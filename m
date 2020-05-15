@@ -2,39 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9491D5C77
-	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 00:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C605D1D5C98
+	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 00:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgEOWmG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 18:42:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34029 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726729AbgEOWmF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 18:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589582524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5q43gttRNqMu1PIGrPl7cLm6uhoV/76UxdA6VMpftBY=;
-        b=L56fltFIfe94KwSZIGQBhVFy4Q1tsOaWME/OwNIZe1hMtwMuLCUX600T4pkmCfB3PbkS8f
-        5bwYOJOpj1+yAo7js/ISl8eLA+z3jVR5gQ9pC7PP6Dwnj1gXqagz5082k3GbaZpEWWIFo/
-        2H0JWE74/KgyoeAMlwp49nHSaT1dQ0M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-3xEnrdYeNSu20afDhsHuRQ-1; Fri, 15 May 2020 18:42:00 -0400
-X-MC-Unique: 3xEnrdYeNSu20afDhsHuRQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBC8A8014D7;
-        Fri, 15 May 2020 22:41:56 +0000 (UTC)
-Received: from krava (unknown [10.40.192.69])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 967F060BF1;
-        Fri, 15 May 2020 22:41:51 +0000 (UTC)
-Date:   Sat, 16 May 2020 00:41:50 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
+        id S1726247AbgEOW7m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 18:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgEOW7m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 18:59:42 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDBEC05BD09
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:59:42 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id y10so1655573ybm.12
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dC+XhfbqGlhAhbAgyMdHUqPw5BLvGzk1yB+TQwnz4Es=;
+        b=GtgoC7VfR7ofh/b0+XXCmCRyrz1ZdRQTxwPKcbSn8AGVsJL1PTuo8ed/VSbRTXOxxh
+         QoQpob+pJw2EjpaAWbOkO1M85kUUJXBTCY5KJetb88ebg9cK3NME+3ys6Gblksg5ssu2
+         gWEHe2DUfbY7PR6MfhCSCPt17ld2kmfha48RWc9lIaCNYE8BmYOqjCmDtlIbJyNzEnxn
+         QuF5pDFw03jfZdfcoUKpL2Ep9KgVqE8ac34Kqcx8l9GO1n7FrPnPTTObHBdeoOTG39hp
+         2CGFBZPuCAdG34MKdbxcD4Ouy6PfsgiHx8Adfb84KgVvK/ncefFwcRsGVmHEAZ21AQMb
+         hAIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dC+XhfbqGlhAhbAgyMdHUqPw5BLvGzk1yB+TQwnz4Es=;
+        b=q5xwnYFKjwwzeOauy9snOYMd194NLCt7XrY6q6pA14kvXwgqpBb+0Fao0ivQscSCvb
+         p/T5xSW0uG+LBnOx1FQ4h+wS/MRlVP8ZPeXqpUYmoiSttaLWSdMxTnHsaSCfPzk36d99
+         2VWx9m0Qa+13SWnZWWFRWXBGVPct0dLt5OkJJDF/dDwnfV81hF7hTfnWXsnnDDKJRMLw
+         dhQldrEBCIrOvR7HcWkDqNBVGo+M2rmlD8zY48N3xCsVPR/hU73NfM7x2E8ZRVlCo3Bf
+         PL+OlVBbu1Ikj965nY3SrT/AErQNNzDwlw+oWIianve1PYR/Ea0icMiI25fm7Jtshtzg
+         T1GQ==
+X-Gm-Message-State: AOAM532IjY5QGKRNQIzUcA4HJ5OUOd8TbAN6lF2WRFTZolDczNGYH5xp
+        V+uHChqG8YPldjaVlFeRTrHJcdQf2+fQrzAssE2Z8w==
+X-Google-Smtp-Source: ABdhPJzA8Cr+oKh4iPKJxB/HOXfxB16FYU3mosClVpNarz/OFo9hUOk0QS6SuasjPAkl/T5P6KoafxYlyo87ftsOajw=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr9552468ybf.177.1589583580023;
+ Fri, 15 May 2020 15:59:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-8-irogers@google.com>
+ <20200515224139.GB3577540@krava>
+In-Reply-To: <20200515224139.GB3577540@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 15 May 2020 15:59:28 -0700
+Message-ID: <CAP-5=fXxTt8Deh6JDQrEqKncM+EfzMnU3_Vg8J4tD3O1uN9hSA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
+To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,133 +77,59 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
-Message-ID: <20200515224150.GC3577540@krava>
-References: <20200515165007.217120-1-irogers@google.com>
- <20200515165007.217120-8-irogers@google.com>
- <20200515194115.GA3577540@krava>
- <CAP-5=fUp4ECBntUamWK53LhTbT9W5w5A0frFyOMxoWK0Q2o60A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUp4ECBntUamWK53LhTbT9W5w5A0frFyOMxoWK0Q2o60A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 15, 2020 at 02:35:43PM -0700, Ian Rogers wrote:
-> On Fri, May 15, 2020 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, May 15, 2020 at 3:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> > index 8b4ce704a68d..f64ab91c432b 100644
+> > --- a/tools/perf/util/expr.c
+> > +++ b/tools/perf/util/expr.c
+> > @@ -4,25 +4,76 @@
+> >  #include "expr.h"
+> >  #include "expr-bison.h"
+> >  #include "expr-flex.h"
+> > +#include <linux/kernel.h>
 > >
-> > On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
+> >  #ifdef PARSER_DEBUG
+> >  extern int expr_debug;
+> >  #endif
 > >
-> > SNIP
-> >
-> > > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > > index b071df373f8b..37be5a368d6e 100644
-> > > --- a/tools/perf/util/metricgroup.c
-> > > +++ b/tools/perf/util/metricgroup.c
-> > > @@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
-> > >
-> > >  struct egroup {
-> > >       struct list_head nd;
-> > > -     int idnum;
-> > > -     const char **ids;
-> > > +     struct expr_parse_ctx pctx;
-> > >       const char *metric_name;
-> > >       const char *metric_expr;
-> > >       const char *metric_unit;
-> > > @@ -94,19 +93,21 @@ struct egroup {
-> > >  };
-> > >
-> > >  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> > > -                                   const char **ids,
-> > > -                                   int idnum,
-> > > +                                   struct expr_parse_ctx *pctx,
-> > >                                     struct evsel **metric_events,
-> > >                                     bool *evlist_used)
-> > >  {
-> > >       struct evsel *ev;
-> > > -     int i = 0, j = 0;
-> > >       bool leader_found;
-> > > +     const size_t idnum = hashmap__size(&pctx->ids);
-> > > +     size_t i = 0;
-> > > +     int j = 0;
-> > > +     double *val_ptr;
-> > >
-> > >       evlist__for_each_entry (perf_evlist, ev) {
-> > >               if (evlist_used[j++])
-> > >                       continue;
-> > > -             if (!strcmp(ev->name, ids[i])) {
-> > > +             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
-> >
-> > hum, you sure it's doing the same thing as before?
-> >
-> > hashmap__find will succede all the time in here, while the
-> > previous code was looking for the start of the group ...
-> > the logic in here is little convoluted, so maybe I'm
-> > missing some point in here ;-)
-> 
-> If we have a metric like "A + B" and another like "C / D" then by
-> we'll generate a string (the extra_events strbuf in the code) like
-> "{A,B}:W,{C,D}:W" from __metricgroup__add_metric. This will turn into
-> an evlist in metricgroup__parse_groups of A,B,C,D. The code is trying
-> to associate the events A,B with the first metric and C,D with the
-> second. The code doesn't support sharing of events and events are
-> marked as used and can't be part of other metrics. The evlist order is
-> also reflective of the order of metrics, so if there were metrics "A +
-> B + C" and "A + B", as the first metric is first in the evlist we
-> don't run the risk of C being placed with A and B in a different
-> group.
-> 
-> The old code used the order of events to match within a metric and say
-> for metric "A+B+C" we want to match A then B, and so on. The new code
-> acts more like a set, so "A + B + C" becomes a set containing A, B and
-> C, we check A is in the set then B and then C. For both pieces of code
-> they are only working because of the evlist_used "bitmap" and that the
-> order in the evlists and metrics matches.
-> 
-> The current code could just use ordering to match first n1 events with
-> the first metric, the next n2 events with the second and so on. So
-> both the find now, and the strcmp before always return true in this
-> branch.
-> 
-> In the RFC patch set I want to share events and so I do checks related
-> to the group leader so that I know when moving from one group to
-> another in the evlist. The find/strcmp becomes load bearing as I will
-> re-use events as long as they match.
-> https://lore.kernel.org/lkml/20200508053629.210324-14-irogers@google.com/
-> 
-> > jirka
-> >
-> > >                       if (!metric_events[i])
-> > >                               metric_events[i] = ev;
-> > >                       i++;
-> > > @@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> > >                       memset(metric_events, 0,
-> > >                               sizeof(struct evsel *) * idnum);
-> 
-> This re-check was unnecessary in the old code and unnecessary even
-> more so now as the hashmap_find is given exactly the same arguments.
-> I'll remove it in v3 while addressing Andrii's memory leak fixes.
+> > +static size_t key_hash(const void *key, void *ctx __maybe_unused)
+> > +{
+> > +     const char *str = (const char *)key;
+> > +     size_t hash = 0;
+> > +
+> > +     while (*str != '\0') {
+> > +             hash *= 31;
+> > +             hash += *str;
+> > +             str++;
+> > +     }
+> > +     return hash;
+> > +}
+> > +
+> > +static bool key_equal(const void *key1, const void *key2,
+> > +                 void *ctx __maybe_unused)
+> > +{
+> > +     return !strcmp((const char *)key1, (const char *)key2);
+>
+> should that be strcasecmp ? would it affect the key_hash as well?
 
-ok, that was my other confusion, because it's useless ;-)
+The original code does make use of strcasecmp in one place, but in the
+group matching (the main useless use for this code) it doesn't. I
+don't think it is a regression to keep it as this, and would like a
+test case for when it does matter. Is that ok?
 
-thanks for the explanation,
-jirka
+Thanks,
+Ian
 
-> 
-> Thanks,
-> Ian
-> 
-> > > -                     if (!strcmp(ev->name, ids[i])) {
-> > > +                     if (hashmap__find(&pctx->ids, ev->name,
-> > > +                                       (void **)&val_ptr)) {
-> > >                               if (!metric_events[i])
-> > >                                       metric_events[i] = ev;
-> >
-> > SNIP
-> >
-> 
-
+> jirka
+>
