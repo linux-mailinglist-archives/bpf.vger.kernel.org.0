@@ -2,73 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26161D5B5A
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 23:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C001D5BB0
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 23:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgEOVTI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 17:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        id S1726266AbgEOVf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 17:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726183AbgEOVTH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 17:19:07 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A617C061A0C;
-        Fri, 15 May 2020 14:19:06 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x12so3240292qts.9;
-        Fri, 15 May 2020 14:19:06 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726183AbgEOVf4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 17:35:56 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D157BC061A0C
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x15so1848257ybr.10
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 14:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc;
-        bh=srt7QXlq4v2mVg2Pcb9Nrsj43p0okN5hPOgneLc3kDU=;
-        b=IC9yJMxMC2Bc6jWNDzMmlDB3+fmkmwHp/GWWHThRou0USteQZjoXvCa34feLiTCRPN
-         dNOQYkuPLcaKLQ2We2ulkNlRwkMMmhx806CbAZ9kqYqCxubYJcM2Sv0AgQ2WuhvN1vry
-         bj/pQzLlWwep0QtWwhaLgCxiu1pg+1P3BXOMJ7s5hNFL4H7WSgkS8heVf55vmEXwNLLR
-         9D7vXoMh2Vl7M4/dAE97wulo0+0v6qrh6Xck/V53alDcLm77Tf3Tc9KkK4VgLQxSPMQb
-         +6fLLcND3PXxIwflu/ffcUfn5qBNK1WA8oHUpGIfjbs1ZHbMHnivwVKvFE1cxJYo0uQC
-         /lfQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
+        b=NfimAyTC/aIkfOHS2ufqPSllOkeKqp1ZK6kze94gN6kn1ADBKZD3dHs2eXsMiGzBR1
+         15TmsMiq4KlpeHxxUJ5YdLeKyW23BftJ/gMJmVwlsAn9wcJ8hNxPhlPYwpt5prr5Plzx
+         X43QaZjtrMfGtVTJ/ubc6mkEj6Ge5py3FKjasFZ+0KDaHQnCgsGN1GjqHijFAE+tqSUr
+         I0o2HfrLoen8lac1vJSzfPD+hjfINdbvGmnNZ+aYkTJtddLFqxcCrbqe6UPzgZVuVVHV
+         xDLercuanoXp8rDUc6rnzIa3P8yb045tTQv7jF96E3NAAxmFtOEQvwlMc35NBfkuYpr+
+         Seqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:date:user-agent:in-reply-to
-         :references:mime-version:content-transfer-encoding:subject:to:cc;
-        bh=srt7QXlq4v2mVg2Pcb9Nrsj43p0okN5hPOgneLc3kDU=;
-        b=ZIsMR9Ifqi3KOg+DhznC6GbHNGQjNtf7DHU0zfiFm3u1KKp4kJFsZvdOKqIH+MYYyu
-         B4adPQT5y2+f3+dkHYq4qoYprI2exzH5CrLw+LjJH38TE2YPbU6i+UOSVa8ppmyjtelD
-         t2348rMZbhMVmTLjkJvAX9x6q9weJTQ3A8yzTqsUZlxu4OmLPvxyRvl/T1nkDChzDxhS
-         zbrgjB0+ABEoBkx1bOEqo8e+tU/NSUPkIplvCzhYdI2MK3egVGCDWCdyQKRtfXUXU0Mv
-         Uo7joT2BZMD49WQ65w3LqmAa7U+hbnIXELkCXOFLNGaxqyxX3OSjaPSubUmfr9EsiuuN
-         K/rg==
-X-Gm-Message-State: AOAM531WHtYjfVA4b2eEa67DsivK3UaQ/rb2F12SnEIwAck7XnCqqm1+
-        ZPIaR6AnwtinjqGSaUONSlU=
-X-Google-Smtp-Source: ABdhPJyzrzazSLyxQqTYcTXRILBssVzRq+eZQpILUE2lrhccijlaN/BQkScN0/xmxqKfyyqk5ZtR3A==
-X-Received: by 2002:ac8:6b8a:: with SMTP id z10mr5471891qts.373.1589577545145;
-        Fri, 15 May 2020 14:19:05 -0700 (PDT)
-Received: from [192.168.86.185] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id d7sm2420093qkk.26.2020.05.15.14.19.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 May 2020 14:19:04 -0700 (PDT)
-Message-ID: <5ebf0748.1c69fb81.f8310.eef3@mx.google.com>
-From:   arnaldo.melo@gmail.com
-Date:   Fri, 15 May 2020 18:18:45 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
-References: <20200515165007.217120-1-irogers@google.com> <20200515170036.GA10230@kernel.org> <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sVQVIr84sLsAtEf+Ll1fioJb9v8WVaNtHmGOv4kP0R8=;
+        b=lV9gD7S4P5tkDvUEEDvgY0mzykBvSSTPI0ETlgKzDd43eCXkSr8D5iPAlSarf6YnxZ
+         VZA0W5I27Nb1EI+5QFlXU3/VkK4JDFsqM8miZwFOfG4mUyedwnddGrQ9sbbiVMoSSHUl
+         16SRJP/YiPpMRbIAimSMD50R39Np7G0FMHhFM41HperwKlaW70PLTYAJ3LiX+xmqfKfQ
+         8YnggXOuJPCY8VeV7ywXM490F+5z/HkgaHurwgqCKFDx2RKAIHuMOJbXwt+lL+fUHSl3
+         vKRF44guD7w672oOsbvk29szLIU808UMDkqsOIlNb2maXXUp8Kq+lnUp1N6jkIIGBveY
+         Fr9g==
+X-Gm-Message-State: AOAM532Jw8yU2YSxhsJty8gH1W2adKG1aTeoXetZsczSIZVL8RxYE6Ig
+        d6rlVORThPuUylZel347Vje0E+d+GQA1SIpoBWh3pg==
+X-Google-Smtp-Source: ABdhPJzO8Z79WAQPa+P8cIWRu5FYqccxVpUsubtP/BCBp9spOPnwntRjPW/UivBlIqcTjuFF/pHj3glO1AKf2bwUZSU=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr9073716ybf.177.1589578554699;
+ Fri, 15 May 2020 14:35:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 0/7] Copy hashmap to tools/perf/util, use in perf expr
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-8-irogers@google.com>
+ <20200515194115.GA3577540@krava>
+In-Reply-To: <20200515194115.GA3577540@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 15 May 2020 14:35:43 -0700
+Message-ID: <CAP-5=fUp4ECBntUamWK53LhTbT9W5w5A0frFyOMxoWK0Q2o60A@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
@@ -83,61 +74,117 @@ CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Kim Phillips <kim.phillips@amd.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Leo Yan <leo.yan@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-<bpf@vger.kernel.org>,Stephane Eranian <eranian@google.com>
-From: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Message-ID: <79BCBAF7-BF5F-4556-A923-56E9D82FB570@gmail.com>
-
-
-
-On May 15, 2020 4:42:46 PM GMT-03:00, Andrii Nakryiko <andrii=2Enakryiko@g=
-mail=2Ecom> wrote:
->On Fri, May 15, 2020 at 10:01 AM Arnaldo Carvalho de Melo
-><arnaldo=2Emelo@gmail=2Ecom> wrote:
->>
->> Em Fri, May 15, 2020 at 09:50:00AM -0700, Ian Rogers escreveu:
->> > Perf's expr code currently builds an array of strings then removes
->> > duplicates=2E The array is larger than necessary and has recently
->been
->> > increased in size=2E When this was done it was commented that a
->hashmap
->> > would be preferable=2E
->> >
->> > libbpf has a hashmap but libbpf isn't currently required to build
->> > perf=2E To satisfy various concerns this change copies libbpf's
->hashmap
->> > into tools/perf/util, it then adds a check in perf that the two are
->in
->> > sync=2E
->> >
->> > Andrii's patch to hashmap from bpf-next is brought into this set to
->> > fix issues with hashmap__clear=2E
->> >
->> > Two minor changes to libbpf's hashmap are made that remove an
->unused
->> > dependency and fix a compiler warning=2E
->>
->> Andrii/Alexei/Daniel, what do you think about me merging these fixes
->in my
->> perf-tools-next branch?
+On Fri, May 15, 2020 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
 >
->I'm ok with the idea, but it's up to maintainers to coordinate this :)
+> On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index b071df373f8b..37be5a368d6e 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
+> >
+> >  struct egroup {
+> >       struct list_head nd;
+> > -     int idnum;
+> > -     const char **ids;
+> > +     struct expr_parse_ctx pctx;
+> >       const char *metric_name;
+> >       const char *metric_expr;
+> >       const char *metric_unit;
+> > @@ -94,19 +93,21 @@ struct egroup {
+> >  };
+> >
+> >  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > -                                   const char **ids,
+> > -                                   int idnum,
+> > +                                   struct expr_parse_ctx *pctx,
+> >                                     struct evsel **metric_events,
+> >                                     bool *evlist_used)
+> >  {
+> >       struct evsel *ev;
+> > -     int i = 0, j = 0;
+> >       bool leader_found;
+> > +     const size_t idnum = hashmap__size(&pctx->ids);
+> > +     size_t i = 0;
+> > +     int j = 0;
+> > +     double *val_ptr;
+> >
+> >       evlist__for_each_entry (perf_evlist, ev) {
+> >               if (evlist_used[j++])
+> >                       continue;
+> > -             if (!strcmp(ev->name, ids[i])) {
+> > +             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+>
+> hum, you sure it's doing the same thing as before?
+>
+> hashmap__find will succede all the time in here, while the
+> previous code was looking for the start of the group ...
+> the logic in here is little convoluted, so maybe I'm
+> missing some point in here ;-)
 
-Good to know, do I'll take all patches except the ones touching libppf, wi=
-ll just make sure the copy is done with the patches applied=2E
+If we have a metric like "A + B" and another like "C / D" then by
+we'll generate a string (the extra_events strbuf in the code) like
+"{A,B}:W,{C,D}:W" from __metricgroup__add_metric. This will turn into
+an evlist in metricgroup__parse_groups of A,B,C,D. The code is trying
+to associate the events A,B with the first metric and C,D with the
+second. The code doesn't support sharing of events and events are
+marked as used and can't be part of other metrics. The evlist order is
+also reflective of the order of metrics, so if there were metrics "A +
+B + C" and "A + B", as the first metric is first in the evlist we
+don't run the risk of C being placed with A and B in a different
+group.
 
-At some point they'll land in libbpf and the warning from check_headers=2E=
-sh will be resolved=2E
+The old code used the order of events to match within a metric and say
+for metric "A+B+C" we want to match A then B, and so on. The new code
+acts more like a set, so "A + B + C" becomes a set containing A, B and
+C, we check A is in the set then B and then C. For both pieces of code
+they are only working because of the evlist_used "bitmap" and that the
+order in the evlists and metrics matches.
+
+The current code could just use ordering to match first n1 events with
+the first metric, the next n2 events with the second and so on. So
+both the find now, and the strcmp before always return true in this
+branch.
+
+In the RFC patch set I want to share events and so I do checks related
+to the group leader so that I know when moving from one group to
+another in the evlist. The find/strcmp becomes load bearing as I will
+re-use events as long as they match.
+https://lore.kernel.org/lkml/20200508053629.210324-14-irogers@google.com/
+
+> jirka
+>
+> >                       if (!metric_events[i])
+> >                               metric_events[i] = ev;
+> >                       i++;
+> > @@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> >                       memset(metric_events, 0,
+> >                               sizeof(struct evsel *) * idnum);
+
+This re-check was unnecessary in the old code and unnecessary even
+more so now as the hashmap_find is given exactly the same arguments.
+I'll remove it in v3 while addressing Andrii's memory leak fixes.
 
 Thanks,
+Ian
 
-- Arnaldo
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+> > -                     if (!strcmp(ev->name, ids[i])) {
+> > +                     if (hashmap__find(&pctx->ids, ev->name,
+> > +                                       (void **)&val_ptr)) {
+> >                               if (!metric_events[i])
+> >                                       metric_events[i] = ev;
+>
+> SNIP
+>
