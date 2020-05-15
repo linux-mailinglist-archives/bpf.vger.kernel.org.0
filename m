@@ -2,136 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2BE1D48E4
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 10:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150EE1D4940
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 11:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgEOIzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 04:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727050AbgEOIzD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 04:55:03 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727941AbgEOJR0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 05:17:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32024 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727861AbgEOJR0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 05:17:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589534244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mnRre2Cx4ihUmsSYvpskeloE4Blh3L+V4XuwzK66mi0=;
+        b=P4Iii1atA6lNryeNNVXerKJ9TF0kR6JPrrspqdkCO34DsixQTq7XZupi7qCG7b5NnGIRF/
+        n4k4d1R+KCo9t3ys9jxxbH7eFEv2rc12Ob9nLHCCgQOriwIMkDRnHTMH9SFRedVnOM+mzj
+        hrkBBbX7hJccOCKObugHMRJCOdKcqoQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-e0TBRx52PWahR22LB9MItA-1; Fri, 15 May 2020 05:17:20 -0400
+X-MC-Unique: e0TBRx52PWahR22LB9MItA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A23A206B6;
-        Fri, 15 May 2020 08:55:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589532901;
-        bh=oClvNX1jiA9weydwEdlbenPiHIznHQd1L5EBZhCxx3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpt+mp4LzvuJbX9ycQvw0RpWGNKF5RbZCD0kYOXuvsY6Itbjj25ZChFWEoFSWgyeS
-         2w8CH90vuzfAcTG4bYJuviqa2BGLKMD0ysk87k5yQpFoXoqmmLwYDZXhrATqThPunL
-         Ge02lOwSxj2U73XKT+Rxrzr5aIw+V31CeLBi9HGg=
-Date:   Fri, 15 May 2020 10:54:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>, stable@vger.kernel.org,
-        lkp@lists.01.org, bpf@vger.kernel.org,
-        kernel test robot <rong.a.chen@intel.com>
-Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
-Message-ID: <20200515085459.GH1474499@kroah.com>
-References: <20200513074418.GE17565@shao2-debian>
- <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
- <20200513102634.GC871114@kroah.com>
- <20200514031420.GE102436@dhcp-12-153.nay.redhat.com>
- <20200514103017.GA1829391@kroah.com>
- <e5221ecb-04ad-bc77-d66f-b438c1a8b5c7@fb.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69715835BA8;
+        Fri, 15 May 2020 09:17:17 +0000 (UTC)
+Received: from krava (unknown [10.40.194.127])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7835478B23;
+        Fri, 15 May 2020 09:17:10 +0000 (UTC)
+Date:   Fri, 15 May 2020 11:17:07 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 4/8] libbpf hashmap: Localize static hashmap__* symbols
+Message-ID: <20200515091707.GC3511648@krava>
+References: <20200515065624.21658-1-irogers@google.com>
+ <20200515065624.21658-5-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e5221ecb-04ad-bc77-d66f-b438c1a8b5c7@fb.com>
+In-Reply-To: <20200515065624.21658-5-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 14, 2020 at 11:38:27AM -0700, Andrii Nakryiko wrote:
-> On 5/14/20 3:30 AM, Greg Kroah-Hartman wrote:
-> > On Thu, May 14, 2020 at 11:14:20AM +0800, Hangbin Liu wrote:
-> > > On Wed, May 13, 2020 at 12:26:34PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Wed, May 13, 2020 at 05:58:35PM +0800, Hangbin Liu wrote:
-> > > > > 
-> > > > > Thanks test bot catch the issue.
-> > > > > On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wrote:
-> > > > > > Greeting,
-> > > > > > 
-> > > > > > FYI, we noticed the following commit (built with gcc-7):
-> > > > > > 
-> > > > > > commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/bpf: Fix perf_buffer test on systems w/ offline CPUs")
-> > > > > > https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > > > > 
-> > > > > The author for this commit is Andrii(cc'd).
-> > > > > 
-> > > > > Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test if the setup disabled it")
-> > > > > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
-> > > > > >     goto cleanup;
-> > > > > >     ^~~~
-> > > > > 
-> > > > > Hi Greg, we are missing a depend commit
-> > > > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
-> > > > > 
-> > > > > So either we need backport this patch, or if you like, we can also fix it by
-> > > > > changing 'goto cleanup;' to 'goto close_prog;'. So which one do you prefer?
+On Thu, May 14, 2020 at 11:56:20PM -0700, Ian Rogers wrote:
+> Localize the hashmap__* symbols in libbpf.a. To allow for a version in
+> libapi.
 > 
-> Hi, sorry for late reply, missed emails earlier.
+> Before:
+> $ nm libbpf.a
+> ...
+> 000000000002088a t hashmap_add_entry
+> 000000000001712a t hashmap__append
+> 0000000000020aa3 T hashmap__capacity
+> 000000000002099c T hashmap__clear
+> 00000000000208b3 t hashmap_del_entry
+> 0000000000020fc1 T hashmap__delete
+> 0000000000020f29 T hashmap__find
+> 0000000000020c6c t hashmap_find_entry
+> 0000000000020a61 T hashmap__free
+> 0000000000020b08 t hashmap_grow
+> 00000000000208dd T hashmap__init
+> 0000000000020d35 T hashmap__insert
+> 0000000000020ab5 t hashmap_needs_to_grow
+> 0000000000020947 T hashmap__new
+> 0000000000000775 t hashmap__set
+> 00000000000212f8 t hashmap__set
+> 0000000000020a91 T hashmap__size
+> ...
 > 
-> The above "selftest to skeletons" commit will need some more after that,
-> it's going to be a pretty big back-port, so I think just fixing it up would
-> be ok.
-> 
-> > > > 
-> > > > I don't know, I have no context here at all, sorry.
-> > > > 
-> > > > What stable kernel tree is failing, what patch needs to be changed, what
-> > > > patch caused this, and so on...
-> > > > 
-> > > > confused,
-> > > 
-> > > Oh, sorry, I should reply the full email. I will forward the full message in
-> > > the bellow. For your questions:
-> > > 
-> > > the stable kernel tree is linux-5.4.y,
-> > > my patch is da43712a7262 ("selftests/bpf: Skip perf hw events test if the
-> > > setup disabled it")[1].
-> > > 
-> > > The reason is we are lacking upstream commit
-> > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
-> > > 
-> > > This will call build warning
-> > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
-> > >     goto cleanup;
-> > >     ^~~~
-> > > 
-> > > To fix it, I think the easiest way is change the "goto cleanup" to "goto
-> > > close_prog".
-> > 
-> > Ok, can you send a patch for this, documenting all of the above so I
-> > know what's going on?
-> > 
-> > > For the other error:
-> > > 
-> > > prog_tests/perf_buffer.c: In function ‘test_perf_buffer’:
-> > > prog_tests/perf_buffer.c:39:8: warning: implicit declaration of function ‘parse_cpu_mask_file’ [-Wimplicit-function-declaration]
-> > >    err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
-> > >          ^~~~~~~~~~~~~~~~~~~
-> > > ../lib.mk:138: recipe for target '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs' failed
-> > > make: *** [/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs] Error 1
-> > > make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf'
-> > > 
-> > > I think Andrii may like help.
-> > 
-> > That looks like a bug, we should revert the offending patch, right?
-> 
-> 6803ee25f0ea ("libbpf: Extract and generalize CPU mask parsing logic") added
-> parse_cpu_mask_file() function, so back-porting that commit should solve
-> this? It should be straightforward and shouldn't bring any more dependent
-> commits.
+> After:
+> $ nm libbpf.a
+> ...
+> 000000000002088a t hashmap_add_entry
+> 000000000001712a t hashmap__append
+> 0000000000020aa3 t hashmap__capacity
+> 000000000002099c t hashmap__clear
+> 00000000000208b3 t hashmap_del_entry
+> 0000000000020fc1 t hashmap__delete
+> 0000000000020f29 t hashmap__find
+> 0000000000020c6c t hashmap_find_entry
+> 0000000000020a61 t hashmap__free
+> 0000000000020b08 t hashmap_grow
+> 00000000000208dd t hashmap__init
+> 0000000000020d35 t hashmap__insert
+> 0000000000020ab5 t hashmap_needs_to_grow
+> 0000000000020947 t hashmap__new
+> 0000000000000775 t hashmap__set
+> 00000000000212f8 t hashmap__set
+> 0000000000020a91 t hashmap__size
+> ...
 
-As this does not apply cleanly, can you provide a working backport so
-that I can apply that?
+I think this will break bpf selftests which use hashmap,
+we need to find some other way to include this
 
-tahnks,
+either to use it from libbpf directly, or use the api version
+only if the libbpf is not compiled in perf, we could use
+following to detect that:
 
-greg k-h
+      CFLAGS += -DHAVE_LIBBPF_SUPPORT
+      $(call detected,CONFIG_LIBBPF)
+
+jirka
+
