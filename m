@@ -2,167 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7B21D56F1
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 19:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0D51D577D
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 19:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgEORAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 13:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S1726494AbgEORV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 13:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726144AbgEORAl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 13:00:41 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05537C061A0C;
-        Fri, 15 May 2020 10:00:41 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id z9so1396755qvi.12;
-        Fri, 15 May 2020 10:00:40 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726219AbgEORV2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 13:21:28 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D727C061A0C;
+        Fri, 15 May 2020 10:21:28 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id l73so4191619pjb.1;
+        Fri, 15 May 2020 10:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AoY0BNeS5s76CJAngCFpdWwtsXhJLMkUY02Jn749C6w=;
-        b=o4lMkvd+4qZ/WovyIPQ6EY1ZKJB7R6p9MVI29CLBVNV8RK+aMzWAxwfqQBGaiIYtsc
-         sywwbY/QTshA18hHqy5QODROSqiYuHtq1AbcrZG+VnMWCAKUkWCUCSE93TT0hXQ5dW5J
-         fmOzRPewctvAnUseiFi6ES+/A3+338B5eaTTeFI6x5ZTLTUXVQ/R3hDcbwMSVneLTMDq
-         pKpOufpFhI6NdZ1V+LC7gAku/5t9RZgcgdlUq8dA93Z8NBWQdzMaK0k3CnCwEKZXyfkR
-         OsUKANWy40ax0m+YH/XOClUVbveu9LFEQCOdsEYub+OACtA8/6/w84GzpRrGPr1iH271
-         CT3A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=35HyAw9zmoVHtnMhNhUc0eB8VDDuplrFilWXrtTPywo=;
+        b=WKKinlU9jgGgJmexATOS/798jU9houmifd5vekTaR6N6mWnoBjnid7hbLl6KjEl1oO
+         fm0hfl9ldCf/LVPoXBAw4NjakCh71YlpR+64cFjI3mYnSNXE4yLcCs/+GcGLlfhbJo6C
+         cFEEnzftPfxtzc/UnOFC8r76fLReVxCmN4bIiLOX2+ZAEZU8Q3PpgKHW1TX6FOs1AVxR
+         o8ALy5iuWAr/RD7QTCOjdKm2XRQeV40INQugL7PCM94aoqmEuL2NfnqKNRS7VnC9gqJj
+         2iVGXzMuQyHjW788GORKB9WPJhRUtYi7RYRy+KjXuva98ZNiiausaExPRLK6Qo2GW1FZ
+         ULkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AoY0BNeS5s76CJAngCFpdWwtsXhJLMkUY02Jn749C6w=;
-        b=Ha1BHJFlK18D/wvJ4RKD5MnjJaLdQu00sIhBtFveaCwylsZ2OZueFKA4Tsf0ZRlOvg
-         rr/NBAlrQHp3XHy0vT3T6RQlQHctQzAanuPV8aLtAOB00ainzC/tW65p/Jf5Mtu1YwuV
-         1TeeWqIKHvT6bsl4Cng7n7TUq0i6+mndvcuo8+AOFdHcw1du/qerZ0GX24BjyrNLPoAc
-         7faHuKIZiAPxP0L/Ch1/9QlDjALazk3pXcE9oqgjF52OJE2UNc7n2Upy3JZexWsPUjeH
-         oyqSnUyedonfXw3L0frUqUYDno2eonmwxc6PycY4rLO13Qs7JvjG5tPMJe3M1QPMAZkk
-         nexw==
-X-Gm-Message-State: AOAM532U5ZWY34oDTMbCFM3AzISzV3XH3v/zNU29/ElhnbCgtyI5UH/H
-        h4bmtf2e0PO1KnlTilA957k=
-X-Google-Smtp-Source: ABdhPJzJIQEtu7koHbckefZCoV9JJZTtTJ9GEbszMEGYv4dMDGi4gfxxGpN/9rt4eWJJNV5Re93CHQ==
-X-Received: by 2002:a05:6214:905:: with SMTP id dj5mr4437992qvb.222.1589562040125;
-        Fri, 15 May 2020 10:00:40 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id n124sm1968608qkn.24.2020.05.15.10.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 10:00:39 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 32E2240AFD; Fri, 15 May 2020 14:00:36 -0300 (-03)
-Date:   Fri, 15 May 2020 14:00:36 -0300
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 0/7] Copy hashmap to tools/perf/util, use in perf expr
-Message-ID: <20200515170036.GA10230@kernel.org>
-References: <20200515165007.217120-1-irogers@google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=35HyAw9zmoVHtnMhNhUc0eB8VDDuplrFilWXrtTPywo=;
+        b=cY9nOO946aRNgVqMxYih0mqW/RxEhYOt6uZC6hQoX+evzKCJefmj4ZoCepbRm1y1Xa
+         +DEOgDFaQEe6Hp4KUCr3ttzrRQZvLaWZFeXfGSJu0BwyzwtZyX42Sv7ac+oDjpI2JJ/s
+         tq2irkG1YmivVQMFMqf3V4f0wswTSLku9OxBvT7lY1pTDqdtIksJtwmCxbYFAnR4Wy+P
+         ETcX9dIElLr7AyhI7pz5rM5aLAbVtDEyjJCRLwzzBofe757W7Axf3+yo90F5wOz6yKYk
+         UWV5QflS6u2Z94rs5RpkHX55AHkhA+SmBCTvq6PZs5KUcWic4XY7fb1IOMAHjBGRTC3i
+         VJdw==
+X-Gm-Message-State: AOAM531Hb5NSe9U0EM2ezdC5pPtkts+QhzGx98LO+lpU7q5NiMWrxAuE
+        bzdDFzCM8FKGCFZI60CHjPk=
+X-Google-Smtp-Source: ABdhPJwLNpI61lel8Edw3bda3fi8wvyeiUq2JRSzz/0GUgBedc4ckSRSiajoXFToOJ0KHCWwwi4ZGA==
+X-Received: by 2002:a17:90a:1f4b:: with SMTP id y11mr4701576pjy.136.1589563287513;
+        Fri, 15 May 2020 10:21:27 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id i25sm2543012pfd.45.2020.05.15.10.21.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 May 2020 10:21:26 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: pull-request: bpf-next 2020-05-15
+Date:   Fri, 15 May 2020 10:21:24 -0700
+Message-Id: <20200515172124.44077-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515165007.217120-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, May 15, 2020 at 09:50:00AM -0700, Ian Rogers escreveu:
-> Perf's expr code currently builds an array of strings then removes
-> duplicates. The array is larger than necessary and has recently been
-> increased in size. When this was done it was commented that a hashmap
-> would be preferable.
-> 
-> libbpf has a hashmap but libbpf isn't currently required to build
-> perf. To satisfy various concerns this change copies libbpf's hashmap
-> into tools/perf/util, it then adds a check in perf that the two are in
-> sync.
-> 
-> Andrii's patch to hashmap from bpf-next is brought into this set to
-> fix issues with hashmap__clear.
-> 
-> Two minor changes to libbpf's hashmap are made that remove an unused
-> dependency and fix a compiler warning.
+Hi David,
 
-Andrii/Alexei/Daniel, what do you think about me merging these fixes in my
-perf-tools-next branch?
+The following pull-request contains BPF updates for your *net-next* tree.
 
-- Arnaldo
- 
-> Two perf test changes are also brought in as they need refactoring to
-> account for the expr API change and it is expected they will land
-> ahead of this.
-> https://lore.kernel.org/lkml/20200513062236.854-2-irogers@google.com/
-> 
-> Tested with 'perf test' and 'make -C tools/perf build-test'.
-> 
-> The hashmap change was originally part of an RFC:
-> https://lore.kernel.org/lkml/20200508053629.210324-1-irogers@google.com/
-> 
-> v2. moves hashmap into tools/perf/util rather than libapi, to allow
-> hashmap's libbpf symbols to be visible when built statically for
-> testing.
-> 
-> Andrii Nakryiko (1):
->   libbpf: Fix memory leak and possible double-free in hashmap__clear
-> 
-> Ian Rogers (6):
->   libbpf hashmap: Remove unused #include
->   libbpf hashmap: Fix signedness warnings
->   tools lib/api: Copy libbpf hashmap to tools/perf/util
->   perf test: Provide a subtest callback to ask for the reason for
->     skipping a subtest
->   perf test: Improve pmu event metric testing
->   perf expr: Migrate expr ids table to a hashmap
-> 
->  tools/lib/bpf/hashmap.c         |  10 +-
->  tools/lib/bpf/hashmap.h         |   1 -
->  tools/perf/check-headers.sh     |   4 +
->  tools/perf/tests/builtin-test.c |  18 ++-
->  tools/perf/tests/expr.c         |  40 +++---
->  tools/perf/tests/pmu-events.c   | 169 ++++++++++++++++++++++-
->  tools/perf/tests/tests.h        |   4 +
->  tools/perf/util/Build           |   4 +
->  tools/perf/util/expr.c          | 129 +++++++++--------
->  tools/perf/util/expr.h          |  26 ++--
->  tools/perf/util/expr.y          |  22 +--
->  tools/perf/util/hashmap.c       | 238 ++++++++++++++++++++++++++++++++
->  tools/perf/util/hashmap.h       | 177 ++++++++++++++++++++++++
->  tools/perf/util/metricgroup.c   |  87 ++++++------
->  tools/perf/util/stat-shadow.c   |  49 ++++---
->  15 files changed, 798 insertions(+), 180 deletions(-)
->  create mode 100644 tools/perf/util/hashmap.c
->  create mode 100644 tools/perf/util/hashmap.h
-> 
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
-> 
+We've added 37 non-merge commits during the last 1 day(s) which contain
+a total of 67 files changed, 741 insertions(+), 252 deletions(-).
 
--- 
+The main changes are:
 
-- Arnaldo
+1) bpf_xdp_adjust_tail() now allows to grow the tail as well, from Jesper.
+
+2) bpftool can probe CONFIG_HZ, from Daniel.
+
+3) CAP_BPF is introduced to isolate user processes that use BPF infra and
+   to secure BPF networking services by dropping CAP_SYS_ADMIN requirement
+   in certain cases, from Alexei.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andy Gospodarek, Björn Töpel, Grygorii Strashko, Jakub Kicinski, Jason 
+Wang, Lorenzo Bianconi, Mao Wenan, Michael S. Tsirkin, Quentin Monnet, 
+Sameeh Jubran, Tariq Toukan, Toke Høiland-Jørgensen, Toshiaki Makita
+
+----------------------------------------------------------------
+
+The following changes since commit d00f26b623333f2419f4c3b95ff11c8b1bb96f56:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next (2020-05-14 20:31:21 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to ed24a7a852b542911479383d5c80b9a2b4bb8caa:
+
+  Merge branch 'bpf-cap' (2020-05-15 17:29:46 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (4):
+      Merge branch 'xdp-grow-tail'
+      bpf, capability: Introduce CAP_BPF
+      bpf: Implement CAP_BPF
+      selftests/bpf: Use CAP_BPF and CAP_PERFMON in tests
+
+Daniel Borkmann (2):
+      bpf, bpftool: Allow probing for CONFIG_HZ from kernel config
+      Merge branch 'bpf-cap'
+
+Ilias Apalodimas (1):
+      net: netsec: Add support for XDP frame size
+
+Jesper Dangaard Brouer (32):
+      xdp: Add frame size to xdp_buff
+      bnxt: Add XDP frame size to driver
+      sfc: Add XDP frame size
+      mvneta: Add XDP frame size to driver
+      net: XDP-generic determining XDP frame size
+      xdp: Xdp_frame add member frame_sz and handle in convert_to_xdp_frame
+      xdp: Cpumap redirect use frame_sz and increase skb_tailroom
+      veth: Adjust hard_start offset on redirect XDP frames
+      veth: Xdp using frame_sz in veth driver
+      dpaa2-eth: Add XDP frame size
+      hv_netvsc: Add XDP frame size to driver
+      qlogic/qede: Add XDP frame size to driver
+      net: ethernet: ti: Add XDP frame size to driver cpsw
+      ena: Add XDP frame size to amazon NIC driver
+      mlx4: Add XDP frame size and adjust max XDP MTU
+      net: thunderx: Add XDP frame size
+      nfp: Add XDP frame size to netronome driver
+      tun: Add XDP frame size
+      vhost_net: Also populate XDP frame size
+      virtio_net: Add XDP frame size in two code paths
+      ixgbe: Fix XDP redirect on archs with PAGE_SIZE above 4K
+      ixgbe: Add XDP frame size to driver
+      ixgbevf: Add XDP frame size to VF driver
+      i40e: Add XDP frame size to driver
+      ice: Add XDP frame size to driver
+      xdp: For Intel AF_XDP drivers add XDP frame_sz
+      mlx5: Rx queue setup time determine frame_sz for XDP
+      xdp: Allow bpf_xdp_adjust_tail() to grow packet size
+      xdp: Clear grow memory in bpf_xdp_adjust_tail()
+      bpf: Add xdp.frame_sz in bpf_prog_test_run_xdp().
+      selftests/bpf: Adjust BPF selftest for xdp_adjust_tail
+      selftests/bpf: Xdp_adjust_tail add grow tail tests
+
+ drivers/media/rc/bpf-lirc.c                        |   2 +-
+ drivers/net/ethernet/amazon/ena/ena_netdev.c       |   1 +
+ drivers/net/ethernet/amazon/ena/ena_netdev.h       |   5 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c      |   1 +
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c   |   1 +
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |   7 ++
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  30 ++++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   2 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c          |  34 ++++--
+ drivers/net/ethernet/intel/ice/ice_xsk.c           |   2 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |  33 ++++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   2 +
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c  |  34 ++++--
+ drivers/net/ethernet/marvell/mvneta.c              |  25 +++--
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c     |   3 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c         |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en.h       |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   6 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |   2 +
+ .../net/ethernet/netronome/nfp/nfp_net_common.c    |   6 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c         |   1 +
+ drivers/net/ethernet/qlogic/qede/qede_main.c       |   2 +-
+ drivers/net/ethernet/sfc/rx.c                      |   1 +
+ drivers/net/ethernet/socionext/netsec.c            |  30 +++--
+ drivers/net/ethernet/ti/cpsw.c                     |   1 +
+ drivers/net/ethernet/ti/cpsw_new.c                 |   1 +
+ drivers/net/hyperv/netvsc_bpf.c                    |   1 +
+ drivers/net/hyperv/netvsc_drv.c                    |   2 +-
+ drivers/net/tun.c                                  |   2 +
+ drivers/net/veth.c                                 |  28 +++--
+ drivers/net/virtio_net.c                           |  15 ++-
+ drivers/vhost/net.c                                |   1 +
+ include/linux/bpf.h                                |  18 ++-
+ include/linux/bpf_verifier.h                       |   3 +
+ include/linux/capability.h                         |   5 +
+ include/net/xdp.h                                  |  27 ++++-
+ include/net/xdp_sock.h                             |  11 ++
+ include/uapi/linux/bpf.h                           |   4 +-
+ include/uapi/linux/capability.h                    |  34 +++++-
+ kernel/bpf/arraymap.c                              |  10 +-
+ kernel/bpf/bpf_struct_ops.c                        |   2 +-
+ kernel/bpf/core.c                                  |   2 +-
+ kernel/bpf/cpumap.c                                |  23 +---
+ kernel/bpf/hashtab.c                               |   4 +-
+ kernel/bpf/helpers.c                               |   4 +-
+ kernel/bpf/lpm_trie.c                              |   2 +-
+ kernel/bpf/map_in_map.c                            |   2 +-
+ kernel/bpf/queue_stack_maps.c                      |   2 +-
+ kernel/bpf/reuseport_array.c                       |   2 +-
+ kernel/bpf/stackmap.c                              |   2 +-
+ kernel/bpf/syscall.c                               |  89 +++++++++++----
+ kernel/bpf/verifier.c                              |  37 ++++---
+ kernel/trace/bpf_trace.c                           |   3 +
+ net/bpf/test_run.c                                 |  16 ++-
+ net/core/bpf_sk_storage.c                          |   4 +-
+ net/core/dev.c                                     |  14 ++-
+ net/core/filter.c                                  |  19 +++-
+ net/core/xdp.c                                     |   8 ++
+ security/selinux/include/classmap.h                |   4 +-
+ tools/bpf/bpftool/feature.c                        | 120 +++++++++++---------
+ .../selftests/bpf/prog_tests/xdp_adjust_tail.c     | 123 ++++++++++++++++++++-
+ .../bpf/progs/test_xdp_adjust_tail_grow.c          |  33 ++++++
+ ...adjust_tail.c => test_xdp_adjust_tail_shrink.c} |  12 +-
+ tools/testing/selftests/bpf/test_verifier.c        |  44 ++++++--
+ tools/testing/selftests/bpf/verifier/calls.c       |  16 +--
+ tools/testing/selftests/bpf/verifier/dead_code.c   |  10 +-
+ 67 files changed, 741 insertions(+), 252 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
+ rename tools/testing/selftests/bpf/progs/{test_adjust_tail.c => test_xdp_adjust_tail_shrink.c} (70%)
