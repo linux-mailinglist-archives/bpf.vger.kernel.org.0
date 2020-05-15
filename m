@@ -2,80 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0BE1D481D
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 10:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2BE1D48E4
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 10:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgEOI3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 04:29:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42109 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726694AbgEOI3K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 04:29:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589531349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=320TULVpXy4LDI+cfJjU9DKbHZcEcjNlm91yWc7effw=;
-        b=DF78CKcQtuoSrEkDg0yrWfOLyOkLUJ2FN4sL2LfgK12HvAVscbEHNdbcnh63Vt/c49hwXy
-        sYFdCNH/2Kgqsr4GGgfbQW2F6FlDdaPiyjuRYTe3RMavd+l00ul36GlfTv0safMMbWMCG2
-        LTyCRKM++jzHpQwmW61K25vWcBvxKpI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-qeDgXTogPnOX2Hk9JqzUUw-1; Fri, 15 May 2020 04:29:05 -0400
-X-MC-Unique: qeDgXTogPnOX2Hk9JqzUUw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727116AbgEOIzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 04:55:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727050AbgEOIzD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 04:55:03 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1772018A983B;
-        Fri, 15 May 2020 08:28:45 +0000 (UTC)
-Received: from localhost (unknown [10.40.194.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E706D83857;
-        Fri, 15 May 2020 08:28:43 +0000 (UTC)
-Date:   Fri, 15 May 2020 10:28:41 +0200
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     bpf@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH RFC] selftests: do not use .ONESHELL
-Message-ID: <20200515102841.3fa15ff7@redhat.com>
-In-Reply-To: <20200515030051.60148-1-yauheni.kaliuta@redhat.com>
-References: <20200515030051.60148-1-yauheni.kaliuta@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A23A206B6;
+        Fri, 15 May 2020 08:55:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589532901;
+        bh=oClvNX1jiA9weydwEdlbenPiHIznHQd1L5EBZhCxx3M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bpt+mp4LzvuJbX9ycQvw0RpWGNKF5RbZCD0kYOXuvsY6Itbjj25ZChFWEoFSWgyeS
+         2w8CH90vuzfAcTG4bYJuviqa2BGLKMD0ysk87k5yQpFoXoqmmLwYDZXhrATqThPunL
+         Ge02lOwSxj2U73XKT+Rxrzr5aIw+V31CeLBi9HGg=
+Date:   Fri, 15 May 2020 10:54:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>, stable@vger.kernel.org,
+        lkp@lists.01.org, bpf@vger.kernel.org,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
+Message-ID: <20200515085459.GH1474499@kroah.com>
+References: <20200513074418.GE17565@shao2-debian>
+ <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
+ <20200513102634.GC871114@kroah.com>
+ <20200514031420.GE102436@dhcp-12-153.nay.redhat.com>
+ <20200514103017.GA1829391@kroah.com>
+ <e5221ecb-04ad-bc77-d66f-b438c1a8b5c7@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e5221ecb-04ad-bc77-d66f-b438c1a8b5c7@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 May 2020 06:00:51 +0300, Yauheni Kaliuta wrote:
-> 1) I'm wondering how commit c363eb48ada5 ("selftests: fix too long
-> argument") worked without the patch.
-
-I think it was because it reduced the list of files from three
-replications to two. I did not notice the .ONESHELL; it also explains
-the oddity that I saw with @ behavior.
-
-With the .ONESHELL removed, we can further simplify INSTALL_SINGLE_RULE
-by removing the @echo rsync and the at-sign before rsync.
-
-> 2) The code does not look working as expected for me:
-> 2.1) "X$(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES)" != "X" is
-> always true sine the left part will be at least "X  " (spaces);
-> 2.2) according to manual in .ONESHELL case gmake checks only first
-> line for @, so @rsync is passed to the shell;
-> 2.3) $(OUTPUT)/(TEST_PROGS) adds $(OUTPUT) only to the first prog;
+On Thu, May 14, 2020 at 11:38:27AM -0700, Andrii Nakryiko wrote:
+> On 5/14/20 3:30 AM, Greg Kroah-Hartman wrote:
+> > On Thu, May 14, 2020 at 11:14:20AM +0800, Hangbin Liu wrote:
+> > > On Wed, May 13, 2020 at 12:26:34PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, May 13, 2020 at 05:58:35PM +0800, Hangbin Liu wrote:
+> > > > > 
+> > > > > Thanks test bot catch the issue.
+> > > > > On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wrote:
+> > > > > > Greeting,
+> > > > > > 
+> > > > > > FYI, we noticed the following commit (built with gcc-7):
+> > > > > > 
+> > > > > > commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/bpf: Fix perf_buffer test on systems w/ offline CPUs")
+> > > > > > https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > > > 
+> > > > > The author for this commit is Andrii(cc'd).
+> > > > > 
+> > > > > Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test if the setup disabled it")
+> > > > > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
+> > > > > >     goto cleanup;
+> > > > > >     ^~~~
+> > > > > 
+> > > > > Hi Greg, we are missing a depend commit
+> > > > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
+> > > > > 
+> > > > > So either we need backport this patch, or if you like, we can also fix it by
+> > > > > changing 'goto cleanup;' to 'goto close_prog;'. So which one do you prefer?
 > 
-> Did I miss something?
+> Hi, sorry for late reply, missed emails earlier.
+> 
+> The above "selftest to skeletons" commit will need some more after that,
+> it's going to be a pretty big back-port, so I think just fixing it up would
+> be ok.
+> 
+> > > > 
+> > > > I don't know, I have no context here at all, sorry.
+> > > > 
+> > > > What stable kernel tree is failing, what patch needs to be changed, what
+> > > > patch caused this, and so on...
+> > > > 
+> > > > confused,
+> > > 
+> > > Oh, sorry, I should reply the full email. I will forward the full message in
+> > > the bellow. For your questions:
+> > > 
+> > > the stable kernel tree is linux-5.4.y,
+> > > my patch is da43712a7262 ("selftests/bpf: Skip perf hw events test if the
+> > > setup disabled it")[1].
+> > > 
+> > > The reason is we are lacking upstream commit
+> > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
+> > > 
+> > > This will call build warning
+> > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
+> > >     goto cleanup;
+> > >     ^~~~
+> > > 
+> > > To fix it, I think the easiest way is change the "goto cleanup" to "goto
+> > > close_prog".
+> > 
+> > Ok, can you send a patch for this, documenting all of the above so I
+> > know what's going on?
+> > 
+> > > For the other error:
+> > > 
+> > > prog_tests/perf_buffer.c: In function ‘test_perf_buffer’:
+> > > prog_tests/perf_buffer.c:39:8: warning: implicit declaration of function ‘parse_cpu_mask_file’ [-Wimplicit-function-declaration]
+> > >    err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
+> > >          ^~~~~~~~~~~~~~~~~~~
+> > > ../lib.mk:138: recipe for target '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs' failed
+> > > make: *** [/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs] Error 1
+> > > make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf'
+> > > 
+> > > I think Andrii may like help.
+> > 
+> > That looks like a bug, we should revert the offending patch, right?
+> 
+> 6803ee25f0ea ("libbpf: Extract and generalize CPU mask parsing logic") added
+> parse_cpu_mask_file() function, so back-porting that commit should solve
+> this? It should be straightforward and shouldn't bring any more dependent
+> commits.
 
-I think you didn't miss anything and that you're right. Could you
-submit a patch to remove the spaces? I can then submit a patch to
-further simplify INSTALL_SINGLE_RULE if you don't want to do that, too.
+As this does not apply cleanly, can you provide a working backport so
+that I can apply that?
 
-Thanks!
+tahnks,
 
- Jiri
-
+greg k-h
