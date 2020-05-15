@@ -2,70 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278CC1D4302
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 03:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844741D4305
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 03:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgEOBhU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 21:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S1728030AbgEOBiv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 21:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgEOBhU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 21:37:20 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB35C061A0C
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 18:37:18 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z22so461542lfd.0
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 18:37:18 -0700 (PDT)
+        with ESMTP id S1727912AbgEOBiv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 21:38:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8E8C061A0C;
+        Thu, 14 May 2020 18:38:50 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d21so452322ljg.9;
+        Thu, 14 May 2020 18:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nTCxr919JLcLy8gr2eID1e/ZOYe2jUxvHLfSOwtbGfk=;
-        b=rM3Aj+JoSOKJzCTbS5/nRT2R+80BYij2zinfeBL/1bjOeKXWl+21ETIi5L99IygPCB
-         Eo1O0XupTl8WPKoMm+CalCSRRsO0sQSKzr1RdnjZExtgrx8Lyx+wro8jEnoM8/OmNBkZ
-         7BYqHwxWDd2oCWDUIZw4GoAISXA2jp5HSoOi9394dojZbqwwWxpcl0jdrPJo0J0HokKT
-         DpUyQ7WnxObxROJ3ha6jgILYi6B6GSr2Hma5CAO46wJdD5GnFBZ+YVdVYwR1nAa4Th3I
-         rrkCE5sbCLYT0pE+5P8F2B5O5KLvg9elfiuzGYk5PHbMJDUQci012j+Jls3zFYH4awFU
-         DZ5A==
+        bh=DcRLMC8AdRE/ebA3Y4wmeQqBQqJWEwlknp2rFOrxp4k=;
+        b=CRURWcO8pELH4346b432h94eh4EaF6LXZkDyD1jEB7qfy2ARxL1z1CiNCxV1VMQEy3
+         yFk2giKhuX2/Q+KWvhHo8nDLg6H8r7OrkL71Fis7bNSlTh/uuSdSmM91SHtm+ViDeiEA
+         TpLcJmdzPKiNlHgsVfNQs2Lf3SSPXOewgTqog6kQ2hwsPZA9PvRlE63NHIYz/8bAedZJ
+         eG/AvgZyG/uTYtOA/30utfFcSz4d6qEkiIVshWOrBQ4arKAZqvtp3S0xUyBR0hqMZBLF
+         hSZkAdvduhhZUnMk1LoXjRRuVoWfqov97O/SgEaLHLB5IC3RvSclvCu8uf9rCq7XCgIR
+         IGJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nTCxr919JLcLy8gr2eID1e/ZOYe2jUxvHLfSOwtbGfk=;
-        b=PFq5W4Ctz7+R54XE28FatWuHWMbMFZxb/ImT/KRS08YTn706cspm9hd61566BtumO2
-         TMiAK1ymc4AkXz/wgSlvUdU7x0Yg7un8avwtp71tKAq/M3PyiG3yH1pQJs3Vb83SsjsG
-         yIMirsvxTIs8lQ7hRzqdKoQpBrzRntMLqsigo1Lstu1mTNAyrHmX/pd28DFvZoMzuGhm
-         mxyVSwuatQ27crQvEHscn/fMzouaHhE1P/T3gilhPqqH6gX+3p6JY2a71T05lcR9hIE/
-         Vc+4/+I1kbVykCO+rzGy8MNyopY28ZYD2LeSqr1UmIgea0iU50b2gLuDteMZVOG/hxhR
-         ZBzA==
-X-Gm-Message-State: AOAM5303Vyx1hU2fzhuUKu56w1ky+61PNUPROiKtUFofHSRiESs+kd28
-        0oXSJQSRGE3B4xg3jrPOmmILecsAZCiowz2WOJs=
-X-Google-Smtp-Source: ABdhPJw0nz4XBaxLoCvYOl66cQj774jgpGiWO6EB2JUgbL5zuw30NdPYAZJ9Eq5F4NCP92rKc9buFzywz+LBI6iTU7g=
-X-Received: by 2002:ac2:58d7:: with SMTP id u23mr613464lfo.119.1589506636820;
- Thu, 14 May 2020 18:37:16 -0700 (PDT)
+        bh=DcRLMC8AdRE/ebA3Y4wmeQqBQqJWEwlknp2rFOrxp4k=;
+        b=TT/pNj5PY3LWXEKGJnmJU2Xy6YB7x5/4rUf4+MKkxTkIg4pX5N0rJD+dQKKSZhZkKK
+         U63NaGQMrUQL7G43C/XJFBH6ZajeiF4vVBHsVoYx4U71CFqbeOgtbfDJTgDjZBs7/gLC
+         +0YmOs4qqGm68nw7IS0ejh6HfUfxyP3xBEMirDn0hhRFOUVZVCG0pbLeWTTrpk1rqWqT
+         dFATsaJlMUIkk8qesUNMHy+E3+BJEOuWPAQ+awTMF15SRL5Oq7dmmIU63ffIYQRF9RW5
+         VoQKCh3i/Qu5DpuwhYJikYSyHmNe7g6G+aKfgTf+pFv2SgD2pB3ex365ZVSzaOthpk1E
+         6N+w==
+X-Gm-Message-State: AOAM530Ce2TpmzALgkx9bqJQteuICiwU3KfDCsrJtJ7XdMfrvd+kJTLl
+        4yyyAKfzlVbAu+DaDW8zsqwGuBDHNK3XJY4eWRc=
+X-Google-Smtp-Source: ABdhPJwuDPoLqMDwVYkuer7bPNDX4SB7xPmbLzNbASXYYAjw80+OMdipEy48L/v0diSIxQRoMsaBXJysnxJzyDSkJBU=
+X-Received: by 2002:a05:651c:48a:: with SMTP id s10mr230789ljc.7.1589506729332;
+ Thu, 14 May 2020 18:38:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1589420814.git.rdna@fb.com>
-In-Reply-To: <cover.1589420814.git.rdna@fb.com>
+References: <20200514055137.1564581-1-andriin@fb.com>
+In-Reply-To: <20200514055137.1564581-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 14 May 2020 18:37:05 -0700
-Message-ID: <CAADnVQJZTjGYBuDRobuCeuwdM89MgcFsf-adX094CD5Z936XLA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] bpf: Narrow loads for bpf_sock_addr.user_port
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 14 May 2020 18:38:38 -0700
+Message-ID: <CAADnVQLYt--n_Yp1_A8BVp-p17ymVkkqtzgisKm1a0JGwkhpCw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: fix bpf_iter's task iterator logic
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 6:50 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Wed, May 13, 2020 at 10:54 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> This patch set adds support for narrow loads from bpf_sock_addr.user_port
-> in BPF_PROG_TYPE_CGROUP_SOCK_ADDR program.s
+> task_seq_get_next might stop prematurely if get_pid_task() fails to get
+> task_struct. Failure to do so doesn't mean that there are no more tasks with
+> higher pids. Procfs's iteration algorithm (see next_tgid in fs/proc/base.c)
+> does a retry in such case. After this fix, instead of stopping prematurely
+> after about 300 tasks on my server, bpf_iter program now returns >4000, which
+> sounds much closer to reality.
 >
-> Patch 1 adds narrow loads support for user_port.
-> Patch 2 tests it.
+> Cc: Yonghong Song <yhs@fb.com>
+> Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 Applied. Thanks
