@@ -2,189 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725BC1D5A09
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370941D5A19
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgEOTbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 15:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        id S1726179AbgEOTjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 15:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726179AbgEOTbf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:31:35 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D79DC061A0C;
-        Fri, 15 May 2020 12:31:35 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id m11so3823266qka.4;
-        Fri, 15 May 2020 12:31:35 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726168AbgEOTjq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:39:46 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED38C061A0C;
+        Fri, 15 May 2020 12:39:45 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d7so2972737qtn.11;
+        Fri, 15 May 2020 12:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XJjN9ibCXjp8K2HY3J5E9z/6bT2jdDqqJ0d/+XKG9vQ=;
-        b=dniOoFPQ7c23DT0Afwm9JEgn5XBiD0MJ6h8KMbkYTI2vePpgSgYxFiCsNpgfUpD/O6
-         /rPMY15dxsJDreh7z1tApov7yco37WRK33EXdqo1IM6Df6+d/PJUFGJ0fBspixOPu+rz
-         tO4QBg7bXoah+t9Cpn78a0cdMjTn0qT6dgk1N1NLQleLjrs1ksXXw9tnZehLM5PjgTOA
-         jQiYcFOObFtTrsjB01d9DqG5m/Sa19um8Q9N4g9fPFeXX3z7K4aaxX5FycDcNoQ9r8SO
-         ztd1mP9hNc8YkHed17zrzuacSBmGVeceQCR7s25mcn1xx/wv95/JSmcj5zxCEEk5jiQ7
-         jZNA==
+         :cc;
+        bh=4BQMLiV7/BzZ4YarNv+2ABNpKJB9d3AIj9UHyBIXc0M=;
+        b=CO76H2fPe/gmTLc9vA/Uw8T86Xg+X8HMd1/oZ+N6jGgzKfFJnhkyEa0nCAgaB1mhOO
+         DS7bHDWmBfMxfgn08jVH+Ir45lUztMhcQsKK6BIas2HN5uB2bXHFSvRCAPJTiQGOQpff
+         8o1iiDoziuQ4jhCJOf+TFMrADges9ONOoEZt9BciOzw2MEqpOjL0ZykeC8mK0ncvI02r
+         zR/bHvcZVqlGOJhphjK5Uc2jl/D0QC2yq+8aa5hP2L3mXrivKoyb6Tvg2UrM3Iziugk7
+         bpB2fbKaW4SnaN/5w3V0tEBkwP4xVvkY8lPghTePTtbTZE4OcvYtJbpUmSRUjdbJ9Imy
+         EU3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XJjN9ibCXjp8K2HY3J5E9z/6bT2jdDqqJ0d/+XKG9vQ=;
-        b=nnjVMzkcLyBTJYJ8bJfTp55BPHyGmXTy9qfxWfO+GqlwPHnbXlUU4oQj/IMyzQtaM5
-         /NfFgK+uK+RdndN6XEGZRTarjCIHNjS5bLmfgVaf1/5ON2Z9M35w3dXXmf3aQ8UUqI+T
-         LwrMxP8qZr9nKz/F7ub2oSHTlGi43vT9N/A9k/0p1Bf3vTL7FiAjjLs5uZjk2l4tsJVK
-         +bzkeP00ZJl6sM3O52JmOGOoHpymmbKGEGF8e1qKawZkfKDhp64/ppY+Ai0J2sgdjRhW
-         HGuCVAWzPTE0Ua7h51gfbqIrasU8fCJP05z58Rm7uOz7as86CcsAqeI31/4xGaq9u1ez
-         4+9g==
-X-Gm-Message-State: AOAM533/rkLP/oRDe76xQbpoIqyohD8YRTJWqB/q+/4FWxZliZCFgX4U
-        EQ7WwYYetcSVGA4zm+poWNiTTOs6nDFS3YN06cLGNVNz
-X-Google-Smtp-Source: ABdhPJyNd96eqdXCuPIJTJrA0VIMk25vj1mM6UXo2olVu2fQHh+J16P1s2owxUvMvoj4fJ7NCubDvksDmfQTNsZnEHU=
-X-Received: by 2002:a05:620a:2049:: with SMTP id d9mr5424186qka.449.1589571093217;
- Fri, 15 May 2020 12:31:33 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=4BQMLiV7/BzZ4YarNv+2ABNpKJB9d3AIj9UHyBIXc0M=;
+        b=WlLEPQTydNCDS+kVwktSixGKBH0WGSzJgAF43p9bvAkP2Az5JS8y7R+cfaYG7YcBwa
+         JL4YubRiovq2rLk/XLcCQqbeqeGtmqngGOVVVKHcYgA+Sow6JCyvMHxUx72Mf1fO60IP
+         fR9I562UxOkmAr+3aim8lHR5DC5YoT+KnO01ISGZZw4PrPjE4Bxd0fwNT4TvOKc89cx7
+         ebrjB1czNV7F/1FUaptWPymWmive8JAqj//N2DpEu//OO6wuP7g08DVt75KuePICNuxe
+         Pu7l0F8lfotKCZZybYvWHLCM19s3GX3ZDs/4MCSOOQ5Z1n+Qv3aX3IYawzEK1X6r+kWs
+         MKwg==
+X-Gm-Message-State: AOAM533HP9nFS/6GlmSFtRwPXixp7potRstIPGk5wMRmor9P3uYL0HKs
+        GRvz1yBYGTm2WxYxu7UekslB9m51Nq5n1ueZR8s=
+X-Google-Smtp-Source: ABdhPJxnwuBdyHD8GKWt0YJqtP3FaI6rV2VYuQhkw3oH7yyy8yh2SxOwnA6qKrcqBG6vPu4l1/yUJH2LM/bK/bqPcB8=
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr5209605qtd.117.1589571585047;
+ Fri, 15 May 2020 12:39:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200513074418.GE17565@shao2-debian> <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
- <20200513102634.GC871114@kroah.com> <20200514031420.GE102436@dhcp-12-153.nay.redhat.com>
- <20200514103017.GA1829391@kroah.com> <e5221ecb-04ad-bc77-d66f-b438c1a8b5c7@fb.com>
- <20200515085459.GH1474499@kroah.com>
-In-Reply-To: <20200515085459.GH1474499@kroah.com>
+References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-8-irogers@google.com>
+In-Reply-To: <20200515165007.217120-8-irogers@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 15 May 2020 12:31:21 -0700
-Message-ID: <CAEf4Bza-9VcabritwoOn1MB98BOopBM9VtRiHu01zBjPJ9w7Sw@mail.gmail.com>
-Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        linux- stable <stable@vger.kernel.org>, lkp@lists.01.org,
-        bpf <bpf@vger.kernel.org>,
-        kernel test robot <rong.a.chen@intel.com>
+Date:   Fri, 15 May 2020 12:39:34 -0700
+Message-ID: <CAEf4BzZOB0L0iie0CAduNOnE4TXbfKeo-g97kwfMPZ5Mg7uRwg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 15, 2020 at 1:55 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, May 15, 2020 at 9:51 AM Ian Rogers <irogers@google.com> wrote:
 >
-> On Thu, May 14, 2020 at 11:38:27AM -0700, Andrii Nakryiko wrote:
-> > On 5/14/20 3:30 AM, Greg Kroah-Hartman wrote:
-> > > On Thu, May 14, 2020 at 11:14:20AM +0800, Hangbin Liu wrote:
-> > > > On Wed, May 13, 2020 at 12:26:34PM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Wed, May 13, 2020 at 05:58:35PM +0800, Hangbin Liu wrote:
-> > > > > >
-> > > > > > Thanks test bot catch the issue.
-> > > > > > On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wro=
-te:
-> > > > > > > Greeting,
-> > > > > > >
-> > > > > > > FYI, we noticed the following commit (built with gcc-7):
-> > > > > > >
-> > > > > > > commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/=
-bpf: Fix perf_buffer test on systems w/ offline CPUs")
-> > > > > > > https://git.kernel.org/cgit/linux/kernel/git/stable/linux-sta=
-ble-rc.git linux-5.4.y
-> > > > > >
-> > > > > > The author for this commit is Andrii(cc'd).
-> > > > > >
-> > > > > > Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test =
-if the setup disabled it")
-> > > > > > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label =E2=
-=80=98cleanup=E2=80=99 used but not defined
-> > > > > > >     goto cleanup;
-> > > > > > >     ^~~~
-> > > > > >
-> > > > > > Hi Greg, we are missing a depend commit
-> > > > > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skel=
-etons").
-> > > > > >
-> > > > > > So either we need backport this patch, or if you like, we can a=
-lso fix it by
-> > > > > > changing 'goto cleanup;' to 'goto close_prog;'. So which one do=
- you prefer?
-> >
-> > Hi, sorry for late reply, missed emails earlier.
-> >
-> > The above "selftest to skeletons" commit will need some more after that=
-,
-> > it's going to be a pretty big back-port, so I think just fixing it up w=
-ould
-> > be ok.
-> >
-> > > > >
-> > > > > I don't know, I have no context here at all, sorry.
-> > > > >
-> > > > > What stable kernel tree is failing, what patch needs to be change=
-d, what
-> > > > > patch caused this, and so on...
-> > > > >
-> > > > > confused,
-> > > >
-> > > > Oh, sorry, I should reply the full email. I will forward the full m=
-essage in
-> > > > the bellow. For your questions:
-> > > >
-> > > > the stable kernel tree is linux-5.4.y,
-> > > > my patch is da43712a7262 ("selftests/bpf: Skip perf hw events test =
-if the
-> > > > setup disabled it")[1].
-> > > >
-> > > > The reason is we are lacking upstream commit
-> > > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeleton=
-s").
-> > > >
-> > > > This will call build warning
-> > > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label =E2=80=98cl=
-eanup=E2=80=99 used but not defined
-> > > >     goto cleanup;
-> > > >     ^~~~
-> > > >
-> > > > To fix it, I think the easiest way is change the "goto cleanup" to =
-"goto
-> > > > close_prog".
-> > >
-> > > Ok, can you send a patch for this, documenting all of the above so I
-> > > know what's going on?
-> > >
-> > > > For the other error:
-> > > >
-> > > > prog_tests/perf_buffer.c: In function =E2=80=98test_perf_buffer=E2=
-=80=99:
-> > > > prog_tests/perf_buffer.c:39:8: warning: implicit declaration of fun=
-ction =E2=80=98parse_cpu_mask_file=E2=80=99 [-Wimplicit-function-declaratio=
-n]
-> > > >    err =3D parse_cpu_mask_file("/sys/devices/system/cpu/online",
-> > > >          ^~~~~~~~~~~~~~~~~~~
-> > > > ../lib.mk:138: recipe for target '/usr/src/perf_selftests-x86_64-rh=
-el-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/se=
-lftests/bpf/test_progs' failed
-> > > > make: *** [/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da437=
-12a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs]=
- Error 1
-> > > > make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-7.6-ks=
-elftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/b=
-pf'
-> > > >
-> > > > I think Andrii may like help.
-> > >
-> > > That looks like a bug, we should revert the offending patch, right?
-> >
-> > 6803ee25f0ea ("libbpf: Extract and generalize CPU mask parsing logic") =
-added
-> > parse_cpu_mask_file() function, so back-porting that commit should solv=
-e
-> > this? It should be straightforward and shouldn't bring any more depende=
-nt
-> > commits.
+> Use a hashmap between a char* string and a double* value. While bpf's
+> hashmap entries are size_t in size, we can't guarantee sizeof(size_t) >=
+> sizeof(double). Avoid a memory allocation when gathering ids by making 0.0
+> a special value encoded as NULL.
 >
-> As this does not apply cleanly, can you provide a working backport so
-> that I can apply that?
+> Original map suggestion by Andi Kleen:
+> https://lore.kernel.org/lkml/20200224210308.GQ160988@tassilo.jf.intel.com/
+> and seconded by Jiri Olsa:
+> https://lore.kernel.org/lkml/20200423112915.GH1136647@krava/
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/expr.c       |  40 ++++++-----
+>  tools/perf/tests/pmu-events.c |  25 +++----
+>  tools/perf/util/expr.c        | 129 +++++++++++++++++++---------------
+>  tools/perf/util/expr.h        |  26 +++----
+>  tools/perf/util/expr.y        |  22 +-----
+>  tools/perf/util/metricgroup.c |  87 +++++++++++------------
+>  tools/perf/util/stat-shadow.c |  49 ++++++++-----
+>  7 files changed, 197 insertions(+), 181 deletions(-)
+>
+> diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+> index 3f742612776a..5e606fd5a2c6 100644
+> --- a/tools/perf/tests/expr.c
+> +++ b/tools/perf/tests/expr.c
+> @@ -19,11 +19,9 @@ static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
+>  int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+>  {
+>         const char *p;
+> -       const char **other;
+> -       double val;
+> -       int i, ret;
+> +       double val, *val_ptr;
+> +       int ret;
+>         struct expr_parse_ctx ctx;
+> -       int num_other;
+>
+>         expr__ctx_init(&ctx);
+>         expr__add_id(&ctx, "FOO", 1);
+> @@ -52,25 +50,29 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+>         ret = expr__parse(&val, &ctx, p, 1);
+>         TEST_ASSERT_VAL("missing operand", ret == -1);
+>
+> +       hashmap__clear(&ctx.ids);
 
-Sure, will do.
+hashmap__clear() will free up memory allocated for hashmap itself and
+hash entries, but not keys/values. Unless it's happening somewhere
+else, you'll need to do something similar to expr__ctx_clear() below?
 
->
-> tahnks,
->
-> greg k-h
+Same below for another "lone" hashmap_clear() call.
+
+>         TEST_ASSERT_VAL("find other",
+> -                       expr__find_other("FOO + BAR + BAZ + BOZO", "FOO", &other, &num_other, 1) == 0);
+
+[...]
