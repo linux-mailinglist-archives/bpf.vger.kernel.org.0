@@ -2,153 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9991D52BD
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 16:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5AA1D5327
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 17:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgEOO7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 10:59:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32904 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726263AbgEOO7V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 10:59:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589554759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xcab0cmvJdvPEWHUxyhfWdxbwZt/8hc2SOf8Qa9hlEE=;
-        b=EjlOouVettFY022TR/g5VH6FCNik+7RpgBxxMOO9XooR/sQanfP5EStJ5XVfPjsGkErEKR
-        8BuMqHEcP300xLhSrNZyBEq0j3pfws0yPAN8EuXZwzqtsjlmHyHCDtSgPbkuT3zzvW5NYN
-        6/o9GHw6hC+cqi0tNeKrC6qQ1K8DTXs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-bsulARIrNtKRGXVSVna1Dw-1; Fri, 15 May 2020 10:59:14 -0400
-X-MC-Unique: bsulARIrNtKRGXVSVna1Dw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A90A53;
-        Fri, 15 May 2020 14:59:12 +0000 (UTC)
-Received: from krava (unknown [10.40.194.127])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C5A655D9D7;
-        Fri, 15 May 2020 14:59:08 +0000 (UTC)
-Date:   Fri, 15 May 2020 16:59:07 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726504AbgEOPHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 11:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726174AbgEOPHu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 11:07:50 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA34CC061A0C;
+        Fri, 15 May 2020 08:07:50 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id u5so1074419pgn.5;
+        Fri, 15 May 2020 08:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xkPZgbRyoXj8VgKHhN72c04Ed4oZhZQXxzUIYhF5Dm0=;
+        b=dUZ7BnOmpGSvC7Z0FaCtXXr6VD4kjhC58W567jEPdN3Iyz5uyhH0/EFIakTj1UZ3w+
+         w9k89SUtJk4CVOctr5kJmGeAXQlSXWtLVx+u3I0a6Tf5CViC1Mu9NXQvT4MN7hIesW7J
+         Ffl/4B0Fj//Hj1W24c9qNe/4hN8x0c/MQjoSr1CJlCphOZibHvqCF2e+7nLhDCpmlHuE
+         ekf0D57PWmjmGzH/ZUWf4zjHVH8q+TdpFdQlZlIjtOErWjZr9ZvjrXB/D/VAMYQdR+va
+         oIqPmyqWDwtn6m7EU0kncBJM7CquK+n6/7y7xIx+/cni0KJRHqj108Df+9JnHTwjxdrI
+         PCZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xkPZgbRyoXj8VgKHhN72c04Ed4oZhZQXxzUIYhF5Dm0=;
+        b=PeNahV0+7vhsvbQoGmrTuKol70Fxs3Skt+aQkqRDU7+miCQqDaKjhifCS/ExCgOGno
+         6sMSIbxa6qKFQtV4VffcFb8qkoZ2OqSXVeby1boP4jy+dlqgLDhkzAWAPMshs7KJFzk7
+         ZJBwTU7BpC4FNBn6/ugz8yoGanZvs4ZlIwPimdSXuRqq5UzQjuh0WfgFnS49TzrC6FkP
+         0BvPmtaAc0HMTBjDC1AGu5bSMtcrESX3HHGSpbTaIkG7op8Tff+r9wEJcIz9PbLn6S02
+         GqE7+EW4v/t2hO+/YmXP2VHsHLhfU0xx/qpNFRgoRkO6zV0Aq3jtZzgIMdYdbwF6AtkT
+         4ZPQ==
+X-Gm-Message-State: AOAM531O7x5PpMVEtZeMz8gT4Y2LvTHkMPwxiwQpuolV8WCFWH9wvNG7
+        8z8DSSelJAH5JVILISCGlhmqsQJB
+X-Google-Smtp-Source: ABdhPJx8pHG0A+/S60CIk3UTKuVVYMOSYiluSnebUoU+6sgqtB2gciuqOOqpIyt61M638XI+FGlT4g==
+X-Received: by 2002:a65:6810:: with SMTP id l16mr3436636pgt.390.1589555270151;
+        Fri, 15 May 2020 08:07:50 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:6ccd])
+        by smtp.gmail.com with ESMTPSA id k6sm2194209pfp.111.2020.05.15.08.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 May 2020 08:07:49 -0700 (PDT)
+Date:   Fri, 15 May 2020 08:07:42 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, dccp@vger.kernel.org,
+        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 1/9] bpf: Add d_path helper
-Message-ID: <20200515145907.GE3565839@krava>
-References: <20200506132946.2164578-1-jolsa@kernel.org>
- <20200506132946.2164578-2-jolsa@kernel.org>
- <CAEf4BzaiTFasYEnj-N100=mxQN5R70xKbF4Z2xJcWHaaYN4_ag@mail.gmail.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 05/17] inet: Run SK_LOOKUP BPF program on
+ socket lookup
+Message-ID: <20200515150742.obhv4sdps5chduay@ast-mbp>
+References: <20200511185218.1422406-1-jakub@cloudflare.com>
+ <20200511185218.1422406-6-jakub@cloudflare.com>
+ <20200511204445.i7sessmtszox36xd@ast-mbp>
+ <87wo5d2xht.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaiTFasYEnj-N100=mxQN5R70xKbF4Z2xJcWHaaYN4_ag@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <87wo5d2xht.fsf@cloudflare.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:06:01PM -0700, Andrii Nakryiko wrote:
-> On Wed, May 6, 2020 at 6:30 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding d_path helper function that returns full path
-> > for give 'struct path' object, which needs to be the
-> > kernel BTF 'path' object.
-> >
-> > The helper calls directly d_path function.
-> >
-> > Updating also bpf.h tools uapi header and adding
-> > 'path' to bpf_helpers_doc.py script.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       | 14 +++++++++++++-
-> >  kernel/trace/bpf_trace.c       | 31 +++++++++++++++++++++++++++++++
-> >  scripts/bpf_helpers_doc.py     |  2 ++
-> >  tools/include/uapi/linux/bpf.h | 14 +++++++++++++-
-> >  4 files changed, 59 insertions(+), 2 deletions(-)
-> >
+On Fri, May 15, 2020 at 02:28:30PM +0200, Jakub Sitnicki wrote:
+> On Mon, May 11, 2020 at 10:44 PM CEST, Alexei Starovoitov wrote:
+> > On Mon, May 11, 2020 at 08:52:06PM +0200, Jakub Sitnicki wrote:
+> >> Run a BPF program before looking up a listening socket on the receive path.
+> >> Program selects a listening socket to yield as result of socket lookup by
+> >> calling bpf_sk_assign() helper and returning BPF_REDIRECT code.
+> >>
+> >> Alternatively, program can also fail the lookup by returning with BPF_DROP,
+> >> or let the lookup continue as usual with BPF_OK on return.
+> >>
+> >> This lets the user match packets with listening sockets freely at the last
+> >> possible point on the receive path, where we know that packets are destined
+> >> for local delivery after undergoing policing, filtering, and routing.
+> >>
+> >> With BPF code selecting the socket, directing packets destined to an IP
+> >> range or to a port range to a single socket becomes possible.
+> >>
+> >> Suggested-by: Marek Majkowski <marek@cloudflare.com>
+> >> Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
+> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> >> ---
 > 
 > [...]
 > 
-> >
-> > +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-> > +{
-> > +       char *p = d_path(path, buf, sz - 1);
-> > +       int len;
-> > +
-> > +       if (IS_ERR(p)) {
-> > +               len = PTR_ERR(p);
-> > +       } else {
-> > +               len = strlen(p);
-> > +               if (len && p != buf) {
-> > +                       memmove(buf, p, len);
-> > +                       buf[len] = 0;
-> > +               }
-> > +       }
-> > +
-> > +       return len;
-> > +}
-> > +
-> > +static u32 bpf_d_path_btf_ids[3];
+> > Also please switch to bpf_link way of attaching. All system wide attachments
+> > should be visible and easily debuggable via 'bpftool link show'.
+> > Currently we're converting tc and xdp hooks to bpf_link. This new hook
+> > should have it from the beginning.
 > 
-> Using shorter than 5 element array is "unconventional", but seems like
-> btf_distill_func_proto will never access elements that are not
-> ARG_PTR_TO_BTF_ID, so it's fine. But than again, if we are saving
-> space, why not just 1-element array? :)
+> Just to clarify, I understood that bpf(BPF_PROG_ATTACH/DETACH) doesn't
+> have to be supported for new hooks.
 
-right, that can be actualy just 1 element array ;-)
-
-> 
-> 
-> > +static const struct bpf_func_proto bpf_d_path_proto = {
-> > +       .func           = bpf_d_path,
-> > +       .gpl_only       = true,
-> > +       .ret_type       = RET_INTEGER,
-> > +       .arg1_type      = ARG_PTR_TO_BTF_ID,
-> > +       .arg2_type      = ARG_PTR_TO_MEM,
-> > +       .arg3_type      = ARG_CONST_SIZE,
-> > +       .btf_id         = bpf_d_path_btf_ids,
-> > +};
-> > +
-> 
-> [...]
-> 
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index b3643e27e264..bc13cad27872 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -3068,6 +3068,17 @@ union bpf_attr {
-> >   *             See: clock_gettime(CLOCK_BOOTTIME)
-> >   *     Return
-> >   *             Current *ktime*.
-> > + *
-> > + * int bpf_d_path(struct path *path, char *buf, u32 sz)
-> > + *     Description
-> > + *             Return full path for given 'struct path' object, which
-> > + *             needs to be the kernel BTF 'path' object. The path is
-> > + *             returned in buffer provided 'buf' of size 'sz'.
-> > + *
-> 
-> Please specify if it's always zero-terminated string (especially on truncation).
-
-ok, will mention the zero termination in here
-
-thanks,
-jirka
-
+Yes. Not only no need. I don't think attach/detach fits.
