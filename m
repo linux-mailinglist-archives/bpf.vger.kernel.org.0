@@ -2,808 +2,332 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FD61D4679
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 08:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14C41D4808
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 10:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgEOG5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 02:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S1726725AbgEOIWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 04:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726722AbgEOG4q (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 02:56:46 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8E8C05BD0A
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 23:56:46 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d7so1566990ybp.12
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 23:56:46 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726694AbgEOIWF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 04:22:05 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954DFC061A0C;
+        Fri, 15 May 2020 01:22:03 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id o134so723196ybg.2;
+        Fri, 15 May 2020 01:22:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ASXgkl9jjy97Vpt8ThFDh/vzQo4yJ10C2p5zMR9IFP0=;
-        b=GJojiVvC4Xwev66Pkan0IFOjzyWd7pAaohzST4ZVmrciflpEo+Rp3NyJGGM3HLFHez
-         uuYr1TnzHLKZ52btL6CJeN4UhuZuQ3fnwo/sXVqeCpZZ4dUERs26gQtFTjpywqpdKJdb
-         QqS9InjR/ywXcMRzZkCTGjihOvlLE7HYFRH7B3mRaRS8ARcJKZFnQxtrs591yftC9vkr
-         4uiO24lwP6sNcvx6AScuOQW9Z1ckX/07KKcsp0pYzq25yTQYYh83vQciN3b4rYSjU8kS
-         RnTMqMsoD+kyEJwXPzHGXBYAAMdqbvLyI+rMTW3RtcNEJT9pcBMyeCkE8UWoW+DsPHbl
-         T6UA==
+        bh=XyeTfqz3UGt24SeLIl2g9AW/ng3n23DMpFGeZuB/a4I=;
+        b=YEIYBUKZdtoQMH76Hn/eg25d0HtVDe0gcV96ufGesve/aUfuOPt1EZ7PgZcfuJVeTs
+         jZ3fxx8uFDJ6Us/fAoTgvH7bSnd2UbmqaYaFXxCNfk5yb+Ron2SyzrX6UP7fV7CFfC1Z
+         CbWRWyQ/wFQeJIo49bzNHGLQdNuu+g0xfXUhuh8uqWqsLyp9MUqL3RAtr/veo5Ze7bUX
+         +eqZzIy3Wp2hTv2RieFhsNmpwyfmk/wAtYEv0abfG11g8lzbpVwkI+XSiVXaQMab71Jg
+         vWGc/0rk/LQo3ybZDKKUsWZcqSUi+uuUN/ekRUFJhtgHPL40+3b+EyGhpuS2AS249QDy
+         rVIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ASXgkl9jjy97Vpt8ThFDh/vzQo4yJ10C2p5zMR9IFP0=;
-        b=eJJyPKL6KYM25iw2ITAmb2tvKJy92ZiLnCVTPIVPrA0A7A3xZjGhOReU2OD49hqOS4
-         PYVzWqfgJN8iSBT74OWwfSVAcfO9SwSI0CnjmBbXko2DRXJ/oadkbLmqUjL8RMnR/Flz
-         pgFNmBg4LgP8qFrGKvPSq4NcQ71JYF8wLD1W6te8EGxb9b1j7cz2jgMMzFYCIV5tHzvd
-         tCLsTshKJCFeq6BrUM4HZtRtdAFFoFS2sDJlSYAMchi+xjcYXSoGlhL0J4+dR0Zi7d0K
-         agUWUXKPbcZQVZhNy5Ql8wZvZumlIzNaN6moKsh7PESm7VIkLBtbgcd3YxdEPfQ8Us6r
-         arfg==
-X-Gm-Message-State: AOAM53252NIF0Gz0cJhGA8C6tw9H09B4bc+QHyrTXrRNNhAI0FaghRub
-        tZUo7IwwGVmMbe6PbkvRTfP095VSa1z6
-X-Google-Smtp-Source: ABdhPJzOmEg9tICLafCKUYry6ScxTMNQ/Vqn/NS2thX2FUAiW2pEaeSQP9fPqk66WjITsXsBIQP1TzllKVaT
-X-Received: by 2002:a25:7903:: with SMTP id u3mr3366128ybc.251.1589525805856;
- Thu, 14 May 2020 23:56:45 -0700 (PDT)
-Date:   Thu, 14 May 2020 23:56:24 -0700
-In-Reply-To: <20200515065624.21658-1-irogers@google.com>
-Message-Id: <20200515065624.21658-9-irogers@google.com>
-Mime-Version: 1.0
-References: <20200515065624.21658-1-irogers@google.com>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH 8/8] perf expr: Migrate expr ids table to a hashmap
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XyeTfqz3UGt24SeLIl2g9AW/ng3n23DMpFGeZuB/a4I=;
+        b=E2u63S01soCCmswIrJRUwn9jN1Iut0lXhot5cAxMdgvQ75D5q3tYZlH1JeoHWpgtHn
+         zTWmshp4x40Q7aGb/vXOfjn92f3JmvTehJoSiK2SaXhnoOJKm9qTwA84d4WJC8wukNCZ
+         7nkKR/K9PcZPp9O2qlW++xq+8RvK5p9h2BSfxuPdGrzQtM10XL4N2iYkWhk1PDGnry+T
+         nc2FZMzQB1XD7X0mSoKQLN5PRlOGXUcRZ8y1CHWF/LhrDarOa8oE+fiaI5QtiBwJNxA0
+         bBo2u6Wuq5k6/p2qNcbOo7TW83KO33USKktusu4aGEKJye29FIJDOFCJUuLE7Of3yqUb
+         MEbQ==
+X-Gm-Message-State: AOAM532tjnkHFB+bWPUSXt75dMMvTHar/bKy8AkqOPzhvTfAioxkguFO
+        g1ovDkmlV40OIVWbv3EfIuA68H9ZO8wEAuLwCA==
+X-Google-Smtp-Source: ABdhPJyHnsWBDpbb05bub9sdNsZ3Gg/mOoa6Ey0zYN65Nzw/NCwva/6eExilVCQd2Hpx4UztSqz40yhVp7/R6N4U/rw=
+X-Received: by 2002:a25:b9c4:: with SMTP id y4mr3597726ybj.349.1589530922516;
+ Fri, 15 May 2020 01:22:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200512144339.1617069-1-danieltimlee@gmail.com>
+ <20200512144339.1617069-2-danieltimlee@gmail.com> <f8d524dc-245b-e8c6-3e0b-16969df76b0a@fb.com>
+ <CAEKGpziAt7gDzqzvOO4=dMODB_wajFq-HbYNyfz6xNVaGaB9rQ@mail.gmail.com> <c677db23-1680-6fcb-1629-0a93f60bf2c8@fb.com>
+In-Reply-To: <c677db23-1680-6fcb-1629-0a93f60bf2c8@fb.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Fri, 15 May 2020 17:21:48 +0900
+Message-ID: <CAEKGpzhuTg3N20eRYjTXj74OzCiG-L0YCsBouMYP2weG6AJ2QA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] samples: bpf: refactor kprobe tracing user
+ progs with libbpf
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use a hashmap between a char* string and a double* value. While bpf's
-hashmap entries are size_t in size, we can't guarantee sizeof(size_t) >=
-sizeof(double). Avoid a memory allocation when gathering ids by making 0.0
-a special value encoded as NULL.
+On Thu, May 14, 2020 at 12:29 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 5/12/20 11:51 PM, Daniel T. Lee wrote:
+> > On Wed, May 13, 2020 at 10:40 AM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 5/12/20 7:43 AM, Daniel T. Lee wrote:
+> >>> Currently, the kprobe BPF program attachment method for bpf_load is
+> >>> quite old. The implementation of bpf_load "directly" controls and
+> >>> manages(create, delete) the kprobe events of DEBUGFS. On the other hand,
+> >>> using using the libbpf automatically manages the kprobe event.
+> >>> (under bpf_link interface)
+> >>>
+> >>> By calling bpf_program__attach(_kprobe) in libbpf, the corresponding
+> >>> kprobe is created and the BPF program will be attached to this kprobe.
+> >>> To remove this, by simply invoking bpf_link__destroy will clean up the
+> >>> event.
+> >>>
+> >>> This commit refactors kprobe tracing programs (tracex{1~7}_user.c) with
+> >>> libbpf using bpf_link interface and bpf_program__attach.
+> >>>
+> >>> tracex2_kern.c, which tracks system calls (sys_*), has been modified to
+> >>> append prefix depending on architecture.
+> >>>
+> >>> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> >>> ---
+> >>>    samples/bpf/Makefile       | 12 +++----
+> >>>    samples/bpf/tracex1_user.c | 41 ++++++++++++++++++++----
+> >>>    samples/bpf/tracex2_kern.c |  8 ++++-
+> >>>    samples/bpf/tracex2_user.c | 55 ++++++++++++++++++++++++++------
+> >>>    samples/bpf/tracex3_user.c | 65 ++++++++++++++++++++++++++++----------
+> >>>    samples/bpf/tracex4_user.c | 55 +++++++++++++++++++++++++-------
+> >>>    samples/bpf/tracex6_user.c | 53 +++++++++++++++++++++++++++----
+> >>>    samples/bpf/tracex7_user.c | 43 ++++++++++++++++++++-----
+> >>>    8 files changed, 268 insertions(+), 64 deletions(-)
+> >>>
+> >>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> >>> index 424f6fe7ce38..4c91e5914329 100644
+> >>> --- a/samples/bpf/Makefile
+> >>> +++ b/samples/bpf/Makefile
+> >>> @@ -64,13 +64,13 @@ fds_example-objs := fds_example.o
+> >>>    sockex1-objs := sockex1_user.o
+> >>>    sockex2-objs := sockex2_user.o
+> >>>    sockex3-objs := bpf_load.o sockex3_user.o
+> >>> -tracex1-objs := bpf_load.o tracex1_user.o $(TRACE_HELPERS)
+> >>> -tracex2-objs := bpf_load.o tracex2_user.o
+> >>> -tracex3-objs := bpf_load.o tracex3_user.o
+> >>> -tracex4-objs := bpf_load.o tracex4_user.o
+> >>> +tracex1-objs := tracex1_user.o $(TRACE_HELPERS)
+> >>> +tracex2-objs := tracex2_user.o
+> >>> +tracex3-objs := tracex3_user.o
+> >>> +tracex4-objs := tracex4_user.o
+> >>>    tracex5-objs := bpf_load.o tracex5_user.o $(TRACE_HELPERS)
+> >>> -tracex6-objs := bpf_load.o tracex6_user.o
+> >>> -tracex7-objs := bpf_load.o tracex7_user.o
+> >>> +tracex6-objs := tracex6_user.o
+> >>> +tracex7-objs := tracex7_user.o
+> >>>    test_probe_write_user-objs := bpf_load.o test_probe_write_user_user.o
+> >>>    trace_output-objs := bpf_load.o trace_output_user.o $(TRACE_HELPERS)
+> >>>    lathist-objs := bpf_load.o lathist_user.o
+> >>> diff --git a/samples/bpf/tracex1_user.c b/samples/bpf/tracex1_user.c
+> >>> index 55fddbd08702..1b15ab98f7d3 100644
+> >>> --- a/samples/bpf/tracex1_user.c
+> >>> +++ b/samples/bpf/tracex1_user.c
+> >>> @@ -1,21 +1,45 @@
+> >>>    // SPDX-License-Identifier: GPL-2.0
+> >>>    #include <stdio.h>
+> >>> -#include <linux/bpf.h>
+> >>>    #include <unistd.h>
+> >>> -#include <bpf/bpf.h>
+> >>> -#include "bpf_load.h"
+> >>> +#include <bpf/libbpf.h>
+> >>>    #include "trace_helpers.h"
+> >>>
+> >>> +#define __must_check
+> >>
+> >> This is not very user friendly.
+> >> Maybe not including linux/err.h and
+> >> use libbpf API libbpf_get_error() instead?
+> >>
+> >
+> > This approach looks more apparent and can stick with the libbpf API.
+> > I'll update code using this way.
+> >
+> >>> +#include <linux/err.h>
+> >>> +
+> >>>    int main(int ac, char **argv)
+> >>>    {
+> >>> -     FILE *f;
+> >>> +     struct bpf_link *link = NULL;
+> >>> +     struct bpf_program *prog;
+> >>> +     struct bpf_object *obj;
+> >>>        char filename[256];
+> >>> +     FILE *f;
+> >>>
+> >>>        snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+> >>> +     obj = bpf_object__open_file(filename, NULL);
+> >>> +     if (IS_ERR(obj)) {
+> >>> +             fprintf(stderr, "ERROR: opening BPF object file failed\n");
+> >>> +             obj = NULL;
+> >>> +             goto cleanup;
+> >>
+> >> You do not need to goto cleanup, directly return 0 is okay here.
+> >> The same for other files in this patch.
+> >>
+> >
+> > As you said, it would be better to return right away than to proceed
+> > any further. I'll apply the code at next patch.
+> >
+> >>> +     }
+> >>> +
+> >>> +     prog = bpf_object__find_program_by_name(obj, "bpf_prog1");
+> >>> +     if (!prog) {
+> >>> +             fprintf(stderr, "ERROR: finding a prog in obj file failed\n");
+> >>> +             goto cleanup;
+> >>> +     }
+> >>> +
+> >>> +     /* load BPF program */
+> >>> +     if (bpf_object__load(obj)) {
+> >>> +             fprintf(stderr, "ERROR: loading BPF object file failed\n");
+> >>> +             goto cleanup;
+> >>> +     }
+> >>>
+> >>> -     if (load_bpf_file(filename)) {
+> >>> -             printf("%s", bpf_log_buf);
+> >>> -             return 1;
+> >>> +     link = bpf_program__attach(prog);
+> >>> +     if (IS_ERR(link)) {
+> >>> +             fprintf(stderr, "ERROR: bpf_program__attach failed\n");
+> >>> +             link = NULL;
+> >>> +             goto cleanup;
+> >>>        }
+> >>>
+> >>>        f = popen("taskset 1 ping -c5 localhost", "r");
+> >>> @@ -23,5 +47,8 @@ int main(int ac, char **argv)
+> >>>
+> >>>        read_trace_pipe();
+> >>>
+> >>> +cleanup:
+> >>> +     bpf_link__destroy(link);
+> >>> +     bpf_object__close(obj);
+> >>
+> >> Typically in kernel, we do multiple labels for such cases
+> >> like
+> >> destroy_link:
+> >>          bpf_link__destroy(link);
+> >> close_object:
+> >>          bpf_object__close(obj);
+> >>
+> >> The error path in the main() function jumps to proper label.
+> >> This is more clean and less confusion.
+> >>
+> >> The same for other cases in this file.
+> >>
+> >
+> > I totally agree that multiple labels are much more intuitive.
+> > But It's not very common to jump to the destroy_link label.
+> >
+> > Either when on the routine is completed successfully and jumps to the
+> > destroy_link branch, or an error occurred while bpf_program__attach
+> > was called "several" times and jumps to the destroy_link branch.
+> >
+> > Single bpf_program__attach like this tracex1 sample doesn't really have
+> > to destroy link, since the link has been set to NULL on attach error and
+> > bpf_link__destroy() is designed to do nothing if passed NULL to it.
+> >
+> > So I think current approach will keep consistent between samples since
+> > most of the sample won't need to jump to destroy_link.
+>
+> Since this is the sample code, I won't enforce that. So yes, you can
+> keep your current approach.
+>
+> >
+> >>>        return 0;
+> >>>    }
+> >>> diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+> >>> index d865bb309bcb..ff5d00916733 100644
+> >>> --- a/samples/bpf/tracex2_kern.c
+> >>> +++ b/samples/bpf/tracex2_kern.c
+> >>> @@ -11,6 +11,12 @@
+> >>>    #include <bpf/bpf_helpers.h>
+> >>>    #include <bpf/bpf_tracing.h>
+> >>>
+> >>> +#ifdef __x86_64__
+> >>> +#define SYSCALL "__x64_"
+> >>> +#else
+> >>> +#define SYSCALL
+> >>> +#endif
+> >>
+> >> See test_progs.h, one more case to handle:
+> >> #ifdef __x86_64__
+> >> #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
+> >> #elif defined(__s390x__)
+> >> #define SYS_NANOSLEEP_KPROBE_NAME "__s390x_sys_nanosleep"
+> >> #else
+> >> #define SYS_NANOSLEEP_KPROBE_NAME "sys_nanosleep"
+> >> #endif
+> >>
+> >
+> > That was also one of the considerations when writing patches.
+> > I'm planning to refactor most of the programs in the sample using
+> > libbpf, and found out that there are bunch of samples that tracks
+> > syscall with kprobe. Replacing all of them will take lots of macros
+> > and I thought using prefix will be better idea.
+> >
+> > Actually, my initial plan was to create macro of SYSCALL()
+> >
+> >         #ifdef __x86_64__
+> >         #define PREFIX "__x64_"
+> >         #elif defined(__s390x__)
+> >         #define PREFIX "__s390x_"
+> >         #else
+> >         #define PREFIX ""
+> >         #endif
+> >
+> >         #define SYSCALL(SYS) PREFIX ## SYS
+> >
+> > And to use this macro universally without creating additional headers,
+> > I was trying to add this to samples/bpf/syscall_nrs.c which later
+> > compiles to samples/bpf/syscall_nrs.h. But it was pretty hacky way and
+> > it won't work properly. So I ended up with just adding prefix to syscall.
+>
+> I think it is okay to create a trace_common.h to have this definition
+> defined in one place and use them in bpf programs.
+>
+> >
+> > Is it necessary to define all of the macro for each architecture?
+>
+> Yes, if we define in trace_common.h, let us do for x64/x390x/others
+> similar to the above.
+>
 
-Original map suggestion by Andi Kleen:
-https://lore.kernel.org/lkml/20200224210308.GQ160988@tassilo.jf.intel.com/
-and seconded by Jiri Olsa:
-https://lore.kernel.org/lkml/20200423112915.GH1136647@krava/
+Sounds great. I'll add trace_common.h and apply the syscall macro.
+I'll send a new version of the patch soon.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/expr.c       |  40 ++++++-----
- tools/perf/tests/pmu-events.c |  25 +++----
- tools/perf/util/expr.c        | 129 +++++++++++++++++++---------------
- tools/perf/util/expr.h        |  22 +++---
- tools/perf/util/expr.y        |  22 +-----
- tools/perf/util/metricgroup.c |  87 +++++++++++------------
- tools/perf/util/stat-shadow.c |  49 ++++++++-----
- 7 files changed, 193 insertions(+), 181 deletions(-)
+> >
+> >>> +
+> >>>    struct bpf_map_def SEC("maps") my_map = {
+> >>>        .type = BPF_MAP_TYPE_HASH,
+> >>>        .key_size = sizeof(long),
+> >>> @@ -77,7 +83,7 @@ struct bpf_map_def SEC("maps") my_hist_map = {
+> >>>        .max_entries = 1024,
+> >>>    };
+> >>>
+> >>> -SEC("kprobe/sys_write")
+> >>> +SEC("kprobe/" SYSCALL "sys_write")
+> >>>    int bpf_prog3(struct pt_regs *ctx)
+> >>>    {
+> >>>        long write_size = PT_REGS_PARM3(ctx);
+> >> [...]
+> >
+> >
+> > Thank you for your time and effort for the review :)
+> >
+> > Best,
+> > Daniel
+> >
 
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index 3f742612776a..5e606fd5a2c6 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -19,11 +19,9 @@ static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
- int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- {
- 	const char *p;
--	const char **other;
--	double val;
--	int i, ret;
-+	double val, *val_ptr;
-+	int ret;
- 	struct expr_parse_ctx ctx;
--	int num_other;
- 
- 	expr__ctx_init(&ctx);
- 	expr__add_id(&ctx, "FOO", 1);
-@@ -52,25 +50,29 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 	ret = expr__parse(&val, &ctx, p, 1);
- 	TEST_ASSERT_VAL("missing operand", ret == -1);
- 
-+	hashmap__clear(&ctx.ids);
- 	TEST_ASSERT_VAL("find other",
--			expr__find_other("FOO + BAR + BAZ + BOZO", "FOO", &other, &num_other, 1) == 0);
--	TEST_ASSERT_VAL("find other", num_other == 3);
--	TEST_ASSERT_VAL("find other", !strcmp(other[0], "BAR"));
--	TEST_ASSERT_VAL("find other", !strcmp(other[1], "BAZ"));
--	TEST_ASSERT_VAL("find other", !strcmp(other[2], "BOZO"));
--	TEST_ASSERT_VAL("find other", other[3] == NULL);
-+			expr__find_other("FOO + BAR + BAZ + BOZO", "FOO",
-+					 &ctx, 1) == 0);
-+	TEST_ASSERT_VAL("find other", hashmap__size(&ctx.ids) == 3);
-+	TEST_ASSERT_VAL("find other", hashmap__find(&ctx.ids, "BAR",
-+						    (void **)&val_ptr));
-+	TEST_ASSERT_VAL("find other", hashmap__find(&ctx.ids, "BAZ",
-+						    (void **)&val_ptr));
-+	TEST_ASSERT_VAL("find other", hashmap__find(&ctx.ids, "BOZO",
-+						    (void **)&val_ptr));
- 
-+	hashmap__clear(&ctx.ids);
- 	TEST_ASSERT_VAL("find other",
--			expr__find_other("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@", NULL,
--				   &other, &num_other, 3) == 0);
--	TEST_ASSERT_VAL("find other", num_other == 2);
--	TEST_ASSERT_VAL("find other", !strcmp(other[0], "EVENT1,param=3/"));
--	TEST_ASSERT_VAL("find other", !strcmp(other[1], "EVENT2,param=3/"));
--	TEST_ASSERT_VAL("find other", other[2] == NULL);
-+			expr__find_other("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
-+					 NULL, &ctx, 3) == 0);
-+	TEST_ASSERT_VAL("find other", hashmap__size(&ctx.ids) == 2);
-+	TEST_ASSERT_VAL("find other", hashmap__find(&ctx.ids, "EVENT1,param=3/",
-+						    (void **)&val_ptr));
-+	TEST_ASSERT_VAL("find other", hashmap__find(&ctx.ids, "EVENT2,param=3/",
-+						    (void **)&val_ptr));
- 
--	for (i = 0; i < num_other; i++)
--		zfree(&other[i]);
--	free((void *)other);
-+	expr__ctx_clear(&ctx);
- 
- 	return 0;
- }
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index e21f0addcfbb..3de59564deb0 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -433,8 +433,6 @@ static int test_parsing(void)
- 	struct pmu_events_map *map;
- 	struct pmu_event *pe;
- 	int i, j, k;
--	const char **ids;
--	int idnum;
- 	int ret = 0;
- 	struct expr_parse_ctx ctx;
- 	double result;
-@@ -446,29 +444,34 @@ static int test_parsing(void)
- 			break;
- 		j = 0;
- 		for (;;) {
-+			struct hashmap_entry *cur;
-+			size_t bkt;
-+
- 			pe = &map->table[j++];
- 			if (!pe->name && !pe->metric_group && !pe->metric_name)
- 				break;
- 			if (!pe->metric_expr)
- 				continue;
--			if (expr__find_other(pe->metric_expr, NULL,
--						&ids, &idnum, 0) < 0) {
-+			expr__ctx_init(&ctx);
-+			if (expr__find_other(pe->metric_expr, NULL, &ctx, 0)
-+				  < 0) {
- 				expr_failure("Parse other failed", map, pe);
- 				ret++;
- 				continue;
- 			}
--			expr__ctx_init(&ctx);
- 
- 			/*
- 			 * Add all ids with a made up value. The value may
- 			 * trigger divide by zero when subtracted and so try to
- 			 * make them unique.
- 			 */
--			for (k = 0; k < idnum; k++)
--				expr__add_id(&ctx, ids[k], k + 1);
-+			k = 1;
-+			hashmap__for_each_entry((&ctx.ids), cur, bkt)
-+				expr__add_id(&ctx, strdup(cur->key), k++);
- 
--			for (k = 0; k < idnum; k++) {
--				if (check_parse_id(ids[k], map == cpus_map, pe))
-+			hashmap__for_each_entry((&ctx.ids), cur, bkt) {
-+				if (check_parse_id(cur->key, map == cpus_map,
-+						   pe))
- 					ret++;
- 			}
- 
-@@ -476,9 +479,7 @@ static int test_parsing(void)
- 				expr_failure("Parse failed", map, pe);
- 				ret++;
- 			}
--			for (k = 0; k < idnum; k++)
--				zfree(&ids[k]);
--			free(ids);
-+			expr__ctx_clear(&ctx);
- 		}
- 	}
- 	/* TODO: fail when not ok */
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index 8b4ce704a68d..f64ab91c432b 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -4,25 +4,76 @@
- #include "expr.h"
- #include "expr-bison.h"
- #include "expr-flex.h"
-+#include <linux/kernel.h>
- 
- #ifdef PARSER_DEBUG
- extern int expr_debug;
- #endif
- 
-+static size_t key_hash(const void *key, void *ctx __maybe_unused)
-+{
-+	const char *str = (const char *)key;
-+	size_t hash = 0;
-+
-+	while (*str != '\0') {
-+		hash *= 31;
-+		hash += *str;
-+		str++;
-+	}
-+	return hash;
-+}
-+
-+static bool key_equal(const void *key1, const void *key2,
-+		    void *ctx __maybe_unused)
-+{
-+	return !strcmp((const char *)key1, (const char *)key2);
-+}
-+
- /* Caller must make sure id is allocated */
--void expr__add_id(struct expr_parse_ctx *ctx, const char *name, double val)
-+int expr__add_id(struct expr_parse_ctx *ctx, const char *name, double val)
- {
--	int idx;
-+	double *val_ptr = NULL, *old_val = NULL;
-+	char *old_key = NULL;
-+	int ret;
-+
-+	if (val != 0.0) {
-+		val_ptr = malloc(sizeof(double));
-+		if (!val_ptr)
-+			return -ENOMEM;
-+		*val_ptr = val;
-+	}
-+	ret = hashmap__set(&ctx->ids, name, val_ptr,
-+			   (const void **)&old_key, (void **)&old_val);
-+	free(old_key);
-+	free(old_val);
-+	return ret;
-+}
-+
-+int expr__get_id(struct expr_parse_ctx *ctx, const char *id, double *val_ptr)
-+{
-+	double *data;
- 
--	assert(ctx->num_ids < MAX_PARSE_ID);
--	idx = ctx->num_ids++;
--	ctx->ids[idx].name = name;
--	ctx->ids[idx].val = val;
-+	if (!hashmap__find(&ctx->ids, id, (void **)&data))
-+		return -1;
-+	*val_ptr = (data == NULL) ?  0.0 : *data;
-+	return 0;
- }
- 
- void expr__ctx_init(struct expr_parse_ctx *ctx)
- {
--	ctx->num_ids = 0;
-+	hashmap__init(&ctx->ids, key_hash, key_equal, NULL);
-+}
-+
-+void expr__ctx_clear(struct expr_parse_ctx *ctx)
-+{
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+
-+	hashmap__for_each_entry((&ctx->ids), cur, bkt) {
-+		free((char *)cur->key);
-+		free(cur->value);
-+	}
-+	hashmap__clear(&ctx->ids);
- }
- 
- static int
-@@ -56,61 +107,25 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
- 	return ret;
- }
- 
--int expr__parse(double *final_val, struct expr_parse_ctx *ctx, const char *expr, int runtime)
-+int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
-+		const char *expr, int runtime)
- {
- 	return __expr__parse(final_val, ctx, expr, EXPR_PARSE, runtime) ? -1 : 0;
- }
- 
--static bool
--already_seen(const char *val, const char *one, const char **other,
--	     int num_other)
--{
--	int i;
--
--	if (one && !strcasecmp(one, val))
--		return true;
--	for (i = 0; i < num_other; i++)
--		if (!strcasecmp(other[i], val))
--			return true;
--	return false;
--}
--
--int expr__find_other(const char *expr, const char *one, const char ***other,
--		     int *num_other, int runtime)
-+int expr__find_other(const char *expr, const char *one,
-+		     struct expr_parse_ctx *ctx, int runtime)
- {
--	int err, i = 0, j = 0;
--	struct expr_parse_ctx ctx;
--
--	expr__ctx_init(&ctx);
--	err = __expr__parse(NULL, &ctx, expr, EXPR_OTHER, runtime);
--	if (err)
--		return -1;
--
--	*other = malloc((ctx.num_ids + 1) * sizeof(char *));
--	if (!*other)
--		return -ENOMEM;
--
--	for (i = 0, j = 0; i < ctx.num_ids; i++) {
--		const char *str = ctx.ids[i].name;
--
--		if (already_seen(str, one, *other, j))
--			continue;
--
--		str = strdup(str);
--		if (!str)
--			goto out;
--		(*other)[j++] = str;
--	}
--	(*other)[j] = NULL;
--
--out:
--	if (i != ctx.num_ids) {
--		while (--j)
--			free((char *) (*other)[i]);
--		free(*other);
--		err = -1;
-+	double *old_val = NULL;
-+	char *old_key = NULL;
-+	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
-+
-+	if (one) {
-+		hashmap__delete(&ctx->ids, one,
-+				(const void **)&old_key, (void **)&old_val);
-+		free(old_key);
-+		free(old_val);
- 	}
- 
--	*num_other = j;
--	return err;
-+	return ret;
- }
-diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-index 40fc452b0f2b..03c961e85e65 100644
---- a/tools/perf/util/expr.h
-+++ b/tools/perf/util/expr.h
-@@ -2,17 +2,10 @@
- #ifndef PARSE_CTX_H
- #define PARSE_CTX_H 1
- 
--#define EXPR_MAX_OTHER 64
--#define MAX_PARSE_ID EXPR_MAX_OTHER
--
--struct expr_parse_id {
--	const char *name;
--	double val;
--};
-+#include <api/hashmap.h>
- 
- struct expr_parse_ctx {
--	int num_ids;
--	struct expr_parse_id ids[MAX_PARSE_ID];
-+	struct hashmap ids;
- };
- 
- struct expr_scanner_ctx {
-@@ -21,9 +14,12 @@ struct expr_scanner_ctx {
- };
- 
- void expr__ctx_init(struct expr_parse_ctx *ctx);
--void expr__add_id(struct expr_parse_ctx *ctx, const char *id, double val);
--int expr__parse(double *final_val, struct expr_parse_ctx *ctx, const char *expr, int runtime);
--int expr__find_other(const char *expr, const char *one, const char ***other,
--		int *num_other, int runtime);
-+void expr__ctx_clear(struct expr_parse_ctx *ctx);
-+int expr__add_id(struct expr_parse_ctx *ctx, const char *id, double val);
-+int expr__get_id(struct expr_parse_ctx *ctx, const char *id, double *val_ptr);
-+int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
-+		const char *expr, int runtime);
-+int expr__find_other(const char *expr, const char *one,
-+		struct expr_parse_ctx *ids, int runtime);
- 
- #endif
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index 21e82a1e11a2..ec5a48bf5f34 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -46,19 +46,6 @@ static void expr_error(double *final_val __maybe_unused,
- 	pr_debug("%s\n", s);
- }
- 
--static int lookup_id(struct expr_parse_ctx *ctx, char *id, double *val)
--{
--	int i;
--
--	for (i = 0; i < ctx->num_ids; i++) {
--		if (!strcasecmp(ctx->ids[i].name, id)) {
--			*val = ctx->ids[i].val;
--			return 0;
--		}
--	}
--	return -1;
--}
--
- %}
- %%
- 
-@@ -72,12 +59,7 @@ all_other: all_other other
- 
- other: ID
- {
--	if (ctx->num_ids + 1 >= EXPR_MAX_OTHER) {
--		pr_err("failed: way too many variables");
--		YYABORT;
--	}
--
--	ctx->ids[ctx->num_ids++].name = $1;
-+	expr__add_id(ctx, $1, 0.0);
- }
- |
- MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
-@@ -92,7 +74,7 @@ if_expr:
- 	;
- 
- expr:	  NUMBER
--	| ID			{ if (lookup_id(ctx, $1, &$$) < 0) {
-+	| ID			{ if (expr__get_id(ctx, $1, &$$)) {
- 					pr_debug("%s not found\n", $1);
- 					YYABORT;
- 				  }
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index b071df373f8b..37be5a368d6e 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
- 
- struct egroup {
- 	struct list_head nd;
--	int idnum;
--	const char **ids;
-+	struct expr_parse_ctx pctx;
- 	const char *metric_name;
- 	const char *metric_expr;
- 	const char *metric_unit;
-@@ -94,19 +93,21 @@ struct egroup {
- };
- 
- static struct evsel *find_evsel_group(struct evlist *perf_evlist,
--				      const char **ids,
--				      int idnum,
-+				      struct expr_parse_ctx *pctx,
- 				      struct evsel **metric_events,
- 				      bool *evlist_used)
- {
- 	struct evsel *ev;
--	int i = 0, j = 0;
- 	bool leader_found;
-+	const size_t idnum = hashmap__size(&pctx->ids);
-+	size_t i = 0;
-+	int j = 0;
-+	double *val_ptr;
- 
- 	evlist__for_each_entry (perf_evlist, ev) {
- 		if (evlist_used[j++])
- 			continue;
--		if (!strcmp(ev->name, ids[i])) {
-+		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
- 			if (!metric_events[i])
- 				metric_events[i] = ev;
- 			i++;
-@@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 			memset(metric_events, 0,
- 				sizeof(struct evsel *) * idnum);
- 
--			if (!strcmp(ev->name, ids[i])) {
-+			if (hashmap__find(&pctx->ids, ev->name,
-+					  (void **)&val_ptr)) {
- 				if (!metric_events[i])
- 					metric_events[i] = ev;
- 				i++;
-@@ -175,19 +177,20 @@ static int metricgroup__setup_events(struct list_head *groups,
- 	list_for_each_entry (eg, groups, nd) {
- 		struct evsel **metric_events;
- 
--		metric_events = calloc(sizeof(void *), eg->idnum + 1);
-+		metric_events = calloc(sizeof(void *),
-+				hashmap__size(&eg->pctx.ids) + 1);
- 		if (!metric_events) {
- 			ret = -ENOMEM;
- 			break;
- 		}
--		evsel = find_evsel_group(perf_evlist, eg->ids, eg->idnum,
--					 metric_events, evlist_used);
-+		evsel = find_evsel_group(perf_evlist, &eg->pctx, metric_events,
-+					evlist_used);
- 		if (!evsel) {
- 			pr_debug("Cannot resolve %s: %s\n",
- 					eg->metric_name, eg->metric_expr);
- 			continue;
- 		}
--		for (i = 0; i < eg->idnum; i++)
-+		for (i = 0; metric_events[i]; i++)
- 			metric_events[i]->collect_stat = true;
- 		me = metricgroup__lookup(metric_events_list, evsel, true);
- 		if (!me) {
-@@ -415,20 +418,20 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
- }
- 
- static void metricgroup__add_metric_weak_group(struct strbuf *events,
--					       const char **ids,
--					       int idnum)
-+					       struct expr_parse_ctx *ctx)
- {
-+	struct hashmap_entry *cur;
-+	size_t bkt, i = 0;
- 	bool no_group = false;
--	int i;
- 
--	for (i = 0; i < idnum; i++) {
--		pr_debug("found event %s\n", ids[i]);
-+	hashmap__for_each_entry((&ctx->ids), cur, bkt) {
-+		pr_debug("found event %s\n", (const char *)cur->key);
- 		/*
- 		 * Duration time maps to a software event and can make
- 		 * groups not count. Always use it outside a
- 		 * group.
- 		 */
--		if (!strcmp(ids[i], "duration_time")) {
-+		if (!strcmp(cur->key, "duration_time")) {
- 			if (i > 0)
- 				strbuf_addf(events, "}:W,");
- 			strbuf_addf(events, "duration_time");
-@@ -437,21 +440,22 @@ static void metricgroup__add_metric_weak_group(struct strbuf *events,
- 		}
- 		strbuf_addf(events, "%s%s",
- 			i == 0 || no_group ? "{" : ",",
--			ids[i]);
-+			(const char *)cur->key);
- 		no_group = false;
-+		i++;
- 	}
- 	if (!no_group)
- 		strbuf_addf(events, "}:W");
- }
- 
- static void metricgroup__add_metric_non_group(struct strbuf *events,
--					      const char **ids,
--					      int idnum)
-+					      struct expr_parse_ctx *ctx)
- {
--	int i;
-+	struct hashmap_entry *cur;
-+	size_t bkt;
- 
--	for (i = 0; i < idnum; i++)
--		strbuf_addf(events, ",%s", ids[i]);
-+	hashmap__for_each_entry((&ctx->ids), cur, bkt)
-+		strbuf_addf(events, ",%s", (const char *)cur->key);
- }
- 
- static void metricgroup___watchdog_constraint_hint(const char *name, bool foot)
-@@ -495,32 +499,32 @@ int __weak arch_get_runtimeparam(void)
- static int __metricgroup__add_metric(struct strbuf *events,
- 		struct list_head *group_list, struct pmu_event *pe, int runtime)
- {
--
--	const char **ids;
--	int idnum;
- 	struct egroup *eg;
- 
--	if (expr__find_other(pe->metric_expr, NULL, &ids, &idnum, runtime) < 0)
--		return -EINVAL;
--
--	if (events->len > 0)
--		strbuf_addf(events, ",");
--
--	if (metricgroup__has_constraint(pe))
--		metricgroup__add_metric_non_group(events, ids, idnum);
--	else
--		metricgroup__add_metric_weak_group(events, ids, idnum);
--
- 	eg = malloc(sizeof(*eg));
- 	if (!eg)
- 		return -ENOMEM;
- 
--	eg->ids = ids;
--	eg->idnum = idnum;
-+	expr__ctx_init(&eg->pctx);
- 	eg->metric_name = pe->metric_name;
- 	eg->metric_expr = pe->metric_expr;
- 	eg->metric_unit = pe->unit;
- 	eg->runtime = runtime;
-+
-+	if (expr__find_other(pe->metric_expr, NULL, &eg->pctx, runtime) < 0) {
-+		expr__ctx_clear(&eg->pctx);
-+		free(eg);
-+		return -EINVAL;
-+	}
-+
-+	if (events->len > 0)
-+		strbuf_addf(events, ",");
-+
-+	if (metricgroup__has_constraint(pe))
-+		metricgroup__add_metric_non_group(events, &eg->pctx);
-+	else
-+		metricgroup__add_metric_weak_group(events, &eg->pctx);
-+
- 	list_add_tail(&eg->nd, group_list);
- 
- 	return 0;
-@@ -603,12 +607,9 @@ static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
- static void metricgroup__free_egroups(struct list_head *group_list)
- {
- 	struct egroup *eg, *egtmp;
--	int i;
- 
- 	list_for_each_entry_safe (eg, egtmp, group_list, nd) {
--		for (i = 0; i < eg->idnum; i++)
--			zfree(&eg->ids[i]);
--		zfree(&eg->ids);
-+		expr__ctx_clear(&eg->pctx);
- 		list_del_init(&eg->nd);
- 		free(eg);
- 	}
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index 9bd7a8d2a858..c44dc814b377 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -323,35 +323,46 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
- {
- 	struct evsel *counter, *leader, **metric_events, *oc;
- 	bool found;
--	const char **metric_names;
-+	struct expr_parse_ctx ctx;
-+	struct hashmap_entry *cur;
-+	size_t bkt;
- 	int i;
--	int num_metric_names;
- 
-+	expr__ctx_init(&ctx);
- 	evlist__for_each_entry(evsel_list, counter) {
- 		bool invalid = false;
- 
- 		leader = counter->leader;
- 		if (!counter->metric_expr)
- 			continue;
-+
-+		expr__ctx_clear(&ctx);
- 		metric_events = counter->metric_events;
- 		if (!metric_events) {
--			if (expr__find_other(counter->metric_expr, counter->name,
--						&metric_names, &num_metric_names, 1) < 0)
-+			if (expr__find_other(counter->metric_expr,
-+					     counter->name,
-+					     &ctx, 1) < 0)
- 				continue;
- 
- 			metric_events = calloc(sizeof(struct evsel *),
--					       num_metric_names + 1);
--			if (!metric_events)
-+					       hashmap__size(&ctx.ids) + 1);
-+			if (!metric_events) {
-+				expr__ctx_clear(&ctx);
- 				return;
-+			}
- 			counter->metric_events = metric_events;
- 		}
- 
--		for (i = 0; i < num_metric_names; i++) {
-+		i = 0;
-+		hashmap__for_each_entry((&ctx.ids), cur, bkt) {
-+			const char *metric_name = (const char *)cur->key;
-+
- 			found = false;
- 			if (leader) {
- 				/* Search in group */
- 				for_each_group_member (oc, leader) {
--					if (!strcasecmp(oc->name, metric_names[i]) &&
-+					if (!strcasecmp(oc->name,
-+							metric_name) &&
- 						!oc->collect_stat) {
- 						found = true;
- 						break;
-@@ -360,7 +371,8 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
- 			}
- 			if (!found) {
- 				/* Search ignoring groups */
--				oc = perf_stat__find_event(evsel_list, metric_names[i]);
-+				oc = perf_stat__find_event(evsel_list,
-+							   metric_name);
- 			}
- 			if (!oc) {
- 				/* Deduping one is good enough to handle duplicated PMUs. */
-@@ -373,27 +385,28 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
- 				 * of events. So we ask the user instead to add the missing
- 				 * events.
- 				 */
--				if (!printed || strcasecmp(printed, metric_names[i])) {
-+				if (!printed ||
-+				    strcasecmp(printed, metric_name)) {
- 					fprintf(stderr,
- 						"Add %s event to groups to get metric expression for %s\n",
--						metric_names[i],
-+						metric_name,
- 						counter->name);
--					printed = strdup(metric_names[i]);
-+					printed = strdup(metric_name);
- 				}
- 				invalid = true;
- 				continue;
- 			}
--			metric_events[i] = oc;
-+			metric_events[i++] = oc;
- 			oc->collect_stat = true;
- 		}
- 		metric_events[i] = NULL;
--		free(metric_names);
- 		if (invalid) {
- 			free(metric_events);
- 			counter->metric_events = NULL;
- 			counter->metric_expr = NULL;
- 		}
- 	}
-+	expr__ctx_clear(&ctx);
- }
- 
- static double runtime_stat_avg(struct runtime_stat *st,
-@@ -738,7 +751,10 @@ static void generic_metric(struct perf_stat_config *config,
- 
- 	expr__ctx_init(&pctx);
- 	/* Must be first id entry */
--	expr__add_id(&pctx, name, avg);
-+	n = strdup(name);
-+	if (!n)
-+		return;
-+	expr__add_id(&pctx, n, avg);
- 	for (i = 0; metric_events[i]; i++) {
- 		struct saved_value *v;
- 		struct stats *stats;
-@@ -814,8 +830,7 @@ static void generic_metric(struct perf_stat_config *config,
- 			     (metric_name ? metric_name : name) : "", 0);
- 	}
- 
--	for (i = 1; i < pctx.num_ids; i++)
--		zfree(&pctx.ids[i].name);
-+	expr__ctx_clear(&pctx);
- }
- 
- void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+Thank you for your time and effort for the review :)
+
 -- 
-2.26.2.761.g0e0b3e54be-goog
-
+Best,
+Daniel T. Lee
