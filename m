@@ -2,115 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0481D43D4
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 05:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EED21D441A
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 05:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgEODBB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 23:01:01 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53565 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgEODBB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 23:01:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589511659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=La4b/fC5MXOK9UrrO4wGU7CGg+zIEUJJ22+O6l7daB0=;
-        b=WxgJUnN+XSUnWGhU5J6aVGlHnv1bmWmI2A9k1COCLwBa9K1pdbWD9ez3AYxGNXY38i/xFu
-        jvKh4Qq5KWCnYTzH/WsG1s/8CeqExa7ZdYJVb3OMv4H4Ti+rqeilklLybwC3D2tvhO8mPv
-        wrwMEKkuEETVhBu7igovPVFkEQB+SjY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-xI0o2lzzNP-s8VGxIM97nQ-1; Thu, 14 May 2020 23:00:56 -0400
-X-MC-Unique: xI0o2lzzNP-s8VGxIM97nQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 442CB1005510;
-        Fri, 15 May 2020 03:00:55 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-113-25.ams2.redhat.com [10.36.113.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 01F9A5D9D7;
-        Fri, 15 May 2020 03:00:53 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: [PATCH RFC] selftests: do not use .ONESHELL
-Date:   Fri, 15 May 2020 06:00:51 +0300
-Message-Id: <20200515030051.60148-1-yauheni.kaliuta@redhat.com>
+        id S1727847AbgEODi2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 23:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726176AbgEODi1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 23:38:27 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA2AC061A0C;
+        Thu, 14 May 2020 20:38:26 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fu13so377187pjb.5;
+        Thu, 14 May 2020 20:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=semwFQKbUumCsuPBbqSdVLlwqa542y7E1U+Mdc3K92E=;
+        b=WypUw6qdOo65YLISnXVforHKpFkozUe/ijcZyTJzt0FmAWDGTjJ4rqrGug588F36k0
+         44S8bI9AFKtQBQHPErsXa1VE0z00X48q85tkDWHU4z4dPaFPdR15wGLY7knR6xXE7ywd
+         KAipCb1rHuTdj1IWB+04y5MmZOOpm9SJCyP9S+bP+GU4PxdJFceEki44iU8ZtucJZlQp
+         mKuQqrAkcmTfDVWQxYjZRIaYv4C1rGhsX15OOFEuKZWLKx4FZ8c0mgj10nHOl0fKjNAQ
+         E0iY8ES6AlJEU+uUx3NWrsvL2at5YpOa1N2y1GraTdz1kYgagj2lYbzLHKyHVeLOnByv
+         c3Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=semwFQKbUumCsuPBbqSdVLlwqa542y7E1U+Mdc3K92E=;
+        b=QNh5oeFbYq7vUzZsitfDPcH2t1l6k7Nx0/nZ9Zn5e25ar57oN0cHuLU6W0V9wYIOwB
+         Z9BiN5PCPGjDBbrp+/jPhiyEiDTf3GVle+Bwr2nROx0bOS/eApSqXTwuD3QQhKSyT+Pm
+         i4btt3TgfgTMAql0MTg1ExhRZ5jM2OKLLuTWoM9wJIeuBFU/zq7Mt+3hiEGCG7On6fND
+         byubRSdCZowgyiItq0FCEGmgx1/x6xQP+1j0H4cXQKSf8yieulrvdixuizSacQTi8ZJq
+         AmrLYCSLA9J8XvY+OIYbfVOG/ZWgR46Y8/T/Gy5+WfaqLx1SrCy/8Ki17x7FtJQPfJbU
+         KhNw==
+X-Gm-Message-State: AOAM533oEhLr+2utGv/PCIAt9P+2DkHATzigo+aUHHDC1NbqeEYqYi9R
+        nTHR2u1G40+qWAtkV0b9I2FOsIC+CFy0fw==
+X-Google-Smtp-Source: ABdhPJzCMbrxc40SVrl5ucEdZxkKiSALPad6VLa4KrRDgvjs1AqMp0TeLFfCR2KvAnZ2GLBEAE+5aA==
+X-Received: by 2002:a17:90a:950a:: with SMTP id t10mr1243853pjo.193.1589513903969;
+        Thu, 14 May 2020 20:38:23 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b75sm371172pjc.23.2020.05.14.20.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 20:38:23 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: [PATCH 5.4] selftests/bpf: fix goto cleanup label not defined
+Date:   Fri, 15 May 2020 11:38:05 +0800
+Message-Id: <20200515033805.2172595-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using one shell for the whole recipe with long lists can cause
+kernel test robot found a warning when build bpf selftest for 5.4.y stable
+tree:
 
-make[1]: execvp: /bin/sh: Argument list too long
+prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
+   goto cleanup;
+   ^~~~
 
-with some shells. Triggered by commit 309b81f0fdc4 ("selftests/bpf:
-Install generated test progs")
+This is because we are lacking upstream commit dde53c1b763b
+("selftests/bpf: Convert few more selftest to skeletons"). But this
+commit is too large and need more backports. To fix it, the
+easiest way is just use the current goto label 'close_prog'.
 
-It requires to change the rule which rely on the one shell
-behaviour (run_tests).
-
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc: Jiri Benc <jbenc@redhat.com>
-Cc: Shuah Khan <shuah@kernel.org>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Fixes: da43712a7262 ("selftests/bpf: Skip perf hw events test if the setup disabled it")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
+ .../testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1) I'm wondering how commit c363eb48ada5 ("selftests: fix too long
-argument") worked without the patch.
-
-2) The code does not look working as expected for me:
-2.1) "X$(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES)" != "X" is
-always true sine the left part will be at least "X  " (spaces);
-2.2) according to manual in .ONESHELL case gmake checks only first
-line for @, so @rsync is passed to the shell;
-2.3) $(OUTPUT)/(TEST_PROGS) adds $(OUTPUT) only to the first prog;
-
-
-Did I miss something?
-
----
- tools/testing/selftests/lib.mk | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index b0556c752443..e9e5e33297cf 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -59,7 +59,6 @@ else
- all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
- endif
- 
--.ONESHELL:
- define RUN_TESTS
- 	@BASE_DIR="$(selfdir)";			\
- 	. $(selfdir)/kselftest/runner.sh;	\
-@@ -71,13 +70,13 @@ endef
- 
- run_tests: all
- ifdef building_out_of_srctree
--	@if [ "X$(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES)" != "X" ]; then
--		@rsync -aq $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(OUTPUT)
-+	@if [ "X$(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES)" != "X" ]; then \
-+		rsync -aq $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(OUTPUT); \
- 	fi
--	@if [ "X$(TEST_PROGS)" != "X" ]; then
--		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(OUTPUT)/$(TEST_PROGS))
--	else
--		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS))
-+	@if [ "X$(TEST_PROGS)" != "X" ]; then \
-+		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(OUTPUT)/$(TEST_PROGS)) ; \
-+	else \
-+		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS)); \
- 	fi
- else
- 	$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS))
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+index 1735faf17536..437cb93e72ac 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+@@ -52,7 +52,7 @@ void test_stacktrace_build_id_nmi(void)
+ 	if (pmu_fd < 0 && errno == ENOENT) {
+ 		printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
+ 		test__skip();
+-		goto cleanup;
++		goto close_prog;
+ 	}
+ 	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
+ 		  pmu_fd, errno))
 -- 
-2.26.2
+2.25.4
 
