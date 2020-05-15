@@ -2,165 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A451D5A3F
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176A51D5A56
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgEOTm6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 15:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S1726374AbgEOTtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 15:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726168AbgEOTm6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:42:58 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A9CC061A0C;
-        Fri, 15 May 2020 12:42:58 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id i68so3015845qtb.5;
-        Fri, 15 May 2020 12:42:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726183AbgEOTtG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:49:06 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84D9C061A0C
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 12:49:06 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n77so3901410ybf.2
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 12:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3FeZo7wxUKF5f4TtRFTT/9ikqtb4RICo/S0MwMu9vSo=;
-        b=ntWeU88/ZODmBoBJzxsMHcHPQwhBwu/fsT+NjYCYj3tSizmOSPq+zKlQSL8S518Zvn
-         FFSY2R2OrJuWcD5ry1+6WepFZBKDQ/1UMJ76idiDBu8Y2PYwv0Y6f7Fl/eotDeoow9iV
-         nNEtFFTV0qoqsWYGRCL2wNLWlUrTAodVTnbBEsx83QY6BOSb8ittkAC27dJIOSx1T6gd
-         /6ZEGsPYBBy/B4fBvUHffHEoP4sJfd6GwVQ0n8YPMaejW9t91Qz6uWyHwEXttgQ+AwGd
-         faVnP8CNbSxSxsJWQBICNwMeaN7KNLZIFFSBTplH0z+fpDq9GFcmff4KD+PJLFVitnUf
-         yCVg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=0lx4/muAj6zHL5hlNrQDx8C/+BhbmUkBZUFKAjLFg14=;
+        b=aeu6q1m7nVHL3PgmuMxmXvACbigIfstLfKme6Y8xFp+EQV0WxXxrEXWpu2YB1cKvEg
+         7G0gJVWh7sgGEJH0VGAZRjn17cDmDBwEUjoLW/FlO3Qm362+n9w1Zkgbg1N/sQvgGqFQ
+         3FTPYPvZTH0d4fkvAtfcDDu9KcNBAxOWnB6U4CzVN66NVcMKy4lWWiw2UPJJJRBLx4rL
+         4OiHiVC+h4MRCY4MdzLjcG0bVbvccKoWAQagm8kzGTKJmO9ShwrAquxQHrj0F9u+8B6r
+         enBu8nBouFvRjR3USPbQa3pOyS1q36mIQoIVn37UHxB+S4UXUuxKMoE+sPBoqXMRsqf9
+         9CQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3FeZo7wxUKF5f4TtRFTT/9ikqtb4RICo/S0MwMu9vSo=;
-        b=JLdPHbNk2sUPN/sWgLZUWtFXfWsQuG16k2KLkch9TfqfUYmMMpgNVLPIHE63T+VAyj
-         sG3AKkGk6lAfP7cfptgnhrKzwNNrPmiBzc0aLKz0jUriRN/S+8PywNzdz3KXyKOZPNNW
-         RjWtVPpIrLzyQOCer+4npz26EMbv/wk5kUUUrhpL1LQl2gMHuo3la5/fNghmhx2vxE9P
-         DRtdbo4ccQBxPYMP9qQmNH06ElPRAN9t7DS/RCpBsG6h56CGKsmdhQs8zmUGhQThFjxo
-         Z9mVhHYojnZd9gmo3D/vFnACVZOrg8xH4L7smqJwxHpmbADHt2PZPGYTQJt1gKK8fIRb
-         tAPg==
-X-Gm-Message-State: AOAM5319D9K0i2BXv507s4zgmudqIRnH49oocWxNpVYy3yrvRsLXsXCZ
-        owlrKy/spYXd/YaQK3kOlwgeZ2Sm/oG5EmTEN0Q=
-X-Google-Smtp-Source: ABdhPJydym0mkVZTYgwU9sGeeAr5aapv8UMqIAmPaxOtjLJUJJgBDkya5IjfjdAlrGdaVBwHpG6V2rczHCoOprxGlzA=
-X-Received: by 2002:ac8:424b:: with SMTP id r11mr5248216qtm.171.1589571777348;
- Fri, 15 May 2020 12:42:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515165007.217120-1-irogers@google.com> <20200515170036.GA10230@kernel.org>
-In-Reply-To: <20200515170036.GA10230@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 15 May 2020 12:42:46 -0700
-Message-ID: <CAEf4BzZ5=_yu1kL77n+Oc0K9oaDi4J=c+7CV8D0AXs2hBxhNbw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] Copy hashmap to tools/perf/util, use in perf expr
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=0lx4/muAj6zHL5hlNrQDx8C/+BhbmUkBZUFKAjLFg14=;
+        b=JohCPwwmMbaRONYAVqRQXNkraZZ8gV0A3Ph4zEA0Dp7tLAFXoUr8ov4Ta/TKICBIQL
+         8mTWPO7zRfWchi51b6BvN7GdesCYgNukusdhMr74Qoe8HZVsMr+IY/OPr6B8w4Qv9v8f
+         2tJ2bVVHa2jV3h9hMAn4lF5SoKy2Poo8dFgGMaKZDOEO2N1ods0tgwQ7w8YMrRALHJZ4
+         BOhDbE2pNhbc+K38xSON+77abIiHogQjyswBWs1/Sd1HQV/NSi4xWJe6qBfKJztrn6/C
+         bDIOM5pgJ8vanDzGwIHEbIdspUAqNg9UHvAfehi2eG/T9H+g11ToElEG72yWSNKZhkDz
+         jewQ==
+X-Gm-Message-State: AOAM531HZoRUa4QD0WN0ipeUJApI7bMTDtgzK2tuaoCctvrvziuGieOg
+        mV3Ly/HOsRFyuhmiT1RvYTS5ZtI=
+X-Google-Smtp-Source: ABdhPJw9asfw462ApaggfcGn4vZ/mEZjRo7LyirHwmtnRYAHg6ZQGiHUtpOjU2BZjn9W7NvMXlghgZ8=
+X-Received: by 2002:a25:bc8d:: with SMTP id e13mr8575945ybk.67.1589572145960;
+ Fri, 15 May 2020 12:49:05 -0700 (PDT)
+Date:   Fri, 15 May 2020 12:49:03 -0700
+Message-Id: <20200515194904.229296-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+Subject: [PATCH bpf-next 1/2] selftests/bpf: fix test_align
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 15, 2020 at 10:01 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Fri, May 15, 2020 at 09:50:00AM -0700, Ian Rogers escreveu:
-> > Perf's expr code currently builds an array of strings then removes
-> > duplicates. The array is larger than necessary and has recently been
-> > increased in size. When this was done it was commented that a hashmap
-> > would be preferable.
-> >
-> > libbpf has a hashmap but libbpf isn't currently required to build
-> > perf. To satisfy various concerns this change copies libbpf's hashmap
-> > into tools/perf/util, it then adds a check in perf that the two are in
-> > sync.
-> >
-> > Andrii's patch to hashmap from bpf-next is brought into this set to
-> > fix issues with hashmap__clear.
-> >
-> > Two minor changes to libbpf's hashmap are made that remove an unused
-> > dependency and fix a compiler warning.
->
-> Andrii/Alexei/Daniel, what do you think about me merging these fixes in my
-> perf-tools-next branch?
+Commit 294f2fc6da27 ("bpf: Verifer, adjust_scalar_min_max_vals to always
+call update_reg_bounds()") changed the way verifier logs some of its state,
+adjust the test_align accordingly. Where possible, I tried to
+not copy-paste the entire log line and resorted to dropping
+the last closing brace instead.
 
-I'm ok with the idea, but it's up to maintainers to coordinate this :)
+Fixes: 294f2fc6da27 ("bpf: Verifer, adjust_scalar_min_max_vals to always call update_reg_bounds()")
+Cc: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/test_align.c | 41 ++++++++++++------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
->
-> - Arnaldo
->
-> > Two perf test changes are also brought in as they need refactoring to
-> > account for the expr API change and it is expected they will land
-> > ahead of this.
-> > https://lore.kernel.org/lkml/20200513062236.854-2-irogers@google.com/
-> >
-> > Tested with 'perf test' and 'make -C tools/perf build-test'.
-> >
-> > The hashmap change was originally part of an RFC:
-> > https://lore.kernel.org/lkml/20200508053629.210324-1-irogers@google.com/
-> >
-> > v2. moves hashmap into tools/perf/util rather than libapi, to allow
-> > hashmap's libbpf symbols to be visible when built statically for
-> > testing.
-> >
-> > Andrii Nakryiko (1):
-> >   libbpf: Fix memory leak and possible double-free in hashmap__clear
-> >
-> > Ian Rogers (6):
-> >   libbpf hashmap: Remove unused #include
-> >   libbpf hashmap: Fix signedness warnings
-> >   tools lib/api: Copy libbpf hashmap to tools/perf/util
-> >   perf test: Provide a subtest callback to ask for the reason for
-> >     skipping a subtest
-> >   perf test: Improve pmu event metric testing
-> >   perf expr: Migrate expr ids table to a hashmap
-> >
-> >  tools/lib/bpf/hashmap.c         |  10 +-
-> >  tools/lib/bpf/hashmap.h         |   1 -
-> >  tools/perf/check-headers.sh     |   4 +
-> >  tools/perf/tests/builtin-test.c |  18 ++-
-> >  tools/perf/tests/expr.c         |  40 +++---
-> >  tools/perf/tests/pmu-events.c   | 169 ++++++++++++++++++++++-
-> >  tools/perf/tests/tests.h        |   4 +
-> >  tools/perf/util/Build           |   4 +
-> >  tools/perf/util/expr.c          | 129 +++++++++--------
-> >  tools/perf/util/expr.h          |  26 ++--
-> >  tools/perf/util/expr.y          |  22 +--
-> >  tools/perf/util/hashmap.c       | 238 ++++++++++++++++++++++++++++++++
-> >  tools/perf/util/hashmap.h       | 177 ++++++++++++++++++++++++
-> >  tools/perf/util/metricgroup.c   |  87 ++++++------
-> >  tools/perf/util/stat-shadow.c   |  49 ++++---
-> >  15 files changed, 798 insertions(+), 180 deletions(-)
-> >  create mode 100644 tools/perf/util/hashmap.c
-> >  create mode 100644 tools/perf/util/hashmap.h
-> >
-> > --
-> > 2.26.2.761.g0e0b3e54be-goog
-> >
->
-> --
->
-> - Arnaldo
+diff --git a/tools/testing/selftests/bpf/test_align.c b/tools/testing/selftests/bpf/test_align.c
+index 0262f7b374f9..c9c9bdce9d6d 100644
+--- a/tools/testing/selftests/bpf/test_align.c
++++ b/tools/testing/selftests/bpf/test_align.c
+@@ -359,15 +359,15 @@ static struct bpf_align_test tests[] = {
+ 			 * is still (4n), fixed offset is not changed.
+ 			 * Also, we create a new reg->id.
+ 			 */
+-			{29, "R5_w=pkt(id=4,off=18,r=0,umax_value=2040,var_off=(0x0; 0x7fc))"},
++			{29, "R5_w=pkt(id=4,off=18,r=0,umax_value=2040,var_off=(0x0; 0x7fc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (18)
+ 			 * which is 20.  Then the variable offset is (4n), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{33, "R4=pkt(id=4,off=22,r=22,umax_value=2040,var_off=(0x0; 0x7fc))"},
+-			{33, "R5=pkt(id=4,off=18,r=22,umax_value=2040,var_off=(0x0; 0x7fc))"},
++			{33, "R4=pkt(id=4,off=22,r=22,umax_value=2040,var_off=(0x0; 0x7fc)"},
++			{33, "R5=pkt(id=4,off=18,r=22,umax_value=2040,var_off=(0x0; 0x7fc)"},
+ 		},
+ 	},
+ 	{
+@@ -410,15 +410,15 @@ static struct bpf_align_test tests[] = {
+ 			/* Adding 14 makes R6 be (4n+2) */
+ 			{9, "R6_w=inv(id=0,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc))"},
+ 			/* Packet pointer has (4n+2) offset */
+-			{11, "R5_w=pkt(id=1,off=0,r=0,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc))"},
+-			{13, "R4=pkt(id=1,off=4,r=0,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc))"},
++			{11, "R5_w=pkt(id=1,off=0,r=0,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc)"},
++			{13, "R4=pkt(id=1,off=4,r=0,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{15, "R5=pkt(id=1,off=0,r=4,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc))"},
++			{15, "R5=pkt(id=1,off=0,r=4,umin_value=14,umax_value=1034,var_off=(0x2; 0x7fc)"},
+ 			/* Newly read value in R6 was shifted left by 2, so has
+ 			 * known alignment of 4.
+ 			 */
+@@ -426,15 +426,15 @@ static struct bpf_align_test tests[] = {
+ 			/* Added (4n) to packet pointer's (4n+2) var_off, giving
+ 			 * another (4n+2).
+ 			 */
+-			{19, "R5_w=pkt(id=2,off=0,r=0,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc))"},
+-			{21, "R4=pkt(id=2,off=4,r=0,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc))"},
++			{19, "R5_w=pkt(id=2,off=0,r=0,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc)"},
++			{21, "R4=pkt(id=2,off=4,r=0,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{23, "R5=pkt(id=2,off=0,r=4,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc))"},
++			{23, "R5=pkt(id=2,off=0,r=4,umin_value=14,umax_value=2054,var_off=(0x2; 0xffc)"},
+ 		},
+ 	},
+ 	{
+@@ -469,16 +469,16 @@ static struct bpf_align_test tests[] = {
+ 		.matches = {
+ 			{4, "R5_w=pkt_end(id=0,off=0,imm=0)"},
+ 			/* (ptr - ptr) << 2 == unknown, (4n) */
+-			{6, "R5_w=inv(id=0,smax_value=9223372036854775804,umax_value=18446744073709551612,var_off=(0x0; 0xfffffffffffffffc))"},
++			{6, "R5_w=inv(id=0,smax_value=9223372036854775804,umax_value=18446744073709551612,var_off=(0x0; 0xfffffffffffffffc)"},
+ 			/* (4n) + 14 == (4n+2).  We blow our bounds, because
+ 			 * the add could overflow.
+ 			 */
+-			{7, "R5_w=inv(id=0,var_off=(0x2; 0xfffffffffffffffc))"},
++			{7, "R5_w=inv(id=0,smin_value=-9223372036854775806,smax_value=9223372036854775806,umin_value=2,umax_value=18446744073709551614,var_off=(0x2; 0xfffffffffffffffc)"},
+ 			/* Checked s>=0 */
+-			{9, "R5=inv(id=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
++			{9, "R5=inv(id=0,umin_value=2,umax_value=9223372034707292158,var_off=(0x2; 0x7fffffff7ffffffc)"},
+ 			/* packet pointer + nonnegative (4n+2) */
+-			{11, "R6_w=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
+-			{13, "R4_w=pkt(id=1,off=4,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
++			{11, "R6_w=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372034707292158,var_off=(0x2; 0x7fffffff7ffffffc)"},
++			{13, "R4_w=pkt(id=1,off=4,r=0,umin_value=2,umax_value=9223372034707292158,var_off=(0x2; 0x7fffffff7ffffffc)"},
+ 			/* NET_IP_ALIGN + (4n+2) == (4n), alignment is fine.
+ 			 * We checked the bounds, but it might have been able
+ 			 * to overflow if the packet pointer started in the
+@@ -486,7 +486,7 @@ static struct bpf_align_test tests[] = {
+ 			 * So we did not get a 'range' on R6, and the access
+ 			 * attempt will fail.
+ 			 */
+-			{15, "R6_w=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
++			{15, "R6_w=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372034707292158,var_off=(0x2; 0x7fffffff7ffffffc)"},
+ 		}
+ 	},
+ 	{
+@@ -528,7 +528,7 @@ static struct bpf_align_test tests[] = {
+ 			/* New unknown value in R7 is (4n) */
+ 			{11, "R7_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+ 			/* Subtracting it from R6 blows our unsigned bounds */
+-			{12, "R6=inv(id=0,smin_value=-1006,smax_value=1034,var_off=(0x2; 0xfffffffffffffffc))"},
++			{12, "R6=inv(id=0,smin_value=-1006,smax_value=1034,umin_value=2,umax_value=18446744073709551614,var_off=(0x2; 0xfffffffffffffffc)"},
+ 			/* Checked s>= 0 */
+ 			{14, "R6=inv(id=0,umin_value=2,umax_value=1034,var_off=(0x2; 0x7fc))"},
+ 			/* At the time the word size load is performed from R5,
+@@ -537,7 +537,8 @@ static struct bpf_align_test tests[] = {
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{20, "R5=pkt(id=1,off=0,r=4,umin_value=2,umax_value=1034,var_off=(0x2; 0x7fc))"},
++			{20, "R5=pkt(id=1,off=0,r=4,umin_value=2,umax_value=1034,var_off=(0x2; 0x7fc)"},
++
+ 		},
+ 	},
+ 	{
+@@ -579,18 +580,18 @@ static struct bpf_align_test tests[] = {
+ 			/* Adding 14 makes R6 be (4n+2) */
+ 			{11, "R6_w=inv(id=0,umin_value=14,umax_value=74,var_off=(0x2; 0x7c))"},
+ 			/* Subtracting from packet pointer overflows ubounds */
+-			{13, "R5_w=pkt(id=1,off=0,r=8,umin_value=18446744073709551542,umax_value=18446744073709551602,var_off=(0xffffffffffffff82; 0x7c))"},
++			{13, "R5_w=pkt(id=1,off=0,r=8,umin_value=18446744073709551542,umax_value=18446744073709551602,var_off=(0xffffffffffffff82; 0x7c)"},
+ 			/* New unknown value in R7 is (4n), >= 76 */
+ 			{15, "R7_w=inv(id=0,umin_value=76,umax_value=1096,var_off=(0x0; 0x7fc))"},
+ 			/* Adding it to packet pointer gives nice bounds again */
+-			{16, "R5_w=pkt(id=2,off=0,r=0,umin_value=2,umax_value=1082,var_off=(0x2; 0x7fc))"},
++			{16, "R5_w=pkt(id=2,off=0,r=0,umin_value=2,umax_value=1082,var_off=(0x2; 0xfffffffc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{20, "R5=pkt(id=2,off=0,r=4,umin_value=2,umax_value=1082,var_off=(0x2; 0x7fc))"},
++			{20, "R5=pkt(id=2,off=0,r=4,umin_value=2,umax_value=1082,var_off=(0x2; 0xfffffffc)"},
+ 		},
+ 	},
+ };
+-- 
+2.26.2.761.g0e0b3e54be-goog
+
