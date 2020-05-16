@@ -2,134 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0098F1D5D82
-	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 03:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714A51D5E42
+	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 05:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgEPBCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 21:02:42 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55712 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgEPBCl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 21:02:41 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jZlDr-0004n3-DS; Sat, 16 May 2020 03:02:39 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jZlDr-00078q-5W; Sat, 16 May 2020 03:02:39 +0200
-Subject: Re: [bpf-next PATCH v2 00/12] bpf: selftests, test_sockmap
- improvements
-To:     John Fastabend <john.fastabend@gmail.com>, lmb@cloudflare.com,
-        jakub@cloudflare.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org
-References: <158939706939.15176.10993188758954570904.stgit@john-Precision-5820-Tower>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b2233fba-09b0-a530-780e-c8ed238c6dee@iogearbox.net>
-Date:   Sat, 16 May 2020 03:02:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <158939706939.15176.10993188758954570904.stgit@john-Precision-5820-Tower>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1727937AbgEPDnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 23:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726247AbgEPDnF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 23:43:05 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 773F320728;
+        Sat, 16 May 2020 03:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589600585;
+        bh=9Yr3NqlaT8J3yD/oIp4iOMhtlWnif5o5ocW4LHaILdM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gyBQnTy1kkqh/qqbQgXTvgoLZUb4vpkCq+qjNMxNfH2LO1uD/nFf2CQ93t2pqZ2HH
+         Nvv3z8XinGroioseW6l362KaQNKI1k7UrzuUhEywWLMpAOhwLDsF/32qhs84qDVP/z
+         cpTKthgjLlt17JXXUVZs8KirdFerSU19m7odBjKc=
+Date:   Sat, 16 May 2020 12:42:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/18] maccess: allow architectures to provide kernel
+ probing directly
+Message-Id: <20200516124259.5b68a4e1d4670efa1397a1e0@kernel.org>
+In-Reply-To: <20200513160038.2482415-15-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
+        <20200513160038.2482415-15-hch@lst.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25813/Fri May 15 14:16:29 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/13/20 9:12 PM, John Fastabend wrote:
-> Note: requires fixes listed below to be merged into bpf-next before
->        applied.
-> 
-> Update test_sockmap to add ktls tests and in the process make output
-> easier to understand and reduce overall runtime significantly. Before
-> this series test_sockmap did a poor job of tracking sent bytes causing
-> the recv thread to wait for a timeout even though all expected bytes
-> had been received. Doing this many times causes significant delays.
-> Further, we did many redundant tests because the send/recv test we used
-> was not specific to the parameters we were testing. For example testing
-> a failure case that always fails many times with different send sizes
-> is mostly useless. If the test condition catches 10B in the kernel code
-> testing 100B, 1kB, 4kB, and so on is just noise.
-> 
-> The main motivation for this is to add ktls tests, the last patch. Until
-> now I have been running these locally but we haven't had them checked in
-> to selftests. And finally I'm hoping to get these pushed into the libbpf
-> test infrastructure so we can get more testing. For that to work we need
-> ability to white and blacklist tests based on kernel features so we add
-> that here as well.
-> 
-> The new output looks like this broken into test groups with subtest
-> counters,
-> 
->   $ time sudo ./test_sockmap
->   # 1/ 6  sockmap:txmsg test passthrough:OK
->   # 2/ 6  sockmap:txmsg test redirect:OK
->   ...
->   #22/ 1 sockhash:txmsg test push/pop data:OK
->   Pass: 22 Fail: 0
-> 
->   real    0m9.790s
->   user    0m0.093s
->   sys     0m7.318s
-> 
-> The old output printed individual subtest and was rather noisy
-> 
->   $ time sudo ./test_sockmap
->   [TEST 0]: (1, 1, 1, sendmsg, pass,): PASS
->   ...
->   [TEST 823]: (16, 1, 100, sendpage, ... ,pop (1599,1609),): PASS
->   Summary: 824 PASSED 0 FAILED
-> 
->   real    0m56.761s
->   user    0m0.455s
->   sys     0m31.757s
-> 
-> So we are able to reduce time from ~56s to ~10s. To recover older more
-> verbose output simply run with --verbose option. To whitelist and
-> blacklist tests use the new --whitelist and --blacklist flags added. For
-> example to run cork sockhash tests but only ones that don't have a receive
-> hang (used to test negative cases) we could do,
-> 
->   $ ./test_sockmap --whitelist="cork" --blacklist="sockmap,hang"
-> 
-> Requires these two fixes from net tree,
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=3e104c23816220919ea1b3fd93fabe363c67c484
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=81aabbb9fb7b4b1efd073b62f0505d3adad442f3
-> 
-> v1->v2: Addressed Jakub's comments, exit to _exit and strerror typo.
->          Added Jakubs Reviewed-by tag, Thanks!
-> 
-> ---
-> 
-> John Fastabend (12):
->        bpf: sockmap, msg_pop_data can incorrecty set an sge length
->        bpf: sockmap, bpf_tcp_ingress needs to subtract bytes from sg.size
->        bpf: selftests, move sockmap bpf prog header into progs
->        bpf: selftests, remove prints from sockmap tests
->        bpf: selftests, sockmap test prog run without setting cgroup
->        bpf: selftests, print error in test_sockmap error cases
->        bpf: selftests, improve test_sockmap total bytes counter
->        bpf: selftests, break down test_sockmap into subtests
->        bpf: selftests, provide verbose option for selftests execution
->        bpf: selftests, add whitelist option to test_sockmap
->        bpf: selftests, add blacklist to test_sockmap
->        bpf: selftests, add ktls tests to test_sockmap
-> 
-> 
->   .../selftests/bpf/progs/test_sockmap_kern.h        |  299 +++++++
->   tools/testing/selftests/bpf/test_sockmap.c         |  913 ++++++++++----------
->   tools/testing/selftests/bpf/test_sockmap_kern.h    |  451 ----------
->   3 files changed, 770 insertions(+), 893 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_kern.h
->   delete mode 100644 tools/testing/selftests/bpf/test_sockmap_kern.h
+Hi Christoph,
 
-Applied 3-12, thanks!
+On Wed, 13 May 2020 18:00:34 +0200
+Christoph Hellwig <hch@lst.de> wrote:
+
+> Provide alternative versions of probe_kernel_read, probe_kernel_write
+> and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
+> use arch hooks that are modelled after unsafe_{get,put}_user to access
+> kernel memory in an exception safe way.
+
+This patch seems to introduce new implementation of probe_kernel_read/write()
+and strncpy_from_kernel_unsafe(), but also drops copy_from/to_kernel_nofault()
+and strncpy_from_kernel_nofault() if HAVE_ARCH_PROBE_KERNEL is defined.
+In the result, this cause a link error with BPF and kprobe events.
+
+BTW, what is the difference of *_unsafe() and *_nofault()?
+(maybe we make those to *_nofault() finally?)
+
+Thank you,
+
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+> 
+> diff --git a/mm/maccess.c b/mm/maccess.c
+> index 9773e2253b495..e9efe2f98e34a 100644
+> --- a/mm/maccess.c
+> +++ b/mm/maccess.c
+> @@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+>  	return true;
+>  }
+>  
+> +#ifdef HAVE_ARCH_PROBE_KERNEL
+> +
+> +#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
+> +	while (len >= sizeof(type)) {					\
+> +		arch_kernel_read(dst, src, type, err_label);		\
+> +		dst += sizeof(type);					\
+> +		src += sizeof(type);					\
+> +		len -= sizeof(type);					\
+> +	}
+> +
+> +long probe_kernel_read(void *dst, const void *src, size_t size)
+> +{
+> +	if (!probe_kernel_read_allowed(dst, src, size))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +	probe_kernel_read_loop(dst, src, size, u64, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u32, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u16, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u8, Efault);
+> +	pagefault_enable();
+> +	return 0;
+> +Efault:
+> +	pagefault_enable();
+> +	return -EFAULT;
+> +}
+> +EXPORT_SYMBOL_GPL(probe_kernel_read);
+> +
+> +#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
+> +	while (len >= sizeof(type)) {					\
+> +		arch_kernel_write(dst, src, type, err_label);		\
+> +		dst += sizeof(type);					\
+> +		src += sizeof(type);					\
+> +		len -= sizeof(type);					\
+> +	}
+> +
+> +long probe_kernel_write(void *dst, const void *src, size_t size)
+> +{
+> +	pagefault_disable();
+> +	probe_kernel_write_loop(dst, src, size, u64, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u32, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u16, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u8, Efault);
+> +	pagefault_enable();
+> +	return 0;
+> +Efault:
+> +	pagefault_enable();
+> +	return -EFAULT;
+> +}
+> +
+> +long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
+> +{
+> +	const void *src = unsafe_addr;
+> +
+> +	if (unlikely(count <= 0))
+> +		return 0;
+> +	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +	do {
+> +		arch_kernel_read(dst, src, u8, Efault);
+> +		dst++;
+> +		src++;
+> +	} while (dst[-1] && src - unsafe_addr < count);
+> +	pagefault_enable();
+> +
+> +	dst[-1] = '\0';
+> +	return src - unsafe_addr;
+> +Efault:
+> +	pagefault_enable();
+> +	dst[-1] = '\0';
+> +	return -EFAULT;
+> +}
+> +#else /* HAVE_ARCH_PROBE_KERNEL */
+>  /**
+>   * probe_kernel_read(): safely attempt to read from kernel-space
+>   * @dst: pointer to the buffer that shall take the data
+> @@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+>  
+>  	return ret ? -EFAULT : src - unsafe_addr;
+>  }
+> +#endif /* HAVE_ARCH_PROBE_KERNEL */
+>  
+>  /**
+>   * probe_user_read(): safely attempt to read from a user-space location
+> -- 
+> 2.26.2
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
