@@ -2,43 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E152D1D8AEA
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 00:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A9B1D8B35
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 00:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgERW3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 18:29:46 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55940 "EHLO
+        id S1728420AbgERWqC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 18:46:02 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57872 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgERW3q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 18:29:46 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        with ESMTP id S1728281AbgERWqB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 18:46:01 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jaoGU-0007b4-CW; Tue, 19 May 2020 00:29:42 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jaoGU-000Ee7-4f; Tue, 19 May 2020 00:29:42 +0200
-Subject: Re: [PATCH bpf-next 4/4] bpf, testing: add get{peer,sock}name
- selftests to test_progs
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        sdf@google.com
-References: <cover.1589813738.git.daniel@iogearbox.net>
- <1b9869b34027bc0722f4217a0b04f1cccccc5c33.1589813738.git.daniel@iogearbox.net>
- <20200518221728.GA49655@rdna-mbp.dhcp.thefacebook.com>
+        id 1jaoWC-0000c3-Vq; Tue, 19 May 2020 00:45:57 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e6f2dc5e-3491-8ace-a902-975ab42002f0@iogearbox.net>
-Date:   Tue, 19 May 2020 00:29:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+To:     ast@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, rdna@fb.com,
+        sdf@google.com, andrii.nakryiko@gmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next v2 0/4] Add get{peer,sock}name cgroup attach types
+Date:   Tue, 19 May 2020 00:45:44 +0200
+Message-Id: <cover.1589841594.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200518221728.GA49655@rdna-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.2/25816/Mon May 18 14:17:08 2020)
 Sender: bpf-owner@vger.kernel.org
@@ -46,51 +34,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/19/20 12:17 AM, Andrey Ignatov wrote:
-> Daniel Borkmann <daniel@iogearbox.net> [Mon, 2020-05-18 08:35 -0700]:
->> Extend the existing connect_force_port test to assert get{peer,sock}name programs
->> as well. The workflow for e.g. IPv4 is as follows: i) server binds to concrete
->> port, ii) client calls getsockname() on server fd which exposes 1.2.3.4:60000 to
->> client, iii) client connects to service address 1.2.3.4:60000 binds to concrete
->> local address (127.0.0.1:22222) and remaps service address to a concrete backend
->> address (127.0.0.1:60123), iv) client then calls getsockname() on its own fd to
->> verify local address (127.0.0.1:22222) and getpeername() on its own fd which then
->> publishes service address (1.2.3.4:60000) instead of actual backend. Same workflow
->> is done for IPv6 just with different address/port tuples.
->>
->>    # ./test_progs -t connect_force_port
->>    #14 connect_force_port:OK
->>    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Andrey Ignatov <rdna@fb.com>
->> ---
-> 
->> --- a/tools/testing/selftests/bpf/network_helpers.c
->> +++ b/tools/testing/selftests/bpf/network_helpers.c
->> @@ -5,6 +5,8 @@
->>   #include <string.h>
->>   #include <unistd.h>
->>   
->> +#include <arpa/inet.h>
->> +
->>   #include <sys/epoll.h>
->>   
->>   #include <linux/err.h>
->> @@ -35,7 +37,7 @@ struct ipv6_packet pkt_v6 = {
->>   	.tcp.doff = 5,
->>   };
->>   
->> -int start_server(int family, int type)
->> +int start_server_with_port(int family, int type, int port)
-> 
-> Nit: IMO it's worth to start using __u16 for ports in new places,
-> especially since this network helper can be adopted by many tests in the
-> future. I know 4-byte int-s are used for ports even in UAPI, but IMO it
-> just adds confusion and complicates implementation in both kernel and
-> user BPF programs.
+Trivial patch to add get{peer,sock}name cgroup attach types to the BPF
+sock_addr programs in order to enable rewriting sockaddr structs from
+both calls along with libbpf and bpftool support as well as selftests.
 
-Ok, makes sense, I'll change the signature to __u16 port in a v2.
+Thanks!
 
-Thanks,
-Daniel
+v1 -> v2:
+  - use __u16 for ports in start_server_with_port() signature and in
+    expected_{local,peer} ports in the test case (Andrey)
+  - Added both Andrii's and Andrey's ACKs
+
+Daniel Borkmann (4):
+  bpf: add get{peer,sock}name attach types for sock_addr
+  bpf, libbpf: enable get{peer,sock}name attach types
+  bpf, bpftool: enable get{peer,sock}name attach types
+  bpf, testing: add get{peer,sock}name selftests to test_progs
+
+ include/linux/bpf-cgroup.h                    |   1 +
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/syscall.c                          |  12 ++
+ kernel/bpf/verifier.c                         |   6 +-
+ net/core/filter.c                             |   4 +
+ net/ipv4/af_inet.c                            |   8 +-
+ net/ipv6/af_inet6.c                           |   9 +-
+ .../bpftool/Documentation/bpftool-cgroup.rst  |  10 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  15 ++-
+ tools/bpf/bpftool/cgroup.c                    |   7 +-
+ tools/bpf/bpftool/main.h                      |   4 +
+ tools/bpf/bpftool/prog.c                      |   6 +-
+ tools/include/uapi/linux/bpf.h                |   4 +
+ tools/lib/bpf/libbpf.c                        |   8 ++
+ tools/testing/selftests/bpf/network_helpers.c |  11 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/connect_force_port.c       | 107 +++++++++++++-----
+ .../selftests/bpf/progs/connect_force_port4.c |  59 +++++++++-
+ .../selftests/bpf/progs/connect_force_port6.c |  70 +++++++++++-
+ 20 files changed, 295 insertions(+), 54 deletions(-)
+
+-- 
+2.21.0
+
