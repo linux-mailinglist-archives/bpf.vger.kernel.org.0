@@ -2,131 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD96A1D732F
-	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 10:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC911D7388
+	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 11:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgERIpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 04:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgERIpj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 04:45:39 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C3C061A0C;
-        Mon, 18 May 2020 01:45:39 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x10so3961446plr.4;
-        Mon, 18 May 2020 01:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lXzzUAU+hsiLT32/l66VdtX5LtrIrzhbLmvU5zagp04=;
-        b=iFHlVa+gUW+VW6elb9e4ZX0ruSFDV3RZtDIz+BdIVczPPjDJ8LXCq6Ons6Ljz+65Xn
-         LiudbeYmUkhaBw8oJ59/Ftc9qRTi9iKf4fo0Hpmg92aLmbtb6MBClIsywW8r455dR4ms
-         B4KvT6pPoYJFrSfDqI214xAbX0UTgKggfWSBGkDotsqlsfzMvZMnDuIfqVEAn7FsVGVO
-         Z99CBpJghlKsMbrnqyyr/PFdPiEKVzthAYW8KhcM8VzFfA/KCqKuQSTNoAFkmh2R5IAa
-         0la1RBuq9z8XbyE61K34ut2Zr7OneyEBTeSAPlxNatCc3KVp8l6P5hT3wGw7m4zOPVdG
-         bTdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lXzzUAU+hsiLT32/l66VdtX5LtrIrzhbLmvU5zagp04=;
-        b=D741G6CyjNDrxi3LURmzKqTLvWCHxn+zaIjXJnLdzXofzQP006MshnDUuK5JjGeq85
-         b9bRFYwpgyQa4YKj5o08ONLWafyYHCA1NVNaXzf6phSWxuCzpu0uMlfqSnlJWP9vrEMO
-         0m88fPKN71kBj0H1rTcggpiHicbZK0OuSLOMQTGAWwON40FU2P/xa3h+8/g+TU5Tjjrf
-         ZcUzvvHHv87fknK+kZb/hZjnkmOK96CLeNtRYnSDvda7sJ/df6gwDohKSqCwH1Gb1Mqr
-         ldDa8Eipd730GWrBZ+8RQR/UL9dPIfdQU98QNIP8imPI4ygGeytrrefFYergmCoiQNkx
-         TSDQ==
-X-Gm-Message-State: AOAM532mnAFdWFJeFl3T0nGW22SmF1xokkjB6IGrKp1QBF5/Kl3n58f8
-        1jEYHd38v7A618WbCSRnOV8=
-X-Google-Smtp-Source: ABdhPJwDIOAyCFuGFAqrsMCwCKwG714GBSs+iyxlhqtfEIPw+TxTqJjTyHdCdgESX0qZL3v6+AebHw==
-X-Received: by 2002:a17:902:930b:: with SMTP id bc11mr15550447plb.2.1589791538903;
-        Mon, 18 May 2020 01:45:38 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h4sm7325758pfo.3.2020.05.18.01.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 01:45:38 -0700 (PDT)
-Date:   Mon, 18 May 2020 16:45:27 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200518084527.GF102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com>
- <20200424085610.10047-1-liuhangbin@gmail.com>
- <20200424085610.10047-2-liuhangbin@gmail.com>
- <87r1wd2bqu.fsf@toke.dk>
+        id S1726800AbgERJLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 05:11:20 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60028 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726505AbgERJLU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 05:11:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04I93ATR173287;
+        Mon, 18 May 2020 09:10:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Rvkso+0xj+PaZPCgO7NcqlP3hcldz8TuQZ/t643+Io8=;
+ b=mqABSTJEenM30vsxFxjbAMut5oKHKCuD7bKCGWQ42NqBm0nm++F+hoWtMwoK4wBeWK94
+ T6twSyP80Unnh+6nQQX27JJjxLeQ54BqYzNTtvM45pG71Rk7fdme6UwZrZ1PyXRXaXgM
+ 5+tZGQwj/nSq51Ie8gR7Ki99ikUtPX9f/ZTeRpZ7XgIiBn2fE51RcDYPu3xNcy9ClBBW
+ 31cnpS00srfEXmwSqVChOFdXI+S0DdBXOchqTNTY8wX3h0Xqx7cap9JtdtcIEUACFUVX
+ HuKms+yjaw2OX/Mp8+j3RlAzN5Xpu/qF3893fuXBXl8I8GVwfSrFh19UrgKxgz4iWBDX qA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3127kqwn1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 18 May 2020 09:10:59 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04I94KsA115300;
+        Mon, 18 May 2020 09:10:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 312t3v7w3e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 09:10:58 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04I9Ar6c001535;
+        Mon, 18 May 2020 09:10:53 GMT
+Received: from dhcp-10-175-184-176.vpn.oracle.com (/10.175.184.176)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 May 2020 02:10:52 -0700
+Date:   Mon, 18 May 2020 10:10:44 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Yonghong Song <yhs@fb.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org, joe@perches.com,
+        linux@rasmusvillemoes.dk, arnaldo.melo@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 6/7] bpf: add support for %pT format specifier
+ for bpf_trace_printk() helper
+In-Reply-To: <040b71a1-9bbf-9a55-6f1a-e7b8c36f8c6e@fb.com>
+Message-ID: <alpine.LRH.2.21.2005181000520.893@localhost>
+References: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com> <1589263005-7887-7-git-send-email-alan.maguire@oracle.com> <040b71a1-9bbf-9a55-6f1a-e7b8c36f8c6e@fb.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r1wd2bqu.fsf@toke.dk>
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9624 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ phishscore=0 bulkscore=0 suspectscore=3 mlxscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005180081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9624 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=3 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005180081
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Toke,
+On Wed, 13 May 2020, Yonghong Song wrote:
 
-On Fri, Apr 24, 2020 at 04:34:49PM +0200, Toke Høiland-Jørgensen wrote:
 > 
-> Yeah, the new helper is much cleaner!
+> > +				while (isbtffmt(fmt[i]))
+> > +					i++;
 > 
-> > To achive this I add a new ex_map for struct bpf_redirect_info.
-> > in the helper I set tgt_value to NULL to make a difference with
-> > bpf_xdp_redirect_map()
-> >
-> > We also add a flag *BPF_F_EXCLUDE_INGRESS* incase you don't want to
-> > create a exclude map for each interface and just want to exclude the
-> > ingress interface.
-> >
-> > The general data path is kept in net/core/filter.c. The native data
-> > path is in kernel/bpf/devmap.c so we can use direct calls to
-> > get better performace.
+> The pointer passed to the helper may not be valid pointer. I think you
+> need to do a probe_read_kernel() here. Do an atomic memory allocation
+> here should be okay as this is mostly for debugging only.
 > 
-> Got any performance numbers? :)
 
-Recently I tried with pktgen to get the performance number. It works
-with native mode, although the number looks not high.
+Are there other examples of doing allocations in program execution
+context? I'd hate to be the first to introduce one if not. I was hoping
+I could get away with some per-CPU scratch space. Most data structures
+will fit within a small per-CPU buffer, but if multiple copies
+are required, performance isn't the key concern. It will make traversing
+the buffer during display a bit more complex but I think avoiding 
+allocation might make that complexity worth it. The other thought I had 
+was we could carry out an allocation associated with the attach, 
+but that's messy as it's possible run-time might determine the type for
+display (and thus the amount of the buffer we need to copy safely).
 
-I tested it on VM with 1 cpu core. By forwarding to 7 ports, With pktgen
-config like:
-echo "count 10000000" > /proc/net/pktgen/veth0
-echo "clone_skb 0" > /proc/net/pktgen/veth0
-echo "pkt_size 64" > /proc/net/pktgen/veth0
-echo "dst 224.1.1.10" > /proc/net/pktgen/veth0
+Great news about LLVM support for __builtin_btf_type_id()!
 
-I got forwarding number like:
-Forwarding     159958 pkt/s
-Forwarding     160213 pkt/s
-Forwarding     160448 pkt/s
+Thanks!
 
-But when testing generic mode, I got system crashed directly. The code
-path is:
-do_xdp_generic()
-  - netif_receive_generic_xdp()
-    - pskb_expand_head()    <- skb_is_nonlinear(skb)
-      - BUG_ON(skb_shared(skb))
-
-So I want to ask do you have the same issue with pktgen? Any workaround?
-
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index 2e29a671d67e..1dbe42290223 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> 
-> Updates to tools/include should generally go into a separate patch.
-
-Is this a must to? It looks strange to separate the same implementation
-into two patches.
-
-Thanks
-Hangbin
+Alan
