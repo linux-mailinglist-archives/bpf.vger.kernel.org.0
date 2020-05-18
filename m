@@ -2,127 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6829D1D877F
-	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 20:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8891D8805
+	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 21:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgERSsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 14:48:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25110 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728954AbgERSsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 14:48:09 -0400
-IronPort-SDR: 9w171sGsPnXirNoSx2AUB3WNFcAG++UvT/G8tNU0+0tavcta3Q3Wz1OP5TbCqUCqQHg8PmNM2w
- nGMqcGKqYVNA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:48:09 -0700
-IronPort-SDR: mgWApbAGJRj9w0REMKEw6KCfhSIfuskQOQLzs/P57nbv/sxZwkmU+NY36C2Ft9lPuIDn8zANQd
- 4mihNWmNYG6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="264053954"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga003.jf.intel.com with ESMTP; 18 May 2020 11:48:06 -0700
-Date:   Mon, 18 May 2020 20:44:58 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, lmb@cloudflare.com,
-        john.fastabend@gmail.com
-Subject: Re: getting bpf_tail_call to work with bpf function calls. Was: [RFC
- PATCH bpf-next 0/1] bpf, x64: optimize JIT prologue/epilogue generation
-Message-ID: <20200518184458.GC6472@ranger.igk.intel.com>
-References: <20200511143912.34086-1-maciej.fijalkowski@intel.com>
- <2e3c6be0-e482-d856-7cc1-b1d03a26428e@iogearbox.net>
- <20200512000153.hfdeh653v533qbe6@ast-mbp.dhcp.thefacebook.com>
- <20200513115855.GA3574@ranger.igk.intel.com>
- <20200517043227.2gpq22ifoq37ogst@ast-mbp.dhcp.thefacebook.com>
+        id S1726964AbgERTOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 15:14:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15528 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726640AbgERTOf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 May 2020 15:14:35 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IJ1m61077558;
+        Mon, 18 May 2020 15:13:56 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312cayku13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 15:13:56 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04IJ1u8g078009;
+        Mon, 18 May 2020 15:13:55 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312cayku0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 15:13:55 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04IJ9JjX006711;
+        Mon, 18 May 2020 19:13:54 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma02dal.us.ibm.com with ESMTP id 313wha9uep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 19:13:54 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IJCrYY49676774
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 19:12:53 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A19BC6055;
+        Mon, 18 May 2020 19:12:53 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E92FDC6057;
+        Mon, 18 May 2020 19:12:48 +0000 (GMT)
+Received: from oc3272150783.ibm.com (unknown [9.160.104.35])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Mon, 18 May 2020 19:12:48 +0000 (GMT)
+Date:   Mon, 18 May 2020 14:12:42 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: metric expressions including metrics?
+Message-ID: <20200518191242.GA27634@oc3272150783.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200517043227.2gpq22ifoq37ogst@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
+ priorityscore=1501 cotscore=-2147483648 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005180157
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 16, 2020 at 09:32:27PM -0700, Alexei Starovoitov wrote:
-> On Wed, May 13, 2020 at 01:58:55PM +0200, Maciej Fijalkowski wrote:
-> > 
-> > So to me, if we would like to get rid of maxing out stack space, then we
-> > would have to do some dancing for preserving the tail call counter - keep
-> > it in some unused register? Or epilogue would pop it from stack to some
-> > register and target program's prologue would push it to stack from that
-> > register (I am making this up probably). And rbp/rsp would need to be
-> > created/destroyed during the program-to-program transition that happens
-> > via tailcall. That would mean also more instructions.
-> 
-> How about the following:
-> The prologue will look like:
-> nop5
-> xor eax,eax  // two new bytes if bpf_tail_call() is used in this function
-> push rbp
-> mov rbp, rsp
-> sub rsp, rounded_stack_depth
-> push rax // zero init tail_call counter
-> variable number of push rbx,r13,r14,r15
-> 
-> Then bpf_tail_call will pop variable number rbx,..
-> and final 'pop rax'
-> Then 'add rsp, size_of_current_stack_frame'
-> jmp to next function and skip over 'nop5; xor eax,eax; push rpb; mov rbp, rsp'
-> 
-> This way new function will set its own stack size and will init tail call
-> counter with whatever value the parent had.
-> 
-> If next function doesn't use bpf_tail_call it won't have 'xor eax,eax'.
-> Instead it would need to have 'nop2' in there.
-> That's the only downside I see.
-> Any other ideas?
+I'm curious how hard it would be to define metrics using other metrics,
+in the metrics definition files.
 
-Not really - had a thought with Bjorn about using one callee-saved
-register that is yet unused by x64 JIT (%r12) and i was also thinking
-about some freaky usage of SSE register as a general purpose one. However,
-your idea is pretty neat - I gave it already a shot and with a single
-tweak I managed to got it working, e.g. selftests are fine as well as two
-samples that utilize tail calls. Note also that I got rid of the stack
-clamp being done in fixup_bpf_calls.
+Currently, to my understanding, every metric definition must be an
+expresssion based solely on arithmetic combinations of hardware events.
 
-About a tweak:
-- RETPOLINE_RAX_BPF_JIT used for indirect tail calls needed to become a
-  RETPOLINE_RCX_BPF_JIT, so that we preserve the content of %rax across
-  jumping between programs via tail calls. I looked up GCC commit that
-  Daniel quoted on a patch that implements RETPOLINE_RAX_BPF_JIT and it
-  said that for register that is holding the address of function that we
-  will be jumping onto, we are free to use most of GP registers. I picked
-  %rcx.
+Some metrics are hierarchical in nature such that a higher-level metric
+can be defined as an arithmetic expression of two other metrics, e.g.
 
-I was also thinking about a minor optimization where we would replace the
-add/sub %rsp, $off32 with a nop7 if stack depth is 0.
+cache_miss_cycles_per_instruction =
+  data_cache_miss_cycles_per_instruction +
+  instruction_cache_miss_cycles_per_instruction
 
-About a way forward - I reached out to Bjorn to co-operate on providing
-the benchmark for measuring the impact of new tail call handling as well
-as providing a proof in a form of selftests that bpf2bpf is working
-together with tail calls.
+This would need to be defined something like:
+dcache_miss_cpi = "dcache_miss_cycles / instructions"
+icache_miss_cpi = "icache_miss_cycles / instructions"
+cache_miss_cpi = "(dcache_miss_cycles + icache_miss_cycles) / instructions"
 
-About a benchmark, we think that having tests for best and worst cases
-would tell us what is going on. So:
-- have a main program that is not using any of callee registers that will
-  be tailcalling onto another program that is also not using any of R6-R9.
-- have the same flow but both programs will be using R6, R7, R8, R9; main
-  program needs to use them because we will be popping these registers
-  before the tail call and target program will be doing pushes.
+Could the latter definition be simplified to:
+cache_miss_cpi = "dcache_miss_cpi + icache_miss_cpi"
 
-Daniel, John, is there some Cilium benchmark that we could incorporate? I
-don't think we be able to come up with a program that would mimic what you
-have previously described, e.g. 6 static jumps where every program would
-be utilizing every callee-saved register. Any help/pointers on how should
-we approach it would be very appreciated.
+With multi-level caches and NUMA hierarchies, some of these higher-level
+metrics can involve a lot of hardware events.
 
-Does that sound like a plan, overall?
+Given the recent activity in this area, I'm curious if this has been
+considered and already on a wish/to-do list, or found onerous.
 
-Thank you,
-Maciej
+Regards,
+Paul Clarke
