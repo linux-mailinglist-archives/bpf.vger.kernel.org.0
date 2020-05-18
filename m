@@ -2,471 +2,288 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC371D8B38
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 00:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166FF1D8BBF
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 01:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728281AbgERWqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 18:46:04 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57884 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728377AbgERWqE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 18:46:04 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jaoWF-0000ch-9d; Tue, 19 May 2020 00:45:59 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, rdna@fb.com,
-        sdf@google.com, andrii.nakryiko@gmail.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH bpf-next v2 4/4] bpf, testing: add get{peer,sock}name selftests to test_progs
-Date:   Tue, 19 May 2020 00:45:48 +0200
-Message-Id: <3343da6ad08df81af715a95d61a84fb4a960f2bf.1589841594.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1589841594.git.daniel@iogearbox.net>
-References: <cover.1589841594.git.daniel@iogearbox.net>
+        id S1728003AbgERXp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 19:45:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11478 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726407AbgERXp0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 May 2020 19:45:26 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04INiqSW001716
+        for <bpf@vger.kernel.org>; Mon, 18 May 2020 16:45:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=rxDM1LiWgcvD+qiqMH2cCL9PMAEApjWmsVyyCa2bZKE=;
+ b=kD1dcMsEv6bhtGhtIe1sL03qyfQsvDAyEfSj2q6c2SyljTEm1hmBlZ7GIgm9Zl/E5QjB
+ taMoVhmLNP4lCBvnLpQIdsRDv1BQldLaJrUNkmfNRrul2kr6rBkcJ/U848nFaSVN0HaC
+ yKszmA6En+6t0mYmRkSjAZno5b95GKrHEyY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 312bp18ypr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 18 May 2020 16:45:24 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 18 May 2020 16:45:23 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 576B02EC3778; Mon, 18 May 2020 16:45:19 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Yonghong Song <yhs@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftest/bpf: make bpf_iter selftest compilable against old vmlinux.h
+Date:   Mon, 18 May 2020 16:45:16 -0700
+Message-ID: <20200518234516.3915052-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25816/Mon May 18 14:17:08 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 cotscore=-2147483648
+ malwarescore=0 suspectscore=8 bulkscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 adultscore=0 lowpriorityscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005180202
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the existing connect_force_port test to assert get{peer,sock}name programs
-as well. The workflow for e.g. IPv4 is as follows: i) server binds to concrete
-port, ii) client calls getsockname() on server fd which exposes 1.2.3.4:60000 to
-client, iii) client connects to service address 1.2.3.4:60000 binds to concrete
-local address (127.0.0.1:22222) and remaps service address to a concrete backend
-address (127.0.0.1:60123), iv) client then calls getsockname() on its own fd to
-verify local address (127.0.0.1:22222) and getpeername() on its own fd which then
-publishes service address (1.2.3.4:60000) instead of actual backend. Same workflow
-is done for IPv6 just with different address/port tuples.
+It's good to be able to compile bpf_iter selftest even on systems that do=
+n't
+have the very latest vmlinux.h, e.g., for libbpf tests against older kern=
+els in
+Travis CI. To that extent, re-define bpf_iter_meta and corresponding bpf_=
+iter
+context structs in each selftest. To avoid type clashes with vmlinux.h, r=
+ename
+vmlinux.h's definitions to get them out of the way.
 
-  # ./test_progs -t connect_force_port
-  #14 connect_force_port:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Andrey Ignatov <rdna@fb.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Yonghong Song <yhs@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- tools/testing/selftests/bpf/network_helpers.c |  11 +-
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../bpf/prog_tests/connect_force_port.c       | 107 +++++++++++++-----
- .../selftests/bpf/progs/connect_force_port4.c |  59 +++++++++-
- .../selftests/bpf/progs/connect_force_port6.c |  70 +++++++++++-
- 5 files changed, 215 insertions(+), 33 deletions(-)
+ .../selftests/bpf/progs/bpf_iter_bpf_map.c     | 16 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_ipv6_route.c  | 16 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_netlink.c     | 16 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_task.c        | 16 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_task_file.c   | 18 ++++++++++++++++++
+ .../bpf/progs/bpf_iter_test_kern_common.h      | 16 ++++++++++++++++
+ 6 files changed, 98 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 999a775484c1..e36dd1a1780d 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -5,6 +5,8 @@
- #include <string.h>
- #include <unistd.h>
- 
-+#include <arpa/inet.h>
-+
- #include <sys/epoll.h>
- 
- #include <linux/err.h>
-@@ -35,7 +37,7 @@ struct ipv6_packet pkt_v6 = {
- 	.tcp.doff = 5,
- };
- 
--int start_server(int family, int type)
-+int start_server_with_port(int family, int type, __u16 port)
- {
- 	struct sockaddr_storage addr = {};
- 	socklen_t len;
-@@ -45,11 +47,13 @@ int start_server(int family, int type)
- 		struct sockaddr_in *sin = (void *)&addr;
- 
- 		sin->sin_family = AF_INET;
-+		sin->sin_port = htons(port);
- 		len = sizeof(*sin);
- 	} else {
- 		struct sockaddr_in6 *sin6 = (void *)&addr;
- 
- 		sin6->sin6_family = AF_INET6;
-+		sin6->sin6_port = htons(port);
- 		len = sizeof(*sin6);
- 	}
- 
-@@ -76,6 +80,11 @@ int start_server(int family, int type)
- 	return fd;
- }
- 
-+int start_server(int family, int type)
-+{
-+	return start_server_with_port(family, type, 0);
-+}
-+
- static const struct timeval timeo_sec = { .tv_sec = 3 };
- static const size_t timeo_optlen = sizeof(timeo_sec);
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 86914e6e7b53..6a8009605670 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -34,6 +34,7 @@ struct ipv6_packet {
- extern struct ipv6_packet pkt_v6;
- 
- int start_server(int family, int type);
-+int start_server_with_port(int family, int type, __u16 port);
- int connect_to_fd(int family, int type, int server_fd);
- int connect_fd_to_fd(int client_fd, int server_fd);
- int connect_wait(int client_fd);
-diff --git a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-index 47fbb20cb6a6..17bbf76812ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-+++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-@@ -4,7 +4,8 @@
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- 
--static int verify_port(int family, int fd, int expected)
-+static int verify_ports(int family, int fd,
-+			__u16 expected_local, __u16 expected_peer)
- {
- 	struct sockaddr_storage addr;
- 	socklen_t len = sizeof(addr);
-@@ -20,9 +21,25 @@ static int verify_port(int family, int fd, int expected)
- 	else
- 		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
- 
--	if (ntohs(port) != expected) {
--		log_err("Unexpected port %d, expected %d", ntohs(port),
--			expected);
-+	if (ntohs(port) != expected_local) {
-+		log_err("Unexpected local port %d, expected %d", ntohs(port),
-+			expected_local);
-+		return -1;
-+	}
-+
-+	if (getpeername(fd, (struct sockaddr *)&addr, &len)) {
-+		log_err("Failed to get peer addr");
-+		return -1;
-+	}
-+
-+	if (family == AF_INET)
-+		port = ((struct sockaddr_in *)&addr)->sin_port;
-+	else
-+		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
-+
-+	if (ntohs(port) != expected_peer) {
-+		log_err("Unexpected peer port %d, expected %d", ntohs(port),
-+			expected_peer);
- 		return -1;
- 	}
- 
-@@ -31,33 +48,67 @@ static int verify_port(int family, int fd, int expected)
- 
- static int run_test(int cgroup_fd, int server_fd, int family, int type)
- {
-+	bool v4 = family == AF_INET;
-+	__u16 expected_local_port = v4 ? 22222 : 22223;
-+	__u16 expected_peer_port = 60000;
- 	struct bpf_prog_load_attr attr = {
--		.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+		.file = v4 ? "./connect_force_port4.o" :
-+			     "./connect_force_port6.o",
- 	};
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	int expected_port;
--	int prog_fd;
--	int err;
--	int fd;
--
--	if (family == AF_INET) {
--		attr.file = "./connect_force_port4.o";
--		attr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
--		expected_port = 22222;
--	} else {
--		attr.file = "./connect_force_port6.o";
--		attr.expected_attach_type = BPF_CGROUP_INET6_CONNECT;
--		expected_port = 22223;
--	}
-+	int xlate_fd, fd, err;
-+	__u32 duration = 0;
- 
--	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	err = bpf_prog_load_xattr(&attr, &obj, &xlate_fd);
- 	if (err) {
- 		log_err("Failed to load BPF object");
- 		return -1;
- 	}
- 
--	err = bpf_prog_attach(prog_fd, cgroup_fd, attr.expected_attach_type,
--			      0);
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/connect4" :
-+						 "cgroup/connect6");
-+	if (CHECK(!prog, "find_prog", "connect prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_CONNECT :
-+			      BPF_CGROUP_INET6_CONNECT, 0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/getpeername4" :
-+						 "cgroup/getpeername6");
-+	if (CHECK(!prog, "find_prog", "getpeername prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_GETPEERNAME :
-+			      BPF_CGROUP_INET6_GETPEERNAME, 0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/getsockname4" :
-+						 "cgroup/getsockname6");
-+	if (CHECK(!prog, "find_prog", "getsockname prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_GETSOCKNAME :
-+			      BPF_CGROUP_INET6_GETSOCKNAME, 0);
- 	if (err) {
- 		log_err("Failed to attach BPF program");
- 		goto close_bpf_object;
-@@ -69,8 +120,8 @@ static int run_test(int cgroup_fd, int server_fd, int family, int type)
- 		goto close_bpf_object;
- 	}
- 
--	err = verify_port(family, fd, expected_port);
--
-+	err = verify_ports(family, fd, expected_local_port,
-+			   expected_peer_port);
- 	close(fd);
- 
- close_bpf_object:
-@@ -86,25 +137,25 @@ void test_connect_force_port(void)
- 	if (CHECK_FAIL(cgroup_fd < 0))
- 		return;
- 
--	server_fd = start_server(AF_INET, SOCK_STREAM);
-+	server_fd = start_server_with_port(AF_INET, SOCK_STREAM, 60123);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_STREAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET6, SOCK_STREAM);
-+	server_fd = start_server_with_port(AF_INET6, SOCK_STREAM, 60124);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_STREAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET, SOCK_DGRAM);
-+	server_fd = start_server_with_port(AF_INET, SOCK_DGRAM, 60123);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_DGRAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET6, SOCK_DGRAM);
-+	server_fd = start_server_with_port(AF_INET6, SOCK_DGRAM, 60124);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_DGRAM));
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port4.c b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-index 1b8eb34b2db0..7396308677a3 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port4.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-@@ -1,5 +1,6 @@
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c b/tools=
+/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+index 4867cd3445c8..b57bd6fef208 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+@@ -1,11 +1,27 @@
  // SPDX-License-Identifier: GPL-2.0
- #include <string.h>
-+#include <stdbool.h>
- 
- #include <linux/bpf.h>
- #include <linux/in.h>
-@@ -12,17 +13,71 @@
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-+struct svc_addr {
-+	__be32 addr;
-+	__be16 port;
-+};
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__bpf_map bpf_iter__bpf_map___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__bpf_map
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+=20
+ char _license[] SEC("license") =3D "GPL";
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct svc_addr);
-+} service_mapping SEC(".maps");
++struct bpf_iter__bpf_map {
++	struct bpf_iter_meta *meta;
++	struct bpf_map *map;
++} __attribute__((preserve_access_index));
 +
- SEC("cgroup/connect4")
--int _connect4(struct bpf_sock_addr *ctx)
-+int connect4(struct bpf_sock_addr *ctx)
+ SEC("iter/bpf_map")
+ int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
  {
- 	struct sockaddr_in sa = {};
-+	struct svc_addr *orig;
- 
-+	/* Force local address to 127.0.0.1:22222. */
- 	sa.sin_family = AF_INET;
- 	sa.sin_port = bpf_htons(22222);
--	sa.sin_addr.s_addr = bpf_htonl(0x7f000001); /* 127.0.0.1 */
-+	sa.sin_addr.s_addr = bpf_htonl(0x7f000001);
- 
- 	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
- 		return 0;
- 
-+	/* Rewire service 1.2.3.4:60000 to backend 127.0.0.1:60123. */
-+	if (ctx->user_port == bpf_htons(60000)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0,
-+					  BPF_SK_STORAGE_GET_F_CREATE);
-+		if (!orig)
-+			return 0;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c b/to=
+ols/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+index ab9e2650e021..c8e9ca74c87b 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+@@ -1,9 +1,25 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__ipv6_route bpf_iter__ipv6_route___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__ipv6_route
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+		orig->addr = ctx->user_ip4;
-+		orig->port = ctx->user_port;
++struct bpf_iter__ipv6_route {
++	struct bpf_iter_meta *meta;
++	struct fib6_info *rt;
++} __attribute__((preserve_access_index));
 +
-+		ctx->user_ip4 = bpf_htonl(0x7f000001);
-+		ctx->user_port = bpf_htons(60123);
-+	}
-+	return 1;
-+}
+ char _license[] SEC("license") =3D "GPL";
+=20
+ extern bool CONFIG_IPV6_SUBTREES __kconfig __weak;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c b/tools=
+/testing/selftests/bpf/progs/bpf_iter_netlink.c
+index 6b40a233d4e0..e7b8753eac0b 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+@@ -1,6 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__netlink bpf_iter__netlink___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__netlink
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+=20
+@@ -9,6 +14,17 @@ char _license[] SEC("license") =3D "GPL";
+ #define sk_rmem_alloc	sk_backlog.rmem_alloc
+ #define sk_refcnt	__sk_common.skc_refcnt
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+SEC("cgroup/getsockname4")
-+int getsockname4(struct bpf_sock_addr *ctx)
-+{
-+	/* Expose local server as 1.2.3.4:60000 to client. */
-+	if (ctx->user_port == bpf_htons(60123)) {
-+		ctx->user_ip4 = bpf_htonl(0x01020304);
-+		ctx->user_port = bpf_htons(60000);
-+	}
-+	return 1;
-+}
++struct bpf_iter__netlink {
++	struct bpf_iter_meta *meta;
++	struct netlink_sock *sk;
++} __attribute__((preserve_access_index));
 +
-+SEC("cgroup/getpeername4")
-+int getpeername4(struct bpf_sock_addr *ctx)
-+{
-+	struct svc_addr *orig;
-+
-+	/* Expose service 1.2.3.4:60000 as peer instead of backend. */
-+	if (ctx->user_port == bpf_htons(60123)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
-+		if (orig) {
-+			ctx->user_ip4 = orig->addr;
-+			ctx->user_port = orig->port;
-+		}
-+	}
- 	return 1;
- }
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port6.c b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-index ae6f7d750b4c..c1a2b555e9ad 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port6.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-@@ -12,17 +12,83 @@
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-+struct svc_addr {
-+	__be32 addr[4];
-+	__be16 port;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct svc_addr);
-+} service_mapping SEC(".maps");
-+
- SEC("cgroup/connect6")
--int _connect6(struct bpf_sock_addr *ctx)
-+int connect6(struct bpf_sock_addr *ctx)
+ static inline struct inode *SOCK_INODE(struct socket *socket)
  {
- 	struct sockaddr_in6 sa = {};
-+	struct svc_addr *orig;
- 
-+	/* Force local address to [::1]:22223. */
- 	sa.sin6_family = AF_INET6;
- 	sa.sin6_port = bpf_htons(22223);
--	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1); /* ::1 */
-+	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1);
- 
- 	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
- 		return 0;
- 
-+	/* Rewire service [fc00::1]:60000 to backend [::1]:60124. */
-+	if (ctx->user_port == bpf_htons(60000)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0,
-+					  BPF_SK_STORAGE_GET_F_CREATE);
-+		if (!orig)
-+			return 0;
+ 	return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
+sting/selftests/bpf/progs/bpf_iter_task.c
+index 90f9011c57ca..ee754021f98e 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
+@@ -1,11 +1,27 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__task bpf_iter__task___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__task
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+=20
+ char _license[] SEC("license") =3D "GPL";
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+		orig->addr[0] = ctx->user_ip6[0];
-+		orig->addr[1] = ctx->user_ip6[1];
-+		orig->addr[2] = ctx->user_ip6[2];
-+		orig->addr[3] = ctx->user_ip6[3];
-+		orig->port = ctx->user_port;
++struct bpf_iter__task {
++	struct bpf_iter_meta *meta;
++	struct task_struct *task;
++} __attribute__((preserve_access_index));
 +
-+		ctx->user_ip6[0] = 0;
-+		ctx->user_ip6[1] = 0;
-+		ctx->user_ip6[2] = 0;
-+		ctx->user_ip6[3] = bpf_htonl(1);
-+		ctx->user_port = bpf_htons(60124);
-+	}
-+	return 1;
-+}
+ SEC("iter/task")
+ int dump_task(struct bpf_iter__task *ctx)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/too=
+ls/testing/selftests/bpf/progs/bpf_iter_task_file.c
+index c6ced38f0880..0f0ec3db20ba 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
+@@ -1,11 +1,29 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__task_file bpf_iter__task_file___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__task_file
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+=20
+ char _license[] SEC("license") =3D "GPL";
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+SEC("cgroup/getsockname6")
-+int getsockname6(struct bpf_sock_addr *ctx)
-+{
-+	/* Expose local server as [fc00::1]:60000 to client. */
-+	if (ctx->user_port == bpf_htons(60124)) {
-+		ctx->user_ip6[0] = bpf_htonl(0xfc000000);
-+		ctx->user_ip6[1] = 0;
-+		ctx->user_ip6[2] = 0;
-+		ctx->user_ip6[3] = bpf_htonl(1);
-+		ctx->user_port = bpf_htons(60000);
-+	}
-+	return 1;
-+}
++struct bpf_iter__task_file {
++	struct bpf_iter_meta *meta;
++	struct task_struct *task;
++	__u32 fd;
++	struct file *file;
++} __attribute__((preserve_access_index));
 +
-+SEC("cgroup/getpeername6")
-+int getpeername6(struct bpf_sock_addr *ctx)
-+{
-+	struct svc_addr *orig;
+ SEC("iter/task_file")
+ int dump_task_file(struct bpf_iter__task_file *ctx)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.=
+h b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.h
+index bdd51cf14b54..dee1339e6905 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.h
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.h
+@@ -1,11 +1,27 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__task bpf_iter__task___not_used
+ #include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__task
+ #include <bpf/bpf_helpers.h>
+=20
+ char _license[] SEC("license") =3D "GPL";
+ int count =3D 0;
+=20
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
 +
-+	/* Expose service [fc00::1]:60000 as peer instead of backend. */
-+	if (ctx->user_port == bpf_htons(60124)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
-+		if (orig) {
-+			ctx->user_ip6[0] = orig->addr[0];
-+			ctx->user_ip6[1] = orig->addr[1];
-+			ctx->user_ip6[2] = orig->addr[2];
-+			ctx->user_ip6[3] = orig->addr[3];
-+			ctx->user_port = orig->port;
-+		}
-+	}
- 	return 1;
- }
--- 
-2.21.0
++struct bpf_iter__task {
++	struct bpf_iter_meta *meta;
++	struct task_struct *task;
++} __attribute__((preserve_access_index));
++
+ SEC("iter/task")
+ int dump_task(struct bpf_iter__task *ctx)
+ {
+--=20
+2.24.1
 
