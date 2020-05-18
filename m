@@ -2,87 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4A51D8BD3
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 01:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7B71D8BE8
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 01:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgERXtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 19:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
+        id S1726713AbgERXzd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 19:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgERXtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 19:49:07 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E1BC061A0C;
-        Mon, 18 May 2020 16:49:07 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id n22so7255175qtv.12;
-        Mon, 18 May 2020 16:49:07 -0700 (PDT)
+        with ESMTP id S1726053AbgERXzd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 19:55:33 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26071C061A0C;
+        Mon, 18 May 2020 16:55:33 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f189so12534425qkd.5;
+        Mon, 18 May 2020 16:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f+AY3FRaJmalcu4pX+pebzZ1sSzojNFexqC9nPXOHDA=;
-        b=PPiv03doHBPiQaLfhP0vGLpZ+cWsqtMDcGZtDkNmGF0XAS+AvQB8+H9xAs0NPWafJz
-         mChlxx3CoLR6BMF2WVFelYzEr2bYS0m3D/xBhzSaseTIfpyjVIPICw2Ag4EVa2l6EbPe
-         37io0Efzx8HFNsk0iWDPKMY9fbWspXZdp3AfCZRYgLt0d4pNiyN0lu9Erx8qvkk/pKGq
-         mSqaPLWbIkGY4mThBk9Y0VS3d4oSadGu4BDWPE6EdGWKpeTiCPLNb+8Z+X93KaCBcxGV
-         0kirSpcxIcaCAOJVlT180srxVEwxNPANope2yFdD7iBNuZP+1V5L14Nyl0VPIBB3nKs1
-         CVOA==
+        bh=qAA3OKl6AVtvhmTV5S8FL74OsHN/DYWammXE/OmRhwk=;
+        b=of7AbYv0K2/b2seTUWM/TCubCj3XxMuDVafKnxmHkJ5qKedufmFbUg/4MMwe4PweiG
+         6QojRewkL4NlTCXCkYG8wpCvaCiYXBYocBMwbJb/zweokGRWLpmqLgvQ4sJ2XcgmoECt
+         ebW/k42dOPj0mVvwtLOxBNanjNzbqVAkow7SHuOVXBHJJbt5V+DwOJfw3BPGvEnify2Q
+         KY060T/ZVjDBthFiAldmSGjvzLI0GaVkLRfU17VG1d3doEHlcYIg/gzgpBdoQSsP05YV
+         jZ33AnHXQwB94XLYtyohTkCRzAQck5ygfcQT7BAtC3zKIJlS6vuvJoCCfqKxEp0HTb8+
+         K8kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f+AY3FRaJmalcu4pX+pebzZ1sSzojNFexqC9nPXOHDA=;
-        b=IySDpNlmewnToHLhAB6VfguE4/XKpAy/qG9uTzNh1595oI5VtrjLCnEB+CIRRj/xKh
-         IqAkR0mDv7QJFzUL8fJ/EGVHtyqvnZOvYihH1oCjrY0VFm2h0sKKtjkuw+1A17EbLV5i
-         W0cwWjLzOtao3EsseNV6S5X3HChUOgBLRQvUpOSyn0DgTpgH/mJb9lpfisATBHETik4W
-         aGtBZ/7vUD4UXVabox+YHH8UpfiGojAh1AsSuRCOiYrMCfuxUnfqsrlnlx+YZOV8RyT6
-         cYIr3qa2qiFe2qRPkxMJVr+0Xg8Ap2smMalmHRo7BT+ag1S7EvOMT56J/i184lvpwxoS
-         US2w==
-X-Gm-Message-State: AOAM531M1RPriNaqOJPk/nmCBnWo5HGtoxeh78OEecxNR2jFpm0SWeRl
-        241O1qSm4x6qVkxVTmcseRWIWHBs8IUYou3aXTM=
-X-Google-Smtp-Source: ABdhPJyvDOL7ag5J1IVA9/sORGWCwqv4imVl7lZONC8RM8xWipV5wfm6Q9qoFuNT4F4B4e1kwDO8Zu2xw0JLZtpCKLw=
-X-Received: by 2002:ac8:1ae7:: with SMTP id h36mr18950456qtk.59.1589845747017;
- Mon, 18 May 2020 16:49:07 -0700 (PDT)
+        bh=qAA3OKl6AVtvhmTV5S8FL74OsHN/DYWammXE/OmRhwk=;
+        b=Qg9tkg7uIsMaNWF6+r+nz9SSM0wn11mpXeK5lA8z3Rdi7zY1HBcqMIH6PTbIKt1tst
+         qbqSbWTgevPX17m8inUodj1rhyi5CEUNJFhVCT2pMBlH5c1WFPS7GtflPRmvp2nBLef+
+         HIcXSQ11WH5BZY3In+XM6ofkdYRX3rIJCrUSLIGwzCeX/E+siSeRq0wh80eLpN3N+wjT
+         VDC9smpry1gAn+Prcdpy1tfRD3wMuSH37qiaA1x/XVjsdkfuREBuZyxNAk2JMom8Yuew
+         G+3yTPHp3gIrTSD9BjMboV+XVhPVV4SsocBWXk4SGXqMSZezQ/LUwhg3a5pMFZS2vv+h
+         Dzsw==
+X-Gm-Message-State: AOAM530A2ze2t8OlB9cKsa33dnLJifuW2bkxLSTqQpKJ996FoEkLfiBs
+        A6HvRvxCta0lD+ZnK9O6ozdQc5+8Q/CwMEaUS64=
+X-Google-Smtp-Source: ABdhPJzh9Kj+2AxdNEAYc+rIsDyGhowO1iK33avGNCWJvAzzh177gX8yg+klZsBJ+v4xBnbvsP59bmeclxmn9uEq/9s=
+X-Received: by 2002:ae9:efc1:: with SMTP id d184mr19648194qkg.437.1589846132391;
+ Mon, 18 May 2020 16:55:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com>
+References: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
+In-Reply-To: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 18 May 2020 16:48:55 -0700
-Message-ID: <CAEf4BzZZxXhO4QZ4XVYjd3SS2z9NHY6c-_ivvvE2nkCcA1iQPw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add general instructions for test execution
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 18 May 2020 16:55:21 -0700
+Message-ID: <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
+To:     Qian Cai <cai@lca.pw>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+        Linux Netdev List <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 18, 2020 at 4:24 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Sun, May 17, 2020 at 7:45 PM Qian Cai <cai@lca.pw> wrote:
 >
-> Getting a clean BPF selftests run involves ensuring latest trunk LLVM/clang
-> are used, pahole is recent (>=1.16) and config matches the specified
-> config file as closely as possible.  Document all of this in the general
-> README.rst file.  Also note how to work around timeout failures.
+> With Clang 9.0.1,
 >
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
-
-Awesome, thanks.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/testing/selftests/bpf/README.rst | 46 ++++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
+> return array->value + array->elem_size * (index & array->index_mask);
 >
+> but array->value is,
+>
+> char value[0] __aligned(8);
 
-[...]
+This, and ptrs and pptrs, should be flexible arrays. But they are in a
+union, and unions don't support flexible arrays. Putting each of them
+into anonymous struct field also doesn't work:
+
+/data/users/andriin/linux/include/linux/bpf.h:820:18: error: flexible
+array member in a struct with no named members
+   struct { void *ptrs[] __aligned(8); };
+
+So it probably has to stay this way. Is there a way to silence UBSAN
+for this particular case?
