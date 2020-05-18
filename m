@@ -2,527 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F641D7E63
-	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 18:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5B41D7E77
+	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 18:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgERQ0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 12:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S1728079AbgERQ3U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 12:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728043AbgERQ0c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 12:26:32 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A77C061A0C
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 09:26:29 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 69so3988524otv.2
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 09:26:29 -0700 (PDT)
+        with ESMTP id S1728045AbgERQ3T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 12:29:19 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3C4C05BD09
+        for <bpf@vger.kernel.org>; Mon, 18 May 2020 09:29:19 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id j8so11195779iog.13
+        for <bpf@vger.kernel.org>; Mon, 18 May 2020 09:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=MYD88ZOp5yuS8ykGn4mDUccZ1GFuDpHoOpb0ThXwQ8I=;
-        b=i4XLW+tideJrIioEM9DTZPWuFG/m2wPkixdoxQZtlNUXJbxKPvzUFlB2IKp6naHM33
-         i+igikj8AycUICVjiElx0s178Y/D1Oj48kDpA5eiTtZfwAO7B2mcnQG+F6Gnza7Crv6n
-         4PMljiVyC4sQKwbPdCqF+GQCmhEgMU6Fn4T5dNGYvPL2ISAGRrwNNHV1wvoYn0Jy8taz
-         cFAr7ZQAezQr8wcpBtUua4wdbR9A7FVXuDj1S8dy9VHXY/DOQnMt+zQeBSFc3WoT3aoE
-         4sNIoCmzyiS2Fgi0+GmeHfccyHBrkr1elnTDp3MKBTZ9y2rvl3XFocOCWzlm8ZRNL5Aq
-         ifEQ==
+         :cc;
+        bh=TmNo324ewiqBrOzyFgGIajOz2Fxu5S4md+RR2eoMBH0=;
+        b=cR6cpj4L3VfEX9LUwmpRrf5NaiDdEHQkdowyBqBDeP9M+RN+2PDUK9GqoycTwAHDkz
+         v1kLKq+JDAbgGiNdDihildBwccSJeTyzjQl9UKfkXpQ9vNqRRkcWCErz0HmKI4hifSBY
+         d+uumoTs1E8WCj8oA4lOOmAv+ZnAizTpJiETY5X+seRwXvJZ00cQWJXbrBIJFcVP7yCj
+         gxEc9sgee310IqVllejFcBrMITelb35V5SI6azfkxzd2lv3TBqfKwDRq9Q8XFAJD41bg
+         yO3/yfvFY1kq5xP74oW7hSdtWwD1jEBZqJm/mFWU9DOy0ggV+8k8/IdM9hN5lcU7qonu
+         v0Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=MYD88ZOp5yuS8ykGn4mDUccZ1GFuDpHoOpb0ThXwQ8I=;
-        b=gRJi+e9PbZp3x6xXYfCxz2jZDyoB7BBLP9LyW/HEcrG/yzqAexY1X9qj07ZHuLI6wt
-         NSHwUAOPKz5vv9DRISiNMJRBZAGlcCJPtiGtp5K6w7JDeBXd2BGxJFjwvydTID5Prm4q
-         lHpCzCcVDCKVkNiTXJcTQlXOkz02vnNsmKVeRM0mqYnd8W1vok4uKqy2dGBrTbEhFi5r
-         KmSO7seP//p1ia/PgOpeI8KGwsIefea5cuMt9ONbNJzuVM0JbuGh/C0LFCSqB9MnlOHo
-         ngXyJrPT0G8KVyOMEUZ2cV8N8SvTQZP+Hk8niMXG9CRUXO9Pfo46+SVm+SL6eNRIsBL6
-         EDLA==
-X-Gm-Message-State: AOAM530X/4MJSZh3HLYOZD1bzGbr8FkDk5R5y4NebyJLa6XA7tfwei/u
-        kO7JEjhjg92Wzu159h12ObselNel26p909R593ZqEA==
-X-Google-Smtp-Source: ABdhPJxky5JHjImbwqS0kRQGV2yPfcq6D1YEhDcn8GeC/rw0Hzi10J//UghDg3BmuaRyVHs6paN0nf2fAQqjM2bXN68=
-X-Received: by 2002:a9d:7348:: with SMTP id l8mr6412796otk.44.1589819188482;
- Mon, 18 May 2020 09:26:28 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=TmNo324ewiqBrOzyFgGIajOz2Fxu5S4md+RR2eoMBH0=;
+        b=ZzZO7wkJQIoAvyQkkx7uZhNrPrJJcaLr7k1Vtm0Tv8Wtm8bs9QeVRYuW5kxS9zWoEZ
+         0fGEvMrcwZZHx+a/0hvWEyCCRJbmEDg8/QMwRVWUaHSLp4Xl3IX72r0M4PAU2TyqX/he
+         O1fPcI/vm2wwKO2IaaYc/UPbGzHKcWUGoo0bYrWnXLpzc4NM7GiLoICHLIdvDcCKlBnI
+         tYLb5PMmhUe45lZq45zzUk0ra2VuVIyV5Qb1jNzNG9GxqJ+0pxSS+cIGJgFW3MAd9EoL
+         fTa9dT1R82ciVQwjRUJE6dXs5jZcVm8zbV1ByIAr/P6/vRATuzUHReT2DqvsaUz4yq3w
+         aOPg==
+X-Gm-Message-State: AOAM532Ea0ZAxx0rHe4thgNxP111du+rXvuZoFJqfomn6sTOoGowJlbc
+        92wM87LrFh+zDDNxtAIm5zbQyQWeHLmw7vC/qzUVFg==
+X-Google-Smtp-Source: ABdhPJwfkal/ogCvbE1YiVUSr2oHNZPX1BV5tAJ5ccooYPRJnI4ec3PTfIwWNWbZ0WgPcK7m/mubWCdkilY0URhDGgE=
+X-Received: by 2002:a02:cf17:: with SMTP id q23mr16428337jar.39.1589819358215;
+ Mon, 18 May 2020 09:29:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <uoP8.1589216772739724336.Sdgx@lists.iovisor.org>
- <CAEf4Bzb8uc_L5MRgeNf=6p3TNdPWNnmLV0CYtYx=mXnaZYXR6Q@mail.gmail.com> <CAGgYrAjstp+=eJAwpA4jVQY-9Z-SmySUpim08gEqOv94cfhoUQ@mail.gmail.com>
-In-Reply-To: <CAGgYrAjstp+=eJAwpA4jVQY-9Z-SmySUpim08gEqOv94cfhoUQ@mail.gmail.com>
-From:   Tristan Mayfield <mayfieldtristan@gmail.com>
-Date:   Mon, 18 May 2020 12:26:17 -0400
-Message-ID: <CAGgYrAhqXP31DcGLJn+Y_78uq8yv7JL9LdkwQ066QvK5i_iqUQ@mail.gmail.com>
-Subject: Fwd: [iovisor-dev] Building BPF programs and kernel persistence
-To:     bpf@vger.kernel.org
+References: <20200515221732.44078-1-irogers@google.com> <20200515221732.44078-8-irogers@google.com>
+ <20200518154505.GE24211@kernel.org> <CAP-5=fWZwuSLaFX+-pgeE_H92Mtp7+_NrwBeRFTqyfPjVRkbWg@mail.gmail.com>
+ <20200518160648.GI24211@kernel.org> <20200518161137.GK24211@kernel.org>
+In-Reply-To: <20200518161137.GK24211@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 18 May 2020 09:29:06 -0700
+Message-ID: <CAP-5=fWzb5XxcFishFErRtdc-Gvv-7DkVpd6HSiy2_RswfjeDg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] perf expr: Migrate expr ids table to a hashmap
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
----------- Forwarded message ---------
-From: Tristan Mayfield <mayfieldtristan@gmail.com>
-Date: Mon, May 18, 2020 at 12:23 PM
-Subject: Re: [iovisor-dev] Building BPF programs and kernel persistence
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: <iovisor-dev@lists.iovisor.org>, <bpf@vger.kernel.org>
-
-
-Thanks for the reply Andrii.
-
-Managed to get a build working outside of the kernel tree for BPF programs.
-The two major things that I learned were that first, the order in
-which files are
-included in the build command is more important than I previously thought.
-The second thing was learning how clang deals with asm differently than gcc=
-.
-I had to use samples/bpf/asm_goto_workaround.h to fix those errors.
-The meat of the makefile is as follows:
-
-CLANGINC :=3D /usr/lib/llvm-10/lib/clang/10.0.0/include
-INC_FLAGS :=3D -nostdinc -isystem $(CLANGINC)
-EXTRA_FLAGS :=3D -O3 -emit-llvm
-
-linuxhdrs :=3D /usr/src/linux-headers-$(shell uname -r)
-LINUXINCLUDE :=3D -include $(linuxhdrs)/include/linux/kconfig.h \
-                                -include asm_workaround.h \
-                                -I$(linuxhdrs)/arch/x86/include/ \
-                                -I$(linuxhdrs)/arch/x86/include/uapi \
-                                -I$(linuxhdrs)/arch/x86/include/generated \
-                                -I$(linuxhdrs)/arch/x86/include/generated/u=
-api \
-                                -I$(linuxhdrs)/include \
-                                -I$(linuxhdrs)/include/uapi \
-                                -I$(linuxhdrs)/include/generated/uapi \
-
-COMPILERFLAGS :=3D -D__KERNEL__ -D__ASM_SYSREG_H \
-                                -D__BPF_TRACING__ -D__TARGET_ARCH_$(ARCH) \
-
-# Builds all the targets from corresponding .c files
-$(BPFOBJDIR)/%.o:$(BPFSRCDIR)/%.c
-        $(CC) $(INC_FLAGS) $(COMPILERFLAGS) \
-                $(LINUXINCLUDE) $(LIBBPF_HDRS) \
-                $(EXTRA_FLAGS) -c $< -o - | $(LLC) -march=3Dbpf
--filetype obj -o $@
-
-I wanted to include that sample for whatever soul in the future wants
-to tread the
-same path with similar systems experience levels.
-I still get about 100+ warnings when building that are the same as or
-similar to:
-
-/usr/src/linux-headers-5.4.0-26-generic/arch/x86/include/asm/atomic.h:194:9=
-:
-warning: unused variable '__ptr' [-Wunused-variable]
-        return arch_cmpxchg(&v->counter, old, new);
-                  ^
-
-/usr/src/linux-headers-5.4.0-26-generic/arch/x86/include/asm/msr.h:100:26:
-warning: variable 'low' is uninitialized when used here
-[-Wuninitialized]
-        return EAX_EDX_VAL(val, low, high);
-                                                    ^~~
-
-I suspect that these warnings come from my aggressive warning flags during
-compilation rather than from actual issues in the kernel.
-
-> Right, pinning map or program doesn't ensure that program is still
-> attached to whatever BPF hook you attached to it. As you mentioned,
-> XDP, tc, cgroup-bpf programs are persistent. We are actually moving
-> towards the model of auto-detachment for those as well. See recent
-> activity around bpf_link. The solution with bpf_link to make such
-> attachments persistent is through pinning **link** itself, not program
-> or map. bpf_link is relatively recent addition, so on older kernels
-> you'd have to make sure you still have some process around that would
-> keep BPF attachment FD around.
-
-
-I have been looking at the commits surrounding the pinning of
-bpf_link. It looks like it's only
-working in kernel 5.7? I did actually go through and attempt to attach
-links for kprobes,
-tracepoints, and raw_tracepoints in kernel 5.4 but, as you suggested,
-it seems unsupported.
-I have yet to try on kernel 5.5-5.7 so I'll take a look this week or next.
-
-As I mentioned before, with basic functionality in place here, I'm
-interested in working on
-some sort of BPF tutorial similar to the XDP tutorial
-(https://github.com/xdp-project/xdp-tutorial)
-with perhaps a more in-depth look at the technology included as well.
-
-I'm still fuzzy on the relationship between bpf(2) and perf(1). Would
-it be correct to say that for
-tracepoints, kprobes, and uprobes BPF leverages perf "under the hood"
-while for XDP and tc,
-this is more like classic BPF in that it's implementation doesn't involve p=
-erf?
-If that's the case then is the bpf_link object the tool to bridge BPF
-and perf? I noticed that when
-checking for pinned BPF programs with bpftool in kernel 5.4 that
-unless a kprobe, tracepoint,
-or uprobe is listed in "bpftool perf list", the program doesn't seem
-to be running. Is the use of
-perf to load BPF programs potentially a way to make them "headless"
-instead of pinning the bpf_link objects?
-
-Regardless, I'm excited to have a more reliable build system than I
-have in the past. I think I'll start looking more into CO-RE and
-libbpf on kernels 5.5-5.7.
-
-Hope everyone is staying healthy out there,
-Tristan
-
-On Thu, May 14, 2020 at 5:51 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, May 18, 2020 at 9:11 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> On Mon, May 11, 2020 at 10:06 AM <mayfieldtristan@gmail.com> wrote:
+> Em Mon, May 18, 2020 at 01:06:48PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Mon, May 18, 2020 at 09:03:45AM -0700, Ian Rogers escreveu:
+> > > On Mon, May 18, 2020 at 8:45 AM Arnaldo Carvalho de Melo wrote:
+> > > this build issue sounds like this patch is missing:
+> > > https://lore.kernel.org/lkml/20200515221732.44078-3-irogers@google.com/
+> > > The commit message there could have explicitly said having this
+> > > #include causes the conflicting definitions between perf's debug.h and
+> > > libbpf_internal.h's definitions of pr_info, etc.
 > >
-> >
-> > Hi all, hope everyone is staying healthy out there.
+> > yeah, understood, but I'm not processing patches for tools/lib/bpf/,
+> > Daniel is, I'll only get that one later, then we can go back to the way
+> > you structured it. Just an extra bit of confusion in this process ;-)
 >
-> Hi! For the future, I think cc'ing bpf@vger.kernel.org would be a good
-> idea, there are a lot of folks who are probably not watching iovisor
-> mailing list, but could help with issues like this.
+> So, thiis is failing on all alpine Linux containers:
 >
-> >
-> > I've been working on building BPF programs, and have run into a few iss=
-ues that I think might be clang (vs gcc) based.
-> > It seems that either clang isn't the most friendly of compilers when it=
- comes to building Linux-native programs, or my lack of experience makes it=
- seem so.
-> > I've been trying to build the simple BPF program below:
-> >
-> >
-> > #include "bpf_helpers.h"
-> > #include <linux/bpf.h>
-> > #include <linux/version.h>
-> > #include <linux/types.h>
-> > #include <linux/tcp.h>
-> > #include <net/sock.h>
-> >
-> > struct inet_sock_set_state_args {
-> >         long long pad;
-> > const void * skaddr;
-> > int oldstate;
-> > int newstate;
-> > u16 sport;
-> >   u16 dport;
-> > u16 family;
-> > u8 protocol;
-> > u8 saddr[4];
-> > u8 daddr[4];
-> > u8 saddr_v6[16];
-> > u8 daddr_v6[16];
-> > };
-> >
-> >
-> > SEC("tracepoint/sock/inet_sock_set_state")
-> > int bpf_prog(struct inet_sock_set_state_args *args) {
-> >
-> >   struct sock *sk =3D (struct sock *)args->skaddr;
-> >   short lport =3D args->sport;
-> >
-> >   char msg[] =3D "lport: %d\n";
-> >   bpf_trace_printk(msg, sizeof(msg), lport);
-> >
-> >   return 0;
-> > }
-> >
-> > char _license[] SEC("license") =3D "GPL";
-> >
-> >
-> >
-> > I've been looking through selftests/bpf/, samples/bpf/, and examples on=
- various blogs and articles.
-> > From this, I've come up with the following makefile:
-> >
-> >
-> > ## Build tools
-> > LLC :=3D llc
-> > CC :=3D clang
-> > HOSTCC :=3D clang
-> > CLANGINC :=3D /usr/lib/llvm-10/lib/clang/10.0.0/include
-> >
-> > ## Some useful flags
-> > INC_FLAGS :=3D -nostdinc -isystem $(CLANGINC)
-> > EXTRA_FLAGS :=3D -O3 -emit-llvm
-> >
-> > ## Includes
-> > linuxhdrs :=3D /usr/src/linux-headers-$(shell uname -r)
-> > LINUXINCLUDE :=3D -include $(linuxhdrs)/include/linux/kconfig.h \
-> > -include /usr/include/linux/bpf.h \
-> > -I$(linuxhdrs)/arch/x86/include/ \
-> > -I$(linuxhdrs)/arch/x86/include/uapi \
-> > -I$(linuxhdrs)/arch/x86/include/generated \
-> > -I$(linuxhdrs)/arch/x86/include/generated/uapi \
-> > -I$(linuxhdrs)/include \
-> > -I$(linuxhdrs)/include/uapi \
-> > -I$(linuxhdrs)/include/generated/uapi \
-> > LIBBPF :=3D  -I/home/vagrant/libbpf/src/
-> > OBJS :=3D tcptest.bpf.o
-> >
-> > $(OBJS): %.o:%.c
-> > $(CC) $(INC_FLAGS) \
-> > -target bpf -D__KERNEL__ -D __ASM_SYSREG_H \
-> > -D__BPF_TRACING__ -D__TARGET_ARCH_$(ARCH) \
-> > -Wno-unused-value -Wno-pointer-sign \
-> > -Wno-compare-distinct-pointer-types \
-> > -Wno-gnu-variable-sized-type-not-at-end \
-> > -Wno-address-of-packed-member \
-> > -Wno-tautological-compare \
-> > -Wno-unknown-warning-option \
-> > -Wall -v \
-> > $(LINUXINCLUDE) $(LIBBPF) \
-> > $(EXTRA_FLAGS) -c $< -o - | $(LLC) -march=3Dbpf -filetype obj -o $
-> >
-> >
-> > Unfortunately, I keep running into what seems to be asm errors. I've tr=
-ied reorganizing the list of include statements, taking out "-target bpf", =
-not including some files, including other files, etc etc.
-> > This stackoverflow post suggests that it's a kconfig.h error, but I see=
-m to be including the file just fine (https://stackoverflow.com/questions/5=
-6975861/error-compiling-ebpf-c-code-out-of-kernel-tree/56990939#56990939).
-> > I'm not really sure where to go from here with building BPF programs an=
-d including files that have the kernel datatypes. Maybe I'm missing somethi=
-ng that's obvious that I'm just ignorant of?
->
-> I'd start with actually specifying what compilation errors you run
-> into. Also check out
-> https://github.com/iovisor/bcc/blob/master/libbpf-tools/Makefile to
-> see how BPF programs can be compiled properly outside of kernel tree.
-> Though that one pretty much assumes vmlinux.h, which simplifies a
-> bunch of compilation issues, probably.
->
-> >
-> >
-> >
-> > As additional information, and regarding kernel persistence, I am worki=
-ng on a monitoring project that uses BPF programs to continuously monitor t=
-he system without the bulky dependencies that BCC includes. I'm concurrentl=
-y working on a BTF/CO-RE solution but I'm emphasizing a non-CO-RE approach =
-at the moment. I can load and run BPF programs but upon termination of my u=
-serspace loader the BPF programs themselves also terminate.
-> >
-> >
-> >
-> > I would like to have the BPF program persist in the kernel even after t=
-he user space loader has completed its execution. I read in various documen=
-tation and in a 2015 LWN article that persistent BPF programs can be create=
-d by pinning programs and maps to the BPF vfs so as to keep the fds open. I=
- have attempted pinning the entire BPF object, various programs and various=
- maps, and no matter what I've tried the kernel BPF program terminates when=
- the userspace process terminates. Using bpftool I have verified that the B=
-PF files are pinned to the location and that BPF programs themselves all wo=
-rk. I know that persistent BPF programs are a part of projects like XDP and=
- tc. Is there a way to do this for a generic BPF loader without having to i=
-mplement customized kernel functions?  Below I have included a simplified v=
-ersion of my code. In which I outline the basic steps I take to load the co=
-mpiled bpf programs and attempt to make persistent instances of them.
->
-> Right, pinning map or program doesn't ensure that program is still
-> attached to whatever BPF hook you attached to it. As you mentioned,
-> XDP, tc, cgroup-bpf programs are persistent. We are actually moving
-> towards the model of auto-detachment for those as well. See recent
-> activity around bpf_link. The solution with bpf_link to make such
-> attachments persistent is through pinning **link** itself, not program
-> or map. bpf_link is relatively recent addition, so on older kernels
-> you'd have to make sure you still have some process around that would
-> keep BPF attachment FD around.
+>   CC       /tmp/build/perf/util/metricgroup.o
+>   CC       /tmp/build/perf/util/header.o
+> In file included from util/metricgroup.c:25:0:
+> /git/linux/tools/lib/api/fs/fs.h:16:0: error: "FS" redefined [-Werror]
+>  #define FS(name)    \
+>  ^
+> In file included from /git/linux/tools/perf/util/hashmap.h:16:0,
+>                  from util/expr.h:11,
+>                  from util/metricgroup.c:14:
+> /usr/include/bits/reg.h:28:0: note: this is the location of the previous definition
+>  #define FS     25
+>  ^
+>   CC       /tmp/build/perf/util/callchain.o
+>   CC       /tmp/build/perf/util/values.o
+>   CC       /tmp/build/perf/util/debug.o
+>   CC       /tmp/build/perf/util/fncache.o
+> cc1: all warnings being treated as errors
+> mv: can't rename '/tmp/build/perf/util/.metricgroup.o.tmp': No such file or directory
+> /git/linux/tools/build/Makefile.build:96: recipe for target '/tmp/build/perf/util/metricgroup.o' failed
 >
 >
-> >
-> >
-> >
-> > #include <stdio.h>
-> >
-> > #include <stdlib.h>
-> >
-> > #include <string.h>
-> >
-> > #include <errno.h>
-> >
-> > #include <getopt.h>
-> >
-> > #include <dirent.h>
-> >
-> > #include <sys/stat.h>
-> >
-> > #include <unistd.h>
-> >
-> > #include <assert.h>
-> >
-> > #include <linux/version.h>
-> >
-> >
-> >
-> > #include "libbpf.h"
-> >
-> > #include "bpf.h"
-> >
-> > #include "loader_helpers.h"
-> >
-> >
-> >
-> > #include <stdbool.h>
-> >
-> > #include <fcntl.h>
-> >
-> > #include <poll.h>
-> >
-> > #include <linux/perf_event.h>
-> >
-> > #include <assert.h>
-> >
-> > #include <sys/syscall.h>
-> >
-> > #include <sys/ioctl.h>
-> >
-> > #include <sys/mman.h>
-> >
-> > #include <time.h>
-> >
-> > #include <signal.h>
-> >
-> > #include <linux/ptrace.h>
-> >
-> >
-> >
-> > int main(int argc, char **argv) {
-> >
-> >
-> >
-> >     struct bpf_object *bpf_obj;
-> >
-> >     struct bpf_program *bpf_prog;
-> >
-> >     struct bpf_map *map;
-> >
-> >     char * license =3D "GPL";
-> >
-> >     __u32 kernelvers =3D LINUX_VERSION_CODE;
-> >
-> >     struct bpf_link * link;
-> >
-> >     int err;
-> >
-> >     int prog_fd;
-> >
-> >
-> >
-> >     bpf_obj =3D bpf_object__open("test_file.bpf.o");
-> >
-> >
-> >
-> >     bpf_prog =3D bpf_program__next(NULL, bpf_obj);
-> >
-> >
-> >
-> >     err =3D bpf_program__set_tracepoint(bpf_prog);
-> >
-> >     if(err) {
-> >
-> >         fprintf(stderr, "ERR couldn't setup program type\n");
-> >
-> >         return -1;
-> >
-> >     }
-> >
-> >     err =3D bpf_program__load(bpf_prog, license, kernelvers);
-> >
-> >     if(err) {
-> >
-> >         fprintf(stderr, "ERR couldn't setup program phase\n");
-> >
-> >         return -1;
-> >
-> >     }
-> >
-> >     prog_fd =3D bpf_program__fd(bpf_prog);
-> >
-> >
-> >
-> >     link =3D bpf_program__attach_tracepoint(bpf_prog, "syscalls", "sys_=
-enter_openat");
-> >
-> >     if(!link) {
-> >
-> >         fprintf(stderr, "ERROR ATTACHING TRACEPOINT\n");
-> >
-> >         return -1;
-> >
-> >     }
-> >
-> >
-> >
-> >     assert(bpf_program__is_tracepoint(bpf_prog));
-> >
-> >
-> >
-> > pin:
-> >
-> >     err =3D bpf_program__pin(bpf_prog, "/sys/fs/bpf/tpprogram");
-> >
-> >     if(err) {
-> >
-> >         if(err =3D=3D -17) {
-> >
-> >             printf("Program exists...trying to unpin and retry!\n");
-> >
-> >             err =3D bpf_program__unpin(bpf_prog, "/sys/fs/bpf/tpprogram=
-");
-> >
-> >             if(!err) {
-> >
-> >                 goto pin;
-> >
-> >            }
-> >
-> >             printf("The pining already exists but it couldn't be remove=
-d...\n");
-> >
-> >             return -1;
-> >
-> >         }
-> >
-> >         printf("We couldn't pin...%d\n", err);
-> >
-> >         return -1;
-> >
-> >     }
-> >
-> >
-> >
-> >     printf("Program pinned and working...\n");
-> >
-> >
-> >
-> >     return 0;
-> >
-> > }
-> >
-> >
-> >
-> >
-> > Thanks for having a look and I hope these issues can be cleared up. See=
-ms like building is the last major hurdle I have to get rolling with better=
- engineering solutions than manually including structs in my files.
-> > Hope everyone stays well!
+> I'll check that soon,
 >
->
-> Hope above helped. Please cc bpf@vger.kernel.org (and ideally send
-> plain-text emails, kernel mailing lists don't accept HTML emails).
->
-> >
-> > _._,_._,_
-> > ________________________________
-> > Links:
-> >
-> > You receive all messages sent to this group.
-> >
-> > View/Reply Online (#1847) | Reply To Sender | Reply To Group | Mute Thi=
-s Topic | New Topic
-> >
-> > Your Subscription | Contact Group Owner | Unsubscribe [andrii.nakryiko@=
-gmail.com]
-> >
-> > _._,_._,_
+> - Arnaldo
+
+I had some issues here too:
+https://lore.kernel.org/lkml/CAEf4BzYxTTND7T7X0dLr2CbkEvUuKtarOeoJYYROefij+qds0w@mail.gmail.com/
+The only reason for the bits/reg.h inclusion is for __WORDSIZE for the
+hash_bits operation. As shown below:
+
+#ifdef __GLIBC__
+#include <bits/wordsize.h>
+#else
+#include <bits/reg.h>
+#endif
+static inline size_t hash_bits(size_t h, int bits)
+{
+/* shuffle bits and return requested number of upper bits */
+return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
+}
+
+It'd be possible to change the definition of hash_bits and remove the
+#includes by:
+
+static inline size_t hash_bits(size_t h, int bits)
+{
+/* shuffle bits and return requested number of upper bits */
+#ifdef __LP64__
+  int shift = 64 - bits;
+#else
+  int shift = 32 - bits;
+#endif
+return (h * 11400714819323198485llu) >> shift;
+}
+
+Others may have a prefered more portable solution. A separate issue
+with this same function is undefined behavior getting flagged
+(unnecessarily) by sanitizers:
+https://lore.kernel.org/lkml/20200508063954.256593-1-irogers@google.com/
+
+I was planning to come back to that once we got these changes landed.
+
+Thanks!
+Ian
