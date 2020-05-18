@@ -2,124 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8891D8805
-	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 21:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4081D8816
+	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 21:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgERTOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 15:14:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15528 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726640AbgERTOf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 May 2020 15:14:35 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IJ1m61077558;
-        Mon, 18 May 2020 15:13:56 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 312cayku13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 15:13:56 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04IJ1u8g078009;
-        Mon, 18 May 2020 15:13:55 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 312cayku0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 15:13:55 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04IJ9JjX006711;
-        Mon, 18 May 2020 19:13:54 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 313wha9uep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 19:13:54 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IJCrYY49676774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 May 2020 19:12:53 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0A19BC6055;
-        Mon, 18 May 2020 19:12:53 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E92FDC6057;
-        Mon, 18 May 2020 19:12:48 +0000 (GMT)
-Received: from oc3272150783.ibm.com (unknown [9.160.104.35])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Mon, 18 May 2020 19:12:48 +0000 (GMT)
-Date:   Mon, 18 May 2020 14:12:42 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: metric expressions including metrics?
-Message-ID: <20200518191242.GA27634@oc3272150783.ibm.com>
+        id S1727847AbgERTT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 15:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727844AbgERTT1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 15:19:27 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE62CC061A0C;
+        Mon, 18 May 2020 12:19:27 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id c24so9097019qtw.7;
+        Mon, 18 May 2020 12:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s95MZNZk4da7VuxgfefKMgjRh1rPyTCBhD+EEEwkR/8=;
+        b=SA4Oot4F2DqYFReKGdvYgKe/+AZrlkMOvo0WJDGw4yNkCYITIod2V2gndgjcW6qLna
+         orp3MKF6MPTn9fa/3ZndIj/opCsBdk9mLp/o/hwWlXmYBDo7Y4z+h1GCpTq55ow+TjBB
+         xgKB/9gC+4gOmmgoVBCa4eLMrEiwz2L4zqYRKuPIcbzW7XMQ2iqQ520++NgD+mCTdCBi
+         JT6cxBfk5hryMmYEAu6PM4QskeiAl7SJhQuzMF5GcqqQ5KP9kEKK++4duOTDy8N3A64R
+         /UWcHAPfqHm19JkP9WpSYmPqTuoU3MRKDYUc8siQY/xSJTKX9reS5TgyWch2C/SeIB2k
+         PoTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s95MZNZk4da7VuxgfefKMgjRh1rPyTCBhD+EEEwkR/8=;
+        b=TGqNKVZ1aqJTtqmgUDo5s2CbbPvqf21QOZKqokO70zv9CujYCvxeeoVtDRgOXpRIRm
+         TbAdmO34wScgqPY3mU6hJaVnYlVq2PPjVIjqr2KFf3alNqFANrRkXty/SbmX7WwcgHmF
+         VVZqNaZZS5bElaHBDzwivHzDCbgT7LRtOgmaTVPv8tTHY4pnICEO0XzJROayVPCtZJTY
+         HVQqylUF1IlgHngFutwLYMeDqK5dPtbiU5bKSU6mDxWDtyLllzBoc/fgr+XAYRs/1Kem
+         oqfQ45Z0kWgLzJOhEgQ/I5R2ZQUoFvC2geg+gbAUZf6xXYpzk6+NIRVSx+qtUXMSct+/
+         2Yvg==
+X-Gm-Message-State: AOAM5323Pbj3B3mFi0z7ekmEn2267L759jK6JW17ggiHhTz1YJFN40NC
+        VdIRs6+hc76a28lWPd/NjNZWQYrxs3213YHfdvRDew==
+X-Google-Smtp-Source: ABdhPJz6w+itEf9XZE0mkutOkz7F9VZOhAdEtBxR+q7dCVFEDD8HWvwOmZpCqGX0iWGVTgTA1K+5UuDwesXIOJfwomw=
+X-Received: by 2002:ac8:6d0a:: with SMTP id o10mr17504736qtt.141.1589829566900;
+ Mon, 18 May 2020 12:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 impostorscore=0
- malwarescore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
- priorityscore=1501 cotscore=-2147483648 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005180157
+References: <158945314698.97035.5286827951225578467.stgit@firesoul>
+ <158945349549.97035.15316291762482444006.stgit@firesoul> <CAADnVQLtJotzY==OfOHmA-KdTb6bF7uqKVYGhnPj-oyzSZ8C_g@mail.gmail.com>
+ <20200518115234.3b6925de@carbon> <20200518123030.5f316e23@carbon>
+In-Reply-To: <20200518123030.5f316e23@carbon>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 May 2020 12:19:15 -0700
+Message-ID: <CAEf4BzYgjR6BWG6RY1NFsVMp97RKsEG39cQy_USxkK95HRQFkA@mail.gmail.com>
+Subject: Re: unstable xdp tests. Was: [PATCH net-next v4 31/33] bpf: add
+ xdp.frame_sz in bpf_prog_test_run_xdp().
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@fb.com>, sameehj@amazon.com,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm curious how hard it would be to define metrics using other metrics,
-in the metrics definition files.
+On Mon, May 18, 2020 at 3:33 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> On Mon, 18 May 2020 11:52:34 +0200
+> Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+> > ... I'm getting unrelated compile errors for selftests/bpf in
+> > bpf-next tree (HEAD 96586dd9268d2).
+> >
+> > The compile error, see below signature, happens in ./progs/bpf_iter_ipv6_route.c
+> > (tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c).
+> >
+> > Related to commit:
+> >  7c128a6bbd4f ("tools/bpf: selftests: Add iterator programs for ipv6_route and netlink") (Author: Yonghong Song)
+>
+> After re-compiling the kernel in the same tree, this issue goes away.
+>
+> I guess this is related to:
+>   #include "vmlinux.h"
+>
 
-Currently, to my understanding, every metric definition must be an
-expresssion based solely on arithmetic combinations of hardware events.
+Yes, I ran into the same issue with libbpf CI tests for older kernel.
+vmlinux.h for it simply doesn't contain definitions of bpf_iter__xxx
+types. I think for selftests, it's better to have local copies of
+those struct definitions, to make it compilable against older
+vmlinux.h.
 
-Some metrics are hierarchical in nature such that a higher-level metric
-can be defined as an arithmetic expression of two other metrics, e.g.
 
-cache_miss_cycles_per_instruction =
-  data_cache_miss_cycles_per_instruction +
-  instruction_cache_miss_cycles_per_instruction
-
-This would need to be defined something like:
-dcache_miss_cpi = "dcache_miss_cycles / instructions"
-icache_miss_cpi = "icache_miss_cycles / instructions"
-cache_miss_cpi = "(dcache_miss_cycles + icache_miss_cycles) / instructions"
-
-Could the latter definition be simplified to:
-cache_miss_cpi = "dcache_miss_cpi + icache_miss_cpi"
-
-With multi-level caches and NUMA hierarchies, some of these higher-level
-metrics can involve a lot of hardware events.
-
-Given the recent activity in this area, I'm curious if this has been
-considered and already on a wish/to-do list, or found onerous.
-
-Regards,
-Paul Clarke
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
