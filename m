@@ -2,468 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BABA1D7CF7
-	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 17:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249561D7D2C
+	for <lists+bpf@lfdr.de>; Mon, 18 May 2020 17:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgERPfk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 11:35:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34772 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728055AbgERPfj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 11:35:39 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jahnj-00029t-Ix; Mon, 18 May 2020 17:35:35 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, rdna@fb.com,
-        sdf@google.com, Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next 4/4] bpf, testing: add get{peer,sock}name selftests to test_progs
-Date:   Mon, 18 May 2020 17:35:15 +0200
-Message-Id: <1b9869b34027bc0722f4217a0b04f1cccccc5c33.1589813738.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1589813738.git.daniel@iogearbox.net>
-References: <cover.1589813738.git.daniel@iogearbox.net>
+        id S1727782AbgERPpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 11:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727040AbgERPpK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 11:45:10 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E2DC061A0C;
+        Mon, 18 May 2020 08:45:09 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id r187so7633363qkf.6;
+        Mon, 18 May 2020 08:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rzkj0apKg+9dAE9ITAc0kw21NDc3bzZzChV1Zzph3jM=;
+        b=eoYQijA0kQhBgOKv9S9xmjIl7acasA3cMRgnCt4EU7hUq7O3p3Izo7a9m3A4DynEEj
+         kBFB7KLU/aVKPhrVcP59kJt/F+MLM9eu+w51RNa2tahs1XTJZyTfQY4uB79PxBLWROWs
+         Xj6Es1MpLFAQWbn01mVGBjwP76xOFknhDjrOeWtGh9cweLHhdSbDpmSrU/VIJRM8jim6
+         wJR3Gl95smJeRNGDAK+nnA5Rl3oLmU5/NhTkiDQTGD6uxACK2NMYFWU66CiDQy12zEqY
+         5kUjal89YOm6/ZYzveiF2TsnfIIrD3QHxurA+Qy/5Vt5Lg0TUlHfGA9uEl2mIVASSTYs
+         0K+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rzkj0apKg+9dAE9ITAc0kw21NDc3bzZzChV1Zzph3jM=;
+        b=j1L7ys1IUy1dH8+p6K/eXLPi7iEZE3URE7ZHpyqjIQjeqrWhKwVQeN0rX6cQp0XhHK
+         empEbsXCoBdz5N7s25ChckhE9PixkwZu4huKpkR8S08xglQhUCcNWwM0jltju+6NbYDo
+         28mCClGJTGhz1zL+pL0LVpWm4hfyPo498qMFawnbSiIrc60BsXwpuOkferkFo0OflKoO
+         ED+YzeqmbLZyKxVwDSmteb/jHSYVxgGj+ty9K57ZKviiPflsXjrMDuoERT00b302QtUs
+         HbDiKALrZT//0DGttkOXekCc1jZmU21kzVy70VC9KxzbT1n3XfipB8LmrQnAKxkni9nX
+         t0iQ==
+X-Gm-Message-State: AOAM5336lkVQzocWVLRbHFth/1RxjIrkFfU/LPhx5Ax0aZC0dAP7hjBI
+        8rArW/puLgqqAVbVA+5ZI4C+Em7bBP7dSQ==
+X-Google-Smtp-Source: ABdhPJxfI+1IUAtHN7pYsLjRTqhDQqKeGbS4oBXnUG5jDKgJ4GMTuEP/ADEccrcG7Bh9LNtQfO2q2A==
+X-Received: by 2002:a37:8287:: with SMTP id e129mr12328386qkd.204.1589816708983;
+        Mon, 18 May 2020 08:45:08 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id d196sm8538583qkg.16.2020.05.18.08.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 08:45:08 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4860040AFD; Mon, 18 May 2020 12:45:05 -0300 (-03)
+Date:   Mon, 18 May 2020 12:45:05 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 7/7] perf expr: Migrate expr ids table to a hashmap
+Message-ID: <20200518154505.GE24211@kernel.org>
+References: <20200515221732.44078-1-irogers@google.com>
+ <20200515221732.44078-8-irogers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25816/Mon May 18 14:17:08 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515221732.44078-8-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the existing connect_force_port test to assert get{peer,sock}name programs
-as well. The workflow for e.g. IPv4 is as follows: i) server binds to concrete
-port, ii) client calls getsockname() on server fd which exposes 1.2.3.4:60000 to
-client, iii) client connects to service address 1.2.3.4:60000 binds to concrete
-local address (127.0.0.1:22222) and remaps service address to a concrete backend
-address (127.0.0.1:60123), iv) client then calls getsockname() on its own fd to
-verify local address (127.0.0.1:22222) and getpeername() on its own fd which then
-publishes service address (1.2.3.4:60000) instead of actual backend. Same workflow
-is done for IPv6 just with different address/port tuples.
+Em Fri, May 15, 2020 at 03:17:32PM -0700, Ian Rogers escreveu:
+> Use a hashmap between a char* string and a double* value. While bpf's
+> hashmap entries are size_t in size, we can't guarantee sizeof(size_t) >=
+> sizeof(double). Avoid a memory allocation when gathering ids by making 0.0
+> a special value encoded as NULL.
+> 
+> Original map suggestion by Andi Kleen:
+> https://lore.kernel.org/lkml/20200224210308.GQ160988@tassilo.jf.intel.com/
+> and seconded by Jiri Olsa:
+> https://lore.kernel.org/lkml/20200423112915.GH1136647@krava/
 
-  # ./test_progs -t connect_force_port
-  #14 connect_force_port:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+I'm having trouble here when building it with:
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrey Ignatov <rdna@fb.com>
----
- tools/testing/selftests/bpf/network_helpers.c |  11 +-
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../bpf/prog_tests/connect_force_port.c       | 107 +++++++++++++-----
- .../selftests/bpf/progs/connect_force_port4.c |  59 +++++++++-
- .../selftests/bpf/progs/connect_force_port6.c |  70 +++++++++++-
- 5 files changed, 215 insertions(+), 33 deletions(-)
+make -C tools/perf O=/tmp/build/perf
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 999a775484c1..5caaa59a549f 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -5,6 +5,8 @@
- #include <string.h>
- #include <unistd.h>
+    CC       /tmp/build/perf/tests/expr.o
+    INSTALL  trace_plugins
+    CC       /tmp/build/perf/util/metricgroup.o
+  In file included from /home/acme/git/perf/tools/lib/bpf/hashmap.h:18,
+                   from /home/acme/git/perf/tools/perf/util/expr.h:6,
+                   from tests/expr.c:3:
+  /home/acme/git/perf/tools/lib/bpf/libbpf_internal.h:63: error: "pr_info" redefined [-Werror]
+     63 | #define pr_info(fmt, ...) __pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
+        |
+  In file included from tests/expr.c:2:
+  /home/acme/git/perf/tools/perf/util/debug.h:24: note: this is the location of the previous definition
  
-+#include <arpa/inet.h>
-+
- #include <sys/epoll.h>
- 
- #include <linux/err.h>
-@@ -35,7 +37,7 @@ struct ipv6_packet pkt_v6 = {
- 	.tcp.doff = 5,
- };
- 
--int start_server(int family, int type)
-+int start_server_with_port(int family, int type, int port)
- {
- 	struct sockaddr_storage addr = {};
- 	socklen_t len;
-@@ -45,11 +47,13 @@ int start_server(int family, int type)
- 		struct sockaddr_in *sin = (void *)&addr;
- 
- 		sin->sin_family = AF_INET;
-+		sin->sin_port = htons(port);
- 		len = sizeof(*sin);
- 	} else {
- 		struct sockaddr_in6 *sin6 = (void *)&addr;
- 
- 		sin6->sin6_family = AF_INET6;
-+		sin6->sin6_port = htons(port);
- 		len = sizeof(*sin6);
- 	}
- 
-@@ -76,6 +80,11 @@ int start_server(int family, int type)
- 	return fd;
- }
- 
-+int start_server(int family, int type)
-+{
-+	return start_server_with_port(family, type, 0);
-+}
-+
- static const struct timeval timeo_sec = { .tv_sec = 3 };
- static const size_t timeo_optlen = sizeof(timeo_sec);
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 86914e6e7b53..186fec1cfec0 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -34,6 +34,7 @@ struct ipv6_packet {
- extern struct ipv6_packet pkt_v6;
- 
- int start_server(int family, int type);
-+int start_server_with_port(int family, int type, int port);
- int connect_to_fd(int family, int type, int server_fd);
- int connect_fd_to_fd(int client_fd, int server_fd);
- int connect_wait(int client_fd);
-diff --git a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-index 47fbb20cb6a6..7a0479255db4 100644
---- a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-+++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-@@ -4,7 +4,8 @@
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- 
--static int verify_port(int family, int fd, int expected)
-+static int verify_ports(int family, int fd,
-+			int expected_local, int expected_peer)
- {
- 	struct sockaddr_storage addr;
- 	socklen_t len = sizeof(addr);
-@@ -20,9 +21,25 @@ static int verify_port(int family, int fd, int expected)
- 	else
- 		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
- 
--	if (ntohs(port) != expected) {
--		log_err("Unexpected port %d, expected %d", ntohs(port),
--			expected);
-+	if (ntohs(port) != expected_local) {
-+		log_err("Unexpected local port %d, expected %d", ntohs(port),
-+			expected_local);
-+		return -1;
-+	}
-+
-+	if (getpeername(fd, (struct sockaddr *)&addr, &len)) {
-+		log_err("Failed to get peer addr");
-+		return -1;
-+	}
-+
-+	if (family == AF_INET)
-+		port = ((struct sockaddr_in *)&addr)->sin_port;
-+	else
-+		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
-+
-+	if (ntohs(port) != expected_peer) {
-+		log_err("Unexpected peer port %d, expected %d", ntohs(port),
-+			expected_peer);
- 		return -1;
- 	}
- 
-@@ -31,33 +48,67 @@ static int verify_port(int family, int fd, int expected)
- 
- static int run_test(int cgroup_fd, int server_fd, int family, int type)
- {
-+	bool v4 = family == AF_INET;
-+	int expected_local_port = v4 ? 22222 : 22223;
-+	int expected_peer_port = 60000;
- 	struct bpf_prog_load_attr attr = {
--		.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+		.file = v4 ? "./connect_force_port4.o" :
-+			     "./connect_force_port6.o",
- 	};
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	int expected_port;
--	int prog_fd;
--	int err;
--	int fd;
--
--	if (family == AF_INET) {
--		attr.file = "./connect_force_port4.o";
--		attr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
--		expected_port = 22222;
--	} else {
--		attr.file = "./connect_force_port6.o";
--		attr.expected_attach_type = BPF_CGROUP_INET6_CONNECT;
--		expected_port = 22223;
--	}
-+	int xlate_fd, fd, err;
-+	__u32 duration = 0;
- 
--	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	err = bpf_prog_load_xattr(&attr, &obj, &xlate_fd);
- 	if (err) {
- 		log_err("Failed to load BPF object");
- 		return -1;
- 	}
- 
--	err = bpf_prog_attach(prog_fd, cgroup_fd, attr.expected_attach_type,
--			      0);
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/connect4" :
-+						 "cgroup/connect6");
-+	if (CHECK(!prog, "find_prog", "connect prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_CONNECT :
-+			      BPF_CGROUP_INET6_CONNECT, 0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/getpeername4" :
-+						 "cgroup/getpeername6");
-+	if (CHECK(!prog, "find_prog", "getpeername prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_GETPEERNAME :
-+			      BPF_CGROUP_INET6_GETPEERNAME, 0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	prog = bpf_object__find_program_by_title(obj, v4 ?
-+						 "cgroup/getsockname4" :
-+						 "cgroup/getsockname6");
-+	if (CHECK(!prog, "find_prog", "getsockname prog not found\n")) {
-+		err = -EIO;
-+		goto close_bpf_object;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd, v4 ?
-+			      BPF_CGROUP_INET4_GETSOCKNAME :
-+			      BPF_CGROUP_INET6_GETSOCKNAME, 0);
- 	if (err) {
- 		log_err("Failed to attach BPF program");
- 		goto close_bpf_object;
-@@ -69,8 +120,8 @@ static int run_test(int cgroup_fd, int server_fd, int family, int type)
- 		goto close_bpf_object;
- 	}
- 
--	err = verify_port(family, fd, expected_port);
--
-+	err = verify_ports(family, fd, expected_local_port,
-+			   expected_peer_port);
- 	close(fd);
- 
- close_bpf_object:
-@@ -86,25 +137,25 @@ void test_connect_force_port(void)
- 	if (CHECK_FAIL(cgroup_fd < 0))
- 		return;
- 
--	server_fd = start_server(AF_INET, SOCK_STREAM);
-+	server_fd = start_server_with_port(AF_INET, SOCK_STREAM, 60123);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_STREAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET6, SOCK_STREAM);
-+	server_fd = start_server_with_port(AF_INET6, SOCK_STREAM, 60124);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_STREAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET, SOCK_DGRAM);
-+	server_fd = start_server_with_port(AF_INET, SOCK_DGRAM, 60123);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_DGRAM));
- 	close(server_fd);
- 
--	server_fd = start_server(AF_INET6, SOCK_DGRAM);
-+	server_fd = start_server_with_port(AF_INET6, SOCK_DGRAM, 60124);
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_DGRAM));
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port4.c b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-index 1b8eb34b2db0..7396308677a3 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port4.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <string.h>
-+#include <stdbool.h>
- 
- #include <linux/bpf.h>
- #include <linux/in.h>
-@@ -12,17 +13,71 @@
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-+struct svc_addr {
-+	__be32 addr;
-+	__be16 port;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct svc_addr);
-+} service_mapping SEC(".maps");
-+
- SEC("cgroup/connect4")
--int _connect4(struct bpf_sock_addr *ctx)
-+int connect4(struct bpf_sock_addr *ctx)
- {
- 	struct sockaddr_in sa = {};
-+	struct svc_addr *orig;
- 
-+	/* Force local address to 127.0.0.1:22222. */
- 	sa.sin_family = AF_INET;
- 	sa.sin_port = bpf_htons(22222);
--	sa.sin_addr.s_addr = bpf_htonl(0x7f000001); /* 127.0.0.1 */
-+	sa.sin_addr.s_addr = bpf_htonl(0x7f000001);
- 
- 	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
- 		return 0;
- 
-+	/* Rewire service 1.2.3.4:60000 to backend 127.0.0.1:60123. */
-+	if (ctx->user_port == bpf_htons(60000)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0,
-+					  BPF_SK_STORAGE_GET_F_CREATE);
-+		if (!orig)
-+			return 0;
-+
-+		orig->addr = ctx->user_ip4;
-+		orig->port = ctx->user_port;
-+
-+		ctx->user_ip4 = bpf_htonl(0x7f000001);
-+		ctx->user_port = bpf_htons(60123);
-+	}
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockname4")
-+int getsockname4(struct bpf_sock_addr *ctx)
-+{
-+	/* Expose local server as 1.2.3.4:60000 to client. */
-+	if (ctx->user_port == bpf_htons(60123)) {
-+		ctx->user_ip4 = bpf_htonl(0x01020304);
-+		ctx->user_port = bpf_htons(60000);
-+	}
-+	return 1;
-+}
-+
-+SEC("cgroup/getpeername4")
-+int getpeername4(struct bpf_sock_addr *ctx)
-+{
-+	struct svc_addr *orig;
-+
-+	/* Expose service 1.2.3.4:60000 as peer instead of backend. */
-+	if (ctx->user_port == bpf_htons(60123)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
-+		if (orig) {
-+			ctx->user_ip4 = orig->addr;
-+			ctx->user_port = orig->port;
-+		}
-+	}
- 	return 1;
- }
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port6.c b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-index ae6f7d750b4c..c1a2b555e9ad 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port6.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-@@ -12,17 +12,83 @@
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-+struct svc_addr {
-+	__be32 addr[4];
-+	__be16 port;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct svc_addr);
-+} service_mapping SEC(".maps");
-+
- SEC("cgroup/connect6")
--int _connect6(struct bpf_sock_addr *ctx)
-+int connect6(struct bpf_sock_addr *ctx)
- {
- 	struct sockaddr_in6 sa = {};
-+	struct svc_addr *orig;
- 
-+	/* Force local address to [::1]:22223. */
- 	sa.sin6_family = AF_INET6;
- 	sa.sin6_port = bpf_htons(22223);
--	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1); /* ::1 */
-+	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1);
- 
- 	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
- 		return 0;
- 
-+	/* Rewire service [fc00::1]:60000 to backend [::1]:60124. */
-+	if (ctx->user_port == bpf_htons(60000)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0,
-+					  BPF_SK_STORAGE_GET_F_CREATE);
-+		if (!orig)
-+			return 0;
-+
-+		orig->addr[0] = ctx->user_ip6[0];
-+		orig->addr[1] = ctx->user_ip6[1];
-+		orig->addr[2] = ctx->user_ip6[2];
-+		orig->addr[3] = ctx->user_ip6[3];
-+		orig->port = ctx->user_port;
-+
-+		ctx->user_ip6[0] = 0;
-+		ctx->user_ip6[1] = 0;
-+		ctx->user_ip6[2] = 0;
-+		ctx->user_ip6[3] = bpf_htonl(1);
-+		ctx->user_port = bpf_htons(60124);
-+	}
-+	return 1;
-+}
-+
-+SEC("cgroup/getsockname6")
-+int getsockname6(struct bpf_sock_addr *ctx)
-+{
-+	/* Expose local server as [fc00::1]:60000 to client. */
-+	if (ctx->user_port == bpf_htons(60124)) {
-+		ctx->user_ip6[0] = bpf_htonl(0xfc000000);
-+		ctx->user_ip6[1] = 0;
-+		ctx->user_ip6[2] = 0;
-+		ctx->user_ip6[3] = bpf_htonl(1);
-+		ctx->user_port = bpf_htons(60000);
-+	}
-+	return 1;
-+}
-+
-+SEC("cgroup/getpeername6")
-+int getpeername6(struct bpf_sock_addr *ctx)
-+{
-+	struct svc_addr *orig;
-+
-+	/* Expose service [fc00::1]:60000 as peer instead of backend. */
-+	if (ctx->user_port == bpf_htons(60124)) {
-+		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
-+		if (orig) {
-+			ctx->user_ip6[0] = orig->addr[0];
-+			ctx->user_ip6[1] = orig->addr[1];
-+			ctx->user_ip6[2] = orig->addr[2];
-+			ctx->user_ip6[3] = orig->addr[3];
-+			ctx->user_port = orig->port;
-+		}
-+	}
- 	return 1;
- }
--- 
-2.21.0
+It looks like libbpf's hashmap.h is being used instead of the one in
+tools/perf/util/, yeah, as intended, but then since I don't have the
+fixes you added to the BPF tree, the build fails, if I instead
+unconditionally use
 
+#include "util/hashmap.h"
+
+It works. Please ack.
+
+I.e. with the patch below, further tests:
+
+[acme@five perf]$ perf -vv | grep -i bpf
+                   bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+[acme@five perf]$ nm ~/bin/perf | grep -i libbpf_ | wc -l
+39
+[acme@five perf]$ nm ~/bin/perf | grep -i hashmap_ | wc -l
+17
+[acme@five perf]$
+
+Explicitely building without LIBBPF:
+
+[acme@five perf]$ perf -vv | grep -i bpf
+                   bpf: [ OFF ]  # HAVE_LIBBPF_SUPPORT
+[acme@five perf]$
+[acme@five perf]$ nm ~/bin/perf | grep -i libbpf_ | wc -l
+0
+[acme@five perf]$ nm ~/bin/perf | grep -i hashmap_ | wc -l
+9
+[acme@five perf]$
+
+Works,
+
+- Arnaldo
+
+diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+index d60a8feaf50b..8a2c1074f90f 100644
+--- a/tools/perf/util/expr.h
++++ b/tools/perf/util/expr.h
+@@ -2,11 +2,14 @@
+ #ifndef PARSE_CTX_H
+ #define PARSE_CTX_H 1
+ 
+-#ifdef HAVE_LIBBPF_SUPPORT
+-#include <bpf/hashmap.h>
+-#else
+-#include "hashmap.h"
+-#endif
++// There are fixes that need to land upstream before we can use libbpf's headers,
++// for now use our copy unconditionally, since the data structures at this point
++// are exactly the same, no problem.
++//#ifdef HAVE_LIBBPF_SUPPORT
++//#include <bpf/hashmap.h>
++//#else
++#include "util/hashmap.h"
++//#endif
+ 
+ struct expr_parse_ctx {
+ 	struct hashmap ids;
