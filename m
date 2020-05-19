@@ -2,122 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514441DA33A
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 23:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F251DA3AF
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 23:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgESVLQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 17:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgESVLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 17:11:16 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE8DC08C5C0;
-        Tue, 19 May 2020 14:11:16 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id c24so868370qtw.7;
-        Tue, 19 May 2020 14:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xaAAfS8WetBzRX6cXWvro6Ajf4D7TYt0S5EIonSLEGI=;
-        b=p3GX0U+N3P8qKyoWEPRQuF40BELYdCnJEQtocpAxK3mlfXB/1r8Tzf7VcYKi36R5KB
-         tRyZb6F8nG63dJ7jE9D2YoIZKrwO0gZh39LHuBWddfM4Ce71URo3ryJlYLiV6bgTyi8Y
-         ix6ne/bLenLBtPsJIEnFu7h0rSE3ZqK3OvBAx96MeZiEVG7qghuzZ5Leb2hFxRcyQGZZ
-         DLr9h8Nfy/8uhn9o+8YyKpdIU3pulpzNgIGbZEOp4ZUgxtdmmwG+1desTKUiLmDGX6eT
-         oKRiYfc0gb5s+/EQ2lTpFFq812mPeia+V9HGxcNw6tZk94p4lGXGQSE1RcEJG1pI47+e
-         Wa1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xaAAfS8WetBzRX6cXWvro6Ajf4D7TYt0S5EIonSLEGI=;
-        b=CIsh/nNViJcLmE+bDYswP6NTPLTA5V0pgBMsDIf11nEcwZiD0HbHp3OeY/6tka8nSm
-         sxwPy6OaEzY46ri/ydKFA5hBJSEzGbfPq1VzpunZ5rQMltduKbH3wUuxWME+IHnhhH64
-         aNgCxl12ZRimy6V/lQT4jkfGwFuCTR3Nzm4I/vBVlO2WMSXm88HCnbPm5XdFUHxHxjnq
-         YVvzkbq00brBlVPNGQ6UqCIAx2V35eG58OhttNIG4PePQZDuMgVavjbAgMAjkuBzlxNe
-         UELr98953f+1lxPBJ0iFPDJLS/pjW9VCX/8a6VwQjgPHqJjP/9ISUwDaFbbwmvVmembL
-         fcfA==
-X-Gm-Message-State: AOAM533+fRJLzkOei13ubS6uZreDmbshSaITZ+uyS9d982PeI1bzTi3I
-        ghUiFKVdgcj0Qsmgwms6GEjBHZSkh6N3qlUrips=
-X-Google-Smtp-Source: ABdhPJz8NLEByo39Z68gr64KvvND2hdFNS7bgZ70wbn0gGOvJAXNf4vyzRJnW+b3W+YTYISJGzA+i2RHSrSJyPnc3qI=
-X-Received: by 2002:ac8:424b:: with SMTP id r11mr1958366qtm.171.1589922674983;
- Tue, 19 May 2020 14:11:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519192341.134360-1-andriin@fb.com> <20200519210834.qwfrhq2ixgy6l3oy@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200519210834.qwfrhq2ixgy6l3oy@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 May 2020 14:11:04 -0700
-Message-ID: <CAEf4Bzb2kLKHAVSO10yo1JO-Ye89XEz64eJh7cBkd3utXC3bkw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: convert bpf_iter_test_kern{3,4}.c
- to define own bpf_iter_meta
+        id S1726194AbgESVe5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 17:34:57 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53882 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgESVe5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 17:34:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JLXDpC064727;
+        Tue, 19 May 2020 21:34:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=XvX+z7KKVGBzMZiI3Qgk3gyGUPZ961yy2VHT9Alm848=;
+ b=rDoNTc1KHr5fv+G158PN8ibredYUabaKl2NUJ0vZJ/Yu2UE3oZwKq8IC4NZF5W3xuiPr
+ 4Wq6RcP+3Oy7k3cBGOqI9GF4mLuFfsNWOg5IM+euRgVOHdOpQDjlr+Iy+Pfc9qOyXVWQ
+ uUCdtqV8UUR83d7S9rGVQn9XhM7rbpx8PiVzmlSFljrS0iViRQE1FxsXH82VucFYVuME
+ 52K8Z7vst+rDuf2FujaMTrE7N5dyIwnckHAJFw/VcMgdC1O4Gu7yFLR1Hi3Ug1ORzkCZ
+ z47x36FZLDUTXhQdZnbXzrm4GzYhERlM0Qd2AwQf0lQQKlNJBGHdcWXy5uEFDj3gZ/qd 8Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3127kr7y9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 May 2020 21:34:38 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JLX1Kj046925;
+        Tue, 19 May 2020 21:34:37 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 312t35fd4x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 May 2020 21:34:37 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JLYZcU025379;
+        Tue, 19 May 2020 21:34:35 GMT
+Received: from dhcp-10-175-213-8.vpn.oracle.com (/10.175.213.8)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 May 2020 14:34:35 -0700
+Date:   Tue, 19 May 2020 22:34:25 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+cc:     Alan Maguire <alan.maguire@oracle.com>, shuah@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: add general instructions for
+ test execution
+In-Reply-To: <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <alpine.LRH.2.21.2005192224560.31696@localhost>
+References: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com> <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005190181
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005190181
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 19, 2020 at 2:08 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, May 19, 2020 at 12:23:41PM -0700, Andrii Nakryiko wrote:
-> > b9f4c01f3e0b ("selftest/bpf: Make bpf_iter selftest compilable against old vmlinux.h")
-> > missed the fact that bpf_iter_test_kern{3,4}.c are not just including
-> > bpf_iter_test_kern_common.h and need similar bpf_iter_meta re-definition
-> > explicitly.
-> >
-> > Fixes: b9f4c01f3e0b ("selftest/bpf: Make bpf_iter selftest compilable against old vmlinux.h")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  .../selftests/bpf/progs/bpf_iter_test_kern3.c     | 15 +++++++++++++++
-> >  .../selftests/bpf/progs/bpf_iter_test_kern4.c     | 15 +++++++++++++++
-> >  2 files changed, 30 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c
-> > index 636a00fa074d..13c2c90c835f 100644
-> > --- a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c
-> > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c
-> > @@ -1,10 +1,25 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /* Copyright (c) 2020 Facebook */
-> > +#define bpf_iter_meta bpf_iter_meta___not_used
-> > +#define bpf_iter__task bpf_iter__task___not_used
-> >  #include "vmlinux.h"
-> > +#undef bpf_iter_meta
-> > +#undef bpf_iter__task
-> >  #include <bpf/bpf_helpers.h>
-> >
-> >  char _license[] SEC("license") = "GPL";
-> >
-> > +struct bpf_iter_meta {
-> > +     struct seq_file *seq;
-> > +     __u64 session_id;
-> > +     __u64 seq_num;
-> > +} __attribute__((preserve_access_index));
-> > +
-> > +struct bpf_iter__task {
-> > +     struct bpf_iter_meta *meta;
-> > +     struct task_struct *task;
-> > +} __attribute__((preserve_access_index));
->
-> Applied, but I was wondering whether all these structs can be placed
-> in a single header file like bpf_iters.h ?
-> struct bpf_iter_meta is common across all of them.
-> What if next iter patch changes the name in there?
-> We'd need to patch 10 tests? It's unstable api, so it's fine,
-> but considering the churn it seems common header would be good.
-> That .h would include struct bpf_iter__bpf_map, bpf_iter__task,
-> bpf_iter__task_file, etc
-> wdyt?
+On Tue, 19 May 2020, Alexei Starovoitov wrote:
 
-I initially wanted to keep each selftest independent, so that anyone
-looking for example would just have everything in one file. But I
-agree, we have quite a bunch of them already, so it makes sense to
-centralize that in one common header. I'll post a follow-up patch a
-bit later to consolidate this.
+> On Mon, May 18, 2020 at 12:23:10PM +0100, Alan Maguire wrote:
+> > Getting a clean BPF selftests run involves ensuring latest trunk LLVM/clang
+> > are used, pahole is recent (>=1.16) and config matches the specified
+> > config file as closely as possible.  Document all of this in the general
+> > README.rst file.  Also note how to work around timeout failures.
+> > 
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > ---
+> >  tools/testing/selftests/bpf/README.rst | 46 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 46 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
+> > index 0f67f1b..b00eebb 100644
+> > --- a/tools/testing/selftests/bpf/README.rst
+> > +++ b/tools/testing/selftests/bpf/README.rst
+> > @@ -1,6 +1,52 @@
+> >  ==================
+> >  BPF Selftest Notes
+> >  ==================
+> > +First verify the built kernel config options match the config options
+> > +specified in the config file in this directory.  Test failures for
+> > +unknown helpers, inability to find BTF etc will be observed otherwise.
+> > +
+> > +To ensure the maximum number of tests pass, it is best to use the latest
+> > +trunk LLVM/clang, i.e.
+> > +
+> > +git clone https://github.com/llvm/llvm-project
+> > +
+> > +Build/install trunk LLVM:
+> > +
+> > +.. code-block:: bash
+> > +  git clone https://github.com/llvm/llvm-project
+> > +  cd llvm-project
+> > +  mkdir build/llvm
+> > +  cd build/llvm
+> > +  cmake ../../llvm/
+> > +  make
+> > +  sudo make install
+> > +  cd ../../
+> > +
+> > +Build/install trunk clang:
+> > +
+> > +.. code-block:: bash
+> > +  mkdir -p build/clang
+> > +  cd build/clang
+> > +  cmake ../../clang
+> > +  make
+> > +  sudo make install
+> > +
+> 
+> these instructions are obsolete and partially incorrect.
+> May be refer to Documentation/bpf/bpf_devel_QA.rst instead?
+>
+
+Sure; looks like there are up-to-date sections there on
+running BPF selftests and building LLVM manually.  Perhaps
+I should add the notes about pahole etc there too?
+I should also have noted that without an up-to-date iproute2
+failures will be observed also.
+  
+> > +When building the kernel with CONFIG_DEBUG_INFO_BTF, pahole
+> > +version 16 or later is also required for BTF function
+> > +support. pahole can be built from the source at
+> > +
+> > +https://github.com/acmel/dwarves
+> > +
+> > +It is often available in "dwarves/libdwarves" packages also,
+> > +but be aware that versions prior to 1.16 will fail with
+> > +errors that functions cannot be found in BTF.
+> > +
+> > +When running selftests, the default timeout of 45 seconds
+> > +can be exceeded by some tests.  We can override the default
+> > +timeout via a "settings" file; for example:
+> > +
+> > +.. code-block:: bash
+> > +  echo "timeout=120" > tools/testing/selftests/bpf/settings
+> 
+> Is it really the case?
+> I've never seen anything like this.
+> 
+
+When running via "make run_tests" on baremetal systems I
+see test timeouts pretty consistently; e.g. from a bpf tree test
+run yesterday:
+
+not ok 6 selftests: bpf: test_progs # TIMEOUT
+not ok 31 selftests: bpf: test_tunnel.sh # TIMEOUT
+not ok 38 selftests: bpf: test_lwt_ip_encap.sh # TIMEOUT
+not ok 40 selftests: bpf: test_tc_tunnel.sh # TIMEOUT
+not ok 42 selftests: bpf: test_xdping.sh # TIMEOUT
+not ok 43 selftests: bpf: test_bpftool_build.sh # TIMEOUT
+
+These will only occur if running via "make run_tests",
+so running tests individually would not trigger these
+failures.
+
+Alan
