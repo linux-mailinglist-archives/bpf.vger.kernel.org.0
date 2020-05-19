@@ -2,41 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F61D9DC7
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 19:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA3D1D9DCD
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 19:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgESRVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 13:21:25 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51704 "EHLO
+        id S1729320AbgESRWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 13:22:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51812 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729238AbgESRVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 13:21:25 -0400
+        with ESMTP id S1729053AbgESRWU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 13:22:20 -0400
 Received: from sslproxy01.your-server.de ([78.46.139.224])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jb5ve-0003cr-PZ; Tue, 19 May 2020 19:21:22 +0200
+        id 1jb5wP-0003gY-84; Tue, 19 May 2020 19:22:09 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jb5ve-000D5F-GM; Tue, 19 May 2020 19:21:22 +0200
-Subject: Re: [PATCH bpf-next v2 0/5] samples: bpf: refactor kprobe tracing
- progs with libbpf
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
+        id 1jb5wO-000GLg-W8; Tue, 19 May 2020 19:22:09 +0200
+Subject: Re: [PATCH bpf-next] bpf: fix too large copy from user in
+ bpf_test_init
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-References: <20200516040608.1377876-1-danieltimlee@gmail.com>
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <158980712729.256597.6115007718472928659.stgit@firesoul>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a2814e19-3a0a-bfc8-a025-62e4bb7302a7@iogearbox.net>
-Date:   Tue, 19 May 2020 19:21:21 +0200
+Message-ID: <169a1b10-4bb8-6ba1-4f5f-e74dd273107a@iogearbox.net>
+Date:   Tue, 19 May 2020 19:22:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200516040608.1377876-1-danieltimlee@gmail.com>
+In-Reply-To: <158980712729.256597.6115007718472928659.stgit@firesoul>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,53 +46,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/16/20 6:06 AM, Daniel T. Lee wrote:
-> Currently, the kprobe BPF program attachment method for bpf_load is
-> pretty outdated. The implementation of bpf_load "directly" controls and
-> manages(create, delete) the kprobe events of DEBUGFS. On the other hand,
-> using using the libbpf automatically manages the kprobe event.
-> (under bpf_link interface)
+On 5/18/20 3:05 PM, Jesper Dangaard Brouer wrote:
+> Commit bc56c919fce7 ("bpf: Add xdp.frame_sz in bpf_prog_test_run_xdp().")
+> recently changed bpf_prog_test_run_xdp() to use larger frames for XDP in
+> order to test tail growing frames (via bpf_xdp_adjust_tail) and to have
+> memory backing frame better resemble drivers.
 > 
-> This patchset refactors kprobe tracing programs with using libbpf API
-> for loading bpf program instead of previous bpf_load implementation.
+> The commit contains a bug, as it tries to copy the max data size from
+> userspace, instead of the size provided by userspace.  This cause XDP
+> unit tests to fail sporadically with EFAULT, an unfortunate behavior.
+> The fix is to only copy the size specified by userspace.
 > 
-> ---
-> Changes in V2:
->   - refactor pointer error check with libbpf_get_error
->   - on bpf object open failure, return instead jump to cleanup
->   - add macro for adding architecture prefix to system calls (sys_*)
-> 
-> Daniel T. Lee (5):
->    samples: bpf: refactor pointer error check with libbpf
->    samples: bpf: refactor kprobe tracing user progs with libbpf
->    samples: bpf: refactor tail call user progs with libbpf
->    samples: bpf: add tracex7 test file to .gitignore
->    samples: bpf: refactor kprobe, tail call kern progs map definition
-> 
->   samples/bpf/.gitignore              |  1 +
->   samples/bpf/Makefile                | 16 +++----
->   samples/bpf/sampleip_kern.c         | 12 +++---
->   samples/bpf/sampleip_user.c         |  7 +--
->   samples/bpf/sockex3_kern.c          | 36 ++++++++--------
->   samples/bpf/sockex3_user.c          | 64 +++++++++++++++++++---------
->   samples/bpf/trace_common.h          | 13 ++++++
->   samples/bpf/trace_event_kern.c      | 24 +++++------
->   samples/bpf/trace_event_user.c      |  9 ++--
->   samples/bpf/tracex1_user.c          | 37 +++++++++++++---
->   samples/bpf/tracex2_kern.c          | 27 ++++++------
->   samples/bpf/tracex2_user.c          | 51 ++++++++++++++++++----
->   samples/bpf/tracex3_kern.c          | 24 +++++------
->   samples/bpf/tracex3_user.c          | 61 +++++++++++++++++++-------
->   samples/bpf/tracex4_kern.c          | 12 +++---
->   samples/bpf/tracex4_user.c          | 51 +++++++++++++++++-----
->   samples/bpf/tracex5_kern.c          | 14 +++---
->   samples/bpf/tracex5_user.c          | 66 +++++++++++++++++++++++++----
->   samples/bpf/tracex6_kern.c          | 38 +++++++++--------
->   samples/bpf/tracex6_user.c          | 49 ++++++++++++++++++---
->   samples/bpf/tracex7_user.c          | 39 +++++++++++++----
->   samples/bpf/xdp_redirect_cpu_user.c |  5 +--
->   22 files changed, 455 insertions(+), 201 deletions(-)
->   create mode 100644 samples/bpf/trace_common.h
-> 
+> Fixes: bc56c919fce7 ("bpf: Add xdp.frame_sz in bpf_prog_test_run_xdp().")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
 Applied, thanks!
