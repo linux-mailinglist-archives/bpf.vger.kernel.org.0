@@ -2,75 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F481D9A5E
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 16:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068761D9A8F
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 17:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgESOuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 10:50:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30696 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726880AbgESOuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 10:50:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589899806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w2XUngnLZtW7XIr4Ix0OUD7C12BtNVeTVxdhwNMrRCI=;
-        b=C836Al7w+NoWTL6O18vCmqTy5Q2W7QAw7voCx0OibvmZ1/MtNrpx4x8Z91NE6UXFScagqM
-        KV/kbWcXZT6qzPWnjz+GkheCnGI6apmE7JDpkVPpRdx80QciFeyRCD75aAQcZ7Ukdc/p/a
-        72ljAU9GC/ut95HSQC1LR3X6g4QeVEQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-wK6FVXiiNh6MxiqTOsMDmw-1; Tue, 19 May 2020 10:50:02 -0400
-X-MC-Unique: wK6FVXiiNh6MxiqTOsMDmw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D42E918CA27D;
-        Tue, 19 May 2020 14:50:01 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-168.ams2.redhat.com [10.36.112.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AA3C53A1;
-        Tue, 19 May 2020 14:49:59 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     shuah <shuah@kernel.org>
-Cc:     bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH v2 0/3] selftests: lib.mk improvements
-References: <20200515120026.113278-1-yauheni.kaliuta@redhat.com>
-        <689fe06a-c781-e6ed-0544-8023c86fc21a@kernel.org>
-Date:   Tue, 19 May 2020 17:49:57 +0300
-In-Reply-To: <689fe06a-c781-e6ed-0544-8023c86fc21a@kernel.org>
-        (shuah@kernel.org's message of "Tue, 19 May 2020 07:59:16 -0600")
-Message-ID: <xunyblmknfmy.fsf@redhat.com>
+        id S1728968AbgESPAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 11:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728647AbgESPAo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 11:00:44 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE200C08C5C0
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 08:00:43 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id h16so11756181eds.5
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 08:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=olWeaL9L3Th4SH3qpwoevbMzoFhixmGWtefArTEgTk4=;
+        b=bEyFs82H4jPOzYgYPlYzidt1XghxF9RQPbBVSYNlHHo+64d1MNTn8faNwlkFFp8XOf
+         gG93TwfVwkG1x1SYSw+sjMMWFJkF7MEU4WVXqVGtcdcINUqMvvJ0+cCULgJtCQLQs61K
+         vXj6dXSp1aRiCwt0AazexjVnkE4ZNAkpCDQS9XxiM0RaP1T3r5NtDEln4DdTvI5ROC75
+         IyyM7+pvwZ7/s+bKvbD/iAAfpgQHgYVyLMUKpVP+x5wk348rr8fMWFwaLt3cdSNfwjEe
+         PHIFvD/DButvkbeAQN6sl0IFWPv3XAMn/cdJYslshqL4n0Fjc65uCPcTOXm8wnzgg8Ac
+         dmKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=olWeaL9L3Th4SH3qpwoevbMzoFhixmGWtefArTEgTk4=;
+        b=qMPANh7v6+7cWo/GG8w9FC6JorhUB/TTQ+waaCuabex62bpwwVBYQAy0BwyaEhVnqa
+         jHSN4TCDFyyEHkAbe4eYfHFkAdcd4Q8Rdv9KDvg8DFaw1qio4cBzDV1jT2ey+zC+0ADe
+         52lQsQGNsN1TDAvfHAJazAWJKBY+qpcB6qtTpLweOAGdi2Vg/ES7FxHU7c/yYAHHtAYF
+         Z7hYP4K2LJhka6eNTIusFY2uy5bfvsEx6Z9v496DqF9kUmdJivSWefmOST/yoOBxnsqB
+         S22OOtvj4fzdq6yFJ+aG80Reeh+gMsD93eTk7FikCQojXsvBGFeWl1Pfz92sm96MYMuZ
+         vHpw==
+X-Gm-Message-State: AOAM531iBYKgTId3rLX0mJC/5PdPLJUAVTCWbFy7zbmF10XmmcUd1Y6E
+        NAEtvUSD15fBJLvkpUvmJ7NoMMHQfG1CPkL0qiU9Xg==
+X-Google-Smtp-Source: ABdhPJz+lhIpPKFIwyc4CnD865mj0YwvB2BjckQu7J/mXksfcTixa7jQ+FQ7BA5W++Bj57SzGGXmJbtqvWOZOvNVKQg=
+X-Received: by 2002:a50:ee1a:: with SMTP id g26mr17925721eds.18.1589900442359;
+ Tue, 19 May 2020 08:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
+ <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com>
+ <CAG=TAF6aqo-sT2YE30riqp7f47KyXH_uhNJ=M9L12QU6EEEfqQ@mail.gmail.com> <CAEf4BzaBfnDL=WpRP-7rYFhocOsCQyFuZaLvM0+k9sv2t_=rVw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaBfnDL=WpRP-7rYFhocOsCQyFuZaLvM0+k9sv2t_=rVw@mail.gmail.com>
+From:   Qian Cai <cai@lca.pw>
+Date:   Tue, 19 May 2020 11:00:31 -0400
+Message-ID: <CAG=TAF5rYmMXBcxno0pPxVZdcyz=ik-enh03E-V8wupjDS0K5g@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, shuah!
+On Mon, May 18, 2020 at 8:25 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, May 18, 2020 at 5:09 PM Qian Cai <cai@lca.pw> wrote:
+> >
+> > On Mon, May 18, 2020 at 7:55 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Sun, May 17, 2020 at 7:45 PM Qian Cai <cai@lca.pw> wrote:
+> > > >
+> > > > With Clang 9.0.1,
+> > > >
+> > > > return array->value + array->elem_size * (index & array->index_mask);
+> > > >
+> > > > but array->value is,
+> > > >
+> > > > char value[0] __aligned(8);
+> > >
+> > > This, and ptrs and pptrs, should be flexible arrays. But they are in a
+> > > union, and unions don't support flexible arrays. Putting each of them
+> > > into anonymous struct field also doesn't work:
+> > >
+> > > /data/users/andriin/linux/include/linux/bpf.h:820:18: error: flexible
+> > > array member in a struct with no named members
+> > >    struct { void *ptrs[] __aligned(8); };
+> > >
+> > > So it probably has to stay this way. Is there a way to silence UBSAN
+> > > for this particular case?
+> >
+> > I am not aware of any way to disable a particular function in UBSAN
+> > except for the whole file in kernel/bpf/Makefile,
+> >
+> > UBSAN_SANITIZE_arraymap.o := n
+> >
+> > If there is no better way to do it, I'll send a patch for it.
+>
+>
+> That's probably going to be too drastic, we still would want to
+> validate the rest of arraymap.c code, probably. Not sure, maybe
+> someone else has better ideas.
 
->>>>> On Tue, 19 May 2020 07:59:16 -0600, shuah   wrote:
+This works although it might makes sense to create a pair of
+ubsan_disable_current()/ubsan_enable_current() for it.
 
- > On 5/15/20 6:00 AM, Yauheni Kaliuta wrote:
- >> 
- >> Yauheni Kaliuta (3):
- >> selftests: do not use .ONESHELL
- >> selftests: fix condition in run_tests
- >> selftests: simplify run_tests
- >> 
- >> tools/testing/selftests/lib.mk | 19 ++++++-------------
- >> 1 file changed, 6 insertions(+), 13 deletions(-)
- >> 
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 11584618e861..6415b089725e 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -170,11 +170,16 @@ static void *array_map_lookup_elem(struct
+bpf_map *map, void *key)
+ {
+        struct bpf_array *array = container_of(map, struct bpf_array, map);
+        u32 index = *(u32 *)key;
++       void *elem;
 
- > Quick note that, I will pull these in for 5.8-rc1.
+        if (unlikely(index >= array->map.max_entries))
+                return NULL;
 
-Thanks!
-
--- 
-WBR,
-Yauheni Kaliuta
-
+-       return array->value + array->elem_size * (index & array->index_mask);
++       current->in_ubsan++;
++       elem = array->value + array->elem_size * (index & array->index_mask);
++       current->in_ubsan--;
++
++       return elem;
+ }
