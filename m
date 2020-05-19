@@ -2,101 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FF81D8C08
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 02:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E951D8C0B
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 02:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgESAKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 20:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
+        id S1726284AbgESAPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 20:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgESAJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 20:09:59 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0049AC05BD0A
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 17:09:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id j21so5627949ejy.1
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 17:09:58 -0700 (PDT)
+        with ESMTP id S1726280AbgESAPw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 20:15:52 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52812C061A0C;
+        Mon, 18 May 2020 17:15:51 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id t25so9788516qtc.0;
+        Mon, 18 May 2020 17:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IxrqFxJdqSnS7VAVDqLnJkOH5P3wut+0z7ZMFgHZj30=;
-        b=OwsxdxHif5GFjHubXSJp6rvDOZwLJi7vXG5yU3ZO8BbDACR2v48yEeLiOPcdZtOo11
-         9QCKurOKyqOiS4Pgas32x/doPXSRsxxLlAJXkpuXKIXLNbfXsue23L1hLeNzu9tLHGZs
-         JooBGkjDk5B39aNx/i6N5D1BPrMGdednoHEoUPxRGgs/rMLBfMYsI+L34P3l/KLCIhAE
-         Bcyz+XdzYrBu3iJk713GoaG18d7vyw8yTTFvmwUHJJKgbNu/6iOn7L5r/YskAnjCWFf/
-         uu3R1h80bv8xGMkXT6HOWEdvCQmXWmY4WjF1ZkoAjSJH6uNo8IXKKLMPsOQqktMUqaCg
-         S/Qw==
+        bh=LSQ6bbK5QmZwJYC9jpLIrNTbJNjUMjJ5eQzgUn+LHiw=;
+        b=eTT7Rr21sjGUotCwrUVISAfchfQWCiQ9yrJYlbMSF6liSgYlBIPz/l5fHjmqlL4c4w
+         WMrbsSofwyJf/AnyRF9aV8MrqIQ6NcBrOEJ28mltRJh1Z5u+wLtJIQJ5aba+jKEZdv8M
+         FtN0bmM8tTX7vaCRmvchx5hKoO0c+UA3KZawa7JVl2sCPMj6D4D7qh7jFS+9jUonALdW
+         5wFGrn/m8syprshKI4qc5CfzksRNgkyfXX/3M0Csok8UIAD7BIJiwwnT80KWmrpoMcg0
+         RBafdg0/7S2I5ceRa6Puur+IGTAcjj+hJpcFZNtF5PMp3YvCCF45FeUCS24V+a6uBqNf
+         GBMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IxrqFxJdqSnS7VAVDqLnJkOH5P3wut+0z7ZMFgHZj30=;
-        b=JkaFDdfN+lCUkQAS7TNbd6RoI+B6TRlssA8Wx/2V1zuTvmF+kl9o7zYa4Lo8mhtCyP
-         zmlEjWqb3mUfgXV4yV4/k0mzcleZAORQAsb1usKrX66EeVZa0rLtC/WKL+qbRQ1Oo7bk
-         ZmtTfPyjeYnSg8s6FV2VdoqBatMEN3oWDa9C2MmWddbaD67ce7xu4MrjNo//CPLN+ftD
-         sc02fIl/EnQCUiIf75d+aXrAikSg2VbdXJ7kr6+l7cNuL50eUCFrx74C7Oj6zkTc2YUe
-         QZxSYQmnoNehf1VxQ56sjv/cT8Tf4GjkpzHpxQJFOguRV6gt1YDbYFLcTKp3vYn8FNqk
-         0Qsw==
-X-Gm-Message-State: AOAM533fzYeA0ii76o8BnECAD1UVZsTONBP1TUJa3likhPLxSGTHT/60
-        xNZi6f/NlB6ibSIltxLcbqggVdXY4aVeTF7Ddwsi0Q==
-X-Google-Smtp-Source: ABdhPJyM9kGDV9TZPMgj39tKayJfeBGR62rAJ1b5FnKzloflEafk1UWqAI2Uso93q9XPvEKdMmcwZqvltLQWyV5XW88=
-X-Received: by 2002:a17:906:4d9a:: with SMTP id s26mr16447641eju.153.1589846997488;
- Mon, 18 May 2020 17:09:57 -0700 (PDT)
+        bh=LSQ6bbK5QmZwJYC9jpLIrNTbJNjUMjJ5eQzgUn+LHiw=;
+        b=fZyBaOyZv8sbI8x4gtsoUIuV6HemeZmtLSKz1OYCa9jKM8DNaLD0lI/y2WmR8715P5
+         7LOCW65K/Xpir1M3Kp6Jfpg7edVxZIf7aFkRt/ftbE7wXQa+yEEXBoP9hELasIkODdrO
+         cJDoS/4arZCe3YDsyqw79Sxg2ysbc94yI1dabJhouXkcnjz2YWI96IkHbiMs8ZK29NuZ
+         PQ/vppMT1JiC8cANsE1aNhcLWaUYEJp5Cu/oXqiqI16/jYZpaOtjgrP8qvsE4mHlUy0p
+         PM7IxaGZVG9V1IIkvUP2KwERg2UwC1jq1Zfky4OPaYoahkTEvctALYL/Rp3bK5y9ucsl
+         pXZw==
+X-Gm-Message-State: AOAM530paCQhOGO4LdzZc1gRlVhMYDF5VKbzee1jQHENfk3mqIR0C8iM
+        4zVuhT7lHEX662XNpduwTwVZ52VRsk064dXZgqc=
+X-Google-Smtp-Source: ABdhPJz5rEWsMFhUBy4xS7xqMbRblS3+sZNU6SFhpT7v4u3/aqpCrpy3O0lHJLntkvFQ6C4BnXEyCfQsnuDDQpammU0=
+X-Received: by 2002:ac8:1ae7:: with SMTP id h36mr19053242qtk.59.1589847350333;
+ Mon, 18 May 2020 17:15:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
- <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com>
-In-Reply-To: <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com>
-From:   Qian Cai <cai@lca.pw>
-Date:   Mon, 18 May 2020 20:09:46 -0400
-Message-ID: <CAG=TAF6aqo-sT2YE30riqp7f47KyXH_uhNJ=M9L12QU6EEEfqQ@mail.gmail.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
+References: <158980712729.256597.6115007718472928659.stgit@firesoul>
+In-Reply-To: <158980712729.256597.6115007718472928659.stgit@firesoul>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 May 2020 17:15:39 -0700
+Message-ID: <CAEf4BzZJ4dHHtWK-Kfiy2RRNsoK=3t8c94x_jxs6SDRVpcS-HA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix too large copy from user in bpf_test_init
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 18, 2020 at 7:55 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, May 18, 2020 at 6:08 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> On Sun, May 17, 2020 at 7:45 PM Qian Cai <cai@lca.pw> wrote:
-> >
-> > With Clang 9.0.1,
-> >
-> > return array->value + array->elem_size * (index & array->index_mask);
-> >
-> > but array->value is,
-> >
-> > char value[0] __aligned(8);
+> Commit bc56c919fce7 ("bpf: Add xdp.frame_sz in bpf_prog_test_run_xdp().")
+> recently changed bpf_prog_test_run_xdp() to use larger frames for XDP in
+> order to test tail growing frames (via bpf_xdp_adjust_tail) and to have
+> memory backing frame better resemble drivers.
 >
-> This, and ptrs and pptrs, should be flexible arrays. But they are in a
-> union, and unions don't support flexible arrays. Putting each of them
-> into anonymous struct field also doesn't work:
+> The commit contains a bug, as it tries to copy the max data size from
+> userspace, instead of the size provided by userspace.  This cause XDP
+> unit tests to fail sporadically with EFAULT, an unfortunate behavior.
+> The fix is to only copy the size specified by userspace.
 >
-> /data/users/andriin/linux/include/linux/bpf.h:820:18: error: flexible
-> array member in a struct with no named members
->    struct { void *ptrs[] __aligned(8); };
->
-> So it probably has to stay this way. Is there a way to silence UBSAN
-> for this particular case?
+> Fixes: bc56c919fce7 ("bpf: Add xdp.frame_sz in bpf_prog_test_run_xdp().")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
 
-I am not aware of any way to disable a particular function in UBSAN
-except for the whole file in kernel/bpf/Makefile,
+LGTM.
 
-UBSAN_SANITIZE_arraymap.o := n
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-If there is no better way to do it, I'll send a patch for it.
+>  net/bpf/test_run.c |    8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+
+[...]
