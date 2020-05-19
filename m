@@ -2,141 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA8C1D9BAC
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 17:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D821D9C03
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 18:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgESPu2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 11:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        id S1729345AbgESQIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 12:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728534AbgESPu2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 11:50:28 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FACC08C5C0;
-        Tue, 19 May 2020 08:50:27 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ci21so1554973pjb.3;
-        Tue, 19 May 2020 08:50:27 -0700 (PDT)
+        with ESMTP id S1729161AbgESQIR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 12:08:17 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78457C08C5C1
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:08:16 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 82so11919lfh.2
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AHB18FnKAoqJzm0hykNiv4yZDqIuhCRDkCqTAP0Fza4=;
-        b=QnNPvhaHvPjBVI/mG9O+hAmqbMjquL9s/zmkb+9meC8rSuBDLe7FQ8nMwG+U8ZxSEi
-         F6PjYH8sX+az7OnVlmnLh9hn1LLMNXj9d2qenWkcW+/W0YDcYh+rIXZM4W913siZRXuW
-         KQKN897o5aLdFm/g8wz6Z/xwA92k2ifVjZOJn9V+2D9H/7LIyw3eX28YsA39YDdQGHJ8
-         +ww4Ae9hT+klcE06nFRFvdahB4hoi5l4j8ZcV/g/Zi0zT6OGwvqMIrOo+Ya0/DU5BdQo
-         DYH0rMRpgsLYv0T262RO87DhjL7iJRhbYvBHYuND/jI8xPNJNBt/maG7/bmhQGQrbtxa
-         I9CA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yx5q8kTLmBrxy32bs18zizlzOjtx0vFts57BKijzI48=;
+        b=HCXGSXVripfdjF3MiGwI8HqE63+BVnW9g3cwRZiRc5Emx+jBu6A4Nsobp13SbpFd6U
+         Lyt8wvpLjFnfI845wbjgkTVZflwu9OTBrRm/9vher3ASfX9/MH65gZZ8ahxQbI/5jnLa
+         wMfTgbalXvP1B/G3Ib0nnbu0+sXLvWt0bQgfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AHB18FnKAoqJzm0hykNiv4yZDqIuhCRDkCqTAP0Fza4=;
-        b=YpVXSdKVt4Sa0z6xeodaRR4y2gGy7DaD38egNGo5Z/oIfUpla+XX/XH+N2wTrWoGy4
-         zf1Abub+X4Ai4kZOldGl6SA62mNgBG410djRkxS0vpMZh/5ToFl1NZIgVaBq8bdzZHsS
-         F4Ul+2HORkhYpRntnHT20K1czaVuv3YRrayBNpX7dBKvfUCT+12/aFdNA7vcjv1SPLgA
-         BjtcgW5htjVJdQUIeAiAMCqlqpiJLoRz5spvH0cKJtGUULH9sCX5ceVuVvUsSKLAeysv
-         CQj80ko7E1Fjye7qWZPu0P3XvbYpoQND/oPrKtzyqUXcn5mPThh6/ICBqvj1RM3htMq7
-         2xiA==
-X-Gm-Message-State: AOAM5318LEkkmq+rzUfi6G92K5S+gh4ZhAm8izjGhlu6TV34CNk1BQNZ
-        tW48zWGcxAys8Eze5valYdA=
-X-Google-Smtp-Source: ABdhPJxcFDvvZRcc6B2dds0KSXBbh7Kpiwc0U5r6qb5JbXZg+WDQ8gRZfYUL49kKtBH7JSaQAfrzuA==
-X-Received: by 2002:a17:902:599b:: with SMTP id p27mr129948pli.75.1589903426596;
-        Tue, 19 May 2020 08:50:26 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:7206])
-        by smtp.gmail.com with ESMTPSA id s13sm7769280pfh.118.2020.05.19.08.50.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 08:50:24 -0700 (PDT)
-Date:   Tue, 19 May 2020 08:50:21 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, bpf@vger.kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: add general instructions for
- test execution
-Message-ID: <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
-References: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yx5q8kTLmBrxy32bs18zizlzOjtx0vFts57BKijzI48=;
+        b=iFfWJLpCYIXiMfaMMpLOaXm7Dvf4OzjYTlKYCG0wZ6NZYMzDE3fTOO0gcwojEy4ZzN
+         pNKVmuBSLyOVZ2YHcqvW/KzwnaRLlvPNYZtUf7rj7oBVk4FO4Ztb2dmG5GNkdfYMzVFe
+         G+ACylB8XBXfk1t+vVTbEDt3ckzySj1WDvszSWEv3l8nXs2B4YOHbn8J/MTjU5bOjwW2
+         5Rfcb/leFsLAoj8Kg3jJs3s7Zgd5flUK1H6A+923KANeFQpRi2mVwR1dWITNIoQY/7rf
+         ix4+bCptYx+t166PZvsIsu4VGBNUiyZmgwT+uoVxVeiB5PC2ASIRdYKXN+aCYTQiauSy
+         w12Q==
+X-Gm-Message-State: AOAM530rG9b9qQbv6Lk2loZk+gAFuImFX0/Way75kCsC+ekEF/phTxUZ
+        RD+8T74BYG3l7CtfXzfR5oVNJ3Lg0g0=
+X-Google-Smtp-Source: ABdhPJyzKjIK3+xe/QOjG2OLeWA7X564A9jR+oTUFkvYPM0NNRIW7tgR9IO9ULq+babye9qcX0R2Dg==
+X-Received: by 2002:a19:5f04:: with SMTP id t4mr15984542lfb.208.1589904493664;
+        Tue, 19 May 2020 09:08:13 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id t30sm8400621lfd.29.2020.05.19.09.08.12
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 May 2020 09:08:12 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id w15so4360862lfe.11
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:08:12 -0700 (PDT)
+X-Received: by 2002:ac2:5a0a:: with SMTP id q10mr1343727lfn.142.1589904491650;
+ Tue, 19 May 2020 09:08:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com>
+References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-12-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-12-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 May 2020 09:07:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
+Message-ID: <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
+Subject: Re: [PATCH 11/20] bpf: factor out a bpf_trace_copy_string helper
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 18, 2020 at 12:23:10PM +0100, Alan Maguire wrote:
-> Getting a clean BPF selftests run involves ensuring latest trunk LLVM/clang
-> are used, pahole is recent (>=1.16) and config matches the specified
-> config file as closely as possible.  Document all of this in the general
-> README.rst file.  Also note how to work around timeout failures.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/testing/selftests/bpf/README.rst | 46 ++++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-> index 0f67f1b..b00eebb 100644
-> --- a/tools/testing/selftests/bpf/README.rst
-> +++ b/tools/testing/selftests/bpf/README.rst
-> @@ -1,6 +1,52 @@
->  ==================
->  BPF Selftest Notes
->  ==================
-> +First verify the built kernel config options match the config options
-> +specified in the config file in this directory.  Test failures for
-> +unknown helpers, inability to find BTF etc will be observed otherwise.
-> +
-> +To ensure the maximum number of tests pass, it is best to use the latest
-> +trunk LLVM/clang, i.e.
-> +
-> +git clone https://github.com/llvm/llvm-project
-> +
-> +Build/install trunk LLVM:
-> +
-> +.. code-block:: bash
-> +  git clone https://github.com/llvm/llvm-project
-> +  cd llvm-project
-> +  mkdir build/llvm
-> +  cd build/llvm
-> +  cmake ../../llvm/
-> +  make
-> +  sudo make install
-> +  cd ../../
-> +
-> +Build/install trunk clang:
-> +
-> +.. code-block:: bash
-> +  mkdir -p build/clang
-> +  cd build/clang
-> +  cmake ../../clang
-> +  make
-> +  sudo make install
-> +
+On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> +       switch (fmt_ptype) {
+> +       case 's':
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +               strncpy_from_unsafe(buf, unsafe_ptr, bufsz);
+> +               break;
+> +#endif
+> +       case 'k':
+> +               strncpy_from_kernel_nofault(buf, unsafe_ptr, bufsz);
+> +               break;
 
-these instructions are obsolete and partially incorrect.
-May be refer to Documentation/bpf/bpf_devel_QA.rst instead?
+That 's' case needs a "fallthrough;" for the overlapping case,
+methinks. Otherwise you'll get warnings.
 
-> +When building the kernel with CONFIG_DEBUG_INFO_BTF, pahole
-> +version 16 or later is also required for BTF function
-> +support. pahole can be built from the source at
-> +
-> +https://github.com/acmel/dwarves
-> +
-> +It is often available in "dwarves/libdwarves" packages also,
-> +but be aware that versions prior to 1.16 will fail with
-> +errors that functions cannot be found in BTF.
-> +
-> +When running selftests, the default timeout of 45 seconds
-> +can be exceeded by some tests.  We can override the default
-> +timeout via a "settings" file; for example:
-> +
-> +.. code-block:: bash
-> +  echo "timeout=120" > tools/testing/selftests/bpf/settings
-
-Is it really the case?
-I've never seen anything like this.
+                  Linus
