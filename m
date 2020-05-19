@@ -2,245 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B061DA073
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 21:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AC61DA099
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 21:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgESTGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 15:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
+        id S1726344AbgESTJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 15:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgESTGI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 15:06:08 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06414C08C5C0;
-        Tue, 19 May 2020 12:06:07 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id z80so820931qka.0;
-        Tue, 19 May 2020 12:06:07 -0700 (PDT)
+        with ESMTP id S1726059AbgESTJt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 15:09:49 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0011C08C5C0
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 12:09:48 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id p4so142344qvr.10
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 12:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wPeWB2uZZlMXrat1KPGYz49Pg/cmaGt0tVfETslJ1hE=;
-        b=O8qflmVACVLkpRT1Rl6i3K9s8LXuvR4+Ee5DJTsd2DlGoHKSd5zgp5PWNhz1qSob8f
-         HW6YyMMSW9hw1zF+j7M6F5IK7GDquIqG7lilHEbZbnaZN4+NJN7Yvvh+nl7Ia4uRieXX
-         IEBo2iV+Plpn2M885mp15KaB/LWPdw3r93nVqyZix0e3NToilJGe5Zg+YBzCJPH+lM4c
-         M2LAvH3jlsCeoDpshd3YmHXUjvZIVt0HQ5BI5cfcCZoRitgBDRpXjZAd9j7DgHK2186L
-         nhasYde8ypE+eBXrnxaDQKLwQafSsWsiD9q4OwDS87kqMebulgERrhmc6/MdlWwKPi45
-         5ovw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=raM1VqmCm3GYW75MVkTY0Qg9nZ5emw7l95/51B74Nwg=;
+        b=nDh67nJtvJJEatPhfbbGyA31uywFr31AavlbGj6AGKyvh0B/rYX0iFXuMIjtvh1iJf
+         80UWIfm1Wy4OH0yri9MPZJrJTthu+HIBa26WHsxTjdM8hKhBaVCkPVbmFKhPKgr/BV8j
+         pvPZ+JfgLRd74Da/hMhQwUfGdeklPHJoM1doMCxfifuSWI1C/Tt4hHoXKBwB1E034xE6
+         uJSxWHkA4d2jxsQVvqgjtfF49mmDNvf8Klvs/pcOnYkmsMWt0VebxkuAEaMpkIAvXVxY
+         QXML06EG/4kvktn5iwNnmFULGVavJL6kLHY+CjMAKilqYyMoZd4IlUWddy39pAacJmGw
+         OLvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wPeWB2uZZlMXrat1KPGYz49Pg/cmaGt0tVfETslJ1hE=;
-        b=WBFqTk74yPjuW6c9LPX8tmZZIjUKdLV2OIRuXgZeRZEV5vbt0g48tLSb3EEESRjiox
-         lHwbH9thJYspfHlsKupchB5v6y8M4I7+21wEKzMddwyINM9bDJzydk9xH6Op/JSCrmNB
-         tMLUzSwPIcVfQE/VFHUgevcBn/3u024+g0QTZnSVBGGxV6tgIvNLmvltH5QwWiWMQJIt
-         +d7lk0BxD57PpgCEJLBTjBWWGpGrOj9B1CL2EadXoT/Dyk5sXhfyJaQl0httzkIhi4lq
-         I1zeTxzXIm4QTYX61Wv85QHMR5rJtix4kyj6nKMiUfCA4GgSB0sAGocF2wLqAA6ZTGm+
-         LREg==
-X-Gm-Message-State: AOAM533CdnjMinI85eWUiqlBaxTJC4Wz2Cao98Yy7c2v09T8UMqJ/hvn
-        QkMNH3AXRm/GMsCFn4YVjds=
-X-Google-Smtp-Source: ABdhPJw/WgXp3coDEPG/OCJLk9DoCE4w7l1xw4atsB/8gnBZGGTf8rViGg26ZMBCSFPK4FGowseRtA==
-X-Received: by 2002:a05:620a:a53:: with SMTP id j19mr940312qka.183.1589915166969;
-        Tue, 19 May 2020 12:06:06 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id q54sm488669qtj.38.2020.05.19.12.06.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 12:06:06 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 021AD40AFD; Tue, 19 May 2020 16:06:02 -0300 (-03)
-Date:   Tue, 19 May 2020 16:06:02 -0300
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 6/7] perf test: Improve pmu event metric testing
-Message-ID: <20200519190602.GB28228@kernel.org>
-References: <20200515221732.44078-1-irogers@google.com>
- <20200515221732.44078-7-irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=raM1VqmCm3GYW75MVkTY0Qg9nZ5emw7l95/51B74Nwg=;
+        b=a5aQzeUuoCvjuvsXeE4mvTwrSOyBSFWi+SIdPd2Ysz60uYcgRzkTsYCugMfiDpedws
+         D1o/zPPmZmBkPSLGgeWa2L2lCp+Zb53gGz3dItpINfFEo1X8tc08d5iIAPGv9n7UWHxH
+         kz2IU2FTzArVCJRX+K3Z9RKRt0Neold2ytU2RI7JA1nmWefj868yIAsHyLal9u2NeaTY
+         KsdA7VT9njP2lT/05FA4xOtFsKPQhGQLAr4weAQV+PeN/vJfbVwNlM6db6BqPu0xcMzj
+         2FTJqwilCYIiiue5VMQdUqxeViY2zFVVdY+zPdVhYD1CoC4sBfIPKC2EOIzJtrnMtd5Z
+         npmQ==
+X-Gm-Message-State: AOAM5329OBSBI+vRxrXr3OwikhskC/+Z2X+rIBmA838GEJrUeO3OFSQe
+        zav6b3qEPc19cVjL/CgZ8r8nDmGwwk/ssllBK3k=
+X-Google-Smtp-Source: ABdhPJyo/YI3oasNI/4MsWKOo3dkiwE0f86EaSlXKixqhNTDi9hMRXGiRubGgxhJcEmuUrNON4A/UA3EmIlE3fRVdv8=
+X-Received: by 2002:a0c:a892:: with SMTP id x18mr1107972qva.247.1589915388028;
+ Tue, 19 May 2020 12:09:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515221732.44078-7-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+References: <20200519084957.55166-1-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20200519084957.55166-1-yauheni.kaliuta@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 19 May 2020 12:09:36 -0700
+Message-ID: <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: install btf .c files
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, May 15, 2020 at 03:17:31PM -0700, Ian Rogers escreveu:
-> Break pmu-events test into 2 and add a test to verify that all pmu
-> metric expressions simply parse. Try to parse all metric ids/events,
-> skip/warn if metrics for the current architecture fail to parse. To
-> support warning for a skip, and an ability for a subtest to describe why
-> it skips.
-> 
-> Tested on power9, skylakex, haswell, broadwell, westmere, sandybridge and
-> ivybridge.
-> 
-> May skip/warn on other architectures if metrics are invalid. In
-> particular s390 is untested, but its expressions are trivial. The
-> untested architectures with expressions are power8, cascadelakex,
-> tremontx, skylake, jaketown, ivytown and variants of haswell and
-> broadwell.
-> 
-> v3. addresses review comments from John Garry <john.garry@huawei.com>,
-> Jiri Olsa <jolsa@redhat.com> and Arnaldo Carvalho de Melo
-> <acme@kernel.org>.
-> v2. changes the commit message as event parsing errors no longer cause
-> the test to fail.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Jin Yao <yao.jin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Kajol Jain <kjain@linux.ibm.com>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Paul Clarke <pc@us.ibm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Stephane Eranian <eranian@google.com>
-> Link: http://lore.kernel.org/lkml/20200513212933.41273-1-irogers@google.com
-> [ split from a larger patch ]
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Tue, May 19, 2020 at 1:50 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> Some .c files used by test_progs to check btf and they are missing
+> from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
+> test_progs and test_maps w/ general rule").
+>
+> Take them back.
+>
+> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+> test_maps w/ general rule")
+>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 > ---
->  tools/perf/tests/builtin-test.c |   7 ++
->  tools/perf/tests/pmu-events.c   | 168 ++++++++++++++++++++++++++++++--
->  tools/perf/tests/tests.h        |   3 +
->  3 files changed, 172 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> index baee735e6aa5..9553f8061772 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -75,6 +75,13 @@ static struct test generic_tests[] = {
->  	{
->  		.desc = "PMU events",
->  		.func = test__pmu_events,
-> +		.subtest = {
-> +			.skip_if_fail	= false,
-> +			.get_nr		= test__pmu_events_subtest_get_nr,
-> +			.get_desc	= test__pmu_events_subtest_get_desc,
-> +			.skip_reason	= test__pmu_events_subtest_skip_reason,
-> +		},
-> +
->  	},
->  	{
->  		.desc = "DSO data read",
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index d64261da8bf7..e21f0addcfbb 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -8,6 +8,9 @@
->  #include <linux/zalloc.h>
->  #include "debug.h"
->  #include "../pmu-events/pmu-events.h"
-> +#include "util/evlist.h"
-> +#include "util/expr.h"
-> +#include "util/parse-events.h"
->  
->  struct perf_pmu_test_event {
->  	struct pmu_event event;
-> @@ -144,7 +147,7 @@ static struct pmu_events_map *__test_pmu_get_events_map(void)
->  }
->  
->  /* Verify generated events from pmu-events.c is as expected */
-> -static int __test_pmu_event_table(void)
-> +static int test_pmu_event_table(void)
->  {
->  	struct pmu_events_map *map = __test_pmu_get_events_map();
->  	struct pmu_event *table;
-> @@ -347,14 +350,11 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
->  	return res;
->  }
->  
-> -int test__pmu_events(struct test *test __maybe_unused,
-> -		     int subtest __maybe_unused)
-> +
-> +static int test_aliases(void)
->  {
->  	struct perf_pmu *pmu = NULL;
->  
-> -	if (__test_pmu_event_table())
-> -		return -1;
-> -
->  	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
->  		int count = 0;
->  
-> @@ -377,3 +377,159 @@ int test__pmu_events(struct test *test __maybe_unused,
->  
->  	return 0;
->  }
-> +
-> +static bool is_number(const char *str)
-> +{
-> +	char *end_ptr;
-> +
-> +	strtod(str, &end_ptr);
-> +	return end_ptr != str;
-> +}
+>  tools/testing/selftests/bpf/Makefile | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index e716e931d0c9..d96440732905 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -46,6 +46,9 @@ TEST_GEN_FILES =
+>  TEST_FILES = test_lwt_ip_encap.o \
+>         test_tc_edt.o
+>
+> +BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
+> +TEST_FILES += $(BTF_C_FILES)
 
-So, this breaks in some systems:
+Can you please re-use BTF_C_FILES in TRUNNER_EXTRA_FILES := assignment
+on line 357?
 
-cc1: warnings being treated as errors
-tests/pmu-events.c: In function 'is_number':
-tests/pmu-events.c:385: error: ignoring return value of 'strtod', declared with attribute warn_unused_result
-mv: cannot stat `/tmp/build/perf/tests/.pmu-events.o.tmp': No such file or director
+See also $(TRUNNER_BINARY)-extras rule. For "flavored" test_progs
+runners (e.g., test_progs-no_alu32), those files need to be copied
+into no_alu32 sub-directory (same for BPF .o files, actually). Unless
+you don't want to run flavored test_progs, of course.
 
-So I'm changing it to verify the result of strtod() which is, humm,
-interesting, please check:
-
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 3de59564deb0..6c58c3a89e6b 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include "math.h"
- #include "parse-events.h"
- #include "pmu.h"
- #include "tests.h"
-@@ -381,8 +382,12 @@ static int test_aliases(void)
- static bool is_number(const char *str)
- {
- 	char *end_ptr;
-+	double v;
- 
--	strtod(str, &end_ptr);
-+	errno = 0;
-+	v = strtod(str, &end_ptr);
-+	if ((errno == ERANGE && (v == HUGE_VAL || v == -HUGE_VAL)) || (errno != 0 && v == 0.0))
-+		return false;
- 	return end_ptr != str;
- }
- 
+>  # Order correspond to 'make run_tests' order
+>  TEST_PROGS := test_kmod.sh \
+>         test_xdp_redirect.sh \
+> --
+> 2.26.2
+>
