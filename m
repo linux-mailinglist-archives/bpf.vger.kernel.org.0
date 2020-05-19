@@ -2,209 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FFD1D8CD3
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 03:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CF11D8D20
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 03:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgESBDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 21:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
+        id S1726513AbgESBad (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 May 2020 21:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgESBDG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 May 2020 21:03:06 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37592C061A0C
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 18:03:05 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id m185so1497789wme.3
-        for <bpf@vger.kernel.org>; Mon, 18 May 2020 18:03:05 -0700 (PDT)
+        with ESMTP id S1726276AbgESBac (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 May 2020 21:30:32 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AF9C061A0C;
+        Mon, 18 May 2020 18:30:32 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id dh1so1874872qvb.13;
+        Mon, 18 May 2020 18:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uwuNGFJAq2sDPWpG9aNv6dzcxMBNAA6NXYKA7mcTybI=;
-        b=drPHrcBCXZX1rda3Kpdk+cqo042O7DO1DIU9AeEqDf7UHkFJ4/c/onKSCTe3otqFTF
-         jns2pg4DXnUY2hLBRDmiR1TxSV/1nViKvRFbfT2V11J/nWErA0mBfRLJRoPUtRzLZUgS
-         EV2oY3nooJYb1s7urSS6Tu097ar0rPT5GtU/CYTnltusVt5x1LnukwgGwcZ+zzQ+TarC
-         IeDak1/oXB27jw6FYqrWXDndFCAByBwu4APRQJGRiC96BB9N+kYXrzgE3au1Uqy77x9J
-         fjXpXQ5aakljhndn/SHte+D4wTE8v9IKVrgcZtjcKxmOc/DhiZZOfsgalbkin+ZebIol
-         n8HQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKVPJF/NEdnmBXWDMMPJJBCWq4APWNkeLoswoZMG3Ww=;
+        b=I75n233fSllmNqXPDvlYaKSzbi9lYJnoYrDss99O5N5J83UuSJ/DxQY+YqNsWWGKY6
+         4nbbPnTvENBt04qqdbjofYwUwQPUsHSyjZj5zviEWx5HPBHx6MAvMSgXwy0IM7C3Vq/4
+         KakPFaUf4vfhQJ1h039eq5zTM2f6UkNWa+BOiXTaxIkFhuJOHPruDh5sVcFz0L3Xp32G
+         KFo4K1L4v/hrT/UuuMwR5rsodFFR3Loe1OHWPjnXI0UIvOL9azOyAzhrC/GwU0XI6JIX
+         DNC0C1pGBenK+qCtFlxQjIDN88Xdwh21c7W/2QV89PTOKrvMIpmi7b1I6MEHCLBGFy0u
+         X7BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uwuNGFJAq2sDPWpG9aNv6dzcxMBNAA6NXYKA7mcTybI=;
-        b=fHS9Uh9hTGfNWPOLFRgqK4pKaZNI1j4VPzMQsGtPlqljKErId537FVaUrB/YVLQcc/
-         L2ON+nminCPAaahaYPrY87b1Xcpa4M/Cx7PvN+vX/hRif0uXNiyQUJSJNGVzFhLPwANV
-         xCWm7LX/mceD/UUz4KstmE6EdazyGfOW0+5wdehJ5T4KABTcgWSXB04xFznXuLHISjKh
-         1pEVwjOi24IwD9GCzqnp/AAmEgt1SMZN1GeSPK1bTSXKYCgG3PIznkpfQJqW3A1H7rsM
-         bUQdirwloF178NUvOfl8QsNeOQ2XV//hR0DemYSjcxh4Tgdn4g976DKalfkEt2hidr7H
-         RWeQ==
-X-Gm-Message-State: AOAM5329/qwqeVblm7ZjJGAGWiVqtcWG/TPrJiOmU8R4LVICPu6mHE6o
-        UYfyalXna/SXwADpQTCiQIqV7HfLkxY=
-X-Google-Smtp-Source: ABdhPJxBU/Q//jj/zetOkVpdP3raoQMUciTl3LZyGYwOsbKeYbCF/iIr0qFPPGN8ye4L1Af1qUSRiw==
-X-Received: by 2002:a05:600c:247:: with SMTP id 7mr2155491wmj.76.1589850184317;
-        Mon, 18 May 2020 18:03:04 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.185.137])
-        by smtp.gmail.com with ESMTPSA id 81sm1852918wme.16.2020.05.18.18.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 18:03:03 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] tools: bpftool: make capability check account
- for new BPF caps
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-References: <20200516005149.3841-1-quentin@isovalent.com>
- <CAEf4BzZDC9az2vFPTNW03gSUZiYdc9-XeyP+1h8WkAKHagkUTg@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <3ffe7cc3-01da-1862-d734-b7a8b1d7c63d@isovalent.com>
-Date:   Tue, 19 May 2020 02:03:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKVPJF/NEdnmBXWDMMPJJBCWq4APWNkeLoswoZMG3Ww=;
+        b=pW/mTdrUVje8Dys2rtzgw1iMV1t1BA+z1cJqutIW9ByY4qPkfF8xc83QSvzLW04Wt7
+         L0IefGSIQkRFumsd3AqIDcjyQ/H6e7P3ZuMxPZm5t0hOjDagbN5XS4BVV/0KYsHYrhVR
+         /c25emBBera7cOsB0j3flW60pX01PYT79sHOYIM0Q8x3kA7cU3oibzeJJw4nMjCyrBvU
+         6ufIem9bsrkJkG//f8oql5D8xHWNjgye3C0tFh3yJSfzc+qD5z9fT5wFI4O8ENyOwakx
+         PaqVkxHX4lGxftMoLpoiMhjDRR4ZZE89EkizaYFyZd2JWUFGbnS54E7JhM4TBdjigmgy
+         Ccxw==
+X-Gm-Message-State: AOAM532u40N96O+y1aOg6EMCFdHBRhiVP74ix0LFfGAUWh2KjL+hFevP
+        hVFMHHGF+EsRhQuV6IQgHu2Kq5J6E9gJEIy4jds=
+X-Google-Smtp-Source: ABdhPJwduNWTZvoufiV1M2qPAsvy9XRLIUzSaqdPrQn350b2t77KBGnh6PwB9dY3VQ6J9ODHIUKoegKuft0fwP6UwN4=
+X-Received: by 2002:ad4:55ea:: with SMTP id bu10mr19629870qvb.163.1589851831727;
+ Mon, 18 May 2020 18:30:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZDC9az2vFPTNW03gSUZiYdc9-XeyP+1h8WkAKHagkUTg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
+ <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com>
+ <CAG=TAF6aqo-sT2YE30riqp7f47KyXH_uhNJ=M9L12QU6EEEfqQ@mail.gmail.com>
+ <CAEf4BzaBfnDL=WpRP-7rYFhocOsCQyFuZaLvM0+k9sv2t_=rVw@mail.gmail.com> <45f9ef5d-18e3-c92f-e7a9-1c6d6405e478@fb.com>
+In-Reply-To: <45f9ef5d-18e3-c92f-e7a9-1c6d6405e478@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 May 2020 18:30:20 -0700
+Message-ID: <CAEf4Bza4++AxxU4ikMEfjeYLMiudWqc=Tk=5iTeBBNRjZjZZkQ@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Qian Cai <cai@lca.pw>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-05-18 17:07 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Fri, May 15, 2020 at 5:52 PM Quentin Monnet <quentin@isovalent.com> wrote:
->>
->> Following the introduction of CAP_BPF, and the switch from CAP_SYS_ADMIN
->> to other capabilities for various BPF features, update the capability
->> checks (and potentially, drops) in bpftool for feature probes. Because
->> bpftool and/or the system might not know of CAP_BPF yet, some caution is
->> necessary:
->>
->> - If compiled and run on a system with CAP_BPF, check CAP_BPF,
->>   CAP_SYS_ADMIN, CAP_PERFMON, CAP_NET_ADMIN.
->>
->> - Guard against CAP_BPF being undefined, to allow compiling bpftool from
->>   latest sources on older systems. If the system where feature probes
->>   are run does not know of CAP_BPF, stop checking after CAP_SYS_ADMIN,
->>   as this should be the only capability required for all the BPF
->>   probing.
->>
->> - If compiled from latest sources on a system without CAP_BPF, but later
->>   executed on a newer system with CAP_BPF knowledge, then we only test
->>   CAP_SYS_ADMIN. Some probes may fail if the bpftool process has
->>   CAP_SYS_ADMIN but misses the other capabilities. The alternative would
->>   be to redefine the value for CAP_BPF in bpftool, but this does not
->>   look clean, and the case sounds relatively rare anyway.
->>
->> Note that libcap offers a cap_to_name() function to retrieve the name of
->> a given capability (e.g. "cap_sys_admin"). We do not use it because
->> deriving the names from the macros looks simpler than using
->> cap_to_name() (doing a strdup() on the string) + cap_free() + handling
->> the case of failed allocations, when we just want to use the name of the
->> capability in an error message.
->>
->> The checks when compiling without libcap (i.e. root versus non-root) are
->> unchanged.
->>
->> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
->> ---
->>  tools/bpf/bpftool/feature.c | 85 +++++++++++++++++++++++++++++--------
->>  1 file changed, 67 insertions(+), 18 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
->> index 1b73e63274b5..3c3d779986c7 100644
->> --- a/tools/bpf/bpftool/feature.c
->> +++ b/tools/bpf/bpftool/feature.c
->> @@ -758,12 +758,32 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
->>         print_end_section();
->>  }
->>
->> +#ifdef USE_LIBCAP
->> +#define capability(c) { c, #c }
->> +#endif
->> +
->>  static int handle_perms(void)
->>  {
->>  #ifdef USE_LIBCAP
->> -       cap_value_t cap_list[1] = { CAP_SYS_ADMIN };
->> -       bool has_sys_admin_cap = false;
->> +       struct {
->> +               cap_value_t cap;
->> +               char name[14];  /* strlen("CAP_SYS_ADMIN") */
->> +       } required_caps[] = {
->> +               capability(CAP_SYS_ADMIN),
->> +#ifdef CAP_BPF
->> +               /* Leave CAP_BPF in second position here: We will stop checking
->> +                * if the system does not know about it, since it probably just
->> +                * needs CAP_SYS_ADMIN to run all the probes in that case.
->> +                */
->> +               capability(CAP_BPF),
->> +               capability(CAP_NET_ADMIN),
->> +               capability(CAP_PERFMON),
->> +#endif
->> +       };
->> +       bool has_admin_caps = true;
->> +       cap_value_t *cap_list;
->>         cap_flag_value_t val;
->> +       unsigned int i;
->>         int res = -1;
->>         cap_t caps;
->>
->> @@ -774,41 +794,70 @@ static int handle_perms(void)
->>                 return -1;
->>         }
->>
->> -       if (cap_get_flag(caps, CAP_SYS_ADMIN, CAP_EFFECTIVE, &val)) {
->> -               p_err("bug: failed to retrieve CAP_SYS_ADMIN status");
->> +       cap_list = malloc(sizeof(cap_value_t) * ARRAY_SIZE(required_caps));
-> 
-> I fail to see why you need to dynamically allocate cap_list?
-> cap_value_t cap_list[ARRAY_SIZE(required_caps)] wouldn't work?
+On Mon, May 18, 2020 at 6:00 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 5/18/20 5:25 PM, Andrii Nakryiko wrote:
+> > On Mon, May 18, 2020 at 5:09 PM Qian Cai <cai@lca.pw> wrote:
+> >>
+> >> On Mon, May 18, 2020 at 7:55 PM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Sun, May 17, 2020 at 7:45 PM Qian Cai <cai@lca.pw> wrote:
+> >>>>
+> >>>> With Clang 9.0.1,
+> >>>>
+> >>>> return array->value + array->elem_size * (index & array->index_mask);
+> >>>>
+> >>>> but array->value is,
+> >>>>
+> >>>> char value[0] __aligned(8);
+> >>>
+> >>> This, and ptrs and pptrs, should be flexible arrays. But they are in a
+> >>> union, and unions don't support flexible arrays. Putting each of them
+> >>> into anonymous struct field also doesn't work:
+> >>>
+> >>> /data/users/andriin/linux/include/linux/bpf.h:820:18: error: flexible
+> >>> array member in a struct with no named members
+> >>>     struct { void *ptrs[] __aligned(8); };
+> >>>
+> >>> So it probably has to stay this way. Is there a way to silence UBSAN
+> >>> for this particular case?
+> >>
+> >> I am not aware of any way to disable a particular function in UBSAN
+> >> except for the whole file in kernel/bpf/Makefile,
+> >>
+> >> UBSAN_SANITIZE_arraymap.o := n
+> >>
+> >> If there is no better way to do it, I'll send a patch for it.
+> >
+> >
+> > That's probably going to be too drastic, we still would want to
+> > validate the rest of arraymap.c code, probably. Not sure, maybe
+> > someone else has better ideas.
+>
+> Maybe something like below?
+>
+>    struct bpf_array {
+>          struct bpf_map map;
+>          u32 elem_size;
+>          u32 index_mask;
+>          struct bpf_array_aux *aux;
+>          union {
+>                  char value;
+>                  void *ptrs;
+>                  void __percpu *pptrs;
+>          } u[] __aligned(8);
 
-Oh I should have thought about that, thanks! I'll fix it.
+That will require wider code changes, and would look quite unnatural:
 
->> +       if (!cap_list) {
->> +               p_err("failed to allocate cap_list: %s", strerror(errno));
->>                 goto exit_free;
->>         }
->> -       if (val == CAP_SET)
->> -               has_sys_admin_cap = true;
->>
->> -       if (!run_as_unprivileged && !has_sys_admin_cap) {
->> -               p_err("full feature probing requires CAP_SYS_ADMIN, run as root or use 'unprivileged'");
->> -               goto exit_free;
->> +       for (i = 0; i < ARRAY_SIZE(required_caps); i++) {
->> +               const char *cap_name = required_caps[i].name;
->> +               cap_value_t cap = required_caps[i].cap;
->> +
->> +#ifdef CAP_BPF
->> +               if (cap == CAP_BPF && !CAP_IS_SUPPORTED(cap))
->> +                       /* System does not know about CAP_BPF, meaning
->> +                        * that CAP_SYS_ADMIN is the only capability
->> +                        * required. We already checked it, break.
->> +                        */
->> +                       break;
->> +#endif
-> 
-> Seems more reliable to check all 4 capabilities independently (so
-> don't stop if !CAP_IS_SUPPORTED(cap)), and drop those that you have
-> set. Or there are some downsides to that?
+array->u[whatever].pptrs
 
-If CAP_BPF is not supported, there is simply no point in going on
-checking the other capabilities, since CAP_SYS_ADMIN is the only one we
-need to do the feature probes. So in that case I see little point in
-checking the others.
+instead of current
 
-But if I understand your concern, you're right in the sense that the
-current code would consider a user as "unprivileged" if they do not have
-all four capabilities (in the case where CAP_BPF is supported); but they
-may still have a subset of them and not be completely unprivileged, and
-in that case we would have has_admin_caps at false and skip capabilities
-drop.
+array->pptrs[whatever]
 
-I will fix that in next version. I am not sure about the advantage of
-keeping track of the capabilities and building a list just for dropping
-only the ones we have, but I can do that if you prefer.
-
-Thanks a lot for the review!
-Quentin
+>    };
