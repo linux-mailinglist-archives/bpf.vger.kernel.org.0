@@ -2,128 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D256F1D8D3D
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 03:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C2A1D8EDC
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 06:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgESBmm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 May 2020 21:42:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63784 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726227AbgESBmm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 May 2020 21:42:42 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04J1a7ln007196;
-        Mon, 18 May 2020 18:42:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=bc2qKunowKhFaVT/J9InA4DeLGvW0kltooCybuV/HI8=;
- b=JKQce6L8cDVX2eob/aCILK5CBBJwxedqf3xtJdrq4zeVx9sk/M/GMLNCxckz7BLHyt6H
- /9Bd/pLXQFfw7H6jpn17vY9HEzzIK9ccx7bgMY0Y22rw8Tiz2nN0YJu5aQCaPtKH/TBF
- W7p454QswQJC+VBRZRnfzIEJDK8NxZS2Ufw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 312dpx97ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 18 May 2020 18:42:28 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 18 May 2020 18:42:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H9x2C8vDP64VYjloIgM5sg0uHDG6OfX+AF8OY5Wypk4uGO/Z8BgimO8s2Q7U+D3U1VpjRBLzmsbUDbQ3CisG3879B/dSSxhZwnE75T6Axi8UEQ34//4WjiJ2PHy9S7EmhpCpBQRho4y09XpEuB6mwXqH9aIrOgX0AC7y/9ogSPszBQkro+rqcBzKN/J3ped+8GT5UP/3tcBTeoV16/7ygCaVSrXK8gzqylN8+LkXse+vJ1iz/IndOb1U39T+DoFFfoLPxqe0TxQ86/poiF8ih6kabEP58OOYHC4dfE3FY2gNEPq3i2pofFrmYO+KTvZj0hU6nlSLOBB2nqFq7HeiPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bc2qKunowKhFaVT/J9InA4DeLGvW0kltooCybuV/HI8=;
- b=dcBPDu9UEcc7bMDdun8iqs5K9ZS6fWD5YW9ZTkMy+jFMAgT6HRCFKV7Dazieh2ItpkNg2lz/qq1FFIowjR1dH2jRweVeVQpsgb1pf49ZNRpCUz6dr2JuNLGvZb6itkI3SKPCEr/TUyPMSr7770bFF9RTuLMjefcPKoSJgOB87rnpnj0RgDABqtRZLAuzMsmXoOW0PGZl4dynZjsgrlZeR/H1hiV4ifSCm/C/4t9M1dy+rcqKHpjU21luom/Ts6cF6DX6AjivIrFFM5M+N/9tiopb3TUqEsqAZiFFBZOLSlUncCo/CfJ6rK41U0uhRI22tvYiBn2uJZLuIKHTOmh13A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bc2qKunowKhFaVT/J9InA4DeLGvW0kltooCybuV/HI8=;
- b=T6D54SnZz0CnLtrdR6EEPxIQH45dXh+a+KbDSXcwDDLKss/iJP5akXymXpYxNpsUHxjKfIwSWyGJD90SBIpuSXg2S+8tqKx1LYm4kwtzgxgbJlUiaqzHkLkoXCFRO2mrptdpkXqc9Cz49F1aqaiMspfXG7MOvPOYaJDWledfD+I=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3192.namprd15.prod.outlook.com (2603:10b6:a03:10f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Tue, 19 May
- 2020 01:42:26 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3000.034; Tue, 19 May 2020
- 01:42:26 +0000
-Subject: Re: [PATCH bpf-next] selftest/bpf: make bpf_iter selftest compilable
- against old vmlinux.h
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20200518234516.3915052-1-andriin@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <6633a04c-aab4-5182-2bed-28b235436932@fb.com>
-Date:   Mon, 18 May 2020 18:42:24 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <20200518234516.3915052-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0003.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::16) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1726554AbgESEkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 00:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgESEkD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 00:40:03 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1694EC061A0C;
+        Mon, 18 May 2020 21:40:02 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id p12so10096591qtn.13;
+        Mon, 18 May 2020 21:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ef8uGVA3J/Q3uZk4bRLiF9KBaJiSBJ6a54346FamXFo=;
+        b=jg5nASl04iv4Fc5ymkwoZdlDwRQVgGM2FpUy9uFpbr0c+83BGnJ1o5FV+qhpeF6MHo
+         VumZG/7Rmk9kAEwa+g4riNpMv+IUHO1SEmgULUseVmK5WtcpvCK9EYqDsCMM/FmW51CL
+         LakjbSnjLdyQ78kKJyrT56Y3fOiPKzirVpiIqQ8hQQ38otfUMBlAAkN92L5Rv2QUL4+q
+         HJdJ+KwCgh/vGSD+RHcWa2o080Tdfhiq1JlAtdmf+oVjvRJubNgzetePevVHB0of2SEv
+         gob25SdBucK9iDLvVY1B3TnjEBpf9LT9wvFi1Sy44ptyrsdu2IKpFQ8P8/4quYilGHKE
+         CXFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ef8uGVA3J/Q3uZk4bRLiF9KBaJiSBJ6a54346FamXFo=;
+        b=AEGUCx8eqJwP1MJbdOZr36hO92dgfTFYIXgbp1RfB5+bheaAfaoLZ+HI3S8jjdXF86
+         Vn0PVEOMk9QReowodkqa/qsiuZksPDRoaLpwcO6pTthDuG6vaSot/lSHk0TYNUlUv08J
+         ppVFX/TcAiEJw1VQLRg9F0jZtI5LFduqk5wlzOAqAQ3D0BWEsbPG5EQj9JbtBR0qKLyl
+         YCml28yygsX55MW8d0odH0VYIQr4cptVJx4oZ1KtqiToSNO8UnMQNVRwiGtr6VQfZOyo
+         wK929O/SxZZGvQywFu/aGwZ/4u4xIpZwcwx/e3oqScnzqKSHVfhyuIjlwkH6ZObd6FAf
+         jR0A==
+X-Gm-Message-State: AOAM5328bhfhtL41a5gsq+GYQLzxMvHfiLShsDrDO90BdCJOgEwQ2E/G
+        mWRMjKTuoU6Hbbtmp/bKpH+0N+n//6+uSmITk8I=
+X-Google-Smtp-Source: ABdhPJy9zag//58ZgfB17SZbTGntuo6NBj9soLHQ18BKXHp8Pa3IFGtcsOrc18YvUEKZ329NgPHO/qNZXJveTbmgvW8=
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr19919130qtd.117.1589863201034;
+ Mon, 18 May 2020 21:40:01 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:f205) by BYAPR06CA0003.namprd06.prod.outlook.com (2603:10b6:a03:d4::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend Transport; Tue, 19 May 2020 01:42:26 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f205]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b80b7abf-9944-4bc0-14aa-08d7fb95e282
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3192:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB319249A26ADE03642429E332D3B90@BYAPR15MB3192.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 040866B734
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cEch0uouj3t8GUtxdkxiEP2z06ID8QZ+LtjOFPBYqb0qi4j2oTJg1L/BjDtFQBaJ9OaXpwSc2vlt/L7vLsOrJDWjqJwCUIZxvr8O0xlg3itEgfc49pENjvGBU2ELLmqrLe3JHjcwPyJVg+rpSUiBVjhAXirBHS8OjXKF7BXO8nvK1tlL7/RJef/xZxkBSHCDF6QDHFWWTPb5jMBOMpqeuAB2LgRVVzYGoLptWdO1lhgOfguZti7QvDlYWochdNvylKHI5BsFijlT/J1FGYWJ/okTK2iQe5+toy2bFHHRqpUjZbGoJ2enCEgs7SbFy/STgp674SuxpyFBCjdnWlBNmHOebDDcP+z8JCcUf+sBOchUQoycdmmYZhDEM6sILprSPDkqKfX/eUsYcldi3PAv5joSfakVMHWk3X9WKyVB8mY1/eVhHBHKeLBgvGOzFcETlYkMjQB+CLHpDFyJtBW5Hv7ddvkmZsZ5Fa2/Cn/0Gji2MzcDJhR+ppvD2+qeY/jp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(346002)(136003)(396003)(376002)(31686004)(6486002)(4326008)(53546011)(6506007)(52116002)(8936002)(4744005)(66476007)(66946007)(6512007)(66556008)(36756003)(86362001)(31696002)(16526019)(186003)(8676002)(2616005)(316002)(478600001)(5660300002)(2906002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 03VW8I2wd3ceFIYV6VjWykqjoG8UsAsnptzwhe9UUMXvdfyT0XWxYzBxk0xKcQQW+lA2bP6B+qMKIKcHwL/EHbsNq+THkTVZ3uS0HGSB0pwirfe4EjITc7W50HRFs8DWUWSDN9Aw6kCry8JAVrYtGQ2DlwIBvFQV3czPV/72sA3zXMQ+q3rP9+erjfB0Dx87M3CWuRy/BLhfuAID06VVzep95wTSmw6VNZ8NrS3MzKeZJaFX+SuEF+mK1gwfExrJSN3yDrvYm0cxyqVsG+7m77qFfj8Cx20ZRrjtzd/sGj2fpBLvJ0GTSqmz7ohvUg4xAKRAZU5AE0Oc+HrYp9pt3lZFa9/xJ0udls/4ls9F4ryhIDGJtV7xeHp0MnbGexNUXhwySmhN5RWkFV7tK9XkfHAfobS8R2qsKSaNy57cSSZxud9/oFxLaWw2A4zC6RvDk6P3GSFPWpyNA6QiVCmznBQDSPvTJycrQHagPRW4rGvc/uvjSHwjn/cv4BJpzUAQ710h7XBY5DTcI3rivZsi2g==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b80b7abf-9944-4bc0-14aa-08d7fb95e282
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2020 01:42:26.6468
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qyQgDrTLN8RoRu7zaId90w5Xk4ASut56hgB3CXgSHAy4XLP0obX0lPFcyVl0vgA6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3192
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-18_11:2020-05-15,2020-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 spamscore=0 mlxlogscore=912
- lowpriorityscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- cotscore=-2147483648 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005190013
-X-FB-Internal: deliver
+References: <20200516005149.3841-1-quentin@isovalent.com> <CAEf4BzZDC9az2vFPTNW03gSUZiYdc9-XeyP+1h8WkAKHagkUTg@mail.gmail.com>
+ <3ffe7cc3-01da-1862-d734-b7a8b1d7c63d@isovalent.com>
+In-Reply-To: <3ffe7cc3-01da-1862-d734-b7a8b1d7c63d@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 May 2020 21:39:50 -0700
+Message-ID: <CAEf4BzaD3UW8AL7ZEiqMzpSP_u_RT-p=VK5oTVjMHyd7Wpckyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools: bpftool: make capability check account
+ for new BPF caps
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, May 18, 2020 at 6:03 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2020-05-18 17:07 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Fri, May 15, 2020 at 5:52 PM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> Following the introduction of CAP_BPF, and the switch from CAP_SYS_ADMIN
+> >> to other capabilities for various BPF features, update the capability
+> >> checks (and potentially, drops) in bpftool for feature probes. Because
+> >> bpftool and/or the system might not know of CAP_BPF yet, some caution is
+> >> necessary:
+> >>
+> >> - If compiled and run on a system with CAP_BPF, check CAP_BPF,
+> >>   CAP_SYS_ADMIN, CAP_PERFMON, CAP_NET_ADMIN.
+> >>
+> >> - Guard against CAP_BPF being undefined, to allow compiling bpftool from
+> >>   latest sources on older systems. If the system where feature probes
+> >>   are run does not know of CAP_BPF, stop checking after CAP_SYS_ADMIN,
+> >>   as this should be the only capability required for all the BPF
+> >>   probing.
+> >>
+> >> - If compiled from latest sources on a system without CAP_BPF, but later
+> >>   executed on a newer system with CAP_BPF knowledge, then we only test
+> >>   CAP_SYS_ADMIN. Some probes may fail if the bpftool process has
+> >>   CAP_SYS_ADMIN but misses the other capabilities. The alternative would
+> >>   be to redefine the value for CAP_BPF in bpftool, but this does not
+> >>   look clean, and the case sounds relatively rare anyway.
+> >>
+> >> Note that libcap offers a cap_to_name() function to retrieve the name of
+> >> a given capability (e.g. "cap_sys_admin"). We do not use it because
+> >> deriving the names from the macros looks simpler than using
+> >> cap_to_name() (doing a strdup() on the string) + cap_free() + handling
+> >> the case of failed allocations, when we just want to use the name of the
+> >> capability in an error message.
+> >>
+> >> The checks when compiling without libcap (i.e. root versus non-root) are
+> >> unchanged.
+> >>
+> >> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> >> ---
+> >>  tools/bpf/bpftool/feature.c | 85 +++++++++++++++++++++++++++++--------
+> >>  1 file changed, 67 insertions(+), 18 deletions(-)
+> >>
+> >> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> >> index 1b73e63274b5..3c3d779986c7 100644
+> >> --- a/tools/bpf/bpftool/feature.c
+> >> +++ b/tools/bpf/bpftool/feature.c
+> >> @@ -758,12 +758,32 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
+> >>         print_end_section();
+> >>  }
+> >>
+> >> +#ifdef USE_LIBCAP
+> >> +#define capability(c) { c, #c }
+> >> +#endif
+> >> +
+> >>  static int handle_perms(void)
+> >>  {
+> >>  #ifdef USE_LIBCAP
+> >> -       cap_value_t cap_list[1] = { CAP_SYS_ADMIN };
+> >> -       bool has_sys_admin_cap = false;
+> >> +       struct {
+> >> +               cap_value_t cap;
+> >> +               char name[14];  /* strlen("CAP_SYS_ADMIN") */
+> >> +       } required_caps[] = {
+> >> +               capability(CAP_SYS_ADMIN),
+> >> +#ifdef CAP_BPF
+> >> +               /* Leave CAP_BPF in second position here: We will stop checking
+> >> +                * if the system does not know about it, since it probably just
+> >> +                * needs CAP_SYS_ADMIN to run all the probes in that case.
+> >> +                */
+> >> +               capability(CAP_BPF),
+> >> +               capability(CAP_NET_ADMIN),
+> >> +               capability(CAP_PERFMON),
+> >> +#endif
+> >> +       };
+> >> +       bool has_admin_caps = true;
+> >> +       cap_value_t *cap_list;
+> >>         cap_flag_value_t val;
+> >> +       unsigned int i;
+> >>         int res = -1;
+> >>         cap_t caps;
+> >>
+> >> @@ -774,41 +794,70 @@ static int handle_perms(void)
+> >>                 return -1;
+> >>         }
+> >>
+> >> -       if (cap_get_flag(caps, CAP_SYS_ADMIN, CAP_EFFECTIVE, &val)) {
+> >> -               p_err("bug: failed to retrieve CAP_SYS_ADMIN status");
+> >> +       cap_list = malloc(sizeof(cap_value_t) * ARRAY_SIZE(required_caps));
+> >
+> > I fail to see why you need to dynamically allocate cap_list?
+> > cap_value_t cap_list[ARRAY_SIZE(required_caps)] wouldn't work?
+>
+> Oh I should have thought about that, thanks! I'll fix it.
+>
+> >> +       if (!cap_list) {
+> >> +               p_err("failed to allocate cap_list: %s", strerror(errno));
+> >>                 goto exit_free;
+> >>         }
+> >> -       if (val == CAP_SET)
+> >> -               has_sys_admin_cap = true;
+> >>
+> >> -       if (!run_as_unprivileged && !has_sys_admin_cap) {
+> >> -               p_err("full feature probing requires CAP_SYS_ADMIN, run as root or use 'unprivileged'");
+> >> -               goto exit_free;
+> >> +       for (i = 0; i < ARRAY_SIZE(required_caps); i++) {
+> >> +               const char *cap_name = required_caps[i].name;
+> >> +               cap_value_t cap = required_caps[i].cap;
+> >> +
+> >> +#ifdef CAP_BPF
+> >> +               if (cap == CAP_BPF && !CAP_IS_SUPPORTED(cap))
+> >> +                       /* System does not know about CAP_BPF, meaning
+> >> +                        * that CAP_SYS_ADMIN is the only capability
+> >> +                        * required. We already checked it, break.
+> >> +                        */
+> >> +                       break;
+> >> +#endif
+> >
+> > Seems more reliable to check all 4 capabilities independently (so
+> > don't stop if !CAP_IS_SUPPORTED(cap)), and drop those that you have
+> > set. Or there are some downsides to that?
+>
+> If CAP_BPF is not supported, there is simply no point in going on
+> checking the other capabilities, since CAP_SYS_ADMIN is the only one we
+> need to do the feature probes. So in that case I see little point in
+> checking the others.
+>
+> But if I understand your concern, you're right in the sense that the
+> current code would consider a user as "unprivileged" if they do not have
+> all four capabilities (in the case where CAP_BPF is supported); but they
+> may still have a subset of them and not be completely unprivileged, and
+> in that case we would have has_admin_caps at false and skip capabilities
+> drop.
+>
+> I will fix that in next version. I am not sure about the advantage of
+> keeping track of the capabilities and building a list just for dropping
+> only the ones we have, but I can do that if you prefer.
+>
 
+Honestly, I don't use bpftool feature at all, so I'm not very
+qualified to decide. I just like tools not making too many
+assumptions, where not necessary. So see for yourself :)
 
-On 5/18/20 4:45 PM, Andrii Nakryiko wrote:
-> It's good to be able to compile bpf_iter selftest even on systems that don't
-> have the very latest vmlinux.h, e.g., for libbpf tests against older kernels in
-> Travis CI. To that extent, re-define bpf_iter_meta and corresponding bpf_iter
-> context structs in each selftest. To avoid type clashes with vmlinux.h, rename
-> vmlinux.h's definitions to get them out of the way.
-> 
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-
-Acked-by: Yonghong Song <yhs@fb.com>
+> Thanks a lot for the review!
+> Quentin
