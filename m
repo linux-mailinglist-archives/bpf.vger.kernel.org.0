@@ -2,103 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0593D1D9866
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423E51D98B6
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 15:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgESNp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 09:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729327AbgESNp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 09:45:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DE0C08C5C1;
-        Tue, 19 May 2020 06:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qCsBvrh+KJD94OzZIg2wzK8eCwrltTUzrmGt8F6Hn0Y=; b=etRLBJXUk51bBqKHOncqZVvZyI
-        vQtqk4TEib0NYj8DZbaJYTWVbFti0S1FOQTd8OOvMAOvvG0eS2z886Ra8KdtsaBczmwJT/lYKIa/q
-        kPbCLDNzaKZGTVer4rnsbXu/5PQUPlqefb96nX8OiUKS3OzpI5MRZsEbjFpAp9JFwupLVwCSfFMHu
-        O/RNnLpEedx5Un+x3Exl18c0pjdk1wEN197kzQh2dzmpruxazCfrkrQCb7pLl19MmtTUEoxexHmud
-        ejW4iRE3Hxs5MV+slCZgYSzYLpYgDBm5mDmm10BLqkixlob6lKEkc0PntbPpD71QC5GQzubFsF2Vn
-        Np5UHAWA==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jb2ZA-0003wy-0R; Tue, 19 May 2020 13:45:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 20/20] maccess: return -ERANGE when copy_from_kernel_nofault_allowed fails
-Date:   Tue, 19 May 2020 15:44:49 +0200
-Message-Id: <20200519134449.1466624-21-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
+        id S1728855AbgESN71 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 09:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728775AbgESN71 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 09:59:27 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7F6F20825;
+        Tue, 19 May 2020 13:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589896767;
+        bh=0IhArQVYM/6CbgtBJOhdd65fjzeUoMZcZUlX9Zz0pZs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CQ4PmYLBQ7Gqf19gvVV46Jd4yTAk4AnXbl56srpjNvvfmLGRnL1tZ6HQ6oiP5xJmy
+         m7P4DyJMdveb7ugRt4eefLoOg25kR95LBDIr+/SGo0P4umepd4f1elqAvL8Dx2jqn0
+         IE+F2GmvwVrAIdRn7u8K110zrU5+aLD3eLWxZvXE=
+Subject: Re: [PATCH v2 0/3] selftests: lib.mk improvements
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>, bpf@vger.kernel.org
+Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        shuah <shuah@kernel.org>
+References: <20200515120026.113278-1-yauheni.kaliuta@redhat.com>
+From:   shuah <shuah@kernel.org>
+Message-ID: <689fe06a-c781-e6ed-0544-8023c86fc21a@kernel.org>
+Date:   Tue, 19 May 2020 07:59:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200515120026.113278-1-yauheni.kaliuta@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow the callers to distinguish a real unmapped address vs a range
-that can't be probed.
+On 5/15/20 6:00 AM, Yauheni Kaliuta wrote:
+> 
+> Yauheni Kaliuta (3):
+>    selftests: do not use .ONESHELL
+>    selftests: fix condition in run_tests
+>    selftests: simplify run_tests
+> 
+>   tools/testing/selftests/lib.mk | 19 ++++++-------------
+>   1 file changed, 6 insertions(+), 13 deletions(-)
+> 
 
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/maccess.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Quick note that, I will pull these in for 5.8-rc1.
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 1e7d77656c596..4010d64189d21 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -25,7 +25,7 @@ bool __weak copy_from_kernel_nofault_allowed(void *dst, const void *unsafe_src,
- long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- {
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
-@@ -69,7 +69,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	do {
-@@ -107,7 +107,7 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
-@@ -174,7 +174,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
--- 
-2.26.2
-
+thanks,
+-- Shuah
