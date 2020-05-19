@@ -2,95 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6041D9D78
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 19:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2F61D9DC7
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 19:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgESRGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 13:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728689AbgESRGj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 13:06:39 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1BEC08C5C0;
-        Tue, 19 May 2020 10:06:39 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f13so3806026wmc.5;
-        Tue, 19 May 2020 10:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b0b+DAWsimTwHxmy06gC1qGATqHB41HGKjKMHuwB2uU=;
-        b=MfGRtbZZN/6k9+wrlP2zSdODee8Kn2QMUL/8Ac6tS6yHb3r8m6+MdCT9zPTPzeU1bh
-         iBaeIRXuJeWmrcRrYr2Ncl75OrlrAjpsKpnhD3i8CWAZhepgZGpfutsOGBg3lLIE0vGb
-         6Sj+AbGtcN1W7daBksFLJO2r8GovEcfrwfPUdj+253ep5uVVDZ96wj7Hy92GkDH02Bu/
-         c0F2eRV3e9oR49N/mS6eQAST8HlLpI9bycnb06i9dISfkaFo5b+2RZpgWr8p9O8vYUdW
-         0fj21SkwZGgas8XZUAY0JS4YGRhjBUMVZhyT2YA73HmIIdtcJeA05E69kFQdG28feQ5J
-         ShHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b0b+DAWsimTwHxmy06gC1qGATqHB41HGKjKMHuwB2uU=;
-        b=NPVrbdqsz8RaWqqNDf9A6pHNEpJbKKdxBc38h2NFN51w55wIWYYj8PakDpmnauTEHK
-         H7guAnMFAh2XZQR8qARxd23WPtfggunYhN+omWI/7pq78bNIAsP/IcXBm7hKZC0iO5Va
-         MCuqHMqLiGB/MUzK+/bLAzJcy1CTJj5INgfmzxW3+iFMOusTBdKhMPOZFjf+koXN1UkM
-         7LYeGVGUKZaym252IkZSMcXkrN01kkFTLsWkHHj83C6XGtEN0YXIBc0ImgMkam9WO8uE
-         EuCWBOetCFhfVkR6Y2Ww1Tti0dESCiFlZXpDADIzwrxLT2G/9t3cqGG91eZroHD+0LPc
-         adkg==
-X-Gm-Message-State: AOAM532996DiujznV+rkj9JOkd4mhORO88hb63jy7P2r+d5sPE48zQGN
-        mLNvDtiosiSoz+4nlCP2LHchanRoceniv72jaRw=
-X-Google-Smtp-Source: ABdhPJxy2Vuubx4taPhjA38NN0S65kjz787Mc5Ytyn12i7oNvkxHFWadGOZ8hPI5SvYsnQIOwXmu+TeL1T73xs+taxk=
-X-Received: by 2002:a1c:a557:: with SMTP id o84mr358436wme.165.1589907998184;
- Tue, 19 May 2020 10:06:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519085724.294949-8-bjorn.topel@gmail.com>
- <202005192351.j1H08VpV%lkp@intel.com> <c81b36a0-11dd-4b7f-fad8-85f31dced58c@intel.com>
- <20200519095539.570323c8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200519095539.570323c8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 19 May 2020 19:06:26 +0200
-Message-ID: <CAJ+HfNiunSSR8yY3_wHdxW71kmxMXhsRg2TRv+OVvSg9UZCFWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 07/15] i40e: separate kernel allocated rx_bi
- rings from AF_XDP rings
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        id S1729279AbgESRVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 13:21:25 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51704 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729238AbgESRVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 13:21:25 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jb5ve-0003cr-PZ; Tue, 19 May 2020 19:21:22 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jb5ve-000D5F-GM; Tue, 19 May 2020 19:21:22 +0200
+Subject: Re: [PATCH bpf-next v2 0/5] samples: bpf: refactor kprobe tracing
+ progs with libbpf
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        kbuild-all@lists.01.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Yonghong Song <yhs@fb.com>
+References: <20200516040608.1377876-1-danieltimlee@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a2814e19-3a0a-bfc8-a025-62e4bb7302a7@iogearbox.net>
+Date:   Tue, 19 May 2020 19:21:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200516040608.1377876-1-danieltimlee@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25817/Tue May 19 14:16:16 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 19 May 2020 at 18:55, Jakub Kicinski <kuba@kernel.org> wrote:
->
-[...]
->
-> While at it I also get this on patch 11 (gcc-10, W=3D1):
->
-> drivers/net/ethernet/mellanox/mlx5/core/en_main.c: In function mlx5e_allo=
-c_rq:
-> drivers/net/ethernet/mellanox/mlx5/core/en_main.c:376:6: warning: variabl=
-e num_xsk_frames set but not used [-Wunused-but-set-variable]
->    376 |  u32 num_xsk_frames =3D 0;
->        |      ^~~~~~~~~~~~~~
+On 5/16/20 6:06 AM, Daniel T. Lee wrote:
+> Currently, the kprobe BPF program attachment method for bpf_load is
+> pretty outdated. The implementation of bpf_load "directly" controls and
+> manages(create, delete) the kprobe events of DEBUGFS. On the other hand,
+> using using the libbpf automatically manages the kprobe event.
+> (under bpf_link interface)
+> 
+> This patchset refactors kprobe tracing programs with using libbpf API
+> for loading bpf program instead of previous bpf_load implementation.
+> 
+> ---
+> Changes in V2:
+>   - refactor pointer error check with libbpf_get_error
+>   - on bpf object open failure, return instead jump to cleanup
+>   - add macro for adding architecture prefix to system calls (sys_*)
+> 
+> Daniel T. Lee (5):
+>    samples: bpf: refactor pointer error check with libbpf
+>    samples: bpf: refactor kprobe tracing user progs with libbpf
+>    samples: bpf: refactor tail call user progs with libbpf
+>    samples: bpf: add tracex7 test file to .gitignore
+>    samples: bpf: refactor kprobe, tail call kern progs map definition
+> 
+>   samples/bpf/.gitignore              |  1 +
+>   samples/bpf/Makefile                | 16 +++----
+>   samples/bpf/sampleip_kern.c         | 12 +++---
+>   samples/bpf/sampleip_user.c         |  7 +--
+>   samples/bpf/sockex3_kern.c          | 36 ++++++++--------
+>   samples/bpf/sockex3_user.c          | 64 +++++++++++++++++++---------
+>   samples/bpf/trace_common.h          | 13 ++++++
+>   samples/bpf/trace_event_kern.c      | 24 +++++------
+>   samples/bpf/trace_event_user.c      |  9 ++--
+>   samples/bpf/tracex1_user.c          | 37 +++++++++++++---
+>   samples/bpf/tracex2_kern.c          | 27 ++++++------
+>   samples/bpf/tracex2_user.c          | 51 ++++++++++++++++++----
+>   samples/bpf/tracex3_kern.c          | 24 +++++------
+>   samples/bpf/tracex3_user.c          | 61 +++++++++++++++++++-------
+>   samples/bpf/tracex4_kern.c          | 12 +++---
+>   samples/bpf/tracex4_user.c          | 51 +++++++++++++++++-----
+>   samples/bpf/tracex5_kern.c          | 14 +++---
+>   samples/bpf/tracex5_user.c          | 66 +++++++++++++++++++++++++----
+>   samples/bpf/tracex6_kern.c          | 38 +++++++++--------
+>   samples/bpf/tracex6_user.c          | 49 ++++++++++++++++++---
+>   samples/bpf/tracex7_user.c          | 39 +++++++++++++----
+>   samples/bpf/xdp_redirect_cpu_user.c |  5 +--
+>   22 files changed, 455 insertions(+), 201 deletions(-)
+>   create mode 100644 samples/bpf/trace_common.h
+> 
 
-Ah, yes. Thanks!
-
-I'll wait until tomorrow for more input, and then do a respin.
-
-
-Bj=C3=B6rn
+Applied, thanks!
