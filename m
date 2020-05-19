@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4815C1D9C82
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 18:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C4B1D9CCF
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 18:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729375AbgESQ0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 12:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S1729452AbgESQd0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 12:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729399AbgESQ0S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 12:26:18 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7AFC08C5C2
-        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z18so340716lji.12
-        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
+        with ESMTP id S1729448AbgESQd0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 12:33:26 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ABDC08C5C0
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:33:25 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id l15so38842lje.9
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:33:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
-        b=a8S6FimrljQCYdqdMRjHudj5xuwSAYeW17sDBke8Wp/wO6Vv10u9cXvAcweW0ZSEYT
-         O3hXN68ol8TooTR2xUI2YNd5y+PctNRhxhENJnhmYB+aBitMMtqsXQFMvUY86xEYH5PA
-         jFICERjG8bgZGMW0GbVN6qDt50ZsFp9Lq9zCI=
+        bh=TFvy+u64rADS0X9wXPVDcnjojb1U9iWCN3n097gO97s=;
+        b=KITgpUd5bP2WD+I3Ft3adLmt6MH7MS4MFJexni61RXcXlzD9Gqjwa8Lmdkq9TYyfqS
+         KL4aFjs9x04ZYvGYs2IsxZG5dgyhwKLIBJrjoMKhrn6xZPweQeBnKjN1RmntmQCr96TY
+         jycjBR645lH/xqU7rOHokwZ9wup3usfS+9Z3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
-        b=JP71PoyNeYvRwd5WG1YNcLe9M747lm2xmnJqOFjEcUbsP9Djw1thlAD0TGlP6m/Jv5
-         wIDuf55NyRZzZ7y9OO69l1YGMftGXCaiJY2UZ4sn/K+zky5JiCgXGrvo6aww5KwrIdDy
-         Bc5s/sxqqyvJNvAjF7CG5ykT3YIYujDMPi6Bwgm7Hr3NFPdPVpALVTZ/cohp9agCEEFG
-         4KEkuNECKbjhiYyV6Q2P+pIhb8l19LRVC9ND1De3dd35i2M3r7N1MVRamoJf4m9pt9L0
-         +iHsQ6SpZ3wGyxd6itzjADDiTXu/Ya0Yoce7atTQdTskCl9chOSz2D3wUp+X0O1M5b4o
-         PWxw==
-X-Gm-Message-State: AOAM5301yN7wIMrY9QaZIQdL6wdebbagB9hDgVHgC+MBq+Ieq30MRTlS
-        +Nfwk5xfDRc47YJNf+TexWenorb5cSU=
-X-Google-Smtp-Source: ABdhPJwTiLYogUzqlxbE6EnFgFq7t/BRkmJupiYWO3IyFR8HZ/rbY0Wg6L1V2p8775RoN1WfTEBCFg==
-X-Received: by 2002:a2e:9d45:: with SMTP id y5mr144421ljj.258.1589905575276;
-        Tue, 19 May 2020 09:26:15 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id q13sm9365553lfh.73.2020.05.19.09.26.13
+        bh=TFvy+u64rADS0X9wXPVDcnjojb1U9iWCN3n097gO97s=;
+        b=SacKmsNT/MVt+gazf3ez6hz6d3kTT32oHgrSUSrUWmDajhBUCY1DzBhbzXf+9qhHkW
+         7NmLxzO8yDdjsO6AJEZEgVZbf8tTBJDqDp9A4We7qznFa0zKf0FLHX2MW0//9sq2QbCQ
+         l0CqU6dnPmS3X8Utfvc7aWxOUm3KKPvTG4Jc4Q9wuZws+B/a08UnD4PdyUg2Y2VZb2TU
+         NS4+UcV3KRcDY+QZywZpF2gcP/2OnNJ9tA/9Egd/R7DQYMDbM2OSM9gagcW8qqhfUHyQ
+         x00+47yfLrjzm3yNKrS4WgH4XTRsyUayHvxJ6pC9L+VDPa542FLwQhARfVSX34XhIu9y
+         VZAQ==
+X-Gm-Message-State: AOAM531+ApmgQRnur16LNgPCBxU9SboFwx9v76jhcFA/bcdyxbqutFnb
+        s4zNjY2ZdAKhvaW4i0ptTHw33ewGhns=
+X-Google-Smtp-Source: ABdhPJwvA61ktHsp+GuesQ9gBDOZ3ccZThCYKAbSP+3Ff8njknKqnOOEndXoYetTFKLb93ZPXBzjkA==
+X-Received: by 2002:a05:651c:c3:: with SMTP id 3mr157926ljr.71.1589906003888;
+        Tue, 19 May 2020 09:33:23 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id v10sm69388lja.23.2020.05.19.09.33.22
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 09:26:14 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id v16so369589ljc.8
-        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:13 -0700 (PDT)
-X-Received: by 2002:a05:651c:1183:: with SMTP id w3mr128485ljo.265.1589905573160;
- Tue, 19 May 2020 09:26:13 -0700 (PDT)
+        Tue, 19 May 2020 09:33:22 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id b6so443873ljj.1
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:33:22 -0700 (PDT)
+X-Received: by 2002:a2e:9641:: with SMTP id z1mr145949ljh.201.1589906002260;
+ Tue, 19 May 2020 09:33:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-13-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-13-hch@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-14-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-14-hch@lst.de>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 19 May 2020 09:25:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
-Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
-Subject: Re: [PATCH 12/20] maccess: remove strncpy_from_unsafe
+Date:   Tue, 19 May 2020 09:33:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjg6v1NU31ku2aAMfX7Yu0oDKRvKeBJVGZFQB7AjcwhAA@mail.gmail.com>
+Message-ID: <CAHk-=wjg6v1NU31ku2aAMfX7Yu0oDKRvKeBJVGZFQB7AjcwhAA@mail.gmail.com>
+Subject: Re: [PATCH 13/20] maccess: always use strict semantics for probe_kernel_read
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -76,60 +76,37 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
 >
+> +
 > +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
 > +           compat && (unsigned long)unsafe_ptr < TASK_SIZE)
-> +               ret = strncpy_from_user_nofault(dst, user_ptr, size);
+> +               ret = probe_user_read(dst, user_ptr, size);
 > +       else
-> +               ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
+> +               ret = probe_kernel_read(dst, unsafe_ptr, size);
+...
+> -               ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +               if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +                   (unsigned long)addr < TASK_SIZE) {
+> +                       ret = probe_user_read(&c,
+> +                               (__force u8 __user *)addr + len, 1);
+> +               } else {
+> +                       ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +               }
+...
+> +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +           (unsigned long)src < TASK_SIZE) {
+> +               return probe_user_read(dest, (__force const void __user *)src,
+> +                               size);
 
-These conditionals are completely illegible.
+If you can't make the conditional legible and fit on a single line and
+make it obvious _why_ you have that conditional, just use a helper
+function.
 
-That's true in the next patch too.
+Either for just the conditional itself, or for the whole operation.
+And at least for the bpf case, since you want the whole operation for
+that error handling and clearing of the result buffer anyway, I
+suspect it would be cleaner to have that kind of
+"bpf_copy_legacy_nofault()" function or whatever.
 
-Stop using "IS_ENABLED(config)" to make very complex conditionals.
+(And see previous email why I dislike that "compat" naming in the bpf case)
 
-A clear #ifdef is much better if the alternative is a conditional that
-is completely impossible to actually understand and needs multiple
-lines to read.
-
-If you made this a simple helper (called "bpf_strncpy_from_unsafe()"
-with that "compat" flag, perhaps?), it would be much more legible as
-
-  /*
-   * Big comment goes here about the compat behavior and
-   * non-overlapping address spaces and ambiguous pointers.
-   */
-  static long bpf_strncpy_from_legacy(void *dest, const void
-*unsafe_ptr, long size, bool legacy)
-  {
-  #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-        if (legacy && addr < TASK_SIZE)
-            return strncpy_from_user_nofault(dst, (const void __user
-*) unsafe_ptr, size);
-  #endif
-
-        return strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
-  }
-
-and then you'd just use
-
-        if (bpf_strncpy_from_unsafe(dst, unsafe_ptr, size, compat) < 0)
-                memset(dst, 0, size);
-
-and avoid any complicated conditionals, goto's, and make the code much
-easier to understand thanks to having a big comment about the legacy
-case.
-
-In fact, separately I'd probably want that "compat" naming to be
-scrapped entirely in that file.
-
-"compat" generally means something very specific and completely
-different in the kernel: it's the "I'm a 32-bit binary on a 64-bit
-kernel" compatibility case.
-
-Here, it's literally "BPF legacy behavior", not that kind of "compat" thing.
-
-But that renaming is separate, although I'd start the ball rolling
-with that "bpf_strncpy_from_legacy()" helper.
-
-                Linus
+                    Linus
