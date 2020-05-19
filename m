@@ -2,90 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AE51D9C5C
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 18:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4815C1D9C82
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgESQUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 12:20:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9797 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729001AbgESQUO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 12:20:14 -0400
-IronPort-SDR: o3RNfQZBKwvz4Azsv4w4nCsmLeeCOymg4C4ySIZDif8HUEJwXMtbyNHl0p5f1TAZLHGDpu6l8r
- /W7gN+x1SsoQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 09:20:14 -0700
-IronPort-SDR: eirhOS9d5jbEnEJW7qcNvSY8CvMw3KNxz3F3nzI3oNMNIvzXku6lZAwphlIZ54DxxvP2rce+z7
- 4XKPKDRag0ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
-   d="scan'208";a="439672455"
-Received: from shochwel-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.38.72])
-  by orsmga005.jf.intel.com with ESMTP; 19 May 2020 09:20:10 -0700
-Subject: Re: [PATCH bpf-next v3 07/15] i40e: separate kernel allocated rx_bi
- rings from AF_XDP rings
-To:     kbuild test robot <lkp@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com
-Cc:     kbuild-all@lists.01.org, maximmi@mellanox.com,
-        maciej.fijalkowski@intel.com, intel-wired-lan@lists.osuosl.org
-References: <20200519085724.294949-8-bjorn.topel@gmail.com>
- <202005192351.j1H08VpV%lkp@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <c81b36a0-11dd-4b7f-fad8-85f31dced58c@intel.com>
-Date:   Tue, 19 May 2020 18:20:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729375AbgESQ0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 12:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729399AbgESQ0S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 12:26:18 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7AFC08C5C2
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id z18so340716lji.12
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
+        b=a8S6FimrljQCYdqdMRjHudj5xuwSAYeW17sDBke8Wp/wO6Vv10u9cXvAcweW0ZSEYT
+         O3hXN68ol8TooTR2xUI2YNd5y+PctNRhxhENJnhmYB+aBitMMtqsXQFMvUY86xEYH5PA
+         jFICERjG8bgZGMW0GbVN6qDt50ZsFp9Lq9zCI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
+        b=JP71PoyNeYvRwd5WG1YNcLe9M747lm2xmnJqOFjEcUbsP9Djw1thlAD0TGlP6m/Jv5
+         wIDuf55NyRZzZ7y9OO69l1YGMftGXCaiJY2UZ4sn/K+zky5JiCgXGrvo6aww5KwrIdDy
+         Bc5s/sxqqyvJNvAjF7CG5ykT3YIYujDMPi6Bwgm7Hr3NFPdPVpALVTZ/cohp9agCEEFG
+         4KEkuNECKbjhiYyV6Q2P+pIhb8l19LRVC9ND1De3dd35i2M3r7N1MVRamoJf4m9pt9L0
+         +iHsQ6SpZ3wGyxd6itzjADDiTXu/Ya0Yoce7atTQdTskCl9chOSz2D3wUp+X0O1M5b4o
+         PWxw==
+X-Gm-Message-State: AOAM5301yN7wIMrY9QaZIQdL6wdebbagB9hDgVHgC+MBq+Ieq30MRTlS
+        +Nfwk5xfDRc47YJNf+TexWenorb5cSU=
+X-Google-Smtp-Source: ABdhPJwTiLYogUzqlxbE6EnFgFq7t/BRkmJupiYWO3IyFR8HZ/rbY0Wg6L1V2p8775RoN1WfTEBCFg==
+X-Received: by 2002:a2e:9d45:: with SMTP id y5mr144421ljj.258.1589905575276;
+        Tue, 19 May 2020 09:26:15 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id q13sm9365553lfh.73.2020.05.19.09.26.13
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 May 2020 09:26:14 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id v16so369589ljc.8
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 09:26:13 -0700 (PDT)
+X-Received: by 2002:a05:651c:1183:: with SMTP id w3mr128485ljo.265.1589905573160;
+ Tue, 19 May 2020 09:26:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202005192351.j1H08VpV%lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-13-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-13-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 May 2020 09:25:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
+Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
+Subject: Re: [PATCH 12/20] maccess: remove strncpy_from_unsafe
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-05-19 17:18, kbuild test robot wrote:
-> Hi "Björn,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on bpf-next/master]
-> [also build test WARNING on jkirsher-next-queue/dev-queue next-20200518]
-> [cannot apply to bpf/master linus/master v5.7-rc6]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Introduce-AF_XDP-buffer-allocation-API/20200519-203122
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: riscv-allyesconfig (attached as .config)
-> compiler: riscv64-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> 
->>> drivers/net/ethernet/intel/i40e/i40e_txrx.c:531:6: warning: no previous prototype for 'i40e_fd_handle_status' [-Wmissing-prototypes]
-> 531 | void i40e_fd_handle_status(struct i40e_ring *rx_ring, u64 qword0_raw,
-> |      ^~~~~~~~~~~~~~~~~~~~~
+On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
 >
+> +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +           compat && (unsigned long)unsafe_ptr < TASK_SIZE)
+> +               ret = strncpy_from_user_nofault(dst, user_ptr, size);
+> +       else
+> +               ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
 
-Yes, this could indeed be made static. Hmm, I wonder why I didn't get
-that warning on my x86-64 build!? I'll spin a v4 (or do a follow-up?).
+These conditionals are completely illegible.
 
+That's true in the next patch too.
 
-Björn
+Stop using "IS_ENABLED(config)" to make very complex conditionals.
+
+A clear #ifdef is much better if the alternative is a conditional that
+is completely impossible to actually understand and needs multiple
+lines to read.
+
+If you made this a simple helper (called "bpf_strncpy_from_unsafe()"
+with that "compat" flag, perhaps?), it would be much more legible as
+
+  /*
+   * Big comment goes here about the compat behavior and
+   * non-overlapping address spaces and ambiguous pointers.
+   */
+  static long bpf_strncpy_from_legacy(void *dest, const void
+*unsafe_ptr, long size, bool legacy)
+  {
+  #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+        if (legacy && addr < TASK_SIZE)
+            return strncpy_from_user_nofault(dst, (const void __user
+*) unsafe_ptr, size);
+  #endif
+
+        return strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
+  }
+
+and then you'd just use
+
+        if (bpf_strncpy_from_unsafe(dst, unsafe_ptr, size, compat) < 0)
+                memset(dst, 0, size);
+
+and avoid any complicated conditionals, goto's, and make the code much
+easier to understand thanks to having a big comment about the legacy
+case.
+
+In fact, separately I'd probably want that "compat" naming to be
+scrapped entirely in that file.
+
+"compat" generally means something very specific and completely
+different in the kernel: it's the "I'm a 32-bit binary on a 64-bit
+kernel" compatibility case.
+
+Here, it's literally "BPF legacy behavior", not that kind of "compat" thing.
+
+But that renaming is separate, although I'd start the ball rolling
+with that "bpf_strncpy_from_legacy()" helper.
+
+                Linus
