@@ -2,173 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F251DA3AF
-	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 23:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2371DA3BB
+	for <lists+bpf@lfdr.de>; Tue, 19 May 2020 23:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgESVe5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 17:34:57 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:53882 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgESVe5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 17:34:57 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JLXDpC064727;
-        Tue, 19 May 2020 21:34:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=XvX+z7KKVGBzMZiI3Qgk3gyGUPZ961yy2VHT9Alm848=;
- b=rDoNTc1KHr5fv+G158PN8ibredYUabaKl2NUJ0vZJ/Yu2UE3oZwKq8IC4NZF5W3xuiPr
- 4Wq6RcP+3Oy7k3cBGOqI9GF4mLuFfsNWOg5IM+euRgVOHdOpQDjlr+Iy+Pfc9qOyXVWQ
- uUCdtqV8UUR83d7S9rGVQn9XhM7rbpx8PiVzmlSFljrS0iViRQE1FxsXH82VucFYVuME
- 52K8Z7vst+rDuf2FujaMTrE7N5dyIwnckHAJFw/VcMgdC1O4Gu7yFLR1Hi3Ug1ORzkCZ
- z47x36FZLDUTXhQdZnbXzrm4GzYhERlM0Qd2AwQf0lQQKlNJBGHdcWXy5uEFDj3gZ/qd 8Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3127kr7y9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 May 2020 21:34:38 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JLX1Kj046925;
-        Tue, 19 May 2020 21:34:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 312t35fd4x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 May 2020 21:34:37 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JLYZcU025379;
-        Tue, 19 May 2020 21:34:35 GMT
-Received: from dhcp-10-175-213-8.vpn.oracle.com (/10.175.213.8)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 May 2020 14:34:35 -0700
-Date:   Tue, 19 May 2020 22:34:25 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
+        id S1726824AbgESVkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 17:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgESVkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 17:40:05 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6B7C08C5C0
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 14:40:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x10so425466plr.4
+        for <bpf@vger.kernel.org>; Tue, 19 May 2020 14:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qZrnOBqdIK/f9ZKEYvAl0vw/13DRB3RwIGSmwGXyTpI=;
+        b=YD0FWr1n4aRBwXbRpkumGdVcnRnTBzs8xC53EtpY/+CDnTQq5QrfVWZuUHWHC7t/oC
+         GCluPTOCW1KYp8yaGOWLKDdonR1xl0cIqDBBpYL/Jc01xqzgLo2avep6uumO1EeeIe0+
+         sqTXfRtYYEmAKVRLMLfBHLUyJCkqlV8EfLlTU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qZrnOBqdIK/f9ZKEYvAl0vw/13DRB3RwIGSmwGXyTpI=;
+        b=kKC/qeO8dvphB52OZiJZ8fKDrsFd3+1C0Yok04D95bf5mcwHaOiPxHQaSWC85Ye9i8
+         lMjMOs3RpELQCfeSQbTn+XS7dvBPKEzzCcN/dRBAaqwmWjMf0UzH8TaElLpLN3QAfuD7
+         d1CF8dzkZtUmWMqoQpdd18KJJ5rzgJDiK6OY8pOFE+Ehpafd4xVGAwoqtzN1pQGTTEN+
+         xF0FuHIPbWfxLysi/FgmYjj25g5lEzIHldUpQRS+IXyelaK1IRGDmCiYhvLs4/iTncYh
+         K8Glipt+QKe+FpYiD0IMF7A3oWc7uh0ImUOEVtxAAFyo//qL2Y29bHOD8vx+aox+sMnP
+         UzSg==
+X-Gm-Message-State: AOAM533G4TKRUvgYCf9+Hjrb/vqPh1S4dYjLDV2BC6GGmRYtfP5hlD26
+        lrbHvJYUv2041dQdGTXDLvXUyA==
+X-Google-Smtp-Source: ABdhPJxxUbJw24Z12APTaY/3nigy/vJ+nnWJ/bpNRl0x+5MCtEWwJIZ0w7jwgPf8UyhhfpOzN1YH0w==
+X-Received: by 2002:a17:902:bb82:: with SMTP id m2mr1369227pls.291.1589924403251;
+        Tue, 19 May 2020 14:40:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n67sm370238pfn.16.2020.05.19.14.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 14:40:01 -0700 (PDT)
+Date:   Tue, 19 May 2020 14:40:00 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>, shuah@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: add general instructions for
- test execution
-In-Reply-To: <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
-Message-ID: <alpine.LRH.2.21.2005192224560.31696@localhost>
-References: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com> <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+Cc:     Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Matt Denton <mpdenton@google.com>,
+        Chris Palmer <palmer@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: seccomp feature development
+Message-ID: <202005191434.57253AD@keescook>
+References: <202005181120.971232B7B@keescook>
+ <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
+ <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
+ <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005190181
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005190181
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 19 May 2020, Alexei Starovoitov wrote:
-
-> On Mon, May 18, 2020 at 12:23:10PM +0100, Alan Maguire wrote:
-> > Getting a clean BPF selftests run involves ensuring latest trunk LLVM/clang
-> > are used, pahole is recent (>=1.16) and config matches the specified
-> > config file as closely as possible.  Document all of this in the general
-> > README.rst file.  Also note how to work around timeout failures.
-> > 
-> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > ---
-> >  tools/testing/selftests/bpf/README.rst | 46 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 46 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-> > index 0f67f1b..b00eebb 100644
-> > --- a/tools/testing/selftests/bpf/README.rst
-> > +++ b/tools/testing/selftests/bpf/README.rst
-> > @@ -1,6 +1,52 @@
-> >  ==================
-> >  BPF Selftest Notes
-> >  ==================
-> > +First verify the built kernel config options match the config options
-> > +specified in the config file in this directory.  Test failures for
-> > +unknown helpers, inability to find BTF etc will be observed otherwise.
-> > +
-> > +To ensure the maximum number of tests pass, it is best to use the latest
-> > +trunk LLVM/clang, i.e.
-> > +
-> > +git clone https://github.com/llvm/llvm-project
-> > +
-> > +Build/install trunk LLVM:
-> > +
-> > +.. code-block:: bash
-> > +  git clone https://github.com/llvm/llvm-project
-> > +  cd llvm-project
-> > +  mkdir build/llvm
-> > +  cd build/llvm
-> > +  cmake ../../llvm/
-> > +  make
-> > +  sudo make install
-> > +  cd ../../
-> > +
-> > +Build/install trunk clang:
-> > +
-> > +.. code-block:: bash
-> > +  mkdir -p build/clang
-> > +  cd build/clang
-> > +  cmake ../../clang
-> > +  make
-> > +  sudo make install
-> > +
+On Tue, May 19, 2020 at 09:18:47AM -0700, Alexei Starovoitov wrote:
+> On Mon, May 18, 2020 at 7:53 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
+> >
+> > On 2020-05-19, Jann Horn <jannh@google.com> wrote:
+> > > On Mon, May 18, 2020 at 11:05 PM Kees Cook <keescook@chromium.org> wrote:
+> > > > ## deep argument inspection
+> > > >
+> > > > The argument caching bit is, I think, rather mechanical in nature since
+> > > > it's all "just" internal to the kernel: seccomp can likely adjust how it
+> > > > allocates seccomp_data (maybe going so far as to have it split across two
+> > > > pages with the syscall argument struct always starting on the 2nd page
+> > > > boundary), and copying the EA struct into that page, which will be both
+> > > > used by the filter and by the syscall.
+> > >
+> > > We could also do the same kind of thing the eBPF verifier does in
+> > > convert_ctx_accesses(), and rewrite the context accesses to actually
+> > > go through two different pointers depending on the (constant) offset
+> > > into seccomp_data.
+> >
+> > My main worry with this is that we'll need to figure out what kind of
+> > offset mathematics are necessary to deal with pointers inside the
+> > extensible struct. As a very ugly proposal, you could make it so that
+> > you multiply the offset by PAGE_SIZE each time you want to dereference
+> > the pointer at that offset (unless we want to add new opcodes to cBPF to
+> > allow us to represent this).
 > 
-> these instructions are obsolete and partially incorrect.
-> May be refer to Documentation/bpf/bpf_devel_QA.rst instead?
->
+> Please don't. cbpf is frozen.
 
-Sure; looks like there are up-to-date sections there on
-running BPF selftests and building LLVM manually.  Perhaps
-I should add the notes about pahole etc there too?
-I should also have noted that without an up-to-date iproute2
-failures will be observed also.
-  
-> > +When building the kernel with CONFIG_DEBUG_INFO_BTF, pahole
-> > +version 16 or later is also required for BTF function
-> > +support. pahole can be built from the source at
-> > +
-> > +https://github.com/acmel/dwarves
-> > +
-> > +It is often available in "dwarves/libdwarves" packages also,
-> > +but be aware that versions prior to 1.16 will fail with
-> > +errors that functions cannot be found in BTF.
-> > +
-> > +When running selftests, the default timeout of 45 seconds
-> > +can be exceeded by some tests.  We can override the default
-> > +timeout via a "settings" file; for example:
-> > +
-> > +.. code-block:: bash
-> > +  echo "timeout=120" > tools/testing/selftests/bpf/settings
+https://www.youtube.com/watch?v=L0MK7qz13bU
+
+If the only workable design paths for deep arg inspection end up needing
+BPF helpers, I would agree that it's time for seccomp to grow eBPF
+language support. I'm still hoping there's a clean solution that doesn't
+require a seccomp language extension.
+
+> > > We don't need to actually zero-fill memory for this beyond what the
+> > > kernel supports - AFAIK the existing APIs already say that passing a
+> > > short length is equivalent to passing zeroes, so we can just replace
+> > > all out-of-bounds loads with zeroing registers in the filter.
+> > > The tricky case is what should happen if the userspace program passes
+> > > in fields that the filter doesn't know about. The filter can see the
+> > > length field passed in by userspace, and then just reject anything
+> > > where the length field is bigger than the structure size the filter
+> > > knows about. But maybe it'd be slightly nicer if there was an
+> > > operation for "tell me whether everything starting at offset X is
+> > > zeroes", so that if someone compiles with newer kernel headers where
+> > > the struct is bigger, and leaves the new fields zeroed, the syscalls
+> > > still go through an outdated filter properly.
+> >
+> > I think the best way of handling this (without breaking programs
+> > senselessly) is to have filters essentially emulate
+> > copy_struct_from_user() semantics -- which is along the lines of what
+> > you've suggested.
 > 
-> Is it really the case?
-> I've never seen anything like this.
+> and cpbf load instruction will become copy_from_user() underneath?
+
+No, this was meaning internal checking about struct sizes needs to exist
+(not the user copy parts).
+
+> I don't see how that can work.
+> Have you considered implications to jits, register usage, etc ?
 > 
+> ebpf will become sleepable soon. It will be able to do copy_from_user()
+> and examine any level of user pointer dereference.
+> toctou is still going to be a concern though,
+> but such ebpf+copy_from_user analysis and syscall sandboxing
+> will not need to change kernel code base around syscalls at all.
+> No need to invent E-syscalls and all the rest I've seen in this thread.
 
-When running via "make run_tests" on baremetal systems I
-see test timeouts pretty consistently; e.g. from a bpf tree test
-run yesterday:
+To avoid the ToCToU, the seccomp infrastructure must do the
+copy_from_user(), so there's not need for the sleepable stuff in seccomp
+that I can see. The question is mainly one of flattening.
 
-not ok 6 selftests: bpf: test_progs # TIMEOUT
-not ok 31 selftests: bpf: test_tunnel.sh # TIMEOUT
-not ok 38 selftests: bpf: test_lwt_ip_encap.sh # TIMEOUT
-not ok 40 selftests: bpf: test_tc_tunnel.sh # TIMEOUT
-not ok 42 selftests: bpf: test_xdping.sh # TIMEOUT
-not ok 43 selftests: bpf: test_bpftool_build.sh # TIMEOUT
-
-These will only occur if running via "make run_tests",
-so running tests individually would not trigger these
-failures.
-
-Alan
+-- 
+Kees Cook
