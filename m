@@ -2,95 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA111DA793
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 03:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A13F1DA813
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 04:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgETBzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 May 2020 21:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgETBzs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 May 2020 21:55:48 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCE7C061A0E
-        for <bpf@vger.kernel.org>; Tue, 19 May 2020 18:55:47 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id ee19so619826qvb.11
-        for <bpf@vger.kernel.org>; Tue, 19 May 2020 18:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=ghTZqejRfgfS5fU2jVg75uMDbgGX4TrDcdfAaAdauPM=;
-        b=ZOSedoTXRdCITrmaNoTnIMCXK7FvETKzbgoMB6JrmV4a5WGgI4bUyJioFolzQmGVrq
-         o84jZ9Q029nIsm59ickCSKRAQ01KYsQEUK+O0c4WczRv54WM0OVp426vCrLLCpKR37Mw
-         m5+8b6DcRSebQJ0RTOCsPoR2ZIbKjuquYzCasav1Nxy8+/U0kUkQUoatHY5OrIxy9YtL
-         yAVmCyNuLc+1DjGAfNtUnT7YgFJbNpFsbuQn2zlgnGL6qXiPYNQ0+P32QGnABRJpe8HR
-         nVBWLJcjfkd+mQxUSjqqoCgfYXpimBamkomH/UGmqkYwxDWuFhnC7r08aRZk4wq13M7K
-         eJcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=ghTZqejRfgfS5fU2jVg75uMDbgGX4TrDcdfAaAdauPM=;
-        b=lw5s/tgsJVO7Zy3uKu8BD2KedA0zdPIl9vw9cgCV1kpstpZvV9w4OqOLr6ps6tQkpO
-         mj0SXTAHK2CrerBywZYscsCUmqYm4mB8IXID+vyQg7q96s8nLql34/cLi/DXokJKY7yu
-         asLOCwM9/Vis8BMz+jD3RFS9l0bez283u+7Q5pqnGRtLiLZQ4s6F8LxoMMy618atPo6R
-         snnd8FzmY13X9zgWmhBR7CvB2f00AOn6RnSbR4IKxXw9Pk4TjtetjqtyyANHulTjaTRj
-         9WG5v62QQjkfEffauJrcM5y1RRSuYQ/TBaotBPAKPZ/1G3XiJhL7mLXHIpnyyxLTWJEh
-         IHTA==
-X-Gm-Message-State: AOAM5331WHzhqf5+IGegIqSX4LayxksNKlrJQ5bts7g+fBAcUhdyjTh0
-        zzV9QZCxQx+hNYtRrdUmXo4DCvg0YskN8w==
-X-Google-Smtp-Source: ABdhPJyy1uyJk+Gqjg5bwcSBKIbQNOr6J5nfgaVGYYnWbcx1hDrSKyd/Hr8zTt2MLIvCkn1/+n7iIQ==
-X-Received: by 2002:ad4:466f:: with SMTP id z15mr2750441qvv.101.1589939746442;
-        Tue, 19 May 2020 18:55:46 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id j3sm1007064qkf.9.2020.05.19.18.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 18:55:45 -0700 (PDT)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
-Date:   Tue, 19 May 2020 21:55:45 -0400
-Message-Id: <FE7742FF-713E-4310-95E7-9B217662E53E@lca.pw>
-References: <CAEf4BzZKCh7+2TL8GVetxrOKYCoL0U7jTGsO5CbDExs7Px+bYQ@mail.gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726938AbgETCeq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 May 2020 22:34:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgETCep (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 May 2020 22:34:45 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19D9F2075F;
+        Wed, 20 May 2020 02:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589942085;
+        bh=5TX6blDXQ6f+6hKSGCxomiV/h9BfQhuTdQ1tm+sld0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=klTWpgECYRftIP9DfV5mt0U3/nHgbW3YxUGGev8YNKgKYSbR6PX904dQj9BXy+wwR
+         Z57gcVqNNDl8oZQ0XqQt4jR8uStgPIqDNn91m1Hty6nAQEazs44wW6mpqpznPL70Lr
+         2SM+1MGRt9qkjE38McwUKkvY60bdDnwI6cC1wIjI=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0C7C740AFD; Tue, 19 May 2020 23:34:43 -0300 (-03)
+Date:   Tue, 19 May 2020 23:34:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-In-Reply-To: <CAEf4BzZKCh7+2TL8GVetxrOKYCoL0U7jTGsO5CbDExs7Px+bYQ@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: iPhone Mail (17E262)
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [PATCH v3 6/7] perf test: Improve pmu event metric testing
+Message-ID: <20200520023443.GE32678@kernel.org>
+References: <20200515221732.44078-1-irogers@google.com>
+ <20200515221732.44078-7-irogers@google.com>
+ <20200519190602.GB28228@kernel.org>
+ <CAP-5=fVdDjazSdzfTXeuWwqCSh0zURp3M8QZpYK=qd92GeyrRw@mail.gmail.com>
+ <20200520011548.GD28228@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520011548.GD28228@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Em Tue, May 19, 2020 at 10:15:48PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, May 19, 2020 at 01:15:41PM -0700, Ian Rogers escreveu:
+> > On Tue, May 19, 2020 at 12:06 PM Arnaldo Carvalho de Melo
+> > errno != 0 for both cases as the man page notes suggest doing this.
+> > The tests using v are necessary to avoid the unused result, but
+> > presumably any errno case should return false here? I guess testing
+> > that is redundant as the return below will catch it. Perhaps this
+> > should be:
+> > 
+> > errno = 0;
+> > v = strtod(str, &end_ptr);
+> > (void)v;  /* We don't care for the value of the double, just that it
+> > converts. Avoid unused result warnings. */
+> > return errno == 0 && end_ptr != str;
+> 
+> Ok, I'll try that one.
 
+What I have is in my tmp.perf/core branch, this and the hashmap.h
+__WORDSIZE fixups, with those all the alpine Linux containers, that use
+Musl libc passed, waiting for the remaining 80 other containers to
+finish, now lots of these containers build with and without NO_LIBBPF=1
+to make sure we test both variants,
 
-> On May 19, 2020, at 7:23 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->=20
-> I agree, it's bad to have this noise. But again, there is nothing
-> wrong with the way it's used in BPF code base. We'd gladly use
-> flexible array, if we could. But given we can't, I'd say the proper
-> solution (in order of my preference) would be:
->=20
->  - don't trigger false error, if zero-sized array is the member of union;
->  - or have some sort of annotation at field declaration site (not a
-> field access site).
->=20
-> Is that possible?
-
-I am not a compiler expert, but with my experience with all those compiler i=
-nstrumental technology like KCSAN, KASAN and UBSAN, it seems both options yo=
-u prop need to modify compilers, i.e., -fsanitize=3Dundefined=
+- Arnaldo
