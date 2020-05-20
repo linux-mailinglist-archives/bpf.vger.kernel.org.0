@@ -2,127 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8515D1DBBB4
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 19:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D881DBCAB
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 20:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgETRkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 13:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S1726576AbgETSVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 14:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgETRkF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 13:40:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213D3C061A0E
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 10:40:04 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 132so2502841ybc.22
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 10:40:04 -0700 (PDT)
+        with ESMTP id S1726729AbgETSUU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 14:20:20 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D53C08C5C0
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 11:20:19 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id k15so2637379ybt.4
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 11:20:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=JjuT0BvlfRc0YWDoJydhmiVNBxtWkNF7rv8/0zwekGs=;
-        b=jYxxD4HE3SIJHytWf1LqVAfz5AsPvv3s0y4taplmDHZw33iS5wQ1zrCsTPYlpE+JNE
-         Qrq0mEjjtx/IAjaynJ+xMMakXgtc7D/iaB46h8SfUJT4dQMR2q4lhuMWWdR165IuUvKV
-         FiwjjHjsEMtpVhUSS7BqVJirH42j7ILQpU3w0Tkblt2iaJMF1YCel8Jb6SeqmGtNyF84
-         uSriUkeuVCgWez2YdK81I9LkinvL+JIciVkCsgfHvsH+ijf/NwlKRUh0Gqrs4Mw5GZuE
-         hB0FLcX/L916tvk/GqniEGkVQAA1sH34dFOIyhUmiRXyXdRxflI1GZCc1dpY7r+HzxJi
-         VeFA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=HirrhLtLdWXctOmYl+GGXlhELiHQimzvAAf/lgliNtM=;
+        b=Lymp+HoZWtdVPsEhkUCFjvzZfmfCdrJ+0vpCWb9rwEx/Xmetsrtm/o00bCY08F4/Rq
+         VR186IkjVvsURWe54okR8cFkJoanJBuOvCIDJfSXLGVyGTHR4Gl1kSzMhDgKfzkNSjKA
+         ph3Q4CRNvIOxysyDzInQidifLpqLr/GuDHaiDa6SonZLSHveVv61Ic1rCyzPDIZwAH1e
+         xHeiKA+Iu5rKPGvcC40LPkBoq0OLz6Fg0KfD9S1GV1+t8iVrCm2T7YX5sNCVLIosG+q9
+         wSn9njOb1jLeO6X1Uj7oJpkXY5ZC1pYeyyD8ZfBirweSpGYPa/8icc4aYlO69VD621/L
+         n+Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=JjuT0BvlfRc0YWDoJydhmiVNBxtWkNF7rv8/0zwekGs=;
-        b=Mc50GDGMSSJ9/DpHt3voQFfkn7N/spAumCHzEXnjNBO0MkBwdobpnFcYAAB9DchCPx
-         yTitJAWa3EI1w1hisWTqffyvl/SmNJZQb0VbcodyMf3R0Na7gqIi2TBrU2JT5puhwxey
-         9LRQMcAyeXgG44NgK7w4hVQKxCCoTvDo3uDFm78tViN6AbdAJQE+mHjtpNnfLeKefWAz
-         rCCVMwrCLI+10U+g4aMqdTUB9hKIivgSgZfDaAuH8QAPnvBvqQ9y4jzNTuVzDlII2hZK
-         GmcFVAYmSROF5QgqDPsyUYljnCfru9DCZWr+mvoVuka24gwTN2sOWpfuXGvSk8WjcxC/
-         q+tw==
-X-Gm-Message-State: AOAM533wmMLVLd9C3vJsBFsnruYCH07Q+3I58inuFGd/bxguRGKN7tOp
-        PxPL080jh6TbervxIr5LPpMu7qY=
-X-Google-Smtp-Source: ABdhPJx8JbJfndxuwxbMxlZu3Iw23RmY+6ZflbIIs0uhSYR72FyK3YGgGVxF3foQcQavt2WiMFZh7Q0=
-X-Received: by 2002:a25:ba8f:: with SMTP id s15mr8858832ybg.34.1589996403329;
- Wed, 20 May 2020 10:40:03 -0700 (PDT)
-Date:   Wed, 20 May 2020 10:40:00 -0700
-In-Reply-To: <20200520172258.551075-1-jakub@cloudflare.com>
-Message-Id: <20200520174000.GA49942@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=HirrhLtLdWXctOmYl+GGXlhELiHQimzvAAf/lgliNtM=;
+        b=YwNDF0K0Ky5JtLqIeYnix109JfPqWNN8u4PHPhZ2mYRzJ7TByagYpOUcsl+6hM15QU
+         3BNBg4HJt8sv2Iq3G6oTQbnMbrUhpySQmMBfVPXgwtmRGllhR2mhEO2n+KJACymQmEs7
+         5W3XyXbMy9KyBXIbEUlrMSWedJWqnPKIITtp7Xrq+6+s2t0VLpzs7upYprR+wASYk/yR
+         DQ+LQg5slQBLfjduS+Dd0lkwJBGvGnOz4ZTh+IfqEztY451uyebHLtTiOzaOhWlsi6MW
+         4iURvVA0rIzTVzav3PSrs4cjRgm4RFgT8k6RH6paLCuGGzzo4x5lD8X3RyzAPAogxSW3
+         hrUA==
+X-Gm-Message-State: AOAM532BJ2FJdgeRCYZHZf0MIwVA4K0ye9OzJRLAy2ah+ZfP1ZCOa/HA
+        lBu2fD5pAl20FFOGyXIn9nMhjjIJSfcr
+X-Google-Smtp-Source: ABdhPJycvTSovxfJnyx4j6fte7xJCX7Uvo5rFBgeP48/vmM2CXzcwrtEtZojGSQO78TM+7YUq6KB9+mLPl2J
+X-Received: by 2002:a25:d8cf:: with SMTP id p198mr8525330ybg.119.1589998818599;
+ Wed, 20 May 2020 11:20:18 -0700 (PDT)
+Date:   Wed, 20 May 2020 11:20:04 -0700
+Message-Id: <20200520182011.32236-1-irogers@google.com>
 Mime-Version: 1.0
-References: <20200520172258.551075-1-jakub@cloudflare.com>
-Subject: Re: [PATCH bpf] flow_dissector: Drop BPF flow dissector prog ref on
- netns cleanup
-From:   sdf@google.com
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+Subject: [PATCH v2 0/7] Share events between metrics
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/20, Jakub Sitnicki wrote:
-> When attaching a flow dissector program to a network namespace with
-> bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+Metric groups contain metrics. Metrics create groups of events to
+ideally be scheduled together. Often metrics refer to the same events,
+for example, a cache hit and cache miss rate. Using separate event
+groups means these metrics are multiplexed at different times and the
+counts don't sum to 100%. More multiplexing also decreases the
+accuracy of the measurement.
 
-> If netns gets destroyed while a flow dissector is still attached, and  
-> there
-> are no other references to the prog, we leak the reference and the program
-> remains loaded.
+This change orders metrics from groups or the command line, so that
+the ones with the most events are set up first. Later metrics see if
+groups already provide their events, and reuse them if
+possible. Unnecessary events and groups are eliminated.
 
-> Leak can be reproduced by running flow dissector tests from selftests/bpf:
+The option --metric-no-group is added so that metrics aren't placed in
+groups. This affects multiplexing and may increase sharing.
 
->    # bpftool prog list
->    # ./test_flow_dissector.sh
->    ...
->    selftests: test_flow_dissector [PASS]
->    # bpftool prog list
->    4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
->            loaded_at 2020-05-20T18:50:53+0200  uid 0
->            xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
->            btf_id 4
->    #
+The option --metric-mo-merge is added and with this option the
+existing grouping behavior is preserved.
 
-> Fix it by detaching the flow dissector program when netns is going away.
+Using skylakex metrics I ran the following shell code to count the
+number of events for each metric group (this ignores metric groups
+with a single metric, and one of the duplicated TopdownL1 and
+TopDownL1 groups):
 
-> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
+for i in all Branches BrMispredicts Cache_Misses FLOPS Instruction_Type Memory_BW Pipeline Power SMT Summary TopdownL1 TopdownL1_SMT
+do
+  echo Metric group: $i
+  echo -n " - No merging (old default, now --metric-no-merge): "
+  /tmp/perf/perf stat -a --metric-no-merge -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]" | wc -l
+  echo -n " - Merging over metrics (new default)             : "
+  /tmp/perf/perf stat -a -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]"|wc -l
+  echo -n " - No event groups and merging (--metric-no-group): "
+  /tmp/perf/perf stat -a --metric-no-group -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]"|wc -l
+done
 
-> Discovered while working on bpf_link support for netns-attached progs.
-> Looks like bpf tree material so pushing it out separately.
-Oh, good catch!
+Metric group: all
+ - No merging (old default, now --metric-no-merge): 193
+ - Merging over metrics (new default)             : 142
+ - No event groups and merging (--metric-no-group): 84
+Metric group: Branches
+ - No merging (old default, now --metric-no-merge): 8
+ - Merging over metrics (new default)             : 8
+ - No event groups and merging (--metric-no-group): 4
+Metric group: BrMispredicts
+ - No merging (old default, now --metric-no-merge): 11
+ - Merging over metrics (new default)             : 11
+ - No event groups and merging (--metric-no-group): 10
+Metric group: Cache_Misses
+ - No merging (old default, now --metric-no-merge): 11
+ - Merging over metrics (new default)             : 9
+ - No event groups and merging (--metric-no-group): 6
+Metric group: FLOPS
+ - No merging (old default, now --metric-no-merge): 18
+ - Merging over metrics (new default)             : 10
+ - No event groups and merging (--metric-no-group): 10
+Metric group: Instruction_Type
+ - No merging (old default, now --metric-no-merge): 6
+ - Merging over metrics (new default)             : 6
+ - No event groups and merging (--metric-no-group): 4
+Metric group: Pipeline
+ - No merging (old default, now --metric-no-merge): 6
+ - Merging over metrics (new default)             : 6
+ - No event groups and merging (--metric-no-group): 5
+Metric group: Power
+ - No merging (old default, now --metric-no-merge): 16
+ - Merging over metrics (new default)             : 16
+ - No event groups and merging (--metric-no-group): 10
+Metric group: SMT
+ - No merging (old default, now --metric-no-merge): 11
+ - Merging over metrics (new default)             : 8
+ - No event groups and merging (--metric-no-group): 7
+Metric group: Summary
+ - No merging (old default, now --metric-no-merge): 19
+ - Merging over metrics (new default)             : 17
+ - No event groups and merging (--metric-no-group): 17
+Metric group: TopdownL1
+ - No merging (old default, now --metric-no-merge): 16
+ - Merging over metrics (new default)             : 7
+ - No event groups and merging (--metric-no-group): 7
+Metric group: TopdownL1_SMT
+ - No merging (old default, now --metric-no-merge): 24
+ - Merging over metrics (new default)             : 7
+ - No event groups and merging (--metric-no-group): 7
 
-> -jkbs
+There are 5 out of 12 metric groups where no events are shared, such
+as Power, however, disabling grouping of events always reduces the
+number of events.
 
->   net/core/flow_dissector.c | 29 ++++++++++++++++++++++++++++-
->   1 file changed, 28 insertions(+), 1 deletion(-)
+The result for Memory_BW needs explanation:
 
-> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-> index 3eff84824c8b..b6179cd20158 100644
-> --- a/net/core/flow_dissector.c
-> +++ b/net/core/flow_dissector.c
-> @@ -179,6 +179,27 @@ int skb_flow_dissector_bpf_prog_detach(const union  
-> bpf_attr *attr)
->   	return 0;
->   }
+Metric group: Memory_BW
+ - No merging (old default, now --metric-no-merge): 9
+ - Merging over metrics (new default)             : 5
+ - No event groups and merging (--metric-no-group): 11
 
-> +static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
-> +{
-> +	struct bpf_prog *attached;
-> +
-> +	/* We don't lock the update-side because there are no
-> +	 * references left to this netns when we get called. Hence
-> +	 * there can be no attach/detach in progress.
-> +	 */
-> +	rcu_read_lock();
-> +	attached = rcu_dereference(net->flow_dissector_prog);
-> +	if (attached) {
-> +		RCU_INIT_POINTER(net->flow_dissector_prog, NULL);
-> +		bpf_prog_put(attached);
-> +	}
-> +	rcu_read_unlock();
-> +}
-I wonder, should we instead refactor existing
-skb_flow_dissector_bpf_prog_detach to accept netns (instead of attr)
-can call that here? Instead of reimplementing it (I don't think we
-care about mutex lock/unlock efficiency here?). Thoughts?
+Both with and without merging the groups fail to be set up and so the
+event counts here are for broken metrics. The --metric-no-group number
+is accurate as all the events are scheduled. Ideally a constraint
+would be added for these metrics in the json code to avoid grouping.
+
+v2. rebases on kernel/git/acme/linux.git branch tmp.perf/core, fixes a
+missing comma with metric lists (reported-by Jiri Olsa
+<jolsa@redhat.com>) and adds early returns to metricgroup__add_metric
+(suggested-by Jiri Olsa).
+
+v1. was prepared on kernel/git/acme/linux.git branch tmp.perf/core
+
+Compared to RFC v3: fix a bug where unnecessary commas were passed to
+parse-events and were echoed. Fix a bug where the same event could be
+matched more than once with --metric-no-group, causing there to be
+events missing.
+https://lore.kernel.org/lkml/20200508053629.210324-1-irogers@google.com/
+
+Ian Rogers (7):
+  perf metricgroup: Always place duration_time last
+  perf metricgroup: Use early return in add_metric
+  perf metricgroup: Delay events string creation
+  perf metricgroup: Order event groups by size
+  perf metricgroup: Remove duped metric group events
+  perf metricgroup: Add options to not group or merge
+  perf metricgroup: Remove unnecessary ',' from events
+
+ tools/perf/Documentation/perf-stat.txt |  19 ++
+ tools/perf/builtin-stat.c              |  11 +-
+ tools/perf/util/metricgroup.c          | 239 ++++++++++++++++++-------
+ tools/perf/util/metricgroup.h          |   6 +-
+ tools/perf/util/stat.h                 |   2 +
+ 5 files changed, 207 insertions(+), 70 deletions(-)
+
+-- 
+2.26.2.761.g0e0b3e54be-goog
+
