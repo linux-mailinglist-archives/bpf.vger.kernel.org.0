@@ -2,89 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC481DC03C
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 22:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB38E1DC187
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 23:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgETUeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 16:34:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgETUeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 16:34:12 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 766D3207E8;
-        Wed, 20 May 2020 20:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590006851;
-        bh=nrhqiPlqg0n1hAE/O/a+UV4rvWhhKR/jrI3wT+HPdB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fnETanLGKttjkEDsIOkbvEpJYimeA18NjKziM8drdxMbWqnxJRwv2z9bJPmHYy4OX
-         Qymq55cxN+8xS9TpqOtAcsZqHbC9oKnawEEkLKBjb/yGVzqJj8DHvUu7N1CNgXjWcC
-         FPJnGkx5GKum6HTnpGaHQ3qI28qCOx5Zb6erqtF4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7029A40AFD; Wed, 20 May 2020 17:34:09 -0300 (-03)
-Date:   Wed, 20 May 2020 17:34:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 3/7] perf metricgroup: Delay events string creation
-Message-ID: <20200520203409.GA26877@kernel.org>
-References: <20200520072814.128267-1-irogers@google.com>
- <20200520072814.128267-4-irogers@google.com>
- <20200520131412.GK157452@krava>
- <CAP-5=fXHRiahLZjQHcFiWW=zdXc7r+=WdMpzeCj-+xPcqB2khQ@mail.gmail.com>
+        id S1726892AbgETVpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 17:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728019AbgETVpc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 17:45:32 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B99C061A0E
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 14:45:32 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 142so5255947qkl.6
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 14:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ImoIHuFvHoMO0gWqFgEtRwQa4LB065DY+2eyFbUKhZk=;
+        b=Pw/4+OX0rQc4l8X1OWzfbfoj547x0qt3PJWfnvkZMxzmJLp6AE9o7Ix9Gg6Krt6kph
+         RIQAjsVyxxNgZSb6nc7IPlcmZE7HyV3C4Hr6axUwX45kLyUzmg81/Jjg3FcXz8vCC4U1
+         rbxP6lswF7OhiH/FFWqjKH7knweo1XH6SR861eXIyBxyRVd+mzme1NoHJSEb95uHNvwV
+         dWzcIffKA/OmOCCrrnixom874Bh2A8/Rxc7ds1xAsidjhVsjiEFsUkn6P8K7Hu0aVuiS
+         fhDsGAp/a5SnwWBRNDvzxPWcWeLvyQk7H2I7ZxDKpf5Xv4m3W1+jx+TveH4mBOiviDv+
+         KOQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ImoIHuFvHoMO0gWqFgEtRwQa4LB065DY+2eyFbUKhZk=;
+        b=LrHk6Rfc3xK442fl32gnMbK94f+U8ePMysPmvIaHb31IojxGSi2SXHE6NPUWognpk1
+         J7mMJwJMF5oUd/cNmEyG0mP7cDt/NE0POa/ZT7R8HLku/MqUttDqEOzwtv7SdvnyK1La
+         m4U5RNPqyfbdRmYe0sEFqvkkHa9T9YCfHpMuk04JcbJoC4oZdRkNxcvWN2/4jxSdqAQU
+         sFmS0/3D8h0OjIHsrj1WQgAgdjpBl9zlpeq6w0ThgrXXspngL8n1vswDZQowOwVXFYQG
+         jxPEjvAQN5Mx7YZurELyitnRWJePJqHuCm8V7+7eCrEIatwMfOgSBlyqEqvHMzQ/ZHMY
+         35Ew==
+X-Gm-Message-State: AOAM5318rzEbZ8SASoyylQx+TThXjYi7l79EQG33NOhqzGBiR0cQAoXV
+        eUBxPUASqL6ctzR+ILOy7WG/p/ZRJ3LQ0a9FAvQ=
+X-Google-Smtp-Source: ABdhPJx66027ZdoDLKaa1Lo+imZ7LSBtev7uoA+iy05pYxEqV8hoD7ba5f6QiFB4Klp3QoLxop84EwDrRVnYM1CBymY=
+X-Received: by 2002:a05:620a:247:: with SMTP id q7mr947251qkn.36.1590011131656;
+ Wed, 20 May 2020 14:45:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXHRiahLZjQHcFiWW=zdXc7r+=WdMpzeCj-+xPcqB2khQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20200519084957.55166-1-yauheni.kaliuta@redhat.com>
+ <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com> <xuny7dx7nnbc.fsf@redhat.com>
+In-Reply-To: <xuny7dx7nnbc.fsf@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 May 2020 14:45:20 -0700
+Message-ID: <CAEf4BzZ8Sx3HLPag71dOLkfWJgiRbjGNc6HcMca9CcO=LWC4Tw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: install btf .c files
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, May 20, 2020 at 11:22:22AM -0700, Ian Rogers escreveu:
-> On Wed, May 20, 2020 at 6:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >                               break;
-> > >               }
-> > >       }
-> > > +     if (!ret) {
-> >
-> > could you please do instead:
-> >
-> >         if (ret)
-> >                 return ret;
-> >
-> > so the code below cuts down one indent level and you
-> > don't need to split up the lines
-> 
-> Done, broken out as a separate patch in v2:
-> https://lore.kernel.org/lkml/20200520182011.32236-3-irogers@google.com/
+On Tue, May 19, 2020 at 11:16 PM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> Hi, Andrii!
+>
+> >>>>> On Tue, 19 May 2020 12:09:36 -0700, Andrii Nakryiko  wrote:
+>
+>  > On Tue, May 19, 2020 at 1:50 AM Yauheni Kaliuta
+>  > <yauheni.kaliuta@redhat.com> wrote:
+>  >>
+>  >> Some .c files used by test_progs to check btf and they are missing
+>  >> from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
+>  >> test_progs and test_maps w/ general rule").
+>  >>
+>  >> Take them back.
+>  >>
+>  >> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+>  >> test_maps w/ general rule")
+>  >>
+>  >> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+>  >> ---
+>  >> tools/testing/selftests/bpf/Makefile | 3 +++
+>  >> 1 file changed, 3 insertions(+)
+>  >>
+>  >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>  >> index e716e931d0c9..d96440732905 100644
+>  >> --- a/tools/testing/selftests/bpf/Makefile
+>  >> +++ b/tools/testing/selftests/bpf/Makefile
+>  >> @@ -46,6 +46,9 @@ TEST_GEN_FILES =
+>  >> TEST_FILES = test_lwt_ip_encap.o \
+>  >> test_tc_edt.o
+>  >>
+>  >> +BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
+>  >> +TEST_FILES += $(BTF_C_FILES)
+>
+>  > Can you please re-use BTF_C_FILES in TRUNNER_EXTRA_FILES :=
+>  > assignment on line 357?
+>
+> Do you mean this:
 
-Jiri, was this the only issue with this patchkit? I've merged already
-the first one, that you acked.
+Yes, you can add my Acked-by: Andrii Nakryiko <andriin@fb.com>.
+Test_progs flavors can be addressed separately, I think.
 
-- Arnaldo
+[...]
