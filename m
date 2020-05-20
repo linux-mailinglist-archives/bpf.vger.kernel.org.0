@@ -2,184 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4441DA9DC
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 07:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8571DAA79
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 08:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgETF0J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 01:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbgETF0I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 01:26:08 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95871C061A0E;
-        Tue, 19 May 2020 22:26:08 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ci23so727091pjb.5;
-        Tue, 19 May 2020 22:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eRmslym24V6G/rjPE8TehOfLWQ3zK6gG071z6c2z4UU=;
-        b=erUqusEcKRlIP3KYp3chtbL3NTp8aMyzzUU5VsGfE7lUwSaCnAkHLHve1yL3c+2ysw
-         tzV8VcKNivFaTnUwNf6c39c50waU31eQaRd7qXjqQRQ/eDh9+Cv3jBWmurl059hFt+q1
-         V5oSvIaX712w7elQvFTxwaO8IOmcDNBc+4Mgq89Trfv9U2wbq4LjA2t0TKtoCyVxubwp
-         xsvsI/OtlgMIXE7HF5s6y4LKwB34+LPafXCgjk6X9kShKU3OOFvPXQfKn6yIs7beMVT9
-         lIQaPdfIrSu7Rs8KDS7h3xIeNjla/7dr9VFcN+2SayNyRWJAUgAIlDyKIiveEVj+BoQf
-         Ni4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eRmslym24V6G/rjPE8TehOfLWQ3zK6gG071z6c2z4UU=;
-        b=M6QpjsC/fYt5FyVAhLJVkmhxCzynzSJSeAiTIY0k+GimCqmgyz99zZ1y2MjWwv8QrC
-         lCk/H9/ub9YcZUlbAihHOkMS77hoa9WGetnPFdSWVYbhqGtIpCtmv6L4rYaEcihlrZQb
-         /TwRnvBRenECrsj8FWip2SU8GY1DbkstwoTXu8xIy+Fuh9oF17TVPuo9F7ta1GIuIiMU
-         riCEtwKm+WwaNJ6R0WiY6RCOIdw/794aqsqrJsOU8iPYmsKW3uYCk49IjZZjMjVFuJZt
-         KOwLx6/enEuJlfek4N40DRl9OdKQ+2TAQbEGz3vv268V2AubB9E4nGoTrXx/DDazfx6T
-         nehw==
-X-Gm-Message-State: AOAM5315d9/nYhn5b/GxMPDTY8i/bxB4k5QCSo9gGQHNF+rnIultZL7c
-        0e43TjFxCkwnV4tcvQH2ia0=
-X-Google-Smtp-Source: ABdhPJxgU6JMsC870qBMQn3lqTKFkDnKKBt3MvzEuqd85kwCYzn4m4YWzUn1hbHotWgCzS7GTpNWQg==
-X-Received: by 2002:a17:90a:8c85:: with SMTP id b5mr3143434pjo.187.1589952368001;
-        Tue, 19 May 2020 22:26:08 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8135])
-        by smtp.gmail.com with ESMTPSA id 131sm882738pgf.49.2020.05.19.22.26.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 22:26:06 -0700 (PDT)
-Date:   Tue, 19 May 2020 22:26:04 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, bpf@vger.kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: add general instructions for
- test execution
-Message-ID: <20200520052604.o53ca2kyzd7sd3g3@ast-mbp.dhcp.thefacebook.com>
-References: <1589800990-11209-1-git-send-email-alan.maguire@oracle.com>
- <20200519155021.6tag46i57z2hsivj@ast-mbp.dhcp.thefacebook.com>
- <alpine.LRH.2.21.2005192224560.31696@localhost>
+        id S1726309AbgETGQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 02:16:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55336 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726224AbgETGQe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 02:16:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589955392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OMQ9IJD9O1/jeNpFpeWM7Xv9tCq8zAdhnCdDGCrzgkY=;
+        b=bg5G/yUmWCzwHF3U+Ldrp0GDaq5lAC0eGOqH6wIYdPKLBBJc7leFPwCMo+ek/jMLkawluF
+        XdMnZD51bLauRJVJtWEG1CO1TJwzK/GWiqrR8UVE+6xoCqu/l+7hcgfXaCfsqTojt0AebQ
+        tIkihDJS2QUKfP4I/rShQSliQyH4EGQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-w7_Sz8eQMp2dGlHFcSmTHQ-1; Wed, 20 May 2020 02:16:28 -0400
+X-MC-Unique: w7_Sz8eQMp2dGlHFcSmTHQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EC90835B43;
+        Wed, 20 May 2020 06:16:27 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-168.ams2.redhat.com [10.36.112.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E87852E162;
+        Wed, 20 May 2020 06:16:25 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH] selftests/bpf: install btf .c files
+References: <20200519084957.55166-1-yauheni.kaliuta@redhat.com>
+        <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com>
+Date:   Wed, 20 May 2020 09:16:23 +0300
+In-Reply-To: <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com>
+        (Andrii Nakryiko's message of "Tue, 19 May 2020 12:09:36 -0700")
+Message-ID: <xuny7dx7nnbc.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.2005192224560.31696@localhost>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 19, 2020 at 10:34:25PM +0100, Alan Maguire wrote:
-> On Tue, 19 May 2020, Alexei Starovoitov wrote:
-> 
-> > On Mon, May 18, 2020 at 12:23:10PM +0100, Alan Maguire wrote:
-> > > Getting a clean BPF selftests run involves ensuring latest trunk LLVM/clang
-> > > are used, pahole is recent (>=1.16) and config matches the specified
-> > > config file as closely as possible.  Document all of this in the general
-> > > README.rst file.  Also note how to work around timeout failures.
-> > > 
-> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/README.rst | 46 ++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 46 insertions(+)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-> > > index 0f67f1b..b00eebb 100644
-> > > --- a/tools/testing/selftests/bpf/README.rst
-> > > +++ b/tools/testing/selftests/bpf/README.rst
-> > > @@ -1,6 +1,52 @@
-> > >  ==================
-> > >  BPF Selftest Notes
-> > >  ==================
-> > > +First verify the built kernel config options match the config options
-> > > +specified in the config file in this directory.  Test failures for
-> > > +unknown helpers, inability to find BTF etc will be observed otherwise.
-> > > +
-> > > +To ensure the maximum number of tests pass, it is best to use the latest
-> > > +trunk LLVM/clang, i.e.
-> > > +
-> > > +git clone https://github.com/llvm/llvm-project
-> > > +
-> > > +Build/install trunk LLVM:
-> > > +
-> > > +.. code-block:: bash
-> > > +  git clone https://github.com/llvm/llvm-project
-> > > +  cd llvm-project
-> > > +  mkdir build/llvm
-> > > +  cd build/llvm
-> > > +  cmake ../../llvm/
-> > > +  make
-> > > +  sudo make install
-> > > +  cd ../../
-> > > +
-> > > +Build/install trunk clang:
-> > > +
-> > > +.. code-block:: bash
-> > > +  mkdir -p build/clang
-> > > +  cd build/clang
-> > > +  cmake ../../clang
-> > > +  make
-> > > +  sudo make install
-> > > +
-> > 
-> > these instructions are obsolete and partially incorrect.
-> > May be refer to Documentation/bpf/bpf_devel_QA.rst instead?
-> >
-> 
-> Sure; looks like there are up-to-date sections there on
-> running BPF selftests and building LLVM manually.  Perhaps
-> I should add the notes about pahole etc there too?
+Hi, Andrii!
 
-yes. please.
-Could you mention distros that have fresh pahole?
-Otherwise users will have an impression that pahole needs
-to be build from scratch as well. Which is not the case.
+>>>>> On Tue, 19 May 2020 12:09:36 -0700, Andrii Nakryiko  wrote:
 
-> I should also have noted that without an up-to-date iproute2
-> failures will be observed also.
+ > On Tue, May 19, 2020 at 1:50 AM Yauheni Kaliuta
+ > <yauheni.kaliuta@redhat.com> wrote:
+ >> 
+ >> Some .c files used by test_progs to check btf and they are missing
+ >> from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
+ >> test_progs and test_maps w/ general rule").
+ >> 
+ >> Take them back.
+ >> 
+ >> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+ >> test_maps w/ general rule")
+ >> 
+ >> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+ >> ---
+ >> tools/testing/selftests/bpf/Makefile | 3 +++
+ >> 1 file changed, 3 insertions(+)
+ >> 
+ >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+ >> index e716e931d0c9..d96440732905 100644
+ >> --- a/tools/testing/selftests/bpf/Makefile
+ >> +++ b/tools/testing/selftests/bpf/Makefile
+ >> @@ -46,6 +46,9 @@ TEST_GEN_FILES =
+ >> TEST_FILES = test_lwt_ip_encap.o \
+ >> test_tc_edt.o
+ >> 
+ >> +BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
+ >> +TEST_FILES += $(BTF_C_FILES)
 
-Would be good to highlight which tests will fail with old iproute2.
-I'm not sure which version is necessary.
-What is 'up-to-date' ?
-The tests I run before applying work for me and I rebuild iproute2
-every year or so :)
+ > Can you please re-use BTF_C_FILES in TRUNNER_EXTRA_FILES :=
+ > assignment on line 357?
 
-> > > +When building the kernel with CONFIG_DEBUG_INFO_BTF, pahole
-> > > +version 16 or later is also required for BTF function
-> > > +support. pahole can be built from the source at
-> > > +
-> > > +https://github.com/acmel/dwarves
-> > > +
-> > > +It is often available in "dwarves/libdwarves" packages also,
-> > > +but be aware that versions prior to 1.16 will fail with
-> > > +errors that functions cannot be found in BTF.
-> > > +
-> > > +When running selftests, the default timeout of 45 seconds
-> > > +can be exceeded by some tests.  We can override the default
-> > > +timeout via a "settings" file; for example:
-> > > +
-> > > +.. code-block:: bash
-> > > +  echo "timeout=120" > tools/testing/selftests/bpf/settings
-> > 
-> > Is it really the case?
-> > I've never seen anything like this.
-> > 
-> 
-> When running via "make run_tests" on baremetal systems I
-> see test timeouts pretty consistently; e.g. from a bpf tree test
-> run yesterday:
-> 
-> not ok 6 selftests: bpf: test_progs # TIMEOUT
-> not ok 31 selftests: bpf: test_tunnel.sh # TIMEOUT
-> not ok 38 selftests: bpf: test_lwt_ip_encap.sh # TIMEOUT
-> not ok 40 selftests: bpf: test_tc_tunnel.sh # TIMEOUT
-> not ok 42 selftests: bpf: test_xdping.sh # TIMEOUT
-> not ok 43 selftests: bpf: test_bpftool_build.sh # TIMEOUT
-> 
-> These will only occur if running via "make run_tests",
-> so running tests individually would not trigger these
-> failures.
+Do you mean this:
 
-If timeout is necessary it's better to fix it in the git
-instead of requiring users to tweak their environment.
+From 45ce4975303de9e0abc733f68583a50478733071 Mon Sep 17 00:00:00 2001
+From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Date: Tue, 19 May 2020 11:35:52 +0300
+Subject: [PATCH] selftests/bpf: install btf .c files
+
+Some .c files used by test_progs to check btf and they are missing
+from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
+test_progs and test_maps w/ general rule").
+
+Take them back.
+
+Reuse BTF_C_FILES for TRUNNER_EXTRA_FILES.
+
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+test_maps w/ general rule")
+
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+---
+ tools/testing/selftests/bpf/Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e716e931d0c9..3ab4b6937987 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -46,6 +46,9 @@ TEST_GEN_FILES =
+ TEST_FILES = test_lwt_ip_encap.o \
+ 	test_tc_edt.o
+ 
++BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
++TEST_FILES += $(BTF_C_FILES)
++
+ # Order correspond to 'make run_tests' order
+ TEST_PROGS := test_kmod.sh \
+ 	test_xdp_redirect.sh \
+@@ -357,8 +360,7 @@ TRUNNER_BPF_PROGS_DIR := progs
+ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+ 			 network_helpers.c testing_helpers.c		\
+ 			 flow_dissector_load.h
+-TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+-		       $(wildcard progs/btf_dump_test_case_*.c)
++TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(BTF_C_FILES)
+ TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+ TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+ TRUNNER_BPF_LDFLAGS := -mattr=+alu32
+-- 
+2.26.2
+
+?
+
+ > See also $(TRUNNER_BINARY)-extras rule. For "flavored"
+ > test_progs runners (e.g., test_progs-no_alu32), those files
+ > need to be copied into no_alu32 sub-directory (same for BPF .o
+ > files, actually). Unless you don't want to run flavored
+ > test_progs, of course.
+
+Thanks, I'll have a look.
+
+ >> # Order correspond to 'make run_tests' order
+ >> TEST_PROGS := test_kmod.sh \
+ >> test_xdp_redirect.sh \
+ >> --
+ >> 2.26.2
+ >> 
+
+
+-- 
+WBR,
+Yauheni Kaliuta
+
