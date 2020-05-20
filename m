@@ -2,115 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6368A1DB710
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 16:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FBC1DB727
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgETOaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 10:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32944 "EHLO mail.kernel.org"
+        id S1727018AbgETOeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 10:34:17 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26290 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgETOaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 10:30:18 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64206205CB;
-        Wed, 20 May 2020 14:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589985017;
-        bh=bMsUrfEBhqQ2ZdF+Y8Gv8Gqh8iNsHpYp6jNM1nM5kOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a1bWiQwGLeEtWfAIKT8KsxIp2IslN1LO7MUduJYWar1HTcCTeM3d4Ezc5JNBAsHCK
-         rnGNB8PhtKB5u1+Zqvj43iEvKE3bjuuTIGPpj+YeanbhhQaULqz2KHIDG9/zGHbxw5
-         mpqsV/5ILxloh74L23h6n+c9hrF0GV38iICkmozI=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7646040AFD; Wed, 20 May 2020 11:30:14 -0300 (-03)
-Date:   Wed, 20 May 2020 11:30:14 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, cj.chengjian@huawei.com,
-        huawei.libin@huawei.com, xiexiuqi@huawei.com, mark.rutland@arm.com,
-        guohanjun@huawei.com, alexander.shishkin@linux.intel.com,
-        wangnan0@huawei.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
-Message-ID: <20200520143014.GJ32678@kernel.org>
-References: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
- <20200520070551.GC110644@krava>
- <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
+        id S1726943AbgETOeR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 10:34:17 -0400
+IronPort-SDR: B+3LPz5J8KvRyoG2J35sy2xsZYCV501Ng39Ij+l9MBO9a472nkp+Slf1LqxJpiwAjrri9aVCsd
+ YXio1EbeOyXg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 07:34:16 -0700
+IronPort-SDR: KT0TlJdT5CgYsXjQIEQi3y1yaUTbjn4SqyAukPNeonzcKiY/z1feQYVSQcBk4KzOK6uRTriwHM
+ zMsxDpA/r1yw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="308739120"
+Received: from sbaldwin-mobl3.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.56.131])
+  by FMSMGA003.fm.intel.com with ESMTP; 20 May 2020 07:34:06 -0700
+Subject: Re: [PATCH bpf-next v4 01/15] xsk: fix xsk_umem_xdp_frame_sz()
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        jeffrey.t.kirsher@intel.com, maximmi@mellanox.com,
+        maciej.fijalkowski@intel.com
+References: <20200520094742.337678-1-bjorn.topel@gmail.com>
+ <20200520094742.337678-2-bjorn.topel@gmail.com>
+ <20200520151819.1d2254b7@carbon>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <17701885-c91d-5bfc-b96d-29263a0d08ab@intel.com>
+Date:   Wed, 20 May 2020 16:34:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200520151819.1d2254b7@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
-X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, May 20, 2020 at 06:22:12PM +0800, Wangshaobo (bobo) escreveu:
+On 2020-05-20 15:18, Jesper Dangaard Brouer wrote:
+> On Wed, 20 May 2020 11:47:28 +0200
+> Björn Töpel <bjorn.topel@gmail.com> wrote:
 > 
-> 在 2020/5/20 15:05, Jiri Olsa 写道:
-> > On Wed, May 20, 2020 at 11:32:16AM +0800, Wang ShaoBo wrote:
-> > > key_scan_pos is a pointer for getting scan position in
-> > > bpf__obj_config_map() for each BPF map configuration term,
-> > > but it's misused when error not happened.
-> > > 
-> > > Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
-> > > Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> > > ---
-> > >   tools/perf/util/bpf-loader.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > > index 10c187b8b8ea..460056bc072c 100644
-> > > --- a/tools/perf/util/bpf-loader.c
-> > > +++ b/tools/perf/util/bpf-loader.c
-> > > @@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
-> > >   out:
-> > >   	free(map_name);
-> > >   	if (!err)
-> > > -		key_scan_pos += strlen(map_opt);
-> > > +		*key_scan_pos += strlen(map_opt);
-> > seems good, was there something failing because of this?
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > 
-> > thanks,
-> > jirka
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Calculating the "data_hard_end" for an XDP buffer coming from AF_XDP
+>> zero-copy mode, the return value of xsk_umem_xdp_frame_sz() is added
+>> to "data_hard_start".
+>>
+>> Currently, the chunk size of the UMEM is returned by
+>> xsk_umem_xdp_frame_sz(). This is not correct, if the fixed UMEM
+>> headroom is non-zero. Fix this by returning the chunk_size without the
+>> UMEM headroom.
+>>
+>> Fixes: 2a637c5b1aaf ("xdp: For Intel AF_XDP drivers add XDP frame_sz")
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>>   include/net/xdp_sock.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+>> index abd72de25fa4..6b1137ce1692 100644
+>> --- a/include/net/xdp_sock.h
+>> +++ b/include/net/xdp_sock.h
+>> @@ -239,7 +239,7 @@ static inline u64 xsk_umem_adjust_offset(struct xdp_umem *umem, u64 address,
+>>   
+>>   static inline u32 xsk_umem_xdp_frame_sz(struct xdp_umem *umem)
+>>   {
+>> -	return umem->chunk_size_nohr + umem->headroom;
+>> +	return umem->chunk_size_nohr;
 > 
->   I found this problem when i checked this code, I think it is
+> Hmm, is this correct?
 > 
->   an implicit question, but if we delete the two line,  the problem
+> As you write "xdp_data_hard_end" is calculated as an offset from
+> xdp->data_hard_start pointer based on the frame_sz.  Will your
+> xdp->data_hard_start + frame_sz point to packet end?
+>
+
+Yes, I believe this is correct.
+
+Say that a user uses a chunk size of 2k, and a umem headroom of, say,
+64. This means that the kernel should (at least) leave 64B which the
+kernel shouldn't touch.
+
+umem->headroom | XDP_PACKET_HEADROOM | packet |          |
+                ^                     ^        ^      ^   ^
+                a                     b        c      d   e
+
+a: data_hard_start
+b: data
+c: data_end
+d: data_hard_end, (e - 320)
+e: hardlimit of chunk, a + umem->chunk_size_nohr
+
+Prior this fix the umem->headroom was *included* in frame_sz.
+
+> #define xdp_data_hard_end(xdp)                          \
+>          ((xdp)->data_hard_start + (xdp)->frame_sz -     \
+>           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
 > 
->   also no longer exists.
+> Note the macro reserves the last 320 bytes (for skb_shared_info), but
+> for AF_XDP zero-copy mode, it will never create an SKB that use this
+> area.   Thus, in principle we can allow XDP-progs to extend/grow tail
+> into this area, but I don't think there is any use-case for this, as
+> it's much easier to access packet-data in userspace application.
+> (Thus, it might not be worth the complexity to give AF_XDP
+> bpf_xdp_adjust_tail access to this area, by e.g. "lying" via adding 320
+> bytes to frame_sz).
+> 
 
-The point is that the only user of this is:
-
-  tools/perf/util/parse-events.c
-    err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
-      if (err) bpf__strerror_config_obj(obj, term, parse_state->evlist, &error_pos, err, errbuf, sizeof(errbuf));
+I agree, and in the picture (well...) above that would be "d". IOW
+data_hard_end is 320 "off" the real end.
 
 
-And then:
-
-int bpf__strerror_config_obj(struct bpf_object *obj __maybe_unused,
-                             struct parse_events_term *term __maybe_unused,
-                             struct evlist *evlist __maybe_unused,
-                             int *error_pos __maybe_unused, int err,
-                             char *buf, size_t size)
-{
-        bpf__strerror_head(err, buf, size);
-        bpf__strerror_entry(BPF_LOADER_ERRNO__OBJCONF_MAP_TYPE,
-                            "Can't use this config term with this map type");
-        bpf__strerror_end(buf, size);
-        return 0;
-}
-
-        
-So this is infrastructure that Wang Nan put in place for providing
-better error messages but that he ended up not using, so I'll apply the
-fix, its correct even not fixing any real problem at this time.
-
-- Arnaldo
+Björn
