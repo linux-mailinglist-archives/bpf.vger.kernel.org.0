@@ -2,117 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E9F1DC1EA
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 00:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5401DC248
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 00:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgETWNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 18:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44220 "EHLO
+        id S1728580AbgETWmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 18:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgETWNA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 18:13:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBAFC061A0E
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 15:13:00 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x2so2262112pfx.7
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 15:13:00 -0700 (PDT)
+        with ESMTP id S1728550AbgETWmR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 18:42:17 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B97C061A0F
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 15:42:15 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id b131so67795ybg.13
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 15:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XErmAxfkk3Y+wyR1/r9vGDck/MULwvoNu6L4T+bWwB8=;
-        b=p25d0wMMu9Ivnvc9QM5hFo009ybgJCCis3tX2tcF/iyFyGIWyeeNIWpURCAOKOIBgD
-         23gplry9xVsZHhMXH2zz798QYbhKQuyWbMREO3ma4kFg1nRqsQ3qpB96ibht2v2XPuFA
-         836QctUy9QmyothByWvR2drELutgPQPGRvdY5zZqKfCbOn/pHpLlbU0VekSHBy5hrZRU
-         uTo0c+mT2eFQlXKKXIjQuVjosC26E4OMcpeG4yD4/O6GCRlXnkwBHK7letR8xxqLv1vH
-         m63Xj5H6D7AiL4GpALWByxLMrk83wGHOYgELse08EHuuTV6vAtOE3E/FNHEAuLcHKkDt
-         jESA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dvtn9Vcw9Mu98E89DI4uU9zUHcPKNAC6K0uYrY5V7wY=;
+        b=maeJMRB/Bw0/93huxTAw8NYf3nSth3kkbZ9jMF+IJqT2fe0A1xTTw4sEh4NoG95aLe
+         Po+q2bJp4eS3oJEc2sXJ28TdPUqHJomesT1sCV/yvkD5m2S/y+tyufRNDIthIIJSW7A7
+         4R74ipSexjHgkb5kBTwWB0n//Uv7rtfY+XcPhEdVvWr6PMUKImP+vDaym8neM/m/akuJ
+         x/ZIZragkSbzTAAi7cgYW+o7RWmwH7edNLhOggQ0iO1loGe/bCbX128N/G5Fp73Gojzp
+         4bQjoHC+yDjmPHbFXbQs4Rn9HfWdBHyr/2fLKdDeBB7OWbY00I7QzxbFcrtG1pesDBJG
+         jWXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XErmAxfkk3Y+wyR1/r9vGDck/MULwvoNu6L4T+bWwB8=;
-        b=jQTdMLKjrB7WcqWtF19phJj0oINxhK/pr2S2jafNHJaHSlhiWwCxEQc3n4hMod9FkH
-         iXoysy7XxMlfpzri3zUqTtz6DsQE6Hp26wz7etNXa+ScH0CUQx8EZYc+y8gFueE83tUU
-         FHSx/MvOzlNEV6/7J5xqblRTd50rkuwo58+RTfAq4Y8piCWF/55XS48+CKycW4gl3Lno
-         JMiFIOhyc/1UwyK/EH2V/LNlTglXr9gCVWY6C9IIq1WRVO1Ge7UEwfGd+6ec915+ZkDB
-         oTP1MteFnWbdiyAagOUnPtEQf7OSQJdmHnQsgCIZ3Ok/CdXJXXoq22JKd9W3myNdWuY9
-         Xu9Q==
-X-Gm-Message-State: AOAM531qE62Hx/wnlZO5LhRklQCXJayQeYKcCQ2ia42LeFelB02lhSdF
-        FV1UZhI9deWYv7j038R42+4=
-X-Google-Smtp-Source: ABdhPJwtKE3/H6cEoLNr7R9vXvdgYq8VWxdeheSKabOuJZHBWvyItRelaxpFaDEPkdO+HsZVL/ozig==
-X-Received: by 2002:a63:514:: with SMTP id 20mr5928674pgf.150.1590012780204;
-        Wed, 20 May 2020 15:13:00 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e680])
-        by smtp.gmail.com with ESMTPSA id e1sm2792380pjv.54.2020.05.20.15.12.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 15:12:59 -0700 (PDT)
-Date:   Wed, 20 May 2020 15:12:56 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [Ksummit-discuss] [TECH TOPIC] seccomp feature development
-Message-ID: <20200520221256.tzqkjpeswv3d6ne2@ast-mbp.dhcp.thefacebook.com>
-References: <202005200917.71E6A5B20@keescook>
- <20200520163102.GZ23230@ZenIV.linux.org.uk>
- <202005201104.72FED15776@keescook>
- <CAHk-=wierGOJZhzrj1+R18id-WdfmK=eWT9YfWdCfMvEO+jLLg@mail.gmail.com>
- <202005201151.AFA3C9E@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dvtn9Vcw9Mu98E89DI4uU9zUHcPKNAC6K0uYrY5V7wY=;
+        b=HAcGIdWxuuhmfmdJ7Ksjx3CNr9luSL7ceSG1idSKzAow3NVvpUtS+RkKycLwzSfyn2
+         iCeBc8V/lXQeqHMkBKkUsjDWJDQqJPJ4Aeaao1/KIjPWss985FlNeN0uTOZObssfxTh5
+         en3ZpVHDJAONlL3kpUjJz+HIaSQF5DfcX6q+AmMlU6jgmaoJv/WbNucif1OX04LXmbTh
+         Yz5TtBALenkt9qn9GqQ5eXZbr0e2bPdbH0YNnGPo12zTQMDwPgMngACCHAS6XNzmhba/
+         oA45wF8cg2yUYPRBHMxQD4uGLeUGKnXJJFqjuUnt2J2V4m3aDavQWP9VHHDjhVNpEgKs
+         RI0A==
+X-Gm-Message-State: AOAM533DiRsAcjSxfIYmOv5t5PQbXOcX4HMlaYNlpvgkvJBSMXDDLYbE
+        zQbadGc8+jrZkSiqXWxp370K5n0vogFm3QGXa2LA8A==
+X-Google-Smtp-Source: ABdhPJzs+ERhRHgOSK3Jl85Xe9DI8Tn03w4ppBuvTG+XjaVacohus9qdYiAG5C64Y7dMx6LihN2Z+owKtQ2E0CUdUUI=
+X-Received: by 2002:a25:790e:: with SMTP id u14mr10909068ybc.324.1590014534392;
+ Wed, 20 May 2020 15:42:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202005201151.AFA3C9E@keescook>
+References: <20200520072814.128267-1-irogers@google.com> <20200520072814.128267-6-irogers@google.com>
+ <20200520134847.GM157452@krava> <CAP-5=fVGf9i7hvQcht_8mnMMjzhQYdFqPzZFraE-iMR7Vcr1tw@mail.gmail.com>
+ <20200520220912.GP157452@krava>
+In-Reply-To: <20200520220912.GP157452@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 20 May 2020 15:42:02 -0700
+Message-ID: <CAP-5=fU12vP45Sg3uRSuz-xoceTPTKw9-XZieKv1PaTnREMdrw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:04:04PM -0700, Kees Cook wrote:
-> On Wed, May 20, 2020 at 11:27:03AM -0700, Linus Torvalds wrote:
-> > Don't make this some kind of abstract conceptual problem thing.
-> > Because it's not.
-> 
-> I have no intention of making this abstract (the requests for expanding
-> seccomp coverage have been for only a select class of syscalls, and
-> specifically clone3 and openat2) nor more complicated than it needs to be
-> (I regularly resist expanding the seccomp BPF dialect into eBPF).
+On Wed, May 20, 2020 at 3:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, May 20, 2020 at 09:50:13AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> > > > +             }
+> > >
+> > > is the groupping still enabled when we merge groups? could part
+> > > of the metric (events) be now computed in different groups?
+> >
+> > By default the change will take two metrics and allow the shorter
+> > metric (in terms of number of events) to share the events of the
+> > longer metric. If the events for the shorter metric aren't in the
+> > longer metric then the shorter metric must use its own group of
+> > events. If sharing has occurred then the bitmap is used to work out
+> > which events and groups are no longer in use.
+> >
+> > With --metric-no-group then any event can be used for a metric as
+> > there is no grouping. This is why more events can be eliminated.
+> >
+> > With --metric-no-merge then the logic to share events between
+> > different metrics is disabled and every metric is in a group. This
+> > allows the current behavior to be had.
+> >
+> > There are some corner cases, such as metrics with constraints (that
+> > don't group) and duration_time that is never placed into a group.
+> >
+> > Partial sharing, with one event in 1 weak event group and 1 in another
+> > is never performed. Using --metric-no-group allows something similar.
+> > Given multiplexing, I'd be concerned about accuracy problems if events
+> > between groups were shared - say for IPC, were you measuring
+> > instructions and cycles at the same moment?
+>
+> hum, I think that's also concern if you are multiplexing 2 groups and one
+> metric getting events from both groups that were not meassured together
+>
+> it makes sense to me put all the merged events into single weak group
+> anything else will have the issue you described above, no?
+>
+> and perhaps add command line option for merging that to make sure it's
+> what user actuly wants
 
-Kees, since you've forked the thread I'm adding bpf mailing list back and
-re-iterating my point:
-** Nack to cBPF extensions **
-How that is relevant?
-You're proposing to add copy_from_user() to selected syscalls, like clone3,
-and present large __u32 array to cBPF program.
-In other words existing fixed sized 'struct seccomp_data' will become
-either variable length or jumbo fixed size like one page.
-In the fomer case it would mean that cBPF would need to be extended
-with variable length logic. Which in turn means it will suffer from
-spectre v1 issues.
-We've spent a lot of time fixing spectre v1 issues with eBPF. Including
-teaching the verifier to recognize speculative patterns inside the programs
-so that malicious bpf progs trying to exploit spec v1 will be caught
-at load time. There is no other tool (compiler or static analysis) that
-can do similar analysis. I suggest that you look into what eBPF
-is actually doing instead of trying to reinvent the wheel.
-If you go with latter approach of presenting cBPF with giant
-'struct seccomp_data + page' that extra page would need to be zeroed out
-before invocation of bpf program which will make seccomp even less usable
-that it is today. Currently it's slow and unusable in production datacenter.
-People suggested for years to adopt eBPF in seccomp to accelerate it,
-but, as you confessed, you resisted and sounds like now you want to
-implement seccomp specific syscall bitmask?
-Which means more kernel code, more bugs, more security issues.
-imo that's another reinvented wheel when eBPF can do it already. I don't think
-it's a good idea to add kernel code when eBPF-based solution exists and capable
-of examining any level of nested args.
+I'm not sure I'm following. With the patch set if we have 3 metrics
+with the event groups shown:
+M1: {A,B,C}:W
+M2: {A,B}:W
+M3: {A,B,D}:W
 
-> Perhaps the question is "how deeply does seccomp need to inspect?"
-> and maybe it does not get to see anything beyond just the "top level"
-> struct (i.e. struct clone_args) and all pointers within THAT become
-> opaque? That certainly simplifies the design.
+then what happens is we sort the metrics in to M1, M3, M2 then when we
+come to match the events:
 
-clone3's 'struct clone_args' has set_tid pointer as a second level.
-I don't think that sticking to first level of pointers for this particular
-syscall will make seccomp filtering any more practical.
+ - by default: match events allowing sharing if all events come from
+the same group. So in the example M1 will first match with {A,B,C}
+then M3 will fail to match the group {A,B,C} but match {A,B,D}; M2
+will succeed with matching {A,B} from M1. The events/group for M2 can
+be removed as they are no longer used. This kind of sharing is
+opportunistic and respects existing groupings. While it may mean a
+metric is computed from a group that now multiplexes, that group will
+run for more of the time as there are fewer groups to multiplex with.
+In this example we've gone from 3 groups down to 2, 8 events down to
+6. An improvement would be to realize that A,B is in both M1 and M3,
+so when we print the stat we could combine these values.
+
+ - with --metric-no-merge: no events are shared by metrics M1, M2 and
+M3 have their events and computation as things currently are. There
+are 3 groups and 8 events.
+
+ - with --metric-no-group: all groups are removed and so the evlist
+has A,B,C,A,B,A,B,D in it. The matching will now match M1 to A,B,C at
+the beginning of the list, M2 to the first A,B and M3 to the same A,B
+and D at the end of the list. We've got no groups and the events have
+gone from 8 down to 4.
+
+It is difficult to reason about which grouping is most accurate. If we
+have 4 counters (no NMI watchdog) then this example will fit with no
+multiplexing. The default above should achieve less multiplexing, in
+the same way merging PMU events currently does - this patch is trying
+to mirror the --no-merge functionality to a degree. Considering
+TopDownL1 then we go from metrics that never sum to 100%, to metrics
+that do in either the default or --metric-no-group cases.
+
+I'm not sure what user option is missing with these combinations? The
+default is trying to strike a compromise and I think user interaction
+is unnecessary, just as --no-merge doesn't cause interaction. If the
+existing behavior is wanted using --metric-no-merge will give that.
+The new default and --metric-no-group are hopefully going to reduce
+the number of groups and events. I'm somewhat agnostic as to what the
+flag functionality should be as what I'm working with needs either the
+default or --metric-no-group, I can use whatever flag is agreed upon.
+
+Thanks,
+Ian
+
+> thanks,
+> jirka
+>
+>
+> >
+> > > I was wondering if we could merge all the hasmaps into single
+> > > one before the parse the evlist.. this way we won't need removing
+> > > later.. but I did not thought this through completely, so it
+> > > might not work at some point
+> >
+> > This could be done in the --metric-no-group case reasonably easily
+> > like the current hashmap. For groups you'd want something like a set
+> > of sets of events, but then you'd only be able to share events if the
+> > sets were the same. A directed acyclic graph could capture the events
+> > and the sharing relationships, it may be possible to optimize cases
+> > like {A,B,C}, {A,B,D}, {A,B} so that the small group on the end shares
+> > events with both the {A,B,C} and {A,B,D} group. This may be good
+> > follow up work. We could also solve this in the json, for example
+> > create a "phony" group of {A,B,C,D} that all three metrics share from.
+> > You could also use --metric-no-group to achieve that sharing now.
+> >
+> > Thanks,
+> > Ian
+> >
+> > > jirka
+> > >
+> >
+>
