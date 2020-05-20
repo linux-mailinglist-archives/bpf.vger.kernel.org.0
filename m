@@ -2,66 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0801D1DBA92
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536CC1DBB02
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 19:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgETRD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 13:03:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727917AbgETRDt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 13:03:49 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DFE420708;
-        Wed, 20 May 2020 17:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589994228;
-        bh=/YtqEongQLlP1gJq4f41wHCnKACXtCf/GgNRIFAx/h8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C01ybvQtnzIB0EvtgCHy/2qwoBsIDW3cigmV2uHwWrQC7vsZi+YBAGHYbML7SSGjs
-         2YkZY0jN7JXGK/oNAQ0OuUEFhf7xudXR7VHRs9DrrsJGtsJ6ZBOBPW45y7A8zIx1+k
-         oSaGA+AV+XqTRJl6HOoqm5CMAzFdgPermilOA5MA=
-Date:   Wed, 20 May 2020 10:03:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com, jeffrey.t.kirsher@intel.com,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v4 09/15] ice, xsk: migrate to new
- MEM_TYPE_XSK_BUFF_POOL
-Message-ID: <20200520100342.620a0979@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200520094742.337678-10-bjorn.topel@gmail.com>
-References: <20200520094742.337678-1-bjorn.topel@gmail.com>
-        <20200520094742.337678-10-bjorn.topel@gmail.com>
+        id S1726560AbgETRTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 13:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgETRTD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 13:19:03 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623A6C061A0E;
+        Wed, 20 May 2020 10:19:02 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e1so3969168wrt.5;
+        Wed, 20 May 2020 10:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WjoBWssVHBqyFxbEQ95THjA8DwdaA15bcQxmRjylmZg=;
+        b=smVMN+odCBqaMwnw8ELsWxRi0g2b8Dea1GDPoSNlGKc9bqV9kiVDTqHpCLmee2h6vA
+         9az6vKmyX1eDQzNIhrFuWAR1UyCLsDArmdY/yFdhxYG3t7Q6KVr/6/tXHdx4S27rDljv
+         wwWgvXYvsWTuGsSrWivIGnPH4Cd8uts5/8xBpQWzDBVN+fo66BHwu9onOVvevV80/SMk
+         J7NU8rUTSGM+ckuNCagujX8hsbFGvGD09cbXyOAqzrZYJDppzhY/QIlhjrU1NHAykaKa
+         pmQVTsZFVkCv8mTsRcPyTmBcTvDhiMD0iIG9eRxEMGD1J3AL5QeCQh8DDrfJ5Lu5S7kJ
+         tTmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WjoBWssVHBqyFxbEQ95THjA8DwdaA15bcQxmRjylmZg=;
+        b=aIJHLJRa+qbCjh7zgOlgcKOL5U0AH5Bf0mO0Yp+9Wd2wKN31vqO/rLjMf0t/WTBBaD
+         4hK1/TzwsWpVm6/B7TaWI8TLdRm/Dn03YeKHB6TQk3q11NrwcnKn89dzhto/qImkSAPV
+         K9ka1MH3ZH0Ui1FeNDE3S3abokA51YItfL0/cypiW/0KrhuTsDCKL4fzrdXAKL+F0mT/
+         NgXXK7rgzE+02SRBZlGc8M21DRN0nQqtPJhz9Bs282sF3RC/p9wFD5veE+LqHiahJe/e
+         4S/HgGO7/HzEptPvYzp4kOtlvEQTPHzXeaVgcnFEICR02wmJnWLhkV9n9XL0GXdv4t50
+         +Meg==
+X-Gm-Message-State: AOAM530dRl4EAV6QOfimF7/tVOoCEVnqH6ZKdL8MFNsSn2TcyqK72C2G
+        w2x0LXmDpCRXi5K5sSdFdGVR8eRub9YkC0Tf2SQ=
+X-Google-Smtp-Source: ABdhPJyZBIZqLYSG4g785vCGsXo0DwKM/I7MoLWiEIcWCbvk0lXAiMYbJ38VU2g5O3IRznEAv7e7WWgWLGb51/knXQ4=
+X-Received: by 2002:a5d:5642:: with SMTP id j2mr4942061wrw.52.1589995141127;
+ Wed, 20 May 2020 10:19:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20200520094742.337678-1-bjorn.topel@gmail.com>
+ <20200520094742.337678-4-bjorn.topel@gmail.com> <20200520095743.0d6dda04@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200520095743.0d6dda04@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 20 May 2020 19:18:49 +0200
+Message-ID: <CAJ+HfNgxH0xLUvm=MPpF-VhoGLPYF2=gJMAw3VkmduO2SJhy=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 03/15] xsk: move driver interface to xdp_sock_drv.h
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 May 2020 11:47:36 +0200 Bj=C3=B6rn T=C3=B6pel wrote:
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->=20
-> Remove MEM_TYPE_ZERO_COPY in favor of the new MEM_TYPE_XSK_BUFF_POOL
-> APIs.
->=20
-> Cc: intel-wired-lan@lists.osuosl.org
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+On Wed, 20 May 2020 at 18:57, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 20 May 2020 11:47:30 +0200 Bj=C3=B6rn T=C3=B6pel wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Move the AF_XDP zero-copy driver interface to its own include file
+> > called xdp_sock_drv.h. This, hopefully, will make it more clear for
+> > NIC driver implementors to know what functions to use for zero-copy
+> > support.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> With W=3D1:
+>
+> net/xdp/xsk_queue.c:67:26: warning: symbol 'xsk_reuseq_prepare' was not d=
+eclared. Should it be static?
+> net/xdp/xsk_queue.c:86:26: warning: symbol 'xsk_reuseq_swap' was not decl=
+ared. Should it be static?
+> net/xdp/xsk_queue.c:108:6: warning: symbol 'xsk_reuseq_free' was not decl=
+ared. Should it be static?
+> net/xdp/xsk_queue.c:67:27: warning: no previous prototype for xsk_reuseq_=
+prepare [-Wmissing-prototypes]
+>   67 | struct xdp_umem_fq_reuse *xsk_reuseq_prepare(u32 nentries)
+>      |                           ^~~~~~~~~~~~~~~~~~
+> net/xdp/xsk_queue.c:86:27: warning: no previous prototype for xsk_reuseq_=
+swap [-Wmissing-prototypes]
+>   86 | struct xdp_umem_fq_reuse *xsk_reuseq_swap(struct xdp_umem *umem,
+>      |                           ^~~~~~~~~~~~~~~
+> net/xdp/xsk_queue.c:108:6: warning: no previous prototype for xsk_reuseq_=
+free [-Wmissing-prototypes]
+>  108 | void xsk_reuseq_free(struct xdp_umem_fq_reuse *rq)
+>      |      ^~~~~~~~~~~~~~~
 
-patch 8 also has a warning I can't figure out.
+Yes, missing include there. After the series these functions are
+removed, but still good to get rid of the (bisect) noise.
 
-But here (patch 9) it's quite clear:
+I'll fix this in a v5. Thanks, Jakub!
 
-drivers/net/ethernet/intel/ice/ice_xsk.c:414: warning: Excess function para=
-meter 'alloc' description in 'ice_alloc_rx_bufs_zc'
-drivers/net/ethernet/intel/ice/ice_xsk.c:480: warning: Excess function para=
-meter 'xdp' description in 'ice_construct_skb_zc'
+
+Bj=C3=B6rn
