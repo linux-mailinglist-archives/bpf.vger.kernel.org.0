@@ -2,115 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9F21DB591
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 15:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6368A1DB710
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 16:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgETNtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 09:49:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20998 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726548AbgETNtB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 09:49:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589982540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a816W8Z5hp9K0nG+dy2LJ94rdDDToT47/ru3WqNRsNQ=;
-        b=iXLUJwYxYGP/SkkPVywn7SleB/SImDDE7f5MlyAugUmXwJydPQj7YQowJLBM6S9TX3jbg5
-        d90uCmewab+pxDHd5bxI6HtdBF9p8BNFCIPZ2dzlsIKCdllUO38GQ/MyozFRtD78dzQ6O2
-        WFE72Ys2vTEVLUxrlcQ6baE6lZqEPYQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-Of_ePFwOOx-1njuz7CnsEg-1; Wed, 20 May 2020 09:48:56 -0400
-X-MC-Unique: Of_ePFwOOx-1njuz7CnsEg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726560AbgETOaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 10:30:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726452AbgETOaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 10:30:18 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3300E80B71E;
-        Wed, 20 May 2020 13:48:53 +0000 (UTC)
-Received: from krava (unknown [10.40.193.10])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 373567958D;
-        Wed, 20 May 2020 13:48:48 +0000 (UTC)
-Date:   Wed, 20 May 2020 15:48:47 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
-Message-ID: <20200520134847.GM157452@krava>
-References: <20200520072814.128267-1-irogers@google.com>
- <20200520072814.128267-6-irogers@google.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 64206205CB;
+        Wed, 20 May 2020 14:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589985017;
+        bh=bMsUrfEBhqQ2ZdF+Y8Gv8Gqh8iNsHpYp6jNM1nM5kOw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a1bWiQwGLeEtWfAIKT8KsxIp2IslN1LO7MUduJYWar1HTcCTeM3d4Ezc5JNBAsHCK
+         rnGNB8PhtKB5u1+Zqvj43iEvKE3bjuuTIGPpj+YeanbhhQaULqz2KHIDG9/zGHbxw5
+         mpqsV/5ILxloh74L23h6n+c9hrF0GV38iICkmozI=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7646040AFD; Wed, 20 May 2020 11:30:14 -0300 (-03)
+Date:   Wed, 20 May 2020 11:30:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, cj.chengjian@huawei.com,
+        huawei.libin@huawei.com, xiexiuqi@huawei.com, mark.rutland@arm.com,
+        guohanjun@huawei.com, alexander.shishkin@linux.intel.com,
+        wangnan0@huawei.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
+Message-ID: <20200520143014.GJ32678@kernel.org>
+References: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
+ <20200520070551.GC110644@krava>
+ <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200520072814.128267-6-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:28:12AM -0700, Ian Rogers wrote:
+Em Wed, May 20, 2020 at 06:22:12PM +0800, Wangshaobo (bobo) escreveu:
+> 
+> 在 2020/5/20 15:05, Jiri Olsa 写道:
+> > On Wed, May 20, 2020 at 11:32:16AM +0800, Wang ShaoBo wrote:
+> > > key_scan_pos is a pointer for getting scan position in
+> > > bpf__obj_config_map() for each BPF map configuration term,
+> > > but it's misused when error not happened.
+> > > 
+> > > Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
+> > > Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> > > ---
+> > >   tools/perf/util/bpf-loader.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> > > index 10c187b8b8ea..460056bc072c 100644
+> > > --- a/tools/perf/util/bpf-loader.c
+> > > +++ b/tools/perf/util/bpf-loader.c
+> > > @@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
+> > >   out:
+> > >   	free(map_name);
+> > >   	if (!err)
+> > > -		key_scan_pos += strlen(map_opt);
+> > > +		*key_scan_pos += strlen(map_opt);
+> > seems good, was there something failing because of this?
+> > 
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> > thanks,
+> > jirka
+> 
+>   I found this problem when i checked this code, I think it is
+> 
+>   an implicit question, but if we delete the two line,  the problem
+> 
+>   also no longer exists.
 
-SNIP
+The point is that the only user of this is:
 
->  
-> @@ -157,7 +183,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->  	int i = 0;
->  	int ret = 0;
->  	struct egroup *eg;
-> -	struct evsel *evsel;
-> +	struct evsel *evsel, *tmp;
->  	unsigned long *evlist_used;
->  
->  	evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
-> @@ -173,7 +199,8 @@ static int metricgroup__setup_events(struct list_head *groups,
->  			ret = -ENOMEM;
->  			break;
->  		}
-> -		evsel = find_evsel_group(perf_evlist, &eg->pctx, metric_events,
-> +		evsel = find_evsel_group(perf_evlist, &eg->pctx,
-> +					eg->has_constraint, metric_events,
->  					evlist_used);
->  		if (!evsel) {
->  			pr_debug("Cannot resolve %s: %s\n",
-> @@ -200,6 +227,12 @@ static int metricgroup__setup_events(struct list_head *groups,
->  		list_add(&expr->nd, &me->head);
->  	}
->  
-> +	evlist__for_each_entry_safe(perf_evlist, tmp, evsel) {
-> +		if (!test_bit(evsel->idx, evlist_used)) {
-> +			evlist__remove(perf_evlist, evsel);
-> +			evsel__delete(evsel);
-> +		}
+  tools/perf/util/parse-events.c
+    err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
+      if (err) bpf__strerror_config_obj(obj, term, parse_state->evlist, &error_pos, err, errbuf, sizeof(errbuf));
 
-is the groupping still enabled when we merge groups? could part
-of the metric (events) be now computed in different groups?
 
-I was wondering if we could merge all the hasmaps into single
-one before the parse the evlist.. this way we won't need removing
-later.. but I did not thought this through completely, so it
-might not work at some point
+And then:
 
-jirka
+int bpf__strerror_config_obj(struct bpf_object *obj __maybe_unused,
+                             struct parse_events_term *term __maybe_unused,
+                             struct evlist *evlist __maybe_unused,
+                             int *error_pos __maybe_unused, int err,
+                             char *buf, size_t size)
+{
+        bpf__strerror_head(err, buf, size);
+        bpf__strerror_entry(BPF_LOADER_ERRNO__OBJCONF_MAP_TYPE,
+                            "Can't use this config term with this map type");
+        bpf__strerror_end(buf, size);
+        return 0;
+}
 
+        
+So this is infrastructure that Wang Nan put in place for providing
+better error messages but that he ended up not using, so I'll apply the
+fix, its correct even not fixing any real problem at this time.
+
+- Arnaldo
