@@ -2,128 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FBC1DB727
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6AC1DB76B
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 16:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgETOeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 10:34:17 -0400
-Received: from mga01.intel.com ([192.55.52.88]:26290 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbgETOeR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 10:34:17 -0400
-IronPort-SDR: B+3LPz5J8KvRyoG2J35sy2xsZYCV501Ng39Ij+l9MBO9a472nkp+Slf1LqxJpiwAjrri9aVCsd
- YXio1EbeOyXg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 07:34:16 -0700
-IronPort-SDR: KT0TlJdT5CgYsXjQIEQi3y1yaUTbjn4SqyAukPNeonzcKiY/z1feQYVSQcBk4KzOK6uRTriwHM
- zMsxDpA/r1yw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
-   d="scan'208";a="308739120"
-Received: from sbaldwin-mobl3.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.56.131])
-  by FMSMGA003.fm.intel.com with ESMTP; 20 May 2020 07:34:06 -0700
-Subject: Re: [PATCH bpf-next v4 01/15] xsk: fix xsk_umem_xdp_frame_sz()
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com, maximmi@mellanox.com,
-        maciej.fijalkowski@intel.com
-References: <20200520094742.337678-1-bjorn.topel@gmail.com>
- <20200520094742.337678-2-bjorn.topel@gmail.com>
- <20200520151819.1d2254b7@carbon>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <17701885-c91d-5bfc-b96d-29263a0d08ab@intel.com>
-Date:   Wed, 20 May 2020 16:34:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726845AbgETOun (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 10:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbgETOun (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 10:50:43 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55B1C08C5C0
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 07:50:42 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x15so1106596ybr.10
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 07:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ajOsEVzBBmvLmCdJ2Fdc///Cfm2T2Xmx2TMwaA04DAo=;
+        b=I8m8YrPTQXsy55nnqHyJdwIhm6QdarEOtspEoGcg9nkXM0Ew5AiYBTRIXjdtZxXD6S
+         izOaYJYXE9XhaKVivA15X9QwZB3PnP3Qtl7QtzesZcYYMbCOjlRer0BjLRwvbWrr3bKz
+         vk+zY7elcJGaeObSkGHGPxyQecLQW8tuncrc2tGZPsmNSar4qJEW9mJ2sKXaBeXLnFb1
+         knwneHaygvC8zuiYEbffnkfuYqr7AB8BPsN2D0fzE8BkWD983alvNMTYO3pCTscKsJsU
+         UoCgPcIVR5XrlFoUhmm56VsMLBd29uLTatSh8xwvQO3OY7NoruCYGaLLv2KyCDTa7hrJ
+         7ZHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ajOsEVzBBmvLmCdJ2Fdc///Cfm2T2Xmx2TMwaA04DAo=;
+        b=o/3P6NUrwPHwBuCy5uMWGE+udZLpB0fbRBNmfVBKExdQL9dRt5/yXwUCuVoQzN27yG
+         TI0gY8gT9KgOHsn3PneybAjef4ifihYMHKUi9lQPsvEi1QMLUPrSw0xQIUg+6Bb3guLL
+         C+5gM51zL2Nny3l+yPyRFubFxZi9kDMjNf4k9y9ySkJK8XufreAD6qBVFB9r/gJ3+27S
+         Aszmc0MwD0AH8SAKm7tHs60fDL1YZ+SW672ecQVX0SD/qLKU5Lt/PcW4zeFvR6/nnjgb
+         aI8UPBYjsGBgcfnNGmvCwBaouPuTsAPUEPtIKElREPoRjhffX6xWKmnXFTh1hNWm1Ic+
+         Xenw==
+X-Gm-Message-State: AOAM531RoGbkn/RtmxG+rIyhn0cwe2dgC7EQGMgLXo7tQzwNoW8WpaTI
+        GmL6UMObMIE72vJXmQ7mmW1YZbYtuCGyP7kBKobh8w==
+X-Google-Smtp-Source: ABdhPJwUG/n0zhdUFbriSJsXmMxGywwDOeEtiLHjve+29uytAAbLo+u0KRAoTbKvizTmfvhGt1A2X7ckmp17h3/0lU0=
+X-Received: by 2002:a25:4446:: with SMTP id r67mr7502533yba.41.1589986241692;
+ Wed, 20 May 2020 07:50:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200520151819.1d2254b7@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200520072814.128267-1-irogers@google.com> <20200520131359.GJ157452@krava>
+In-Reply-To: <20200520131359.GJ157452@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 20 May 2020 07:50:30 -0700
+Message-ID: <CAP-5=fXZVmjuiGyRsjzjfsBOpN50SeA+Gi66Of_wa61j7f6X5Q@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Share events between metrics
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-05-20 15:18, Jesper Dangaard Brouer wrote:
-> On Wed, 20 May 2020 11:47:28 +0200
-> Björn Töpel <bjorn.topel@gmail.com> wrote:
-> 
->> From: Björn Töpel <bjorn.topel@intel.com>
->>
->> Calculating the "data_hard_end" for an XDP buffer coming from AF_XDP
->> zero-copy mode, the return value of xsk_umem_xdp_frame_sz() is added
->> to "data_hard_start".
->>
->> Currently, the chunk size of the UMEM is returned by
->> xsk_umem_xdp_frame_sz(). This is not correct, if the fixed UMEM
->> headroom is non-zero. Fix this by returning the chunk_size without the
->> UMEM headroom.
->>
->> Fixes: 2a637c5b1aaf ("xdp: For Intel AF_XDP drivers add XDP frame_sz")
->> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->> ---
->>   include/net/xdp_sock.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
->> index abd72de25fa4..6b1137ce1692 100644
->> --- a/include/net/xdp_sock.h
->> +++ b/include/net/xdp_sock.h
->> @@ -239,7 +239,7 @@ static inline u64 xsk_umem_adjust_offset(struct xdp_umem *umem, u64 address,
->>   
->>   static inline u32 xsk_umem_xdp_frame_sz(struct xdp_umem *umem)
->>   {
->> -	return umem->chunk_size_nohr + umem->headroom;
->> +	return umem->chunk_size_nohr;
-> 
-> Hmm, is this correct?
-> 
-> As you write "xdp_data_hard_end" is calculated as an offset from
-> xdp->data_hard_start pointer based on the frame_sz.  Will your
-> xdp->data_hard_start + frame_sz point to packet end?
+On Wed, May 20, 2020 at 6:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
+> On Wed, May 20, 2020 at 12:28:07AM -0700, Ian Rogers wrote:
+> > Metric groups contain metrics. Metrics create groups of events to
+> > ideally be scheduled together. Often metrics refer to the same events,
+> > for example, a cache hit and cache miss rate. Using separate event
+> > groups means these metrics are multiplexed at different times and the
+> > counts don't sum to 100%. More multiplexing also decreases the
+> > accuracy of the measurement.
+> >
+> > This change orders metrics from groups or the command line, so that
+> > the ones with the most events are set up first. Later metrics see if
+> > groups already provide their events, and reuse them if
+> > possible. Unnecessary events and groups are eliminated.
+> >
+> > The option --metric-no-group is added so that metrics aren't placed in
+> > groups. This affects multiplexing and may increase sharing.
+> >
+> > The option --metric-mo-merge is added and with this option the
+> > existing grouping behavior is preserved.
+> >
+> > Using skylakex metrics I ran the following shell code to count the
+> > number of events for each metric group (this ignores metric groups
+> > with a single metric, and one of the duplicated TopdownL1 and
+> > TopDownL1 groups):
+>
+> hi,
+> I'm getting parser error with:
+>
+> [jolsa@krava perf]$ sudo ./perf stat -M IPC,CPI -a -I 1000
+> event syntax error: '..ed.thread}:W{inst_retired.any,cpu_clk_unhalted.thread}:W,{inst_retired.any,cycles}:W'
+>                                   \___ parser error
+>
+> jirka
 
-Yes, I believe this is correct.
+Ah, looks like an issue introduced by:
+https://lore.kernel.org/lkml/20200520072814.128267-8-irogers@google.com/
+as there is a missing comma. I'll investigate after some breakfast.
 
-Say that a user uses a chunk size of 2k, and a umem headroom of, say,
-64. This means that the kernel should (at least) leave 64B which the
-kernel shouldn't touch.
-
-umem->headroom | XDP_PACKET_HEADROOM | packet |          |
-                ^                     ^        ^      ^   ^
-                a                     b        c      d   e
-
-a: data_hard_start
-b: data
-c: data_end
-d: data_hard_end, (e - 320)
-e: hardlimit of chunk, a + umem->chunk_size_nohr
-
-Prior this fix the umem->headroom was *included* in frame_sz.
-
-> #define xdp_data_hard_end(xdp)                          \
->          ((xdp)->data_hard_start + (xdp)->frame_sz -     \
->           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
-> 
-> Note the macro reserves the last 320 bytes (for skb_shared_info), but
-> for AF_XDP zero-copy mode, it will never create an SKB that use this
-> area.   Thus, in principle we can allow XDP-progs to extend/grow tail
-> into this area, but I don't think there is any use-case for this, as
-> it's much easier to access packet-data in userspace application.
-> (Thus, it might not be worth the complexity to give AF_XDP
-> bpf_xdp_adjust_tail access to this area, by e.g. "lying" via adding 320
-> bytes to frame_sz).
-> 
-
-I agree, and in the picture (well...) above that would be "d". IOW
-data_hard_end is 320 "off" the real end.
-
-
-Björn
+Thanks,
+Ian
