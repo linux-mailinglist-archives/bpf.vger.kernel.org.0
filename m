@@ -2,105 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450051DBDED
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 21:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC481DC03C
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 22:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgETTWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 15:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgETTWl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 15:22:41 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EC0C061A0E;
-        Wed, 20 May 2020 12:22:41 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p30so1886026pgl.11;
-        Wed, 20 May 2020 12:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OVMLRI/qYuKHi4wFXwj/y3J+J9HuBJ9GEwbF/G1h7vs=;
-        b=vZ8IO5JvkRxbPEL5oIae2LPKd4XKGs0oq6d9USfSK9MbFesburkTyZANdAFl2/YkZb
-         m9mIVcA5FPwrpIo3W5NjuIqNAmUDjC5x8dYlUYDcDJb3nrkaT+GxVkNBHKOVX87U49PP
-         prMp2CVSQelpUMk0Gg3oY4At+STHy85+PzYR/THKXqL25+UIBad1lu18qT7mWCieV87W
-         H8HcFQwF56gZv50eYEcWQb+ckVgjsel6lBzAqKesCERsAmRLUMUxyk/4K9sPNEHJVtmV
-         BzqTLNpqMevZr8KANwNxrA5ILhxxtQIP7yr8kHEFYAnFC9kmjYMJseu7z5MBUUyVKlVM
-         dvag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OVMLRI/qYuKHi4wFXwj/y3J+J9HuBJ9GEwbF/G1h7vs=;
-        b=UStHcV+Fs830YS2pslFqTprmJ0eFydYXUq6SIcnTlJjfC7J0pisff8HGUcOXHlrCGd
-         SZsZ9vxa+2aGWAOZunrag68G2z00grcYXEe44hYcEuBnk/TNGcafNE+cQRadvK8Jqo1y
-         jxtmcHNTYlAl9mTmNrpBLhRRfvTToyOpz7vV4/G6+ZkNthcksQtUvPkelhXVbqjzm/Ct
-         tRmSvlh0Fjakhj61eMfvbjaGtZ5/mX/Kw6SbQv32ACwlvDm7GpdYqRrlYRYChkgBpHhj
-         WjwZqdnXedh7KvyW190RyxLGY3QvRkaecjQDer/R8pS6Rfezu3Yl3wBERO1PTM4I0Ktt
-         LQww==
-X-Gm-Message-State: AOAM530iLQrY6gD38emI9wU31VJaeIAoVR76/1WuAWHoSJZTUxlpJSCo
-        qfcXFEXQh/2+kicKi9AzYgU=
-X-Google-Smtp-Source: ABdhPJyKrkGByROGfhVaaKME8Vy/7DHu4vmtEFkG/CHCI2prtWxpATDGqiv8/kxH+eYbqS0iCcnfkQ==
-X-Received: by 2002:a63:f316:: with SMTP id l22mr5204505pgh.38.1590002561093;
-        Wed, 20 May 2020 12:22:41 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id 62sm2762424pfc.204.2020.05.20.12.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 12:22:40 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH bpf-next v5 15/15] MAINTAINERS, xsk: update AF_XDP section after moves/adds
-Date:   Wed, 20 May 2020 21:21:03 +0200
-Message-Id: <20200520192103.355233-16-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200520192103.355233-1-bjorn.topel@gmail.com>
-References: <20200520192103.355233-1-bjorn.topel@gmail.com>
+        id S1726985AbgETUeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 16:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726860AbgETUeM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 16:34:12 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 766D3207E8;
+        Wed, 20 May 2020 20:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590006851;
+        bh=nrhqiPlqg0n1hAE/O/a+UV4rvWhhKR/jrI3wT+HPdB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fnETanLGKttjkEDsIOkbvEpJYimeA18NjKziM8drdxMbWqnxJRwv2z9bJPmHYy4OX
+         Qymq55cxN+8xS9TpqOtAcsZqHbC9oKnawEEkLKBjb/yGVzqJj8DHvUu7N1CNgXjWcC
+         FPJnGkx5GKum6HTnpGaHQ3qI28qCOx5Zb6erqtF4=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7029A40AFD; Wed, 20 May 2020 17:34:09 -0300 (-03)
+Date:   Wed, 20 May 2020 17:34:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/7] perf metricgroup: Delay events string creation
+Message-ID: <20200520203409.GA26877@kernel.org>
+References: <20200520072814.128267-1-irogers@google.com>
+ <20200520072814.128267-4-irogers@google.com>
+ <20200520131412.GK157452@krava>
+ <CAP-5=fXHRiahLZjQHcFiWW=zdXc7r+=WdMpzeCj-+xPcqB2khQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXHRiahLZjQHcFiWW=zdXc7r+=WdMpzeCj-+xPcqB2khQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Em Wed, May 20, 2020 at 11:22:22AM -0700, Ian Rogers escreveu:
+> On Wed, May 20, 2020 at 6:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >                               break;
+> > >               }
+> > >       }
+> > > +     if (!ret) {
+> >
+> > could you please do instead:
+> >
+> >         if (ret)
+> >                 return ret;
+> >
+> > so the code below cuts down one indent level and you
+> > don't need to split up the lines
+> 
+> Done, broken out as a separate patch in v2:
+> https://lore.kernel.org/lkml/20200520182011.32236-3-irogers@google.com/
 
-Update MAINTAINERS to correctly mirror the current AF_XDP socket file
-layout. Also, add the AF_XDP files of libbpf.
+Jiri, was this the only issue with this patchkit? I've merged already
+the first one, that you acked.
 
-rfc->v1: Sorted file entries. (Joe)
-
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- MAINTAINERS | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b7844f6cfa4a..087e68b21f9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18443,8 +18443,12 @@ R:	Jonathan Lemon <jonathan.lemon@gmail.com>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
--F:	kernel/bpf/xskmap.c
-+F:	include/net/xdp_sock*
-+F:	include/net/xsk_buffer_pool.h
-+F:	include/uapi/linux/if_xdp.h
- F:	net/xdp/
-+F:	samples/bpf/xdpsock*
-+F:	tools/lib/bpf/xsk*
- 
- XEN BLOCK SUBSYSTEM
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
--- 
-2.25.1
-
+- Arnaldo
