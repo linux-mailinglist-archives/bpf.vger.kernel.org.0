@@ -2,147 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B111DB4BB
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 15:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DCA1DB4CC
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 15:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgETNOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 09:14:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24595 "EHLO
+        id S1726560AbgETNSi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 09:18:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20671 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726920AbgETNOh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 09:14:37 -0400
+        with ESMTP id S1726570AbgETNSh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 09:18:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589980475;
+        s=mimecast20190719; t=1589980715;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3bQBk28+CfN7MxyBrv8xDw/DEBfvcuoXApS/KUph1C0=;
-        b=iA0jk59RgObfmVwiT0GsXBysMjQlK8+2dPfmSIEjHv8WJKkPhO4apNTCzVkzlAABOrLN/V
-        OpK7mpVBXyQiQNo3pQC1RJ3IfqTQwmLVN4mfNgybXacVj2Ga3E3pY+mo9bd5JDzeWga3Gn
-        nMYS3eCXpWDHWx2wKoBrrr2SrqmUiAg=
+        bh=OHGYUKfvJ5M3zCTUp9P9l18wl3V5wBTvg9xasGTVV6E=;
+        b=CISgtwx6Zn63+k4YefMDYvYKdVoUj2TkXy0QWIvrGuxmYPtS1In+dRHgMPNwWuszNxipoi
+        XlAauFKIMutBWjcT5HwZkUlcht5LARSbwzpvh/E/a50GS2tc/geSx4OmZiKQMUFdmMA4Yz
+        4zSV41Yup8X/cXpHGhlPGXsz1mIVfFs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-4dWvN2ifNbiGZzzcr1IFUg-1; Wed, 20 May 2020 09:14:32 -0400
-X-MC-Unique: 4dWvN2ifNbiGZzzcr1IFUg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-365-w2Eb611aNJiVTHh8dLMl_A-1; Wed, 20 May 2020 09:18:29 -0400
+X-MC-Unique: w2Eb611aNJiVTHh8dLMl_A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C5F8EC1A1;
-        Wed, 20 May 2020 13:14:29 +0000 (UTC)
-Received: from krava (unknown [10.40.193.10])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9DACB1053B2C;
-        Wed, 20 May 2020 13:14:23 +0000 (UTC)
-Date:   Wed, 20 May 2020 15:14:22 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 1/7] perf metricgroup: Change evlist_used to a bitmap
-Message-ID: <20200520131422.GL157452@krava>
-References: <20200520072814.128267-1-irogers@google.com>
- <20200520072814.128267-2-irogers@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E003B1005510;
+        Wed, 20 May 2020 13:18:26 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C3562E05A;
+        Wed, 20 May 2020 13:18:21 +0000 (UTC)
+Date:   Wed, 20 May 2020 15:18:19 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        jeffrey.t.kirsher@intel.com,
+        =?UTF-8?B?QmrDtnJu?= =?UTF-8?B?IFTDtnBlbA==?= 
+        <bjorn.topel@intel.com>, maximmi@mellanox.com,
+        maciej.fijalkowski@intel.com
+Subject: Re: [PATCH bpf-next v4 01/15] xsk: fix xsk_umem_xdp_frame_sz()
+Message-ID: <20200520151819.1d2254b7@carbon>
+In-Reply-To: <20200520094742.337678-2-bjorn.topel@gmail.com>
+References: <20200520094742.337678-1-bjorn.topel@gmail.com>
+        <20200520094742.337678-2-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520072814.128267-2-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:28:08AM -0700, Ian Rogers wrote:
-> Use a bitmap rather than an array of bools.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Wed, 20 May 2020 11:47:28 +0200
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>=20
+> Calculating the "data_hard_end" for an XDP buffer coming from AF_XDP
+> zero-copy mode, the return value of xsk_umem_xdp_frame_sz() is added
+> to "data_hard_start".
+>=20
+> Currently, the chunk size of the UMEM is returned by
+> xsk_umem_xdp_frame_sz(). This is not correct, if the fixed UMEM
+> headroom is non-zero. Fix this by returning the chunk_size without the
+> UMEM headroom.
+>=20
+> Fixes: 2a637c5b1aaf ("xdp: For Intel AF_XDP drivers add XDP frame_sz")
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 > ---
->  tools/perf/util/metricgroup.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 6772d256dfdf..a16f60da06ab 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -95,7 +95,7 @@ struct egroup {
->  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  				      struct expr_parse_ctx *pctx,
->  				      struct evsel **metric_events,
-> -				      bool *evlist_used)
-> +				      unsigned long *evlist_used)
+>  include/net/xdp_sock.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index abd72de25fa4..6b1137ce1692 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -239,7 +239,7 @@ static inline u64 xsk_umem_adjust_offset(struct xdp_u=
+mem *umem, u64 address,
+> =20
+>  static inline u32 xsk_umem_xdp_frame_sz(struct xdp_umem *umem)
 >  {
->  	struct evsel *ev;
->  	bool leader_found;
-> @@ -105,7 +105,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  	double *val_ptr;
->  
->  	evlist__for_each_entry (perf_evlist, ev) {
-> -		if (evlist_used[j++])
-> +		if (test_bit(j++, evlist_used))
->  			continue;
->  		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
->  			if (!metric_events[i])
-> @@ -141,7 +141,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  			j++;
->  		}
->  		ev = metric_events[i];
-> -		evlist_used[ev->idx] = true;
-> +		set_bit(ev->idx, evlist_used);
->  	}
->  
->  	return metric_events[0];
-> @@ -157,13 +157,11 @@ static int metricgroup__setup_events(struct list_head *groups,
->  	int ret = 0;
->  	struct egroup *eg;
->  	struct evsel *evsel;
-> -	bool *evlist_used;
-> +	unsigned long *evlist_used;
->  
-> -	evlist_used = calloc(perf_evlist->core.nr_entries, sizeof(bool));
-> -	if (!evlist_used) {
-> -		ret = -ENOMEM;
-> -		return ret;
-> -	}
-> +	evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
-> +	if (!evlist_used)
-> +		return -ENOMEM;
->  
->  	list_for_each_entry (eg, groups, nd) {
->  		struct evsel **metric_events;
-> @@ -201,7 +199,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->  		list_add(&expr->nd, &me->head);
->  	}
->  
-> -	free(evlist_used);
-> +	bitmap_free(evlist_used);
->  
->  	return ret;
->  }
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
-> 
+> -	return umem->chunk_size_nohr + umem->headroom;
+> +	return umem->chunk_size_nohr;
+
+Hmm, is this correct?
+
+As you write "xdp_data_hard_end" is calculated as an offset from
+xdp->data_hard_start pointer based on the frame_sz.  Will your
+xdp->data_hard_start + frame_sz point to packet end?
+
+#define xdp_data_hard_end(xdp)                          \
+        ((xdp)->data_hard_start + (xdp)->frame_sz -     \
+         SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+
+Note the macro reserves the last 320 bytes (for skb_shared_info), but
+for AF_XDP zero-copy mode, it will never create an SKB that use this
+area.   Thus, in principle we can allow XDP-progs to extend/grow tail
+into this area, but I don't think there is any use-case for this, as
+it's much easier to access packet-data in userspace application.
+(Thus, it might not be worth the complexity to give AF_XDP
+bpf_xdp_adjust_tail access to this area, by e.g. "lying" via adding 320
+bytes to frame_sz).
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
