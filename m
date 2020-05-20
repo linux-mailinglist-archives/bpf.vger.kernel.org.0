@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A970B1DB0E1
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 13:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03EC1DB11B
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 13:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgETLDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 07:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53600 "EHLO mail.kernel.org"
+        id S1726831AbgETLLe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 07:11:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgETLDC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 07:03:02 -0400
+        id S1726859AbgETLLc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 07:11:32 -0400
 Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54C63206F1;
-        Wed, 20 May 2020 11:02:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6429E207C4;
+        Wed, 20 May 2020 11:11:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589972581;
-        bh=utyPQ/u7bwlzb7x8dQEbcEoU71e3JC9vp1bcYs20I9U=;
+        s=default; t=1589973091;
+        bh=CZO2oVmSFplMBz9Hp/Ib++cLu93ut1vlEwhwSgDctvg=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rngQvLz2MUGKZpewOVsH0Gp996X30NtOhiZA6Cbl0hEqhTknZQkQtDQFiHZHAEToY
-         fgDm7RfVUybJvMWZuXAQNFp0jtJjFgHde5QiBByfKknhdpkLQu8UBIfHPc464pgZrb
-         8JcdoCjPSOev7Zt6WeeVeI+PkJexXjdwsOwSI3WI=
-Date:   Wed, 20 May 2020 20:02:55 +0900
+        b=0JQBodzpZZsofv0Hjk8g+YCto+yzr1HnJmp8bkaaHFsZdNStcwkqu6sxB/Cq7RGNZ
+         D9oyW+ivG0VvZVxdbnNjqnjrKg4ZFxKYuPou20DYf2dxIBIfJoUskwUkakdJdMZzgW
+         O2b3pTDEl9xo3o3HjCuYb8IrGfvnz8+E0HAxmEdI=
+Date:   Wed, 20 May 2020 20:11:26 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -33,86 +33,63 @@ Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 20/20] maccess: return -ERANGE when
- copy_from_kernel_nofault_allowed fails
-Message-Id: <20200520200255.3db6d27304f0b4c29c52ebcc@kernel.org>
-In-Reply-To: <20200519134449.1466624-21-hch@lst.de>
+Subject: Re: [PATCH 13/20] maccess: always use strict semantics for
+ probe_kernel_read
+Message-Id: <20200520201126.f37d3b1e46355199216404e2@kernel.org>
+In-Reply-To: <20200519134449.1466624-14-hch@lst.de>
 References: <20200519134449.1466624-1-hch@lst.de>
-        <20200519134449.1466624-21-hch@lst.de>
+        <20200519134449.1466624-14-hch@lst.de>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 19 May 2020 15:44:49 +0200
+On Tue, 19 May 2020 15:44:42 +0200
 Christoph Hellwig <hch@lst.de> wrote:
 
-> Allow the callers to distinguish a real unmapped address vs a range
-> that can't be probed.
-> 
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Hi Christoph,
-
-Can you also update the kerneldoc comment too?
-Other than that, this looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> ---
->  mm/maccess.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index 1e7d77656c596..4010d64189d21 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -25,7 +25,7 @@ bool __weak copy_from_kernel_nofault_allowed(void *dst, const void *unsafe_src,
->  long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
->  {
->  	if (!copy_from_kernel_nofault_allowed(dst, src, size))
-> -		return -EFAULT;
-> +		return -ERANGE;
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 2f6737cc53e6c..82da20e712507 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1208,7 +1208,13 @@ fetch_store_strlen(unsigned long addr)
+>  	u8 c;
 >  
->  	pagefault_disable();
->  	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
-> @@ -69,7 +69,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
->  	if (unlikely(count <= 0))
->  		return 0;
->  	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
-> -		return -EFAULT;
-> +		return -ERANGE;
->  
->  	pagefault_disable();
 >  	do {
-> @@ -107,7 +107,7 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
->  	mm_segment_t old_fs = get_fs();
->  
->  	if (!copy_from_kernel_nofault_allowed(dst, src, size))
-> -		return -EFAULT;
-> +		return -ERANGE;
->  
->  	set_fs(KERNEL_DS);
->  	pagefault_disable();
-> @@ -174,7 +174,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
->  	if (unlikely(count <= 0))
->  		return 0;
->  	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
-> -		return -EFAULT;
-> +		return -ERANGE;
->  
->  	set_fs(KERNEL_DS);
->  	pagefault_disable();
-> -- 
-> 2.26.2
-> 
+> -		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +		if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+> +		    (unsigned long)addr < TASK_SIZE) {
+> +			ret = probe_user_read(&c,
+> +				(__force u8 __user *)addr + len, 1);
+> +		} else {
+> +			ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +		}
+>  		len++;
+>  	} while (c && ret == 0 && len < MAX_STRING_SIZE);
+
+To avoid redundant check in the loop, we can use strnlen_user_nofault() out of
+the loop. Something like below.
+
+...
+	u8 c;
+
+	if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
+	    (unsigned long)addr < TASK_SIZE) {
+		return strnlen_user_nofault((__force u8 __user *)addr, MAX_STRING_SIZE);
+
+	do {
+		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+		len++;
+	} while (c && ret == 0 && len < MAX_STRING_SIZE);
+...
+
+This must work because we must not have a string that continues across
+kernel　space and user space.
+
+Thank you,
 
 
 -- 
