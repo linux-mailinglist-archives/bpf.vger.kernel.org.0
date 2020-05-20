@@ -2,118 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82D61DAA7F
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 08:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC621DAB88
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 09:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgETGTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 02:19:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55036 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgETGTH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 02:19:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C3567AD45;
-        Wed, 20 May 2020 06:19:07 +0000 (UTC)
-Date:   Wed, 20 May 2020 16:18:51 +1000
-From:   Aleksa Sarai <asarai@suse.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: seccomp feature development
-Message-ID: <20200520061851.rxxgz2frffqt66q6@yavin.dot.cyphar.com>
-References: <202005181120.971232B7B@keescook>
- <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
- <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
- <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
- <20200520012045.5yqejh6kic3gbkyw@yavin.dot.cyphar.com>
- <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
+        id S1726528AbgETHGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 03:06:03 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47571 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725998AbgETHGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 03:06:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589958361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=12r6Pw0ocdRXl1n2t8Xeq4Bd0G+JXCXMNugfD9+yIIQ=;
+        b=NOt9W0hOKDK7e8QGESH6DZCdCQOpOe9KPpiOrLTLqEb8AbTyn4MEtkpIJ9OyJVe1lsKuEg
+        zT9Oy/K8HYemGkLAYQaDxBlUNS8tHIMyNFLzs0QRxCxsqgdOLBnol8G42vf72m2GFhJyeT
+        kgmtrHNso22M5+9z8Pm4voY3Mqb/77s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-hp6Vo_v5MlSkVVNrj1qJlQ-1; Wed, 20 May 2020 03:05:57 -0400
+X-MC-Unique: hp6Vo_v5MlSkVVNrj1qJlQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 536AD107ACF2;
+        Wed, 20 May 2020 07:05:55 +0000 (UTC)
+Received: from krava (unknown [10.40.194.155])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6F14F5D9CA;
+        Wed, 20 May 2020 07:05:52 +0000 (UTC)
+Date:   Wed, 20 May 2020 09:05:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc:     cj.chengjian@huawei.com, huawei.libin@huawei.com,
+        xiexiuqi@huawei.com, mark.rutland@arm.com, guohanjun@huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        wangnan0@huawei.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
+Message-ID: <20200520070551.GC110644@krava>
+References: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rn7hnswmzhtvif3b"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, May 20, 2020 at 11:32:16AM +0800, Wang ShaoBo wrote:
+> key_scan_pos is a pointer for getting scan position in
+> bpf__obj_config_map() for each BPF map configuration term,
+> but it's misused when error not happened.
+> 
+> Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
+> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> ---
+>  tools/perf/util/bpf-loader.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index 10c187b8b8ea..460056bc072c 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
+>  out:
+>  	free(map_name);
+>  	if (!err)
+> -		key_scan_pos += strlen(map_opt);
+> +		*key_scan_pos += strlen(map_opt);
 
---rn7hnswmzhtvif3b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+seems good, was there something failing because of this?
 
-On 2020-05-19, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> On Wed, May 20, 2020 at 11:20:45AM +1000, Aleksa Sarai wrote:
-> > No it won't become copy_from_user(), nor will there be a TOCTOU race.
-> >=20
-> > The idea is that seccomp will proactively copy the struct (and
-> > recursively any of the struct pointers inside) before the syscall runs
-> > -- as this is done by seccomp it doesn't require any copy_from_user()
-> > primitives in cBPF. We then run the cBPF filter on the copied struct,
-> > just like how cBPF programs currently operate on seccomp_data (how this
-> > would be exposed to the cBPF program as part of the seccomp ABI is the
-> > topic of discussion here).
-> >=20
-> > Then, when the actual syscall code runs, the struct will have already
-> > been copied and the syscall won't copy it again.
->=20
-> Let's take bpf syscall as an example.
-> Are you suggesting that all of syscall logic of conditionally parsing
-> the arguments will be copy-pasted into seccomp-syscall infra, then
-> it will do copy_from_user() all the data and replace all aligned_u64
-> in "union bpf_attr" with kernel copied pointers instead of user pointers
-> and make all of bpf syscall's copy_from_user() actions to be conditional ?
-> If seccomp is on, use kernel pointers... if seccomp is off, do copy_from_=
-user ?
-> And the same idea will be replicated for all syscalls?
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-This would be done optionally per-syscall. Only syscalls which want to
-opt-in to such a mechanism (such as clone3 and openat2) would be
-affected. Also, bpf is possibly the least-friendly syscall to pick as an
-example of these types of filters -- openat2/clone3 is much simpler to
-consider.
+thanks,
+jirka
 
-The point is that if we both agree that seccomp needs to have a way to
-do "deep argument inspection" (filtering based on the struct argument to
-a syscall), then some sort of caching mechanism is simply necessary to
-solve the problem. Otherwise there's a trivial TOCTOU and seccomp
-filtering for such syscalls would be rendered almost useless.
+>  	return err;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---rn7hnswmzhtvif3b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEXzbGxhtUYBJKdfWmnhiqJn3bjbQFAl7Ey8kACgkQnhiqJn3b
-jbS1aw/+Ke+3XabRAdGNQcKJl07/uM/ddqclXOauVrhWiCSAxWSnWVu97XP7n4Ce
-gQq6Da4u3IVhScgvfuR7utNO0uprnaW7Aj4Seb8ioajFA4I5DCWzn1JJHl90et7n
-0oonnFE/IQuCwcWfCJ8EVcv6HdLBxpGPXEciCX9qXUyi6ipEAlmaRI1am7SeUFcF
-dfc6Nz4azXPMtrTaXlQbwQ4pLHDF1pW+rBa06mgyJlQYgvcmsmxkE3fRxhJxauBX
-4sWTYrkVQu0aB3CnSONO5sqfZiZuEf0rGJqF8ETgTYSBBQ5hGT1uuvQYnCz7jtM6
-AbTq8BGAMG3Ox/2s/sezHLsWJx2ypoQ34NMSSfRgacBmse56OdHGP8zEDJJRm/OA
-RNqpL5ZJ9HWG8H9zor9FTcc4CvvdxUpX326QCL+l3eJrt+Afd++erZyOpfbzZhKH
-MKb7aSSmhvy+NgVpZpjj8CF3mzYdAlTFVldgXRa5rvKwshz75+8uA9dCZa7MidDQ
-Vmw4vIkdcWXY8c5VABuKw0p4Z41OCV15eKBDzK4e6fR4HDTM8QHe6X4sk8f3cR9F
-4P5JEuO6YOfXuDGClgc0Nb89IqtwBB61EJyt/LZbwIcu4A6htR2lTsxlSJfqWHCz
-Z3haeWiCQoaPN9Sgt/NXhPOn+MYJq/xqle4SAHCzKC+YdjWyvrQ=
-=Iji/
------END PGP SIGNATURE-----
-
---rn7hnswmzhtvif3b--
