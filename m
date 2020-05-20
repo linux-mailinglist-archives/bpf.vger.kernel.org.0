@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3011DBA77
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 19:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0801D1DBA92
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 19:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgETRC3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 13:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48992 "EHLO mail.kernel.org"
+        id S1726898AbgETRD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 13:03:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETRC3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 13:02:29 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.3])
+        id S1727917AbgETRDt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 13:03:49 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7711420708;
-        Wed, 20 May 2020 17:02:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DFE420708;
+        Wed, 20 May 2020 17:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589994149;
-        bh=whpzmBwWqd+gQAUGWLi+RbgTC02qz0FLfolqqvqu7LQ=;
+        s=default; t=1589994228;
+        bh=/YtqEongQLlP1gJq4f41wHCnKACXtCf/GgNRIFAx/h8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Dz1iB4Meka3S3vPoGpbLpYfm8i83lJ+hM5iKd7NtF5xIWoWGUYqxZ6XkRPpAAvQy5
-         tVa41gDmBBO528lGkjjhXJo31Tn7PniVeyCbT+HrvISOEV1KTn2Mqf7dCjbJ44CSV0
-         vxqWwNyOSL8m6cPKswHtskR6dwCdw6/q5eQaEGxI=
-Date:   Wed, 20 May 2020 10:02:18 -0700
+        b=C01ybvQtnzIB0EvtgCHy/2qwoBsIDW3cigmV2uHwWrQC7vsZi+YBAGHYbML7SSGjs
+         2YkZY0jN7JXGK/oNAQ0OuUEFhf7xudXR7VHRs9DrrsJGtsJ6ZBOBPW45y7A8zIx1+k
+         oSaGA+AV+XqTRJl6HOoqm5CMAzFdgPermilOA5MA=
+Date:   Wed, 20 May 2020 10:03:42 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
@@ -33,12 +33,12 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         maximmi@mellanox.com, maciej.fijalkowski@intel.com,
         intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v4 07/15] i40e: separate kernel allocated rx_bi
- rings from AF_XDP rings
-Message-ID: <20200520100218.56e4ee2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200520094742.337678-8-bjorn.topel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 09/15] ice, xsk: migrate to new
+ MEM_TYPE_XSK_BUFF_POOL
+Message-ID: <20200520100342.620a0979@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200520094742.337678-10-bjorn.topel@gmail.com>
 References: <20200520094742.337678-1-bjorn.topel@gmail.com>
-        <20200520094742.337678-8-bjorn.topel@gmail.com>
+        <20200520094742.337678-10-bjorn.topel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -47,20 +47,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 May 2020 11:47:34 +0200 Bj=C3=B6rn T=C3=B6pel wrote:
+On Wed, 20 May 2020 11:47:36 +0200 Bj=C3=B6rn T=C3=B6pel wrote:
 > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >=20
-> Continuing the path to support MEM_TYPE_XSK_BUFF_POOL, the AF_XDP
-> zero-copy/sk_buff rx_bi rings are now separate. Functions to properly
-> allocate the different rings are added as well.
->=20
-> v3->v4: Made i40e_fd_handle_status() static. (kbuild test robot)
+> Remove MEM_TYPE_ZERO_COPY in favor of the new MEM_TYPE_XSK_BUFF_POOL
+> APIs.
 >=20
 > Cc: intel-wired-lan@lists.osuosl.org
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-There is a new warning here, at least one. But i40e has so many
-existing warnings with W=3D1, I can't figure out which one is new :(
+patch 8 also has a warning I can't figure out.
 
-You most likely forgot to adjust kdoc somewhere after adding or
-removing a function parameter.
+But here (patch 9) it's quite clear:
+
+drivers/net/ethernet/intel/ice/ice_xsk.c:414: warning: Excess function para=
+meter 'alloc' description in 'ice_alloc_rx_bufs_zc'
+drivers/net/ethernet/intel/ice/ice_xsk.c:480: warning: Excess function para=
+meter 'xdp' description in 'ice_construct_skb_zc'
