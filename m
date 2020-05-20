@@ -2,105 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B9D1DAF4E
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 11:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C031DB003
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 12:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgETJtu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 05:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgETJtu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 05:49:50 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ECFC061A0E;
-        Wed, 20 May 2020 02:49:50 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ci21so992171pjb.3;
-        Wed, 20 May 2020 02:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OVMLRI/qYuKHi4wFXwj/y3J+J9HuBJ9GEwbF/G1h7vs=;
-        b=GE3R50FFzi3Txqcx8u2WH1++xpjwluyfKgq087IHiuBteWVNOcqo0n7N6TL1tDUDGB
-         ckHOu9EhLKQxS5uJpqhKTpASSY+iEe9yBsvULHLCDpshh3N+/Z4sF17wQgjBYnEDmfcM
-         N/WP/P26mbTzJlTxS00k5tBYY4xro8qg/5syYtO5XXDHFXcoWujGCIU8mh/isJkxVCR6
-         I8AZV2J85BdumuRpndrP65vRDgaUeO/QDwChUoKLG3tXU34eWbFc6/4rBGN3ik2m3EPw
-         C7/DiFB+UFk7MBvp1e/mh8dWtyCy/H34YYURrrdsdD6E1CtQ5oYWlSlixhdKY6tmrcPn
-         nA9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OVMLRI/qYuKHi4wFXwj/y3J+J9HuBJ9GEwbF/G1h7vs=;
-        b=qPeYHhqfh6EmKWGIDG8wEgW6B4/U9bfPmwtpuJPzltAR3ISGsumLDRMqUCJHesKBwa
-         waT8+7JYd9VjRbPd80rrdr9aZzPfGDmI1cBSoRo0TgTMinqF2p+5de5yXRBtciPC8Oim
-         oTv16BXZMRPvTjhXRkpkMpeOMitV0DJoTXeXlgYfP/gsTbaaDG9+Z2biH7ODoW3osTd4
-         mg0drhBxAXIjYIyIGBLQ0MfFevKl+leraETeDV/c9p0ibWw2CxRqWxkjvP4tPS2k8xgy
-         F7WvxsopS27+vmSo5QPO12wFJdTGGGqxIgDcA3j0UhCgQ+31aOcJEYyvuxNucYkMHxEJ
-         99Xg==
-X-Gm-Message-State: AOAM5306a7M3AUjUqSwdRF07PyQBJSvQvmsnj9zxxqO2cuv3j3x1JtI1
-        EOnPsduD01EQLeiUiYtIUmE=
-X-Google-Smtp-Source: ABdhPJzO6ap5q3fwyXpEEnpcw20a7uylqEyDpd4h1gEvkB0D+mmf6DXN81vKBAnMZaqoF8YNCCT6jw==
-X-Received: by 2002:a17:90a:1d1:: with SMTP id 17mr4328297pjd.211.1589968189779;
-        Wed, 20 May 2020 02:49:49 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id c124sm1707494pfb.187.2020.05.20.02.49.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 02:49:48 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH bpf-next v4 15/15] MAINTAINERS, xsk: update AF_XDP section after moves/adds
-Date:   Wed, 20 May 2020 11:47:42 +0200
-Message-Id: <20200520094742.337678-16-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200520094742.337678-1-bjorn.topel@gmail.com>
-References: <20200520094742.337678-1-bjorn.topel@gmail.com>
+        id S1726436AbgETKWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 06:22:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35600 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726435AbgETKWX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 06:22:23 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1DACEE65830E18F0CE88;
+        Wed, 20 May 2020 18:22:20 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.10) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
+ 18:22:13 +0800
+Subject: Re: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
+        <xiexiuqi@huawei.com>, <mark.rutland@arm.com>,
+        <guohanjun@huawei.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <wangnan0@huawei.com>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
+ <20200520070551.GC110644@krava>
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Message-ID: <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
+Date:   Wed, 20 May 2020 18:22:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200520070551.GC110644@krava>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.10]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
 
-Update MAINTAINERS to correctly mirror the current AF_XDP socket file
-layout. Also, add the AF_XDP files of libbpf.
+在 2020/5/20 15:05, Jiri Olsa 写道:
+> On Wed, May 20, 2020 at 11:32:16AM +0800, Wang ShaoBo wrote:
+>> key_scan_pos is a pointer for getting scan position in
+>> bpf__obj_config_map() for each BPF map configuration term,
+>> but it's misused when error not happened.
+>>
+>> Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
+>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>> ---
+>>   tools/perf/util/bpf-loader.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+>> index 10c187b8b8ea..460056bc072c 100644
+>> --- a/tools/perf/util/bpf-loader.c
+>> +++ b/tools/perf/util/bpf-loader.c
+>> @@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
+>>   out:
+>>   	free(map_name);
+>>   	if (!err)
+>> -		key_scan_pos += strlen(map_opt);
+>> +		*key_scan_pos += strlen(map_opt);
+> seems good, was there something failing because of this?
+>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
+> thanks,
+> jirka
 
-rfc->v1: Sorted file entries. (Joe)
+   I found this problem when i checked this code, I think it is
 
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- MAINTAINERS | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+   an implicit question, but if we delete the two line,  the problem
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b7844f6cfa4a..087e68b21f9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18443,8 +18443,12 @@ R:	Jonathan Lemon <jonathan.lemon@gmail.com>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
--F:	kernel/bpf/xskmap.c
-+F:	include/net/xdp_sock*
-+F:	include/net/xsk_buffer_pool.h
-+F:	include/uapi/linux/if_xdp.h
- F:	net/xdp/
-+F:	samples/bpf/xdpsock*
-+F:	tools/lib/bpf/xsk*
- 
- XEN BLOCK SUBSYSTEM
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
--- 
-2.25.1
+   also no longer exists.
+
+   thanks,
+
+   Wang ShaoBo
+
 
