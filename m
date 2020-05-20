@@ -2,160 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8571DAA79
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 08:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82D61DAA7F
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 08:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgETGQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 02:16:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55336 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726224AbgETGQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 02:16:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589955392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OMQ9IJD9O1/jeNpFpeWM7Xv9tCq8zAdhnCdDGCrzgkY=;
-        b=bg5G/yUmWCzwHF3U+Ldrp0GDaq5lAC0eGOqH6wIYdPKLBBJc7leFPwCMo+ek/jMLkawluF
-        XdMnZD51bLauRJVJtWEG1CO1TJwzK/GWiqrR8UVE+6xoCqu/l+7hcgfXaCfsqTojt0AebQ
-        tIkihDJS2QUKfP4I/rShQSliQyH4EGQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-w7_Sz8eQMp2dGlHFcSmTHQ-1; Wed, 20 May 2020 02:16:28 -0400
-X-MC-Unique: w7_Sz8eQMp2dGlHFcSmTHQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EC90835B43;
-        Wed, 20 May 2020 06:16:27 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-168.ams2.redhat.com [10.36.112.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E87852E162;
-        Wed, 20 May 2020 06:16:25 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH] selftests/bpf: install btf .c files
-References: <20200519084957.55166-1-yauheni.kaliuta@redhat.com>
-        <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com>
-Date:   Wed, 20 May 2020 09:16:23 +0300
-In-Reply-To: <CAEf4Bzb-FjHtH9dyVtjZf7FYBB2BiPs0mK8ZoqH3B9iU5Hz7Mg@mail.gmail.com>
-        (Andrii Nakryiko's message of "Tue, 19 May 2020 12:09:36 -0700")
-Message-ID: <xuny7dx7nnbc.fsf@redhat.com>
+        id S1726450AbgETGTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 02:19:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55036 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgETGTH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 02:19:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C3567AD45;
+        Wed, 20 May 2020 06:19:07 +0000 (UTC)
+Date:   Wed, 20 May 2020 16:18:51 +1000
+From:   Aleksa Sarai <asarai@suse.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>,
+        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Matt Denton <mpdenton@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: seccomp feature development
+Message-ID: <20200520061851.rxxgz2frffqt66q6@yavin.dot.cyphar.com>
+References: <202005181120.971232B7B@keescook>
+ <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
+ <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
+ <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
+ <20200520012045.5yqejh6kic3gbkyw@yavin.dot.cyphar.com>
+ <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rn7hnswmzhtvif3b"
+Content-Disposition: inline
+In-Reply-To: <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii!
 
->>>>> On Tue, 19 May 2020 12:09:36 -0700, Andrii Nakryiko  wrote:
+--rn7hnswmzhtvif3b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- > On Tue, May 19, 2020 at 1:50 AM Yauheni Kaliuta
- > <yauheni.kaliuta@redhat.com> wrote:
- >> 
- >> Some .c files used by test_progs to check btf and they are missing
- >> from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
- >> test_progs and test_maps w/ general rule").
- >> 
- >> Take them back.
- >> 
- >> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
- >> test_maps w/ general rule")
- >> 
- >> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
- >> ---
- >> tools/testing/selftests/bpf/Makefile | 3 +++
- >> 1 file changed, 3 insertions(+)
- >> 
- >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
- >> index e716e931d0c9..d96440732905 100644
- >> --- a/tools/testing/selftests/bpf/Makefile
- >> +++ b/tools/testing/selftests/bpf/Makefile
- >> @@ -46,6 +46,9 @@ TEST_GEN_FILES =
- >> TEST_FILES = test_lwt_ip_encap.o \
- >> test_tc_edt.o
- >> 
- >> +BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
- >> +TEST_FILES += $(BTF_C_FILES)
+On 2020-05-19, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> On Wed, May 20, 2020 at 11:20:45AM +1000, Aleksa Sarai wrote:
+> > No it won't become copy_from_user(), nor will there be a TOCTOU race.
+> >=20
+> > The idea is that seccomp will proactively copy the struct (and
+> > recursively any of the struct pointers inside) before the syscall runs
+> > -- as this is done by seccomp it doesn't require any copy_from_user()
+> > primitives in cBPF. We then run the cBPF filter on the copied struct,
+> > just like how cBPF programs currently operate on seccomp_data (how this
+> > would be exposed to the cBPF program as part of the seccomp ABI is the
+> > topic of discussion here).
+> >=20
+> > Then, when the actual syscall code runs, the struct will have already
+> > been copied and the syscall won't copy it again.
+>=20
+> Let's take bpf syscall as an example.
+> Are you suggesting that all of syscall logic of conditionally parsing
+> the arguments will be copy-pasted into seccomp-syscall infra, then
+> it will do copy_from_user() all the data and replace all aligned_u64
+> in "union bpf_attr" with kernel copied pointers instead of user pointers
+> and make all of bpf syscall's copy_from_user() actions to be conditional ?
+> If seccomp is on, use kernel pointers... if seccomp is off, do copy_from_=
+user ?
+> And the same idea will be replicated for all syscalls?
 
- > Can you please re-use BTF_C_FILES in TRUNNER_EXTRA_FILES :=
- > assignment on line 357?
+This would be done optionally per-syscall. Only syscalls which want to
+opt-in to such a mechanism (such as clone3 and openat2) would be
+affected. Also, bpf is possibly the least-friendly syscall to pick as an
+example of these types of filters -- openat2/clone3 is much simpler to
+consider.
 
-Do you mean this:
+The point is that if we both agree that seccomp needs to have a way to
+do "deep argument inspection" (filtering based on the struct argument to
+a syscall), then some sort of caching mechanism is simply necessary to
+solve the problem. Otherwise there's a trivial TOCTOU and seccomp
+filtering for such syscalls would be rendered almost useless.
 
-From 45ce4975303de9e0abc733f68583a50478733071 Mon Sep 17 00:00:00 2001
-From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date: Tue, 19 May 2020 11:35:52 +0300
-Subject: [PATCH] selftests/bpf: install btf .c files
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
 
-Some .c files used by test_progs to check btf and they are missing
-from installation after commit 74b5a5968fe8 ("selftests/bpf: Replace
-test_progs and test_maps w/ general rule").
+--rn7hnswmzhtvif3b
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Take them back.
+-----BEGIN PGP SIGNATURE-----
 
-Reuse BTF_C_FILES for TRUNNER_EXTRA_FILES.
+iQIzBAABCAAdFiEEXzbGxhtUYBJKdfWmnhiqJn3bjbQFAl7Ey8kACgkQnhiqJn3b
+jbS1aw/+Ke+3XabRAdGNQcKJl07/uM/ddqclXOauVrhWiCSAxWSnWVu97XP7n4Ce
+gQq6Da4u3IVhScgvfuR7utNO0uprnaW7Aj4Seb8ioajFA4I5DCWzn1JJHl90et7n
+0oonnFE/IQuCwcWfCJ8EVcv6HdLBxpGPXEciCX9qXUyi6ipEAlmaRI1am7SeUFcF
+dfc6Nz4azXPMtrTaXlQbwQ4pLHDF1pW+rBa06mgyJlQYgvcmsmxkE3fRxhJxauBX
+4sWTYrkVQu0aB3CnSONO5sqfZiZuEf0rGJqF8ETgTYSBBQ5hGT1uuvQYnCz7jtM6
+AbTq8BGAMG3Ox/2s/sezHLsWJx2ypoQ34NMSSfRgacBmse56OdHGP8zEDJJRm/OA
+RNqpL5ZJ9HWG8H9zor9FTcc4CvvdxUpX326QCL+l3eJrt+Afd++erZyOpfbzZhKH
+MKb7aSSmhvy+NgVpZpjj8CF3mzYdAlTFVldgXRa5rvKwshz75+8uA9dCZa7MidDQ
+Vmw4vIkdcWXY8c5VABuKw0p4Z41OCV15eKBDzK4e6fR4HDTM8QHe6X4sk8f3cR9F
+4P5JEuO6YOfXuDGClgc0Nb89IqtwBB61EJyt/LZbwIcu4A6htR2lTsxlSJfqWHCz
+Z3haeWiCQoaPN9Sgt/NXhPOn+MYJq/xqle4SAHCzKC+YdjWyvrQ=
+=Iji/
+-----END PGP SIGNATURE-----
 
-Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
-test_maps w/ general rule")
-
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- tools/testing/selftests/bpf/Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e716e931d0c9..3ab4b6937987 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -46,6 +46,9 @@ TEST_GEN_FILES =
- TEST_FILES = test_lwt_ip_encap.o \
- 	test_tc_edt.o
- 
-+BTF_C_FILES = $(wildcard progs/btf_dump_test_case_*.c)
-+TEST_FILES += $(BTF_C_FILES)
-+
- # Order correspond to 'make run_tests' order
- TEST_PROGS := test_kmod.sh \
- 	test_xdp_redirect.sh \
-@@ -357,8 +360,7 @@ TRUNNER_BPF_PROGS_DIR := progs
- TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 flow_dissector_load.h
--TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
--		       $(wildcard progs/btf_dump_test_case_*.c)
-+TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(BTF_C_FILES)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
- TRUNNER_BPF_LDFLAGS := -mattr=+alu32
--- 
-2.26.2
-
-?
-
- > See also $(TRUNNER_BINARY)-extras rule. For "flavored"
- > test_progs runners (e.g., test_progs-no_alu32), those files
- > need to be copied into no_alu32 sub-directory (same for BPF .o
- > files, actually). Unless you don't want to run flavored
- > test_progs, of course.
-
-Thanks, I'll have a look.
-
- >> # Order correspond to 'make run_tests' order
- >> TEST_PROGS := test_kmod.sh \
- >> test_xdp_redirect.sh \
- >> --
- >> 2.26.2
- >> 
-
-
--- 
-WBR,
-Yauheni Kaliuta
-
+--rn7hnswmzhtvif3b--
