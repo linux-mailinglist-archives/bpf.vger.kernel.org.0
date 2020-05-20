@@ -2,134 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A047B1DAC0E
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 09:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407161DAC84
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 09:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgETH2u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 03:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
+        id S1726720AbgETHqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 03:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgETH2j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 03:28:39 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDB0C061A0F
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 00:28:39 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id p15so2893227qkk.15
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 00:28:39 -0700 (PDT)
+        with ESMTP id S1726403AbgETHqi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 May 2020 03:46:38 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23469C061A0F
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 00:46:37 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id o134so512330ybg.2
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 00:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2tRmly8/qGDtTekbgn2lo5YJiPgOHSr53socGYeFTI4=;
-        b=olaQa8CE1BsKbe+yaSv7WAep0ye3gnRfXCsSa19Bmm9FUmeEOseb8R8cXKoS3SldFK
-         8VGdjr0mSAs0JsCJgVkRP2AFgZua25Qx9hEk8RF0Wiob7F+tPI0L0aL96Uu772POuqA+
-         uwhxtvPF34zKhY15RrV/FHEn4T5bcwmUmWu16dvM1QSfxbOGhmqQmZukZDGWxJpo53G5
-         G6H5vckludUETauA9rAV3B3Cob8YTvhDQLxldYXK7TeXsJRgm2yJ/eC+k89X7AjYOiQ0
-         5CDUIHT9/XLTKPU+jCg1JC0nJ2x3nuGUbYMU00wLPFJHnHnfRpX/JdMP8KGKxd/4uWUE
-         Gveg==
+        bh=GcskknYh95Rq/Z6Azk62iLDMqUdVtj6gS2U77ZaIoIU=;
+        b=O44tJvlv/WeGAb2EUW5U1b7mccht+alKed3ccPJygFxfgOiFTPk1FratyivkGc09Lv
+         xuzcQDqx5Hgm7ZErC5Ll1kGXoT8P4VVHw2p3iW54tOUCLs9CpnclbpknkrOPV24VSlU8
+         8wM2T9eqOBFTanPK5rnk4LgPYPh3A7PxoiRB+LYZH1PxDB41pN1I8QZSzz1UT02PB29S
+         FjvcxIKv5zbe9M1/LHogO3Ebj+KEt43IIO0zhchKc2GKE3vBi+nJAUELFit5FR/l2A4Y
+         WYHNbIuCWPW8qutZwXV/iekANN7iMF5zJZu9FWhBbj+NHjs7eUbFUsYfOb/oRT3x4FVC
+         xh1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=2tRmly8/qGDtTekbgn2lo5YJiPgOHSr53socGYeFTI4=;
-        b=m51P0Ew8na5zOFKVts0aKGGd6aXS8Hg2NaMk8vJAXf76fKnR05jh+DHNE6rDc/E1vn
-         VQRThz4JkSCQLdbtkqEspEmN7Hifz/M069J8x4L5SKodTl1+KamRrxB42+vVJmjw7rq0
-         BWeuMLdRC5UXj1Y++aIf09b0KVONy43dquNW/AA+MyJkRGu9RK6LnkOgYH2XldjoXD7r
-         khQ1gRALLY2oUfqNm53cjDmwxNXeYFa6Q8e30IqzMlhD9NU1TxT8iSMLzfJQypmtmJJj
-         8K1bkvNyCqc3qo6MuZBKvxxs8YFc7tnaKeX2wJpnrsyaR4mqmTomSKuRws6jUgzCxxgp
-         xndw==
-X-Gm-Message-State: AOAM532tTVzwVVUBNWbKx0OTDQCEKYVNvpqnxvsVN8YuJM9CCgzZ0N8X
-        7lUAlOSqkVR+zUn/SPUOD2iijhU+N3/z
-X-Google-Smtp-Source: ABdhPJyza8+/G6GYTHs1Y7nBujR1GXXlFW4JKXm7exIG6wNQZEBwDZgk05NesOSemj3kuy22h4aviOPWTLL2
-X-Received: by 2002:ad4:57cb:: with SMTP id y11mr3521842qvx.26.1589959717451;
- Wed, 20 May 2020 00:28:37 -0700 (PDT)
-Date:   Wed, 20 May 2020 00:28:14 -0700
-In-Reply-To: <20200520072814.128267-1-irogers@google.com>
-Message-Id: <20200520072814.128267-8-irogers@google.com>
-Mime-Version: 1.0
-References: <20200520072814.128267-1-irogers@google.com>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH 7/7] perf metricgroup: Remove unnecessary ',' from events
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GcskknYh95Rq/Z6Azk62iLDMqUdVtj6gS2U77ZaIoIU=;
+        b=qlKkWI4RucF7+x/ubiF318dc0SqMCDO0EkJyy/RTciDGMnvENCL5SwqFm4QgUEYEWC
+         kEAMyVoDhDOlOnuADtaw0GRSXzYwu7vtKeGf9KIuSORzx0KpC1F7yIREwJVkS9GBNgbZ
+         AlrrmXw6JgVIDHmoBBNnQxOPo8lodcCYin7cb0ObsmztQ2JUtkKxremX5Vb/ijzdKbn+
+         JtUqOtYqgZr7/d7t5Beel2DHKrsPILY1lDS3H+cXXyy0yBOCOqtmnQTvbo6tcJv3qWjE
+         XJeE+b7IktkAgV6yuCs6zGmY+njFlQqkrIegrOlkiNgSd/RoCPN4koZSyEME9X9AIQeO
+         OeMw==
+X-Gm-Message-State: AOAM533UM58NSufCVOa+siSXap9vo+Y/hHZRkfFkU8zx1Jvac2ArGpra
+        O0Gy4pEda1QWBzHEd6oRIpjYLmiFGKAFq5yDiaNUwQ==
+X-Google-Smtp-Source: ABdhPJwGvKZvdPEjgUaNjoxgTzneBcLyd71wFjTYqOE86+SlBKa4uqcqVAnujdHK89IgJTKnEatAb+OEoATUC4Gc+x0=
+X-Received: by 2002:a25:7cc1:: with SMTP id x184mr5135676ybc.403.1589960793022;
+ Wed, 20 May 2020 00:46:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200508053629.210324-1-irogers@google.com> <20200508053629.210324-13-irogers@google.com>
+ <20200509002518.GF3538@tassilo.jf.intel.com> <CAP-5=fWYO2e9yVPuXGVKZ7TBP4PP6MjyEFiSd+20DOxYSLC--w@mail.gmail.com>
+ <20200509024019.GI3538@tassilo.jf.intel.com>
+In-Reply-To: <20200509024019.GI3538@tassilo.jf.intel.com>
 From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
+Date:   Wed, 20 May 2020 00:46:22 -0700
+Message-ID: <CAP-5=fVPh0og6CmjM4G1bDGB_S+Sp4v_4WM3r5XqwQPbk7ASdg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 12/14] perf metricgroup: order event groups by size
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
         Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
         John Garry <john.garry@huawei.com>,
         Jin Yao <yao.jin@linux.intel.com>,
         Kan Liang <kan.liang@linux.intel.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
         Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove unnecessary commas from events before they are parsed. This
-avoids ',' being echoed by parse-events.l.
+On Fri, May 8, 2020 at 7:40 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> > > I'm not sure if size is that great an heuristic. The dedup algorithm should
+> > > work in any case even if you don't order by size, right?
+> >
+> > Consider two metrics:
+> >  - metric 1 with events {A,B}
+> >  - metric 2 with events {A,B,C,D}
+> > If the list isn't sorted then as the matching takes the first group
+> > with all the events, metric 1 will match {A,B} and metric 2 {A,B,C,D}.
+> > If the order is sorted to {A,B,C,D},{A,B} then metric 1 matches within
+> > the {A,B,C,D} group as does metric 2. The events in metric 1 aren't
+> > used and are removed.
+>
+> Ok. It's better for the longer metric if they stay together.
+>
+> >
+> > The dedup algorithm is very naive :-)
+>
+> I guess what matters is that it gives reasonable results on the current
+> metrics. I assume it does?
+>
+> How much deduping is happening if you run all metrics?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/metricgroup.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Hi Andi,
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 432ae2e4c7b1..570285132cf6 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -501,9 +501,14 @@ static void metricgroup__add_metric_non_group(struct strbuf *events,
- {
- 	struct hashmap_entry *cur;
- 	size_t bkt;
-+	bool first = true;
- 
--	hashmap__for_each_entry((&ctx->ids), cur, bkt)
--		strbuf_addf(events, ",%s", (const char *)cur->key);
-+	hashmap__for_each_entry((&ctx->ids), cur, bkt) {
-+		if (!first)
-+			strbuf_addf(events, ",");
-+		strbuf_addf(events, "%s", (const char *)cur->key);
-+		first = false;
-+	}
- }
- 
- static void metricgroup___watchdog_constraint_hint(const char *name, bool foot)
-@@ -637,8 +642,10 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 		}
- 	}
- 	if (!ret) {
-+		bool first = true;
-+
- 		list_for_each_entry(eg, group_list, nd) {
--			if (events->len > 0)
-+			if (events->len > 0 && !first)
- 				strbuf_addf(events, ",");
- 
- 			if (eg->has_constraint) {
-@@ -648,6 +655,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 				metricgroup__add_metric_weak_group(events,
- 								   &eg->pctx);
- 			}
-+			first = false;
- 		}
- 	}
- 	return ret;
--- 
-2.26.2.761.g0e0b3e54be-goog
+I included this data in the latest cover-letter:
+https://lore.kernel.org/lkml/20200520072814.128267-1-irogers@google.com/
 
+> For toplev on my long term todo list was to compare it against
+> a hopefully better schedule generated by or-tools, but I never
+> got around to coding that up.
+>
+> -Andi
+
+Agreed, and this relates to your comments about doing the algorithm as
+a separate pass outside of find_evsel_group. For that, I don't
+disagree but would like to land what we have and then follow up with
+improvements.
+
+Thanks,
+Ian
