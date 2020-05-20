@@ -2,114 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00161DB441
-	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 14:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C901DB4B7
+	for <lists+bpf@lfdr.de>; Wed, 20 May 2020 15:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgETM4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 May 2020 08:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgETM4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 May 2020 08:56:24 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86C0C061A0E
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 05:56:23 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s8so3011270wrt.9
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 05:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRf0IXb8hQkrdaL1fqV3l4f1s2bF25mDJk/8LzKBDyk=;
-        b=FcM3iKpmGOIcheIq2sv7UBjccYXgY5UfnFjB4xNjwyYn/tsB62nOO1DlESb5YDOJW0
-         sqFXADpYAoyt8FhrnVZr8S0nV8jXbRhFgVllGSXhkdtwDwjB2N1piQYgke2bBl7yz4Cu
-         VYa9mPs5vM6n6ad8Zc7RtsTFPTTusIOL3Oj7Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRf0IXb8hQkrdaL1fqV3l4f1s2bF25mDJk/8LzKBDyk=;
-        b=G/JBR3O9HSN2NQIUFXateLJco+Wp/rlrTZ+zmQ+XPRG6mSYlbTmtFi7MCjBYUOpNJt
-         gfC4qrNEooZn48iUZLAbL2jSrpINE+IV1Hp36+/ms/GbKqmpx9AtHU6MK9ZEtTxwfBtk
-         SbhNBTTcYi/+HT4TTJr9yZ9GTEX2TbapgZzQcgIqi2DSqf6sXKWuXMGsQrTtrOwy5gZt
-         X6g/2aRcZ2QUGUrIE0apkasQmntCyNKUYgwMtq7kA+hTIxPqL1uQrTOaI6HxH/7KM7sE
-         UXEZzT/2r5uiJGqX3QmgM8Kv2O+C96N1O21KRk9of6BeIxiUSAPYzaZl/dD97WXjZjwT
-         pKwg==
-X-Gm-Message-State: AOAM530eCmCrcUOhkQW32iPKPuCfOMpR71iRwemsDqTT1z8wN7m23Eaz
-        5dZ7WIBYttk2jlbNVdFgfnMFbQ==
-X-Google-Smtp-Source: ABdhPJzZTIkt68m48X0Gd2mSWXMTScvuAo6k7MEMXpKVIa3O8ND+TYDMoHIr5dtTngUw3l1H6DOPPg==
-X-Received: by 2002:adf:e703:: with SMTP id c3mr4169330wrm.252.1589979382402;
-        Wed, 20 May 2020 05:56:22 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id i11sm2961978wrc.35.2020.05.20.05.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 05:56:21 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
-Date:   Wed, 20 May 2020 14:56:16 +0200
-Message-Id: <20200520125616.193765-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+        id S1726822AbgETNOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 May 2020 09:14:15 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46779 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726435AbgETNOO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 20 May 2020 09:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589980453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZyJW0Q/g6i/6kSuHAySWrYItdVGQP1hyPNjvu+H1F/s=;
+        b=UHpkr+PuD9Ws/VBro2OtuFTeJSTqyNZ/Fom+zpKgPVGhQiu5lz6ayM80rjYhKoIXbWEOCR
+        nnco6hXtNAPGxrAwKMNhVpoCtAUdCWEidISIFTEdOXJDTKnSjv1GUOesP7ytEbxcY3lic+
+        5rq3Vj/blwJUUuXPH0BRLvZhkTMXJfY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-GH-TA4nPM1-e3un7UbhALA-1; Wed, 20 May 2020 09:14:09 -0400
+X-MC-Unique: GH-TA4nPM1-e3un7UbhALA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5D3F8015CE;
+        Wed, 20 May 2020 13:14:05 +0000 (UTC)
+Received: from krava (unknown [10.40.193.10])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C49EF600E3;
+        Wed, 20 May 2020 13:14:00 +0000 (UTC)
+Date:   Wed, 20 May 2020 15:13:59 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 0/7] Share events between metrics
+Message-ID: <20200520131359.GJ157452@krava>
+References: <20200520072814.128267-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520072814.128267-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Wed, May 20, 2020 at 12:28:07AM -0700, Ian Rogers wrote:
+> Metric groups contain metrics. Metrics create groups of events to
+> ideally be scheduled together. Often metrics refer to the same events,
+> for example, a cache hit and cache miss rate. Using separate event
+> groups means these metrics are multiplexed at different times and the
+> counts don't sum to 100%. More multiplexing also decreases the
+> accuracy of the measurement.
+> 
+> This change orders metrics from groups or the command line, so that
+> the ones with the most events are set up first. Later metrics see if
+> groups already provide their events, and reuse them if
+> possible. Unnecessary events and groups are eliminated.
+> 
+> The option --metric-no-group is added so that metrics aren't placed in
+> groups. This affects multiplexing and may increase sharing.
+> 
+> The option --metric-mo-merge is added and with this option the
+> existing grouping behavior is preserved.
+> 
+> Using skylakex metrics I ran the following shell code to count the
+> number of events for each metric group (this ignores metric groups
+> with a single metric, and one of the duplicated TopdownL1 and
+> TopDownL1 groups):
 
-secid_to_secctx is not stackable, and since the BPF LSM registers this
-hook by default, the call_int_hook logic is not suitable which
-"bails-on-fail" and casues issues when other LSMs register this hook and
-eventually breaks Audit.
+hi,
+I'm getting parser error with:
 
-In order to fix this, directly iterate over the security hooks instead
-of using call_int_hook as suggested in:
+[jolsa@krava perf]$ sudo ./perf stat -M IPC,CPI -a -I 1000
+event syntax error: '..ed.thread}:W{inst_retired.any,cpu_clk_unhalted.thread}:W,{inst_retired.any,cycles}:W'
+                                  \___ parser error
 
-https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
 
-Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- security/security.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/security/security.c b/security/security.c
-index 7fed24b9d57e..51de970fbb1e 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1965,8 +1965,20 @@ EXPORT_SYMBOL(security_ismaclabel);
- 
- int security_secid_to_secctx(u32 secid, char **secdata, u32 *seclen)
- {
--	return call_int_hook(secid_to_secctx, -EOPNOTSUPP, secid, secdata,
--				seclen);
-+	struct security_hook_list *hp;
-+	int rc;
-+
-+	/*
-+	 * Currently, only one LSM can implement secid_to_secctx (i.e this
-+	 * LSM hook is not "stackable").
-+	 */
-+	hlist_for_each_entry(hp, &security_hook_heads.secid_to_secctx, list) {
-+		rc = hp->hook.secid_to_secctx(secid, secdata, seclen);
-+		if (rc != LSM_RET_DEFAULT(secid_to_secctx))
-+			return rc;
-+	}
-+
-+	return LSM_RET_DEFAULT(secid_to_secctx);
- }
- EXPORT_SYMBOL(security_secid_to_secctx);
- 
--- 
-2.26.2.761.g0e0b3e54be-goog
+jirka
 
