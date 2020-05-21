@@ -2,87 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478BD1DD58C
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 20:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E671DD5A4
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 20:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgEUSEG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 14:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S1729531AbgEUSG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 14:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbgEUSEG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 14:04:06 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC66CC061A0E
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 11:04:05 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b6so9448617ljj.1
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 11:04:05 -0700 (PDT)
+        with ESMTP id S1729497AbgEUSG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 14:06:28 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5794C061A0F;
+        Thu, 21 May 2020 11:06:27 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f13so6317723wmc.5;
+        Thu, 21 May 2020 11:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Gg4b4CDCsETMIm4Edj1Xv31p6ZdZ0NWSz903G/X2Po=;
-        b=C+6xQYv405ppXq81KjYUQtltgLKHhtWFV7DfKyUQgnD/o5JsMIaX3ld48tDI1ZlD7K
-         U7kuhQvl7mdKFxmVsF/c3fYz37gu4oWx14U5jtAODWIsK4FqzsUCdodSWDq8PJADqJQN
-         fxp/doyT7dYvEricBmr9oFTSOXixPbh/BPwNs=
+         :cc:content-transfer-encoding;
+        bh=2oKUs5QZClEMAOsEaZjzQhSXF7x/4a/f2Jwzz6UyoJE=;
+        b=c7uwnRnETaPj+j3tsQN+VhjZMRlQvmblbe5WlZO3TTxgdkj/GYjRvkTaYDxgD19VOW
+         dtN/JQQFfl835TYX+JMpNqx5z384Ew7jIlcKbMMWv1O8+eXbmRuX7MoltgMvtO0Jc1hz
+         pVjiaMxUkSkmJwr80wPP93FiIZ8G2uW7f+gJ2jft/fd92Gc4zRqEABNQQ2W9trxIhjyS
+         TPtdJCHt8D/6+hV9fgBQejDKhk29o/uS06xk6mhvIAsm32DcX0oIsCqQpBwyAj30dcw/
+         dCxH0zl5s5NYCSEt8M5jXdbBdOLO6GC917jPY/cU4MymIh8wXV/bmYckTgIdBBP0u+YJ
+         OSkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Gg4b4CDCsETMIm4Edj1Xv31p6ZdZ0NWSz903G/X2Po=;
-        b=mPYI6Vm2H1L0z6vjxFGXUXQXQh7e1SzsUTNXjuirqxXD1ICNXqKlPLqtN3gWIqBup4
-         Hp5PhZkTrMlnMcRzKnQLqhz/s3YyI0hULa+TuHNzsJzoL4fLMqJ3EmtyflayINt5esoS
-         NMcCLECso44P0DwZNQDTMykRA4ysV36U15bPo1GqEaeywxLwTeaS2CXP1wkYvsVFPrhf
-         iOlIr6nOqzKvLUI2XUu89WpMZBTaG9TCoPD6ymy/kxmracIrHAM5B8TTYOMneXwlnXM/
-         732Ad5O5CPiJsrJLsMz+7Za7nEoXJkUYAh7I9KdQEPzXHM666LwCEq8rvsBzoIP5O+nQ
-         8KfA==
-X-Gm-Message-State: AOAM532rVWTZaoHYUtqyVuLKYaS16gMOGvKvMtz6Ss1n9SHIoFtTZRri
-        X7sWwcBNZYNt/4Weetx7nTyFQoao8es=
-X-Google-Smtp-Source: ABdhPJw4rYyDlFhbNyb3Tmx55ibvtHPVnlwHhA5SqE5ABRQUHGx3+b3uwdUBqqBx2ICT0adMT4XvJA==
-X-Received: by 2002:a2e:9a0d:: with SMTP id o13mr5282500lji.15.1590084242433;
-        Thu, 21 May 2020 11:04:02 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id k22sm1923840lfg.69.2020.05.21.11.04.01
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 11:04:01 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id z6so9366525ljm.13
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 11:04:01 -0700 (PDT)
-X-Received: by 2002:a2e:9891:: with SMTP id b17mr3748342ljj.312.1590084240602;
- Thu, 21 May 2020 11:04:00 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2oKUs5QZClEMAOsEaZjzQhSXF7x/4a/f2Jwzz6UyoJE=;
+        b=JMaGCaaLwiyd6r5DFRSOLqwJTdAlFdm3AcwL6gfXRXtQ7HkIKL1rXeyl4XCvgDFB5N
+         hLc62h+9ngGzPRWASZUZCQp2LTq8rPYppvqdFIQxUS+7Okuj/JCvurOIAR21ZY+h+O4y
+         BoGN9uEqWDGM+/ERZjjr9HzxcpJNTwtWT38J8uHX+0U0nGqcF08liL56d1J/U2H5vkQV
+         otfJPOguUKW1N/3EURUcMKVQiVGdUYuCDbo5payVQgHSPy6Uxk0DXWARW5Ym8pCHgk+a
+         f9lurr7Y5WiBQJ3TxaMb0nyIGmard3n4hANyBmfcUykIbDoS2pEZI2GRUShlaFF1FoQ7
+         jWzA==
+X-Gm-Message-State: AOAM532saMqc7kTfXxNv62ptvCGfmLD+KytmCN/sBD1dgtbMKKkGB8LZ
+        F3AYZ3of1UjEnk2Wsnldl4Wo6c3eZLvQJxk2Ixw=
+X-Google-Smtp-Source: ABdhPJyXyvJuEWEVpqcB8w9P2gPQ6qGAnGbCZMax01jRj/a8Hqq4AhTNrBwc+18BeHatA31LptZyrkSVLJArrbVCquI=
+X-Received: by 2002:a1c:2d0c:: with SMTP id t12mr3915030wmt.165.1590084386639;
+ Thu, 21 May 2020 11:06:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200521152301.2587579-1-hch@lst.de>
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 May 2020 11:03:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiQa3GNytJDdN=RKzSKfGQdPBvso+2Lmi+BpOP=BA_n6A@mail.gmail.com>
-Message-ID: <CAHk-=wiQa3GNytJDdN=RKzSKfGQdPBvso+2Lmi+BpOP=BA_n6A@mail.gmail.com>
-Subject: Re: clean up and streamline probe_kernel_* and friends v4
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+References: <20200520094742.337678-1-bjorn.topel@gmail.com>
+ <20200520094742.337678-2-bjorn.topel@gmail.com> <20200520151819.1d2254b7@carbon>
+ <17701885-c91d-5bfc-b96d-29263a0d08ab@intel.com> <20200521062947.71d9cddd@carbon>
+In-Reply-To: <20200521062947.71d9cddd@carbon>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 21 May 2020 20:06:15 +0200
+Message-ID: <CAJ+HfNg73Wfq0ODX4kY396yyNQ-zAn1szssqqQNu4+DLbdSb2A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 01/15] xsk: fix xsk_umem_xdp_frame_sz()
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 8:23 AM Christoph Hellwig <hch@lst.de> wrote:
+On Thu, 21 May 2020 at 06:30, Jesper Dangaard Brouer <brouer@redhat.com> wr=
+ote:
 >
-> this series start cleaning up the safe kernel and user memory probing
-> helpers in mm/maccess.c, and then allows architectures to implement
-> the kernel probing without overriding the address space limit and
-> temporarily allowing access to user memory.  It then switches x86
-> over to this new mechanism by reusing the unsafe_* uaccess logic.
+> On Wed, 20 May 2020 16:34:05 +0200
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> wrote:
+>
+> > On 2020-05-20 15:18, Jesper Dangaard Brouer wrote:
+> > > On Wed, 20 May 2020 11:47:28 +0200
+> > > Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+> > >
+> > >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > >>
+> > >> Calculating the "data_hard_end" for an XDP buffer coming from AF_XDP
+> > >> zero-copy mode, the return value of xsk_umem_xdp_frame_sz() is added
+> > >> to "data_hard_start".
+> > >>
+> > >> Currently, the chunk size of the UMEM is returned by
+> > >> xsk_umem_xdp_frame_sz(). This is not correct, if the fixed UMEM
+> > >> headroom is non-zero. Fix this by returning the chunk_size without t=
+he
+> > >> UMEM headroom.
+> > >>
+> > >> Fixes: 2a637c5b1aaf ("xdp: For Intel AF_XDP drivers add XDP frame_sz=
+")
+> > >> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > >> ---
+> > >>   include/net/xdp_sock.h | 2 +-
+> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > >> index abd72de25fa4..6b1137ce1692 100644
+> > >> --- a/include/net/xdp_sock.h
+> > >> +++ b/include/net/xdp_sock.h
+> > >> @@ -239,7 +239,7 @@ static inline u64 xsk_umem_adjust_offset(struct =
+xdp_umem *umem, u64 address,
+> > >>
+> > >>   static inline u32 xsk_umem_xdp_frame_sz(struct xdp_umem *umem)
+> > >>   {
+> > >> -  return umem->chunk_size_nohr + umem->headroom;
+> > >> +  return umem->chunk_size_nohr;
+> > >
+> > > Hmm, is this correct?
+> > >
+> > > As you write "xdp_data_hard_end" is calculated as an offset from
+> > > xdp->data_hard_start pointer based on the frame_sz.  Will your
+> > > xdp->data_hard_start + frame_sz point to packet end?
+> > >
+> >
+> > Yes, I believe this is correct.
+> >
+> > Say that a user uses a chunk size of 2k, and a umem headroom of, say,
+> > 64. This means that the kernel should (at least) leave 64B which the
+> > kernel shouldn't touch.
+> >
+> > umem->headroom | XDP_PACKET_HEADROOM | packet |          |
+> >                 ^                     ^        ^      ^   ^
+> >                 a                     b        c      d   e
+> >
+> > a: data_hard_start
+> > b: data
+> > c: data_end
+> > d: data_hard_end, (e - 320)
+> > e: hardlimit of chunk, a + umem->chunk_size_nohr
+> >
+> > Prior this fix the umem->headroom was *included* in frame_sz.
+>
+> Thanks for the nice ascii art description. I can now see that you are
+> right.   We should add this kind of documentation, perhaps as a comment
+> in the code?
+>
 
-I could not see anything to object to in this version. So Ack from me,
-but obviously I'm hoping others will try to read it through as well.
+Definitely! I'd say both in code, and af_xdp.rst! I'll make a patch.
+Thanks for the suggestion!
 
-              Linus
+Cheers,
+Bj=C3=B6rn
