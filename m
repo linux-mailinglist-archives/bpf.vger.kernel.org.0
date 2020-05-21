@@ -2,125 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32391DD6CC
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FE91DD6FE
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbgEUTMT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 15:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729548AbgEUTMT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 15:12:19 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E84C061A0E;
-        Thu, 21 May 2020 12:12:19 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so6380313qts.9;
-        Thu, 21 May 2020 12:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cR6/WgdxEb48OPUj9rt10xxN8lgY/TRAtYbhZXD6v3M=;
-        b=uTTOWA1/DohmCDhX+BR04WgbUaubItV7uNx/ETKMk/U92y8QbyICM+g9sKinYfmDuN
-         nbCwoQs/mcGEWCZrV5FCfn+rr85L3WHN01O9p/JZqQRgBcwe5y0sAOA/OR7Vj9Y2X4SE
-         87TEA3lOWl/xF3h7VfiH+HE3tnbhW4GKgFXKisW27lphpwF7Pkr88k/vz+rw8+8/HVuL
-         G/ipU9i6bbTsFBUFDkCmxHgFY/iWukJvylp9uHFWjqZkqzrc+ajpDmwLn0R5spuJzfE8
-         zk5tPr7sUi8N8JpS59c0l7fnvfAu0pdrZCBNf996C0YP8ho77mbpWd3ixBSq4VwsgdhN
-         HKZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cR6/WgdxEb48OPUj9rt10xxN8lgY/TRAtYbhZXD6v3M=;
-        b=tKaFYIgHxBzul4QpjuTQo7o484ndLgE8NH0O6q/twwxItqK80Sz9hl9l3t5DWTsaLM
-         uJ3y+Yf6CEvoPVUx6S4ik6YAE1rHd/qV1fOjLCsex34Yr0UTAXgnChEcGKAoIsNx+WHi
-         p1ZRaSEr4eiTvE1YbBN2QcxD6vYQPxj8XOsBfce6y67wVwIJu57+JgxK9PmEtZtn1TmE
-         abuLcj/pE8/jX7tMndHFaKbFXAahQyxBkQj5fMVqjXEN5gkVNVfCOk2jEKacgjXXjkbv
-         3HKZKzfHkBptnNBy4W/qCw9UlNaKdy8sHh5Y+PIAXsqzq5WYE0wgg7TOWxpsEwFbfM54
-         lasg==
-X-Gm-Message-State: AOAM530BczkkfMkay8ttnLwqSM0kJ7UyQBA8Og8qAeFCe7yRSznAnnvN
-        ECs7BZAT7eQ+PZPjfQGWD8Sy1eerQ7LUKRSstHo=
-X-Google-Smtp-Source: ABdhPJxCA9ASFNs1WgVNDKwgd5TKRdkqJrLsrFtQm0wXeykzRQ2EWOB7HDfDd0qpE95Tc96Hb97MFejWrwqhhEyAWbc=
-X-Received: by 2002:aed:2f02:: with SMTP id l2mr12002183qtd.117.1590088338755;
- Thu, 21 May 2020 12:12:18 -0700 (PDT)
+        id S1730231AbgEUTSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 15:18:09 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:24154 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729635AbgEUTSJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 15:18:09 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04LJI1fs028724
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 12:18:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Cb1UKooagn9zP1mrguDUeh5/m57ACxTgzJRzYxsIky4=;
+ b=qo4qhnOpxqNrkGFPqNtJ5HLwuRl0vcnK3K1i8VrPlhoOynXwH13xtCgqmXZlkFtRp0Ru
+ wNwTIrOGhkd97e6B+iRUN5pjtJzvWeMeft6AgtefeWp/U7QnQaA2s3U7MdUliH8PDLfZ
+ JOYqyVq4xFWKTWHFi9mAaYiy8As56Dcm5fA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 314rt7n60g-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 12:18:08 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 May 2020 12:17:58 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 3C3CA2942F51; Thu, 21 May 2020 12:17:52 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/3] bpf: Allow inner map with different max_entries
+Date:   Thu, 21 May 2020 12:17:52 -0700
+Message-ID: <20200521191752.3448223-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <159007153289.10695.12380087259405383510.stgit@john-Precision-5820-Tower>
- <159007175735.10695.9639519610473734809.stgit@john-Precision-5820-Tower>
- <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
- <5ec6d090627d0_75322ab85d4a45bcf6@john-XPS-13-9370.notmuch> <5ec6d1cdbc900_7d832ae77617e5c0ce@john-XPS-13-9370.notmuch>
-In-Reply-To: <5ec6d1cdbc900_7d832ae77617e5c0ce@john-XPS-13-9370.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 21 May 2020 12:12:07 -0700
-Message-ID: <CAEf4BzY0Ft8djizeAn3sSZOLfy-ZiH5+AC=ikjk6Uno1U1JgSQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v3 4/5] bpf: selftests, add sk_msg helpers load
- and attach test
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-21_13:2020-05-21,2020-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=13 adultscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ cotscore=-2147483648 bulkscore=0 phishscore=0 mlxlogscore=342
+ priorityscore=1501 impostorscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005210141
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 12:09 PM John Fastabend
-<john.fastabend@gmail.com> wrote:
->
-> John Fastabend wrote:
-> > Andrii Nakryiko wrote:
-> > > On Thu, May 21, 2020 at 7:36 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> > > >
-> > > > The test itself is not particularly useful but it encodes a common
-> > > > pattern we have.
-> > > >
-> > > > Namely do a sk storage lookup then depending on data here decide if
-> > > > we need to do more work or alternatively allow packet to PASS. Then
-> > > > if we need to do more work consult task_struct for more information
-> > > > about the running task. Finally based on this additional information
-> > > > drop or pass the data. In this case the suspicious check is not so
-> > > > realisitic but it encodes the general pattern and uses the helpers
-> > > > so we test the workflow.
-> > > >
-> > > > This is a load test to ensure verifier correctly handles this case.
-> > > >
-> > > > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > > > ---
->
-> [...]
->
-> > > > +static void test_skmsg_helpers(enum bpf_map_type map_type)
-> > > > +{
-> > > > +       struct test_skmsg_load_helpers *skel;
-> > > > +       int err, map, verdict;
-> > > > +
-> > > > +       skel = test_skmsg_load_helpers__open_and_load();
-> > > > +       if (!skel) {
-> > > > +               FAIL("skeleton open/load failed");
-> > > > +               return;
-> > > > +       }
-> > > > +
-> > > > +       verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
-> > > > +       map = bpf_map__fd(skel->maps.sock_map);
-> > > > +
-> > > > +       err = xbpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
-> > > > +       if (err)
-> > > > +               return;
-> > > > +       xbpf_prog_detach2(verdict, map, BPF_SK_MSG_VERDICT);
-> > >
-> > > no cleanup in this test, at all
-> >
-> > Guess we need __destroy(skel) here.
-> >
-> > As an aside how come if the program closes and refcnt drops the entire
-> > thing isn't destroyed. I didn't think there was any pinning happening
-> > in the __open_and_load piece.
->
-> I guess these are in progs_test so we can't leave these around for
-> any following tests to trip over. OK. Same thing for patch 3 fwiw.
+This series allows the outer map to be updated with inner map in differen=
+t
+size as long as it is safe (meaning the max_entries is not used in the
+verification time during prog load).
 
-Yep, exactly. It's a cooperative environment at the moment. We've
-talked about running tests in forked processes and in parallel, but
-until then, cleaning up is very important.
+Please see individual patch for details.
+
+Martin KaFai Lau (3):
+  bpf: Clean up inner map type check
+  bpf: Relax the max_entries check for inner map
+  bpf: selftests: Add test for different inner map size
+
+ include/linux/bpf.h                           | 18 +++++-
+ include/linux/bpf_types.h                     | 64 +++++++++++--------
+ kernel/bpf/btf.c                              |  2 +-
+ kernel/bpf/map_in_map.c                       | 12 ++--
+ kernel/bpf/syscall.c                          | 19 +++++-
+ kernel/bpf/verifier.c                         |  2 +-
+ .../selftests/bpf/prog_tests/btf_map_in_map.c | 12 ++++
+ .../selftests/bpf/progs/test_btf_map_in_map.c | 31 +++++++++
+ 8 files changed, 119 insertions(+), 41 deletions(-)
+
+--=20
+2.24.1
+
