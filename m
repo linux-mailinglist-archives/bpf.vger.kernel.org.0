@@ -2,162 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5DE1DC8B4
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 10:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A3E1DC8EC
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 10:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgEUIek (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 04:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S1728764AbgEUImj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 04:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728577AbgEUIek (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 04:34:40 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C2BC061A0F
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:34:39 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id d7so7808681eja.7
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:34:38 -0700 (PDT)
+        with ESMTP id S1728670AbgEUImj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 04:42:39 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C2BC061A0F
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:42:39 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id j21so7873900ejy.1
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:42:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NBjbnCOh61b7cgKVaUsbqPDW94/cGzD2MQ0ZynD04OI=;
-        b=VtkWO+UlZXR6dHQYJP28BAe/uNVGTjTU4W4MhifCI5ih7nSlP0Cxfn/QVDu7CgjjJ5
-         oaY/rFGpUpZDRwZ5Jh6hXzagrfQr+Twd84fwdKMZjm390/Hf/J0dJ5WS+tRg6QST0Os2
-         eNazPat/1t4w31HVH0E87ceKkM7BB8PtPK3Jo=
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=khKa3VospsGF/zZX2jqzC6B0pFc8OmygKNEDOR+IIDs=;
+        b=Wm8lXXMowUblSGIk6/pirZc6GcIOfnLyEBXmgX4cZtvkuC21pO/JvKHEK/tsjsBynd
+         qMtn41/nHj55SyL4CM4D0LMOMrOCZ4dHNppjKdKjOw1VOMHAjdaKI06vUEGJlEJ85Oj+
+         XVuH8U2sNqYhVGlRE/RsuXUIaB9auvZ1dey7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NBjbnCOh61b7cgKVaUsbqPDW94/cGzD2MQ0ZynD04OI=;
-        b=AqsVRnoSewVKtPb62cZho7D5NqUwQqElZbdxtthOfyZfNTF7jxmubHqNAPslUOXE1d
-         z9qYxwrjvjG0ogEEN4pGgjN7QzquBtYb7VaQCKOCexg2xi5wTuBDoJa5KVYSPc0Os/Mv
-         P893kQov9rOYEIWrSy88deaCXVJlmBIYZK2WVUrZ+o1uSBb5UZNvcIFFnwHoOCTFkIOC
-         gwkoj+DHH6XfZ+r/9XHVtYaaKah362L5OtCmJ9lTgrvcqRmSXdia2Al+3AAxLN3uT3AE
-         EmopVfj1IzBAFLBrWOo2PzwQbS4k0YwKrHY7xgqEbrRqFgF6IWKjToEGC0v7/80VZ7Vh
-         wQqQ==
-X-Gm-Message-State: AOAM5324HUmyY79mQX0O/nIxOyt5eLUsLiRbpnTsIuaYHRISBMi795To
-        jX3Pm6YW6clNKrsfpExBxRwo9XDt3v8=
-X-Google-Smtp-Source: ABdhPJwqPcShx3HijRp3m1yW21LlqC0tmWcv7pLr0/2aUApSFyhEOXvWg/jt93rib49tzmYEZWy+xw==
-X-Received: by 2002:a17:906:82d9:: with SMTP id a25mr2442349ejy.43.1590050077182;
-        Thu, 21 May 2020 01:34:37 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id b14sm4231685edx.93.2020.05.21.01.34.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=khKa3VospsGF/zZX2jqzC6B0pFc8OmygKNEDOR+IIDs=;
+        b=d26rqKjOzq239RzbQHWBf9wwLeYGqyLc7zu1EJF5xDpdO0aCifilr6ahxsaVm9+sPC
+         v3aQwuTED24Hg+6G3cF9YJW+vDAJP8GEVhWA5/vWGJcLMY7zbE3CSn+PJ2wXxJjXW7d9
+         gcRQZgCEPf5LZxDo9Rhler3ruff+N6L2tl7ZqBlkZMn30nFeaX8YqYDPcdvqzZf0o6zw
+         29zXDj70S+8bqOXcKnbskl1kbSMmnNqEutvg22FYuVH2PG2cAsgAoceOlpZAw6xE5566
+         G/UFgW4hQ53+QNbCg1U4KjMmlfx7jlUNX2XxjC1yI2xD6uIn29VCZAHUD8OgftH1mjpc
+         /6Tw==
+X-Gm-Message-State: AOAM532sgnfy1EDn4ZzbGCXY2l+Z9gAftH08qWJ7FAULiH+L/f9Bwfm/
+        FpkLAMDqigunxI08WTpD99u/8A==
+X-Google-Smtp-Source: ABdhPJx+XOrTFqKgizJY4KIkfc8KjvyzF63/6kJQz1+A7w5KHL1aNfOwXBebe+U2tody6dumUg2S4w==
+X-Received: by 2002:a17:906:fa84:: with SMTP id lt4mr2681695ejb.318.1590050557722;
+        Thu, 21 May 2020 01:42:37 -0700 (PDT)
+Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id nj6sm4149437ejb.99.2020.05.21.01.42.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 01:34:36 -0700 (PDT)
+        Thu, 21 May 2020 01:42:37 -0700 (PDT)
+Date:   Thu, 21 May 2020 10:42:14 +0200
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        Stanislav Fomichev <sdf@google.com>,
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Petar Penkov <ppenkov@google.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf v2] flow_dissector: Drop BPF flow dissector prog ref on netns cleanup
-Date:   Thu, 21 May 2020 10:34:35 +0200
-Message-Id: <20200521083435.560256-1-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.25.4
+Subject: Re: [PATCH bpf] flow_dissector: Drop BPF flow dissector prog ref on
+ netns cleanup
+Message-ID: <20200521104214.6a1a4f9c@toad>
+In-Reply-To: <20200520174000.GA49942@google.com>
+References: <20200520172258.551075-1-jakub@cloudflare.com>
+        <20200520174000.GA49942@google.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When attaching a flow dissector program to a network namespace with
-bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+On Wed, 20 May 2020 10:40:00 -0700
+sdf@google.com wrote:
 
-If netns gets destroyed while a flow dissector is still attached, and there
-are no other references to the prog, we leak the reference and the program
-remains loaded.
+> > +static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
+> > +{
+> > +	struct bpf_prog *attached;
+> > +
+> > +	/* We don't lock the update-side because there are no
+> > +	 * references left to this netns when we get called. Hence
+> > +	 * there can be no attach/detach in progress.
+> > +	 */
+> > +	rcu_read_lock();
+> > +	attached = rcu_dereference(net->flow_dissector_prog);
+> > +	if (attached) {
+> > +		RCU_INIT_POINTER(net->flow_dissector_prog, NULL);
+> > +		bpf_prog_put(attached);
+> > +	}
+> > +	rcu_read_unlock();
+> > +}  
+> I wonder, should we instead refactor existing
+> skb_flow_dissector_bpf_prog_detach to accept netns (instead of attr)
+> can call that here? Instead of reimplementing it (I don't think we
+> care about mutex lock/unlock efficiency here?). Thoughts?
 
-Leak can be reproduced by running flow dissector tests from selftests/bpf:
+I wanted to be nice to container-heavy workloads where network
+namespaces get torn down frequently and in parallel and avoid
+locking a global mutex. OTOH we already do it today, for instance in
+devlink pre_exit callback.
 
-  # bpftool prog list
-  # ./test_flow_dissector.sh
-  ...
-  selftests: test_flow_dissector [PASS]
-  # bpftool prog list
-  4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
-          loaded_at 2020-05-20T18:50:53+0200  uid 0
-          xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
-          btf_id 4
-  #
+In our case I think there is a way to have the cake and it eat too:
 
-Fix it by detaching the flow dissector program when netns is going away.
+https://lore.kernel.org/bpf/20200521083435.560256-1-jakub@cloudflare.com/
 
-Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
-
-Notes:
-    v2:
-    - Share code between pre_exit and prog_detach callbacks (Stanislav)
-
- net/core/flow_dissector.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 3eff84824c8b..3ad723b2e299 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -160,12 +160,10 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
- 	return ret;
- }
- 
--int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
-+static int flow_dissector_bpf_prog_detach(struct net *net)
- {
- 	struct bpf_prog *attached;
--	struct net *net;
- 
--	net = current->nsproxy->net_ns;
- 	mutex_lock(&flow_dissector_mutex);
- 	attached = rcu_dereference_protected(net->flow_dissector_prog,
- 					     lockdep_is_held(&flow_dissector_mutex));
-@@ -179,6 +177,24 @@ int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
- 	return 0;
- }
- 
-+int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
-+{
-+	return flow_dissector_bpf_prog_detach(current->nsproxy->net_ns);
-+}
-+
-+static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
-+{
-+	/* We're not racing with attach/detach because there are no
-+	 * references to netns left when pre_exit gets called.
-+	 */
-+	if (rcu_access_pointer(net->flow_dissector_prog))
-+		flow_dissector_bpf_prog_detach(net);
-+}
-+
-+static struct pernet_operations flow_dissector_pernet_ops __net_initdata = {
-+	.pre_exit = flow_dissector_pernet_pre_exit,
-+};
-+
- /**
-  * __skb_flow_get_ports - extract the upper layer ports and return them
-  * @skb: sk_buff to extract the ports from
-@@ -1827,6 +1843,8 @@ EXPORT_SYMBOL(flow_keys_basic_dissector);
- 
- static int __init init_default_flow_dissectors(void)
- {
-+	int err;
-+
- 	skb_flow_dissector_init(&flow_keys_dissector,
- 				flow_keys_dissector_keys,
- 				ARRAY_SIZE(flow_keys_dissector_keys));
-@@ -1836,7 +1854,11 @@ static int __init init_default_flow_dissectors(void)
- 	skb_flow_dissector_init(&flow_keys_basic_dissector,
- 				flow_keys_basic_dissector_keys,
- 				ARRAY_SIZE(flow_keys_basic_dissector_keys));
--	return 0;
-+
-+	err = register_pernet_subsys(&flow_dissector_pernet_ops);
-+
-+	WARN_ON(err);
-+	return err;
- }
- 
- core_initcall(init_default_flow_dissectors);
--- 
-2.25.4
-
+Thanks for reviewing it,
+-jkbs
