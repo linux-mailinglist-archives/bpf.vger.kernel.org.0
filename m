@@ -2,152 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766CB1DD705
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675AE1DD7FB
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 22:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730474AbgEUTST (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 15:18:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11934 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730433AbgEUTSS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 15:18:18 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04LJFKnj015926
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 12:18:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=gU+TNATQ6pS6u5lCv+LO1PcwVc8Wrajrb96jRxaRnMs=;
- b=a6B0dXUZ07dcw7gRBXvrPcNXY8q9WpTKqHsRy80o/D9++VuoxqFblYZXXx9XQ56QMHGX
- gFYBPm6VJGhXqE8OuHaLX/Ww8D6eEwPzz0eoazC+oJRT3XX2kQ7BKb0a5lWFSeuCFswN
- c3AtS5poRIvXMHhgpClEaubfTP0j7myPuWM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 315qhhvbxq-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 12:18:17 -0700
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 21 May 2020 12:18:16 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id EB7402942F51; Thu, 21 May 2020 12:18:10 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] bpf: selftests: Add test for different inner map size
-Date:   Thu, 21 May 2020 12:18:10 -0700
-Message-ID: <20200521191810.3449366-1-kafai@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200521191752.3448223-1-kafai@fb.com>
-References: <20200521191752.3448223-1-kafai@fb.com>
+        id S1728368AbgEUUHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 16:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726814AbgEUUHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 16:07:21 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5B3C061A0E;
+        Thu, 21 May 2020 13:07:20 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d10so3775751pgn.4;
+        Thu, 21 May 2020 13:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=6d13EMYazFjX1LgdWbBRghhkZbK0Ab5O1+6Rr/1em8M=;
+        b=M8kNnCYVDTx0bIrZhMD5mlR+8tMD5skL3BH+a8a49cRAQmFnbz8KJsznbBrdD8/7yo
+         MHbfdVo/sFg3TjQTAd9+H89tTnlyhVnntJ5pDXmDlICJ7sMiYStO+jBSQvxbtrmTdboc
+         ebWed0kxGm1J6k1l8iWtFQP27+1cyk7WaNPnca+hRpd1lHYp+fcixovIWzAz2Z/MYWQs
+         fThAhYXUtSm1ITAUHjCW9+IikE3pm/GQFZMntaWTaSa2jD0mYuxzzrW80JfKU/v4xCEV
+         +RkBkfIxYeB4fPAJ7W6MfRPAOVjUgCMEYGOPEfCCo3NfdCFO2aeT8I0YJk/pogvNMOdR
+         kvxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=6d13EMYazFjX1LgdWbBRghhkZbK0Ab5O1+6Rr/1em8M=;
+        b=GBSEVcCdSSGrt7Zw4vk0NMgzWLw+yl3nsY68WKRxtm8hdhePdB6LdpoIz7lEZf0260
+         CdWuSNWlGPZAM6AW1cmykWoMT+VsQlYEDFLT/HSvCtr+u/6oShXaowhPnKFxxkCjmmU4
+         eTDRzfYT5mHwSAcAkPwtAMub//hVOQl2lSdsokl5Dna8BxlcLxvyDJ4HetNIiaQssKwu
+         D0vDP3ZfhynFKMnbAPkJcSR1Tr2VXLPZGaIiAPaB3B1ZNM+KE+Q95ORSbOSkMHjH6F4p
+         5YAt0DhxTXiQMi5v85ZvaPHZx835pqbQUVN/cmgUTMIkOqXfqoHPs/HU2TZMhkGIgqHz
+         Ytmg==
+X-Gm-Message-State: AOAM531dLe2UTfb+mvGLIir2zVBugdyAPUbM2HHVc6pPaazhLuXWv7Zz
+        5ewHGnW9LZvbMnOBhOveJ8g=
+X-Google-Smtp-Source: ABdhPJy96qTwcfvIzVwaoeOHubCptt4iLp9Oz+q8rf8VJORp7xETrZdN6xnpkYtoaWFBtlgAkZHOqA==
+X-Received: by 2002:a63:de06:: with SMTP id f6mr10886470pgg.238.1590091639664;
+        Thu, 21 May 2020 13:07:19 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id q193sm4978383pfq.158.2020.05.21.13.07.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 May 2020 13:07:18 -0700 (PDT)
+Subject: [bpf-next PATCH v2 0/4] ] verifier,
+ improve ptr is_branch_taken logic
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     yhs@fb.com, andrii.nakryiko@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com
+Date:   Thu, 21 May 2020 13:07:04 -0700
+Message-ID: <159009128301.6313.11384218513010252427.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-21_13:2020-05-21,2020-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=13 clxscore=1015 cotscore=-2147483648 priorityscore=1501
- mlxscore=0 spamscore=0 impostorscore=0 mlxlogscore=685 adultscore=0
- malwarescore=0 bulkscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005210140
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch tests the inner map size can be different
-for reuseport_sockarray but has to be the same for
-arraymap.
+This series adds logic to the verifier to handle the case where a
+pointer is known to be non-null but then the verifier encountesr a
+instruction, such as 'if ptr == 0 goto X' or 'if ptr != 0 goto X',
+where the pointer is compared against 0. Because the verifier tracks
+if a pointer may be null in many cases we can improve the branch
+tracking by following the case known to be true.
 
-Cc: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+The first patch adds the verifier logic and patches 2-4 add the
+test cases.
+
+v1->v2: fix verifier logic to return -1 indicating both paths must 
+still be walked if value is not zero. Move mark_precision skip for
+this case into caller of mark_precision to ensure mark_precision can
+still catch other misuses. And add PTR_TYPE_BTF_ID to our list of
+supported types. Finally add one more test to catch the value not
+equal zero case. Thanks to Andrii for original review. 
+
+Also fixed up commit messages hopefully its better now.
+
 ---
- .../selftests/bpf/prog_tests/btf_map_in_map.c | 12 +++++++
- .../selftests/bpf/progs/test_btf_map_in_map.c | 31 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/to=
-ols/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-index f7ee8fa377ad..7ae767d15608 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-@@ -44,6 +44,18 @@ void test_btf_map_in_map(void)
- 	bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map2), &key, &val);
- 	CHECK(val !=3D 3, "inner2", "got %d !=3D exp %d\n", val, 3);
-=20
-+	val =3D bpf_map__fd(skel->maps.sockarr_sz2);
-+	err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.outer_sockarr_sz1),
-+				  &key, &val, 0);
-+	CHECK(err, "outer_sockarr inner map size check",
-+	      "cannot use an inner_map with different size\n");
-+
-+	val =3D bpf_map__fd(skel->maps.inner_map_sz2);
-+	err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.outer_arr), &key,
-+				  &val, 0);
-+	CHECK(!err, "outer_arr inner map size check",
-+	      "incorrectly updated with an inner_map in different size\n");
-+
- cleanup:
- 	test_btf_map_in_map__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c b/to=
-ols/testing/selftests/bpf/progs/test_btf_map_in_map.c
-index e5093796be97..0b8e04a817f6 100644
---- a/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_btf_map_in_map.c
-@@ -11,6 +11,13 @@ struct inner_map {
- } inner_map1 SEC(".maps"),
-   inner_map2 SEC(".maps");
-=20
-+struct inner_map_sz2 {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, int);
-+	__type(value, int);
-+} inner_map_sz2 SEC(".maps");
-+
- struct outer_arr {
- 	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
- 	__uint(max_entries, 3);
-@@ -50,6 +57,30 @@ struct outer_hash {
- 	},
- };
-=20
-+struct sockarr_sz1 {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, int);
-+} sockarr_sz1 SEC(".maps");
-+
-+struct sockarr_sz2 {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, int);
-+	__type(value, int);
-+} sockarr_sz2 SEC(".maps");
-+
-+struct outer_sockarr_sz1 {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__array(values, struct sockarr_sz1);
-+} outer_sockarr_sz1 SEC(".maps") =3D {
-+	.values =3D { (void *)&sockarr_sz1 },
-+};
-+
- int input =3D 0;
-=20
- SEC("raw_tp/sys_enter")
---=20
-2.24.1
+John Fastabend (4):
+      bpf: verifier track null pointer branch_taken with JNE and JEQ
+      bpf: selftests, verifier case for non null pointer check branch taken
+      bpf: selftests, verifier case for non null pointer map value branch
+      bpf: selftests, add printk to test_sk_lookup_kern to encode null ptr check
 
+
+ kernel/bpf/verifier.c                              |   36 ++++++++++++++++++--
+ .../selftests/bpf/progs/test_sk_lookup_kern.c      |    1 +
+ .../testing/selftests/bpf/verifier/ref_tracking.c  |   33 ++++++++++++++++++
+ .../testing/selftests/bpf/verifier/value_or_null.c |   19 +++++++++++
+ 4 files changed, 86 insertions(+), 3 deletions(-)
+
+--
+Signature
