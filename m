@@ -2,126 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09631DD18D
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 17:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DBE1DD2C1
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 18:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730323AbgEUPYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 11:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        id S1728339AbgEUQHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 12:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730311AbgEUPYM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 11:24:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17D0C061A0E;
-        Thu, 21 May 2020 08:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=kv7va3JnJ1SeELpjhZcyLBCa20krrM3Xn4ju295jtGk=; b=rUdy0Gqzh3C4nJ6TIdAzKeaoif
-        wcO+pkmQg4oh+RaTJSGjuKJXdWDDJUYMIicegaPFbD3QMndGAgCdBjZh1eLyE/wqaocovxx+mGLyi
-        RlEMRo4KWxKjsECuFNapixznaS98/x20tWLfwVzyQQGMpVDlktZOHWqxxteKQyx3Eant2Ou6sVWT1
-        FDeAz0UFxKBHg0u2Qw9BwNLcec2AzoQa4PjCr/deKqjkOm7+ph3GVN0NQ+PU7PAKvqInr5q8DWlrn
-        L5OJO06mNjWLrStuLSvcAmQJVAu1CwXpApFO5RGzG1T1lSsG6M6h2aBM2rEhOzv3ekUiixNL/AXHa
-        326OosUA==;
-Received: from [2001:4bb8:18c:5da7:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbn3K-0004wA-Sz; Thu, 21 May 2020 15:24:11 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 23/23] maccess: return -ERANGE when copy_from_kernel_nofault_allowed fails
-Date:   Thu, 21 May 2020 17:23:01 +0200
-Message-Id: <20200521152301.2587579-24-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200521152301.2587579-1-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
+        with ESMTP id S1726938AbgEUQHX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 12:07:23 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B477FC05BD43
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 09:07:23 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id 79so8012383iou.2
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 09:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mxBFsMmx8n9R2e5C1RT8PEj0LODZtQH68Aq7zJz2Edg=;
+        b=pFd15NLinE1WqDgaOpWx2OED66tL+5EXs4pCEYPHvRKAxY5GB696t0HJGp7L+ZpUOs
+         pwODl4lmr2JTGo/96Q61JeYXp5uYC/Y+phvZNbtzO7ud5/AItIoqEZ1wA6TQQS3p9psi
+         G7TtDYPTj1HEAJn731CBVZjdhKPg3i6XfyNwwgmcdqdB7DsH+NcbimkJYYPebZrCaREp
+         TDTL3Oi1dHBZObtlezJgDgAlAbwjkqphYAA4PuAzYtV8FplmLMa1MXN4+zJ2ZOcQWtvS
+         XSXGf75kXkV17oX81DM7TA094Pv/9ONtHYpOC7FLjyBPrZYWx3idKcSkcld7U7Vpkwnx
+         4WPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mxBFsMmx8n9R2e5C1RT8PEj0LODZtQH68Aq7zJz2Edg=;
+        b=NCnMiXAAnZl4KpExIFzGJKWGuzqzDTemiPW4i/N+9Acvw7QjB57xI+5BAbt3HFpFZi
+         0cVaGhbyRFMbNG0K/VQpayJZMF4HgCS3wmgLQkXX0/NEqSMlvzLdU6HVDjh0vFDrSkRu
+         oa6c+PHAFFlrpLNWF1zl7SqNkcsLg13+5Bw8aEPIbg5a/uBZOL/WLzCZF84RYgufmlO3
+         HJV3c/ORcE1NVW3fvtkYzfZl28EfyrZU4MCQncmWYMpBtbhMiws0yN/8Bd8A6/wKJzR2
+         Qs6XjCssURUtDZ5SH4vAbg4ebDEBl06YCtYjEpyzqgTrcZ0Fc5OCTU9oX6cUvLjf3odc
+         sBkg==
+X-Gm-Message-State: AOAM530Ag0mUFRVO6Oh53dnCZChXrNPDQGMvGUcxmXWX2bGvE8Ra41sT
+        qlnHyuWyBk9H3S3KkZzUJiVuMZS5rS7pJk/g/M5K9Q==
+X-Google-Smtp-Source: ABdhPJz71t3ROrdOggBJfNzsVoKRUnZjxPfccVeuDl4zar33TlmiT0+HZBA/QYPItDFw8rBAE2EI4Vu+One/6Wu4oBQ=
+X-Received: by 2002:a5e:9807:: with SMTP id s7mr8476077ioj.27.1590077243097;
+ Thu, 21 May 2020 09:07:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200521123835.70069-1-songmuchun@bytedance.com> <20200521152117.GC28818@bombadil.infradead.org>
+In-Reply-To: <20200521152117.GC28818@bombadil.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 22 May 2020 00:06:46 +0800
+Message-ID: <CAMZfGtVxPevhTy8LMpKUtkk1jX86doiPD0nOTRuKg25+8Vz=ag@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] files: Use rcu lock to get the file
+ structures for better performance
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     adobriyan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        ebiederm@xmission.com, bernd.edlinger@hotmail.de,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow the callers to distinguish a real unmapped address vs a range
-that can't be probed.
+On Thu, May 21, 2020 at 11:21 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, May 21, 2020 at 08:38:35PM +0800, Muchun Song wrote:
+> > There is another safe way to get the file structure without
+> > holding the files->file_lock. That is rcu lock, and this way
+> > has better performance. So use the rcu lock instead of the
+> > files->file_lock.
+>
+> What makes you think this is safe?  Are you actually seeing contention
+> on this spinlock?
+>
 
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- mm/maccess.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+I have read the doc which is in the Documentation/filesystems/files.txt.
+If my understanding is correct, I think it is safe to use rcu lock.
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 349b6cb14426c..d317f8b8095ca 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -25,7 +25,7 @@ bool __weak copy_from_kernel_nofault_allowed(const void *unsafe_src,
- long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- {
- 	if (!copy_from_kernel_nofault_allowed(src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
-@@ -69,7 +69,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	do {
-@@ -94,7 +94,8 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
-  * @size: size of the data chunk
-  *
-  * Safely read from kernel address @src to the buffer at @dst.  If a kernel
-- * fault happens, handle that and return -EFAULT.
-+ * fault happens, handle that and return -EFAULT.  If @src is not a valid kernel
-+ * address, return -ERANGE.
-  *
-  * We ensure that the copy_from_user is executed in atomic context so that
-  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
-@@ -107,7 +108,7 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	if (!copy_from_kernel_nofault_allowed(src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
-@@ -159,8 +160,9 @@ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
-  *
-  * On success, returns the length of the string INCLUDING the trailing NUL.
-  *
-- * If access fails, returns -EFAULT (some data may have been copied
-- * and the trailing NUL added).
-+ * If access fails, returns -EFAULT (some data may have been copied and the
-+ * trailing NUL added).  If @unsafe_addr is not a valid kernel address, return
-+ * -ERANGE.
-  *
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-@@ -174,7 +176,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
+Thanks.
+
 -- 
-2.26.2
-
+Yours,
+Muchun
