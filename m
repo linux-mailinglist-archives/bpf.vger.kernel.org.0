@@ -2,151 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A831DC63F
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 06:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BA91DC6C9
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 08:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgEUEaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 00:30:07 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45945 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726394AbgEUEaH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 00:30:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590035404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WXgoiIQBmQkuRGuRereQHuQkbFC/POS9aYRCiQc+tnw=;
-        b=baqv66aBEZI32AgDLlTA5Awb06sXQBJFs+QJTEep1A2l6JaYCla7dQL2X/7sUNmC3Ea7zG
-        huktSlj1pdKR7ag1yo1/V8DqLYKfPooyBQtBo6bsi2/Hq/GiuPs/SdUsSEfUSdSRo95vyu
-        14SENRI/YO/R2GrqEj34m3guJo106GU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-Oqx0dhwlMbCe71NM53_ElA-1; Thu, 21 May 2020 00:29:58 -0400
-X-MC-Unique: Oqx0dhwlMbCe71NM53_ElA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 530C8474;
-        Thu, 21 May 2020 04:29:56 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E14D06EA2B;
-        Thu, 21 May 2020 04:29:48 +0000 (UTC)
-Date:   Thu, 21 May 2020 06:29:47 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com, maximmi@mellanox.com,
-        maciej.fijalkowski@intel.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next v4 01/15] xsk: fix xsk_umem_xdp_frame_sz()
-Message-ID: <20200521062947.71d9cddd@carbon>
-In-Reply-To: <17701885-c91d-5bfc-b96d-29263a0d08ab@intel.com>
-References: <20200520094742.337678-1-bjorn.topel@gmail.com>
-        <20200520094742.337678-2-bjorn.topel@gmail.com>
-        <20200520151819.1d2254b7@carbon>
-        <17701885-c91d-5bfc-b96d-29263a0d08ab@intel.com>
+        id S1728002AbgEUGD1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 02:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgEUGD1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 02:03:27 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3492CC061A0E
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 23:03:26 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id o14so6845227ljp.4
+        for <bpf@vger.kernel.org>; Wed, 20 May 2020 23:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
+        b=AvPZonUnxRtEiAFYFMhjr/FU/637Er7yT5CVjUbT+yUy7Urqy2asoKciAFfZc5WAZC
+         MFbF2PccB3p0f1o7NGNRfCXSCs8FzP2Nr2XvzsIfX2gV7BHNrxtA5rowVe65xznloozO
+         mO4kG63x9++u1/WE/1yQkVC9bcthEU+Q8NUNlR1J31TvVlPl9aqoL9d9pg5yv9j4NzVM
+         mJBqAL3MC69XJflTV2YfJ05iZbTEy/pOu55FASpFP7a9yndU1I4OlI/C4atSz6t25ymM
+         nq66WteYgsiIX/5tmWZvf4esO9hWJ57o4CUtw8l3NRJbsnel8nc3lq7epzFz8jMlTkaQ
+         Qx5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
+        b=Nppwffd2BZvA3xxKrDpFKNKO7d4P1fe8e9i4ZCChwlvV33egso2YHwLYUgD3AUMI+Y
+         X4SzEErh4QLKd+hfddEvXGctnANuOtmy5YgYcYxbl2Ce+2pZZ+Cmk+H6lmTlnO3xl7HS
+         mQkyjcEflUHSC82dLydRAfKPx/aRrAoGRMgmJzYY4FMqCz57im864AbtAzOo9i4sqLzT
+         z3Qh91TxumIdlwqk6A1FcgKwghtM/rT3aiukHyNyLAc2O45NOf16nlOsURlllIb87OhG
+         NlQPJRxdfUhzM2p6MA3bYDCJtLgF724hvXlEl9espyn3dsAYRXSxcK8UAWkhY5tYBG1Z
+         2hMg==
+X-Gm-Message-State: AOAM530PxyIATasUXPWAI+0pTQah8scO21kVA4R3vWygacUXbEEpTYh3
+        M3h3jxNLAvNOuNio/Hw7r0wDMt51VXBQHqdHs3I=
+X-Google-Smtp-Source: ABdhPJxTzLUMJrjy9jeE4svtE/6D9igck9hGqu1uJdmKpKI3bFICSylDUtg67SbboWycp/LEMgFvY6qJgFkHYAYtmrM=
+X-Received: by 2002:a2e:160e:: with SMTP id w14mr1964894ljd.66.1590041003732;
+ Wed, 20 May 2020 23:03:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Received: by 2002:a2e:8015:0:0:0:0:0 with HTTP; Wed, 20 May 2020 23:03:23
+ -0700 (PDT)
+Reply-To: mrs.chantala2055@gmail.com
+From:   "mrs.chantal" <mrshmaria01@gmail.com>
+Date:   Thu, 21 May 2020 06:03:23 +0000
+Message-ID: <CAH7QNKfP7prFAt9tFzX-tUo_ASH5XZnqk3n_JTPZcyO6Ypo0jQ@mail.gmail.com>
+Subject: hiCompliment
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 May 2020 16:34:05 +0200
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> wrote:
-
-> On 2020-05-20 15:18, Jesper Dangaard Brouer wrote:
-> > On Wed, 20 May 2020 11:47:28 +0200
-> > Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
-> >  =20
-> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>
-> >> Calculating the "data_hard_end" for an XDP buffer coming from AF_XDP
-> >> zero-copy mode, the return value of xsk_umem_xdp_frame_sz() is added
-> >> to "data_hard_start".
-> >>
-> >> Currently, the chunk size of the UMEM is returned by
-> >> xsk_umem_xdp_frame_sz(). This is not correct, if the fixed UMEM
-> >> headroom is non-zero. Fix this by returning the chunk_size without the
-> >> UMEM headroom.
-> >>
-> >> Fixes: 2a637c5b1aaf ("xdp: For Intel AF_XDP drivers add XDP frame_sz")
-> >> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >> ---
-> >>   include/net/xdp_sock.h | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> >> index abd72de25fa4..6b1137ce1692 100644
-> >> --- a/include/net/xdp_sock.h
-> >> +++ b/include/net/xdp_sock.h
-> >> @@ -239,7 +239,7 @@ static inline u64 xsk_umem_adjust_offset(struct xd=
-p_umem *umem, u64 address,
-> >>  =20
-> >>   static inline u32 xsk_umem_xdp_frame_sz(struct xdp_umem *umem)
-> >>   {
-> >> -	return umem->chunk_size_nohr + umem->headroom;
-> >> +	return umem->chunk_size_nohr; =20
-> >=20
-> > Hmm, is this correct?
-> >=20
-> > As you write "xdp_data_hard_end" is calculated as an offset from
-> > xdp->data_hard_start pointer based on the frame_sz.  Will your
-> > xdp->data_hard_start + frame_sz point to packet end?
-> > =20
->=20
-> Yes, I believe this is correct.
->=20
-> Say that a user uses a chunk size of 2k, and a umem headroom of, say,
-> 64. This means that the kernel should (at least) leave 64B which the
-> kernel shouldn't touch.
->=20
-> umem->headroom | XDP_PACKET_HEADROOM | packet |          |
->                 ^                     ^        ^      ^   ^
->                 a                     b        c      d   e
->=20
-> a: data_hard_start
-> b: data
-> c: data_end
-> d: data_hard_end, (e - 320)
-> e: hardlimit of chunk, a + umem->chunk_size_nohr
->=20
-> Prior this fix the umem->headroom was *included* in frame_sz.
-
-Thanks for the nice ascii art description. I can now see that you are
-right.   We should add this kind of documentation, perhaps as a comment
-in the code?
-
-
-> > #define xdp_data_hard_end(xdp)                          \
-> >          ((xdp)->data_hard_start + (xdp)->frame_sz -     \
-> >           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
-> >=20
-> > Note the macro reserves the last 320 bytes (for skb_shared_info), but
-> > for AF_XDP zero-copy mode, it will never create an SKB that use this
-> > area.   Thus, in principle we can allow XDP-progs to extend/grow tail
-> > into this area, but I don't think there is any use-case for this, as
-> > it's much easier to access packet-data in userspace application.
-> > (Thus, it might not be worth the complexity to give AF_XDP
-> > bpf_xdp_adjust_tail access to this area, by e.g. "lying" via adding 320
-> > bytes to frame_sz).
-> >  =20
->=20
-> I agree, and in the picture (well...) above that would be "d". IOW
-> data_hard_end is 320 "off" the real end.
-
-Yes, we agree.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+     Compliment of the day to you. I am Mrs.CHANTAL I am sending this brief
+    letter to solicit your partnership to transfer $13.5 Million US
+    Dollars.I shall send you more information and procedures when I receive
+    positive response From you. Please send me a message in My private
+    email address is ( mrschantal066@gmail.com  )
+    Best Regards
+    MrS.Chantal
