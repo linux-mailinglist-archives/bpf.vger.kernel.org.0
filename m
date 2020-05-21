@@ -2,65 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BA91DC6C9
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 08:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5DE1DC8B4
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 10:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgEUGD1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 02:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S1728643AbgEUIek (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 04:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgEUGD1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 02:03:27 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3492CC061A0E
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 23:03:26 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id o14so6845227ljp.4
-        for <bpf@vger.kernel.org>; Wed, 20 May 2020 23:03:26 -0700 (PDT)
+        with ESMTP id S1728577AbgEUIek (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 04:34:40 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C2BC061A0F
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:34:39 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id d7so7808681eja.7
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
-        b=AvPZonUnxRtEiAFYFMhjr/FU/637Er7yT5CVjUbT+yUy7Urqy2asoKciAFfZc5WAZC
-         MFbF2PccB3p0f1o7NGNRfCXSCs8FzP2Nr2XvzsIfX2gV7BHNrxtA5rowVe65xznloozO
-         mO4kG63x9++u1/WE/1yQkVC9bcthEU+Q8NUNlR1J31TvVlPl9aqoL9d9pg5yv9j4NzVM
-         mJBqAL3MC69XJflTV2YfJ05iZbTEy/pOu55FASpFP7a9yndU1I4OlI/C4atSz6t25ymM
-         nq66WteYgsiIX/5tmWZvf4esO9hWJ57o4CUtw8l3NRJbsnel8nc3lq7epzFz8jMlTkaQ
-         Qx5w==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBjbnCOh61b7cgKVaUsbqPDW94/cGzD2MQ0ZynD04OI=;
+        b=VtkWO+UlZXR6dHQYJP28BAe/uNVGTjTU4W4MhifCI5ih7nSlP0Cxfn/QVDu7CgjjJ5
+         oaY/rFGpUpZDRwZ5Jh6hXzagrfQr+Twd84fwdKMZjm390/Hf/J0dJ5WS+tRg6QST0Os2
+         eNazPat/1t4w31HVH0E87ceKkM7BB8PtPK3Jo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
-        b=Nppwffd2BZvA3xxKrDpFKNKO7d4P1fe8e9i4ZCChwlvV33egso2YHwLYUgD3AUMI+Y
-         X4SzEErh4QLKd+hfddEvXGctnANuOtmy5YgYcYxbl2Ce+2pZZ+Cmk+H6lmTlnO3xl7HS
-         mQkyjcEflUHSC82dLydRAfKPx/aRrAoGRMgmJzYY4FMqCz57im864AbtAzOo9i4sqLzT
-         z3Qh91TxumIdlwqk6A1FcgKwghtM/rT3aiukHyNyLAc2O45NOf16nlOsURlllIb87OhG
-         NlQPJRxdfUhzM2p6MA3bYDCJtLgF724hvXlEl9espyn3dsAYRXSxcK8UAWkhY5tYBG1Z
-         2hMg==
-X-Gm-Message-State: AOAM530PxyIATasUXPWAI+0pTQah8scO21kVA4R3vWygacUXbEEpTYh3
-        M3h3jxNLAvNOuNio/Hw7r0wDMt51VXBQHqdHs3I=
-X-Google-Smtp-Source: ABdhPJxTzLUMJrjy9jeE4svtE/6D9igck9hGqu1uJdmKpKI3bFICSylDUtg67SbboWycp/LEMgFvY6qJgFkHYAYtmrM=
-X-Received: by 2002:a2e:160e:: with SMTP id w14mr1964894ljd.66.1590041003732;
- Wed, 20 May 2020 23:03:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBjbnCOh61b7cgKVaUsbqPDW94/cGzD2MQ0ZynD04OI=;
+        b=AqsVRnoSewVKtPb62cZho7D5NqUwQqElZbdxtthOfyZfNTF7jxmubHqNAPslUOXE1d
+         z9qYxwrjvjG0ogEEN4pGgjN7QzquBtYb7VaQCKOCexg2xi5wTuBDoJa5KVYSPc0Os/Mv
+         P893kQov9rOYEIWrSy88deaCXVJlmBIYZK2WVUrZ+o1uSBb5UZNvcIFFnwHoOCTFkIOC
+         gwkoj+DHH6XfZ+r/9XHVtYaaKah362L5OtCmJ9lTgrvcqRmSXdia2Al+3AAxLN3uT3AE
+         EmopVfj1IzBAFLBrWOo2PzwQbS4k0YwKrHY7xgqEbrRqFgF6IWKjToEGC0v7/80VZ7Vh
+         wQqQ==
+X-Gm-Message-State: AOAM5324HUmyY79mQX0O/nIxOyt5eLUsLiRbpnTsIuaYHRISBMi795To
+        jX3Pm6YW6clNKrsfpExBxRwo9XDt3v8=
+X-Google-Smtp-Source: ABdhPJwqPcShx3HijRp3m1yW21LlqC0tmWcv7pLr0/2aUApSFyhEOXvWg/jt93rib49tzmYEZWy+xw==
+X-Received: by 2002:a17:906:82d9:: with SMTP id a25mr2442349ejy.43.1590050077182;
+        Thu, 21 May 2020 01:34:37 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id b14sm4231685edx.93.2020.05.21.01.34.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 01:34:36 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf v2] flow_dissector: Drop BPF flow dissector prog ref on netns cleanup
+Date:   Thu, 21 May 2020 10:34:35 +0200
+Message-Id: <20200521083435.560256-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Received: by 2002:a2e:8015:0:0:0:0:0 with HTTP; Wed, 20 May 2020 23:03:23
- -0700 (PDT)
-Reply-To: mrs.chantala2055@gmail.com
-From:   "mrs.chantal" <mrshmaria01@gmail.com>
-Date:   Thu, 21 May 2020 06:03:23 +0000
-Message-ID: <CAH7QNKfP7prFAt9tFzX-tUo_ASH5XZnqk3n_JTPZcyO6Ypo0jQ@mail.gmail.com>
-Subject: hiCompliment
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-     Compliment of the day to you. I am Mrs.CHANTAL I am sending this brief
-    letter to solicit your partnership to transfer $13.5 Million US
-    Dollars.I shall send you more information and procedures when I receive
-    positive response From you. Please send me a message in My private
-    email address is ( mrschantal066@gmail.com  )
-    Best Regards
-    MrS.Chantal
+When attaching a flow dissector program to a network namespace with
+bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+
+If netns gets destroyed while a flow dissector is still attached, and there
+are no other references to the prog, we leak the reference and the program
+remains loaded.
+
+Leak can be reproduced by running flow dissector tests from selftests/bpf:
+
+  # bpftool prog list
+  # ./test_flow_dissector.sh
+  ...
+  selftests: test_flow_dissector [PASS]
+  # bpftool prog list
+  4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
+          loaded_at 2020-05-20T18:50:53+0200  uid 0
+          xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
+          btf_id 4
+  #
+
+Fix it by detaching the flow dissector program when netns is going away.
+
+Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+
+Notes:
+    v2:
+    - Share code between pre_exit and prog_detach callbacks (Stanislav)
+
+ net/core/flow_dissector.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 3eff84824c8b..3ad723b2e299 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -160,12 +160,10 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+ 	return ret;
+ }
+ 
+-int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
++static int flow_dissector_bpf_prog_detach(struct net *net)
+ {
+ 	struct bpf_prog *attached;
+-	struct net *net;
+ 
+-	net = current->nsproxy->net_ns;
+ 	mutex_lock(&flow_dissector_mutex);
+ 	attached = rcu_dereference_protected(net->flow_dissector_prog,
+ 					     lockdep_is_held(&flow_dissector_mutex));
+@@ -179,6 +177,24 @@ int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
+ 	return 0;
+ }
+ 
++int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
++{
++	return flow_dissector_bpf_prog_detach(current->nsproxy->net_ns);
++}
++
++static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
++{
++	/* We're not racing with attach/detach because there are no
++	 * references to netns left when pre_exit gets called.
++	 */
++	if (rcu_access_pointer(net->flow_dissector_prog))
++		flow_dissector_bpf_prog_detach(net);
++}
++
++static struct pernet_operations flow_dissector_pernet_ops __net_initdata = {
++	.pre_exit = flow_dissector_pernet_pre_exit,
++};
++
+ /**
+  * __skb_flow_get_ports - extract the upper layer ports and return them
+  * @skb: sk_buff to extract the ports from
+@@ -1827,6 +1843,8 @@ EXPORT_SYMBOL(flow_keys_basic_dissector);
+ 
+ static int __init init_default_flow_dissectors(void)
+ {
++	int err;
++
+ 	skb_flow_dissector_init(&flow_keys_dissector,
+ 				flow_keys_dissector_keys,
+ 				ARRAY_SIZE(flow_keys_dissector_keys));
+@@ -1836,7 +1854,11 @@ static int __init init_default_flow_dissectors(void)
+ 	skb_flow_dissector_init(&flow_keys_basic_dissector,
+ 				flow_keys_basic_dissector_keys,
+ 				ARRAY_SIZE(flow_keys_basic_dissector_keys));
+-	return 0;
++
++	err = register_pernet_subsys(&flow_dissector_pernet_ops);
++
++	WARN_ON(err);
++	return err;
+ }
+ 
+ core_initcall(init_default_flow_dissectors);
+-- 
+2.25.4
+
