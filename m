@@ -2,91 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0701DD112
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 17:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2EF1DD114
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 17:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgEUPVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 11:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        id S1729910AbgEUPVf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 11:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgEUPVP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 11:21:15 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12954C061A0E
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 08:21:14 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id t11so7455824qvv.11
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 08:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=9lkpAxU/Frlu8q2+TZv8WXsY+5fekFwCMxqOU2GbUws=;
-        b=C459PlgMpa8qYr/Ahy0+Odf3EG4yZDSUOxlCSEUs+vVxwUqTKOmlVKvJpZ/abcX8fn
-         7BtLnaWLCt0yWkz5ouOKN/pOmyT2AxSrampHkinUP48QYrjJT4PJ4QSaSuD3p0+yMASt
-         eQKDY+G7Onm5nEfjgOj4YXTkrVikCzhyhE87IpPYsZo3K9DXDNu18MI1VSEAgBNJVowx
-         ZRzjq1oAVSVpo/2S/65Sy0/bdqNPRlD5YXdYouIcqJtB7BeqZp6h6JXToBjAH3Oy951D
-         mSwSHZMLXUTArnfK0RGWZRNCAwNW6o2zePN8a0nyL9gGEfRxr5xuoLgiJuiX2RK4YGQm
-         m9UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9lkpAxU/Frlu8q2+TZv8WXsY+5fekFwCMxqOU2GbUws=;
-        b=c+1T8suT+U397yUQksQyZMm5hQPdVvj7I0ukfgQYZz1WQfNL7w+NzrdiVCQhi2EFYP
-         Qi28sqQO7DDmojZNL55dcaZNUgZxn4n+XNKeRDgMMv7ZhpRtEBrYsLsKyIZnenJh4/ES
-         g3H7M0WfGhRpgPAowKmEwrAjCQUVIFcAWsbKEAudX8Sp+HRVF5RFA7b+BM/ET44HdRQ4
-         ICd1SBt/q4MdG1amT8wbhprGodVnW7+o1BRK2pbFmT+y83Y2S4u09FzTLOGSL9Rw+aWX
-         ckTRBelG8etQHxyeuol0cwZa8c8YT7f63kVjmnyvv5aLwWQ3CxKXl69jI37PW3qXvF9K
-         sGFg==
-X-Gm-Message-State: AOAM533+mL3LZX3NOxo8HeBZkug6FZ7tYvMOWxzEWGU/z8abkkLjQdAe
-        GX7ag7sNnfsDlLghjDu/HJ/+eHs=
-X-Google-Smtp-Source: ABdhPJwEeEqc2SIIxOIk9bV5/VcJvZjsEaWLrXJuywDArF1hfveBKPIGJL/MpTKGOkINxIeFM/xgsEY=
-X-Received: by 2002:a0c:906e:: with SMTP id o101mr10478572qvo.180.1590074473192;
- Thu, 21 May 2020 08:21:13 -0700 (PDT)
-Date:   Thu, 21 May 2020 08:21:11 -0700
-In-Reply-To: <20200521083435.560256-1-jakub@cloudflare.com>
-Message-Id: <20200521152111.GB49942@google.com>
-Mime-Version: 1.0
-References: <20200521083435.560256-1-jakub@cloudflare.com>
-Subject: Re: [PATCH bpf v2] flow_dissector: Drop BPF flow dissector prog ref
- on netns cleanup
-From:   sdf@google.com
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        with ESMTP id S1727898AbgEUPVf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 11:21:35 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750F5C061A0E;
+        Thu, 21 May 2020 08:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q0/V8y0Nv8zA7Pp8oKLblpvhLC3VMtOQmusIqCMTC7g=; b=DKXGp2RtTdyH8/q8s6RUq1anmn
+        vJwQd0AvOKxBpp0Q8kSMcneF8wUZA1uqNZd3kTiAb8dVQohGM8Ayhhje/Jn23xXFo49/a4BMstDH6
+        PW9xzhRJ9kbCsK1TPiuUvzuY1yhGhp2NtK577cARhvmyMcyibgB92G+rTwVMHgdPG+//N3KfWdNMg
+        TXtHeamDEE2wpRAwZAT+/6p+ng4gV4rKLtcP9PTVq9rH9JLilKLoTWzCojtnb0q82vtpaKRIFwnRZ
+        Y/K6d7GqMG7/4SPrsn+0r1FQCGLG3T8EHoM0/hZ850+OXsEgcmHwMZZHPazRwLI62UAbKFXFe7z4s
+        5SmXbAsQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbn0X-0003oT-R1; Thu, 21 May 2020 15:21:18 +0000
+Date:   Thu, 21 May 2020 08:21:17 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     adobriyan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        ebiederm@xmission.com, bernd.edlinger@hotmail.de,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] files: Use rcu lock to get the file structures for
+ better performance
+Message-ID: <20200521152117.GC28818@bombadil.infradead.org>
+References: <20200521123835.70069-1-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521123835.70069-1-songmuchun@bytedance.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/21, Jakub Sitnicki wrote:
-> When attaching a flow dissector program to a network namespace with
-> bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+On Thu, May 21, 2020 at 08:38:35PM +0800, Muchun Song wrote:
+> There is another safe way to get the file structure without
+> holding the files->file_lock. That is rcu lock, and this way
+> has better performance. So use the rcu lock instead of the
+> files->file_lock.
 
-> If netns gets destroyed while a flow dissector is still attached, and  
-> there
-> are no other references to the prog, we leak the reference and the program
-> remains loaded.
+What makes you think this is safe?  Are you actually seeing contention
+on this spinlock?
 
-> Leak can be reproduced by running flow dissector tests from selftests/bpf:
-
->    # bpftool prog list
->    # ./test_flow_dissector.sh
->    ...
->    selftests: test_flow_dissector [PASS]
->    # bpftool prog list
->    4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
->            loaded_at 2020-05-20T18:50:53+0200  uid 0
->            xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
->            btf_id 4
->    #
-
-> Fix it by detaching the flow dissector program when netns is going away.
-
-> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-
-Thank you!
