@@ -2,200 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A2F1DD68F
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70AA1DD6A5
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgEUTDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 15:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
+        id S1729996AbgEUTIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 15:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729548AbgEUTDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 15:03:52 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1951C061A0E;
-        Thu, 21 May 2020 12:03:52 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d3so3249699pln.1;
-        Thu, 21 May 2020 12:03:52 -0700 (PDT)
+        with ESMTP id S1729548AbgEUTIl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 15:08:41 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21006C061A0E;
+        Thu, 21 May 2020 12:08:41 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d7so6354765qtn.11;
+        Thu, 21 May 2020 12:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=YG/Rd93DgDyZiJme5K9Qkk13z1FQo+t3Cuv8eEz4qLg=;
-        b=Pq8e21/qB0ru0tBwkmJD0CtlecIvnV97VErj/kiCdcrq3kb4Zkx79jGEMOVAMCvlaH
-         mUUQkdVz0ZZ+qjETJ+JBVOlxt1qv4mi7lwh42YywcZDUtfhFTX3Xob49LRVSu43lJNjz
-         Nwn2NYGpYti+7Nhrec6Rse7rT0G2Ph23YEKUki2JI9kJzC78DKFKYmIED9gz0eTqXk/Y
-         DXnT8aXeBkd/PKSWi0JHPsEY5zEjV/N2/oJ4i+eThSVM9Pcw12kHhDPrJtosyFnbkrTX
-         /A8UJuU9rWDoERDenP9DmNS2y7CA0ylchw2G2W3p+KCZbN5WUUdr2hAstLRodqgePG+u
-         mNbw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xADZjI/N2EtkaruXQTMj1x8tGiT26fVV1QiEq2ceDQ=;
+        b=CYB5wxb7oT680vCxqOcZwIE5kb2n+EVfmYqV7aas+t0PEOLNr/VyzxFaBkmHBTlSfU
+         XV5R+VbanFqOGVrQUTjG1JaLB+thnczimBrJCPStyy94PF3eGkkUvt4R4uw5A0azolWk
+         35W7bfV8XnDPMcDScZb0AINfrULcMweBEMGdwXUve27WDnecvU7sCU9SwlnCpiQk41v1
+         w0e75OGRhAJOzdT99pEbKr9vzf4rJHwW84JO3GSnCV1pe0Q7IAVFO0g7c8zHqiX6q1Tb
+         46uqqNeZFbnWrlipX1+mc4dcPpYY5ki0PzVyjrL1fDHNBJ/U/yoBInYJus/dp1yXWPxS
+         kAvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=YG/Rd93DgDyZiJme5K9Qkk13z1FQo+t3Cuv8eEz4qLg=;
-        b=L27wAc9lRKnZrkx8rC+wXvylZb85tBbENKU1pRQ/Tbyt2LPEcfXIMPBr6AQCNJnM1X
-         PvLZMHln2Vsyon5hcwjorD2yydm5CbcwLM+ja2Vsa5nlfvDKPiUIxfTbgahJDJfB0g2P
-         rYd5VAcLQvz8Tpoh0mHHkemKuF84F+QaT9qzn0Qsiz/beBQt2WSbCkKLDcY9jpJJmlWO
-         WJqdV1mzXpeOg8NL0TpYeui5xNqqZHDcRQrHX8sM8ejn+qt1oJQWowHhIBImIYov0R5u
-         /R7aWIe5B9Bvb/x6RnR5IEJokUNDLneLuVuYrMwYBiU66AeI9yKq5Z6Mxot8+lKXJyGR
-         sIAw==
-X-Gm-Message-State: AOAM530YnDxRl574FXVz+Jit12Sbm9Tcb3FoY+ORYnGlpQSBh/Cl3OyQ
-        /D8ymAokUc4lXHOx58cZMyc=
-X-Google-Smtp-Source: ABdhPJywlixTcd/UxFpQF2whwi4YKPT1oJHNUzVMfq5eLzyBsy12LYWlMEHFG/jELHG08mEP1iSx4Q==
-X-Received: by 2002:a17:902:9004:: with SMTP id a4mr10990473plp.126.1590087832140;
-        Thu, 21 May 2020 12:03:52 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id gg8sm5012470pjb.39.2020.05.21.12.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 12:03:51 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:03:44 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>
-Message-ID: <5ec6d090627d0_75322ab85d4a45bcf6@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
-References: <159007153289.10695.12380087259405383510.stgit@john-Precision-5820-Tower>
- <159007175735.10695.9639519610473734809.stgit@john-Precision-5820-Tower>
- <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v3 4/5] bpf: selftests, add sk_msg helpers load
- and attach test
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xADZjI/N2EtkaruXQTMj1x8tGiT26fVV1QiEq2ceDQ=;
+        b=AwED3jj1Z5HXniZGqjSqJmsMzoiE9YYul0ecH1K2f8M3LHOzPWoavF1d/lADJCxsfh
+         cOlFneAvpsttUdeb3S5p6bkOE1ZbUrvlU2D5/Xs4pNk2E4WzsXtZU2fZCZEyUFPyKSZP
+         HTjUG6rM31GOY8ukcJy4Yl+o5ZsIyNxAJ/Y3fwtQ/wxDIsPVwESkxogJux2v++dliAL5
+         /x87VtGkPQH/3fx32eDO6iy6+wwB/Bl/rp31QBKXtGsXFgEbjS5mpfUZLXK5vgOnSYVI
+         X8k16X0ycMJyHpvubXlcpWqYvfGfYAzGNGVChAlZryBQIHX3FXSxxCRm3dsYfmmhEceD
+         oicQ==
+X-Gm-Message-State: AOAM531q9IdQh9v9Bt1AsayxiDnen7ZUj74raUnJEODcK2Xhwm5diepy
+        BmLnbH4QboNMAcaYwzuGCeK4TZ+76FDLNUadsZA=
+X-Google-Smtp-Source: ABdhPJyqb6hU4FvuItXvWCs2Teb01dXQduZPvNngtXUpAqnBEeplx3BVXQiCZV5N2FwXEeL/LRBtDu5oEDnDSU5fVPE=
+X-Received: by 2002:ac8:424b:: with SMTP id r11mr12164850qtm.171.1590088120365;
+ Thu, 21 May 2020 12:08:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200520172258.551075-1-jakub@cloudflare.com>
+In-Reply-To: <20200520172258.551075-1-jakub@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 May 2020 12:08:29 -0700
+Message-ID: <CAEf4BzbpMp9D0TsC5dhRJ-AeKqsXJ5EyEcCx2-kkZg+ZBnHYqg@mail.gmail.com>
+Subject: Re: [PATCH bpf] flow_dissector: Drop BPF flow dissector prog ref on
+ netns cleanup
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Thu, May 21, 2020 at 7:36 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > The test itself is not particularly useful but it encodes a common
-> > pattern we have.
-> >
-> > Namely do a sk storage lookup then depending on data here decide if
-> > we need to do more work or alternatively allow packet to PASS. Then
-> > if we need to do more work consult task_struct for more information
-> > about the running task. Finally based on this additional information
-> > drop or pass the data. In this case the suspicious check is not so
-> > realisitic but it encodes the general pattern and uses the helpers
-> > so we test the workflow.
-> >
-> > This is a load test to ensure verifier correctly handles this case.
-> >
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/sockmap_basic.c       |   57 ++++++++++++++++++++
-> >  .../selftests/bpf/progs/test_skmsg_load_helpers.c  |   48 +++++++++++++++++
-> >  2 files changed, 105 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_skmsg_load_helpers.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > index aa43e0b..cacb4ad 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > @@ -1,13 +1,46 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  // Copyright (c) 2020 Cloudflare
-> > +#include <error.h>
-> >
-> >  #include "test_progs.h"
-> > +#include "test_skmsg_load_helpers.skel.h"
-> >
-> >  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
-> >
-> >  #define TCP_REPAIR_ON          1
-> >  #define TCP_REPAIR_OFF_NO_WP   -1      /* Turn off without window probes */
-> >
-> > +#define _FAIL(errnum, fmt...)                                                  \
-> > +       ({                                                                     \
-> > +               error_at_line(0, (errnum), __func__, __LINE__, fmt);           \
-> > +               CHECK_FAIL(true);                                              \
-> > +       })
-> > +#define FAIL(fmt...) _FAIL(0, fmt)
-> > +#define FAIL_ERRNO(fmt...) _FAIL(errno, fmt)
-> > +#define FAIL_LIBBPF(err, msg)                                                  \
-> > +       ({                                                                     \
-> > +               char __buf[MAX_STRERR_LEN];                                    \
-> > +               libbpf_strerror((err), __buf, sizeof(__buf));                  \
-> > +               FAIL("%s: %s", (msg), __buf);                                  \
-> > +       })
-> > +
-> > +#define xbpf_prog_attach(prog, target, type, flags)                            \
-> > +       ({                                                                     \
-> > +               int __ret =                                                    \
-> > +                       bpf_prog_attach((prog), (target), (type), (flags));    \
-> > +               if (__ret == -1)                                               \
-> > +                       FAIL_ERRNO("prog_attach(" #type ")");                  \
-> > +               __ret;                                                         \
-> > +       })
-> > +
-> > +#define xbpf_prog_detach2(prog, target, type)                                  \
-> > +       ({                                                                     \
-> > +               int __ret = bpf_prog_detach2((prog), (target), (type));        \
-> > +               if (__ret == -1)                                               \
-> > +                       FAIL_ERRNO("prog_detach2(" #type ")");                 \
-> > +               __ret;                                                         \
-> > +       })
-> 
-> I'm not convinced we need these macro, can you please just use CHECKs?
-> I'd rather not learn each specific test's custom macros.
+On Wed, May 20, 2020 at 10:24 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> When attaching a flow dissector program to a network namespace with
+> bpf(BPF_PROG_ATTACH, ...) we grab a reference to bpf_prog.
+>
+> If netns gets destroyed while a flow dissector is still attached, and there
+> are no other references to the prog, we leak the reference and the program
+> remains loaded.
+>
+> Leak can be reproduced by running flow dissector tests from selftests/bpf:
+>
+>   # bpftool prog list
+>   # ./test_flow_dissector.sh
+>   ...
+>   selftests: test_flow_dissector [PASS]
+>   # bpftool prog list
+>   4: flow_dissector  name _dissect  tag e314084d332a5338  gpl
+>           loaded_at 2020-05-20T18:50:53+0200  uid 0
+>           xlated 552B  jited 355B  memlock 4096B  map_ids 3,4
+>           btf_id 4
+>   #
+>
+> Fix it by detaching the flow dissector program when netns is going away.
+>
+> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+>
+> Discovered while working on bpf_link support for netns-attached progs.
+> Looks like bpf tree material so pushing it out separately.
+>
+> -jkbs
+>
 
-Will just remove the entire block above.
+[...]
 
-> 
-> > +
-> >  static int connected_socket_v4(void)
-> >  {
-> >         struct sockaddr_in addr = {
-> > @@ -70,10 +103,34 @@ static void test_sockmap_create_update_free(enum bpf_map_type map_type)
-> >         close(s);
-> >  }
-> >
-> > +static void test_skmsg_helpers(enum bpf_map_type map_type)
-> > +{
-> > +       struct test_skmsg_load_helpers *skel;
-> > +       int err, map, verdict;
-> > +
-> > +       skel = test_skmsg_load_helpers__open_and_load();
-> > +       if (!skel) {
-> > +               FAIL("skeleton open/load failed");
-> > +               return;
-> > +       }
-> > +
-> > +       verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
-> > +       map = bpf_map__fd(skel->maps.sock_map);
-> > +
-> > +       err = xbpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
-> > +       if (err)
-> > +               return;
-> > +       xbpf_prog_detach2(verdict, map, BPF_SK_MSG_VERDICT);
-> 
-> no cleanup in this test, at all
+>  /**
+>   * __skb_flow_get_ports - extract the upper layer ports and return them
+>   * @skb: sk_buff to extract the ports from
+> @@ -1827,6 +1848,8 @@ EXPORT_SYMBOL(flow_keys_basic_dissector);
+>
+>  static int __init init_default_flow_dissectors(void)
+>  {
+> +       int err;
+> +
+>         skb_flow_dissector_init(&flow_keys_dissector,
+>                                 flow_keys_dissector_keys,
+>                                 ARRAY_SIZE(flow_keys_dissector_keys));
+> @@ -1836,7 +1859,11 @@ static int __init init_default_flow_dissectors(void)
+>         skb_flow_dissector_init(&flow_keys_basic_dissector,
+>                                 flow_keys_basic_dissector_keys,
+>                                 ARRAY_SIZE(flow_keys_basic_dissector_keys));
+> -       return 0;
+> +
+> +       err = register_pernet_subsys(&flow_dissector_pernet_ops);
+> +
+> +       WARN_ON(err);
 
-Guess we need __destroy(skel) here.
+syzbot simulates memory allocation failures, which can bubble up here,
+so this WARN_ON will probably trigger. I wonder if this could be
+rewritten so that init fails, when registration fails? What are the
+consequences?
 
-As an aside how come if the program closes and refcnt drops the entire
-thing isn't destroyed. I didn't think there was any pinning happening
-in the __open_and_load piece.
-
-> 
-> > +}
-> > +
-> 
-> [...]
-> 
-> > +
-> > +int _version SEC("version") = 1;
-> 
-> version not needed
-> 
-> > +char _license[] SEC("license") = "GPL";
-> >
-
-
+> +       return err;
+>  }
+>
+>  core_initcall(init_default_flow_dissectors);
+> --
+> 2.25.4
+>
