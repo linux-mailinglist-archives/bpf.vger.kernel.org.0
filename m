@@ -2,101 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A3E1DC8EC
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 10:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15911DCB74
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 12:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgEUImj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 04:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728670AbgEUImj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 04:42:39 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C2BC061A0F
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:42:39 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id j21so7873900ejy.1
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 01:42:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=khKa3VospsGF/zZX2jqzC6B0pFc8OmygKNEDOR+IIDs=;
-        b=Wm8lXXMowUblSGIk6/pirZc6GcIOfnLyEBXmgX4cZtvkuC21pO/JvKHEK/tsjsBynd
-         qMtn41/nHj55SyL4CM4D0LMOMrOCZ4dHNppjKdKjOw1VOMHAjdaKI06vUEGJlEJ85Oj+
-         XVuH8U2sNqYhVGlRE/RsuXUIaB9auvZ1dey7Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=khKa3VospsGF/zZX2jqzC6B0pFc8OmygKNEDOR+IIDs=;
-        b=d26rqKjOzq239RzbQHWBf9wwLeYGqyLc7zu1EJF5xDpdO0aCifilr6ahxsaVm9+sPC
-         v3aQwuTED24Hg+6G3cF9YJW+vDAJP8GEVhWA5/vWGJcLMY7zbE3CSn+PJ2wXxJjXW7d9
-         gcRQZgCEPf5LZxDo9Rhler3ruff+N6L2tl7ZqBlkZMn30nFeaX8YqYDPcdvqzZf0o6zw
-         29zXDj70S+8bqOXcKnbskl1kbSMmnNqEutvg22FYuVH2PG2cAsgAoceOlpZAw6xE5566
-         G/UFgW4hQ53+QNbCg1U4KjMmlfx7jlUNX2XxjC1yI2xD6uIn29VCZAHUD8OgftH1mjpc
-         /6Tw==
-X-Gm-Message-State: AOAM532sgnfy1EDn4ZzbGCXY2l+Z9gAftH08qWJ7FAULiH+L/f9Bwfm/
-        FpkLAMDqigunxI08WTpD99u/8A==
-X-Google-Smtp-Source: ABdhPJx+XOrTFqKgizJY4KIkfc8KjvyzF63/6kJQz1+A7w5KHL1aNfOwXBebe+U2tody6dumUg2S4w==
-X-Received: by 2002:a17:906:fa84:: with SMTP id lt4mr2681695ejb.318.1590050557722;
-        Thu, 21 May 2020 01:42:37 -0700 (PDT)
-Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id nj6sm4149437ejb.99.2020.05.21.01.42.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 01:42:37 -0700 (PDT)
-Date:   Thu, 21 May 2020 10:42:14 +0200
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     sdf@google.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Petar Penkov <ppenkov@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH bpf] flow_dissector: Drop BPF flow dissector prog ref on
- netns cleanup
-Message-ID: <20200521104214.6a1a4f9c@toad>
-In-Reply-To: <20200520174000.GA49942@google.com>
-References: <20200520172258.551075-1-jakub@cloudflare.com>
-        <20200520174000.GA49942@google.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728363AbgEUKyi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 06:54:38 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41976 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727864AbgEUKyh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 06:54:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590058475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VUVyi/atpOj47t9gevngeyErf5if/P8pruyVYvTX6qg=;
+        b=UHTecVt1PxUVVzWS2LrworoesYBXX/EnRlJs1Nt+ZV+nd8vh9TWw3bP8190groFtuj/9Vp
+        xLWThTMD8DJV8eKWOr4HmWNQcdpxSdk90RhYbMP8cGRiwhciPAqDkknZkVm/5jwMgqmkyl
+        ywtCriEbsxn0YCPmCwk5R1qvGiSi7DM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-cg7FSCEiOOKf7MitDdE6rg-1; Thu, 21 May 2020 06:54:33 -0400
+X-MC-Unique: cg7FSCEiOOKf7MitDdE6rg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D62F219200C0;
+        Thu, 21 May 2020 10:54:30 +0000 (UTC)
+Received: from krava (unknown [10.40.195.217])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 674481059137;
+        Thu, 21 May 2020 10:54:13 +0000 (UTC)
+Date:   Thu, 21 May 2020 12:54:12 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
+Message-ID: <20200521105412.GS157452@krava>
+References: <20200520072814.128267-1-irogers@google.com>
+ <20200520072814.128267-6-irogers@google.com>
+ <20200520134847.GM157452@krava>
+ <CAP-5=fVGf9i7hvQcht_8mnMMjzhQYdFqPzZFraE-iMR7Vcr1tw@mail.gmail.com>
+ <20200520220912.GP157452@krava>
+ <CAP-5=fU12vP45Sg3uRSuz-xoceTPTKw9-XZieKv1PaTnREMdrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fU12vP45Sg3uRSuz-xoceTPTKw9-XZieKv1PaTnREMdrw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 May 2020 10:40:00 -0700
-sdf@google.com wrote:
+On Wed, May 20, 2020 at 03:42:02PM -0700, Ian Rogers wrote:
 
-> > +static void __net_exit flow_dissector_pernet_pre_exit(struct net *net)
-> > +{
-> > +	struct bpf_prog *attached;
-> > +
-> > +	/* We don't lock the update-side because there are no
-> > +	 * references left to this netns when we get called. Hence
-> > +	 * there can be no attach/detach in progress.
-> > +	 */
-> > +	rcu_read_lock();
-> > +	attached = rcu_dereference(net->flow_dissector_prog);
-> > +	if (attached) {
-> > +		RCU_INIT_POINTER(net->flow_dissector_prog, NULL);
-> > +		bpf_prog_put(attached);
-> > +	}
-> > +	rcu_read_unlock();
-> > +}  
-> I wonder, should we instead refactor existing
-> skb_flow_dissector_bpf_prog_detach to accept netns (instead of attr)
-> can call that here? Instead of reimplementing it (I don't think we
-> care about mutex lock/unlock efficiency here?). Thoughts?
+SNIP
 
-I wanted to be nice to container-heavy workloads where network
-namespaces get torn down frequently and in parallel and avoid
-locking a global mutex. OTOH we already do it today, for instance in
-devlink pre_exit callback.
+> >
+> > hum, I think that's also concern if you are multiplexing 2 groups and one
+> > metric getting events from both groups that were not meassured together
+> >
+> > it makes sense to me put all the merged events into single weak group
+> > anything else will have the issue you described above, no?
+> >
+> > and perhaps add command line option for merging that to make sure it's
+> > what user actuly wants
+> 
+> I'm not sure I'm following. With the patch set if we have 3 metrics
+> with the event groups shown:
+> M1: {A,B,C}:W
+> M2: {A,B}:W
+> M3: {A,B,D}:W
+> 
+> then what happens is we sort the metrics in to M1, M3, M2 then when we
+> come to match the events:
+> 
+>  - by default: match events allowing sharing if all events come from
+> the same group. So in the example M1 will first match with {A,B,C}
+> then M3 will fail to match the group {A,B,C} but match {A,B,D}; M2
+> will succeed with matching {A,B} from M1. The events/group for M2 can
+> be removed as they are no longer used. This kind of sharing is
+> opportunistic and respects existing groupings. While it may mean a
+> metric is computed from a group that now multiplexes, that group will
+> run for more of the time as there are fewer groups to multiplex with.
+> In this example we've gone from 3 groups down to 2, 8 events down to
+> 6. An improvement would be to realize that A,B is in both M1 and M3,
+> so when we print the stat we could combine these values.
 
-In our case I think there is a way to have the cake and it eat too:
+ok, I misunderstood and thought you would colaps also M3 to
+have A,B computed via M1 group and with separate D ...
 
-https://lore.kernel.org/bpf/20200521083435.560256-1-jakub@cloudflare.com/
+thanks a lot for the explanation, it might be great to have it
+in the comments/changelog or even man page
 
-Thanks for reviewing it,
--jkbs
+> 
+>  - with --metric-no-merge: no events are shared by metrics M1, M2 and
+> M3 have their events and computation as things currently are. There
+> are 3 groups and 8 events.
+> 
+>  - with --metric-no-group: all groups are removed and so the evlist
+> has A,B,C,A,B,A,B,D in it. The matching will now match M1 to A,B,C at
+> the beginning of the list, M2 to the first A,B and M3 to the same A,B
+> and D at the end of the list. We've got no groups and the events have
+> gone from 8 down to 4.
+> 
+> It is difficult to reason about which grouping is most accurate. If we
+> have 4 counters (no NMI watchdog) then this example will fit with no
+> multiplexing. The default above should achieve less multiplexing, in
+> the same way merging PMU events currently does - this patch is trying
+> to mirror the --no-merge functionality to a degree. Considering
+> TopDownL1 then we go from metrics that never sum to 100%, to metrics
+> that do in either the default or --metric-no-group cases.
+> 
+> I'm not sure what user option is missing with these combinations? The
+> default is trying to strike a compromise and I think user interaction
+> is unnecessary, just as --no-merge doesn't cause interaction. If the
+> existing behavior is wanted using --metric-no-merge will give that.
+> The new default and --metric-no-group are hopefully going to reduce
+> the number of groups and events. I'm somewhat agnostic as to what the
+> flag functionality should be as what I'm working with needs either the
+> default or --metric-no-group, I can use whatever flag is agreed upon.
+
+no other option is needed then
+
+thanks,
+jirka
+
