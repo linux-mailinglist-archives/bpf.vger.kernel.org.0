@@ -2,142 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818121DD6C8
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32391DD6CC
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbgEUTLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 15:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
+        id S1729600AbgEUTMT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 15:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729856AbgEUTLM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 15:11:12 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33819C061A0E;
-        Thu, 21 May 2020 12:11:11 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id n15so3573977pjt.4;
-        Thu, 21 May 2020 12:11:11 -0700 (PDT)
+        with ESMTP id S1729548AbgEUTMT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 15:12:19 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E84C061A0E;
+        Thu, 21 May 2020 12:12:19 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so6380313qts.9;
+        Thu, 21 May 2020 12:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=9QIhsGopa4M7tNFZalbxD5E1jKNa/x6AV8khESsAzfw=;
-        b=XraSPReeOvuRLrCMQyMan2StG4J/4ANzvJuv+ESjC1cUhtAIyTk3y8OWZcTEWeUWIX
-         TbAhlfUJGUW7Df2yOlYUyg70fh7luH8K1K4FvxcmxFCgdXNwU5s99Wz6iAea9Wq2ioVc
-         9GP2sBTpDPqBxWHWM3SS11JzN3Z1KV+5LoAwVMTrs4G5hVBCwL95a7wkiglzgd2cDtby
-         GkvSNYMvKIgPr/+zvXflFafqaOHFTyDghbtlvgHoQSOdHRPyRFNkOd2CNpA7ZAFwUWzN
-         DFNLSgDOvD4kXB2o+OWxMCApyrf2OEJ2uv7+rOMe6bO0GO9cxe5bPe9/3M+LyrZgAmJ3
-         CQqA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cR6/WgdxEb48OPUj9rt10xxN8lgY/TRAtYbhZXD6v3M=;
+        b=uTTOWA1/DohmCDhX+BR04WgbUaubItV7uNx/ETKMk/U92y8QbyICM+g9sKinYfmDuN
+         nbCwoQs/mcGEWCZrV5FCfn+rr85L3WHN01O9p/JZqQRgBcwe5y0sAOA/OR7Vj9Y2X4SE
+         87TEA3lOWl/xF3h7VfiH+HE3tnbhW4GKgFXKisW27lphpwF7Pkr88k/vz+rw8+8/HVuL
+         G/ipU9i6bbTsFBUFDkCmxHgFY/iWukJvylp9uHFWjqZkqzrc+ajpDmwLn0R5spuJzfE8
+         zk5tPr7sUi8N8JpS59c0l7fnvfAu0pdrZCBNf996C0YP8ho77mbpWd3ixBSq4VwsgdhN
+         HKZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=9QIhsGopa4M7tNFZalbxD5E1jKNa/x6AV8khESsAzfw=;
-        b=oNKLi4wgfMFvUnhFioTY3HivtD3uzsxGjX240QZvx9i+XFuMk8YQhWn2FUej7Vr7m3
-         zBSYLux/xVVBQ404RD2B48ATEiwXErpzlrYMux1BnW88+JifHvMe/3Aa/UOI3kh5JE7u
-         7pe3HvxU+RBmdFwxdO/9B7YXibwIk5FZYgxID5Wr/HiLpUs5G8T6WEGqA74A7Jxmuvw3
-         v2WeBo1UqMXkrJrdOxtgSCoTMm7R8c+niVHp4J9P1ctMSDz+3xcF11uAFNLKL1OduZUj
-         tH7eIbh63YzzcXtHYlvxzDF8Rd9SBgtNgRZy5+SWHLox2KdBSZuuCWARDyqyxgUDsvVy
-         Q1dg==
-X-Gm-Message-State: AOAM531VP0PTp0VHQ4N77ejohyrzONI3sYLkCg4O95y4OXC0Npblbvio
-        dZ2na/taKALQ61X7spfaY9I=
-X-Google-Smtp-Source: ABdhPJyVqouICpvgSpmk7ixtdFpzyv9O1iyyQgOOwbCV7QbNrhwwZ0gz4B+K+QvD37sqLktLMNnHQQ==
-X-Received: by 2002:a17:90a:9f02:: with SMTP id n2mr13658696pjp.173.1590088270772;
-        Thu, 21 May 2020 12:11:10 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k3sm5187161pjc.38.2020.05.21.12.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 12:11:09 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:11:03 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cR6/WgdxEb48OPUj9rt10xxN8lgY/TRAtYbhZXD6v3M=;
+        b=tKaFYIgHxBzul4QpjuTQo7o484ndLgE8NH0O6q/twwxItqK80Sz9hl9l3t5DWTsaLM
+         uJ3y+Yf6CEvoPVUx6S4ik6YAE1rHd/qV1fOjLCsex34Yr0UTAXgnChEcGKAoIsNx+WHi
+         p1ZRaSEr4eiTvE1YbBN2QcxD6vYQPxj8XOsBfce6y67wVwIJu57+JgxK9PmEtZtn1TmE
+         abuLcj/pE8/jX7tMndHFaKbFXAahQyxBkQj5fMVqjXEN5gkVNVfCOk2jEKacgjXXjkbv
+         3HKZKzfHkBptnNBy4W/qCw9UlNaKdy8sHh5Y+PIAXsqzq5WYE0wgg7TOWxpsEwFbfM54
+         lasg==
+X-Gm-Message-State: AOAM530BczkkfMkay8ttnLwqSM0kJ7UyQBA8Og8qAeFCe7yRSznAnnvN
+        ECs7BZAT7eQ+PZPjfQGWD8Sy1eerQ7LUKRSstHo=
+X-Google-Smtp-Source: ABdhPJxCA9ASFNs1WgVNDKwgd5TKRdkqJrLsrFtQm0wXeykzRQ2EWOB7HDfDd0qpE95Tc96Hb97MFejWrwqhhEyAWbc=
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr12002183qtd.117.1590088338755;
+ Thu, 21 May 2020 12:12:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <159007153289.10695.12380087259405383510.stgit@john-Precision-5820-Tower>
+ <159007175735.10695.9639519610473734809.stgit@john-Precision-5820-Tower>
+ <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
+ <5ec6d090627d0_75322ab85d4a45bcf6@john-XPS-13-9370.notmuch> <5ec6d1cdbc900_7d832ae77617e5c0ce@john-XPS-13-9370.notmuch>
+In-Reply-To: <5ec6d1cdbc900_7d832ae77617e5c0ce@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 May 2020 12:12:07 -0700
+Message-ID: <CAEf4BzY0Ft8djizeAn3sSZOLfy-ZiH5+AC=ikjk6Uno1U1JgSQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v3 4/5] bpf: selftests, add sk_msg helpers load
+ and attach test
+To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Networking <netdev@vger.kernel.org>
-Message-ID: <5ec6d2473d523_7d832ae77617e5c07a@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzYJRaY+tsa2TH5WoLAEo=ckd=D2XK5u4YFezkj4jfrZLQ@mail.gmail.com>
-References: <159007153289.10695.12380087259405383510.stgit@john-Precision-5820-Tower>
- <159007177838.10695.12211214514015683724.stgit@john-Precision-5820-Tower>
- <CAEf4BzYJRaY+tsa2TH5WoLAEo=ckd=D2XK5u4YFezkj4jfrZLQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v3 5/5] bpf: selftests, test probe_* helpers from
- SCHED_CLS
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Thu, May 21, 2020 at 7:36 AM John Fastabend <john.fastabend@gmail.com> wrote:
+On Thu, May 21, 2020 at 12:09 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> John Fastabend wrote:
+> > Andrii Nakryiko wrote:
+> > > On Thu, May 21, 2020 at 7:36 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > >
+> > > > The test itself is not particularly useful but it encodes a common
+> > > > pattern we have.
+> > > >
+> > > > Namely do a sk storage lookup then depending on data here decide if
+> > > > we need to do more work or alternatively allow packet to PASS. Then
+> > > > if we need to do more work consult task_struct for more information
+> > > > about the running task. Finally based on this additional information
+> > > > drop or pass the data. In this case the suspicious check is not so
+> > > > realisitic but it encodes the general pattern and uses the helpers
+> > > > so we test the workflow.
+> > > >
+> > > > This is a load test to ensure verifier correctly handles this case.
+> > > >
+> > > > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > > > ---
+>
+> [...]
+>
+> > > > +static void test_skmsg_helpers(enum bpf_map_type map_type)
+> > > > +{
+> > > > +       struct test_skmsg_load_helpers *skel;
+> > > > +       int err, map, verdict;
+> > > > +
+> > > > +       skel = test_skmsg_load_helpers__open_and_load();
+> > > > +       if (!skel) {
+> > > > +               FAIL("skeleton open/load failed");
+> > > > +               return;
+> > > > +       }
+> > > > +
+> > > > +       verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
+> > > > +       map = bpf_map__fd(skel->maps.sock_map);
+> > > > +
+> > > > +       err = xbpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
+> > > > +       if (err)
+> > > > +               return;
+> > > > +       xbpf_prog_detach2(verdict, map, BPF_SK_MSG_VERDICT);
+> > >
+> > > no cleanup in this test, at all
 > >
-> > Lets test using probe* in SCHED_CLS network programs as well just
-> > to be sure these keep working. Its cheap to add the extra test
-> > and provides a second context to test outside of sk_msg after
-> > we generalized probe* helpers to all networking types.
+> > Guess we need __destroy(skel) here.
 > >
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
+> > As an aside how come if the program closes and refcnt drops the entire
+> > thing isn't destroyed. I didn't think there was any pinning happening
+> > in the __open_and_load piece.
+>
+> I guess these are in progs_test so we can't leave these around for
+> any following tests to trip over. OK. Same thing for patch 3 fwiw.
 
-[...]
-
-> > +++ b/tools/testing/selftests/bpf/progs/test_skb_helpers.c
-> > @@ -0,0 +1,33 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_endian.h>
-> > +
-> > +int _version SEC("version") = 1;
-> 
-> version is not needed
-> 
-> > +
-> > +#define TEST_COMM_LEN 10
-> 
-> doesn't matter for this test, but it's 16 everywhere, let's stay consistent
-> 
-> > +
-> > +struct bpf_map_def SEC("maps") cgroup_map = {
-> > +       .type                   = BPF_MAP_TYPE_CGROUP_ARRAY,
-> > +       .key_size               = sizeof(u32),
-> > +       .value_size             = sizeof(u32),
-> > +       .max_entries    = 1,
-> > +};
-> > +
-> 
-> Please use new BTF syntax for maps
-> 
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +SEC("classifier/test_skb_helpers")
-> > +int test_skb_helpers(struct __sk_buff *skb)
-> > +{
-> > +       struct task_struct *task;
-> > +       char *comm[TEST_COMM_LEN];
-> 
-> this is array of pointer, not array of chars
-> 
-> > +       __u32 tpid;
-> > +       int ctask;
-> > +
-> > +       ctask = bpf_current_task_under_cgroup(&cgroup_map, 0);
-> 
-> compiler might complain that ctask is written, but not read. Let's
-> assign it to some global variable?
-
-I'll do a read here and check the value then it should be fine.
-
-Will fold in the above comments as well.
-
-> > +       task = (struct task_struct *)bpf_get_current_task();
-> > +
-> > +       bpf_probe_read_kernel(&tpid , sizeof(tpid), &task->tgid);
-> > +       bpf_probe_read_kernel_str(&comm, sizeof(comm), &task->comm);
-> > +       return 0;
-> > +}
-> >
+Yep, exactly. It's a cooperative environment at the moment. We've
+talked about running tests in forked processes and in parallel, but
+until then, cleaning up is very important.
