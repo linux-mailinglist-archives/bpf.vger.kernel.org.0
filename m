@@ -2,118 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D2F1DD66C
-	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 20:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A2F1DD68F
+	for <lists+bpf@lfdr.de>; Thu, 21 May 2020 21:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgEUS67 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 14:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
+        id S1729856AbgEUTDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 15:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729603AbgEUS67 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 14:58:59 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECEDC061A0E
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 11:58:59 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id a23so6401510qto.1
-        for <bpf@vger.kernel.org>; Thu, 21 May 2020 11:58:59 -0700 (PDT)
+        with ESMTP id S1729548AbgEUTDw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 15:03:52 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1951C061A0E;
+        Thu, 21 May 2020 12:03:52 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d3so3249699pln.1;
+        Thu, 21 May 2020 12:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SkT32RVtASIP8CGRtZRQGHPZetvexkw0Tk4FcVWqhjg=;
-        b=NLBndha66Sy1yrsslaj01OFsquN9NR9Sev1Ta0Rk/Hid8wn2NLGK11mLkL6bsP6ZqY
-         zsrIgnAwcrCplfX1hLlydMpnDojF026r6/At060fM7HrWFKKQAkXXKJlI2waf9Cp/M8G
-         PyZLilF3jsSjqFfOQ7rxsCCBemxXC8PQ1TyRxgnsEnWr1kBaEgoVrgFdq15zYDszxIXb
-         JAve4oGyrD7BI6E2I0bYKl8qSkdtx7Qi58Hs5WBfTnOxRl94WchUFNZ37gVKkhvdOqPG
-         FRczQXsXkXk0T3N3WMJfEQBjoYQpvWH0ziuCB92aeGLCFly2CnVM2TG4JksD6QgGRYqi
-         kMSw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=YG/Rd93DgDyZiJme5K9Qkk13z1FQo+t3Cuv8eEz4qLg=;
+        b=Pq8e21/qB0ru0tBwkmJD0CtlecIvnV97VErj/kiCdcrq3kb4Zkx79jGEMOVAMCvlaH
+         mUUQkdVz0ZZ+qjETJ+JBVOlxt1qv4mi7lwh42YywcZDUtfhFTX3Xob49LRVSu43lJNjz
+         Nwn2NYGpYti+7Nhrec6Rse7rT0G2Ph23YEKUki2JI9kJzC78DKFKYmIED9gz0eTqXk/Y
+         DXnT8aXeBkd/PKSWi0JHPsEY5zEjV/N2/oJ4i+eThSVM9Pcw12kHhDPrJtosyFnbkrTX
+         /A8UJuU9rWDoERDenP9DmNS2y7CA0ylchw2G2W3p+KCZbN5WUUdr2hAstLRodqgePG+u
+         mNbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SkT32RVtASIP8CGRtZRQGHPZetvexkw0Tk4FcVWqhjg=;
-        b=uPHyDhM0V/OOD8CYOOH3DcMlHtrgkjb1ipQb6PkzpKTU5BeCJevU9Oe+tQtpgE50nb
-         UnmqSD5ObMuLUJKqXNbL7SzsZhPPZIGfZo79DerbYvOQlP4PyLGW4zpTHMVjsKPjBQsu
-         hyerKJ7syYsjKaZw/pnKmlsAdAMi0p2GGdRqaHuzzALWQ3iBKE9eQGeXqKDPGaR7iivq
-         xvJayOq5HOdnZhVPvUDrnsE0DDiZO8Z/UhzqwQ44BT8/F+f57YqFRzDFurc/j5UnqHAM
-         nF4TF1C52RwaaJwzBAVeVSGNE/xA+jxbv9+p92MwPbrWLoZErvhXybDo1AGOu4YMmuFE
-         0Jzg==
-X-Gm-Message-State: AOAM53089i1bIiBSqWXLbXA+NTtlWW4OiiyNRdUHDvhfMeaPraO1inyk
-        MlQYicX0DZlJ5S0uKnUHdKL/kLBTRFdpRygerIvNFEPw
-X-Google-Smtp-Source: ABdhPJypriRPlj0CvQ6ikRZJeO6l4De45Vb/eg1K6EF8duX9O/XM5vOQ5sN4M0N5MKMyISo0vKdboclZMtDzmF8Fdkc=
-X-Received: by 2002:ac8:3a42:: with SMTP id w60mr2170488qte.141.1590087538460;
- Thu, 21 May 2020 11:58:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAADnVQJwqH2XFnTeXLnqbONtaU3akNh9BZ-tXk8r=NcGGY_noQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJwqH2XFnTeXLnqbONtaU3akNh9BZ-tXk8r=NcGGY_noQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 21 May 2020 11:58:47 -0700
-Message-ID: <CAEf4BzZVVgMbNE4d7b5kPUoWPJz-ENgyP1BfC+h-X29r1Pk2fA@mail.gmail.com>
-Subject: Re: accessing global and per-cpu vars
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     haoluo@google.com, Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=YG/Rd93DgDyZiJme5K9Qkk13z1FQo+t3Cuv8eEz4qLg=;
+        b=L27wAc9lRKnZrkx8rC+wXvylZb85tBbENKU1pRQ/Tbyt2LPEcfXIMPBr6AQCNJnM1X
+         PvLZMHln2Vsyon5hcwjorD2yydm5CbcwLM+ja2Vsa5nlfvDKPiUIxfTbgahJDJfB0g2P
+         rYd5VAcLQvz8Tpoh0mHHkemKuF84F+QaT9qzn0Qsiz/beBQt2WSbCkKLDcY9jpJJmlWO
+         WJqdV1mzXpeOg8NL0TpYeui5xNqqZHDcRQrHX8sM8ejn+qt1oJQWowHhIBImIYov0R5u
+         /R7aWIe5B9Bvb/x6RnR5IEJokUNDLneLuVuYrMwYBiU66AeI9yKq5Z6Mxot8+lKXJyGR
+         sIAw==
+X-Gm-Message-State: AOAM530YnDxRl574FXVz+Jit12Sbm9Tcb3FoY+ORYnGlpQSBh/Cl3OyQ
+        /D8ymAokUc4lXHOx58cZMyc=
+X-Google-Smtp-Source: ABdhPJywlixTcd/UxFpQF2whwi4YKPT1oJHNUzVMfq5eLzyBsy12LYWlMEHFG/jELHG08mEP1iSx4Q==
+X-Received: by 2002:a17:902:9004:: with SMTP id a4mr10990473plp.126.1590087832140;
+        Thu, 21 May 2020 12:03:52 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id gg8sm5012470pjb.39.2020.05.21.12.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 12:03:51 -0700 (PDT)
+Date:   Thu, 21 May 2020 12:03:44 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, olegrom@google.com,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>
+Message-ID: <5ec6d090627d0_75322ab85d4a45bcf6@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
+References: <159007153289.10695.12380087259405383510.stgit@john-Precision-5820-Tower>
+ <159007175735.10695.9639519610473734809.stgit@john-Precision-5820-Tower>
+ <CAEf4BzZpZ5_Mn66h9a+VE0UtrXUcYdNe-Fj0zEvfDbhUG7Z=sw@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v3 4/5] bpf: selftests, add sk_msg helpers load
+ and attach test
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 10:07 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> Hi,
->
-> here are my notes from the bpf office hours today.
-> Does it sound as what we discussed?
->
-> Steps to add incremental support to global vars:
-> 1. teach libbpf to replace "ld_imm64 rX, foo" with absolute address
-> of var "foo" by reading that value from kallsyms.
-> From the verifier point of view ld_imm64 instruction will look like it's
-> assigning large constant into a register.
-> The bpf prog would need to use bpf_probe_read_kernel()
-> to further access vars.
+Andrii Nakryiko wrote:
+> On Thu, May 21, 2020 at 7:36 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > The test itself is not particularly useful but it encodes a common
+> > pattern we have.
+> >
+> > Namely do a sk storage lookup then depending on data here decide if
+> > we need to do more work or alternatively allow packet to PASS. Then
+> > if we need to do more work consult task_struct for more information
+> > about the running task. Finally based on this additional information
+> > drop or pass the data. In this case the suspicious check is not so
+> > realisitic but it encodes the general pattern and uses the helpers
+> > so we test the workflow.
+> >
+> > This is a load test to ensure verifier correctly handles this case.
+> >
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/sockmap_basic.c       |   57 ++++++++++++++++++++
+> >  .../selftests/bpf/progs/test_skmsg_load_helpers.c  |   48 +++++++++++++++++
+> >  2 files changed, 105 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_skmsg_load_helpers.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > index aa43e0b..cacb4ad 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > @@ -1,13 +1,46 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  // Copyright (c) 2020 Cloudflare
+> > +#include <error.h>
+> >
+> >  #include "test_progs.h"
+> > +#include "test_skmsg_load_helpers.skel.h"
+> >
+> >  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
+> >
+> >  #define TCP_REPAIR_ON          1
+> >  #define TCP_REPAIR_OFF_NO_WP   -1      /* Turn off without window probes */
+> >
+> > +#define _FAIL(errnum, fmt...)                                                  \
+> > +       ({                                                                     \
+> > +               error_at_line(0, (errnum), __func__, __LINE__, fmt);           \
+> > +               CHECK_FAIL(true);                                              \
+> > +       })
+> > +#define FAIL(fmt...) _FAIL(0, fmt)
+> > +#define FAIL_ERRNO(fmt...) _FAIL(errno, fmt)
+> > +#define FAIL_LIBBPF(err, msg)                                                  \
+> > +       ({                                                                     \
+> > +               char __buf[MAX_STRERR_LEN];                                    \
+> > +               libbpf_strerror((err), __buf, sizeof(__buf));                  \
+> > +               FAIL("%s: %s", (msg), __buf);                                  \
+> > +       })
+> > +
+> > +#define xbpf_prog_attach(prog, target, type, flags)                            \
+> > +       ({                                                                     \
+> > +               int __ret =                                                    \
+> > +                       bpf_prog_attach((prog), (target), (type), (flags));    \
+> > +               if (__ret == -1)                                               \
+> > +                       FAIL_ERRNO("prog_attach(" #type ")");                  \
+> > +               __ret;                                                         \
+> > +       })
+> > +
+> > +#define xbpf_prog_detach2(prog, target, type)                                  \
+> > +       ({                                                                     \
+> > +               int __ret = bpf_prog_detach2((prog), (target), (type));        \
+> > +               if (__ret == -1)                                               \
+> > +                       FAIL_ERRNO("prog_detach2(" #type ")");                 \
+> > +               __ret;                                                         \
+> > +       })
+> 
+> I'm not convinced we need these macro, can you please just use CHECKs?
+> I'd rather not learn each specific test's custom macros.
 
-yep
+Will just remove the entire block above.
 
->
-> 2. teach pahole to store ' A ' annotated kallsyms into vmlinux BTF as
-> BTF_KIND_VAR.
-> There are ~300 of them, so should be minimal increase in size.
+> 
+> > +
+> >  static int connected_socket_v4(void)
+> >  {
+> >         struct sockaddr_in addr = {
+> > @@ -70,10 +103,34 @@ static void test_sockmap_create_update_free(enum bpf_map_type map_type)
+> >         close(s);
+> >  }
+> >
+> > +static void test_skmsg_helpers(enum bpf_map_type map_type)
+> > +{
+> > +       struct test_skmsg_load_helpers *skel;
+> > +       int err, map, verdict;
+> > +
+> > +       skel = test_skmsg_load_helpers__open_and_load();
+> > +       if (!skel) {
+> > +               FAIL("skeleton open/load failed");
+> > +               return;
+> > +       }
+> > +
+> > +       verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
+> > +       map = bpf_map__fd(skel->maps.sock_map);
+> > +
+> > +       err = xbpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
+> > +       if (err)
+> > +               return;
+> > +       xbpf_prog_detach2(verdict, map, BPF_SK_MSG_VERDICT);
+> 
+> no cleanup in this test, at all
 
-I thought we'd do that based on section name? Or we will actually
-teach pahole to extract kallsyms from vmlinux image?
+Guess we need __destroy(skel) here.
 
-There was step 1.5 (or even 0.5) to see if it's feasible to add not
-just per-CPU variables as well.
+As an aside how come if the program closes and refcnt drops the entire
+thing isn't destroyed. I didn't think there was any pinning happening
+in the __open_and_load piece.
 
->
-> 3. teach libbpf to scan vmlinux BTF for vars and replace "ld_imm64 rX, foo"
-> with BPF_PSEUDO_BTF_ID.
-> From the verifier point of view 'ld_imm64 rX, 123 // pseudo_btf_id'
-> will be similar to ld_imm64 with pseudo_map_fd and pseudo_map_value.
-> The verifier will check btf_id and replace that with actual kernel address
-> at program load time. It will also know that exact type of 'rX' from there on.
-> That gives big performance win since bpf prog will be able to use
-> direct load instructions to access vars.
+> 
+> > +}
+> > +
+> 
+> [...]
+> 
+> > +
+> > +int _version SEC("version") = 1;
+> 
+> version not needed
+> 
+> > +char _license[] SEC("license") = "GPL";
+> >
 
-yep
 
->
-> 4. add bpf_per_cpu(var, cpu) helper.
-> It will accept 'var' in R1 and the verifier will enforce that R1 is
-> PTR_TO_BTF_ID type
-> and it's BTF_KIND_VAR and it's in per-cpu datasec.
-> The return value from that helper will be normal PTR_TO_BTF_ID,
-> so subsequent load instruction can use it directly.
-> Would be nice to have this helper without BTF requirement,
-> but I don't see how to make it safe without BTF at the moment.
-> Similarly bpf_this_cpu_ptr(var) helper could be necessary or
-> we may fold it into cpu == BPF_F_CURRENT_CPU as a single helper.
-
-separate helper sounds better to me, both from usability stand point,
-as well as not using extra register unnecessarily
