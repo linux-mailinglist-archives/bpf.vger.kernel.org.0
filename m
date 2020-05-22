@@ -2,109 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634841DDE9C
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 06:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2AB1DDEB0
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 06:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgEVENo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 00:13:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32332 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726338AbgEVENn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 00:13:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590120822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7cH40HAWZ/3Qx3sDVnVqBbfj0xwcDt+Jaa0AZ6Vk1J8=;
-        b=V3hf6ZYyRqhDOK45XCeHHdkJU9m3gzvVZ4OfrKKGBbpfS81Gs4QMSDyTKqUUtmOFcHCOFA
-        3H/CJKHMrRHpv3T73nRFygzDN8vlXDNEwMFNuM0gPRbcDz7PGmfiahLycuYP1ojIS98PlQ
-        J/HMr5azkN8ZgO2zHOFhz28d8Q3Xo/I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-R_bNKGvANTKe5_hd5zV5nA-1; Fri, 22 May 2020 00:13:38 -0400
-X-MC-Unique: R_bNKGvANTKe5_hd5zV5nA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2781980183C;
-        Fri, 22 May 2020 04:13:35 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-74.ams2.redhat.com [10.36.112.74])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B19B15D9C9;
-        Fri, 22 May 2020 04:13:31 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 8/8] selftests/bpf: factor out MKDIR rule
-Date:   Fri, 22 May 2020 07:13:10 +0300
-Message-Id: <20200522041310.233185-9-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
-References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
+        id S1726330AbgEVEXy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 00:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgEVEXy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 00:23:54 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AADC061A0E;
+        Thu, 21 May 2020 21:23:54 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z64so101792pfb.1;
+        Thu, 21 May 2020 21:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=VFVkn5SIewi4W+JsI73heYNt2jx78NTkR31h8FiEoto=;
+        b=HvrQslqsbzT2BI7n+5FmF8haiLpDnBHvcocd5U76z2052+4l+sgns3zNPDPmW7QbBh
+         /Eon2KOT575zS9VVV8VgkhaO5t+UnvYZ2S4Ks4r+J3zs5pZw5g6cb9K9RUj/yxta6wSn
+         sE/Wn6lWY0J5jegkqu+NG826+KiFeQLSEK7ojGb+53YYMIFhfiTBeke8GBl/eayv5vRS
+         OlUmkW7eBUt17ZDXcVyk81yWqo4FZ/LQNss/0RTcWuaICyTbPaQwYItdpxFcAvgkkkho
+         NpIg6E0nV0gY7LfNcfUnlp/Tc/mEIgQ2BB3ALml49auk99X2Gq7XKxJTw2gv4pjbzDdP
+         4oMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=VFVkn5SIewi4W+JsI73heYNt2jx78NTkR31h8FiEoto=;
+        b=aLR5MDi/3l2wZCySGIBik+ZbXKkSPvs9GJJT/ttI6SzaYyDdlfOt7z3whJ+TWx/Ukp
+         zKp7Zfb5Eieni5Ao7gN4aa76tHht4OrUzGA6M8gJ/xMC8TA1SHN65wu+5pLqztgVRqpG
+         FtRxGhB0dsLKHJHAT76F14Aje5BpuxBsQdcJ8efEQVZDgVlzyOKpo+f+vZZ3OUp2HZVW
+         To+pT+O6soyzF60nBW0v4wGS9VvtTQGNrVmy+BZi8ZXBJq4HQfEkFblbXehcUnVnOXmP
+         P6Ws7xTyXXy/C+MV5r6VcLT9gQPIEg2Gm1w+GWrQn+HmsQNXtc1lr86ax2xtkXkMd50i
+         Mx9g==
+X-Gm-Message-State: AOAM5314oevt0OYYQKA9YOM0qDhJKe6DKNO/v3gZbBF4tw9wvdufUf5+
+        TD0aEawLWP9886HRLarLO8o=
+X-Google-Smtp-Source: ABdhPJwtseKCyiM7l7G7kYvcZRzieHe/oIuA7SOVPJur7ytHW6SmKW0LGn1r3VUAAQ9hez9LsXzGsQ==
+X-Received: by 2002:a17:90a:6c96:: with SMTP id y22mr2305845pjj.74.1590121433551;
+        Thu, 21 May 2020 21:23:53 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id m14sm4949978pgk.56.2020.05.21.21.23.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 May 2020 21:23:52 -0700 (PDT)
+Subject: [bpf-next PATCH v4 0/5] bpf: Add sk_msg and networking helpers
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     yhs@fb.com, andrii.nakryiko@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com, jakub@cloudflare.com, lmb@cloudflare.com
+Date:   Thu, 21 May 2020 21:23:36 -0700
+Message-ID: <159012108670.14791.18091717338621259928.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Do not repeat youself, move common mkdir code (message and action)
-to a variable.
+This series adds helpers for sk_msg program type and based on feedback
+from v1 adds *_task_* helpers and probe_* helpers to all networking
+programs with perfmon_capable() capabilities.
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+The list of helpers breaks down as follows,
+
+Networking with perfmon_capable() guard (patch2):
+
+ BPF_FUNC_get_current_task
+ BPF_FUNC_current_task_under_cgroup
+ BPF_FUNC_probe_read_user
+ BPF_FUNC_probe_read_kernel
+ BPF_FUNC_probe_read_user_str
+ BPF_FUNC_probe_read_kernel_str
+
+Added to sk_msg program types (patch1,3):
+
+ BPF_FUNC_perf_event_output
+ BPF_FUNC_get_current_uid_gid
+ BPF_FUNC_get_current_pid_tgid
+ BPF_FUNC_get_current_cgroup_id
+ BPF_FUNC_get_current_ancestor_cgroup_id
+ BPF_FUNC_get_cgroup_classid
+
+ BPF_FUNC_sk_storage_get
+ BPF_FUNC_sk_storage_delete
+
+For testing we create two tests. One specifically for the sk_msg
+program types which encodes a common pattern we use to test verifier
+logic now and as the verifier evolves.
+
+Next we have skb classifier test. This uses the test run infra to
+run a test which uses the get_current_task, current_task_under_cgroup,
+probe_read_kernel, and probe_reak_kernel_str.
+
+Note we dropped the old probe_read variants probe_read() and
+probe_read_str() in v2.
+
+v3->v4:
+ patch4, remove macros and put code inline, add test cleanup, remove
+ version in bpf program.
+ patch5, use ctask returned from task_under_cgroup so that we avoid
+ any potential compiler warnings, add test cleanup, use BTF style
+ maps.
+ 
+v2->v3:
+ Pulled header update of tools sk_msg_md{} structure into patch3 for
+ easier review. ACKs from Yonghong pushed into v3
+
+v1->v2:
+ Pulled generic helpers *current_task* and probe_* into the
+ base func helper so they can be used more widely in networking scope.
+ BPF capabilities patch is now in bpf-next so use perfmon_capable() check
+ instead of CAP_SYS_ADMIN.
+
+ Drop old probe helpers, probe_read() and probe_read_str()
+
+ Added tests.
+
+ Thanks to Daniel, Yonghong, and Andrii for review and feedback.
+
 ---
- tools/testing/selftests/bpf/Makefile | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index bade24e29a1a..26497d8869ea 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -252,6 +252,11 @@ define COMPILE_C_RULE
- 	$(CC) $(CFLAGS) -c $(filter %.c,$^) $(LDLIBS) -o $@
- endef
- 
-+define MKDIR_RULE
-+	$(call msg,MKDIR,,$@)
-+	mkdir -p $@
-+endef
-+
- SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
- 
- # Set up extra TRUNNER_XXX "temporary" variables in the environment (relies on
-@@ -294,8 +299,7 @@ define DEFINE_TEST_RUNNER_RULES
- ifeq ($($(TRUNNER_OUTPUT)-dir),)
- $(TRUNNER_OUTPUT)-dir := y
- $(TRUNNER_OUTPUT):
--	$$(call msg,MKDIR,,$$@)
--	mkdir -p $$@
-+	$$(MKDIR_RULE)
- 
- ifneq ($2,)
- EXTRA_CLEAN +=$(TRUNNER_OUTPUT)
-@@ -337,8 +341,7 @@ $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c | $(dir $(TRUNNER_TESTS_HDR))
- EXTRA_CLEAN += $(TRUNNER_TESTS_HDR)
- 
- $(dir $(TRUNNER_TESTS_HDR)):
--	$$(call msg,MKDIR,,$$@)
--	mkdir -p $$@
-+	$$(MKDIR_RULE)
- endif
- 
- # compile individual test files
-@@ -425,8 +428,7 @@ $(OUTPUT)/verifier/tests.h: verifier/*.c | $(OUTPUT)/verifier
- EXTRA_CLEAN += $(OUTPUT)/verifier/tests.h
- 
- $(OUTPUT)/verifier:
--	$(call msg,MKDIR,,$@)
--	mkdir -p $@
-+	$(MKDIR_RULE)
- 
- $(OUTPUT)/test_verifier: CFLAGS += -I$(abspath verifier)
- $(OUTPUT)/test_verifier: test_verifier.c $(OUTPUT)/verifier/tests.h $(BPFOBJ) \
--- 
-2.26.2
+John Fastabend (5):
+      bpf: sk_msg add some generic helpers that may be useful from sk_msg
+      bpf: extend bpf_base_func_proto helpers with probe_* and *current_task*
+      bpf: sk_msg add get socket storage helpers
+      bpf: selftests, add sk_msg helpers load and attach test
+      bpf: selftests, test probe_* helpers from SCHED_CLS
 
+
+ .../testing/selftests/bpf/prog_tests/skb_helpers.c |   30 +++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |   35 +++++++++++++++
+ .../testing/selftests/bpf/progs/test_skb_helpers.c |   33 ++++++++++++++
+ .../selftests/bpf/progs/test_skmsg_load_helpers.c  |   47 ++++++++++++++++++++
+ 4 files changed, 145 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/skb_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_skb_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_skmsg_load_helpers.c
+
+--
+Signature
