@@ -2,528 +2,661 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DE51DDC1F
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 02:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2F51DDC30
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 02:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgEVAZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 20:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36188 "EHLO mail.kernel.org"
+        id S1726830AbgEVAee (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 20:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726693AbgEVAZE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 20:25:04 -0400
+        id S1726785AbgEVAee (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 20:34:34 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 242352072C;
-        Fri, 22 May 2020 00:25:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ECDD2072C;
+        Fri, 22 May 2020 00:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590107103;
-        bh=66biuv0Jwsr53nJ8fx5mA/MnwbdG1pdBdQXJvMQGqnU=;
+        s=default; t=1590107673;
+        bh=wWqEQTXoDY230SRdVgPhwmMxy16C3iksXHhgyjDUrZc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c5UJod2Oei0BAqRP2t5VjFD+DijGMawek83jI/GWxvHADIJKhZJuycva9dq5JvV/l
-         flY4pcsaadSUtBkEA9vIfsROoMiUERvN3SKG3PFsXLHxtk/dwwNlN/N509VRJITc8R
-         1scCVjOE4eFS7cNTt+fmIG58IJ2NvopmSuMp9yK0=
+        b=DtTTYKbzwDblceEzvaPuD0pUlGRpiWlY35WxqqI6E8Iut/1ERdpZqSuRLaCXTNLOk
+         ilB/DfRbwRIkUgdIl2loANfkvf3BQpiwGXk8/05cV3pPWTn0DK9Ggdd+wje/UFAjx0
+         84vMP158IwVT5Q+DhLPC4CzTPW5KgXZGPdvaLp6Y=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 02D0C3522FEB; Thu, 21 May 2020 17:25:03 -0700 (PDT)
-Date:   Thu, 21 May 2020 17:25:02 -0700
+        id 5EC283522FEB; Thu, 21 May 2020 17:34:33 -0700 (PDT)
+Date:   Thu, 21 May 2020 17:34:33 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
         daniel@iogearbox.net, andrii.nakryiko@gmail.com,
         kernel-team@fb.com, Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/7] bpf: implement BPF ring buffer and
- verifier support for it
-Message-ID: <20200522002502.GF2869@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH v2 bpf-next 2/7] tools/memory-model: add BPF ringbuf MPSC
+ litmus tests
+Message-ID: <20200522003433.GG2869@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20200517195727.279322-1-andriin@fb.com>
- <20200517195727.279322-2-andriin@fb.com>
+ <20200517195727.279322-3-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200517195727.279322-2-andriin@fb.com>
+In-Reply-To: <20200517195727.279322-3-andriin@fb.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 17, 2020 at 12:57:21PM -0700, Andrii Nakryiko wrote:
-> This commits adds a new MPSC ring buffer implementation into BPF ecosystem,
-> which allows multiple CPUs to submit data to a single shared ring buffer. On
-> the consumption side, only single consumer is assumed.
+On Sun, May 17, 2020 at 12:57:22PM -0700, Andrii Nakryiko wrote:
+> Add 4 litmus tests for BPF ringbuf implementation, divided into two different
+> use cases.
+> 
+> First, two unbounded case, one with 1 producer and another with
+> 2 producers, single consumer. All reservations are supposed to succeed.
+> 
+> Second, bounded case with only 1 record allowed in ring buffer at any given
+> time. Here failures to reserve space are expected. Again, 1- and 2- producer
+> cases, single consumer, are validated.
+> 
+> Just for the fun of it, I also wrote a 3-producer cases, it took *16 hours* to
+> validate, but came back successful as well. I'm not including it in this
+> patch, because it's not practical to run it. See output for all included
+> 4 cases and one 3-producer one with bounded use case.
+> 
+> Each litmust test implements producer/consumer protocol for BPF ring buffer
+> implementation found in kernel/bpf/ringbuf.c. Due to limitations, all records
+> are assumed equal-sized and producer/consumer counters are incremented by 1.
+> This doesn't change the correctness of the algorithm, though.
 
-[ . . . ]
+Very cool!!!
 
-Focusing just on the ring-buffer mechanism, with a question or two
-below.  Looks pretty close, actually!
+However, these should go into Documentation/litmus-tests/bpf-rb or similar.
+Please take a look at Documentation/litmus-tests/ in -rcu, -tip, and
+-next, including the README file.
 
-							Thanx, Paul
+The tools/memory-model/litmus-tests directory is for basic examples,
+not for the more complex real-world ones like these guys.  ;-)
 
+								Thanx, Paul
+
+> Verification results:
+> /* 1p1c bounded case */
+> $ herd7 -unroll 0 -conf linux-kernel.cfg litmus-tests/mpsc-rb+1p1c+bounded.litmus
+> Test mpsc-rb+1p1c+bounded Allowed
+> States 2
+> 0:rFail=0; 1:rFail=0; cx=0; dropped=0; len1=1; px=1;
+> 0:rFail=0; 1:rFail=0; cx=1; dropped=0; len1=1; px=1;
+> Ok
+> Witnesses
+> Positive: 3 Negative: 0
+> Condition exists (0:rFail=0 /\ 1:rFail=0 /\ dropped=0 /\ px=1 /\ len1=1 /\ (cx=0 \/ cx=1))
+> Observation mpsc-rb+1p1c+bounded Always 3 0
+> Time mpsc-rb+1p1c+bounded 0.03
+> Hash=5bdad0f41557a641370e7fa6b8eb2f43
+> 
+> /* 2p1c bounded case */
+> $ herd7 -unroll 0 -conf linux-kernel.cfg litmus-tests/mpsc-rb+2p1c+bounded.litmus
+> Test mpsc-rb+2p1c+bounded Allowed
+> States 4
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=0; dropped=1; len1=1; px=1;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=1; dropped=0; len1=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=1; dropped=1; len1=1; px=1;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=2; dropped=0; len1=1; px=2;
+> Ok
+> Witnesses
+> Positive: 22 Negative: 0
+> Condition exists (0:rFail=0 /\ 1:rFail=0 /\ 2:rFail=0 /\ len1=1 /\ (dropped=0 /\ px=2 /\ (cx=1 \/ cx=2) \/ dropped=1 /\ px=1 /\ (cx=0 \/ cx=1)))
+> Observation mpsc-rb+2p1c+bounded Always 22 0
+> Time mpsc-rb+2p1c+bounded 119.38
+> Hash=e2f8f442a02bf7d8c2988ba82cf002d2
+> 
+> /* 1p1c unbounded case */
+> $ herd7 -unroll 0 -conf linux-kernel.cfg litmus-tests/mpsc-rb+1p1c+unbound.litmus
+> Test mpsc-rb+1p1c+unbound Allowed
+> States 2
+> 0:rFail=0; 1:rFail=0; cx=0; len1=1; px=1;
+> 0:rFail=0; 1:rFail=0; cx=1; len1=1; px=1;
+> Ok
+> Witnesses
+> Positive: 3 Negative: 0
+> Condition exists (0:rFail=0 /\ 1:rFail=0 /\ px=1 /\ len1=1 /\ (cx=0 \/ cx=1))
+> Observation mpsc-rb+1p1c+unbound Always 3 0
+> Time mpsc-rb+1p1c+unbound 0.02
+> Hash=be9de6487d8e27c3d37802d122e4a87c
+> 
+> /* 2p1c unbounded case */
+> $ herd7 -unroll 0 -conf linux-kernel.cfg litmus-tests/mpsc-rb+2p1c+unbound.litmus
+> Test mpsc-rb+2p1c+unbound Allowed
+> States 3
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=0; len1=1; len2=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=1; len1=1; len2=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; cx=2; len1=1; len2=1; px=2;
+> Ok
+> Witnesses
+> Positive: 42 Negative: 0
+> Condition exists (0:rFail=0 /\ 1:rFail=0 /\ 2:rFail=0 /\ px=2 /\ len1=1 /\ len2=1 /\ (cx=0 \/ cx=1 \/ cx=2))
+> Observation mpsc-rb+2p1c+unbound Always 42 0
+> Time mpsc-rb+2p1c+unbound 39.19
+> Hash=f0352aba9bdc03dd0b1def7d0c4956fa
+> 
+> /* 3p1c bounded case */
+> $ herd7 -unroll 0 -conf linux-kernel.cfg mpsc-rb+3p1c+bounded.litmus
+> Test mpsc+ringbuf-spinlock Allowed
+> States 5
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; 3:rFail=0; cx=0; len1=1; len2=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; 3:rFail=0; cx=1; len1=1; len2=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; 3:rFail=0; cx=1; len1=1; len2=1; px=3;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; 3:rFail=0; cx=2; len1=1; len2=1; px=2;
+> 0:rFail=0; 1:rFail=0; 2:rFail=0; 3:rFail=0; cx=2; len1=1; len2=1; px=3;
+> Ok
+> Witnesses
+> Positive: 558 Negative: 0
+> Condition exists (0:rFail=0 /\ 1:rFail=0 /\ 2:rFail=0 /\ 3:rFail=0 /\ len1=1 /\ len2=1 /\ (px=2 /\ (cx=0 \/ cx=1 \/ cx=2) \/ px=3 /\ (cx=1 \/ cx=2)))
+> Observation mpsc+ringbuf-spinlock Always 558 0
+> Time mpsc+ringbuf-spinlock 57487.24
+> Hash=133977dba930d167b4e1b4a6923d5687
+> 
+> Cc: Paul E. McKenney <paulmck@kernel.org>
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  include/linux/bpf.h            |  13 +
->  include/linux/bpf_types.h      |   1 +
->  include/linux/bpf_verifier.h   |   4 +
->  include/uapi/linux/bpf.h       |  84 +++++-
->  kernel/bpf/Makefile            |   2 +-
->  kernel/bpf/helpers.c           |  10 +
->  kernel/bpf/ringbuf.c           | 487 +++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c           |  12 +
->  kernel/bpf/verifier.c          | 157 ++++++++---
->  kernel/trace/bpf_trace.c       |  10 +
->  tools/include/uapi/linux/bpf.h |  90 +++++-
->  11 files changed, 832 insertions(+), 38 deletions(-)
->  create mode 100644 kernel/bpf/ringbuf.c
-
-[ . . . ]
-
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+>  .../litmus-tests/mpsc-rb+1p1c+bounded.litmus  |  92 +++++++++++
+>  .../litmus-tests/mpsc-rb+1p1c+unbound.litmus  |  83 ++++++++++
+>  .../litmus-tests/mpsc-rb+2p1c+bounded.litmus  | 152 ++++++++++++++++++
+>  .../litmus-tests/mpsc-rb+2p1c+unbound.litmus  | 137 ++++++++++++++++
+>  4 files changed, 464 insertions(+)
+>  create mode 100644 tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
+>  create mode 100644 tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
+>  create mode 100644 tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
+>  create mode 100644 tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
+> 
+> diff --git a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
 > new file mode 100644
-> index 000000000000..3c19f0f07726
+> index 000000000000..cafd17afe11e
 > --- /dev/null
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -0,0 +1,487 @@
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
-> +#include <linux/err.h>
-> +#include <linux/irq_work.h>
-> +#include <linux/slab.h>
-> +#include <linux/filter.h>
-> +#include <linux/mm.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/wait.h>
-> +#include <linux/poll.h>
-> +#include <uapi/linux/btf.h>
+> +++ b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
+> @@ -0,0 +1,92 @@
+> +C mpsc-rb+1p1c+bounded
 > +
-> +#define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+> +(*
+> + * Result: Always
+> + *
+> + * This litmus test validates BPF ring buffer implementation under the
+> + * following assumptions:
+> + * - 1 producer;
+> + * - 1 consumer;
+> + * - ring buffer has capacity for only 1 record.
+> + *
+> + * Expectations:
+> + * - 1 record pushed into ring buffer;
+> + * - 0 or 1 element is consumed.
+> + * - no failures.
+> + *)
 > +
-> +/* non-mmap()'able part of bpf_ringbuf (everything up to consumer page) */
-> +#define RINGBUF_PGOFF \
-> +	(offsetof(struct bpf_ringbuf, consumer_pos) >> PAGE_SHIFT)
-> +/* consumer page and producer page */
-> +#define RINGBUF_POS_PAGES 2
-> +
-> +#define RINGBUF_MAX_RECORD_SZ (UINT_MAX/4)
-> +
-> +/* Maximum size of ring buffer area is limited by 32-bit page offset within
-> + * record header, counted in pages. Reserve 8 bits for extensibility, and take
-> + * into account few extra pages for consumer/producer pages and
-> + * non-mmap()'able parts. This gives 64GB limit, which seems plenty for single
-> + * ring buffer.
-> + */
-> +#define RINGBUF_MAX_DATA_SZ \
-> +	(((1ULL << 24) - RINGBUF_POS_PAGES - RINGBUF_PGOFF) * PAGE_SIZE)
-> +
-> +struct bpf_ringbuf {
-> +	wait_queue_head_t waitq;
-> +	struct irq_work work;
-> +	u64 mask;
-> +	spinlock_t spinlock ____cacheline_aligned_in_smp;
-> +	/* Consumer and producer counters are put into separate pages to allow
-> +	 * mapping consumer page as r/w, but restrict producer page to r/o.
-> +	 * This protects producer position from being modified by user-space
-> +	 * application and ruining in-kernel position tracking.
-> +	 */
-> +	unsigned long consumer_pos __aligned(PAGE_SIZE);
-> +	unsigned long producer_pos __aligned(PAGE_SIZE);
-> +	char data[] __aligned(PAGE_SIZE);
-> +};
-> +
-> +struct bpf_ringbuf_map {
-> +	struct bpf_map map;
-> +	struct bpf_map_memory memory;
-> +	struct bpf_ringbuf *rb;
-> +};
-> +
-> +/* 8-byte ring buffer record header structure */
-> +struct bpf_ringbuf_hdr {
-> +	u32 len;
-> +	u32 pg_off;
-> +};
-> +
-> +static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
 > +{
-> +	const gfp_t flags = GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN |
-> +			    __GFP_ZERO;
-> +	int nr_meta_pages = RINGBUF_PGOFF + RINGBUF_POS_PAGES;
-> +	int nr_data_pages = data_sz >> PAGE_SHIFT;
-> +	int nr_pages = nr_meta_pages + nr_data_pages;
-> +	struct page **pages, *page;
-> +	size_t array_size;
-> +	void *addr;
-> +	int i;
+> +	max_len = 1;
+> +	len1 = 0;
+> +	px = 0;
+> +	cx = 0;
+> +	dropped = 0;
+> +}
 > +
-> +	/* Each data page is mapped twice to allow "virtual"
-> +	 * continuous read of samples wrapping around the end of ring
-> +	 * buffer area:
-> +	 * ------------------------------------------------------
-> +	 * | meta pages |  real data pages  |  same data pages  |
-> +	 * ------------------------------------------------------
-> +	 * |            | 1 2 3 4 5 6 7 8 9 | 1 2 3 4 5 6 7 8 9 |
-> +	 * ------------------------------------------------------
-> +	 * |            | TA             DA | TA             DA |
-> +	 * ------------------------------------------------------
-> +	 *                               ^^^^^^^
-> +	 *                                  |
-> +	 * Here, no need to worry about special handling of wrapped-around
-> +	 * data due to double-mapped data pages. This works both in kernel and
-> +	 * when mmap()'ed in user-space, simplifying both kernel and
-> +	 * user-space implementations significantly.
-> +	 */
-> +	array_size = (nr_meta_pages + 2 * nr_data_pages) * sizeof(*pages);
-> +	if (array_size > PAGE_SIZE)
-> +		pages = vmalloc_node(array_size, numa_node);
-> +	else
-> +		pages = kmalloc_node(array_size, flags, numa_node);
-> +	if (!pages)
-> +		return NULL;
+> +P0(int *len1, int *cx, int *px)
+> +{
+> +	int *rLenPtr;
+> +	int rLen;
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
 > +
-> +	for (i = 0; i < nr_pages; i++) {
-> +		page = alloc_pages_node(numa_node, flags, 0);
-> +		if (!page) {
-> +			nr_pages = i;
-> +			goto err_free_pages;
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
 > +		}
-> +		pages[i] = page;
-> +		if (i >= nr_meta_pages)
-> +			pages[nr_data_pages + i] = page;
 > +	}
-> +
-> +	addr = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
-> +		    VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
-> +	if (addr)
-> +		return addr;
-> +
-> +err_free_pages:
-> +	for (i = 0; i < nr_pages; i++)
-> +		free_page((unsigned long)pages[i]);
-> +	kvfree(pages);
-> +	return NULL;
 > +}
 > +
-> +static void bpf_ringbuf_notify(struct irq_work *work)
+> +P1(int *len1, spinlock_t *rb_lock, int *px, int *cx, int *dropped, int *max_len)
 > +{
-> +	struct bpf_ringbuf *rb = container_of(work, struct bpf_ringbuf, work);
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
 > +
-> +	wake_up_all(&rb->waitq);
-> +}
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
 > +
-> +static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
-> +{
-> +	struct bpf_ringbuf *rb;
+> +	spin_lock(rb_lock);
 > +
-> +	if (!data_sz || !PAGE_ALIGNED(data_sz))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (data_sz > RINGBUF_MAX_DATA_SZ)
-> +		return ERR_PTR(-E2BIG);
-> +
-> +	rb = bpf_ringbuf_area_alloc(data_sz, numa_node);
-> +	if (!rb)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	spin_lock_init(&rb->spinlock);
-> +	init_waitqueue_head(&rb->waitq);
-> +	init_irq_work(&rb->work, bpf_ringbuf_notify);
-> +
-> +	rb->mask = data_sz - 1;
-> +	rb->consumer_pos = 0;
-> +	rb->producer_pos = 0;
-> +
-> +	return rb;
-> +}
-> +
-> +static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
-> +{
-> +	struct bpf_ringbuf_map *rb_map;
-> +	u64 cost;
-> +	int err;
-> +
-> +	if (attr->map_flags & ~RINGBUF_CREATE_FLAG_MASK)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (attr->key_size || attr->value_size ||
-> +	    attr->max_entries == 0 || !PAGE_ALIGNED(attr->max_entries))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	rb_map = kzalloc(sizeof(*rb_map), GFP_USER);
-> +	if (!rb_map)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	bpf_map_init_from_attr(&rb_map->map, attr);
-> +
-> +	cost = sizeof(struct bpf_ringbuf_map) +
-> +	       sizeof(struct bpf_ringbuf) +
-> +	       attr->max_entries;
-> +	err = bpf_map_charge_init(&rb_map->map.memory, cost);
-> +	if (err)
-> +		goto err_free_map;
-> +
-> +	rb_map->rb = bpf_ringbuf_alloc(attr->max_entries, rb_map->map.numa_node);
-> +	if (IS_ERR(rb_map->rb)) {
-> +		err = PTR_ERR(rb_map->rb);
-> +		goto err_uncharge;
-> +	}
-> +
-> +	return &rb_map->map;
-> +
-> +err_uncharge:
-> +	bpf_map_charge_finish(&rb_map->map.memory);
-> +err_free_map:
-> +	kfree(rb_map);
-> +	return ERR_PTR(err);
-> +}
-> +
-> +static void bpf_ringbuf_free(struct bpf_ringbuf *ringbuf)
-> +{
-> +	kvfree(ringbuf);
-> +}
-> +
-> +static void ringbuf_map_free(struct bpf_map *map)
-> +{
-> +	struct bpf_ringbuf_map *rb_map;
-> +
-> +	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
-> +	 * so the programs (can be more than one that used this map) were
-> +	 * disconnected from events. Wait for outstanding critical sections in
-> +	 * these programs to complete
-> +	 */
-> +	synchronize_rcu();
-> +
-> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
-> +	bpf_ringbuf_free(rb_map->rb);
-> +	kfree(rb_map);
-> +}
-> +
-> +static void *ringbuf_map_lookup_elem(struct bpf_map *map, void *key)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
-> +static int ringbuf_map_update_elem(struct bpf_map *map, void *key, void *value,
-> +				   u64 flags)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static int ringbuf_map_delete_elem(struct bpf_map *map, void *key)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static int ringbuf_map_get_next_key(struct bpf_map *map, void *key,
-> +				    void *next_key)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static size_t bpf_ringbuf_mmap_page_cnt(const struct bpf_ringbuf *rb)
-> +{
-> +	size_t data_pages = (rb->mask + 1) >> PAGE_SHIFT;
-> +
-> +	/* consumer page + producer page + 2 x data pages */
-> +	return RINGBUF_POS_PAGES + 2 * data_pages;
-> +}
-> +
-> +static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
-> +{
-> +	struct bpf_ringbuf_map *rb_map;
-> +	size_t mmap_sz;
-> +
-> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
-> +	mmap_sz = bpf_ringbuf_mmap_page_cnt(rb_map->rb) << PAGE_SHIFT;
-> +
-> +	if (vma->vm_pgoff * PAGE_SIZE + (vma->vm_end - vma->vm_start) > mmap_sz)
-> +		return -EINVAL;
-> +
-> +	return remap_vmalloc_range(vma, rb_map->rb,
-> +				   vma->vm_pgoff + RINGBUF_PGOFF);
-> +}
-> +
-> +static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
-> +{
-> +	unsigned long cons_pos, prod_pos;
-> +
-> +	cons_pos = smp_load_acquire(&rb->consumer_pos);
-
-What happens if there is a delay here?  (The delay might be due to
-interrupts, preemption in PREEMPT=y kernels, vCPU preemption, ...)
-
-If this is called from a producer holding the lock, then the only
-->consumer_pos can change, and that can only decrease the amount of
-data available.  Besides which, ->consumer_pos is sampled first.
-But why would a producer care how much data was queued, as opposed
-to how much free space was available?
-
-From the consumer, only ->producer_pos can change, and that can only
-increase the amount of data available.  (Assuming that producers cannot
-erase old data on wrap-around before the consumer consumes it.)
-
-So probably nothing bad happens.
-
-On the bit about the producer holding the lock, some lockdep assertions
-might make things easier on your future self.
-
-> +	prod_pos = smp_load_acquire(&rb->producer_pos);
-> +	return prod_pos - cons_pos;
-> +}
-> +
-> +static __poll_t ringbuf_map_poll(struct bpf_map *map, struct file *filp,
-> +				 struct poll_table_struct *pts)
-> +{
-> +	struct bpf_ringbuf_map *rb_map;
-> +
-> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
-> +	poll_wait(filp, &rb_map->rb->waitq, pts);
-> +
-> +	if (ringbuf_avail_data_sz(rb_map->rb))
-> +		return EPOLLIN | EPOLLRDNORM;
-> +	return 0;
-> +}
-> +
-> +const struct bpf_map_ops ringbuf_map_ops = {
-> +	.map_alloc = ringbuf_map_alloc,
-> +	.map_free = ringbuf_map_free,
-> +	.map_mmap = ringbuf_map_mmap,
-> +	.map_poll = ringbuf_map_poll,
-> +	.map_lookup_elem = ringbuf_map_lookup_elem,
-> +	.map_update_elem = ringbuf_map_update_elem,
-> +	.map_delete_elem = ringbuf_map_delete_elem,
-> +	.map_get_next_key = ringbuf_map_get_next_key,
-> +};
-> +
-> +/* Given pointer to ring buffer record metadata and struct bpf_ringbuf itself,
-> + * calculate offset from record metadata to ring buffer in pages, rounded
-> + * down. This page offset is stored as part of record metadata and allows to
-> + * restore struct bpf_ringbuf * from record pointer. This page offset is
-> + * stored at offset 4 of record metadata header.
-> + */
-> +static size_t bpf_ringbuf_rec_pg_off(struct bpf_ringbuf *rb,
-> +				     struct bpf_ringbuf_hdr *hdr)
-> +{
-> +	return ((void *)hdr - (void *)rb) >> PAGE_SHIFT;
-> +}
-> +
-> +/* Given pointer to ring buffer record header, restore pointer to struct
-> + * bpf_ringbuf itself by using page offset stored at offset 4
-> + */
-> +static struct bpf_ringbuf *
-> +bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
-> +{
-> +	unsigned long addr = (unsigned long)(void *)hdr;
-> +	unsigned long off = (unsigned long)hdr->pg_off << PAGE_SHIFT;
-> +
-> +	return (void*)((addr & PAGE_MASK) - off);
-> +}
-> +
-> +static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
-> +{
-> +	unsigned long cons_pos, prod_pos, new_prod_pos, flags;
-> +	u32 len, pg_off;
-> +	struct bpf_ringbuf_hdr *hdr;
-> +
-> +	if (unlikely(size > RINGBUF_MAX_RECORD_SZ))
-> +		return NULL;
-> +
-> +	len = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
-> +	cons_pos = smp_load_acquire(&rb->consumer_pos);
-
-There might be a longish delay acquiring the spinlock, which could mean
-that cons_pos was out of date, which might result in an unnecessary
-producer-side failure.  Why not pick up cons_pos after the lock is
-acquired?  After all, it is in the same cache line as the lock, so this
-should have negligible effect on lock-hold time.
-
-(Unless you had either really small cachelines or really big locks.)
-
-> +	if (in_nmi()) {
-> +		if (!spin_trylock_irqsave(&rb->spinlock, flags))
-> +			return NULL;
+> +	rPx = *px;
+> +	if (rPx - rCx >= *max_len) {
+> +		atomic_inc(dropped);
+> +		spin_unlock(rb_lock);
 > +	} else {
-> +		spin_lock_irqsave(&rb->spinlock, flags);
+> +		if (rPx == 0)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		*rLenPtr = -1;
+> +		smp_wmb();
+> +		smp_store_release(px, rPx + 1);
+> +
+> +		spin_unlock(rb_lock);
+> +
+> +		smp_store_release(rLenPtr, 1);
 > +	}
+> +}
 > +
-> +	prod_pos = rb->producer_pos;
-> +	new_prod_pos = prod_pos + len;
+> +exists (
+> +	0:rFail=0 /\ 1:rFail=0
+> +	/\
+> +	(
+> +		(dropped=0 /\ px=1 /\ len1=1 /\ (cx=0 \/ cx=1))
+> +	)
+> +)
+> diff --git a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
+> new file mode 100644
+> index 000000000000..84f660598015
+> --- /dev/null
+> +++ b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
+> @@ -0,0 +1,83 @@
+> +C mpsc-rb+1p1c+unbound
 > +
-> +	/* check for out of ringbuf space by ensuring producer position
-> +	 * doesn't advance more than (ringbuf_size - 1) ahead
-> +	 */
-> +	if (new_prod_pos - cons_pos > rb->mask) {
-> +		spin_unlock_irqrestore(&rb->spinlock, flags);
-> +		return NULL;
+> +(*
+> + * Result: Always
+> + *
+> + * This litmus test validates BPF ring buffer implementation under the
+> + * following assumptions:
+> + * - 1 producer;
+> + * - 1 consumer;
+> + * - ring buffer capacity is unbounded.
+> + *
+> + * Expectations:
+> + * - 1 record pushed into ring buffer;
+> + * - 0 or 1 element is consumed.
+> + * - no failures.
+> + *)
+> +
+> +{
+> +	len1 = 0;
+> +	px = 0;
+> +	cx = 0;
+> +}
+> +
+> +P0(int *len1, int *cx, int *px)
+> +{
+> +	int *rLenPtr;
+> +	int rLen;
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
+> +		}
 > +	}
+> +}
 > +
-> +	hdr = (void *)rb->data + (prod_pos & rb->mask);
-> +	pg_off = bpf_ringbuf_rec_pg_off(rb, hdr);
-> +	hdr->len = size | BPF_RINGBUF_BUSY_BIT;
-> +	hdr->pg_off = pg_off;
+> +P1(int *len1, spinlock_t *rb_lock, int *px, int *cx)
+> +{
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
 > +
-> +	/* ensure header is written before updating producer positions */
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	spin_lock(rb_lock);
+> +
+> +	rPx = *px;
+> +	if (rPx == 0)
+> +		rLenPtr = len1;
+> +	else
+> +		rFail = 1;
+> +
+> +	*rLenPtr = -1;
 > +	smp_wmb();
-
-The smp_store_release() makes this unnecessary with respect to
-->producer_pos.  So what later write is it also ordering against?
-If none, this smp_wmb() can go away.
-
-And if the later write is the xchg() in bpf_ringbuf_commit(), the
-xchg() implies full barriers before and after, so that the smp_wmb()
-could still go away.
-
-So other than the smp_store_release() and the xchg(), what later write
-is the smp_wmb() ordering against?
-
-> +	/* pairs with consumer's smp_load_acquire() */
-> +	smp_store_release(&rb->producer_pos, new_prod_pos);
+> +	smp_store_release(px, rPx + 1);
 > +
-> +	spin_unlock_irqrestore(&rb->spinlock, flags);
+> +	spin_unlock(rb_lock);
 > +
-> +	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
+> +	smp_store_release(rLenPtr, 1);
 > +}
 > +
-> +BPF_CALL_3(bpf_ringbuf_reserve, struct bpf_map *, map, u64, size, u64, flags)
+> +exists (
+> +	0:rFail=0 /\ 1:rFail=0
+> +	/\ px=1 /\ len1=1
+> +	/\ (cx=0 \/ cx=1)
+> +)
+> diff --git a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
+> new file mode 100644
+> index 000000000000..900104c4933b
+> --- /dev/null
+> +++ b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
+> @@ -0,0 +1,152 @@
+> +C mpsc-rb+2p1c+bounded
+> +
+> +(*
+> + * Result: Always
+> + *
+> + * This litmus test validates BPF ring buffer implementation under the
+> + * following assumptions:
+> + * - 2 identical producers;
+> + * - 1 consumer;
+> + * - ring buffer has capacity for only 1 record.
+> + *
+> + * Expectations:
+> + * - either 1 or 2 records are pushed into ring buffer;
+> + * - 0, 1, or 2 elements are consumed by consumer;
+> + * - appropriate number of dropped records is recorded to satisfy ring buffer
+> + *   size bounds;
+> + * - no failures.
+> + *)
+> +
 > +{
-> +	struct bpf_ringbuf_map *rb_map;
-> +
-> +	if (unlikely(flags))
-> +		return 0;
-> +
-> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
-> +	return (unsigned long)__bpf_ringbuf_reserve(rb_map->rb, size);
+> +	max_len = 1;
+> +	len1 = 0;
+> +	px = 0;
+> +	cx = 0;
+> +	dropped = 0;
 > +}
 > +
-> +const struct bpf_func_proto bpf_ringbuf_reserve_proto = {
-> +	.func		= bpf_ringbuf_reserve,
-> +	.ret_type	= RET_PTR_TO_ALLOC_MEM_OR_NULL,
-> +	.arg1_type	= ARG_CONST_MAP_PTR,
-> +	.arg2_type	= ARG_CONST_ALLOC_SIZE_OR_ZERO,
-> +	.arg3_type	= ARG_ANYTHING,
-> +};
-> +
-> +static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
+> +P0(int *len1, int *cx, int *px)
 > +{
-> +	unsigned long rec_pos, cons_pos;
-> +	struct bpf_ringbuf_hdr *hdr;
-> +	struct bpf_ringbuf *rb;
-> +	u32 new_len;
+> +	int *rLenPtr;
+> +	int rLen;
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
 > +
-> +	hdr = sample - BPF_RINGBUF_HDR_SZ;
-> +	rb = bpf_ringbuf_restore_from_rec(hdr);
-> +	new_len = hdr->len ^ BPF_RINGBUF_BUSY_BIT;
-> +	if (discard)
-> +		new_len |= BPF_RINGBUF_DISCARD_BIT;
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
 > +
-> +	/* update record header with correct final size prefix */
-> +	xchg(&hdr->len, new_len);
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else if (rCx == 1)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
 > +
-> +	/* if consumer caught up and is waiting for our record, notify about
-> +	 * new data availability
-> +	 */
-> +	rec_pos = (void *)hdr - (void *)rb->data;
-> +	cons_pos = smp_load_acquire(&rb->consumer_pos) & rb->mask;
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
+> +		}
+> +	}
 > +
-> +	if (flags & BPF_RB_FORCE_WAKEUP)
-> +		irq_work_queue(&rb->work);
-> +	else if (cons_pos == rec_pos && !(flags & BPF_RB_NO_WAKEUP))
-> +		irq_work_queue(&rb->work);
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else if (rCx == 1)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
+> +		}
+> +	}
 > +}
+> +
+> +P1(int *len1, spinlock_t *rb_lock, int *px, int *cx, int *dropped, int *max_len)
+> +{
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	spin_lock(rb_lock);
+> +
+> +	rPx = *px;
+> +	if (rPx - rCx >= *max_len) {
+> +		atomic_inc(dropped);
+> +		spin_unlock(rb_lock);
+> +	} else {
+> +		if (rPx == 0)
+> +			rLenPtr = len1;
+> +		else if (rPx == 1)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		*rLenPtr = -1;
+> +		smp_wmb();
+> +		smp_store_release(px, rPx + 1);
+> +
+> +		spin_unlock(rb_lock);
+> +
+> +		smp_store_release(rLenPtr, 1);
+> +	}
+> +}
+> +
+> +P2(int *len1, spinlock_t *rb_lock, int *px, int *cx, int *dropped, int *max_len)
+> +{
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	spin_lock(rb_lock);
+> +
+> +	rPx = *px;
+> +	if (rPx - rCx >= *max_len) {
+> +		atomic_inc(dropped);
+> +		spin_unlock(rb_lock);
+> +	} else {
+> +		if (rPx == 0)
+> +			rLenPtr = len1;
+> +		else if (rPx == 1)
+> +			rLenPtr = len1;
+> +		else
+> +			rFail = 1;
+> +
+> +		*rLenPtr = -1;
+> +		smp_wmb();
+> +		smp_store_release(px, rPx + 1);
+> +
+> +		spin_unlock(rb_lock);
+> +
+> +		smp_store_release(rLenPtr, 1);
+> +	}
+> +}
+> +
+> +exists (
+> +	0:rFail=0 /\ 1:rFail=0 /\ 2:rFail=0 /\ len1=1
+> +	/\
+> +	(
+> +		(dropped = 0 /\ px=2 /\ (cx=1 \/ cx=2))
+> +		\/
+> +		(dropped = 1 /\ px=1 /\ (cx=0 \/ cx=1))
+> +	)
+> +)
+> diff --git a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
+> new file mode 100644
+> index 000000000000..83372e9eb079
+> --- /dev/null
+> +++ b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
+> @@ -0,0 +1,137 @@
+> +C mpsc-rb+2p1c+unbound
+> +
+> +(*
+> + * Result: Always
+> + *
+> + * This litmus test validates BPF ring buffer implementation under the
+> + * following assumptions:
+> + * - 2 identical producers;
+> + * - 1 consumer;
+> + * - ring buffer capacity is unbounded.
+> + *
+> + * Expectations:
+> + * - 2 records pushed into ring buffer;
+> + * - 0, 1, or 2 elements are consumed.
+> + * - no failures.
+> + *)
+> +
+> +{
+> +	len1 = 0;
+> +	len2 = 0;
+> +	px = 0;
+> +	cx = 0;
+> +}
+> +
+> +P0(int *len1, int *len2, int *cx, int *px)
+> +{
+> +	int *rLenPtr;
+> +	int rLen;
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else if (rCx == 1)
+> +			rLenPtr = len2;
+> +		else
+> +			rFail = 1;
+> +
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
+> +		}
+> +	}
+> +
+> +	rPx = smp_load_acquire(px);
+> +	if (rCx < rPx) {
+> +		if (rCx == 0)
+> +			rLenPtr = len1;
+> +		else if (rCx == 1)
+> +			rLenPtr = len2;
+> +		else
+> +			rFail = 1;
+> +
+> +		rLen = smp_load_acquire(rLenPtr);
+> +		if (rLen == 0) {
+> +			rFail = 1;
+> +		} else if (rLen == 1) {
+> +			rCx = rCx + 1;
+> +			smp_store_release(cx, rCx);
+> +		}
+> +	}
+> +}
+> +
+> +P1(int *len1, int *len2, spinlock_t *rb_lock, int *px, int *cx)
+> +{
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	spin_lock(rb_lock);
+> +
+> +	rPx = *px;
+> +	if (rPx == 0)
+> +		rLenPtr = len1;
+> +	else if (rPx == 1)
+> +		rLenPtr = len2;
+> +	else
+> +		rFail = 1;
+> +
+> +	*rLenPtr = -1;
+> +	smp_wmb();
+> +	smp_store_release(px, rPx + 1);
+> +
+> +	spin_unlock(rb_lock);
+> +
+> +	smp_store_release(rLenPtr, 1);
+> +}
+> +
+> +P2(int *len1, int *len2, spinlock_t *rb_lock, int *px, int *cx)
+> +{
+> +	int rPx;
+> +	int rCx;
+> +	int rFail;
+> +	int *rLenPtr;
+> +
+> +	rFail = 0;
+> +	rCx = smp_load_acquire(cx);
+> +
+> +	spin_lock(rb_lock);
+> +
+> +	rPx = *px;
+> +	if (rPx == 0)
+> +		rLenPtr = len1;
+> +	else if (rPx == 1)
+> +		rLenPtr = len2;
+> +	else
+> +		rFail = 1;
+> +
+> +	*rLenPtr = -1;
+> +	smp_wmb();
+> +	smp_store_release(px, rPx + 1);
+> +
+> +	spin_unlock(rb_lock);
+> +
+> +	smp_store_release(rLenPtr, 1);
+> +}
+> +
+> +exists (
+> +	0:rFail=0 /\ 1:rFail=0 /\ 2:rFail=0
+> +	/\
+> +	px=2 /\ len1=1 /\ len2=1
+> +	/\
+> +	(cx=0 \/ cx=1 \/ cx=2)
+> +)
+> -- 
+> 2.24.1
+> 
