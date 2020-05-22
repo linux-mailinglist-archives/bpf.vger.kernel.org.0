@@ -2,93 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0D1DDAD2
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 01:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE871DDB98
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 02:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbgEUXQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 19:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730716AbgEUXQX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 19:16:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB7FC061A0E;
-        Thu, 21 May 2020 16:16:23 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u35so4072181pgk.6;
-        Thu, 21 May 2020 16:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=acfVlb2TMgscry80C0vTxbeOFW1Wr/1R1Z7DITt9fyI=;
-        b=H0WI9PeWUPnz5xFZ3TBk4SOSYc7YkzDZTRlQKnZVD8rygYaqoTg7tuJYCOkNcMI/Rn
-         aKbIQQnm+RzKFX1EUwtskyPGmagQ9oIgX14x26hmYrSKziF2z75WFft1pYIHDPgUEEtk
-         et2CA4vb9w7j7A8uvShQs3RoxfoQEyFxtNZUrYFd1WM1Ittv6rbDur6hgwBiCQIJ9LC6
-         UgHnkAJoGyPGVcjCLoVEFaF82Re+jNtEO/lDqNRw3e+JB94m2wkfPMmOnby++FivzVTK
-         mc8XTdT9IT6EkyKUb0dmhNyxhEDfkdzLFSFUIaMny9BhKA5Nb9UjtSUpNQNUPmrreOkE
-         6HZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=acfVlb2TMgscry80C0vTxbeOFW1Wr/1R1Z7DITt9fyI=;
-        b=EibwXu0I9YujdjrrBf7ojOSePvpAHdA+SZzNgP8VT7kB6SOOLmGdo5tVWVfXK9BRTK
-         1UDKIjRUTHmuEkkQvE2KKZZPVyD4byFQ8x9RuSJ4FqNoB6MmpLSoaLiOgO68QTW+ikGF
-         XL2I3XegJXjvqOVQUeAXssYtvNtotBOZW6lb6rj9UPV70jYpiNklqxtBbX8GdTRXMwHF
-         W8ogsSBsvE+R1HNUfhfp7oq8ReyShytwi9t1GN8w/keaPFI2Fo/G2Ay0ulHQS3rufH/k
-         jM0Lyzh8en+x1SMaCCLv0ItqXSiwtWgkBdd0e2ot8wJ2UYyPIKI7BiUfXyixLS9VXURl
-         p0WQ==
-X-Gm-Message-State: AOAM531HJuqCzRp2/jC361MYFP+EtvwcOfwDAaQaOpHBsX1qXXh12GCk
-        ZpSQVm5rPXtcQPmDsJo0I/c=
-X-Google-Smtp-Source: ABdhPJyUO688r4+mckiCu+4PrMsc+P6j+ZJXLtSXsUX/2FZ74kwJrRbbi7srOWRy7MaZYN3X0tNvJw==
-X-Received: by 2002:a62:25c6:: with SMTP id l189mr1126140pfl.28.1590102982518;
-        Thu, 21 May 2020 16:16:22 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e680])
-        by smtp.gmail.com with ESMTPSA id h4sm5159590pfo.3.2020.05.21.16.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 16:16:21 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:16:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1730445AbgEVAE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 20:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729771AbgEVAE6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 May 2020 20:04:58 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 234A2207D8;
+        Fri, 22 May 2020 00:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590105898;
+        bh=nOzaaU4D0Dp728Lmp1J3pE4tiMfeddkJwOIqDp8fw7U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KYkzfNVImZyFXO92ouqtFx4Wn+lahd/EenyTm9IWrUgKxLXTM7Mw4AaNfwE/cITko
+         b+YC+mO7bXcilZnM+LaBWxom42ehoARofe5HFRsG96aBSpHIaegnxQtnKfkOS3J+AO
+         Om4qy3Ilig1AZ97xiA9G4WIpQ+CrYDAPjondB7YM=
+Date:   Fri, 22 May 2020 09:04:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 0/3] bpf: Allow inner map with different
- max_entries
-Message-ID: <20200521231618.x3s45pttduqijbjv@ast-mbp.dhcp.thefacebook.com>
-References: <20200521191752.3448223-1-kafai@fb.com>
- <CAEf4BzYQmUCbQ-PB2UR5n=WEiCHU3T3zQcQCnjvqCew6rmjGLg@mail.gmail.com>
- <20200521225939.7nmw7l5dk3wf557r@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzZyhT6D6F2A+cN6TKvLFoH5GU5QVEVW7ZkG+KQRgJC-1w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZyhT6D6F2A+cN6TKvLFoH5GU5QVEVW7ZkG+KQRgJC-1w@mail.gmail.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/23] tracing/kprobes: handle mixed kernel/userspace
+ probes better
+Message-Id: <20200522090450.a6ef7a53878c61d10340949a@kernel.org>
+In-Reply-To: <20200521152301.2587579-15-hch@lst.de>
+References: <20200521152301.2587579-1-hch@lst.de>
+        <20200521152301.2587579-15-hch@lst.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:10:36PM -0700, Andrii Nakryiko wrote:
-> > > 4. Then for size check change, again, it's really much simpler and
-> > > cleaner just to have a special case in check in bpf_map_meta_equal for
-> > > cases where map size matters.
-> > It may be simpler but not necessary less fragile for future map type.
-> >
-> > I am OK for removing patch 1 and just check for a specific
-> > type in patch 2 but I think it is fragile for future map
-> > type IMO.
-> 
-> Well, if we think that the good default needs to be to check size,
-> then similar to above, explicitly list stuff that *does not* follow
-> the default, i.e., maps that don't want max_elements verification. My
-> point still stands.
+On Thu, 21 May 2020 17:22:52 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-I think consoldating map properties in bpf_types.h is much cleaner
-and less error prone.
-I'd only like to tweak the macro in patch 1 to avoid explicit ", 0)".
-Can BPF_MAP_TYPE() macro stay as-is and additional macro introduced
-for maps with properties ? BPF_MAP_TYPE_FL() ?
-Or do some macro magic that the same macro can be used with 2 and 3 args?
+> Instead of using the dangerous probe_kernel_read and strncpy_from_unsafe
+> helpers, rework probes to try a user probe based on the address if the
+> architecture has a common address space for kernel and userspace.
+> 
+
+This looks good to me.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  kernel/trace/trace_kprobe.c | 72 ++++++++++++++++++++++---------------
+>  1 file changed, 43 insertions(+), 29 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 4325f9e7fadaa..4aeaef53ba970 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1200,6 +1200,15 @@ static const struct file_operations kprobe_profile_ops = {
+>  
+>  /* Kprobe specific fetch functions */
+>  
+> +/* Return the length of string -- including null terminal byte */
+> +static nokprobe_inline int
+> +fetch_store_strlen_user(unsigned long addr)
+> +{
+> +	const void __user *uaddr =  (__force const void __user *)addr;
+> +
+> +	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+> +}
+> +
+>  /* Return the length of string -- including null terminal byte */
+>  static nokprobe_inline int
+>  fetch_store_strlen(unsigned long addr)
+> @@ -1207,30 +1216,27 @@ fetch_store_strlen(unsigned long addr)
+>  	int ret, len = 0;
+>  	u8 c;
+>  
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if (addr < TASK_SIZE)
+> +		return fetch_store_strlen_user(addr);
+> +#endif
+> +
+>  	do {
+> -		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
+> +		ret = probe_kernel_read_strict(&c, (u8 *)addr + len, 1);
+>  		len++;
+>  	} while (c && ret == 0 && len < MAX_STRING_SIZE);
+>  
+>  	return (ret < 0) ? ret : len;
+>  }
+>  
+> -/* Return the length of string -- including null terminal byte */
+> -static nokprobe_inline int
+> -fetch_store_strlen_user(unsigned long addr)
+> -{
+> -	const void __user *uaddr =  (__force const void __user *)addr;
+> -
+> -	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
+> -}
+> -
+>  /*
+> - * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
+> - * length and relative data location.
+> + * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
+> + * with max length and relative data location.
+>   */
+>  static nokprobe_inline int
+> -fetch_store_string(unsigned long addr, void *dest, void *base)
+> +fetch_store_string_user(unsigned long addr, void *dest, void *base)
+>  {
+> +	const void __user *uaddr =  (__force const void __user *)addr;
+>  	int maxlen = get_loc_len(*(u32 *)dest);
+>  	void *__dest;
+>  	long ret;
+> @@ -1240,11 +1246,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  
+>  	__dest = get_loc_data(dest, base);
+>  
+> -	/*
+> -	 * Try to get string again, since the string can be changed while
+> -	 * probing.
+> -	 */
+> -	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
+> +	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
+>  	if (ret >= 0)
+>  		*(u32 *)dest = make_data_loc(ret, __dest - base);
+>  
+> @@ -1252,35 +1254,37 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  }
+>  
+>  /*
+> - * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
+> - * with max length and relative data location.
+> + * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
+> + * length and relative data location.
+>   */
+>  static nokprobe_inline int
+> -fetch_store_string_user(unsigned long addr, void *dest, void *base)
+> +fetch_store_string(unsigned long addr, void *dest, void *base)
+>  {
+> -	const void __user *uaddr =  (__force const void __user *)addr;
+>  	int maxlen = get_loc_len(*(u32 *)dest);
+>  	void *__dest;
+>  	long ret;
+>  
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if ((unsigned long)addr < TASK_SIZE)
+> +		return fetch_store_string_user(addr, dest, base);
+> +#endif
+> +
+>  	if (unlikely(!maxlen))
+>  		return -ENOMEM;
+>  
+>  	__dest = get_loc_data(dest, base);
+>  
+> -	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
+> +	/*
+> +	 * Try to get string again, since the string can be changed while
+> +	 * probing.
+> +	 */
+> +	ret = strncpy_from_user_nofault(__dest, (void *)addr, maxlen);
+>  	if (ret >= 0)
+>  		*(u32 *)dest = make_data_loc(ret, __dest - base);
+>  
+>  	return ret;
+>  }
+>  
+> -static nokprobe_inline int
+> -probe_mem_read(void *dest, void *src, size_t size)
+> -{
+> -	return probe_kernel_read(dest, src, size);
+> -}
+> -
+>  static nokprobe_inline int
+>  probe_mem_read_user(void *dest, void *src, size_t size)
+>  {
+> @@ -1289,6 +1293,16 @@ probe_mem_read_user(void *dest, void *src, size_t size)
+>  	return probe_user_read(dest, uaddr, size);
+>  }
+>  
+> +static nokprobe_inline int
+> +probe_mem_read(void *dest, void *src, size_t size)
+> +{
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +	if ((unsigned long)src < TASK_SIZE)
+> +		return probe_mem_read_user(dest, src, size);
+> +#endif
+> +	return probe_kernel_read_strict(dest, src, size);
+> +}
+> +
+>  /* Note that we don't verify it, since the code does not come from user space */
+>  static int
+>  process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
+> -- 
+> 2.26.2
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
