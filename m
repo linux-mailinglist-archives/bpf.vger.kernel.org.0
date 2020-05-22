@@ -2,215 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE871DDB98
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 02:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769BF1DDB9E
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 02:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgEVAE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 20:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729771AbgEVAE6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 20:04:58 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 234A2207D8;
-        Fri, 22 May 2020 00:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590105898;
-        bh=nOzaaU4D0Dp728Lmp1J3pE4tiMfeddkJwOIqDp8fw7U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KYkzfNVImZyFXO92ouqtFx4Wn+lahd/EenyTm9IWrUgKxLXTM7Mw4AaNfwE/cITko
-         b+YC+mO7bXcilZnM+LaBWxom42ehoARofe5HFRsG96aBSpHIaegnxQtnKfkOS3J+AO
-         Om4qy3Ilig1AZ97xiA9G4WIpQ+CrYDAPjondB7YM=
-Date:   Fri, 22 May 2020 09:04:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1730127AbgEVAHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 20:07:08 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26536 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729771AbgEVAHH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 20:07:07 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04M052TR005975;
+        Thu, 21 May 2020 17:06:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=XO6kG0iM+/M6W46pJHF2j+YPzfcLgC/9YvYiexjiKBQ=;
+ b=GNUzroXjQHuy7U1pZx+E4IHERROVZuMaQ5lQkSe4KAZ2V99D9HHdKVxtzrrLDFlMKwJj
+ knuNrp0FZHLpuXcWdsz4OjAq/EkFXJ+CaZXMQN1LD4eUNCjv4Ojrr/0nJ+DQNISnTcWX
+ hPwRerSnJKquJXWI9RvfqYNLZpeDe4kfJ5Q= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 314jubm2m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 21 May 2020 17:06:52 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 May 2020 17:06:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DAYudmxSJJOVHlj5bAeohiOgulWOhTc7dUQEhrAzyOZK1Nbyfogt8EiNx0En5UMO/Qs4no29nfkkcYX1Fag4Ri8mQt/oLGgQv/nRVibneO777vUbSGVhi1Ta3hjpI+1ABKuia/udSkXs7YVm0Xf7KbOzsrbotxpgbXi7QH0kUtQSld/h/fRyOpt/LF+PMHbW9mQHGHHv1HV7sPpv6HstD/IXooushb71CdanIFL5wwKzNuSVb1aVe9W4Hm6g5fQED3nTXmmZ533eObIfq/BMEEYpGpg+4ncYJgIxl0glqUs2sqVYXr1K3AkA3JpOM+e5ozsZKQqYdmlqXbun7r4NoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XO6kG0iM+/M6W46pJHF2j+YPzfcLgC/9YvYiexjiKBQ=;
+ b=OkCs6rawIZCkq9OCAaR28FPUEHSHI9ZihZEwvrNNVQYi+5GuSf4UOYlJtnD0U3+qf+QtS68WQLzzSUeiHBugI39dKNxhv++zETW1xFgPCKVApqsRatT90XmskeathZrkCQSQTrNsT8Sc42jRluGNxnN3JeowNiq+i5bc8pac74fVeZxo9nxkD8iyF1WXX0u5avCyAVgAQ8oxpNhlur/pweuNSAQI0DyiBJjjvNnQ/FGbxxUBEhD9WKlgUY4boOmLR8vIN6lUnL+cn55B/qvHav3xFzxdY3xzoJRUQAt5UFZrXdJc6I4OATnrQXwwYAWqvh/gJvmlHNRPMqJww78yZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XO6kG0iM+/M6W46pJHF2j+YPzfcLgC/9YvYiexjiKBQ=;
+ b=bvhRqFDt1+cEjSv9Qho2P1ZyLpP/cH0uL0tIKAhn1WWEtS8ybc0QyOZkQe/NU8O1aEC5GetPfiB9xTW2CaZ2r6FhUkRJWPjKZnViRy939rDORv+Yyb4vR4XM11DLH+wZWOxbih7gMspCGJb9t0EtyDiOXE4nndc0e2KrMshPhNE=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY5PR15MB3716.namprd15.prod.outlook.com (2603:10b6:a03:1b4::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Fri, 22 May
+ 2020 00:06:50 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::71cb:7c2e:b016:77b6]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::71cb:7c2e:b016:77b6%7]) with mapi id 15.20.3000.034; Fri, 22 May 2020
+ 00:06:50 +0000
+Date:   Thu, 21 May 2020 17:06:49 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/23] tracing/kprobes: handle mixed kernel/userspace
- probes better
-Message-Id: <20200522090450.a6ef7a53878c61d10340949a@kernel.org>
-In-Reply-To: <20200521152301.2587579-15-hch@lst.de>
-References: <20200521152301.2587579-1-hch@lst.de>
-        <20200521152301.2587579-15-hch@lst.de>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 0/3] bpf: Allow inner map with different
+ max_entries
+Message-ID: <20200522000649.ggnjkrtawbmvxibb@kafai-mbp.dhcp.thefacebook.com>
+References: <20200521191752.3448223-1-kafai@fb.com>
+ <CAEf4BzYQmUCbQ-PB2UR5n=WEiCHU3T3zQcQCnjvqCew6rmjGLg@mail.gmail.com>
+ <20200521225939.7nmw7l5dk3wf557r@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZyhT6D6F2A+cN6TKvLFoH5GU5QVEVW7ZkG+KQRgJC-1w@mail.gmail.com>
+ <20200521231618.x3s45pttduqijbjv@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521231618.x3s45pttduqijbjv@ast-mbp.dhcp.thefacebook.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: BYAPR11CA0042.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::19) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:510e) by BYAPR11CA0042.namprd11.prod.outlook.com (2603:10b6:a03:80::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Fri, 22 May 2020 00:06:50 +0000
+X-Originating-IP: [2620:10d:c090:400::5:510e]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dd524128-bc4f-4c20-609c-08d7fde406ca
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3716:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB37162A1A28F3448C2087D60CD5B40@BY5PR15MB3716.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04111BAC64
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: glstEkKkFSZE6PCkTZOi9z1I0KkR41qyEu0WuCRUI2lhnklKRIdVdx90bIamYYYzajsPDVsO62d3ZooB4E/GwRBLzqtGeGl0RtMhGDlxlUIkD1zvPxFiIoUEXeeTCWv7QKrl58+t3phcWw0px6A2hwm/fVuFym6Pjk8m0zZEkN1P+RV0322+K+vdaoNK9zuiOHMC8e0td9i06YrvJYySVnv6HIcjNYl2QJlGybsdBjdFz3l6d1T4CM1d59u5asX5FuIOTNdcudDENKeoQDpbCxyElwJf502ro88y+4Qu/qyDy9+TKZkGJ7Xx+tasxNz4qPExGINkegbqQlLmb4FL9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(396003)(39860400002)(136003)(376002)(6916009)(66476007)(55016002)(52116002)(66556008)(7696005)(4326008)(9686003)(1076003)(316002)(54906003)(2906002)(478600001)(3716004)(5660300002)(86362001)(8936002)(8676002)(66946007)(6506007)(186003)(16526019);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: XG1EZD4IY2IDy6HSDQmUJOC7ZtH8dY9r/T+NYE5hdJvNF35wq06U0Nc6gKPDyfTV6jv+mMXLS2fWakdza9c0a4POWDL9+4yrOuAgnMWW29KeUrjSX94l/787unwfh+dje1XwlhzCzB5Xg5XgFNYGc/WJZ/QEXsMu/0/yUgw6izI8RcSfiGL90fIA6Gj4bLep/GdR9NVryYG29CRx8FXD3ok+RvRCgI4F1h5lGZDJh2jEk5X80adM/uxyDiElFeiqK7OEKgZtxPy0rZkBX6D4C+qBcIpj5rTtrmEFfSNXXQBLqZE0dAA7bkxDZfOJWxySQiBhgVbzb4wQWcqnKiJc8GOqEbneVR1RNee/1E3MWmsB5uBmDi/7WUPBp9vQKlVqPu1JttSuNYKEI/Q+XXu5yURnB8VUKE+TUnwYy/YM5bK4GbFvmI7CUhVIyuzN4AlmQrj9wsq5dQ+kL9i0CkRZyCWskAYVzbBCQ/wnH1gjckQHQQ27dPUXJgVvn3bqRE3Eo4FX53aL1jLZNnZvhjm7/Q==
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd524128-bc4f-4c20-609c-08d7fde406ca
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 00:06:50.6650
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZQTSWGOz384KxGwxpa7W6mTxVzUPQvlisadQC7euxDEFhk0Fztc3kRzxcaU8CodZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3716
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-21_16:2020-05-21,2020-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ cotscore=-2147483648 mlxlogscore=662 clxscore=1015 bulkscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 phishscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005210183
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 21 May 2020 17:22:52 +0200
-Christoph Hellwig <hch@lst.de> wrote:
-
-> Instead of using the dangerous probe_kernel_read and strncpy_from_unsafe
-> helpers, rework probes to try a user probe based on the address if the
-> architecture has a common address space for kernel and userspace.
+On Thu, May 21, 2020 at 04:16:18PM -0700, Alexei Starovoitov wrote:
+> On Thu, May 21, 2020 at 04:10:36PM -0700, Andrii Nakryiko wrote:
+> > > > 4. Then for size check change, again, it's really much simpler and
+> > > > cleaner just to have a special case in check in bpf_map_meta_equal for
+> > > > cases where map size matters.
+> > > It may be simpler but not necessary less fragile for future map type.
+> > >
+> > > I am OK for removing patch 1 and just check for a specific
+> > > type in patch 2 but I think it is fragile for future map
+> > > type IMO.
+> > 
+> > Well, if we think that the good default needs to be to check size,
+> > then similar to above, explicitly list stuff that *does not* follow
+> > the default, i.e., maps that don't want max_elements verification. My
+> > point still stands.
 > 
-
-This looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  kernel/trace/trace_kprobe.c | 72 ++++++++++++++++++++++---------------
->  1 file changed, 43 insertions(+), 29 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 4325f9e7fadaa..4aeaef53ba970 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1200,6 +1200,15 @@ static const struct file_operations kprobe_profile_ops = {
->  
->  /* Kprobe specific fetch functions */
->  
-> +/* Return the length of string -- including null terminal byte */
-> +static nokprobe_inline int
-> +fetch_store_strlen_user(unsigned long addr)
-> +{
-> +	const void __user *uaddr =  (__force const void __user *)addr;
-> +
-> +	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
-> +}
-> +
->  /* Return the length of string -- including null terminal byte */
->  static nokprobe_inline int
->  fetch_store_strlen(unsigned long addr)
-> @@ -1207,30 +1216,27 @@ fetch_store_strlen(unsigned long addr)
->  	int ret, len = 0;
->  	u8 c;
->  
-> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> +	if (addr < TASK_SIZE)
-> +		return fetch_store_strlen_user(addr);
-> +#endif
-> +
->  	do {
-> -		ret = probe_kernel_read(&c, (u8 *)addr + len, 1);
-> +		ret = probe_kernel_read_strict(&c, (u8 *)addr + len, 1);
->  		len++;
->  	} while (c && ret == 0 && len < MAX_STRING_SIZE);
->  
->  	return (ret < 0) ? ret : len;
->  }
->  
-> -/* Return the length of string -- including null terminal byte */
-> -static nokprobe_inline int
-> -fetch_store_strlen_user(unsigned long addr)
-> -{
-> -	const void __user *uaddr =  (__force const void __user *)addr;
-> -
-> -	return strnlen_user_nofault(uaddr, MAX_STRING_SIZE);
-> -}
-> -
->  /*
-> - * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
-> - * length and relative data location.
-> + * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
-> + * with max length and relative data location.
->   */
->  static nokprobe_inline int
-> -fetch_store_string(unsigned long addr, void *dest, void *base)
-> +fetch_store_string_user(unsigned long addr, void *dest, void *base)
->  {
-> +	const void __user *uaddr =  (__force const void __user *)addr;
->  	int maxlen = get_loc_len(*(u32 *)dest);
->  	void *__dest;
->  	long ret;
-> @@ -1240,11 +1246,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
->  
->  	__dest = get_loc_data(dest, base);
->  
-> -	/*
-> -	 * Try to get string again, since the string can be changed while
-> -	 * probing.
-> -	 */
-> -	ret = strncpy_from_unsafe(__dest, (void *)addr, maxlen);
-> +	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
->  	if (ret >= 0)
->  		*(u32 *)dest = make_data_loc(ret, __dest - base);
->  
-> @@ -1252,35 +1254,37 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
->  }
->  
->  /*
-> - * Fetch a null-terminated string from user. Caller MUST set *(u32 *)buf
-> - * with max length and relative data location.
-> + * Fetch a null-terminated string. Caller MUST set *(u32 *)buf with max
-> + * length and relative data location.
->   */
->  static nokprobe_inline int
-> -fetch_store_string_user(unsigned long addr, void *dest, void *base)
-> +fetch_store_string(unsigned long addr, void *dest, void *base)
->  {
-> -	const void __user *uaddr =  (__force const void __user *)addr;
->  	int maxlen = get_loc_len(*(u32 *)dest);
->  	void *__dest;
->  	long ret;
->  
-> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> +	if ((unsigned long)addr < TASK_SIZE)
-> +		return fetch_store_string_user(addr, dest, base);
-> +#endif
-> +
->  	if (unlikely(!maxlen))
->  		return -ENOMEM;
->  
->  	__dest = get_loc_data(dest, base);
->  
-> -	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
-> +	/*
-> +	 * Try to get string again, since the string can be changed while
-> +	 * probing.
-> +	 */
-> +	ret = strncpy_from_user_nofault(__dest, (void *)addr, maxlen);
->  	if (ret >= 0)
->  		*(u32 *)dest = make_data_loc(ret, __dest - base);
->  
->  	return ret;
->  }
->  
-> -static nokprobe_inline int
-> -probe_mem_read(void *dest, void *src, size_t size)
-> -{
-> -	return probe_kernel_read(dest, src, size);
-> -}
-> -
->  static nokprobe_inline int
->  probe_mem_read_user(void *dest, void *src, size_t size)
->  {
-> @@ -1289,6 +1293,16 @@ probe_mem_read_user(void *dest, void *src, size_t size)
->  	return probe_user_read(dest, uaddr, size);
->  }
->  
-> +static nokprobe_inline int
-> +probe_mem_read(void *dest, void *src, size_t size)
-> +{
-> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> +	if ((unsigned long)src < TASK_SIZE)
-> +		return probe_mem_read_user(dest, src, size);
-> +#endif
-> +	return probe_kernel_read_strict(dest, src, size);
-> +}
-> +
->  /* Note that we don't verify it, since the code does not come from user space */
->  static int
->  process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
-> -- 
-> 2.26.2
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> I think consoldating map properties in bpf_types.h is much cleaner
+> and less error prone.
+> I'd only like to tweak the macro in patch 1 to avoid explicit ", 0)".
+> Can BPF_MAP_TYPE() macro stay as-is and additional macro introduced
+> for maps with properties ? BPF_MAP_TYPE_FL() ?
+> Or do some macro magic that the same macro can be used with 2 and 3 args?
+I will give it a try to minimize the code churn.
