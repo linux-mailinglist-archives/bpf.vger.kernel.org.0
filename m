@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5A91DF1CF
-	for <lists+bpf@lfdr.de>; Sat, 23 May 2020 00:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B301DF2A6
+	for <lists+bpf@lfdr.de>; Sat, 23 May 2020 01:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731127AbgEVW1D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 18:27:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46286 "EHLO
+        id S1731254AbgEVXDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 19:03:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50794 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731122AbgEVW1D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 18:27:03 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S1731193AbgEVXDg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 19:03:36 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jcG84-00023q-9B; Sat, 23 May 2020 00:27:00 +0200
+        id 1jcGhP-0004nE-5S; Sat, 23 May 2020 01:03:31 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jcG83-000LmB-Vu; Sat, 23 May 2020 00:27:00 +0200
-Subject: Re: [PATCH v2 bpf-next 2/3] bpf: Relax the max_entries check for
- inner map
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
-        netdev@vger.kernel.org, Andrey Ignatov <rdna@fb.com>
-References: <20200522022336.899416-1-kafai@fb.com>
- <20200522022349.900034-1-kafai@fb.com>
+        id 1jcGhO-0003La-QL; Sat, 23 May 2020 01:03:30 +0200
+Subject: Re: [bpf-next PATCH v4 2/5] bpf: extend bpf_base_func_proto helpers
+ with probe_* and *current_task*
+To:     John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
+        andrii.nakryiko@gmail.com, ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
+        lmb@cloudflare.com
+References: <159012108670.14791.18091717338621259928.stgit@john-Precision-5820-Tower>
+ <159012146282.14791.7652481804905295417.stgit@john-Precision-5820-Tower>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <777e87c2-e871-8409-c942-38054ab2d419@iogearbox.net>
-Date:   Sat, 23 May 2020 00:26:59 +0200
+Message-ID: <f6f5b27f-0a60-0e86-6e7b-f721b069a88c@iogearbox.net>
+Date:   Sat, 23 May 2020 01:03:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200522022349.900034-1-kafai@fb.com>
+In-Reply-To: <159012146282.14791.7652481804905295417.stgit@john-Precision-5820-Tower>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,92 +46,171 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/22/20 4:23 AM, Martin KaFai Lau wrote:
-> This patch relaxes the max_entries check for most of the inner map types
-> during an update to the outer map.  The max_entries of those map types
-> are only used in runtime.  By doing this, an inner map with different
-> size can be updated to the outer map in runtime.  People has a use
-> case that starts with a smaller inner map first and then replaces
-> it with a larger inner map later when it is needed.
+On 5/22/20 6:24 AM, John Fastabend wrote:
+> Often it is useful when applying policy to know something about the
+> task. If the administrator has CAP_SYS_ADMIN rights then they can
+> use kprobe + networking hook and link the two programs together to
+> accomplish this. However, this is a bit clunky and also means we have
+> to call both the network program and kprobe program when we could just
+> use a single program and avoid passing metadata through sk_msg/skb->cb,
+> socket, maps, etc.
 > 
-> The max_entries of arraymap and xskmap are used statically
-> in verification time to generate the inline code, so they
-> are excluded in this patch.
+> To accomplish this add probe_* helpers to bpf_base_func_proto programs
+> guarded by a perfmon_capable() check. New supported helpers are the
+> following,
 > 
-> Cc: Andrey Ignatov <rdna@fb.com>
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+>   BPF_FUNC_get_current_task
+>   BPF_FUNC_current_task_under_cgroup
+>   BPF_FUNC_probe_read_user
+>   BPF_FUNC_probe_read_kernel
+>   BPF_FUNC_probe_read_user_str
+>   BPF_FUNC_probe_read_kernel_str
+> 
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->   include/linux/bpf.h       | 12 ++++++++++++
->   include/linux/bpf_types.h |  6 ++++--
->   kernel/bpf/map_in_map.c   |  3 ++-
->   3 files changed, 18 insertions(+), 3 deletions(-)
+>   0 files changed
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f947d899aa46..1839ef9aca02 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -99,6 +99,18 @@ struct bpf_map_memory {
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 886949f..ee992dd 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -601,6 +601,13 @@ const struct bpf_func_proto bpf_event_output_data_proto =  {
+>   	.arg5_type      = ARG_CONST_SIZE_OR_ZERO,
+>   };
 >   
->   /* Cannot be used as an inner map */
->   #define BPF_MAP_NO_INNER_MAP (1 << 0)
-> +/* When a prog has used map-in-map, the verifier requires
-> + * an inner-map as a template to verify the access operations
-> + * on the outer and inner map.  For some inner map-types,
-> + * the verifier uses the inner_map's max_entries statically
-> + * (e.g. to generate inline code).  If this verification
-> + * time usage on max_entries applies to an inner map-type,
-> + * during runtime, only the inner map with the same
-> + * max_entries can be updated to this outer map.
-> + *
-> + * Please see bpf_map_meta_equal() for details.
-> + */
-> +#define BPF_MAP_NO_DYNAMIC_INNER_MAP_SIZE (1 << 1)
->   
->   struct bpf_map {
->   	/* The first two cachelines with read-mostly members of which some
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index 3f32702c9bf4..85861722b7f3 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -78,7 +78,8 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
->   
->   #define BPF_MAP_TYPE(x, y) BPF_MAP_TYPE_FL(x, y, 0)
->   
-> -BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
-> +BPF_MAP_TYPE_FL(BPF_MAP_TYPE_ARRAY, array_map_ops,
-> +		BPF_MAP_NO_DYNAMIC_INNER_MAP_SIZE)
->   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
->   /* prog_array->aux->{type,jited} is a runtime binding.
->    * Doing static check alone in the verifier is not enough,
-> @@ -116,7 +117,8 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_SOCKHASH, sock_hash_ops)
->   #endif
->   BPF_MAP_TYPE(BPF_MAP_TYPE_CPUMAP, cpu_map_ops)
->   #if defined(CONFIG_XDP_SOCKETS)
-> -BPF_MAP_TYPE(BPF_MAP_TYPE_XSKMAP, xsk_map_ops)
-> +BPF_MAP_TYPE_FL(BPF_MAP_TYPE_XSKMAP, xsk_map_ops,
-> +		BPF_MAP_NO_DYNAMIC_INNER_MAP_SIZE)
->   #endif
->   #ifdef CONFIG_INET
->   BPF_MAP_TYPE(BPF_MAP_TYPE_REUSEPORT_SOCKARRAY, reuseport_array_ops)
-> diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-> index d965a1d328a9..b296fe8af1ad 100644
-> --- a/kernel/bpf/map_in_map.c
-> +++ b/kernel/bpf/map_in_map.c
-> @@ -77,7 +77,8 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
->   		meta0->key_size == meta1->key_size &&
->   		meta0->value_size == meta1->value_size &&
->   		meta0->map_flags == meta1->map_flags &&
-> -		meta0->max_entries == meta1->max_entries;
-> +		(meta0->max_entries == meta1->max_entries ||
-> +		 !(meta0->properties & BPF_MAP_NO_DYNAMIC_INNER_MAP_SIZE));
+> +const struct bpf_func_proto bpf_current_task_under_cgroup_proto __weak;
+> +const struct bpf_func_proto bpf_get_current_task_proto __weak;
+> +const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+> +const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+> +const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
+> +const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
+> +
+>   const struct bpf_func_proto *
+>   bpf_base_func_proto(enum bpf_func_id func_id)
+>   {
+> @@ -648,6 +655,26 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>   	case BPF_FUNC_jiffies64:
+>   		return &bpf_jiffies64_proto;
+>   	default:
+> +		break;
+> +	}
+> +
+> +	if (!perfmon_capable())
+> +		return NULL;
+> +
+> +	switch (func_id) {
+> +	case BPF_FUNC_get_current_task:
+> +		return &bpf_get_current_task_proto;
+> +	case BPF_FUNC_current_task_under_cgroup:
+> +		return &bpf_current_task_under_cgroup_proto;
 
-Same thought here on making it an explicit opt-in instead. So no 'by default a
-dynamic inner map size is safe and enabled' but instead the other way round and
-allow the cases we know that are working and care about (e.g. htab, lru, etc)
-where we can safely follow-up later with more on a case-by-case basis.
+Afaics, the map creation of BPF_MAP_TYPE_CGROUP_ARRAY is only tied to CAP_BPF and
+the bpf_current_task_under_cgroup() technically is not strictly tracing related.
+We do have similar bpf_skb_under_cgroup() for this map type in networking, for
+example, so 'current' is the only differentiator between the two.
 
+Imho, the get_current_task() and memory probes below are fine and perfmon_capable()
+is also required for them. It's just that this one above stands out from the rest,
+and while thinking about it, what is the rationale for enabling bpf_current_task_under_cgroup()
+but not e.g. bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id() helpers
+that you've added in prior patch to sk_msg_func_proto()? What makes these different?
+
+The question is also wrt cgroup helpers on how reliable they could be used, say, in
+networking programs when we're under softirq instead of process context? Something
+would need to be documented at min, but I think it's probably best to say that we
+allow retrieving current and the probe mem helpers only, given for these cases you're
+on your own anyway and have to know what you're doing.. while the others can be used
+w/o much thought in some cases where we always have a valid current (like sock_addr
+progs), but not in others tc/BPF or XDP. Wdyt?
+
+> +	case BPF_FUNC_probe_read_user:
+> +		return &bpf_probe_read_user_proto;
+> +	case BPF_FUNC_probe_read_kernel:
+> +		return &bpf_probe_read_kernel_proto;
+> +	case BPF_FUNC_probe_read_user_str:
+> +		return &bpf_probe_read_user_str_proto;
+> +	case BPF_FUNC_probe_read_kernel_str:
+> +		return &bpf_probe_read_kernel_str_proto;
+> +	default:
+>   		return NULL;
+>   	}
+>   }
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 9531f54..6fabbc4 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -147,7 +147,7 @@ BPF_CALL_3(bpf_probe_read_user, void *, dst, u32, size,
+>   	return ret;
 >   }
 >   
->   void *bpf_map_fd_get_ptr(struct bpf_map *map,
+> -static const struct bpf_func_proto bpf_probe_read_user_proto = {
+> +const struct bpf_func_proto bpf_probe_read_user_proto = {
+>   	.func		= bpf_probe_read_user,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -167,7 +167,7 @@ BPF_CALL_3(bpf_probe_read_user_str, void *, dst, u32, size,
+>   	return ret;
+>   }
+>   
+> -static const struct bpf_func_proto bpf_probe_read_user_str_proto = {
+> +const struct bpf_func_proto bpf_probe_read_user_str_proto = {
+>   	.func		= bpf_probe_read_user_str,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -198,7 +198,7 @@ BPF_CALL_3(bpf_probe_read_kernel, void *, dst, u32, size,
+>   	return bpf_probe_read_kernel_common(dst, size, unsafe_ptr, false);
+>   }
+>   
+> -static const struct bpf_func_proto bpf_probe_read_kernel_proto = {
+> +const struct bpf_func_proto bpf_probe_read_kernel_proto = {
+>   	.func		= bpf_probe_read_kernel,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -213,7 +213,7 @@ BPF_CALL_3(bpf_probe_read_compat, void *, dst, u32, size,
+>   	return bpf_probe_read_kernel_common(dst, size, unsafe_ptr, true);
+>   }
+>   
+> -static const struct bpf_func_proto bpf_probe_read_compat_proto = {
+> +const struct bpf_func_proto bpf_probe_read_compat_proto = {
+>   	.func		= bpf_probe_read_compat,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -253,7 +253,7 @@ BPF_CALL_3(bpf_probe_read_kernel_str, void *, dst, u32, size,
+>   	return bpf_probe_read_kernel_str_common(dst, size, unsafe_ptr, false);
+>   }
+>   
+> -static const struct bpf_func_proto bpf_probe_read_kernel_str_proto = {
+> +const struct bpf_func_proto bpf_probe_read_kernel_str_proto = {
+>   	.func		= bpf_probe_read_kernel_str,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -268,7 +268,7 @@ BPF_CALL_3(bpf_probe_read_compat_str, void *, dst, u32, size,
+>   	return bpf_probe_read_kernel_str_common(dst, size, unsafe_ptr, true);
+>   }
+>   
+> -static const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
+> +const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
+>   	.func		= bpf_probe_read_compat_str,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -907,7 +907,7 @@ BPF_CALL_0(bpf_get_current_task)
+>   	return (long) current;
+>   }
+>   
+> -static const struct bpf_func_proto bpf_get_current_task_proto = {
+> +const struct bpf_func_proto bpf_get_current_task_proto = {
+>   	.func		= bpf_get_current_task,
+>   	.gpl_only	= true,
+>   	.ret_type	= RET_INTEGER,
+> @@ -928,7 +928,7 @@ BPF_CALL_2(bpf_current_task_under_cgroup, struct bpf_map *, map, u32, idx)
+>   	return task_under_cgroup_hierarchy(current, cgrp);
+>   }
+>   
+> -static const struct bpf_func_proto bpf_current_task_under_cgroup_proto = {
+> +const struct bpf_func_proto bpf_current_task_under_cgroup_proto = {
+>   	.func           = bpf_current_task_under_cgroup,
+>   	.gpl_only       = false,
+>   	.ret_type       = RET_INTEGER,
 > 
 
