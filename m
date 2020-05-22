@@ -2,82 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EDA1DDC96
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 03:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BDB1DDD10
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 04:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgEVBXd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 May 2020 21:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgEVBXc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 May 2020 21:23:32 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950B1C061A0E;
-        Thu, 21 May 2020 18:23:32 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id f15so3757746plr.3;
-        Thu, 21 May 2020 18:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ogbg3vrGDJe0611dyqo8aJKJy+hyyzLlyQmUDoBczI4=;
-        b=IgQ8Lvm6uoFkqaWjj/5uTQhkFd4Ay4eM61kvsD4Q9WaCiu12WVamQAWCEMN/PZCBu4
-         BwvGPE44+OMWLl1ZgdDNkgWIEl66FtBgKwWzIQMsKHzXn0u2crLRtuy1yE4hxDG/SyOg
-         k13PTXbmfd5YVHSNy43btFG4wMpT6g1Usx3/JcOmkFQ4QqJo9ZrfB6xpP5HJWH81vOB4
-         XeyKMNF1vFf+GbPGhSr0hyEfykAIpu78msJ0lU10JzBusdZmMK6J8RNMxUfmQtTU3y7I
-         YfzM262kIxnrPIFX+1BRydeRT02DWUkGXphEo4ePQhiJ9mkYZnN3HWam7FaM+d0UpzOw
-         mjrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ogbg3vrGDJe0611dyqo8aJKJy+hyyzLlyQmUDoBczI4=;
-        b=VsjowW3HOaCV1AZ/JuTsqsrwLokLThKQhyGA3OjR0Ni36tq4zsSk3WrILjCrC9l+KB
-         ygt5AulrCJ0ZNMpEiVf5RfANiL8hg9FKILlhWeJIqzfEfVO961BRGMZjobGtYDOqp7H9
-         VTdjsvlTBNYWvYiw8AWfNKjSDRZV02tUq6w54rPGoyN7lcOSrSJuAoCpxvBBhmbX/bfM
-         5YTCdj441UxpyQJxisiFpY/bXy1MuVpci0qpZ8I5JT5V3S4HwEoDHkgQFtNt63LpnnJF
-         SfHbMyM6Q/P+C1xs3ieI7//t05a/t6UYDP/8PObjp5nyNr/wacr79S2Pd60uZ5+xChDP
-         1Jxg==
-X-Gm-Message-State: AOAM532mOzfoVwDbOSo2qu9H2Bvjpkg3REHbdzltdhDjb9ptdNJWcM3E
-        p3NykYdWbSnVm2P41mmDQdsUJ9Cl
-X-Google-Smtp-Source: ABdhPJwaMxKrphz9D07FJ6rBzcGCtfeZ7zTzYCZB6fw3bLlEu/NZXP05iuVhDGKc67+Hat2YrUFsuw==
-X-Received: by 2002:a17:90a:246d:: with SMTP id h100mr1407400pje.21.1590110611577;
-        Thu, 21 May 2020 18:23:31 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e680])
-        by smtp.gmail.com with ESMTPSA id 65sm5515340pfy.219.2020.05.21.18.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 18:23:30 -0700 (PDT)
-Date:   Thu, 21 May 2020 18:23:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: Re: [PATCH v2 bpf-next 7/7] docs/bpf: add BPF ring buffer design
- notes
-Message-ID: <20200522012328.7vs44qhutdiukrog@ast-mbp.dhcp.thefacebook.com>
-References: <20200517195727.279322-1-andriin@fb.com>
- <20200517195727.279322-8-andriin@fb.com>
+        id S1727063AbgEVCXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 May 2020 22:23:40 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50316 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727024AbgEVCXk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 May 2020 22:23:40 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04M2LMsQ003724
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 19:23:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=wrNTn2OkIgYH7F4VTgfk8wvs6/Asl3XeMbbeQ3RGdvg=;
+ b=JagpSwMn9PeAyv24uIeAo7NbD50pH2YvTLBznlNXF40dCOetYpBpr3Y6pDTY0P0/7sJ1
+ JDD+oPo/eQd7RU2Yds4ea/4A41QJa4HcM1HskWvcxxai84a83fxNv6G84a7v9HKV6gIt
+ NOceMN69ngUxayOsneVoMs/AFi1hHMF8S58= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3152xu2nd0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 21 May 2020 19:23:39 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 May 2020 19:23:39 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id A784B29455B1; Thu, 21 May 2020 19:23:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/3] bpf: Allow inner map with different max_entries
+Date:   Thu, 21 May 2020 19:23:36 -0700
+Message-ID: <20200522022336.899416-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200517195727.279322-8-andriin@fb.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-21_16:2020-05-21,2020-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
+ cotscore=-2147483648 priorityscore=1501 mlxscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=432 lowpriorityscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 spamscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005220017
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 17, 2020 at 12:57:27PM -0700, Andrii Nakryiko wrote:
-> Add commit description from patch #1 as a stand-alone documentation under
-> Documentation/bpf, as it might be more convenient format, in long term
-> perspective.
-> 
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  Documentation/bpf/ringbuf.txt | 191 ++++++++++++++++++++++++++++++++++
+People has a use case that starts with a smaller inner map first and then
+replaces it with a larger inner map later when it is needed.
 
-Thanks for the doc. Looks great, but could you make it .rst from the start?
-otherwise soon after somebody will be converting it adding churn.
+This series allows the outer map to be updated with inner map in differen=
+t
+size as long as it is safe (meaning the max_entries is not used in the
+verification time during prog load).
+
+Please see individual patch for details.
+
+v2:
+- New BPF_MAP_TYPE_FL to minimize code churns (Alexei)
+- s/capabilities/properties/ (Andrii)
+- Describe WHY in commit log (Andrii)
+
+Martin KaFai Lau (3):
+  bpf: Consolidate inner-map-compatible properties into bpf_types.h
+  bpf: Relax the max_entries check for inner map
+  bpf: selftests: Add test for different inner map size
+
+ include/linux/bpf.h                           | 20 ++++++++++--
+ include/linux/bpf_types.h                     | 25 +++++++++++----
+ kernel/bpf/btf.c                              |  4 +--
+ kernel/bpf/map_in_map.c                       | 12 +++----
+ kernel/bpf/syscall.c                          | 25 +++++++++++----
+ kernel/bpf/verifier.c                         |  4 +--
+ .../selftests/bpf/prog_tests/btf_map_in_map.c | 12 +++++++
+ .../selftests/bpf/progs/test_btf_map_in_map.c | 31 +++++++++++++++++++
+ 8 files changed, 107 insertions(+), 26 deletions(-)
+
+--=20
+2.24.1
+
