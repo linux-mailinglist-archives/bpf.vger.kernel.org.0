@@ -2,91 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A62A1DE5BD
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 13:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE321DE8DE
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgEVLoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 07:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbgEVLoI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 07:44:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C36C061A0E;
-        Fri, 22 May 2020 04:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qixK0Ok5LjJzLtlIqZRWTn3BuaZ1Y97zRlOZ39Oq9js=; b=P6IvguSq9Yegz1CsStKaYYtLo/
-        1Nv8m8rx8orS0RpvYeRQSaGvjP+Qq6si7kfYhVUem1FPjF81j7+k9URLKD8jKdNcgG8CjiPSeJ1MO
-        AkQmBLr/GCusJWG39W44W7lbEJK673nVztf3VxcFwq+eBaybxhsrZNCmE9GEfnapBWVFcRehO9Qbo
-        /AdEbFB4DfiU5nvnQWS6Znpc5zeiPZe9vR+T1GlUlGN1+r73inTsPTMQPFptNRhfnPSV8zfM9uRUj
-        Ecg/Yn2mEZmNqX+mlMY9x+rmuiUkVe6u8sSGGRRfDvFBHFHyrNg5VhpzKurjTi8vA0WM7UZxa/ni0
-        e0CG+Njg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jc65d-0005yy-2M; Fri, 22 May 2020 11:43:49 +0000
-Date:   Fri, 22 May 2020 04:43:48 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     adobriyan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        ebiederm@xmission.com, bernd.edlinger@hotmail.de,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] files: Use rcu lock to get the file
- structures for better performance
-Message-ID: <20200522114348.GL28818@bombadil.infradead.org>
-References: <20200521123835.70069-1-songmuchun@bytedance.com>
- <20200521164746.GD28818@bombadil.infradead.org>
- <CAMZfGtWn4xa-5-0rN2KJzUYioiOOUYX9BFcUDNZS85H11sYDEA@mail.gmail.com>
+        id S1729926AbgEVO2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 10:28:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729891AbgEVO2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 10:28:16 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B74CB22D2A;
+        Fri, 22 May 2020 14:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590157695;
+        bh=gWd6Dp0QUtBPCxzBiT2I2dBLdCo6gJM2lGpMQsZdKjw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e0DCZjtMWMlYPlUiP2Ek50J3c6JPU05W7BmhJ5G39W7tpAz0hFjEvjQifj5/w3IzR
+         JRyBoQZFgnYxOToUisJEQw9l9co6ndQYuQO4qSI94g6AhD5NVhOjCiy7Er+eQhFH0S
+         FX2GPGvWLB2TBfeo0uMfFdiNvc5yAJuAXTepzrWM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5FD2440AFD; Fri, 22 May 2020 11:28:13 -0300 (-03)
+Date:   Fri, 22 May 2020 11:28:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        haoluo@google.com, Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, olegrom@google.com,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: accessing global and per-cpu vars
+Message-ID: <20200522142813.GF14034@kernel.org>
+References: <CAADnVQJwqH2XFnTeXLnqbONtaU3akNh9BZ-tXk8r=NcGGY_noQ@mail.gmail.com>
+ <CAEf4BzZVVgMbNE4d7b5kPUoWPJz-ENgyP1BfC+h-X29r1Pk2fA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtWn4xa-5-0rN2KJzUYioiOOUYX9BFcUDNZS85H11sYDEA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZVVgMbNE4d7b5kPUoWPJz-ENgyP1BfC+h-X29r1Pk2fA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 22, 2020 at 03:52:39PM +0800, Muchun Song wrote:
-> On Fri, May 22, 2020 at 12:47 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > @@ -160,14 +168,23 @@ static int proc_fd_link(struct dentry *dentry, struct path *path)
-> > >               unsigned int fd = proc_fd(d_inode(dentry));
-> > >               struct file *fd_file;
-> > >
-> > > -             spin_lock(&files->file_lock);
-> > > +             rcu_read_lock();
-> > > +again:
-> > >               fd_file = fcheck_files(files, fd);
-> > >               if (fd_file) {
-> > > +                     if (!get_file_rcu(fd_file)) {
-> > > +                             /*
-> > > +                              * we loop to catch the new file
-> > > +                              * (or NULL pointer).
-> > > +                              */
-> > > +                             goto again;
-> > > +                     }
-> > >                       *path = fd_file->f_path;
-> > >                       path_get(&fd_file->f_path);
-> > > +                     fput(fd_file);
-> > >                       ret = 0;
-> > >               }
-> > > -             spin_unlock(&files->file_lock);
-> > > +             rcu_read_unlock();
-> >
-> > Why is it an improvement to increment/decrement the refcount on the
-> > struct file here, rather than take/release the spinlock?
-> >
+Em Thu, May 21, 2020 at 11:58:47AM -0700, Andrii Nakryiko escreveu:
+> On Thu, May 21, 2020 at 10:07 AM Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > 2. teach pahole to store ' A ' annotated kallsyms into vmlinux BTF as
+> > BTF_KIND_VAR.
+> > There are ~300 of them, so should be minimal increase in size.
 > 
-> lock-free vs spinlock.
+> I thought we'd do that based on section name? Or we will actually
+> teach pahole to extract kallsyms from vmlinux image?
 
-bananas vs oranges.
+No need to touch kallsyms:
 
-How do you think refcounts work?  How do you think spinlocks work?
+  net/core/filter.c
+  
+  DEFINE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
+  
+  # grep -w bpf_redirect_info /proc/kallsyms
+  000000000002a160 A bpf_redirect_info
+  #
+  # readelf -s ~acme/git/build/v5.7-rc2+/vmlinux | grep bpf_redirect_info
+  113637: 000000000002a2e0    32 OBJECT  GLOBAL DEFAULT   34 bpf_redirect_info
+  #
 
-> Do you think spinlock would be better than the lock-free method?
-> Actually I prefer the rcu lock.
+Its in the ELF symtab.
 
-Why?  You don't seem to understand the tradeoffs.
+[root@quaco ~]# grep ' A ' /proc/kallsyms | wc -l
+351
+[root@quaco ~]# readelf -s ~acme/git/build/v5.7-rc2+/vmlinux | grep "OBJECT  GLOBAL" | wc -l
+3221
+[root@quaco ~]#
+
+So ' A ' in kallsyms needs some extra info from the symtab in addition
+to being OBJECT GLOBAL, checking...
+ 
+> There was step 1.5 (or even 0.5) to see if it's feasible to add not
+> just per-CPU variables as well.
+
+- Arnaldo
