@@ -2,75 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6861DEB7F
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 17:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE5C1DEC2C
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 17:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730412AbgEVPJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 11:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729931AbgEVPJS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 11:09:18 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66DA4205CB;
-        Fri, 22 May 2020 15:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590160157;
-        bh=QTA3E1jA92zSGe5NaJYapobJCORlYiuebmNUd5lavYg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=d5EMPOABtnYFFWaxZKcCLjVyQ6VALEbfU0v41m4Eq+aPF5SrDiS+QwekpctWm+JRt
-         3FDWc6yM0kL2vvR3stDQI1Cl2bcFDoXt8XgkkiJRUCJ96E06UznhjWBb11WWy8jOdi
-         n7RzXWxYwVHRlrfTJIlyufBFu4sQINAKeW8WIyXY=
-Subject: Re: [PATCH v2 0/3] selftests: lib.mk improvements
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, shuah <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org
-References: <20200515120026.113278-1-yauheni.kaliuta@redhat.com>
- <689fe06a-c781-e6ed-0544-8023c86fc21a@kernel.org>
- <xunyblmknfmy.fsf@redhat.com>
-From:   shuah <shuah@kernel.org>
-Message-ID: <4e0d1e4e-9ed2-025c-1164-fd52a88c1ed2@kernel.org>
-Date:   Fri, 22 May 2020 09:09:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730608AbgEVPiy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 11:38:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32125 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727807AbgEVPix (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 11:38:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590161932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=76FoYd4vHwWJfp5NSdgXYMXT/svq3UBSXuFpWv4febA=;
+        b=XfZQF5qpLSTUwCOg9UYT5ZmfocuWJggNtr+rJxSnlaff6qJgylYWhptxFg+kvF3LZWJfNB
+        iKyZOMk04xVQunGkO5ZM86CSeVovWrqSgC1Zr2HuvSzgIJLbsxnhahDIPUIrmVoxPCIwRV
+        fUiUTtQWc1ZKEWU0ZhuurIBnU8gUuI8=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-6SK6snm4OsC98t2fjFyjzg-1; Fri, 22 May 2020 11:38:49 -0400
+X-MC-Unique: 6SK6snm4OsC98t2fjFyjzg-1
+Received: by mail-ot1-f71.google.com with SMTP id k23so4974906otl.13
+        for <bpf@vger.kernel.org>; Fri, 22 May 2020 08:38:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=76FoYd4vHwWJfp5NSdgXYMXT/svq3UBSXuFpWv4febA=;
+        b=RvMFlaZpMfO6prbXp6sGoruFY/zq0nQ/i5UalzpL3Lh7SrDPFy6wmXsdHNITx35CkU
+         EjTCO4UwipPLcuA3SrFA2ALpg6YHcpE6AfITL42xnPNVBz+CWib49UupiKaEQ5mMhTSj
+         ssXHqWSbCFMqZucyPPSc6P7ofvW09ePuMVN4W6p+zHacQKinDUpXXKl3qnVsVVbifmKz
+         eCo7ySb7obOmI2cqK13NrP7mbCP5FV4B+g9X0uNjNxmD3wkf9OeS9MkWGZPpjcVkMPI1
+         jDY69+6mXv2H2nxvK43+R1n9fBn1wJSg4wuxQiFypho5xVHgcmC2s3+XbLJodTBXpB/z
+         +7Eg==
+X-Gm-Message-State: AOAM532BeWEzMWcFIhpWbMKeo94IMEer4r7cEyHvOGF/50w7DTI+zeP3
+        fdrOMznNLA8Ef1tCqfuG7XgMdIvU5SdC3vJYzUBlBNpgeN02JWXexezlXXxZYWvuxmvkP0DSLl1
+        vcIuTZl6Q42iUSy/HSbrOJp3HPHY3
+X-Received: by 2002:aca:fc0e:: with SMTP id a14mr2819905oii.12.1590161928744;
+        Fri, 22 May 2020 08:38:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwplnAypNt3q8AxSu1Z6dOXu0aYfLGnk8C7KF6d7Ab9BGArnW5SHUQ0dGfe6u0HgeKQPB8Pha5nmIPoPHuEOe4=
+X-Received: by 2002:aca:fc0e:: with SMTP id a14mr2819896oii.12.1590161928553;
+ Fri, 22 May 2020 08:38:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <xunyblmknfmy.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200515120026.113278-1-yauheni.kaliuta@redhat.com>
+ <689fe06a-c781-e6ed-0544-8023c86fc21a@kernel.org> <xunyblmknfmy.fsf@redhat.com>
+ <4e0d1e4e-9ed2-025c-1164-fd52a88c1ed2@kernel.org>
+In-Reply-To: <4e0d1e4e-9ed2-025c-1164-fd52a88c1ed2@kernel.org>
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Date:   Fri, 22 May 2020 18:38:32 +0300
+Message-ID: <CANoWswmZmHo=ha65u=D8XWD7u9decs6FqubPjVu2YOvm6bz-nA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] selftests: lib.mk improvements
+To:     shuah <shuah@kernel.org>
+Cc:     bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/19/20 8:49 AM, Yauheni Kaliuta wrote:
-> Hi, shuah!
-> 
->>>>>> On Tue, 19 May 2020 07:59:16 -0600, shuah   wrote:
-> 
->   > On 5/15/20 6:00 AM, Yauheni Kaliuta wrote:
->   >>
->   >> Yauheni Kaliuta (3):
->   >> selftests: do not use .ONESHELL
->   >> selftests: fix condition in run_tests
->   >> selftests: simplify run_tests
->   >>
->   >> tools/testing/selftests/lib.mk | 19 ++++++-------------
->   >> 1 file changed, 6 insertions(+), 13 deletions(-)
->   >>
-> 
->   > Quick note that, I will pull these in for 5.8-rc1.
+Hi, Shuah!
 
-Patches look okay to me, however, just noticed, this series hasn't
-been cc'ed to linux-kselftest. Hence it didn't go through the
-necessary reviews.
+On Fri, May 22, 2020 at 6:09 PM shuah <shuah@kernel.org> wrote:
+>
+> On 5/19/20 8:49 AM, Yauheni Kaliuta wrote:
+> > Hi, shuah!
+> >
+> >>>>>> On Tue, 19 May 2020 07:59:16 -0600, shuah   wrote:
+> >
+> >   > On 5/15/20 6:00 AM, Yauheni Kaliuta wrote:
+> >   >>
+> >   >> Yauheni Kaliuta (3):
+> >   >> selftests: do not use .ONESHELL
+> >   >> selftests: fix condition in run_tests
+> >   >> selftests: simplify run_tests
+> >   >>
+> >   >> tools/testing/selftests/lib.mk | 19 ++++++-------------
+> >   >> 1 file changed, 6 insertions(+), 13 deletions(-)
+> >   >>
+> >
+> >   > Quick note that, I will pull these in for 5.8-rc1.
+>
+> Patches look okay to me, however, just noticed, this series hasn't
+> been cc'ed to linux-kselftest. Hence it didn't go through the
+> necessary reviews.
+>
+> Please run get_maintainers and resend the series to everybody the
+> script suggests.
+>
 
-Please run get_maintainers and resend the series to everybody the
-script suggests.
+Sorry for that. Should I resend to the ML?
 
-thanks,
--- Shuah
+
+-- 
+WBR, Yauheni
 
