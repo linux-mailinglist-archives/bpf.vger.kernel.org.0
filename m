@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE78E1DEF8E
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 20:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8471DEFB6
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 21:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730849AbgEVS6g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 14:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
+        id S1730925AbgEVTH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 15:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730840AbgEVS6f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 14:58:35 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810A1C061A0E;
-        Fri, 22 May 2020 11:58:35 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id i5so11686855qkl.12;
-        Fri, 22 May 2020 11:58:35 -0700 (PDT)
+        with ESMTP id S1730867AbgEVTH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 15:07:59 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CF6C05BD43;
+        Fri, 22 May 2020 12:07:58 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id s1so11765253qkf.9;
+        Fri, 22 May 2020 12:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Gpy0uHkIeQmpCnBOmw7IB3fvyPs5tQERo4inod6pNFc=;
-        b=IhOgSoXLkCIJvCLmV/m6sF6m++0UII5dTW5RGAY4JS9hxMutg6J+qxjmtbtV3TZ5nd
-         9WdeeguflL9LBQncNSPhvvGVwmJXpPU2nwueYiZEUGd1idmB/OLeH5J+4wacHGdolqxU
-         NYpLnnzehH9hsIlD8YgQ6uX8qjIIUyJbHllB/F78JXMAyWQlLm+XE8ZbbqYGQ9p+rfgd
-         ECnDF4qT0CQUlg8dvdPPcXNQgSggRJh/rhEL6NvvzJVbOCns5iwC8thpt69egVsqQ48Z
-         4uKDqUYVHgaJRorwwedh7nOMwHJTXtot7rxJ4n9Q7e3PPFdlmS7EtEJ4ChuuTiaImX/u
-         wVOg==
+        bh=cP5NZcCM4E0ML+MjDR5Tnt9wAZKTWYo4VSKRdeIz7EE=;
+        b=KczSMAuZR3ZxghK8BWr4poKujf+qNDoAMUsj3EewtvYcpwOGxykoI3F4k58KZ+sudp
+         s1LX/2LwygR+q2T3lACD2jJRlEAg47nq38naDwdHftAMQ2a2BzWn3XVZ+9+YJtqg0qB0
+         lv/C41V+HBB40lnwoPuK/knkd6KzhD7VRtPZUB4NVdRm/WmnbiaQtY+KtF0Oazx3207L
+         iVAbZcOJs9LWuzPlDaO9wY9HIIJ4hb1mEEB2nU3k5UD8qc8haQCmC13UwTHSStx9JsGY
+         eXC5I2Z0BiBmcjCNKrKV5ZecCUZCrraFNXL0CGkx09JXYeg0cG0+CBs8HExjK4hT6bug
+         a4aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Gpy0uHkIeQmpCnBOmw7IB3fvyPs5tQERo4inod6pNFc=;
-        b=XArbfxeM6qGwLTtHxh88lqehhYfUcvaYBEj+wPk4xAzTRjN5Qhkjsk1lNXGeNbL7pH
-         YsoIlrdzD1TIArfk3DKrotqjnVdejTNaYcqpqF+iecR8k5Ed5MJ0hOEQzpqZru4w+NXA
-         KnQsp/rMQgKNa668UemjPPpi+BFzLlGRNOvzrxdfhqChaiJmW6rB/YcJZciWSD7FDxLG
-         yhUzvFXBTu8QVCO5DRwdSmt9dv7QILDgnorMMwul4tK0knJw6JCOLS348p/p/lCoCe68
-         fwHUddnKGEIFK9p0Lop2TUtR/AeqoglKRNQOXgfGw36XHEuVCPEWMbVBS2mRSwJEZfgd
-         tb7Q==
-X-Gm-Message-State: AOAM530EcsuRQsxLPRYxfFCt6am9ZzyJREmocGoUFEB3nUXCODHKPj8i
-        P/vWQJrHEOwUoyzIywYf7fBtKgRil7F9ie2ZSjc=
-X-Google-Smtp-Source: ABdhPJxU/DEHIQc0KmmkRUdeR6DSacVYg35VEadwnuMPRsD2vrzsFWPOj+lIDMwAvCWdtDdarKve10T19QyWO2rsUa0=
-X-Received: by 2002:ae9:efc1:: with SMTP id d184mr17475880qkg.437.1590173914774;
- Fri, 22 May 2020 11:58:34 -0700 (PDT)
+        bh=cP5NZcCM4E0ML+MjDR5Tnt9wAZKTWYo4VSKRdeIz7EE=;
+        b=COBvMovd6Sp+aIqVdfz1lmrYVhl2FmCTIVyV2nUwwPG8g5qhkD5M2GU97+YWVJbgzH
+         YgCJDnDh5jNIY2sxHVkttmCEWDKjWLU9uYmtPBKClIIY3mpJOGbHPuus0G5ZFuR4BwmO
+         6/yjvwQAgsNUw3hKJpFP11onHldRrRP1dpMB93QBFkiTAbWu4gPietfaQW6v+zL6Fyuh
+         iNmRSIk9QbZHQsNbBTilSCpZWCBA3pSbz0Rcjx40/WH7Q2JaGrKmCiVmFbyW/3IkoTNh
+         gMmZgBYhibzSCnP6pp/MzRj/0U/d1+GJbyY9w9uIlIPvdsnuI4UEWqgkjP71gIU/hM9T
+         g+yA==
+X-Gm-Message-State: AOAM530PnQGCZMTLj7+eYKbjUIlLztorQtCwMcPBlN5AT5ZTuFny2Zh2
+        cKsoo9yrl8Q8G7yRJYqi+CEKE5rLgAyS2hS2xnLkB8mn
+X-Google-Smtp-Source: ABdhPJw4rQ1oYVQPO2v0pSrSZw3oxGarJJ1LkCm6NTyyi7QSDy4VX0WvnPkxtbG4o8dkHvOAImI7Iaf6bX4X9W2dmN8=
+X-Received: by 2002:a05:620a:2049:: with SMTP id d9mr17756600qka.449.1590174477089;
+ Fri, 22 May 2020 12:07:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200517195727.279322-1-andriin@fb.com> <20200517195727.279322-6-andriin@fb.com>
- <20200522012034.sufpu7e62itcn2vg@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200522012034.sufpu7e62itcn2vg@ast-mbp.dhcp.thefacebook.com>
+References: <20200517195727.279322-1-andriin@fb.com> <20200517195727.279322-7-andriin@fb.com>
+ <20200522012147.shnwybm5my7dgy4v@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200522012147.shnwybm5my7dgy4v@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 May 2020 11:58:24 -0700
-Message-ID: <CAEf4BzZy+iVMfVCHP-PT5hdeWwmjgqp5dpPvhzbz1bsateJN_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 5/7] selftests/bpf: add BPF ringbuf selftests
+Date:   Fri, 22 May 2020 12:07:46 -0700
+Message-ID: <CAEf4Bza34RXPn_1m-nnEceRCQLFykEv9YQXpZZnyk0sE3X-Jwg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/7] bpf: add BPF ringbuf and perf buffer benchmarks
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -65,55 +65,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 6:20 PM Alexei Starovoitov
+On Thu, May 21, 2020 at 6:21 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Sun, May 17, 2020 at 12:57:25PM -0700, Andrii Nakryiko wrote:
-> > diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> > new file mode 100644
-> > index 000000000000..7eb85dd9cd66
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> > @@ -0,0 +1,77 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2019 Facebook
+> On Sun, May 17, 2020 at 12:57:26PM -0700, Andrii Nakryiko wrote:
+> > +
+> > +static inline int roundup_len(__u32 len)
+> > +{
+> > +     /* clear out top 2 bits */
+> > +     len <<= 2;
+> > +     len >>= 2;
+> > +     /* add length prefix */
+> > +     len += RINGBUF_META_LEN;
+> > +     /* round up to 8 byte alignment */
+> > +     return (len + 7) / 8 * 8;
+> > +}
 >
-> oops ;)
+> the same round_up again?
 >
-
-heh, still living in good old 2019... :) fixing...
-
 > > +
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
+> > +static void ringbuf_custom_process_ring(struct ringbuf_custom *r)
+> > +{
+> > +     unsigned long cons_pos, prod_pos;
+> > +     int *len_ptr, len;
+> > +     bool got_new_data;
 > > +
-> > +char _license[] SEC("license") = "GPL";
+> > +     cons_pos = smp_load_acquire(r->consumer_pos);
+> > +     while (true) {
+> > +             got_new_data = false;
+> > +             prod_pos = smp_load_acquire(r->producer_pos);
+> > +             while (cons_pos < prod_pos) {
+> > +                     len_ptr = r->data + (cons_pos & r->mask);
+> > +                     len = smp_load_acquire(len_ptr);
 > > +
-> > +struct sample {
-> > +     int pid;
-> > +     int seq;
-> > +     long value;
-> > +     char comm[16];
-> > +};
+> > +                     /* sample not committed yet, bail out for now */
+> > +                     if (len & RINGBUF_BUSY_BIT)
+> > +                             return;
 > > +
-> > +struct ringbuf_map {
-> > +     __uint(type, BPF_MAP_TYPE_RINGBUF);
-> > +     __uint(max_entries, 1 << 12);
-> > +} ringbuf1 SEC(".maps"),
-> > +  ringbuf2 SEC(".maps");
+> > +                     got_new_data = true;
+> > +                     cons_pos += roundup_len(len);
 > > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-> > +     __uint(max_entries, 4);
-> > +     __type(key, int);
-> > +     __array(values, struct ringbuf_map);
-> > +} ringbuf_arr SEC(".maps") = {
-> > +     .values = {
-> > +             [0] = &ringbuf1,
-> > +             [2] = &ringbuf2,
-> > +     },
-> > +};
+> > +                     atomic_inc(&buf_hits.value);
+> > +             }
+> > +             if (got_new_data)
+> > +                     smp_store_release(r->consumer_pos, cons_pos);
+> > +             else
+> > +                     break;
+> > +     };
+> > +}
 >
-> the tests look great. Very easy to understand the usage model.
+> copy paste from libbpf? why?
 
-great, thanks!
+Yep, it's deliberate, see description of rb-custom benchmark in commit message.
+
+Basically, I was worried that generic libbpf callback calling might
+introduce a noticeable slowdown and wanted to test the case where
+ultimate peformance was necessary and someone would just implement
+custom reading loop with inlined processing logic. And it turned out
+to be noticeable, see benchmark results for rb-libbpf and rb-custom
+benchmarks. So I satisfied my curiosity :), but if you think that's
+not necessary, I can drop rb-custom (and, similarly, pb-custom for
+perfbuf). It still seems useful to me, though (and is sort of an
+example of minimal correct implementation of ringbuf/perfbuf reading).
+
+Btw, apart from speed up from avoiding indirect calls (due to
+callback), this algorithm also does "batched"
+smp_store_release(r->consumer_pos) only once after each inner
+`while(cons_pos < prod_pos)` loop, so there is theoretically less
+cache line bouncing, which might give a bit more speed as well. Libbpf
+pessimistically does smp_store_release() after each record in
+assumption that customer-provided callback might take a while, so it's
+better to give producers a bit more space back as early as possible.
