@@ -2,84 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3931DEFBB
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 21:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76FE1DF0F7
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 23:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730992AbgEVTId (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 15:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730922AbgEVTId (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 15:08:33 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BDAC05BD43;
-        Fri, 22 May 2020 12:08:32 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id fb16so5239973qvb.5;
-        Fri, 22 May 2020 12:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RSKvN9GsCgTeXDr/XJE3bDuJb3nm0AFXNuuPiYKCNlw=;
-        b=uhepK/Mfr7dHA4lujcE2P6GZrPSU5wATxf2sjY/mWHlCeJUMTIhz/fv+nViuEmc8Gf
-         GEQo4VpDhkP9sevXvpuZbMVwxfqKTkR+N3bR12CEZFPb28WmIXYalxfQeRvb323sATX2
-         idBHO9QxFI16XmxCpgEtjkqQJun/eBMvsjKPbewiOYf5tAqF4JCSu9RxGmO8+PVpAsqw
-         kmuQ7zgXmdTf79dRxNxawAujl1+3w0PbJ7GOBFtOMJGjOSC+LwFjawnjvqRG+Y/24Wt/
-         bLEMa79tWWEnnI420nxqdTHYbwVrgMlIyg/OctpFjeDBYa9UpYm9FlYrrIQ4k2QMb1Rc
-         jAeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RSKvN9GsCgTeXDr/XJE3bDuJb3nm0AFXNuuPiYKCNlw=;
-        b=GB5YDZ0n5Lj2KuYZwGllU/BwgU2ECIZmUuKPp/+LyDZNEt8Rx4PoW4VDaxKuYzIKI7
-         SNTVg8OtHagmGsotiLiT60SD6c42CpGLRPO9xFanfsZXJlFdZONXYIqBn3UZyxyfHsw7
-         sB4m3U6XlX0KCALBS7Hs0Q/0OQ4D5pWykD2m8UTp1Lamh/EUYH8vXmGNf01RJ5GRIzp8
-         u8sFTMYs2zg2fUuBMxrz4elvknx65NwETGPC78S04UGseZVukFYQSTtbdJ76VRm73ezA
-         fEQ2+jyjOLfoq74wPRvSi2NX3fZ3kW8EtUEpEhZqz9kUb/hM296JqMNe4sdoUo+Jv+Fl
-         RqmA==
-X-Gm-Message-State: AOAM532fAdpPMIKDQzy+GkQIZ4r5HBk/wBLDKvuGrPGMJrKTqOnXhDMa
-        opcLYmb4lkivUXMhSbSmitaWGqgKCtAJe+8yEgE=
-X-Google-Smtp-Source: ABdhPJwr8AqOf14843trhTGV00bCKP0IIYcHllnnd6LkWIuEL92YkXQRB2JtH9P+6wA5tZAww620tvxUvTD3dq9CfVM=
-X-Received: by 2002:a0c:a892:: with SMTP id x18mr5140027qva.247.1590174512189;
- Fri, 22 May 2020 12:08:32 -0700 (PDT)
+        id S1731023AbgEVVTY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 17:19:24 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37146 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730976AbgEVVTY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 17:19:24 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jcF4T-0004pr-Ny; Fri, 22 May 2020 23:19:13 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-05-22
+Date:   Fri, 22 May 2020 23:19:13 +0200
+Message-Id: <20200522211913.25281-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20200517195727.279322-1-andriin@fb.com> <20200517195727.279322-8-andriin@fb.com>
- <20200522012328.7vs44qhutdiukrog@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200522012328.7vs44qhutdiukrog@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 May 2020 12:08:21 -0700
-Message-ID: <CAEf4Bzat4ct+czJAKta-7Kwo-MVRxSG3J7qe04un3ymn6dK2xw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 7/7] docs/bpf: add BPF ring buffer design notes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25820/Fri May 22 14:21:08 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 6:23 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, May 17, 2020 at 12:57:27PM -0700, Andrii Nakryiko wrote:
-> > Add commit description from patch #1 as a stand-alone documentation under
-> > Documentation/bpf, as it might be more convenient format, in long term
-> > perspective.
-> >
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  Documentation/bpf/ringbuf.txt | 191 ++++++++++++++++++++++++++++++++++
->
-> Thanks for the doc. Looks great, but could you make it .rst from the start?
-> otherwise soon after somebody will be converting it adding churn.
+Hi David,
 
-Yeah, sure, will do conversion in v3.
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 3 non-merge commits during the last 3 day(s) which contain
+a total of 5 files changed, 69 insertions(+), 11 deletions(-).
+
+The main changes are:
+
+1) Fix to reject mmap()'ing read-only array maps as writable since BPF verifier
+   relies on such map content to be frozen, from Andrii Nakryiko.
+
+2) Fix breaking audit from secid_to_secctx() LSM hook by avoiding to use
+   call_int_hook() since this hook is not stackable, from KP Singh.
+
+3) Fix BPF flow dissector program ref leak on netns cleanup, from Jakub Sitnicki.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, James Morris, Jann Horn, Stanislav Fomichev
+
+----------------------------------------------------------------
+
+The following changes since commit 20a785aa52c82246055a089e55df9dac47d67da1:
+
+  sctp: Don't add the shutdown timer if its already been added (2020-05-19 15:46:52 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 5cf65922bb15279402e1e19b5ee8c51d618fa51f:
+
+  flow_dissector: Drop BPF flow dissector prog ref on netns cleanup (2020-05-21 17:52:45 -0700)
+
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      bpf: Prevent mmap()'ing read-only maps as writable
+
+Jakub Sitnicki (1):
+      flow_dissector: Drop BPF flow dissector prog ref on netns cleanup
+
+KP Singh (1):
+      security: Fix hook iteration for secid_to_secctx
+
+ kernel/bpf/syscall.c                          | 17 ++++++++++++++---
+ net/core/flow_dissector.c                     | 26 +++++++++++++++++++++-----
+ security/security.c                           | 16 ++++++++++++++--
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 13 ++++++++++++-
+ tools/testing/selftests/bpf/progs/test_mmap.c |  8 ++++++++
+ 5 files changed, 69 insertions(+), 11 deletions(-)
