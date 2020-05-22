@@ -2,79 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36FB1DE00D
-	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 08:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB751DE152
+	for <lists+bpf@lfdr.de>; Fri, 22 May 2020 09:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgEVGkx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 02:40:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45555 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728200AbgEVGkw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 02:40:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590129651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mTaoeYWrAmwNDuPFgsH0H1f2AsEd8kq2roldQNjN7NI=;
-        b=EHoq9U5MTwKUVB8jRXFhSE07+u3ePJ3LSw8W5xHEv9QT6n6EBRhv+xp/4gm5IJ8vq1EBEJ
-        J4duytyFRj2b8UjnWdTW90J5HKTI3Pnfdfc4UhO1XxhcTwALsOxcbLkoi5VdnwurrM0Li6
-        s3S8lYwB6fk7p0i/+t55zE+lTboC3bI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-q-91C4HgMT-rl7WniVaH1A-1; Fri, 22 May 2020 02:40:49 -0400
-X-MC-Unique: q-91C4HgMT-rl7WniVaH1A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E7BE80B72D;
-        Fri, 22 May 2020 06:40:48 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-212.ams2.redhat.com [10.36.112.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2536960CC0;
-        Fri, 22 May 2020 06:40:46 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH 0/8] selftests/bpf: installation and out of tree build fixes
-References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
-Date:   Fri, 22 May 2020 09:40:44 +0300
-In-Reply-To: <20200522041310.233185-1-yauheni.kaliuta@redhat.com> (Yauheni
-        Kaliuta's message of "Fri, 22 May 2020 07:13:02 +0300")
-Message-ID: <xuny367so4k3.fsf@redhat.com>
+        id S1728891AbgEVHxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 03:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728889AbgEVHxR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 03:53:17 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED4BC08C5C0
+        for <bpf@vger.kernel.org>; Fri, 22 May 2020 00:53:16 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id f3so10466351ioj.1
+        for <bpf@vger.kernel.org>; Fri, 22 May 2020 00:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0hMIF0bX1Z2ctSQRsIH8bL7klvWMt1Ycgv5mMdX899A=;
+        b=Gk2163dsjAuCNMV7LA/ZO42nMwxeZZ8nqJ1CBTIwgC8z9GLVnppYZnzstChQrm2qfD
+         8mK9im+afdMDewIqO5+X0zY8inurUF6yBtXCr4le9dq07HdNqzliYP9linligez9q6A4
+         vz5QgloIQQzgBn68xxitBfY7Z/LTbARHOfPzkJ85zkXpSMx997hIS9xwP2ZvNBtV0vlF
+         vMWlbsnsL2vmVoJo2A+kURB5Z24W+eD7ovARCe+hLsKTyGNk6JMBNtxzJ3142utLLo4h
+         XBZFh7Wpw3WPne/kbai3pyc0huvqfMtLzf7bZ/JqN7UuT379sgLl2mz4R8+evKeOPCON
+         njuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0hMIF0bX1Z2ctSQRsIH8bL7klvWMt1Ycgv5mMdX899A=;
+        b=e1/YBF6BOrV4CRwqEizORhqnqvQ9MJQVTP3Z2+0nFHVoSCd0+IR0W4Avisnhg43fcC
+         8+7NjRiI2GMEUYRPZ99G7soEucg3B7IkS4SR53EPwV0vWsgXSXy1RA8CD3N9LACpBPxx
+         zUILrA8Ym8/jduSECqWvGzxRYb27J0kYys00+4hpOsLotcwWhYsn6kPizue66fSUMEWJ
+         lrXVuexayCD0aNld9LcNfZHqEzs5nlFmGFvKc30qg/evFsk3s2Pbk9dzhNgCM5xn11fm
+         QJaGcguRLk0fQ3XTT0+hFRUuG80PrEh/OHQQT855aLthV/7TMrN28XN4z3OnhUHMSveg
+         uBYg==
+X-Gm-Message-State: AOAM533nRf9uV2BSoMWXoeLMzcldb/ryPolUuPSg8FrVr6NMr7RKP0Ez
+        I9/kpdsztt7abYR6TPNHxsYqwQZ/ifZrhstVTT6iPw==
+X-Google-Smtp-Source: ABdhPJw8ie6elC0IvR64+rA0KFztqvvPkNu/yxHl9rVx5DEDKO3Y7o1i7gvscpCS/kn/kL6IVesi9lAsfGqChJXom24=
+X-Received: by 2002:a5e:c603:: with SMTP id f3mr2039700iok.56.1590133995721;
+ Fri, 22 May 2020 00:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20200521123835.70069-1-songmuchun@bytedance.com> <20200521164746.GD28818@bombadil.infradead.org>
+In-Reply-To: <20200521164746.GD28818@bombadil.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 22 May 2020 15:52:39 +0800
+Message-ID: <CAMZfGtWn4xa-5-0rN2KJzUYioiOOUYX9BFcUDNZS85H11sYDEA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] files: Use rcu lock to get the file
+ structures for better performance
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     adobriyan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        ebiederm@xmission.com, bernd.edlinger@hotmail.de,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, May 22, 2020 at 12:47 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, May 21, 2020 at 08:38:35PM +0800, Muchun Song wrote:
+> > +++ b/fs/proc/fd.c
+> > @@ -34,19 +34,27 @@ static int seq_show(struct seq_file *m, void *v)
+> >       if (files) {
+> >               unsigned int fd = proc_fd(m->private);
+> >
+> > -             spin_lock(&files->file_lock);
+> > +             rcu_read_lock();
+> > +again:
+> >               file = fcheck_files(files, fd);
+> >               if (file) {
+> > -                     struct fdtable *fdt = files_fdtable(files);
+> > +                     struct fdtable *fdt;
+> > +
+> > +                     if (!get_file_rcu(file)) {
+> > +                             /*
+> > +                              * we loop to catch the new file (or NULL
+> > +                              * pointer).
+> > +                              */
+> > +                             goto again;
+> > +                     }
+> >
+> > +                     fdt = files_fdtable(files);
+>
+> This is unusual, and may not be safe.
+>
+> fcheck_files() loads files->fdt.  Then it loads file from fdt->fd[].
+> Now you're loading files->fdt again here, and it could have been changed
+> by another thread expanding the fd table.
+>
+> You have to write a changelog which convinces me you've thought about
+> this race and that it's safe.  Because I don't think you even realise
+> it's a possibility at this point.
 
-Actually, a bit more needed :)
+Thanks for your review, it is a problem. I can fix it.
 
->>>>> On Fri, 22 May 2020 07:13:02 +0300, Yauheni Kaliuta  wrote:
+>
+> > @@ -160,14 +168,23 @@ static int proc_fd_link(struct dentry *dentry, struct path *path)
+> >               unsigned int fd = proc_fd(d_inode(dentry));
+> >               struct file *fd_file;
+> >
+> > -             spin_lock(&files->file_lock);
+> > +             rcu_read_lock();
+> > +again:
+> >               fd_file = fcheck_files(files, fd);
+> >               if (fd_file) {
+> > +                     if (!get_file_rcu(fd_file)) {
+> > +                             /*
+> > +                              * we loop to catch the new file
+> > +                              * (or NULL pointer).
+> > +                              */
+> > +                             goto again;
+> > +                     }
+> >                       *path = fd_file->f_path;
+> >                       path_get(&fd_file->f_path);
+> > +                     fput(fd_file);
+> >                       ret = 0;
+> >               }
+> > -             spin_unlock(&files->file_lock);
+> > +             rcu_read_unlock();
+>
+> Why is it an improvement to increment/decrement the refcount on the
+> struct file here, rather than take/release the spinlock?
+>
 
- > I had a look, here are some fixes.
- > Yauheni Kaliuta (8):
- >   selftests/bpf: remove test_align from Makefile
- >   selftests/bpf: build bench.o for any $(OUTPUT)
- >   selftests/bpf: install btf .c files
- >   selftests/bpf: fix object files installation
- >   selftests/bpf: add output dir to include list
- >   selftests/bpf: fix urandom_read installation
- >   selftests/bpf: fix test.h placing for out of tree build
- >   selftests/bpf: factor out MKDIR rule
+lock-free vs spinlock.
 
- >  tools/testing/selftests/bpf/Makefile | 77 ++++++++++++++++++++--------
- >  1 file changed, 55 insertions(+), 22 deletions(-)
-
- > -- 
- > 2.26.2
-
+Do you think spinlock would be better than the lock-free method?
+Actually I prefer the rcu lock.
 
 -- 
-WBR,
-Yauheni Kaliuta
-
+Yours,
+Muchun
