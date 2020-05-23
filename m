@@ -2,145 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7E91DF83B
-	for <lists+bpf@lfdr.de>; Sat, 23 May 2020 18:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4516A1DFB50
+	for <lists+bpf@lfdr.de>; Sun, 24 May 2020 00:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgEWQaB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 May 2020 12:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgEWQaB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 May 2020 12:30:01 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D112C061A0E;
-        Sat, 23 May 2020 09:30:01 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k22so5641362pls.10;
-        Sat, 23 May 2020 09:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=6pAXMPbHbvLSWlK9WHtxQGZ5oIoO4iFw14tKjUPAMAA=;
-        b=oRMDVrL0qv58KOSmQfSrcMW3YBaGg8LvtAoDn1gBbAJ1m3BQCCxIUHgBgeoVXpu9Ze
-         YOO4ai731UMt5spKe/HRTRiKNI4He8J4mjr3ScCbMVEnlU1xJclHNI4yOFTrASfk4mjj
-         5IDXUXaYAeNAEjULqTZtLWf1oI8IXLZsIJsNi3IwAkXa5Rs3w1d6LONOn4j4YVICv28h
-         JIxH/js5/EMbooYVK72cECwIhxeX0r2sHMMF50EkMTy1ezOUnZs4hmPgJgkrPqUGTK6l
-         qB49yl2ZMEEcZZoBhZDlZV6cjaAQu9NBFGsJbDuxXxSnn0EzkwIKLZHaO+n5dwcnPS7l
-         4cww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=6pAXMPbHbvLSWlK9WHtxQGZ5oIoO4iFw14tKjUPAMAA=;
-        b=JEnOTKF7iRFWuHc3CQhsMkxeao1qn7NRyZw/U/nrqrlCvPl7hmS4ZvYriyvnsEAvUA
-         B+xqiPhxv90RpzeP2IsktyP1+in7yNEhTLalPDudT1kqPGMtw/ksIzG8+HMug/YOA+iA
-         XqQibABPwCHjMN/G2BljmJjVTzFaCHSQf1ly/QnkQY3yPWpEFhMB0QN6TNCQJxCpU3Et
-         BbXzRXzYhvf/2gtpUenzMieskBu+mfi/q3aWqn95zA4rIEnIitjM97bCy+zbawTh41S7
-         19NLYBRS7gTpaISzRxQNIjSoo2IxOQlpNMCnPMAPPPhFteA4myQTNZPOofIGlu92M1G0
-         nuKw==
-X-Gm-Message-State: AOAM531nDO8I1VWzTg0SBVjGBa3v8k7+XyF2yrUGt2KU9F/1aTuYZG3U
-        6DiYdDipeXlLTzL9s+tFVdLf28Mw
-X-Google-Smtp-Source: ABdhPJw10LDTk7fdab6CG7yCB0CKqhKyL/HHY9JnqVwA4pVz6e2Bww4uhjx7hdpGaEAbKJKybDyE5Q==
-X-Received: by 2002:a17:90b:1994:: with SMTP id mv20mr10999577pjb.41.1590251400856;
-        Sat, 23 May 2020 09:30:00 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id e15sm9462760pfh.23.2020.05.23.09.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 May 2020 09:29:59 -0700 (PDT)
-Date:   Sat, 23 May 2020 09:29:50 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
-        andrii.nakryiko@gmail.com, ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-        lmb@cloudflare.com
-Message-ID: <5ec94f7eb8377_103c2ab70a8e65c0d1@john-XPS-13-9370.notmuch>
-In-Reply-To: <f6f5b27f-0a60-0e86-6e7b-f721b069a88c@iogearbox.net>
-References: <159012108670.14791.18091717338621259928.stgit@john-Precision-5820-Tower>
- <159012146282.14791.7652481804905295417.stgit@john-Precision-5820-Tower>
- <f6f5b27f-0a60-0e86-6e7b-f721b069a88c@iogearbox.net>
-Subject: Re: [bpf-next PATCH v4 2/5] bpf: extend bpf_base_func_proto helpers
- with probe_* and *current_task*
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728488AbgEWWTt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 May 2020 18:19:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43270 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728468AbgEWWTt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 May 2020 18:19:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590272387;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+pt5OdV916/YUwvPCITecq1PtzZYEa/3tc5nSV/fP4o=;
+        b=O29Jop4FyNZHULmwsLnsnxz2pEWBSInQXOSePqAR5Ubu14tbGBUrmUtF4IG3Z6jm4hRTGz
+        Ytn/PUwww045LT3mdkUjPrbRPGGJfN5fpCJLmwxMGjQzLG37IA46L/hvqNq4eOjUUvElJL
+        2TMA2EWJTCC0kKqXC5OR0n7ESIg6o04=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-GLPbmnFKM-aKHl18yEjEMg-1; Sat, 23 May 2020 18:19:45 -0400
+X-MC-Unique: GLPbmnFKM-aKHl18yEjEMg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D63A1460;
+        Sat, 23 May 2020 22:19:42 +0000 (UTC)
+Received: from krava (unknown [10.40.192.72])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B73C5C1D3;
+        Sat, 23 May 2020 22:19:37 +0000 (UTC)
+Date:   Sun, 24 May 2020 00:19:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 0/7] Share events between metrics
+Message-ID: <20200523221936.GA123450@krava>
+References: <20200520182011.32236-1-irogers@google.com>
+ <20200521114325.GT157452@krava>
+ <20200521172235.GD14034@kernel.org>
+ <20200522101311.GA404187@krava>
+ <20200522144908.GI14034@kernel.org>
+ <CAP-5=fUaaNpi3RZd9-Q-uCaudop0tU5NN8HFek5e2XLoBZqt6w@mail.gmail.com>
+ <CAP-5=fWZYJ2RXeXGGmFXAW9CNnb2S6cGYKc_M=hUQyCng7KJBQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fWZYJ2RXeXGGmFXAW9CNnb2S6cGYKc_M=hUQyCng7KJBQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann wrote:
-> On 5/22/20 6:24 AM, John Fastabend wrote:
-> > Often it is useful when applying policy to know something about the
-> > task. If the administrator has CAP_SYS_ADMIN rights then they can
-> > use kprobe + networking hook and link the two programs together to
-> > accomplish this. However, this is a bit clunky and also means we have
-> > to call both the network program and kprobe program when we could just
-> > use a single program and avoid passing metadata through sk_msg/skb->cb,
-> > socket, maps, etc.
-> > 
-> > To accomplish this add probe_* helpers to bpf_base_func_proto programs
-> > guarded by a perfmon_capable() check. New supported helpers are the
-> > following,
-> > 
-> >   BPF_FUNC_get_current_task
-> >   BPF_FUNC_current_task_under_cgroup
-> >   BPF_FUNC_probe_read_user
-> >   BPF_FUNC_probe_read_kernel
-> >   BPF_FUNC_probe_read_user_str
-> >   BPF_FUNC_probe_read_kernel_str
-> > 
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > Acked-by: Yonghong Song <yhs@fb.com>
+On Fri, May 22, 2020 at 10:56:59AM -0700, Ian Rogers wrote:
 
-[...]
+SNIP
 
-> >   bpf_base_func_proto(enum bpf_func_id func_id)
-> >   {
-> > @@ -648,6 +655,26 @@ bpf_base_func_proto(enum bpf_func_id func_id)
-> >   	case BPF_FUNC_jiffies64:
-> >   		return &bpf_jiffies64_proto;
-> >   	default:
-> > +		break;
-> > +	}
-> > +
-> > +	if (!perfmon_capable())
-> > +		return NULL;
-> > +
-> > +	switch (func_id) {
-> > +	case BPF_FUNC_get_current_task:
-> > +		return &bpf_get_current_task_proto;
-> > +	case BPF_FUNC_current_task_under_cgroup:
-> > +		return &bpf_current_task_under_cgroup_proto;
+> >> >       #11 0x00000000004b6911 in cmd_test (argc=1, argv=0x7fffffffd7f0) at tests/builtin-test.c:772
+> >> >       #12 0x00000000004e977b in run_builtin (p=0xa7eee8 <commands+552>, argc=3, argv=0x7fffffffd7f0) at perf.c:312
+> >> >       #13 0x00000000004e99e8 in handle_internal_command (argc=3, argv=0x7fffffffd7f0) at perf.c:364
+> >> >       #14 0x00000000004e9b2f in run_argv (argcp=0x7fffffffd64c, argv=0x7fffffffd640) at perf.c:408
+> >> >       #15 0x00000000004e9efb in main (argc=3, argv=0x7fffffffd7f0) at perf.c:538
+> >> >
+> >> > attached patch fixes it for me, but I'm not sure this
+> >> > should be necessary
+> >>
+> >> ... applying the patch below makes the segfault go away. Ian, Ack? I can
+> >> fold it into the patch introducing the problem.
+> >
+> >
+> > I suspect this patch is a memory leak. The underlying issue is likely the outstanding hashmap_clear fix in libbpf. Let me check.
+> >
+> > Thanks,
+> > Ian
 > 
-> Afaics, the map creation of BPF_MAP_TYPE_CGROUP_ARRAY is only tied to CAP_BPF and
-> the bpf_current_task_under_cgroup() technically is not strictly tracing related.
-> We do have similar bpf_skb_under_cgroup() for this map type in networking, for
-> example, so 'current' is the only differentiator between the two.
+> Tested:
+> $ git checkout -b testing acme/tmp.perf/core
+> $ make ...
+> $ perf test 7
+> 7: Simple expression parser                              : FAILED!
+> $ git cherry-pick 6bca339175bf
+> [acme-perf-expr-testing 4614bd252003] libbpf: Fix memory leak and
+> possible double-free in hashmap__c
+
+yep, it fixes the issue for me, but I see that under different commit number:
+
+  229bf8bf4d91 libbpf: Fix memory leak and possible double-free in hashmap__clear
+
+jirka
+
+> lear
+> Author: Andrii Nakryiko <andriin@fb.com>
+> Date: Tue Apr 28 18:21:04 2020 -0700
+> 1 file changed, 7 insertions(+)
+> $ make ...
+> $ perf test 7
+> 7: Simple expression parser                              : Ok
 > 
-> Imho, the get_current_task() and memory probes below are fine and perfmon_capable()
-> is also required for them. It's just that this one above stands out from the rest,
-> and while thinking about it, what is the rationale for enabling bpf_current_task_under_cgroup()
-> but not e.g. bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id() helpers
-> that you've added in prior patch to sk_msg_func_proto()? What makes these different?
-
-I think the only reason I split it like this is it required touching bpf_trace.c
-on the code side.
-
-
+> I'd prefer we took the libbpf fix as initializing over the top of the
+> hashmap will leak. This fix is in the tools/perf/util/hashmap.c.
 > 
-> The question is also wrt cgroup helpers on how reliable they could be used, say, in
-> networking programs when we're under softirq instead of process context? Something
-> would need to be documented at min, but I think it's probably best to say that we
-> allow retrieving current and the probe mem helpers only, given for these cases you're
-> on your own anyway and have to know what you're doing.. while the others can be used
-> w/o much thought in some cases where we always have a valid current (like sock_addr
-> progs), but not in others tc/BPF or XDP. Wdyt?
+> Thanks,
+> Ian
 > 
+> >> - Arnaldo
+> >>
+> >> > jirka
+> >> >
+> >> >
+> >> > ---
 
-That is a good analysis. Let me just drop the current_task_under_cgroup here and then
-we can add it on a per context basis.
+SNIP
 
-Thanks,
-John
