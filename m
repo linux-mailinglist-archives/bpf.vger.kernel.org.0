@@ -2,60 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF7A1DF3B2
-	for <lists+bpf@lfdr.de>; Sat, 23 May 2020 03:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E961DF3BF
+	for <lists+bpf@lfdr.de>; Sat, 23 May 2020 03:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgEWBC4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 May 2020 21:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
+        id S2387525AbgEWBH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 May 2020 21:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387484AbgEWBCy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 May 2020 21:02:54 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5353C05BD43
-        for <bpf@vger.kernel.org>; Fri, 22 May 2020 18:02:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s8so11967418wrt.9
-        for <bpf@vger.kernel.org>; Fri, 22 May 2020 18:02:51 -0700 (PDT)
+        with ESMTP id S2387491AbgEWBH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 May 2020 21:07:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650EFC05BD43
+        for <bpf@vger.kernel.org>; Fri, 22 May 2020 18:07:57 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u188so11730868wmu.1
+        for <bpf@vger.kernel.org>; Fri, 22 May 2020 18:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=UA9qNsuSqBuwEW9X2q53MDSN/CA+BUtr5zDrNyDcPlg=;
-        b=fN6ekS+SlPlpBuANldX3LQofzetiK2tkYG5OKa45+e7LPEepION2QeEyntKELhOVwj
-         TH69OIeLhkSQbgK1vwTP8FycqJt6LWtrGZ2WXWN8uvR9CnZx+l4E1QTp/jUIM/1mkMyB
-         JqjkhQYPeRgfOvSe+mMYH9DR8pbR/nvGzxYe37rcLaTm6DgmDaxTiAl4VdxqC0IIocnq
-         RsGYEt001I/i0mpXryxDa73QWwXijKaoajbZ77iRGmtgk2B7kM59bAjca+JR0diSQfpU
-         GPkVpt7D2BtVGeDQAhPvpMFPG1lX61gucbe0iR9xVyH17EcX+TgRJj4x1onBoedFXO05
-         uFqA==
+        bh=jiqSi+xY3gUP3p/pOnNA6TC3IyMfO2CH4Q4oZK5IQeg=;
+        b=BSgYUuRTNpbG0SGm+d2uVpdR5Dt0beVFyCalp9QfMfIEqAihAaYeuYvekpnwpDgyrw
+         /XMg5gw4LRmkhQ/3/zQfOgBBgbRNt5yhPkSJ5mVG7Gpng3KAELcRlgC9SECsg35gbI5I
+         LaLNDCIK2bDRbcAakBtH3pnxNEZcd08L1hUD8CM7VMGiN09CB/kpq31QEZcWJMzsmLA1
+         6GTfH6Nh8E2JTcLt3oDkvvti56XU6ZGaxklHTkgZYQb9qxiyV4s1dyCAfznwR9YGSYm0
+         mO+lrAB3R2QPpHC97EXKRaYGmTTzy6mJDirwv0BseahXHFRkJ4ePU6aS57Aw7vj1u/nF
+         X/Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=UA9qNsuSqBuwEW9X2q53MDSN/CA+BUtr5zDrNyDcPlg=;
-        b=em6kZwlRanLeo1m9wptFj4Q8o+xMUYHomVyCOQY9i3shViF77CcCXkMfUZ5cEVn59I
-         8OP2Y2xZAfj8meROQanVoRyLzJhcvqGyi4ajKOx+8HQkvIdi00L/7gIizUbVZi8V8g63
-         FAsijotyhsmHZtU/insbfmSeWDaZLTKsn4FA48tFETVrD1UjqQmUrkHvE5zsyW5vc9SH
-         Uxp85ESYtqquAIisYlYQ8nrMPyxK6/3SWTjxENZLP5M/SWAiG8JnKPnGpKrzvpQQwQnx
-         qzJZja9FSz+p4Spv004Z2keJMNq//RZMvQxjmdUnXWNorLuRKoqjG6tiCiOjJBHDZ+M/
-         Indw==
-X-Gm-Message-State: AOAM5330hIWDocUgK9IULJ5snc5papklEAS6X7XGxE/Mv5mszF7A95we
-        3GHUzI+3vxQxavL3pp+kTOirYQ==
-X-Google-Smtp-Source: ABdhPJw5pgW9Cyi/1DCHRA/WqhgnHR9OmPZM0hkiKfxZ3ld1iSDPFx6bLVvmqvQs1HmSzAw2iaOE8g==
-X-Received: by 2002:adf:f5c1:: with SMTP id k1mr5288953wrp.30.1590195770374;
-        Fri, 22 May 2020 18:02:50 -0700 (PDT)
+        bh=jiqSi+xY3gUP3p/pOnNA6TC3IyMfO2CH4Q4oZK5IQeg=;
+        b=OTUFnXGASGgkknwR8Y6xM6VkvFck8oGBTWfr8c99pbIIo+PoGr5ptilr0WKnUvyi0j
+         WukrkCT9pcyXd1p3TFwDtsicS5xt4MUY33QiLgtsTXHxmnWgoRPp+CcPqg7uteKM6ZGH
+         +VkbaiP+qKY2gfP0bR6eaxwyhTq7oB7FgA3O0G30JXIKtL7/33Eb34VM5P1vhubxSB9i
+         jgBnMF7J9z++n/5OyA+J4l9LKL+gDHJyxjzaO/wwO3nsn414nc2ws8DmgxM29Sf0pK8w
+         5pBdZysEXwQ79qS8wjNxjKK9MGglmJwlnysra1K44lfx0Elw481NFczZRmF+agoo12sd
+         7Rzg==
+X-Gm-Message-State: AOAM5334W2Oi4eGoROv2XtbIJ+QhWisBc0ideoPIbJhRV8rol/+ayCGD
+        lO2Ffdy54h7pwYt+89JcSSX9jg==
+X-Google-Smtp-Source: ABdhPJyhzsKUNSD9prp+Uh4JLj+4KQKhf46FZO0TXMog5Hv+t5bj0zOYXXV4QDmdcV/2HMIWdMRmcw==
+X-Received: by 2002:a1c:6884:: with SMTP id d126mr3413221wmc.121.1590196075956;
+        Fri, 22 May 2020 18:07:55 -0700 (PDT)
 Received: from localhost.localdomain ([194.53.184.60])
-        by smtp.gmail.com with ESMTPSA id s8sm8114158wrg.50.2020.05.22.18.02.49
+        by smtp.gmail.com with ESMTPSA id z132sm12016973wmc.29.2020.05.22.18.07.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 18:02:49 -0700 (PDT)
+        Fri, 22 May 2020 18:07:55 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2] tools: bpftool: make capability check account for new BPF caps
-Date:   Sat, 23 May 2020 02:02:47 +0100
-Message-Id: <20200523010247.20654-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next] tools: bpftool: clean subcommand help messages
+Date:   Sat, 23 May 2020 02:07:51 +0100
+Message-Id: <20200523010751.23465-1-quentin@isovalent.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,187 +63,350 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Following the introduction of CAP_BPF, and the switch from CAP_SYS_ADMIN
-to other capabilities for various BPF features, update the capability
-checks (and potentially, drops) in bpftool for feature probes. Because
-bpftool and/or the system might not know of CAP_BPF yet, some caution is
-necessary:
+This is a clean-up for the formatting of the do_help functions for
+bpftool's subcommands. The following fixes are included:
 
-- If compiled and run on a system with CAP_BPF, check CAP_BPF,
-  CAP_SYS_ADMIN, CAP_PERFMON, CAP_NET_ADMIN.
+- Do not use argv[-2] for "iter" help message, as the help is shown by
+  default if no "iter" action is selected, resulting in messages looking
+  like "./bpftool bpftool pin...".
 
-- Guard against CAP_BPF being undefined, to allow compiling bpftool from
-  latest sources on older systems. If the system where feature probes
-  are run does not know of CAP_BPF, stop checking after CAP_SYS_ADMIN,
-  as this should be the only capability required for all the BPF
-  probing.
+- Do not print unused HELP_SPEC_PROGRAM in help message for "bpftool
+  link".
 
-- If compiled from latest sources on a system without CAP_BPF, but later
-  executed on a newer system with CAP_BPF knowledge, then we only test
-  CAP_SYS_ADMIN. Some probes may fail if the bpftool process has
-  CAP_SYS_ADMIN but misses the other capabilities. The alternative would
-  be to redefine the value for CAP_BPF in bpftool, but this does not
-  look clean, and the case sounds relatively rare anyway.
+- Andrii used argument indexing to avoid having multiple occurrences of
+  bin_name and argv[-2] in the fprintf() for the help message, for
+  "bpftool gen" and "bpftool link". Let's reuse this for all other help
+  functions. We can remove up to thirty arguments for the "bpftool map"
+  help message.
 
-Note that libcap offers a cap_to_name() function to retrieve the name of
-a given capability (e.g. "cap_sys_admin"). We do not use it because
-deriving the names from the macros looks simpler than using
-cap_to_name() (doing a strdup() on the string) + cap_free() + handling
-the case of failed allocations, when we just want to use the name of the
-capability in an error message.
-
-The checks when compiling without libcap (i.e. root versus non-root) are
-unchanged.
-
-v2:
-- Do not allocate cap_list dynamically.
-- Drop BPF-related capabilities when running with "unprivileged", even
-  if we didn't have the full set in the first place (in v1, we would
-  skip dropping them in that case).
-- Keep track of what capabilities we have, print the names of the
-  missing ones for privileged probing.
-- Attempt to drop only the capabilities we actually have.
-- Rename a couple variables.
+- Harmonise all functions, e.g. use ending quotes-comma on a separate
+  line.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/bpf/bpftool/feature.c | 85 ++++++++++++++++++++++++++++---------
- 1 file changed, 66 insertions(+), 19 deletions(-)
+ tools/bpf/bpftool/btf.c        |  8 +++----
+ tools/bpf/bpftool/cgroup.c     | 14 +++++-------
+ tools/bpf/bpftool/feature.c    |  6 ++---
+ tools/bpf/bpftool/gen.c        |  6 ++---
+ tools/bpf/bpftool/iter.c       |  8 +++----
+ tools/bpf/bpftool/link.c       |  1 -
+ tools/bpf/bpftool/map.c        | 41 +++++++++++++++-------------------
+ tools/bpf/bpftool/net.c        | 12 +++++-----
+ tools/bpf/bpftool/perf.c       |  2 +-
+ tools/bpf/bpftool/prog.c       | 27 ++++++++++------------
+ tools/bpf/bpftool/struct_ops.c | 15 ++++++-------
+ 11 files changed, 64 insertions(+), 76 deletions(-)
 
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 41a1346934a1..c134666591a6 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -951,9 +951,9 @@ static int do_help(int argc, char **argv)
+ 	}
+ 
+ 	fprintf(stderr,
+-		"Usage: %s btf { show | list } [id BTF_ID]\n"
+-		"       %s btf dump BTF_SRC [format FORMAT]\n"
+-		"       %s btf help\n"
++		"Usage: %1$s %2$s { show | list } [id BTF_ID]\n"
++		"       %1$s %2$s dump BTF_SRC [format FORMAT]\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       BTF_SRC := { id BTF_ID | prog PROG | map MAP [{key | value | kv | all}] | file FILE }\n"
+ 		"       FORMAT  := { raw | c }\n"
+@@ -961,7 +961,7 @@ static int do_help(int argc, char **argv)
+ 		"       " HELP_SPEC_PROGRAM "\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+-		bin_name, bin_name, bin_name);
++		bin_name, "btf");
+ 
+ 	return 0;
+ }
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index 27931db421d8..d901cc1b904a 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -491,20 +491,18 @@ static int do_help(int argc, char **argv)
+ 	}
+ 
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list } CGROUP [**effective**]\n"
+-		"       %s %s tree [CGROUP_ROOT] [**effective**]\n"
+-		"       %s %s attach CGROUP ATTACH_TYPE PROG [ATTACH_FLAGS]\n"
+-		"       %s %s detach CGROUP ATTACH_TYPE PROG\n"
+-		"       %s %s help\n"
++		"Usage: %1$s %2$s { show | list } CGROUP [**effective**]\n"
++		"       %1$s %2$s tree [CGROUP_ROOT] [**effective**]\n"
++		"       %1$s %2$s attach CGROUP ATTACH_TYPE PROG [ATTACH_FLAGS]\n"
++		"       %1$s %2$s detach CGROUP ATTACH_TYPE PROG\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		HELP_SPEC_ATTACH_TYPES "\n"
+ 		"       " HELP_SPEC_ATTACH_FLAGS "\n"
+ 		"       " HELP_SPEC_PROGRAM "\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+-		bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2]);
++		bin_name, argv[-2]);
+ 
+ 	return 0;
+ }
 diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 1b73e63274b5..0e60d9e30beb 100644
+index 1b73e63274b5..f05e9e57b593 100644
 --- a/tools/bpf/bpftool/feature.c
 +++ b/tools/bpf/bpftool/feature.c
-@@ -758,11 +758,29 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
- 	print_end_section();
+@@ -937,12 +937,12 @@ static int do_help(int argc, char **argv)
+ 	}
+ 
+ 	fprintf(stderr,
+-		"Usage: %s %s probe [COMPONENT] [full] [unprivileged] [macros [prefix PREFIX]]\n"
+-		"       %s %s help\n"
++		"Usage: %1$s %2$s probe [COMPONENT] [full] [unprivileged] [macros [prefix PREFIX]]\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       COMPONENT := { kernel | dev NAME }\n"
+ 		"",
+-		bin_name, argv[-2], bin_name, argv[-2]);
++		bin_name, argv[-2]);
+ 
+ 	return 0;
  }
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 0e5f0236cc76..a3c4bb86c05a 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -586,12 +586,12 @@ static int do_help(int argc, char **argv)
+ 	}
  
-+#ifdef USE_LIBCAP
-+#define capability(c) { c, false, #c }
-+#define capability_msg(a, i) a[i].set ? "" : a[i].name, a[i].set ? "" : ", "
-+#endif
-+
- static int handle_perms(void)
+ 	fprintf(stderr,
+-		"Usage: %1$s gen skeleton FILE\n"
+-		"       %1$s gen help\n"
++		"Usage: %1$s %2$s skeleton FILE\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+-		bin_name);
++		bin_name, "gen");
+ 
+ 	return 0;
+ }
+diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+index eb5987a0c3b6..33240fcc6319 100644
+--- a/tools/bpf/bpftool/iter.c
++++ b/tools/bpf/bpftool/iter.c
+@@ -68,10 +68,10 @@ static int do_pin(int argc, char **argv)
+ static int do_help(int argc, char **argv)
  {
- #ifdef USE_LIBCAP
--	cap_value_t cap_list[1] = { CAP_SYS_ADMIN };
--	bool has_sys_admin_cap = false;
-+	struct {
-+		cap_value_t cap;
-+		bool set;
-+		char name[14];	/* strlen("CAP_SYS_ADMIN") */
-+	} bpf_caps[] = {
-+		capability(CAP_SYS_ADMIN),
-+#ifdef CAP_BPF
-+		capability(CAP_BPF),
-+		capability(CAP_NET_ADMIN),
-+		capability(CAP_PERFMON),
-+#endif
-+	};
-+	cap_value_t cap_list[ARRAY_SIZE(bpf_caps)];
-+	unsigned int i, nb_bpf_caps = 0;
-+	bool cap_sys_admin_only = true;
- 	cap_flag_value_t val;
- 	int res = -1;
- 	cap_t caps;
-@@ -774,35 +792,64 @@ static int handle_perms(void)
- 		return -1;
+ 	fprintf(stderr,
+-		"Usage: %s %s pin OBJ PATH\n"
+-		"       %s %s help\n"
+-		"\n",
+-		bin_name, argv[-2], bin_name, argv[-2]);
++		"Usage: %1$s %2$s pin OBJ PATH\n"
++		"       %1$s %2$s help\n"
++		"",
++		bin_name, "iter");
+ 
+ 	return 0;
+ }
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index b6a0b35c78ae..670a561dc31b 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -312,7 +312,6 @@ static int do_help(int argc, char **argv)
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_LINK "\n"
+-		"       " HELP_SPEC_PROGRAM "\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+ 		bin_name, argv[-2]);
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 85cbe9a19170..c5fac8068ba1 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -1561,24 +1561,24 @@ static int do_help(int argc, char **argv)
  	}
  
--	if (cap_get_flag(caps, CAP_SYS_ADMIN, CAP_EFFECTIVE, &val)) {
--		p_err("bug: failed to retrieve CAP_SYS_ADMIN status");
--		goto exit_free;
--	}
--	if (val == CAP_SET)
--		has_sys_admin_cap = true;
-+#ifdef CAP_BPF
-+	if (CAP_IS_SUPPORTED(CAP_BPF))
-+		cap_sys_admin_only = false;
-+#endif
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list }   [MAP]\n"
+-		"       %s %s create     FILE type TYPE key KEY_SIZE value VALUE_SIZE \\\n"
+-		"                              entries MAX_ENTRIES name NAME [flags FLAGS] \\\n"
+-		"                              [dev NAME]\n"
+-		"       %s %s dump       MAP\n"
+-		"       %s %s update     MAP [key DATA] [value VALUE] [UPDATE_FLAGS]\n"
+-		"       %s %s lookup     MAP [key DATA]\n"
+-		"       %s %s getnext    MAP [key DATA]\n"
+-		"       %s %s delete     MAP  key DATA\n"
+-		"       %s %s pin        MAP  FILE\n"
+-		"       %s %s event_pipe MAP [cpu N index M]\n"
+-		"       %s %s peek       MAP\n"
+-		"       %s %s push       MAP value VALUE\n"
+-		"       %s %s pop        MAP\n"
+-		"       %s %s enqueue    MAP value VALUE\n"
+-		"       %s %s dequeue    MAP\n"
+-		"       %s %s freeze     MAP\n"
+-		"       %s %s help\n"
++		"Usage: %1$s %2$s { show | list }   [MAP]\n"
++		"       %1$s %2$s create     FILE type TYPE key KEY_SIZE value VALUE_SIZE \\\n"
++		"                                  entries MAX_ENTRIES name NAME [flags FLAGS] \\\n"
++		"                                  [dev NAME]\n"
++		"       %1$s %2$s dump       MAP\n"
++		"       %1$s %2$s update     MAP [key DATA] [value VALUE] [UPDATE_FLAGS]\n"
++		"       %1$s %2$s lookup     MAP [key DATA]\n"
++		"       %1$s %2$s getnext    MAP [key DATA]\n"
++		"       %1$s %2$s delete     MAP  key DATA\n"
++		"       %1$s %2$s pin        MAP  FILE\n"
++		"       %1$s %2$s event_pipe MAP [cpu N index M]\n"
++		"       %1$s %2$s peek       MAP\n"
++		"       %1$s %2$s push       MAP value VALUE\n"
++		"       %1$s %2$s pop        MAP\n"
++		"       %1$s %2$s enqueue    MAP value VALUE\n"
++		"       %1$s %2$s dequeue    MAP\n"
++		"       %1$s %2$s freeze     MAP\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_MAP "\n"
+ 		"       DATA := { [hex] BYTES }\n"
+@@ -1593,11 +1593,6 @@ static int do_help(int argc, char **argv)
+ 		"                 queue | stack | sk_storage | struct_ops }\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+ 		bin_name, argv[-2]);
  
--	if (!run_as_unprivileged && !has_sys_admin_cap) {
--		p_err("full feature probing requires CAP_SYS_ADMIN, run as root or use 'unprivileged'");
--		goto exit_free;
-+	for (i = 0; i < ARRAY_SIZE(bpf_caps); i++) {
-+		const char *cap_name = bpf_caps[i].name;
-+		cap_value_t cap = bpf_caps[i].cap;
-+
-+		if (cap_get_flag(caps, cap, CAP_EFFECTIVE, &val)) {
-+			p_err("bug: failed to retrieve %s status: %s", cap_name,
-+			      strerror(errno));
-+			goto exit_free;
-+		}
-+
-+		if (val == CAP_SET) {
-+			bpf_caps[i].set = true;
-+			cap_list[nb_bpf_caps++] = cap;
-+		}
-+
-+		if (cap_sys_admin_only)
-+			/* System does not know about CAP_BPF, meaning that
-+			 * CAP_SYS_ADMIN is the only capability required. We
-+			 * just checked it, break.
-+			 */
-+			break;
+ 	return 0;
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index c5e3895b7c8b..56c3a2bae3ef 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -458,10 +458,10 @@ static int do_help(int argc, char **argv)
  	}
  
--	if ((run_as_unprivileged && !has_sys_admin_cap) ||
--	    (!run_as_unprivileged && has_sys_admin_cap)) {
-+	if ((run_as_unprivileged && !nb_bpf_caps) ||
-+	    (!run_as_unprivileged && nb_bpf_caps == ARRAY_SIZE(bpf_caps)) ||
-+	    (!run_as_unprivileged && cap_sys_admin_only && nb_bpf_caps)) {
- 		/* We are all good, exit now */
- 		res = 0;
- 		goto exit_free;
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list } [dev <devname>]\n"
+-		"       %s %s attach ATTACH_TYPE PROG dev <devname> [ overwrite ]\n"
+-		"       %s %s detach ATTACH_TYPE dev <devname>\n"
+-		"       %s %s help\n"
++		"Usage: %1$s %2$s { show | list } [dev <devname>]\n"
++		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite ]\n"
++		"       %1$s %2$s detach ATTACH_TYPE dev <devname>\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_PROGRAM "\n"
+ 		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload }\n"
+@@ -470,8 +470,8 @@ static int do_help(int argc, char **argv)
+ 		"      For progs attached to cgroups, use \"bpftool cgroup\"\n"
+ 		"      to dump program attachments. For program types\n"
+ 		"      sk_{filter,skb,msg,reuseport} and lwt/seg6, please\n"
+-		"      consult iproute2.\n",
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
++		"      consult iproute2.\n"
++		"",
+ 		bin_name, argv[-2]);
+ 
+ 	return 0;
+diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
+index 3341aa14acda..ad23934819c7 100644
+--- a/tools/bpf/bpftool/perf.c
++++ b/tools/bpf/bpftool/perf.c
+@@ -231,7 +231,7 @@ static int do_show(int argc, char **argv)
+ static int do_help(int argc, char **argv)
+ {
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list | help }\n"
++		"Usage: %1$s %2$s { show | list | help }\n"
+ 		"",
+ 		bin_name, argv[-2]);
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 245f941fdbcf..a5eff83496f2 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1984,24 +1984,24 @@ static int do_help(int argc, char **argv)
  	}
  
--	/* if (run_as_unprivileged && has_sys_admin_cap), drop CAP_SYS_ADMIN */
-+	if (!run_as_unprivileged) {
-+		if (cap_sys_admin_only)
-+			p_err("missing %s, required for full feature probing; run as root or use 'unprivileged'",
-+			      bpf_caps[0].name);
-+		else
-+			p_err("missing %s%s%s%s%s%s%s%srequired for full feature probing; run as root or use 'unprivileged'",
-+			      capability_msg(bpf_caps, 0),
-+			      capability_msg(bpf_caps, 1),
-+			      capability_msg(bpf_caps, 2),
-+			      capability_msg(bpf_caps, 3));
-+		goto exit_free;
-+	}
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list } [PROG]\n"
+-		"       %s %s dump xlated PROG [{ file FILE | opcodes | visual | linum }]\n"
+-		"       %s %s dump jited  PROG [{ file FILE | opcodes | linum }]\n"
+-		"       %s %s pin   PROG FILE\n"
+-		"       %s %s { load | loadall } OBJ  PATH \\\n"
++		"Usage: %1$s %2$s { show | list } [PROG]\n"
++		"       %1$s %2$s dump xlated PROG [{ file FILE | opcodes | visual | linum }]\n"
++		"       %1$s %2$s dump jited  PROG [{ file FILE | opcodes | linum }]\n"
++		"       %1$s %2$s pin   PROG FILE\n"
++		"       %1$s %2$s { load | loadall } OBJ  PATH \\\n"
+ 		"                         [type TYPE] [dev NAME] \\\n"
+ 		"                         [map { idx IDX | name NAME } MAP]\\\n"
+ 		"                         [pinmaps MAP_DIR]\n"
+-		"       %s %s attach PROG ATTACH_TYPE [MAP]\n"
+-		"       %s %s detach PROG ATTACH_TYPE [MAP]\n"
+-		"       %s %s run PROG \\\n"
++		"       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
++		"       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
++		"       %1$s %2$s run PROG \\\n"
+ 		"                         data_in FILE \\\n"
+ 		"                         [data_out FILE [data_size_out L]] \\\n"
+ 		"                         [ctx_in FILE [ctx_out FILE [ctx_size_out M]]] \\\n"
+ 		"                         [repeat N]\n"
+-		"       %s %s profile PROG [duration DURATION] METRICs\n"
+-		"       %s %s tracelog\n"
+-		"       %s %s help\n"
++		"       %1$s %2$s profile PROG [duration DURATION] METRICs\n"
++		"       %1$s %2$s tracelog\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_MAP "\n"
+ 		"       " HELP_SPEC_PROGRAM "\n"
+@@ -2022,10 +2022,7 @@ static int do_help(int argc, char **argv)
+ 		"       METRIC := { cycles | instructions | l1d_loads | llc_misses }\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2]);
++		bin_name, argv[-2]);
  
--	if (cap_set_flag(caps, CAP_EFFECTIVE, ARRAY_SIZE(cap_list), cap_list,
-+	/* if (run_as_unprivileged && nb_bpf_caps > 0), drop capabilities. */
-+	if (cap_set_flag(caps, CAP_EFFECTIVE, nb_bpf_caps, cap_list,
- 			 CAP_CLEAR)) {
--		p_err("bug: failed to clear CAP_SYS_ADMIN from capabilities");
-+		p_err("bug: failed to clear capabilities: %s", strerror(errno));
- 		goto exit_free;
+ 	return 0;
+ }
+diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
+index e17738479edc..b58b91f62ffb 100644
+--- a/tools/bpf/bpftool/struct_ops.c
++++ b/tools/bpf/bpftool/struct_ops.c
+@@ -566,16 +566,15 @@ static int do_help(int argc, char **argv)
  	}
  
- 	if (cap_set_proc(caps)) {
--		p_err("failed to drop CAP_SYS_ADMIN: %s", strerror(errno));
-+		p_err("failed to drop capabilities: %s", strerror(errno));
- 		goto exit_free;
- 	}
+ 	fprintf(stderr,
+-		"Usage: %s %s { show | list } [STRUCT_OPS_MAP]\n"
+-		"       %s %s dump [STRUCT_OPS_MAP]\n"
+-		"       %s %s register OBJ\n"
+-		"       %s %s unregister STRUCT_OPS_MAP\n"
+-		"       %s %s help\n"
++		"Usage: %1$s %2$s { show | list } [STRUCT_OPS_MAP]\n"
++		"       %1$s %2$s dump [STRUCT_OPS_MAP]\n"
++		"       %1$s %2$s register OBJ\n"
++		"       %1$s %2$s unregister STRUCT_OPS_MAP\n"
++		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       OPTIONS := { {-j|--json} [{-p|--pretty}] }\n"
+-		"       STRUCT_OPS_MAP := [ id STRUCT_OPS_MAP_ID | name STRUCT_OPS_MAP_NAME ]\n",
+-		bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2],
++		"       STRUCT_OPS_MAP := [ id STRUCT_OPS_MAP_ID | name STRUCT_OPS_MAP_NAME ]\n"
++		"",
+ 		bin_name, argv[-2]);
  
-@@ -817,7 +864,7 @@ static int handle_perms(void)
- 
- 	return res;
- #else
--	/* Detection assumes user has sufficient privileges (CAP_SYS_ADMIN).
-+	/* Detection assumes user has specific privileges.
- 	 * We do not use libpcap so let's approximate, and restrict usage to
- 	 * root user only.
- 	 */
-@@ -901,7 +948,7 @@ static int do_probe(int argc, char **argv)
- 		}
- 	}
- 
--	/* Full feature detection requires CAP_SYS_ADMIN privilege.
-+	/* Full feature detection requires specific privileges.
- 	 * Let's approximate, and warn if user is not root.
- 	 */
- 	if (handle_perms())
+ 	return 0;
 -- 
 2.20.1
 
