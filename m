@@ -2,153 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBDD1E00C1
-	for <lists+bpf@lfdr.de>; Sun, 24 May 2020 18:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0B01E00FC
+	for <lists+bpf@lfdr.de>; Sun, 24 May 2020 19:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbgEXQwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 May 2020 12:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
+        id S2387748AbgEXRWS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 May 2020 13:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387707AbgEXQwN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 May 2020 12:52:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA78AC061A0E;
-        Sun, 24 May 2020 09:52:12 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id n18so7851444pfa.2;
-        Sun, 24 May 2020 09:52:12 -0700 (PDT)
+        with ESMTP id S2387707AbgEXRWR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 May 2020 13:22:17 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4ACC061A0E;
+        Sun, 24 May 2020 10:22:17 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id w3so10146455qkb.6;
+        Sun, 24 May 2020 10:22:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=c+kV5gNWJS1YZqZMTWzL6tHSr3iTCMvs+TA8dfrV6Vc=;
-        b=DcEFeqWklfSCALhxg0ovVbBLPa76pWTU4yxD7IrcXlxMLIACnyFR5+PJN4NfJibuNQ
-         IBvBLpBZC7UVNxO7EWNvCCHtjBjcsGGU/F1lFUqcRQzLpt4obqKNmTbIkyaLKpXEaL3x
-         KktuameQqxfbGPfHsI4eFRERXLxPe48vWhrz9Q5w3aIRxo1W1n6fycaRzGC8Tqo5hOQS
-         VcjqPwCtV5f/L1qmYhFgJpVZ/yB0Lj6yLm2ANgybKygpcfNzX7LFq+5JriMeiwhD6fwY
-         T+LM0BHaMFoDcT7IEhIt/n18dt8Y5anNBz6wwsRdIbCcATwvk4r/Rk51D4Jl6AamHKn5
-         UC2A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HOB7DJtAt7OqMWSSFuPavE57wAs0HI6Y2mvqKtQhO2o=;
+        b=L8nUBEW8rI6wvT5v+4R9yh7ArGoy4wCtp0hVoHJ0jBZ5zRYtHvOcQHGHdlyih4ETUl
+         NRP19hbkKRIpOvDXvLd9T6tSbfLtf+gytEBnHNFOYYeY3O8pu3XirRv4LdzrPxOr+e1S
+         x+jYmF7cTduPzo5BvgvHDOcoSHWy/D7cPuEA0jJzH1kci9X9tsopPlH1yoacSUk0qC8G
+         nSQmjzoH8C2qKBwSuq3TP7mtS733vT1F04SnIco1DORyQnvjH2JSM5KihPku+FcnfW33
+         XSDc/VVsIRjkoogkCkDKQQqezBTv+leKBfO4IbzWFBpSjvgxHTvPOmRXiSvkDWMZ7m9Z
+         rA+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=c+kV5gNWJS1YZqZMTWzL6tHSr3iTCMvs+TA8dfrV6Vc=;
-        b=dKvuyVT0QvIwjvzZALPGAolX09iQjTxGRpqgdAQCwlWm17IYtyaFlhrOTq7mF+khVB
-         tuJBo1AXmsk81lMU1N/jQGaO/iGS8TQh44y6x08SGZ3w+NtW/LJ6iOgKzPYbjDkfmxY9
-         54WOyuweB0IyQuOYF5DxoUc5JQCEWkFekDuQSCbg8y0ahRY/yaVJTOFfOyXOHHFw2kkb
-         /VdYhiVrvOqJFqujNUayuZ/CPSl2LGotCyOEln+axNrPDY+z5nhM59MZKf6KXPVywC/X
-         5qIUXfywrCVxp9L7g917Fg4EBWPImCe8Csw1nnEyvHwuwTLmUYzs/lMlseSS94twGMoZ
-         we+g==
-X-Gm-Message-State: AOAM5321unR0u3kzr7cjEbVMFtMsJFEylrCjG0CqmWgecRhw6biO11aR
-        tjOPeyiGiCPhdY1er0qOKKA=
-X-Google-Smtp-Source: ABdhPJwaFDGJEQb7ER83PlbyJyBzESCKiZJWxuFZMPm1w85ohEjH6gX4HGe48gd9+B5wb+o2mylKSg==
-X-Received: by 2002:aa7:99c8:: with SMTP id v8mr10245515pfi.36.1590339132361;
-        Sun, 24 May 2020 09:52:12 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id t12sm8747564pjf.3.2020.05.24.09.52.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 24 May 2020 09:52:11 -0700 (PDT)
-Subject: [bpf-next PATCH v5 5/5] bpf,
- selftests: test probe_* helpers from SCHED_CLS
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     yhs@fb.com, andrii.nakryiko@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Sun, 24 May 2020 09:51:57 -0700
-Message-ID: <159033911685.12355.15951980509828906214.stgit@john-Precision-5820-Tower>
-In-Reply-To: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
-References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HOB7DJtAt7OqMWSSFuPavE57wAs0HI6Y2mvqKtQhO2o=;
+        b=JRRdbho3SW6XB6qPqSbIz5+UCEYY8EmoOd6DWZVPoaDu/d2mIyazXfft3S7SwNjzUI
+         tytOCgomEcilZpMAUax5okYDnbwe3nrU9ptRVyx5NgufSl6c+RaH3DHI0PtDULVulhlX
+         n4Y+QpuVVn37h4qs6nJUPjoHoF5s7HLkcmvAK6j001BGTJcxRnYWIyLitDy5kWPfcDfO
+         x8U2OUfKXCG8HNCUeOi/uX4j2DiiwIh8pt8sOxjQVk64RSXVNXP/DLPPe1daceA0MYKa
+         4ECb/vViI1yYFqoEkrVIDewiEdKrK6ytpd/XC58skkD8/uv5Or1VPG5mE9kWPyNvCGn9
+         ypYQ==
+X-Gm-Message-State: AOAM530CV6zA+gYWtketEUMNp8ucWkg1c+aUS9nvvUvNEqKJmTggoRTT
+        mtZlOSTC0ysHz/fUwnmxl5c=
+X-Google-Smtp-Source: ABdhPJyCqsYV8xitKRx7CmfAA0xR3jd+1bNWsLQLi3NTcFMKvjZ8ntVkXYqbv6MwGaTlb2Wu8WSM6Q==
+X-Received: by 2002:a37:9f0c:: with SMTP id i12mr24245409qke.264.1590340936835;
+        Sun, 24 May 2020 10:22:16 -0700 (PDT)
+Received: from ?IPv6:2601:284:8202:10b0:dde6:2665:8a05:87c9? ([2601:284:8202:10b0:dde6:2665:8a05:87c9])
+        by smtp.googlemail.com with ESMTPSA id b17sm6016596qkl.95.2020.05.24.10.22.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 May 2020 10:22:16 -0700 (PDT)
+Subject: Re: [RFC bpf-next 1/2] bpf: cpumap: add the possibility to attach a
+ eBPF program to cpumap
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     ast@kernel.org, davem@davemloft.net, brouer@redhat.com,
+        daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org
+References: <cover.1590162098.git.lorenzo@kernel.org>
+ <6685dc56730e109758bd3affb1680114c3064da1.1590162098.git.lorenzo@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <21c30a1c-cebc-b2f2-be94-9db430610578@gmail.com>
+Date:   Sun, 24 May 2020 11:22:14 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <6685dc56730e109758bd3affb1680114c3064da1.1590162098.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lets test using probe* in SCHED_CLS network programs as well just
-to be sure these keep working. Its cheap to add the extra test
-and provides a second context to test outside of sk_msg after
-we generalized probe* helpers to all networking types.
+On 5/22/20 10:11 AM, Lorenzo Bianconi wrote:
+> @@ -307,8 +354,23 @@ static int cpu_map_kthread_run(void *data)
+>  	return 0;
+>  }
+>  
+> -static struct bpf_cpu_map_entry *__cpu_map_entry_alloc(u32 qsize, u32 cpu,
+> -						       int map_id)
+> +static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu,
+> +				      u32 prog_id)
+> +{
+> +	struct bpf_prog *prog;
+> +
+> +	/* TODO attach type */
+> +	prog = bpf_prog_by_id(prog_id);
+> +	if (IS_ERR(prog) || prog->type != BPF_PROG_TYPE_XDP)
+> +		return -EINVAL;
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../testing/selftests/bpf/prog_tests/skb_helpers.c |   30 ++++++++++++++++++++
- .../testing/selftests/bpf/progs/test_skb_helpers.c |   28 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/skb_helpers.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_skb_helpers.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_helpers.c b/tools/testing/selftests/bpf/prog_tests/skb_helpers.c
-new file mode 100644
-index 0000000..f302ad8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_helpers.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+void test_skb_helpers(void)
-+{
-+	struct __sk_buff skb = {
-+		.wire_len = 100,
-+		.gso_segs = 8,
-+		.gso_size = 10,
-+	};
-+	struct bpf_prog_test_run_attr tattr = {
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.ctx_in = &skb,
-+		.ctx_size_in = sizeof(skb),
-+		.ctx_out = &skb,
-+		.ctx_size_out = sizeof(skb),
-+	};
-+	struct bpf_object *obj;
-+	int err;
-+
-+	err = bpf_prog_load("./test_skb_helpers.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+			    &tattr.prog_fd);
-+	if (CHECK_ATTR(err, "load", "err %d errno %d\n", err, errno))
-+		return;
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err, "len", "err %d errno %d\n", err, errno);
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_skb_helpers.c b/tools/testing/selftests/bpf/progs/test_skb_helpers.c
-new file mode 100644
-index 0000000..bb3fbf1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_skb_helpers.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#define TEST_COMM_LEN 16
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, u32);
-+	__type(value, u32);
-+} cgroup_map SEC(".maps");
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("classifier/test_skb_helpers")
-+int test_skb_helpers(struct __sk_buff *skb)
-+{
-+	struct task_struct *task;
-+	char comm[TEST_COMM_LEN];
-+	__u32 tpid;
-+
-+	task = (struct task_struct *)bpf_get_current_task();
-+	bpf_probe_read_kernel(&tpid , sizeof(tpid), &task->tgid);
-+	bpf_probe_read_kernel_str(&comm, sizeof(comm), &task->comm);
-+	return 0;
-+}
+Add check that expected_attach_type is NOT set since it uses existing
+xdp programs which should not have it set.
 
