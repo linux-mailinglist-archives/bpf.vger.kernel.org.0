@@ -2,131 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646CD1E1540
-	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 22:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFED1E1766
+	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 23:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390378AbgEYUeU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 May 2020 16:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389950AbgEYUeU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 May 2020 16:34:20 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB95C061A0E;
-        Mon, 25 May 2020 13:34:18 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id p12so14552391qtn.13;
-        Mon, 25 May 2020 13:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KZZ4cyf2D7Nph4LGicpQpQCPZg8i4pMLDvE8Rtnb0xg=;
-        b=GNqpoFjmVY9xYL51/sr3io05Wcdu2tcoaCljwMsX8PgXgthylwo5vUpdPirlevl2Kb
-         P4OIVl741ZNDlMKPgmUB/ApaSZ03jaDh2Y3ACUkyTWKQIKgdqP8oMIftBfnYew6ElsJZ
-         AKj0Bou0vdKuXv8kU+G/7gdTpyJ7jc+d6kswHYWeUf+sLg5cn3br8MYDkcGWqaxfrFwS
-         9MuSQqtzCineuH63j/Qd60KOmuUbx+9mbik4QDYZq6x2OAxH6oDR1RpA1rPUfakKu7Mn
-         ETbIzrmDbptQ+idQA0bq9cAXiTNsBljn1TqTeAtopoLBS/i8yD0MCLXEbkKNdcytXA9r
-         Bs+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KZZ4cyf2D7Nph4LGicpQpQCPZg8i4pMLDvE8Rtnb0xg=;
-        b=Z4yoD1ieOpouEy6hNbmcvO3BeVKgL4SAG7Qvw2ep3vG6RDBbkaVr6jt/qpwULbCz85
-         ewI8blkibhpaJzaWoB+Uh7D3eQecroInq11vgbwOen1Kze7bla1VT2/F+e1h1FDI31Sj
-         NvvXtSKrfv9+rq7FjN38dhHYEVCVHGoi0VJ1dHRz9Taux6Ol9zIlPBl4dE7fka7+fDmC
-         GIfVX0cRx4zNm7BPSh56QvIEKk2XORrybfibebxwG3GQ3RceNcSog/w3hNP3rw8XeLsy
-         6WajdTElYny7aR9JhBFyJ5CDOweMXefjUlxvKsjJpG1wMMR9CgytCnVxvR8430L/5lsm
-         nriA==
-X-Gm-Message-State: AOAM531wn4nmcoAnYyMvZr6xlAXeRwCkBOsCJDwQDpJQWO4nbb1bWE1c
-        GLijkVQB6nSfnOMQt9X2v38NHUJHSqLyxiPMnvI=
-X-Google-Smtp-Source: ABdhPJxCV0Z7YrTta1N00A6FQJ1WZVKimxPFbv15yzqpsZCw4xjv8m8IlrNgECsyStL69pvLlhCZy3bWoYSwiQpaRdQ=
-X-Received: by 2002:ac8:71cd:: with SMTP id i13mr13100703qtp.93.1590438857855;
- Mon, 25 May 2020 13:34:17 -0700 (PDT)
+        id S1731574AbgEYVvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 May 2020 17:51:48 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47828 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgEYVvs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 May 2020 17:51:48 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jdL0Z-0007By-Hz; Mon, 25 May 2020 23:51:43 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jdL0Z-000BAv-9t; Mon, 25 May 2020 23:51:43 +0200
+Subject: Re: [bpf-next PATCH v5 1/5] bpf, sk_msg: add some generic helpers
+ that may be useful from sk_msg
+To:     John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
+        andrii.nakryiko@gmail.com, ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
+ <159033903373.12355.15489763099696629346.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <48c47712-bba1-3f53-bbeb-8a7403dab6db@iogearbox.net>
+Date:   Mon, 25 May 2020 23:51:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200517195727.279322-1-andriin@fb.com> <20200517195727.279322-2-andriin@fb.com>
- <20200522010722.2lgagrt6cmw6dzmm@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200522010722.2lgagrt6cmw6dzmm@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 May 2020 13:34:06 -0700
-Message-ID: <CAEf4BzZ7Yhc8Lt2X9_cMkBHBsxj+G8qnpORG3sT-p6HbjYftVA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/7] bpf: implement BPF ring buffer and
- verifier support for it
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <159033903373.12355.15489763099696629346.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25823/Mon May 25 14:23:53 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 21, 2020 at 6:07 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, May 17, 2020 at 12:57:21PM -0700, Andrii Nakryiko wrote:
-> > -     if (off < 0 || size < 0 || (size == 0 && !zero_size_allowed) ||
-> > -         off + size > map->value_size) {
-> > -             verbose(env, "invalid access to map value, value_size=%d off=%d size=%d\n",
-> > -                     map->value_size, off, size);
-> > -             return -EACCES;
-> > -     }
-> > -     return 0;
-> > +     if (off >= 0 && size_ok && off + size <= mem_size)
-> > +             return 0;
-> > +
-> > +     verbose(env, "invalid access to memory, mem_size=%u off=%d size=%d\n",
-> > +             mem_size, off, size);
-> > +     return -EACCES;
->
-> iirc invalid access to map value is one of most common verifier errors that
-> people see when they're use unbounded access. Generalizing it to memory is
-> technically correct, but it makes the message harder to decipher.
-> What is 'mem_size' ? Without context it is difficult to guess that
-> it's actually size of map value element.
-> Could you make this error message more human friendly depending on
-> type of pointer?
+On 5/24/20 6:50 PM, John Fastabend wrote:
+> Add these generic helpers that may be useful to use from sk_msg programs.
+> The helpers do not depend on ctx so we can simply add them here,
+> 
+>   BPF_FUNC_perf_event_output
+>   BPF_FUNC_get_current_uid_gid
+>   BPF_FUNC_get_current_pid_tgid
+>   BPF_FUNC_get_current_comm
 
-I realized that __check_pkt_access is essentially identical and
-unified map value, packet, and memory access checks, with custom log
-per type of register.
+Hmm, added helpers below are what you list here except get_current_comm.
+Was this forgotten to be added here?
 
->
-> >       if (err) {
-> > -             verbose(env, "R%d min value is outside of the array range\n",
-> > +             verbose(env, "R%d min value is outside of the memory region\n",
-> >                       regno);
-> >               return err;
-> >       }
-> > @@ -2518,18 +2527,38 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
-> >        * If reg->umax_value + off could overflow, treat that as unbounded too.
-> >        */
-> >       if (reg->umax_value >= BPF_MAX_VAR_OFF) {
-> > -             verbose(env, "R%d unbounded memory access, make sure to bounds check any array access into a map\n",
-> > +             verbose(env, "R%d unbounded memory access, make sure to bounds check any memory region access\n",
-> >                       regno);
-> >               return -EACCES;
-> >       }
-> > -     err = __check_map_access(env, regno, reg->umax_value + off, size,
-> > +     err = __check_mem_access(env, reg->umax_value + off, size, mem_size,
-> >                                zero_size_allowed);
-> > -     if (err)
-> > -             verbose(env, "R%d max value is outside of the array range\n",
-> > +     if (err) {
-> > +             verbose(env, "R%d max value is outside of the memory region\n",
-> >                       regno);
->
-> I'm not that worried about above three generalizations of errors,
-> but if you can make it friendly by describing type of memory region
-> I think it will be a plus.
+>   BPF_FUNC_get_current_cgroup_id
+>   BPF_FUNC_get_current_ancestor_cgroup_id
+>   BPF_FUNC_get_cgroup_classid
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>   net/core/filter.c |   16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 822d662..a56046a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6443,6 +6443,22 @@ sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   		return &bpf_msg_push_data_proto;
+>   	case BPF_FUNC_msg_pop_data:
+>   		return &bpf_msg_pop_data_proto;
+> +	case BPF_FUNC_perf_event_output:
+> +		return &bpf_event_output_data_proto;
+> +	case BPF_FUNC_get_current_uid_gid:
+> +		return &bpf_get_current_uid_gid_proto;
+> +	case BPF_FUNC_get_current_pid_tgid:
+> +		return &bpf_get_current_pid_tgid_proto;
+> +#ifdef CONFIG_CGROUPS
+> +	case BPF_FUNC_get_current_cgroup_id:
+> +		return &bpf_get_current_cgroup_id_proto;
+> +	case BPF_FUNC_get_current_ancestor_cgroup_id:
+> +		return &bpf_get_current_ancestor_cgroup_id_proto;
+> +#endif
+> +#ifdef CONFIG_CGROUP_NET_CLASSID
+> +	case BPF_FUNC_get_cgroup_classid:
+> +		return &bpf_get_cgroup_classid_curr_proto;
+> +#endif
+>   	default:
+>   		return bpf_base_func_proto(func_id);
+>   	}
+> 
 
-These I left as is (i.e., generic "memory region"), because they were
-wrong before (it's more general than just array access), but also
-didn't want to clutter code with extra switches or mappings to string,
-given that these messages will go right after custom message from
-__check_mem_access. Hope that's fine.
