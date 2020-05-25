@@ -2,122 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B041E1278
-	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 18:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB71E145C
+	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 20:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729183AbgEYQQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 May 2020 12:16:22 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52429 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726445AbgEYQQU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 May 2020 12:16:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590423379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rT4eP6mLqLtUhR/uGSDEBhfpcmkWKNCZeUPJ402mAyM=;
-        b=Pk5lj7oAw4fYHgKeynTIGWkrQf+y5nLQO5bbuV9/PnAE9nn+x2fUzwlyPdNQn+V7Kb/flq
-        WNY2zHkJ07KwgvrYXoTHZgct9TjQ1A/Fz1Mxz03h4eUi0BClWkB7QueWLI2vwTYlbkGJjk
-        S8YD9gD69GiIZ5Ho8tumjhxN57Vf+qo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-zgFduTI5P82EJX1ZKLs6lQ-1; Mon, 25 May 2020 12:16:17 -0400
-X-MC-Unique: zgFduTI5P82EJX1ZKLs6lQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC590460;
-        Mon, 25 May 2020 16:16:15 +0000 (UTC)
-Received: from ebuild.redhat.com (ovpn-112-147.ams2.redhat.com [10.36.112.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E4CB05C1BB;
-        Mon, 25 May 2020 16:16:10 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next] libbpf: add API to consume the perf ring buffer content
-Date:   Mon, 25 May 2020 18:15:38 +0200
-Message-Id: <159042332675.79900.6845937535091126683.stgit@ebuild>
-User-Agent: StGit/0.21
+        id S2389123AbgEYSbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 May 2020 14:31:09 -0400
+Received: from smtp8.emailarray.com ([65.39.216.67]:23526 "HELO
+        smtp8.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S2388753AbgEYSbH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 May 2020 14:31:07 -0400
+Received: (qmail 21551 invoked by uid 89); 25 May 2020 18:31:03 -0000
+Received: from unknown (HELO localhost) (amxlbW9uQGZsdWdzdmFtcC5jb21AMTYzLjExNC4xMzIuMw==) (POLARISLOCAL)  
+  by smtp8.emailarray.com with SMTP; 25 May 2020 18:31:03 -0000
+Date:   Mon, 25 May 2020 11:30:59 -0700
+From:   Jonathan Lemon <bsd@fb.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        maximmi@mellanox.com,
+        Minh =?utf-8?Q?B=C3=B9i?= Quang <minhquangbui99@gmail.com>
+Subject: Re: [PATCH bpf] xsk: add overflow check for u64 division, stored
+ into u32
+Message-ID: <20200525183059.aeaepmpa5h2nbzvc@bsd-mbp>
+References: <20200525080400.13195-1-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200525080400.13195-1-bjorn.topel@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This new API, perf_buffer__consume, can be used as follows:
-- When you have a perf ring where wakeup_events is higher than 1,
-  and you have remaining data in the rings you would like to pull
-  out on exit (or maybe based on a timeout).
-- For low latency cases where you burn a CPU that constantly polls
-  the queues.
+On Mon, May 25, 2020 at 10:03:59AM +0200, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> The npgs member of struct xdp_umem is an u32 entity, and stores the
+> number of pages the UMEM consumes. The calculation of npgs
+> 
+>   npgs = size / PAGE_SIZE
+> 
+> can overflow.
+> 
+> To avoid overflow scenarios, the division is now first stored in a
+> u64, and the result is verified to fit into 32b.
+> 
+> An alternative would be storing the npgs as a u64, however, this
+> wastes memory and is an unrealisticly large packet area.
+> 
+> Link: https://lore.kernel.org/bpf/CACtPs=GGvV-_Yj6rbpzTVnopgi5nhMoCcTkSkYrJHGQHJWFZMQ@mail.gmail.com/
+> Fixes: c0c77d8fb787 ("xsk: add user memory registration support sockopt")
+> Reported-by: "Minh Bùi Quang" <minhquangbui99@gmail.com>
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
----
- tools/lib/bpf/libbpf.c   |   23 +++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |    1 +
- tools/lib/bpf/libbpf.map |    1 +
- 3 files changed, 25 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index fa04cbe547ed..cbef3dac7507 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8456,6 +8456,29 @@ int perf_buffer__poll(struct perf_buffer *pb, int timeout_ms)
- 	return cnt < 0 ? -errno : cnt;
- }
- 
-+int perf_buffer__consume(struct perf_buffer *pb)
-+{
-+	int i;
-+
-+	if (!pb)
-+		return -EINVAL;
-+
-+	if (!pb->cpu_bufs)
-+		return 0;
-+
-+	for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
-+		int err;
-+		struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
-+
-+		err = perf_buffer__process_records(pb, cpu_buf);
-+		if (err) {
-+			pr_warn("error while processing records: %d\n", err);
-+			return err;
-+		}
-+	}
-+	return 0;
-+}
-+
- struct bpf_prog_info_array_desc {
- 	int	array_offset;	/* e.g. offset of jited_prog_insns */
- 	int	count_offset;	/* e.g. offset of jited_prog_len */
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 8ea69558f0a8..1e2e399a5f2c 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -533,6 +533,7 @@ perf_buffer__new_raw(int map_fd, size_t page_cnt,
- 
- LIBBPF_API void perf_buffer__free(struct perf_buffer *pb);
- LIBBPF_API int perf_buffer__poll(struct perf_buffer *pb, int timeout_ms);
-+LIBBPF_API int perf_buffer__consume(struct perf_buffer *pb);
- 
- typedef enum bpf_perf_event_ret
- 	(*bpf_perf_event_print_t)(struct perf_event_header *hdr,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 0133d469d30b..381a7342ecfc 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -262,4 +262,5 @@ LIBBPF_0.0.9 {
- 		bpf_link_get_fd_by_id;
- 		bpf_link_get_next_id;
- 		bpf_program__attach_iter;
-+		perf_buffer__consume;
- } LIBBPF_0.0.8;
-
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
