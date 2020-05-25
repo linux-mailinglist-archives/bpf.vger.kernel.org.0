@@ -2,58 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C586E1E0FE9
-	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 15:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770C21E0FED
+	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 15:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403909AbgEYNyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 May 2020 09:54:24 -0400
-Received: from sym2.noone.org ([178.63.92.236]:57420 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403812AbgEYNyX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 May 2020 09:54:23 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 49Vz9B07Vjzvjc1; Mon, 25 May 2020 15:54:21 +0200 (CEST)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH] bpftool: print correct error message when failing to load BTF
-Date:   Mon, 25 May 2020 15:54:21 +0200
-Message-Id: <20200525135421.4154-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+        id S2403901AbgEYNzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 May 2020 09:55:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60047 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2403812AbgEYNzO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 May 2020 09:55:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590414913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=SVF681tuWmjHPWJqOeMK+C0AOeZ6V8i69hpRWb72Bxs=;
+        b=aHHmQABEi4DuMNwQl5GBhIAUAsRg8vQm1S/tb1VhMJStNCPi78wd2X+iHwO2HXWlmnYEQ8
+        ftZEupp7E95WJel6eMf4x3c/e1G23TKWGZCDtyqXHegMU4JyMxQ48moI56ASgYPK5sWdWC
+        wNRH8rqZYG7HBeYnYALVW1bNN9YunJA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-dU_IHBZoOlexVrZg-_mH6A-1; Mon, 25 May 2020 09:55:09 -0400
+X-MC-Unique: dU_IHBZoOlexVrZg-_mH6A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE595100CC85;
+        Mon, 25 May 2020 13:55:08 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-114-121.ams2.redhat.com [10.36.114.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6B19F5C1BB;
+        Mon, 25 May 2020 13:55:07 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: kselftest OOT run_tests
+Date:   Mon, 25 May 2020 16:55:05 +0300
+Message-ID: <xunyblmcqfuu.fsf@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-btf__parse_raw and btf__parse_elf return negative error numbers wrapped
-in an ERR_PTR, so the extracted value needs to be negated before passing
-them to strerror which expects a positive error number.
+Hi!
 
-Before:
-  Error: failed to load BTF from .../vmlinux: Unknown error -2
+I'm wondering how out of tree check is supposed to work for make
+O=dir run_tests from selftests (or make -C ...) directory?
 
-After:
-  Error: failed to load BTF from .../vmlinux: No such file or directory
+(both with 051f278e9d81 ("kbuild: replace KBUILD_SRCTREE with
+boolean building_out_of_srctree") and without)
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- tools/bpf/bpftool/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+make M= ... does not work with run_tests.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 41a1346934a1..da6c3b9bd821 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -553,7 +553,7 @@ static int do_dump(int argc, char **argv)
- 			btf = btf__parse_elf(*argv, NULL);
- 
- 		if (IS_ERR(btf)) {
--			err = PTR_ERR(btf);
-+			err = -PTR_ERR(btf);
- 			btf = NULL;
- 			p_err("failed to load BTF from %s: %s",
- 			      *argv, strerror(err));
 -- 
-2.26.1
+WBR,
+Yauheni Kaliuta
 
