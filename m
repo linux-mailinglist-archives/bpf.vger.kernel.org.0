@@ -2,102 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7071E17F5
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 00:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE871E1805
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 01:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgEYW6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 May 2020 18:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgEYW6L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 May 2020 18:58:11 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A525C061A0E;
-        Mon, 25 May 2020 15:58:11 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q9so421652pjm.2;
-        Mon, 25 May 2020 15:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=IniJC2Di+vQAsbW2GoTt2IMpLewAzkRSmpn+NzU1Xjo=;
-        b=NPAqgZPGhEsrg/Dn7N0vV300FwqcfONiL4U06a7Itu5PgPogaEZd1MiN8TT6uytPKp
-         1x/cfeo2UWZLM/xofblVsSdsdqOBnhb0z3FXJgtX09oPEHJHsgP+G24YET8xgctAJ4aF
-         Dyfjkd1N08K3bFlURxtj+me2ADj5xKvmmfoY7eeF0VOUPmAH1zA1AE3akREG+JKMrykb
-         L9zfVxI+DR3VMDZe5mZ+4Fh12qIc0sy0KeLXBWElpOPBPOEKsLlmO5QoCbA/5ASH/C8U
-         msaf6FjAGHMgIs/h4UXAkBP3CDcNGZ8M8BtuGmcnO3VD0rp80wXLT1LcRYfVPeXI3F8X
-         aPPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=IniJC2Di+vQAsbW2GoTt2IMpLewAzkRSmpn+NzU1Xjo=;
-        b=nS0CNj9jKZMM6G41gs96IvWsQ3n+ctcjW3AxrmLNt9P+uVgmA1oq0OFihBsJu3fvt4
-         tavoYi+i3RU/ppd60TPIIRsRZs7R6W721EBkn1esEYGsTg4FZmLb7oAPQVutF69jjoQd
-         KLL0hDJMRvZTNFgHy9CQjlu+pj3zZyE8BcTjFM0KP6f6feM1L65NLjK+k7ufNK34Efge
-         /dL65b77bA3gSinZRUxTcoRKjz3rf1ixv31I5xHyrL8wskOx6RCgdJ8ZOVnrnvVrB1WC
-         8M3Blkw3wP//7/eKodwa72IV2yN/GLGbO5pNIR0cXXBAw6ddvreXUldkq0Duuo7EEpRv
-         L92A==
-X-Gm-Message-State: AOAM531twaPuP0jDQ2O/+dAM6xiN/4WVcahZbhp1CodRmjqIzvbXSbGF
-        tEkzaI2zurKWy1A24mzPsAo=
-X-Google-Smtp-Source: ABdhPJxpKzwImK8whMMSPSc1uq/tj40+g3iAvUDO1l1EE7JPJ0Eb1X6pm5tP/d8nhQmUZabIJYywog==
-X-Received: by 2002:a17:90a:3ad1:: with SMTP id b75mr23493690pjc.216.1590447490633;
-        Mon, 25 May 2020 15:58:10 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id q201sm13681895pfq.40.2020.05.25.15.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 15:58:10 -0700 (PDT)
-Date:   Mon, 25 May 2020 15:58:01 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
-        andrii.nakryiko@gmail.com, ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <5ecc4d799cc25_718d2b15b962e5b8b1@john-XPS-13-9370.notmuch>
-In-Reply-To: <3503d44d-799f-5440-781a-3c4cd2d89282@iogearbox.net>
-References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
- <159033905529.12355.4368381069655254932.stgit@john-Precision-5820-Tower>
- <3503d44d-799f-5440-781a-3c4cd2d89282@iogearbox.net>
-Subject: Re: [bpf-next PATCH v5 2/5] bpf: extend bpf_base_func_proto helpers
- with probe_* and *current_task*
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728092AbgEYXAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 May 2020 19:00:46 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:50555 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgEYXAp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 May 2020 19:00:45 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 126B083640;
+        Tue, 26 May 2020 11:00:44 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1590447644;
+        bh=Xne4K3RqtbPnQ+ea6EEqddntF/BSLVnRXKCdz++ZUVs=;
+        h=From:To:Cc:Subject:Date;
+        b=DcdiVSV3snOO/4jZNyhqgCNWHeF4pdzEY1zcS148Xn/nLJzz3fN1BxyeP4BIgJJeu
+         +Sj06htHFGOyozp7Sn6aRpkW5O0YT1rkCcLLeA3ss5slwXQKnnbXaH8JFzo8En9u0u
+         Rc9+bCwmKuswhePWY1+bXHz69Aq/JBb2OSA0EVet9UtXa7s+2QM8MIo1oJzxRNzHrV
+         vzUH9aWJw3TAoTcStnBMXRxsGr4K4I68HpBm87VqOBjPAvk1Hix5bNARSDQ4l1A3Wm
+         DKvzsXPxtvtWSV3q5bKfpIb0TrAKyuKCagqjQlpGW0jAc3btnlg9ztzhGBZRGKGmAJ
+         Geakiq5O7jNOw==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5ecc4e180000>; Tue, 26 May 2020 11:00:44 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 10F2813ED4B;
+        Tue, 26 May 2020 11:00:39 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 0535228006C; Tue, 26 May 2020 11:00:40 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH] bpf: Fix spelling in comment
+Date:   Tue, 26 May 2020 11:00:24 +1200
+Message-Id: <20200525230025.14470-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann wrote:
-> On 5/24/20 6:50 PM, John Fastabend wrote:
-> > Often it is useful when applying policy to know something about the
-> > task. If the administrator has CAP_SYS_ADMIN rights then they can
-> > use kprobe + networking hook and link the two programs together to
-> > accomplish this. However, this is a bit clunky and also means we have
-> > to call both the network program and kprobe program when we could just
-> > use a single program and avoid passing metadata through sk_msg/skb->cb,
-> > socket, maps, etc.
-> > 
-> > To accomplish this add probe_* helpers to bpf_base_func_proto programs
-> > guarded by a perfmon_capable() check. New supported helpers are the
-> > following,
-> > 
-> >   BPF_FUNC_get_current_task
-> >   BPF_FUNC_current_task_under_cgroup
-> 
-> Nit: Stale commit message?
-> 
+Change 'handeled' to 'handled'.
 
-Correct, stale commit.
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >   BPF_FUNC_probe_read_user
-> >   BPF_FUNC_probe_read_kernel
-> >   BPF_FUNC_probe_read_user_str
-> >   BPF_FUNC_probe_read_kernel_str
-> > 
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > ---
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 916f5132a984..1ff8e73e9b12 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1543,7 +1543,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, co=
+nst struct bpf_insn *insn, u6
+=20
+ 		/* ARG1 at this point is guaranteed to point to CTX from
+ 		 * the verifier side due to the fact that the tail call is
+-		 * handeled like a helper, that is, bpf_tail_call_proto,
++		 * handled like a helper, that is, bpf_tail_call_proto,
+ 		 * where arg1_type is ARG_PTR_TO_CTX.
+ 		 */
+ 		insn =3D prog->insnsi;
+--=20
+2.25.1
 
-[...]
