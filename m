@@ -2,86 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33A1E06D2
-	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 08:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B837F1E06E0
+	for <lists+bpf@lfdr.de>; Mon, 25 May 2020 08:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgEYGS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 May 2020 02:18:58 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48051 "EHLO
+        id S2388655AbgEYG3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 May 2020 02:29:00 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50600 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729653AbgEYGS5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 May 2020 02:18:57 -0400
+        by vger.kernel.org with ESMTP id S1730446AbgEYG3A (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 May 2020 02:29:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590387536;
+        s=mimecast20190719; t=1590388139;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HP26hv9iAyi1MUU5g6+eJngX9ihCxZ4VLxR9IAwqTd0=;
-        b=RBfYVFefvZAAqwSRliVoppRs5EESavOtyih+Tm3LhVIA/b2fZOzdO8bl05ZBbcnsUVVfzV
-        hoyQMmwjx3ltCpLlUnHmJqfdj7I1ortmstM0ePtTMpOfs2dO7/aSBY/yD6lMVW8w5y+WFI
-        7cG7+kRss7BENM0IUBBj54ZiPtPkGXc=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=LGh412eQYr3rCq8xxf45CgrfvWBm+hok9IqBC+gring=;
+        b=Q/Kql79NW72okyzPw74EzdVbahKRb5ukirGBwGlgyhy4ajXZgc2gw8kRn8CeU/eLWYLnys
+        GSfuQ0MzMGDDe/zynw73Y4agagQfeWNIM/KkWnsFlJoEJm4nFDfF6J+jgafh3LdD/+paLZ
+        kGWjqmaPbpxKFDQqYJoQqMBukqlnVko=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-l8eW_VfBNUitsQRbOkaP7A-1; Mon, 25 May 2020 02:18:51 -0400
-X-MC-Unique: l8eW_VfBNUitsQRbOkaP7A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-94-uQ_nYwdtOAuiI16gi10DWA-1; Mon, 25 May 2020 02:28:56 -0400
+X-MC-Unique: uQ_nYwdtOAuiI16gi10DWA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DEF68014D7;
-        Mon, 25 May 2020 06:18:50 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 634DA1005510;
+        Mon, 25 May 2020 06:28:55 +0000 (UTC)
 Received: from astarta.redhat.com (ovpn-112-111.ams2.redhat.com [10.36.112.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A019510013D5;
-        Mon, 25 May 2020 06:18:48 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5810F60CC0;
+        Mon, 25 May 2020 06:28:54 +0000 (UTC)
 From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH RESEND] libbpf: use .so dynamic symbols for abi check
-Date:   Mon, 25 May 2020 09:18:46 +0300
-Message-Id: <20200525061846.16524-1-yauheni.kaliuta@redhat.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
+Subject: OUTPUT and TEST_CUSTOM_PROGS
+Date:   Mon, 25 May 2020 09:28:52 +0300
+Message-ID: <xuny367osf2z.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since dynamic symbols are used for dynamic linking it makes sense to
-use them (readelf --dyn-syms) for abi check.
+Hi!
 
-Found with some configuration on powerpc where linker puts
-local *.plt_call.* symbols into .so.
+lib.mk expects TEST_GEN_PROGS, TEST_GEN_PROGS_EXTENDED and
+TEST_GEN_FILES to be in local directory and tries to handle out
+of tree build adding OUTPUT to it at the beginning.
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+commit be16a244c199 ("selftests: lib.mk: add TEST_CUSTOM_PROGS to
+allow custom test run/install") adds TEST_CUSTOM_PROGS but it
+handles it differently. Should it add OUTPUT as well?
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index aee7f1a83c77..aea585cbe2f4 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -151,7 +151,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- 			   sed 's/\[.*\]//' | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
- 			   sort -u | wc -l)
--VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
-+VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
- 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
- 
- CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
-@@ -218,7 +218,7 @@ check_abi: $(OUTPUT)libbpf.so
- 		    sed 's/\[.*\]//' |					 \
- 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
- 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
--		readelf -s --wide $(OUTPUT)libbpf.so |			 \
-+		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
- 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
- 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
- 		diff -u $(OUTPUT)libbpf_global_syms.tmp			 \
 -- 
-2.26.2
+WBR,
+Yauheni Kaliuta
 
