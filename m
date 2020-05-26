@@ -2,130 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E8C1E2A20
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 20:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D43D1E2A2D
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 20:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbgEZSdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 14:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgEZSdl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 14:33:41 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D58C03E96D;
-        Tue, 26 May 2020 11:33:40 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id x29so3790124qtv.4;
-        Tue, 26 May 2020 11:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nwMtGvHNh6lLDCA8DTGdQ8UWv5hRqWibFM0Tb1k8GGg=;
-        b=fz0CQ3Sf7fjr/WoZrUoM3L3ln6u2rZ/CNEfI2UaruVwWibupI5FKpT5u7ZmSajRjKp
-         BVsoG1j2vAl/BgA7aUv8ooSNo9gO4HM6sP8zCTC3Tap+axu3ZLO3mgl4Oi64D/j30G/C
-         FM1mndOqwp5G5uzLtlZMIIkgRn9ma9EUHqWCw5Dtt71EWbWfNo8imGEguZQtRCcJQIeJ
-         ldIerIKysOxZG53nBs+u4m4js2kf9qsARiw3Rl+lanss519JML1HKWF+G2hY+4gNOqgV
-         8Jj5hyoOrDvrM9qZnWZIpb31BDq9dNcUN83/+9dTwl0Uz6n5LvU8xFnkX+qWLX7HDdn1
-         CQAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nwMtGvHNh6lLDCA8DTGdQ8UWv5hRqWibFM0Tb1k8GGg=;
-        b=XPw8dtphHZJkhCu8KE2l4MMcn02XC3q/M44fkOFjkZ0fYXc/XyjL9kkrtFo1tjPTRR
-         Vj6JYUQ+7xeWgI65ufaL3bs75YWg64sx8s2UJha0/T7lfkQOx5XdJxtYMIKjFqOVHFHZ
-         7B2/tpZp+WOL6/+vZ51X+BUWX/w6/rVHepjOZSsY9v928XPMcctm+euZa7AOQ6NzxioO
-         kYGzgQBBw2PfGsH//DThfhfrkeRsXfHkpfDyzMnO9ENE1LZYTZphnUTBRUiMIN8Y7Eg5
-         rqX40PiJuEc6evnoD0GIMg2w9yMrQWl8RtPIySY4BtTM3zPS0GNJ0KSqTWQeJznnJSZ+
-         qW+A==
-X-Gm-Message-State: AOAM533ZNuHFgvNHRv95bMmj9CQun0QCMLN4hjhFsKDfERx8qSsloXt7
-        Egs8NvNfum+2r/Z0bPXrpJJkUfOwBeJubbDEoi4=
-X-Google-Smtp-Source: ABdhPJwljHp9Sq4fK5IdJ45CMdIOBTFj1C+1x5WsYcf70jKmZDLCYdGKH0ej1/EGcED+mm/yuSRgFa/a8TcW4bjIdVo=
-X-Received: by 2002:ac8:71cd:: with SMTP id i13mr134894qtp.93.1590518017811;
- Tue, 26 May 2020 11:33:37 -0700 (PDT)
+        id S1728113AbgEZSfy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 14:35:54 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:37025 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387399AbgEZSfy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 May 2020 14:35:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590518152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ogM6EMAk5wZGZ44YTRT0bYlk0gdm9Bl2w0G3CGLJGw=;
+        b=Xz5dVaJqvDSIDem4jfsWJlLtHpDH8Z6a5s+Ad2rhoK2Lms3b7HglHAR4KfMz5OFo3hdT6M
+        rbiskgn/j90yl2PJXskopIQcfTJVl//o1+LJmlopJzdDyXy5mOLGcyov6hhYN8bb8JtkgT
+        U+BEq5cf63abXOiUnmF69Ri6KwDlgzI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-JXKRwOwqOACu_s2dR4f3-w-1; Tue, 26 May 2020 14:35:49 -0400
+X-MC-Unique: JXKRwOwqOACu_s2dR4f3-w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEF7D461;
+        Tue, 26 May 2020 18:35:47 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52E7D10013D5;
+        Tue, 26 May 2020 18:35:43 +0000 (UTC)
+Date:   Tue, 26 May 2020 20:35:41 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next] bpf: Fix map_check_no_btf return code
+Message-ID: <20200526203541.41efd94d@carbon>
+In-Reply-To: <CAEf4BzaXE5AsR1EvC8kQRoiRbsdLtq2AkHSU9_NqijAWxcN5fQ@mail.gmail.com>
+References: <159050511046.148183.1806612131878890638.stgit@firesoul>
+        <CAEf4BzaXE5AsR1EvC8kQRoiRbsdLtq2AkHSU9_NqijAWxcN5fQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
- <159033903373.12355.15489763099696629346.stgit@john-Precision-5820-Tower>
- <48c47712-bba1-3f53-bbeb-8a7403dab6db@iogearbox.net> <5ecc4d3c78c9e_718d2b15b962e5b845@john-XPS-13-9370.notmuch>
-In-Reply-To: <5ecc4d3c78c9e_718d2b15b962e5b845@john-XPS-13-9370.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 May 2020 11:33:26 -0700
-Message-ID: <CAEf4BzZ0b_UyxzyE-8+3oWSieutWov1UuVJ5Ugpn0yx8qeYNrA@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v5 1/5] bpf, sk_msg: add some generic helpers
- that may be useful from sk_msg
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 25, 2020 at 3:57 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Daniel Borkmann wrote:
-> > On 5/24/20 6:50 PM, John Fastabend wrote:
-> > > Add these generic helpers that may be useful to use from sk_msg programs.
-> > > The helpers do not depend on ctx so we can simply add them here,
-> > >
-> > >   BPF_FUNC_perf_event_output
-> > >   BPF_FUNC_get_current_uid_gid
-> > >   BPF_FUNC_get_current_pid_tgid
-> > >   BPF_FUNC_get_current_comm
-> >
-> > Hmm, added helpers below are what you list here except get_current_comm.
-> > Was this forgotten to be added here?
->
-> Forgot to update commit messages. I dropped it because it wasn't clear to
-> me it was very useful or how I would use it from this context. I figure we
-> can add it later if its needed.
+On Tue, 26 May 2020 11:16:50 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-But it's also not harmful in any way and is in a similar group as
-get_current_pid_tgid. So let's add it sooner rather than later. There
-is no cost in allowing this, right?
+> On Tue, May 26, 2020 at 7:59 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
+> > When a BPF-map type doesn't support having a BTF info associated, the
+> > bpf_map_ops->map_check_btf is set to map_check_no_btf(). This function
+> > map_check_no_btf() currently returns -ENOTSUPP, which result in a very
+> > confusing error message in libbpf, see below.
+> >
+> > The errno ENOTSUPP is part of the kernels internal errno in file
+> > include/linux/errno.h. As is stated in the file, these "should never be seen
+> > by user programs."
+> >
+> > Choosing errno EUCLEAN instead, which translated to "Structure needs
+> > cleaning" by strerror(3). This hopefully leads people to think about data
+> > structures which BTF is all about.  
+> 
+> How about instead of tweaking error code
 
->
+Regardless we still need to change the error code used, as strerror(3)
+cannot convert it to something meaningful.  As the code comment says
+this errno "should never be seen by user programs.".
+
+My notes are here:
+ https://github.com/xdp-project/xdp-project/blob/BTF01-notes.public/areas/core/BTF_01_notes.org
+
+> we actually just add support
+> for BTF key/values for all maps. For special maps, we can just enforce
+> that BTF is 4-byte integer (or typedef of that), so that in practice
+> you'll be defining it as:
+> 
+> struct {
+>     __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+>     __type(key, u32);
+>     __type(value, u32);
+> } my_map SEC(".maps");
+> 
+> and it will just work?
+
+Nope, this will also fail.
+
+I'm all for adding support for more BPF-maps in follow up patches.  I
+will soon be adding support for cpumap and devmap.  And I will likely
+be asking all kind of weird questions, I hope I can get some help from
+you to figure out all the details ;-)
+
 > >
-> > >   BPF_FUNC_get_current_cgroup_id
-> > >   BPF_FUNC_get_current_ancestor_cgroup_id
-> > >   BPF_FUNC_get_cgroup_classid
-> > >
-> > > Acked-by: Yonghong Song <yhs@fb.com>
-> > > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > > ---
-> > >   net/core/filter.c |   16 ++++++++++++++++
-> > >   1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 822d662..a56046a 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -6443,6 +6443,22 @@ sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> > >             return &bpf_msg_push_data_proto;
-> > >     case BPF_FUNC_msg_pop_data:
-> > >             return &bpf_msg_pop_data_proto;
-> > > +   case BPF_FUNC_perf_event_output:
-> > > +           return &bpf_event_output_data_proto;
-> > > +   case BPF_FUNC_get_current_uid_gid:
-> > > +           return &bpf_get_current_uid_gid_proto;
-> > > +   case BPF_FUNC_get_current_pid_tgid:
-> > > +           return &bpf_get_current_pid_tgid_proto;
-> > > +#ifdef CONFIG_CGROUPS
-> > > +   case BPF_FUNC_get_current_cgroup_id:
-> > > +           return &bpf_get_current_cgroup_id_proto;
-> > > +   case BPF_FUNC_get_current_ancestor_cgroup_id:
-> > > +           return &bpf_get_current_ancestor_cgroup_id_proto;
-> > > +#endif
-> > > +#ifdef CONFIG_CGROUP_NET_CLASSID
-> > > +   case BPF_FUNC_get_cgroup_classid:
-> > > +           return &bpf_get_cgroup_classid_curr_proto;
-> > > +#endif
-> > >     default:
-> > >             return bpf_base_func_proto(func_id);
-> > >     }
-> > >
+> > Before this change end-users of libbpf will see:
+> >  libbpf: Error in bpf_create_map_xattr(cpu_map):ERROR: strerror_r(-524)=22(-524). Retrying without BTF.
 > >
->
->
+> > After this change end-users of libbpf will see:
+> >  libbpf: Error in bpf_create_map_xattr(cpu_map):Structure needs cleaning(-117). Retrying without BTF.
+> >
+> > Fixes: e8d2bec04579 ("bpf: decouple btf from seq bpf fs dump and enable more maps")
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  kernel/bpf/syscall.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index d13b804ff045..ecde7d938421 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -732,7 +732,7 @@ int map_check_no_btf(const struct bpf_map *map,
+> >                      const struct btf_type *key_type,
+> >                      const struct btf_type *value_type)
+> >  {
+> > -       return -ENOTSUPP;
+> > +       return -EUCLEAN;
+> >  }
+> >
+> >  static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+> >
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
