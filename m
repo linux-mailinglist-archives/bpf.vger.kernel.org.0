@@ -2,104 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9651E3133
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 23:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7381E3175
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 23:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389070AbgEZV3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 17:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389025AbgEZV3n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 17:29:43 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BE9C061A0F;
-        Tue, 26 May 2020 14:29:42 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id dh1so10191725qvb.13;
-        Tue, 26 May 2020 14:29:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GUKVFk/6zg8e24EMsItEJum+6uy8m8KoXWjqefEDVIg=;
-        b=i7s5LM8BREgS3PAf1BOwkR81AyFmy4jAcxKXExtgtSzwVvBmTlF88JD8aPwew1dVZv
-         FSKExR82mtRVBmz9N8dD+il6B1UwKdu+P+PiB1BYbSE1BIXIyvDPRTImhrXJB6pu/e8c
-         eLTKzQcohp3pxXbtV0CLVRcTF2eXO8z2dmmWN+bRNfl1lLF8pHSah6BvIxtSpT+70nbQ
-         R8pqWsRDM57jkL9zT28mvPYAoND7Vz31tS8U3y7kH1rR+hoHr4UGhR6P/Hq/3XpoFVQR
-         cKwuIH66wpH1xHbsLsTX+sppP7dMLDDwLXP6S28QIczaMRcVmimDhbWYe2Oh8jk7xoRK
-         1nmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GUKVFk/6zg8e24EMsItEJum+6uy8m8KoXWjqefEDVIg=;
-        b=LUltgkXFMqLivWoUwXJfO8YVjX6am1c+OGVfYd99ioNJ+emLqmAIHTwyyei8Z67K/x
-         b9L7ThGDaXRIlTXPGJqLEoyV/QPw4dl+E8u/tJckvph+DUuAJFP9/dzg4REO0N2QPR8d
-         CIYc+CNwaperKyresVJ9fhaQvfWPWBwE+A+HiocoqglzXjFjNaUsuaPs2vImtIgJczsY
-         kNI0nhxZgCq2ts44IYsvJnqesyDP+BoARbQS+HVfhbM4wt/ezyTWQStVXzteQ+Uj3Epd
-         b/YkSLweYHzD8JBDdJVmcdLc/23+UM71OwceHXtetRK9AeZYRqbT3I0oSvm+A/Z7eU3L
-         GSYw==
-X-Gm-Message-State: AOAM530ExV6ATpzPsDZwnPqRNr0Wc362ccQV3mlViVYgPZGpCT3v2Mlg
-        rp6+OFatVb1BOP3xV8Gtu4FoflsHRmOGMg/vpUk=
-X-Google-Smtp-Source: ABdhPJyqAxP0EiYGoXZPYVeXHvGV+gzu/9say0vy0n2jmLdALsOUlDji1Y88fuqltWa69vLKQh8+Foaivvy2KSCPUSE=
-X-Received: by 2002:ad4:588c:: with SMTP id dz12mr22217780qvb.196.1590528582079;
- Tue, 26 May 2020 14:29:42 -0700 (PDT)
+        id S1729082AbgEZVsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 17:48:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49032 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgEZVsD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 17:48:03 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jdhQX-0002Rl-PG; Tue, 26 May 2020 23:48:01 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jdhQX-000CEk-Hv; Tue, 26 May 2020 23:48:01 +0200
+Subject: Re: [PATCH 0/8] selftests/bpf: installation and out of tree build
+ fixes
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>, bpf@vger.kernel.org
+Cc:     Jiri Benc <jbenc@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
+ <xuny367so4k3.fsf@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <77645d8b-2448-a35b-912a-abd3e329139d@iogearbox.net>
+Date:   Tue, 26 May 2020 23:48:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
- <159033903373.12355.15489763099696629346.stgit@john-Precision-5820-Tower>
- <48c47712-bba1-3f53-bbeb-8a7403dab6db@iogearbox.net> <5ecc4d3c78c9e_718d2b15b962e5b845@john-XPS-13-9370.notmuch>
- <CAEf4BzZ0b_UyxzyE-8+3oWSieutWov1UuVJ5Ugpn0yx8qeYNrA@mail.gmail.com> <5ecd8135d7ab4_35792ad4115a05b8d@john-XPS-13-9370.notmuch>
-In-Reply-To: <5ecd8135d7ab4_35792ad4115a05b8d@john-XPS-13-9370.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 May 2020 14:29:31 -0700
-Message-ID: <CAEf4Bzb7e=dpv7hP4SfLARpkDw1uTAeASRHEp9gBuK1Od=sqaA@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v5 1/5] bpf, sk_msg: add some generic helpers
- that may be useful from sk_msg
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <xuny367so4k3.fsf@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25824/Tue May 26 14:27:30 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 26, 2020 at 1:51 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Andrii Nakryiko wrote:
-> > On Mon, May 25, 2020 at 3:57 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > >
-> > > Daniel Borkmann wrote:
-> > > > On 5/24/20 6:50 PM, John Fastabend wrote:
-> > > > > Add these generic helpers that may be useful to use from sk_msg programs.
-> > > > > The helpers do not depend on ctx so we can simply add them here,
-> > > > >
-> > > > >   BPF_FUNC_perf_event_output
-> > > > >   BPF_FUNC_get_current_uid_gid
-> > > > >   BPF_FUNC_get_current_pid_tgid
-> > > > >   BPF_FUNC_get_current_comm
-> > > >
-> > > > Hmm, added helpers below are what you list here except get_current_comm.
-> > > > Was this forgotten to be added here?
-> > >
-> > > Forgot to update commit messages. I dropped it because it wasn't clear to
-> > > me it was very useful or how I would use it from this context. I figure we
-> > > can add it later if its needed.
-> >
-> > But it's also not harmful in any way and is in a similar group as
-> > get_current_pid_tgid. So let's add it sooner rather than later. There
-> > is no cost in allowing this, right?
-> >
->
-> It shouldn't cost anything only thing is I have code that runs the other
-> three that has been deployed, at least into a dev environment, so I know
-> its useful and works.
->
-> How about we push it as a follow up? I can add it and do some cleanups
-> on the CHECK_FAILs tonight.
+On 5/22/20 8:40 AM, Yauheni Kaliuta wrote:
+> 
+> Actually, a bit more needed :)
 
-Sure, no worries, works for me.
+Not quite sure how to parse this, I presume you are intending to send a v2 of
+this series with [0] folded in? Please also do not add line-breaks in the middle
+of all your Fixes tags as otherwise it would break searching for commits in the
+git log. For the v2 respin, please also add a better cover letter than just saying
+nothing more than 'I had a look, here are some fixes.'. At least a minimal high
+level summary of the selftest Makefile changes in this series.
 
->
-> Thanks,
-> John
+Thanks,
+Daniel
+
+   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200522081901.238516-1-yauheni.kaliuta@redhat.com/
+
+>>>>>> On Fri, 22 May 2020 07:13:02 +0300, Yauheni Kaliuta  wrote:
+> 
+>   > I had a look, here are some fixes.
+>   > Yauheni Kaliuta (8):
+>   >   selftests/bpf: remove test_align from Makefile
+>   >   selftests/bpf: build bench.o for any $(OUTPUT)
+>   >   selftests/bpf: install btf .c files
+>   >   selftests/bpf: fix object files installation
+>   >   selftests/bpf: add output dir to include list
+>   >   selftests/bpf: fix urandom_read installation
+>   >   selftests/bpf: fix test.h placing for out of tree build
+>   >   selftests/bpf: factor out MKDIR rule
+> 
+>   >  tools/testing/selftests/bpf/Makefile | 77 ++++++++++++++++++++--------
+>   >  1 file changed, 55 insertions(+), 22 deletions(-)
+> 
+>   > --
+>   > 2.26.2
+> 
+> 
+
