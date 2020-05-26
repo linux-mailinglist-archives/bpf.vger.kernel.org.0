@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51881E3226
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 00:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188D41E3228
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 00:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391125AbgEZWOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 18:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
+        id S2391647AbgEZWOH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 18:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390125AbgEZWOB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 18:14:01 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F3EC061A0F
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 15:14:00 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z1so5504424qtn.2
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 15:14:00 -0700 (PDT)
+        with ESMTP id S2390125AbgEZWOH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 18:14:07 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D028DC061A0F
+        for <bpf@vger.kernel.org>; Tue, 26 May 2020 15:14:06 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id m44so17603355qtm.8
+        for <bpf@vger.kernel.org>; Tue, 26 May 2020 15:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g2P8B8LAS18qjSBl4hxGv80ASo2ujlVK+KjwBqFrkfM=;
-        b=MbvLx9saGQ1kra0Icek6c84/XIaOjnqB8uay79Hoyv9zY1vAwBCEGP/+1cIfrw4bKk
-         MhWr7wHCZBIJJwpDDCvZ7cz0/IZBaxYNHHYmrPTDrDg9y3/LB1vPIHNoZ0hfbnrkPSM1
-         cS9mu6CRwnhAzQbhxCCYXgYuk6+RJ9I6SHz8H25RN0E7KkFoXgkEvHEiSrjBc/zC/bzz
-         UtDs8+sUP0OCeX4ifWnmnKieMDJZrd1ervoLQIPMrkqtroprXqgX8Cds27rzEffAlqGU
-         HBfl+ZPbkHPAMm5t59Z6DwlR6aH85VP2BBf0Vyart2GyJTRddX30eR+8WTCKuRwf9oVN
-         gKJg==
+        bh=KiGbbuhreSRjvWcyZ8Gx1L8BK3CkeZ5t3ryJaR357V0=;
+        b=jWSSOxrr/egqgmdjVeMXFs23VO3fu4QckI2uFSk9Op7JfgHDgNQssYDn2usqQ6o0HQ
+         MGTAecDcSK9k0C7Qw65SrB5TstdVSgEVh+7rmkWh7uOTaEjEb7n9Jk8yq9WMSRz3i/YI
+         rTpQvSIP65nVt4/j0zWfaSEqG3ws4hgtTRZV/cKXr6yvJmp4xQBNjyGq02gXNs3qhh/m
+         SLMwgLUcJlwlTRIg1X6Wc0SkSYircgUhzbULEl6ajoH8N4qOprMrai1SNC/8vvCmGdSU
+         kRKigRCprxVKDGrr5DyLisen3miyXp7w+UkBRfrR0AqXX1B1i4IKezVh3wewzrU7t/+U
+         LHSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g2P8B8LAS18qjSBl4hxGv80ASo2ujlVK+KjwBqFrkfM=;
-        b=juQRn30x49IyaUeKMXX5WQ8RVe8aIx8+/rkQfAeV3JLwrvlrpeHZch8ldUWlExQ3Rx
-         ksQ0piSLxmhq2Yubrgfs59n8yrfc4l2oTu81GNyXD+NgqeeC1eghIaAlusfvlTDnriCf
-         ABZCwoszBXgh2ZjX36aEfqXH2hAFt6tLqEeILM37XiFa0Oige17M723r23/1FsfsDOhu
-         N75EnwZd76ap8Y7H0WB5XS3fPGUsLuOMhOLOhYP8OIajuOwWo3XhYk5L/MxbBUQFW68C
-         OVGCtZY23C1bqCtxwRzWiWlsACMAg8/3CFthDM/kWlYB4hwwh9JCepZ4nWeh0OBMk4np
-         9f5Q==
-X-Gm-Message-State: AOAM533AlaFhRnrJCXGhCiMfDPsbuLoJ0IiVDvMwOExsLusuYWSjOleb
-        Zi3ecf9S9FPOepQOO4yV2X3DIqBuqihHQacciuY=
-X-Google-Smtp-Source: ABdhPJy6dej4pF86ONY/EAPmBCvFeimND9nLPddLOkNO1lE9pUE9UeT52FxjI8O1JGE8LbTZVAASzkA+2DeXQ5/9hxM=
-X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr1048599qta.141.1590531239653;
- Tue, 26 May 2020 15:13:59 -0700 (PDT)
+        bh=KiGbbuhreSRjvWcyZ8Gx1L8BK3CkeZ5t3ryJaR357V0=;
+        b=pYWz0iaxYEJRlx6wZekvODPJAN/8zcjf9LnW4h1IHUU2jq5A1NV7RFBM8JeY4DDIPl
+         yMbmODAaNr+KdJ13yd26cfsds2vYgcYL+FUxKl+0n5CvK4qpH/eWwW4Q9jYzGEi9eGf4
+         92qqeaU/ziZqyqQt5yNXb4XfKr2qTgjm9BWGm6Xy/RFXKWkNQ67YtpjqXuOANpLAJC0R
+         qeEssh37aRT6ol+QA8aT3PDSP7PSaTCfP+HWYDuMRivH7be6yBGhbxIKxbgvQBSxPIjC
+         VbWSIa14t5yKg28v/2mFkmL4/Gfw9TqRPrYKDcHmQo+WWCIRIVpv5gLc4sSX0fOTo/BR
+         UTCQ==
+X-Gm-Message-State: AOAM531iQ3Wa+YGqXUKd+5DvvM9seIA9pVUbWyN8SYWDsgFHoabMSmwZ
+        HrADk1SIAvdaBObTwZkP0DwU3y7kVPSU45FpsrQ=
+X-Google-Smtp-Source: ABdhPJxXan2rdHQWxB5CNsOfdNyS17q4kp8j4WknPcNnwp9PtgKvnmQ+59inb0CJpKCbtRlg5LBF6/CDo79+AtXT7W0=
+X-Received: by 2002:ac8:71cd:: with SMTP id i13mr1028418qtp.93.1590531246101;
+ Tue, 26 May 2020 15:14:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com> <20200522041310.233185-6-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200522041310.233185-6-yauheni.kaliuta@redhat.com>
+References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com> <20200522041310.233185-7-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20200522041310.233185-7-yauheni.kaliuta@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 May 2020 15:13:48 -0700
-Message-ID: <CAEf4BzbOJFXhWL6PSstWoqadEY4qzG4uA66kt8+KLK+8c0ye0g@mail.gmail.com>
-Subject: Re: [PATCH 5/8] selftests/bpf: add output dir to include list
+Date:   Tue, 26 May 2020 15:13:55 -0700
+Message-ID: <CAEf4BzbVbM9jh5K=qcywooTWvuAvS8euDy+xru6tQEd=Y4T+wg@mail.gmail.com>
+Subject: Re: [PATCH 6/8] selftests/bpf: fix urandom_read installation
 To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
         Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
@@ -63,37 +63,35 @@ X-Mailing-List: bpf@vger.kernel.org
 On Thu, May 21, 2020 at 9:14 PM Yauheni Kaliuta
 <yauheni.kaliuta@redhat.com> wrote:
 >
-> Some headers (skel) are generated in the output directory and used
-> for build (test_cpp.cpp), so add it to the list (as well as
-> CURDIR) otherwise out of tree build is broken.
+> selftests/lib.mk does not prepend TEST_CUSTOM_PROGS with OUTPUT (vs
+> TEST_GEN_PROGS, TEST_GEN_PROGS_EXTENDED, TEST_GEN_FILES). So do it
+> in the bpf Makefile. Otherwise make install fails to install it on
+> out of tree build.
 >
-
-So this is needed only for test_cpp, right? Because test_prog's tests
-are built with a special rule changing their workdir to the one that
-contains proper skeleton. Let's just add -I$(OUTPUT) to test_cpp rule
-instead of adding it to every single .c build rule? If we later still
-need this, then we should consider adding it widely.
-
-
 > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 > ---
->  tools/testing/selftests/bpf/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+
+>  tools/testing/selftests/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 1ba3d72c3261..efab82151ce2 100644
+> index efab82151ce2..31598ca2d396 100644
 > --- a/tools/testing/selftests/bpf/Makefile
 > +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -22,7 +22,8 @@ LLVM_OBJCOPY  ?= llvm-objcopy
->  BPF_GCC                ?= $(shell command -v bpf-gcc;)
->  SAN_CFLAGS     ?=
->  CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) $(SAN_CFLAGS)             \
-> -         -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
-> +         -I$(CURDIR) -I$(abspath $(OUTPUT))                            \
-> +         -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)                      \
->           -I$(TOOLSINCDIR) -I$(APIDIR)                                  \
->           -Dbpf_prog_load=bpf_prog_test_load                            \
->           -Dbpf_load_program=bpf_test_load_program
+> @@ -82,7 +82,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
+>         flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
+>         test_lirc_mode2_user xdping test_cpp runqslower bench
+>
+> -TEST_CUSTOM_PROGS = urandom_read
+> +TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
+>
+>  # Emit succinct information message describing current building step
+>  # $1 - generic step name (e.g., CC, LINK, etc);
 > --
 > 2.26.2
 >
