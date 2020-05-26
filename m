@@ -2,94 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1281E24C1
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 16:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E271E272C
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 18:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgEZO6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 10:58:41 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22956 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731329AbgEZO6k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 May 2020 10:58:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590505118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4tAE1IK4f2T1kuJd9DT8hikh4EdTWXjmuVs8CT+cGE0=;
-        b=gM1LEYZnk031CIsxiHKp7oQegfn/NmI40Iw6oaqZdHquw/HodRQ6NlSufRChpYDi8+Xerz
-        oTkJY8U5H06N2kStoxdn18Hip1L106olfX+EMF7N3rA2QrX3gvfyF6wRnuRnjazWHDt3s9
-        Eb2DT9q9ymQcWMMSOb3hdoQzIrLaRjM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-iQffCG_xMXCBCE5H44383Q-1; Tue, 26 May 2020 10:58:37 -0400
-X-MC-Unique: iQffCG_xMXCBCE5H44383Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1193D835B49;
-        Tue, 26 May 2020 14:58:36 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B75FF5D9E7;
-        Tue, 26 May 2020 14:58:31 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 8B5F6300003E9;
-        Tue, 26 May 2020 16:58:30 +0200 (CEST)
-Subject: [PATCH bpf-next] bpf: Fix map_check_no_btf return code
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Date:   Tue, 26 May 2020 16:58:30 +0200
-Message-ID: <159050511046.148183.1806612131878890638.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S1730030AbgEZQeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 12:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728450AbgEZQdk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 12:33:40 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47375C03E97A
+        for <bpf@vger.kernel.org>; Tue, 26 May 2020 09:33:40 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r7so4355009wro.1
+        for <bpf@vger.kernel.org>; Tue, 26 May 2020 09:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3d51jgWtfOexQMR16pUfp1Ft+cFFsdNIgNCbJ0oO6z8=;
+        b=S1vl8LNQNGh9Z9oQEIaEr3gX4dBzKdAj9yZBl9C8Z9eB9PxSDAHYk+yztCPZT/cc5o
+         EiTXiXfHkY+NQVCYy4gS0Vd+ufYrK/Nqn88WnMiNYw8VNbr//5v5JAfanWXjVaa4UPa/
+         IXmxKiSMm+hlWLN126CkuJ2x4CDQDobvrDzb8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3d51jgWtfOexQMR16pUfp1Ft+cFFsdNIgNCbJ0oO6z8=;
+        b=f4Av0lMfkKHU+3+wL9GMqFV9QJLHEHkS1AHkzPYVectLk5V6QwyPEHkJWxc/aABcAw
+         HTkPxPhR15sKg273B6jaz82+9Y1pmsLLewQ6K7KBgcSgtra6fD8ovwYGO5y41tX+g8MY
+         Aeyvi+rYjLS1umQBC3KT056QsAADkgPaV06ckOQcl0rDUyQybYO6VYAx3uNN5Sxw6Dbw
+         bcSbyofqT5vCt0jt1BZ8QgkFPBOhpX47x0vVKO4OYdtJDljvW2c+XVq0j+yK5b4aYcQJ
+         Vm+0jcAZjVoZ4XeIWnBctlGUe39piS5cZNre/6+z83rgg+eQdiO1hozeGEhGeY5Gjnoo
+         +uuw==
+X-Gm-Message-State: AOAM53072VtB0BX8f4yJtQE95IfDS4Pc5QveGd7BIYACPjVbFSYd/n1O
+        d81K0V7mn7JJlpRCuUXE6tSitQ==
+X-Google-Smtp-Source: ABdhPJySwURRYLxVZfz9zYM60ZLeI2UfSrRa2z7iq8zE9ysrRYMQUfSNRCioM6c/ISpeYj/hrPKyAw==
+X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr22098919wrw.16.1590510818551;
+        Tue, 26 May 2020 09:33:38 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id k17sm48654wmj.15.2020.05.26.09.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 09:33:37 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next 0/4] Generalizing bpf_local_storage
+Date:   Tue, 26 May 2020 18:33:32 +0200
+Message-Id: <20200526163336.63653-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a BPF-map type doesn't support having a BTF info associated, the
-bpf_map_ops->map_check_btf is set to map_check_no_btf(). This function
-map_check_no_btf() currently returns -ENOTSUPP, which result in a very
-confusing error message in libbpf, see below.
+From: KP Singh <kpsingh@google.com>
 
-The errno ENOTSUPP is part of the kernels internal errno in file
-include/linux/errno.h. As is stated in the file, these "should never be seen
-by user programs."
+bpf_sk_storage can already be used by some BPF program types to annotate
+socket objects. These annotations are managed with the life-cycle of the
+object (i.e. freed when the object is freed) which makes BPF programs
+much simpler and less prone to errors and leaks.
 
-Choosing errno EUCLEAN instead, which translated to "Structure needs
-cleaning" by strerror(3). This hopefully leads people to think about data
-structures which BTF is all about.
+This patch series:
 
-Before this change end-users of libbpf will see:
- libbpf: Error in bpf_create_map_xattr(cpu_map):ERROR: strerror_r(-524)=22(-524). Retrying without BTF.
+* Generalizes the bpf_sk_storage infrastructure to allow easy
+  implementation of local storage for other objects
+* Implements local storage for inodes
+* Makes both bpf_{sk, inode}_storage available to LSM programs.
 
-After this change end-users of libbpf will see:
- libbpf: Error in bpf_create_map_xattr(cpu_map):Structure needs cleaning(-117). Retrying without BTF.
+Local storage is safe to use in LSM programs as the attachment sites are
+limited and the owning object won't be freed, however, this is not the
+case for tracing. Usage in tracing is expected to follow a white-list
+based approach similar to the d_path helper
+(https://lore.kernel.org/bpf/20200506132946.2164578-1-jolsa@kernel.org).
 
-Fixes: e8d2bec04579 ("bpf: decouple btf from seq bpf fs dump and enable more maps")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- kernel/bpf/syscall.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Access to local storage would allow LSM programs to implement stateful
+detections like detecting the unlink of a running executable from the
+examples shared as a part of the KRSI series
+https://lore.kernel.org/bpf/20200329004356.27286-1-kpsingh@chromium.org/
+and
+https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index d13b804ff045..ecde7d938421 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -732,7 +732,7 @@ int map_check_no_btf(const struct bpf_map *map,
- 		     const struct btf_type *key_type,
- 		     const struct btf_type *value_type)
- {
--	return -ENOTSUPP;
-+	return -EUCLEAN;
- }
- 
- static int map_check_btf(struct bpf_map *map, const struct btf *btf,
 
+*** BLURB HERE ***
+
+KP Singh (4):
+  bpf: Generalize bpf_sk_storage
+  bpf: Implement bpf_local_storage for inodes
+  bpf: Allow local storage to be used from LSM programs
+  bpf: Add selftests for local_storage
+
+ fs/inode.c                                    |    3 +
+ .../bpf_local_storage.h}                      |   14 +-
+ include/linux/bpf_types.h                     |    1 +
+ include/linux/fs.h                            |    5 +
+ include/net/sock.h                            |    4 +-
+ include/uapi/linux/bpf.h                      |   54 +-
+ kernel/bpf/Makefile                           |    4 +
+ kernel/bpf/bpf_local_storage.c                | 1595 +++++++++++++++++
+ kernel/bpf/bpf_lsm.c                          |   20 +-
+ kernel/bpf/cgroup.c                           |    2 +-
+ kernel/bpf/syscall.c                          |    3 +-
+ kernel/bpf/verifier.c                         |   10 +
+ net/bpf/test_run.c                            |    2 +-
+ net/core/Makefile                             |    1 -
+ net/core/bpf_sk_storage.c                     | 1183 ------------
+ net/core/filter.c                             |    2 +-
+ net/core/sock.c                               |    2 +-
+ net/ipv4/bpf_tcp_ca.c                         |    2 +-
+ net/ipv4/inet_diag.c                          |    2 +-
+ tools/bpf/bpftool/map.c                       |    1 +
+ tools/include/uapi/linux/bpf.h                |   54 +-
+ tools/lib/bpf/libbpf_probes.c                 |    5 +-
+ .../bpf/prog_tests/test_local_storage.c       |   60 +
+ .../selftests/bpf/progs/local_storage.c       |  139 ++
+ 24 files changed, 1959 insertions(+), 1209 deletions(-)
+ rename include/{net/bpf_sk_storage.h => linux/bpf_local_storage.h} (72%)
+ create mode 100644 kernel/bpf/bpf_local_storage.c
+ delete mode 100644 net/core/bpf_sk_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
 
