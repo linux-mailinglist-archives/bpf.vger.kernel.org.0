@@ -2,116 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372C91E242B
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 16:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1281E24C1
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 16:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgEZOdq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 10:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726882AbgEZOdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 10:33:45 -0400
-Received: from localhost (unknown [151.48.148.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729482AbgEZO6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 10:58:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22956 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731329AbgEZO6k (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 May 2020 10:58:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590505118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4tAE1IK4f2T1kuJd9DT8hikh4EdTWXjmuVs8CT+cGE0=;
+        b=gM1LEYZnk031CIsxiHKp7oQegfn/NmI40Iw6oaqZdHquw/HodRQ6NlSufRChpYDi8+Xerz
+        oTkJY8U5H06N2kStoxdn18Hip1L106olfX+EMF7N3rA2QrX3gvfyF6wRnuRnjazWHDt3s9
+        Eb2DT9q9ymQcWMMSOb3hdoQzIrLaRjM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-iQffCG_xMXCBCE5H44383Q-1; Tue, 26 May 2020 10:58:37 -0400
+X-MC-Unique: iQffCG_xMXCBCE5H44383Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1A692065F;
-        Tue, 26 May 2020 14:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590503625;
-        bh=LdvSxghRs9yS+Ku+gpT21dSwC2nEsXrTcmSQxsBjTFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hTZdY/jwNcx7J8+XxmDvOXhxNRxaT0aBoyuzHh/4ahBXpBXvbV6T8XUeYta23l5lF
-         1SNvFF8HxcbypkvQ0v32CnIcsbRAE3RRFAr7wrMHJitmK+gywsrhEsVa7B3RgesfAb
-         EDCWak9andw7nCm4ZCvT7JqV8pfLho+yXBGrHYpA=
-Date:   Tue, 26 May 2020 16:33:40 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        davem@davemloft.net, daniel@iogearbox.net,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        toshiaki.makita1@gmail.com
-Subject: Re: [PATCH bpf-next] xdp: introduce convert_to_xdp_buff utility
- routine
-Message-ID: <20200526143340.GA3769@localhost.localdomain>
-References: <26bcdba277dc23a57298218b7617cd8ebe03676e.1590500470.git.lorenzo@kernel.org>
- <20200526162008.7bd2d18f@carbon>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1193D835B49;
+        Tue, 26 May 2020 14:58:36 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B75FF5D9E7;
+        Tue, 26 May 2020 14:58:31 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 8B5F6300003E9;
+        Tue, 26 May 2020 16:58:30 +0200 (CEST)
+Subject: [PATCH bpf-next] bpf: Fix map_check_no_btf return code
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Date:   Tue, 26 May 2020 16:58:30 +0200
+Message-ID: <159050511046.148183.1806612131878890638.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
-Content-Disposition: inline
-In-Reply-To: <20200526162008.7bd2d18f@carbon>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+When a BPF-map type doesn't support having a BTF info associated, the
+bpf_map_ops->map_check_btf is set to map_check_no_btf(). This function
+map_check_no_btf() currently returns -ENOTSUPP, which result in a very
+confusing error message in libbpf, see below.
 
---OgqxwSJOaUobr8KG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The errno ENOTSUPP is part of the kernels internal errno in file
+include/linux/errno.h. As is stated in the file, these "should never be seen
+by user programs."
 
-> On Tue, 26 May 2020 15:48:13 +0200
-> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->=20
+Choosing errno EUCLEAN instead, which translated to "Structure needs
+cleaning" by strerror(3). This hopefully leads people to think about data
+structures which BTF is all about.
 
-[...]
+Before this change end-users of libbpf will see:
+ libbpf: Error in bpf_create_map_xattr(cpu_map):ERROR: strerror_r(-524)=22(-524). Retrying without BTF.
 
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 90f11760bd12..5dbdd65866a9 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -106,6 +106,16 @@ void xdp_warn(const char *msg, const char *func, c=
-onst int line);
-> > =20
-> >  struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
-> > =20
-> > +static inline
-> > +void convert_to_xdp_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-> > +{
-> > +	xdp->data_hard_start =3D (void *)frame;
->=20
-> This assumption is problematic.  You are suppose to deduct this from
-> frame->data pointer.
->=20
-> Currently the xdp_frame is designed and access such that is is possible
-> to use another memory area for xdp_frame.  That would break after this
-> change.
->=20
-> This should instead be:
->=20
->  xdp->data_hard_start =3D frame->data - (frame->headroom + sizeof(struct =
-xdp_frame));
+After this change end-users of libbpf will see:
+ libbpf: Error in bpf_create_map_xattr(cpu_map):Structure needs cleaning(-117). Retrying without BTF.
 
-ack, fine. I will fix it v2.
+Fixes: e8d2bec04579 ("bpf: decouple btf from seq bpf fs dump and enable more maps")
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ kernel/bpf/syscall.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Lorenzo
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index d13b804ff045..ecde7d938421 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -732,7 +732,7 @@ int map_check_no_btf(const struct bpf_map *map,
+ 		     const struct btf_type *key_type,
+ 		     const struct btf_type *value_type)
+ {
+-	return -ENOTSUPP;
++	return -EUCLEAN;
+ }
+ 
+ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
 
->=20
-> > +	xdp->data =3D frame->data;
-> > +	xdp->data_end =3D frame->data + frame->len;
-> > +	xdp->data_meta =3D frame->data - frame->metasize;
-> > +	xdp->frame_sz =3D frame->frame_sz;
-> > +}
-> > +
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
 
---OgqxwSJOaUobr8KG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXs0owgAKCRA6cBh0uS2t
-rAAyAQCkFj/X0UTbyI5n4mzNdkWIBO289jPslneWxkfrK/x+SQEAxCqRUZrLQbhb
-4Lg74IaF1IKZhnPteuRuziUuyjVv1QI=
-=5SWW
------END PGP SIGNATURE-----
-
---OgqxwSJOaUobr8KG--
