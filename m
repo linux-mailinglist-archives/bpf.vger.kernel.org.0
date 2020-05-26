@@ -2,89 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BD61E3022
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 22:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C721E3047
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 22:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391346AbgEZUkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 16:40:15 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36658 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391281AbgEZUkP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 May 2020 16:40:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590525614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gI364zi/wryAJLpdZYgpXb7/ufwHHKVQ6Q8jqyVuF8Q=;
-        b=bHL8vPjNNHheqsOCEQGd/P5aKUeo+zkJrhdam5jiuaOkj8EqFPk2DbkM0rVhsLV3fGGmvX
-        qGhvveegvIjMHlWKCLBDSBDQwY4IyfcU8nhXrohejOpIzCw7OSyl7MeK+wa+k+4fb6XQOh
-        XJK7w31GMQrovpAvYPcBkvUeCkusYV4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-_5UcDM9sMnu4IPkMan7vLQ-1; Tue, 26 May 2020 16:40:12 -0400
-X-MC-Unique: _5UcDM9sMnu4IPkMan7vLQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AFB11005512;
-        Tue, 26 May 2020 20:40:11 +0000 (UTC)
-Received: from [10.3.112.17] (ovpn-112-17.phx2.redhat.com [10.3.112.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A740C60C47;
-        Tue, 26 May 2020 20:40:07 +0000 (UTC)
-Subject: Re: kselftest OOT run_tests
-To:     shuah <shuah@kernel.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
-References: <xunyblmcqfuu.fsf@redhat.com>
- <ad5ee014-759c-d0fb-5dc1-f1f25481a453@kernel.org>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <fcd9debe-4bed-df1a-d5ea-69e0a8d0ac98@redhat.com>
-Date:   Tue, 26 May 2020 16:40:06 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <ad5ee014-759c-d0fb-5dc1-f1f25481a453@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S2403975AbgEZUvM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 16:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403969AbgEZUvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 16:51:12 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA945C061A0F;
+        Tue, 26 May 2020 13:51:10 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id j21so10633426pgb.7;
+        Tue, 26 May 2020 13:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=JDCjEBwyvZfUeJw9bPCiqLmIBbR8GM0KiGn9Dhm2E+Y=;
+        b=aQ7SPJ5pd+5QqzLEyNUBOJjOwEm2dmfdnfu4oQCvgC2ot2hbEecM29H60M1RTVdFUe
+         MxgQAwRQ/JRpWsIc0VdCjxhpQLM5RIC1jStURaFo0V3J6Sz5jJUf3fZMZhKauV1z02B/
+         QXd8+lWPz/And2hKcLG9vhsI0IRcC5nLQ7D+yXVMtEb4k6mp15zGhlxeXopoAgPsI4LZ
+         978Hlxz4JGl5l7LDAFfr42VqhYCOiSrVDpHWgEtJHuySKWgz5ok7hx5Af7T1wQeYWGBa
+         BQJJ+kOY7aXgXUX6uTibESbOQEECcgWJh9NBhqYPmt1HSZxkOBya5WmFKjkUE6WeiGIj
+         f4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=JDCjEBwyvZfUeJw9bPCiqLmIBbR8GM0KiGn9Dhm2E+Y=;
+        b=dvBIG0hREFLJ9aK/xEaGpq5uvepBOdXxcviWVtt9wSuRuUeWPtK+vxxGDbWcTRA8ml
+         1I/JPbvCUowlSVzITqMWuB+/b8VaY5/Dx5BAoOsjtC1bC1NQz4Gc612jzH29cvGDnENT
+         ZpQefpWtNCqTAAtqySBVMgrHQd5x5wrh0LCTr7daxBawb5pplaoYrh3J8HT3LQW06hzM
+         DJiIaEBesAcPiNM4h/TlbdC5rN1arxnlpWMD37zSSvGe4uJr6NZLeZb+Uo8QUzlDnO8M
+         PQhsl9/cMH5eiRoU8ydIWpegpg7WhpDeVdDDOQ5M406aosiOZdOK84DIKEzGeXLx9DAD
+         Trpw==
+X-Gm-Message-State: AOAM533w+tPvY4z+ITbwVgQLG0Z+p5MP2PZM6vkKBPC2UQ17Oud/PAnl
+        4qahFD+gM5BYvUtGp5BE8YAS+E6K
+X-Google-Smtp-Source: ABdhPJyQvfzeo5P5wAZ8LZABsrKzt+50hYLz8ptDuLMDY73ETB5A+UJQM65GXgvz9B0GGY0vinNS2Q==
+X-Received: by 2002:a63:5d55:: with SMTP id o21mr704726pgm.58.1590526270522;
+        Tue, 26 May 2020 13:51:10 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id m12sm436597pgj.46.2020.05.26.13.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 13:51:09 -0700 (PDT)
+Date:   Tue, 26 May 2020 13:51:01 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Message-ID: <5ecd8135d7ab4_35792ad4115a05b8d@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZ0b_UyxzyE-8+3oWSieutWov1UuVJ5Ugpn0yx8qeYNrA@mail.gmail.com>
+References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
+ <159033903373.12355.15489763099696629346.stgit@john-Precision-5820-Tower>
+ <48c47712-bba1-3f53-bbeb-8a7403dab6db@iogearbox.net>
+ <5ecc4d3c78c9e_718d2b15b962e5b845@john-XPS-13-9370.notmuch>
+ <CAEf4BzZ0b_UyxzyE-8+3oWSieutWov1UuVJ5Ugpn0yx8qeYNrA@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v5 1/5] bpf, sk_msg: add some generic helpers
+ that may be useful from sk_msg
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/26/20 1:13 PM, shuah wrote:
-> On 5/25/20 7:55 AM, Yauheni Kaliuta wrote:
->> Hi!
->>
->> I'm wondering how out of tree check is supposed to work for make
->> O=dir run_tests from selftests (or make -C ...) directory?
->>
->> (both with 051f278e9d81 ("kbuild: replace KBUILD_SRCTREE with
->> boolean building_out_of_srctree") and without)
->>
->> make M= ... does not work with run_tests.
->>
+Andrii Nakryiko wrote:
+> On Mon, May 25, 2020 at 3:57 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Daniel Borkmann wrote:
+> > > On 5/24/20 6:50 PM, John Fastabend wrote:
+> > > > Add these generic helpers that may be useful to use from sk_msg programs.
+> > > > The helpers do not depend on ctx so we can simply add them here,
+> > > >
+> > > >   BPF_FUNC_perf_event_output
+> > > >   BPF_FUNC_get_current_uid_gid
+> > > >   BPF_FUNC_get_current_pid_tgid
+> > > >   BPF_FUNC_get_current_comm
+> > >
+> > > Hmm, added helpers below are what you list here except get_current_comm.
+> > > Was this forgotten to be added here?
+> >
+> > Forgot to update commit messages. I dropped it because it wasn't clear to
+> > me it was very useful or how I would use it from this context. I figure we
+> > can add it later if its needed.
 > 
-> Kselftests run_tests target isn't intended for building and running
-> tests OOT. Also make M= doesn't make sense for them.
-> 
-> There is no support to build OOT at the moment. I would like to get
-> a better understanding of your use-case. Can you elaborate?
+> But it's also not harmful in any way and is in a similar group as
+> get_current_pid_tgid. So let's add it sooner rather than later. There
+> is no cost in allowing this, right?
 > 
 
-Hey Yauheni, can you CC me on the use-case explanation?
+It shouldn't cost anything only thing is I have code that runs the other
+three that has been deployed, at least into a dev environment, so I know
+its useful and works.
 
-We currently do something really silly for the livepatch selftests on 
-RHEL-7 for CKI that requires building them as pseudo OOT... in our case, 
-we'd like to just be able to do something like make modules_prepare && 
-make M= lib/livepatch, so perhaps a bit different... but I'd be curious 
-for which problem you're currently trying to solve.
+How about we push it as a follow up? I can add it and do some cleanups
+on the CHECK_FAILs tonight.
 
-Regards,
-
--- Joe
-
+Thanks,
+John
