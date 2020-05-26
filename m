@@ -2,123 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9617B1E1E49
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 11:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D581E234C
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731683AbgEZJVz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 05:21:55 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55395 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731605AbgEZJVz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 May 2020 05:21:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590484914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TH1d6HXKl4wUwZvK9cSvbJst6ATdoGACf8kVgH3UPzE=;
-        b=ZDu2Cy/d8QkpGydDCzNbdzgZQ24u+hi5JGVGPp/FxGQbdwUqRakdV5fYHIW+0liXdGO1Al
-        UFmP6Bv9YdWC1Wtl90UwWpD2Y+Dcg/mc3cFk3FercZGBWc4PWLhDFJm9bIBe62xq5LF0MS
-        SRzyIFyA+holSKwBWB1PFMh5LKPJYEA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-KcSW6ARQPwKvGpgCIu1FiA-1; Tue, 26 May 2020 05:21:52 -0400
-X-MC-Unique: KcSW6ARQPwKvGpgCIu1FiA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728795AbgEZNsq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 09:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728218AbgEZNsp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 09:48:45 -0400
+Received: from localhost.localdomain.com (unknown [151.48.148.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E63101009600;
-        Tue, 26 May 2020 09:21:50 +0000 (UTC)
-Received: from ebuild.redhat.com (ovpn-112-147.ams2.redhat.com [10.36.112.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EA1B65C1BB;
-        Tue, 26 May 2020 09:21:45 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next v2] libbpf: add API to consume the perf ring buffer content
-Date:   Tue, 26 May 2020 11:21:42 +0200
-Message-Id: <159048487929.89441.7465713173442594608.stgit@ebuild>
-User-Agent: StGit/0.21
+        by mail.kernel.org (Postfix) with ESMTPSA id F005C206C3;
+        Tue, 26 May 2020 13:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590500925;
+        bh=br5hq+/xboZF0mD2QUl2IO6kSUPYhmSavWgQKk2qyHI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M1SeeFfc1Rw2KRirnWiVrqJgHAtdguFWcngU5eIiCC7fYkBQ7A3HsLO7JUO7nY+26
+         Jwuu4pF1kQMzYhcMbs3oA06OQSRXWake/moGzpCyyKtwC26HQfhFKk5m1EOJgt/q2P
+         d7P2qtceu2sWZUL88TdaDWnnOHr/yz+4TfDjV8sw=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     ast@kernel.org, davem@davemloft.net, brouer@redhat.com,
+        daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org, toshiaki.makita1@gmail.com
+Subject: [PATCH bpf-next] xdp: introduce convert_to_xdp_buff utility routine
+Date:   Tue, 26 May 2020 15:48:13 +0200
+Message-Id: <26bcdba277dc23a57298218b7617cd8ebe03676e.1590500470.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This new API, perf_buffer__consume, can be used as follows:
-- When you have a perf ring where wakeup_events is higher than 1,
-  and you have remaining data in the rings you would like to pull
-  out on exit (or maybe based on a timeout).
-- For low latency cases where you burn a CPU that constantly polls
-  the queues.
+Introduce convert_to_xdp_buff utility routine to initialize xdp_buff
+fields from xdp_frames ones. Rely on convert_to_xdp_buff in veth xdp
+code
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
-v2:
- - Removed some input checks
- - Support spare CPU buffers
- - Moved variable "err" up
+ drivers/net/veth.c | 12 ++----------
+ include/net/xdp.h  | 10 ++++++++++
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
- tools/lib/bpf/libbpf.c   |   19 +++++++++++++++++++
- tools/lib/bpf/libbpf.h   |    1 +
- tools/lib/bpf/libbpf.map |    1 +
- 3 files changed, 21 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index fa04cbe547ed..5d60de6fd818 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8456,6 +8456,25 @@ int perf_buffer__poll(struct perf_buffer *pb, int timeout_ms)
- 	return cnt < 0 ? -errno : cnt;
- }
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index b586d2fa5551..dfbe553f967e 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -559,27 +559,19 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 					struct veth_xdp_tx_bq *bq,
+ 					struct veth_stats *stats)
+ {
+-	void *hard_start = frame->data - frame->headroom;
+ 	int len = frame->len, delta = 0;
+ 	struct xdp_frame orig_frame;
+ 	struct bpf_prog *xdp_prog;
+ 	unsigned int headroom;
+ 	struct sk_buff *skb;
  
-+int perf_buffer__consume(struct perf_buffer *pb)
+-	/* bpf_xdp_adjust_head() assures BPF cannot access xdp_frame area */
+-	hard_start -= sizeof(struct xdp_frame);
+-
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (likely(xdp_prog)) {
+ 		struct xdp_buff xdp;
+ 		u32 act;
+ 
+-		xdp.data_hard_start = hard_start;
+-		xdp.data = frame->data;
+-		xdp.data_end = frame->data + frame->len;
+-		xdp.data_meta = frame->data - frame->metasize;
+-		xdp.frame_sz = frame->frame_sz;
++		convert_to_xdp_buff(frame, &xdp);
+ 		xdp.rxq = &rq->xdp_rxq;
+ 
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+@@ -626,7 +618,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 	rcu_read_unlock();
+ 
+ 	headroom = sizeof(struct xdp_frame) + frame->headroom - delta;
+-	skb = veth_build_skb(hard_start, headroom, len, frame->frame_sz);
++	skb = veth_build_skb(frame, headroom, len, frame->frame_sz);
+ 	if (!skb) {
+ 		xdp_return_frame(frame);
+ 		stats->rx_drops++;
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 90f11760bd12..5dbdd65866a9 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -106,6 +106,16 @@ void xdp_warn(const char *msg, const char *func, const int line);
+ 
+ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
+ 
++static inline
++void convert_to_xdp_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
 +{
-+	int i, err;
-+
-+	for (i = 0; i < pb->cpu_cnt; i++) {
-+		struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
-+
-+		if (!cpu_buf)
-+			continue;
-+
-+		err = perf_buffer__process_records(pb, cpu_buf);
-+		if (err) {
-+			pr_warn("error while processing records: %d\n", err);
-+			return err;
-+		}
-+	}
-+	return 0;
++	xdp->data_hard_start = (void *)frame;
++	xdp->data = frame->data;
++	xdp->data_end = frame->data + frame->len;
++	xdp->data_meta = frame->data - frame->metasize;
++	xdp->frame_sz = frame->frame_sz;
 +}
 +
- struct bpf_prog_info_array_desc {
- 	int	array_offset;	/* e.g. offset of jited_prog_insns */
- 	int	count_offset;	/* e.g. offset of jited_prog_len */
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 8ea69558f0a8..1e2e399a5f2c 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -533,6 +533,7 @@ perf_buffer__new_raw(int map_fd, size_t page_cnt,
- 
- LIBBPF_API void perf_buffer__free(struct perf_buffer *pb);
- LIBBPF_API int perf_buffer__poll(struct perf_buffer *pb, int timeout_ms);
-+LIBBPF_API int perf_buffer__consume(struct perf_buffer *pb);
- 
- typedef enum bpf_perf_event_ret
- 	(*bpf_perf_event_print_t)(struct perf_event_header *hdr,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 0133d469d30b..381a7342ecfc 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -262,4 +262,5 @@ LIBBPF_0.0.9 {
- 		bpf_link_get_fd_by_id;
- 		bpf_link_get_next_id;
- 		bpf_program__attach_iter;
-+		perf_buffer__consume;
- } LIBBPF_0.0.8;
+ /* Convert xdp_buff to xdp_frame */
+ static inline
+ struct xdp_frame *convert_to_xdp_frame(struct xdp_buff *xdp)
+-- 
+2.26.2
 
