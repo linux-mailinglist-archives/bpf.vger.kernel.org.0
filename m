@@ -2,94 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E121E297C
-	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 19:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945EA1E29AB
+	for <lists+bpf@lfdr.de>; Tue, 26 May 2020 20:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388586AbgEZR7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 13:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
+        id S2388551AbgEZSHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 14:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388499AbgEZR7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 13:59:08 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D74FC03E96D
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 10:59:08 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id r16so1068993qvm.6
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 10:59:08 -0700 (PDT)
+        with ESMTP id S1728339AbgEZSHr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 14:07:47 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26374C03E96D;
+        Tue, 26 May 2020 11:07:47 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c12so7033836qtq.11;
+        Tue, 26 May 2020 11:07:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ftT8GVUXacGzP3kg8TVm5zJgCurWuWO6xVYrwW2lba8=;
-        b=WSAYgSHWMtND11SlxJ9Miv7GxdC1VM8ojrwnP5+wT5WXU+3XhmMSqMyBXyAU9WuYyA
-         G2KvSQ/4NWGjekn11kn7RI7kS3cCH/iv/t4czYr3xJzQu8/OAhzOXG+RunGqwyuJv5wN
-         m9NmJhdn9EKksJ12VzT1d0NCfBoA30NMyQOyQk+2xd3qdGoKr27axy1qFDZCGwYLRUOu
-         T2Z4kn6bFsck5srw2VWr4Sx8bF7KKl7vWgpSQ4pS+PWjawG2Ki6BSxcAUkqFkZS9ybcN
-         Vs0996Jbx+8JAFrpak4vUioRmowDZSSMPNg1+0QLiB78f6N+HoPNH9CLeHpVla6wcMLm
-         JP4A==
+        bh=Uv8aTyB5ZoyUcR4sXkd9GoRt1JQv4QFxfFGzScsfTwU=;
+        b=JiZdgFUELlxZMg6BwS/qz1J7Ph/JyOyDGXekw3tgXGqa2ubHTPf7LbuJ64ThRd9ffG
+         FP8D04cV928ZuW5ZKuNcl35DvI7xsGVrSbPJIdvV/wPfWCY5j1h/rNYDVH+UCosEJsSB
+         I6E05fFj86iXMKZobRR/zWWa/iStZtsdoNgTuSBA2EyGvvt2I/tHMoQkLAef6t+Rfw2A
+         xLbMOzbfKFuZ5tapEuH1HQBfmUnB/wIjUDPa2Z81Ft2om+5bduZfLOXVQHT1eEYs7yJ6
+         bGWawrndkM8FeZK1k5950+7LIKfq/m9os3m0+RGblQVYhqmcstjrd5vMclEMfoz5hPdd
+         38kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ftT8GVUXacGzP3kg8TVm5zJgCurWuWO6xVYrwW2lba8=;
-        b=P+eWYE3zNbarjuJCbPUIfOS1iwMxkLqYOvB63ZnmsVjCYMyVfeqHDllyTs040SvEdC
-         OiF1WMulpAACWvOD0wFVnyQpPCFoxZsJZxsX4A+NQEkYuDvnOFJePpA1xYa41aVXEGiL
-         bEFFyAvdlI0gUGoQFmvRpbn3VbuUtpgGK9nxe92ng8I3wTbXtZBuw64pyHMj8D2Hk7FG
-         EGLHPbndypIgff/wE7Is3KfEshw7EM632IVg2CGMmeOZjHShM3XDftmCSLgnBL/1EcrH
-         7xXw+eS2v14LuliM1rhH8OHUCBTBaa3zFzkbJ6KiMNmyJ76AKnBQxq+IznB0MlP97lwe
-         rITQ==
-X-Gm-Message-State: AOAM5337BUzqvQgKh8TU6IhFVfl5ZHcVgcLEHHsWp0nZQd2sXs7UQVr1
-        cf+cT6Yd0SlhAvCYIsUg0g9md8cfTTsRAeUF+H8=
-X-Google-Smtp-Source: ABdhPJy4SusCzcjfcy9ePjo4ofVWHDJ+gharQKvxYe72EGp7OPNcIGQXQMTu0tsi+9ufiGKxDwMjdavoNcSqktaB1iE=
-X-Received: by 2002:ad4:55ea:: with SMTP id bu10mr22163695qvb.163.1590515947632;
- Tue, 26 May 2020 10:59:07 -0700 (PDT)
+        bh=Uv8aTyB5ZoyUcR4sXkd9GoRt1JQv4QFxfFGzScsfTwU=;
+        b=kwvMdPCNEu1BpnO4U7n7h5L0r71jp9fQHqwE8qi+fxU3w3KQgNdXqOKm0RQWDHr0ID
+         /69R64clJ8K6lf91Zc3uOELJsyqCQnrdsu6H58tH4PqSLYpgPyYP7V9rPmTO9XAkGR2G
+         anu+W+74b+DXZbDbZDPGb3E54ERKqjuagEEjeXJ9yiqTLfpw/YK2OWjWhnEpZ979u9Wd
+         gwyHLr/6vRAEtew9+lgqaUcAEs20Y3yFuvEvbaa8wxCX8cf1Dql7Fu2cA63QixVogSW7
+         SIQGp61eRCK+mhQ3af3uwg3y3KywYvFHn43g8MzmkBG3HgLsebLwGWEaPSlALsto99F9
+         wkEQ==
+X-Gm-Message-State: AOAM530j2cFILOV/9LsGrNaOXJyOACsFXUhPU6ocGfhjxTdDs+VXvg8P
+        h2y5eL6n1YL07+THPrBQ6L8C1YzVeRw3WVVXUS8=
+X-Google-Smtp-Source: ABdhPJzJeUPaze86huw6U9JHcT2Iq9b1tADvMlgofADewlRfE6P/LmBu89vVa8FpDF1GCNRb6zkzeaRqgf88OA47Z/k=
+X-Received: by 2002:ac8:424b:: with SMTP id r11mr4501qtm.171.1590516466348;
+ Tue, 26 May 2020 11:07:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526174612.5447-1-nborisov@suse.com>
-In-Reply-To: <20200526174612.5447-1-nborisov@suse.com>
+References: <159033879471.12355.1236562159278890735.stgit@john-Precision-5820-Tower>
+ <159033909665.12355.6166415847337547879.stgit@john-Precision-5820-Tower>
+In-Reply-To: <159033909665.12355.6166415847337547879.stgit@john-Precision-5820-Tower>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 May 2020 10:58:56 -0700
-Message-ID: <CAEf4BzaP=Pvf9D73rD0kf7LRe6AMnQ1Cfk7jdS+So6JHXBQFJg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Install headers as part of make install
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 26 May 2020 11:07:35 -0700
+Message-ID: <CAEf4BzbDnQKUqmD4VL_PHPGpA3WbUS3cr0jimNf7NhRcA4ZPpg@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v5 4/5] bpf, selftests: add sk_msg helpers load
+ and attach test
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:49 AM Nikolay Borisov <nborisov@suse.com> wrote:
+On Sun, May 24, 2020 at 9:51 AM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Current 'make install' results in only pkg-config and library binaries
-> being installed. For consistency also install headers as part of
-> "make install"
+> The test itself is not particularly useful but it encodes a common
+> pattern we have.
 >
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> Namely do a sk storage lookup then depending on data here decide if
+> we need to do more work or alternatively allow packet to PASS. Then
+> if we need to do more work consult task_struct for more information
+> about the running task. Finally based on this additional information
+> drop or pass the data. In this case the suspicious check is not so
+> realisitic but it encodes the general pattern and uses the helpers
+> so we test the workflow.
+>
+> This is a load test to ensure verifier correctly handles this case.
+>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 > ---
 
-Github Makefile already does that, curiously :)
+Other than perror and CHECK_FAIL nag below, looks good:
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
+>  .../selftests/bpf/prog_tests/sockmap_basic.c       |   35 +++++++++++++++
+>  .../selftests/bpf/progs/test_skmsg_load_helpers.c  |   47 ++++++++++++++++++++
+>  2 files changed, 82 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_skmsg_load_helpers.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index aa43e0b..96e7b7f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -1,7 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2020 Cloudflare
+> +#include <error.h>
+>
+>  #include "test_progs.h"
+> +#include "test_skmsg_load_helpers.skel.h"
+>
+>  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
+>
+> @@ -70,10 +72,43 @@ static void test_sockmap_create_update_free(enum bpf_map_type map_type)
+>         close(s);
+>  }
+>
+> +static void test_skmsg_helpers(enum bpf_map_type map_type)
+> +{
+> +       struct test_skmsg_load_helpers *skel;
+> +       int err, map, verdict;
+> +
+> +       skel = test_skmsg_load_helpers__open_and_load();
+> +       if (CHECK_FAIL(!skel)) {
+> +               perror("test_skmsg_load_helpers__open_and_load");
 
->  tools/lib/bpf/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index aee7f1a83c77..d02c4d910aad 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -264,7 +264,7 @@ install_pkgconfig: $(PC_FILE)
->         $(call QUIET_INSTALL, $(PC_FILE)) \
->                 $(call do_install,$(PC_FILE),$(libdir_SQ)/pkgconfig,644)
->
-> -install: install_lib install_pkgconfig
-> +install: install_lib install_pkgconfig install_headers
->
->  ### Cleaning rules
->
-> --
-> 2.17.1
->
+All test_progs tests use CHECK() macro to test and emit error message
+on error, so no need to do silent CHECK_FAIL() and then perror(). Same
+below in few places. I don't think you need to send v6 just for this,
+but please follow up with a clean up.
+
+> +               return;
+> +       }
+> +
+> +       verdict = bpf_program__fd(skel->progs.prog_msg_verdict);
+> +       map = bpf_map__fd(skel->maps.sock_map);
+> +
+> +       err = bpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
+> +       if (CHECK_FAIL(err)) {
+> +               perror("bpf_prog_attach");
+> +               goto out;
+> +       }
+> +
+> +       err = bpf_prog_detach2(verdict, map, BPF_SK_MSG_VERDICT);
+> +       if (CHECK_FAIL(err)) {
+> +               perror("bpf_prog_detach2");
+> +               goto out;
+> +       }
+> +out:
+> +       test_skmsg_load_helpers__destroy(skel);
+> +}
+> +
+
+[...]
