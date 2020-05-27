@@ -2,93 +2,305 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E001E3856
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 07:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FF61E394A
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 08:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgE0Fhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 01:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE0Fhw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 01:37:52 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3736C061A0F
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 22:37:51 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a25so15722797ljp.3
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 22:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CxROJcUOPtf8/J1V8c+SsfyP3z+XtNkoyadTbnAQOmc=;
-        b=LYQ/uN6DuFN8wgWYjKxrd4eE4LWQy91P08KFOpWEWRKn/OXk7WGmOJlHdNrb/WIRuB
-         ZeDSdK9tIB/d1+9LPi4XDqg0OmKoUdgkFS3ZIQiHQPPRIWf7yk5EXMf0WGdTdOjwPHFj
-         PgtTmQ1E2OywXhabXkVq9wp7JdaWhEB5yGqCfBkO+D3Ca7ZTms6dY6RIrtI10uAdmejD
-         f8nf8LR4apxb0Bkg9P0AbDYiqBIAuC8xUTzcR5tBJYMrbFqPibwADf7ebtKXMsNdCRZb
-         ScAmllkU1Jpdl7GZV5hY4uKITJHSsLIcw5ZAcvsiP8aJLMd+/dKSndVVAZoOCwQQVH3U
-         u2WA==
+        id S1728620AbgE0GcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 02:32:14 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:37037 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728267AbgE0GcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 02:32:13 -0400
+Received: by mail-il1-f197.google.com with SMTP id k18so19720772ilq.4
+        for <bpf@vger.kernel.org>; Tue, 26 May 2020 23:32:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CxROJcUOPtf8/J1V8c+SsfyP3z+XtNkoyadTbnAQOmc=;
-        b=lQNlUD3MtjdW6rXCrisgXGNO9SHde/Jw+JxWBYni3eRCye6pxJoGNakZ0Na+KQpPmE
-         YZjJU1vJJAphvbBvT45RV79YDutEKq0leEIbojPP8fzAF/H5dy0GbXXT3751gJbeip71
-         o0lSCyxrb9UHGP0rqBeYN6BSJeTnEjzE8oqoCCIaT2ARcUNi5mOYxSlsTH0AzpA84gkL
-         hC4HJaHe5k9P6+M1i6HR+w/T19oljnkv868JZxYzLjgNQaU6NPs09A1HMHbfykHcTOqC
-         XXnD8q2G5m+eAsGxBw5TZQsTVJmBp+foLKwxv4O5t7piR3WgJ5cFawMtxa/f4dlLYRKw
-         CQBg==
-X-Gm-Message-State: AOAM530FkHdjwYdxUSBTRuGxYjwggJcvq0k6w1wLDs8iDwKCmijrSwLE
-        KZLt8MTjAVvhr4NDxNAbYOn09puaJfJGtszCsh94Hg==
-X-Google-Smtp-Source: ABdhPJyHBnbZBx/Y646asawl3c95ynilSMs8QpFStKT20wztGLIROZ/Xt85++wEies1IWRl7pRGWbxrppWNknzPblKQ=
-X-Received: by 2002:a2e:87d2:: with SMTP id v18mr2324057ljj.121.1590557870380;
- Tue, 26 May 2020 22:37:50 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=TBULOzo9LvPNBBFzoyQ5veFCaN1iX98z2o5DjaAetdA=;
+        b=Ndk+vQAL3IPfJ0ERprNJgExnKD2yi9iS1Dc28htIJykIER7d1zqLfxyfpUFKR/Y0Eu
+         lbmklI6N1ZpBkQn0Oh7suVQwchI+yfvXg6e5CLEj7XcUTiCze6h9FfwJN4xHz+dpXiPA
+         oCjN3YIWM/fNuYq1FI9VDpf2VaI1OCI6DhnhTBz2Hfju0qffFUulaW9u11u2GjOXsOuD
+         C+IPYVJ21BFKyjexYFeDGxnHcsIYyKXr/tTc0FwetAf2QYzFogczX3XB+Vht0+iTVtt3
+         lyJQ3PL3vud9wn4hufQl7X306BQvAOUVYzb7lHKg3Wh+SUu+sETju3phmRCC/iNu9i5e
+         /o6Q==
+X-Gm-Message-State: AOAM530WsrtE4T9LWvFeE0fmtRzTha1MMnZUriVXWseW2cR+ySPKQBKZ
+        o4vEilNFN48m/HW9fJoh5PFylFj/2GE2PucxKIjyxUw0F6Bp
+X-Google-Smtp-Source: ABdhPJyYJEpcLX5oo8J+/efKSjBWc4bjDOyL/rkzrGYcq72ZC1hPRfHDDix2aA5lsr5Cw51U9Dk4rFtthu9sN/E7+ztmTbPFy1He
 MIME-Version: 1.0
-References: <xuny367so4k3.fsf@redhat.com> <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
- <CAEf4BzZaCTDT6DcLYvyFr4RUUm4fFbyb743e1JrEp2DS69cbug@mail.gmail.com> <xunya71uosvv.fsf@redhat.com>
-In-Reply-To: <xunya71uosvv.fsf@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 26 May 2020 22:37:39 -0700
-Message-ID: <CAADnVQJUL9=T576jo29F_zcEd=C6_OiExaGbEup6F-mA01EKZQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+X-Received: by 2002:a92:d6cc:: with SMTP id z12mr4189533ilp.179.1590561131732;
+ Tue, 26 May 2020 23:32:11 -0700 (PDT)
+Date:   Tue, 26 May 2020 23:32:11 -0700
+In-Reply-To: <000000000000e0b6be05a42f555e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004024d505a69b5f0b@google.com>
+Subject: Re: KMSAN: uninit-value in bpf_skb_load_helper_32
+From:   syzbot <syzbot+ae94def68efda6a4be52@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:31 PM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
->
-> Hi, Andrii!
->
-> >>>>> On Tue, 26 May 2020 17:19:18 -0700, Andrii Nakryiko  wrote:
->
->  > On Fri, May 22, 2020 at 1:19 AM Yauheni Kaliuta
->  > <yauheni.kaliuta@redhat.com> wrote:
->  >>
->  >> There is difference in depoying static and generated extra resource
->  >> files between in/out of tree build and flavors:
->  >>
->  >> - in case of unflavored out-of-tree build static files are not
->  >> available and must be copied as well as both static and generated
->  >> files for flavored build.
->  >>
->  >> So split the rules and variables. The name TRUNNER_EXTRA_GEN_FILES
->  >> is chosen in analogy to TEST_GEN_* variants.
->  >>
->
->  > Can we keep them together but be smarter about what needs to
->  > be copied based on source/target directories? I would really
->  > like to not blow up all these rules.
->
-> I can try, ok, I just find it a bit more clear. But it's good to
-> get some input from kselftest about OOT build in general.
+syzbot has found a reproducer for the following crash on:
 
-I see no value in 'make install' of selftests/bpf
-and since it's broken just remove that makefile target.
+HEAD commit:    94bc4cd0 net: bpf: kmsan: disable CONFIG_BPF_JIT under KMSAN
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=149b3d4a100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86e4f8af239686c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae94def68efda6a4be52
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12fc37aa100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fce3a1100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ae94def68efda6a4be52@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in ____bpf_skb_load_helper_32 net/core/filter.c:238 [inline]
+BUG: KMSAN: uninit-value in bpf_skb_load_helper_32+0xee/0x2d0 net/core/filter.c:232
+CPU: 1 PID: 8814 Comm: sshd Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ ____bpf_skb_load_helper_32 net/core/filter.c:238 [inline]
+ bpf_skb_load_helper_32+0xee/0x2d0 net/core/filter.c:232
+ ___bpf_prog_run+0x214d/0x97a0 kernel/bpf/core.c:1516
+ __bpf_prog_run32+0x101/0x170 kernel/bpf/core.c:1681
+ bpf_dispatcher_nop_func include/linux/bpf.h:545 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:599 [inline]
+ bpf_prog_run_clear_cb include/linux/filter.h:721 [inline]
+ run_filter net/packet/af_packet.c:2012 [inline]
+ packet_rcv+0x70f/0x2160 net/packet/af_packet.c:2085
+ deliver_skb net/core/dev.c:2168 [inline]
+ dev_queue_xmit_nit+0x862/0x1270 net/core/dev.c:2238
+ xmit_one net/core/dev.c:3473 [inline]
+ dev_hard_start_xmit+0x20f/0xab0 net/core/dev.c:3493
+ sch_direct_xmit+0x512/0x18b0 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x15ec/0x3350 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:134 [inline]
+ __dev_xmit_skb net/core/dev.c:3668 [inline]
+ __dev_queue_xmit+0x23b7/0x3b20 net/core/dev.c:4021
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip_finish_output2+0x20fd/0x2610 net/ipv4/ip_output.c:228
+ __ip_finish_output+0xaa7/0xd80 net/ipv4/ip_output.c:306
+ ip_finish_output+0x166/0x410 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x593/0x680 net/ipv4/ip_output.c:430
+ dst_output include/net/dst.h:435 [inline]
+ ip_local_out net/ipv4/ip_output.c:125 [inline]
+ __ip_queue_xmit+0x1b5c/0x21a0 net/ipv4/ip_output.c:530
+ ip_queue_xmit+0xcc/0xf0 include/net/ip.h:237
+ __tcp_transmit_skb+0x4221/0x6090 net/ipv4/tcp_output.c:1238
+ tcp_transmit_skb net/ipv4/tcp_output.c:1254 [inline]
+ tcp_write_xmit+0x30e1/0xb470 net/ipv4/tcp_output.c:2517
+ __tcp_push_pending_frames+0x124/0x4e0 net/ipv4/tcp_output.c:2693
+ tcp_push+0x6fa/0x8a0 net/ipv4/tcp.c:725
+ tcp_sendmsg_locked+0x5d89/0x6d00 net/ipv4/tcp.c:1403
+ tcp_sendmsg+0xb2/0x100 net/ipv4/tcp.c:1433
+ inet_sendmsg+0x178/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ sock_write_iter+0x606/0x6d0 net/socket.c:1004
+ call_write_iter include/linux/fs.h:1907 [inline]
+ new_sync_write fs/read_write.c:484 [inline]
+ __vfs_write+0xa5a/0xca0 fs/read_write.c:497
+ vfs_write+0x444/0x8e0 fs/read_write.c:559
+ ksys_write+0x267/0x450 fs/read_write.c:612
+ __do_sys_write fs/read_write.c:624 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:621
+ __x64_sys_write+0x4a/0x70 fs/read_write.c:621
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f155876b970
+Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 7e 9b 01 00 48 89 04 24
+RSP: 002b:00007ffc12f70e38 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000034 RCX: 00007f155876b970
+RDX: 0000000000000034 RSI: 000055fc293bc0a4 RDI: 0000000000000003
+RBP: 000055fc293ad0b0 R08: 00007ffc12fb4080 R09: 0000000000000070
+R10: 000000000000006f R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffc12f70ecf R14: 000055fc27f2fbe7 R15: 0000000000000003
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ ___bpf_prog_run+0x6c80/0x97a0 kernel/bpf/core.c:1391
+ __bpf_prog_run32+0x101/0x170 kernel/bpf/core.c:1681
+ bpf_dispatcher_nop_func include/linux/bpf.h:545 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:599 [inline]
+ bpf_prog_run_clear_cb include/linux/filter.h:721 [inline]
+ run_filter net/packet/af_packet.c:2012 [inline]
+ packet_rcv+0x70f/0x2160 net/packet/af_packet.c:2085
+ deliver_skb net/core/dev.c:2168 [inline]
+ dev_queue_xmit_nit+0x862/0x1270 net/core/dev.c:2238
+ xmit_one net/core/dev.c:3473 [inline]
+ dev_hard_start_xmit+0x20f/0xab0 net/core/dev.c:3493
+ sch_direct_xmit+0x512/0x18b0 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x15ec/0x3350 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:134 [inline]
+ __dev_xmit_skb net/core/dev.c:3668 [inline]
+ __dev_queue_xmit+0x23b7/0x3b20 net/core/dev.c:4021
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip_finish_output2+0x20fd/0x2610 net/ipv4/ip_output.c:228
+ __ip_finish_output+0xaa7/0xd80 net/ipv4/ip_output.c:306
+ ip_finish_output+0x166/0x410 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x593/0x680 net/ipv4/ip_output.c:430
+ dst_output include/net/dst.h:435 [inline]
+ ip_local_out net/ipv4/ip_output.c:125 [inline]
+ __ip_queue_xmit+0x1b5c/0x21a0 net/ipv4/ip_output.c:530
+ ip_queue_xmit+0xcc/0xf0 include/net/ip.h:237
+ __tcp_transmit_skb+0x4221/0x6090 net/ipv4/tcp_output.c:1238
+ tcp_transmit_skb net/ipv4/tcp_output.c:1254 [inline]
+ tcp_write_xmit+0x30e1/0xb470 net/ipv4/tcp_output.c:2517
+ __tcp_push_pending_frames+0x124/0x4e0 net/ipv4/tcp_output.c:2693
+ tcp_push+0x6fa/0x8a0 net/ipv4/tcp.c:725
+ tcp_sendmsg_locked+0x5d89/0x6d00 net/ipv4/tcp.c:1403
+ tcp_sendmsg+0xb2/0x100 net/ipv4/tcp.c:1433
+ inet_sendmsg+0x178/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ sock_write_iter+0x606/0x6d0 net/socket.c:1004
+ call_write_iter include/linux/fs.h:1907 [inline]
+ new_sync_write fs/read_write.c:484 [inline]
+ __vfs_write+0xa5a/0xca0 fs/read_write.c:497
+ vfs_write+0x444/0x8e0 fs/read_write.c:559
+ ksys_write+0x267/0x450 fs/read_write.c:612
+ __do_sys_write fs/read_write.c:624 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:621
+ __x64_sys_write+0x4a/0x70 fs/read_write.c:621
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ ___bpf_prog_run+0x6cbe/0x97a0 kernel/bpf/core.c:1391
+ __bpf_prog_run32+0x101/0x170 kernel/bpf/core.c:1681
+ bpf_dispatcher_nop_func include/linux/bpf.h:545 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:599 [inline]
+ bpf_prog_run_clear_cb include/linux/filter.h:721 [inline]
+ run_filter net/packet/af_packet.c:2012 [inline]
+ packet_rcv+0x70f/0x2160 net/packet/af_packet.c:2085
+ deliver_skb net/core/dev.c:2168 [inline]
+ dev_queue_xmit_nit+0x862/0x1270 net/core/dev.c:2238
+ xmit_one net/core/dev.c:3473 [inline]
+ dev_hard_start_xmit+0x20f/0xab0 net/core/dev.c:3493
+ sch_direct_xmit+0x512/0x18b0 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x15ec/0x3350 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:134 [inline]
+ __dev_xmit_skb net/core/dev.c:3668 [inline]
+ __dev_queue_xmit+0x23b7/0x3b20 net/core/dev.c:4021
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip_finish_output2+0x20fd/0x2610 net/ipv4/ip_output.c:228
+ __ip_finish_output+0xaa7/0xd80 net/ipv4/ip_output.c:306
+ ip_finish_output+0x166/0x410 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x593/0x680 net/ipv4/ip_output.c:430
+ dst_output include/net/dst.h:435 [inline]
+ ip_local_out net/ipv4/ip_output.c:125 [inline]
+ __ip_queue_xmit+0x1b5c/0x21a0 net/ipv4/ip_output.c:530
+ ip_queue_xmit+0xcc/0xf0 include/net/ip.h:237
+ __tcp_transmit_skb+0x4221/0x6090 net/ipv4/tcp_output.c:1238
+ tcp_transmit_skb net/ipv4/tcp_output.c:1254 [inline]
+ tcp_write_xmit+0x30e1/0xb470 net/ipv4/tcp_output.c:2517
+ __tcp_push_pending_frames+0x124/0x4e0 net/ipv4/tcp_output.c:2693
+ tcp_push+0x6fa/0x8a0 net/ipv4/tcp.c:725
+ tcp_sendmsg_locked+0x5d89/0x6d00 net/ipv4/tcp.c:1403
+ tcp_sendmsg+0xb2/0x100 net/ipv4/tcp.c:1433
+ inet_sendmsg+0x178/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ sock_write_iter+0x606/0x6d0 net/socket.c:1004
+ call_write_iter include/linux/fs.h:1907 [inline]
+ new_sync_write fs/read_write.c:484 [inline]
+ __vfs_write+0xa5a/0xca0 fs/read_write.c:497
+ vfs_write+0x444/0x8e0 fs/read_write.c:559
+ ksys_write+0x267/0x450 fs/read_write.c:612
+ __do_sys_write fs/read_write.c:624 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:621
+ __x64_sys_write+0x4a/0x70 fs/read_write.c:621
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ ___bpf_prog_run+0x6c64/0x97a0 kernel/bpf/core.c:1391
+ __bpf_prog_run32+0x101/0x170 kernel/bpf/core.c:1681
+ bpf_dispatcher_nop_func include/linux/bpf.h:545 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:599 [inline]
+ bpf_prog_run_clear_cb include/linux/filter.h:721 [inline]
+ run_filter net/packet/af_packet.c:2012 [inline]
+ packet_rcv+0x70f/0x2160 net/packet/af_packet.c:2085
+ deliver_skb net/core/dev.c:2168 [inline]
+ dev_queue_xmit_nit+0x862/0x1270 net/core/dev.c:2238
+ xmit_one net/core/dev.c:3473 [inline]
+ dev_hard_start_xmit+0x20f/0xab0 net/core/dev.c:3493
+ sch_direct_xmit+0x512/0x18b0 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x15ec/0x3350 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:134 [inline]
+ __dev_xmit_skb net/core/dev.c:3668 [inline]
+ __dev_queue_xmit+0x23b7/0x3b20 net/core/dev.c:4021
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ neigh_hh_output include/net/neighbour.h:499 [inline]
+ neigh_output include/net/neighbour.h:508 [inline]
+ ip_finish_output2+0x20fd/0x2610 net/ipv4/ip_output.c:228
+ __ip_finish_output+0xaa7/0xd80 net/ipv4/ip_output.c:306
+ ip_finish_output+0x166/0x410 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_output+0x593/0x680 net/ipv4/ip_output.c:430
+ dst_output include/net/dst.h:435 [inline]
+ ip_local_out net/ipv4/ip_output.c:125 [inline]
+ __ip_queue_xmit+0x1b5c/0x21a0 net/ipv4/ip_output.c:530
+ ip_queue_xmit+0xcc/0xf0 include/net/ip.h:237
+ __tcp_transmit_skb+0x4221/0x6090 net/ipv4/tcp_output.c:1238
+ tcp_transmit_skb net/ipv4/tcp_output.c:1254 [inline]
+ tcp_write_xmit+0x30e1/0xb470 net/ipv4/tcp_output.c:2517
+ __tcp_push_pending_frames+0x124/0x4e0 net/ipv4/tcp_output.c:2693
+ tcp_push+0x6fa/0x8a0 net/ipv4/tcp.c:725
+ tcp_sendmsg_locked+0x5d89/0x6d00 net/ipv4/tcp.c:1403
+ tcp_sendmsg+0xb2/0x100 net/ipv4/tcp.c:1433
+ inet_sendmsg+0x178/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ sock_write_iter+0x606/0x6d0 net/socket.c:1004
+ call_write_iter include/linux/fs.h:1907 [inline]
+ new_sync_write fs/read_write.c:484 [inline]
+ __vfs_write+0xa5a/0xca0 fs/read_write.c:497
+ vfs_write+0x444/0x8e0 fs/read_write.c:559
+ ksys_write+0x267/0x450 fs/read_write.c:612
+ __do_sys_write fs/read_write.c:624 [inline]
+ __se_sys_write+0x92/0xb0 fs/read_write.c:621
+ __x64_sys_write+0x4a/0x70 fs/read_write.c:621
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:297
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Local variable ----regs@__bpf_prog_run32 created at:
+ __bpf_prog_run32+0x87/0x170 kernel/bpf/core.c:1681
+ __bpf_prog_run32+0x87/0x170 kernel/bpf/core.c:1681
+=====================================================
+
