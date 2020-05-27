@@ -2,83 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB101E4E90
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 21:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00E11E4EA6
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 21:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbgE0TvB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 15:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        id S2387476AbgE0Ty0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 15:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgE0TvA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 15:51:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884A0C05BD1E
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:50:58 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j10so9783157wrw.8
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:50:58 -0700 (PDT)
+        with ESMTP id S2387464AbgE0Ty0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 15:54:26 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A311C05BD1E
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:54:26 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id m21so4767641eds.13
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V5UMxzsS/A7fHxpEGv2BAIFrOJ94NXArnFHPmKBj8V0=;
-        b=jAk1xYzHrYllHAyb2tJGBpdvqmrlJiIn2R6dQksKVcitqXIN9pEiYjgq46DPtqbIT7
-         BrcUXbq2B3aGbr10M+zTw3l8kWi+fpvavDqeE2Jrv4oEmYgnIdw+HIV2mX5lQdBEyVEQ
-         BPr0lvAHG5CJfsujOa9Qy54qyczNpRY4DMk38=
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=hMHA9o8N/oLP6gKdOd6KFilP6DjKJyX2ReZ7fR+OqUs=;
+        b=MmR9oOojBLRudT9whRmp/Ezb2/Xf+s85g+1861AQrXOWMZdcNQfBSS624d4yVJeSMR
+         gyxWQYmO+BNiIWFazgEuaRFJTsWU1kYwMOHYdAZ+sgFyxZ2mtDWIYiRoUiGF0GyB/siw
+         PeIQfWsUUsEAlE1UmP6cdWsBwcvfQfnwBbyAI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V5UMxzsS/A7fHxpEGv2BAIFrOJ94NXArnFHPmKBj8V0=;
-        b=sxJuv1pZfMrwJQNql5SRcT/91/iYkRayudAHje1nlm6TJVKOLJu7Ym9zNzbfGeDmMM
-         foY78/UaCIgQ5IY/XNSfLpbRY6PiZeyxXvcy4B0Pem/RbLzsi058T3jOKKqChLXB6ASq
-         b145MhoOrW3OMgY8OOKL0zQBc7XIfliHrMWCx+W08+KpQ0wQmpj5p9kbK99g99xH2cRg
-         uuoAGqTz9nTFmuUgAJDqz7DmE0OV/4QiGf3BYTbExDGiGfE/wKSifV10rQof7PB5Lfyo
-         JVDHZ8g3tui7qkXDqDwF6YHXS5YzQ5Z1L/Fp+Y9+4GyzHD3/GfeuQ5BJt7K7M18IKk9I
-         5P1w==
-X-Gm-Message-State: AOAM531+ufIiLQxEh+RzxMeqml7qHNIsjzM5hOvtIqfCMXmyq/fMeZyL
-        +S1OYNo482vT1RfNeJpVu56rlbQKdrDGpPXzIdfqEQ==
-X-Google-Smtp-Source: ABdhPJxQZzHuBd2fNDn1DgqffWs10SXs7xya1obkJmi+uRdPu3hKtz/ByHRxFBjAW1K5Uv8l0DcBmu+cg4njl0FORJQ=
-X-Received: by 2002:adf:9c84:: with SMTP id d4mr4295373wre.327.1590609057271;
- Wed, 27 May 2020 12:50:57 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=hMHA9o8N/oLP6gKdOd6KFilP6DjKJyX2ReZ7fR+OqUs=;
+        b=I8u6pBqQwasJLh6yOMySzrTWD7Wuic2Cx9QNGSeM/eFEKLxaKEVqUpg8Dy2JrNGFtC
+         4HLzgkxQZiMsvfpDGuPu3T7TKSLXaEWOsKuPeK+OpqPcdgVJDylKiCmv8mLY0iaQTzs1
+         srvGwAsqBrbgGU0AO/vEvibaVp3mZDLZ27I8KUxid95FrRF0carHxkJM5tfALSFPBt0N
+         D0IOZ3iAKtLgy6p+YDZnm9S975qCwMWTBTU2j4ZzOuYvGalRwmHGXjMpy3YVjNDiBSo4
+         AcgaPQicZwWnwwIpYa9JE32BtcJEqXc9sIWY6mclfTB9QWFflNFtsf5sy4qF9xebbwVW
+         v5jw==
+X-Gm-Message-State: AOAM533hib0pUQUNm4uASydURguXJRG9IHcR0f8yHWR4yyzmV5ir9/1b
+        ETi75mgPNRHEh1n5ehzrIU9MLg==
+X-Google-Smtp-Source: ABdhPJy2iOgwesh1MgLPg2N5Uh8ITPWR640mk6ppMfZ/MXBXmT5TQePxpqePDF0oTnCuX37feYw+ZQ==
+X-Received: by 2002:a05:6402:1ca6:: with SMTP id cz6mr15855411edb.381.1590609264928;
+        Wed, 27 May 2020 12:54:24 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id bd10sm2884605edb.10.2020.05.27.12.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 12:54:24 -0700 (PDT)
+References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-6-jakub@cloudflare.com> <20200527174805.GG49942@google.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next 5/8] bpf: Add link-based BPF program attachment to network namespace
+In-reply-to: <20200527174805.GG49942@google.com>
+Date:   Wed, 27 May 2020 21:54:23 +0200
+Message-ID: <87tv012lxs.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20200527141753.101163-1-kpsingh@chromium.org> <20200527190948.GE23230@ZenIV.linux.org.uk>
-In-Reply-To: <20200527190948.GE23230@ZenIV.linux.org.uk>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 27 May 2020 21:50:46 +0200
-Message-ID: <CACYkzJ5MkWjVPo1JK68+fVyX7p=8bsi9P-C6nR=LYGJw04f9sw@mail.gmail.com>
-Subject: Re: [PATCH] fs: Add an explicit might_sleep() to iput
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 9:09 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Wed, May 27, 2020 at 07:48 PM CEST, sdf@google.com wrote:
+> On 05/27, Jakub Sitnicki wrote:
+>> Add support for bpf() syscall subcommands that operate on
+>> bpf_link (LINK_CREATE, LINK_UPDATE, OBJ_GET_INFO) for attach points tied to
+>> network namespaces (that is flow dissector at the moment).
 >
-> On Wed, May 27, 2020 at 04:17:53PM +0200, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > It is currently mentioned in the comments to the function that iput
-> > might sleep when the inode is destroyed. Have it call might_sleep, as
-> > dput already does.
-> >
-> > Adding an explicity might_sleep() would help in quickly realizing that
-> > iput is called from a place where sleeping is not allowed when
-> > CONFIG_DEBUG_ATOMIC_SLEEP is enabled as noticed in the dicussion:
+>> Link-based and prog-based attachment can be used interchangeably, but only
+>> one can be in use at a time. Attempts to attach a link when a prog is
+>> already attached directly, and the other way around, will be met with
+>> -EBUSY.
 >
-> You do realize that there are some cases where iput() *is* guaranteed
-> to be non-blocking, right?
+>> Attachment of multiple links of same attach type to one netns is not
+>> supported, with the intention to lift it when a use-case presents
+>> itself. Because of that attempts to create a netns link, when one already
+>> exists result in -E2BIG error, signifying that there is no space left for
+>> another attachment.
+>
+>> Link-based attachments to netns don't keep a netns alive by holding a ref
+>> to it. Instead links get auto-detached from netns when the latter is being
+>> destroyed by a pernet pre_exit callback.
+>
+>> When auto-detached, link lives in defunct state as long there are open FDs
+>> for it. -ENOLINK is returned if a user tries to update a defunct link.
+>
+>> Because bpf_link to netns doesn't hold a ref to struct net, special care is
+>> taken when releasing the link. The netns might be getting torn down when
+>> the release function tries to access it to detach the link.
+>
+>> To ensure the struct net object is alive when release function accesses it
+>> we rely on the fact that cleanup_net(), struct net destructor, calls
+>> synchronize_rcu() after invoking pre_exit callbacks. If auto-detach from
+>> pre_exit happens first, link release will not attempt to access struct net.
+>
+>> Same applies the other way around, network namespace doesn't keep an
+>> attached link alive because by not holding a ref to it. Instead bpf_links
+>> to netns are RCU-freed, so that pernet pre_exit callback can safely access
+>> and auto-detach the link when racing with link release/free.
+>
+> [..]
+>> +	rcu_read_lock();
+>>   	for (type = 0; type < MAX_NETNS_BPF_ATTACH_TYPE; type++) {
+>> -		if (rcu_access_pointer(net->bpf.progs[type]))
+>> +		if (rcu_access_pointer(net->bpf.links[type]))
+>> +			bpf_netns_link_auto_detach(net, type);
+>> +		else if (rcu_access_pointer(net->bpf.progs[type]))
+>>   			__netns_bpf_prog_detach(net, type);
+>>   	}
+>> +	rcu_read_unlock();
+> Aren't you doing RCU_INIT_POINTER in __netns_bpf_prog_detach?
+> Is it allowed under rcu_read_load?
 
-Yes, but the same could be said about dput too right?
+Yes, that's true. __netns_bpf_prog_detach does
 
-Are there any callers that rely on these cases? (e.g. when the caller is
-sure that it's not dropping the last reference to the inode).
+	RCU_INIT_POINTER(net->bpf.progs[type], NULL);
 
-- KP
+RCU read lock is here for the rcu_dereference() that happens in
+bpf_netns_link_auto_detach (netns doesn't hold a ref to bpf_link):
+
+/* Called with RCU read lock. */
+static void __net_exit
+bpf_netns_link_auto_detach(struct net *net, enum netns_bpf_attach_type type)
+{
+	struct bpf_netns_link *net_link;
+	struct bpf_link *link;
+
+	link = rcu_dereference(net->bpf.links[type]);
+	if (!link)
+		return;
+	net_link = to_bpf_netns_link(link);
+	RCU_INIT_POINTER(net_link->net, NULL);
+}
+
+I've pulled it up, out of the loop, perhaps too eagerly and just made it
+confusing, considering we're iterating over a 1-item array :-)
+
+Now, I'm also doing RCU_INIT_POINTER on the *contents of bpf_link* in
+bpf_netns_link_auto_detach. Is that allowed? I'm not sure, that bit is
+hazy to me.
+
+There are no concurrent writers to net_link->net, just readers, i.e.
+bpf_netns_link_release(). And I know bpf_link won't be freed until the
+grace period elapses.
+
+sparse and CONFIG_PROVE_RCU are not shouting at me, but please do if it
+doesn't hold up or make sense.
+
+I certainly can push the rcu_read_lock() down into
+bpf_netns_link_auto_detach().
+
+-jkbs
