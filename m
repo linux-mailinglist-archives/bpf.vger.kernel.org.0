@@ -2,130 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC5F1E4B84
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23071E4BFE
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731175AbgE0RJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 13:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S2391263AbgE0Rfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 13:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731168AbgE0RJS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 13:09:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA71C08C5C3
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e1so24813261wrt.5
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
+        with ESMTP id S2387837AbgE0Rfk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 13:35:40 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649ECC03E97D
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:35:39 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 14so183081qkv.16
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:35:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
-        b=Qtq4RcWnFirDNuZdCyVBt5tPFqmhvzYSUFkVjQjHkQBc6IkA+WeniGp5LmnT8OVVfB
-         UE9q1ImGpjLTJce6qJy6hzRVPiHuV5AmS4EJxRkfHzrKJ9QHTdXlw8wjGUt2+zXOLkZn
-         Se1DyUC2fMvdHcPa6G5vi/3874MVikhkzprOA=
+        bh=5pjnryafVyy4mvARp4PLvV79vSG5/akHWFEPy2KlnO8=;
+        b=dCGTihItQsGdYpyiMxMhs9bG07VqaX7OZDpHdEgQ/I0ws6IWqscrTrbKj7KnmVsugx
+         L85ohmrQrYqgB5F/1TCwKCYf3AIZSNRBUSzHYw9Cv+cYNiaPGQTJOtCx6Iyy6r5S+Tga
+         k3naGklZtQ4/a4uIwun19KNN7T+1Gu0qn2nCn/TxTvkB/XDzhBiAnAcJ6XDv2vi7oi1Y
+         6j65zq5TwYq8Hp9V7VLehld2v2x9RUZLLvBHRu6pJzniue+UazeBwON5gfDoBqnduqAg
+         zY+LIu4ln8I+LP3bWh1a+HzcJYPs8Q5Kgsry75N+g3/Y9nrTmpGzAZijFMX43oyWWwNH
+         3aQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
-        b=h3cv4SjHuuI1D1Za+8zruxxKIrElMNste/Y7FVB5xwjGQvx8QBxjLuIIdgcyUF9EqQ
-         P2Q0M+mNoyz9qh9/a2KfV1eQn/d+BM94Ueyxy/FFqG4QD+yRxWVEtA3FJjUPAUNcnlLP
-         H/vPnhAV2KtTzKjG9kO8wAhgR9dghi10mGssrHld9mWW43c+bu1nbizzKxCS89uCkJif
-         oUvWGsVX5U1yhCn0f7bw+Uqgh4NgchM8q8oexPI1AGqXmOPSouiYW7Nx4ytDICa36MB1
-         l28rwNK5ccBSonjzgX7rG1fJucc4k/H+X7NLxvqjrbGGvDalDM5MyUJ64ZW8z0j+lUf3
-         0aNg==
-X-Gm-Message-State: AOAM533KPfVR669Nk/M7q6IHRjKY5vAv7l7SYgdUAkvL7fDxlbRNfTzg
-        nsCisBpf/TfwOGB5wFBRJwU4ln5Lo+WZ/ehT8S9tRA==
-X-Google-Smtp-Source: ABdhPJzb9gs//rirYU8Ktj397bVqkAAUoWJzxzq0eYzi6ZVCA4steGmUtKbIrEXVz5r+7fo8CuNrI6m8cpFs8ONaSh0=
-X-Received: by 2002:a5d:4e88:: with SMTP id e8mr14770779wru.188.1590599356306;
- Wed, 27 May 2020 10:09:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-3-kpsingh@chromium.org>
- <20200527050823.GA31860@infradead.org> <20200527123840.GA12958@google.com> <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
-In-Reply-To: <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 27 May 2020 19:09:05 +0200
-Message-ID: <CACYkzJ6f0=r4h9sNqnXp_uBnHu=b6oGQFFGOv7H65UMOjtNKaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=5pjnryafVyy4mvARp4PLvV79vSG5/akHWFEPy2KlnO8=;
+        b=Ods+d2gjERSIyboarJpGokA1r4J9ZcP8kM37qNh1+ZRdANPNsAKdn1cBs4ycVNymsh
+         r2NfmeLccV+yOio86G6B+bWYdPnwAZT71lMkdkP5ek+JRvEjURXr7cu7PBHtyGGd8a3L
+         VdfpM6F1eoBZ4e9QaH4sGPSh6ANK3673WqCZFTLYTEIU68V6ruefxlRpBA6VROyI0LNO
+         wgHzcdErMMEQwUXZBKtIeT6aSMePQLY97jBQJWaJAvFzsFWo8im+U02R+/CJHJYYUSKz
+         0GJcCX51Y0D1Ulg2DxVZuXwrpJpfgB2oPK82NEU88ol7N2nviXzlueuH8NjPwCi7goSe
+         fwmg==
+X-Gm-Message-State: AOAM532vwpVemjI2N1Bg6CfQDsyMZ0uZ10BKzmDR6Ex130BZlWPdZcWQ
+        BCp3JN3M/RYxao+LGLEO8XEVWEo=
+X-Google-Smtp-Source: ABdhPJwP0e9h28WtLMf45Hus656qDYeDO+Q/IfiFF60rc2z7Uf9u2AXgp8ITZaNsqnb7aOyvExdPpjA=
+X-Received: by 2002:a0c:fb0e:: with SMTP id c14mr12165721qvp.63.1590600938582;
+ Wed, 27 May 2020 10:35:38 -0700 (PDT)
+Date:   Wed, 27 May 2020 10:35:36 -0700
+In-Reply-To: <20200527170840.1768178-2-jakub@cloudflare.com>
+Message-Id: <20200527173536.GD49942@google.com>
+Mime-Version: 1.0
+References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-2-jakub@cloudflare.com>
+Subject: Re: [PATCH bpf-next 1/8] flow_dissector: Don't grab update-side lock
+ on prog detach from pre_exit
+From:   sdf@google.com
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 6:41 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 5/27/2020 5:38 AM, KP Singh wrote:
-> > On 26-May 22:08, Christoph Hellwig wrote:
-> >> On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
-> >>> From: KP Singh <kpsingh@google.com>
-> >>>
-> >>> Similar to bpf_local_storage for sockets, add local storage for inodes.
-> >>> The life-cycle of storage is managed with the life-cycle of the inode.
-> >>> i.e. the storage is destroyed along with the owning inode.
-> >>>
-> >>> Since, the intention is to use this in LSM programs, the destruction is
-> >>> done after security_inode_free in __destroy_inode.
-> >> NAK onbloating the inode structure.  Please find an out of line way
-> >> to store your information.
-> > The other alternative is to use lbs_inode (security blobs) and we can
-> > do this without adding fields to struct inode.
->
-> This is the correct approach, and always has been. This isn't the
-> first ( or second :( ) case where the correct behavior for an LSM
-> has been pretty darn obvious, but you've taken a different approach
-> for no apparent reason.
->
-> > Here is a rough diff (only illustrative, won't apply cleanly) of the
-> > changes needed to this patch:
-> >
-> >  https://gist.github.com/sinkap/1d213d17fb82a5e8ffdc3f320ec37d79
->
-> To do just a little nit-picking, please use bpf_inode() instead of
-> bpf_inode_storage(). This is in keeping with the convention used by
-> the other security modules. Sticking with the existing convention
-> makes it easier for people (and tools) that work with multiple
-> security modules.
->
-> > Once tracing has gets a whitelist based access to inode storage, I
-> > guess it, too, can use bpf_local_storage for inodes
->
-> Only within the BPF module. Your sentence above is slightly garbled,
-> so I'm not really sure what you're saying, but if you're suggesting
-> that tracing code outside of the BPF security module can use the
-> BPF inode data, the answer is a resounding "no".
+On 05/27, Jakub Sitnicki wrote:
+> When there are no references to struct net left, that is check_net(net) is
+> false, we don't need to synchronize updates to flow_dissector prog with  
+> BPF
+> prog attach/detach callbacks. That allows us to pull locking up from the
+> shared detach routine and into the bpf prog detach callback.
 
-This is why I wanted to add a separate pointer in struct inode so that
-we could share the implementation with tracing. bpf_local_storage
-is managed (per-program+per-type of storage) with separate BPF maps.
-So, it can be easily shared between two programs (and
-program types) without them clobbering over each other.
-
-I guess we can have separate pointers for tracing,
-use the pointer in the security blob for the LSM and discuss this separately
-if and when we use this for tracing and keep this series patches scoped to
-BPF_PROG_TYPE_LSM.
-
-- KP
-
->
-> >  if CONFIG_BPF_LSM
-> > is enabled. Does this sound reasonable to the BPF folks?
-> >
-> > - KP
-> >
-> >
->
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
