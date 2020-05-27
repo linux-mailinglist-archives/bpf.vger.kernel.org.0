@@ -2,50 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492E81E4DE1
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 21:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553E51E4E31
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 21:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgE0TKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 15:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
+        id S1726095AbgE0Tbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgE0TKA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 15:10:00 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEACC08C5C1;
-        Wed, 27 May 2020 12:09:59 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1je1Qy-00GSnL-VQ; Wed, 27 May 2020 19:09:49 +0000
-Date:   Wed, 27 May 2020 20:09:48 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        bpf@vger.kernel.org, Brendan Jackman <jackmanb@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] fs: Add an explicit might_sleep() to iput
-Message-ID: <20200527190948.GE23230@ZenIV.linux.org.uk>
-References: <20200527141753.101163-1-kpsingh@chromium.org>
+        with ESMTP id S1725872AbgE0Tbu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 15:31:50 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FEBC03E96E
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:31:50 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l27so7335499ejc.1
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 12:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=3iP99u7MW7LTm3Pdh5bRsJ3IqZrIPpHpVGyoisVCKsU=;
+        b=AjPKXFtQ2WSAX1TAxoqV85vpgz5xH97VjezmwwxoWgTMCCq8DjHRYLphJP1rAXlarn
+         orfUkhp97c9IrH9ToW0h8GrMz13uSWqZJ70oWgnxHt8wx1D8QdjHO75wuUVfu21jVhZo
+         znx4J8vz0UJ4pl2skNq5uEFDhmk7B3JBj+uto=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=3iP99u7MW7LTm3Pdh5bRsJ3IqZrIPpHpVGyoisVCKsU=;
+        b=Ghg9EplXi42dee1Zya7eZYP3yNEsI3e7MNVVWQaau9CjBOe94gK9m4/J9mgcbIjgJ5
+         //0ND7vHEsV+YkWDKsPI22HyatewH1YXsDockq9RTOs39Us+xvC9SSjSETCGQ+nAyKpQ
+         C8Y0o+/IB5hE4GfxFgYUUoGD4uFW7jN6e0ujoAo1K6fwCV7DMhqPAMwE4BaXMhiWg48S
+         p0Xf5Z4hHZGtuiE7w7rKVpRZfRxLHgPHEitO5wkZsmdxxVktpNdnSlPmuSgpMzNgDRtv
+         3WQnaFlKbe/UtCKaJ6afSh7WPaDfMTYJNVCBNG1s34yHMxO0lUi6FSlBFFyTBzxrIcn9
+         xI5w==
+X-Gm-Message-State: AOAM532NQRnNkqlM0ktsCZUeTXhEU0jvBdqe12TEp3LJN5Lbm3hGFhJ/
+        SLcQlgs8gc3t/sMr656Qq51fQw==
+X-Google-Smtp-Source: ABdhPJzv3AJ4zpOiPWvrhAIqoAxtjELfOueixe6KrwJQpm7ictkx5IKCchceOIpP3U/Wz4JG4rKixg==
+X-Received: by 2002:a17:906:48ce:: with SMTP id d14mr5326982ejt.468.1590607908608;
+        Wed, 27 May 2020 12:31:48 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id v8sm2925796eds.20.2020.05.27.12.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 12:31:48 -0700 (PDT)
+References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-4-jakub@cloudflare.com> <20200527174036.GF49942@google.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next 3/8] net: Introduce netns_bpf for BPF programs attached to netns
+In-reply-to: <20200527174036.GF49942@google.com>
+Date:   Wed, 27 May 2020 21:31:47 +0200
+Message-ID: <87v9kh2mzg.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527141753.101163-1-kpsingh@chromium.org>
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 04:17:53PM +0200, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> It is currently mentioned in the comments to the function that iput
-> might sleep when the inode is destroyed. Have it call might_sleep, as
-> dput already does.
-> 
-> Adding an explicity might_sleep() would help in quickly realizing that
-> iput is called from a place where sleeping is not allowed when
-> CONFIG_DEBUG_ATOMIC_SLEEP is enabled as noticed in the dicussion:
+On Wed, May 27, 2020 at 07:40 PM CEST, sdf@google.com wrote:
+> On 05/27, Jakub Sitnicki wrote:
+>> In order to:
+>
+>>   (1) attach more than one BPF program type to netns, or
+>>   (2) support attaching BPF programs to netns with bpf_link, or
+>>   (3) support multi-prog attach points for netns
+>
+>> we will need to keep more state per netns than a single pointer like we
+>> have now for BPF flow dissector program.
+>
+>> Prepare for the above by extracting netns_bpf that is part of struct net,
+>> for storing all state related to BPF programs attached to netns.
+>
+>> Turn flow dissector callbacks for querying/attaching/detaching a program
+>> into generic ones that operate on netns_bpf. Next patch will move the
+>> generic callbacks into their own module.
+>
+>> This is similar to how it is organized for cgroup with cgroup_bpf.
+>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>   include/linux/bpf-netns.h   | 56 ++++++++++++++++++++++
+>>   include/linux/skbuff.h      | 26 ----------
+>>   include/net/net_namespace.h |  4 +-
+>>   include/net/netns/bpf.h     | 17 +++++++
+>>   kernel/bpf/syscall.c        |  7 +--
+>>   net/core/flow_dissector.c   | 96 ++++++++++++++++++++++++-------------
+>>   6 files changed, 143 insertions(+), 63 deletions(-)
+>>   create mode 100644 include/linux/bpf-netns.h
+>>   create mode 100644 include/net/netns/bpf.h
+>
+>> diff --git a/include/linux/bpf-netns.h b/include/linux/bpf-netns.h
+>> new file mode 100644
+>> index 000000000000..f3aec3d79824
+>> --- /dev/null
+>> +++ b/include/linux/bpf-netns.h
+>> @@ -0,0 +1,56 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _BPF_NETNS_H
+>> +#define _BPF_NETNS_H
+>> +
+>> +#include <linux/mutex.h>
+>> +#include <uapi/linux/bpf.h>
+>> +
+>> +enum netns_bpf_attach_type {
+>> +	NETNS_BPF_INVALID = -1,
+>> +	NETNS_BPF_FLOW_DISSECTOR = 0,
+>> +	MAX_NETNS_BPF_ATTACH_TYPE
+>> +};
+>> +
+>> +static inline enum netns_bpf_attach_type
+>> +to_netns_bpf_attach_type(enum bpf_attach_type attach_type)
+>> +{
+>> +	switch (attach_type) {
+>> +	case BPF_FLOW_DISSECTOR:
+>> +		return NETNS_BPF_FLOW_DISSECTOR;
+>> +	default:
+>> +		return NETNS_BPF_INVALID;
+>> +	}
+>> +}
+>> +
+>> +/* Protects updates to netns_bpf */
+>> +extern struct mutex netns_bpf_mutex;
+> I wonder whether it's a good time to make this mutex per-netns, WDYT?
+>
+> The only problem I see is that it might complicate the global
+> mode of flow dissector where we go over every ns to make sure no
+> progs are attached. That will be racy with per-ns mutex unless
+> we do something about it...
 
-You do realize that there are some cases where iput() *is* guaranteed
-to be non-blocking, right?
+It crossed my mind. I stuck with a global mutex for a couple of
+reasons. Different that one you bring up, which I forgot about.
+
+1. Don't know if it has potential to be a bottleneck.
+
+cgroup BPF uses a global mutex too. Even one that serializes access to
+more data than just BPF programs attached to a cgroup.
+
+Also, we grab the netns_bpf_mutex only on prog attach/detach, and link
+create/update/release. Netns teardown is not grabbing it. So if you're
+not using netns BPF you're not going to "feel" contention.
+
+2. Makes locking on nets bpf_link release trickier
+
+In bpf_netns_link_release (patch 5), we deref pointer from link to
+struct net under RCU read lock, in case the net is being destroyed
+simulatneously.
+
+However, we're also grabbing the netns_bpf_mutex, in case of another
+possible scenario, when struct net is alive and well (refcnt > 0), but
+we're racing with a prog attach/detach to access net->bpf.{links,progs}.
+
+Making the mutex part of net->bpf means I first need to somehow ensure
+netns stays alive if I go to sleep waiting for the lock. Or it would
+have to be a spinlock, or some better (simpler?) locking scheme.
+
+
+The above two convinced me that I should start with a global mutex, and
+go for more pain if there's contention.
+
+Thanks for giving the series a review.
+
+-jkbs
