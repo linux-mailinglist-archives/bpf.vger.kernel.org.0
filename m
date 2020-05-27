@@ -2,141 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2D1E3401
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 02:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD0B1E3428
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 02:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgE0ATc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 20:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
+        id S1727041AbgE0AtH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 May 2020 20:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbgE0ATb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 20:19:31 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C59C061A0F
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 17:19:30 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id ee19so10388354qvb.11
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 17:19:30 -0700 (PDT)
+        with ESMTP id S1726930AbgE0AtG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 May 2020 20:49:06 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFF5C061A0F;
+        Tue, 26 May 2020 17:49:06 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id a13so9421456pls.8;
+        Tue, 26 May 2020 17:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bgIkdTJ2fV3jCpNCnpmWRYJAdI69E2EbKa0x+7NQeFI=;
-        b=FtvrbalSHSjACl6/FwTE1ixvwxvbFOSYYKHXJqbRdXqHfGApFy/SaMHqGzLy7E5fjK
-         N0t8a/K70oap+mXL5PLoJ59djZmENT67s6Ur1NqkLQKU6Re/wISB2MHzfApS3KOje3dr
-         xFUxcgSRdNZMwM5zYbNVD5i6uHNQccDgFtMOyiAvj3VQsCAXm00yuorDpX5BnzV/HFEb
-         P0eM0Vfbvd8fgkSPbaNGMS3nczVAx7iclSi2880k+qSGlVS+xt8x0TnMCOzTiAZdns4F
-         N2QGYF5uLYOZcMAo31TQRAx66rNL3mfdK8gH1j2lTewPM/94D14DJMoC89+GKxnQSh9x
-         4pyA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q/JlVkIYtOH22Thby0LCK8W0UIVx5wzKW2ljCTmFrvY=;
+        b=OVgewBZMqLqx04vVNrWds7PmRoUIVOv+xHXyvWSIiIbGC+YwfZC7X6NVCuT5K1Asb1
+         HE929zmNDgh0Qkmgz/Jzx2oq0uP6lKIY1yBNTaS0Ztph/StvXi++sToegBHxx+Mh/qfS
+         pUsjuKHdfpOSJn28kuOr+a5ygYhL0xGrAfVLHNz+xw9ZYwfohwpHA2zwmhYdySIdzDDC
+         IrhOi6M3hIeSlY7UOxwTr5gRotCVmgrSyOsSCHMPu2336P6Ylk1Fnts++wQY+vwSVGtc
+         ok+P9eVxw4+6WHW6O0LYdbP40rNyxJyc04FlqaMxKX8ahQiE8yUPxASNRcsiBLUhZQAq
+         xtCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bgIkdTJ2fV3jCpNCnpmWRYJAdI69E2EbKa0x+7NQeFI=;
-        b=V9fy/SID2J9gKO2134lyQDU/zmbgl4tm9skn289+NtfwtF/L3M/W0+Mw59vFp5C2rT
-         7XwyspSp2fgpnvGDIW8CaGyc+WTkJeXVATP4GzxazV7aw65uAZ7Daaj3fiYVjmpnxRnz
-         ooJt1hCUF/lT5+IkNfq3PaS21YQVFe05arETf7dp1s17cO+6/bc3ZJ4o8TehBlJmDhUA
-         4XzVWbXRlBMzavjKZEHxTKYLEkC0gPa+/iVkxNRLh1Hg/QSS5ByRbOml9TJF7+PZLCck
-         DfmcBewxjHaQ13P5mTbThonAWRe/oc6+OjMk3Tn35xEPQRGMegT8Map57LKMA8hzcaPR
-         O8hQ==
-X-Gm-Message-State: AOAM5314SL2j/giP5VxZMV8Oeu4G00StN0eAwzazvHHZ2VE9yRw8MTgo
-        4qeuHN7iXySUSuKym/xKcRb2Tzobf8mY/Yo+NZI=
-X-Google-Smtp-Source: ABdhPJzDyyoifhtoUslYvEq6zHkPgVvN/eo+hw9yyJvc/t6KZ7Tqa2xx51Bu3HAC+1JNfhvwfzrGW17gsPKbF2Pmfp8=
-X-Received: by 2002:a0c:b92f:: with SMTP id u47mr9171084qvf.247.1590538769398;
- Tue, 26 May 2020 17:19:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q/JlVkIYtOH22Thby0LCK8W0UIVx5wzKW2ljCTmFrvY=;
+        b=YW3DBPbFy2WzTKNDbHcFgWplFhNp0kdaZWIKk2FFTBarrYZ5a1Az5Iyie4Z/f2lU8O
+         IUy2m6CCIZrO++/g6QaA08YS/9G5lYjgoq3CzVnh4uUoMfk0xWgbyjGXnGlP05EDYRtI
+         /BIN855ZvLw7ugdf9us3FRsjSHN6YKjwiJ554DhB4rgrxeiKZMufrgxlaWTIHuhhNTqJ
+         jRwVrrxmpKBUDD0c8KmZvfWnuG3xc0r4h/dA4YnUOrVbKOymdd2+lswkIuYb02q/lRWq
+         J0qU6lNoGKi2On2ikOSCR37T0JkRkw+LHk+NkJ5rZGLbuhyM79tq5HZ68w1bVcebxn/j
+         pbbg==
+X-Gm-Message-State: AOAM533Ms6gUramo+1advAMI8I+cq8PPfLpq0QB4JXvL66DK9R6q6Xsg
+        Vd9IwPF10D2V7o2t1pPCdbM=
+X-Google-Smtp-Source: ABdhPJzbIAE1tc8zindTkUItJkLL8VLCvoWaN1PuG6Cmc9mLiASRCnu8+8azTqHTQ9J1JgY60oTIUw==
+X-Received: by 2002:a17:90a:c584:: with SMTP id l4mr1939961pjt.195.1590540546018;
+        Tue, 26 May 2020 17:49:06 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:726d])
+        by smtp.gmail.com with ESMTPSA id gt10sm583281pjb.30.2020.05.26.17.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 17:49:05 -0700 (PDT)
+Date:   Tue, 26 May 2020 17:49:02 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
+Message-ID: <20200527004902.lo6c2efv5vix5nqq@ast-mbp.dhcp.thefacebook.com>
+References: <20200526163336.63653-1-kpsingh@chromium.org>
+ <20200526163336.63653-3-kpsingh@chromium.org>
 MIME-Version: 1.0
-References: <xuny367so4k3.fsf@redhat.com> <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 26 May 2020 17:19:18 -0700
-Message-ID: <CAEf4BzZaCTDT6DcLYvyFr4RUUm4fFbyb743e1JrEp2DS69cbug@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526163336.63653-3-kpsingh@chromium.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 22, 2020 at 1:19 AM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
->
-> There is difference in depoying static and generated extra resource
-> files between in/out of tree build and flavors:
->
-> - in case of unflavored out-of-tree build static files are not
-> available and must be copied as well as both static and generated
-> files for flavored build.
->
-> So split the rules and variables. The name TRUNNER_EXTRA_GEN_FILES
-> is chosen in analogy to TEST_GEN_* variants.
->
-
-Can we keep them together but be smarter about what needs to be copied
-based on source/target directories? I would really like to not blow up
-all these rules.
-
-> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 26 ++++++++++++++++++++++----
->  1 file changed, 22 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 26497d8869ea..c80c06272759 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -363,12 +363,28 @@ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:                             \
->         $$(call msg,EXT-OBJ,$(TRUNNER_BINARY),$$@)
->         $$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
->
-> -# only copy extra resources if in flavored build
-> -$(TRUNNER_BINARY)-extras: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
-> -ifneq ($2,)
-> +# copy extra resources when needed.
-> +# Static files for both out of tree and flavored (so, not current dir).
-> +# Generated files for flavored only.
-> +$(TRUNNER_BINARY)-extras: $(TRUNNER_BINARY)-extras-static \
-> +                         $(TRUNNER_BINARY)-extras-gen
+On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
+>  
+> +static struct bpf_local_storage_data *inode_storage_update(
+> +	struct inode *inode, struct bpf_map *map, void *value, u64 map_flags)
+> +{
+> +	struct bpf_local_storage_data *old_sdata = NULL;
+> +	struct bpf_local_storage_elem *selem;
+> +	struct bpf_local_storage *local_storage;
+> +	struct bpf_local_storage_map *smap;
+> +	int err;
 > +
-> +$(TRUNNER_BINARY)-extras-static: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
-> +ifneq ($(CURDIR)),$(realpath $(TRUNNER_OUTPUT)))
->         $$(call msg,EXT-COPY,$(TRUNNER_BINARY),$(TRUNNER_EXTRA_FILES))
-> +ifneq ($(TRUNNER_EXTRA_FILES),)
->         cp -a $$^ $(TRUNNER_OUTPUT)/
->  endif
-> +endif
+> +	err = check_update_flags(map, map_flags);
+> +	if (err)
+> +		return ERR_PTR(err);
 > +
-> +$(TRUNNER_BINARY)-extras-gen: $(addprefix $(OUTPUT)/,$(TRUNNER_EXTRA_GEN_FILES)) \
-> +                           | $(TRUNNER_OUTPUT)
-> +ifneq ($2,)
-> +       $$(call msg,EXT-COPY,$(TRUNNER_BINARY),$(TRUNNER_EXTRA_GEN_FILES))
-> +ifneq ($(TRUNNER_EXTRA_GEN_FILES),)
-> +       cp -a $$^ $(TRUNNER_OUTPUT)/
-> +endif
-> +endif
->
->  $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                      \
->                              $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)           \
-> @@ -384,7 +400,8 @@ TRUNNER_BPF_PROGS_DIR := progs
->  TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c \
->                          network_helpers.c testing_helpers.c            \
->                          flow_dissector_load.h
-> -TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(BTF_C_FILES)
-> +TRUNNER_EXTRA_FILES := $(BTF_C_FILES)
-> +TRUNNER_EXTRA_GEN_FILES := urandom_read
->  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
->  TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
->  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
-> @@ -408,6 +425,7 @@ TRUNNER_TESTS_DIR := map_tests
->  TRUNNER_BPF_PROGS_DIR := progs
->  TRUNNER_EXTRA_SOURCES := test_maps.c
->  TRUNNER_EXTRA_FILES :=
-> +TRUNNER_EXTRA_GEN_FILES :=
->  TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
->  TRUNNER_BPF_CFLAGS :=
->  TRUNNER_BPF_LDFLAGS :=
-> --
-> 2.26.2
->
+> +	smap = (struct bpf_local_storage_map *)map;
+> +	local_storage = rcu_dereference(inode->inode_bpf_storage);
+> +
+> +	if (!local_storage || hlist_empty(&local_storage->list)) {
+> +		/* Very first elem for this inode */
+> +		err = check_flags(NULL, map_flags);
+> +		if (err)
+> +			return ERR_PTR(err);
+> +
+> +		selem = selem_alloc(smap, value);
+> +		if (!selem)
+> +			return ERR_PTR(-ENOMEM);
+> +
+> +		err = inode_storage_alloc(inode, smap, selem);
+
+inode_storage_update looks like big copy-paste except above one line.
+pls consolidate.
+
+> +BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+> +	   void *, value, u64, flags)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +
+> +	if (flags > BPF_LOCAL_STORAGE_GET_F_CREATE)
+> +		return (unsigned long)NULL;
+> +
+> +	sdata = inode_storage_lookup(inode, map, true);
+> +	if (sdata)
+> +		return (unsigned long)sdata->data;
+> +
+> +	if (flags == BPF_LOCAL_STORAGE_GET_F_CREATE &&
+> +	    atomic_inc_not_zero(&inode->i_count)) {
+> +		sdata = inode_storage_update(inode, map, value, BPF_NOEXIST);
+> +		iput(inode);
+> +		return IS_ERR(sdata) ?
+> +			(unsigned long)NULL : (unsigned long)sdata->data;
+> +	}
+
+This is wrong. You cannot just copy paste the refcounting logic
+from bpf_sk_storage_get(). sk->sk_refcnt is very different from inode->i_count.
+To start, the inode->i_count cannot be incremented without lock.
+If you really need to do it you need igrab().
+Secondly, the iput() is not possible to call from bpf prog yet, since
+progs are not sleepable and iput() may call iput_final() which may sleep.
+But considering that only lsm progs from lsm hooks will call bpf_inode_storage_get()
+the inode is not going to disappear while this function is running.
+So why touch i_count ?
+
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+>  BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
+>  {
+>  	if (refcount_inc_not_zero(&sk->sk_refcnt)) {
+> @@ -957,6 +1229,20 @@ BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
+>  	return -ENOENT;
+>  }
+>  
+> +BPF_CALL_2(bpf_inode_storage_delete,
+> +	   struct bpf_map *, map, struct inode *, inode)
+> +{
+> +	int err;
+> +
+> +	if (atomic_inc_not_zero(&inode->i_count)) {
+> +		err = inode_storage_delete(inode, map);
+> +		iput(inode);
+> +		return err;
+> +	}
+
+ditto.
+
+> +
+> +	return inode_storage_delete(inode, map);
+
+bad copy-paste from bpf_sk_storage_delete?
+or what is this logic suppose to do?
