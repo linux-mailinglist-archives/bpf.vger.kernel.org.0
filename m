@@ -2,191 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5F71E3541
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 04:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498911E377B
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 06:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgE0CLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 May 2020 22:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgE0CLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 May 2020 22:11:16 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE016C03E97A
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 19:11:14 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v19so1576459wmj.0
-        for <bpf@vger.kernel.org>; Tue, 26 May 2020 19:11:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ipUdTLnpQOIojrMyR3JyiZnfjmcjJ5S3+vvLX0u1WTg=;
-        b=DOuH2kP2aeGP1W4uOzhBKrSoSzufsBnclYFQQFHRS9g2gBz9ORHxXyrcJmDgHCI+nd
-         lKZR3CxT8/SFUPl/0RSlQZoTAvQ2VoBGw5IJ03AscxowpPHOX45qQPtC3m1xh2vs5nBb
-         StR23Z28+tzSznWdX5y5wF+aiDvT1LQNmvQB4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ipUdTLnpQOIojrMyR3JyiZnfjmcjJ5S3+vvLX0u1WTg=;
-        b=nhoCg43vawnbKBEQBorh7IpNWtH09TolRRL7Fs7jc9A/meAqs7C6mumnzFbH8tjUoT
-         jslThjndXPaYz0bUQv3g6iE171CFMthJpSD0lcsxM2cmCMufCfPyCeTj3HX46B3MasUh
-         +DfXvXNqIP9FV/C0km+AdtCBIZ48PRvMwg/GPLigySnaWZH0DsRg7tK7aGjzH9hhRZeI
-         ap5CLgE9TQtWetNIHRLPt5gF7c2JICLxeSUoTJTCSBXE3nOMW4mfOLnUqRXZeIMODCHK
-         RrHbZRWxoZnqGGNDv/SX8PIscfP2EeSgezJ0ilEDE1SzWZLGxJ9jyA7kHyCT0SJuHu1P
-         95ng==
-X-Gm-Message-State: AOAM531osFFM79luf5D8o1gwoRt0rzGWwRkpbPMeUVVBPaN6PT1gp7rs
-        CqJFGalUTDDr+B5CusA6KKng4A==
-X-Google-Smtp-Source: ABdhPJw2LdNhciHKkSNxeAMGIla1TaBk20r0eRoecZGPQSy8eengZqskOy+JhG0pZfQ9RCfwACNT2w==
-X-Received: by 2002:a1c:117:: with SMTP id 23mr1993725wmb.90.1590545473423;
-        Tue, 26 May 2020 19:11:13 -0700 (PDT)
-Received: from google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id l19sm1259285wmj.14.2020.05.26.19.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 19:11:12 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 27 May 2020 04:11:11 +0200
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
-Message-ID: <20200527021111.GA197666@google.com>
-References: <20200526163336.63653-1-kpsingh@chromium.org>
- <20200526163336.63653-3-kpsingh@chromium.org>
- <20200527004902.lo6c2efv5vix5nqq@ast-mbp.dhcp.thefacebook.com>
+        id S1725793AbgE0Epu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 00:45:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27864 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725294AbgE0Epu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 00:45:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590554748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lY4nsy+z0erajJB0eMA92mGIWRcBi9lS2Mr4MNMGG0U=;
+        b=RfR3CBTHHdv9bhKTzuxR66aTYxr3jJm+fzZFuRtqtjPadvc0sBd0bf/yTtuL76aB9LTH7K
+        47SP69lbzKEAX9teA4TaKyF9qmrqPobp8XssxpdnwpdfHsGdO7H03e8MKOveO4fBxmrZTu
+        IWte8IT0blFKEfR7rb8b1gGczFyMCus=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-j3Tct9jZOea4b-feQmxWrw-1; Wed, 27 May 2020 00:45:42 -0400
+X-MC-Unique: j3Tct9jZOea4b-feQmxWrw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C70CD461;
+        Wed, 27 May 2020 04:45:40 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-104.ams2.redhat.com [10.36.112.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4594310013D5;
+        Wed, 27 May 2020 04:45:39 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 0/8] selftests/bpf: installation and out of tree build fixes
+In-Reply-To: <77645d8b-2448-a35b-912a-abd3e329139d@iogearbox.net> (Daniel
+        Borkmann's message of "Tue, 26 May 2020 23:48:01 +0200")
+References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
+        <xuny367so4k3.fsf@redhat.com>
+        <77645d8b-2448-a35b-912a-abd3e329139d@iogearbox.net>
+Date:   Wed, 27 May 2020 07:45:37 +0300
+Message-ID: <xunyzh9uouj2.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527004902.lo6c2efv5vix5nqq@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for taking a look!
+Hi, Daniel!
 
-On 26-May 17:49, Alexei Starovoitov wrote:
-> On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
-> >  
-> > +static struct bpf_local_storage_data *inode_storage_update(
-> > +	struct inode *inode, struct bpf_map *map, void *value, u64 map_flags)
-> > +{
-> > +	struct bpf_local_storage_data *old_sdata = NULL;
-> > +	struct bpf_local_storage_elem *selem;
-> > +	struct bpf_local_storage *local_storage;
-> > +	struct bpf_local_storage_map *smap;
-> > +	int err;
-> > +
-> > +	err = check_update_flags(map, map_flags);
-> > +	if (err)
-> > +		return ERR_PTR(err);
-> > +
-> > +	smap = (struct bpf_local_storage_map *)map;
-> > +	local_storage = rcu_dereference(inode->inode_bpf_storage);
-> > +
-> > +	if (!local_storage || hlist_empty(&local_storage->list)) {
-> > +		/* Very first elem for this inode */
-> > +		err = check_flags(NULL, map_flags);
-> > +		if (err)
-> > +			return ERR_PTR(err);
-> > +
-> > +		selem = selem_alloc(smap, value);
-> > +		if (!selem)
-> > +			return ERR_PTR(-ENOMEM);
-> > +
-> > +		err = inode_storage_alloc(inode, smap, selem);
-> 
-> inode_storage_update looks like big copy-paste except above one line.
-> pls consolidate.
+>>>>> On Tue, 26 May 2020 23:48:01 +0200, Daniel Borkmann  wrote:
 
-Sure.
+ > On 5/22/20 8:40 AM, Yauheni Kaliuta wrote:
+ >> 
+ >> Actually, a bit more needed :)
 
-> 
-> > +BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
-> > +	   void *, value, u64, flags)
-> > +{
-> > +	struct bpf_local_storage_data *sdata;
-> > +
-> > +	if (flags > BPF_LOCAL_STORAGE_GET_F_CREATE)
-> > +		return (unsigned long)NULL;
-> > +
-> > +	sdata = inode_storage_lookup(inode, map, true);
-> > +	if (sdata)
-> > +		return (unsigned long)sdata->data;
-> > +
-> > +	if (flags == BPF_LOCAL_STORAGE_GET_F_CREATE &&
-> > +	    atomic_inc_not_zero(&inode->i_count)) {
-> > +		sdata = inode_storage_update(inode, map, value, BPF_NOEXIST);
-> > +		iput(inode);
-> > +		return IS_ERR(sdata) ?
-> > +			(unsigned long)NULL : (unsigned long)sdata->data;
-> > +	}
-> 
-> This is wrong. You cannot just copy paste the refcounting logic
-> from bpf_sk_storage_get(). sk->sk_refcnt is very different from inode->i_count.
-> To start, the inode->i_count cannot be incremented without lock.
+ > Not quite sure how to parse this, I presume you are intending
+ > to send a v2 of this series with [0] folded in? Please also do
+ > not add line-breaks in the middle of all your Fixes tags as
+ > otherwise it would break searching for commits in the git
+ > log. For the v2 respin, please also add a better cover letter
+ > than just saying nothing more than 'I had a look, here are
+ > some fixes.'. At least a minimal high level summary of the
+ > selftest Makefile changes in this series.
 
-Good catch! Agreed, Jann pointed out that this can lead to bugs
-similar to https://crbug.com/project-zero/2015.
+Thanks! That was part of thread with Andrii, but I should have
+sent separated. Anyway (see Andrii's comments) it's not coming as
+is, so I'll do v2. Sorry for that. 
 
-> If you really need to do it you need igrab().
-> Secondly, the iput() is not possible to call from bpf prog yet, since
+ > Thanks,
+ > Daniel
 
-> progs are not sleepable and iput() may call iput_final() which may sleep.
+ >   [0]
+ > https://patchwork.ozlabs.org/project/netdev/patch/20200522081901.238516-1-yauheni.kaliuta@redhat.com/
 
-Agreed, I will send a separate patch to add a might_sleep call to
-iput() which currently only has a "Consequently, iput() can sleep."
-warning in the comments so that this can be caught by
-CONFIG_DEBUG_ATOMIC_SLEEP.
+ >>>>>>> On Fri, 22 May 2020 07:13:02 +0300, Yauheni Kaliuta  wrote:
+ >> 
+ >> > I had a look, here are some fixes.
+ >> > Yauheni Kaliuta (8):
+ >> >   selftests/bpf: remove test_align from Makefile
+ >> >   selftests/bpf: build bench.o for any $(OUTPUT)
+ >> >   selftests/bpf: install btf .c files
+ >> >   selftests/bpf: fix object files installation
+ >> >   selftests/bpf: add output dir to include list
+ >> >   selftests/bpf: fix urandom_read installation
+ >> >   selftests/bpf: fix test.h placing for out of tree build
+ >> >   selftests/bpf: factor out MKDIR rule
+ >> 
+ >> >  tools/testing/selftests/bpf/Makefile | 77 ++++++++++++++++++++--------
+ >> >  1 file changed, 55 insertions(+), 22 deletions(-)
+ >> 
+ >> > --
+ >> > 2.26.2
+ >> 
+ >> 
 
-> But considering that only lsm progs from lsm hooks will call bpf_inode_storage_get()
-> the inode is not going to disappear while this function is running.
 
-If the inode pointer is an argument to the LSM hook, it won't
-disappear and yes this does hold generally true for the other
-use-cases as well.
+-- 
+WBR,
+Yauheni Kaliuta
 
-> So why touch i_count ?
-> 
-> > +
-> > +	return (unsigned long)NULL;
-> > +}
-> > +
-> >  BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
-> >  {
-> >  	if (refcount_inc_not_zero(&sk->sk_refcnt)) {
-> > @@ -957,6 +1229,20 @@ BPF_CALL_2(bpf_sk_storage_delete, struct bpf_map *, map, struct sock *, sk)
-> >  	return -ENOENT;
-> >  }
-> >  
-> > +BPF_CALL_2(bpf_inode_storage_delete,
-> > +	   struct bpf_map *, map, struct inode *, inode)
-> > +{
-> > +	int err;
-> > +
-> > +	if (atomic_inc_not_zero(&inode->i_count)) {
-> > +		err = inode_storage_delete(inode, map);
-> > +		iput(inode);
-> > +		return err;
-> > +	}
-> 
-> ditto.
-> 
-> > +
-> > +	return inode_storage_delete(inode, map);
-> 
-> bad copy-paste from bpf_sk_storage_delete?
-> or what is this logic suppose to do?
-
-The former :) fixed...
-
-- KP
