@@ -2,140 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEC11E4EBD
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 22:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243EA1E4ECB
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 22:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbgE0UAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 16:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S1728149AbgE0UFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 16:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgE0UAJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 16:00:09 -0400
-Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76615C05BD1E;
-        Wed, 27 May 2020 13:00:09 -0700 (PDT)
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 5B5DA2E12EE;
-        Wed, 27 May 2020 23:00:07 +0300 (MSK)
-Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
-        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id 1xIuqmhcc7-03fatEW3;
-        Wed, 27 May 2020 23:00:07 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1590609607; bh=uSK+OBDgw29F63KnYsd7s3gqiYFBGfZuRwqWVCvZ3gU=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=r5wb0IwKapaDLrMtxrQhuiTqY1UM8u/+gODDfdpMsG7cRiNg9HORNQqjj01sSd5aT
-         zxEDLW9I3L88eKbzxQsciWy+eQ2V2xzPoYLkbUJemiQdgpCEqftEde9ke0L5ek4CEA
-         aPK7+9gMp5oa+pM7Fer1Y6qDbEC97JC0elGaXEzY=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 178.154.179.134-vpn.dhcp.yndx.net (178.154.179.134-vpn.dhcp.yndx.net [178.154.179.134])
-        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id p1CLlcPIkt-03W0tHJ8;
-        Wed, 27 May 2020 23:00:03 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     davem@davemloft.net, brakmo@fb.com, eric.dumazet@gmail.com
-Cc:     kafai@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpf: add SO_KEEPALIVE and related options to bpf_setsockopt
-Date:   Wed, 27 May 2020 22:58:49 +0300
-Message-Id: <20200527195849.97118-3-zeil@yandex-team.ru>
-In-Reply-To: <20200527195849.97118-1-zeil@yandex-team.ru>
-References: <20200527195849.97118-1-zeil@yandex-team.ru>
+        with ESMTP id S1726114AbgE0UFa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 16:05:30 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209A6C05BD1E;
+        Wed, 27 May 2020 13:05:30 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1je2Im-00GTzv-F9; Wed, 27 May 2020 20:05:24 +0000
+Date:   Wed, 27 May 2020 21:05:24 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] fs: Add an explicit might_sleep() to iput
+Message-ID: <20200527200524.GG23230@ZenIV.linux.org.uk>
+References: <20200527141753.101163-1-kpsingh@chromium.org>
+ <20200527190948.GE23230@ZenIV.linux.org.uk>
+ <CACYkzJ5MkWjVPo1JK68+fVyX7p=8bsi9P-C6nR=LYGJw04f9sw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ5MkWjVPo1JK68+fVyX7p=8bsi9P-C6nR=LYGJw04f9sw@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds support of SO_KEEPALIVE flag and TCP related options
-to bpf_setsockopt() routine. This is helpful if we want to enable or tune
-TCP keepalive for applications which don't do it in the userspace code.
+On Wed, May 27, 2020 at 09:50:46PM +0200, KP Singh wrote:
+> On Wed, May 27, 2020 at 9:09 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > On Wed, May 27, 2020 at 04:17:53PM +0200, KP Singh wrote:
+> > > From: KP Singh <kpsingh@google.com>
+> > >
+> > > It is currently mentioned in the comments to the function that iput
+> > > might sleep when the inode is destroyed. Have it call might_sleep, as
+> > > dput already does.
+> > >
+> > > Adding an explicity might_sleep() would help in quickly realizing that
+> > > iput is called from a place where sleeping is not allowed when
+> > > CONFIG_DEBUG_ATOMIC_SLEEP is enabled as noticed in the dicussion:
+> >
+> > You do realize that there are some cases where iput() *is* guaranteed
+> > to be non-blocking, right?
+> 
+> Yes, but the same could be said about dput too right?
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- net/core/filter.c | 39 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+Theoretically, but note that even there dput(NULL) won't trigger that.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a6fc234..f125f9d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4248,8 +4248,8 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
- static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			   char *optval, int optlen, u32 flags)
- {
-+	int val, valbool;
- 	int ret = 0;
--	int val;
- 
- 	if (!sk_fullsock(sk))
- 		return -EINVAL;
-@@ -4260,6 +4260,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 		if (optlen != sizeof(int))
- 			return -EINVAL;
- 		val = *((int *)optval);
-+		valbool = val ? 1 : 0;
- 
- 		/* Only some socketops are supported */
- 		switch (optname) {
-@@ -4298,6 +4299,11 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 				sk_dst_reset(sk);
- 			}
- 			break;
-+		case SO_KEEPALIVE:
-+			if (sk->sk_prot->keepalive)
-+				sk->sk_prot->keepalive(sk, valbool);
-+			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-+			break;
- 		default:
- 			ret = -EINVAL;
- 		}
-@@ -4358,6 +4364,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			ret = tcp_set_congestion_control(sk, name, false,
- 							 reinit, true);
- 		} else {
-+			struct inet_connection_sock *icsk = inet_csk(sk);
- 			struct tcp_sock *tp = tcp_sk(sk);
- 
- 			if (optlen != sizeof(int))
-@@ -4386,6 +4393,36 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 				else
- 					tp->save_syn = val;
- 				break;
-+			case TCP_KEEPIDLE:
-+				if (val < 1 || val > MAX_TCP_KEEPIDLE)
-+					ret = -EINVAL;
-+				else
-+					keepalive_time_set(sk, val);
-+				break;
-+			case TCP_KEEPINTVL:
-+				if (val < 1 || val > MAX_TCP_KEEPINTVL)
-+					ret = -EINVAL;
-+				else
-+					tp->keepalive_intvl = val * HZ;
-+				break;
-+			case TCP_KEEPCNT:
-+				if (val < 1 || val > MAX_TCP_KEEPCNT)
-+					ret = -EINVAL;
-+				else
-+					tp->keepalive_probes = val;
-+				break;
-+			case TCP_SYNCNT:
-+				if (val < 1 || val > MAX_TCP_SYNCNT)
-+					ret = -EINVAL;
-+				else
-+					icsk->icsk_syn_retries = val;
-+				break;
-+			case TCP_USER_TIMEOUT:
-+				if (val < 0)
-+					ret = -EINVAL;
-+				else
-+					icsk->icsk_user_timeout = val;
-+				break;
- 			default:
- 				ret = -EINVAL;
- 			}
--- 
-2.7.4
+> Are there any callers that rely on these cases? (e.g. when the caller is
+> sure that it's not dropping the last reference to the inode).
 
+Not sure - there might be.  Try and see if it gives false positives,
+but I would rather have it done in -next circa -rc1, so we could see
+what falls out and withdraw that if there turn out to be some.
+
+One thing I definitely want to avoid is a flow of BS patches of
+"warning is given, therefore we must do something, this is something,
+let's do it" variety.  Right now we have just under 700 callers in
+the tree, most of them in individual filesystems; I'm not up to
+auditing that pile on the moments notice...
