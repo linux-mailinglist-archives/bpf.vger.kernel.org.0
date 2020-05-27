@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924601E4C29
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9021E4C5A
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387803AbgE0Rkl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 13:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        id S2391704AbgE0RsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 13:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387564AbgE0Rkk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 13:40:40 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BDAC03E97D
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:40:39 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id x22so222251qkj.6
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:40:39 -0700 (PDT)
+        with ESMTP id S2391708AbgE0RsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 13:48:09 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD7EC03E97D
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:48:08 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id y2so250968qkf.2
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=hcV5y/448NucPuCFDD5s80WvaLV/+L6Y6aWTXNhPJ6M=;
-        b=b/bZTy4vE6/uduslr+Kb3ocuKQlHq2Is7+CEKiiImtdISm09h2fkkq3jav+Epoghrh
-         CyJhRCA46mxHpds7YnkQN1lDiSMhiLqgtP3Emm9kOmNy7/+mFmc9NqgRgKQytUf7cnhZ
-         UlrHefwWqeVWjBylxOyItGC1PkIvI1bPCNYRq37R+AymTtgUtxwVjPGiZbNnS6dWFM+V
-         Zxs2bkr/E6NvLQGVKwukbRAETdxS0Sb5xLd5+buVJ4S9JEL44/2ZkIEn3JmNYlAbqJhk
-         Wbyr9g0z5kFhtxLAin1PFmuFN11TZx19x9PsvS5VlJjZf1WZFcT05y5Vs/VzeB00lSty
-         t1Zw==
+        bh=hCh6x28F7RCb/iRwPUgrfvOqv0uQyjWT7o6ARE6uy94=;
+        b=buh8K4Ebwqz0vYSel8dZkg1XwFAfHoXQdpKcLLhuErjdwEO3cTujJFqQlCwMgp06Hh
+         L5PA/poWu0ooGUHqzv7ipkX2cuuq2XH+MNF2QGxnsB284zZdq+YHOB8lkVD6j9trL//Q
+         NvNx+7FHseulPD3GfEsK2BXLoC6b/SlBsh+31twwqZqlQiEOS9Ro+WrgRSEcE9naro3t
+         tBrJxWU1uWtIW1dyWQexaPzRDBXgq4ay2HOe9SD9otSbWv9qDdwOYY015p93xnXxczP8
+         sMeVOl4PgeX4LKluhlOUYzY9v+Lj1cW6oEKqqR5gcwxqFEPs900VHvdhM3fWimeU7P93
+         j97Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hcV5y/448NucPuCFDD5s80WvaLV/+L6Y6aWTXNhPJ6M=;
-        b=I0r0STHRDOPm7mXDG+qBDCEVFbdM73cOcfX+h7Ueioblm1AcymvV2z7yfRq66+49zc
-         hsTwr5oHMT3dgx5dOCbuHocNjmh71W42gwfeAwk07GHNRwIH8pCVOejYrZTTDXizO+F8
-         PSET8WmhsVo/dw/O78WABDPOZPRbOHVTKKqRpfp9pmThPS05hUD+BlmAsjsyjbV5JaXr
-         1Sl7Korv9hc1U4XQVYOFEnExz7JfkSd3STsN4sMID/RPGFDi+xmxChwfM3nyk4H3HqF2
-         YRioUd/FQZ5qAfgeDwBxXx4vqA5TMGIXAV11WNIW1FsTPCGAyXuKsYoX/ednll/bpsPL
-         Nkzg==
-X-Gm-Message-State: AOAM530xuAHDmirV+YDOYsM49CpbV2OSb8/kiVJIgkh7YYQ/J0Mw+cmJ
-        rAR/FvIri85wQU8/4nEqZxDDTjM=
-X-Google-Smtp-Source: ABdhPJwBJ98QhfL2t1UhVy+T83POjlR8Ywppmx99tCxRxf3pJkEqt367bijcpIXOQwtoKw/hHQzoBOA=
-X-Received: by 2002:a0c:f445:: with SMTP id h5mr24198190qvm.151.1590601238703;
- Wed, 27 May 2020 10:40:38 -0700 (PDT)
-Date:   Wed, 27 May 2020 10:40:36 -0700
-In-Reply-To: <20200527170840.1768178-4-jakub@cloudflare.com>
-Message-Id: <20200527174036.GF49942@google.com>
+        bh=hCh6x28F7RCb/iRwPUgrfvOqv0uQyjWT7o6ARE6uy94=;
+        b=hvDAFyGjoTZifc8aaGjY0raqnJDaTKYP6tI4gLvr4+h7GAGI6jTvO3yQGceMFkjH2Z
+         oih/3J5odJpuqQty5Ns4if7SlaX1yW/o84Mopw1d4HHbYqzZQcLKj1Cl4TkhFjnvdToY
+         YMElnnSJusLXLE/cAyEiAEv7+4h7iEw32EcpxJ4uVVwc7I+dR68Fpwd8hMQ65laOWxSc
+         InJTFamOghbmURdwNLYgpKh2o4ydYc7J/tDfvn9C7MKHo2EudNo6hogw1HbiamliFddU
+         8qes9OK/RLHMIRo5NevBHo9WweomQvry8RFCwACyrrwZu4RjClx023rnix+ZB+2AUjKv
+         Ya4g==
+X-Gm-Message-State: AOAM5312JJ0jPP5a4bJOVUqqMjpR4S+Oy/F1dsNVDjepRhgTHRP3qCZq
+        Llp1voiF8otXQcYhf828IL5Z4C4=
+X-Google-Smtp-Source: ABdhPJwnVrg5lq5Zze8uh9HWudikqOpQQ1aOF9BZdxGZF1Ms86JDN765C3hY/aC807lhNfYtxACa3G0=
+X-Received: by 2002:a05:6214:1371:: with SMTP id c17mr4053196qvw.186.1590601687264;
+ Wed, 27 May 2020 10:48:07 -0700 (PDT)
+Date:   Wed, 27 May 2020 10:48:05 -0700
+In-Reply-To: <20200527170840.1768178-6-jakub@cloudflare.com>
+Message-Id: <20200527174805.GG49942@google.com>
 Mime-Version: 1.0
-References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-4-jakub@cloudflare.com>
-Subject: Re: [PATCH bpf-next 3/8] net: Introduce netns_bpf for BPF programs
- attached to netns
+References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-6-jakub@cloudflare.com>
+Subject: Re: [PATCH bpf-next 5/8] bpf: Add link-based BPF program attachment
+ to network namespace
 From:   sdf@google.com
 To:     Jakub Sitnicki <jakub@cloudflare.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -61,71 +61,54 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 05/27, Jakub Sitnicki wrote:
-> In order to:
+> Add support for bpf() syscall subcommands that operate on
+> bpf_link (LINK_CREATE, LINK_UPDATE, OBJ_GET_INFO) for attach points tied  
+> to
+> network namespaces (that is flow dissector at the moment).
 
->   (1) attach more than one BPF program type to netns, or
->   (2) support attaching BPF programs to netns with bpf_link, or
->   (3) support multi-prog attach points for netns
+> Link-based and prog-based attachment can be used interchangeably, but only
+> one can be in use at a time. Attempts to attach a link when a prog is
+> already attached directly, and the other way around, will be met with
+> -EBUSY.
 
-> we will need to keep more state per netns than a single pointer like we
-> have now for BPF flow dissector program.
+> Attachment of multiple links of same attach type to one netns is not
+> supported, with the intention to lift it when a use-case presents
+> itself. Because of that attempts to create a netns link, when one already
+> exists result in -E2BIG error, signifying that there is no space left for
+> another attachment.
 
-> Prepare for the above by extracting netns_bpf that is part of struct net,
-> for storing all state related to BPF programs attached to netns.
+> Link-based attachments to netns don't keep a netns alive by holding a ref
+> to it. Instead links get auto-detached from netns when the latter is being
+> destroyed by a pernet pre_exit callback.
 
-> Turn flow dissector callbacks for querying/attaching/detaching a program
-> into generic ones that operate on netns_bpf. Next patch will move the
-> generic callbacks into their own module.
+> When auto-detached, link lives in defunct state as long there are open FDs
+> for it. -ENOLINK is returned if a user tries to update a defunct link.
 
-> This is similar to how it is organized for cgroup with cgroup_bpf.
+> Because bpf_link to netns doesn't hold a ref to struct net, special care  
+> is
+> taken when releasing the link. The netns might be getting torn down when
+> the release function tries to access it to detach the link.
 
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
->   include/linux/bpf-netns.h   | 56 ++++++++++++++++++++++
->   include/linux/skbuff.h      | 26 ----------
->   include/net/net_namespace.h |  4 +-
->   include/net/netns/bpf.h     | 17 +++++++
->   kernel/bpf/syscall.c        |  7 +--
->   net/core/flow_dissector.c   | 96 ++++++++++++++++++++++++-------------
->   6 files changed, 143 insertions(+), 63 deletions(-)
->   create mode 100644 include/linux/bpf-netns.h
->   create mode 100644 include/net/netns/bpf.h
+> To ensure the struct net object is alive when release function accesses it
+> we rely on the fact that cleanup_net(), struct net destructor, calls
+> synchronize_rcu() after invoking pre_exit callbacks. If auto-detach from
+> pre_exit happens first, link release will not attempt to access struct  
+> net.
 
-> diff --git a/include/linux/bpf-netns.h b/include/linux/bpf-netns.h
-> new file mode 100644
-> index 000000000000..f3aec3d79824
-> --- /dev/null
-> +++ b/include/linux/bpf-netns.h
-> @@ -0,0 +1,56 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _BPF_NETNS_H
-> +#define _BPF_NETNS_H
-> +
-> +#include <linux/mutex.h>
-> +#include <uapi/linux/bpf.h>
-> +
-> +enum netns_bpf_attach_type {
-> +	NETNS_BPF_INVALID = -1,
-> +	NETNS_BPF_FLOW_DISSECTOR = 0,
-> +	MAX_NETNS_BPF_ATTACH_TYPE
-> +};
-> +
-> +static inline enum netns_bpf_attach_type
-> +to_netns_bpf_attach_type(enum bpf_attach_type attach_type)
-> +{
-> +	switch (attach_type) {
-> +	case BPF_FLOW_DISSECTOR:
-> +		return NETNS_BPF_FLOW_DISSECTOR;
-> +	default:
-> +		return NETNS_BPF_INVALID;
-> +	}
-> +}
-> +
-> +/* Protects updates to netns_bpf */
-> +extern struct mutex netns_bpf_mutex;
-I wonder whether it's a good time to make this mutex per-netns, WDYT?
+> Same applies the other way around, network namespace doesn't keep an
+> attached link alive because by not holding a ref to it. Instead bpf_links
+> to netns are RCU-freed, so that pernet pre_exit callback can safely access
+> and auto-detach the link when racing with link release/free.
 
-The only problem I see is that it might complicate the global
-mode of flow dissector where we go over every ns to make sure no
-progs are attached. That will be racy with per-ns mutex unless
-we do something about it...
+[..]
+> +	rcu_read_lock();
+>   	for (type = 0; type < MAX_NETNS_BPF_ATTACH_TYPE; type++) {
+> -		if (rcu_access_pointer(net->bpf.progs[type]))
+> +		if (rcu_access_pointer(net->bpf.links[type]))
+> +			bpf_netns_link_auto_detach(net, type);
+> +		else if (rcu_access_pointer(net->bpf.progs[type]))
+>   			__netns_bpf_prog_detach(net, type);
+>   	}
+> +	rcu_read_unlock();
+Aren't you doing RCU_INIT_POINTER in __netns_bpf_prog_detach?
+Is it allowed under rcu_read_load?
