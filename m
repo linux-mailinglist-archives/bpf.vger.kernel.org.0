@@ -2,164 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B576C1E5123
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 00:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69661E5184
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 00:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgE0WX3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 18:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S1725613AbgE0W76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 18:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgE0WX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 18:23:28 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E54C05BD1E;
-        Wed, 27 May 2020 15:23:26 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id c11so28776114ljn.2;
-        Wed, 27 May 2020 15:23:26 -0700 (PDT)
+        with ESMTP id S1725601AbgE0W76 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 18:59:58 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A984C05BD1E
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 15:59:58 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id r16so3246041qvm.6
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 15:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oDUCdw/ayIiyqDGiRwy24Togh8qSAsEHJq3kdKNjy6E=;
-        b=ikxz+wtqcz/ix6joyxaUeYfQteyOLp04oMU8aJNHvQnZFbC9bWtbG1YytzuVFhW7H5
-         v+O7FfJ+cIfAxN0yjNGeg6pplAK8DwxGrqi/BjwaVQKPVGxUSi8mfwZvRtspfetStYV9
-         ox5CabBJjOpPZzRG6SA6pvEveJ4NU7jx9XKLQ6Drk6tJBDUDDyVZgy2Ra9hrOCp+zYTw
-         k2m/P6ArpEIVCxXj7j8he3Qt6YgUyJeTv02WQYhPScomjaJsUrIV2pQlKSjgcqWDPWAc
-         zTGXUWpDvHrMlX/0OvjuTlyX2Al1yHuQe1paZm/bLenHB7dISjOXZ1T1o58tu866OC76
-         qZDg==
+        bh=zQ0Vq72W9QRGCJxoMgyu3FzhHtcrYW+iI4uF5iQCrw8=;
+        b=bA0/H2exnSZwIX4ZbhJwbX+qbXQCJSu5+0FyvBnkOV5ji+fIbPV+kbGvEFhI5R/ehv
+         X3k9U7iULhUhLAJfgaVqQNCz/8ANKyBPVDc4JvkYF/w20CgJELq5Plnu+ilAv6eWqyAu
+         KY3CZfzZx796jMZfg6WqXr3Yma4wKCkXx3I1RQGSncSx4Zsswx75Wme+dSidRVG5+rHk
+         lxhZ8Q2QHsxZsgeUOCdS4G6gut+OstVkv0aoXfWaNeLcbLJZXMNoqaG1gh3qij3W8yol
+         sJCaXGu5DkPOwNPRlpBpXhvKxdPznBVyJaWa9nqajbID3QNitxwj1ug/u+qw3ctsrXtc
+         dHUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oDUCdw/ayIiyqDGiRwy24Togh8qSAsEHJq3kdKNjy6E=;
-        b=QMMcE8aHeFhzhiyWMSnpfTW9wbYbhtF5GaUr4XsKX2KGlMj8aNhGKIfFRfc0xhDrn4
-         0qn063BMMqjYg2snWUdkq2HC42xr/U9Wva9u90Yf0vytS/3hsNmqCKv4x9sbRJSJFSgD
-         gYQ1T9ccOPwDoGktJPZV+wkwz4HEPoifSasX73bK+JH44OmFCXlODRMIXAcNaY8LfevB
-         5hSIcuIT3YrPIYIalGtMAZSiNVqStoZTtR4gqThxhljNOY6AhvX8YIZyiIx6WWnto+pI
-         XaBCKk+/OlYK3a9Rc+G8Fia5s7jvFgUX9y/Ou+GGSjbIH+NB3oX5LyfrJv1ackYPb5tX
-         IRtA==
-X-Gm-Message-State: AOAM5328mebKTww9zNi/K9pTcAk0dLo5pycTDTWNPpJgso6IE/lx+3kI
-        R7zgeNyw21jHaxCTAn9h5fYZXQfSeSSwad3dfM0=
-X-Google-Smtp-Source: ABdhPJz2YfTgfRMaHeZNPMoqZ6BxheRpJKYAN/tJKTVlw8s7jqed1pa8mFXkVP0vF4UtBXfQUQeu8+/snV7j/b2NWj0=
-X-Received: by 2002:a2e:150e:: with SMTP id s14mr3716381ljd.290.1590618204753;
- Wed, 27 May 2020 15:23:24 -0700 (PDT)
+        bh=zQ0Vq72W9QRGCJxoMgyu3FzhHtcrYW+iI4uF5iQCrw8=;
+        b=BEyuUmMhZS2SUhZ7WX3aeXkAogegHFufqKUDHouy11DGKaPCdIrCoVQ6eZv5g6vbix
+         ptJYr0t3cQwd5MMrtxbiGFEXouxsUMoWtKtBmU3veqoHIKEn2bzMYA5NA6aPef62i/iw
+         u1x7LLGLWVoC+u4u7v1n/w9AmWHbf9WdSTng6SV67ddGb/faFK5u+e6aeJ5LsFc966fb
+         +9dONcPUs+ByobHKXh9PZhsINmW7Ck9aMu2niizsP3z5fsW94A3kJUUBkkWKHFRnSXA3
+         ITWUQzH3EXMlhxDXOt1ZOPngKL/wP5jAvWL/o7SGvd6UiT7NztjsWuY5Dm7krf8DS50z
+         jbsg==
+X-Gm-Message-State: AOAM533onkosn7nJZuq4Lva8Z7rbZjNL8XglBomivoH/BVJGS61CmbPQ
+        dK1Tc0KN7yjBUmtc3sYQsBdcfouKvMC0wsfjQ5I=
+X-Google-Smtp-Source: ABdhPJxbKIqEiLp42CkkvuARpCJ6lK+MDk1K76rspAMz9TpDNR9kb7WjI/g53+RYXDtTlSr1XoODdH5nnkHFcpniPOY=
+X-Received: by 2002:ad4:55ea:: with SMTP id bu10mr314872qvb.163.1590620397345;
+ Wed, 27 May 2020 15:59:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <xuny367so4k3.fsf@redhat.com> <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
- <CAEf4BzZaCTDT6DcLYvyFr4RUUm4fFbyb743e1JrEp2DS69cbug@mail.gmail.com>
- <xunya71uosvv.fsf@redhat.com> <CAADnVQJUL9=T576jo29F_zcEd=C6_OiExaGbEup6F-mA01EKZQ@mail.gmail.com>
- <xuny367lq1z1.fsf@redhat.com> <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
- <xunyh7w1nwem.fsf@redhat.com> <CAADnVQKbKA_Yuj7v3c6fNi7gZ8z_q_hzX2ry9optEHE3B_iWcg@mail.gmail.com>
- <ec5f6bd9-83e9-fc55-1885-18eee404d988@kernel.org>
-In-Reply-To: <ec5f6bd9-83e9-fc55-1885-18eee404d988@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 27 May 2020 15:23:13 -0700
-Message-ID: <CAADnVQJhb0+KWY0=4WVKc8NQswDJ5pU7LW1dQE2TQuya0Pn0oA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-To:     shuah <shuah@kernel.org>
-Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <159057923399.191121.11186124752660899399.stgit@firesoul>
+In-Reply-To: <159057923399.191121.11186124752660899399.stgit@firesoul>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 May 2020 15:59:46 -0700
+Message-ID: <CAEf4Bzavr2hLv+Z0be0_uGRfPqNsBKAsQL7MpQUoXQX46rj4eA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V2] bpf: Fix map_check_no_btf return code
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 3:01 PM shuah <shuah@kernel.org> wrote:
+On Wed, May 27, 2020 at 4:34 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> On 5/27/20 11:05 AM, Alexei Starovoitov wrote:
-> > On Wed, May 27, 2020 at 10:02 AM Yauheni Kaliuta
-> > <yauheni.kaliuta@redhat.com> wrote:
-> >>
-> >> Hi, Alexei!
-> >>
-> >>>>>>> On Wed, 27 May 2020 09:48:04 -0700, Alexei Starovoitov  wrote:
-> >>
-> >>   > On Wed, May 27, 2020 at 12:19 AM Yauheni Kaliuta
-> >>   > <yauheni.kaliuta@redhat.com> wrote:
-> >>   >>
-> >>   >> Hi, Alexei!
-> >>   >>
-> >>   >> >>>>> On Tue, 26 May 2020 22:37:39 -0700, Alexei Starovoitov  wrote:
-> >>   >>
-> >>   >> > On Tue, May 26, 2020 at 10:31 PM Yauheni Kaliuta
-> >>   >> > <yauheni.kaliuta@redhat.com> wrote:
-> >>   >> >>
-> >>   >> >> Hi, Andrii!
-> >>   >> >>
-> >>   >> >> >>>>> On Tue, 26 May 2020 17:19:18 -0700, Andrii Nakryiko  wrote:
-> >>   >> >>
-> >>   >> >> > On Fri, May 22, 2020 at 1:19 AM Yauheni Kaliuta
-> >>   >> >> > <yauheni.kaliuta@redhat.com> wrote:
-> >>   >> >> >>
-> >>   >> >> >> There is difference in depoying static and generated extra resource
-> >>   >> >> >> files between in/out of tree build and flavors:
-> >>   >> >> >>
-> >>   >> >> >> - in case of unflavored out-of-tree build static files are not
-> >>   >> >> >> available and must be copied as well as both static and generated
-> >>   >> >> >> files for flavored build.
-> >>   >> >> >>
-> >>   >> >> >> So split the rules and variables. The name TRUNNER_EXTRA_GEN_FILES
-> >>   >> >> >> is chosen in analogy to TEST_GEN_* variants.
-> >>   >> >> >>
-> >>   >> >>
-> >>   >> >> > Can we keep them together but be smarter about what needs to
-> >>   >> >> > be copied based on source/target directories? I would really
-> >>   >> >> > like to not blow up all these rules.
-> >>   >> >>
-> >>   >> >> I can try, ok, I just find it a bit more clear. But it's good to
-> >>   >> >> get some input from kselftest about OOT build in general.
-> >>   >>
-> >>   >> > I see no value in 'make install' of selftests/bpf
-> >>   >> > and since it's broken just remove that makefile target.
-> >>   >>
-> >>   >> Some CI systems perform testing next stage after building were
-> >>   >> build tree is not available anymore. So it's in use at the
-> >>   >> moment.
-> >>
-> >>   > such CI systems can do 'cp -r' then
-> >> >> It's a discussion for linux-kselftest@ (added).
-> >>
-> >> At the moment `make install` is generic kselftest functionality
-> >> and since bpf is part of that infra it looks a bit strange to
-> >> break it intentionally.
-> >
-> > selftests/bpf is only historically part of selftests.
-> > It probably should stop using kselftest build infra all together.
-> > We had breakages in selftests/bpf in the past only because
-> > of changes in kselftests bits.
-> >
+> When a BPF-map type doesn't support having a BTF info associated, the
+> bpf_map_ops->map_check_btf is set to map_check_no_btf(). This function
+> map_check_no_btf() currently returns -ENOTSUPP, which result in a very
+> confusing error message in libbpf, see below.
 >
-> The question is whether or not the breakages addresses quickly.
-> Also, bpf keels breaking ksleftest builds and installs because
-> it has dependencies on bleeding edge tools and causes problems
-> for kselftest users.
+> The errno ENOTSUPP is part of the kernels internal errno in file
+> include/linux/errno.h. As is stated in the file, these "should never be
+> seen by user programs". This is not a not a standard Unix error.
 >
-> You are pulling me into the discussion midway and I am missing the
-> context for the discussion. There is another thread on this topic
-> where Yauheni and I have been talking about bpf install.
+> This should likely have been EOPNOTSUPP instead. This seems to be a common
+> mistake, that even checkpatch tries to catch see commit 6b9ea5ff5abd
+> ("checkpatch: warn about uses of ENOTSUPP").
 >
-> I would say bpf install has never really worked from kselftest
-> install mechanism.
+> Before this change end-users of libbpf will see:
+>  libbpf: Error in bpf_create_map_xattr(cpu_map):ERROR: strerror_r(-524)=22(-524). Retrying without BTF.
 >
-> Ideally all tests use kselftest common install rule to leverage
-> the install and not have users do individual test installs.
-> It isn't productive and cooperative to say let's have bpf test
-> do its thing. It is part of selftests and we have to figure out
-> how to have it consistently build and run.
+> After this change end-users of libbpf will see:
+>  libbpf: Error in bpf_create_map_xattr(cpu_map):Operation not supported(-95). Retrying without BTF.
 >
-> It isn't building for me on Linux 5.7-rc7 at the moment, leave
-> alone install.
+> V2: Use EOPNOTSUPP instead of EUCLEAN.
 >
-> The test Makefile has to handle OUTPUT directory. Please add me
-> to the entire patch series especially if it changes selftests
-> Makefile and lib.mk. I will review and try to see if we can make
-> bpf install work under kselftest common infrastructure.
+> Fixes: e8d2bec04579 ("bpf: decouple btf from seq bpf fs dump and enable more maps")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
 
-I prefer to keep selftests/bpf install broken.
-This forced marriage between kselftests and selftests/bpf
-never worked well. I think it's a time to free them up from each other.
+I don't mind this change, per se, mostly because I think it doesn't matter. But:
+
+$ rg ENOTSUPP kernel/bpf | wc -l
+42
+$ rg EOPNOTSUPP kernel/bpf | wc -l
+8
+
+So 5 to 1 in favor of ENOTSUPP in purely BPF sources.
+
+Globally across kernel sources the picture is different, though:
+
+$ rg ENOTSUPP | wc -l
+1597
+$ rg EOPNOTSUPP | wc -l
+6982
+
+I didn't audit if those errors can get eventually propagated to
+user-space, but I'd imagine that most would. So, despite what that
+errno.h header says, EOPNOTSUPP is quite widely used still.
+
+But regardless, can you please reply on v1 thread why adding support
+for BTF to these special maps (that do not support BTF right now)
+won't be a better solution and won't work (as you claimed)?
+
+
+>  kernel/bpf/syscall.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index d13b804ff045..e4e0a0c5192c 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -732,7 +732,7 @@ int map_check_no_btf(const struct bpf_map *map,
+>                      const struct btf_type *key_type,
+>                      const struct btf_type *value_type)
+>  {
+> -       return -ENOTSUPP;
+> +       return -EOPNOTSUPP;
+>  }
+>
+>  static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+>
+>
