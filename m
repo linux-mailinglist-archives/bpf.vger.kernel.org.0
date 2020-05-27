@@ -2,118 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5A81E4B51
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8758C1E4B94
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgE0RCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 13:02:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31404 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728883AbgE0RCw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 13:02:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590598971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0llQvuHUDajWbd807ZLZZoLe6sIkfmzt8DCvGnqKX3w=;
-        b=P2lEaBvcehtQOLZ74Xy8FD33FrJSmXWzhWxDESFJjhZeWdhOnghpH6LUz9TsfC8GbtV8Tl
-        9ztcgtRM40F2BNQK/gUfcCHSSNJY4RTkijBAzoXog2UTRU4RQW9sVuSeXaqxusvNIzsbqc
-        DUP3dfES9wy+2upB9C0yQqN1O/NFsaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-1Xhp6ZlVNRWCfah0MzcNvA-1; Wed, 27 May 2020 13:02:49 -0400
-X-MC-Unique: 1Xhp6ZlVNRWCfah0MzcNvA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A786835B47;
-        Wed, 27 May 2020 17:02:48 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-114-49.ams2.redhat.com [10.36.114.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B8401768A0;
-        Wed, 27 May 2020 17:02:43 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-References: <xuny367so4k3.fsf@redhat.com>
-        <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
-        <CAEf4BzZaCTDT6DcLYvyFr4RUUm4fFbyb743e1JrEp2DS69cbug@mail.gmail.com>
-        <xunya71uosvv.fsf@redhat.com>
-        <CAADnVQJUL9=T576jo29F_zcEd=C6_OiExaGbEup6F-mA01EKZQ@mail.gmail.com>
-        <xuny367lq1z1.fsf@redhat.com>
-        <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
-Date:   Wed, 27 May 2020 20:02:41 +0300
-In-Reply-To: <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
-        (Alexei Starovoitov's message of "Wed, 27 May 2020 09:48:04 -0700")
-Message-ID: <xunyh7w1nwem.fsf@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S1731228AbgE0RMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 13:12:34 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55191 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729894AbgE0RMd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 May 2020 13:12:33 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 022B8A97;
+        Wed, 27 May 2020 13:12:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 27 May 2020 13:12:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        content-transfer-encoding:content-type:in-reply-to:date:cc
+        :subject:from:to:message-id; s=fm3; bh=6pxEigjWfelMjOWs/Jq1DeSXe
+        YEVsneKZclbXHsrvFQ=; b=Dx1/DmhtipYpfHdvAyM/R5S0l0Urw1kxEabTy7ndJ
+        KTekDH5RnTfTmgtWbw1GPf0w0zy//8W2XsYDGENYLAJYsG0M8MFKQSDtejpoMNaj
+        hAnXIlNbMdyUmtqWBcPkLMwrLpd0M7Nc9TADOGV8r3gsiI1QSzzcbcOKvskxWyKF
+        nWVGqyFKvv8np6XOsHfTuSvEfCcTazr4q8NN3JRTDddw3g5bkUEkEjt7XqafB7mF
+        s6kv6nZ29QgL09L95cmnqmIRb0l/H+XOyd3tVem/EXMHCkWlMabbx17u+lEyIi6K
+        3pthk+jGFVzijmv9tcwao0yLwP9yMl0ot6BCt4x7h51LQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6pxEig
+        jWfelMjOWs/Jq1DeSXeYEVsneKZclbXHsrvFQ=; b=0IfLJJFz1oyDNl66pJNJfD
+        fK4c+ZqgBV1JRd7wxvWo0TU2bYMX+yWOONUwtiB+FAnfw5CoMWYA3HuOJmeEcBPU
+        q/R1AyizBPiuyjRbbfpR4f7oAz/w44K8x1bfsWuD6eRh21k1csZ/bGwbNjAylRqG
+        S+zKp5kTf584fTAjy65FIqG4zQT2eZj8e1EzY0n//TpCX4X5shiCofJRsWRjhz+v
+        d8/6CyoSQmHjzKPaqDddMQGkUE8+Pfxftj15FQ6LpZOcIGiJYWbn/7iaf/xmQiV7
+        cU4CzpS/asntOs7f7QqfBxMPHb3C9yAf8NwoTMtLn7S9qV5cTx0tWsr3I2WKHtPw
+        ==
+X-ME-Sender: <xms:fp_OXnzMMddzuGs3DxMkcMGcAaZYDGTqZrX0dF1dx5rYHJOk_uyfcw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvgedgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpefgtggjfffuhffvkfesthhqredttddtjeen
+    ucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeelleelfeekudehudeitdefkeeutdfhieeiudeggfdutdetleek
+    vedtteevieffteenucfkphepjeefrdelfedrvdegjedrudefgeenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:fp_OXvSUMbDbI3ZC12QTnicdy3P20kMOKD3dc3jOfmeB3oesg5oXDA>
+    <xmx:fp_OXhX8P3FO9-Nt1LGVYuVV2rj-Slpt8I8KW0srICQtB7EPwbtJUQ>
+    <xmx:fp_OXhif-JI4R5yF4LAsFNrABBnXAQv97F_q5pBCEdII_QRGP4NGBg>
+    <xmx:f5_OXt7AKk-ovSiZzUxVTphnwaOqRn5Id8NRDUl4Od2wBnp27IJaxlzjc_g>
+Received: from localhost (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7C89A3280063;
+        Wed, 27 May 2020 13:12:29 -0400 (EDT)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAEf4BzbR+7X-boCBC-f60jugp8xWKVTeFTyUmrcv8Qy4iKsvjg@mail.gmail.com>
+Date:   Wed, 27 May 2020 10:03:56 -0700
+Cc:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
+        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
+        "john fastabend" <john.fastabend@gmail.com>,
+        "KP Singh" <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        "bpf" <bpf@vger.kernel.org>, "Networking" <netdev@vger.kernel.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux" <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH bpf-next] libbpf: Export bpf_object__load_vmlinux_btf
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Message-Id: <C31OATROKNZK.27CUNDSXX9I4K@maharaja>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Alexei!
+Hi Andrii,
 
->>>>> On Wed, 27 May 2020 09:48:04 -0700, Alexei Starovoitov  wrote:
+On Tue May 26, 2020 at 3:09 PM PST, Andrii Nakryiko wrote:
+> On Tue, May 26, 2020 at 7:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Right now the libbpf model encourages loading the entire object at once=
+.
+> > In this model, libbpf handles loading BTF from vmlinux for us. However,
+> > it can be useful to selectively load certain maps and programs inside a=
+n
+> > object without loading everything else.
+>
+> There is no way to selectively load or not load a map. All maps are
+> created, unless they are reusing map FD or pinned instances. See
+> below, I'd like to understand the use case better.
+>
+> >
+> > In the latter model, there was perviously no way to load BTF on-demand.
+> > This commit exports the bpf_object__load_vmlinux_btf such that we are
+> > able to load BTF on demand.
+> >
+>
+> Let's start with the real problem, not a solution. Do you have
+> specific use case where you need bpf_object__load_vmlinux_btf()? It
+> might not do anything if none of BPF programs in the object requires
+> BTF, because it's very much tightly coupled with loading bpf_object as
+> a whole model. I'd like to understand what you are after with this,
+> before exposing internal implementation details as an API.
 
- > On Wed, May 27, 2020 at 12:19 AM Yauheni Kaliuta
- > <yauheni.kaliuta@redhat.com> wrote:
- >> 
- >> Hi, Alexei!
- >> 
- >> >>>>> On Tue, 26 May 2020 22:37:39 -0700, Alexei Starovoitov  wrote:
- >> 
- >> > On Tue, May 26, 2020 at 10:31 PM Yauheni Kaliuta
- >> > <yauheni.kaliuta@redhat.com> wrote:
- >> >>
- >> >> Hi, Andrii!
- >> >>
- >> >> >>>>> On Tue, 26 May 2020 17:19:18 -0700, Andrii Nakryiko  wrote:
- >> >>
- >> >> > On Fri, May 22, 2020 at 1:19 AM Yauheni Kaliuta
- >> >> > <yauheni.kaliuta@redhat.com> wrote:
- >> >> >>
- >> >> >> There is difference in depoying static and generated extra resource
- >> >> >> files between in/out of tree build and flavors:
- >> >> >>
- >> >> >> - in case of unflavored out-of-tree build static files are not
- >> >> >> available and must be copied as well as both static and generated
- >> >> >> files for flavored build.
- >> >> >>
- >> >> >> So split the rules and variables. The name TRUNNER_EXTRA_GEN_FILES
- >> >> >> is chosen in analogy to TEST_GEN_* variants.
- >> >> >>
- >> >>
- >> >> > Can we keep them together but be smarter about what needs to
- >> >> > be copied based on source/target directories? I would really
- >> >> > like to not blow up all these rules.
- >> >>
- >> >> I can try, ok, I just find it a bit more clear. But it's good to
- >> >> get some input from kselftest about OOT build in general.
- >> 
- >> > I see no value in 'make install' of selftests/bpf
- >> > and since it's broken just remove that makefile target.
- >> 
- >> Some CI systems perform testing next stage after building were
- >> build tree is not available anymore. So it's in use at the
- >> moment.
+If I try loading a program through the following sequence:
 
- > such CI systems can do 'cp -r' then
+    bpf_object__open_file()
+    bpf_object__find_program_by_name()
+    bpf_program__load()
 
-It's a discussion for linux-kselftest@ (added).
+And the program require BTF (tp_btf), I get an unavoidable (to the best
+of my knowledge) segfault in the following code path:
 
-At the moment `make install` is generic kselftest functionality
-and since bpf is part of that infra it looks a bit strange to
-break it intentionally.
+    bpf_program__load()
+      libbpf_find_attach_btf_id()    <-- [0]
+        __find_vmlinx_btf_id()
+          find_btf_by_prefix_kind()
+            btf__find_by_name_kind() <-- boom (btf->nr_types)
 
--- 
-WBR,
-Yauheni Kaliuta
+because [0] passes prog->obj->btf_vmlinux which is still null. So the
+solution I'm proposing is exporting bpf_object__load_vmlinux_btf() and
+calling that on struct bpf_object before performing prog loads.
 
+[...]
+
+Thanks,
+Daniel
