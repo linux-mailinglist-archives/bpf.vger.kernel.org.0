@@ -2,659 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BA21E4B7E
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC5F1E4B84
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 19:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731156AbgE0RJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 13:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
+        id S1731175AbgE0RJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 13:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731158AbgE0RI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 13:08:56 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F73C03E97D
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:08:55 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id x1so28949983ejd.8
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:08:55 -0700 (PDT)
+        with ESMTP id S1731168AbgE0RJS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 13:09:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA71C08C5C3
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e1so24813261wrt.5
+        for <bpf@vger.kernel.org>; Wed, 27 May 2020 10:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JAYN5a0KJoeE6Dvs0d4kZPvueK4ogH0zi3w+lkTlt3U=;
-        b=ZzA+3ezNwa0vw+WJAixTidceDVlLqFSMivx7n0M34LgbIJKgymxptknYZ4/ldvMQtN
-         Ac3A20eS1g+0fgMbyV/BcTLK8IiL/m6Pu1POBHpbPA2MatfBBm8YKoA/9in9HFfljuwP
-         PJQrQlMzBJS+AnCvO22OID4yWPLaxEVsXsf7g=
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
+        b=Qtq4RcWnFirDNuZdCyVBt5tPFqmhvzYSUFkVjQjHkQBc6IkA+WeniGp5LmnT8OVVfB
+         UE9q1ImGpjLTJce6qJy6hzRVPiHuV5AmS4EJxRkfHzrKJ9QHTdXlw8wjGUt2+zXOLkZn
+         Se1DyUC2fMvdHcPa6G5vi/3874MVikhkzprOA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JAYN5a0KJoeE6Dvs0d4kZPvueK4ogH0zi3w+lkTlt3U=;
-        b=hBP+KjZPvZGUaulDk5qvzTyCOxvzKzJ1it17m6AC8zDxQSsggUasghdublllkYaFnt
-         KjPlt8wVVxarXrNJNVzpIYrWhSUzX6QDbgfMXRRkCaN6ycFvOlaSu24n4T70wR/BzgCs
-         Ih9kdhPs9PNLm4FKG5wfgAp4fIP073gd++ephytsoAmjH52+TB69YVmaucWWxrQgPFuz
-         bxsajqE/frHp1aDB/awLX9+24xnqgjW6RBpW96QhfIXbkeA3QJaINEiBHDKN7fLYO/sa
-         Hcq0KM2pitBpIc8kwwb0lfTCgVb+YopncZ6Q4eO/pFO8c+YS5rwpfUqLv67ev4dSJn5O
-         ez4A==
-X-Gm-Message-State: AOAM532UQDanYvbpnjZoMPTFaF8n6ztPhlnfKaUkfnszDzyR1aGtYeVH
-        HRRNKKreo1MykDo51xNWoV3OL5Pv1c8=
-X-Google-Smtp-Source: ABdhPJwjfRhpfMcg5gnuv0i2uUUdcLn70pQpwoe1Rrux735r2ZA7ZmTFV859eJycyXBDmReJhRY+Bg==
-X-Received: by 2002:a17:906:3944:: with SMTP id g4mr6905752eje.55.1590599333891;
-        Wed, 27 May 2020 10:08:53 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id g21sm2580528edw.9.2020.05.27.10.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2020 10:08:53 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH bpf-next 8/8] selftests/bpf: Add tests for attaching bpf_link to netns
-Date:   Wed, 27 May 2020 19:08:40 +0200
-Message-Id: <20200527170840.1768178-9-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200527170840.1768178-1-jakub@cloudflare.com>
-References: <20200527170840.1768178-1-jakub@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N7BcF2YbmFlnYsgsgnhG+rP4MiM9BYbCfVaOcHA0CmE=;
+        b=h3cv4SjHuuI1D1Za+8zruxxKIrElMNste/Y7FVB5xwjGQvx8QBxjLuIIdgcyUF9EqQ
+         P2Q0M+mNoyz9qh9/a2KfV1eQn/d+BM94Ueyxy/FFqG4QD+yRxWVEtA3FJjUPAUNcnlLP
+         H/vPnhAV2KtTzKjG9kO8wAhgR9dghi10mGssrHld9mWW43c+bu1nbizzKxCS89uCkJif
+         oUvWGsVX5U1yhCn0f7bw+Uqgh4NgchM8q8oexPI1AGqXmOPSouiYW7Nx4ytDICa36MB1
+         l28rwNK5ccBSonjzgX7rG1fJucc4k/H+X7NLxvqjrbGGvDalDM5MyUJ64ZW8z0j+lUf3
+         0aNg==
+X-Gm-Message-State: AOAM533KPfVR669Nk/M7q6IHRjKY5vAv7l7SYgdUAkvL7fDxlbRNfTzg
+        nsCisBpf/TfwOGB5wFBRJwU4ln5Lo+WZ/ehT8S9tRA==
+X-Google-Smtp-Source: ABdhPJzb9gs//rirYU8Ktj397bVqkAAUoWJzxzq0eYzi6ZVCA4steGmUtKbIrEXVz5r+7fo8CuNrI6m8cpFs8ONaSh0=
+X-Received: by 2002:a5d:4e88:: with SMTP id e8mr14770779wru.188.1590599356306;
+ Wed, 27 May 2020 10:09:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-3-kpsingh@chromium.org>
+ <20200527050823.GA31860@infradead.org> <20200527123840.GA12958@google.com> <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
+In-Reply-To: <f933521f-6370-c9ba-d662-703c1ebc7c03@schaufler-ca.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 27 May 2020 19:09:05 +0200
+Message-ID: <CACYkzJ6f0=r4h9sNqnXp_uBnHu=b6oGQFFGOv7H65UMOjtNKaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Implement bpf_local_storage for inodes
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the existing test case for flow dissector attaching to cover:
+On Wed, May 27, 2020 at 6:41 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>
+> On 5/27/2020 5:38 AM, KP Singh wrote:
+> > On 26-May 22:08, Christoph Hellwig wrote:
+> >> On Tue, May 26, 2020 at 06:33:34PM +0200, KP Singh wrote:
+> >>> From: KP Singh <kpsingh@google.com>
+> >>>
+> >>> Similar to bpf_local_storage for sockets, add local storage for inodes.
+> >>> The life-cycle of storage is managed with the life-cycle of the inode.
+> >>> i.e. the storage is destroyed along with the owning inode.
+> >>>
+> >>> Since, the intention is to use this in LSM programs, the destruction is
+> >>> done after security_inode_free in __destroy_inode.
+> >> NAK onbloating the inode structure.  Please find an out of line way
+> >> to store your information.
+> > The other alternative is to use lbs_inode (security blobs) and we can
+> > do this without adding fields to struct inode.
+>
+> This is the correct approach, and always has been. This isn't the
+> first ( or second :( ) case where the correct behavior for an LSM
+> has been pretty darn obvious, but you've taken a different approach
+> for no apparent reason.
+>
+> > Here is a rough diff (only illustrative, won't apply cleanly) of the
+> > changes needed to this patch:
+> >
+> >  https://gist.github.com/sinkap/1d213d17fb82a5e8ffdc3f320ec37d79
+>
+> To do just a little nit-picking, please use bpf_inode() instead of
+> bpf_inode_storage(). This is in keeping with the convention used by
+> the other security modules. Sticking with the existing convention
+> makes it easier for people (and tools) that work with multiple
+> security modules.
+>
+> > Once tracing has gets a whitelist based access to inode storage, I
+> > guess it, too, can use bpf_local_storage for inodes
+>
+> Only within the BPF module. Your sentence above is slightly garbled,
+> so I'm not really sure what you're saying, but if you're suggesting
+> that tracing code outside of the BPF security module can use the
+> BPF inode data, the answer is a resounding "no".
 
- - link creation,
- - link updates,
- - link info querying,
- - mixing links with direct prog attachment.
+This is why I wanted to add a separate pointer in struct inode so that
+we could share the implementation with tracing. bpf_local_storage
+is managed (per-program+per-type of storage) with separate BPF maps.
+So, it can be easily shared between two programs (and
+program types) without them clobbering over each other.
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- .../bpf/prog_tests/flow_dissector_reattach.c  | 500 +++++++++++++++++-
- 1 file changed, 471 insertions(+), 29 deletions(-)
+I guess we can have separate pointers for tracing,
+use the pointer in the security blob for the LSM and discuss this separately
+if and when we use this for tracing and keep this series patches scoped to
+BPF_PROG_TYPE_LSM.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-index 1f51ba66b98b..b702226fa762 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-@@ -11,6 +11,7 @@
- #include <fcntl.h>
- #include <sched.h>
- #include <stdbool.h>
-+#include <sys/stat.h>
- #include <unistd.h>
- 
- #include <linux/bpf.h>
-@@ -18,6 +19,8 @@
- 
- #include "test_progs.h"
- 
-+static int init_net = -1;
-+
- static bool is_attached(int netns)
- {
- 	__u32 cnt;
-@@ -32,7 +35,7 @@ static bool is_attached(int netns)
- 	return cnt > 0;
- }
- 
--static int load_prog(void)
-+static int load_prog(enum bpf_prog_type type)
- {
- 	struct bpf_insn prog[] = {
- 		BPF_MOV64_IMM(BPF_REG_0, BPF_OK),
-@@ -40,61 +43,494 @@ static int load_prog(void)
- 	};
- 	int fd;
- 
--	fd = bpf_load_program(BPF_PROG_TYPE_FLOW_DISSECTOR, prog,
--			      ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
-+	fd = bpf_load_program(type, prog, ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
- 	if (CHECK_FAIL(fd < 0))
- 		perror("bpf_load_program");
- 
- 	return fd;
- }
- 
--static void do_flow_dissector_reattach(void)
-+static void test_prog_attach_prog_attach(int netns, int prog1, int prog2)
- {
--	int prog_fd[2] = { -1, -1 };
- 	int err;
- 
--	prog_fd[0] = load_prog();
--	if (prog_fd[0] < 0)
--		return;
--
--	prog_fd[1] = load_prog();
--	if (prog_fd[1] < 0)
--		goto out_close;
--
--	err = bpf_prog_attach(prog_fd[0], 0, BPF_FLOW_DISSECTOR, 0);
-+	err = bpf_prog_attach(prog1, 0, BPF_FLOW_DISSECTOR, 0);
- 	if (CHECK_FAIL(err)) {
--		perror("bpf_prog_attach-0");
--		goto out_close;
-+		perror("bpf_prog_attach(prog1)");
-+		return;
- 	}
- 
- 	/* Expect success when attaching a different program */
--	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
-+	err = bpf_prog_attach(prog2, 0, BPF_FLOW_DISSECTOR, 0);
- 	if (CHECK_FAIL(err)) {
--		perror("bpf_prog_attach-1");
-+		perror("bpf_prog_attach(prog2) #1");
- 		goto out_detach;
- 	}
- 
- 	/* Expect failure when attaching the same program twice */
--	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
-+	err = bpf_prog_attach(prog2, 0, BPF_FLOW_DISSECTOR, 0);
- 	if (CHECK_FAIL(!err || errno != EINVAL))
--		perror("bpf_prog_attach-2");
-+		perror("bpf_prog_attach(prog2) #2");
- 
- out_detach:
- 	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
- 	if (CHECK_FAIL(err))
- 		perror("bpf_prog_detach");
-+}
-+
-+static void test_link_create_link_create(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int link1, link2;
-+
-+	link1 = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect failure creating link when another link exists */
-+	errno = 0;
-+	link2 = bpf_link_create(prog2, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link2 != -1 || errno != E2BIG))
-+		perror("bpf_prog_attach(prog2) expected E2BIG");
-+	if (link2 != -1)
-+		close(link2);
-+
-+	close(link1);
-+}
-+
-+static void test_prog_attach_link_create(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int err, link;
-+
-+	err = bpf_prog_attach(prog1, -1, BPF_FLOW_DISSECTOR, 0);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_prog_attach(prog1)");
-+		return;
-+	}
-+
-+	/* Expect failure creating link when prog attached */
-+	errno = 0;
-+	link = bpf_link_create(prog2, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link != -1 || errno != EBUSY))
-+		perror("bpf_link_create(prog2) expected EBUSY");
-+	if (link != -1)
-+		close(link);
-+
-+	err = bpf_prog_detach(-1, BPF_FLOW_DISSECTOR);
-+	if (CHECK_FAIL(err))
-+		perror("bpf_prog_detach");
-+}
-+
-+static void test_link_create_prog_attach(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int err, link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect failure attaching prog when link exists */
-+	errno = 0;
-+	err = bpf_prog_attach(prog2, -1, BPF_FLOW_DISSECTOR, 0);
-+	if (CHECK_FAIL(!err || errno != EBUSY))
-+		perror("bpf_prog_attach(prog2) expected EBUSY");
-+
-+	close(link);
-+}
-+
-+static void test_link_create_prog_detach(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int err, link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect failure detaching prog when link exists */
-+	errno = 0;
-+	err = bpf_prog_detach(-1, BPF_FLOW_DISSECTOR);
-+	if (CHECK_FAIL(!err || errno != EBUSY))
-+		perror("bpf_prog_detach");
-+
-+	close(link);
-+}
-+
-+static void test_prog_attach_detach_query(int netns, int prog1, int prog2)
-+{
-+	int err;
-+
-+	err = bpf_prog_attach(prog1, 0, BPF_FLOW_DISSECTOR, 0);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_prog_attach(prog1)");
-+		return;
-+	}
-+	if (CHECK_FAIL(!is_attached(netns)))
-+		return;
-+
-+	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_prog_detach");
-+		return;
-+	}
-+
-+	/* Expect no prog attached after successful detach */
-+	CHECK_FAIL(is_attached(netns));
-+}
-+
-+static void test_link_create_close_query(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+	if (CHECK_FAIL(!is_attached(netns)))
-+		return;
-+
-+	close(link);
-+	/* Expect no prog attached after closing last link FD */
-+	CHECK_FAIL(is_attached(netns));
-+}
-+
-+static void test_link_update_no_old_prog(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int err, link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect success replacing the prog when old prog not specified */
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(err))
-+		perror("bpf_link_update");
-+
-+	close(link);
-+}
-+
-+static void test_link_update_replace_old_prog(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int err, link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect success F_REPLACE and old prog specified to succeed */
-+	update_opts.flags = BPF_F_REPLACE;
-+	update_opts.old_prog_fd = prog1;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(err))
-+		perror("bpf_link_update");
-+
-+	close(link);
-+}
-+
-+static void test_link_update_invalid_opts(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int err, link;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect update to fail w/ old prog FD but w/o F_REPLACE*/
-+	errno = 0;
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = prog1;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EINVAL)) {
-+		perror("bpf_link_update expected EINVAL");
-+		goto out_close;
-+	}
-+
-+	/* Expect update to fail on old prog FD mismatch */
-+	errno = 0;
-+	update_opts.flags = BPF_F_REPLACE;
-+	update_opts.old_prog_fd = prog2;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EPERM)) {
-+		perror("bpf_link_update expected EPERM");
-+		goto out_close;
-+	}
-+
-+	/* Expect update to fail for invalid old prog FD */
-+	errno = 0;
-+	update_opts.flags = BPF_F_REPLACE;
-+	update_opts.old_prog_fd = -1;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EBADF)) {
-+		perror("bpf_link_update expected EBADF");
-+		goto out_close;
-+	}
-+
-+	/* Expect update to fail with invalid flags */
-+	errno = 0;
-+	update_opts.flags = BPF_F_ALLOW_MULTI;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EINVAL))
-+		perror("bpf_link_update expected EINVAL");
- 
- out_close:
--	close(prog_fd[1]);
--	close(prog_fd[0]);
-+	close(link);
-+}
-+
-+static void test_link_update_invalid_prog(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int err, link, prog3;
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	/* Expect failure when new prog FD is not valid */
-+	errno = 0;
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, -1, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EBADF)) {
-+		perror("bpf_link_update expected EINVAL");
-+		goto out_close_link;
-+	}
-+
-+	prog3 = load_prog(BPF_PROG_TYPE_SOCKET_FILTER);
-+	if (prog3 < 0)
-+		goto out_close_link;
-+
-+	/* Expect failure when new prog FD type doesn't match */
-+	errno = 0;
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, prog3, &update_opts);
-+	if (CHECK_FAIL(!err || errno != EINVAL))
-+		perror("bpf_link_update expected EINVAL");
-+
-+	close(prog3);
-+out_close_link:
-+	close(link);
-+}
-+
-+static void test_link_update_netns_gone(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int err, link, old_netns;
-+
-+	err = unshare(CLONE_NEWNET);
-+	if (CHECK_FAIL(err)) {
-+		perror("unshare(CLONE_NEWNET)");
-+		return;
-+	}
-+
-+	old_netns = netns;
-+	netns = open("/proc/self/ns/net", O_RDONLY);
-+	if (CHECK_FAIL(netns < 0)) {
-+		perror("open(/proc/self/ns/net");
-+		setns(old_netns, CLONE_NEWNET);
-+		return;
-+	}
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	close(netns);
-+	err = setns(old_netns, CLONE_NEWNET);
-+	if (CHECK_FAIL(err)) {
-+		perror("setns(CLONE_NEWNET)");
-+		close(link);
-+		return;
-+	}
-+
-+	/* Expect failure when netns destroyed */
-+	errno = 0;
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(!err || errno != ENOLINK))
-+		perror("bpf_link_update");
-+
-+	close(link);
-+}
-+
-+static void test_link_get_info(int netns, int prog1, int prog2)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, create_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	struct bpf_prog_info prog1_info = {};
-+	struct bpf_prog_info prog2_info = {};
-+	struct bpf_link_info link_info1 = {};
-+	struct bpf_link_info link_info2 = {};
-+	struct stat netns_stat = {};
-+	unsigned int info_len;
-+	int err, link;
-+
-+	err = fstat(netns, &netns_stat);
-+	if (CHECK_FAIL(err)) {
-+		perror("stat(netns)");
-+		return;
-+	}
-+
-+	info_len = sizeof(prog1_info);
-+	err = bpf_obj_get_info_by_fd(prog1, &prog1_info, &info_len);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_obj_get_info_by_fd(prog1)");
-+		return;
-+	}
-+	CHECK_FAIL(info_len != sizeof(prog1_info));
-+
-+	info_len = sizeof(prog2_info);
-+	err = bpf_obj_get_info_by_fd(prog2, &prog2_info, &info_len);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_obj_get_info_by_fd(prog1)");
-+		return;
-+	}
-+	CHECK_FAIL(info_len != sizeof(prog2_info));
-+
-+	link = bpf_link_create(prog1, netns, BPF_FLOW_DISSECTOR, &create_opts);
-+	if (CHECK_FAIL(link < 0)) {
-+		perror("bpf_link_create(prog1)");
-+		return;
-+	}
-+
-+	info_len = sizeof(link_info1);
-+	err = bpf_obj_get_info_by_fd(link, &link_info1, &info_len);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_obj_get_info");
-+		goto out_close;
-+	}
-+	CHECK_FAIL(info_len != sizeof(link_info1));
-+
-+	/* Expect link info to be sane and match prog and netns details */
-+	CHECK_FAIL(link_info1.type != BPF_LINK_TYPE_NETNS);
-+	CHECK_FAIL(link_info1.id == 0);
-+	CHECK_FAIL(link_info1.prog_id != prog1_info.id);
-+	CHECK_FAIL(link_info1.netns.netns_ino != netns_stat.st_ino);
-+	CHECK_FAIL(link_info1.netns.attach_type != BPF_FLOW_DISSECTOR);
-+
-+	update_opts.flags = 0;
-+	update_opts.old_prog_fd = 0;
-+	err = bpf_link_update(link, prog2, &update_opts);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_link_update(prog2)");
-+		goto out_close;
-+	}
-+
-+	info_len = sizeof(link_info2);
-+	err = bpf_obj_get_info_by_fd(link, &link_info2, &info_len);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_obj_get_info");
-+		goto out_close;
-+	}
-+	CHECK_FAIL(info_len != sizeof(link_info2));
-+
-+	/* Expect no info change after update except in prog id */
-+	CHECK_FAIL(link_info2.type != BPF_LINK_TYPE_NETNS);
-+	CHECK_FAIL(link_info2.id != link_info1.id);
-+	CHECK_FAIL(link_info2.prog_id != prog2_info.id);
-+	CHECK_FAIL(link_info2.netns.netns_ino != netns_stat.st_ino);
-+	CHECK_FAIL(link_info2.netns.attach_type != BPF_FLOW_DISSECTOR);
-+
-+out_close:
-+	close(link);
-+}
-+
-+static void run_tests(int netns)
-+{
-+	struct test {
-+		const char *test_name;
-+		void (*test_func)(int netns, int prog1, int prog2);
-+	} tests[] = {
-+		{ "prog attach, prog attach",
-+		  test_prog_attach_prog_attach },
-+		{ "link create, link create",
-+		  test_link_create_link_create },
-+		{ "prog attach, link create",
-+		  test_prog_attach_link_create },
-+		{ "link create, prog attach",
-+		  test_link_create_prog_attach },
-+		{ "link create, prog detach",
-+		  test_link_create_prog_detach },
-+		{ "prog attach, detach, query",
-+		  test_prog_attach_detach_query },
-+		{ "link create, close, query",
-+		  test_link_create_close_query },
-+		{ "link update no old prog",
-+		  test_link_update_no_old_prog },
-+		{ "link update with replace old prog",
-+		  test_link_update_replace_old_prog },
-+		{ "link update invalid opts",
-+		  test_link_update_invalid_opts },
-+		{ "link update invalid prog",
-+		  test_link_update_invalid_prog },
-+		{ "link update netns gone",
-+		  test_link_update_netns_gone },
-+		{ "link get info",
-+		  test_link_get_info },
-+	};
-+	int i, progs[2] = { -1, -1 };
-+	char test_name[80];
-+
-+	for (i = 0; i < ARRAY_SIZE(progs); i++) {
-+		progs[i] = load_prog(BPF_PROG_TYPE_FLOW_DISSECTOR);
-+		if (progs[i] < 0)
-+			goto out_close;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		snprintf(test_name, sizeof(test_name),
-+			 "flow dissector %s%s",
-+			 tests[i].test_name,
-+			 netns == init_net ? " (init_net)" : "");
-+		if (test__start_subtest(test_name))
-+			tests[i].test_func(netns, progs[0], progs[1]);
-+	}
-+out_close:
-+	for (i = 0; i < ARRAY_SIZE(progs); i++) {
-+		if (progs[i] != -1)
-+			CHECK_FAIL(close(progs[i]));
-+	}
- }
- 
- void test_flow_dissector_reattach(void)
- {
--	int init_net, self_net, err;
-+	int err, new_net, saved_net;
- 
--	self_net = open("/proc/self/ns/net", O_RDONLY);
--	if (CHECK_FAIL(self_net < 0)) {
-+	saved_net = open("/proc/self/ns/net", O_RDONLY);
-+	if (CHECK_FAIL(saved_net < 0)) {
- 		perror("open(/proc/self/ns/net");
- 		return;
- 	}
-@@ -118,7 +554,7 @@ void test_flow_dissector_reattach(void)
- 	}
- 
- 	/* First run tests in root network namespace */
--	do_flow_dissector_reattach();
-+	run_tests(init_net);
- 
- 	/* Then repeat tests in a non-root namespace */
- 	err = unshare(CLONE_NEWNET);
-@@ -126,15 +562,21 @@ void test_flow_dissector_reattach(void)
- 		perror("unshare(CLONE_NEWNET)");
- 		goto out_setns;
- 	}
--	do_flow_dissector_reattach();
-+	new_net = open("/proc/self/ns/net", O_RDONLY);
-+	if (CHECK_FAIL(new_net < 0)) {
-+		perror("open(/proc/self/ns/net");
-+		return;
-+	}
-+	run_tests(new_net);
-+	close(new_net);
- 
- out_setns:
- 	/* Move back to netns we started in. */
--	err = setns(self_net, CLONE_NEWNET);
-+	err = setns(saved_net, CLONE_NEWNET);
- 	if (CHECK_FAIL(err))
- 		perror("setns(/proc/self/ns/net)");
- 
- out_close:
- 	close(init_net);
--	close(self_net);
-+	close(saved_net);
- }
--- 
-2.25.4
+- KP
 
+>
+> >  if CONFIG_BPF_LSM
+> > is enabled. Does this sound reasonable to the BPF folks?
+> >
+> > - KP
+> >
+> >
+>
