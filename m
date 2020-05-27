@@ -2,95 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42601E3D8C
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 11:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F33B1E3EA4
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 12:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgE0J2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 05:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgE0J2c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 May 2020 05:28:32 -0400
-Received: from lore-desk.lan (unknown [151.48.148.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729478AbgE0KIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 06:08:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27157 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727888AbgE0KIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 06:08:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590574110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/pDmMX+qjUrBerXvv05Q4HiW8gwQv2m7btG8CnNotbc=;
+        b=RgZBwfsErgU48Vp6L/vmrhiU/IyszSCT1xgMGAn+FstLrxbBZmuukZJhOLS2fqsCdd0YuH
+        gFukrcQxa85dKinMnZHzZYmVKMTgHJ9dmyRL4kr/H+cyYaKr0u0umY5ZBkpQFdvqKowjIp
+        5dpMLdHZ7Ng7OEeYfyn8g4Smj5/dVEE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-h-pncdU-P8aH_e06pKZMsw-1; Wed, 27 May 2020 06:08:26 -0400
+X-MC-Unique: h-pncdU-P8aH_e06pKZMsw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E70A20890;
-        Wed, 27 May 2020 09:28:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590571712;
-        bh=NCIcF/aN6YMziToxCMz9vHqC8BzCusF3Ikf1iEZXrP0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YEEPhdZ+avzBIFB/R3U5P9UMMBhEwEjXjbbO+dAdoVjJ2ORsv2RfMAAC3fQSc4Dpg
-         DHa6aZ7uvvjz/rtO/UkUn76Y0N6eSYqSB3opz0npaZqePm9xIvLULNtJVxFezXBC17
-         lH/6M99SjoILImYM/Ow6jA1awjaqNq5drvnspE+Y=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     ast@kernel.org, davem@davemloft.net, brouer@redhat.com,
-        daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
-        dsahern@kernel.org, toshiaki.makita1@gmail.com
-Subject: [PATCH v2 bpf-next] xdp: introduce convert_to_xdp_buff utility routine
-Date:   Wed, 27 May 2020 11:28:03 +0200
-Message-Id: <80a0128d78f6c77210a8cccf7c5a78f53c45e7d3.1590571528.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50A68835B41;
+        Wed, 27 May 2020 10:08:25 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 038187A1E1;
+        Wed, 27 May 2020 10:08:16 +0000 (UTC)
+Date:   Wed, 27 May 2020 12:08:15 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        davem@davemloft.net, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
+        toshiaki.makita1@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next] xdp: introduce convert_to_xdp_buff utility
+ routine
+Message-ID: <20200527120815.4222e00d@carbon>
+In-Reply-To: <80a0128d78f6c77210a8cccf7c5a78f53c45e7d3.1590571528.git.lorenzo@kernel.org>
+References: <80a0128d78f6c77210a8cccf7c5a78f53c45e7d3.1590571528.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce convert_to_xdp_buff utility routine to initialize xdp_buff
-fields from xdp_frames ones. Rely on convert_to_xdp_buff in veth xdp
-code
+On Wed, 27 May 2020 11:28:03 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
-Changes since v1:
-- rely on frame->data pointer to compute xdp->data_hard_start one
----
- drivers/net/veth.c |  6 +-----
- include/net/xdp.h  | 10 ++++++++++
- 2 files changed, 11 insertions(+), 5 deletions(-)
+> Introduce convert_to_xdp_buff utility routine to initialize xdp_buff
+> fields from xdp_frames ones. Rely on convert_to_xdp_buff in veth xdp
+> code
+> 
+> Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+> Changes since v1:
+> - rely on frame->data pointer to compute xdp->data_hard_start one
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index b586d2fa5551..9f91e79b7823 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -575,11 +575,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
- 		struct xdp_buff xdp;
- 		u32 act;
- 
--		xdp.data_hard_start = hard_start;
--		xdp.data = frame->data;
--		xdp.data_end = frame->data + frame->len;
--		xdp.data_meta = frame->data - frame->metasize;
--		xdp.frame_sz = frame->frame_sz;
-+		convert_to_xdp_buff(frame, &xdp);
- 		xdp.rxq = &rq->xdp_rxq;
- 
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 90f11760bd12..df99d5d267b2 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -106,6 +106,16 @@ void xdp_warn(const char *msg, const char *func, const int line);
- 
- struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
- 
-+static inline
-+void convert_to_xdp_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-+{
-+	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
-+	xdp->data = frame->data;
-+	xdp->data_end = frame->data + frame->len;
-+	xdp->data_meta = frame->data - frame->metasize;
-+	xdp->frame_sz = frame->frame_sz;
-+}
-+
- /* Convert xdp_buff to xdp_frame */
- static inline
- struct xdp_frame *convert_to_xdp_frame(struct xdp_buff *xdp)
+LGTM
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
 -- 
-2.26.2
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
