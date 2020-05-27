@@ -2,87 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B94B1E3B38
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 10:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF75F1E3C4E
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 10:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgE0IFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 04:05:42 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56763 "EHLO
+        id S2388112AbgE0ImN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 04:42:13 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54495 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729367AbgE0IFl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 May 2020 04:05:41 -0400
+        by vger.kernel.org with ESMTP id S2387929AbgE0ImN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 May 2020 04:42:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590566740;
+        s=mimecast20190719; t=1590568932;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iv61hiKMRdE+binuenpMGOmIDwOOgnaGDNF59OZgFNw=;
-        b=NHrh6dpz40bAkUrQG1thQhWXSWeGyGyk7SLEORNTL+VnEOBGxWSNa/CpMnRgg0+Gvquci9
-        fo76oBU3ZJnQ3rcUVapYOwIdlUCujel+lWSQ33hJ6Ak4xCP7a0iLRPZd48HWA7+Tu8xQPG
-        vCawv3CZm/lQvWHAaJltIKfxKuUZRQg=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-APUhzAX-OP-yDYWvjuY_cQ-1; Wed, 27 May 2020 04:05:37 -0400
-X-MC-Unique: APUhzAX-OP-yDYWvjuY_cQ-1
-Received: by mail-ot1-f72.google.com with SMTP id l26so3208534otr.14
-        for <bpf@vger.kernel.org>; Wed, 27 May 2020 01:05:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iv61hiKMRdE+binuenpMGOmIDwOOgnaGDNF59OZgFNw=;
-        b=e6HDLkmfrTC0ff48aakNYGA9VMmeb7MLYu4rDEVPcjIuCTsy0fjunme8OmIdSo4Y0L
-         bGaM6PpBHSq0lbz8MRZmBe1r/KhQaIsgpWGHZo7dNEQAcAQVpHmbQlfWZ4EgovIP25Oe
-         qRr/X9hMoSE6cbGlqGFOxZ+NinhUYg7skp+5wBFV09JZ/Ni4oUZYLKqdnVME9ognRunJ
-         y9UWiq0hn2hn6guxRyKC4qOVYaBVo9CUgvYWqQd8OYmFG8K65CV5WKSzzljCfo+ou6bw
-         T1qVk0ovlW0UNg7doOaKsMcdjU1t2ufPtE0ea9lmRJKRf//O45/wh4LI4fV2HsvOOqjh
-         RaCg==
-X-Gm-Message-State: AOAM533HeOzy0TwhFv4nN3jB8RMs2JSEmfzDliu+Hk0/dDeETokpjqoe
-        gM6seL8vgdCt7RCgwW/+1pzI+qfbtb0zVKBwshyYRj1sAhg13l4ZmJ0dlZkJoBZCwEVhsi+/bin
-        L5oGlOdVMrBZiczIYleNglqSfEwdb
-X-Received: by 2002:a4a:3790:: with SMTP id r138mr2175322oor.81.1590566736950;
-        Wed, 27 May 2020 01:05:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9cK1fII07jm9d1oAGLySP1vgu/XtruBGCfr+FfHNisYPVjdJRz45yDq/CDrOf06VCe/xxR8yWdn75OjyUWoM=
-X-Received: by 2002:a4a:3790:: with SMTP id r138mr2175298oor.81.1590566736701;
- Wed, 27 May 2020 01:05:36 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cRnUD5oK5sLVCVcFqnFWAetwGl+ORfvUve2vTyNoLZU=;
+        b=grA6yVkHWnOlIukkJm6VOKhCTkTdubTkDHq0UNulyRtOuh/BNuEso3PDU2cXW2DvCqCo5W
+        89ZZBoee/MseNB6seft3yCAoldJOQgagrKc22uUHPdusv3FMydEJwUogsoIQlYvHcYquXB
+        3JzsaZ8h+QXDZ5iIFWbuXKtz7DUOrUU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284--Y7aSUawNriOQ3BKB4PO7g-1; Wed, 27 May 2020 04:42:10 -0400
+X-MC-Unique: -Y7aSUawNriOQ3BKB4PO7g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 195D8107ACF3;
+        Wed, 27 May 2020 08:42:09 +0000 (UTC)
+Received: from ebuild.redhat.com (ovpn-112-147.ams2.redhat.com [10.36.112.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 615E35D9E5;
+        Wed, 27 May 2020 08:42:04 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Subject: [PATCH bpf-next] libbpf: fix perf_buffer__free() API for sparse allocs
+Date:   Wed, 27 May 2020 10:42:00 +0200
+Message-Id: <159056888305.330763.9684536967379110349.stgit@ebuild>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-References: <20200522041310.233185-1-yauheni.kaliuta@redhat.com>
- <xuny367so4k3.fsf@redhat.com> <CAEf4BzZd507Hyfu8GYxZfJ-Rc0GAs1UNCN0uBqX3kYS9sz-yDA@mail.gmail.com>
- <xunyv9kiou7w.fsf@redhat.com> <CAEf4Bzau5MWYqP1XfZzYVj6tf7Y9fmJRgjbO00DzOmJ_iGschg@mail.gmail.com>
- <xunyy2pdon4g.fsf@redhat.com>
-In-Reply-To: <xunyy2pdon4g.fsf@redhat.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Wed, 27 May 2020 11:05:20 +0300
-Message-ID: <CANoWsw=5gypPiHYHLr+iKCY3CUwAHoEN1MsFuZEMbgOB8uRSyQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] selftests/bpf: installation and out of tree build fixes
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:25 AM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
+In case the cpu_bufs are sparsely allocated they are not
+all free'ed. These changes will fix this.
 
-[...]
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+ tools/lib/bpf/libbpf.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
->  > My point is that by building in tree and then just copying
->  > everything under selftests/bpf directory to wherever you want
->  > to "install" it would just work. And won't require
->  > complicating already complicated Makefile. Any problem with
->  > such approach?
->
-> I understand. I see only wasting of space as a problem, but
-> should check.
->
-
-Well, it messes up with the lib.mk functionality. There must be
-explicit was for customization, like it's done with OVERRIDE_TARGETS.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 5d60de6fd818..74d967619dcf 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8137,9 +8137,12 @@ void perf_buffer__free(struct perf_buffer *pb)
+ 	if (!pb)
+ 		return;
+ 	if (pb->cpu_bufs) {
+-		for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
++		for (i = 0; i < pb->cpu_cnt; i++) {
+ 			struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
+ 
++			if (!cpu_buf)
++				continue;
++
+ 			bpf_map_delete_elem(pb->map_fd, &cpu_buf->map_key);
+ 			perf_buffer__free_cpu_buf(pb, cpu_buf);
+ 		}
 
