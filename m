@@ -2,78 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF75F1E3C4E
-	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 10:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42601E3D8C
+	for <lists+bpf@lfdr.de>; Wed, 27 May 2020 11:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388112AbgE0ImN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 May 2020 04:42:13 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54495 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387929AbgE0ImN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 May 2020 04:42:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590568932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cRnUD5oK5sLVCVcFqnFWAetwGl+ORfvUve2vTyNoLZU=;
-        b=grA6yVkHWnOlIukkJm6VOKhCTkTdubTkDHq0UNulyRtOuh/BNuEso3PDU2cXW2DvCqCo5W
-        89ZZBoee/MseNB6seft3yCAoldJOQgagrKc22uUHPdusv3FMydEJwUogsoIQlYvHcYquXB
-        3JzsaZ8h+QXDZ5iIFWbuXKtz7DUOrUU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284--Y7aSUawNriOQ3BKB4PO7g-1; Wed, 27 May 2020 04:42:10 -0400
-X-MC-Unique: -Y7aSUawNriOQ3BKB4PO7g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728094AbgE0J2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 May 2020 05:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726761AbgE0J2c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 May 2020 05:28:32 -0400
+Received: from lore-desk.lan (unknown [151.48.148.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 195D8107ACF3;
-        Wed, 27 May 2020 08:42:09 +0000 (UTC)
-Received: from ebuild.redhat.com (ovpn-112-147.ams2.redhat.com [10.36.112.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 615E35D9E5;
-        Wed, 27 May 2020 08:42:04 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next] libbpf: fix perf_buffer__free() API for sparse allocs
-Date:   Wed, 27 May 2020 10:42:00 +0200
-Message-Id: <159056888305.330763.9684536967379110349.stgit@ebuild>
-User-Agent: StGit/0.21
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E70A20890;
+        Wed, 27 May 2020 09:28:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590571712;
+        bh=NCIcF/aN6YMziToxCMz9vHqC8BzCusF3Ikf1iEZXrP0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YEEPhdZ+avzBIFB/R3U5P9UMMBhEwEjXjbbO+dAdoVjJ2ORsv2RfMAAC3fQSc4Dpg
+         DHa6aZ7uvvjz/rtO/UkUn76Y0N6eSYqSB3opz0npaZqePm9xIvLULNtJVxFezXBC17
+         lH/6M99SjoILImYM/Ow6jA1awjaqNq5drvnspE+Y=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     ast@kernel.org, davem@davemloft.net, brouer@redhat.com,
+        daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org, toshiaki.makita1@gmail.com
+Subject: [PATCH v2 bpf-next] xdp: introduce convert_to_xdp_buff utility routine
+Date:   Wed, 27 May 2020 11:28:03 +0200
+Message-Id: <80a0128d78f6c77210a8cccf7c5a78f53c45e7d3.1590571528.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In case the cpu_bufs are sparsely allocated they are not
-all free'ed. These changes will fix this.
+Introduce convert_to_xdp_buff utility routine to initialize xdp_buff
+fields from xdp_frames ones. Rely on convert_to_xdp_buff in veth xdp
+code
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- tools/lib/bpf/libbpf.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Changes since v1:
+- rely on frame->data pointer to compute xdp->data_hard_start one
+---
+ drivers/net/veth.c |  6 +-----
+ include/net/xdp.h  | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5d60de6fd818..74d967619dcf 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8137,9 +8137,12 @@ void perf_buffer__free(struct perf_buffer *pb)
- 	if (!pb)
- 		return;
- 	if (pb->cpu_bufs) {
--		for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
-+		for (i = 0; i < pb->cpu_cnt; i++) {
- 			struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index b586d2fa5551..9f91e79b7823 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -575,11 +575,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 		struct xdp_buff xdp;
+ 		u32 act;
  
-+			if (!cpu_buf)
-+				continue;
+-		xdp.data_hard_start = hard_start;
+-		xdp.data = frame->data;
+-		xdp.data_end = frame->data + frame->len;
+-		xdp.data_meta = frame->data - frame->metasize;
+-		xdp.frame_sz = frame->frame_sz;
++		convert_to_xdp_buff(frame, &xdp);
+ 		xdp.rxq = &rq->xdp_rxq;
+ 
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 90f11760bd12..df99d5d267b2 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -106,6 +106,16 @@ void xdp_warn(const char *msg, const char *func, const int line);
+ 
+ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
+ 
++static inline
++void convert_to_xdp_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
++{
++	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
++	xdp->data = frame->data;
++	xdp->data_end = frame->data + frame->len;
++	xdp->data_meta = frame->data - frame->metasize;
++	xdp->frame_sz = frame->frame_sz;
++}
 +
- 			bpf_map_delete_elem(pb->map_fd, &cpu_buf->map_key);
- 			perf_buffer__free_cpu_buf(pb, cpu_buf);
- 		}
+ /* Convert xdp_buff to xdp_frame */
+ static inline
+ struct xdp_frame *convert_to_xdp_frame(struct xdp_buff *xdp)
+-- 
+2.26.2
 
