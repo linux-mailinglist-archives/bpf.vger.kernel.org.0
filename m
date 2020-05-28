@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D02B1E5729
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 08:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A467E1E5745
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 08:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgE1GCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 02:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
+        id S1727847AbgE1GIh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 02:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgE1GCO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 May 2020 02:02:14 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276AAC05BD1E;
-        Wed, 27 May 2020 23:02:14 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id f89so12417597qva.3;
-        Wed, 27 May 2020 23:02:14 -0700 (PDT)
+        with ESMTP id S1726791AbgE1GIh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 02:08:37 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB15C05BD1E;
+        Wed, 27 May 2020 23:08:36 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id k22so6585152qtm.6;
+        Wed, 27 May 2020 23:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=45G1LDDlVetLDg7OKETYjBt8f5wWe6ZxSy9i5esK7+k=;
-        b=eSAvTXgyfNSZ9Y8cbyeWStfJ/phhH+Y9IbQ+Rg4rAA/LHP67OnhbGbUgp2qnJzXe9K
-         mdCFPDEev5M4Sy5uk9Op/KZpvoCmj7VWxyZGMHqM8Jhmq+JJ2NuZtmQ+SXuj2lmYuzSq
-         Y8xRXQUmwJhL/eHI8Fo+EqhvSWST9v+j+w29hiVMFCDuzHSdRhW/rekintuRIH69KzMq
-         5bPHzENhje8lFy5/hC+gvbYFKVi/lVDFWb2HPEj1tLCW8EIqoxLQO4RIfDJsopFYVmZb
-         4pIfDPX4NYbYnR0rqHRhI1njko5FO3h1Vu5SyyYNuMyRN9zmua0tIzbjlmE36jMrMDjj
-         bWIA==
+        bh=E3nnwRQVmPx0RnVlPvOQUeyhAGklO+sO+VnesiuX/yY=;
+        b=ehN1cA5CXzDuLWvcTY/AxbJ6iAOMW29Ib02oHaEAuMU4dWWdolHD95EjfcYSqF8prQ
+         7Zk6fqp4bdUBYaYSr7rF8wPiut3+oi018XGym6GswrKlTpJJdldE4uGXBtlvQUodMsfU
+         6JSwYL20KixReKr31eLdXTLLI5ld3a/oyfwSi2vJPqTJzZBz6NtnmAmgtMCA7d7GR3+l
+         VDRDIyKG+BQp9IRwhrK3gkJgZW+bfsEqtVYfytr18ePy3ACxNKMsLk/IybbDAZZZxIwi
+         qYEpWe3N46BzcfMWGsrUJFTjvwm4iOCxGFtLZsp1PDfFnVfltp4GPu7kIXh+PZW8sp5C
+         ZYRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=45G1LDDlVetLDg7OKETYjBt8f5wWe6ZxSy9i5esK7+k=;
-        b=cQ1PdmPHEGd6SuHfR1xLzSQzMtXJW6m+mj5sdEc54dzMopkktA7trluAmxOcoBY0rg
-         l2Xm7ktBrkRG9LXGtYkTtmH9dTdZdZ780Y6Y+A0rt9rtp7zyXLVtSI0MR7BcMVmMD1Vk
-         aEjRQHQw++2xndUxrQfLUIuJO9jaiPM5z3V3kMrWQ43OM0U7Xb4DY5cYfnrSMKvsO4k+
-         xDoHeeIkfWEZfm0rERvJFxnuHP0MaxYmvwAImIGjgf3n+eFXOfp8hz0+kFYL42WHOnoQ
-         JcNC1QSzpqRKh5qgCUnkn4qnhIE77aFgOiQ30Gd+6o2cDBOLfqugpreI6ZXrnZ3dBLiQ
-         rcJA==
-X-Gm-Message-State: AOAM530PjZuFK/BpDttBLR6P9Xy9LUOowfsDgruu5kjFb3+yODapNVb3
-        KN4vy9WX3Gpp8SyDCGTivGL9/zinxK7792kS1Ww=
-X-Google-Smtp-Source: ABdhPJxqCMNd09Kwmt2fKA0rosttsoiX1WdfBD78oyhh+hXVs9be7HNQuRRMBnctkVSpYkaVJSKlEFacoJ5PiMpMg3g=
-X-Received: by 2002:a0c:a9c6:: with SMTP id c6mr1550426qvb.224.1590645732928;
- Wed, 27 May 2020 23:02:12 -0700 (PDT)
+        bh=E3nnwRQVmPx0RnVlPvOQUeyhAGklO+sO+VnesiuX/yY=;
+        b=fuCipaOuyT7UmRqcmgFDW4qt7YsO3ApodtG2zbCHZAhOjBNKPuEu/gP2jjQ1ZXKw30
+         SMuJdK8IbfzOdoUN1PGrRB5Hf6iIu6x3Y58FtGTgYdrT0OrcoK5kHC2M69KZcP3f5Jjo
+         c7y5xC49tx8rQjIA8vwQpa3i0DXFIBn+34CPcVtMDYg/66CEJ/4FnBCWIZPjPmyHiqmX
+         4gdMwvItk0xK8ujVvbPUNylqdgV5El4/q/9edfK6x1MLpC67Fj6LYpqjHjW6dfzXAL90
+         g5luBmwan8hunUU0WeHX88Jdf5CvtAUD5LENgVAqrI0TXZFMVlUzTZJqqth5+lkDOD+H
+         e1kg==
+X-Gm-Message-State: AOAM5309dml0xQaNHwg56nX/y/S7fo5xsDpFT0HQY/+bgnDBQ9G6TU/8
+        zeFHXrzPA3yHrshnjI9ETqe5crVaXdoZR2vOwz0=
+X-Google-Smtp-Source: ABdhPJzz3xU5n2qpLAOibXZAZbCTz0i+IvOfTNgATlTLwz42ikWywTzqgzucc5MtT5Ezvl45thcblGWmI605Fct7YWE=
+X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr1436840qta.141.1590646115344;
+ Wed, 27 May 2020 23:08:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-8-jakub@cloudflare.com>
-In-Reply-To: <20200527170840.1768178-8-jakub@cloudflare.com>
+References: <20200527170840.1768178-1-jakub@cloudflare.com> <20200527170840.1768178-9-jakub@cloudflare.com>
+In-Reply-To: <20200527170840.1768178-9-jakub@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 May 2020 23:02:02 -0700
-Message-ID: <CAEf4Bzb8cAOTc4G01020_Kd=z5p+XA+zqmtRvEj9JQsLw3-8sQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] bpftool: Support link show for
- netns-attached links
+Date:   Wed, 27 May 2020 23:08:24 -0700
+Message-ID: <CAEf4BzZEDArh8kL-mredwYb=GAOXEue=rGAjOaM0qGjj5RG6RA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: Add tests for attaching
+ bpf_link to netns
 To:     Jakub Sitnicki <jakub@cloudflare.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         kernel-team@cloudflare.com
@@ -62,64 +62,26 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, May 27, 2020 at 12:16 PM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Make `bpf link show` aware of new link type, that is links attached to
-> netns. When listing netns-attached links, display netns inode number as its
-> identifier and link attach type.
+> Extend the existing test case for flow dissector attaching to cover:
+>
+>  - link creation,
+>  - link updates,
+>  - link info querying,
+>  - mixing links with direct prog attachment.
 >
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  tools/bpf/bpftool/link.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->
-> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> index 670a561dc31b..83a17d62c4c3 100644
-> --- a/tools/bpf/bpftool/link.c
-> +++ b/tools/bpf/bpftool/link.c
-> @@ -17,6 +17,7 @@ static const char * const link_type_name[] = {
->         [BPF_LINK_TYPE_TRACING]                 = "tracing",
->         [BPF_LINK_TYPE_CGROUP]                  = "cgroup",
->         [BPF_LINK_TYPE_ITER]                    = "iter",
-> +       [BPF_LINK_TYPE_NETNS]                   = "netns",
->  };
->
->  static int link_parse_fd(int *argc, char ***argv)
-> @@ -122,6 +123,16 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
->                         jsonw_uint_field(json_wtr, "attach_type",
->                                          info->cgroup.attach_type);
->                 break;
-> +       case BPF_LINK_TYPE_NETNS:
-> +               jsonw_uint_field(json_wtr, "netns_ino",
-> +                                info->netns.netns_ino);
-> +               if (info->netns.attach_type < ARRAY_SIZE(attach_type_name))
-> +                       jsonw_string_field(json_wtr, "attach_type",
-> +                               attach_type_name[info->netns.attach_type]);
-> +               else
-> +                       jsonw_uint_field(json_wtr, "attach_type",
-> +                                        info->netns.attach_type);
-> +               break;
 
-Can you please extract this attach_type handling into a helper func,
-it's annoying to read so many repetitive if/elses. Same for plain-text
-variant below. Thanks!
+You are not using bpf_program__attach_netns() at all. Would be nice to
+actually use higher-level API here...
 
->         default:
->                 break;
->         }
-> @@ -190,6 +201,14 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
->                 else
->                         printf("attach_type %u  ", info->cgroup.attach_type);
->                 break;
-> +       case BPF_LINK_TYPE_NETNS:
-> +               printf("\n\tnetns_ino %u  ", info->netns.netns_ino);
-> +               if (info->netns.attach_type < ARRAY_SIZE(attach_type_name))
-> +                       printf("attach_type %s  ",
-> +                              attach_type_name[info->netns.attach_type]);
-> +               else
-> +                       printf("attach_type %u  ", info->netns.attach_type);
-> +               break;
->         default:
->                 break;
->         }
-> --
-> 2.25.4
+Also... what's up with people using CHECK_FAIL + perror instead of
+CHECK? Is CHECK being avoided for some reason or people are just not
+aware of it (which is strange, because CHECK was there before
+CHECK_FAIL)?
+
+>  .../bpf/prog_tests/flow_dissector_reattach.c  | 500 +++++++++++++++++-
+>  1 file changed, 471 insertions(+), 29 deletions(-)
 >
+
+[...]
