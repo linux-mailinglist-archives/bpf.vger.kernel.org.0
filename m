@@ -2,98 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646A11E657B
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 17:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48C11E6720
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 18:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403901AbgE1PG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 11:06:58 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39948 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403787AbgE1PG6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 May 2020 11:06:58 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jeK75-0001th-BD; Thu, 28 May 2020 17:06:31 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jeK74-000Ei1-Ul; Thu, 28 May 2020 17:06:30 +0200
-Subject: Re: [PATCH] powerpc/bpf: Enable bpf_probe_read{, str}() on powerpc
- again
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, bpf@vger.kernel.org
-References: <20200527122844.19524-1-pmladek@suse.com>
- <87ftbkkh00.fsf@mpe.ellerman.id.au> <20200528091351.GE3529@linux-b0ei>
- <87d06ojlib.fsf@mpe.ellerman.id.au>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <aace2e9e-c63c-a1a2-a1e1-c7a46904e8c5@iogearbox.net>
-Date:   Thu, 28 May 2020 17:06:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <87d06ojlib.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25826/Thu May 28 14:33:30 2020)
+        id S2404852AbgE1QJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 12:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404827AbgE1QJs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 12:09:48 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA77BC08C5C6
+        for <bpf@vger.kernel.org>; Thu, 28 May 2020 09:09:47 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id y25so503838qtb.6
+        for <bpf@vger.kernel.org>; Thu, 28 May 2020 09:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=l7izMIej695jtDHxNmO1NkELxUiXr1gE4xucCDUIPm4=;
+        b=vQSPm6UKNcJZfv+Y5nSEzSRQ+ZCC2hrUyqqqGRl6RnGVqdmRRolQ1bbxPfqLsaHCVJ
+         CADJhY7EtrpdJ+nsVZUDr6E+pVWGA5aG8SaAVJtxJUYotJGe9+TVZNLnA1bjO0UgMbRI
+         iW3tW6Q7DeNvkfG3aw8VIB7NWetu5Gs20EmjX//IWhHU6O2wWPfZylqKXDq49qNOT8NM
+         HXqm/zeT91CbqgKKwEWpW1Khy4n6fm5NhDpDvhlS04E8BX69m4K0CQQ31UWdUz0T4Dps
+         44/WXKTmjtCcgrly9B6TkypSzT9UVCRQZS9ccFzoCmdO+LLVdfTVAyqMKhVaN56trKf2
+         fNYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=l7izMIej695jtDHxNmO1NkELxUiXr1gE4xucCDUIPm4=;
+        b=VUJWNrYfgCALoYmwNi8lOgHoFd+A1r1m4W12MFvoa+8WAy7rsqOnFM4qzXO9zwSFxJ
+         923q8NQ3QjPrW+Ftufgwohb/tB5F+rKOFVvsm/r4b6z+QfGrtveeXhEinycqohg5uUAa
+         zhQdsMmmrIOeO0ydM22esdmb+rMKC7viE00GmT42GMjEzNB1cOEy51mZXEVark8IYAdJ
+         FbE1pli1WdW3QwzyZ0ia9voKc9qemTuvhZtxGP3XiAvPlOgi9JHdPmOXFNL2JN7xqY8T
+         WxDeLA/wN3/8UA06sTH7u+o0pmFb1P86BFMe0CvOhKBXKL6OrDQ0RdDB/I4OFdOOJeYb
+         vyBA==
+X-Gm-Message-State: AOAM531KgoCo8mxe5qW2aFzp5B4BqQ6HBczoSrpXJhMiixGQ4Sy34Owv
+        2ZERozXklSBR3KGF21lDwqCvfEI=
+X-Google-Smtp-Source: ABdhPJxL4q98bQJFae2QsNI+B0JMMlsleqWKuc5RO8AxECU+QolvkoeIFQJH+VO4UZqDxgTjmYIiqyY=
+X-Received: by 2002:a0c:a1e3:: with SMTP id e90mr3945555qva.187.1590682187088;
+ Thu, 28 May 2020 09:09:47 -0700 (PDT)
+Date:   Thu, 28 May 2020 09:09:45 -0700
+In-Reply-To: <87r1v42ue8.fsf@cloudflare.com>
+Message-Id: <20200528160945.GD57268@google.com>
+Mime-Version: 1.0
+References: <20200527170840.1768178-1-jakub@cloudflare.com>
+ <20200527170840.1768178-6-jakub@cloudflare.com> <20200527205300.GC57268@google.com>
+ <87r1v42ue8.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next 5/8] bpf: Add link-based BPF program attachment
+ to network namespace
+From:   sdf@google.com
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/28/20 2:23 PM, Michael Ellerman wrote:
-> Petr Mladek <pmladek@suse.com> writes:
->> On Thu 2020-05-28 11:03:43, Michael Ellerman wrote:
->>> Petr Mladek <pmladek@suse.com> writes:
->>>> The commit 0ebeea8ca8a4d1d453a ("bpf: Restrict bpf_probe_read{, str}() only
->>>> to archs where they work") caused that bpf_probe_read{, str}() functions
->>>> were not longer available on architectures where the same logical address
->>>> might have different content in kernel and user memory mapping. These
->>>> architectures should use probe_read_{user,kernel}_str helpers.
->>>>
->>>> For backward compatibility, the problematic functions are still available
->>>> on architectures where the user and kernel address spaces are not
->>>> overlapping. This is defined CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
->>>>
->>>> At the moment, these backward compatible functions are enabled only
->>>> on x86_64, arm, and arm64. Let's do it also on powerpc that has
->>>> the non overlapping address space as well.
->>>>
->>>> Signed-off-by: Petr Mladek <pmladek@suse.com>
->>>
->>> This seems like it should have a Fixes: tag and go into v5.7?
->>
->> Good point:
->>
->> Fixes: commit 0ebeea8ca8a4d1d4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
->>
->> And yes, it should ideally go into v5.7 either directly or via stable.
->>
->> Should I resend the patch with Fixes and
->> Cc: stable@vger.kernel.org #v45.7 lines, please?
-> 
-> If it goes into v5.7 then it doesn't need a Cc: stable, and I guess a
-> Fixes: tag is nice to have but not so important as it already mentions
-> the commit that caused the problem. So a resend probably isn't
-> necessary.
-> 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-> 
-> Daniel can you pick this up, or should I?
+On 05/28, Jakub Sitnicki wrote:
+> On Wed, May 27, 2020 at 10:53 PM CEST, sdf@google.com wrote:
+> > On 05/27, Jakub Sitnicki wrote:
+[..]
+> > Otherwise, those mutex_lock+rcu_read_lock are a bit confusing.
 
-Yeah I'll take it into bpf tree for v5.7.
-
-Thanks everyone,
-Daniel
+> Great idea, thanks. This is almost the same as what I was thinking
+> about. The only difference being that I want to also get ref to net, so
+> it doesn't go away while we continue outside of RCU read-side critical
+> section.
+That will also work, up to you. Thanks!
