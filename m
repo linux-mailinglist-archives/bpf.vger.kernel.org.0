@@ -2,154 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE6D1E57A0
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 08:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339F91E5833
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 09:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgE1Ggm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 02:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE1Ggl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 May 2020 02:36:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DD9C05BD1E;
-        Wed, 27 May 2020 23:36:41 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c185so2126678qke.7;
-        Wed, 27 May 2020 23:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0amOchmDsqcUzF+cWoGP0KCTy3ejb6HUTP67rmJQFu4=;
-        b=TN1aXrTltN3wuUmgN8WPiIyl3Rscu+nyF80CAslZc0t8t3ce2hMBf9mbz7CwVHrjI7
-         H7ILlhWIde7uQ3xR1YtnrIkluslLlBNIbsVijpZEy0KQGaOESBp0HgQK6uPA62j/BDQE
-         2EDC9eShDDKPyJM5m0sf6wWnO6wBCVaW3ggQXUlaGcMc2mm01EXOoeErjnpCYuwU0n70
-         otwm//I3FbTlCzy+m+m2rRfNI0kzVUK5Szy24as0l+WG5+lSag0RaoKQHyUul0GzaWa6
-         t01hHszZ4oPeBzTafRmE6PBCnRQV7yI6xuBEKUPza7BVL7ygNi7B6cmAv3i2Cf8wac4s
-         M8nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0amOchmDsqcUzF+cWoGP0KCTy3ejb6HUTP67rmJQFu4=;
-        b=TG1ZmjGKuTWzS+GaN0KhJD+fBmcPd0fupD7ODfwZ7Ce9AQ80fIY8n+vnFx4XrcTG3z
-         OjYUGmxzyJOj/FS7LjJfRzI0xU/Ze3tT0SO1ghdM5JG6XD4ct5qbc72ohCEC5P2zXnzn
-         WxscgQZX8WHAZmQloopveysnIee1uAPC2rf29CJhe35w+zB0miG/z0FAq48pHpbijkyi
-         PqB0YjsRnBD5zEua/iZhJApeF2OnouZLpTHbuRe0QcZwC6kK0hFvu6lU8d/kflnR/EDo
-         YsVn/nDx6AZ6cTixfjP6MVUZb+kEAwVYdSoBO1W27IYTuNMvW3KsFDrSw0R59iBDHmj8
-         hLKw==
-X-Gm-Message-State: AOAM530dSHF1eDjZyzWtWDugtD+rByRZzuy6busn/0tafl/kFDXt5UyH
-        VXpVD8KJWe7nTdlKUV1nLMwMxocFa+pZLfPJUa0=
-X-Google-Smtp-Source: ABdhPJxJuU/mMi4LoHKwCacMUXEHrhBvL3NRaAWWtZAb80jwxR1onoEbQTf6uvr/BY0h14+s2qBANITgBdoylqbwAwk=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr1354085qkk.92.1590647800486;
- Wed, 27 May 2020 23:36:40 -0700 (PDT)
+        id S1726026AbgE1HIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 03:08:54 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21871 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE1HIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 03:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590649733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ANit70hi2jTtVlz3lijP5XKnWXauKvYpmf5xFNjsp8Y=;
+        b=EMj1E1hF/v5Go6UK4E9lXlVcC0wnkFQiQnU7Gy4iSHoJJeF2uZnhuhJ0XDure9fVLsGl5W
+        DkQrhaHtPtROEF0zfbK/qIJYZnwyFXeuar2ObGqTztz+Y70OT8epI3akB1PcCfXhiK9qQh
+        UTIoQ5MLXawFuowFXs3b3Zhcv7KY1/k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-Ts51S8KYOtGmKQS7S8U2uQ-1; Thu, 28 May 2020 03:08:50 -0400
+X-MC-Unique: Ts51S8KYOtGmKQS7S8U2uQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EFCC80183C;
+        Thu, 28 May 2020 07:08:49 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7761B19D7B;
+        Thu, 28 May 2020 07:08:44 +0000 (UTC)
+Date:   Thu, 28 May 2020 09:08:42 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V2] bpf: Fix map_check_no_btf return code
+Message-ID: <20200528090842.6fb4e42d@carbon>
+In-Reply-To: <CAEf4Bzavr2hLv+Z0be0_uGRfPqNsBKAsQL7MpQUoXQX46rj4eA@mail.gmail.com>
+References: <159057923399.191121.11186124752660899399.stgit@firesoul>
+        <CAEf4Bzavr2hLv+Z0be0_uGRfPqNsBKAsQL7MpQUoXQX46rj4eA@mail.gmail.com>
 MIME-Version: 1.0
-References: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
-In-Reply-To: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 May 2020 23:36:29 -0700
-Message-ID: <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
-Subject: Re: [RFC PATCH] samples:bpf: introduce task detector
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 7:53 PM =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.=
-com> wrote:
->
-> This is a tool to trace the related schedule events of a
-> specified task, eg the migration, sched in/out, wakeup and
-> sleep/block.
->
-> The event was translated into sentence to be more readable,
-> by execute command 'task_detector -p 49870' we continually
-> tracing the schedule events related to 'top' like:
->
-> ----------------------------
-> 923455517688  CPU=3D23  PID=3D49870  COMM=3Dtop          ENQUEUE
-> 923455519633  CPU=3D23  PID=3D0      COMM=3DIDLE         PREEMPTED       =
-         1945ns
-> 923455519868  CPU=3D23  PID=3D49870  COMM=3Dtop          EXECUTE AFTER WA=
-ITED     2180ns
-> 923468279019  CPU=3D23  PID=3D49870  COMM=3Dtop          WAIT AFTER EXECU=
-TED      12ms
-> 923468279220  CPU=3D23  PID=3D128    COMM=3Dksoftirqd/23 PREEMPT
-> 923468283051  CPU=3D23  PID=3D128    COMM=3Dksoftirqd/23 DEQUEUE AFTER PR=
-EEMPTED  3831ns
-> 923468283216  CPU=3D23  PID=3D49870  COMM=3Dtop          EXECUTE AFTER WA=
-ITED     4197ns
-> 923476280180  CPU=3D23  PID=3D49870  COMM=3Dtop          WAIT AFTER EXECU=
-TED      7996us
-> 923476280350  CPU=3D23  PID=3D128    COMM=3Dksoftirqd/23 PREEMPT
-> 923476322029  CPU=3D23  PID=3D128    COMM=3Dksoftirqd/23 DEQUEUE AFTER PR=
-EEMPTED  41us
-> 923476322150  CPU=3D23  PID=3D49870  COMM=3Dtop          EXECUTE AFTER WA=
-ITED     41us
-> 923479726879  CPU=3D23  PID=3D49870  COMM=3Dtop          DEQUEUE AFTER EX=
-ECUTED   3404us
-> ----------------------------
->
-> This could be helpful on debugging the competition on CPU
-> resource, to find out who has stolen the CPU and how much
-> it stolen.
->
-> It can also tracing the syscall by append option -s.
->
-> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-> ---
+On Wed, 27 May 2020 15:59:46 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-I haven't looked through implementation thoroughly yet. But I have few
-general remarks.
+> But regardless, can you please reply on v1 thread why adding support
+> for BTF to these special maps (that do not support BTF right now)
+> won't be a better solution and won't work (as you claimed)?
 
-This looks like a useful and generic tool. I think it will get most
-attention and be most useful if it will be part of BCC tools. There is
-already a set of generic tools that use libbpf and CO-RE, see [0]. It
-feels like this belongs there.
+(I will reply here instead of on v1) and I have not claimed it won't
+work.  It will work, but we loose an opportunity if we just allow BTF
+across the board, without using it for per map validation.
 
-Some of the annoying parts (e.g., syscall name translation) is already
-generalized as part of syscount tool PR (to be hopefully merged soon),
-so you'll be able to save quite a lot of code with this. There is also
-a common build infra that takes care of things like vmlinux.h, which
-would provide definitions for all those xxx_args structs that you had
-to manually define.
+We have an opportunity with these special maps, that do not support BTF
+right now.  The value field in these maps are actually a UAPI and also
+kABI (Binary).  
 
-With CO-RE, it also will allow to compile this tool once and run it on
-many different kernels without recompilation. Please do take a look
-and submit a PR there, it will be a good addition to the toolkit (and
-will force you write a bit of README explaining use of this tool as
-well ;).
+Simply describing the struct with BTF is nice, but only helpful to make
+the end-user understand they binary layout.  On the kernel side we are
+still stuck with a kABI that can only be end-extended and size increased.
+I want to use BTF on the kernel-side to validate and enforce that user
+provided the expected "named" layout, and possibly reject it.  This
+gives us a layer that can provide a flexible kABI.  From my current
+understanding of the kernel side code that parse/walk BTF, I we can
+actually have flexible offsets (for e.g. structs) in the binary value,
+and remap those on the kernel side.  Enforcing a named layout when we
+enable BTF for these maps, will give us binary flexibility for future
+changes.  I hope you agree?
 
-As for the code itself, I haven't gone through it much, but please
-convert map definition syntax to BTF-defined one. The one you are
-using is a legacy one. Thanks!
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-  [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
-
->  samples/bpf/Makefile             |   3 +
->  samples/bpf/task_detector.h      | 382 +++++++++++++++++++++++++++++++++=
-++++++
->  samples/bpf/task_detector_kern.c | 329 +++++++++++++++++++++++++++++++++
->  samples/bpf/task_detector_user.c | 314 ++++++++++++++++++++++++++++++++
->  4 files changed, 1028 insertions(+)
->  create mode 100644 samples/bpf/task_detector.h
->  create mode 100644 samples/bpf/task_detector_kern.c
->  create mode 100644 samples/bpf/task_detector_user.c
->
-
-[...]
