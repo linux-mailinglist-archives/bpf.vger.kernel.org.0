@@ -2,81 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9590A1E5A5A
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 10:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0088B1E5A83
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 10:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgE1IGK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 04:06:10 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52003 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726330AbgE1IGK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 04:06:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590653169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/A7U1eX3P3zNwvhg2WSo20I7YadGS8TVdB6GLHa5NLI=;
-        b=hn6BPRIM7aZLeaGShLY2potEj4ZXB2VvrLzgwpS96rw+ynB9BN13qQBuSV0TDBgHU5UXFw
-        4ZfJTterAhEoVDQ6WUoQ3NZv3vx3CBUPvQ4gcDhoIgfk5crR/B7sP7QVin/stXEIGAjkiG
-        cmvrs4vOFzSfwHoY/wm4rA01vPukn2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-B_reQBTVMvavJnFNHpyU-w-1; Thu, 28 May 2020 04:06:05 -0400
-X-MC-Unique: B_reQBTVMvavJnFNHpyU-w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFCBD800D24;
-        Thu, 28 May 2020 08:06:03 +0000 (UTC)
-Received: from localhost (unknown [10.40.195.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 521C819D82;
-        Thu, 28 May 2020 08:05:59 +0000 (UTC)
-Date:   Thu, 28 May 2020 10:05:57 +0200
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     shuah <shuah@kernel.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726529AbgE1IOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 04:14:48 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49828 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726441AbgE1IOs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 04:14:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TzscnAD_1590653683;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TzscnAD_1590653683)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 May 2020 16:14:44 +0800
+Subject: Re: [RFC PATCH] samples:bpf: introduce task detector
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-Message-ID: <20200528100557.20489f04@redhat.com>
-In-Reply-To: <CAADnVQJhb0+KWY0=4WVKc8NQswDJ5pU7LW1dQE2TQuya0Pn0oA@mail.gmail.com>
-References: <xuny367so4k3.fsf@redhat.com>
-        <20200522081901.238516-1-yauheni.kaliuta@redhat.com>
-        <CAEf4BzZaCTDT6DcLYvyFr4RUUm4fFbyb743e1JrEp2DS69cbug@mail.gmail.com>
-        <xunya71uosvv.fsf@redhat.com>
-        <CAADnVQJUL9=T576jo29F_zcEd=C6_OiExaGbEup6F-mA01EKZQ@mail.gmail.com>
-        <xuny367lq1z1.fsf@redhat.com>
-        <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
-        <xunyh7w1nwem.fsf@redhat.com>
-        <CAADnVQKbKA_Yuj7v3c6fNi7gZ8z_q_hzX2ry9optEHE3B_iWcg@mail.gmail.com>
-        <ec5f6bd9-83e9-fc55-1885-18eee404d988@kernel.org>
-        <CAADnVQJhb0+KWY0=4WVKc8NQswDJ5pU7LW1dQE2TQuya0Pn0oA@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
+ <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <9a78329c-8bfe-2b83-b418-3de88e972c5a@linux.alibaba.com>
+Date:   Thu, 28 May 2020 16:14:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 27 May 2020 15:23:13 -0700, Alexei Starovoitov wrote:
-> I prefer to keep selftests/bpf install broken.
-> This forced marriage between kselftests and selftests/bpf
-> never worked well. I think it's a time to free them up from each other.
+Hi, Andrii
 
-Alexei, it would be great if you could cooperate with other people
-instead of pushing your own way. The selftests infrastructure was put
-to the kernel to have one place for testing. Inventing yet another way
-to add tests does not help anyone. You don't own the kernel. We're
-community, we should cooperate.
+Thanks for your comments :-)
 
- Jiri
+On 2020/5/28 下午2:36, Andrii Nakryiko wrote:
+[snip]
+>> ---
+> 
+> I haven't looked through implementation thoroughly yet. But I have few
+> general remarks.
+> 
+> This looks like a useful and generic tool. I think it will get most
+> attention and be most useful if it will be part of BCC tools. There is
+> already a set of generic tools that use libbpf and CO-RE, see [0]. It
+> feels like this belongs there.
+> 
+> Some of the annoying parts (e.g., syscall name translation) is already
+> generalized as part of syscount tool PR (to be hopefully merged soon),
+> so you'll be able to save quite a lot of code with this. There is also
+> a common build infra that takes care of things like vmlinux.h, which
+> would provide definitions for all those xxx_args structs that you had
+> to manually define.
+> 
+> With CO-RE, it also will allow to compile this tool once and run it on
+> many different kernels without recompilation. Please do take a look
+> and submit a PR there, it will be a good addition to the toolkit (and
+> will force you write a bit of README explaining use of this tool as
+> well ;).
 
+Aha, I used to think bcc only support python and cpp :-P
+
+I'll try to rework it and submit PR, I'm glad to know that you think
+this tool as a helpful one, we do solved some tough issue with it
+already.
+
+> 
+> As for the code itself, I haven't gone through it much, but please
+> convert map definition syntax to BTF-defined one. The one you are
+> using is a legacy one. Thanks!
+> 
+>   [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+
+Will check the example there :-)
+
+Regards,
+Michael Wang
+
+> 
+>>  samples/bpf/Makefile             |   3 +
+>>  samples/bpf/task_detector.h      | 382 +++++++++++++++++++++++++++++++++++++++
+>>  samples/bpf/task_detector_kern.c | 329 +++++++++++++++++++++++++++++++++
+>>  samples/bpf/task_detector_user.c | 314 ++++++++++++++++++++++++++++++++
+>>  4 files changed, 1028 insertions(+)
+>>  create mode 100644 samples/bpf/task_detector.h
+>>  create mode 100644 samples/bpf/task_detector_kern.c
+>>  create mode 100644 samples/bpf/task_detector_user.c
+>>
+> 
+> [...]
+> 
