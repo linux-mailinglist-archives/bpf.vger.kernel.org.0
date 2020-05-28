@@ -2,167 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638251E684E
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 19:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510B61E6844
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 19:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405309AbgE1RHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 13:07:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15882 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405353AbgE1RHb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 13:07:31 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04SH5VfE010223;
-        Thu, 28 May 2020 10:07:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=ttpklS1jCjfldmKIMBzGwqeDTHTIzeohYbM/31d+z+g=;
- b=QbD1JXduP0r4nMGPWf8zwmXRu8aBrgeZW7uldKNmq7oy/M3jXRmpQD92Go5kdrbaqxXE
- 8yyHFsWpQ3iRWN763uI9Zj9dVep+8EjyC9jsOHbQG0dP+R1qi9r3N4ZNxh0MzN0pScK2
- It+mkrOxS/vbDyM9YH3afv8LGXo2pqbNoSU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 319bqcuysr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 28 May 2020 10:07:08 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 28 May 2020 10:06:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ULHtXmn1HonriYbs4H6yqquPDEp+b+R0K+64dlsEjil+mt+pQflAnRw3cgzlFBtrzGDTNcA1p6P94vREsKDW0Sq19+DzztWhWPp7yYOtLC82Dl1fbN07bYHXkGcDTyi0palsRVgfqclxLIcA3D9fAUZbv+HYE5tI88zMocS8OnDJNbWztlFt9kC9+Iw20JFnyFfFVHzZFb63VNMsJQtJftAaSDbNVd6VzzZ3Iym1C3AxPk+pUO/HhZ4bc5nYmGYkTQ6fEgaQEoe2Pnzdwxl3sDYnocwjRL60x3qNwIMcthD/B/ZK7roVA2MpqB8TSc9EE2j4rN17yDjEAuSB/U1+zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ttpklS1jCjfldmKIMBzGwqeDTHTIzeohYbM/31d+z+g=;
- b=B1G+DUNq9r7tDrZKBsdH9BlIXfBIeRbyFvHkLT6Uf9wgHcMu4d+FGncHynzMhSnWfOHp6Xx+RpXK0ENF6Ozpl+pIgc2ctMA55WIs8+5/aG6FrwQ/idDISlcwrEw+GbCGKtorODdOTSnm0u5EICegCBY1j4lmfBQ682dv2gnDlQZRmUn5U+gkou7YLHeicBUt29pQHAApRqUTC9jq0/JCSxx9gLRNPDQV8l1IF+mQN8IPIfFtCdpKLJhAf75T8QORzkwUI8aL0TK0pdc0uQHTZBNDW+JlqIseeMszWY16t21xHjDIrZ8+zDVm3JAYZloJ2zpW1YcUgCi3zQt2XAwjzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ttpklS1jCjfldmKIMBzGwqeDTHTIzeohYbM/31d+z+g=;
- b=C2ieEJbYcf4YukfpLWYfoPd8zdL8qdsnp2k7DbSGBhaC1mGIEIyanvB4EvWnQqDsU17IxVaHLQCCH1DFvzHjJ3BzQGOXPejN1Qc/hDsmHlT4WZvMP1vbolxa8w6hdCK5x71/Vsk8CeR9sf9rRpmQxaLvprQVZEMqAJ7SdMi26h8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2901.namprd15.prod.outlook.com (2603:10b6:a03:b5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Thu, 28 May
- 2020 17:06:20 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3021.030; Thu, 28 May 2020
- 17:06:20 +0000
-Subject: Re: [PATCH 12/23] bpf: handle the compat string in
- bpf_trace_copy_string better
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S2405269AbgE1RHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 13:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405521AbgE1RHM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 13:07:12 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35120C08C5C7
+        for <bpf@vger.kernel.org>; Thu, 28 May 2020 10:07:12 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id i9so5881758ool.5
+        for <bpf@vger.kernel.org>; Thu, 28 May 2020 10:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MSYAXf0gH1R97AXlajHE5LTABlem3lPHGGzXxX7zQC8=;
+        b=MYYjYlTAOhQ1+b7SP+A2xe40exKwJ/+0EOjzdy2zmz8rGnhqKF8L/wf2eqHj83KZ9l
+         Jo6EFTajJkyIW54WpBbcTZC3HZP8Aez5Jm26HFZdFHYB513g1oLJIpHal00HXMngNaB+
+         HlvZvvpa4MFIXR9svkhixu5SxdcHGsVmB+3do=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MSYAXf0gH1R97AXlajHE5LTABlem3lPHGGzXxX7zQC8=;
+        b=Im/miO4gHPCEf6G+PIaCDGmYT8Bq0dUsXOu/gT0zmMBptv94N1J58Nqfds+TOSxGf4
+         1RJsMzb32Jdbcpa6H4y/jQE9LBi94I/AUk8NdwfVPePgHNMafDSj0zuzGg6MTwgmF+aC
+         +RrVUujZo8igEVULcWRKWtX9HbLy5P77oLBKPp5NXLyhWkdIS6j51PQZWKEkGIUrq+xC
+         EzKmXdwyGPEFe60t9pwaW+iUV/qoZmO/r0mSKaeO/ik03F8Ia/cjHYr4Kwk3ijJ3YuxB
+         RSfJ8f4hVCzRidN2RMzxJ/SOTCYB1W/LiC97M6ngMzNV+ucoKqQIXu2u3dt1I4vl2/6T
+         VYkg==
+X-Gm-Message-State: AOAM531WTUgPi6cPT4PdKLj+uajaCCvle6qJNjUa0PM2C6T3WEmyp1PL
+        d0vzwxBdS3udxM2zObRrlVce+Q==
+X-Google-Smtp-Source: ABdhPJzVGEG4NA8jcw9ZrJVD6PSwQ8zFUrVfjK/h9WyCT35b+tpc8nk3Go4NEEta5zP4jF8iSYu2Ug==
+X-Received: by 2002:a4a:9d42:: with SMTP id f2mr3310265ook.15.1590685631525;
+        Thu, 28 May 2020 10:07:11 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g10sm1060259otn.34.2020.05.28.10.07.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 May 2020 10:07:10 -0700 (PDT)
+Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Benc <jbenc@redhat.com>, shuah <shuah@kernel.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        <linux-parisc@vger.kernel.org>, <linux-um@lists.infradead.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20200521152301.2587579-1-hch@lst.de>
- <20200521152301.2587579-13-hch@lst.de>
- <20200527190432.e4af1fba00c13cb1421f5a37@linux-foundation.org>
- <2b64fae6-394c-c1e5-8963-c256f4284065@fb.com> <20200528043957.GA28494@lst.de>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a1aa26f4-8c0a-5f8a-8460-6d61f167702d@fb.com>
-Date:   Thu, 28 May 2020 10:06:17 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
-In-Reply-To: <20200528043957.GA28494@lst.de>
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <xunya71uosvv.fsf@redhat.com>
+ <CAADnVQJUL9=T576jo29F_zcEd=C6_OiExaGbEup6F-mA01EKZQ@mail.gmail.com>
+ <xuny367lq1z1.fsf@redhat.com>
+ <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
+ <xunyh7w1nwem.fsf@redhat.com>
+ <CAADnVQKbKA_Yuj7v3c6fNi7gZ8z_q_hzX2ry9optEHE3B_iWcg@mail.gmail.com>
+ <ec5f6bd9-83e9-fc55-1885-18eee404d988@kernel.org>
+ <CAADnVQJhb0+KWY0=4WVKc8NQswDJ5pU7LW1dQE2TQuya0Pn0oA@mail.gmail.com>
+ <20200528100557.20489f04@redhat.com> <20200528105631.GE3115014@kroah.com>
+ <20200528161437.x3e2ddxmj6nlhvv7@ast-mbp.dhcp.thefacebook.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <be0a24f4-8602-ba1b-6ca4-7308b01d7a48@linuxfoundation.org>
+Date:   Thu, 28 May 2020 11:07:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200528161437.x3e2ddxmj6nlhvv7@ast-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR04CA0020.namprd04.prod.outlook.com
- (2603:10b6:a03:217::25) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:454a) by BY3PR04CA0020.namprd04.prod.outlook.com (2603:10b6:a03:217::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Thu, 28 May 2020 17:06:19 +0000
-X-Originating-IP: [2620:10d:c090:400::5:454a]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 278fbe6b-98ee-444c-8673-08d80329716f
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2901:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2901B71907B4435B8A2226D8D38E0@BYAPR15MB2901.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0417A3FFD2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j+dC+D5XnjWBEwmX69PNibEbzdzeS//UupfgsW5iCfA/4BzJjnuRqUkGNa5HHwHohkAoXBoMLYcE1YPW0rtXDlvbcTLUzGRW5/Y6WfRvV5yDmCOT5p2jN1YVg2HIs7QtrGDWpcO97bvsjaPcsaXotfRBCscT1o5W54kYrpfeNT4/62ZU3jSNOClbPCPHUt26nU1qsjmzT3lArBxk/StGoBKsYoDYy3Xp74W9AT7mc9arwuf6rBGZ+crZbz+VZDK949fixOH/kxt5JMAwel5g1kFscLIQ1d+XfmO7kNuj0+Jp07verDvZU8qz+5cMl7iXAHmHSyPiXArsOY3YxoRdid9Uk7NRr+yqqB0PTs2Bsje1+b8+MM4TG3OfmmGFfLiSBWTZxZT8wqEpQjccyQe2m5iCXlJ7oL2k/masGX0UYg7IJgpN96gfcLdDJLZN3H5Bdpu5MKliakpXCaRMqirWFy1A0YjhKrBVT7PBBMac368=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(376002)(346002)(396003)(366004)(316002)(66946007)(8936002)(31686004)(6486002)(8676002)(478600001)(966005)(2906002)(16526019)(7416002)(6512007)(52116002)(2616005)(186003)(6916009)(86362001)(6506007)(36756003)(31696002)(53546011)(5660300002)(66556008)(54906003)(66476007)(4326008)(21314003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: G6TOGe79IZkCyKy+ZwRwltpLTkOoyiefOFATjdDt9FZ7qIKHS9nqr+S1nrVwldUmPloX4mp+HBXj2hgI3J/xbhqUtwKoSkvT05CNbxfUpOL74OGtKVAxQ88OSoMmbAt4K9NqBjoyu7WpTA5wIEcoWR7322cnrLoNY/qE4kHuHJfZZ4oB5AgdYW2QNQAOchYxGU8wz0EkSABXiFBN6XNS4vqIdT/yr/FtTcEkbsibQagPBgBlECWhw1zmM1mJb6zdUBm1ej2FCVkzu/rVlO9Rgu9jgulsD5qiytEa4UZ7XmqY+5dnfE5Fmh+L1nF8k4G8fHN5qM5TStZVta50kCz9BISbkmYifg2vh95yYW+cdQgb1PvqBoYygIzlhIef1CEdRzLZLuk6WTBK3WXy6rO/RIrHiM8KLFbcPMmqOn8ceTJ/f0waHhLetmujm8Y8Vl8/7iTJVgEOG5g5eqxN3xjXG564TSArKA/vMNHastVVWThWNg+FTRMW3V9o31Pjuek/Pf5gK5I6FVtyiYvZLp+ydQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 278fbe6b-98ee-444c-8673-08d80329716f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 17:06:20.7410
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bXZ/iBHo8JZOLnK0G2nipYyS7Q8UyWtDTAA/ELwEGBVm+PqR0S3DrFNOzm9Tmka5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2901
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-28_03:2020-05-28,2020-05-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=742 spamscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 adultscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005280119
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 5/27/20 9:39 PM, Christoph Hellwig wrote:
-> On Wed, May 27, 2020 at 07:26:30PM -0700, Yonghong Song wrote:
->>> --- a/kernel/trace/bpf_trace.c~xxx
->>> +++ a/kernel/trace/bpf_trace.c
->>> @@ -588,15 +588,22 @@ BPF_CALL_5(bpf_seq_printf, struct seq_fi
->>>    		}
->>>      		if (fmt[i] == 's') {
->>> +			void *unsafe_ptr;
->>> +
->>>    			/* try our best to copy */
->>>    			if (memcpy_cnt >= MAX_SEQ_PRINTF_MAX_MEMCPY) {
->>>    				err = -E2BIG;
->>>    				goto out;
->>>    			}
->>>    -			err = strncpy_from_unsafe(bufs->buf[memcpy_cnt],
->>> -						  (void *) (long) args[fmt_cnt],
->>> -						  MAX_SEQ_PRINTF_STR_LEN);
->>> +			unsafe_ptr = (void *)(long)args[fmt_cnt];
->>> +			if ((unsigned long)unsafe_ptr < TASK_SIZE) {
->>> +				err = strncpy_from_user_nofault(
->>> +					bufs->buf[memcpy_cnt], unsafe_ptr,
->>> +					MAX_SEQ_PRINTF_STR_LEN);
->>> +			} else {
->>> +				err = -EFAULT;
->>> +			}
+On 5/28/20 10:14 AM, Alexei Starovoitov wrote:
+> On Thu, May 28, 2020 at 12:56:31PM +0200, Greg KH wrote:
+>> On Thu, May 28, 2020 at 10:05:57AM +0200, Jiri Benc wrote:
+>>> On Wed, 27 May 2020 15:23:13 -0700, Alexei Starovoitov wrote:
+>>>> I prefer to keep selftests/bpf install broken.
+>>>> This forced marriage between kselftests and selftests/bpf
+>>>> never worked well. I think it's a time to free them up from each other.
+>>>
+>>> Alexei, it would be great if you could cooperate with other people
+>>> instead of pushing your own way. The selftests infrastructure was put
+>>> to the kernel to have one place for testing. Inventing yet another way
+>>> to add tests does not help anyone. You don't own the kernel. We're
+>>> community, we should cooperate.
 >>
->> This probably not right.
->> The pointer stored at args[fmt_cnt] is a kernel pointer,
->> but it could be an invalid address and we do not want to fault.
->> Not sure whether it exists or not, we should use
->> strncpy_from_kernel_nofault()?
+>> I agree, we rely on the infrastructure of the kselftests framework so
+>> that testing systems do not have to create "custom" frameworks to handle
+>> all of the individual variants that could easily crop up here.
+>>
+>> Let's keep it easy for people to run and use these tests, to not do so
+>> is to ensure that they are not used, which is the exact opposite goal of
+>> creating tests.
 > 
-> If you know it is a kernel pointer with this series it should be
-> strncpy_from_kernel_nofault.  But even before the series it should have
-> been strncpy_from_unsafe_strict.
+> Greg,
+> 
+> It is easy for people (bpf developers) to run and use the tests.
+> Every developer runs them before submitting patches.
+> New tests is a hard requirement for any new features.
+> Maintainers run them for every push.
+> 
+> What I was and will push back hard is when other people (not bpf developers)
+> come back with an excuse that some CI system has a hard time running these
+> tests. It's the problem of weak CI. That CI needs to be fixed. Not the tests.
+> The example of this is that we already have github/libbpf CI that runs
+> selftests/bpf just fine. Anyone who wants to do another CI are welcome to copy
+> paste what already works instead of burdening people (bpf developers) who run
+> and use existing tests. I frankly have no sympathy to folks who put their own
+> interest of their CI development in front of bpf community of developers.
+> The main job of CI is to help developers and maintainers.
+> Where helping means to not impose new dumb rules on developers because CI
+> framework is dumb. Fix CI instead.
+> 
 
-The use of strncpy_from_unsafe() mimics old bpf_trace_printk() 
-implementation which just changed to _strict version:
-https://lkml.org/lkml/2020/5/18/1309
+Here is what CI users are requesting:
 
-Agreed that we should change to strncpy_from_unsafe_strict().
-I can submit a patch for this.
+- ability to install bpf test with other selftests using kselftest
+   install. The common framework is in place and with minor changes
+   to bpf test Makefile, we can make this happen. Others and myself
+   are willing to work on this, so we can get bpf test coverage in
+   test rings.
 
-Thanks!
+- be able to build and run existing tests without breaking the test
+   build when new tests are added that have hard dependency on new
+   versions of tools (llvm etc.). This isn't such a novel idea. We
+   don't break kernel builds every single release and even when we
+   require newer compiler releases. Plan the new tests with the intent
+   to not break existing users and add new tests at the same time.
+   We use min rev and not bleeding edge as the requirement for kernel
+   build.
+
+Requiring test rings upgrade to new versions of llvm is unreasonable.
+It places undue burden on the admins to do this every single release
+(may be even every rc cycle)
+
+What is dumb about these requests and why is it not acceptable to just
+bpf when all other sub-systems keep adding tests continuously using the
+selftests framework so we can test the kernel better and our releases
+are of better quality.
+
+If you check the volume of tests that get added every release, you can
+easily see it isn't hard.
+
+Calling the needs of CI dumb is detrimental to kernel quality as these
+rings provide a very important function. Addressing their use-case helps
+get better test coverage for bpf and kernel areas that use bpf.
+
+thanks,
+-- Shuah
+
+
+
+
+
+
