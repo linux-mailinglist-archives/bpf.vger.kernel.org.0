@@ -2,303 +2,508 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E071E6E43
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 00:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533801E6E65
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 00:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436737AbgE1V77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 17:59:59 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42748 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436716AbgE1V7u (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 17:59:50 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04SLxWPH032763;
-        Thu, 28 May 2020 14:59:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=31KZyrW6KDH3s5lRZId+IbaWZtv1rGpGMC8gmli+6CI=;
- b=iMk1GaE3vIHV8FL9oY55qqoHxfdtP9taxLoXZBgM14YrJCZOYiYWQrDs0QG1Wgbk0+cK
- 0nzK6Zz2yWx5Ftazfsqmz7eGAor7+GJSHb27AcCaw5h3tjWe1P2rcbgtbQq8KzLgYc1g
- nbmKjPb3lotAznHwro3WTF+kJ6Eqs6IOIKk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 319bqcxg9t-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 28 May 2020 14:59:35 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 28 May 2020 14:58:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oGCSaRarrV1tnvH4tFGAcsyjzDwxWgOIusHnIFc77rxk+J0PeonEiPccQ51q4cZbQlJ7z1/pKXMFwlvqE/Oc5E84EKBJoFi/kZW9KxqxlsCNkveiQtuMpEnweCZUZ2uAeF9cVG5R+/jvFEOgvOAhNihLlBZPZRgX0P01uqx757VGIqaJ1Uu3LsXClCeBJ5SupTSpO8zodtI0ZuF/VujE/CnwGyl2+djT0lKr1PBEEJLxH5NPbiG8mgUPA5raK3M33i/uaBWdvupZcnlEJ/LpUXwY1Is67zzHzVgytHmxTITGUCL9HLwYrgTwYu/R4xnbl0pmBBliy0xneDlxQ7VIeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=31KZyrW6KDH3s5lRZId+IbaWZtv1rGpGMC8gmli+6CI=;
- b=ANVi3Sv45xGB2lSdve6vRvY8XJdN/2R0dtWLqbxiCb+q4U29n7lw0Te+Q7oluOdgCYTiH+FoOcPsR31bkonh70ySda8tttxHWvoSecCUNiMsvRKM6B9q9xEDq+nlxC5vJDpJvT/Vt2xFcc8YvYYAZWbiDw/jqV0z6ruXNfOmyEP5lN5/+YVr+8xOpit0cmS7ASYD/LqWiESFLDqcnCyGqavshy8H6tPki/O43otILuc7H77TRv5puZYUZSREvSY8GaX6POcIx9eYFmYZxu6zIjfuFrmzeZoIoy15LfW1EHSNTZNwQbbc1Z4U3kvq8vlMsmAXPBIH/i8xmCEaifZuvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=31KZyrW6KDH3s5lRZId+IbaWZtv1rGpGMC8gmli+6CI=;
- b=j5k2+ohWbBr+a2FEYKiPUwFOjjTRxrywDJ5spxT/4z0hmfSzMURfRl2f82REbQWR31NNO0nF6d9vAtqA/ew8KAVKjMqUK8OancfLqwd3ayoN4fphjDLa53yI8hkbeGSnkNclhFid96rRUWueakziSHF4EO/YM7IF6lJF5eUmXYc=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Thu, 28 May
- 2020 21:58:56 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3021.030; Thu, 28 May 2020
- 21:58:56 +0000
-Subject: Re: [PATCH bpf 1/2] bpf: fix a verifier issue when assigning 32bit
- reg states to 64bit ones
-To:     John Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-References: <20200528165043.1568623-1-yhs@fb.com>
- <20200528165043.1568695-1-yhs@fb.com>
- <5ed02d7214c39_1fea2b263a20e5b435@john-XPS-13-9370.notmuch>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <74b999c8-5e0b-7d82-8f45-83813f5b20fc@fb.com>
-Date:   Thu, 28 May 2020 14:58:54 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
-In-Reply-To: <5ed02d7214c39_1fea2b263a20e5b435@john-XPS-13-9370.notmuch>
+        id S2436845AbgE1WLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 18:11:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49796 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436844AbgE1WLm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 18:11:42 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jeQkT-0006fq-7p; Fri, 29 May 2020 00:11:37 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jeQkS-000CJf-To; Fri, 29 May 2020 00:11:36 +0200
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: implement BPF ring buffer and
+ verifier support for it
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+References: <20200526063255.1675186-1-andriin@fb.com>
+ <20200526063255.1675186-2-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <15c1dd7f-b24b-6482-bdf0-f80b79280e91@iogearbox.net>
+Date:   Fri, 29 May 2020 00:11:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200526063255.1675186-2-andriin@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0024.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::37) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1908] (2620:10d:c090:400::5:95a7) by BYAPR02CA0024.namprd02.prod.outlook.com (2603:10b6:a02:ee::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.18 via Frontend Transport; Thu, 28 May 2020 21:58:56 +0000
-X-Originating-IP: [2620:10d:c090:400::5:95a7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea2ac5ab-bc75-46a7-96a4-08d8035251b1
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3208:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3208620DB6C950A87E62CBE0D38E0@BYAPR15MB3208.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0417A3FFD2
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NovMDXGBsdkJyH10BtTWwMZZOGaPOJ1jw448aOYqszQ+kA4CcfV4e8rOFaMRFgm1G+El1qFH5tJ8KfjPoR6sej5q5u405+2FI8av8f65ggiOcpsw8rND63Sp/YP3qgoUSQ5A75FAshVlB4qD3CPfGKjyllqyM0tOnvVrKkZ3vjfqjMqBSGpsRbeuPM4FEWUvHuY6QBmXrm5la4ckl7DTN6WdqCcR5M27DRw7w4WZTqwBWCDAVdAmpBsuFavnVe61x6nrrSI/t/L3Cp1RqmjQd3BepIZmoOBdE7qhCLdELyWwkqyrUHYghk8NWKgCmdlHGJc3Sg1Y/ZYajN3AzAhmtfM5CumcGWn7x8suS2N2W5CA1xQpamMDWshmHHeKIxNw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(396003)(39860400002)(136003)(376002)(66556008)(6486002)(54906003)(52116002)(86362001)(5660300002)(8936002)(186003)(83380400001)(16526019)(53546011)(2616005)(8676002)(316002)(478600001)(36756003)(66946007)(31686004)(66476007)(4326008)(2906002)(31696002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Fo7RDC67IYfcs2f74emisFRnxVZe3JoZ1micfCbYJznhxy/RkjgKlQuvRIW4T3Ivoo2ND/J0ZQX3kygNufOCXqi1XE45vgjgfp8V+p1FMCauzExyvwWP+QK6gVMVZZ2C7OuhUPzT4UrMYjBKw327v1QO25cA+gxKF7HWSl/hSoI6bK0dnBbFpWmwTy7eVA5nu16iTksIjKoI42eBWorY8+uiUE8tJqq2GCbqjeXBCa5fgq+0mpEmsdiELbIbUFMlpVbdqJf1QSMrvxT59gy/ecOQHHzv3U468/ZNeEdMMwpyK5gH1CT8PCAG+qbYJuwKXJth92RRF6cTsLfNajn1ukvkUlzLbS+Jpnt1ofL1YVb5o4/xuPiiSQerr/VLHOMyyT+XYvqwTJLEn66YBmKo8ZkvdgHMcCvy7BSzohr+s8VUNDjyNGW73e+cgqZwPqqWZvGRKQeCRZtdW7RExSURqPjNxD/BlD4Q+xRXDK7qPu3Db5a/fvhkVoGYKIIzHD+dUy5Xj61wbVqPUVM/9XSflw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea2ac5ab-bc75-46a7-96a4-08d8035251b1
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2020 21:58:56.6579
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LvyTpPr2gkc1vnSk7EtTL/SuWnUXF/FCqxkK8tDdpK/8V+8BQn7+djGIBkaSpBIY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-28_08:2020-05-28,2020-05-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 adultscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- impostorscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005280141
-X-FB-Internal: deliver
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25826/Thu May 28 14:33:30 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hey Andrii,
 
+On 5/26/20 8:32 AM, Andrii Nakryiko wrote:
+[...]
+> +static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+> +{
+> +	const gfp_t flags = GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN |
+> +			    __GFP_ZERO;
+> +	int nr_meta_pages = RINGBUF_PGOFF + RINGBUF_POS_PAGES;
+> +	int nr_data_pages = data_sz >> PAGE_SHIFT;
+> +	int nr_pages = nr_meta_pages + nr_data_pages;
+> +	struct page **pages, *page;
+> +	size_t array_size;
+> +	void *addr;
+> +	int i;
+> +
+> +	/* Each data page is mapped twice to allow "virtual"
+> +	 * continuous read of samples wrapping around the end of ring
+> +	 * buffer area:
+> +	 * ------------------------------------------------------
+> +	 * | meta pages |  real data pages  |  same data pages  |
+> +	 * ------------------------------------------------------
+> +	 * |            | 1 2 3 4 5 6 7 8 9 | 1 2 3 4 5 6 7 8 9 |
+> +	 * ------------------------------------------------------
+> +	 * |            | TA             DA | TA             DA |
+> +	 * ------------------------------------------------------
+> +	 *                               ^^^^^^^
+> +	 *                                  |
+> +	 * Here, no need to worry about special handling of wrapped-around
+> +	 * data due to double-mapped data pages. This works both in kernel and
+> +	 * when mmap()'ed in user-space, simplifying both kernel and
+> +	 * user-space implementations significantly.
+> +	 */
+> +	array_size = (nr_meta_pages + 2 * nr_data_pages) * sizeof(*pages);
+> +	if (array_size > PAGE_SIZE)
+> +		pages = vmalloc_node(array_size, numa_node);
+> +	else
+> +		pages = kmalloc_node(array_size, flags, numa_node);
+> +	if (!pages)
+> +		return NULL;
+> +
+> +	for (i = 0; i < nr_pages; i++) {
+> +		page = alloc_pages_node(numa_node, flags, 0);
+> +		if (!page) {
+> +			nr_pages = i;
+> +			goto err_free_pages;
+> +		}
+> +		pages[i] = page;
+> +		if (i >= nr_meta_pages)
+> +			pages[nr_data_pages + i] = page;
+> +	}
+> +
+> +	addr = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+> +		    VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+> +	if (addr)
+> +		return addr;
 
-On 5/28/20 2:30 PM, John Fastabend wrote:
-> Yonghong Song wrote:
->> With the latest trunk llvm (llvm 11), I hit a verifier issue for
->> test_prog subtest test_verif_scale1.
->>
->> The following simplified example illustrate the issue:
->>      w9 = 0  /* R9_w=inv0 */
->>      r8 = *(u32 *)(r1 + 80)  /* __sk_buff->data_end */
->>      r7 = *(u32 *)(r1 + 76)  /* __sk_buff->data */
->>      ......
->>      w2 = w9 /* R2_w=inv0 */
->>      r6 = r7 /* R6_w=pkt(id=0,off=0,r=0,imm=0) */
->>      r6 += r2 /* R6_w=inv(id=0) */
->>      r3 = r6 /* R3_w=inv(id=0) */
->>      r3 += 14 /* R3_w=inv(id=0) */
->>      if r3 > r8 goto end
->>      r5 = *(u32 *)(r6 + 0) /* R6_w=inv(id=0) */
->>         <== error here: R6 invalid mem access 'inv'
->>      ...
->>    end:
->>
->> In real test_verif_scale1 code, "w9 = 0" and "w2 = w9" are in
->> different basic blocks.
->>
->> In the above, after "r6 += r2", r6 becomes a scalar, which eventually
->> caused the memory access error. The correct register state should be
->> a pkt pointer.
->>
->> The inprecise register state starts at "w2 = w9".
->> The 32bit register w9 is 0, in __reg_assign_32_into_64(),
->> the 64bit reg->smax_value is assigned to be U32_MAX.
->> The 64bit reg->smin_value is 0 and the 64bit register
->> itself remains constant based on reg->var_off.
->>
->> In adjust_ptr_min_max_vals(), the verifier checks for a known constant,
->> smin_val must be equal to smax_val. Since they are not equal,
->> the verifier decides r6 is a unknown scalar, which caused later failure.
->>
->> The llvm10 does not have this issue as it generates different code:
->>      w9 = 0  /* R9_w=inv0 */
->>      r8 = *(u32 *)(r1 + 80)  /* __sk_buff->data_end */
->>      r7 = *(u32 *)(r1 + 76)  /* __sk_buff->data */
->>      ......
->>      r6 = r7 /* R6_w=pkt(id=0,off=0,r=0,imm=0) */
->>      r6 += r9 /* R6_w=pkt(id=0,off=0,r=0,imm=0) */
->>      r3 = r6 /* R3_w=pkt(id=0,off=0,r=0,imm=0) */
->>      r3 += 14 /* R3_w=pkt(id=0,off=14,r=0,imm=0) */
->>      if r3 > r8 goto end
->>      ...
->>
->> To fix the issue, if 32bit register is a const 0,
->> then just assign max vaue 0 to 64bit register smax_value as well.
->>
->> Fixes: 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
->> Cc: John Fastabend <john.fastabend@gmail.com>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
-> 
-> 
-> Thanks!
-> 
->> ---
->>   kernel/bpf/verifier.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 8d7ee40e2748..5123ce54695f 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -1174,6 +1174,9 @@ static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
->>   		reg->smin_value = 0;
->>   	if (reg->s32_max_value > 0)
->>   		reg->smax_value = reg->s32_max_value;
->> +	else if (reg->s32_max_value == 0 && reg->s32_min_value == 0 &&
->> +		 tnum_is_const(reg->var_off))
->> +		reg->smax_value = 0; /* const 0 */
->>   	else
->>   		reg->smax_value = U32_MAX;
->>   }
->> -- 
->> 2.24.1
->>
-> 
-> How about the following, I think it will also cover the case above. We should be
-> checking 'smin_value > 0' as well I believe.
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b3d2590..80d22de 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1217,14 +1217,14 @@ static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
->           * but must be positive otherwise set to worse case bounds
->           * and refine later from tnum.
->           */
-> +       if (reg->s32_min_value >= 0 && reg->s32_max_value >= 0)
+Does this need an explicit vunmap() as well in bpf_ringbuf_free()? I can see that the
+__vfree() calls __vunmap(addr, 1) which does the deallocation, but how does this stand
+with the case of kmalloc_node()? (And does it even make sense to support < PAGE_SIZE
+array size here?)
 
-I agree that s32_min_value needs to be checked. Otherwise, a negative
-s32_min_value, not sure how to derive reg->smax_value....
+> +err_free_pages:
+> +	for (i = 0; i < nr_pages; i++)
+> +		free_page((unsigned long)pages[i]);
+> +	kvfree(pages);
+> +	return NULL;
+> +}
+> +
+> +static void bpf_ringbuf_notify(struct irq_work *work)
+> +{
+> +	struct bpf_ringbuf *rb = container_of(work, struct bpf_ringbuf, work);
+> +
+> +	wake_up_all(&rb->waitq);
+> +}
+> +
+> +static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+> +{
+> +	struct bpf_ringbuf *rb;
+> +
+> +	if (!data_sz || !PAGE_ALIGNED(data_sz))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +#ifdef CONFIG_64BIT
+> +	/* on 32-bit arch, it's impossible to overflow record's hdr->pgoff */
+> +	if (data_sz > RINGBUF_MAX_DATA_SZ)
+> +		return ERR_PTR(-E2BIG);
+> +#endif
+> +
+> +	rb = bpf_ringbuf_area_alloc(data_sz, numa_node);
+> +	if (!rb)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	spin_lock_init(&rb->spinlock);
+> +	init_waitqueue_head(&rb->waitq);
+> +	init_irq_work(&rb->work, bpf_ringbuf_notify);
+> +
+> +	rb->mask = data_sz - 1;
+> +	rb->consumer_pos = 0;
+> +	rb->producer_pos = 0;
+> +
+> +	return rb;
+> +}
+> +
+> +static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +	u64 cost;
+> +	int err;
+> +
+> +	if (attr->map_flags & ~RINGBUF_CREATE_FLAG_MASK)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	if (attr->key_size || attr->value_size ||
+> +	    attr->max_entries == 0 || !PAGE_ALIGNED(attr->max_entries))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	rb_map = kzalloc(sizeof(*rb_map), GFP_USER);
+> +	if (!rb_map)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	bpf_map_init_from_attr(&rb_map->map, attr);
+> +
+> +	cost = sizeof(struct bpf_ringbuf_map) +
+> +	       sizeof(struct bpf_ringbuf) +
+> +	       attr->max_entries;
+> +	err = bpf_map_charge_init(&rb_map->map.memory, cost);
+> +	if (err)
+> +		goto err_free_map;
+> +
+> +	rb_map->rb = bpf_ringbuf_alloc(attr->max_entries, rb_map->map.numa_node);
+> +	if (IS_ERR(rb_map->rb)) {
+> +		err = PTR_ERR(rb_map->rb);
+> +		goto err_uncharge;
+> +	}
+> +
+> +	return &rb_map->map;
+> +
+> +err_uncharge:
+> +	bpf_map_charge_finish(&rb_map->map.memory);
+> +err_free_map:
+> +	kfree(rb_map);
+> +	return ERR_PTR(err);
+> +}
+> +
+> +static void bpf_ringbuf_free(struct bpf_ringbuf *ringbuf)
+> +{
+> +	kvfree(ringbuf);
 
-> +               reg->smax_value = reg->s32_max_value;
-> +       else
-> +               reg->smax_value = U32_MAX;
->          if (reg->s32_min_value > 0)
->                  reg->smin_value = reg->s32_min_value;
->          else
->                  reg->smin_value = 0;
-> -       if (reg->s32_min_value >= 0 && reg->s32_max_value > 0)
-> -               reg->smax_value = reg->s32_max_value;
-> -       else
-> -               reg->smax_value = U32_MAX;
->   }
-> 
-> This causes selftests failure I pasted it at the end of the email. By my
-> analysis what happens here is after line 10 we get different bounds
-> and this falls out so that we just miss triggering the failure case in
-> check_reg_sane_offset()
-> 
->          if (smin >= BPF_MAX_VAR_OFF || smin <= -BPF_MAX_VAR_OFF) {
->                  verbose(env, "value %lld makes %s pointer be out of bounds\n",
->                          smin, reg_type_str[type]);
->                  return false;
->          }
-> 
-> 
-> However (would need to check, improve verifier test) that should still
-> fail as soon as its read. WDYT? I can try to roll it into your test if
+... here.
 
-Which read, you mean r0 += r1? Yes, r1 range seems pretty big,
-R1_w=inv(id=0,umax_value=72057594037927935,var_off=(0x0; 0xffffffffffffff))
-so a failure should be right, I guess.
+> +}
+> +
+> +static void ringbuf_map_free(struct bpf_map *map)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +
+> +	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
+> +	 * so the programs (can be more than one that used this map) were
+> +	 * disconnected from events. Wait for outstanding critical sections in
+> +	 * these programs to complete
+> +	 */
+> +	synchronize_rcu();
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	bpf_ringbuf_free(rb_map->rb);
+> +	kfree(rb_map);
+> +}
+> +
+> +static void *ringbuf_map_lookup_elem(struct bpf_map *map, void *key)
+> +{
+> +	return ERR_PTR(-ENOTSUPP);
+> +}
+> +
+> +static int ringbuf_map_update_elem(struct bpf_map *map, void *key, void *value,
+> +				   u64 flags)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static int ringbuf_map_delete_elem(struct bpf_map *map, void *key)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static int ringbuf_map_get_next_key(struct bpf_map *map, void *key,
+> +				    void *next_key)
+> +{
+> +	return -ENOTSUPP;
+> +}
 
-> you want or if you have time go for it. Let me know.
+One use-case we'd have that would be quite interesting to resolve as well is
+to implement ->map_push_elem() callback from here and have a bpf_ringbuf_output()
+like way to feed also data from user space into the same ring buffer that BPF
+programs do. In our case we use perf RB for all sort of event messages from BPF
+side and we also have trace events from our golang agent, both get "merged" into
+an event stream together and then exported. I think it might be really useful to
+allow this here natively.
 
-Since this is a little more involved and you are more familiar with
-the code, please go ahead to make the change.
+> +static size_t bpf_ringbuf_mmap_page_cnt(const struct bpf_ringbuf *rb)
+> +{
+> +	size_t data_pages = (rb->mask + 1) >> PAGE_SHIFT;
+> +
+> +	/* consumer page + producer page + 2 x data pages */
+> +	return RINGBUF_POS_PAGES + 2 * data_pages;
+> +}
+> +
+> +static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +	size_t mmap_sz;
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	mmap_sz = bpf_ringbuf_mmap_page_cnt(rb_map->rb) << PAGE_SHIFT;
+> +
+> +	if (vma->vm_pgoff * PAGE_SIZE + (vma->vm_end - vma->vm_start) > mmap_sz)
+> +		return -EINVAL;
+> +
+> +	return remap_vmalloc_range(vma, rb_map->rb,
+> +				   vma->vm_pgoff + RINGBUF_PGOFF);
+> +}
+> +
+> +static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
+> +{
+> +	unsigned long cons_pos, prod_pos;
+> +
+> +	cons_pos = smp_load_acquire(&rb->consumer_pos);
+> +	prod_pos = smp_load_acquire(&rb->producer_pos);
+> +	return prod_pos - cons_pos;
+> +}
+> +
+> +static __poll_t ringbuf_map_poll(struct bpf_map *map, struct file *filp,
+> +				 struct poll_table_struct *pts)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	poll_wait(filp, &rb_map->rb->waitq, pts);
+> +
+> +	if (ringbuf_avail_data_sz(rb_map->rb))
+> +		return EPOLLIN | EPOLLRDNORM;
+> +	return 0;
+> +}
+> +
+> +const struct bpf_map_ops ringbuf_map_ops = {
+> +	.map_alloc = ringbuf_map_alloc,
+> +	.map_free = ringbuf_map_free,
+> +	.map_mmap = ringbuf_map_mmap,
+> +	.map_poll = ringbuf_map_poll,
+> +	.map_lookup_elem = ringbuf_map_lookup_elem,
+> +	.map_update_elem = ringbuf_map_update_elem,
+> +	.map_delete_elem = ringbuf_map_delete_elem,
+> +	.map_get_next_key = ringbuf_map_get_next_key,
+> +};
+> +
+> +/* Given pointer to ring buffer record metadata and struct bpf_ringbuf itself,
+> + * calculate offset from record metadata to ring buffer in pages, rounded
+> + * down. This page offset is stored as part of record metadata and allows to
+> + * restore struct bpf_ringbuf * from record pointer. This page offset is
+> + * stored at offset 4 of record metadata header.
+> + */
+> +static size_t bpf_ringbuf_rec_pg_off(struct bpf_ringbuf *rb,
+> +				     struct bpf_ringbuf_hdr *hdr)
+> +{
+> +	return ((void *)hdr - (void *)rb) >> PAGE_SHIFT;
+> +}
+> +
+> +/* Given pointer to ring buffer record header, restore pointer to struct
+> + * bpf_ringbuf itself by using page offset stored at offset 4
+> + */
+> +static struct bpf_ringbuf *
+> +bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
+> +{
+> +	unsigned long addr = (unsigned long)(void *)hdr;
+> +	unsigned long off = (unsigned long)hdr->pg_off << PAGE_SHIFT;
+> +
+> +	return (void*)((addr & PAGE_MASK) - off);
+> +}
+> +
+> +static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+> +{
+> +	unsigned long cons_pos, prod_pos, new_prod_pos, flags;
+> +	u32 len, pg_off;
+> +	struct bpf_ringbuf_hdr *hdr;
+> +
+> +	if (unlikely(size > RINGBUF_MAX_RECORD_SZ))
+> +		return NULL;
+> +
+> +	len = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
+> +	cons_pos = smp_load_acquire(&rb->consumer_pos);
+> +
+> +	if (in_nmi()) {
+> +		if (!spin_trylock_irqsave(&rb->spinlock, flags))
+> +			return NULL;
+> +	} else {
+> +		spin_lock_irqsave(&rb->spinlock, flags);
 
-Thanks!
+Should this side probe with trylock as well to avoid potential blockage?
 
-> 
-> # ./test_verifier -v 66
-> #66/p bounds check after truncation of boundary-crossing range (2) FAIL
-> Unexpected success to load!
-> func#0 @0
-> 0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-> 0: (7a) *(u64 *)(r10 -8) = 0
-> 1: R1=ctx(id=0,off=0,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-> 1: (bf) r2 = r10
-> 2: R1=ctx(id=0,off=0,imm=0) R2_w=fp0 R10=fp0 fp-8_w=mmmmmmmm
-> 2: (07) r2 += -8
-> 3: R1=ctx(id=0,off=0,imm=0) R2_w=fp-8 R10=fp0 fp-8_w=mmmmmmmm
-> 3: (18) r1 = 0xffff8883dba1e800
-> 5: R1_w=map_ptr(id=0,off=0,ks=8,vs=8,imm=0) R2_w=fp-8 R10=fp0 fp-8_w=mmmmmmmm
-> 5: (85) call bpf_map_lookup_elem#1
-> 6: R0_w=map_value_or_null(id=1,off=0,ks=8,vs=8,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-> 6: (15) if r0 == 0x0 goto pc+9
->   R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-> 7: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-> 7: (71) r1 = *(u8 *)(r0 +0)
->   R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-> 8: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff)) R10=fp0 fp-8_w=mmmmmmmm
-> 8: (07) r1 += 2147483584
-> 9: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,umin_value=2147483584,umax_value=2147483839,var_off=(0x0; 0xffffffff)) R10=fp0 fp-8_w=mmmmmmmm
-> 9: (07) r1 += 2147483584
-> 10: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,umin_value=4294967168,umax_value=4294967423,var_off=(0x0; 0x1ffffffff)) R10=fp0 fp-8_w=mmmmmmmm
-> 10: (bc) w1 = w1
-> 11: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0 fp-8_w=mmmmmmmm
-> 11: (17) r1 -= 2147483584
-> 12: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,smin_value=-2147483584,smax_value=2147483711) R10=fp0 fp-8_w=mmmmmmmm
-> 12: (17) r1 -= 2147483584
-> 13: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,smin_value=-4294967168,smax_value=127) R10=fp0 fp-8_w=mmmmmmmm
-> 13: (77) r1 >>= 8
-> 14: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0) R1_w=inv(id=0,umax_value=72057594037927935,var_off=(0x0; 0xffffffffffffff)) R10=fp0 fp-8_w=mmmmmmmm
-> 14: (0f) r0 += r1
-> last_idx 14 first_idx 0
-> regs=2 stack=0 before 13: (77) r1 >>= 8
-> regs=2 stack=0 before 12: (17) r1 -= 2147483584
-> regs=2 stack=0 before 11: (17) r1 -= 2147483584
-> regs=2 stack=0 before 10: (bc) w1 = w1
-> regs=2 stack=0 before 9: (07) r1 += 2147483584
-> regs=2 stack=0 before 8: (07) r1 += 2147483584
-> regs=2 stack=0 before 7: (71) r1 = *(u8 *)(r0 +0)
-> 15: R0_w=map_value(id=0,off=0,ks=8,vs=8,umax_value=72057594037927935,var_off=(0x0; 0xffffffffffffff)) R1_w=invP(id=0,umax_value=72057594037927935,var_off=(0x0; 0xffffffffffffff)) R10=fp0 fp-8_w=mmmmmmmm
-> 15: (b7) r0 = 0
-> 16: R0=inv0 R1=invP(id=0,umax_value=72057594037927935,var_off=(0x0; 0xffffffffffffff)) R10=fp0 fp-8=mmmmmmmm
-> 16: (95) exit
-> 
-> from 6 to 16: safe
-> processed 17 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
-> 
+> +	}
+> +
+> +	prod_pos = rb->producer_pos;
+> +	new_prod_pos = prod_pos + len;
+> +
+> +	/* check for out of ringbuf space by ensuring producer position
+> +	 * doesn't advance more than (ringbuf_size - 1) ahead
+> +	 */
+> +	if (new_prod_pos - cons_pos > rb->mask) {
+> +		spin_unlock_irqrestore(&rb->spinlock, flags);
+> +		return NULL;
+> +	}
+> +
+> +	hdr = (void *)rb->data + (prod_pos & rb->mask);
+> +	pg_off = bpf_ringbuf_rec_pg_off(rb, hdr);
+> +	hdr->len = size | BPF_RINGBUF_BUSY_BIT;
+> +	hdr->pg_off = pg_off;
+> +
+> +	/* pairs with consumer's smp_load_acquire() */
+> +	smp_store_release(&rb->producer_pos, new_prod_pos);
+> +
+> +	spin_unlock_irqrestore(&rb->spinlock, flags);
+> +
+> +	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
+> +}
+> +
+> +BPF_CALL_3(bpf_ringbuf_reserve, struct bpf_map *, map, u64, size, u64, flags)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +
+> +	if (unlikely(flags))
+> +		return 0;
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	return (unsigned long)__bpf_ringbuf_reserve(rb_map->rb, size);
+> +}
+> +
+> +const struct bpf_func_proto bpf_ringbuf_reserve_proto = {
+> +	.func		= bpf_ringbuf_reserve,
+> +	.ret_type	= RET_PTR_TO_ALLOC_MEM_OR_NULL,
+> +	.arg1_type	= ARG_CONST_MAP_PTR,
+> +	.arg2_type	= ARG_CONST_ALLOC_SIZE_OR_ZERO,
+> +	.arg3_type	= ARG_ANYTHING,
+> +};
+> +
+> +static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
+> +{
+> +	unsigned long rec_pos, cons_pos;
+> +	struct bpf_ringbuf_hdr *hdr;
+> +	struct bpf_ringbuf *rb;
+> +	u32 new_len;
+> +
+> +	hdr = sample - BPF_RINGBUF_HDR_SZ;
+> +	rb = bpf_ringbuf_restore_from_rec(hdr);
+> +	new_len = hdr->len ^ BPF_RINGBUF_BUSY_BIT;
+> +	if (discard)
+> +		new_len |= BPF_RINGBUF_DISCARD_BIT;
+> +
+> +	/* update record header with correct final size prefix */
+> +	xchg(&hdr->len, new_len);
+> +
+> +	/* if consumer caught up and is waiting for our record, notify about
+> +	 * new data availability
+> +	 */
+> +	rec_pos = (void *)hdr - (void *)rb->data;
+> +	cons_pos = smp_load_acquire(&rb->consumer_pos) & rb->mask;
+> +
+> +	if (flags & BPF_RB_FORCE_WAKEUP)
+> +		irq_work_queue(&rb->work);
+> +	else if (cons_pos == rec_pos && !(flags & BPF_RB_NO_WAKEUP))
+> +		irq_work_queue(&rb->work);
+> +}
+> +
+> +BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
+> +{
+> +	bpf_ringbuf_commit(sample, flags, false /* discard */);
+> +	return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_ringbuf_submit_proto = {
+> +	.func		= bpf_ringbuf_submit,
+> +	.ret_type	= RET_VOID,
+> +	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+> +	.arg2_type	= ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
+> +{
+> +	bpf_ringbuf_commit(sample, flags, true /* discard */);
+> +	return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_ringbuf_discard_proto = {
+> +	.func		= bpf_ringbuf_discard,
+> +	.ret_type	= RET_VOID,
+> +	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+> +	.arg2_type	= ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_4(bpf_ringbuf_output, struct bpf_map *, map, void *, data, u64, size,
+> +	   u64, flags)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +	void *rec;
+> +
+> +	if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
+> +		return -EINVAL;
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	rec = __bpf_ringbuf_reserve(rb_map->rb, size);
+> +	if (!rec)
+> +		return -EAGAIN;
+> +
+> +	memcpy(rec, data, size);
+
+As discussed, (non-linear) skb capture would be needed as well. Is the plan to
+integrate this here into the same record (data + skb capture as one)?
+
+> +	bpf_ringbuf_commit(rec, flags, false /* discard */);
+> +	return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_ringbuf_output_proto = {
+> +	.func		= bpf_ringbuf_output,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_CONST_MAP_PTR,
+> +	.arg2_type	= ARG_PTR_TO_MEM,
+> +	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+> +	.arg4_type	= ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
+> +{
+> +	struct bpf_ringbuf *rb;
+> +
+> +	rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
+> +
+> +	switch (flags) {
+> +	case BPF_RB_AVAIL_DATA:
+> +		return ringbuf_avail_data_sz(rb);
+> +	case BPF_RB_RING_SIZE:
+> +		return rb->mask + 1;
+> +	case BPF_RB_CONS_POS:
+> +		return smp_load_acquire(&rb->consumer_pos);
+> +	case BPF_RB_PROD_POS:
+> +		return smp_load_acquire(&rb->producer_pos);
+
+Do you have an example where the latter two are needed/useful for non-debugging?
+Maybe leave out for now if only used for debugging?
+
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +const struct bpf_func_proto bpf_ringbuf_query_proto = {
+> +	.func		= bpf_ringbuf_query,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_CONST_MAP_PTR,
+> +	.arg2_type	= ARG_ANYTHING,
+> +};
