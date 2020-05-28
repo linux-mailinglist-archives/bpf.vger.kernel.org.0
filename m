@@ -2,107 +2,374 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0088B1E5A83
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 10:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B951E5B7D
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 11:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgE1IOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 04:14:48 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49828 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726441AbgE1IOs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 04:14:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TzscnAD_1590653683;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TzscnAD_1590653683)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 28 May 2020 16:14:44 +0800
-Subject: Re: [RFC PATCH] samples:bpf: introduce task detector
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
- <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <9a78329c-8bfe-2b83-b418-3de88e972c5a@linux.alibaba.com>
-Date:   Thu, 28 May 2020 16:14:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1728061AbgE1JKu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 05:10:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51992 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728080AbgE1JKu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 05:10:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590657047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UFzpO+6iT1rL/bzVFAZMoDu6Pt9kJ09Pb8QOj8eMx2k=;
+        b=gKTkpHjjateUb8pKWN80anKcasBK5u06RVqAkQWCsRn8dVfNu9sU+wacS7QGWDC7jhiQDM
+        XPF92HdRpSitWfDVtxEH5/Kr57HXCRoYVh3yl2Ge0l8JOkDzE2UnHqKhdLt9vjG4QcairV
+        akYg2/sxhHeONYylEGhe0VZECcvilRk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-eJCDeR8uMzmGnw7xipq1RQ-1; Thu, 28 May 2020 05:10:43 -0400
+X-MC-Unique: eJCDeR8uMzmGnw7xipq1RQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A243B107ACCD;
+        Thu, 28 May 2020 09:10:42 +0000 (UTC)
+Received: from [10.36.112.109] (ovpn-112-109.ams2.redhat.com [10.36.112.109])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C0ECB7A8A9;
+        Thu, 28 May 2020 09:10:38 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc:     "Alexei Starovoitov" <ast@kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>,
+        bpf@vger.kernel.org
+Subject: Re: fentry/fexit trace to BPF_PROG_TYPE_EXT BPF program not working
+Date:   Thu, 28 May 2020 11:10:27 +0200
+Message-ID: <20F0986B-1EFD-42B8-AF84-07F41E4F8B54@redhat.com>
+In-Reply-To: <898E05E3-544D-4836-B6FD-3D9EE835F52B@redhat.com>
+References: <666CF27B-18B4-420B-A0FC-29947DB1682D@redhat.com>
+ <CAADnVQJGdEJaW6oQbFOQYJWJxhjY-P=jawYYedb_qDN4zZufQg@mail.gmail.com>
+ <917D3B95-2FB0-4785-9B5E-F4AA6B9104BE@redhat.com>
+ <45653D32-C707-4095-B121-DDE1ADA567B8@redhat.com>
+ <898E05E3-544D-4836-B6FD-3D9EE835F52B@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii
 
-Thanks for your comments :-)
 
-On 2020/5/28 下午2:36, Andrii Nakryiko wrote:
-[snip]
->> ---
-> 
-> I haven't looked through implementation thoroughly yet. But I have few
-> general remarks.
-> 
-> This looks like a useful and generic tool. I think it will get most
-> attention and be most useful if it will be part of BCC tools. There is
-> already a set of generic tools that use libbpf and CO-RE, see [0]. It
-> feels like this belongs there.
-> 
-> Some of the annoying parts (e.g., syscall name translation) is already
-> generalized as part of syscount tool PR (to be hopefully merged soon),
-> so you'll be able to save quite a lot of code with this. There is also
-> a common build infra that takes care of things like vmlinux.h, which
-> would provide definitions for all those xxx_args structs that you had
-> to manually define.
-> 
-> With CO-RE, it also will allow to compile this tool once and run it on
-> many different kernels without recompilation. Please do take a look
-> and submit a PR there, it will be a good addition to the toolkit (and
-> will force you write a bit of README explaining use of this tool as
-> well ;).
+On 27 May 2020, at 18:54, Eelco Chaudron wrote:
 
-Aha, I used to think bcc only support python and cpp :-P
-
-I'll try to rework it and submit PR, I'm glad to know that you think
-this tool as a helpful one, we do solved some tough issue with it
-already.
-
-> 
-> As for the code itself, I haven't gone through it much, but please
-> convert map definition syntax to BTF-defined one. The one you are
-> using is a legacy one. Thanks!
-> 
->   [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
-
-Will check the example there :-)
-
-Regards,
-Michael Wang
-
-> 
->>  samples/bpf/Makefile             |   3 +
->>  samples/bpf/task_detector.h      | 382 +++++++++++++++++++++++++++++++++++++++
->>  samples/bpf/task_detector_kern.c | 329 +++++++++++++++++++++++++++++++++
->>  samples/bpf/task_detector_user.c | 314 ++++++++++++++++++++++++++++++++
->>  4 files changed, 1028 insertions(+)
->>  create mode 100644 samples/bpf/task_detector.h
->>  create mode 100644 samples/bpf/task_detector_kern.c
->>  create mode 100644 samples/bpf/task_detector_user.c
+> On 14 May 2020, at 13:56, Eelco Chaudron wrote:
+>
+>> On 13 May 2020, at 16:58, Eelco Chaudron wrote:
 >>
-> 
-> [...]
-> 
+>>> On 6 May 2020, at 3:45, Alexei Starovoitov wrote:
+>>>
+>>>> On Wed, Apr 29, 2020 at 4:51 AM Eelco Chaudron 
+>>>> <echaudro@redhat.com> wrote:
+>>>>>
+>>>>> Hi Alexie at al.
+>>>>>
+>>>>> I was trying to attach a fentry/fexit trace to BPF_PROG_TYPE_EXT 
+>>>>> BPF
+>>>>> program but I'm getting a verifier error, and not sure why. Is 
+>>>>> this
+>>>>> supported?
+>>>>
+>
+> <SNIP>
+>
+>> xdp-fexit]$ bpftool btf dump file xdpdump_bpf.o
+>> [1] PTR '(anon)' type_id=2
+>> [2] INT 'long long unsigned int' size=8 bits_offset=0 nr_bits=64 
+>> encoding=(none)
+>> [3] FUNC_PROTO '(anon)' ret_type_id=4 vlen=1
+>> 	'ctx' type_id=1
+>> [4] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+>> [5] FUNC 'trace_on_exit' type_id=3
+>> [6] STRUCT 'xdp_buff' size=48 vlen=6
+>> 	'data' type_id=7 bits_offset=0
+>> 	'data_end' type_id=7 bits_offset=64
+>> 	'data_meta' type_id=7 bits_offset=128
+>> 	'data_hard_start' type_id=7 bits_offset=192
+>> 	'handle' type_id=8 bits_offset=256
+>> 	'rxq' type_id=9 bits_offset=320
+>> [7] PTR '(anon)' type_id=0
+>> [8] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 
+>> encoding=(none)
+>> [9] PTR '(anon)' type_id=10
+>> [10] STRUCT 'xdp_rxq_info' size=16 vlen=2
+>> 	'dev' type_id=11 bits_offset=0
+>> 	'queue_index' type_id=12 bits_offset=64
+>> [11] PTR '(anon)' type_id=14
+>> [12] TYPEDEF '__u32' type_id=13
+>> [13] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 
+>> encoding=(none)
+>> [14] STRUCT 'net_device' size=4 vlen=1
+>> 	'ifindex' type_id=4 bits_offset=0
+>> [15] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>> [16] ARRAY '(anon)' type_id=15 index_type_id=17 nr_elems=4
+>> [17] INT '__ARRAY_SIZE_TYPE__' size=4 bits_offset=0 nr_bits=32 
+>> encoding=(none)
+>> [18] VAR '_license' type_id=16, linkage=global-alloc
+>> [19] DATASEC 'license' size=0 vlen=1
+>> 	type_id=18 offset=0 size=4
+>>
+>> Maybe you can take a quick peek why it’s failing as I have no real 
+>> experience with the verifier. I created some sample code that you can 
+>> easily use with the following instructions:
+>>
+>> Checkout the xdp tools repo and build it:
+>>
+>>   # git clone https://github.com/chaudron/xdp-tools.git
+>>   # cd xdp-tools
+>>   # git checkout dev/xdpdump_multi
+>>   # make
+>>
+>>   # ulimit -l unlimited
+>>   # cd xdp-test
+>>   # cp ../lib/libxdp/xdp-dispatcher.o .
+>>   # ../xdp-loader/xdp-loader load -m skb eth0 test_two_bpf.o 
+>> test_bpf.o test_long_func_name.o --force
+>>
+>>
+>> Bpftool should now show you the programs loaded, look for xdp_test_I:
+>>
+>>   # bpftool prog | grep "xdp_test_I "
+>>   199: ext  name xdp_test_I  tag b5a46c6e9935298c  gpl
+>>
+>>
+>> Now use the id (199) in the xdp-fexit test program
+>>
+>>   # cd ../xdp-fexit/
+>>   # git diff
+>>
+>>   -    prog_fd = bpf_prog_get_fd_by_id(56);
+>>   +    prog_fd = bpf_prog_get_fd_by_id(199);
+>>
+>>   # make
+>>
+>>
+>> Run it:
+>>
+>>   # ./fexit
+>>
+>>   - Found prog_fd = 3
+>>   - Opening object file
+>>   - Opened object file: 0xa526b0
+>>   libbpf: load bpf program failed: Permission denied
+>>   libbpf: -- BEGIN DUMP LOG ---
+>>   libbpf:
+>>   func#0 @0
+>>   arg#0 type is not a struct
+>>   Unrecognized arg#0 type PTR
+>>   0: R1=ctx(id=0,off=0,imm=0) R10=fp0
+>>   ; int BPF_PROG(trace_on_exit, struct xdp_buff *xdp, int ret)
+>>   0: (79) r1 = *(u64 *)(r1 +0)
+>>   invalid bpf_context access off=0 size=8
+>>   verification time 145 usec
+>>   stack depth 0
+>>   processed 1 insns (limit 1000000) max_states_per_insn 0 
+>> total_states 0 peak_states 0 mark_read 0
+>>
+>>   libbpf: -- END LOG --
+>>   libbpf: failed to load program 'fexit/xdp_test_I'
+>>   libbpf: failed to load object './xdpdump_bpf.o'
+>>   ERROR: Failed to load object file: Permission denied
+>>
+>> Any ideas are welcome…
+>
+> Hi Alexei,
+>
+> I’m still trying to get attach an fentry to a EXT program, however I 
+> did found the verifier issues…
+> If I attach fentry to an XDP entry point, the BPF_PROG() macro casts 
+> the ctx to long int *, which works:
+>
+> SEC("fentry/func")
+> int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)
+> {
+> }
+>
+> Is there a difference between attaching to an XDP program vs EXT that 
+> it is requiring a struct?
+>
+> So if I change my function to the below the verifier stops complaining 
+> for the EXT program:
+>
+>
+> #define bpf_debug(fmt, ...)                     \
+>     {                                           \
+> 	char __fmt[] = fmt;                         \
+> 	bpf_trace_printk(__fmt, sizeof(__fmt),      \
+>                          ##__VA_ARGS__);        \
+>     }
+>
+> SEC("fentry/func")
+> int trace_on_entry(struct xdp_md *xdp)
+> {
+>      bpf_debug("HALLO ID: %u", xdp->rx_queue_index);
+>      return 0;
+> }
+>
+>
+> However now the verifier complains about the following and have no 
+> clue why:
+>
+>   libbpf: map:xdpdump_perf_map 
+> container_name:____btf_map_xdpdump_perf_map cannot be found in BTF. 
+> Missing BPF_ANNOTATE_KV_PAIR?
+>   libbpf: created map xdpdump_perf_map: fd=7
+>   libbpf: created map xdpdump_.data: fd=8
+>   libbpf: load_attr.prog_type 26,load_attr.attach_prog_fd 6, 
+> load_attr.attach_btf_id 7
+>   libbpf: load bpf program failed: Permission denied
+>   libbpf: -- BEGIN DUMP LOG ---
+>   libbpf:
+>   Unrecognized arg#0 type PTR
+>   ; int trace_on_entry(struct xdp_md *xdp)
+>   0: (b7) r2 = 1965367354
+>   ; bpf_debug("HALLO ID: %u", xdp->rx_queue_index);
+>   1: (63) *(u32 *)(r10 -8) = r2
+>   2: (18) r2 = 0x4449204f4c4c4148
+>   4: (7b) *(u64 *)(r10 -16) = r2
+>   5: (b7) r2 = 0
+>   6: (73) *(u8 *)(r10 -4) = r2
+>   last_idx 6 first_idx 0
+>   regs=4 stack=0 before 5: (b7) r2 = 0
+>   7: (61) r3 = *(u32 *)(r1 +16)
+>   func 'xdp_test_I' doesn't have 3-th argument
+>   invalid bpf_context access off=16 size=4
+>   processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 
+> 0 peak_states 0 mark_read 0
+>
+>   libbpf: -- END LOG --
+>   libbpf: failed to load program 'fentry/func'
+>   libbpf: failed to load object './xdpdump_multi_bpf.o'
+>   ERROR: Can't load eBPF object: Kernel verifier blocks program 
+> loading(-4007)
+>
+>
+> This is the program details I try to attach too:
+>
+> 49: type 28  name xdp_test_I  tag b5a46c6e9935298c  gpl
+> 	loaded_at 2020-05-27T11:40:55+0000  uid 0
+> 	xlated 136B  jited 108B  memlock 4096B
+> 	btf_id 12
+>
+> # bpftool btf dump id 12
+> [1] PTR '(anon)' type_id=2
+> [2] STRUCT 'xdp_md' size=20 vlen=5
+> 	'data' type_id=3 bits_offset=0
+> 	'data_end' type_id=3 bits_offset=32
+> 	'data_meta' type_id=3 bits_offset=64
+> 	'ingress_ifindex' type_id=3 bits_offset=96
+> 	'rx_queue_index' type_id=3 bits_offset=128
+> [3] TYPEDEF '__u32' type_id=4
+> [4] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+> [5] FUNC_PROTO '(anon)' ret_type_id=6 vlen=1
+> 	'ctx' type_id=1
+> [6] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> [7] FUNC 'xdp_test_I' type_id=5 linkage=global
+> [8] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+> [9] ARRAY '(anon)' type_id=8 index_type_id=10 nr_elems=4
+> [10] INT '__ARRAY_SIZE_TYPE__' size=4 bits_offset=0 nr_bits=32 
+> encoding=(none)
+> [11] VAR '_license' type_id=9, linkage=global-alloc
+> [12] DATASEC 'license' size=4 vlen=1
+> 	type_id=11 offset=0 size=4
+>
+
+As attaching to an XDP entry point with fentry required not to use the 
+xdp_md struct, but the xdp_buff struct, I tried this also.
+But as you can see below, also here it compliant about the xdp_test_I 
+function an argument (note the xdp_test_I function is the EXT function I 
+try to attach to).
+
+This is the new code:
+
+   struct xdp_rxq_info {
+       /* Structure does not need to contain all entries,
+        * as "preserve_access_index" will use BTF to fix this...
+        */
+       struct net_device *dev;
+       __u32 queue_index;
+   } __attribute__((preserve_access_index));
+
+   struct xdp_buff {
+       void *data;
+       void *data_end;
+       void *data_meta;
+       void *data_hard_start;
+       unsigned long handle;
+   	  struct xdp_rxq_info *rxq;
+   } __attribute__((preserve_access_index));
+
+   SEC("fentry/func")
+   int trace_on_entry(struct xdp_buff *xdp)
+   {
+       bpf_debug("HALLO ID: %u", xdp->rxq->queue_index);
+       return 0;
+   }
+
+The result of the kernel:
+
+   libbpf: map:xdpdump_perf_map 
+container_name:____btf_map_xdpdump_perf_map cannot be found in BTF. 
+Missing BPF_ANNOTATE_KV_PAIR?
+   libbpf: created map xdpdump_perf_map: fd=7
+   libbpf: created map xdpdump_.data: fd=8
+   libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+   libbpf: prog 'fentry/func': performing 2 CO-RE offset relocs
+   libbpf: prog 'fentry/func': relo #0: kind 0, spec is [2] xdp_buff + 
+0:5 => 40.0 @ &x[0].rxq
+   libbpf: [2] xdp_buff: found candidate [19906] xdp_buff
+   libbpf: prog 'fentry/func': relo #0: matching candidate #0 xdp_buff 
+against spec [19906] xdp_buff + 0:4 => 32.0 @ &x[0].rxq: 1
+   libbpf: prog 'fentry/func': relo #0: patched insn #7 (LDX/ST/STX) off 
+40 -> 32
+   libbpf: prog 'fentry/func': relo #1: kind 0, spec is [9] xdp_rxq_info 
++ 0:1 => 8.0 @ &x[0].queue_index
+   libbpf: [9] xdp_rxq_info: found candidate [3409] xdp_rxq_info
+   libbpf: prog 'fentry/func': relo #1: matching candidate #0 
+xdp_rxq_info against spec [3409] xdp_rxq_info + 0:1 => 8.0 @ 
+&x[0].queue_index: 1
+   libbpf: prog 'fentry/func': relo #1: patched insn #8 (LDX/ST/STX) off 
+8 -> 8
+   libbpf: load_attr.prog_type 26,load_attr.attach_prog_fd 6, 
+load_attr.attach_btf_id 7
+   libbpf: load bpf program failed: Permission denied
+   libbpf: -- BEGIN DUMP LOG ---
+   libbpf:
+   Unrecognized arg#0 type PTR
+   ; int trace_on_entry(struct xdp_buff *xdp)
+   0: (b7) r2 = 1965367354
+   ; bpf_debug("HALLO ID: %u", xdp->rxq->queue_index);
+   1: (63) *(u32 *)(r10 -8) = r2
+   2: (18) r2 = 0x4449204f4c4c4148
+   4: (7b) *(u64 *)(r10 -16) = r2
+   5: (b7) r2 = 0
+   6: (73) *(u8 *)(r10 -4) = r2
+   last_idx 6 first_idx 0
+   regs=4 stack=0 before 5: (b7) r2 = 0
+   7: (79) r1 = *(u64 *)(r1 +32)
+   func 'xdp_test_I' doesn't have 5-th argument
+   invalid bpf_context access off=32 size=8
+   processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 
+0 peak_states 0 mark_read 0
+
+   libbpf: -- END LOG --
+   libbpf: failed to load program 'fentry/func'
+   libbpf: failed to load object './xdpdump_multi_bpf.o'
+   ERROR: Can't load eBPF object: Kernel verifier blocks program 
+loading(-4007)
+
+Any input is welcome. I included the bpf list to see if others might 
+have any input (thought it was already).
+
+Cheers,
+
+Eelco
+
