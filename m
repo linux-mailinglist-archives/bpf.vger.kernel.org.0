@@ -2,101 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A901A1E6951
-	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 20:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CC01E695A
+	for <lists+bpf@lfdr.de>; Thu, 28 May 2020 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405744AbgE1S37 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 14:29:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25686 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2405803AbgE1S36 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 May 2020 14:29:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590690597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i0Vd3Rmv/FJ0VzEZAhAOa4CEuK81Nugu5T6/vtWTnzw=;
-        b=gNDFwlsXKhpl3BXE047+U2KY8pzlZEvZAc323yIVSxAfN3lXJXFTIJWQzNTugAp3KLIGhA
-        J+YlyLSDO17xXM4mMvP93YeTPJe5WZGRNuOdrge+2byMhMkTMVcf8+mHYiRE7b8UtI5dp3
-        sxcYG0ALJ9EnJavO4SQBK4hZgd0nX8c=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-DbLcpSezPiyk9Yj7jI0yAQ-1; Thu, 28 May 2020 14:29:53 -0400
-X-MC-Unique: DbLcpSezPiyk9Yj7jI0yAQ-1
-Received: by mail-ot1-f70.google.com with SMTP id v6so1766664ots.12
-        for <bpf@vger.kernel.org>; Thu, 28 May 2020 11:29:53 -0700 (PDT)
+        id S2405854AbgE1Sbn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 14:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405798AbgE1Sbl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 14:31:41 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8752CC08C5C6;
+        Thu, 28 May 2020 11:31:41 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id j32so864011qte.10;
+        Thu, 28 May 2020 11:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IT+YfidDEh3lkLxRoXW91Fv8QrVmqkWlnlBsq8swgno=;
+        b=pQFYbuj0tHk6MsNX0qbukP8/Iwi71Eu4OhUxwzoLipj0jA4FbP9qbonwlHMY9r0nLC
+         Ijf7GTuej2Ix4KFhalQf6BrKo2IhDN5jT4VNE+ByTrsKpdTzBzDImKH3jKSYYuWjkS27
+         awTQWG1/1+eCv9iIsJ1s952huaBL6CJK/g1sD1pQ/GJVTfw19LfL0c6F1TxVzHEdHCf6
+         nrDPicuXzLoXlyQLGvc4X1ODl2osR08+1brq4vggDFNz4jDVp4uzUIdV3inhi+CYavSW
+         2PWgXBtezBWwDlGAxtdbwfkgKKTeaHm73ImefwevJtLOJZwOtCrGC8tcDmMaOPcsytmK
+         oB7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i0Vd3Rmv/FJ0VzEZAhAOa4CEuK81Nugu5T6/vtWTnzw=;
-        b=OntYvPYRwrHXRymu4zxgn2pykw7sILJkKUcXsQqu7OQzqwNVT6whc4TtPr4ZXqOv0G
-         UPjT5YXs1+p3JXQmlica0/DzslzQB/UPlui3LtG7qoWasje1+gy3uCc6puArMJbURZaU
-         FSJ+dbo3+XWgD+yZ+pb8d+yhCXs9h1HAGkWSGuvHrTAcoYHhm1BmDKVOXJGyACxRpJXy
-         FmSfRx2ZfkhgCma/2772L5tHuQikO2MfJdfB6Aa9J0Bv9+cp733Orjr5JrNNY5lkA3pq
-         aiwQ54W30iBhIjZ1dVP7j+E0zyu7+zSJSQheASNzbopR+CB68mUWYYWb/a5uO7aNS+UY
-         KAPw==
-X-Gm-Message-State: AOAM532d7yakliBLfdQZxEcM1ap6g31BhS0xrdktutac0Pqn+q5OZttR
-        AszaJeFvKDDjSe6ciTlYrhiZZaWr/aLfFtZqNcL+xX0EKBSg3J9U3Zf+KjOL0r4L/oGH7Zid/9h
-        VCQg28IbH/Z6/idHQ+kbXW+htuLt3
-X-Received: by 2002:a05:6830:2155:: with SMTP id r21mr3468291otd.187.1590690592714;
-        Thu, 28 May 2020 11:29:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzg4T0ToaCnYPW94GkNCgylY/4Ew6dw2U7zjptPDZEbgJaQv0LDiIcZmgltwjOWCVFVaLpICn3DsZX1DQVw7yo=
-X-Received: by 2002:a05:6830:2155:: with SMTP id r21mr3468272otd.187.1590690592491;
- Thu, 28 May 2020 11:29:52 -0700 (PDT)
+        bh=IT+YfidDEh3lkLxRoXW91Fv8QrVmqkWlnlBsq8swgno=;
+        b=sft7lIgjgm22pWLjVu74u435sqp1eX9XeUoXAUqRakXAHsprtN3phkrPc6MO1/QF02
+         z7eiZ2HjP4Qn4Z7LAB5iAYD5po6mgHVrgydfrFw89uDfZCKTPHjnfcROUBctWuuf2Djt
+         XClDckSHqJpKbsN/0MUq6jSVH/X8z6MhCsxd/stMitYH5yH57JawR0LLcAY/MFKVXZBA
+         qJzXZmkEhvNQkYAAArGskGnyJJlFOxrNCZCdx7fXKR9lJEQmhNFf3+U8WxhHyZdWDLcw
+         NJPOvuwQaNH643+5AXeloRAmtheRBUpYOI4Jp1RbH2nriar5nOWSNO2yvVLg/KQ8SNzN
+         1XwQ==
+X-Gm-Message-State: AOAM533XQxiFA1sp4YSpZ+w+u5cuQ2rPTdlv1NpPauwUhHDcAkAWjAzF
+        jaHr+Pe94CM96pxBXeKrO1LyzrzXe6igUIenFnN040rD2d8=
+X-Google-Smtp-Source: ABdhPJxRGA3CdrLBH5Kg0SBfJKf5/Wfsqw1IrHZATYGsSzsNK8ghrMXsZ0vYqimlKLZ7STIOnDGC1QZ3aqufLSM3aa4=
+X-Received: by 2002:ac8:424b:: with SMTP id r11mr4563311qtm.171.1590690700762;
+ Thu, 28 May 2020 11:31:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <xuny367lq1z1.fsf@redhat.com> <CAADnVQ+1o1JAm7w1twW0KgKMHbp-JvVjzET2N+VS1z=LajybzA@mail.gmail.com>
- <xunyh7w1nwem.fsf@redhat.com> <CAADnVQKbKA_Yuj7v3c6fNi7gZ8z_q_hzX2ry9optEHE3B_iWcg@mail.gmail.com>
- <ec5f6bd9-83e9-fc55-1885-18eee404d988@kernel.org> <CAADnVQJhb0+KWY0=4WVKc8NQswDJ5pU7LW1dQE2TQuya0Pn0oA@mail.gmail.com>
- <20200528100557.20489f04@redhat.com> <20200528105631.GE3115014@kroah.com>
- <20200528161437.x3e2ddxmj6nlhvv7@ast-mbp.dhcp.thefacebook.com>
- <be0a24f4-8602-ba1b-6ca4-7308b01d7a48@linuxfoundation.org> <20200528181546.eqzcc5kq5y6hnbcu@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200528181546.eqzcc5kq5y6hnbcu@ast-mbp.dhcp.thefacebook.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Thu, 28 May 2020 21:29:36 +0300
-Message-ID: <CANoWsw=NOvkFAv_roNSJhCqK6Z=xAv79CERzDNKz0qSqzZPstQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: split -extras target to -static and -gen
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Benc <jbenc@redhat.com>, shuah <shuah@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+References: <20200527170840.1768178-1-jakub@cloudflare.com>
+ <20200527170840.1768178-9-jakub@cloudflare.com> <CAEf4BzZEDArh8kL-mredwYb=GAOXEue=rGAjOaM0qGjj5RG6RA@mail.gmail.com>
+ <87lflc2no9.fsf@cloudflare.com>
+In-Reply-To: <87lflc2no9.fsf@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 28 May 2020 11:31:29 -0700
+Message-ID: <CAEf4BzZ0qhdABJrG5mkeUM9je3FoJG3jTQ8oeFwT8JV7xS5+Qg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: Add tests for attaching
+ bpf_link to netns
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
-
-On Thu, May 28, 2020 at 9:16 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, May 28, 2020 at 6:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> On Thu, May 28, 2020 at 11:07:09AM -0600, Shuah Khan wrote:
-
-[...]
+> On Thu, May 28, 2020 at 08:08 AM CEST, Andrii Nakryiko wrote:
+> > On Wed, May 27, 2020 at 12:16 PM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >>
+> >> Extend the existing test case for flow dissector attaching to cover:
+> >>
+> >>  - link creation,
+> >>  - link updates,
+> >>  - link info querying,
+> >>  - mixing links with direct prog attachment.
+> >>
+> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> >> ---
 > >
-> > Here is what CI users are requesting:
-> >
-> > - ability to install bpf test with other selftests using kselftest
-> >   install. The common framework is in place and with minor changes
-> >   to bpf test Makefile, we can make this happen. Others and myself
-> >   are willing to work on this, so we can get bpf test coverage in
-> >   test rings.
+> > You are not using bpf_program__attach_netns() at all. Would be nice to
+> > actually use higher-level API here...
 >
-> so you're saying that bpf maintainers and all bpf developers now
-> would need to incorporate new 'make install' step to their workflow
-> because some unknown CI system that is not even functional decided
-> to do 'make install' ?
-> That's exactly my point about selfish CI developers who put their
-> needs in front of bpf community of developers.
+> That's true. I didn't exercise the high-level API. I can cover that.
+>
+> >
+> > Also... what's up with people using CHECK_FAIL + perror instead of
+> > CHECK? Is CHECK being avoided for some reason or people are just not
+> > aware of it (which is strange, because CHECK was there before
+> > CHECK_FAIL)?
+>
+> I can only speak for myself. Funnily enough I think I've switched from
+> CHECK to CHECK_FAIL when I touched on BPF flow dissector last time [0].
+>
+> CHECK needs and "external" duration variable to be in scope, and so it
+> was suggested to me that if I'm not measuring run-time with
+> bpf_prog_test_run, CHECK_FAIL might be a better choice.
 
-May be, it can work both ways to make everybody happy :) (I haven't
-seen yet fundamental problems why not).
+duration is unfortunate and historical, we can eventually fix that,
+but it simply didn't feel worthwhile to me. I just do `static int
+duration;` at the top of the test and forget about it.
 
+>
+> CHECK is also perhaps too verbose because it emits a log message on
+> success (to report duration, I assume).
+
+I actually find that CHECK emitting message regardless of success or
+failure (in verbose mode or when test fails) helps a lot to narrow
+down where exactly the failure happens (it's not always obvious from
+error message). So unless we are talking about 100+ element loops, I'm
+all for CHECK vebosity. Again, you'll see it only when something fails
+or you run tests in verbose mode.
+
+CHECK_FAIL is the worst in that case, because it makes me blind in
+terms of tracking progress of test.
+
+>
+> You have a better overview of all the tests than me, but if I had the
+> cycles I'd see if renaming CHECK to something more specific, for those
+> test that actually track prog run time, can work.
+
+I'd make CHECK not depend on duration instead, and convert existing
+cases that do rely on duration to something like CHECK_TIMED.
+
+>
+> -jkbs
+>
+>
+> [0] https://lore.kernel.org/bpf/87imov1y5m.fsf@cloudflare.com/
+>
+>
+>
+> >
+> >>  .../bpf/prog_tests/flow_dissector_reattach.c  | 500 +++++++++++++++++-
+> >>  1 file changed, 471 insertions(+), 29 deletions(-)
+> >>
+> >
+> > [...]
