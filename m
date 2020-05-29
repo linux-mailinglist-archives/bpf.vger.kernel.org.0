@@ -2,110 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2131E851C
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 19:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B651E84D1
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 19:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgE2Rho (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 13:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S1726962AbgE2Rbz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 13:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbgE2Rhk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 13:37:40 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2AAC008631
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 10:29:31 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n18so86406pfa.2
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 10:29:31 -0700 (PDT)
+        with ESMTP id S1726549AbgE2Rb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 13:31:28 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D632C008634;
+        Fri, 29 May 2020 10:31:24 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e4so215118ljn.4;
+        Fri, 29 May 2020 10:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=g6Xmv8Aoic+dGmRE+DHUL3CUzcIpKcgQcYn9ErwDWD8=;
-        b=SsIDa+EtPdUVsVc+T2wflPrc080k7bUdJ6ZFv3IuoatzBaTljDqWAvugITuVDzxOOu
-         RTttTq+IE0IYz0QU5o325iEezdG8LOTC8f591S9tPGLZpPJJWcO2AZEmpCqjbXV8OHV1
-         9d+sbt1hv3is/q3YxBhFx+mh/s35EISlHGhykNNv+IV5ClnfuThvO0L+yTOvMjJnZH6b
-         mDqERX5XnEzD9eGG+oBLzBhzyRmsfI9/SG9n4YEIFSgiGSyd+B21VBSb/2inykBDUqMO
-         7U8NRKDeLtJLBKBIlAaqUlg6VZnd1L+GFH3ZsGLsyVFfMEXswwNffGd0RZkR6BvmbIpa
-         U7uw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ttnFiSgTFcA9bsBuJjpQ07w9QZNxtFa6q/Uv5VxYCnY=;
+        b=VT5wHJ649RlneCJBvi04+KfyfEYKt3LcRfU5tnAXyJkr3GKgdD1md//2dZFtciINqj
+         o8djEDfAjQCXIlWpHJR8uOcu8A6CjpEKn3rLDZjj4M/aJMI7/VxKf+ELBwSVwkBBwLCj
+         dFTDF+kJ8aUNhPaJZ9gfvE2abgLXqIWEJexWoMKBiOQ9bu6FVH4rPUpOQ5kH7rgG9fKp
+         UDd+vHfbS/XJcrttidZox89hP/Y4qOg5DsLrABNAYwPDcH6GzNAB7aMzk5c5BZrpwdq1
+         lBz5ZeI546kXlNRK09CCLjn62lzFNVDhmZRPe0DyB4QJ3dCgyFKlW6dlDpDAb+CASbn7
+         SG5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=g6Xmv8Aoic+dGmRE+DHUL3CUzcIpKcgQcYn9ErwDWD8=;
-        b=b+DHHk2qK6LWZ7Qgf4v/Y1Fv+L7N4Eg8pWavQNL1kCKbqmpQzqSSehgZnt+XafJolf
-         4DX081ZuD2clHg6gOQ05BpAdHIJtPbowvBCy4EDytraapegJIYJjblvBXdtt4q7HQ+J7
-         LY6nWxat1Y1JMmhwM5872TWT7VB+q6xEn5EOquFQ7AxL9uUBFPKuKH56sm++9KFHl2Zw
-         6ovOdVsGs69zH/2SkfXO6T2X724qi1fbsafIPqw127KbfKUIwS3b2lnDXZWhjU6moUxW
-         kxhTl+XIvMYX1ViHjP0B3QVPQX9/P8PX8BqivYTJknI6wxkCCXUioaUJ2sUfsCku1wMM
-         thgQ==
-X-Gm-Message-State: AOAM530LIQmBNQ85iHALMNUtP5ztqN/mLmv9FHq0LMqpjJpETwlm2Js2
-        MAojsXA9W4Io7MsegrsPJ0y1BqT2
-X-Google-Smtp-Source: ABdhPJzTv5S99Sacn38rJ2nTNyk0Uafcump07ru90F5jTHlNB+h6S+xESqPsnylfligoVMjz6Vge3g==
-X-Received: by 2002:a65:51c7:: with SMTP id i7mr9328073pgq.382.1590773371450;
-        Fri, 29 May 2020 10:29:31 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k18sm884044pfp.208.2020.05.29.10.29.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 May 2020 10:29:30 -0700 (PDT)
-Subject: [bpf PATCH 3/3] bpf,
- selftests: add a verifier test for assigning 32bit reg states to
- 64bit ones
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     yhs@fb.com, alexei.starovoitov@gmail.com, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, john.fastabend@gmail.com, kernel-team@fb.com
-Date:   Fri, 29 May 2020 10:29:18 -0700
-Message-ID: <159077335867.6014.2075350327073125374.stgit@john-Precision-5820-Tower>
-In-Reply-To: <159077324869.6014.6516130782021506562.stgit@john-Precision-5820-Tower>
-References: <159077324869.6014.6516130782021506562.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ttnFiSgTFcA9bsBuJjpQ07w9QZNxtFa6q/Uv5VxYCnY=;
+        b=SOKkbWHvgbHtJCuhx8hsfbF+wHziPwtDjdxbyOik9HL+yBZALxTHgvE2uMqIDvYhcF
+         UVem6EyUu94ERtfb+Lie2MOToFa2VMT2T9WXTElWR+tKzuB5mxBuH8DngL9rlc4MvseM
+         B6WqlnDIMUx8K6S80cBQTwGnUUxdoC3R8wxivtWBkZ+FSRZfKRKaIMyzgYmyDqQqSuoR
+         r3VFuGSAGzBx7ASc9H0rE2INfvg2WFx0tIPIM0rjMphu29MNR1FbIXWQb7m/yeecN/ZU
+         S5f32PE5+efVSmj/dRBBU9QdfJ316tTIRShOidBOsbcGWz7ZLHOpF252nGQy0UyyFZks
+         5RMQ==
+X-Gm-Message-State: AOAM530L5nchlcnbD3+IsLQsIZzS1SjOSAHxsAqos+PzmPzs+yb/sEuc
+        37kwlzRhcGJ0qq6SYsrBH4x3+Oh/z0xkLwbeLPY=
+X-Google-Smtp-Source: ABdhPJyVqzjOtqZW3copbX8PaKgTwOYBVo/jLi1F2/mksD9f6+C2PBaBY09o4eLFXR3LyhDARaCWoQN74WfHw83YGLM=
+X-Received: by 2002:a2e:81d1:: with SMTP id s17mr4824524ljg.91.1590773482693;
+ Fri, 29 May 2020 10:31:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com> <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook>
+In-Reply-To: <202005290903.11E67AB0FD@keescook>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 29 May 2020 10:31:11 -0700
+Message-ID: <CAADnVQLciPUdO4hP2a2EbUE2zdE3AUxb8KZPkVaM+6+1CMNFzg@mail.gmail.com>
+Subject: Re: new seccomp mode aims to improve performance
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "zhujianwei (C)" <zhujianwei7@huawei.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Hehuazhen <hehuazhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Added a verifier test for assigning 32bit reg states to
-64bit where 32bit reg holds a constant value of 0.
+On Fri, May 29, 2020 at 9:09 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, May 29, 2020 at 08:43:56AM -0700, Alexei Starovoitov wrote:
+> > On Fri, May 29, 2020 at 5:50 AM zhujianwei (C) <zhujianwei7@huawei.com>=
+ wrote:
+> > >
+> > > Hi, all
+> > >
+> > >=E3=80=80=E3=80=80 We're using seccomp to increase container security,=
+ but bpf rules filter causes performance to deteriorate. So, is there a goo=
+d solution to improve performance, or can we add a simplified seccomp mode =
+to improve performance?
+>
+> Yes, there are already plans for a simple syscall bitmap[1] seccomp featu=
+re.
+>
+> > I don't think your hunch at where cpu is spending cycles is correct.
+> > Could you please do two experiments:
+> > 1. try trivial seccomp bpf prog that simply returns 'allow'
+> > 2. replace bpf_prog_run_pin_on_cpu() in seccomp.c with C code
+> >   that returns 'allow' and make sure it's noinline or in a different C =
+file,
+> >   so that compiler doesn't optimize the whole seccomp_run_filters() int=
+o a nop.
+> >
+> > Then measure performance of both.
+> > I bet you'll see exactly the same numbers.
+>
+> Android has already done this, it appeared to not be the same. Calling
+> into a SECCOMP_RET_ALLOW filter had a surprisingly high cost. I'll see
+> if I can get you the numbers. I was frankly quite surprised -- I
+> understood the bulk of the seccomp overhead to be in taking the TIF_WORK
+> path, copying arguments, etc, but something else is going on there.
 
-Without previous kernel verifier.c fix, the test in
-this patch will fail.
+Kees,
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/testing/selftests/bpf/verifier/bounds.c |   22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/testing/selftests/bpf/verifier/bounds.c
-index fafa540..58f4aa59 100644
---- a/tools/testing/selftests/bpf/verifier/bounds.c
-+++ b/tools/testing/selftests/bpf/verifier/bounds.c
-@@ -535,3 +535,25 @@
- 	},
- 	.result = ACCEPT
- },
-+{
-+	"assigning 32bit bounds to 64bit for wA = 0, wB = wA",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data_end)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
-+		    offsetof(struct __sk_buff, data)),
-+	BPF_MOV32_IMM(BPF_REG_9, 0),
-+	BPF_MOV32_REG(BPF_REG_2, BPF_REG_9),
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_7),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_6, BPF_REG_2),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_6),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 8),
-+	BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_8, 1),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_5, BPF_REG_6, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result = ACCEPT,
-+	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
-+},
-
+Please show the numbers that prove your point.
+I've seen people making this mistake over and over again.
+Intel folks also said that calling into bpf is slow only to be proved wrong=
+.
+It turned out to be the cost of retpoline and bpf_dispatcher logic resolved=
+ it.
