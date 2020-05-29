@@ -2,183 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558AA1E87BD
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 21:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E5C1E88AC
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 22:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgE2T1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 15:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        id S1726926AbgE2UMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 16:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgE2T1G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 15:27:06 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCAFC03E969
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 12:27:06 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id q16so1639382plr.2
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 12:27:06 -0700 (PDT)
+        with ESMTP id S1726866AbgE2UMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 16:12:33 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FBBC03E969;
+        Fri, 29 May 2020 13:12:31 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z64so389381pfb.1;
+        Fri, 29 May 2020 13:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=o/t21DOf3N4tU3q9CHLKe4uAPhKpGjNd6jUKhRTo7Pw=;
-        b=C3BYX09WdYjGq3THgqRtIpX1kmXGTzdTjyvnJTXDcMbGuWUQAZA0ntUajAy2AsM5J3
-         4BT26rKrS9RgdJAeimaPzZLqBvcCEj00rQymm1Tt8jqS/LEc6HqrTjT6xASBAQqzQMig
-         iHpw94VcQUYfOzJffP6KUqLz/ZEdLCyigHOUI=
+        bh=gUocMtpwdaWAZ7apW76UnYvJQVntYbYjDQYSBzcs1Yo=;
+        b=KRHZXIHgK5lSYK8fl8l2EdAEuxToMG2nYz96YF9odBvToMi+KHVX1yxpy91pG+wNu5
+         427jiCI1XW02fz2EJqz9xOsXMHQDJC1FcLSv/Fx1ff6vCaNjtq4zuyy+odzwchNQF+I5
+         VbCpWLYv5s9eE34eKD9mfJJUzxHSdrObemXxbr9TzaMEo1rfXsaCKnDOs74MFqYF+Coj
+         nxSv0+Q2ioCjy+ONHqPwGf58WOBKZlrSC71txNf9xeMsr9UVITt4QL9DZ1d7SwVwm6sD
+         vMaB+tK5rJAljZhWn0NBNhvxUWSzNVrJ093wtwqSuNGagL4lKm3S55g2MEO1L71qexeN
+         /T9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=o/t21DOf3N4tU3q9CHLKe4uAPhKpGjNd6jUKhRTo7Pw=;
-        b=DbcdQhDHTixeQAMhyug4wD2hD/8QBzqq8OJPjmFzMvq/78iXIXhR5jWlo6i9t+8w0K
-         LMuB56H9JHachMyoT20g1evQxjPGauQ0OFexRKh/3j1HwsBhmpPgo14Xi6DKHZeDkk4M
-         cUkatwpo7NF4L1b2fSvkBi7ZuxfX1FtoFNq5SxRQR65/kwDANDYuruPJJxZPS5DM281t
-         th+FqW7X34F7+x1YR1YGqoiTSxAHB7CSS8pYTtseVtAUJuiv0MHIjISfuU27kw/nVvkJ
-         puw5TEDaP3BRhPxknCk8mNgfDqoAE/sDXYCYBqQd4Eq4Hpd5kR7VRs24Vda4ria3PPbO
-         J4Fg==
-X-Gm-Message-State: AOAM531Je/ofyNRLzwpm4EmQtSbY3cXd0VJXeeYT0KiqEMm28cG81F3p
-        KfnoPS8B6/JopTvLApy+pjyELg==
-X-Google-Smtp-Source: ABdhPJwpDHVpkT7XWfMKgzeXt9Zai0pArlJJUrlzK2q7jlmWeLfEStY3jHhhr3icXxEA51QG3pIaow==
-X-Received: by 2002:a17:90a:cb13:: with SMTP id z19mr103549pjt.169.1590780425670;
-        Fri, 29 May 2020 12:27:05 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm2246320pfr.2.2020.05.29.12.27.04
+        bh=gUocMtpwdaWAZ7apW76UnYvJQVntYbYjDQYSBzcs1Yo=;
+        b=TMkgHLhlP6e+rCEczRmeQa1GkJu9/mj96yC+TOn47jDbFY0mKRojh69ZhZf7gS/67Y
+         ze4U4RzWvaCRyCXjpQVLP4Z9x1ytwk6LM9oKpno+D4gsiwTJQqZzmEPZJQpC9olAdAHN
+         KOL2oKh0ScYjh+go44Rx1MkZc9zsQ0AOprd0kP0L3tyiFbPqnj8VFk3iiL24uk7TBFQj
+         jH9npS8ZzVEAB0OXrS3iXCulrT2pOzuVfCkwv/iqEz0zF5Bolsz7na/j30maqJuvisgN
+         3QkGot+vNlXFfMgfXO/RTsL80LmgK+RT3ycRvClXQ+n9M623CYd4kQXHKmjG+pQQuqK1
+         K1wA==
+X-Gm-Message-State: AOAM533D28DTudYHTjUs6l6yny+u56n4By9Zx0f9hsNYLVpI8aer688K
+        HoYjhKcgtyLLcKGCSzYf5XM=
+X-Google-Smtp-Source: ABdhPJyoBiAcX4B8h9eZvd7zqegfwCNH6eWnC7Lb4GCDcasEz2nOycz9LMi49tUuhLSNGbGBF4mnng==
+X-Received: by 2002:a62:7b0b:: with SMTP id w11mr10740579pfc.7.1590783151331;
+        Fri, 29 May 2020 13:12:31 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6ddc])
+        by smtp.gmail.com with ESMTPSA id m2sm7876197pfe.41.2020.05.29.13.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 12:27:04 -0700 (PDT)
-Date:   Fri, 29 May 2020 12:27:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "zhujianwei (C)" <zhujianwei7@huawei.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Hehuazhen <hehuazhen@huawei.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
-        Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
-Subject: Re: new seccomp mode aims to improve performance
-Message-ID: <202005291043.A63D910A8@keescook>
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
- <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
- <202005290903.11E67AB0FD@keescook>
+        Fri, 29 May 2020 13:12:30 -0700 (PDT)
+Date:   Fri, 29 May 2020 13:12:28 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] bpf: Introduce sleepable BPF programs
+Message-ID: <20200529201228.oixjsibn6uwktkgh@ast-mbp.dhcp.thefacebook.com>
+References: <20200529043839.15824-1-alexei.starovoitov@gmail.com>
+ <20200529043839.15824-3-alexei.starovoitov@gmail.com>
+ <CAEf4BzZXnqLwhJaUVKX0ExVa+Sw5mnhg5FLJN-VKPX59f6EAoQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202005290903.11E67AB0FD@keescook>
+In-Reply-To: <CAEf4BzZXnqLwhJaUVKX0ExVa+Sw5mnhg5FLJN-VKPX59f6EAoQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 29, 2020 at 09:09:28AM -0700, Kees Cook wrote:
-> On Fri, May 29, 2020 at 08:43:56AM -0700, Alexei Starovoitov wrote:
-> > I don't think your hunch at where cpu is spending cycles is correct.
-> > Could you please do two experiments:
-> > 1. try trivial seccomp bpf prog that simply returns 'allow'
-> > 2. replace bpf_prog_run_pin_on_cpu() in seccomp.c with C code
-> >   that returns 'allow' and make sure it's noinline or in a different C file,
-> >   so that compiler doesn't optimize the whole seccomp_run_filters() into a nop.
-> > 
-> > Then measure performance of both.
-> > I bet you'll see exactly the same numbers.
+On Fri, May 29, 2020 at 01:25:06AM -0700, Andrii Nakryiko wrote:
+> > index 11584618e861..26b18b6a3dbc 100644
+> > --- a/kernel/bpf/arraymap.c
+> > +++ b/kernel/bpf/arraymap.c
+> > @@ -393,6 +393,11 @@ static void array_map_free(struct bpf_map *map)
+> >          */
+> >         synchronize_rcu();
+> >
+> > +       /* arrays could have been used by both sleepable and non-sleepable bpf
+> > +        * progs. Make sure to wait for both prog types to finish executing.
+> > +        */
+> > +       synchronize_srcu(&bpf_srcu);
+> > +
 > 
-> Android has already done this, it appeared to not be the same. Calling
-> into a SECCOMP_RET_ALLOW filter had a surprisingly high cost. I'll see
-> if I can get you the numbers. I was frankly quite surprised -- I
-> understood the bulk of the seccomp overhead to be in taking the TIF_WORK
-> path, copying arguments, etc, but something else is going on there.
+> to minimize churn later on when you switch to rcu_trace, maybe extract
+> synchronize_rcu() + synchronize_srcu(&bpf_srcu) into a function (e.g.,
+> something like synchronize_sleepable_bpf?), exposed as an internal
+> API? That way you also wouldn't need to add bpf_srcu to linux/bpf.h?
 
-So while it's not the Android measurements, here's what I'm seeing on
-x86_64 (this is hardly a perfect noiseless benchmark, but sampling error
-appears to close to 1%):
+I think the opposite is must have actually. I think rcu operations should never
+be hidden in helpers. All rcu/srcu/rcu_trace ops should always be open coded.
 
+> > @@ -577,8 +577,8 @@ static void *__htab_map_lookup_elem(struct bpf_map *map, void *key)
+> >         struct htab_elem *l;
+> >         u32 hash, key_size;
+> >
+> > -       /* Must be called with rcu_read_lock. */
+> > -       WARN_ON_ONCE(!rcu_read_lock_held());
+> > +       /* Must be called with s?rcu_read_lock. */
+> > +       WARN_ON_ONCE(!rcu_read_lock_held() && !srcu_read_lock_held(&bpf_srcu));
+> >
+> 
+> Similar to above, might be worthwhile extracting into a function?
 
-net.core.bpf_jit_enable=0:
+This one I'm 50/50, since this pattern will be in many places.
+But what kind of helper that would be?
+Clear name is very hard.
+WARN_ON_ONCE(!bpf_specific_rcu_lock_held()) ?
+Moving WARN into the helper would be even worse.
 
-Benchmarking 16777216 samples...
-10.633756139 - 0.004359714 = 10629396425
-getpid native: 633 ns
-23.008737499 - 10.633967641 = 12374769858
-getpid RET_ALLOW 1 filter: 737 ns
-36.723141843 - 23.008975696 = 13714166147
-getpid RET_ALLOW 2 filters: 817 ns
-47.751422021 - 36.723345630 = 11028076391
-getpid BPF-less allow: 657 ns
-Estimated total seccomp overhead for 1 filter: 104 ns
-Estimated total seccomp overhead for 2 filters: 184 ns
-Estimated seccomp per-filter overhead: 80 ns
-Estimated seccomp entry overhead: 24 ns
-Estimated BPF overhead per filter: 80 ns
+When rcu_trace is available the churn of patches to convert srcu to rcu_trace
+will be a good thing. The patches will convey the difference.
+Like bpf_srcu will disappear. They will give a way to do benchmarking before/after
+and will help to go back to srcu in unlikely case there is some obscure bug
+in rcu_trace. Hiding srcu vs rcu_trace details behind helpers is not how
+the code should read. The trade off with one and another will be different
+case by case. Like synchronize_srcu() is ok, but synchronize_rcu_trace()
+may be too heavy in the trampoline update code and extra counter would be needed.
+Also there will be synchronize_multi() that I plan to use as well.
 
+> >
+> > +       if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+> > +           prog->type != BPF_PROG_TYPE_LSM) {
+> > +               verbose(env, "Only fentry/fexit/fmod_ret and lsm programs can be sleepable\n");
+> > +               return -EINVAL;
+> > +       }
+> 
+> 
+> BPF_PROG_TYPE_TRACING also includes iterator and raw tracepoint
+> programs. You mention only fentry/fexit/fmod_ret are allowed. What
+> about those two? I don't see any explicit checks for iterator and
+> raw_tracepoint attach types in a switch below, so just checking if
+> they should be allowed to be sleepable?
 
-net.core.bpf_jit_enable=1:
-net.core.bpf_jit_harden=1:
+good point. tp_btf and iter don't use trampoline, so sleepable flag
+is ignored. which is wrong. I'll add a check to get the prog rejected.
 
-Benchmarking 16777216 samples...
-31.939978606 - 21.275190689 = 10664787917
-getpid native: 635 ns
-43.324592380 - 31.940794751 = 11383797629
-getpid RET_ALLOW 1 filter: 678 ns
-55.001650599 - 43.326293248 = 11675357351
-getpid RET_ALLOW 2 filters: 695 ns
-65.986452855 - 55.002249904 = 10984202951
-getpid BPF-less allow: 654 ns
-Estimated total seccomp overhead for 1 filter: 43 ns
-Estimated total seccomp overhead for 2 filters: 60 ns
-Estimated seccomp per-filter overhead: 17 ns
-Estimated seccomp entry overhead: 26 ns
-Estimated BPF overhead per filter: 24 ns
+> Also seems like freplace ones are also sleeepable, if they replace
+> sleepable programs, right?
 
+freplace is a different program type. So it's rejected by this code already.
+Eventually I'll add support to allow sleepable freplace prog that extend
+sleepable target. But that's future.
 
-net.core.bpf_jit_enable=1:
-net.core.bpf_jit_harden=0:
+> > +
+> >         if (prog->type == BPF_PROG_TYPE_STRUCT_OPS)
+> >                 return check_struct_ops_btf_id(env);
+> >
+> > @@ -10762,8 +10801,29 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+> >                         if (ret)
+> >                                 verbose(env, "%s() is not modifiable\n",
+> >                                         prog->aux->attach_func_name);
+> > +               } else if (prog->aux->sleepable) {
+> > +                       switch (prog->type) {
+> > +                       case BPF_PROG_TYPE_TRACING:
+> > +                               /* fentry/fexit progs can be sleepable only if they are
+> > +                                * attached to ALLOW_ERROR_INJECTION or security_*() funcs.
+> > +                                */
+> > +                               ret = check_attach_modify_return(prog, addr);
+> 
+> I was so confused about this piece... check_attach_modify_return()
+> should probably be renamed to something else, it's not for fmod_ret
+> only anymore.
 
-Benchmarking 16777216 samples...
-10.684681435 - 0.004198682 = 10680482753
-getpid native: 636 ns
-22.050823167 - 10.685571417 = 11365251750
-getpid RET_ALLOW 1 filter: 677 ns
-33.714134291 - 22.051100183 = 11663034108
-getpid RET_ALLOW 2 filters: 695 ns
-44.793312551 - 33.714383001 = 11078929550
-getpid BPF-less allow: 660 ns
-Estimated total seccomp overhead for 1 filter: 41 ns
-Estimated total seccomp overhead for 2 filters: 59 ns
-Estimated seccomp per-filter overhead: 18 ns
-Estimated seccomp entry overhead: 23 ns
-Estimated BPF overhead per filter: 17 ns
+why? I think the name is correct. The helper checks whether target
+allows modifying its return value. It's a first while list.
+When that passes the black list applies via check_sleepable_blacklist() function.
 
+I was considering using whitelist for sleepable as well, but that's overkill.
+Too much overlap with mod_ret.
+Imo check whitelist + check blacklist for white list exceptions is clean enough.
 
-The above is from my (very dangerous!) benchmarking patch[1].
-
-So, with the layered nature of seccomp filters there's a reasonable gain
-to be seen for a O(1) bitmap lookup to skip running even a single filter,
-even for the fastest BPF mode.
-
-Not that we need to optimize for the pathological case, but this would
-be especially useful for cases like systemd, which appears to be
-constructing seccomp filters very inefficiently maybe on a per-syscall[3]
-basis? For example, systemd-resolved has 32 (!) seccomp filters
-attached[2]:
-
-# grep ^Seccomp_filters /proc/$(pidof systemd-resolved)/status
-Seccomp_filters:        32
-
-# grep SystemCall /lib/systemd/system/systemd-resolved.service
-SystemCallArchitectures=native
-SystemCallErrorNumber=EPERM
-SystemCallFilter=@system-service
-
-I'd like to better understand what they're doing, but haven't had time
-to dig in. (The systemd devel mailing list requires subscription, so
-I've directly CCed some systemd folks that have touched seccomp there
-recently. Hi! The starts of this thread is here[4].)
-
--Kees
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=seccomp/benchmark-bpf&id=20cc7d8f4238ea3bc1798f204bb865f4994cca27
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/seccomp&id=9d06f16f463cef5c445af9738efed2bfe4c64730
-[3] https://www.freedesktop.org/software/systemd/man/systemd.exec.html#SystemCallFilter=
-[4] https://lore.kernel.org/bpf/c22a6c3cefc2412cad00ae14c1371711@huawei.com/
-
--- 
-Kees Cook
+> 
+> > +                               if (!ret)
+> > +                                       ret = check_sleepable_blacklist(addr);
+> > +                               break;
+> > +                       case BPF_PROG_TYPE_LSM:
+> > +                               /* LSM progs check that they are attached to bpf_lsm_*() funcs
+> > +                                * which are sleepable too.
+> > +                                */
+> > +                               ret = check_sleepable_blacklist(addr);
+> > +                               break;
