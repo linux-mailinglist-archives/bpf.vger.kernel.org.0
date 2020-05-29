@@ -2,86 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7A51E82DF
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50D51E831E
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgE2QDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 12:03:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44762 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725865AbgE2QDP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 12:03:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590768194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JQJBuKxibYAvW+zZiY/Y9en7xdW7sDWElJX/eOrT0u8=;
-        b=CLLgeOaNnDndo+Eij9yQM/WZOUoNYF5PVirMqW67rJqPCavBtp+1bWYBzuR/ymmHrljmM6
-        6B/Pm7rd5rFm5XVeUt30xLXj0KJls5BfhwRPtREli0883PCLSRrHGhtjjOHGDRMzWVZa7w
-        2VMrLkzKHIEsT7OW8a1UWhHMk8YoSUA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-zP8Og08BPN-Dpgg_zOU6EQ-1; Fri, 29 May 2020 12:03:10 -0400
-X-MC-Unique: zP8Og08BPN-Dpgg_zOU6EQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A54B107AD74;
-        Fri, 29 May 2020 16:03:08 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF1A75D9EF;
-        Fri, 29 May 2020 16:02:57 +0000 (UTC)
-Date:   Fri, 29 May 2020 18:02:56 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        toke@redhat.com, lorenzo@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        brouer@redhat.com
-Subject: Re: [PATCH v3 bpf-next 1/5] devmap: Formalize map value as a named
- struct
-Message-ID: <20200529180256.2e4d3940@carbon>
-In-Reply-To: <2a121938-fe50-694c-40c6-0f4b8edbefb5@gmail.com>
-References: <20200529052057.69378-1-dsahern@kernel.org>
-        <20200529052057.69378-2-dsahern@kernel.org>
-        <20200529102256.22dd50da@carbon>
-        <2a121938-fe50-694c-40c6-0f4b8edbefb5@gmail.com>
+        id S1727989AbgE2QGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 12:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgE2QG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 12:06:28 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84786C03E969;
+        Fri, 29 May 2020 09:06:28 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h9so2324147qtj.7;
+        Fri, 29 May 2020 09:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lqTsyzjRehJUOH405LBW4wTGdQ2N6UIDHlWNnbs0wQw=;
+        b=DgU2WmpxqUFLQ+4O4a2LwXWDXk1KgxaX+xNMUUQ/HtvQ0+NO3TPRP7NcpG/1oNMDBb
+         VYLsi7BuudNO0qEyLzbKMaNuMVGwpQ5akkwxkS8zjNwT27AkwlrR5B58logDJ4VEfXQY
+         6WOiqz4KzenhsujPS941u5eSadiokp0Pyn/nxfwnxlITVKVe5KCvpjKTbiKcTMijuzjc
+         5qc0M2wM6QOwdqSg+6R6GKpfXzD/mujKDY9xgec3zMBT88rj38i26nMDRTaGGZiPHaQ9
+         ApRm+G2O3dV5gDumTPB2cPUBwn0U7MWbJqhjV6JalsuIE/crJ5/YoQgNpT9hXGI0eqx2
+         mYkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lqTsyzjRehJUOH405LBW4wTGdQ2N6UIDHlWNnbs0wQw=;
+        b=qbVGZZuBKnCd7RQu9VW+XEY8WpnOh/8+WiwbPjQazp7Q1rvbxanrW3aSbu6D6TfBwP
+         LqHHkrQtghEiYh1iJ1i6S8lRM31b9+PtHZLt1LCEAXjMS1R53P0SRM2oc6cAVV6c8YEw
+         BECLfN/5FuO1LnSw18uN3DnjlIXGS+wPIPhI7ipxi/WYYzRmTJ213cBA/5OrkTXmQVMG
+         2s1eBQHFWH9daT2dYixi1MQdu0mo+IRwMhQc0m4IiI0m8Tdl2RyvBN1pyt4y2R5/s/rg
+         vk1pR5Dd6werW++42YE+FnoKX067Bv13FEqplp8/i3ZvniSUHKTy6GZS9h8b/rsSxIkU
+         UsVg==
+X-Gm-Message-State: AOAM533w3vVJDTRO+kDh2zahzBVfSqhdh7860RuwAq+i2BhV+qZuctVM
+        CoekrpZ3P+VWpBdNcq8B9B8=
+X-Google-Smtp-Source: ABdhPJwXvWOjITxD1BzHdHiBH+kJMAfmlqQtckkVGFDu1kRKUccRxxJwItrlNrQuqa2PGzC7wYeq8Q==
+X-Received: by 2002:aed:3b54:: with SMTP id q20mr9805140qte.362.1590768387836;
+        Fri, 29 May 2020 09:06:27 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:9452:75de:4860:c1e3? ([2601:282:803:7700:9452:75de:4860:c1e3])
+        by smtp.googlemail.com with ESMTPSA id 10sm7802275qkv.136.2020.05.29.09.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 09:06:27 -0700 (PDT)
+Subject: Re: [PATCH bpf-next RFC 1/3] bpf: move struct bpf_devmap_val out of
+ UAPI
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
+ <159076798058.1387573.3077178618799401182.stgit@firesoul>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a0cadc6b-ceb4-c40b-8a02-67b99a665d74@gmail.com>
+Date:   Fri, 29 May 2020 10:06:25 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <159076798058.1387573.3077178618799401182.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 29 May 2020 09:36:14 -0600
-David Ahern <dsahern@gmail.com> wrote:
+On 5/29/20 9:59 AM, Jesper Dangaard Brouer wrote:
+> @@ -60,6 +60,15 @@ struct xdp_dev_bulk_queue {
+>  	unsigned int count;
+>  };
+>  
+> +/* DEVMAP values */
+> +struct bpf_devmap_val {
+> +	__u32 ifindex;   /* device index */
+> +	union {
+> +		int   fd;  /* prog fd on map write */
+> +		__u32 id;  /* prog id on map read */
+> +	} bpf_prog;
+> +};
+> +
 
-> On 5/29/20 2:22 AM, Jesper Dangaard Brouer wrote:
-> > We do need this struct bpf_devmap_val, but I think it is wrong to make this UAPI.
-> > 
-> > A BPF-prog can get this via:  #include "vmlinux.h"  
-> 
-> sure. I see that now.
-> 
-> I forgot to fold in a small update to the selftests, so I need to send a
-> v4 anyways. I will wait until later in the day in case there are other
-> comments.
-
-I've just posted a patchset on top of this V3, that moves struct
-bpf_devmap_val, and that demonstrate via code that I mean by
-leveraging BTF for dynamic config API.
-
-https://lore.kernel.org/netdev/159076794319.1387573.8722376887638960093.stgit@firesoul/
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+I can pick up this name change for v4.
