@@ -2,302 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA101E6FB0
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 00:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2931E710E
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 02:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437411AbgE1Wym (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 18:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437396AbgE1Wy3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 May 2020 18:54:29 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890B6C08C5CA
-        for <bpf@vger.kernel.org>; Thu, 28 May 2020 15:54:29 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b6so532039qkh.11
-        for <bpf@vger.kernel.org>; Thu, 28 May 2020 15:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+zdBNPOW7cOm3saj18R6cxycqoLSohMFP/QJpLGzg1E=;
-        b=HBd2vw5otsK1Ic+ZhoaAv5DjPeJWRNR1ElMMQA/Hm7cNcLoSsn1A5cpbisfjoJoDSs
-         GIsps7HmWKCV1WFFSh+XteZ2SENcTyGF0G42D0TQeyFND14KbnUgxz4L0h6+s55JGLzy
-         Dz3nZ49LsNvuZPuqF9abr/oFvAFXNyZZjOXEs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+zdBNPOW7cOm3saj18R6cxycqoLSohMFP/QJpLGzg1E=;
-        b=HMkBQCZOyT8yln764UkOvNCQXsvK0XD6vQuNjyR2B2lCD+zfo8NZ0KbnEv+hnJAIfa
-         PCQSZLa0emNa9ZOSKiFiibSZFgZhR7dqvvUnS0aOGLeBBytirDPiAWOUM155Cgmb9jqO
-         E37VjT0quY8ZK7EqZBsOJzwi4VxqBcKBVJCwf29C1U877uGrNHheofBbwma3mj2WE4IG
-         jg+wNZHpc7SqMy7joy2prEnPDJjFt3fENXzzwMli80KeMxz9ea3Qw/IWleMNrqq5wUR2
-         ruGH+UxuOzg9gRAiK9NsVKCmOuLnfGvuCIetc9/PX1fs5FlvPeBgxNcLdY8cQWTC/QhN
-         Gw2g==
-X-Gm-Message-State: AOAM531SiatjXch/ty2/7O36HCmu9Ste05L3Bobqhd6R87qb2Z+E1dnp
-        SrAR7EWmwosMj33LyN24uqOQog==
-X-Google-Smtp-Source: ABdhPJzhTMeBJ00IWmmVqjA7IjEXo6/Clp1WbKxbGJLKmJaqeGr0WCvwCQbPbJ5Sk971Zv/URXRHYg==
-X-Received: by 2002:a37:ef08:: with SMTP id j8mr5304678qkk.442.1590706468511;
-        Thu, 28 May 2020 15:54:28 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id m10sm6350677qtg.94.2020.05.28.15.54.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 15:54:28 -0700 (PDT)
-Date:   Thu, 28 May 2020 18:54:27 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, paulmck@kernel.org,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH linux-rcu] docs/litmus-tests: add BPF ringbuf MPSC litmus
- tests
-Message-ID: <20200528225427.GA225299@google.com>
-References: <20200528062408.547149-1-andriin@fb.com>
+        id S2437956AbgE2AEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 May 2020 20:04:45 -0400
+Received: from ozlabs.org ([203.11.71.1]:55491 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437912AbgE2AEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 May 2020 20:04:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Y4Z15pqnz9sSr;
+        Fri, 29 May 2020 10:04:41 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1590710682;
+        bh=1k66Zb1qj7uZTPSgBhIL++YFWp+iDlmiX28l8erpYqg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o1PcgC9S+oeama+IYyXAsikM6eJBkAXJmRybBTKTG3nSLKRN/+hbWjBYIkEGNOD3w
+         tEHBgjs7AGq/z4oYtKerEUcCSRiMBzSmG4qjrOCA2nF+dJvQiTEw2KuxCYF5XU9DCr
+         N+XSySMPJqa76fXQHmt2yDDly3t+AdPhuTsUJTNS49HueAQoCWdsPHKpdsfe5tweBU
+         x7x+Yfzwv41BQJORdPCye2b0AifE/ScvPRRUiWwWgWy58CaJCnx2EvfEhMWEp1kpfJ
+         D9lfo8oDfXHVRE8MlYZaKv42OkimVKzpeGxJbXVOr+VB9CdFzP5EGWfAqsH7fKsBZq
+         4EA2vxLFfmfcw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, bpf@vger.kernel.org
+Subject: Re: [PATCH] powerpc/bpf: Enable bpf_probe_read{, str}() on powerpc again
+In-Reply-To: <aace2e9e-c63c-a1a2-a1e1-c7a46904e8c5@iogearbox.net>
+References: <20200527122844.19524-1-pmladek@suse.com> <87ftbkkh00.fsf@mpe.ellerman.id.au> <20200528091351.GE3529@linux-b0ei> <87d06ojlib.fsf@mpe.ellerman.id.au> <aace2e9e-c63c-a1a2-a1e1-c7a46904e8c5@iogearbox.net>
+Date:   Fri, 29 May 2020 10:05:05 +1000
+Message-ID: <87y2pbip1q.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528062408.547149-1-andriin@fb.com>
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Andrii,
-This is quite exciting. Some comments below:
+Daniel Borkmann <daniel@iogearbox.net> writes:
+> On 5/28/20 2:23 PM, Michael Ellerman wrote:
+>> Petr Mladek <pmladek@suse.com> writes:
+>>> On Thu 2020-05-28 11:03:43, Michael Ellerman wrote:
+>>>> Petr Mladek <pmladek@suse.com> writes:
+>>>>> The commit 0ebeea8ca8a4d1d453a ("bpf: Restrict bpf_probe_read{, str}() only
+>>>>> to archs where they work") caused that bpf_probe_read{, str}() functions
+>>>>> were not longer available on architectures where the same logical address
+>>>>> might have different content in kernel and user memory mapping. These
+>>>>> architectures should use probe_read_{user,kernel}_str helpers.
+>>>>>
+>>>>> For backward compatibility, the problematic functions are still available
+>>>>> on architectures where the user and kernel address spaces are not
+>>>>> overlapping. This is defined CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+>>>>>
+>>>>> At the moment, these backward compatible functions are enabled only
+>>>>> on x86_64, arm, and arm64. Let's do it also on powerpc that has
+>>>>> the non overlapping address space as well.
+>>>>>
+>>>>> Signed-off-by: Petr Mladek <pmladek@suse.com>
+>>>>
+>>>> This seems like it should have a Fixes: tag and go into v5.7?
+>>>
+>>> Good point:
+>>>
+>>> Fixes: commit 0ebeea8ca8a4d1d4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+>>>
+>>> And yes, it should ideally go into v5.7 either directly or via stable.
+>>>
+>>> Should I resend the patch with Fixes and
+>>> Cc: stable@vger.kernel.org #v45.7 lines, please?
+>> 
+>> If it goes into v5.7 then it doesn't need a Cc: stable, and I guess a
+>> Fixes: tag is nice to have but not so important as it already mentions
+>> the commit that caused the problem. So a resend probably isn't
+>> necessary.
+>> 
+>> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+>> 
+>> Daniel can you pick this up, or should I?
+>
+> Yeah I'll take it into bpf tree for v5.7.
 
-On Wed, May 27, 2020 at 11:24:08PM -0700, Andrii Nakryiko wrote:
-[...]
-> diff --git a/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus
-> new file mode 100644
-> index 000000000000..558f054fb0b4
-> --- /dev/null
-> +++ b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+bounded.litmus
-> @@ -0,0 +1,91 @@
-> +C bpf-rb+1p1c+bounded
-> +
-> +(*
-> + * Result: Always
-> + *
-> + * This litmus test validates BPF ring buffer implementation under the
-> + * following assumptions:
-> + * - 1 producer;
-> + * - 1 consumer;
-> + * - ring buffer has capacity for only 1 record.
-> + *
-> + * Expectations:
-> + * - 1 record pushed into ring buffer;
-> + * - 0 or 1 element is consumed.
-> + * - no failures.
-> + *)
-> +
-> +{
-> +	atomic_t dropped;
-> +}
-> +
-> +P0(int *lenFail, int *len1, int *cx, int *px)
-> +{
-> +	int *rLenPtr;
-> +	int rLen;
-> +	int rPx;
-> +	int rCx;
-> +	int rFail;
-> +
-> +	rFail = 0;
-> +
-> +	rCx = smp_load_acquire(cx);
-> +	rPx = smp_load_acquire(px);
+Thanks.
 
-Is it possible for you to put some more comments around which ACQUIRE is
-paired with which RELEASE? And, in general more comments around the reason
-for a certain memory barrier and what pairs with what. In the kernel sources,
-the barriers needs a comment anyway.
-
-> +	if (rCx < rPx) {
-> +		if (rCx == 0) {
-> +			rLenPtr = len1;
-> +		} else {
-> +			rLenPtr = lenFail;
-> +			rFail = 1;
-> +		}
-> +
-> +		rLen = smp_load_acquire(rLenPtr);
-> +		if (rLen == 0) {
-> +			rFail = 1;
-> +		} else if (rLen == 1) {
-> +			rCx = rCx + 1;
-> +			smp_store_release(cx, rCx);
-> +		}
-> +	}
-> +}
-> +
-> +P1(int *lenFail, int *len1, spinlock_t *rb_lock, int *px, int *cx, atomic_t *dropped)
-> +{
-> +	int rPx;
-> +	int rCx;
-> +	int rFail;
-> +	int *rLenPtr;
-> +
-> +	rFail = 0;
-> +
-> +	rCx = smp_load_acquire(cx);
-> +	spin_lock(rb_lock);
-> +
-> +	rPx = *px;
-> +	if (rPx - rCx >= 1) {
-> +		atomic_inc(dropped);
-
-Why does 'dropped' need to be atomic if you are always incrementing under a
-lock?
-
-> +		spin_unlock(rb_lock);
-> +	} else {
-> +		if (rPx == 0) {
-> +			rLenPtr = len1;
-> +		} else {
-> +			rLenPtr = lenFail;
-> +			rFail = 1;
-> +		}
-> +
-> +		*rLenPtr = -1;
-
-Clarify please the need to set the length intermittently to -1. Thanks.
-
-> +		smp_store_release(px, rPx + 1);
-> +
-> +		spin_unlock(rb_lock);
-> +
-> +		smp_store_release(rLenPtr, 1);
-> +	}
-> +}
-> +
-> +exists (
-> +	0:rFail=0 /\ 1:rFail=0
-> +	/\
-> +	(
-> +		(dropped=0 /\ px=1 /\ len1=1 /\ (cx=0 \/ cx=1))
-> +	)
-> +)
-> diff --git a/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+unbound.litmus b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+unbound.litmus
-> new file mode 100644
-> index 000000000000..7ab5d0e6e49f
-> --- /dev/null
-> +++ b/Documentation/litmus-tests/bpf-rb/bpf-rb+1p1c+unbound.litmus
-
-I wish there was a way to pass args to litmus tests, then perhaps it would
-have been possible to condense some of these tests. :-)
-
-> diff --git a/Documentation/litmus-tests/bpf-rb/bpf-rb+2p1c+bounded.litmus b/Documentation/litmus-tests/bpf-rb/bpf-rb+2p1c+bounded.litmus
-> new file mode 100644
-> index 000000000000..83f80328c92b
-> --- /dev/null
-> +++ b/Documentation/litmus-tests/bpf-rb/bpf-rb+2p1c+bounded.litmus
-[...]
-> +P0(int *lenFail, int *len1, int *cx, int *px)
-> +{
-> +	int *rLenPtr;
-> +	int rLen;
-> +	int rPx;
-> +	int rCx;
-> +	int rFail;
-> +
-> +	rFail = 0;
-> +
-> +	rCx = smp_load_acquire(cx);
-> +	rPx = smp_load_acquire(px);
-> +	if (rCx < rPx) {
-> +		if (rCx == 0) {
-> +			rLenPtr = len1;
-> +		} else if (rCx == 1) {
-> +			rLenPtr = len1;
-> +		} else {
-> +			rLenPtr = lenFail;
-> +			rFail = 1;
-> +		}
-> +
-> +		rLen = smp_load_acquire(rLenPtr);
-> +		if (rLen == 0) {
-> +			rFail = 1;
-> +		} else if (rLen == 1) {
-> +			rCx = rCx + 1;
-> +			smp_store_release(cx, rCx);
-> +		}
-> +	}
-> +
-> +	rPx = smp_load_acquire(px);
-> +	if (rCx < rPx) {
-> +		if (rCx == 0) {
-> +			rLenPtr = len1;
-> +		} else if (rCx == 1) {
-> +			rLenPtr = len1;
-> +		} else {
-> +			rLenPtr = lenFail;
-> +			rFail = 1;
-> +		}
-> +
-> +		rLen = smp_load_acquire(rLenPtr);
-> +		if (rLen == 0) {
-> +			rFail = 1;
-> +		} else if (rLen == 1) {
-> +			rCx = rCx + 1;
-> +			smp_store_release(cx, rCx);
-> +		}
-> +	}
-> +}
-> +
-> +P1(int *lenFail, int *len1, spinlock_t *rb_lock, int *px, int *cx, atomic_t *dropped)
-> +{
-> +	int rPx;
-> +	int rCx;
-> +	int rFail;
-> +	int *rLenPtr;
-> +
-> +	rFail = 0;
-> +	rLenPtr = lenFail;
-> +
-> +	rCx = smp_load_acquire(cx);
-> +	spin_lock(rb_lock);
-> +
-> +	rPx = *px;
-> +	if (rPx - rCx >= 1) {
-> +		atomic_inc(dropped);
-> +		spin_unlock(rb_lock);
-> +	} else {
-> +		if (rPx == 0) {
-> +			rLenPtr = len1;
-> +		} else if (rPx == 1) {
-> +			rLenPtr = len1;
-> +		} else {
-> +			rLenPtr = lenFail;
-> +			rFail = 1;
-> +		}
-> +
-> +		*rLenPtr = -1;
-> +		smp_store_release(px, rPx + 1);
-> +
-> +		spin_unlock(rb_lock);
-> +
-> +		smp_store_release(rLenPtr, 1);
-
-I ran a test replacing the last 2 statements above with the following and it
-still works:
-
-                spin_unlock(rb_lock);
-                WRITE_ONCE(*rLenPtr, 1);
-
-Wouldn't you expect the test to catch an issue? The spin_unlock is already a
-RELEASE barrier.
-
-Suggestion: It is hard to review the patch because it is huge, it would be
-good to split this up into 4 patches for each of the tests. But upto you :)
-
-thanks,
-
- - Joel
-
-[...]
-
+cheers
