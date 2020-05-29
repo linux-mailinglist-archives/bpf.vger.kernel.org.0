@@ -2,87 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9391E83F3
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C701E83F6
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgE2Qqv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 12:46:51 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:46928 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726857AbgE2Qqu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 May 2020 12:46:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590770809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=satBzjqEWExQ7MJMHl6Q6QslZmW/U2ljzHPOP9S7DpI=;
-        b=ZZiANsnduuxV5MvPj0uzcHE9cJCzoh7VLY9pc+F80LLYzulWGvL13EFpxgl/lAi+smCRem
-        PScu8GuG0ZN9zPmK7331vR0o7v1X+BU8tXVITasdYPye0IeaWnXfkgTJM1csjQJzxJ6xcX
-        d90s8iJuFMSsVTGPC/t6i5o5K58gU50=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-uO1NQ2WlMKu1Y4D8jgexdg-1; Fri, 29 May 2020 12:46:47 -0400
-X-MC-Unique: uO1NQ2WlMKu1Y4D8jgexdg-1
-Received: by mail-ej1-f72.google.com with SMTP id t24so1143666ejr.18
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 09:46:47 -0700 (PDT)
+        id S1725681AbgE2Qsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 12:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2Qsq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 12:48:46 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9C5C03E969;
+        Fri, 29 May 2020 09:48:45 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 205so2810167qkg.3;
+        Fri, 29 May 2020 09:48:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NHEfOR+MU8lQyz8ylk78HOtCrqvScTyrekgLYUDpaYM=;
+        b=miLXrgwWvoavkqmIH8G+EZ+4yZNKX+MNyou25/6P8+wcrtRY6hgrtXo67mJHjaW2Xz
+         IU4y5kYaaRTBeEePTl09TBn9Y5Gwuj50uI6MeFDHoAxgMhOBdAKD0jexM3ntP2p+JoID
+         Bx9Y9F4578895fAZ65OCWOHpzo2hbYpEywfZsnrkEp/81FfMnpUyWSDz7zAbfI5ca3N9
+         Hdi6nqim0I0dfw8HcR/arzzCd0Qghi5Jgr8eHDHxkrO1ZdKif14uNycT9HWoJrDw+SOY
+         AWulynPaZF56WtQLrRRsoHUgqMKb812QXqdfDmz8Q1jqM10qYnhlFVj+DW/KFH/li43N
+         8jiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=satBzjqEWExQ7MJMHl6Q6QslZmW/U2ljzHPOP9S7DpI=;
-        b=qkJyIjLNh4IANPrqOaXYhkjx/YS3uiMFIgcs6Ku2Vey0raFkAqz8dOmp9PzaleILQ/
-         q4xoxYBhYZtlBTEhP7oXi26OIyvDZukX/bxja0rA/ExdkzJEqxMqwsrBJmNrY6w2KKri
-         dNeNrSF+uH1rX+qBZ7CKU7dRYo3NGDklKZQfThkpANFQ+gqYbJpww/MZYl5Dbm8TBjgu
-         YVFWYvo6ZhX/Dnt51c7hp76YB+U9Onu1LdNezkrNE92O+27p16FRwFiW9FvnCkLf6JK4
-         19EfXQNyw0wBec5rfzizlHrOsqZw51VpTyKMhK9AWtfHXPNgihf0Y59r+FD4Pq4d4HLY
-         bIpg==
-X-Gm-Message-State: AOAM533Xuq17AFcwNBiR2DecBHEjoWFULS+LO+Ssl3Q54caFDHgtDiEf
-        MmcxXIsXpR4xaKkOBq2ouq7yibpoDOnIvbtS64ynzCwuW1Z9bGOOBj95t1n21wsdCqRBiDoadtW
-        W7VDcWL7IYZYW
-X-Received: by 2002:a05:6402:1d10:: with SMTP id dg16mr8923707edb.309.1590770806802;
-        Fri, 29 May 2020 09:46:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyd2YI0laEZoe5KG/qECc2J3Yng27MQ7+AWtHrrldc9w01zYj1Sk8C5tjbmFh4eXEjLY8Cchw==
-X-Received: by 2002:a05:6402:1d10:: with SMTP id dg16mr8923687edb.309.1590770806664;
-        Fri, 29 May 2020 09:46:46 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id g21sm7220308edw.9.2020.05.29.09.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 09:46:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 79F88182019; Fri, 29 May 2020 18:46:45 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NHEfOR+MU8lQyz8ylk78HOtCrqvScTyrekgLYUDpaYM=;
+        b=nn8H0WYcCoewYowcZyx5Ak667XfvYEBQ7wLZy7AMxePu7LryB39T2MfxmHpBKGVEaI
+         lAc52pacakvhZTNKZe9EJS64WoQL2X5MP1z2yPdOxFCWvzvDqFTYGulY/pISSBB0fGnx
+         uT3H6L7b+MsPpZcblsJTwaQFIW0t/WkjQaVFJOzmYgbXZNAcLOOt2BxGYG1dZgv/RiJa
+         gf/LChNnaORxTQqYgVxJFvw3VCtcK1M0ekODYmmlgpI0sAZrmwL5bp3T7jbhaQp2b3HF
+         GeRRbzItbz4Z2V718og5jH00neM4W7C1PY4upVekRPy16beLANLC2f5n6ODIQ+L9C5yi
+         KRfA==
+X-Gm-Message-State: AOAM532SblaEu570O9409/JQ2iHVnzsotXjYXDsMGeah6PAVHKw2+Sp+
+        z4Rgt6ujcFNc7e587B5OUHY=
+X-Google-Smtp-Source: ABdhPJxn3qSDgkcbgogZEAq8X0r79dZLu3QVSO94Nu2uvuuNJ54qss0HFufBD75SYhbazKjMuWv/dQ==
+X-Received: by 2002:a37:a949:: with SMTP id s70mr8435869qke.111.1590770924246;
+        Fri, 29 May 2020 09:48:44 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:9452:75de:4860:c1e3? ([2601:282:803:7700:9452:75de:4860:c1e3])
+        by smtp.googlemail.com with ESMTPSA id g28sm3118876qts.88.2020.05.29.09.48.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 09:48:43 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 5/5] selftest: Add tests for XDP programs in
+ devmap entries
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org
 Cc:     bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         brouer@redhat.com, lorenzo@kernel.org, daniel@iogearbox.net,
         john.fastabend@gmail.com, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        dsahern@gmail.com, David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH v3 bpf-next 0/5] bpf: Add support for XDP programs in DEVMAP entries
-In-Reply-To: <20200529052057.69378-1-dsahern@kernel.org>
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
 References: <20200529052057.69378-1-dsahern@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 29 May 2020 18:46:45 +0200
-Message-ID: <87o8q6zo22.fsf@toke.dk>
+ <20200529052057.69378-6-dsahern@kernel.org> <87r1v2zo3y.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a8fd8937-25d7-0822-67a7-e01b856261be@gmail.com>
+Date:   Fri, 29 May 2020 10:48:41 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
+In-Reply-To: <87r1v2zo3y.fsf@toke.dk>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern <dsahern@kernel.org> writes:
-
-> Implementation of Daniel's proposal for allowing DEVMAP entries to be
-> a device index, program fd pair.
->
-> Programs are run after XDP_REDIRECT and have access to both Rx device
-> and Tx device.
-
-Found one more nit apart from the changes you already said you'd do for
-v4. So with those fixes, feel free to add my:
-
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+On 5/29/20 10:45 AM, Toke Høiland-Jørgensen wrote:
+>> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
+>> new file mode 100644
+>> index 000000000000..b360ba2bd441
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/test_xdp_devmap_helpers.c
+>> @@ -0,0 +1,22 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* fails to load without expected_attach_type = BPF_XDP_DEVMAP
+>> + * because of access to egress_ifindex
+>> + */
+>> +#include <linux/bpf.h>
+>> +#include <bpf/bpf_helpers.h>
+>> +
+>> +SEC("xdp_dm_log")
+> Guess this should be xdp_devmap_log now?
+> 
+no. this program is for negative testing - it should load as an XDP
+program without the expected_attach_type set. See the comment at the top
+of the file.
