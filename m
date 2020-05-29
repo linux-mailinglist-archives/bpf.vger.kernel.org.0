@@ -2,132 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698C11E8254
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 17:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0EB1E82AE
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 17:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgE2PoK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 11:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726940AbgE2PoK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 11:44:10 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010A8C03E969;
-        Fri, 29 May 2020 08:44:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 202so1577654lfe.5;
-        Fri, 29 May 2020 08:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=geCqCulS7H/YuAfHXfOQ101HM2bdw3ee5IqTWvyn0zg=;
-        b=hXrzVRQwarnpCQxHcvLwAam+fo6puHGvVYkztPQDjg5YzS0ZwdfkZGJQ04okA5lYvE
-         sKj78x5h9fBEumRmgLeMBHVgjMTcgS8++/S6l6sEyF90rzNgpo4IR9N9zrENEK+gD2Mi
-         vF712gEdVDkKXiasn9WmCzdjuULcgS//LxVrrJ8MOiX1YlZGHyA1EC66UPKLZxqp85Mg
-         /ayXVSdymEWCgyUg4P0BoZ5B1DooE5xc/NuhkK91TC3eaLlvaQVxM4xFQYJw7FU2FXOr
-         wqeNHlpviCrULCuwO/Dol2QEb8h1lbkjWgxbACyLVtOponkePmpcc2e51JUNJshqyA6h
-         TJVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=geCqCulS7H/YuAfHXfOQ101HM2bdw3ee5IqTWvyn0zg=;
-        b=nM+WA7/LX9ZLs+ygOqX90jXDhiZFLR5RwtfMeVkRI4ZJxItShGWwoCryh0ulFwu/WS
-         lYI8iT/9iNkSWHfAFvQrVDBeEDqtTdXoETMGo9Qnj6/sUIBpC15x7DLA0pPDUUqcLpbb
-         RwUw4LY+fysUapg3kYwz+VIMpTGr5cvGBUZ3BgMh0wMSIpPNIVVIjFHxIRMwPiu4x4EX
-         htnE9LCExU0JwCnPM/kf77MNM/z9IONfoUXmMH+y7aJ/6AhT42kP7AJqCq3Ndqevskr5
-         V/5CSJb1+Ki5FriDi5FMNKlfL/Cy0j1It1fSjPFSGN9HfSmT8NnM1kHMrBkXivZTRq8m
-         G5Mg==
-X-Gm-Message-State: AOAM530nOM0EUjsEV9LHAMFArZSX+3pG2YPwKJ/t1TeNuAA4eyOuFGQ1
-        moV+D+VoQo06yHDcMkGc1JKe6BDAe5dd6viuxD4hNhDy
-X-Google-Smtp-Source: ABdhPJyN+ip7YVnKEX1CPufQSaHB8kYyQoAPLefJOJyJth+ObjZ/WhHbeMX//BHoZ2AIJAIPFLpqUFHu2n2q3PcLRhk=
-X-Received: by 2002:a19:103:: with SMTP id 3mr4562062lfb.196.1590767048398;
- Fri, 29 May 2020 08:44:08 -0700 (PDT)
+        id S1727803AbgE2P7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 11:59:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43405 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727062AbgE2P7o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 11:59:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590767983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VntPpR9u98L+N1ionzHID7bD1Jl6O7zFn7tkv1DNgkg=;
+        b=Oc/vY0HpNVZn2J4iarBb0/W8Zbju16V+WL3MkOlDIDbulLhSjO4Q+c/nEmAZJLh+59Dc/z
+        Sh5348+4dkmdwVS1ljb00OOZxJA40S1451TbOEGVERkzn5l3nK6oQuG/cnD1aY0pTMzQ9n
+        +3JBp7T0jGAytBKmO5mMjsVelSif218=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-RLG4ksL5Ps6bBoIUCXZlAg-1; Fri, 29 May 2020 11:59:41 -0400
+X-MC-Unique: RLG4ksL5Ps6bBoIUCXZlAg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6AA7464;
+        Fri, 29 May 2020 15:59:39 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B876D5D9F3;
+        Fri, 29 May 2020 15:59:36 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 8B6D9300003E9;
+        Fri, 29 May 2020 17:59:35 +0200 (CEST)
+Subject: [PATCH bpf-next RFC 0/3] bpf: dynamic map-value config layout via BTF
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 29 May 2020 17:59:35 +0200
+Message-ID: <159076794319.1387573.8722376887638960093.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
-In-Reply-To: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 29 May 2020 08:43:56 -0700
-Message-ID: <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
-Subject: Re: new seccomp mode aims to improve performance
-To:     "zhujianwei (C)" <zhujianwei7@huawei.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Hehuazhen <hehuazhen@huawei.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 29, 2020 at 5:50 AM zhujianwei (C) <zhujianwei7@huawei.com> wro=
-te:
->
-> Hi, all
->
-> =E3=80=80=E3=80=80We're using seccomp to increase container security, but=
- bpf rules filter causes performance to deteriorate. So, is there a good so=
-lution to improve performance, or can we add a simplified seccomp mode to i=
-mprove performance?
+This patchset is based on top of David Ahern's work V3: "bpf: Add support
+for XDP programs in DEVMAP entries"[1]. The purpose is to address the kABI
+interfaces that is introduced in that patchset, before it is released.
 
-I don't think your hunch at where cpu is spending cycles is correct.
-Could you please do two experiments:
-1. try trivial seccomp bpf prog that simply returns 'allow'
-2. replace bpf_prog_run_pin_on_cpu() in seccomp.c with C code
-  that returns 'allow' and make sure it's noinline or in a different C file=
-,
-  so that compiler doesn't optimize the whole seccomp_run_filters() into a =
-nop.
+[1] https://lore.kernel.org/netdev/20200529052057.69378-1-dsahern@kernel.org
 
-Then measure performance of both.
-I bet you'll see exactly the same numbers.
-If you have retpoline on then bpf case will be slightly slower because
-of retpoline cost.
+The map-value of these special maps are evolving into configuration
+interface between userspace and kernel. The approach in[1] is to expose a
+binary struct layout that can only be grown in the end of the struct.
 
-Only after this experiment let's discuss the options about accelerating sec=
-comp.
+With the BTF technology it is possible to create an interface that is much
+more dynamic and flexible.
 
->
-> =E3=80=80=E3=80=80// Pseudo code
-> =E3=80=80=E3=80=80int __secure_computing(int this_syscall)
-> =E3=80=80=E3=80=80{
-> =E3=80=80=E3=80=80      ...
-> =E3=80=80=E3=80=80      switch (mode) {
-> =E3=80=80=E3=80=80      case SECCOMP_MODE_STRICT:
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80      case SECCOMP_MODE_FILTER:
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80      case SECCOMP_MODE_LIGHT_FILTER:
-> =E3=80=80=E3=80=80              //do light syscall filter.
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80              break;
-> =E3=80=80=E3=80=80      }
-> =E3=80=80=E3=80=80      ...
-> =E3=80=80=E3=80=80}
->
-> =E3=80=80=E3=80=80int light_syscall_filter(int syscall_num) {
-> =E3=80=80=E3=80=80      if(scno > SYSNUM_MAX) {
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80              return -EACCESS;
-> =E3=80=80=E3=80=80      }
->
-> =E3=80=80=E3=80=80=E3=80=80=E3=80=80    bool *filter_map =3D get_filter_m=
-ap(current);
-> =E3=80=80=E3=80=80      if(filter_map =3D=3D NULL) {
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80              return -EFAULT;
-> =E3=80=80=E3=80=80      }
->
-> =E3=80=80=E3=80=80=E3=80=80=E3=80=80    if(filter_map[syscall_num] =3D=3D=
- true) {
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80              return 0;
-> =E3=80=80=E3=80=80      } else {
-> =E3=80=80=E3=80=80              ...
-> =E3=80=80=E3=80=80              return -EACCESS;
-> =E3=80=80=E3=80=80      }
-> =E3=80=80=E3=80=80      ...
-> =E3=80=80=E3=80=80}
+---
+
+Jesper Dangaard Brouer (3):
+      bpf: move struct bpf_devmap_val out of UAPI
+      bpf: devmap dynamic map-value storage area based on BTF
+      samples/bpf: change xdp_fwd to use new BTF config interface
+
+
+ include/uapi/linux/bpf.h                           |    9 -
+ kernel/bpf/devmap.c                                |  227 +++++++++++++++++---
+ samples/bpf/xdp_fwd.h                              |   24 ++
+ samples/bpf/xdp_fwd_kern.c                         |    5 
+ samples/bpf/xdp_fwd_user.c                         |    9 +
+ tools/include/uapi/linux/bpf.h                     |    9 -
+ .../selftests/bpf/prog_tests/xdp_devmap_attach.c   |   18 +-
+ .../bpf/progs/test_xdp_with_devmap_helpers.c       |   10 +
+ 8 files changed, 252 insertions(+), 59 deletions(-)
+ create mode 100644 samples/bpf/xdp_fwd.h
+
+--
+
