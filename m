@@ -2,69 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079731E81AA
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 17:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E331E81EC
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 17:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgE2PVb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 11:21:31 -0400
-Received: from www62.your-server.de ([213.133.104.62]:37912 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgE2PVa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 11:21:30 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jegp2-0004Pj-Uv; Fri, 29 May 2020 17:21:25 +0200
-Date:   Fri, 29 May 2020 17:21:24 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/5] BPF ring buffer
-Message-ID: <20200529152124.GA5264@pc-9.home>
-References: <20200529075424.3139988-1-andriin@fb.com>
+        id S1727069AbgE2PgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 11:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726962AbgE2PgT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 11:36:19 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E71FC03E969;
+        Fri, 29 May 2020 08:36:19 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id y1so2203064qtv.12;
+        Fri, 29 May 2020 08:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c+MMdeVxRZeoQGBWcJz8mkMsH1Gvo3n6WkWpW9us2ZE=;
+        b=IZqgJwWgF8fJuC0MrftA1lZ75spdnAIvnhcXFABTcbKXU3wRCbDxGSx+HQxpi9NqM1
+         c/rMH8b0VfrwwZ3g8TS3ZoC2ED9ooh8EaVZlqK4bA9qB+BUSb+vDE5PfAGHwBh00T2YX
+         pcKl4G1Zeu8VbRwgJYgVrjfdaI2rGQlafO0qvjfOK7/mVyZ5gFO+7L0Jsokf4SFR3iLh
+         MmQ5bEgIR1Ss90zdJLTPZDnnF7VbBOtO3uAVXQ5nelSNcugZ5yoWI58fmyh+a3tq/2CJ
+         UtC/wUHBBk9E1RxlpeKHWhqER7ucka5S0J6qIDaFmlM224VQXnBxEAjyi1M5xqAF/Msz
+         wBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c+MMdeVxRZeoQGBWcJz8mkMsH1Gvo3n6WkWpW9us2ZE=;
+        b=hGLSGqabSJ0GMvDVDcBJQJ3mvqx+M7KuTBHsJTFAZPnI8jAEhDmbztMiNRUv17EcjT
+         iwEOAdQcgFCmlbTwpHLC4Ic+mm+KXVjmbF2rgwkpzq0Xd7UrURhHFs/ulyPJ2GCnBsJS
+         DVaLXamQJziEsgZAlMzGTP8dufxKb2h3CxDdB2B8GvcdtX4XoMZllhY+WcUuZDEVKYSs
+         8NiP2f/u4cKtO9cQOztG5YgUclFW85Tm9AMV0sZ2iaDH4Dzih56uL76OdvC4WPQ6+bT0
+         1YTq8noqucd4+TMowi3TvAbA3zrVF1SDu2BwgRSTvofbWajyRM5VfdRpLq3fSNt7jNMH
+         H4Gg==
+X-Gm-Message-State: AOAM533hLqBhXcpRBn4mHHZqkjT/aRuBm/V2+8RrLmw/Vy+Uc2FdvZEE
+        y0Z6okH5zdah08Ft6WtscHg=
+X-Google-Smtp-Source: ABdhPJw4vHoX3KGzV7ayHVSDIVNT4rGOKKSPk3aMjUknrdGg6XXceYdmBj27dmlSTvfr/pkx7y/rUA==
+X-Received: by 2002:ac8:2492:: with SMTP id s18mr9267013qts.81.1590766578416;
+        Fri, 29 May 2020 08:36:18 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:9452:75de:4860:c1e3? ([2601:282:803:7700:9452:75de:4860:c1e3])
+        by smtp.googlemail.com with ESMTPSA id w10sm8773648qtc.15.2020.05.29.08.36.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 08:36:17 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 1/5] devmap: Formalize map value as a named
+ struct
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, toke@redhat.com, lorenzo@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com
+References: <20200529052057.69378-1-dsahern@kernel.org>
+ <20200529052057.69378-2-dsahern@kernel.org> <20200529102256.22dd50da@carbon>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <2a121938-fe50-694c-40c6-0f4b8edbefb5@gmail.com>
+Date:   Fri, 29 May 2020 09:36:14 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529075424.3139988-1-andriin@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25827/Fri May 29 14:37:56 2020)
+In-Reply-To: <20200529102256.22dd50da@carbon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 29, 2020 at 12:54:19AM -0700, Andrii Nakryiko wrote:
-> Implement a new BPF ring buffer, as presented at BPF virtual conference ([0]).
-> It presents an alternative to perf buffer, following its semantics closely,
-> but allowing sharing same instance of ring buffer across multiple CPUs
-> efficiently.
+On 5/29/20 2:22 AM, Jesper Dangaard Brouer wrote:
+> We do need this struct bpf_devmap_val, but I think it is wrong to make this UAPI.
 > 
-> Most patches have extensive commentary explaining various aspects, so I'll
-> keep cover letter short. Overall structure of the patch set:
-> - patch #1 adds BPF ring buffer implementation to kernel and necessary
->   verifier support;
-> - patch #2 adds libbpf consumer implementation for BPF ringbuf;
-> - patch #3 adds selftest, both for single BPF ring buf use case, as well as
->   using it with array/hash of maps;
-> - patch #4 adds extensive benchmarks and provide some analysis in commit
->   message, it builds upon selftests/bpf's bench runner.
-> - patch #5 adds most of patch #1 commit message as a doc under
->   Documentation/bpf/ringbuf.rst.
-> 
-> Litmus tests, validating consumer/producer protocols and memory orderings,
-> were moved out as discussed in [1] and are going to be posted against -rcu
-> tree and put under Documentation/litmus-tests/bpf-rb.
-> 
->   [0] https://docs.google.com/presentation/d/18ITdg77Bj6YDOH2LghxrnFxiPWe0fAqcmJY95t_qr0w
->   [1] https://lkml.org/lkml/2020/5/22/1011
-> 
-> v3->v4:
-> - fix ringbuf freeing (vunmap, __free_page); verified with a trivial loop
->   creating and closing ringbuf map endlessly (Daniel);
+> A BPF-prog can get this via:  #include "vmlinux.h"
 
-Applied, thanks!
+sure. I see that now.
+
+I forgot to fold in a small update to the selftests, so I need to send a
+v4 anyways. I will wait until later in the day in case there are other
+comments.
