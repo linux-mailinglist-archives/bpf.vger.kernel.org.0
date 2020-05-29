@@ -2,235 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9891E86DB
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 20:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558AA1E87BD
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 21:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgE2Slg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 14:41:36 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26344 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725901AbgE2Slf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 May 2020 14:41:35 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04TIfLvk024654;
-        Fri, 29 May 2020 11:41:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=RVIgJwR6HnG4jLcAUuuLzZGpJhpUF+kW33NCEcUW8ak=;
- b=JqSZsn/o4SD+1L4iptooFS+ylgf2Zqu/lUrbR9qs9LBCnapQsJ0tNTmTB4Vbf00OTg/X
- 0dfnYi/JBGf49ieX0Ys+iCAHK3pWFVIJA5AWk532mKPfEMwxSrQsfWLq/Oy1MTgygyET
- QeIzURo4gwsExKtSLkURvnkf7z4N6FxuQjI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31a552jcf7-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 29 May 2020 11:41:22 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 29 May 2020 11:41:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fV9mB1aV/lt+8CjuNXR2EmhCSAWmNQP562NZ6yFwFpMLUfbJRZw2o93mObbbRStNHIjrnhjn4VaJtjuWz2pRFUv3VEHCDNPS8TzPYdvIgZ1mVzqVTvPu6ho6e6yjUCD38fPE0HcmRAaO+h9nuprmF5Wk4dJOPZI8xEdsMPkQDM3r7sCif8/x2aoiVw+IuHuq2XNsVrljdeGtionOUflWCCv41ls5ycSDsGlS28XocVhSHiB6dDAj40zgkziy3zlmfYxnJxVuSCzWcCojIhX3xSEcJgYX2Jl7pYVtYQz7AbUnx19HS4xgkVPxobtYn5j565Y7teeG90O4WANdS42CjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RVIgJwR6HnG4jLcAUuuLzZGpJhpUF+kW33NCEcUW8ak=;
- b=S8ilSeYNRPVACFpUp2Z6fR1DorJ9J6P2o+VWpppim3V90zMZwSvCsMuVjmER6nCCcc8KP31a72dfZJ8yrzjwYs4tIQi3oVbRGeXEHXfgMLq3C6sNseR4NAN3UQ5ljuv8xbYYSjlA/FCoE9yQPrUgfkRcaYSBcK12sNnK3a9AIrJL6LtzUTBGmOJue4aY4O/DdLwrlLRbtPttLgxunSpuJdyzkAX3OprzA+/WiOIjArKmNeoD6/oGNevWV2Ut3Wg8sGnUzN37/haYfTmqVqvm4aGKLooripr2wyAe3xmwyTDI1E/7h0fMi1UWwPybrXrLnJUviK0sK8iwGM45e7L0CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RVIgJwR6HnG4jLcAUuuLzZGpJhpUF+kW33NCEcUW8ak=;
- b=N3AtqEbjVzick8+6p5krrf7IldosM1Lo+lllEVvh7SHhjhw/mFrZSj+qFGsUw/qhJStpQxtNTHJS24BigEKaZOpdlNa0V6kxwvY83JHSNQJnc/V9jDhxWUJq+0McomAgxGGRx7cDpG4ZOjY0rQa0pJKX51dQNXQouRPAMFMOM7E=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2327.namprd15.prod.outlook.com (2603:10b6:a02:8e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Fri, 29 May
- 2020 18:41:18 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3045.018; Fri, 29 May 2020
- 18:41:18 +0000
-Subject: Re: [bpf PATCH 2/3] bpf, selftests: verifier bounds tests need to be
- updated
-To:     John Fastabend <john.fastabend@gmail.com>,
-        <alexei.starovoitov@gmail.com>, <daniel@iogearbox.net>
-CC:     <bpf@vger.kernel.org>, <kernel-team@fb.com>
-References: <159077324869.6014.6516130782021506562.stgit@john-Precision-5820-Tower>
- <159077333942.6014.14004320043595756079.stgit@john-Precision-5820-Tower>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ec4438b6-4dc0-9310-b14f-f288078fec85@fb.com>
-Date:   Fri, 29 May 2020 11:41:16 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
-In-Reply-To: <159077333942.6014.14004320043595756079.stgit@john-Precision-5820-Tower>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR11CA0097.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::38) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1726878AbgE2T1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 15:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgE2T1G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 15:27:06 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCAFC03E969
+        for <bpf@vger.kernel.org>; Fri, 29 May 2020 12:27:06 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id q16so1639382plr.2
+        for <bpf@vger.kernel.org>; Fri, 29 May 2020 12:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o/t21DOf3N4tU3q9CHLKe4uAPhKpGjNd6jUKhRTo7Pw=;
+        b=C3BYX09WdYjGq3THgqRtIpX1kmXGTzdTjyvnJTXDcMbGuWUQAZA0ntUajAy2AsM5J3
+         4BT26rKrS9RgdJAeimaPzZLqBvcCEj00rQymm1Tt8jqS/LEc6HqrTjT6xASBAQqzQMig
+         iHpw94VcQUYfOzJffP6KUqLz/ZEdLCyigHOUI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o/t21DOf3N4tU3q9CHLKe4uAPhKpGjNd6jUKhRTo7Pw=;
+        b=DbcdQhDHTixeQAMhyug4wD2hD/8QBzqq8OJPjmFzMvq/78iXIXhR5jWlo6i9t+8w0K
+         LMuB56H9JHachMyoT20g1evQxjPGauQ0OFexRKh/3j1HwsBhmpPgo14Xi6DKHZeDkk4M
+         cUkatwpo7NF4L1b2fSvkBi7ZuxfX1FtoFNq5SxRQR65/kwDANDYuruPJJxZPS5DM281t
+         th+FqW7X34F7+x1YR1YGqoiTSxAHB7CSS8pYTtseVtAUJuiv0MHIjISfuU27kw/nVvkJ
+         puw5TEDaP3BRhPxknCk8mNgfDqoAE/sDXYCYBqQd4Eq4Hpd5kR7VRs24Vda4ria3PPbO
+         J4Fg==
+X-Gm-Message-State: AOAM531Je/ofyNRLzwpm4EmQtSbY3cXd0VJXeeYT0KiqEMm28cG81F3p
+        KfnoPS8B6/JopTvLApy+pjyELg==
+X-Google-Smtp-Source: ABdhPJwpDHVpkT7XWfMKgzeXt9Zai0pArlJJUrlzK2q7jlmWeLfEStY3jHhhr3icXxEA51QG3pIaow==
+X-Received: by 2002:a17:90a:cb13:: with SMTP id z19mr103549pjt.169.1590780425670;
+        Fri, 29 May 2020 12:27:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h3sm2246320pfr.2.2020.05.29.12.27.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2020 12:27:04 -0700 (PDT)
+Date:   Fri, 29 May 2020 12:27:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "zhujianwei (C)" <zhujianwei7@huawei.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Hehuazhen <hehuazhen@huawei.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
+        Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
+Subject: Re: new seccomp mode aims to improve performance
+Message-ID: <202005291043.A63D910A8@keescook>
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
+ <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1387] (2620:10d:c090:400::5:c583) by BYAPR11CA0097.namprd11.prod.outlook.com (2603:10b6:a03:f4::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Fri, 29 May 2020 18:41:17 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c583]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dc757de5-19c5-43e9-57c3-08d803ffdfc6
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2327:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB23272B29AC203F9F54E2C697D38F0@BYAPR15MB2327.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 04180B6720
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qU2WgBhvQcl8ymDnkoySFSF8Y2rsMjN/coCwwX+rysAIF2du6WiGpGVmanUf0nJ9gVqRcITx4gA+p53YmZ7NjM6+m1r7PM8DVCGZ7UT033gsti+rCakm00OVnfPJpsV+vYaP8JDsbBlcV3XPwd3yoWRLbc7ER4XQCHmKXqsSNcn5H+9qZhUE5onIuSvDLXZH68klmeMKX/BKwrj3fQA4+Dan0l4/TULjK4/zFZeb07/IMV3wVFQqfOk3W2riC2pFE/6n+xt05YOEYjNzE5KMAl7W0/awdwG6L4MC+u/FlN141ZhtYhmIcaD18Fv4ySaEVWPepYirt5PnNzHp/CllTi6PT9pkUktDnD70kRGgj6cu0mpK91YJDWzt7tjdheOL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(396003)(366004)(346002)(136003)(2616005)(5660300002)(8676002)(8936002)(186003)(52116002)(83380400001)(6486002)(53546011)(16526019)(66556008)(86362001)(31696002)(2906002)(478600001)(36756003)(66946007)(316002)(4326008)(66476007)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: tfe5sYNPjko8PO9Gt3hfRZTZcVkeInyXGcGTwYevxLyFCHQbNxQo1/T3HG+j0p36oeKBLd4krC6IVs5NSfEKTi4fIyoLg46H98Ada8SEgTa6g0oXUz3JnNtqMfxwaWhwTKqVLwrxCyzSaZAkct5s1kNUzS+68S7rr2fSbzltboLqw663DNTv8l+SjiqRRcZh7pN0aJbRDVHGFv2iDYM6piybOIy4GOEmBBFf1hTI88IU9H9gcz0ZQDfHzPUl/vuRobqkhvnIwzW24HNRDJoSvgicvPH9XQkHh0XEB1j5vImLV/yGHsIMgLGDsGdnF3qyzptk89F81NgmlCb1qrnHUgDUuUA0vsoqo65KXx2cvvEbFOona7VpbAYIPd4V0kTRMOtpAP8lUbqQtmSGDEWgxKoYhcFdyCGo8FdoHPgY5hSR2hES7t5sR/tVOsvir3Z/dNYalkUGFLuiwVMiRgYSiEUmfzIVU+wUQ3Jw/Nz0XSeqj3JQrC74O0yUbLRDkYFBkX8IbbNwaDrUXKibK1blGg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc757de5-19c5-43e9-57c3-08d803ffdfc6
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2020 18:41:18.1745
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DhCzB53MWCzyJlFLE0+swm1MvURBbaKJVQBqASL0HqyvgTTTutDZPTiDawCOl55S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2327
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-29_10:2020-05-28,2020-05-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- lowpriorityscore=0 cotscore=-2147483648 spamscore=0 malwarescore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005290140
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005290903.11E67AB0FD@keescook>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, May 29, 2020 at 09:09:28AM -0700, Kees Cook wrote:
+> On Fri, May 29, 2020 at 08:43:56AM -0700, Alexei Starovoitov wrote:
+> > I don't think your hunch at where cpu is spending cycles is correct.
+> > Could you please do two experiments:
+> > 1. try trivial seccomp bpf prog that simply returns 'allow'
+> > 2. replace bpf_prog_run_pin_on_cpu() in seccomp.c with C code
+> >   that returns 'allow' and make sure it's noinline or in a different C file,
+> >   so that compiler doesn't optimize the whole seccomp_run_filters() into a nop.
+> > 
+> > Then measure performance of both.
+> > I bet you'll see exactly the same numbers.
+> 
+> Android has already done this, it appeared to not be the same. Calling
+> into a SECCOMP_RET_ALLOW filter had a surprisingly high cost. I'll see
+> if I can get you the numbers. I was frankly quite surprised -- I
+> understood the bulk of the seccomp overhead to be in taking the TIF_WORK
+> path, copying arguments, etc, but something else is going on there.
+
+So while it's not the Android measurements, here's what I'm seeing on
+x86_64 (this is hardly a perfect noiseless benchmark, but sampling error
+appears to close to 1%):
 
 
-On 5/29/20 10:28 AM, John Fastabend wrote:
-> After previous fix for zero extension test_verifier tests #65 and #66 now
-> fail. Before the fix we can see the alu32 mov op at insn 10
-> 
-> 10: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=invP(id=0,
->                smin_value=4294967168,smax_value=4294967423,
->                umin_value=4294967168,umax_value=4294967423,
->                var_off=(0x0; 0x1ffffffff),
->                s32_min_value=-2147483648,s32_max_value=2147483647,
->                u32_min_value=0,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 10: (bc) w1 = w1
-> 11: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=invP(id=0,
->                smin_value=0,smax_value=2147483647,
->                umin_value=0,umax_value=4294967295,
->                var_off=(0x0; 0xffffffff),
->                s32_min_value=-2147483648,s32_max_value=2147483647,
->                u32_min_value=0,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 
-> After the fix at insn 10 because we have 's32_min_value < 0' the following
-> step 11 now has 'smax_value=U32_MAX' where before we pulled the s32_max_value
-> bound into the smax_value as seen above in 11 with smax_value=2147483647.
-> 
-> 10: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=inv(id=0,
->               smin_value=4294967168,smax_value=4294967423,
->               umin_value=4294967168,umax_value=4294967423,
->               var_off=(0x0; 0x1ffffffff),
->               s32_min_value=-2147483648, s32_max_value=2147483647,
->               u32_min_value=0,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 10: (bc) w1 = w1
-> 11: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=inv(id=0,
->               smin_value=0,smax_value=4294967295,
->               umin_value=0,umax_value=4294967295,
->               var_off=(0x0; 0xffffffff),
->               s32_min_value=-2147483648, s32_max_value=2147483647,
->               u32_min_value=0, u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 
-> The fall out of this is by the time we get to the failing instruction at
-> step 14 where previously we had the following:
-> 
-> 14: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=inv(id=0,
->               smin_value=72057594021150720,smax_value=72057594029539328,
->               umin_value=72057594021150720,umax_value=72057594029539328,
->               var_off=(0xffffffff000000; 0xffffff),
->               s32_min_value=-16777216,s32_max_value=-1,
->               u32_min_value=-16777216,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 14: (0f) r0 += r1
-> 
-> We now have,
-> 
-> 14: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=inv(id=0,
->               smin_value=0,smax_value=72057594037927935,
->               umin_value=0,umax_value=72057594037927935,
->               var_off=(0x0; 0xffffffffffffff),
->               s32_min_value=-2147483648,s32_max_value=2147483647,
->               u32_min_value=0,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 14: (0f) r0 += r1
-> 
-> In the original step 14 'smin_value=72057594021150720' this trips the logic
-> in the verifier function check_reg_sane_offset(),
-> 
->   if (smin >= BPF_MAX_VAR_OFF || smin <= -BPF_MAX_VAR_OFF) {
-> 	verbose(env, "value %lld makes %s pointer be out of bounds\n",
-> 		smin, reg_type_str[type]);
-> 	return false;
->   }
-> 
-> Specifically, the 'smin <= -BPF_MAX_VAR_OFF' check. But with the fix
-> at step 14 we have bounds 'smin_value=0' so the above check is not tripped
-> because BPF_MAX_VAR_OFF=1<<29.
-> 
-> We have a smin_value=0 here because at step 10 the smaller smin_value=0 means
-> the subtractions at steps 11 and 12 bring the smin_value negative.
-> 
-> 11: (17) r1 -= 2147483584
-> 12: (17) r1 -= 2147483584
-> 13: (77) r1 >>= 8
-> 
-> Then the shift clears the top bit and smin_value is set to 0. Note we still
-> have the smax_value in the fixed code so any reads will fail. An alternative
-> would be to have reg_sane_check() do both smin and smax value tests.
-> 
-> To fix the test we can omit the 'r1 >>=8' at line 13. This will change the
-> err string, but keeps the intention of the test as suggseted by the title,
-> "check after truncation of boundary-crossing range". If the verifier logic
-> changes a different value is likely to be thrown in the error or the error
-> will no longer be thrown forcing this test to be examined. With this change
-> we see the new state at step 13.
-> 
-> 13: R0_w=map_value(id=0,off=0,ks=8,vs=8,imm=0)
->      R1_w=invP(id=0,
->                smin_value=-4294967168,smax_value=127,
->                umin_value=0,umax_value=18446744073709551615,
->                s32_min_value=-2147483648,s32_max_value=2147483647,
->                u32_min_value=0,u32_max_value=-1)
->      R10=fp0 fp-8_w=mmmmmmmm
-> 
-> Giving the expected out of bounds error, "value -4294967168 makes map_value
-> pointer be out of bounds" However, for unpriv case we see a different error
-> now because of the mixed signed bounds pointer arithmatic. This seems OK so
-> I've only added the unpriv_errstr for this. Another optino may have been to
-> do addition on r1 instead of subtraction but I favor the approach above
-> slightly.
-> 
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->   tools/testing/selftests/bpf/verifier/bounds.c |   24 ++++++++++--------------
->   1 file changed, 10 insertions(+), 14 deletions(-)
+net.core.bpf_jit_enable=0:
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Benchmarking 16777216 samples...
+10.633756139 - 0.004359714 = 10629396425
+getpid native: 633 ns
+23.008737499 - 10.633967641 = 12374769858
+getpid RET_ALLOW 1 filter: 737 ns
+36.723141843 - 23.008975696 = 13714166147
+getpid RET_ALLOW 2 filters: 817 ns
+47.751422021 - 36.723345630 = 11028076391
+getpid BPF-less allow: 657 ns
+Estimated total seccomp overhead for 1 filter: 104 ns
+Estimated total seccomp overhead for 2 filters: 184 ns
+Estimated seccomp per-filter overhead: 80 ns
+Estimated seccomp entry overhead: 24 ns
+Estimated BPF overhead per filter: 80 ns
+
+
+net.core.bpf_jit_enable=1:
+net.core.bpf_jit_harden=1:
+
+Benchmarking 16777216 samples...
+31.939978606 - 21.275190689 = 10664787917
+getpid native: 635 ns
+43.324592380 - 31.940794751 = 11383797629
+getpid RET_ALLOW 1 filter: 678 ns
+55.001650599 - 43.326293248 = 11675357351
+getpid RET_ALLOW 2 filters: 695 ns
+65.986452855 - 55.002249904 = 10984202951
+getpid BPF-less allow: 654 ns
+Estimated total seccomp overhead for 1 filter: 43 ns
+Estimated total seccomp overhead for 2 filters: 60 ns
+Estimated seccomp per-filter overhead: 17 ns
+Estimated seccomp entry overhead: 26 ns
+Estimated BPF overhead per filter: 24 ns
+
+
+net.core.bpf_jit_enable=1:
+net.core.bpf_jit_harden=0:
+
+Benchmarking 16777216 samples...
+10.684681435 - 0.004198682 = 10680482753
+getpid native: 636 ns
+22.050823167 - 10.685571417 = 11365251750
+getpid RET_ALLOW 1 filter: 677 ns
+33.714134291 - 22.051100183 = 11663034108
+getpid RET_ALLOW 2 filters: 695 ns
+44.793312551 - 33.714383001 = 11078929550
+getpid BPF-less allow: 660 ns
+Estimated total seccomp overhead for 1 filter: 41 ns
+Estimated total seccomp overhead for 2 filters: 59 ns
+Estimated seccomp per-filter overhead: 18 ns
+Estimated seccomp entry overhead: 23 ns
+Estimated BPF overhead per filter: 17 ns
+
+
+The above is from my (very dangerous!) benchmarking patch[1].
+
+So, with the layered nature of seccomp filters there's a reasonable gain
+to be seen for a O(1) bitmap lookup to skip running even a single filter,
+even for the fastest BPF mode.
+
+Not that we need to optimize for the pathological case, but this would
+be especially useful for cases like systemd, which appears to be
+constructing seccomp filters very inefficiently maybe on a per-syscall[3]
+basis? For example, systemd-resolved has 32 (!) seccomp filters
+attached[2]:
+
+# grep ^Seccomp_filters /proc/$(pidof systemd-resolved)/status
+Seccomp_filters:        32
+
+# grep SystemCall /lib/systemd/system/systemd-resolved.service
+SystemCallArchitectures=native
+SystemCallErrorNumber=EPERM
+SystemCallFilter=@system-service
+
+I'd like to better understand what they're doing, but haven't had time
+to dig in. (The systemd devel mailing list requires subscription, so
+I've directly CCed some systemd folks that have touched seccomp there
+recently. Hi! The starts of this thread is here[4].)
+
+-Kees
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=seccomp/benchmark-bpf&id=20cc7d8f4238ea3bc1798f204bb865f4994cca27
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/seccomp&id=9d06f16f463cef5c445af9738efed2bfe4c64730
+[3] https://www.freedesktop.org/software/systemd/man/systemd.exec.html#SystemCallFilter=
+[4] https://lore.kernel.org/bpf/c22a6c3cefc2412cad00ae14c1371711@huawei.com/
+
+-- 
+Kees Cook
