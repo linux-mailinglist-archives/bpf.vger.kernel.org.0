@@ -2,99 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F3F1E8339
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129C21E83A6
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgE2QJc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 May 2020 12:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2QJb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 May 2020 12:09:31 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4659C03E969
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 09:09:30 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y11so1311075plt.12
-        for <bpf@vger.kernel.org>; Fri, 29 May 2020 09:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7tFtwZgvZE5hW33XbmmKt8eqRyrQtOfEzKnpZP3Z4fw=;
-        b=GYoiy6jTScqVloKoIjwXCzc+l+EG1hBVzc+mtPa5HPhYQ+A9L305gHi07UgwFOnw0T
-         dmosi0h18RvyDg3UGAzomXNRW6wIzIZZL3hZWylaxIlGuYfTHyHke0x3akAlw9VyfnG6
-         WTl5A0LIqRV7YK4EIxscvhAZaoHgOBRPACxHE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7tFtwZgvZE5hW33XbmmKt8eqRyrQtOfEzKnpZP3Z4fw=;
-        b=e7oJIdQ+T6X8Z3jkpuXsaVwJmjwZKVwvKb4d8V9YevQTcV0lxqH/AzjzCsQcwNv671
-         94lu2WUnIpeARmTLBSlC90XIqrGk4IhI5KvGP6ZAHSRWeW83kG+zPsU4oXTaULNt85g9
-         ejFQmtk6IDmRHrjAx16s46wiuZkXJRN6tLOVDAL29OntRV/PC3mTJojVNef9yFs1rOTC
-         x9pkMqwfXsq3gLFZs4/V5W6PE56mCEzr+kmLzzbuekhQ8jhAUdoA9j+2EDwISShnDJZS
-         ZvQfCqjSFH+9qE9qkCbqhO8hqiSUep/nq7igyFRsIGMw+Y5K6Z1BSDRntdHnrw2+wP2r
-         2k8Q==
-X-Gm-Message-State: AOAM5328AMYXMWbQMe33C15LiYlXtACvCN22OnE8isLgMClBACJ5VTSR
-        uy27hYP4S2OfDMO6nbDzF2zpXQ==
-X-Google-Smtp-Source: ABdhPJwiF0InviA286xZMds7P6A3F23qpGlkmzD4rF6zE18n7jXKvqQI9cH5t4J0qPX2tBr2hsnccA==
-X-Received: by 2002:a17:90a:950b:: with SMTP id t11mr10570641pjo.35.1590768570208;
-        Fri, 29 May 2020 09:09:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm1993834pfr.2.2020.05.29.09.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 09:09:29 -0700 (PDT)
-Date:   Fri, 29 May 2020 09:09:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "zhujianwei (C)" <zhujianwei7@huawei.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Hehuazhen <hehuazhen@huawei.com>
-Subject: Re: new seccomp mode aims to improve performance
-Message-ID: <202005290903.11E67AB0FD@keescook>
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
- <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+        id S1727013AbgE2Q2V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 12:28:21 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:35480 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725681AbgE2Q2V (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 29 May 2020 12:28:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590769700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QOocdEe8JcHWozlDHA2H1VhP1cNSV3Qek6Z4dV8TZIg=;
+        b=hDddTkwSlMs8BItdvKnFvB9QjzMLQtlbT0yRo79CWiUMENb0SGAN5WyKFodJ1k/yvp02/h
+        ieu2DwFV1iawzwxYnCWxYwOAX0jLuSCc1joW1CiMH14sMOLOHkp0gl48DycDpFRMH1MvPA
+        MBNT1qplSOIDn3JyvO4ZZzj0thiaWu8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-TrjcmuouNH6DG4JTYjvPbQ-1; Fri, 29 May 2020 12:28:11 -0400
+X-MC-Unique: TrjcmuouNH6DG4JTYjvPbQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 308081855A1D;
+        Fri, 29 May 2020 16:28:10 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 393A27A8CC;
+        Fri, 29 May 2020 16:28:04 +0000 (UTC)
+Date:   Fri, 29 May 2020 18:28:03 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next RFC 1/3] bpf: move struct bpf_devmap_val out of
+ UAPI
+Message-ID: <20200529182803.526832ed@carbon>
+In-Reply-To: <a0cadc6b-ceb4-c40b-8a02-67b99a665d74@gmail.com>
+References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
+        <159076798058.1387573.3077178618799401182.stgit@firesoul>
+        <a0cadc6b-ceb4-c40b-8a02-67b99a665d74@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 29, 2020 at 08:43:56AM -0700, Alexei Starovoitov wrote:
-> On Fri, May 29, 2020 at 5:50 AM zhujianwei (C) <zhujianwei7@huawei.com> wrote:
-> >
-> > Hi, all
-> >
-> > 　　We're using seccomp to increase container security, but bpf rules filter causes performance to deteriorate. So, is there a good solution to improve performance, or can we add a simplified seccomp mode to improve performance?
+On Fri, 29 May 2020 10:06:25 -0600
+David Ahern <dsahern@gmail.com> wrote:
 
-Yes, there are already plans for a simple syscall bitmap[1] seccomp feature.
-
-> I don't think your hunch at where cpu is spending cycles is correct.
-> Could you please do two experiments:
-> 1. try trivial seccomp bpf prog that simply returns 'allow'
-> 2. replace bpf_prog_run_pin_on_cpu() in seccomp.c with C code
->   that returns 'allow' and make sure it's noinline or in a different C file,
->   so that compiler doesn't optimize the whole seccomp_run_filters() into a nop.
+> On 5/29/20 9:59 AM, Jesper Dangaard Brouer wrote:
+> > @@ -60,6 +60,15 @@ struct xdp_dev_bulk_queue {
+> >  	unsigned int count;
+> >  };
+> >  
+> > +/* DEVMAP values */
+> > +struct bpf_devmap_val {
+> > +	__u32 ifindex;   /* device index */
+> > +	union {
+> > +		int   fd;  /* prog fd on map write */
+> > +		__u32 id;  /* prog id on map read */
+> > +	} bpf_prog;
+> > +};
+> > +  
 > 
-> Then measure performance of both.
-> I bet you'll see exactly the same numbers.
+> I can pick up this name change for v4.
 
-Android has already done this, it appeared to not be the same. Calling
-into a SECCOMP_RET_ALLOW filter had a surprisingly high cost. I'll see
-if I can get you the numbers. I was frankly quite surprised -- I
-understood the bulk of the seccomp overhead to be in taking the TIF_WORK
-path, copying arguments, etc, but something else is going on there.
-
--Kees
-
-[1] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/
+Great - I will appreciate, as this will make my patchset compatible
+with yours :-)
 
 -- 
-Kees Cook
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
