@@ -2,108 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B3B1E728A
-	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 04:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4461E74D3
+	for <lists+bpf@lfdr.de>; Fri, 29 May 2020 06:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404786AbgE2CYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 May 2020 22:24:50 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41046 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404312AbgE2CYt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 May 2020 22:24:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TzwUFZy_1590719085;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TzwUFZy_1590719085)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 29 May 2020 10:24:46 +0800
-Subject: Re: [RFC PATCH] samples:bpf: introduce task detector
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <6561a67d-6dac-0302-8590-5f46bb0205c2@linux.alibaba.com>
- <CAEf4BzYwO59x0kJWNk1sfwKz=Lw+Sb_ouyRpx8-v1x8XFoqMOw@mail.gmail.com>
- <9a78329c-8bfe-2b83-b418-3de88e972c5a@linux.alibaba.com>
- <CAEf4BzYHFAbOeVbs8Y2j5HjYOavDC+M+HtOst69Qtm2h5A3M=A@mail.gmail.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <0c8ec8d5-22df-8380-1ebf-e7f124dbe801@linux.alibaba.com>
-Date:   Fri, 29 May 2020 10:24:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1725777AbgE2E00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 May 2020 00:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgE2E0Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 May 2020 00:26:24 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E07C08C5C6;
+        Thu, 28 May 2020 21:26:24 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k22so536060pls.10;
+        Thu, 28 May 2020 21:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QAwruukUMW1HUOCfl1F4ET8bfY+WJbFgJ5/JcXJqvaA=;
+        b=fq2Ck8j+m9qq8TSEU5itXiVwQ4Pc4MOqkC6MOO/oOSeZc2Svpp8MirtR1buvf793cr
+         QjUXtAXMSAEORgbw3Z+HvPWrJvDeqdgFjwZ6v5O/IUCorNBtelETKQ3AEi1KozNq0TGv
+         srysn/RqWtzCjpHEhakD/pbnX5izG+PPnlqMXPnuGm6+qvihBcAgu5ItX61kSGhbDT89
+         J64nZtQm4t+a/WOXvRst0dRwDFn7IGenxGPjKPuyU9U7BGRI6ojmy5u8rZDc9XbRKJ2t
+         a9aLSzWqkvA+Wd0bq2zf1UiP4YSTPKKzSpRn5iQdJRV1udRCVhccy6nHcQlGs/ozHbhr
+         yfSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QAwruukUMW1HUOCfl1F4ET8bfY+WJbFgJ5/JcXJqvaA=;
+        b=r8gS+b3JTfVusyAP5u8Abk9fu2C4xDISMXQ1pmeD2qs79pnMWpTzkzllkMBAaVnp11
+         1AL1KlSCdP/Z/qghEfqZcEE8xz0kLrof4V9+UcK68MhvFO1C+g3OqVEUvwtpX6FKcC/j
+         avqGPycm/bFwiseG/zLY1Id065ydWpm2KGNEQ8ondo2uJlUCtRhXaKhpo2Ls9ga4C1C0
+         pgCBR289Qgr3ZE9PSArr2S3YT0U9TnkWQ5EFINt89tuqGh2sIu1MXVfBYT6ipLlpPmIM
+         1JrnGwWROCJgRADndiaR7GD8Uh2gf9njWuCKsLhLm8dMoTE8FELJH3pvMczKYHwjJ+uS
+         ZVXg==
+X-Gm-Message-State: AOAM531MjdM8czU5XAk5MG6f8h226nwmiPD4FETjEPH1y+GS9lOfsQoD
+        H9QgCjEpQQAhJw20vR7lj5w=
+X-Google-Smtp-Source: ABdhPJxcI4V0c2C+rvnJRXgn7fBIsLGzdKcctUyUi7zbOnx8hXA2tWlgp2EGGrka3Wj7cKNbqnx7Xg==
+X-Received: by 2002:a17:902:b217:: with SMTP id t23mr6863300plr.183.1590726384193;
+        Thu, 28 May 2020 21:26:24 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4a1c])
+        by smtp.gmail.com with ESMTPSA id b4sm5956372pfo.140.2020.05.28.21.26.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 21:26:23 -0700 (PDT)
+Date:   Thu, 28 May 2020 21:26:20 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce sleepable BPF programs
+Message-ID: <20200529042620.747i342nizywycyv@ast-mbp.dhcp.thefacebook.com>
+References: <20200528053334.89293-1-alexei.starovoitov@gmail.com>
+ <20200528053334.89293-2-alexei.starovoitov@gmail.com>
+ <20200528221227.GA217782@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYHFAbOeVbs8Y2j5HjYOavDC+M+HtOst69Qtm2h5A3M=A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528221227.GA217782@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2020/5/29 上午2:34, Andrii Nakryiko wrote:
-[snip]
->>>
->>> With CO-RE, it also will allow to compile this tool once and run it on
->>> many different kernels without recompilation. Please do take a look
->>> and submit a PR there, it will be a good addition to the toolkit (and
->>> will force you write a bit of README explaining use of this tool as
->>> well ;).
->>
->> Aha, I used to think bcc only support python and cpp :-P
->>
+On Fri, May 29, 2020 at 12:12:27AM +0200, KP Singh wrote:
+> > +			if (ret)
+> > +				verbose(env, "%s() is not modifiable\n",
+> > +					prog->aux->attach_func_name);
+> > +		} else if (prog->aux->sleepable && prog->type == BPF_PROG_TYPE_TRACING) {
+> > +			/* fentry/fexit progs can be sleepable only if they are
+> > +			 * attached to ALLOW_ERROR_INJECTION or security_*() funcs.
+> > +			 * LSM progs check that they are attached to bpf_lsm_*() funcs
+> > +			 * which are sleepable too.
 > 
-> libbpf-tools don't use BCC at all, they are just co-located with BCC
-> and BCC tools in the same repository and are lightweight alternatives
-> to BCC-based tools. But it needs kernel with BTF built-in, which is
-> the only (temporary) downside.
-
-I see, thanks for the explain :-)
-
-We prefer libbpf since we feel it's more friendly for kernel folks to
-do develop, less suspects when meet any BUG, while BCC is a good way
-to package and distribute, glad to know that we can have them in one
-piece now.
-
-Regards,
-Michael Wang
-
+> I know of one LSM hook which is not sleepable and is executed in an
+> RCU callback i.e. task_free. I don't think t's a problem to run under
+> SRCU for that (I tried it and it does not cause any issues).
 > 
->> I'll try to rework it and submit PR, I'm glad to know that you think
->> this tool as a helpful one, we do solved some tough issue with it
->> already.
->>
->>>
->>> As for the code itself, I haven't gone through it much, but please
->>> convert map definition syntax to BTF-defined one. The one you are
->>> using is a legacy one. Thanks!
->>>
->>>   [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
->>
->> Will check the example there :-)
->>
->> Regards,
->> Michael Wang
->>
->>>
->>>>  samples/bpf/Makefile             |   3 +
->>>>  samples/bpf/task_detector.h      | 382 +++++++++++++++++++++++++++++++++++++++
->>>>  samples/bpf/task_detector_kern.c | 329 +++++++++++++++++++++++++++++++++
->>>>  samples/bpf/task_detector_user.c | 314 ++++++++++++++++++++++++++++++++
->>>>  4 files changed, 1028 insertions(+)
->>>>  create mode 100644 samples/bpf/task_detector.h
->>>>  create mode 100644 samples/bpf/task_detector_kern.c
->>>>  create mode 100644 samples/bpf/task_detector_user.c
->>>>
->>>
->>> [...]
->>>
+> We can add a blacklisting mechanism later for the sleepable flags or
+> just the sleeping helpers (based on some of the work going on to
+> whitelist functions for helper usage).
+
+Good catch. *_task_free() are not sleepable. I'll introduce a simple
+blacklist for now. Since I'm not adding actual sleeping helpers in this
+patch set nothing is broken, but it will give us the base to build stuff on top.
