@@ -2,58 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63E21E9273
-	for <lists+bpf@lfdr.de>; Sat, 30 May 2020 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491731E93D9
+	for <lists+bpf@lfdr.de>; Sat, 30 May 2020 23:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgE3QGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 May 2020 12:06:49 -0400
-Received: from sonic302-54.consmr.mail.ne1.yahoo.com ([66.163.186.180]:39028
-        "EHLO sonic302-54.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728927AbgE3QGt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 30 May 2020 12:06:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590854808; bh=3gwbdpD6fpTnU3AIhQs1dw9/oeXqxu71NA+1nQpVq+I=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OjPwDHUVVPjeLY3f+X2+0Fn5Spa/K2dw6cjxG9oGUo1gBqb/9GSpvf5KZJclrsvdL4HMQYZObPY/5tEpjnkDuvkUhWVzxbDM/8yYCRtdCHSk4yJK8OtH/1iVieSR2JcvhPZxqUnbB2eUovUBiP7PqliUHcdUNK33G2KO+se14STxJa8HJw+vfDNGKOoiGbfmaDezec8ZUCWp1FqIFPYkKQSt9EgOfdKQDdC+bWXGUr0Ewpcr46qMnpfUOLGB3YTwyrzRi6JAR8B+BWgZEzED5JIUhw6zjo8vyWCvuDVC4r+Y/5pgaGxOl0xUPZV2s8+qou8ruHBV3lcVwSf5koFpQA==
-X-YMail-OSG: cK5eGeMVM1neuT9pbW0aQfqC1z92p790VwOv2VXegL9k71bT_zWS5UOtOlQ1hhG
- 2KRG.z4xHU_6wS_0aC9Jbg.rF6FC1QigB2IPu0hjF8R1OijSqzX2BLmWXFeyuoE3H95ufB4qGg_V
- pizGpu6Ma0ktbpZAWotOCXz_cOSP6AbKfKwz7w5IdorDwnAHF0XoTFsAJZ07XDGCP6CpC7V6uYxk
- F53aZX4tlBnpeIQubMLOyucHK9oj1gbzAVDASdW7jzh3KHKFKvUStYjTKiiKNgAM0GI6q6FBKLSZ
- PwZ7VX8rZxP9.9ar7og53SOaQEIjQrDDdAFnPwO2B9411mVViWL8.6Mt.QgfsU0aCHP6ZVcsa2LP
- zvz5AlYm1iL0xh5UasC2xlX8xgqhwaT4DN4FgVeBy2nQrmvyUZw6OqdG3qEIK6rIVjw.QGlm8p8B
- EDUqyZLbDcB__J4h0c_zyZeo0K3JHUR06WwtmCag7ER15FQFdRItuO_FOZYb00eytK7h9Zs3UoLA
- rwCni7SYcCvWvMemYpi2fwk13VEesECqK8_z4vd2qEEgEqe99Jwffuk9x4s0zEeG27XiJ.GYbVSO
- H00VcEIqn2ctwW_bW8wrk_H8CeUkQN_0Scn10v5Fd0sUNYEfZUYTssEe7a.uyii.TPLTjXP8IwwW
- eoBzrLl0WUk4b.Zv18pmZbijhAk_euzChwrw5686CIigE7.oiChH15cKaeNszEZ2fUdW0U4gTdZp
- wL4K1h3PILas_mdBHRAXkiJ60kP0srWYYiYUQt7qIaHd3uN0OSjVjd6jWZ6dwwGfZZAtnWiRJzHw
- lBc99I8zCc.Cs.mOMfy4K8J6_1W8k7Eof_2AfTEzUUywk2c4rzIfS6xJeoF9ShsszfBvBR.kbTol
- Ouvq51l.Khu20G0ZPDOGAWZhd07D64sJak4o4C9p4jH3_YhnIvuOkVcusMkj5x08yZnvBcMtYROF
- GAl6VKGaQcJL4I_jeUQRDbU201hltbucZy87yQfU3n62MSA.5O78RP9dgCo9I3PSxLkU8ufLR39H
- khbH_TQv5AVkkSmPvPYtj5qNFSLe0gqxaIXTp8aFjEVYsVwWrbuGc8ltgTsmos6AehEG9wSr2pHe
- CGErWAhoti.Q71tbmx7N9iA1TgT89r3U0vaeAVZ7QH4CLhNVyxYO0qEWbqaVD7Zd1EG7ESGlN.uw
- llkgaXhpIBVzxwYMHYK29A0sn6cFb5QuNg8vrm0_ogHm7myjVUrMWktdOSzvfw0rw2X5tP5zrpS2
- 1LFwAmJISsP9l3qkilxj7kDEMVbCbkWCibIopTbxcEigxgBsXq4gaYdcaxrWEC2.cjZLbX6JbJF2
- QotFKn48EaWwpV5y3Zzo2GoHRNq7sy026sqsVs.oiJ69G_14wyWkW85qs
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Sat, 30 May 2020 16:06:48 +0000
-Date:   Sat, 30 May 2020 16:04:47 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <mau32@nbvit.in>
-Reply-To: maurhinck7@gmail.com
-Message-ID: <1936203153.166352.1590854688000@mail.yahoo.com>
-Subject: 
+        id S1729338AbgE3VJW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 May 2020 17:09:22 -0400
+Received: from mail-eopbgr30080.outbound.protection.outlook.com ([40.107.3.80]:41895
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729098AbgE3VJW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 30 May 2020 17:09:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fFKAMO2r7bzVgIX1CrNGdjcOviHV33llp9iefK+6rhAjC0wcpnGvBAGReBjnPJZmNWo5H4WsuFBLDmd7vf8UdPb7zf+TDCzrUqpNEL0UlH0YjQkEsSR6QXfCMtbnEwuzipk1z7YsYFTGI4hDclTLEx5WMIjU5xQgZv1CL5WQJLTWps+Xwttk8GYWNrpkJnzkRH6h7hg1a4RQ52OxQ1EbCneBaULGuRz6qpirRBPc7pF2ymab9tvWNlwTm6AnmbiqvRo5vITF90rDcXOJka74IdXBtsT0anqXEHL3JoYMR0eb41tuS/ltU042cGSHh8NwcjDi2J8/YQwGQp1Zu1AAHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gvbp74Lrj0pI7o1DRA28wwgPqHFqNmVhGNrngd15oA0=;
+ b=kdleIaPqBTw1S1leCtTx6FnqhYNn4JskU8UCS1yu2kD0gSxBDajX5VQ0eTurITY7TRAErJzLTXVU6qGBy6jaK/Ojuuf6nYmUV9A9sOpJIqhF9cTvXmvvveDPsPR6Br2F24kSVkmNBgePZjiZ4IHZF8RyZmUojAFL/ZU7HjDDZozEoO6czqb5duaXsoKl2/QIVQTVLRgFhl0/6g0eQ75Av/Fr7mT17qedEfJSdq1GGwbEXZ1iHhXkJkXzP7ZROjiZ5+Pvsihzry68HDovI2XU2XbaQM54gucoESU0tq4f6/r00ZON6Apv4ui8jlYL0K8b22GK26wrzH+K2CMp9mQDXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=inf.elte.hu; dmarc=pass action=none header.from=inf.elte.hu;
+ dkim=pass header.d=inf.elte.hu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ikelte.onmicrosoft.com; s=selector2-ikelte-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gvbp74Lrj0pI7o1DRA28wwgPqHFqNmVhGNrngd15oA0=;
+ b=twkta8Ul2elWftP3X47kZwpvuKRQk46uRd7o7YiWsEu7Stpg3j7ikGrDHkvpIaffOj9UWwFYHB7JbIMJXT+1TztadiMcIXgFIxBAIfc/G4lpqKwLYAEVozIbNOvrYUjY7Rc1Vu23sNf14WIinGb3T5qhJ9Ga644E9KCbn7AazQw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=inf.elte.hu;
+Received: from DB8PR10MB2652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:ab::20)
+ by DB8PR10MB3034.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:e1::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19; Sat, 30 May
+ 2020 21:09:16 +0000
+Received: from DB8PR10MB2652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::285b:6f31:7d11:5c53]) by DB8PR10MB2652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::285b:6f31:7d11:5c53%5]) with mapi id 15.20.3045.022; Sat, 30 May 2020
+ 21:09:16 +0000
+From:   Ferenc Fejes <fejes@inf.elte.hu>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ferenc Fejes <fejes@inf.elte.hu>
+Subject: [PATCH v2 net-next  0/3] Extending bpf_setsockopt with SO_BINDTODEVICE sockopt
+Date:   Sat, 30 May 2020 23:08:59 +0200
+Message-Id: <cover.1590871065.git.fejes@inf.elte.hu>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR0202CA0016.eurprd02.prod.outlook.com
+ (2603:10a6:803:14::29) To DB8PR10MB2652.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:10:ab::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1936203153.166352.1590854688000.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (89.133.95.17) by VI1PR0202CA0016.eurprd02.prod.outlook.com (2603:10a6:803:14::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Sat, 30 May 2020 21:09:15 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [89.133.95.17]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 733b226e-cf4b-4274-c27a-08d804ddb5de
+X-MS-TrafficTypeDiagnostic: DB8PR10MB3034:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR10MB303474A3FD9856D34400A3BCE18C0@DB8PR10MB3034.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 041963B986
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ivY8dz3o1TTOpKwBqyTYsjk0ka3WciBK5BampuD2FZSvQ8k3rejRbPm4H7w5Jv8Q6L0BtKpy7p+SW9nPfjdT1G7TJ1mfsoq7Vqac8tS7hta+HXGDwxxQxJN4qc5w//pQ42YRmIKkXitevCqX4kc0ZoLW+jxuuZ/AD72dzasBbQIYh51j1MboL83rdfZfDjwCgSNRXYfYXyWGIDTF5dbdf5nhurjQb64vFg4bH7aQw4LGwr3Xrihx3HCa5rwcMR//bPNo0b+OJLy4LIrYpetBimqxTT70nuNtz8gFBOAwBA6jf6cWWo+d47Uv8iQMBcu5zTb0hJ7NKozpH6L2jw/QeucGo30mKRj2ouKpHFiZiElXmwjH7CZRUjXi+uFjrV1w
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR10MB2652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(396003)(39840400004)(366004)(66556008)(6486002)(69590400007)(66946007)(66476007)(478600001)(83380400001)(107886003)(8936002)(6506007)(8676002)(52116002)(6666004)(4744005)(5660300002)(26005)(2616005)(6916009)(316002)(956004)(786003)(86362001)(4326008)(2906002)(6512007)(16526019)(54906003)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: IA8u97++3TSzJ7Cc7aCJ6KwYXCu8XE43FOn43S4K8U6lHnE0/OiVI+AZGra3MP9RmCRlprQQvOP602TF2EAA6+Q//8kVSDi1FMI70i/adzbA8t1O8GI73dPlLuj5/DxJdIVA+5AVKCmikL1I0xdJx6aLUpTL2oao2wGSb7Nrc62HWtN4bj65atMpWfqWcFYy/odmyuXgkIkpZJriyKHytLkdf9i9t2+0CeOoxbbNfi1I2RKQH6MN7CnJGRgtsjax1nkrgN14gJRs9BKeEotak/fE5yLMRnXKW+tZzLDmLQVzhyEXQk6judBKLfxoBeHgUWsOmy6Eyo9gYEUgGZ/cPGrOzplViosYCLttsu0IbS6+2fY3vRab1CZTLdde/bL+JOuH9URDhpCEvRj0ySjpI+W3ge+MQadaXhTJ47PJ1kUh2sgREx8J5Bkj4m/O1Oo6YDpWbWnla3/8C7z5QmcDcpQxnQwHxcDk0/TCNqlngJc=
+X-OriginatorOrg: inf.elte.hu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 733b226e-cf4b-4274-c27a-08d804ddb5de
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 May 2020 21:09:16.0192
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0133bb48-f790-4560-a64d-ac46a472fbbc
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eF8dUy4IRmr5WWdMXvI6ykLMulnbaRZX+qkJbj0Tue1mYgBlJW/Pm8SSY/M8ZIYwN+ti9f6vbp33mHeTy7EYRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3034
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This option makes it possible to programatically bind sockets
+to netdevices. With the help of this option sockets 
+of VRF unaware applications could be distributed between 
+multiple VRFs with an eBPF program. This lets the applications
+benefit from multiple possible routes.
 
+v2:
+- splitting up the patch to three parts
+- lock_sk parameter for optional locking in sock_bindtoindex - Stanislav Fomichev
+- testing the SO_BINDTODEVICE option - Andrii Nakryiko
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck7@gmail.com) fo=
-r further details.
+Ferenc Fejes (3):
+  net: Make locking in sock_bindtoindex optional
+  bpf: Allow SO_BINDTODEVICE opt in bpf_setsockopt
+  selftests/bpf: Add test for SO_BINDTODEVICE opt of bpf_setsockopt
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
+ include/net/sock.h                            |  2 +-
+ net/core/filter.c                             | 27 ++++++++++++++-
+ net/core/sock.c                               | 10 +++---
+ net/ipv4/udp_tunnel.c                         |  2 +-
+ net/ipv6/ip6_udp_tunnel.c                     |  2 +-
+ .../selftests/bpf/progs/connect4_prog.c       | 33 +++++++++++++++++++
+ 6 files changed, 68 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
+
