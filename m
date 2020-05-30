@@ -2,101 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1DA1E9221
-	for <lists+bpf@lfdr.de>; Sat, 30 May 2020 16:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63E21E9273
+	for <lists+bpf@lfdr.de>; Sat, 30 May 2020 18:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729169AbgE3Og4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 May 2020 10:36:56 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22625 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729090AbgE3Og4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 30 May 2020 10:36:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590849414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jYF29yT1seaF6Nn7oxZie9sNTdhmGFUGLY8Riq5cZvY=;
-        b=B420OcOucyuwPOdXQ3xzbKXKnv5yJDS9abHS9oeb87C3EybZDAPtui27owzLc0nHUxzQtH
-        5DggwxKR/4qJQB7M33AHj2f/n8gKjfKihA8kH+dtY/CNAx/UEC9P2ZGdS5rEo3N/vsMWNZ
-        wkb3zskx5luYm/FQwMoJps/3AMTn4j0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-p1ZVQgw5MomKe5qhH4_cyg-1; Sat, 30 May 2020 10:36:51 -0400
-X-MC-Unique: p1ZVQgw5MomKe5qhH4_cyg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 905DA1855A21;
-        Sat, 30 May 2020 14:36:49 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A192B62ABC;
-        Sat, 30 May 2020 14:36:44 +0000 (UTC)
-Date:   Sat, 30 May 2020 16:36:43 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next RFC 2/3] bpf: devmap dynamic map-value storage
- area based on BTF
-Message-ID: <20200530163643.290eb18c@carbon>
-In-Reply-To: <CAEf4BzbL1ftGZ9x0hvFDc-PGNexTuMv67VxT=q2NF0y6im6+cg@mail.gmail.com>
-References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
-        <159076798566.1387573.8417040652693679408.stgit@firesoul>
-        <CAEf4BzbL1ftGZ9x0hvFDc-PGNexTuMv67VxT=q2NF0y6im6+cg@mail.gmail.com>
+        id S1729044AbgE3QGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 May 2020 12:06:49 -0400
+Received: from sonic302-54.consmr.mail.ne1.yahoo.com ([66.163.186.180]:39028
+        "EHLO sonic302-54.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728927AbgE3QGt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 30 May 2020 12:06:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1590854808; bh=3gwbdpD6fpTnU3AIhQs1dw9/oeXqxu71NA+1nQpVq+I=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OjPwDHUVVPjeLY3f+X2+0Fn5Spa/K2dw6cjxG9oGUo1gBqb/9GSpvf5KZJclrsvdL4HMQYZObPY/5tEpjnkDuvkUhWVzxbDM/8yYCRtdCHSk4yJK8OtH/1iVieSR2JcvhPZxqUnbB2eUovUBiP7PqliUHcdUNK33G2KO+se14STxJa8HJw+vfDNGKOoiGbfmaDezec8ZUCWp1FqIFPYkKQSt9EgOfdKQDdC+bWXGUr0Ewpcr46qMnpfUOLGB3YTwyrzRi6JAR8B+BWgZEzED5JIUhw6zjo8vyWCvuDVC4r+Y/5pgaGxOl0xUPZV2s8+qou8ruHBV3lcVwSf5koFpQA==
+X-YMail-OSG: cK5eGeMVM1neuT9pbW0aQfqC1z92p790VwOv2VXegL9k71bT_zWS5UOtOlQ1hhG
+ 2KRG.z4xHU_6wS_0aC9Jbg.rF6FC1QigB2IPu0hjF8R1OijSqzX2BLmWXFeyuoE3H95ufB4qGg_V
+ pizGpu6Ma0ktbpZAWotOCXz_cOSP6AbKfKwz7w5IdorDwnAHF0XoTFsAJZ07XDGCP6CpC7V6uYxk
+ F53aZX4tlBnpeIQubMLOyucHK9oj1gbzAVDASdW7jzh3KHKFKvUStYjTKiiKNgAM0GI6q6FBKLSZ
+ PwZ7VX8rZxP9.9ar7og53SOaQEIjQrDDdAFnPwO2B9411mVViWL8.6Mt.QgfsU0aCHP6ZVcsa2LP
+ zvz5AlYm1iL0xh5UasC2xlX8xgqhwaT4DN4FgVeBy2nQrmvyUZw6OqdG3qEIK6rIVjw.QGlm8p8B
+ EDUqyZLbDcB__J4h0c_zyZeo0K3JHUR06WwtmCag7ER15FQFdRItuO_FOZYb00eytK7h9Zs3UoLA
+ rwCni7SYcCvWvMemYpi2fwk13VEesECqK8_z4vd2qEEgEqe99Jwffuk9x4s0zEeG27XiJ.GYbVSO
+ H00VcEIqn2ctwW_bW8wrk_H8CeUkQN_0Scn10v5Fd0sUNYEfZUYTssEe7a.uyii.TPLTjXP8IwwW
+ eoBzrLl0WUk4b.Zv18pmZbijhAk_euzChwrw5686CIigE7.oiChH15cKaeNszEZ2fUdW0U4gTdZp
+ wL4K1h3PILas_mdBHRAXkiJ60kP0srWYYiYUQt7qIaHd3uN0OSjVjd6jWZ6dwwGfZZAtnWiRJzHw
+ lBc99I8zCc.Cs.mOMfy4K8J6_1W8k7Eof_2AfTEzUUywk2c4rzIfS6xJeoF9ShsszfBvBR.kbTol
+ Ouvq51l.Khu20G0ZPDOGAWZhd07D64sJak4o4C9p4jH3_YhnIvuOkVcusMkj5x08yZnvBcMtYROF
+ GAl6VKGaQcJL4I_jeUQRDbU201hltbucZy87yQfU3n62MSA.5O78RP9dgCo9I3PSxLkU8ufLR39H
+ khbH_TQv5AVkkSmPvPYtj5qNFSLe0gqxaIXTp8aFjEVYsVwWrbuGc8ltgTsmos6AehEG9wSr2pHe
+ CGErWAhoti.Q71tbmx7N9iA1TgT89r3U0vaeAVZ7QH4CLhNVyxYO0qEWbqaVD7Zd1EG7ESGlN.uw
+ llkgaXhpIBVzxwYMHYK29A0sn6cFb5QuNg8vrm0_ogHm7myjVUrMWktdOSzvfw0rw2X5tP5zrpS2
+ 1LFwAmJISsP9l3qkilxj7kDEMVbCbkWCibIopTbxcEigxgBsXq4gaYdcaxrWEC2.cjZLbX6JbJF2
+ QotFKn48EaWwpV5y3Zzo2GoHRNq7sy026sqsVs.oiJ69G_14wyWkW85qs
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Sat, 30 May 2020 16:06:48 +0000
+Date:   Sat, 30 May 2020 16:04:47 +0000 (UTC)
+From:   "Mrs. Maureen Hinckley" <mau32@nbvit.in>
+Reply-To: maurhinck7@gmail.com
+Message-ID: <1936203153.166352.1590854688000@mail.yahoo.com>
+Subject: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1936203153.166352.1590854688000.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 30 May 2020 00:19:50 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Fri, May 29, 2020 at 8:59 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > The devmap map-value can be read from BPF-prog side, and could be used for a
-> > storage area per device. This could e.g. contain info on headers that need  
-> 
-> If BPF program needs a storage area per device, why can't it just use
-> a separate map or just plain array (both keyed by ifindex) to store
-> whatever it needs per-device? It's not clear why this flexibility and
-> complexity is needed from the description above.
-
-Sorry I though it was obvious, it is for performance reasons and to
-reduce the number of maps needed.  We do a lookup in the devmap anyhow,
-thus this memory will be cache-hot.  Doing another lookup in a separate
-map, which is not guaranteed to be cache-hot, will be wasting cycles.
-
-> > to be added when packet egress this device.
-> >
-> > This patchset adds a dynamic storage member to struct bpf_devmap_val. More
-> > importantly the struct bpf_devmap_val is made dynamic via leveraging and
-> > requiring BTF for struct sizes above 4. The only mandatory struct member is
-> > 'ifindex' with a fixed offset of zero.
-> >
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  kernel/bpf/devmap.c |  216 ++++++++++++++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 185 insertions(+), 31 deletions(-)
-> >  
-> 
-> [...]
-> 
 
 
+I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
+ thousand USD) to you. Contact us via my email at (maurhinck7@gmail.com) fo=
+r further details.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Best Regards,
+Mrs. Maureen Hinckley,
+Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
