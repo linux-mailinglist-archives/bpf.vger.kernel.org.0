@@ -2,227 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BCC1E964F
-	for <lists+bpf@lfdr.de>; Sun, 31 May 2020 10:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E5E1E9861
+	for <lists+bpf@lfdr.de>; Sun, 31 May 2020 17:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgEaI3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 May 2020 04:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbgEaI3O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 May 2020 04:29:14 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAE0C03E96A
-        for <bpf@vger.kernel.org>; Sun, 31 May 2020 01:29:13 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id k11so6262036ejr.9
-        for <bpf@vger.kernel.org>; Sun, 31 May 2020 01:29:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=01x38t0xTk7+DfmoaUEjlRqGIKh1P8FrwxiKsjkB7Q0=;
-        b=M47TiDPQiix4JzD5xbIyYxnvk+SV3J2SG9KC/B1Q43LjhLe2Ov7y6KaWBqBvFXprN5
-         x3v12joXadiWi/ztMU06F2ifMulrywdyqrmTdU+7yyLfxtxu9/labftjnJU+omwzL+J7
-         kwd/tfrGdALTvY0z0a7FnnjvPjqnrKc+viKgw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=01x38t0xTk7+DfmoaUEjlRqGIKh1P8FrwxiKsjkB7Q0=;
-        b=K3eJ8K8+6C7A1ZVTh9bEMcEnih7hz5/okrYp4cS1LNBL2Qw74b6qCsl+dOXUdXvTJl
-         vjemszV6yTymsryNuZzwPihYhCT4zs5d8nguvwxyUSIQFcUjmD2JSAODaWKnOGR5TSVT
-         ltUzRh8NZOOtzDGNdpxGSXWvyJw2nT3QV/dO73AmOJWvn9pL/NFPmFt2jvXtPUO9jHey
-         x308h6M7wbu7A3Tc5hR2qppLO2u6FiADwm0Besrjw/K1FAy4v53ZIkqxeSdO30s3kP0P
-         zpFhLBQASTEBZ7Jv307eJV38vFdRFpoYQpLj7pZzGL9S8RdD9aCS/reekNlKbjXnp43a
-         5m0A==
-X-Gm-Message-State: AOAM531akJNgfJeklPFWotpz+ORlnb1WXKT6nonYvKQj2Y7tW6stGL5v
-        m+T5cSdWE1rx4XE3ti2Dea1HMher5JM=
-X-Google-Smtp-Source: ABdhPJz8WjaZwgilQvvQsoR/axJltqOCpIRaF8bSEDEd+xTahOmxmxgPMFlyGjDJ+QM6chfo/sET4w==
-X-Received: by 2002:a17:906:9149:: with SMTP id y9mr9343813ejw.153.1590913752225;
-        Sun, 31 May 2020 01:29:12 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id g13sm11778021ejh.119.2020.05.31.01.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2020 01:29:11 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH bpf-next v2 12/12] selftests/bpf: Extend test_flow_dissector to cover link creation
-Date:   Sun, 31 May 2020 10:28:46 +0200
-Message-Id: <20200531082846.2117903-13-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200531082846.2117903-1-jakub@cloudflare.com>
-References: <20200531082846.2117903-1-jakub@cloudflare.com>
+        id S1728071AbgEaPKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 May 2020 11:10:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22406 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728031AbgEaPKx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 May 2020 11:10:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590937851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5PzQOC014IOVx9/TNBcKObA8/fHxBl+Fe3amH29hNfc=;
+        b=ggwN0U6Ka/LlUK6ggVW40kmL9UkwiDRAh/f6mMZzgEzy5HkgwnnPxPkCGNbu8rjy7dWZta
+        q/byj3707YltZm0fsC93ZJEnE+Ut9HnILP70xQAntPNDQTax/NsJLaVTNkPXVCXu9XTTPk
+        Yon+Fdwi0X87i3OkqJxu5y4+ANgmiYQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-32icELIcMk6POeBgo6jIlA-1; Sun, 31 May 2020 11:10:47 -0400
+X-MC-Unique: 32icELIcMk6POeBgo6jIlA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 981091005510;
+        Sun, 31 May 2020 15:10:44 +0000 (UTC)
+Received: from krava (unknown [10.40.192.36])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 72DDA610AB;
+        Sun, 31 May 2020 15:10:40 +0000 (UTC)
+Date:   Sun, 31 May 2020 17:10:39 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 7/9] bpf: Compile the BTF id whitelist data in vmlinux
+Message-ID: <20200531151039.GA881900@krava>
+References: <20200506132946.2164578-1-jolsa@kernel.org>
+ <20200506132946.2164578-8-jolsa@kernel.org>
+ <20200513182940.gil7v5vkthhwck3t@ast-mbp.dhcp.thefacebook.com>
+ <20200514080515.GH3343750@krava>
+ <CAEf4BzbZ6TYxVTJx3ij1WXy5AvVQio9Ht=tePO+xQf=JLigoog@mail.gmail.com>
+ <20200528172349.GA506785@krava>
+ <CAEf4BzbM-5-_QzDhrJDFJefo-m0OWDhvjsK_F1vA-ja4URVE9Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbM-5-_QzDhrJDFJefo-m0OWDhvjsK_F1vA-ja4URVE9Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the existing flow_dissector test case to run tests once using direct
-prog attachments, and then for the second time using indirect attachment
-via link.
+On Fri, May 29, 2020 at 01:48:58PM -0700, Andrii Nakryiko wrote:
+> On Thu, May 28, 2020 at 10:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, May 14, 2020 at 03:46:26PM -0700, Andrii Nakryiko wrote:
+> >
+> > SNIP
+> >
+> > > > I was thinking of putting the names in __init section and generate the BTF
+> > > > ids on kernel start, but the build time generation seemed more convenient..
+> > > > let's see the linking times with 'real size' whitelist and we can reconsider
+> > > >
+> > >
+> > > Being able to record such places where to put BTF ID in code would be
+> > > really nice, as Alexei mentioned. There are many potential use cases
+> > > where it would be good to have BTF IDs just put into arbitrary
+> > > variables/arrays. This would trigger compilation error, if someone
+> > > screws up the name, or function is renamed, or if function can be
+> > > compiled out under some configuration. E.g., assuming some reasonable
+> > > implementation of the macro
+> >
+> > hi,
+> > I'm struggling with this part.. to get some reasonable reference
+> > to function/name into 32 bits? any idea? ;-)
+> >
+> 
+> Well, you don't have to store actual pointer, right? E.g, emitting
+> something like this in assembly:
+> 
+> .global __BTF_ID___some_function
+> .type __BTF_ID___some_function, @object
+> .size __BTF_ID___some_function, 4
+> __BTF_ID___some_function:
+> .zero  4
+> 
+> Would reserve 4 bytes and emit __BTF_ID___some_function symbol. If we
+> can then post-process vmlinux image and for all symbols starting with
+> __BTF_ID___ find some_function BTF type id and put it into those 4
+> bytes, that should work, no?
+> 
+> Maybe generalize it to __BTF_ID__{func,struct,typedef}__some_function,
+> whatever, not sure. Just an idea.
 
-The intention is to exercises the newly added high-level API for attaching
-programs to network namespace with links (bpf_program__attach_netns).
+nice, so something like below?
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+it'd be in .S file, or perhaps in inline asm, assuming I'll be
+able to pass macro arguments to asm("")
+
+with externs defined in some header file:
+
+  extern const int bpf_skb_output_btf_ids[];
+  extern const int btf_whitelist_d_path[];
+
+  $ objdump -x ./kernel/bpf/whitelist.o
+  ...
+  0000000000000000 l     O .data  0000000000000004 __BTF_ID__func__vfs_truncate
+  0000000000000004 l     O .data  0000000000000004 __BTF_ID__func__vfs_fallocate
+  0000000000000008 l     O .data  0000000000000004 __BTF_ID__func__krava
+  0000000000000010 l     O .data  0000000000000004 __BTF_ID__struct__sk_buff
+  0000000000000000 g       .data  0000000000000000 btf_whitelist_d_path
+  0000000000000010 g       .data  0000000000000000 bpf_skb_output_btf_ids
+
+also it'd be nice to get rid of BTF_ID__ symbols in the final link
+
+thanks,
+jirka
+
+
 ---
- .../selftests/bpf/prog_tests/flow_dissector.c | 115 +++++++++++++-----
- 1 file changed, 82 insertions(+), 33 deletions(-)
+#define BTF_ID(prefix, name)                    \
+.local __BTF_ID__##prefix##__##name;            \
+.type __BTF_ID__##prefix##__##name, @object;    \
+.size __BTF_ID__##prefix##__##name, 4;          \
+__BTF_ID__##prefix##__##name:                   \
+.zero 4
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index b6370c0b3b7a..ea14e3ece812 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -103,6 +103,7 @@ struct test {
- 
- #define VLAN_HLEN	4
- 
-+static __u32 duration;
- struct test tests[] = {
- 	{
- 		.name = "ipv4",
-@@ -474,11 +475,87 @@ static int init_prog_array(struct bpf_object *obj, struct bpf_map *prog_array)
- 	return 0;
- }
- 
-+static void run_tests_skb_less(int tap_fd, struct bpf_map *keys)
-+{
-+	int i, err, keys_fd;
-+
-+	keys_fd = bpf_map__fd(keys);
-+	if (CHECK(keys_fd < 0, "bpf_map__fd", "err %d\n", keys_fd))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		/* Keep in sync with 'flags' from eth_get_headlen. */
-+		__u32 eth_get_headlen_flags =
-+			BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG;
-+		struct bpf_prog_test_run_attr tattr = {};
-+		struct bpf_flow_keys flow_keys = {};
-+		__u32 key = (__u32)(tests[i].keys.sport) << 16 |
-+			    tests[i].keys.dport;
-+
-+		/* For skb-less case we can't pass input flags; run
-+		 * only the tests that have a matching set of flags.
-+		 */
-+
-+		if (tests[i].flags != eth_get_headlen_flags)
-+			continue;
-+
-+		err = tx_tap(tap_fd, &tests[i].pkt, sizeof(tests[i].pkt));
-+		CHECK(err < 0, "tx_tap", "err %d errno %d\n", err, errno);
-+
-+		err = bpf_map_lookup_elem(keys_fd, &key, &flow_keys);
-+		CHECK_ATTR(err, tests[i].name, "bpf_map_lookup_elem %d\n", err);
-+
-+		CHECK_ATTR(err, tests[i].name, "skb-less err %d\n", err);
-+		CHECK_FLOW_KEYS(tests[i].name, flow_keys, tests[i].keys);
-+
-+		err = bpf_map_delete_elem(keys_fd, &key);
-+		CHECK_ATTR(err, tests[i].name, "bpf_map_delete_elem %d\n", err);
-+	}
-+}
-+
-+static void test_skb_less_prog_attach(struct bpf_flow *skel, int tap_fd)
-+{
-+	int err, prog_fd;
-+
-+	prog_fd = bpf_program__fd(skel->progs._dissect);
-+	if (CHECK(prog_fd < 0, "bpf_program__fd", "err %d\n", prog_fd))
-+		return;
-+
-+	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
-+	if (CHECK(err, "bpf_prog_attach", "err %d errno %d\n", err, errno))
-+		return;
-+
-+	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
-+
-+	err = bpf_prog_detach(prog_fd, BPF_FLOW_DISSECTOR);
-+	CHECK(err, "bpf_prog_detach", "err %d errno %d\n", err, errno);
-+}
-+
-+static void test_skb_less_link_create(struct bpf_flow *skel, int tap_fd)
-+{
-+	struct bpf_link *link;
-+	int err, net_fd;
-+
-+	net_fd = open("/proc/self/ns/net", O_RDONLY);
-+	if (CHECK(net_fd < 0, "open(/proc/self/ns/net)", "err %d\n", errno))
-+		return;
-+
-+	link = bpf_program__attach_netns(skel->progs._dissect, net_fd);
-+	if (CHECK(IS_ERR(link), "attach_netns", "err %ld\n", PTR_ERR(link)))
-+		goto out_close;
-+
-+	run_tests_skb_less(tap_fd, skel->maps.last_dissection);
-+
-+	err = bpf_link__destroy(link);
-+	CHECK(err, "bpf_link__destroy", "err %d\n", err);
-+out_close:
-+	close(net_fd);
-+}
-+
- void test_flow_dissector(void)
- {
- 	int i, err, prog_fd, keys_fd = -1, tap_fd;
- 	struct bpf_flow *skel;
--	__u32 duration = 0;
- 
- 	skel = bpf_flow__open_and_load();
- 	if (CHECK(!skel, "skel", "failed to open/load skeleton\n"))
-@@ -526,45 +603,17 @@ void test_flow_dissector(void)
- 	 * via BPF map in this case.
- 	 */
- 
--	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
--	CHECK(err, "bpf_prog_attach", "err %d errno %d\n", err, errno);
--
- 	tap_fd = create_tap("tap0");
- 	CHECK(tap_fd < 0, "create_tap", "tap_fd %d errno %d\n", tap_fd, errno);
- 	err = ifup("tap0");
- 	CHECK(err, "ifup", "err %d errno %d\n", err, errno);
- 
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		/* Keep in sync with 'flags' from eth_get_headlen. */
--		__u32 eth_get_headlen_flags =
--			BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG;
--		struct bpf_prog_test_run_attr tattr = {};
--		struct bpf_flow_keys flow_keys = {};
--		__u32 key = (__u32)(tests[i].keys.sport) << 16 |
--			    tests[i].keys.dport;
--
--		/* For skb-less case we can't pass input flags; run
--		 * only the tests that have a matching set of flags.
--		 */
--
--		if (tests[i].flags != eth_get_headlen_flags)
--			continue;
--
--		err = tx_tap(tap_fd, &tests[i].pkt, sizeof(tests[i].pkt));
--		CHECK(err < 0, "tx_tap", "err %d errno %d\n", err, errno);
--
--		err = bpf_map_lookup_elem(keys_fd, &key, &flow_keys);
--		CHECK_ATTR(err, tests[i].name, "bpf_map_lookup_elem %d\n", err);
--
--		CHECK_ATTR(err, tests[i].name, "skb-less err %d\n", err);
--		CHECK_FLOW_KEYS(tests[i].name, flow_keys, tests[i].keys);
--
--		err = bpf_map_delete_elem(keys_fd, &key);
--		CHECK_ATTR(err, tests[i].name, "bpf_map_delete_elem %d\n", err);
--	}
-+	/* Test direct prog attachment */
-+	test_skb_less_prog_attach(skel, tap_fd);
-+	/* Test indirect prog attachment via link */
-+	test_skb_less_link_create(skel, tap_fd);
- 
- 	close(tap_fd);
--	bpf_prog_detach(prog_fd, BPF_FLOW_DISSECTOR);
- out_destroy_skel:
- 	bpf_flow__destroy(skel);
- }
--- 
-2.25.4
+#define BTF_ID_LIST(name)                       \
+.global name;                                   \
+name:                
+
+#define ZERO .zero 4
+
+.data
+
+BTF_ID_LIST(btf_whitelist_d_path)
+BTF_ID(func, vfs_truncate)
+BTF_ID(func, vfs_fallocate)
+BTF_ID(func, krava)
+ZERO
+
+BTF_ID_LIST(bpf_skb_output_btf_ids)
+BTF_ID(struct, sk_buff)
 
