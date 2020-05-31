@@ -2,108 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ED71E98A1
-	for <lists+bpf@lfdr.de>; Sun, 31 May 2020 17:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4639B1E98DD
+	for <lists+bpf@lfdr.de>; Sun, 31 May 2020 18:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgEaPnJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 31 May 2020 11:43:09 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:22911 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727951AbgEaPnJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 31 May 2020 11:43:09 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-IWvaN8SJPfK3fXoaof0uiw-1; Sun, 31 May 2020 11:43:01 -0400
-X-MC-Unique: IWvaN8SJPfK3fXoaof0uiw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A879107ACCA;
-        Sun, 31 May 2020 15:42:59 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 65A465D9C5;
-        Sun, 31 May 2020 15:42:56 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     KP Singh <kpsingh@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH] bpf: Use tracing helpers for lsm programs
-Date:   Sun, 31 May 2020 17:42:55 +0200
-Message-Id: <20200531154255.896551-1-jolsa@kernel.org>
+        id S1726081AbgEaQfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 May 2020 12:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgEaQfd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 May 2020 12:35:33 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A88C061A0E;
+        Sun, 31 May 2020 09:35:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bh7so3262336plb.11;
+        Sun, 31 May 2020 09:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bYF+Q99ElfhGxFFkQVu4J74caB7UVLnUUGkn2xhZvNA=;
+        b=V4+pO9hY7PBtYFNR/HeVRVLjqMlg+a5Il8WotYghrxc8f35IyOLDmK92jUf1Wz2MTU
+         sqBzcEKhmDeYa7gJbKm7fgW3bwsfY0110QevtFMghE5kd5uditaaMNguyuZfZZ16jdte
+         0Xts+hXWt88Gax3NEJxaokVx9kPk/VKK5p9BqtL2n0Gusye99en7hKhJGxz6CMAcII6g
+         paJzgm4G6NE7kDWO9fwdX7P2gNnhDwoicgAXjHo/xhnq6IABqTUEj4Whm9Pvk/KALB75
+         7tmU+uByCBjBNXscYIxBUgFaGYAicAp1OioxIE6gtA6Kegr6SJSwtubqGHBdIM7WJtvb
+         rDrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bYF+Q99ElfhGxFFkQVu4J74caB7UVLnUUGkn2xhZvNA=;
+        b=QYX4kF4oGlDNwdtUE2jbWIObaPhrJchErvhfLWMJJjqXuvkmvnD3RwrxUUW3NfthR5
+         V0AUlzBAyjwCev9fL+QXV3WIu3MgEhGzaJlsQ2djTYw5QjYvkxnnSS7sZB1LUOQfbHpT
+         jnf1mX5gSOY7nMDz71aFUrM5J4ry5buOzuxQzgPKW/mRtFnxopCcgMv/mFrhmfkeSgVP
+         Ncl1Js929nA8qoYRyno3fY7odtWPKeeOWFMXWXd538yjrB6MZvCWgdpoyPoa6G3paybf
+         dNqCa4Q44arbjEO0hXKoShd6e38U41yjn61giYdeINm5+k7lnIQFUjasUDZy7inFz1pV
+         RC4w==
+X-Gm-Message-State: AOAM532NDHyH/No+ltnyix0m+ZpK9hQRPoSnjxQaWDmX7bS0/+tUEBNK
+        WDKhF7eKyRXcw6FYvO1m1a8=
+X-Google-Smtp-Source: ABdhPJzilMH0KdTIkABYJL/ZbIsizAsgALCv5FKGDNH0EQLaGvpAccNy9pFmDKLs9QSd4ucIP823fg==
+X-Received: by 2002:a17:902:6902:: with SMTP id j2mr17169545plk.2.1590942931516;
+        Sun, 31 May 2020 09:35:31 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6ddc])
+        by smtp.gmail.com with ESMTPSA id o27sm11385878pgd.18.2020.05.31.09.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2020 09:35:30 -0700 (PDT)
+Date:   Sun, 31 May 2020 09:35:28 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH 9/9] bpf: make bpf_check_uarg_tail_zero() use
+ check_zeroed_user()
+Message-ID: <20200531163528.uzdziatmpglluls4@ast-mbp.dhcp.thefacebook.com>
+References: <20200528234025.GT23230@ZenIV.linux.org.uk>
+ <20200529232814.45149-1-viro@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200529232814.45149-1-viro@ZenIV.linux.org.uk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currenty lsm uses bpf_tracing_func_proto helpers which do
-not include stack trace or perf event output. It's useful
-to have those for bpftrace lsm support [1].
+On Sat, May 30, 2020 at 12:28:14AM +0100, Al Viro wrote:
+> From: Al Viro <viro@zeniv.linux.org.uk>
+> 
+> ... rather than open-coding it, and badly, at that.
+> 
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  kernel/bpf/syscall.c | 25 ++++++-------------------
+>  1 file changed, 6 insertions(+), 19 deletions(-)
 
-Using tracing_prog_func_proto helpers for lsm programs.
-
-[1] https://github.com/iovisor/bpftrace/pull/1347
-
-Cc: KP Singh <kpsingh@google.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- include/linux/bpf.h      | 3 +++
- kernel/bpf/bpf_lsm.c     | 2 +-
- kernel/trace/bpf_trace.c | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e5884f7f801c..caa26ab471e8 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1628,6 +1628,9 @@ extern const struct bpf_func_proto bpf_ringbuf_query_proto;
- const struct bpf_func_proto *bpf_tracing_func_proto(
- 	enum bpf_func_id func_id, const struct bpf_prog *prog);
- 
-+const struct bpf_func_proto *tracing_prog_func_proto(
-+  enum bpf_func_id func_id, const struct bpf_prog *prog);
-+
- /* Shared helpers among cBPF and eBPF. */
- void bpf_user_rnd_init_once(void);
- u64 bpf_user_rnd_u32(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 19636703b24e..fb278144e9fd 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -49,6 +49,6 @@ const struct bpf_prog_ops lsm_prog_ops = {
- };
- 
- const struct bpf_verifier_ops lsm_verifier_ops = {
--	.get_func_proto = bpf_tracing_func_proto,
-+	.get_func_proto = tracing_prog_func_proto,
- 	.is_valid_access = btf_ctx_access,
- };
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3767d34114c0..794d665bebdd 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1467,7 +1467,7 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	}
- }
- 
--static const struct bpf_func_proto *
-+const struct bpf_func_proto *
- tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
- 	switch (func_id) {
--- 
-2.25.4
-
+lgtm
+Acked-by: Alexei Starovoitov <ast@kernel.org>
