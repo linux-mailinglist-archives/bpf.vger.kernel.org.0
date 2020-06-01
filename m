@@ -2,148 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346F21EB0ED
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 23:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6031EB0F4
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 23:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgFAVZr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 17:25:47 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51436 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbgFAVZq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 17:25:46 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051LMQtm062677;
-        Mon, 1 Jun 2020 21:25:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=aW/4iU44t63GXZS7lAjRY3neUhFtpwCFtyEQqF5JqFY=;
- b=xcp3Y73AIZcKVnH5ZpTAe37hYs1WfU2aVwAzexUNndv1stl248RCMqv3EApv0c2RwJRc
- K2HllDbJfyV1dWahnDMi+ziEmo34Zm1/703ZrMr5E176VTP/QZmWMdh2NvFY7mVEY6I3
- 4q5vcFMrpegg5VxbwB6+TMFxHUXW59v863Zxv8F3QoQMlRkVa0UlQfWMtUDS12DF0/sK
- fnu2Dtj0iQ1MGE+bicaxjCDTCIe/QXJZTMILGODDRGqPJ+uy7TxJPEnXpmdEjx0v5/Yw
- Ad8cPApXglqx8dZOs8FmIy7UQ98KaKPelT6/RmbFQgBqkxunQFO+mz5gKNA4ILC0G3Ou bA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31bfem0ubt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 01 Jun 2020 21:25:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051LNrrC154553;
-        Mon, 1 Jun 2020 21:25:32 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31c25kt2kq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Jun 2020 21:25:32 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 051LPUU2011564;
-        Mon, 1 Jun 2020 21:25:30 GMT
-Received: from dhcp-10-175-199-18.vpn.oracle.com (/10.175.199.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Jun 2020 14:25:30 -0700
-Date:   Mon, 1 Jun 2020 22:25:23 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Daniel Borkmann <daniel@iogearbox.net>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-In-Reply-To: <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
-Message-ID: <alpine.LRH.2.21.2006012217530.15886@localhost>
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com> <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com> <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com> <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
- <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com> <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net> <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com> <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net>
- <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com> <alpine.LRH.2.21.2006011839430.623@localhost> <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1728590AbgFAVaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 17:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgFAVaQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 17:30:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDA7C061A0E;
+        Mon,  1 Jun 2020 14:30:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a127so2020618pfa.12;
+        Mon, 01 Jun 2020 14:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EQtsk1rZamt+L4G8tYDHjFumIzjgAUFptfaCOMTLs5I=;
+        b=LHTvWjrutz5OmoFHv+8kTy28g1WIaPtNCFNvL4PIi/c5iyQNqngHkpRXkWKl2YS0tH
+         AZ34Pd3Ihq4s1qKiSfnDH40OK0TxslADyCRtWvY+CYNbxxa4H+uUmzzUW1mPlq31oRye
+         RBm6qw+4GTBywfD2wYiUSPjK1J9m5b7mWizFm10Cz1HO64v0OrKIJgArpISdIMXSSKQF
+         mDIHt0aUM5D3myvsh7wR+RBKYbD5aoXhsYp9x/EFOBXOJGzl/FaDTKA81Zp6QVE2qODu
+         OmKcW4/5RtC1IAXqYV74FI8nQZutBlkdUod8p1cnRsxbHWzd5yPkBL+iYbX6vxGaa4IH
+         MhAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EQtsk1rZamt+L4G8tYDHjFumIzjgAUFptfaCOMTLs5I=;
+        b=Q7iSge2NrGHPlgDEH7x5rQZ0zQcx2SUpu1AUmjLLKfn89zsB/GlbAwedhruHrLCXUn
+         sQdtivYS0JpcTL39n2Q+dL7oWjoW3alchne6z1aU+mg4X16w/WbWbrl/MQYDJTOqUaDl
+         oyk+eerevVZMgag/h9/F/SAZjevv1czrWyH6HmuOy0zkqmCYo1vS+rtGqZgxIGWGTTds
+         GHhHA7iX7lmSmveIq1BmpXnx72f7MOc8vk9kLP3kfLGBscCq64ag7G0lWjltS9SBIsNC
+         Xeg4J8YF516AmRCPvWjiv3VN2AoZEXNxPyeLIdbueBaO4Nuc4f3WrgqAtp1i183IKETY
+         SF6Q==
+X-Gm-Message-State: AOAM533UideugPhV4z2g3wTxMe4EvxtrIomYo74WWp0mh+D1unXzC1S1
+        MYGI+vmuABMhOxilZUa6ouU=
+X-Google-Smtp-Source: ABdhPJwBHPqoBmC0pQSc5ljm2ImbrYhbzjonGVGhO7XUIA0l/T7D/X1Jy8pcr3VcGWsQ0QMMCfXEJg==
+X-Received: by 2002:a63:546:: with SMTP id 67mr21997234pgf.364.1591047015533;
+        Mon, 01 Jun 2020 14:30:15 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:514a])
+        by smtp.gmail.com with ESMTPSA id j3sm305963pfh.87.2020.06.01.14.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 14:30:14 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 14:30:12 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next RFC 2/3] bpf: devmap dynamic map-value storage
+ area based on BTF
+Message-ID: <20200601213012.vgt7oqplfbzeddzm@ast-mbp.dhcp.thefacebook.com>
+References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
+ <159076798566.1387573.8417040652693679408.stgit@firesoul>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006010156
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
- impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006010156
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159076798566.1387573.8417040652693679408.stgit@firesoul>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 1 Jun 2020, Daniel Borkmann wrote:
+On Fri, May 29, 2020 at 05:59:45PM +0200, Jesper Dangaard Brouer wrote:
+> +
+> +/* Expected BTF layout that match struct bpf_devmap_val */
+> +static const struct expect layout[] = {
+> +	{BTF_KIND_INT,		true,	 0,	 4,	"ifindex"},
+> +	{BTF_KIND_UNION,	false,	32,	 4,	"bpf_prog"},
+> +	{BTF_KIND_STRUCT,	false,	-1,	-1,	"storage"}
+> +};
+> +
+> +static int dev_map_check_btf(const struct bpf_map *map,
+> +			     const struct btf *btf,
+> +			     const struct btf_type *key_type,
+> +			     const struct btf_type *value_type)
+> +{
+> +	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
+> +	u32 found_members_cnt = 0;
+> +	u32 int_data;
+> +	int off;
+> +	u32 i;
+> +
+> +	/* Validate KEY type and size */
+> +	if (BTF_INFO_KIND(key_type->info) != BTF_KIND_INT)
+> +		return -EOPNOTSUPP;
+> +
+> +	int_data = *(u32 *)(key_type + 1);
+> +	if (BTF_INT_BITS(int_data) != 32 || BTF_INT_OFFSET(int_data) != 0)
+> +		return -EOPNOTSUPP;
+> +
+> +	/* Validate VALUE have layout that match/map-to struct bpf_devmap_val
+> +	 * - With a flexible size of member 'storage'.
+> +	 */
+> +
+> +	if (BTF_INFO_KIND(value_type->info) != BTF_KIND_STRUCT)
+> +		return -EOPNOTSUPP;
+> +
+> +	/* Struct/union members in BTF must not exceed (max) expected members */
+> +	if (btf_type_vlen(value_type) > ARRAY_SIZE(layout))
+> +			return -E2BIG;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(layout); i++) {
+> +		off = btf_find_expect_layout_offset(btf, value_type, &layout[i]);
+> +
+> +		if (off < 0 && layout[i].mandatory)
+> +			return -EUCLEAN;
+> +
+> +		if (off >= 0)
+> +			found_members_cnt++;
+> +
+> +		/* Transfer layout config to map */
+> +		switch (i) {
+> +		case 0:
+> +			dtab->cfg.btf_offset.ifindex = off;
+> +			break;
+> +		case 1:
+> +			dtab->cfg.btf_offset.bpf_prog = off;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +
+> +	/* Detect if BTF/vlen have members that were not found */
+> +	if (btf_type_vlen(value_type) > found_members_cnt)
+> +		return -E2BIG;
+> +
+> +	return 0;
+> +}
 
-> On 6/1/20 7:48 PM, Alan Maguire wrote:
-> > On Wed, 13 May 2020, Lorenz Bauer wrote:
-> > 
-> >>>> Option 1: always downgrade UNNECESSARY to NONE
-> >>>> - Easiest to back port
-> >>>> - The helper is safe by default
-> >>>> - Performance impact unclear
-> >>>> - No escape hatch for Cilium
-> >>>>
-> >>>> Option 2: add a flag to force CHECKSUM_NONE
-> >>>> - New UAPI, can this be backported?
-> >>>> - The helper isn't safe by default, needs documentation
-> >>>> - Escape hatch for Cilium
-> >>>>
-> >>>> Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
-> >>>> - New UAPI, can this be backported?
-> >>>> - The helper is safe by default
-> >>>> - Escape hatch for Cilium (though you'd need to detect availability of
-> >>>> the
-> >>>>     flag somehow)
-> >>>
-> >>> This seems most reasonable to me; I can try and cook a proposal for
-> >>> tomorrow as
-> >>> potential fix. Even if we add a flag, this is still backportable to stable
-> >>> (as
-> >>> long as the overall patch doesn't get too complex and the backport itself
-> >>> stays
-> >>> compatible uapi-wise to latest kernels. We've done that before.). I happen
-> >>> to
-> >>> have two ixgbe NICs on some of my test machines which seem to be setting
-> >>> the
-> >>> CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
-> >>
-> >> Great! I'm happy to test, of course.
-> > 
-> > I had a go at implementing option 3 as a few colleagues ran into this
-> > problem. They confirmed the fix below resolved the issue.  Daniel is
-> > this  roughly what you had in mind? I can submit a patch for the bpf
-> > tree if that's acceptable with the new flag. Do we need a few
-> > tests though?
-> 
-> Coded this [0] up last week which Lorenz gave a spin as well. Originally
-> wanted to
-> get it out Friday night, but due to internal release stuff it got too late Fri
-> night
-> and didn't want to rush it at 3am anymore, so the series as fixes is going out
-> tomorrow
-> morning [today was public holiday in CH over here].
->
-
-Looks great! Although I've only seen this issue arise
-for cases where csum_level == 0, should we also
-add "skb->csum_level = 0;" when we reset the
-ip_summed value?
-
-Feel free to add a
-
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-
-...for the series if needed. Thanks again!
-
-Alan
-
-> Thanks,
-> Daniel
-> 
->   [0]
-> https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/log/?h=pr/adjust-csum
-> 
-> 
+This layout validation looks really weird to me.
+That layout[] array sort of complements BTF to describe the data,
+but double describe of the layout feels like hack.
+I'm with Andrii here. Separate array indexed by ifindex or global array
+without map_lookup() can be used with good performance.
+I don't think such devamp extension is necessary.
