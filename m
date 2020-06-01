@@ -2,198 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858F01EA891
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 19:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89B41EAC6F
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 20:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgFARus (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 13:50:48 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60668 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgFARur (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 13:50:47 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051Hm1qP095531;
-        Mon, 1 Jun 2020 17:50:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=wmMb8dfAMWZaQN68Y1JXBMCtXawo2UKsGE+TKeMoP/U=;
- b=l2XwW80w3sTIbc30U3KtwDQQJp5Z+N8RnT2C/i89YWhBWgqMPSPfonsvLPZH0xNDszPJ
- GVLmfmVk7h0P8RgRcIkJZ6pNc6tXOvxUFGoYq92ARDGRfQneq6iSYMRlnZOvjPj5dgqk
- WPnI2G/kuTv4CVRF5NdjNba7PvKJciAikoSEV5FggyX9lHcLbVR/lwPa+VLvuz0SSs8r
- mK0KrZz6ey+D1g3ifnu76zx4yiIBgH/wwCfLtiyS+5w7P13keUbIod0Pv4hDi3kH9+oC
- HcmZQMz+lpxVrh8hLJGucueUbirmjDEdnvxOobCeXE7xCzgGmbgzBK1W53ZB9vBv8xe2 iw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31d5qr06sp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 01 Jun 2020 17:50:31 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 051HlrJl118068;
-        Mon, 1 Jun 2020 17:48:30 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 31c25kb1f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Jun 2020 17:48:30 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 051HmSFx003858;
-        Mon, 1 Jun 2020 17:48:28 GMT
-Received: from dhcp-10-175-199-18.vpn.oracle.com (/10.175.199.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Jun 2020 10:48:27 -0700
-Date:   Mon, 1 Jun 2020 18:48:20 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Lorenz Bauer <lmb@cloudflare.com>
-cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-In-Reply-To: <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
-Message-ID: <alpine.LRH.2.21.2006011839430.623@localhost>
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com> <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com> <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com> <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
- <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com> <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net> <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com> <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net>
- <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1728162AbgFASgc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 14:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731678AbgFASQR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:16:17 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E9DC03E96B
+        for <bpf@vger.kernel.org>; Mon,  1 Jun 2020 11:16:17 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a127so1823207pfa.12
+        for <bpf@vger.kernel.org>; Mon, 01 Jun 2020 11:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gaFkZYsYYFJyyx55DGTF9A7EdpoNLAP59WZ+rERt0uM=;
+        b=ghePNO8rIozpiTI1KKBRaL6PDserKLG92k+jNnAuF0dhxLEmR+oICYa0HILWic8GnX
+         0l84MgoEZIKPOW4Kc7+D4DrX/3R+CTISxRpQo0TpkE6RTJS7/gd4fymZWo3yNORP7I+y
+         x0DpHB6sCYPF/Z76naSOIuZsx5jpvgzRX6kQA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gaFkZYsYYFJyyx55DGTF9A7EdpoNLAP59WZ+rERt0uM=;
+        b=UbSexruYJXkWe32p6m13V/Gkl8cTp/KXIuvs9oN95OBZ+UWTs0LX1WYvlcPXvTgkPj
+         RXrz/7xqAPZXljX6jAfGCgHyOK0/F/tPJh/7zYHt4DwC36iA19JzatsrG+ilPpTqxDD5
+         VmkRyu93v4cPIYSK2xoOvuaD0yFxFkJ5FghDl7N1TVpFntLiGPOhg39clVEMT8C6um/2
+         N6VQLWDgyAUdgtaGfI2uz9/b6V050vBjh6+DgrZJBMWxvdztqY58paF6egHx7pgtU7CY
+         WRSyMePG6h01oWo/lAgGuhGCZopKEqPaNoLYcfNBLo6Lxgi14zmuvHlUJrAULHv6YNaJ
+         JzpA==
+X-Gm-Message-State: AOAM530FZ63pjPiL6aDJkiVt622C/6rD1jS0d6KRDyHY5koPPrTN1RjR
+        JIW3Rt66sGunNLYFLBOeFRtw3Q==
+X-Google-Smtp-Source: ABdhPJybGLkEiF1x3eks6bpgb0gC2n+ttaw4z8cSr+utx8q/utgBnkp0pT3UB7M/Q1v3YNSv3la41g==
+X-Received: by 2002:a62:7a89:: with SMTP id v131mr2130192pfc.38.1591035376884;
+        Mon, 01 Jun 2020 11:16:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r7sm138517pgu.61.2020.06.01.11.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 11:16:15 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 11:16:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "zhujianwei (C)" <zhujianwei7@huawei.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Hehuazhen <hehuazhen@huawei.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
+        Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
+        daniel@iogearbox.net, netdev@vger.kernel.org
+Subject: Re: new seccomp mode aims to improve performance
+Message-ID: <202006011106.8766849C2@keescook>
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
+ <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook>
+ <202005291043.A63D910A8@keescook>
+ <20200531171915.wsxvdjeetmhpsdv2@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=3 spamscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006010133
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9639 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 cotscore=-2147483648
- mlxscore=0 lowpriorityscore=0 suspectscore=3 spamscore=0 adultscore=0
- clxscore=1011 impostorscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006010133
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531171915.wsxvdjeetmhpsdv2@ast-mbp.dhcp.thefacebook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On Wed, 13 May 2020, Lorenz Bauer wrote:
-
-> > > Option 1: always downgrade UNNECESSARY to NONE
-> > > - Easiest to back port
-> > > - The helper is safe by default
-> > > - Performance impact unclear
-> > > - No escape hatch for Cilium
-> > >
-> > > Option 2: add a flag to force CHECKSUM_NONE
-> > > - New UAPI, can this be backported?
-> > > - The helper isn't safe by default, needs documentation
-> > > - Escape hatch for Cilium
-> > >
-> > > Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
-> > > - New UAPI, can this be backported?
-> > > - The helper is safe by default
-> > > - Escape hatch for Cilium (though you'd need to detect availability of the
-> > >    flag somehow)
-> >
-> > This seems most reasonable to me; I can try and cook a proposal for tomorrow as
-> > potential fix. Even if we add a flag, this is still backportable to stable (as
-> > long as the overall patch doesn't get too complex and the backport itself stays
-> > compatible uapi-wise to latest kernels. We've done that before.). I happen to
-> > have two ixgbe NICs on some of my test machines which seem to be setting the
-> > CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
+On Sun, May 31, 2020 at 10:19:15AM -0700, Alexei Starovoitov wrote:
+> Thank you for crafting a benchmark.
+> The only thing that it's not doing a fair comparison.
+> The problem with that patch [1] that is using:
 > 
-> Great! I'm happy to test, of course.
+> static noinline u32 __seccomp_benchmark(struct bpf_prog *prog,
+>                                         const struct seccomp_data *sd)
+> {
+>         return SECCOMP_RET_ALLOW;
+> }
 > 
+> as a benchmarking function.
+> The 'noinline' keyword tells the compiler to keep the body of the function, but
+> the compiler is still doing full control and data flow analysis though this
+> function and it is smart enough to optimize its usage in seccomp_run_filters()
+> and in __seccomp_filter() because all functions are in a single .c file.
+> Lots of code gets optimized away when 'f->benchmark' is on.
+> 
+> To make it into fair comparison I've added the following patch
+> on top of your [1].
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 2fdbf5ad8372..86204422e096 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -244,7 +244,7 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
+>         return 0;
+>  }
+> 
+> -static noinline u32 __seccomp_benchmark(struct bpf_prog *prog,
+> +__weak noinline u32 __seccomp_benchmark(struct bpf_prog *prog,
+>                                         const struct seccomp_data *sd)
+> 
+> Please take a look at 'make kernel/seccomp.s' before and after to see the difference
+> __weak keyword makes.
 
-I had a go at implementing option 3 as a few colleagues ran into this 
-problem. They confirmed the fix below resolved the issue.  Daniel is
-this  roughly what you had in mind? I can submit a patch for the bpf
-tree if that's acceptable with the new flag. Do we need a few
-tests though?
+Ah yeah, thanks. That does bring it up to the same overhead. Nice!
 
-From 7e0b0c78530f3800e5c40aa1fe87e5db82c5fb59 Mon Sep 17 00:00:00 2001
-From: Alan Maguire <alan.maguire@oracle.com>
-Date: Mon, 1 Jun 2020 13:10:37 +0200
-Subject: [PATCH bpf-next 1/2] bpf: fix bpf_skb_adjust_room decap for
- CHECKSUM_UNNECESSESARY skbs
+> And here is what seccomp_benchmark now reports:
+> 
+> Benchmarking 33554432 samples...
+> 22.618269641 - 15.030812794 = 7587456847
+> getpid native: 226 ns
+> 30.792042986 - 22.619048831 = 8172994155
+> getpid RET_ALLOW 1 filter: 243 ns
+> 39.451435038 - 30.792836778 = 8658598260
+> getpid RET_ALLOW 2 filters: 258 ns
+> 47.616011529 - 39.452190830 = 8163820699
+> getpid BPF-less allow: 243 ns
+> Estimated total seccomp overhead for 1 filter: 17 ns
+> Estimated total seccomp overhead for 2 filters: 32 ns
+> Estimated seccomp per-filter overhead: 15 ns
+> Estimated seccomp entry overhead: 2 ns
+> Estimated BPF overhead per filter: 0 ns
+> 
+> [...]
+> 
+> > So, with the layered nature of seccomp filters there's a reasonable gain
+> > to be seen for a O(1) bitmap lookup to skip running even a single filter,
+> > even for the fastest BPF mode.
+> 
+> This is not true.
+> The O(1) bitmap implemented as kernel C code will have exactly the same speed
+> as O(1) bitmap implemented as eBPF program.
 
-When hardware verifies checksums for some of the headers it
-will set CHECKSUM_UNNECESSESARY and csum_level indicates the
-number of consecutive checksums found.  If we de-encapsulate
-data however these values become invalid since we likely
-just removed the checksum-validated headers.  The best option
-in such cases is to revert to CHECKSUM_NONE as all checksums
-will then be checked in software.  Otherwise such checks can
-be skipped.
+Yes, that'd be true if it was the first (and only) filter. What I'm
+trying to provide is a mechanism to speed up the syscalls for all
+attached filters (i.e. create a seccomp fast-path). The reality of
+seccomp usage is that it's very layered: systemd sets some (or many!),
+then container runtime sets some, then the process itself might set
+some.
 
-Other checksum states are handled via skb_postpull_rcsum().
-
-Reported-by: Lorenz Bauer <lmb@cloudflare.com>
-Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- include/uapi/linux/bpf.h |  7 +++++++
- net/core/filter.c        | 15 ++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 974ca6e..03ab70c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1646,6 +1646,12 @@ struct bpf_stack_build_id {
-  *		* **BPF_F_ADJ_ROOM_FIXED_GSO**: Do not adjust gso_size.
-  *		  Adjusting mss in this way is not allowed for datagrams.
-  *
-+ *		* **BPF_F_ADJ_ROOM_SKIP_CSUM_RESET**: When shrinking skbs
-+ *		  marked CHECKSUM_UNNECESSARY, avoid default behavior which
-+ *		  resets to CHECKSUM_NONE.  In most cases, this flag will
-+ *		  not be needed as the default behavior ensures checksums
-+ *		  will be verified in sofware.
-+ *
-  *		* **BPF_F_ADJ_ROOM_ENCAP_L3_IPV4**,
-  *		  **BPF_F_ADJ_ROOM_ENCAP_L3_IPV6**:
-  *		  Any new space is reserved to hold a tunnel header.
-@@ -3431,6 +3437,7 @@ enum {
- 	BPF_F_ADJ_ROOM_ENCAP_L3_IPV6	= (1ULL << 2),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
-+	BPF_F_ADJ_ROOM_SKIP_CSUM_RESET	= (1ULL << 5),
- };
- 
- enum {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a6fc234..47c8a31 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3113,7 +3113,8 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
- {
- 	int ret;
- 
--	if (flags & ~BPF_F_ADJ_ROOM_FIXED_GSO)
-+	if (flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-+		      BPF_F_ADJ_ROOM_SKIP_CSUM_RESET))
- 		return -EINVAL;
- 
- 	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
-@@ -3143,6 +3144,18 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
- 		shinfo->gso_segs = 0;
- 	}
- 
-+	/*
-+	 * Decap should invalidate checksum checks done by hardware.
-+	 * skb_csum_unnecessary() is not used as the other conditions
-+	 * in that predicate do not need to be considered here; we only
-+	 * wish to downgrade CHECKSUM_UNNECESSARY to CHECKSUM_NONE.
-+	 */
-+	if (unlikely(!(flags & BPF_F_ADJ_ROOM_SKIP_CSUM_RESET) &&
-+		     skb->ip_summed == CHECKSUM_UNNECESSARY)) {
-+		skb->ip_summed = CHECKSUM_NONE;
-+		skb->csum_level = 0;
-+	}
-+
- 	return 0;
- }
- 
 -- 
-1.8.3.1
-
+Kees Cook
