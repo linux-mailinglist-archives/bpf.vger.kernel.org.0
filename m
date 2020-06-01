@@ -2,149 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5861EB1AE
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 00:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2AD1EB1B2
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 00:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgFAW0g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 18:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S1728428AbgFAW2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 18:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728478AbgFAW0f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 18:26:35 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445C0C061A0E;
-        Mon,  1 Jun 2020 15:26:35 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id j12so2184835lfh.0;
-        Mon, 01 Jun 2020 15:26:35 -0700 (PDT)
+        with ESMTP id S1725800AbgFAW2G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 18:28:06 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F6AC061A0E;
+        Mon,  1 Jun 2020 15:28:05 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id y9so855522qvs.4;
+        Mon, 01 Jun 2020 15:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nk/3gy4rhWFtZzEIg7CzzGWUKTHes4CV4dirJuIzOFs=;
-        b=fyflDZygD8LsPhM3zh/m5Jh3IW/gjOsC+OEiqls/TRQ+N2OCJ8wTWB+/uSvEbJbgG7
-         jSmieFkh3/ITbJsQ3CiqTPE08SrnO4h1rRdRniLjVm7pU0lkFx0RBsj3sl94YSnsk33I
-         1j/4rdzV/4gXDlPPJLwsXZbkEIKKefLZXqcoYWZDtIfvQywBlzo2Q8WOgktfEuZQJHeu
-         8ynL2l8qkQNA7NLPPJUC+hRZbEKRENL92WRYOp4oiR/VUxKtxMxjBYcSFxvD4GOHxCJ+
-         E/5300IKSNvqYnRa8YcLUDRRf3l93UuL/K5HlHGi+MfR/a1pNediu9qug/jxMngq5hjN
-         G+RA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w34qrgAtqKgWn0UNxg9g50JFvRmAbPE4l3k1NpuixCc=;
+        b=FX3ZGVwbd1+L4oOVXEzicN4ElNQPWdDo46vCq5u9/Zg9fJrvymADqyIooj05mKYtSc
+         ItJiinZOjBYSmg2Ru9TWKF4O36DOt93Gl8E0HcT4FlVSGUzz150TUrOy4JBGd7KtYM7Y
+         yktw1fdHkT7uv4LvBkc6GrzaHmMLWhEFIY7ii9aU0WdM1z8dm3p1lGVTVmsCqcoEzrW+
+         XPz7MlgrAnkiZvDeC5Bjg4s3GHOy0LZ1gMftsoCWKcL2MgMlPKYnwMUKtXh/TlTy2Oi/
+         8TZS+MSY8RxjBRng7+UF1j8gtTMPENJPfJv15K8kuH3TJbk6Q9b7MQcB4RT1mCG4NPRB
+         hwaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nk/3gy4rhWFtZzEIg7CzzGWUKTHes4CV4dirJuIzOFs=;
-        b=uH0OPmvMXpSptIIjpWoxi9OWYPi2A23FOBsLNyBidbS4+bt+cb8xUU8j/Y1Md3zlbS
-         xJoxVVmveIN9APCldDgpB76mZbNizzTa4BUmJdHGBTfGYNJaV58MTGQR1ait9GZPSSIH
-         dCviNb6233Gasqi2KOzsiqzXV2YVpxxwoEDBzK5+RwbueXG4MNWk35UHRhsLeSi6wV1R
-         7JWi6ZCSC3XtBBqcPeiZ/HCG+s+mRuaDb3uJq2F962hydjtXguBMRaK/lVxT5Nk3C3K9
-         H1UskzBQfc9+lg7MS5WItOFHuUk320L75ZDivlLSSrxJpgFLrV9Uei1iN21FIwFD1tbK
-         YeOA==
-X-Gm-Message-State: AOAM530IrZwahpLqE+z5W8MC5nzWY8m3m6fKaja/lf4b+qdfEKcXLTJt
-        Q9un1IKI9tU0HfD17F9lH3vvMoK36tEGJG8gqemZwA==
-X-Google-Smtp-Source: ABdhPJzW3iYTzGHJDV2pULPYHk3q1ZfeFzqWsr7cDruoEAtCV7G8lHF+8gCifK/n/n0jK9CTXa9WeXvXSe2beW6FsdU=
-X-Received: by 2002:a19:48e:: with SMTP id 136mr12374796lfe.134.1591050393731;
- Mon, 01 Jun 2020 15:26:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w34qrgAtqKgWn0UNxg9g50JFvRmAbPE4l3k1NpuixCc=;
+        b=T1ZZQyGCTyFLzs46YyLUomTOqN3fpvk94E3TFML/fB69HbtgOMod529JYeNcGwtnHr
+         9gm5dxgDlqYfWz9nYtPhV+cmW9FyiyC4qIrJQ71rMnMOPoym5cOTdF6zzQRGlSKZ3M9G
+         /nau74nAf9us4tgi0+mtQKn6BCr2dB0T2W4rG1QLa+DSgca8rNQMinNb0oL+Wskv9HUD
+         ckZ/PpwstkBXmrtRK4JsX3fdQnvKw/oefazULYpOHOuV+eNFnaOa3G7ci48XIngPBpMq
+         5x3QL29vhWOBtUzVhUvueWri1P0lRfBA3TDKQylkPYX7+vxVy/1bVVRdQAjYI4Pks0vf
+         suIg==
+X-Gm-Message-State: AOAM533EBr4jJBfkqOtMsNaq7DCOCYU1h0+qsTGF/rcA+VmIWthgmNCp
+        q2OZwT4uC5sxOrQL1yR+FyE=
+X-Google-Smtp-Source: ABdhPJzNoUyN6nQF1jd4/5OR1guuPDqOvhgxEfgWG7sYy2kB+jgYnMY86pXH39We+onlcCe98+nCQQ==
+X-Received: by 2002:a0c:b60c:: with SMTP id f12mr22811410qve.244.1591050484893;
+        Mon, 01 Jun 2020 15:28:04 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:c9ef:b9c4:cdc1:2f07? ([2601:282:803:7700:c9ef:b9c4:cdc1:2f07])
+        by smtp.googlemail.com with ESMTPSA id y66sm652093qka.24.2020.06.01.15.28.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 15:28:04 -0700 (PDT)
+Subject: Re: [PATCH v4 bpf-next 0/5] bpf: Add support for XDP programs in
+ DEVMAP entries
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200529220716.75383-1-dsahern@kernel.org>
+ <CAADnVQK1rzFfzcQX-EGW57=O2xnz2pjX5madnZGTiAsKnCmbHA@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ed66bdc6-4114-2ecf-1812-176d0250730b@gmail.com>
+Date:   Mon, 1 Jun 2020 16:28:02 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200531082846.2117903-1-jakub@cloudflare.com>
-In-Reply-To: <20200531082846.2117903-1-jakub@cloudflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 1 Jun 2020 15:26:22 -0700
-Message-ID: <CAADnVQJhs4FMnHfSAgAAujAE70n98BA7YNvdd2eO4__FVe7CcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/12] Link-based program attachment to
- network namespaces
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAADnVQK1rzFfzcQX-EGW57=O2xnz2pjX5madnZGTiAsKnCmbHA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 31, 2020 at 1:28 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> One of the pieces of feedback from recent review of BPF hooks for socket
-> lookup [0] was that new program types should use bpf_link-based
-> attachment.
->
-> This series introduces new bpf_link type for attaching to network
-> namespace. All link operations are supported. Errors returned from ops
-> follow cgroup example. Patch 4 description goes into error semantics.
->
-> The major change in v2 is a switch away from RCU to mutex-only
-> synchronization. Andrii pointed out that it is not needed, and it makes
-> sense to keep locking straightforward.
->
-> Also, there were a couple of bugs in update_prog and fill_info initial
-> implementation, one picked up by kbuild. Those are now fixed. Tests have
-> been extended to cover them. Full changelog below.
->
-> Series is organized as so:
->
-> Patches 1-3 prepare a space in struct net to keep state for attached BPF
-> programs, and massage the code in flow_dissector to make it attach type
-> agnostic, to finally move it under kernel/bpf/.
->
-> Patch 4, the most important one, introduces new bpf_link link type for
-> attaching to network namespace.
->
-> Patch 5 unifies the update error (ENOLINK) between BPF cgroup and netns.
->
-> Patches 6-8 make libbpf and bpftool aware of the new link type.
->
-> Patches 9-12 Add and extend tests to check that link low- and high-level
-> API for operating on links to netns works as intended.
->
-> Thanks to Alexei, Andrii, Lorenz, Marek, and Stanislav for feedback.
->
-> -jkbs
->
-> [0] https://lore.kernel.org/bpf/20200511185218.1422406-1-jakub@cloudflare.com/
->
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Cc: Marek Majkowski <marek@cloudflare.com>
-> Cc: Stanislav Fomichev <sdf@google.com>
->
-> v1 -> v2:
->
-> - Switch to mutex-only synchronization. Don't rely on RCU grace period
->   guarantee when accessing struct net from link release / update /
->   fill_info, and when accessing bpf_link from pernet pre_exit
->   callback. (Andrii)
-> - Drop patch 1, no longer needed with mutex-only synchronization.
-> - Don't leak uninitialized variable contents from fill_info callback
->   when link is in defunct state. (kbuild)
-> - Make fill_info treat the link as defunct (i.e. no attached netns) when
->   struct net refcount is 0, but link has not been yet auto-detached.
-> - Add missing BPF_LINK_TYPE define in bpf_types.h for new link type.
-> - Fix link update_prog callback to update the prog that will run, and
->   not just the link itself.
-> - Return EEXIST on prog attach when link already exists, and on link
->   create when prog is already attached directly. (Andrii)
-> - Return EINVAL on prog detach when link is attached. (Andrii)
-> - Fold __netns_bpf_link_attach into its only caller. (Stanislav)
-> - Get rid of a wrapper around container_of() (Andrii)
-> - Use rcu_dereference_protected instead of rcu_access_pointer on
->   update-side. (Stanislav)
-> - Make return-on-success from netns_bpf_link_create less
->   confusing. (Andrii)
-> - Adapt bpf_link for cgroup to return ENOLINK when updating a defunct
->   link. (Andrii, Alexei)
-> - Order new exported symbols in libbpf.map alphabetically (Andrii)
-> - Keep libbpf's "failed to attach link" warning message clear as to what
->   we failed to attach to (cgroup vs netns). (Andrii)
-> - Extract helpers for printing link attach type. (bpftool, Andrii)
-> - Switch flow_dissector tests to BPF skeleton and extend them to
->   exercise link-based flow dissector attachment. (Andrii)
-> - Harden flow dissector attachment tests with prog query checks after
->   prog attach/detach, or link create/update/close.
-> - Extend flow dissector tests to cover fill_info for defunct links.
-> - Rebase onto recent bpf-next
+On 6/1/20 3:12 PM, Alexei Starovoitov wrote:
+> In patch 5 I had to fix:
+> /data/users/ast/net-next/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c:
+> In function ‘test_neg_xdp_devmap_helpers’:
+> /data/users/ast/net-next/tools/testing/selftests/bpf/test_progs.h:106:3:
+> warning: ‘duration’ may be used uninitialized in this function
+> [-Wmaybe-uninitialized]
+>   106 |   fprintf(stdout, "%s:PASS:%s %d nsec\n",   \
+>       |   ^~~~~~~
+> /data/users/ast/net-next/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c:79:8:
+> note: ‘duration’ was declared here
+>    79 |  __u32 duration;
 
-I really like the set. Applied. Thanks!
+What compiler version? it compiles cleanly with ubuntu 20.04 and gcc
+9.3. The other prog_tests are inconsistent with initializing it.
+
+> 
+> and that selftest is imo too primitive.
+
+I focused the selftests on API changes introduced by this set - new
+attach type, valid accesses to egress_ifindex and not allowing devmap
+programs with xdp generic.
+
+> It's only loading progs and not executing them.
+> Could you please add prog_test_run to it?
+> 
+
+I will look into it.
