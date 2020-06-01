@@ -2,100 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5523B1EB00E
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 22:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82491EB017
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 22:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgFAUNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 16:13:19 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48080 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727996AbgFAUNS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:13:18 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jfqo7-0002Sm-AO; Mon, 01 Jun 2020 22:13:15 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jfqo6-000A3n-S2; Mon, 01 Jun 2020 22:13:15 +0200
-Subject: Re: Checksum behaviour of bpf_redirected packets
-To:     Alan Maguire <alan.maguire@oracle.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
- <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
- <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
- <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
- <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
- <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net>
- <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com>
- <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net>
- <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
- <alpine.LRH.2.21.2006011839430.623@localhost>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
-Date:   Mon, 1 Jun 2020 22:13:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728450AbgFAUSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 16:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727996AbgFAUSH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:18:07 -0400
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 693312076B;
+        Mon,  1 Jun 2020 20:18:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591042686;
+        bh=gTxHNUn+c76zemOeMmtcdzx9uVaCHcJ5E/m8Bh3yCOI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tr0RQWR6oS6AssPXqfmeq9xuvj7d9qQdiRkCMfNRT8f863omNQQQ2qQyRZ8vm7t1D
+         rch1yJSLWyZrBmgTyZjcbBNVWJ7hipC9qOlpLIdgK/DkatV8GES6dxiLZJ/hTmhRI1
+         rqj3JlCgX/JZtZLpuG+rsFrE9Ii/CzYzflWPHbuk=
+Received: by mail-lj1-f182.google.com with SMTP id m18so9788390ljo.5;
+        Mon, 01 Jun 2020 13:18:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530bHzQY8XD2MiWIKcVsPjzAJMSHNk5FXCECBMQdyyu/vynKu7r5
+        iEBZvMRaa8Xy9QR6C6/XmdZCyUoAEpGAQ6XQxJs=
+X-Google-Smtp-Source: ABdhPJwvioT6Tk2rGCLM59ZIXtwMkm6KmKCoUrFB2IhhLJ5TIjz3MFr0H1zBt+czuJOum20rxlt+BKbayd1hZA5ABgI=
+X-Received: by 2002:a2e:9115:: with SMTP id m21mr763659ljg.350.1591042684664;
+ Mon, 01 Jun 2020 13:18:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.2006011839430.623@localhost>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25830/Mon Jun  1 14:42:28 2020)
+References: <20200601162814.17426-1-efremov@linux.com>
+In-Reply-To: <20200601162814.17426-1-efremov@linux.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 1 Jun 2020 13:17:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4nHJ6ewZ6U6EyJYUx7AFpde5D38yRykK3Q_cGf7sgBaQ@mail.gmail.com>
+Message-ID: <CAPhsuW4nHJ6ewZ6U6EyJYUx7AFpde5D38yRykK3Q_cGf7sgBaQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Change kvfree to kfree in generic_map_lookup_batch()
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/1/20 7:48 PM, Alan Maguire wrote:
-> On Wed, 13 May 2020, Lorenz Bauer wrote:
-> 
->>>> Option 1: always downgrade UNNECESSARY to NONE
->>>> - Easiest to back port
->>>> - The helper is safe by default
->>>> - Performance impact unclear
->>>> - No escape hatch for Cilium
->>>>
->>>> Option 2: add a flag to force CHECKSUM_NONE
->>>> - New UAPI, can this be backported?
->>>> - The helper isn't safe by default, needs documentation
->>>> - Escape hatch for Cilium
->>>>
->>>> Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
->>>> - New UAPI, can this be backported?
->>>> - The helper is safe by default
->>>> - Escape hatch for Cilium (though you'd need to detect availability of the
->>>>     flag somehow)
->>>
->>> This seems most reasonable to me; I can try and cook a proposal for tomorrow as
->>> potential fix. Even if we add a flag, this is still backportable to stable (as
->>> long as the overall patch doesn't get too complex and the backport itself stays
->>> compatible uapi-wise to latest kernels. We've done that before.). I happen to
->>> have two ixgbe NICs on some of my test machines which seem to be setting the
->>> CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
->>
->> Great! I'm happy to test, of course.
-> 
-> I had a go at implementing option 3 as a few colleagues ran into this
-> problem. They confirmed the fix below resolved the issue.  Daniel is
-> this  roughly what you had in mind? I can submit a patch for the bpf
-> tree if that's acceptable with the new flag. Do we need a few
-> tests though?
+On Mon, Jun 1, 2020 at 9:29 AM Denis Efremov <efremov@linux.com> wrote:
+>
+> buf_prevkey in generic_map_lookup_batch() is allocated with
+> kmalloc(). It's safe to free it with kfree().
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-Coded this [0] up last week which Lorenz gave a spin as well. Originally wanted to
-get it out Friday night, but due to internal release stuff it got too late Fri night
-and didn't want to rush it at 3am anymore, so the series as fixes is going out tomorrow
-morning [today was public holiday in CH over here].
+Please add prefix "PATCH bpf" or "PATCH bpf-next" to indicate which
+tree this should
+apply to. This one looks more like for bpf-next, as current code still
+works. For patches
+to bpf-next, we should wait after the merge window.
+
+Also, maybe add:
+
+Fixes: cb4d03ab499d ("bpf: Add generic support for lookup batch op")
+
+Acked-by: Song Liu <songliubraving@fb.com>
 
 Thanks,
-Daniel
-
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/log/?h=pr/adjust-csum
+Song
