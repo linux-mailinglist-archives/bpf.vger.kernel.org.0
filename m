@@ -2,84 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3100A1EB1BF
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 00:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDB21EB1C4
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 00:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgFAWct (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 18:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        id S1728746AbgFAWfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 18:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgFAWct (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 18:32:49 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81BEC061A0E;
-        Mon,  1 Jun 2020 15:32:47 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id g18so9087878qtu.13;
-        Mon, 01 Jun 2020 15:32:47 -0700 (PDT)
+        with ESMTP id S1725800AbgFAWfx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 18:35:53 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21030C061A0E;
+        Mon,  1 Jun 2020 15:35:53 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id c185so10744927qke.7;
+        Mon, 01 Jun 2020 15:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/BTUzm5I/T2S4Sq+qzDnXjNneOs43YX0KcgqUMnlEaU=;
-        b=j5s9SpXA+hOGD2HUU1LOPJgBknH9U/44LpLrQg3HqZ2sXy7lxLMyUyNisYi8CJjWJM
-         W+WGKwjuUh6demoNEgT5dxoCloEGWC+CzM7cJkhK39XThVL2IB/B/sSO0Npxs6txYeCt
-         jCvX/QoBUYrh9641ja4+HBv15b2UyVuBjPb5ij2cDzmPF4gsI8qp5AVaCzP3p2oBU4wV
-         00Xi5YJxo3XDDPYPhXQN87+RQXqCIBZdPCRUdkGZzAvqQmd9hui7agvslk0I8Sx9eZzZ
-         fH9zaTbjsZf7HMbgE78xQPDC1K7AX1iMWMCTZf60BKxoPTjW1Md1IXIZTQ/Osj2H7Gi6
-         8fXw==
+        bh=saDRZSQN+EO7hXiyKj+8p9AKheZQg+BkB4hiacIVfQA=;
+        b=qDIyR6k+ojmOSeeaOGXKN+EfFJ76qNUtnz3A+L/Ok28wnhzJyK6/jNwUf6gow8HZaN
+         xtKjRCX9V8wwhh24980eq/D5ekEpxgOcLmoEM4oeVsvvl+HJJTtutY/iDAPPPheRS2WB
+         4rhMMR1lS25P4Pn4NJkDani2jNryK50OPKG7e5w6ZhO1T4/1wVEMnM8LZkq7NSPtGYOo
+         XUN3elwLK+U6FcArpC/HYc/XtVaQx6DPZSY5ucnxABBQyIBUm/P+oPTK0AkwvAMWWtOD
+         1KZUKrMbs8Zci7Qd2wqubUMikBH2fnuGzd+LENO/yMolQNdliR31F9Wpb6JCl12Yls3Q
+         0zng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/BTUzm5I/T2S4Sq+qzDnXjNneOs43YX0KcgqUMnlEaU=;
-        b=k8wggmBXYLjIIwuVKPCaNjH9edHQ0cALNKsteuRdX85dPm+wwhC3e4cZcb5+GquCYX
-         knSeStpKe0jvz/Jd80b1Na2UWl7fBQCXXU9yUQIKoWHIsDGagXqnybGfREto1vpVHgXo
-         K2fmu7bjbZe2nKgTdiv7BjAOBUG6BOxLc5Jnv3X4sU474DRVQwTEfVf4hpOWGHwUzZKB
-         hUSOoa+ZSOomW+DwqnY1rgU9W9eW3NxCgIhs5RtYNPTJTJWJ5sGSn3mkavyRR3h8/bmz
-         Jqb0YMwFN/dC/7ofWy8pjgLYotfrLsvUBYWGXYWRifyOU1xaxEpxSpXY4Mvvog5bJo5g
-         DY8g==
-X-Gm-Message-State: AOAM533JIDUBLecQIzpMQvXNBgE7tvgCAM7Q7YxR0V54qJg2duRSwu7g
-        WB1ER7e5ZwPXy1Vr2zixtGRW9h7dvp/L2tjZaYurzG6o
-X-Google-Smtp-Source: ABdhPJxZPwBRq3DhS6ZyMZYmWYYp/hB0yds1JWTdHcC/nmOxXdyzLaIkRYzRRAa8+mWV6XBdgFdGnnOKz1+Nnbj5W+4=
-X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr23573113qta.141.1591050766945;
- Mon, 01 Jun 2020 15:32:46 -0700 (PDT)
+        bh=saDRZSQN+EO7hXiyKj+8p9AKheZQg+BkB4hiacIVfQA=;
+        b=qHbee2qC2UR9b9OAshkPlQ/PKNK0PTvrWz7QHgRkxia52ddXZwuksxRJRv1T+c0zHQ
+         +TW7VQB8iRDZIdOOGOXujlhWrClB9uPmuBIajZP96V5p/0iZDevndCUNl6vXwoP6gIuY
+         aMeF89D6O9F4eLsyoxEcsJpVLAzjQXvi35JCQa6SdIAYL5S0aX3/lAcvM+puW7LSG2ld
+         sMLPUORiBkU6lMA/MbU7TZjR7CofgtV3dvJnWw6OjO2qY5e2UTxfm3tbQTSXAbei7ZID
+         xvh5z1mKiG5D34PuGXIrwxtmq93bap+VLs3sqVCqxDedbwbiIYU+ist3g606OMY4gj0s
+         JEVw==
+X-Gm-Message-State: AOAM531TxSxfhnCaOK0QLShZYICSLVRhzpUmIWVYWM+iN7RSMJSAExdi
+        Qh+f+gZ7KhuPjW5whQpCG9QtOxQss4Grdafy4iwOKEO8
+X-Google-Smtp-Source: ABdhPJyfPXNuzgIhc2y4HFofcO6Tll7FFEr+iZn7PXBxcjfl9P2XT1rgtOQ7PCayKTIktvgdn/tQpXXdi/39o/pD2RM=
+X-Received: by 2002:a05:620a:247:: with SMTP id q7mr22355592qkn.36.1591050952371;
+ Mon, 01 Jun 2020 15:35:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200531082846.2117903-1-jakub@cloudflare.com> <20200531082846.2117903-7-jakub@cloudflare.com>
-In-Reply-To: <20200531082846.2117903-7-jakub@cloudflare.com>
+References: <20200531082846.2117903-1-jakub@cloudflare.com> <20200531082846.2117903-8-jakub@cloudflare.com>
+In-Reply-To: <20200531082846.2117903-8-jakub@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Jun 2020 15:32:36 -0700
-Message-ID: <CAEf4BzYvfSN_gzkioCPxtvZAt5KyuQBPqr-T9WBKjd8orF5KdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 06/12] libbpf: Add support for bpf_link-based
- netns attachment
+Date:   Mon, 1 Jun 2020 15:35:41 -0700
+Message-ID: <CAEf4BzZqtuA_45g_87jyuAdmvid=XuLGekgBdWY8i94Pnztm7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 07/12] bpftool: Extract helpers for showing
+ link attach type
 To:     Jakub Sitnicki <jakub@cloudflare.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
+        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 31, 2020 at 1:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Sun, May 31, 2020 at 1:32 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Add bpf_program__attach_nets(), which uses LINK_CREATE subcommand to create
-
-typo: nets -> netns
-
-> an FD-based kernel bpf_link, for attach types tied to network namespace,
-> that is BPF_FLOW_DISSECTOR for the moment.
+> Code for printing link attach_type is duplicated in a couple of places, and
+> likely will be duplicated for future link types as well. Create helpers to
+> prevent duplication.
 >
+> Suggested-by: Andrii Nakryiko <andriin@fb.com>
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
 
-Looks good.
+LGTM, minor nit below.
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  tools/lib/bpf/libbpf.c   | 23 ++++++++++++++++++-----
->  tools/lib/bpf/libbpf.h   |  2 ++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 21 insertions(+), 5 deletions(-)
+>  tools/bpf/bpftool/link.c | 44 ++++++++++++++++++++--------------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
 >
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> index 670a561dc31b..1ff416eff3d7 100644
+> --- a/tools/bpf/bpftool/link.c
+> +++ b/tools/bpf/bpftool/link.c
+> @@ -62,6 +62,15 @@ show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
+>         jsonw_uint_field(json_wtr, "prog_id", info->prog_id);
+>  }
+>
+> +static void show_link_attach_type_json(__u32 attach_type, json_writer_t *wtr)
+
+nit: if you look at jsonw_uint_field/jsonw_string_field, they accept
+json_write_t as a first argument, because they are sort of working on
+"object" json_writer_t. I think that's good and consistent. No big
+deal, but if you can adjust it for consistency, it would be good.
+
+> +{
+> +       if (attach_type < ARRAY_SIZE(attach_type_name))
+> +               jsonw_string_field(wtr, "attach_type",
+> +                                  attach_type_name[attach_type]);
+> +       else
+> +               jsonw_uint_field(wtr, "attach_type", attach_type);
+> +}
+> +
 
 [...]
