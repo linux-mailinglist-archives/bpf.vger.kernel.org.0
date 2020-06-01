@@ -2,288 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BF71EA65A
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 16:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079C21EA698
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 17:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgFAO5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 10:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgFAO5c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 10:57:32 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E415C05BD43
-        for <bpf@vger.kernel.org>; Mon,  1 Jun 2020 07:57:31 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gl26so9458014ejb.11
-        for <bpf@vger.kernel.org>; Mon, 01 Jun 2020 07:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GtVCS7DBg5IZVzTuXW5+e+BS6VDlNJ+w0jwnfdmJFNc=;
-        b=lY3UBbOzpbjBvBEzUK5rHRGykpyVJjthCrnOeoVxAC/ueanpx1CXourOABHBXwtwlx
-         wsQr06GMoTnr7P6Tqky72hhY5D5xRwMKhDrdHRFldSkI7bw3IvlH29jwR8b74466wRbc
-         CRH+i4sBIgGx7dgPntxKjo6fhVKMChRUUis/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GtVCS7DBg5IZVzTuXW5+e+BS6VDlNJ+w0jwnfdmJFNc=;
-        b=XeDZOiqNeQMTLTS3FRklRt/WMMlxkHjUF9xpnhEO54/QfK9ajbv5K1nNS9O3QIuaXw
-         fDb/XALR/ur+h68uWlNqszbNKJ0d3FvHju3WWH4hrnK0Q6BcIwLtMZkA4CizKXf3uuM9
-         RefUs34F1HbBGd9kD94nIQiDO9mbK9QbVxNup/OxEWUzcJ5LNZ5haXvW75b5CjI32Ggq
-         y6U5lkcA0UIQvFlA82fZwoXgxyxXVGtxbl6u5U5tv1hgxqiDXvMR6gUr8EHqSSp5sOSv
-         oDxFulxjkvhzyffo1wxTpP1u8BhwzZm9bSBDEgwrZ/0ug75u71OfpQ9SgxEe5/ac9Yua
-         dAiA==
-X-Gm-Message-State: AOAM5337gFXtY4Ffq/Q5mUrP7XN8ZxryaFDcHPYSAqeoK6WqRFx8OySx
-        NhWfQyvuQ7B426ArGddU6D4z0w==
-X-Google-Smtp-Source: ABdhPJyA5gtmrMEOC8h3czFqyOTNZU9VDREUeQV5/TGDeA8LJad0KAjx5TO2gAkp/ZnwZamIONgeWg==
-X-Received: by 2002:a17:906:3a43:: with SMTP id a3mr19190464ejf.121.1591023449974;
-        Mon, 01 Jun 2020 07:57:29 -0700 (PDT)
-Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id m30sm15259301eda.16.2020.06.01.07.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 07:57:20 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 16:57:16 +0200
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net
-Subject: Re: [bpf-next PATCH 2/3] bpf: fix running sk_skb program types with
- ktls
-Message-ID: <20200601165716.5a6fa76a@toad>
-In-Reply-To: <159079361946.5745.605854335665044485.stgit@john-Precision-5820-Tower>
-References: <159079336010.5745.8538518572099799848.stgit@john-Precision-5820-Tower>
-        <159079361946.5745.605854335665044485.stgit@john-Precision-5820-Tower>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726901AbgFAPNr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 11:13:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34240 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726017AbgFAPNr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Jun 2020 11:13:47 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 051F7bK2013408;
+        Mon, 1 Jun 2020 08:13:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=GEl4Q+k5Yb4CA6FNH8nOuh4pNTllajYNeUb1nSAgEKU=;
+ b=IvIyRq7Iytj/0SBtYfEqIgA1i7zWnXZCg/7Musrp4f5EZWRiuvTuv5NuDGrUpGS/hDu6
+ c5jCsAPv+OC6aRgjoSbnHFv76UvOHM2jec5OEQTUSai9ipbMwSy/eYiKAHhxd394rhQ1
+ 2Fq9mHeVfxYnCj6RHTf26Y/rEeJlZjNYlVw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31bk5n4wk3-19
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 01 Jun 2020 08:13:45 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 1 Jun 2020 08:13:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mdw7VmNLq9CUaOl0AcAOl/lHhi7O2ENuZG3ihRc1qQunA+xpIALvdckBIr1dXrAAdbOBIPFCIBjjDG9AVjBsmKqZ26Y/PENhKmVI8lpiqJnc+THl8YWcNhU/ltyL3z28SGe98yaYVQ9nXWf1Tj0c5bsZA9iRRrrsd2KI32a5hTdEKxWe2F6bk4q4FdyvNoema9+Rn4fU4l2X9kb1rmmDObp7hlRtdFaEA3hVGH/NTL0fC4PColXPZPYsm3V2NhNzXNxcIeyCONzCKXjDFc9N+3qQqcvu6mVtQSvSDfpTKQ2fjCf/FRppYBe78Drf49cN+PYDM8wjuLANyQGukjgSng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GEl4Q+k5Yb4CA6FNH8nOuh4pNTllajYNeUb1nSAgEKU=;
+ b=SSPUAdADRbVUGmfbuSCihjVqQpl2KLEmoUhD/4CiLZCmkdCjNydHvGY77DkZ9sJDhHXHzZ27pdhGUuqo+ZjE52bLUK5S//wL4O7LBKsISraUd7G1PbSLyXX5z0SSM34Cfq8f5jxC+MC3zACHZ5K2D3+pFeLk6CUig44wVZQnmsFuheL+jRQESSLB9tbM3J1epXMZfFHCY5ttCiCDrBhxMbDlzCQOFVUHMwcMsZYRQhnozUByp55mvRkW0mVUIwHmacwS8VBLMSE0shF3ZFOOwTxvuHGwgUKX+jjdrxT/CsuLuG3gLClDLLeMItaA3XNQAFCGlMiIlz/PXLViXQOoLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GEl4Q+k5Yb4CA6FNH8nOuh4pNTllajYNeUb1nSAgEKU=;
+ b=kC/03vjjgdYbPwQvXopaxAJEY7v9SyRpUXlKEznWFdzaB5Oyp7k1WiFbwKfp8l6S0FofFMbm6S2UVX7KFAAan/tiZB/oYqZWlEZ8YUkIYYIq/E4O2tSQ3MG07V2dxd7UkNowbia4FkJkHgU37sQryVIw3ErCXDALGQNrcNO7qMo=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2952.namprd15.prod.outlook.com (2603:10b6:a03:f9::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Mon, 1 Jun
+ 2020 15:13:43 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3045.024; Mon, 1 Jun 2020
+ 15:13:43 +0000
+Subject: Re: Trouble running bpf_iter tests
+To:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>
+CC:     kernel-team <kernel-team@cloudflare.com>
+References: <CACAyw99G8vWfZAxy5ohapnTgwndzDrBeTARvxyrO6xopoW98yQ@mail.gmail.com>
+ <CACAyw98Stt_Ch3nFZ26UO9qDoCL46w-bt73G==NH=bMieCwBPw@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <cf3ee3cc-9095-3bac-0210-51b866b115db@fb.com>
+Date:   Mon, 1 Jun 2020 08:13:41 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
+In-Reply-To: <CACAyw98Stt_Ch3nFZ26UO9qDoCL46w-bt73G==NH=bMieCwBPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BYAPR02CA0062.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::39) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::110b] (2620:10d:c090:400::5:bd91) by BYAPR02CA0062.namprd02.prod.outlook.com (2603:10b6:a03:54::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.19 via Frontend Transport; Mon, 1 Jun 2020 15:13:43 +0000
+X-Originating-IP: [2620:10d:c090:400::5:bd91]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e9aa575f-33a0-4eba-0dca-08d8063e5fb9
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2952:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB295216839B701CFBD65B670DD38A0@BYAPR15MB2952.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-Forefront-PRVS: 0421BF7135
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gZNIw4kv7ntmqw2dO7/AunX+1cJZWZTmIt/uDBIg8bRxAvgDdEsj2iYWizY+q/r6PFlrEZH9y7D6AYb6Pm7C26tEMnBsyIQarSLaMs8ZeXuBx7CRDWqDmYr2Vs6z3yp7U3Bl42FyFq7X8koHBSWmo1cM7ASeMmC4v0OkpujEMhkSoMMTmsqpKALR07r7wrDs321FuYAyZZF5IgkP6bYH44bPRC3ZRDeXDP+ShOgPuDiFxd0T2uWCdyqqY98gjz572kF9uzO6iImID2UdMwceMRtT7cowPjfUiP5BjOBwMHJolYlCxotlo0p3grMtquxezIY6CHoSKUtY5ZQC8xui0WdhV6GUvhsGPwiCiGceoPXI0tUlhPrTBYmgcrSRmAoi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(39860400002)(396003)(376002)(366004)(110136005)(316002)(2906002)(83380400001)(8936002)(2616005)(186003)(478600001)(66476007)(52116002)(66556008)(66946007)(5660300002)(31686004)(16526019)(6486002)(53546011)(8676002)(86362001)(31696002)(36756003)(4326008)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: r8pPEd0IzTigZVB+0FupRT6am+og91H4CQFQ4Q2e9/oZ+rxR8DZn7YytslUe34/ptajFpHAauhQGTH+lGEt63dDd9KUn+HZkHOJmSrLeQfNc1lldzWGcPcuHZNofkb7f+a+wfCc0YaYyQlc89GyVFrzZPdDfcM0YRJSlEYj9ZSRbm49FhqK+VIbYtA0DodOCKqOrf1O6en4CTmNFHC4eedEYvI5T4A1X9LlG5Rlod0BdSc3q+UQjMBJ5g8MKicMhrYd9riNAexS5s+ovMwxQX7r61/lC9g3UfYpmTnr8+4hqlZsbBGEjO+feTK+A29+Q2zC72CrlAXans9qkf8/pqcXF26cDnohfJleOeCFEXSEq7sda+Baqlii4ny8VI7UfDCa/QRANsQ6nBReE4YfQLt55OotWV9yoafvMYLzNEVWRc3ThzoKfSoXrCG8MS0KpkxV9kWE/x63W5Du19jXdtW0pT0NeVkSOHMm0upeQqjeQrwAFwQ8wzMB2HOjH0xD9DkLqE401Iu1yVi6FhbAvWQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9aa575f-33a0-4eba-0dca-08d8063e5fb9
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 15:13:43.7866
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TGN3RDB/mxrQqEqBFi/ZOym4JSNkdELPLJcLTyaLgqGISLUx6iRH98tyPj56lkfT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2952
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-01_11:2020-06-01,2020-06-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ impostorscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ mlxlogscore=999 cotscore=-2147483648 phishscore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006010112
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 29 May 2020 16:06:59 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
 
-> KTLS uses a stream parser to collect TLS messages and send them to
-> the upper layer tls receive handler. This ensures the tls receiver
-> has a full TLS header to parse when it is run. However, when a
-> socket has BPF_SK_SKB_STREAM_VERDICT program attached before KTLS
-> is enabled we end up with two stream parsers running on the same
-> socket.
-> 
-> The result is both try to run on the same socket. First the KTLS
-> stream parser runs and calls read_sock() which will tcp_read_sock
-> which in turn calls tcp_rcv_skb(). This dequeues the skb from the
-> sk_receive_queue. When this is done KTLS code then data_ready()
-> callback which because we stacked KTLS on top of the bpf stream
-> verdict program has been replaced with sk_psock_start_strp(). This
-> will in turn kick the stream parser again and eventually do the
-> same thing KTLS did above calling into tcp_rcv_skb() and dequeuing
-> a skb from the sk_receive_queue.
-> 
-> At this point the data stream is broke. Part of the stream was
-> handled by the KTLS side some other bytes may have been handled
-> by the BPF side. Generally this results in either missing data
-> or more likely a "Bad Message" complaint from the kTLS receive
-> handler as the BPF program steals some bytes meant to be in a
-> TLS header and/or the TLS header length is no longer correct.
-> 
-> We've already broke the idealized model where we can stack ULPs
-> in any order with generic callbacks on the TX side to handle this.
-> So in this patch we do the same thing but for RX side. We add
-> a sk_psock_strp_enabled() helper so TLS can learn a BPF verdict
-> program is running and add a tls_sw_has_ctx_rx() helper so BPF
-> side can learn there is a TLS ULP on the socket.
-> 
-> Then on BPF side we omit calling our stream parser to avoid
-> breaking the data stream for the KTLS receiver. Then on the
-> KTLS side we call BPF_SK_SKB_STREAM_VERDICT once the KTLS
-> receiver is done with the packet but before it posts the
-> msg to userspace. This gives us symmetry between the TX and
-> RX halfs and IMO makes it usable again. On the TX side we
-> process packets in this order BPF -> TLS -> TCP and on
-> the receive side in the reverse order TCP -> TLS -> BPF.
-> 
-> Discovered while testing OpenSSL 3.0 Alpha2.0 release.
-> 
-> Fixes: d829e9c4112b5 ("tls: convert to generic sk_msg interface")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  include/linux/skmsg.h |    8 ++++++++
->  include/net/tls.h     |    9 +++++++++
->  net/core/skmsg.c      |   43 ++++++++++++++++++++++++++++++++++++++++---
->  net/tls/tls_sw.c      |   20 ++++++++++++++++++--
->  4 files changed, 75 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index ad31c9f..08674cd 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -437,4 +437,12 @@ static inline void psock_progs_drop(struct sk_psock_progs *progs)
->  	psock_set_prog(&progs->skb_verdict, NULL);
->  }
->  
-> +int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb);
-> +
-> +static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
-> +{
-> +	if (!psock)
-> +		return false;
-> +	return psock->parser.enabled;
-> +}
->  #endif /* _LINUX_SKMSG_H */
-> diff --git a/include/net/tls.h b/include/net/tls.h
-> index bf9eb48..b74d59b 100644
-> --- a/include/net/tls.h
-> +++ b/include/net/tls.h
-> @@ -567,6 +567,15 @@ static inline bool tls_sw_has_ctx_tx(const struct sock *sk)
->  	return !!tls_sw_ctx_tx(ctx);
->  }
->  
-> +static inline bool tls_sw_has_ctx_rx(const struct sock *sk)
-> +{
-> +	struct tls_context *ctx = tls_get_ctx(sk);
-> +
-> +	if (!ctx)
-> +		return false;
-> +	return !!tls_sw_ctx_rx(ctx);
-> +}
-> +
->  void tls_sw_write_space(struct sock *sk, struct tls_context *ctx);
->  void tls_device_write_space(struct sock *sk, struct tls_context *ctx);
->  
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 9d72f71..351afbf 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -7,6 +7,7 @@
->  
->  #include <net/sock.h>
->  #include <net/tcp.h>
-> +#include <net/tls.h>
->  
->  static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
->  {
-> @@ -714,6 +715,38 @@ static void sk_psock_skb_redirect(struct sk_psock *psock, struct sk_buff *skb)
->  	}
->  }
->  
-> +static void sk_psock_tls_verdict_apply(struct sk_psock *psock,
-> +				       struct sk_buff *skb, int verdict)
-> +{
-> +	switch (verdict) {
-> +	case __SK_REDIRECT:
-> +		sk_psock_skb_redirect(psock, skb);
-> +		break;
-> +	case __SK_PASS:
-> +	case __SK_DROP:
+On 6/1/20 7:42 AM, Lorenz Bauer wrote:
+> For some reason the initial e-mail wasn't plain text, apologies.
+>
+> ---------- Forwarded message ---------
+> From: Lorenz Bauer <lmb@cloudflare.com>
+> Date: Mon, 1 Jun 2020 at 15:32
+> Subject: Trouble running bpf_iter tests
+> To: Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
+> Cc: kernel-team <kernel-team@cloudflare.com>
+>
+>
+> Hi Yonghong,
+>
+> I'm having trouble running the bpf_iter tests on bpf-next at 551f08b1d8eadbc.
+> On a freshly built kernel running in a VM I get the following:
+>
+>      root@vm:/home/lorenz/dev/bpf-next/tools/testing/selftests/bpf#
+> ./test_progs -t bpf_iter
+> 510 bits_offset=640
+>      #3/1 btf_id_or_null:OK
+>      libbpf: failed to open system Kconfig
+>      libbpf: failed to load object 'bpf_iter_ipv6_route'
+>      libbpf: failed to load BPF skeleton 'bpf_iter_ipv6_route': -22
+>      test_ipv6_route:FAIL:bpf_iter_ipv6_route__open_and_load skeleton
+> open_and_load failed1510 bits_offset=1024
+>      #3/2 ipv6_route:FAIL
+>      libbpf: netlink is not found in vmlinux BTF
+>      libbpf: failed to load object 'bpf_iter_netlink'
+>      libbpf: failed to load BPF skeleton 'bpf_iter_netlink': -2
+>      test_netlink:FAIL:bpf_iter_netlink__open_and_load skeleton
+> open_and_load failed1510 bits_offset=1408
+>      #3/3 netlink:FAIL
+>      libbpf: bpf_map is not found in vmlinux BTF
+>      libbpf: failed to load object 'bpf_iter_bpf_map'
+>      libbpf: failed to load BPF skeleton 'bpf_iter_bpf_map': -2
+>      test_bpf_map:FAIL:bpf_iter_bpf_map__open_and_load skeleton
+> open_and_load failed
+>      #3/4 bpf_map:FAIL
+>      ....
+>      #3 bpf_iter:FAIL
+>      Summary: 0/1 PASSED, 0 SKIPPED, 12 FAILED
+>
+> If I understand correctly, this is because there is no function
+> information for bpf_iter_bpf_map
+> present in my /sys/kernel/btf/vmlinux:
+>
+>      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
+> grep bpf_iter_bpf_map
+>      #
 
-The two cases above need a "fallthrough;", right?
+Yes, this is the reason.
 
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
-> +int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
-> +{
-> +	struct bpf_prog *prog;
-> +	int ret = __SK_PASS;
-> +
-> +	rcu_read_lock();
-> +	prog = READ_ONCE(psock->progs.skb_verdict);
-> +	if (likely(prog)) {
-> +		tcp_skb_bpf_redirect_clear(skb);
-> +		ret = sk_psock_bpf_run(psock, prog, skb);
-> +		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> +	}
-> +	rcu_read_unlock();
-> +	sk_psock_tls_verdict_apply(psock, skb, ret);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(sk_psock_tls_strp_read);
-> +
->  static void sk_psock_verdict_apply(struct sk_psock *psock,
->  				   struct sk_buff *skb, int verdict)
->  {
-> @@ -792,9 +825,13 @@ static void sk_psock_strp_data_ready(struct sock *sk)
->  	rcu_read_lock();
->  	psock = sk_psock(sk);
->  	if (likely(psock)) {
-> -		write_lock_bh(&sk->sk_callback_lock);
-> -		strp_data_ready(&psock->parser.strp);
-> -		write_unlock_bh(&sk->sk_callback_lock);
-> +		if (tls_sw_has_ctx_rx(sk)) {
-> +			psock->parser.saved_data_ready(sk);
-> +		} else {
-> +			write_lock_bh(&sk->sk_callback_lock);
-> +			strp_data_ready(&psock->parser.strp);
-> +			write_unlock_bh(&sk->sk_callback_lock);
-> +		}
->  	}
->  	rcu_read_unlock();
->  }
-> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> index 2d399b6..61043c6 100644
-> --- a/net/tls/tls_sw.c
-> +++ b/net/tls/tls_sw.c
-> @@ -1731,6 +1731,7 @@ int tls_sw_recvmsg(struct sock *sk,
->  	long timeo;
->  	bool is_kvec = iov_iter_is_kvec(&msg->msg_iter);
->  	bool is_peek = flags & MSG_PEEK;
-> +	bool bpf_strp_enabled;
->  	int num_async = 0;
->  
->  	flags |= nonblock;
-> @@ -1740,6 +1741,7 @@ int tls_sw_recvmsg(struct sock *sk,
->  
->  	psock = sk_psock_get(sk);
->  	lock_sock(sk);
-> +	bpf_strp_enabled = sk_psock_strp_enabled(psock);
->  
->  	/* Process pending decrypted records. It must be non-zero-copy */
->  	err = process_rx_list(ctx, msg, &control, &cmsg, 0, len, false,
-> @@ -1793,11 +1795,12 @@ int tls_sw_recvmsg(struct sock *sk,
->  
->  		if (to_decrypt <= len && !is_kvec && !is_peek &&
->  		    ctx->control == TLS_RECORD_TYPE_DATA &&
-> -		    prot->version != TLS_1_3_VERSION)
-> +		    prot->version != TLS_1_3_VERSION &&
-> +		    !sk_psock_strp_enabled(psock))
+>
+> There is an entry in /proc/kallsyms however:
+>
+>      # grep bpf_iter_bpf_map /proc/kallsyms
+>      ffffffff826b2f13 T bpf_iter_bpf_map
+That means the kernel actually haves the right information.
+>
+> And other bpf_iter related symbols are available in BTF:
+>
+>      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
+> grep bpf_iter_
+>      [12602] TYPEDEF 'bpf_iter_init_seq_priv_t' type_id=9310
+>      [12603] TYPEDEF 'bpf_iter_fini_seq_priv_t' type_id=352
+>      [12604] STRUCT 'bpf_iter_reg' size=56 vlen=7
+>      [12608] STRUCT 'bpf_iter_meta' size=24 vlen=3
+>      [12609] STRUCT 'bpf_iter_target_info' size=32 vlen=3
+>      [12611] STRUCT 'bpf_iter_link' size=72 vlen=2
+>      [12613] STRUCT 'bpf_iter_priv_data' size=40 vlen=6
+>      [12617] STRUCT 'bpf_iter_seq_map_info' size=4 vlen=1
+>      [12620] STRUCT 'bpf_iter__bpf_map' size=16 vlen=2
+>      [12622] STRUCT 'bpf_iter_seq_task_common' size=8 vlen=1
+>      [12623] STRUCT 'bpf_iter_seq_task_info' size=16 vlen=2
+>      [12625] STRUCT 'bpf_iter__task' size=16 vlen=2
+>      [12626] STRUCT 'bpf_iter_seq_task_file_info' size=32 vlen=5
+>      [12628] STRUCT 'bpf_iter__task_file' size=32 vlen=4
+>      [25591] STRUCT 'bpf_iter__netlink' size=16 vlen=2
+>      [27509] STRUCT 'bpf_iter__ipv6_route' size=16 vlen=2
+>
+> Can you help me make this work?
 
-Is this recheck of parser state intentional? Or can we test for
-"!bpf_strp_enabled" here also?
+Looks like you have old pahole in your system. You need pahole 1.16 or later
 
->  			zc = true;
->  
->  		/* Do not use async mode if record is non-data */
-> -		if (ctx->control == TLS_RECORD_TYPE_DATA)
-> +		if (ctx->control == TLS_RECORD_TYPE_DATA && !bpf_strp_enabled)
->  			async_capable = ctx->async_capable;
->  		else
->  			async_capable = false;
-> @@ -1847,6 +1850,19 @@ int tls_sw_recvmsg(struct sock *sk,
->  			goto pick_next_record;
->  
->  		if (!zc) {
-> +			if (bpf_strp_enabled) {
-> +				err = sk_psock_tls_strp_read(psock, skb);
-> +				if (err != __SK_PASS) {
-> +					rxm->offset = rxm->offset + rxm->full_len;
-> +					rxm->full_len = 0;
-> +					if (err == __SK_DROP)
-> +						consume_skb(skb);
-> +					ctx->recv_pkt = NULL;
-> +					__strp_unpause(&ctx->strp);
-> +					continue;
-> +				}
-> +			}
-> +
->  			if (rxm->full_len > len) {
->  				retain_skb = true;
->  				chunk = len;
-> 
+to enable global functions emitted to vmlinux BTF. Could you give a try?
 
+>
+> Thanks
+> Lorenz
+>
