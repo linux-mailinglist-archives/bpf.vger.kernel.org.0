@@ -2,177 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED571EAF75
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 21:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5523B1EB00E
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 22:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgFATGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 15:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728407AbgFATGs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 15:06:48 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3998C061A0E;
-        Mon,  1 Jun 2020 12:06:46 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z1so8647606qtn.2;
-        Mon, 01 Jun 2020 12:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Llrgk7+W9TLrYsuboc7Lm4z6Mn6CXQv30Bi9jrkMViA=;
-        b=HX0AknQPr2UrtWk6MQk+TwJxdu7pIsoIuJDU+wjAFOk/LY2gLxAgByAQatxfdc5+IP
-         Iu9P0K6qzfivToi9Cd0seY3ABOVpzDN6vOV/0ges17+YFDroWZS+lXgF3Ar+fe3go3t/
-         wwGkLe+nJjzATG9h/IesrS4deSeWKw/Z01/bzPPLRj4/5v2CHptx/564cxjRdNdw57q9
-         1IXJ0rB6w/wK3c4Z20mBtbo2cfzeYfgWmOymprg3mzdhaO8zcAVqyJPMO4k7FUl2NeJg
-         DlF6xLrF+qjp+jf9LsWoyp6zSO2YfoHzL7T3EbnIXEo6SuoZ69p7G9y8nVREpQrpaGFv
-         9yrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Llrgk7+W9TLrYsuboc7Lm4z6Mn6CXQv30Bi9jrkMViA=;
-        b=lakx53ZYhkqV5xVdYX6L7CF5m7BsxTMyaDAm/7RtpKnUdmXtLjWxD1R0NZVRC3YqPr
-         4FGedzYY6CguG8qw36KFYnL4SXhlIMAAuP762CxNPfTQOjr7qr+GRHXg3v2rLntr31Jq
-         i3W1L3R3l5qZuooLBb+m+2eNBEh5V+c0KGT+GhJ9f8ntCbfA5G7KZ+pTy1E/HqiaqrXQ
-         WbzozeqXLVbscwYF5hCaasuPvu16nmkSG0xcahynaqP0dhr3azgu2ylE/uMoz7ZVoUJo
-         tWwr22SKgiiOKhUoFVHKC4oXfTKN07AToq1DWBDq1cBrDuX8RXkIWJJNdxoNCXLSKilR
-         7yuQ==
-X-Gm-Message-State: AOAM531j+S5HskC8Km29gt12jWBwoOWlVR0AEHMYoFqTm50BEtZZqYST
-        gjDTo8I/vejxW5O9LiyU2bOJkkNH9rcB18zDwrY=
-X-Google-Smtp-Source: ABdhPJxQ7/XGtasgrRrJ7vUyCfsoAICbMpDYL+nG9HXjO3JqEezNUhDH3/6Dhr1OsSFHAwd6GpMI5i4BBJ635E32kP8=
-X-Received: by 2002:ac8:4b63:: with SMTP id g3mr14945198qts.171.1591038405924;
- Mon, 01 Jun 2020 12:06:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200506132946.2164578-1-jolsa@kernel.org> <20200506132946.2164578-8-jolsa@kernel.org>
- <20200513182940.gil7v5vkthhwck3t@ast-mbp.dhcp.thefacebook.com>
- <20200514080515.GH3343750@krava> <CAEf4BzbZ6TYxVTJx3ij1WXy5AvVQio9Ht=tePO+xQf=JLigoog@mail.gmail.com>
- <20200528172349.GA506785@krava> <CAEf4BzbM-5-_QzDhrJDFJefo-m0OWDhvjsK_F1vA-ja4URVE9Q@mail.gmail.com>
- <20200531151039.GA881900@krava>
-In-Reply-To: <20200531151039.GA881900@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Jun 2020 12:06:34 -0700
-Message-ID: <CAEf4BzZTyzMaXbpDOCUHyWV7hotwaT3DdHuDxrK=0bfOMLQ5AQ@mail.gmail.com>
-Subject: Re: [PATCH 7/9] bpf: Compile the BTF id whitelist data in vmlinux
-To:     Jiri Olsa <jolsa@redhat.com>
+        id S1728182AbgFAUNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 16:13:19 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48080 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727996AbgFAUNS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 16:13:18 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jfqo7-0002Sm-AO; Mon, 01 Jun 2020 22:13:15 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jfqo6-000A3n-S2; Mon, 01 Jun 2020 22:13:15 +0200
+Subject: Re: Checksum behaviour of bpf_redirected packets
+To:     Alan Maguire <alan.maguire@oracle.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
+ <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+ <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+ <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
+ <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
+ <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net>
+ <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com>
+ <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net>
+ <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
+ <alpine.LRH.2.21.2006011839430.623@localhost>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
+Date:   Mon, 1 Jun 2020 22:13:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <alpine.LRH.2.21.2006011839430.623@localhost>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25830/Mon Jun  1 14:42:28 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 31, 2020 at 8:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, May 29, 2020 at 01:48:58PM -0700, Andrii Nakryiko wrote:
-> > On Thu, May 28, 2020 at 10:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Thu, May 14, 2020 at 03:46:26PM -0700, Andrii Nakryiko wrote:
-> > >
-> > > SNIP
-> > >
-> > > > > I was thinking of putting the names in __init section and generate the BTF
-> > > > > ids on kernel start, but the build time generation seemed more convenient..
-> > > > > let's see the linking times with 'real size' whitelist and we can reconsider
-> > > > >
-> > > >
-> > > > Being able to record such places where to put BTF ID in code would be
-> > > > really nice, as Alexei mentioned. There are many potential use cases
-> > > > where it would be good to have BTF IDs just put into arbitrary
-> > > > variables/arrays. This would trigger compilation error, if someone
-> > > > screws up the name, or function is renamed, or if function can be
-> > > > compiled out under some configuration. E.g., assuming some reasonable
-> > > > implementation of the macro
-> > >
-> > > hi,
-> > > I'm struggling with this part.. to get some reasonable reference
-> > > to function/name into 32 bits? any idea? ;-)
-> > >
-> >
-> > Well, you don't have to store actual pointer, right? E.g, emitting
-> > something like this in assembly:
-> >
-> > .global __BTF_ID___some_function
-> > .type __BTF_ID___some_function, @object
-> > .size __BTF_ID___some_function, 4
-> > __BTF_ID___some_function:
-> > .zero  4
-> >
-> > Would reserve 4 bytes and emit __BTF_ID___some_function symbol. If we
-> > can then post-process vmlinux image and for all symbols starting with
-> > __BTF_ID___ find some_function BTF type id and put it into those 4
-> > bytes, that should work, no?
-> >
-> > Maybe generalize it to __BTF_ID__{func,struct,typedef}__some_function,
-> > whatever, not sure. Just an idea.
->
-> nice, so something like below?
->
-> it'd be in .S file, or perhaps in inline asm, assuming I'll be
-> able to pass macro arguments to asm("")
+On 6/1/20 7:48 PM, Alan Maguire wrote:
+> On Wed, 13 May 2020, Lorenz Bauer wrote:
+> 
+>>>> Option 1: always downgrade UNNECESSARY to NONE
+>>>> - Easiest to back port
+>>>> - The helper is safe by default
+>>>> - Performance impact unclear
+>>>> - No escape hatch for Cilium
+>>>>
+>>>> Option 2: add a flag to force CHECKSUM_NONE
+>>>> - New UAPI, can this be backported?
+>>>> - The helper isn't safe by default, needs documentation
+>>>> - Escape hatch for Cilium
+>>>>
+>>>> Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
+>>>> - New UAPI, can this be backported?
+>>>> - The helper is safe by default
+>>>> - Escape hatch for Cilium (though you'd need to detect availability of the
+>>>>     flag somehow)
+>>>
+>>> This seems most reasonable to me; I can try and cook a proposal for tomorrow as
+>>> potential fix. Even if we add a flag, this is still backportable to stable (as
+>>> long as the overall patch doesn't get too complex and the backport itself stays
+>>> compatible uapi-wise to latest kernels. We've done that before.). I happen to
+>>> have two ixgbe NICs on some of my test machines which seem to be setting the
+>>> CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
+>>
+>> Great! I'm happy to test, of course.
+> 
+> I had a go at implementing option 3 as a few colleagues ran into this
+> problem. They confirmed the fix below resolved the issue.  Daniel is
+> this  roughly what you had in mind? I can submit a patch for the bpf
+> tree if that's acceptable with the new flag. Do we need a few
+> tests though?
 
-I'd do inline asm, there are no arguments you need to pass into
-asm("") itself, everything can be done through macro string
-interpolation, I think. Having everything in .c file would be way more
-convenient and obvious.
+Coded this [0] up last week which Lorenz gave a spin as well. Originally wanted to
+get it out Friday night, but due to internal release stuff it got too late Fri night
+and didn't want to rush it at 3am anymore, so the series as fixes is going out tomorrow
+morning [today was public holiday in CH over here].
 
->
-> with externs defined in some header file:
->
->   extern const int bpf_skb_output_btf_ids[];
->   extern const int btf_whitelist_d_path[];
->
->   $ objdump -x ./kernel/bpf/whitelist.o
->   ...
->   0000000000000000 l     O .data  0000000000000004 __BTF_ID__func__vfs_truncate
->   0000000000000004 l     O .data  0000000000000004 __BTF_ID__func__vfs_fallocate
->   0000000000000008 l     O .data  0000000000000004 __BTF_ID__func__krava
->   0000000000000010 l     O .data  0000000000000004 __BTF_ID__struct__sk_buff
->   0000000000000000 g       .data  0000000000000000 btf_whitelist_d_path
->   0000000000000010 g       .data  0000000000000000 bpf_skb_output_btf_ids
->
-> also it'd be nice to get rid of BTF_ID__ symbols in the final link
->
-> thanks,
-> jirka
->
->
-> ---
-> #define BTF_ID(prefix, name)                    \
-> .local __BTF_ID__##prefix##__##name;            \
-> .type __BTF_ID__##prefix##__##name, @object;    \
-> .size __BTF_ID__##prefix##__##name, 4;          \
-> __BTF_ID__##prefix##__##name:                   \
-> .zero 4
->
-> #define BTF_ID_LIST(name)                       \
-> .global name;                                   \
-> name:
->
-> #define ZERO .zero 4
->
-> .data
->
-> BTF_ID_LIST(btf_whitelist_d_path)
-> BTF_ID(func, vfs_truncate)
-> BTF_ID(func, vfs_fallocate)
-> BTF_ID(func, krava)
-> ZERO
->
-> BTF_ID_LIST(bpf_skb_output_btf_ids)
-> BTF_ID(struct, sk_buff)
->
+Thanks,
+Daniel
+
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/log/?h=pr/adjust-csum
