@@ -2,117 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DF91E9C09
-	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 05:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB391EA1AE
+	for <lists+bpf@lfdr.de>; Mon,  1 Jun 2020 12:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgFADaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 May 2020 23:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S1725925AbgFAKRI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 06:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgFADaY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 May 2020 23:30:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E603C061A0E;
-        Sun, 31 May 2020 20:30:24 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m18so6345588ljo.5;
-        Sun, 31 May 2020 20:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F6i5SASVSgSpSYDAzcQbg53yQdsOZO3Fx6kPYx0YZ3k=;
-        b=O3HBguBOjy9sbFSRhXwYFbERBBgwHyLSwd1HeOzzomTbQ9sstgS0uLsWg+9DMY8cuU
-         9Xc5EKddC/tJ4jLJ0Ohyo5lRJJ9Ut5PDDYH3gr8d/Q8wlhWmtihojzzQLoebqotEo8Np
-         ZMmCdZzdl4wBxvBeqbNy/8yfvXW8q1xgBDJBepPs5ulKx5qdYDTcPKLAOVd2Sv8/Bati
-         M9DYquffpRBTZboxLSNWIp19dP9Tt+vvenkFMswFrJ+cS3dJUhkSoKRyQlbXLjnnI70G
-         QdzARbHY/ltMk/udHvzbh/ugykfksYJy4fd4AinbKgLN1RTXT1VNxe/yaDnk76td13BJ
-         BG/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F6i5SASVSgSpSYDAzcQbg53yQdsOZO3Fx6kPYx0YZ3k=;
-        b=nlwby03BTb9up85fk/de1DTomhZ1CCfNU+Fuidw7t+ePeq2/HrStfXStp43sGr82AP
-         uILbbK4MBtQg+mijiG4rH6ZaHrA5acZ0ejDT64NHfbbGjvHlrf+TKuUbEDRbeA6xuSHx
-         TMtbfSNjGpPFBw/W/eQFehssI/fDAdEQLFwv2JsvzZe+fdOHOrbU4MYvMM991naf7uDk
-         NOpQPGAAkTL44cReBXbmLswAy/lar4OA/wfEveQcOCyZCsy67x3GRGEW0iN2zc+9C3Q0
-         scCIgkfgoT6PmRjgePLyC4I31mmVVxoglfPL4Dh15K2xQU4otmLmGGQrYvn+iuLZHHuz
-         Jt6Q==
-X-Gm-Message-State: AOAM531Fevx2jCocxp8eww0GI8KWBnINfU+RzjvzvPaA8sZumQMkDj03
-        /FrZYHvN1IeLRF16SVhHj8G4I18B++oEjRrt13M=
-X-Google-Smtp-Source: ABdhPJyAzNEi9cYcWRrJbXRavEbq8HtQrf4XpgklNn4d4oE7k997AbiodKa1D6orRYJMl6d9CC7JAHppNThneUVBUCI=
-X-Received: by 2002:a2e:9187:: with SMTP id f7mr9916269ljg.450.1590982222677;
- Sun, 31 May 2020 20:30:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com> <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
- <202005290903.11E67AB0FD@keescook> <202005291043.A63D910A8@keescook> <ff10225b79a14fec9bc383e710d74b2e@huawei.com>
-In-Reply-To: <ff10225b79a14fec9bc383e710d74b2e@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 31 May 2020 20:30:11 -0700
-Message-ID: <CAADnVQK2WEh980KMkXy9TNeDqKA-fDMxkojPYf=b5eJSgG=K0g@mail.gmail.com>
-Subject: Re: new seccomp mode aims to improve performance
-To:     "zhujianwei (C)" <zhujianwei7@huawei.com>
-Cc:     Kees Cook <keescook@chromium.org>,
+        with ESMTP id S1725886AbgFAKRH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 06:17:07 -0400
+X-Greylist: delayed 326 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 01 Jun 2020 03:17:07 PDT
+Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBDFC061A0E;
+        Mon,  1 Jun 2020 03:17:07 -0700 (PDT)
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id A50DCE811D6;
+        Mon,  1 Jun 2020 12:11:38 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id E1C2F160AC6; Mon,  1 Jun 2020 12:11:37 +0200 (CEST)
+Date:   Mon, 1 Jun 2020 12:11:37 +0200
+From:   Lennart Poettering <lennart@poettering.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "zhujianwei (C)" <zhujianwei7@huawei.com>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "linux-security-module@vger.kernel.org" 
         <linux-security-module@vger.kernel.org>,
         Hehuazhen <hehuazhen@huawei.com>,
-        Lennart Poettering <lennart@poettering.net>,
         Christian Ehrhardt <christian.ehrhardt@canonical.com>,
-        =?UTF-8?Q?Zbigniew_J=C4=99drzejewski=2DSzmek?= <zbyszek@in.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
+Subject: Re: new seccomp mode aims to improve performance
+Message-ID: <20200601101137.GA121847@gardel-login>
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
+ <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook>
+ <202005291043.A63D910A8@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005291043.A63D910A8@keescook>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 31, 2020 at 7:08 PM zhujianwei (C) <zhujianwei7@huawei.com> wro=
-te:
->
-> This is the test result on linux 5.7.0-rc7 for aarch64.
-> And retpoline disabled default.
-> #cat /sys/devices/system/cpu/vulnerabilities/spectre_v2
-> Not affected
->
-> bpf_jit_enable 1
-> bpf_jit_harden 0
->
-> We run unixbench syscall benchmark on the original kernel and the new one=
-(replace bpf_prog_run_pin_on_cpu() with immediately returning 'allow' one).
-> The unixbench syscall testcase runs 5 system calls=EF=BC=88close/umask/du=
-p/getpid/getuid, extra 15 syscalls needed to run it=EF=BC=89 in a loop for =
-10 seconds, counts the number and finally output it. We also add some more =
-filters (each with the same rules) to evaluate the situation just like kees=
- mentioned(case like systemd-resolve), and we find it is right: more filter=
-s, more overhead. The following is our result (./syscall 10 m):
->
-> original:
->         seccomp_off:                    10684939
->         seccomp_on_1_filters:   8513805         overhead=EF=BC=9A19.8%
->         seccomp_on_4_filters:   7105592         overhead=EF=BC=9A33.0%
->         seccomp_on_32_filters:  2308677         overhead=EF=BC=9A78.3%
->
-> after replacing bpf_prog_run_pin_on_cpu:
->         seccomp_off:                    10685244
->         seccomp_on_1_filters:   9146483         overhead=EF=BC=9A14.1%
->         seccomp_on_4_filters:   8969886         overhead=EF=BC=9A16.0%
->         seccomp_on_32_filters:  6454372         overhead=EF=BC=9A39.6%
->
-> N-filter bpf overhead:
->         1_filters:              5.7%
->         4_filters:              17.0%
->         32_filters:     38.7%
->
-> // kernel code modification place
-> static noinline u32 bpf_prog_run_pin_on_cpu_allow(const struct bpf_prog *=
-prog, const void *ctx)
-> {
->         return SECCOMP_RET_ALLOW;
-> }
+On Fr, 29.05.20 12:27, Kees Cook (keescook@chromium.org) wrote:
 
-This is apples to oranges.
-As explained earlier:
-https://lore.kernel.org/netdev/20200531171915.wsxvdjeetmhpsdv2@ast-mbp.dhcp=
-.thefacebook.com/T/#u
-Please use __weak instead of static and redo the numbers.
+> # grep ^Seccomp_filters /proc/$(pidof systemd-resolved)/status
+> Seccomp_filters:        32
+>
+> # grep SystemCall /lib/systemd/system/systemd-resolved.service
+> SystemCallArchitectures=native
+> SystemCallErrorNumber=EPERM
+> SystemCallFilter=@system-service
+>
+> I'd like to better understand what they're doing, but haven't had time
+> to dig in. (The systemd devel mailing list requires subscription, so
+> I've directly CCed some systemd folks that have touched seccomp there
+> recently. Hi! The starts of this thread is here[4].)
+
+Hmm, so on x86-64 we try to install our seccomp filters three times:
+for the x86-64 syscall ABI, for the i386 syscall ABI and for the x32
+syscall ABI. Not all of the filters we apply work on all ABIs though,
+because syscalls are available on some but not others, or cannot
+sensibly be matched on some (because of socketcall, ipc and such
+multiplexed syscalls).
+
+When we fist added support for seccomp filters to systemd we compiled
+everything into a single filter, and let libseccomp apply it to
+different archs. But that didn't work out, since libseccomp doesn't
+tell use when it manages to apply a filter and when not, i.e. to which
+arch it worked and to which arch it didn't. And since we have some
+whitelist and some blacklist filters the internal fallback logic of
+libsecccomp doesn't work for us either, since you never know what you
+end up with. So we ended up breaking the different settings up into
+individual filters, and apply them individually and separately for
+each arch, so that we know exactly what we managed to install and what
+not, and what we can then know will properly filter and can check in
+our test suite.
+
+Keeping the filters separate made things a lot easier and simpler to
+debug, and our log output and testing became much less of a black
+box. We know exactly what worked and what didn't, and our test
+validate each filter.
+
+For systemd-resolved we apply a bunch more filters than just those
+that are result of SystemCallFilter= and SystemCallArchitectures=
+(SystemCallFilter= itself synthesizes one filter per syscall ABI).
+
+1. RestrictSUIDSGID= generates a seccomp filter to generated suid/sgid
+   binaries, i.e. filters chmod() and related calls and their
+   arguments
+
+2. LockPersonality= blocks personality() for most arguments
+
+3. MemoryDenyWriteExecute= blocks mmap() and similar calls if the
+   selected map has X and W set at the same time
+
+4. RestrictRealtime= blocks sched_setscheulder() for most parameters
+
+5. RestrictAddressFamilies= blocks socket() and related calls for
+   various address families
+
+6. ProtectKernelLogs= blocks the syslog() syscall for most parameters
+
+7. ProtectKernelTunables= blocks the old _sysctl() syscall among some
+   other things
+
+8. RestrictNamespaces= blocks various unshare() and clone() bits
+
+So yeah, if one turns on many of these options in services (and we
+generally turn on everything we can for the services we ship) and then
+multiply that by the archs you end up with quite a bunch.
+
+If we wanted to optimize that in userspace, then libseccomp would have
+to be improved quite substantially to let us know exactly what works
+and what doesn't, and to have sane fallback both when building
+whitelists and blacklists.
+
+An easy improvement is probably if libseccomp would now start refusing
+to install x32 seccomp filters altogether now that x32 is entirely
+dead? Or are the entrypoints for x32 syscalls still available in the
+kernel? How could userspace figure out if they are available? If
+libseccomp doesn't want to add code for that, we probably could have
+that in systemd itself too...
+
+Lennart
+
+--
+Lennart Poettering, Berlin
