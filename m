@@ -2,133 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEDD1EB94E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 12:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D64A1EBA2E
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 13:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgFBKNh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 06:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgFBKNh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:13:37 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7731AC061A0E
-        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 03:13:36 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id e5so3112163ote.11
-        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 03:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PYkyYuO+K0IbSvklnuIVXc7+pRVpwEFri33hk6ziZGs=;
-        b=Sg4fm5pqNTXPVevEgnLoH6WKtxa5GcpTflO+Grnm329qZzg+ZqZ+R4eR0eUzAGvUqE
-         t4kXIBg1YUV8gT1wuASV8sx49NqneGS9IWpT2qvkcGSMsdjC73fOcY/hDg3wIiJutVkX
-         mddCgckOg1aSb9kxJUzvGdghpnXQsPlAviGgY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PYkyYuO+K0IbSvklnuIVXc7+pRVpwEFri33hk6ziZGs=;
-        b=gFObLFGmfeks49JaPJM3RstZQ7c+7kEi6ovlsuNuyGHYqfzHcik/dSL5owIBxjcM1a
-         u3jFTy88FUMciUFp5dmXJaWK9D+g1kUr4WC6kGwuQMK74/+b7tmeJvDI3FnSuJruhesO
-         jN0fjzffDRb2cDqGXtp613vkV7lnyDvZcr2jt9I/gtzfl+foKXkhssYh6oCfMzVu1G03
-         dEG8mv58G+t7T8Zjc5UUE+HLt9z7bi2B3LNoaw1qT37N4YLPhehFO0WXMJWYRoDoPs58
-         82TFbK3WWVZq7J85S7hoCYc90im34h3TPU2XJXd6jd/e/yp05YdIDOP4UVUWCJqakZQy
-         fKFQ==
-X-Gm-Message-State: AOAM532taDTvHeJaRrL+eXCITXbTM7ZxcYM6TD6FNJVqPE9U4TeMyr6j
-        M6pBdAVEqyHCiDwXLDDiR5/Pfom/h5hLPxeSd0yAxw==
-X-Google-Smtp-Source: ABdhPJxUGS55A1IBSfhFpkv1YTXzaxW3Kc3xHYICwrVhxTw+/ptkO8t7gBt7zhtfhF7KJiAgnYg9wO9zGlAcTgv1aUs=
-X-Received: by 2002:a05:6830:2303:: with SMTP id u3mr18093642ote.147.1591092815856;
- Tue, 02 Jun 2020 03:13:35 -0700 (PDT)
+        id S1725940AbgFBLNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 07:13:04 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2514 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725919AbgFBLNE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 07:13:04 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 54A711A1897B9FC0BEC9;
+        Tue,  2 Jun 2020 19:13:01 +0800 (CST)
+Received: from dggema758-chm.china.huawei.com (10.1.198.200) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 2 Jun 2020 19:13:00 +0800
+Received: from dggema758-chm.china.huawei.com (10.1.198.200) by
+ dggema758-chm.china.huawei.com (10.1.198.200) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 2 Jun 2020 19:13:00 +0800
+Received: from dggema758-chm.china.huawei.com ([10.9.48.193]) by
+ dggema758-chm.china.huawei.com ([10.9.48.193]) with mapi id 15.01.1913.007;
+ Tue, 2 Jun 2020 19:13:00 +0800
+From:   "zhujianwei (C)" <zhujianwei7@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Kees Cook <keescook@chromium.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Hehuazhen <hehuazhen@huawei.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
+        =?utf-8?B?WmJpZ25pZXcgSsSZZHJ6ZWpld3NraS1Tem1law==?= 
+        <zbyszek@in.waw.pl>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IG5ldyBzZWNjb21wIG1vZGUgYWltcyB0byBpbXBy?=
+ =?utf-8?Q?ove_performance?=
+Thread-Topic: =?utf-8?B?562U5aSNOiBuZXcgc2VjY29tcCBtb2RlIGFpbXMgdG8gaW1wcm92ZSBwZXJm?=
+ =?utf-8?Q?ormance?=
+Thread-Index: AdY1q17j91IY6CMiRsq40mFg/pmPz///wxIAgAAHIgCAADc1gP/7503AgAfEWYD//fXnAIADmuoA//74EOA=
+Date:   Tue, 2 Jun 2020 11:13:00 +0000
+Message-ID: <717a06e7f35740ccb4c70470ec70fb2f@huawei.com>
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
+ <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook> <202005291043.A63D910A8@keescook>
+ <ff10225b79a14fec9bc383e710d74b2e@huawei.com>
+ <CAADnVQK2WEh980KMkXy9TNeDqKA-fDMxkojPYf=b5eJSgG=K0g@mail.gmail.com>
+ <7dacac003a9949ea8163fca5125a2cae@huawei.com>
+ <20200602032446.7sn2fmzsea2v2wbs@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200602032446.7sn2fmzsea2v2wbs@ast-mbp.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.166.215.96]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
- <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
- <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
- <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net> <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
- <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net> <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com>
- <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net> <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
- <alpine.LRH.2.21.2006011839430.623@localhost> <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
- <alpine.LRH.2.21.2006012217530.15886@localhost>
-In-Reply-To: <alpine.LRH.2.21.2006012217530.15886@localhost>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 2 Jun 2020 11:13:24 +0100
-Message-ID: <CACAyw98FxUjxmr4ai5JiudV5p3pd4U6fxxULrkMWJtuBKtUDgA@mail.gmail.com>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 1 Jun 2020 at 22:25, Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> On Mon, 1 Jun 2020, Daniel Borkmann wrote:
->
-> > On 6/1/20 7:48 PM, Alan Maguire wrote:
-> > > On Wed, 13 May 2020, Lorenz Bauer wrote:
-> > >
-> > >>>> Option 1: always downgrade UNNECESSARY to NONE
-> > >>>> - Easiest to back port
-> > >>>> - The helper is safe by default
-> > >>>> - Performance impact unclear
-> > >>>> - No escape hatch for Cilium
-> > >>>>
-> > >>>> Option 2: add a flag to force CHECKSUM_NONE
-> > >>>> - New UAPI, can this be backported?
-> > >>>> - The helper isn't safe by default, needs documentation
-> > >>>> - Escape hatch for Cilium
-> > >>>>
-> > >>>> Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
-> > >>>> - New UAPI, can this be backported?
-> > >>>> - The helper is safe by default
-> > >>>> - Escape hatch for Cilium (though you'd need to detect availability of
-> > >>>> the
-> > >>>>     flag somehow)
-> > >>>
-> > >>> This seems most reasonable to me; I can try and cook a proposal for
-> > >>> tomorrow as
-> > >>> potential fix. Even if we add a flag, this is still backportable to stable
-> > >>> (as
-> > >>> long as the overall patch doesn't get too complex and the backport itself
-> > >>> stays
-> > >>> compatible uapi-wise to latest kernels. We've done that before.). I happen
-> > >>> to
-> > >>> have two ixgbe NICs on some of my test machines which seem to be setting
-> > >>> the
-> > >>> CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
-> > >>
-> > >> Great! I'm happy to test, of course.
-> > >
-> > > I had a go at implementing option 3 as a few colleagues ran into this
-> > > problem. They confirmed the fix below resolved the issue.  Daniel is
-> > > this  roughly what you had in mind? I can submit a patch for the bpf
-> > > tree if that's acceptable with the new flag. Do we need a few
-> > > tests though?
-> >
-> > Coded this [0] up last week which Lorenz gave a spin as well. Originally
-> > wanted to
-> > get it out Friday night, but due to internal release stuff it got too late Fri
-> > night
-> > and didn't want to rush it at 3am anymore, so the series as fixes is going out
-> > tomorrow
-> > morning [today was public holiday in CH over here].
-> >
->
-> Looks great! Although I've only seen this issue arise
-> for cases where csum_level == 0, should we also
-> add "skb->csum_level = 0;" when we reset the
-> ip_summed value?
-
-FWIW I had the same reaction. Maybe it's worth adding after all, Daniel?
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+PiA+IFRoaXMgaXMgdGhlIHRlc3QgcmVzdWx0IG9uIGxpbnV4IDUuNy4wLXJjNyBmb3IgYWFyY2g2
+NC4NCj4gPiBBbmQgcmV0cG9saW5lIGRpc2FibGVkIGRlZmF1bHQuDQo+ID4gI2NhdCAvc3lzL2Rl
+dmljZXMvc3lzdGVtL2NwdS92dWxuZXJhYmlsaXRpZXMvc3BlY3RyZV92Mg0KPiA+IE5vdCBhZmZl
+Y3RlZA0KPiA+DQo+ID4gYnBmX2ppdF9lbmFibGUgMQ0KPiA+IGJwZl9qaXRfaGFyZGVuIDANCj4g
+Pg0KPiA+IFdlIHJ1biB1bml4YmVuY2ggc3lzY2FsbCBiZW5jaG1hcmsgb24gdGhlIG9yaWdpbmFs
+IGtlcm5lbCBhbmQgdGhlIG5ldyBvbmUocmVwbGFjZSBicGZfcHJvZ19ydW5fcGluX29uX2NwdSgp
+IHdpdGggaW1tZWRpYXRlbHkgcmV0dXJuaW5nICdhbGxvdycgb25lKS4NCj4gPiBUaGUgdW5peGJl
+bmNoIHN5c2NhbGwgdGVzdGNhc2UgcnVucyA1IHN5c3RlbSBjYWxsc++8iGNsb3NlL3VtYXNrL2R1
+cC9nZXRwaWQvZ2V0dWlkLCBleHRyYSAxNSBzeXNjYWxscyBuZWVkZWQgdG8gcnVuIGl077yJIGlu
+IGEgbG9vcCBmb3IgMTAgc2Vjb25kcywgY291bnRzIHRoZSBudW1iZXIgYW5kIGZpbmFsbHkgb3V0
+cHV0IGl0LiBXZSBhbHNvIGFkZCBzb21lIG1vcmUgZmlsdGVycyAoZWFjaCB3aXRoIHRoZSBzYW1l
+IHJ1bGVzKSB0byBldmFsdWF0ZSB0aGUgc2l0dWF0aW9uIGp1c3QgbGlrZSBrZWVzIG1lbnRpb25l
+ZChjYXNlIGxpa2Ugc3lzdGVtZC1yZXNvbHZlKSwgYW5kIHdlIGZpbmQgaXQgaXMgcmlnaHQ6IG1v
+cmUgZmlsdGVycywgbW9yZSBvdmVyaGVhZC4gVGhlIGZvbGxvd2luZyBpcyBvdXIgcmVzdWx0ICgu
+L3N5c2NhbGwgMTAgbSk6DQo+ID4NCj4gPiBvcmlnaW5hbDoNCj4gPiAgICAgICAgIHNlY2NvbXBf
+b2ZmOiAgICAgICAgICAgICAgICAgICAgMTA2ODQ5MzkNCj4gPiAgICAgICAgIHNlY2NvbXBfb25f
+MV9maWx0ZXJzOiAgIDg1MTM4MDUgICAgICAgICBvdmVyaGVhZO+8mjE5LjglDQo+ID4gICAgICAg
+ICBzZWNjb21wX29uXzRfZmlsdGVyczogICA3MTA1NTkyICAgICAgICAgb3ZlcmhlYWTvvJozMy4w
+JQ0KPiA+ICAgICAgICAgc2VjY29tcF9vbl8zMl9maWx0ZXJzOiAgMjMwODY3NyAgICAgICAgIG92
+ZXJoZWFk77yaNzguMyUNCj4gPg0KPiA+IGFmdGVyIHJlcGxhY2luZyBicGZfcHJvZ19ydW5fcGlu
+X29uX2NwdToNCj4gPiAgICAgICAgIHNlY2NvbXBfb2ZmOiAgICAgICAgICAgICAgICAgICAgMTA2
+ODUyNDQNCj4gPiAgICAgICAgIHNlY2NvbXBfb25fMV9maWx0ZXJzOiAgIDkxNDY0ODMgICAgICAg
+ICBvdmVyaGVhZO+8mjE0LjElDQo+ID4gICAgICAgICBzZWNjb21wX29uXzRfZmlsdGVyczogICA4
+OTY5ODg2ICAgICAgICAgb3ZlcmhlYWTvvJoxNi4wJQ0KPiA+ICAgICAgICAgc2VjY29tcF9vbl8z
+Ml9maWx0ZXJzOiAgNjQ1NDM3MiAgICAgICAgIG92ZXJoZWFk77yaMzkuNiUNCj4gPg0KPiA+IE4t
+ZmlsdGVyIGJwZiBvdmVyaGVhZDoNCj4gPiAgICAgICAgIDFfZmlsdGVyczogICAgICAgICAgICAg
+IDUuNyUNCj4gPiAgICAgICAgIDRfZmlsdGVyczogICAgICAgICAgICAgIDE3LjAlDQo+ID4gICAg
+ICAgICAzMl9maWx0ZXJzOiAgICAgMzguNyUNCj4gPg0KPiA+IC8vIGtlcm5lbCBjb2RlIG1vZGlm
+aWNhdGlvbiBwbGFjZQ0KPiA+IHN0YXRpYyBub2lubGluZSB1MzIgYnBmX3Byb2dfcnVuX3Bpbl9v
+bl9jcHVfYWxsb3coY29uc3Qgc3RydWN0IA0KPiA+IGJwZl9wcm9nICpwcm9nLCBjb25zdCB2b2lk
+ICpjdHgpIHsNCj4gPiAgICAgICAgIHJldHVybiBTRUNDT01QX1JFVF9BTExPVzsNCj4gPiB9DQo+
+IA0KPiA+VGhpcyBpcyBhcHBsZXMgdG8gb3Jhbmdlcy4NCj4gPkFzIGV4cGxhaW5lZCBlYXJsaWVy
+Og0KPiA+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbmV0ZGV2LzIwMjAwNTMxMTcxOTE1LndzeHZk
+amVldG1ocHNkdjJAYXN0LW1iDQo+ID5wLmRoY3AudGhlZmFjZWJvb2suY29tL1QvI3UgUGxlYXNl
+IHVzZSBfX3dlYWsgaW5zdGVhZCBvZiBzdGF0aWMgYW5kIA0KPiA+cmVkbyB0aGUgbnVtYmVycy4N
+Cj4gDQo+IA0KPiB3ZSBoYXZlIHJlcGxhY2VkIOKAmHN0YXRpY+KAmSB3aXRoIOKAmF9fd2Vha+KA
+mSwgdGVzdGVkIHdpdGggdGhlIHNhbWUgd2F5LCBhbmQgZ290IGFsbW9zdGx5IHRoZSBzYW1lIHJl
+c3VsdCwgaW4gb3VyIHRlc3QgZW52aXJvbm1lbnQoYWFyY2g2NCkuDQo+IA0KPiAtc3RhdGljIG5v
+aW5saW5lIHUzMiBicGZfcHJvZ19ydW5fcGluX29uX2NwdV9hbGxvdyhjb25zdCBzdHJ1Y3QgDQo+
+IGJwZl9wcm9nICpwcm9nLCBjb25zdCB2b2lkICpjdHgpDQo+ICtfX3dlYWsgbm9pbmxpbmUgdTMy
+IGJwZl9wcm9nX3J1bl9waW5fb25fY3B1X2FsbG93KGNvbnN0IHN0cnVjdCANCj4gK2JwZl9wcm9n
+ICpwcm9nLCBjb25zdCB2b2lkICpjdHgpDQo+IA0KPiBvcmlnaW5hbDoNCj4gCXNlY2NvbXBfb2Zm
+OgkJCTEwNjg0OTM5DQo+IAlzZWNjb21wX29uXzFfZmlsdGVyczoJODUxMzgwNQkJb3ZlcmhlYWTv
+vJoxOS44JQ0KPiAJc2VjY29tcF9vbl80X2ZpbHRlcnM6CTcxMDU1OTIJCW92ZXJoZWFk77yaMzMu
+MCUNCj4gCXNlY2NvbXBfb25fMzJfZmlsdGVyczoJMjMwODY3NwkJb3ZlcmhlYWTvvJo3OC4zJQ0K
+PiAJDQo+IGFmdGVyIHJlcGxhY2luZyBicGZfcHJvZ19ydW5fcGluX29uX2NwdToNCj4gCXNlY2Nv
+bXBfb2ZmOgkJCTEwNjY3MTk1DQo+IAlzZWNjb21wX29uXzFfZmlsdGVyczoJOTE0NzQ1NAkJb3Zl
+cmhlYWTvvJoxNC4yJQ0KPiAJc2VjY29tcF9vbl80X2ZpbHRlcnM6CTg5Mjc2MDUJCW92ZXJoZWFk
+77yaMTYuMSUNCj4gCXNlY2NvbXBfb25fMzJfZmlsdGVyczoJNjM1NTQ3NgkJb3ZlcmhlYWTvvJo0
+MC42JQ0KDQo+IGFyZSB5b3Ugc2F5aW5nIHRoYXQgYnkgcmVwbGFjaW5nICdzdGF0aWMnIHdpdGgg
+J19fd2VhaycgaXQgZ290IHNsb3dlcj8hDQo+IFNvbWV0aGluZyBkb2Vzbid0IGFkZCB1cC4gUGxl
+YXNlIGNoZWNrIGdlbmVyYXRlZCBhc3NlbWJseS4NCj4gQnkgaGF2aW5nIHN1Y2ggJ3N0YXRpYyBu
+b2lubGluZSBicGZfcHJvZ19ydW5fcGluX29uX2NwdScgeW91J3JlIHRlbGxpbmcgY29tcGlsZXIg
+dG8gcmVtb3ZlIG1vc3Qgb2Ygc2VjY29tcF9ydW5fZmlsdGVycygpIGNvZGUgd2hpY2ggbm93IHdp
+bGwgcmV0dXJuIG9ubHkgdHdvIHBvc3NpYmxlIHZhbHVlcy4gV2hpY2ggZnVydGhlciBtZWFucyB0
+aGF0IGxhcmdlICdzd2l0Y2gnDQo+IHN0YXRlbWVudCBpbiBfX3NlY2NvbXBfZmlsdGVyKCkgaXMg
+YWxzbyBvcHRpbWl6ZWQuIHBvcHVsYXRlX3NlY2NvbXBfZGF0YSgpIGlzIHJlbW92ZWQuIEV0Yywg
+ZXRjLiBUaGF0IGV4cGxhaW5zIDE0JSB2cyAxOSUgZGlmZmVyZW5jZS4NCj4gTWF5IGJlIHlvdSBo
+YXZlIHNvbWUgZGVidWcgb24/IExpa2UgY2FudF9taWdyYXRlKCkgaXMgbm90IGEgbm9wPw0KPiBP
+ciBzdGF0aWNfYnJhbmNoIGlzIG5vdCBzdXBwb3J0ZWQ/DQo+IFRoZSBzdXJlIHdheSBpcyB0byBj
+aGVjayBhc3NlbWJseS4NCg0KTm8sIHdlIHNheSB0aGF0IGJ5IHJlcGxhY2luZyAnc3RhdGljJyB3
+aXRoICdfX3dlYWsnIGl0IGdvdCB0aGUgc2FtZSByZXN1bHQsIGluIG91ciB0ZXN0Y2FzZSB3aGlj
+aCBmaWx0ZXJzIDIwIGFsbG93ZWQgc3lzY2FsbCBudW0gKGZvciBkZXRhaWxzLCBzZWUgdGhlIHBy
+ZXZpb3VzIHBvc3QpLiANCg0Kc3RhdGljIGNhc2U6DQoJTi1maWx0ZXIgYnBmIG92ZXJoZWFkOg0K
+CTFfZmlsdGVyczoJCTUuNyUNCgk0X2ZpbHRlcnM6CQkxNy4wJQ0KCTMyX2ZpbHRlcnM6CTM4Ljcl
+DQoNCl9fd2VhayBjYXNlOg0KCU4tZmlsdGVyIGJwZiBvdmVyaGVhZDoNCgkxX2ZpbHRlcnM6CQk1
+LjYlDQoJNF9maWx0ZXJzOgkJMTYuOSUNCgkzMl9maWx0ZXJzOgkzNy43JQ0K
