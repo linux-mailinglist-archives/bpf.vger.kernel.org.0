@@ -2,167 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF421EC571
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 01:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7241D1EC591
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 01:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgFBXH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 19:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        id S1728285AbgFBXVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 19:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbgFBXHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:07:25 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD30C08C5C0;
-        Tue,  2 Jun 2020 16:07:25 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id v2so208337pfv.7;
-        Tue, 02 Jun 2020 16:07:25 -0700 (PDT)
+        with ESMTP id S1727011AbgFBXVC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 19:21:02 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCACC08C5C2
+        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 16:21:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id d1so590846ila.8
+        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 16:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KTZvJtVigtxw9MJWkvf+29F3R4dmcqUDp8xnTxy0Txg=;
-        b=SffIyj5c6wB/USCSVZ2pPT+HAw4XdCf3Vgezto5/vwEHy3Od0dsHLz8l6GNwjYIauT
-         q8oiIB3tAf5ApNH+taK8cXQj7aXeHfC2XUQKHEdTa1Cxv3oLgAmnKsEplhN3cQfBulTf
-         P1+i9ueya/3X6qhNOfv3wtnWgxg+hfWQlWc/y0nC2wBqUvfUJHq7Ry5RUE4pWvMfZ1Mo
-         TR1Aw+IUPIXt0G968mg6qnFTyLxiQb7cJ5JMyD8zTa6GrGmvuaQhFk3SuphUwRlMAu//
-         7N1sPtcEOo//9sFQOKNh4thRnfqlkOgLVxvZksrakcj10H9x5h5iCCaqvpVWMDBHQofA
-         3qTQ==
+        d=mforney-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=rKLwbDj0Nm8UB8U3LBRjaFhNE/ibgWumyiHSHHsuajI=;
+        b=sc4v2U5d8vQlexafU7mTJ1c0h9lF0UrIOSIcY8kJcHY7zHVzolCwLZHC9VrLISRD9q
+         ZzWDc8BjLytNhe+KpuKsZ5lYSfSsp3QhxKC58ad/B5fkfhUXWgA9r+KLPmpuA4wWzQ2j
+         WM9fDoGz3tTSHNWMFgDtZeFmq7Q4C4ffMAwI4P7FYbCJTT8/B45GwlfD5ET8/FWJ17tV
+         4Htg4wO90KnCmdjrl9M42ilWDCjOul5YITEsTC5dkQwTI0U7kLTOrAuuLGghF5hDNbYQ
+         nDn+HKPbtEkgo0nqhpcCFJY6IpzPOKX7M/P2aiKyNiaAbozllRbxOCmA6X8Z7mNZ11PE
+         iXvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KTZvJtVigtxw9MJWkvf+29F3R4dmcqUDp8xnTxy0Txg=;
-        b=tBJu8kO535xpY10YkMOhnAhk/Ke2asiB4vZpMUZnj6vmeFSzi7h7+oBnPV2KOpOSZa
-         sjFgmsZm3lxy86a1ZnbJICNTKu1iz8Ps8LH/U8LKYrFFlzbGixNKi+6JoWNCLeokNYfn
-         P137LYZgcXZkmABpxYuJDCXTtfOWW9DbEMIOCt6ZQfoNG9VF4nSU6qnNfEJtG0pXvTdJ
-         rzg2iSjheCus5W1d9GiAUIdqTd77EeVS4NwDmwTEreDzKdV8t53nHdIo6Oael+Sr/ZSV
-         sibSVSIKQICA/9QT6gJfldDbETVtuNFYSeUJRLDtsJZW8NaC6k8zBdVEEDakObGHtPHL
-         GoYQ==
-X-Gm-Message-State: AOAM531nAGcV9sCqjuF8WnPTPVp66GVgRhJeWYJ79ckyk/T1elCQhYUS
-        t/1O/PAya+60H5cjUxwQjWk=
-X-Google-Smtp-Source: ABdhPJxgn2b2dGiJxuYgsnRLu1c5e44iX50wlO46J8oofZKEqJiCurqFF5LzZDsoFGXddL/77VWKLA==
-X-Received: by 2002:a65:6790:: with SMTP id e16mr27092510pgr.145.1591139244993;
-        Tue, 02 Jun 2020 16:07:24 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:514a])
-        by smtp.gmail.com with ESMTPSA id h3sm102760pje.28.2020.06.02.16.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 16:07:23 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 16:07:20 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Michael Forney <mforney@mforney.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=rKLwbDj0Nm8UB8U3LBRjaFhNE/ibgWumyiHSHHsuajI=;
+        b=T3tVwiunfWHLTTOlvnPwIT1J/bwaPhmgYyWI9r2rdBvZkJcRAZxxeT62vbWGxiZqHd
+         ckj7sW673Z6s6tSpBzkxbHT+B3vsRS0fM5cIOPHdBCE/TfMXQK2xtjUZnJsDDBOk+GCc
+         /GNoY+Ar2Ah855yAD83lLaDOjXTHvQPzu4DN1a8ZKq4PpdbjS/zEwINJ9tOpq0vqd29v
+         IUEC7ewXevY1zf1VThZ8Jf+iwjyGDglT+NPMQbc197gNEeUYABl0vFGAbpjrxhC+608p
+         F6y5kBsDhsqJTuLeF5yCdSYi4vBMeAUqS9t7jZREgEipeMJ5cQWZYdgM2TT/Ecy+6jqT
+         ozaA==
+X-Gm-Message-State: AOAM530xK/2MVofRsP256xM3FxXQ9XMsTRO6huITQLazjO+Oc2IVEhyD
+        idgGfjcsneFXV1Bqpctd1fUSu+2NxiU59jm+T8aHAQ==
+X-Google-Smtp-Source: ABdhPJyU5GjMh5Pz9ddkKuUVlM4AEBS535l20xZroynV46Yl/4egt2hFWdCTfTTuEu9XbC3QBw28pDIYY9+vHKwnAEw=
+X-Received: by 2002:a92:2a06:: with SMTP id r6mr1457141ile.121.1591140061496;
+ Tue, 02 Jun 2020 16:21:01 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6638:150:0:0:0:0 with HTTP; Tue, 2 Jun 2020 16:21:00
+ -0700 (PDT)
+X-Originating-IP: [73.70.188.119]
+In-Reply-To: <20200602230720.hf2ysnlssg67cpmw@ast-mbp.dhcp.thefacebook.com>
+References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
+ <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net> <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+ <87blpc4g14.fsf@toke.dk> <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
+ <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
+ <20200602191703.xbhgy75l7cb537xe@ast-mbp.dhcp.thefacebook.com>
+ <CAGw6cBstsD40MMoHg2dGUe7YvR5KdHD8BqQ5xeXoYKLCUFAudg@mail.gmail.com> <20200602230720.hf2ysnlssg67cpmw@ast-mbp.dhcp.thefacebook.com>
+From:   Michael Forney <mforney@mforney.org>
+Date:   Tue, 2 Jun 2020 16:21:00 -0700
+Message-ID: <CAGw6cBuF8Dj-22bH=ryL+17N48pwMD5hN49sH4AHYYyMm2xgtg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
+ used from BPF program side to enums
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
- used from BPF program side to enums
-Message-ID: <20200602230720.hf2ysnlssg67cpmw@ast-mbp.dhcp.thefacebook.com>
-References: <20200303003233.3496043-1-andriin@fb.com>
- <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
- <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
- <87blpc4g14.fsf@toke.dk>
- <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
- <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
- <20200602191703.xbhgy75l7cb537xe@ast-mbp.dhcp.thefacebook.com>
- <CAGw6cBstsD40MMoHg2dGUe7YvR5KdHD8BqQ5xeXoYKLCUFAudg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGw6cBstsD40MMoHg2dGUe7YvR5KdHD8BqQ5xeXoYKLCUFAudg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 02:40:52PM -0700, Michael Forney wrote:
-> On 2020-06-02, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > It's possible, but I'm not sure what it will fix.
-> > Your example is a bit misleading, since it's talking about B
-> > which doesn't have type specifier, whereas enums in bpf.h have ULL
-> > suffix where necessary.
-> > And the one you pointed out BPF_F_CTXLEN_MASK has sizeof == 8 in all cases.
-> 
-> Apologies if I wasn't clear, I was just trying to explain why this C
-> extension can have confusing semantics where the type of an enum
-> constant depends on where it is used. You're right that it doesn't
-> happen in this particular case.
-> 
-> The breakage appears with my C compiler, which as I mentioned, only
-> implements the extension when the enum constants fit into unsigned int
-> to avoid these problems.
-> 
-> $ cproc -x c -c - -o /dev/null <<EOF
-> > #include <linux/bpf.h>
-> > EOF
-> <stdin>:420:41: error: enumerator 'BPF_F_CTXLEN_MASK' value cannot be
-> represented as 'int' or 'unsigned int'
-> cproc: compile: process 3772 exited with status 1
-> cproc: preprocess: process signaled: Terminated
-> cproc: assemble: process signaled: Terminated
-> $
-> 
-> Since the Linux UAPI headers may be used with a variety of compilers,
-> I think it's important to stick to the standard as much as possible.
-> BPF_F_CTXLEN_MASK is the only enum constant I've encountered in the
-> Linux UAPI that has a value outside the range of unsigned int.
+On 2020-06-02, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> the enum definition of BPF_F_CTXLEN_MASK is certainly within standard.
+> I don't think kernel should adjust its headers because some compiler
+> is failing to understand C standard.
 
-the enum definition of BPF_F_CTXLEN_MASK is certainly within standard.
-I don't think kernel should adjust its headers because some compiler
-is failing to understand C standard.
+This is not true. See C11 6.7.2.2p2: "The expression that defines the
+value of an enumeration constant shall be an integer constant
+expression that has a value representable as an int."
 
-> > Also when B is properly annotated like 0x80000000ULL it will have size 8
-> > as well.
-> 
-> Even with a suffixed integer literal, it still may be the case that an
-> annotated constant has a different type inside and outside the enum.
-> 
-> For example, in
-> 
-> 	enum {
-> 		A = 0x80000000ULL,
-> 		S1 = sizeof(A),
-> 	};
-> 	enum {
-> 		S2 = sizeof(A),
-> 	};
-> 
-> we have S1 == 8 and S2 == 4.
+You can also see this with gcc if you turn on -Wpedantic and include
+it in a way such that warnings are not silenced:
 
-correct, because enum needs to fit all of its constants.
-It's not at all related to size.
-sizeof() is an expression that is being evulated in the context and
-affects the size of enum.
-It could have been any other math operation on constants known
-at compile time.
+$ gcc -Wpedantic -x c -c -o /dev/null /usr/include/linux/bpf.h
+/usr/include/linux/bpf.h:76:7: warning: ISO C forbids zero-size array
+'data' [-Wpedantic]
+   76 |  __u8 data[0]; /* Arbitrary size */
+      |       ^~~~
+/usr/include/linux/bpf.h:3220:22: warning: ISO C restricts enumerator
+values to range of 'int' [-Wpedantic]
+ 3220 |  BPF_F_INDEX_MASK  = 0xffffffffULL,
+      |                      ^~~~~~~~~~~~~
+/usr/include/linux/bpf.h:3221:23: warning: ISO C restricts enumerator
+values to range of 'int' [-Wpedantic]
+ 3221 |  BPF_F_CURRENT_CPU  = BPF_F_INDEX_MASK,
+      |                       ^~~~~~~~~~~~~~~~
+/usr/include/linux/bpf.h:3223:23: warning: ISO C restricts enumerator
+values to range of 'int' [-Wpedantic]
+ 3223 |  BPF_F_CTXLEN_MASK  = (0xfffffULL << 32),
+      |                       ^
+/usr/include/linux/bpf.h:3797:8: warning: ISO C forbids zero-size
+array 'args' [-Wpedantic]
+ 3797 |  __u64 args[0];
+      |        ^~~~
+$
 
-> 
-> >> Also, I'm not sure if it was considered, but using enums also changes
-> >> the signedness of these constants. Many of the previous macro
-> >> expressions had type unsigned long long, and now they have type int
-> >> (the type of the expression specifying the constant value does not
-> >> matter). I could see this causing problems if these constants are used
-> >> in expressions involving shifts or implicit conversions.
-> >
-> > It would have been if the enums were not annotated. But that's not the case.
-> 
-> The type of the expression has no relation to the type of the constant
-> outside the enum. Take this example from bpf.h:
-> 
-> 	enum {
-> 		BPF_DEVCG_DEV_BLOCK     = (1ULL << 0),
-> 	 	BPF_DEVCG_DEV_CHAR      = (1ULL << 1),
-> 	};
-> 
-> Previously, with the defines, they had type unsigned long long. Now,
-> they have type int. sizeof(BPF_DEVCG_DEV_BLOCK) == 4 and
-> -BPF_DEVCG_DEV_BLOCK < 0 == 1.
-
-and I still don't see how it breaks anything.
-If it was #define and .h switched its definition from 1 to 1ULL
-it would have had the same effect. That is the point of the constant in .h.
-Same effect regardless whether it was done via #define and via enum.
-The size and type of the constant may change. It's not uapi breakage.
+-Michael
