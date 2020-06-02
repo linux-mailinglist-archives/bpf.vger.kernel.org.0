@@ -2,132 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F63C1EB72C
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 10:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CC61EB7B9
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 10:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgFBIQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 04:16:52 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58670 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725921AbgFBIQw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jun 2020 04:16:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591085810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5fjn1LT3OUXoQ+qo6mOFTzip+J62UlIvmtArBLfCL5Q=;
-        b=GxDKn+oh0GG9CycImClAMxS4UOuGkEqPrs0eT2OxAOwDOXYS5fFhF5oISO5l10U3gNWR4w
-        rZGKvTsL4PHxC4CR0Su9RyzyO7mfRg0c/6g0h/y0U4z+9P6oFlmbRgrbATbPPQhoIiiEkl
-        XGX9xU5KkecfpN3LVruukoZTnlik4Bc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-TcA8xkvTOJmlXQQbqXXxpg-1; Tue, 02 Jun 2020 04:16:46 -0400
-X-MC-Unique: TcA8xkvTOJmlXQQbqXXxpg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EC77107ACF6;
-        Tue,  2 Jun 2020 08:16:44 +0000 (UTC)
-Received: from krava (unknown [10.40.195.39])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 744C65C1D6;
-        Tue,  2 Jun 2020 08:16:40 +0000 (UTC)
-Date:   Tue, 2 Jun 2020 10:16:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 7/9] bpf: Compile the BTF id whitelist data in vmlinux
-Message-ID: <20200602081639.GD1112120@krava>
-References: <20200506132946.2164578-1-jolsa@kernel.org>
- <20200506132946.2164578-8-jolsa@kernel.org>
- <20200513182940.gil7v5vkthhwck3t@ast-mbp.dhcp.thefacebook.com>
- <20200514080515.GH3343750@krava>
- <CAEf4BzbZ6TYxVTJx3ij1WXy5AvVQio9Ht=tePO+xQf=JLigoog@mail.gmail.com>
- <20200528172349.GA506785@krava>
- <CAEf4BzbM-5-_QzDhrJDFJefo-m0OWDhvjsK_F1vA-ja4URVE9Q@mail.gmail.com>
- <20200531151039.GA881900@krava>
- <CAEf4BzZTyzMaXbpDOCUHyWV7hotwaT3DdHuDxrK=0bfOMLQ5AQ@mail.gmail.com>
+        id S1726260AbgFBIzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 04:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgFBIzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 04:55:15 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E257C061A0E
+        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 01:55:15 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id mb16so11968748ejb.4
+        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 01:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=UpZeVaraeAQCVNTZxXpOffz+FSPS8pHdNGnocyS2mhk=;
+        b=IfTL60FvMGXj/A7fWRprxLo4myJSe/7osNvWnXdiUhVLmyrNXubAGMwIkVO9CPVnJa
+         C0J6bji0V7H6sHXSlwvcr/L8YjnMrYhoZGXOqHzOOEWJfBsn/9BNRPCD255Y/YPiij1V
+         vkPqMp6+ldS0xbEku1m5tfZw40rDl+vFsUCt4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=UpZeVaraeAQCVNTZxXpOffz+FSPS8pHdNGnocyS2mhk=;
+        b=QQnaJqn7uzT8Bh9hxasbFOuqeMNBxLe+THiikQuo6I8bZcIH6NcxJwBqb5fQCILGXo
+         d16BfXS/V9d88drncJpmGvTmycHBqvqIVX5S3Eo8vEG46XF7La6MQWAjzbTpTnQw8oWT
+         +7LjebBvA+GIVehoifHKzrfIiWtjfcaBNn3H0z5UYoSzQ8mL0Ud6hzCEk2RXj63T5h6T
+         1FvE8CTYSKDoyBr+lnz3xszP5g+eLmNIzpvgqZJmWqp8tcao5SLE3zim1SlgXVXqFTMc
+         5xIE/ezfQVx9c8U5b6QAaUn+ck0grlqUvNklPZgJvllHMTBnuvd9ZVDbirZkS/R+LAfC
+         9/iw==
+X-Gm-Message-State: AOAM531or801bn6CmZU9bvOJvNxkvOB1325bFky5e6WMhGOE6XYiQKO1
+        5nkL8UfwMUwN6Iachs3znxhWmA==
+X-Google-Smtp-Source: ABdhPJwJqxgwVu93QJg4CxBwG5J1Q0TEJ2Y32gJowtg7cF18HlBLAu2TrQXYuGRlXg4kMh8XqgxwhQ==
+X-Received: by 2002:a17:906:934d:: with SMTP id p13mr23219841ejw.414.1591088113536;
+        Tue, 02 Jun 2020 01:55:13 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id la5sm1347388ejb.94.2020.06.02.01.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 01:55:12 -0700 (PDT)
+References: <159079336010.5745.8538518572099799848.stgit@john-Precision-5820-Tower> <159079361946.5745.605854335665044485.stgit@john-Precision-5820-Tower> <20200601165716.5a6fa76a@toad> <5ed51cae71d0d_3f612ade269e05b46e@john-XPS-13-9370.notmuch> <5ed523a8b7749_54cc2acde13425b85b@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Subject: Re: [bpf-next PATCH 2/3] bpf: fix running sk_skb program types with ktls
+In-reply-to: <5ed523a8b7749_54cc2acde13425b85b@john-XPS-13-9370.notmuch>
+Date:   Tue, 02 Jun 2020 10:55:11 +0200
+Message-ID: <87img93l00.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZTyzMaXbpDOCUHyWV7hotwaT3DdHuDxrK=0bfOMLQ5AQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 12:06:34PM -0700, Andrii Nakryiko wrote:
-> On Sun, May 31, 2020 at 8:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, May 29, 2020 at 01:48:58PM -0700, Andrii Nakryiko wrote:
-> > > On Thu, May 28, 2020 at 10:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Thu, May 14, 2020 at 03:46:26PM -0700, Andrii Nakryiko wrote:
-> > > >
-> > > > SNIP
-> > > >
-> > > > > > I was thinking of putting the names in __init section and generate the BTF
-> > > > > > ids on kernel start, but the build time generation seemed more convenient..
-> > > > > > let's see the linking times with 'real size' whitelist and we can reconsider
-> > > > > >
-> > > > >
-> > > > > Being able to record such places where to put BTF ID in code would be
-> > > > > really nice, as Alexei mentioned. There are many potential use cases
-> > > > > where it would be good to have BTF IDs just put into arbitrary
-> > > > > variables/arrays. This would trigger compilation error, if someone
-> > > > > screws up the name, or function is renamed, or if function can be
-> > > > > compiled out under some configuration. E.g., assuming some reasonable
-> > > > > implementation of the macro
-> > > >
-> > > > hi,
-> > > > I'm struggling with this part.. to get some reasonable reference
-> > > > to function/name into 32 bits? any idea? ;-)
-> > > >
-> > >
-> > > Well, you don't have to store actual pointer, right? E.g, emitting
-> > > something like this in assembly:
-> > >
-> > > .global __BTF_ID___some_function
-> > > .type __BTF_ID___some_function, @object
-> > > .size __BTF_ID___some_function, 4
-> > > __BTF_ID___some_function:
-> > > .zero  4
-> > >
-> > > Would reserve 4 bytes and emit __BTF_ID___some_function symbol. If we
-> > > can then post-process vmlinux image and for all symbols starting with
-> > > __BTF_ID___ find some_function BTF type id and put it into those 4
-> > > bytes, that should work, no?
-> > >
-> > > Maybe generalize it to __BTF_ID__{func,struct,typedef}__some_function,
-> > > whatever, not sure. Just an idea.
-> >
-> > nice, so something like below?
-> >
-> > it'd be in .S file, or perhaps in inline asm, assuming I'll be
-> > able to pass macro arguments to asm("")
-> 
-> I'd do inline asm, there are no arguments you need to pass into
-> asm("") itself, everything can be done through macro string
-> interpolation, I think. Having everything in .c file would be way more
-> convenient and obvious.
+On Mon, Jun 01, 2020 at 05:50 PM CEST, John Fastabend wrote:
+> John Fastabend wrote:
+>> Jakub Sitnicki wrote:
+>> > On Fri, 29 May 2020 16:06:59 -0700
+>> > John Fastabend <john.fastabend@gmail.com> wrote:
+>> >
+>> > > KTLS uses a stream parser to collect TLS messages and send them to
+>> > > the upper layer tls receive handler. This ensures the tls receiver
+>> > > has a full TLS header to parse when it is run. However, when a
+>> > > socket has BPF_SK_SKB_STREAM_VERDICT program attached before KTLS
+>> > > is enabled we end up with two stream parsers running on the same
+>> > > socket.
+>> > >
+>> > > The result is both try to run on the same socket. First the KTLS
+>> > > stream parser runs and calls read_sock() which will tcp_read_sock
+>> > > which in turn calls tcp_rcv_skb(). This dequeues the skb from the
+>> > > sk_receive_queue. When this is done KTLS code then data_ready()
+>> > > callback which because we stacked KTLS on top of the bpf stream
+>> > > verdict program has been replaced with sk_psock_start_strp(). This
+>> > > will in turn kick the stream parser again and eventually do the
+>> > > same thing KTLS did above calling into tcp_rcv_skb() and dequeuing
+>> > > a skb from the sk_receive_queue.
+>> > >
+>> > > At this point the data stream is broke. Part of the stream was
+>> > > handled by the KTLS side some other bytes may have been handled
+>> > > by the BPF side. Generally this results in either missing data
+>> > > or more likely a "Bad Message" complaint from the kTLS receive
+>> > > handler as the BPF program steals some bytes meant to be in a
+>> > > TLS header and/or the TLS header length is no longer correct.
+>> > >
+>> > > We've already broke the idealized model where we can stack ULPs
+>> > > in any order with generic callbacks on the TX side to handle this.
+>> > > So in this patch we do the same thing but for RX side. We add
+>> > > a sk_psock_strp_enabled() helper so TLS can learn a BPF verdict
+>> > > program is running and add a tls_sw_has_ctx_rx() helper so BPF
+>> > > side can learn there is a TLS ULP on the socket.
+>> > >
+>> > > Then on BPF side we omit calling our stream parser to avoid
+>> > > breaking the data stream for the KTLS receiver. Then on the
+>> > > KTLS side we call BPF_SK_SKB_STREAM_VERDICT once the KTLS
+>> > > receiver is done with the packet but before it posts the
+>> > > msg to userspace. This gives us symmetry between the TX and
+>> > > RX halfs and IMO makes it usable again. On the TX side we
+>> > > process packets in this order BPF -> TLS -> TCP and on
+>> > > the receive side in the reverse order TCP -> TLS -> BPF.
+>> > >
+>> > > Discovered while testing OpenSSL 3.0 Alpha2.0 release.
+>> > >
+>> > > Fixes: d829e9c4112b5 ("tls: convert to generic sk_msg interface")
+>> > > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > > ---
+>
+> [...]
+>
+>> > > +static void sk_psock_tls_verdict_apply(struct sk_psock *psock,
+>> > > +				       struct sk_buff *skb, int verdict)
+>> > > +{
+>> > > +	switch (verdict) {
+>> > > +	case __SK_REDIRECT:
+>> > > +		sk_psock_skb_redirect(psock, skb);
+>> > > +		break;
+>> > > +	case __SK_PASS:
+>> > > +	case __SK_DROP:
+>> >
+>> > The two cases above need a "fallthrough;", right?
+>>
+>> Correct otherwise will get the "fallthrough" patch shortly after this
+>> lands. Thanks I'll add it.
+>>
+>
+> hmm actually I don't think we need 'fallthrough;' here when the
+> case doesn't have statements,
+>
+>  switch (a) {
+>  case 1:
+>  case 2:
+>  default:
+>      break;
+>  }
+>
+> seems OK to me. I don't have a preference though so feel free to
+> correct me.
 
-wil will do it in inline asm
+I misunderstood guidance in [0]. You're right, it seems too verbose to
+annotate cases without statements. Didn't mean to nit-pick :-)
 
-thanks,
-jirka
-
+[0] https://www.kernel.org/doc/html/latest/process/deprecated.html#implicit-switch-case-fall-through
