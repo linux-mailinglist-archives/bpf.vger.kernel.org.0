@@ -2,137 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42301EC03E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 18:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BF81EC132
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 19:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgFBQmM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 12:42:12 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:45336 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgFBQmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 12:42:12 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052GfwWi027116;
-        Tue, 2 Jun 2020 16:41:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=p52x2Baw9/LPh2wvk1CQWEy2tmRGP0WhETKpvLUn4P4=;
- b=Suu4/FUMudbk/xV4zMUScVstK+NHpKu6GE3BPYi4V3E/VLKg/XKQFf9IEJR7cUmKxqdO
- CYlJM3GT1LNCcfyEoYj0hupNeIqr/lsg3ZR92BH1zwNxi5OJOQxhkiqRNXmAg95WnYMB
- ukPoTlIMW+JPWZzyjMSoDC8ymLgXrGtv3nUK0qelQE97nmfpTTdVhc7ysuPNyFRztJ52
- PX1mEP5cEBO7rs4ByeZv7z4ZO6unTjuMhBO8o4bq5lD5Xg9fopw1C7E4+G2RguVpqMfa
- G35Fb0w1Gnsxx4u/KX/OE7ZeOM9Fjitr358z5gohkXWobeMLuwai7CjgwNIrL5+X3TGu xQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 31bewqw3x3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 02 Jun 2020 16:41:59 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 052GY07X004749;
-        Tue, 2 Jun 2020 16:41:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31dju1sv01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Jun 2020 16:41:58 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 052Gfvba008028;
-        Tue, 2 Jun 2020 16:41:57 GMT
-Received: from dhcp-10-175-162-197.vpn.oracle.com (/10.175.162.197)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jun 2020 09:41:57 -0700
-Date:   Tue, 2 Jun 2020 17:41:51 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Daniel Borkmann <daniel@iogearbox.net>
-cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf 2/3] bpf: Add csum_level helper for fixing up csum
- levels
-In-Reply-To: <5d317380-142e-c364-2793-68d0bed9efcd@iogearbox.net>
-Message-ID: <alpine.LRH.2.21.2006021730340.17227@localhost>
-References: <cover.1591108731.git.daniel@iogearbox.net> <279ae3717cb3d03c0ffeb511493c93c450a01e1a.1591108731.git.daniel@iogearbox.net> <CACAyw982WPUfNN_9LD0bhGPTtBSca7t0UV_0UsO3dVGjtEZm9A@mail.gmail.com> <5d317380-142e-c364-2793-68d0bed9efcd@iogearbox.net>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726589AbgFBRjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 13:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgFBRjM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 13:39:12 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B241CC05BD1E;
+        Tue,  2 Jun 2020 10:39:11 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c14so12326016qka.11;
+        Tue, 02 Jun 2020 10:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggvBLTbgRYnl8y+Dehj+RL3S/6wD8MGqD+aYH9/SFi4=;
+        b=oLtSfnZdg6IbisGfewVCJOM26JVOBD4WCVKqPwMq5imrN/f5nNTV3S5u1BLx4Hx5BH
+         CZfq2xrExwKXR/k5cz5pbxoUNwKXT6rgB7oDsP4lT6xwI8/MpTQJkhDlrZq5Jwfj49TD
+         hfqKIXg0m8u7tlZ3ynpZoVdMzbX79GH5nzTBc32P2FAyNRJWjbKwkks9IN7k0Mn+3Wuz
+         5rv3l6FRV9MpJHgWRNViXXhJYCqdl+PRiWKc6Hapbel26dscM6exlcQf1BLaAmTNGc1c
+         JAdQceoHWUSO/4lT0vaGwENq81+cV3IUqyc7sYeBVgrjQqfP4Pev2n/CYkKX0F34KuzP
+         v+Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ggvBLTbgRYnl8y+Dehj+RL3S/6wD8MGqD+aYH9/SFi4=;
+        b=YOTOvJH+Cea6NVVCpy5FyIlEsd9PGswwq9oK7U80KmVaAhXiU14dte5zqDObXgWDNy
+         dhMrepzOFNy0ro6XiHIJQiu9WeBAP4nQQBk0AsAiFMQVyVvLYU/C9x8EvrviG0DljHW8
+         TpuytxNHnPvxQSZlMgGaaZWHcXZhEYl7Wse5R0XL9Ohv9U/C5i7q58JpgbTnvXeM5Ugz
+         cDyaFZzlMhgQRBgMngNHkfnJ0XseWiK9mQwl8p4wqhjffEhrxMVhF30UUxNP9mmaO05/
+         h13B5oSjN5ix7FJytmeoF4mTMwI7sFyspawm1D0JwhqSSDUr+9dqrtvII27k9Qb+BKlu
+         e9rA==
+X-Gm-Message-State: AOAM531ztMJEreohYLNmDHMNIh5mHMSYGoj6CDd880lJg9EzVk3x2MoX
+        pBuVl4A/8lB4AKkpdRaHqYUTbUqs7wb2Oh3tauWeFJo7
+X-Google-Smtp-Source: ABdhPJx1DNgsEQy0UtQnVOKbvEEfnxE4ARQmmEvZ8QgnHp62iN6QlbrYTVpM/KBylHqSHTsQ2osN4P3ROum8opbZfXo=
+X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr27607385qkl.437.1591119550678;
+ Tue, 02 Jun 2020 10:39:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=11 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006020118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9640 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 suspectscore=11 impostorscore=0 cotscore=-2147483648
- lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006020119
+References: <20200531082846.2117903-1-jakub@cloudflare.com>
+ <20200531082846.2117903-5-jakub@cloudflare.com> <CAEf4BzbxPrEJgWyeh_XzQcQ6VwfhC9NzyDNX4JCu86Jj4cCMtA@mail.gmail.com>
+ <87ftbd3jci.fsf@cloudflare.com>
+In-Reply-To: <87ftbd3jci.fsf@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 2 Jun 2020 10:38:59 -0700
+Message-ID: <CAEf4BzZ-A8KDc6kh1aezWuTEaO4_7Q0ZO352U-8Egkx6Y9qJdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 04/12] bpf: Add link-based BPF program
+ attachment to network namespace
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2 Jun 2020, Daniel Borkmann wrote:
-
-> On 6/2/20 5:19 PM, Lorenz Bauer wrote:
-> > On Tue, 2 Jun 2020 at 15:58, Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> Add a bpf_csum_level() helper which BPF programs can use in combination
-> >> with bpf_skb_adjust_room() when they pass in BPF_F_ADJ_ROOM_NO_CSUM_RESET
-> >> flag to the latter to avoid falling back to CHECKSUM_NONE.
-> >>
-> >> The bpf_csum_level() allows to adjust CHECKSUM_UNNECESSARY skb->csum_levels
-> >> via BPF_CSUM_LEVEL_{INC,DEC} which calls
-> >> __skb_{incr,decr}_checksum_unnecessary()
-> >> on the skb. The helper also allows a BPF_CSUM_LEVEL_RESET which sets the
-> >> skb's
-> >> csum to CHECKSUM_NONE as well as a BPF_CSUM_LEVEL_QUERY to just return the
-> >> current level. Without this helper, there is no way to otherwise adjust the
-> >> skb->csum_level. I did not add an extra dummy flags as there is plenty of
-> >> free
-> >> bitspace in level argument itself iff ever needed in future.
-> >>
-> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> >> ---
-> >>   include/uapi/linux/bpf.h       | 43 +++++++++++++++++++++++++++++++++-
-> >>   net/core/filter.c              | 38 ++++++++++++++++++++++++++++++
-> >>   tools/include/uapi/linux/bpf.h | 43 +++++++++++++++++++++++++++++++++-
-> >>   3 files changed, 122 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index 3ba2bbbed80c..46622901cba7 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -3220,6 +3220,38 @@ union bpf_attr {
-> >>    *             calculation.
-> >>    *     Return
-> >>    *             Requested value, or 0, if flags are not recognized.
-> >> + *
-> >> + * int bpf_csum_level(struct sk_buff *skb, u64 level)
-> > 
-> > u64 flags? We can also stuff things into level I guess.
-> 
-> Yeah, I did mention it in the commit log. There is plenty of bit space to
-> extend
-> with flags in there iff ever needed. Originally, helper was called
-> bpf_csum_adjust()
-> but then renamed into bpf_csum_level() to be more 'topic specific' (aka do one
-> thing
-> and do it well...) and avoid future api overloading, so if necessary level can
-> be
-> used since I don't think the enum will be extended much further from what we
-> have
-> here anyway.
-> 
-> [...]
-> > 
-> > Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+On Tue, Jun 2, 2020 at 2:30 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
+> On Tue, Jun 02, 2020 at 12:30 AM CEST, Andrii Nakryiko wrote:
+> > On Sun, May 31, 2020 at 1:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >>
+> >> Extend bpf() syscall subcommands that operate on bpf_link, that is
+> >> LINK_CREATE, LINK_UPDATE, OBJ_GET_INFO, to accept attach types tied to
+> >> network namespaces (only flow dissector at the moment).
+> >>
+> >> Link-based and prog-based attachment can be used interchangeably, but only
+> >> one can exist at a time. Attempts to attach a link when a prog is already
+> >> attached directly, and the other way around, will be met with -EEXIST.
+> >> Attempts to detach a program when link exists result in -EINVAL.
+> >>
+> >> Attachment of multiple links of same attach type to one netns is not
+> >> supported with the intention to lift the restriction when a use-case
+> >> presents itself. Because of that link create returns -E2BIG when trying to
+> >> create another netns link, when one already exists.
+> >>
+> >> Link-based attachments to netns don't keep a netns alive by holding a ref
+> >> to it. Instead links get auto-detached from netns when the latter is being
+> >> destroyed, using a pernet pre_exit callback.
+> >>
+> >> When auto-detached, link lives in defunct state as long there are open FDs
+> >> for it. -ENOLINK is returned if a user tries to update a defunct link.
+> >>
+> >> Because bpf_link to netns doesn't hold a ref to struct net, special care is
+> >> taken when releasing, updating, or filling link info. The netns might be
+> >> getting torn down when any of these link operations are in progress. That
+> >> is why auto-detach and update/release/fill_info are synchronized by the
+> >> same mutex. Also, link ops have to always check if auto-detach has not
+> >> happened yet and if netns is still alive (refcnt > 0).
+> >>
+> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> >> ---
+> >>  include/linux/bpf-netns.h      |   8 ++
+> >>  include/linux/bpf_types.h      |   3 +
+> >>  include/net/netns/bpf.h        |   1 +
+> >>  include/uapi/linux/bpf.h       |   5 +
+> >>  kernel/bpf/net_namespace.c     | 244 ++++++++++++++++++++++++++++++++-
+> >>  kernel/bpf/syscall.c           |   3 +
+> >>  tools/include/uapi/linux/bpf.h |   5 +
+> >>  7 files changed, 267 insertions(+), 2 deletions(-)
+> >>
+> >
+> > [...]
+> >
+> >> +
+> >> +static int bpf_netns_link_update_prog(struct bpf_link *link,
+> >> +                                     struct bpf_prog *new_prog,
+> >> +                                     struct bpf_prog *old_prog)
+> >> +{
+> >> +       struct bpf_netns_link *net_link =
+> >> +               container_of(link, struct bpf_netns_link, link);
+> >> +       enum netns_bpf_attach_type type = net_link->netns_type;
+> >> +       struct net *net;
+> >> +       int ret = 0;
+> >> +
+> >> +       if (old_prog && old_prog != link->prog)
+> >> +               return -EPERM;
+> >> +       if (new_prog->type != link->prog->type)
+> >> +               return -EINVAL;
+> >> +
+> >> +       mutex_lock(&netns_bpf_mutex);
+> >> +
+> >> +       net = net_link->net;
+> >> +       if (!net || !check_net(net)) {
+> >
+> > As is, this check_net() check looks very racy. Because if we do worry
+> > about net refcnt dropping to zero, then between check_net() and
+> > accessing net fields that can happen. So if that's a possiblity, you
+> > should probably instead do maybe_get_net() instead.
+> >
+> > But on the other hand, if we established that auto-detach taking a
+> > mutex protects us from net going away, then maybe we shouldn't worry
+> > at all about that, and thus check_net() is unnecessary and just
+> > unnecessarily confusing everything.
+> >
+> > I don't know enough overall net lifecycle, so I'm not sure which one
+> > it is. But the way it is right now still looks suspicious to me.
+>
+> The story behind the additional "!check_net(net)" test (in update_prog
+> and in fill_info) is that without it, user-space will see the link as
+> defunct only after some delay from the moment last ref to netns is gone
+> (for instance, last process left the netns).
+>
+> That is because netns is being destroyed from a workqueue [0].
 
-Looks great! The only thing that gave me pause was
-the -EACCES return value for the case where we query
-and the skb is not subject to CHECKSUM_UNNECESSESARY ;
--ENOENT ("no such level") feels slightly closer to the
-situation to me but either is a reasonable choice I think.
+Ok, so it's not strictly necessary in terms of correctness, but just
+nicer behaviro and it's still safe to access net, even if its refcnt
+drops to zero meanwhile. Ok, thanks for elaborating.
 
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+>
+> This unpredictable delay makes testing the uAPI harder, and I expect
+> using it as well. Since we can do better and check the refcnt to detect
+> "early" that netns is no good any more, that's what we do.
+>
+> At least that was my thinking here. I was hoping the comment below the
+> check would be enough. Didn't mean to cause confusion.
+>
+> So there is no race, the locking scheme you suggested holds.
+>
+> [0] https://elixir.bootlin.com/linux/latest/source/net/core/net_namespace.c#L644
+>
+> >
+> >> +               /* Link auto-detached or netns dying */
+> >> +               ret = -ENOLINK;
+> >> +               goto out_unlock;
+> >> +       }
+> >> +
+> >> +       old_prog = xchg(&link->prog, new_prog);
+> >> +       rcu_assign_pointer(net->bpf.progs[type], new_prog);
+> >> +       bpf_prog_put(old_prog);
+> >> +
+> >> +out_unlock:
+> >> +       mutex_unlock(&netns_bpf_mutex);
+> >> +       return ret;
+> >> +}
+> >> +
+> >> +static int bpf_netns_link_fill_info(const struct bpf_link *link,
+> >> +                                   struct bpf_link_info *info)
+> >> +{
+> >> +       const struct bpf_netns_link *net_link =
+> >> +               container_of(link, struct bpf_netns_link, link);
+> >> +       unsigned int inum = 0;
+> >> +       struct net *net;
+> >> +
+> >> +       mutex_lock(&netns_bpf_mutex);
+> >> +       net = net_link->net;
+> >> +       if (net && check_net(net))
+> >> +               inum = net->ns.inum;
+> >> +       mutex_unlock(&netns_bpf_mutex);
+> >> +
+> >> +       info->netns.netns_ino = inum;
+> >> +       info->netns.attach_type = net_link->type;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static void bpf_netns_link_show_fdinfo(const struct bpf_link *link,
+> >> +                                      struct seq_file *seq)
+> >> +{
+> >> +       struct bpf_link_info info = {};
+> >
+> > initialization here is probably not necessary, as long as you access
+> > only fields that fill_info initializes.
+>
+> True. I figured that better safe than leaking stack contents, if
+> bpf_netns_link_fill_info gets broken.
+>
+> >
+> >> +
+> >> +       bpf_netns_link_fill_info(link, &info);
+> >> +       seq_printf(seq,
+> >> +                  "netns_ino:\t%u\n"
+> >> +                  "attach_type:\t%u\n",
+> >> +                  info.netns.netns_ino,
+> >> +                  info.netns.attach_type);
+> >> +}
+> >> +
+> >
+> > [...]
