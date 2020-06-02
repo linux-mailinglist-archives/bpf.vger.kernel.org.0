@@ -2,166 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5041F1EB908
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 12:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEDD1EB94E
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 12:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgFBKBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 06:01:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36289 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726371AbgFBKBf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 06:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591092093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PmTtQ3ibqfrrDHlho+FTT5b9gEDz+ZOULuQ1xKCm2Mg=;
-        b=SqIK+I8+UEvAPF1wBDQ56QipZgE5tFdf0lIm09Npj3ne3sWJcz9+oHuBDPIV2JyOFaIXrK
-        IHRLE1eefGK3Mhw145Q6uPwitVvYqbyUWBmiYTJu8ysFAZjyO9Iui0Unjo44dzTd7GCZCM
-        vtZIDX3zy/zHO9HKJP0UzBTnSthau+A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-g2HrNGMeNk-z552ZKhR-OA-1; Tue, 02 Jun 2020 06:01:30 -0400
-X-MC-Unique: g2HrNGMeNk-z552ZKhR-OA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 711BF107ACF2;
-        Tue,  2 Jun 2020 10:01:29 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 363F619C4F;
-        Tue,  2 Jun 2020 10:01:21 +0000 (UTC)
-Date:   Tue, 2 Jun 2020 12:01:20 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next RFC 2/3] bpf: devmap dynamic map-value storage
- area based on BTF
-Message-ID: <20200602120120.15d07304@carbon>
-In-Reply-To: <87a71lzur7.fsf@toke.dk>
-References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
-        <159076798566.1387573.8417040652693679408.stgit@firesoul>
-        <87tuzyzodv.fsf@toke.dk>
-        <20200602105908.19254e0f@carbon>
-        <87a71lzur7.fsf@toke.dk>
+        id S1726377AbgFBKNh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 06:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbgFBKNh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:13:37 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7731AC061A0E
+        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 03:13:36 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e5so3112163ote.11
+        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 03:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PYkyYuO+K0IbSvklnuIVXc7+pRVpwEFri33hk6ziZGs=;
+        b=Sg4fm5pqNTXPVevEgnLoH6WKtxa5GcpTflO+Grnm329qZzg+ZqZ+R4eR0eUzAGvUqE
+         t4kXIBg1YUV8gT1wuASV8sx49NqneGS9IWpT2qvkcGSMsdjC73fOcY/hDg3wIiJutVkX
+         mddCgckOg1aSb9kxJUzvGdghpnXQsPlAviGgY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PYkyYuO+K0IbSvklnuIVXc7+pRVpwEFri33hk6ziZGs=;
+        b=gFObLFGmfeks49JaPJM3RstZQ7c+7kEi6ovlsuNuyGHYqfzHcik/dSL5owIBxjcM1a
+         u3jFTy88FUMciUFp5dmXJaWK9D+g1kUr4WC6kGwuQMK74/+b7tmeJvDI3FnSuJruhesO
+         jN0fjzffDRb2cDqGXtp613vkV7lnyDvZcr2jt9I/gtzfl+foKXkhssYh6oCfMzVu1G03
+         dEG8mv58G+t7T8Zjc5UUE+HLt9z7bi2B3LNoaw1qT37N4YLPhehFO0WXMJWYRoDoPs58
+         82TFbK3WWVZq7J85S7hoCYc90im34h3TPU2XJXd6jd/e/yp05YdIDOP4UVUWCJqakZQy
+         fKFQ==
+X-Gm-Message-State: AOAM532taDTvHeJaRrL+eXCITXbTM7ZxcYM6TD6FNJVqPE9U4TeMyr6j
+        M6pBdAVEqyHCiDwXLDDiR5/Pfom/h5hLPxeSd0yAxw==
+X-Google-Smtp-Source: ABdhPJxUGS55A1IBSfhFpkv1YTXzaxW3Kc3xHYICwrVhxTw+/ptkO8t7gBt7zhtfhF7KJiAgnYg9wO9zGlAcTgv1aUs=
+X-Received: by 2002:a05:6830:2303:: with SMTP id u3mr18093642ote.147.1591092815856;
+ Tue, 02 Jun 2020 03:13:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
+ <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+ <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+ <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net> <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
+ <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net> <CACAyw99_GkLrxEj13R1ZJpnw_eWxhZas=72rtR8Pgt_Vq3dbeg@mail.gmail.com>
+ <ff8e3902-9385-11ee-3cc5-44dd3355c9fc@iogearbox.net> <CACAyw9_LPEOvHbmP8UrpwVkwYT57rKWRisai=Z7kbKxOPh5XNQ@mail.gmail.com>
+ <alpine.LRH.2.21.2006011839430.623@localhost> <835af597-c346-e178-09c4-9f67c9480020@iogearbox.net>
+ <alpine.LRH.2.21.2006012217530.15886@localhost>
+In-Reply-To: <alpine.LRH.2.21.2006012217530.15886@localhost>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 2 Jun 2020 11:13:24 +0100
+Message-ID: <CACAyw98FxUjxmr4ai5JiudV5p3pd4U6fxxULrkMWJtuBKtUDgA@mail.gmail.com>
+Subject: Re: Checksum behaviour of bpf_redirected packets
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 02 Jun 2020 11:23:24 +0200
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
-
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->=20
-> > On Fri, 29 May 2020 18:39:40 +0200
-> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
-> > =20
-> >> Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> >>  =20
-> >> > The devmap map-value can be read from BPF-prog side, and could be us=
-ed for a
-> >> > storage area per device. This could e.g. contain info on headers tha=
-t need
-> >> > to be added when packet egress this device.
-> >> >
-> >> > This patchset adds a dynamic storage member to struct bpf_devmap_val=
-. More
-> >> > importantly the struct bpf_devmap_val is made dynamic via leveraging=
- and
-> >> > requiring BTF for struct sizes above 4. The only mandatory struct me=
-mber is
-> >> > 'ifindex' with a fixed offset of zero.
-> >> >
-> >> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> >> > ---
-> >> >  kernel/bpf/devmap.c |  216 ++++++++++++++++++++++++++++++++++++++++=
-++++-------
-> >> >  1 file changed, 185 insertions(+), 31 deletions(-)
-> >> >
-> >> > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> >> > index 4ab67b2d8159..9cf2dadcc0fe 100644 =20
-> > [...] =20
-> >> > @@ -60,13 +61,30 @@ struct xdp_dev_bulk_queue {
-> >> >  	unsigned int count;
-> >> >  };
-> >> > =20
-> >> > -/* DEVMAP values */
-> >> > +/* DEVMAP map-value layout.
-> >> > + *
-> >> > + * The struct data-layout of map-value is a configuration interface.
-> >> > + * BPF-prog side have read-only access to this memory.
-> >> > + *
-> >> > + * The layout might be different than below, because some struct me=
-mbers are
-> >> > + * optional.  This is made dynamic by requiring userspace provides =
-an BTF
-> >> > + * description of the struct layout, when creating the BPF-map. Str=
-uct names
-> >> > + * are important and part of API, as BTF use these names to identif=
-y members.
-> >> > + */
-> >> >  struct bpf_devmap_val {
-> >> > -	__u32 ifindex;   /* device index */
-> >> > +	__u32 ifindex;   /* device index - mandatory */
-> >> >  	union {
-> >> >  		int   fd;  /* prog fd on map write */
-> >> >  		__u32 id;  /* prog id on map read */
-> >> >  	} bpf_prog;
-> >> > +	struct {
-> >> > +		/* This 'storage' member is meant as a dynamically sized area,
-> >> > +		 * that BPF developer can redefine.  As other members are added
-> >> > +		 * overtime, this area can shrink, as size can be regained by
-> >> > +		 * not using members above. Add new members above this struct.
-> >> > +		 */
-> >> > +		unsigned char data[24];
-> >> > +	} storage;   =20
-> >>=20
-> >> Why is this needed? Userspace already passes in the value_size, so why
-> >> can't the kernel just use the BTF to pick out the values it cares about
-> >> and let the rest be up to userspace? =20
+On Mon, 1 Jun 2020 at 22:25, Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Mon, 1 Jun 2020, Daniel Borkmann wrote:
+>
+> > On 6/1/20 7:48 PM, Alan Maguire wrote:
+> > > On Wed, 13 May 2020, Lorenz Bauer wrote:
+> > >
+> > >>>> Option 1: always downgrade UNNECESSARY to NONE
+> > >>>> - Easiest to back port
+> > >>>> - The helper is safe by default
+> > >>>> - Performance impact unclear
+> > >>>> - No escape hatch for Cilium
+> > >>>>
+> > >>>> Option 2: add a flag to force CHECKSUM_NONE
+> > >>>> - New UAPI, can this be backported?
+> > >>>> - The helper isn't safe by default, needs documentation
+> > >>>> - Escape hatch for Cilium
+> > >>>>
+> > >>>> Option 3: downgrade to CHECKSUM_NONE, add flag to skip this
+> > >>>> - New UAPI, can this be backported?
+> > >>>> - The helper is safe by default
+> > >>>> - Escape hatch for Cilium (though you'd need to detect availability of
+> > >>>> the
+> > >>>>     flag somehow)
+> > >>>
+> > >>> This seems most reasonable to me; I can try and cook a proposal for
+> > >>> tomorrow as
+> > >>> potential fix. Even if we add a flag, this is still backportable to stable
+> > >>> (as
+> > >>> long as the overall patch doesn't get too complex and the backport itself
+> > >>> stays
+> > >>> compatible uapi-wise to latest kernels. We've done that before.). I happen
+> > >>> to
+> > >>> have two ixgbe NICs on some of my test machines which seem to be setting
+> > >>> the
+> > >>> CHECKSUM_UNNECESSARY, so I'll run some experiments from over here as well.
+> > >>
+> > >> Great! I'm happy to test, of course.
+> > >
+> > > I had a go at implementing option 3 as a few colleagues ran into this
+> > > problem. They confirmed the fix below resolved the issue.  Daniel is
+> > > this  roughly what you had in mind? I can submit a patch for the bpf
+> > > tree if that's acceptable with the new flag. Do we need a few
+> > > tests though?
 > >
-> > The kernel cannot just ignore unknown struct members, due to forward
-> > compatibility. An older kernel that sees a new struct member, cannot
-> > know what this struct member is used for.  Thus, later I'm rejecting
-> > map creation if I detect members kernel doesn't know about.
+> > Coded this [0] up last week which Lorenz gave a spin as well. Originally
+> > wanted to
+> > get it out Friday night, but due to internal release stuff it got too late Fri
+> > night
+> > and didn't want to rush it at 3am anymore, so the series as fixes is going out
+> > tomorrow
+> > morning [today was public holiday in CH over here].
 > >
-> > This means, that I need to create a named area (e.g. named 'storage')
-> > that users can define their own layout within.
-> >
-> > This might be difficult to comprehend for other kernel developers,
-> > because usually we create forward compatibility via walking the binary
-> > struct and then assume that if an unknown area (in end-of-struct)
-> > contains zeros, then it means end-user isn't using that unknown feature.
-> > This doesn't work when the default value, as in this exact case, need
-> > to be minus-1 do describe "unused" as this is a file descriptor.
-> >
-> > Forward compatibility is different here.  If the end-user include the
-> > member in their BTF description, that means they intend to use it.
-> > Thus, kernel need to reject map-create if it sees unknown members. =20
->=20
-> Ah, right, of course. You could still allow such a "user-defined" member
-> to be any size userspace likes, though, couldn't you?
+>
+> Looks great! Although I've only seen this issue arise
+> for cases where csum_level == 0, should we also
+> add "skb->csum_level = 0;" when we reset the
+> ip_summed value?
 
-Yes.  In this implementation the "user-defined" member 'storage' do have
-variable size (and can be non-existing).  Do you mean that I have
-limited the total size of the struct to be 32 bytes?
-(Which is true, and that can also be made dynamic, but I was trying to
-limit the scope of patch.  It is hard enough to wrap head around the
-binary struct from userspace is becoming dynamic)
+FWIW I had the same reaction. Maybe it's worth adding after all, Daniel?
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
