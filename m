@@ -2,87 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995E81EC1FD
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 20:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10B31EC241
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 20:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgFBSjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 14:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        id S1726223AbgFBS7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 14:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgFBSjq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 14:39:46 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B592EC08C5C0
-        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 11:39:45 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q24so1948215pjd.1
-        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 11:39:45 -0700 (PDT)
+        with ESMTP id S1726174AbgFBS7n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 14:59:43 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096F5C08C5C0;
+        Tue,  2 Jun 2020 11:59:42 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id z9so3261381ljh.13;
+        Tue, 02 Jun 2020 11:59:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RtLS8+a88UB49gCeA48ay61o0FJ7r6NvEDuSLjJ15Ws=;
-        b=BEYw1+YtCM8/jNfafOjZEiG/Sn4OmMKzw4L8wqdnZx8Rr7aqoQXrg9cgHYBCJWJRYe
-         1g95M9p0Mb2LSzvbYAZt1HJ2esEh3EFk+NBAyMpxt7wq/iMEHjrLPUzcBgjhcshjQbPo
-         vButaFp/zKOzl5MT8vC1Lflg8kRVpjxGSEXHQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wlP6EmtH4oErIgXGovLEskNL+GxMqCU3konRptVK3k=;
+        b=sumtyCzei8Pjdzsz7A+65BufAOnGjSn7bXljLJG3EfFMc7f52rrjjfNXHPdeVuU9G4
+         aHZRb8vwf+FxEjoCuZEY2yTJgSxlkZGZpf0LJLRqTyf23JHaYNJGX1V+gnkgt+zvyLej
+         KDWeGkZDDEE0eQLk8LksGLMDiIaTORAHIfyPPNfE3EdiUavHBoA2FRQANdfbLcTCjzja
+         ToGi5GpQDQF437Cfs2dNqa47JlDVA+pmKWpYFVlVMBmKAuz9r0gHj3aqRdTm1ZZiEW2i
+         Z2kP0gWTZ262NrBCSFfKtmsfrP+dVO09Ji7X/sjlpiI4o3VaW5d+4a7eEFbyRi0zoJKz
+         Ie6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RtLS8+a88UB49gCeA48ay61o0FJ7r6NvEDuSLjJ15Ws=;
-        b=uF7Ae06wpTQyLxjtDVusIDNsjJJQC/1VKO7FgNBDHiknsZdqMK9aCplOQ9NK+Q7VwQ
-         zVLg72W+4LAuOGSf7ox06By6EkdV4gvIa1sKzQtntSPJFHer23eEgjmJh2lnPIqacrhr
-         dryXhB9PZ55DO2imumW126D5ZPBiAdjowaoBbbW/OPQrq6nc3MuvFgthzUPHF4zX3+la
-         c50lffI/dXo2rFlXqb13ySIyMgm8cujG56+ERJCkPm7VzflgKr3PMDHrket2OnbpEq16
-         Iq6X7nIDnEp4ZgbXLDN4KynOSJcGi5RUACOixkQZC4dQqcVb/z8wWv96pi8FN61ZXnd7
-         kf4Q==
-X-Gm-Message-State: AOAM531ySW+6qHP/Fsh8c+ejTDTK3ezcLnFDE17kWyQ3/3RX4c/rI7Pd
-        7DVRqbCuveGoSQQnB+Hgu4QvQA==
-X-Google-Smtp-Source: ABdhPJxeJZrKbRy+KqMNDTnZc8TuNFqju+DN5fMoH6TrGPjUPtP8dDdJjqSOfuUssmzxaUde+9NEbQ==
-X-Received: by 2002:a17:90b:3691:: with SMTP id mj17mr518962pjb.152.1591123185308;
-        Tue, 02 Jun 2020 11:39:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j17sm3081062pjy.22.2020.06.02.11.39.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 11:39:44 -0700 (PDT)
-Date:   Tue, 2 Jun 2020 11:39:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Lennart Poettering <lennart@poettering.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "zhujianwei (C)" <zhujianwei7@huawei.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Hehuazhen <hehuazhen@huawei.com>,
-        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
-        Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
-        Tom Hromatka <tom.hromatka@oracle.com>
-Subject: Re: new seccomp mode aims to improve performance
-Message-ID: <202006021138.6E2073803@keescook>
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
- <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
- <202005290903.11E67AB0FD@keescook>
- <202005291043.A63D910A8@keescook>
- <20200601101137.GA121847@gardel-login>
- <CAHC9VhTK1306C2+ghMWHC0X6XVHiG+vBKPC5=7QLjxXwX4Eu9Q@mail.gmail.com>
- <20200602125323.GB123838@gardel-login>
- <CAHC9VhShd2GLqei6MSREr_vzeVXNcObdVVgvhj1WP7_Ob2C3ag@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wlP6EmtH4oErIgXGovLEskNL+GxMqCU3konRptVK3k=;
+        b=dr10k6vPqDPfUWguOv7pUb9yJe/5lOgJZong+elVZNEISwSkK9tndMX5DkGCKbAX6t
+         JtjnxXkzEL09H05BEvTPpi7gNwMPgDBmmIgY5jBj6oGE6TQUrnmjgsUiowbLJ12Ly6f4
+         S9n9A7MH2pBA3R4Xbefgv5oEVvyB+9RTzzBKaKMNBZx1iaSzH22kS/d0gYO5qM643jXe
+         31WmSgY+RnWyI+ifVi5keXeQH5HFtNc9W5JBsKGyK8o6hWimV4Ls9h6xPAxxxRVVeXrF
+         hILB93o14CDbsku3yU7n5mx7h51hh7pnkjRGa5ksvEkJLLUjWNSDLd9VNiXxjVU/JtT8
+         EOYA==
+X-Gm-Message-State: AOAM530fsDJs5ddxxOTL/D0Jhj44lcVJXLk4/36ZjxH+mrh3l6HnRPAh
+        pKUYn0pBpms0j+ApdWBeHrEiqy5vuo6+Q3sUoUI=
+X-Google-Smtp-Source: ABdhPJzH12bEzKSHdbnMVE5IzldD5WdVAI5z+UMCRZWK2Bwk7apQ7kloIaZKFxiyXf5PLXc6sB+0NaxWSZk2+ff3VWA=
+X-Received: by 2002:a2e:974a:: with SMTP id f10mr253335ljj.283.1591124381387;
+ Tue, 02 Jun 2020 11:59:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhShd2GLqei6MSREr_vzeVXNcObdVVgvhj1WP7_Ob2C3ag@mail.gmail.com>
+References: <cover.1591108731.git.daniel@iogearbox.net>
+In-Reply-To: <cover.1591108731.git.daniel@iogearbox.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Jun 2020 11:59:30 -0700
+Message-ID: <CAADnVQLFB1Y9PP3NtZvrFRyRTsTW=nHuGOhqYqC+mgghfh4rEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 0/3] Fix csum unnecessary on bpf_skb_adjust_room
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 11:03:31AM -0400, Paul Moore wrote:
-> Perhaps others will clarify, but from my reading of this thread there
-> is a performance advantage to be gained by limiting the number of
-> seccomp filters installed for a given process.
+On Tue, Jun 2, 2020 at 7:58 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> This series fixes an issue originally reported by Lorenz Bauer where using
+> the bpf_skb_adjust_room() helper hid a checksum bug since it wasn't adjusting
+> CHECKSUM_UNNECESSARY's skb->csum_level after decap. The fix is two-fold:
+>  i) We do a safe reset in bpf_skb_adjust_room() to CHECKSUM_NONE with an opt-
+>     out flag BPF_F_ADJ_ROOM_NO_CSUM_RESET.
+> ii) We add a new bpf_csum_level() for the latter in order to allow users to
+>     manually inc/dec the skb->csum_level when needed.
+> The series is rebased against latest bpf-next tree. It can be applied there,
+> or to bpf after the merge win sync from net-next.
 
-Generally speaking, yes, though obviously the size and layout of a single
-filter (i.e. is it a balanced tree?) will still impact the overhead.
-
--- 
-Kees Cook
+Applied. Thanks
