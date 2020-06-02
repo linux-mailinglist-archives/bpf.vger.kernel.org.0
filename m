@@ -2,147 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFCA1EB8C6
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 11:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5041F1EB908
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 12:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgFBJqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 05:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgFBJqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 05:46:17 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B8C05BD43
-        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 02:46:17 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a25so4917524ejg.5
-        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 02:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=INWpqCllWxiZN050hQmTrPBqQBX7Ogci0UB7YJjVunM=;
-        b=cIVksyRGkCJppF6GPfjQpyYhV0WBlj9r4pRRqwef1l8sqTC0hXetdLH+KxUWAooMzJ
-         GgPbfkz7hOu1wfRFU9HLIuVUWskktY85fNjRi/qrWy+yefbVJCgCNujfzHvaRYCGfNO/
-         qgJm7JjUBgN7I8ghM1AgBKt7MuRIwWXlLaroY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=INWpqCllWxiZN050hQmTrPBqQBX7Ogci0UB7YJjVunM=;
-        b=VqzE/R32I5qN6yyY2EvmHSLwnlb1ur9PdoH3CazqIk29ClC+gfA7TLIJzFko8d9xXP
-         Q1EFpbYj7ISuaLs3uGpVNMu9uStchBkyLkYcDGQ/KFa7CwIm9kVDPtTcRDvodDivGAmP
-         uu0dpNfx2SIb5ftDewaeC/j+SG49HoY/q8w99NxGGLYyCajHD+jSmHWaIFFsxxhqu5Z1
-         0/wF4iQ+RwjGofRgsJUcrVv15XnwsF0wNi5dbipq5lBvkMVlxzn7n0fjcOibq0UUvwOL
-         wKtpvDQ+/SPr1QkBNQ81qve6k70zxmMZjWanx/tnCFxV7JMfqWT/iI9RZ6vEIpycFyrG
-         oEsQ==
-X-Gm-Message-State: AOAM530ZPR1pavzAE2ZY+VERi2qMzeFsl0PcAm0pemAOpfFzbR2yySms
-        P97jUg3YPT2hwt+bcIEJPrCzgbyZ1iY=
-X-Google-Smtp-Source: ABdhPJzPo6bX6U0VNh0qdiuApJHPADPVcNTw8Ah6/796S+EpoPaciyJoA37oTIpDPGOkSPQCBHa4rA==
-X-Received: by 2002:a17:906:b7cd:: with SMTP id fy13mr23826393ejb.133.1591091175618;
-        Tue, 02 Jun 2020 02:46:15 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id di14sm1277383edb.77.2020.06.02.02.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 02:46:15 -0700 (PDT)
-References: <20200531082846.2117903-1-jakub@cloudflare.com> <20200531082846.2117903-12-jakub@cloudflare.com> <CAEf4BzbBRNCTxZvtn2s3uN+JG-Z6BpHvgbovi6abaQi6rSeBbQ@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next v2 11/12] selftests/bpf: Convert test_flow_dissector to use BPF skeleton
-In-reply-to: <CAEf4BzbBRNCTxZvtn2s3uN+JG-Z6BpHvgbovi6abaQi6rSeBbQ@mail.gmail.com>
-Date:   Tue, 02 Jun 2020 11:46:13 +0200
-Message-ID: <87d06h3imy.fsf@cloudflare.com>
+        id S1726380AbgFBKBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 06:01:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36289 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726371AbgFBKBf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 06:01:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591092093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PmTtQ3ibqfrrDHlho+FTT5b9gEDz+ZOULuQ1xKCm2Mg=;
+        b=SqIK+I8+UEvAPF1wBDQ56QipZgE5tFdf0lIm09Npj3ne3sWJcz9+oHuBDPIV2JyOFaIXrK
+        IHRLE1eefGK3Mhw145Q6uPwitVvYqbyUWBmiYTJu8ysFAZjyO9Iui0Unjo44dzTd7GCZCM
+        vtZIDX3zy/zHO9HKJP0UzBTnSthau+A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-g2HrNGMeNk-z552ZKhR-OA-1; Tue, 02 Jun 2020 06:01:30 -0400
+X-MC-Unique: g2HrNGMeNk-z552ZKhR-OA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 711BF107ACF2;
+        Tue,  2 Jun 2020 10:01:29 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 363F619C4F;
+        Tue,  2 Jun 2020 10:01:21 +0000 (UTC)
+Date:   Tue, 2 Jun 2020 12:01:20 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next RFC 2/3] bpf: devmap dynamic map-value storage
+ area based on BTF
+Message-ID: <20200602120120.15d07304@carbon>
+In-Reply-To: <87a71lzur7.fsf@toke.dk>
+References: <159076794319.1387573.8722376887638960093.stgit@firesoul>
+        <159076798566.1387573.8417040652693679408.stgit@firesoul>
+        <87tuzyzodv.fsf@toke.dk>
+        <20200602105908.19254e0f@carbon>
+        <87a71lzur7.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 12:42 AM CEST, Andrii Nakryiko wrote:
-> On Sun, May 31, 2020 at 1:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> Switch flow dissector test setup from custom BPF object loader to BPF
->> skeleton to save boilerplate and prepare for testing higher-level API for
->> attaching flow dissector with bpf_link.
->>
->> To avoid depending on program order in the BPF object when populating the
->> flow dissector PROG_ARRAY map, change the program section names to contain
->> the program index into the map. This follows the example set by tailcall
->> tests.
->>
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->>  .../selftests/bpf/prog_tests/flow_dissector.c | 50 +++++++++++++++++--
->>  tools/testing/selftests/bpf/progs/bpf_flow.c  | 20 ++++----
->>  2 files changed, 55 insertions(+), 15 deletions(-)
->>
->
-> [...]
->
->> diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
->> index 9941f0ba471e..de6de9221518 100644
->> --- a/tools/testing/selftests/bpf/progs/bpf_flow.c
->> +++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
->> @@ -20,20 +20,20 @@
->>  #include <bpf/bpf_endian.h>
->>
->>  int _version SEC("version") = 1;
->> -#define PROG(F) SEC(#F) int bpf_func_##F
->> +#define PROG(F) PROG_(F, _##F)
->> +#define PROG_(NUM, NAME) SEC("flow_dissector/"#NUM) int bpf_func##NAME
->>
->>  /* These are the identifiers of the BPF programs that will be used in tail
->>   * calls. Name is limited to 16 characters, with the terminating character and
->>   * bpf_func_ above, we have only 6 to work with, anything after will be cropped.
->>   */
->> -enum {
->> -       IP,
->> -       IPV6,
->> -       IPV6OP, /* Destination/Hop-by-Hop Options IPv6 Extension header */
->> -       IPV6FR, /* Fragmentation IPv6 Extension Header */
->> -       MPLS,
->> -       VLAN,
->> -};
->
-> not clear why? just add MAX_PROG after VLAN?
+On Tue, 02 Jun 2020 11:23:24 +0200
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-I wanted to change section names to:
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>=20
+> > On Fri, 29 May 2020 18:39:40 +0200
+> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+> > =20
+> >> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> >>  =20
+> >> > The devmap map-value can be read from BPF-prog side, and could be us=
+ed for a
+> >> > storage area per device. This could e.g. contain info on headers tha=
+t need
+> >> > to be added when packet egress this device.
+> >> >
+> >> > This patchset adds a dynamic storage member to struct bpf_devmap_val=
+. More
+> >> > importantly the struct bpf_devmap_val is made dynamic via leveraging=
+ and
+> >> > requiring BTF for struct sizes above 4. The only mandatory struct me=
+mber is
+> >> > 'ifindex' with a fixed offset of zero.
+> >> >
+> >> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >> > ---
+> >> >  kernel/bpf/devmap.c |  216 ++++++++++++++++++++++++++++++++++++++++=
+++++-------
+> >> >  1 file changed, 185 insertions(+), 31 deletions(-)
+> >> >
+> >> > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> >> > index 4ab67b2d8159..9cf2dadcc0fe 100644 =20
+> > [...] =20
+> >> > @@ -60,13 +61,30 @@ struct xdp_dev_bulk_queue {
+> >> >  	unsigned int count;
+> >> >  };
+> >> > =20
+> >> > -/* DEVMAP values */
+> >> > +/* DEVMAP map-value layout.
+> >> > + *
+> >> > + * The struct data-layout of map-value is a configuration interface.
+> >> > + * BPF-prog side have read-only access to this memory.
+> >> > + *
+> >> > + * The layout might be different than below, because some struct me=
+mbers are
+> >> > + * optional.  This is made dynamic by requiring userspace provides =
+an BTF
+> >> > + * description of the struct layout, when creating the BPF-map. Str=
+uct names
+> >> > + * are important and part of API, as BTF use these names to identif=
+y members.
+> >> > + */
+> >> >  struct bpf_devmap_val {
+> >> > -	__u32 ifindex;   /* device index */
+> >> > +	__u32 ifindex;   /* device index - mandatory */
+> >> >  	union {
+> >> >  		int   fd;  /* prog fd on map write */
+> >> >  		__u32 id;  /* prog id on map read */
+> >> >  	} bpf_prog;
+> >> > +	struct {
+> >> > +		/* This 'storage' member is meant as a dynamically sized area,
+> >> > +		 * that BPF developer can redefine.  As other members are added
+> >> > +		 * overtime, this area can shrink, as size can be regained by
+> >> > +		 * not using members above. Add new members above this struct.
+> >> > +		 */
+> >> > +		unsigned char data[24];
+> >> > +	} storage;   =20
+> >>=20
+> >> Why is this needed? Userspace already passes in the value_size, so why
+> >> can't the kernel just use the BTF to pick out the values it cares about
+> >> and let the rest be up to userspace? =20
+> >
+> > The kernel cannot just ignore unknown struct members, due to forward
+> > compatibility. An older kernel that sees a new struct member, cannot
+> > know what this struct member is used for.  Thus, later I'm rejecting
+> > map creation if I detect members kernel doesn't know about.
+> >
+> > This means, that I need to create a named area (e.g. named 'storage')
+> > that users can define their own layout within.
+> >
+> > This might be difficult to comprehend for other kernel developers,
+> > because usually we create forward compatibility via walking the binary
+> > struct and then assume that if an unknown area (in end-of-struct)
+> > contains zeros, then it means end-user isn't using that unknown feature.
+> > This doesn't work when the default value, as in this exact case, need
+> > to be minus-1 do describe "unused" as this is a file descriptor.
+> >
+> > Forward compatibility is different here.  If the end-user include the
+> > member in their BTF description, that means they intend to use it.
+> > Thus, kernel need to reject map-create if it sees unknown members. =20
+>=20
+> Ah, right, of course. You could still allow such a "user-defined" member
+> to be any size userspace likes, though, couldn't you?
 
-  "flow_dissector/0"
-  "flow_dissector/1"
-  ...
+Yes.  In this implementation the "user-defined" member 'storage' do have
+variable size (and can be non-existing).  Do you mean that I have
+limited the total size of the struct to be 32 bytes?
+(Which is true, and that can also be made dynamic, but I was trying to
+limit the scope of patch.  It is hard enough to wrap head around the
+binary struct from userspace is becoming dynamic)
 
-while keeping the corresponding function names as:
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-  bpf_func_IP
-  bpf_func_IPV6
-  ...
-
-For that I needed the preprocessor to know the value of the constant.
-
->
->> +#define IP             0
->> +#define IPV6           1
->> +#define IPV6OP         2 /* Destination/Hop-by-Hop Options IPv6 Ext. Header */
->> +#define IPV6FR         3 /* Fragmentation IPv6 Extension Header */
->> +#define MPLS           4
->> +#define VLAN           5
->> +#define MAX_PROG       6
->>
->>  #define IP_MF          0x2000
->>  #define IP_OFFSET      0x1FFF
->> @@ -59,7 +59,7 @@ struct frag_hdr {
->>
->>  struct {
->>         __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
->> -       __uint(max_entries, 8);
->> +       __uint(max_entries, MAX_PROG);
->>         __uint(key_size, sizeof(__u32));
->>         __uint(value_size, sizeof(__u32));
->>  } jmp_table SEC(".maps");
->> --
->> 2.25.4
->>
