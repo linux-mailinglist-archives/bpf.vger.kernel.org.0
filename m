@@ -2,116 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79721EC138
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 19:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C9A1EC149
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 19:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgFBRj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 13:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgFBRj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 13:39:57 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B641FC05BD1E;
-        Tue,  2 Jun 2020 10:39:57 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c185so13350496qke.7;
-        Tue, 02 Jun 2020 10:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdvA9kDIBzucfn/6IgtzkjYebMxFXuhS6oUsUI3IUbg=;
-        b=qIJMtL0f5UBsR6FtXMMz4qvs5BxZxXnR0kiWutWBXQeYEi50JyBCH5HzOZzd0uFit3
-         tuO58iYAgRyPBpslUryfngBZC6J9zP7ajVq3Rx5H/CytJqQfMBN8tWQfYTJ6Qb3tDh8w
-         aOxbWyNkfNjs8hg68n8sedVy5+oKXhFZVZsyqeQepJC/XE1JLMQOzyCCGwiX6CgDCSJF
-         eb/jWTXGP+WHrX6fKwYsdSBxEMi/NG34Z4eboglWLDHP62i/1n9BywVb1Kbg91ydPXIc
-         XikwWgIZbZmMOSFsuId7668TOMx9HoT9YMbi1qJgoqQOH4g4XjsBccyJtPGtzydK4DWH
-         2L8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdvA9kDIBzucfn/6IgtzkjYebMxFXuhS6oUsUI3IUbg=;
-        b=MYW2OL91WPoE8g3gTaDcAceT1adkiH8rZadGKgKUyvlsWuGfkso+3r/Lx6JrXIjCqB
-         mzp5sfBh197QtHg6vGCZl1NOG7NfXeDasGQNXUzHSBfAuW8C098NW1VRPsSAg+3bucLL
-         Lm3pLRlv2bLrc0mrVdTpM+yJ80mUJo5nP/dwSRdxNPRy9qZqwO5O+ICswqlD1RtClEU0
-         u5wdu6j7yAN2984iAMfU13dKtcqpQ9u6hHqH93OU1A2VzLSvQAjFEp8zVmwttgSb2PTS
-         F8JzH1K73vNuHX4nvgWIfz8qa9H7ve3uQbk7HA+ksIkhdrWx49hTwDtqhHdWEpU+13uF
-         ziVA==
-X-Gm-Message-State: AOAM533N4hvYEg4Ek08pDXGNc5dnEuUdyzyHcbE5E3ezNux8wFRG37df
-        4YahbmNCrstopQGVDDGyhNg6xFrFv/viVJhRBOw=
-X-Google-Smtp-Source: ABdhPJxSuUJI8zaC9OIAbfjZ7c4dKwnBkDkguezcDY1oDaRpnB1uxvSREFoHXvB0g/CW2n4diYN4h+ILkWy2aP84uu0=
-X-Received: by 2002:a05:620a:247:: with SMTP id q7mr26248551qkn.36.1591119596968;
- Tue, 02 Jun 2020 10:39:56 -0700 (PDT)
+        id S1726373AbgFBRoB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 13:44:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12798 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725969AbgFBRoB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jun 2020 13:44:01 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 052HWYbq082430;
+        Tue, 2 Jun 2020 13:43:48 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31dp42aur4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 13:43:48 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 052He96R007292;
+        Tue, 2 Jun 2020 17:43:46 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 31bf47xgbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jun 2020 17:43:46 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 052Hhhos58655210
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jun 2020 17:43:43 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC63C5204F;
+        Tue,  2 Jun 2020 17:43:43 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.174.225])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EA8355204E;
+        Tue,  2 Jun 2020 17:43:42 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] s390/bpf: Maintain 8-byte stack alignment
+Date:   Tue,  2 Jun 2020 19:43:39 +0200
+Message-Id: <20200602174339.2501066-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200531082846.2117903-1-jakub@cloudflare.com>
- <20200531082846.2117903-8-jakub@cloudflare.com> <CAEf4BzZqtuA_45g_87jyuAdmvid=XuLGekgBdWY8i94Pnztm7Q@mail.gmail.com>
- <87eeqx3j22.fsf@cloudflare.com>
-In-Reply-To: <87eeqx3j22.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Jun 2020 10:39:46 -0700
-Message-ID: <CAEf4BzZHjMKfzVBqOq2Zgobx9iniZV+ve1EEirxvDbRAHan6OA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 07/12] bpftool: Extract helpers for showing
- link attach type
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-02_13:2020-06-02,2020-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 cotscore=-2147483648
+ adultscore=0 suspectscore=2 spamscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 mlxlogscore=999 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006020123
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 2:37 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Tue, Jun 02, 2020 at 12:35 AM CEST, Andrii Nakryiko wrote:
-> > On Sun, May 31, 2020 at 1:32 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >>
-> >> Code for printing link attach_type is duplicated in a couple of places, and
-> >> likely will be duplicated for future link types as well. Create helpers to
-> >> prevent duplication.
-> >>
-> >> Suggested-by: Andrii Nakryiko <andriin@fb.com>
-> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> >> ---
-> >
-> > LGTM, minor nit below.
-> >
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> >
-> >>  tools/bpf/bpftool/link.c | 44 ++++++++++++++++++++--------------------
-> >>  1 file changed, 22 insertions(+), 22 deletions(-)
-> >>
-> >> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> >> index 670a561dc31b..1ff416eff3d7 100644
-> >> --- a/tools/bpf/bpftool/link.c
-> >> +++ b/tools/bpf/bpftool/link.c
-> >> @@ -62,6 +62,15 @@ show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
-> >>         jsonw_uint_field(json_wtr, "prog_id", info->prog_id);
-> >>  }
-> >>
-> >> +static void show_link_attach_type_json(__u32 attach_type, json_writer_t *wtr)
-> >
-> > nit: if you look at jsonw_uint_field/jsonw_string_field, they accept
-> > json_write_t as a first argument, because they are sort of working on
-> > "object" json_writer_t. I think that's good and consistent. No big
-> > deal, but if you can adjust it for consistency, it would be good.
->
-> I followed show_link_header_json example here. I'm guessing the
-> intention was to keep show_link_header_json and show_link_header_plain
-> consistent, as the former takes an extra arg (wtr).
+Certain kernel functions (e.g. get_vtimer/set_vtimer) cause kernel
+panic when the stack is not 8-byte aligned. Currently JITed BPF programs
+may trigger this by allocating stack frames with non-rounded sizes and
+then being interrupted. Fix by using rounded fp->aux->stack_depth.
 
-It's fine, it's a minor point, even though this order feels backwards to me :)
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ arch/s390/net/bpf_jit_comp.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
->
-> >
-> >> +{
-> >> +       if (attach_type < ARRAY_SIZE(attach_type_name))
-> >> +               jsonw_string_field(wtr, "attach_type",
-> >> +                                  attach_type_name[attach_type]);
-> >> +       else
-> >> +               jsonw_uint_field(wtr, "attach_type", attach_type);
-> >> +}
-> >> +
-> >
-> > [...]
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 8d2134136290..0f37a1b635f8 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -594,7 +594,7 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
+  * stack space for the large switch statement.
+  */
+ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+-				 int i, bool extra_pass)
++				 int i, bool extra_pass, u32 stack_depth)
+ {
+ 	struct bpf_insn *insn = &fp->insnsi[i];
+ 	u32 dst_reg = insn->dst_reg;
+@@ -1207,7 +1207,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		 */
+ 
+ 		if (jit->seen & SEEN_STACK)
+-			off = STK_OFF_TCCNT + STK_OFF + fp->aux->stack_depth;
++			off = STK_OFF_TCCNT + STK_OFF + stack_depth;
+ 		else
+ 			off = STK_OFF_TCCNT;
+ 		/* lhi %w0,1 */
+@@ -1249,7 +1249,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		/*
+ 		 * Restore registers before calling function
+ 		 */
+-		save_restore_regs(jit, REGS_RESTORE, fp->aux->stack_depth);
++		save_restore_regs(jit, REGS_RESTORE, stack_depth);
+ 
+ 		/*
+ 		 * goto *(prog->bpf_func + tail_call_start);
+@@ -1519,7 +1519,7 @@ static int bpf_set_addr(struct bpf_jit *jit, int i)
+  * Compile eBPF program into s390x code
+  */
+ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp,
+-			bool extra_pass)
++			bool extra_pass, u32 stack_depth)
+ {
+ 	int i, insn_count, lit32_size, lit64_size;
+ 
+@@ -1527,18 +1527,18 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp,
+ 	jit->lit64 = jit->lit64_start;
+ 	jit->prg = 0;
+ 
+-	bpf_jit_prologue(jit, fp->aux->stack_depth);
++	bpf_jit_prologue(jit, stack_depth);
+ 	if (bpf_set_addr(jit, 0) < 0)
+ 		return -1;
+ 	for (i = 0; i < fp->len; i += insn_count) {
+-		insn_count = bpf_jit_insn(jit, fp, i, extra_pass);
++		insn_count = bpf_jit_insn(jit, fp, i, extra_pass, stack_depth);
+ 		if (insn_count < 0)
+ 			return -1;
+ 		/* Next instruction address */
+ 		if (bpf_set_addr(jit, i + insn_count) < 0)
+ 			return -1;
+ 	}
+-	bpf_jit_epilogue(jit, fp->aux->stack_depth);
++	bpf_jit_epilogue(jit, stack_depth);
+ 
+ 	lit32_size = jit->lit32 - jit->lit32_start;
+ 	lit64_size = jit->lit64 - jit->lit64_start;
+@@ -1569,6 +1569,7 @@ struct s390_jit_data {
+  */
+ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ {
++	u32 stack_depth = round_up(fp->aux->stack_depth, 8);
+ 	struct bpf_prog *tmp, *orig_fp = fp;
+ 	struct bpf_binary_header *header;
+ 	struct s390_jit_data *jit_data;
+@@ -1621,7 +1622,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	 *   - 3:   Calculate program size and addrs arrray
+ 	 */
+ 	for (pass = 1; pass <= 3; pass++) {
+-		if (bpf_jit_prog(&jit, fp, extra_pass)) {
++		if (bpf_jit_prog(&jit, fp, extra_pass, stack_depth)) {
+ 			fp = orig_fp;
+ 			goto free_addrs;
+ 		}
+@@ -1635,7 +1636,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 		goto free_addrs;
+ 	}
+ skip_init_ctx:
+-	if (bpf_jit_prog(&jit, fp, extra_pass)) {
++	if (bpf_jit_prog(&jit, fp, extra_pass, stack_depth)) {
+ 		bpf_jit_binary_free(header);
+ 		fp = orig_fp;
+ 		goto free_addrs;
+-- 
+2.25.4
+
