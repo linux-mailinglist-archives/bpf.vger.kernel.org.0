@@ -2,111 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24C71EB375
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 04:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00AB1EB38E
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 05:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgFBCmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jun 2020 22:42:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2095 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726007AbgFBCmi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jun 2020 22:42:38 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 17708EF423BB9FEA2E9B;
-        Tue,  2 Jun 2020 10:42:36 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 2 Jun 2020 10:42:35 +0800
-Received: from dggema758-chm.china.huawei.com (10.1.198.200) by
- dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 2 Jun 2020 10:42:35 +0800
-Received: from dggema758-chm.china.huawei.com ([10.9.48.193]) by
- dggema758-chm.china.huawei.com ([10.9.48.193]) with mapi id 15.01.1913.007;
- Tue, 2 Jun 2020 10:42:35 +0800
-From:   "zhujianwei (C)" <zhujianwei7@huawei.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Kees Cook <keescook@chromium.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Hehuazhen <hehuazhen@huawei.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
-        =?utf-8?B?WmJpZ25pZXcgSsSZZHJ6ZWpld3NraS1Tem1law==?= 
-        <zbyszek@in.waw.pl>
-Subject: =?utf-8?B?562U5aSNOiBuZXcgc2VjY29tcCBtb2RlIGFpbXMgdG8gaW1wcm92ZSBwZXJm?=
- =?utf-8?Q?ormance?=
-Thread-Topic: new seccomp mode aims to improve performance
-Thread-Index: AdY1q17j91IY6CMiRsq40mFg/pmPz///wxIAgAAHIgCAADc1gP/7503AgAfEWYD//fXnAA==
-Date:   Tue, 2 Jun 2020 02:42:35 +0000
-Message-ID: <7dacac003a9949ea8163fca5125a2cae@huawei.com>
-References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
- <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
- <202005290903.11E67AB0FD@keescook> <202005291043.A63D910A8@keescook>
- <ff10225b79a14fec9bc383e710d74b2e@huawei.com>
- <CAADnVQK2WEh980KMkXy9TNeDqKA-fDMxkojPYf=b5eJSgG=K0g@mail.gmail.com>
-In-Reply-To: <CAADnVQK2WEh980KMkXy9TNeDqKA-fDMxkojPYf=b5eJSgG=K0g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.166.215.96]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725927AbgFBDAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jun 2020 23:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgFBDAI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jun 2020 23:00:08 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC9AC061A0E;
+        Mon,  1 Jun 2020 20:00:08 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m2so7845289otr.12;
+        Mon, 01 Jun 2020 20:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jtF4AvSxqsU+X9FzCx+GzCjq0VfbG8HvJK2Tbq5CDY0=;
+        b=RSLiVLlsx0GyxaZMFtsugZhjVJIetvCAIvJP23h6+s1CmWYVi+9rjm9kh967ZbfUD6
+         YhI+GjME7AuAUWgT7kzgEyIUEvBDm0SlAoqaRcXEIvlqH52XX8WCcxHoabvniHBgcDbD
+         5BrUnGoG4gSNgXDpJSW/0xWGHbsFSxmxVM5R2/jOqCPvhqpHKYaCVcTzG6rHBUDyipa7
+         XGRsjdoJGaKi0D76fzf/SLqmOp74HQJQWaHmGYrOSwInw7QiEvR9ccGfyKrFIldUZFzi
+         BQuBdfZz2s1On6aauHFFWzf9d5oEboRO3SLQ/VVjuCYDclR+MrRsCJdUzlz/CXF9rubQ
+         A1iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jtF4AvSxqsU+X9FzCx+GzCjq0VfbG8HvJK2Tbq5CDY0=;
+        b=U/aw/O1AcVTVYWyaqbetvVdjrsHz62xL95C7heCD+Fm0Ok6Igdcbc4aK9JwJxLx6hn
+         SoHRGSUB85pUAX7o9PE3w6s28pGzVWafvDFNFvOfhtOdz5YsE/Uyoh/sQn3LzlihFfQk
+         KVgiU1oPOSyEERoiUHngDxXY+DeB7X2OuOA/mRbPYyDfbHLXNAqKtTT7O1DLhNM+eTS7
+         6lZaiH+SCuqnRWLc7fX3jISs24UE9GBRt/KIHtPWOWCW9x3AM/sDm07q7fz7LHxFocuO
+         gVcYCEt9lOboMKl8aGF9ALTUyJVXpHi+Y7wUEPb/orowF26HriQkN0dm1eByV18M5i0F
+         3o7g==
+X-Gm-Message-State: AOAM533BxTDIzs9hwN2BfPgQcAzGTaCH59HMQjHWX+NVGvlG1tH6/kFF
+        n5QFAjEwpe6/y4lWCSQDXJE=
+X-Google-Smtp-Source: ABdhPJxRUGiVLdRKfwEwmeb0IyoH6Hz9zy6DRrAZooecRAHQb8hsQJic4MPO8aGA5Nlpq2LhzPz4uA==
+X-Received: by 2002:a9d:3f5:: with SMTP id f108mr19613801otf.74.1591066807662;
+        Mon, 01 Jun 2020 20:00:07 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:c9ef:b9c4:cdc1:2f07? ([2601:282:803:7700:c9ef:b9c4:cdc1:2f07])
+        by smtp.googlemail.com with ESMTPSA id u17sm329505ote.63.2020.06.01.20.00.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 20:00:07 -0700 (PDT)
+Subject: Re: [PATCH v4 bpf-next 0/5] bpf: Add support for XDP programs in
+ DEVMAP entries
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200529220716.75383-1-dsahern@kernel.org>
+ <CAADnVQK1rzFfzcQX-EGW57=O2xnz2pjX5madnZGTiAsKnCmbHA@mail.gmail.com>
+ <ed66bdc6-4114-2ecf-1812-176d0250730b@gmail.com>
+ <CAEf4BzaYU7-JhjnStL_JWVtL1-8wuB1ZcJkxoN01_bbKvdyaqA@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a2fe68b0-922e-a5ed-f2c3-5d1a122d790f@gmail.com>
+Date:   Mon, 1 Jun 2020 21:00:05 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAEf4BzaYU7-JhjnStL_JWVtL1-8wuB1ZcJkxoN01_bbKvdyaqA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pg0KPiBUaGlzIGlzIHRoZSB0ZXN0IHJlc3VsdCBvbiBsaW51eCA1LjcuMC1yYzcgZm9yIGFhcmNo
-NjQuDQo+IEFuZCByZXRwb2xpbmUgZGlzYWJsZWQgZGVmYXVsdC4NCj4gI2NhdCAvc3lzL2Rldmlj
-ZXMvc3lzdGVtL2NwdS92dWxuZXJhYmlsaXRpZXMvc3BlY3RyZV92Mg0KPiBOb3QgYWZmZWN0ZWQN
-Cj4NCj4gYnBmX2ppdF9lbmFibGUgMQ0KPiBicGZfaml0X2hhcmRlbiAwDQo+DQo+IFdlIHJ1biB1
-bml4YmVuY2ggc3lzY2FsbCBiZW5jaG1hcmsgb24gdGhlIG9yaWdpbmFsIGtlcm5lbCBhbmQgdGhl
-IG5ldyBvbmUocmVwbGFjZSBicGZfcHJvZ19ydW5fcGluX29uX2NwdSgpIHdpdGggaW1tZWRpYXRl
-bHkgcmV0dXJuaW5nICdhbGxvdycgb25lKS4NCj4gVGhlIHVuaXhiZW5jaCBzeXNjYWxsIHRlc3Rj
-YXNlIHJ1bnMgNSBzeXN0ZW0gY2FsbHPvvIhjbG9zZS91bWFzay9kdXAvZ2V0cGlkL2dldHVpZCwg
-ZXh0cmEgMTUgc3lzY2FsbHMgbmVlZGVkIHRvIHJ1biBpdO+8iSBpbiBhIGxvb3AgZm9yIDEwIHNl
-Y29uZHMsIGNvdW50cyB0aGUgbnVtYmVyIGFuZCBmaW5hbGx5IG91dHB1dCBpdC4gV2UgYWxzbyBh
-ZGQgc29tZSBtb3JlIGZpbHRlcnMgKGVhY2ggd2l0aCB0aGUgc2FtZSBydWxlcykgdG8gZXZhbHVh
-dGUgdGhlIHNpdHVhdGlvbiBqdXN0IGxpa2Uga2VlcyBtZW50aW9uZWQoY2FzZSBsaWtlIHN5c3Rl
-bWQtcmVzb2x2ZSksIGFuZCB3ZSBmaW5kIGl0IGlzIHJpZ2h0OiBtb3JlIGZpbHRlcnMsIG1vcmUg
-b3ZlcmhlYWQuIFRoZSBmb2xsb3dpbmcgaXMgb3VyIHJlc3VsdCAoLi9zeXNjYWxsIDEwIG0pOg0K
-Pg0KPiBvcmlnaW5hbDoNCj4gICAgICAgICBzZWNjb21wX29mZjogICAgICAgICAgICAgICAgICAg
-IDEwNjg0OTM5DQo+ICAgICAgICAgc2VjY29tcF9vbl8xX2ZpbHRlcnM6ICAgODUxMzgwNSAgICAg
-ICAgIG92ZXJoZWFk77yaMTkuOCUNCj4gICAgICAgICBzZWNjb21wX29uXzRfZmlsdGVyczogICA3
-MTA1NTkyICAgICAgICAgb3ZlcmhlYWTvvJozMy4wJQ0KPiAgICAgICAgIHNlY2NvbXBfb25fMzJf
-ZmlsdGVyczogIDIzMDg2NzcgICAgICAgICBvdmVyaGVhZO+8mjc4LjMlDQo+DQo+IGFmdGVyIHJl
-cGxhY2luZyBicGZfcHJvZ19ydW5fcGluX29uX2NwdToNCj4gICAgICAgICBzZWNjb21wX29mZjog
-ICAgICAgICAgICAgICAgICAgIDEwNjg1MjQ0DQo+ICAgICAgICAgc2VjY29tcF9vbl8xX2ZpbHRl
-cnM6ICAgOTE0NjQ4MyAgICAgICAgIG92ZXJoZWFk77yaMTQuMSUNCj4gICAgICAgICBzZWNjb21w
-X29uXzRfZmlsdGVyczogICA4OTY5ODg2ICAgICAgICAgb3ZlcmhlYWTvvJoxNi4wJQ0KPiAgICAg
-ICAgIHNlY2NvbXBfb25fMzJfZmlsdGVyczogIDY0NTQzNzIgICAgICAgICBvdmVyaGVhZO+8mjM5
-LjYlDQo+DQo+IE4tZmlsdGVyIGJwZiBvdmVyaGVhZDoNCj4gICAgICAgICAxX2ZpbHRlcnM6ICAg
-ICAgICAgICAgICA1LjclDQo+ICAgICAgICAgNF9maWx0ZXJzOiAgICAgICAgICAgICAgMTcuMCUN
-Cj4gICAgICAgICAzMl9maWx0ZXJzOiAgICAgMzguNyUNCj4NCj4gLy8ga2VybmVsIGNvZGUgbW9k
-aWZpY2F0aW9uIHBsYWNlDQo+IHN0YXRpYyBub2lubGluZSB1MzIgYnBmX3Byb2dfcnVuX3Bpbl9v
-bl9jcHVfYWxsb3coY29uc3Qgc3RydWN0IA0KPiBicGZfcHJvZyAqcHJvZywgY29uc3Qgdm9pZCAq
-Y3R4KSB7DQo+ICAgICAgICAgcmV0dXJuIFNFQ0NPTVBfUkVUX0FMTE9XOw0KPiB9DQoNCj5UaGlz
-IGlzIGFwcGxlcyB0byBvcmFuZ2VzLg0KPkFzIGV4cGxhaW5lZCBlYXJsaWVyOg0KPmh0dHBzOi8v
-bG9yZS5rZXJuZWwub3JnL25ldGRldi8yMDIwMDUzMTE3MTkxNS53c3h2ZGplZXRtaHBzZHYyQGFz
-dC1tYnAuZGhjcC50aGVmYWNlYm9vay5jb20vVC8jdQ0KPlBsZWFzZSB1c2UgX193ZWFrIGluc3Rl
-YWQgb2Ygc3RhdGljIGFuZCByZWRvIHRoZSBudW1iZXJzLg0KDQoNCndlIGhhdmUgcmVwbGFjZWQg
-4oCYc3RhdGlj4oCZIHdpdGgg4oCYX193ZWFr4oCZLCB0ZXN0ZWQgd2l0aCB0aGUgc2FtZSB3YXks
-IGFuZCBnb3QgYWxtb3N0bHkgdGhlIHNhbWUgcmVzdWx0LCBpbiBvdXIgdGVzdCBlbnZpcm9ubWVu
-dChhYXJjaDY0KS4NCg0KLXN0YXRpYyBub2lubGluZSB1MzIgYnBmX3Byb2dfcnVuX3Bpbl9vbl9j
-cHVfYWxsb3coY29uc3Qgc3RydWN0IGJwZl9wcm9nICpwcm9nLCBjb25zdCB2b2lkICpjdHgpDQor
-X193ZWFrIG5vaW5saW5lIHUzMiBicGZfcHJvZ19ydW5fcGluX29uX2NwdV9hbGxvdyhjb25zdCBz
-dHJ1Y3QgYnBmX3Byb2cgKnByb2csIGNvbnN0IHZvaWQgKmN0eCkNCg0Kb3JpZ2luYWw6DQoJc2Vj
-Y29tcF9vZmY6CQkJMTA2ODQ5MzkNCglzZWNjb21wX29uXzFfZmlsdGVyczoJODUxMzgwNQkJb3Zl
-cmhlYWTvvJoxOS44JQ0KCXNlY2NvbXBfb25fNF9maWx0ZXJzOgk3MTA1NTkyCQlvdmVyaGVhZO+8
-mjMzLjAlDQoJc2VjY29tcF9vbl8zMl9maWx0ZXJzOgkyMzA4Njc3CQlvdmVyaGVhZO+8mjc4LjMl
-DQoJDQphZnRlciByZXBsYWNpbmcgYnBmX3Byb2dfcnVuX3Bpbl9vbl9jcHU6DQoJc2VjY29tcF9v
-ZmY6CQkJMTA2NjcxOTUNCglzZWNjb21wX29uXzFfZmlsdGVyczoJOTE0NzQ1NAkJb3ZlcmhlYWTv
-vJoxNC4yJQ0KCXNlY2NvbXBfb25fNF9maWx0ZXJzOgk4OTI3NjA1CQlvdmVyaGVhZO+8mjE2LjEl
-DQoJc2VjY29tcF9vbl8zMl9maWx0ZXJzOgk2MzU1NDc2CQlvdmVyaGVhZO+8mjQwLjYlDQoNCk4t
-ZmlsdGVyIGJwZiBvdmVyaGVhZDoNCgkxX2ZpbHRlcnM6CQk1LjYlDQoJNF9maWx0ZXJzOgkJMTYu
-OSUNCgkzMl9maWx0ZXJzOgkzNy43JQ0KDQoNCg0K
+On 6/1/20 4:52 PM, Andrii Nakryiko wrote:
+> Do you have specific examples of inconsistencies? Seems like duration is:
+
+nope, just a quick grep trying to understand why it compiled cleanly for
+me and looking at similar tests.
+
+> 1. either static variable, and thus zero-initialized;
+> 2. is initialized explicitly at declaration;
+> 3. is filled out with bpf_prog_test_run().
+> 
+
+apparently so.
