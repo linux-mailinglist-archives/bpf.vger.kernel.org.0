@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC7E1EB8A2
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 11:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFCA1EB8C6
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 11:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgFBJhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 05:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S1726630AbgFBJqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 05:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgFBJhO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 05:37:14 -0400
+        with ESMTP id S1726377AbgFBJqR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 05:46:17 -0400
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AE1C05BD43
-        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 02:37:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a2so12042217ejb.10
-        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 02:37:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B8C05BD43
+        for <bpf@vger.kernel.org>; Tue,  2 Jun 2020 02:46:17 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a25so4917524ejg.5
+        for <bpf@vger.kernel.org>; Tue, 02 Jun 2020 02:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=yH03CJIHckJVBkbjqZkuGweYUGX1vX1nVQpBmI8JtJQ=;
-        b=MkZn0Oc2YPIO9mo8lV9QP55Ifa0/gh9tYDne0Wx4SRxG2KAwBSWT3NGcBW7QaaUdWS
-         r8swF+qu6NLsi+rZFalbNf2NtCnMdSDZ8h6CMGBl/DZLwBATsbaNuk0VmSrEgz5IQRzJ
-         rQumCeirSFF9ON+0NEQynrukCEuhrRMp0TlEM=
+        bh=INWpqCllWxiZN050hQmTrPBqQBX7Ogci0UB7YJjVunM=;
+        b=cIVksyRGkCJppF6GPfjQpyYhV0WBlj9r4pRRqwef1l8sqTC0hXetdLH+KxUWAooMzJ
+         GgPbfkz7hOu1wfRFU9HLIuVUWskktY85fNjRi/qrWy+yefbVJCgCNujfzHvaRYCGfNO/
+         qgJm7JjUBgN7I8ghM1AgBKt7MuRIwWXlLaroY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=yH03CJIHckJVBkbjqZkuGweYUGX1vX1nVQpBmI8JtJQ=;
-        b=MFkyMunHVc2KkUcn/YQSJQP/j3xTJLYmmg6C86pa+kQSbTsT8dOfyW+xiwiFS722to
-         L9UlsqLmhsKawNEHYXoqqJRwKyzwQEf3PtwPuSR1SEO4qdsB28fRmSOlTemRNdLzatow
-         aLCwd62Q2ZyUJwoE1uR6f5o67ojjGPAmfSuLIcXjYuqK8/KsXvso9FZpY3mDweKIkv71
-         AvfzlIz4yUW6KX7IetVpXy6p5K3TbuVC3f8Yr+irN14B7N00hOAnRQ57DRJU0OKEYaqB
-         V3OdCTsfuG5fL4fvgTMxUugob9yKHfaTZGJ6U+vzrTYUyp5cf+BypXw1VaxfOiVraCuJ
-         Wm1A==
-X-Gm-Message-State: AOAM533XhTExE1oaxep7uXtbcxWZajLvAyoKppLEdcTvX4YtiXf8wwmV
-        lhsTOvx5VzwmQa/ireYux2VoNQ==
-X-Google-Smtp-Source: ABdhPJykkk+ugrzAeS/7I7eJvWYkPvMZtXL8s4/Uc71P9D/a1e/3PMyCiWB4ocdOftx5+rTeGZRE4g==
-X-Received: by 2002:a17:906:af84:: with SMTP id mj4mr16937690ejb.473.1591090630825;
-        Tue, 02 Jun 2020 02:37:10 -0700 (PDT)
+        bh=INWpqCllWxiZN050hQmTrPBqQBX7Ogci0UB7YJjVunM=;
+        b=VqzE/R32I5qN6yyY2EvmHSLwnlb1ur9PdoH3CazqIk29ClC+gfA7TLIJzFko8d9xXP
+         Q1EFpbYj7ISuaLs3uGpVNMu9uStchBkyLkYcDGQ/KFa7CwIm9kVDPtTcRDvodDivGAmP
+         uu0dpNfx2SIb5ftDewaeC/j+SG49HoY/q8w99NxGGLYyCajHD+jSmHWaIFFsxxhqu5Z1
+         0/wF4iQ+RwjGofRgsJUcrVv15XnwsF0wNi5dbipq5lBvkMVlxzn7n0fjcOibq0UUvwOL
+         wKtpvDQ+/SPr1QkBNQ81qve6k70zxmMZjWanx/tnCFxV7JMfqWT/iI9RZ6vEIpycFyrG
+         oEsQ==
+X-Gm-Message-State: AOAM530ZPR1pavzAE2ZY+VERi2qMzeFsl0PcAm0pemAOpfFzbR2yySms
+        P97jUg3YPT2hwt+bcIEJPrCzgbyZ1iY=
+X-Google-Smtp-Source: ABdhPJzPo6bX6U0VNh0qdiuApJHPADPVcNTw8Ah6/796S+EpoPaciyJoA37oTIpDPGOkSPQCBHa4rA==
+X-Received: by 2002:a17:906:b7cd:: with SMTP id fy13mr23826393ejb.133.1591091175618;
+        Tue, 02 Jun 2020 02:46:15 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id u23sm1271702eds.73.2020.06.02.02.37.09
+        by smtp.gmail.com with ESMTPSA id di14sm1277383edb.77.2020.06.02.02.46.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 02:37:10 -0700 (PDT)
-References: <20200531082846.2117903-1-jakub@cloudflare.com> <20200531082846.2117903-8-jakub@cloudflare.com> <CAEf4BzZqtuA_45g_87jyuAdmvid=XuLGekgBdWY8i94Pnztm7Q@mail.gmail.com>
+        Tue, 02 Jun 2020 02:46:15 -0700 (PDT)
+References: <20200531082846.2117903-1-jakub@cloudflare.com> <20200531082846.2117903-12-jakub@cloudflare.com> <CAEf4BzbBRNCTxZvtn2s3uN+JG-Z6BpHvgbovi6abaQi6rSeBbQ@mail.gmail.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next v2 07/12] bpftool: Extract helpers for showing link attach type
-In-reply-to: <CAEf4BzZqtuA_45g_87jyuAdmvid=XuLGekgBdWY8i94Pnztm7Q@mail.gmail.com>
-Date:   Tue, 02 Jun 2020 11:37:09 +0200
-Message-ID: <87eeqx3j22.fsf@cloudflare.com>
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next v2 11/12] selftests/bpf: Convert test_flow_dissector to use BPF skeleton
+In-reply-to: <CAEf4BzbBRNCTxZvtn2s3uN+JG-Z6BpHvgbovi6abaQi6rSeBbQ@mail.gmail.com>
+Date:   Tue, 02 Jun 2020 11:46:13 +0200
+Message-ID: <87d06h3imy.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -61,51 +61,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 12:35 AM CEST, Andrii Nakryiko wrote:
-> On Sun, May 31, 2020 at 1:32 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Tue, Jun 02, 2020 at 12:42 AM CEST, Andrii Nakryiko wrote:
+> On Sun, May 31, 2020 at 1:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >>
->> Code for printing link attach_type is duplicated in a couple of places, and
->> likely will be duplicated for future link types as well. Create helpers to
->> prevent duplication.
+>> Switch flow dissector test setup from custom BPF object loader to BPF
+>> skeleton to save boilerplate and prepare for testing higher-level API for
+>> attaching flow dissector with bpf_link.
 >>
->> Suggested-by: Andrii Nakryiko <andriin@fb.com>
+>> To avoid depending on program order in the BPF object when populating the
+>> flow dissector PROG_ARRAY map, change the program section names to contain
+>> the program index into the map. This follows the example set by tailcall
+>> tests.
+>>
 >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 >> ---
->
-> LGTM, minor nit below.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
->>  tools/bpf/bpftool/link.c | 44 ++++++++++++++++++++--------------------
->>  1 file changed, 22 insertions(+), 22 deletions(-)
+>>  .../selftests/bpf/prog_tests/flow_dissector.c | 50 +++++++++++++++++--
+>>  tools/testing/selftests/bpf/progs/bpf_flow.c  | 20 ++++----
+>>  2 files changed, 55 insertions(+), 15 deletions(-)
 >>
->> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
->> index 670a561dc31b..1ff416eff3d7 100644
->> --- a/tools/bpf/bpftool/link.c
->> +++ b/tools/bpf/bpftool/link.c
->> @@ -62,6 +62,15 @@ show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
->>         jsonw_uint_field(json_wtr, "prog_id", info->prog_id);
->>  }
->>
->> +static void show_link_attach_type_json(__u32 attach_type, json_writer_t *wtr)
->
-> nit: if you look at jsonw_uint_field/jsonw_string_field, they accept
-> json_write_t as a first argument, because they are sort of working on
-> "object" json_writer_t. I think that's good and consistent. No big
-> deal, but if you can adjust it for consistency, it would be good.
-
-I followed show_link_header_json example here. I'm guessing the
-intention was to keep show_link_header_json and show_link_header_plain
-consistent, as the former takes an extra arg (wtr).
-
->
->> +{
->> +       if (attach_type < ARRAY_SIZE(attach_type_name))
->> +               jsonw_string_field(wtr, "attach_type",
->> +                                  attach_type_name[attach_type]);
->> +       else
->> +               jsonw_uint_field(wtr, "attach_type", attach_type);
->> +}
->> +
 >
 > [...]
+>
+>> diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> index 9941f0ba471e..de6de9221518 100644
+>> --- a/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> +++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> @@ -20,20 +20,20 @@
+>>  #include <bpf/bpf_endian.h>
+>>
+>>  int _version SEC("version") = 1;
+>> -#define PROG(F) SEC(#F) int bpf_func_##F
+>> +#define PROG(F) PROG_(F, _##F)
+>> +#define PROG_(NUM, NAME) SEC("flow_dissector/"#NUM) int bpf_func##NAME
+>>
+>>  /* These are the identifiers of the BPF programs that will be used in tail
+>>   * calls. Name is limited to 16 characters, with the terminating character and
+>>   * bpf_func_ above, we have only 6 to work with, anything after will be cropped.
+>>   */
+>> -enum {
+>> -       IP,
+>> -       IPV6,
+>> -       IPV6OP, /* Destination/Hop-by-Hop Options IPv6 Extension header */
+>> -       IPV6FR, /* Fragmentation IPv6 Extension Header */
+>> -       MPLS,
+>> -       VLAN,
+>> -};
+>
+> not clear why? just add MAX_PROG after VLAN?
+
+I wanted to change section names to:
+
+  "flow_dissector/0"
+  "flow_dissector/1"
+  ...
+
+while keeping the corresponding function names as:
+
+  bpf_func_IP
+  bpf_func_IPV6
+  ...
+
+For that I needed the preprocessor to know the value of the constant.
+
+>
+>> +#define IP             0
+>> +#define IPV6           1
+>> +#define IPV6OP         2 /* Destination/Hop-by-Hop Options IPv6 Ext. Header */
+>> +#define IPV6FR         3 /* Fragmentation IPv6 Extension Header */
+>> +#define MPLS           4
+>> +#define VLAN           5
+>> +#define MAX_PROG       6
+>>
+>>  #define IP_MF          0x2000
+>>  #define IP_OFFSET      0x1FFF
+>> @@ -59,7 +59,7 @@ struct frag_hdr {
+>>
+>>  struct {
+>>         __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>> -       __uint(max_entries, 8);
+>> +       __uint(max_entries, MAX_PROG);
+>>         __uint(key_size, sizeof(__u32));
+>>         __uint(value_size, sizeof(__u32));
+>>  } jmp_table SEC(".maps");
+>> --
+>> 2.25.4
+>>
