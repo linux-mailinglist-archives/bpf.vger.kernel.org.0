@@ -2,83 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801391EC244
-	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 21:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A991EC28B
+	for <lists+bpf@lfdr.de>; Tue,  2 Jun 2020 21:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgFBTAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 15:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S1726589AbgFBTRI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 15:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726174AbgFBTAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 15:00:25 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD522C08C5C0;
-        Tue,  2 Jun 2020 12:00:23 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id z9so3264399ljh.13;
-        Tue, 02 Jun 2020 12:00:23 -0700 (PDT)
+        with ESMTP id S1726174AbgFBTRI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 15:17:08 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3043C08C5C0;
+        Tue,  2 Jun 2020 12:17:07 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e9so4395969pgo.9;
+        Tue, 02 Jun 2020 12:17:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yat/Aky85YNgrWEeCGdTP3vQQX75KX5ytsot2hrgsCI=;
-        b=FtVSNzeBZW96IGZKJ6cAxbvq6wXcwHjKNm9xd3DMPmQi+sdolEqd9ZVjAc4myYto7A
-         1rLfJwssRGbi76jBvwkyr50O95Q2xPgsgt+SAa+EJbljGUff6QzdQEZVE4yv5e0ISnaZ
-         J2Mv3zQuaScIiWAllmtl10DGXg1pV8oI1ZW8104LNQGw+lk5cIPOZRCIdmkN3zqTQUFX
-         RL2DN6DhzAF6bN86qRNFM5YGyshyLTLSn8gL/7YDyakcIeVDPPzjioUk8nHD9eFuwppg
-         Db3J3SJ+0OElkU0yB4tFjRq2PDcLOjxxeDt6jChlFotA7D0nxqXFSRygaRdkWkkzUukn
-         QrRg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ERk066J2kbr4z1++RmP1dJLaVwbGWGmMSnbedw3Oxy8=;
+        b=GafUOppcftTmTnqBNb0uh3fbk/HTmNrhcKYxKTbaJtJ+UXG++ljmzTovkylp+KfkQt
+         JjbGdripYCUbpWhYh+9yFPTc0b0NqwlbeMfSGmBj1Wlxp40BWeDyFTFVkp0kzrMp1g75
+         qrd1/F31I6ZXftrylJmdp2tpLllz3ORuR1h1D/Z86ulwvzXL6naLpSJ5fvzBrd024X9h
+         w/4hPpPGIBXvv3bPLuFWwDnaNDIijsbU8lJfZbCI2RejPrW25c5LNdVuhEO8tYug04O6
+         2PGRheBTiCdSuSCyBuxPa1R2iYLqkdwsUQAZjPEkcdjjGXn1AtWaVjZ4dnW6RY+z+YxL
+         NIxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yat/Aky85YNgrWEeCGdTP3vQQX75KX5ytsot2hrgsCI=;
-        b=Zg+lRul1xcSLecnf0K6AfDL1H5LnXiK9v44ssJH9KUQ62BDFZP/Hfoa+3F2dZTrhVB
-         SFH1j/c8lG2lAcBK4wY6BOQRpUcX6/tgKhCGxQb7oEK1apAfjgDQQjob9pVl0BhVq9qD
-         +X5FEfV/7w+OGnsEtwApUQssVsrGja3bgTw7iLA7tKWFbKhT22bueQUPuwkvFoy6wYjT
-         WMdiyL4EzjOtDqgvtNAV43aq+9hC6I/19Vz7gFeW+A+BeIde1AXOoJhxJwz7MmDAIGW9
-         yVR/R/BrkoHxagAxRlvAKWyRNHJKeMZip/5fOCgbUWo9cqKfZKNM1RABMgXyq/mL8991
-         TS8Q==
-X-Gm-Message-State: AOAM531sO0a+8XEuD+rfp++hgeDhXTUgXQZjA/koIFPu0hl7ZrB69ACZ
-        +/eMswXFeNnZxIyqjUEsNUknHw1YafTfP/edkMg=
-X-Google-Smtp-Source: ABdhPJyfxpdE+xTeimPsFR7wp9fd2+yuX3q9JVQtaflOhoGPK8t/SzN4ORWSM3L4igOuhnEq1DAFNtaEDcFA+wwsuBk=
-X-Received: by 2002:a2e:150e:: with SMTP id s14mr245961ljd.290.1591124422271;
- Tue, 02 Jun 2020 12:00:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200602050349.215037-1-andriin@fb.com> <CAPhsuW5OH9paDZpG-KfYK3EkwpaQWPOcD6c0kyLQ7+ePs9Xd8g@mail.gmail.com>
-In-Reply-To: <CAPhsuW5OH9paDZpG-KfYK3EkwpaQWPOcD6c0kyLQ7+ePs9Xd8g@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ERk066J2kbr4z1++RmP1dJLaVwbGWGmMSnbedw3Oxy8=;
+        b=JltdQVircmTYNhDJ32KIS7XiftkWZFLjnAtFTHQWzKhgdBJ5zSYLdFjaS8ub1bZKW0
+         qOX/eonHIxEqhBYwnbWUKa7o43uLvBKo5CMqaNthquxMtXNozPpC6ic5iWjalwq2emKx
+         WWfpgm0fT8yTt8UuSKdGp3iTH9OhFHfgwlZsG2nYwc4OvPRiC/mjImQHJYInu8bIdt6h
+         hB15YhamgI2uRqGWYQWBzkwRo5ukyHVvPJ7Tse+KY48BqeYS7TOvO/vfelPxYCHwEAaB
+         NaAYJB3ylWO8CNtqVhm56gWVems/is8rPz6v1/qI2RhlxmLFniHNZEMlYlOXKtvQ3aPn
+         O6WA==
+X-Gm-Message-State: AOAM532pAuKhVMGao7h045B3ebUkm4E64taJ9q8w7LMAq53CMvCLHHUk
+        NQZCXaAQPtb66m54z641v+Ia+Rln
+X-Google-Smtp-Source: ABdhPJxrLBTRjhYYQ8aylnRTJsImNG9e2BYc18+Q/s66Jql+u9eFvQlIzqbvwEiZ1NKXEsFgfnkiOA==
+X-Received: by 2002:a17:90b:b14:: with SMTP id bf20mr688347pjb.231.1591125427339;
+        Tue, 02 Jun 2020 12:17:07 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:514a])
+        by smtp.gmail.com with ESMTPSA id n2sm3137456pfd.125.2020.06.02.12.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 12:17:06 -0700 (PDT)
+Date:   Tue, 2 Jun 2020 12:17:03 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 2 Jun 2020 12:00:07 -0700
-Message-ID: <CAADnVQL9CYGyFM-hpi4=jSA6gp3vs_0i5+bVJ5sduPtO_cPsZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix sample_cnt shared between two threads
-To:     Song Liu <song@kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+To:     Michael Forney <mforney@mforney.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
+ used from BPF program side to enums
+Message-ID: <20200602191703.xbhgy75l7cb537xe@ast-mbp.dhcp.thefacebook.com>
+References: <20200303003233.3496043-1-andriin@fb.com>
+ <20200303003233.3496043-2-andriin@fb.com>
+ <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
+ <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+ <87blpc4g14.fsf@toke.dk>
+ <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
+ <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 9:22 AM Song Liu <song@kernel.org> wrote:
->
-> On Mon, Jun 1, 2020 at 10:04 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Make sample_cnt volatile to fix possible selftests failure due to compiler
-> > optimization preventing latest sample_cnt value to be visible to main thread.
-> > sample_cnt is incremented in background thread, which is then joined into main
-> > thread. So in terms of visibility sample_cnt update is ok. But because it's
-> > not volatile, compiler might make optimizations that would prevent main thread
-> > to see latest updated value. Fix this by marking global variable volatile.
-> >
-> > Fixes: cb1c9ddd5525 ("selftests/bpf: Add BPF ringbuf selftests")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
+On Mon, Jun 01, 2020 at 10:31:34PM -0700, Michael Forney wrote:
+> Hi,
+> 
+> On 2020-03-04, Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > I was about to push the series out, but agree that there may be a risk for
+> > #ifndefs
+> > in the BPF C code. If we want to be on safe side, #define FOO FOO would be
+> > needed.
+> 
+> I did indeed hit some breakage due to this change, but not for the
+> anticipated reason.
+> 
+> The C standard requires that enumeration constants be representable as
+> an int, and have type int. While it is a common extension to allow
+> constants that exceed the limits of int, and this is required
+> elsewhere in Linux UAPI headers, this is the first case I've
+> encountered where the constant is not representable as unsigned int
+> either:
+> 
+> 	enum {
+> 		BPF_F_CTXLEN_MASK		= (0xfffffULL << 32),
+> 	};
+> 
+> To see why this can be problematic, consider the following program:
+> 
+> 	#include <stdio.h>
+> 	
+> 	enum {
+> 		A = 1,
+> 		B = 0x80000000,
+> 		C = 1ULL << 32,
+> 	
+> 		A1 = sizeof(A),
+> 		B1 = sizeof(B),
+> 	};
+> 	
+> 	enum {
+> 		A2 = sizeof(A),
+> 		B2 = sizeof(B),
+> 	};
+> 	
+> 	int main(void) {
+> 		printf("sizeof(A) = %d, %d\n", (int)A1, (int)A2);
+> 		printf("sizeof(B) = %d, %d\n", (int)B1, (int)B2);
+> 	}
+> 
+> You might be surprised by the output:
+> 
+> 	sizeof(A) = 4, 4
+> 	sizeof(B) = 4, 8
+> 
+> This is because the type of B is different inside and outside the
+> enum. In my C compiler, I have implemented the extension only for
+> constants that fit in unsigned int to avoid these confusing semantics.
+> 
+> Since BPF_F_CTXLEN_MASK is the only offending constant, is it possible
+> to restore its definition as a macro?
 
-Applied. Thanks.
+It's possible, but I'm not sure what it will fix.
+Your example is a bit misleading, since it's talking about B
+which doesn't have type specifier, whereas enums in bpf.h have ULL
+suffix where necessary.
+And the one you pointed out BPF_F_CTXLEN_MASK has sizeof == 8 in all cases.
 
-I also pushed trivial commit to fix test_verifier.
+Also when B is properly annotated like 0x80000000ULL it will have size 8
+as well.
+
+#include <stdio.h>
+
+enum {
+        A = 1,
+        B = 0x80000000,
+        C = 1ULL << 32,
+        D = 0x80000000ULL,
+
+        A1 = sizeof(A),
+        B1 = sizeof(B),
+        C1 = sizeof(C),
+        D1 = sizeof(D),
+};
+
+enum {
+        A2 = sizeof(A),
+        B2 = sizeof(B),
+        C2 = sizeof(C),
+        D2 = sizeof(D),
+};
+
+int main(void) {
+        printf("sizeof(A) = %d, %d\n", (int)A1, (int)A2);
+        printf("sizeof(B) = %d, %d\n", (int)B1, (int)B2);
+        printf("sizeof(C) = %d, %d\n", (int)C1, (int)C2);
+        printf("sizeof(D) = %d, %d\n", (int)D1, (int)D2);
+}
+
+sizeof(A) = 4, 4
+sizeof(B) = 4, 8
+sizeof(C) = 8, 8
+sizeof(D) = 8, 8
+
+So the problem is only with non-annotated enums that are mixed
+in a enum with some values <32bit and others >32 bit.
+bpf.h has only one such enum:
+enum {
+        BPF_F_INDEX_MASK                = 0xffffffffULL,
+        BPF_F_CURRENT_CPU               = BPF_F_INDEX_MASK,
+        BPF_F_CTXLEN_MASK               = (0xfffffULL << 32),
+};
+
+and all values are annotated with ULL.
+So I really don't see a problem.
+
+> Also, I'm not sure if it was considered, but using enums also changes
+> the signedness of these constants. Many of the previous macro
+> expressions had type unsigned long long, and now they have type int
+> (the type of the expression specifying the constant value does not
+> matter). I could see this causing problems if these constants are used
+> in expressions involving shifts or implicit conversions.
+
+It would have been if the enums were not annotated. But that's not the case. 
