@@ -2,116 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3301ED802
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 23:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11261ED8CB
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 00:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgFCVWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jun 2020 17:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S1726434AbgFCWvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jun 2020 18:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgFCVWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jun 2020 17:22:44 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B36C08C5C1
-        for <bpf@vger.kernel.org>; Wed,  3 Jun 2020 14:22:44 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id d5so3971089ios.9
-        for <bpf@vger.kernel.org>; Wed, 03 Jun 2020 14:22:44 -0700 (PDT)
+        with ESMTP id S1726370AbgFCWvv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jun 2020 18:51:51 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0CEC08C5C0;
+        Wed,  3 Jun 2020 15:51:51 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g12so1334478pll.10;
+        Wed, 03 Jun 2020 15:51:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mforney-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=Vd1tK7E4e8B2IJoSA0SswmHmJ19G2rVBFIVNVFG/X94=;
-        b=giwJlAm6IcT7kr/NSD2Y2PEVgUTF1GkxDvtDYdMcfTOtsH8Qvykupu1wcGfjbv8pNv
-         5vJgAsbKs526WBmmBr6aliR4qAcsGnj+jDKcfFqfLLj2VZriMgLDHDXiZndXcFsXU5kl
-         N2wg9z0MRON7wos2mtwKzoVc4IiFjLNrxY2bdmvlbiPSIH2smUKLSh3E0tqjSEBvEj8k
-         ZSwVhEtzTxyHSwCDcoUBy/0mUvh4oaZsA0LXOy4S+qw3cP7nv2RwMCYcSzg4RaPf3jCO
-         I6iKh72CcIPrtNylbvuTf4dOTv+H+eZwJ+UH6eU2bC5Jvw9fFqYo4+wbPVMf5CnyuXzq
-         CQBg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=75AnbeF25C5PRHxMmWsplju/2l9IUUVHTzTZ0/yQJAc=;
+        b=SDhBGLUJVPcBJbIeW5nwe6+j1yB0umBcNiVJr5B1L82JZptTYzKpKq7oTfaunxCfE2
+         G9m9P3VUA8YordePTB2o7TCUPrDMekcMK8UU8pvuPDF0b2ysRKLEMGi3pXmlzbAwHQ6C
+         ekGLoBBW/9NlIkBg75FRE4d/0ML/VN3C91xIisv1arzlteZiyjg3Sb9lcxptXkdnLffW
+         XsRVegn1omS6cj1eYpAWZR0OFUMBfCGqRIt1er4MnpfWLiiebdXz2152LRxDRWevgOWe
+         /8KB6bUUU7JKFw9pCKsfDER4mp2hWRhzcvKf4y3ToSh8l/q//pmMmh9U+VTeXTok1P/1
+         xXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=Vd1tK7E4e8B2IJoSA0SswmHmJ19G2rVBFIVNVFG/X94=;
-        b=JguHX4T0HzPBa/YDCeUMZEvCLulQFAkaT45v8Ptywy7Wr3j3beLYuwwETQ8GDsZ+w1
-         G65C6H+5AibKUG2S+xiIV+iXBe5APFvpXqecmcFfmRWFcD5g78KQFUNF0UzvD/w2LZ11
-         nAvzCnj/cm6Alb1i3txMsn1GvnwLDG6Dxsu1VoqiV0uubrHbwpQvIp3J3oAnmRUABD/0
-         Gphz4f+OjI9egqo6ZCFhVkNBRDd+Gs7ofg+tEFiFwOYqk1a+Q9vPpvdU4IxIJ4UIXx3c
-         M3Cr19xqfI8qwTUO0NEpiqaxd2DUpd50Ez05nY/7N2rH4ovUBqVF6YtGEj66X9cIKbXP
-         Z5pw==
-X-Gm-Message-State: AOAM530Uso5cvWzIkxM/rX3q8QL6MWvDkhPqyn+epqClHTKoYtdzAf9N
-        IO1noSEiyj3dYkFPcoLuQ05ovtQRC13cBCIHPFIsZg==
-X-Google-Smtp-Source: ABdhPJyUv7TtObDa4+oi4CiavulBo96tgOsMZmelhqiT6FWh92m1tnV3EX2us6FKIicn1NINkALJXBxCfI7/DRp4rkI=
-X-Received: by 2002:a5d:9242:: with SMTP id e2mr1433044iol.85.1591219363695;
- Wed, 03 Jun 2020 14:22:43 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6638:150:0:0:0:0 with HTTP; Wed, 3 Jun 2020 14:22:42
- -0700 (PDT)
-X-Originating-IP: [73.70.188.119]
-In-Reply-To: <CAADnVQLzQcUyi3Trtr0iT7gEhpSQYAH8WD5q+X8EmRwMYMzhbQ@mail.gmail.com>
-References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net> <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
- <87blpc4g14.fsf@toke.dk> <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
- <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
- <20200602191703.xbhgy75l7cb537xe@ast-mbp.dhcp.thefacebook.com>
- <CAGw6cBstsD40MMoHg2dGUe7YvR5KdHD8BqQ5xeXoYKLCUFAudg@mail.gmail.com>
- <20200602230720.hf2ysnlssg67cpmw@ast-mbp.dhcp.thefacebook.com>
- <CAGw6cBuF8Dj-22bH=ryL+17N48pwMD5hN49sH4AHYYyMm2xgtg@mail.gmail.com> <CAADnVQLzQcUyi3Trtr0iT7gEhpSQYAH8WD5q+X8EmRwMYMzhbQ@mail.gmail.com>
-From:   Michael Forney <mforney@mforney.org>
-Date:   Wed, 3 Jun 2020 14:22:42 -0700
-Message-ID: <CAGw6cBvpe_pL4dPY8USuETe4jh2Aq24XPf6PkFKAYHmHCGE1jw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
- used from BPF program side to enums
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=75AnbeF25C5PRHxMmWsplju/2l9IUUVHTzTZ0/yQJAc=;
+        b=YB8Fnc2OPN900iSDmyCadKZgI7A36UCJBpd+qKD9pMqI+wn+YZpqHfRF5KFLEU9HwQ
+         Gspvay5VBr8NmayarUk4qzpV+mOVHjmGdGlkYQ568X8yTdAQCsQoBNnGyH5du5vknr6T
+         4TO9cWDnHQM0uyYOlytuOcjqiXNGzPxJIpEJZ1K6AOFzcoWLfGsi22ykApV1RQoi0lPL
+         1B0urZodKPBThIVfxP1oQ3rgd+n65Lrzm5lTSP5nuU7btE3OSuCaQ0qdMoMY8eBqgLLy
+         S+jyc500mm7athd//fM3AdHbUbLFMcUC3fgKrkB305+XTpCCCdtAChwvSbSJpnzxkKv9
+         IOvw==
+X-Gm-Message-State: AOAM531BZqRBUmlHL6XSG1Yae5uOgsXyXUeADigzDOkZKg/WABPwbsEH
+        XokjVqcohZYp8jBzWAHAO1alsgeEj84=
+X-Google-Smtp-Source: ABdhPJz4pidEV/JBtin0o/PScX4wuDrRQl7WdxdFMqQxZX03oEiDeQKoC2pbF+5b5ImvIGr4w5XPtw==
+X-Received: by 2002:a17:90a:aa8f:: with SMTP id l15mr2626996pjq.156.1591224710358;
+        Wed, 03 Jun 2020 15:51:50 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id k101sm4094947pjb.26.2020.06.03.15.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 15:51:49 -0700 (PDT)
+Date:   Wed, 03 Jun 2020 15:51:40 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Message-ID: <5ed8297cbf0fd_6d732af83f96a5c0a5@john-XPS-13-9370.notmuch>
+In-Reply-To: <878sh33mvj.fsf@cloudflare.com>
+References: <158385850787.30597.8346421465837046618.stgit@john-Precision-5820-Tower>
+ <6f8bb6d8-bb70-4533-f15b-310db595d334@gmail.com>
+ <87a71k2yje.fsf@cloudflare.com>
+ <5ed7ed7d315bd_36aa2ab64b3c85bcd9@john-XPS-13-9370.notmuch>
+ <878sh33mvj.fsf@cloudflare.com>
+Subject: Re: [bpf PATCH] bpf: sockmap, remove bucket->lock from
+ sock_{hash|map}_free
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-06-02, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> ISO C forbids zero-size arrays, unnamed struct/union, gcc extensions,
-> empty unions, etc
-> So ?
+Jakub Sitnicki wrote:
+> On Wed, Jun 03, 2020 at 08:35 PM CEST, John Fastabend wrote:
+> > Jakub Sitnicki wrote:
+> 
+> [...]
+> 
+> >> I'm not sure that the check for map->refcnt when sock is unlinking
+> >> itself from the map will do it. I worry we will then have issues when
+> >> sockhash is unlinking itself from socks (so the other way around) in
+> >> sock_hash_free(). We could no longer assume that the sock & psock
+> >> exists.
+> >>
+> >> What comes to mind is to reintroduce the spin-lock protected critical
+> >> section in sock_hash_free(), but delay the processing of sockets to be
+> >> unlinked from sockhash. We could grab a ref to sk_psock while holding a
+> >> spin-lock and unlink it while no longer in atomic critical section.
+> >
+> > It seems so. In sock_hash_free we logically need,
+> >
+> >  for (i = 0; i < htab->buckets_num; i++) {
+> >   hlist_for_each_entryy_safe(...) {
+> >   	hlist_del_rcu() <- detached from bucket and no longer reachable
+> 
+> Just to confirm - synchronize_rcu() doesn't prevent
+> sock_hash_delete_from_link() from getting as far as hlist_del_rcu(),
+> that is here [0], while on another cpu sock_hash_free() is also
+> performing hlist_del_rcu().
 
-So their use should be avoided in UAPI headers whenever possible.
-While the other extensions are simple and have clear semantics, enums
-with out-of-range values do not. Even gcc and clang don't agree on
-what the types of out-of-range constants are within the enum
-specifier:
+Right.
 
-	enum { A = 0x80000000ULL, is_clang =
-__builtin_types_compatible_p(__typeof__(A), unsigned long long) };
+> 
+> That is, reintroducing the spin-lock is needed, right? Otherwise we have
+> two concurrent updaters that are not synchronized.
+> 
 
-On gcc x86_64, is_clang == 0. On clang x86_64, is_clang == 1.
+Agree I don't have any better idea.
 
-> #define BPF_F_CTXLEN_MASK BPF_F_CTXLEN_MASK
-> will only work as workaround for _your_ compiler.
-> We are not gonna add hacks like this for every compiler.
+> >         synchronize_rcu()
+> >         // now element can not be reached from unhash()
+> > 	... sock_map_unref(elem->sk, elem) ...
+> >   }
+> >  }
+> >
+> > We don't actually want to stick a synchronize_rcu() in that loop
+> > so I agree we need to collect the elements do a sync then remove them.
+> 
+> [...]
+> 
+> >>
+> >> John, WDYT?
+> >
+> > Want to give it a try? Or I can draft something.
+> 
+> I can give it a try, as I clearly need to wrap my head better around
+> this code path. But I can only see how to do it with a spin-lock back in
+> place in sock_hash_free(). If you have an idea in mind how to do it
+> locklessly, please go ahead.
 
-This doesn't solve the problem, which is that after preprocessing,
-BPF_F_INDEX_MASK and BPF_F_CURRENT_CPU, and BPF_F_CTXLEN_MASK are enum
-constants with values that can't be represented as int. Changing them
-back to defines will. This is not a hack, it is following the C
-standard.
+No I can't think of anything better.
 
-> and I still don't see how it breaks anything.
-> If it was #define and .h switched its definition from 1 to 1ULL
-> it would have had the same effect. That is the point of the constant in .h.
-> Same effect regardless whether it was done via #define and via enum.
-> The size and type of the constant may change. It's not uapi breakage.
+> 
+> [...]
+> 
+> [0] https://elixir.bootlin.com/linux/latest/source/net/core/sock_map.c#L738
 
-My point is that something like
 
-	unsigned long long x = BPF_DEVCG_DEV_BLOCK << 32;
-
-used to be perfectly fine in Linux 5.6. Now, in 5.7 with the enum
-definition, it is undefined behavior.
-
--Michael
