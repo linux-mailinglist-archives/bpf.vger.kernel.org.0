@@ -2,102 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B91EC5D2
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 01:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E5E1EC781
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 04:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgFBXhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 19:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
+        id S1726013AbgFCClH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jun 2020 22:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbgFBXhA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 19:37:00 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AFBC08C5C0;
-        Tue,  2 Jun 2020 16:37:00 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u10so371190ljj.9;
-        Tue, 02 Jun 2020 16:37:00 -0700 (PDT)
+        with ESMTP id S1726051AbgFCClG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jun 2020 22:41:06 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6C3C08C5C0;
+        Tue,  2 Jun 2020 19:41:05 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id w20so690100pga.6;
+        Tue, 02 Jun 2020 19:41:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GdWNUgi5y0Fz4OroTP++PrgaHpt4V1QS6Jm3TD7Guhw=;
-        b=flswYF3O5wxY51s5J6uaJ0EKQbmA0V43mqv+TMz3LDvmQ8CqkGdH2mVfStb3EJj8iC
-         P3OdRr8XmL1hn/eB4hosjEVE+bB1p7nBDJ5nV4Em2Cv/KnAPQ4hCe522QjgteN5DVM2k
-         kq0K2T4UOo4Zw4riBEoAoCwwCANgdloqPeVrqxOvcB4XSovXwcWLQ5LacvF5G5L42xK3
-         ZITGR1vr8aoG5A7eyK150VjKlZpExWqArRF04a8sGQ57D301PCKTWDdbxkHvls67nZ/8
-         7/sbxpZPdwAw1OGId/jE9s55d4FfJovu/JOmdRU1AXqdfGlR40N7RNbMKz9dzA2r7SsB
-         aR/w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EB75bi8QTeVzqrx9jwWk4wz772Z05AX+1WdlpDKhHNo=;
+        b=KuoK74s/E/VLnN5y3HutWbMf6OeGxNP0wJfX/55F4KC3WWYexpSFh2oULh0X3AN5OG
+         Sr+cKm4gNgdOtHq49ubNwFVqoTWlMjt71bld3no5nn0/UtoJvqfNly9xuhOUegKbFbzo
+         4Kzj6UMwi61P11r0NA1CZxvF9OgvJ9SYMeVBDuotcbwmY0sDoRjc1//QZD04MTp38jBw
+         8nI8bmh0/edUCJn6qgjKGMjpYh0jJOZ0318fWAYZ9wjHpRXbElhSQy3cRohaVZMaxsrN
+         GagaCUCU/EH9j1D3D1VD+a8drJGnjZibKcNwng4SUekB7YAiz8jbEW0+HxjV1T6Qya7w
+         kNhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GdWNUgi5y0Fz4OroTP++PrgaHpt4V1QS6Jm3TD7Guhw=;
-        b=BL390f4EsyplpCqJCUwLvMBpWhosl1widbf1OaX8hdH+isvXBoizVCkfeox7suK+Ez
-         fA/egfPRn5wuXkMx+c8olY0HRPuUO83nt7hcB5nHlk49ENHb7Z1LeMyryB4GsgRT4ymF
-         ftv6QlGDEuhpDEJ1sqRxzX1jpTnBJFkD8TAVGbGAJwM2ho5ti56cpc3EAv6uPUihSsbL
-         Vf2TatzWSSsP81nw9XDv1fv2k8FURp0q26QAgbJbM0QXHxfYu36LcHqg53y1L8iCR6lR
-         aEXvC1n6e1zjtozCQAl1rGXK4ukkvAoWTMNKG3RaZeQmKx6jWoLlKgxO0WSongyZfuRI
-         VyZA==
-X-Gm-Message-State: AOAM532Xp4VdkLVyz+1N7AtJumBqg9oBVQjT+dCZ/TBLhEQbkgdQyodj
-        aNXfh5jHLDsWd9jUSxvNEDIYW49bCB4LIE+PKPM=
-X-Google-Smtp-Source: ABdhPJwWZAbuTC/pnOc5/VzkEakgL1GLhE2Ep1oCj70IRumzCeqf4Cv1NXxKiPB/rXYFrZdtFdLk0DA5k46qvFpnMNQ=
-X-Received: by 2002:a2e:81d1:: with SMTP id s17mr702198ljg.91.1591141018774;
- Tue, 02 Jun 2020 16:36:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EB75bi8QTeVzqrx9jwWk4wz772Z05AX+1WdlpDKhHNo=;
+        b=J36EplU+5+YjpCB63Rxyz4UJ7FCDVjo2FhJr9U3S1Dsfe5NHMYipy/I3M696u8q2J6
+         YF4DYV1T9BqeL0ZExCowyQ7GnbawAlYGJk2cndQie7fPTlVXAvYLj9XqQI94NsVIfkwx
+         RYSIQ0OZMTW+nYLphyMWgy4S/OHFdCPBtgrDcwfWWIqaksCsIkwmYZoQAeFIjW1So8la
+         OB1WiwE5A7oksHhM4SqA3qus2hKnxCLAxH3hHYZUzWtmEc6nfTFJc0CgXMkbC16MYULe
+         kEfD621qpe2GME4JobOuCGsQXF7FFdqM229z1LsOYfMxOD07qBRhZex2IMjimZJJiaJf
+         +5Rg==
+X-Gm-Message-State: AOAM533Bv0lQtNDAMJNLkfkLcnvBNaI3Ybe+4mZgLqzrcMxikf/uyWUS
+        d2oIhcd86uK0Nn2IVvaR9NQ=
+X-Google-Smtp-Source: ABdhPJzRdgif90NB2MPa1c8Oo6UyryMehTj1voTNyEQ50nY1t/+htMLnKqYCILHLu0IG97LXz31GXQ==
+X-Received: by 2002:a63:b10b:: with SMTP id r11mr25502461pgf.27.1591152065420;
+        Tue, 02 Jun 2020 19:41:05 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 207sm386461pfw.190.2020.06.02.19.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2020 19:41:04 -0700 (PDT)
+Date:   Wed, 3 Jun 2020 10:40:54 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
+Message-ID: <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com>
+ <20200526140539.4103528-1-liuhangbin@gmail.com>
+ <87zh9t1xvh.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net> <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
- <87blpc4g14.fsf@toke.dk> <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
- <CAGw6cBuCwmbULDq2v76SWqVYL2o8i+pBg7JnDi=F+6Wcq3SDTA@mail.gmail.com>
- <20200602191703.xbhgy75l7cb537xe@ast-mbp.dhcp.thefacebook.com>
- <CAGw6cBstsD40MMoHg2dGUe7YvR5KdHD8BqQ5xeXoYKLCUFAudg@mail.gmail.com>
- <20200602230720.hf2ysnlssg67cpmw@ast-mbp.dhcp.thefacebook.com> <CAGw6cBuF8Dj-22bH=ryL+17N48pwMD5hN49sH4AHYYyMm2xgtg@mail.gmail.com>
-In-Reply-To: <CAGw6cBuF8Dj-22bH=ryL+17N48pwMD5hN49sH4AHYYyMm2xgtg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 2 Jun 2020 16:36:46 -0700
-Message-ID: <CAADnVQLzQcUyi3Trtr0iT7gEhpSQYAH8WD5q+X8EmRwMYMzhbQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
- used from BPF program side to enums
-To:     Michael Forney <mforney@mforney.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zh9t1xvh.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 4:21 PM Michael Forney <mforney@mforney.org> wrote:
->
-> On 2020-06-02, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > the enum definition of BPF_F_CTXLEN_MASK is certainly within standard.
-> > I don't think kernel should adjust its headers because some compiler
-> > is failing to understand C standard.
->
-> This is not true. See C11 6.7.2.2p2: "The expression that defines the
-> value of an enumeration constant shall be an integer constant
-> expression that has a value representable as an int."
->
-> You can also see this with gcc if you turn on -Wpedantic and include
-> it in a way such that warnings are not silenced:
->
-> $ gcc -Wpedantic -x c -c -o /dev/null /usr/include/linux/bpf.h
+On Wed, May 27, 2020 at 12:21:54PM +0200, Toke Høiland-Jørgensen wrote:
+> > The example in patch 2 is functional, but not a lot of effort
+> > has been made on performance optimisation. I did a simple test(pkt size 64)
+> > with pktgen. Here is the test result with BPF_MAP_TYPE_DEVMAP_HASH
+> > arrays:
+> >
+> > bpf_redirect_map() with 1 ingress, 1 egress:
+> > generic path: ~1600k pps
+> > native path: ~980k pps
+> >
+> > bpf_redirect_map_multi() with 1 ingress, 3 egress:
+> > generic path: ~600k pps
+> > native path: ~480k pps
+> >
+> > bpf_redirect_map_multi() with 1 ingress, 9 egress:
+> > generic path: ~125k pps
+> > native path: ~100k pps
+> >
+> > The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+> > the arrays and do clone skb/xdpf. The native path is slower than generic
+> > path as we send skbs by pktgen. So the result looks reasonable.
+> 
+> How are you running these tests? Still on virtual devices? We really
+> need results from a physical setup in native mode to assess the impact
+> on the native-XDP fast path. The numbers above don't tell much in this
+> regard. I'd also like to see a before/after patch for straight
+> bpf_redirect_map(), since you're messing with the fast path, and we want
+> to make sure it's not causing a performance regression for regular
+> redirect.
+> 
+> Finally, since the overhead seems to be quite substantial: A comparison
+> with a regular network stack bridge might make sense? After all we also
+> want to make sure it's a performance win over that :)
 
-ISO C forbids zero-size arrays, unnamed struct/union, gcc extensions,
-empty unions, etc
-So ?
+Hi Toke,
 
-warning: ISO C forbids zero-size array =E2=80=98args=E2=80=99 [-Wpedantic]
- 4095 |  __u64 args[0];
- warning: ISO C90 doesn=E2=80=99t support unnamed structs/unions [-Wpedanti=
-c]
- 3795 |  __bpf_md_ptr(void *, data_end);
+Here is the result I tested with 2 i40e 10G ports on physical machine.
+The pktgen pkt_size is 64.
 
-#define BPF_F_CTXLEN_MASK BPF_F_CTXLEN_MASK
-will only work as workaround for _your_ compiler.
-We are not gonna add hacks like this for every compiler.
+Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are two modes data):
+generic mode: 1.32M PPS
+driver mode: 1.66M PPS
+
+xdp_redirect_map:
+generic mode: 1.88M PPS
+driver mode: 2.74M PPS
+
+xdp_redirect_map_multi:
+generic mode: 1.38M PPS
+driver mode: 2.73M PPS
+
+So what do you think about the data. If you are OK, I will update
+my patch and re-post it.
+
+Thanks
+Hangbin
