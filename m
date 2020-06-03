@@ -2,92 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C117C1ED42B
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 18:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8641ED570
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 19:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgFCQXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jun 2020 12:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgFCQXC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jun 2020 12:23:02 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD90C08C5C0;
-        Wed,  3 Jun 2020 09:23:00 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o8so2072376pgm.7;
-        Wed, 03 Jun 2020 09:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s7Ko6upiKAIvqYL063g9Rc3Xn7QRvM5OJQcOqOMGn4U=;
-        b=rrwhxy37h03q7p2U6a2+yR9r95zdtmyfsaGq+5/pmM54tFyLU53gbwIxy327hv4jFa
-         ZfCxGhnyTaBfFwlmSfYbn9TshqD8dhElUGlCTPAyv3DF+sc6pJyrEmOTD0a/ASuI0jsE
-         RTrHhVQ0MnvN29qP3uBCsnAHDjxg8hVLh/gvK/R0+QwbIw8VnfMgyNLUixH6YqN7Qx6i
-         SKQVG/Mh2piAabxY/s10LDi3WAd8fWqNlSnTirVpjMd0hPspUeG4nkhDa/g0W/YSf1tk
-         Gb6TU7we4yruHT1IaFz/VpJC9h3sXtkZ+SMCt8VfRtxuNx4OREycte31PmrrIiM7jz5g
-         Wy3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s7Ko6upiKAIvqYL063g9Rc3Xn7QRvM5OJQcOqOMGn4U=;
-        b=JZCmgm8urwYCqKR0CrF9Ft66zkS7fV83LOcoXP1LpowO0tk18e89IyieQJEmM9P9+C
-         O5gk79gBIeWGzNRw5EndThGPy6WQUui6mDX3TXoCAc+cVKAVoT8y1KhSI3M1LKGQuYk0
-         fBcNQXtV+s+1xOquzHDomo21GODMsL5XgN+VTNxOin72UdprnMxIptFnhq+LdDFgLPEO
-         /egZGtiO1CCf65tiNFgaEAeju0tsDNn8+w9zU/sWUv2fQaOmqnrr3blWjQM/MQrNV/t/
-         RbsF6SrkCA4gXxx1ldR2FrqEAMvu94K40XqCn6wr4R6/BBgXPS1gkdP+4pSoGgfN2Zhg
-         FrCQ==
-X-Gm-Message-State: AOAM531eaeICvxGqWcy91f6hghZ+tGjsM5R7sm7odq+xgno4Cwwqhr+9
-        emw8K/smTUlcyyqmiMAtT0Q=
-X-Google-Smtp-Source: ABdhPJw6rBWTPBUW9ehxH1BKjm+dkXuXj74CvXevwAvXkT3gUOhDdmcX8TDlYiLPUdP5AtFDIqv4bQ==
-X-Received: by 2002:a63:6604:: with SMTP id a4mr218583pgc.12.1591201380246;
-        Wed, 03 Jun 2020 09:23:00 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:514a])
-        by smtp.gmail.com with ESMTPSA id m12sm3000411pjs.41.2020.06.03.09.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 09:22:59 -0700 (PDT)
-Date:   Wed, 3 Jun 2020 09:22:57 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on
- BTF
-Message-ID: <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
-References: <159119908343.1649854.17264745504030734400.stgit@firesoul>
+        id S1726219AbgFCRzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jun 2020 13:55:37 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46194 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgFCRzh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jun 2020 13:55:37 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053HpaX6169343;
+        Wed, 3 Jun 2020 17:55:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=e3o2KK1m1OUhdKXLk8BYlIuJm7LXmY0Qn2D/qITDM5E=;
+ b=GiImnz3CmN5ZP2W3igK7dVc0I16LpzBR9xrO0Jnr/5XqR2x2Z9qNaH07bJ4bSzRxH7wG
+ FhqTMkMqgfh1kcnlpE838nawzQvq8qXIUs1I+tlYBmQaSHgb82VDIvmbi8sj96ORC0XA
+ /cfj6ZqTsp+cvBHnn8qvqJTF5Ggnid2erR+TrsTgxEtRCa/1+17GXRr+b4UzGVhB85nE
+ H58mqJ87YTn+n+XUWGYKbg8rmWz8BM/j0wJ+taWcw7l2++DqpGau986q9k/SqCmH61VS
+ N3xPWShzc6m1S3VJvMRJjMywLR92aI3+J25rWUR9vMdl+KYmPu+giMA/S43v39IFcY9b sw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 31bewr2r0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 03 Jun 2020 17:55:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053HrKit083778;
+        Wed, 3 Jun 2020 17:55:19 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 31c1e0dbm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Jun 2020 17:55:18 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 053HtHI4019731;
+        Wed, 3 Jun 2020 17:55:17 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 10:55:17 -0700
+Date:   Wed, 3 Jun 2020 20:55:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: Fix an error code in check_btf_func()
+Message-ID: <20200603175509.GE18931@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159119908343.1649854.17264745504030734400.stgit@firesoul>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=996
+ spamscore=0 bulkscore=0 adultscore=0 suspectscore=2 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=2 impostorscore=0 cotscore=-2147483648
+ lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006030138
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 05:44:43PM +0200, Jesper Dangaard Brouer wrote:
-> The recent commit fbee97feed9b ("bpf: Add support to attach bpf program to a
-> devmap entry"), introduced ability to attach (and run) a separate XDP
-> bpf_prog for each devmap entry. A bpf_prog is added via a file-descriptor,
-> thus not using the feature requires using value minus-1. The UAPI is
-> extended via tail-extending struct bpf_devmap_val and using map->value_size
-> to determine the feature set.
-> 
-> There is a specific problem with dev_map_can_have_prog() check, which is
-> called from net/core/dev.c in generic_xdp_install() to refuse usage of
-> devmap's from generic-XDP that support these bpf_prog's. The check is size
-> based. This means that all newer features will be blocked from being use by
-> generic-XDP.
-> 
-> This patch allows userspace to skip handling of 'bpf_prog' on map-inserts.
-> The feature can be skipped, via not including the member 'bpf_prog' in the
-> map-value struct, which is propagated/described via BTF.
-> 
-> Fixes: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com
+This code returns success if kcalloc() but it should return -ENOMEM.
 
-The patch makes no sense to me.
-please expose 'struct struct bpf_devmap_val' in uapi/bpf.h
-That's what it is whether you want to acknowledge that or not.
+Fixes: 8c1b6e69dcc1 ("bpf: Compare BTF types of functions arguments with actual types")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ kernel/bpf/verifier.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5c7bbaac81ef9..25363f134bf0c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7581,8 +7581,10 @@ static int check_btf_func(struct bpf_verifier_env *env,
+ 	if (!krecord)
+ 		return -ENOMEM;
+ 	info_aux = kcalloc(nfuncs, sizeof(*info_aux), GFP_KERNEL | __GFP_NOWARN);
+-	if (!info_aux)
++	if (!info_aux) {
++		ret = -ENOMEM;
+ 		goto err_free;
++	}
+ 
+ 	for (i = 0; i < nfuncs; i++) {
+ 		ret = bpf_check_uarg_tail_zero(urecord, krec_size, urec_size);
+-- 
+2.26.2
+
