@@ -2,117 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F2B1ECC3B
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 11:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079071ECDF6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 13:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgFCJMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jun 2020 05:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgFCJMF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:12:05 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8930C05BD43
-        for <bpf@vger.kernel.org>; Wed,  3 Jun 2020 02:12:04 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id x1so1353233ejd.8
-        for <bpf@vger.kernel.org>; Wed, 03 Jun 2020 02:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nTJKg7NFlS/kS/+rvsgLEsS0PyK1+J6045eIfGo40yo=;
-        b=D4oYPOKO9hTNajgIR15Wn+4k++eP7IRGRfB9Mdcs4CqYquTmsDLhyZwWHShZO4LQlO
-         ARASZr0P7WffkVXLMcy5tTs4hD8C1iBppLHnIISE1f7f5T1Co90qv0WXIyWbP1QSP0FW
-         vvWk3EIt4TlqN5RZpd1AiIFnPFWqDY/hEyoLaDx+oj7ZD9JWMiFAHxkpNbjg6kBfrG0H
-         ZWyf04x7R1Zr57A9Vb6i6St4/5YwC0jV7UKpJOidW5MMOPKCmKdFg5rYiJJrLGVIIwWw
-         TtDwZVO06ZBNE/CSmzHfB/+bAID/X+W7iGHJKeIJBmNq18Uy0m7vwAa2OcxBJlqOktCx
-         X28g==
+        id S1725993AbgFCLFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jun 2020 07:05:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44053 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726003AbgFCLFf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:05:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591182333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7/UZ1k1Tnz+0aL6W1DGoxSSobfkMGETgBO+uk6FERaM=;
+        b=ilWFgepJztXU8paZnksYiDLX1VCU0fMtCNRPrDMphganF9C0gkEV7afQtU0zppAG+Bd7cS
+        1H7tswEKd0Ni4S1AS/X7YOHGJC1NYaqnCr/vXtT4TMd1AT4qzugSZ0h4Xi7jTsCZc5PGGB
+        0AxT1M2obov90WLVf1izK5BNgghIT80=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-KDeOwqGPMUKn62QpSnVlvA-1; Wed, 03 Jun 2020 07:05:31 -0400
+X-MC-Unique: KDeOwqGPMUKn62QpSnVlvA-1
+Received: by mail-ed1-f69.google.com with SMTP id k17so907204edo.20
+        for <bpf@vger.kernel.org>; Wed, 03 Jun 2020 04:05:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nTJKg7NFlS/kS/+rvsgLEsS0PyK1+J6045eIfGo40yo=;
-        b=DAg4Z1YH75wizzZJFMtn8paaN0U8APb51t2QzRZGO1mhifgd/dWqjlaSqz890beG/I
-         mkb0MW28TGYzCLgwVpWnl+10NzaNr24SpSjWoKL7dYgUIi9agJ1VnZ+XcMZBu2zx9jPz
-         8j9TihJE+q+u6Ew5mV5XasIq6MXWljAu0g02T7Puav99SCxD+H0lQhmZjaOudVHYXt9b
-         kThhgzKzYFNlz0TNFQYGe39nexk6kQeEBVE2V1i/yPJVl4Z3+ACArqoZSZzoW0BM2d8H
-         bAuhddHX/7xNKkVt+5jW4IIwaPhko/cis8BKRxr1UbAPk5VZDj6rXsmnEHX60NSOcYtH
-         w8Aw==
-X-Gm-Message-State: AOAM532b17cH+KtJwOn9HL55Dy7kxF6UNCxT+eBU11kBMXUuzZSPQbO4
-        hdg2V76OkHz1VQnFagoM48nlIN/xM6QlzA==
-X-Google-Smtp-Source: ABdhPJyfTBPk1JryAQQvMhD39g9OljlrjBk4NcoU/yS6cmG3yen98ftBcC9QYnjCKhKv/hikEK41bQ==
-X-Received: by 2002:a17:906:f8f:: with SMTP id q15mr28143238ejj.389.1591175523317;
-        Wed, 03 Jun 2020 02:12:03 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([79.132.248.22])
-        by smtp.gmail.com with ESMTPSA id dj26sm857510edb.4.2020.06.03.02.12.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jun 2020 02:12:02 -0700 (PDT)
-Subject: Re: [PATCH bpf] bpf: fix unused-var without NETDEVICES
-To:     Ferenc Fejes <fejes@inf.elte.hu>
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=7/UZ1k1Tnz+0aL6W1DGoxSSobfkMGETgBO+uk6FERaM=;
+        b=QtNR5gtabNDSzmNJ09iVCbR0wYx92iGdvxL36C3E4Kw72+kDNEvXzA4Vdhd0ozG5QS
+         GmOx1BjC++Fh9wWvfSyODa4sy9TCD31HJrNlD5ss7kCzjTX6qui13JhkxX0McGZV3dtO
+         MfhiW4TwUrt44mV8V5+Ie5YUxmQpvBBdldXTkhCNnpO7DTafeN9Penc0JSoC/nAiu0qa
+         KQ6Ucg7GFo+XzM4KjlLLO+RmmZG10NFnCym6ZxnFxVg79GgavIS8svmoALkUf9kwZzD5
+         TT2ZT8wwXDuBZZu8s40l6LYZ4Bv5n5aiTkfExDmNCZI19zXlZpT0YiaOsZ9IlZFn/AYO
+         jCZA==
+X-Gm-Message-State: AOAM532m3j8EAy3l0d+/veYuNJdIcA4dDtPRK5ZBBXFI4CRjzeA8xols
+        4yg9pzysn2wo4mjbEQhErKqhh5N2D4s8Lso2TgClarSvgMGz/g4fczADCg/pXXWXFx/hubOykBL
+        67yQaZm+CxhwS
+X-Received: by 2002:a05:6402:311c:: with SMTP id dc28mr15417535edb.184.1591182330459;
+        Wed, 03 Jun 2020 04:05:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPv1J7mEIffBwXirBApKMnotEG2ItUqEy0W7mVGX7vHKGQMpxhiGMUsPP5lgXN4El4jaQIDg==
+X-Received: by 2002:a05:6402:311c:: with SMTP id dc28mr15417508edb.184.1591182330204;
+        Wed, 03 Jun 2020 04:05:30 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id s14sm933965ejd.111.2020.06.03.04.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jun 2020 04:05:28 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 64AED182797; Wed,  3 Jun 2020 13:05:28 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200603081124.1627600-1-matthieu.baerts@tessares.net>
- <CAAej5NZZNg+0EbZsa-SrP0S_sOPMqdzgQ9hS8z6DYpQp9G+yhw@mail.gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <1cb3266c-7c8c-ebe6-0b6e-6d970e0adbd1@tessares.net>
-Date:   Wed, 3 Jun 2020 11:12:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
+In-Reply-To: <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200526140539.4103528-1-liuhangbin@gmail.com> <87zh9t1xvh.fsf@toke.dk> <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 03 Jun 2020 13:05:28 +0200
+Message-ID: <87img8l893.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CAAej5NZZNg+0EbZsa-SrP0S_sOPMqdzgQ9hS8z6DYpQp9G+yhw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ferenc,
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-On 03/06/2020 10:56, Ferenc Fejes wrote:
-> Matthieu Baerts <matthieu.baerts@tessares.net> ezt írta (időpont:
-> 2020. jún. 3., Sze, 10:11):
->>
->> A recent commit added new variables only used if CONFIG_NETDEVICES is
->> set.
-> 
-> Thank you for noticing and fixed this!
-> 
->> A simple fix is to only declare these variables if the same
->> condition is valid.
->>
->> Other solutions could be to move the code related to SO_BINDTODEVICE
->> option from _bpf_setsockopt() function to a dedicated one or only
->> declare these variables in the related "case" section.
-> 
-> Yes thats indeed a cleaner way to approach this. I will prepare a fix for that.
+> On Wed, May 27, 2020 at 12:21:54PM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
+land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+>> > The example in patch 2 is functional, but not a lot of effort
+>> > has been made on performance optimisation. I did a simple test(pkt siz=
+e 64)
+>> > with pktgen. Here is the test result with BPF_MAP_TYPE_DEVMAP_HASH
+>> > arrays:
+>> >
+>> > bpf_redirect_map() with 1 ingress, 1 egress:
+>> > generic path: ~1600k pps
+>> > native path: ~980k pps
+>> >
+>> > bpf_redirect_map_multi() with 1 ingress, 3 egress:
+>> > generic path: ~600k pps
+>> > native path: ~480k pps
+>> >
+>> > bpf_redirect_map_multi() with 1 ingress, 9 egress:
+>> > generic path: ~125k pps
+>> > native path: ~100k pps
+>> >
+>> > The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we l=
+oop
+>> > the arrays and do clone skb/xdpf. The native path is slower than gener=
+ic
+>> > path as we send skbs by pktgen. So the result looks reasonable.
+>>=20
+>> How are you running these tests? Still on virtual devices? We really
+>> need results from a physical setup in native mode to assess the impact
+>> on the native-XDP fast path. The numbers above don't tell much in this
+>> regard. I'd also like to see a before/after patch for straight
+>> bpf_redirect_map(), since you're messing with the fast path, and we want
+>> to make sure it's not causing a performance regression for regular
+>> redirect.
+>>=20
+>> Finally, since the overhead seems to be quite substantial: A comparison
+>> with a regular network stack bridge might make sense? After all we also
+>> want to make sure it's a performance win over that :)
+>
+> Hi Toke,
+>
+> Here is the result I tested with 2 i40e 10G ports on physical machine.
+> The pktgen pkt_size is 64.
 
-I should have maybe added that I didn't take this approach because in 
-the rest of the code, I don't see that variables are declared only in a 
-"case" section (no "{" ... "}" after "case") and code is generally not 
-moved into a dedicated function in these big switch/cases. But maybe it 
-makes sense here because of the #ifdef!
-At the end, I took the simple approach because it is for -net.
+These numbers seem a bit low (I'm getting ~8.5MPPS on my test machine
+for a simple redirect). Some of that may just be performance of the
+machine, I guess (what are you running this on?), but please check that
+you are not limited by pktgen itself - i.e., that pktgen is generating
+traffic at a higher rate than what XDP is processing.
 
-In other words, I don't know what maintainers would prefer here but I am 
-happy to see any another solutions implemented to remove these compiler 
-warnings :)
+> Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are tw=
+o modes data):
+> generic mode: 1.32M PPS
+> driver mode: 1.66M PPS
 
-Cheers,
-Matt
--- 
-Matthieu Baerts | R&D Engineer
-matthieu.baerts@tessares.net
-Tessares SA | Hybrid Access Solutions
-www.tessares.net
-1 Avenue Jean Monnet, 1348 Louvain-la-Neuve, Belgium
+I'm not sure I understand this - what are you measuring here exactly?
+
+> xdp_redirect_map:
+> generic mode: 1.88M PPS
+> driver mode: 2.74M PPS
+
+Please add numbers without your patch applied as well, for comparison.
+
+> xdp_redirect_map_multi:
+> generic mode: 1.38M PPS
+> driver mode: 2.73M PPS
+
+I assume this is with a single interface only, right? Could you please
+add a test with a second interface (so the packet is cloned) as well?
+You can just use a veth as the second target device.
+
+-Toke
+
