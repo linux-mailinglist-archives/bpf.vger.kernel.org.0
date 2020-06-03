@@ -2,129 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E5E1EC781
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 04:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CFD1EC883
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 06:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgFCClH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jun 2020 22:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgFCClG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jun 2020 22:41:06 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6C3C08C5C0;
-        Tue,  2 Jun 2020 19:41:05 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id w20so690100pga.6;
-        Tue, 02 Jun 2020 19:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EB75bi8QTeVzqrx9jwWk4wz772Z05AX+1WdlpDKhHNo=;
-        b=KuoK74s/E/VLnN5y3HutWbMf6OeGxNP0wJfX/55F4KC3WWYexpSFh2oULh0X3AN5OG
-         Sr+cKm4gNgdOtHq49ubNwFVqoTWlMjt71bld3no5nn0/UtoJvqfNly9xuhOUegKbFbzo
-         4Kzj6UMwi61P11r0NA1CZxvF9OgvJ9SYMeVBDuotcbwmY0sDoRjc1//QZD04MTp38jBw
-         8nI8bmh0/edUCJn6qgjKGMjpYh0jJOZ0318fWAYZ9wjHpRXbElhSQy3cRohaVZMaxsrN
-         GagaCUCU/EH9j1D3D1VD+a8drJGnjZibKcNwng4SUekB7YAiz8jbEW0+HxjV1T6Qya7w
-         kNhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EB75bi8QTeVzqrx9jwWk4wz772Z05AX+1WdlpDKhHNo=;
-        b=J36EplU+5+YjpCB63Rxyz4UJ7FCDVjo2FhJr9U3S1Dsfe5NHMYipy/I3M696u8q2J6
-         YF4DYV1T9BqeL0ZExCowyQ7GnbawAlYGJk2cndQie7fPTlVXAvYLj9XqQI94NsVIfkwx
-         RYSIQ0OZMTW+nYLphyMWgy4S/OHFdCPBtgrDcwfWWIqaksCsIkwmYZoQAeFIjW1So8la
-         OB1WiwE5A7oksHhM4SqA3qus2hKnxCLAxH3hHYZUzWtmEc6nfTFJc0CgXMkbC16MYULe
-         kEfD621qpe2GME4JobOuCGsQXF7FFdqM229z1LsOYfMxOD07qBRhZex2IMjimZJJiaJf
-         +5Rg==
-X-Gm-Message-State: AOAM533Bv0lQtNDAMJNLkfkLcnvBNaI3Ybe+4mZgLqzrcMxikf/uyWUS
-        d2oIhcd86uK0Nn2IVvaR9NQ=
-X-Google-Smtp-Source: ABdhPJzRdgif90NB2MPa1c8Oo6UyryMehTj1voTNyEQ50nY1t/+htMLnKqYCILHLu0IG97LXz31GXQ==
-X-Received: by 2002:a63:b10b:: with SMTP id r11mr25502461pgf.27.1591152065420;
-        Tue, 02 Jun 2020 19:41:05 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 207sm386461pfw.190.2020.06.02.19.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 19:41:04 -0700 (PDT)
-Date:   Wed, 3 Jun 2020 10:40:54 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-Message-ID: <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com>
- <20200526140539.4103528-1-liuhangbin@gmail.com>
- <87zh9t1xvh.fsf@toke.dk>
+        id S1725780AbgFCEvi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jun 2020 00:51:38 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2156 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725275AbgFCEvi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jun 2020 00:51:38 -0400
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id CD7BA67876921A873E0A;
+        Wed,  3 Jun 2020 12:51:35 +0800 (CST)
+Received: from dggema755-chm.china.huawei.com (10.1.198.197) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 3 Jun 2020 12:51:35 +0800
+Received: from dggema758-chm.china.huawei.com (10.1.198.200) by
+ dggema755-chm.china.huawei.com (10.1.198.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 3 Jun 2020 12:51:35 +0800
+Received: from dggema758-chm.china.huawei.com ([10.9.48.193]) by
+ dggema758-chm.china.huawei.com ([10.9.48.193]) with mapi id 15.01.1913.007;
+ Wed, 3 Jun 2020 12:51:35 +0800
+From:   "zhujianwei (C)" <zhujianwei7@huawei.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Hehuazhen <hehuazhen@huawei.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Christian Ehrhardt <christian.ehrhardt@canonical.com>,
+        =?utf-8?B?WmJpZ25pZXcgSsSZZHJ6ZWpld3NraS1Tem1law==?= 
+        <zbyszek@in.waw.pl>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlOWkjTogbmV3IHNlY2NvbXAgbW9kZSBhaW1z?=
+ =?utf-8?Q?_to_improve_performance?=
+Thread-Topic: =?utf-8?B?562U5aSNOiDnrZTlpI06IG5ldyBzZWNjb21wIG1vZGUgYWltcyB0byBpbXBy?=
+ =?utf-8?Q?ove_performance?=
+Thread-Index: AdY1q17j91IY6CMiRsq40mFg/pmPz///wxIAgAAHIgCAADc1gP/7503AgAfEWYD//fXnAIADmuoA//74EOD//e1ysP/75+mA//aekTA=
+Date:   Wed, 3 Jun 2020 04:51:35 +0000
+Message-ID: <8fb6782a829a4d79b73c189756086630@huawei.com>
+References: <c22a6c3cefc2412cad00ae14c1371711@huawei.com>
+ <CAADnVQLnFuOR+Xk1QXpLFGHx-8StPCye7j5UgKbBoLrmKtygQA@mail.gmail.com>
+ <202005290903.11E67AB0FD@keescook> <202005291043.A63D910A8@keescook>
+ <ff10225b79a14fec9bc383e710d74b2e@huawei.com>
+ <CAADnVQK2WEh980KMkXy9TNeDqKA-fDMxkojPYf=b5eJSgG=K0g@mail.gmail.com>
+ <7dacac003a9949ea8163fca5125a2cae@huawei.com>
+ <20200602032446.7sn2fmzsea2v2wbs@ast-mbp.dhcp.thefacebook.com>
+ <07ce4c1273054955a350e67f2dc35812@huawei.com>
+ <202006021111.947830EC@keescook>
+In-Reply-To: <202006021111.947830EC@keescook>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.166.215.96]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zh9t1xvh.fsf@toke.dk>
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 27, 2020 at 12:21:54PM +0200, Toke Høiland-Jørgensen wrote:
-> > The example in patch 2 is functional, but not a lot of effort
-> > has been made on performance optimisation. I did a simple test(pkt size 64)
-> > with pktgen. Here is the test result with BPF_MAP_TYPE_DEVMAP_HASH
-> > arrays:
-> >
-> > bpf_redirect_map() with 1 ingress, 1 egress:
-> > generic path: ~1600k pps
-> > native path: ~980k pps
-> >
-> > bpf_redirect_map_multi() with 1 ingress, 3 egress:
-> > generic path: ~600k pps
-> > native path: ~480k pps
-> >
-> > bpf_redirect_map_multi() with 1 ingress, 9 egress:
-> > generic path: ~125k pps
-> > native path: ~100k pps
-> >
-> > The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
-> > the arrays and do clone skb/xdpf. The native path is slower than generic
-> > path as we send skbs by pktgen. So the result looks reasonable.
-> 
-> How are you running these tests? Still on virtual devices? We really
-> need results from a physical setup in native mode to assess the impact
-> on the native-XDP fast path. The numbers above don't tell much in this
-> regard. I'd also like to see a before/after patch for straight
-> bpf_redirect_map(), since you're messing with the fast path, and we want
-> to make sure it's not causing a performance regression for regular
-> redirect.
-> 
-> Finally, since the overhead seems to be quite substantial: A comparison
-> with a regular network stack bridge might make sense? After all we also
-> want to make sure it's a performance win over that :)
-
-Hi Toke,
-
-Here is the result I tested with 2 i40e 10G ports on physical machine.
-The pktgen pkt_size is 64.
-
-Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are two modes data):
-generic mode: 1.32M PPS
-driver mode: 1.66M PPS
-
-xdp_redirect_map:
-generic mode: 1.88M PPS
-driver mode: 2.74M PPS
-
-xdp_redirect_map_multi:
-generic mode: 1.38M PPS
-driver mode: 2.73M PPS
-
-So what do you think about the data. If you are OK, I will update
-my patch and re-post it.
-
-Thanks
-Hangbin
+PiBHaXZlbiB0aGF0IHlvdSdyZSBzdGlsbCBkb2luZyB0aGlzIGluIHN5c2NhbGxfdHJhY2VfZW50
+ZXIoKSwgSSBpbWFnaW5lDQo+IGl0IGNvdWxkIGxpdmUgaW4gc2VjdXJlX2NvbXB1dGluZygpLg0K
+DQpJbmRlZWQsIFdlIGFncmVlIHdpdGggdGhhdCBhZGRpbmcgbGlnaHRfc3lzY2FsbF9maWx0ZXIg
+aW4gc2VjY29tcF9jb21wdXRpbmcoKS4gDQoNCj4gSSB3b25kZXIgaWYgYWFyY2g2NCBoYXMgaGln
+aGVyIG92ZXJoZWFkIGZvciBjYWxsaW5nIGludG8gdGhlIFRJRl9XT1JLDQo+IHRyYWNlIHN0dWZm
+PyAoT3IgaWYgYWFyY2g2NCdzIEJQRiBKSVQgaXMgbm90IGFzIGVmZmljaWVudCBhcyB4ODY/KQ0K
+DQpXZSBhbHNvIGd1ZXNzIHRoYXQgdGhlcmUgYXJlIG1hbnkgcG9zc2libGUgcmVhc29ucy4NCkFu
+ZCB3ZSB0aGluayB0aGF0IHBsYWNpbmcgdGhlIGJpdG1hcCBmaWx0ZXIgdGhlIGZ1cnRoZXIgZm9y
+d2FyZCB0aGUgYmV0dGVyLiBPdXIgdGVzdCByZXN1bHRzIHNob3cgdGhhdCBwbGFjaW5nIHRoZSBi
+aXRtYXAgZmlsdGVyIGZvcndhcmQgY2FuIHNvbHZlIHNpbmdsZSBmaWx0ZXIgdG90YWwgb3Zlcmhl
+YWQuIFdoYXQgaXMgeW91ciBvcGluaW9uIGFib3V0IHRoYXQ/DQoNCj4gQW55d2F5LCB0aGUgZnVu
+Y3Rpb25hbGl0eSBoZXJlIGlzIHNpbWlsYXIgdG8gd2hhdCBJJ3ZlIGJlZW4gd29ya2luZw0KPiBv
+biBmb3IgYml0bWFwcyAoaGF2aW5nIGEgZ2xvYmFsIHByZWFsbG9jYXRlZCBiaXRtYXAgaXNuJ3Qg
+Z29pbmcgdG8gYmUNCj4gdXBzdHJlYW1hYmxlLCBidXQgaXQncyBnb29kIGZvciBQb0MpLiBUaGUg
+Y29tcGxpY2F0aW9ucyBhcmUgd2l0aCBoYW5kbGluZw0KPiBkaWZmZXJpbmcgYXJjaGl0ZWN0dXJl
+IChmb3IgY29tcGF0IHN5c3RlbXMpLCB0cmFja2luZy9jaG9vc2luZyBiZXR3ZWVuDQo+IHRoZSB2
+YXJpb3VzIGJhc2ljIFNFQ0NPTVBfUkVUXyogYmVoYXZpb3JzLCBldGMuDQoNCkZpcnN0bHksIHRo
+YW5rIHlvdSBmb3IgY29ycmVjdGlvbiBpbiBjb2RlLCB5ZXMsIGl0IGlzIGp1c3QgYSBQb0MgZm9y
+IHBlcmZvcm1hbmNlIHRlc3QuDQpJbmRlZWQsIHlvdXIgYml0bWFwIGlkZWEgaXMgYmFzaWNseSBz
+YW1lIHdpdGggdXMuIEFuZCwgd2UgYXJlIHRyeWluZyB0byBmaW5kIGEgc29sdXRpb24gdG8gaW1w
+cm92ZSB0aGUgc2VjY29tcCBwZXJmb3JtYW5jZSBmb3IgcHJvZHVjdCB1c2UuIA0KU28gV2hhdCBp
+cyB5b3VyIHBsYW4gdG8gaGF2ZSBpdCBkb25lPyANCkNvdWxkIHdlIGRvIHNvbWV0aGluZyB0byBo
+ZWxwIHlvdSBwcm9jZWVkIGl0Pw0K
