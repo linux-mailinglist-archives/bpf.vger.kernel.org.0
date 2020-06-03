@@ -2,149 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079071ECDF6
-	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 13:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBAA1ECE10
+	for <lists+bpf@lfdr.de>; Wed,  3 Jun 2020 13:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbgFCLFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jun 2020 07:05:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44053 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726003AbgFCLFf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jun 2020 07:05:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591182333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7/UZ1k1Tnz+0aL6W1DGoxSSobfkMGETgBO+uk6FERaM=;
-        b=ilWFgepJztXU8paZnksYiDLX1VCU0fMtCNRPrDMphganF9C0gkEV7afQtU0zppAG+Bd7cS
-        1H7tswEKd0Ni4S1AS/X7YOHGJC1NYaqnCr/vXtT4TMd1AT4qzugSZ0h4Xi7jTsCZc5PGGB
-        0AxT1M2obov90WLVf1izK5BNgghIT80=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-KDeOwqGPMUKn62QpSnVlvA-1; Wed, 03 Jun 2020 07:05:31 -0400
-X-MC-Unique: KDeOwqGPMUKn62QpSnVlvA-1
-Received: by mail-ed1-f69.google.com with SMTP id k17so907204edo.20
-        for <bpf@vger.kernel.org>; Wed, 03 Jun 2020 04:05:31 -0700 (PDT)
+        id S1725975AbgFCLMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jun 2020 07:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgFCLMl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jun 2020 07:12:41 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9446C08C5C1
+        for <bpf@vger.kernel.org>; Wed,  3 Jun 2020 04:12:40 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id n24so1753090ejd.0
+        for <bpf@vger.kernel.org>; Wed, 03 Jun 2020 04:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=IO3gZk9GSajxC3SK5Unh+EKoratZTST28AQ2HqoD+7c=;
+        b=PRTbJ3qnjmjz33qUyNFCWVIkKHM7nH5Yjm3r9GCFVKuasbZnqavcHLDpk9uyxcp6/d
+         VCAiI0hdua6C9/TWIYYsD9aFR3Wrb/qLmmLz8VpMMgGX5U7BJWyqbHi8lKYDsuvwQcX0
+         yS/1h0ftcxZ8eU1PlY/mpTsJX43+WRvqlhxRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=7/UZ1k1Tnz+0aL6W1DGoxSSobfkMGETgBO+uk6FERaM=;
-        b=QtNR5gtabNDSzmNJ09iVCbR0wYx92iGdvxL36C3E4Kw72+kDNEvXzA4Vdhd0ozG5QS
-         GmOx1BjC++Fh9wWvfSyODa4sy9TCD31HJrNlD5ss7kCzjTX6qui13JhkxX0McGZV3dtO
-         MfhiW4TwUrt44mV8V5+Ie5YUxmQpvBBdldXTkhCNnpO7DTafeN9Penc0JSoC/nAiu0qa
-         KQ6Ucg7GFo+XzM4KjlLLO+RmmZG10NFnCym6ZxnFxVg79GgavIS8svmoALkUf9kwZzD5
-         TT2ZT8wwXDuBZZu8s40l6LYZ4Bv5n5aiTkfExDmNCZI19zXlZpT0YiaOsZ9IlZFn/AYO
-         jCZA==
-X-Gm-Message-State: AOAM532m3j8EAy3l0d+/veYuNJdIcA4dDtPRK5ZBBXFI4CRjzeA8xols
-        4yg9pzysn2wo4mjbEQhErKqhh5N2D4s8Lso2TgClarSvgMGz/g4fczADCg/pXXWXFx/hubOykBL
-        67yQaZm+CxhwS
-X-Received: by 2002:a05:6402:311c:: with SMTP id dc28mr15417535edb.184.1591182330459;
-        Wed, 03 Jun 2020 04:05:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPv1J7mEIffBwXirBApKMnotEG2ItUqEy0W7mVGX7vHKGQMpxhiGMUsPP5lgXN4El4jaQIDg==
-X-Received: by 2002:a05:6402:311c:: with SMTP id dc28mr15417508edb.184.1591182330204;
-        Wed, 03 Jun 2020 04:05:30 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s14sm933965ejd.111.2020.06.03.04.05.28
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=IO3gZk9GSajxC3SK5Unh+EKoratZTST28AQ2HqoD+7c=;
+        b=eaje/ScpVzpyMBAJxv827DkWBwrTdlIv0J719G2d/hL6NXfBJ7t9KMWXEHvi9WObjG
+         TpM7MsYP+35b18EpEC0O3Wq39z+GvbOjvLSCAa5jFOE/LctY2btUNc2v6NW7uGJpkYbM
+         eyEen+wF94YuQTmnm4XMjlTmmcH/yxbgTrcKWAtCVadJQyQ/zI4RUQLphWhkIqesQpHa
+         UFh+QlRC92cBmYRWv82BjXQLc17GGjpR6MQPlHWALsnqXWTn+VQbfi+58T6YDPN1etpt
+         zV8M3MjxMIgV1TkTz6qLgGZwjv+tERC5bHazjWHIvCm7SM+TE5h+H2qU9S+FgA28AubZ
+         f3tA==
+X-Gm-Message-State: AOAM532YonXDZo8ATT89i5/KQoNidhGGDa8mTW1SyxCvR6qs+44qYdkY
+        pxKh6uOj3oiJCzf4vAKvCwZWlw==
+X-Google-Smtp-Source: ABdhPJz7AO+3pEFTJZH8xsc1rpRoaf7pok0mEj92UC8vzPTzfXllixTUpPW7N8gQEVQ09H+qyzA3ZQ==
+X-Received: by 2002:a17:906:4cd9:: with SMTP id q25mr28576033ejt.175.1591182759179;
+        Wed, 03 Jun 2020 04:12:39 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id z3sm957590ejl.38.2020.06.03.04.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 04:05:28 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 64AED182797; Wed,  3 Jun 2020 13:05:28 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-In-Reply-To: <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200526140539.4103528-1-liuhangbin@gmail.com> <87zh9t1xvh.fsf@toke.dk> <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 03 Jun 2020 13:05:28 +0200
-Message-ID: <87img8l893.fsf@toke.dk>
+        Wed, 03 Jun 2020 04:12:38 -0700 (PDT)
+References: <158385850787.30597.8346421465837046618.stgit@john-Precision-5820-Tower> <6f8bb6d8-bb70-4533-f15b-310db595d334@gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [bpf PATCH] bpf: sockmap, remove bucket->lock from sock_{hash|map}_free
+In-reply-to: <6f8bb6d8-bb70-4533-f15b-310db595d334@gmail.com>
+Date:   Wed, 03 Jun 2020 13:12:37 +0200
+Message-ID: <87a71k2yje.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
-
-> On Wed, May 27, 2020 at 12:21:54PM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
-land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
->> > The example in patch 2 is functional, but not a lot of effort
->> > has been made on performance optimisation. I did a simple test(pkt siz=
-e 64)
->> > with pktgen. Here is the test result with BPF_MAP_TYPE_DEVMAP_HASH
->> > arrays:
->> >
->> > bpf_redirect_map() with 1 ingress, 1 egress:
->> > generic path: ~1600k pps
->> > native path: ~980k pps
->> >
->> > bpf_redirect_map_multi() with 1 ingress, 3 egress:
->> > generic path: ~600k pps
->> > native path: ~480k pps
->> >
->> > bpf_redirect_map_multi() with 1 ingress, 9 egress:
->> > generic path: ~125k pps
->> > native path: ~100k pps
->> >
->> > The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we l=
-oop
->> > the arrays and do clone skb/xdpf. The native path is slower than gener=
-ic
->> > path as we send skbs by pktgen. So the result looks reasonable.
->>=20
->> How are you running these tests? Still on virtual devices? We really
->> need results from a physical setup in native mode to assess the impact
->> on the native-XDP fast path. The numbers above don't tell much in this
->> regard. I'd also like to see a before/after patch for straight
->> bpf_redirect_map(), since you're messing with the fast path, and we want
->> to make sure it's not causing a performance regression for regular
->> redirect.
->>=20
->> Finally, since the overhead seems to be quite substantial: A comparison
->> with a regular network stack bridge might make sense? After all we also
->> want to make sure it's a performance win over that :)
+On Wed, Jun 03, 2020 at 08:13 AM CEST, Eric Dumazet wrote:
+> On 3/10/20 9:41 AM, John Fastabend wrote:
+>> The bucket->lock is not needed in the sock_hash_free and sock_map_free
+>> calls, in fact it is causing a splat due to being inside rcu block.
+>>
+>>
+>> | BUG: sleeping function called from invalid context at net/core/sock.c:2935
+>> | in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 62, name: kworker/0:1
+>> | 3 locks held by kworker/0:1/62:
+>> |  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
+>> |  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
+>> |  #2: ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
+>> | CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04008-g7b083332376e #454
+>> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+>> | Workqueue: events bpf_map_free_deferred
+>> | Call Trace:
+>> |  dump_stack+0x71/0xa0
+>> |  ___might_sleep.cold+0xa6/0xb6
+>> |  lock_sock_nested+0x28/0x90
+>> |  sock_map_free+0x5f/0x180
+>> |  bpf_map_free_deferred+0x58/0x80
+>> |  process_one_work+0x260/0x5e0
+>> |  worker_thread+0x4d/0x3e0
+>> |  kthread+0x108/0x140
+>> |  ? process_one_work+0x5e0/0x5e0
+>> |  ? kthread_park+0x90/0x90
+>> |  ret_from_fork+0x3a/0x50
+>>
+>> The reason we have stab->lock and bucket->locks in sockmap code is to
+>> handle checking EEXIST in update/delete cases. We need to be careful during
+>> an update operation that we check for EEXIST and we need to ensure that the
+>> psock object is not in some partial state of removal/insertion while we do
+>> this. So both map_update_common and sock_map_delete need to guard from being
+>> run together potentially deleting an entry we are checking, etc. But by the
+>> time we get to the tear-down code in sock_{ma[|hash}_free we have already
+>> disconnected the map and we just did synchronize_rcu() in the line above so
+>> no updates/deletes should be in flight. Because of this we can drop the
+>> bucket locks from the map free'ing code, noting no update/deletes can be
+>> in-flight.
+>>
+>> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+>> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> ---
+>>  net/core/sock_map.c |   12 ++++++++----
+>>  1 file changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> index 085cef5..b70c844 100644
+>> --- a/net/core/sock_map.c
+>> +++ b/net/core/sock_map.c
+>> @@ -233,8 +233,11 @@ static void sock_map_free(struct bpf_map *map)
+>>  	struct bpf_stab *stab = container_of(map, struct bpf_stab, map);
+>>  	int i;
+>>
+>> +	/* After the sync no updates or deletes will be in-flight so it
+>> +	 * is safe to walk map and remove entries without risking a race
+>> +	 * in EEXIST update case.
 >
-> Hi Toke,
 >
-> Here is the result I tested with 2 i40e 10G ports on physical machine.
-> The pktgen pkt_size is 64.
+> What prevents other cpus from deleting stuff in sock_hash_delete_elem() ?
+>
+> What state has been changed before the synchronize_rcu() call here,
+> that other cpus check before attempting a delete ?
+>
+> Typically, synchronize_rcu() only makes sense if readers can not start a new cycle.
+>
+> A possible fix would be to check in sock_hash_delete_elem() (and possibly others methods)
+> if map->refcnt is not zero.
+>
+> syzbot found : (no repro yet)
+>
+> general protection fault, probably for non-canonical address 0xfbd59c0000000024: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: maybe wild-memory-access in range [0xdead000000000120-0xdead000000000127]
+> CPU: 2 PID: 14305 Comm: kworker/2:3 Not tainted 5.7.0-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Workqueue: events bpf_map_free_deferred
+> RIP: 0010:__write_once_size include/linux/compiler.h:279 [inline]
+> RIP: 0010:__hlist_del include/linux/list.h:811 [inline]
+> RIP: 0010:hlist_del_rcu include/linux/rculist.h:485 [inline]
+> RIP: 0010:sock_hash_free+0x202/0x4a0 net/core/sock_map.c:1021
+> Code: 0f 85 15 02 00 00 4c 8d 7b 28 4c 8b 63 20 4c 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 47 02 00 00 4c 8b 6b 28 4c 89 e8 48 c1 e8 03 <80> 3c 28 00 0f 85 25 02 00 00 4d 85 e4 4d 89 65 00 74 20 e8 f6 82
+> RSP: 0018:ffffc90000ba7c38 EFLAGS: 00010a06
+> RAX: 1bd5a00000000024 RBX: ffff88801d866700 RCX: ffffffff8636ae84
+> RDX: 0000000000000000 RSI: ffffffff8636afe9 RDI: ffff88801d866720
+> RBP: dffffc0000000000 R08: ffff888022765080 R09: fffffbfff185f952
+> R10: ffffffff8c2fca8f R11: fffffbfff185f951 R12: 0000000000000000
+> R13: dead000000000122 R14: dead000000000122 R15: ffff88801d866728
+> FS:  0000000000000000(0000) GS:ffff88802d000000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f27551a9db8 CR3: 0000000056530000 CR4: 0000000000340ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  bpf_map_free_deferred+0xb2/0x100 kernel/bpf/syscall.c:471
+>  process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
+>  worker_thread+0x96/0xe20 kernel/workqueue.c:2414
+>  kthread+0x388/0x470 kernel/kthread.c:268
+>  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+> Modules linked in:
+> ---[ end trace da3ce2417ae8d343 ]---
+> RIP: 0010:__write_once_size include/linux/compiler.h:279 [inline]
+> RIP: 0010:__hlist_del include/linux/list.h:811 [inline]
+> RIP: 0010:hlist_del_rcu include/linux/rculist.h:485 [inline]
+> RIP: 0010:sock_hash_free+0x202/0x4a0 net/core/sock_map.c:1021
+> Code: 0f 85 15 02 00 00 4c 8d 7b 28 4c 8b 63 20 4c 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 47 02 00 00 4c 8b 6b 28 4c 89 e8 48 c1 e8 03 <80> 3c 28 00 0f 85 25 02 00 00 4d 85 e4 4d 89 65 00 74 20 e8 f6 82
+> RSP: 0018:ffffc90000ba7c38 EFLAGS: 00010a06
+> RAX: 1bd5a00000000024 RBX: ffff88801d866700 RCX: ffffffff8636ae84
+> RDX: 0000000000000000 RSI: ffffffff8636afe9 RDI: ffff88801d866720
+> RBP: dffffc0000000000 R08: ffff888022765080 R09: fffffbfff185f952
+> R10: ffffffff8c2fca8f R11: fffffbfff185f951 R12: 0000000000000000
+> R13: dead000000000122 R14: dead000000000122 R15: ffff88801d866728
+> FS:  0000000000000000(0000) GS:ffff88802d000000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1e5e3c6290 CR3: 000000001347f000 CR4: 0000000000340ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
 
-These numbers seem a bit low (I'm getting ~8.5MPPS on my test machine
-for a simple redirect). Some of that may just be performance of the
-machine, I guess (what are you running this on?), but please check that
-you are not limited by pktgen itself - i.e., that pktgen is generating
-traffic at a higher rate than what XDP is processing.
+My initial reasoning behind the change was that sock_hash_delete_elem()
+callers hold a ref to sockhash [0]. Either because there is an open FD
+for the map, or the map is in use by loaded BPF program. The same
+applies to updates.
 
-> Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are tw=
-o modes data):
-> generic mode: 1.32M PPS
-> driver mode: 1.66M PPS
+If that holds, map->refcnt is > 0, and we should not see the map being
+freed at the same time as sock_hash_delete_elem() happens.
 
-I'm not sure I understand this - what are you measuring here exactly?
+But then there is also sock_hash_delete_from_link() that deletes from
+sockhash when a sock/psock unlinks itself from the map. This operation
+happens without holding a ref to the map, so that sockets won't keep the
+map "alive". There is no corresponding *_update_from_link() for updates
+without holding a ref.
 
-> xdp_redirect_map:
-> generic mode: 1.88M PPS
-> driver mode: 2.74M PPS
+Sadly, I can't spot anything preventing list mutation, hlist_del_rcu(),
+from happening both in sock_hash_delete_elem() and sock_hash_free()
+concurrently, now that the bucket spin-lock doesn't protect it any
+more. That is what I understand syzbot is reporting.
 
-Please add numbers without your patch applied as well, for comparison.
+synchronize_rcu() before we walk the htable doesn't rule it out, because
+as you point out, new readers can start a new cycle, and we don't change
+any state that would signal that the map is going away.
 
-> xdp_redirect_map_multi:
-> generic mode: 1.38M PPS
-> driver mode: 2.73M PPS
+I'm not sure that the check for map->refcnt when sock is unlinking
+itself from the map will do it. I worry we will then have issues when
+sockhash is unlinking itself from socks (so the other way around) in
+sock_hash_free(). We could no longer assume that the sock & psock
+exists.
 
-I assume this is with a single interface only, right? Could you please
-add a test with a second interface (so the packet is cloned) as well?
-You can just use a veth as the second target device.
+What comes to mind is to reintroduce the spin-lock protected critical
+section in sock_hash_free(), but delay the processing of sockets to be
+unlinked from sockhash. We could grab a ref to sk_psock while holding a
+spin-lock and unlink it while no longer in atomic critical section.
 
--Toke
+Either way, Eric, thank you for the report and the pointers.
 
+John, WDYT?
+
+[0] https://lore.kernel.org/netdev/8736boor55.fsf@cloudflare.com/
+
+>> +	 */
+>>  	synchronize_rcu();
+>> -	raw_spin_lock_bh(&stab->lock);
+>>  	for (i = 0; i < stab->map.max_entries; i++) {
+>>  		struct sock **psk = &stab->sks[i];
+>>  		struct sock *sk;
+>> @@ -248,7 +251,6 @@ static void sock_map_free(struct bpf_map *map)
+>>  			release_sock(sk);
+>>  		}
+>>  	}
+>> -	raw_spin_unlock_bh(&stab->lock);
+>>
+>>  	/* wait for psock readers accessing its map link */
+>>  	synchronize_rcu();
+>> @@ -863,10 +865,13 @@ static void sock_hash_free(struct bpf_map *map)
+>>  	struct hlist_node *node;
+>>  	int i;
+>>
+>> +	/* After the sync no updates or deletes will be in-flight so it
+>> +	 * is safe to walk map and remove entries without risking a race
+>> +	 * in EEXIST update case.
+>> +	 */
+>>  	synchronize_rcu();
+>>  	for (i = 0; i < htab->buckets_num; i++) {
+>>  		bucket = sock_hash_select_bucket(htab, i);
+>> -		raw_spin_lock_bh(&bucket->lock);
+>>  		hlist_for_each_entry_safe(elem, node, &bucket->head, node) {
+>>  			hlist_del_rcu(&elem->node);
+>>  			lock_sock(elem->sk);
+>> @@ -875,7 +880,6 @@ static void sock_hash_free(struct bpf_map *map)
+>>  			rcu_read_unlock();
+>>  			release_sock(elem->sk);
+>>  		}
+>> -		raw_spin_unlock_bh(&bucket->lock);
+>>  	}
+>>
+>>  	/* wait for psock readers accessing its map link */
+>>
