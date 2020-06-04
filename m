@@ -2,219 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5ABE1EE782
-	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 17:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1481EE800
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgFDPQ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jun 2020 11:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729215AbgFDPQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jun 2020 11:16:25 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729293AbgFDPsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jun 2020 11:48:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55310 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729302AbgFDPsX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jun 2020 11:48:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591285701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ypX2HGAenFX8CiIHs612J9G7sHpnxozjQSK2LUFU94=;
+        b=Z79CDYtwAqDlJBXRp0H1ScYhD52xkQ95HcqU5ThoDf5Mqkm3B/idO6prR6x9j7+2q9hr/a
+        zKg5GTlSLNdFc4fgG+oF3i8EYGHDx34LlBqvV9qt7/zQxF6fp8FlUb4N/041KPG1bu0e2F
+        tq8f7p71dfUN5+Qf1bj0Yo14W1wtsnI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-2xERtY5CNseVKVVlwHds8Q-1; Thu, 04 Jun 2020 11:48:17 -0400
+X-MC-Unique: 2xERtY5CNseVKVVlwHds8Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55A5E2072E;
-        Thu,  4 Jun 2020 15:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591283784;
-        bh=JcSD0jyN4zx3WRmR0DhzZEfE1jmiBh4dFVcJF7d04UM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gQnhG/LL8CbGZyfbQaiplNTtAqceboL2yjtfAyDZy/dcUGx/r1ed4lGL8LyEKCYQd
-         +xblb7nflPi2Xhg7UO5V4S5UE/Cie+ryf5KHOOoumzHq2UHKr3GK/k2sDHk0QIkM2e
-         6Xcw27M50WLVKKk6gvBiRnYxLl/RG7fhYqDJSzQg=
-Date:   Fri, 5 Jun 2020 00:16:20 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc:     linux-perf-users@vger.kernel.org, acme@kernel.org,
-        bpf@vger.kernel.org, jolsa@redhat.com, tmricht@linux.ibm.com,
-        heiko.carstens@de.ibm.com, mhiramat@kernel.org, iii@linux.ibm.com
-Subject: Re: [PATCH] perf: Fix bpf prologue generation, user attribute
- access in kprobes
-Message-Id: <20200605001620.39f07857155a85a662a2da23@kernel.org>
-In-Reply-To: <20200604091028.101569-1-sumanthk@linux.ibm.com>
-References: <20200604091028.101569-1-sumanthk@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B0D0107ACCD;
+        Thu,  4 Jun 2020 15:48:16 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97B1978FAC;
+        Thu,  4 Jun 2020 15:48:07 +0000 (UTC)
+Date:   Thu, 4 Jun 2020 17:48:06 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on
+ BTF
+Message-ID: <20200604174806.29130b81@carbon>
+In-Reply-To: <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
+References: <159119908343.1649854.17264745504030734400.stgit@firesoul>
+        <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  4 Jun 2020 11:10:28 +0200
-Sumanth Korikkar <sumanthk@linux.ibm.com> wrote:
+On Wed, 3 Jun 2020 09:22:57 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-> Issues:
-> 1. bpf_probe_read is no longer available for architecture which has
->    overlapping address space. Hence bpf prologue generation fails
-> 2. perf probe -a 'do_sched_setscheduler  pid policy
->    param->sched_priority@user' did not work before.
+> On Wed, Jun 03, 2020 at 05:44:43PM +0200, Jesper Dangaard Brouer wrote:
+> > The recent commit fbee97feed9b ("bpf: Add support to attach bpf program to a
+> > devmap entry"), introduced ability to attach (and run) a separate XDP
+> > bpf_prog for each devmap entry. A bpf_prog is added via a file-descriptor,
+> > thus not using the feature requires using value minus-1. The UAPI is
+> > extended via tail-extending struct bpf_devmap_val and using map->value_size
+> > to determine the feature set.
+> > 
+> > There is a specific problem with dev_map_can_have_prog() check, which is
+> > called from net/core/dev.c in generic_xdp_install() to refuse usage of
+> > devmap's from generic-XDP that support these bpf_prog's. The check is size
+> > based. This means that all newer features will be blocked from being use by
+> > generic-XDP.
+> > 
+> > This patch allows userspace to skip handling of 'bpf_prog' on map-inserts.
+> > The feature can be skipped, via not including the member 'bpf_prog' in the
+> > map-value struct, which is propagated/described via BTF.
+> > 
+> > Fixes: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com  
 > 
-> Fixes:
-> 1. Use bpf_probe_read_kernel for kernel member access. For user
->    attribute access in kprobes, bpf_probe_read_user is utilized
-> 2. Make (perf probe -a 'do_sched_setscheduler  pid policy
->    param->sched_priority@user') output equivalent to ftrace
->    ('p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32
->    policy=%r3:s32 sched_priority=+u0 (%r4):s32' > kprobe_events)
-> 
-> Other:
-> 1. Right now, __match_glob() does not handle [u]<offset>. For now, use
->   *u]<offset>.
+> The patch makes no sense to me.
 
-Ah, good catch!
+Hmm, that is not a very constructive answer, and it doesn't help me
+to improve and move forward with the code.  I interpret that you think
+my approach is completely wrong, but it would have been nice to
+understand why.  I will give up on this approach, also given bpf-next
+is closed now.
 
-Thank you for fixing the perf-probe part issue!
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> please expose 'struct struct bpf_devmap_val' in uapi/bpf.h
+> That's what it is whether you want to acknowledge that or not.
 
-Thanks!
+I will NOT send a patch that expose this in uapi/bpf.h.  As I explained
+before, this caused the issues for my userspace application, that
+automatically picked-up struct bpf_devmap_val, and started to fail
+(with no code changes), because it needed minus-1 as input.  I fear
+that this will cause more work for me later, when I have to helpout and
+support end-users on e.g. xdp-newbies list, as it will not be obvious
+to end-users why their programs map-insert start to fail.  I have given
+up, so I will not NACK anyone sending such a patch.
 
-> 2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
->    Add user memory access attribute support")
-> 
-> Test:
-> 1. ulimit -l 128 ; ./perf record -e tests/bpf_sched_setscheduler.c
-> 2. cat tests/bpf_sched_setscheduler.c
-> 
-> static void (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
->         (void *) 6;
-> static int (*bpf_probe_read_user)(void *dst, __u32 size,
->                                   const void *unsafe_ptr) = (void *) 112;
-> static int (*bpf_probe_read_kernel)(void *dst, __u32 size,
->         const void *unsafe_ptr) = (void *) 113;
-> 
-> SEC("func=do_sched_setscheduler  pid policy param->sched_priority@user")
-> int bpf_func__setscheduler(void *ctx, int err, pid_t pid, int policy,
->                            int param)
-> {
->         char fmt[] = "prio: %ld";
->         bpf_trace_printk(fmt, sizeof(fmt), param);
->         return 1;
-> }
-> 
-> char _license[] SEC("license") = "GPL";
-> int _version SEC("version") = LINUX_VERSION_CODE;
-> 
-> 3. ./perf script
->    sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
->    pid=261614 policy=2 sched_priority=1
-> 
-> 4. cat /sys/kernel/debug/tracing/trace
->    <...>-309956 [006] .... 1616098.093957: 0: prio: 1
-> 
-> 5. bpf_probe_read_user is used when @user attribute is used. Otherwise,
->    defaults to bpf_probe_read_kernel
-> 
-> 6. ./perf test bpf (null_lseek - kernel member access)
-> 42: BPF filter                                            :
-> 42.1: Basic BPF filtering                                 : Ok
-> 42.2: BPF pinning                                         : Ok
-> 42.3: BPF prologue generation                             : Ok
-> 42.4: BPF relocation checker                              : FAILED!
-> 
-> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->  tools/perf/util/bpf-prologue.c | 14 ++++++++++----
->  tools/perf/util/probe-event.c  |  7 +++++--
->  tools/perf/util/probe-file.c   |  2 +-
->  3 files changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf-prologue.c b/tools/perf/util/bpf-prologue.c
-> index b020a8678eb9..9887ae09242d 100644
-> --- a/tools/perf/util/bpf-prologue.c
-> +++ b/tools/perf/util/bpf-prologue.c
-> @@ -142,7 +142,8 @@ static int
->  gen_read_mem(struct bpf_insn_pos *pos,
->  	     int src_base_addr_reg,
->  	     int dst_addr_reg,
-> -	     long offset)
-> +	     long offset,
-> +	     int probeid)
->  {
->  	/* mov arg3, src_base_addr_reg */
->  	if (src_base_addr_reg != BPF_REG_ARG3)
-> @@ -159,7 +160,7 @@ gen_read_mem(struct bpf_insn_pos *pos,
->  		ins(BPF_MOV64_REG(BPF_REG_ARG1, dst_addr_reg), pos);
->  
->  	/* Call probe_read  */
-> -	ins(BPF_EMIT_CALL(BPF_FUNC_probe_read), pos);
-> +	ins(BPF_EMIT_CALL(probeid), pos);
->  	/*
->  	 * Error processing: if read fail, goto error code,
->  	 * will be relocated. Target should be the start of
-> @@ -241,7 +242,7 @@ static int
->  gen_prologue_slowpath(struct bpf_insn_pos *pos,
->  		      struct probe_trace_arg *args, int nargs)
->  {
-> -	int err, i;
-> +	int err, i, probeid;
->  
->  	for (i = 0; i < nargs; i++) {
->  		struct probe_trace_arg *arg = &args[i];
-> @@ -276,11 +277,16 @@ gen_prologue_slowpath(struct bpf_insn_pos *pos,
->  				stack_offset), pos);
->  
->  		ref = arg->ref;
-> +		probeid = BPF_FUNC_probe_read_kernel;
->  		while (ref) {
->  			pr_debug("prologue: arg %d: offset %ld\n",
->  				 i, ref->offset);
-> +
-> +			if (ref->user_access)
-> +				probeid = BPF_FUNC_probe_read_user;
-> +
->  			err = gen_read_mem(pos, BPF_REG_3, BPF_REG_7,
-> -					   ref->offset);
-> +					   ref->offset, probeid);
->  			if (err) {
->  				pr_err("prologue: failed to generate probe_read function call\n");
->  				goto errout;
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index eea132f512b0..7cdb66ef3baa 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -1565,7 +1565,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
->  	}
->  
->  	tmp = strchr(str, '@');
-> -	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
-> +	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
->  		if (!user_access_is_supported()) {
->  			semantic_error("ftrace does not support user access\n");
->  			return -EINVAL;
-> @@ -1986,7 +1986,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
->  		if (depth < 0)
->  			return depth;
->  	}
-> -	err = strbuf_addf(buf, "%+ld(", ref->offset);
-> +	if (ref->user_access)
-> +		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
-> +	else
-> +		err = strbuf_addf(buf, "%+ld(", ref->offset);
->  	return (err < 0) ? err : depth;
->  }
->  
-> diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-> index 8c852948513e..064b63a6a3f3 100644
-> --- a/tools/perf/util/probe-file.c
-> +++ b/tools/perf/util/probe-file.c
-> @@ -1044,7 +1044,7 @@ static struct {
->  	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
->  	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
->  	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
-> -	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
-> +	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
->  	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
->  	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
->  };
-> -- 
-> 2.25.4
-> 
-
+Why is it we need to support file-descriptor zero as a valid
+file-descriptor for a bpf-prog?
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
