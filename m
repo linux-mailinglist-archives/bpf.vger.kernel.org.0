@@ -2,139 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEA41EE6CC
-	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 16:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ABE1EE782
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 17:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgFDOl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jun 2020 10:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729025AbgFDOl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jun 2020 10:41:57 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FF3C08C5C0;
-        Thu,  4 Jun 2020 07:41:57 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n9so2272214plk.1;
-        Thu, 04 Jun 2020 07:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Uk6PJ7Nzre4spAUUPUK7CAc4Akdbq548HfhSI26hbYI=;
-        b=T0W+FRGOkYgkgG1NjbzAb2a6EANsfDB27gmlYxY/6fcea/KothkheSzJJNXQZqOahg
-         zhIO2Qdv0YtQcTK6bs0t49VXuQsOlVShKwc2fjVd2sgt7RBABcWvVodP8U5nf8w7WXW8
-         2OGWdy6a5TMS8DVEayp5mIcjB/wlJNHK40WtZ0KDiqakJtcEVA1jLmfPVcAlqVRnyU7n
-         l1V6OMGAIZ+Nt8k8z5g0Wh6zWCKJo2v10JJEHGSTKHJQsnAOUzlkghzHwE++/H3hvEot
-         RE3Tbk+KbjrzSXOOQ1BC0P/nbISieqOuriId5FZofSVGJs+Kda77RnaZToTJI2yPnpgf
-         sAJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Uk6PJ7Nzre4spAUUPUK7CAc4Akdbq548HfhSI26hbYI=;
-        b=Zz/zOghxEFd+O0ETzj8Z3ZpGUKxUihpIoDfoI8p0tX7N2DYJjCLiGDJOJhxafoj5kx
-         pg5g5vSguHetRA/oJ1Ey+BBKiwXnKBxHYCvkmyJQK8sumQDo+a/w6Axx3db8kfvEavLx
-         uheX+BBQzzl4jaF4HORH56dNOIxNV8UfIHJ4m93hb3fZPAs4PBVc1yjDZ3QSFccdVi1L
-         itbXFqk+YXmaGlBLsWd9kU6L/rXI2IamfZD6qq3ZUYL8wCz+IyHIDWJsVcZgWFh7Q+GI
-         yK2g18PzMEVleJEJGaPUD6MAEp6DKGDuCGwLhXvx8Mdq/7y3xXcI3Ij66U2VexEacmh6
-         qTEg==
-X-Gm-Message-State: AOAM530fd5K5NcWjNpnLY0FJ41kxO2IiTNG7wfhY9cdrzLw01cATkQdL
-        wWUEjThAebjT1btFg/FeIEE=
-X-Google-Smtp-Source: ABdhPJw88RUGSpxEWmM4vBP4fPfOwYnZpQ/PPO96LJiYNYAS1w/xPF72Xfkc8aftyigEe2EjLQVm2g==
-X-Received: by 2002:a17:902:8303:: with SMTP id bd3mr5245705plb.217.1591281716861;
-        Thu, 04 Jun 2020 07:41:56 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x1sm4617525pfn.76.2020.06.04.07.41.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 07:41:56 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 22:41:45 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-Message-ID: <20200604144145.GN102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com>
- <20200526140539.4103528-1-liuhangbin@gmail.com>
- <87zh9t1xvh.fsf@toke.dk>
- <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
- <87img8l893.fsf@toke.dk>
- <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
- <871rmvkvwn.fsf@toke.dk>
- <20200604121212.GM102436@dhcp-12-153.nay.redhat.com>
- <87bllzj9bw.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87bllzj9bw.fsf@toke.dk>
+        id S1729408AbgFDPQ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jun 2020 11:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729215AbgFDPQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jun 2020 11:16:25 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55A5E2072E;
+        Thu,  4 Jun 2020 15:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591283784;
+        bh=JcSD0jyN4zx3WRmR0DhzZEfE1jmiBh4dFVcJF7d04UM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gQnhG/LL8CbGZyfbQaiplNTtAqceboL2yjtfAyDZy/dcUGx/r1ed4lGL8LyEKCYQd
+         +xblb7nflPi2Xhg7UO5V4S5UE/Cie+ryf5KHOOoumzHq2UHKr3GK/k2sDHk0QIkM2e
+         6Xcw27M50WLVKKk6gvBiRnYxLl/RG7fhYqDJSzQg=
+Date:   Fri, 5 Jun 2020 00:16:20 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc:     linux-perf-users@vger.kernel.org, acme@kernel.org,
+        bpf@vger.kernel.org, jolsa@redhat.com, tmricht@linux.ibm.com,
+        heiko.carstens@de.ibm.com, mhiramat@kernel.org, iii@linux.ibm.com
+Subject: Re: [PATCH] perf: Fix bpf prologue generation, user attribute
+ access in kprobes
+Message-Id: <20200605001620.39f07857155a85a662a2da23@kernel.org>
+In-Reply-To: <20200604091028.101569-1-sumanthk@linux.ibm.com>
+References: <20200604091028.101569-1-sumanthk@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 02:37:23PM +0200, Toke Høiland-Jørgensen wrote:
-> > Now I use the ethtool_stats.pl to count forwarding speed and here is the result:
-> >
-> > With kernel 5.7(ingress i40e, egress i40e)
-> > XDP:
-> > bridge: 1.8M PPS
-> > xdp_redirect_map:
-> >   generic mode: 1.9M PPS
-> >   driver mode: 10.4M PPS
+On Thu,  4 Jun 2020 11:10:28 +0200
+Sumanth Korikkar <sumanthk@linux.ibm.com> wrote:
+
+> Issues:
+> 1. bpf_probe_read is no longer available for architecture which has
+>    overlapping address space. Hence bpf prologue generation fails
+> 2. perf probe -a 'do_sched_setscheduler  pid policy
+>    param->sched_priority@user' did not work before.
 > 
-> Ah, now we're getting somewhere! :)
+> Fixes:
+> 1. Use bpf_probe_read_kernel for kernel member access. For user
+>    attribute access in kprobes, bpf_probe_read_user is utilized
+> 2. Make (perf probe -a 'do_sched_setscheduler  pid policy
+>    param->sched_priority@user') output equivalent to ftrace
+>    ('p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32
+>    policy=%r3:s32 sched_priority=+u0 (%r4):s32' > kprobe_events)
 > 
-> > Kernel 5.7 + my patch(ingress i40e, egress i40e)
-> > bridge: 1.8M
-> > xdp_redirect_map:
-> >   generic mode: 1.86M PPS
-> >   driver mode: 10.17M PPS
+> Other:
+> 1. Right now, __match_glob() does not handle [u]<offset>. For now, use
+>   *u]<offset>.
+
+Ah, good catch!
+
+Thank you for fixing the perf-probe part issue!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks!
+
+> 2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
+>    Add user memory access attribute support")
 > 
-> Right, so this corresponds to a ~2ns overhead (10**9/10400000 -
-> 10**9/10170000). This is not too far from being in the noise, I suppose;
-> is the difference consistent?
-
-Sorry, I didn't get, what different consistent do you mean?
-
+> Test:
+> 1. ulimit -l 128 ; ./perf record -e tests/bpf_sched_setscheduler.c
+> 2. cat tests/bpf_sched_setscheduler.c
 > 
-> > xdp_redirect_map_multi:
-> >   generic mode: 1.53M PPS
-> >   driver mode: 7.22M PPS
-> >
-> > Kernel 5.7 + my patch(ingress i40e, egress veth)
-> > xdp_redirect_map:
-> >   generic mode: 1.38M PPS
-> >   driver mode: 4.15M PPS
-> > xdp_redirect_map_multi:
-> >   generic mode: 1.13M PPS
-> >   driver mode: 3.55M PPS
+> static void (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
+>         (void *) 6;
+> static int (*bpf_probe_read_user)(void *dst, __u32 size,
+>                                   const void *unsafe_ptr) = (void *) 112;
+> static int (*bpf_probe_read_kernel)(void *dst, __u32 size,
+>         const void *unsafe_ptr) = (void *) 113;
+> 
+> SEC("func=do_sched_setscheduler  pid policy param->sched_priority@user")
+> int bpf_func__setscheduler(void *ctx, int err, pid_t pid, int policy,
+>                            int param)
+> {
+>         char fmt[] = "prio: %ld";
+>         bpf_trace_printk(fmt, sizeof(fmt), param);
+>         return 1;
+> }
+> 
+> char _license[] SEC("license") = "GPL";
+> int _version SEC("version") = LINUX_VERSION_CODE;
+> 
+> 3. ./perf script
+>    sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
+>    pid=261614 policy=2 sched_priority=1
+> 
+> 4. cat /sys/kernel/debug/tracing/trace
+>    <...>-309956 [006] .... 1616098.093957: 0: prio: 1
+> 
+> 5. bpf_probe_read_user is used when @user attribute is used. Otherwise,
+>    defaults to bpf_probe_read_kernel
+> 
+> 6. ./perf test bpf (null_lseek - kernel member access)
+> 42: BPF filter                                            :
+> 42.1: Basic BPF filtering                                 : Ok
+> 42.2: BPF pinning                                         : Ok
+> 42.3: BPF prologue generation                             : Ok
+> 42.4: BPF relocation checker                              : FAILED!
+> 
+> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
+> ---
+>  tools/perf/util/bpf-prologue.c | 14 ++++++++++----
+>  tools/perf/util/probe-event.c  |  7 +++++--
+>  tools/perf/util/probe-file.c   |  2 +-
+>  3 files changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf-prologue.c b/tools/perf/util/bpf-prologue.c
+> index b020a8678eb9..9887ae09242d 100644
+> --- a/tools/perf/util/bpf-prologue.c
+> +++ b/tools/perf/util/bpf-prologue.c
+> @@ -142,7 +142,8 @@ static int
+>  gen_read_mem(struct bpf_insn_pos *pos,
+>  	     int src_base_addr_reg,
+>  	     int dst_addr_reg,
+> -	     long offset)
+> +	     long offset,
+> +	     int probeid)
+>  {
+>  	/* mov arg3, src_base_addr_reg */
+>  	if (src_base_addr_reg != BPF_REG_ARG3)
+> @@ -159,7 +160,7 @@ gen_read_mem(struct bpf_insn_pos *pos,
+>  		ins(BPF_MOV64_REG(BPF_REG_ARG1, dst_addr_reg), pos);
+>  
+>  	/* Call probe_read  */
+> -	ins(BPF_EMIT_CALL(BPF_FUNC_probe_read), pos);
+> +	ins(BPF_EMIT_CALL(probeid), pos);
+>  	/*
+>  	 * Error processing: if read fail, goto error code,
+>  	 * will be relocated. Target should be the start of
+> @@ -241,7 +242,7 @@ static int
+>  gen_prologue_slowpath(struct bpf_insn_pos *pos,
+>  		      struct probe_trace_arg *args, int nargs)
+>  {
+> -	int err, i;
+> +	int err, i, probeid;
+>  
+>  	for (i = 0; i < nargs; i++) {
+>  		struct probe_trace_arg *arg = &args[i];
+> @@ -276,11 +277,16 @@ gen_prologue_slowpath(struct bpf_insn_pos *pos,
+>  				stack_offset), pos);
+>  
+>  		ref = arg->ref;
+> +		probeid = BPF_FUNC_probe_read_kernel;
+>  		while (ref) {
+>  			pr_debug("prologue: arg %d: offset %ld\n",
+>  				 i, ref->offset);
+> +
+> +			if (ref->user_access)
+> +				probeid = BPF_FUNC_probe_read_user;
+> +
+>  			err = gen_read_mem(pos, BPF_REG_3, BPF_REG_7,
+> -					   ref->offset);
+> +					   ref->offset, probeid);
+>  			if (err) {
+>  				pr_err("prologue: failed to generate probe_read function call\n");
+>  				goto errout;
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> index eea132f512b0..7cdb66ef3baa 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -1565,7 +1565,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
+>  	}
+>  
+>  	tmp = strchr(str, '@');
+> -	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
+> +	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
+>  		if (!user_access_is_supported()) {
+>  			semantic_error("ftrace does not support user access\n");
+>  			return -EINVAL;
+> @@ -1986,7 +1986,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
+>  		if (depth < 0)
+>  			return depth;
+>  	}
+> -	err = strbuf_addf(buf, "%+ld(", ref->offset);
+> +	if (ref->user_access)
+> +		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
+> +	else
+> +		err = strbuf_addf(buf, "%+ld(", ref->offset);
+>  	return (err < 0) ? err : depth;
+>  }
+>  
+> diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+> index 8c852948513e..064b63a6a3f3 100644
+> --- a/tools/perf/util/probe-file.c
+> +++ b/tools/perf/util/probe-file.c
+> @@ -1044,7 +1044,7 @@ static struct {
+>  	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
+>  	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
+>  	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
+> -	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
+> +	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
+>  	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
+>  	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
+>  };
+> -- 
+> 2.25.4
+> 
 
-With XDP_DROP in veth perr, the number looks much better
 
-xdp_redirect_map:
-  generic mode: 1.64M PPS
-  driver mode: 13.3M PPS
-xdp_redirect_map_multi:
-  generic mode: 1.29M PPS
-  driver mode: 8.5M PPS
-
-> >
-> > Kernel 5.7 + my patch(ingress i40e, egress i40e + veth)
-> > xdp_redirect_map_multi:
-> >   generic mode: 1.13M PPS
-> >   driver mode: 3.47M PPS
-
-But I don't know why this one get even a little slower..
-
-xdp_redirect_map_multi:
-  generic mode: 0.96M PPS
-  driver mode: 3.14M PPS
-
-Thanks
-Hangbin
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
