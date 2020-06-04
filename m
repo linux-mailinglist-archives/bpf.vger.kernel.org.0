@@ -2,136 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BE21EDC17
-	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 06:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200CB1EE02B
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 10:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgFDEJy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jun 2020 00:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgFDEJx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jun 2020 00:09:53 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0C8C03E96D;
-        Wed,  3 Jun 2020 21:09:52 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id m2so524751pjv.2;
-        Wed, 03 Jun 2020 21:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=roJ1VT2hODxNfHsexsDZ51zcsKofe74M10rlpMeT9Wc=;
-        b=XWDoQogHkGeuGdTPrzjPIT1b7CxbyvdjksVKpeGdBpghRtL31gXdXdgaelKTw9ulGa
-         1ZmOug1r08gVaev3JQqOHb/JrS3NIH7esDE6wj2gUvD7INuaX/qzBaiZPC4WKj5qOOtj
-         tQVAlTRfRaF5xg3ejezZPSOOEK1rAsmHrC7epqhZVkhvcmg7pygnRN6s5xoL/WKSoaR/
-         AwxwtQADw/QC/8132uqWwcPOw+WMne47thumt2gEHrRHGxU9fpWNgVGUsigLOYszi7pu
-         fJPBQg7EOOOQTddCpa+C77UqBZRAG7lYb3X5bqc2d3jTuMPpNFMTQfVD4eFfjfYdSHYS
-         3zEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=roJ1VT2hODxNfHsexsDZ51zcsKofe74M10rlpMeT9Wc=;
-        b=StVHXURix1+6/PweaXza20qEdYPA+qXC8EgDSUEg27tqUHqmaAjuMa7vbb8Z0KHbd/
-         xU5KDbE/aEt7mehXxWcRUhFzuNUU9dUNdvdo2c34573Tw5/51nVxg0aQHwI827r77+fN
-         Cxqm32fb2pSwO/mMkc0P+lvZR+uobWxReQasHK+ZJKgHTOr/04r30ds29JzfO04MaoeM
-         0a+dVu3Nf9PTXKfQMoVdPT/osTSF+p9GIjPY7FSUIk7fTh24ihJxGkndpMSJQB3sJxT8
-         dkL4KbaIRUFAVLI6hnthYEM9Krc8p0z2p0IDULG7hSXbkbyYE0R46P3ygngX/SN1ZJPD
-         7wTA==
-X-Gm-Message-State: AOAM532+0U3Nv+uIsVdewQEiK5y2vz5FAHlRj9CVxpWEf39kD4ZNyU4h
-        cudLEXMq2qUgQN9mdvm7w0o=
-X-Google-Smtp-Source: ABdhPJzi0cBJNkHQogPhj59FZr4Q2IMDNuNsqqwTI3HHTH+IOX9u56tK1mkhb1CbYHOUK47YpwoqLw==
-X-Received: by 2002:a17:902:7787:: with SMTP id o7mr2882667pll.52.1591243791591;
-        Wed, 03 Jun 2020 21:09:51 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x14sm2750878pgj.14.2020.06.03.21.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2020 21:09:50 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 12:09:40 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-Message-ID: <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com>
- <20200526140539.4103528-1-liuhangbin@gmail.com>
- <87zh9t1xvh.fsf@toke.dk>
- <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
- <87img8l893.fsf@toke.dk>
+        id S1726802AbgFDIzF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jun 2020 04:55:05 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56536 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726664AbgFDIzF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jun 2020 04:55:05 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0548kV17025798;
+        Thu, 4 Jun 2020 08:54:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=JIQfxmPvTFHHyVrHNeasOgcdmrQ+G3M5MRzkNLwrEqs=;
+ b=B/THnTSpSZVKPVZDbzXqGZ0Ri2QVlJWQoLNZPv0GtT71G7zbbEfTU36kJn3SPksT2kR4
+ ekv/gTdftG1l3HGtGr/M8GvbzSTyRepIouOeSoL4ud6RTmypOQ0hAhlWNsJncVOik5vJ
+ SuPi/yMnHSGwqtPdOGwLuSajpcNAj4s1z5idXX5a27RBmj+RMOa6/Ab4m/0aMKSNlOzi
+ ad4L48I0bQrHxLXavR2MM6lGBRzr8kNyON7Owlljav72yj9GjTpxQ9xgYmbolMm6LMJN
+ WdRq5CbBg0pAKpDGgDJCxDQW8NNiMIPtmnzLeqMhOltX6HJL6n6yy7Vba7++cXiYa+3D 3Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31evap0hsq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 04 Jun 2020 08:54:46 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0548m6sZ006063;
+        Thu, 4 Jun 2020 08:54:45 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 31dju4nure-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jun 2020 08:54:45 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0548si4v002251;
+        Thu, 4 Jun 2020 08:54:44 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 04 Jun 2020 01:54:43 -0700
+Date:   Thu, 4 Jun 2020 11:54:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2 bpf-next] bpf: Fix an error code in check_btf_func()
+Message-ID: <20200604085436.GA943001@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87img8l893.fsf@toke.dk>
+In-Reply-To: <CAADnVQJPwtan12Htu-0VhvuC3M-o_kbnPpN=SXVC-amn9BcZCw@mail.gmail.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006040059
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006040059
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 01:05:28PM +0200, Toke Høiland-Jørgensen wrote:
-> > Hi Toke,
-> >
-> > Here is the result I tested with 2 i40e 10G ports on physical machine.
-> > The pktgen pkt_size is 64.
-> 
-> These numbers seem a bit low (I'm getting ~8.5MPPS on my test machine
-> for a simple redirect). Some of that may just be performance of the
-> machine, I guess (what are you running this on?), but please check that
-> you are not limited by pktgen itself - i.e., that pktgen is generating
-> traffic at a higher rate than what XDP is processing.
+This code returns success if the "info_aux" allocation fails but it
+should return -ENOMEM.
 
-Here is the test topology, which looks like
+Fixes: 8c1b6e69dcc1 ("bpf: Compare BTF types of functions arguments with actual types")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: style change
 
- Host A    |     Host B        |        Host C
- eth0      +    eth0 - eth1    +        eth0
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I did pktgen sending on Host A, forwarding on Host B.
-Host B is a Dell PowerEdge R730 (128G memory, Intel(R) Xeon(R) CPU E5-2690 v3)
-eth0, eth1 is an onboard i40e 10G driver
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5c7bbaac81ef9..34cde841ab681 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7552,7 +7552,7 @@ static int check_btf_func(struct bpf_verifier_env *env,
+ 	const struct btf *btf;
+ 	void __user *urecord;
+ 	u32 prev_offset = 0;
+-	int ret = 0;
++	int ret = -ENOMEM;
+ 
+ 	nfuncs = attr->func_info_cnt;
+ 	if (!nfuncs)
+-- 
+2.26.2
 
-Test 1: add eth0, eth1 to br0 and test bridge forwarding
-Test 2: Test xdp_redirect_map(), eth0 is ingress, eth1 is egress
-Test 3: Test xdp_redirect_map_multi(), eth0 is ingress, eth1 is egress
-
-> 
-> > Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are two modes data):
-> > generic mode: 1.32M PPS
-> > driver mode: 1.66M PPS
-> 
-> I'm not sure I understand this - what are you measuring here exactly?
-
-> Finally, since the overhead seems to be quite substantial: A comparison
-> with a regular network stack bridge might make sense? After all we also
-> want to make sure it's a performance win over that :)
-
-I though you want me also test with bridge forwarding. Am I missing something?
-
-> 
-> > xdp_redirect_map:
-> > generic mode: 1.88M PPS
-> > driver mode: 2.74M PPS
-> 
-> Please add numbers without your patch applied as well, for comparison.
-
-OK, I will.
-> 
-> > xdp_redirect_map_multi:
-> > generic mode: 1.38M PPS
-> > driver mode: 2.73M PPS
-> 
-> I assume this is with a single interface only, right? Could you please
-> add a test with a second interface (so the packet is cloned) as well?
-> You can just use a veth as the second target device.
-
-OK, so the topology on Host B should be like
-
-eth0 + eth1 + veth0, eth0 as ingress, eth1 and veth0 as egress, right?
-
-Thanks
-Hangbin
