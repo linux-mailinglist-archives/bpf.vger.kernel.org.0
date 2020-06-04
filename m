@@ -2,228 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E30D1EE0E5
-	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 11:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1471EE1AF
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 11:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgFDJK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jun 2020 05:10:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17858 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726603AbgFDJK4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Jun 2020 05:10:56 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05492dGI134053;
-        Thu, 4 Jun 2020 05:10:55 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ek589e1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jun 2020 05:10:55 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05492ne4135041;
-        Thu, 4 Jun 2020 05:10:54 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ek589e0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jun 2020 05:10:54 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0549AQQF023550;
-        Thu, 4 Jun 2020 09:10:52 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 31bf481nyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jun 2020 09:10:52 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0549AnVC57147826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Jun 2020 09:10:49 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 387ECA4069;
-        Thu,  4 Jun 2020 09:10:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E158FA4065;
-        Thu,  4 Jun 2020 09:10:48 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Jun 2020 09:10:48 +0000 (GMT)
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-To:     linux-perf-users@vger.kernel.org, acme@kernel.org
-Cc:     bpf@vger.kernel.org, jolsa@redhat.com, tmricht@linux.ibm.com,
-        heiko.carstens@de.ibm.com, mhiramat@kernel.org, iii@linux.ibm.com,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>
-Subject: [PATCH] perf: Fix bpf prologue generation, user attribute access in kprobes
-Date:   Thu,  4 Jun 2020 11:10:28 +0200
-Message-Id: <20200604091028.101569-1-sumanthk@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-04_05:2020-06-02,2020-06-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 phishscore=0 bulkscore=0 clxscore=1011
- mlxscore=0 malwarescore=0 cotscore=-2147483648 mlxlogscore=999
- impostorscore=0 priorityscore=1501 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006040058
+        id S1728306AbgFDJoc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jun 2020 05:44:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34315 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727993AbgFDJoc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jun 2020 05:44:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591263870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uZHdoObDjTElR9UN5P0vaZwCPB+TZB2WZjwDmEDQVDw=;
+        b=DQwunvmb5P48Cv/I1QjLIb6H00CdzCeV4foPc/cYmhmCFrIy7PAjv1+/j+cgNjDJ6eFw9o
+        nlpEvUez9eXCYLvOp97LvYSwBkiEek8wX7s4LDI/p6A58VOsQl1MMkEIOEqIE60v3VdiIN
+        GBf8ukXKTMgsfYFGsSQryG/xPbwyCqU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-7BbuxaQeOcub_z6ILmiGww-1; Thu, 04 Jun 2020 05:44:28 -0400
+X-MC-Unique: 7BbuxaQeOcub_z6ILmiGww-1
+Received: by mail-ej1-f71.google.com with SMTP id w12so1920526ejf.5
+        for <bpf@vger.kernel.org>; Thu, 04 Jun 2020 02:44:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=uZHdoObDjTElR9UN5P0vaZwCPB+TZB2WZjwDmEDQVDw=;
+        b=jVdXM646MRK+i5EWm9rKvb/8001uqmPIOB/uwispquiK8dA67bdPMHuGjidq58z75k
+         XREjorBvIVaUOd3Q2JhjMVnvZXqgxb+CKtiIjRHSZaWVJ+PbEgwtVmp+W/JBNwGi72PT
+         Ir/c8xkaAwqjMA8S+tFbFFwIm+mBRyQjNvhyWJZw/PV8oOtIZ1riCf86gRCo26XyZpxy
+         tYbD5WvDh4jc9+r20vDe+q30ZEnIPRYyoaX0o84ktDd2GdJ2kBXmdJwJnRzLvmKVeJG7
+         XlSI08o+pjJd8e5hK+ZMg3TWrSJasFzP8bRw+PkaYydnALpxu6b1usDcO/gXTSZSecB4
+         V/wQ==
+X-Gm-Message-State: AOAM531WNWW4zUVsIjSCHNvK7fgGfTgcFkJB7vHVULxif9MeRQsJWJTz
+        M5riuORelzLjSY/CX3JOglTDT1YiljL65y8ToKXcdZVkMRltOUaAS03udiIcSaJzJp74TxG7JeA
+        iAntXun/0jzqI
+X-Received: by 2002:a17:906:ce2f:: with SMTP id sd15mr3033154ejb.445.1591263866912;
+        Thu, 04 Jun 2020 02:44:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9U7Wk9/8k4fdL3F2ZW+JJ20/SRb3lDEepDfF9ATJXCTZc8SjjEWNmX6F77AOLfRhOWwu5eA==
+X-Received: by 2002:a17:906:ce2f:: with SMTP id sd15mr3033139ejb.445.1591263866674;
+        Thu, 04 Jun 2020 02:44:26 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j10sm1931787edf.97.2020.06.04.02.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jun 2020 02:44:25 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D6D68182797; Thu,  4 Jun 2020 11:44:24 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
+In-Reply-To: <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200526140539.4103528-1-liuhangbin@gmail.com> <87zh9t1xvh.fsf@toke.dk> <20200603024054.GK102436@dhcp-12-153.nay.redhat.com> <87img8l893.fsf@toke.dk> <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 04 Jun 2020 11:44:24 +0200
+Message-ID: <871rmvkvwn.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Issues:
-1. bpf_probe_read is no longer available for architecture which has
-   overlapping address space. Hence bpf prologue generation fails
-2. perf probe -a 'do_sched_setscheduler  pid policy
-   param->sched_priority@user' did not work before.
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-Fixes:
-1. Use bpf_probe_read_kernel for kernel member access. For user
-   attribute access in kprobes, bpf_probe_read_user is utilized
-2. Make (perf probe -a 'do_sched_setscheduler  pid policy
-   param->sched_priority@user') output equivalent to ftrace
-   ('p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32
-   policy=%r3:s32 sched_priority=+u0 (%r4):s32' > kprobe_events)
+> On Wed, Jun 03, 2020 at 01:05:28PM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
+land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+>> > Hi Toke,
+>> >
+>> > Here is the result I tested with 2 i40e 10G ports on physical machine.
+>> > The pktgen pkt_size is 64.
+>>=20
+>> These numbers seem a bit low (I'm getting ~8.5MPPS on my test machine
+>> for a simple redirect). Some of that may just be performance of the
+>> machine, I guess (what are you running this on?), but please check that
+>> you are not limited by pktgen itself - i.e., that pktgen is generating
+>> traffic at a higher rate than what XDP is processing.
+>
+> Here is the test topology, which looks like
+>
+>  Host A    |     Host B        |        Host C
+>  eth0      +    eth0 - eth1    +        eth0
+>
+> I did pktgen sending on Host A, forwarding on Host B.
+> Host B is a Dell PowerEdge R730 (128G memory, Intel(R) Xeon(R) CPU E5-269=
+0 v3)
+> eth0, eth1 is an onboard i40e 10G driver
+>
+> Test 1: add eth0, eth1 to br0 and test bridge forwarding
+> Test 2: Test xdp_redirect_map(), eth0 is ingress, eth1 is egress
+> Test 3: Test xdp_redirect_map_multi(), eth0 is ingress, eth1 is egress
 
-Other:
-1. Right now, __match_glob() does not handle [u]<offset>. For now, use
-  *u]<offset>.
-2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
-   Add user memory access attribute support")
+Right, that all seems reasonable, but that machine is comparable to
+my test machine, so you should be getting way more than 2.75 MPPS on a
+regular redirect test. Are you bottlenecked on pktgen or something?
 
-Test:
-1. ulimit -l 128 ; ./perf record -e tests/bpf_sched_setscheduler.c
-2. cat tests/bpf_sched_setscheduler.c
+Could you please try running Jesper's ethtool stats poller:
+https://github.com/netoptimizer/network-testing/blob/master/bin/ethtool_sta=
+ts.pl
 
-static void (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
-        (void *) 6;
-static int (*bpf_probe_read_user)(void *dst, __u32 size,
-                                  const void *unsafe_ptr) = (void *) 112;
-static int (*bpf_probe_read_kernel)(void *dst, __u32 size,
-        const void *unsafe_ptr) = (void *) 113;
+on eth0 on Host B, and see what PPS values you get on the different counter=
+s?
 
-SEC("func=do_sched_setscheduler  pid policy param->sched_priority@user")
-int bpf_func__setscheduler(void *ctx, int err, pid_t pid, int policy,
-                           int param)
-{
-        char fmt[] = "prio: %ld";
-        bpf_trace_printk(fmt, sizeof(fmt), param);
-        return 1;
-}
+>> > Bridge forwarding(I use sample/bpf/xdp1 to count the PPS, so there are=
+ two modes data):
+>> > generic mode: 1.32M PPS
+>> > driver mode: 1.66M PPS
+>>=20
+>> I'm not sure I understand this - what are you measuring here exactly?
+>
+>> Finally, since the overhead seems to be quite substantial: A comparison
+>> with a regular network stack bridge might make sense? After all we also
+>> want to make sure it's a performance win over that :)
+>
+> I though you want me also test with bridge forwarding. Am I missing somet=
+hing?
 
-char _license[] SEC("license") = "GPL";
-int _version SEC("version") = LINUX_VERSION_CODE;
+Yes, but what does this mean:
+> (I use sample/bpf/xdp1 to count the PPS, so there are two modes data):
 
-3. ./perf script
-   sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
-   pid=261614 policy=2 sched_priority=1
+or rather, why are there two numbers? :)
 
-4. cat /sys/kernel/debug/tracing/trace
-   <...>-309956 [006] .... 1616098.093957: 0: prio: 1
+>> > xdp_redirect_map:
+>> > generic mode: 1.88M PPS
+>> > driver mode: 2.74M PPS
+>>=20
+>> Please add numbers without your patch applied as well, for comparison.
+>
+> OK, I will.
+>>=20
+>> > xdp_redirect_map_multi:
+>> > generic mode: 1.38M PPS
+>> > driver mode: 2.73M PPS
+>>=20
+>> I assume this is with a single interface only, right? Could you please
+>> add a test with a second interface (so the packet is cloned) as well?
+>> You can just use a veth as the second target device.
+>
+> OK, so the topology on Host B should be like
+>
+> eth0 + eth1 + veth0, eth0 as ingress, eth1 and veth0 as egress, right?
 
-5. bpf_probe_read_user is used when @user attribute is used. Otherwise,
-   defaults to bpf_probe_read_kernel
+Yup, exactly!
 
-6. ./perf test bpf (null_lseek - kernel member access)
-42: BPF filter                                            :
-42.1: Basic BPF filtering                                 : Ok
-42.2: BPF pinning                                         : Ok
-42.3: BPF prologue generation                             : Ok
-42.4: BPF relocation checker                              : FAILED!
-
-Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
----
- tools/perf/util/bpf-prologue.c | 14 ++++++++++----
- tools/perf/util/probe-event.c  |  7 +++++--
- tools/perf/util/probe-file.c   |  2 +-
- 3 files changed, 16 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/util/bpf-prologue.c b/tools/perf/util/bpf-prologue.c
-index b020a8678eb9..9887ae09242d 100644
---- a/tools/perf/util/bpf-prologue.c
-+++ b/tools/perf/util/bpf-prologue.c
-@@ -142,7 +142,8 @@ static int
- gen_read_mem(struct bpf_insn_pos *pos,
- 	     int src_base_addr_reg,
- 	     int dst_addr_reg,
--	     long offset)
-+	     long offset,
-+	     int probeid)
- {
- 	/* mov arg3, src_base_addr_reg */
- 	if (src_base_addr_reg != BPF_REG_ARG3)
-@@ -159,7 +160,7 @@ gen_read_mem(struct bpf_insn_pos *pos,
- 		ins(BPF_MOV64_REG(BPF_REG_ARG1, dst_addr_reg), pos);
- 
- 	/* Call probe_read  */
--	ins(BPF_EMIT_CALL(BPF_FUNC_probe_read), pos);
-+	ins(BPF_EMIT_CALL(probeid), pos);
- 	/*
- 	 * Error processing: if read fail, goto error code,
- 	 * will be relocated. Target should be the start of
-@@ -241,7 +242,7 @@ static int
- gen_prologue_slowpath(struct bpf_insn_pos *pos,
- 		      struct probe_trace_arg *args, int nargs)
- {
--	int err, i;
-+	int err, i, probeid;
- 
- 	for (i = 0; i < nargs; i++) {
- 		struct probe_trace_arg *arg = &args[i];
-@@ -276,11 +277,16 @@ gen_prologue_slowpath(struct bpf_insn_pos *pos,
- 				stack_offset), pos);
- 
- 		ref = arg->ref;
-+		probeid = BPF_FUNC_probe_read_kernel;
- 		while (ref) {
- 			pr_debug("prologue: arg %d: offset %ld\n",
- 				 i, ref->offset);
-+
-+			if (ref->user_access)
-+				probeid = BPF_FUNC_probe_read_user;
-+
- 			err = gen_read_mem(pos, BPF_REG_3, BPF_REG_7,
--					   ref->offset);
-+					   ref->offset, probeid);
- 			if (err) {
- 				pr_err("prologue: failed to generate probe_read function call\n");
- 				goto errout;
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index eea132f512b0..7cdb66ef3baa 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -1565,7 +1565,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
- 	}
- 
- 	tmp = strchr(str, '@');
--	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
-+	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
- 		if (!user_access_is_supported()) {
- 			semantic_error("ftrace does not support user access\n");
- 			return -EINVAL;
-@@ -1986,7 +1986,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
- 		if (depth < 0)
- 			return depth;
- 	}
--	err = strbuf_addf(buf, "%+ld(", ref->offset);
-+	if (ref->user_access)
-+		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
-+	else
-+		err = strbuf_addf(buf, "%+ld(", ref->offset);
- 	return (err < 0) ? err : depth;
- }
- 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index 8c852948513e..064b63a6a3f3 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -1044,7 +1044,7 @@ static struct {
- 	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
- 	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
- 	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
--	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
-+	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
- 	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
- 	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
- };
--- 
-2.25.4
+-Toke
 
