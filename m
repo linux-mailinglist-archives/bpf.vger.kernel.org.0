@@ -2,100 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2681EE975
-	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 19:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14ED1EEA5C
+	for <lists+bpf@lfdr.de>; Thu,  4 Jun 2020 20:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730215AbgFDRdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jun 2020 13:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730213AbgFDRdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jun 2020 13:33:45 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E38C08C5C0;
-        Thu,  4 Jun 2020 10:33:45 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id q16so2473971plr.2;
-        Thu, 04 Jun 2020 10:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T+6H1+9Hc5xNAJNMrtQes/xq+kxehbavBD4hX3343tc=;
-        b=iG5gsumFGxrHozrLYw1FZsfw0QE6p6Gu+15o8yVaiX4tnxixG9Qt2T9FBU0s953Dti
-         NBukuJ7gc4HmmlhSqQGOR/2MfnNOlxajLMWxzhnCx1YmUuAkViDfWhz9XUt5xX5Y3Hgd
-         /QmDT76vAMAa3S6kUS83NyfHw6HnVAa+reQaXYrNviTgze25w4J9yZzRWG4OUCzI062t
-         npntV62shwKD0YJrH93Cf7aakUFEVfIw8ju36Tv5f47XD8tH1SQ8s+itoMfTFGcmM2sB
-         UGRwW3G5QYv4/1h7M9N/YRXNE1uHOMpJFbMl3kbBpJZUgnNQv8Z6JGSYxlu63pt/LWOx
-         ymBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T+6H1+9Hc5xNAJNMrtQes/xq+kxehbavBD4hX3343tc=;
-        b=iHZh5PCr9fSgc0mYbR8M549lAxOBtQsnmqIA1cxLpebKqTMG46exCEaQTyvI+n63JT
-         qmT9ePmLPXJNbLHiLjJf/389gULEnehs4Y2IPha5VtOenEYHiFAS7u3CekAlbK3yreXo
-         V6rgs4lPcIV7Nf1FtS1OYjYncry0qOGnYLU5w2ItfpkcGIv3acmA0vU1besWrqy4+e17
-         3z92ERujsVTIvIyFEKFg7HvRMhy6Vp2Pz3br7XISlrSrxOYQSgbuJXzT/l9cW/MuHsYn
-         3ZYvUg0soCjlimzpdRdNDbGkAx+gFDXcPVoUxzl70p3qK6BEH73IPard6FSFaxeWSGxq
-         dBdA==
-X-Gm-Message-State: AOAM533rYY4fJL2/4gjBtlKKCfobutqWk5evOJ5OW7+80skKbFn9WH4b
-        Q9SLmfkdXzcnToxPwj0SmP2xuN/F
-X-Google-Smtp-Source: ABdhPJx4aXokw4cruyLTjv2VAzhwa96dczxbYm7egnoAc3Aj6nRkORGY+72mpY5agCz4kLX8aaJ4pg==
-X-Received: by 2002:a17:902:7045:: with SMTP id h5mr5917653plt.108.1591292024612;
-        Thu, 04 Jun 2020 10:33:44 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:3d39])
-        by smtp.gmail.com with ESMTPSA id a2sm4537851pgh.81.2020.06.04.10.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 10:33:43 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 10:33:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on
- BTF
-Message-ID: <20200604173341.rvfrjmt433knl3uv@ast-mbp.dhcp.thefacebook.com>
-References: <159119908343.1649854.17264745504030734400.stgit@firesoul>
- <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
- <20200604174806.29130b81@carbon>
- <205b3716-e571-b38f-614f-86819d153c4e@gmail.com>
+        id S1725939AbgFDShY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jun 2020 14:37:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgFDShW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jun 2020 14:37:22 -0400
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2780720825;
+        Thu,  4 Jun 2020 18:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591295842;
+        bh=zVQ/a3QGGMwVEKXv04Zyp+cYabQnJ/hl5W1NaF+IHxU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QqPc/05WRFNYktsxU3lxmkmrsXD/kqlZWBwVd/rV7vMoJxuhSTsBvsT2TC0kgXJUE
+         nOAQTo1NYlI6mAduFRJJfY3+txBu+BALxafRUoxnGseD4sDK87m3Cpu3e6uKXDFR0c
+         DGuBlSfMdI0khNo/2nLtDvNiaMRjEZWVtH3OgE4c=
+Received: by mail-lf1-f52.google.com with SMTP id e125so4249533lfd.1;
+        Thu, 04 Jun 2020 11:37:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530Yvy3KA0IZwK2G+2RJiuAgNRJcyfyO7j6bDY1iWcf4zpzGyDLP
+        YbTz3Wla4ZsZgcq8SjK46Aj8r31pitSBaFvLjAI=
+X-Google-Smtp-Source: ABdhPJwELS2VbxbfUSW2SafVtBUYtQ1Mw9hELIS7evhsCM1/DuOzz5FbaC0/82U2B34IP/5Y1RKbQ/h6lWZGK054Vgw=
+X-Received: by 2002:a19:c6c2:: with SMTP id w185mr3164934lff.69.1591295840422;
+ Thu, 04 Jun 2020 11:37:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <205b3716-e571-b38f-614f-86819d153c4e@gmail.com>
+References: <CAADnVQJPwtan12Htu-0VhvuC3M-o_kbnPpN=SXVC-amn9BcZCw@mail.gmail.com>
+ <20200604085436.GA943001@mwanda>
+In-Reply-To: <20200604085436.GA943001@mwanda>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 4 Jun 2020 11:37:09 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7BK+4sJ42YpseWkHf0brW65se5HkQCkq-ONHx--sW4iw@mail.gmail.com>
+Message-ID: <CAPhsuW7BK+4sJ42YpseWkHf0brW65se5HkQCkq-ONHx--sW4iw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: Fix an error code in check_btf_func()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 10:40:06AM -0600, David Ahern wrote:
-> On 6/4/20 9:48 AM, Jesper Dangaard Brouer wrote:
-> > I will NOT send a patch that expose this in uapi/bpf.h.  As I explained
-> > before, this caused the issues for my userspace application, that
-> > automatically picked-up struct bpf_devmap_val, and started to fail
-> > (with no code changes), because it needed minus-1 as input.  I fear
-> > that this will cause more work for me later, when I have to helpout and
-> > support end-users on e.g. xdp-newbies list, as it will not be obvious
-> > to end-users why their programs map-insert start to fail.  I have given
-> > up, so I will not NACK anyone sending such a patch.
+On Thu, Jun 4, 2020 at 1:55 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> This code returns success if the "info_aux" allocation fails but it
+> should return -ENOMEM.
+>
+> Fixes: 8c1b6e69dcc1 ("bpf: Compare BTF types of functions arguments with actual types")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Jesper,
+Acked-by: Song Liu <songliubraving@fb.com>
 
-you gave wrong direction to David during development of the patches and
-now the devmap uapi is suffering the consequences.
-
-> > 
-> > Why is it we need to support file-descriptor zero as a valid
-> > file-descriptor for a bpf-prog?
-> 
-> That was a nice property of using the id instead of fd. And the init to
-> -1 is not unique to this; adopters of the bpf_set_link_xdp_fd_opts for
-> example have to do the same.
-
-I think it's better to adopt "fd==0 -> invalid" approach.
-It won't be unique here. We're already using it in other places in bpf syscall.
-I agree with Jesper that requiring -1 init of 2nd field is quite ugly
-and inconvenient.
+> ---
+> v2: style change
+>
