@@ -2,140 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B361EFBE5
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 16:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0EB1EFBE9
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 16:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgFEOxz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 10:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727839AbgFEOxy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 10:53:54 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E35CC08C5C2
-        for <bpf@vger.kernel.org>; Fri,  5 Jun 2020 07:53:53 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o15so10397396ejm.12
-        for <bpf@vger.kernel.org>; Fri, 05 Jun 2020 07:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=aYBimq73plyo4JsuWnszJuZkFsHKcX8NbkajF0wTUdY=;
-        b=AAZ1bY0TljnBJAy+XO1rlODzdla4ORRMxpvo4XKlQ/10mqD/2fBJhV/EaqdYQlXaU+
-         TtV1wQ1lxmjQCgaNVo7yLM6do7Fs8myFZonjqUhqw7fS8i0U83StuKW2oG3glxpoCInT
-         cmJx7ZrvEpTfvt7boODw2xV6cUZzhxexmlWys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=aYBimq73plyo4JsuWnszJuZkFsHKcX8NbkajF0wTUdY=;
-        b=OJ+7aJ8lgA8xPwMH309mGt54IFAKz8ji/ELeJATAgfkKg58FgmomqBWTb5QutGa65I
-         0w/Bg/pjjy9yr8QideJLcuQSZVModfWRlADAGKZQMb6R+lGkrLJbEoqK0FGhSsCmBh1e
-         VVLnEqs/Xu7Xef6cMoMoqbuu25v/M7DhLNs4BzI7BuMoT1XSaPEIvD7lq7PkwYGoFjzs
-         YAqFJLULCUQfwhPeFtcu1eHolyBmpCkjAMxAFvYq3vpvRkwU7D6x9C5sP0OIRy95k1Kk
-         oG+VaZUZ6Brao3tafac3eXI3owK1IAB2SB9lSiwGz9+Zs4+5w1UDkPIZZceuGF0LJAT4
-         tNCg==
-X-Gm-Message-State: AOAM5320Ql9cT5dumrG7cl24dVnxqKAZvoIZPJ2wisqubNN9rHu+7XrV
-        nyt+SIAqujAq/xxotfofXGQsG3PQHRU=
-X-Google-Smtp-Source: ABdhPJziqxQ+oI9F47MW4cxr3WqzrNiTTLvNbvA6GNdFFy/hB/ZVLZFBaEYRJnfqtGIOuLKkI2+ABg==
-X-Received: by 2002:a17:906:3bd7:: with SMTP id v23mr8527519ejf.299.1591368832101;
-        Fri, 05 Jun 2020 07:53:52 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id b24sm5046651edw.70.2020.06.05.07.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2020 07:53:51 -0700 (PDT)
-References: <20200605124011.71043-1-wangli09@kuaishou.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Wang Li <wangli8850@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net,
-        Wang Li <wangli09@kuaishou.com>,
-        huangxuesen <huangxuesen@kuaishou.com>,
-        yangxingwu <yangxingwu@kuaishou.com>
-Subject: Re: [PATCH] bpf: export the net namespace for bpf_sock_ops
-In-reply-to: <20200605124011.71043-1-wangli09@kuaishou.com>
-Date:   Fri, 05 Jun 2020 16:53:50 +0200
-Message-ID: <875zc536o1.fsf@cloudflare.com>
+        id S1727839AbgFEOyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 10:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727114AbgFEOyM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 10:54:12 -0400
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80F452074B;
+        Fri,  5 Jun 2020 14:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591368851;
+        bh=jRPCH/tx4o7fYOkKEAOKTxSmol19jY0MwCvdOWSCKAI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=enQnTCIaLOeTZTNG/rmeVyg/RmVp7XKHMw5DwsWCuSVIgIby4E344h6ycmd0AlVk1
+         y44cP6JYDhFg07hnNc2elrMY5IzMJitQJykWOu+cwGdKcKStncH5VUqfWusyvn92yA
+         rFSDXNW0SORLA8gxNMajY2kmDbL3+y+eb7XwhPHY=
+Received: by mail-ot1-f41.google.com with SMTP id o13so7805669otl.5;
+        Fri, 05 Jun 2020 07:54:11 -0700 (PDT)
+X-Gm-Message-State: AOAM532Rhg3TsWVcAGPo/o4cMmM7XXo9W4n3+KtDJL8F/hlGYgPLaxoO
+        Qm4jXk0E2R5BOvS1Ak90pyWZPk/+rMGzqhX8Pus=
+X-Google-Smtp-Source: ABdhPJx/a9mwC0PJr0EhFiLa+ncxjCxnQyruNdvyALIvOh6oevrfHoSe8gmM6LrDcE9CmGfDvhVaFPoTsZ1+96IFR6I=
+X-Received: by 2002:a9d:476:: with SMTP id 109mr8457492otc.77.1591368850849;
+ Fri, 05 Jun 2020 07:54:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200518190716.751506-1-nivedita@alum.mit.edu>
+ <20200518190716.751506-6-nivedita@alum.mit.edu> <20200605003134.GA95743@rdna-mbp.dhcp.thefacebook.com>
+ <CAMj1kXGaQGaoiCqQpX4mdN6UQi25=EhqiNZn=sbcgi1YYuJwBA@mail.gmail.com>
+ <20200605131419.GA560594@rani.riverdale.lan> <20200605133232.GA616374@rani.riverdale.lan>
+In-Reply-To: <20200605133232.GA616374@rani.riverdale.lan>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 5 Jun 2020 16:53:59 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXG936NeN7+Mf42bL-7V5pRVjoNmCKmVT3EcB5EGh2y5fQ@mail.gmail.com>
+Message-ID: <CAMj1kXG936NeN7+Mf42bL-7V5pRVjoNmCKmVT3EcB5EGh2y5fQ@mail.gmail.com>
+Subject: Re: [PATCH 05/24] efi/libstub: Optimize for size instead of speed
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Andrey Ignatov <rdna@fb.com>,
+        linux-efi <linux-efi@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 02:40 PM CEST, Wang Li wrote:
-> Sometimes we need net namespace as part of the key for BPF_MAP_TYPE_SOCKHASH to
-> distinguish the connections with same five-tuples, for example when we do the
-> sock_map acceleration for the proxy that uses 127.0.0.1 to 127.0.0.1 connections
-> in different containers on same node.
-> And we export the netns inum instead of the real pointer of struct net to avoid
-> the potential security issue.
+On Fri, 5 Jun 2020 at 15:32, Arvind Sankar <nivedita@alum.mit.edu> wrote:
 >
-> Signed-off-by: Wang Li <wangli09@kuaishou.com>
-> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
-> Signed-off-by: yangxingwu <yangxingwu@kuaishou.com>
-> ---
->  include/uapi/linux/bpf.h       |  2 ++
->  net/core/filter.c              | 17 +++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  2 ++
->  3 files changed, 21 insertions(+)
+> On Fri, Jun 05, 2020 at 09:14:19AM -0400, Arvind Sankar wrote:
+> > On Fri, Jun 05, 2020 at 08:33:22AM +0200, Ard Biesheuvel wrote:
+> > > Hello Andrey,
+> > >
+> > > On Fri, 5 Jun 2020 at 02:31, Andrey Ignatov <rdna@fb.com> wrote:
+> > > >
+> > > > Arvind Sankar <nivedita@alum.mit.edu> [Wed, 1969-12-31 23:00 -0800]:
+> > > > > Reclaim the bloat from the addition of printf by optimizing the stub for
+> > > > > size. With gcc 9, the text size of the stub is:
+> > > > >
+> > > > > ARCH    before  +printf    -Os
+> > > > > arm      35197    37889  34638
+> > > > > arm64    34883    38159  34479
+> > > > > i386     18571    21657  17025
+> > > > > x86_64   25677    29328  22144
+> > > > >
+> > > > > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > > > > ---
+> > > > >  drivers/firmware/efi/libstub/Makefile | 4 ++--
+> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> > > > > index fb34c9d14a3c..034d71663b1e 100644
+> > > > > --- a/drivers/firmware/efi/libstub/Makefile
+> > > > > +++ b/drivers/firmware/efi/libstub/Makefile
+> > > > > @@ -7,7 +7,7 @@
+> > > > >  #
+> > > > >  cflags-$(CONFIG_X86_32)              := -march=i386
+> > > > >  cflags-$(CONFIG_X86_64)              := -mcmodel=small
+> > > > > -cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ -O2 \
+> > > > > +cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ \
+> > > > >                                  -fPIC -fno-strict-aliasing -mno-red-zone \
+> > > > >                                  -mno-mmx -mno-sse -fshort-wchar \
+> > > > >                                  -Wno-pointer-sign \
+> > > > > @@ -25,7 +25,7 @@ cflags-$(CONFIG_ARM)                := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+> > > > >
+> > > > >  cflags-$(CONFIG_EFI_GENERIC_STUB) += -I$(srctree)/scripts/dtc/libfdt
+> > > > >
+> > > > > -KBUILD_CFLAGS                        := $(cflags-y) -DDISABLE_BRANCH_PROFILING \
+> > > > > +KBUILD_CFLAGS                        := $(cflags-y) -Os -DDISABLE_BRANCH_PROFILING \
+> > > > >                                  -include $(srctree)/drivers/firmware/efi/libstub/hidden.h \
+> > > > >                                  -D__NO_FORTIFY \
+> > > > >                                  $(call cc-option,-ffreestanding) \
+> > > >
+> > > > Hi Arvind,
+> > > >
+> > > > This patch breaks build for me:
+> > > >
+> > > > $>make -j32 -s bzImage
+> > > > drivers/firmware/efi/libstub/alignedmem.c: In function \x2018efi_allocate_pages_aligned\x2019:
+> > > > drivers/firmware/efi/libstub/alignedmem.c:38:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+> > > >   status = efi_bs_call(allocate_pages, EFI_ALLOCATE_MAX_ADDRESS,
+> > > >          ^
+> > >
+> > > Which version of GCC are you using?
+> >
+> > gcc-4.8.5 from the config. I got a copy and can reproduce it. Just
+> > adding -maccumulate-outgoing-args appears to fix it, checking some more.
+> >
 >
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c65b374a5090..0fe7e459f023 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3947,6 +3947,8 @@ struct bpf_sock_ops {
->  				 * there is a full socket. If not, the
->  				 * fields read as zero.
->  				 */
-> +	__u32 netns_inum;	/* The net namespace this sock belongs to */
-> +
+> On a simple test:
+>         extern void __attribute__ (( ms_abi )) ms_abi();
+>         void sysv_abi(void) { ms_abi(); }
+> it only breaks with -Os -fno-asynchronous-unwind-tables, weirdly enough.
 
-In uapi/linux/bpf.h we have a field `netns_ino` for storing net
-namespace inode number in a couple structs (bpf_prog_info,
-bpf_map_info). Would be nice to keep the naming constent.
+I guess the logic that decides whether -maccumulate-outgoing-args is
+enabled is somewhat opaque.
 
->  	__u32 snd_cwnd;
->  	__u32 srtt_us;		/* Averaged RTT << 3 in usecs */
->  	__u32 bpf_sock_ops_cb_flags; /* flags defined in uapi/linux/tcp.h */
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index d01a244b5087..bfe448ace25f 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -8450,6 +8450,23 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->  					       is_fullsock));
->  		break;
->
-> +	case offsetof(struct bpf_sock_ops, netns_inum):
-> +#ifdef CONFIG_NET_NS
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
-> +						struct bpf_sock_ops_kern, sk),
-> +				      si->dst_reg, si->src_reg,
-> +				      offsetof(struct bpf_sock_ops_kern, sk));
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
-> +						struct sock_common, skc_net),
-> +				      si->dst_reg, si->dst_reg,
-> +				      offsetof(struct sock_common, skc_net));
-> +		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg,
-> +				      offsetof(struct net, ns.inum));
-> +#else
-> +		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
-> +#endif
-> +		break;
-> +
->  	case offsetof(struct bpf_sock_ops, state):
->  		BUILD_BUG_ON(sizeof_field(struct sock_common, skc_state) != 1);
->
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index c65b374a5090..0fe7e459f023 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3947,6 +3947,8 @@ struct bpf_sock_ops {
->  				 * there is a full socket. If not, the
->  				 * fields read as zero.
->  				 */
-> +	__u32 netns_inum;	/* The net namespace this sock belongs to */
-> +
->  	__u32 snd_cwnd;
->  	__u32 srtt_us;		/* Averaged RTT << 3 in usecs */
->  	__u32 bpf_sock_ops_cb_flags; /* flags defined in uapi/linux/tcp.h */
+Could we perhaps back out the -Os change for 4.8 and earlier?
