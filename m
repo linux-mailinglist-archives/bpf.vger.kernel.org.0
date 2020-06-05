@@ -2,157 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFFA1EF15D
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 08:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EBD1EF303
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 10:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgFEGdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 02:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgFEGdf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:33:35 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726072AbgFEIXg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 04:23:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30652 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726062AbgFEIXg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 04:23:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591345415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2JMbJInhzUsJ9+e9ERl6UPX0rmPsCDgr0I1iZOJwgig=;
+        b=K6Eo/b2Q67gfiM1z79Stx2d7VIde804g/diLgdDq5r32GjI917yJYU6BtvMkGS2LKW4fJs
+        Ja1oEcTBIeBLfIaCmIPHZ3VWQcKTww2O42SwvN5uYsquEhOcKITXppe63bpKH2dPAQ0qO7
+        SksNU36lvPZr/kki+yuVm8VESpuGhEg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-BdyA08kXOu23Lbxn7WO4lg-1; Fri, 05 Jun 2020 04:23:32 -0400
+X-MC-Unique: BdyA08kXOu23Lbxn7WO4lg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FB6A207F7;
-        Fri,  5 Jun 2020 06:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591338814;
-        bh=OyA0SPdScgbcmUmLNB1wHj6mmcj7lB0EY3tbkA7rHB8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GcrwA40+pCfJEgqHhw/H6BJWQfIkY/Pflgt2kw8G2LE21WYN61OKVqMbQ2RyreY9y
-         Dn8EePdZvUu5U45bOdWxRhPok/y3j/zTXMyXbm98UcQGj/i2I1IG/XIzeGRR/qaUhm
-         Uylkbd6xg5d7CemDK5JN0KQXjsLXcLmysnP00jmI=
-Received: by mail-oi1-f176.google.com with SMTP id p70so7314875oic.12;
-        Thu, 04 Jun 2020 23:33:34 -0700 (PDT)
-X-Gm-Message-State: AOAM530fgUSiqvuhYLqzSX4iMumxCG1n80YclCnE2WdzKAfJbV2scIfw
-        YVRV2ogx2QXA/GvCex2HgWXNzneDPNUXh1Gshms=
-X-Google-Smtp-Source: ABdhPJxIcXiCQoQNMIxa1oDKCzFpm8Ra4nnADMDyHj9KIW1QIH13VaPG2u51XM8ZpTyBvm2z4U2aC2pN7RJCyla40iM=
-X-Received: by 2002:aca:b707:: with SMTP id h7mr1057058oif.174.1591338813378;
- Thu, 04 Jun 2020 23:33:33 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56DF1A0C00;
+        Fri,  5 Jun 2020 08:23:31 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7135C75294;
+        Fri,  5 Jun 2020 08:23:25 +0000 (UTC)
+Date:   Fri, 5 Jun 2020 10:23:23 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        David Miller <davem@davemloft.net>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on
+ BTF
+Message-ID: <20200605102323.15c2c06c@carbon>
+In-Reply-To: <20200604173341.rvfrjmt433knl3uv@ast-mbp.dhcp.thefacebook.com>
+References: <159119908343.1649854.17264745504030734400.stgit@firesoul>
+        <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
+        <20200604174806.29130b81@carbon>
+        <205b3716-e571-b38f-614f-86819d153c4e@gmail.com>
+        <20200604173341.rvfrjmt433knl3uv@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20200518190716.751506-1-nivedita@alum.mit.edu>
- <20200518190716.751506-6-nivedita@alum.mit.edu> <20200605003134.GA95743@rdna-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200605003134.GA95743@rdna-mbp.dhcp.thefacebook.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 5 Jun 2020 08:33:22 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGaQGaoiCqQpX4mdN6UQi25=EhqiNZn=sbcgi1YYuJwBA@mail.gmail.com>
-Message-ID: <CAMj1kXGaQGaoiCqQpX4mdN6UQi25=EhqiNZn=sbcgi1YYuJwBA@mail.gmail.com>
-Subject: Re: [PATCH 05/24] efi/libstub: Optimize for size instead of speed
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-efi <linux-efi@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Andrey,
+On Thu, 4 Jun 2020 10:33:41 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-On Fri, 5 Jun 2020 at 02:31, Andrey Ignatov <rdna@fb.com> wrote:
->
-> Arvind Sankar <nivedita@alum.mit.edu> [Wed, 1969-12-31 23:00 -0800]:
-> > Reclaim the bloat from the addition of printf by optimizing the stub for
-> > size. With gcc 9, the text size of the stub is:
-> >
-> > ARCH    before  +printf    -Os
-> > arm      35197    37889  34638
-> > arm64    34883    38159  34479
-> > i386     18571    21657  17025
-> > x86_64   25677    29328  22144
-> >
-> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > ---
-> >  drivers/firmware/efi/libstub/Makefile | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> > index fb34c9d14a3c..034d71663b1e 100644
-> > --- a/drivers/firmware/efi/libstub/Makefile
-> > +++ b/drivers/firmware/efi/libstub/Makefile
-> > @@ -7,7 +7,7 @@
-> >  #
-> >  cflags-$(CONFIG_X86_32)              := -march=i386
-> >  cflags-$(CONFIG_X86_64)              := -mcmodel=small
-> > -cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ -O2 \
-> > +cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ \
-> >                                  -fPIC -fno-strict-aliasing -mno-red-zone \
-> >                                  -mno-mmx -mno-sse -fshort-wchar \
-> >                                  -Wno-pointer-sign \
-> > @@ -25,7 +25,7 @@ cflags-$(CONFIG_ARM)                := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
-> >
-> >  cflags-$(CONFIG_EFI_GENERIC_STUB) += -I$(srctree)/scripts/dtc/libfdt
-> >
-> > -KBUILD_CFLAGS                        := $(cflags-y) -DDISABLE_BRANCH_PROFILING \
-> > +KBUILD_CFLAGS                        := $(cflags-y) -Os -DDISABLE_BRANCH_PROFILING \
-> >                                  -include $(srctree)/drivers/firmware/efi/libstub/hidden.h \
-> >                                  -D__NO_FORTIFY \
-> >                                  $(call cc-option,-ffreestanding) \
->
-> Hi Arvind,
->
-> This patch breaks build for me:
->
-> $>make -j32 -s bzImage
-> drivers/firmware/efi/libstub/alignedmem.c: In function \x2018efi_allocate_pages_aligned\x2019:
-> drivers/firmware/efi/libstub/alignedmem.c:38:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
->   status = efi_bs_call(allocate_pages, EFI_ALLOCATE_MAX_ADDRESS,
->          ^
+> On Thu, Jun 04, 2020 at 10:40:06AM -0600, David Ahern wrote:
+> > On 6/4/20 9:48 AM, Jesper Dangaard Brouer wrote:  
+> > > I will NOT send a patch that expose this in uapi/bpf.h.  As I explained
+> > > before, this caused the issues for my userspace application, that
+> > > automatically picked-up struct bpf_devmap_val, and started to fail
+> > > (with no code changes), because it needed minus-1 as input.  I fear
+> > > that this will cause more work for me later, when I have to helpout and
+> > > support end-users on e.g. xdp-newbies list, as it will not be obvious
+> > > to end-users why their programs map-insert start to fail.  I have given
+> > > up, so I will not NACK anyone sending such a patch.  
+> 
+> Jesper,
+> 
+> you gave wrong direction to David during development of the patches and
+> now the devmap uapi is suffering the consequences.
+> 
+> > > 
+> > > Why is it we need to support file-descriptor zero as a valid
+> > > file-descriptor for a bpf-prog?  
+> > 
+> > That was a nice property of using the id instead of fd. And the init to
+> > -1 is not unique to this; adopters of the bpf_set_link_xdp_fd_opts for
+> > example have to do the same.  
+> 
+> I think it's better to adopt "fd==0 -> invalid" approach.
+> It won't be unique here. We're already using it in other places in bpf syscall.
+> I agree with Jesper that requiring -1 init of 2nd field is quite ugly
+> and inconvenient.
 
-Which version of GCC are you using?
+Great. If we can remove this requirement of -1 init (and let zero mean
+feature isn't used), then I'm all for exposing expose in uapi/bpf.h.
 
 
-> In file included from drivers/firmware/efi/libstub/alignedmem.c:6:0:
-> drivers/firmware/efi/libstub/efistub.h:49:64: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
->  #define efi_bs_call(func, ...) efi_system_table->boottime->func(__VA_ARGS__)
->                                                                 ^
-> drivers/firmware/efi/libstub/alignedmem.c:50:4: note: in expansion of macro \x2018efi_bs_call\x2019
->     efi_bs_call(free_pages, alloc_addr, slack - l + 1);
->     ^
-> drivers/firmware/efi/libstub/alignedmem.c:50: confused by earlier errors, bailing out
-> In file included from drivers/firmware/efi/libstub/efi-stub-helper.c:19:0:
-> drivers/firmware/efi/libstub/efi-stub-helper.c: In function \x2018efi_char16_puts\x2019:
-> drivers/firmware/efi/libstub/efistub.h:52:51: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
->  #define efi_call_proto(inst, func, ...) inst->func(inst, ##__VA_ARGS__)
->                                                    ^
-> drivers/firmware/efi/libstub/efi-stub-helper.c:37:2: note: in expansion of macro \x2018efi_call_proto\x2019
->   efi_call_proto(efi_table_attr(efi_system_table, con_out),
->   ^
-> drivers/firmware/efi/libstub/efi-stub-helper.c:37: confused by earlier errors, bailing out
-> drivers/firmware/efi/libstub/file.c: In function \x2018handle_cmdline_files\x2019:
-> drivers/firmware/efi/libstub/file.c:73:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
->   status = efi_bs_call(handle_protocol, image->device_handle, &fs_proto,
->          ^
-> drivers/firmware/efi/libstub/file.c:73: confused by earlier errors, bailing out
-> Preprocessed source stored into /tmp/ccc4T4FI.out file, please attach this to your bugreport.
-> make[5]: *** [drivers/firmware/efi/libstub/alignedmem.o] Error 1
-> make[5]: *** Waiting for unfinished jobs....
-> drivers/firmware/efi/libstub/gop.c: In function \x2018efi_setup_gop\x2019:
-> drivers/firmware/efi/libstub/gop.c:565:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
->   status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
->          ^
-> drivers/firmware/efi/libstub/gop.c:565: confused by earlier errors, bailing out
-> Preprocessed source stored into /tmp/ccgQG7p4.out file, please attach this to your bugreport.
-> make[5]: *** [drivers/firmware/efi/libstub/efi-stub-helper.o] Error 1
-> Preprocessed source stored into /tmp/ccnqGnqG.out file, please attach this to your bugreport.
-> make[5]: *** [drivers/firmware/efi/libstub/file.o] Error 1
-> Preprocessed source stored into /tmp/ccle7n2N.out file, please attach this to your bugreport.
-> make[5]: *** [drivers/firmware/efi/libstub/gop.o] Error 1
-> make[4]: *** [drivers/firmware/efi/libstub] Error 2
-> make[3]: *** [drivers/firmware/efi] Error 2
-> make[2]: *** [drivers/firmware] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [drivers] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [sub-make] Error 2
->
-> Either reverting the patch or disabling CONFIG_EFI_STUB fixes it.
->
-> Initially I found it on bpf/bpf-next HEAD but same happens on
-> torvalds/linux.
->
-> I attach the config I used.
->
-> --
-> Andrey Ignatov
+For future extensions there is still a problem/challenge in
+dev_map_can_have_prog() that blocks generic-XDP for using future
+extensions.  BUT next person extending devmap can deal with that, so
+it's not something we need to deal with now.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
