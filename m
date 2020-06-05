@@ -2,154 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649451EF153
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 08:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFFA1EF15D
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 08:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgFEG0U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 02:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgFEG0U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 02:26:20 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973B8C08C5C2;
-        Thu,  4 Jun 2020 23:26:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a45so2973582pje.1;
-        Thu, 04 Jun 2020 23:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IRof0b1rFrwWWRJN8qOBPwgfMe6X5AOkvuliLGw1Vsc=;
-        b=Bpjpe/8wXy/86s9EMI49DGRC48mS4AsGUndLn4M2QmXE/p6pyfOWJ2xokWLZru/Zxl
-         RV9DgGKCKrzwwwqI/VwiiNCq0vhUvkLFOrJk6rnJBRzGNph8bZRdYx8PV9xj92ogaKTW
-         3LzZiYdJ56SHYaIn46r4y+HjeWsJ9SRMKEYi3zDIEqh71uHsNDKNPLMywngZhfO2Pizg
-         4O3pjuVx75qVFNru/BebhxPOYb8CVgWq1ZEQpLBrlkaci3eb3s5N4DOG8mPOm5FTP7tK
-         an2NKelMynAJEt17swvuotgmpS08qzgO/hk/UNYMph3TtoyRjVk3nYD2wmuHYjVokgpe
-         fNoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IRof0b1rFrwWWRJN8qOBPwgfMe6X5AOkvuliLGw1Vsc=;
-        b=dZrrRi1vVVN23U/x+tjC3M5yqAsjbsUiwYW+6sOf8Pxw8ocWt6pILJiTVVveD1vRX0
-         aGH5Ncr+X2kS1eTVzw2Nsxn1PbdY6jv6qencAW8NWI9Jd9tc9ZVCheZQmu7E+6ogBYic
-         9j4XAr9poPr772hWNB1MYfsIw/fRLs97aPsT+Ys3mOmG4MniwV06LBDbbSdG2Ldhpr8l
-         cI5BK2WVsm0SRsqQroqDJi5r46JR/Ls6TGyZKlRpiRS1J6M2og732rPHLm5FIpIeCkas
-         +2IaluwAspPTVy4p4C8+HbuJ7uRWYJ10mbYdyyIwIJtYpnYkagMTZIqL07i5ARZdtanF
-         8tvA==
-X-Gm-Message-State: AOAM533p/QRgcrKcFoX1g0jVrY4COc2pi/N8vSQhxXoYb9ZUvWvt3F5E
-        vaRgAEGcb6k1ewEBiwP9J+A=
-X-Google-Smtp-Source: ABdhPJyZ7wEAW9kU4s+T6lyF/Are+J1ZDJ6DeV43NRnom9K8PcISpZOuCuz6luwDSQPACrUchs3Gug==
-X-Received: by 2002:a17:90a:d104:: with SMTP id l4mr1229681pju.25.1591338377072;
-        Thu, 04 Jun 2020 23:26:17 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id u128sm1852679pfu.148.2020.06.04.23.26.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 23:26:16 -0700 (PDT)
-Date:   Fri, 5 Jun 2020 14:26:06 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-Message-ID: <20200605062606.GO102436@dhcp-12-153.nay.redhat.com>
-References: <20200526140539.4103528-1-liuhangbin@gmail.com>
- <87zh9t1xvh.fsf@toke.dk>
- <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
- <87img8l893.fsf@toke.dk>
- <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
- <871rmvkvwn.fsf@toke.dk>
- <20200604121212.GM102436@dhcp-12-153.nay.redhat.com>
- <87bllzj9bw.fsf@toke.dk>
- <20200604144145.GN102436@dhcp-12-153.nay.redhat.com>
- <87d06ees41.fsf@toke.dk>
+        id S1726117AbgFEGdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 02:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725280AbgFEGdf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 02:33:35 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FB6A207F7;
+        Fri,  5 Jun 2020 06:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591338814;
+        bh=OyA0SPdScgbcmUmLNB1wHj6mmcj7lB0EY3tbkA7rHB8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GcrwA40+pCfJEgqHhw/H6BJWQfIkY/Pflgt2kw8G2LE21WYN61OKVqMbQ2RyreY9y
+         Dn8EePdZvUu5U45bOdWxRhPok/y3j/zTXMyXbm98UcQGj/i2I1IG/XIzeGRR/qaUhm
+         Uylkbd6xg5d7CemDK5JN0KQXjsLXcLmysnP00jmI=
+Received: by mail-oi1-f176.google.com with SMTP id p70so7314875oic.12;
+        Thu, 04 Jun 2020 23:33:34 -0700 (PDT)
+X-Gm-Message-State: AOAM530fgUSiqvuhYLqzSX4iMumxCG1n80YclCnE2WdzKAfJbV2scIfw
+        YVRV2ogx2QXA/GvCex2HgWXNzneDPNUXh1Gshms=
+X-Google-Smtp-Source: ABdhPJxIcXiCQoQNMIxa1oDKCzFpm8Ra4nnADMDyHj9KIW1QIH13VaPG2u51XM8ZpTyBvm2z4U2aC2pN7RJCyla40iM=
+X-Received: by 2002:aca:b707:: with SMTP id h7mr1057058oif.174.1591338813378;
+ Thu, 04 Jun 2020 23:33:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87d06ees41.fsf@toke.dk>
+References: <20200518190716.751506-1-nivedita@alum.mit.edu>
+ <20200518190716.751506-6-nivedita@alum.mit.edu> <20200605003134.GA95743@rdna-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200605003134.GA95743@rdna-mbp.dhcp.thefacebook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 5 Jun 2020 08:33:22 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGaQGaoiCqQpX4mdN6UQi25=EhqiNZn=sbcgi1YYuJwBA@mail.gmail.com>
+Message-ID: <CAMj1kXGaQGaoiCqQpX4mdN6UQi25=EhqiNZn=sbcgi1YYuJwBA@mail.gmail.com>
+Subject: Re: [PATCH 05/24] efi/libstub: Optimize for size instead of speed
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-efi <linux-efi@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 06:02:54PM +0200, Toke Høiland-Jørgensen wrote:
-> Hangbin Liu <liuhangbin@gmail.com> writes:
-> 
-> > On Thu, Jun 04, 2020 at 02:37:23PM +0200, Toke HÃƒÂ¸iland-JÃƒÂ¸rgensen wrote:
-> >> > Now I use the ethtool_stats.pl to count forwarding speed and here is the result:
-> >> >
-> >> > With kernel 5.7(ingress i40e, egress i40e)
-> >> > XDP:
-> >> > bridge: 1.8M PPS
-> >> > xdp_redirect_map:
-> >> >   generic mode: 1.9M PPS
-> >> >   driver mode: 10.4M PPS
-> >> 
-> >> Ah, now we're getting somewhere! :)
-> >> 
-> >> > Kernel 5.7 + my patch(ingress i40e, egress i40e)
-> >> > bridge: 1.8M
-> >> > xdp_redirect_map:
-> >> >   generic mode: 1.86M PPS
-> >> >   driver mode: 10.17M PPS
-> >> 
-> >> Right, so this corresponds to a ~2ns overhead (10**9/10400000 -
-> >> 10**9/10170000). This is not too far from being in the noise, I suppose;
-> >> is the difference consistent?
+Hello Andrey,
+
+On Fri, 5 Jun 2020 at 02:31, Andrey Ignatov <rdna@fb.com> wrote:
+>
+> Arvind Sankar <nivedita@alum.mit.edu> [Wed, 1969-12-31 23:00 -0800]:
+> > Reclaim the bloat from the addition of printf by optimizing the stub for
+> > size. With gcc 9, the text size of the stub is:
 > >
-> > Sorry, I didn't get, what different consistent do you mean?
-> 
-> I meant, how much do the numbers vary between each test run?
+> > ARCH    before  +printf    -Os
+> > arm      35197    37889  34638
+> > arm64    34883    38159  34479
+> > i386     18571    21657  17025
+> > x86_64   25677    29328  22144
+> >
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > ---
+> >  drivers/firmware/efi/libstub/Makefile | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> > index fb34c9d14a3c..034d71663b1e 100644
+> > --- a/drivers/firmware/efi/libstub/Makefile
+> > +++ b/drivers/firmware/efi/libstub/Makefile
+> > @@ -7,7 +7,7 @@
+> >  #
+> >  cflags-$(CONFIG_X86_32)              := -march=i386
+> >  cflags-$(CONFIG_X86_64)              := -mcmodel=small
+> > -cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ -O2 \
+> > +cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ \
+> >                                  -fPIC -fno-strict-aliasing -mno-red-zone \
+> >                                  -mno-mmx -mno-sse -fshort-wchar \
+> >                                  -Wno-pointer-sign \
+> > @@ -25,7 +25,7 @@ cflags-$(CONFIG_ARM)                := $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) \
+> >
+> >  cflags-$(CONFIG_EFI_GENERIC_STUB) += -I$(srctree)/scripts/dtc/libfdt
+> >
+> > -KBUILD_CFLAGS                        := $(cflags-y) -DDISABLE_BRANCH_PROFILING \
+> > +KBUILD_CFLAGS                        := $(cflags-y) -Os -DDISABLE_BRANCH_PROFILING \
+> >                                  -include $(srctree)/drivers/firmware/efi/libstub/hidden.h \
+> >                                  -D__NO_FORTIFY \
+> >                                  $(call cc-option,-ffreestanding) \
+>
+> Hi Arvind,
+>
+> This patch breaks build for me:
+>
+> $>make -j32 -s bzImage
+> drivers/firmware/efi/libstub/alignedmem.c: In function \x2018efi_allocate_pages_aligned\x2019:
+> drivers/firmware/efi/libstub/alignedmem.c:38:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+>   status = efi_bs_call(allocate_pages, EFI_ALLOCATE_MAX_ADDRESS,
+>          ^
 
-Oh, when run it at the same period, the number is stable, the range is about
-~0.05M PPS. But after a long time or reboot, the speed may changed a little.
-Here is the new test result after I reboot the system:
+Which version of GCC are you using?
 
-Kernel 5.7 + my patch(ingress i40e, egress i40e)
-xdp_redirect_map:
-  generic mode: 1.9M PPS
-  driver mode: 10.2M PPS
 
-xdp_redirect_map_multi:
-  generic mode: 1.58M PPS
-  driver mode: 7.16M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(No XDP on peer))
-xdp_redirect_map:
-  generic mode: 2.2M PPS
-  driver mode: 14.2M PPS
-
-xdp_redirect_map_multi:
-  generic mode: 1.6M PPS
-  driver mode: 9.9M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(with XDP_DROP on peer))
-xdp_redirect_map:
-  generic mode: 1.6M PPS
-  driver mode: 13.6M PPS
-
-xdp_redirect_map_multi:
-  generic mode: 1.3M PPS
-  driver mode: 8.7M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(No XDP on peer))
-xdp_redirect_map_multi:
-  generic mode: 1.15M PPS
-  driver mode: 3.48M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(with XDP_DROP on peer))
-xdp_redirect_map_multi:
-  generic mode: 0.98M PPS
-  driver mode: 3.15M PPS
-
-This time the number looks more reasonable.
-
-Thanks
-Hangbin
+> In file included from drivers/firmware/efi/libstub/alignedmem.c:6:0:
+> drivers/firmware/efi/libstub/efistub.h:49:64: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+>  #define efi_bs_call(func, ...) efi_system_table->boottime->func(__VA_ARGS__)
+>                                                                 ^
+> drivers/firmware/efi/libstub/alignedmem.c:50:4: note: in expansion of macro \x2018efi_bs_call\x2019
+>     efi_bs_call(free_pages, alloc_addr, slack - l + 1);
+>     ^
+> drivers/firmware/efi/libstub/alignedmem.c:50: confused by earlier errors, bailing out
+> In file included from drivers/firmware/efi/libstub/efi-stub-helper.c:19:0:
+> drivers/firmware/efi/libstub/efi-stub-helper.c: In function \x2018efi_char16_puts\x2019:
+> drivers/firmware/efi/libstub/efistub.h:52:51: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+>  #define efi_call_proto(inst, func, ...) inst->func(inst, ##__VA_ARGS__)
+>                                                    ^
+> drivers/firmware/efi/libstub/efi-stub-helper.c:37:2: note: in expansion of macro \x2018efi_call_proto\x2019
+>   efi_call_proto(efi_table_attr(efi_system_table, con_out),
+>   ^
+> drivers/firmware/efi/libstub/efi-stub-helper.c:37: confused by earlier errors, bailing out
+> drivers/firmware/efi/libstub/file.c: In function \x2018handle_cmdline_files\x2019:
+> drivers/firmware/efi/libstub/file.c:73:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+>   status = efi_bs_call(handle_protocol, image->device_handle, &fs_proto,
+>          ^
+> drivers/firmware/efi/libstub/file.c:73: confused by earlier errors, bailing out
+> Preprocessed source stored into /tmp/ccc4T4FI.out file, please attach this to your bugreport.
+> make[5]: *** [drivers/firmware/efi/libstub/alignedmem.o] Error 1
+> make[5]: *** Waiting for unfinished jobs....
+> drivers/firmware/efi/libstub/gop.c: In function \x2018efi_setup_gop\x2019:
+> drivers/firmware/efi/libstub/gop.c:565:9: sorry, unimplemented: ms_abi attribute requires -maccumulate-outgoing-args or subtarget optimization implying it
+>   status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
+>          ^
+> drivers/firmware/efi/libstub/gop.c:565: confused by earlier errors, bailing out
+> Preprocessed source stored into /tmp/ccgQG7p4.out file, please attach this to your bugreport.
+> make[5]: *** [drivers/firmware/efi/libstub/efi-stub-helper.o] Error 1
+> Preprocessed source stored into /tmp/ccnqGnqG.out file, please attach this to your bugreport.
+> make[5]: *** [drivers/firmware/efi/libstub/file.o] Error 1
+> Preprocessed source stored into /tmp/ccle7n2N.out file, please attach this to your bugreport.
+> make[5]: *** [drivers/firmware/efi/libstub/gop.o] Error 1
+> make[4]: *** [drivers/firmware/efi/libstub] Error 2
+> make[3]: *** [drivers/firmware/efi] Error 2
+> make[2]: *** [drivers/firmware] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [drivers] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [sub-make] Error 2
+>
+> Either reverting the patch or disabling CONFIG_EFI_STUB fixes it.
+>
+> Initially I found it on bpf/bpf-next HEAD but same happens on
+> torvalds/linux.
+>
+> I attach the config I used.
+>
+> --
+> Andrey Ignatov
