@@ -2,165 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABF21EF3FD
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 11:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB53A1EF5FF
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 13:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgFEJZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 05:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgFEJZY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 05:25:24 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BF3C08C5C2
-        for <bpf@vger.kernel.org>; Fri,  5 Jun 2020 02:25:23 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id e5so7055841ote.11
-        for <bpf@vger.kernel.org>; Fri, 05 Jun 2020 02:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=awC3McLlqkV5w+nX1DTOlWQX1TYrzi6BnBNbGy3LN1M=;
-        b=VNcME9PL6aHVc4p26Mseug//RrZkg1UxKXaPF/+TqoYzyMu7tAa7zUHgx7gs/5mHcN
-         eEO4f29w6lAjX18jkVk2jz101wQ1uy4jkFRcu8v93joAmxIZHgOX7I8SKn4zka4KR9Hw
-         1lEm917+3l3yqEDImtG4fHulzo5FN7XZpoTeU=
+        id S1726979AbgFELBI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 07:01:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49515 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726950AbgFELBH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 07:01:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591354865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=99VNPYJGoMPl79e21WOZdb+KAZocUbilTfddS29tBis=;
+        b=EMrUf8eV50QDlKmjTPF7TXEYpAZTcj2nGGcteieg1bOQG+SMrL2cXnK9/gUyNRjkbp0AC/
+        eW/VLrhxyPKbZrRHneuCuqMZpNbQZBiRYua+qQ+q6tmjM1ZQRjz2hBbYt47ncitDZYBccR
+        QBXF8ZY5DqcFR4v8AWe9QNoCd0Mnyio=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-Tx9W51jJP5yMGV5XyGSK2Q-1; Fri, 05 Jun 2020 07:01:03 -0400
+X-MC-Unique: Tx9W51jJP5yMGV5XyGSK2Q-1
+Received: by mail-ej1-f69.google.com with SMTP id bo19so3469319ejb.0
+        for <bpf@vger.kernel.org>; Fri, 05 Jun 2020 04:01:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=awC3McLlqkV5w+nX1DTOlWQX1TYrzi6BnBNbGy3LN1M=;
-        b=YVpAF1eQXiM64U3LS1HPho7+nJkGfyO0N+BigIrApmJ5YAQR3rwq+a9YiEWOfkSa7Z
-         9s/BqKZ91Q9jegVjrzQnIsJCk8qR47I0Opch4AqRi0Z4QFUcw8TkMhfQMEW5U2GQQhsi
-         ZqEGbec5fVtnMRcsSZEqSui1Q8Ikz8CzZ4n3bvizumfFdDIBQOnOxNBl1T3cUKxC56fg
-         gu3ZuYSKmLwMc5tLngy4etI03+JO3FyYfb5xPtpuXJH/9Ap125aGy6a15Fy/sYSi1fLp
-         RwVl4lB7HsH8t/VYCNsC3qWCTf8clO+M18CjkBFFtLJPGzZQaw3dfF0wLkv7gijNwbLA
-         HVAA==
-X-Gm-Message-State: AOAM533Nc/gWVs5rxyeT2InII3w6eCFgJ0cJMS3cHYRziYL/3UDdV8iX
-        2fulC5zrSMCvGMhuwMT/iEVoLAm+Ly5Hsdrwvh47jw==
-X-Google-Smtp-Source: ABdhPJxkyDi5cbhADcYweqx7Mfm/kBP5nE11HxL8RWAn9LvUQBGA4JdEwM+0Ma7qu8kSou6cFR/ZzO/1Uq0M3VIWb5s=
-X-Received: by 2002:a9d:7f06:: with SMTP id j6mr2098013otq.132.1591349122528;
- Fri, 05 Jun 2020 02:25:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=99VNPYJGoMPl79e21WOZdb+KAZocUbilTfddS29tBis=;
+        b=G25zBSuLjcVHrL0aR5FL0D95Qvd8rn2qq3luj+QTFTRCShHAsB3xs49ZEIk+TEprVJ
+         8mKEPRxeTWMAx5B5gukN4M4ghmEvzvETFS8XmNuJFy/4uF1fIH1BqFoUax/qHUMyQTrE
+         bmVb9jXf+DMOw7XKNHIAtOot57NrkAlrt57oaq0/7qYLNCR+4dqXS04h2gPzswP7b3Z0
+         nn3vchzQYYNXsREho2KRN97g5RxCbFkCf7tITOPAQQ2NXOsYxZEXxxymoLfOz6P0e7M3
+         2zTqNKszbKUd0Nc+cw5xKWjA5uNbqnxHiwBPdFjqKfYtZe8Ygp4hHdGguXNKZEUgu1GA
+         JWfA==
+X-Gm-Message-State: AOAM531vE14sVjMOWNyfSeFWsHaxUivFMXOECpUxdBj11AxPET5ZB5vB
+        vY1PVPrrQSN4rae0nsquzu72ohU6mmA8DzJ6g/QKc44FV7GGS8YD9QzzObgZCPuff6HhZ1qtvnI
+        J+irwkwTuJXI8
+X-Received: by 2002:aa7:d158:: with SMTP id r24mr8533232edo.272.1591354862322;
+        Fri, 05 Jun 2020 04:01:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3FkyT1V4vxoO2SrH/qvQCMvKtyEkE41uXCPhuRSVuJBMRq0wXuv5atvbNLgcHzJTRm/uNKA==
+X-Received: by 2002:aa7:d158:: with SMTP id r24mr8533193edo.272.1591354861927;
+        Fri, 05 Jun 2020 04:01:01 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id h8sm4703487edk.72.2020.06.05.04.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2020 04:01:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9910818200D; Fri,  5 Jun 2020 13:01:00 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        David Miller <davem@davemloft.net>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on BTF
+In-Reply-To: <20200605102323.15c2c06c@carbon>
+References: <159119908343.1649854.17264745504030734400.stgit@firesoul> <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com> <20200604174806.29130b81@carbon> <205b3716-e571-b38f-614f-86819d153c4e@gmail.com> <20200604173341.rvfrjmt433knl3uv@ast-mbp.dhcp.thefacebook.com> <20200605102323.15c2c06c@carbon>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 05 Jun 2020 13:01:00 +0200
+Message-ID: <87y2p1dbf7.fsf@toke.dk>
 MIME-Version: 1.0
-References: <CACAyw99G8vWfZAxy5ohapnTgwndzDrBeTARvxyrO6xopoW98yQ@mail.gmail.com>
- <CACAyw98Stt_Ch3nFZ26UO9qDoCL46w-bt73G==NH=bMieCwBPw@mail.gmail.com>
- <cf3ee3cc-9095-3bac-0210-51b866b115db@fb.com> <CACAyw9-Kp21FotWKgzvWkzjXUdpNPH=HJy79eX3aBbZmcYsFQQ@mail.gmail.com>
-In-Reply-To: <CACAyw9-Kp21FotWKgzvWkzjXUdpNPH=HJy79eX3aBbZmcYsFQQ@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 5 Jun 2020 10:25:11 +0100
-Message-ID: <CACAyw985Oqky+35NsJ9Pj9XCfgUoRRnwXuEfc8Yh=7Dd91FzBA@mail.gmail.com>
-Subject: Re: Trouble running bpf_iter tests
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 1 Jun 2020 at 17:27, Lorenz Bauer <lmb@cloudflare.com> wrote:
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
+
+> On Thu, 4 Jun 2020 10:33:41 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, 1 Jun 2020 at 16:13, Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> > On 6/1/20 7:42 AM, Lorenz Bauer wrote:
-> > > For some reason the initial e-mail wasn't plain text, apologies.
-> > >
-> > > ---------- Forwarded message ---------
-> > > From: Lorenz Bauer <lmb@cloudflare.com>
-> > > Date: Mon, 1 Jun 2020 at 15:32
-> > > Subject: Trouble running bpf_iter tests
-> > > To: Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
-> > > Cc: kernel-team <kernel-team@cloudflare.com>
-> > >
-> > >
-> > > Hi Yonghong,
-> > >
-> > > I'm having trouble running the bpf_iter tests on bpf-next at 551f08b1d8eadbc.
-> > > On a freshly built kernel running in a VM I get the following:
-> > >
-> > >      root@vm:/home/lorenz/dev/bpf-next/tools/testing/selftests/bpf#
-> > > ./test_progs -t bpf_iter
-> > > 510 bits_offset=640
-> > >      #3/1 btf_id_or_null:OK
-> > >      libbpf: failed to open system Kconfig
-> > >      libbpf: failed to load object 'bpf_iter_ipv6_route'
-> > >      libbpf: failed to load BPF skeleton 'bpf_iter_ipv6_route': -22
-> > >      test_ipv6_route:FAIL:bpf_iter_ipv6_route__open_and_load skeleton
-> > > open_and_load failed1510 bits_offset=1024
-> > >      #3/2 ipv6_route:FAIL
-> > >      libbpf: netlink is not found in vmlinux BTF
-> > >      libbpf: failed to load object 'bpf_iter_netlink'
-> > >      libbpf: failed to load BPF skeleton 'bpf_iter_netlink': -2
-> > >      test_netlink:FAIL:bpf_iter_netlink__open_and_load skeleton
-> > > open_and_load failed1510 bits_offset=1408
-> > >      #3/3 netlink:FAIL
-> > >      libbpf: bpf_map is not found in vmlinux BTF
-> > >      libbpf: failed to load object 'bpf_iter_bpf_map'
-> > >      libbpf: failed to load BPF skeleton 'bpf_iter_bpf_map': -2
-> > >      test_bpf_map:FAIL:bpf_iter_bpf_map__open_and_load skeleton
-> > > open_and_load failed
-> > >      #3/4 bpf_map:FAIL
-> > >      ....
-> > >      #3 bpf_iter:FAIL
-> > >      Summary: 0/1 PASSED, 0 SKIPPED, 12 FAILED
-> > >
-> > > If I understand correctly, this is because there is no function
-> > > information for bpf_iter_bpf_map
-> > > present in my /sys/kernel/btf/vmlinux:
-> > >
-> > >      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
-> > > grep bpf_iter_bpf_map
-> > >      #
-> >
-> > Yes, this is the reason.
-> >
-> > >
-> > > There is an entry in /proc/kallsyms however:
-> > >
-> > >      # grep bpf_iter_bpf_map /proc/kallsyms
-> > >      ffffffff826b2f13 T bpf_iter_bpf_map
-> > That means the kernel actually haves the right information.
-> > >
-> > > And other bpf_iter related symbols are available in BTF:
-> > >
-> > >      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
-> > > grep bpf_iter_
-> > >      [12602] TYPEDEF 'bpf_iter_init_seq_priv_t' type_id=9310
-> > >      [12603] TYPEDEF 'bpf_iter_fini_seq_priv_t' type_id=352
-> > >      [12604] STRUCT 'bpf_iter_reg' size=56 vlen=7
-> > >      [12608] STRUCT 'bpf_iter_meta' size=24 vlen=3
-> > >      [12609] STRUCT 'bpf_iter_target_info' size=32 vlen=3
-> > >      [12611] STRUCT 'bpf_iter_link' size=72 vlen=2
-> > >      [12613] STRUCT 'bpf_iter_priv_data' size=40 vlen=6
-> > >      [12617] STRUCT 'bpf_iter_seq_map_info' size=4 vlen=1
-> > >      [12620] STRUCT 'bpf_iter__bpf_map' size=16 vlen=2
-> > >      [12622] STRUCT 'bpf_iter_seq_task_common' size=8 vlen=1
-> > >      [12623] STRUCT 'bpf_iter_seq_task_info' size=16 vlen=2
-> > >      [12625] STRUCT 'bpf_iter__task' size=16 vlen=2
-> > >      [12626] STRUCT 'bpf_iter_seq_task_file_info' size=32 vlen=5
-> > >      [12628] STRUCT 'bpf_iter__task_file' size=32 vlen=4
-> > >      [25591] STRUCT 'bpf_iter__netlink' size=16 vlen=2
-> > >      [27509] STRUCT 'bpf_iter__ipv6_route' size=16 vlen=2
-> > >
-> > > Can you help me make this work?
-> >
-> > Looks like you have old pahole in your system. You need pahole 1.16 or later
-> >
-> > to enable global functions emitted to vmlinux BTF. Could you give a try?
+>> On Thu, Jun 04, 2020 at 10:40:06AM -0600, David Ahern wrote:
+>> > On 6/4/20 9:48 AM, Jesper Dangaard Brouer wrote:  
+>> > > I will NOT send a patch that expose this in uapi/bpf.h.  As I explained
+>> > > before, this caused the issues for my userspace application, that
+>> > > automatically picked-up struct bpf_devmap_val, and started to fail
+>> > > (with no code changes), because it needed minus-1 as input.  I fear
+>> > > that this will cause more work for me later, when I have to helpout and
+>> > > support end-users on e.g. xdp-newbies list, as it will not be obvious
+>> > > to end-users why their programs map-insert start to fail.  I have given
+>> > > up, so I will not NACK anyone sending such a patch.  
+>> 
+>> Jesper,
+>> 
+>> you gave wrong direction to David during development of the patches and
+>> now the devmap uapi is suffering the consequences.
+>> 
+>> > > 
+>> > > Why is it we need to support file-descriptor zero as a valid
+>> > > file-descriptor for a bpf-prog?  
+>> > 
+>> > That was a nice property of using the id instead of fd. And the init to
+>> > -1 is not unique to this; adopters of the bpf_set_link_xdp_fd_opts for
+>> > example have to do the same.  
+>> 
+>> I think it's better to adopt "fd==0 -> invalid" approach.
+>> It won't be unique here. We're already using it in other places in bpf syscall.
+>> I agree with Jesper that requiring -1 init of 2nd field is quite ugly
+>> and inconvenient.
 >
-> Indeed, upgrading to v1.17 fixed the issue! Thanks for your help :)
+> Great. If we can remove this requirement of -1 init (and let zero mean
+> feature isn't used), then I'm all for exposing expose in uapi/bpf.h.
 
-Thinking about this some more, could we make the kernel build depend
-on pahole > 1.15? I foresee a future where distro kernels are built with old
-pahole and therefore we don't get access to bpf_iter even on new kernels.
+If we're going to officially deprecate fd 0 as a valid BPF fd, we should
+at least make sure users don't end up with such an fd after opening a
+BPF object. Not sure how the fd number assignment works, but could we
+make sure that the kernel never returns fd 0 for a BPF program/map?
 
-Right now it's very easy to miss this.
+Alternatively, we could add a check in libbpf and either reject the
+call, or just call dup() before passing the fd to the kernel.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Right now it's quite trivial to get a BPF program ref with fd0 - all you
+have to do is open a BPF program is the first thing you do after closing
+stdin (like a daemon might). I'd really rather not have to help anyone
+debug that...
 
-www.cloudflare.com
+-Toke
+
