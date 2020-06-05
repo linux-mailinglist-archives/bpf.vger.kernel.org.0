@@ -2,195 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E41D1F029D
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 23:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB641F0396
+	for <lists+bpf@lfdr.de>; Sat,  6 Jun 2020 01:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgFEVqk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 17:46:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:29021 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725924AbgFEVqk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:46:40 -0400
-IronPort-SDR: Qa1xJqqBmoywy720h8OljpakS8DH/f3TmyHbq+vXnn45Z0LbaIbxzhGEqLl1mSOh3PfWFwEAjW
- WmDBayiIzkLA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 14:46:39 -0700
-IronPort-SDR: X1qOiYmG5RxnudBOEYCfiQaRWs8jnViLoIelTHgXuNYq7lAcBCCIVn/h3WSz93Q7xJrS3Lndb3
- ijVk6diV9DEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,477,1583222400"; 
-   d="scan'208";a="258142861"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Jun 2020 14:46:38 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        id S1728368AbgFEXpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 19:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728353AbgFEXpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 19:45:16 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0979BC08C5C2;
+        Fri,  5 Jun 2020 16:45:16 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id y1so10010304qtv.12;
+        Fri, 05 Jun 2020 16:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cDnXKvrGYGj1JaieRDbcFskiNgfUz83IdJ88bt0ez48=;
+        b=RnwtsHCyQOrlUpn6nT0vBiJZLcUP2AKVs+4NI2VOaB69paLwHOYh13BlT0ky1Sejih
+         NTBuYwc1XrFINYItQB68VSYT9iZTCQebVRmLnHlNbd+qJ81zu4JaOPVZbKivd6ujAnSk
+         Cxv42AkW3XS4n7sVRQre6xFJS/otDPKf6g0zHiEW/7nTLUlN0lBCJEO77JnQHvIamYTU
+         VA2V4hc18woOvxeUJ9uAVzOzSe9kVi69PYCx15pVuzjYPQYHTCds7YTlcmjq+xEmxuyI
+         LYuaQwQkrvrIVnp1kpZaFjnoJd/jZ8MO3LV0J/15CQ8i/IsoLGrhMQpdId6OujgqpRPr
+         gGuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cDnXKvrGYGj1JaieRDbcFskiNgfUz83IdJ88bt0ez48=;
+        b=HIp8cBbp9y6IrykEAlM6uYRXMg0F3PzewrSzE6pU2f97LpGLiNxy3wHD49OvUiyy7r
+         dMj02+1/3cDtj2oqtz/a50lYZK/4oYZ9mP1yfxsrUIu5g4Sp1C4WpKpYd4vSJPTaSHt9
+         sAG+wG2mRk3WUZm31B8f262pqorkEfS3uMImZhY6UJM14Pk/8yxFAnUhWQIiJjDCpB+s
+         Iha9m8iecteER/q/sofx6jGki+j/mCR6y5Re5gbTvU0IY1HS4pr8Mz/+itPeA5/VLdrG
+         iAgOBj1avtrdJpEH2i+mIVSp7Lmp6Dqh7y1PX1gP2cpwdVDF9QnfPE2I1WIeV1Bcm7eD
+         hWQg==
+X-Gm-Message-State: AOAM531BB2zkOf/evt8zOmyALBPo+izTOe2WUe9MhUi91EuW4vz2Z+Vi
+        LQGLlHklcH2mjCaR8ENqabg=
+X-Google-Smtp-Source: ABdhPJwOYYiME0l0Mhpfxm9+ltFRZPYoQ0qo3TiQh/gYXf7yXL4rWSYdBpeWhr7ZzI4lvCbu3jIsoQ==
+X-Received: by 2002:ac8:3483:: with SMTP id w3mr11790858qtb.330.1591400715346;
+        Fri, 05 Jun 2020 16:45:15 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:2910:573e:9fb2:51d7? ([2601:282:803:7700:2910:573e:9fb2:51d7])
+        by smtp.googlemail.com with ESMTPSA id k190sm1117514qkf.40.2020.06.05.16.45.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jun 2020 16:45:14 -0700 (PDT)
+Subject: Re: [PATCH v4 bpf-next 0/5] bpf: Add support for XDP programs in
+ DEVMAP entries
+From:   David Ahern <dsahern@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [PATCH] virtio_net: Unregister and re-register xdp_rxq across freeze/restore
-Date:   Fri,  5 Jun 2020 14:46:24 -0700
-Message-Id: <20200605214624.21430-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200529220716.75383-1-dsahern@kernel.org>
+ <CAADnVQK1rzFfzcQX-EGW57=O2xnz2pjX5madnZGTiAsKnCmbHA@mail.gmail.com>
+ <ed66bdc6-4114-2ecf-1812-176d0250730b@gmail.com>
+Message-ID: <3136e24a-abf7-3cdb-f0a8-6de8830bc3f9@gmail.com>
+Date:   Fri, 5 Jun 2020 17:45:12 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed66bdc6-4114-2ecf-1812-176d0250730b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Unregister each queue's xdp_rxq during freeze, and re-register the new
-instance during restore.  All queues are released during free and
-recreated during restore, i.e. the pre-freeze xdp_rxq will be lost.
+On 6/1/20 4:28 PM, David Ahern wrote:
+>>
+>> and that selftest is imo too primitive.
+> 
+> I focused the selftests on API changes introduced by this set - new
+> attach type, valid accesses to egress_ifindex and not allowing devmap
+> programs with xdp generic.
+> 
+>> It's only loading progs and not executing them.
+>> Could you please add prog_test_run to it?
+>>
+> 
+> I will look into it.
+> 
 
-The bug is detected by WARNs in xdp_rxq_info_unreg() and
-xdp_rxq_info_unreg_mem_model() that fire after a suspend/resume cycle as
-virtnet_close() attempts to unregister an uninitialized xdp_rxq object.
-
-  ------------[ cut here ]------------
-  Driver BUG
-  WARNING: CPU: 0 PID: 880 at net/core/xdp.c:163 xdp_rxq_info_unreg+0x48/0x50
-  Modules linked in:
-  CPU: 0 PID: 880 Comm: ip Not tainted 5.7.0-rc5+ #80
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0010:xdp_rxq_info_unreg+0x48/0x50
-  Code: <0f> 0b eb ca 0f 1f 40 00 0f 1f 44 00 00 53 48 83 ec 10 8b 47 0c 83
-  RSP: 0018:ffffc900001ab540 EFLAGS: 00010286
-  RAX: 0000000000000000 RBX: ffff88827f83ac80 RCX: 0000000000000000
-  RDX: 000000000000000a RSI: ffffffff8253bc2a RDI: ffffffff825397ec
-  RBP: 0000000000000000 R08: ffffffff8253bc20 R09: 000000000000000a
-  R10: ffffc900001ab548 R11: 0000000000000370 R12: ffff88817a89c000
-  R13: 0000000000000000 R14: ffffc900001abbc8 R15: 0000000000000001
-  FS:  00007f48b70e70c0(0000) GS:ffff88817bc00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f48b6634950 CR3: 0000000277f1d002 CR4: 0000000000160eb0
-  Call Trace:
-   virtnet_close+0x6a/0xb0
-   __dev_close_many+0x91/0x100
-   __dev_change_flags+0xc1/0x1c0
-   dev_change_flags+0x23/0x60
-   do_setlink+0x350/0xdf0
-   __rtnl_newlink+0x553/0x860
-   rtnl_newlink+0x43/0x60
-   rtnetlink_rcv_msg+0x289/0x340
-   netlink_rcv_skb+0xd1/0x110
-   netlink_unicast+0x203/0x310
-   netlink_sendmsg+0x32b/0x460
-   sock_sendmsg+0x5b/0x60
-   ____sys_sendmsg+0x23e/0x260
-   ___sys_sendmsg+0x88/0xd0
-   __sys_sendmsg+0x63/0xa0
-   do_syscall_64+0x4c/0x170
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  ------------[ cut here ]------------
-
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Fixes: 754b8a21a96d5 ("virtio_net: setup xdp_rxq_info")
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
-
-Disclaimer: I am not remotely confident that this patch is 100% correct
-or complete, my VirtIO knowledge is poor and my networking knowledge is
-downright abysmal.
-
- drivers/net/virtio_net.c | 37 +++++++++++++++++++++++++++++--------
- 1 file changed, 29 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba38765dc490..61055be3615e 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1469,6 +1469,21 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
- 	return received;
- }
- 
-+static int virtnet_reg_xdp(struct xdp_rxq_info *xdp_rxq,
-+			   struct net_device *dev, u32 queue_index)
-+{
-+	int err;
-+
-+	err = xdp_rxq_info_reg(xdp_rxq, dev, queue_index);
-+	if (err < 0)
-+		return err;
-+
-+	err = xdp_rxq_info_reg_mem_model(xdp_rxq, MEM_TYPE_PAGE_SHARED, NULL);
-+	if (err < 0)
-+		xdp_rxq_info_unreg(xdp_rxq);
-+	return err;
-+}
-+
- static int virtnet_open(struct net_device *dev)
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
-@@ -1480,17 +1495,10 @@ static int virtnet_open(struct net_device *dev)
- 			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
- 				schedule_delayed_work(&vi->refill, 0);
- 
--		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i);
-+		err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, dev, i);
- 		if (err < 0)
- 			return err;
- 
--		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
--						 MEM_TYPE_PAGE_SHARED, NULL);
--		if (err < 0) {
--			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--			return err;
--		}
--
- 		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
- 		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
- 	}
-@@ -2306,6 +2314,7 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
- 
- 	if (netif_running(vi->dev)) {
- 		for (i = 0; i < vi->max_queue_pairs; i++) {
-+			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
- 			napi_disable(&vi->rq[i].napi);
- 			virtnet_napi_tx_disable(&vi->sq[i].napi);
- 		}
-@@ -2313,6 +2322,8 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
- }
- 
- static int init_vqs(struct virtnet_info *vi);
-+static void virtnet_del_vqs(struct virtnet_info *vi);
-+static void free_receive_page_frags(struct virtnet_info *vi);
- 
- static int virtnet_restore_up(struct virtio_device *vdev)
- {
-@@ -2331,6 +2342,10 @@ static int virtnet_restore_up(struct virtio_device *vdev)
- 				schedule_delayed_work(&vi->refill, 0);
- 
- 		for (i = 0; i < vi->max_queue_pairs; i++) {
-+			err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, vi->dev, i);
-+			if (err)
-+				goto free_vqs;
-+
- 			virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
- 			virtnet_napi_tx_enable(vi, vi->sq[i].vq,
- 					       &vi->sq[i].napi);
-@@ -2340,6 +2355,12 @@ static int virtnet_restore_up(struct virtio_device *vdev)
- 	netif_tx_lock_bh(vi->dev);
- 	netif_device_attach(vi->dev);
- 	netif_tx_unlock_bh(vi->dev);
-+	return 0;
-+
-+free_vqs:
-+	cancel_delayed_work_sync(&vi->refill);
-+	free_receive_page_frags(vi);
-+	virtnet_del_vqs(vi);
- 	return err;
- }
- 
--- 
-2.26.0
-
+The test_run infrastructure does not handle XDP_REDIRECT which is needed
+to step into the devmap code and then run programs tied to devmap entries.
