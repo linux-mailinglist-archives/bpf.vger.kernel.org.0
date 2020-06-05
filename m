@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503841EF76F
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 14:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407E21EF798
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 14:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgFEM0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 08:26:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
+        id S1727995AbgFEM1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 08:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbgFEM0J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jun 2020 08:26:09 -0400
+        id S1727785AbgFEM0U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 08:26:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A382207D3;
-        Fri,  5 Jun 2020 12:26:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C73A620899;
+        Fri,  5 Jun 2020 12:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591359968;
-        bh=Dimt5y8jni40l+7kWNBHR76jFKglQWP8uF56vJ9AAWQ=;
+        s=default; t=1591359979;
+        bh=fC9izFrruXj6AsbCeQ4l2w0VDiLHQfu+hr89vphmSxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XNJdbEdVgkiXXgltu2ekrTfh9skFzYQF1aC702qBpUHrP0HHcsyD8+uDvQget0N2k
-         WiqZzYu2H0iYfXYNddZlFCAU6DrfO/1vGjRxBOoyDMdH6So5lTGJaWlaii9jRyUrXs
-         ITQtiWwgQ4BclLz+DrlBs1ZWYK1uIM/rL/EEoitE=
+        b=OIOYeXWGHS2hDzSN5YgHddwCbE4LUMIhRRS5ZcavJWHqtsgfGGO+FmMKugN3plrYT
+         A49PhVveIX8Ug+aaIShZq4PNLIsW/zOETOWkFDGATElzlmJk22+z85qjMRqza8zYIF
+         3/MXRCyzRF+loEQYRwjzyvE7PmFgU+vXxSY8jzfw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Eric Dumazet <edumazet@google.com>,
@@ -31,12 +31,12 @@ Cc:     Eric Dumazet <edumazet@google.com>,
         syzbot+3610d489778b57cc8031@syzkaller.appspotmail.com,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 9/9] l2tp: do not use inet_hash()/inet_unhash()
-Date:   Fri,  5 Jun 2020 08:25:57 -0400
-Message-Id: <20200605122558.2882712-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 8/8] l2tp: do not use inet_hash()/inet_unhash()
+Date:   Fri,  5 Jun 2020 08:26:09 -0400
+Message-Id: <20200605122609.2882841-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200605122558.2882712-1-sashal@kernel.org>
-References: <20200605122558.2882712-1-sashal@kernel.org>
+In-Reply-To: <20200605122609.2882841-1-sashal@kernel.org>
+References: <20200605122609.2882841-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -128,7 +128,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 44 insertions(+), 15 deletions(-)
 
 diff --git a/net/l2tp/l2tp_ip.c b/net/l2tp/l2tp_ip.c
-index d4c60523c549..99881b81f302 100644
+index f7880becc165..37a9f2a25263 100644
 --- a/net/l2tp/l2tp_ip.c
 +++ b/net/l2tp/l2tp_ip.c
 @@ -24,7 +24,6 @@
@@ -139,7 +139,7 @@ index d4c60523c549..99881b81f302 100644
  #include <net/tcp_states.h>
  #include <net/protocol.h>
  #include <net/xfrm.h>
-@@ -213,15 +212,31 @@ static int l2tp_ip_recv(struct sk_buff *skb)
+@@ -215,15 +214,31 @@ static int l2tp_ip_recv(struct sk_buff *skb)
  	return 0;
  }
  
@@ -175,7 +175,7 @@ index d4c60523c549..99881b81f302 100644
  	return 0;
  }
  
-@@ -598,8 +613,8 @@ static struct proto l2tp_ip_prot = {
+@@ -605,8 +620,8 @@ static struct proto l2tp_ip_prot = {
  	.sendmsg	   = l2tp_ip_sendmsg,
  	.recvmsg	   = l2tp_ip_recvmsg,
  	.backlog_rcv	   = l2tp_ip_backlog_recv,
@@ -187,7 +187,7 @@ index d4c60523c549..99881b81f302 100644
  #ifdef CONFIG_COMPAT
  	.compat_setsockopt = compat_ip_setsockopt,
 diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
-index 2f28f9910b92..2ff25c445b82 100644
+index 6efdfc9b5c43..9c4670fb29d7 100644
 --- a/net/l2tp/l2tp_ip6.c
 +++ b/net/l2tp/l2tp_ip6.c
 @@ -24,8 +24,6 @@
@@ -199,7 +199,7 @@ index 2f28f9910b92..2ff25c445b82 100644
  #include <net/tcp_states.h>
  #include <net/protocol.h>
  #include <net/xfrm.h>
-@@ -226,15 +224,31 @@ static int l2tp_ip6_recv(struct sk_buff *skb)
+@@ -229,15 +227,31 @@ static int l2tp_ip6_recv(struct sk_buff *skb)
  	return 0;
  }
  
@@ -235,7 +235,7 @@ index 2f28f9910b92..2ff25c445b82 100644
  	return 0;
  }
  
-@@ -732,8 +746,8 @@ static struct proto l2tp_ip6_prot = {
+@@ -742,8 +756,8 @@ static struct proto l2tp_ip6_prot = {
  	.sendmsg	   = l2tp_ip6_sendmsg,
  	.recvmsg	   = l2tp_ip6_recvmsg,
  	.backlog_rcv	   = l2tp_ip6_backlog_recv,
