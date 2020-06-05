@@ -2,77 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1074B1EF355
-	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 10:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF21EF3FD
+	for <lists+bpf@lfdr.de>; Fri,  5 Jun 2020 11:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgFEIq5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jun 2020 04:46:57 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:56981 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726084AbgFEIq4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 5 Jun 2020 04:46:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=anny.hu@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0U-dVCGy_1591346802;
-Received: from L-PF215YVF-1240.hz.ali.com(mailfrom:anny.hu@linux.alibaba.com fp:SMTPD_---0U-dVCGy_1591346802)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 05 Jun 2020 16:46:54 +0800
-From:   dihu <anny.hu@linux.alibaba.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, dihu <anny.hu@linux.alibaba.com>
-Subject: [PATCH] bpf/sockmap: fix kernel panic at __tcp_bpf_recvmsg
-Date:   Fri,  5 Jun 2020 16:46:25 +0800
-Message-Id: <20200605084625.9783-1-anny.hu@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.0
+        id S1726188AbgFEJZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jun 2020 05:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgFEJZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jun 2020 05:25:24 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BF3C08C5C2
+        for <bpf@vger.kernel.org>; Fri,  5 Jun 2020 02:25:23 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e5so7055841ote.11
+        for <bpf@vger.kernel.org>; Fri, 05 Jun 2020 02:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=awC3McLlqkV5w+nX1DTOlWQX1TYrzi6BnBNbGy3LN1M=;
+        b=VNcME9PL6aHVc4p26Mseug//RrZkg1UxKXaPF/+TqoYzyMu7tAa7zUHgx7gs/5mHcN
+         eEO4f29w6lAjX18jkVk2jz101wQ1uy4jkFRcu8v93joAmxIZHgOX7I8SKn4zka4KR9Hw
+         1lEm917+3l3yqEDImtG4fHulzo5FN7XZpoTeU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=awC3McLlqkV5w+nX1DTOlWQX1TYrzi6BnBNbGy3LN1M=;
+        b=YVpAF1eQXiM64U3LS1HPho7+nJkGfyO0N+BigIrApmJ5YAQR3rwq+a9YiEWOfkSa7Z
+         9s/BqKZ91Q9jegVjrzQnIsJCk8qR47I0Opch4AqRi0Z4QFUcw8TkMhfQMEW5U2GQQhsi
+         ZqEGbec5fVtnMRcsSZEqSui1Q8Ikz8CzZ4n3bvizumfFdDIBQOnOxNBl1T3cUKxC56fg
+         gu3ZuYSKmLwMc5tLngy4etI03+JO3FyYfb5xPtpuXJH/9Ap125aGy6a15Fy/sYSi1fLp
+         RwVl4lB7HsH8t/VYCNsC3qWCTf8clO+M18CjkBFFtLJPGzZQaw3dfF0wLkv7gijNwbLA
+         HVAA==
+X-Gm-Message-State: AOAM533Nc/gWVs5rxyeT2InII3w6eCFgJ0cJMS3cHYRziYL/3UDdV8iX
+        2fulC5zrSMCvGMhuwMT/iEVoLAm+Ly5Hsdrwvh47jw==
+X-Google-Smtp-Source: ABdhPJxkyDi5cbhADcYweqx7Mfm/kBP5nE11HxL8RWAn9LvUQBGA4JdEwM+0Ma7qu8kSou6cFR/ZzO/1Uq0M3VIWb5s=
+X-Received: by 2002:a9d:7f06:: with SMTP id j6mr2098013otq.132.1591349122528;
+ Fri, 05 Jun 2020 02:25:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAyw99G8vWfZAxy5ohapnTgwndzDrBeTARvxyrO6xopoW98yQ@mail.gmail.com>
+ <CACAyw98Stt_Ch3nFZ26UO9qDoCL46w-bt73G==NH=bMieCwBPw@mail.gmail.com>
+ <cf3ee3cc-9095-3bac-0210-51b866b115db@fb.com> <CACAyw9-Kp21FotWKgzvWkzjXUdpNPH=HJy79eX3aBbZmcYsFQQ@mail.gmail.com>
+In-Reply-To: <CACAyw9-Kp21FotWKgzvWkzjXUdpNPH=HJy79eX3aBbZmcYsFQQ@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 5 Jun 2020 10:25:11 +0100
+Message-ID: <CACAyw985Oqky+35NsJ9Pj9XCfgUoRRnwXuEfc8Yh=7Dd91FzBA@mail.gmail.com>
+Subject: Re: Trouble running bpf_iter tests
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When user application calls read() with MSG_PEEK flag to read data
-of bpf sockmap socket, kernel panic happens at
-__tcp_bpf_recvmsg+0x12c/0x350. sk_msg is not removed from ingress_msg
-queue after read out under MSG_PEEK flag is set. Because it's not
-judged whether sk_msg is the last msg of ingress_msg queue, the next
-sk_msg may be the head of ingress_msg queue, whose memory address of
-sg page is invalid. So it's necessary to add check codes to prevent
-this problem.
+On Mon, 1 Jun 2020 at 17:27, Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Mon, 1 Jun 2020 at 16:13, Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> > On 6/1/20 7:42 AM, Lorenz Bauer wrote:
+> > > For some reason the initial e-mail wasn't plain text, apologies.
+> > >
+> > > ---------- Forwarded message ---------
+> > > From: Lorenz Bauer <lmb@cloudflare.com>
+> > > Date: Mon, 1 Jun 2020 at 15:32
+> > > Subject: Trouble running bpf_iter tests
+> > > To: Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
+> > > Cc: kernel-team <kernel-team@cloudflare.com>
+> > >
+> > >
+> > > Hi Yonghong,
+> > >
+> > > I'm having trouble running the bpf_iter tests on bpf-next at 551f08b1d8eadbc.
+> > > On a freshly built kernel running in a VM I get the following:
+> > >
+> > >      root@vm:/home/lorenz/dev/bpf-next/tools/testing/selftests/bpf#
+> > > ./test_progs -t bpf_iter
+> > > 510 bits_offset=640
+> > >      #3/1 btf_id_or_null:OK
+> > >      libbpf: failed to open system Kconfig
+> > >      libbpf: failed to load object 'bpf_iter_ipv6_route'
+> > >      libbpf: failed to load BPF skeleton 'bpf_iter_ipv6_route': -22
+> > >      test_ipv6_route:FAIL:bpf_iter_ipv6_route__open_and_load skeleton
+> > > open_and_load failed1510 bits_offset=1024
+> > >      #3/2 ipv6_route:FAIL
+> > >      libbpf: netlink is not found in vmlinux BTF
+> > >      libbpf: failed to load object 'bpf_iter_netlink'
+> > >      libbpf: failed to load BPF skeleton 'bpf_iter_netlink': -2
+> > >      test_netlink:FAIL:bpf_iter_netlink__open_and_load skeleton
+> > > open_and_load failed1510 bits_offset=1408
+> > >      #3/3 netlink:FAIL
+> > >      libbpf: bpf_map is not found in vmlinux BTF
+> > >      libbpf: failed to load object 'bpf_iter_bpf_map'
+> > >      libbpf: failed to load BPF skeleton 'bpf_iter_bpf_map': -2
+> > >      test_bpf_map:FAIL:bpf_iter_bpf_map__open_and_load skeleton
+> > > open_and_load failed
+> > >      #3/4 bpf_map:FAIL
+> > >      ....
+> > >      #3 bpf_iter:FAIL
+> > >      Summary: 0/1 PASSED, 0 SKIPPED, 12 FAILED
+> > >
+> > > If I understand correctly, this is because there is no function
+> > > information for bpf_iter_bpf_map
+> > > present in my /sys/kernel/btf/vmlinux:
+> > >
+> > >      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
+> > > grep bpf_iter_bpf_map
+> > >      #
+> >
+> > Yes, this is the reason.
+> >
+> > >
+> > > There is an entry in /proc/kallsyms however:
+> > >
+> > >      # grep bpf_iter_bpf_map /proc/kallsyms
+> > >      ffffffff826b2f13 T bpf_iter_bpf_map
+> > That means the kernel actually haves the right information.
+> > >
+> > > And other bpf_iter related symbols are available in BTF:
+> > >
+> > >      # ./bpftool btf dump file /sys/kernel/btf/vmlinux format raw |
+> > > grep bpf_iter_
+> > >      [12602] TYPEDEF 'bpf_iter_init_seq_priv_t' type_id=9310
+> > >      [12603] TYPEDEF 'bpf_iter_fini_seq_priv_t' type_id=352
+> > >      [12604] STRUCT 'bpf_iter_reg' size=56 vlen=7
+> > >      [12608] STRUCT 'bpf_iter_meta' size=24 vlen=3
+> > >      [12609] STRUCT 'bpf_iter_target_info' size=32 vlen=3
+> > >      [12611] STRUCT 'bpf_iter_link' size=72 vlen=2
+> > >      [12613] STRUCT 'bpf_iter_priv_data' size=40 vlen=6
+> > >      [12617] STRUCT 'bpf_iter_seq_map_info' size=4 vlen=1
+> > >      [12620] STRUCT 'bpf_iter__bpf_map' size=16 vlen=2
+> > >      [12622] STRUCT 'bpf_iter_seq_task_common' size=8 vlen=1
+> > >      [12623] STRUCT 'bpf_iter_seq_task_info' size=16 vlen=2
+> > >      [12625] STRUCT 'bpf_iter__task' size=16 vlen=2
+> > >      [12626] STRUCT 'bpf_iter_seq_task_file_info' size=32 vlen=5
+> > >      [12628] STRUCT 'bpf_iter__task_file' size=32 vlen=4
+> > >      [25591] STRUCT 'bpf_iter__netlink' size=16 vlen=2
+> > >      [27509] STRUCT 'bpf_iter__ipv6_route' size=16 vlen=2
+> > >
+> > > Can you help me make this work?
+> >
+> > Looks like you have old pahole in your system. You need pahole 1.16 or later
+> >
+> > to enable global functions emitted to vmlinux BTF. Could you give a try?
+>
+> Indeed, upgrading to v1.17 fixed the issue! Thanks for your help :)
 
-[20759.125457] BUG: kernel NULL pointer dereference, address:
-0000000000000008
-[20759.132118] CPU: 53 PID: 51378 Comm: envoy Tainted: G            E
-5.4.32 #1
-[20759.140890] Hardware name: Inspur SA5212M4/YZMB-00370-109, BIOS
-4.1.12 06/18/2017
-[20759.149734] RIP: 0010:copy_page_to_iter+0xad/0x300
-[20759.270877] __tcp_bpf_recvmsg+0x12c/0x350
-[20759.276099] tcp_bpf_recvmsg+0x113/0x370
-[20759.281137] inet_recvmsg+0x55/0xc0
-[20759.285734] __sys_recvfrom+0xc8/0x130
-[20759.290566] ? __audit_syscall_entry+0x103/0x130
-[20759.296227] ? syscall_trace_enter+0x1d2/0x2d0
-[20759.301700] ? __audit_syscall_exit+0x1e4/0x290
-[20759.307235] __x64_sys_recvfrom+0x24/0x30
-[20759.312226] do_syscall_64+0x55/0x1b0
-[20759.316852] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thinking about this some more, could we make the kernel build depend
+on pahole > 1.15? I foresee a future where distro kernels are built with old
+pahole and therefore we don't get access to bpf_iter even on new kernels.
 
-Signed-off-by: dihu <anny.hu@linux.alibaba.com>
----
- net/ipv4/tcp_bpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+Right now it's very easy to miss this.
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 5a05327..b82e4c3 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -64,6 +64,9 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
- 		} while (i != msg_rx->sg.end);
- 
- 		if (unlikely(peek)) {
-+			if (msg_rx == list_last_entry(&psock->ingress_msg,
-+						      struct sk_msg, list))
-+				break;
- 			msg_rx = list_next_entry(msg_rx, list);
- 			continue;
- 		}
 -- 
-1.8.3.1
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
