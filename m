@@ -2,155 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3180A1F0CD4
-	for <lists+bpf@lfdr.de>; Sun,  7 Jun 2020 18:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2221E1F0FE2
+	for <lists+bpf@lfdr.de>; Sun,  7 Jun 2020 22:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgFGQOF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Jun 2020 12:14:05 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:51184 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgFGQOE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Jun 2020 12:14:04 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jhxvp-0002cG-P9; Sun, 07 Jun 2020 10:13:57 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jhxvo-00019j-Gk; Sun, 07 Jun 2020 10:13:57 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
-        <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
-        <202006051903.C44988B@keescook>
-        <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
-        <20200606201956.rvfanoqkevjcptfl@ast-mbp>
-        <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
-        <20200607014935.vhd3scr4qmawq7no@ast-mbp>
-        <CAHk-=wiUjZV5VmdqUOGjpNMmobGQKyZpaa=MuJ-5XM3Da86zBg@mail.gmail.com>
-Date:   Sun, 07 Jun 2020 11:09:52 -0500
-In-Reply-To: <CAHk-=wiUjZV5VmdqUOGjpNMmobGQKyZpaa=MuJ-5XM3Da86zBg@mail.gmail.com>
-        (Linus Torvalds's message of "Sat, 6 Jun 2020 19:19:56 -0700")
-Message-ID: <87zh9e6enj.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727779AbgFGUwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Jun 2020 16:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgFGUwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Jun 2020 16:52:34 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46A8C08C5C4
+        for <bpf@vger.kernel.org>; Sun,  7 Jun 2020 13:52:32 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id q13so11764265edi.3
+        for <bpf@vger.kernel.org>; Sun, 07 Jun 2020 13:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1G07w47LS2GVvWUAMlEyfb7I8BzMHJf84EiK66bALbQ=;
+        b=J1MUpiUqYS+rrSFVW5LZGZpGL6fHw2RfH4phpJD/E4yehFBT7rmPgS5HkviEdJ0Sfk
+         04Dk6/QX5sF26qs0zckwfK41r6sG8y707X1erkXzD8g5Hq8C78yw4zNZLSMqH9BwtBu0
+         ZvjmWzRChrNW53ZOrUzD36PI7OAlA3uHHZ8kw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1G07w47LS2GVvWUAMlEyfb7I8BzMHJf84EiK66bALbQ=;
+        b=PovusflkQCIgxTEJFAoGaVjtzSyLf80kFkhmjnSV/6DhJBaPHDhyr0oVbeZFq6Ggaz
+         3KpDTH7Y60qaqeUUnYaJWKucf6o4xKUMMjHQrskyo2kBPZHzPDtnwMlX95cOkP6K9wfb
+         4DXFDIwHTR41jC8jkjGP/VbrukcaDystDNFzPu+TJ92hS4L6caFPadjSpVM5ZCMQn/7u
+         CXrNSdFWNT01TvzIBXp7AD1rQb7xVRLvasLFxSJsyUkaXRyyLOS4lzQtym/IHTpyFYOE
+         yvZGJ5LZoBVVPo64/Iny7JEfdUzRaVA1i4wFqcCrROgfvgUK+++9vk1/ztGSfF3T8T2s
+         YtnA==
+X-Gm-Message-State: AOAM531/DuIuSXRmq9oalN0/C+JvP84vULG74gOcPmNDHQpNjfHaZVNc
+        dZXllCNAKNVrDutB5GoOqmvPeHH4mgM=
+X-Google-Smtp-Source: ABdhPJzxDb97vWcWqEd/4PXkAxGxWDt+GyQa76dMfiGJr/gV3QPTaG4SvzNBoSOXmXokgw+S5sEEZQ==
+X-Received: by 2002:aa7:da46:: with SMTP id w6mr18926329eds.31.1591563151012;
+        Sun, 07 Jun 2020 13:52:31 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id h8sm10887095edk.72.2020.06.07.13.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jun 2020 13:52:30 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH bpf 0/2] Fixes for sock_hash_free
+Date:   Sun,  7 Jun 2020 22:52:27 +0200
+Message-Id: <20200607205229.2389672-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jhxvo-00019j-Gk;;;mid=<87zh9e6enj.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+muq+Q+C7rIVT84MbZG4uY5MVdL5DGEpI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 498 ms - load_scoreonly_sql: 0.15 (0.0%),
-        signal_user_changed: 12 (2.4%), b_tie_ro: 10 (2.0%), parse: 1.66
-        (0.3%), extract_message_metadata: 20 (4.1%), get_uri_detail_list: 3.2
-        (0.6%), tests_pri_-1000: 8 (1.6%), tests_pri_-950: 1.47 (0.3%),
-        tests_pri_-900: 1.12 (0.2%), tests_pri_-90: 84 (16.9%), check_bayes:
-        82 (16.5%), b_tokenize: 9 (1.9%), b_tok_get_all: 10 (1.9%),
-        b_comp_prob: 3.1 (0.6%), b_tok_touch_all: 56 (11.2%), b_finish: 0.93
-        (0.2%), tests_pri_0: 354 (71.1%), check_dkim_signature: 0.97 (0.2%),
-        check_dkim_adsp: 3.3 (0.7%), poll_dns_idle: 0.79 (0.2%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 8 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+This series is an attempt to fix a race in sock_hash_free recently reported
+by Eric [0]. The race, and a mem leak I found on the way, can be triggered
+by the crude reproducer posted below.
 
-> On Sat, Jun 6, 2020 at 6:49 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>>
->> I'm not aware of execve issues. I don't remember being cc-ed on them.
->> To me this 'lets remove everything' patch comes out of nowhere with
->> a link to three month old patch as a justification.
->
-> Well, it's out of nowhere as far as bpf is concerned, but we've had a
-> fair amount of discussions about execve cleanups (and a fair amount of
-> work too, not just discussion) lately
->
-> So it comes out of "execve is rather grotty", and trying to make it
-> simpler have fewer special cases.
->
->> So far we had two attempts at converting netfilter rules to bpf. Both ended up
->> with user space implementation and short cuts.
->
-> So I have a question: are we convinced that doing this "netfilter
-> conversion" in user space is required at all?
->
-> I realize that yes, running clang is not something we'd want to do in
-> kernel space, that's not what I'm asking.
->
-> But how much might be doable at kernel compile time (run clang to
-> generate bpf statically when building the kernel) together with some
-> simplistic run-time parameterized JITting for the table details that
-> the kernel could do on its own without a real compiler?
->
-> Because the problem with this code isn't the "use bpf for netfilter
-> rules", it's the "run a user mode helper". The execve thing is
-> actually only incidental, it also ends up being a somewhat interesting
-> issue wrt namespacing and security (and bootstrapping - I'm not
-> convinced people want to have a clang bpf compiler in initrd etc).
->
-> So particularly if we accept the fact that we won't necessarily need
-> all of netfilter converted in general - some will be just translated
-> entirely independently in user space and not use netfilter at all
-> (just bpf loaded normally)
->
-> IOW there would potentially only be a (fairly small?) core set that
-> the kernel would need to be able to handle "natively".
->
-> Am I just blathering?
+[0] https://lore.kernel.org/bpf/6f8bb6d8-bb70-4533-f15b-310db595d334@gmail.com/
 
-I wish I could answer you.
+Cc: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
 
-All the code does at this time is connect some ipv4 bpfilter specific
-setsockopt commands to a usermode helper with a read pipe and a write
-pipe.  The userspace portion does absolutely nothing with those
-commands.
+--8<--
 
-I don't have the foggiest idea what that code hopes to be doing when
-that code is fully fleshed out.
+enum { NUM_SOCKS = 1000 };
 
-If the goal is to become a backwards compatible compiler from historic
-netfilter commands to bpf it isn't the craziest design in the world.
-But that isn't what is implemented today.
+static void *close_map(void *map)
+{
+	close(*(int *)map);
+	return NULL;
+}
 
-With no users it just isn't clear what the code needs to be doing so I
-can't tell what needs to be done to bugs in the code.  I can't answer
-which behaviors do the users care about.
+int main(void)
+{
+	int sock[NUM_SOCKS];
+	pthread_t worker;
+	int map;
+	int i, err;
 
-Eric
+	map = bpf_create_map(BPF_MAP_TYPE_SOCKHASH, sizeof(int), sizeof(int), NUM_SOCKS, 0);
+	if (map < 0)
+		error(1, -map, "map create");
+
+	for (i = 0; i < NUM_SOCKS; i++) {
+		int fd = socket(AF_INET, SOCK_STREAM, 0);
+		if (fd < 0)
+			error(1, errno, "socket");
+
+		err = listen(fd, SOMAXCONN);
+		if (err)
+			error(1, errno, "listen");
+
+		sock[i] = fd;
+		err = bpf_map_update_elem(map, &i, &fd, BPF_ANY);
+		if (err)
+			error(1, errno, "map update");
+	}
+
+	err = pthread_create(&worker, NULL, close_map, &map);
+	if (err)
+		error(1, err, "thread create");
+
+	/* usleep(100); */
+
+	for (int i = 0; i < NUM_SOCKS; i++)
+		close(sock[i]);
+
+	pthread_join(worker, NULL);
+	return 0;
+}
+-->8--
+
+Jakub Sitnicki (2):
+  bpf, sockhash: Fix memory leak when unlinking sockets in
+    sock_hash_free
+  bpf, sockhash: Synchronize delete from bucket list on map free
+
+ net/core/sock_map.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+-- 
+2.25.4
+
