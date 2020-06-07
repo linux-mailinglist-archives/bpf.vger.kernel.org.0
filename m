@@ -2,106 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E911F0B05
-	for <lists+bpf@lfdr.de>; Sun,  7 Jun 2020 14:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515821F0B61
+	for <lists+bpf@lfdr.de>; Sun,  7 Jun 2020 15:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgFGMAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Jun 2020 08:00:49 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:37250 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgFGMAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Jun 2020 08:00:48 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jhtyl-0001dw-Km; Sun, 07 Jun 2020 06:00:43 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jhtyk-0006iC-Gc; Sun, 07 Jun 2020 06:00:43 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726623AbgFGNXN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Jun 2020 09:23:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24469 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726619AbgFGNXM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Jun 2020 09:23:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591536190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nzWELUbihqr0OzJqk667T7ZcaVLQixxUzSoFLzNjkfY=;
+        b=DUj6CqiCFTfAVv9+88lH/9z+AgJAjkHSYXuN4HziUYFnsiXps4QU6C7m1483mP3nLi8iYq
+        Gap+LIXY1xSvDy3HsOMxU2K7vsx845wH+kSc0HtZAH/q+uOL0Lhx2U1HyNEHaSvELCMKw4
+        oOVcl0mx+SwC0RlInUsQksZOMSHDAkY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-a3zKGBdNN_eyObwmPqLX9Q-1; Sun, 07 Jun 2020 09:23:08 -0400
+X-MC-Unique: a3zKGBdNN_eyObwmPqLX9Q-1
+Received: by mail-wr1-f72.google.com with SMTP id i6so4421062wrr.23
+        for <bpf@vger.kernel.org>; Sun, 07 Jun 2020 06:23:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nzWELUbihqr0OzJqk667T7ZcaVLQixxUzSoFLzNjkfY=;
+        b=LgN8LX0DZpEWL/awC8/4gxH7UOd8UvWKOxjgCzzoDoOIqPl+yMUa3iF4upzr8OmwNN
+         sxWDaWZHmNmjZUvpO1zvPiTO18UTO+h+DyZJbklJnb4TkD7mRtEh1elKudQEQdVSZRm1
+         hYUGngJ0EwTMuhIbsnJLjWscXCOTScHD2aGAb4tILzdZR1CF5+LE3CNJaKWtsNGDxSUC
+         AS+SmSe5Prg8VgGnmkf+jLbUepdyLnTNsuvvv+s+aXm2Sd0Og/eEqmKvOKHcjY6RI4ti
+         JhvD13a5M5bN3Sudj82X4y+zZjHYf87Ml3et4TvpRqyqGh7tH9jVDPrtFvR0jFiFuSs/
+         x5og==
+X-Gm-Message-State: AOAM530Xt3RkiPtqoNqBfpTYprVCEXcLc7HbewqBMkbp9wIqE16J1o1b
+        OddS7BN2fOCZeKNUnxJMsD4kcnLOWE0pVvVic9Xvw2zgvNFRwEdkN0enmjyz1iBSdiI14Pl5gQe
+        VN0W4UMTI6dFt
+X-Received: by 2002:adf:ef47:: with SMTP id c7mr20308727wrp.57.1591536187562;
+        Sun, 07 Jun 2020 06:23:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9Cz802alwljjy3QR3GieCH2PcRwXdp616DctWfOY9tE4occ9rLa9RTY7DIsA2TnSjwRq/+g==
+X-Received: by 2002:adf:ef47:: with SMTP id c7mr20308698wrp.57.1591536187295;
+        Sun, 07 Jun 2020 06:23:07 -0700 (PDT)
+Received: from redhat.com (bzq-82-81-31-23.red.bezeqint.net. [82.81.31.23])
+        by smtp.gmail.com with ESMTPSA id r2sm20886428wrg.68.2020.06.07.06.23.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jun 2020 06:23:06 -0700 (PDT)
+Date:   Sun, 7 Jun 2020 09:23:03 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
-        <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
-        <202006051903.C44988B@keescook>
-        <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
-        <20200606201956.rvfanoqkevjcptfl@ast-mbp>
-        <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
-        <20200607014935.vhd3scr4qmawq7no@ast-mbp>
-        <87mu5f8ljf.fsf@x220.int.ebiederm.org>
-Date:   Sun, 07 Jun 2020 06:56:38 -0500
-In-Reply-To: <87mu5f8ljf.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Sun, 07 Jun 2020 00:58:12 -0500")
-Message-ID: <87pnab6qdl.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH] virtio_net: Unregister and re-register xdp_rxq across
+ freeze/restore
+Message-ID: <20200607091542-mutt-send-email-mst@kernel.org>
+References: <20200605214624.21430-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jhtyk-0006iC-Gc;;;mid=<87pnab6qdl.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18vo+QpO0AQ5tbbwAnnCvshI6m6PQdNB1U=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4559]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 724 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (1.3%), b_tie_ro: 8 (1.1%), parse: 0.81 (0.1%),
-         extract_message_metadata: 10 (1.4%), get_uri_detail_list: 0.64 (0.1%),
-         tests_pri_-1000: 14 (1.9%), tests_pri_-950: 1.22 (0.2%),
-        tests_pri_-900: 1.00 (0.1%), tests_pri_-90: 80 (11.1%), check_bayes:
-        79 (10.9%), b_tokenize: 6 (0.8%), b_tok_get_all: 6 (0.9%),
-        b_comp_prob: 1.97 (0.3%), b_tok_touch_all: 61 (8.5%), b_finish: 0.86
-        (0.1%), tests_pri_0: 594 (82.0%), check_dkim_signature: 0.49 (0.1%),
-        check_dkim_adsp: 2.1 (0.3%), poll_dns_idle: 0.38 (0.1%), tests_pri_10:
-        2.3 (0.3%), tests_pri_500: 8 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605214624.21430-1-sean.j.christopherson@intel.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+On Fri, Jun 05, 2020 at 02:46:24PM -0700, Sean Christopherson wrote:
+> Unregister each queue's xdp_rxq during freeze, and re-register the new
+> instance during restore.  All queues are released during free and
+> recreated during restore, i.e. the pre-freeze xdp_rxq will be lost.
+> 
+> The bug is detected by WARNs in xdp_rxq_info_unreg() and
+> xdp_rxq_info_unreg_mem_model() that fire after a suspend/resume cycle as
+> virtnet_close() attempts to unregister an uninitialized xdp_rxq object.
+> 
+>   ------------[ cut here ]------------
+>   Driver BUG
+>   WARNING: CPU: 0 PID: 880 at net/core/xdp.c:163 xdp_rxq_info_unreg+0x48/0x50
+>   Modules linked in:
+>   CPU: 0 PID: 880 Comm: ip Not tainted 5.7.0-rc5+ #80
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>   RIP: 0010:xdp_rxq_info_unreg+0x48/0x50
+>   Code: <0f> 0b eb ca 0f 1f 40 00 0f 1f 44 00 00 53 48 83 ec 10 8b 47 0c 83
+>   RSP: 0018:ffffc900001ab540 EFLAGS: 00010286
+>   RAX: 0000000000000000 RBX: ffff88827f83ac80 RCX: 0000000000000000
+>   RDX: 000000000000000a RSI: ffffffff8253bc2a RDI: ffffffff825397ec
+>   RBP: 0000000000000000 R08: ffffffff8253bc20 R09: 000000000000000a
+>   R10: ffffc900001ab548 R11: 0000000000000370 R12: ffff88817a89c000
+>   R13: 0000000000000000 R14: ffffc900001abbc8 R15: 0000000000000001
+>   FS:  00007f48b70e70c0(0000) GS:ffff88817bc00000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 00007f48b6634950 CR3: 0000000277f1d002 CR4: 0000000000160eb0
+>   Call Trace:
+>    virtnet_close+0x6a/0xb0
+>    __dev_close_many+0x91/0x100
+>    __dev_change_flags+0xc1/0x1c0
+>    dev_change_flags+0x23/0x60
+>    do_setlink+0x350/0xdf0
+>    __rtnl_newlink+0x553/0x860
+>    rtnl_newlink+0x43/0x60
+>    rtnetlink_rcv_msg+0x289/0x340
+>    netlink_rcv_skb+0xd1/0x110
+>    netlink_unicast+0x203/0x310
+>    netlink_sendmsg+0x32b/0x460
+>    sock_sendmsg+0x5b/0x60
+>    ____sys_sendmsg+0x23e/0x260
+>    ___sys_sendmsg+0x88/0xd0
+>    __sys_sendmsg+0x63/0xa0
+>    do_syscall_64+0x4c/0x170
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>   ------------[ cut here ]------------
+> 
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Fixes: 754b8a21a96d5 ("virtio_net: setup xdp_rxq_info")
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+> 
+> Disclaimer: I am not remotely confident that this patch is 100% correct
+> or complete, my VirtIO knowledge is poor and my networking knowledge is
+> downright abysmal.
+> 
+>  drivers/net/virtio_net.c | 37 +++++++++++++++++++++++++++++--------
+>  1 file changed, 29 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index ba38765dc490..61055be3615e 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1469,6 +1469,21 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+>  	return received;
+>  }
+>  
+> +static int virtnet_reg_xdp(struct xdp_rxq_info *xdp_rxq,
+> +			   struct net_device *dev, u32 queue_index)
+> +{
+> +	int err;
+> +
+> +	err = xdp_rxq_info_reg(xdp_rxq, dev, queue_index);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	err = xdp_rxq_info_reg_mem_model(xdp_rxq, MEM_TYPE_PAGE_SHARED, NULL);
+> +	if (err < 0)
+> +		xdp_rxq_info_unreg(xdp_rxq);
+> +	return err;
+> +}
+> +
+>  static int virtnet_open(struct net_device *dev)
+>  {
+>  	struct virtnet_info *vi = netdev_priv(dev);
+> @@ -1480,17 +1495,10 @@ static int virtnet_open(struct net_device *dev)
+>  			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+>  				schedule_delayed_work(&vi->refill, 0);
+>  
+> -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i);
+> +		err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, dev, i);
+>  		if (err < 0)
+>  			return err;
+>  
+> -		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
+> -						 MEM_TYPE_PAGE_SHARED, NULL);
+> -		if (err < 0) {
+> -			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> -			return err;
+> -		}
+> -
+>  		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+>  		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
+>  	}
+> @@ -2306,6 +2314,7 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
+>  
+>  	if (netif_running(vi->dev)) {
+>  		for (i = 0; i < vi->max_queue_pairs; i++) {
+> +			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+>  			napi_disable(&vi->rq[i].napi);
+>  			virtnet_napi_tx_disable(&vi->sq[i].napi);
 
-> I have sympathy with your efforts but since the code is currently dead,
-> and in need of work.  I will write a good version of removing
-> CONFIG_BPFILTER_UMH on top of -rc1, leaving CONFIG_BPFILTER.
+I suspect the right thing to do is to first disable all NAPI,
+then play with XDP. Generally cleanup in the reverse order
+of init is a good idea.
 
-Of course when I just limit my code removal to code that depends upon
-the user mode helper all that is left is a Kconfig entry and
-include/uapi/linux/bpfilter.h.
 
-I don't get it.
+>  		}
+> @@ -2313,6 +2322,8 @@ static void virtnet_freeze_down(struct virtio_device *vdev)
+>  }
+>  
+>  static int init_vqs(struct virtnet_info *vi);
+> +static void virtnet_del_vqs(struct virtnet_info *vi);
+> +static void free_receive_page_frags(struct virtnet_info *vi);
 
-I also noticed that the type of do_exeve_file is wrong. envp and argv
-are not "void *", they should be "const char __user *const __user *__argv".
+I'd really rather we reordered code so forward decls are not necessary.
 
-Eric
+>  static int virtnet_restore_up(struct virtio_device *vdev)
+>  {
+> @@ -2331,6 +2342,10 @@ static int virtnet_restore_up(struct virtio_device *vdev)
+>  				schedule_delayed_work(&vi->refill, 0);
+>  
+>  		for (i = 0; i < vi->max_queue_pairs; i++) {
+> +			err = virtnet_reg_xdp(&vi->rq[i].xdp_rxq, vi->dev, i);
+> +			if (err)
+> +				goto free_vqs;
+> +
+>  			virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+>  			virtnet_napi_tx_enable(vi, vi->sq[i].vq,
+>  					       &vi->sq[i].napi);
+> @@ -2340,6 +2355,12 @@ static int virtnet_restore_up(struct virtio_device *vdev)
+>  	netif_tx_lock_bh(vi->dev);
+>  	netif_device_attach(vi->dev);
+>  	netif_tx_unlock_bh(vi->dev);
+> +	return 0;
+> +
+> +free_vqs:
+> +	cancel_delayed_work_sync(&vi->refill);
+> +	free_receive_page_frags(vi);
+> +	virtnet_del_vqs(vi);
+
+
+I am not sure this is safe to do after device-ready.
+
+Can reg xdp happen before device ready?
+
+
+>  	return err;
+>  }
+>  
+> -- 
+> 2.26.0
+
