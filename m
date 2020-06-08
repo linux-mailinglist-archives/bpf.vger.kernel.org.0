@@ -2,136 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362B71F1C27
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 17:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB771F1C73
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 17:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730271AbgFHPdG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 11:33:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28272 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729754AbgFHPdG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 11:33:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591630384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ejRzmIfo/YStbmem6OtL2DwKFhnwBSwtvJjwxXmGTAs=;
-        b=ZmbN4MZ6etr92F1M7dyKE+zY3e00aHzs06BIXI3nMhmw2FuC1I35rRhRIMydMuWEQjEGss
-        6FUZ9jMNplCAyUywyZC9+8I8Q3nsx5ijzxvlmfoeq6OLuxZ8TGsEb+GabRcmXJi97C7exY
-        J7R7y6sdoiHbiRXxj+Etssu75I+CiQ4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-z59hrjdaM0yVyiGoKu_p1A-1; Mon, 08 Jun 2020 11:33:03 -0400
-X-MC-Unique: z59hrjdaM0yVyiGoKu_p1A-1
-Received: by mail-ed1-f71.google.com with SMTP id w23so7037597edt.18
-        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 08:33:01 -0700 (PDT)
+        id S1730264AbgFHPym (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 11:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730267AbgFHPym (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 11:54:42 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7252AC08C5C2
+        for <bpf@vger.kernel.org>; Mon,  8 Jun 2020 08:54:42 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id i1so16032037ils.11
+        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 08:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+kLKPwVpWorCw8nCW5DpXWIGBbAVjNFGZ0QtGfMbrHE=;
+        b=J51dzEmSRHNYKF+nyTk80O/dpZgtTQgB8P7TA4mVvB61vMVNhvJgafHEmgSZ/BkH9q
+         ni44N9QWPDardIEAuzrbV4jRkSWdNq4uLWYRTlXHJ8ogS5gSOLi5gvXJVL5kPWPXRcIz
+         CBI0j1Hg7+/TNpgoYnh+rgcbVbaSHI2IuCKfFPwBBIfgekKfSkplK2OlsTQHVNa+edCk
+         0sIi5PMrMlEWzGiMGAICYRtHQV79zFH2iGhW5rdhA8mOBxpqV74Tj0iYV3wVMbV/Y9Xa
+         GiRdmgNrl/DN5le6DfgiIWhL6XDhCXvwh2OyzR+YKy0u0ZbZRoesiw4qoirI68I0jBZD
+         TGvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ejRzmIfo/YStbmem6OtL2DwKFhnwBSwtvJjwxXmGTAs=;
-        b=fqD6e9IiL/Jh08nI6rxextBzCgl6KjBXRbPeTDTnJlKNLt65ayw9LukJQ0KbFh6ypE
-         EWnv2Z+LdYCKVHtckJq4WcsLi6pX2+uuNHyacCirvuySqx71PiHGNcj9JtqBQe2campI
-         vsGAH7iQEIxMT39OtW4msDsp5qxA6SyBi9hL7DnCHIrk4AftzgddfeV2AWLoHkKqvPvC
-         BX8AGIDgvOXoVkUIvPdSrXNMPq129Krd/2W1johX/txb085joh/Imm5q5KWKT8f3rWlg
-         1OlhBbwHbAqR+F+W/1TAFZmlyEwRRN11P6XisHSIS/zbsSApwX7KNpuES5CKpB44hJmS
-         1p6w==
-X-Gm-Message-State: AOAM530yyxZhALvLZnC66AcAU12JQ1tzV/L9/0KrR0LPXGMWe2zSQLqa
-        LEsmSUaQI4H1KZoSts6vKXwzskBdVK4vdkGF0POpZS4HXYgLKhrcJTva2MQFyVMBe3f5W24Eke5
-        hGtcUrNe3Rtbp
-X-Received: by 2002:a17:906:b7cd:: with SMTP id fy13mr20807850ejb.443.1591630379391;
-        Mon, 08 Jun 2020 08:32:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6+Rh+weLJ3CfNdx8kMK8oyTWU8xcp2vBI8ombCs1CQg+t4iJHtD4AMWJQ7Wb0figtNT0EXQ==
-X-Received: by 2002:a17:906:b7cd:: with SMTP id fy13mr20807831ejb.443.1591630379191;
-        Mon, 08 Jun 2020 08:32:59 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id sa19sm11467045ejb.15.2020.06.08.08.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 08:32:58 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 916E818200D; Mon,  8 Jun 2020 17:32:54 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-In-Reply-To: <20200605062606.GO102436@dhcp-12-153.nay.redhat.com>
-References: <20200526140539.4103528-1-liuhangbin@gmail.com> <87zh9t1xvh.fsf@toke.dk> <20200603024054.GK102436@dhcp-12-153.nay.redhat.com> <87img8l893.fsf@toke.dk> <20200604040940.GL102436@dhcp-12-153.nay.redhat.com> <871rmvkvwn.fsf@toke.dk> <20200604121212.GM102436@dhcp-12-153.nay.redhat.com> <87bllzj9bw.fsf@toke.dk> <20200604144145.GN102436@dhcp-12-153.nay.redhat.com> <87d06ees41.fsf@toke.dk> <20200605062606.GO102436@dhcp-12-153.nay.redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 08 Jun 2020 17:32:54 +0200
-Message-ID: <878sgxd13t.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+kLKPwVpWorCw8nCW5DpXWIGBbAVjNFGZ0QtGfMbrHE=;
+        b=Qnb68v1ysRKBbQbQQLa1lzStLBaJWbnLRmVuMFH0+CXjOlCLrI7tm1YUxZIL7MwY30
+         W++3rSAK80g9YrsRjC2m/AkTGSKOmOPgFqGH8kNksI23GNFrmmfPG5zy/DEp9QFkd9dB
+         Mm6r9/O/r1HGKw0ud7A+9fasYMePsGKhJsenMJJocB0Fb8mOcrerHE4ILeg/rMRbjovE
+         3W/Dq/NUgKL1cUYgrFtkLgyzL3IwGNFxSljsSDZVrJAB2906KweQ+0t5Pue2ifrBb3B+
+         1PgC9XT1J8+TfH119rBpmkTa6THI14DhpyNRXL/XDLyrkR1IcNj02PE9Ecs67ATYpC2K
+         LI7A==
+X-Gm-Message-State: AOAM530oYAvPC9T2UCdA5SnNAlv6ZTRsNUURX2KegiZ2IDgXbQ+Dwo6b
+        36JSjnEFyhBUwj7vpyLUso4XYigmtdD5jbvC+WVz37rzomU=
+X-Google-Smtp-Source: ABdhPJygA96lynH4xQx878uXyR+SQgP8Fqiah78LngAI78+6ArbF568c4x5hcF+jMLU1U76U9Xtsto4gXEFJLDwm9qY=
+X-Received: by 2002:a92:c60b:: with SMTP id p11mr15972973ilm.137.1591631681394;
+ Mon, 08 Jun 2020 08:54:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1591315176.git.zhuyifei@google.com> <4f13798ae41986f8fe8a6f8698c7cbeaefba93b0.1591315176.git.zhuyifei@google.com>
+ <8b8290bf-2691-4c1e-07ae-e3262ef25632@iogearbox.net>
+In-Reply-To: <8b8290bf-2691-4c1e-07ae-e3262ef25632@iogearbox.net>
+From:   YiFei Zhu <zhuyifei@google.com>
+Date:   Mon, 8 Jun 2020 10:54:29 -0500
+Message-ID: <CAA-VZPm687Okro3D+RUGfE9UBgV4auGn+uBWAfp8RZtXoCkU-A@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] net/filter: Permit reading NET in
+ load_bytes_relative when MAC not set
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+On Mon, Jun 8, 2020 at 8:56 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> Couldn't you run into the case above where the passed offset is large enough
+> that start + offset goes beyond end pointer [and then above comparison is
+> performed as unsigned ..]?
 
-> On Thu, Jun 04, 2020 at 06:02:54PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Hangbin Liu <liuhangbin@gmail.com> writes:
->>=20
->> > On Thu, Jun 04, 2020 at 02:37:23PM +0200, Toke H=C3=83=C6=92=C3=82=C2=
-=B8iland-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
->> >> > Now I use the ethtool_stats.pl to count forwarding speed and here i=
-s the result:
->> >> >
->> >> > With kernel 5.7(ingress i40e, egress i40e)
->> >> > XDP:
->> >> > bridge: 1.8M PPS
->> >> > xdp_redirect_map:
->> >> >   generic mode: 1.9M PPS
->> >> >   driver mode: 10.4M PPS
->> >>=20
->> >> Ah, now we're getting somewhere! :)
->> >>=20
->> >> > Kernel 5.7 + my patch(ingress i40e, egress i40e)
->> >> > bridge: 1.8M
->> >> > xdp_redirect_map:
->> >> >   generic mode: 1.86M PPS
->> >> >   driver mode: 10.17M PPS
->> >>=20
->> >> Right, so this corresponds to a ~2ns overhead (10**9/10400000 -
->> >> 10**9/10170000). This is not too far from being in the noise, I suppo=
-se;
->> >> is the difference consistent?
->> >
->> > Sorry, I didn't get, what different consistent do you mean?
->>=20
->> I meant, how much do the numbers vary between each test run?
->
-> Oh, when run it at the same period, the number is stable, the range is ab=
-out
-> ~0.05M PPS. But after a long time or reboot, the speed may changed a litt=
-le.
-> Here is the new test result after I reboot the system:
->
-> Kernel 5.7 + my patch(ingress i40e, egress i40e)
-> xdp_redirect_map:
->   generic mode: 1.9M PPS
->   driver mode: 10.2M PPS
->
-> xdp_redirect_map_multi:
->   generic mode: 1.58M PPS
->   driver mode: 7.16M PPS
->
-> Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(No XDP on peer))
-> xdp_redirect_map:
->   generic mode: 2.2M PPS
->   driver mode: 14.2M PPS
+You are right. I missed that offset would be large and make start +
+offset > end,
+when I was trying to reason the offsets and overflows. I just checked
+that on x86_64
+it emits a 'jg' instruction on x86_64, and the test I tried with
+offset = 0xffff does
+return -EFAULT. However, I searched around and saw that this is due to integer
+promotion of len and the test would fail (i.e. not returning -EFAULT) on x86_32
+(I have not tested this).
 
-This looks wrong - why is performance increasing when adding another
-target? How are you even adding another target to regular
-xdp_redirect_map?
+> (At least on x86-64, the 'ptr + len <= end' should
+> never have an issue [0].)
 
--Toke
+Alright, I see that len is an ARG_CONST_SIZE, which would be checked by
+check_helper_mem_access, so it is bound by the stack size. So the argument
+against ptr >= start also applies here, correct?
 
+YiFei Zhu
