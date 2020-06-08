@@ -2,127 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D8D1F1A2C
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 15:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740BA1F1A77
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 15:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgFHNdz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 09:33:55 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:62913 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729875AbgFHNdy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 09:33:54 -0400
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 058DXVKM023535;
-        Mon, 8 Jun 2020 22:33:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 058DXVKM023535
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1591623212;
-        bh=b+o3Hm4QtvCz1v/3Sh/JT6aGk4myx3VOofcrTavBqrk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CMJmkSl2WOimRx+lm6tfZz98ISZpMBRK0DbB5JCpCVvU6x7EGNBAK1BchsuKfx8eT
-         smP18vaF0LLUaOLJWxy8PgD84wFJAeAuA6gRY5Xyrp6d9kZaXk5aFoiu2+9U+tjMFc
-         gB4p9g751gJnRy3a2uMKdbZo0C5JbCb8mko8oObEUQQtWrg68xZjKQFZP9UXm/h75J
-         zjjcUYdkWc5Tf9L9SVQpPL4JhbYTF7+il7fKYIjML4ZkHGKaeCPI0FqQ8bqHElBinZ
-         hJR8KbojN5pNJxMzxmRBGMPyku/g/jDYEgyRcM2ENCGx4kOVBPdrUK8dUjMEG4N8qJ
-         IykKAoNeJEqqQ==
-X-Nifty-SrcIP: [209.85.217.54]
-Received: by mail-vs1-f54.google.com with SMTP id k13so9773510vsm.13;
-        Mon, 08 Jun 2020 06:33:32 -0700 (PDT)
-X-Gm-Message-State: AOAM530nV0EcxYr2hWUDiPQvoMJ00z92eeC4LnCxOx3Cpk5RVOI9wB5N
-        Z7wjvFHlgx810FBhKENF/x7pML8lNdby5qSXpzE=
-X-Google-Smtp-Source: ABdhPJyfBMyc0+YCkYixUd2p+AN/T03Qhj7+s3JZLuqn4kS0/Z0lvBdDfypzJhoi2h2pGnaS8dEXskpx9ISJNDks+sQ=
-X-Received: by 2002:a67:2d42:: with SMTP id t63mr15019160vst.181.1591623211449;
- Mon, 08 Jun 2020 06:33:31 -0700 (PDT)
+        id S1728799AbgFHN4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 09:56:49 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34880 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728472AbgFHN4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 09:56:48 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jiIGd-0005jO-D6; Mon, 08 Jun 2020 15:56:47 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jiIGd-000WFp-5i; Mon, 08 Jun 2020 15:56:47 +0200
+Subject: Re: [PATCH bpf 1/2] net/filter: Permit reading NET in
+ load_bytes_relative when MAC not set
+To:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+References: <cover.1591315176.git.zhuyifei@google.com>
+ <4f13798ae41986f8fe8a6f8698c7cbeaefba93b0.1591315176.git.zhuyifei@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8b8290bf-2691-4c1e-07ae-e3262ef25632@iogearbox.net>
+Date:   Mon, 8 Jun 2020 15:56:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-5-masahiroy@kernel.org>
- <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-In-Reply-To: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 8 Jun 2020 22:32:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQkVA05G9f68PTyyChno2OEOq_gsmjGwML7PerZvwOuSA@mail.gmail.com>
-Message-ID: <CAK7LNAQkVA05G9f68PTyyChno2OEOq_gsmjGwML7PerZvwOuSA@mail.gmail.com>
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4f13798ae41986f8fe8a6f8698c7cbeaefba93b0.1591315176.git.zhuyifei@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25837/Mon Jun  8 14:50:11 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 8:56 PM Michal Kubecek <mkubecek@suse.cz> wrote:
->
-> On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
-> > The user mode helper should be compiled for the same architecture as
-> > the kernel.
-> >
-> > This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
-> >
-> > Now that Kbuild provides the syntax 'userprogs', use it to fix the
-> > Makefile mess.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > ---
-> >
-> >  net/bpfilter/Makefile | 11 ++++-------
-> >  1 file changed, 4 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> > index 36580301da70..6ee650c6badb 100644
-> > --- a/net/bpfilter/Makefile
-> > +++ b/net/bpfilter/Makefile
-> > @@ -3,17 +3,14 @@
-> >  # Makefile for the Linux BPFILTER layer.
-> >  #
-> >
-> > -hostprogs := bpfilter_umh
-> > +userprogs := bpfilter_umh
-> >  bpfilter_umh-objs := main.o
-> > -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> > -HOSTCC := $(CC)
-> > +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> >
-> > -ifeq ($(CONFIG_BPFILTER_UMH), y)
-> > -# builtin bpfilter_umh should be compiled with -static
-> > +# builtin bpfilter_umh should be linked with -static
-> >  # since rootfs isn't mounted at the time of __init
-> >  # function is called and do_execv won't find elf interpreter
-> > -KBUILD_HOSTLDFLAGS += -static
-> > -endif
-> > +bpfilter_umh-ldflags += -static
-> >
-> >  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
->
-> Hello,
->
-> I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
-> drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
-> passed to the linker even if bpfilter_umh is built as a module which
-> wasn't the case in v5.7.
->
-> This is not mentioned in the commit message and the comment still says
-> "*builtin* bpfilter_umh should be linked with -static" so this change
-> doesn't seem to be intentional. Did I miss something?
->
-> Michal Kubecek
+On 6/5/20 2:07 AM, YiFei Zhu wrote:
+> Added a check in the switch case on start_header that checks for
+> the existence of the header, and in the case that MAC is not set
+> and the caller requests for MAC, -EFAULT. If the caller requests
+> for NET then MAC's existence is completely ignored.
+> 
+> There is no function to check NET header's existence and as far
+> as cgroup_skb/egress is concerned it should always be set.
+> 
+> Removed for ptr >= the start of header, considering offset is
+> bounded unsigned and should always be true. ptr + len <= end is
+> overflow-unsafe and replaced with len <= end - ptr, and
+> len <= end - mac is redundant to this condition.
+> 
+> Fixes: 3eee1f75f2b9 ("bpf: fix bpf_skb_load_bytes_relative pkt length check")
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> ---
+>   net/core/filter.c | 16 +++++++++-------
+>   1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index d01a244b5087..d3e8445b5494 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -1755,25 +1755,27 @@ BPF_CALL_5(bpf_skb_load_bytes_relative, const struct sk_buff *, skb,
+>   	   u32, offset, void *, to, u32, len, u32, start_header)
+>   {
+>   	u8 *end = skb_tail_pointer(skb);
+> -	u8 *net = skb_network_header(skb);
+> -	u8 *mac = skb_mac_header(skb);
+> -	u8 *ptr;
+> +	u8 *start, *ptr;
+>   
+> -	if (unlikely(offset > 0xffff || len > (end - mac)))
+> +	if (unlikely(offset > 0xffff))
+>   		goto err_clear;
+>   
+>   	switch (start_header) {
+>   	case BPF_HDR_START_MAC:
+> -		ptr = mac + offset;
+> +		if (unlikely(!skb_mac_header_was_set(skb)))
+> +			goto err_clear;
+> +		start = skb_mac_header(skb);
+>   		break;
+>   	case BPF_HDR_START_NET:
+> -		ptr = net + offset;
+> +		start = skb_network_header(skb);
+>   		break;
+>   	default:
+>   		goto err_clear;
+>   	}
+>   
+> -	if (likely(ptr >= mac && ptr + len <= end)) {
+> +	ptr = start + offset;
+> +
+> +	if (likely(len <= end - ptr)) {
 
+Couldn't you run into the case above where the passed offset is large enough
+that start + offset goes beyond end pointer [and then above comparison is
+performed as unsigned ..]? (At least on x86-64, the 'ptr + len <= end' should
+never have an issue [0].) Either way, maybe lets add a test in 2/2 to assert
+correct behavior there.
 
-Sorry. ifeq was accidentally dropped.
-I will restore it.
+   [0] https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt
 
--- 
-Best Regards
-Masahiro Yamada
+>   		memcpy(to, ptr, len);
+>   		return 0;
+>   	}
+> 
+
