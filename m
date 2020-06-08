@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025531F29B6
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4971F2986
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730847AbgFIADW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 20:03:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46132 "EHLO mail.kernel.org"
+        id S2387431AbgFIABP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 20:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731225AbgFHXVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:21:51 -0400
+        id S1731316AbgFHXW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:22:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E34A20842;
-        Mon,  8 Jun 2020 23:21:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 596B920814;
+        Mon,  8 Jun 2020 23:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658510;
-        bh=za9EyI3o5uaFj1FcFu/tNsgXVP1mJnijVnQloGQKC8c=;
+        s=default; t=1591658547;
+        bh=fkfXndqxh4AQ+gd8Jrw7nvbRge50YW+KBgsDLiMt3sE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0QWkDq//IfWdyHXzYu7A2xomoT1iponN6USptM6G49qEdIGy59BwDrpSqcDvHqWj7
-         Q2+BO6dp6oo+NurjVyFOEzsyNcmwmS1n2x+yI8Pr0d9g2eCV3PJJD000QHfw51FKzV
-         bN1omiVfWHEQfcni5tCQN5aC/UtnZ/2T6+ggaPh4=
+        b=gVFE+KqDnx6Y3GdO2prr0DnT49WQDMW+xPPxoRK8AJLi5hgt9bUjI7IsIPFg5YMfS
+         yUy2auXeN8Jc84me6YdiGAPLZXwbAt+0L3gbEmOo3cuAv9duGTf3xINqkaJL68k5T8
+         Wi6Q89meJ9oLtq8MXEFnlvKn/Kri/QsEBYSI+QFA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
+Cc:     Eelco Chaudron <echaudro@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 140/175] selftests/bpf: CONFIG_IPV6_SEG6_BPF required for test_seg6_loop.o
-Date:   Mon,  8 Jun 2020 19:18:13 -0400
-Message-Id: <20200608231848.3366970-140-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 168/175] libbpf: Fix perf_buffer__free() API for sparse allocs
+Date:   Mon,  8 Jun 2020 19:18:41 -0400
+Message-Id: <20200608231848.3366970-168-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -45,34 +46,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Eelco Chaudron <echaudro@redhat.com>
 
-[ Upstream commit 3c8e8cf4b18b3a7034fab4c4504fc4b54e4b6195 ]
+[ Upstream commit 601b05ca6edb0422bf6ce313fbfd55ec7bbbc0fd ]
 
-test_seg6_loop.o uses the helper bpf_lwt_seg6_adjust_srh();
-it will not be present if CONFIG_IPV6_SEG6_BPF is not specified.
+In case the cpu_bufs are sparsely allocated they are not all
+free'ed. These changes will fix this.
 
-Fixes: b061017f8b4d ("selftests/bpf: add realistic loop tests")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Fixes: fb84b8224655 ("libbpf: add perf buffer API")
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/1590147389-26482-2-git-send-email-alan.maguire@oracle.com
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/159056888305.330763.9684536967379110349.stgit@ebuild
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/config | 1 +
- 1 file changed, 1 insertion(+)
+ tools/lib/bpf/libbpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 5dc109f4c097..b9601f13cf03 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -25,6 +25,7 @@ CONFIG_XDP_SOCKETS=y
- CONFIG_FTRACE_SYSCALLS=y
- CONFIG_IPV6_TUNNEL=y
- CONFIG_IPV6_GRE=y
-+CONFIG_IPV6_SEG6_BPF=y
- CONFIG_NET_FOU=m
- CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_IPV6_FOU=m
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 281cc65276e0..2a1dbf52fc9a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5358,9 +5358,12 @@ void perf_buffer__free(struct perf_buffer *pb)
+ 	if (!pb)
+ 		return;
+ 	if (pb->cpu_bufs) {
+-		for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
++		for (i = 0; i < pb->cpu_cnt; i++) {
+ 			struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
+ 
++			if (!cpu_buf)
++				continue;
++
+ 			bpf_map_delete_elem(pb->map_fd, &cpu_buf->map_key);
+ 			perf_buffer__free_cpu_buf(pb, cpu_buf);
+ 		}
 -- 
 2.25.1
 
