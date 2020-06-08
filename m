@@ -2,142 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02BF1F1D20
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9811F1D2B
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbgFHQUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 12:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S1730485AbgFHQW7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 12:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730383AbgFHQUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:20:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F4EC08C5C2;
-        Mon,  8 Jun 2020 09:20:33 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id s23so7434045pfh.7;
-        Mon, 08 Jun 2020 09:20:33 -0700 (PDT)
+        with ESMTP id S1730475AbgFHQW6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 12:22:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1600C08C5C2
+        for <bpf@vger.kernel.org>; Mon,  8 Jun 2020 09:22:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j10so18075590wrw.8
+        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 09:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/NDI/ZUtltozdgt+VOJE7nUU/VTdvGl6xwv3n0DF9lA=;
-        b=T2Vhsg0fl2OahE2dkh/ezXVLuIN91L9WIqFxxzxHcuMLA5vKGXOmrJDIVBlCgSLY2j
-         h6UBkKXzh7D464n6yBwiGNMWFEO06QiqLPSM605z9H23afs8UYlQNyCRFQzdZg75ptP5
-         kPNfBg/KHcVuI/UVfVhkY15vEptXQWyUXfcsJQOQSRdkRY2cialTvhozElcGCqVcckjq
-         ChiHewep6+WJVVRWoiOR4LjaX7BCJqWO0foYYtfRaBveOeihuSdcHbvD3tvUZBtf2Wvz
-         b2nILJ/6Gp5yrr7jLzQqqwMNFg+KvOcRdodbi0BmXQktZBsOZC+m5T/HdTy77/m3cy7g
-         vZ0A==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hs1EELNtgkaMondyRtgQ/6Z9mw2fYYd1xiptMHkTtFA=;
+        b=ndOHGLTaByr9ofdCBK5UVRXpqyxBmcTEBUOqz/laTHtMlkelV5nMDGwIxHLn+n7LAx
+         6AG+1gPjhoqT0/eGqnxXkMs+4kwhXHbdLD51zfWNha64FIlC5WiZ3l/VfS2224OY1pP5
+         oqOnyaC2rND5M+dX4Nqp3MLtFrp1wWjZnDDbw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/NDI/ZUtltozdgt+VOJE7nUU/VTdvGl6xwv3n0DF9lA=;
-        b=OuRutS0GosOZ6mn9N/bpC0FFITnvqVmAdVB5V+JxYK8Jo2WfMqNLI03WYxevRcCfi/
-         dd252AudcQ/zjabfDcIAWYvTzawMKlZUa372Ehi+gJ31b80Js0Qq8zUUXgUY1yAad83Y
-         UvOS+ofbjtf7aYK1aV5bgcpURoUW6R8/CRr4EKH18lMlBGtNUoGGkvzqtwM5ajD5Qo4c
-         vPNLkTfvpkR9ck5XF+IzR27cjguhVe8aAT60ssnT7mSXlF9TjNVaA0mCuP3sv98DmmCC
-         BpQwLIVZT+tJgWazlFpaKqu58bUs0Vh9ftzFmxp1MDooCjd3AKI2ll8apID9cQe3jdLj
-         4jEA==
-X-Gm-Message-State: AOAM531ixxxvZXH9CQorOrApMb1NA3PKg5iBluZW55CdKDpxkEGAWMVQ
-        cULcAllALjTotFsU9c0kRws=
-X-Google-Smtp-Source: ABdhPJxkhAFBaKaQdG026r6BnTBUV5jCbBOp7uYZAq09/0aR1h1G9KUHzyIMadVQzowYOiQ4TYuyvA==
-X-Received: by 2002:a63:a36e:: with SMTP id v46mr20417464pgn.378.1591633231761;
-        Mon, 08 Jun 2020 09:20:31 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:73f9])
-        by smtp.gmail.com with ESMTPSA id s1sm43020pjp.14.2020.06.08.09.20.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hs1EELNtgkaMondyRtgQ/6Z9mw2fYYd1xiptMHkTtFA=;
+        b=rUuCHoellxyXnDFai/wcSLptSxHKCnsigluIahhj3i+zwE4YoDVzXYfCZaJFw07m58
+         x/Or4ta7LcMQ09hwR7gDL6GMSr7ilfWaEwBQ5qw2kChqSFOoiNbTe/tfrY1/MAf0uHQk
+         CKBQySvbxgAr9yDIaCVyf1hZJdF2MRqvMuHVELx8MjPpkwiVGv2d4rUx/kp1eoLfb/wt
+         /u3/s0HOGmwqcbwW7WsM3fX0WmjbRaFb3uL7ZbBm50ekc5bb1yWSFovepgRTtpOpCgrZ
+         gR0Cnh1kLwkxxmoKsv3XfY/JDhH+4MZtvhhNc4OMNlSo1qkvZQN3xPo/IkhIv85rJsys
+         bR1Q==
+X-Gm-Message-State: AOAM531qYSfudrJIflLZQRkwc3fEYL2qgHtqsCB+tHzz8wHV/hxT2l6N
+        0iH9X21JECPChJog04Z2wjaVRg==
+X-Google-Smtp-Source: ABdhPJzP+Yico773WoQLz8PnS8XimH0eOsVTKoFbV8W6LsSuKSkEQnAXSFPDmG0XSmY2ceDAtZiaaA==
+X-Received: by 2002:adf:9c12:: with SMTP id f18mr26206857wrc.105.1591633375425;
+        Mon, 08 Jun 2020 09:22:55 -0700 (PDT)
+Received: from antares.lan (f.7.9.4.f.9.a.d.f.4.a.3.6.5.1.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:156:3a4f:da9f:497f])
+        by smtp.gmail.com with ESMTPSA id w3sm50929wmg.44.2020.06.08.09.22.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 09:20:30 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 09:20:27 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Mon, 08 Jun 2020 09:22:54 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-Message-ID: <20200608162027.iyaqtnhrjtp3vos5@ast-mbp.dhcp.thefacebook.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
- <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
- <202006051903.C44988B@keescook>
- <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp>
- <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp>
- <CAHk-=wiUjZV5VmdqUOGjpNMmobGQKyZpaa=MuJ-5XM3Da86zBg@mail.gmail.com>
+        Shuah Khan <shuah@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Roman Gushchin <guro@fb.com>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf] bpf: cgroup: allow multi-attach program to replace itself
+Date:   Mon,  8 Jun 2020 17:22:01 +0100
+Message-Id: <20200608162202.94002-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiUjZV5VmdqUOGjpNMmobGQKyZpaa=MuJ-5XM3Da86zBg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 06, 2020 at 07:19:56PM -0700, Linus Torvalds wrote:
-> On Sat, Jun 6, 2020 at 6:49 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >>
-> > I'm not aware of execve issues. I don't remember being cc-ed on them.
-> > To me this 'lets remove everything' patch comes out of nowhere with
-> > a link to three month old patch as a justification.
-> 
-> Well, it's out of nowhere as far as bpf is concerned, but we've had a
-> fair amount of discussions about execve cleanups (and a fair amount of
-> work too, not just discussion) lately
-> 
-> So it comes out of "execve is rather grotty", and trying to make it
-> simpler have fewer special cases.
-> 
-> > So far we had two attempts at converting netfilter rules to bpf. Both ended up
-> > with user space implementation and short cuts.
-> 
-> So I have a question: are we convinced that doing this "netfilter
-> conversion" in user space is required at all?
-> 
-> I realize that yes, running clang is not something we'd want to do in
-> kernel space, that's not what I'm asking.
-> 
-> But how much might be doable at kernel compile time (run clang to
-> generate bpf statically when building the kernel) together with some
-> simplistic run-time parameterized JITting for the table details that
-> the kernel could do on its own without a real compiler?
+When using BPF_PROG_ATTACH to attach a program to a cgroup in
+BPF_F_ALLOW_MULTI mode, it is not possible to replace a program
+with itself. This is because the check for duplicate programs
+doesn't take the replacement program into account.
 
-Right. There is no room for large user space application like clang
-in vmlinux. The idea for umh was to stay small and self contained.
-Its advantage vs kernel module is to execute with user privs
-and use normal syscalls to drive kernel instead of export_symbol apis.
+Replacing a program with itself might seem weird, but it has
+some uses: first, it allows resetting the associated cgroup storage.
+Second, it makes the API consistent with the non-ALLOW_MULTI usage,
+where it is possible to replace a program with itself. Third, it
+aligns BPF_PROG_ATTACH with bpf_link, where replacing itself is
+also supported.
 
-There are two things in this discussion. bpfilter that intercepting
-netfilter sockopt and elf file embedded into vmlinux that executes
-as user process.
-The pro/con of bpfilter approach is hard to argue now because
-bpfilter itself didn't materialize yet. I'm fine with removal of that part
-from the kernel, but I'm still arguing that 'embed elf into vmlinux'
-is necessary, useful and there is no alternative.
-There are builtin kernel modules. 'elf in vmlinux' is similar to that.
-The primary use case is bpf driven features like bpf_lsm.
-bpf_lsm needs to load many different bpf programs, create bpf maps, populate
-them, attach to lsm hooks to make the whole thing ready. That initialization of
-bpf_lsm is currently done after everything booted, but folks want it to be
-active much early. Like other LSMs.
-Take android for example. It can certify vmlinux, but not boot fs image.
-vmlinux needs to apply security policy via bpf_lsm during the boot.
-In such case 'embedded elf in vmlinux' would start early, do its thing
-via bpf syscall and exit. Unlike bpfilter approach it won't stay running.
-Its job is to setup all bpf things and quit.
-Theoretically we can do it as proper kernel module, but then it would mean huge
-refactoring of all bpf syscall commands to be accessible from the kernel module.
-It's simpler to embed elf into vmlinux and run it as user process doing normal
-syscalls. I can imagine that in other cases this elf executable would keep
-running after setup.
-It doesn't have to be bpf related. Folks thought they can do usb drivers
-running in user space and ready at boot. 'elf in vmlinux' would work as well.
+Sice this code has been refactored a few times this change will
+only apply to v5.7 and later. Adjustments could be made to
+commit 1020c1f24a94 ("bpf: Simplify __cgroup_bpf_attach") and
+commit d7bf2c10af05 ("bpf: allocate cgroup storage entries on attaching bpf programs")
+as well as commit 324bda9e6c5a ("bpf: multi program support for cgroup+bpf")
+
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
+---
+ kernel/bpf/cgroup.c                                        | 2 +-
+ .../testing/selftests/bpf/prog_tests/cgroup_attach_multi.c | 7 +++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index fdf7836750a3..4d76f16524cc 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -378,7 +378,7 @@ static struct bpf_prog_list *find_attach_entry(struct list_head *progs,
+ 	}
+ 
+ 	list_for_each_entry(pl, progs, node) {
+-		if (prog && pl->prog == prog)
++		if (prog && pl->prog == prog && prog != replace_prog)
+ 			/* disallow attaching the same prog twice */
+ 			return ERR_PTR(-EINVAL);
+ 		if (link && pl->link == link)
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+index 139f8e82c7c6..b549fcfacc0b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+@@ -230,6 +230,13 @@ void test_cgroup_attach_multi(void)
+ 		  "prog_replace", "errno=%d\n", errno))
+ 		goto err;
+ 
++	/* replace program with itself */
++	attach_opts.replace_prog_fd = allow_prog[6];
++	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
++					BPF_CGROUP_INET_EGRESS, &attach_opts),
++		  "prog_replace", "errno=%d\n", errno))
++		goto err;
++
+ 	value = 0;
+ 	CHECK_FAIL(bpf_map_update_elem(map_fd, &key, &value, 0));
+ 	CHECK_FAIL(system(PING_CMD));
+-- 
+2.25.1
+
