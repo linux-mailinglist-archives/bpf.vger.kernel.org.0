@@ -2,41 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAB41F2382
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 01:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38241F22E9
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 01:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729970AbgFHXPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
+        id S1728823AbgFHXLG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 19:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729954AbgFHXPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:02 -0400
+        id S1728817AbgFHXLF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCAF621531;
-        Mon,  8 Jun 2020 23:15:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9097A208FE;
+        Mon,  8 Jun 2020 23:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658102;
-        bh=q+/YNJFG0GRlIcTN8/G1ReOa5iQS1CReUKZzJgxNyxE=;
+        s=default; t=1591657864;
+        bh=H41nqotO2pzomHP53p6h5JZJ/pOdapmKqlagWJkG6tY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQJ90JEU4iRiJ+em6F+/ImFFSr293/GElhc8WCUPN+ZSbXQpNiABHCntFUjsbKtzh
-         vMonIVwh/GDcokTYqNdDpF9Li+KnroJ1CNlkawHr9i3nTzxeFkIsSMs0g8x4R4r5WK
-         lorJtJ0QAGPNJFQJ/iHzJMRLG7EkHUVrOoAk9Jig=
+        b=N24tVHbF5bA3naoTQim6FDAES1W4lWvycgWcPIQ68yYdkbMvEzBksVFGy5uiiinBt
+         e28Fe1tzbRnEltCgLHhXldupzz60LiwkhGBl1gXUh091Ac0NBGIWnExHPHRrTd2tAi
+         p4VI80eZiBzkSg3MBo59If+KY7/EHaf6ufHhzaHY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 142/606] bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_range
-Date:   Mon,  8 Jun 2020 19:04:27 -0400
-Message-Id: <20200608231211.3363633-142-sashal@kernel.org>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 226/274] selftests/bpf: CONFIG_LIRC required for test_lirc_mode2.sh
+Date:   Mon,  8 Jun 2020 19:05:19 -0400
+Message-Id: <20200608230607.3361041-226-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,41 +45,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-commit 47cc0ed574abcbbde0cf143ddb21a0baed1aa2df upstream.
+[ Upstream commit a5dfaa2ab94057dd75c7911143482a0a85593c14 ]
 
-Given bpf_probe_read{,str}() BPF helpers are now only available under
-CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, we need to add the drop-in
-replacements of bpf_probe_read_{kernel,user}_str() to do_refine_retval_range()
-as well to avoid hitting the same issue as in 849fa50662fbc ("bpf/verifier:
-refine retval R0 state for bpf_get_stack helper").
+test_lirc_mode2.sh assumes presence of /sys/class/rc/rc0/lirc*/uevent
+which will not be present unless CONFIG_LIRC=y
 
+Fixes: 6bdd533cee9a ("bpf: add selftest for lirc_mode2 type program")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20200515101118.6508-3-daniel@iogearbox.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/bpf/1590147389-26482-3-git-send-email-alan.maguire@oracle.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/config | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c1bb5be530e9..775fca737909 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4113,7 +4113,9 @@ static int do_refine_retval_range(struct bpf_verifier_env *env,
- 
- 	if (ret_type != RET_INTEGER ||
- 	    (func_id != BPF_FUNC_get_stack &&
--	     func_id != BPF_FUNC_probe_read_str))
-+	     func_id != BPF_FUNC_probe_read_str &&
-+	     func_id != BPF_FUNC_probe_read_kernel_str &&
-+	     func_id != BPF_FUNC_probe_read_user_str))
- 		return 0;
- 
- 	/* Error case where ret is in interval [S32MIN, -1]. */
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 48e058552eb7..2118e23ac07a 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -38,3 +38,4 @@ CONFIG_IPV6_SIT=m
+ CONFIG_BPF_JIT=y
+ CONFIG_BPF_LSM=y
+ CONFIG_SECURITY=y
++CONFIG_LIRC=y
 -- 
 2.25.1
 
