@@ -2,101 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3841F184E
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 13:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D998A1F196F
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 14:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgFHL4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 07:56:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51664 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgFHL4c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 07:56:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9CACCAB8F;
-        Mon,  8 Jun 2020 11:56:33 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id EF84260490; Mon,  8 Jun 2020 13:56:28 +0200 (CEST)
-Date:   Mon, 8 Jun 2020 13:56:28 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build
- bpfilter_umh
-Message-ID: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-References: <20200423073929.127521-1-masahiroy@kernel.org>
- <20200423073929.127521-5-masahiroy@kernel.org>
+        id S1729626AbgFHM4E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 08:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729557AbgFHM4A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 08:56:00 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A394FC08C5C2
+        for <bpf@vger.kernel.org>; Mon,  8 Jun 2020 05:55:59 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id k11so18176136ejr.9
+        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 05:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xZSmmZRxwaSFlAQ/QPHWTlQ0XQomYLOTrs+C/wJekUA=;
+        b=mFuZaL8Amji3XMg7qBHt7NINexu2PtEC0PZmD6/aic1G6PxN3jrHLJhlfgHB+Nz/A3
+         R4tJ/+qCzUaAXSjccefK4FZu8QdxG3Tngq6xK3TiD+n3MFguSlSYgovB921h5N0CM2ju
+         e4jfx/ygOkF+OHIDkGxJBqAhqtxsv/luEXU0HzeOU6xuSoxfrESAaN4SJbJRSjroDDtK
+         YACni5/Fuk9coJZC7Bk5QKOtrXBbwn5QfyYY0XtgvsIQy/haDuPfFSvqW4LT0ZRfEMyM
+         uS6qlWTjEerIRGZF3JHB3ZcBIGdK8N9NQEfAlJbDKMYg9ZBzfBolw2RmzDLckWoby07p
+         J5xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xZSmmZRxwaSFlAQ/QPHWTlQ0XQomYLOTrs+C/wJekUA=;
+        b=uJs0LhEdYk/rfyNtWD91W0i7RLKoaIs9ah3VyG2pjuqtjPA5YOkT4hNd68U/Qq1uKx
+         b/YfOtn4RHucBWg6kK89sXaEDgSbkuf8N05Ku+DGbhtAsT9YHLd4q9B/xUcBEct0Bah8
+         MzVQzocbfWjUjbIOcjwryzGiZ9XCHmfPrL8L/deobNPRuGLKBO9Owy4b3VQndQnpv4Me
+         e3kD2giZSodDk8wOu9cU7eklgPMqyoS6xVycs9M1NjC9l2ELLOId3JEbKQpkXYdrwUoq
+         mhZzG4k+Ia3MDxeSh9+8Pbjxv3WpwSbbTzrgfynPERloJvYnM0eXwW2gNuq6S1Az+FGd
+         yNag==
+X-Gm-Message-State: AOAM5303FpX22p8lf2m+wj9GQ1J4fjnn/rn0c5sZXYW90lphZr23CgSK
+        /MuODSJyyaRBjEgO1lZf9FBD8Q==
+X-Google-Smtp-Source: ABdhPJyRYlLmXuOs2DMxSSDWSWQfxH/DHqvXwEjiSNo2xPN+Oc3rBv33mEMqAe7gDQBH8U9xTnMiug==
+X-Received: by 2002:a17:906:39d9:: with SMTP id i25mr20331284eje.510.1591620958326;
+        Mon, 08 Jun 2020 05:55:58 -0700 (PDT)
+Received: from localhost.localdomain ([2001:171b:226e:c200:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id h9sm10602388ejc.96.2020.06.08.05.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2020 05:55:57 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     mhiramat@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH] tracing/probe: Fix bpf_task_fd_query() for kprobes and uprobes
+Date:   Mon,  8 Jun 2020 14:45:32 +0200
+Message-Id: <20200608124531.819838-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423073929.127521-5-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
-> The user mode helper should be compiled for the same architecture as
-> the kernel.
-> 
-> This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
-> 
-> Now that Kbuild provides the syntax 'userprogs', use it to fix the
-> Makefile mess.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> ---
-> 
->  net/bpfilter/Makefile | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> index 36580301da70..6ee650c6badb 100644
-> --- a/net/bpfilter/Makefile
-> +++ b/net/bpfilter/Makefile
-> @@ -3,17 +3,14 @@
->  # Makefile for the Linux BPFILTER layer.
->  #
->  
-> -hostprogs := bpfilter_umh
-> +userprogs := bpfilter_umh
->  bpfilter_umh-objs := main.o
-> -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> -HOSTCC := $(CC)
-> +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
->  
-> -ifeq ($(CONFIG_BPFILTER_UMH), y)
-> -# builtin bpfilter_umh should be compiled with -static
-> +# builtin bpfilter_umh should be linked with -static
->  # since rootfs isn't mounted at the time of __init
->  # function is called and do_execv won't find elf interpreter
-> -KBUILD_HOSTLDFLAGS += -static
-> -endif
-> +bpfilter_umh-ldflags += -static
->  
->  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
+Commit 60d53e2c3b75 ("tracing/probe: Split trace_event related data from
+trace_probe") removed the trace_[ku]probe structure from the
+trace_event_call->data pointer. As bpf_get_[ku]probe_info() were
+forgotten in that change, fix them now. These functions are currently
+only used by the bpf_task_fd_query() syscall handler to collect
+information about a perf event.
 
-Hello,
+Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+Found while trying to run the task_fd_query BPF sample. I intend to try
+and move that sample to kselftests since it seems like a useful
+regression test.
+---
+ kernel/trace/trace_kprobe.c | 2 +-
+ kernel/trace/trace_uprobe.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
-drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
-passed to the linker even if bpfilter_umh is built as a module which
-wasn't the case in v5.7.
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 35989383ae113..8eeb95e04bf52 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1629,7 +1629,7 @@ int bpf_get_kprobe_info(const struct perf_event *event, u32 *fd_type,
+ 	if (perf_type_tracepoint)
+ 		tk = find_trace_kprobe(pevent, group);
+ 	else
+-		tk = event->tp_event->data;
++		tk = trace_kprobe_primary_from_call(event->tp_event);
+ 	if (!tk)
+ 		return -EINVAL;
+ 
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 2a8e8e9c1c754..fdd47f99b18fd 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1412,7 +1412,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
+ 	if (perf_type_tracepoint)
+ 		tu = find_probe_event(pevent, group);
+ 	else
+-		tu = event->tp_event->data;
++		tu = trace_uprobe_primary_from_call(event->tp_event);
+ 	if (!tu)
+ 		return -EINVAL;
+ 
+-- 
+2.27.0
 
-This is not mentioned in the commit message and the comment still says
-"*builtin* bpfilter_umh should be linked with -static" so this change
-doesn't seem to be intentional. Did I miss something?
-
-Michal Kubecek
