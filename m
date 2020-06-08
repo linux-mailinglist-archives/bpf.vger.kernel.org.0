@@ -2,103 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFB21F1DBF
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86DF1F1DC5
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387454AbgFHQtS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 12:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387429AbgFHQtR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:49:17 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D078EC08C5C2
-        for <bpf@vger.kernel.org>; Mon,  8 Jun 2020 09:49:15 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id a6so14867630qka.9
-        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 09:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=4cSXd/WEBOMmjBzHT5V64B0CdBFXvfK/YmpOS865C/E=;
-        b=U3EfLuu7JaLkGMY8hL5QIb1XxjOTvGLy8smtkMre6qK5eYxBLb2UL/zFO2wglyhsMu
-         UvezhXn9mhrv0A7/FhCf8JnkEJTlV1VLNsipBdO/UsRGBq7OU4cvXBok03qi61RIPwYY
-         cPFbpx7piIlTZzGtkW8/4i7sum2DbqS2EbzkDwEB3fJwkusvralu/xdeCEm1jeCCTR5I
-         hgQLAlzmiNsYiwK8xuG6S/FSqj9OtLCIfPL3Ux2nlm4a+ru9sgaOfJjtOfYfH4CFwTEx
-         mqp0KagzuygvTokeurbn2I3y+aupyDOmqHa0WNO3I2RH1aXp9uX80NDRvqN3aNVp0vHm
-         OWaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4cSXd/WEBOMmjBzHT5V64B0CdBFXvfK/YmpOS865C/E=;
-        b=FekLWxjDV29o0GEqs2LoUzTGigeNDuS9bD/+V3/q36K9hPR7UV62GW/a+fHLk8yy5d
-         Vl9t1KmzZnt4gDwTxu7HdvRZ0OxnI3JaDdS/wbS76xJStAKqZ7VoN5h8TdJCFfRMMFtc
-         0giQ+nzQP2OYl0iIX299m3HMMcLkhWpieAvq4VFtiYxi823lB3jKcHI/i/I4mexrRkzP
-         AMIoopkBXnns0CyMtn8cAHWWtjyTxWKzzfKC6bbWFtoFkGMfm2l4c3xUi2SOI/eAkKMv
-         b2yUTjiaSikzhvwonfEoesPDx3OIVMfPQIlGQyTRQR2dbRrdWymx9GK4VPVyyc4hssg9
-         bwaw==
-X-Gm-Message-State: AOAM533B4xxQd7HrbmVuaGTdJ7pCRVPOYdbyoRp2RtuNp5yadcSZlG0L
-        CJLJ7iYiEriCWXEo2oQ66HdKmHI=
-X-Google-Smtp-Source: ABdhPJw3SF/yeOWoX1y6fxdX9jvAKFUnJPCziJIZcvXIyleiG6G/g3vMRpIR6CTI4d5n5FeYtiZMXjs=
-X-Received: by 2002:a0c:f991:: with SMTP id t17mr23459051qvn.123.1591634954981;
- Mon, 08 Jun 2020 09:49:14 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 09:49:13 -0700
-In-Reply-To: <CAADnVQL3iBoem4T6CxYeZRCJwS7qRwjjbW+8ip5r3-LCt_eRXQ@mail.gmail.com>
-Message-Id: <20200608164913.GA142074@google.com>
-Mime-Version: 1.0
-References: <20200424064338.538313-1-hch@lst.de> <20200424064338.538313-6-hch@lst.de>
- <1fc7ce08-26a7-59ff-e580-4e6c22554752@oracle.com> <20200608065120.GA17859@lst.de>
- <c0f216d1-edc1-68e6-7f3e-c00e33452707@oracle.com> <20200608130503.GA22898@lst.de>
- <CAADnVQL3iBoem4T6CxYeZRCJwS7qRwjjbW+8ip5r3-LCt_eRXQ@mail.gmail.com>
-Subject: Re: WARNING: CPU: 1 PID: 52 at mm/page_alloc.c:4826
- __alloc_pages_nodemask (Re: [PATCH 5/5] sysctl: pass kernel pointers to ->proc_handler)
-From:   sdf@google.com
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        id S1730661AbgFHQvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 12:51:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48216 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730644AbgFHQvV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 12:51:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591635080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IJqgJi0TbFuBA4SoeHkaZM+/7OxWIOPGA5NgaEXtFn8=;
+        b=Siscq+kw++7N74yH5HKHIwaFfIiNd3EkbZ5g0wA8NxUUBy11WMKRfGrbmUYo2/hYi5FjK/
+        44YFHokWKV9gzqKVxFT98maFTCOORRwU56du4lP3+oBj2/iIc8Xh+aJ1W7Xp1/hTef22Yw
+        6ddUr/KqOB/KfKoPnJTMxnbt9e+DF5I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-LQUUDFU8PMG0OfbRQn-xWQ-1; Mon, 08 Jun 2020 12:51:18 -0400
+X-MC-Unique: LQUUDFU8PMG0OfbRQn-xWQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 363E38730A2;
+        Mon,  8 Jun 2020 16:51:17 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B90BB5C1C5;
+        Mon,  8 Jun 2020 16:51:13 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 7918E300003EB;
+        Mon,  8 Jun 2020 18:51:12 +0200 (CEST)
+Subject: [PATCH bpf 0/3] bpf: avoid using/returning file descriptor value zero
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Date:   Mon, 08 Jun 2020 18:51:12 +0200
+Message-ID: <159163498340.1967373.5048584263152085317.stgit@firesoul>
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/08, Alexei Starovoitov wrote:
-> On Mon, Jun 8, 2020 at 6:05 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Mon, Jun 08, 2020 at 09:45:49AM +0200, Vegard Nossum wrote:
-> > > Just a test case.
-> > >
-> > > Allowing the kernel to allocate an unbounded amount of memory on  
-> behalf
-> > > of userspace is an easy DOS.
-> > >
-> > > All the length checks were already in there, e.g.
-> > >
-> > >  static int cmm_timeout_handler(struct ctl_table *ctl, int write,
-> > >                               void __user *buffer, size_t *lenp,  
-> loff_t
-> > > *ppos)
-> > >  {
-> > >         char buf[64], *p;
-> > > [...]
-> > >                 len = min(*lenp, sizeof(buf));
-> > >                 if (copy_from_user(buf, buffer, len))
-> > >                         return -EFAULT;
-> >
-> > Doesn't help if we don't know the exact limit yet.  But we can put
-> > some arbitrary but reasonable limit like KMALLOC_MAX_SIZE on the
-> > sysctls and see if this sticks.
+Make it easier to handle UAPI/kABI extensions by avoid BPF using/returning
+file descriptor value zero. Use this in recent devmap extension to keep
+older applications compatible with newer kernels.
 
-> adding Stanislav. I think he's looking into this already.
-Yeah, I'm looking at it from the get/setsockopt point of view.
-I'm currently trying to bypass allocating a buffer if it's greater
-than PAGE_SIZE.
-I suppose for sysctls we should try to do something similar?
+For special type maps (e.g. devmap and cpumap) the map-value data-layout is
+a configuration interface. This is a kernel Application Binary Interface
+(kABI) that can only be tail extended. Thus, new members (and thus features)
+can only be added to the end of this structure, and the kernel uses the
+map->value_size from userspace to determine feature set 'version'.
+
+For this kind of kABI to be extensible and backward compatible, is it common
+that new members/fields (that represent a new feature) in the struct are
+initialised as zero, which indicate that the feature isn't used. This makes
+it possible to write userspace applications that are unaware of new kernel
+features, but just include latest uapi headers, zero-init struct and
+populate features it knows about.
+
+The recent extension of devmap with a bpf_prog.fd requires end-user to
+supply the file-descriptor value minus-1 to communicate that the features
+isn't used. This isn't compatible with the described kABI extension model.
+
+---
+
+Jesper Dangaard Brouer (3):
+      bpf: syscall to start at file-descriptor 1
+      bpf: devmap adjust uapi for attach bpf program
+      bpf: selftests and tools use struct bpf_devmap_val from uapi
+
+
+ fs/file.c                                          |    2 +
+ include/linux/file.h                               |    1 +
+ include/uapi/linux/bpf.h                           |   13 +++++++
+ kernel/bpf/devmap.c                                |   17 ++-------
+ kernel/bpf/syscall.c                               |   38 +++++++++++++++++---
+ tools/include/uapi/linux/bpf.h                     |   13 +++++++
+ .../selftests/bpf/prog_tests/xdp_devmap_attach.c   |    8 ----
+ .../selftests/bpf/progs/test_xdp_devmap_helpers.c  |    2 +
+ .../bpf/progs/test_xdp_with_devmap_helpers.c       |    3 +-
+ 9 files changed, 66 insertions(+), 31 deletions(-)
+
+--
+
