@@ -2,98 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284611F2923
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B526B1F2E8E
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731428AbgFHXXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 19:23:07 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:58937 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731430AbgFHXXF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:23:05 -0400
-Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 058NMDxO028517;
-        Tue, 9 Jun 2020 08:22:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
- Tue, 09 Jun 2020 08:22:13 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 058NMD61028513
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 9 Jun 2020 08:22:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1729074AbgFHXMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 19:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728384AbgFHXMU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:12:20 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C7C1212CC;
+        Mon,  8 Jun 2020 23:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591657940;
+        bh=52liZxWS/YVroA/0/89/gMuhBgSh5CrWsVrWvpMtxo8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HDwlKid4kRMpQBoMqO5E0dhfpM2WucrsJdCMZSl2gmfXwr4Qck+ua9JJor+CEFOWG
+         kX/FZp20iu9P2XerocXebmYl3jWbHVWPGLvxZ3GW+K+2gf1EhkxP/CWbDNsI7S/Gyd
+         FbXoh99o0Mjt2LgjSMFSOXdI7HKu1neJNUvOLtXQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
- <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
- <202006051903.C44988B@keescook> <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp>
- <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp>
- <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
- <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
-Date:   Tue, 9 Jun 2020 08:22:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 006/606] bpf: Fix bug in mmap() implementation for BPF array map
+Date:   Mon,  8 Jun 2020 19:02:11 -0400
+Message-Id: <20200608231211.3363633-6-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
+References: <20200608231211.3363633-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/09 1:23, Alexei Starovoitov wrote:
-> On Sun, Jun 07, 2020 at 11:31:05AM +0900, Tetsuo Handa wrote:
->> On 2020/06/07 10:49, Alexei Starovoitov wrote:
->>> So you're right that for most folks user space is the
->>> answer. But there are cases where kernel has to have these things before
->>> systemd starts.
->>
->> Why such cases can't use init= kernel command line argument?
->> The program specified via init= kernel command line argument can do anything
->> before systemd (a.k.a. global init process) starts.
->>
->> By the way, from the LSM perspective, doing a lot of things before global init
->> process starts is not desirable, for access decision can be made only after policy
->> is loaded (which is generally when /sbin/init on a device specified via root=
->> kernel command line argument becomes ready). Since
->> fork_usermode_blob((void *) "#!/bin/true\n", 12, info) is possible, I worry that
->> the ability to start userspace code is abused for bypassing dentry/inode-based
->> permission checks.
-> 
-> bpf_lsm is that thing that needs to load and start acting early.
-> It's somewhat chicken and egg. fork_usermode_blob() will start a process
-> that will load and apply security policy to all further forks and execs.
+[ Upstream commit 333291ce5055f2039afc907badaf5b66bc1adfdc ]
 
-fork_usermode_blob() would start a process in userspace, but early in the boot
-stage means that things in the kernel might not be ready to serve for userspace
-processes (e.g. we can't open a shared library before a filesystem containing
-that file becomes ready, we can't mount a filesystem before mount point becomes
-ready, we can't access mount point before a device that contains that directory
-becomes ready).
+mmap() subsystem allows user-space application to memory-map region with
+initial page offset. This wasn't taken into account in initial implementation
+of BPF array memory-mapping. This would result in wrong pages, not taking into
+account requested page shift, being memory-mmaped into user-space. This patch
+fixes this gap and adds a test for such scenario.
 
-TOMOYO LSM module uses call_usermodehelper() from tomoyo_load_policy() in order to
-load and apply security policy. What is so nice with fork_usermode_blob() compared
-to existing call_usermodehelper(), at the cost of confusing LSM modules by allowing
-file-less execve() request from fork_usermode_blob() ?
+Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200512235925.3817805-1-andriin@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/bpf/arraymap.c                         | 7 ++++++-
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 9 +++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 95d77770353c..1d6120fd5ba6 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -486,7 +486,12 @@ static int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+ 	if (!(map->map_flags & BPF_F_MMAPABLE))
+ 		return -EINVAL;
+ 
+-	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array), pgoff);
++	if (vma->vm_pgoff * PAGE_SIZE + (vma->vm_end - vma->vm_start) >
++	    PAGE_ALIGN((u64)array->map.max_entries * array->elem_size))
++		return -EINVAL;
++
++	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array),
++				   vma->vm_pgoff + pgoff);
+ }
+ 
+ const struct bpf_map_ops array_map_ops = {
+diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
+index 16a814eb4d64..b0e789678aa4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/mmap.c
++++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
+@@ -197,6 +197,15 @@ void test_mmap(void)
+ 	CHECK_FAIL(map_data->val[far] != 3 * 321);
+ 
+ 	munmap(tmp2, 4 * page_size);
++
++	/* map all 4 pages, but with pg_off=1 page, should fail */
++	tmp1 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
++		    data_map_fd, page_size /* initial page shift */);
++	if (CHECK(tmp1 != MAP_FAILED, "adv_mmap7", "unexpected success")) {
++		munmap(tmp1, 4 * page_size);
++		goto cleanup;
++	}
++
+ cleanup:
+ 	if (bss_mmaped)
+ 		CHECK_FAIL(munmap(bss_mmaped, bss_sz));
+-- 
+2.25.1
+
