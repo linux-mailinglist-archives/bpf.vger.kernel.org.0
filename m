@@ -2,165 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5D51F0FE6
-	for <lists+bpf@lfdr.de>; Sun,  7 Jun 2020 22:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF251F10B9
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 02:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgFGUwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Jun 2020 16:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727800AbgFGUwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Jun 2020 16:52:35 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C44C08C5C4
-        for <bpf@vger.kernel.org>; Sun,  7 Jun 2020 13:52:35 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id y13so16019809eju.2
-        for <bpf@vger.kernel.org>; Sun, 07 Jun 2020 13:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a7cTe9lHJ0Tcm8GY6e2Wo0eV9aS0hOnp7kZnr703qjg=;
-        b=lLGRHVd04oD1XH2Wl4Kf+DHbyMtzVE7KdSOBORw1MN90BfytknCNC6+qc2i0cLN5w3
-         Wz+Nx2rOe0sgBViBnnKhP9VAueG3IDJy2Z3NuafqePxekSmkOrKk/Le26209bhWY88Tp
-         2tsUm6R7xxo/XuJT0AE45fcSWmqXAmajVbSmY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a7cTe9lHJ0Tcm8GY6e2Wo0eV9aS0hOnp7kZnr703qjg=;
-        b=OV6l5/Q1t3xFSjdj5uVW5aIEqk+0UxRFC4NEDYC6i31719PpBWAdbhKTx/HhXhFXl1
-         X/sLKLwkuI7PMOjGmozjjC2ubyWwGWLcOL7zqntAj0qLxVlhOoAC4wA3chp9qSTf/Um1
-         HcZsH6veTbAf6+T+OdMM+eoNzkTbstWVwkN2ko7cHPRWBx9Am63hIsiPSH5FKj+J6TQD
-         o7YhFdjlwCpuf7/XSVt4GKdGnIiDdcS8ludYAx6gOutZTvvGDZmF4LdLejilzCpJDU7b
-         sMTYZsu1VxzEcy9e1PJ2TrZDplDMfKjxhxkr8BMVNnI3WVAJbKjz5r5IIv1oLyHl9pNS
-         HGpg==
-X-Gm-Message-State: AOAM530FqbpKGnatv+LcohCpA/VQhq9WDzzJQlMvdNrqfnIqi/X3DSVw
-        wNGftYM3QSGfkaDvRbPx8bU4Lx0qNBg=
-X-Google-Smtp-Source: ABdhPJzH83ytLClaKstlaYyUAnnSJMkc3anhVa2ePqbxqIDgiN1URyA9uRxsVK3zYjNmu1C5NqvgWg==
-X-Received: by 2002:a17:906:4ecf:: with SMTP id i15mr18967826ejv.515.1591563153669;
-        Sun, 07 Jun 2020 13:52:33 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id j5sm11096865edk.53.2020.06.07.13.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 13:52:33 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Subject: [PATCH bpf 2/2] bpf, sockhash: Synchronize delete from bucket list on map free
-Date:   Sun,  7 Jun 2020 22:52:29 +0200
-Message-Id: <20200607205229.2389672-3-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200607205229.2389672-1-jakub@cloudflare.com>
-References: <20200607205229.2389672-1-jakub@cloudflare.com>
+        id S1728293AbgFHAga (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Jun 2020 20:36:30 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48424 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727965AbgFHAga (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 7 Jun 2020 20:36:30 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0580ReZB002607
+        for <bpf@vger.kernel.org>; Sun, 7 Jun 2020 17:36:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=pAzCA2kpyA3czVGvV+jHK/6wwisaOtSSG8JsrbSJiwc=;
+ b=g6f9+2CuwoJ1gvQak6Xh3OKVxbLw44An3Vcv5scm6TbCcbmGufwrGIkyILbU+kTc5u7q
+ 53g2bksaSz3HSz6UyOHxFLVR0NJp4dh18KB+fF2EJX1Sr8EeIi6NwpnJhC8E3oYsrIrW
+ DWkYLkmfsdutCxA2ZZJ7W3J3zE8BV4WzNCQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31g6tkcyby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 07 Jun 2020 17:36:28 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 7 Jun 2020 17:36:22 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id BC9D12EC3971; Sun,  7 Jun 2020 17:36:17 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] selftests/bpf: fix ringbuf selftest sample counting undeterminism
+Date:   Sun, 7 Jun 2020 17:36:15 -0700
+Message-ID: <20200608003615.3549991-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-07_13:2020-06-04,2020-06-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 spamscore=0 priorityscore=1501 mlxlogscore=961
+ impostorscore=0 bulkscore=0 clxscore=1015 cotscore=-2147483648
+ adultscore=0 lowpriorityscore=0 suspectscore=8 mlxscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006080001
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We can end up modifying the sockhash bucket list from two CPUs when a
-sockhash is being destroyed (sock_hash_free) on one CPU, while a socket
-that is in the sockhash is unlinking itself from it on another CPU
-it (sock_hash_delete_from_link).
+Fix test race, in which background poll can get either 5 or 6 samples,
+depending on timing of notification. Prevent this by open-coding sample
+triggering and forcing notification for the very last sample only.
 
-This results in accessing a list element that is in an undefined state as
-reported by KASAN:
+Also switch to using atomic increments and exchanges for more obviously
+reliable counting and checking. Additionally, check expected processed sa=
+mple
+counters for single-threaded use cases as well.
 
-| ==================================================================
-| BUG: KASAN: wild-memory-access in sock_hash_free+0x13c/0x280
-| Write of size 8 at addr dead000000000122 by task kworker/2:1/95
-|
-| CPU: 2 PID: 95 Comm: kworker/2:1 Not tainted 5.7.0-rc7-02961-ge22c35ab0038-dirty #691
-| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-| Workqueue: events bpf_map_free_deferred
-| Call Trace:
-|  dump_stack+0x97/0xe0
-|  ? sock_hash_free+0x13c/0x280
-|  __kasan_report.cold+0x5/0x40
-|  ? mark_lock+0xbc1/0xc00
-|  ? sock_hash_free+0x13c/0x280
-|  kasan_report+0x38/0x50
-|  ? sock_hash_free+0x152/0x280
-|  sock_hash_free+0x13c/0x280
-|  bpf_map_free_deferred+0xb2/0xd0
-|  ? bpf_map_charge_finish+0x50/0x50
-|  ? rcu_read_lock_sched_held+0x81/0xb0
-|  ? rcu_read_lock_bh_held+0x90/0x90
-|  process_one_work+0x59a/0xac0
-|  ? lock_release+0x3b0/0x3b0
-|  ? pwq_dec_nr_in_flight+0x110/0x110
-|  ? rwlock_bug.part.0+0x60/0x60
-|  worker_thread+0x7a/0x680
-|  ? _raw_spin_unlock_irqrestore+0x4c/0x60
-|  kthread+0x1cc/0x220
-|  ? process_one_work+0xac0/0xac0
-|  ? kthread_create_on_node+0xa0/0xa0
-|  ret_from_fork+0x24/0x30
-| ==================================================================
-
-Fix it by reintroducing spin-lock protected critical section around the
-code that removes the elements from the bucket on sockhash free.
-
-To do that we also need to defer processing of removed elements, until out
-of atomic context so that we can unlink the socket from the map when
-holding the sock lock.
-
-Fixes: 90db6d772f74 ("bpf, sockmap: Remove bucket->lock from sock_{hash|map}_free")
-Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Fixes: 9a5f25ad30e5 ("selftests/bpf: Fix sample_cnt shared between two th=
+reads")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- net/core/sock_map.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/ringbuf.c        | 42 +++++++++++++++----
+ 1 file changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index ea46f07a22d8..17a40a947546 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1013,6 +1013,7 @@ static void sock_hash_free(struct bpf_map *map)
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/ringbuf.c
+index 2bba908dfa63..c1650548433c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -25,13 +25,23 @@ struct sample {
+ 	char comm[16];
+ };
+=20
+-static volatile int sample_cnt;
++static int sample_cnt;
++
++static void atomic_inc(int *cnt)
++{
++	__atomic_add_fetch(cnt, 1, __ATOMIC_SEQ_CST);
++}
++
++static int atomic_xchg(int *cnt, int val)
++{
++	return __atomic_exchange_n(cnt, val, __ATOMIC_SEQ_CST);
++}
+=20
+ static int process_sample(void *ctx, void *data, size_t len)
  {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
- 	struct bpf_htab_bucket *bucket;
-+	struct hlist_head unlink_list;
- 	struct bpf_htab_elem *elem;
- 	struct hlist_node *node;
- 	int i;
-@@ -1024,13 +1025,31 @@ static void sock_hash_free(struct bpf_map *map)
- 	synchronize_rcu();
- 	for (i = 0; i < htab->buckets_num; i++) {
- 		bucket = sock_hash_select_bucket(htab, i);
--		hlist_for_each_entry_safe(elem, node, &bucket->head, node) {
--			hlist_del_rcu(&elem->node);
+ 	struct sample *s =3D data;
+=20
+-	sample_cnt++;
++	atomic_inc(&sample_cnt);
+=20
+ 	switch (s->seq) {
+ 	case 0:
+@@ -76,7 +86,7 @@ void test_ringbuf(void)
+ 	const size_t rec_sz =3D BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
+ 	pthread_t thread;
+ 	long bg_ret =3D -1;
+-	int err;
++	int err, cnt;
+=20
+ 	skel =3D test_ringbuf__open_and_load();
+ 	if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
+@@ -116,11 +126,15 @@ void test_ringbuf(void)
+ 	/* -EDONE is used as an indicator that we are done */
+ 	if (CHECK(err !=3D -EDONE, "err_done", "done err: %d\n", err))
+ 		goto cleanup;
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 2, "cnt", "exp %d samples, got %d\n", 2, cnt);
+=20
+ 	/* we expect extra polling to return nothing */
+ 	err =3D ring_buffer__poll(ringbuf, 0);
+ 	if (CHECK(err !=3D 0, "extra_samples", "poll result: %d\n", err))
+ 		goto cleanup;
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 0, "cnt", "exp %d samples, got %d\n", 0, cnt);
+=20
+ 	CHECK(skel->bss->dropped !=3D 0, "err_dropped", "exp %ld, got %ld\n",
+ 	      0L, skel->bss->dropped);
+@@ -136,6 +150,8 @@ void test_ringbuf(void)
+ 	      3L * rec_sz, skel->bss->cons_pos);
+ 	err =3D ring_buffer__poll(ringbuf, -1);
+ 	CHECK(err <=3D 0, "poll_err", "err %d\n", err);
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 2, "cnt", "exp %d samples, got %d\n", 2, cnt);
+=20
+ 	/* start poll in background w/ long timeout */
+ 	err =3D pthread_create(&thread, NULL, poll_thread, (void *)(long)10000)=
+;
+@@ -164,6 +180,8 @@ void test_ringbuf(void)
+ 	      2L, skel->bss->total);
+ 	CHECK(skel->bss->discarded !=3D 1, "err_discarded", "exp %ld, got %ld\n=
+",
+ 	      1L, skel->bss->discarded);
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 0, "cnt", "exp %d samples, got %d\n", 0, cnt);
+=20
+ 	/* clear flags to return to "adaptive" notification mode */
+ 	skel->bss->flags =3D 0;
+@@ -178,10 +196,20 @@ void test_ringbuf(void)
+ 	if (CHECK(err !=3D EBUSY, "try_join", "err %d\n", err))
+ 		goto cleanup;
+=20
++	/* still no samples, because consumer is behind */
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 0, "cnt", "exp %d samples, got %d\n", 0, cnt);
 +
-+		/* We are racing with sock_hash_delete_from_link to
-+		 * enter the spin-lock critical section. Every socket on
-+		 * the list is still linked to sockhash. Since link
-+		 * exists, psock exists and holds a ref to socket. That
-+		 * lets us to grab a socket ref too.
-+		 */
-+		raw_spin_lock_bh(&bucket->lock);
-+		hlist_for_each_entry(elem, &bucket->head, node)
-+			sock_hold(elem->sk);
-+		hlist_move_list(&bucket->head, &unlink_list);
-+		raw_spin_unlock_bh(&bucket->lock);
++	skel->bss->dropped =3D 0;
++	skel->bss->total =3D 0;
++	skel->bss->discarded =3D 0;
 +
-+		/* Process removed entries out of atomic context to
-+		 * block for socket lock before deleting the psock's
-+		 * link to sockhash.
-+		 */
-+		hlist_for_each_entry_safe(elem, node, &unlink_list, node) {
-+			hlist_del(&elem->node);
- 			lock_sock(elem->sk);
- 			rcu_read_lock();
- 			sock_map_unref(elem->sk, elem);
- 			rcu_read_unlock();
- 			release_sock(elem->sk);
-+			sock_put(elem->sk);
- 			sock_hash_free_elem(htab, elem);
- 		}
- 	}
--- 
-2.25.4
++	skel->bss->value =3D 333;
++	syscall(__NR_getpgid);
+ 	/* now force notifications */
+ 	skel->bss->flags =3D BPF_RB_FORCE_WAKEUP;
+-	sample_cnt =3D 0;
+-	trigger_samples();
++	skel->bss->value =3D 777;
++	syscall(__NR_getpgid);
+=20
+ 	/* now we should get a pending notification */
+ 	usleep(50000);
+@@ -193,8 +221,8 @@ void test_ringbuf(void)
+ 		goto cleanup;
+=20
+ 	/* 3 rounds, 2 samples each */
+-	CHECK(sample_cnt !=3D 6, "wrong_sample_cnt",
+-	      "expected to see %d samples, got %d\n", 6, sample_cnt);
++	cnt =3D atomic_xchg(&sample_cnt, 0);
++	CHECK(cnt !=3D 6, "cnt", "exp %d samples, got %d\n", 6, cnt);
+=20
+ 	/* BPF side did everything right */
+ 	CHECK(skel->bss->dropped !=3D 0, "err_dropped", "exp %ld, got %ld\n",
+--=20
+2.24.1
 
