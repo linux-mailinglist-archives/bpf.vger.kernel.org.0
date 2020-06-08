@@ -2,95 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3015D1F15B3
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 11:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3841F184E
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 13:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgFHJnO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 05:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729166AbgFHJnN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 05:43:13 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D177C08C5C3
-        for <bpf@vger.kernel.org>; Mon,  8 Jun 2020 02:43:12 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id p5so16608600wrw.9
-        for <bpf@vger.kernel.org>; Mon, 08 Jun 2020 02:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QBOzkuj3WaDvQhWGfrOv45jIFvmUW2vuFAYUss6HLWU=;
-        b=jquz+S78EEYw8es0c8TY5MpWtSOHPuc3HjORFlXcnf3jYImjBfqKwVGDM5LZvehNl9
-         T6mjbLZcbfz5YyBNVfSOEzD8VgBD1ScAQet/ahi4cOkyZ46k+J4glnl7rYH0+xZ7XlFl
-         DcYX97+oAQxo8Mxs3p8/FgUd3pi9qhcEC43Cs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QBOzkuj3WaDvQhWGfrOv45jIFvmUW2vuFAYUss6HLWU=;
-        b=tfb4gJh/SHWNDhQt53CW4OTG55l3fwkdee4Igsr18ltJ3CYgb83tfyMGbVs7qdesgT
-         w4UdfdjpilqedxD170U9TZCxICSsA4rHw4yAgRYKUIFPImyzCl7s0eCZwtEBApCSg+Fx
-         V5Z3ktk7MvgIRQTIVH7badW6AsTYcbOhIVUZvFlj/rMj1qjc4On0KbS1YVTOE/j/O1BI
-         b+fSzxFwCddOryo3eg2ep71FHGVkWUhXTasYuboyrWY1ZIdLzK0zWJBZXUx7wQF9SAEr
-         rbO/pHYhRNScIZcRyLAjE63M+5oyZ/+d90lpZUAEfezQj1uWGmVw32LHDZ0ZtplhjlGV
-         Dq+A==
-X-Gm-Message-State: AOAM531bOqKIfbAjaE+V6/A/xA8XfQx3YOdFhXrKbmH2D8M4c/Wov4eX
-        PrMi20vxwvbbO1k+vpdD5MDiZw==
-X-Google-Smtp-Source: ABdhPJxN0rk75wDEQQF5Sj/M3KHgZ/LvtrJPWFJdt0nBFozlfyUtF3VJRw2GG4Zfr67eAJA4geebxg==
-X-Received: by 2002:a5d:4c81:: with SMTP id z1mr24417133wrs.371.1591609390868;
-        Mon, 08 Jun 2020 02:43:10 -0700 (PDT)
-Received: from antares.lan (f.7.9.4.f.9.a.d.f.4.a.3.6.5.1.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:156:3a4f:da9f:497f])
-        by smtp.gmail.com with ESMTPSA id l17sm21993124wmi.16.2020.06.08.02.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 02:43:10 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     daniel@iogearbox.com, ast@kernel.org, yhs@fb.com,
-        bpf@vger.kernel.org
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        Ivan Babrou <ivan@cloudflare.com>
-Subject: [PATCH bpf] scripts: require pahole v1.16 when generating BTF
-Date:   Mon,  8 Jun 2020 10:42:57 +0100
-Message-Id: <20200608094257.47366-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729655AbgFHL4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 07:56:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51664 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726597AbgFHL4c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 07:56:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9CACCAB8F;
+        Mon,  8 Jun 2020 11:56:33 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id EF84260490; Mon,  8 Jun 2020 13:56:28 +0200 (CEST)
+Date:   Mon, 8 Jun 2020 13:56:28 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build
+ bpfilter_umh
+Message-ID: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
+References: <20200423073929.127521-1-masahiroy@kernel.org>
+ <20200423073929.127521-5-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423073929.127521-5-masahiroy@kernel.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_iter requires the kernel BTF to be generated with
-pahole >= 1.16, since otherwise the function definitions
-that the iterator attaches to are not included.
-This failure mode is indistiguishable from trying to attach
-to an iterator that really doesn't exist.
+On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
+> The user mode helper should be compiled for the same architecture as
+> the kernel.
+> 
+> This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
+> 
+> Now that Kbuild provides the syntax 'userprogs', use it to fix the
+> Makefile mess.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> ---
+> 
+>  net/bpfilter/Makefile | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
+> index 36580301da70..6ee650c6badb 100644
+> --- a/net/bpfilter/Makefile
+> +++ b/net/bpfilter/Makefile
+> @@ -3,17 +3,14 @@
+>  # Makefile for the Linux BPFILTER layer.
+>  #
+>  
+> -hostprogs := bpfilter_umh
+> +userprogs := bpfilter_umh
+>  bpfilter_umh-objs := main.o
+> -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> -HOSTCC := $(CC)
+> +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+>  
+> -ifeq ($(CONFIG_BPFILTER_UMH), y)
+> -# builtin bpfilter_umh should be compiled with -static
+> +# builtin bpfilter_umh should be linked with -static
+>  # since rootfs isn't mounted at the time of __init
+>  # function is called and do_execv won't find elf interpreter
+> -KBUILD_HOSTLDFLAGS += -static
+> -endif
+> +bpfilter_umh-ldflags += -static
+>  
+>  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
 
-Since it's really easy to miss this requirement, bump the
-pahole version check used at build time to at least 1.16.
+Hello,
 
-Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-Suggested-by: Ivan Babrou <ivan@cloudflare.com>
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- scripts/link-vmlinux.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
+drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
+passed to the linker even if bpfilter_umh is built as a module which
+wasn't the case in v5.7.
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 3adef49250af..a37875904ca6 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -143,8 +143,8 @@ gen_btf()
- 	fi
- 
- 	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
--	if [ "${pahole_ver}" -lt "113" ]; then
--		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.13"
-+	if [ "${pahole_ver}" -lt "116" ]; then
-+		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
- 		return 1
- 	fi
- 
--- 
-2.25.1
+This is not mentioned in the commit message and the comment still says
+"*builtin* bpfilter_umh should be linked with -static" so this change
+doesn't seem to be intentional. Did I miss something?
 
+Michal Kubecek
