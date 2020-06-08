@@ -2,41 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345841F2D24
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA981F2F66
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 02:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgFHXPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 19:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36638 "EHLO mail.kernel.org"
+        id S1728701AbgFHXKg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 19:10:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728270AbgFHXPe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:15:34 -0400
+        id S1728696AbgFHXKf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:35 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2E0B20801;
-        Mon,  8 Jun 2020 23:15:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7371208FE;
+        Mon,  8 Jun 2020 23:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658133;
-        bh=wG6r09WBZXBQHy367q4m6MyNiVwiapMtLH9N6qQ59aE=;
+        s=default; t=1591657834;
+        bh=9hnYe63g3vNUWbLOB/FO/gxg7KJj1oQxrmXrsSdDF5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=emtDsbceKDXxlWniNLFFV1AzHJvI/S8gJhRkzM9ac8kiOkzW5Htug9VUSATjjUnWk
-         JBM6/uG/2oeybszudsTxbD//LQtyYpiqqAjAJ9KOM4XXLqDR00btpHj4F+avme6Pvc
-         f9jJakgt0PX9yel2kr3X9sFiXWJhWj96LLwO5KWA=
+        b=Nd4imnCKWfhHkte7E86OzU32THw1VLSAHe4+4z0gubmwsTCcexzr9zIZlJpy5uCfH
+         Wx02XvTPQeUJXTEfH9sYyX+PhnVsQ29lDmqR2H4QUaydpxbQuM9xFNl7MBrIKC5zCD
+         4kXCD/MPwAoajyN9smXavItof4IsIhQWFns4I8JI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 168/606] kbuild: Remove debug info from kallsyms linking
-Date:   Mon,  8 Jun 2020 19:04:53 -0400
-Message-Id: <20200608231211.3363633-168-sashal@kernel.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 204/274] veth: Adjust hard_start offset on redirect XDP frames
+Date:   Mon,  8 Jun 2020 19:04:57 -0400
+Message-Id: <20200608230607.3361041-204-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,140 +48,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-[ Upstream commit af73d78bd384aa9b8789aa6e7ddbb165f971276f ]
+[ Upstream commit 5c8572251fabc5bb49fd623c064e95a9daf6a3e3 ]
 
-When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
-time collecting and writing the dwarf sections to the temporary output
-files. kallsyms does not need this information, and leaving it off
-halves their linking time. This is especially noticeable without
-CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
-need those details.
+When native XDP redirect into a veth device, the frame arrives in the
+xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+which can run a new XDP bpf_prog on the packet. Doing so requires
+converting xdp_frame to xdp_buff, but the tricky part is that
+xdp_frame memory area is located in the top (data_hard_start) memory
+area that xdp_buff will point into.
 
-Refactor the BTF and kallsyms generation stages slightly for more
-regularized temporary names. Skip debug during kallsyms links.
-Additionally move "info BTF" to the correct place since commit
-8959e39272d6 ("kbuild: Parameterize kallsyms generation and correct
-reporting"), which added "info LD ..." to vmlinux_link calls.
+The current code tried to protect the xdp_frame area, by assigning
+xdp_buff.data_hard_start past this memory. This results in 32 bytes
+less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
 
-For a full debug info build with BTF, my link time goes from 1m06s to
-0m54s, saving about 12 seconds, or 18%.
+This protect step is actually not needed, because BPF-helper
+bpf_xdp_adjust_head() already reserve this area, and don't allow
+BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+directly at xdp_frame memory area.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/202003031814.4AEA3351@keescook
+Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+Reported-by: Mao Wenan <maowenan@huawei.com>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Link: https://lore.kernel.org/bpf/158945338331.97035.5923525383710752178.stgit@firesoul
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/link-vmlinux.sh | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ drivers/net/veth.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index dd484e92752e..ac569e197bfa 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -63,12 +63,18 @@ vmlinux_link()
- 	local lds="${objtree}/${KBUILD_LDS}"
- 	local output=${1}
- 	local objects
-+	local strip_debug
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index aece0e5eec8c..d5691bb84448 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -564,13 +564,15 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 					struct veth_stats *stats)
+ {
+ 	void *hard_start = frame->data - frame->headroom;
+-	void *head = hard_start - sizeof(struct xdp_frame);
+ 	int len = frame->len, delta = 0;
+ 	struct xdp_frame orig_frame;
+ 	struct bpf_prog *xdp_prog;
+ 	unsigned int headroom;
+ 	struct sk_buff *skb;
  
- 	info LD ${output}
- 
- 	# skip output file argument
- 	shift
- 
-+	# The kallsyms linking does not need debug symbols included.
-+	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
-+		strip_debug=-Wl,--strip-debug
-+	fi
++	/* bpf_xdp_adjust_head() assures BPF cannot access xdp_frame area */
++	hard_start -= sizeof(struct xdp_frame);
 +
- 	if [ "${SRCARCH}" != "um" ]; then
- 		objects="--whole-archive			\
- 			${KBUILD_VMLINUX_OBJS}			\
-@@ -79,6 +85,7 @@ vmlinux_link()
- 			${@}"
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (likely(xdp_prog)) {
+@@ -592,7 +594,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 			break;
+ 		case XDP_TX:
+ 			orig_frame = *frame;
+-			xdp.data_hard_start = head;
+ 			xdp.rxq->mem = frame->mem;
+ 			if (unlikely(veth_xdp_tx(rq, &xdp, bq) < 0)) {
+ 				trace_xdp_exception(rq->dev, xdp_prog, act);
+@@ -605,7 +606,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 			goto xdp_xmit;
+ 		case XDP_REDIRECT:
+ 			orig_frame = *frame;
+-			xdp.data_hard_start = head;
+ 			xdp.rxq->mem = frame->mem;
+ 			if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
+ 				frame = &orig_frame;
+@@ -629,7 +629,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 	rcu_read_unlock();
  
- 		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
-+			${strip_debug#-Wl,}			\
- 			-o ${output}				\
- 			-T ${lds} ${objects}
- 	else
-@@ -91,6 +98,7 @@ vmlinux_link()
- 			${@}"
- 
- 		${CC} ${CFLAGS_vmlinux}				\
-+			${strip_debug}				\
- 			-o ${output}				\
- 			-Wl,-T,${lds}				\
- 			${objects}				\
-@@ -106,6 +114,8 @@ gen_btf()
- {
- 	local pahole_ver
- 	local bin_arch
-+	local bin_format
-+	local bin_file
- 
- 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
- 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-@@ -118,8 +128,9 @@ gen_btf()
- 		return 1
- 	fi
- 
--	info "BTF" ${2}
- 	vmlinux_link ${1}
-+
-+	info "BTF" ${2}
- 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
- 
- 	# dump .BTF section into raw binary file to link with final vmlinux
-@@ -127,11 +138,12 @@ gen_btf()
- 		cut -d, -f1 | cut -d' ' -f2)
- 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
- 		awk '{print $4}')
-+	bin_file=.btf.vmlinux.bin
- 	${OBJCOPY} --change-section-address .BTF=0 \
- 		--set-section-flags .BTF=alloc -O binary \
--		--only-section=.BTF ${1} .btf.vmlinux.bin
-+		--only-section=.BTF ${1} $bin_file
- 	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
--		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
-+		--rename-section .data=.BTF $bin_file ${2}
- }
- 
- # Create ${2} .o file with all symbols from the ${1} object file
-@@ -166,8 +178,8 @@ kallsyms()
- kallsyms_step()
- {
- 	kallsymso_prev=${kallsymso}
--	kallsymso=.tmp_kallsyms${1}.o
--	kallsyms_vmlinux=.tmp_vmlinux${1}
-+	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
-+	kallsymso=${kallsyms_vmlinux}.o
- 
- 	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
- 	kallsyms ${kallsyms_vmlinux} ${kallsymso}
-@@ -190,7 +202,6 @@ cleanup()
- {
- 	rm -f .btf.*
- 	rm -f .tmp_System.map
--	rm -f .tmp_kallsyms*
- 	rm -f .tmp_vmlinux*
- 	rm -f System.map
- 	rm -f vmlinux
-@@ -257,9 +268,8 @@ tr '\0' '\n' < modules.builtin.modinfo | sed -n 's/^[[:alnum:]:_]*\.file=//p' |
- 
- btf_vmlinux_bin_o=""
- if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
--	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
--		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
--	else
-+	btf_vmlinux_bin_o=.btf.vmlinux.bin.o
-+	if ! gen_btf .tmp_vmlinux.btf $btf_vmlinux_bin_o ; then
- 		echo >&2 "Failed to generate BTF for vmlinux"
- 		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
- 		exit 1
+ 	headroom = sizeof(struct xdp_frame) + frame->headroom - delta;
+-	skb = veth_build_skb(head, headroom, len, 0);
++	skb = veth_build_skb(hard_start, headroom, len, 0);
+ 	if (!skb) {
+ 		xdp_return_frame(frame);
+ 		stats->rx_drops++;
 -- 
 2.25.1
 
