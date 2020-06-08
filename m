@@ -2,36 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36851F234E
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAB41F2382
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 01:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgFHXNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 19:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33578 "EHLO mail.kernel.org"
+        id S1729970AbgFHXPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 19:15:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729551AbgFHXNn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:13:43 -0400
+        id S1729954AbgFHXPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:15:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADBF7214D8;
-        Mon,  8 Jun 2020 23:13:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCAF621531;
+        Mon,  8 Jun 2020 23:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658022;
-        bh=O4sIm0dMTHqRZCNxs3PMb5hcgRJULMMM54RSsYvmZzM=;
+        s=default; t=1591658102;
+        bh=q+/YNJFG0GRlIcTN8/G1ReOa5iQS1CReUKZzJgxNyxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F1yw1wz+uI9OEFQsyy85GOQZGHGC3KoGlB+D/SIm0JmdbSTAmmD1l3wts9O9c//c6
-         ic/0LubGEJyDE4eQxEaPXgyJbTzL7zLwOZb0IVHgz4KJJTij391/f4h86OZSLw2S8F
-         MGGaJuS01F2kLvG7WOQmjW/T54rB3TZcAW3IkKb8=
+        b=qQJ90JEU4iRiJ+em6F+/ImFFSr293/GElhc8WCUPN+ZSbXQpNiABHCntFUjsbKtzh
+         vMonIVwh/GDcokTYqNdDpF9Li+KnroJ1CNlkawHr9i3nTzxeFkIsSMs0g8x4R4r5WK
+         lorJtJ0QAGPNJFQJ/iHzJMRLG7EkHUVrOoAk9Jig=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 075/606] bpf: Enforce returning 0 for fentry/fexit progs
-Date:   Mon,  8 Jun 2020 19:03:20 -0400
-Message-Id: <20200608231211.3363633-75-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 142/606] bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_range
+Date:   Mon,  8 Jun 2020 19:04:27 -0400
+Message-Id: <20200608231211.3363633-142-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
 References: <20200608231211.3363633-1-sashal@kernel.org>
@@ -44,64 +46,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit e92888c72fbdc6f9d07b3b0604c012e81d7c0da7 upstream.
+commit 47cc0ed574abcbbde0cf143ddb21a0baed1aa2df upstream.
 
-Currently, tracing/fentry and tracing/fexit prog
-return values are not enforced. In trampoline codes,
-the fentry/fexit prog return values are ignored.
-Let us enforce it to be 0 to avoid confusion and
-allows potential future extension.
+Given bpf_probe_read{,str}() BPF helpers are now only available under
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, we need to add the drop-in
+replacements of bpf_probe_read_{kernel,user}_str() to do_refine_retval_range()
+as well to avoid hitting the same issue as in 849fa50662fbc ("bpf/verifier:
+refine retval R0 state for bpf_get_stack helper").
 
-This patch also explicitly added return value
-checking for tracing/raw_tp, tracing/fmod_ret,
-and freplace programs such that these program
-return values can be anything. The purpose are
-two folds:
- 1. to make it explicit about return value expectations
-    for these programs in verifier.
- 2. for tracing prog_type, if a future attach type
-    is added, the default is -ENOTSUPP which will
-    enforce to specify return value ranges explicitly.
-
-Fixes: fec56f5890d9 ("bpf: Introduce BPF trampoline")
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200514053206.1298415-1-yhs@fb.com
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200515101118.6508-3-daniel@iogearbox.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/bpf/verifier.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1c53ccbd5b5d..c1bb5be530e9 100644
+index c1bb5be530e9..775fca737909 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -6498,6 +6498,22 @@ static int check_return_code(struct bpf_verifier_env *env)
- 			return 0;
- 		range = tnum_const(0);
- 		break;
-+	case BPF_PROG_TYPE_TRACING:
-+		switch (env->prog->expected_attach_type) {
-+		case BPF_TRACE_FENTRY:
-+		case BPF_TRACE_FEXIT:
-+			range = tnum_const(0);
-+			break;
-+		case BPF_TRACE_RAW_TP:
-+			return 0;
-+		default:
-+			return -ENOTSUPP;
-+		}
-+		break;
-+	case BPF_PROG_TYPE_EXT:
-+		/* freplace program can return anything as its return value
-+		 * depends on the to-be-replaced kernel func or bpf program.
-+		 */
- 	default:
+@@ -4113,7 +4113,9 @@ static int do_refine_retval_range(struct bpf_verifier_env *env,
+ 
+ 	if (ret_type != RET_INTEGER ||
+ 	    (func_id != BPF_FUNC_get_stack &&
+-	     func_id != BPF_FUNC_probe_read_str))
++	     func_id != BPF_FUNC_probe_read_str &&
++	     func_id != BPF_FUNC_probe_read_kernel_str &&
++	     func_id != BPF_FUNC_probe_read_user_str))
  		return 0;
- 	}
+ 
+ 	/* Error case where ret is in interval [S32MIN, -1]. */
 -- 
 2.25.1
 
