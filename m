@@ -2,102 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A3C1F1CE2
-	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BB81F1CFD
+	for <lists+bpf@lfdr.de>; Mon,  8 Jun 2020 18:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgFHQGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 12:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730378AbgFHQGj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 12:06:39 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15DFC08C5C2;
-        Mon,  8 Jun 2020 09:06:38 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id s18so19309699ioe.2;
-        Mon, 08 Jun 2020 09:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=m0MCfyAVvG/TnOOlixlSlNHg0o6ZIZMmhOPM1yKrMsk=;
-        b=sfxTc+T/k0Mho9L39uU9FVHb2ybu9cUIVG5skJKsPQcUIXMFQz8B8iqv7vWuAnpO76
-         qkRvSDxdWhNDz/fv9x3vu+QDY9mkoRnflPz3codabnyVY61rQUtwJNvXHN0ns1hlPnux
-         jxWt3I6Pxgs+RsCf6b7UcCIKJAibJ9yOJq5mskdqiFtEhnRzBkgBHyS/MEIUmvAqQFCC
-         QgOcnoY73Ai7zb+tLr/fEmbxeFJpVW1/XsquQz1o697ZzfzABPdQwYetdWaKEioi7TqX
-         s9ZvHXvFa01646sIIXO+oDGzJEMiDzP6gGHx++foHf1hw0FpCd+XmK3o4dwfzvW4c1LM
-         dLcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=m0MCfyAVvG/TnOOlixlSlNHg0o6ZIZMmhOPM1yKrMsk=;
-        b=omd55WAnrrhdYzrW2iSnfr4tuMGat+ci7m+IkVXGghtMgmYLP//bfLf24sO4RZ38WC
-         5hjYIn6KtuHA8QQ5O7H6Xe32tNcSpEmMWNhlxpBUC3qyMa/wLwx8QJ3aU1F2YLBON2G+
-         c11rYS1eXlSHzO5MoRkrQSKBI+FqhhuoGOKQaJ1gNnKyij/JvOHYRlWhE4PfrZhbSDyj
-         v3QHRPlvJO8rt71ki/PMmXz5ln9ysysjp7nB7fEKra6AXzMvpeo8ndNYGjkcSzHhoOFT
-         S5PpZbTwEUg6sQSt+s/ofIY7TgtBkkuJqg3GO3Z9FrQCWJDp9F1dq5ZFySCNHKZiYtSA
-         zpJw==
-X-Gm-Message-State: AOAM532LIgFbCifp34u5UqyawIKGYyK6JaI+nO/DodnWRx7a8Z6m3M9J
-        EoK6+q8WyhVEq2lZokQrUk2CJOgbXAw=
-X-Google-Smtp-Source: ABdhPJwyZT+R6bq/65KQY0F4Egc1frdjkNNDesAzriYQHZ6yXj6Q/iRLH4JyhjGh9oMil22yUeIS0Q==
-X-Received: by 2002:a6b:9144:: with SMTP id t65mr20397005iod.99.1591632396889;
-        Mon, 08 Jun 2020 09:06:36 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id c3sm1866364ilr.45.2020.06.08.09.06.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 09:06:35 -0700 (PDT)
-Date:   Mon, 08 Jun 2020 09:06:27 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     dihu <anny.hu@linux.alibaba.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, dihu <anny.hu@linux.alibaba.com>
-Message-ID: <5ede6203aba1d_2c272afa690ca5c4c6@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200605084625.9783-1-anny.hu@linux.alibaba.com>
-References: <20200605084625.9783-1-anny.hu@linux.alibaba.com>
-Subject: RE: [PATCH] bpf/sockmap: fix kernel panic at __tcp_bpf_recvmsg
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1730409AbgFHQLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 12:11:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730336AbgFHQLy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 12:11:54 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6202E2063A;
+        Mon,  8 Jun 2020 16:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591632714;
+        bh=5iBPmL/VaZp2yDxe19nlMgBARsfJrpmyX/uXreSE6s4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FqMES/74tLwdfEcstzqlW1bpCj4STuxaIxv6VybgT2a2O9VFJj1dLdeyE5baFBY14
+         OsP0B9SGy9kq0nu6HfJB0usy5yEdp0ndg1/7UAZHvdTiytTSk5wwLXUnX9pb5VO+Lm
+         xon6F+I0xVyU3E51oWkMQJWhLa1f9/zr2TmlKBwA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E3C2940AFD; Mon,  8 Jun 2020 13:11:50 -0300 (-03)
+Date:   Mon, 8 Jun 2020 13:11:50 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Irina Tirdea <irina.tirdea@intel.com>, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: libbpf's hashmap use of __WORDSIZE
+Message-ID: <20200608161150.GA3073@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-dihu wrote:
-> When user application calls read() with MSG_PEEK flag to read data
-> of bpf sockmap socket, kernel panic happens at
-> __tcp_bpf_recvmsg+0x12c/0x350. sk_msg is not removed from ingress_msg
-> queue after read out under MSG_PEEK flag is set. Because it's not
-> judged whether sk_msg is the last msg of ingress_msg queue, the next
-> sk_msg may be the head of ingress_msg queue, whose memory address of
-> sg page is invalid. So it's necessary to add check codes to prevent
-> this problem.
-> 
-> [20759.125457] BUG: kernel NULL pointer dereference, address:
-> 0000000000000008
-> [20759.132118] CPU: 53 PID: 51378 Comm: envoy Tainted: G            E
-> 5.4.32 #1
-> [20759.140890] Hardware name: Inspur SA5212M4/YZMB-00370-109, BIOS
-> 4.1.12 06/18/2017
-> [20759.149734] RIP: 0010:copy_page_to_iter+0xad/0x300
-> [20759.270877] __tcp_bpf_recvmsg+0x12c/0x350
-> [20759.276099] tcp_bpf_recvmsg+0x113/0x370
-> [20759.281137] inet_recvmsg+0x55/0xc0
-> [20759.285734] __sys_recvfrom+0xc8/0x130
-> [20759.290566] ? __audit_syscall_entry+0x103/0x130
-> [20759.296227] ? syscall_trace_enter+0x1d2/0x2d0
-> [20759.301700] ? __audit_syscall_exit+0x1e4/0x290
-> [20759.307235] __x64_sys_recvfrom+0x24/0x30
-> [20759.312226] do_syscall_64+0x55/0x1b0
-> [20759.316852] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Signed-off-by: dihu <anny.hu@linux.alibaba.com>
-> ---
->  net/ipv4/tcp_bpf.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+Hi Andrii,
 
-Thanks, looks good to me.
+	We've got that hashmap.[ch] copy from libbpf so that we can
+build perf in systems where libbpf isn't available, and to make it build
+in all the containers I regularly test build perf I had to add the patch
+below, I test build with many versions of both gcc and clang and
+multiple libcs.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+  https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
+
+The way that tools/include/linux/bitops.h has been doing since 2012 is
+explained in:
+
+  http://git.kernel.org/torvalds/c/3f34f6c0233ae055b5
+
+Please take a look and see if you find it acceptable,
+
+Thanks,
+
+- Arnaldo
+  
+  Warning: Kernel ABI header at 'tools/perf/util/hashmap.h' differs from latest version at 'tools/lib/bpf/hashmap.h'
+  diff -u tools/perf/util/hashmap.h tools/lib/bpf/hashmap.h
+
+$ diff -u tools/lib/bpf/hashmap.h tools/perf/util/hashmap.h
+--- tools/lib/bpf/hashmap.h	2020-06-05 13:25:27.822079838 -0300
++++ tools/perf/util/hashmap.h	2020-06-05 13:25:27.838079794 -0300
+@@ -10,10 +10,9 @@
+ 
+ #include <stdbool.h>
+ #include <stddef.h>
+-#ifdef __GLIBC__
+-#include <bits/wordsize.h>
+-#else
+-#include <bits/reg.h>
++#include <limits.h>
++#ifndef __WORDSIZE
++#define __WORDSIZE (__SIZEOF_LONG__ * 8)
+ #endif
+ 
+ static inline size_t hash_bits(size_t h, int bits)
