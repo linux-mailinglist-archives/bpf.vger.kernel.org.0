@@ -2,110 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4C01F3695
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 11:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90541F375F
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 11:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgFIJDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 05:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgFIJDs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 05:03:48 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705AEC05BD43
-        for <bpf@vger.kernel.org>; Tue,  9 Jun 2020 02:03:48 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t21so12998987edr.12
-        for <bpf@vger.kernel.org>; Tue, 09 Jun 2020 02:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9f22rJL4VIrAu8fDizdaN/kAIljAWzM52xMFa+9jhcE=;
-        b=lETBsvPl/e6m7cD1GW80ZZstOjK1s+8vpzxkkt56DthnbNGvhoVJpuEhXvgqlodADS
-         CdMQ73miTju/tPFRCg6+leMzxLZwNNkzsiB4LSJ2hTV2UBabUQzluHIS/D8WWT4u9U8P
-         17JymPfEoXvTcDmJyAXIp7BbttZ84+8/V1Z+Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9f22rJL4VIrAu8fDizdaN/kAIljAWzM52xMFa+9jhcE=;
-        b=fkf36VmS/fAmRzWuzO7fm2FtAjFH7+ABG07iysX+vrNAHePfVIhbytE2JBpL+tICRl
-         KEWYn7+3v13o4pBlj0oJOGgH+GXg+YcmSfNZNTQDHj/OSD9j05ifQeYU/iRejws3jV3V
-         3eVNcu+Ge1JSAUubh2k4w2KPExaDsGxFQTDpUDOdCJLreVz0xNMPUIr8ZSR36QVUiJDX
-         xtDxjAR0ZIljAJIRT+s7cvhtbV23bMDPJUm7KvRiP/BXCE2SmfgY9pQ3JxCjzGu9GIcm
-         BiVm8g8JIMJ7J/f7dEVBN9JU4TmDu07IxlaNJuSid/PnCcQSGEiNRgLvS3S1485LjlKR
-         CPCQ==
-X-Gm-Message-State: AOAM531R25XmcaP1r8QjdrZEbndq1W3UE8B3EThylfBIu7KADstj2kTX
-        4OCxZ1uFV/oYLhLkhK6PcxChv/1LHw8=
-X-Google-Smtp-Source: ABdhPJwmO5mlkYxhnPgEdMGvz+/409+hPu5jLZh2LYxy6w/sxaKeJWimzsdAz6wvi799qO2cj7C/IQ==
-X-Received: by 2002:aa7:c682:: with SMTP id n2mr25139091edq.18.1591693427077;
-        Tue, 09 Jun 2020 02:03:47 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id k23sm490495ejo.120.2020.06.09.02.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 02:03:46 -0700 (PDT)
-References: <20200605084625.9783-1-anny.hu@linux.alibaba.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     dihu <anny.hu@linux.alibaba.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] bpf/sockmap: fix kernel panic at __tcp_bpf_recvmsg
-In-reply-to: <20200605084625.9783-1-anny.hu@linux.alibaba.com>
-Date:   Tue, 09 Jun 2020 11:03:45 +0200
-Message-ID: <874krk391q.fsf@cloudflare.com>
+        id S1728579AbgFIJz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 05:55:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49005 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728068AbgFIJz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 05:55:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591696525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8fFbCsU1oSPk2DqSBeHz33w2HQ4HTjTHQAGGZ09Klps=;
+        b=hS8268edcJphAsV4Jk0gX2jYsWkZZ3b7WxgGG3OYY2h6j0SfaXqnlCZstr1IA5fiEY7KDm
+        lJia/8XOyrnfYznfqF2fU9EyoAGTwb9s9Wo9F442fDhHiZiPu+sVYz+988j5o9J/npFa1c
+        xS/hvb3+UK2xSTRLKPIMO2KlZXna5sI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-LrN1mwcBP5yToYNUaMAEOQ-1; Tue, 09 Jun 2020 05:55:22 -0400
+X-MC-Unique: LrN1mwcBP5yToYNUaMAEOQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0EBA461;
+        Tue,  9 Jun 2020 09:55:20 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A1E02B580;
+        Tue,  9 Jun 2020 09:55:15 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 11:55:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH bpf 0/3] bpf: avoid using/returning file descriptor
+ value zero
+Message-ID: <20200609115513.2422b53a@carbon>
+In-Reply-To: <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
+References: <159163498340.1967373.5048584263152085317.stgit@firesoul>
+        <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 05, 2020 at 10:46 AM CEST, dihu wrote:
-> When user application calls read() with MSG_PEEK flag to read data
-> of bpf sockmap socket, kernel panic happens at
-> __tcp_bpf_recvmsg+0x12c/0x350. sk_msg is not removed from ingress_msg
-> queue after read out under MSG_PEEK flag is set. Because it's not
-> judged whether sk_msg is the last msg of ingress_msg queue, the next
-> sk_msg may be the head of ingress_msg queue, whose memory address of
-> sg page is invalid. So it's necessary to add check codes to prevent
-> this problem.
->
-> [20759.125457] BUG: kernel NULL pointer dereference, address:
-> 0000000000000008
-> [20759.132118] CPU: 53 PID: 51378 Comm: envoy Tainted: G            E
-> 5.4.32 #1
-> [20759.140890] Hardware name: Inspur SA5212M4/YZMB-00370-109, BIOS
-> 4.1.12 06/18/2017
-> [20759.149734] RIP: 0010:copy_page_to_iter+0xad/0x300
-> [20759.270877] __tcp_bpf_recvmsg+0x12c/0x350
-> [20759.276099] tcp_bpf_recvmsg+0x113/0x370
-> [20759.281137] inet_recvmsg+0x55/0xc0
-> [20759.285734] __sys_recvfrom+0xc8/0x130
-> [20759.290566] ? __audit_syscall_entry+0x103/0x130
-> [20759.296227] ? syscall_trace_enter+0x1d2/0x2d0
-> [20759.301700] ? __audit_syscall_exit+0x1e4/0x290
-> [20759.307235] __x64_sys_recvfrom+0x24/0x30
-> [20759.312226] do_syscall_64+0x55/0x1b0
-> [20759.316852] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> Signed-off-by: dihu <anny.hu@linux.alibaba.com>
-> ---
->  net/ipv4/tcp_bpf.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index 5a05327..b82e4c3 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -64,6 +64,9 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
->  		} while (i != msg_rx->sg.end);
->  
->  		if (unlikely(peek)) {
-> +			if (msg_rx == list_last_entry(&psock->ingress_msg,
-> +						      struct sk_msg, list))
-> +				break;
->  			msg_rx = list_next_entry(msg_rx, list);
->  			continue;
->  		}
+On Mon, 8 Jun 2020 18:34:10 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+> On Mon, Jun 08, 2020 at 06:51:12PM +0200, Jesper Dangaard Brouer wrote:
+> > Make it easier to handle UAPI/kABI extensions by avoid BPF using/returning
+> > file descriptor value zero. Use this in recent devmap extension to keep
+> > older applications compatible with newer kernels.
+> > 
+> > For special type maps (e.g. devmap and cpumap) the map-value data-layout is
+> > a configuration interface. This is a kernel Application Binary Interface
+> > (kABI) that can only be tail extended. Thus, new members (and thus features)
+> > can only be added to the end of this structure, and the kernel uses the
+> > map->value_size from userspace to determine feature set 'version'.  
+> 
+> please drop these kabi references. As far as I know kabi is a redhat invention
+> and I'm not even sure what exactly it means.
+> 'struct bpf_devmap_val' is uapi. No need to invent new names for existing concept.
+
+Sure I can call it UAPI.
+
+I was alluding to the difference between API and ABI, but it doesn't matter.
+For the record, Red Hat didn't invent ABI (Application Binary Interface):
+ https://en.wikipedia.org/wiki/Application_binary_interface
+
+
+> > The recent extension of devmap with a bpf_prog.fd requires end-user to
+> > supply the file-descriptor value minus-1 to communicate that the features
+> > isn't used. This isn't compatible with the described kABI extension model.  
+> 
+> non-zero prog_fd requirement exists already in bpf syscall. It's not recent.
+> So I don't think patch 1 is appropriate at this point. Certainly not
+> for bpf tree. We can argue about it usefulness when bpf-next reopens.
+> For now I think patches 2 and 3 are good to go.
+
+Great.
+
+> Don't delete 'enum sk_action' in patch 2 though.
+
+Sorry, yes, that was a mistake.
+
+> The rest looks good to me.
+
+Thanks!
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
