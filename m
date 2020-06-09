@@ -2,179 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 205871F3275
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 05:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91601F3376
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 07:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgFIDD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 23:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbgFIDD4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 23:03:56 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6C7C03E969;
-        Mon,  8 Jun 2020 20:03:56 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id d6so744827pjs.3;
-        Mon, 08 Jun 2020 20:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=o1xdnqtB0eVQDLfx59H38+2bM7V5x3vfyxVg2OMwsd4=;
-        b=DSp8WUmfuA4+3D5VcKP+ZMoH8myBBpC/9l61ZE4iVgV9Iou2IM90B0iiVhQ+Xu5FnN
-         iHqajEujKXP9U9+Og19F5i/GHc/UgPNfFrlej9FybM44BQhVdUdWAVQs3vk+46KFtd9c
-         CT+gzmb02f76sFXIr3cvc7J25clNxBd8rcDB04dFu6Bn5YR5SE7to75adcXaN9waH1tj
-         Px+UMc5zLlevn0yqZB88XiepRp2duK0Avu+66B1o6okZaAieLks9SPme7olwPx9SRyJv
-         9VWtqBIlxglm8L2NOgCOBEIkSXKahVoJ3vOCcVqO0/4HjBKEQ0k5JH6M3lnUPbFJgWrb
-         XwWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=o1xdnqtB0eVQDLfx59H38+2bM7V5x3vfyxVg2OMwsd4=;
-        b=as1lyNkitdda7E+lYRdit96S9hX8tsO0ImfAOvOk25ZGgFBi+utfUd/8C/+D+K7E20
-         d/XTX9KaL2z1ruyl/ylVgx8CKxx33hwj3PlVlqtP8XBKi7DtZMxgYCxYq94b9pIYKPxn
-         95TPdVQRY/rVh1aFDv0n+Dg+9CA3y6zf4r3furFj7VRuK7uJMThMi6+xI59avwetRpYf
-         YK+aOfi96NEvK9ET9QUFo6+WGrQ0Tyxbo8fpUkWd+eaLJ+90Vtj6kF+yj0MDsQe1RpAe
-         IyjPAhn/J+SLcOZ8TxVJMYhU/b2Bptfzw0O7OUXJ6TU0GWTnrVcvEObocrTXquFAevMf
-         eehQ==
-X-Gm-Message-State: AOAM532tASoRWFPHF3TwKoXOclJgD023mod3rEuEinTihcHelv1byJKV
-        LdidN5nNic6/jwgIf3Aj070Lu4soxDYTxg==
-X-Google-Smtp-Source: ABdhPJxsiyCOP98DpLPuhVw1J/zX9ZVMMsnYITkaeiQbeL1OmgX4XWHV93r7SxpD5R8g6SgjcHVNZA==
-X-Received: by 2002:a17:902:aa48:: with SMTP id c8mr1522401plr.128.1591671835936;
-        Mon, 08 Jun 2020 20:03:55 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z8sm776966pjr.41.2020.06.08.20.03.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 20:03:55 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 11:03:44 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        id S1728027AbgFIFaF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 01:30:05 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:65353 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgFIFaF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 01:30:05 -0400
+Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0595TCte076702;
+        Tue, 9 Jun 2020 14:29:12 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
+ Tue, 09 Jun 2020 14:29:12 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0595TAji076692
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 9 Jun 2020 14:29:12 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
-Message-ID: <20200609030344.GP102436@dhcp-12-153.nay.redhat.com>
-References: <20200603024054.GK102436@dhcp-12-153.nay.redhat.com>
- <87img8l893.fsf@toke.dk>
- <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
- <871rmvkvwn.fsf@toke.dk>
- <20200604121212.GM102436@dhcp-12-153.nay.redhat.com>
- <87bllzj9bw.fsf@toke.dk>
- <20200604144145.GN102436@dhcp-12-153.nay.redhat.com>
- <87d06ees41.fsf@toke.dk>
- <20200605062606.GO102436@dhcp-12-153.nay.redhat.com>
- <878sgxd13t.fsf@toke.dk>
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
+ <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
+ <202006051903.C44988B@keescook> <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
+ <20200606201956.rvfanoqkevjcptfl@ast-mbp>
+ <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
+ <20200607014935.vhd3scr4qmawq7no@ast-mbp>
+ <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
+ <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
+ <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
+ <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <ddabab93-4660-3a46-8b05-89385e292b75@i-love.sakura.ne.jp>
+Date:   Tue, 9 Jun 2020 14:29:09 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <878sgxd13t.fsf@toke.dk>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 05:32:54PM +0200, Toke Høiland-Jørgensen wrote:
-> Hangbin Liu <liuhangbin@gmail.com> writes:
+On 2020/06/09 10:28, Alexei Starovoitov wrote:
+>> TOMOYO LSM module uses call_usermodehelper() from tomoyo_load_policy() in order to
+>> load and apply security policy. What is so nice with fork_usermode_blob() compared
+>> to existing call_usermodehelper(), at the cost of confusing LSM modules by allowing
+>> file-less execve() request from fork_usermode_blob() ?
 > 
-> > On Thu, Jun 04, 2020 at 06:02:54PM +0200, Toke Høiland-Jørgensen wrote:
-> >> Hangbin Liu <liuhangbin@gmail.com> writes:
-> >> 
-> >> > On Thu, Jun 04, 2020 at 02:37:23PM +0200, Toke HÃƒÂ¸iland-JÃƒÂ¸rgensen wrote:
-> >> >> > Now I use the ethtool_stats.pl to count forwarding speed and here is the result:
-> >> >> >
-> >> >> > With kernel 5.7(ingress i40e, egress i40e)
-> >> >> > XDP:
-> >> >> > bridge: 1.8M PPS
-> >> >> > xdp_redirect_map:
-> >> >> >   generic mode: 1.9M PPS
-> >> >> >   driver mode: 10.4M PPS
-> >> >> 
-> >> >> Ah, now we're getting somewhere! :)
-> >> >> 
-> >> >> > Kernel 5.7 + my patch(ingress i40e, egress i40e)
-> >> >> > bridge: 1.8M
-> >> >> > xdp_redirect_map:
-> >> >> >   generic mode: 1.86M PPS
-> >> >> >   driver mode: 10.17M PPS
-> >> >> 
-> >> >> Right, so this corresponds to a ~2ns overhead (10**9/10400000 -
-> >> >> 10**9/10170000). This is not too far from being in the noise, I suppose;
-> >> >> is the difference consistent?
-> >> >
-> >> > Sorry, I didn't get, what different consistent do you mean?
-> >> 
-> >> I meant, how much do the numbers vary between each test run?
-> >
-> > Oh, when run it at the same period, the number is stable, the range is about
-> > ~0.05M PPS. But after a long time or reboot, the speed may changed a little.
-> > Here is the new test result after I reboot the system:
-> >
-> > Kernel 5.7 + my patch(ingress i40e, egress i40e)
-> > xdp_redirect_map:
-> >   generic mode: 1.9M PPS
-> >   driver mode: 10.2M PPS
-> >
-> > xdp_redirect_map_multi:
-> >   generic mode: 1.58M PPS
-> >   driver mode: 7.16M PPS
-> >
-> > Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(No XDP on peer))
-> > xdp_redirect_map:
-> >   generic mode: 2.2M PPS
-> >   driver mode: 14.2M PPS
+> For the same reason you did commit 0e4ae0e0dec6 ("TOMOYO: Make several options configurable.")
+> Quoting your words from that commit:
+> "To be able to start using enforcing mode from the early stage of boot sequence,
+>  this patch adds support for activating access control without calling external
+>  policy loader program."
 > 
-> This looks wrong - why is performance increasing when adding another
-> target? How are you even adding another target to regular
-> xdp_redirect_map?
-> 
-Oh, sorry for the typo, the numbers make me crazy, it should be only
-ingress i40e, egress veth. Here is the right description:
 
-Kernel 5.7 + my patch(ingress i40e, egress i40e)
-xdp_redirect_map:
-  generic mode: 1.9M PPS
-  driver mode: 10.2M PPS
+I can't catch what you mean. That commit is to allow not to call usermode helper.
 
-xdp_redirect_map_multi:
-  generic mode: 1.58M PPS
-  driver mode: 7.16M PPS
+You can't start a usermode helper which requires access to filesystems (e.g. ELF loaders,
+shared libraries) before call_usermodehelper() can start a usermode helper which requires
+access to filesystems. Under such a restricted condition, what is nice with starting a
+usermode helper? Programs which can be started under such condition will be quite limited.
+My question is: why you can't use existing call_usermodehelper() (if you need to call
+a usermode helper) ?
 
-Kernel 5.7 + my patch(ingress i40e, egress veth(No XDP on peer))
-xdp_redirect_map:
-  generic mode: 2.2M PPS
-  driver mode: 14.2M PPS
-
-xdp_redirect_map_multi:
-  generic mode: 1.6M PPS
-  driver mode: 9.9M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress veth(with XDP_DROP on peer))
-xdp_redirect_map:
-  generic mode: 1.6M PPS
-  driver mode: 13.6M PPS
-
-xdp_redirect_map_multi:
-  generic mode: 1.3M PPS
-  driver mode: 8.7M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(No XDP on peer))
-xdp_redirect_map_multi:
-  generic mode: 1.15M PPS
-  driver mode: 3.48M PPS
-
-Kernel 5.7 + my patch(ingress i40e, egress i40e + veth(with XDP_DROP on peer))
-xdp_redirect_map_multi:
-  generic mode: 0.98M PPS
-  driver mode: 3.15M PPS
-
-The performance number for xdp_redirect_map_multi is not very well.
-But I think we can optimize after the implementation.
-
-Thanks
-Hangbin
