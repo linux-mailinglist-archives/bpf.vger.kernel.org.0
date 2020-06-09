@@ -2,93 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EB1F45AD
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 20:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2D41F45C8
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 20:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgFISTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 14:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        id S2388910AbgFISU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 14:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388847AbgFISTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:19:10 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635B0C05BD1E;
-        Tue,  9 Jun 2020 11:19:10 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id u16so13080263lfl.8;
-        Tue, 09 Jun 2020 11:19:10 -0700 (PDT)
+        with ESMTP id S2388905AbgFISUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 14:20:25 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F676C03E97C;
+        Tue,  9 Jun 2020 11:20:25 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y11so24674329ljm.9;
+        Tue, 09 Jun 2020 11:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8czp2mGud/X9y8SyDAs2+lXPkjmhftyAJy2rrCLMh7w=;
-        b=LZqbSx12x35LLKdUmVUSmHuoMheWg3Tm+NXcuDzeepDPMMH0UCb1N2L0jyxK7TbyvI
-         E35VVaQ+Z7Y38/aPC0+UHNVxS4jRMHme7YMCO4pz35HgHeWU22fJ2hv0mN/+K8S5slfy
-         k9Vyi2qYFLBDFPbfCG4YiilDap4zxInhhtLj4xAm3ykX5qgTORMmJ0NwzK4VLNv2htaL
-         8g7Bo4+teHW84V4Wlc4kN/Oq42hyjd2xfsQm95cka7tas9lGp7wJYMEJc1PdYWCyO1mC
-         e1TirmSj/ilv70OZaQleZsWp6YgGn9fL45zoppLglrp/HbaljykhJhq6x6Q01AlwmgdB
-         kxfg==
+        bh=1UmqHndylAKxGJX7FYv1MgzV7Bb9W4RKBrBw18IkLFg=;
+        b=FDD1uqsA6nGoNGcc9tXnygpq7Kf7mg40KZ7mc25jUhB54DGdhNz6WsiVhBcv+NCZ+i
+         2QQqQlKsZEYDpPLjO0QzLAueaZrLsZ3A/pmJu6ZJafLamgIBAkoiPDiHr5qqekuhBkjr
+         kyo8x194qZFkZ8k1jUySaWfqGUIsYw5DfvtziZkYjbDn/kwA+BfO8C8SNn1f4zxfH8X+
+         J6pio//pdxm0672Lz1/HhT6IH4IivFRf+AFzAKwzN9YgW1D2EHfgQr5miSQeqWir3PO6
+         TvnG5MUzXpSl2+QVzNMyjPQh2FIwM8hZXoKks0ZYukTQ8R6mSQovRZHjBoGoR62699Vy
+         dvsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8czp2mGud/X9y8SyDAs2+lXPkjmhftyAJy2rrCLMh7w=;
-        b=HOOexHso2/EgosGz0RPkon8u9+wUERTYETy/9vU5X4eVsVFmD024AZhYM+DAbTtD7R
-         5YvtY2dyLtTlMI0YQMirO1OQlrhaBGltRqyNEiUXQeSuWWn2HP6hyGj97zD0fSlBl2wz
-         O0VVXRwgqfgI0gZxT6apJsFyUYhm0D6Lo3rPWtbEF9U05QuRoLyWI1lqmysjohJXClXN
-         ACsG5VSyYrF7tZg/tu1iuEWWkkmGS0nxDh3NC9pPI5EO8+aQhV5QxQVwremkuoehCXDC
-         OKaF5+fyiM0cy8qYOHFEQtn2sS9Mjoq2gjW10STGrbZgL91Z8BHW1MbqFqOnlC6gkQAO
-         AQcw==
-X-Gm-Message-State: AOAM533n3TSfgPpJtDrU/evgZIwui7MG+GcM/b/vYrZsx6I70hoUWPGG
-        SvgBE/F7fjMw9PnWH/moRZ+Qm7JUDwExG9qEwaU=
-X-Google-Smtp-Source: ABdhPJwJgkr+goe4IPDGLuPCQCuWqxBkd3MNiQkky0sI9TT2JC0L2pk6zNTvXPm+sziwRZVmsDOUBgsnUMR4Fp0WY4U=
-X-Received: by 2002:a19:987:: with SMTP id 129mr16215034lfj.8.1591726748546;
- Tue, 09 Jun 2020 11:19:08 -0700 (PDT)
+        bh=1UmqHndylAKxGJX7FYv1MgzV7Bb9W4RKBrBw18IkLFg=;
+        b=mC3gZu38Ky80dTCkD7pgQl+twyMBwARqDKIVKUpiLDknGzpzMt6uZIxowS9kZdJway
+         GkZye5xaYpIu9OKGXJYHDeSCMp1xNe99DwifusspfnmN65YxQTx0EGxbjiIfJuNDt9xh
+         FZcZv4LfaHYW1lALI5vv+KMYXYCYIYDx8eVbxsy0V3t8QkEgwiHKodwtQOP7Wh0nCTfX
+         svPPuYAHOnWbmeBX+Y/HSZrHiNRclLdQsfSN9X8x7xzH5LB3K9YAW5WrsALKtzM0vB4+
+         z2c6I1zHPtfOwvKYE+pZ1x8tLeTTVNVJeHi7EA7bUofKXCAB0QUire9oMtttcYBMjm/C
+         oUIg==
+X-Gm-Message-State: AOAM531e6gUyRrYh5sG0HFZ61SoErfDyvM/k4EXTuh66voop24uLtlrK
+        wNK787wm4EMuoWq1m3Ng0FY/FaBJna/SGuy6e70=
+X-Google-Smtp-Source: ABdhPJwCOogO12BY91rGPFd7kLaNaATnfS9GcFhbjFtTs3Nh+FQ5t0kzxprNkjO43NSOdxYaYGv7VCgLKyJl6rw/wzw=
+X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr14848384ljo.121.1591726823712;
+ Tue, 09 Jun 2020 11:20:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200608124531.819838-1-jean-philippe@linaro.org> <20200609161234.c0b1460e6a6ce73ba478a22a@kernel.org>
-In-Reply-To: <20200609161234.c0b1460e6a6ce73ba478a22a@kernel.org>
+References: <20200608151723.9539-1-dsahern@kernel.org>
+In-Reply-To: <20200608151723.9539-1-dsahern@kernel.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Jun 2020 11:18:57 -0700
-Message-ID: <CAADnVQ+1CsKo1wdY6hUwExP8dnCBDhjoWCjoHp-jTvOoghPh4w@mail.gmail.com>
-Subject: Re: [PATCH] tracing/probe: Fix bpf_task_fd_query() for kprobes and uprobes
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 9 Jun 2020 11:20:12 -0700
+Message-ID: <CAADnVQLJiNKxdAsC7OUuiTG4Z2csdpG6ctff8j1f6BgicpvE_g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reset data_meta before running programs attached
+ to devmap entry
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 9, 2020 at 12:12 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Jun 8, 2020 at 8:17 AM David Ahern <dsahern@kernel.org> wrote:
 >
-> On Mon,  8 Jun 2020 14:45:32 +0200
-> Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
+> This is a new context that does not handle metadata at the moment, so
+> mark data_meta invalid.
 >
-> > Commit 60d53e2c3b75 ("tracing/probe: Split trace_event related data from
-> > trace_probe") removed the trace_[ku]probe structure from the
-> > trace_event_call->data pointer. As bpf_get_[ku]probe_info() were
-> > forgotten in that change, fix them now. These functions are currently
-> > only used by the bpf_task_fd_query() syscall handler to collect
-> > information about a perf event.
-> >
->
-> Oops, good catch!
->
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
->
->
-> > Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
-> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
->
-> Cc: stable@vger.kernel.org
+> Fixes: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
+> Signed-off-by: David Ahern <dsahern@kernel.org>
 
-Applied to bpf tree. Thanks
+Applied. Thanks
