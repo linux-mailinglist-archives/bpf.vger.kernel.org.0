@@ -2,82 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31C11F44DE
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 20:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06EB1F45AD
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 20:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388459AbgFISJN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 14:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
+        id S1730749AbgFISTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 14:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388450AbgFISJH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 14:09:07 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC44DC05BD1E
-        for <bpf@vger.kernel.org>; Tue,  9 Jun 2020 11:09:06 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z206so13055596lfc.6
-        for <bpf@vger.kernel.org>; Tue, 09 Jun 2020 11:09:06 -0700 (PDT)
+        with ESMTP id S2388847AbgFISTK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 14:19:10 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635B0C05BD1E;
+        Tue,  9 Jun 2020 11:19:10 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id u16so13080263lfl.8;
+        Tue, 09 Jun 2020 11:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ogBASi6iUFg7q2fB38qT1Thf4pCew1r3vqCaWc789jc=;
-        b=E2Ejh8mYblCco8jvn54oVOfPF3EuLAReZh1lZi1cONOuTVYDZHLA9on62jEWgbQPbK
-         9h5G3l6QSi8YqephB02Rg3UkHUvSc8EJbEB4XKmA+6NHlEa6YH2Qu5mk8f3671mZxWtY
-         aEDLVtP+iPLH60fVu7cl/8XRsrL/zxYzmFujFyF1/r3BObmOlQGPGPybG4CF45ZtgtEi
-         3nKguWrBWt5VSfC/ya26SEtThnwkK87BrVe9dEM2v0EbnFCPxkNeTA063Mkl+1gqaNCx
-         hSrRWmuKHTkKnHDmh/juFxVXtmlMm0s6Ir78vkDAj7pfk9fYtwxTRmmIideYB12h9+D+
-         MwdQ==
+        bh=8czp2mGud/X9y8SyDAs2+lXPkjmhftyAJy2rrCLMh7w=;
+        b=LZqbSx12x35LLKdUmVUSmHuoMheWg3Tm+NXcuDzeepDPMMH0UCb1N2L0jyxK7TbyvI
+         E35VVaQ+Z7Y38/aPC0+UHNVxS4jRMHme7YMCO4pz35HgHeWU22fJ2hv0mN/+K8S5slfy
+         k9Vyi2qYFLBDFPbfCG4YiilDap4zxInhhtLj4xAm3ykX5qgTORMmJ0NwzK4VLNv2htaL
+         8g7Bo4+teHW84V4Wlc4kN/Oq42hyjd2xfsQm95cka7tas9lGp7wJYMEJc1PdYWCyO1mC
+         e1TirmSj/ilv70OZaQleZsWp6YgGn9fL45zoppLglrp/HbaljykhJhq6x6Q01AlwmgdB
+         kxfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ogBASi6iUFg7q2fB38qT1Thf4pCew1r3vqCaWc789jc=;
-        b=AoavWRgOkOgGWsvOWKPB/8LbjMiwUl0oUShzdwup+RZnOQ1j84Trib1zoemSt9qHjo
-         l4u3aikQUNRuibmZyvS899kFBZGC7lArh+dXuV8m5BKDfvu0U6VMD7fT9Qmt9cox8tkO
-         /RavyBbRltCwIraRJrnUpHnJSfS6rmlw3/sVLozp+XTFxCmQ0YC8PkNT5SGsH93aGsDp
-         hupd3WKiAzU1PRBJWbTJFbeSvfgd8d1ffPm/cfXvVK7emh8wI1pE3LYV9pGWcNtCjJS3
-         t/qMPzsq8uwGTu0a5SJ/6zcJdKuSzhBTyEQSXu7QVkCnSoeFifeJ+58S7Rhz99y2XXTC
-         FHzw==
-X-Gm-Message-State: AOAM532jwG4Br96gdmLFgjlb+KbqDwa2QwDi3kxYenUTqRnzKX11Vdpl
-        iySWZx0cqDeFcuR+fmm8F2OUM1sv/oJ8LsxaJV0=
-X-Google-Smtp-Source: ABdhPJytOTFrDOf7MTo9mE6F9eX6j8PXNDIKUc38o4iGPhND0wzmemGSruXk2AQtvE32ACJqWRvYfW+WRmJenksFKAg=
-X-Received: by 2002:ac2:5f82:: with SMTP id r2mr15802293lfe.119.1591726144918;
- Tue, 09 Jun 2020 11:09:04 -0700 (PDT)
+        bh=8czp2mGud/X9y8SyDAs2+lXPkjmhftyAJy2rrCLMh7w=;
+        b=HOOexHso2/EgosGz0RPkon8u9+wUERTYETy/9vU5X4eVsVFmD024AZhYM+DAbTtD7R
+         5YvtY2dyLtTlMI0YQMirO1OQlrhaBGltRqyNEiUXQeSuWWn2HP6hyGj97zD0fSlBl2wz
+         O0VVXRwgqfgI0gZxT6apJsFyUYhm0D6Lo3rPWtbEF9U05QuRoLyWI1lqmysjohJXClXN
+         ACsG5VSyYrF7tZg/tu1iuEWWkkmGS0nxDh3NC9pPI5EO8+aQhV5QxQVwremkuoehCXDC
+         OKaF5+fyiM0cy8qYOHFEQtn2sS9Mjoq2gjW10STGrbZgL91Z8BHW1MbqFqOnlC6gkQAO
+         AQcw==
+X-Gm-Message-State: AOAM533n3TSfgPpJtDrU/evgZIwui7MG+GcM/b/vYrZsx6I70hoUWPGG
+        SvgBE/F7fjMw9PnWH/moRZ+Qm7JUDwExG9qEwaU=
+X-Google-Smtp-Source: ABdhPJwJgkr+goe4IPDGLuPCQCuWqxBkd3MNiQkky0sI9TT2JC0L2pk6zNTvXPm+sziwRZVmsDOUBgsnUMR4Fp0WY4U=
+X-Received: by 2002:a19:987:: with SMTP id 129mr16215034lfj.8.1591726748546;
+ Tue, 09 Jun 2020 11:19:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200608094257.47366-1-lmb@cloudflare.com> <3318a5fa-e4c0-67a7-0d69-9eb16d397f73@fb.com>
-In-Reply-To: <3318a5fa-e4c0-67a7-0d69-9eb16d397f73@fb.com>
+References: <20200608124531.819838-1-jean-philippe@linaro.org> <20200609161234.c0b1460e6a6ce73ba478a22a@kernel.org>
+In-Reply-To: <20200609161234.c0b1460e6a6ce73ba478a22a@kernel.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Jun 2020 11:08:53 -0700
-Message-ID: <CAADnVQ+BR5kZOZwMqcbF=yp2kZA_jpmN_F215AHYm8oWfG-4Lw@mail.gmail.com>
-Subject: Re: [PATCH bpf] scripts: require pahole v1.16 when generating BTF
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, daniel@iogearbox.com,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ivan Babrou <ivan@cloudflare.com>
+Date:   Tue, 9 Jun 2020 11:18:57 -0700
+Message-ID: <CAADnVQ+1CsKo1wdY6hUwExP8dnCBDhjoWCjoHp-jTvOoghPh4w@mail.gmail.com>
+Subject: Re: [PATCH] tracing/probe: Fix bpf_task_fd_query() for kprobes and uprobes
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 10:33 AM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Jun 9, 2020 at 12:12 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
+> On Mon,  8 Jun 2020 14:45:32 +0200
+> Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
 >
-> On 6/8/20 2:42 AM, Lorenz Bauer wrote:
-> > bpf_iter requires the kernel BTF to be generated with
-> > pahole >= 1.16, since otherwise the function definitions
-> > that the iterator attaches to are not included.
-> > This failure mode is indistiguishable from trying to attach
-> > to an iterator that really doesn't exist.
+> > Commit 60d53e2c3b75 ("tracing/probe: Split trace_event related data from
+> > trace_probe") removed the trace_[ku]probe structure from the
+> > trace_event_call->data pointer. As bpf_get_[ku]probe_info() were
+> > forgotten in that change, fix them now. These functions are currently
+> > only used by the bpf_task_fd_query() syscall handler to collect
+> > information about a perf event.
 > >
-> > Since it's really easy to miss this requirement, bump the
-> > pahole version check used at build time to at least 1.16.
-> >
-> > Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-> > Suggested-by: Ivan Babrou <ivan@cloudflare.com>
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 >
-> Acked-by: Yonghong Song <yhs@fb.com>
+> Oops, good catch!
+>
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+>
+>
+> > Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
+> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>
+> Cc: stable@vger.kernel.org
 
-Applied. Thanks
+Applied to bpf tree. Thanks
