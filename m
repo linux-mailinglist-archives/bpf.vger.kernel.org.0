@@ -2,61 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F351F4187
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 18:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C341F41C4
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 19:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbgFIQ5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 12:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
+        id S1731525AbgFIRJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 13:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731061AbgFIQ5H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 12:57:07 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB69C05BD1E;
-        Tue,  9 Jun 2020 09:57:07 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m81so23586783ioa.1;
-        Tue, 09 Jun 2020 09:57:07 -0700 (PDT)
+        with ESMTP id S1731522AbgFIRJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:09:28 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D538C05BD1E;
+        Tue,  9 Jun 2020 10:09:27 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t8so21067224ilm.7;
+        Tue, 09 Jun 2020 10:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=5gvAS0s0tNpovI3i50BhHwoc6p3AStdG8TOtuxWup4w=;
-        b=tMvNXNJopze0GqB5+EV+ftXRCWZBeAN6qu2GK8i13KXAnv+Byi7F93Bd+iVyKjBUNo
-         hO9yhQtuT1sdzfHnZpuAfXsSNp+c2JhctcoXr5c2mXRhl8+CBg7Jx8OWxFccaBI9KnxL
-         n2zqtjPDI5jwAFxNGB+OAWeU37COAvNIPl1jgVqy8mCiYJ1WIGtOBZIzQtOFBKDnY+Ah
-         LCoH04OVGWmsD1y+/oKEc4h5p65ORFlJfEnUghZAySAR8HtYygyTr/+mqjzSeFClHedW
-         wPAfikhEOotImnatbJaqQxq83Lf0sPc2zTERq0g1Dn//WhxPvQxFdGuY1T4cz2GBOwpr
-         UM6w==
+        bh=OIlKxeZxM3e/pP7D/bVrWCwP7xeVBhGQH39vr/IlNIs=;
+        b=u1w/EfgUFymmbHhQDsMU3qROHhi0t0IiG3U4A/K0Ldw6Wz2phZUh8S4/UBNUxQ2Eb4
+         HeZuRu3CyqgYjOJOEgIPsqhtNfCBFo2H43Qfj5CMBe3nwzUU5opmFFCcTAwfbcdyYcu6
+         AB202oFgvbRH8OdGlA9C3g05TDw4K3g9X6U6j6LfUYehuWCwEOLT2SjxBdFAymGqMY4v
+         aFscgRjsTLRZcDXMPCyMeM0Jm8sLABe5wFiQo26g//dKH6T63DVao7OyFglC5FUy8Pka
+         UgHFNdPLlWgNxrPCcgkqwf4NcnzqKBTss1nj1w8LU4NwxfAabrLQOmVgq1eApQdTBpSR
+         e/FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=5gvAS0s0tNpovI3i50BhHwoc6p3AStdG8TOtuxWup4w=;
-        b=JJ9118HRxq49XaFOzBSaLzdvW5wuKw7rkjw/L5ajSATmr/FsWJiXq/p8RgJWJvbZVA
-         YW4jqh1zNXOU0SXRvq5K0m0VGqJvlVIDSiRWUHNYb2Hcoceg1WgBZ4X8TXHHPTthpSjQ
-         kxhsv19NZtafnpr8lE0N5QhYMRw2WOs4yRx/Rb/jGQKI2XhZmSCNHSAhY1tnaCRL2WDH
-         mc6Gza0e8JmiTDjQgRDtUdc1homko5Jhc43ZshmVY0vc8T2fIIe3xGnJcHT+XDrmV6+/
-         0jB9zBfWxDOfCCO/6ppKTyxWeD9gXUhsRorHKkP7JjeZUn8ShSF/VzZjhmccBDdqQb12
-         WDQg==
-X-Gm-Message-State: AOAM532Pikm+PT2FhTtSlMoJAX6hiKftLvIdRZ6OCO0pPs8bAPWpE3eF
-        XdN3on/nzIm+RXEjWjnAyUQ=
-X-Google-Smtp-Source: ABdhPJxzfFNX5iPi6sdKo+Si6me8KJa4LoBVF4M8+UTrToEsXFwUCXTJ4+2Cezd7q2X79o0KK+1RsQ==
-X-Received: by 2002:a02:84c6:: with SMTP id f64mr27190470jai.25.1591721826490;
-        Tue, 09 Jun 2020 09:57:06 -0700 (PDT)
+        bh=OIlKxeZxM3e/pP7D/bVrWCwP7xeVBhGQH39vr/IlNIs=;
+        b=hZ1ZXbz2z/x8Ekw5Z+5wDi7+teAws21Q5KaG6LS+4HrHTTan65r9p/fNKOBCK/nxpy
+         2RbNKtVVCa1/svLRgBwUg1U/k4q29dbZTw4v9f9jho8IcGTgAmzYw5ywYIJMnduUYNpM
+         L/FkJVlq3XCjQkCdapjcyeRBcX31+d+bPZ5uylH3SNGu1uE1hggsH/csAt5KDSY3Qm8k
+         793uW9Txo1MyTcLPwrOuQnWA6Fx5driU7oEQcJ6kdxtAYxRtp49hvVNhMm7HizxLRXY9
+         T/e2m+kq/bzvXE9UkVX3aPAf1MSRRdEUAP1oTMqcB13RyJrbHh+5o4VbRMEldGLveJdL
+         uWWw==
+X-Gm-Message-State: AOAM530SfZv0oyUl0V86ht28Cysk/57TDS56LfnVDVUs8Z9Yh3Ptl7dT
+        ESt4mVfwZyYoV+yQdPSzBEA=
+X-Google-Smtp-Source: ABdhPJz3jHHUkB8Lb5+mbq05CxfJ2voNYFLh5a2c93QpZFppARqV3xBLsSfrenh9F57R4+9j6Kf0Ww==
+X-Received: by 2002:a92:c94b:: with SMTP id i11mr28699657ilq.177.1591722566898;
+        Tue, 09 Jun 2020 10:09:26 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n7sm6721682ile.76.2020.06.09.09.57.04
+        by smtp.gmail.com with ESMTPSA id v87sm337515ili.2.2020.06.09.10.09.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 09:57:05 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 09:56:56 -0700
+        Tue, 09 Jun 2020 10:09:26 -0700 (PDT)
+Date:   Tue, 09 Jun 2020 10:09:18 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com
-Message-ID: <5edfbf58f0ff1_5cca2af6a27f45b8fc@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200607205229.2389672-2-jakub@cloudflare.com>
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <5edfc23e1bb3e_5cca2af6a27f45b8df@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200607205229.2389672-3-jakub@cloudflare.com>
 References: <20200607205229.2389672-1-jakub@cloudflare.com>
- <20200607205229.2389672-2-jakub@cloudflare.com>
-Subject: RE: [PATCH bpf 1/2] bpf, sockhash: Fix memory leak when unlinking
- sockets in sock_hash_free
+ <20200607205229.2389672-3-jakub@cloudflare.com>
+Subject: RE: [PATCH bpf 2/2] bpf, sockhash: Synchronize delete from bucket
+ list on map free
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -67,49 +68,60 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Jakub Sitnicki wrote:
-> When sockhash gets destroyed while sockets are still linked to it, we will
-> walk the bucket lists and delete the links. However, we are not freeing the
-> list elements after processing them, leaking the memory.
+> We can end up modifying the sockhash bucket list from two CPUs when a
+> sockhash is being destroyed (sock_hash_free) on one CPU, while a socket
+> that is in the sockhash is unlinking itself from it on another CPU
+> it (sock_hash_delete_from_link).
 > 
-> The leak can be triggered by close()'ing a sockhash map when it still
-> contains sockets, and observed with kmemleak:
+> This results in accessing a list element that is in an undefined state as
+> reported by KASAN:
 > 
->   unreferenced object 0xffff888116e86f00 (size 64):
->     comm "race_sock_unlin", pid 223, jiffies 4294731063 (age 217.404s)
->     hex dump (first 32 bytes):
->       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->       81 de e8 41 00 00 00 00 c0 69 2f 15 81 88 ff ff  ...A.....i/.....
->     backtrace:
->       [<00000000dd089ebb>] sock_hash_update_common+0x4ca/0x760
->       [<00000000b8219bd5>] sock_hash_update_elem+0x1d2/0x200
->       [<000000005e2c23de>] __do_sys_bpf+0x2046/0x2990
->       [<00000000d0084618>] do_syscall_64+0xad/0x9a0
->       [<000000000d96f263>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> | ==================================================================
+> | BUG: KASAN: wild-memory-access in sock_hash_free+0x13c/0x280
+> | Write of size 8 at addr dead000000000122 by task kworker/2:1/95
+> |
+> | CPU: 2 PID: 95 Comm: kworker/2:1 Not tainted 5.7.0-rc7-02961-ge22c35ab0038-dirty #691
+> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> | Workqueue: events bpf_map_free_deferred
+> | Call Trace:
+> |  dump_stack+0x97/0xe0
+> |  ? sock_hash_free+0x13c/0x280
+> |  __kasan_report.cold+0x5/0x40
+> |  ? mark_lock+0xbc1/0xc00
+> |  ? sock_hash_free+0x13c/0x280
+> |  kasan_report+0x38/0x50
+> |  ? sock_hash_free+0x152/0x280
+> |  sock_hash_free+0x13c/0x280
+> |  bpf_map_free_deferred+0xb2/0xd0
+> |  ? bpf_map_charge_finish+0x50/0x50
+> |  ? rcu_read_lock_sched_held+0x81/0xb0
+> |  ? rcu_read_lock_bh_held+0x90/0x90
+> |  process_one_work+0x59a/0xac0
+> |  ? lock_release+0x3b0/0x3b0
+> |  ? pwq_dec_nr_in_flight+0x110/0x110
+> |  ? rwlock_bug.part.0+0x60/0x60
+> |  worker_thread+0x7a/0x680
+> |  ? _raw_spin_unlock_irqrestore+0x4c/0x60
+> |  kthread+0x1cc/0x220
+> |  ? process_one_work+0xac0/0xac0
+> |  ? kthread_create_on_node+0xa0/0xa0
+> |  ret_from_fork+0x24/0x30
+> | ==================================================================
 > 
-> Fix it by freeing the list element when we're done with it.
+> Fix it by reintroducing spin-lock protected critical section around the
+> code that removes the elements from the bucket on sockhash free.
 > 
-> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+> To do that we also need to defer processing of removed elements, until out
+> of atomic context so that we can unlink the socket from the map when
+> holding the sock lock.
+> 
+> Fixes: 90db6d772f74 ("bpf, sockmap: Remove bucket->lock from sock_{hash|map}_free")
+> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  net/core/sock_map.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 00a26cf2cfe9..ea46f07a22d8 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -1031,6 +1031,7 @@ static void sock_hash_free(struct bpf_map *map)
->  			sock_map_unref(elem->sk, elem);
->  			rcu_read_unlock();
->  			release_sock(elem->sk);
-> +			sock_hash_free_elem(htab, elem);
->  		}
->  	}
->  
-> -- 
-> 2.25.4
-> 
+>  net/core/sock_map.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
 
-In Cilium we pin the map and never release it thanks for catching this.
+Thanks.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
