@@ -2,96 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32CA1F3A65
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 14:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762AD1F3A88
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 14:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgFIMIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 08:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgFIMIf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 08:08:35 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82668C05BD1E;
-        Tue,  9 Jun 2020 05:08:34 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id v79so20425377qkb.10;
-        Tue, 09 Jun 2020 05:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=vRHbPOXtPbJdANLvmSwZ4cS7X1/NwFEoLTvptBebMJM=;
-        b=aADFy46qw/Vq/MMCuSbBmbsKc0B9TH20nslbYSnWZNTVPRWLM4Eiu3okUJjB+jyDKP
-         2vQzs7enHj/b8o2w3J+JzTGAJPdJ8WeEZYsfgNlzUL4h//jWglPvInFIKrfyf/9pjggP
-         92SNWvRKlOQdNK2XiWmxqvUEuoR6VF0xR/YvgadYyuGbB6OEsPE9ZH5CaGJRYTE+S71n
-         ZO0to0h5nvo7nHqgv0Xb5EDS5xACoa2V4zsRXNc0N/eJNjRtFAhXHuKMtpRpqwhy64re
-         FoCCCSREHz0D7053m/SJ6t7asElKY97FrMaxLt85/87yvS/ZQjgp8FwATgT/CNbg2mvO
-         hiAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=vRHbPOXtPbJdANLvmSwZ4cS7X1/NwFEoLTvptBebMJM=;
-        b=aWV/18v53aZLyloCYaGfM8MuljcgxqsbkXAR+s/X9rjiy8CKTrXVAMTxsa6/qvUf4L
-         rZh0FvzzZ4Rq4OOzISzylvQHSdUgbx/ZC1jR3YCDlvKNKWdTACUhJclbz57nFvwyihgr
-         K0KZai5QMXRVKpy8WgoffYZs5FsxhSVwbWTtcxaW6uoBlAb2X8KpcinfatIXtYvi5S50
-         TFFgbFS+V669Tb1HxXHAyh/JyFXtnHzuohOSfbqOmFofawv245yFzsXBTwpbZxeb0Ke6
-         5QWdvqsf++zWAcEOtxLT7K9FtLbBpo07kfqTRYPEME5Dnr6Woq0IRf9Ofn/yiaOsSGQY
-         1r3A==
-X-Gm-Message-State: AOAM5301/TVXSeTr8X2GOkjuhfbzGT6Pdh9bDx084VJWqQL+YiS3FhwQ
-        bQQQCm7yfFZrbaVlOl1b4tI=
-X-Google-Smtp-Source: ABdhPJxSzISY4ib4u1DtG9gJaxQkMpZ71pq7o6ENgO3YLF6GKZ8qbVpkR7mK0rYln/VJQxzA8xkGTw==
-X-Received: by 2002:a37:9c91:: with SMTP id f139mr27953469qke.371.1591704513335;
-        Tue, 09 Jun 2020 05:08:33 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:29ac:7979:1e2e:c67b])
-        by smtp.googlemail.com with ESMTPSA id d56sm10732690qtb.54.2020.06.09.05.08.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 05:08:32 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
-Date:   Tue,  9 Jun 2020 08:08:03 -0400
-Message-Id: <20200609120804.10569-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729281AbgFIMT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 08:19:29 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30622 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726903AbgFIMT2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jun 2020 08:19:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591705166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BSEsHrwlhqk7DyzByK+cUZneFESEsg/CqT2uCmrkWg4=;
+        b=ZXCJHzRqYvX/3UbQoDZAzTOTpbxhZlNUUmWzzbaAfOX0CwsTZr7C3jfUzbTcoB1pmR0y6N
+        iawxb0ZImTT2gh2lBSjUrjKac2mxl1W5yQOZdvG/x5XsqWsfAz4/2ORN0/4uErkRkp8hKA
+        rEAMQ3Lcj6IbjKCRWwap01smTdODKCg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-YkP2-4GWN3ijU-xuiQOWIQ-1; Tue, 09 Jun 2020 08:19:23 -0400
+X-MC-Unique: YkP2-4GWN3ijU-xuiQOWIQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A8FA107ACF5;
+        Tue,  9 Jun 2020 12:19:19 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E980A2DE64;
+        Tue,  9 Jun 2020 12:19:13 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 14:19:12 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        David Miller <davem@davemloft.net>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V1] bpf: devmap dynamic map-value area based on
+ BTF
+Message-ID: <20200609141912.34b70975@carbon>
+In-Reply-To: <CAADnVQKWj_eoVE9XLqwEX2ZWB_yLwRtuQqY7EuFZSNZd40ukPQ@mail.gmail.com>
+References: <159119908343.1649854.17264745504030734400.stgit@firesoul>
+        <20200603162257.nxgultkidnb7yb6q@ast-mbp.dhcp.thefacebook.com>
+        <20200604174806.29130b81@carbon>
+        <205b3716-e571-b38f-614f-86819d153c4e@gmail.com>
+        <20200604173341.rvfrjmt433knl3uv@ast-mbp.dhcp.thefacebook.com>
+        <20200605102323.15c2c06c@carbon>
+        <CAADnVQKWj_eoVE9XLqwEX2ZWB_yLwRtuQqY7EuFZSNZd40ukPQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The memset call is made right after malloc call. To fix this, add the null check right after malloc and then do memset.
+On Fri, 5 Jun 2020 09:58:26 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- samples/bpf/xdp_rxq_info_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Jun 5, 2020 at 1:23 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+> >
+> > Great. If we can remove this requirement of -1 init (and let zero mean
+> > feature isn't used), then I'm all for exposing expose in uapi/bpf.h.  
+> 
+> Not having it in bpf.h doesn't magically make it invisible.
+> It's uapi because user space C sources rely on its fixed format.
+> vmlinux.h contains all kernel types. both uapi and kernel internal.
+> devmap selftest taking uapi 'struct bpf_devmap_val' from vmlinux.h is
+> an awful hack.
+> I prefer to keep vmlinux.h usage to bpf programs only.
+> User space C code should interface with kernel via proper uapi headers.
+> When vmlinux.h is used by bpf C program it's completely different from
+> user space C code doing the same, because llvm emits relocations for
+> bpf prog and libbpf adjusts them.
+> So doing 'foo->bar' in bpf C is specific to target kernel, whereas
+> user C code 'foo->bar' is a hard constant which bakes it into uapi
+> that kernel has to keep backwards compatible.
 
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-index 4fe47502ebed..490b07b7df78 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -202,11 +202,11 @@ static struct datarec *alloc_record_per_cpu(void)
- 
- 	size = sizeof(struct datarec) * nr_cpus;
- 	array = malloc(size);
--	memset(array, 0, size);
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
- 		exit(EXIT_FAIL_MEM);
- 	}
-+	memset(array, 0, size);
- 	return array;
- }
- 
+Thank you for taking time to explain this.
+Much appreciated, I agree with everything above.
+
+
+> If in some distant future we teach both gcc and clang to do bpf-style
+> relocations for x86 and teach ld.so to adjust them then we can dream
+> about very differently looking kernel/user interfaces.
+> Right now any struct used by user C code and passed into kernel is uapi.
+
+I like this future vision.
+
+I guess this patch is premature, as it operates in the same problem
+space. It tried to address uapi flexbility, by letting userspace define
+the uapi layout via BTF at map_create() time, and let kernel-side
+validate BTF-info and restrict possible struct member names, which are
+remapped to offsets inside the kernel.
+
+I'll instead wait for the future...
+
 -- 
-2.17.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
