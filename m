@@ -2,112 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD621F34AC
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 09:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC7F1F35EE
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 10:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgFIHMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 03:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbgFIHMk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 03:12:40 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 968E2207C3;
-        Tue,  9 Jun 2020 07:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591686759;
-        bh=Zoe/5AXhdJcm13q+lPAQH677WgRV+Gd44TJnwDEoY1I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VyTsQ+PU0OR2ZxRMKgar1E33sFQ+EPibbwHx2C8YiTQBrYxctPKKg6frtUC2ZRZAK
-         trl4gs9x0QbQPFF5dKzqRv2g3k77gZr06jFqK2pb+sRp4+jggKPkUSoHCN+nfOjqB3
-         uBPoctnKMHTG+TAr1IxxSCZ32fo2GrJeG1jRFF6o=
-Date:   Tue, 9 Jun 2020 16:12:34 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        mhiramat@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org
-Subject: Re: [PATCH] tracing/probe: Fix bpf_task_fd_query() for kprobes and
- uprobes
-Message-Id: <20200609161234.c0b1460e6a6ce73ba478a22a@kernel.org>
-In-Reply-To: <20200608124531.819838-1-jean-philippe@linaro.org>
-References: <20200608124531.819838-1-jean-philippe@linaro.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728234AbgFIIKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 04:10:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21524 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728029AbgFIIKe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jun 2020 04:10:34 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05982lTj137693;
+        Tue, 9 Jun 2020 04:10:31 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31hrn86urv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 04:10:31 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05983CKq139600;
+        Tue, 9 Jun 2020 04:10:31 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31hrn86uqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 04:10:30 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0598ACUH030386;
+        Tue, 9 Jun 2020 08:10:29 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 31g2s7t845-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 08:10:28 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0598AQY712058950
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Jun 2020 08:10:26 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3A7FA4066;
+        Tue,  9 Jun 2020 08:10:25 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C949A405C;
+        Tue,  9 Jun 2020 08:10:25 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Jun 2020 08:10:25 +0000 (GMT)
+From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
+To:     linux-perf-users@vger.kernel.org, acme@kernel.org
+Cc:     bpf@vger.kernel.org, jolsa@redhat.com, tmricht@linux.ibm.com,
+        heiko.carstens@de.ibm.com, mhiramat@kernel.org, iii@linux.ibm.com,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>
+Subject: [PATCH v2 0/2] perf: Fix bpf prologue generation, uaccess
+Date:   Tue,  9 Jun 2020 10:10:17 +0200
+Message-Id: <20200609081019.60234-1-sumanthk@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-09_02:2020-06-08,2020-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ phishscore=0 clxscore=1015 adultscore=0 mlxlogscore=924
+ cotscore=-2147483648 suspectscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006090056
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon,  8 Jun 2020 14:45:32 +0200
-Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
+Patches:
+1. Fix bpf prologue generation. bpf_probe_read is unavailable for arch
+   with overlapping address space.  If uaccess, use bpf_probe_read_user.
+   Otherwise, use bpf_probe_read_kernel.
+2. Fix uaccess in kprobes. Now perf probe add with @user attribute works
 
-> Commit 60d53e2c3b75 ("tracing/probe: Split trace_event related data from
-> trace_probe") removed the trace_[ku]probe structure from the
-> trace_event_call->data pointer. As bpf_get_[ku]probe_info() were
-> forgotten in that change, fix them now. These functions are currently
-> only used by the bpf_task_fd_query() syscall handler to collect
-> information about a perf event.
-> 
+v1->v2:
+- Split the patches and add Acked-By
 
-Oops, good catch!
+Thank you.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Sumanth Korikkar (2):
+  perf: Fix user attribute access in kprobes
+  perf: Fix bpf prologue generation
 
-
-> Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-
-Cc: stable@vger.kernel.org
-
-
-Thank you!
-
-> ---
-> Found while trying to run the task_fd_query BPF sample. I intend to try
-> and move that sample to kselftests since it seems like a useful
-> regression test.
-> ---
->  kernel/trace/trace_kprobe.c | 2 +-
->  kernel/trace/trace_uprobe.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 35989383ae113..8eeb95e04bf52 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1629,7 +1629,7 @@ int bpf_get_kprobe_info(const struct perf_event *event, u32 *fd_type,
->  	if (perf_type_tracepoint)
->  		tk = find_trace_kprobe(pevent, group);
->  	else
-> -		tk = event->tp_event->data;
-> +		tk = trace_kprobe_primary_from_call(event->tp_event);
->  	if (!tk)
->  		return -EINVAL;
->  
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 2a8e8e9c1c754..fdd47f99b18fd 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -1412,7 +1412,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
->  	if (perf_type_tracepoint)
->  		tu = find_probe_event(pevent, group);
->  	else
-> -		tu = event->tp_event->data;
-> +		tu = trace_uprobe_primary_from_call(event->tp_event);
->  	if (!tu)
->  		return -EINVAL;
->  
-> -- 
-> 2.27.0
-> 
-
+ tools/perf/util/bpf-prologue.c | 14 ++++++++++----
+ tools/perf/util/probe-event.c  |  7 +++++--
+ tools/perf/util/probe-file.c   |  2 +-
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
