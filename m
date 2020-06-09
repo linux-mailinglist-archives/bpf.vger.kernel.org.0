@@ -2,126 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C341F41C4
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 19:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E611F4225
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 19:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731525AbgFIRJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 13:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S1731707AbgFIR0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 13:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731522AbgFIRJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 13:09:28 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D538C05BD1E;
-        Tue,  9 Jun 2020 10:09:27 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t8so21067224ilm.7;
-        Tue, 09 Jun 2020 10:09:27 -0700 (PDT)
+        with ESMTP id S1726938AbgFIR0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 13:26:38 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D3CC05BD1E;
+        Tue,  9 Jun 2020 10:26:38 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t16so8292983plo.7;
+        Tue, 09 Jun 2020 10:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=OIlKxeZxM3e/pP7D/bVrWCwP7xeVBhGQH39vr/IlNIs=;
-        b=u1w/EfgUFymmbHhQDsMU3qROHhi0t0IiG3U4A/K0Ldw6Wz2phZUh8S4/UBNUxQ2Eb4
-         HeZuRu3CyqgYjOJOEgIPsqhtNfCBFo2H43Qfj5CMBe3nwzUU5opmFFCcTAwfbcdyYcu6
-         AB202oFgvbRH8OdGlA9C3g05TDw4K3g9X6U6j6LfUYehuWCwEOLT2SjxBdFAymGqMY4v
-         aFscgRjsTLRZcDXMPCyMeM0Jm8sLABe5wFiQo26g//dKH6T63DVao7OyFglC5FUy8Pka
-         UgHFNdPLlWgNxrPCcgkqwf4NcnzqKBTss1nj1w8LU4NwxfAabrLQOmVgq1eApQdTBpSR
-         e/FA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H0WCBbKlN3H2RLMXFyw7xfGn8ug6YqjVteAv3Iz89Go=;
+        b=YxyXQEdb19IlluMtrrYyZkmuPZufBxjhbsS1ZmiQxrFW+mUL+uYd8NEQ+CM1hqBTco
+         C3NIS+Gt+KcKlLV1UFWJscUEBOLUqAhSsJ7ulYW+tPZSYSQ9iRz4abW9LQ1oQTqqGZn9
+         Ejl8TgioygsdIWQNXfHgnGPGtW88SjQNosN1kZrsbuJ5ZKPpygLVIYEbmVPLrT+DhrSQ
+         V4fSBEW+/jx3ZFfoz9gPpHxYiPTHSUPNdfyQPjlBNgqoc/nskguVSEukkNmYt7rj+IDY
+         cp5mDEUF1bMkkGi89kKb7BZ87FRWFMnMs5HBXhxS4hdtImZUkLqQs8aBBJR3tG9t+Xpj
+         PW8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=OIlKxeZxM3e/pP7D/bVrWCwP7xeVBhGQH39vr/IlNIs=;
-        b=hZ1ZXbz2z/x8Ekw5Z+5wDi7+teAws21Q5KaG6LS+4HrHTTan65r9p/fNKOBCK/nxpy
-         2RbNKtVVCa1/svLRgBwUg1U/k4q29dbZTw4v9f9jho8IcGTgAmzYw5ywYIJMnduUYNpM
-         L/FkJVlq3XCjQkCdapjcyeRBcX31+d+bPZ5uylH3SNGu1uE1hggsH/csAt5KDSY3Qm8k
-         793uW9Txo1MyTcLPwrOuQnWA6Fx5driU7oEQcJ6kdxtAYxRtp49hvVNhMm7HizxLRXY9
-         T/e2m+kq/bzvXE9UkVX3aPAf1MSRRdEUAP1oTMqcB13RyJrbHh+5o4VbRMEldGLveJdL
-         uWWw==
-X-Gm-Message-State: AOAM530SfZv0oyUl0V86ht28Cysk/57TDS56LfnVDVUs8Z9Yh3Ptl7dT
-        ESt4mVfwZyYoV+yQdPSzBEA=
-X-Google-Smtp-Source: ABdhPJz3jHHUkB8Lb5+mbq05CxfJ2voNYFLh5a2c93QpZFppARqV3xBLsSfrenh9F57R4+9j6Kf0Ww==
-X-Received: by 2002:a92:c94b:: with SMTP id i11mr28699657ilq.177.1591722566898;
-        Tue, 09 Jun 2020 10:09:26 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id v87sm337515ili.2.2020.06.09.10.09.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H0WCBbKlN3H2RLMXFyw7xfGn8ug6YqjVteAv3Iz89Go=;
+        b=m1uOXM2tf2HNxkyNfh6o5sywkEVDf6RztHW8MO/lCET4+LXE45jFNHKQP2GAuhiW+R
+         5IPKn4nlM/C7Fhu5aQLoCRu6RxAZM7P+1pVRYV+sq/nK4B/pRw2Dhsf4IK2pGnTxFn2M
+         /fT0BU9Jinpn8aS+LghUibEc0Af6SCddUb+cf5x4GhTVcoukYQZRtLLGPusccSVayeZQ
+         MeZpilNPGEzhK4/gpu0QHxmHOKCz8FqAtlsOhTtZu6ors+kVAPs9EacgjMqCaSamQkio
+         0VDBBGNjXZLOj0+wRieSYGvj9ulqLpsTLbvtlDtDligzsrLXra1CeBOEkjLnhJY2eqE0
+         JMEA==
+X-Gm-Message-State: AOAM531Jgof8wzIoZo0CDeRJ680SDDPQbhGfDp4vIphto4lr/6k546aN
+        hJHJbgVMaiCBpI41PW68LgQ9rpXghf8=
+X-Google-Smtp-Source: ABdhPJzhGk/apyuUOFJO6BzMUHyvCz3QlCOAX63h65V9ueRQAu4EzZWL/Hg9pGwHI1YNJpxt9pWVnw==
+X-Received: by 2002:a17:90b:1495:: with SMTP id js21mr6000385pjb.48.1591723597857;
+        Tue, 09 Jun 2020 10:26:37 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id w190sm10390387pfw.35.2020.06.09.10.26.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 10:09:26 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 10:09:18 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <5edfc23e1bb3e_5cca2af6a27f45b8df@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200607205229.2389672-3-jakub@cloudflare.com>
-References: <20200607205229.2389672-1-jakub@cloudflare.com>
- <20200607205229.2389672-3-jakub@cloudflare.com>
-Subject: RE: [PATCH bpf 2/2] bpf, sockhash: Synchronize delete from bucket
- list on map free
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Tue, 09 Jun 2020 10:26:36 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        john.fastabend@gmail.com, toke@redhat.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        brouer@redhat.com, maciej.fijalkowski@intel.com,
+        bjorn.topel@intel.com
+Subject: [RFC PATCH bpf-next 0/2] bpf_redirect_map() tail call detection and xdp_do_redirect() avoidance
+Date:   Tue,  9 Jun 2020 19:26:20 +0200
+Message-Id: <20200609172622.37990-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> We can end up modifying the sockhash bucket list from two CPUs when a
-> sockhash is being destroyed (sock_hash_free) on one CPU, while a socket
-> that is in the sockhash is unlinking itself from it on another CPU
-> it (sock_hash_delete_from_link).
-> 
-> This results in accessing a list element that is in an undefined state as
-> reported by KASAN:
-> 
-> | ==================================================================
-> | BUG: KASAN: wild-memory-access in sock_hash_free+0x13c/0x280
-> | Write of size 8 at addr dead000000000122 by task kworker/2:1/95
-> |
-> | CPU: 2 PID: 95 Comm: kworker/2:1 Not tainted 5.7.0-rc7-02961-ge22c35ab0038-dirty #691
-> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-> | Workqueue: events bpf_map_free_deferred
-> | Call Trace:
-> |  dump_stack+0x97/0xe0
-> |  ? sock_hash_free+0x13c/0x280
-> |  __kasan_report.cold+0x5/0x40
-> |  ? mark_lock+0xbc1/0xc00
-> |  ? sock_hash_free+0x13c/0x280
-> |  kasan_report+0x38/0x50
-> |  ? sock_hash_free+0x152/0x280
-> |  sock_hash_free+0x13c/0x280
-> |  bpf_map_free_deferred+0xb2/0xd0
-> |  ? bpf_map_charge_finish+0x50/0x50
-> |  ? rcu_read_lock_sched_held+0x81/0xb0
-> |  ? rcu_read_lock_bh_held+0x90/0x90
-> |  process_one_work+0x59a/0xac0
-> |  ? lock_release+0x3b0/0x3b0
-> |  ? pwq_dec_nr_in_flight+0x110/0x110
-> |  ? rwlock_bug.part.0+0x60/0x60
-> |  worker_thread+0x7a/0x680
-> |  ? _raw_spin_unlock_irqrestore+0x4c/0x60
-> |  kthread+0x1cc/0x220
-> |  ? process_one_work+0xac0/0xac0
-> |  ? kthread_create_on_node+0xa0/0xa0
-> |  ret_from_fork+0x24/0x30
-> | ==================================================================
-> 
-> Fix it by reintroducing spin-lock protected critical section around the
-> code that removes the elements from the bucket on sockhash free.
-> 
-> To do that we also need to defer processing of removed elements, until out
-> of atomic context so that we can unlink the socket from the map when
-> holding the sock lock.
-> 
-> Fixes: 90db6d772f74 ("bpf, sockmap: Remove bucket->lock from sock_{hash|map}_free")
-> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
->  net/core/sock_map.c | 23 +++++++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
+I hacked a quick PoC, based on the input from my earlier post [1].
 
-Thanks.
+Quick recap; For certain XDP programs, would it be possible to get rid
+of the xdp_do_redirect() call (and the per-cpu write/read), and
+instead perform the action directly from the BPF helper? If so, that
+would potentially make the XDP_REDIRECT faster/less complex.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+This PoC/RFC teach the verifier to detect when an XDP program is
+structured such that all bpf_redirect_map() calls are tail calls. A
+driver can then probe the BPF program, use the new
+xdp_set_redirect_tailcall() function, and avoid the xdp_do_redirect()
+call. This was Toke's suggestion, instead of my XDP_CONSUMED idea,
+adding a new action.
+
+To perform the xdp_do_redirect() tasks from the bpf_redirect_map()
+helper, additional parameters are needed (XDP context, netdev, and XDP
+program). They are passed via the bpf_redirect_into per-cpu structure
+using the xdp_set_redirect_tailcall() function.
+
+Note that the code is broken for programs mixing bpf_redirect() and
+bpf_redirect_map()!
+
+There are more details in the commits.
+
+Is this a good idea? I have only measured for AF_XDP redirects, but
+all XDP_REDIRECT targets should benefit. For AF_XDP the rxdrop
+scenario went from 21.5 to 23.2 Mpps on my machine.
+
+Next steps would be implement proper tail calls (suggested by John and
+Alexei).
+
+Getting input on my (horrible) verifier peephole hack, and a better
+way to detect tail calls would be very welcome!
+
+Disregard naming and style. I'm mostly interested what people think
+about the concept, and if it's worth working on.
+
+Next steps:
+  * Better tail call detection in the verifier, instead of the naive
+    peephole version in patch 1.
+  * Implement proper tail calls (constrained, indirect jump BPF
+    instruction).
+
+
+Cheers,
+Björn
+
+[1] https://lore.kernel.org/bpf/CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com/
+
+Björn Töpel (2):
+  bpf, xdp: add naive bpf_redirect_map() tail call detection
+  i40e: avoid xdp_do_redirect() call when "redirect_tail_call" is set
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 14 ++++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c  | 14 ++++-
+ include/linux/bpf_verifier.h                |  2 +
+ include/linux/filter.h                      | 19 ++++++-
+ kernel/bpf/verifier.c                       | 53 +++++++++++++++++++
+ net/core/filter.c                           | 57 +++++++++++++++++++++
+ 6 files changed, 154 insertions(+), 5 deletions(-)
+
+
+base-commit: cb8e59cc87201af93dfbb6c3dccc8fcad72a09c2
+-- 
+2.25.1
+
