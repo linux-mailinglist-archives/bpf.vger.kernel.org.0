@@ -2,119 +2,256 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354561F345E
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 08:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA05B1F3495
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 09:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgFIGud (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 02:50:33 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32754 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726886AbgFIGud (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jun 2020 02:50:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591685432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMwcUIFPWAyOd8cKk46GmiqaJ7VH8w0Cpy4nyi0OjGc=;
-        b=Q2XX1BIcRvHh/Ffa/vOneVFLtSHNBU2WgyajTxzp9XVTiIr2U9z8txAdg4ZP1G9JfjKCr/
-        Xja7yaitye6uLhpV3ist3ib/FeOBnl9coc+NrcmYh2BBa1VPt3EJW/os/1bnWLn7sHxVMW
-        spaLPGcqbI+O9Xf8XKVKURsCMUZPvA8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-pfs1qKM-NFKoNWHgrO6dWA-1; Tue, 09 Jun 2020 02:50:28 -0400
-X-MC-Unique: pfs1qKM-NFKoNWHgrO6dWA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E95FC18FF661;
-        Tue,  9 Jun 2020 06:50:25 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5700F768C1;
-        Tue,  9 Jun 2020 06:50:18 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 08:50:17 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     gaurav singh <gaurav1086@gmail.com>
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
-Message-ID: <20200609085017.0d285568@carbon>
-In-Reply-To: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
-References: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
+        id S1727842AbgFIHA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 03:00:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61592 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727021AbgFIHA4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jun 2020 03:00:56 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0596VpAE123568;
+        Tue, 9 Jun 2020 03:00:55 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31huupq45b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 03:00:54 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0596WCp4125039;
+        Tue, 9 Jun 2020 03:00:53 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31huupq43m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 03:00:53 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0596pAWt013446;
+        Tue, 9 Jun 2020 07:00:51 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 31g2s7t731-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Jun 2020 07:00:51 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05970mgB46202912
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Jun 2020 07:00:48 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 354794204C;
+        Tue,  9 Jun 2020 07:00:48 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF75842057;
+        Tue,  9 Jun 2020 07:00:47 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.50.94])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Jun 2020 07:00:47 +0000 (GMT)
+Subject: Re: [PATCH] perf: Fix bpf prologue generation, user attribute access
+ in kprobes
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        jolsa@redhat.com, tmricht@linux.ibm.com, heiko.carstens@de.ibm.com,
+        mhiramat@kernel.org, iii@linux.ibm.com
+References: <20200604091028.101569-1-sumanthk@linux.ibm.com>
+ <20200608164327.GD3073@kernel.org>
+From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
+Message-ID: <fb0e9318-a905-0a77-524b-f6f16d670c22@linux.ibm.com>
+Date:   Tue, 9 Jun 2020 09:00:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200608164327.GD3073@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-09_01:2020-06-08,2020-06-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 cotscore=-2147483648 suspectscore=0 mlxscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006090046
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 6 Jun 2020 19:59:48 -0400
-gaurav singh <gaurav1086@gmail.com> wrote:
+Hi Arnaldo,
 
-> Hi,
-> 
-> The memset call is made right after malloc call. To fix this, add the null
-> check right after malloc and then do memset.
-> 
-> Please find the patch below.
+On 6/8/20 6:43 PM, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 04, 2020 at 11:10:28AM +0200, Sumanth Korikkar escreveu:
+>> Issues:
+>> 1. bpf_probe_read is no longer available for architecture which has
+>>     overlapping address space. Hence bpf prologue generation fails
+>> 2. perf probe -a 'do_sched_setscheduler  pid policy
+>>     param->sched_priority@user' did not work before.
+> This looks super nice, thanks for working on this!
+>
+> But please split this into multiple patches, one for the 'perf probe'
+> part, add the Acked-by provided by Masami to that one, and the other for
+> the part fixing the lack of bpf_probe_read(), ok?
+Thank you. Ok sure. I will send the split patches.
 
-The fix in your patch seem correct (although there are more places),
-but the way you send/submit the patch is wrong.  The patch itself also
-mangle whitespaces.
-
-You can read the guide:
-
- https://www.kernel.org/doc/html/latest/process/submitting-patches.html
- https://www.kernel.org/doc/html/latest/process/index.html
-
---Jesper
-
-
-> Thanks and regards,
-> Gaurav.
-> 
-> 
-> From 552b7df0e12572737929c60478b5dca2a40f4ad9 Mon Sep 17 00:00:00 2001
-> From: Gaurav Singh <gaurav1086@gmail.com>
-> Date: Sat, 6 Jun 2020 19:57:48 -0400
-> Subject: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
-> 
-> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
-> ---
->  samples/bpf/xdp_rxq_info_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/samples/bpf/xdp_rxq_info_user.c
-> b/samples/bpf/xdp_rxq_info_user.c
-> index 4fe47502ebed..490b07b7df78 100644
-> --- a/samples/bpf/xdp_rxq_info_user.c
-> +++ b/samples/bpf/xdp_rxq_info_user.c
-> @@ -202,11 +202,11 @@ static struct datarec *alloc_record_per_cpu(void)
-> 
->   size = sizeof(struct datarec) * nr_cpus;
->   array = malloc(size);
-> - memset(array, 0, size);
->   if (!array) {
->   fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
->   exit(EXIT_FAIL_MEM);
->   }
-> + memset(array, 0, size);
->   return array;
->  }
-> 
-
-
-
+Best Regards
+Sumanth
+>
+> Thanks!
+>
+> - Arnaldo
+>   
+>> Fixes:
+>> 1. Use bpf_probe_read_kernel for kernel member access. For user
+>>     attribute access in kprobes, bpf_probe_read_user is utilized
+>> 2. Make (perf probe -a 'do_sched_setscheduler  pid policy
+>>     param->sched_priority@user') output equivalent to ftrace
+>>     ('p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32
+>>     policy=%r3:s32 sched_priority=+u0 (%r4):s32' > kprobe_events)
+>>
+>> Other:
+>> 1. Right now, __match_glob() does not handle [u]<offset>. For now, use
+>>    *u]<offset>.
+>> 2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
+>>     Add user memory access attribute support")
+>>
+>> Test:
+>> 1. ulimit -l 128 ; ./perf record -e tests/bpf_sched_setscheduler.c
+>> 2. cat tests/bpf_sched_setscheduler.c
+>>
+>> static void (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
+>>          (void *) 6;
+>> static int (*bpf_probe_read_user)(void *dst, __u32 size,
+>>                                    const void *unsafe_ptr) = (void *) 112;
+>> static int (*bpf_probe_read_kernel)(void *dst, __u32 size,
+>>          const void *unsafe_ptr) = (void *) 113;
+>>
+>> SEC("func=do_sched_setscheduler  pid policy param->sched_priority@user")
+>> int bpf_func__setscheduler(void *ctx, int err, pid_t pid, int policy,
+>>                             int param)
+>> {
+>>          char fmt[] = "prio: %ld";
+>>          bpf_trace_printk(fmt, sizeof(fmt), param);
+>>          return 1;
+>> }
+>>
+>> char _license[] SEC("license") = "GPL";
+>> int _version SEC("version") = LINUX_VERSION_CODE;
+>>
+>> 3. ./perf script
+>>     sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
+>>     pid=261614 policy=2 sched_priority=1
+>>
+>> 4. cat /sys/kernel/debug/tracing/trace
+>>     <...>-309956 [006] .... 1616098.093957: 0: prio: 1
+>>
+>> 5. bpf_probe_read_user is used when @user attribute is used. Otherwise,
+>>     defaults to bpf_probe_read_kernel
+>>
+>> 6. ./perf test bpf (null_lseek - kernel member access)
+>> 42: BPF filter                                            :
+>> 42.1: Basic BPF filtering                                 : Ok
+>> 42.2: BPF pinning                                         : Ok
+>> 42.3: BPF prologue generation                             : Ok
+>> 42.4: BPF relocation checker                              : FAILED!
+>>
+>> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+>> Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
+>> ---
+>>   tools/perf/util/bpf-prologue.c | 14 ++++++++++----
+>>   tools/perf/util/probe-event.c  |  7 +++++--
+>>   tools/perf/util/probe-file.c   |  2 +-
+>>   3 files changed, 16 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/tools/perf/util/bpf-prologue.c b/tools/perf/util/bpf-prologue.c
+>> index b020a8678eb9..9887ae09242d 100644
+>> --- a/tools/perf/util/bpf-prologue.c
+>> +++ b/tools/perf/util/bpf-prologue.c
+>> @@ -142,7 +142,8 @@ static int
+>>   gen_read_mem(struct bpf_insn_pos *pos,
+>>   	     int src_base_addr_reg,
+>>   	     int dst_addr_reg,
+>> -	     long offset)
+>> +	     long offset,
+>> +	     int probeid)
+>>   {
+>>   	/* mov arg3, src_base_addr_reg */
+>>   	if (src_base_addr_reg != BPF_REG_ARG3)
+>> @@ -159,7 +160,7 @@ gen_read_mem(struct bpf_insn_pos *pos,
+>>   		ins(BPF_MOV64_REG(BPF_REG_ARG1, dst_addr_reg), pos);
+>>   
+>>   	/* Call probe_read  */
+>> -	ins(BPF_EMIT_CALL(BPF_FUNC_probe_read), pos);
+>> +	ins(BPF_EMIT_CALL(probeid), pos);
+>>   	/*
+>>   	 * Error processing: if read fail, goto error code,
+>>   	 * will be relocated. Target should be the start of
+>> @@ -241,7 +242,7 @@ static int
+>>   gen_prologue_slowpath(struct bpf_insn_pos *pos,
+>>   		      struct probe_trace_arg *args, int nargs)
+>>   {
+>> -	int err, i;
+>> +	int err, i, probeid;
+>>   
+>>   	for (i = 0; i < nargs; i++) {
+>>   		struct probe_trace_arg *arg = &args[i];
+>> @@ -276,11 +277,16 @@ gen_prologue_slowpath(struct bpf_insn_pos *pos,
+>>   				stack_offset), pos);
+>>   
+>>   		ref = arg->ref;
+>> +		probeid = BPF_FUNC_probe_read_kernel;
+>>   		while (ref) {
+>>   			pr_debug("prologue: arg %d: offset %ld\n",
+>>   				 i, ref->offset);
+>> +
+>> +			if (ref->user_access)
+>> +				probeid = BPF_FUNC_probe_read_user;
+>> +
+>>   			err = gen_read_mem(pos, BPF_REG_3, BPF_REG_7,
+>> -					   ref->offset);
+>> +					   ref->offset, probeid);
+>>   			if (err) {
+>>   				pr_err("prologue: failed to generate probe_read function call\n");
+>>   				goto errout;
+>> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+>> index eea132f512b0..7cdb66ef3baa 100644
+>> --- a/tools/perf/util/probe-event.c
+>> +++ b/tools/perf/util/probe-event.c
+>> @@ -1565,7 +1565,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
+>>   	}
+>>   
+>>   	tmp = strchr(str, '@');
+>> -	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
+>> +	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
+>>   		if (!user_access_is_supported()) {
+>>   			semantic_error("ftrace does not support user access\n");
+>>   			return -EINVAL;
+>> @@ -1986,7 +1986,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
+>>   		if (depth < 0)
+>>   			return depth;
+>>   	}
+>> -	err = strbuf_addf(buf, "%+ld(", ref->offset);
+>> +	if (ref->user_access)
+>> +		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
+>> +	else
+>> +		err = strbuf_addf(buf, "%+ld(", ref->offset);
+>>   	return (err < 0) ? err : depth;
+>>   }
+>>   
+>> diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+>> index 8c852948513e..064b63a6a3f3 100644
+>> --- a/tools/perf/util/probe-file.c
+>> +++ b/tools/perf/util/probe-file.c
+>> @@ -1044,7 +1044,7 @@ static struct {
+>>   	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
+>>   	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
+>>   	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
+>> -	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
+>> +	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
+>>   	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
+>>   	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
+>>   };
+>> -- 
+>> 2.25.4
+>>
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Sumanth Korikkar
 
