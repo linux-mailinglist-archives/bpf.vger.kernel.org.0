@@ -2,88 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91601F3376
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 07:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354561F345E
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 08:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgFIFaF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 01:30:05 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:65353 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgFIFaF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 01:30:05 -0400
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0595TCte076702;
-        Tue, 9 Jun 2020 14:29:12 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Tue, 09 Jun 2020 14:29:12 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0595TAji076692
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 9 Jun 2020 14:29:12 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
- <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
- <202006051903.C44988B@keescook> <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp>
- <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp>
- <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
- <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
- <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
- <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <ddabab93-4660-3a46-8b05-89385e292b75@i-love.sakura.ne.jp>
-Date:   Tue, 9 Jun 2020 14:29:09 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727909AbgFIGud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 02:50:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32754 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726886AbgFIGud (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jun 2020 02:50:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591685432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RMwcUIFPWAyOd8cKk46GmiqaJ7VH8w0Cpy4nyi0OjGc=;
+        b=Q2XX1BIcRvHh/Ffa/vOneVFLtSHNBU2WgyajTxzp9XVTiIr2U9z8txAdg4ZP1G9JfjKCr/
+        Xja7yaitye6uLhpV3ist3ib/FeOBnl9coc+NrcmYh2BBa1VPt3EJW/os/1bnWLn7sHxVMW
+        spaLPGcqbI+O9Xf8XKVKURsCMUZPvA8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-pfs1qKM-NFKoNWHgrO6dWA-1; Tue, 09 Jun 2020 02:50:28 -0400
+X-MC-Unique: pfs1qKM-NFKoNWHgrO6dWA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E95FC18FF661;
+        Tue,  9 Jun 2020 06:50:25 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5700F768C1;
+        Tue,  9 Jun 2020 06:50:18 +0000 (UTC)
+Date:   Tue, 9 Jun 2020 08:50:17 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     gaurav singh <gaurav1086@gmail.com>
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
+Message-ID: <20200609085017.0d285568@carbon>
+In-Reply-To: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
+References: <CAFAFadDVe1Au2eJ8ho_cK1riwf9FDaGck3o+VEcKpqRgO5qXdA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/09 10:28, Alexei Starovoitov wrote:
->> TOMOYO LSM module uses call_usermodehelper() from tomoyo_load_policy() in order to
->> load and apply security policy. What is so nice with fork_usermode_blob() compared
->> to existing call_usermodehelper(), at the cost of confusing LSM modules by allowing
->> file-less execve() request from fork_usermode_blob() ?
+On Sat, 6 Jun 2020 19:59:48 -0400
+gaurav singh <gaurav1086@gmail.com> wrote:
+
+> Hi,
 > 
-> For the same reason you did commit 0e4ae0e0dec6 ("TOMOYO: Make several options configurable.")
-> Quoting your words from that commit:
-> "To be able to start using enforcing mode from the early stage of boot sequence,
->  this patch adds support for activating access control without calling external
->  policy loader program."
+> The memset call is made right after malloc call. To fix this, add the null
+> check right after malloc and then do memset.
+> 
+> Please find the patch below.
+
+The fix in your patch seem correct (although there are more places),
+but the way you send/submit the patch is wrong.  The patch itself also
+mangle whitespaces.
+
+You can read the guide:
+
+ https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+ https://www.kernel.org/doc/html/latest/process/index.html
+
+--Jesper
+
+
+> Thanks and regards,
+> Gaurav.
+> 
+> 
+> From 552b7df0e12572737929c60478b5dca2a40f4ad9 Mon Sep 17 00:00:00 2001
+> From: Gaurav Singh <gaurav1086@gmail.com>
+> Date: Sat, 6 Jun 2020 19:57:48 -0400
+> Subject: [PATCH] bpf: alloc_record_per_cpu Add null check after malloc
+> 
+> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+> ---
+>  samples/bpf/xdp_rxq_info_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/samples/bpf/xdp_rxq_info_user.c
+> b/samples/bpf/xdp_rxq_info_user.c
+> index 4fe47502ebed..490b07b7df78 100644
+> --- a/samples/bpf/xdp_rxq_info_user.c
+> +++ b/samples/bpf/xdp_rxq_info_user.c
+> @@ -202,11 +202,11 @@ static struct datarec *alloc_record_per_cpu(void)
+> 
+>   size = sizeof(struct datarec) * nr_cpus;
+>   array = malloc(size);
+> - memset(array, 0, size);
+>   if (!array) {
+>   fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
+>   exit(EXIT_FAIL_MEM);
+>   }
+> + memset(array, 0, size);
+>   return array;
+>  }
 > 
 
-I can't catch what you mean. That commit is to allow not to call usermode helper.
 
-You can't start a usermode helper which requires access to filesystems (e.g. ELF loaders,
-shared libraries) before call_usermodehelper() can start a usermode helper which requires
-access to filesystems. Under such a restricted condition, what is nice with starting a
-usermode helper? Programs which can be started under such condition will be quite limited.
-My question is: why you can't use existing call_usermodehelper() (if you need to call
-a usermode helper) ?
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
