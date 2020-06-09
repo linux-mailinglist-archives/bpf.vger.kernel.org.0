@@ -2,105 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D422D1F46BA
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 21:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49581F4776
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 21:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgFITDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 15:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729806AbgFITDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 15:03:16 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2779C05BD1E;
-        Tue,  9 Jun 2020 12:03:15 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u5so10712132pgn.5;
-        Tue, 09 Jun 2020 12:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gGyIV6UxNUHV7DjM1a2LqubEJEXLMYkVW9VjppkBHpI=;
-        b=UIVuxdEN2zRdJRiCZmsVCLJ20AR0QoWuqHPqlvA5RFEkf/DSXtMInyukg02/TAyjdj
-         ixOTYtKq2jlN/6VDbasUZZsGnjjnFChSLpZuHk4qhJh+vm5tFkzQ0ESxrYgte5+525cO
-         JF03NhIm0sb6osnYtEV/yyZX9JJQSw7a/uMxhmjZ1rjtd4Kg0kgLrr6OuaROo6nQS6ym
-         u9xPBJ5AlGdyJe9s4pf7g9dvrKAzSE6PKTeTSwT0Uz4dytcUciOkI1+W4YNbiwdTeh5s
-         BaUn/gG06iFIIWcp5Abidmcc0PARVYa/LGrRYij5w2zTA/kdL/fgaLLuS8pcIqwNu5pQ
-         pAZA==
+        id S1731711AbgFITry (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 15:47:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48561 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731247AbgFITrx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 15:47:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591732071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xB1oD9kpoB9pl4KWasJnll/v8m3IdFvCXccjs79r90A=;
+        b=MkA7IAkZI76vLfkMeNzLMOdqVQ7Q9W2J6KV8/mMV10XVtX+JWDNp8hMXkq/xi+yfy2nmiz
+        GfEp4pZQaE0dPE9xdiquMLFlUNbz7AZ9LzEXzWF/vjAPM04c7i4vzHl/UFvfojR40HxOIH
+        Acav/Dq6TAgo4vzIvGoY7POTrgyAL/c=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-iwxJK8l3P6qbuPQacd9fsA-1; Tue, 09 Jun 2020 15:47:49 -0400
+X-MC-Unique: iwxJK8l3P6qbuPQacd9fsA-1
+Received: by mail-ed1-f71.google.com with SMTP id y25so8567334edv.10
+        for <bpf@vger.kernel.org>; Tue, 09 Jun 2020 12:47:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gGyIV6UxNUHV7DjM1a2LqubEJEXLMYkVW9VjppkBHpI=;
-        b=AXQznsyubVT2MpAgOG1WYSvE0yKh71K6/FemgXNJXuAp7HowjyeMjaFIeN0Epaxnni
-         bBy7WWB5ZhI7Jhf8s7ejV4TBDjYp5VYeNMi0DnQZA+HUoGLGnZqXlrGFeJdBZS4XSU4w
-         +JaBOmwUOoVhtbTkMXRlztRur+LatGta2n4T1PFPIsnrkUoIKAnumAyio0Ag92eQ13kk
-         hFL/iYBmZ7LEIpyFb4/O/hm62Wui5M4fqEfID5N1aLZCXVNvQAMP9OFzFLEIqIXAtpiH
-         IukVCeiy3rlVS0xOeAlCaAS2lRML9PPSwVlRMBnYQFW7ySt+gqGviR2j3nRvm69FMpYd
-         ge8Q==
-X-Gm-Message-State: AOAM530eP9cpx0TbE+QETKmCm6SZXJ+kbB81tmPlx44lbF3wp2jSaZi/
-        AyiTcGbm+OYvNuvKF7jPyQc=
-X-Google-Smtp-Source: ABdhPJxmm43xmoi3b4iNxuTyglXh970KPyLvSJMVBn3QPi9G7NOT50VlUOA70Ek8sFwpEWMAsvKhNQ==
-X-Received: by 2002:a63:5961:: with SMTP id j33mr25841067pgm.372.1591729395179;
-        Tue, 09 Jun 2020 12:03:15 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:73f9])
-        by smtp.gmail.com with ESMTPSA id w10sm9155982pgm.70.2020.06.09.12.03.13
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=xB1oD9kpoB9pl4KWasJnll/v8m3IdFvCXccjs79r90A=;
+        b=k47Yb/jsMxqDV9qaY1iHEIUevRgFdMASgx/yMfAT8uzXeRZFEc7yYitm/ECPIo5NA1
+         BJlynr2NdXzndqeGhDkfxAR1+aw1M67gE3VPAgMHdapuDo3ceg9ZldLRpIVVWchstE4e
+         pla70XgmGtrzHLzNwTqXtdXZh1l18LCYMIEwxSlQObkri8NqtKA3aNgp1xWX+dVStahg
+         LckyswT4F07GGpuzutgXLzOT2seE4Tw6tSHpL293b3lYni6c8DFmAm9q7QgrAT6YHStV
+         uJKaDfBLkWoqyxocgEPvYMGVUVgUqr2rfMKPtq2GDUjYR6w2I9BheNo8JvZrN4yHTfT8
+         kE+g==
+X-Gm-Message-State: AOAM533olyOPdGpuLfM9k5z0c0BS+o4mSGDPOZQ5Rtk14F/KO14cjxmO
+        q03PBiU+H4o4FXo7ANu/fL3AbwBkXKsf/MxN6IQrYTcSoZmcDlHoZMksSBTa0lZ6wFECUzQVsTO
+        w4HP5Kd5k4y5v
+X-Received: by 2002:a17:906:1d55:: with SMTP id o21mr26230175ejh.491.1591732068630;
+        Tue, 09 Jun 2020 12:47:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyf1sNKkLWeyTjzQSEoqtchZN5z8CNGMjaxb4kfu1oo54GerCMlQme8NBryBKoVoCUZzk2NIA==
+X-Received: by 2002:a17:906:1d55:: with SMTP id o21mr26230158ejh.491.1591732068366;
+        Tue, 09 Jun 2020 12:47:48 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id p6sm13932648ejb.71.2020.06.09.12.47.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 12:03:14 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 12:03:12 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: Re: [PATCH bpf V2 0/2] bpf: adjust uapi for devmap prior to kernel
- release
-Message-ID: <20200609190312.cymwvcbxdnrelatx@ast-mbp.dhcp.thefacebook.com>
-References: <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
- <159170947966.2102545.14401752480810420709.stgit@firesoul>
+        Tue, 09 Jun 2020 12:47:47 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0A9B8180654; Tue,  9 Jun 2020 21:47:47 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        john.fastabend@gmail.com
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        brouer@redhat.com, maciej.fijalkowski@intel.com
+Subject: Re: [RFC PATCH bpf-next 2/2] i40e: avoid xdp_do_redirect() call when "redirect_tail_call" is set
+In-Reply-To: <20200609172622.37990-3-bjorn.topel@gmail.com>
+References: <20200609172622.37990-1-bjorn.topel@gmail.com> <20200609172622.37990-3-bjorn.topel@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 09 Jun 2020 21:47:46 +0200
+Message-ID: <87r1uo81i5.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159170947966.2102545.14401752480810420709.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 03:31:41PM +0200, Jesper Dangaard Brouer wrote:
-> For special type maps (e.g. devmap and cpumap) the map-value data-layout is
-> a configuration interface. This is uapi that can only be tail extended.
-> Thus, new members (and thus features) can only be added to the end of this
-> structure, and the kernel uses the map->value_size from userspace to
-> determine feature set 'version'.
-> 
-> For this kind of uapi to be extensible and backward compatible, is it common
-> that new members/fields (that represent a new feature) in the struct are
-> initialized as zero, which indicate that the feature isn't used. This makes
-> it possible to write userspace applications that are unaware of new kernel
-> features, but just include latest uapi headers, zero-init struct and
-> populate features it knows about.
-> 
-> The recent extension of devmap with a bpf_prog.fd requires end-user to
-> supply the file-descriptor value minus-1 to communicate that the features
-> isn't used. This isn't compatible with the described kABI extension model.
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 
-Applied to bpf tree without this cover letter, because I don't want
-folks to read above and start using kabi terminology liks this.
-I've never seen a definition of kabi. I've heard redhat has something, but
-I don't know what it is and really not interested to find out.
-Studying amd64 psABI, sparc psABI, gABI was enough of time sink.
-When folks use ABI they really mean binary. 
-Old binaries that use devmap_val will work as-is with newer kernel.
-There is no binary breakage due to devmap_val.
-Whereas what you describe above is what will happen if something gets
-recompiled. It's an API quirk. And arguable not an UAPI breakage.
-UAPI structs have to initialized.
-There is a struct and there is initializer for it.
-Like if you did 'spinlock_t lock;' and it got broken with new kernel
-it's programmers fault. It's not uapi and certainly not abi issue.
-DEFINE_SPINLOCK() should have been used.
-Same thing with user space.
-'struct bpf_devmap_val' would be ok from uapi pov even with -1.
-It's just much more convenient to have zero init. Less error prone, etc.
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> If an XDP program, where all the bpf_redirect_map() calls are tail
+> calls (as defined by the previous commit), the driver does not need to
+> explicitly call xdp_do_redirect().
+>
+> The driver checks the active XDP program, and notifies the BPF helper
+> indirectly via xdp_set_redirect_tailcall().
+>
+> This is just a naive, as-simple-as-possible implementation, calling
+> xdp_set_redirect_tailcall() for each packet.
+
+Do you really need the driver changes? The initial setup could be moved
+to bpf_prog_run_xdp(), and xdp_do_redirect() could be changed to an
+inline wrapper that just checks a flag and immediately returns 0 if the
+redirect action was already performed. Or am I missing some reason why
+this wouldn't work?
+
+-Toke
+
