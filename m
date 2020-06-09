@@ -2,126 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAD01F31FE
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 03:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1E11F3207
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 03:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgFIB2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jun 2020 21:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S1727005AbgFIBeQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jun 2020 21:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgFIB2b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jun 2020 21:28:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEC6C03E969;
-        Mon,  8 Jun 2020 18:28:30 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id m2so642736pjv.2;
-        Mon, 08 Jun 2020 18:28:30 -0700 (PDT)
+        with ESMTP id S1726013AbgFIBeP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jun 2020 21:34:15 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23052C03E969;
+        Mon,  8 Jun 2020 18:34:14 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d10so9583452pgn.4;
+        Mon, 08 Jun 2020 18:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=/PrxdzanFtzivOl3Sfi1aaLSqEOyJZliRgx5aBR5kA8=;
-        b=Z9r90gU9ch4ro1ELqinZ9peFG9SeQgLlzRhb+EOKO4g+fgXOyTTn783DcPbMndH2QX
-         vo9SUTSg6L7uRuNCfall8o+o2y1EoFYfLxe4xoNZ602CgvDiRjz5jTs/U28krFQtCXfq
-         t5JjqG/vARt2Z5qA0Su20/vzlrITjdHthHTcO3kbVEp20VotbXYdpWOfQL1YgbKCIhqi
-         37XsWN9Mxz1U59mjG4DUziIFp713bzkRaopjJnbn99uL2dfSBKsmdW5VPrvenmvd7HYP
-         yhTLm/PHNrTj3dmKfyeoYUhUVaN51X3ed1KJHTP6+ocaZtj5kXCqcW1nHBD15wUit2Qi
-         Zhjw==
+        bh=jhL9ib6Qh1vBgJAv4YXNv9y7jnx3ua/7/dlVLGaEkfU=;
+        b=f5sLNW9gYB2SmY/52HyeO/PqFaZQO0Fz3S2bogmvU9vHk+mLFcbRiJRwjZ0nwy268q
+         2db9ANGqcY3F1dB+z0Kt7fJ94Qhz1t1LHzR+ENG1m+gpWfCf4/oiolvKSd5LeWuCCyFM
+         lJk9OiISOcoy+fSwNg6uLyro1kBQMgm+o2oTaVtqoxud8n0a0hLayxujWw1MGgSMZrfP
+         o3IBBLRTDGNheTxRJthGGDAb7ITFwVRJc/5rcdr7ba+yDKR9feLxGFyA99cDcRjH7QTk
+         MA8DkGTVcj5gohyHAOtUqt7XzqW3ipyemBSnhTNyUCL+vk2n6iogXZ9Pqx32xhOB7BEU
+         J0kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/PrxdzanFtzivOl3Sfi1aaLSqEOyJZliRgx5aBR5kA8=;
-        b=rI4YEx0hdSnKVL7Lcz6mRuyQFYgmvFJaxLfxE6Y/OhEe1jT0LV2YTtdjW69i0ojX4v
-         h8Y9/VFb8eQYniTzD/DXIzBns+ed4PdTkLyAFxjYL3vF/gkDl+rfW1OzYv2Q6pHgx6Dm
-         qZ2zSGR6bUK43/OQgO/kd8cfA5nM7PIOChm6KOrX69LNeiWDTshjFRRGPNf96r+c6COB
-         rI6xCY9g+625iE+Xao8wqDMh5qzGMAzaOHjvhHMY9gU7pFUUchoY+via95yslF1x/EuC
-         j5T/3h1e7/NyColSoqOhtWfUXFCWuK7QalwI6gFDhjKo6t1Dw8AlwlvOoUK8GBQtCbk/
-         dmiA==
-X-Gm-Message-State: AOAM533br4uPCFPhfPQz+XnG0bal3cA/qvySdTb87tOVDB9OgT96bIRp
-        zWgsoo51mDOtriX8kLG/9Og=
-X-Google-Smtp-Source: ABdhPJzfMCt7IHrLFWZyU8KJNkaWCbROB3mi7kvkG8AEBLpzWrGizA6jeZ/fMfQeHYAy0pQr7eksXw==
-X-Received: by 2002:a17:90a:1d46:: with SMTP id u6mr2183173pju.146.1591666109952;
-        Mon, 08 Jun 2020 18:28:29 -0700 (PDT)
+        bh=jhL9ib6Qh1vBgJAv4YXNv9y7jnx3ua/7/dlVLGaEkfU=;
+        b=MxjUcJkMa9ZbMcVQ93zCYq2Y6GVeDagAn1h79EkWMI1/C6g6rhQinRvuGnnhOl7xu+
+         jjIspF7q/4WgyJt5wfWUad1LuZIP+GYuZ47HdWfyDgIDni5DByT7vXBAHds6VBqNu8T+
+         +zcJuN54x4CGearJsMs/RXYvK4cUAQRhnKSF0NNFc/WcSrfo1FOHn8rl0iUdzTBGgkUY
+         DMKCu66Mzxj+ogxpfNf1c/+8QtSsnxI5kJfhpfR2jPn8hX7Kt2tw7qfRrysp3mxWN6iO
+         OIkYnxlVGKdIc5WCfFYps7c+Q0JCCv50krrHEEfTEbaedUKLHmSw16nEBK93iSxR9vQu
+         01Gw==
+X-Gm-Message-State: AOAM531PTVRmRBMWnKntnq4CHswE/v+U1LF7LfsTVijTXDR0a0rV/PXf
+        HdthRHYDi+VU2YsG8DakwsNS2O6j
+X-Google-Smtp-Source: ABdhPJz5b8azXlyQZ+ntJNGoYOVwRSbF2b0SQ5/7EuoM0alvySRf/6LZepFHVXhxris5byjHMJEMaw==
+X-Received: by 2002:a63:7a12:: with SMTP id v18mr22906725pgc.131.1591666453433;
+        Mon, 08 Jun 2020 18:34:13 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:73f9])
-        by smtp.gmail.com with ESMTPSA id i21sm6930297pgn.20.2020.06.08.18.28.27
+        by smtp.gmail.com with ESMTPSA id e78sm8290079pfh.50.2020.06.08.18.34.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 18:28:29 -0700 (PDT)
-Date:   Mon, 8 Jun 2020 18:28:26 -0700
+        Mon, 08 Jun 2020 18:34:12 -0700 (PDT)
+Date:   Mon, 8 Jun 2020 18:34:10 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-Message-ID: <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
-References: <20200329005528.xeKtdz2A0%akpm@linux-foundation.org>
- <13fb3ab7-9ab1-b25f-52f2-40a6ca5655e1@i-love.sakura.ne.jp>
- <202006051903.C44988B@keescook>
- <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp>
- <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp>
- <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
- <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
- <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: Re: [PATCH bpf 0/3] bpf: avoid using/returning file descriptor value
+ zero
+Message-ID: <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
+References: <159163498340.1967373.5048584263152085317.stgit@firesoul>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
+In-Reply-To: <159163498340.1967373.5048584263152085317.stgit@firesoul>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 08:22:13AM +0900, Tetsuo Handa wrote:
-> On 2020/06/09 1:23, Alexei Starovoitov wrote:
-> > On Sun, Jun 07, 2020 at 11:31:05AM +0900, Tetsuo Handa wrote:
-> >> On 2020/06/07 10:49, Alexei Starovoitov wrote:
-> >>> So you're right that for most folks user space is the
-> >>> answer. But there are cases where kernel has to have these things before
-> >>> systemd starts.
-> >>
-> >> Why such cases can't use init= kernel command line argument?
-> >> The program specified via init= kernel command line argument can do anything
-> >> before systemd (a.k.a. global init process) starts.
-> >>
-> >> By the way, from the LSM perspective, doing a lot of things before global init
-> >> process starts is not desirable, for access decision can be made only after policy
-> >> is loaded (which is generally when /sbin/init on a device specified via root=
-> >> kernel command line argument becomes ready). Since
-> >> fork_usermode_blob((void *) "#!/bin/true\n", 12, info) is possible, I worry that
-> >> the ability to start userspace code is abused for bypassing dentry/inode-based
-> >> permission checks.
-> > 
-> > bpf_lsm is that thing that needs to load and start acting early.
-> > It's somewhat chicken and egg. fork_usermode_blob() will start a process
-> > that will load and apply security policy to all further forks and execs.
+On Mon, Jun 08, 2020 at 06:51:12PM +0200, Jesper Dangaard Brouer wrote:
+> Make it easier to handle UAPI/kABI extensions by avoid BPF using/returning
+> file descriptor value zero. Use this in recent devmap extension to keep
+> older applications compatible with newer kernels.
 > 
-> fork_usermode_blob() would start a process in userspace, but early in the boot
-> stage means that things in the kernel might not be ready to serve for userspace
-> processes (e.g. we can't open a shared library before a filesystem containing
-> that file becomes ready, we can't mount a filesystem before mount point becomes
-> ready, we can't access mount point before a device that contains that directory
-> becomes ready).
-> 
-> TOMOYO LSM module uses call_usermodehelper() from tomoyo_load_policy() in order to
-> load and apply security policy. What is so nice with fork_usermode_blob() compared
-> to existing call_usermodehelper(), at the cost of confusing LSM modules by allowing
-> file-less execve() request from fork_usermode_blob() ?
+> For special type maps (e.g. devmap and cpumap) the map-value data-layout is
+> a configuration interface. This is a kernel Application Binary Interface
+> (kABI) that can only be tail extended. Thus, new members (and thus features)
+> can only be added to the end of this structure, and the kernel uses the
+> map->value_size from userspace to determine feature set 'version'.
 
-For the same reason you did commit 0e4ae0e0dec6 ("TOMOYO: Make several options configurable.")
-Quoting your words from that commit:
-"To be able to start using enforcing mode from the early stage of boot sequence,
- this patch adds support for activating access control without calling external
- policy loader program."
+please drop these kabi references. As far as I know kabi is a redhat invention
+and I'm not even sure what exactly it means.
+'struct bpf_devmap_val' is uapi. No need to invent new names for existing concept.
+
+> The recent extension of devmap with a bpf_prog.fd requires end-user to
+> supply the file-descriptor value minus-1 to communicate that the features
+> isn't used. This isn't compatible with the described kABI extension model.
+
+non-zero prog_fd requirement exists already in bpf syscall. It's not recent.
+So I don't think patch 1 is appropriate at this point. Certainly not
+for bpf tree. We can argue about it usefulness when bpf-next reopens.
+For now I think patches 2 and 3 are good to go.
+Don't delete 'enum sk_action' in patch 2 though.
+The rest looks good to me.
+Thanks!
