@@ -2,133 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C021F3D8B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 16:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8EC1F3EE5
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 17:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgFIOFS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 10:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729793AbgFIOFR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 10:05:17 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDE8C05BD1E
-        for <bpf@vger.kernel.org>; Tue,  9 Jun 2020 07:05:17 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id l12so18719908ejn.10
-        for <bpf@vger.kernel.org>; Tue, 09 Jun 2020 07:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5hepcAY2/ehcC2QRXTzcnN6zPc+QLUZRF3NIFXI3NgY=;
-        b=CU9j5ULLQAwSyo5lzgoEK/VLxHk2fXaIjC83AeSXtVcYBK0qoA04HYDsrHYWVeMvS+
-         YGjAt81DhuozocMhJKbMfw/IqDZevlAoWNtcX4AiEc/Fr4TgLpg+9VoJcdEwNYhAac/I
-         X5nBwrg1GDIxiodJQUkQ15xrodKbrpaDomhYTVTMy5SYPxpIf2zlk6JMKIB+GF+BVINc
-         2lXvzaNWSzQuEn/j/IhOdfhX/ndgoVv4UKiDhGCKbBKgoHSGpB58+pEvHSvU8sxmOWuj
-         AVoSnoh2CKfWYLHw1KaE7T8Rd3XaaB3y3wlPdRGomcfI7alCTX0vQo9XCn7L+Yj22+BS
-         RDiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5hepcAY2/ehcC2QRXTzcnN6zPc+QLUZRF3NIFXI3NgY=;
-        b=Budq7Yq+Bh+ReBiwCeKESsicNaPviKj26BvKvRdfWbTwxx16JG6JNvqxP3fy+zjYaJ
-         8CHdUrK6jmJKduJkKxuuZWlBheTh0dA8F7IOk4zquBKVmoj4CwciNl9c2j88pxRYo52s
-         sbN/mXmxpszni9jsCLpISZzm3YK0fxBVs0+7V0TuDZ0WKLgVAFgat9n1GtG0wgvIP7MY
-         r7y6lwy2dbsIsUBU/jf16ZPCng626on8kqHxpYSbW1+bDMMC1XKGul/klJW68n1ugWas
-         6ysLaQ3eZYUCrvJb5ejfnNMZY/eLY9M3bmihmssg+EAOhn0sP3Ztz4DDfH6V3bn+gnUm
-         jgIQ==
-X-Gm-Message-State: AOAM533Zzvj266OotoXFjgp2aNAVGm/MWulifnuZAzYhZTiUnlDHEhGc
-        /+1cZ2EKSNfdduUUS+qphEqH0A==
-X-Google-Smtp-Source: ABdhPJzg++2o5ePPL5lY4GZatvE+sm6jWJ3OClVthRqg01qkSFwIJ27W183rZIEmcXKonTMixnWQNw==
-X-Received: by 2002:a17:906:2656:: with SMTP id i22mr24427488ejc.397.1591711516099;
-        Tue, 09 Jun 2020 07:05:16 -0700 (PDT)
-Received: from myrica ([2001:171b:226e:c200:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id k24sm3844512edk.95.2020.06.09.07.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 07:05:15 -0700 (PDT)
-Date:   Tue, 9 Jun 2020 16:05:04 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf] libbpf: Fix BTF-to-C conversion of noreturn function
- pointers
-Message-ID: <20200609140504.GA915559@myrica>
-References: <20200608152052.898491-1-jean-philippe@linaro.org>
- <CAEf4BzaNaHGBxNLdA1RA7VPou7ypO3Z5XBRG5gpkePx4g27yWA@mail.gmail.com>
+        id S1729615AbgFIPJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 11:09:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728082AbgFIPJe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 11:09:34 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D0E020734;
+        Tue,  9 Jun 2020 15:09:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591715373;
+        bh=/nRvt+5AL7C5WRv+m7bP14Y+g2kcLzTwbrBIMA/iLt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mqQkVko8c+sV31lA4O9JYS24s3il9F7KAuaX6YOtMDplLdvF9ZY7/RgHql1ll+h8F
+         cJCp3UxFlxSzhLSHq3GSSB3ip84Jl3p5DqQCWJ84wx2MOCmP3LEgiAYXELQiolj4CX
+         jDCx8AH37m1387G7jZxgJbWW3xyzdQ0bXmdyWVu0=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 32A9A40AFD; Tue,  9 Jun 2020 12:09:31 -0300 (-03)
+Date:   Tue, 9 Jun 2020 12:09:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        jolsa@redhat.com, tmricht@linux.ibm.com, heiko.carstens@de.ibm.com,
+        mhiramat@kernel.org, iii@linux.ibm.com
+Subject: Re: [PATCH v2 1/2] perf: Fix user attribute access in kprobes
+Message-ID: <20200609150931.GC24868@kernel.org>
+References: <20200609081019.60234-1-sumanthk@linux.ibm.com>
+ <20200609081019.60234-2-sumanthk@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaNaHGBxNLdA1RA7VPou7ypO3Z5XBRG5gpkePx4g27yWA@mail.gmail.com>
+In-Reply-To: <20200609081019.60234-2-sumanthk@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 04:50:37PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jun 8, 2020 at 8:23 AM Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
-> >
-> > When trying to convert the BTF for a function pointer marked "noreturn"
-> > to C code, bpftool currently generates a syntax error. This happens with
-> > the exit() pointer in drivers/firmware/efi/libstub/efistub.h, in an
-> > arm64 vmlinux. When dealing with this declaration:
-> >
-> >         efi_status_t __noreturn (__efiapi *exit)(...);
-> >
-> > bpftool produces the following output:
-> >
-> >         efi_status_tvolatile  (*exit)(...);
+Em Tue, Jun 09, 2020 at 10:10:18AM +0200, Sumanth Korikkar escreveu:
+> Issue:
+> perf probe -a 'do_sched_setscheduler  pid policy
+> param->sched_priority@user' did not work before.
 > 
+> Fix:
+> Make (perf probe -a 'do_sched_setscheduler  pid policy
+> param->sched_priority@user') output equivalent to ftrace
+> ('p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32 policy=%r3:s32
+> sched_priority=+u0(%r4):s32' > kprobe_events)
 > 
-> I'm curious where this volatile is coming from, I don't see it in
-> __efiapi. But even if it's there, shouldn't it be inside parens
-> instead:
+> Other:
+> 1. Right now, __match_glob() does not handle [u]<offset>. For now, use
+>   *u]<offset>.
+> 2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
+>    Add user memory access attribute support")
 > 
-> efi_status_t (volatile *exit)(...);
-
-It's the __noreturn attribute that becomes "volatile", not the __efiapi.
-My reproducer is:
-
-  struct my_struct {
-          void __attribute__((noreturn)) (*fn)(int);
-  };
-  struct my_struct a;
-
-When generating DWARF info for this, GCC inserts a DW_TAG_volatile_type.
-Clang doesn't add a volatile tag, it just omits the noreturn qualifier.
-From what I could find, it's due to legacy "noreturn" support in GCC [1]:
-before version 2.5 the only way to declare a noreturn function was to
-declare it volatile.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/Function-Attributes.html
-
-Given that not all compilers turn "noreturn" into "volatile", and that I
-haven't managed to insert any other modifier (volatile/const/restrict) in
-this location (the efistub example above is the only issue on an
-allyesconfig kernel), I was considering simply removing this call to
-btf_dump_emit_mods(). But I'm not confident enough that it won't ever be
-necessary.
-
-> > Fix the error by inserting the space before the function modifier.
-> >
-> > Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
-> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > ---
+> Test:
+> 1. perf probe -a 'do_sched_setscheduler  pid policy
+>    param->sched_priority@user'
 > 
-> Can you please add tests for this case into selftests (probably
-> progs/btf_dump_test_case_syntax.c?) So it's clear what's the input and
-> what's the expected output.
+> 2 ./perf script
+>    sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
+>    pid=261614 policy=2 sched_priority=1
+> 
+> 3. cat /sys/kernel/debug/tracing/trace
+>    <...>-309956 [006] .... 1616098.093957: 0: prio: 1
 
-Those tests are built with clang, which doesn't emit the "volatile"
-modifier. Should I add a separate test for GCC?
+Thanks, I'm adding this:
 
-Thanks,
-Jean
+Fixes: 1e032f7cfa14 ("perf-probe: Add user memory access attribute support")
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+So that the stable guys pick this up eventually,
+
+That first hunk with the strcmp() return check could have gone into a
+separate patch, but I'll process it as-is for expediency,
+
+- Arnaldo
+ 
+> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  tools/perf/util/probe-event.c | 7 +++++--
+>  tools/perf/util/probe-file.c  | 2 +-
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> index a08f373d3305..df713a5d1e26 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -1575,7 +1575,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
+>  	}
+>  
+>  	tmp = strchr(str, '@');
+> -	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
+> +	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
+>  		if (!user_access_is_supported()) {
+>  			semantic_error("ftrace does not support user access\n");
+>  			return -EINVAL;
+> @@ -1995,7 +1995,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
+>  		if (depth < 0)
+>  			return depth;
+>  	}
+> -	err = strbuf_addf(buf, "%+ld(", ref->offset);
+> +	if (ref->user_access)
+> +		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
+> +	else
+> +		err = strbuf_addf(buf, "%+ld(", ref->offset);
+>  	return (err < 0) ? err : depth;
+>  }
+>  
+> diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+> index 8c852948513e..064b63a6a3f3 100644
+> --- a/tools/perf/util/probe-file.c
+> +++ b/tools/perf/util/probe-file.c
+> @@ -1044,7 +1044,7 @@ static struct {
+>  	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
+>  	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
+>  	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
+> -	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
+> +	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
+>  	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
+>  	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
+>  };
+> -- 
+> 2.17.1
+> 
+
+-- 
+
+- Arnaldo
