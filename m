@@ -2,105 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90541F375F
-	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 11:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0A31F39E5
+	for <lists+bpf@lfdr.de>; Tue,  9 Jun 2020 13:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgFIJz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 05:55:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49005 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728068AbgFIJz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 05:55:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591696525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8fFbCsU1oSPk2DqSBeHz33w2HQ4HTjTHQAGGZ09Klps=;
-        b=hS8268edcJphAsV4Jk0gX2jYsWkZZ3b7WxgGG3OYY2h6j0SfaXqnlCZstr1IA5fiEY7KDm
-        lJia/8XOyrnfYznfqF2fU9EyoAGTwb9s9Wo9F442fDhHiZiPu+sVYz+988j5o9J/npFa1c
-        xS/hvb3+UK2xSTRLKPIMO2KlZXna5sI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-LrN1mwcBP5yToYNUaMAEOQ-1; Tue, 09 Jun 2020 05:55:22 -0400
-X-MC-Unique: LrN1mwcBP5yToYNUaMAEOQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0EBA461;
-        Tue,  9 Jun 2020 09:55:20 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A1E02B580;
-        Tue,  9 Jun 2020 09:55:15 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 11:55:13 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH bpf 0/3] bpf: avoid using/returning file descriptor
- value zero
-Message-ID: <20200609115513.2422b53a@carbon>
-In-Reply-To: <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
-References: <159163498340.1967373.5048584263152085317.stgit@firesoul>
-        <20200609013410.5ktyuzlqu5xpbp4a@ast-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1729061AbgFILjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 07:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729009AbgFILjk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:39:40 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7FEC05BD1E;
+        Tue,  9 Jun 2020 04:39:38 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id n11so20396557qkn.8;
+        Tue, 09 Jun 2020 04:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=wlYOKY2I6wi0AZVoSy6PBE75mux/rrdwmF8a8HBdn5M=;
+        b=ldS3WwZQWTk8bDSo8NDt5VogtC72qUiaBdLyNmHMC8Na3TD+2I3riqEBMX9k/bv+9Y
+         S1o5oKbL6sDjCNhOfrfB6gt5xc6SYsPVzEQHv4BQdY3ZCTIj1o7CUkmks+CtvzTADCHm
+         WWfro0C6furMkC0n/rJJYwN9ke/lpL0ztj4F4Useg660aeEhdvCs6AHnETcKRt5zv1M+
+         e5+5VYhldjoNZYuvdsrdbO13Jhoe41zlzAhXTiJizXHMMxEAPcVTGrBXoEVTGrpH2A5H
+         TwFm8fk2JpTUlL4RbBYcP97AauT7BIaThq2W63+ZFVuacDlWHCRxND6GBGp21VuKOTOm
+         eWGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=wlYOKY2I6wi0AZVoSy6PBE75mux/rrdwmF8a8HBdn5M=;
+        b=BT0uDdLAtpvS+dpYN0v0RaPNC0k7Sr/vN1gjxxRH/WX7G6OeGW9ghupSwS3V4+eEqa
+         RNMYo1fBFdT4w5mUB0o1hWKH6zCinzrIr6Kt8U8//VlC3XKhhPSCXE7cc+S7z08CZjVc
+         7zLwRrC7XgDu20e0oZ6z5TA5hIdfs5utIKP8mvrB3AFs/THQjHOdLD5tI3HupYllZQyT
+         wOtAbgdiQouFWcrpyP7IAn75Wrqk2hznK2arq0Dylh+xYw1ym3gqAG8why5kdJUPJyCQ
+         UjV1NrCThNQorPbA3dCMRduLIkShQL/jLmVNWWg3vwrmbUY46zmcZ5l6+yICLWMUf/1Q
+         DbLQ==
+X-Gm-Message-State: AOAM533hLRUHmIu7A0ScNiZdcbj46fbr1GVe+xHqjD8+NC8EKoVFnYzH
+        fHbpm+qU6im46ji7V07m7/E=
+X-Google-Smtp-Source: ABdhPJyETuxHuDwV7vkN1AD62FuGp1fzYttn8Uu7IuV44VL/4wUSxOlnH0PrL/NZQOuUhH5eecI9ag==
+X-Received: by 2002:a05:620a:1321:: with SMTP id p1mr27394982qkj.476.1591702778157;
+        Tue, 09 Jun 2020 04:39:38 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:29ac:7979:1e2e:c67b])
+        by smtp.googlemail.com with ESMTPSA id n13sm11281614qtb.20.2020.06.09.04.39.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 04:39:37 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: 
+Date:   Tue,  9 Jun 2020 07:38:38 -0400
+Message-Id: <20200609113839.9628-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 8 Jun 2020 18:34:10 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Please find the patch below.
 
-> On Mon, Jun 08, 2020 at 06:51:12PM +0200, Jesper Dangaard Brouer wrote:
-> > Make it easier to handle UAPI/kABI extensions by avoid BPF using/returning
-> > file descriptor value zero. Use this in recent devmap extension to keep
-> > older applications compatible with newer kernels.
-> > 
-> > For special type maps (e.g. devmap and cpumap) the map-value data-layout is
-> > a configuration interface. This is a kernel Application Binary Interface
-> > (kABI) that can only be tail extended. Thus, new members (and thus features)
-> > can only be added to the end of this structure, and the kernel uses the
-> > map->value_size from userspace to determine feature set 'version'.  
-> 
-> please drop these kabi references. As far as I know kabi is a redhat invention
-> and I'm not even sure what exactly it means.
-> 'struct bpf_devmap_val' is uapi. No need to invent new names for existing concept.
+Thanks and regards,
+Gaurav.
 
-Sure I can call it UAPI.
+From Gaurav Singh <gaurav1086@gmail.com> # This line is ignored.
+From: Gaurav Singh <gaurav1086@gmail.com>
+Reply-To: 
+Subject: 
+In-Reply-To: 
 
-I was alluding to the difference between API and ABI, but it doesn't matter.
-For the record, Red Hat didn't invent ABI (Application Binary Interface):
- https://en.wikipedia.org/wiki/Application_binary_interface
-
-
-> > The recent extension of devmap with a bpf_prog.fd requires end-user to
-> > supply the file-descriptor value minus-1 to communicate that the features
-> > isn't used. This isn't compatible with the described kABI extension model.  
-> 
-> non-zero prog_fd requirement exists already in bpf syscall. It's not recent.
-> So I don't think patch 1 is appropriate at this point. Certainly not
-> for bpf tree. We can argue about it usefulness when bpf-next reopens.
-> For now I think patches 2 and 3 are good to go.
-
-Great.
-
-> Don't delete 'enum sk_action' in patch 2 though.
-
-Sorry, yes, that was a mistake.
-
-> The rest looks good to me.
-
-Thanks!
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
 
