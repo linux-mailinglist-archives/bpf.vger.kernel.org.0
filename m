@@ -2,101 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4951F1F5080
-	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 10:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B0F1F51CB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 12:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgFJIqT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jun 2020 04:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgFJIqS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jun 2020 04:46:18 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7997C03E96F
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 01:46:17 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id mb16so1653231ejb.4
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 01:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fr9WSBy3gq5GY8giUE4KFe+ZLK4loVtHVClvYlgpVVQ=;
-        b=TqVVUJoSRKntkPgmQCHuFRGWI2BxlwxQqsTclCYQSCf3eaVZpD7azhD7/QG6YAJQKg
-         eI6na/W/DIwZ84Qt/aaZ/XVkVellNvzRI94eENitRi8ribFC5CRIvpEVJTba6+uJIT/D
-         fC3WJTBmPf6caQC9IyXy5jMWJ6vs61gRXJMwvfDkmEEkaydtTZe32inwrCGoGNopHZUm
-         K2Kev9SuC0Te4VLCcq0LagBi1XEOnohn16uumL+sxUHhJwcNyaoAJsmhkuJ9Fp+ieAd5
-         ZjUivzxPfztI3q0hHnzfnoiuJkqBT1Bt/c0xSX01IRZQZ28lefeFup44z2IVWqQjVS1P
-         hHMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fr9WSBy3gq5GY8giUE4KFe+ZLK4loVtHVClvYlgpVVQ=;
-        b=Mo6/PsR6ZankWuUbgnk7aZnyiEprImPDcNipk9woTR0f539mhud3qauADBJlpnhkph
-         yrhTQLl6Wvt3UtlizxMWN246vyIZ3UbOoEmskcuHyPqfH+mGDpkm/NDjLP7g2awcgGKF
-         gqXcBeRXbXmVXUFEKXBOG0nf2NImeihBs7GRJlttn+q8cofqsCNnH8BOjr6M6echVS0I
-         EbCmVWQOzh6Fwdn77uNPx+3jz3L6nUR9URk/hxy1ZWsvCgvcHUL9/RssxpozEvhzBkXt
-         RGUm/NsTV6J1wo4jale1hCloj3P05P9VclVU0JEQ8VlAQ6wAjxUOS50gw28c7/YGS16D
-         5y6w==
-X-Gm-Message-State: AOAM530CUh4Y1zvmrP2bM4SFnm+Q+9CAMBvC1dKWKgfuwoUPgU8PZSdl
-        AytW5mEPlAwuvUBQc4LpeUEhpThdn/o=
-X-Google-Smtp-Source: ABdhPJzA97A3rrLRtTlBwR3B3e3BG33eFj9uqUFs9Ug4zmbFxTvGgBuwrDfFMBkC8/t0lc1NotIZ0w==
-X-Received: by 2002:a17:906:2b92:: with SMTP id m18mr2574832ejg.218.1591778776018;
-        Wed, 10 Jun 2020 01:46:16 -0700 (PDT)
-Received: from myrica ([2001:171b:226e:c200:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id p13sm16608202edq.50.2020.06.10.01.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 01:46:15 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 10:46:05 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf] libbpf: handle GCC noreturn-turned-volatile quirk
-Message-ID: <20200610084605.GB6844@myrica>
-References: <20200610052335.2862559-1-andriin@fb.com>
+        id S1728067AbgFJKDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jun 2020 06:03:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33953 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726134AbgFJKDr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jun 2020 06:03:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591783425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y3gVkRYNcyACplWqSVHWQ8TB063FgXgKpFwaGhzUCAc=;
+        b=SfLq/ehYF/CuzWpK4ZdVAuWZbNGZ66z+lq3t6EpdmOo3CzDTRvNuo/dP3qfXqz5h9e6QoY
+        fPV4lbMposXWdCRzzl1+IWGOhbgoV+cKqWHrxwoY1EmxTHL/Dnh89kURKm6iZaQL0E2uxu
+        N6Ytk9yfaG/0vznmL13U8/qj5z7cVrc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-T8iVgHxrNIi00NgPnGyftQ-1; Wed, 10 Jun 2020 06:03:43 -0400
+X-MC-Unique: T8iVgHxrNIi00NgPnGyftQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EA0E107ACCD;
+        Wed, 10 Jun 2020 10:03:42 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 893017C336;
+        Wed, 10 Jun 2020 10:03:31 +0000 (UTC)
+Date:   Wed, 10 Jun 2020 12:03:30 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv4 bpf-next 0/2] xdp: add dev map multicast support
+Message-ID: <20200610120330.5dbdcce2@carbon>
+In-Reply-To: <20200610023508.GR102436@dhcp-12-153.nay.redhat.com>
+References: <20200604040940.GL102436@dhcp-12-153.nay.redhat.com>
+        <871rmvkvwn.fsf@toke.dk>
+        <20200604121212.GM102436@dhcp-12-153.nay.redhat.com>
+        <87bllzj9bw.fsf@toke.dk>
+        <20200604144145.GN102436@dhcp-12-153.nay.redhat.com>
+        <87d06ees41.fsf@toke.dk>
+        <20200605062606.GO102436@dhcp-12-153.nay.redhat.com>
+        <878sgxd13t.fsf@toke.dk>
+        <20200609030344.GP102436@dhcp-12-153.nay.redhat.com>
+        <87lfkw7zhk.fsf@toke.dk>
+        <20200610023508.GR102436@dhcp-12-153.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610052335.2862559-1-andriin@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 10:23:35PM -0700, Andrii Nakryiko wrote:
-> Handle a GCC quirk of emitting extra volatile modifier in DWARF (and
-> subsequently preserved in BTF by pahole) for function pointers marked as
-> __attribute__((noreturn)). This was the way to mark such functions before GCC
-> 2.5 added noreturn attribute. Drop such func_proto modifiers, similarly to how
-> it's done for array (also to handle GCC quirk/bug).
-> 
-> Such volatile attribute is emitted by GCC only, so existing selftests can't
-> express such test. Simple repro is like this (compiled with GCC + BTF
-> generated by pahole):
-> 
->   struct my_struct {
->       void __attribute__((noreturn)) (*fn)(int);
->   };
->   struct my_struct a;
-> 
-> Without this fix, output will be:
-> 
-> struct my_struct {
->     voidvolatile  (*fn)(int);
-> };
-> 
-> With the fix:
-> 
-> struct my_struct {
->     void (*fn)(int);
-> };
-> 
-> Reported-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+On Wed, 10 Jun 2020 10:35:08 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-Thanks, this fixes the issue I was seeing with the arm64 vmlinux
+> On Tue, Jun 09, 2020 at 10:31:19PM +0200, Toke H=C3=83=C2=B8iland-J=C3=83=
+=C2=B8rgensen wrote:
+> > > Oh, sorry for the typo, the numbers make me crazy, it should be only
+> > > ingress i40e, egress veth. Here is the right description:
+> > >
+> > > Kernel 5.7 + my patch(ingress i40e, egress i40e)
+> > > xdp_redirect_map:
+> > >   generic mode: 1.9M PPS
+> > >   driver mode: 10.2M PPS
+> > >
+> > > xdp_redirect_map_multi:
+> > >   generic mode: 1.58M PPS
+> > >   driver mode: 7.16M PPS
+> > >
+> > > Kernel 5.7 + my patch(ingress i40e, egress veth(No XDP on peer))
+> > > xdp_redirect_map:
+> > >   generic mode: 2.2M PPS
+> > >   driver mode: 14.2M PPS =20
+> >=20
+> > A few messages up-thread you were getting 4.15M PPS in this case - what
+> > changed? It's inconsistencies like these that make me suspicious of the
+> > whole set of results :/ =20
+>=20
+> I got the number after a reboot, not sure what happened.
+> And I also feel surprised... But the result shows the number, so I have
+> to put it here.
+>=20
+> >=20
+> > Are you getting these numbers from ethtool_stats.pl or from the XDP
+> > program? What counter are you looking at, exactly? =20
+>=20
+> For bridge testing I use ethtool_stats.pl. For later xdp_redirect_map
+> and xdp_redirect_map_multi testing, I checked that ethtool_stats.pl and
+> XDP program shows the same number. When run ethtool_stats.pl the number
+> will go a little bit slower. So at the end I use the xdp program's number.
 
-Tested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+You cannot trust the xdp program's number, because it just counts all
+RX-packets, and don't take into account if the packets are getting
+dropped.  We really want to verify (e.g. with ethtool_stats.pl) that
+the packets were successfully transmitted.
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
