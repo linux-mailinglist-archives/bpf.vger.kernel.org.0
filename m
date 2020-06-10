@@ -2,105 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8EF1F4BDA
-	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 05:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5091F4CD8
+	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 07:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgFJDn3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 23:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgFJDn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:43:28 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE5BC05BD1E;
-        Tue,  9 Jun 2020 20:43:27 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id dp10so419660qvb.10;
-        Tue, 09 Jun 2020 20:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=qm+oX+JQzV56QUtwpMbMoKGf+j/HM4yHTB8cqsstqTg=;
-        b=bpUMlBXZEXALee+IT7Ke3lzVjM9eFpSHKJPQ7jWtW1ZCSh9fYvzftShwYgAZMP4+gm
-         72QVGyOnorRDtEdS2pC6xNakGk4m/D1H73P8jO8cJKQslHxveHNTxoqEdaY2E81TTbNF
-         MdB2DWbL/Xctu4oLqLLHa4gjPJT/01rh3q24cPTZuzh5mRamlh9Mmkvn/QewFY1MYRjS
-         PgA2Yk31L5u6bW6HniD3sLa+UE1FnkYNrnLJVFYZ2gq+mOaAXsjbnwvDF71CwSY70hzl
-         Bx0o9ZGqFMVqpNrM6PskLgIh5uDZ5I6UJW2+ZF4DEP8uXqUMK3P7mqz/efZEufNPteWJ
-         Rsdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=qm+oX+JQzV56QUtwpMbMoKGf+j/HM4yHTB8cqsstqTg=;
-        b=DWcrOFVmYggAjr3h96i6lUX6auT7aTUaiVmfAxj3xQ07+dTwcSC9wuUxRgxXFNNjdM
-         vHLwFjcTP0483cCQ93Q4nTZdDXs15RXkEk37Q8YnSQdMH+hT43QrEav4RQWokEyV8B1q
-         gusFAQMf0KuKXAve03TJSD16f0FyQQS7+XK7nC9PCRCXbSj5He8sDrhsDGq4mNuUWJLE
-         O6G4U17qlG1e2rfJ/Bal4RVLLXhHJ4znLfw2SlNr1V+Gwj9AQTZHqJV/kx4xfPiXxqOJ
-         FqGiKP+Y71w12rexf58Ee9x/miieyvOcGSnJAwoZj1/CPq/sVl/w2wLuN9qsYpHAtB+I
-         fizQ==
-X-Gm-Message-State: AOAM532VtRLaLwxZLBsl5RK03+/70WatKS5WiBfu8X3lqiYqLLQSC7x+
-        oDdpo3jTekiXIYDBGUo1NWQ=
-X-Google-Smtp-Source: ABdhPJxTJl/mAPYn1Zj+USIzItK0bT9+uv/88xJzEVVK2p+GeSYUecA0nOyh7z47J+f44eSXz1U2GA==
-X-Received: by 2002:ad4:4725:: with SMTP id l5mr1394050qvz.120.1591760605788;
-        Tue, 09 Jun 2020 20:43:25 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:29ac:7979:1e2e:c67b])
-        by smtp.googlemail.com with ESMTPSA id p13sm11195403qke.135.2020.06.09.20.43.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 20:43:25 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Alex Dewar <alex.dewar@gmx.co.uk>,
-        linux-um@lists.infradead.org (open list:USER-MODE LINUX (UML)),
-        linux-kernel@vger.kernel.org (open list),
-        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools))
-Subject: [PATCH] Fix null pointer dereference in vector_user_bpf
-Date:   Tue,  9 Jun 2020 23:43:00 -0400
-Message-Id: <20200610034314.9290-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725908AbgFJFYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jun 2020 01:24:05 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32696 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725270AbgFJFYF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jun 2020 01:24:05 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05A5O3OB006263
+        for <bpf@vger.kernel.org>; Tue, 9 Jun 2020 22:24:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=wk4m97LslfaUbKnkIPM3HlF91jQHoSVwuKVhbCNMzqU=;
+ b=MKrnhkVTPoCx+z0C5oGIA6WVhMOGSxDDL1t2gWb8QOGQePy0gRIoublyvdiRHnl8sNWs
+ ifpBm3lqdsu/ud9iSjgOby3IzMPi1sZO2oH3TBy1f4DHLxtwuJP5RbjX6no4n64nql2i
+ HzoK0dnZrsVS4D3RkqglKiEhoi1s+1ni56g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 31g6tkseaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 09 Jun 2020 22:24:03 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 9 Jun 2020 22:23:45 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id E087A2EC392F; Tue,  9 Jun 2020 22:23:41 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <jean-philippe@linaro.org>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] libbpf: handle GCC noreturn-turned-volatile quirk
+Date:   Tue, 9 Jun 2020 22:23:35 -0700
+Message-ID: <20200610052335.2862559-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-10_02:2020-06-10,2020-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 spamscore=0 priorityscore=1501 mlxlogscore=756
+ impostorscore=0 bulkscore=0 clxscore=1015 cotscore=-2147483648
+ adultscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006100040
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+Handle a GCC quirk of emitting extra volatile modifier in DWARF (and
+subsequently preserved in BTF by pahole) for function pointers marked as
+__attribute__((noreturn)). This was the way to mark such functions before=
+ GCC
+2.5 added noreturn attribute. Drop such func_proto modifiers, similarly t=
+o how
+it's done for array (also to handle GCC quirk/bug).
 
-The bpf_prog is being checked for !NULL after uml_kmalloc but
-later its used directly for example: 
-bpf_prog->filter = bpf and is also later returned upon success.
-Fix this, do a NULL check and return right away.
+Such volatile attribute is emitted by GCC only, so existing selftests can=
+'t
+express such test. Simple repro is like this (compiled with GCC + BTF
+generated by pahole):
 
+  struct my_struct {
+      void __attribute__((noreturn)) (*fn)(int);
+  };
+  struct my_struct a;
+
+Without this fix, output will be:
+
+struct my_struct {
+    voidvolatile  (*fn)(int);
+};
+
+With the fix:
+
+struct my_struct {
+    void (*fn)(int);
+};
+
+Reported-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- arch/um/drivers/vector_user.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/lib/bpf/btf_dump.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index aa28e9eecb7b..71d043ae306f 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -730,10 +730,12 @@ void *uml_vector_user_bpf(char *filename)
- 		return false;
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index de07e559a11d..bbb430317260 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1137,6 +1137,20 @@ static void btf_dump_emit_mods(struct btf_dump *d,=
+ struct id_stack *decl_stack)
  	}
- 	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
--	if (bpf_prog != NULL) {
--		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
--		bpf_prog->filter = NULL;
-+	if (bpf_prog == NULL) {
-+		printk(KERN_ERR "Failed to allocate bpf prog buffer");
-+		return NULL;
- 	}
-+	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-+	bpf_prog->filter = NULL;
- 	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
- 	if (ffd < 0) {
- 		printk(KERN_ERR "Error %d opening bpf file", -errno);
--- 
-2.17.1
+ }
+=20
++static void btf_dump_drop_mods(struct btf_dump *d, struct id_stack *decl=
+_stack)
++{
++	const struct btf_type *t;
++	__u32 id;
++
++	while (decl_stack->cnt) {
++		id =3D decl_stack->ids[decl_stack->cnt - 1];
++		t =3D btf__type_by_id(d->btf, id);
++		if (!btf_is_mod(t))
++			return;
++		decl_stack->cnt--;
++	}
++}
++
+ static void btf_dump_emit_name(const struct btf_dump *d,
+ 			       const char *name, bool last_was_ptr)
+ {
+@@ -1235,14 +1249,7 @@ static void btf_dump_emit_type_chain(struct btf_du=
+mp *d,
+ 			 * a const/volatile modifier for array, so we are
+ 			 * going to silently skip them here.
+ 			 */
+-			while (decls->cnt) {
+-				next_id =3D decls->ids[decls->cnt - 1];
+-				next_t =3D btf__type_by_id(d->btf, next_id);
+-				if (btf_is_mod(next_t))
+-					decls->cnt--;
+-				else
+-					break;
+-			}
++			btf_dump_drop_mods(d, decls);
+=20
+ 			if (decls->cnt =3D=3D 0) {
+ 				btf_dump_emit_name(d, fname, last_was_ptr);
+@@ -1270,7 +1277,15 @@ static void btf_dump_emit_type_chain(struct btf_du=
+mp *d,
+ 			__u16 vlen =3D btf_vlen(t);
+ 			int i;
+=20
+-			btf_dump_emit_mods(d, decls);
++			/*
++			 * GCC emits extra volatile qualifier for
++			 * __attribute__((noreturn)) function pointers. Clang
++			 * doesn't do it. It's a GCC quirk for backwards
++			 * compatibility with code written for GCC <2.5. So,
++			 * similarly to extra qualifiers for array, just drop
++			 * them, instead of handling them.
++			 */
++			btf_dump_drop_mods(d, decls);
+ 			if (decls->cnt) {
+ 				btf_dump_printf(d, " (");
+ 				btf_dump_emit_type_chain(d, decls, fname, lvl);
+--=20
+2.24.1
 
