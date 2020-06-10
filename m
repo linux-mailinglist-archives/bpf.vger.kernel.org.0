@@ -2,126 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3033F1F4BA6
-	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 05:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917C11F4BAB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 05:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgFJDB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jun 2020 23:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgFJDB6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jun 2020 23:01:58 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D3CC05BD1E;
-        Tue,  9 Jun 2020 20:01:58 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id i16so671320qtr.7;
-        Tue, 09 Jun 2020 20:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=9BDkz46lWvTDN3YxKGr7Bl8qQegPZ/wDf2X35bbrkxU=;
-        b=oVKNo/tfvz7bFmNdvIMwTizX/CsT8Gxj6piNvPjqzCF7cJCI3wQOS7Hs/HkFy/pMjn
-         mQVorA9tU4t/ylaGAJpQZFrmG+Q+MopbBOyPQ0PzFOhqkJ/DH/0Yafq3HOw7AndkRtNZ
-         SfusXBFGo2lTUTDTOO8g1n9dT/ZxKcHOMg+Uc+6d5b6JD+s3yMj2RikNoEKXSom/kaD/
-         Qp4dSrLdIfVKC2/Mx40xuzWkOZ1W1/FGfSLmisSFwlayob8MtzuMRjhlV1mLu4TmZjr9
-         Z3VtByXkO8hKPzHHwdmQuvLURHxXGA0eWs0zvL+xiQMEmvDU7kkwDPnoFuZ9fOxmMtA1
-         iUwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=9BDkz46lWvTDN3YxKGr7Bl8qQegPZ/wDf2X35bbrkxU=;
-        b=Nt7LpsCpQkA0L8sWbzHXcQc20oSvmrFU0gx4DRQrcsgRMzJGjy2AV6dleGL9fyRxoh
-         dLPtyU41SjFIRuQejvLp1sE0zsmoyN9v+O/8EvaB0hNgTzZ7InxSLuybnvND5G4YJFDx
-         QrbT8ZCdhBB76Fw8CuawupSGj6tcAyvLGh3QQzJTdvbC9xLg2DLBrA1Cakmu0vd/jgA+
-         VZU2fZYE1MmFrvErymTIdJwG+OBry2wrdWoam5fT1iQIccvbwDYpTekwF2vmGws1/qqg
-         2kDnwuNEV4AjhTbDrq3RVPr/DIEXqlvhnq7dqGhCc/MBF62yIFo31b7WEw9TfvNbLXGl
-         mrDQ==
-X-Gm-Message-State: AOAM530VO8zevcedf7YlTk1+UaFH1Raq/7u5CbN5Li/kk7YlDePbn6UY
-        nmhqKDIKp5GOFSo5VqARnr0=
-X-Google-Smtp-Source: ABdhPJwO45Dbs22xOgau2tZLeyyht/La6qYJg4UW4TydiwZ68nZvNhFSDc2qDJGiLzO3Va+Sh21zaw==
-X-Received: by 2002:ac8:18b9:: with SMTP id s54mr1089544qtj.176.1591758117561;
-        Tue, 09 Jun 2020 20:01:57 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:29ac:7979:1e2e:c67b])
-        by smtp.googlemail.com with ESMTPSA id y19sm10778716qki.19.2020.06.09.20.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 20:01:56 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        id S1726102AbgFJDJO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jun 2020 23:09:14 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57485 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgFJDJO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jun 2020 23:09:14 -0400
+Received: from fsav109.sakura.ne.jp (fsav109.sakura.ne.jp [27.133.134.236])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05A38P2B029472;
+        Wed, 10 Jun 2020 12:08:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav109.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp);
+ Wed, 10 Jun 2020 12:08:25 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05A38Kkn029445
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 10 Jun 2020 12:08:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] xdp_rxq_info_user: Add null check after malloc
-Date:   Tue,  9 Jun 2020 23:01:36 -0400
-Message-Id: <20200610030145.17263-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <20200606201956.rvfanoqkevjcptfl@ast-mbp>
+ <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
+ <20200607014935.vhd3scr4qmawq7no@ast-mbp>
+ <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
+ <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
+ <af00d341-6046-e187-f5c8-5f57b40f017c@i-love.sakura.ne.jp>
+ <20200609012826.dssh2lbfr6tlhwwa@ast-mbp.dhcp.thefacebook.com>
+ <ddabab93-4660-3a46-8b05-89385e292b75@i-love.sakura.ne.jp>
+ <20200609223214.43db3orsyjczb2dd@ast-mbp.dhcp.thefacebook.com>
+ <6a8b284f-461e-11b5-9985-6dc70012f774@i-love.sakura.ne.jp>
+ <20200610000546.4hh4n53vaxc4hypi@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <1be571d2-c517-d7a7-788e-3bcc07afa858@i-love.sakura.ne.jp>
+Date:   Wed, 10 Jun 2020 12:08:20 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200610000546.4hh4n53vaxc4hypi@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+On 2020/06/10 9:05, Alexei Starovoitov wrote:
+> I think you're still missing that usermode_blob is completely fs-less.
+> It doesn't need any fs to work.
 
-The memset call is made right after malloc call which
-can return a NULL pointer upon failure causing a 
-segmentation fault. Fix this by adding a null check 
-right after malloc() and then do memset().
+fork_usermode_blob() allows usage like fork_usermode_blob("#!/bin/sh").
+A problem for LSMs is not "It doesn't need any fs to work." but "It can access any fs and
+it can issue arbitrary syscalls.".
 
----
- samples/bpf/xdp_rxq_info_user.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+LSM modules switch their security context upon execve(), based on available information like
+"What is the !AT_SYMLINK_NOFOLLOW pathname for the requested program passed to execve()?",
+"What is the AT_SYMLINK_NOFOLLOW pathname for the requested program passed to execve()?",
+"What are argv[]/envp[] for the requested program passed to execve()?", "What is the inode's
+security context passed to execve()?" etc. And file-less execve() request (a.k.a.
+fork_usermode_blob()) makes pathname information (which pathname-based LSMs depend on)
+unavailable.
 
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-index 4fe47502ebed..2d03c84a4cca 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -202,11 +202,11 @@ static struct datarec *alloc_record_per_cpu(void)
- 
- 	size = sizeof(struct datarec) * nr_cpus;
- 	array = malloc(size);
--	memset(array, 0, size);
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
- 		exit(EXIT_FAIL_MEM);
- 	}
-+	memset(array, 0, size);
- 	return array;
- }
- 
-@@ -218,11 +218,11 @@ static struct record *alloc_record_per_rxq(void)
- 
- 	size = sizeof(struct record) * nr_rxqs;
- 	array = malloc(size);
--	memset(array, 0, size);
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_rxqs:%u)\n", nr_rxqs);
- 		exit(EXIT_FAIL_MEM);
- 	}
-+	memset(array, 0, size);
- 	return array;
- }
- 
-@@ -233,11 +233,11 @@ static struct stats_record *alloc_stats_record(void)
- 	int i;
- 
- 	rec = malloc(sizeof(*rec));
--	memset(rec, 0, sizeof(*rec));
- 	if (!rec) {
- 		fprintf(stderr, "Mem alloc error\n");
- 		exit(EXIT_FAIL_MEM);
- 	}
-+	memset(rec, 0, sizeof(*rec));
- 	rec->rxq = alloc_record_per_rxq();
- 	for (i = 0; i < nr_rxqs; i++)
- 		rec->rxq[i].cpu = alloc_record_per_cpu();
--- 
-2.17.1
+Since fork_usermode_blob() can execute arbitrary code in userspace, fork_usermode_blob() can
+allow execution of e.g. statically linked HTTP server and statically linked DBMS server, without
+giving LSM modules a chance to understand the intent of individual file-less execve() request.
+If many different statically linked programs were executed via fork_usermode_blob(), how LSM
+modules can determine whether a syscall from a file-less process should be permitted/denied?
+
+By the way, TOMOYO LSM wants to know meaningful AT_SYMLINK_NOFOLLOW pathname and !AT_SYMLINK_NOFOLLOW
+pathname, and currently there is no API for allow obtaining both pathnames atomically. But that is a
+different problem, for what this mail thread is discussing would be whether we can avoid file-less
+execve() request (i.e. get rid of fork_usermode_blob()).
 
