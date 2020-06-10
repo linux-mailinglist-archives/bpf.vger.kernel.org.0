@@ -2,97 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CAE1F5B37
-	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 20:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BEE1F5B5E
+	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 20:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgFJSbQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jun 2020 14:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S1729112AbgFJSly (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jun 2020 14:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728973AbgFJSbQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jun 2020 14:31:16 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05431C03E96B
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:31:16 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id c12so2552456qtq.11
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:31:15 -0700 (PDT)
+        with ESMTP id S1726105AbgFJSlx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jun 2020 14:41:53 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9D7C03E96B
+        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:41:53 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id w18so3445733iom.5
+        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMTxSBGT3qH57Z0fcgefq7qyTbxTLnXxOSOE4PZ8MyE=;
-        b=MKDkK48tQlKn3rHlcrFdcTUSkKJpYzz+DzpUzwRHnV2noHqwovinLsmwOWp83HJymH
-         gIY8qVOyAhGUldbAf6WO2FtpEfDFIx0aBzifznR5AZTDKq8JKIFQycZWx+XBaq1zpNVW
-         7sco7LbuSjIieu4/xgLMqH5vDqFEnMQ2W/piSja2OtpN25gDeoV1hHK8e2YLtqR/n7mR
-         0FCx1TaxevER077ZxfPH1bIHIfrU11Dnm63+CxHBBR3MuFjtRT+dS3lNj8pG/OUlEtaK
-         Z8dgtN/5DUisRboihY71nOw6mAS3wvJN+VIeOg97GgB6JNU5j7ZGfnOspTzHNYI4gQfo
-         dAmg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TqssSk9jekCgl25sSVkHrxv5LcrDzHYWlwwhJ3PjGnc=;
+        b=NcASmyezcynt5xNQRWzFnlaFXKNcdzKob9ahl75OqUA0BYOefi3vxPN2KfMSA4inQb
+         INQiUwEtMRQ6F9oi2xk6CJU7ZJA7L694Be9Owf1+YOQw+UtLHF65oEGTXlUOM17nn6w+
+         eg9izQhRsPjc6fi4ds3sAg+G37ByU0Eeow+cUOCIYqBxOaeQQOm04193NWkeM3w73WTt
+         SVGuo768nN4DgbtbmWDytRp6KlM0NVa7Z/YhKapRdm2xp3cJnFFY1abFg4LUSeKTYpLJ
+         fclRX+Deeg4bgFiGfe4Ri5VnjjkFpC5EasimA/SUQxiYN7ty0PUu1uHEqZRwIVPMMdDz
+         Mvug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMTxSBGT3qH57Z0fcgefq7qyTbxTLnXxOSOE4PZ8MyE=;
-        b=d1mrgIPJI7AJRK7mhL72+ph9BgGJQpo+BrmCpABIGqZfIOQx+wpNCDN0eIlgiFhxV8
-         ceXfcIr9p55SWWNWYK+pYenMTHvxIT+0NnEoXl041XFTfWUSLkajIcGWd4QusgZI7cIj
-         WTADfg4jPtW6/hc5zp1HMwdj9vZM2Q+/uzpBpJ1rJi3ssONVm0iiNuDTVqyO8YaMS+PW
-         H3hLajac2iDfiXWNN08jcLL+UrwsJEBl5kLn085sNy4Al6EDdD/aNafBibH7AJbCv0/o
-         KUgjg6IvltOnX4Av7RTnQbKvxaQyeoJzteB6z8YA9ZXsDl0oHCdVrz22giLF0MCV/vHG
-         1JfA==
-X-Gm-Message-State: AOAM530TqVFoLy1VkO4ywik5O1Sb8qpltStYjZ+3qPeUJ/pgPdzrE84m
-        zAtZFkvCWUmI1h1H3W4gCDUL8d/AW8Ent8ywBsA6tJGg
-X-Google-Smtp-Source: ABdhPJwa7beKtV4VDOIH081hAVMgpcN2jqpoHHjk2c/VI12OysfQ6cul0tj974hkBv4MG4j0fP9r3F6eZI2S7yMubIo=
-X-Received: by 2002:ac8:42ce:: with SMTP id g14mr4652218qtm.117.1591813875207;
- Wed, 10 Jun 2020 11:31:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200610130804.21423-1-tklauser@distanz.ch>
-In-Reply-To: <20200610130804.21423-1-tklauser@distanz.ch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Jun 2020 11:31:03 -0700
-Message-ID: <CAEf4BzaGRcgj5COyfsNtR6uGgakCCBT=Q3osPR84ap2r1EMRjg@mail.gmail.com>
-Subject: Re: [PATCH bpf] tools, bpftool: Fix memory leak in codegen error cases
-To:     Tobias Klauser <tklauser@distanz.ch>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TqssSk9jekCgl25sSVkHrxv5LcrDzHYWlwwhJ3PjGnc=;
+        b=J5pFQjaHMQm6dPBPBPQYfR8ZtrTD/Kadtb8gVGQWAOtQp8Xv2mogPWIgoFVDAcoQZp
+         huC4v5VjN1UU7CoZZhC9qFvc+GPlkH/UcvL2xOC/KLVvGbRfdhDt6n3A/BWIRbpOzukk
+         uFmvEA3Qqfh2ByQ2k/mCGM5eTl2FXEFGLbAxh4/5/Qf1EKsHU1XldI1oDMOvQG17Bsvs
+         2SFP6qEj4uWICkX7jYJbs0DtiWD2o5OKgC5AXWWXWUiKaoMCZpkehAGpszS1e3slpzg+
+         uweQPuAReVWZ100xOHh88eYsBu7AzwWm3VSPB8kmkSe0oBnKYe2KxauIeRASt6pVg5Yl
+         7inA==
+X-Gm-Message-State: AOAM5333HpJhEFLasX8V+jWeRtzI5SS/UPx/WMvPtQbgGOoRGM/5H6oU
+        zCzHaiavrMUxtLsusm1lUSnpN/KNPOA=
+X-Google-Smtp-Source: ABdhPJwL8s5bfwwb4V8sI94zxuiAhuYSp0fnIBLZ9Nh5Iq6ieI2CeHo3hJTDASHtty4RBlH4YhXXhg==
+X-Received: by 2002:a5e:a705:: with SMTP id b5mr4792492iod.12.1591814512115;
+        Wed, 10 Jun 2020 11:41:52 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-2.tnkngak.clients.pavlovmedia.com. [173.230.99.2])
+        by smtp.gmail.com with ESMTPSA id b13sm319587ilq.20.2020.06.10.11.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 11:41:51 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+X-Google-Original-From: YiFei Zhu <zhuyifei@google.com>
+To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Subject: [PATCH bpf v2 0/2] Fix bpf_skb_load_bytes_relative for cgroup_skb/egress
+Date:   Wed, 10 Jun 2020 13:41:38 -0500
+Message-Id: <cover.1591812755.git.zhuyifei@google.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 6:10 AM Tobias Klauser <tklauser@distanz.ch> wrote:
->
-> Free the memory allocated for the template on error paths in function
-> codegen.
->
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> ---
+When cgroup_skb/egress triggers the MAC header is not set. On the other hand,
+load_bytes_relative unconditionally calls skb_mac_header which, when MC not
+set, returns a pointer after the tail pointer, breaking the logic even if the
+caller requested the NET header.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Fix is to conditionally use skb_mac_header or skb_network_header depending on
+the requested header, -EFAULT when the header is not set. Added a test that
+asserts during cgroup_skb/egress request for MAC header returns -EFAULT and
+request for NET header succeeds.
 
->  tools/bpf/bpftool/gen.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index a3c4bb86c05a..ecbae47e66b8 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -224,6 +224,7 @@ static int codegen(const char *template, ...)
->                 } else {
->                         p_err("unrecognized character at pos %td in template '%s'",
->                               src - template - 1, template);
-> +                       free(s);
->                         return -EINVAL;
->                 }
->         }
-> @@ -234,6 +235,7 @@ static int codegen(const char *template, ...)
->                         if (*src != '\t') {
->                                 p_err("not enough tabs at pos %td in template '%s'",
->                                       src - template - 1, template);
-> +                               free(s);
->                                 return -EINVAL;
->                         }
->                 }
-> --
-> 2.27.0
->
+Updates since v1:
+* Reverted the bound condition check to account for bad offset parameter
+  larger than data length.
+* Add test asssertion for failure return code on the condition above.
+
+YiFei Zhu (2):
+  net/filter: Permit reading NET in load_bytes_relative when MAC not set
+  selftests/bpf: Add cgroup_skb/egress test for load_bytes_relative
+
+ net/core/filter.c                             | 16 +++--
+ .../bpf/prog_tests/load_bytes_relative.c      | 71 +++++++++++++++++++
+ .../selftests/bpf/progs/load_bytes_relative.c | 48 +++++++++++++
+ 3 files changed, 128 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
+ create mode 100644 tools/testing/selftests/bpf/progs/load_bytes_relative.c
+
+--
+2.27.0
