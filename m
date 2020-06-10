@@ -2,219 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238171F5B60
-	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 20:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524451F5B7C
+	for <lists+bpf@lfdr.de>; Wed, 10 Jun 2020 20:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbgFJSmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jun 2020 14:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
+        id S1729305AbgFJSuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jun 2020 14:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgFJSmA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jun 2020 14:42:00 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5045BC03E96B
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:42:00 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x18so3003319ilp.1
-        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:42:00 -0700 (PDT)
+        with ESMTP id S1729248AbgFJSuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jun 2020 14:50:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0164DC03E96B
+        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:50:18 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 205so3133442qkg.3
+        for <bpf@vger.kernel.org>; Wed, 10 Jun 2020 11:50:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XuDKJlFvrWQvHtXyu6wvCFHG/oEtjAHJCgNoRHZmo34=;
-        b=tWx62ZlinY6sCnswL+zBLEKNK92wBQHgt1vAEsJMsYSlziSYiH3j9qhUQp/mUSShPX
-         CLOhYWcDCm87NTw7cLhv22433FP9fZLdN6mX+//mAXs0kmbdE21M19NaaQjbg1KZgse0
-         rRp4CwWGz5XpVjhiwB0utcmQt1NA72f0SLFF4pGzQj6BpEl/puwPG/7eD7UIu8Z2GnNJ
-         GIkKGPhVJ7AXcXVY26zg0S1YfDPPwOFv8l6SGEB2ifKuiNXNgM74ftlMuZqy55Yk+oMO
-         QZQO077EXRAZEz0Qj0k5fdSttceQL0oOZ3b7ZMvQHfilwKQ8B9aSY9XGkuo1vXk8I9sY
-         9pwA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eRvVqDo/sW+IkzOCwkljRr9QBmI4ScXSfu7DDF6Hl3g=;
+        b=snp8Zh03HmmlZU6Q2WZqq/OaC2Bq82WVV1ZGBI1iDWtBy3NaPHEEyDhofGcSkfQF8a
+         PmtCCrI0Iijjf+gsWkjB4zlXpQOd3vGw2h9CsCKb5hkh4NnrkDq/S5NLH5/H7RMrsCS2
+         be5ehJ8DIHqjpkD9TJrJYonSBB2cT6TvbyASB+y2o1xsPWIKhORExyGMwifgCud5ayrn
+         daXOcXlhu8SevMz1Su/qjKVx0c63JxRLUtuKklrLMZ41lNPU02X4//bNefq84rDeRrcI
+         46te2oq4gmDL/t1zbGMWcsdZXdLYEiztKD3Em2a4UsinTU0dH8G88bsJwKE3A5thrzWt
+         Kemw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XuDKJlFvrWQvHtXyu6wvCFHG/oEtjAHJCgNoRHZmo34=;
-        b=bwCuQsGluc9eSdIrSlooWD839mhZtCdpptX9+Zg4iN+pjSxUeuq1W4h6tL6xUasPWX
-         saen+ZeWLn4CoZoj6PGvCr3M5D9kF1Zkk34YoV+aK+DdV5XZLoOYD3g+YhttOZhRyfR1
-         NbF9V1Dz5FyG2INJCYLVJt8Hi5Qojjm+9MG4Eig3RYucLJaMpv0NliN08KajdNVmvc4A
-         GP5HPRa5v4WmHq6PWjX5W6B8S1rd30ajPiYqqLRlgy+cMibL4G3F0WkIeWMtZHZcBsa7
-         +VnDYMJupFtkKLlEnWUxkSGgQqmaGrqZN+hJajZyNY89pdpRlanngFbFl5hZbg3ZREBM
-         q4jw==
-X-Gm-Message-State: AOAM532qvJMsC5z6MU0A9QifYgfAYj4Yn9jkRhD+FwBLzCJtK9YJ+WD6
-        ClTxd10PhMY9qaI+S223YBufbRBhEIVPbg==
-X-Google-Smtp-Source: ABdhPJykB5qlwhx1AGjQD78zhXw7yfa9N8G+iSGMYXgVMkk0D4k6WDorrCf0K5oCbuph6I8wYDEuvg==
-X-Received: by 2002:a92:c84f:: with SMTP id b15mr4082955ilq.123.1591814519263;
-        Wed, 10 Jun 2020 11:41:59 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-2.tnkngak.clients.pavlovmedia.com. [173.230.99.2])
-        by smtp.gmail.com with ESMTPSA id b13sm319587ilq.20.2020.06.10.11.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 11:41:57 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-X-Google-Original-From: YiFei Zhu <zhuyifei@google.com>
-To:     bpf@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eRvVqDo/sW+IkzOCwkljRr9QBmI4ScXSfu7DDF6Hl3g=;
+        b=P22KL3FGegP8Fctp59MhzdjpybkPPQTcgxVHU4i04Qg7eKl05LPKkyssbHFy617NcK
+         d3TEBJyByp2ao9xl5iPXttn0xEaMAUyVnP6rMFPgqkRPZ5qOeMo8+7ACrugKSi4Xn9Ee
+         0UVErJPvYK6a2rYYLKmT7a2+gCMuWrDbnSgJdYmBJTDUU9cPbkHStWR+UII34wtpThh5
+         f7+YI2dR3fQ7xz5st2p8pK5E/0OndoBJgZcE+PQNuvL8V2VDMa8pNzlLmKviiQsWq7+f
+         WDXXKWWkhYCisVTyzwHax9viTWEzGCi1YUCP4NYd1e435iAen3S883Jj7dWGB2AlYFGF
+         U36g==
+X-Gm-Message-State: AOAM532/S3uiZ7wtU2+T/AulfPtgh4wRb2pX3+ZzU2kncqepNrc474uG
+        K+vjj5MIrmOgju88eIaKQcleLpTCm32K0t3EE6E=
+X-Google-Smtp-Source: ABdhPJzIjWDlsx5xiNwII5EdA4R63Cv6pDU1th93za72AY7zVaeQwSop7BQQMNsHqaFuHRF1OTsi8nv9rpedoSM0u7c=
+X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr4749205qkl.437.1591815017192;
+ Wed, 10 Jun 2020 11:50:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200610130807.21497-1-tklauser@distanz.ch>
+In-Reply-To: <20200610130807.21497-1-tklauser@distanz.ch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Jun 2020 11:50:06 -0700
+Message-ID: <CAEf4Bzbiz6qST5Ws4pKB4qZdqfwG_12UgFeQk96da1qipAJS9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf] tools, bpftool: check return value of function codegen
+To:     Tobias Klauser <tklauser@distanz.ch>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH bpf v2 2/2] selftests/bpf: Add cgroup_skb/egress test for load_bytes_relative
-Date:   Wed, 10 Jun 2020 13:41:40 -0500
-Message-Id: <9028ccbea4385a620e69c0a104f469ffd655c01e.1591812755.git.zhuyifei@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1591812755.git.zhuyifei@google.com>
-References: <cover.1591812755.git.zhuyifei@google.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When cgroup_skb/egress triggers the MAC header is not set. Added a
-test that asserts reading MAC header is a -EFAULT but NET header
-succeeds. The test result from within the eBPF program is stored in
-an 1-element array map that the userspace then reads and asserts on.
+On Wed, Jun 10, 2020 at 6:09 AM Tobias Klauser <tklauser@distanz.ch> wrote:
+>
+> The codegen function might fail an return an error. Check its return
+> value in all call sites and handle it properly.
+>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> ---
 
-Another assertion is added that reading from a large offset, past
-the end of packet, returns -EFAULT.
+codegen() can fail only if the system ran out of memory or the static
+template is malformed. Both are highly unlikely. I wonder if the
+better approach would be to just exit(1) on such an unlikely error
+inside codegen() and make the function itself void-returning.
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- .../bpf/prog_tests/load_bytes_relative.c      | 71 +++++++++++++++++++
- .../selftests/bpf/progs/load_bytes_relative.c | 48 +++++++++++++
- 2 files changed, 119 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
- create mode 100644 tools/testing/selftests/bpf/progs/load_bytes_relative.c
+We'll probably expand codegen to other languages soon, so not having
+to do those annoying error checks everywhere is a good thing.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c b/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
-new file mode 100644
-index 000000000000..c1168e4a9036
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+void test_load_bytes_relative(void)
-+{
-+	int server_fd, cgroup_fd, prog_fd, map_fd, client_fd;
-+	int err;
-+	struct bpf_object *obj;
-+	struct bpf_program *prog;
-+	struct bpf_map *test_result;
-+	__u32 duration = 0;
-+
-+	__u32 map_key = 0;
-+	__u32 map_value = 0;
-+
-+	cgroup_fd = test__join_cgroup("/load_bytes_relative");
-+	if (CHECK_FAIL(cgroup_fd < 0))
-+		return;
-+
-+	server_fd = start_server(AF_INET, SOCK_STREAM);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+
-+	err = bpf_prog_load("./load_bytes_relative.o", BPF_PROG_TYPE_CGROUP_SKB,
-+			    &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		goto close_server_fd;
-+
-+	test_result = bpf_object__find_map_by_name(obj, "test_result");
-+	if (CHECK_FAIL(!test_result))
-+		goto close_bpf_object;
-+
-+	map_fd = bpf_map__fd(test_result);
-+	if (map_fd < 0)
-+		goto close_bpf_object;
-+
-+	prog = bpf_object__find_program_by_name(obj, "load_bytes_relative");
-+	if (CHECK_FAIL(!prog))
-+		goto close_bpf_object;
-+
-+	err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS,
-+			      BPF_F_ALLOW_MULTI);
-+	if (CHECK_FAIL(err))
-+		goto close_bpf_object;
-+
-+	client_fd = connect_to_fd(AF_INET, SOCK_STREAM, server_fd);
-+	if (CHECK_FAIL(client_fd < 0))
-+		goto close_bpf_object;
-+	close(client_fd);
-+
-+	err = bpf_map_lookup_elem(map_fd, &map_key, &map_value);
-+	if (CHECK_FAIL(err))
-+		goto close_bpf_object;
-+
-+	CHECK(map_value != 1, "bpf", "bpf program returned failure");
-+
-+close_bpf_object:
-+	bpf_object__close(obj);
-+
-+close_server_fd:
-+	close(server_fd);
-+
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/load_bytes_relative.c b/tools/testing/selftests/bpf/progs/load_bytes_relative.c
-new file mode 100644
-index 000000000000..dc1d04a7a3d6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/load_bytes_relative.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <errno.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} test_result SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int load_bytes_relative(struct __sk_buff *skb)
-+{
-+	struct ethhdr eth;
-+	struct iphdr iph;
-+
-+	__u32 map_key = 0;
-+	__u32 test_passed = 0;
-+
-+	/* MAC header is not set by the time cgroup_skb/egress triggers */
-+	if (bpf_skb_load_bytes_relative(skb, 0, &eth, sizeof(eth),
-+					BPF_HDR_START_MAC) != -EFAULT)
-+		goto fail;
-+
-+	if (bpf_skb_load_bytes_relative(skb, 0, &iph, sizeof(iph),
-+					BPF_HDR_START_NET))
-+		goto fail;
-+
-+	if (bpf_skb_load_bytes_relative(skb, 0xffff, &iph, sizeof(iph),
-+					BPF_HDR_START_NET) != -EFAULT)
-+		goto fail;
-+
-+	test_passed = 1;
-+
-+fail:
-+	bpf_map_update_elem(&test_result, &map_key, &test_passed, BPF_ANY);
-+
-+	return 1;
-+}
--- 
-2.27.0
+What do you think?
 
+[...]
