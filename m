@@ -2,37 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5244D1F6DA3
-	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 20:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9585B1F6DB9
+	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 21:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgFKSvU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 14:51:20 -0400
-Received: from mout.web.de ([212.227.17.12]:38831 "EHLO mout.web.de"
+        id S1726583AbgFKTJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 15:09:41 -0400
+Received: from mout.web.de ([217.72.192.78]:58403 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbgFKSvT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 14:51:19 -0400
+        id S1726159AbgFKTJk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 15:09:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1591901459;
-        bh=K4VnlmIMmt2H+6LejIAOIjQN8Plwr3oGRWVaDnWDKAM=;
+        s=dbaedf251592; t=1591902564;
+        bh=dbIwwHdiMV4teofJdCbf7Y1qEHsQkx0IKl88SrSI/wo=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=m92ByOje1cHc9qapcg0++LG3An4fKXMNVx8CoAH9xjfSl8wZ8hQJqIOKZe3yf8Uu4
-         6Cb63p67AuMyax3rkfx0Oi1WDPbEw4auygZRivxKivMgGiqjxjFIMYWkCznI6g8gjj
-         iSFZ+MI8mesozVI+dPXTp4kEX+Jb5Efb9Ke1XStU=
+        b=XDS3iBpE3K7mXWT0rZDRMSm0cFM23l9Gtv2zuOeATb5w0fdySOxwG8JScnBbOvqmz
+         ga5qxe+GOiZDOkhzBMFiMwkCz+QuBBQ/UgqOh/V8lZ2z9ejqkENKd16OcTIeyxwEfz
+         HRQm3ZCtoKZ2aIssjr/n2EmXfPDuHl+eVKMGT9n4=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.66.14]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0M89mf-1ixNuE24Jt-00vhhq; Thu, 11
- Jun 2020 20:50:59 +0200
-Subject: Re: [PATCH v2 1/2] perf tools: Fix potential memory leaks in perf
- events parser
-To:     Cheng Jian <cj.chengjian@huawei.com>,
-        Chen Wandun <chenwandun@huawei.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+Received: from [192.168.1.2] ([78.49.66.14]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MzTPW-1ix0nE1PhA-00vKLa; Thu, 11
+ Jun 2020 21:09:24 +0200
+Subject: Re: [PATCH v2 2/2] perf tools: Improve exception handling in two
+ functions of perf events parser
+To:     Chen Wandun <chenwandun@huawei.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Cheng Jian <cj.chengjian@huawei.com>,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>
 References: <20200611145605.21427-1-chenwandun@huawei.com>
- <20200611145605.21427-2-chenwandun@huawei.com>
+ <20200611145605.21427-3-chenwandun@huawei.com>
 From:   Markus Elfring <Markus.Elfring@web.de>
 Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
@@ -77,49 +76,52 @@ Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
  x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
  pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <51efcf82-4c0c-70d3-9700-6969e6decde1@web.de>
-Date:   Thu, 11 Jun 2020 20:50:58 +0200
+Message-ID: <685bb0ec-c08a-d7e5-6aa3-fb7ca842d0d0@web.de>
+Date:   Thu, 11 Jun 2020 21:09:22 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200611145605.21427-2-chenwandun@huawei.com>
+In-Reply-To: <20200611145605.21427-3-chenwandun@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-X-Provags-ID: V03:K1:yiAsCXN0qgyKzCW+7aPj8Lu1FS3gP8ymz/mkcVrw+bUNUgazHlq
- GV9blg4tWMUSMSdHdM0IX+JluRKM1plEOr3PP4vTjBxYrvR6TrsH5A0n1RLuxkEuXRZAgoi
- 8BtNX+CTFSlUikBv282DmiWrNmv9xaXjs84NW6Wchd4ADZYBraU3TWXdjJv42m6ZY9r0ee1
- LMkB5UXvPy+2jtg/eYdOg==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8YHVMukXKwtYmbINvs1ODICL/ViARbrtJlTIw3xQBO4k6y08rvF
+ Ze7MA1QiO9gvkEO0O4aQXL8wt94e96KVc8lLIFtU3//HofcRxa16etnlGih7SNdBg/jZrWL
+ pThUHRFRP0FLX1ak/V4N8SneQ4ciYSs2PuUI1mY2MEXaeU9Q7UJ7DbWDVF4szlpesvz11P8
+ /D0jaIYjpCwvoxnqUxQtw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:a7BhrGoOUK0=:Kd9+CKPF/5kFIN06UtRHRq
- 4n5hYPUu92AVG5QnpHxAjObrcBXWye4n++RZdCCa78lE7m5QV+PqamSOEtq9MoBv12W0J/3YA
- jA11z6BqnKy/LqijZqNn6v9wxM12h5vjb27rO6xHfpbyGupRouyhuQTBaEz5BOC4j8fTs0l9F
- lxzIaOjuN//b+VVEidx+TkfxNgfke2/dtMck77Hed2NxYZl5BXeu4khsIOjQ4XZM1766xYcp0
- GPw5qpSMC/gEnm+MtM719RMxQAwsPM88tXjgpwpol/5EEjuwfblvi/fZmiXrOIfi4E77WES2Y
- Jq90DLnG/GuXUEYCyrSxuGnqxSOnj8KABK//G7hZeEBYq7D+uDZuP5WJZ/SYRV3GmscMNJWpt
- 0iz/6w05HpxOlX8kxvP+ZDTyD3pFYHVelJVFL7Wm2kKhPnzykg+AB5Ir/bHexgbG3zFG+mS92
- mptKhvKKIw4TwaMXInZ2B4S/TRRTQ50bTwn4cssivU/t6jjt0qODT+BAmLAz51tczMe2zRDYB
- 4YcCT7HOoyRhdtTksg5saJz5Dcz1S2RWvhbIXanTO+BgCXsCxOmeSs6Qvu0mC5KfvGwO9Q7bW
- c69iVCtlMNSTRARlAo9dkE1V1x132oCiMsaneCrs7Svb4IWZgo8B0LYshABxfnb1s9roxH+vG
- rlP/gU4f0k0RkOX8iOkHbK0KdhYqNpPn6CCYd6NTrOoBQA+qkA0cm72wEcU5BTpIKqLCIr0dy
- DkPWclCCFznDzPKGTLdUZcBp771lggKhc4XY9k4Wg16W9tQF+s6ZsVWIASKfg8ALTg+eAJmZ0
- qkrwwUubALodWBdvUsiAuvbsO3SKxjUi28n/kQVHb1ocKaYR8ZoRzGGU/uf9EHyHPCka8nVEP
- cfnHXJIB1zT+Y650/wFb2R2r1nDPKqJnl3SRqzcH84K6rge2OadhZyYOfjhTFnvV87RfhaU2z
- 2mJnc/XmTSGWzM7/yn/YTvCPO3QFieed+3EP+vgIYnvsvowrwHWG7OjHrT1MaHFttT6eoblNB
- Y8X2gJxbLilWPQ6A0ghsaQYsbyWHvvT2Gros3LH82Ikr7XnKw5lkhsPa0XyT7kZKkaBQY5hD6
- Y06YHqUnRYfY10WJQ0DXPezqLy8VVs51pso73eDy3/R2t+tEkzzWHh1jQCuluuvaR/PNv/AcI
- AxyC0cKhQbTPRGq++xIMagbFykjkvnppaUJ8x+ZqMcfGrkY8Ts8fZrAxJAStmZxZysZomc+YD
- 2JkRh0Yn4WrIyJReP
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2Qd2GijSBKA=:P6G5eqoRCj67AI7GF4twfg
+ qfbE5CcbxG15OL0YYhw8P3ta0R+wLOfuzQ2e2HVwQolHzcj3T+63wIXDOrBmkN/7uiuDc/eSV
+ GtTJjso1tJ1RsCrQtF08vlGmGKXcg4gULcKi3hZzpdhKLoOD+WfapcoHX0n5EkziQP/jdbwCL
+ d9iHb7IaXl0F6UEXVoliuCMp/s0DnHgC6eTuTO9lIG9UTre1/U8IdH4yokiS/xK6Jnaen6BQE
+ eeUDYYdFKBDErQiTVX9/KEnBj9d0gZv03mIhekZNzQzMfNGtHyJll2Gw1jzt8oP8UED20V6EO
+ gHVHJmzn+ZR7QzcSafn+0YFB6F7NrbWmCslW0AIjdX2Gw9sz7yTZevgjYn5i0CDVeQmujhb8T
+ KIikq3F17Zw0jW7TN85AT2wwQI9e4TAxpNtT8Mf8ZM2Ja4ReMEWshf9OL7NcWXg7xlw2h2DR5
+ ETcN/1DMlgObatLAXrGROyC3uhj2U9Fr1Hoea190SBEAGXATIsq158APBlUs7e049918TSskp
+ V3kAgGmZkGKv76ybyTousjicQxPVllr2YgqG1qV4ONb+PCTdF3XV38/74GLlgehTF/BvQhm4R
+ tvpJCneYN6P4TzrtZE16O0aDdLROD2lEhup6o9+xtYgWOy7oaPatBDSNrDczXYg4kfpbeMvYz
+ IcyWpSplWQXHFfdVjirxgj1LjmIUHtxVlHDtbfxyflploYy7g3EXOzES4YEThwEwYsTinSsCm
+ DbdYFhJPalgWKHxaYVQdoE+V2iE+/k4Bn2N3IHI4+RVtJAUU151v5+dDzAJ10/uy5XbWZSGto
+ mESk7YvUkLZmEA4cn2JQtsLZ4hp4bxjCb1SdPFM18l/P5zEwHHNBFRLNPP8i7pRxU2Skcnzst
+ fh3O7w2IssZ77ec4CwI7R6PerbeRCfiDe4LC+tAbtWpDoRmGrDzVR0LoT7zQJR3X+XY2nTkLn
+ l3FExDl0XcJPLiN1ZhNwllB8zbEalD+hF/31GostLD/neITp81SQt5PMJEX3IuMArlQNe4wwP
+ zhtCjaAk+fwkkedA9c5DS9Q5f8DZazTL773X1r2UreEMOSWX0keoz7q0QSOw+1RQmmesWsk8/
+ v8gSjX+4iQgKB4QjWqJtcuLbia4RDI97qYMHP6AtwvJV38KnNcmPLTe0SW6/wYyh9W7XUNOuF
+ 7FaCs6Dfq3I3ylpsx8sYX7OGf0VpixV/0TxMy2BaMIcLUAtupZ7Hv6WeEL+mDufZ2RczQI0eN
+ j7HivTZmOcrq6j5ug
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Fix memory leak of in function parse_events_term__sym_hw()
-> and parse_events_term__clone() when error occur.
+> Fix potential memory leak. Function new_term may return error, so
+> it is need to free memory when the return value is negative.
 
 How do you think about a wording variant like the following?
 
-   Release a configuration object after a string duplication failed.
+   Add jump targets so that a configuration object and a duplicated string
+   are released after a call of the function =E2=80=9Cstrdup=E2=80=9D or =
+=E2=80=9Cnew_term=E2=80=9D failed.
 
 Regards,
 Markus
