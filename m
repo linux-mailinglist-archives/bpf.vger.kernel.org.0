@@ -2,147 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF3E1F6F06
-	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 22:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63DC1F6F9C
+	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 23:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726153AbgFKUvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 16:51:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54200 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726317AbgFKUvK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 16:51:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591908668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2wJauOrh2sJagAyvMb41d/GChNhkUUFu5LwDnqBhpp8=;
-        b=aztPZ0ONQIEqcv0gDpiB8BjbPPiw3v4IoRnxaanTCvbBXNP/p/jAps9puKKEM40dNUFwPB
-        RmSXTXGw/e7WvASDClkeQNVQ/6qr+ofwmT06tOJ+85DVr1TgbX5qLvfhkr+lVGs6S3o1is
-        jvn++36LrSV7wOvdpkAnSmIrq1a4zAg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-hDqKBRRbMhWozcETuMPi-Q-1; Thu, 11 Jun 2020 16:50:49 -0400
-X-MC-Unique: hDqKBRRbMhWozcETuMPi-Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB9858018A2;
-        Thu, 11 Jun 2020 20:50:47 +0000 (UTC)
-Received: from krava (unknown [10.40.194.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 593E4579A3;
-        Thu, 11 Jun 2020 20:50:41 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 22:50:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Frantisek Hrbata <fhrbata@redhat.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [RFC] .BTF section data alignment issue on s390
-Message-ID: <20200611205040.GA1853644@krava>
+        id S1726159AbgFKVzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 17:55:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44240 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726153AbgFKVzG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 17:55:06 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jjVA8-0005fD-AK; Thu, 11 Jun 2020 23:55:04 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jjVA8-000AFI-2U; Thu, 11 Jun 2020 23:55:04 +0200
+Subject: Re: [PATCH] tools, bpftool: Exit on error in function codegen
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tobias Klauser <tklauser@distanz.ch>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20200610130807.21497-1-tklauser@distanz.ch>
+ <20200611103341.21532-1-tklauser@distanz.ch>
+ <CAEf4BzaHaHKSVuNt7kgFm53-byDro1ijADD+Q-i39yMfT9pT-g@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9761fb51-461e-1760-b357-a4865cd583ac@iogearbox.net>
+Date:   Thu, 11 Jun 2020 23:55:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAEf4BzaHaHKSVuNt7kgFm53-byDro1ijADD+Q-i39yMfT9pT-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25840/Thu Jun 11 14:52:31 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-we're hitting a problem on s390 with BTF data alignment.
+On 6/11/20 8:02 PM, Andrii Nakryiko wrote:
+> On Thu, Jun 11, 2020 at 3:33 AM Tobias Klauser <tklauser@distanz.ch> wrote:
+>>
+>> Currently, the codegen function might fail and return an error. But its
+>> callers continue without checking its return value. Since codegen can
+>> fail only in the ounlikely case of the system running out of memory or
+>> the static template being malformed, just exit(-1) directly from codegen
+>> and make it void-returning.
+>>
+>> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+>> ---
+> 
+> LGTM. Thanks!
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-When running simple test, we're getting this message from
-verifier and console:
-
-  bpf_common.c:91: BROK: Failed verification: in-kernel BTF is malformed
-  [   41.545572] BPF:Total section length too long
-
-
-AFAICS it happens when .BTF section data size is not an even number ;-)
-
-DISCLAIMER I'm quite ignorant of s390x arch details, so most likely I'm
-totally wrong and perhaps missing something important and there's simple
-explanation.. but here's what got me here:
-
-
-... so BTF data is placed in .BTF section via linker script:
-
-        .BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {                           \
-                __start_BTF = .;                                        \
-                *(.BTF)                                                 \
-                __stop_BTF = .;                                         \
-        }
-
-
-and the .BTF data size in btf_parse_vmlinux is computed as:
-
-        btf->data_size = __stop_BTF - __start_BTF;
-
-
-this computation is compiled as:
-
-        00000000002aeb20 <btf_parse_vmlinux>:
-        ...
-          2aeb8a:  larl    %r1,cda3ac <__start_BTF+0x2084a8>    # loads r1 with end
-          2aeb90:  larl    %r2,ad1f04 <__start_BTF>             # loads r2 with start
-          2aeb96:  sgr     %r1,%r2                              # substract r1 - r2 
-
-
-having following values for start/stop_BTF symbols:
-
-        # nm ./vmlinux | grep __start_BTF
-        0000000000ad1f04 R __start_BTF
-        # nm ./vmlinux | grep __stop_BTF
-        0000000000cda3ad R __stop_BTF
-
-        -> the BTF data size is 0x2084a9
-
-
-but as you can see the instruction that loads the 'end' symbol:
-
-        larl    %r1,cda3ac <__start_BTF+0x2084a8>
-
-
-is loading '__start_BTF + 0x2084a8', which is '__stop_BTF - 1'
-
-
-From spec it seems that larl instruction's argument must be even
-number ([1] page 7-214):
-
-        2.   For  LOAD  RELATIVE  LONG,  the  second  oper-and must be aligned
-        on an integral boundary cor-responding to the operand’s size. 
-
-
-I also found an older bug complaining about this issue [2]:
-
-        ...
-        larl instruction can only load even values - instructions on s390 are 2-byte
-        aligned and the instruction encodes offset to the target in 2-byte units.
-        ...
-        The GNU BFD linker for s390 doesn't bother to check if relocations fit or are
-        properly aligned. 
-        ...
-
-
-I tried to fix that aligning the end to even number, but then
-btf_check_sec_info logic needs to be adjusted as well, and
-probably other places as well.. so I decided to share this
-first.. because it all seems wrong ;-)
-
-thoughts? thanks,
-jirka
-
-
-[1] http://publibfi.boulder.ibm.com/epubs/pdf/dz9zr008.pdf
-[2] https://sourceware.org/bugzilla/show_bug.cgi?id=18960
-
+Applied, thanks!
