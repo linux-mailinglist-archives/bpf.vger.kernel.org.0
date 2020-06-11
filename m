@@ -2,208 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE6C1F7087
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 00:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CE21F70E2
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 01:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgFKWqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 18:46:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726251AbgFKWqf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jun 2020 18:46:35 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05BMXEua152323;
-        Thu, 11 Jun 2020 18:46:20 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31kknyjvtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 18:46:20 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05BMZSB0162540;
-        Thu, 11 Jun 2020 18:46:19 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31kknyjvt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 18:46:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05BMjYmr015758;
-        Thu, 11 Jun 2020 22:46:17 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 31g2s82aed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jun 2020 22:46:17 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05BMiw9m60621252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 22:44:58 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8387AE067;
-        Thu, 11 Jun 2020 22:46:14 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 298A6AE065;
-        Thu, 11 Jun 2020 22:46:14 +0000 (GMT)
-Received: from sig-9-145-174-225.de.ibm.com (unknown [9.145.174.225])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Jun 2020 22:46:14 +0000 (GMT)
-Message-ID: <e1823b9409720aadb14691fbc4e136ad36c5264c.camel@linux.ibm.com>
-Subject: Re: [RFC] .BTF section data alignment issue on s390
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1726284AbgFKXbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 19:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgFKXbj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 19:31:39 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D03C08C5C1;
+        Thu, 11 Jun 2020 16:31:39 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y17so2941586plb.8;
+        Thu, 11 Jun 2020 16:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=53niQxqahks3EKNdNU3JdcwDT5/fPF/bXLdvCKXBBLU=;
+        b=cQBSeLaO39fs84L+DCF7EpMGoLq4AUFWvJrTHTKXio6daEkqS+rp1K6pEOm7t3tIx8
+         i/g2el5SbhHHeGVCBEKrQ+1nymJjnvpcE81waFAIThUZ5oOOQ/uPVzreplkuIHSp8bxZ
+         y5uKxabngYjUdfDvvC66FY+bRyfcx6AyjUQAr1vEGWqKO4bQSfQ6V5PJLiT3EgePVnAy
+         Fqe2xTdjb8sdMpT1DvfJDthxyq3jv21fccco0e0FsY1fouFHUFRwAfk1RB4/LiXZ43JW
+         RrlU6/PV4VOPkHKmkUReX2yTO0lqMF+ltJVHEE+JMZujbibg/Hu50ilDT0etsMEmMSJU
+         p1bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=53niQxqahks3EKNdNU3JdcwDT5/fPF/bXLdvCKXBBLU=;
+        b=oWC6Y9IrbRFvc++8nZdfKmGBkgWxlSWcy4iDGNoCjWo3XT+aCRJ01W/YmznMULFijt
+         /Vqg33cbUq4UTyXIx8QDdW8uV0THL7/02X/baJY9b3RgreSxAnZOzNY9CXfWWF+krAlw
+         VjKaohnuGjn4sPdNBwN1etq16J3IL6h4JL8751sbObJq5KyoQtZ3zyz1pP6n60b79wWK
+         3BKf60i8CbMaO2Ro8TalQe2uGySSYbzkFB/Gx0KIk6ZR5jMUWJBqK+N2oldr1/aHR4Uv
+         SxXn8t3NkvNM3uKsWAvYgmbOgBFHAVsJbl0tZSgtsToYf5M87C+PkUvgrqeYZDuJiU6x
+         R2uA==
+X-Gm-Message-State: AOAM533ZjQ0VV6N7u39+i0lIfsmxLURMlPBIaW0Dm8lNbkTRzgHkiSsU
+        kEJ9kImKYhlt5beZ/xQzzwk=
+X-Google-Smtp-Source: ABdhPJxmHS9QruoYsSu8Vwr0dt8xezQlGs8fL/ApDuOch0vBMhIPalUbjDCVFD6D25ayMBdlYjWJHA==
+X-Received: by 2002:a17:902:d711:: with SMTP id w17mr8690412ply.139.1591918298382;
+        Thu, 11 Jun 2020 16:31:38 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:73f9])
+        by smtp.gmail.com with ESMTPSA id u128sm4078947pfu.148.2020.06.11.16.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 16:31:37 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 16:31:34 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Frantisek Hrbata <fhrbata@redhat.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Fri, 12 Jun 2020 00:46:13 +0200
-In-Reply-To: <20200611205040.GA1853644@krava>
-References: <20200611205040.GA1853644@krava>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+References: <202006051903.C44988B@keescook>
+ <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
+ <20200606201956.rvfanoqkevjcptfl@ast-mbp>
+ <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
+ <20200607014935.vhd3scr4qmawq7no@ast-mbp>
+ <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
+ <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
+ <87r1uo2ejt.fsf@x220.int.ebiederm.org>
+ <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
+ <87d066vd4y.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-11_23:2020-06-11,2020-06-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 phishscore=0 suspectscore=0 spamscore=0
- cotscore=-2147483648 priorityscore=1501 mlxlogscore=999 clxscore=1011
- adultscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110174
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d066vd4y.fsf@x220.int.ebiederm.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-06-11 at 22:50 +0200, Jiri Olsa wrote:
-> hi,
-> we're hitting a problem on s390 with BTF data alignment.
+On Wed, Jun 10, 2020 at 04:12:29PM -0500, Eric W. Biederman wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 > 
-> When running simple test, we're getting this message from
-> verifier and console:
+> > On Tue, Jun 09, 2020 at 03:02:30PM -0500, Eric W. Biederman wrote:
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >> 
+> >> > bpf_lsm is that thing that needs to load and start acting early.
+> >> > It's somewhat chicken and egg. fork_usermode_blob() will start a process
+> >> > that will load and apply security policy to all further forks and
+> >> > execs.
+> >> 
+> >> What is the timeframe for bpf_lsm patches wanting to use
+> >> fork_usermode_blob()?
+> >> 
+> >> Are we possibly looking at something that will be ready for the next
+> >> merge window?
+> >
+> > In bpf space there are these that want to use usermode_blobs:
+> > 1. bpfilter itself.
+> > First of all I think we made a mistake delaying landing the main patches:
+> > https://lore.kernel.org/patchwork/patch/902785/
+> > https://lore.kernel.org/patchwork/patch/902783/
+> > without them bpfilter is indeed dead. That probably was the reason
+> > no one was brave enough to continue working on it.
+> > So I think the landed skeleton of bpfilter can be removed.
+> > I think no user space code will notice that include/uapi/linux/bpfilter.h
+> > is gone. So it won't be considered as user space breakage.
+> > Similarly CONFIG_BPFILTER can be nuked too.
+> > bpftool is checking for it (see tools/bpf/bpftool/feature.c)
+> > but it's fine to remove it.
+> > I still think that the approach taken was a correct one, but
+> > lifting that project off the ground was too much for three of us.
+> > So when it's staffed appropriately we can re-add that code.
+> >
+> > 2. bpf_lsm.
+> > It's very active at the moment. I'm working on it as well
+> > (sleepable progs is targeting that), but I'm not sure when folks
+> > would have to have it during the boot. So far it sounds that
+> > they're addressing more critical needs first. "bpf_lsm ready at boot"
+> > came up several times during "bpf office hours" conference calls,
+> > so it's certainly on the radar. If I to guess I don't think
+> > bpf_lsm will use usermode_blobs in the next 6 weeks.
+> > More likely 2-4 month.
+> >
+> > 3. bpf iterator.
+> > It's already capable extension of several things in /proc.
+> > See https://lore.kernel.org/bpf/20200509175921.2477493-1-yhs@fb.com/
+> > Cat-ing bpf program as "cat /sys/fs/bpf/my_ipv6_route"
+> > will produce the same human output as "cat /proc/net/ipv6_route".
+> > The key difference is that bpf is all tracing based and it's unstable.
+> > struct fib6_info can change and prog will stop loading.
+> > There are few FIXME in there. That is being addressed right now.
+> > After that the next step is to make cat-able progs available
+> > right after boot via usermode_blobs.
+> > Unlike cases 1 and 2 here we don't care that they appear before pid 1.
+> > They can certainly be chef installed and started as services.
+> > But they are kernel dependent, so deploying them to production
+> > is much more complicated when they're done as separate rpm.
+> > Testing is harder and so on. Operational issues pile up when something
+> > that almost like kernel module is done as a separate package.
+> > Hence usermode_blob fits the best.
+> > Of course we were not planning to add a bunch of them to kernel tree.
+> > The idea was to add only _one_ such cat-able bpf prog and have it as
+> > a selftest for usermode_blob + bpf_iter. What we want our users to
+> > see in 'cat my_ipv6_route' is probably different from other companies.
+> > These patches will likely be using usermode_blob() in the next month.
+> >
+> > But we don't need to wait. We can make the progress right now.
+> > How about we remove bpfilter uapi and rename net/bpfilter/bpfilter_kern.c
+> > into net/umb/umb_test.c only to exercise Makefile to build elf file
+> > from simple main.c including .S with incbin trick
+> > and kernel side that does fork_usermode_blob().
+> > And that's it.
+> > net/ipv4/bpfilter/sockopt.c and kconfig can be removed.
+> > That would be enough base to do use cases 2 and 3 above.
+> > Having such selftest will be enough to adjust the layering
+> > for fork_usermode_blob(), right?
 > 
->   bpf_common.c:91: BROK: Failed verification: in-kernel BTF is
-> malformed
->   [   41.545572] BPF:Total section length too long
-> 
-> 
-> AFAICS it happens when .BTF section data size is not an even number
-> ;-)
-> 
-> DISCLAIMER I'm quite ignorant of s390x arch details, so most likely
-> I'm
-> totally wrong and perhaps missing something important and there's
-> simple
-> explanation.. but here's what got me here:
-> 
-> 
-> ... so BTF data is placed in .BTF section via linker script:
-> 
->         .BTF : AT(ADDR(.BTF) - LOAD_OFFSET)
-> {                           \
->                 __start_BTF =
-> .;                                        \
->                 *(.BTF)                                              
->    \
->                 __stop_BTF =
-> .;                                         \
->         }
-> 
-> 
-> and the .BTF data size in btf_parse_vmlinux is computed as:
-> 
->         btf->data_size = __stop_BTF - __start_BTF;
-> 
-> 
-> this computation is compiled as:
-> 
->         00000000002aeb20 <btf_parse_vmlinux>:
->         ...
->           2aeb8a:  larl    %r1,cda3ac <__start_BTF+0x2084a8>    #
-> loads r1 with end
->           2aeb90:  larl    %r2,ad1f04 <__start_BTF>             #
-> loads r2 with start
->           2aeb96:  sgr     %r1,%r2                              #
-> substract r1 - r2 
-> 
-> 
-> having following values for start/stop_BTF symbols:
-> 
->         # nm ./vmlinux | grep __start_BTF
->         0000000000ad1f04 R __start_BTF
->         # nm ./vmlinux | grep __stop_BTF
->         0000000000cda3ad R __stop_BTF
-> 
->         -> the BTF data size is 0x2084a9
-> 
-> 
-> but as you can see the instruction that loads the 'end' symbol:
-> 
->         larl    %r1,cda3ac <__start_BTF+0x2084a8>
-> 
-> 
-> is loading '__start_BTF + 0x2084a8', which is '__stop_BTF - 1'
-> 
-> 
-> From spec it seems that larl instruction's argument must be even
-> number ([1] page 7-214):
-> 
->         2.   For  LOAD  RELATIVE  LONG,  the  second  oper-and must
-> be aligned
->         on an integral boundary cor-responding to the operand’s
-> size. 
-> 
-> 
-> I also found an older bug complaining about this issue [2]:
-> 
->         ...
->         larl instruction can only load even values - instructions on
-> s390 are 2-byte
->         aligned and the instruction encodes offset to the target in
-> 2-byte units.
->         ...
->         The GNU BFD linker for s390 doesn't bother to check if
-> relocations fit or are
->         properly aligned. 
->         ...
-> 
-> 
-> I tried to fix that aligning the end to even number, but then
-> btf_check_sec_info logic needs to be adjusted as well, and
-> probably other places as well.. so I decided to share this
-> first.. because it all seems wrong ;-)
-> 
-> thoughts? thanks,
-> jirka
-> 
-> 
-> [1] http://publibfi.boulder.ibm.com/epubs/pdf/dz9zr008.pdf
-> [2] https://sourceware.org/bugzilla/show_bug.cgi?id=18960
-> 
-Hi Jiri,
+> If I understand correctly you are asking people to support out of tree
+> code.  I see some justification for this functionality for in-tree code.
+> For out of tree code there really is no way to understand support or
+> maintain the code.
 
-Actually I recently ran into it myself on Debian, and I believe your
-analysis is correct :-) The only thing to add to it is that the
-compiler emits the correct instruction (if you look at the .o file),
-it's linker that messes things up.
+It's just like saying that sys_finit_module() is there to support out
+of tree code. There are in- and out- tree modules and there will be
+in- and out- of tree bpf programs, but the focus is on those that
+are relevant for the long term future of the kernel.
+The 1 case above is in-tree only. There is nothing in bpfilter
+that makes sense out of tree.
+The 2 case (bpf_lsm) is primarily in-tree. Security is something
+everyone wants its own way, but majority of bpf_lsm functionality
+should live in-tree.
+The 3 case is mostly out-of-tree. If there was obvious way to
+extend /proc it could have been in-tree, but no one will agree.
 
-The linker bug in question is [1].
+> We probably also need to have a conversation about why this
+> functionality is a better choice that using a compiled in initramfs,
+> such as can be had by setting CONFIG_INITRAMFS_SOURCE.
 
-I opened [2] to Debian folks, and I believe that other important
-distros (RH, SUSE, Ubuntu) have this fixed already.
+I explained it several times already. I don't see how initramfs solves 1 and 2.
 
-Which distro are you using?
+> Even with this write up and the conversations so far I don't understand
+> what problem fork_usermode_blob is supposed to be solving.  Is there
+> anything kernel version dependent about bpf_lsm?  For me the primary
+> justification of something like fork_usermode_blob is something that is
+> for all practical purposes a kernel module but it just happens to run in
+> usermode.
 
-Best regards,
-Ilya
+that's what it is. It's a kernel module that runs in user space.
 
-[1] 
-https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=e6213e09ed0e
-[2] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=961736
+> From what little I know about bpf_lsm that isn't the case.  So far all
 
+It is.
+
+> you have mentioned is that bpf_lsm needs to load early.  That seems like
+> something that could be solved by a couple of lines init/main.c that
+> forks and exec's a program before init if it is present.  Maybe that
+> also needs a bit of protection so the bootloader can't override the
+> binary.
+> 
+> The entire concept of a loadable lsm has me scratching my head.  Last
+> time that concept was seriously looked at the races for initializing per
+> object data were difficult enough to deal with modular support was
+> removed from all of the existing lsms.
+
+I'm not sure what races you're talking about.
+usermode_blob will interact with kernel via syscalls and other standard
+communication mechanism.
+
+> Not to mention there are places where the lsm hooks are a pretty lousy
+> API and will be refactored to make things better with no thought of any
+> out of tree code.
+
+I don't see how refactoring LSM hooks is relevant in this discussion.
+
+> 
+> > If I understood you correctly you want to replace pid_t
+> > in 'struct umh_info' with proper 'struct pid' pointer that
+> > is refcounted, so user process's exit is clean? What else?
+> 
+> No "if (filename)" or "if (file)" on the exec code paths.  No extra case
+> for the LSM's to have to deal with.  Nothing fork_usermode_blob does is
+> something that can't be done from userspace as far as execve is
+> concerned so there is no justification for any special cases in the core
+> of the exec code.
+
+Adding getname_kernel() instead of filename==NULL is trivial enough
+and makes sense as a cleanup.
+But where do you see 'if (file)' ?
+The correct 'file' pointer is passed from shmem_kernel_file_setup() all
+the way to exec.
+
+> Getting the deny_write_count and the reference count correct on the file
+> argument as well as getting BPRM_FLAGS_PATH_INACCESSIBLE set.
+
+There is no fd because there is no task, but there is a file. I think 
+do_execve should assume BINPRM_FLAGS_PATH_INACCESSIBLE in this case.
+
+> Using the proper type for argv and envp.
+
+I guess that's going to be a part of other cleanup.
+
+> Those are the things I know of that need to be addressed.
+> 
+> 
+> Getting the code refactored so that the do_open_execat can be called
+> in do_execveat_common instead of __do_execve_file is enough of a
+> challenge of code motion I really would rather not do that.   Unfortunately that is
+> the only way I can see right now to have both do_execveat_common and
+> do_execve_file pass in a struct file.
+
+The 'struct file' is there. Please take another look at the code.
+
+> Calling deny_write_access and get_file in do_execve_file and probably
+> a bit more is the only way I can see to cleanly isoloate the special
+> cases fork_usermode_blob brings to the table.
+> 
+> 
+> Strictly speaking I am also aware of the issue that the kernel has to
+> use set_fs(KERNEL_DS) to allow argv and envp to exist in kernel space
+> instead of userspace.  That needs to be fixed as well, but for all
+> kernel uses of exec.  So any work fixing fork_usermode_blob can ignore
+> that issue.
+
+well, this is the problem of usermodehelper_exec.
+usermode_blob doesn't use argv/envp.
+They could be NULL for all practical purpose.
