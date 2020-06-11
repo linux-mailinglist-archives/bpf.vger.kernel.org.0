@@ -2,119 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F7B1F6A83
-	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 17:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D51F6C47
+	for <lists+bpf@lfdr.de>; Thu, 11 Jun 2020 18:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgFKPCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 11:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        id S1726468AbgFKQkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 12:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728273AbgFKPCh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 11:02:37 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC6EC08C5C1;
-        Thu, 11 Jun 2020 08:02:37 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id er17so2755575qvb.8;
-        Thu, 11 Jun 2020 08:02:37 -0700 (PDT)
+        with ESMTP id S1725782AbgFKQkE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 12:40:04 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72638C08C5C1;
+        Thu, 11 Jun 2020 09:40:02 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id i3so3164307ljg.3;
+        Thu, 11 Jun 2020 09:40:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=r0hNAlb8gwk+2s8vLxqGkBolOrtvmVp5BagPwVX1Ajk=;
-        b=ZEnqBpV6x9tbdnOXrWgmoMoqpMcm7FzfGEskyPDedCcKDSQrsF1vEAxEx9ndKxbWHn
-         jS17XPJiB9YI1TnrV5zGnhtH5ObaNDQ3I4vVq8QLarWla8zcjHw4zwGELtxndGQOwjH0
-         SyYu47PN7bk5ooMJ3JhCYhDB5F8UESAwIAuQbkTRpu6xdomvxWEwTxSqNz2ARGfIfk00
-         7nMgwDnjIrThaEtNn/LPqSkJVIXO9Vx0qpjKRBnYmNqQSBNCc/+5vgHicWxPXQu6qh/s
-         5UdV1sorpqq+5yC5X116GTcMYS2IrTvZC1JKINbuGVo9vB+BW/lmgdlTi4aVQZUcZ1Xf
-         6BTw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mUtfyCnJq9KNvYA4sDxFeP/1TqOH9e3q0Aq9ZpBK68g=;
+        b=Q9iAkXu+1ZVIx0PW68azX9veyZQ6BCIpuBrxpwFbvwQWH6mEn8dPN2Pc2Rf6vwEhGE
+         uY+si4r1kMpp11aMDw06F7LliFVlTrx0Nj1MKwV6ng36jCbPYvXq4Ksvs+H+a+BoHqnO
+         1iKgmL8eFeeK/weGhM8PJ9fXGXuSHIZWC2UlBpkCCmIJ/7vMm+Lb2Pe5iOvHFqkvNsRA
+         dTL1VYcGFCy1/mkNqBxGt4Avm13HcIhT5t1fYEhxUBYwyafjHePwbWx/nfGq4qSyXQwp
+         c5cLyuxcdR+AZNWBYkXL3Jdaz2XOBSor5YWoRum0wr8pvoLx72/gNFcjEhFRPpkutkDv
+         x9pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=r0hNAlb8gwk+2s8vLxqGkBolOrtvmVp5BagPwVX1Ajk=;
-        b=QXQ0Y5/4O+C1igi4p0hkKxFPyn9uH44BL0vh9NuHwI8RtIybeMoGOQP9nyQE0waXC1
-         gB5Ud2m6NXx/wwiSBqxYsE6GYMiiAaxKiUDFW6PXvxfKic2/H0gjIjr6fv7pVBLbgZjz
-         HRC6uMZSmx2EiFO+toWdSODimC7xCp7IXOp/zTdN5X4vL5gBqp8j0PoOFBPYY1lljCj2
-         Bw2PSJIgvYWUtLlVHIbuuq457H5cRm/Qs7vA64D2VTLuXNfJacWxvOJNGu6ciZU9FC7u
-         brGK/FSvXq0Eo9F6WrWDazDyEkmPRdr3h30W5pKSsFnac8sSC/StNKaxusvJwaib+IaQ
-         zBvA==
-X-Gm-Message-State: AOAM530u01gU/T8u/S8df7zqWFPKk8zwLoqZkMCIBBMZnu3RwGzWMice
-        mMV72hMwo3UEHAChQd2JTrg=
-X-Google-Smtp-Source: ABdhPJxOTBEvquTX9k2vohWCjqbVEuu/GZqdZH7clWhzbcWr27EmLQ//jvq/zFCkjHzAGjdmWyUa1Q==
-X-Received: by 2002:ad4:4e14:: with SMTP id dl20mr8503813qvb.101.1591887756824;
-        Thu, 11 Jun 2020 08:02:36 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:f00a:33d2:6ec2:475c])
-        by smtp.googlemail.com with ESMTPSA id 78sm2230157qkg.65.2020.06.11.08.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 08:02:35 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
-Date:   Thu, 11 Jun 2020 11:02:21 -0400
-Message-Id: <20200611150221.15665-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mUtfyCnJq9KNvYA4sDxFeP/1TqOH9e3q0Aq9ZpBK68g=;
+        b=RaVTS0269E5rv+jNmVfNSiNlyBd8Yq1oK8EiFkOW9DaZZr3Q7C62DAngXumCz3ScAf
+         gaNgqz/cJFRxHhYuX7R4SH6YMCT58xfDCwZMRgxflIhOXRMQ5v9xZn8ovDSPWb8TAJ19
+         QYuAFvuVWmMtIdW6Z9FmQYDZTYpouBS7/RIxP5KQOZc08ryBTgwIVKe5V5pQogmnEal9
+         Nvk3mPkLn4mcUk8TKees7Ra3XamdYYGkJMXacL+B4i7/npxvVpIibBvKQgV1b0wenaqg
+         gW94PA0ifoe7FKuDazhT1OKV6OH+4bcg0DfNqMCJhb9T2FhhewT9isDE/pf9lhiti4mJ
+         BtCQ==
+X-Gm-Message-State: AOAM532A/x9jXUBmapBOGiEYoi50d6pDpeuDs98QGef22UBW9i7qEW1F
+        oBgQrFo3Taw6jGTAYQXqABalvomjhznRciXjfpKDep/t
+X-Google-Smtp-Source: ABdhPJxxzeNoPlMQKylwRX1o+c7NiLLp+u+QZr3fOZZalxzvwZrXOQoL74ebh8hyw17MDZw36LX4LNcWNmPEjbO4OiE=
+X-Received: by 2002:a2e:9187:: with SMTP id f7mr4963497ljg.450.1591893600256;
+ Thu, 11 Jun 2020 09:40:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAMDScmnpbPgs+mB_aMY16aXLMMWBgfu0sqna06MH8RPoGpw7_Q@mail.gmail.com>
+ <87imfy7hrx.fsf@toke.dk> <CAMDScmm5nCzeffaeEuSFHATunsH36XW2VzbsFCuWhU5OYr_naA@mail.gmail.com>
+ <87a71a7gay.fsf@toke.dk> <CAMDScmnTYKfjMjiqLGduY4Pk3X0D7RQhjtY7DuPmh65VMNeCRw@mail.gmail.com>
+ <20200611125952.3527dfdb@carbon> <CAEf4BzafLSnjjqdeH9-Wu7J69a=7_3gmqqDBV8ysTOTmnvmtyw@mail.gmail.com>
+In-Reply-To: <CAEf4BzafLSnjjqdeH9-Wu7J69a=7_3gmqqDBV8ysTOTmnvmtyw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 11 Jun 2020 09:39:48 -0700
+Message-ID: <CAADnVQKB6+8JWVWfn+p2gcooVvoW1LEv7Lsv17+GrApy+osWLw@mail.gmail.com>
+Subject: Re: [iovisor-dev] Error loading xdp program that worked with bpf_load
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Elerion <elerion1000@gmail.com>,
+        "iovisor-dev@lists.iovisor.org" <iovisor-dev@lists.iovisor.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Xdp <xdp-newbies@vger.kernel.org>,
+        Yonghong Song <ys114321@gmail.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace malloc/memset with calloc
+On Thu, Jun 11, 2020 at 9:35 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jun 11, 2020 at 4:00 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
+> > (Cross-posting to iovisor-dev)
+> >
+> > Seeking input from BPF-llvm developers. How come Clang/LLVM 10+ is
+> > generating incompatible BTF-info in ELF file, and downgrading to LLVM-9
+> > fixes the issue ?
+> >
+> >
+> > On Wed, 10 Jun 2020 14:50:27 -0700 Elerion <elerion1000@gmail.com> wrote:
+> >
+> > > Never mind, I fixed it by downgrading to Clang 9.
+> > >
+> > > It appears to be an issue with Clang/LLVM 10+
+> > >
+> > > https://github.com/cilium/ebpf/issues/43
+>
+> This is newer Clang recording that function is global, not static.
+> libbpf is sanitizing BTF to remove this flag, if kernel doesn't
+> support this. But given this is re-implementation of libbpf, that's
+> probably not happening, right?
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- samples/bpf/xdp_rxq_info_user.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+just running ./test_xdp_veth.sh on the latest bpf-next with the latest
+clang I see:
+BTF debug data section '.BTF' rejected: Invalid argument (22)!
+ - Length:       514
+Verifier analysis:
+...
+[11] VAR _license type_id=9 linkage=1
+[12] DATASEC license size=0 vlen=1 size == 0
 
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-index 4fe47502ebed..caa4e7ffcfc7 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -198,11 +198,8 @@ static struct datarec *alloc_record_per_cpu(void)
- {
- 	unsigned int nr_cpus = bpf_num_possible_cpus();
- 	struct datarec *array;
--	size_t size;
- 
--	size = sizeof(struct datarec) * nr_cpus;
--	array = malloc(size);
--	memset(array, 0, size);
-+	array = calloc(nr_cpus, sizeof(struct datarec));
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
- 		exit(EXIT_FAIL_MEM);
-@@ -214,11 +211,8 @@ static struct record *alloc_record_per_rxq(void)
- {
- 	unsigned int nr_rxqs = bpf_map__def(rx_queue_index_map)->max_entries;
- 	struct record *array;
--	size_t size;
- 
--	size = sizeof(struct record) * nr_rxqs;
--	array = malloc(size);
--	memset(array, 0, size);
-+	array = calloc(nr_rxqs, sizeof(struct record));
- 	if (!array) {
- 		fprintf(stderr, "Mem alloc error (nr_rxqs:%u)\n", nr_rxqs);
- 		exit(EXIT_FAIL_MEM);
-@@ -232,8 +226,7 @@ static struct stats_record *alloc_stats_record(void)
- 	struct stats_record *rec;
- 	int i;
- 
--	rec = malloc(sizeof(*rec));
--	memset(rec, 0, sizeof(*rec));
-+	rec = calloc(1, sizeof(struct stats_record));
- 	if (!rec) {
- 		fprintf(stderr, "Mem alloc error\n");
- 		exit(EXIT_FAIL_MEM);
--- 
-2.17.1
 
+BTF debug data section '.BTF' rejected: Invalid argument (22)!
+ - Length:       494
+Verifier analysis:
+...
+[11] VAR _license type_id=9 linkage=1
+[12] DATASEC license size=0 vlen=1 size == 0
+
+
+BTF debug data section '.BTF' rejected: Invalid argument (22)!
+11] VAR _license type_id=9 linkage=1
+[12] DATASEC license size=0 vlen=1 size == 0
+
+PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
+64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.042 ms
+
+--- 10.1.1.33 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.042/0.042/0.042/0.000 ms
+selftests: xdp_veth [PASS]
+
+Is that just the noise from libbpf probing or what?
