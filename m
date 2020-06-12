@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450551F715C
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 02:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE931F7172
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 02:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgFLA0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 20:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
+        id S1726357AbgFLAgt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 20:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgFLA0t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:26:49 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3856FC03E96F;
-        Thu, 11 Jun 2020 17:26:49 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c14so7453326qka.11;
-        Thu, 11 Jun 2020 17:26:49 -0700 (PDT)
+        with ESMTP id S1726321AbgFLAgt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 20:36:49 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C815C03E96F;
+        Thu, 11 Jun 2020 17:36:49 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c12so5927705qtq.11;
+        Thu, 11 Jun 2020 17:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=XihjhM7PNDe6DTRFb+Tb27kII0d9sFsX2YnNNfTFAB8=;
-        b=avRfAddoVxJIjKVncxYfHxppQQ7YN8qOh8YfKqE4FfoemEVefjMYlKjkqkOznaYqmZ
-         pyZzyLpXUOiiBUHGxpFH3AH5eylL8l+dhxkqKAdgeii/rtRqL0SLBJrrWQqNuYkwGBih
-         8wfe6q6YWxLZ1TrsRGWbaYzaBoUJ1pwgoFcSiy7QMspcAeqycVXGF3yBXeyvxlm0sGye
-         XTpS48XBPAUwRr7PRrKM7G9huEk8qq6w8HcPzFegv2ldPlN26HldKlW+PguCO516uTtI
-         F3BWZndIqcsZi8O3yO7U34vRbY9mGR1XPmWJSZ5H6un/mTY0GAA8SAFGbzE9UGyzaP+f
-         4gmQ==
+        bh=boR49jpVVRV/Q0WW/lSHnRqxWQvt+zi1RK7D2cfa/KQ=;
+        b=rlAdwRm9hTb9aJanRInl8J1ga3yBiPstojKvPwkWPLmWuhIfnagqRf2036p2pa7Q8A
+         RWu+NMUefznT+bPIVBlAfmv7d5vyOOipVD8HsRVHKtu06OL3V2c11fgP/8QE4emjSNtD
+         33wi+hHa5G97wharcnrXbgMpWMylPcxvZYMHce+FHT6kEEn98NFDhOfnnwfux1qBHw3H
+         /gfdxPgeGbhjpmsyIK/k/5zOFWMtScvvhasE5yPPAdtTWMvY8sii62idNBcAM3Gl1Zss
+         +km/niDjnK5rAm8UvK6mCLrvTajNjdne/kuTXkXmmxlpvSQB9DNjrw7CeTeljT/V0Xaw
+         cfiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=XihjhM7PNDe6DTRFb+Tb27kII0d9sFsX2YnNNfTFAB8=;
-        b=MgXUmTEMzBLRn+RK6q4xLJLC/BPvzvKRUGBfrMTfILR/urnOzQuFSS+RBNDiBWVB63
-         WzYTt1EDH9ZkEhBKZkEZxkkcvBbpGQaJ7J09X5xugVTVtJGXJvKP+wnLGhH7gQFuvXzF
-         ZbOho2oAS3rGrHW/zbYk3eRiKcmFUvJOFuycAcmcyM7JWlCRVAyvEYAxx656RQE1pKVp
-         1TzNUuiScAO7QJFGNdsmfNhdo9XlqnmgBn2CkOGkD5PGeYYPgdsD8+3hwbzf4a9iuheL
-         Mp5SrDvwjL6OjdcBFcaSLh5E2FAKIU1tJXJGFX/4IkUXVOt9gaMtIK6BFYo7cE+BOP92
-         qmQg==
-X-Gm-Message-State: AOAM531rnSQj8ago5NDdPlk5puvTlyIj58duWOKkNZgqDDUWrY1HrtQY
-        l/5rHSWXJDmmEwFBDtT1U3xrLxXlk5Gs5Q==
-X-Google-Smtp-Source: ABdhPJxDqnEbvb8lxMuzHTWY9tCTZCqUUTQzLRifCeRxqyhsYTRHsS2yVdhnOePkUXI6mVlOUo7sUA==
-X-Received: by 2002:ae9:f40b:: with SMTP id y11mr604223qkl.107.1591921608305;
-        Thu, 11 Jun 2020 17:26:48 -0700 (PDT)
+        bh=boR49jpVVRV/Q0WW/lSHnRqxWQvt+zi1RK7D2cfa/KQ=;
+        b=DbAIuxPnZPywXMrpvgd1mxIa6i62Z0S25q8GPxcOmvVht9ATE6CsEI3/Grh6ENWTEm
+         T1LD54yHKoDxWkOuyj64zQAIS0BXWJwttng+RuG2WgFarP2Dbrl/v4paDlfyni0hBbbW
+         KqKRjxntJiXvbtGRYdv+BOswOGXfLue0Q4YxnlCt3lLXtpO4FoNJfZ8lzLu0shn74ulM
+         ypZ28hVQQA+kHvviyjyyzRmf7MYE0CtOcLHtzpWK7w7jZW1qj8lOADzzudet+7glmjOZ
+         R2n1WIrWU0hD+EZP8Y8kWq5a2TePfbqETq5uAXNO5Qj8aUgz92SEEf7iCD8Zr+gajRum
+         2gPg==
+X-Gm-Message-State: AOAM531NL+KxMHB3bdPi2zQRRe7Jocvax45yuj4pnuODSuz2Ck6SrVvl
+        L/I2CtffeoQnZs9L4T0rm8s=
+X-Google-Smtp-Source: ABdhPJyMNFemg5AAjTj1xQ2S4u9yW3ZUeOWoSPep6xN2RyxhGudxiyuxJn96SJvdohjSw9lew8hQ8A==
+X-Received: by 2002:ac8:1742:: with SMTP id u2mr641083qtk.341.1591922208515;
+        Thu, 11 Jun 2020 17:36:48 -0700 (PDT)
 Received: from linux.home ([2604:2000:1344:41d:f00a:33d2:6ec2:475c])
-        by smtp.googlemail.com with ESMTPSA id g47sm3696421qtk.53.2020.06.11.17.26.46
+        by smtp.googlemail.com with ESMTPSA id m126sm3432996qke.99.2020.06.11.17.36.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 17:26:47 -0700 (PDT)
+        Thu, 11 Jun 2020 17:36:48 -0700 (PDT)
 From:   Gaurav Singh <gaurav1086@gmail.com>
 To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,8 +61,8 @@ To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
         bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
         linux-kernel@vger.kernel.org (open list)
 Subject: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
-Date:   Thu, 11 Jun 2020 20:26:33 -0400
-Message-Id: <20200612002639.32173-1-gaurav1086@gmail.com>
+Date:   Thu, 11 Jun 2020 20:36:40 -0400
+Message-Id: <20200612003640.16248-1-gaurav1086@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200611150221.15665-1-gaurav1086@gmail.com>
 References: <20200611150221.15665-1-gaurav1086@gmail.com>
@@ -73,7 +73,8 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Replace malloc/memset with calloc
 
-Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info") Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
  samples/bpf/xdp_rxq_info_user.c | 13 +++----------
  1 file changed, 3 insertions(+), 10 deletions(-)
