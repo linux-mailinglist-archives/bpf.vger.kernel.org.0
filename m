@@ -2,58 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D0C1F7696
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 12:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E921F769F
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 12:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbgFLKPv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 06:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        id S1726317AbgFLKR5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 06:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgFLKPh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 06:15:37 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638D8C08C5C1
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 03:15:36 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so10467663ljn.4
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 03:15:36 -0700 (PDT)
+        with ESMTP id S1726024AbgFLKR4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jun 2020 06:17:56 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135E3C03E96F
+        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 03:17:55 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 9so10467539ljc.8
+        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 03:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/gbHlr0KqPDkStZANGWcajnn6OdrqVI8OcC2DaXaFRY=;
-        b=b9KwvlW4LejDyrkRYv5SvjtOE6OMNofyEWm9A7xUh1tcYnGbI0lRXrPHJQSjFa/zXC
-         06OdNtxbEmQS6HkUgkxADSsmxgI0buOOKVSZb6+n8z43YEcJ6nBbnhyRCkAokVq7ha/i
-         Afjz5FYNc1SGY1zJXPJhIs5GxkJQtz774QDLk=
+        bh=WZlUc07Rr8ksgIjTvwWUAkRdKf7159z7g2XNRXUltyI=;
+        b=Hwpa5+EBWwC9JsHgTzkp9L0UNfpjyRoItxBOXVRcDB6BTWyLsPP66VWj7jFMRA7Jfn
+         S3Ta3hY844UuAJyhy91+zzoZt3JF7YCMoR0+N42NKBr7WUwnBW0QqDaHbw/OCACM3R9x
+         IxLn99jsfxcVSimF8KQS7D5rCyRCEHKpf6pR4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/gbHlr0KqPDkStZANGWcajnn6OdrqVI8OcC2DaXaFRY=;
-        b=pomgGYodSBAPD927SB6bersEDQywRqngj36k+FFOZb1hLOG65r7TVwj0fQSfA5uXNu
-         Sy4rHxhjDy9a0TOH+JtQrAXu2Bey/+b4ZfnfHWUjdOOvxjLfSvnhSxQWJbEvnq7Huta9
-         z876xcSjZaWfIGKxq+n7KAieiqCbYm363Ft6ESq2yVmVf7Eu+v8usQ9gkNPJQd8U6LP9
-         Ef6+J78W7mXSWJd/wioqHIPvQOhA/ujWVyF2e3ticfPknvDp4H/QbguPL545iDfxzZ9z
-         YR0j1MEG+KOERatsbkSp+uE4hQFCKktywIG8YnLLnA4avlWYa8edUkl87LQ9S4o7mhwQ
-         ouRw==
-X-Gm-Message-State: AOAM533Hh0Qb3yqg7+f2Q5/jyYp4EyPQ3XgbW4m43jLbGI6P1s048Tsz
-        DkJzFhJHSUQ4TeVO0VNQmg5nRQ==
-X-Google-Smtp-Source: ABdhPJwBFZTgyd1+YZ2YR2Zp9TGIIZadEUbsi3pQARgJGt4sMdi7U4PqKKM6y5drMqNORdkgBwb4cA==
-X-Received: by 2002:a2e:5c2:: with SMTP id 185mr6083410ljf.260.1591956934738;
-        Fri, 12 Jun 2020 03:15:34 -0700 (PDT)
+        bh=WZlUc07Rr8ksgIjTvwWUAkRdKf7159z7g2XNRXUltyI=;
+        b=i88/7uNwuxz2P4c5yieZOcUnYezKywYEwX5suHSHlbB8OzNV6EJeVwhfdEDkH5qTiR
+         dQgU+sJkmBGwkalJlmMP7qrNvpo7jbDNbH+h2bcQRBJiqhw6cinQ0HLRzrvSFQnsaUzp
+         WJngY+l85vKQLNHyfvIWnz/CGl7h+9isesKU32j1LmDgK5VdG6A+09X8uGEkA8a9MdRo
+         6Rnun9WID0Id2y2NA+QBcqJM2ijKmwKE90pee4BjmsYY8s+BZVUMTjpYVQ+A2nJQmqTs
+         SQ0HhAx10jxyqmTKVdXV6FG912MWRxpb7zCwXMYj/2Wf/lrUGOs6zRQF/JmUKnVcn9Y3
+         rphw==
+X-Gm-Message-State: AOAM531U2xinyMd9AwnSkNuKAyDwTQJa3HFb7GbDN5L+qRUqzbBu5uRh
+        6DyQ929Gcp2B3OmcCneqODQ+/Q==
+X-Google-Smtp-Source: ABdhPJwUV5CjBcNm4+qoH43nmTNZKJ7PSGvfl/7KprEX5/5c/ou5DN9IOooDPHtM807G80gC7++NLA==
+X-Received: by 2002:a2e:8690:: with SMTP id l16mr5792715lji.462.1591957073513;
+        Fri, 12 Jun 2020 03:17:53 -0700 (PDT)
 Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id t7sm1659609lfq.64.2020.06.12.03.15.34
+        by smtp.gmail.com with ESMTPSA id w15sm1655270lfl.51.2020.06.12.03.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 03:15:34 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 12:15:26 +0200
+        Fri, 12 Jun 2020 03:17:53 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 12:17:50 +0200
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Sabrina Dubroca <sd@queasysnail.net>
-Cc:     netdev@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf] bpf: tcp: recv() should return 0 when the peer
- socket is closed
-Message-ID: <20200612121526.4810a073@toad>
-In-Reply-To: <26038a28c21fea5d04d4bd4744c5686d3f2e5504.1591784177.git.sd@queasysnail.net>
-References: <26038a28c21fea5d04d4bd4744c5686d3f2e5504.1591784177.git.sd@queasysnail.net>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf] bpf: sockmap: don't attach programs to UDP sockets
+Message-ID: <20200612121750.0004c74d@toad>
+In-Reply-To: <20200611172520.327602-1-lmb@cloudflare.com>
+References: <20200611172520.327602-1-lmb@cloudflare.com>
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -63,45 +67,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Jun 2020 12:19:43 +0200
-Sabrina Dubroca <sd@queasysnail.net> wrote:
+On Thu, 11 Jun 2020 18:25:20 +0100
+Lorenz Bauer <lmb@cloudflare.com> wrote:
 
-> If the peer is closed, we will never get more data, so
-> tcp_bpf_wait_data will get stuck forever. In case we passed
-> MSG_DONTWAIT to recv(), we get EAGAIN but we should actually get
-> 0.
+> The stream parser infrastructure isn't set up to deal with UDP
+> sockets, so we mustn't try to attach programs to them.
 > 
-> From man 2 recv:
+> I remember making this change at some point, but I must have lost
+> it while rebasing or something similar.
 > 
->     RETURN VALUE
-> 
->     When a stream socket peer has performed an orderly shutdown, the
->     return value will be 0 (the traditional "end-of-file" return).
-> 
-> This patch makes tcp_bpf_wait_data always return 1 when the peer
-> socket has been shutdown. Either we have data available, and it would
-> have returned 1 anyway, or there isn't, in which case we'll call
-> tcp_recvmsg which does the right thing in this situation.
-> 
-> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
+> Fixes: 7b98cd42b049 ("bpf: sockmap: Add UDP support")
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 > ---
->  net/ipv4/tcp_bpf.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  net/core/sock_map.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index 2b915aafda42..7aa68f4aae6c 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -245,6 +245,9 @@ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
->  	DEFINE_WAIT_FUNC(wait, woken_wake_function);
->  	int ret = 0;
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 00a26cf2cfe9..35cea36f3892 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -424,10 +424,7 @@ static int sock_map_get_next_key(struct bpf_map *map, void *key, void *next)
+>  	return 0;
+>  }
 >  
-> +	if (sk->sk_shutdown & RCV_SHUTDOWN)
-> +		return 1;
+> -static bool sock_map_redirect_allowed(const struct sock *sk)
+> -{
+> -	return sk->sk_state != TCP_LISTEN;
+> -}
+> +static bool sock_map_redirect_allowed(const struct sock *sk);
+>  
+>  static int sock_map_update_common(struct bpf_map *map, u32 idx,
+>  				  struct sock *sk, u64 flags)
+> @@ -508,6 +505,11 @@ static bool sk_is_udp(const struct sock *sk)
+>  	       sk->sk_protocol == IPPROTO_UDP;
+>  }
+>  
+> +static bool sock_map_redirect_allowed(const struct sock *sk)
+> +{
+> +	return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
+> +}
 > +
->  	if (!timeo)
->  		return ret;
->  
+>  static bool sock_map_sk_is_suitable(const struct sock *sk)
+>  {
+>  	return sk_is_tcp(sk) || sk_is_udp(sk);
 
 Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
