@@ -2,94 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B521F7B5C
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 18:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE521F7D39
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgFLQCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 12:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S1726314AbgFLSxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 14:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgFLQCC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 12:02:02 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CB0C03E96F
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 09:02:01 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l10so10244036wrr.10
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 09:02:01 -0700 (PDT)
+        with ESMTP id S1726310AbgFLSxj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jun 2020 14:53:39 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC73C03E96F;
+        Fri, 12 Jun 2020 11:53:38 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l17so9979441qki.9;
+        Fri, 12 Jun 2020 11:53:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zQejEshYFNqUb7v3sioackX6D/pyfet7gpxzYUl52wE=;
-        b=PBYbhxCMm9X+7/S47/3y+XNZktGaW42Z7fcfOreCztwwDU50QNAbPSjHdjzR+nZFit
-         305TjsQRfWasNDoU/NywVe2HLHqNrWeS7kF/hLOrAeXpuypJ4icYBdiY3OxolNpJVbsC
-         j2Bp60+NVG2kGFpa1PAj91qYQMPUEWyZsQQqM=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=Qh641OHejXpMoiaqdfORBCnk81oMMYKOpl7AmvDd/qw=;
+        b=sK8ZIgksUWgBLZYVKp/MiKTt2re/4Di/h5B/xyVC8dkmzziuY/1cIkb85PITbY8PIb
+         tctq/P+GJFegS9YkoMsx5AU5Lkq0Vp807deCfhElDIWcobZVOJs1/ZuHlsOKkF8G9zkE
+         BJOiEv2iEzDEdYXf6FUInS3/M9IcdLnXz0qEToO38P8vkRJ/yG9CLjNGf8LOc2d9337m
+         J8adFRGzHKTHcx8hehD+qK98MLstkTJniCMB1ANol4TlMV9yHc1dcgLrWKZhpCGQNOJn
+         lMdL6ILIKqcZjxGJ/hpbGEp/bH/dip0vPKsgU+E/UMk+sSQ74ocESMuHuRV8D65ezGBS
+         wG+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zQejEshYFNqUb7v3sioackX6D/pyfet7gpxzYUl52wE=;
-        b=qHTjVELBuXMCkZhgZANfxLxHVknjVctgE8S3uGVCKvSg0CmUnzWvdKwDOE0yWJfROs
-         mJ5w4G0Ryte0+u8TQNjq7e3gzdOFWhnMkWJwX42EluGFRpVj1XBdkaDUUHkgUH6foXOv
-         rVRk+4F3RiDunZHjSP8x00d4wsFHHn6ZelGu/uWjutQeAPPSEmjaMDqgj8LxR+DpQogL
-         xuK/d2r8GKItZUDSJ6WGP9Inx3eiiesu2fX52Kp4R1U4vmxo5vhTw6CVhspuOykl9d2Z
-         AJELFeJ9m/P4IJ2ABwb3HMBIMdOdv1Jog1fgz3AlNxuuZdSb5SW5kBg+XIRwjIefqlAU
-         O5iw==
-X-Gm-Message-State: AOAM532ZFP14hxCYXaSjH10CD0+v0pmUwW11gyMfCkbMxBmOMjdf2/yb
-        0ZyfW/VsjJ2poLbWxujblwNkDA==
-X-Google-Smtp-Source: ABdhPJwmxuL4QdXOsFvU61egyGC88qJdz9nI+m0Pp8bmpgmWGAwH/RDq42CraRgRg31Tvv29fPJ3/g==
-X-Received: by 2002:adf:e9cb:: with SMTP id l11mr15244107wrn.86.1591977720712;
-        Fri, 12 Jun 2020 09:02:00 -0700 (PDT)
-Received: from antares.lan (1.e.7.e.0.1.3.6.1.5.d.2.f.1.0.9.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:901f:2d51:6310:e7e1])
-        by smtp.gmail.com with ESMTPSA id k16sm11169941wrp.66.2020.06.12.09.01.59
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=Qh641OHejXpMoiaqdfORBCnk81oMMYKOpl7AmvDd/qw=;
+        b=J7By8jCDCTpfSClplUMudggw4gKiHMCdFnsryJgoK4v/s6EvRsp3tARwFINzhnAKpO
+         ZCOPCulwDL4BF5ERV4BzEJ2wYLSWpko+uS1K5wcIBp3tAKI0ffGAEGlxWIjIWvvSnL9w
+         L2UYeHq97YXH4UwVDyslX8SyPRgi1JOdfW3/9XnsW2jxaT5EZGy+0+R92byoIvHJlTyT
+         MNtYKMt1dvQuhPjaz7HSHHI60peRmDa4Q8fWK9/M3Ha2xNzcMOWLlPmAEEuzKz9yK+L1
+         TYDpYQ9WVlKsq90XrlllmaxR8yC0XpOwML3mYT3YVxFhvI3vQq4T8+I8EVXaogmSSrep
+         dAGw==
+X-Gm-Message-State: AOAM533l7WPPsfs1X/YARdpJFkBiG7zxmTyHEQhUrDPZ+LSR37AZJlXf
+        lxt7pLS+/DUarN8m4/zTD9o=
+X-Google-Smtp-Source: ABdhPJxSKn+a0LGaP3g0JoZhdw2t7p0eQrGpXb5LV8ZhEXVn/bgcKifKQYF7hdJ9C/3U1fewbNzNig==
+X-Received: by 2002:ae9:f80e:: with SMTP id x14mr4336586qkh.314.1591988017643;
+        Fri, 12 Jun 2020 11:53:37 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:549b:4a8:a945:10b9])
+        by smtp.googlemail.com with ESMTPSA id o6sm5079906qtd.59.2020.06.12.11.53.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 09:02:00 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
+        Fri, 12 Jun 2020 11:53:37 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf 2/2] bpf: sockmap: reject invalid attach_flags
-Date:   Fri, 12 Jun 2020 17:01:41 +0100
-Message-Id: <20200612160141.188370-2-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200612160141.188370-1-lmb@cloudflare.com>
-References: <20200612160141.188370-1-lmb@cloudflare.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
+        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] xdp_rxq_info_user: Fix null pointer dereference. Replace malloc/memset with calloc.
+Date:   Fri, 12 Jun 2020 14:53:27 -0400
+Message-Id: <20200612185328.4671-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200611150221.15665-1-gaurav1086@gmail.com>
+References: <20200611150221.15665-1-gaurav1086@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using BPF_PROG_ATTACH on a sockmap program currently understands no
-flags, but accepts any value. Return EINVAL if any flags are specified.
+Memset on the pointer right after malloc can cause a
+null pointer deference if it failed to allocate memory.
+A simple fix is to replace malloc/memset with a calloc()
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
- net/core/sock_map.c | 3 +++
- 1 file changed, 3 insertions(+)
+ samples/bpf/xdp_rxq_info_user.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 00a26cf2cfe9..6f0894909138 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -70,6 +70,9 @@ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog)
- 	struct fd f;
- 	int ret;
+diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
+index 4fe47502ebed..caa4e7ffcfc7 100644
+--- a/samples/bpf/xdp_rxq_info_user.c
++++ b/samples/bpf/xdp_rxq_info_user.c
+@@ -198,11 +198,8 @@ static struct datarec *alloc_record_per_cpu(void)
+ {
+ 	unsigned int nr_cpus = bpf_num_possible_cpus();
+ 	struct datarec *array;
+-	size_t size;
  
-+	if (attr->attach_flags)
-+		return -EINVAL;
-+
- 	f = fdget(ufd);
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map))
+-	size = sizeof(struct datarec) * nr_cpus;
+-	array = malloc(size);
+-	memset(array, 0, size);
++	array = calloc(nr_cpus, sizeof(struct datarec));
+ 	if (!array) {
+ 		fprintf(stderr, "Mem alloc error (nr_cpus:%u)\n", nr_cpus);
+ 		exit(EXIT_FAIL_MEM);
+@@ -214,11 +211,8 @@ static struct record *alloc_record_per_rxq(void)
+ {
+ 	unsigned int nr_rxqs = bpf_map__def(rx_queue_index_map)->max_entries;
+ 	struct record *array;
+-	size_t size;
+ 
+-	size = sizeof(struct record) * nr_rxqs;
+-	array = malloc(size);
+-	memset(array, 0, size);
++	array = calloc(nr_rxqs, sizeof(struct record));
+ 	if (!array) {
+ 		fprintf(stderr, "Mem alloc error (nr_rxqs:%u)\n", nr_rxqs);
+ 		exit(EXIT_FAIL_MEM);
+@@ -232,8 +226,7 @@ static struct stats_record *alloc_stats_record(void)
+ 	struct stats_record *rec;
+ 	int i;
+ 
+-	rec = malloc(sizeof(*rec));
+-	memset(rec, 0, sizeof(*rec));
++	rec = calloc(1, sizeof(struct stats_record));
+ 	if (!rec) {
+ 		fprintf(stderr, "Mem alloc error\n");
+ 		exit(EXIT_FAIL_MEM);
 -- 
-2.25.1
+2.17.1
 
