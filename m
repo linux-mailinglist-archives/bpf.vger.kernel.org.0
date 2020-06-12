@@ -2,151 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A56E1F728E
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 05:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6593E1F73FE
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 08:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgFLDk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 23:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726520AbgFLDk4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 23:40:56 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726441AbgFLGnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 02:43:01 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21530 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726408AbgFLGnB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jun 2020 02:43:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591944179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5UhtuP90l943Isqu6Ks89etrSpmI2RwrlhSkwDRnr7w=;
+        b=KDIb675cJ0bDbkf24x/IkjlXhwtru3ryuXqBwqUGXOsJv6CFy6s5bjZWoeiSxIG2nayw46
+        kiNwBxvNTjClgOHYlfeiZkDJyalVo67aIj28uWFPzT0PxHSJJXMQm1Dmhmqx/D29nLexzZ
+        Bf4vsuwYLbyaJMfJboKFz92+dmn2XTY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-MK4jfssWMfSNJ0xQZQHuzw-1; Fri, 12 Jun 2020 02:42:55 -0400
+X-MC-Unique: MK4jfssWMfSNJ0xQZQHuzw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 876B820835;
-        Fri, 12 Jun 2020 03:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591933255;
-        bh=vd7bcPbtbMIp5UdKF+DEUXSHMR5maubaM+1JjLQFxjg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oQ0K7OQ2UDESsf7QaLPKDXk5xUCQ866U57diPfIILFqyofgzracTuT21wt52wobNL
-         nAznRXNywEmSDssA8sLykfaoIgT5I97rcaqGSLcXfx+5Oa2M3YxmoJl8DLpT/uvnim
-         b8CitxSTqLsYQ71pNgE3YeUOgy206eRTM3mUYQOw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6A07135228C7; Thu, 11 Jun 2020 20:40:55 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 20:40:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C1F6801504;
+        Fri, 12 Jun 2020 06:42:53 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 992705D9CA;
+        Fri, 12 Jun 2020 06:42:48 +0000 (UTC)
+Date:   Fri, 12 Jun 2020 08:42:44 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Gaurav Singh <gaurav1086@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH RFC v3 bpf-next 1/4] bpf: Introduce sleepable BPF programs
-Message-ID: <20200612034055.GH4455@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200611222340.24081-1-alexei.starovoitov@gmail.com>
- <20200611222340.24081-2-alexei.starovoitov@gmail.com>
- <CAADnVQ+Ed86oOZPA1rOn_COKPpH1917Q6QUtETkciC8L8+u22A@mail.gmail.com>
- <20200612000447.GF4455@paulmck-ThinkPad-P72>
- <20200612021301.7esez3plqpmjf5wu@ast-mbp.dhcp.thefacebook.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
+        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
+Message-ID: <20200612084244.4ab4f6c6@carbon>
+In-Reply-To: <20200612003640.16248-1-gaurav1086@gmail.com>
+References: <20200611150221.15665-1-gaurav1086@gmail.com>
+        <20200612003640.16248-1-gaurav1086@gmail.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612021301.7esez3plqpmjf5wu@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 07:13:01PM -0700, Alexei Starovoitov wrote:
-> On Thu, Jun 11, 2020 at 05:04:47PM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 11, 2020 at 03:29:09PM -0700, Alexei Starovoitov wrote:
-> > > On Thu, Jun 11, 2020 at 3:23 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > >  /* dummy _ops. The verifier will operate on target program's ops. */
-> > > >  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> > > > @@ -205,14 +206,12 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
-> > > >             tprogs[BPF_TRAMP_MODIFY_RETURN].nr_progs)
-> > > >                 flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
-> > > >
-> > > > -       /* Though the second half of trampoline page is unused a task could be
-> > > > -        * preempted in the middle of the first half of trampoline and two
-> > > > -        * updates to trampoline would change the code from underneath the
-> > > > -        * preempted task. Hence wait for tasks to voluntarily schedule or go
-> > > > -        * to userspace.
-> > > > +       /* the same trampoline can hold both sleepable and non-sleepable progs.
-> > > > +        * synchronize_rcu_tasks_trace() is needed to make sure all sleepable
-> > > > +        * programs finish executing. It also ensures that the rest of
-> > > > +        * generated tramopline assembly finishes before updating trampoline.
-> > > >          */
-> > > > -
-> > > > -       synchronize_rcu_tasks();
-> > > > +       synchronize_rcu_tasks_trace();
-> > > 
-> > > Hi Paul,
-> > > 
-> > > I've been looking at rcu_trace implementation and I think above change
-> > > is correct.
-> > > Could you please double check my understanding?
-> > 
-> > From an RCU Tasks Trace perspective, it looks good to me!
-> > 
-> > You have rcu_read_lock_trace() and rcu_read_unlock_trace() protecting
-> > the readers and synchronize_rcu_trace() waiting for them.
-> > 
-> > One question given my lack of understanding of BPF:  Are there still
-> > tramoplines for non-sleepable BPF programs?  If so, they might still
-> > need to use synchronize_rcu_tasks() or some such.
+On Thu, 11 Jun 2020 20:36:40 -0400
+Gaurav Singh <gaurav1086@gmail.com> wrote:
+
+> Replace malloc/memset with calloc
 > 
-> The same trampoline can hold both sleepable and non-sleepable progs.
-> The following is possible:
-> . trampoline asm starts
->   . rcu_read_lock + migrate_disable
->     . non-sleepable prog_A
->   . rcu_read_unlock + migrate_enable
-> . trampoline asm
->   . rcu_read_lock_trace
->     . sleepable prog_B
->   . rcu_read_unlock_trace
-> . trampoline asm
->   . rcu_read_lock + migrate_disable
->     . non-sleepable prog_C
->   . rcu_read_unlock + migrate_enable
-> . trampoline asm ends
+> Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
+> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 
-Ah, new one on me!
+Above is the correct use of Fixes + Signed-off-by.
 
-> > The general principle is "never mix one type of RCU reader with another
-> > type of RCU updater".
-> > 
-> > But in this case, one approach is to use synchronize_rcu_mult():
-> > 
-> > 	synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
-> 
-> That was my first approach, but I've started looking deeper and looks
-> like rcu_tasks_trace is stronger than rcu_tasks.
-> 'never mix' is a valid concern, so for future proofing the rcu_mult()
-> is cleaner, but from safety pov just sync*rcu_tasks_trace() is enough
-> even when trampoline doesn't hold sleepable progs, right ?
+Now you need to update/improve the description, to also
+mention/describe that this also solves the bug you found.
 
-You really can have synchronize_rcu_tasks_trace() return before
-synchronize_rcu_tasks().  And vice versa, though perhaps with less
-probability.  So if you need both, you need to use both.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-> Also timing wise rcu_mult() is obviously faster than doing
-> one at a time, but how do you sort their speeds:
-> A: synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
-> B: synchronize_rcu_tasks();
-> C: synchronize_rcu_tasks_trace();
-
-duration(A) cannot be shorter than either duration(B) or duration(C).
-In theory, duration(A) = max(duration(B), duration(C)).  In practice,
-things are a bit messier, but the max() is not a bad rule of thumb.
-
-> > That would wait for both types of readers, and do so concurrently.
-> > And if there is also a need to wait on rcu_read_lock() and friends,
-> > you could do this:
-> > 
-> > 	synchronize_rcu_mult(call_rcu, call_rcu_tasks, call_rcu_tasks_trace);
-> 
-> I was about to reply that trampoline doesn't need it and there is no such
-> case yet, but then realized that I can use it in hashtab freeing with:
-> synchronize_rcu_mult(call_rcu, call_rcu_tasks_trace);
-> That would be nice optimization.
-
-Very good!  ;-)
-
-							Thanx, Paul
