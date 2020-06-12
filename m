@@ -2,156 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A751F7580
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 10:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D871F7666
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 12:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgFLIyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 04:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgFLIyU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 04:54:20 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E65DC03E96F;
-        Fri, 12 Jun 2020 01:54:20 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a127so3981443pfa.12;
-        Fri, 12 Jun 2020 01:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1h0U0on2B5eieW//0BjOn1nuqwFmMt2z2UwHZRgs9sY=;
-        b=dzHSWgvHQidPUJPOLQ9tG26Ze1dNyZbBQPA7QTKYwDt5MfkokFNBdOLjWRC8beqoEr
-         g0vwJwBpvWAjWexk4EVyC6tvXOgR2fdCgXybAMhmcNwBRMc30y6cYoOd0XWW1HKHu5Re
-         jjj2nfe6r5JbHJXB7JxSUS0h/X1sT8zqXzhU/yh+mBTkgII8cMnN0J3CQF6FOakPZC/L
-         IEZD2OpqvmcnAIN1Bui/IYPv+DwbO0u6Q1GJQhZ8AELtaS9+kQKLd+TOtaE/z/eMIJO2
-         h/J/jpRzB05iQDU1qm5nhs3sxaDu7TKStKloYYofWRtkVhTkjlvf0Bj2h/JyQyF/TS66
-         8iKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1h0U0on2B5eieW//0BjOn1nuqwFmMt2z2UwHZRgs9sY=;
-        b=GBn825p8z/5FilAlrpZunSiJPc5wK51tLHG8i5NrwnzToEagwfyGcubtQz7w4GcHxB
-         RlcvxGfj6ywjyYsT0V5P/R56LoSYlKWZVe0xZTCExUJx/paxR85UW/+s2vYPWw0ivvo0
-         Ibj0TwncUrnsJnWSlo+htvYiWcq9j2P1ch8CEyvnVScPZR8lXYy/aKi5KHWhpuYyE8wB
-         twSOreOLjN0C9CoP2rZVeKqRE66j4twzVN6RH1PPR904QQ9Hd2aAjVkMlbte2Ta0BRdH
-         S/tiI3rOa/wB+7qo5ytk+skbFk/ETo03Fwg7ChwMOrBmXSB933YkKpBLBgaKwAvgvqq9
-         2XRw==
-X-Gm-Message-State: AOAM5313U2yCplrdO71nmnqxZKi0z4lx1aBZxi0EeOPZkRfHSIwkd1p2
-        1PaDOkxCPmrliY11d7VuP0M=
-X-Google-Smtp-Source: ABdhPJxfJkbaQXLHCaxdazaUT87ROcCfAiTKRl3Z3yo9Kf6Gpfn+YSk5DOH5/B9M0ANHrnr6QSK99g==
-X-Received: by 2002:aa7:979b:: with SMTP id o27mr1975531pfp.284.1591952059854;
-        Fri, 12 Jun 2020 01:54:19 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 130sm5208060pfw.176.2020.06.12.01.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 01:54:19 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 16:54:08 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv4 bpf-next 1/2] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com>
- <20200526140539.4103528-1-liuhangbin@gmail.com>
- <20200526140539.4103528-2-liuhangbin@gmail.com>
- <20200610121859.0412c111@carbon>
+        id S1726279AbgFLKBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 06:01:31 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:42637 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbgFLKBa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jun 2020 06:01:30 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id CD8785C00C6;
+        Fri, 12 Jun 2020 06:01:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 12 Jun 2020 06:01:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=k9Hc0n0ZZ+r2PM/CxaFyy+acOdU
+        13GIRtpmvbo4Scvg=; b=D5L2iCYNJvs1gTEpItjsH85GlZQdEXixFw1xImAjDYh
+        KDXQu+rOyhfQ+V7T8pvJk290aZowGukLNGIRDftlZe/eg1g3qjrjagDPPUe9wGs9
+        Ikc0VfpF6fWsAJjCwnu5eq7Z3R/t1A3F0rFihxstBLei50s5yrd9h7E917qFuZ4R
+        k6Q1P3gX4TsLe1KCrRHwUIlj+WJumV561XjIrwie2sTGzVBuES72LoG2qufr167H
+        wppqGhfsyCCiyBbD/A9oTIFISQ1Q99dUTYIUXCHK9wCM7Wc5y8pv1UJrmhXbxeKM
+        qj+4kxxt2auxu1EUsFDteF45zY+danP6qp0ZioDUyHg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=k9Hc0n
+        0ZZ+r2PM/CxaFyy+acOdU13GIRtpmvbo4Scvg=; b=SqZY9HAvgKrAzKIwAteYtM
+        bHUxJ+E/+SOf+uczdqw8tuPaWBE1vBEzyvLFe0QsaZaR+/78zDIYUD3q0bE/igt9
+        x/dNzVBG231z/y9tLosoADDA2cTn5WJ88AQ/I0Iwt5rflDA6ZjoSdYCCVDOECd/E
+        vn27Xu6L0m+DJ3oiv6DxDGhWdS03WDQvPMrk+m+nVXOJCKRSKaMrXrFNG2Qs4uLT
+        ajKJFgRMGGiiXmr2vrQTFEb8oAQl9UT/yu6tVbOyztwR3IpldGerro2bRFJONJjO
+        KB5x54Cz+k4kabCJKsz8biKLFsLEGHdFXx5jJ8RZAacPVBJO2Dwhmk+39I+CEUdg
+        ==
+X-ME-Sender: <xms:c1LjXjtbUoLQLWh24Xw1PNX9tj9ckKsftBYTgk1LN8IAXyi5hkrp7g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeiuddgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:c1LjXkf2YQed55oCLiGxpGONoKGwz3_5Bzz7s7W28SwIdqFHt6b5EQ>
+    <xmx:c1LjXmz-zbq9KoJJYlstbCUaCmhDHp4u1BrI6iPw1WEYE8IpSNB-MA>
+    <xmx:c1LjXiPIvRQsyC1qBv12yXEl1eNsJ7pSkpyr4qc23OlFOkgHJQP_dQ>
+    <xmx:d1LjXukvL5SdC2m3M83mE2b74Bu4DICQVt7-6ZeUEMwQp2ukNnU5RA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F3ACE328005E;
+        Fri, 12 Jun 2020 06:01:22 -0400 (EDT)
+Date:   Fri, 12 Jun 2020 12:01:11 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Cheng Jian <cj.chengjian@huawei.com>,
+        Chen Wandun <chenwandun@huawei.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2 1/2] perf tools: Fix potential memory leaks in perf
+ events parser
+Message-ID: <20200612100111.GA3157576@kroah.com>
+References: <20200611145605.21427-1-chenwandun@huawei.com>
+ <20200611145605.21427-2-chenwandun@huawei.com>
+ <51efcf82-4c0c-70d3-9700-6969e6decde1@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200610121859.0412c111@carbon>
+In-Reply-To: <51efcf82-4c0c-70d3-9700-6969e6decde1@web.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 12:18:59PM +0200, Jesper Dangaard Brouer wrote:
-> On Tue, 26 May 2020 22:05:38 +0800
-> Hangbin Liu <liuhangbin@gmail.com> wrote:
+On Thu, Jun 11, 2020 at 08:50:58PM +0200, Markus Elfring wrote:
+> > Fix memory leak of in function parse_events_term__sym_hw()
+> > and parse_events_term__clone() when error occur.
 > 
-> > diff --git a/net/core/xdp.c b/net/core/xdp.c
-> > index 90f44f382115..acdc63833b1f 100644
-> > --- a/net/core/xdp.c
-> > +++ b/net/core/xdp.c
-> > @@ -475,3 +475,29 @@ void xdp_warn(const char *msg, const char *func, const int line)
-> >  	WARN(1, "XDP_WARN: %s(line:%d): %s\n", func, line, msg);
-> >  };
-> >  EXPORT_SYMBOL_GPL(xdp_warn);
-> > +
-> > +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
-> > +{
-> > +	unsigned int headroom, totalsize;
-> > +	struct xdp_frame *nxdpf;
-> > +	struct page *page;
-> > +	void *addr;
-> > +
-> > +	headroom = xdpf->headroom + sizeof(*xdpf);
-> > +	totalsize = headroom + xdpf->len;
-> > +
-> > +	if (unlikely(totalsize > PAGE_SIZE))
-> > +		return NULL;
-> > +	page = dev_alloc_page();
-> > +	if (!page)
-> > +		return NULL;
-> > +	addr = page_to_virt(page);
-> > +
-> > +	memcpy(addr, xdpf, totalsize);
+> How do you think about a wording variant like the following?
 > 
-> I don't think this will work.  You are assuming that the memory model
-> (xdp_mem_info) is the same.
+>    Release a configuration object after a string duplication failed.
 > 
-> You happened to use i40, that have MEM_TYPE_PAGE_SHARED, and you should
-> have changed this to MEM_TYPE_PAGE_ORDER0, but it doesn't crash as they
-> are compatible.  If you were using mlx5, I suspect that this would
-> result in memory leaking.
+> Regards,
+> Markus
 
-Is there anything else I should do except add the following line?
-	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
-> 
-> You also need to update xdpf->frame_sz, as you also cannot assume it is
-> the same.
+Hi,
 
-Won't the memcpy() copy xdpf->frame_sz to nxdpf? 
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
 
-And I didn't see xdpf->frame_sz is set in xdp_convert_zc_to_xdp_frame(),
-do we need a fix?
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
 
-Thanks
-Hangbin
-> 
-> > +
-> > +	nxdpf = addr;
-> > +	nxdpf->data = addr + headroom;
-> > +
-> > +	return nxdpf;
-> > +}
-> > +EXPORT_SYMBOL_GPL(xdpf_clone);
-> 
-> 
-> -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
-> 
-> 
-> struct xdp_frame {
-> 	void *data;
-> 	u16 len;
-> 	u16 headroom;
-> 	u32 metasize:8;
-> 	u32 frame_sz:24;
-> 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
-> 	 * while mem info is valid on remote CPU.
-> 	 */
-> 	struct xdp_mem_info mem;
-> 	struct net_device *dev_rx; /* used by cpumap */
-> };
-> 
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
+
+thanks,
+
+greg k-h's patch email bot
