@@ -2,83 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E45A1F7E07
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 22:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394051F7EB5
+	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 00:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgFLUUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 16:20:48 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:20684 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726307AbgFLUUs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jun 2020 16:20:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591993246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e7FPq3nO6B1maCulGzahMUgGvOzcx8PXF95wcQrwkyM=;
-        b=ZFTZQR6XZ/83q7pmABIlRwMYe3y/1xHpiIqoR7q8ubiW1Slggt1fog+W84XXY8iuVGBuZf
-        yV/gnHdBZPenn6pXW/7vf1196aZQoA799rLxsvjMNonQXiXx3Z+4UP+htNlKqCvMW/oOPx
-        iJsqr/4p8ZsPjsrg8FO1HCwRBPgToFE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-93I2KMh6Nt-Efum2afEK1g-1; Fri, 12 Jun 2020 16:20:42 -0400
-X-MC-Unique: 93I2KMh6Nt-Efum2afEK1g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3A5C801504;
-        Fri, 12 Jun 2020 20:20:40 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B6595C660;
-        Fri, 12 Jun 2020 20:20:33 +0000 (UTC)
-Date:   Fri, 12 Jun 2020 22:20:31 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Gaurav Singh <gaurav1086@gmail.com>
-Cc:     brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] xdp_rxq_info_user: Fix null pointer dereference.
- Replace malloc/memset with calloc.
-Message-ID: <20200612222031.515d5338@carbon>
-In-Reply-To: <20200612185328.4671-1-gaurav1086@gmail.com>
-References: <20200611150221.15665-1-gaurav1086@gmail.com>
-        <20200612185328.4671-1-gaurav1086@gmail.com>
+        id S1726290AbgFLWFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 18:05:10 -0400
+Received: from sym2.noone.org ([178.63.92.236]:60562 "EHLO sym2.noone.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgFLWFK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jun 2020 18:05:10 -0400
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 49kFC83k7Xzvjc1; Sat, 13 Jun 2020 00:05:07 +0200 (CEST)
+Date:   Sat, 13 Jun 2020 00:05:07 +0200
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf] tools/bpftool: fix skeleton codegen
+Message-ID: <20200612220506.nad3zmcg7j75hnsz@distanz.ch>
+References: <20200612201603.680852-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612201603.680852-1-andriin@fb.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 12 Jun 2020 14:53:27 -0400
-Gaurav Singh <gaurav1086@gmail.com> wrote:
-
-> Memset on the pointer right after malloc can cause a
-> null pointer deference if it failed to allocate memory.
-> A simple fix is to replace malloc/memset with a calloc()
+On 2020-06-12 at 22:16:03 +0200, Andrii Nakryiko <andriin@fb.com> wrote:
+> Remove unnecessary check at the end of codegen() routine which makes codegen()
+> to always fail and exit bpftool with error code. Positive value of variable
+> n is not an indicator of a failure.
 > 
-> Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
-> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+> Cc: Tobias Klauser <tklauser@distanz.ch>
+> Fixes: 2c4779eff837 ("tools, bpftool: Exit on error in function codegen")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Sorry about this, thanks for fixing it.
