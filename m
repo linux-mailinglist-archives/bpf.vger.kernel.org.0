@@ -2,104 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0883B1F7770
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 13:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02F21F77A3
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 14:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgFLLrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 07:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgFLLrm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 07:47:42 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E4AC03E96F;
-        Fri, 12 Jun 2020 04:47:42 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id v24so3646934plo.6;
-        Fri, 12 Jun 2020 04:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbZcKA6Rhm4nCGMfP9Rvp1r28EhMhEPMy4TrCL8RdRE=;
-        b=F7ak+z3ro6mwAOVAPjbpePKPk1HpE4idBe9F7nEJ8IuSytT9FHSrtY2q0ypzgnaKOD
-         SxNdViTlOLsFhiAtjY9J+rEU0UgsHhl1B0JZB2+POC4M/V4MZ2dcUAx79NKsBVT9VB1k
-         qFT8SVXTrmGZjUqxB1b/g8d9GBBEQtFdVIuZJyLHM9A5YHF7T+/0uDdfnlrXLoqLbi2z
-         ddhwEEi8iIOJJwWv7k5yLGnYeujMBfvJxjyZmELN1Prq4qcBLLTNM/vZc7XuK91jA8Wn
-         VWyX/rqspi9i5IQFxTvvt+5VF4o0CQtK/bMMxqqCz5BJzE+Pkdxs2veEOZ74YEz1S7bd
-         BVbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbZcKA6Rhm4nCGMfP9Rvp1r28EhMhEPMy4TrCL8RdRE=;
-        b=SbFRiZoAwwqXo3ovKLdoVl18az+q1ZLUN32lNBBKVjzH5MKGD5k/70yWX509ZZW9Zx
-         GcrblN7nlIB9y2LfMq0OJdIzbpybew0RbSI5clngVgsUzZjsqO5n0JWSp7xnb1p0pmk7
-         pSlv9jpuDn/SNeHuh9ZHmbnTUXhqyhBOScgPPxY7DcwjismAVgkG0tvRPOytMqCFDuy7
-         mK0jB82saCRJVn0mlf42fDoWQn4Wzj0tmiqY4/OZKCKUnfE3/6oANeZFm7Zqe+8s97Z/
-         ixqEqVYL1v1wly1K+LdEMPhGxo9xgU1rLDk8B49Mqfc96X4oiHwsqwm4mTfy/vrZ1yJS
-         TANg==
-X-Gm-Message-State: AOAM530TfZeaG9eyxFqqWHIbWiz6O5vAZL2ssPl5/L61+nbK7TchGK/Q
-        MSJTtstLtNDTcVud1rFD95PuVZIZAnM=
-X-Google-Smtp-Source: ABdhPJxpadzLW2w3UQlGH5ka4zIsvW0vagy1Xsm/dkF+Pkm3xn2KQUBOIoAUK2XGhw/Nq9EWCGynnA==
-X-Received: by 2002:a17:90a:d3d6:: with SMTP id d22mr12533184pjw.184.1591962461401;
-        Fri, 12 Jun 2020 04:47:41 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id h9sm3227266pjs.50.2020.06.12.04.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 04:47:40 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH net] i40e: fix crash when Rx descriptor count is changed
-Date:   Fri, 12 Jun 2020 13:47:31 +0200
-Message-Id: <20200612114731.144630-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726329AbgFLMFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 08:05:38 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54552 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725886AbgFLMFh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jun 2020 08:05:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591963535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g5ghH5RlSs+XTEgRPgodo5nKXtKIcrVv1ZEvWgXN4nQ=;
+        b=HvbevyL1PdlL5pHmWpmWrmJ+ajiQHOja8990v1RtC+bmB5ugW4SG7s321xLwYyDhH20ZWZ
+        TasFlAiqVHtzNHk5DDKMYoXc4YOHwpaGuElVdaKz6sP8SXkwkAR+BmeKd6VaSGaYsxs6WQ
+        L1MFE7yuoK1gxmgT3r5tVDKvRq7L1rc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-cktZo0nPMsej_p0D-mUS3A-1; Fri, 12 Jun 2020 08:05:31 -0400
+X-MC-Unique: cktZo0nPMsej_p0D-mUS3A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 504628015CE;
+        Fri, 12 Jun 2020 12:05:29 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 25E945D9C5;
+        Fri, 12 Jun 2020 12:05:23 +0000 (UTC)
+Date:   Fri, 12 Jun 2020 14:05:20 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Gaurav Singh <gaurav1086@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "open list:XDP (eXpress Data Path)" <netdev@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
+Message-ID: <20200612140520.1e3c0461@carbon>
+In-Reply-To: <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
+References: <20200611150221.15665-1-gaurav1086@gmail.com>
+        <20200612003640.16248-1-gaurav1086@gmail.com>
+        <20200612084244.4ab4f6c6@carbon>
+        <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Fri, 12 Jun 2020 03:14:58 -0700
+Joe Perches <joe@perches.com> wrote:
 
-When the AF_XDP buffer allocator was introduced, the Rx SW ring
-"rx_bi" allocation was moved from i40e_setup_rx_descriptors()
-function, and was instead done in the i40e_configure_rx_ring()
-function.
+> On Fri, 2020-06-12 at 08:42 +0200, Jesper Dangaard Brouer wrote:
+> > On Thu, 11 Jun 2020 20:36:40 -0400
+> > Gaurav Singh <gaurav1086@gmail.com> wrote:
+> >   
+> > > Replace malloc/memset with calloc
+> > > 
+> > > Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
+> > > Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>  
+> > 
+> > Above is the correct use of Fixes + Signed-off-by.
+> > 
+> > Now you need to update/improve the description, to also
+> > mention/describe that this also solves the bug you found.  
+> 
+> This is not a fix, it's a conversion of one
+> correct code to a shorter one.
 
-This broke the ethtool set_ringparam() hook for changing the Rx
-descriptor count, which was relying on i40e_setup_rx_descriptors() to
-handle the alloction.
+Read the code again Joe.  There is a bug in the code that gets removed,
+as it runs memset on the memory before checking if it was NULL.
 
-Fix this by adding an explicit i40e_alloc_rx_bi() call to
-i40e_set_ringparam().
+IHMO this proves why is it is necessary to mention in the commit
+message, as you didn't notice the bug in your code review.
 
-Fixes: be1222b585fd ("i40e: Separate kernel allocated rx_bi rings from AF_XDP rings")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index aa8026b1eb81..67806b7b2f49 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -2070,6 +2070,9 @@ static int i40e_set_ringparam(struct net_device *netdev,
- 			 */
- 			rx_rings[i].tail = hw->hw_addr + I40E_PRTGEN_STATUS;
- 			err = i40e_setup_rx_descriptors(&rx_rings[i]);
-+			if (err)
-+				goto rx_unwind;
-+			err = i40e_alloc_rx_bi(&rx_rings[i]);
- 			if (err)
- 				goto rx_unwind;
- 
-
-base-commit: 18dbd4cd9b8c957025cf90a3c50102b31bde14f7
 -- 
-2.25.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
