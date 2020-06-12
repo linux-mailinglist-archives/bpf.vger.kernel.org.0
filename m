@@ -2,144 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E561F7122
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 02:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324961F7134
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 02:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgFLAEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 20:04:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgFLAEt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:04:49 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02D9820853;
-        Fri, 12 Jun 2020 00:04:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591920288;
-        bh=zhN9pvX/GHt+eRCGsoMJjH8TB6EC2vueYb5IyBukovA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Qjjwr5sPrc8GLc9zLoGnYgc6skDa0XU8ozi6PngAVEpeGbyRGnMAiTg7oBGNgiOte
-         K9gD7yabEJthl4+ZwnysDmCXySTCWAgSWdtUdlBTOKKo8BUqbFf6N70E+BeOqOYUIS
-         GnCEl9iwS10laOWamEefVDpr4Z0ySvF2b2A5ha04=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D2C6F35228C7; Thu, 11 Jun 2020 17:04:47 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 17:04:47 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH RFC v3 bpf-next 1/4] bpf: Introduce sleepable BPF programs
-Message-ID: <20200612000447.GF4455@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200611222340.24081-1-alexei.starovoitov@gmail.com>
- <20200611222340.24081-2-alexei.starovoitov@gmail.com>
- <CAADnVQ+Ed86oOZPA1rOn_COKPpH1917Q6QUtETkciC8L8+u22A@mail.gmail.com>
+        id S1726294AbgFLAJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 20:09:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2056 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726285AbgFLAJZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jun 2020 20:09:25 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05C03o9O013704
+        for <bpf@vger.kernel.org>; Thu, 11 Jun 2020 17:09:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=yoRFtuqgldzuDicKT65vnkwZGGHZUQjfmNf9aNVXl6o=;
+ b=oofH6C6AMAoW4G7vTihKjAteN9uhij+SAu3k+V7z66hyWN190Of+NQpJ76aij+2wvIDL
+ AMlPAY92LaCib4AHwlZBs0fNuQB4KCPknQ/WxR6kwIlhrHsZWyIMk5qgN/YgtUd43TK3
+ ee9KLuGqXA9lHyU6v5li4BHXpg2GBArx7Ls= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31k322fyt8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 11 Jun 2020 17:09:23 -0700
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 11 Jun 2020 17:09:22 -0700
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id D51FD37008C7; Thu, 11 Jun 2020 17:09:12 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf] bpf: Fix memlock accounting for sock_hash
+Date:   Thu, 11 Jun 2020 17:08:57 -0700
+Message-ID: <20200612000857.2881453-1-rdna@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+Ed86oOZPA1rOn_COKPpH1917Q6QUtETkciC8L8+u22A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-11_23:2020-06-11,2020-06-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
+ priorityscore=1501 suspectscore=38 impostorscore=0 mlxlogscore=470
+ phishscore=0 bulkscore=0 malwarescore=0 adultscore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006110188
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 03:29:09PM -0700, Alexei Starovoitov wrote:
-> On Thu, Jun 11, 2020 at 3:23 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> >  /* dummy _ops. The verifier will operate on target program's ops. */
-> >  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> > @@ -205,14 +206,12 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
-> >             tprogs[BPF_TRAMP_MODIFY_RETURN].nr_progs)
-> >                 flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
-> >
-> > -       /* Though the second half of trampoline page is unused a task could be
-> > -        * preempted in the middle of the first half of trampoline and two
-> > -        * updates to trampoline would change the code from underneath the
-> > -        * preempted task. Hence wait for tasks to voluntarily schedule or go
-> > -        * to userspace.
-> > +       /* the same trampoline can hold both sleepable and non-sleepable progs.
-> > +        * synchronize_rcu_tasks_trace() is needed to make sure all sleepable
-> > +        * programs finish executing. It also ensures that the rest of
-> > +        * generated tramopline assembly finishes before updating trampoline.
-> >          */
-> > -
-> > -       synchronize_rcu_tasks();
-> > +       synchronize_rcu_tasks_trace();
-> 
-> Hi Paul,
-> 
-> I've been looking at rcu_trace implementation and I think above change
-> is correct.
-> Could you please double check my understanding?
+Add missed bpf_map_charge_init() in sock_hash_alloc() and
+correspondingly bpf_map_charge_finish() on ENOMEM.
 
-From an RCU Tasks Trace perspective, it looks good to me!
+It was found accidentally while working on unrelated selftest that
+checks "map->memory.pages > 0" is true for all map types.
 
-You have rcu_read_lock_trace() and rcu_read_unlock_trace() protecting
-the readers and synchronize_rcu_trace() waiting for them.
+Before:
+	# bpftool m l
+	...
+	3692: sockhash  name m_sockhash  flags 0x0
+		key 4B  value 4B  max_entries 8  memlock 0B
 
-One question given my lack of understanding of BPF:  Are there still
-tramoplines for non-sleepable BPF programs?  If so, they might still
-need to use synchronize_rcu_tasks() or some such.
+After:
+	# bpftool m l
+	...
+	84: sockmap  name m_sockmap  flags 0x0
+		key 4B  value 4B  max_entries 8  memlock 4096B
 
-The general principle is "never mix one type of RCU reader with another
-type of RCU updater".
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+---
+ net/core/sock_map.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-But in this case, one approach is to use synchronize_rcu_mult():
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 17a40a947546..3a2dc6af1d78 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -989,11 +989,15 @@ static struct bpf_map *sock_hash_alloc(union bpf_at=
+tr *attr)
+ 		err =3D -EINVAL;
+ 		goto free_htab;
+ 	}
++	err =3D bpf_map_charge_init(&htab->map.memory, cost);
++	if (err)
++		goto free_htab;
+=20
+ 	htab->buckets =3D bpf_map_area_alloc(htab->buckets_num *
+ 					   sizeof(struct bpf_htab_bucket),
+ 					   htab->map.numa_node);
+ 	if (!htab->buckets) {
++		bpf_map_charge_finish(&htab->map.memory);
+ 		err =3D -ENOMEM;
+ 		goto free_htab;
+ 	}
+--=20
+2.24.1
 
-	synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
-
-That would wait for both types of readers, and do so concurrently.
-And if there is also a need to wait on rcu_read_lock() and friends,
-you could do this:
-
-	synchronize_rcu_mult(call_rcu, call_rcu_tasks, call_rcu_tasks_trace);
-
-> Also see benchmarking numbers in the cover letter :)
-
-Now -that- is what I am talking about!!!  Very nice!  ;-)
-
-							Thanx, Paul
-
-> >         err = arch_prepare_bpf_trampoline(new_image, new_image + PAGE_SIZE / 2,
-> >                                           &tr->func.model, flags, tprogs,
-> > @@ -344,7 +343,14 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
-> >         if (WARN_ON_ONCE(!hlist_empty(&tr->progs_hlist[BPF_TRAMP_FEXIT])))
-> >                 goto out;
-> >         bpf_image_ksym_del(&tr->ksym);
-> > -       /* wait for tasks to get out of trampoline before freeing it */
-> > +       /* This code will be executed when all bpf progs (both sleepable and
-> > +        * non-sleepable) went through
-> > +        * bpf_prog_put()->call_rcu[_tasks_trace]()->bpf_prog_free_deferred().
-> > +        * Hence no need for another synchronize_rcu_tasks_trace() here,
-> > +        * but synchronize_rcu_tasks() is still needed, since trampoline
-> > +        * may not have had any sleepable programs and we need to wait
-> > +        * for tasks to get out of trampoline code before freeing it.
-> > +        */
-> >         synchronize_rcu_tasks();
-> >         bpf_jit_free_exec(tr->image);
-> >         hlist_del(&tr->hlist);
-> > @@ -394,6 +400,21 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
-> >         rcu_read_unlock();
-> >  }
-> >
-> > +/* when rcu_read_lock_trace is held it means that some sleepable bpf program is
-> > + * running. Those programs can use bpf arrays and preallocated hash maps. These
-> > + * map types are waiting on programs to complete via
-> > + * synchronize_rcu_tasks_trace();
-> > + */
-> > +void notrace __bpf_prog_enter_sleepable(void)
-> > +{
-> > +       rcu_read_lock_trace();
-> > +}
-> > +
-> > +void notrace __bpf_prog_exit_sleepable(void)
-> > +{
-> > +       rcu_read_unlock_trace();
-> > +}
-> > +
