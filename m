@@ -2,137 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3FC1F7185
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 02:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C921F7217
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 04:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgFLA6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jun 2020 20:58:46 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54474 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgFLA6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jun 2020 20:58:45 -0400
-Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05C0vilX017075;
-        Fri, 12 Jun 2020 09:57:44 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
- Fri, 12 Jun 2020 09:57:44 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05C0vh7p017069
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 12 Jun 2020 09:57:43 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        id S1726386AbgFLCNG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jun 2020 22:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgFLCNF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jun 2020 22:13:05 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878BCC03E96F;
+        Thu, 11 Jun 2020 19:13:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s10so3420374pgm.0;
+        Thu, 11 Jun 2020 19:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UQ8rQVE1mrRi7P5Vbyl92IPl7nN2rHQUP0qk2KtkISI=;
+        b=lsUxt89N+EWW5Z6oMTi1tzQQ8ddi+6wzXed0WBW2fFdPfz9fVxl2f1hZS3wZ+1v2w9
+         jX4ouN+Lp+RtP4sb6nFi4NzgWILd0YBzgpJDe1RXCanVfkeHFaTv4Z/L6Hnj1nvLtaMQ
+         D9KM0BKb9/WWXUZdVfVZ2BhkaG1uq4fiHsD102Z38wVQG61ZR28z/3j1r646JGv0ovT9
+         AEatQSWO8wgJz02q35UVmwmY/OdNa0rl7MA9BMqSAV3tG7ZJiwR69s+gnS5mQwYgGLbf
+         XaI6WLfyXX9ELKjn+KgpSxkBDGDJpqSWLjBY73y4cntNRdI0gVpNXHMr/2AgYjxF9quA
+         dEhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UQ8rQVE1mrRi7P5Vbyl92IPl7nN2rHQUP0qk2KtkISI=;
+        b=ThnYf/EgWmCxdTun8MZgI6jSLM6EJUCO4wiNKe2R1oKYB4qcWubPhNOMoQGnQlRdT6
+         5TrkeNzAXzxcErpZucctp4o4Teef85l0VOUdwrU5sgRT2qB+qMDOXvyA1OLoARivpu7G
+         wwR5/KdxGzMx+sbD5ekP1gs2AG0X1PL4/NpAIdnqlz202R1lVty0CG9Vra/2PvTK3I8U
+         a4ev4mfkTZVjIkkLusEgiudByC6nMfaFRBnFDseows7GrxQYE9GnL1f6yIqszyRBbeTd
+         HSEijfrJGCX8ffWmJc0w298bmMaPXq+7tXPe6NZv4InpvgMg5RH4bxS/X61XOHhWK/T9
+         nZhA==
+X-Gm-Message-State: AOAM532cNqdtDKZ94cBrPf/7finWdJuYk0b9rncVrY9rSORWtC6fERSq
+        RGOZrk0YKYz5eiZQSQJ2wwI=
+X-Google-Smtp-Source: ABdhPJxkLa0v0PXKtKt7nf/g8sS2WsLW4BBjW/wuBQRHQb7Qvoyokqvp+YI3mExfAS6VlBAKIMWrxg==
+X-Received: by 2002:a63:5b04:: with SMTP id p4mr9526624pgb.315.1591927984627;
+        Thu, 11 Jun 2020 19:13:04 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:73f9])
+        by smtp.gmail.com with ESMTPSA id d4sm3917361pjm.55.2020.06.11.19.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 19:13:03 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 19:13:01 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <202006051903.C44988B@keescook>
- <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp>
- <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp>
- <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
- <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
- <87r1uo2ejt.fsf@x220.int.ebiederm.org>
- <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
- <87d066vd4y.fsf@x220.int.ebiederm.org>
- <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <62859212-df69-b913-c1e0-cd2e358d1adf@i-love.sakura.ne.jp>
-Date:   Fri, 12 Jun 2020 09:57:40 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH RFC v3 bpf-next 1/4] bpf: Introduce sleepable BPF programs
+Message-ID: <20200612021301.7esez3plqpmjf5wu@ast-mbp.dhcp.thefacebook.com>
+References: <20200611222340.24081-1-alexei.starovoitov@gmail.com>
+ <20200611222340.24081-2-alexei.starovoitov@gmail.com>
+ <CAADnVQ+Ed86oOZPA1rOn_COKPpH1917Q6QUtETkciC8L8+u22A@mail.gmail.com>
+ <20200612000447.GF4455@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612000447.GF4455@paulmck-ThinkPad-P72>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/12 8:31, Alexei Starovoitov wrote:
-> On Wed, Jun 10, 2020 at 04:12:29PM -0500, Eric W. Biederman wrote:
->> We probably also need to have a conversation about why this
->> functionality is a better choice that using a compiled in initramfs,
->> such as can be had by setting CONFIG_INITRAMFS_SOURCE.
-
-I agree. CONFIG_INITRAMFS_SOURCE or call_usermodehelper() should be fine.
-
->> Even with this write up and the conversations so far I don't understand
->> what problem fork_usermode_blob is supposed to be solving.  Is there
->> anything kernel version dependent about bpf_lsm?  For me the primary
->> justification of something like fork_usermode_blob is something that is
->> for all practical purposes a kernel module but it just happens to run in
->> usermode.
+On Thu, Jun 11, 2020 at 05:04:47PM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 11, 2020 at 03:29:09PM -0700, Alexei Starovoitov wrote:
+> > On Thu, Jun 11, 2020 at 3:23 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > >  /* dummy _ops. The verifier will operate on target program's ops. */
+> > >  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+> > > @@ -205,14 +206,12 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
+> > >             tprogs[BPF_TRAMP_MODIFY_RETURN].nr_progs)
+> > >                 flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
+> > >
+> > > -       /* Though the second half of trampoline page is unused a task could be
+> > > -        * preempted in the middle of the first half of trampoline and two
+> > > -        * updates to trampoline would change the code from underneath the
+> > > -        * preempted task. Hence wait for tasks to voluntarily schedule or go
+> > > -        * to userspace.
+> > > +       /* the same trampoline can hold both sleepable and non-sleepable progs.
+> > > +        * synchronize_rcu_tasks_trace() is needed to make sure all sleepable
+> > > +        * programs finish executing. It also ensures that the rest of
+> > > +        * generated tramopline assembly finishes before updating trampoline.
+> > >          */
+> > > -
+> > > -       synchronize_rcu_tasks();
+> > > +       synchronize_rcu_tasks_trace();
+> > 
+> > Hi Paul,
+> > 
+> > I've been looking at rcu_trace implementation and I think above change
+> > is correct.
+> > Could you please double check my understanding?
 > 
-> that's what it is. It's a kernel module that runs in user space.
+> From an RCU Tasks Trace perspective, it looks good to me!
 > 
-
-How can the code running in the userspace memory be protected? Like you said
-
-  It's nice to be able to compile that blob with -g and be able to 'gdb -p' into it.
-  That works and very convenient when it comes to debugging. Compare that to debugging
-  a kernel module!
-
-, the userspace memory can be easily interfered from userspace. The kernel module
-running in kernel space is protected (unless methods like /dev/{mem,kmem} are used)
-but the kernel module running in user space is not protected.
-
-You said
-
-  What you're saying is tomoyo doesn't trust kernel modules that are built-in
-  as part of vmlinux and doesn't trust vmlinux build.
-
-but the word 'trust' has multiple aspects. One of aspects is "can the program
-contain malicious code?" which would be mitigated by cryptographic signing
-technology. But another aspect is "does the program contain vulnerability or
-bugs?" which would be mitigated by updating programs as soon as possible.
-Yet another aspect is "is the program protected from interference?" which would
-be mitigated by enforcing sandbox like seccomp. But to enforce it, we need
-information for identifying what does the code need to do.
-
-We might need to invent built-in "protected userspace" because existing
-"unprotected userspace" is not trustworthy enough to run kernel modules.
-That's not just inventing fork_usermode_blob().
-
-
-
->> Strictly speaking I am also aware of the issue that the kernel has to
->> use set_fs(KERNEL_DS) to allow argv and envp to exist in kernel space
->> instead of userspace.  That needs to be fixed as well, but for all
->> kernel uses of exec.  So any work fixing fork_usermode_blob can ignore
->> that issue.
+> You have rcu_read_lock_trace() and rcu_read_unlock_trace() protecting
+> the readers and synchronize_rcu_trace() waiting for them.
 > 
-> well, this is the problem of usermodehelper_exec.
-> usermode_blob doesn't use argv/envp.
-> They could be NULL for all practical purpose.
+> One question given my lack of understanding of BPF:  Are there still
+> tramoplines for non-sleepable BPF programs?  If so, they might still
+> need to use synchronize_rcu_tasks() or some such.
+
+The same trampoline can hold both sleepable and non-sleepable progs.
+The following is possible:
+. trampoline asm starts
+  . rcu_read_lock + migrate_disable
+    . non-sleepable prog_A
+  . rcu_read_unlock + migrate_enable
+. trampoline asm
+  . rcu_read_lock_trace
+    . sleepable prog_B
+  . rcu_read_unlock_trace
+. trampoline asm
+  . rcu_read_lock + migrate_disable
+    . non-sleepable prog_C
+  . rcu_read_unlock + migrate_enable
+. trampoline asm ends
+
 > 
+> The general principle is "never mix one type of RCU reader with another
+> type of RCU updater".
+> 
+> But in this case, one approach is to use synchronize_rcu_mult():
+> 
+> 	synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
 
-That's what TOMOYO LSM does not like. You said
+That was my first approach, but I've started looking deeper and looks
+like rcu_tasks_trace is stronger than rcu_tasks.
+'never mix' is a valid concern, so for future proofing the rcu_mult()
+is cleaner, but from safety pov just sync*rcu_tasks_trace() is enough
+even when trampoline doesn't hold sleepable progs, right ?
 
-  tomoyo does path name resolution as a string and using that for security?
-  I'm looking at tomoyo_realpath*() and tomoyo_pathcmp(). Ouch.
-  Path based security is anti pattern of security.
+Also timing wise rcu_mult() is obviously faster than doing
+one at a time, but how do you sort their speeds:
+A: synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
+B: synchronize_rcu_tasks();
+C: synchronize_rcu_tasks_trace();
 
-but, like Casey mentioned, pathnames/argv/envp etc. represents *user intentions*
-for controlling what that code can do.
+> That would wait for both types of readers, and do so concurrently.
+> And if there is also a need to wait on rcu_read_lock() and friends,
+> you could do this:
+> 
+> 	synchronize_rcu_mult(call_rcu, call_rcu_tasks, call_rcu_tasks_trace);
 
-A method for allow anonymously running arbitrary code in userspace memory (which
-can be interfered) is so painful. I won't be able to trust kernel modules running
-in userspace memory.
+I was about to reply that trampoline doesn't need it and there is no such
+case yet, but then realized that I can use it in hashtab freeing with:
+synchronize_rcu_mult(call_rcu, call_rcu_tasks_trace);
+That would be nice optimization.
