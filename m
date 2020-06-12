@@ -2,60 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343CA1F77AB
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 14:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C174A1F7A95
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 17:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgFLMG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 08:06:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50431 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726255AbgFLMG4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 08:06:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591963615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=naLbiu6HsX+Z2d/q/OU86dDzWk8INFro9FYGhNZfqd8=;
-        b=RpGWd/R4wLRqm1iI8F+ZCgH+pvbw7UVzn+xCjaPYmg37dFx3tT6yhXoc7n0W6IUVqKo6Zu
-        ATOgVAVMA3G/bGONmrefAAotqPkEwBoNp2nLKiSeTc1Nyvct2OaXpz9UWrutZKUEGCD/VL
-        F/VwdovOq9JtbXMXGHH9SCDm3Tk/aEQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-fT6QrvfyOa-zZIJVH2J_mw-1; Fri, 12 Jun 2020 08:06:54 -0400
-X-MC-Unique: fT6QrvfyOa-zZIJVH2J_mw-1
-Received: by mail-ej1-f71.google.com with SMTP id bo19so4131553ejb.0
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 05:06:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=naLbiu6HsX+Z2d/q/OU86dDzWk8INFro9FYGhNZfqd8=;
-        b=LNV+SPPNjJq2V7m7+YqZLzPPc/gAzEs2dUYl3i50SVzy9xV+woSuPiDhmq4m+khjuK
-         o6pfKlScDEV7TVjbODqojh3wfgmf8wHjuBZwkQuqaeGEo9i4+cSbVzdOgBU1Vfs6a0eV
-         gt9fUbfUW/Q4oeASyH8gJvpOOAZhAmMf0m7x/B5ZOmBp7hFqAIJyC3yIWpPozBqnY9ZH
-         upY0vGOCug2P2RYqkY4ucl/EKrdykJ+WA0ArX+GQX3zXWUJsMtegvLn1oyBNBcO4xrVh
-         BlGQFzyMCFKHP6reK3vIcjRIyvYlJQCscRakpflsup6OrKOhLjXrFapWbMYiOCXoYYfA
-         bx8Q==
-X-Gm-Message-State: AOAM531644I4zW2+6VjmYOfmSfUnApcux1QNtrgnBMWRtiA2h7vleIMV
-        WylKC1DE+xofPGE6aruY6M5cEkFJ9RGofpQoGBGdMtEH++eTZDY6TFgC/xCytAsp7JOgVdQffGD
-        0dpACfkUEgULi
-X-Received: by 2002:aa7:dad6:: with SMTP id x22mr11558449eds.265.1591963612912;
-        Fri, 12 Jun 2020 05:06:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4lVEfRjPxrT+5Z6RjJUpxaAxzdwF0uc8y38f8DYIg6oQjP4TWeq6YjE5s/j2es2+1PRLT3Q==
-X-Received: by 2002:aa7:dad6:: with SMTP id x22mr11558414eds.265.1591963612639;
-        Fri, 12 Jun 2020 05:06:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id o90sm634231edb.60.2020.06.12.05.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jun 2020 05:06:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 69A291804F0; Fri, 12 Jun 2020 14:06:50 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Joe Perches <joe@perches.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Gaurav Singh <gaurav1086@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726452AbgFLPTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 11:19:17 -0400
+Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:56422 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726085AbgFLPTQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jun 2020 11:19:16 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id CD2A7100E4720;
+        Fri, 12 Jun 2020 15:19:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:2895:2901:2911:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:4425:5007:6119:6742:7514:7903:10004:10400:10848:10967:11026:11232:11658:11914:12297:12740:12760:12895:13069:13095:13311:13357:13439:14096:14097:14181:14659:14721:21067:21080:21212:21433:21451:21627:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: toy64_4f084a126ddd
+X-Filterd-Recvd-Size: 2858
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 12 Jun 2020 15:19:12 +0000 (UTC)
+Message-ID: <0b82952a6e0b4a05c93f4d18b3d0b2f43b61ab98.camel@perches.com>
+Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
+From:   Joe Perches <joe@perches.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Gaurav Singh <gaurav1086@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -65,44 +37,58 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         KP Singh <kpsingh@chromium.org>,
-        "open list\:XDP \(eXpress Data Path\)" <netdev@vger.kernel.org>,
-        "open list\:XDP \(eXpress Data Path\)" <bpf@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <netdev@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xdp_rxq_info_user: Replace malloc/memset w/calloc
-In-Reply-To: <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
-References: <20200611150221.15665-1-gaurav1086@gmail.com> <20200612003640.16248-1-gaurav1086@gmail.com> <20200612084244.4ab4f6c6@carbon> <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 12 Jun 2020 14:06:50 +0200
-Message-ID: <8736705vz9.fsf@toke.dk>
+Date:   Fri, 12 Jun 2020 08:19:10 -0700
+In-Reply-To: <20200612140520.1e3c0461@carbon>
+References: <20200611150221.15665-1-gaurav1086@gmail.com>
+         <20200612003640.16248-1-gaurav1086@gmail.com>
+         <20200612084244.4ab4f6c6@carbon>
+         <427be84b1154978342ef861f1f4634c914d03a94.camel@perches.com>
+         <20200612140520.1e3c0461@carbon>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joe Perches <joe@perches.com> writes:
+On Fri, 2020-06-12 at 14:05 +0200, Jesper Dangaard Brouer wrote:
+> On Fri, 12 Jun 2020 03:14:58 -0700
+> Joe Perches <joe@perches.com> wrote:
+> 
+> > On Fri, 2020-06-12 at 08:42 +0200, Jesper Dangaard Brouer wrote:
+> > > On Thu, 11 Jun 2020 20:36:40 -0400
+> > > Gaurav Singh <gaurav1086@gmail.com> wrote:
+> > >   
+> > > > Replace malloc/memset with calloc
+> > > > 
+> > > > Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
+> > > > Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>  
+> > > 
+> > > Above is the correct use of Fixes + Signed-off-by.
+> > > 
+> > > Now you need to update/improve the description, to also
+> > > mention/describe that this also solves the bug you found.  
+> > 
+> > This is not a fix, it's a conversion of one
+> > correct code to a shorter one.
+> 
+> Read the code again Joe.  There is a bug in the code that gets removed,
+> as it runs memset on the memory before checking if it was NULL.
+> 
+> IHMO this proves why is it is necessary to mention in the commit
+> message, as you didn't notice the bug in your code review.
 
-> On Fri, 2020-06-12 at 08:42 +0200, Jesper Dangaard Brouer wrote:
->> On Thu, 11 Jun 2020 20:36:40 -0400
->> Gaurav Singh <gaurav1086@gmail.com> wrote:
->> 
->> > Replace malloc/memset with calloc
->> > 
->> > Fixes: 0fca931a6f21 ("samples/bpf: program demonstrating access to xdp_rxq_info")
->> > Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
->> 
->> Above is the correct use of Fixes + Signed-off-by.
->> 
->> Now you need to update/improve the description, to also
->> mention/describe that this also solves the bug you found.
->
-> This is not a fix, it's a conversion of one
-> correct code to a shorter one.
+I didn't review the code at all, just the commit message,
 
-No it isn't - the original code memset()s before it checks the return
-from malloc(), so it's a potential NULL-pointer reference... Which the
-commit message should explain, obviously :)
+It's important to have commit messages that describe the
+defect being corrected too.
 
--Toke
+Otherwise, a simple malloc/memset(0) vs zalloc equivalent
+is not actually a defect.
+
 
