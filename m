@@ -2,198 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0ED1F74E2
-	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 09:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A751F7580
+	for <lists+bpf@lfdr.de>; Fri, 12 Jun 2020 10:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgFLH4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 03:56:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33688 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726396AbgFLH4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 03:56:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1591948589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LNbUY1q6FIZ97hLXxGpuj36BUNMuCI5VduaUjfayv64=;
-        b=anJiOowGuHxkszPc3psthCkrAxgjmzg2Eh5dQXtT4BHFWBW7iE13ORo+f2KUtoZSuuhJeO
-        Cq6BVDvd0TgI/UWdm12zuhr7CX02s0V+G7Z4LPRFEtuRzonQBNQGA+p/4gMHlRSJ9aYlMh
-        UgqUIa1nPoXZNEdfP2mWEpBg8IUZPQg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-cab5DlpeObi7zj79e2LdIQ-1; Fri, 12 Jun 2020 03:56:23 -0400
-X-MC-Unique: cab5DlpeObi7zj79e2LdIQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 796D7872FE2;
-        Fri, 12 Jun 2020 07:56:21 +0000 (UTC)
-Received: from krava (unknown [10.40.192.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 461295C1B2;
-        Fri, 12 Jun 2020 07:56:15 +0000 (UTC)
-Date:   Fri, 12 Jun 2020 09:56:14 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1726343AbgFLIyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 04:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgFLIyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jun 2020 04:54:20 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E65DC03E96F;
+        Fri, 12 Jun 2020 01:54:20 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a127so3981443pfa.12;
+        Fri, 12 Jun 2020 01:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1h0U0on2B5eieW//0BjOn1nuqwFmMt2z2UwHZRgs9sY=;
+        b=dzHSWgvHQidPUJPOLQ9tG26Ze1dNyZbBQPA7QTKYwDt5MfkokFNBdOLjWRC8beqoEr
+         g0vwJwBpvWAjWexk4EVyC6tvXOgR2fdCgXybAMhmcNwBRMc30y6cYoOd0XWW1HKHu5Re
+         jjj2nfe6r5JbHJXB7JxSUS0h/X1sT8zqXzhU/yh+mBTkgII8cMnN0J3CQF6FOakPZC/L
+         IEZD2OpqvmcnAIN1Bui/IYPv+DwbO0u6Q1GJQhZ8AELtaS9+kQKLd+TOtaE/z/eMIJO2
+         h/J/jpRzB05iQDU1qm5nhs3sxaDu7TKStKloYYofWRtkVhTkjlvf0Bj2h/JyQyF/TS66
+         8iKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1h0U0on2B5eieW//0BjOn1nuqwFmMt2z2UwHZRgs9sY=;
+        b=GBn825p8z/5FilAlrpZunSiJPc5wK51tLHG8i5NrwnzToEagwfyGcubtQz7w4GcHxB
+         RlcvxGfj6ywjyYsT0V5P/R56LoSYlKWZVe0xZTCExUJx/paxR85UW/+s2vYPWw0ivvo0
+         Ibj0TwncUrnsJnWSlo+htvYiWcq9j2P1ch8CEyvnVScPZR8lXYy/aKi5KHWhpuYyE8wB
+         twSOreOLjN0C9CoP2rZVeKqRE66j4twzVN6RH1PPR904QQ9Hd2aAjVkMlbte2Ta0BRdH
+         S/tiI3rOa/wB+7qo5ytk+skbFk/ETo03Fwg7ChwMOrBmXSB933YkKpBLBgaKwAvgvqq9
+         2XRw==
+X-Gm-Message-State: AOAM5313U2yCplrdO71nmnqxZKi0z4lx1aBZxi0EeOPZkRfHSIwkd1p2
+        1PaDOkxCPmrliY11d7VuP0M=
+X-Google-Smtp-Source: ABdhPJxfJkbaQXLHCaxdazaUT87ROcCfAiTKRl3Z3yo9Kf6Gpfn+YSk5DOH5/B9M0ANHrnr6QSK99g==
+X-Received: by 2002:aa7:979b:: with SMTP id o27mr1975531pfp.284.1591952059854;
+        Fri, 12 Jun 2020 01:54:19 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 130sm5208060pfw.176.2020.06.12.01.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 01:54:19 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 16:54:08 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Frantisek Hrbata <fhrbata@redhat.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: Re: [RFC] .BTF section data alignment issue on s390
-Message-ID: <20200612075614.GA1885974@krava>
-References: <20200611205040.GA1853644@krava>
- <e1823b9409720aadb14691fbc4e136ad36c5264c.camel@linux.ibm.com>
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [PATCHv4 bpf-next 1/2] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com>
+ <20200526140539.4103528-1-liuhangbin@gmail.com>
+ <20200526140539.4103528-2-liuhangbin@gmail.com>
+ <20200610121859.0412c111@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e1823b9409720aadb14691fbc4e136ad36c5264c.camel@linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200610121859.0412c111@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 12:46:13AM +0200, Ilya Leoshkevich wrote:
-> On Thu, 2020-06-11 at 22:50 +0200, Jiri Olsa wrote:
-> > hi,
-> > we're hitting a problem on s390 with BTF data alignment.
-> > 
-> > When running simple test, we're getting this message from
-> > verifier and console:
-> > 
-> >   bpf_common.c:91: BROK: Failed verification: in-kernel BTF is
-> > malformed
-> >   [   41.545572] BPF:Total section length too long
-> > 
-> > 
-> > AFAICS it happens when .BTF section data size is not an even number
-> > ;-)
-> > 
-> > DISCLAIMER I'm quite ignorant of s390x arch details, so most likely
-> > I'm
-> > totally wrong and perhaps missing something important and there's
-> > simple
-> > explanation.. but here's what got me here:
-> > 
-> > 
-> > ... so BTF data is placed in .BTF section via linker script:
-> > 
-> >         .BTF : AT(ADDR(.BTF) - LOAD_OFFSET)
-> > {                           \
-> >                 __start_BTF =
-> > .;                                        \
-> >                 *(.BTF)                                              
-> >    \
-> >                 __stop_BTF =
-> > .;                                         \
-> >         }
-> > 
-> > 
-> > and the .BTF data size in btf_parse_vmlinux is computed as:
-> > 
-> >         btf->data_size = __stop_BTF - __start_BTF;
-> > 
-> > 
-> > this computation is compiled as:
-> > 
-> >         00000000002aeb20 <btf_parse_vmlinux>:
-> >         ...
-> >           2aeb8a:  larl    %r1,cda3ac <__start_BTF+0x2084a8>    #
-> > loads r1 with end
-> >           2aeb90:  larl    %r2,ad1f04 <__start_BTF>             #
-> > loads r2 with start
-> >           2aeb96:  sgr     %r1,%r2                              #
-> > substract r1 - r2 
-> > 
-> > 
-> > having following values for start/stop_BTF symbols:
-> > 
-> >         # nm ./vmlinux | grep __start_BTF
-> >         0000000000ad1f04 R __start_BTF
-> >         # nm ./vmlinux | grep __stop_BTF
-> >         0000000000cda3ad R __stop_BTF
-> > 
-> >         -> the BTF data size is 0x2084a9
-> > 
-> > 
-> > but as you can see the instruction that loads the 'end' symbol:
-> > 
-> >         larl    %r1,cda3ac <__start_BTF+0x2084a8>
-> > 
-> > 
-> > is loading '__start_BTF + 0x2084a8', which is '__stop_BTF - 1'
-> > 
-> > 
-> > From spec it seems that larl instruction's argument must be even
-> > number ([1] page 7-214):
-> > 
-> >         2.   For  LOAD  RELATIVE  LONG,  the  second  oper-and must
-> > be aligned
-> >         on an integral boundary cor-responding to the operand’s
-> > size. 
-> > 
-> > 
-> > I also found an older bug complaining about this issue [2]:
-> > 
-> >         ...
-> >         larl instruction can only load even values - instructions on
-> > s390 are 2-byte
-> >         aligned and the instruction encodes offset to the target in
-> > 2-byte units.
-> >         ...
-> >         The GNU BFD linker for s390 doesn't bother to check if
-> > relocations fit or are
-> >         properly aligned. 
-> >         ...
-> > 
-> > 
-> > I tried to fix that aligning the end to even number, but then
-> > btf_check_sec_info logic needs to be adjusted as well, and
-> > probably other places as well.. so I decided to share this
-> > first.. because it all seems wrong ;-)
-> > 
-> > thoughts? thanks,
-> > jirka
-> > 
-> > 
-> > [1] http://publibfi.boulder.ibm.com/epubs/pdf/dz9zr008.pdf
-> > [2] https://sourceware.org/bugzilla/show_bug.cgi?id=18960
-> > 
-> Hi Jiri,
+On Wed, Jun 10, 2020 at 12:18:59PM +0200, Jesper Dangaard Brouer wrote:
+> On Tue, 26 May 2020 22:05:38 +0800
+> Hangbin Liu <liuhangbin@gmail.com> wrote:
 > 
-> Actually I recently ran into it myself on Debian, and I believe your
-> analysis is correct :-) The only thing to add to it is that the
-> compiler emits the correct instruction (if you look at the .o file),
-> it's linker that messes things up.
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 90f44f382115..acdc63833b1f 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -475,3 +475,29 @@ void xdp_warn(const char *msg, const char *func, const int line)
+> >  	WARN(1, "XDP_WARN: %s(line:%d): %s\n", func, line, msg);
+> >  };
+> >  EXPORT_SYMBOL_GPL(xdp_warn);
+> > +
+> > +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
+> > +{
+> > +	unsigned int headroom, totalsize;
+> > +	struct xdp_frame *nxdpf;
+> > +	struct page *page;
+> > +	void *addr;
+> > +
+> > +	headroom = xdpf->headroom + sizeof(*xdpf);
+> > +	totalsize = headroom + xdpf->len;
+> > +
+> > +	if (unlikely(totalsize > PAGE_SIZE))
+> > +		return NULL;
+> > +	page = dev_alloc_page();
+> > +	if (!page)
+> > +		return NULL;
+> > +	addr = page_to_virt(page);
+> > +
+> > +	memcpy(addr, xdpf, totalsize);
 > 
-> The linker bug in question is [1].
+> I don't think this will work.  You are assuming that the memory model
+> (xdp_mem_info) is the same.
 > 
-> I opened [2] to Debian folks, and I believe that other important
-> distros (RH, SUSE, Ubuntu) have this fixed already.
-> 
-> Which distro are you using?
+> You happened to use i40, that have MEM_TYPE_PAGE_SHARED, and you should
+> have changed this to MEM_TYPE_PAGE_ORDER0, but it doesn't crash as they
+> are compatible.  If you were using mlx5, I suspect that this would
+> result in memory leaking.
 
-I'm on RHEL ;-) I wonder why that fix was missed,
-I'll follow up on that with our binutils guys
-
-thanks a lot for the info,
-jirka
-
+Is there anything else I should do except add the following line?
+	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
 > 
+> You also need to update xdpf->frame_sz, as you also cannot assume it is
+> the same.
+
+Won't the memcpy() copy xdpf->frame_sz to nxdpf? 
+
+And I didn't see xdpf->frame_sz is set in xdp_convert_zc_to_xdp_frame(),
+do we need a fix?
+
+Thanks
+Hangbin
+> 
+> > +
+> > +	nxdpf = addr;
+> > +	nxdpf->data = addr + headroom;
+> > +
+> > +	return nxdpf;
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdpf_clone);
+> 
+> 
+> -- 
 > Best regards,
-> Ilya
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
 > 
-> [1] 
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=e6213e09ed0e
-> [2] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=961736
 > 
-
+> struct xdp_frame {
+> 	void *data;
+> 	u16 len;
+> 	u16 headroom;
+> 	u32 metasize:8;
+> 	u32 frame_sz:24;
+> 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+> 	 * while mem info is valid on remote CPU.
+> 	 */
+> 	struct xdp_mem_info mem;
+> 	struct net_device *dev_rx; /* used by cpumap */
+> };
+> 
