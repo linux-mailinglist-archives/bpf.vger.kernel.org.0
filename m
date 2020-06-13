@@ -2,101 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9461F8476
-	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 19:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3FC1F8594
+	for <lists+bpf@lfdr.de>; Sun, 14 Jun 2020 00:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgFMRwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Jun 2020 13:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgFMRwV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Jun 2020 13:52:21 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BF6C03E96F;
-        Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id x189so4556771iof.9;
-        Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zohJCjdH5WGCVYNdwZ7CTrdR3aOqxAG5fyOBK5BztPc=;
-        b=EUObILvwjkSPfOGbLkzWJI+bN4YkEE1QMRNu6obBM54ATHFDLMaR8jcldK29nUeBLh
-         4jdNSXAntcPwcBPMW19IVFfCQ3b6eT4uMd1knpz+5Ym01z2ht+dS9XmMBhriBt1bYkrR
-         8F14Hp8FNOGHuKK5kNoflJa0hQWBtXrgbTWKKXH8T/jvf3Z2y78fHcHAtSXevXhpOR3c
-         rbqd1cY0S8jO+i4iDRSWSaUlH3vJRTdlPWA3FDrc6/oKEnJdzCBc8QcBrbFuNgbIxlRW
-         AW8PKX2mdWIEVMKvBQv2Fn7hp6tSkaO+KfMclXgQfPHTCYQGmAyZ1IGzqKAJgAQEI5eV
-         gM9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zohJCjdH5WGCVYNdwZ7CTrdR3aOqxAG5fyOBK5BztPc=;
-        b=KF35/U6aUqUoNswvXKQO0aqKnirASX28D6HBITnDpAmGL63A3EuKz3qOXA6t4Qi4cI
-         IPOFmfrlAdOCVaY1tOfthky1hX0EYcLEm8Zi/8wowugJR+7eqyPRLI92Vf4HNn28POAL
-         Knfk5YKMcBAHKsa0Yio7cK+nM7JlEXJFy1baGo8NGk+c41KotDu7uPDivQfoIsafiQjN
-         PO7c8KOY6IbzlJK4iDC3xBjJFdYzORpR9mcm92WaPpedj5ySRS2MUNjg0ohFHw4V63qx
-         m9OtA9Wuq4NrarQVMsfO7Vy0bmBMOIRVZ9JzeSBG/LUpG17inzAA45YLN+60AEug7qGZ
-         Xh7Q==
-X-Gm-Message-State: AOAM532fGg46vEv7jzSOOGtoAJ0Wguh7zh+wG3YOhRN1QdsTQF2QZjT0
-        DIUqZwjeaoH8Z5Ji8Y08Iv5xHB+Fqb+3inBCxfM=
-X-Google-Smtp-Source: ABdhPJwjY/vl6qjusNuTDwyuBK/oHqui9HUITvTM3CJWb9devaQE+o7GXcDRCoU1S6cljuvkxQ/n7AArm90xf+58W1A=
-X-Received: by 2002:a05:6638:216:: with SMTP id e22mr13883777jaq.16.1592070740031;
- Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAMdYzYpKEOWCjb-kZj=HAkzQ0_QNs4N_6pXz1qPb1YQ2Xh5Jsg@mail.gmail.com>
-In-Reply-To: <CAMdYzYpKEOWCjb-kZj=HAkzQ0_QNs4N_6pXz1qPb1YQ2Xh5Jsg@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 13 Jun 2020 10:52:08 -0700
-Message-ID: <CAM_iQpUNNs4fzLAT8xmhbg+dhM0gdS+HVOtFD+fMJegeSHgUFA@mail.gmail.com>
-Subject: Re: [Crash] unhandled kernel memory read from unreadable memory
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726507AbgFMWOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Jun 2020 18:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgFMWOW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Jun 2020 18:14:22 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6781C20789;
+        Sat, 13 Jun 2020 22:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592086461;
+        bh=pYMSq2imgTOvmvL665OX5Xw/S5VmKP/5qtwZkMvOoEw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X7SqHb999bhQvtvtS46PFUWV2jQv3LxTR28sZ9ADAoFKIWpYhG7PliHCQAe2ggmqK
+         BK1tXC9KKHi/Tf5wCP2EjEuZPEuZ2lf+pY0BIB5T7V1FshjYz9yOcwxbS8ApkFK2OE
+         S38QloZHFUcKFOq2PmJIaaCdLj6KtJ8+XLqDcpcQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8B1DF40AFD; Sat, 13 Jun 2020 19:14:19 -0300 (-03)
+Date:   Sat, 13 Jun 2020 19:14:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000ead67105a7fadaa9"
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [RFC PATCH bpf-next 8/8] tools/bpftool: show PIDs with FDs open
+ against BPF map/prog/link/btf
+Message-ID: <20200613221419.GB7488@kernel.org>
+References: <20200612223150.1177182-1-andriin@fb.com>
+ <20200612223150.1177182-9-andriin@fb.com>
+ <20200613034507.wjhd4z6dsda3pz7c@ast-mbp>
+ <CAEf4BzaHVRxkiDbTGashiuakXFBRYvDsQmJ0O08xFijKXiAwSg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaHVRxkiDbTGashiuakXFBRYvDsQmJ0O08xFijKXiAwSg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---000000000000ead67105a7fadaa9
-Content-Type: text/plain; charset="UTF-8"
+Em Fri, Jun 12, 2020 at 10:57:59PM -0700, Andrii Nakryiko escreveu:
+> On Fri, Jun 12, 2020 at 8:45 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Jun 12, 2020 at 03:31:50PM -0700, Andrii Nakryiko wrote:
+> > > Add bpf_iter-based way to find all the processes that hold open FDs against
+> > > BPF object (map, prog, link, btf). Add new flag (-o, for "ownership", given
+> > > -p is already taken) to trigger collection and output of these PIDs.
+> > >
+> > > Sample output for each of 4 BPF objects:
+> > >
+> > > $ sudo ./bpftool -o prog show
+> > > 1992: cgroup_skb  name egress_alt  tag 9ad187367cf2b9e8  gpl
+> > >         loaded_at 2020-06-12T14:18:10-0700  uid 0
+> > >         xlated 48B  jited 59B  memlock 4096B  map_ids 2074
+> > >         btf_id 460
+> > >         pids: 913709,913732,913733,913734
+> > > 2062: cgroup_device  tag 8c42dee26e8cd4c2  gpl
+> > >         loaded_at 2020-06-12T14:37:52-0700  uid 0
+> > >         xlated 648B  jited 409B  memlock 4096B
+> > >         pids: 1
+> > >
+> > > $ sudo ./bpftool -o map show
+> > > 2074: array  name test_cgr.bss  flags 0x400
+> > >         key 4B  value 8B  max_entries 1  memlock 8192B
+> > >         btf_id 460
+> > >         pids: 913709,913732,913733,913734
+> > >
+> > > $ sudo ./bpftool -o link show
+> > > 82: cgroup  prog 1992
+> > >         cgroup_id 0  attach_type egress
+> > >         pids: 913709,913732,913733,913734
+> > > 86: cgroup  prog 1992
+> > >         cgroup_id 0  attach_type egress
+> > >         pids: 913709,913732,913733,913734
+> >
+> > This is awesome.
 
-Hello,
+Indeed.
+ 
+> Thanks.
+> 
+> >
+> > Why extra flag though? I think it's so useful that everyone would want to see
 
-On Sat, Jun 13, 2020 at 5:41 AM Peter Geis <pgwipeout@gmail.com> wrote:
->
-> Good Morning,
->
-> Last night I started experiencing crashes on my home server.
-> I updated to 5.6.17 from 5.6.15 a few days ago but I'm not sure if
-> that is related.
-> The crash occurred four times between last night and this morning.
+Agreed.
+ 
+> No good reason apart from "being safe by default". If turned on by
+> default, bpftool would need to probe for bpf_iter support first. I can
+> add probing and do this by default.
 
-Yeah, this is known. Can you test the attached patch?
+I think this is the way to go.
+ 
+> > this by default. Also the word 'pid' has kernel meaning or user space meaning?
+> > Looks like kernel then bpftool should say 'tid'.
+> 
+> No, its process ID in user-space sense. See task->tgid in
+> pid_iter.bpf.c. I figured thread ID isn't all that useful.
+> 
+> > Could you capture comm as well and sort it by comm, like:
+> >
+> > $ sudo ./bpftool link show
+> > 82: cgroup  prog 1992
+> >         cgroup_id 0  attach_type egress
+> >         systemd(1), firewall(913709 913732), logger(913733 913734)
+> 
+> Yep, comm is useful, I'll add that. Grouping by comm is kind of a
+> pain, though, plus usually there will be one process only. So let me
+> start with doing comm (pid) for each PID independently. I think that
+> will be as good in practice.
 
-Thanks.
+-- 
 
---000000000000ead67105a7fadaa9
-Content-Type: text/x-patch; charset="US-ASCII"; name="cgroup_sk_alloc.diff"
-Content-Disposition: attachment; filename="cgroup_sk_alloc.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kbdxrsd10>
-X-Attachment-Id: f_kbdxrsd10
-
-ZGlmZiAtLWdpdCBhL2tlcm5lbC9jZ3JvdXAvY2dyb3VwLmMgYi9rZXJuZWwvY2dyb3VwL2Nncm91
-cC5jCmluZGV4IDZjOWM2YWM4MzkzNi4uYzAxMjQ1YTE5ZWEyIDEwMDY0NAotLS0gYS9rZXJuZWwv
-Y2dyb3VwL2Nncm91cC5jCisrKyBiL2tlcm5lbC9jZ3JvdXAvY2dyb3VwLmMKQEAgLTY0MzgsOSAr
-NjQzOCw2IEBAIHZvaWQgY2dyb3VwX3NrX2FsbG9jX2Rpc2FibGUodm9pZCkKIAogdm9pZCBjZ3Jv
-dXBfc2tfYWxsb2Moc3RydWN0IHNvY2tfY2dyb3VwX2RhdGEgKnNrY2QpCiB7Ci0JaWYgKGNncm91
-cF9za19hbGxvY19kaXNhYmxlZCkKLQkJcmV0dXJuOwotCiAJLyogU29ja2V0IGNsb25lIHBhdGgg
-Ki8KIAlpZiAoc2tjZC0+dmFsKSB7CiAJCS8qCkBAIC02NDUzLDYgKzY0NTAsOSBAQCB2b2lkIGNn
-cm91cF9za19hbGxvYyhzdHJ1Y3Qgc29ja19jZ3JvdXBfZGF0YSAqc2tjZCkKIAkJcmV0dXJuOwog
-CX0KIAorCWlmIChjZ3JvdXBfc2tfYWxsb2NfZGlzYWJsZWQpCisJCXJldHVybjsKKwogCS8qIERv
-bid0IGFzc29jaWF0ZSB0aGUgc29jayB3aXRoIHVucmVsYXRlZCBpbnRlcnJ1cHRlZCB0YXNrJ3Mg
-Y2dyb3VwLiAqLwogCWlmIChpbl9pbnRlcnJ1cHQoKSkKIAkJcmV0dXJuOwo=
---000000000000ead67105a7fadaa9--
+- Arnaldo
