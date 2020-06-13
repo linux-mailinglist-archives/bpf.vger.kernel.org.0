@@ -2,131 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCE71F812F
-	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 07:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759C81F833E
+	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 14:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725771AbgFMF6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Jun 2020 01:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S1726196AbgFMMjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Jun 2020 08:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgFMF6M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Jun 2020 01:58:12 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6D4C03E96F;
-        Fri, 12 Jun 2020 22:58:11 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b27so11123800qka.4;
-        Fri, 12 Jun 2020 22:58:11 -0700 (PDT)
+        with ESMTP id S1726039AbgFMMjq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Jun 2020 08:39:46 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9608C03E96F;
+        Sat, 13 Jun 2020 05:39:45 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id p20so12696696ejd.13;
+        Sat, 13 Jun 2020 05:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ooC6zDR4D9kUn0XYJNEVpFCkJ4RWM1cROne2/QW99bw=;
-        b=CXQ7IV7TIiEHNbDNvhZmY0SMeldOfH/MJdWYNQaFNLIUBdFbqeNnLSuzYfLeJMN4HO
-         8gsxX0QRFq9bIeUjfzZfZZc4j1/MAV0xV33rgAD+2xcIBAqzeHMMwZiBPpYeDQzZe7wz
-         1llbBQIinq+NLpjaGEFNT32Jry/c+4eaiIN7Ky2AiSRkGcN/3Euoa76wjK4UgKl8aWKa
-         3R3HijAfSH/+7ed7iCha7CVxtzOHTKdOBju7q8pok3a2qldlC9zsBlj674fbsRckqE15
-         97S1Cx3j519AS1csowGpJZL5i2DVTPPI0KWaAOXPYR0Fj4Y/SMyenzDNV5FgOYXatw9t
-         2wHA==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=rLYdWMneE4TVUY9aSOs8/2TEq8Z2KQLp41INl5IKYh0=;
+        b=oORIqEvjVM4ZMLb1sDdiGXA7Dp79k42spmbQA63GyvXfvZvTDlVAByDFp4LdE2FxHN
+         kVeBfr19R6eOj8puIaIIWbcExMPl4PB5J7mLTkTgBLM/xM7/FLeyGGDKzDRJt+P7ED1Q
+         iOjmyvmo7fLX7wCcdjg7zjSYYy5uzb2xBom6gnYz6l5D/fkB4rOVsZT/woS2Sz9uuvhW
+         zC3iksBAL7p4+8HoPHSMWeejQ73LViQPEWUSVrYBPUhcf9noUJUJwEGOPiDARW8QYJnF
+         tps/fq1tToMoCQum9vX/L4YMzxZ+scsjZxyNMcQGcUvcwH9lXTgmI0JCWkN5VtNbGKKB
+         YYFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ooC6zDR4D9kUn0XYJNEVpFCkJ4RWM1cROne2/QW99bw=;
-        b=EuUqKRC9ye9XH9cXTx95HFoQMO1lUvmAvFOMpj70F1+iPn/60gphm3g/FSAg0k+VJ3
-         KlyUjNlsAUCQXU+KqNwDcaoQh3wXwspPNhyDIIgCaxF10PuOxTTtbhFC957qc1DuzJ74
-         U+tKfcV9zr8XmvSJ6oUm6gPuY5+ck8L+X84fv7s3NOad/Hd/skp7JMAKZcuybDQV2YGy
-         WltjsetQFjke5P4lbwALhqtFg3+28U/w2EWCY6XY/YQrq0WiENJY5F8G3MHXkzx2gL8k
-         FMAwueGN+Z/hlE8io/+xpw8OC7yyqj0SjpIKDWSsMvKPPJHjvZ3pnVVJGh1l62M6+2P1
-         4EDQ==
-X-Gm-Message-State: AOAM5324mLPbCpWyeqmGSdzECr4A1c/Qhj0+/7Mt/9onmfk3zMK2eDH/
-        K37Mc9WUGEGNwv5/GlIgQKpSZX8IJX4X2XH3r5s=
-X-Google-Smtp-Source: ABdhPJzYcSdDs9GKpPp+/VbL8vTr1s6QD/8Id1USDo94Qg4iufIANplx6KVZr+wKynEyAQi/TKRBJncRyhWVlhq/vT4=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr6282241qkk.92.1592027890424;
- Fri, 12 Jun 2020 22:58:10 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=rLYdWMneE4TVUY9aSOs8/2TEq8Z2KQLp41INl5IKYh0=;
+        b=EGh8RgGuNiTNK6jg4bjDAPRhgg4seT6MsGv21HeAcUZ9Fdvv2Zn0FJpugGnYygteNG
+         7Ufudl3wQfnr2KYflMJO2esflU73n6XYKB6iWrLdmiie1jivUKDd4YT4AZat3O7eiQV8
+         UjRNFRwhixn+fhlRWabHoDqz/O7vQN2jDvRWyjPipIYlAWgrRKLwSE1e66UiUzMW6SCC
+         qAs4lIOkOLW7PwNqxQbS5tTUDTNcEuhVMc10E8hijIIxPDbgak1n3oYZjmTnmqPP4cxi
+         skQeU1xYXf+8jaTLzcWICP7cf3z6+3crCG00qcbj2hzQVHFuppPCmm1jl6mgpy8pgVqs
+         3caA==
+X-Gm-Message-State: AOAM530rMfgQ/WE4c1CvVaklWr43oM2Y7tSVbIwtbjWEHm8pWGwHEO6Y
+        Oh4C335ySHxy9B0HmYmKf03sJmjwnCka6gd1zak=
+X-Google-Smtp-Source: ABdhPJysRCa7yIX8FfZzFbBFY3gZOtUop9G2+iZF0fUZA9B2TXVj7BjV2V8LQigDxv3g85vf4gke44qavwc3cA3YZLA=
+X-Received: by 2002:a17:906:ce30:: with SMTP id sd16mr18271989ejb.374.1592051983520;
+ Sat, 13 Jun 2020 05:39:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200612223150.1177182-1-andriin@fb.com> <20200612223150.1177182-9-andriin@fb.com>
- <20200613034507.wjhd4z6dsda3pz7c@ast-mbp>
-In-Reply-To: <20200613034507.wjhd4z6dsda3pz7c@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 12 Jun 2020 22:57:59 -0700
-Message-ID: <CAEf4BzaHVRxkiDbTGashiuakXFBRYvDsQmJ0O08xFijKXiAwSg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 8/8] tools/bpftool: show PIDs with FDs open
- against BPF map/prog/link/btf
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Sat, 13 Jun 2020 08:39:32 -0400
+Message-ID: <CAMdYzYpKEOWCjb-kZj=HAkzQ0_QNs4N_6pXz1qPb1YQ2Xh5Jsg@mail.gmail.com>
+Subject: [Crash] unhandled kernel memory read from unreadable memory
+To:     "David S. Miller" <davem@davemloft.net>, kuznet@ms2.inr.ac.ru,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 8:45 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Jun 12, 2020 at 03:31:50PM -0700, Andrii Nakryiko wrote:
-> > Add bpf_iter-based way to find all the processes that hold open FDs against
-> > BPF object (map, prog, link, btf). Add new flag (-o, for "ownership", given
-> > -p is already taken) to trigger collection and output of these PIDs.
-> >
-> > Sample output for each of 4 BPF objects:
-> >
-> > $ sudo ./bpftool -o prog show
-> > 1992: cgroup_skb  name egress_alt  tag 9ad187367cf2b9e8  gpl
-> >         loaded_at 2020-06-12T14:18:10-0700  uid 0
-> >         xlated 48B  jited 59B  memlock 4096B  map_ids 2074
-> >         btf_id 460
-> >         pids: 913709,913732,913733,913734
-> > 2062: cgroup_device  tag 8c42dee26e8cd4c2  gpl
-> >         loaded_at 2020-06-12T14:37:52-0700  uid 0
-> >         xlated 648B  jited 409B  memlock 4096B
-> >         pids: 1
-> >
-> > $ sudo ./bpftool -o map show
-> > 2074: array  name test_cgr.bss  flags 0x400
-> >         key 4B  value 8B  max_entries 1  memlock 8192B
-> >         btf_id 460
-> >         pids: 913709,913732,913733,913734
-> >
-> > $ sudo ./bpftool -o link show
-> > 82: cgroup  prog 1992
-> >         cgroup_id 0  attach_type egress
-> >         pids: 913709,913732,913733,913734
-> > 86: cgroup  prog 1992
-> >         cgroup_id 0  attach_type egress
-> >         pids: 913709,913732,913733,913734
->
-> This is awesome.
+Good Morning,
 
-Thanks.
+Last night I started experiencing crashes on my home server.
+I updated to 5.6.17 from 5.6.15 a few days ago but I'm not sure if
+that is related.
+The crash occurred four times between last night and this morning.
 
->
-> Why extra flag though? I think it's so useful that everyone would want to see
-
-No good reason apart from "being safe by default". If turned on by
-default, bpftool would need to probe for bpf_iter support first. I can
-add probing and do this by default.
-
-> this by default. Also the word 'pid' has kernel meaning or user space meaning?
-> Looks like kernel then bpftool should say 'tid'.
-
-No, its process ID in user-space sense. See task->tgid in
-pid_iter.bpf.c. I figured thread ID isn't all that useful.
-
-> Could you capture comm as well and sort it by comm, like:
->
-> $ sudo ./bpftool link show
-> 82: cgroup  prog 1992
->         cgroup_id 0  attach_type egress
->         systemd(1), firewall(913709 913732), logger(913733 913734)
-
-Yep, comm is useful, I'll add that. Grouping by comm is kind of a
-pain, though, plus usually there will be one process only. So let me
-start with doing comm (pid) for each PID independently. I think that
-will be as good in practice.
+[23352.431106] rockpro64 kernel: Unable to handle kernel read from
+unreadable memory at virtual address 0000000000000010
+[23352.431938] rockpro64 kernel: Mem abort info:
+[23352.432199] rockpro64 kernel:   ESR = 0x96000004
+[23352.432485] rockpro64 kernel:   EC = 0x25: DABT (current EL), IL = 32 bits
+[23352.432965] rockpro64 kernel:   SET = 0, FnV = 0
+[23352.433248] rockpro64 kernel:   EA = 0, S1PTW = 0
+[23352.433536] rockpro64 kernel: Data abort info:
+[23352.433803] rockpro64 kernel:   ISV = 0, ISS = 0x00000004
+[23352.434153] rockpro64 kernel:   CM = 0, WnR = 0
+[23352.434475] rockpro64 kernel: user pgtable: 4k pages, 48-bit VAs,
+pgdp=0000000094d4c000
+[23352.435174] rockpro64 kernel: [0000000000000010]
+pgd=0000000094f3d003, pud=00000000bdb7f003, pmd=0000000000000000
+[23352.435963] rockpro64 kernel: Internal error: Oops: 96000004 [#1] SMP
+[23352.436396] rockpro64 kernel: Modules linked in: xt_TCPMSS
+nf_conntrack_netlink xfrm_user xt_addrtype br_netfilter ip_set_hash_ip
+ip_set_hash_net xt_set ip_set cfg80211 nft_counter xt_length
+xt_connmark xt_multiport xt_mark nf_log_ip>
+[23352.436519] rockpro64 kernel:  ghash_ce enclosure snd_soc_es8316
+scsi_transport_sas snd_seq_midi sha2_ce snd_seq_midi_event
+snd_soc_simple_card snd_rawmidi snd_soc_audio_graph_card sha256_arm64
+panfrost snd_soc_simple_card_utils sha1>
+[23352.444216] rockpro64 kernel:  async_pq async_xor xor xor_neon
+async_tx uas raid6_pq raid1 raid0 multipath linear usb_storage
+xhci_plat_hcd dwc3 rtc_rk808 clk_rk808 rk808_regulator ulpi udc_core
+fusb302 tcpm typec fan53555 rk808 pwm_>
+[23352.455532] rockpro64 kernel: CPU: 3 PID: 1237 Comm: nfsd Not
+tainted 5.6.17+ #74
+[23352.456054] rockpro64 kernel: Hardware name: pine64
+rockpro64_rk3399/rockpro64_rk3399, BIOS
+2020.07-rc2-00124-g515f613253-dirty 05/19/2020
+[23352.457010] rockpro64 kernel: pstate: 60400005 (nZCv daif +PAN -UAO)
+[23352.457445] rockpro64 kernel: pc : __cgroup_bpf_run_filter_skb+0x2a8/0x400
+[23352.457918] rockpro64 kernel: lr : ip_finish_output+0x98/0xd0
+[23352.458287] rockpro64 kernel: sp : ffff80001325b900
+[23352.458581] rockpro64 kernel: x29: ffff80001325b900 x28: ffff000012f0fae0
+[23352.459051] rockpro64 kernel: x27: 0000000000000001 x26: ffff00005f0ddc00
+[23352.459521] rockpro64 kernel: x25: 0000000000000118 x24: ffff0000dcd3c270
+[23352.459990] rockpro64 kernel: x23: 0000000000000010 x22: ffff800011b1aec0
+[23352.460458] rockpro64 kernel: x21: ffff0000efcacc40 x20: 0000000000000010
+[23352.460928] rockpro64 kernel: x19: ffff0000dcd3bf00 x18: 0000000000000000
+[23352.461396] rockpro64 kernel: x17: 0000000000000000 x16: 0000000000000000
+[23352.461863] rockpro64 kernel: x15: 0000000000000000 x14: 0000000000000004
+[23352.462332] rockpro64 kernel: x13: 0000000000000001 x12: 0000000000201400
+[23352.462802] rockpro64 kernel: x11: 0000000000000000 x10: 0000000000000000
+[23352.463271] rockpro64 kernel: x9 : ffff800010b6f6d0 x8 : 0000000000000260
+[23352.463738] rockpro64 kernel: x7 : 0000000000000000 x6 : ffff0000dc12a000
+[23352.464208] rockpro64 kernel: x5 : ffff0000dcd3bf00 x4 : 0000000000000028
+[23352.464677] rockpro64 kernel: x3 : 0000000000000000 x2 : ffff000012f0fb08
+[23352.465145] rockpro64 kernel: x1 : ffff00005f0ddd40 x0 : 0000000000000000
+[23352.465616] rockpro64 kernel: Call trace:
+[23352.465843] rockpro64 kernel:  __cgroup_bpf_run_filter_skb+0x2a8/0x400
+[23352.466283] rockpro64 kernel:  ip_finish_output+0x98/0xd0
+[23352.466625] rockpro64 kernel:  ip_output+0xb0/0x130
+[23352.466920] rockpro64 kernel:  ip_local_out+0x4c/0x60
+[23352.467233] rockpro64 kernel:  __ip_queue_xmit+0x128/0x380
+[23352.467584] rockpro64 kernel:  ip_queue_xmit+0x10/0x18
+[23352.467903] rockpro64 kernel:  __tcp_transmit_skb+0x470/0xaf0
+[23352.468274] rockpro64 kernel:  tcp_write_xmit+0x39c/0x1110
+[23352.468623] rockpro64 kernel:  __tcp_push_pending_frames+0x40/0x100
+[23352.469040] rockpro64 kernel:  tcp_send_fin+0x6c/0x240
+[23352.469358] rockpro64 kernel:  tcp_shutdown+0x60/0x68
+[23352.469669] rockpro64 kernel:  inet_shutdown+0xb0/0x120
+[23352.469997] rockpro64 kernel:  kernel_sock_shutdown+0x1c/0x28
+[23352.470464] rockpro64 kernel:  svc_tcp_sock_detach+0xd0/0x110 [sunrpc]
+[23352.470980] rockpro64 kernel:  svc_delete_xprt+0x74/0x240 [sunrpc]
+[23352.471445] rockpro64 kernel:  svc_recv+0x45c/0xb10 [sunrpc]
+[23352.471864] rockpro64 kernel:  nfsd+0xdc/0x150 [nfsd]
+[23352.472179] rockpro64 kernel:  kthread+0xfc/0x128
+[23352.472461] rockpro64 kernel:  ret_from_fork+0x10/0x18
+[23352.472785] rockpro64 kernel: Code: 9100c0c6 17ffff7b f9431cc0
+91004017 (f9400814)
+[23352.473324] rockpro64 kernel: ---[ end trace 978df9e144fd1235 ]---
+[29973.397069] rockpro64 kernel: Unable to handle kernel read from
+unreadable memory at virtual address 0000000000000010
+[29973.397966] rockpro64 kernel: Mem abort info:
+[29973.398224] rockpro64 kernel:   ESR = 0x96000004
+[29973.398503] rockpro64 kernel:   EC = 0x25: DABT (current EL), IL = 32 bits
+[29973.398976] rockpro64 kernel:   SET = 0, FnV = 0
+[29973.399254] rockpro64 kernel:   EA = 0, S1PTW = 0
+[29973.399537] rockpro64 kernel: Data abort info:
+[29973.399799] rockpro64 kernel:   ISV = 0, ISS = 0x00000004
+[29973.400143] rockpro64 kernel:   CM = 0, WnR = 0
+[29973.400416] rockpro64 kernel: user pgtable: 4k pages, 48-bit VAs,
+pgdp=00000000dcdd1000
+[29973.400989] rockpro64 kernel: [0000000000000010] pgd=0000000000000000
+[29973.401490] rockpro64 kernel: Internal error: Oops: 96000004 [#2] SMP
