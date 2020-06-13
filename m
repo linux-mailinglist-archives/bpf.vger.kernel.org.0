@@ -2,158 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18B71F8016
-	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 03:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DEF1F80BC
+	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 05:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgFMBDP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jun 2020 21:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S1726396AbgFMDi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jun 2020 23:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgFMBDP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jun 2020 21:03:15 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CC9C03E96F
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 18:03:15 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id g7so5227719qvx.11
-        for <bpf@vger.kernel.org>; Fri, 12 Jun 2020 18:03:15 -0700 (PDT)
+        with ESMTP id S1726392AbgFMDiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jun 2020 23:38:25 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE95C03E96F;
+        Fri, 12 Jun 2020 20:38:25 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id s23so5227028pfh.7;
+        Fri, 12 Jun 2020 20:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uWvi7+6qg8050KnLcF7RqqwsSRkHb7fXq+P8wk9d2x4=;
-        b=dXeqj+POezAcqsggGCMnvtUHFdTR71mDcabIgl3rJ2mVPchK0zVYtPp11m9wuc/Ag+
-         q04BUm0JH93+GwsRMvY3I5XTj9janG2a0A6uy+9MJHVxfsiqy8/KPFVOGGUgtDXBdr+F
-         Df3p6mHPtvAizrLnhYbVshvVMowwH/wQkgd4ceRDztG13SW4+uFxjxeVRc4UEmTijUlk
-         2HI8vdPDRfpyXq9pOfQZeNY8U69Xt33P1YhOQyK04Lxw5VRatcAQSXb1McNCI4hrJwd9
-         Zmd/Xl6rEYKfcY2XYP6BPaVKtO6oMwmGrQDoW60uaaaLkYdqiTraFtfRqCeieUQsEXsK
-         rRtg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nvZ8ZPQQ2Ao+T8CSV7zjmFR3kWqVRNjhytQMJrXZzTU=;
+        b=MKlwCxj9ezu8XfqLnTsxJf6T8fsjK7ThFtT9OuD7rd8/wZK7zFVaMw6RaHbpj/gRGM
+         McxML2ryVcEr+oq8OXwIQhqnBktQVYtpRm8Jf0H5wWZccGbIwv1L0Gx3rAhGWx3Dfoh0
+         DkPMoyE5NUNqeHvQS5ONYlLrW5N4e/UH3ceK8Fb2RYPrHPD0Yf/EtPVFPK7plfoUShGN
+         7SIZQg/sO4gZwbJVFTv9Ie5OfN2z/Y3r5qrkEEv6hCruVPPEyENIZyyQbKMnGIZaPNqW
+         wGO/T7L79XkW/yQnESIjprpWYVDUW8B9nfk7yPIRHAOM5//7vWYaSCeAUkj2XwQ7yHWd
+         yLiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uWvi7+6qg8050KnLcF7RqqwsSRkHb7fXq+P8wk9d2x4=;
-        b=TI/sUjOsqIDrt70DJdtaaGGr6ZH9ULR9NVBWWoA4yKrp1RHMP0oHc13IwTgcFL1qId
-         PfS99vPy1RUzqmwhG1/5tx0S8f9+YhhjM7gSdOMkvgc7zBNp3bpkpy6LoOu0ILlmB034
-         mDMCPMlIdIgwgVGbyB36O8bUBQDksR1SAIoZz4ZVe9ouFs8FhdJ3JwFKE38p/pR8h313
-         nGjBMBVE6PlTaa8jG0I2zfVtmU+Cz9JuPnpCKgRLmEfJ7ODrryUpFuzXZzfsIDEk9ZXM
-         oKjDAV5CnztPZl/JKZUmdkQHZm3nZ/AyWlad42KgBpYg2DXDO4jPCj6ul6Jk+3CU+0S7
-         k2SA==
-X-Gm-Message-State: AOAM531tnT91AmDoTTjt2zuS54IjZJeTw0gi44OdgfQ8V7olC2Kvw77l
-        neWB3WQ0R6ZpwdY6/8HOJUulebwcJByMglE6vTIvqA==
-X-Google-Smtp-Source: ABdhPJyU8I0/Bty6HNJsK/KEz5WXvQdFWli3DpOJ4ABCfmIEG0q1glpzaUwpyoMb58JU9fgMbUZKfe62oxVqiGaDuto=
-X-Received: by 2002:a0c:d444:: with SMTP id r4mr15090129qvh.67.1592010194225;
- Fri, 12 Jun 2020 18:03:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200608182748.6998-1-sdf@google.com> <20200613003356.sqp6zn3lnh4qeqyl@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200613003356.sqp6zn3lnh4qeqyl@ast-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 12 Jun 2020 18:03:03 -0700
-Message-ID: <CAKH8qBuJpks_ny-8MDzzZ5axobn=35P3krVbyz2mtBBtR8Uv+A@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/2] bpf: don't return EINVAL from {get,set}sockopt
- when optlen > PAGE_SIZE
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nvZ8ZPQQ2Ao+T8CSV7zjmFR3kWqVRNjhytQMJrXZzTU=;
+        b=eFqSRFdTnJJjIhYKxRsoWUB5DmQWvLZ2iO66bcCYjL/W/8nx35kB/zRIZijNi0Xcev
+         IBIIST9MN6eCshsFzwiEcmlwLYdUM54Guh1596pTJbIyZs/a62OB/LlPqAdUJ5K5uSgS
+         fscHdHPOquaX8C38925bwBT+nyZcdI/2urB6DMurDk7sm3/tkuiFtDjEjO2oGZnWUVJu
+         vbODVIoN5GkkBbGRAPQ3gxWlo5x1AX4Fe+sBJHrPhlDLnq19ee9bjZfvHDo6bqipXt6a
+         aM2ficEucoZthWa+IEi6UP4Wx9l5Ok4LOeG22kQXeq17mCVQwtxwmKq7OIb0p9PzwhFK
+         9mBQ==
+X-Gm-Message-State: AOAM530CUPCy+Vawl75jU4140uBJzpAir000plL9ic5yl9XTp4igZXpu
+        YqR4HuTYipXz2wvxSRhigaI=
+X-Google-Smtp-Source: ABdhPJxsjIEetDiwLo8Z4+WtTFZ25AtbM+HqNjzgwDwf5VGQCJiI3J4aj+WFLURqWKaVgJrXFT51sw==
+X-Received: by 2002:a63:1b20:: with SMTP id b32mr13383883pgb.39.1592019504930;
+        Fri, 12 Jun 2020 20:38:24 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:9709])
+        by smtp.gmail.com with ESMTPSA id a16sm6466343pgk.88.2020.06.12.20.38.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 20:38:24 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 20:38:21 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Laight <David.Laight@aculab.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200613033821.l62q2ed5ligheyhu@ast-mbp>
+References: <20200606201956.rvfanoqkevjcptfl@ast-mbp>
+ <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
+ <20200607014935.vhd3scr4qmawq7no@ast-mbp>
+ <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
+ <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
+ <87r1uo2ejt.fsf@x220.int.ebiederm.org>
+ <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
+ <87d066vd4y.fsf@x220.int.ebiederm.org>
+ <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+ <62859212-df69-b913-c1e0-cd2e358d1adf@i-love.sakura.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62859212-df69-b913-c1e0-cd2e358d1adf@i-love.sakura.ne.jp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 5:34 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jun 08, 2020 at 11:27:47AM -0700, Stanislav Fomichev wrote:
-> > Attaching to these hooks can break iptables because its optval is
-> > usually quite big, or at least bigger than the current PAGE_SIZE limit.
-> > David also mentioned some SCTP options can be big (around 256k).
-> >
-> > There are two possible ways to fix it:
-> > 1. Increase the limit to match iptables max optval. There is, however,
-> >    no clear upper limit. Technically, iptables can accept up to
-> >    512M of data (not sure how practical it is though).
-> >
-> > 2. Bypass the value (don't expose to BPF) if it's too big and trigger
-> >    BPF only with level/optname so BPF can still decide whether
-> >    to allow/deny big sockopts.
-> >
-> > The initial attempt was implemented using strategy #1. Due to
-> > listed shortcomings, let's switch to strategy #2. When there is
-> > legitimate a real use-case for iptables/SCTP, we can consider increasing
-> > the PAGE_SIZE limit.
-> >
-> > v3:
-> > * don't increase the limit, bypass the argument
-> >
-> > v2:
-> > * proper comments formatting (Jakub Kicinski)
-> >
-> > Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-> > Cc: David Laight <David.Laight@ACULAB.COM>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  kernel/bpf/cgroup.c | 18 ++++++++++++++----
-> >  1 file changed, 14 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index fdf7836750a3..758082853086 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -1276,9 +1276,18 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
-> >
-> >  static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
-> >  {
-> > -     if (unlikely(max_optlen > PAGE_SIZE) || max_optlen < 0)
-> > +     if (unlikely(max_optlen < 0))
-> >               return -EINVAL;
-> >
-> > +     if (unlikely(max_optlen > PAGE_SIZE)) {
-> > +             /* We don't expose optvals that are greater than PAGE_SIZE
-> > +              * to the BPF program.
-> > +              */
-> > +             ctx->optval = NULL;
-> > +             ctx->optval_end = NULL;
-> > +             return 0;
-> > +     }
->
-> It's probably ok, but makes me uneasy about verifier consequences.
-> ctx->optval is PTR_TO_PACKET and it's a valid pointer from verifier pov.
-> Do we have cases already where PTR_TO_PACKET == PTR_TO_PACKET_END ?
-> I don't think we have such tests. I guess bpf prog won't be able to read
-> anything and nothing will crash, but having PTR_TO_PACKET that is
-> actually NULL would be an odd special case to keep in mind for everyone
-> who will work on the verifier from now on.
->
-> Also consider bpf prog that simply reads something small like 4 bytes.
-> IP_FREEBIND sockopt (like your selftest in the patch 2) will have
-> those 4 bytes, so it's natural for the prog to assume that it can read it.
-> It will have
-> p = ctx->optval;
-> if (p + 4 > ctx->optval_end)
->  /* goto out and don't bother logging, since that never happens */
-> *(u32*)p;
->
-> but 'clever' user space would pass long optlen and prog suddenly
-> 'not seeing' the sockopt. It didn't crash, but debugging would be
-> surprising.
->
-> I feel it's better to copy the first 4k and let the program see it.
-Agreed with the IP_FREEBIND example wrt observability, however it's
-not clear what to do with the cropped buffer if the bpf program
-modifies it.
+On Fri, Jun 12, 2020 at 09:57:40AM +0900, Tetsuo Handa wrote:
+> 
+> , the userspace memory can be easily interfered from userspace. The kernel module
+> running in kernel space is protected (unless methods like /dev/{mem,kmem} are used)
+> but the kernel module running in user space is not protected.
 
-Consider that huge iptables setsockopts where the usespace passes
-PAGE_SIZE*10 optlen with real data and bpf prog sees only part of it.
-Now, if the bpf program modifies the buffer (say, flips some byte), we
-are back to square one. We either have to silently discard that buffer
-or reallocate/merge. My reasoning with data == NULL, is that at least
-there is a clear signal that the program can't access the data (and
-can look at optlen to see if the original buffer is indeed non-zero
-and maybe deny such requests?).
-At this point I'm really starting to think that maybe we should just
-vmalloc everything that is >PAGE_SIZE and add a sysclt to limit an
-upper bound :-/
-I'll try to think about this a bit more over the weekend.
+huh? One user process 'can easily interfere' with memory of other process?
+
+> 
+> You said
+> 
+>   What you're saying is tomoyo doesn't trust kernel modules that are built-in
+>   as part of vmlinux and doesn't trust vmlinux build.
+> 
+> but the word 'trust' has multiple aspects. One of aspects is "can the program
+> contain malicious code?" which would be mitigated by cryptographic signing
+
+usermode_blob is either part of kernel module or part of vmlinux.
+If it's part of vmlinux it's inherently trusted.
+If it's part of ko it's signed along with the rest of ko.
+
+> We might need to invent built-in "protected userspace" because existing
+> "unprotected userspace" is not trustworthy enough to run kernel modules.
+> That's not just inventing fork_usermode_blob().
+
+sorry, but this makes no sense at all to me.
+
+> can be interfered) is so painful. I won't be able to trust kernel modules running
+> in userspace memory.
+
+The part that I suspect is still missing is what triggers fork_usermode_blob().
+It's always kernel code == trusted code.
+
+Currently we have the following:
+
+vmlinux {
+  core code of kernel
+  built-in mod_A {
+    kernel code
+  }
+  built-in mod_B {
+    kernel code
+  }
+}
+loadable mod_C {
+  kernel code
+}
+
+With fork_usermode_blob() kernel modules can delegate parts of their
+functionality to run in user space:
+
+vmlinux {
+  core code of kernel
+  built-in mod_A {
+    kernel code
+    code to run in user space
+  }
+  built-in mod_B {
+    kernel code
+    code to run in user space
+  }
+}
+loadable mod_C {
+  kernel code
+  code to run in user space
+}
+
+The interface between kernel part of .ko and user part of .ko is
+specific to that particular kernel module. It's not a typical user space.
+Take bpfilter, for example. It has its own format of structures
+that are being passed between kernel side of bpfilter and user side
+of bpfilter. It's bpfilter's internal interface that doesn't
+create user api. bpfilter in kernel 5.x could be passing different
+structs vs bpfilter in kernel 6.x.
+It also cannot be started via init=, but it has to be ready
+if pid 1 needs it.
+Say, bpfilter was compiled as loadable kernel module.
+In such case bpfilter.ko will not be loaded into the kernel
+until the first iptables sockopt. It may never be loaded.
+But when loaded the bpfilter.ko will start its user space side
+via fork_usermode_blob() that is specific to that version of .ko.
+Other kernel modules like bpf_lsm.ko will decide what's appropriate
+for them in terms of when user side should start and exit.
+Likely bpf_lsm.ko would want to be built-in.
+In all cases kernel module cannot rely on traditional usermode_helper,
+because usermode_helper is true uapi. The admin can boot kernel 5.x
+and it must work with usermode_helpers installed in rootfs. The admin
+will reboot to kernel 6.x and it should still work without changing rootfs.
+Whereas usermode_blobs are ko and kernel specific.
