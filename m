@@ -2,90 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D561F8440
-	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 18:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9461F8476
+	for <lists+bpf@lfdr.de>; Sat, 13 Jun 2020 19:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgFMQOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Jun 2020 12:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
+        id S1726335AbgFMRwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Jun 2020 13:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgFMQOQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Jun 2020 12:14:16 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38D4C03E96F;
-        Sat, 13 Jun 2020 09:14:15 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n23so14393906ljh.7;
-        Sat, 13 Jun 2020 09:14:15 -0700 (PDT)
+        with ESMTP id S1726277AbgFMRwV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Jun 2020 13:52:21 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BF6C03E96F;
+        Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id x189so4556771iof.9;
+        Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3Z22YICQz99p/3fJOvv++fyY9F0HKpG3y5w4PdDzU70=;
-        b=A1P9spR+f6bHj2n3TGvTWpFq9f4pLAWeJGvVcGB+vUsLZ1v6T2k5rcVSZVvWoP85vD
-         Lxk6eSMAclQNHOo30Xvdm8BI1NSLIBi1svdH6pZhjnKu4deA8hm6f7xKyE062cnSIRMi
-         z2F2b8+iI62pLgTXXd7WtwZDhtTocRO4MCGzEaI6DpMtt/QltemDBGbZycBSLBcIg0Wg
-         N6K01/GjeoOEqlafAbCBKLdW20SecoB26XYYKzOMztTL4ynoZQNOSdzVXxEzslFNu18B
-         o8McVjf2bGN12SV/T0QkX2r/tRZ5N+Vd4m9G6n1zD4RJ/cuLIh6Qg12SRDCCPq3aweO3
-         kvOA==
+        bh=zohJCjdH5WGCVYNdwZ7CTrdR3aOqxAG5fyOBK5BztPc=;
+        b=EUObILvwjkSPfOGbLkzWJI+bN4YkEE1QMRNu6obBM54ATHFDLMaR8jcldK29nUeBLh
+         4jdNSXAntcPwcBPMW19IVFfCQ3b6eT4uMd1knpz+5Ym01z2ht+dS9XmMBhriBt1bYkrR
+         8F14Hp8FNOGHuKK5kNoflJa0hQWBtXrgbTWKKXH8T/jvf3Z2y78fHcHAtSXevXhpOR3c
+         rbqd1cY0S8jO+i4iDRSWSaUlH3vJRTdlPWA3FDrc6/oKEnJdzCBc8QcBrbFuNgbIxlRW
+         AW8PKX2mdWIEVMKvBQv2Fn7hp6tSkaO+KfMclXgQfPHTCYQGmAyZ1IGzqKAJgAQEI5eV
+         gM9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3Z22YICQz99p/3fJOvv++fyY9F0HKpG3y5w4PdDzU70=;
-        b=ig5pzXN6jYcX2a+6H1DHUbGnAsBo0Bxh2nzCyUXiyuPJtp3klrb7Yczn0pGRyl14vI
-         xbGYQEkn+2hwZxti0MVN0125Y0K+pxV2OZ0ODu5su0kgDcMWM5OgWrs8ZyOadSesxQ5l
-         IYPmWTelf7MK6c3gMc4kUC0ZfRqDp0To1K51d/FHGQvxVe/rd+a3dvrYw2G1KIRvhQPZ
-         pbUKDpSHnUv2fZbHuLeDBOyyjbQO+0G5GaF+HC8BBHzOslrlEg8N76TkT+UOIg2ijNg/
-         AbjfAVNFcRgqkbgY9yo6SqXf3sB4S2TyF2bo5X3fFqT+g8n7+rNNEwYvz+v3Ycs/5H9V
-         3KdQ==
-X-Gm-Message-State: AOAM531HNgc7amSdQ/kLN1GxrZ62o8JDaiJZjlDj7XHP0xZ9C1bZrm3G
-        9gWldPB63tGTX0EkXd32VLT8A6rmwfr+eTfRGjc=
-X-Google-Smtp-Source: ABdhPJzOKo/GorobPu735mwueaLomXxYZbLz9eL+BquGghJcyzOhJo2f4GfhEul/wctM5P5KLsVXWiuXCE+fuAgQOBQ=
-X-Received: by 2002:a2e:b1d4:: with SMTP id e20mr8884027lja.290.1592064854002;
- Sat, 13 Jun 2020 09:14:14 -0700 (PDT)
+        bh=zohJCjdH5WGCVYNdwZ7CTrdR3aOqxAG5fyOBK5BztPc=;
+        b=KF35/U6aUqUoNswvXKQO0aqKnirASX28D6HBITnDpAmGL63A3EuKz3qOXA6t4Qi4cI
+         IPOFmfrlAdOCVaY1tOfthky1hX0EYcLEm8Zi/8wowugJR+7eqyPRLI92Vf4HNn28POAL
+         Knfk5YKMcBAHKsa0Yio7cK+nM7JlEXJFy1baGo8NGk+c41KotDu7uPDivQfoIsafiQjN
+         PO7c8KOY6IbzlJK4iDC3xBjJFdYzORpR9mcm92WaPpedj5ySRS2MUNjg0ohFHw4V63qx
+         m9OtA9Wuq4NrarQVMsfO7Vy0bmBMOIRVZ9JzeSBG/LUpG17inzAA45YLN+60AEug7qGZ
+         Xh7Q==
+X-Gm-Message-State: AOAM532fGg46vEv7jzSOOGtoAJ0Wguh7zh+wG3YOhRN1QdsTQF2QZjT0
+        DIUqZwjeaoH8Z5Ji8Y08Iv5xHB+Fqb+3inBCxfM=
+X-Google-Smtp-Source: ABdhPJwjY/vl6qjusNuTDwyuBK/oHqui9HUITvTM3CJWb9devaQE+o7GXcDRCoU1S6cljuvkxQ/n7AArm90xf+58W1A=
+X-Received: by 2002:a05:6638:216:: with SMTP id e22mr13883777jaq.16.1592070740031;
+ Sat, 13 Jun 2020 10:52:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <202006051903.C44988B@keescook> <875zc4c86z.fsf_-_@x220.int.ebiederm.org>
- <20200606201956.rvfanoqkevjcptfl@ast-mbp> <CAHk-=wi=rpNZMeubhq2un3rCMAiOL8A+FZpdPnwFLEY09XGgAQ@mail.gmail.com>
- <20200607014935.vhd3scr4qmawq7no@ast-mbp> <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
- <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
- <87r1uo2ejt.fsf@x220.int.ebiederm.org> <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
- <87d066vd4y.fsf@x220.int.ebiederm.org> <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
- <87bllngirv.fsf@x220.int.ebiederm.org> <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 13 Jun 2020 09:14:02 -0700
-Message-ID: <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+References: <CAMdYzYpKEOWCjb-kZj=HAkzQ0_QNs4N_6pXz1qPb1YQ2Xh5Jsg@mail.gmail.com>
+In-Reply-To: <CAMdYzYpKEOWCjb-kZj=HAkzQ0_QNs4N_6pXz1qPb1YQ2Xh5Jsg@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 13 Jun 2020 10:52:08 -0700
+Message-ID: <CAM_iQpUNNs4fzLAT8xmhbg+dhM0gdS+HVOtFD+fMJegeSHgUFA@mail.gmail.com>
+Subject: Re: [Crash] unhandled kernel memory read from unreadable memory
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000ead67105a7fadaa9"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 8:33 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Jun 13, 2020 at 7:13 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > I am in the middle of cleaning up exec.  Send the patches that address
-> > the issues and make this mess not a maintenance issue, and I will be
-> > happy to leave fork_usermode_blob alone.  Otherwise I plan to just
-> > remove the code for now as it is all dead at the moment.
->
-> May be stop being a jerk first ?
-> It's a Nack to remove the code.
+--000000000000ead67105a7fadaa9
+Content-Type: text/plain; charset="UTF-8"
 
-I'm happy to work on changes, but your removal threats must stop
-before we can continue discussion. ok?
+Hello,
+
+On Sat, Jun 13, 2020 at 5:41 AM Peter Geis <pgwipeout@gmail.com> wrote:
+>
+> Good Morning,
+>
+> Last night I started experiencing crashes on my home server.
+> I updated to 5.6.17 from 5.6.15 a few days ago but I'm not sure if
+> that is related.
+> The crash occurred four times between last night and this morning.
+
+Yeah, this is known. Can you test the attached patch?
+
+Thanks.
+
+--000000000000ead67105a7fadaa9
+Content-Type: text/x-patch; charset="US-ASCII"; name="cgroup_sk_alloc.diff"
+Content-Disposition: attachment; filename="cgroup_sk_alloc.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kbdxrsd10>
+X-Attachment-Id: f_kbdxrsd10
+
+ZGlmZiAtLWdpdCBhL2tlcm5lbC9jZ3JvdXAvY2dyb3VwLmMgYi9rZXJuZWwvY2dyb3VwL2Nncm91
+cC5jCmluZGV4IDZjOWM2YWM4MzkzNi4uYzAxMjQ1YTE5ZWEyIDEwMDY0NAotLS0gYS9rZXJuZWwv
+Y2dyb3VwL2Nncm91cC5jCisrKyBiL2tlcm5lbC9jZ3JvdXAvY2dyb3VwLmMKQEAgLTY0MzgsOSAr
+NjQzOCw2IEBAIHZvaWQgY2dyb3VwX3NrX2FsbG9jX2Rpc2FibGUodm9pZCkKIAogdm9pZCBjZ3Jv
+dXBfc2tfYWxsb2Moc3RydWN0IHNvY2tfY2dyb3VwX2RhdGEgKnNrY2QpCiB7Ci0JaWYgKGNncm91
+cF9za19hbGxvY19kaXNhYmxlZCkKLQkJcmV0dXJuOwotCiAJLyogU29ja2V0IGNsb25lIHBhdGgg
+Ki8KIAlpZiAoc2tjZC0+dmFsKSB7CiAJCS8qCkBAIC02NDUzLDYgKzY0NTAsOSBAQCB2b2lkIGNn
+cm91cF9za19hbGxvYyhzdHJ1Y3Qgc29ja19jZ3JvdXBfZGF0YSAqc2tjZCkKIAkJcmV0dXJuOwog
+CX0KIAorCWlmIChjZ3JvdXBfc2tfYWxsb2NfZGlzYWJsZWQpCisJCXJldHVybjsKKwogCS8qIERv
+bid0IGFzc29jaWF0ZSB0aGUgc29jayB3aXRoIHVucmVsYXRlZCBpbnRlcnJ1cHRlZCB0YXNrJ3Mg
+Y2dyb3VwLiAqLwogCWlmIChpbl9pbnRlcnJ1cHQoKSkKIAkJcmV0dXJuOwo=
+--000000000000ead67105a7fadaa9--
