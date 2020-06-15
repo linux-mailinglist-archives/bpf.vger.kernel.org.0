@@ -2,151 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118D81F9369
-	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 11:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DAD1F93C5
+	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 11:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgFOJaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 05:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgFOJaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:30:30 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D36C061A0E
-        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 02:30:29 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x14so16347587wrp.2
-        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 02:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9PyDy+lPgxoS47WMp8ZmjVUGLv0r3brP/KQkZKhcDf8=;
-        b=QxHl5WABvi0AL+F2pxxMoAFr08oZ+Hcui6cwFDypx35YFSL0Es2Q8c/7E2qjmqQeDY
-         ZHzoFkQ0o1R1kpnUZ35sDvdJqo18UsHTTttKuVeBZN8M6eSBd+YlE7/qFYWOAN4hz7RM
-         r8Xzi74Zc2P/s0mp2HXNJpozUXNVKKKdoeZkpcdeSjM0gmN79EAo6NpXA83+s3GMRtqK
-         80Z9tXnU/UBJQZDB+HBwfWqsHpMymru2ikj12IXF0JEGCSd3HH9zAD0NzHq5ZiBrqwW6
-         LgIhInt3CygXJlZ5d+Iez1d9sI1MbJrBL3ehL7kmlm4fw6+ET4pZ+3uyc6rc4jeMhsoc
-         ULzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9PyDy+lPgxoS47WMp8ZmjVUGLv0r3brP/KQkZKhcDf8=;
-        b=Q4My/tTNxbo7CPzTfKeluCzV5vsQSOXcDysXVuw3Yh2ko8KqfKzjhWPDI6jWrpHU24
-         n012PAzGjAGUSot/u9gp49VmKXEeA2Y31grU6CaUtl53zSWqXwlMGZm8FRdij5luKJe8
-         YpJivf9IX2+R2juOtey35ozHZwfIqb4y/TnUWyu7hDrHH0mABHiepOnpYIP4oRKeNDy8
-         dAR3xFjZ9HquIwyCtQo0ql4UWVdFQz6aAZR/cXWN7VZt9j+HxtvKaNxgYB4DV8Y15sHR
-         rXsz0ZChuEydpl1kZeqxuE0OYCJQ1U1i2u5qocQVmUoQ2N0aiKKNSvR4MeHLAmT6Ue8k
-         Mk5g==
-X-Gm-Message-State: AOAM5337aVZFr9QtkN48OCpPvXmZo/l4rcLGWw1RxKFLlmNe8W06IIH1
-        FjuxJCgTU45YT2NxsSrmIm9Z7Q==
-X-Google-Smtp-Source: ABdhPJyRG3KlUcY+CCckIILFBLaJqYbI76Ry9vtXtMwXHBOkMiCqmBdTiK2f7E9UNTUKDkVbOkD5yQ==
-X-Received: by 2002:a5d:4d4d:: with SMTP id a13mr28498697wru.252.1592213428587;
-        Mon, 15 Jun 2020 02:30:28 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.184.27])
-        by smtp.gmail.com with ESMTPSA id x8sm24129663wrs.43.2020.06.15.02.30.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2020 02:30:28 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 8/8] tools/bpftool: show PIDs with FDs open
- against BPF map/prog/link/btf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        Song Liu <songliubraving@fb.com>
-References: <20200612223150.1177182-1-andriin@fb.com>
- <20200612223150.1177182-9-andriin@fb.com>
- <20200613034507.wjhd4z6dsda3pz7c@ast-mbp>
- <CAEf4BzaHVRxkiDbTGashiuakXFBRYvDsQmJ0O08xFijKXiAwSg@mail.gmail.com>
- <20200613221419.GB7488@kernel.org> <87pna01yzh.fsf@toke.dk>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <d2220bfb-db28-251a-66ca-6f3a6377c94f@isovalent.com>
-Date:   Mon, 15 Jun 2020 10:30:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728781AbgFOJnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jun 2020 05:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728626AbgFOJno (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:43:44 -0400
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 581C3206D7;
+        Mon, 15 Jun 2020 09:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592214224;
+        bh=h9iDtTC155H8y8ijbYh/I4bXZWq8mQ2WmNzz0ZDQZ/8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XST84rnMgFvKZeDuWzqxgqrBdT2hLemvqhFHD63KT7/4jDDa7+2xFZUOPOQwFxlAp
+         vvHTPt0XPsIBsD/wsZX5Ll+JPd2YcvTKvkeOHY6I2cuACJJ28Iw66CdHBdA3fqAPxW
+         EA/oYiIq9D80OxshpJcqBihTylNwbqGPepX2zE3s=
+Received: by mail-oi1-f182.google.com with SMTP id a21so15302319oic.8;
+        Mon, 15 Jun 2020 02:43:44 -0700 (PDT)
+X-Gm-Message-State: AOAM531Sh9/hKo2x8nHY6b9Fij+eW48/UwLaTNRw6r7dcW2Fe6kKOAhR
+        AM0CtWAW+JiqAcqG/AswsGp/5hOnkfZWwVntpl8=
+X-Google-Smtp-Source: ABdhPJwVOJVLzMhqyBugezrvFZeW6chSrziL0zpZxXsmNV5WBIk26t41KZmkOaXcDOZqsToD7/Dh55WNfXoel+o6EDM=
+X-Received: by 2002:aca:d0d:: with SMTP id 13mr1478325oin.174.1592214223750;
+ Mon, 15 Jun 2020 02:43:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87pna01yzh.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20200605133232.GA616374@rani.riverdale.lan> <20200605150638.1011637-1-nivedita@alum.mit.edu>
+ <20200605160946.GA46739@rdna-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200605160946.GA46739@rdna-mbp.dhcp.thefacebook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 15 Jun 2020 11:43:32 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH+5MX5-Bn6tLBvFTKW4oh6L5D4DTxvEqcmrxQK8Yi8HA@mail.gmail.com>
+Message-ID: <CAMj1kXH+5MX5-Bn6tLBvFTKW4oh6L5D4DTxvEqcmrxQK8Yi8HA@mail.gmail.com>
+Subject: Re: [PATCH] efi/x86: Fix build with gcc 4
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-efi <linux-efi@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-06-15 11:04 UTC+0200 ~ Toke Høiland-Jørgensen <toke@redhat.com>
-> Arnaldo Carvalho de Melo <acme@kernel.org> writes:
-> 
->> Em Fri, Jun 12, 2020 at 10:57:59PM -0700, Andrii Nakryiko escreveu:
->>> On Fri, Jun 12, 2020 at 8:45 PM Alexei Starovoitov
->>> <alexei.starovoitov@gmail.com> wrote:
->>>>
->>>> On Fri, Jun 12, 2020 at 03:31:50PM -0700, Andrii Nakryiko wrote:
->>>>> Add bpf_iter-based way to find all the processes that hold open FDs against
->>>>> BPF object (map, prog, link, btf). Add new flag (-o, for "ownership", given
->>>>> -p is already taken) to trigger collection and output of these PIDs.
->>>>>
->>>>> Sample output for each of 4 BPF objects:
->>>>>
->>>>> $ sudo ./bpftool -o prog show
->>>>> 1992: cgroup_skb  name egress_alt  tag 9ad187367cf2b9e8  gpl
->>>>>         loaded_at 2020-06-12T14:18:10-0700  uid 0
->>>>>         xlated 48B  jited 59B  memlock 4096B  map_ids 2074
->>>>>         btf_id 460
->>>>>         pids: 913709,913732,913733,913734
->>>>> 2062: cgroup_device  tag 8c42dee26e8cd4c2  gpl
->>>>>         loaded_at 2020-06-12T14:37:52-0700  uid 0
->>>>>         xlated 648B  jited 409B  memlock 4096B
->>>>>         pids: 1
->>>>>
->>>>> $ sudo ./bpftool -o map show
->>>>> 2074: array  name test_cgr.bss  flags 0x400
->>>>>         key 4B  value 8B  max_entries 1  memlock 8192B
->>>>>         btf_id 460
->>>>>         pids: 913709,913732,913733,913734
->>>>>
->>>>> $ sudo ./bpftool -o link show
->>>>> 82: cgroup  prog 1992
->>>>>         cgroup_id 0  attach_type egress
->>>>>         pids: 913709,913732,913733,913734
->>>>> 86: cgroup  prog 1992
->>>>>         cgroup_id 0  attach_type egress
->>>>>         pids: 913709,913732,913733,913734
->>>>
->>>> This is awesome.
->>
->> Indeed.
->>  
->>> Thanks.
->>>
->>>>
->>>> Why extra flag though? I think it's so useful that everyone would want to see
->>
->> Agreed.
->>  
->>> No good reason apart from "being safe by default". If turned on by
->>> default, bpftool would need to probe for bpf_iter support first. I can
->>> add probing and do this by default.
->>
->> I think this is the way to go.
-> 
-> +1
-> 
-> And also +1 on the awesomeness of this feature! :)
-> 
-> -Toke
-> 
+On Fri, 5 Jun 2020 at 18:09, Andrey Ignatov <rdna@fb.com> wrote:
+>
+> Arvind Sankar <nivedita@alum.mit.edu> [Fri, 2020-06-05 08:06 -0700]:
+> > Commit
+> >   bbf8e8b0fe04 ("efi/libstub: Optimize for size instead of speed")
+> >
+> > changed the optimization level for the EFI stub to -Os from -O2.
+> >
+> > Andrey Ignatov reports that this breaks the build with gcc 4.8.5.
+> >
+> > Testing on godbolt.org, the combination of -Os,
+> > -fno-asynchronous-unwind-tables, and ms_abi functions doesn't work,
+> > failing with the error:
+> >   sorry, unimplemented: ms_abi attribute requires
+> >   -maccumulate-outgoing-args or subtarget optimization implying it
+> >
+> > This does appear to work with gcc 4.9 onwards.
+> >
+> > Add -maccumulate-outgoing-args explicitly to unbreak the build with
+> > pre-4.9 versions of gcc.
+> >
+> > Reported-by: Andrey Ignatov <rdna@fb.com>
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+>
+> Thanks. I confirmed it fixes the problem on my setup with gcc 4.8.5 and
+> also works as before with clang 9.0.20190721.
+>
 
-Thanks a lot Andrii, the feature looks great indeed.
+Queued in efi/urgent, thanks.
 
-Thank you for the clean-up and refactoring in bpftool and its Makefile
-as well, I am happy to confirm that test_bpftool_build.sh still passes
-on my setup with your changes.
-
-Quentin
+> > ---
+> >  drivers/firmware/efi/libstub/Makefile | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+> > index cce4a7436052..d67418de768c 100644
+> > --- a/drivers/firmware/efi/libstub/Makefile
+> > +++ b/drivers/firmware/efi/libstub/Makefile
+> > @@ -6,7 +6,8 @@
+> >  # enabled, even if doing so doesn't break the build.
+> >  #
+> >  cflags-$(CONFIG_X86_32)              := -march=i386
+> > -cflags-$(CONFIG_X86_64)              := -mcmodel=small
+> > +cflags-$(CONFIG_X86_64)              := -mcmodel=small \
+> > +                                $(call cc-option,-maccumulate-outgoing-args)
+> >  cflags-$(CONFIG_X86)         += -m$(BITS) -D__KERNEL__ \
+> >                                  -fPIC -fno-strict-aliasing -mno-red-zone \
+> >                                  -mno-mmx -mno-sse -fshort-wchar \
+> > --
+> > 2.26.2
+> >
+>
+> --
+> Andrey Ignatov
