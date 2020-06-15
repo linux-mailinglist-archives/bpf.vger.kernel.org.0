@@ -2,109 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DEF1F9FFB
-	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 21:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6191FA30F
+	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 23:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731249AbgFOTLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 15:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729354AbgFOTLe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 15:11:34 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C06C061A0E;
-        Mon, 15 Jun 2020 12:11:34 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c14so16801319qka.11;
-        Mon, 15 Jun 2020 12:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rdkpIsIw6sRIoGnuOlulGFCOXMxUltM2VCp1RbU21dg=;
-        b=iTbRo0q8FVkocB7ftDkONGmUYqNUIaF5aixAH33JB6cA3BpBLq8mUH2P05gbV+mD+5
-         +1hqspa9jCav+K4LYzZTDcu8yIvSew2jO3bOQFIQ0B/N7lGxaf0mp8uF0rwOa0mDFD9X
-         8sN1O6hdZQCY7O7uj4AfkTLge9tiBUVSjcB+ehx1RBYv7sZ1TMJECfOdWWR9kowJgcSY
-         9E3R+4ErJly+BRkXLb7VSJ/rLa/MA32yUajxPDrbtCqbemV4C+YTeflCke08QSdkWgTp
-         vOVcse2xxtrhTN3nuhiJrBG6ZnCiYj573kdAr9cpzGl7J9494r9BDrGOI5NWgMhSjz++
-         kUHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rdkpIsIw6sRIoGnuOlulGFCOXMxUltM2VCp1RbU21dg=;
-        b=Vo/IDYIo2RQPAIr2U87Lbqd7O3GB2mP2TLIqyiEw9OuGPIZ+cTKavd3NsLOeZ99HnT
-         ZTqzXGQEtQIZSB6P7S8hKUIfWXoE4DV2MWZ//pBeNPOgO85FM1cXsI0N0iVY6p8Rsx7z
-         dnDG/INZnl/9dJp1b/hLjbrGyBscRd1GCEKF5rzRj6HgdF/RNrqc3BZc3R1llAB2E2Cf
-         Z2A/pWG+4ORVglotO+SpST4/r9zIdEGLc7d4GCGqpOr9HzViiJGMMrn9XjxdbFIa0X/s
-         CSd+eMRZrmri1m6O5qH1e8yAlTwA6Z1H912kFb4fxDAZRf8MslsPM9DSAM/r1G7IzLma
-         RTzA==
-X-Gm-Message-State: AOAM531ahRLAaPvdstI5bEwlgRqp8HNlS5NBuE54tDSfydkJJUQw2hJX
-        N9s4d1wniX0Ke7skvcI7byVr+XowN68nhOHwMFA=
-X-Google-Smtp-Source: ABdhPJw22D438K5vly+hM9sl/edTx+Uc9e1F++PayshnqRM6JUYbgqIJfTcq8m9Iie5bdXGN5wk3uWagtlOBcmj2STc=
-X-Received: by 2002:a37:6508:: with SMTP id z8mr16940330qkb.39.1592248293220;
- Mon, 15 Jun 2020 12:11:33 -0700 (PDT)
+        id S1726306AbgFOVuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jun 2020 17:50:01 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3428 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725911AbgFOVuB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Jun 2020 17:50:01 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05FLfrUD022670
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 14:50:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=fm+NbO4L+q2VNFa4whOmcS49Lv0eIcbwx/82lo9KzMs=;
+ b=MFMyHCL03OU5G/fgw84/U64d3+4JeibNlt4oKI8ubh7ub0oyx49M9Zh6bxQWRzDCYh1S
+ xecQ3jROXLHGXGdBQR9oL5kV11YyUl14VYZPKoHybqiaH2VXgPXs7g5KtU7QVOvPcOpE
+ ISeIqgh3gD9C0bVGhqJxFBGJHevu+p14Cds= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31negceurb-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 14:50:00 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 15 Jun 2020 14:49:33 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 0D2B42EC36F3; Mon, 15 Jun 2020 14:49:28 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: fix definition of bpf_ringbuf_output() helper in UAPI comments
+Date:   Mon, 15 Jun 2020 14:49:26 -0700
+Message-ID: <20200615214926.3638836-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200612223150.1177182-1-andriin@fb.com> <20200612223150.1177182-4-andriin@fb.com>
- <CA+khW7jxdS1KRpk2syVGjDqbyn3wAd3Eh_LEMAEhkPUehuXMwg@mail.gmail.com>
-In-Reply-To: <CA+khW7jxdS1KRpk2syVGjDqbyn3wAd3Eh_LEMAEhkPUehuXMwg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Jun 2020 12:11:22 -0700
-Message-ID: <CAEf4BzbQBNnNV2rGOJHUs1Yh2Njqu5bEtB_DsgF9AOruGorKHg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/8] selftests/bpf: add __ksym extern selftest
-To:     Hao Luo <haoluo@google.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-15_11:2020-06-15,2020-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
+ malwarescore=0 spamscore=0 priorityscore=1501 suspectscore=8 clxscore=1015
+ bulkscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=737 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006150155
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 9:45 AM Hao Luo <haoluo@google.com> wrote:
->
-> Andrii, a couple of general comments on fixed_percpu_data.
->
-> I think it would be better to check the existence of fixed_percpu_data in=
- kallsyms first. If it's not there, just skip, or maybe warn but not fail.
+Fix definition of bpf_ringbuf_output() in UAPI header comments, which is =
+used
+to generate libbpf's bpf_helper_defs.h header. Return value is a number (=
+erro
+code), not a pointer.
 
-fixed_percpu_data is always there, but I missed the fact that it's
-x86-specific one. I'll switch to some bpf-specific symbol (e.g., like
-bpf_prog_fops or something along those lines).
+Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support=
+ for it")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
->
-> Further, if we really want to be sure that  fixed_percpu_data is the firs=
-t percpu var, we can read the value of __per_cpu_start, which marks the beg=
-inning address of the percpu section. Checking the address of fixed_percpu_=
-data against __per_cpu_start rather than 0 should be more robust, I think, =
-given that fixed_percpu_data exists.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 19684813faae..974a71342aea 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3168,7 +3168,7 @@ union bpf_attr {
+  *	Return
+  *		The id is returned or 0 in case the id could not be retrieved.
+  *
+- * void *bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 fla=
+gs)
++ * int bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 flags=
+)
+  * 	Description
+  * 		Copy *size* bytes from *data* into a ring buffer *ringbuf*.
+  * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 19684813faae..974a71342aea 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3168,7 +3168,7 @@ union bpf_attr {
+  *	Return
+  *		The id is returned or 0 in case the id could not be retrieved.
+  *
+- * void *bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 fla=
+gs)
++ * int bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 flags=
+)
+  * 	Description
+  * 		Copy *size* bytes from *data* into a ring buffer *ringbuf*.
+  * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
+--=20
+2.24.1
 
-There are assertions in Linux sources that fixed_percpu_data is 0, so
-I don't think that it necessary. But it's a moot point, as I'll use
-something less x86-specific.
-
->
-> Hao
->
-> On Fri, Jun 12, 2020 at 3:35 PM Andrii Nakryiko <andriin@fb.com> wrote:
->>
->> Validate libbpf is able to handle weak and strong kernel symbol externs =
-in BPF
->> code correctly.
->>
->> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->> ---
->>  .../testing/selftests/bpf/prog_tests/ksyms.c  | 71 +++++++++++++++++++
->>  .../testing/selftests/bpf/progs/test_ksyms.c  | 32 +++++++++
->>  2 files changed, 103 insertions(+)
->>  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms.c
->>  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms.c
->>
-
-[...]
