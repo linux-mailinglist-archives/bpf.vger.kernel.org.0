@@ -2,35 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D071F9175
-	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 10:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3891F9211
+	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 10:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgFOIak (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 04:30:40 -0400
-Received: from mout.web.de ([212.227.15.14]:43235 "EHLO mout.web.de"
+        id S1729031AbgFOIqC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jun 2020 04:46:02 -0400
+Received: from mout.web.de ([212.227.15.3]:37459 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728180AbgFOIak (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:30:40 -0400
+        id S1728496AbgFOIqB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jun 2020 04:46:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1592209820;
-        bh=gJSDf66UIv9lJIjZ6iwA+toPmjiCWe0MzdTiede4Dcw=;
+        s=dbaedf251592; t=1592210742;
+        bh=JGcaxb9uC8/GIXTkKSm8CjGX2H5RAr1V3fXLz/6gII8=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CCoxy4lx6KUxnprFGaV79M+IeDrpq/2+tStPTpYaEjSp2/1jwlsIRXq/81gXgwDaf
-         N1iCx3M0p4cSce3d8ziw5lgSGl1fST3A43tmwIUEV/GewhcjUKp6C2Nq3YuY/KLKlg
-         gsHVek6NFWQ52q4T9yxHVLePMGhWM6FhwUe8dTzo=
+        b=MAChBveDvgIxdveper6xK699rebLGSM1vP26RWeOgE4gkK1NH7guBldP+nx1bZ29T
+         CjrG7riRpFOFPQSMVMfpbvv3Ibrdc25/lviZ0nbC3Cq31ID2d97Eu0bxweewIbUTgZ
+         cJfurKYntfdYHuXyeLI2LVlCtoogC+jgODz/TW1s=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.107.236]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MLgTT-1jjvQd1Ev5-000phK; Mon, 15
- Jun 2020 10:30:20 +0200
-Subject: Re: [PATCH v3 0/2] Fixing memory leaks in perf events parser
-To:     Chen Wandun <chenwandun@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>, netdev@vger.kernel.org,
+Received: from [192.168.1.2] ([78.49.107.236]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MCXVX-1jb5xl0rx5-009hnV; Mon, 15
+ Jun 2020 10:45:42 +0200
+Subject: Re: [PATCH v3 1/2] perf tools: Fix potential memory leaks in perf
+ events parser
+To:     Cheng Jian <cj.chengjian@huawei.com>,
+        Chen Wandun <chenwandun@huawei.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>
 References: <20200615013614.8646-1-chenwandun@huawei.com>
+ <20200615013614.8646-2-chenwandun@huawei.com>
 From:   Markus Elfring <Markus.Elfring@web.de>
 Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
@@ -75,70 +77,51 @@ Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
  x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
  pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <1ee927e5-2bb6-a72c-8705-95bc6cacf719@web.de>
-Date:   Mon, 15 Jun 2020 10:30:18 +0200
+Message-ID: <507a2266-39cd-0887-1b6b-59764fddd153@web.de>
+Date:   Mon, 15 Jun 2020 10:45:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200615013614.8646-1-chenwandun@huawei.com>
+In-Reply-To: <20200615013614.8646-2-chenwandun@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yocFRMxAiW6vS6YQh4Ww8kFFOmXce7o6fqR3Itxi1Cly/DNGLND
- Z3CfA17YsMfwOsfB6pxPMwEZDGyedgnk3xwQUdobhinBS0z1HOTrgsAK5QRVwS7yJSNd6xz
- MGOmXeKu6ule/OEwxKeWxU+ElpvdyIY1QUNagQ3Jr+j39U+5DKTPS/jD6hyUE05tkHrDUna
- m6La2D6aANETmgjzzV0GA==
+X-Provags-ID: V03:K1:U53p0p61XPkAW6db9bX187NL4fIf0KOAD3ZHpaj+OoBBJhJ9svS
+ X1icW9Wa3mdjP6C6+redUYsiVI/LlgBwnuHHhlRkWiruKSdeFmhmYhgNeiN1qtod2vdM2sU
+ Yq2cywBaw/4MsZ7nVcjqtuCU0H3nSgUsAymNuxCTbUB9uXUZTvVzMJroJ/u8rpTR6ZcGyDm
+ nO625yzktKzWBxKlc9pFw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7K9w0tX4hls=:FtCh15c2IyQSe17BdT68B1
- Orcc7GVq9Q1CtqJUO94r1qBFzGI+PqSf0AhVqoFhxxmv3s8lZhRpyLasFds154Tox5/WRHvxr
- m38jB6AkUjp71L9SkDbq+dZINChjBuEiDCPmKzKuB2bhdeOHkgZL/zEBmBsGwPz2+hMpQ+sUG
- h6VDLqsx19OgKS4df3NECYRnkb8+HCFUW3J4YgP1XcuqftIej6Dp4Q9iKdLnEC26Rwyw7yRWa
- L/fJ05l3BHmpFNkPgsUjnaaMjrc47sQiRjF3xq3YbS9Lkpfgsts8SWX6JSWRKoejUf42vMXZk
- bAmKzj7g1mikkqXaBAy/fdUdDVN+8OVfVnuqZSWEmW2rmyKEzdKhm0IHdaZVtb18Wi4sk9vlj
- sLJPgxCj6nZQpuycwRLZM1G49NsQ4C9H/2CT8S3MxrEj3crHIOWg6gH/bOXYNpcUwGM2hlbum
- xUtni7T3wBkIK8oaW2r+jgy06z+s9Dzd9ouIFUsC/UGV1EdtaYK+hslFNSOiIdIkdKzWM6jP+
- PKL5muLo898TaDrYbRq1ScFhRAT6TgG0LBCJgdqs9GFqtOQAGZlwg8vi5CZvOYM6wxhwKBpOu
- YfddZnivK4m1mgVBgVewaoBhSCCAO9gGS/iSq/vDz8NdcIJcsVI5Bg7XQWjaCVPdEj1/JuD+s
- ymrxdDSjyD2SagjZWJ5xRXfRocv3HrQVsCUJYkwN12g/z4EvQglQMX/ygKVkewexvrSGvyOor
- YGY5gRRxC4cx5GUni5azyomufc/qeNiBargzyGV4yMKLYAQZmCrPp3sFKnHA1Z+QIsi6snM32
- iz/W7MBw/6yHs2+Bmw/NvnycyLVP2NDqwiNH9om6vy4ExnG8NPCH+p5aqKygN8rqp9RrdKfHu
- UqX1IxtSBO+IOkYGDCRzAIAUNHI/50kAU/v8bdmTHvk4uwTwS0nUA+VzGBkQPOMzDdcF+yFqS
- AvbXLKmX7OqVO9G+ZOCctE+SfHE5yHcF1t8eOkseoGvZdxnWtCFfrO9UAbUW85Q/9JR3YaiaV
- BOSlqZy5CNH6fx6Xm815ScIM81K3pdtcllU1inj5kpL4HyQsqn6kfS9Qe56KTivcL+pvOhWiL
- S1zkQvAfWxzNAeXVIUigp1r/xLRTcpw9FgekSfWf6Ei/npgf4KgvSBYVewfd37/vKrb+kMCxT
- E9FUYsi2WI+mjYdpqAd5RCun1LH6Wdaw+Rez3VCNTwhyR0uL9XxWtCABPvW49YR8JxzC08uH3
- Kf6DvQejCapQ4KY4A
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qm6Zvz9obEQ=:Zw5ZSSSrUoh5rWUE2HBh99
+ BAA+rTn+bJ36V2YAL1drp3EHw+O+uIBk1B5gd/b7Ym8AybV6LaNhMEGbCdCYWkJuO9FrWBgKW
+ v0j5rI8wzhtVD0j4vedjU7rNbeATWZl2NsRoDj77bFDlZOB7ZyXpClXPJ3bZ6yr6n8SbM0D3e
+ Z4XFFdOW+EpdyPSM/TDJyPWFV5NQvuZzEAZ8wqla1IC4d65dwhClHxPzm+wh4r79YTLflHxjF
+ +/eW8imI+/UuwtDAZywbsArM4eGXYxQUtR8NvkrRPRPeY/SiCn22TaOCriyM2uVcehR8wmGB6
+ giLDkDqiBVJII06AJEoEh2Viq3v9g7khJ9KEI5ft6OMGE34uYwGXONci+UMbxYLd2IOrJQVlu
+ KZ6bk2OF6MEx+oOHHUaybvouTH6ETJmv7T9GAa3Duz0LqPENEOn9I+7O2FriToMfwozkW+GtY
+ RdElwhzZRE0DvhDH7DbUeBlt1eyS6BKEhrIgz+l+8OCGlfFfXItgYTJeGTDOJ2eC3ULrPpuof
+ OSgCM3GozpEGzRgYjiTIiePkUvndaJ3HKCkbpBN2tT+qQZkVxOWycrDsgN/WVtDvqtqtk46mX
+ nKIx2xV+qT1AqSfKf9rpVDDhPHPxkqN4034L0/oQtE8fkIYsF8JphPGMDgRB+xrIt9YGyQEz+
+ HuVPRjcX/bX9htCxFdKQ9W4ZlrT/JJokA3UMzdINmTffLr2dLKXn2xB39kcJbnAb7AxgV+UqS
+ epQJzTiUN4/+q5b2o/YjPENrFquLNZZjUnLJ/nITXicL7UbdOpT4JDM+9AtfCT05+EeaQldHB
+ ckHdiddNSZ4KDpmVsDScUlyxqUS4odIC6gy2exh96a1af6sc0jc1pa8fcHgcp9rX2kImDCc5R
+ uTDbBHSKX0XGbolOGxUEJ1N+2gTykw6aG2BEem7rxl8oGyfNdJjnJJZakXhSfCyv42p/0R6WK
+ d3tQP5VR3k0UERCUO4ohX7JHXFYQuNxgWoUpO/wGZVlG/18fCBYdHV2TGJdWo0WiapvlS7H4W
+ Q/wI0oRg1t5qeMr5/4WxkgrMqR2zbrOw6Yedexaa3rlCBeM7Mw3EyLD9/iCVgaZdxXVOJ5JnY
+ QN/bCwzXJCZDEDIRHWOGZ7+gqgfIpFPZ3CRuOEUaV7X+xisQ0vJXnDywWQaquG/YkCahm5JQ1
+ zhtEpX5C3RVuC64OFSk369eCTdC8ARAxxFotWk8qkIog98Mvg8Eg1UgHwLPsR4F2uIL4Zbh07
+ m2qJRvXWqTuHcXeIh
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> fix some memleaks in parse_events_term__sym_hw and parse_events_term__cl=
-one.
+> Fix memory leak of in function parse_events_term__sym_hw()
+> and parse_events_term__clone() when string duplication failed.
 
-Can it be more appropriate to refer to the term =E2=80=9Cmemory leak=E2=80=
-=9D in consistent ways?
-
-
-> v1 =3D=3D> v2
-> 1. split into two patches
-
-Corresponding development consequences can become more interesting.
-
-
-> v2 =3D=3D> v3
-> add more commit log.
->
-> Chen Wandun (1):
->   perf tools: fix potential memleak in perf events parser
->
-> Cheng Jian (1):
->   perf tools: fix potential memleak in perf events parser
->
->  tools/perf/util/parse-events.c | 51 ++++++++++++++++++++++++++++------
-
-Are there any chances to make the change distinction a bit easier
-by adjusting such commit subjects?
+Can a wording like =E2=80=9CFix memory leaks in =E2=80=A6=E2=80=9D be more=
+ appropriate for
+the final commit message?
+Would you find any other description variant more pleasing?
 
 Regards,
 Markus
