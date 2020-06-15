@@ -2,116 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F7B1F9A98
-	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 16:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301DB1F9DB3
+	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 18:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730686AbgFOOn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 10:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S1731104AbgFOQlw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jun 2020 12:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730405AbgFOOn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 10:43:58 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F115C05BD43
-        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 07:43:57 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id y45so3396398ooi.8
-        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 07:43:57 -0700 (PDT)
+        with ESMTP id S1730985AbgFOQlv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:41:51 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0996C05BD43
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 09:41:50 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id fc4so8055089qvb.1
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 09:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=r8im4dJtuxkkAaqZZS6bmcni2naI0KL21K/0KZhRnTg=;
-        b=Kvpm8lif52moFLeMmaNKGAHoyXK5aBJWB+oAUhzGn06yJXqIvn/PnfObLHY9dxrmon
-         3LBcru7CGHTqvQ2q9h7SG/2RHOsw3K4VKzqDapSU6QXnYY72ZBKse0+FifGxXpmZGSa2
-         WqECeuk02tQWmywJxEP3fjo9i0CJIQPSkhfB4=
+        bh=2GiKBA0Yhba1TI03GaAPY7BkOWgJVPjHL3sAxzmKYpk=;
+        b=Rwy0WzcH61XLCenE33ke+EInFA6layi0G4vtRVPwec4HQx1IZl1dDsWvrv2iNirxZo
+         u+MxABZ9Bj7lD2MKmY+7alFcTYbxsi86spc0fR3oyPZarOiBBZCQFl6RQzFACAvc2eee
+         V+8V3tJpMRNXoTf8MyrH63hvhKjj2B6kMBg81CywSqQXbMBamD65uKvFiEUUJ8vtzHfx
+         sO+cIIeceS8+ZekeFylI+hmkiWkqqQWf+h2XPdxvLa7e9fO3/BO+b3N3sUBtEGfOQ6DH
+         wU9YeT78do697MmBI85BoMwni23GJIRKRm0hJvj0nx0ADIVklsfTtKbF9b/ZHPVmqlc8
+         GJJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=r8im4dJtuxkkAaqZZS6bmcni2naI0KL21K/0KZhRnTg=;
-        b=oEXbGrjDpE5O/rlpgLiIhC2kcfVvhsqCr2YzJ2S82nJjXc1/cbFGkhY5OnBH4VCcPj
-         1tgOcOKC3u0NbZhbhVtGv8AeHBQ1Nvc8jbPF97E3wirZgL076Lcagrouwdd2C4g8Lnpa
-         gDcYKKKMUR1jV68waJi2C8gkjhVr8O35DMI7+1II3brfv9NTzDjMFHjaXK+0q2isT22q
-         uxeZTjyOHLf8MppHXT5Vd0eQ5MUQgAJaBbockuAZnLRSYf8yXs3CdOUPxAIP+7FB/4b8
-         Ce38CaYGJNgZ24VS4KYGxg2FGyjg2Gmyuom58XRjhfk2icMZvBSqO+Zu8j4Vs+qkVmZ3
-         BPmw==
-X-Gm-Message-State: AOAM531lh8mHcGNEA+HTHCzC2Ff4NECrzA9pRa0TEEa2uhgVweSBNHDH
-        6dcZFyNneQY4QZsttN1wqouIHmFUYYQU3bM/AxhOPQ==
-X-Google-Smtp-Source: ABdhPJzQC7JHZFZ5lcxDRbQbodCqupHVOnlokMDpxwYb3ub+OdcyuaHCeS2Lw5IKYZvlIc7mtPcUVZqSHhJ+MgwjgzQ=
-X-Received: by 2002:a4a:3559:: with SMTP id w25mr21208459oog.6.1592232236922;
- Mon, 15 Jun 2020 07:43:56 -0700 (PDT)
+        bh=2GiKBA0Yhba1TI03GaAPY7BkOWgJVPjHL3sAxzmKYpk=;
+        b=iOrRrrTZ/Xr3h6AwOZd8h/VgNmnrYEt1b48aODsP8hRt1iOMBof2ArGwjEYSN2O00q
+         x0fUy0v7bVNtCu1PaEvZPtmYWIgjWDnHF9GmeJs14dF4slh/cJ1BnvMfujm2IVwcWczo
+         bmpY8R3jeLkuua4auTsgzSZ2DnZhF6EZ2SnUM4ukRbW9kWXXTNgFXj6ZTtxaFmwYjiL8
+         2vEiCarCIvnfG8dO/XN57hlXu3f3ckzflhFPYwKVS5JGHqfHx6+M+8rX+MU9CItQyyFc
+         iScJI41OEoBpbTtmtiK4jK+pxejVBQTqbOMvCskyLYovRPwXBG18W6NsyRVfPrK5yl16
+         st6g==
+X-Gm-Message-State: AOAM532XLr78a+jp8Q4AntUquiOoSevMSuj/GjVw1Mrd8u81wnVbTAbm
+        XEy8LDAyEmv9vVj+TnHRZvmzmN7Mrqr6U5dik1cUcA==
+X-Google-Smtp-Source: ABdhPJyTf9MxpzxwGxlkjLiriktRyuTpJGqoFyBlJLkFmk78sb8FdtJykzGOumVYFxDcXTsdVoYqqSe3MmZ+CVgR2tU=
+X-Received: by 2002:ad4:5512:: with SMTP id az18mr25620752qvb.51.1592239309534;
+ Mon, 15 Jun 2020 09:41:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 15 Jun 2020 15:43:45 +0100
-Message-ID: <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
+References: <20200608182748.6998-1-sdf@google.com> <20200613003356.sqp6zn3lnh4qeqyl@ast-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuJpks_ny-8MDzzZ5axobn=35P3krVbyz2mtBBtR8Uv+A@mail.gmail.com> <20200613035038.qmoxtf5mn3g3aiqe@ast-mbp>
+In-Reply-To: <20200613035038.qmoxtf5mn3g3aiqe@ast-mbp>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 15 Jun 2020 09:41:38 -0700
+Message-ID: <CAKH8qBvUv_OwjFA70JQfL-rET662okH87QYyeivbybCPwCEJEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 1/2] bpf: don't return EINVAL from {get,set}sockopt
+ when optlen > PAGE_SIZE
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        David Laight <David.Laight@aculab.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
+On Fri, Jun 12, 2020 at 8:50 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
+[ .. ]
+> > > It's probably ok, but makes me uneasy about verifier consequences.
+> > > ctx->optval is PTR_TO_PACKET and it's a valid pointer from verifier pov.
+> > > Do we have cases already where PTR_TO_PACKET == PTR_TO_PACKET_END ?
+> > > I don't think we have such tests. I guess bpf prog won't be able to read
+> > > anything and nothing will crash, but having PTR_TO_PACKET that is
+> > > actually NULL would be an odd special case to keep in mind for everyone
+> > > who will work on the verifier from now on.
+> > >
+> > > Also consider bpf prog that simply reads something small like 4 bytes.
+> > > IP_FREEBIND sockopt (like your selftest in the patch 2) will have
+> > > those 4 bytes, so it's natural for the prog to assume that it can read it.
+> > > It will have
+> > > p = ctx->optval;
+> > > if (p + 4 > ctx->optval_end)
+> > >  /* goto out and don't bother logging, since that never happens */
+> > > *(u32*)p;
+> > >
+> > > but 'clever' user space would pass long optlen and prog suddenly
+> > > 'not seeing' the sockopt. It didn't crash, but debugging would be
+> > > surprising.
+> > >
+> > > I feel it's better to copy the first 4k and let the program see it.
+> > Agreed with the IP_FREEBIND example wrt observability, however it's
+> > not clear what to do with the cropped buffer if the bpf program
+> > modifies it.
+> >
+> > Consider that huge iptables setsockopts where the usespace passes
+> > PAGE_SIZE*10 optlen with real data and bpf prog sees only part of it.
+> > Now, if the bpf program modifies the buffer (say, flips some byte), we
+> > are back to square one. We either have to silently discard that buffer
+> > or reallocate/merge. My reasoning with data == NULL, is that at least
+> > there is a clear signal that the program can't access the data (and
+> > can look at optlen to see if the original buffer is indeed non-zero
+> > and maybe deny such requests?).
+> > At this point I'm really starting to think that maybe we should just
+> > vmalloc everything that is >PAGE_SIZE and add a sysclt to limit an
+> > upper bound :-/
+> > I'll try to think about this a bit more over the weekend.
 >
-> On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > ---
-> >  kernel/bpf/net_namespace.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > index 78cf061f8179..56133e78ae4f 100644
-> > --- a/kernel/bpf/net_namespace.c
-> > +++ b/kernel/bpf/net_namespace.c
-> > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> >         struct net *net;
-> >         int ret;
-> >
-> > +       if (attr->attach_flags || attr->target_fd)
-> > +               return -EINVAL;
-> > +
->
-> In theory it makes sense, but how did you test it?
-
-Not properly it seems, sorry!
-
-> test_progs -t flow
-> fails 5 tests.
-
-I spent today digging through this, and the issue is actually more annoying than
-I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-program being detached is actually what user space expects. We actually have
-tests that set attach_bpf_fd for these to attach points, which tells
-me that this is
-an easy mistake to make.
-
-Unfortunately I can't come up with a good fix that seems backportable:
-- Making sockmap and flow_dissector have the same semantics as cgroup
-  and lirc2 requires a bunch of changes (probably a new function for sockmap)
-- Returning EINVAL from BPF_PROG_DETACH if attach_bpf_fd is specified
-  leads to a lot of churn in selftests
-
-Is it worth just landing these fixes on bpf or bpf-next without
-backporting them?
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+> Yeah. Tough choices.
+> We can also detect in the verifier whether program accessed ctx->optval
+> and skip alloc/copy if program didn't touch it, but I suspect in most
+> case the program would want to read it.
+> I think vmallocing what optlen said is DoS-able. It's better to
+> stick with single page.
+> Let's keep brainstorming.
+Btw, can we use sleepable bpf for that? As in, do whatever I suggested
+in these patches (don't expose optval>PAGE_SIZE via context), but add
+a new helper where you can say 'copy x bytes from y offset of the
+original optval' (the helper will do sleepable copy_form_user).
+That way we have a clean signal to the BPF that the value is too big
+(optval==optval_end==NULL) and the user can fallback to the helper to
+inspect the value. We can also provide another helper to export new
+value for this case.
+WDYT?
