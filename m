@@ -2,124 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBB41F9248
-	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 10:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC33B1F92A0
+	for <lists+bpf@lfdr.de>; Mon, 15 Jun 2020 11:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbgFOIyf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 04:54:35 -0400
-Received: from mout.web.de ([212.227.15.4]:51897 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728522AbgFOIyf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 04:54:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1592211249;
-        bh=8kiclZYo4jXkElPbwv3WBlLcVhLVTrcSqSXXxlnioVo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=o5aA/uMf2NYJEv/kKk9zdbOPoHDCrE5AVg0Rq+fgjZIM1B07YQP9IumaMBWDLX8kX
-         0oaaTYPQ8teAgfk7U1ZL/NgBoBgUxZ5LsX/JT4Nn40xT8lUDukTNtEss8uNtJazhl/
-         k9nlmYDD/z2v7Z5g2A/gcSZY39UpRqO3ZZQUM+G4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.107.236]) by smtp.web.de (mrweb001
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MJCAc-1jmPZj1sDK-002oE8; Mon, 15
- Jun 2020 10:54:09 +0200
-Subject: Re: [PATCH v3 2/2] perf tools: Fix potential memory leaks in perf
- events parser
-To:     Chen Wandun <chenwandun@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20200615013614.8646-1-chenwandun@huawei.com>
- <20200615013614.8646-3-chenwandun@huawei.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <f33f13bd-d337-bcb0-5aca-4b7900be9909@web.de>
-Date:   Mon, 15 Jun 2020 10:54:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729073AbgFOJEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jun 2020 05:04:43 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53046 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728411AbgFOJEm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Jun 2020 05:04:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592211881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eqCxKohGvLbDOAcYvRzfZ70rZCgIvTAgDpyXvxo9QZw=;
+        b=Qlk2SwuYJP++GBzymzqRPg6oV/vIwnCSPsTpT2RzsbKO/qx80ZlxXrMAeMdSMY3ga3S96Z
+        tIAlSB1aEihqCFtrF9BvLaUzVkqaOE2YhSWhpIu6blcnyyfbetIB3rwb2OxZqeVsJljT9X
+        Tk+f0kybCccmgHkpEqekbOnJ4uL+z4c=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-m0Iv62gKNQKbCAeY85jZ2w-1; Mon, 15 Jun 2020 05:04:39 -0400
+X-MC-Unique: m0Iv62gKNQKbCAeY85jZ2w-1
+Received: by mail-ed1-f69.google.com with SMTP id dn27so4685724edb.15
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 02:04:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=eqCxKohGvLbDOAcYvRzfZ70rZCgIvTAgDpyXvxo9QZw=;
+        b=jllMJ40Y44bxLbCpNipjQMpYguxACVFmldBQ9snT0Mf/XiKcGl51gvZlg2MaPUKcvG
+         YS0WrL0eXWpAITTun5hD/MXYTvaIjm6vFOk5Q+Ai+eBzgPm5isXZBy1fUVdCVsEqsOCp
+         o7VRyx+kwxcMLwCgKJnAmcFdKanZ1vNzKwSHDP3tZd1pjAfkgSrpsmugFcQWIW2sxPpt
+         PRVc8sEVpg/NvfWZHtQxI0gNZHV8yOqPyyvSnZLI7UhdxK6C+ThG9S57qrZx1dUi9DZF
+         iD1v09pR1irA4ZkFXT+I16ozY9QUJyMFd0G1UoEnMFZbGiaqFTcmYANNgkLJQBL/o+YD
+         Z9LA==
+X-Gm-Message-State: AOAM531wakFsF4B2qKCDvoNhVahc1U+WFJNHg2fcc/8vjmCADWYO/qf9
+        W8wb5k9+QW/OXfIS72Gw2XUWHFIkqt3xBktnB3Jo80FYNLa+kPMHY+u752l6OQmkJEK77abIcRP
+        OULhQALahMkz/
+X-Received: by 2002:a50:f094:: with SMTP id v20mr22603475edl.77.1592211878375;
+        Mon, 15 Jun 2020 02:04:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQV9d8O1teV5U813ms9N4ToB2nzLDvlhioQHU+f4HBdn9vWHWBNEJsAmukYldRqTxWeB+HPA==
+X-Received: by 2002:a50:f094:: with SMTP id v20mr22603450edl.77.1592211878095;
+        Mon, 15 Jun 2020 02:04:38 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id z10sm8653487ejb.9.2020.06.15.02.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2020 02:04:36 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9883D1814F7; Mon, 15 Jun 2020 11:04:34 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [RFC PATCH bpf-next 8/8] tools/bpftool: show PIDs with FDs open against BPF map/prog/link/btf
+In-Reply-To: <20200613221419.GB7488@kernel.org>
+References: <20200612223150.1177182-1-andriin@fb.com> <20200612223150.1177182-9-andriin@fb.com> <20200613034507.wjhd4z6dsda3pz7c@ast-mbp> <CAEf4BzaHVRxkiDbTGashiuakXFBRYvDsQmJ0O08xFijKXiAwSg@mail.gmail.com> <20200613221419.GB7488@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 15 Jun 2020 11:04:34 +0200
+Message-ID: <87pna01yzh.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200615013614.8646-3-chenwandun@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:4W0dlm3kcJa7QOo0V2Dwx2C5qa0VPLn3YC2AfQkVkY3sdH6Efoi
- dYmRLng9APZhTry/m1YuZXehYaGNjBpSdrQ804HsXz419fD/L3vCWmEQ7YZkumO7JnUnT+Y
- KmEUvfyg8ykM9lS7LpPIbMZ6zbE5FlxZx5e0vo9SHjTVL25XDw3tmYfgZg6lB0JVnPvDCfW
- r4Hnot9yTia1jHMj9Rg3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T9AwP/HRY4A=:0HOarJHIKjXFsZwOTz2qkE
- BHhML7i/2erQ/Gj7NODZhAhRMpkfM4YUEWuJuAD5zUPUZ+WClfIR00Aj3KPKyFSbwOCzAqem0
- BQyucPIlDUfVaAE6eGngv5M3Y6Ed9ZRXC1Jp1aBLwFgkBe+LMBTJBtQpSGcS1pzQ1KLqIU/0h
- VtAQBhNLoMgBprFKZHCbRV+nRV3WfoZ1aVFUTy0TWUs34lQA0Aq+TAQ5XpxcW6+JQ/oD0aeTy
- YozMHxLhq8ziJNmt5Hz9EHQIl5L8xsurZYFgOhJwIhhslBs5uXwLAjoq+writpufvQqg0FPBd
- NtBY+uUTAgBDNnWz5Yn5/hMvxbrEbtWMk8jv1ZLaJY4eC08weGcjtxXswa5gJ/D+oNF0z57Dq
- n0OKSYHYSFd19Hl7C6NeRb5AdKjYQtF3avIfPrHIhCj/r6HSxcCQ2opMp27uK+pCJTH/zjG3F
- 2AvR3dPFTlD5PL6QiRHzee1OA1ve04hdI8jr0blP4IZ5P20bfdsdur4h80BRqXCQq1tS78h9E
- olrhubuRtIGoymZEgjC5oZd+HFEcUDdyvb1cy6RVqqzfkJUVh+Svif3Ti+WnVBHxxAnV7whDe
- 9S62D9erlAPOiWOkMF4dX54G8rwpBrRGcQJZajF6d26gmysz3PKXjKdn3XtkOxZThEmMaC/4z
- OtDD6sWwPWFXsOsbPmls1qzB2E3zEAmkdpWMoC5ZLCXi/uanAeEYKHH5Pvd7V8N8Boruptj7C
- rQ1P3/mHu8zBrZze65NAo4X1Za2A0xxd0IjOFH+9KLqBT02G9v5kJ4o9wJmyUbgDPWayrfnI6
- Gaunm/nhXnZ3a+a9vYAnAJ9JfCCcg+0xSutfovQz8Ut1mWtWCF9IfK+bwKKlK4CK8jVZaiG1T
- RIZMKvwzGHcpnLfW/UoTb+73FMGR2odf+YUWoa4eZ4/9NCq4db1pH8pg3NW2REKezFos2oQCn
- I3Bxd8gPmnJcuEvhFqySkAW6tlx+SX90qEfhjiWaxJ7IQo6qh3yq0WyZEtP/6i0BWfmXx0JOd
- Ejc5J1PmchS/tkIfPVl5uV0JZ/jkoO6myklOFBC8BE1gWpyBSztymju7J/l2tUEzRt+BUO6z/
- ePes0jyNjM8LtwcbVbQs4haNB5famFjyJUmYJ8qGnGqO3pPv3/MFtsK9xuDEdZiQqpYu1IH4Q
- EQun6AWt2z9zyTsB/7vByI+Pshra72lOkdGKEQ0bsnMcjEF6rtIDzK9j0wDcnxphFSzJ/VQ/m
- jKH2fQhZ+kLHieIZT
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Fix potential memory leak. Function new_term may return error, so
-> it is need to free memory when the return value is negative.
+Arnaldo Carvalho de Melo <acme@kernel.org> writes:
 
-I hope that a typo will be avoided for the final commit message.
-Would you find any other description variant more pleasing?
+> Em Fri, Jun 12, 2020 at 10:57:59PM -0700, Andrii Nakryiko escreveu:
+>> On Fri, Jun 12, 2020 at 8:45 PM Alexei Starovoitov
+>> <alexei.starovoitov@gmail.com> wrote:
+>> >
+>> > On Fri, Jun 12, 2020 at 03:31:50PM -0700, Andrii Nakryiko wrote:
+>> > > Add bpf_iter-based way to find all the processes that hold open FDs against
+>> > > BPF object (map, prog, link, btf). Add new flag (-o, for "ownership", given
+>> > > -p is already taken) to trigger collection and output of these PIDs.
+>> > >
+>> > > Sample output for each of 4 BPF objects:
+>> > >
+>> > > $ sudo ./bpftool -o prog show
+>> > > 1992: cgroup_skb  name egress_alt  tag 9ad187367cf2b9e8  gpl
+>> > >         loaded_at 2020-06-12T14:18:10-0700  uid 0
+>> > >         xlated 48B  jited 59B  memlock 4096B  map_ids 2074
+>> > >         btf_id 460
+>> > >         pids: 913709,913732,913733,913734
+>> > > 2062: cgroup_device  tag 8c42dee26e8cd4c2  gpl
+>> > >         loaded_at 2020-06-12T14:37:52-0700  uid 0
+>> > >         xlated 648B  jited 409B  memlock 4096B
+>> > >         pids: 1
+>> > >
+>> > > $ sudo ./bpftool -o map show
+>> > > 2074: array  name test_cgr.bss  flags 0x400
+>> > >         key 4B  value 8B  max_entries 1  memlock 8192B
+>> > >         btf_id 460
+>> > >         pids: 913709,913732,913733,913734
+>> > >
+>> > > $ sudo ./bpftool -o link show
+>> > > 82: cgroup  prog 1992
+>> > >         cgroup_id 0  attach_type egress
+>> > >         pids: 913709,913732,913733,913734
+>> > > 86: cgroup  prog 1992
+>> > >         cgroup_id 0  attach_type egress
+>> > >         pids: 913709,913732,913733,913734
+>> >
+>> > This is awesome.
+>
+> Indeed.
+>  
+>> Thanks.
+>> 
+>> >
+>> > Why extra flag though? I think it's so useful that everyone would want to see
+>
+> Agreed.
+>  
+>> No good reason apart from "being safe by default". If turned on by
+>> default, bpftool would need to probe for bpf_iter support first. I can
+>> add probing and do this by default.
+>
+> I think this is the way to go.
 
-Regards,
-Markus
++1
+
+And also +1 on the awesomeness of this feature! :)
+
+-Toke
+
