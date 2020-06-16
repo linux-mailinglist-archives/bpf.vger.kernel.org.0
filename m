@@ -2,93 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04261FC183
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 00:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E85E1FC1DE
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 00:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgFPWXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 18:23:39 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41756 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgFPWXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 18:23:38 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlJzT-0007Kn-Rd; Wed, 17 Jun 2020 00:23:35 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlJzT-000IMx-Hw; Wed, 17 Jun 2020 00:23:35 +0200
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
- concatenation pattern test
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200616050432.1902042-1-andriin@fb.com>
- <20200616050432.1902042-2-andriin@fb.com>
- <5fed920d-aeb6-c8de-18c0-7c046bbfb242@iogearbox.net>
- <CAEf4BzZQXKBFNqAtadcK6UArfgMDQ--5P0XA1m2f_d8KG6YRtg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <dd14f356-44bc-0ff0-a089-ce9fb9936c62@iogearbox.net>
-Date:   Wed, 17 Jun 2020 00:23:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZQXKBFNqAtadcK6UArfgMDQ--5P0XA1m2f_d8KG6YRtg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25845/Tue Jun 16 15:01:35 2020)
+        id S1726332AbgFPWxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 18:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgFPWxA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jun 2020 18:53:00 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553CBC061573
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 15:52:59 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id a5so333183qkk.12
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 15:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=FwKJ3q/6fE4EDZGFpwJDQKDs/dstZjG8+NaImCshfEs=;
+        b=K3yVwNdzIFHrtdM61GCSwgTjSrJd7YBiZqddu0w99u1ywEu2nZcFXcDYnGN0tZRq1T
+         ob5rFfg+qYJE4KTWz3beVcJxGZatZJ5kZg6qSDzZgsnJaGduI4pvNjdOw4ZoFGzujZlE
+         a4irXsix3wwNWXl1ghnIU35Ojsp8BgvEGUgzpmi+cEawRGJMOzRPhU3yBVDekKeqiTg4
+         sUc4uUrAXfR/FuJvXAKOtzabue0vo4znbAn8per75lzpR19cdKUGNPBI4uJJjkPbIwAy
+         F2O6swud+aCcU95SVzqtKivWP0iIuVRnX/KteItqelCvIGOeAMZ79oc9wWVfkEdb0bOG
+         UhnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=FwKJ3q/6fE4EDZGFpwJDQKDs/dstZjG8+NaImCshfEs=;
+        b=HGRvp/6FrWQ+hblCEehwCEhOgbcQ2R3EAtJ4BMIp7VTZcCJUiKG8nne86oIjV3AZ+i
+         9ye67+32yqKNDMYnG4UW4OBmK5N+98xkCJDM9JEnsotT37LffWqmqlYNNttC6dSYSiRV
+         oHOog9VCrhykTufDY2zdUDSkoXkegCg/f3Nsrnjw1JkI89jYXk//sz3ffq1P1zCL7xbx
+         jeq2oklCxhPtlJvDR/Dld2hSNtiKI+eCEUNz1ucRen7VetQtcVYbg4dfx+ZxtWxU5tNc
+         GzsnFU+i93eAJxZ+mloAbHJBfBEwldmkLY0cnqaPCF5LKST67V5fS/n/2bnOxA7esPYg
+         CAAQ==
+X-Gm-Message-State: AOAM531buZ96RR3slzrmvJ6lh7mu3gzYllP1yPg6tgLCiRqVVcsxUef/
+        WT+PiaY6nLUb4al7upkWXVrKjeI=
+X-Google-Smtp-Source: ABdhPJyOo6nigqMS/g8tN8v1GXfAWeEQqAGTgm1HCeCqgUPoiO/TtAYjwhqpBhjOMuKjYTlEem/ytJw=
+X-Received: by 2002:a05:6214:b30:: with SMTP id w16mr4758020qvj.28.1592347978506;
+ Tue, 16 Jun 2020 15:52:58 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 15:52:55 -0700
+Message-Id: <20200616225256.246769-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
+Subject: [PATCH bpf v4 1/2] bpf: don't return EINVAL from {get,set}sockopt
+ when optlen > PAGE_SIZE
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/16/20 11:27 PM, Andrii Nakryiko wrote:
-> On Tue, Jun 16, 2020 at 1:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 6/16/20 7:04 AM, Andrii Nakryiko wrote:
->>> Add selftest that validates variable-length data reading and concatentation
->>> with one big shared data array. This is a common pattern in production use for
->>> monitoring and tracing applications, that potentially can read a lot of data,
->>> but usually reads much less. Such pattern allows to determine precisely what
->>> amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
->>>
->>> This is the first BPF selftest that at all looks at and tests
->>> bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
->>> testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
->>> 0 on success, instead of amount of bytes successfully read.
->>>
->>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>
->> Fix looks good, but I'm seeing an issue in the selftest on my side. With latest
->> Clang/LLVM I'm getting:
->>
->> # ./test_progs -t varlen
->> #86 varlen:OK
->> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>
->> All good, however, the test_progs-no_alu32 fails for me with:
-> 
-> Yeah, same here. It's due to Clang emitting unnecessary bit shifts
-> because bpf_probe_read_kernel_str() is defined as returning 32-bit
-> int. I have a patch ready locally, just waiting for bpf-next to open,
-> which switches those helpers to return long, which auto-matically
-> fixes this test.
-> 
-> If it's not a problem, I'd just wait for that patch to go into
-> bpf-next. If not, I can sprinkle bits of assembly magic around to
-> force the kernel to do those bitshifts earlier. But I figured having
-> test_progs-no_alu32 failing one selftest temporarily wasn't too bad.
+Attaching to these hooks can break iptables because its optval is
+usually quite big, or at least bigger than the current PAGE_SIZE limit.
+David also mentioned some SCTP options can be big (around 256k).
 
-Given {net,bpf}-next will open up soon, another option could be to take in the fix
-itself to bpf and selftest would be submitted together with your other improvement;
-any objections?
+There are two possible ways to fix it:
+1. Increase the limit to match iptables max optval. There is, however,
+   no clear upper limit. Technically, iptables can accept up to
+   512M of data (not sure how practical it is though).
 
-Thanks,
-Daniel
+2. Bypass the value (don't expose to BPF) if it's too big and trigger
+   BPF only with level/optname so BPF can still decide whether
+   to allow/deny big sockopts.
+
+The initial attempt was implemented using strategy #1. Due to
+listed shortcomings, let's switch to strategy #2. When there is
+legitimate a real use-case for iptables/SCTP, we can consider increasing
+ the PAGE_SIZE limit.
+
+To support the cases where len(optval) > PAGE_SIZE we can
+leverage upcoming sleepable BPF work by providing a helper
+which can do copy_from_user (sleepable) at the given offset
+from the original large buffer.
+
+v4:
+* use temporary buffer to avoid optval == optval_end == NULL;
+  this removes the corner case in the verifier that might assume
+  non-zero PTR_TO_PACKET/PTR_TO_PACKET_END.
+
+v3:
+* don't increase the limit, bypass the argument
+
+v2:
+* proper comments formatting (Jakub Kicinski)
+
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Cc: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/filter.h |  1 +
+ kernel/bpf/cgroup.c    | 31 +++++++++++++++++++++++++------
+ 2 files changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 259377723603..f4565a70f8ba 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1276,6 +1276,7 @@ struct bpf_sockopt_kern {
+ 	s32		optname;
+ 	s32		optlen;
+ 	s32		retval;
++	u8		optval_too_large;
+ };
+ 
+ #endif /* __LINUX_FILTER_H__ */
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 4d76f16524cc..be78c01bf459 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1276,9 +1276,18 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+ 
+ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ {
+-	if (unlikely(max_optlen > PAGE_SIZE) || max_optlen < 0)
++	if (unlikely(max_optlen < 0))
+ 		return -EINVAL;
+ 
++	if (unlikely(max_optlen > PAGE_SIZE)) {
++		/* We don't expose optvals that are greater than PAGE_SIZE
++		 * to the BPF program.
++		 */
++		ctx->optval = &ctx->optval_too_large;
++		ctx->optval_end = &ctx->optval_too_large;
++		return 0;
++	}
++
+ 	ctx->optval = kzalloc(max_optlen, GFP_USER);
+ 	if (!ctx->optval)
+ 		return -ENOMEM;
+@@ -1288,9 +1297,15 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ 	return 0;
+ }
+ 
++static int sockopt_has_optval(struct bpf_sockopt_kern *ctx)
++{
++	return ctx->optval != &ctx->optval_too_large;
++}
++
+ static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
+ {
+-	kfree(ctx->optval);
++	if (sockopt_has_optval(ctx))
++		kfree(ctx->optval);
+ }
+ 
+ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+@@ -1325,7 +1340,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 
+ 	ctx.optlen = *optlen;
+ 
+-	if (copy_from_user(ctx.optval, optval, *optlen) != 0) {
++	if (sockopt_has_optval(&ctx) &&
++	    copy_from_user(ctx.optval, optval, *optlen) != 0) {
+ 		ret = -EFAULT;
+ 		goto out;
+ 	}
+@@ -1354,7 +1370,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 		*level = ctx.level;
+ 		*optname = ctx.optname;
+ 		*optlen = ctx.optlen;
+-		*kernel_optval = ctx.optval;
++		if (sockopt_has_optval(&ctx))
++			*kernel_optval = ctx.optval;
+ 	}
+ 
+ out:
+@@ -1407,7 +1424,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 		if (ctx.optlen > max_optlen)
+ 			ctx.optlen = max_optlen;
+ 
+-		if (copy_from_user(ctx.optval, optval, ctx.optlen) != 0) {
++		if (sockopt_has_optval(&ctx) &&
++		    copy_from_user(ctx.optval, optval, ctx.optlen) != 0) {
+ 			ret = -EFAULT;
+ 			goto out;
+ 		}
+@@ -1436,7 +1454,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 		goto out;
+ 	}
+ 
+-	if (copy_to_user(optval, ctx.optval, ctx.optlen) ||
++	if ((sockopt_has_optval(&ctx) &&
++	     copy_to_user(optval, ctx.optval, ctx.optlen)) ||
+ 	    put_user(ctx.optlen, optlen)) {
+ 		ret = -EFAULT;
+ 		goto out;
+-- 
+2.27.0.290.gba653c62da-goog
+
