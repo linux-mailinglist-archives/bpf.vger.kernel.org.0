@@ -2,124 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07581FB461
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 16:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40281FB490
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 16:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgFPO2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 10:28:46 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51501 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728917AbgFPO2q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:28:46 -0400
+        id S1728919AbgFPOi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 10:38:26 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52745 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727077AbgFPOiZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jun 2020 10:38:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592317725;
+        s=mimecast20190719; t=1592318304;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AI16rQVkD7Ajxg/nYxiVD6rmlKmGpKvCI2wJJ+04RQ0=;
-        b=Zjcp9+1Yi0rPCW9rrJHLm3IRmsbZbt8VeCZrvj1ZntF/K3uVGgJBy+hnMLHRRHhaTYPX2q
-        dfrwur1DI5BApIOnMDYv7vDznlVsOveCdRqZ0t7wY/DIXFALUpsUHxj2mhbNfsa9Q628lC
-        tXYttNMyYuvOra1rpNR0Ng+LH8JcJjQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-w_oY9-AJMvywK5z65a1uGA-1; Tue, 16 Jun 2020 10:28:43 -0400
-X-MC-Unique: w_oY9-AJMvywK5z65a1uGA-1
-Received: by mail-wr1-f71.google.com with SMTP id c14so8307445wrm.15
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 07:28:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AI16rQVkD7Ajxg/nYxiVD6rmlKmGpKvCI2wJJ+04RQ0=;
-        b=DgnznjPp4byiyC+30EJrHjxK2WZX3KQilycYy/U3CsmIHzhDRWvlVesn/jyOwiNuSO
-         7LrUDehdY5zBk82dQ8WtPbI1dU4Djqcbmcxij7f496lHEP/TkfPnDAK3J5uqmkntZJ+j
-         kHVCF2B/y2I2jGS+9LUuHX9r3q+RqdTjfKkEGMPgl75Sk48O+LRUu3Gs77GuUiQXhB2P
-         q7zFQMu5O+jnfbX0GjBstzLN5Rc0n337smJquLIt12FAicmYgNn/ONLM1fn3EilE6UbE
-         PJMqd3QF2cQH03PQOK/A1Ncly0nwkuz0JB55nAYXRDIsoKPT3m+z829rZxL3N+Db3iHR
-         xslw==
-X-Gm-Message-State: AOAM530OwwuYsvOScAhO+R6CLkM05faA6oGX1+Euqk6NkgnxTRaus9rE
-        adLldlk9SXvwS82Lo9owH6TZoCYpUmmIm7My1Mx+E+Rul5n29hFyM314S4DwKSxToM4xGDaFoJE
-        bTcFj8yFHwsEI
-X-Received: by 2002:a7b:cb99:: with SMTP id m25mr3520694wmi.0.1592317722134;
-        Tue, 16 Jun 2020 07:28:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwQmy1lYG/gWNoBlK1yHHWXCKIpburSaJAz2yR+SMxJuNNKnChnO8WdefVi0oKx2gC6DZcig==
-X-Received: by 2002:a7b:cb99:: with SMTP id m25mr3520679wmi.0.1592317721896;
-        Tue, 16 Jun 2020 07:28:41 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y19sm4025678wmi.6.2020.06.16.07.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 07:28:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D1B0D181513; Tue, 16 Jun 2020 16:28:39 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Xiumei Mu <xmu@redhat.com>
-Subject: [PATCH bpf] devmap: use bpf_map_area_alloc() for allocating hash buckets
-Date:   Tue, 16 Jun 2020 16:28:29 +0200
-Message-Id: <20200616142829.114173-1-toke@redhat.com>
-X-Mailer: git-send-email 2.27.0
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5nXojDArjm3fbdFQyCIywRTxpZLNfyYEE+NzV4MWLuM=;
+        b=euJ/XZyNA52tWF/vtSuGkMf9psIumiN0jHqZoXwgpkqyNZETIDUcd4oS7pYuxmFLPqkGfL
+        WvCrDVprixGSpDl+NF3JblbHnFP2bqyt3phBPzztY7lrrn4Jyk1nsABhyVCJbopyI6j9tE
+        VXtJKsOymajQIrfM7HBe/zcEqgkl9i8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-oIELlBwROymyFbPw2TibZQ-1; Tue, 16 Jun 2020 10:38:19 -0400
+X-MC-Unique: oIELlBwROymyFbPw2TibZQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFCB1E919;
+        Tue, 16 Jun 2020 14:38:17 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 063C719D61;
+        Tue, 16 Jun 2020 14:38:05 +0000 (UTC)
+Date:   Tue, 16 Jun 2020 16:38:04 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv4 bpf-next 1/2] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20200616163804.19d00d03@carbon>
+In-Reply-To: <20200616101133.GV102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com>
+        <20200526140539.4103528-1-liuhangbin@gmail.com>
+        <20200526140539.4103528-2-liuhangbin@gmail.com>
+        <20200610121859.0412c111@carbon>
+        <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+        <20200616105506.163ea5a3@carbon>
+        <20200616101133.GV102436@dhcp-12-153.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller discovered that creating a hash of type devmap_hash with a large
-number of entries can hit the memory allocator limit for allocating
-contiguous memory regions. There's really no reason to use kmalloc_array()
-directly in the devmap code, so just switch it to the existing
-bpf_map_area_alloc() function that is used elsewhere.
+On Tue, 16 Jun 2020 18:11:33 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- kernel/bpf/devmap.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> HI Jesper,
+> 
+> On Tue, Jun 16, 2020 at 10:55:06AM +0200, Jesper Dangaard Brouer wrote:
+> > > Is there anything else I should do except add the following line?
+> > > 	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;  
+> > 
+> > You do realize that you also have copied over the mem.id, right?  
+> 
+> Thanks for the reminding. To confirm, set mem.id to 0 is enough, right?
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 0cbb72cdaf63..5fdbc776a760 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -86,12 +86,13 @@ static DEFINE_PER_CPU(struct list_head, dev_flush_list);
- static DEFINE_SPINLOCK(dev_map_lock);
- static LIST_HEAD(dev_map_list);
+Yes.
+
+> > And as I wrote below you also need to update frame_sz.
+> >   
+> > > > 
+> > > > You also need to update xdpf->frame_sz, as you also cannot assume it is
+> > > > the same.    
+> > > 
+> > > Won't the memcpy() copy xdpf->frame_sz to nxdpf?   
+> > 
+> > You obviously cannot use the frame_sz from the existing frame, as you
+> > just allocated a new page for the new xdp_frame, that have another size
+> > (here PAGE_SIZE).  
+> 
+> Thanks, I didn't understand the frame_sz correctly before.
+> > 
+> >   
+> > > And I didn't see xdpf->frame_sz is set in xdp_convert_zc_to_xdp_frame(),
+> > > do we need a fix?  
+> > 
+> > Good catch, that sounds like a bug, that should be fixed.
+> > Will you send a fix?  
+> 
+> OK, I will.
+
+Thanks.
  
--static struct hlist_head *dev_map_create_hash(unsigned int entries)
-+static struct hlist_head *dev_map_create_hash(unsigned int entries,
-+					      int numa_node)
- {
- 	int i;
- 	struct hlist_head *hash;
- 
--	hash = kmalloc_array(entries, sizeof(*hash), GFP_KERNEL);
-+	hash = bpf_map_area_alloc(entries * sizeof(*hash), numa_node);
- 	if (hash != NULL)
- 		for (i = 0; i < entries; i++)
- 			INIT_HLIST_HEAD(&hash[i]);
-@@ -145,7 +146,8 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 		return -EINVAL;
- 
- 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
--		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets);
-+		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets,
-+							   dtab->map.numa_node);
- 		if (!dtab->dev_index_head)
- 			goto free_charge;
- 
-@@ -232,7 +234,7 @@ static void dev_map_free(struct bpf_map *map)
- 			}
- 		}
- 
--		kfree(dtab->dev_index_head);
-+		bpf_map_area_free(dtab->dev_index_head);
- 	} else {
- 		for (i = 0; i < dtab->map.max_entries; i++) {
- 			struct bpf_dtab_netdev *dev;
+> >   
+> > > > > +
+> > > > > +	nxdpf = addr;
+> > > > > +	nxdpf->data = addr + headroom;
+> > > > > +
+> > > > > +	return nxdpf;
+> > > > > +}
+> > > > > +EXPORT_SYMBOL_GPL(xdpf_clone);    
+> > > > 
+> > > > 
+> > > > struct xdp_frame {
+> > > > 	void *data;
+> > > > 	u16 len;
+> > > > 	u16 headroom;
+> > > > 	u32 metasize:8;
+> > > > 	u32 frame_sz:24;
+> > > > 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+> > > > 	 * while mem info is valid on remote CPU.
+> > > > 	 */
+> > > > 	struct xdp_mem_info mem;
+> > > > 	struct net_device *dev_rx; /* used by cpumap */
+> > > > };
+> > > >     
+> > >   
+> > 
+> > struct xdp_mem_info {
+> > 	u32                        type;                 /*     0     4 */
+> > 	u32                        id;                   /*     4     4 */
+> > 
+> > 	/* size: 8, cachelines: 1, members: 2 */
+> > 	/* last cacheline: 8 bytes */
+> > };
+> >   
+> 
+> Is this a struct reference or you want to remind me something else?
+
+This is just a struct reference to help the readers of this email.
+I had to lookup the struct to review this code, so I included it to
+save time for other reviewers.
+
 -- 
-2.27.0
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
