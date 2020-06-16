@@ -2,118 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430071FA72B
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 05:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336FD1FA813
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 07:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgFPDzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jun 2020 23:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgFPDzl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jun 2020 23:55:41 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C53C061A0E;
-        Mon, 15 Jun 2020 20:55:39 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n24so21715349lji.10;
-        Mon, 15 Jun 2020 20:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ef/c5sByl1dQLDC7ct1QT+x4ZA8mc0Ozfd+rnzLi0vM=;
-        b=HrDELnRkblGg4LR88wDhd2g+xC39qXUU+freDI0HxIr32SiRt0bcNNXO5LsyiY8AXi
-         ewFyq21sGR66Sk3yPq4kjEFg9wh01Zksx8Xh/zQijF4UDgK4KRmdKjrTr7LcSsEDXNGk
-         5y/Ng9nKELD7mNp0o5soNjSdedHsv4mVD1gbxQ1oUE8EtFjvpfbSM0UtVZdywBKCpLE8
-         5Lf1v7D2nP1P+Oa6Tpj/pyUqYMqqZ6+KeJVcexSqd3rJVmA6+COOHDRTUQvKZ78Og5Xj
-         etPBbaZ6p9NTtC7ce+LBrGjLvhQEWDCEOI7oLmDi8MF8wvZ+falTQDLzEfnRXSey5R2j
-         5uLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ef/c5sByl1dQLDC7ct1QT+x4ZA8mc0Ozfd+rnzLi0vM=;
-        b=baGb9OhFLWka1v7mOT3An66kWWiddJIu6QlcS2jj/jczlrOrjXMwBdhIL4traRLKHq
-         q5kIfSHsSd1CvY7qwYKXBOKU+W4LPVh7Vk7L/HjpzI/zfGjBABs+N0PEWpb2MP9Z57sn
-         P721XSGGG5n8AWnijOUiFg0hEuHtD0RrqwyOqasbiBPTqqzZHNKzkJGdmUuosQOnGyT2
-         BXcH5Y+9D9PZI29OLhaDkoAKiYhB2nPimyObgZkUCT7QuxarFYiNl0OYNhgBMIOM6tu0
-         hRf6Y4dsC1iu9M72crsSOg5BZvMiGC+UM/uWH2omOU7DIUpMFxf8xcaCuwT4nwByuGQK
-         bWZg==
-X-Gm-Message-State: AOAM532UkrvlBTI+2CB0vFgn/zXtufmP+uEImIyLk+zghPxR7oimO8YS
-        oFomSaxm7ZsVcrwXzZ5i7uMhHLa0kovkhDHJJCA=
-X-Google-Smtp-Source: ABdhPJwv30NCg1WqRnRZqVd0fR/+EmBquaNoRMIRqikQ4C3M04oWhogn6YZD9m5ky5fIo/FgLoaGmo/xTvK2NSZyO6w=
-X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr401486ljo.121.1592279738042;
- Mon, 15 Jun 2020 20:55:38 -0700 (PDT)
+        id S1725928AbgFPFEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 01:04:43 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45238 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725710AbgFPFEn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jun 2020 01:04:43 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05G53Hkd025069
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 22:04:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=GkEct7hq4y31Z+EChUTSGdzyQUOiVP/OFvqPi7EQuZc=;
+ b=YN835TCv3FLHimtQQB8yhzz/Vla9JtO6uJ0u0n5f7iJ4psbblSdv4AmMnshwH4uxp/wQ
+ v4YUl6IjNbIcwwLy6+8RkOq+Lqj5nOOYcLs/yfT9BdumrAaJzlSq59UR4MDAoAtmElOq
+ Dgh8U0GyjtoNsWVddqTooAaK/N6NFouD5kc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31nesqr6yb-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 15 Jun 2020 22:04:42 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 15 Jun 2020 22:04:41 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 9E8CC2EC2F00; Mon, 15 Jun 2020 22:04:34 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Christoph Hellwig <hch@lst.de>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf 1/2] bpf: bpf_probe_read_kernel_str() has to return amount of data read on success
+Date:   Mon, 15 Jun 2020 22:04:30 -0700
+Message-ID: <20200616050432.1902042-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
- <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
-In-Reply-To: <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 15 Jun 2020 20:55:26 -0700
-Message-ID: <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-15_11:2020-06-15,2020-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ cotscore=-2147483648 mlxscore=0 adultscore=0 bulkscore=0 suspectscore=8
+ clxscore=1015 priorityscore=1501 malwarescore=0 mlxlogscore=831
+ lowpriorityscore=0 phishscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006160036
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > >
-> > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> > >
-> > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > > ---
-> > >  kernel/bpf/net_namespace.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > > index 78cf061f8179..56133e78ae4f 100644
-> > > --- a/kernel/bpf/net_namespace.c
-> > > +++ b/kernel/bpf/net_namespace.c
-> > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > >         struct net *net;
-> > >         int ret;
-> > >
-> > > +       if (attr->attach_flags || attr->target_fd)
-> > > +               return -EINVAL;
-> > > +
-> >
-> > In theory it makes sense, but how did you test it?
->
-> Not properly it seems, sorry!
->
-> > test_progs -t flow
-> > fails 5 tests.
->
-> I spent today digging through this, and the issue is actually more annoying than
-> I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-> attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-> program being detached is actually what user space expects. We actually have
-> tests that set attach_bpf_fd for these to attach points, which tells
-> me that this is
-> an easy mistake to make.
->
-> Unfortunately I can't come up with a good fix that seems backportable:
-> - Making sockmap and flow_dissector have the same semantics as cgroup
->   and lirc2 requires a bunch of changes (probably a new function for sockmap)
+During recent refactorings, bpf_probe_read_kernel_str() started returning=
+ 0 on
+success, instead of amount of data successfully read. This majorly breaks
+applications relying on bpf_probe_read_kernel_str() and bpf_probe_read_st=
+r()
+and their results. Fix this by returning actual number of bytes read.
 
-making flow dissector pass prog_fd as cg and lirc is certainly my preference.
-Especially since tests are passing fd user code is likely doing the same,
-so breakage is unlikely. Also it wasn't done that long ago, so
-we can backport far enough.
-It will remove cap_net_admin ugly check in bpf_prog_detach()
-which is the only exception now in cap model.
+Cc: Christoph Hellwig <hch@lst.de>
+Fixes: 8d92db5c04d1 ("bpf: rework the compat kernel probe handling")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e729c9e587a0..a3ac7de98baa 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -241,7 +241,7 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size,=
+ const void *unsafe_ptr)
+ 	if (unlikely(ret < 0))
+ 		goto fail;
+=20
+-	return 0;
++	return ret;
+ fail:
+ 	memset(dst, 0, size);
+ 	return ret;
+--=20
+2.24.1
+
