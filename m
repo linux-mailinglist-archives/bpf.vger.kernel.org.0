@@ -2,141 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426F91FBFE8
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 22:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FC81FC016
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 22:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731352AbgFPUVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 16:21:09 -0400
-Received: from www62.your-server.de ([213.133.104.62]:54006 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726856AbgFPUVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 16:21:09 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlI4w-0004C2-3O; Tue, 16 Jun 2020 22:21:06 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlI4v-0000cm-Qx; Tue, 16 Jun 2020 22:21:05 +0200
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
- concatenation pattern test
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Christoph Hellwig <hch@lst.de>
-References: <20200616050432.1902042-1-andriin@fb.com>
- <20200616050432.1902042-2-andriin@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5fed920d-aeb6-c8de-18c0-7c046bbfb242@iogearbox.net>
-Date:   Tue, 16 Jun 2020 22:21:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1731658AbgFPUhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 16:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgFPUhY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jun 2020 16:37:24 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F5C061573;
+        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so123989ljm.9;
+        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
+        b=pyXB6lOygv7d3fpovp/hfSOGjPv5ee22Kh91pmpyuPkSH3cPe3xSSoKSv3zqwVnXx5
+         +hhuHw8IAeyT6YN+YmeJ8SISZmCPqA8fh5VAgYKlNwFqozX8D6KxPnyN0eqUlSB4iFjy
+         0H9mr/YUYfncmuJd4v0jGbf+5gecaMKPZpgz/EwdlODlfHSUFP3c36q+sN12qIfRSTDc
+         9XvqhgIfIAJ3h5l+xUN6yALuo9i/u+p6vm4CfhHzmRPyRrib0DNg9SrFIynm1eDiW+fz
+         a5WjoU7rKP3KdkSRkTyfBDEWwObdz/xvMkdbgkD/hVLLtcLk5LAtPzC1lrDPU//KAnpI
+         ENvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
+        b=rObWlGhHfsQITvObmKX8O7ZhbsJPwqDAl0r2llWXj6F1NK0P4JazhUNGqKTVUPFCpL
+         BaeIt1GfZyudkP6aAnt9GXDvOcT30TcGB/QenrOWOO5xbrBWI8T2CAHNEgRAZz/5sn1z
+         9bqHchEdngon6xgX+Exqgq4QjBuP+ddR54ubaFzvCFGUsOPZ+9aziwkrLO+JdzJVBOSz
+         /NTT3jtUwnadKCd1ltUVsshnM70CA/wjQL2W+2YeaXU2VP0R2CT+0YuDjzvqj23dUIuO
+         XYu8rNwMiaHTyaBwiBQ/Hz5y8OP0f5JVoiP6EUQt2qowV6DWQWy61eP3fdrb2G4T1SPo
+         n5eg==
+X-Gm-Message-State: AOAM53399Cyn5DCg2Uim0DwN/DovUOGwwOSrq79sM9jbNZUMcVyC9JLn
+        CabeBx9z99ASy/Mnf2uz0DXL+8ly/jYnLBclG8A=
+X-Google-Smtp-Source: ABdhPJwE2lMLvVUrdVYb5jqSp16Jt51lzYQ+YF39c3LoNZ6rdQE19vSQ2lSbpLa+BE9LdtTZnOw2WK0Z27HR99wUpn4=
+X-Received: by 2002:a2e:98d7:: with SMTP id s23mr2376050ljj.2.1592339842579;
+ Tue, 16 Jun 2020 13:37:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200616050432.1902042-2-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25845/Tue Jun 16 15:01:35 2020)
+References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
+ <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
+ <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com> <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
+In-Reply-To: <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 16 Jun 2020 13:37:11 -0700
+Message-ID: <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/16/20 7:04 AM, Andrii Nakryiko wrote:
-> Add selftest that validates variable-length data reading and concatentation
-> with one big shared data array. This is a common pattern in production use for
-> monitoring and tracing applications, that potentially can read a lot of data,
-> but usually reads much less. Such pattern allows to determine precisely what
-> amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
-> 
-> This is the first BPF selftest that at all looks at and tests
-> bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
-> testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
-> 0 on success, instead of amount of bytes successfully read.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+On Tue, Jun 16, 2020 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > > >
+> > > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
+> > > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
+> > > > >
+> > > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
+> > > > > ---
+> > > > >  kernel/bpf/net_namespace.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+> > > > > index 78cf061f8179..56133e78ae4f 100644
+> > > > > --- a/kernel/bpf/net_namespace.c
+> > > > > +++ b/kernel/bpf/net_namespace.c
+> > > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > > > >         struct net *net;
+> > > > >         int ret;
+> > > > >
+> > > > > +       if (attr->attach_flags || attr->target_fd)
+> > > > > +               return -EINVAL;
+> > > > > +
+> > > >
+> > > > In theory it makes sense, but how did you test it?
+> > >
+> > > Not properly it seems, sorry!
+> > >
+> > > > test_progs -t flow
+> > > > fails 5 tests.
+> > >
+> > > I spent today digging through this, and the issue is actually more annoying than
+> > > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
+> > > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
+> > > program being detached is actually what user space expects. We actually have
+> > > tests that set attach_bpf_fd for these to attach points, which tells
+> > > me that this is
+> > > an easy mistake to make.
+> > >
+> > > Unfortunately I can't come up with a good fix that seems backportable:
+> > > - Making sockmap and flow_dissector have the same semantics as cgroup
+> > >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
+> >
+> > making flow dissector pass prog_fd as cg and lirc is certainly my preference.
+> > Especially since tests are passing fd user code is likely doing the same,
+> > so breakage is unlikely. Also it wasn't done that long ago, so
+> > we can backport far enough.
+> > It will remove cap_net_admin ugly check in bpf_prog_detach()
+> > which is the only exception now in cap model.
+>
+> SGTM. What about sockmap though? The code for that has been around for ages.
 
-Fix looks good, but I'm seeing an issue in the selftest on my side. With latest
-Clang/LLVM I'm getting:
+you mean the second patch that enforces sock_map_get_from_fd doesn't
+use attach_flags?
+I think it didn't break anything, so enforcing is fine.
 
-# ./test_progs -t varlen
-#86 varlen:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+or the detach part that doesn't use prog_fd ?
+I'm not sure what's the best here.
+At least from cap perspective it's fine because map_fd is there.
 
-All good, however, the test_progs-no_alu32 fails for me with:
-
-# ./test_progs-no_alu32 -t varlen
-Switching to flavor 'no_alu32' subdirectory...
-libbpf: load bpf program failed: Invalid argument
-libbpf: -- BEGIN DUMP LOG ---
-libbpf:
-arg#0 type is not a struct
-Unrecognized arg#0 type PTR
-; int pid = bpf_get_current_pid_tgid() >> 32;
-0: (85) call bpf_get_current_pid_tgid#14
-; int pid = bpf_get_current_pid_tgid() >> 32;
-1: (77) r0 >>= 32
-; if (test_pid != pid || !capture)
-2: (18) r1 = 0xffffb14a4010c200
-4: (61) r1 = *(u32 *)(r1 +0)
-  R0_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R1_w=map_value(id=0,off=512,ks=4,vs=1056,imm=0) R10=fp0
-; if (test_pid != pid || !capture)
-5: (5d) if r1 != r0 goto pc+43
-  R0_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0
-6: (18) r1 = 0xffffb14a4010c204
-8: (71) r1 = *(u8 *)(r1 +0)
-  R0_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R1_w=map_value(id=0,off=516,ks=4,vs=1056,imm=0) R10=fp0
-9: (15) if r1 == 0x0 goto pc+39
-  R0=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R1=inv(id=0,umax_value=255,var_off=(0x0; 0xff)) R10=fp0
-; len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-10: (18) r6 = 0xffffb14a4010c220
-12: (18) r1 = 0xffffb14a4010c220
-14: (b7) r2 = 256
-15: (18) r3 = 0xffffb14a4010c000
-17: (85) call bpf_probe_read_kernel_str#115
-  R0=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R1_w=map_value(id=0,off=544,ks=4,vs=1056,imm=0) R2_w=inv256 R3_w=map_value(id=0,off=0,ks=4,vs=1056,imm=0) R6_w=map_value(id=0,off=544,ks=4,vs=1056,imm=0) R10=fp0
-last_idx 17 first_idx 9
-regs=4 stack=0 before 15: (18) r3 = 0xffffb14a4010c000
-regs=4 stack=0 before 14: (b7) r2 = 256
-18: (67) r0 <<= 32
-19: (bf) r1 = r0
-20: (77) r1 >>= 32
-; if (len <= MAX_LEN) {
-21: (25) if r1 > 0x100 goto pc+7
-  R0=inv(id=0,smax_value=1099511627776,umax_value=18446744069414584320,var_off=(0x0; 0xffffffff00000000),s32_min_value=0,s32_max_value=0,u32_max_value=0) R1=inv(id=0,umax_value=256,var_off=(0x0; 0x1ff)) R6=map_value(id=0,off=544,ks=4,vs=1056,imm=0) R10=fp0
-;
-22: (c7) r0 s>>= 32
-; payload1_len1 = len;
-23: (18) r1 = 0xffffb14a4010c208
-25: (7b) *(u64 *)(r1 +0) = r0
-  R0_w=inv(id=0,smin_value=-2147483648,smax_value=256) R1_w=map_value(id=0,off=520,ks=4,vs=1056,imm=0) R6=map_value(id=0,off=544,ks=4,vs=1056,imm=0) R10=fp0
-; payload += len;
-26: (18) r6 = 0xffffb14a4010c220
-28: (0f) r6 += r0
-last_idx 28 first_idx 21
-regs=1 stack=0 before 26: (18) r6 = 0xffffb14a4010c220
-regs=1 stack=0 before 25: (7b) *(u64 *)(r1 +0) = r0
-regs=1 stack=0 before 23: (18) r1 = 0xffffb14a4010c208
-regs=1 stack=0 before 22: (c7) r0 s>>= 32
-regs=1 stack=0 before 21: (25) if r1 > 0x100 goto pc+7
-  R0_rw=invP(id=0,smax_value=1099511627776,umax_value=18446744069414584320,var_off=(0x0; 0xffffffff00000000),s32_min_value=0,s32_max_value=0,u32_max_value=0) R1_rw=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6_w=map_value(id=0,off=544,ks=4,vs=1056,imm=0) R10=fp0
-parent didn't have regs=1 stack=0 marks
-last_idx 20 first_idx 9
-regs=1 stack=0 before 20: (77) r1 >>= 32
-regs=1 stack=0 before 19: (bf) r1 = r0
-regs=1 stack=0 before 18: (67) r0 <<= 32
-regs=1 stack=0 before 17: (85) call bpf_probe_read_kernel_str#115
-value -2147483648 makes map_value pointer be out of bounds
-processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 2 peak_states 2 mark_read 1
-
-libbpf: -- END LOG --
-libbpf: failed to load program 'raw_tp/sys_enter'
-libbpf: failed to load object 'test_varlen'
-libbpf: failed to load BPF skeleton 'test_varlen': -4007
-test_varlen:FAIL:skel_open failed to open skeleton
-#86 varlen:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+John, wdyt?
