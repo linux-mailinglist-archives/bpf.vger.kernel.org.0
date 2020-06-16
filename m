@@ -2,66 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF231FAF40
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 13:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3451FB1BD
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 15:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgFPLdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 07:33:17 -0400
-Received: from sym2.noone.org ([178.63.92.236]:57200 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728448AbgFPLdH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 07:33:07 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 49mQzz560Wzvjc1; Tue, 16 Jun 2020 13:33:03 +0200 (CEST)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
-Subject: [PATCH bpf] tools, bpftool: Add ringbuf map type to map command docs
-Date:   Tue, 16 Jun 2020 13:33:03 +0200
-Message-Id: <20200616113303.8123-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+        id S1728549AbgFPNKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 09:10:34 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45184 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726306AbgFPNKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jun 2020 09:10:34 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jlBM0-0004aN-8w; Tue, 16 Jun 2020 15:10:16 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jlBLz-0004ar-ON; Tue, 16 Jun 2020 15:10:15 +0200
+Subject: Re: [PATCH] [bpf] xdp_redirect_cpu_user: Fix null pointer dereference
+To:     Gaurav Singh <gaurav1086@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20200614190434.31321-1-gaurav1086@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f803b1ad-cccd-750f-01e4-e1769ab1d538@iogearbox.net>
+Date:   Tue, 16 Jun 2020 15:10:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200614190434.31321-1-gaurav1086@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25844/Mon Jun 15 15:06:22 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit c34a06c56df7 ("tools/bpftool: Add ringbuf map to a list of known
-map types") added the symbolic "ringbuf" name. Document it in the bpftool
-map command docs and usage as well.
+On 6/14/20 9:04 PM, Gaurav Singh wrote:
+> Memset() on the pointer right after malloc() can cause
+> a null pointer dereference if it failed to allocate memory.
+> Fix this by replacing malloc/memset with a single calloc().
+> 
+> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- tools/bpf/bpftool/Documentation/bpftool-map.rst | 2 +-
- tools/bpf/bpftool/map.c                         | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Squashed all three same fixes into one and pushed to bpf, thanks!
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index 31101643e57c..70c78faa47ab 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -49,7 +49,7 @@ MAP COMMANDS
- |		| **lru_percpu_hash** | **lpm_trie** | **array_of_maps** | **hash_of_maps**
- |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
- |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
--|		| **queue** | **stack** | **sk_storage** | **struct_ops** }
-+|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** }
- 
- DESCRIPTION
- ===========
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index 99109a6afe17..1d3b60651078 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1591,7 +1591,7 @@ static int do_help(int argc, char **argv)
- 		"                 lru_percpu_hash | lpm_trie | array_of_maps | hash_of_maps |\n"
- 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
- 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
--		"                 queue | stack | sk_storage | struct_ops }\n"
-+		"                 queue | stack | sk_storage | struct_ops | ringbuf }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
- 		"",
- 		bin_name, argv[-2]);
--- 
-2.27.0
+> @@ -222,11 +219,9 @@ static struct datarec *alloc_record_per_cpu(void)
+>   static struct stats_record *alloc_stats_record(void)
+>   {
+>   	struct stats_record *rec;
+> -	int i, size;
+> +	int i;
+>   
+> -	size = sizeof(*rec) + n_cpus * sizeof(struct record);
+> -	rec = malloc(size);
+> -	memset(rec, 0, size);
+> +	rec = calloc(n_cpus + 1, sizeof(struct record));
 
+For the record, this one is buggy, so I fixed it up as well.
+
+>   	if (!rec) {
+>   		fprintf(stderr, "Mem alloc error\n");
+>   		exit(EXIT_FAIL_MEM);
+> 
+
+Thanks,
+Daniel
