@@ -2,137 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FC81FC016
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 22:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004281FC025
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 22:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbgFPUhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 16:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgFPUhY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 16:37:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F5C061573;
-        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y11so123989ljm.9;
-        Tue, 16 Jun 2020 13:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
-        b=pyXB6lOygv7d3fpovp/hfSOGjPv5ee22Kh91pmpyuPkSH3cPe3xSSoKSv3zqwVnXx5
-         +hhuHw8IAeyT6YN+YmeJ8SISZmCPqA8fh5VAgYKlNwFqozX8D6KxPnyN0eqUlSB4iFjy
-         0H9mr/YUYfncmuJd4v0jGbf+5gecaMKPZpgz/EwdlODlfHSUFP3c36q+sN12qIfRSTDc
-         9XvqhgIfIAJ3h5l+xUN6yALuo9i/u+p6vm4CfhHzmRPyRrib0DNg9SrFIynm1eDiW+fz
-         a5WjoU7rKP3KdkSRkTyfBDEWwObdz/xvMkdbgkD/hVLLtcLk5LAtPzC1lrDPU//KAnpI
-         ENvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ED+E05jFvuSbF1d6fG9JM8s3vB5/r4QTyu/6Ssk0hqI=;
-        b=rObWlGhHfsQITvObmKX8O7ZhbsJPwqDAl0r2llWXj6F1NK0P4JazhUNGqKTVUPFCpL
-         BaeIt1GfZyudkP6aAnt9GXDvOcT30TcGB/QenrOWOO5xbrBWI8T2CAHNEgRAZz/5sn1z
-         9bqHchEdngon6xgX+Exqgq4QjBuP+ddR54ubaFzvCFGUsOPZ+9aziwkrLO+JdzJVBOSz
-         /NTT3jtUwnadKCd1ltUVsshnM70CA/wjQL2W+2YeaXU2VP0R2CT+0YuDjzvqj23dUIuO
-         XYu8rNwMiaHTyaBwiBQ/Hz5y8OP0f5JVoiP6EUQt2qowV6DWQWy61eP3fdrb2G4T1SPo
-         n5eg==
-X-Gm-Message-State: AOAM53399Cyn5DCg2Uim0DwN/DovUOGwwOSrq79sM9jbNZUMcVyC9JLn
-        CabeBx9z99ASy/Mnf2uz0DXL+8ly/jYnLBclG8A=
-X-Google-Smtp-Source: ABdhPJwE2lMLvVUrdVYb5jqSp16Jt51lzYQ+YF39c3LoNZ6rdQE19vSQ2lSbpLa+BE9LdtTZnOw2WK0Z27HR99wUpn4=
-X-Received: by 2002:a2e:98d7:: with SMTP id s23mr2376050ljj.2.1592339842579;
- Tue, 16 Jun 2020 13:37:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
- <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
- <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com> <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
-In-Reply-To: <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 16 Jun 2020 13:37:11 -0700
-Message-ID: <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726428AbgFPUlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 16:41:04 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34364 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726464AbgFPUlD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jun 2020 16:41:03 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05GKegHa004352;
+        Tue, 16 Jun 2020 13:40:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=r9iR/Z+s6iv91NrQf4m3Zpjz9qMXVHMl0Yv2cbninHg=;
+ b=inn1lpkdDQ7mt8Qfb6WH+IsdmAUJcq87H4f1YY7CLvRhElyjJ3U/T7vbaYHAiYThE1Aj
+ M9irHTtf6SbCrKDg8/iQ98zX+MYyT92y9vXa/kBCorzicWfn17+lUD8qygJTQ8RoziaU
+ FUD4WH3X55qfndqZ3Me6vyawM11HTzz6w/0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 31pv0htudw-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 16 Jun 2020 13:40:43 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 16 Jun 2020 13:40:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FwUGPLfV0IJne6QhZ6D+axkZo/OjAwvRqFHU6BtFqELPKLC3ixdLLgECBQrY0JxN2OJ+WOCQHaChjXmj1kEo6ef5NQx6gCgbNSmontu7ANRtmxtsOtLFM+UX+o+X4Kz4htTNEFrU0cIE0oXLp1O4ExB12UDRoNIx+8jO+8JYbVQ7WvjN9ieWTBUuu2sDy+1B3VwyU+pbh49yy9YHAb6w4pGRn1V92pxr1bQWHpy9UApnOQAjF9ejFWxz83f0C5Q2jDr5V8vx/fqrn7hggwbk6tuVbGYZRc0MgKujWxBRUev93/5MuTuc76xKmAXHHiAYt8tX0A/15Ov1j5m9HOt3YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r9iR/Z+s6iv91NrQf4m3Zpjz9qMXVHMl0Yv2cbninHg=;
+ b=dgAF7+tM/xX6qbpgJPbavOeTHBWyNYMDLSWwsAPaOLPrmAMnzQIA1NolXVlZrA3NVa2CGYieLaoqiZzQN14jdH9pZhBNrnPl0xmSDnRC+1M3t8PaLv+mW68hcv/ER0lXf2r15BDq1Sj8DE75IgnQ3fLmhVVNWhLcdPERYXHXue3xTSBV6jEPKizMvh5MrFa3sPw1+A1tc/y0BdoP8xxGfgTP3h5Xwz4MsxrpfIUIIUgYNVlPadO8pGuakCpy/fsrGQ+eBx2mgsZ6Q1AK9EarqsgZQHulzydlj2jCT0Jzt4ui8hs6KQtDRcRfsKCH6XF6Z9ggS8kWQTQ2UAku24uGFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r9iR/Z+s6iv91NrQf4m3Zpjz9qMXVHMl0Yv2cbninHg=;
+ b=Z3EM5dUr89raYey+wKYHEHOyPXPwlmdDqzlHQYrduMI66aaNTxjbRpzYCpI0ZiCt9o95d3df7LlLuYArMwh42XOApBP4vaAFUn4v0FQQZrrd5o1CU1/ZNZM1m+f/x8YQaWcARdMZMUN0SXKf6uNyezXtLaN3Hf1xhV9wWJb4/Rw=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2997.namprd15.prod.outlook.com (2603:10b6:a03:b0::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Tue, 16 Jun
+ 2020 20:40:28 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3088.028; Tue, 16 Jun 2020
+ 20:40:28 +0000
+Subject: Re: [PATCH bpf-next 4/4] bpf: Add selftests for local_storage
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200526163336.63653-1-kpsingh@chromium.org>
+ <20200526163336.63653-5-kpsingh@chromium.org>
+ <CAEf4BzY0=Hh3O6qeD=2sMWpQRpHpizxH+nEA0hD0khPf3VAbhA@mail.gmail.com>
+ <20200616155433.GA11971@google.com>
+ <CAEf4BzZm86BQqhfVHfm7aKvwK-UXC7679DsJe8xQqYR8eUUwAQ@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <eb5e9c81-237a-d2d0-6bc6-26b1d5590a00@fb.com>
+Date:   Tue, 16 Jun 2020 13:40:26 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+In-Reply-To: <CAEf4BzZm86BQqhfVHfm7aKvwK-UXC7679DsJe8xQqYR8eUUwAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BYAPR05CA0079.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::20) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1860] (2620:10d:c090:400::5:4028) by BYAPR05CA0079.namprd05.prod.outlook.com (2603:10b6:a03:e0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.9 via Frontend Transport; Tue, 16 Jun 2020 20:40:27 +0000
+X-Originating-IP: [2620:10d:c090:400::5:4028]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba335b5b-cc20-4e3a-21e5-08d812358136
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2997:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB299701A78D322DA805A951D5D39D0@BYAPR15MB2997.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-Forefront-PRVS: 04362AC73B
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fpsbbe8zCOnmcy00roWWWiMQYHyLWKO+jMCWNPJIl+xb7ZN9QP6y2GKzsX6Nl8lBOvzGLlxivgshwWIPGEoKfKmv+ZBdmY0NS7EGZZOogeq/Ywo3cN/vI1n1ISERf5Mj6xv5Cj1TOIjVs77CNzRfh/4RkSj2lobLWi4fTFlzHq6rCCGQ/1CvPySvqBKpQI0zHpma3Scz0DVqFfq7E8oMBF8zsOcZ06HrA0WCCZiep1aIqQtfk51x7kflt9Wxan3C7Ed47Hx1wu5Fwvan5wS9fH65EaWhjt7myG2hCZvbtod2hoMQ46u7qhiVi/H95KERb+8+ZrNjHgN92o/OlvWrkXOgNHJhjI+Cu05SyhaehU9WaB8BooMrNty8LK8rZL0y
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(6486002)(83380400001)(7416002)(16526019)(8676002)(498600001)(8936002)(110136005)(54906003)(31686004)(186003)(4326008)(52116002)(31696002)(53546011)(2616005)(86362001)(66946007)(2906002)(66476007)(36756003)(66556008)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: UtoKOjmnH1Z7GHQkBAnZO2RqFsEbz9ovUvExCMFZ1/MXZcDqHz+sMP1QHjufm0X/x9tWhkqUBdOGn7lVZLfqWWjlvRFZevMqfH2X4yNL9SLkqKr9EpwjKQUb/tRWppd6zCX/1LvcDx7bPn4cjgPIKUrpeXvcOJdnIVU+tvi4HJDbnjuzlzMxu2FccNFCbs4+gyMoe2JAvPLtIx07iKaDypYwNlI/0gFPTvgU2VYG/EjscN6k1Ikuax1qdXa5RbPvBwiYPr9k3eHU61JoAwM1LOIGIti6cP7kcNcbQtvioRCv8hGM4tUmqZnAV1LhfLrNE37yT5d8/mKFt65p1iImhNrbCjg7L69FJvTx0otORcG7eJhe09HaReY/2Wtjoqh5pJQByxxmUnbPsSOPk6yBKtno2TOtlmiBuj/H+Rh90mwZxJHI+0rmKkHwKCWOlaK7tuPGSEHW+cW/pDfC/Yhzv/yXjAneSMn+3Uew+Jznn1zVAqAuu9xzIwlHIcD2IWuJyuAMHasuS0l0O/qAR57NiA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba335b5b-cc20-4e3a-21e5-08d812358136
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 20:40:28.6418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GFoiah6/hnmi8QJ00CrnoTvDVhJquwa/volfvbgUJh6CdufPcMp3mYF786ndWJCW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2997
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-16_13:2020-06-16,2020-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 cotscore=-2147483648
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006160144
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+
+On 6/16/20 12:25 PM, Andrii Nakryiko wrote:
+> On Tue, Jun 16, 2020 at 8:54 AM KP Singh <kpsingh@chromium.org> wrote:
+>> On 01-Jun 13:29, Andrii Nakryiko wrote:
+>>> On Tue, May 26, 2020 at 9:34 AM KP Singh <kpsingh@chromium.org> wrote:
+>>>> From: KP Singh <kpsingh@google.com>
+>>>>
+>>>> inode_local_storage:
+>>>>
+>>>> * Hook to the file_open and inode_unlink LSM hooks.
+>>>> * Create and unlink a temporary file.
+>>>> * Store some information in the inode's bpf_local_storage during
+>>>>    file_open.
+>>>> * Verify that this information exists when the file is unlinked.
+>>>>
+>>>> sk_local_storage:
+>>>>
+>>>> * Hook to the socket_post_create and socket_bind LSM hooks.
+>>>> * Open and bind a socket and set the sk_storage in the
+>>>>    socket_post_create hook using the start_server helper.
+>>>> * Verify if the information is set in the socket_bind hook.
+>>>>
+>>>> Signed-off-by: KP Singh <kpsingh@google.com>
+>>>> ---
+>>>>   .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
+>>>>   .../selftests/bpf/progs/local_storage.c       | 139 ++++++++++++++++++
+>>>>   2 files changed, 199 insertions(+)
+>>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+>>>>   create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+>>>>
+>>> [...]
+>>>
+>>>> +struct dummy_storage {
+>>>> +       __u32 value;
+>>>> +};
+>>>> +
+>>>> +struct {
+>>>> +       __uint(type, BPF_MAP_TYPE_INODE_STORAGE);
+>>>> +       __uint(map_flags, BPF_F_NO_PREALLOC);
+>>>> +       __type(key, int);
+>>>> +       __type(value, struct dummy_storage);
+>>>> +} inode_storage_map SEC(".maps");
+>>>> +
+>>>> +struct {
+>>>> +       __uint(type, BPF_MAP_TYPE_SK_STORAGE);
+>>>> +       __uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
+>>>> +       __type(key, int);
+>>>> +       __type(value, struct dummy_storage);
+>>>> +} sk_storage_map SEC(".maps");
+>>>> +
+>>>> +/* Using vmlinux.h causes the generated BTF to be so big that the object
+>>>> + * load fails at btf__load.
+>>>> + */
+>>> That's first time I hear about such issue. Do you have an error log
+>>> from verifier?
+>> Here's what I get when I do the following change.
+>>
+>> --- a/tools/testing/selftests/bpf/progs/local_storage.c
+>> +++ b/tools/testing/selftests/bpf/progs/local_storage.c
+>> @@ -4,8 +4,8 @@
+>>    * Copyright 2020 Google LLC.
+>>    */
+>>
+>> +#include "vmlinux.h"
+>>   #include <errno.h>
+>> -#include <linux/bpf.h>
+>>   #include <stdbool.h>
+>>   #include <bpf/bpf_helpers.h>
+>>   #include <bpf/bpf_tracing.h>
+>> @@ -37,24 +37,6 @@ struct {
+>>          __type(value, struct dummy_storage);
+>>   } sk_storage_map SEC(".maps");
+>>
+>> -/* Using vmlinux.h causes the generated BTF to be so big that the object
+>> - * load fails at btf__load.
+>> - */
+>> -struct sock {} __attribute__((preserve_access_index));
+>> -struct sockaddr {} __attribute__((preserve_access_index));
+>> -struct socket {
+>> -       struct sock *sk;
+>> -} __attribute__((preserve_access_index));
+>> -
+>> -struct inode {} __attribute__((preserve_access_index));
+>> -struct dentry {
+>> -       struct inode *d_inode;
+>> -} __attribute__((preserve_access_index));
+>> -struct file {
+>> -       struct inode *f_inode;
+>> -} __attribute__((preserve_access_index));
+>>
+>> ./test_progs -t test_local_storage
+>> libbpf: Error loading BTF: Invalid argument(22)
+>> libbpf: magic: 0xeb9f
+>> version: 1
+>> flags: 0x0
+>> hdr_len: 24
+>> type_off: 0
+>> type_len: 4488
+>> str_off: 4488
+>> str_len: 3012
+>> btf_total_size: 7524
+>>
+>> [1] STRUCT (anon) size=32 vlen=4
+>>          type type_id=2 bits_offset=0
+>>          map_flags type_id=6 bits_offset=64
+>>          key type_id=8 bits_offset=128
+>>          value type_id=9 bits_offset=192
+>> [2] PTR (anon) type_id=4
+>> [3] INT int size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+>> [4] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=28
+>> [5] INT __ARRAY_SIZE_TYPE__ size=4 bits_offset=0 nr_bits=32 encoding=(none)
+>> [6] PTR (anon) type_id=7
+>> [7] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=1
+>> [8] PTR (anon) type_id=3
+>> [9] PTR (anon) type_id=10
+>> [10] STRUCT dummy_storage size=4 vlen=1
+>>          value type_id=11 bits_offset=0
+>> [11] TYPEDEF __u32 type_id=12
+>>
+>>    [... More BTF Dump ...]
+>>
+>> [91] TYPEDEF wait_queue_head_t type_id=175
+>>
+>>    [... More BTF Dump ...]
+>>
+>> [173] FWD super_block struct
+>> [174] FWD vfsmount struct
+>> [175] FWD wait_queue_head struct
+>> [106] STRUCT socket_wq size=128 vlen=4
+>>          wait type_id=91 bits_offset=0 Invalid member
+>>
+>> libbpf: Error loading .BTF into kernel: -22.
+>> libbpf: map 'inode_storage_map': failed to create: Invalid argument(-22)
+>> libbpf: failed to load object 'local_storage'
+>> libbpf: failed to load BPF skeleton 'local_storage': -22
+>> test_test_local_storage:FAIL:skel_load lsm skeleton failed
+>> #81 test_local_storage:FAIL
+>>
+>> The failiure is in:
+>>
+>> [106] STRUCT socket_wq size=128 vlen=4
+>>          wait type_id=91 bits_offset=0 Invalid member
+>>
+>>> Clang is smart enough to trim down used types to only those that are
+>>> actually necessary, so too big BTF shouldn't be a thing. But let's try
+>>> to dig into this and fix whatever issue it is, before giving up :)
+>>>
+>> I was wrong about the size being an issue. The verifier thinks the BTF
+>> is invalid and more specificially it thinks that the socket_wq's
+>> member with type_id=91, i.e. typedef wait_queue_head_t is invalid. Am
+>> I missing some toolchain patches?
+>>
+> It is invalid BTF in the sense that we have a struct, embedding a
+> struct, which is only defined as a forward declaration. There is not
+> enough information and such situation would have caused compilation
+> error, because it's impossible to determine the size of the outer
+> struct.
 >
-> On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > >
-> > > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > >
-> > > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> > > > >
-> > > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > > > > ---
-> > > > >  kernel/bpf/net_namespace.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > >
-> > > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > > > > index 78cf061f8179..56133e78ae4f 100644
-> > > > > --- a/kernel/bpf/net_namespace.c
-> > > > > +++ b/kernel/bpf/net_namespace.c
-> > > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > > > >         struct net *net;
-> > > > >         int ret;
-> > > > >
-> > > > > +       if (attr->attach_flags || attr->target_fd)
-> > > > > +               return -EINVAL;
-> > > > > +
-> > > >
-> > > > In theory it makes sense, but how did you test it?
-> > >
-> > > Not properly it seems, sorry!
-> > >
-> > > > test_progs -t flow
-> > > > fails 5 tests.
-> > >
-> > > I spent today digging through this, and the issue is actually more annoying than
-> > > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-> > > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-> > > program being detached is actually what user space expects. We actually have
-> > > tests that set attach_bpf_fd for these to attach points, which tells
-> > > me that this is
-> > > an easy mistake to make.
-> > >
-> > > Unfortunately I can't come up with a good fix that seems backportable:
-> > > - Making sockmap and flow_dissector have the same semantics as cgroup
-> > >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
-> >
-> > making flow dissector pass prog_fd as cg and lirc is certainly my preference.
-> > Especially since tests are passing fd user code is likely doing the same,
-> > so breakage is unlikely. Also it wasn't done that long ago, so
-> > we can backport far enough.
-> > It will remove cap_net_admin ugly check in bpf_prog_detach()
-> > which is the only exception now in cap model.
+> Yonghong, it seems like Clang is pruning types too aggressively here?
+> We should keep types that are embedded, even if they are not used
+> directly by user code. Could you please take a look?
+
+Sure. Will take a look shortly.
+
 >
-> SGTM. What about sockmap though? The code for that has been around for ages.
-
-you mean the second patch that enforces sock_map_get_from_fd doesn't
-use attach_flags?
-I think it didn't break anything, so enforcing is fine.
-
-or the detach part that doesn't use prog_fd ?
-I'm not sure what's the best here.
-At least from cap perspective it's fine because map_fd is there.
-
-John, wdyt?
+>
+>
+>> - KP
+>>
+>>
+>>>> +struct sock {} __attribute__((preserve_access_index));
+>>>> +struct sockaddr {} __attribute__((preserve_access_index));
+>>>> +struct socket {
+>>>> +       struct sock *sk;
+>>>> +} __attribute__((preserve_access_index));
+>>>> +
+>>>> +struct inode {} __attribute__((preserve_access_index));
+>>>> +struct dentry {
+>>>> +       struct inode *d_inode;
+>>>> +} __attribute__((preserve_access_index));
+>>>> +struct file {
+>>>> +       struct inode *f_inode;
+>>>> +} __attribute__((preserve_access_index));
+>>>> +
+>>>> +
+>>> [...]
