@@ -2,166 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6D81FABAE
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 10:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A91D1FABD3
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 11:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgFPIzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 04:55:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47579 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725911AbgFPIzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:55:25 -0400
+        id S1725710AbgFPJEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 05:04:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40156 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725896AbgFPJEX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jun 2020 05:04:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592297723;
+        s=mimecast20190719; t=1592298262;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wPF4qSfy9sktQyy2eeERuhgmZWCBKew9r91uHe9yaxg=;
-        b=W9vTyiChCmQkES6Szhkg4WOce43xzQ32dcFB/25w4rfogYCkQB/pDh2Bu5BzyG1ywPUsL7
-        +A2HylBN8K3aRz4cbwoflpcajDqFk2GbWOHjV1Z7RpMZqGIslpCH+/ZiZqHkD2OzPNJ1/3
-        jDLPtXA3vaoQlCwGvtXiyvVaLRarqAg=
+        bh=Ka0//B8iqVe7XF0DH1uWb/HCvgCVFTO+HcSeWwz6I0c=;
+        b=hB+PqTy9Dfc/BD+3GhRQ2XdIowAZPtVSd9bKvO0TqQGlYsCO8RvPWmKhQI2PGV3hZHvtBw
+        sCX3+PrTVEK+x57zvHwjumwC1ddNiggWLqDrbwKnpvZJqkcieSw5XJ8MJSg/vCzXOA2w/s
+        HSWLuY5mAzhyzfy2ZwgSQma9PD7//6U=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-AjfjPjU3O7eoLgJpO1VzbQ-1; Tue, 16 Jun 2020 04:55:20 -0400
-X-MC-Unique: AjfjPjU3O7eoLgJpO1VzbQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-341-eTzddpHJOjmIAzN8h4b-kw-1; Tue, 16 Jun 2020 05:04:18 -0400
+X-MC-Unique: eTzddpHJOjmIAzN8h4b-kw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67A6C10AB647;
-        Tue, 16 Jun 2020 08:55:19 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29C1E100961D;
+        Tue, 16 Jun 2020 09:04:17 +0000 (UTC)
 Received: from carbon (unknown [10.40.208.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 243D01002396;
-        Tue, 16 Jun 2020 08:55:07 +0000 (UTC)
-Date:   Tue, 16 Jun 2020 10:55:06 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 995B319D71;
+        Tue, 16 Jun 2020 09:04:05 +0000 (UTC)
+Date:   Tue, 16 Jun 2020 11:04:04 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
         Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
         brouer@redhat.com
 Subject: Re: [PATCHv4 bpf-next 1/2] xdp: add a new helper for dev map
  multicast support
-Message-ID: <20200616105506.163ea5a3@carbon>
-In-Reply-To: <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+Message-ID: <20200616110404.27149171@carbon>
+In-Reply-To: <87d0678b8w.fsf@toke.dk>
 References: <20200415085437.23028-1-liuhangbin@gmail.com>
         <20200526140539.4103528-1-liuhangbin@gmail.com>
         <20200526140539.4103528-2-liuhangbin@gmail.com>
-        <20200610121859.0412c111@carbon>
-        <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+        <20200610122153.76d30e37@carbon>
+        <87d0678b8w.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 12 Jun 2020 16:54:08 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-> On Wed, Jun 10, 2020 at 12:18:59PM +0200, Jesper Dangaard Brouer wrote:
+On Wed, 10 Jun 2020 12:29:35 +0200
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>=20
 > > On Tue, 26 May 2020 22:05:38 +0800
 > > Hangbin Liu <liuhangbin@gmail.com> wrote:
-> >   
-> > > diff --git a/net/core/xdp.c b/net/core/xdp.c
-> > > index 90f44f382115..acdc63833b1f 100644
-> > > --- a/net/core/xdp.c
-> > > +++ b/net/core/xdp.c
-> > > @@ -475,3 +475,29 @@ void xdp_warn(const char *msg, const char *func, const int line)
-> > >  	WARN(1, "XDP_WARN: %s(line:%d): %s\n", func, line, msg);
-> > >  };
-> > >  EXPORT_SYMBOL_GPL(xdp_warn);
-> > > +
-> > > +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
-> > > +{
-> > > +	unsigned int headroom, totalsize;
-> > > +	struct xdp_frame *nxdpf;
-> > > +	struct page *page;
-> > > +	void *addr;
-> > > +
-> > > +	headroom = xdpf->headroom + sizeof(*xdpf);
-> > > +	totalsize = headroom + xdpf->len;
-> > > +
-> > > +	if (unlikely(totalsize > PAGE_SIZE))
-> > > +		return NULL;
-> > > +	page = dev_alloc_page();
-> > > +	if (!page)
-> > > +		return NULL;
-> > > +	addr = page_to_virt(page);
-> > > +
-> > > +	memcpy(addr, xdpf, totalsize);  
-> > 
-> > I don't think this will work.  You are assuming that the memory model
-> > (xdp_mem_info) is the same.
-> > 
-> > You happened to use i40, that have MEM_TYPE_PAGE_SHARED, and you should
-> > have changed this to MEM_TYPE_PAGE_ORDER0, but it doesn't crash as they
-> > are compatible.  If you were using mlx5, I suspect that this would
-> > result in memory leaking.  
-> 
-> Is there anything else I should do except add the following line?
-> 	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
+> > =20
+> >> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> >> index a51d9fb7a359..ecc5c44a5bab 100644
+> >> --- a/kernel/bpf/devmap.c
+> >> +++ b/kernel/bpf/devmap.c =20
+> > [...]
+> > =20
+> >> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *de=
+v_rx,
+> >> +			  struct bpf_map *map, struct bpf_map *ex_map,
+> >> +			  bool exclude_ingress)
+> >> +{
+[...]
+> >> +		if (!first) {
+> >> +			nxdpf =3D xdpf_clone(xdpf);
+> >> +			if (unlikely(!nxdpf))
+> >> +				return -ENOMEM;
+> >> +
+> >> +			bq_enqueue(dev, nxdpf, dev_rx);
+> >> +		} else {
+> >> +			bq_enqueue(dev, xdpf, dev_rx); =20
+> >
+> > This looks racy.  You enqueue the original frame, and then later
+> > xdpf_clone it.  The original frame might have been freed at that
+> > point. =20
+>=20
+> This was actually my suggestion; on the assumption that bq_enqueue()
+> just puts the frame on a list that won't be flushed until we exit the
+> NAPI loop.
+>=20
+> But I guess now that you mention it that bq_enqueue() may flush the
+> queue, so you're right that this won't work. Sorry about that, Hangbin :/
+>=20
+> Jesper, the reason I suggested this was to avoid an "extra" copy (i.e.,
+> if we have two destinations, ideally we should only clone once instead
+> of twice). Got any clever ideas for a safe way to achieve this? :)
 
-You do realize that you also have copied over the mem.id, right?
+Maybe you/we could avoid the clone on the last destination?
 
-And as I wrote below you also need to update frame_sz.
-
-> > 
-> > You also need to update xdpf->frame_sz, as you also cannot assume it is
-> > the same.  
-> 
-> Won't the memcpy() copy xdpf->frame_sz to nxdpf? 
-
-You obviously cannot use the frame_sz from the existing frame, as you
-just allocated a new page for the new xdp_frame, that have another size
-(here PAGE_SIZE).
-
-
-> And I didn't see xdpf->frame_sz is set in xdp_convert_zc_to_xdp_frame(),
-> do we need a fix?
-
-Good catch, that sounds like a bug, that should be fixed.
-Will you send a fix?
-
-
-> > > +
-> > > +	nxdpf = addr;
-> > > +	nxdpf->data = addr + headroom;
-> > > +
-> > > +	return nxdpf;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(xdpf_clone);  
-> > 
-> > 
-> > struct xdp_frame {
-> > 	void *data;
-> > 	u16 len;
-> > 	u16 headroom;
-> > 	u32 metasize:8;
-> > 	u32 frame_sz:24;
-> > 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
-> > 	 * while mem info is valid on remote CPU.
-> > 	 */
-> > 	struct xdp_mem_info mem;
-> > 	struct net_device *dev_rx; /* used by cpumap */
-> > };
-> >   
-> 
-
-struct xdp_mem_info {
-	u32                        type;                 /*     0     4 */
-	u32                        id;                   /*     4     4 */
-
-	/* size: 8, cachelines: 1, members: 2 */
-	/* last cacheline: 8 bytes */
-};
-
--- 
+--=20
 Best regards,
   Jesper Dangaard Brouer
   MSc.CS, Principal Kernel Engineer at Red Hat
