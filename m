@@ -2,61 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7BA1FC233
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 01:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABAF1FC239
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 01:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgFPXUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 19:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        id S1726401AbgFPXUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 19:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgFPXUP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:20:15 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54EC061573
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 16:20:14 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id e2so172765qvw.7
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 16:20:14 -0700 (PDT)
+        with ESMTP id S1726044AbgFPXUu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jun 2020 19:20:50 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE330C061573
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 16:20:50 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id i16so141951qtr.7
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 16:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ydEIvhIlb7ovVI3Xf7h9v7BiGXq3AQvutaYsjp4Texs=;
-        b=ZlJPiZtn4IBK8cMZY1UsbSNbCNAbfV+Jz/6SBXYZaE6/xOjWjBsO3S/ali4J3aBhgr
-         PxuGjtiRC40R+LZE/NJ7CVdegcwKU2hjYHs+EFCc3x3lU5ZBiIlwJ1G/yyKpfQ2oIZbM
-         GZHocRPFoCG9tJ5yVcqMZ8t6brtS1insmxk7lcltomIzJ15upUtwiOGy2MT6B0Em4RHN
-         uiXbIHtHTRjW7MNsvN+EWgxsyMR7yWxZghnphLRGR2cbeRkIGmA+5OfV5da+OrrThV5z
-         zv46ItWLnHGZ44h40UzEb8hBx5hMlzcXcqyAZf1cfHLTNPxmB62dAa8K4W+gEqrNlMh9
-         PSvA==
+        bh=pqIyQnUzXL5D4KsY5srH61fM06Ml//ffTL2G2f2q/+I=;
+        b=nf1vgdPfxioxYb678T+PGpk3e9XZjrx5frEV88ZO9w+rxRFoN6I+vXrBwNxYikpAr0
+         4qgGlVtlEm1kj9qbcVzkraXqYUMzoi+elLGivjtl1o7AP53OX7jUviC3GoXe90UuMEwL
+         ZibG6EDWYTXBwiab8QOlX9NrGFuRo5RjsbMYMKJU01xxUK0GAqIE91/mWbKy8D4L+6ln
+         6eLNLjfujVEODkbXUH+sCopGW5oQzR0pQ67ONMrtW+mPrBRzm0dJVRPP6dAwDzUHrNSi
+         lHl7CD6cqUjZraEHRqeFrNewr9+8F8yXSWC7YxxtrFygZCRLsosptjVno/LwPr+wNZcJ
+         3iBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ydEIvhIlb7ovVI3Xf7h9v7BiGXq3AQvutaYsjp4Texs=;
-        b=ZpFJjNtxo/6JXs9E4hT13JklzrPwmD6AHabIVDB78KGkRpcMAH5EXTDbuRefGl8tc4
-         qFfTtW8bq4W7GHbG3zl5uvHVtc4xa3/XFp251NM9jtuthLrKdTWhQyLVmyYol9zKExbM
-         rX+84JqFlTcPmfJZ+UvzEa2jq9S8kqgGw2wADOg2e/u/3jvSJnC5Ckg8WFCrEQKdV9O2
-         408TLinogAo4nf1KF2vGPlQWKZrjN1f5GZQAiwnA2y4saUFgK8CTZ2hD75Ag/NudOoGK
-         9YM3iLab93Iugv4CKiWLM0aUlL/8leJrdo+bQBBHcO4yO/vZR0A8A85BxAhycq3s8g5p
-         QlgQ==
-X-Gm-Message-State: AOAM531c8WxwATOt+VmCz8K2Y33jOcxpzypEjp4UsIUxdl1rTGPA7ZCm
-        S05Sdx+QH3kFXMyLc0eFLNvxOBqLHAptEQaN6w5J1w==
-X-Google-Smtp-Source: ABdhPJxd5+ZpJ8GjVcVCEZ1v1WeHVdV9UTZFumqfLL/JQrqofc8zuLTAJrBCUN8dxMgEM3UaxU6R3qWb2KzOk5eSmsE=
-X-Received: by 2002:ad4:4732:: with SMTP id l18mr4912831qvz.43.1592349612894;
- Tue, 16 Jun 2020 16:20:12 -0700 (PDT)
+        bh=pqIyQnUzXL5D4KsY5srH61fM06Ml//ffTL2G2f2q/+I=;
+        b=qAmi8EPzfHMRdG54rogouWd3Q6Oi3K6WlR8fTT9rmEV5lAuKxgeicjqI77VpAcNHaM
+         WkCcd4MLKo14pFmawJnKkqCgBhwNjDSqOU4azNysxDJ6pSQA/Sc+XSrXk2OJDm5Q+Y64
+         sCIVESeGMuWs79MGPmkyUAPnD8ZDCng7FWjwDdurQ7BnRdbtezMPPeK9wXi2W1iboSP+
+         cre4AH4wvCp7esb+SmClj4FpiTRhfslQonnYSzeNT0oJjQX/O7/FkK2nau6bHvB5yxZX
+         tjyP9mlNXk4XgazRYFAhoZOD0r/GaoFkutX4fJxEvRhOrKrsOhrBQva7Z6AK5FErhja8
+         eP3A==
+X-Gm-Message-State: AOAM5302N8oxZwddcS8O2/mRQDIMvNtVkJ5lU0mHqP3XBVXqFwUQ6Qi9
+        XbELZPieSlW9nD92AJxfqh0hMN8VPyneadb+vBepLw==
+X-Google-Smtp-Source: ABdhPJwD3v60Mm1RwFrItNO59U2z4MW3Y+zBVZD4ijXCaWBscZ76kjKPr6/TN7Q/V/cDiH0X8KSR88U3EhUcbxgFBI4=
+X-Received: by 2002:ac8:4c89:: with SMTP id j9mr23961366qtv.326.1592349649706;
+ Tue, 16 Jun 2020 16:20:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200608182748.6998-1-sdf@google.com> <20200613003356.sqp6zn3lnh4qeqyl@ast-mbp.dhcp.thefacebook.com>
- <CAKH8qBuJpks_ny-8MDzzZ5axobn=35P3krVbyz2mtBBtR8Uv+A@mail.gmail.com>
- <20200613035038.qmoxtf5mn3g3aiqe@ast-mbp> <CAKH8qBvUv_OwjFA70JQfL-rET662okH87QYyeivbybCPwCEJEQ@mail.gmail.com>
- <20200616230355.hzipb7hly3fo5moc@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200616230355.hzipb7hly3fo5moc@ast-mbp.dhcp.thefacebook.com>
+References: <20200616225256.246769-1-sdf@google.com> <CAADnVQLS7=UmT9ivyuUiq8i9ZJRUyPNhN0dvdeiF32sUi=A3NQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLS7=UmT9ivyuUiq8i9ZJRUyPNhN0dvdeiF32sUi=A3NQ@mail.gmail.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 16 Jun 2020 16:20:01 -0700
-Message-ID: <CAKH8qBsak9E45d-znh9-4NQ4aSS_qta1_v0wEv-to=8Rc1-R0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/2] bpf: don't return EINVAL from {get,set}sockopt
+Date:   Tue, 16 Jun 2020 16:20:38 -0700
+Message-ID: <CAKH8qBso=z3Thz0pimhLOVvPd2iGMmMoPvUA3j4dZYe1ivr97g@mail.gmail.com>
+Subject: Re: [PATCH bpf v4 1/2] bpf: don't return EINVAL from {get,set}sockopt
  when optlen > PAGE_SIZE
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Laight <David.Laight@aculab.com>
@@ -66,99 +64,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 4:04 PM Alexei Starovoitov
+On Tue, Jun 16, 2020 at 4:05 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, Jun 15, 2020 at 09:41:38AM -0700, Stanislav Fomichev wrote:
-> > On Fri, Jun 12, 2020 at 8:50 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > [ .. ]
-> > > > > It's probably ok, but makes me uneasy about verifier consequences.
-> > > > > ctx->optval is PTR_TO_PACKET and it's a valid pointer from verifier pov.
-> > > > > Do we have cases already where PTR_TO_PACKET == PTR_TO_PACKET_END ?
-> > > > > I don't think we have such tests. I guess bpf prog won't be able to read
-> > > > > anything and nothing will crash, but having PTR_TO_PACKET that is
-> > > > > actually NULL would be an odd special case to keep in mind for everyone
-> > > > > who will work on the verifier from now on.
-> > > > >
-> > > > > Also consider bpf prog that simply reads something small like 4 bytes.
-> > > > > IP_FREEBIND sockopt (like your selftest in the patch 2) will have
-> > > > > those 4 bytes, so it's natural for the prog to assume that it can read it.
-> > > > > It will have
-> > > > > p = ctx->optval;
-> > > > > if (p + 4 > ctx->optval_end)
-> > > > >  /* goto out and don't bother logging, since that never happens */
-> > > > > *(u32*)p;
-> > > > >
-> > > > > but 'clever' user space would pass long optlen and prog suddenly
-> > > > > 'not seeing' the sockopt. It didn't crash, but debugging would be
-> > > > > surprising.
-> > > > >
-> > > > > I feel it's better to copy the first 4k and let the program see it.
-> > > > Agreed with the IP_FREEBIND example wrt observability, however it's
-> > > > not clear what to do with the cropped buffer if the bpf program
-> > > > modifies it.
-> > > >
-> > > > Consider that huge iptables setsockopts where the usespace passes
-> > > > PAGE_SIZE*10 optlen with real data and bpf prog sees only part of it.
-> > > > Now, if the bpf program modifies the buffer (say, flips some byte), we
-> > > > are back to square one. We either have to silently discard that buffer
-> > > > or reallocate/merge. My reasoning with data == NULL, is that at least
-> > > > there is a clear signal that the program can't access the data (and
-> > > > can look at optlen to see if the original buffer is indeed non-zero
-> > > > and maybe deny such requests?).
-> > > > At this point I'm really starting to think that maybe we should just
-> > > > vmalloc everything that is >PAGE_SIZE and add a sysclt to limit an
-> > > > upper bound :-/
-> > > > I'll try to think about this a bit more over the weekend.
-> > >
-> > > Yeah. Tough choices.
-> > > We can also detect in the verifier whether program accessed ctx->optval
-> > > and skip alloc/copy if program didn't touch it, but I suspect in most
-> > > case the program would want to read it.
-> > > I think vmallocing what optlen said is DoS-able. It's better to
-> > > stick with single page.
-> > > Let's keep brainstorming.
-> > Btw, can we use sleepable bpf for that? As in, do whatever I suggested
-> > in these patches (don't expose optval>PAGE_SIZE via context), but add
-> > a new helper where you can say 'copy x bytes from y offset of the
-> > original optval' (the helper will do sleepable copy_form_user).
-> > That way we have a clean signal to the BPF that the value is too big
-> > (optval==optval_end==NULL) and the user can fallback to the helper to
-> > inspect the value. We can also provide another helper to export new
-> > value for this case.
+> On Tue, Jun 16, 2020 at 3:53 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Attaching to these hooks can break iptables because its optval is
+> > usually quite big, or at least bigger than the current PAGE_SIZE limit.
+> > David also mentioned some SCTP options can be big (around 256k).
+> >
+> > There are two possible ways to fix it:
+> > 1. Increase the limit to match iptables max optval. There is, however,
+> >    no clear upper limit. Technically, iptables can accept up to
+> >    512M of data (not sure how practical it is though).
+> >
+> > 2. Bypass the value (don't expose to BPF) if it's too big and trigger
+> >    BPF only with level/optname so BPF can still decide whether
+> >    to allow/deny big sockopts.
+> >
+> > The initial attempt was implemented using strategy #1. Due to
+> > listed shortcomings, let's switch to strategy #2. When there is
+> > legitimate a real use-case for iptables/SCTP, we can consider increasing
+> >  the PAGE_SIZE limit.
+> >
+> > To support the cases where len(optval) > PAGE_SIZE we can
+> > leverage upcoming sleepable BPF work by providing a helper
+> > which can do copy_from_user (sleepable) at the given offset
+> > from the original large buffer.
+> >
+> > v4:
+> > * use temporary buffer to avoid optval == optval_end == NULL;
+> >   this removes the corner case in the verifier that might assume
+> >   non-zero PTR_TO_PACKET/PTR_TO_PACKET_END.
 >
-> sleepable will be read-only and with toctou.
-> I guess this patch is the least evil then ?
-> But I'm confused with the test in patch 2.
-> Why does it do 'if (optval > optval_end)' ?
-> How is that possible when patch 1 makes them equal.
-Right, it should really be 'optval < optval_end', good point!
-I want to make sure in the BPF program that we can't access the buffer
-(essentially return EPERM to the userpace so the test fails).
-Will fix in a follow up.
-
-> may be another idea:
-> allocate 4k, copy first 4k into it, but keep ctx.optlen as original.
-> if bpf prog reads optval and finds it ok in setsockopt,
-> it can set ctx.optlen = 0
-> which would mean run the rest of setsockopt handling with original
-> '__user *optval' and ignore the buffer that was passed to bpf prog.
-> In case of ctx.optlen < 4k the behavior won't change from bpf prog
-> and from kernel pov.
-> When ctx.optlen > 4k and prog didn't adjust it
-> __cgroup_bpf_run_filter_setsockopt will do ret = -EFAULT;
-> and reject sockopt.
-> So bpf prog would be force to do something with large optvals.
-> yet it will be able to examine first 4k bytes of it.
-> It's a bit of change in behavior, but I don't think bpf prog is
-> doing ctx.optlen = 0, since that's more or less the same as
-> doing ctx.optlen = -2.
-> or may be use some other indicator ?
-> And do something similar with getsockopt.
-Good suggestion! That sounds doable in theory, let me try and see if I
-hit something unexpected.
-I suppose trimming provided optval to zero (optlen=0) is not something
-that sensible programs would do?
-
-In this case please ignore the v4 I posted recently!
+> just replied with another idea in v3 thread...
+Yeah, sorry about that, posted 5 mins before your reply :-( Sorry for the noise.
