@@ -2,126 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF04F1FAB35
-	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 10:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6D81FABAE
+	for <lists+bpf@lfdr.de>; Tue, 16 Jun 2020 10:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgFPIaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 04:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbgFPIaU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jun 2020 04:30:20 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF59C03E97C
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 01:30:18 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id u23so15332807otq.10
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 01:30:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iFZu21anIecqeWnmtHDcKq9io7f3G/fD/2SgVahSB5o=;
-        b=xNw2XJ3W6+QRI42l+XFlKIs2oUp3ZMllemOdGovEuifvIF3kEWzDFTdYX+xBKVJZe0
-         XZ+aHBfFXcExTyTXZx2pwIo6GF3KWtHNfN0wD8alb7/4mqnwZMoxYoZfDZcDY6mRwH7X
-         1OI8kbUZYWXgNEdjExp8YSuk1HrapdVEoQ5v4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iFZu21anIecqeWnmtHDcKq9io7f3G/fD/2SgVahSB5o=;
-        b=EFjVLLd+JYtkuOcwcmD37MI7KaxqDruHYf8t3CG/P2v30SpoY/fE85xYj349JD6PL8
-         Oj1eEyU+E/8P/jvGOqhRCt0L+MDTD2k71W7p92Kky8iwdDj+EL8X/+rgLskcYIytTM9N
-         Gb7Qr4wcOJZMz0HfKe2frCS7DwNK0pA2wn2RtAXzMsUPQltV/a2oPjTfI7GSoxyjEfUM
-         MZ6IoYt+FHGqCkb2aqOMubGExCjwMn1BbUcJdYhnH2W5P3FR/SYa2oh216f4mxKK0oUX
-         DjHgupaBCym6ryr/eSq/W/UswEcj+11FUr9h9hes3SymyenZBoVH3euPz/ZX4buMDVZA
-         SXig==
-X-Gm-Message-State: AOAM532MUNLIwaBsth15Q2yNpc00VvNVLuosucwS2GKJIZ02pWDjvAim
-        dwiGlX8Rxx7I3Uq6684XOCe8ggOMXb/tvH23xRqy/Q==
-X-Google-Smtp-Source: ABdhPJxrzvbJdzoHn4DvVnkgACjbZuigtgxQERvnRr4I09yrEvDM8GB18hU9JmN3mH7A3JSLwqB26+Qq3j6dQyXGWTc=
-X-Received: by 2002:a9d:5cc1:: with SMTP id r1mr1384294oti.147.1592296217878;
- Tue, 16 Jun 2020 01:30:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
- <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com> <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
-In-Reply-To: <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 16 Jun 2020 09:30:06 +0100
-Message-ID: <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726467AbgFPIzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 04:55:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47579 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725911AbgFPIzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jun 2020 04:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592297723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wPF4qSfy9sktQyy2eeERuhgmZWCBKew9r91uHe9yaxg=;
+        b=W9vTyiChCmQkES6Szhkg4WOce43xzQ32dcFB/25w4rfogYCkQB/pDh2Bu5BzyG1ywPUsL7
+        +A2HylBN8K3aRz4cbwoflpcajDqFk2GbWOHjV1Z7RpMZqGIslpCH+/ZiZqHkD2OzPNJ1/3
+        jDLPtXA3vaoQlCwGvtXiyvVaLRarqAg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-AjfjPjU3O7eoLgJpO1VzbQ-1; Tue, 16 Jun 2020 04:55:20 -0400
+X-MC-Unique: AjfjPjU3O7eoLgJpO1VzbQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67A6C10AB647;
+        Tue, 16 Jun 2020 08:55:19 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 243D01002396;
+        Tue, 16 Jun 2020 08:55:07 +0000 (UTC)
+Date:   Tue, 16 Jun 2020 10:55:06 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv4 bpf-next 1/2] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20200616105506.163ea5a3@carbon>
+In-Reply-To: <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com>
+        <20200526140539.4103528-1-liuhangbin@gmail.com>
+        <20200526140539.4103528-2-liuhangbin@gmail.com>
+        <20200610121859.0412c111@carbon>
+        <20200612085408.GT102436@dhcp-12-153.nay.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > >
-> > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> > > >
-> > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > > > ---
-> > > >  kernel/bpf/net_namespace.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > > > index 78cf061f8179..56133e78ae4f 100644
-> > > > --- a/kernel/bpf/net_namespace.c
-> > > > +++ b/kernel/bpf/net_namespace.c
-> > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > > >         struct net *net;
-> > > >         int ret;
-> > > >
-> > > > +       if (attr->attach_flags || attr->target_fd)
-> > > > +               return -EINVAL;
-> > > > +
-> > >
-> > > In theory it makes sense, but how did you test it?
-> >
-> > Not properly it seems, sorry!
-> >
-> > > test_progs -t flow
-> > > fails 5 tests.
-> >
-> > I spent today digging through this, and the issue is actually more annoying than
-> > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-> > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-> > program being detached is actually what user space expects. We actually have
-> > tests that set attach_bpf_fd for these to attach points, which tells
-> > me that this is
-> > an easy mistake to make.
-> >
-> > Unfortunately I can't come up with a good fix that seems backportable:
-> > - Making sockmap and flow_dissector have the same semantics as cgroup
-> >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
->
-> making flow dissector pass prog_fd as cg and lirc is certainly my preference.
-> Especially since tests are passing fd user code is likely doing the same,
-> so breakage is unlikely. Also it wasn't done that long ago, so
-> we can backport far enough.
-> It will remove cap_net_admin ugly check in bpf_prog_detach()
-> which is the only exception now in cap model.
+On Fri, 12 Jun 2020 16:54:08 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-SGTM. What about sockmap though? The code for that has been around for ages.
+> On Wed, Jun 10, 2020 at 12:18:59PM +0200, Jesper Dangaard Brouer wrote:
+> > On Tue, 26 May 2020 22:05:38 +0800
+> > Hangbin Liu <liuhangbin@gmail.com> wrote:
+> >   
+> > > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > > index 90f44f382115..acdc63833b1f 100644
+> > > --- a/net/core/xdp.c
+> > > +++ b/net/core/xdp.c
+> > > @@ -475,3 +475,29 @@ void xdp_warn(const char *msg, const char *func, const int line)
+> > >  	WARN(1, "XDP_WARN: %s(line:%d): %s\n", func, line, msg);
+> > >  };
+> > >  EXPORT_SYMBOL_GPL(xdp_warn);
+> > > +
+> > > +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
+> > > +{
+> > > +	unsigned int headroom, totalsize;
+> > > +	struct xdp_frame *nxdpf;
+> > > +	struct page *page;
+> > > +	void *addr;
+> > > +
+> > > +	headroom = xdpf->headroom + sizeof(*xdpf);
+> > > +	totalsize = headroom + xdpf->len;
+> > > +
+> > > +	if (unlikely(totalsize > PAGE_SIZE))
+> > > +		return NULL;
+> > > +	page = dev_alloc_page();
+> > > +	if (!page)
+> > > +		return NULL;
+> > > +	addr = page_to_virt(page);
+> > > +
+> > > +	memcpy(addr, xdpf, totalsize);  
+> > 
+> > I don't think this will work.  You are assuming that the memory model
+> > (xdp_mem_info) is the same.
+> > 
+> > You happened to use i40, that have MEM_TYPE_PAGE_SHARED, and you should
+> > have changed this to MEM_TYPE_PAGE_ORDER0, but it doesn't crash as they
+> > are compatible.  If you were using mlx5, I suspect that this would
+> > result in memory leaking.  
+> 
+> Is there anything else I should do except add the following line?
+> 	nxdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
+
+You do realize that you also have copied over the mem.id, right?
+
+And as I wrote below you also need to update frame_sz.
+
+> > 
+> > You also need to update xdpf->frame_sz, as you also cannot assume it is
+> > the same.  
+> 
+> Won't the memcpy() copy xdpf->frame_sz to nxdpf? 
+
+You obviously cannot use the frame_sz from the existing frame, as you
+just allocated a new page for the new xdp_frame, that have another size
+(here PAGE_SIZE).
+
+
+> And I didn't see xdpf->frame_sz is set in xdp_convert_zc_to_xdp_frame(),
+> do we need a fix?
+
+Good catch, that sounds like a bug, that should be fixed.
+Will you send a fix?
+
+
+> > > +
+> > > +	nxdpf = addr;
+> > > +	nxdpf->data = addr + headroom;
+> > > +
+> > > +	return nxdpf;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(xdpf_clone);  
+> > 
+> > 
+> > struct xdp_frame {
+> > 	void *data;
+> > 	u16 len;
+> > 	u16 headroom;
+> > 	u32 metasize:8;
+> > 	u32 frame_sz:24;
+> > 	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+> > 	 * while mem info is valid on remote CPU.
+> > 	 */
+> > 	struct xdp_mem_info mem;
+> > 	struct net_device *dev_rx; /* used by cpumap */
+> > };
+> >   
+> 
+
+struct xdp_mem_info {
+	u32                        type;                 /*     0     4 */
+	u32                        id;                   /*     4     4 */
+
+	/* size: 8, cachelines: 1, members: 2 */
+	/* last cacheline: 8 bytes */
+};
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-www.cloudflare.com
