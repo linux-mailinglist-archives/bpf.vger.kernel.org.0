@@ -2,159 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874CF1FC662
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 08:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6F61FCBA9
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 13:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgFQGt3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 02:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgFQGt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 02:49:29 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA7CC061573;
-        Tue, 16 Jun 2020 23:49:29 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id c75so1093663ila.8;
-        Tue, 16 Jun 2020 23:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=4A3MtNFTe4w9BDypUAIy1seTZtwzWwLTKRoee1JE3PQ=;
-        b=WbBb8vSsDhjdJXd4XuVwDnm+Z9MGNEi8xoJ6cfO6i5qLDcoskwZpfo3yxD10g1ik6i
-         kfCLNlbxGZmSJLaHQwyViXewkmmdT/bsLV+otoxUNA0DrFCHhA7jpvkPjHbfAxwupgbk
-         ocH7vswJZc3H1PVD57dRzr80idtrM/3mjJ0lXbZF7KL1MtOvnSjVo70dwNBcpEElhAdA
-         aqNx28sb06PH7cX0VDYnexE2nm/WxCUL2yXmsoOx1qyyeM0vQJ3c8gcEhHCM25YfJBBJ
-         409xEbYd5Y+E5FV78vHlhz8CSd4sRDtWahmXdovYJ3CEPBfUehxKaA11ICSCxJPjISoi
-         hINg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=4A3MtNFTe4w9BDypUAIy1seTZtwzWwLTKRoee1JE3PQ=;
-        b=M0BSZg25Tf/p4b4uWmjBkElHs/IAtSxaLbMmQ4zNT8Cc9Uoj5j3uwRE6psAPb09Z9K
-         jaFSrDM8MAhQjuuwo79P5+2e7CaF1tAZ7YntD70LKixVjK060IWargmGRW41xBrBgqTi
-         8Qeyho8s7bOqr0d+7jdlRsF2tPTh85hfvEI7aEuZEfM6jvYWTUjjD+UpzYxkyTXhfUIB
-         PMUo93MtwKXq/U6tz+cZan7djs+wCTrV8UB6uNBXZ3qJprkxWuJOOcp0q3hVvr30hZ3Y
-         EwtP7aGsblVuFcQ16r89B+QQI+CKH/hNMdbnx1Q79klV/jehQFSOfnJ9Oufvjnoep60s
-         wmlQ==
-X-Gm-Message-State: AOAM533JD8BGSvF5MMSx+n4RVsQlBv5EKRIgFQlCnjpPo0N72e4BRyYG
-        GByw6yAaHqGMzfjKB/MgHdk=
-X-Google-Smtp-Source: ABdhPJzoViRRgRiDo3oeUBmL8dkI1s+7DM8xGfda1WPyLBnSUCeb+71tbXgaNb2/tCUFXk5A5IMS4A==
-X-Received: by 2002:a92:8bc7:: with SMTP id i190mr7017207ild.53.1592376568525;
-        Tue, 16 Jun 2020 23:49:28 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w18sm11197128ili.19.2020.06.16.23.49.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 23:49:27 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 23:49:19 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Message-ID: <5ee9bcefda5a3_1d4a2af9b18625c4c0@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com>
-References: <20200612160141.188370-1-lmb@cloudflare.com>
- <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
- <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
- <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
- <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
- <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726853AbgFQLCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 07:02:49 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:34060 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726480AbgFQLCs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jun 2020 07:02:48 -0400
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id ACB552E1604;
+        Wed, 17 Jun 2020 14:02:40 +0300 (MSK)
+Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id 3KAzC31Kde-2cXuTXow;
+        Wed, 17 Jun 2020 14:02:40 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1592391760; bh=0G5nloM8KgXqobAqOq2gJFUTn/Fn9VU2NJE26BprJps=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=DPddCDfPAZwVKVvfmwUMSDge2Ml66g3z4UKA9CIBxqMfd8agZoAWzE0KeTAAN2QhK
+         cawjoSihv6jibf/xVQxfde8/DvjJubizgzGbbFWFfYYncvly0vcBXCq/jzDuqqLewP
+         zzNfKPn9CqPl/6EoGEhDWT1NdsQCtunkWsrKD3T4=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 37.9.89.23-iva.dhcp.yndx.net (37.9.89.23-iva.dhcp.yndx.net [37.9.89.23])
+        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id XJqgFOjlJF-2ckik3i3;
+        Wed, 17 Jun 2020 14:02:38 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Yakunin <zeil@yandex-team.ru>
+To:     daniel@iogearbox.net, alexei.starovoitov@gmail.com
+Cc:     davem@davemloft.net, brakmo@fb.com, eric.dumazet@gmail.com,
+        kafai@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v4 1/3] sock: move sock_valbool_flag to header
+Date:   Wed, 17 Jun 2020 14:02:15 +0300
+Message-Id: <20200617110217.35669-1-zeil@yandex-team.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Tue, Jun 16, 2020 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > >
-> > > > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > > >
-> > > > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > > > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> > > > > >
-> > > > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > > > > > ---
-> > > > > >  kernel/bpf/net_namespace.c | 3 +++
-> > > > > >  1 file changed, 3 insertions(+)
-> > > > > >
-> > > > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > > > > > index 78cf061f8179..56133e78ae4f 100644
-> > > > > > --- a/kernel/bpf/net_namespace.c
-> > > > > > +++ b/kernel/bpf/net_namespace.c
-> > > > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > > > > >         struct net *net;
-> > > > > >         int ret;
-> > > > > >
-> > > > > > +       if (attr->attach_flags || attr->target_fd)
-> > > > > > +               return -EINVAL;
-> > > > > > +
-> > > > >
-> > > > > In theory it makes sense, but how did you test it?
-> > > >
-> > > > Not properly it seems, sorry!
-> > > >
-> > > > > test_progs -t flow
-> > > > > fails 5 tests.
-> > > >
-> > > > I spent today digging through this, and the issue is actually more annoying than
-> > > > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-> > > > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-> > > > program being detached is actually what user space expects. We actually have
-> > > > tests that set attach_bpf_fd for these to attach points, which tells
-> > > > me that this is
-> > > > an easy mistake to make.
+This is preparation for usage in bpf_setsockopt.
 
-In sockmap case I didn't manage to think what multiple programs of the same type
-on the same map would look like so we can just remove whatever program is there.
-Is there a problem with this or is it that we just want the sanity check.
+Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+ include/net/sock.h | 9 +++++++++
+ net/core/sock.c    | 9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-> > > >
-> > > > Unfortunately I can't come up with a good fix that seems backportable:
-> > > > - Making sockmap and flow_dissector have the same semantics as cgroup
-> > > >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
-> > >
-> > > making flow dissector pass prog_fd as cg and lirc is certainly my preference.
-> > > Especially since tests are passing fd user code is likely doing the same,
-> > > so breakage is unlikely. Also it wasn't done that long ago, so
-> > > we can backport far enough.
-> > > It will remove cap_net_admin ugly check in bpf_prog_detach()
-> > > which is the only exception now in cap model.
-> >
-> > SGTM. What about sockmap though? The code for that has been around for ages.
-> 
-> you mean the second patch that enforces sock_map_get_from_fd doesn't
-> use attach_flags?
-> I think it didn't break anything, so enforcing is fine.
+diff --git a/include/net/sock.h b/include/net/sock.h
+index c53cc42..8ba438b 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -879,6 +879,15 @@ static inline void sock_reset_flag(struct sock *sk, enum sock_flags flag)
+ 	__clear_bit(flag, &sk->sk_flags);
+ }
+ 
++static inline void sock_valbool_flag(struct sock *sk, enum sock_flags bit,
++				     int valbool)
++{
++	if (valbool)
++		sock_set_flag(sk, bit);
++	else
++		sock_reset_flag(sk, bit);
++}
++
+ static inline bool sock_flag(const struct sock *sk, enum sock_flags flag)
+ {
+ 	return test_bit(flag, &sk->sk_flags);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 6c4acf1..5ba4753 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -695,15 +695,6 @@ static int sock_getbindtodevice(struct sock *sk, char __user *optval,
+ 	return ret;
+ }
+ 
+-static inline void sock_valbool_flag(struct sock *sk, enum sock_flags bit,
+-				     int valbool)
+-{
+-	if (valbool)
+-		sock_set_flag(sk, bit);
+-	else
+-		sock_reset_flag(sk, bit);
+-}
+-
+ bool sk_mc_loop(struct sock *sk)
+ {
+ 	if (dev_recursion_level())
+-- 
+2.7.4
 
-I'm ok with enforcing it.
-
-> 
-> or the detach part that doesn't use prog_fd ?
-> I'm not sure what's the best here.
-> At least from cap perspective it's fine because map_fd is there.
-> 
-> John, wdyt?
-
-I think we can keep the current detach without the prog_fd as-is. And
-then add logic so that if the prog_fd is included we check it?
