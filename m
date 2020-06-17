@@ -2,193 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC66C1FD93E
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 00:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2341FD994
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 01:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgFQWvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 18:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
+        id S1726763AbgFQXVF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 19:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbgFQWvj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 18:51:39 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D25EC06174E
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 15:51:38 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id w9so2971278qtv.3
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 15:51:38 -0700 (PDT)
+        with ESMTP id S1726976AbgFQXVE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 19:21:04 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D488DC06174E;
+        Wed, 17 Jun 2020 16:21:03 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id s18so4996220ioe.2;
+        Wed, 17 Jun 2020 16:21:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ihyF1SuRluXxY31TEsmM5gFoi7vBLV5yvCMEkIleysg=;
-        b=DBHQI3QQiA5+LFTbsRNEDgXEmxXveVNLFS8v24f0mUbMb7xdYnVtNcMpkpUlCJDwHN
-         yR3bBbBytoBNkVz/l1LXJ4EYsfC6nT5cqX0ma32lrOedyOBcT/yZp4kZaJbVxk3gCrCh
-         9LuugIEuAqaZvZpr8SftpOb+VohU3UM+TgcJFMpwbvqXQp5PWHAEvEzslqduFEI0t+Ul
-         cbFXcinUQSAVpD90JVsDZ1kDH3fTSZpC7whIv9PvAQyhqaerqAzxvzAAMptTg6vxmlnV
-         YQ56uan8qLIyzr3TIbVOsWHIEaQQiqXEnnlwQbRwsZYuaJWEtn6PSkDoewEqpzh/Wceo
-         nsTw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=231wi2Er2OOJz0+jlitOVjoGRe+AiUOaqGzAgNNER3U=;
+        b=P+Ic6lWoJ0GMk5TcvViu8sxk5k4V72UBN6IgrYQJyRa32C1OWzsHyjsuO0leo5midR
+         XGjpRku2ys8jUQ5PUOgOIEI+4ooO/iEUeAgVDIJbMmig3gr5qaXqrzwjwSrXbseP+Rcd
+         1eUaCl3yILUhheK730H88mPnApWRyB4tqb0bgi/3VX0OBhxoUXIFlCgroryi0aAc/hQ0
+         tOGXQbMMJvdmmfoLyy5Kfqy4hbYlrdwUK+xODYKZ8ij/qixI2f4qf70cFvGwZO6EkEFD
+         rzwDwppsK3BnxMUuDWS72LZFnf0DKlYFn5Sb2vCSs85652iwHXcqqb78bFIya+j7B9un
+         Qrfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ihyF1SuRluXxY31TEsmM5gFoi7vBLV5yvCMEkIleysg=;
-        b=qVhacSSEFWHW61zx3axjYORqfeymPguaF0LulE879JGuqmfN6h4b8qnSHPQZXFD2tQ
-         CvWYVwuy7HAj7AE3XIIdCjaLaZI+BRL/nSzQ+oB71fgvZCijtn+vLNC8L5qgn2y0gH+c
-         T3T5ipJyxeIWgoTNHDpFeut8CqDN37PGU1BazOM4xInTDdaYTP1V5tn7BlCtRFsPQJlK
-         xMLUtcfikuMFWA/Ig/m1phooumudODjExRHpGqx7743miMp5Cw6HsQh5P2cwlOUHA+nu
-         Lsvev00YmGVp7R4xVGvJVqS20G40ZMecklth1edy8tJ6K9vsFzz8JOZ+VdqmegQWUKsp
-         Ktbg==
-X-Gm-Message-State: AOAM533v9QYYcxYxFD/e4U2mW34JWKIcuLOQrlLT0qT5uJKN62+QwHUC
-        EDtWJTcQ+VDeZ7IwawxuzhyC20VwiGaLIpFEpJRXhe9l
-X-Google-Smtp-Source: ABdhPJyd9g/gPjzBzZv9kc3lVZ0u+f6y2mRhZSFqIy6+nl/4yEMN/LPoPNYUiz3/kLEnbDe3Z/LTWfYeab9EuiEcleo=
-X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr1480065qta.141.1592434297961;
- Wed, 17 Jun 2020 15:51:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200617211536.1854348-1-yhs@fb.com> <20200617211551.1856689-1-yhs@fb.com>
-In-Reply-To: <20200617211551.1856689-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 17 Jun 2020 15:51:27 -0700
-Message-ID: <CAEf4BzakFhQsLqpoJvw8LPurv27ntyA_x+XZpjxM8MzJhHprtA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/13] tools/bpf: selftests: implement sample
- tcp/tcp6 bpf_iter programs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=231wi2Er2OOJz0+jlitOVjoGRe+AiUOaqGzAgNNER3U=;
+        b=mInyoNswpAAueQBz4tzhUzE7wzH6fTv+C0tWt0DxI6g8BCUU77BBohYoZI4Vc52ygK
+         wH/9s1kctedutZRQyiuYZiQugVpBU2cXTevfX3sWZBluwCsOKhh7Ikc8Xnc47fPO5E+f
+         gI/1l8WuTWQKVzfgkHgx7Mpai2gID54CoWJA3x+woDl149tpGNOHNMrYPYZc3Zjn/h23
+         gdSnXcqczByfYJfk8dt6CA5Vz3/0mD2P7i/d918s8P8paIAzJQe6KB8u/Zss0Tl0n6c0
+         u/bKz0rJYK7zEMO1yIh5dJBURvf0eDpzwhQZLjzgHgk/srA2vq8jA8DG9xYCTxAeyHwS
+         gy8w==
+X-Gm-Message-State: AOAM532iBtOi4oLhslStt0WqMJVY0xIOynas+9mDxyYvILGvsJDzE/RS
+        7bQZzlJhpXuN0LrkNcQeL9g=
+X-Google-Smtp-Source: ABdhPJx3oQ+dsatWET3VuWpwzvcUZ2JwC0C+DjAXaLW70fM1urYC6bEOSSJAdlI7xLWlZaRXesZleQ==
+X-Received: by 2002:a6b:b503:: with SMTP id e3mr1934195iof.175.1592436063271;
+        Wed, 17 Jun 2020 16:21:03 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id r17sm577793ilc.33.2020.06.17.16.20.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 16:21:01 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 16:20:54 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masanori Misono <m.misono760@gmail.com>
+Message-ID: <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200616173556.2204073-1-jolsa@kernel.org>
+References: <20200616173556.2204073-1-jolsa@kernel.org>
+Subject: RE: [PATCH] bpf: Allow small structs to be type of function argument
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 2:16 PM Yonghong Song <yhs@fb.com> wrote:
->
-> In my VM, I got identical result compared to /proc/net/{tcp,tcp6}.
-> For tcp6:
->   $ cat /proc/net/tcp6
->     sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
->      0: 00000000000000000000000000000000:0016 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000001 00000000     0        0 17955 1 000000003eb3102e 100 0 0 10 0
->
->   $ cat /sys/fs/bpf/p1
->     sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
->      0: 00000000000000000000000000000000:0016 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 17955 1 000000003eb3102e 100 0 0 10 0
->
-> For tcp:
->   $ cat /proc/net/tcp
->   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
->    0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2666 1 000000007152e43f 100 0 0 10 0
->   $ cat /sys/fs/bpf/p2
->   sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
->    1: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2666 1 000000007152e43f 100 0 0 10 0
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+Jiri Olsa wrote:
+> This way we can have trampoline on function
+> that has arguments with types like:
+> 
+>   kuid_t uid
+>   kgid_t gid
+> 
+> which unwind into small structs like:
+> 
+>   typedef struct {
+>         uid_t val;
+>   } kuid_t;
+> 
+>   typedef struct {
+>         gid_t val;
+>   } kgid_t;
+> 
+> And we can use them in bpftrace like:
+> (assuming d_path changes are in)
+> 
+>   # bpftrace -e 'lsm:path_chown { printf("uid %d, gid %d\n", args->uid, args->gid) }'
+>   Attaching 1 probe...
+>   uid 0, gid 0
+>   uid 1000, gid 1000
+>   ...
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/testing/selftests/bpf/progs/bpf_iter.h  |  15 +
->  .../selftests/bpf/progs/bpf_iter_tcp4.c       | 261 +++++++++++++++++
->  .../selftests/bpf/progs/bpf_iter_tcp6.c       | 277 ++++++++++++++++++
->  3 files changed, 553 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
->
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-> index d8e6820e49e6..ab3ed904d391 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-> @@ -7,6 +7,8 @@
->  #define bpf_iter__netlink bpf_iter__netlink___not_used
->  #define bpf_iter__task bpf_iter__task___not_used
->  #define bpf_iter__task_file bpf_iter__task_file___not_used
-> +#define bpf_iter__tcp bpf_iter__tcp___not_used
-> +#define tcp6_sock tcp6_sock___not_used
->  #include "vmlinux.h"
->  #undef bpf_iter_meta
->  #undef bpf_iter__bpf_map
-> @@ -14,6 +16,8 @@
->  #undef bpf_iter__netlink
->  #undef bpf_iter__task
->  #undef bpf_iter__task_file
-> +#undef bpf_iter__tcp
-> +#undef tcp6_sock
->
->  struct bpf_iter_meta {
->         struct seq_file *seq;
-> @@ -47,3 +51,14 @@ struct bpf_iter__bpf_map {
->         struct bpf_iter_meta *meta;
->         struct bpf_map *map;
->  } __attribute__((preserve_access_index));
-> +
-> +struct bpf_iter__tcp {
-> +       struct bpf_iter_meta *meta;
-> +       struct sock_common *sk_common;
-> +       uid_t uid;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct tcp6_sock {
-> +       struct tcp_sock tcp;
-> +       struct ipv6_pinfo inet6;
-> +} __attribute__((preserve_access_index));
-
-Why redefining struct tcp6_sock? It seems it's been defined forever,
-so should just come from vmlinux.h
-
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-> new file mode 100644
-> index 000000000000..37008b914334
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-> @@ -0,0 +1,261 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
-> +#include "bpf_iter.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define sk_state       __sk_common.skc_state
-> +#define sk_refcnt      __sk_common.skc_refcnt
-> +
-> +#define inet_daddr     sk.__sk_common.skc_daddr
-> +#define inet_rcv_saddr sk.__sk_common.skc_rcv_saddr
-> +#define inet_dport     sk.__sk_common.skc_dport
-> +
-> +#define tw_daddr       __tw_common.skc_daddr
-> +#define tw_rcv_saddr   __tw_common.skc_rcv_saddr
-> +#define tw_dport       __tw_common.skc_dport
-> +#define tw_refcnt      __tw_common.skc_refcnt
-> +
-> +#define ir_loc_addr    req.__req_common.skc_rcv_saddr
-> +#define ir_rmt_addr    req.__req_common.skc_daddr
-> +#define ir_rmt_port    req.__req_common.skc_dport
-> +#define ir_num         req.__req_common.skc_num
-> +
-> +#define ICSK_TIME_RETRANS      1
-> +#define ICSK_TIME_PROBE0       3
-> +#define ICSK_TIME_LOSS_PROBE   5
-> +#define ICSK_TIME_REO_TIMEOUT  6
-> +
-> +#define TCP_INFINITE_SSTHRESH  0x7fffffff
-> +#define TCP_PINGPONG_THRESH    3
-> +
-> +#define AF_INET                        2
-
-Seems like this is needed to do anything useful with sockets, right?
-How about adding a new helper header (e.g., bpf_sock.h or bpf_net.h?)
-so that everyone can benefit?
-
-
-> +
-> +static int hlist_unhashed_lockless(const struct hlist_node *h)
+>  kernel/bpf/btf.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 58c9af1d4808..f8fee5833684 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -362,6 +362,14 @@ static bool btf_type_is_struct(const struct btf_type *t)
+>  	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+>  }
+>  
+> +/* type is struct and its size is within 8 bytes
+> + * and it can be value of function argument
+> + */
+> +static bool btf_type_is_struct_arg(const struct btf_type *t)
 > +{
-> +        return !(h->pprev);
+> +	return btf_type_is_struct(t) && (t->size <= sizeof(u64));
+
+Can you comment on why sizeof(u64) here? The int types can be larger
+than 64 for example and don't have a similar check, maybe the should
+as well?
+
+Here is an example from some made up program I ran through clang and
+bpftool.
+
+[2] INT '__int128' size=16 bits_offset=0 nr_bits=128 encoding=SIGNED
+
+We also have btf_type_int_is_regular to decide if the int is of some
+"regular" size but I don't see it used in these paths.
+
 > +}
 > +
-> +static int timer_pending(const struct timer_list * timer)
-> +{
-> +       return !hlist_unhashed_lockless(&timer->entry);
-> +}
-> +
+>  static bool __btf_type_is_struct(const struct btf_type *t)
+>  {
+>  	return BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT;
+> @@ -3768,7 +3776,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>  	/* skip modifiers */
+>  	while (btf_type_is_modifier(t))
+>  		t = btf_type_by_id(btf, t->type);
+> -	if (btf_type_is_int(t) || btf_type_is_enum(t))
+> +	if (btf_type_is_int(t) || btf_type_is_enum(t) || btf_type_is_struct_arg(t))
+>  		/* accessing a scalar */
+>  		return true;
+>  	if (!btf_type_is_ptr(t)) {
+> @@ -4161,6 +4169,8 @@ static int __get_type_size(struct btf *btf, u32 btf_id,
+>  		return sizeof(void *);
+>  	if (btf_type_is_int(t) || btf_type_is_enum(t))
+>  		return t->size;
+> +	if (btf_type_is_struct_arg(t))
+> +		return t->size;
+>  	*bad_type = t;
+>  	return -EINVAL;
+>  }
+> -- 
+> 2.25.4
+> 
 
-[...]
+
