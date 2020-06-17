@@ -2,90 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5C11FD1CC
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 18:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B981FD307
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 19:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgFQQT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 12:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
+        id S1726881AbgFQRAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 13:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQQT1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 12:19:27 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85045C06174E;
-        Wed, 17 Jun 2020 09:19:27 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d82so2539928qkc.10;
-        Wed, 17 Jun 2020 09:19:27 -0700 (PDT)
+        with ESMTP id S1726879AbgFQRAf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 13:00:35 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF51C06174E;
+        Wed, 17 Jun 2020 10:00:34 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so1776787lfb.0;
+        Wed, 17 Jun 2020 10:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PVufv+wGfM5FlL19P66hJ3jDiaqB0sb6Nsu+imjTKnw=;
-        b=eD3sX1aK3YUFUi938YQ//SvRlHM1et8inYDL7kUlLxB3EYr4goLGxtdbKLKgCtLOxP
-         42ZwsYSV0o4B5gq3v0OdCDseM304stNszqQRNClpJgS7QzfSXiG+449rNcVUd2LHGZ7j
-         4XagsUw5Gwr/V1mEDhorc+1P+SmzbHW4dN1CN0A6SMQyCWG4VMhE/hGVAKlRGXB5cngO
-         fT7Yn/mGcJq2DkuUmNy9yOEEaOdCBdQkKTaS6L0So6CX9SI4izdeFw+CdteB+V+6OsYA
-         D3N8cWf6viPCAMs8p8DPFH1lGe/9cTWUIE7t+Gs95SXGHriv1ku5TrJATv9A4oQQsNUS
-         k7Hg==
+        bh=hpv46MVpGznrve282OD9AABsHhzo5kEAV9FAN+EOhcs=;
+        b=dqowQoYCthVBCfN1XzIxZwyErGKsnyQ4nKyajEz+2/DiD/Z4+UwfdCTFrvlcLUIw75
+         U4hoveujBWbVmE7hHRETZGM1RKHZ/6T5o3jd4AJA0Pnd+yX0MW7HIN6LxEmOHVvMTK98
+         htqaMy0jnkWrw75PskXf0zfrh5DJcfr/S+mq6i4Jw+wJg/vp8DcFyFP1ZLMzkz05L/NJ
+         nPyCh9yRZ3PPb8mRHr8D18Ot/bzCYMib6XTq0bHOtjjbAzeybQ6AlAVzcuv0cvkXeUHf
+         JqRFHHz35OkZvA1laatubHdByWuE58jukuntB/8YZ8pdOCdhCmDg0CwNSGYcDUZnj2/2
+         Mi4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PVufv+wGfM5FlL19P66hJ3jDiaqB0sb6Nsu+imjTKnw=;
-        b=FKuo2ISB6PfPH7I0DPKWvPWv0127cGQarSUXuHCxHgguudR2kqqTpaOXf6b+V/njT9
-         I+e3JtlaQ3ntFy7ao9T4bUhq3Lc/Ag+Kr9M5iL72FXgtGX0MOAovXb5GWqUYEM5Xzp69
-         5K/nNkLNaGDRqhggHM35pz4HEPtjMer7G0GDZRn8mxogXEgMYsr1a0nP1Naw4KxbInrG
-         ZvhApY2Qu5ZTSM6TkP0VdOyofc5t7oIkczdmimKgKF3ZRoriOTmI8jQUXzV8vDc396ty
-         g/Pg8gChDzcXuId0+z13xT0rAyscukKtIcrmtTo4l6zFtstR2tMJ3YA7mGYU3ITYSZS2
-         LG3A==
-X-Gm-Message-State: AOAM532XubIOMEVw9UWnNR+pJ75zSAkzYtjaLQoOWJqW1vK34cxb2Vyg
-        kTVV1kCkMQ//it3HffIPZN/LJtX80uI3vZp6enI=
-X-Google-Smtp-Source: ABdhPJz7QGnkQFztlyaYHLpZisLJDqmRW08vS28q4CL1huTuy5xbvFBw9U0xBB51DIjBNzjcPKK9PIV7nnJoY0xJ72Q=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr25908887qkk.92.1592410766355;
- Wed, 17 Jun 2020 09:19:26 -0700 (PDT)
+        bh=hpv46MVpGznrve282OD9AABsHhzo5kEAV9FAN+EOhcs=;
+        b=cD8GTe0JvC/hBFeRpKKki6TRGx+rC7mNMp/BizgqzoE3T43Yh8rqyFHLgy7p7vV+qG
+         DRt264P9kKqIsFg2ip4BoCQeNSlrW+vY0NVg8KrERnyZyQ9A+BdrT6s97m6IagNpQ7mw
+         ssBmRoEPJd+rHeZzIE3H9P7g9xvLCzbaO7RKk0iGSBvn0gzxjBYHB5kJ+z9ieQvbX1VF
+         788bJ4yjiMIGpeWTgKFTKVaNyb7dRmNg7u+xEFBlFxRhOjBFGJjQhaMEiXXlTG0KBH5W
+         m9u94nRAp4jLytS7w90uwVSOid3+uzd3rV2GJdiQ/neRh5H+58L2H0TeCxcCy9mmuzVU
+         booA==
+X-Gm-Message-State: AOAM531uP4Tc4jZaKLM/FTrQGG4oxZEksKf42EFs4xpXKSqj52ya9RFt
+        AYHTvCRzLbbvDZosCzU8mcCFNW0L7QapOoSBy2Q=
+X-Google-Smtp-Source: ABdhPJxBrxK8hJxAKQ/K0aWdXmzkAQe1jOG752+Sk3C0mPTClOB07WUXlYlcr9jT5AkKBKkKQHeM98mDyxwxypV/dGo=
+X-Received: by 2002:a19:815:: with SMTP id 21mr1678328lfi.119.1592413229398;
+ Wed, 17 Jun 2020 10:00:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200617155539.1223558-1-andriin@fb.com> <CAADnVQLqg5DSXQXMeVAmCBx001cz-ogkZO1TZ43aJ4Grp93cSA@mail.gmail.com>
-In-Reply-To: <CAADnVQLqg5DSXQXMeVAmCBx001cz-ogkZO1TZ43aJ4Grp93cSA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 17 Jun 2020 09:19:14 -0700
-Message-ID: <CAEf4Bzb4WeHSgM0up99wPV75Fq-tmSMZ5Q=Kw7vkD11YqFRS3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: bump version to 0.0.10
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+References: <20200616103518.2963410-1-liuhangbin@gmail.com>
+ <20200616171233.1579d079@carbon> <5ee9b212af6a1_1d4a2af9b18625c434@john-XPS-13-9370.notmuch>
+In-Reply-To: <5ee9b212af6a1_1d4a2af9b18625c434@john-XPS-13-9370.notmuch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 17 Jun 2020 10:00:17 -0700
+Message-ID: <CAADnVQ+0vFcvWt5E0VfjhMc-DEwZFjkv7h=BU9TBzKCkoAnMJg@mail.gmail.com>
+Subject: Re: [PATCH bpf] xdp: handle frame_sz in xdp_convert_zc_to_xdp_frame()
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
         Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 9:18 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jun 16, 2020 at 11:03 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
 >
-> On Wed, Jun 17, 2020 at 8:59 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> Jesper Dangaard Brouer wrote:
+> > On Tue, 16 Jun 2020 18:35:18 +0800
+> > Hangbin Liu <liuhangbin@gmail.com> wrote:
 > >
-> > Let's start new cycle with another libbpf version bump.
+> > > In commit 34cc0b338a61 we only handled the frame_sz in convert_to_xdp_frame().
+> > > This patch will also handle frame_sz in xdp_convert_zc_to_xdp_frame().
+> > >
+> > > Fixes: 34cc0b338a61 ("xdp: Xdp_frame add member frame_sz and handle in convert_to_xdp_frame")
+> > > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 > >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/lib/bpf/libbpf.map | 3 +++
-> >  1 file changed, 3 insertions(+)
+> > Thanks for spotting and fixing this! :-)
 > >
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index f732c77b7ed0..3b37b8867cec 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -270,3 +270,6 @@ LIBBPF_0.0.9 {
-> >                 ring_buffer__new;
-> >                 ring_buffer__poll;
-> >  } LIBBPF_0.0.8;
-> > +
-> > +LIBBPF_0.0.10 {
-> > +} LIBBPF_0.0.9;
+> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >
 >
-> How about 0.1.0 instead?
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-sure, why not?
+Applied. Thanks
