@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4498C1FC5DF
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 07:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B431FC5F0
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 08:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgFQF4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 01:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
+        id S1726853AbgFQGDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 02:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgFQF4l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 01:56:41 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157BAC061573
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 22:56:41 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id s18so1441711ioe.2
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 22:56:41 -0700 (PDT)
+        with ESMTP id S1726321AbgFQGDI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 02:03:08 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3056C061573;
+        Tue, 16 Jun 2020 23:03:08 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id a13so1030220ilh.3;
+        Tue, 16 Jun 2020 23:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=BatxUGW26zyjldygz4MJ73W8gOjgWpvH5rQXjqft+nk=;
-        b=OFbAzYJJowAki63zSq+ReV//urhYbTd5lVEdQ0dTszHlb/No4QahMGWQ/ORC/DyLb6
-         YcKT9aWV6PiPtDIpGf6THmR22MSzh57iap+ZifEv6TYUcKvxmF5JzfhXK6n0xIVAxnge
-         A1xXJ0NMBCw2Lhkuf02CYph0BAnczLohVQLcWxI2CvLeeYsOyRyxD8V1tn6mWibbaFMj
-         pNL8ZDWtLxeD7EynA50yrvr6dnqkaN9Y1X72OwE5HkU/2Io/MDYSBobUq3NeGxmsjdo8
-         YUAhxp32sQM0ZzTxQJ1W55O/vdIocZYn1Tp4Pg2prIQ7qBQcQ1ds13PRfvrJ/s/iFpGs
-         97cA==
+        bh=BYJ/7pT0d3KlLwz2ALkCpZy3QnaYFBsCD0fEwqLaLPo=;
+        b=DWVrwfHT4bhRWwhiCtHcdIzPr8HUYKFSheNx5ZN1LwGQCSwCFoicekzpZGX6kepSKy
+         9ea7Tyq8R19g5b+hFGMKlvTApGys1U8Vs4i2dSkw1bqpNESgLJ52kA7i0aU2XOLhLWRN
+         wfjryFS6PYriX8Ae2QvjEYqBUN6oD746HZUcJYaGYfUDLDiuq+7vKIwB/jcYvELmeKHh
+         kDz8VJgmCfZATrbQdmAr6uyFdpsuVf95xBogCmJ2UToht6aUII/NGwqodwuIqQV7wb7K
+         caAvJwOGBncQWZAvyYJlJg3LCYMV9RuEzZruPuuGJK8GWj4MoFbJchc4dxoHbxDjATJz
+         vqwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=BatxUGW26zyjldygz4MJ73W8gOjgWpvH5rQXjqft+nk=;
-        b=eWhjAaN863t6ZTKhOHX11jLJXowNJjoMKIEmd2sGEncRil3yO5pQNBYfVzmLIX3vgs
-         n8t9S2QEN+tIFiQqWzfq9eZATDGRQWCD5U77MQaeq8sm5Tl9bp60tWDrN/KScxNEdXZK
-         LayVGJEFMY7/T7k47d5HGVVl8ecm9XsX24PB163GyrBJ6UiBMFHjoThQFiCXPORXZOtj
-         SX6RjFtxMo3qtqPkq2CW3KC4oOPt9gM2eMrTpWmnt77SPXAvasCeXA5eETwukmG/BDZy
-         PX4iV1/phMLrzTi3JGwSd+zoGPULP2596Tf80/1iuWcZneWrUfJuz6nshs7PppQZuKHZ
-         8urA==
-X-Gm-Message-State: AOAM531GcCmF5p/HgHBOUrjq1FoF1qEDw7mOl4dTI4cjzTeaTfMRn6PZ
-        +QpQsb6b/ap+ETvvysezf7w=
-X-Google-Smtp-Source: ABdhPJzGNrMvTR5tPNSbmsOgm27rhPBF/OLO9TOzSpWD0/HZl6XkUvUWCOpt5CfQGVyBdOrvravZDg==
-X-Received: by 2002:a02:1443:: with SMTP id 64mr29224239jag.43.1592373400461;
-        Tue, 16 Jun 2020 22:56:40 -0700 (PDT)
+        bh=BYJ/7pT0d3KlLwz2ALkCpZy3QnaYFBsCD0fEwqLaLPo=;
+        b=uLqvWhWx0gtiBmSuKIVfluAZkQoP18cGXCTf56P86NzjQX1IDgWs99MiiONXwfGxqn
+         7HgIdHk7w+PKur8K++uC9//uFepVyfdvESZKv9uQ9ihozCjoLMFDeoZLjcfa+xHI/5mQ
+         5CgLUEzurME7smbncp7IRwuobYZ+jtmbKFe+32sdzEKe4dl3clUnF/HoTAkDBLtPp3zM
+         EpxWQT7oE8GNqNybEejeiu2QQOc9sQFwsLAtBpkRkHxL/9i6yk8sw5ppWpNs3uK6bvfF
+         nEqJW2a34VX75ofDswDIsV0nkAqHcxy5SxGgCXCVHue2Qq/nqQgInhHwyYvNOPQT7LtX
+         XiDw==
+X-Gm-Message-State: AOAM531ha2LUCg75FUG5a0342cUpzAmgIz4a3uS/JNjYFUMug5j3XNxJ
+        IgWCE6dnk+OoYd/daiJKN+Q=
+X-Google-Smtp-Source: ABdhPJzrWTIHmOmvCEbXcIsuqFdziMQHHQ3WNpYoLGi+AKDexWr2PV+sxLjyky6EUdo0JPMnP7TNiw==
+X-Received: by 2002:a92:48cf:: with SMTP id j76mr6818354ilg.270.1592373787985;
+        Tue, 16 Jun 2020 23:03:07 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id f5sm10827513iog.49.2020.06.16.22.56.37
+        by smtp.gmail.com with ESMTPSA id 65sm11267342ilv.7.2020.06.16.23.03.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2020 22:56:39 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 22:56:31 -0700
+        Tue, 16 Jun 2020 23:03:07 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 23:02:58 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>
-Message-ID: <5ee9b08f486cc_1d4a2af9b18625c4b7@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzaHy9t473htHUv5znxZRMieN3ECk5Jx4O9ZX3A47ONA-Q@mail.gmail.com>
-References: <20200616113303.8123-1-tklauser@distanz.ch>
- <CAEf4BzaHy9t473htHUv5znxZRMieN3ECk5Jx4O9ZX3A47ONA-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] tools, bpftool: Add ringbuf map type to map command
- docs
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, brouer@redhat.com
+Message-ID: <5ee9b212af6a1_1d4a2af9b18625c434@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200616171233.1579d079@carbon>
+References: <20200616103518.2963410-1-liuhangbin@gmail.com>
+ <20200616171233.1579d079@carbon>
+Subject: Re: [PATCH bpf] xdp: handle frame_sz in xdp_convert_zc_to_xdp_frame()
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -69,28 +69,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Tue, Jun 16, 2020 at 4:34 AM Tobias Klauser <tklauser@distanz.ch> wrote:
-> >
-> > Commit c34a06c56df7 ("tools/bpftool: Add ringbuf map to a list of known
-> > map types") added the symbolic "ringbuf" name. Document it in the bpftool
-> > map command docs and usage as well.
-> >
-> > Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> > ---
+Jesper Dangaard Brouer wrote:
+> On Tue, 16 Jun 2020 18:35:18 +0800
+> Hangbin Liu <liuhangbin@gmail.com> wrote:
 > 
-> Thanks!
+> > In commit 34cc0b338a61 we only handled the frame_sz in convert_to_xdp_frame().
+> > This patch will also handle frame_sz in xdp_convert_zc_to_xdp_frame().
+> > 
+> > Fixes: 34cc0b338a61 ("xdp: Xdp_frame add member frame_sz and handle in convert_to_xdp_frame")
+> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 > 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Thanks for spotting and fixing this! :-)
+> 
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> 
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
-
-> 
-> >  tools/bpf/bpftool/Documentation/bpftool-map.rst | 2 +-
-> >  tools/bpf/bpftool/map.c                         | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> 
-> [...]
-
-
