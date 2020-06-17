@@ -2,270 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C301FD56F
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 21:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8E11FD5C1
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 22:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgFQT0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 15:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
+        id S1726845AbgFQUKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 16:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgFQT0p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 15:26:45 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DACC061755
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 12:26:43 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t18so3586308wru.6
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 12:26:43 -0700 (PDT)
+        with ESMTP id S1726809AbgFQUKY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 16:10:24 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AC6C06174E;
+        Wed, 17 Jun 2020 13:10:23 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id u8so1497702pje.4;
+        Wed, 17 Jun 2020 13:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZerrBpegoM9qPQb5Etrj72WXhDGVZ1V83oi0WSi6xTM=;
-        b=PG/Phak1BgrocswLNaIBxizaBxJuxEys+VcrmxMkA2Kwv8Puq21eaAXTJorp1xGU9m
-         Hmd1zTWOcigvZyVarc/KIFI3ZVwoCWcwWRLhnJUjYvw0HHxJLr6+UsD7/E8Q+UMfjMmP
-         dbpQK0Ma0/scU/k+KuUA3b11LZUOkNS6tq6OQ=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sf2DciuJci1s3v36ZVasHTC5UZyw/h2w9sDVox6RVzk=;
+        b=RTBffP1V6FhXLiGiSWfmmgloSEMevbXsMFLj/Z4NoIZIOFj/rt3p/zwtGaYcSR4X8j
+         xhpaIicO51PT7j3zJD4/h22EFuUSU7QgCTw4hxS0NI8HU5ZsF26Jc/VzoqkkwBPza/iC
+         S6KVOYIUFaVdxetcGeQjN4rlXfv4Su/0JDo6oyCjec2JNhvM6qfprrGpum4dFKb9+WSL
+         vL5RcLKZSUfTKYf7f0710QuNLlqMfI/F6zCECZZz+ouE/q2lBuroRLI7z/GtWw7PN9EU
+         sruNEAxI8JwlMVbKRVHpJEnukLOzN0vPxwPhiZ1HkZte6hiRxSygwqMNcDBcpaXrRFCe
+         NS5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZerrBpegoM9qPQb5Etrj72WXhDGVZ1V83oi0WSi6xTM=;
-        b=kZemAmkWIWkxV8fQyzoEXUmc/dEYKi0FS9TzbyI7Q3ti3hCmMG/ODpbA/Tp18cuom/
-         pePsEneZ+E8hpPDxyjmxR1xlngC08GWuSg0kthTAlXlX3FgDeEQIwJzfxus2Aj/qfuo1
-         NBPD1I8AKLbb090UfeFgthm6DhTWML1x6HIX7ac9MCu4E5begWin9UVTonxuyC0ZPtFR
-         p4fyA2BFL8vJzYht2i40bqeAkgfFynJ0L1pKi1+sLhnjuNWpz8vffhPAVbHTzH9F58Ro
-         Gdxjr++um9GkswXfvhGk8x3IFO8Egu7mMTBFf+iuXCkXK66IA091uzLQlecePgUOm+Rb
-         OJXA==
-X-Gm-Message-State: AOAM533UTmdZZFtG1sR+OiggACOrjnm4ql/t0uuMctWxlrZhi8QRO+0a
-        OtCIi9vBI4Ot4U7SPhG2ccszY+eMXGgpjT2E0EskmA==
-X-Google-Smtp-Source: ABdhPJw+mIxRsjYUIf3EhTU2b6GnyuNkF4v+xrjYRaaPs9NlyzRVhkksVVOo1UCBOGfTkiEN9ZV4igzzJ9OdbOfksOs=
-X-Received: by 2002:adf:afc7:: with SMTP id y7mr759772wrd.173.1592422002489;
- Wed, 17 Jun 2020 12:26:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sf2DciuJci1s3v36ZVasHTC5UZyw/h2w9sDVox6RVzk=;
+        b=e9NjbqlxhCsCqywWyhsYz6Z50g0EUfJzFd/rVPGjsKBA9g2YPbap0n+z9yx4ZBM3lQ
+         9mIbDC0lQcYWzhpkBBbf4EGijT93HaRwn44CM/mMEYsVr/sUypy+Jf9tLD3mYdtrlh8W
+         jDkmmtTYSiMin/Z5vswcJnLqCKRNy2tippvebuE1BQspAzxkA56HFJIwLcLIkTGSVOKB
+         1vY+9RaWVE9g/g6ZgBLryPnDU263SNnP5oK5ZODSB/mmONRXMKnSPcr3R1FldYHwBvqV
+         WEKNOKVvOmMInWG4djOXqT/UiKJWdxyGnxVxKp/dDJ4PI+2BE1fSuQVq/3COVI+LQsAA
+         OGHQ==
+X-Gm-Message-State: AOAM532t1J8ceohK6EYpEBhoHzUzBRykX6coPJMIf4fm/3YcMAMKWCdl
+        KHW3L3DrIcrpHP0SO9bvN3g=
+X-Google-Smtp-Source: ABdhPJyFbaFTHdv2xqTmiazkdjPb7zgLq6KZuCABGV7qeGVfWdDBW2FcCfFGIQw1ZQu4WWCD1U+7bA==
+X-Received: by 2002:a17:902:be05:: with SMTP id r5mr637454pls.252.1592424622995;
+        Wed, 17 Jun 2020 13:10:22 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id j17sm360969pjy.22.2020.06.17.13.10.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Jun 2020 13:10:22 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: pull-request: bpf 2020-06-17
+Date:   Wed, 17 Jun 2020 13:10:20 -0700
+Message-Id: <20200617201020.48276-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 MIME-Version: 1.0
-References: <20200526163336.63653-1-kpsingh@chromium.org> <20200526163336.63653-5-kpsingh@chromium.org>
- <CAEf4BzY0=Hh3O6qeD=2sMWpQRpHpizxH+nEA0hD0khPf3VAbhA@mail.gmail.com>
- <20200616155433.GA11971@google.com> <CAEf4BzZm86BQqhfVHfm7aKvwK-UXC7679DsJe8xQqYR8eUUwAQ@mail.gmail.com>
- <7ecf2765-614c-8576-af2c-b4d354e0ffbf@fb.com>
-In-Reply-To: <7ecf2765-614c-8576-af2c-b4d354e0ffbf@fb.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 17 Jun 2020 21:26:31 +0200
-Message-ID: <CACYkzJ7iD5QdtG_HN8niZFa3ySmxNH5Srfcg4z_qdcO-t1UVVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] bpf: Add selftests for local_storage
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for sending a fix. Should I keep the patch as it is with a TODO
-to move to vmlinux.h when LLVM is updated?
+Hi David,
 
+The following pull-request contains BPF updates for your *net* tree.
 
-On Wed, Jun 17, 2020 at 9:19 PM Yonghong Song <yhs@fb.com> wrote:
->
->
-> On 6/16/20 12:25 PM, Andrii Nakryiko wrote:
-> > On Tue, Jun 16, 2020 at 8:54 AM KP Singh <kpsingh@chromium.org> wrote:
-> >> On 01-Jun 13:29, Andrii Nakryiko wrote:
-> >>> On Tue, May 26, 2020 at 9:34 AM KP Singh <kpsingh@chromium.org> wrote:
-> >>>> From: KP Singh <kpsingh@google.com>
-> >>>>
-> >>>> inode_local_storage:
-> >>>>
-> >>>> * Hook to the file_open and inode_unlink LSM hooks.
-> >>>> * Create and unlink a temporary file.
-> >>>> * Store some information in the inode's bpf_local_storage during
-> >>>>    file_open.
-> >>>> * Verify that this information exists when the file is unlinked.
-> >>>>
-> >>>> sk_local_storage:
-> >>>>
-> >>>> * Hook to the socket_post_create and socket_bind LSM hooks.
-> >>>> * Open and bind a socket and set the sk_storage in the
-> >>>>    socket_post_create hook using the start_server helper.
-> >>>> * Verify if the information is set in the socket_bind hook.
-> >>>>
-> >>>> Signed-off-by: KP Singh <kpsingh@google.com>
-> >>>> ---
-> >>>>   .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
-> >>>>   .../selftests/bpf/progs/local_storage.c       | 139 ++++++++++++++++++
-> >>>>   2 files changed, 199 insertions(+)
-> >>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-> >>>>   create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-> >>>>
-> >>> [...]
-> >>>
-> >>>> +struct dummy_storage {
-> >>>> +       __u32 value;
-> >>>> +};
-> >>>> +
-> >>>> +struct {
-> >>>> +       __uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-> >>>> +       __uint(map_flags, BPF_F_NO_PREALLOC);
-> >>>> +       __type(key, int);
-> >>>> +       __type(value, struct dummy_storage);
-> >>>> +} inode_storage_map SEC(".maps");
-> >>>> +
-> >>>> +struct {
-> >>>> +       __uint(type, BPF_MAP_TYPE_SK_STORAGE);
-> >>>> +       __uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-> >>>> +       __type(key, int);
-> >>>> +       __type(value, struct dummy_storage);
-> >>>> +} sk_storage_map SEC(".maps");
-> >>>> +
-> >>>> +/* Using vmlinux.h causes the generated BTF to be so big that the object
-> >>>> + * load fails at btf__load.
-> >>>> + */
-> >>> That's first time I hear about such issue. Do you have an error log
-> >>> from verifier?
-> >> Here's what I get when I do the following change.
-> >>
-> >> --- a/tools/testing/selftests/bpf/progs/local_storage.c
-> >> +++ b/tools/testing/selftests/bpf/progs/local_storage.c
-> >> @@ -4,8 +4,8 @@
-> >>    * Copyright 2020 Google LLC.
-> >>    */
-> >>
-> >> +#include "vmlinux.h"
-> >>   #include <errno.h>
-> >> -#include <linux/bpf.h>
-> >>   #include <stdbool.h>
-> >>   #include <bpf/bpf_helpers.h>
-> >>   #include <bpf/bpf_tracing.h>
-> >> @@ -37,24 +37,6 @@ struct {
-> >>          __type(value, struct dummy_storage);
-> >>   } sk_storage_map SEC(".maps");
-> >>
-> >> -/* Using vmlinux.h causes the generated BTF to be so big that the object
-> >> - * load fails at btf__load.
-> >> - */
-> >> -struct sock {} __attribute__((preserve_access_index));
-> >> -struct sockaddr {} __attribute__((preserve_access_index));
-> >> -struct socket {
-> >> -       struct sock *sk;
-> >> -} __attribute__((preserve_access_index));
-> >> -
-> >> -struct inode {} __attribute__((preserve_access_index));
-> >> -struct dentry {
-> >> -       struct inode *d_inode;
-> >> -} __attribute__((preserve_access_index));
-> >> -struct file {
-> >> -       struct inode *f_inode;
-> >> -} __attribute__((preserve_access_index));
-> >>
-> >> ./test_progs -t test_local_storage
-> >> libbpf: Error loading BTF: Invalid argument(22)
-> >> libbpf: magic: 0xeb9f
-> >> version: 1
-> >> flags: 0x0
-> >> hdr_len: 24
-> >> type_off: 0
-> >> type_len: 4488
-> >> str_off: 4488
-> >> str_len: 3012
-> >> btf_total_size: 7524
-> >>
-> >> [1] STRUCT (anon) size=32 vlen=4
-> >>          type type_id=2 bits_offset=0
-> >>          map_flags type_id=6 bits_offset=64
-> >>          key type_id=8 bits_offset=128
-> >>          value type_id=9 bits_offset=192
-> >> [2] PTR (anon) type_id=4
-> >> [3] INT int size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> >> [4] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=28
-> >> [5] INT __ARRAY_SIZE_TYPE__ size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> >> [6] PTR (anon) type_id=7
-> >> [7] ARRAY (anon) type_id=3 index_type_id=5 nr_elems=1
-> >> [8] PTR (anon) type_id=3
-> >> [9] PTR (anon) type_id=10
-> >> [10] STRUCT dummy_storage size=4 vlen=1
-> >>          value type_id=11 bits_offset=0
-> >> [11] TYPEDEF __u32 type_id=12
-> >>
-> >>    [... More BTF Dump ...]
-> >>
-> >> [91] TYPEDEF wait_queue_head_t type_id=175
-> >>
-> >>    [... More BTF Dump ...]
-> >>
-> >> [173] FWD super_block struct
-> >> [174] FWD vfsmount struct
-> >> [175] FWD wait_queue_head struct
-> >> [106] STRUCT socket_wq size=128 vlen=4
-> >>          wait type_id=91 bits_offset=0 Invalid member
-> >>
-> >> libbpf: Error loading .BTF into kernel: -22.
-> >> libbpf: map 'inode_storage_map': failed to create: Invalid argument(-22)
-> >> libbpf: failed to load object 'local_storage'
-> >> libbpf: failed to load BPF skeleton 'local_storage': -22
-> >> test_test_local_storage:FAIL:skel_load lsm skeleton failed
-> >> #81 test_local_storage:FAIL
-> >>
-> >> The failiure is in:
-> >>
-> >> [106] STRUCT socket_wq size=128 vlen=4
-> >>          wait type_id=91 bits_offset=0 Invalid member
-> >>
-> >>> Clang is smart enough to trim down used types to only those that are
-> >>> actually necessary, so too big BTF shouldn't be a thing. But let's try
-> >>> to dig into this and fix whatever issue it is, before giving up :)
-> >>>
-> >> I was wrong about the size being an issue. The verifier thinks the BTF
-> >> is invalid and more specificially it thinks that the socket_wq's
-> >> member with type_id=91, i.e. typedef wait_queue_head_t is invalid. Am
-> >> I missing some toolchain patches?
-> >>
-> > It is invalid BTF in the sense that we have a struct, embedding a
-> > struct, which is only defined as a forward declaration. There is not
-> > enough information and such situation would have caused compilation
-> > error, because it's impossible to determine the size of the outer
-> > struct.
-> >
-> > Yonghong, it seems like Clang is pruning types too aggressively here?
-> > We should keep types that are embedded, even if they are not used
-> > directly by user code. Could you please take a look?
->
-> Yes, this is a llvm bug. The proposed patch is here.
->
-> https://reviews.llvm.org/D82041
->
-> Will merge into llvm 11 trunk after the review. Not sure
->
-> whether we can get it into llvm 10.0.1 or not as its release
->
-> date is also very close.
->
->
-> >
-> >
-> >
-> >> - KP
-> >>
-> >>
-> >>>> +struct sock {} __attribute__((preserve_access_index));
-> >>>> +struct sockaddr {} __attribute__((preserve_access_index));
-> >>>> +struct socket {
-> >>>> +       struct sock *sk;
-> >>>> +} __attribute__((preserve_access_index));
-> >>>> +
-> >>>> +struct inode {} __attribute__((preserve_access_index));
-> >>>> +struct dentry {
-> >>>> +       struct inode *d_inode;
-> >>>> +} __attribute__((preserve_access_index));
-> >>>> +struct file {
-> >>>> +       struct inode *f_inode;
-> >>>> +} __attribute__((preserve_access_index));
-> >>>> +
-> >>>> +
-> >>> [...]
+We've added 10 non-merge commits during the last 2 day(s) which contain
+a total of 14 files changed, 158 insertions(+), 59 deletions(-).
+
+The main changes are:
+
+1) Important fix for bpf_probe_read_kernel_str() return value, from Andrii.
+
+2) [gs]etsockopt fix for large optlen, from Stanislav.
+
+3) devmap allocation fix, from Toke.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Christoph Hellwig, Jesper Dangaard Brouer, John 
+Fastabend, Xiumei Mu
+
+----------------------------------------------------------------
+
+The following changes since commit c92cbaea3cc0a80807e386922f801eb6d3652c81:
+
+  net: dsa: sja1105: fix PTP timestamping with large tc-taprio cycles (2020-06-15 13:45:59 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 8030e250d882db174cbcd88273570ffb36a13080:
+
+  bpf: Document optval > PAGE_SIZE behavior for sockopt hooks (2020-06-17 10:54:05 -0700)
+
+----------------------------------------------------------------
+Andrii Nakryiko (3):
+      bpf: Fix definition of bpf_ringbuf_output() helper in UAPI comments
+      tools/bpftool: Add ringbuf map to a list of known map types
+      bpf: bpf_probe_read_kernel_str() has to return amount of data read on success
+
+Gaurav Singh (1):
+      bpf, xdp, samples: Fix null pointer dereference in *_user code
+
+Hangbin Liu (1):
+      xdp: Handle frame_sz in xdp_convert_zc_to_xdp_frame()
+
+Stanislav Fomichev (3):
+      bpf: Don't return EINVAL from {get,set}sockopt when optlen > PAGE_SIZE
+      selftests/bpf: Make sure optvals > PAGE_SIZE are bypassed
+      bpf: Document optval > PAGE_SIZE behavior for sockopt hooks
+
+Tobias Klauser (1):
+      tools, bpftool: Add ringbuf map type to map command docs
+
+Toke Høiland-Jørgensen (1):
+      devmap: Use bpf_map_area_alloc() for allocating hash buckets
+
+ Documentation/bpf/prog_cgroup_sockopt.rst          | 14 ++++++
+ include/uapi/linux/bpf.h                           |  2 +-
+ kernel/bpf/cgroup.c                                | 53 +++++++++++++--------
+ kernel/bpf/devmap.c                                | 10 ++--
+ kernel/trace/bpf_trace.c                           |  2 +-
+ net/core/xdp.c                                     |  1 +
+ samples/bpf/xdp_monitor_user.c                     |  8 +---
+ samples/bpf/xdp_redirect_cpu_user.c                |  7 +--
+ samples/bpf/xdp_rxq_info_user.c                    | 13 ++----
+ tools/bpf/bpftool/Documentation/bpftool-map.rst    |  2 +-
+ tools/bpf/bpftool/map.c                            |  3 +-
+ tools/include/uapi/linux/bpf.h                     |  2 +-
+ .../testing/selftests/bpf/prog_tests/sockopt_sk.c  | 46 +++++++++++++++---
+ tools/testing/selftests/bpf/progs/sockopt_sk.c     | 54 +++++++++++++++++++++-
+ 14 files changed, 158 insertions(+), 59 deletions(-)
