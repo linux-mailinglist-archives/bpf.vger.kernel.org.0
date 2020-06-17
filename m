@@ -2,174 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52ED1FD329
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 19:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FE21FD39F
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 19:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgFQRJP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 13:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgFQRJO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 13:09:14 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EF4C06174E;
-        Wed, 17 Jun 2020 10:09:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h95so1367319pje.4;
-        Wed, 17 Jun 2020 10:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=idTgR3OxjMHNtCLNRt5gSOfMSNeQMCjvcLgQtbsY/+4=;
-        b=dnHj7qg+reRZPYIb4+4tyWOmlZMqaKSGsJ8Gd9sGpyvAe6ykeGJZwQ9Tx8ISP5LyCZ
-         JRVc6+1ZQ99zlGA3TfFs+Avjr7ZMi2B8PAo17TYraV6IvzUW8qgOJdyAOWYuwCaQ3Sg2
-         dRja6UNLxL53f5tShKoc6YoH/+M8wr8IMAwXnWzXbnHgp1ZkYe9yCZ9KdLtCo4mVnXsc
-         o0pvvn+RSKBtd2OilxpG0r8pikcAdK8s/NYWvqH9UAj2hIJVz2WSz/Dkxuc2TVxUMQ2d
-         IR/1tVJFbqgp6+SKTExU8k6Cg9r3b6Xcsne5/EKklATbv5sckU11PWRdwLcjMgvYu0l0
-         huMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=idTgR3OxjMHNtCLNRt5gSOfMSNeQMCjvcLgQtbsY/+4=;
-        b=qm2VtmhGrpEan/czlH3FeeI+et22SSPAx4N0jLrIZqGAXkrKpFIsZduEzvkJADbpZ0
-         9Icx3qKgrUIpLOH6m8E4/AVd7z1KR+IaWIvIJ4/sO3s03QHxmQp+TocoxKmCjuGUbo4n
-         B9K+hhEZf5EAbSukghpKFx0HaaX9KdwnQc2iKCjxwPqahoMw8lzS+pm5IeBRd14sTqd2
-         P2YNyrVbLc2doYcJVF5SckJslF4iueDcepsBssWrX7jJ09uHfiQd714xmTQS+6Tm3YN1
-         mURZGG52TtpLK3GJWvku2IzIpA9cX/jUJug19b/HWz6bXFujgAUhSKWNj7mWStSTFYMU
-         EyUQ==
-X-Gm-Message-State: AOAM533yhWFnu/AGROtPOD1J77HrKH6Wn6sB9UqaZeMWUiY3ZM/4SYHm
-        hlnT5havbsm4Gfk65D60yDw=
-X-Google-Smtp-Source: ABdhPJwr2ScYm/EDWciF3FgaluiZXymy0N2t6o3x0L/K5XjP4v4ACSE0CfTxLCGpGCD8GucNWDXFHg==
-X-Received: by 2002:a17:902:7246:: with SMTP id c6mr31629pll.191.1592413752596;
-        Wed, 17 Jun 2020 10:09:12 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:7972])
-        by smtp.gmail.com with ESMTPSA id q68sm162266pjc.30.2020.06.17.10.09.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 10:09:11 -0700 (PDT)
-Date:   Wed, 17 Jun 2020 10:09:09 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: Re: [PATCH bpf v5 1/3] bpf: don't return EINVAL from
- {get,set}sockopt when optlen > PAGE_SIZE
-Message-ID: <20200617170909.koev3t5fmngla3c4@ast-mbp.dhcp.thefacebook.com>
-References: <20200617010416.93086-1-sdf@google.com>
+        id S1726597AbgFQRm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 13:42:29 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32336 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726540AbgFQRm3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jun 2020 13:42:29 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HHXbeL030976
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 10:42:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=PYgiC4RtNGwUt/8nCfb+htud5QZ91fDyCfx3NgcWYa4=;
+ b=mCqYgSV8zh1KHRFA4xrNN1EtF32zOikOK8FVEsc6Wn/Dl66OrhnM1zYFikWOUT4FQ7K8
+ ay8GNPd7KgloxFpJOT3D9Ag1UQJvkjfhs3Bi9ykTOrctgOJ6xvWBsQD4g6Uba36eGVmn
+ 2NAELVT5Aeb0L1UJ+XE97D4CQ4K16D76tig= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31q644ehcn-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 10:42:28 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Jun 2020 10:42:27 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id CD3042942DA5; Wed, 17 Jun 2020 10:42:26 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: sk_storage: Prefer to get a free cache_idx
+Date:   Wed, 17 Jun 2020 10:42:26 -0700
+Message-ID: <20200617174226.2301909-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617010416.93086-1-sdf@google.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_07:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ mlxlogscore=962 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ cotscore=-2147483648 suspectscore=38 adultscore=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006170140
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 06:04:14PM -0700, Stanislav Fomichev wrote:
-> Attaching to these hooks can break iptables because its optval is
-> usually quite big, or at least bigger than the current PAGE_SIZE limit.
-> David also mentioned some SCTP options can be big (around 256k).
-> 
-> For such optvals we expose only the first PAGE_SIZE bytes to
-> the BPF program. BPF program has two options:
-> 1. Set ctx->optlen to 0 to indicate that the BPF's optval
->    should be ignored and the kernel should use original userspace
->    value.
-> 2. Set ctx->optlen to something that's smaller than the PAGE_SIZE.
-> 
-> v5:
-> * use ctx->optlen == 0 with trimmed buffer (Alexei Starovoitov)
-> * update the docs accordingly
-> 
-> v4:
-> * use temporary buffer to avoid optval == optval_end == NULL;
->   this removes the corner case in the verifier that might assume
->   non-zero PTR_TO_PACKET/PTR_TO_PACKET_END.
-> 
-> v3:
-> * don't increase the limit, bypass the argument
-> 
-> v2:
-> * proper comments formatting (Jakub Kicinski)
-> 
-> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-> Cc: David Laight <David.Laight@ACULAB.COM>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  kernel/bpf/cgroup.c | 53 ++++++++++++++++++++++++++++-----------------
->  1 file changed, 33 insertions(+), 20 deletions(-)
-> 
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 4d76f16524cc..ac53102e244a 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1276,16 +1276,23 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
->  
->  static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
->  {
-> -	if (unlikely(max_optlen > PAGE_SIZE) || max_optlen < 0)
-> +	if (unlikely(max_optlen < 0))
->  		return -EINVAL;
->  
-> +	if (unlikely(max_optlen > PAGE_SIZE)) {
-> +		/* We don't expose optvals that are greater than PAGE_SIZE
-> +		 * to the BPF program.
-> +		 */
-> +		max_optlen = PAGE_SIZE;
-> +	}
-> +
->  	ctx->optval = kzalloc(max_optlen, GFP_USER);
->  	if (!ctx->optval)
->  		return -ENOMEM;
->  
->  	ctx->optval_end = ctx->optval + max_optlen;
->  
-> -	return 0;
-> +	return max_optlen;
->  }
->  
->  static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
-> @@ -1319,13 +1326,13 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->  	 */
->  	max_optlen = max_t(int, 16, *optlen);
->  
-> -	ret = sockopt_alloc_buf(&ctx, max_optlen);
-> -	if (ret)
-> -		return ret;
-> +	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-> +	if (max_optlen < 0)
-> +		return max_optlen;
->  
->  	ctx.optlen = *optlen;
->  
-> -	if (copy_from_user(ctx.optval, optval, *optlen) != 0) {
-> +	if (copy_from_user(ctx.optval, optval, min(*optlen, max_optlen)) != 0) {
->  		ret = -EFAULT;
->  		goto out;
->  	}
-> @@ -1353,8 +1360,14 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->  		/* export any potential modifications */
->  		*level = ctx.level;
->  		*optname = ctx.optname;
-> -		*optlen = ctx.optlen;
-> -		*kernel_optval = ctx.optval;
-> +
-> +		/* optlen == 0 from BPF indicates that we should
-> +		 * use original userspace data.
-> +		 */
-> +		if (ctx.optlen != 0) {
-> +			*optlen = ctx.optlen;
+The cache_idx is currently picked by RR.  There is chance that
+the same cache_idx will be picked by multiple sk_storage_maps while
+other cache_idx is still unused.  e.g. It could happen when the
+sk_storage_map is recreated during the restart of the user
+space process.
 
-I think it should be:
-*optlen = min(ctx.optlen, max_optlen);
+This patch tracks the usage count for each cache_idx.  There is
+16 of them now (defined in BPF_SK_STORAGE_CACHE_SIZE).
+It will try to pick the free cache_idx.  If none was found,
+it would pick one with the minimal usage count.
 
-Otherwise when bpf prog doesn't adjust ctx.oplen the kernel will see
-4k only in kernel_optval whereas optlen will be > 4k.
-I suspect iptables sockopt should have crashed at this point.
-How did you test it?
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ net/core/bpf_sk_storage.c | 41 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 4 deletions(-)
 
-> +			*kernel_optval = ctx.optval;
-> +		}
->  	}
->  
+diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+index d2c4d16dadba..1dae4b543243 100644
+--- a/net/core/bpf_sk_storage.c
++++ b/net/core/bpf_sk_storage.c
+@@ -11,8 +11,6 @@
+ #include <uapi/linux/sock_diag.h>
+ #include <uapi/linux/btf.h>
+=20
+-static atomic_t cache_idx;
+-
+ #define SK_STORAGE_CREATE_FLAG_MASK					\
+ 	(BPF_F_NO_PREALLOC | BPF_F_CLONE)
+=20
+@@ -81,6 +79,9 @@ struct bpf_sk_storage_elem {
+ #define SDATA(_SELEM) (&(_SELEM)->sdata)
+ #define BPF_SK_STORAGE_CACHE_SIZE	16
+=20
++static DEFINE_SPINLOCK(cache_idx_lock);
++static u64 cache_idx_usage_counts[BPF_SK_STORAGE_CACHE_SIZE];
++
+ struct bpf_sk_storage {
+ 	struct bpf_sk_storage_data __rcu *cache[BPF_SK_STORAGE_CACHE_SIZE];
+ 	struct hlist_head list;	/* List of bpf_sk_storage_elem */
+@@ -512,6 +513,37 @@ static int sk_storage_delete(struct sock *sk, struct=
+ bpf_map *map)
+ 	return 0;
+ }
+=20
++static u16 cache_idx_get(void)
++{
++	u64 min_usage =3D U64_MAX;
++	u16 i, res =3D 0;
++
++	spin_lock(&cache_idx_lock);
++
++	for (i =3D 0; i < BPF_SK_STORAGE_CACHE_SIZE; i++) {
++		if (cache_idx_usage_counts[i] < min_usage) {
++			min_usage =3D cache_idx_usage_counts[i];
++			res =3D i;
++
++			/* Found a free cache_idx */
++			if (!min_usage)
++				break;
++		}
++	}
++	cache_idx_usage_counts[res]++;
++
++	spin_unlock(&cache_idx_lock);
++
++	return res;
++}
++
++static void cache_idx_free(u16 idx)
++{
++	spin_lock(&cache_idx_lock);
++	cache_idx_usage_counts[idx]--;
++	spin_unlock(&cache_idx_lock);
++}
++
+ /* Called by __sk_destruct() & bpf_sk_storage_clone() */
+ void bpf_sk_storage_free(struct sock *sk)
+ {
+@@ -560,6 +592,8 @@ static void bpf_sk_storage_map_free(struct bpf_map *m=
+ap)
+=20
+ 	smap =3D (struct bpf_sk_storage_map *)map;
+=20
++	cache_idx_free(smap->cache_idx);
++
+ 	/* Note that this map might be concurrently cloned from
+ 	 * bpf_sk_storage_clone. Wait for any existing bpf_sk_storage_clone
+ 	 * RCU read section to finish before proceeding. New RCU
+@@ -673,8 +707,7 @@ static struct bpf_map *bpf_sk_storage_map_alloc(union=
+ bpf_attr *attr)
+ 	}
+=20
+ 	smap->elem_size =3D sizeof(struct bpf_sk_storage_elem) + attr->value_si=
+ze;
+-	smap->cache_idx =3D (unsigned int)atomic_inc_return(&cache_idx) %
+-		BPF_SK_STORAGE_CACHE_SIZE;
++	smap->cache_idx =3D cache_idx_get();
+=20
+ 	return &smap->map;
+ }
+--=20
+2.24.1
+
