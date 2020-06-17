@@ -2,207 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0D21FC32B
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 03:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2815A1FC326
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 03:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgFQBE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jun 2020 21:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S1726270AbgFQBE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jun 2020 21:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgFQBEX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1726456AbgFQBEX (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 16 Jun 2020 21:04:23 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1FFC06174E
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 18:04:20 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id l6so578794qkk.14
-        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 18:04:20 -0700 (PDT)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BE9C061755
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 18:04:21 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id e20so603552ybc.23
+        for <bpf@vger.kernel.org>; Tue, 16 Jun 2020 18:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ElhOma4gQ0OPfIjSUT22cb9hvoULnOkjRgU5fDqO5Dg=;
-        b=a3QcOkj2WOe4iE4Y/U7Cs/HGVVwKjy4nSdV8+/SWygE7198rR4NXMQkqfh4WWk9lX6
-         MtfRiBvWNrsRNTSwBuPuhUSPNy8IdibcRUwxPE9dHhZzdTuHXI4aX9fLJG9YHiTVEWna
-         +KlSyK0jkVckAXXzPPe39JafLdZS1N58vUGnSUtZKupBndmrfJUbdbjrHyc4LxkkDH11
-         j4hvH6Bmo3UYB4nJ25j5b0ayaOY/ZkXUF1aKURGcHh3dsKquiZq6lvCy2+qRDhLCI5yy
-         lK3rtCBRG2QynjOJBvHTEhknqciSzUXr/wrbNG4WFexawyEknPOvq1cVGcn1yrti+yDB
-         X2xw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=MkbdLvL2Zi1F3Tsi0YsCAEZhQKEx0IBwe0FoxjY0e3c=;
+        b=g9bLvjsstMgwhrFyn2geeCipVFJDfjFr9/8EzPLrncu8SsjJ2uFI8H/IeFhK/9rsO0
+         vzC+nBEerldx7v6RIhgIwFp+5jZ7xgsuU2EMeRMNki5DzXAJ94ji4bfXEhzOWxUJVupd
+         89PkXXVGcaFXhfKueij1hQRr5cub8+1cLHJbYOn2yx1XMFc+E2ImE07pMi3UecnT9PgV
+         bH09jIxxcN0XOOiFjKjUQjt5CgXYVH7YwhxkMEF5ALzhmdP5YlguqaPxGzeCKP4iZklZ
+         qr7EPnz5KFxL8BQya11L5BiTrxnQHOjCbTFuIdYCpufNEW6qe6e0xMX7fxMa85viptMw
+         Bw+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ElhOma4gQ0OPfIjSUT22cb9hvoULnOkjRgU5fDqO5Dg=;
-        b=emkrKPbV/nJRMmcmDRRGGrT/638f1s2b7UquXYjJgmbqItmVoioCZHZXUCjAC/1vss
-         NdMe+ILNj/SQJO2RZojmJbw27I73Ync55SBoqEWhswN0AVWGcdcYlFFXqNCZMqbdaIfF
-         3MiJaE79CDWpTsgsY8DU6kQmA/7P2K9WQljw4YXVhaqe44l+RDNHrV2qmCjGzczvhMUm
-         krt+wO8LA9hWyd34BgOV1kaovPXj+ZM/2f0cwqXzkD9WwKGwY9zedepi9R1VqZj3v3lD
-         bZA7ZcpRqwxR0dw0pYhm6Lv9pnuCd1bV8XKkbvWkDwvOFxH4jq+h5xm57J0qy4TNTy9h
-         Rtjg==
-X-Gm-Message-State: AOAM530IBWce5e9bG+mq0Hl3vh/7LyrnBwXj2yqbmf/Btw4gvmkqqJu7
-        k3mY+DoWmKJcCcflyiVdKgPW/lw=
-X-Google-Smtp-Source: ABdhPJy85YW8JFPMFPvtrXCPq1/krJyL+LUXfqnfj0YU0WjOLN687+DjQbt70rUNaEOIfnzSFib2T6o=
-X-Received: by 2002:a0c:ecc6:: with SMTP id o6mr5106743qvq.243.1592355858412;
- Tue, 16 Jun 2020 18:04:18 -0700 (PDT)
-Date:   Tue, 16 Jun 2020 18:04:14 -0700
-Message-Id: <20200617010416.93086-1-sdf@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=MkbdLvL2Zi1F3Tsi0YsCAEZhQKEx0IBwe0FoxjY0e3c=;
+        b=ZKPTqy3mUCoiBaySWeLF7EjdCR4qI2lc+3kvfz8Va8agTSLfYeZCna4/EfUH1zVaWq
+         269Tauoh0kuaPL0ig3wlprye7KEqYbnqFdzHV+qxjcJ6pFK+6rUmMWdlrmAQnSgJ3v0d
+         z7Mkpq9TgWh0b/Qg91ZHiiPXdgwWQZam4E4nbvFanXb3gxoj1tp1RNr+6z5+9WwyUCOu
+         cgJ3gIB1pBPdbxZsKNXFRUibhnqHU2IwMMon3joGaAx6xmRgbeq8ziNGElFgkm3oQNb8
+         06XKPUOVlWLB54jQ6fOZsCCglOD3qwU+MF2Y1KzBsiSTa9OGXmZa0Mq7VWl8NZoj9WdH
+         ljiA==
+X-Gm-Message-State: AOAM532GlWVmzqmK8BvmfjPG9XIdEJfKgcp93ntze+dL71wwuw2xY9oB
+        fjFH9NuSYuZacIypcTwMIzUw9KA=
+X-Google-Smtp-Source: ABdhPJw0253CCA3tRzHDPqpiCitYohp6QS9lcZBoJFKaztrU98zWvQViWAcHhVCShRPrZziZIGcDDw8=
+X-Received: by 2002:a25:9ac5:: with SMTP id t5mr8859813ybo.410.1592355860214;
+ Tue, 16 Jun 2020 18:04:20 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 18:04:15 -0700
+In-Reply-To: <20200617010416.93086-1-sdf@google.com>
+Message-Id: <20200617010416.93086-2-sdf@google.com>
 Mime-Version: 1.0
+References: <20200617010416.93086-1-sdf@google.com>
 X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-Subject: [PATCH bpf v5 1/3] bpf: don't return EINVAL from {get,set}sockopt
- when optlen > PAGE_SIZE
+Subject: [PATCH bpf v5 2/3] selftests/bpf: make sure optvals > PAGE_SIZE are bypassed
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        David Laight <David.Laight@ACULAB.COM>
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Attaching to these hooks can break iptables because its optval is
-usually quite big, or at least bigger than the current PAGE_SIZE limit.
-David also mentioned some SCTP options can be big (around 256k).
+We are relying on the fact, that we can pass > sizeof(int) optvals
+to the SOL_IP+IP_FREEBIND option (the kernel will take first 4 bytes).
+In the BPF program we check that we can only touch PAGE_SIZE bytes,
+but the real optlen is PAGE_SIZE * 2. In both cases, we override it to
+some predefined value and trim the optlen.
 
-For such optvals we expose only the first PAGE_SIZE bytes to
-the BPF program. BPF program has two options:
-1. Set ctx->optlen to 0 to indicate that the BPF's optval
-   should be ignored and the kernel should use original userspace
-   value.
-2. Set ctx->optlen to something that's smaller than the PAGE_SIZE.
+Also, let's modify exiting IP_TOS usecase to test optlen=0 case
+where BPF program just bypasses the data as is.
 
-v5:
-* use ctx->optlen == 0 with trimmed buffer (Alexei Starovoitov)
-* update the docs accordingly
-
-v4:
-* use temporary buffer to avoid optval == optval_end == NULL;
-  this removes the corner case in the verifier that might assume
-  non-zero PTR_TO_PACKET/PTR_TO_PACKET_END.
-
-v3:
-* don't increase the limit, bypass the argument
-
-v2:
-* proper comments formatting (Jakub Kicinski)
-
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Cc: David Laight <David.Laight@ACULAB.COM>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- kernel/bpf/cgroup.c | 53 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 20 deletions(-)
+ .../selftests/bpf/prog_tests/sockopt_sk.c     | 46 +++++++++++++---
+ .../testing/selftests/bpf/progs/sockopt_sk.c  | 54 ++++++++++++++++++-
+ 2 files changed, 91 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 4d76f16524cc..ac53102e244a 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1276,16 +1276,23 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+index 2061a6beac0f..5f54c6aec7f0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+@@ -13,6 +13,7 @@ static int getsetsockopt(void)
+ 		char cc[16]; /* TCP_CA_NAME_MAX */
+ 	} buf = {};
+ 	socklen_t optlen;
++	char *big_buf = NULL;
  
- static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
- {
--	if (unlikely(max_optlen > PAGE_SIZE) || max_optlen < 0)
-+	if (unlikely(max_optlen < 0))
- 		return -EINVAL;
+ 	fd = socket(AF_INET, SOCK_STREAM, 0);
+ 	if (fd < 0) {
+@@ -22,24 +23,31 @@ static int getsetsockopt(void)
  
-+	if (unlikely(max_optlen > PAGE_SIZE)) {
-+		/* We don't expose optvals that are greater than PAGE_SIZE
-+		 * to the BPF program.
-+		 */
-+		max_optlen = PAGE_SIZE;
+ 	/* IP_TOS - BPF bypass */
+ 
+-	buf.u8[0] = 0x08;
+-	err = setsockopt(fd, SOL_IP, IP_TOS, &buf, 1);
++	optlen = getpagesize() * 2;
++	big_buf = calloc(1, optlen);
++	if (!big_buf) {
++		log_err("Couldn't allocate two pages");
++		goto err;
 +	}
 +
- 	ctx->optval = kzalloc(max_optlen, GFP_USER);
- 	if (!ctx->optval)
- 		return -ENOMEM;
++	*(int *)big_buf = 0x08;
++	err = setsockopt(fd, SOL_IP, IP_TOS, big_buf, optlen);
+ 	if (err) {
+ 		log_err("Failed to call setsockopt(IP_TOS)");
+ 		goto err;
+ 	}
  
- 	ctx->optval_end = ctx->optval + max_optlen;
+-	buf.u8[0] = 0x00;
++	memset(big_buf, 0, optlen);
+ 	optlen = 1;
+-	err = getsockopt(fd, SOL_IP, IP_TOS, &buf, &optlen);
++	err = getsockopt(fd, SOL_IP, IP_TOS, big_buf, &optlen);
+ 	if (err) {
+ 		log_err("Failed to call getsockopt(IP_TOS)");
+ 		goto err;
+ 	}
  
--	return 0;
-+	return max_optlen;
+-	if (buf.u8[0] != 0x08) {
+-		log_err("Unexpected getsockopt(IP_TOS) buf[0] 0x%02x != 0x08",
+-			buf.u8[0]);
++	if (*(int *)big_buf != 0x08) {
++		log_err("Unexpected getsockopt(IP_TOS) optval 0x%x != 0x08",
++			*(int *)big_buf);
+ 		goto err;
+ 	}
+ 
+@@ -78,6 +86,28 @@ static int getsetsockopt(void)
+ 		goto err;
+ 	}
+ 
++	/* IP_FREEBIND - BPF can't access optval past PAGE_SIZE */
++
++	optlen = getpagesize() * 2;
++	memset(big_buf, 0, optlen);
++
++	err = setsockopt(fd, SOL_IP, IP_FREEBIND, big_buf, optlen);
++	if (err != 0) {
++		log_err("Failed to call setsockopt, ret=%d", err);
++		goto err;
++	}
++
++	err = getsockopt(fd, SOL_IP, IP_FREEBIND, big_buf, &optlen);
++	if (err != 0) {
++		log_err("Failed to call getsockopt, ret=%d", err);
++		goto err;
++	}
++
++	if (optlen != 1 || *(__u8 *)big_buf != 0x55) {
++		log_err("Unexpected IP_FREEBIND getsockopt, optlen=%d, optval=0x%x",
++			optlen, *(__u8 *)big_buf);
++	}
++
+ 	/* SO_SNDBUF is overwritten */
+ 
+ 	buf.u32 = 0x01010101;
+@@ -124,9 +154,11 @@ static int getsetsockopt(void)
+ 		goto err;
+ 	}
+ 
++	free(big_buf);
+ 	close(fd);
+ 	return 0;
+ err:
++	free(big_buf);
+ 	close(fd);
+ 	return -1;
  }
+diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+index d5a5eeb5fb52..712df7b49cb1 100644
+--- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
++++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+@@ -8,6 +8,10 @@
+ char _license[] SEC("license") = "GPL";
+ __u32 _version SEC("version") = 1;
  
- static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
-@@ -1319,13 +1326,13 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	 */
- 	max_optlen = max_t(int, 16, *optlen);
- 
--	ret = sockopt_alloc_buf(&ctx, max_optlen);
--	if (ret)
--		return ret;
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	if (max_optlen < 0)
-+		return max_optlen;
- 
- 	ctx.optlen = *optlen;
- 
--	if (copy_from_user(ctx.optval, optval, *optlen) != 0) {
-+	if (copy_from_user(ctx.optval, optval, min(*optlen, max_optlen)) != 0) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
-@@ -1353,8 +1360,14 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 		/* export any potential modifications */
- 		*level = ctx.level;
- 		*optname = ctx.optname;
--		*optlen = ctx.optlen;
--		*kernel_optval = ctx.optval;
++#ifndef PAGE_SIZE
++#define PAGE_SIZE 4096
++#endif
 +
-+		/* optlen == 0 from BPF indicates that we should
-+		 * use original userspace data.
+ #define SOL_CUSTOM			0xdeadbeef
+ 
+ struct sockopt_sk {
+@@ -28,12 +32,14 @@ int _getsockopt(struct bpf_sockopt *ctx)
+ 	__u8 *optval = ctx->optval;
+ 	struct sockopt_sk *storage;
+ 
+-	if (ctx->level == SOL_IP && ctx->optname == IP_TOS)
++	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
+ 		/* Not interested in SOL_IP:IP_TOS;
+ 		 * let next BPF program in the cgroup chain or kernel
+ 		 * handle it.
+ 		 */
++		ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
+ 		return 1;
++	}
+ 
+ 	if (ctx->level == SOL_SOCKET && ctx->optname == SO_SNDBUF) {
+ 		/* Not interested in SOL_SOCKET:SO_SNDBUF;
+@@ -51,6 +57,26 @@ int _getsockopt(struct bpf_sockopt *ctx)
+ 		return 1;
+ 	}
+ 
++	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
++		if (optval + 1 > optval_end)
++			return 0; /* EPERM, bounds check */
++
++		ctx->retval = 0; /* Reset system call return value to zero */
++
++		/* Always export 0x55 */
++		optval[0] = 0x55;
++		ctx->optlen = 1;
++
++		/* Userspace buffer is PAGE_SIZE * 2, but BPF
++		 * program can only see the first PAGE_SIZE
++		 * bytes of data.
 +		 */
-+		if (ctx.optlen != 0) {
-+			*optlen = ctx.optlen;
-+			*kernel_optval = ctx.optval;
-+		}
- 	}
- 
- out:
-@@ -1385,12 +1398,12 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	    __cgroup_bpf_prog_array_is_empty(cgrp, BPF_CGROUP_GETSOCKOPT))
- 		return retval;
- 
--	ret = sockopt_alloc_buf(&ctx, max_optlen);
--	if (ret)
--		return ret;
--
- 	ctx.optlen = max_optlen;
- 
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	if (max_optlen < 0)
-+		return max_optlen;
++		if (optval_end - optval != PAGE_SIZE)
++			return 0; /* EPERM, unexpected data size */
 +
- 	if (!retval) {
- 		/* If kernel getsockopt finished successfully,
- 		 * copy whatever was returned to the user back
-@@ -1404,10 +1417,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 			goto out;
- 		}
++		return 1;
++	}
++
+ 	if (ctx->level != SOL_CUSTOM)
+ 		return 0; /* EPERM, deny everything except custom level */
  
--		if (ctx.optlen > max_optlen)
--			ctx.optlen = max_optlen;
--
--		if (copy_from_user(ctx.optval, optval, ctx.optlen) != 0) {
-+		if (copy_from_user(ctx.optval, optval,
-+				   min(ctx.optlen, max_optlen)) != 0) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
-@@ -1436,10 +1447,12 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 		goto out;
+@@ -81,12 +107,14 @@ int _setsockopt(struct bpf_sockopt *ctx)
+ 	__u8 *optval = ctx->optval;
+ 	struct sockopt_sk *storage;
+ 
+-	if (ctx->level == SOL_IP && ctx->optname == IP_TOS)
++	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
+ 		/* Not interested in SOL_IP:IP_TOS;
+ 		 * let next BPF program in the cgroup chain or kernel
+ 		 * handle it.
+ 		 */
++		ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
+ 		return 1;
++	}
+ 
+ 	if (ctx->level == SOL_SOCKET && ctx->optname == SO_SNDBUF) {
+ 		/* Overwrite SO_SNDBUF value */
+@@ -112,6 +140,28 @@ int _setsockopt(struct bpf_sockopt *ctx)
+ 		return 1;
  	}
  
--	if (copy_to_user(optval, ctx.optval, ctx.optlen) ||
--	    put_user(ctx.optlen, optlen)) {
--		ret = -EFAULT;
--		goto out;
-+	if (ctx.optlen != 0) {
-+		if (copy_to_user(optval, ctx.optval, ctx.optlen) ||
-+		    put_user(ctx.optlen, optlen)) {
-+			ret = -EFAULT;
-+			goto out;
-+		}
- 	}
++	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
++		/* Original optlen is larger than PAGE_SIZE. */
++		if (ctx->optlen != PAGE_SIZE * 2)
++			return 0; /* EPERM, unexpected data size */
++
++		if (optval + 1 > optval_end)
++			return 0; /* EPERM, bounds check */
++
++		/* Make sure we can trim the buffer. */
++		optval[0] = 0;
++		ctx->optlen = 1;
++
++		/* Usepace buffer is PAGE_SIZE * 2, but BPF
++		 * program can only see the first PAGE_SIZE
++		 * bytes of data.
++		 */
++		if (optval_end - optval != PAGE_SIZE)
++			return 0; /* EPERM, unexpected data size */
++
++		return 1;
++	}
++
+ 	if (ctx->level != SOL_CUSTOM)
+ 		return 0; /* EPERM, deny everything except custom level */
  
- 	ret = ctx.retval;
 -- 
 2.27.0.290.gba653c62da-goog
 
