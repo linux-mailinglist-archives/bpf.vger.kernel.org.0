@@ -2,901 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BEE1FD643
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 22:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A121FD6EC
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 23:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgFQUog (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 16:44:36 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9776 "EHLO
+        id S1726955AbgFQVQS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 17:16:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20699 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726879AbgFQUof (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jun 2020 16:44:35 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HKiG9b026716
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 13:44:30 -0700
+        by vger.kernel.org with ESMTP id S1726864AbgFQVQR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jun 2020 17:16:17 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05HLG5PD024498
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 14:16:16 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=OLANBWsSN66aoQIostAkmvM6prb1nORK2FsIowv0D4Q=;
- b=SYWXvaq9/OczujD2Ja0hzCk5717NkW0DjDMsU5ZxqaHFoDkUrM0BP0ZqZ5mRNYnQqgrv
- EBTU100vV8jtYEyX5TcgEfjEfGvSVqfxvgRFIUz7HDXnGM+SDQlif32lJyYxCY0Fd0W6
- d+QYZh0S6O9BQGKw6aP5Q3qbKc/kiWGzyEY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31q64eqvn1-2
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=UJYI0QLyDJDdjykKMkoh/W5NWn4PRirekMHEjUEHQXQ=;
+ b=i09Xb0Cl2iSrNbHy/vNud6wP2Qes3RlTzoQayT3YqunTFD9LxMsucdDZqaDSm0lBynnf
+ keq07MBaMFdcgXiFZnjXGX8t5s4GOIYyKDJ3z4obaWtNpTI4ykzYng01WSMRvZkLVzCi
+ 2sjT81Tzh71G9xWjhFOW+K4EfBmvBqEW6Ow= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31q653g1m7-15
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 13:44:29 -0700
-Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 14:16:16 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 17 Jun 2020 13:44:28 -0700
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id 93E2F3700B15; Wed, 17 Jun 2020 13:44:24 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
+ 15.1.1979.3; Wed, 17 Jun 2020 14:15:38 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id CD55D3704EF2; Wed, 17 Jun 2020 14:15:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
 To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 6/6] selftests/bpf: Test access to bpf map pointer
-Date:   Wed, 17 Jun 2020 13:43:47 -0700
-Message-ID: <0e25cb56208bc6c1876c2cf0e2e012152d1a6125.1592426215.git.rdna@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 00/13] implement bpf iterator for tcp and udp sockets
+Date:   Wed, 17 Jun 2020 14:15:36 -0700
+Message-ID: <20200617211536.1854348-1-yhs@fb.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1592426215.git.rdna@fb.com>
-References: <cover.1592426215.git.rdna@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-17_11:2020-06-17,2020-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 cotscore=-2147483648 lowpriorityscore=0 mlxscore=0
- spamscore=0 bulkscore=0 suspectscore=13 adultscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 malwarescore=0 classifier=spam adjust=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 cotscore=-2147483648 suspectscore=1
+ spamscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 classifier=spam adjust=0
  reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006170155
+ definitions=main-2006170159
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests to test access to map pointers from bpf program for all
-map types except struct_ops (that one would need additional work).
+bpf iterator implments traversal of kernel data structures and these
+data structures are passed to a bpf program for processing.
+This gives great flexibility for users to examine kernel data
+structure without using e.g. /proc/net which has limited and
+fixed format.
 
-verifier test focuses mostly on scenarios that must be rejected.
+Commit 138d0be35b14 ("net: bpf: Add netlink and ipv6_route bpf_iter targe=
+ts")
+implemented bpf iterators for netlink and ipv6_route.
+This patch set intends to implement bpf iterators for tcp and udp.
 
-prog_tests test focuses on accessing multiple fields both scalar and a
-nested struct from bpf program and verifies that those fields have
-expected values.
+Currently, /proc/net/tcp is used to print tcp4 stats and /proc/net/tcp6
+is used to print tcp6 stats. /proc/net/udp[6] have similar usage model.
+In contrast, only one tcp iterator is implemented and it is bpf program
+resposibility to filter based on socket family. The same is for udp.
+This will avoid another unnecessary traversal pass if users want
+to check both tcp4 and tcp6.
 
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- .../selftests/bpf/prog_tests/map_ptr.c        |  32 +
- .../selftests/bpf/progs/map_ptr_kern.c        | 686 ++++++++++++++++++
- .../testing/selftests/bpf/verifier/map_ptr.c  |  62 ++
- 3 files changed, 780 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/map_ptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/map_ptr_kern.c
- create mode 100644 tools/testing/selftests/bpf/verifier/map_ptr.c
+Several helpers are also implemented in this patch
+  bpf_skc_to_{tcp, tcp6, tcp_timewait, tcp_request, udp6}_sock
+The argument for these helpers is not a fixed btf_id. For example,
+  bpf_skc_to_tcp(struct sock_common *), or
+  bpf_skc_to_tcp(struct sock *), or
+  bpf_skc_to_tcp(struct inet_sock *), ...
+are all valid. At runtime, the helper will check whether pointer cast
+is legal or not. Please see Patch #5 for details.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_ptr.c b/tools/tes=
-ting/selftests/bpf/prog_tests/map_ptr.c
-new file mode 100644
-index 000000000000..c230a573c373
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/map_ptr.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+#include "map_ptr_kern.skel.h"
-+
-+void test_map_ptr(void)
-+{
-+	struct map_ptr_kern *skel;
-+	__u32 duration =3D 0, retval;
-+	char buf[128];
-+	int err;
-+
-+	skel =3D map_ptr_kern__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "open_load failed\n"))
-+		return;
-+
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.cg_skb), 1, &pkt_=
-v4,
-+				sizeof(pkt_v4), buf, NULL, &retval, NULL);
-+
-+	if (CHECK(err, "test_run", "err=3D%d errno=3D%d\n", err, errno))
-+		goto cleanup;
-+
-+	if (CHECK(!retval, "retval", "retval=3D%d map_type=3D%u line=3D%u\n", r=
-etval,
-+		  skel->bss->g_map_type, skel->bss->g_line))
-+		goto cleanup;
-+
-+cleanup:
-+	map_ptr_kern__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/tes=
-ting/selftests/bpf/progs/map_ptr_kern.c
-new file mode 100644
-index 000000000000..473665cac67e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -0,0 +1,686 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define LOOP_BOUND 0xf
-+#define MAX_ENTRIES 8
-+#define HALF_ENTRIES (MAX_ENTRIES >> 1)
-+
-+_Static_assert(MAX_ENTRIES < LOOP_BOUND, "MAX_ENTRIES must be < LOOP_BOU=
-ND");
-+
-+enum bpf_map_type g_map_type =3D BPF_MAP_TYPE_UNSPEC;
-+__u32 g_line =3D 0;
-+
-+#define VERIFY_TYPE(type, func) ({	\
-+	g_map_type =3D type;		\
-+	if (!func())			\
-+		return 0;		\
-+})
-+
-+
-+#define VERIFY(expr) ({		\
-+	g_line =3D __LINE__;	\
-+	if (!(expr))		\
-+		return 0;	\
-+})
-+
-+struct bpf_map_memory {
-+	__u32 pages;
-+} __attribute__((preserve_access_index));
-+
-+struct bpf_map {
-+	enum bpf_map_type map_type;
-+	__u32 key_size;
-+	__u32 value_size;
-+	__u32 max_entries;
-+	__u32 id;
-+	struct bpf_map_memory memory;
-+} __attribute__((preserve_access_index));
-+
-+static inline int check_bpf_map_fields(struct bpf_map *map, __u32 key_si=
-ze,
-+				       __u32 value_size, __u32 max_entries)
-+{
-+	VERIFY(map->map_type =3D=3D g_map_type);
-+	VERIFY(map->key_size =3D=3D key_size);
-+	VERIFY(map->value_size =3D=3D value_size);
-+	VERIFY(map->max_entries =3D=3D max_entries);
-+	VERIFY(map->id > 0);
-+	VERIFY(map->memory.pages > 0);
-+
-+	return 1;
-+}
-+
-+static inline int check_bpf_map_ptr(struct bpf_map *indirect,
-+				    struct bpf_map *direct)
-+{
-+	VERIFY(indirect->map_type =3D=3D direct->map_type);
-+	VERIFY(indirect->key_size =3D=3D direct->key_size);
-+	VERIFY(indirect->value_size =3D=3D direct->value_size);
-+	VERIFY(indirect->max_entries =3D=3D direct->max_entries);
-+	VERIFY(indirect->id =3D=3D direct->id);
-+	VERIFY(indirect->memory.pages =3D=3D direct->memory.pages);
-+
-+	return 1;
-+}
-+
-+static inline int check(struct bpf_map *indirect, struct bpf_map *direct=
-,
-+			__u32 key_size, __u32 value_size, __u32 max_entries)
-+{
-+	VERIFY(check_bpf_map_ptr(indirect, direct));
-+	VERIFY(check_bpf_map_fields(indirect, key_size, value_size,
-+				    max_entries));
-+	return 1;
-+}
-+
-+static inline int check_default(struct bpf_map *indirect,
-+				struct bpf_map *direct)
-+{
-+	VERIFY(check(indirect, direct, sizeof(__u32), sizeof(__u32),
-+		     MAX_ENTRIES));
-+	return 1;
-+}
-+
-+typedef struct {
-+	int counter;
-+} atomic_t;
-+
-+struct bpf_htab {
-+	struct bpf_map map;
-+	atomic_t count;
-+	__u32 n_buckets;
-+	__u32 elem_size;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(map_flags, BPF_F_NO_PREALLOC); /* to test bpf_htab.count */
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_hash SEC(".maps");
-+
-+static inline int check_hash(void)
-+{
-+	struct bpf_htab *hash =3D (struct bpf_htab *)&m_hash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_hash;
-+	int i;
-+
-+	VERIFY(check_default(&hash->map, map));
-+
-+	VERIFY(hash->n_buckets =3D=3D MAX_ENTRIES);
-+	VERIFY(hash->elem_size =3D=3D 64);
-+
-+	VERIFY(hash->count.counter =3D=3D 0);
-+	for (i =3D 0; i < HALF_ENTRIES; ++i) {
-+		const __u32 key =3D i;
-+		const __u32 val =3D 1;
-+
-+		if (bpf_map_update_elem(hash, &key, &val, 0))
-+			return 0;
-+	}
-+	VERIFY(hash->count.counter =3D=3D HALF_ENTRIES);
-+
-+	return 1;
-+}
-+
-+struct bpf_array {
-+	struct bpf_map map;
-+	__u32 elem_size;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_array SEC(".maps");
-+
-+static inline int check_array(void)
-+{
-+	struct bpf_array *array =3D (struct bpf_array *)&m_array;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_array;
-+	int i, n_lookups =3D 0, n_keys =3D 0;
-+
-+	VERIFY(check_default(&array->map, map));
-+
-+	VERIFY(array->elem_size =3D=3D 8);
-+
-+	for (i =3D 0; i < array->map.max_entries && i < LOOP_BOUND; ++i) {
-+		const __u32 key =3D i;
-+		__u32 *val =3D bpf_map_lookup_elem(array, &key);
-+
-+		++n_lookups;
-+		if (val)
-+			++n_keys;
-+	}
-+
-+	VERIFY(n_lookups =3D=3D MAX_ENTRIES);
-+	VERIFY(n_keys =3D=3D MAX_ENTRIES);
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_prog_array SEC(".maps");
-+
-+static inline int check_prog_array(void)
-+{
-+	struct bpf_array *prog_array =3D (struct bpf_array *)&m_prog_array;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_prog_array;
-+
-+	VERIFY(check_default(&prog_array->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_perf_event_array SEC(".maps");
-+
-+static inline int check_perf_event_array(void)
-+{
-+	struct bpf_array *perf_event_array =3D (struct bpf_array *)&m_perf_even=
-t_array;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_perf_event_array;
-+
-+	VERIFY(check_default(&perf_event_array->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_percpu_hash SEC(".maps");
-+
-+static inline int check_percpu_hash(void)
-+{
-+	struct bpf_htab *percpu_hash =3D (struct bpf_htab *)&m_percpu_hash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_percpu_hash;
-+
-+	VERIFY(check_default(&percpu_hash->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_percpu_array SEC(".maps");
-+
-+static inline int check_percpu_array(void)
-+{
-+	struct bpf_array *percpu_array =3D (struct bpf_array *)&m_percpu_array;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_percpu_array;
-+
-+	VERIFY(check_default(&percpu_array->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_stack_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} m_stack_trace SEC(".maps");
-+
-+static inline int check_stack_trace(void)
-+{
-+	struct bpf_stack_map *stack_trace =3D
-+		(struct bpf_stack_map *)&m_stack_trace;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_stack_trace;
-+
-+	VERIFY(check(&stack_trace->map, map, sizeof(__u32), sizeof(__u64),
-+		     MAX_ENTRIES));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_ARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_cgroup_array SEC(".maps");
-+
-+static inline int check_cgroup_array(void)
-+{
-+	struct bpf_array *cgroup_array =3D (struct bpf_array *)&m_cgroup_array;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_cgroup_array;
-+
-+	VERIFY(check_default(&cgroup_array->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_LRU_HASH);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_lru_hash SEC(".maps");
-+
-+static inline int check_lru_hash(void)
-+{
-+	struct bpf_htab *lru_hash =3D (struct bpf_htab *)&m_lru_hash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_lru_hash;
-+
-+	VERIFY(check_default(&lru_hash->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_LRU_PERCPU_HASH);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_lru_percpu_hash SEC(".maps");
-+
-+static inline int check_lru_percpu_hash(void)
-+{
-+	struct bpf_htab *lru_percpu_hash =3D (struct bpf_htab *)&m_lru_percpu_h=
-ash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_lru_percpu_hash;
-+
-+	VERIFY(check_default(&lru_percpu_hash->map, map));
-+
-+	return 1;
-+}
-+
-+struct lpm_trie {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct lpm_key {
-+	struct bpf_lpm_trie_key trie_key;
-+	__u32 data;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_LPM_TRIE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, struct lpm_key);
-+	__type(value, __u32);
-+} m_lpm_trie SEC(".maps");
-+
-+static inline int check_lpm_trie(void)
-+{
-+	struct lpm_trie *lpm_trie =3D (struct lpm_trie *)&m_lpm_trie;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_lpm_trie;
-+
-+	VERIFY(check(&lpm_trie->map, map, sizeof(struct lpm_key), sizeof(__u32)=
-,
-+		     MAX_ENTRIES));
-+
-+	return 1;
-+}
-+
-+struct inner_map {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} inner_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__array(values, struct {
-+		__uint(type, BPF_MAP_TYPE_ARRAY);
-+		__uint(max_entries, 1);
-+		__type(key, __u32);
-+		__type(value, __u32);
-+	});
-+} m_array_of_maps SEC(".maps") =3D {
-+	.values =3D { (void *)&inner_map, 0, 0, 0, 0, 0, 0, 0, 0 },
-+};
-+
-+static inline int check_array_of_maps(void)
-+{
-+	struct bpf_array *array_of_maps =3D (struct bpf_array *)&m_array_of_map=
-s;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_array_of_maps;
-+
-+	VERIFY(check_default(&array_of_maps->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__array(values, struct inner_map);
-+} m_hash_of_maps SEC(".maps") =3D {
-+	.values =3D {
-+		[2] =3D &inner_map,
-+	},
-+};
-+
-+static inline int check_hash_of_maps(void)
-+{
-+	struct bpf_htab *hash_of_maps =3D (struct bpf_htab *)&m_hash_of_maps;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_hash_of_maps;
-+
-+	VERIFY(check_default(&hash_of_maps->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_dtab {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_devmap SEC(".maps");
-+
-+static inline int check_devmap(void)
-+{
-+	struct bpf_dtab *devmap =3D (struct bpf_dtab *)&m_devmap;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_devmap;
-+
-+	VERIFY(check_default(&devmap->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_stab {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_sockmap SEC(".maps");
-+
-+static inline int check_sockmap(void)
-+{
-+	struct bpf_stab *sockmap =3D (struct bpf_stab *)&m_sockmap;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_sockmap;
-+
-+	VERIFY(check_default(&sockmap->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_cpu_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CPUMAP);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_cpumap SEC(".maps");
-+
-+static inline int check_cpumap(void)
-+{
-+	struct bpf_cpu_map *cpumap =3D (struct bpf_cpu_map *)&m_cpumap;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_cpumap;
-+
-+	VERIFY(check_default(&cpumap->map, map));
-+
-+	return 1;
-+}
-+
-+struct xsk_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_XSKMAP);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_xskmap SEC(".maps");
-+
-+static inline int check_xskmap(void)
-+{
-+	struct xsk_map *xskmap =3D (struct xsk_map *)&m_xskmap;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_xskmap;
-+
-+	VERIFY(check_default(&xskmap->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_shtab {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_sockhash SEC(".maps");
-+
-+static inline int check_sockhash(void)
-+{
-+	struct bpf_shtab *sockhash =3D (struct bpf_shtab *)&m_sockhash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_sockhash;
-+
-+	VERIFY(check_default(&sockhash->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_cgroup_storage_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, __u32);
-+} m_cgroup_storage SEC(".maps");
-+
-+static inline int check_cgroup_storage(void)
-+{
-+	struct bpf_cgroup_storage_map *cgroup_storage =3D
-+		(struct bpf_cgroup_storage_map *)&m_cgroup_storage;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_cgroup_storage;
-+
-+	VERIFY(check(&cgroup_storage->map, map,
-+		     sizeof(struct bpf_cgroup_storage_key), sizeof(__u32), 0));
-+
-+	return 1;
-+}
-+
-+struct reuseport_array {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_reuseport_sockarray SEC(".maps");
-+
-+static inline int check_reuseport_sockarray(void)
-+{
-+	struct reuseport_array *reuseport_sockarray =3D
-+		(struct reuseport_array *)&m_reuseport_sockarray;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_reuseport_sockarray;
-+
-+	VERIFY(check_default(&reuseport_sockarray->map, map));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, __u32);
-+} m_percpu_cgroup_storage SEC(".maps");
-+
-+static inline int check_percpu_cgroup_storage(void)
-+{
-+	struct bpf_cgroup_storage_map *percpu_cgroup_storage =3D
-+		(struct bpf_cgroup_storage_map *)&m_percpu_cgroup_storage;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_percpu_cgroup_storage;
-+
-+	VERIFY(check(&percpu_cgroup_storage->map, map,
-+		     sizeof(struct bpf_cgroup_storage_key), sizeof(__u32), 0));
-+
-+	return 1;
-+}
-+
-+struct bpf_queue_stack {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_QUEUE);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(value, __u32);
-+} m_queue SEC(".maps");
-+
-+static inline int check_queue(void)
-+{
-+	struct bpf_queue_stack *queue =3D (struct bpf_queue_stack *)&m_queue;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_queue;
-+
-+	VERIFY(check(&queue->map, map, 0, sizeof(__u32), MAX_ENTRIES));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(value, __u32);
-+} m_stack SEC(".maps");
-+
-+static inline int check_stack(void)
-+{
-+	struct bpf_queue_stack *stack =3D (struct bpf_queue_stack *)&m_stack;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_stack;
-+
-+	VERIFY(check(&stack->map, map, 0, sizeof(__u32), MAX_ENTRIES));
-+
-+	return 1;
-+}
-+
-+struct bpf_sk_storage_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_sk_storage SEC(".maps");
-+
-+static inline int check_sk_storage(void)
-+{
-+	struct bpf_sk_storage_map *sk_storage =3D
-+		(struct bpf_sk_storage_map *)&m_sk_storage;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_sk_storage;
-+
-+	VERIFY(check(&sk_storage->map, map, sizeof(__u32), sizeof(__u32), 0));
-+
-+	return 1;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
-+	__uint(max_entries, MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} m_devmap_hash SEC(".maps");
-+
-+static inline int check_devmap_hash(void)
-+{
-+	struct bpf_dtab *devmap_hash =3D (struct bpf_dtab *)&m_devmap_hash;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_devmap_hash;
-+
-+	VERIFY(check_default(&devmap_hash->map, map));
-+
-+	return 1;
-+}
-+
-+struct bpf_ringbuf_map {
-+	struct bpf_map map;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 1 << 12);
-+} m_ringbuf SEC(".maps");
-+
-+static inline int check_ringbuf(void)
-+{
-+	struct bpf_ringbuf_map *ringbuf =3D (struct bpf_ringbuf_map *)&m_ringbu=
-f;
-+	struct bpf_map *map =3D (struct bpf_map *)&m_ringbuf;
-+
-+	VERIFY(check(&ringbuf->map, map, 0, 0, 1 << 12));
-+
-+	return 1;
-+}
-+
-+SEC("cgroup_skb/egress")
-+int cg_skb(void *ctx)
-+{
-+	VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_ARRAY, check_array);
-+	VERIFY_TYPE(BPF_MAP_TYPE_PROG_ARRAY, check_prog_array);
-+	VERIFY_TYPE(BPF_MAP_TYPE_PERF_EVENT_ARRAY, check_perf_event_array);
-+	VERIFY_TYPE(BPF_MAP_TYPE_PERCPU_HASH, check_percpu_hash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, check_percpu_array);
-+	VERIFY_TYPE(BPF_MAP_TYPE_STACK_TRACE, check_stack_trace);
-+	VERIFY_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY, check_cgroup_array);
-+	VERIFY_TYPE(BPF_MAP_TYPE_LRU_HASH, check_lru_hash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_LRU_PERCPU_HASH, check_lru_percpu_hash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_LPM_TRIE, check_lpm_trie);
-+	VERIFY_TYPE(BPF_MAP_TYPE_ARRAY_OF_MAPS, check_array_of_maps);
-+	VERIFY_TYPE(BPF_MAP_TYPE_HASH_OF_MAPS, check_hash_of_maps);
-+	VERIFY_TYPE(BPF_MAP_TYPE_DEVMAP, check_devmap);
-+	VERIFY_TYPE(BPF_MAP_TYPE_SOCKMAP, check_sockmap);
-+	VERIFY_TYPE(BPF_MAP_TYPE_CPUMAP, check_cpumap);
-+	VERIFY_TYPE(BPF_MAP_TYPE_XSKMAP, check_xskmap);
-+	VERIFY_TYPE(BPF_MAP_TYPE_SOCKHASH, check_sockhash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, check_cgroup_storage);
-+	VERIFY_TYPE(BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
-+		    check_reuseport_sockarray);
-+	VERIFY_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
-+		    check_percpu_cgroup_storage);
-+	VERIFY_TYPE(BPF_MAP_TYPE_QUEUE, check_queue);
-+	VERIFY_TYPE(BPF_MAP_TYPE_STACK, check_stack);
-+	VERIFY_TYPE(BPF_MAP_TYPE_SK_STORAGE, check_sk_storage);
-+	VERIFY_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, check_devmap_hash);
-+	VERIFY_TYPE(BPF_MAP_TYPE_RINGBUF, check_ringbuf);
-+
-+	return 1;
-+}
-+
-+__u32 _version SEC("version") =3D 1;
-+char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testi=
-ng/selftests/bpf/verifier/map_ptr.c
-new file mode 100644
-index 000000000000..b52209db8250
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
-@@ -0,0 +1,62 @@
-+{
-+	"bpf_map_ptr: read with negative offset rejected",
-+	.insns =3D {
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, -8),
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_array_48b =3D { 1 },
-+	.result_unpriv =3D REJECT,
-+	.errstr_unpriv =3D "bpf_array access is allowed only to CAP_PERFMON and=
- CAP_SYS_ADMIN",
-+	.result =3D REJECT,
-+	.errstr =3D "R1 is bpf_array invalid negative access: off=3D-8",
-+},
-+{
-+	"bpf_map_ptr: write rejected",
-+	.insns =3D {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_array_48b =3D { 3 },
-+	.result_unpriv =3D REJECT,
-+	.errstr_unpriv =3D "bpf_array access is allowed only to CAP_PERFMON and=
- CAP_SYS_ADMIN",
-+	.result =3D REJECT,
-+	.errstr =3D "only read from bpf_array is supported",
-+},
-+{
-+	"bpf_map_ptr: read non-existent field rejected",
-+	.insns =3D {
-+	BPF_MOV64_IMM(BPF_REG_6, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_array_48b =3D { 1 },
-+	.result_unpriv =3D REJECT,
-+	.errstr_unpriv =3D "bpf_array access is allowed only to CAP_PERFMON and=
- CAP_SYS_ADMIN",
-+	.result =3D REJECT,
-+	.errstr =3D "cannot access ptr member ops with moff 0 in struct bpf_map=
- with off 1 size 4",
-+},
-+{
-+	"bpf_map_ptr: read ops field accepted",
-+	.insns =3D {
-+	BPF_MOV64_IMM(BPF_REG_6, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_array_48b =3D { 1 },
-+	.result_unpriv =3D REJECT,
-+	.errstr_unpriv =3D "bpf_array access is allowed only to CAP_PERFMON and=
- CAP_SYS_ADMIN",
-+	.result =3D ACCEPT,
-+	.retval =3D 1,
-+},
+Since btf_id's for both arguments and return value are known at
+build time, the btf_id's are pre-computed once vmlinux btf becomes
+valid. Jiri's "adding d_path helper" patch set
+  https://lore.kernel.org/bpf/20200616100512.2168860-1-jolsa@kernel.org/T=
+/
+provides a way to pre-compute btf id during vmlinux build time.
+This can be applied here as well. A followup patch can convert
+to build time btf id computation after Jiri's patch landed.
+
+Yonghong Song (13):
+  bpf: add bpf_seq_afinfo in tcp_iter_state
+  net: bpf: implement bpf iterator for tcp
+  bpf: support 'X' in bpf_seq_printf() helper
+  bpf: allow tracing programs to use bpf_jiffies64() helper
+  bpf: add bpf_skc_to_tcp6_sock() helper
+  bpf: add bpf_skc_to_{tcp,tcp_timewait,tcp_request}_sock() helpers
+  bpf: add bpf_seq_afinfo in udp_iter_state
+  net: bpf: implement bpf iterator for udp
+  bpf: add bpf_skc_to_udp6_sock() helper
+  bpf/selftests: move newer bpf_iter_* type redefining to a new header
+    file
+  tools/bpf: selftests: implement sample tcp/tcp6 bpf_iter programs
+  tools/bpf: add udp4/udp6 bpf iterator
+  bpf/selftests: add tcp/udp iterator programs to selftests
+
+ include/linux/bpf.h                           |  14 +
+ include/net/tcp.h                             |   1 +
+ include/net/udp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  37 ++-
+ kernel/bpf/btf.c                              |  11 +
+ kernel/bpf/verifier.c                         |  41 ++-
+ kernel/trace/bpf_trace.c                      |  15 +-
+ net/core/filter.c                             | 161 ++++++++++
+ net/ipv4/tcp_ipv4.c                           | 153 +++++++++-
+ net/ipv4/udp.c                                | 145 ++++++++-
+ scripts/bpf_helpers_doc.py                    |  10 +
+ tools/include/uapi/linux/bpf.h                |  37 ++-
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  68 +++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |  80 +++++
+ .../selftests/bpf/progs/bpf_iter_bpf_map.c    |  18 +-
+ .../selftests/bpf/progs/bpf_iter_ipv6_route.c |  18 +-
+ .../selftests/bpf/progs/bpf_iter_netlink.c    |  18 +-
+ .../selftests/bpf/progs/bpf_iter_task.c       |  18 +-
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |  20 +-
+ .../selftests/bpf/progs/bpf_iter_tcp4.c       | 261 +++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_tcp6.c       | 277 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_test_kern3.c |  17 +-
+ .../selftests/bpf/progs/bpf_iter_test_kern4.c |  17 +-
+ .../bpf/progs/bpf_iter_test_kern_common.h     |  18 +-
+ .../selftests/bpf/progs/bpf_iter_udp4.c       |  81 +++++
+ .../selftests/bpf/progs/bpf_iter_udp6.c       |  88 ++++++
+ 26 files changed, 1465 insertions(+), 160 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
+
 --=20
 2.24.1
 
