@@ -2,98 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB1F1FD146
-	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 17:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEB41FD160
+	for <lists+bpf@lfdr.de>; Wed, 17 Jun 2020 17:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgFQPvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 11:51:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57162 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgFQPvw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 11:51:52 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlaLt-0006S2-S3; Wed, 17 Jun 2020 17:51:49 +0200
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jlaLt-000C8s-Iw; Wed, 17 Jun 2020 17:51:49 +0200
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
- concatenation pattern test
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200616050432.1902042-1-andriin@fb.com>
- <20200616050432.1902042-2-andriin@fb.com>
- <5fed920d-aeb6-c8de-18c0-7c046bbfb242@iogearbox.net>
- <CAEf4BzZQXKBFNqAtadcK6UArfgMDQ--5P0XA1m2f_d8KG6YRtg@mail.gmail.com>
- <dd14f356-44bc-0ff0-a089-ce9fb9936c62@iogearbox.net>
- <CAEf4BzYB+gqGEOfuOpJZHP7-e76Y=gp8SQ7rSZ3EGpwQjF6hLA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5b8e8f8d-375b-a14b-425c-bf8834627d03@iogearbox.net>
-Date:   Wed, 17 Jun 2020 17:51:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726945AbgFQPzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 11:55:48 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54004 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726494AbgFQPzs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jun 2020 11:55:48 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05HFsdwS020392
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 08:55:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=YZTTT+4yJKOsSckGQG3nmfu0U81s4MSQc5dwyolzIlg=;
+ b=RgsnHRuuttlR5kL8SrXQ1gQ9sjBUbA7drU17MvGHslqFnNGmqL2kkgjsDJ0FIVh6DeeQ
+ rdQPsqHxpj915PKcuDHLlZuODKM3AlRzsGiFJBFpE5QFerprXomC7c3hH91xpA1DkVGN
+ UjAxXUuioAK7yB//jbcq06EJpn0RJ02XeGk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 31q65k5371-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Jun 2020 08:55:46 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Jun 2020 08:55:45 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 89B622EC341F; Wed, 17 Jun 2020 08:55:43 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: bump version to 0.0.10
+Date:   Wed, 17 Jun 2020 08:55:39 -0700
+Message-ID: <20200617155539.1223558-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYB+gqGEOfuOpJZHP7-e76Y=gp8SQ7rSZ3EGpwQjF6hLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25846/Wed Jun 17 14:58:48 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-17_06:2020-06-17,2020-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ cotscore=-2147483648 mlxlogscore=663 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 adultscore=0 bulkscore=0 impostorscore=0
+ clxscore=1015 spamscore=0 suspectscore=8 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006170126
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/20 1:14 AM, Andrii Nakryiko wrote:
-> On Tue, Jun 16, 2020 at 3:23 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 6/16/20 11:27 PM, Andrii Nakryiko wrote:
->>> On Tue, Jun 16, 2020 at 1:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>> On 6/16/20 7:04 AM, Andrii Nakryiko wrote:
->>>>> Add selftest that validates variable-length data reading and concatentation
->>>>> with one big shared data array. This is a common pattern in production use for
->>>>> monitoring and tracing applications, that potentially can read a lot of data,
->>>>> but usually reads much less. Such pattern allows to determine precisely what
->>>>> amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
->>>>>
->>>>> This is the first BPF selftest that at all looks at and tests
->>>>> bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
->>>>> testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
->>>>> 0 on success, instead of amount of bytes successfully read.
->>>>>
->>>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>>>
->>>> Fix looks good, but I'm seeing an issue in the selftest on my side. With latest
->>>> Clang/LLVM I'm getting:
->>>>
->>>> # ./test_progs -t varlen
->>>> #86 varlen:OK
->>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>
->>>> All good, however, the test_progs-no_alu32 fails for me with:
->>>
->>> Yeah, same here. It's due to Clang emitting unnecessary bit shifts
->>> because bpf_probe_read_kernel_str() is defined as returning 32-bit
->>> int. I have a patch ready locally, just waiting for bpf-next to open,
->>> which switches those helpers to return long, which auto-matically
->>> fixes this test.
->>>
->>> If it's not a problem, I'd just wait for that patch to go into
->>> bpf-next. If not, I can sprinkle bits of assembly magic around to
->>> force the kernel to do those bitshifts earlier. But I figured having
->>> test_progs-no_alu32 failing one selftest temporarily wasn't too bad.
->>
->> Given {net,bpf}-next will open up soon, another option could be to take in the fix
->> itself to bpf and selftest would be submitted together with your other improvement;
->> any objections?
-> 
-> Yeah, no objections.
+Let's start new cycle with another libbpf version bump.
 
-Sounds good, done.
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.map | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index f732c77b7ed0..3b37b8867cec 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -270,3 +270,6 @@ LIBBPF_0.0.9 {
+ 		ring_buffer__new;
+ 		ring_buffer__poll;
+ } LIBBPF_0.0.8;
++
++LIBBPF_0.0.10 {
++} LIBBPF_0.0.9;
+--=20
+2.24.1
+
