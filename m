@@ -2,254 +2,372 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3861FFEA1
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 01:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9D61FFEA3
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 01:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgFRXbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 19:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbgFRXbI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 19:31:08 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47333C06174E;
-        Thu, 18 Jun 2020 16:31:08 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d10so1252562pls.5;
-        Thu, 18 Jun 2020 16:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=dbj3gSF1DajBfQal0C+Z7eSluHmswk4vZ+39x5+Knfo=;
-        b=LQEO3doHW70KeRhiigHF66bm9yrCws1QwYdMVCHd5brVC3OQ3eVhBtTqNlkTQVsCGm
-         RzI7dQrnGah6ESi3PjVkeGsG/RzZrzBckuSoPn53VIYpIO08cSXZFHdYKW93blOVVNbt
-         GfNXXJGNcTXabTRNkL40rbARSBLtYuYOGsBIg4Rojz0vNUKRT5OAPwW3DhPNXSa8jJSh
-         vvJtU9x481Npz2DmOgLsrdk7/LBvLp7L547hqOqHuqLMowgh/SY84Oa30bXlXHnTwmDE
-         6OOQPMvpesogjjvWFhF9LjIdPPby/vgemr9I5SnbaYVCRClmItCcWTUk65IvVBIBbYGK
-         H2uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=dbj3gSF1DajBfQal0C+Z7eSluHmswk4vZ+39x5+Knfo=;
-        b=M/5mbuJeiJvwpCzrrrOOK3Ml1ydQpOJEsPDNpseBf3XEVbSDLhbkbF9c07n+x+0se5
-         UOqx0v7bgz1744Dsa1O2XUzTIl0MEEcVh5/rcXGuWNx/J72+rRzmYIAhqGBKMeyu/4iR
-         QFyvKrUColosD6EDoPUUqKFqrkwGABSNM4Tk6xw/TxxZyTnU0S36nRlcy1BimRuZdi1W
-         mjQNzkMkHodJiQSx2cUU6z0yJkUke2Bs2t6wQf1Xe2yrt/7s31FmABlSNGmK5X7E8fOB
-         K+NZ8EGY2lfDCryViPyAAhoFBqTELNQfzhbNu+AQ/2Zq5FjrrwKAsi+bvgrPxMIOiht0
-         SbVQ==
-X-Gm-Message-State: AOAM530znMQfd8EGpTl0OVGZDRO5dvMBxkAh/J6VIZ/MssbErLA/qP0s
-        Y1JoRJVxKOR7g68AFnxzSlld6aYyoYM=
-X-Google-Smtp-Source: ABdhPJzy9xVTwzzxnyjmzJWc1f+286/scs4XITGlvC5OGqhIuofCsesMVl3vrblxZdU/1NPgDz0+DQ==
-X-Received: by 2002:a17:90a:36d0:: with SMTP id t74mr660446pjb.27.1592523067324;
-        Thu, 18 Jun 2020 16:31:07 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 187sm4030469pfv.53.2020.06.18.16.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 16:31:06 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 16:30:58 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Message-ID: <5eebf9321e11a_519a2abc9795c5bc21@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
-References: <20200617202112.2438062-1-andriin@fb.com>
- <5eeb0e5dcb010_8712abba49be5bc91@john-XPS-13-9370.notmuch>
- <CAEf4BzZi5pMTC9Fq53Mi_mXUm-EQZDyqS_pxEYuGoc0J1ETGUA@mail.gmail.com>
- <5eebb95299a20_6d292ad5e7a285b835@john-XPS-13-9370.notmuch>
- <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: switch most helper return values from
- 32-bit int to 64-bit long
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1727019AbgFRXbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 19:31:52 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33748 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725829AbgFRXbv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jun 2020 19:31:51 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05INPnBo012912;
+        Thu, 18 Jun 2020 16:31:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=vZltNYfC2x/GBLdAVUMJQhD5Ie227e3InE4w0prwNWI=;
+ b=VOEvka9HYPU808qJx6iqk7sDpZzzWfBJvM2ubtWgimoKNFgn2Dm0YKyIjWGstxNbNlfY
+ gK/7kFtAMfNuCOxm1hiyJYCdCB3otELdDB9K/liSxNiXyN32ESRhsIk4OTzEzy3gK8r8
+ BfzuLUnWgPXrCkh4oOzTL3xfB2Iyyb8wbUU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31q660y2jg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Jun 2020 16:31:38 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Jun 2020 16:31:37 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iBNaZw3EZS39Jmakx2AqmjzIfBq9XVMtlfRWotojiFVC/WDUBzH3OgcUtCbSelEqCqPLsmpsKTvKdneQXpwBTLAR60t7xZHJ4gTuJ3VKmWoHM3mZh8VJAWVEFOzmLis9+MzXc1QrT3Yd8656xKvv0uqXv3BX9GGriOD/D/O/LvzMcAQc+5u60ZVSPRcE0AtnemCBcS5zBP6ab1p8Wv3IRHZwK98K7bnDRDhjcI9UhhKoAQgVUJ1gRxhjDgkV099mGVKHfgoJuURei+BAgZuFCDSbIp9QXyGCcqJsgYeVQOZqcmBz/M1S/GPXPw2G4vyu9hIceGD2YB7k4EGzC/X1Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vZltNYfC2x/GBLdAVUMJQhD5Ie227e3InE4w0prwNWI=;
+ b=VZURYlfC6Gsrd+OMsgaqAqnvsl3Nm0CqRfgofecg24AnrgaCGBKtKa32tCXtC625sNM+sXQhzZ/dIAgNnINfZS1/SrigW2SJGiLpmyEN1gJcTTFGYoCaVgGxUgto6Hl4JV5AJZd5FHFvzWEmJtvaV/LAZ9upggxchEJhGbz/MBDtfpDGYlIamSEUJpEMH2mwKLWs9HDsagbm1qmZfCvHsmCWQ3O9N4LgVVLXN3npWatjQJ8xbRV1bEm+c0c3P4qQPIc93HygV05bvFhgr52hNNta+Ueo0L3f+gRYVUlDVnZbF0LcdYD2V58LWD/Qt++ObJj3++lFlHPl8+l0A+bonQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vZltNYfC2x/GBLdAVUMJQhD5Ie227e3InE4w0prwNWI=;
+ b=But4tDwZ4ecUurmZY/Eg3h/6VVZvvZvb/9lV3NT+F2JD+j27Iau9Ihernd8rAnDPJhdHwmVT52VYxg5Xb7RvUDVLWqWH2w9vfSC4R3wEols6i+X77xwfs9FIAXltRbnxPbdzY1nT7No2KiW4D3sUZwuplRbl63j0W/FNE3lSn58=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2695.namprd15.prod.outlook.com (2603:10b6:a03:150::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Thu, 18 Jun
+ 2020 23:31:36 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3109.021; Thu, 18 Jun 2020
+ 23:31:36 +0000
+Subject: Re: [PATCH bpf-next 05/13] bpf: add bpf_skc_to_tcp6_sock() helper
+To:     Martin KaFai Lau <kafai@fb.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+References: <20200617211536.1854348-1-yhs@fb.com>
+ <20200617211542.1856028-1-yhs@fb.com>
+ <20200618205412.6updodfkqv2lz4pm@kafai-mbp.dhcp.thefacebook.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <53c594a0-971e-8f18-d271-34e4f738a534@fb.com>
+Date:   Thu, 18 Jun 2020 16:31:33 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+In-Reply-To: <20200618205412.6updodfkqv2lz4pm@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BYAPR07CA0053.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::30) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::11f0] (2620:10d:c090:400::5:8794) by BYAPR07CA0053.namprd07.prod.outlook.com (2603:10b6:a03:60::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Thu, 18 Jun 2020 23:31:35 +0000
+X-Originating-IP: [2620:10d:c090:400::5:8794]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 28c334e4-faed-47c5-23db-08d813dfbdee
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2695:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB26950FC75E05428094178176D39B0@BYAPR15MB2695.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 0438F90F17
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kpWb8usnzeZp9CJhqaLxBndoO9ujJEC7OIGNCrGHk2wawIJn8xSp+QZ6CfXgCGDG29XZcWnz+RxPjcXy8JrqdY/IZSnjRbWBqrekS5Nd1/EhyYa0cOxzIYyaUDOTNgT8AeO+hoikMSkXh6fPn0UOJ3UBCd4MhFNZ38Zpui+j3UTHWYRPPcjxbHrciMkWDOb9EeIP2Ps4BfQZegcP8o7cRwk1S9v/+10TWYM6Y+kXXXzzOIm18Jb9cjfXazXKFjdFPPDoeCLeMYz2hlyKteGIAqOJf52lMqENw4r1gHKlb6i8GFdVc2iEbqtesFZ8cyPPAxW+iX0Ghxnxct5it/5Wx6LqzTE6lj5lDRpGCT/zgxerq3xu/TJKv4rnCpqXc74m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(366004)(39860400002)(136003)(396003)(66946007)(31696002)(54906003)(86362001)(2616005)(316002)(36756003)(66556008)(37006003)(478600001)(5660300002)(66476007)(6636002)(8936002)(16526019)(186003)(31686004)(83380400001)(4326008)(6486002)(53546011)(52116002)(8676002)(2906002)(6862004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: bI4S3nRJYv64CXSRzAhE+QRRh2s/lMvfprcpedhnxFBRfoSMp5blgoYzYwXcRMUvEA9BeVWkaOTlVUaT2UhFZ6F170W0dkkeDE+o9Gzc50RbM9d5E1T53fAZXkOxsRUydBhDt/RVJ1dLGMbX6Xyu4SgSIe9XcD8rWFn7xFatm+n4gwZX4ikJdwAU4xHnwf7S9lcG/Vv+PARI2PC1TffDQJlzTFPAtWCYdZoQa1ut/sEIxNEeYYTPBBjx+WRv8SEvDCxt+M6AKVv48YafWU9ORQJoqZ0qx5EPcworXU6R/i81u5+MROoETs5Tpcr7+dN4pL1JsLEQIOYvsMrHcNrVEIsdMj+e5cY8cjQPuNbwPQ7k5IDZ86M+5uWPdJ80Fv90bO8IKucXB1BOFAOyd8suAhF2HKeST4/PPWdf8y2mZmvd7i2ny20W7yvyeVQppplTdj5iqpbK6Jjjs+jGiZw26t0llS9y53kdKmMK7gTg2L31voVh0TQkWvT2xMNnW6in4e5PGDmLtbBCN1HkfYKK6w==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28c334e4-faed-47c5-23db-08d813dfbdee
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 23:31:35.8880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hXRTchq6tLTKkZ5ZuECCvtC/zMkkXTYi0IA26pMFE/I+QqtIOTJszE9e4uJhUqKZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2695
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-18_21:2020-06-18,2020-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 impostorscore=0 malwarescore=0
+ cotscore=-2147483648 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006180180
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Thu, Jun 18, 2020 at 11:58 AM John Fastabend
-> <john.fastabend@gmail.com> wrote:
-> >
-> > Andrii Nakryiko wrote:
-> > > On Wed, Jun 17, 2020 at 11:49 PM John Fastabend
-> > > <john.fastabend@gmail.com> wrote:
-> > > >
-> > > > Andrii Nakryiko wrote:
-> > > > > Switch most of BPF helper definitions from returning int to long. These
-> > > > > definitions are coming from comments in BPF UAPI header and are used to
-> > > > > generate bpf_helper_defs.h (under libbpf) to be later included and used from
-> > > > > BPF programs.
-> > > > >
-> > > > > In actual in-kernel implementation, all the helpers are defined as returning
-> > > > > u64, but due to some historical reasons, most of them are actually defined as
-> > > > > returning int in UAPI (usually, to return 0 on success, and negative value on
-> > > > > error).
-> > > >
-> > > > Could we change the helpers side to return correct types now? Meaning if the
-> > > > UAPI claims its an int lets actually return the int.
-> > >
-> > > I'm not sure how exactly you see this being done. BPF ABI dictates
-> > > that the helper's result is passed in a full 64-bit r0 register. Are
-> > > you suggesting that in addition to RET_ANYTHING we should add
-> > > RET_ANYTHING32 and teach verifier that higher 32 bits of r0 are
-> > > guaranteed to be zero? And then make helpers actually return 32-bit
-> > > values without up-casting them to u64?
-> >
-> > Yes this is what I was thinking, having a RET_ANYTHING32 but I would
-> > assume the upper 32-bits could be anything not zeroed. For +alu32
-> > and programmer using correct types I would expect clang to generate
-> > good code here and mostly not need to zero upper bits.
-> >
-> > I think this discussion can be independent of your changes though and
-> > its not at the top of my todo list so probably wont get to investigating
-> > more for awhile.
-> 
-> I'm confused. If the verifier doesn't make any assumptions about upper
-> 32-bits for RET_ANYTHING32, how is it different from RET_ANYTHING and
-> today's logic? What you described is exactly what is happening when
-> bpf_helpers_def.h has BPF helpers defined as returning int.
-> 
 
-Agreed. I recall it helping the 32-bit bounds on the verifier side
-somewhere. But lets drop it maybe it really is not useful. I'll go
-try and recall the details later.
+On 6/18/20 1:54 PM, Martin KaFai Lau wrote:
+> On Wed, Jun 17, 2020 at 02:15:42PM -0700, Yonghong Song wrote:
+>> The helper is used in tracing programs to cast a socket
+>> pointer to a tcp6_sock pointer.
+>> The return value could be NULL if the casting is illegal.
+>>
+>> A new helper return type RET_PTR_TO_BTF_ID_OR_NULL is added
+>> so the verifier is able to deduce proper return types for the helper.
+>>
+>> Different from the previous BTF_ID based helpers,
+>> the bpf_skc_to_tcp6_sock() argument can be several possible
+>> btf_ids. More specifically, all possible socket data structures
+>> with sock_common appearing in the first in the memory layout.
+>> This patch only added socket types related to tcp and udp.
+>>
+>> All possible argument btf_id and return value btf_id
+>> for helper bpf_skc_to_tcp6_sock() are pre-calculcated and
+>> cached. In the future, it is even possible to precompute
+>> these btf_id's at kernel build time.
+>>
+> [ ... ]
+>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 07052d44bca1..e455aa09039b 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -261,6 +261,7 @@ enum bpf_return_type {
+>>   	RET_PTR_TO_TCP_SOCK_OR_NULL,	/* returns a pointer to a tcp_sock or NULL */
+>>   	RET_PTR_TO_SOCK_COMMON_OR_NULL,	/* returns a pointer to a sock_common or NULL */
+>>   	RET_PTR_TO_ALLOC_MEM_OR_NULL,	/* returns a pointer to dynamically allocated memory or NULL */
+>> +	RET_PTR_TO_BTF_ID_OR_NULL,	/* returns a pointer to a btf_id or NULL */
+>>   };
+>>   
+>>   /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
+>> @@ -283,6 +284,10 @@ struct bpf_func_proto {
+>>   		enum bpf_arg_type arg_type[5];
+>>   	};
+>>   	int *btf_id; /* BTF ids of arguments */
+>> +	bool (*check_btf_id)(u32 btf_id, u32 arg); /* If the argument could match
+>> +						    * more than one btf id's.
+>> +						    */
+>> +	int *ret_btf_id; /* return value btf_id */
+>>   };
+>>   
+>>   /* bpf_context is intentionally undefined structure. Pointer to bpf_context is
+>> @@ -1196,6 +1201,10 @@ bool bpf_link_is_iter(struct bpf_link *link);
+>>   struct bpf_prog *bpf_iter_get_info(struct bpf_iter_meta *meta, bool in_stop);
+>>   int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx);
+>>   
+>> +void init_sock_cast_types(struct btf *btf);
+> CONFIG_NET may not be set.
 
-[...] Aggressively pruning
+Good catch, will add proper config guard in the next revision.
 
-> >
-> > Agreed. Sorry for the confusion on my side. Poked at this a bit more this
-> > morning trying to see why I don't hit the same pattern when we have many
-> > cases very similar to above.
-> >
-> > In your C code you never check for negative return codes? Oops, this
-> > means you can walk backwards off the front of payload? This is probably
-> > not valid either from program logic side and/or verifier will probably
-> > yell. Commented where I think you want a <0 check here,
-> 
-> You are missing that I'm using unsigned u64. So (s64)-1 ==
-> (u64)0xFFFFFFFFFFFFFFFF. So negative errors are effectively turned
-> into too large length and I filter them out with the same (len >
-> MAX_SZ) check. This allows to do just one comparison instead of two,
-> and also helps avoid some Clang optimizations that Yonghong is trying
-> to undo right now (if (a > X && a < Y) turned into if (x < Y - X),
-> with assembly that verifier can't verify). So no bug there, very
-> deliberate choice of types.
 
-I caught it just after I sent above ;) In our codebase we do need to
-handle errors and truncated strings differently so really do need the
-two conditions. I guess we could find some clever way around it but
-in practice on latest kernels we've not seen much trouble around
-these with +alu32.
+>
+> [ ... ]
+>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 34cde841ab68..22d90d47befa 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -3735,10 +3735,12 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
+>>   	return -EINVAL;
+>>   }
+>>   
+>> -static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+>> +static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>>   			  enum bpf_arg_type arg_type,
+>> -			  struct bpf_call_arg_meta *meta)
+>> +			  struct bpf_call_arg_meta *meta,
+>> +			  const struct bpf_func_proto *fn)
+>>   {
+>> +	u32 regno = BPF_REG_1 + arg;
+>>   	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+>>   	enum bpf_reg_type expected_type, type = reg->type;
+>>   	int err = 0;
+>> @@ -3820,9 +3822,16 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+>>   		expected_type = PTR_TO_BTF_ID;
+>>   		if (type != expected_type)
+>>   			goto err_type;
+>> -		if (reg->btf_id != meta->btf_id) {
+>> -			verbose(env, "Helper has type %s got %s in R%d\n",
+>> -				kernel_type_name(meta->btf_id),
+>> +		if (!fn->check_btf_id) {
+>> +			if (reg->btf_id != meta->btf_id) {
+>> +				verbose(env, "Helper has type %s got %s in R%d\n",
+>> +					kernel_type_name(meta->btf_id),
+>> +					kernel_type_name(reg->btf_id), regno);
+>> +
+>> +				return -EACCES;
+>> +			}
+>> +		} else if (!fn->check_btf_id(reg->btf_id, arg + 1)) {
+> Why arg "+ 1"?
 
-Interesting about the optimization I've not seen that one yet.  
+In verifier, arg starts from 0 (arguments 0 - 4). In func_proto, we have 
+ARG1 - ARG5.
 
-[...]
+That is why I add one here. I think I can just use 0-4 range for arg 
+parameter, it should be fine.
 
-> See above. In practice (it might be no-ALU32-only thing, don't know),
-> doing two ifs is both less efficient and quite often leads to
-> unverifiable code. Users have to do hacks to complicate control flow
-> enough to prevent Clang from doing Hi/Lo combining. I learned a new
-> inlined assembly trick recently to prevent this, but either way it's
-> unpleasant and unnecessary.
+>
+>> +			verbose(env, "Helper does not support %s in R%d\n",
+>>   				kernel_type_name(reg->btf_id), regno);
+>>   
+>>   			return -EACCES;
+>> @@ -4600,7 +4609,7 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+>>   	struct bpf_reg_state *regs;
+>>   	struct bpf_call_arg_meta meta;
+>>   	bool changes_data;
+>> -	int i, err;
+>> +	int i, err, ret_btf_id;
+>>   
+>>   	/* find function prototype */
+>>   	if (func_id < 0 || func_id >= __BPF_FUNC_MAX_ID) {
+>> @@ -4644,10 +4653,12 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+>>   	meta.func_id = func_id;
+>>   	/* check args */
+>>   	for (i = 0; i < 5; i++) {
+>> -		err = btf_resolve_helper_id(&env->log, fn, i);
+>> -		if (err > 0)
+>> -			meta.btf_id = err;
+>> -		err = check_func_arg(env, BPF_REG_1 + i, fn->arg_type[i], &meta);
+>> +		if (!fn->check_btf_id) {
+>> +			err = btf_resolve_helper_id(&env->log, fn, i);
+>> +			if (err > 0)
+>> +				meta.btf_id = err;
+>> +		}
+>> +		err = check_func_arg(env, i, fn->arg_type[i], &meta, fn);
+> Nit. Since it is passing fn and i, may be skip passing
+> fn->arg_type[i] altogether?
+Make sense, will do.
+>
+>>   		if (err)
+>>   			return err;
+>>   	}
+>> @@ -4750,6 +4761,16 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+>>   		regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+>>   		regs[BPF_REG_0].id = ++env->id_gen;
+>>   		regs[BPF_REG_0].mem_size = meta.mem_size;
+>> +	} else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
+>> +		mark_reg_known_zero(env, regs, BPF_REG_0);
+>> +		regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
+>> +		ret_btf_id = *fn->ret_btf_id;
+>> +		if (ret_btf_id < 0) {
+> If btf_vmlinux is not available, is ret_btf_id == 0?
 
-In the end we also run on ancient kernels so have lots of tricks.
+Yes, it is a global variable. Will change it to <= 0.
 
-[...] more pruning
+>
+>> +			verbose(env, "invalid return type %d of func %s#%d\n",
+>> +				fn->ret_type, func_id_name(func_id), func_id);
+>> +			return err;
+> Is err correctly set at this point?
 
-> > > My point was that this int -> long switch doesn't degrade ALU32 and
-> > > helps no-ALU32, and thus is good :)
-> >
-> > With the long vs int I do see worse code when using the <0 check.
-> > Using C function below which I took from some real code and renamed
-> > variables.
-> >
-> > int myfunc(void *a, void *b, void *c) {
-> >         void *payload = a;
-> >         int len;
-> >
-> >         len = probe_read_str(payload, 1000, a);
-> >         if (len < 0) return len;
-> >         if (len <= 1000) {
-> >                 payload += len;
-> >         }
-> >         len = probe_read_str(payload, 1000, b);
-> >         if (len <= 1000) {
-> >                 payload += len;
-> >         }
-> >         return 1;
-> > }
-> >
-> > Then here is the side-by-side of generated code, with +ALU32.
-> >
-> >   int BPF_FUNC(probe_read, ...                  long BPF_FUNC(probe_read, ...
-> > -------------------------------                ---------------------------------
-> >        0:       r6 = r2                         0:      r6 = r2
-> >        1:       r7 = r1                         1:      r7 = r1
-> >        2:       w2 = 1000                       2:      w2 = 1000
-> >        3:       r3 = r7                         3:      r3 = r7
-> >        4:       call 45                         4:      call 45
-> >        5:       if w0 s< 0 goto +9 <LBB0_4>     5:      r2 = r0
-> >        6:       w2 = w0                         6:      if w0 s< 0 goto +10 <LBB0_4>
-> >        7:       r1 = r7                         7:      r2 <<= 32
-> >        8:       r1 += r2                        8:      r2 s>>= 32
-> >        9:       if w0 s< 1001 goto +1 <LBB0_3>  9:      r1 = r7
-> >       10:       r1 = r7                        10:      r1 += r2
-> >       11:       w2 = 1000                      11:      if w0 s< 1001 goto +1 <LBB0_3>
-> >       12:       r3 = r6                        12:      r1 = r7
-> >       13:       call 45                        13:      w2 = 1000
-> >       14:       w0 = 1                         14:      r3 = r6
-> >       15:       exit                           15:      call 45
-> >                                                16:      w0 = 1
-> >                                                17:      exit
-> >
-> > So a couple extra instruction, but more concerning we created a
-> > <<=,s>> pattern. I'll need to do some more tests but my concern
-> > is that could break verifier for real programs we have. I guess
-> > it didn't in the selftests? Surely, this thread has at least
-> > pointed out some gaps in our test cases. I guess I _could_ make
-> > len a u64 type to remove the sext but then <0 check on a u64?!
-> 
-> I addressed <0 check above. As for <<=,s>>=, I wish Clang was a bit
-> smarter and just did w2 = w2 or something like that, given we just
-> checked that w0 is non-negative. But then again, I wouldn't do two ifs
-> and wouldn't use signed int for len.
+Typo, I mean return ret_btf_id. In Jiri's d_path patch, the btf_id are 
+all non-negative values.
 
-It is smart enough once you get all the types aligned. So after pulling
-in int->long change ideally we would change codebase to use long types as
-well. Maybe we should modify the tests in selftests as well OTOH
-its nice to test what happens when folks leave the return types as int.
+I may adopt the same convention in the next revision to make future 
+conversion easier.
 
-> 
-> >
-> > >
-> > > Overall, long as a return type matches reality and BPF ABI
-> > > specification. BTW, one of the varlen programs from patch 2 doesn't
-> > > even validate successfully on latest kernel with latest Clang right
-> > > now, if helpers return int, even though it's completely correct code.
-> > > That's a real problem we have to deal with in few major BPF
-> > > applications right now, and we have to use inline assembly to enforce
-> > > Clang to do the right thing. A bunch of those problems are simply
-> > > avoided with correct return types for helpers.
-> >
-> > Do the real programs check <0? Did I miss something? I'll try
-> > applying your patch to our real code base and see what happens.
-> 
-> That would be great. Self-tests do work, but having more testing with
-> real-world application would certainly help as well.
-
-Thanks for all the follow up.
-
-I ran the change through some CI on my side and it passed so I can
-complain about a few shifts here and there or just update my code or
-just not change the return types on my side but I'm convinced its OK
-in most cases and helps in some so...
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+>
+>> +		}
+>> +		regs[BPF_REG_0].btf_id = ret_btf_id;
+>>   	} else {
+>>   		verbose(env, "unknown return type %d of func %s#%d\n",
+>>   			fn->ret_type, func_id_name(func_id), func_id);
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index afaec7e082d9..478c10d1ec33 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -1515,6 +1515,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>>   		return &bpf_skb_output_proto;
+>>   	case BPF_FUNC_xdp_output:
+>>   		return &bpf_xdp_output_proto;
+>> +	case BPF_FUNC_skc_to_tcp6_sock:
+>> +		return &bpf_skc_to_tcp6_sock_proto;
+>>   #endif
+>>   	case BPF_FUNC_seq_printf:
+>>   		return prog->expected_attach_type == BPF_TRACE_ITER ?
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 73395384afe2..faf6feedd78e 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -9191,3 +9191,72 @@ void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog)
+>>   {
+>>   	bpf_dispatcher_change_prog(BPF_DISPATCHER_PTR(xdp), prev_prog, prog);
+>>   }
+>> +
+>> +/* Define a list of socket types which can be the argument for
+>> + * skc_to_*_sock() helpers. All these sockets should have
+>> + * sock_common as the first argument in its memory layout.
+>> + */
+>> +static const char *sock_cast_types[] = {
+>> +	"inet_connection_sock",
+>> +	"inet_request_sock",
+>> +	"inet_sock",
+>> +	"inet_timewait_sock",
+>> +	"request_sock",
+>> +	"sock",
+>> +	"sock_common",
+>> +	"tcp_sock",
+>> +	"tcp_request_sock",
+>> +	"tcp_timewait_sock",
+>> +	"tcp6_sock",
+>> +	"udp_sock",
+>> +	"udp6_sock",
+>> +};
+>> +
+>> +static int sock_cast_btf_ids[ARRAY_SIZE(sock_cast_types)];
+>> +
+>> +static bool check_arg_btf_id(u32 btf_id, u32 arg)
+>> +{
+>> +	int i;
+>> +
+>> +	/* only one argument, no need to check arg */
+>> +	for (i = 0; i < ARRAY_SIZE(sock_cast_btf_ids); i++)
+>> +		if (sock_cast_btf_ids[i] == btf_id)
+>> +			return true;
+>> +	return false;
+>> +}
+>> +
+>> +BPF_CALL_1(bpf_skc_to_tcp6_sock, struct sock *, sk)
+>> +{
+>> +	/* add an explicit cast to struct tcp6_sock to force
+>> +	 * debug_info type generation for it.
+>> +	 */
+>> +	if (sk_fullsock(sk) && sk->sk_protocol == IPPROTO_TCP &&
+>> +	    sk->sk_family == AF_INET6)
+>> +		return (unsigned long)(struct tcp6_sock *)sk;
+>> +
+>> +	return (unsigned long)NULL;
+>> +}
+>> +
+>> +static int bpf_skc_to_tcp6_sock_ret_btf_id;
+>> +const struct bpf_func_proto bpf_skc_to_tcp6_sock_proto = {
+>> +	.func			= bpf_skc_to_tcp6_sock,
+>> +	.gpl_only		= true,
+>> +	.ret_type		= RET_PTR_TO_BTF_ID_OR_NULL,
+>> +	.arg1_type		= ARG_PTR_TO_BTF_ID,
+>> +	.check_btf_id		= check_arg_btf_id,
+>> +	.ret_btf_id		= &bpf_skc_to_tcp6_sock_ret_btf_id,
+>> +};
+>> +
+>> +void init_sock_cast_types(struct btf *btf)
+>> +{
+>> +	char *ret_type_name;
+>> +
+>> +	/* find all possible argument btf_id's for socket cast helpers */
+>> +	find_array_of_btf_ids(btf, sock_cast_types, sock_cast_btf_ids,
+>> +			      ARRAY_SIZE(sock_cast_types));
+>> +
+>> +	/* find return btf_id */
+>> +	ret_type_name = "tcp6_sock";
+>> +	find_array_of_btf_ids(btf, &ret_type_name,
+>> +			      &bpf_skc_to_tcp6_sock_ret_btf_id, 1);
+> Instead of re-finding tcp6_sock/tcp_sock/request_sock...etc,
+> can the sock_cast_btf_ids[] be reused?
+Actually, yes, we can. Will do.
