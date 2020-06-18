@@ -2,148 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCB41FFD09
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 23:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A302A1FFD0C
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 23:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgFRVBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 17:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
+        id S1726948AbgFRVCR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 17:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgFRVBV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 17:01:21 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E59CC06174E
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:21 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f18so7049353qkh.1
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:21 -0700 (PDT)
+        with ESMTP id S1725829AbgFRVCR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 17:02:17 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31C3C06174E;
+        Thu, 18 Jun 2020 14:02:16 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a9so8984751ljn.6;
+        Thu, 18 Jun 2020 14:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=401cejwJDHVTFNFxKCBUQdn9/o99cqTleeflC4uOmes=;
-        b=aS6JTqsYXUUaotZw2AdgQcrsJ98JWhOuKsJGPsbVL3S4fd+XF9KKdP8URY5S9mMoSY
-         SBkowrh6yC0hYdxPnhi7Q5VzojxucppVie9al32cpw8kjbaPvRiwVHF1f5hVzj4pFCGA
-         /xp89vBO2OMmGWCPjL1uOvcbii7FjtZW/Jd0s=
+         :cc:content-transfer-encoding;
+        bh=TMDMECxtDyrKw7UR9Mx7zsMc3I+ujgCjjWQyhNCKNAU=;
+        b=JIpHXpZh15j6uf54OZ0ZaYctdkQNVT6WZHwFCP1LiZwKNzvnBVF+8tjbMrEc88y5AQ
+         miDd3UrB7aKm6rDb7mO19hDBDXrpnwDSwdGMSDeRpxlVbgFdf0FL/pk21CFdgHsY17fk
+         xOby98ybU65IY5qMB4KNYVwds9cwYmD4q7ZK//AQy0FB5CFh6vn7EQaSUMrJQ3+Udn2X
+         3IOs1361+GsLreppwlLNHbaEXuSQdoKa2eJKSayOgkDmRixQYALgeX0rhdNZ878UQJ2l
+         9G0ZWePa4mdDWeXl3I863UtIrJQGwgKGjhg1IUnlN6vpzrn7PCISfSaJF9RVEfVdDu+a
+         AXCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=401cejwJDHVTFNFxKCBUQdn9/o99cqTleeflC4uOmes=;
-        b=BlYFiwgjttQeWSvEfDcHWDEc5cGU+/+N+ctysR90JCPOh7L7lguYhcTfxMChJP4FpW
-         PLaR0h7kp0R2WGe+0yBUZxsj48EsDjQ7qNt1fYjdmHOBSEAo7/dDrn0UhX00Iw2di4lN
-         0eE6YJ3F91GAZXQXFcCadVu2QML/HRhqfQb+LZws6CnONsRR1JazSYVvkX3VWBkvTwcQ
-         Z0gspcLMwTGFP6qDVRvV176AuNNM1ngfOoPMXCeT8upWWxbmSE3KMjjFD0jcydL0jmYc
-         qWryj7eVcPerWPVOA2bzt2bXRkxFshJuGfykoCHg+HiRDelU74BhpHp3B1t8jnlig7PX
-         5bHA==
-X-Gm-Message-State: AOAM533OZU3JcwJXLDyJckpveIX/5vz6wab40z44tBfsPMHCOfV283yj
-        K1oJ/sejblPS2J/UFxuyg3y9tJ6553g=
-X-Google-Smtp-Source: ABdhPJxUl7Rwgtp3ojd5rdGKufCTKokE07OaxJe8gC4bfQyQyex7MmQFWpiQF51scjjA+lOChCiJTQ==
-X-Received: by 2002:a37:5ac3:: with SMTP id o186mr327076qkb.272.1592514079724;
-        Thu, 18 Jun 2020 14:01:19 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id c2sm3947134qkl.58.2020.06.18.14.01.18
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 14:01:19 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id b15so3800076ybg.12
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:18 -0700 (PDT)
-X-Received: by 2002:a25:9843:: with SMTP id k3mr862095ybo.444.1592514078217;
- Thu, 18 Jun 2020 14:01:18 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TMDMECxtDyrKw7UR9Mx7zsMc3I+ujgCjjWQyhNCKNAU=;
+        b=CbLPeiZ51L5Tbdh/AWkHZ7ZP2RurCufbVYAS0Ym08kjifyfPEOc1UasmO5Ijz8zLcc
+         +Tule4ebPWyy5KBsRKIKKzFDcZCmDYc8Z461NvWIaUAnrutU4ZaytREWfO7VhukfaOY+
+         hU1WlabcPt2g53ay56GzrjE/jAnotTUCfvmMuHL3KxEjuDEGakclhax2zsWC3XAHhFG3
+         Bp9YROBRGk2xq8H0OiijWgc8s7twW6naMiK0KqPtPslI29jLtBI3F/qzMt6VSJwMbvAi
+         kJjWpxzm+4VzjU1SfRBQVZvgRyOWmpV33OuJRDlvs6tOJ5HKpzgORd5O2NkVb0K6/Dqs
+         KFkg==
+X-Gm-Message-State: AOAM530ws0s5CeFbQ/7okqK+oYYwwT2kI5OiHNJgisLvkeVOEmMS6Qbr
+        ATt/gn0J8TEx/5ZOZH1nTNy/ackvSqbflUbdMuo=
+X-Google-Smtp-Source: ABdhPJxFENU0n/CIub2ELxobC9S6sSTeFivCPAONBxIvjJt9i55UJif8lUyl0SU+Y60it3IJHnYrMzgihE2p4fr35D0=
+X-Received: by 2002:a2e:974a:: with SMTP id f10mr128843ljj.283.1592514135166;
+ Thu, 18 Jun 2020 14:02:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200618142714.GA202183@mwanda>
-In-Reply-To: <20200618142714.GA202183@mwanda>
-From:   Kees Cook <keescook@chromium.org>
-Date:   Thu, 18 Jun 2020 14:01:06 -0700
-X-Gmail-Original-Message-ID: <CAGXu5jJVxSQnqxTsguKFv_rX1vW87jSMeU9HDue-97qYYK82qw@mail.gmail.com>
-Message-ID: <CAGXu5jJVxSQnqxTsguKFv_rX1vW87jSMeU9HDue-97qYYK82qw@mail.gmail.com>
-Subject: Re: [bug report] seccomp: Add find_notification helper
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>, bpf <bpf@vger.kernel.org>
+References: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
+ <20200618195956.73967-1-zenczykowski@gmail.com>
+In-Reply-To: <20200618195956.73967-1-zenczykowski@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 18 Jun 2020 14:02:03 -0700
+Message-ID: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
+Subject: Re: [PATCH] restore behaviour of CAP_SYS_ADMIN allowing the loading
+ of net bpf program
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 7:29 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Thu, Jun 18, 2020 at 1:00 PM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
 >
-> [ Kees, why am I getting tons and tons of these warnings?  Are we not
->   going to initialize things manually any more? ]
-
-We are, yes. This is "just" a bug.
-
+> From: Maciej =C5=BBenczykowski <maze@google.com>
 >
-> Hello Sargun Dhillon,
->
-> The patch 186f03857c48: "seccomp: Add find_notification helper" from
-> Jun 1, 2020, leads to the following static checker warning:
->
->         kernel/seccomp.c:1124 seccomp_notify_recv()
->         error: uninitialized symbol 'knotif'.
+> This is a 5.8-rc1 regression.
 
-Thanks for the heads-up! This was also reported by the ClangBuiltLinux
-project, and I've since fixed it. It should be visible in my
-for-next/seccomp tree now.
+Please add full explanation here.
 
--Kees
+Also use [PATCH bpf] in the subject for future submission.
 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
+
+Reported-by: John
+is missing?
+
+> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> ---
+>  kernel/bpf/syscall.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> kernel/seccomp.c
->   1091  static long seccomp_notify_recv(struct seccomp_filter *filter,
->   1092                                  void __user *buf)
->   1093  {
->   1094          struct seccomp_knotif *knotif, *cur;
->                                        ^^^^^^
-> This used to be initialized to NULL here.
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 8da159936bab..7d946435587d 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2121,7 +2121,7 @@ static int bpf_prog_load(union bpf_attr *attr, unio=
+n bpf_attr __user *uattr)
+>             !bpf_capable())
+>                 return -EPERM;
 >
->   1095          struct seccomp_notif unotif;
->   1096          ssize_t ret;
->   1097
->   1098          /* Verify that we're not given garbage to keep struct extensible. */
->   1099          ret = check_zeroed_user(buf, sizeof(unotif));
->   1100          if (ret < 0)
->   1101                  return ret;
->   1102          if (!ret)
->   1103                  return -EINVAL;
->   1104
->   1105          memset(&unotif, 0, sizeof(unotif));
->   1106
->   1107          ret = down_interruptible(&filter->notif->request);
->   1108          if (ret < 0)
->   1109                  return ret;
->   1110
->   1111          mutex_lock(&filter->notify_lock);
->   1112          list_for_each_entry(cur, &filter->notif->notifications, list) {
->   1113                  if (cur->state == SECCOMP_NOTIFY_INIT) {
->   1114                          knotif = cur;
->                                 ^^^^^^^^^^^^
+> -       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
+> +       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !c=
+apable(CAP_SYS_ADMIN))
+>                 return -EPERM;
+>         if (is_perfmon_prog_type(type) && !perfmon_capable())
+>                 return -EPERM;
+> --
+> 2.27.0.290.gba653c62da-goog
 >
->   1115                          break;
->   1116                  }
->   1117          }
->   1118
->   1119          /*
->   1120           * If we didn't find a notification, it could be that the task was
->   1121           * interrupted by a fatal signal between the time we were woken and
->   1122           * when we were able to acquire the rw lock.
->   1123           */
->   1124          if (!knotif) {
->                      ^^^^^^
-> But now it's uninitialized.
->
->   1125                  ret = -ENOENT;
->   1126                  goto out;
->   1127          }
->   1128
->   1129          unotif.id = knotif->id;
->
-> regards,
-> dan carpenter
-
-
-
--- 
-Kees Cook
-
--- 
-Kees Cook
