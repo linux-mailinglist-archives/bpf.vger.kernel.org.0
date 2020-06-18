@@ -2,158 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472DA1FF0F2
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 13:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA91C1FF4B1
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 16:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbgFRLsT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 07:48:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23718 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728504AbgFRLsS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 07:48:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592480897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uyIvvPBF+MpYQOOLrTvfIr/WJu5YGMFAZyoz1bbDjzM=;
-        b=hXZsu/WL5yALFfiwXdhLiehTlmpkLMEU9phaPtOygLWzAEwM8aXYiYTp/YoxKVe7b6NUOU
-        HACyJbb+oIflr7MTu2B6a5Dcq6KwoQMAfFGjC9qK3+KFwmfSRZQAUdTNjV1hVmahnwyIdw
-        20KuFKVeYQkeBD0vc8ztmXPxyo456Wo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-kRUP0nEkOZKbB_4tCwG95A-1; Thu, 18 Jun 2020 07:48:13 -0400
-X-MC-Unique: kRUP0nEkOZKbB_4tCwG95A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9DB81800D42;
-        Thu, 18 Jun 2020 11:48:10 +0000 (UTC)
-Received: from krava (unknown [10.40.194.92])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 677E41001E91;
-        Thu, 18 Jun 2020 11:48:07 +0000 (UTC)
-Date:   Thu, 18 Jun 2020 13:48:06 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masanori Misono <m.misono760@gmail.com>
-Subject: Re: [PATCH] bpf: Allow small structs to be type of function argument
-Message-ID: <20200618114806.GA2369163@krava>
-References: <20200616173556.2204073-1-jolsa@kernel.org>
- <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
+        id S1726981AbgFRO32 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 10:29:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35156 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726905AbgFRO31 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 10:29:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IELZHo133582;
+        Thu, 18 Jun 2020 14:29:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=LhaF5/Sqsn5WLlV15mIAc0+YEA2vD96TuLei0ftzEx8=;
+ b=ObWqQkstrYCYAMSpe9+rjgFId0JHN6wm+y8VG788XEju+eLlp+OeE776hNG8HFN/L899
+ Jyw4Z7fnpNn8H4Uug+IhWmAvvlAzEl0vrhuInvNfti4+OV8VETcACmqfY7lqQwSz3UnL
+ Z9QL/wkRMuQCc3QFTamGFIkATwZvxPB9RyLhj/WhsBHAWu+z5qOOyWFaaCaYN2lkEz6q
+ SHXQLjbnOLoEpgIHvZ2GRfbHMfbwwWt353UbTCpzaPOcPNG8GC+748HZGMe4TfoeG+dI
+ UsRCRYaNWKX4aSHJvQoq7nrzTyLvWosKKSjFXOVckVr1iXF5ejSnGdjr7JFy/NaG7uUX 6w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31qg357ge8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 Jun 2020 14:29:23 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05IEHHrT090666;
+        Thu, 18 Jun 2020 14:27:22 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31q66sc823-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jun 2020 14:27:22 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05IERJtb018821;
+        Thu, 18 Jun 2020 14:27:21 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Jun 2020 07:27:19 -0700
+Date:   Thu, 18 Jun 2020 17:27:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     sargun@sargun.me
+Cc:     bpf@vger.kernel.org, Kees Cook <keescook@google.com>
+Subject: [bug report] seccomp: Add find_notification helper
+Message-ID: <20200618142714.GA202183@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=791
+ bulkscore=0 adultscore=0 phishscore=0 suspectscore=3 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006180110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9655 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ clxscore=1011 malwarescore=0 impostorscore=0 adultscore=0
+ cotscore=-2147483648 lowpriorityscore=0 mlxlogscore=796 spamscore=0
+ suspectscore=3 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006180110
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 04:20:54PM -0700, John Fastabend wrote:
-> Jiri Olsa wrote:
-> > This way we can have trampoline on function
-> > that has arguments with types like:
-> > 
-> >   kuid_t uid
-> >   kgid_t gid
-> > 
-> > which unwind into small structs like:
-> > 
-> >   typedef struct {
-> >         uid_t val;
-> >   } kuid_t;
-> > 
-> >   typedef struct {
-> >         gid_t val;
-> >   } kgid_t;
-> > 
-> > And we can use them in bpftrace like:
-> > (assuming d_path changes are in)
-> > 
-> >   # bpftrace -e 'lsm:path_chown { printf("uid %d, gid %d\n", args->uid, args->gid) }'
-> >   Attaching 1 probe...
-> >   uid 0, gid 0
-> >   uid 1000, gid 1000
-> >   ...
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/btf.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 58c9af1d4808..f8fee5833684 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -362,6 +362,14 @@ static bool btf_type_is_struct(const struct btf_type *t)
-> >  	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
-> >  }
-> >  
-> > +/* type is struct and its size is within 8 bytes
-> > + * and it can be value of function argument
-> > + */
-> > +static bool btf_type_is_struct_arg(const struct btf_type *t)
-> > +{
-> > +	return btf_type_is_struct(t) && (t->size <= sizeof(u64));
-> 
-> Can you comment on why sizeof(u64) here? The int types can be larger
-> than 64 for example and don't have a similar check, maybe the should
-> as well?
-> 
-> Here is an example from some made up program I ran through clang and
-> bpftool.
-> 
-> [2] INT '__int128' size=16 bits_offset=0 nr_bits=128 encoding=SIGNED
-> 
-> We also have btf_type_int_is_regular to decide if the int is of some
-> "regular" size but I don't see it used in these paths.
+[ Kees, why am I getting tons and tons of these warnings?  Are we not
+  going to initialize things manually any more? ]
 
-so this small structs are passed as scalars via function arguments,
-so the size limit is to fit teir value into register size which holds
-the argument
+Hello Sargun Dhillon,
 
-I'm not sure how 128bit numbers are passed to function as argument,
-but I think we can treat them separately if there's a need
+The patch 186f03857c48: "seccomp: Add find_notification helper" from
+Jun 1, 2020, leads to the following static checker warning:
 
-jirka
+	kernel/seccomp.c:1124 seccomp_notify_recv()
+	error: uninitialized symbol 'knotif'.
 
-> 
-> > +}
-> > +
-> >  static bool __btf_type_is_struct(const struct btf_type *t)
-> >  {
-> >  	return BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT;
-> > @@ -3768,7 +3776,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> >  	/* skip modifiers */
-> >  	while (btf_type_is_modifier(t))
-> >  		t = btf_type_by_id(btf, t->type);
-> > -	if (btf_type_is_int(t) || btf_type_is_enum(t))
-> > +	if (btf_type_is_int(t) || btf_type_is_enum(t) || btf_type_is_struct_arg(t))
-> >  		/* accessing a scalar */
-> >  		return true;
-> >  	if (!btf_type_is_ptr(t)) {
-> > @@ -4161,6 +4169,8 @@ static int __get_type_size(struct btf *btf, u32 btf_id,
-> >  		return sizeof(void *);
-> >  	if (btf_type_is_int(t) || btf_type_is_enum(t))
-> >  		return t->size;
-> > +	if (btf_type_is_struct_arg(t))
-> > +		return t->size;
-> >  	*bad_type = t;
-> >  	return -EINVAL;
-> >  }
-> > -- 
-> > 2.25.4
-> > 
-> 
-> 
+kernel/seccomp.c
+  1091  static long seccomp_notify_recv(struct seccomp_filter *filter,
+  1092                                  void __user *buf)
+  1093  {
+  1094          struct seccomp_knotif *knotif, *cur;
+                                       ^^^^^^
+This used to be initialized to NULL here.
 
+  1095          struct seccomp_notif unotif;
+  1096          ssize_t ret;
+  1097  
+  1098          /* Verify that we're not given garbage to keep struct extensible. */
+  1099          ret = check_zeroed_user(buf, sizeof(unotif));
+  1100          if (ret < 0)
+  1101                  return ret;
+  1102          if (!ret)
+  1103                  return -EINVAL;
+  1104  
+  1105          memset(&unotif, 0, sizeof(unotif));
+  1106  
+  1107          ret = down_interruptible(&filter->notif->request);
+  1108          if (ret < 0)
+  1109                  return ret;
+  1110  
+  1111          mutex_lock(&filter->notify_lock);
+  1112          list_for_each_entry(cur, &filter->notif->notifications, list) {
+  1113                  if (cur->state == SECCOMP_NOTIFY_INIT) {
+  1114                          knotif = cur;
+                                ^^^^^^^^^^^^
+
+  1115                          break;
+  1116                  }
+  1117          }
+  1118  
+  1119          /*
+  1120           * If we didn't find a notification, it could be that the task was
+  1121           * interrupted by a fatal signal between the time we were woken and
+  1122           * when we were able to acquire the rw lock.
+  1123           */
+  1124          if (!knotif) {
+                     ^^^^^^
+But now it's uninitialized.
+
+  1125                  ret = -ENOENT;
+  1126                  goto out;
+  1127          }
+  1128  
+  1129          unotif.id = knotif->id;
+
+regards,
+dan carpenter
