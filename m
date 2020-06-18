@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EF61FE82C
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF4A1FE62F
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgFRCqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 22:46:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37848 "EHLO mail.kernel.org"
+        id S1728945AbgFRBPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 21:15:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728538AbgFRBKf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:10:35 -0400
+        id S1728727AbgFRBPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:15:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C937F21927;
-        Thu, 18 Jun 2020 01:10:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C4532088E;
+        Thu, 18 Jun 2020 01:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442634;
-        bh=gQ+2o7PW7t3IXq8X3hPmf/IAe1h0el2iVacA1Qw7i/A=;
+        s=default; t=1592442917;
+        bh=hWvsQYDqO6ODPc2VivaR0tA2XykBahjovGY7dkG8Gk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LqFPd0j8aOkawlakcLEhBUJqAcOj2a3Xhyv2gfE6ameoYTk3XKGAZgwpx1ZuV4+J5
-         xEOxF4UjVIAcbt1b0yxdYSOx3WJYMAiRbbV7dOjoST+GGCgf4nxKnrE0hmfJ4RT2k7
-         fSq7ZWTfkbxtcKjtJ7jl8bkNdBBv9DR/zJcQTAbs=
+        b=MSJ4YnZkQFbsdQVpkI1DtK5v+O+YLp70YFL66+jJiny4i3Yq2E5soGiJ3CLYX0qi5
+         4jmSNY+pypFlSZN0DpdyDLSX+DllGr91Tw0qxGzGytL19zzl2O1w2yf1DcOBWrT0du
+         WlEgsee6uEitn78U21ObRzbWTcIGI02t6f0M5i08=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sabrina Dubroca <sd@queasysnail.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 111/388] bpf: tcp: Recv() should return 0 when the peer socket is closed
-Date:   Wed, 17 Jun 2020 21:03:28 -0400
-Message-Id: <20200618010805.600873-111-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 334/388] bpf: Fix an error code in check_btf_func()
+Date:   Wed, 17 Jun 2020 21:07:11 -0400
+Message-Id: <20200618010805.600873-334-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -45,51 +45,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Sabrina Dubroca <sd@queasysnail.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 2c7269b231194aae23fb90ab65842573a91acbc9 ]
+[ Upstream commit e7ed83d6fa1a00d0f2ad0327e73d3ea9e7ea8de1 ]
 
-If the peer is closed, we will never get more data, so
-tcp_bpf_wait_data will get stuck forever. In case we passed
-MSG_DONTWAIT to recv(), we get EAGAIN but we should actually get
-0.
+This code returns success if the "info_aux" allocation fails but it
+should return -ENOMEM.
 
->From man 2 recv:
-
-    RETURN VALUE
-
-    When a stream socket peer has performed an orderly shutdown, the
-    return value will be 0 (the traditional "end-of-file" return).
-
-This patch makes tcp_bpf_wait_data always return 1 when the peer
-socket has been shutdown. Either we have data available, and it would
-have returned 1 anyway, or there isn't, in which case we'll call
-tcp_recvmsg which does the right thing in this situation.
-
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/26038a28c21fea5d04d4bd4744c5686d3f2e5504.1591784177.git.sd@queasysnail.net
+Fixes: 8c1b6e69dcc1 ("bpf: Compare BTF types of functions arguments with actual types")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200604085436.GA943001@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 629aaa9a1eb9..9c5540887fbe 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -242,6 +242,9 @@ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
- 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int ret = 0;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index efe14cf24bc6..739d9ba3ba6b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7366,7 +7366,7 @@ static int check_btf_func(struct bpf_verifier_env *env,
+ 	const struct btf *btf;
+ 	void __user *urecord;
+ 	u32 prev_offset = 0;
+-	int ret = 0;
++	int ret = -ENOMEM;
  
-+	if (sk->sk_shutdown & RCV_SHUTDOWN)
-+		return 1;
-+
- 	if (!timeo)
- 		return ret;
- 
+ 	nfuncs = attr->func_info_cnt;
+ 	if (!nfuncs)
 -- 
 2.25.1
 
