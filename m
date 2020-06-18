@@ -2,273 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0E01FECE4
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 09:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12571FECF4
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 09:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgFRHvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 03:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        id S1728144AbgFRHyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 03:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728200AbgFRHvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 03:51:15 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5DEC06174E
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 00:51:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y20so4587088wmi.2
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 00:51:13 -0700 (PDT)
+        with ESMTP id S1728064AbgFRHyA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 03:54:00 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A56C06174E
+        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 00:54:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id l12so5366715ejn.10
+        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 00:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c0N4ORUFQwbB9M7m5d2XItj7rXMe2rFFdByR0dXZXiE=;
-        b=khTMpqPBNowRDJs1iV4XtzmDab/anV9zv6RRzrur8RM3EZCq9TlU9qpVoPG1EK4U6D
-         q56fOdV9yXvSUggH4ZDQz3k5cmXA7okQvwqNf0m160Gg1umTpRnb//gNQ7q6d6zwgR6u
-         Q/2cG2WEwwtUDTezn/GsCuMQOtOTS7STfDITITb4uQXZDHs6uDZVAQu7zxgXrZbc6llB
-         G9sV466JCwxInqZ26XEwkNdg/MC1i8XgD+621HrG5vkRFHKiGaP55Ozd1V98Y5GjcZrn
-         I60aL1t7/14Tu9HXu5GKHqwFDyxTyxnN8pI4VG3o/oHGzmliFmcyXCRgIEM8Pst1UwMU
-         FCvA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qhvL/90/88y6AW7jzugg1jqUhWw7F9WLgfSL8EBj5Xc=;
+        b=p0NBayffKLl9Wl/MbKVYcTa+d4LdvkyWGyV3oE7bnnl3bPJNn6zGLTq4mT9QDx4zLV
+         GLrWXlYu/Uinq/mgU/h7UPCkHTs6Eda2kKggnEmwCHkgi41AD+d8nHJNvMR1z0getkOO
+         HF70UVIh2ytkGjVG9ARBfYBoKkuwUxFXS3X6yRPGY8mv+lwzfDBzfIvi0FIGSWiab18a
+         75y66dm1pwqWfx4IqOqssVmf8BkFDBEPz4mZBnB6fYi+NmmtQadCFfeIZBcrobGdXvd1
+         pMQBKdo43CEr1wyrE+7FvapbK3zjE5RyrYmZ+y2jNxWei7iLGxOp8AWyjZVrQvwEWEzV
+         ++Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c0N4ORUFQwbB9M7m5d2XItj7rXMe2rFFdByR0dXZXiE=;
-        b=BTJ9K/LOr1uYvGXWVrgS5fogxUIf44o8TxaqH0OWsiFKKeubrfNP0doIgEVKShCcfc
-         DWgcMNHuW1/QDT/GzRezdROhSFhFb4qgU7WeGJ9EudBpl63FSFDk7U22Y2B5z/ti7CKg
-         9QDLK1uvefdOCzDQqNAWBVsyL4GT+UOE4wcV/1UslrGF6qrYFjT2dBOV2fQCRTFWkGM/
-         mb5rxvAQNK1IIct9x748gcYDLz6KD7ZmM8Tx4wMzCocgLqfL+BLsBDw8GKjikpE3YB2b
-         6U5xMgyoKN6uoeLECVuAgy8qZqWc7B/aIj2CNEVJqN1wvXxGdqtppepNH+BJorUVMPKW
-         di+w==
-X-Gm-Message-State: AOAM532uCDAlxJeZvy9GP42CbJKc1jIa7G4+m4Zi8eYXgOdPx/y1XeLl
-        5tVQiogbR7/U9icMFfAM7IobHw==
-X-Google-Smtp-Source: ABdhPJy/KVMONRj5cklPba9qZIoYrwNuWEFq2fIw9y6h9aHaBhi0B7/xUGdKMF5fPZ632hxDx+mJ9Q==
-X-Received: by 2002:a7b:c007:: with SMTP id c7mr2712345wmb.165.1592466672568;
-        Thu, 18 Jun 2020 00:51:12 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.184.213])
-        by smtp.gmail.com with ESMTPSA id r2sm2420969wrg.68.2020.06.18.00.51.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 00:51:12 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 8/9] tools/bpftool: show info for processes
- holding BPF map/prog/link/btf FDs
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qhvL/90/88y6AW7jzugg1jqUhWw7F9WLgfSL8EBj5Xc=;
+        b=Hw8SZ788X4+gt+n+i7XRqaZQ9I9DOcbos0PysPVtKoSRCC+FN63iCh5h0XTkYCbpGB
+         6xNfXtQBOqB58gU62c7p1qxj/G4s+zjNxhYMX3aUKBhf6DpyA1E6Xoad0tr5PTWTP9a2
+         rQCFSyYjDEa7IJw31C/+X/q8qz+me3jYgTYNSfl6bKaAOzuz+Dos2vVcpvAEt/QJt3Gx
+         /MtVBC+oTuRFkkoi/95B6uV0RcLlhY/E6eYP58R7hHS5sDq/7p4iD9hXHgZPKZajtTqX
+         T86u2Edrzcaqta7kOQixoYjYS3Y10CdNsIIKZqmU5wTK9iEiQJJFO5b5yR6RkJhqnkM8
+         oTTQ==
+X-Gm-Message-State: AOAM533/rwdCX0hdmq4q8c3jfOJGJpkIpaEhOPcDXf0xoYAZupGGI8py
+        btQos/aKfUOGKbSLDJbBqUrGdtpBMKZ0hTuSjlDpMg==
+X-Google-Smtp-Source: ABdhPJzZanpsVlZ3iP8MKZybzl1G0bUGTD7yT3dF0nI55muJTK7F8By/+Pme7KXunKElFaQy50pGlKdacP8OsbUrQyQ=
+X-Received: by 2002:a17:906:a385:: with SMTP id k5mr2949751ejz.44.1592466838960;
+ Thu, 18 Jun 2020 00:53:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200612223150.1177182-1-andriin@fb.com> <20200612223150.1177182-3-andriin@fb.com>
+ <CA+khW7hFZzp_K_xydSFw0O3LYB22_fC=Z4wG7i9Si+phGHn4cQ@mail.gmail.com>
+ <CAEf4BzYVY-sA_SRqxr-dxrkR5DPW6tv3tnNonK=4WPx6eEiZFQ@mail.gmail.com>
+ <CA+khW7iU4oT3N2fYK6ym7XtWAnyD4fmiMpkuNybrJSROJeuk8A@mail.gmail.com>
+ <CA+khW7gRw+4o2P+cDY+D08OPa8xH3msgQC7C5+9qMy0yashOsA@mail.gmail.com> <CAEf4BzYKTjUF0-uWTUZQ1PkFGwUfx=KgMTM5t9RXewCF_XQkXg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYKTjUF0-uWTUZQ1PkFGwUfx=KgMTM5t9RXewCF_XQkXg@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 18 Jun 2020 00:53:47 -0700
+Message-ID: <CA+khW7jK7fpGH1khvqUiL90TziJYa9826Eud8P1vt6QX07PoKg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/8] libbpf: add support for extracting
+ kernel symbol addresses
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        Kernel Team <kernel-team@fb.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-References: <20200617161832.1438371-1-andriin@fb.com>
- <20200617161832.1438371-9-andriin@fb.com>
- <eebb2cea-dc27-77c6-936e-06ac5272921a@isovalent.com>
- <CAEf4BzbwKObO7CTrC8DJJo-M2trrB94spn2Ta0-GDWJ82uE41A@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <f8ba3a62-0bca-a2b3-9b17-1209c6cf42bb@isovalent.com>
-Date:   Thu, 18 Jun 2020 08:51:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbwKObO7CTrC8DJJo-M2trrB94spn2Ta0-GDWJ82uE41A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        Song Liu <songliubraving@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-06-17 23:01 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Wed, Jun 17, 2020 at 5:24 PM Quentin Monnet <quentin@isovalent.com> wrote:
->>
->> 2020-06-17 09:18 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
->>> Add bpf_iter-based way to find all the processes that hold open FDs against
->>> BPF object (map, prog, link, btf). bpftool always attempts to discover this,
->>> but will silently give up if kernel doesn't yet support bpf_iter BPF programs.
->>> Process name and PID are emitted for each process (task group).
->>>
->>> Sample output for each of 4 BPF objects:
->>>
->>> $ sudo ./bpftool prog show
->>> 2694: cgroup_device  tag 8c42dee26e8cd4c2  gpl
->>>         loaded_at 2020-06-16T15:34:32-0700  uid 0
->>>         xlated 648B  jited 409B  memlock 4096B
->>>         pids systemd(1)
->>> 2907: cgroup_skb  name egress  tag 9ad187367cf2b9e8  gpl
->>>         loaded_at 2020-06-16T18:06:54-0700  uid 0
->>>         xlated 48B  jited 59B  memlock 4096B  map_ids 2436
->>>         btf_id 1202
->>>         pids test_progs(2238417), test_progs(2238445)
->>>
->>> $ sudo ./bpftool map show
->>> 2436: array  name test_cgr.bss  flags 0x400
->>>         key 4B  value 8B  max_entries 1  memlock 8192B
->>>         btf_id 1202
->>>         pids test_progs(2238417), test_progs(2238445)
->>> 2445: array  name pid_iter.rodata  flags 0x480
->>>         key 4B  value 4B  max_entries 1  memlock 8192B
->>>         btf_id 1214  frozen
->>>         pids bpftool(2239612)
->>>
->>> $ sudo ./bpftool link show
->>> 61: cgroup  prog 2908
->>>         cgroup_id 375301  attach_type egress
->>>         pids test_progs(2238417), test_progs(2238445)
->>> 62: cgroup  prog 2908
->>>         cgroup_id 375344  attach_type egress
->>>         pids test_progs(2238417), test_progs(2238445)
->>>
->>> $ sudo ./bpftool btf show
->>> 1202: size 1527B  prog_ids 2908,2907  map_ids 2436
->>>         pids test_progs(2238417), test_progs(2238445)
->>> 1242: size 34684B
->>>         pids bpftool(2258892)
->>>
->>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>> ---
->>
->> [...]
->>
->>> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
->>> new file mode 100644
->>> index 000000000000..3474a91743ff
->>> --- /dev/null
->>> +++ b/tools/bpf/bpftool/pids.c
->>> @@ -0,0 +1,229 @@
->>
->> [...]
->>
->>> +int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
->>> +{
->>> +     char buf[4096];
->>> +     struct pid_iter_bpf *skel;
->>> +     struct pid_iter_entry *e;
->>> +     int err, ret, fd = -1, i;
->>> +     libbpf_print_fn_t default_print;
->>> +
->>> +     hash_init(table->table);
->>> +     set_max_rlimit();
->>> +
->>> +     skel = pid_iter_bpf__open();
->>> +     if (!skel) {
->>> +             p_err("failed to open PID iterator skeleton");
->>> +             return -1;
->>> +     }
->>> +
->>> +     skel->rodata->obj_type = type;
->>> +
->>> +     /* we don't want output polluted with libbpf errors if bpf_iter is not
->>> +      * supported
->>> +      */
->>> +     default_print = libbpf_set_print(libbpf_print_none);
->>> +     err = pid_iter_bpf__load(skel);
->>> +     libbpf_set_print(default_print);
->>> +     if (err) {
->>> +             /* too bad, kernel doesn't support BPF iterators yet */
->>> +             err = 0;
->>> +             goto out;
->>> +     }
->>> +     err = pid_iter_bpf__attach(skel);
->>> +     if (err) {
->>> +             /* if we loaded above successfully, attach has to succeed */
->>> +             p_err("failed to attach PID iterator: %d", err);
->>
->> Nit: What about using strerror(err) for the error messages, here and
->> below? It's easier to read than an integer value.
-> 
-> I'm actually against it. Just a pure string message for error is often
-> quite confusing. It's an extra step, and sometimes quite a quest in
-> itself, to find what's the integer value of errno it was, just to try
-> to understand what kind of error it actually is. So I certainly prefer
-> having integer value, optionally with a string error message.
-> 
-> But that's too much hassle for this "shouldn't happen" type of errors.
-> If they happen, the user is unlikely to infer anything useful and fix
-> the problem by themselves. They will most probably have to ask on the
-> mailing list and paste error messages verbatim and let people like me
-> and you try to guess what's going on. In such cases, having an errno
-> number is much more helpful.
+Sounds good. Thanks.
 
-Ok, fair enough.
-
->>> +             goto out;
->>> +     }
->>> +
->>> +     fd = bpf_iter_create(bpf_link__fd(skel->links.iter));
->>> +     if (fd < 0) {
->>> +             err = -errno;
->>> +             p_err("failed to create PID iterator session: %d", err);
->>> +             goto out;
->>> +     }
->>> +
->>> +     while (true) {
->>> +             ret = read(fd, buf, sizeof(buf));
->>> +             if (ret < 0) {
->>> +                     err = -errno;
->>> +                     p_err("failed to read PID iterator output: %d", err);
->>> +                     goto out;
->>> +             }
->>> +             if (ret == 0)
->>> +                     break;
->>> +             if (ret % sizeof(*e)) {
->>> +                     err = -EINVAL;
->>> +                     p_err("invalid PID iterator output format");
->>> +                     goto out;
->>> +             }
->>> +             ret /= sizeof(*e);
->>> +
->>> +             e = (void *)buf;
->>> +             for (i = 0; i < ret; i++, e++) {
->>> +                     add_ref(table, e);
->>> +             }
->>> +     }
->>> +     err = 0;
->>> +out:
->>> +     if (fd >= 0)
->>> +             close(fd);
->>> +     pid_iter_bpf__destroy(skel);
->>> +     return err;
->>> +}
->>
->> [...]
->>
->>> diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
->>> new file mode 100644
->>> index 000000000000..f560e48add07
->>> --- /dev/null
->>> +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
->>> @@ -0,0 +1,80 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>
->> This would make it the only file not dual-licensed GPL/BSD in bpftool.
->> We've had issues with that before [0], although linking to libbfd is no
->> more a hard requirement. But I see you used a dual-license in the
->> corresponding header file pid_iter.h, so is the single license
->> intentional here? Or would you consider GPL/BSD?
->>
-> 
-> The other BPF program (skeleton/profiler.bpf.c) is also GPL-2.0, we
-> should probably switch both.
-
-Oh I missed that one :(. Yeah, if this is possible, that would be great!
-
->> [0] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=896165#38
->>
->>> +// Copyright (c) 2020 Facebook
->>> +#include <vmlinux.h>
->>> +#include <bpf/bpf_helpers.h>
->>> +#include <bpf/bpf_core_read.h>
->>> +#include <bpf/bpf_tracing.h>
->>> +#include "pid_iter.h"
->>
->> [...]
->>
->>> +
->>> +char LICENSE[] SEC("license") = "GPL";
-> 
-> I wonder if leaving this as GPL would be ok, if the source code itself
-> is dual GPL/BSD?
-
-If the concern is to pass the verifier, it accepts a handful of
-different strings (see include/linux/license.h), one of which is "Dual
-BSD/GPL" and should probably be used in that case. Or did you have
-something else in mind?
+On Tue, Jun 16, 2020 at 6:37 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jun 16, 2020 at 6:24 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Andrii,
+> >
+> > Do you think we need to put the kernel's variables in one single
+> > DATASEC in vmlinux BTF? It looks like all the ksyms in the program
+> > will be under one ".ksyms" section, so we are not able to tell whether
+> > a ksym is from a percpu section or a .rodata section. Without this
+> > information, if the vmlinux has multiple DATASECs, the loader may need
+> > to traverse all of them. If vmlinux BTF has only one DATASEC, it
+> > matches the object's BTF better.
+> >
+> > Right now, the percpu vars are in a ".data..percpu" DATASEC in my
+> > patch and the plan seems that we will introduce more DATASECs to hold
+> > other data.
+> >
+> > Please let me know your insights here. Thanks.
+>
+> I think we should keep original DATASECs in vmlinux's BTF, so that
+> they match ELF sections. Otherwise BTF is going to lie and will cause
+> confusion down the road in the longer term.
+>
+> On the BPF program side, though, I think we'll limit it to just two
+> special sections: .ksyms and .ksyms.percpu. libbpf will have to
+> traverse all vmlinux DATASECs to find corresponding variables, but
+> that's ok, it has to do the linear scan either way.
+>
+> >
+> > Hao
+> >
+> > On Tue, Jun 16, 2020 at 1:05 AM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > On Mon, Jun 15, 2020 at 12:08 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jun 15, 2020 at 9:44 AM Hao Luo <haoluo@google.com> wrote:
+> > > > >
+> > > > > Thanks, Andrii,
+> > > > >
+> > > > > This change looks nice! A couple of comments:
+> > > > >
+> > > > > 1. A 'void' type variable looks slightly odd from a user's perspective. How about using 'u64' or 'void *'? Or at least, a named type, which aliases to 'void'?
+> > > >
+> > > > That choice is very deliberate one. `extern const void` is the right
+> > > > way in C language to access linker-generated symbols, for instance,
+> > > > which is quite similar to what the intent is her. Having void type is
+> > > > very explicit that you don't know/care about that value pointed to by
+> > > > extern address, the only operation you can perform is to get it's
+> > > > address.
+> > > >
+> > > > Once we add kernel variables support, that's when types will start to
+> > > > be specified and libbpf will do extra checks (type matching) and extra
+> > > > work (generating ldimm64 with BTF ID, for instance), to allow C code
+> > > > to access data pointed to by extern address.
+> > > >
+> > > > Switching type to u64 would be misleading in allowing C code to
+> > > > implicitly dereference value of extern. E.g., there is a big
+> > > > difference between:
+> > > >
+> > > > extern u64 bla;
+> > > >
+> > > > printf("%lld\n", bla); /* de-reference happens here, we get contents
+> > > > of memory pointed to by "bla" symbol */
+> > > >
+> > > > printf("%p\n", &bla); /* here we get value of linker symbol/address of
+> > > > extern variable */
+> > > >
+> > > > Currently I explicitly support only the latter and want to prevent the
+> > > > former, until we have kernel variables in BTF. Using `extern void`
+> > > > makes compiler enforce that only the &bla form is allowed. Everything
+> > > > else is compilation error.
+> > > >
+> > >
+> > > Ah, I see. I've been taking the extern variable as an actual variable
+> > > that contains the symbol's address, which is the first case. Your
+> > > approach makes sense. Thanks for explaining.
+> > >
+> > > > > 2. About the type size of ksym, IIUC, it looks strange that the values read from kallsyms have 8 bytes but their corresponding vs->size is 4 bytes and vs->type points to 4-byte int. Can we make them of the same size?
+> > > >
+> > > > That's a bit of a hack on my part. Variable needs to point to some
+> > > > type, which size will match the size of datasec's varinfo entry. This
+> > > > is checked and enforced by kernel. I'm looking for 4-byte int, because
+> > > > it's almost guaranteed that it will be present in program's BTF and I
+> > > > won't have to explicitly add it (it's because all BPF programs return
+> > > > int, so it must be in program's BTF already). While 8-byte long is
+> > > > less likely to be there.
+> > > >
+> > > > In the future, if we have a nicer way to extend BTF (and we will
+> > > > soon), we can do this a bit better, but either way that .ksyms DATASEC
+> > > > type isn't used for anything (there is no map with that DATASEC as a
+> > > > value type), so it doesn't matter.
+> > > >
+> > >
+> > > Thanks for explaining, Andrii.
+> > >
+> > > These explanations as comments in the code would be quite helpful, IMHO.
