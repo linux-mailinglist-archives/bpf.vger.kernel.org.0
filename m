@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36DC1FE5B3
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEB11FE505
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgFRBQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 21:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47202 "EHLO mail.kernel.org"
+        id S1730278AbgFRCWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 22:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729582AbgFRBQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:29 -0400
+        id S1728643AbgFRBSW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:18:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6DA121D90;
-        Thu, 18 Jun 2020 01:16:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B08E021D79;
+        Thu, 18 Jun 2020 01:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442988;
-        bh=oPsEYan8BzCNcN2rrolhf41sx7V3EaoYnpGBm9uEYJU=;
+        s=default; t=1592443101;
+        bh=pfZB5y3kDygxLOky68VuEsp/A3ZbZCf+SZE2za9Qu4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lOQbH3tBuZG1yhlspRf2NDKrSrUHw8O95SORBxX+H+0AMyrZIj7gvvmXYVaur27Af
-         Qr2L/nIFnx3oQdpNH+/rEgTeOO9Z/xAMocZtB84UjD3RDPzi/5Im8uoV/xNsjVfK4/
-         I6Dod/OahhMPsP7UQTkbp8vVQ8pcidyuU9TSYuzA=
+        b=U5Ljdyi1H7Oz3jdpn+71M0wSxLIIi8kjNgONCCzTEOP1w/3VqwPTtq/lfKVFLW3cW
+         vm/iyfNJa7o+NLRCiV43s2306VWpG4Ku8SXJyvwIlPH6idVZ/OebWoG/XyzjM7rnQk
+         xIsp46C6hoO/3A7LJZcfK/RHq/Lmh4EMWlHBXa1w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 388/388] bpf: Undo internal BPF_PROBE_MEM in BPF insns dump
-Date:   Wed, 17 Jun 2020 21:08:05 -0400
-Message-Id: <20200618010805.600873-388-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 080/266] bpf, sockhash: Fix memory leak when unlinking sockets in sock_hash_free
+Date:   Wed, 17 Jun 2020 21:13:25 -0400
+Message-Id: <20200618011631.604574-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
-References: <20200618010805.600873-1-sashal@kernel.org>
+In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
+References: <20200618011631.604574-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,67 +45,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-[ Upstream commit 29fcb05bbf1a7008900bb9bee347bdbfc7171036 ]
+[ Upstream commit 33a7c831565c43a7ee2f38c7df4c4a40e1dfdfed ]
 
-BPF_PROBE_MEM is kernel-internal implmementation details. When dumping BPF
-instructions to user-space, it needs to be replaced back with BPF_MEM mode.
+When sockhash gets destroyed while sockets are still linked to it, we will
+walk the bucket lists and delete the links. However, we are not freeing the
+list elements after processing them, leaking the memory.
 
-Fixes: 2a02759ef5f8 ("bpf: Add support for BTF pointers to interpreter")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+The leak can be triggered by close()'ing a sockhash map when it still
+contains sockets, and observed with kmemleak:
+
+  unreferenced object 0xffff888116e86f00 (size 64):
+    comm "race_sock_unlin", pid 223, jiffies 4294731063 (age 217.404s)
+    hex dump (first 32 bytes):
+      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+      81 de e8 41 00 00 00 00 c0 69 2f 15 81 88 ff ff  ...A.....i/.....
+    backtrace:
+      [<00000000dd089ebb>] sock_hash_update_common+0x4ca/0x760
+      [<00000000b8219bd5>] sock_hash_update_elem+0x1d2/0x200
+      [<000000005e2c23de>] __do_sys_bpf+0x2046/0x2990
+      [<00000000d0084618>] do_syscall_64+0xad/0x9a0
+      [<000000000d96f263>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Fix it by freeing the list element when we're done with it.
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200613002115.1632142-1-andriin@fb.com
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20200607205229.2389672-2-jakub@cloudflare.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/syscall.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ net/core/sock_map.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 4e6dee19a668..5d1d24f56d53 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2923,6 +2923,7 @@ static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
- 	struct bpf_insn *insns;
- 	u32 off, type;
- 	u64 imm;
-+	u8 code;
- 	int i;
- 
- 	insns = kmemdup(prog->insnsi, bpf_prog_insn_size(prog),
-@@ -2931,21 +2932,27 @@ static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
- 		return insns;
- 
- 	for (i = 0; i < prog->len; i++) {
--		if (insns[i].code == (BPF_JMP | BPF_TAIL_CALL)) {
-+		code = insns[i].code;
-+
-+		if (code == (BPF_JMP | BPF_TAIL_CALL)) {
- 			insns[i].code = BPF_JMP | BPF_CALL;
- 			insns[i].imm = BPF_FUNC_tail_call;
- 			/* fall-through */
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 8291568b707f..ba65c608c228 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -879,6 +879,7 @@ static void sock_hash_free(struct bpf_map *map)
+ 			sock_map_unref(elem->sk, elem);
+ 			rcu_read_unlock();
+ 			release_sock(elem->sk);
++			sock_hash_free_elem(htab, elem);
  		}
--		if (insns[i].code == (BPF_JMP | BPF_CALL) ||
--		    insns[i].code == (BPF_JMP | BPF_CALL_ARGS)) {
--			if (insns[i].code == (BPF_JMP | BPF_CALL_ARGS))
-+		if (code == (BPF_JMP | BPF_CALL) ||
-+		    code == (BPF_JMP | BPF_CALL_ARGS)) {
-+			if (code == (BPF_JMP | BPF_CALL_ARGS))
- 				insns[i].code = BPF_JMP | BPF_CALL;
- 			if (!bpf_dump_raw_ok())
- 				insns[i].imm = 0;
- 			continue;
- 		}
-+		if (BPF_CLASS(code) == BPF_LDX && BPF_MODE(code) == BPF_PROBE_MEM) {
-+			insns[i].code = BPF_LDX | BPF_SIZE(code) | BPF_MEM;
-+			continue;
-+		}
+ 	}
  
--		if (insns[i].code != (BPF_LD | BPF_IMM | BPF_DW))
-+		if (code != (BPF_LD | BPF_IMM | BPF_DW))
- 			continue;
- 
- 		imm = ((u64)insns[i + 1].imm << 32) | (u32)insns[i].imm;
 -- 
 2.25.1
 
