@@ -2,87 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8071FFD8D
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 23:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CE41FFD9D
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 00:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731425AbgFRVtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 17:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        id S1729292AbgFRWAD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 18:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgFRVtA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 17:49:00 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE447C06174E;
-        Thu, 18 Jun 2020 14:48:59 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id x18so9121405lji.1;
-        Thu, 18 Jun 2020 14:48:59 -0700 (PDT)
+        with ESMTP id S1729146AbgFRWAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 18:00:03 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF1CC06174E;
+        Thu, 18 Jun 2020 15:00:02 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q8so7119330qkm.12;
+        Thu, 18 Jun 2020 15:00:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Q3SW089VJRQgJW9cl/e2kwpOjXCjLnxzYVYyNM7K6i8=;
-        b=n2qOA+/MUC8heWEYdwM9XoyNyQNGs7lYb5wS/S/AI2Lx3K/J6QaeQ0lGlPtr7jx2q4
-         u0M3xJxNsgK/k4GMAaDak5Zifay8CxEY/KtSucgOqetKCzoqDsqIzug0xMiSuXUuqr6P
-         g2O9SHbgC9a8DocgLHSe6ZiihxQ++2p0hc1smtchmtS0CswwXpjxm2iZ4+Ol5uvDZdY4
-         jgt6Ttt2cZE97tusxQr+l107GMKYtWA+GqrmBYf2DROfpnYbp6sTQ87mEd0mE7oJ8JU3
-         TKTapccQc4s42u5ArBhNTSDM6jEqobZ2+cGh2V9r7XV2/dCTs7osz/eGVzTy+miMOWMb
-         JpAA==
+        bh=5ZR6CFkdg+ULcmL1AuVmvyE6nh/C3rjVxkIJ1sgDqbQ=;
+        b=BC5mxAFSilXrd3JCUQWquJqcr8kKpimZ9NIAe42gucS2lfu1N6vwgmiNkpktOxUz7j
+         REr8/00DR9yjalCs4Ph6hfJdgbaG+cB2fkRahF1av/36md39J9z2GtKr29iu2x9JRVTm
+         Sb1mSq58D7NmRVZUxCFex9kjQ+l0bc9hbfawdEg34aJPmHen9zYN1ZYIuiXLqD7LlmVG
+         oefj49l70jpwjlD0v41T3E2dus+lbeOLnMUZACvX0h/rZ0j9D8U/pjUrW8eU8JPg3Xc+
+         SuplnJSm9Mwf7hZFpUvMtCUpWrfbGKeoYuJHvZBzxRG6Du2ocLbJsRHmZIA7U6thM8cA
+         Rk1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Q3SW089VJRQgJW9cl/e2kwpOjXCjLnxzYVYyNM7K6i8=;
-        b=gbntNg9qe9WFGm2MzJCWMpAqC6c92nnoqfBnDe8XyL9oOSM2WqsYc0bi0ASx4Z26iY
-         rcDoyKjJWtoLxlZP/qA0WRkpkMtjyCP5k1uOfmmd8t7CFUpTfaMcmDq+x5YfmQLHuau2
-         qaNyj716BWeM92otxtwizk51zuqtNh7J6dc3EP4FWDJ+Pd0JHmFleRnoI7niOQ0BlCQx
-         m0a1ZUfH03U531B/q3uED4SRqtO1J7ZsyWuIY8kYEP/kA+DJ2DqTQE7gCH6rJnjmI4Dj
-         OMR40zJ08nWVFlLSXWLP3nE6WBWxk2O449jgZTVo3Fwy5vb0eOOB8S7gp3VGwNKY8q8w
-         t94g==
-X-Gm-Message-State: AOAM533piTA2fR0TaYsRdKZSjDqTBm4jeUU7ADdqXnX9bb/1E2nP6/1M
-        UHGINBRY/nSmI9jSEDbXmqUKLsDWktf0WBBveCc=
-X-Google-Smtp-Source: ABdhPJwDLhJjOmZvAlLjeFBaZznMgbfHXpEz0LjAkaV22GeUBWzaN1Up0oSQbnBc45YrHKuwwtXoiCYed/DjndgEg60=
-X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr214793ljo.121.1592516938204;
- Thu, 18 Jun 2020 14:48:58 -0700 (PDT)
+        bh=5ZR6CFkdg+ULcmL1AuVmvyE6nh/C3rjVxkIJ1sgDqbQ=;
+        b=hJW53MRcZYyfs3+J95MLmJS7nEKsPMHCUUhZZUAiiPGvT3SyY5HgWNYriwAXhyWVa8
+         agEtlzMibEOkaWAD/wRBGP2lNfwFqGhHEDv5+AtXOndgH5ORGPqLO9EWo3Mggyq/8j/C
+         UkTRl1znidqSTCWMvTDFWfvvw8HUoupNvheLD4KvJUBklmqIKVM3e+BrzI2pjRbdLeu6
+         9KPPtoxWoX7BqFMquRGPmTOgZIv40tu0tlD8v2wmx8G8PvDxzcD6HfIMy58rfSrVlHKT
+         EUBc8hzKjNdFSZLP0Ct6xcHoTOoyltH74LR7afTjTHuhFrSG90yMGiauYJ7fwItjOp7R
+         UOtw==
+X-Gm-Message-State: AOAM530Pw1CF8hVdins49+d2Se34VctzxgUnm1x9wF544nr9EGvt13rw
+        N8vrFhhB4+p+N8oiiJCvXvBFf0eR7X/nAD0T12w=
+X-Google-Smtp-Source: ABdhPJzmXrg4YpkekEZQC+Pp+GUzrAhNmszq9ngGtgQ69nrnsyacxmAyBJIpIbawrrXb5HK84Dwgc9RZXQMxrYWeUmI=
+X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr526485qkl.437.1592517601927;
+ Thu, 18 Jun 2020 15:00:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200617174226.2301909-1-kafai@fb.com> <5eeaf50fec904_38b82b28075185c44c@john-XPS-13-9370.notmuch>
-In-Reply-To: <5eeaf50fec904_38b82b28075185c44c@john-XPS-13-9370.notmuch>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 18 Jun 2020 14:48:46 -0700
-Message-ID: <CAADnVQK1zH4sByPUN-+58P4n3XUzdKZJVunu7t5u+07T61gv=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: sk_storage: Prefer to get a free cache_idx
+References: <20200616050432.1902042-1-andriin@fb.com> <20200616050432.1902042-2-andriin@fb.com>
+ <5eebbbef8f904_6d292ad5e7a285b883@john-XPS-13-9370.notmuch>
+In-Reply-To: <5eebbbef8f904_6d292ad5e7a285b883@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 18 Jun 2020 14:59:51 -0700
+Message-ID: <CAEf4BzYNFddhDxLAkOC+q_ZWAet42aHybDiJT9odrzF8n5BBig@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
+ concatenation pattern test
 To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>,
-        Network Development <netdev@vger.kernel.org>
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 10:01 PM John Fastabend
+On Thu, Jun 18, 2020 at 12:09 PM John Fastabend
 <john.fastabend@gmail.com> wrote:
 >
-> Martin KaFai Lau wrote:
-> > The cache_idx is currently picked by RR.  There is chance that
-> > the same cache_idx will be picked by multiple sk_storage_maps while
-> > other cache_idx is still unused.  e.g. It could happen when the
-> > sk_storage_map is recreated during the restart of the user
-> > space process.
+> Andrii Nakryiko wrote:
+> > Add selftest that validates variable-length data reading and concatentation
+> > with one big shared data array. This is a common pattern in production use for
+> > monitoring and tracing applications, that potentially can read a lot of data,
+> > but usually reads much less. Such pattern allows to determine precisely what
+> > amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
 > >
-> > This patch tracks the usage count for each cache_idx.  There is
-> > 16 of them now (defined in BPF_SK_STORAGE_CACHE_SIZE).
-> > It will try to pick the free cache_idx.  If none was found,
-> > it would pick one with the minimal usage count.
+> > This is the first BPF selftest that at all looks at and tests
+> > bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
+> > testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
+> > 0 on success, instead of amount of bytes successfully read.
 > >
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > ---
-> >  net/core/bpf_sk_storage.c | 41 +++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 37 insertions(+), 4 deletions(-)
-> >
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> [...]
+>
+> > +/* .data */
+> > +int payload2_len1 = -1;
+> > +int payload2_len2 = -1;
+> > +int total2 = -1;
+> > +char payload2[MAX_LEN + MAX_LEN] = { 1 };
+> > +
+> > +SEC("raw_tp/sys_enter")
+> > +int handler64(void *regs)
+> > +{
+> > +     int pid = bpf_get_current_pid_tgid() >> 32;
+> > +     void *payload = payload1;
+> > +     u64 len;
+> > +
+> > +     /* ignore irrelevant invocations */
+> > +     if (test_pid != pid || !capture)
+> > +             return 0;
+> > +
+> > +     len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
+> > +     if (len <= MAX_LEN) {
+>
+> Took me a bit grok this. You are relying on the fact that in errors,
+> such as a page fault, will encode to a large u64 value and so you
+> verifier is happy. But most of my programs actually want to distinguish
+> between legitimate errors on the probe vs buffer overrun cases.
 
-Applied. Thanks
+What buffer overrun? bpf_probe_read_str() family cannot return higher
+value than MAX_LEN. If you want to detect truncated strings, then you
+can attempt reading MAX_LEN + 1 and then check that the return result
+is MAX_LEN exactly. But still, that would be something like:
+
+u64 len;
+
+len = bpf_probe_read_str(payload, MAX_LEN + 1, &buf);
+if (len > MAX_LEN)
+  return -1;
+if (len == MAX_LEN) {
+  /* truncated */
+} else {
+  /* full string */
+}
+
+>
+> Can we make these tests do explicit check for errors. For example,
+>
+>   if (len < 0) goto abort;
+>
+> But this also breaks your types here. This is what I was trying to
+> point out in the 1/2 patch thread. Wanted to make the point here as
+> well in case it wasn't clear. Not sure I did the best job explaining.
+>
+
+I can write *a correct* C code in a lot of ways such that it will not
+pass verifier verification, not sure what that will prove, though.
+
+Have you tried using the pattern with two ifs with no-ALU32? Does it work?
+
+Also you are cheating in your example (in patch #1 thread). You are
+exiting on the first error and do not attempt to read any more data
+after that. In practice, you want to get as much info as possible,
+even if some of string reads fail (e.g., because argv might not be
+paged in, but env is, or vice versa). So you'll end up doing this:
+
+len = bpf_probe_read_str(...);
+if (len >= 0 && len <= MAX_LEN) {
+    payload += len;
+}
+...
+
+... and of course it spectacularly fails in no-ALU32.
+
+To be completely fair, this is a result of Clang optimization and
+Yonghong is trying to deal with it as we speak. Switching int to long
+for helpers doesn't help it either. But there are better code patterns
+(unsigned len + single if check) that do work with both ALU32 and
+no-ALU32.
+
+And I just double-checked, this pattern keeps working for ALU32 with
+both int and long types, so maybe there are unnecessary bit shifts,
+but at least code is still verifiable.
+
+So my point stands. int -> long helps in some cases and doesn't hurt
+in others, so I argue that it's a good thing to do :)
+
+
+
+
+> > +             payload += len;
+> > +             payload1_len1 = len;
+> > +     }
+> > +
+> > +     len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
+> > +     if (len <= MAX_LEN) {
+> > +             payload += len;
+> > +             payload1_len2 = len;
+> > +     }
+> > +
+> > +     total1 = payload - (void *)payload1;
+> > +
+> > +     return 0;
+> > +}
