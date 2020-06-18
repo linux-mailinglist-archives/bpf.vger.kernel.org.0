@@ -2,125 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D4A1FFCFB
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 22:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCB41FFD09
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 23:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgFRU5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 16:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        id S1727976AbgFRVBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 17:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgFRU5a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:57:30 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A10C06174E;
-        Thu, 18 Jun 2020 13:57:29 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id r77so8853941ior.3;
-        Thu, 18 Jun 2020 13:57:29 -0700 (PDT)
+        with ESMTP id S1726896AbgFRVBV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 17:01:21 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E59CC06174E
+        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:21 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id f18so7049353qkh.1
+        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=ekBA7MSnXf0K4EAceloISG4Tg8M4FuphXWh1VGKXWfk=;
-        b=GyOLX9Mk7aYkcIhfAq0JTaZ4i8k+nu9eCjDZ/zVkfaNPSJmNqVno48WUOuvhdfrCIK
-         l88F0gxHhG2y/xRhDhVhJdHTV/lmm5rPuX2IGl9c59/m96suidzswmehGSC5bNcfGKYP
-         ViD91bi0a3qnyJvxzy2fhbe7Q+3wCNop6/YrijkQp6U3yxBFO2+8jBeLJADxm135qNX3
-         CXi8VTOs2uMkmEyBBn4MvfdKDzGI8MKsGwG+EdP+uAuJLz9lLelysdfnlMDIT9Rwd6lV
-         TqOmeMqLm1wv5QXQuOgpDXs+fTBDG59L1IZSJxpRN+EtidRUq0vrucj0Ppe932lsF5cl
-         GdZw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=401cejwJDHVTFNFxKCBUQdn9/o99cqTleeflC4uOmes=;
+        b=aS6JTqsYXUUaotZw2AdgQcrsJ98JWhOuKsJGPsbVL3S4fd+XF9KKdP8URY5S9mMoSY
+         SBkowrh6yC0hYdxPnhi7Q5VzojxucppVie9al32cpw8kjbaPvRiwVHF1f5hVzj4pFCGA
+         /xp89vBO2OMmGWCPjL1uOvcbii7FjtZW/Jd0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=ekBA7MSnXf0K4EAceloISG4Tg8M4FuphXWh1VGKXWfk=;
-        b=RWhviHCInvqaiIkfR3GZaYl89MvaCNlKMmDf7R73zZ1UuSPaFaVSElrgUQWHLwrjJ6
-         CdpKMOYw9Gxa5iJsPoEBc9B928c/x/BeDJVB+3Vcz/HxCGvOudOxG23qjPxh6kCF6sHU
-         aztEOpuCyeaJk00/eJ2zj2t6pvKWafSixac8tCZLRyc0lzCSxJvNbA33Lzw9+9neva/h
-         rtlxSh4ZfmURT2WEui+SxvPO4aALFvXB/6iem1zB/L38DeAYQgrfozkXhHrYadMm0RUK
-         mKmvPz8Iv325/FYkAoV85a5c7CcusmPxQc3RIFrNob2UOJCblhnCuhV/Qe4nvq/elfFD
-         ULbg==
-X-Gm-Message-State: AOAM530LifX+uRocbSJrsuLaiskyHv53F6YQbq2pD+d0f+DrFa+nfyfX
-        btJuzo7tzALBS7o3UWhfU8U=
-X-Google-Smtp-Source: ABdhPJzriEUJ+9Czd8kBM9OIvPAToh2o3XpLV6JtCrSB7YlCV+yAzE7ZGJbq6U+AvtNp1ma04hBugA==
-X-Received: by 2002:a02:942e:: with SMTP id a43mr459665jai.113.1592513848154;
-        Thu, 18 Jun 2020 13:57:28 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id p9sm2043716ile.87.2020.06.18.13.57.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:57:27 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 13:57:19 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Message-ID: <5eebd52fc68ee_6d292ad5e7a285b816@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200616100512.2168860-1-jolsa@kernel.org>
-References: <20200616100512.2168860-1-jolsa@kernel.org>
-Subject: RE: [PATCHv3 0/9] bpf: Add d_path helper
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=401cejwJDHVTFNFxKCBUQdn9/o99cqTleeflC4uOmes=;
+        b=BlYFiwgjttQeWSvEfDcHWDEc5cGU+/+N+ctysR90JCPOh7L7lguYhcTfxMChJP4FpW
+         PLaR0h7kp0R2WGe+0yBUZxsj48EsDjQ7qNt1fYjdmHOBSEAo7/dDrn0UhX00Iw2di4lN
+         0eE6YJ3F91GAZXQXFcCadVu2QML/HRhqfQb+LZws6CnONsRR1JazSYVvkX3VWBkvTwcQ
+         Z0gspcLMwTGFP6qDVRvV176AuNNM1ngfOoPMXCeT8upWWxbmSE3KMjjFD0jcydL0jmYc
+         qWryj7eVcPerWPVOA2bzt2bXRkxFshJuGfykoCHg+HiRDelU74BhpHp3B1t8jnlig7PX
+         5bHA==
+X-Gm-Message-State: AOAM533OZU3JcwJXLDyJckpveIX/5vz6wab40z44tBfsPMHCOfV283yj
+        K1oJ/sejblPS2J/UFxuyg3y9tJ6553g=
+X-Google-Smtp-Source: ABdhPJxUl7Rwgtp3ojd5rdGKufCTKokE07OaxJe8gC4bfQyQyex7MmQFWpiQF51scjjA+lOChCiJTQ==
+X-Received: by 2002:a37:5ac3:: with SMTP id o186mr327076qkb.272.1592514079724;
+        Thu, 18 Jun 2020 14:01:19 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id c2sm3947134qkl.58.2020.06.18.14.01.18
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jun 2020 14:01:19 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id b15so3800076ybg.12
+        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 14:01:18 -0700 (PDT)
+X-Received: by 2002:a25:9843:: with SMTP id k3mr862095ybo.444.1592514078217;
+ Thu, 18 Jun 2020 14:01:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200618142714.GA202183@mwanda>
+In-Reply-To: <20200618142714.GA202183@mwanda>
+From:   Kees Cook <keescook@chromium.org>
+Date:   Thu, 18 Jun 2020 14:01:06 -0700
+X-Gmail-Original-Message-ID: <CAGXu5jJVxSQnqxTsguKFv_rX1vW87jSMeU9HDue-97qYYK82qw@mail.gmail.com>
+Message-ID: <CAGXu5jJVxSQnqxTsguKFv_rX1vW87jSMeU9HDue-97qYYK82qw@mail.gmail.com>
+Subject: Re: [bug report] seccomp: Add find_notification helper
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Sargun Dhillon <sargun@sargun.me>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa wrote:
-> hi,
-> adding d_path helper to return full path for 'path' object.
-> 
-> I originally added and used 'file_path' helper, which did the same,
-> but used 'struct file' object. Then realized that file_path is just
-> a wrapper for d_path, so we'd cover more calling sites if we add
-> d_path helper and allowed resolving BTF object within another object,
-> so we could call d_path also with file pointer, like:
-> 
->   bpf_d_path(&file->f_path, buf, size);
-> 
-> This feature is mainly to be able to add dpath (filepath originally)
-> function to bpftrace:
-> 
->   # bpftrace -e 'kfunc:vfs_open { printf("%s\n", dpath(args->path)); }'
-> 
-> v3 changes:
->   - changed tests to use seleton and vmlinux.h [Andrii]
->   - refactored to define ID lists in C object [Andrii]
->   - changed btf_struct_access for nested ID check,
->     instead of adding new function for that [Andrii]
->   - fail build with CONFIG_DEBUG_INFO_BTF if libelf is not detected [Andrii]
-> 
-> Also available at:
->   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   bpf/d_path
-> 
-> thanks,
-> jirka
+On Thu, Jun 18, 2020 at 7:29 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> [ Kees, why am I getting tons and tons of these warnings?  Are we not
+>   going to initialize things manually any more? ]
 
-Hi Jira, Apologize for waiting until v3 to look at this series, but a
-couple general requests as I review this.
+We are, yes. This is "just" a bug.
 
-In the cover letter can we get some more details. The above is really
-terse/cryptic in my opinion. The bpftrace example gives good motiviation,
-but nothing above mentions a new .BTF_ids section and the flow to create
-and use this section.
+>
+> Hello Sargun Dhillon,
+>
+> The patch 186f03857c48: "seccomp: Add find_notification helper" from
+> Jun 1, 2020, leads to the following static checker warning:
+>
+>         kernel/seccomp.c:1124 seccomp_notify_recv()
+>         error: uninitialized symbol 'knotif'.
 
-Also if we add a BTF_ids  section adding documentation in btf.rst should
-happen as well. I would like to see something in the ELF File Format
-Interface section and BTF Generation sections.
+Thanks for the heads-up! This was also reported by the ClangBuiltLinux
+project, and I've since fixed it. It should be visible in my
+for-next/seccomp tree now.
 
-I'm not going to nitpick if its in this series or a stand-alone patch
-but do want to see it. So far the Documentation on BTF is fairly
-good and I want to avoid these kind of gaps.
+-Kees
 
-Thanks!
-John
+>
+> kernel/seccomp.c
+>   1091  static long seccomp_notify_recv(struct seccomp_filter *filter,
+>   1092                                  void __user *buf)
+>   1093  {
+>   1094          struct seccomp_knotif *knotif, *cur;
+>                                        ^^^^^^
+> This used to be initialized to NULL here.
+>
+>   1095          struct seccomp_notif unotif;
+>   1096          ssize_t ret;
+>   1097
+>   1098          /* Verify that we're not given garbage to keep struct extensible. */
+>   1099          ret = check_zeroed_user(buf, sizeof(unotif));
+>   1100          if (ret < 0)
+>   1101                  return ret;
+>   1102          if (!ret)
+>   1103                  return -EINVAL;
+>   1104
+>   1105          memset(&unotif, 0, sizeof(unotif));
+>   1106
+>   1107          ret = down_interruptible(&filter->notif->request);
+>   1108          if (ret < 0)
+>   1109                  return ret;
+>   1110
+>   1111          mutex_lock(&filter->notify_lock);
+>   1112          list_for_each_entry(cur, &filter->notif->notifications, list) {
+>   1113                  if (cur->state == SECCOMP_NOTIFY_INIT) {
+>   1114                          knotif = cur;
+>                                 ^^^^^^^^^^^^
+>
+>   1115                          break;
+>   1116                  }
+>   1117          }
+>   1118
+>   1119          /*
+>   1120           * If we didn't find a notification, it could be that the task was
+>   1121           * interrupted by a fatal signal between the time we were woken and
+>   1122           * when we were able to acquire the rw lock.
+>   1123           */
+>   1124          if (!knotif) {
+>                      ^^^^^^
+> But now it's uninitialized.
+>
+>   1125                  ret = -ENOENT;
+>   1126                  goto out;
+>   1127          }
+>   1128
+>   1129          unotif.id = knotif->id;
+>
+> regards,
+> dan carpenter
+
+
+
+-- 
+Kees Cook
+
+-- 
+Kees Cook
