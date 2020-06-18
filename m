@@ -2,198 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687491FFEE3
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 01:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062F41FFEEC
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 01:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgFRXsp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 19:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbgFRXsp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 19:48:45 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FEFC06174E;
-        Thu, 18 Jun 2020 16:48:45 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a45so3851787pje.1;
-        Thu, 18 Jun 2020 16:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=cGgzomHsmMiibZOiFHQpzS69L8geW6hLr8jvWa1/zL4=;
-        b=Nyre89On0UQFyud2sdz3I8zVgfKWaFWlfzPdQnduM1IDmK/B5cfLxvdr/JPFV5BOmm
-         doqFBHyhkSRQYPFmWq8YV1n3nIFjvur9G2UZG5YoHbgTkGP6f6VBf34BhZia49qw/Yw6
-         P8o6LVYJKcuehf1fY5MOAmlrVzgjMxLTGbOw3alE4jEgDiXrX/3f3/dGVDcrXXat1ZtN
-         ad1TePP0SNBWpannwphaR4ayqTwgaBdgdhssgB+PmMsj69azty42hKyvTWMe1wENI3k5
-         HWQ8i4btjRijLEskes6Mo0/xq1wJ6XpcskiuAPqMC+1M7gTq+srgy90HLT6zRpxhuqBb
-         vITg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=cGgzomHsmMiibZOiFHQpzS69L8geW6hLr8jvWa1/zL4=;
-        b=DX2PwWANgfIMwkq0kcddNmRofrY2UbuW2lldB8N5ZoHiIYzZumSsP3bgLqzFfJE9f9
-         GfcmPd/Aeiwwch0QDRNaShEk0PoOJ/cBQkoQWfUh7qTO9inPLOyH2OuITCtoVycFlInm
-         sAdGeB5A/UjNVSQ/wLBV6i5EY60dUQBxyRGtFNMxH0rSKN9rlYTj04ZTxzBuPJwDspK7
-         hVkTwetebNXxBVkstIU3dg3avIy7+9yNlNy9K6k+H491tApe54jfGAS9GpKlH1bi32iq
-         Zd0GCz1cOSfNoJ7x6LDewcsSKqwv8EwEZJZc4MuxBVBTOpkByyCvdWlZTi/DSWJ1DyE6
-         dQuQ==
-X-Gm-Message-State: AOAM533RGQmqLjWhpJZzFvMOFAPbkkW+kDWUkTzagmeYe6W4BDVLPjkJ
-        xuinJNdlNMKt4/ekm8oH2eU=
-X-Google-Smtp-Source: ABdhPJwKsBbbczybQnXu6vEp+IQaN9iI0Xr0prO0FSo4n1aUbeQ8fqoSd+qWsQ/M4NahWFrFAsI2yQ==
-X-Received: by 2002:a17:902:a585:: with SMTP id az5mr5648730plb.207.1592524124685;
-        Thu, 18 Jun 2020 16:48:44 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id nl11sm7633653pjb.0.2020.06.18.16.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 16:48:43 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 16:48:36 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Christoph Hellwig <hch@lst.de>
-Message-ID: <5eebfd54ec54f_27ce2adb0816a5b876@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzYNFddhDxLAkOC+q_ZWAet42aHybDiJT9odrzF8n5BBig@mail.gmail.com>
-References: <20200616050432.1902042-1-andriin@fb.com>
- <20200616050432.1902042-2-andriin@fb.com>
- <5eebbbef8f904_6d292ad5e7a285b883@john-XPS-13-9370.notmuch>
- <CAEf4BzYNFddhDxLAkOC+q_ZWAet42aHybDiJT9odrzF8n5BBig@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
- concatenation pattern test
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728175AbgFRXvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 19:51:46 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8364 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726948AbgFRXvn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jun 2020 19:51:43 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05INldDc012947;
+        Thu, 18 Jun 2020 16:51:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=CRlopSCUNdslakC9iF70wWLnn/qh50GBFZbTK+m5V9c=;
+ b=NH+tyQabRG6qYbh89fMQMdn/0BX4tlDB8o3mMUbJP8zYwo0JBd6HPQq3RLxWoabMlMgd
+ xo2L9vwwxQeWeYP2z7SRkR9u0QiaB7pTDNQkpogCn9e/Cg2UDV58V6D5rFdH7oDwSAs9
+ rZzgXG1exvBe7KOgi8aDBfmJZMRaUclZyMM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31q644y0tf-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Jun 2020 16:51:29 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Jun 2020 16:51:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k7reeoKVDOBpx4aSdT/eMmQUqmC+Npz/cPMoZHnbXyhdFib/benRX+gDJ83z1gOfKUA0dbXNFZ8V7/wY7fvv5/YOsrNdsOG1ObDVJJ+AoltHNY1ozXzhkE1Gng/bcZjcU+WqNR/Jw70CHWTZCf2kgif9Li/pEeCyIbcsjfPCipvyGYDC3OCMDSqwCRrceV//2vNF1PWBz1BVY88WVo7x6mEhA5BZJdTqlpw4ZiJ0U23FYbTwnLCCVIDjjJlhxsj2SQ4wQuZ4xKWT4fKYBpcs1fIixvLnyIKQme25eaZfY8HfOb2TiQCjw5TAJsZPGyswozSBOowJdzdIgfBG8zlYjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRlopSCUNdslakC9iF70wWLnn/qh50GBFZbTK+m5V9c=;
+ b=BfKlcHmlpkJKGtHQXMgTmh7G8JtxH1vnWBGMVa23uCofSTwgjb15qcRWDyPd/givqbB2uU3odo0GHxREbJMIb2IxhUeTX2lPQzPqMOMV72vz3L8uBZ/U3CSYK3awsX/1TFph++bLLKD4TXfojlSqNwyhF0aYKxtD0eR9XfyBnlmiiGdIp1/VuwMv0EeLfopsKF3Xri4IkHKHrgzsj4PV5xu8HiJJVMadsw6Hkk8a7KAVJf3wPvbsYEXMCA+w58gBr3odH9ivMCrYZNju2bj3ImaXjuHes9rV1Ui7++FlxoyTuxaacXOSZmaJq+27+36SJ0WD2wl9RVvy+N4kT8j7sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRlopSCUNdslakC9iF70wWLnn/qh50GBFZbTK+m5V9c=;
+ b=Ly8KCEmkDMBP7ALQkoJ92vWmY0+gCFrxsoYq5BGELlGNLTfmAILCQxGknUY7C4oCvQIZ7c7tOcLYHva4v680EkenOAZh3gS4sMirUPxtDcpAKCpzO53+/IEA276hnXpnoqZw9DM3Q4nKK4d/83/69I36yhOM5Q7agwGWRQdKBV0=
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BYAPR15MB3190.namprd15.prod.outlook.com (2603:10b6:a03:111::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Thu, 18 Jun
+ 2020 23:51:24 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::bd0e:e1e:29fb:d806]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::bd0e:e1e:29fb:d806%7]) with mapi id 15.20.3109.023; Thu, 18 Jun 2020
+ 23:51:24 +0000
+Date:   Thu, 18 Jun 2020 16:51:22 -0700
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 4/6] bpf: Support access to bpf map fields
+Message-ID: <20200618235122.GB47103@rdna-mbp.dhcp.thefacebook.com>
+References: <cover.1592426215.git.rdna@fb.com>
+ <53fdc8f0c100fc50c8aa5fbc798d659e3dd77e92.1592426215.git.rdna@fb.com>
+ <20200618061841.f52jaacsacazotkq@kafai-mbp.dhcp.thefacebook.com>
+ <20200618194236.GA47103@rdna-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200618194236.GA47103@rdna-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-ClientProxiedBy: BYAPR05CA0062.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::39) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2620:10d:c090:400::5:142a) by BYAPR05CA0062.namprd05.prod.outlook.com (2603:10b6:a03:74::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.12 via Frontend Transport; Thu, 18 Jun 2020 23:51:24 +0000
+X-Originating-IP: [2620:10d:c090:400::5:142a]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 254dd05d-3407-4956-b98f-08d813e28232
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3190:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB31900A7FFE03E17941EE3997A89B0@BYAPR15MB3190.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0438F90F17
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ngODUYm65VGuw8OxcWYAb4scl9UroH1G5JfacBjpugNYWhavv9Uqp7mPPox/3FWWkGn8aqxRRBG4Fs6IPPLMciAumu9jmSLLvnBvZVLdl9ex40a8/PLoYFUMpMKTZP2l3fNJTHzHZmSZOfvbjqasjTQFZfAv+2T9nu4xYMa+EGmuKIZGKGQeW++YFIGRab2iSy8uv566iLmzGYANwS0Nb1RdklSnOiZOH+KPhwD2vVy9684NZmXcJLw+ihyaiX0R8ZnQnKnviIjN4jDNg0Z7mWDS/5CL0K1HLc1G7A2AAntkpGrNKJ0pTVvUHTRop3go
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(396003)(136003)(376002)(39860400002)(66476007)(66556008)(66946007)(478600001)(9686003)(316002)(1076003)(6486002)(4326008)(6636002)(86362001)(186003)(5660300002)(8936002)(2906002)(6496006)(6862004)(16526019)(8676002)(52116002)(33656002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: bczd52irTYbLCiFj2zLWwJD9I1fZsAIofFmWYzvP97xbpSDSEo3p8Jqm8jw614wnECu/ozPxBbhYiX4McTTo8zPg/3O/5Gs3LfFzMDdtsD558mlnbfQjhoWrdEbUNXElQAdx1DAQmgaiwjLcnXcnREZFhWd6R7oaProbxMPzLoSXKK4XQcFsrRIvluETMauV8rujuot/iGssSSAnai7NpPSrUi9OfHw/FoWVbddcAYFwaXsqC32LLORiyDcnHLTmb0S/cXDSuKUcV3UchpRe35ibML/2vQwWaOuKL1kDfADTW9xGIWAW/cLsO3Ep00IkAjTlSetDoXClFOgqA9Jh8d1kbw0U4lYjapzEISapHMIbFOq2xB7ILEjruKAMyX6FwlYirgcaPxtnllMW6SeA07RWvi0WAsWYVK3qSDdmFlf9HIvU+PNGrkIakuaJ/F5LhRPUJzOyFNAKF7cVW8FQEPSIv/RLiSjgnKRenpZxzu8TtYbP2zxk98GlRxQEcDylBhvTjL9uiDNeTWb/2e1A2g==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 254dd05d-3407-4956-b98f-08d813e28232
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2020 23:51:24.4542
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: izo24TuKMJWfPtgFTSVpuJOMNgLhL42p/fiBdy2yRncvTFvpqU8FoSj8u12g5MDY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3190
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-18_21:2020-06-18,2020-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ impostorscore=0 cotscore=-2147483648 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006180183
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Thu, Jun 18, 2020 at 12:09 PM John Fastabend
-> <john.fastabend@gmail.com> wrote:
-> >
-> > Andrii Nakryiko wrote:
-> > > Add selftest that validates variable-length data reading and concatentation
-> > > with one big shared data array. This is a common pattern in production use for
-> > > monitoring and tracing applications, that potentially can read a lot of data,
-> > > but usually reads much less. Such pattern allows to determine precisely what
-> > > amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
-> > >
-> > > This is the first BPF selftest that at all looks at and tests
-> > > bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
-> > > testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
-> > > 0 on success, instead of amount of bytes successfully read.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> >
-> > [...]
-> >
-> > > +/* .data */
-> > > +int payload2_len1 = -1;
-> > > +int payload2_len2 = -1;
-> > > +int total2 = -1;
-> > > +char payload2[MAX_LEN + MAX_LEN] = { 1 };
+Andrey Ignatov <rdna@fb.com> [Thu, 2020-06-18 12:42 -0700]:
+> Martin KaFai Lau <kafai@fb.com> [Wed, 2020-06-17 23:18 -0700]:
+> > On Wed, Jun 17, 2020 at 01:43:45PM -0700, Andrey Ignatov wrote:
+> > [ ... ]
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index e5c5305e859c..fa21b1e766ae 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -3577,6 +3577,67 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, struct btf *btf,
+> > >  	return ctx_type;
+> > >  }
+> > >  
+> > > +#define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type)
+> > > +#define BPF_LINK_TYPE(_id, _name)
+> > > +static const struct bpf_map_ops * const btf_vmlinux_map_ops[] = {
+> > > +#define BPF_MAP_TYPE(_id, _ops) \
+> > > +	[_id] = &_ops,
+> > > +#include <linux/bpf_types.h>
+> > > +#undef BPF_MAP_TYPE
+> > > +};
+> > > +static u32 btf_vmlinux_map_ids[] = {
+> > > +#define BPF_MAP_TYPE(_id, _ops) \
+> > > +	[_id] = (u32)-1,
+> > > +#include <linux/bpf_types.h>
+> > > +#undef BPF_MAP_TYPE
+> > > +};
+> > > +#undef BPF_PROG_TYPE
+> > > +#undef BPF_LINK_TYPE
 > > > +
-> > > +SEC("raw_tp/sys_enter")
-> > > +int handler64(void *regs)
+> > > +static int btf_vmlinux_map_ids_init(const struct btf *btf,
+> > > +				    struct bpf_verifier_log *log)
 > > > +{
-> > > +     int pid = bpf_get_current_pid_tgid() >> 32;
-> > > +     void *payload = payload1;
-> > > +     u64 len;
+> > > +	int base_btf_id, btf_id, i;
+> > > +	const char *btf_name;
 > > > +
-> > > +     /* ignore irrelevant invocations */
-> > > +     if (test_pid != pid || !capture)
-> > > +             return 0;
+> > > +	base_btf_id = btf_find_by_name_kind(btf, "bpf_map", BTF_KIND_STRUCT);
+> > > +	if (base_btf_id < 0)
+> > > +		return base_btf_id;
 > > > +
-> > > +     len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-> > > +     if (len <= MAX_LEN) {
-> >
-> > Took me a bit grok this. You are relying on the fact that in errors,
-> > such as a page fault, will encode to a large u64 value and so you
-> > verifier is happy. But most of my programs actually want to distinguish
-> > between legitimate errors on the probe vs buffer overrun cases.
+> > > +	BUILD_BUG_ON(ARRAY_SIZE(btf_vmlinux_map_ops) !=
+> > > +		     ARRAY_SIZE(btf_vmlinux_map_ids));
+> > > +
+> > > +	for (i = 0; i < ARRAY_SIZE(btf_vmlinux_map_ops); ++i) {
+> > > +		if (!btf_vmlinux_map_ops[i])
+> > > +			continue;
+> > > +		btf_name = btf_vmlinux_map_ops[i]->map_btf_name;
+> > > +		if (!btf_name) {
+> > > +			btf_vmlinux_map_ids[i] = base_btf_id;
+> > > +			continue;
+> > > +		}
+> > > +		btf_id = btf_find_by_name_kind(btf, btf_name, BTF_KIND_STRUCT);
+> > > +		if (btf_id < 0)
+> > > +			return btf_id;
+> > > +		btf_vmlinux_map_ids[i] = btf_id;
+> > Since map_btf_name is already in map_ops, how about storing map_btf_id in
+> > map_ops also?
+> > btf_id 0 is "void" which is as good as -1, so there is no need
+> > to modify all map_ops to init map_btf_id to -1.
 > 
-> What buffer overrun? bpf_probe_read_str() family cannot return higher
-> value than MAX_LEN. If you want to detect truncated strings, then you
-> can attempt reading MAX_LEN + 1 and then check that the return result
-> is MAX_LEN exactly. But still, that would be something like:
-> u64 len;
+> Yeah, btf_id == 0 being a valid id was the reason I used -1.
 > 
-> len = bpf_probe_read_str(payload, MAX_LEN + 1, &buf);
-> if (len > MAX_LEN)
->   return -1;
-> if (len == MAX_LEN) {
->   /* truncated */
-> } else {
->   /* full string */
-> }
+> I realized that having a map type specific struct with btf_id == 0
+> should be practically impossible, but is it guaranteed to always be
+> "void" or it just happened so and can change in the future?
+> 
+> If both this and having one more field in bpf_map_ops is not a problem,
+> I'll move it to bpf_map_ops.
 
-+1
+Nope, I can't do it. All `struct bpf_map_ops` are global `const`, i.e.
+rodata and a try cast `const` away and change them causes a panic.
 
-> 
-> >
-> > Can we make these tests do explicit check for errors. For example,
-> >
-> >   if (len < 0) goto abort;
-> >
-> > But this also breaks your types here. This is what I was trying to
-> > point out in the 1/2 patch thread. Wanted to make the point here as
-> > well in case it wasn't clear. Not sure I did the best job explaining.
-> >
-> 
-> I can write *a correct* C code in a lot of ways such that it will not
-> pass verifier verification, not sure what that will prove, though.
-> 
-> Have you tried using the pattern with two ifs with no-ALU32? Does it work?
+Simple user space repro:
 
-Ran our CI on both mcpu=v2 and mcpu=v3 and the pattern with multiple
-ifs exists in those tests. They both passed so everything seems OK.
-In the real progs though things are a bit more complicated I didn't
-check the exact generate code. Some how I missed the case below.
-I put a compiler barrier in a few spots so I think this is blocking
-the optimization below causing no-alu32 failures. I'll remove the
-barriers after I wrap a few things reviews.. my own bug fixes ;) and
-see if I can trigger the case below.
+	% cat 1.c
+	#include <stdio.h>
+	
+	struct map_ops {
+		int a;
+	};
+	
+	const struct map_ops ops = {
+		.a = 1,
+	};
+	
+	int main(void)
+	{
+		struct map_ops *ops_rw = (struct map_ops *)&ops;
+	
+		printf("before a=%d\n", ops_rw->a);
+		ops_rw->a = 3;
+		printf(" afrer a=%d\n", ops_rw->a);
+	}
+	% clang -O2 -Wall -Wextra -pedantic -pedantic-errors -g 1.c && ./a.out
+	before a=1
+	Segmentation fault (core dumped)
+	% objdump -t a.out  | grep -w ops
+	0000000000400600 g     O .rodata        0000000000000004              ops
 
-> 
-> Also you are cheating in your example (in patch #1 thread). You are
-> exiting on the first error and do not attempt to read any more data
-> after that. In practice, you want to get as much info as possible,
-> even if some of string reads fail (e.g., because argv might not be
-> paged in, but env is, or vice versa). So you'll end up doing this:
-
-Sure.
-
-> 
-> len = bpf_probe_read_str(...);
-> if (len >= 0 && len <= MAX_LEN) {
->     payload += len;
-> }
-> ...
-> 
-> ... and of course it spectacularly fails in no-ALU32.
-> 
-> To be completely fair, this is a result of Clang optimization and
-> Yonghong is trying to deal with it as we speak. Switching int to long
-> for helpers doesn't help it either. But there are better code patterns
-> (unsigned len + single if check) that do work with both ALU32 and
-> no-ALU32.
-
-Great.
-
-> 
-> And I just double-checked, this pattern keeps working for ALU32 with
-> both int and long types, so maybe there are unnecessary bit shifts,
-> but at least code is still verifiable.
-> 
-> So my point stands. int -> long helps in some cases and doesn't hurt
-> in others, so I argue that it's a good thing to do :)
-
-Convinced me as well. I Acked the other patch thanks.
+-- 
+Andrey Ignatov
