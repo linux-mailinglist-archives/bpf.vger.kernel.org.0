@@ -2,106 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED421FEF8B
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 12:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472DA1FF0F2
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 13:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgFRKUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 06:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgFRKUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 06:20:02 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F93C06174E
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 03:20:01 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id w16so5821545ejj.5
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 03:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=up9D0o+AX2qYGWNzMhoiy42Ev9Wr8Rz85ohKGlSqQ0U=;
-        b=Jesg79CtOMTpbspZ+IoydlUzspnzkiV3F0D3dRrZEdmk1/mQaqfA45SE864sqC4Ffd
-         Fy9Ywi6WPJ8CoFbruS8xb16io79uO3CBYdwABKB/eV525K7F/t43AJjzVFi4zt+GKSSN
-         zZINApgo6tNcc8Uj7V1SwkWsfVepwNceckkbKroLG0PQzDorLxLIhcnOLA9VEKUJ7Ow9
-         EVV/7EYnh6q0bjtijaTlIXyViV0wqaEQ5ptGYtZBDGCLpqubQzsZBlmbaJrePAl9m+bi
-         iTfwG6HYD6e47IuhJ+1opShz+fUcdNbOBY1ZkHitEA696JkvIHrIQ0LjPcqIB3NGl6pY
-         AekA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=up9D0o+AX2qYGWNzMhoiy42Ev9Wr8Rz85ohKGlSqQ0U=;
-        b=Ni31GWAz0EUX1freMh+1iQ2S2DdP1VuuwmemjgY7bEqjDt7gVC8T95gr6+BcxmJEU3
-         UdLj3ubvsQiY5AqlFfgqVyqmN3Fkoe8Efu90yRrIL0Zm2bsNGfTX9l1eOGPj8EhprrrQ
-         UYm+MsVldno0OkPJoswNkc3fspLwlUOv/tG7EoG1b/fFUF1GNDTIoCG5oQnxoqTpAPUF
-         o0SJ/aJxsxefBD/cJ/D1sps4/Lty+XlEM9GiQ9kpGY77Vsyyn1fQNHgZUWhkXP7RHFau
-         sc96d3OkJnU4BfW9GloBUM3cwxkpSMNcxbZxeuQA9Ip5r47Hm1bNcAXPkuYKm76JbZFe
-         SP0g==
-X-Gm-Message-State: AOAM531O3RYV6GoYSjQ8QWM9YQYqxTzJMqy0+bMEb8C2VaNpPopGwuCK
-        0toI7qPibxTHeLpA3213tpvjD4AfJTAcsF30U4fLPDl1
-X-Google-Smtp-Source: ABdhPJzsHJgfjGuS2xW+lHwiWnkQMpv0aHnYCdM9AA+r/pUVYDweI7W2lQ6vhylm0kT+c+b89o/lWfQuja5iYZ7fHFQ=
-X-Received: by 2002:a17:906:7751:: with SMTP id o17mr3406640ejn.111.1592475600448;
- Thu, 18 Jun 2020 03:20:00 -0700 (PDT)
+        id S1728783AbgFRLsT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 07:48:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23718 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728504AbgFRLsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 07:48:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592480897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uyIvvPBF+MpYQOOLrTvfIr/WJu5YGMFAZyoz1bbDjzM=;
+        b=hXZsu/WL5yALFfiwXdhLiehTlmpkLMEU9phaPtOygLWzAEwM8aXYiYTp/YoxKVe7b6NUOU
+        HACyJbb+oIflr7MTu2B6a5Dcq6KwoQMAfFGjC9qK3+KFwmfSRZQAUdTNjV1hVmahnwyIdw
+        20KuFKVeYQkeBD0vc8ztmXPxyo456Wo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-kRUP0nEkOZKbB_4tCwG95A-1; Thu, 18 Jun 2020 07:48:13 -0400
+X-MC-Unique: kRUP0nEkOZKbB_4tCwG95A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9DB81800D42;
+        Thu, 18 Jun 2020 11:48:10 +0000 (UTC)
+Received: from krava (unknown [10.40.194.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 677E41001E91;
+        Thu, 18 Jun 2020 11:48:07 +0000 (UTC)
+Date:   Thu, 18 Jun 2020 13:48:06 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masanori Misono <m.misono760@gmail.com>
+Subject: Re: [PATCH] bpf: Allow small structs to be type of function argument
+Message-ID: <20200618114806.GA2369163@krava>
+References: <20200616173556.2204073-1-jolsa@kernel.org>
+ <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-References: <CAHo-OoxJ6XBrBDXUxhCr0J58eOGq3FZu5+Rg6GLeeCjThrA8rg@mail.gmail.com>
- <CAADnVQKXbd986SrW2u4nxY-0nNuC7VoVM29=3LeD9potOJTdZQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKXbd986SrW2u4nxY-0nNuC7VoVM29=3LeD9potOJTdZQ@mail.gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Thu, 18 Jun 2020 03:19:49 -0700
-Message-ID: <CAHo-Ooz4smKgTDTit4NAnaasUDLJLkX7iRcYouv4KY=AG5SUaA@mail.gmail.com>
-Subject: Re: capable_bpf_net_admin()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     BPF Mailing List <bpf@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John has all the details.  I'm just guessing.
+On Wed, Jun 17, 2020 at 04:20:54PM -0700, John Fastabend wrote:
+> Jiri Olsa wrote:
+> > This way we can have trampoline on function
+> > that has arguments with types like:
+> > 
+> >   kuid_t uid
+> >   kgid_t gid
+> > 
+> > which unwind into small structs like:
+> > 
+> >   typedef struct {
+> >         uid_t val;
+> >   } kuid_t;
+> > 
+> >   typedef struct {
+> >         gid_t val;
+> >   } kgid_t;
+> > 
+> > And we can use them in bpftrace like:
+> > (assuming d_path changes are in)
+> > 
+> >   # bpftrace -e 'lsm:path_chown { printf("uid %d, gid %d\n", args->uid, args->gid) }'
+> >   Attaching 1 probe...
+> >   uid 0, gid 0
+> >   uid 1000, gid 1000
+> >   ...
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/bpf/btf.c | 12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 58c9af1d4808..f8fee5833684 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -362,6 +362,14 @@ static bool btf_type_is_struct(const struct btf_type *t)
+> >  	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+> >  }
+> >  
+> > +/* type is struct and its size is within 8 bytes
+> > + * and it can be value of function argument
+> > + */
+> > +static bool btf_type_is_struct_arg(const struct btf_type *t)
+> > +{
+> > +	return btf_type_is_struct(t) && (t->size <= sizeof(u64));
+> 
+> Can you comment on why sizeof(u64) here? The int types can be larger
+> than 64 for example and don't have a similar check, maybe the should
+> as well?
+> 
+> Here is an example from some made up program I ran through clang and
+> bpftool.
+> 
+> [2] INT '__int128' size=16 bits_offset=0 nr_bits=128 encoding=SIGNED
+> 
+> We also have btf_type_int_is_regular to decide if the int is of some
+> "regular" size but I don't see it used in these paths.
 
-But having actually looked at the code, commit 2c78ee898d8f1 ie.
+so this small structs are passed as scalars via function arguments,
+so the size limit is to fit teir value into register size which holds
+the argument
 
-kernel/bpf/syscall.c: bpf_prog_load()
-+       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
-+               return -EPERM;
+I'm not sure how 128bit numbers are passed to function as argument,
+but I think we can treat them separately if there's a need
 
-looks fishy, since our bpfloader only has CHOWN SYS_ADMIN, and the
-maps/programs it creates/loads are used by netd which only has
-NET_ADMIN (but not SYS_ADMIN).  Furthermore I don't really want to
-grant it NET_ADMIN.
+jirka
 
-I think this should again be either NET_ADMIN or SYS_ADMIN.
+> 
+> > +}
+> > +
+> >  static bool __btf_type_is_struct(const struct btf_type *t)
+> >  {
+> >  	return BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT;
+> > @@ -3768,7 +3776,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+> >  	/* skip modifiers */
+> >  	while (btf_type_is_modifier(t))
+> >  		t = btf_type_by_id(btf, t->type);
+> > -	if (btf_type_is_int(t) || btf_type_is_enum(t))
+> > +	if (btf_type_is_int(t) || btf_type_is_enum(t) || btf_type_is_struct_arg(t))
+> >  		/* accessing a scalar */
+> >  		return true;
+> >  	if (!btf_type_is_ptr(t)) {
+> > @@ -4161,6 +4169,8 @@ static int __get_type_size(struct btf *btf, u32 btf_id,
+> >  		return sizeof(void *);
+> >  	if (btf_type_is_int(t) || btf_type_is_enum(t))
+> >  		return t->size;
+> > +	if (btf_type_is_struct_arg(t))
+> > +		return t->size;
+> >  	*bad_type = t;
+> >  	return -EINVAL;
+> >  }
+> > -- 
+> > 2.25.4
+> > 
+> 
+> 
 
-On Thu, Jun 18, 2020 at 12:01 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jun 17, 2020 at 11:43 PM Maciej =C5=BBenczykowski
-> <zenczykowski@gmail.com> wrote:
-> >
-> > is
-> > (SYS_ADMIN || BPF) && NET_ADMIN
-> >
-> > should this not be
-> > SYS_ADMIN || (BPF && NET_ADMIN)
-> >
-> > ?
->
-> capable_bpf_net_admin doesn't exist.
->
-> > Won't this cause a just SYS_ADMIN process to fail to load network bpf p=
-rogs?
->
-> if the process has cap_sys_admin it has all privs.
->
-> > (I haven't debugged this at all, but John is reporting 5.8-rc1 fails
-> > to load bpf progs from Android's bpfloader with EPERM error)
-> >
-> > Or are we okay with this user space visible behavioural change?
->
-> What kind of change? Could you please be more specific?
