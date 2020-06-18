@@ -2,98 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C071F1FFC23
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 22:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A63F1FFCBA
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 22:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgFRUAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 16:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S1732332AbgFRUky (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 16:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgFRUAM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:00:12 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC61EC06174E;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 64so3280333pfv.11;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
+        with ESMTP id S1732312AbgFRUku (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 16:40:50 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB1DC06174E;
+        Thu, 18 Jun 2020 13:40:49 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id t9so8724724ioj.13;
+        Thu, 18 Jun 2020 13:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=BBg1omQmY70sbVnTfrqZN99BMK4tyyYN7aijNl9ncAo=;
-        b=qHVOKZnnbDYvxGXWkUgUv/OJykwW4Rv0tiuG0AlmkHqfD36iP4x7BR2Py5GFqACRDm
-         5i3ifH5S1NN8V9CxJc4PaVmgovpghtY+nVQClp56dFJGJzQQ9riV5153DTb9uaaYCcXn
-         zKSIcsaAL9Q/Xd4Ml4cS0scZDEzGaEn7Pn9HA6i/TpI8l6UiOsikREy1z1OShIzot3XJ
-         tsbfdY9L9LKvv4B76PSu+Qs/yHrHoCwUVuKbjZOyCrVrhVWKboeQm1iRxPuxkDLis3b7
-         PHb0W+fdBBwNgmviD+SKTBLX4wRmnwqNSEdm8tM2U50nY/KyfFaUmFom+xEIr573l11V
-         Rs2w==
+        bh=CVfEDBcb6P1X9UPlG8iy7eKwin490vsgsKNHIJnNkzk=;
+        b=m5mKOPplUNdO+yrGpP+GLCFZ4eZY1ytfeCiJf1ndJz4xs0GgkSWxZuNOmK915BXp47
+         sI/xJZGA8pKZM09TWX1zIwCvfv8VvoPpRcZ6teBtrksuNwm0wAmrebQ2WZWrnWAILsxu
+         9+RDgDspLdm2q/vTs6bnIUTDal5qvCjfoDuZ5lTGkeA0vfVKN3P4LoAEmSKofPV/WGWP
+         USgnk8caV6F1BQ1sem+jMXjV4V7iXQqvI78TyE3H4mWIscj7AJ9kSKnZzY2hVi4FWX0p
+         PylgoAForxJgtMXJL1O4btEUuZCu0FJmQVivsI9Whb6qjJW51P7/1dcLnZWEwmdGncDu
+         wZFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BBg1omQmY70sbVnTfrqZN99BMK4tyyYN7aijNl9ncAo=;
-        b=YSqDrYwXDP46vvwrlxU7mA5j/v1AYLXUfwoUYbnMnlURx2ErXXtvm1QduzHIcSAdcZ
-         J4EUpqxlMSHvxA6quPP3JW9nFYHRIvoQDQ6caevvRS0/11yaGEVovBzoARfXL2TDx4kZ
-         3wZadcc60Vl472HZvzDbkXSdxs2FNBsCVdLzjLxYXt4M0Gl02oGaDCPWlB0FrCXNG9pL
-         qcmAIVvG6vZviXUkeKY9Do3dpKp5y++OWq41M6ufHg1UmBH5gkeOqKDyDIKuFhJsAOgA
-         vy2LpixOpvqM28peTm28uEcenNjtuzPKsz8Wv6z9zcYyZAEoqEJUUoaWggDZ9dZ0uzv2
-         3Jbw==
-X-Gm-Message-State: AOAM530hAs+uVixS/Gxlprd53ekdRgfFNxjSSxs9MfxMS+wzs7jW3GiE
-        UIRckiEGJq3QeWxBqiBUGL0=
-X-Google-Smtp-Source: ABdhPJyK2nA2OlbqWp0JXDCxkOcdEg9DLXJnM7Eeefe6ew+V+/Ftk/5LqOSfW2woQbAIHrltBEwUqQ==
-X-Received: by 2002:a63:4b51:: with SMTP id k17mr176046pgl.177.1592510412155;
-        Thu, 18 Jun 2020 13:00:12 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
-        by smtp.gmail.com with ESMTPSA id 1sm3625046pfx.210.2020.06.18.13.00.11
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=CVfEDBcb6P1X9UPlG8iy7eKwin490vsgsKNHIJnNkzk=;
+        b=TWyRy172niqTrLfjaO6vnqC62LhNzY+MB0IWg5YF06BklFs9/iIz8KUDM/DpKadjVv
+         hB+4tBmovTPbFKqXcMKYAodS6i6oABB8/j9//AbOHHKGXm8TPJwzIvNOja+artjpw7wA
+         1qi7sxqfASDAO9Skr7QLXOU1HJdsojnZuZOmZfh6nh1kchwEBb116YFi2a4EqoA5cJ4P
+         W3eLkWGtzx2EXCCAjFeMvQ3p5OMOlKQMVhR09j24AnJyyUhkaUc+lCGwVgsfzxLvd7qL
+         mzp1uH99VVI/bPAR8SXN8d/XVCt9AMGMezY1HXttBgseMmQh0/hXsLxjePSMu+cXgDn1
+         iQfQ==
+X-Gm-Message-State: AOAM531RidXqBPe2zcnquCQymQpTmDRw95S8B5a/ZUtjgbk/u7BONCuP
+        SEItxAj9MpdPGhpZPuAVHyk=
+X-Google-Smtp-Source: ABdhPJyG+eHEb4WVHXY5HOBhhe2R4cY2/6gIo69dDbDHFg62DcMD/c1NyNzZW0yi3F41Ug7LQlgsCg==
+X-Received: by 2002:a02:3908:: with SMTP id l8mr408111jaa.121.1592512849282;
+        Thu, 18 Jun 2020 13:40:49 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id h13sm2047362ile.18.2020.06.18.13.40.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:00:11 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Thu, 18 Jun 2020 13:40:48 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 13:40:40 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH] restore behaviour of CAP_SYS_ADMIN allowing the loading of net bpf program
-Date:   Thu, 18 Jun 2020 12:59:56 -0700
-Message-Id: <20200618195956.73967-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.27.0.290.gba653c62da-goog
-In-Reply-To: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
-References: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Message-ID: <5eebd1486e46b_6d292ad5e7a285b817@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200616100512.2168860-3-jolsa@kernel.org>
+References: <20200616100512.2168860-1-jolsa@kernel.org>
+ <20200616100512.2168860-3-jolsa@kernel.org>
+Subject: RE: [PATCH 02/11] bpf: Compile btfid tool at kernel compilation start
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+Jiri Olsa wrote:
+> The btfid tool will be used during the vmlinux linking,
+> so it's necessary it's ready for it.
+> =
 
-This is a 5.8-rc1 regression.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  Makefile           | 22 ++++++++++++++++++----
+>  tools/Makefile     |  3 +++
+>  tools/bpf/Makefile |  5 ++++-
+>  3 files changed, 25 insertions(+), 5 deletions(-)
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- kernel/bpf/syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This breaks the build for me. I fixed it with this but then I get warning=
+s,
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8da159936bab..7d946435587d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2121,7 +2121,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	    !bpf_capable())
- 		return -EPERM;
- 
--	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
-+	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 	if (is_perfmon_prog_type(type) && !perfmon_capable())
- 		return -EPERM;
--- 
-2.27.0.290.gba653c62da-goog
+diff --git a/tools/bpf/btfid/btfid.c b/tools/bpf/btfid/btfid.c
+index 7cdf39bfb150..3697e8ae9efa 100644
+--- a/tools/bpf/btfid/btfid.c
++++ b/tools/bpf/btfid/btfid.c
+@@ -48,7 +48,7 @@
+ #include <errno.h>
+ #include <linux/rbtree.h>
+ #include <linux/zalloc.h>
+-#include <btf.h>
++#include <linux/btf.h>
+ #include <libbpf.h>
+ #include <parse-options.h>
 
+Here is the error. Is it something about my setup? bpftool/btf.c uses
+<btf.h>. Because this in top-level Makefile we probably don't want to
+push extra setup onto folks.
+
+In file included from btfid.c:51:
+/home/john/git/bpf-next/tools/lib/bpf/btf.h: In function =E2=80=98btf_is_=
+var=E2=80=99:
+/home/john/git/bpf-next/tools/lib/bpf/btf.h:254:24: error: =E2=80=98BTF_K=
+IND_VAR=E2=80=99 undeclared (first use in this function); did you mean =E2=
+=80=98BTF_KIND_PTR=E2=80=99?
+  return btf_kind(t) =3D=3D BTF_KIND_VAR;
+                        ^~~~~~~~~~~~
+                        BTF_KIND_PTR
+/home/john/git/bpf-next/tools/lib/bpf/btf.h:254:24: note: each undeclared=
+ identifier is reported only once for each function it appears in
+/home/john/git/bpf-next/tools/lib/bpf/btf.h: In function =E2=80=98btf_is_=
+datasec=E2=80=99:
+/home/john/git/bpf-next/tools/lib/bpf/btf.h:259:24: error: =E2=80=98BTF_K=
+IND_DATASEC=E2=80=99 undeclared (first use in this function); did you mea=
+n =E2=80=98BTF_KIND_PTR=E2=80=99?
+  return btf_kind(t) =3D=3D BTF_KIND_DATASEC;
+                        ^~~~~~~~~~~~~~~~
+                        BTF_KIND_PTR
+mv: cannot stat '/home/john/git/bpf-next/tools/bpf/btfid/.btfid.o.tmp': N=
+o such file or directory
+make[3]: *** [/home/john/git/bpf-next/tools/build/Makefile.build:97: /hom=
+e/john/git/bpf-next/tools/bpf/btfid/btfid.o] Error 1
+make[2]: *** [Makefile:59: /home/john/git/bpf-next/tools/bpf/btfid/btfid-=
+in.o] Error 2
+make[1]: *** [Makefile:71: bpf/btfid] Error 2
+make: *** [Makefile:1894: tools/bpf/btfid] Error 2=
