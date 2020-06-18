@@ -2,150 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFE51FFDB2
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 00:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222E81FFE32
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 00:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731655AbgFRWGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 18:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        id S1727776AbgFRWdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 18:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731651AbgFRWGT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:06:19 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A367C06174E;
-        Thu, 18 Jun 2020 15:06:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 10so3458005pfx.8;
-        Thu, 18 Jun 2020 15:06:19 -0700 (PDT)
+        with ESMTP id S1727001AbgFRWdn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 18:33:43 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F03C06174E;
+        Thu, 18 Jun 2020 15:33:43 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id w1so7238894qkw.5;
+        Thu, 18 Jun 2020 15:33:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=LAFncSfCGWvLRoCJ8bDyyKXciwSiLuc1buVG0qkSipE=;
-        b=dyKvm0p8Xn8Ka8yXL4IqpnA9tpQuyPoTPA2kgTn0L65RV1h0W/95MZ/lo78FKYCEdm
-         wE3UajDwIgRfHq6eA4Glx2md7CUpKtsU+ndaOSXMzHccUinr6PDa/NEZpKDJbfn5eDSR
-         LvoB0Idcl4tYcs6qmUv9E6CiCC6y5cSzMvW3d+ZZItyGp7ATODmLz4CNU+UZc/t3DZWB
-         wXd74sEpoCgkDuC2BohcB6utiC6wqWjBYHlk4PvcE61oovn752TpFQvljo9IY3cIWGxR
-         h6UzM6pWg/5UQ9HBlkuFM12GWRd9uW6ybGyoYIAyiBSWWivaH9IqFO/ul4DFiHki1iua
-         Hokw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KBHYsW5yW1CAVvBFDgy/TGfxwLfAurjw5+HPPsQ8l00=;
+        b=GuvA39fiCMFlznSXXw9UFC8pVYn1ImBvDMaASeEWqJU5D8ZNCYt7WfT0BSMzmj5ICy
+         9H7+YhjqBBjTLZvAQRR/pTQ8alt3+a3row7J3+GG34ekhtfgOWaeIDmILcUgUuZ1ndQH
+         DlW2+vmM7BqMBDtanuh8DiknZPSr/R2a53YHBt7YRYybo6MGPjTk29Hl0o9it0oDRxf3
+         ZDFT8UiUjFYkXNiutkfJu3Xf+vTP/gIlPV7Zy9FYmwSUD2tCCiA6rglKEIGpcVhO4a1j
+         g2iSNvg+npagEqyVMq8AKXvW0giJPe5T5YQ9CTCR/sHMG5/u9sBk3bJhTj0lsieBQHd4
+         GE8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=LAFncSfCGWvLRoCJ8bDyyKXciwSiLuc1buVG0qkSipE=;
-        b=hvUtCQ3uQ/CVb5oMblqO95aBPvdRCy5TFdq1/X2vffUaFNdqpbDoHXF8VV0M5WG7kV
-         totH7ufLGcaEXCOpQQNqxGS+k1zHNmbeJf1ddrr1VZNzweY4E4U+6gVg2CsdkfLqev0B
-         DjQmmTaygE+nlvwhODWnPyxplXjwDOh5zzIUJRxz6iO69guNAosRA3ky6GaxiApUIgP6
-         fagvxc7LhciP87QYftP7BbO9VO51cBGKfyLdNDNt5lWZa2nKs2PN+8NmjWrV+trRGB+Z
-         7B6+BrN7KW9HucPyIJdAmS8psxSG4EoM8Vw/qoG1fLldLAX28r7g0YZFHWAMBVUK5xGB
-         grAw==
-X-Gm-Message-State: AOAM533LMToEB451norC9QSrYIZvUBTmT1o5GKvRuUTadnJ8rLJtgr5c
-        d3sHF0i5Rhsv0L6TjG0M8mJeWDlD1CE=
-X-Google-Smtp-Source: ABdhPJxAPLxUaSW11bH8DjM9DwDGQrCDeR2AvCudxlzs16mZFVRoTA3eO74fTBahhX9WmXuHuP357w==
-X-Received: by 2002:a63:591e:: with SMTP id n30mr538273pgb.429.1592517978456;
-        Thu, 18 Jun 2020 15:06:18 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id e5sm3234549pjv.18.2020.06.18.15.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 15:06:17 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 15:06:10 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Masanori Misono <m.misono760@gmail.com>
-Message-ID: <5eebe552dddc1_6d292ad5e7a285b83f@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200618114806.GA2369163@krava>
-References: <20200616173556.2204073-1-jolsa@kernel.org>
- <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
- <20200618114806.GA2369163@krava>
-Subject: Re: [PATCH] bpf: Allow small structs to be type of function argument
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KBHYsW5yW1CAVvBFDgy/TGfxwLfAurjw5+HPPsQ8l00=;
+        b=ShmII9HtH+7MnYG1rp9Lv8qHMS6BHUOFWjPYQyb/4MfGL5aQgYsnDwic6O1sOlMaSg
+         P/1XxOHlFUIl6QPL9I9Q7TierdVrvYYCdPjmnxKKn0ySIs2nwD5ZkOKwQSlPsTts23Ot
+         nlIdVXLz3rLvlzvBc+GcDW6viRpR+ORrBLGHLjT2cQIlmsFZbPdsiAqYn2R9xXAJZsea
+         ZYfgLxOTz4ih4T2GscC/X6611FDOrh2o4BPF3WQuiNvQjj1n2ve5hGAuA91u/BG8nhCT
+         ePNY6HGZlUc4xVeTnVwClj/eFUwLqgIEzrEm745OPk94ksTYMDByaKTEEbZPLyngq76t
+         o5Jg==
+X-Gm-Message-State: AOAM533Z5SQ+yxpXiaS49IISxnPdJdVubA/dvz/nG7SxX2B8wiVYym03
+        Nnwt7rRcgtf4v6MpghyxbN2WJ6Q3rlRO69UE6Xs=
+X-Google-Smtp-Source: ABdhPJziqnDloFofEuz0ZgAXix27jMBCHHkjhYh2laJZmfmWMUi9c/PYPVufxUad3bKMZ/Dod5JJOdXNbbnSDW6Xy4g=
+X-Received: by 2002:a05:620a:b84:: with SMTP id k4mr683424qkh.39.1592519622309;
+ Thu, 18 Jun 2020 15:33:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200611222340.24081-1-alexei.starovoitov@gmail.com> <20200611222340.24081-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20200611222340.24081-3-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 18 Jun 2020 15:33:31 -0700
+Message-ID: <CAEf4BzYbvuZoQb7Sz4Q7McyEA4khHm5RaQPR3bL67owLoyv1RQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 bpf-next 2/4] bpf: Add bpf_copy_from_user() helper.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa wrote:
-> On Wed, Jun 17, 2020 at 04:20:54PM -0700, John Fastabend wrote:
-> > Jiri Olsa wrote:
-> > > This way we can have trampoline on function
-> > > that has arguments with types like:
-> > > 
-> > >   kuid_t uid
-> > >   kgid_t gid
-> > > 
-> > > which unwind into small structs like:
-> > > 
-> > >   typedef struct {
-> > >         uid_t val;
-> > >   } kuid_t;
-> > > 
-> > >   typedef struct {
-> > >         gid_t val;
-> > >   } kgid_t;
-> > > 
-> > > And we can use them in bpftrace like:
-> > > (assuming d_path changes are in)
-> > > 
-> > >   # bpftrace -e 'lsm:path_chown { printf("uid %d, gid %d\n", args->uid, args->gid) }'
-> > >   Attaching 1 probe...
-> > >   uid 0, gid 0
-> > >   uid 1000, gid 1000
-> > >   ...
-> > > 
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  kernel/bpf/btf.c | 12 +++++++++++-
-> > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 58c9af1d4808..f8fee5833684 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -362,6 +362,14 @@ static bool btf_type_is_struct(const struct btf_type *t)
-> > >  	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
-> > >  }
-> > >  
-> > > +/* type is struct and its size is within 8 bytes
-> > > + * and it can be value of function argument
-> > > + */
-> > > +static bool btf_type_is_struct_arg(const struct btf_type *t)
-> > > +{
-> > > +	return btf_type_is_struct(t) && (t->size <= sizeof(u64));
-> > 
-> > Can you comment on why sizeof(u64) here? The int types can be larger
-> > than 64 for example and don't have a similar check, maybe the should
-> > as well?
-> > 
-> > Here is an example from some made up program I ran through clang and
-> > bpftool.
-> > 
-> > [2] INT '__int128' size=16 bits_offset=0 nr_bits=128 encoding=SIGNED
-> > 
-> > We also have btf_type_int_is_regular to decide if the int is of some
-> > "regular" size but I don't see it used in these paths.
-> 
-> so this small structs are passed as scalars via function arguments,
-> so the size limit is to fit teir value into register size which holds
-> the argument
-> 
-> I'm not sure how 128bit numbers are passed to function as argument,
-> but I think we can treat them separately if there's a need
-> 
+On Thu, Jun 11, 2020 at 3:24 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Sleepable BPF programs can now use copy_from_user() to access user memory.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       | 11 ++++++++++-
+>  kernel/bpf/helpers.c           | 22 ++++++++++++++++++++++
+>  kernel/trace/bpf_trace.c       |  2 ++
+>  tools/include/uapi/linux/bpf.h | 11 ++++++++++-
+>  5 files changed, 45 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 6819000682a5..c8c9217f3ac9 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1632,6 +1632,7 @@ extern const struct bpf_func_proto bpf_ringbuf_reserve_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_submit_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_discard_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_query_proto;
+> +extern const struct bpf_func_proto bpf_copy_from_user_proto;
+>
+>  const struct bpf_func_proto *bpf_tracing_func_proto(
+>         enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0bef454c9598..a38c806d34ad 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3260,6 +3260,13 @@ union bpf_attr {
+>   *             case of **BPF_CSUM_LEVEL_QUERY**, the current skb->csum_level
+>   *             is returned or the error code -EACCES in case the skb is not
+>   *             subject to CHECKSUM_UNNECESSARY.
+> + *
+> + * int bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
 
-Moving Andrii up to the TO field ;)
+Can we also add bpf_copy_str_from_user (or bpf_copy_from_user_str,
+whichever makes more sense) as well?
 
-Andrii, do we also need a guard on the int type with sizeof(u64)?
-Otherwise the arg calculation might be incorrect? wdyt did I follow
-along correctly.
+> + *     Description
+> + *             Read *size* bytes from user space address *user_ptr* and store
+> + *             the data in *dst*. This is a wrapper of copy_from_user().
+> + *     Return
+> + *             0 on success, or a negative error in case of failure.
+>   */
+
+[...]
