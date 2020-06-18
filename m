@@ -2,176 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2E61FFE42
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 00:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3861FFEA1
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 01:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgFRWnR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 18:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S1726925AbgFRXbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 19:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgFRWnR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:43:17 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB84C06174E;
-        Thu, 18 Jun 2020 15:43:16 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q2so7295624qkb.2;
-        Thu, 18 Jun 2020 15:43:16 -0700 (PDT)
+        with ESMTP id S1725829AbgFRXbI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 19:31:08 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47333C06174E;
+        Thu, 18 Jun 2020 16:31:08 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d10so1252562pls.5;
+        Thu, 18 Jun 2020 16:31:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SwhZHcmzmSyYCBEQ7qeYwK2+N8x/nvUNoGCWawl3HGs=;
-        b=gGkqpm+TlePX0fculHcIrWfQPZ3SNULh3Gh/rxu/Z9OypNAzXVSLeNf0Zoyelqj5im
-         lBWxCKVqPrLcIReSLEUrWfydEM+EoaBAuIypnLp6Duh6lGc7S0LrMrpUzYZ7E1HSVTla
-         /g3LDc+au7pEiSrG1mnuYwJ906APjyGO2gcKmakr+S3kV/F2GUNjJ0lafjSF3FwSq+29
-         Y/9ejvzSrJYLdm6Ta/nN7pLZoHxrd2XDZjumQFlOJw2JSZppovzGtd5cy37+GY6Kgy9B
-         dkjoorKOC22Cbe/+OjCGh7vh9RAFf5zEgtRZQxzHoZ8hKCBvKZPHfp1j7peBKOIFNzug
-         gVpg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=dbj3gSF1DajBfQal0C+Z7eSluHmswk4vZ+39x5+Knfo=;
+        b=LQEO3doHW70KeRhiigHF66bm9yrCws1QwYdMVCHd5brVC3OQ3eVhBtTqNlkTQVsCGm
+         RzI7dQrnGah6ESi3PjVkeGsG/RzZrzBckuSoPn53VIYpIO08cSXZFHdYKW93blOVVNbt
+         GfNXXJGNcTXabTRNkL40rbARSBLtYuYOGsBIg4Rojz0vNUKRT5OAPwW3DhPNXSa8jJSh
+         vvJtU9x481Npz2DmOgLsrdk7/LBvLp7L547hqOqHuqLMowgh/SY84Oa30bXlXHnTwmDE
+         6OOQPMvpesogjjvWFhF9LjIdPPby/vgemr9I5SnbaYVCRClmItCcWTUk65IvVBIBbYGK
+         H2uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SwhZHcmzmSyYCBEQ7qeYwK2+N8x/nvUNoGCWawl3HGs=;
-        b=KsyXi1J1YC8szc7kqN8eHEVpkebprlE8oOk2qZrqKOkGIbF9m8LHTQI5MAf3L4AxWb
-         Z5aVNKD1g4+JhOtCAs7ut0Krxn1+to0BDsSaDj05JqczIVZQzV54xqdzB2GY12PWqCqz
-         1IeqU5mLk67Ag3oQ7QPmdLxopBo0ItrmuUswqJv2VFWtj7DhRpVzxPEs4oohVHfzuVfD
-         EPrL2WHBJSFEb1YVOB66aFMfbr9TdJPC/O9XEIUrN9IGnB86y02O3nG4tEdJNyzsBjWy
-         EmC/CQWQIFGEGf4iv+exu/X/kV3oG9qbvM+H82c3x0Y+uF+tJeKSyEvdXuskWRUosO1L
-         Gmyw==
-X-Gm-Message-State: AOAM530fKBNEDhiTvwZP9qlF5ADXjvs1a5AgqR1CwkckLvMVwAPJQnJl
-        uIJmgj5FWjSBQ+HVUQk8kx7yynLe98OwpNbQzFI=
-X-Google-Smtp-Source: ABdhPJywBFg3iNInxARijO0jUDP0B5u3dxdqpIvZYLX4uTmyP6assI50LIq321O6f/p7vPr3lsXbkU0D3MQsu30fmc4=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr739437qkk.92.1592520195640;
- Thu, 18 Jun 2020 15:43:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200611222340.24081-1-alexei.starovoitov@gmail.com> <20200611222340.24081-5-alexei.starovoitov@gmail.com>
-In-Reply-To: <20200611222340.24081-5-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Jun 2020 15:43:04 -0700
-Message-ID: <CAEf4Bzb3xfowOkrFC-KzHF5C_8_YMTwrut=s-b+hrh_sEuVHoQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 bpf-next 4/4] selftests/bpf: basic sleepable tests
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=dbj3gSF1DajBfQal0C+Z7eSluHmswk4vZ+39x5+Knfo=;
+        b=M/5mbuJeiJvwpCzrrrOOK3Ml1ydQpOJEsPDNpseBf3XEVbSDLhbkbF9c07n+x+0se5
+         UOqx0v7bgz1744Dsa1O2XUzTIl0MEEcVh5/rcXGuWNx/J72+rRzmYIAhqGBKMeyu/4iR
+         QFyvKrUColosD6EDoPUUqKFqrkwGABSNM4Tk6xw/TxxZyTnU0S36nRlcy1BimRuZdi1W
+         mjQNzkMkHodJiQSx2cUU6z0yJkUke2Bs2t6wQf1Xe2yrt/7s31FmABlSNGmK5X7E8fOB
+         K+NZ8EGY2lfDCryViPyAAhoFBqTELNQfzhbNu+AQ/2Zq5FjrrwKAsi+bvgrPxMIOiht0
+         SbVQ==
+X-Gm-Message-State: AOAM530znMQfd8EGpTl0OVGZDRO5dvMBxkAh/J6VIZ/MssbErLA/qP0s
+        Y1JoRJVxKOR7g68AFnxzSlld6aYyoYM=
+X-Google-Smtp-Source: ABdhPJzy9xVTwzzxnyjmzJWc1f+286/scs4XITGlvC5OGqhIuofCsesMVl3vrblxZdU/1NPgDz0+DQ==
+X-Received: by 2002:a17:90a:36d0:: with SMTP id t74mr660446pjb.27.1592523067324;
+        Thu, 18 Jun 2020 16:31:07 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id 187sm4030469pfv.53.2020.06.18.16.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 16:31:06 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 16:30:58 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <5eebf9321e11a_519a2abc9795c5bc21@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
+References: <20200617202112.2438062-1-andriin@fb.com>
+ <5eeb0e5dcb010_8712abba49be5bc91@john-XPS-13-9370.notmuch>
+ <CAEf4BzZi5pMTC9Fq53Mi_mXUm-EQZDyqS_pxEYuGoc0J1ETGUA@mail.gmail.com>
+ <5eebb95299a20_6d292ad5e7a285b835@john-XPS-13-9370.notmuch>
+ <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: switch most helper return values from
+ 32-bit int to 64-bit long
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 3:25 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Modify few tests to sanity test sleepable bpf functionality.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: KP Singh <kpsingh@google.com>
-> ---
->  tools/testing/selftests/bpf/bench.c             |  2 ++
->  .../selftests/bpf/benchs/bench_trigger.c        | 17 +++++++++++++++++
->  tools/testing/selftests/bpf/progs/lsm.c         | 14 ++++++++++++--
->  .../testing/selftests/bpf/progs/trigger_bench.c |  7 +++++++
->  4 files changed, 38 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-> index 944ad4721c83..1a427685a8a8 100644
-> --- a/tools/testing/selftests/bpf/bench.c
-> +++ b/tools/testing/selftests/bpf/bench.c
-> @@ -317,6 +317,7 @@ extern const struct bench bench_trig_tp;
->  extern const struct bench bench_trig_rawtp;
->  extern const struct bench bench_trig_kprobe;
->  extern const struct bench bench_trig_fentry;
-> +extern const struct bench bench_trig_fentry_sleep;
->  extern const struct bench bench_trig_fmodret;
->  extern const struct bench bench_rb_libbpf;
->  extern const struct bench bench_rb_custom;
-> @@ -338,6 +339,7 @@ static const struct bench *benchs[] = {
->         &bench_trig_rawtp,
->         &bench_trig_kprobe,
->         &bench_trig_fentry,
-> +       &bench_trig_fentry_sleep,
+Andrii Nakryiko wrote:
+> On Thu, Jun 18, 2020 at 11:58 AM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Andrii Nakryiko wrote:
+> > > On Wed, Jun 17, 2020 at 11:49 PM John Fastabend
+> > > <john.fastabend@gmail.com> wrote:
+> > > >
+> > > > Andrii Nakryiko wrote:
+> > > > > Switch most of BPF helper definitions from returning int to long. These
+> > > > > definitions are coming from comments in BPF UAPI header and are used to
+> > > > > generate bpf_helper_defs.h (under libbpf) to be later included and used from
+> > > > > BPF programs.
+> > > > >
+> > > > > In actual in-kernel implementation, all the helpers are defined as returning
+> > > > > u64, but due to some historical reasons, most of them are actually defined as
+> > > > > returning int in UAPI (usually, to return 0 on success, and negative value on
+> > > > > error).
+> > > >
+> > > > Could we change the helpers side to return correct types now? Meaning if the
+> > > > UAPI claims its an int lets actually return the int.
+> > >
+> > > I'm not sure how exactly you see this being done. BPF ABI dictates
+> > > that the helper's result is passed in a full 64-bit r0 register. Are
+> > > you suggesting that in addition to RET_ANYTHING we should add
+> > > RET_ANYTHING32 and teach verifier that higher 32 bits of r0 are
+> > > guaranteed to be zero? And then make helpers actually return 32-bit
+> > > values without up-casting them to u64?
+> >
+> > Yes this is what I was thinking, having a RET_ANYTHING32 but I would
+> > assume the upper 32-bits could be anything not zeroed. For +alu32
+> > and programmer using correct types I would expect clang to generate
+> > good code here and mostly not need to zero upper bits.
+> >
+> > I think this discussion can be independent of your changes though and
+> > its not at the top of my todo list so probably wont get to investigating
+> > more for awhile.
+> 
+> I'm confused. If the verifier doesn't make any assumptions about upper
+> 32-bits for RET_ANYTHING32, how is it different from RET_ANYTHING and
+> today's logic? What you described is exactly what is happening when
+> bpf_helpers_def.h has BPF helpers defined as returning int.
+> 
 
-Can you please add results to commit description for fentry and
-fentry_sleep benchmark, just for comparison?
+Agreed. I recall it helping the 32-bit bounds on the verifier side
+somewhere. But lets drop it maybe it really is not useful. I'll go
+try and recall the details later.
 
->         &bench_trig_fmodret,
->         &bench_rb_libbpf,
->         &bench_rb_custom,
+[...] Aggressively pruning
+
+> >
+> > Agreed. Sorry for the confusion on my side. Poked at this a bit more this
+> > morning trying to see why I don't hit the same pattern when we have many
+> > cases very similar to above.
+> >
+> > In your C code you never check for negative return codes? Oops, this
+> > means you can walk backwards off the front of payload? This is probably
+> > not valid either from program logic side and/or verifier will probably
+> > yell. Commented where I think you want a <0 check here,
+> 
+> You are missing that I'm using unsigned u64. So (s64)-1 ==
+> (u64)0xFFFFFFFFFFFFFFFF. So negative errors are effectively turned
+> into too large length and I filter them out with the same (len >
+> MAX_SZ) check. This allows to do just one comparison instead of two,
+> and also helps avoid some Clang optimizations that Yonghong is trying
+> to undo right now (if (a > X && a < Y) turned into if (x < Y - X),
+> with assembly that verifier can't verify). So no bug there, very
+> deliberate choice of types.
+
+I caught it just after I sent above ;) In our codebase we do need to
+handle errors and truncated strings differently so really do need the
+two conditions. I guess we could find some clever way around it but
+in practice on latest kernels we've not seen much trouble around
+these with +alu32.
+
+Interesting about the optimization I've not seen that one yet.  
 
 [...]
 
->
-> @@ -28,6 +30,9 @@ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
->         is_stack = (vma->vm_start <= vma->vm_mm->start_stack &&
->                     vma->vm_end >= vma->vm_mm->start_stack);
->
-> +       bpf_copy_from_user(args, sizeof(args), (void *)vma->vm_mm->arg_start);
+> See above. In practice (it might be no-ALU32-only thing, don't know),
+> doing two ifs is both less efficient and quite often leads to
+> unverifiable code. Users have to do hacks to complicate control flow
+> enough to prevent Clang from doing Hi/Lo combining. I learned a new
+> inlined assembly trick recently to prevent this, but either way it's
+> unpleasant and unnecessary.
 
-is there some way to ensure that user memory definitely is not paged
-in (and do it from user-space selftest part), so that
-bpf_copy_from_user() *definitely* sleeps? That would be the real test.
-As is, even bpf_probe_read_user() might succeed as well, isn't that
-right?
+In the end we also run on ancient kernels so have lots of tricks.
 
-Seems like doing madvise(MADV_DONTNEED) should be able to accomplish
-that? So instead of reading arg_start, we can pre-setup mmap()'ed
-file, MADV_DONTNEED it, then trigger LSM program and let it attempt
-reading that chunk of memory?
+[...] more pruning
 
+> > > My point was that this int -> long switch doesn't degrade ALU32 and
+> > > helps no-ALU32, and thus is good :)
+> >
+> > With the long vs int I do see worse code when using the <0 check.
+> > Using C function below which I took from some real code and renamed
+> > variables.
+> >
+> > int myfunc(void *a, void *b, void *c) {
+> >         void *payload = a;
+> >         int len;
+> >
+> >         len = probe_read_str(payload, 1000, a);
+> >         if (len < 0) return len;
+> >         if (len <= 1000) {
+> >                 payload += len;
+> >         }
+> >         len = probe_read_str(payload, 1000, b);
+> >         if (len <= 1000) {
+> >                 payload += len;
+> >         }
+> >         return 1;
+> > }
+> >
+> > Then here is the side-by-side of generated code, with +ALU32.
+> >
+> >   int BPF_FUNC(probe_read, ...                  long BPF_FUNC(probe_read, ...
+> > -------------------------------                ---------------------------------
+> >        0:       r6 = r2                         0:      r6 = r2
+> >        1:       r7 = r1                         1:      r7 = r1
+> >        2:       w2 = 1000                       2:      w2 = 1000
+> >        3:       r3 = r7                         3:      r3 = r7
+> >        4:       call 45                         4:      call 45
+> >        5:       if w0 s< 0 goto +9 <LBB0_4>     5:      r2 = r0
+> >        6:       w2 = w0                         6:      if w0 s< 0 goto +10 <LBB0_4>
+> >        7:       r1 = r7                         7:      r2 <<= 32
+> >        8:       r1 += r2                        8:      r2 s>>= 32
+> >        9:       if w0 s< 1001 goto +1 <LBB0_3>  9:      r1 = r7
+> >       10:       r1 = r7                        10:      r1 += r2
+> >       11:       w2 = 1000                      11:      if w0 s< 1001 goto +1 <LBB0_3>
+> >       12:       r3 = r6                        12:      r1 = r7
+> >       13:       call 45                        13:      w2 = 1000
+> >       14:       w0 = 1                         14:      r3 = r6
+> >       15:       exit                           15:      call 45
+> >                                                16:      w0 = 1
+> >                                                17:      exit
+> >
+> > So a couple extra instruction, but more concerning we created a
+> > <<=,s>> pattern. I'll need to do some more tests but my concern
+> > is that could break verifier for real programs we have. I guess
+> > it didn't in the selftests? Surely, this thread has at least
+> > pointed out some gaps in our test cases. I guess I _could_ make
+> > len a u64 type to remove the sext but then <0 check on a u64?!
+> 
+> I addressed <0 check above. As for <<=,s>>=, I wish Clang was a bit
+> smarter and just did w2 = w2 or something like that, given we just
+> checked that w0 is non-negative. But then again, I wouldn't do two ifs
+> and wouldn't use signed int for len.
 
-> +       /*bpf_printk("args=%s\n", args);*/
+It is smart enough once you get all the types aligned. So after pulling
+in int->long change ideally we would change codebase to use long types as
+well. Maybe we should modify the tests in selftests as well OTOH
+its nice to test what happens when folks leave the return types as int.
 
-debugging leftover?
+> 
+> >
+> > >
+> > > Overall, long as a return type matches reality and BPF ABI
+> > > specification. BTW, one of the varlen programs from patch 2 doesn't
+> > > even validate successfully on latest kernel with latest Clang right
+> > > now, if helpers return int, even though it's completely correct code.
+> > > That's a real problem we have to deal with in few major BPF
+> > > applications right now, and we have to use inline assembly to enforce
+> > > Clang to do the right thing. A bunch of those problems are simply
+> > > avoided with correct return types for helpers.
+> >
+> > Do the real programs check <0? Did I miss something? I'll try
+> > applying your patch to our real code base and see what happens.
+> 
+> That would be great. Self-tests do work, but having more testing with
+> real-world application would certainly help as well.
 
-> +
->         if (is_stack && monitored_pid == pid) {
->                 mprotect_count++;
->                 ret = -EPERM;
-> @@ -36,7 +41,7 @@ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
->         return ret;
->  }
->
-> -SEC("lsm/bprm_committed_creds")
-> +SEC("lsm.s/bprm_committed_creds")
->  int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
->  {
->         __u32 pid = bpf_get_current_pid_tgid() >> 32;
-> @@ -46,3 +51,8 @@ int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
->
->         return 0;
->  }
+Thanks for all the follow up.
 
-nit: empty line here, don't squash those functions together :)
+I ran the change through some CI on my side and it passed so I can
+complain about a few shifts here and there or just update my code or
+just not change the return types on my side but I'm convinced its OK
+in most cases and helps in some so...
 
-
-> +SEC("lsm/task_free") /* lsm/ is ok, lsm.s/ fails */
-> +int BPF_PROG(test_task_free, struct task_struct *task)
-> +{
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> index 8b36b6640e7e..9a4d09590b3d 100644
-> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> @@ -39,6 +39,13 @@ int bench_trigger_fentry(void *ctx)
->         return 0;
->  }
->
-> +SEC("fentry.s/__x64_sys_getpgid")
-> +int bench_trigger_fentry_sleep(void *ctx)
-> +{
-> +       __sync_add_and_fetch(&hits, 1);
-> +       return 0;
-> +}
-> +
->  SEC("fmod_ret/__x64_sys_getpgid")
->  int bench_trigger_fmodret(void *ctx)
->  {
-> --
-> 2.23.0
->
+Acked-by: John Fastabend <john.fastabend@gmail.com>
