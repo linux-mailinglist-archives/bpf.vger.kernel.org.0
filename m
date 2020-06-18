@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CAE1FE5E1
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B691FE5C1
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 04:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732718AbgFRC3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jun 2020 22:29:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
+        id S1732763AbgFRC2L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jun 2020 22:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728628AbgFRBQO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jun 2020 21:16:14 -0400
+        id S1729573AbgFRBQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jun 2020 21:16:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3145921D82;
-        Thu, 18 Jun 2020 01:16:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA28F21D80;
+        Thu, 18 Jun 2020 01:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592442974;
-        bh=daUevcPQwSz8ypE0/GRlaqeC7kN8wLzXpFUXl6xgYxE=;
+        s=default; t=1592442984;
+        bh=iRRKd0TbaPUHurhMmZORB6+4Ul6s8eYjZm6WinlAIZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yXsyeDbfDPP2z3lrIkMJqmAOEHXmWAnHiNrd3VMV284yxd9zDKpPjNfYyZ73j277t
-         j4DZ+9XxzKXeEaoUdtQGCosjuuVOYeHjzqxkSbXBypQsF9fZNfgnLXOuB2LuWF2Uq5
-         O0A8BSJAoSmR+ZXTyz51SRRb2xn3aMWyqO5C/Rys=
+        b=N0robWIOEe+R+7I7qqA6tmrAwmXX3TMXtoW/R7VF7UAoYAMHZdNPuNRgNpV0R6ZsA
+         oovbnSbVUdfyEBu1epXRYWOl9FI1wur/yEboNNmPb/NVzBC8u2G6PN3QR3UIXznBRF
+         13yhoi9jdctgKgc58GjQ8QR4BYv4YcxZkk0pDta0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tobias Klauser <tklauser@distanz.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 377/388] tools, bpftool: Fix memory leak in codegen error cases
-Date:   Wed, 17 Jun 2020 21:07:54 -0400
-Message-Id: <20200618010805.600873-377-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 385/388] bpf: sockmap: Don't attach programs to UDP sockets
+Date:   Wed, 17 Jun 2020 21:08:02 -0400
+Message-Id: <20200618010805.600873-385-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200618010805.600873-1-sashal@kernel.org>
 References: <20200618010805.600873-1-sashal@kernel.org>
@@ -45,42 +45,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tobias Klauser <tklauser@distanz.ch>
+From: Lorenz Bauer <lmb@cloudflare.com>
 
-[ Upstream commit d4060ac969563113101c79433f2ae005feca1c29 ]
+[ Upstream commit f6fede8569689dd31e7b0ed15024b25e5ce2e2e5 ]
 
-Free the memory allocated for the template on error paths in function
-codegen.
+The stream parser infrastructure isn't set up to deal with UDP
+sockets, so we mustn't try to attach programs to them.
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200610130804.21423-1-tklauser@distanz.ch
+I remember making this change at some point, but I must have lost
+it while rebasing or something similar.
+
+Fixes: 7b98cd42b049 ("bpf: sockmap: Add UDP support")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20200611172520.327602-1-lmb@cloudflare.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/gen.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/sock_map.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index f8113b3646f5..f5960b48c861 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -225,6 +225,7 @@ static int codegen(const char *template, ...)
- 		} else {
- 			p_err("unrecognized character at pos %td in template '%s'",
- 			      src - template - 1, template);
-+			free(s);
- 			return -EINVAL;
- 		}
- 	}
-@@ -235,6 +236,7 @@ static int codegen(const char *template, ...)
- 			if (*src != '\t') {
- 				p_err("not enough tabs at pos %td in template '%s'",
- 				      src - template - 1, template);
-+				free(s);
- 				return -EINVAL;
- 			}
- 		}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 050bfac97cfb..7e858c1dd711 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -417,10 +417,7 @@ static int sock_map_get_next_key(struct bpf_map *map, void *key, void *next)
+ 	return 0;
+ }
+ 
+-static bool sock_map_redirect_allowed(const struct sock *sk)
+-{
+-	return sk->sk_state != TCP_LISTEN;
+-}
++static bool sock_map_redirect_allowed(const struct sock *sk);
+ 
+ static int sock_map_update_common(struct bpf_map *map, u32 idx,
+ 				  struct sock *sk, u64 flags)
+@@ -501,6 +498,11 @@ static bool sk_is_udp(const struct sock *sk)
+ 	       sk->sk_protocol == IPPROTO_UDP;
+ }
+ 
++static bool sock_map_redirect_allowed(const struct sock *sk)
++{
++	return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
++}
++
+ static bool sock_map_sk_is_suitable(const struct sock *sk)
+ {
+ 	return sk_is_tcp(sk) || sk_is_udp(sk);
 -- 
 2.25.1
 
