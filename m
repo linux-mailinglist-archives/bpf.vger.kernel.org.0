@@ -2,116 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD971FFB7E
-	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 21:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6646B1FFB8A
+	for <lists+bpf@lfdr.de>; Thu, 18 Jun 2020 21:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgFRTGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 15:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S1727978AbgFRTJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 15:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730176AbgFRTGX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 15:06:23 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2C6C06174E
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 12:06:23 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id d4so5433371otk.2
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 12:06:23 -0700 (PDT)
+        with ESMTP id S1728071AbgFRTJq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 15:09:46 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53081C06174E;
+        Thu, 18 Jun 2020 12:09:46 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id a13so6950435ilh.3;
+        Thu, 18 Jun 2020 12:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=pn5FW8J3MCqMPMMMbu9aaNnladSi2Z5PrgpKV0ydSM4=;
-        b=CagGXzeXW4jbGtn3dHz+Ekk8nq9TUqAxBY/EDpnNgmAkepRDwBbO1OXB4S5pzpT3pc
-         TWVu0d6BaicuBJcDIGh61bF0nL6i/jwbHzFsC9UgQqTGBboWZ2BDSBU3u7M6Z+U8M7X+
-         X+bJJclZ8qv0JiFpiLy2urWasu4uCgLFCrD9YUxWEbam0Frk7IPYyIMm+3pQfKQ83myk
-         Lx9fZS/FI1LKls6ndI76ouN24MxevF+P0QaYnOHww+G9TmKneIX0YcJ77+Kq5bXOZai3
-         UL2lPzh+MiILaX7IzxGvsU3zKeT/NX1T9T7I3xk9eJ+6yMAOkGOYaTljYO5y82T2krma
-         c0/w==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=6IBczb4kdESWB+hwv7Y/EqKNNCjEHpD367/7iKBzQeg=;
+        b=ilcNBpp4n+Dk8Np0QClpGicPlk/LuLVga5lRALNS8fJJC4h/hzUvTHWbdS1t0HgKjT
+         nXMwTG3m2Yq59nhTPd8kQwvPMLH3/deFEdFj9ObWq9zew3S4fpeqJ6oH5lDZdyQwkCa1
+         SIuSRctv5D3gEZANQKuY92fo+s542Mtf5c+HW8iQthMypvJZAO7YAC94q9hDhI5rJXfi
+         KKr5A1skl2qQ4d2kUdryE+y4zH4NNXs/hM/WyhaFGAiZ4vHCjJX1YKW0Be0aRiJbHOij
+         ulKC36UlZNA/fe1LBM4Jdf1GYyLQMh+pkSJaiipWcXSeq6wCeVjQilPdR8Ajugv5QZrL
+         Mt+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=pn5FW8J3MCqMPMMMbu9aaNnladSi2Z5PrgpKV0ydSM4=;
-        b=g2mb0D72LQUJ2Dy0j2dyOrG2jef4yKDHBoZViobgO/orUHcNynEiA7HuvdIa0Ky5BZ
-         0imo7k0lhObCHy96dxTo7VywJDGmRrQbCCObiCYvFw3lknLjAjS1by2eAzSop2rsrDsb
-         FshKOAwjj5MnwUkUQd2RSJNagVrUdX3hvqH1Jesg5uyla76uE6NcbVst9DakOvGrWlC6
-         xdIub4MgrKyXmrAPem7KbTXuTNeURtVmEK9dR2FpnyLxqtyCSg4XntyBIdP6lBpc7NRh
-         xgAGMTzRYFKIicZYrw2ductvAsHBuZSg/Y8WkvKQweR+rviibCTKn9+BwUU5JTZFG5VN
-         zxiA==
-X-Gm-Message-State: AOAM5321Toi4fcgx1cJzjmN4O0nsF4pIBophvgnN9VRBq/xeJ4MW0vtF
-        4KViD+wikP64Mwi2QpWqk3XuaRQ++eY+UsjBCz4=
-X-Google-Smtp-Source: ABdhPJw/iX1cglnz6MqkD32FRYXTXnVHVE9SXs7SbCtQjS2aqDXg8S02wFeo++Ojumi9cFqYX7IsDLC6FNawUNdP7a4=
-X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr169130otp.250.1592507182515;
- Thu, 18 Jun 2020 12:06:22 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ac9:780b:0:0:0:0:0 with HTTP; Thu, 18 Jun 2020 12:06:22
- -0700 (PDT)
-From:   Mrs Kim Hong Yeoh <mrs.kimhongyeoh55@gmail.com>
-Date:   Thu, 18 Jun 2020 19:06:22 +0000
-X-Google-Sender-Auth: ZyZvswELvqHA9iW_VmPFl2bqYuU
-Message-ID: <CANe==ryJXvv_6ApAGYW2ovEbEXG8ddrHFVeDH1vwvybAdkmVfA@mail.gmail.com>
-Subject: Greetings Beloved in Christ,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=6IBczb4kdESWB+hwv7Y/EqKNNCjEHpD367/7iKBzQeg=;
+        b=KpKgJ2UDVA03JpyVDlxxmga8JHYt9YmVAa14EE5wLlEahqADWirv7+FKfr4Q0EuHIL
+         CY2SohSpkkUmPbwrc6Q4Hrv/rSjAekPrBoD/qEE8TET9sJNeN0D/R0BDC/sDo5TBGeAu
+         rDbKVhUE0kzofLjFjLrUPO7HVE63bisZ/WBRjni5qvcI3EiAiIYRaG46Go8OKbVs18vr
+         JXWdi9vR80wjwR68H9BriTkbFnEAdHnVkZ2hfc0d88jiaVAwh5SemS0CoODXXA2AbHrc
+         K+GGj0Lo/cTBmDO3rt7TVJ8KpSJx2/gQVGn7eiUcDwlIUbffZBaotrq47C7lmKpByDTR
+         E1XQ==
+X-Gm-Message-State: AOAM530ePb6ES7lnuAALSqiOpQBftJZEcsojgx8RLM6si7Ek2aWfOgdn
+        2dXK/Db5CjJS3VfijqhBLRE=
+X-Google-Smtp-Source: ABdhPJylgxbxpzMxEgHLmcmn7pqbENP1FanyK8WWk3EdKjG0Urfb8NmKdqnCt3ugJcvOW9l16EGIww==
+X-Received: by 2002:a92:dc47:: with SMTP id x7mr5929701ilq.130.1592507385742;
+        Thu, 18 Jun 2020 12:09:45 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id t14sm1868055ilp.73.2020.06.18.12.09.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 12:09:44 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 12:09:35 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>,
+        Christoph Hellwig <hch@lst.de>
+Message-ID: <5eebbbef8f904_6d292ad5e7a285b883@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200616050432.1902042-2-andriin@fb.com>
+References: <20200616050432.1902042-1-andriin@fb.com>
+ <20200616050432.1902042-2-andriin@fb.com>
+Subject: RE: [PATCH bpf 2/2] selftests/bpf: add variable-length data
+ concatenation pattern test
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings Beloved in Christ,
+Andrii Nakryiko wrote:
+> Add selftest that validates variable-length data reading and concatentation
+> with one big shared data array. This is a common pattern in production use for
+> monitoring and tracing applications, that potentially can read a lot of data,
+> but usually reads much less. Such pattern allows to determine precisely what
+> amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
+> 
+> This is the first BPF selftest that at all looks at and tests
+> bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
+> testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
+> 0 on success, instead of amount of bytes successfully read.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-I had previously sent you an email with no feedback from you.I suppose
-it went to your junk folder.I anticipate that you read this mail
-quickly and let me know your opinion or willingness on this classified
-information that I will release to you.  therefore I would not want to
-jeopardize this opportunity to Save lives of Less Privileged ones and
-also change our financial status and give Less Privileged a secured
-future.
+[...]
 
-I am Ms.  Hong Yeoh Kim, Working at MAYBANK (Malaysia) as the
-Non-Independent Non-Executive Director and Chairman of Maybank. During
-our last banking Audits we discovered an abandoned account belongs to
-one of our Foreign Deceased Customer, Late Mr. Wang Jian, The
-Co-founder and Co-chairman of HNA Group, a Chinese conglomerate with
-significant real estate ownerships across the U.S., died in an
-accident while on a business trip in France on Tuesday.
+> +/* .data */
+> +int payload2_len1 = -1;
+> +int payload2_len2 = -1;
+> +int total2 = -1;
+> +char payload2[MAX_LEN + MAX_LEN] = { 1 };
+> +
+> +SEC("raw_tp/sys_enter")
+> +int handler64(void *regs)
+> +{
+> +	int pid = bpf_get_current_pid_tgid() >> 32;
+> +	void *payload = payload1;
+> +	u64 len;
+> +
+> +	/* ignore irrelevant invocations */
+> +	if (test_pid != pid || !capture)
+> +		return 0;
+> +
+> +	len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
+> +	if (len <= MAX_LEN) {
 
-Please go through this link:
-https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
+Took me a bit grok this. You are relying on the fact that in errors,
+such as a page fault, will encode to a large u64 value and so you
+verifier is happy. But most of my programs actually want to distinguish
+between legitimate errors on the probe vs buffer overrun cases.
 
-I am writing to request your assistance in transferring the sum of
-$17.000.000.00 (Seventeen Million United States Dollars) into your
-account as the Late Mr. Wang Jian Foreign Business Partner, which I am
-planning to use the fund to invest for public benefit as follows;
+Can we make these tests do explicit check for errors. For example,
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+  if (len < 0) goto abort;
 
-Meanwhile, before I contacted you I have done personal investigation
-in locating any of Late Mr. Wang Jian relatives who knows about the
-account, but I came out unsuccessful. However, I took this decision to
-use this fund in supporting the Orphanages Children, Less Privileged
-and Elderly People Need Care & Meal Support, because i don't want this
-fund to be transfer into our Government Treasury Account as unclaimed
-fund as the law of my country abiding.
+But this also breaks your types here. This is what I was trying to
+point out in the 1/2 patch thread. Wanted to make the point here as
+well in case it wasn't clear. Not sure I did the best job explaining.
 
-As an officer of the Bank I cannot be directly connected to this
-money, so this is why I have to contact you for us to work so that you
-can assist to claim/receive this money into your bank account for us
-start a charity project, Meanwhile you will have 40% of the total fund
-and 60% for charity project, Note there are practically no risk
-involved, it will be bank to bank transfer, all I need from you is to
-stand and claim $17. Million without any problem with the information
-am going to provide to you.
-
-
-Please for the sake of god accept this offer to work with me and let
-us save lives of those Orphanages Children, Less Privileged and
-Elderly People Need Care, I will appreciate it very much. As soon as I
-receive your kind response, I will give you details on how we can
-achieve it successfully i will explain more on how the fund will be
-transfer to you.
-
-Waiting for your urgent response now.
-best regards
-Ms.  Hong Yeoh Kim.
+> +		payload += len;
+> +		payload1_len1 = len;
+> +	}
+> +
+> +	len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
+> +	if (len <= MAX_LEN) {
+> +		payload += len;
+> +		payload1_len2 = len;
+> +	}
+> +
+> +	total1 = payload - (void *)payload1;
+> +
+> +	return 0;
+> +}
