@@ -2,55 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C82C201E05
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 00:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886DC201E5E
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 00:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgFSW2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 18:28:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39376 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729364AbgFSW2k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:28:40 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jmPV0-0007TG-08; Sat, 20 Jun 2020 00:28:38 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jmPUz-000QAR-Mz; Sat, 20 Jun 2020 00:28:37 +0200
-Subject: Re: [PATCH bpf-next] tools/bpftool: relicense bpftool's BPF profiler
- prog as dual-license GPL/BSD
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Song Liu <songliubraving@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
-References: <20200619222024.519774-1-andriin@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fbde3901-d287-1e68-2648-be2f2d68b8c3@iogearbox.net>
-Date:   Sat, 20 Jun 2020 00:28:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729891AbgFSW5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 18:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730154AbgFSW5o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 18:57:44 -0400
+Received: from localhost.localdomain.com (unknown [151.48.138.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CED4F21D7D;
+        Fri, 19 Jun 2020 22:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592607463;
+        bh=3ZTl+A/Kacpq2EA0Kulq1UyudM0GeuQ/Ht1E3auto+w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DOZgSg/spKDM3Zz1thY8RJMn/BJUwXPDZukfdMYGZf/31Q6WJJb1y034UyB4Ps8pV
+         5O4up5g44OYM4VyTdApQgkVRwlGYInqe3aWafBGGthacRsOGoR0wn3e7f3hPZnFwtW
+         4o6XQxFxilD3zcT5egN5eEMmFJjoAg9lbclo6CUg=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
+        daniel@iogearbox.net, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org
+Subject: [PATCH v2 bpf-next 0/8] introduce support for XDP programs in CPUMAP
+Date:   Sat, 20 Jun 2020 00:57:16 +0200
+Message-Id: <cover.1592606391.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200619222024.519774-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25848/Fri Jun 19 15:01:57 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/20/20 12:20 AM, Andrii Nakryiko wrote:
-> Relicense it to be compatible with the rest of bpftool files.
-> 
-> Cc: Song Liu <songliubraving@fb.com>
-> Suggested-by: Quentin Monnet <quentin@isovalent.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+capability to attach and run a XDP program to CPUMAP entries.
+The idea behind this feature is to add the possibility to define on which CPU
+run the eBPF program if the underlying hw does not support RSS.
+I respin patch 1/6 from a previous series sent by David [2].
+The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+Detailed tests results can be found here:
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap04-map-xdp-prog.org
 
-Applied, thanks!
+Changes since v1:
+- added performance test results
+- added kselftest support
+- fixed memory accounting with page_pool
+- extended xdp_redirect_cpu_user.c to load an external program to perform
+  redirect
+- reported ifindex to attached eBPF program
+- moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
+
+[1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.75383-1-dsahern@kernel.org/
+[2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.40418-2-dsahern@kernel.org/
+
+
+David Ahern (1):
+  net: Refactor xdp_convert_buff_to_frame
+
+Lorenzo Bianconi (7):
+  samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+    loop
+  cpumap: formalize map value as a named struct
+  bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+  bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+    entries
+  libbpf: add SEC name for xdp programs attached to CPUMAP
+  samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+  selftest: add tests for XDP programs in CPUMAP entries
+
+ include/linux/bpf.h                           |   6 +
+ include/net/xdp.h                             |  41 ++--
+ include/trace/events/xdp.h                    |  16 +-
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/cpumap.c                           | 161 +++++++++++---
+ net/core/dev.c                                |   8 +
+ samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+ samples/bpf/xdp_redirect_cpu_user.c           | 208 ++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  38 ++++
+ 12 files changed, 531 insertions(+), 72 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+
+-- 
+2.26.2
+
