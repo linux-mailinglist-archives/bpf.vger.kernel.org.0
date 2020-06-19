@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B90B201A1D
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 20:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E617201A5B
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 20:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbgFSSPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 14:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
+        id S1728973AbgFSSZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 14:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731978AbgFSSPk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:15:40 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF6FC06174E;
-        Fri, 19 Jun 2020 11:15:39 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q8so9784247qkm.12;
-        Fri, 19 Jun 2020 11:15:39 -0700 (PDT)
+        with ESMTP id S1728712AbgFSSZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 14:25:39 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF1CC06174E;
+        Fri, 19 Jun 2020 11:25:39 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id u17so7955485qtq.1;
+        Fri, 19 Jun 2020 11:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RYTTFB9vpBLIdJ5u4RqxHxQWqwi+IRzwIbFYmw2BZoo=;
-        b=kp6DN58mQjYUlmrccU4+kTySQcS8a/C/2gnyYhsfvvJVNeMFr2O0Jo74HhMtd+HfyP
-         269DS2mt6wVSir99HUHhik1snmXpVTR2qo2F5OrQfxR6t40S5PEAoneeLD4QvzwdcKBM
-         oRkgjS3kw8dutF2RY3K+cU9W/0fA89FnujPdkBStmXPURPG2Te9AosfOBKBIkKfH9ndt
-         S5izn9ox8RjW/ZeC+jq4Wp13ZFS7g8twkYaNIUdwuLj2ReDXLwVrw1I4Ia32t5j+8tWx
-         2N+HnutCPq6VjwxLDwsxom6ylH7Nh9WNEZ5XxKMRWe9wSI0CSwb///ct6uDpTP4Q0rIi
-         vCHQ==
+        bh=UKQDrHfQKlAwRetqN3yWweOMe2a7d5XeUCsMt86IhZU=;
+        b=CoxRKf4Yb4EnJGtJlcc23tfjvdWywG5lvFfK3kQ3BgtRTJLl5ChNhKuooKerJ5LXor
+         Hh6CeksJ3q5uFnD0TDK8swFFXRyo6GTudVZyedIJm9YJNavgFv98tMHdYW9LKVoLM50J
+         pnw4WK2kyyGVJXfXVj9eHSXeK3dVgB9+AdCYpZ2FtpjZZa9wQt+lnCazwtxAYcP+hcpI
+         y1yLwgQbPaow/qiOCuVjWX3Gg2ozQelJmtG2CQR+6ur014n7ga1ZIuIJ/llnpX5at8y1
+         kvIXuuXUxBEeUSVdm/+aH35RmY9hFi53/6tF0fQcUR9phA3s/0dOIQVQvhceo+E5kwhr
+         E3sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RYTTFB9vpBLIdJ5u4RqxHxQWqwi+IRzwIbFYmw2BZoo=;
-        b=AIRhYFnrQr1dCljv156N35r9VNg/ADFikozN6wVlBXvlFGb7yKOUYgfDbdKbYHP8BN
-         hikBKIZb73+p1MzRn4+7D1zYeqTM0Chn7x4yRFWzr5AuqvaDAdzqDY0m4M+WSALpIUo3
-         2IHq8sJzexg9rJcKurYCGcrNWYmRhH7mqeKZCgHZIfmBDbAZtKUZ2hL1uZFxTgL/a1vY
-         l4bMJZin9pXS6zyz6pyiM8gC42TvvMvl1nvyWw0/GYgOUs6UxZ8ZfHqMI9KG+0Y0ustj
-         kLzcXnBTJOJnajg2rEkO5XVH2ShmvQAVTw1Km1mbRcSm6KIw6GtABE3mbdIQOJlQW00N
-         SAMA==
-X-Gm-Message-State: AOAM5332CZPpOIE2CL9h3+PVQDS7FGYseQfaHpz9KQrOnYoIYJ/0ASDS
-        RHcsspLIkH68aqzIksb81TIaGj1vVykIU4/wbEY=
-X-Google-Smtp-Source: ABdhPJxMG7Q9EcwgsIhFOnPt1WrO8kx/gLcbgmHTKrDahoF5DSRWAD6bFc5SXGogFT/UJuc/uxXT012OnFx0gDpIwTA=
-X-Received: by 2002:a37:6712:: with SMTP id b18mr4933834qkc.36.1592590538836;
- Fri, 19 Jun 2020 11:15:38 -0700 (PDT)
+        bh=UKQDrHfQKlAwRetqN3yWweOMe2a7d5XeUCsMt86IhZU=;
+        b=Dkx39GMZDixeY5bYFrAidyeXNy+lf1lO6Q9kUSmCD9XizgPEuFEbK6Tz/agdl/j/lE
+         n74KGdETXQHlFIaKPrUI0dudQKOJ7Naf+wNxAzoVIPP2+ksHelkE2GLG9+BFQI4Sv3lF
+         Y5gJED/9iZHovJu8DqxPN4JFWoYWYaSCCnbXrSVAkrYxh2qoYR+IZJPrxirOZcGYPEas
+         Vto81Gn1t40Hj6KNMS/fWN+ektqAptP843Iwg52cXOBbBzxfA81jkWeRhIXbN+5TjFPW
+         OqR0hyDC0MJVcIyklCZcL7IEvlIKQS/9SjJ+9i0dBLYPDetHxI0lLQUr6pb+4zlTlImG
+         mByQ==
+X-Gm-Message-State: AOAM530cM1axLRcUP9otmPbGF/W2Wop34o6/vm6wA6j4uwmZlREbBEeF
+        N29wA5ZEUk/x309BAPziPd/oQK5hnfTg9XEbh2A=
+X-Google-Smtp-Source: ABdhPJy1hobkBSHWIJdIcaUbIy4e9uYICyr0E/cEj+L0b26153zLZ3WhHbepdDK1to8A510PcOPo17ixrlGSogOlHes=
+X-Received: by 2002:ac8:342b:: with SMTP id u40mr4668299qtb.59.1592591138774;
+ Fri, 19 Jun 2020 11:25:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200616100512.2168860-1-jolsa@kernel.org> <20200616100512.2168860-4-jolsa@kernel.org>
- <CAEf4BzZ=BN7zDU_8xMEEoF7khjC4bwGitU+iYf+6uFXPZ_=u-g@mail.gmail.com> <20200619131306.GD2465907@krava>
-In-Reply-To: <20200619131306.GD2465907@krava>
+References: <20200616100512.2168860-1-jolsa@kernel.org> <20200616100512.2168860-10-jolsa@kernel.org>
+ <CAEf4BzY=d5y_-fXvomG7SjkbK7DZn5=-f+sdCYRdZh9qeynQrQ@mail.gmail.com> <20200619133124.GJ2465907@krava>
+In-Reply-To: <20200619133124.GJ2465907@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Jun 2020 11:15:27 -0700
-Message-ID: <CAEf4Bza6DpmiwMXquY1WRTjfqhAPvnu87NsrVhVkew_2coU2Rw@mail.gmail.com>
-Subject: Re: [PATCH 03/11] bpf: Add btf_ids object
+Date:   Fri, 19 Jun 2020 11:25:27 -0700
+Message-ID: <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
+Subject: Re: [PATCH 09/11] bpf: Add d_path helper
 To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -71,95 +71,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 6:13 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Jun 19, 2020 at 6:31 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Thu, Jun 18, 2020 at 05:56:38PM -0700, Andrii Nakryiko wrote:
-> > On Tue, Jun 16, 2020 at 3:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> On Thu, Jun 18, 2020 at 09:35:10PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 16, 2020 at 3:07 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > > >
-> > > Adding support to generate .BTF_ids section that would
-> > > hold various BTF IDs list for verifier.
+> > > Adding d_path helper function that returns full path
+> > > for give 'struct path' object, which needs to be the
+> > > kernel BTF 'path' object.
 > > >
-> > > Adding macros help to define lists of BTF IDs placed in
-> > > .BTF_ids section. They are initially filled with zeros
-> > > (during compilation) and resolved later during the
-> > > linking phase by btfid tool.
+> > > The helper calls directly d_path function.
 > > >
-> > > Following defines list of one BTF ID that is accessible
-> > > within kernel code as bpf_skb_output_btf_ids array.
+> > > Updating also bpf.h tools uapi header and adding
+> > > 'path' to bpf_helpers_doc.py script.
 > > >
-> > >   extern int bpf_skb_output_btf_ids[];
-> > >
-> > >   BTF_ID_LIST(bpf_skb_output_btf_ids)
-> > >   BTF_ID(struct, sk_buff)
-> > >
-> > > Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > > ---
-> > >  include/asm-generic/vmlinux.lds.h |  4 ++
-> > >  kernel/bpf/Makefile               |  2 +-
-> > >  kernel/bpf/btf_ids.c              |  3 ++
-> > >  kernel/bpf/btf_ids.h              | 70 +++++++++++++++++++++++++++++++
-> > >  4 files changed, 78 insertions(+), 1 deletion(-)
-> > >  create mode 100644 kernel/bpf/btf_ids.c
-> > >  create mode 100644 kernel/bpf/btf_ids.h
+> > >  include/linux/bpf.h            |  4 ++++
+> > >  include/uapi/linux/bpf.h       | 14 ++++++++++++-
+> > >  kernel/bpf/btf_ids.c           | 11 ++++++++++
+> > >  kernel/trace/bpf_trace.c       | 38 ++++++++++++++++++++++++++++++++++
+> > >  scripts/bpf_helpers_doc.py     |  2 ++
+> > >  tools/include/uapi/linux/bpf.h | 14 ++++++++++++-
+> > >  6 files changed, 81 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index a94e85c2ec50..d35265b6c574 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1752,5 +1752,9 @@ extern int bpf_skb_output_btf_ids[];
+> > >  extern int bpf_seq_printf_btf_ids[];
+> > >  extern int bpf_seq_write_btf_ids[];
+> > >  extern int bpf_xdp_output_btf_ids[];
+> > > +extern int bpf_d_path_btf_ids[];
+> > > +
+> > > +extern int btf_whitelist_d_path[];
+> > > +extern int btf_whitelist_d_path_cnt;
+> >
+> > So with suggestion from previous patch, this would be declared as:
+> >
+> > extern const struct btf_id_set btf_whitelist_d_path;
+>
+> yes
+>
+> SNIP
+>
+> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > >   * function eBPF program intends to call
+> > > diff --git a/kernel/bpf/btf_ids.c b/kernel/bpf/btf_ids.c
+> > > index d8d0df162f04..853c8fd59b06 100644
+> > > --- a/kernel/bpf/btf_ids.c
+> > > +++ b/kernel/bpf/btf_ids.c
+> > > @@ -13,3 +13,14 @@ BTF_ID(struct, seq_file)
+> > >
+> > >  BTF_ID_LIST(bpf_xdp_output_btf_ids)
+> > >  BTF_ID(struct, xdp_buff)
+> > > +
+> > > +BTF_ID_LIST(bpf_d_path_btf_ids)
+> > > +BTF_ID(struct, path)
+> > > +
+> > > +BTF_WHITELIST_ENTRY(btf_whitelist_d_path)
+> > > +BTF_ID(func, vfs_truncate)
+> > > +BTF_ID(func, vfs_fallocate)
+> > > +BTF_ID(func, dentry_open)
+> > > +BTF_ID(func, vfs_getattr)
+> > > +BTF_ID(func, filp_close)
+> > > +BTF_WHITELIST_END(btf_whitelist_d_path)
+> >
+> > Oh, so that's why you added btf_ids.c. Do you think centralizing all
+> > those BTF ID lists in one file is going to be more convenient? I lean
+> > towards keeping them closer to where they are used, as it was with all
+> > those helper BTF IDS. But I wonder what others think...
+>
+> either way works for me, but then BTF_ID_* macros needs to go
+> to include/linux/btf_ids.h header right?
+>
+
+given it's internal API, I'd probably just put it in
+include/linux/btf.h or include/linux/bpf.h, don't think we need extra
+header just for these
+
+
+> jirka
+>
+> >
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index c1866d76041f..0ff5d8434d40 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -1016,6 +1016,42 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
+> > >         .arg1_type      = ARG_ANYTHING,
+> > >  };
 > > >
 > >
 > > [...]
 > >
-> > > +/*
-> > > + * Following macros help to define lists of BTF IDs placed
-> > > + * in .BTF_ids section. They are initially filled with zeros
-> > > + * (during compilation) and resolved later during the
-> > > + * linking phase by btfid tool.
-> > > + *
-> > > + * Any change in list layout must be reflected in btfid
-> > > + * tool logic.
-> > > + */
-> > > +
-> > > +#define SECTION ".BTF_ids"
-> >
-> > nit: SECTION is super generic and non-greppable. BTF_IDS_SECTION?
->
-> ok
->
-> >
-> > > +
-> > > +#define ____BTF_ID(symbol)                             \
-> > > +asm(                                                   \
-> > > +".pushsection " SECTION ",\"a\";               \n"     \
-> >
-> > section should be also read-only? Either immediately here, of btfid
-> > tool should mark it? Unless I missed that it's already doing it :)
->
-> hm, it's there next to the .BTF section within RO_DATA macro,
-> so I thought that was enough.. I'll double check
-
-ah, linker script magic, got it
-
->
-> >
-> > > +".local " #symbol " ;                          \n"     \
-> > > +".type  " #symbol ", @object;                  \n"     \
-> > > +".size  " #symbol ", 4;                        \n"     \
-> > > +#symbol ":                                     \n"     \
-> > > +".zero 4                                       \n"     \
-> > > +".popsection;                                  \n");
-> > > +
-> > > +#define __BTF_ID(...) \
-> > > +       ____BTF_ID(__VA_ARGS__)
-> >
-> > why varargs, if it's always a single argument? Or it's one of those
-> > macro black magic things were it works only in this particular case,
-> > but not others?
->
-> yea, I kind of struggled in here, because any other would not
-> expand the name concat together with the unique ID bit,
-> __VA_ARGS__ did it nicely ;-) I'll revisit this
-
-it's probably not varargs, but rather nested macro call. Macros are
-weird and tricky...
-
->
-> thanks,
-> jirka
 >
