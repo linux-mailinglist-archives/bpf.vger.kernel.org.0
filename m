@@ -2,168 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E617201A5B
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 20:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E145201A8D
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 20:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728973AbgFSSZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 14:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        id S2436669AbgFSSlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 14:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgFSSZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:25:39 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF1CC06174E;
-        Fri, 19 Jun 2020 11:25:39 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id u17so7955485qtq.1;
-        Fri, 19 Jun 2020 11:25:39 -0700 (PDT)
+        with ESMTP id S2436668AbgFSSlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 14:41:31 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624BEC06174E;
+        Fri, 19 Jun 2020 11:41:30 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id w90so7947855qtd.8;
+        Fri, 19 Jun 2020 11:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UKQDrHfQKlAwRetqN3yWweOMe2a7d5XeUCsMt86IhZU=;
-        b=CoxRKf4Yb4EnJGtJlcc23tfjvdWywG5lvFfK3kQ3BgtRTJLl5ChNhKuooKerJ5LXor
-         Hh6CeksJ3q5uFnD0TDK8swFFXRyo6GTudVZyedIJm9YJNavgFv98tMHdYW9LKVoLM50J
-         pnw4WK2kyyGVJXfXVj9eHSXeK3dVgB9+AdCYpZ2FtpjZZa9wQt+lnCazwtxAYcP+hcpI
-         y1yLwgQbPaow/qiOCuVjWX3Gg2ozQelJmtG2CQR+6ur014n7ga1ZIuIJ/llnpX5at8y1
-         kvIXuuXUxBEeUSVdm/+aH35RmY9hFi53/6tF0fQcUR9phA3s/0dOIQVQvhceo+E5kwhr
-         E3sg==
+        bh=XHmv1ekUZ+R3PNH51MCJg49mz2A0pYE+w+ycVVBqxj4=;
+        b=jx8SwXYSM2uASnIgq+iBEPxKqzkW0kNYCOD02erbXzwAthEmt/RiwR4+z29qjMoS+P
+         lEYxupZY8T40s3/u4oUp/kWOAIQCL3AnJFesw+CTjat6YTbVDWxgB3Vu0HmspymClFuy
+         LDys9sD9D+y/dzglxheKBefJOwkOMF+JcbG5Ashe5bk0WG2gzL8nDDmycVyAq3Cs83uP
+         SV/Qonc9eFKCnkHWpHYBPdwN66RY6DJE1zKLfyftLL9BDr8v1AEdFGI/BTRlrrIDqj2n
+         ahl6cSVjMlX2k1z1aXqQzZxzNW1zfjFSZgDCdA/5sqlsiBUG0xO3DF2QN8e7GtCGbNXh
+         97/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UKQDrHfQKlAwRetqN3yWweOMe2a7d5XeUCsMt86IhZU=;
-        b=Dkx39GMZDixeY5bYFrAidyeXNy+lf1lO6Q9kUSmCD9XizgPEuFEbK6Tz/agdl/j/lE
-         n74KGdETXQHlFIaKPrUI0dudQKOJ7Naf+wNxAzoVIPP2+ksHelkE2GLG9+BFQI4Sv3lF
-         Y5gJED/9iZHovJu8DqxPN4JFWoYWYaSCCnbXrSVAkrYxh2qoYR+IZJPrxirOZcGYPEas
-         Vto81Gn1t40Hj6KNMS/fWN+ektqAptP843Iwg52cXOBbBzxfA81jkWeRhIXbN+5TjFPW
-         OqR0hyDC0MJVcIyklCZcL7IEvlIKQS/9SjJ+9i0dBLYPDetHxI0lLQUr6pb+4zlTlImG
-         mByQ==
-X-Gm-Message-State: AOAM530cM1axLRcUP9otmPbGF/W2Wop34o6/vm6wA6j4uwmZlREbBEeF
-        N29wA5ZEUk/x309BAPziPd/oQK5hnfTg9XEbh2A=
-X-Google-Smtp-Source: ABdhPJy1hobkBSHWIJdIcaUbIy4e9uYICyr0E/cEj+L0b26153zLZ3WhHbepdDK1to8A510PcOPo17ixrlGSogOlHes=
-X-Received: by 2002:ac8:342b:: with SMTP id u40mr4668299qtb.59.1592591138774;
- Fri, 19 Jun 2020 11:25:38 -0700 (PDT)
+        bh=XHmv1ekUZ+R3PNH51MCJg49mz2A0pYE+w+ycVVBqxj4=;
+        b=Cp/+wWCPjizOystSN19w5+FC4e+CdfyqH602UHL7fK+xGwIAM1ReT1Ge5Y3BEdVowQ
+         ZmPGZBUo+O4ZukRqpC7+Qbih37QK5jh5fROGPFgikTYSfMYm1Vv0F/UQN1oh/Xrb1m3O
+         h5TVGgzCqnT7DdyoJ4R7Cxg601jclO/wmaYUTvI1Pid9kkBQ6KV2CzOlRu/28f7sUvFG
+         I7/YNfgEYcGwWV5CWG5A8eF94Ovq71E6W3d/LmpiiZ/NGxqtFEBelEdMFlZc1XYvP+Ev
+         kJaUIZAS+CsPV/W5WQu6voTwG+fgRpCpxLM9vw6G6LN/YMGgENkvg1vvy3hsAjzt07wH
+         NWgA==
+X-Gm-Message-State: AOAM531wKHpZp90Fr3azBxA6CfY1GL7epkBAUWwm8usIKrXHn/KxKrox
+        7kmeEPjtKsX45ZyAIMXQSQn36lqZKSlchM6wFQI=
+X-Google-Smtp-Source: ABdhPJw6mjrzDNTAnYZhFJCQv6YRerhV64SJY3iHtZjZxwrw9vSh1WB5H3Fe4Bg5ZM/2xc2Vg93YfMeAtfwYN19stB8=
+X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr4722535qta.141.1592592089563;
+ Fri, 19 Jun 2020 11:41:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200616100512.2168860-1-jolsa@kernel.org> <20200616100512.2168860-10-jolsa@kernel.org>
- <CAEf4BzY=d5y_-fXvomG7SjkbK7DZn5=-f+sdCYRdZh9qeynQrQ@mail.gmail.com> <20200619133124.GJ2465907@krava>
-In-Reply-To: <20200619133124.GJ2465907@krava>
+References: <20200617202112.2438062-1-andriin@fb.com> <5eeb0e5dcb010_8712abba49be5bc91@john-XPS-13-9370.notmuch>
+ <CAEf4BzZi5pMTC9Fq53Mi_mXUm-EQZDyqS_pxEYuGoc0J1ETGUA@mail.gmail.com>
+ <5eebb95299a20_6d292ad5e7a285b835@john-XPS-13-9370.notmuch>
+ <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
+ <5eebf9321e11a_519a2abc9795c5bc21@john-XPS-13-9370.notmuch>
+ <5eec09418954e_27ce2adb0816a5b8f7@john-XPS-13-9370.notmuch> <45321002-2676-0f5b-c729-5526e503ebd2@iogearbox.net>
+In-Reply-To: <45321002-2676-0f5b-c729-5526e503ebd2@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Jun 2020 11:25:27 -0700
-Message-ID: <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
-Subject: Re: [PATCH 09/11] bpf: Add d_path helper
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+Date:   Fri, 19 Jun 2020 11:41:18 -0700
+Message-ID: <CAEf4Bzb-nqK0Z=GaWWejriSqqGd6D5Cz_w689N7_51D+daGyvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: switch most helper return values from
+ 32-bit int to 64-bit long
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 6:31 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Jun 19, 2020 at 6:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Thu, Jun 18, 2020 at 09:35:10PM -0700, Andrii Nakryiko wrote:
-> > On Tue, Jun 16, 2020 at 3:07 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding d_path helper function that returns full path
-> > > for give 'struct path' object, which needs to be the
-> > > kernel BTF 'path' object.
-> > >
-> > > The helper calls directly d_path function.
-> > >
-> > > Updating also bpf.h tools uapi header and adding
-> > > 'path' to bpf_helpers_doc.py script.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h            |  4 ++++
-> > >  include/uapi/linux/bpf.h       | 14 ++++++++++++-
-> > >  kernel/bpf/btf_ids.c           | 11 ++++++++++
-> > >  kernel/trace/bpf_trace.c       | 38 ++++++++++++++++++++++++++++++++++
-> > >  scripts/bpf_helpers_doc.py     |  2 ++
-> > >  tools/include/uapi/linux/bpf.h | 14 ++++++++++++-
-> > >  6 files changed, 81 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index a94e85c2ec50..d35265b6c574 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -1752,5 +1752,9 @@ extern int bpf_skb_output_btf_ids[];
-> > >  extern int bpf_seq_printf_btf_ids[];
-> > >  extern int bpf_seq_write_btf_ids[];
-> > >  extern int bpf_xdp_output_btf_ids[];
-> > > +extern int bpf_d_path_btf_ids[];
-> > > +
-> > > +extern int btf_whitelist_d_path[];
-> > > +extern int btf_whitelist_d_path_cnt;
-> >
-> > So with suggestion from previous patch, this would be declared as:
-> >
-> > extern const struct btf_id_set btf_whitelist_d_path;
->
-> yes
->
-> SNIP
->
-> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > >   * function eBPF program intends to call
-> > > diff --git a/kernel/bpf/btf_ids.c b/kernel/bpf/btf_ids.c
-> > > index d8d0df162f04..853c8fd59b06 100644
-> > > --- a/kernel/bpf/btf_ids.c
-> > > +++ b/kernel/bpf/btf_ids.c
-> > > @@ -13,3 +13,14 @@ BTF_ID(struct, seq_file)
-> > >
-> > >  BTF_ID_LIST(bpf_xdp_output_btf_ids)
-> > >  BTF_ID(struct, xdp_buff)
-> > > +
-> > > +BTF_ID_LIST(bpf_d_path_btf_ids)
-> > > +BTF_ID(struct, path)
-> > > +
-> > > +BTF_WHITELIST_ENTRY(btf_whitelist_d_path)
-> > > +BTF_ID(func, vfs_truncate)
-> > > +BTF_ID(func, vfs_fallocate)
-> > > +BTF_ID(func, dentry_open)
-> > > +BTF_ID(func, vfs_getattr)
-> > > +BTF_ID(func, filp_close)
-> > > +BTF_WHITELIST_END(btf_whitelist_d_path)
-> >
-> > Oh, so that's why you added btf_ids.c. Do you think centralizing all
-> > those BTF ID lists in one file is going to be more convenient? I lean
-> > towards keeping them closer to where they are used, as it was with all
-> > those helper BTF IDS. But I wonder what others think...
->
-> either way works for me, but then BTF_ID_* macros needs to go
-> to include/linux/btf_ids.h header right?
->
-
-given it's internal API, I'd probably just put it in
-include/linux/btf.h or include/linux/bpf.h, don't think we need extra
-header just for these
-
-
-> jirka
->
-> >
-> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > index c1866d76041f..0ff5d8434d40 100644
-> > > --- a/kernel/trace/bpf_trace.c
-> > > +++ b/kernel/trace/bpf_trace.c
-> > > @@ -1016,6 +1016,42 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
-> > >         .arg1_type      = ARG_ANYTHING,
-> > >  };
-> > >
+> On 6/19/20 2:39 AM, John Fastabend wrote:
+> > John Fastabend wrote:
+> >> Andrii Nakryiko wrote:
+> >>> On Thu, Jun 18, 2020 at 11:58 AM John Fastabend
+> >>> <john.fastabend@gmail.com> wrote:
 > >
 > > [...]
 > >
+> >>> That would be great. Self-tests do work, but having more testing with
+> >>> real-world application would certainly help as well.
+> >>
+> >> Thanks for all the follow up.
+> >>
+> >> I ran the change through some CI on my side and it passed so I can
+> >> complain about a few shifts here and there or just update my code or
+> >> just not change the return types on my side but I'm convinced its OK
+> >> in most cases and helps in some so...
+> >>
+> >> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >
+> > I'll follow this up with a few more selftests to capture a couple of our
+> > patterns. These changes are subtle and I worry a bit that additional
+> > <<,s>> pattern could have the potential to break something.
+> >
+> > Another one we didn't discuss that I found in our code base is feeding
+> > the output of a probe_* helper back into the size field (after some
+> > alu ops) of subsequent probe_* call. Unfortunately, the tests I ran
+> > today didn't cover that case.
+> >
+> > I'll put it on the list tomorrow and encode these in selftests. I'll
+> > let the mainainers decide if they want to wait for those or not.
 >
+> Given potential fragility on verifier side, my preference would be that we
+> have the known variations all covered in selftests before moving forward in
+> order to make sure they don't break in any way. Back in [0] I've seen mostly
+> similar cases in the way John mentioned in other projects, iirc, sysdig was
+> another one. If both of you could hack up the remaining cases we need to
+> cover and then submit a combined series, that would be great. I don't think
+> we need to rush this optimization w/o necessary selftests.
+
+There is no rush, but there is also no reason to delay it. I'd rather
+land it early in the libbpf release cycle and let people try it in
+their prod environments, for those concerned about such code patterns.
+
+I don't have a list of all the patterns that we might need to test.
+Going through all open-source BPF source code to identify possible
+patterns and then coding them up in minimal selftests is a bit too
+much for me, honestly. Additionally, some of those patterns will most
+probably be broken in no-ALU32 and making them work with assembly and
+other clever tricks is actually where the majority of time usually
+goes. Also, simple selftests might not actually trigger pathological
+codegen cases (because in a lot of cases register spill/pressure
+triggers different codegen patterns). So I just don't believe we can
+have a full piece of mind, regardless of how many selftests we add.
+This test_varlen selftest is a simplification of a production code
+we've had for a long while. We never bothered to contribute it as a
+selftest before, which I'd say is our fault as users of BPF. Anyone
+interested in ensuring regressions get detected for the way they write
+BPF code, should distill them into selftests and contribute to our
+test suite (like we did with PyPerf, Strobemeta, and how Jakub
+Sitnicki did recently with his program).
+
+So sure, maintainers might decide to not land this because of
+potential regressions, but I tried to do my best to explain why there
+shouldn't be really regressions (after all, int -> long reflects
+*reality*, where everything is u64/s64 on return from BPF helper),
+apart from actually testing for two patterns I knew about.
+
+After all, even in case of regression, doing `int bla =
+(int)bpf_helper_whatever(...);` is in theory equivalent to what we had
+before, so it's an easy fix. Reality might require an extra compiler
+barrier after that to force Clang to emit casting instructions sooner,
+but that's another story.
+
+>
+> Thanks everyone,
+> Daniel
+>
+>    [0] https://lore.kernel.org/bpf/20200421125822.14073-1-daniel@iogearbox.net/
