@@ -2,72 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5FB200483
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 11:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FA82008C6
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 14:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731048AbgFSJCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 05:02:10 -0400
-Received: from smtp.asem.it ([151.1.184.197]:58300 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbgFSJCJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:02:09 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000329187.MSG 
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 11:02:07 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 11:02:05 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 19 Jun 2020 11:02:05 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Jon Mason <jdmason@kudzu.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Zheng Wei <wei.zheng@vivo.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 1/1] net: ethernet: neterion: vxge: fix spelling mistake
-Date:   Fri, 19 Jun 2020 11:02:04 +0200
-Message-ID: <20200619090204.27503-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
+        id S1732425AbgFSMgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 08:36:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54348 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730721AbgFSMgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 08:36:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592570158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NXJ8JwYP5yMf+56IORlViCZxc1+aN4iEbLDz8h9YxWA=;
+        b=fy0bX340ZCsRIAQTvVTyTb5aSHfv+MMhWVjeY91v/hSt9XS09a/RrLacDjW7qTJLfxWKaG
+        hANYL11e9NzlzfLZP7Db+zm+ECb+/o11fs28UZDlpr4Q5faJSQQT00m1m/bJ0ZIibULc5v
+        j4JhNTOb+LAR7kqQH5MxSGiBYBBx+sg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-qxceCPf6Oea1rHQcpnhBOA-1; Fri, 19 Jun 2020 08:35:33 -0400
+X-MC-Unique: qxceCPf6Oea1rHQcpnhBOA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71648464;
+        Fri, 19 Jun 2020 12:35:31 +0000 (UTC)
+Received: from krava (unknown [10.40.195.134])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1226F10013C4;
+        Fri, 19 Jun 2020 12:35:27 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 14:35:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCHv3 0/9] bpf: Add d_path helper
+Message-ID: <20200619123527.GA2465907@krava>
+References: <20200616100512.2168860-1-jolsa@kernel.org>
+ <5eebd52fc68ee_6d292ad5e7a285b816@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A09020B.5EEC7F0E.0002,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5eebd52fc68ee_6d292ad5e7a285b816@john-XPS-13-9370.notmuch>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix typo: "trigered" --> "triggered"
+On Thu, Jun 18, 2020 at 01:57:19PM -0700, John Fastabend wrote:
+> Jiri Olsa wrote:
+> > hi,
+> > adding d_path helper to return full path for 'path' object.
+> > 
+> > I originally added and used 'file_path' helper, which did the same,
+> > but used 'struct file' object. Then realized that file_path is just
+> > a wrapper for d_path, so we'd cover more calling sites if we add
+> > d_path helper and allowed resolving BTF object within another object,
+> > so we could call d_path also with file pointer, like:
+> > 
+> >   bpf_d_path(&file->f_path, buf, size);
+> > 
+> > This feature is mainly to be able to add dpath (filepath originally)
+> > function to bpftrace:
+> > 
+> >   # bpftrace -e 'kfunc:vfs_open { printf("%s\n", dpath(args->path)); }'
+> > 
+> > v3 changes:
+> >   - changed tests to use seleton and vmlinux.h [Andrii]
+> >   - refactored to define ID lists in C object [Andrii]
+> >   - changed btf_struct_access for nested ID check,
+> >     instead of adding new function for that [Andrii]
+> >   - fail build with CONFIG_DEBUG_INFO_BTF if libelf is not detected [Andrii]
+> > 
+> > Also available at:
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> >   bpf/d_path
+> > 
+> > thanks,
+> > jirka
+> 
+> Hi Jira, Apologize for waiting until v3 to look at this series, but a
+> couple general requests as I review this.
+> 
+> In the cover letter can we get some more details. The above is really
+> terse/cryptic in my opinion. The bpftrace example gives good motiviation,
+> but nothing above mentions a new .BTF_ids section and the flow to create
+> and use this section.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- drivers/net/ethernet/neterion/vxge/vxge-config.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ok, will add more details in next version
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-config.h b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-index 628fa9b2f741..373165119850 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-config.h
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-config.h
-@@ -297,7 +297,7 @@ struct vxge_hw_fifo_config {
-  * @greedy_return: If Set it forces the device to return absolutely all RxD
-  *             that are consumed and still on board when a timer interrupt
-  *             triggers. If Clear, then if the device has already returned
-- *             RxD before current timer interrupt trigerred and after the
-+ *             RxD before current timer interrupt triggered and after the
-  *             previous timer interrupt triggered, then the device is not
-  *             forced to returned the rest of the consumed RxD that it has
-  *             on board which account for a byte count less than the one
--- 
-2.17.1
+> 
+> Also if we add a BTF_ids  section adding documentation in btf.rst should
+> happen as well. I would like to see something in the ELF File Format
+> Interface section and BTF Generation sections.
+
+did not know there was bpf.rst ;-) will update
+
+> 
+> I'm not going to nitpick if its in this series or a stand-alone patch
+> but do want to see it. So far the Documentation on BTF is fairly
+> good and I want to avoid these kind of gaps.
+
+sure, thanks
+
+jirka
+
+> 
+> Thanks!
+> John
+> 
 
