@@ -2,130 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB862009CB
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 15:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD26B2009E2
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 15:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgFSNSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 09:18:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23609 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728430AbgFSNSN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:18:13 -0400
+        id S1732628AbgFSNXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 09:23:21 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57537 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730977AbgFSNXV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jun 2020 09:23:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592572691;
+        s=mimecast20190719; t=1592572999;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wXzLP0jvY3lOyge2s7+F9ufg/cubrwVgsqonGIGw6pY=;
-        b=V2medkaN+hl0QdLkxY+ydCrXWJQEsr+HtCtFxmPx/fzoplnCDq/0XqqilMVN9u7Q6QzdqB
-        oyz+GZ3QMgwEaFHqWGMm1reegqgKP73auhzwiOxVy5w05n7YdN7pza3oANxkUGLedLmUZ2
-        nxaPrujwnWwtz/gyysnD3uD4dbu48vA=
+        bh=L1AwqEJ4MmDGxGt/9nJYqgE/svdWUsuiQ5kUV1vA7nI=;
+        b=beIZwwcWZH3t1VbJN/TkERR4Fb71Pcmm98wg8dq7FJSMR5OJIDyiY/mAzRR486NGxU6mx5
+        6JycgakB4UyafEalnzZ5OlTeeDHcIsqkmFwp//nJbol5Lrv4Rvs6nEi84oniNAfLuKtoAH
+        IZEwd1JJieljXAOfeZbRbbgPRpe8Etc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-iwP5TOzZO-ajxeM4nkLn5w-1; Fri, 19 Jun 2020 09:18:07 -0400
-X-MC-Unique: iwP5TOzZO-ajxeM4nkLn5w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-494-9D-ubtciNxavkdxgpycpSg-1; Fri, 19 Jun 2020 09:23:15 -0400
+X-MC-Unique: 9D-ubtciNxavkdxgpycpSg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48DA4801503;
-        Fri, 19 Jun 2020 13:18:05 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4344A8035CE;
+        Fri, 19 Jun 2020 13:23:12 +0000 (UTC)
 Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D4E6110013C4;
-        Fri, 19 Jun 2020 13:18:01 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 15:18:00 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B23B6109F;
+        Fri, 19 Jun 2020 13:23:07 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 15:23:06 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Andrii Nakryiko <andriin@fb.com>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>,
         Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 05/11] bpf: Remove btf_id helpers resolving
-Message-ID: <20200619131800.GF2465907@krava>
+Subject: Re: [PATCH 02/11] bpf: Compile btfid tool at kernel compilation start
+Message-ID: <20200619132306.GG2465907@krava>
 References: <20200616100512.2168860-1-jolsa@kernel.org>
- <20200616100512.2168860-6-jolsa@kernel.org>
- <CAEf4BzYw0VciF-7CS164Nk8LLnZ4odtdYQyX1MS4eWDN5WbcSg@mail.gmail.com>
+ <20200616100512.2168860-3-jolsa@kernel.org>
+ <5eebd1486e46b_6d292ad5e7a285b817@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYw0VciF-7CS164Nk8LLnZ4odtdYQyX1MS4eWDN5WbcSg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5eebd1486e46b_6d292ad5e7a285b817@john-XPS-13-9370.notmuch>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 06:10:29PM -0700, Andrii Nakryiko wrote:
-> On Tue, Jun 16, 2020 at 3:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Now when we moved the helpers btf_id into .BTF_ids section,
-> > we can remove the code that resolve those IDs in runtime.
-> >
+On Thu, Jun 18, 2020 at 01:40:40PM -0700, John Fastabend wrote:
+> Jiri Olsa wrote:
+> > The btfid tool will be used during the vmlinux linking,
+> > so it's necessary it's ready for it.
+> > 
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
+> >  Makefile           | 22 ++++++++++++++++++----
+> >  tools/Makefile     |  3 +++
+> >  tools/bpf/Makefile |  5 ++++-
+> >  3 files changed, 25 insertions(+), 5 deletions(-)
 > 
-> Nice! :)
+> This breaks the build for me. I fixed it with this but then I get warnings,
 > 
-> BTW, have you looked at bpf_ctx_convert stuff? Would we be able to
-> replace it with your btfids thing as well?
+> diff --git a/tools/bpf/btfid/btfid.c b/tools/bpf/btfid/btfid.c
+> index 7cdf39bfb150..3697e8ae9efa 100644
+> --- a/tools/bpf/btfid/btfid.c
+> +++ b/tools/bpf/btfid/btfid.c
+> @@ -48,7 +48,7 @@
+>  #include <errno.h>
+>  #include <linux/rbtree.h>
+>  #include <linux/zalloc.h>
+> -#include <btf.h>
+> +#include <linux/btf.h>
+>  #include <libbpf.h>
+>  #include <parse-options.h>
+> 
+> Here is the error. Is it something about my setup? bpftool/btf.c uses
+> <btf.h>. Because this in top-level Makefile we probably don't want to
+> push extra setup onto folks.
 
-good, another usage ;-) I'll check
+ouch, I wonder it's because I have libbpf installed and the
+setup got mixed up.. I'll erase and try to reproduce
 
-> 
-> 
-> >  kernel/bpf/btf.c | 88 +++---------------------------------------------
-> >  1 file changed, 4 insertions(+), 84 deletions(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 58c9af1d4808..aea7b2cc8d26 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -4049,96 +4049,16 @@ int btf_struct_access(struct bpf_verifier_log *log,
-> >         return -EINVAL;
-> >  }
-> >
-> 
-> [...]
-> 
-> >  int btf_resolve_helper_id(struct bpf_verifier_log *log,
-> >                           const struct bpf_func_proto *fn, int arg)
-> >  {
-> > -       int *btf_id = &fn->btf_id[arg];
-> > -       int ret;
-> > -
-> >         if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID)
-> >                 return -EINVAL;
-> >
-> > -       ret = READ_ONCE(*btf_id);
-> > -       if (ret)
-> > -               return ret;
-> > -       /* ok to race the search. The result is the same */
-> > -       ret = __btf_resolve_helper_id(log, fn->func, arg);
-> > -       if (!ret) {
-> > -               /* Function argument cannot be type 'void' */
-> > -               bpf_log(log, "BTF resolution bug\n");
-> > -               return -EFAULT;
-> > -       }
-> > -       WRITE_ONCE(*btf_id, ret);
-> > -       return ret;
-> > +       if (WARN_ON_ONCE(!fn->btf_id))
-> > +               return -EINVAL;
-> > +
-> > +       return fn->btf_id[arg];
-> 
-> It probably would be a good idea to add some sanity checking here,
-> making sure that btf_id is >0 (void is never a right type) and <=
-> nr_types in vmlinux_btf?
-
-yep, will add it ;-)
-
+thanks,
 jirka
+
+> 
+> In file included from btfid.c:51:
+> /home/john/git/bpf-next/tools/lib/bpf/btf.h: In function ‘btf_is_var’:
+> /home/john/git/bpf-next/tools/lib/bpf/btf.h:254:24: error: ‘BTF_KIND_VAR’ undeclared (first use in this function); did you mean ‘BTF_KIND_PTR’?
+>   return btf_kind(t) == BTF_KIND_VAR;
+>                         ^~~~~~~~~~~~
+>                         BTF_KIND_PTR
+> /home/john/git/bpf-next/tools/lib/bpf/btf.h:254:24: note: each undeclared identifier is reported only once for each function it appears in
+> /home/john/git/bpf-next/tools/lib/bpf/btf.h: In function ‘btf_is_datasec’:
+> /home/john/git/bpf-next/tools/lib/bpf/btf.h:259:24: error: ‘BTF_KIND_DATASEC’ undeclared (first use in this function); did you mean ‘BTF_KIND_PTR’?
+>   return btf_kind(t) == BTF_KIND_DATASEC;
+>                         ^~~~~~~~~~~~~~~~
+>                         BTF_KIND_PTR
+> mv: cannot stat '/home/john/git/bpf-next/tools/bpf/btfid/.btfid.o.tmp': No such file or directory
+> make[3]: *** [/home/john/git/bpf-next/tools/build/Makefile.build:97: /home/john/git/bpf-next/tools/bpf/btfid/btfid.o] Error 1
+> make[2]: *** [Makefile:59: /home/john/git/bpf-next/tools/bpf/btfid/btfid-in.o] Error 2
+> make[1]: *** [Makefile:71: bpf/btfid] Error 2
+> make: *** [Makefile:1894: tools/bpf/btfid] Error 2
+> 
 
