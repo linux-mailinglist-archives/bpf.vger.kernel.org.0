@@ -2,138 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99032019AA
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 19:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60778201A0E
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 20:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgFSRoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 13:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        id S1731507AbgFSSMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 14:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731681AbgFSRox (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:44:53 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E6BC06174E;
-        Fri, 19 Jun 2020 10:44:53 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id r18so4772756pgk.11;
-        Fri, 19 Jun 2020 10:44:53 -0700 (PDT)
+        with ESMTP id S1725826AbgFSSMm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 14:12:42 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B75C06174E;
+        Fri, 19 Jun 2020 11:12:42 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id g11so4895403qvs.2;
+        Fri, 19 Jun 2020 11:12:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=0QTxVclpKLRWUv6Qkt7Oy+I/CqvmSS/OXzrlfUz9hMw=;
-        b=QnpcjL1S9hDTKp3tXf2mumk0YWSlXC9EgE9t2zc18GUhzATlRMZwIiamU8+aRXmx9p
-         reujFq2zmF4jyUxI2wZxqKpoiUS8KmSkdhUqc23EAvr8eXTbgYaO1EKVljZT0I4jzx4w
-         kMEtHpD9k/h4Ji/4qdtsBI7LXNPubgE4v6Fs0hCHrEgN4WaN8uRYfh8Oxr4f4eeARZCh
-         0dPMZqjNJPH1Up8JJoDlhQ+kVCjRjNMUgOReapo6WXYRhJEgN0GSBt59HjFbStvOv9+G
-         OId7erF0K2farn+Yu7v02MIFT1TqV62GBRtwCG0oMWAZpuJEmdnCZyArJ0fP/Qj9d9lT
-         8mKg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UbbfRcxRyq1V6GPB/xIz4OAnLw11gl0g/X7Sy3NkL8o=;
+        b=CaqWU0L2xHtPYUaYM8TG7MCnFFob824F5nJeu5ZHseHG1OO8kZ73HIbbcsyvZg3t5r
+         HDoWVv2s6WiIVp3dLHyHqzBxxTU3hS4h8yUXih5BDQ9PM+ezc4GM5ou83yAzKvewm8Yj
+         pyZNP1mrkgU7y41bCoVe74N92jUy832G395XgJsx6IMd5acwGCoiMNtK+3Fain6md9ML
+         zSagLztXzVT3G5xrFd98Qbd5yAcHF23LbfZYrZrGKbwG03s1P8KfCO0r/M0JbXQLvXGH
+         2mczFrLzljvcwt6e8pEXhE0F0o4hnxBwvSnNgI9Rsc4Qzf75OcJgV31yTvWkMkY9Ti4a
+         DffA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=0QTxVclpKLRWUv6Qkt7Oy+I/CqvmSS/OXzrlfUz9hMw=;
-        b=BMGGiVtoqT+c30EUjVGsRpkRW9UfO7FF2pWTbDqRMP0Ax5YG3CXAFRpc0mBZAjCfz5
-         DTX7ZQLWVvpy888ezyYuKNnjXM+c4xJLrxFyKcWtEx2bDRrgnp3K+42Y7sDbeUUBV78k
-         pD/iqY6sT1jbMkY1q2Yq3HxFQ1n3dMPv6u3hrJsupaoHe35H1s7l/AH+hYtFmb3F6eEG
-         ALfQOPQdmTqNg7zkCj3U/SNSov+dcA8XSNebQuA2KEqkv35sX1dV00pvZRA6klfm6o0N
-         QXMa9/7ddnhM7yypZEu4K14/NK0xgmf/k/ieP4LCAWlOmB8Pq71taaW/R+M05Z9xltXq
-         luRQ==
-X-Gm-Message-State: AOAM532PNgFMSQqWNqsCajZfSz+kuTCl0iZNsHazOAtV69femKyLaP9q
-        CWBCwjccWiA6XwXHh5aixg4=
-X-Google-Smtp-Source: ABdhPJzxSlyJnvignQypWslzCUvt/J7w/rjpKCkxDm1HSYpty5tBhyrVJIjsPamuCC+YrCwY4Q0GGg==
-X-Received: by 2002:a63:7741:: with SMTP id s62mr3903463pgc.332.1592588692388;
-        Fri, 19 Jun 2020 10:44:52 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id x14sm6503559pfq.80.2020.06.19.10.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 10:44:51 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 10:44:43 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UbbfRcxRyq1V6GPB/xIz4OAnLw11gl0g/X7Sy3NkL8o=;
+        b=oxzJmdhIwZGtFNxuxuGx6bznv2F0vyuiKisWdl2s1H2rqsBNNfsK84IaZs3pOv6Oz/
+         lFnrZPElHkzkHfiGAkqaN8GboWL4v1lt93Oq6EIzIaENcLO+IBIrg0jh/fC13F60cx9m
+         wAyZ1yDg1A/geaEAXlQm4tMvUdJUyA3e3vdCejheYSi0ISJciLDYl0gCPWiYBhhAXnjN
+         +oZLqe+ax/80aJkNwRj1vRSVtEauCs8D3SyHipipdL/ZlFE2Px50zbFzG9Nm05uYGZZ6
+         /NUQrMh2ITn/2kAwKkcAqSXsF1Jmk/TPh0vkpBNPYwNG2GwKXUcqHpOZYRLAs1CQKuL8
+         PB4g==
+X-Gm-Message-State: AOAM532RuG01iG910BAcjdxUtblE/eL8iN3Sv4VS9EXwDN++2OGMUgDd
+        6+Tw2dvNQnNJ68/P0A2U5L5Kr+7OcH/sm7Xf/fk=
+X-Google-Smtp-Source: ABdhPJzymE1oppa1ecUdAIoEcWIl5QiG73MiyZBRT92j2lw03nqXJCwlTIh4N0vM7tAQI9jktpn392rswk0/bGOrsV8=
+X-Received: by 2002:ad4:4baa:: with SMTP id i10mr10397081qvw.163.1592590360828;
+ Fri, 19 Jun 2020 11:12:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200616100512.2168860-1-jolsa@kernel.org> <20200616100512.2168860-2-jolsa@kernel.org>
+ <CAEf4BzbB0ZMfWHrhiPhv79sMVZ9L0gMj54uXKn_-+mTawPiBqw@mail.gmail.com> <20200619130354.GB2465907@krava>
+In-Reply-To: <20200619130354.GB2465907@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 19 Jun 2020 11:12:29 -0700
+Message-ID: <CAEf4BzbK4q9fTTYA5Apyn_wn0tb5K1_Vm7DX_OwM133V6XHB7g@mail.gmail.com>
+Subject: Re: [PATCH 01/11] bpf: Add btfid tool to resolve BTF IDs in ELF object
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Masanori Misono <m.misono760@gmail.com>
-Message-ID: <5eecf98ba643c_137b2ad09f64a5c458@john-XPS-13-9370.notmuch>
-In-Reply-To: <4aec5fb8-9f9d-d01b-dd58-f15d50c5e827@fb.com>
-References: <20200616173556.2204073-1-jolsa@kernel.org>
- <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
- <20200618114806.GA2369163@krava>
- <5eebe552dddc1_6d292ad5e7a285b83f@john-XPS-13-9370.notmuch>
- <CAEf4Bzb+U+A9i0VfGUHLVt28WCob7pb-0iVQA8d1fcR8A27ZpA@mail.gmail.com>
- <5eec061598dcf_403f2afa5de805bcde@john-XPS-13-9370.notmuch>
- <CAADnVQLGNUcDWmrgUBmdcgLMfUNf=-3yroA8a+b7s+Ki5Tb4Jg@mail.gmail.com>
- <4aec5fb8-9f9d-d01b-dd58-f15d50c5e827@fb.com>
-Subject: Re: [PATCH] bpf: Allow small structs to be type of function argument
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song wrote:
-> 
-> 
-> On 6/18/20 7:04 PM, Alexei Starovoitov wrote:
-> > On Thu, Jun 18, 2020 at 5:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >>
-> >>   foo(int a, __int128 b)
-> >>
-> >> would put a in r0 and b in r2 and r3 leaving a hole in r1. But that
-> >> was some old reference manual and  might no longer be the case
-> 
-> This should not happen if clang compilation with -target bpf.
-> This MAY happen if they compile with 'clang -target riscv' as the IR
-> could change before coming to bpf backend.
+On Fri, Jun 19, 2020 at 6:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Jun 18, 2020 at 05:38:03PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 16, 2020 at 3:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > The btfid tool scans Elf object for .BTF_ids section and
+> > > resolves its symbols with BTF IDs.
+> >
+> > naming is hard and subjective, I know. But given this actively
+> > modifies ELF file it probably should indicate this in the name. So
+> > something like patch_btfids or resolve_btfids would be a bit more
+> > accurate and for people not in the know will still trigger the
+> > "warning, tool can modify something" flag, if there are any problems.
+>
+> resolve_btfids sounds good to me
+>
+> >
+> > >
+> > > It will be used to during linking time to resolve arrays
+> > > of BTF IDs used in verifier, so these IDs do not need to
+> > > be resolved in runtime.
+> > >
+> > > The expected layout of .BTF_ids section is described
+> > > in btfid.c header. Related kernel changes are coming in
+> > > following changes.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/bpf/btfid/Build    |  26 ++
+> > >  tools/bpf/btfid/Makefile |  71 +++++
+> > >  tools/bpf/btfid/btfid.c  | 627 +++++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 724 insertions(+)
+> > >  create mode 100644 tools/bpf/btfid/Build
+> > >  create mode 100644 tools/bpf/btfid/Makefile
+> > >  create mode 100644 tools/bpf/btfid/btfid.c
+> > >
+> >
+> > [...]
+> >
+> > > diff --git a/tools/bpf/btfid/btfid.c b/tools/bpf/btfid/btfid.c
+> > > new file mode 100644
+> > > index 000000000000..7cdf39bfb150
+> > > --- /dev/null
+> > > +++ b/tools/bpf/btfid/btfid.c
+> > > @@ -0,0 +1,627 @@
+> > > +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > > +#define  _GNU_SOURCE
+> > > +
+> > > +/*
+> > > + * btfid scans Elf object for .BTF_ids section and resolves
+> > > + * its symbols with BTF IDs.
+> > > + *
+> > > + * Each symbol points to 4 bytes data and is expected to have
+> > > + * following name syntax:
+> > > + *
+> > > + * __BTF_ID__<type>__<symbol>[__<id>]
+> >
+> > This ___<id> thingy is just disambiguation between multiple places in
+> > the code that could have BTF_ID macro, right? Or it has extra meaning?
+>
+> it's there so you could multiple BTF_ID instances with the same
+> symbol name
 
-I guess this means in order to handle __int128 and structs in
-btf_ctx_access we would have to know this did not happen. Otherwise
-the arg to type mappings are off because we simply do
+yeah, reading subsequent patches clarified that for me :)
 
- arg = off / 8
+>
+> >
+> > > + *
+> > > + * type is:
+> > > + *
+> > > + *   func   - lookup BTF_KIND_FUNC symbol with <symbol> name
+> > > + *            and put its ID into its data
+> > > + *
+> > > + *             __BTF_ID__func__vfs_close__1:
+> > > + *             .zero 4
+> > > + *
+> > > + *   struct - lookup BTF_KIND_STRUCT symbol with <symbol> name
+> > > + *            and put its ID into its data
+> > > + *
+> > > + *             __BTF_ID__struct__sk_buff__1:
+> > > + *             .zero 4
+> > > + *
+> > > + *   sort   - put symbol size into data area and sort following
+> >
+> > Oh, I finally got what "put symbol size" means :) It's quite unclear,
+> > to be honest. Also, is this size in bytes or number of IDs? Clarifying
+> > would be helpful (I'll probably get this from reading further down the
+> > code, but still..)
+>
+> I 'put' ;-) the documentation mainly to kernel/bpf/btf_ids.h,
+>
+> so there are 2 types of lists, first one defines
+> just IDs as they go:
+>
+>  BTF_ID_LIST(list1)
+>  BTF_ID(type1, name1)
+>  BTF_ID(type2, name2)
+>
+> and it's used for helpers btf_id array
+>
+> 2nd one provides count and is sorted:
+>
+>  BTF_WHITELIST_ENTRY(list2)
+>  BTF_ID(type1, name1)
+>  BTF_ID(type2, name2)
+>  BTF_WHITELIST_END(list)
+>
+> and it's used for d_path whitelist so far
 
-> 
-> >> in reality. Perhaps just spreading hearsay, but the point is we
-> >> should say something about what the BPF backend convention
-> >> is and write it down. We've started to bump into these things
-> >> lately.
-> > 
-> > calling convention for int128 in bpf is _undefined_.
-> > calling convention for struct by value in bpf is also _undefined_.
-> 
-> Just to clarify a little bit. bpf backend did not do anything
-> special about int128 and struct type. It is using llvm default.
-> That is, int128 using two argument registers and struct passed
-> by address. But I do see some other architectures having their
-> own ways to handle these parameters like X86, AARCH64, AMDGPU, MIPS.
-> 
-> int128 is not widely used. passing struct as the argument is not
-> a good practice. So Agree with Alexei is not really worthwhile to
-> handle them in the place of arguments.
 
-Agree as well I'll just add a small fix to check btf_type_is_int()
-size is <= u64 and that should be sufficient to skip handling the
-int128 case.
-
-> 
-> > 
-> > In many cases the compiler has to have the backend code
-> > so other parts of the compiler can function.
-> > I didn't bother explicitly disabling every undefined case.
-> > Please don't read too much into llvm generated code.
-> > 
+yeah, because BTF_ID_LIST and BTF_WHITELIST stuff was in two different
+patches, I initially was confused by BTF_ID_LIST and thought it's
+actually what BTF_WHITELIST is. Sorry for too many questions!
 
 
+>
+> SNIP
+>
+> > > +               if (sym.st_shndx != obj->efile.idlist_shndx)
+> > > +                       continue;
+> > > +
+> > > +               name = elf_strptr(obj->efile.elf, obj->efile.strtabidx,
+> > > +                                 sym.st_name);
+> > > +
+> > > +               if (!is_btf_id(name))
+> > > +                       continue;
+> > > +
+> > > +               /*
+> > > +                * __BTF_ID__TYPE__vfs_truncate__0
+> > > +                * prefix =  ^
+> > > +                */
+> > > +               prefix = name + sizeof(BTF_ID) - 1;
+> > > +
+> > > +               if (!strncmp(prefix, BTF_STRUCT, sizeof(BTF_STRUCT) - 1)) {
+> > > +                       id = add_struct(obj, prefix);
+> > > +               } else if (!strncmp(prefix, BTF_FUNC, sizeof(BTF_FUNC) - 1)) {
+> > > +                       id = add_func(obj, prefix);
+> > > +               } else if (!strncmp(prefix, BTF_SORT, sizeof(BTF_SORT) - 1)) {
+> > > +                       id = add_sort(obj, prefix);
+> > > +
+> > > +                       /*
+> > > +                        * SORT objects store list's count, which is encoded
+> > > +                        * in symbol's size.
+> > > +                        */
+> > > +                       if (id)
+> > > +                               id->cnt = sym.st_size / sizeof(int);
+> >
+> > doesn't sym.st_size also include extra 4 bytes for length prefix?
+>
+> no, count is excluded from the size
+>
+> SNIP
+>
+> > > +       btf = btf__parse_elf(obj->path, NULL);
+> > > +       err = libbpf_get_error(btf);
+> > > +       if (err) {
+> > > +               pr_err("FAILED: load BTF from %s: %s",
+> > > +                       obj->path, strerror(err));
+> > > +               return -1;
+> > > +       }
+> > > +
+> > > +       nr = btf__get_nr_types(btf);
+> > > +
+> > > +       /*
+> > > +        * Iterate all the BTF types and search for collected symbol IDs.
+> > > +        */
+> > > +       for (type_id = 0; type_id < nr; type_id++) {
+> >
+> > common gotcha: type_id <= nr, you can also skip type_id == 0 (always VOID)
+>
+> ugh, yep.. thanks ;-)
+>
+> >
+> > > +               const struct btf_type *type;
+> > > +               struct rb_root *root = NULL;
+> > > +               struct btf_id *id;
+> > > +               const char *str;
+> > > +               int *nr;
+> > > +
+> > > +               type = btf__type_by_id(btf, type_id);
+> > > +               if (!type)
+> > > +                       continue;
+> >
+> > This ought to be an error...
+>
+> ok, something like "BTF malformed error"
+>
+> >
+> > > +
+> > > +               /* We support func/struct types. */
+> > > +               if (BTF_INFO_KIND(type->info) == BTF_KIND_FUNC && nr_funcs) {
+> >
+> > see libbpf's btf.h: btf_is_func(type)
+>
+> ok
+>
+> >
+> > > +                       root = &obj->funcs;
+> > > +                       nr = &nr_funcs;
+> > > +               } else if (BTF_INFO_KIND(type->info) == BTF_KIND_STRUCT && nr_structs) {
+> >
+> > same as above: btf_is_struct
+> >
+> > But I think you also need to support unions?
+> >
+> > Also what about typedefs? A lot of types are typedefs to struct/func_proto/etc.
+>
+> I added only types which are needed at the moment, but maybe
+> we can add the basic types now, so we don't need to bother later,
+> when we forget how this all work ;-)
+
+yeah, exactly. Once this works, no one will want to go and revisit it,
+so I'd rather make it generic from the get go, especially that it's
+really easy in this case, right?
+
+>
+> >
+> > > +                       root = &obj->structs;
+> > > +                       nr = &nr_structs;
+> > > +               } else {
+> > > +                       continue;
+> > > +               }
+> > > +
+> > > +               str = btf__name_by_offset(btf, type->name_off);
+> > > +               if (!str)
+> > > +                       continue;
+> >
+> > error, shouldn't happen
+>
+> ok
+>
+> >
+> > > +
+> > > +               id = btf_id__find(root, str);
+> > > +               if (id) {
+> >
+> > isn't it an error, if not found?
+>
+> no, at this point we are checking if this BTF type was collected
+> as a symbol for struct/func in some list.. if not, we continue the
+> iteration to next BTF type
+
+ah, ok
+
+>
+> >
+> > > +                       id->id = type_id;
+> > > +                       (*nr)--;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> >
+> > [...]
+> >
+> > > +
+> > > +       /*
+> > > +        * We do proper cleanup and file close
+> > > +        * intentionally only on success.
+> > > +        */
+> > > +       if (elf_collect(&obj))
+> > > +               return -1;
+> > > +
+> > > +       if (symbols_collect(&obj))
+> > > +               return -1;
+> > > +
+> > > +       if (symbols_resolve(&obj))
+> > > +               return -1;
+> > > +
+> > > +       if (symbols_patch(&obj))
+> > > +               return -1;
+> >
+> > nit: should these elf_end/close properly on error?
+>
+> I wrote in the comment above that I intentionaly do not cleanup
+> on error path.. I wanted to save some time, but actualy I think
+> that would not be so expensive, I can add it
+
+as in save CPU time in error case? Who cares about that? If saving
+developer time, well... `goto cleanup` is common and simple pattern ;)
+
+>
+> thanks,
+> jirka
+>
+> >
+> >
+> > > +
+> > > +       elf_end(obj.efile.elf);
+> > > +       close(obj.efile.fd);
+> > > +       return 0;
+> > > +}
+> > > --
+> > > 2.25.4
+> > >
+> >
+>
