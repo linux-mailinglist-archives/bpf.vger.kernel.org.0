@@ -2,143 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1242201DE7
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 00:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B915201DF2
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 00:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgFSWNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 18:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729264AbgFSWNI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:13:08 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C88DC06174E;
-        Fri, 19 Jun 2020 15:13:08 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id q14so8385866qtr.9;
-        Fri, 19 Jun 2020 15:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=in4oZ9U5BKIE1Z3z3573GOie9b5wsL/oh/8kyMjLAjA=;
-        b=SbgIjYy3Y5XjBIUzEqw2lhBdY0K2pXuVcSjIysAYyFQ6NdV4uNC6eOtuY4BlClZiRb
-         we1DCAIIeMbW23VPJo+Hx4ALcySXMCF7Jiht6sfSQk7uJWED8NEn87cUKIRl0QXHj6VN
-         4ilA5PnrMP57u0cXtYZvrOZWgUg8Sdbn1/G5jmNZIb3tAoo2joZfTgFoDrsfPaU/Yv+H
-         Jy87mOSm8X2aZc3C42iSWwjVTIJ7lBlwY9CDWk8exG6/e/PKKkqVB8vIu79HrDLLicRQ
-         vR+vkTnNHsSJLkKbWybK9Yr+svH97sTO3hyHoThij9Ze8tzBqFx1bt3pdigLCKMWzp26
-         35bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=in4oZ9U5BKIE1Z3z3573GOie9b5wsL/oh/8kyMjLAjA=;
-        b=FI2FF8G0qr9jdfcAQP61dq52pnZwfXTyZ4FjmDNiFol2Lb1NdPCxl3jJrHUtxFluvz
-         k9jz5kl6C6gbnO3CRMoko2/2dSO14P25momElgorb+DCHVjBHSN4qrO1LLqnuAtCxpir
-         B/NWlWOjtxuPU5N7Eh793R0hT8O1v0l1agE7zbLmRvO3QwQD1RbmTbhZSB6JEvyMYcZf
-         joQ+fXiK7vmXGNc+uUOfR2JIN4Wmi+6LZRUzztZG3/zcRwJQY/BNpSEaEKsnarU8d/qA
-         VRHep/L0LRLRaadx0E3r4kCPwpW+IJnfX2iXbBHHnMeF1HEIlqNWSLCKEeucp4vNi3HR
-         zlhg==
-X-Gm-Message-State: AOAM533+kqkcRSiVfKTPbb7revjGMHrIbguSQ+pSeKAE8Q0fjgytaJFt
-        zNjhZMYgFY7/ejfiySe5mq1c7k4/OVU0fTBCsPY=
-X-Google-Smtp-Source: ABdhPJxQsxM4Et1u2C3EHPBVYfYsvtdVgNxhMG5AeSd/88hPYkiKkMQqiwQkpw+KbBbHRpnfQ3vcmWeIFFazEHOHoXI=
-X-Received: by 2002:aed:34a4:: with SMTP id x33mr5357608qtd.93.1592604787468;
- Fri, 19 Jun 2020 15:13:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200619203026.78267-1-andriin@fb.com> <20200619203026.78267-2-andriin@fb.com>
- <CA+khW7ji5gFXh1XN71CUy08+bofu=yKfopgXV7yOuhRkoSr1=w@mail.gmail.com>
-In-Reply-To: <CA+khW7ji5gFXh1XN71CUy08+bofu=yKfopgXV7yOuhRkoSr1=w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Jun 2020 15:12:56 -0700
-Message-ID: <CAEf4Bzazwb6kZHP_vD0yd_kgoxh9mbhV_x11c80YBuy=b6ZHpA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/9] libbpf: generalize libbpf externs support
-To:     Hao Luo <haoluo@google.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S1729225AbgFSWU3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 18:20:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34224 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729164AbgFSWU3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jun 2020 18:20:29 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05JM3rp3003952
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 15:20:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=WK7HQ/LBtBVqfsOLYU2138qi2tabx0PY8d+lO7GdfPw=;
+ b=kTtCrxBxxWJydKbiIw5mbeZiwB4KATttln/6aNYMxmkpJX4mGj4OKLuJUV3iKrVTTBu1
+ DocId9BikxiikIpIpzK0GeL0anILrccYn0QOEW95UbX3oZMju7eM/yf5VpdTQW8xlyYl
+ c9/pvxi3Rm1PTvL3hi218vRTG0P+2CKB1q4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31q64572nx-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 15:20:28 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 19 Jun 2020 15:20:26 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id DE7EB2EC3537; Fri, 19 Jun 2020 15:20:25 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Song Liu <songliubraving@fb.com>,
         Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] tools/bpftool: relicense bpftool's BPF profiler prog as dual-license GPL/BSD
+Date:   Fri, 19 Jun 2020 15:20:24 -0700
+Message-ID: <20200619222024.519774-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-19_22:2020-06-19,2020-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ impostorscore=0 cotscore=-2147483648 suspectscore=8 adultscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=623 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006190155
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 2:57 PM Hao Luo <haoluo@google.com> wrote:
->
-> Only two small places on this version, otherwise it looks good to me.
-> I can offer my reviewed-by, if need. :)
->
-> Thanks for the patch!
->
-> Reviewed-by: Hao Luo <haoluo@google.com>
->
-> On Fri, Jun 19, 2020 at 1:34 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Switch existing Kconfig externs to be just one of few possible kinds of more
-> > generic externs. This refactoring is in preparation for ksymbol extern
-> > support, added in the follow up patch. There are no functional changes
-> > intended.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
->
-> [...]
->
-> > @@ -2756,23 +2796,29 @@ static int cmp_externs(const void *_a, const void *_b)
->
-> [...]
->
-> > +
-> > +       if (a->type == EXT_KCFG) {
-> > +               /* descending order by alignment requirements */
-> > +               if (a->kcfg.align != b->kcfg.align)
-> > +                       return a->kcfg.align > b->kcfg.align ? -1 : 1;
-> > +               /* ascending order by size, within same alignment class */
-> > +               if (a->kcfg.sz != b->kcfg.sz)
-> > +                       return a->kcfg.sz < b->kcfg.sz ? -1 : 1;
-> > +               /* resolve ties by name */
-> > +       }
-> > +
-> >         return strcmp(a->name, b->name);
-> >  }
->
-> I assume the comment /* resolve ties by name */ is intended to be
-> close to strcmp?
+Relicense it to be compatible with the rest of bpftool files.
 
-yep
+Cc: Song Liu <songliubraving@fb.com>
+Suggested-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/bpftool/skeleton/profiler.bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> > @@ -2818,22 +2864,39 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
-> >                 ext->name = btf__name_by_offset(obj->btf, t->name_off);
-> >                 ext->sym_idx = i;
-> >                 ext->is_weak = GELF_ST_BIND(sym.st_info) == STB_WEAK;
-> > -               ext->sz = btf__resolve_size(obj->btf, t->type);
-> > -               if (ext->sz <= 0) {
-> > -                       pr_warn("failed to resolve size of extern '%s': %d\n",
-> > -                               ext_name, ext->sz);
-> > -                       return ext->sz;
-> > -               }
-> > -               ext->align = btf__align_of(obj->btf, t->type);
-> > -               if (ext->align <= 0) {
-> > -                       pr_warn("failed to determine alignment of extern '%s': %d\n",
-> > -                               ext_name, ext->align);
-> > -                       return -EINVAL;
-> > -               }
-> > -               ext->type = find_extern_type(obj->btf, t->type,
-> > -                                            &ext->is_signed);
-> > -               if (ext->type == EXT_UNKNOWN) {
-> > -                       pr_warn("extern '%s' type is unsupported\n", ext_name);
-> > +
-> > +               ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
-> > +               if (ext->btf_id <= 0) {
-> > +                       pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
-> > +                               ext_name, ext->btf_id, ext->sec_btf_id);
-> > +                       return ext->sec_btf_id;
-> > +               }
->
-> Did you mean "ext->sec_btf_id <= 0" rather than "ext->btf_id <= 0"?
+diff --git a/tools/bpf/bpftool/skeleton/profiler.bpf.c b/tools/bpf/bpftoo=
+l/skeleton/profiler.bpf.c
+index 20034c12f7c5..c9d196ddb670 100644
+--- a/tools/bpf/bpftool/skeleton/profiler.bpf.c
++++ b/tools/bpf/bpftool/skeleton/profiler.bpf.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ // Copyright (c) 2020 Facebook
+ #include "profiler.h"
+ #include <linux/bpf.h>
+@@ -116,4 +116,4 @@ int BPF_PROG(fexit_XXX)
+ 	return 0;
+ }
+=20
+-char LICENSE[] SEC("license") =3D "GPL";
++char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+--=20
+2.24.1
 
-yep, argh...
