@@ -2,178 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CF51FFF25
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 02:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A753A1FFF26
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 02:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgFSAHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jun 2020 20:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        id S1726906AbgFSAJy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jun 2020 20:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728225AbgFSAHq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jun 2020 20:07:46 -0400
+        with ESMTP id S1726478AbgFSAJx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jun 2020 20:09:53 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D936EC06174E
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 17:07:45 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id w1so7424073qkw.5
-        for <bpf@vger.kernel.org>; Thu, 18 Jun 2020 17:07:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B30C06174E;
+        Thu, 18 Jun 2020 17:09:51 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id f18so7464754qkh.1;
+        Thu, 18 Jun 2020 17:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tUcsCSdLKJLWuZ9L8PBinhK7LKVJ8dZ0jXpZRZMo4eY=;
-        b=h7G7mkp7ZH7p4g1Kh0otltYq9whOZ+IZFFQ5lhOMfeBZrCkD/smF8TL9Ps6gonKQZJ
-         bdJJuTuHUbKDhftBrq5Xn+fcxoHdC7dISKgbMUF3ykgC4n0QvBMia03WMKpc+z8ZsE30
-         xNrxAepnt9J7eIDuneZ9ZAapo9aGe8dZG+HeWXFLpibjHRprlDZIB7dIalZLtp3BTNw5
-         lRRmEwDOnqRhx7m1AoMyjmN+9lBbJG/M53UxxjLes+5Xe2FWKyUIqAAYIUlvo7jELBBD
-         LJUmkpDOVe1/Ln3NtkfPl6c210dUjSkr2g2w97cUVOU9KC7JdhgPOlTETGnST/xWCUWt
-         eYHg==
+        bh=goKnSJ9Yl+PkTpEVqaK8ariT/zkQ6gQTfe/iZV40tgc=;
+        b=fFwOv5EYvwiOcTptsxqlxZDyDhrTtGzKVvVAh6N7hoGJOmUoiqx7GjjJHI2Caku8cP
+         F4or2dOHfMlR284c/bxuIr1G1t1OsaN6SAiz/ro9lMRV2LoCk860A0eAv7rr0+30cfC9
+         lfdIKjOLHAzgvu5c6YsLtZQOBDHFyXRhdy02Xbsx6vBiNAuLMpMkwLKmrMbGlo/uy98l
+         j7BaCUq3xyYfyTeT6xO1s/nfHVk67OC4a3I9gEPe3x98aqJjGNpcf7+5B3n28r20zF/h
+         pDtrEgzubfkCUviZHl5BZCuFRCWzAYu09j/gLKcCl2KyJhpyqAirtYfnULp4GmTut1ed
+         Lf/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tUcsCSdLKJLWuZ9L8PBinhK7LKVJ8dZ0jXpZRZMo4eY=;
-        b=VCtiai5Atv5WnTM9Kcs3B1N0Jkv6Y+DfRzw2fM84V/pd9O3xv9rGtfQGGt4+V1z1CI
-         Cg5/JUmI9Yq0cuwjaEG6NGS0cJs+UbUqXjRKCdsVdvUQMNzBT9Uw93GDDDmXWqlcUAEa
-         +T9oJVQqKQlhQyHP2rygTJUPhpR1SqYu74kkSUsXOj0scqBO1jCXVz/TQe7d5doxQVJN
-         HPxIvdltJp2WyHaYlVmSjzCFSglGk5aifiTkeLw0QQ6MZnUaB/xC8YqPG8SNIPl46tNa
-         vwtn3wjCDt3WOK3kM9UysMmLXiIpbKVIW888rtJztbydLRmSZ/TToiGLOqQVuHpKGGra
-         MaGQ==
-X-Gm-Message-State: AOAM531B6fRRm2xeGJyMvZg26q5hSwhk3warOtvNULg2QQHhZXh78VkN
-        Pb6/tsQCnBLQ1COLtKLRsElxv3wbyfuyQ3POgmw=
-X-Google-Smtp-Source: ABdhPJyea+7NNFClNfNpLAOrOYR/JSOMLq6R8+4NudwhiT4XP+VpJPVWjHi8wnOWRnfcaohBJjMSyUbjANZs6AqOn9Q=
-X-Received: by 2002:a37:6712:: with SMTP id b18mr1102043qkc.36.1592525265055;
- Thu, 18 Jun 2020 17:07:45 -0700 (PDT)
+        bh=goKnSJ9Yl+PkTpEVqaK8ariT/zkQ6gQTfe/iZV40tgc=;
+        b=AF7f97Y/ipo2RitJZus+S5BGnnh1F7EEywp7Jxu28mPlmeaoj3PtUn92rFysfmVhwd
+         GrbWRTV8WJo7S75xl7R77sIciAVoI8nSWGFOf3jWaO17aegFGwI0nya2EM6ugyptSenB
+         Q5Sd7D+Zenp+5jCess3ZjmE+sS1GOtLiabF761FZiIJTrR3xEaaVXcqRj8KBp2p5qSMI
+         1ZPZV2zmoBi7+8OsfzWSg7ygMKdKPXIU3ct3l9utSvAbW3AUbj34Fr70DbS5J6gXnQbN
+         j+kSGk8i+ZoMOth/afKTgYx4q4RsXA1ZhrsIlg4mtOJBYLaMe/96jUARx2jgkYv6/jEW
+         f00A==
+X-Gm-Message-State: AOAM531ma82cIXCa/6QBHcVh7wZVizhnCznQks6ZpDzoMyDAhSLDSBIX
+        An7anhykZ9iAMyMwE80kFHTUDxA9Vs+vObaf8Z8=
+X-Google-Smtp-Source: ABdhPJx2g6BdseJXSaZ35AlifprvBM0XYJUALV5hIgGbvNJnT+Kd7ogVcC3CQzoK01zr2lB7SP1OI/tX7AsOaU/xKPw=
+X-Received: by 2002:a37:d0b:: with SMTP id 11mr1097036qkn.449.1592525389666;
+ Thu, 18 Jun 2020 17:09:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1592426215.git.rdna@fb.com> <53fdc8f0c100fc50c8aa5fbc798d659e3dd77e92.1592426215.git.rdna@fb.com>
- <20200618061841.f52jaacsacazotkq@kafai-mbp.dhcp.thefacebook.com>
- <20200618194236.GA47103@rdna-mbp.dhcp.thefacebook.com> <20200618235122.GB47103@rdna-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200618235122.GB47103@rdna-mbp.dhcp.thefacebook.com>
+References: <20200616050432.1902042-1-andriin@fb.com> <20200616050432.1902042-2-andriin@fb.com>
+ <5eebbbef8f904_6d292ad5e7a285b883@john-XPS-13-9370.notmuch>
+ <CAEf4BzYNFddhDxLAkOC+q_ZWAet42aHybDiJT9odrzF8n5BBig@mail.gmail.com> <5eebfd54ec54f_27ce2adb0816a5b876@john-XPS-13-9370.notmuch>
+In-Reply-To: <5eebfd54ec54f_27ce2adb0816a5b876@john-XPS-13-9370.notmuch>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Jun 2020 17:07:34 -0700
-Message-ID: <CAEf4BzbHqzyurRnFSiKpR4Tb0v-QG36hmcwYrJUFzNu4nY3VDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/6] bpf: Support access to bpf map fields
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 18 Jun 2020 17:09:38 -0700
+Message-ID: <CAEf4Bzbt4=Cvm4Gj0_OnxqYQsyrtLxcMO5EoZntquS3WFqihCg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: add variable-length data
+ concatenation pattern test
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>,
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 4:52 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Thu, Jun 18, 2020 at 4:48 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Andrey Ignatov <rdna@fb.com> [Thu, 2020-06-18 12:42 -0700]:
-> > Martin KaFai Lau <kafai@fb.com> [Wed, 2020-06-17 23:18 -0700]:
-> > > On Wed, Jun 17, 2020 at 01:43:45PM -0700, Andrey Ignatov wrote:
-> > > [ ... ]
-> > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > index e5c5305e859c..fa21b1e766ae 100644
-> > > > --- a/kernel/bpf/btf.c
-> > > > +++ b/kernel/bpf/btf.c
-> > > > @@ -3577,6 +3577,67 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, struct btf *btf,
-> > > >   return ctx_type;
-> > > >  }
+> Andrii Nakryiko wrote:
+> > On Thu, Jun 18, 2020 at 12:09 PM John Fastabend
+> > <john.fastabend@gmail.com> wrote:
+> > >
+> > > Andrii Nakryiko wrote:
+> > > > Add selftest that validates variable-length data reading and concatentation
+> > > > with one big shared data array. This is a common pattern in production use for
+> > > > monitoring and tracing applications, that potentially can read a lot of data,
+> > > > but usually reads much less. Such pattern allows to determine precisely what
+> > > > amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
 > > > >
-> > > > +#define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type)
-> > > > +#define BPF_LINK_TYPE(_id, _name)
-> > > > +static const struct bpf_map_ops * const btf_vmlinux_map_ops[] = {
-> > > > +#define BPF_MAP_TYPE(_id, _ops) \
-> > > > + [_id] = &_ops,
-> > > > +#include <linux/bpf_types.h>
-> > > > +#undef BPF_MAP_TYPE
-> > > > +};
-> > > > +static u32 btf_vmlinux_map_ids[] = {
-> > > > +#define BPF_MAP_TYPE(_id, _ops) \
-> > > > + [_id] = (u32)-1,
-> > > > +#include <linux/bpf_types.h>
-> > > > +#undef BPF_MAP_TYPE
-> > > > +};
-> > > > +#undef BPF_PROG_TYPE
-> > > > +#undef BPF_LINK_TYPE
+> > > > This is the first BPF selftest that at all looks at and tests
+> > > > bpf_probe_read_str()-like helper's return value, closing a major gap in BPF
+> > > > testing. It surfaced the problem with bpf_probe_read_kernel_str() returning
+> > > > 0 on success, instead of amount of bytes successfully read.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > > ---
+> > >
+> > > [...]
+> > >
+> > > > +/* .data */
+> > > > +int payload2_len1 = -1;
+> > > > +int payload2_len2 = -1;
+> > > > +int total2 = -1;
+> > > > +char payload2[MAX_LEN + MAX_LEN] = { 1 };
 > > > > +
-> > > > +static int btf_vmlinux_map_ids_init(const struct btf *btf,
-> > > > +                             struct bpf_verifier_log *log)
+> > > > +SEC("raw_tp/sys_enter")
+> > > > +int handler64(void *regs)
 > > > > +{
-> > > > + int base_btf_id, btf_id, i;
-> > > > + const char *btf_name;
+> > > > +     int pid = bpf_get_current_pid_tgid() >> 32;
+> > > > +     void *payload = payload1;
+> > > > +     u64 len;
 > > > > +
-> > > > + base_btf_id = btf_find_by_name_kind(btf, "bpf_map", BTF_KIND_STRUCT);
-> > > > + if (base_btf_id < 0)
-> > > > +         return base_btf_id;
+> > > > +     /* ignore irrelevant invocations */
+> > > > +     if (test_pid != pid || !capture)
+> > > > +             return 0;
 > > > > +
-> > > > + BUILD_BUG_ON(ARRAY_SIZE(btf_vmlinux_map_ops) !=
-> > > > +              ARRAY_SIZE(btf_vmlinux_map_ids));
-> > > > +
-> > > > + for (i = 0; i < ARRAY_SIZE(btf_vmlinux_map_ops); ++i) {
-> > > > +         if (!btf_vmlinux_map_ops[i])
-> > > > +                 continue;
-> > > > +         btf_name = btf_vmlinux_map_ops[i]->map_btf_name;
-> > > > +         if (!btf_name) {
-> > > > +                 btf_vmlinux_map_ids[i] = base_btf_id;
-> > > > +                 continue;
-> > > > +         }
-> > > > +         btf_id = btf_find_by_name_kind(btf, btf_name, BTF_KIND_STRUCT);
-> > > > +         if (btf_id < 0)
-> > > > +                 return btf_id;
-> > > > +         btf_vmlinux_map_ids[i] = btf_id;
-> > > Since map_btf_name is already in map_ops, how about storing map_btf_id in
-> > > map_ops also?
-> > > btf_id 0 is "void" which is as good as -1, so there is no need
-> > > to modify all map_ops to init map_btf_id to -1.
+> > > > +     len = bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
+> > > > +     if (len <= MAX_LEN) {
+> > >
+> > > Took me a bit grok this. You are relying on the fact that in errors,
+> > > such as a page fault, will encode to a large u64 value and so you
+> > > verifier is happy. But most of my programs actually want to distinguish
+> > > between legitimate errors on the probe vs buffer overrun cases.
 > >
-> > Yeah, btf_id == 0 being a valid id was the reason I used -1.
+> > What buffer overrun? bpf_probe_read_str() family cannot return higher
+> > value than MAX_LEN. If you want to detect truncated strings, then you
+> > can attempt reading MAX_LEN + 1 and then check that the return result
+> > is MAX_LEN exactly. But still, that would be something like:
+> > u64 len;
 > >
-> > I realized that having a map type specific struct with btf_id == 0
-> > should be practically impossible, but is it guaranteed to always be
-> > "void" or it just happened so and can change in the future?
+> > len = bpf_probe_read_str(payload, MAX_LEN + 1, &buf);
+> > if (len > MAX_LEN)
+> >   return -1;
+> > if (len == MAX_LEN) {
+> >   /* truncated */
+> > } else {
+> >   /* full string */
+> > }
+>
+> +1
+>
 > >
-> > If both this and having one more field in bpf_map_ops is not a problem,
-> > I'll move it to bpf_map_ops.
+> > >
+> > > Can we make these tests do explicit check for errors. For example,
+> > >
+> > >   if (len < 0) goto abort;
+> > >
+> > > But this also breaks your types here. This is what I was trying to
+> > > point out in the 1/2 patch thread. Wanted to make the point here as
+> > > well in case it wasn't clear. Not sure I did the best job explaining.
+> > >
+> >
+> > I can write *a correct* C code in a lot of ways such that it will not
+> > pass verifier verification, not sure what that will prove, though.
+> >
+> > Have you tried using the pattern with two ifs with no-ALU32? Does it work?
 >
-> Nope, I can't do it. All `struct bpf_map_ops` are global `const`, i.e.
-> rodata and a try cast `const` away and change them causes a panic.
+> Ran our CI on both mcpu=v2 and mcpu=v3 and the pattern with multiple
+> ifs exists in those tests. They both passed so everything seems OK.
+> In the real progs though things are a bit more complicated I didn't
+> check the exact generate code. Some how I missed the case below.
+> I put a compiler barrier in a few spots so I think this is blocking
+> the optimization below causing no-alu32 failures. I'll remove the
+> barriers after I wrap a few things reviews.. my own bug fixes ;) and
+> see if I can trigger the case below.
 >
-> Simple user space repro:
+> >
+> > Also you are cheating in your example (in patch #1 thread). You are
+> > exiting on the first error and do not attempt to read any more data
+> > after that. In practice, you want to get as much info as possible,
+> > even if some of string reads fail (e.g., because argv might not be
+> > paged in, but env is, or vice versa). So you'll end up doing this:
 >
->         % cat 1.c
->         #include <stdio.h>
+> Sure.
 >
->         struct map_ops {
->                 int a;
->         };
+> >
+> > len = bpf_probe_read_str(...);
+> > if (len >= 0 && len <= MAX_LEN) {
+> >     payload += len;
+> > }
+> > ...
+> >
+> > ... and of course it spectacularly fails in no-ALU32.
+> >
+> > To be completely fair, this is a result of Clang optimization and
+> > Yonghong is trying to deal with it as we speak. Switching int to long
+> > for helpers doesn't help it either. But there are better code patterns
+> > (unsigned len + single if check) that do work with both ALU32 and
+> > no-ALU32.
 >
->         const struct map_ops ops = {
->                 .a = 1,
->         };
+> Great.
 >
->         int main(void)
->         {
->                 struct map_ops *ops_rw = (struct map_ops *)&ops;
+> >
+> > And I just double-checked, this pattern keeps working for ALU32 with
+> > both int and long types, so maybe there are unnecessary bit shifts,
+> > but at least code is still verifiable.
+> >
+> > So my point stands. int -> long helps in some cases and doesn't hurt
+> > in others, so I argue that it's a good thing to do :)
 >
->                 printf("before a=%d\n", ops_rw->a);
->                 ops_rw->a = 3;
->                 printf(" afrer a=%d\n", ops_rw->a);
->         }
->         % clang -O2 -Wall -Wextra -pedantic -pedantic-errors -g 1.c && ./a.out
->         before a=1
->         Segmentation fault (core dumped)
->         % objdump -t a.out  | grep -w ops
->         0000000000400600 g     O .rodata        0000000000000004              ops
->
-> --
-> Andrey Ignatov
+> Convinced me as well. I Acked the other patch thanks.
 
-See the trick that helper prototypes do for BTF ids. Fictional example:
-
-static int hash_map_btf_id;
-
-const struct bpf_map_ops hash_map_opss = {
- ...
- .btf_id = &hash_map_btf_id,
-};
-
-
-then *hash_map_ops.btf_id = <final_btf_id>;
+Awesome :) Thanks for extra testing and validation on your side!
