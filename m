@@ -2,147 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A183E2009A5
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 15:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2B72009AB
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 15:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732450AbgFSNNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 09:13:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35188 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729513AbgFSNNS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:13:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592572397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=an7x1V2TFS3WGjFEC1lctVzmins8f4o7Bkx05YpijFY=;
-        b=EOWLito3LR+t0FuxLcox9r71CRpXwDoZ1yRSmdYQc4Y2EXlENVQVKoP8hbuVsW506cxi7Z
-        9ET1Xa4fDMvAEvxI57vvhkmvLmIxLklouC8Ey+M4nlqpQdsRxx8xXF1eGzahrVq+bKVoNa
-        V72vnY/72pUygaRK314/8HNZpEw4qnw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-qSorFMsvOkOiM7HpspC2og-1; Fri, 19 Jun 2020 09:13:13 -0400
-X-MC-Unique: qSorFMsvOkOiM7HpspC2og-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E393C8015CB;
-        Fri, 19 Jun 2020 13:13:10 +0000 (UTC)
-Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 90AC75D9E5;
-        Fri, 19 Jun 2020 13:13:07 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 15:13:06 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 03/11] bpf: Add btf_ids object
-Message-ID: <20200619131306.GD2465907@krava>
-References: <20200616100512.2168860-1-jolsa@kernel.org>
- <20200616100512.2168860-4-jolsa@kernel.org>
- <CAEf4BzZ=BN7zDU_8xMEEoF7khjC4bwGitU+iYf+6uFXPZ_=u-g@mail.gmail.com>
+        id S1725806AbgFSNNu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 09:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731831AbgFSNNr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:13:47 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DE6C0613EF
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 06:13:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b6so9634650wrs.11
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 06:13:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6UFNoVkVHTZErq2JtCJe5vBxdIIAUeTxaBKUEdnLeKM=;
+        b=SConi2qeGRAGuNLdtIm23QSPOAFACg3QXM3YdAQis7gAzJxIdD8+ZzQGF0ZlPVYDTC
+         POzOonq9u7WSfC+X1tyMD1XD5xRMIHWzDEHPotqLvh5xhx8RtkbVW4xz3GgcfrL+2lhV
+         SUOUIGLgG7MabFFIr8SMJA2QRHhUHwYY4qTd0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6UFNoVkVHTZErq2JtCJe5vBxdIIAUeTxaBKUEdnLeKM=;
+        b=cRLcJYE8YyvCRKFePiGbHkAgFxApnDNFKbG7qwt6/KElU/jTxvIyhmlnSdM+E0Zt/J
+         PLu8Spt+QSHJC5I3bi0TX+aZusN4LuTN3/QhZk8/ulyPvZRtV2kTZ3jEtCaqbhm7ZwQZ
+         htQLPLSU8FYYYbdJba5kSwSsGipuhYElO0DAsNFhUYkdPALwhoYYfWsn6L3r+XejEKPh
+         nOZUedQG/oMIDLAkBbggmE3YKic8Gn/ye5MYFraHDSYkzIu34RWp6U8xqoFtax2Vm2SV
+         Yws2Pml+WY+2Cb4BQCu8AKAET1ZaCK78rFGddbY+LD+34yrdOJ/9YJ6nDePmqYLzWtIS
+         4Euw==
+X-Gm-Message-State: AOAM530+PCfvOsSku90jjoHwfqUSQ9istMR956B0mynrponiRfU4ObB1
+        3jK7SEHz8thIUTk4aq02NY8fIXaqyODqY1DXe1y0Fg==
+X-Google-Smtp-Source: ABdhPJwXqMeHG4k19RmjN1x/uYLq/BiSiI4EM1nMy3AVv6eLoy7FJH0ywzEFP6e55HlgtVBSrMacOTA3AQPzP/hcIzw=
+X-Received: by 2002:adf:afc7:: with SMTP id y7mr4002099wrd.173.1592572424114;
+ Fri, 19 Jun 2020 06:13:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ=BN7zDU_8xMEEoF7khjC4bwGitU+iYf+6uFXPZ_=u-g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200520125616.193765-1-kpsingh@chromium.org> <CAFqZXNsu8Vs86SKpdnej_=xnQqg=Hh132JqNe1Ybt-bHJB4NeQ@mail.gmail.com>
+In-Reply-To: <CAFqZXNsu8Vs86SKpdnej_=xnQqg=Hh132JqNe1Ybt-bHJB4NeQ@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 19 Jun 2020 15:13:32 +0200
+Message-ID: <CACYkzJ5e_JOLS-gmNug6e4RJkSsv7sjMUfMWyfMCsQLSoxS8RQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Peter Zijlstra <peterz@infradead.org>, jpoimboe@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 05:56:38PM -0700, Andrii Nakryiko wrote:
-> On Tue, Jun 16, 2020 at 3:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+Hi,
+
+On Fri, Jun 19, 2020 at 2:49 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> On Wed, May 20, 2020 at 2:56 PM KP Singh <kpsingh@chromium.org> wrote:
+> > From: KP Singh <kpsingh@google.com>
 > >
-> > Adding support to generate .BTF_ids section that would
-> > hold various BTF IDs list for verifier.
+> > secid_to_secctx is not stackable, and since the BPF LSM registers this
+> > hook by default, the call_int_hook logic is not suitable which
+> > "bails-on-fail" and casues issues when other LSMs register this hook and
+> > eventually breaks Audit.
 > >
-> > Adding macros help to define lists of BTF IDs placed in
-> > .BTF_ids section. They are initially filled with zeros
-> > (during compilation) and resolved later during the
-> > linking phase by btfid tool.
+> > In order to fix this, directly iterate over the security hooks instead
+> > of using call_int_hook as suggested in:
 > >
-> > Following defines list of one BTF ID that is accessible
-> > within kernel code as bpf_skb_output_btf_ids array.
+> > https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
 > >
-> >   extern int bpf_skb_output_btf_ids[];
-> >
-> >   BTF_ID_LIST(bpf_skb_output_btf_ids)
-> >   BTF_ID(struct, sk_buff)
-> >
-> > Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/asm-generic/vmlinux.lds.h |  4 ++
-> >  kernel/bpf/Makefile               |  2 +-
-> >  kernel/bpf/btf_ids.c              |  3 ++
-> >  kernel/bpf/btf_ids.h              | 70 +++++++++++++++++++++++++++++++
-> >  4 files changed, 78 insertions(+), 1 deletion(-)
-> >  create mode 100644 kernel/bpf/btf_ids.c
-> >  create mode 100644 kernel/bpf/btf_ids.h
-> >
-> 
+> > Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+> > Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
+> > Reported-by: Alexei Starovoitov <ast@kernel.org>
+> > Signed-off-by: KP Singh <kpsingh@google.com>
 > [...]
-> 
-> > +/*
-> > + * Following macros help to define lists of BTF IDs placed
-> > + * in .BTF_ids section. They are initially filled with zeros
-> > + * (during compilation) and resolved later during the
-> > + * linking phase by btfid tool.
-> > + *
-> > + * Any change in list layout must be reflected in btfid
-> > + * tool logic.
-> > + */
-> > +
-> > +#define SECTION ".BTF_ids"
-> 
-> nit: SECTION is super generic and non-greppable. BTF_IDS_SECTION?
+>
+> Sorry for being late to the party, but doesn't this (and the
+> associated default return value patch) just paper over a bigger
+> problem? What if I have only the BPF LSM enabled and I attach a BPF
+> program to this hook that just returns 0? Doesn't that allow anything
+> privileged enough to do this to force the kernel to try and send
+> memory from uninitialized pointers to userspace and/or copy such
+> memory around and/or free uninitialized pointers?
+>
+> Why on earth does the BPF LSM directly expose *all* of the hooks, even
+> those that are not being used for any security decisions (and are
+> "useful" in this context only for borking the kernel...)? Feel free to
+> prove me wrong, but this lazy approach of "let's just take all the
+> hooks as they are and stick BPF programs to them" doesn't seem like a
 
-ok
+The plan was definitely to not hook everywhere but only call the hooks
+that do have a BPF program registered. This was one of the versions
+we proposed in the initial patches where the call to the BPF LSM was
+guarded by a static key with it being enabled only when there's a
+BPF program attached to the hook.
 
-> 
-> > +
-> > +#define ____BTF_ID(symbol)                             \
-> > +asm(                                                   \
-> > +".pushsection " SECTION ",\"a\";               \n"     \
-> 
-> section should be also read-only? Either immediately here, of btfid
-> tool should mark it? Unless I missed that it's already doing it :)
+https://lore.kernel.org/bpf/20200220175250.10795-5-kpsingh@chromium.org/
 
-hm, it's there next to the .BTF section within RO_DATA macro,
-so I thought that was enough.. I'll double check
+However, this special-cased BPF in the LSM framework, and, was met
+with opposition. Our plan is to still achieve this, but we want to do this
+with DEFINE_STATIC_CALL patches:
 
-> 
-> > +".local " #symbol " ;                          \n"     \
-> > +".type  " #symbol ", @object;                  \n"     \
-> > +".size  " #symbol ", 4;                        \n"     \
-> > +#symbol ":                                     \n"     \
-> > +".zero 4                                       \n"     \
-> > +".popsection;                                  \n");
-> > +
-> > +#define __BTF_ID(...) \
-> > +       ____BTF_ID(__VA_ARGS__)
-> 
-> why varargs, if it's always a single argument? Or it's one of those
-> macro black magic things were it works only in this particular case,
-> but not others?
+https://lore.kernel.org/lkml/cover.1547073843.git.jpoimboe@redhat.com
 
-yea, I kind of struggled in here, because any other would not
-expand the name concat together with the unique ID bit,
-__VA_ARGS__ did it nicely ;-) I'll revisit this
+Using these, only can we enable the call into the hook based on whether
+a program is attached, we can also eliminate the indirect call overhead which
+currently affects the "slow" way which was decided in the discussion:
 
-thanks,
-jirka
+https://lore.kernel.org/bpf/202002241136.C4F9F7DFF@keescook/
 
+> good choice... IMHO you should either limit the set of hooks that can
+> be attached to only those that aren't used to return back values via
+
+I am not sure if limiting the hooks is required here once we have
+the ability to call into BPF only when a program is attached. If the
+the user provides a BPF program, deliberately returns 0 (or any
+other value) then it is working as intended. Even if we limit this in the
+bpf LSM, deliberate privileged users can still achieve this with
+other means.
+
+- KP
+
+> pointers, or (if you really really need to do some state
+> updates/logging in those hooks) use wrapper functions that will call
+> the BPF progs via a simplified interface so that they cannot cause
+> unsafe behavior.
+>
+> --
+> Ondrej Mosnacek
+> Software Engineer, Platform Security - SELinux kernel
+> Red Hat, Inc.
+>
