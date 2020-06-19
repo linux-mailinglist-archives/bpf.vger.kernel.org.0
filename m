@@ -2,124 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FA82008C6
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 14:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6772008FF
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 14:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732425AbgFSMgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 08:36:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54348 "EHLO
+        id S1732450AbgFSMtz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 08:49:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44790 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730721AbgFSMgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 08:36:00 -0400
+        with ESMTP id S1732295AbgFSMtq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 08:49:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592570158;
+        s=mimecast20190719; t=1592570984;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NXJ8JwYP5yMf+56IORlViCZxc1+aN4iEbLDz8h9YxWA=;
-        b=fy0bX340ZCsRIAQTvVTyTb5aSHfv+MMhWVjeY91v/hSt9XS09a/RrLacDjW7qTJLfxWKaG
-        hANYL11e9NzlzfLZP7Db+zm+ECb+/o11fs28UZDlpr4Q5faJSQQT00m1m/bJ0ZIibULc5v
-        j4JhNTOb+LAR7kqQH5MxSGiBYBBx+sg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-135-qxceCPf6Oea1rHQcpnhBOA-1; Fri, 19 Jun 2020 08:35:33 -0400
-X-MC-Unique: qxceCPf6Oea1rHQcpnhBOA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71648464;
-        Fri, 19 Jun 2020 12:35:31 +0000 (UTC)
-Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1226F10013C4;
-        Fri, 19 Jun 2020 12:35:27 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 14:35:27 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCHv3 0/9] bpf: Add d_path helper
-Message-ID: <20200619123527.GA2465907@krava>
-References: <20200616100512.2168860-1-jolsa@kernel.org>
- <5eebd52fc68ee_6d292ad5e7a285b816@john-XPS-13-9370.notmuch>
+        bh=/g/+YnCzud6gIE/myiatywuh+bgiNOQQZfOvz+r2RZM=;
+        b=DJzpqNQL3Ct78b71K3She8S6lrhS3usL8RrHve8/Fe6OvbZlg6mL0+tQcu46JUkXre2a7j
+        wCJeM5i67zqeqXPsz5Xb5HA/z0ezPbvt16HNIJ2y+2qfvWOaQ++M8/Hn63ImspXHOc9tbP
+        HV9MlLeH/yVCwJNU1bYE/DUE4N0GBAs=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-syEXMa-5O6-27WoxKZxk9g-1; Fri, 19 Jun 2020 08:49:42 -0400
+X-MC-Unique: syEXMa-5O6-27WoxKZxk9g-1
+Received: by mail-lj1-f198.google.com with SMTP id u10so1371859ljk.3
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 05:49:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/g/+YnCzud6gIE/myiatywuh+bgiNOQQZfOvz+r2RZM=;
+        b=mQk3InzC3kPvspD143zxIvYqD4yC1CebgMcTv3S1tA7mBFSrAVdWOCTvosRpPc4HUA
+         RWK3/vRam6yCbIjo654zWRZ6WBYr77yyT4w0Hicm7s6h3jAGYHTricSQT+qGLvE8oyIN
+         B6YUK1kNCQ6RofajYnt0sp2bey0/6yo+RSLijoxIwhH2DrbAPKAM8avxIx5UULG5m+vH
+         Vr8NugkHMmUMXtNDINXPqFTgX4caqstCVD9zkvdtFAeF3dJxhrgFLwLsSuQpBD4aifET
+         C4j5ybTsLdLMK4BoL5HYae3lAa5IzxpPREHr/eQg3wkyl1f5oEgVD3MyEj+qzffS7Lzw
+         0Rbw==
+X-Gm-Message-State: AOAM533IuayvjP7b+jEOq7IO1fmEZzA2QXb/bZBw4fB3D5SG53pE3rpj
+        L79OZoztcv95TlKN85tlIEjFHvhzSoIE00nwSnXv8+mQz+USlgpAfZtbSfjEKqY2sstFLWwWBc4
+        JuoEB9Ys+jnUn8SNmPzG1NqfrUGZE
+X-Received: by 2002:ac2:5604:: with SMTP id v4mr1946247lfd.124.1592570981116;
+        Fri, 19 Jun 2020 05:49:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXiPt6NoxSwMoZyeQFCP8RfJAk3JTg7gTtWYjd2TAO4zxGdEHaGSVd0jZZyRVkg26M9VYhdLJvCgnHGSnzbYY=
+X-Received: by 2002:ac2:5604:: with SMTP id v4mr1946227lfd.124.1592570980848;
+ Fri, 19 Jun 2020 05:49:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5eebd52fc68ee_6d292ad5e7a285b816@john-XPS-13-9370.notmuch>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200520125616.193765-1-kpsingh@chromium.org>
+In-Reply-To: <20200520125616.193765-1-kpsingh@chromium.org>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Fri, 19 Jun 2020 14:49:29 +0200
+Message-ID: <CAFqZXNsu8Vs86SKpdnej_=xnQqg=Hh132JqNe1Ybt-bHJB4NeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 01:57:19PM -0700, John Fastabend wrote:
-> Jiri Olsa wrote:
-> > hi,
-> > adding d_path helper to return full path for 'path' object.
-> > 
-> > I originally added and used 'file_path' helper, which did the same,
-> > but used 'struct file' object. Then realized that file_path is just
-> > a wrapper for d_path, so we'd cover more calling sites if we add
-> > d_path helper and allowed resolving BTF object within another object,
-> > so we could call d_path also with file pointer, like:
-> > 
-> >   bpf_d_path(&file->f_path, buf, size);
-> > 
-> > This feature is mainly to be able to add dpath (filepath originally)
-> > function to bpftrace:
-> > 
-> >   # bpftrace -e 'kfunc:vfs_open { printf("%s\n", dpath(args->path)); }'
-> > 
-> > v3 changes:
-> >   - changed tests to use seleton and vmlinux.h [Andrii]
-> >   - refactored to define ID lists in C object [Andrii]
-> >   - changed btf_struct_access for nested ID check,
-> >     instead of adding new function for that [Andrii]
-> >   - fail build with CONFIG_DEBUG_INFO_BTF if libelf is not detected [Andrii]
-> > 
-> > Also available at:
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   bpf/d_path
-> > 
-> > thanks,
-> > jirka
-> 
-> Hi Jira, Apologize for waiting until v3 to look at this series, but a
-> couple general requests as I review this.
-> 
-> In the cover letter can we get some more details. The above is really
-> terse/cryptic in my opinion. The bpftrace example gives good motiviation,
-> but nothing above mentions a new .BTF_ids section and the flow to create
-> and use this section.
+On Wed, May 20, 2020 at 2:56 PM KP Singh <kpsingh@chromium.org> wrote:
+> From: KP Singh <kpsingh@google.com>
+>
+> secid_to_secctx is not stackable, and since the BPF LSM registers this
+> hook by default, the call_int_hook logic is not suitable which
+> "bails-on-fail" and casues issues when other LSMs register this hook and
+> eventually breaks Audit.
+>
+> In order to fix this, directly iterate over the security hooks instead
+> of using call_int_hook as suggested in:
+>
+> https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
+>
+> Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+> Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+[...]
 
-ok, will add more details in next version
+Sorry for being late to the party, but doesn't this (and the
+associated default return value patch) just paper over a bigger
+problem? What if I have only the BPF LSM enabled and I attach a BPF
+program to this hook that just returns 0? Doesn't that allow anything
+privileged enough to do this to force the kernel to try and send
+memory from uninitialized pointers to userspace and/or copy such
+memory around and/or free uninitialized pointers?
 
-> 
-> Also if we add a BTF_ids  section adding documentation in btf.rst should
-> happen as well. I would like to see something in the ELF File Format
-> Interface section and BTF Generation sections.
+Why on earth does the BPF LSM directly expose *all* of the hooks, even
+those that are not being used for any security decisions (and are
+"useful" in this context only for borking the kernel...)? Feel free to
+prove me wrong, but this lazy approach of "let's just take all the
+hooks as they are and stick BPF programs to them" doesn't seem like a
+good choice... IMHO you should either limit the set of hooks that can
+be attached to only those that aren't used to return back values via
+pointers, or (if you really really need to do some state
+updates/logging in those hooks) use wrapper functions that will call
+the BPF progs via a simplified interface so that they cannot cause
+unsafe behavior.
 
-did not know there was bpf.rst ;-) will update
-
-> 
-> I'm not going to nitpick if its in this series or a stand-alone patch
-> but do want to see it. So far the Documentation on BTF is fairly
-> good and I want to avoid these kind of gaps.
-
-sure, thanks
-
-jirka
-
-> 
-> Thanks!
-> John
-> 
+--
+Ondrej Mosnacek
+Software Engineer, Platform Security - SELinux kernel
+Red Hat, Inc.
 
