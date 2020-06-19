@@ -2,113 +2,340 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6772008FF
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 14:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FBD20097C
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 15:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732450AbgFSMtz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 08:49:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44790 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732295AbgFSMtq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 08:49:46 -0400
+        id S1729311AbgFSNEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 09:04:24 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26578 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732758AbgFSNEH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jun 2020 09:04:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592570984;
+        s=mimecast20190719; t=1592571844;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/g/+YnCzud6gIE/myiatywuh+bgiNOQQZfOvz+r2RZM=;
-        b=DJzpqNQL3Ct78b71K3She8S6lrhS3usL8RrHve8/Fe6OvbZlg6mL0+tQcu46JUkXre2a7j
-        wCJeM5i67zqeqXPsz5Xb5HA/z0ezPbvt16HNIJ2y+2qfvWOaQ++M8/Hn63ImspXHOc9tbP
-        HV9MlLeH/yVCwJNU1bYE/DUE4N0GBAs=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-syEXMa-5O6-27WoxKZxk9g-1; Fri, 19 Jun 2020 08:49:42 -0400
-X-MC-Unique: syEXMa-5O6-27WoxKZxk9g-1
-Received: by mail-lj1-f198.google.com with SMTP id u10so1371859ljk.3
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 05:49:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/g/+YnCzud6gIE/myiatywuh+bgiNOQQZfOvz+r2RZM=;
-        b=mQk3InzC3kPvspD143zxIvYqD4yC1CebgMcTv3S1tA7mBFSrAVdWOCTvosRpPc4HUA
-         RWK3/vRam6yCbIjo654zWRZ6WBYr77yyT4w0Hicm7s6h3jAGYHTricSQT+qGLvE8oyIN
-         B6YUK1kNCQ6RofajYnt0sp2bey0/6yo+RSLijoxIwhH2DrbAPKAM8avxIx5UULG5m+vH
-         Vr8NugkHMmUMXtNDINXPqFTgX4caqstCVD9zkvdtFAeF3dJxhrgFLwLsSuQpBD4aifET
-         C4j5ybTsLdLMK4BoL5HYae3lAa5IzxpPREHr/eQg3wkyl1f5oEgVD3MyEj+qzffS7Lzw
-         0Rbw==
-X-Gm-Message-State: AOAM533IuayvjP7b+jEOq7IO1fmEZzA2QXb/bZBw4fB3D5SG53pE3rpj
-        L79OZoztcv95TlKN85tlIEjFHvhzSoIE00nwSnXv8+mQz+USlgpAfZtbSfjEKqY2sstFLWwWBc4
-        JuoEB9Ys+jnUn8SNmPzG1NqfrUGZE
-X-Received: by 2002:ac2:5604:: with SMTP id v4mr1946247lfd.124.1592570981116;
-        Fri, 19 Jun 2020 05:49:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXiPt6NoxSwMoZyeQFCP8RfJAk3JTg7gTtWYjd2TAO4zxGdEHaGSVd0jZZyRVkg26M9VYhdLJvCgnHGSnzbYY=
-X-Received: by 2002:ac2:5604:: with SMTP id v4mr1946227lfd.124.1592570980848;
- Fri, 19 Jun 2020 05:49:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200520125616.193765-1-kpsingh@chromium.org>
-In-Reply-To: <20200520125616.193765-1-kpsingh@chromium.org>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 19 Jun 2020 14:49:29 +0200
-Message-ID: <CAFqZXNsu8Vs86SKpdnej_=xnQqg=Hh132JqNe1Ybt-bHJB4NeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        bh=H6YsdkKpEnRoRC9WP0tVXaHDjzV1XLjvtqhwopcwKSc=;
+        b=bxcqgb5yQhkJ3B9C78z6i5iw9GDM+N8K+SwrJyUMH+svPcdhrookpSggRyIXQjyBgMUWv4
+        zQKij0UZflHFcpL9z/XEi+4HVhc40aaqE/3X8ClyvexRRoFTDnHysKbfW5Gn+nNVYsAugh
+        dcj6n6q+8jmkYrveghFD4M9vce3ChkA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-dxs724m3Nge-fDUozn2otA-1; Fri, 19 Jun 2020 09:04:00 -0400
+X-MC-Unique: dxs724m3Nge-fDUozn2otA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F5788035C3;
+        Fri, 19 Jun 2020 13:03:58 +0000 (UTC)
+Received: from krava (unknown [10.40.195.134])
+        by smtp.corp.redhat.com (Postfix) with SMTP id EFB8B60F89;
+        Fri, 19 Jun 2020 13:03:54 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 15:03:54 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 01/11] bpf: Add btfid tool to resolve BTF IDs in ELF
+ object
+Message-ID: <20200619130354.GB2465907@krava>
+References: <20200616100512.2168860-1-jolsa@kernel.org>
+ <20200616100512.2168860-2-jolsa@kernel.org>
+ <CAEf4BzbB0ZMfWHrhiPhv79sMVZ9L0gMj54uXKn_-+mTawPiBqw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbB0ZMfWHrhiPhv79sMVZ9L0gMj54uXKn_-+mTawPiBqw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 20, 2020 at 2:56 PM KP Singh <kpsingh@chromium.org> wrote:
-> From: KP Singh <kpsingh@google.com>
->
-> secid_to_secctx is not stackable, and since the BPF LSM registers this
-> hook by default, the call_int_hook logic is not suitable which
-> "bails-on-fail" and casues issues when other LSMs register this hook and
-> eventually breaks Audit.
->
-> In order to fix this, directly iterate over the security hooks instead
-> of using call_int_hook as suggested in:
->
-> https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
->
-> Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-> Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: KP Singh <kpsingh@google.com>
-[...]
+On Thu, Jun 18, 2020 at 05:38:03PM -0700, Andrii Nakryiko wrote:
+> On Tue, Jun 16, 2020 at 3:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > The btfid tool scans Elf object for .BTF_ids section and
+> > resolves its symbols with BTF IDs.
+> 
+> naming is hard and subjective, I know. But given this actively
+> modifies ELF file it probably should indicate this in the name. So
+> something like patch_btfids or resolve_btfids would be a bit more
+> accurate and for people not in the know will still trigger the
+> "warning, tool can modify something" flag, if there are any problems.
 
-Sorry for being late to the party, but doesn't this (and the
-associated default return value patch) just paper over a bigger
-problem? What if I have only the BPF LSM enabled and I attach a BPF
-program to this hook that just returns 0? Doesn't that allow anything
-privileged enough to do this to force the kernel to try and send
-memory from uninitialized pointers to userspace and/or copy such
-memory around and/or free uninitialized pointers?
+resolve_btfids sounds good to me
 
-Why on earth does the BPF LSM directly expose *all* of the hooks, even
-those that are not being used for any security decisions (and are
-"useful" in this context only for borking the kernel...)? Feel free to
-prove me wrong, but this lazy approach of "let's just take all the
-hooks as they are and stick BPF programs to them" doesn't seem like a
-good choice... IMHO you should either limit the set of hooks that can
-be attached to only those that aren't used to return back values via
-pointers, or (if you really really need to do some state
-updates/logging in those hooks) use wrapper functions that will call
-the BPF progs via a simplified interface so that they cannot cause
-unsafe behavior.
+> 
+> >
+> > It will be used to during linking time to resolve arrays
+> > of BTF IDs used in verifier, so these IDs do not need to
+> > be resolved in runtime.
+> >
+> > The expected layout of .BTF_ids section is described
+> > in btfid.c header. Related kernel changes are coming in
+> > following changes.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/bpf/btfid/Build    |  26 ++
+> >  tools/bpf/btfid/Makefile |  71 +++++
+> >  tools/bpf/btfid/btfid.c  | 627 +++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 724 insertions(+)
+> >  create mode 100644 tools/bpf/btfid/Build
+> >  create mode 100644 tools/bpf/btfid/Makefile
+> >  create mode 100644 tools/bpf/btfid/btfid.c
+> >
+> 
+> [...]
+> 
+> > diff --git a/tools/bpf/btfid/btfid.c b/tools/bpf/btfid/btfid.c
+> > new file mode 100644
+> > index 000000000000..7cdf39bfb150
+> > --- /dev/null
+> > +++ b/tools/bpf/btfid/btfid.c
+> > @@ -0,0 +1,627 @@
+> > +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > +#define  _GNU_SOURCE
+> > +
+> > +/*
+> > + * btfid scans Elf object for .BTF_ids section and resolves
+> > + * its symbols with BTF IDs.
+> > + *
+> > + * Each symbol points to 4 bytes data and is expected to have
+> > + * following name syntax:
+> > + *
+> > + * __BTF_ID__<type>__<symbol>[__<id>]
+> 
+> This ___<id> thingy is just disambiguation between multiple places in
+> the code that could have BTF_ID macro, right? Or it has extra meaning?
 
---
-Ondrej Mosnacek
-Software Engineer, Platform Security - SELinux kernel
-Red Hat, Inc.
+it's there so you could multiple BTF_ID instances with the same
+symbol name
+
+> 
+> > + *
+> > + * type is:
+> > + *
+> > + *   func   - lookup BTF_KIND_FUNC symbol with <symbol> name
+> > + *            and put its ID into its data
+> > + *
+> > + *             __BTF_ID__func__vfs_close__1:
+> > + *             .zero 4
+> > + *
+> > + *   struct - lookup BTF_KIND_STRUCT symbol with <symbol> name
+> > + *            and put its ID into its data
+> > + *
+> > + *             __BTF_ID__struct__sk_buff__1:
+> > + *             .zero 4
+> > + *
+> > + *   sort   - put symbol size into data area and sort following
+> 
+> Oh, I finally got what "put symbol size" means :) It's quite unclear,
+> to be honest. Also, is this size in bytes or number of IDs? Clarifying
+> would be helpful (I'll probably get this from reading further down the
+> code, but still..)
+
+I 'put' ;-) the documentation mainly to kernel/bpf/btf_ids.h,
+
+so there are 2 types of lists, first one defines
+just IDs as they go:
+
+ BTF_ID_LIST(list1)
+ BTF_ID(type1, name1)
+ BTF_ID(type2, name2)
+
+and it's used for helpers btf_id array
+
+2nd one provides count and is sorted:
+
+ BTF_WHITELIST_ENTRY(list2)
+ BTF_ID(type1, name1)
+ BTF_ID(type2, name2)
+ BTF_WHITELIST_END(list)
+
+and it's used for d_path whitelist so far
+
+SNIP
+
+> > +               if (sym.st_shndx != obj->efile.idlist_shndx)
+> > +                       continue;
+> > +
+> > +               name = elf_strptr(obj->efile.elf, obj->efile.strtabidx,
+> > +                                 sym.st_name);
+> > +
+> > +               if (!is_btf_id(name))
+> > +                       continue;
+> > +
+> > +               /*
+> > +                * __BTF_ID__TYPE__vfs_truncate__0
+> > +                * prefix =  ^
+> > +                */
+> > +               prefix = name + sizeof(BTF_ID) - 1;
+> > +
+> > +               if (!strncmp(prefix, BTF_STRUCT, sizeof(BTF_STRUCT) - 1)) {
+> > +                       id = add_struct(obj, prefix);
+> > +               } else if (!strncmp(prefix, BTF_FUNC, sizeof(BTF_FUNC) - 1)) {
+> > +                       id = add_func(obj, prefix);
+> > +               } else if (!strncmp(prefix, BTF_SORT, sizeof(BTF_SORT) - 1)) {
+> > +                       id = add_sort(obj, prefix);
+> > +
+> > +                       /*
+> > +                        * SORT objects store list's count, which is encoded
+> > +                        * in symbol's size.
+> > +                        */
+> > +                       if (id)
+> > +                               id->cnt = sym.st_size / sizeof(int);
+> 
+> doesn't sym.st_size also include extra 4 bytes for length prefix?
+
+no, count is excluded from the size
+
+SNIP
+
+> > +       btf = btf__parse_elf(obj->path, NULL);
+> > +       err = libbpf_get_error(btf);
+> > +       if (err) {
+> > +               pr_err("FAILED: load BTF from %s: %s",
+> > +                       obj->path, strerror(err));
+> > +               return -1;
+> > +       }
+> > +
+> > +       nr = btf__get_nr_types(btf);
+> > +
+> > +       /*
+> > +        * Iterate all the BTF types and search for collected symbol IDs.
+> > +        */
+> > +       for (type_id = 0; type_id < nr; type_id++) {
+> 
+> common gotcha: type_id <= nr, you can also skip type_id == 0 (always VOID)
+
+ugh, yep.. thanks ;-)
+
+> 
+> > +               const struct btf_type *type;
+> > +               struct rb_root *root = NULL;
+> > +               struct btf_id *id;
+> > +               const char *str;
+> > +               int *nr;
+> > +
+> > +               type = btf__type_by_id(btf, type_id);
+> > +               if (!type)
+> > +                       continue;
+> 
+> This ought to be an error...
+
+ok, something like "BTF malformed error"
+
+> 
+> > +
+> > +               /* We support func/struct types. */
+> > +               if (BTF_INFO_KIND(type->info) == BTF_KIND_FUNC && nr_funcs) {
+> 
+> see libbpf's btf.h: btf_is_func(type)
+
+ok 
+
+> 
+> > +                       root = &obj->funcs;
+> > +                       nr = &nr_funcs;
+> > +               } else if (BTF_INFO_KIND(type->info) == BTF_KIND_STRUCT && nr_structs) {
+> 
+> same as above: btf_is_struct
+> 
+> But I think you also need to support unions?
+> 
+> Also what about typedefs? A lot of types are typedefs to struct/func_proto/etc.
+
+I added only types which are needed at the moment, but maybe
+we can add the basic types now, so we don't need to bother later,
+when we forget how this all work ;-)
+
+> 
+> > +                       root = &obj->structs;
+> > +                       nr = &nr_structs;
+> > +               } else {
+> > +                       continue;
+> > +               }
+> > +
+> > +               str = btf__name_by_offset(btf, type->name_off);
+> > +               if (!str)
+> > +                       continue;
+> 
+> error, shouldn't happen
+
+ok
+
+> 
+> > +
+> > +               id = btf_id__find(root, str);
+> > +               if (id) {
+> 
+> isn't it an error, if not found?
+
+no, at this point we are checking if this BTF type was collected
+as a symbol for struct/func in some list.. if not, we continue the
+iteration to next BTF type
+
+> 
+> > +                       id->id = type_id;
+> > +                       (*nr)--;
+> > +               }
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> 
+> [...]
+> 
+> > +
+> > +       /*
+> > +        * We do proper cleanup and file close
+> > +        * intentionally only on success.
+> > +        */
+> > +       if (elf_collect(&obj))
+> > +               return -1;
+> > +
+> > +       if (symbols_collect(&obj))
+> > +               return -1;
+> > +
+> > +       if (symbols_resolve(&obj))
+> > +               return -1;
+> > +
+> > +       if (symbols_patch(&obj))
+> > +               return -1;
+> 
+> nit: should these elf_end/close properly on error?
+
+I wrote in the comment above that I intentionaly do not cleanup
+on error path.. I wanted to save some time, but actualy I think
+that would not be so expensive, I can add it
+
+thanks,
+jirka
+
+> 
+> 
+> > +
+> > +       elf_end(obj.efile.elf);
+> > +       close(obj.efile.fd);
+> > +       return 0;
+> > +}
+> > --
+> > 2.25.4
+> >
+> 
 
