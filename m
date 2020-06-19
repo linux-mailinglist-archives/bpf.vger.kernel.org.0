@@ -2,174 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D570200B27
-	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 16:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99032019AA
+	for <lists+bpf@lfdr.de>; Fri, 19 Jun 2020 19:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgFSORQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 10:17:16 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45379 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731756AbgFSORP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jun 2020 10:17:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592576232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kLi8OmcpAn5G3kBd5W0qjMBKSdfFGH1S+Rf0efF4Xls=;
-        b=frVI63bARf9TeKAOhsrqr955v0d+yR9q2uvHXAvWMmI/ljDQ0uHRN0s/s0HDOG8lM44yLt
-        SWnJeEy+E9ZWJq5jZ++jCqqonUQ6kSET8Ucfp6SwBR0WQRhfBUNs4pAPnb11bK3n2OmO4h
-        ArptbM6us1rGMMbVyKpE514lW6ycfHA=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-3kbNSHnuOvyQCttiJVKbEQ-1; Fri, 19 Jun 2020 10:17:10 -0400
-X-MC-Unique: 3kbNSHnuOvyQCttiJVKbEQ-1
-Received: by mail-lf1-f69.google.com with SMTP id n17so3484846lfe.15
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 07:17:09 -0700 (PDT)
+        id S1732563AbgFSRoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 13:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731681AbgFSRox (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:44:53 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E6BC06174E;
+        Fri, 19 Jun 2020 10:44:53 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r18so4772756pgk.11;
+        Fri, 19 Jun 2020 10:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=0QTxVclpKLRWUv6Qkt7Oy+I/CqvmSS/OXzrlfUz9hMw=;
+        b=QnpcjL1S9hDTKp3tXf2mumk0YWSlXC9EgE9t2zc18GUhzATlRMZwIiamU8+aRXmx9p
+         reujFq2zmF4jyUxI2wZxqKpoiUS8KmSkdhUqc23EAvr8eXTbgYaO1EKVljZT0I4jzx4w
+         kMEtHpD9k/h4Ji/4qdtsBI7LXNPubgE4v6Fs0hCHrEgN4WaN8uRYfh8Oxr4f4eeARZCh
+         0dPMZqjNJPH1Up8JJoDlhQ+kVCjRjNMUgOReapo6WXYRhJEgN0GSBt59HjFbStvOv9+G
+         OId7erF0K2farn+Yu7v02MIFT1TqV62GBRtwCG0oMWAZpuJEmdnCZyArJ0fP/Qj9d9lT
+         8mKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kLi8OmcpAn5G3kBd5W0qjMBKSdfFGH1S+Rf0efF4Xls=;
-        b=Zbow3WbmIkBQlbtrnRbxReZ8Y5yOHEpISrW5KprGitBTzi87gNfFD/DFU9XrtOySCU
-         TRMiAph4tGAPNwSQL6U75Tly+3NYA1VYPZjl2enlYYqXmgGhONjwgWC9o7Q+lBGHywu8
-         xxNAMLPw/n8u30bUcap8qT8E39rld+ja5/zlXRNjaR3GAdGsu9Wu4Tw4iyVYi88PhZt0
-         yze8wFpSNhd4GogIeZGi5CDJ5PPtcmKFpRRC1GjIB1YbJlle3epozPG9OUKvXHVDIqSV
-         aSmURtTIagednrFKEAx38fTUyBYzFxAIfAy/lPCvxByefQL2kkGW58a/2Y3vfemSTFNu
-         Zk0w==
-X-Gm-Message-State: AOAM533WUfKznNr2EZfqtle3GMlGlqZgz2nraaFt9NfA/VVaffSi/rHs
-        iIq5b1gH5XA+7/M50M/jBoPfRb3Rl4JyaMIINSOQbzU/YPd2cmyyPZzL2XB2jBTXqvMdPzUHTl3
-        8z1zZV1w/rlJ4dyDRrGB0qDi7khr+
-X-Received: by 2002:a05:651c:288:: with SMTP id b8mr2016196ljo.337.1592576227338;
-        Fri, 19 Jun 2020 07:17:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBnUX8NJhTD9+Y6SBhotedimZLTfDoRHr3zkymH2rIJx1if7ROCyyryB7ZBKdteKrgkvdIe7XhrXsikvdoXds=
-X-Received: by 2002:a05:651c:288:: with SMTP id b8mr2016174ljo.337.1592576226986;
- Fri, 19 Jun 2020 07:17:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200520125616.193765-1-kpsingh@chromium.org> <CAFqZXNsu8Vs86SKpdnej_=xnQqg=Hh132JqNe1Ybt-bHJB4NeQ@mail.gmail.com>
- <CACYkzJ5e_JOLS-gmNug6e4RJkSsv7sjMUfMWyfMCsQLSoxS8RQ@mail.gmail.com>
-In-Reply-To: <CACYkzJ5e_JOLS-gmNug6e4RJkSsv7sjMUfMWyfMCsQLSoxS8RQ@mail.gmail.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 19 Jun 2020 16:16:56 +0200
-Message-ID: <CAFqZXNuqNP4OMQGNunyUyyKBc_0-e_P+ogha08V6UsTNCATfLA@mail.gmail.com>
-Subject: Re: [PATCH bpf] security: Fix hook iteration for secid_to_secctx
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=0QTxVclpKLRWUv6Qkt7Oy+I/CqvmSS/OXzrlfUz9hMw=;
+        b=BMGGiVtoqT+c30EUjVGsRpkRW9UfO7FF2pWTbDqRMP0Ax5YG3CXAFRpc0mBZAjCfz5
+         DTX7ZQLWVvpy888ezyYuKNnjXM+c4xJLrxFyKcWtEx2bDRrgnp3K+42Y7sDbeUUBV78k
+         pD/iqY6sT1jbMkY1q2Yq3HxFQ1n3dMPv6u3hrJsupaoHe35H1s7l/AH+hYtFmb3F6eEG
+         ALfQOPQdmTqNg7zkCj3U/SNSov+dcA8XSNebQuA2KEqkv35sX1dV00pvZRA6klfm6o0N
+         QXMa9/7ddnhM7yypZEu4K14/NK0xgmf/k/ieP4LCAWlOmB8Pq71taaW/R+M05Z9xltXq
+         luRQ==
+X-Gm-Message-State: AOAM532PNgFMSQqWNqsCajZfSz+kuTCl0iZNsHazOAtV69femKyLaP9q
+        CWBCwjccWiA6XwXHh5aixg4=
+X-Google-Smtp-Source: ABdhPJzxSlyJnvignQypWslzCUvt/J7w/rjpKCkxDm1HSYpty5tBhyrVJIjsPamuCC+YrCwY4Q0GGg==
+X-Received: by 2002:a63:7741:: with SMTP id s62mr3903463pgc.332.1592588692388;
+        Fri, 19 Jun 2020 10:44:52 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id x14sm6503559pfq.80.2020.06.19.10.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 10:44:51 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 10:44:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
+        Masanori Misono <m.misono760@gmail.com>
+Message-ID: <5eecf98ba643c_137b2ad09f64a5c458@john-XPS-13-9370.notmuch>
+In-Reply-To: <4aec5fb8-9f9d-d01b-dd58-f15d50c5e827@fb.com>
+References: <20200616173556.2204073-1-jolsa@kernel.org>
+ <5eeaa556c7a0e_38b82b28075185c46a@john-XPS-13-9370.notmuch>
+ <20200618114806.GA2369163@krava>
+ <5eebe552dddc1_6d292ad5e7a285b83f@john-XPS-13-9370.notmuch>
+ <CAEf4Bzb+U+A9i0VfGUHLVt28WCob7pb-0iVQA8d1fcR8A27ZpA@mail.gmail.com>
+ <5eec061598dcf_403f2afa5de805bcde@john-XPS-13-9370.notmuch>
+ <CAADnVQLGNUcDWmrgUBmdcgLMfUNf=-3yroA8a+b7s+Ki5Tb4Jg@mail.gmail.com>
+ <4aec5fb8-9f9d-d01b-dd58-f15d50c5e827@fb.com>
+Subject: Re: [PATCH] bpf: Allow small structs to be type of function argument
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 3:13 PM KP Singh <kpsingh@chromium.org> wrote:
-> Hi,
->
-> On Fri, Jun 19, 2020 at 2:49 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> >
-> > On Wed, May 20, 2020 at 2:56 PM KP Singh <kpsingh@chromium.org> wrote:
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > secid_to_secctx is not stackable, and since the BPF LSM registers this
-> > > hook by default, the call_int_hook logic is not suitable which
-> > > "bails-on-fail" and casues issues when other LSMs register this hook and
-> > > eventually breaks Audit.
-> > >
-> > > In order to fix this, directly iterate over the security hooks instead
-> > > of using call_int_hook as suggested in:
-> > >
-> > > https: //lore.kernel.org/bpf/9d0eb6c6-803a-ff3a-5603-9ad6d9edfc00@schaufler-ca.com/#t
-> > >
-> > > Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-> > > Fixes: 625236ba3832 ("security: Fix the default value of secid_to_secctx hook"
-> > > Reported-by: Alexei Starovoitov <ast@kernel.org>
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > [...]
-> >
-> > Sorry for being late to the party, but doesn't this (and the
-> > associated default return value patch) just paper over a bigger
-> > problem? What if I have only the BPF LSM enabled and I attach a BPF
-> > program to this hook that just returns 0? Doesn't that allow anything
-> > privileged enough to do this to force the kernel to try and send
-> > memory from uninitialized pointers to userspace and/or copy such
-> > memory around and/or free uninitialized pointers?
-> >
-> > Why on earth does the BPF LSM directly expose *all* of the hooks, even
-> > those that are not being used for any security decisions (and are
-> > "useful" in this context only for borking the kernel...)? Feel free to
-> > prove me wrong, but this lazy approach of "let's just take all the
-> > hooks as they are and stick BPF programs to them" doesn't seem like a
->
-> The plan was definitely to not hook everywhere but only call the hooks
-> that do have a BPF program registered. This was one of the versions
-> we proposed in the initial patches where the call to the BPF LSM was
-> guarded by a static key with it being enabled only when there's a
-> BPF program attached to the hook.
->
-> https://lore.kernel.org/bpf/20200220175250.10795-5-kpsingh@chromium.org/
->
-> However, this special-cased BPF in the LSM framework, and, was met
-> with opposition. Our plan is to still achieve this, but we want to do this
-> with DEFINE_STATIC_CALL patches:
->
-> https://lore.kernel.org/lkml/cover.1547073843.git.jpoimboe@redhat.com
->
-> Using these, only can we enable the call into the hook based on whether
-> a program is attached, we can also eliminate the indirect call overhead which
-> currently affects the "slow" way which was decided in the discussion:
->
-> https://lore.kernel.org/bpf/202002241136.C4F9F7DFF@keescook/
+Yonghong Song wrote:
+> 
+> 
+> On 6/18/20 7:04 PM, Alexei Starovoitov wrote:
+> > On Thu, Jun 18, 2020 at 5:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >>
+> >>   foo(int a, __int128 b)
+> >>
+> >> would put a in r0 and b in r2 and r3 leaving a hole in r1. But that
+> >> was some old reference manual and  might no longer be the case
+> 
+> This should not happen if clang compilation with -target bpf.
+> This MAY happen if they compile with 'clang -target riscv' as the IR
+> could change before coming to bpf backend.
 
-Perhaps you are misunderstanding me... I don't have a problem with BPF
-LSM registering callbacks for all the hooks. My point is about what
-you can trigger once you attach programs to certain hooks. All the
-above seem to be just optimizations/implementation details that do not
-affect the problem I'm pointing to.
+I guess this means in order to handle __int128 and structs in
+btf_ctx_access we would have to know this did not happen. Otherwise
+the arg to type mappings are off because we simply do
 
->
-> > good choice... IMHO you should either limit the set of hooks that can
-> > be attached to only those that aren't used to return back values via
->
-> I am not sure if limiting the hooks is required here once we have
-> the ability to call into BPF only when a program is attached. If the
-> the user provides a BPF program, deliberately returns 0 (or any
-> other value) then it is working as intended. Even if we limit this in the
-> bpf LSM, deliberate privileged users can still achieve this with
-> other means.
+ arg = off / 8
 
-The point is that for this particular hook (secid_to_secctx) and a
-couple others, the consequences of having control over the return
-value are more serious than with other hooks. For most hooks, the
-implementation usually just returns 0 (OK), -EACCESS (access denied)
-or -E... (error) and the caller either continues as normal or handles
-the error. But here if you return 0, you signal that you have
-initialized the pointer and size to valid values. So suddenly the BPF
-prog doesn't just control allow/deny decisions, but can now easily
-trigger kernel panic. And when you look at the semantics of the hook,
-you will realize that it doesn't really make sense to implement it via
-BPF, since it can never populate the output values and the only
-meaningful implementation would be to just return -EOPNOTSUPP.
+> 
+> >> in reality. Perhaps just spreading hearsay, but the point is we
+> >> should say something about what the BPF backend convention
+> >> is and write it down. We've started to bump into these things
+> >> lately.
+> > 
+> > calling convention for int128 in bpf is _undefined_.
+> > calling convention for struct by value in bpf is also _undefined_.
+> 
+> Just to clarify a little bit. bpf backend did not do anything
+> special about int128 and struct type. It is using llvm default.
+> That is, int128 using two argument registers and struct passed
+> by address. But I do see some other architectures having their
+> own ways to handle these parameters like X86, AARCH64, AMDGPU, MIPS.
+> 
+> int128 is not widely used. passing struct as the argument is not
+> a good practice. So Agree with Alexei is not really worthwhile to
+> handle them in the place of arguments.
 
-Maybe I have it all wrong, but isn't the whole point of BPF programs
-to provide a tight sandbox where you can only implement pure input ->
-output functions + read/modify some internal state? Is it really
-"working as intended" if you can crash the kernel by attaching a
-simple BPF program to a certain hook? I mean yes, you can make the
-system pretty much unusable already using the classic hooks by simply
-returning -EACCESS for everything, but IMO that's quite different from
-causing the kernel to do an invalid memory access.
+Agree as well I'll just add a small fix to check btf_type_is_int()
+size is <= u64 and that should be sufficient to skip handling the
+int128 case.
 
--- 
-Ondrej Mosnacek
-Software Engineer, Platform Security - SELinux kernel
-Red Hat, Inc.
+> 
+> > 
+> > In many cases the compiler has to have the backend code
+> > so other parts of the compiler can function.
+> > I didn't bother explicitly disabling every undefined case.
+> > Please don't read too much into llvm generated code.
+> > 
+
 
