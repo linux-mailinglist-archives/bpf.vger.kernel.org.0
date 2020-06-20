@@ -2,232 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70322024CA
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 17:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2480F202530
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 18:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgFTPbV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Jun 2020 11:31:21 -0400
-Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:33108 "EHLO
-        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725777AbgFTPbU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 20 Jun 2020 11:31:20 -0400
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id C9A622E14A5;
-        Sat, 20 Jun 2020 18:31:15 +0300 (MSK)
-Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id wNKa81Et9K-VEiqWprM;
-        Sat, 20 Jun 2020 18:31:15 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1592667075; bh=sSp3Cjh5xIiN4Wl8lDKmCKq565XnwoV+CUq1oZCzkTw=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=h8ib4eP76R62SC6gc7t8/zyPrsM797mv0Axu/qmABOWADwJ0JEJssySLU4uSuHcxt
-         cA3mQnqpk2VG+RHnki/ruml/54PX+JgsTIWgd80J2Cmx/Yq5qapRDjLQ5pGcIwFP83
-         j+vSbUEI9j+egQutYEIqMUQlsClLcnT8DIq6+PmE=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 178.154.161.3-vpn.dhcp.yndx.net (178.154.161.3-vpn.dhcp.yndx.net [178.154.161.3])
-        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 92kUged0fz-VEkKU89s;
-        Sat, 20 Jun 2020 18:31:14 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     daniel@iogearbox.net, alexei.starovoitov@gmail.com
-Cc:     davem@davemloft.net, brakmo@fb.com, eric.dumazet@gmail.com,
-        kafai@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next v5 3/3] bpf: add SO_KEEPALIVE and related options to bpf_setsockopt
-Date:   Sat, 20 Jun 2020 18:30:52 +0300
-Message-Id: <20200620153052.9439-3-zeil@yandex-team.ru>
-In-Reply-To: <20200620153052.9439-1-zeil@yandex-team.ru>
-References: <20200620153052.9439-1-zeil@yandex-team.ru>
+        id S1726858AbgFTQWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Jun 2020 12:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgFTQWU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Jun 2020 12:22:20 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950DEC06174E
+        for <bpf@vger.kernel.org>; Sat, 20 Jun 2020 09:22:20 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id t85so2804411ili.5
+        for <bpf@vger.kernel.org>; Sat, 20 Jun 2020 09:22:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pallissard.net; s=google;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=ZFaDAYictEV71Pt7cuSV4Z+WzgOfXbyxah3i3EnbYlg=;
+        b=F2rQ3+4Tlt9DT7xWpSUmfxZnw6xuIvjYu9ZPRSs1X1SBYPeh6Ca5qygTuu6nXX1vTy
+         inYd8OEZCSxnZs/aluqqvov0o7X6oONiWrOA1YYPcM4MNaSISkXa22ZSlHIMjAIEXpyc
+         FwP/6Q55dX9qXKjsoE/4yXyEmv1lXriN0GgY73vWbeW2lOWgMl7qMn0YV7LyqCy98t2o
+         olAyW+oX2NQasn194mi9Y/YK2uREOHaZU0Wl5RxuJ7/OmgOYMcQsVwDXk5ujXBv0ZRDE
+         l9GbZ1RTi4t4DRS4KSJlSOGTuFPp/vsRjqDY0Y1HAl5QOqqufiWkEqc+3hQIRowmg+kr
+         2cpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=ZFaDAYictEV71Pt7cuSV4Z+WzgOfXbyxah3i3EnbYlg=;
+        b=LFRWlwhP5oNxCvPOS/+BAGprQP9O7Gp+8AytURhDHlKtPtn6vnI5d+VDexX9OxZs1l
+         zWRDvE0Od7IM1SqKeDLXwfBuxanJMbx/+cMqyl2Y11aCXoO9pPIEU/4WK099UbKKZq14
+         VkiuVXrtDKv6Eed0TEnFEcYGkhJKLengUUEzGflqrRRFkzipn5WZzODapTEOQi5cZObj
+         5+YCKvSjTdLP5Op9TIky9fhKu0jyZIifFlIUn/ziIFtW2X+dFLwEAaHF24Qmxa9ykhWU
+         Fi2zeA4kvOYwUZIB1ZcsQf/Gjzzr+fg/+4dupWHdSdwIXAahq4NBnV4Yb70Yw9XUQ+g0
+         yNBA==
+X-Gm-Message-State: AOAM531unQTXB2Jk0jZIxKuZYwpG8CnYSH4ERf2Cx/3d8VzfI4oTZO2q
+        2a1DhhB7CLCiSyYQnrXeobocX7Nffcg=
+X-Google-Smtp-Source: ABdhPJz30ARIWlcA6YyOoX7JBJDWIlfEKhBsAmLWTUf9tw6xNgSyket3sLzr366BGz87ur2Ns1QX4A==
+X-Received: by 2002:a05:6e02:e51:: with SMTP id l17mr9444831ilk.39.1592670139575;
+        Sat, 20 Jun 2020 09:22:19 -0700 (PDT)
+Received: from mail.matt.pallissard.net (223.91.188.35.bc.googleusercontent.com. [35.188.91.223])
+        by smtp.gmail.com with ESMTPSA id l9sm4891720ili.86.2020.06.20.09.22.18
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jun 2020 09:22:18 -0700 (PDT)
+Date:   Sat, 20 Jun 2020 09:22:16 -0700
+From:   Matt Pallissard <matt@pallissard.net>
+To:     bpf@vger.kernel.org
+Subject: Accessing mm_rss_stat fields with btf/BPF_CORE_READ_INTO
+Message-ID: <20200620162216.2ioyj6uzlpc45jzx@matt-gen-desktop-p01.matt.pallissard.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds support of SO_KEEPALIVE flag and TCP related options
-to bpf_setsockopt() routine. This is helpful if we want to enable or tune
-TCP keepalive for applications which don't do it in the userspace code.
+New to bpf here.
 
-v3:
-  - update kernel-doc in uapi (Nikita Vetoshkin <nekto0n@yandex-team.ru>)
+I'm trying to read values out of of mm_struct.  I have code like this;
 
-v4:
-  - update kernel-doc in tools too (Alexei Starovoitov)
-  - add test to selftests (Alexei Starovoitov)
+unsigned long i[10] = {};
+struct task_struct *t;
+struct mm_rss_stat *rss;
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- include/uapi/linux/bpf.h                          |  7 +++--
- net/core/filter.c                                 | 36 ++++++++++++++++++++++-
- tools/include/uapi/linux/bpf.h                    |  7 +++--
- tools/testing/selftests/bpf/progs/connect4_prog.c | 27 +++++++++++++++++
- 4 files changed, 72 insertions(+), 5 deletions(-)
+t = (struct task_struct *)bpf_get_current_task();
+BPF_CORE_READ_INTO(&rss, t, mm, rss_stat);
+BPF_CORE_READ_INTO(i, rss, count);
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 1968481..1df0df1 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1621,10 +1621,13 @@ union bpf_attr {
-  *
-  * 		* **SOL_SOCKET**, which supports the following *optname*\ s:
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-- * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**.
-+ * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-+ * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-- * 		  **TCP_BPF_SNDCWND_CLAMP**.
-+ * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-+ * 		  **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
-+ * 		  **TCP_SYNCNT**, **TCP_USER_TIMEOUT**.
-  * 		* **IPPROTO_IP**, which supports *optname* **IP_TOS**.
-  * 		* **IPPROTO_IPV6**, which supports *optname* **IPV6_TCLASS**.
-  * 	Return
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7339538..c713b6b 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4289,10 +4289,10 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			   char *optval, int optlen, u32 flags)
- {
- 	char devname[IFNAMSIZ];
-+	int val, valbool;
- 	struct net *net;
- 	int ifindex;
- 	int ret = 0;
--	int val;
- 
- 	if (!sk_fullsock(sk))
- 		return -EINVAL;
-@@ -4303,6 +4303,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 		if (optlen != sizeof(int) && optname != SO_BINDTODEVICE)
- 			return -EINVAL;
- 		val = *((int *)optval);
-+		valbool = val ? 1 : 0;
- 
- 		/* Only some socketops are supported */
- 		switch (optname) {
-@@ -4361,6 +4362,11 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			}
- 			ret = sock_bindtoindex(sk, ifindex, false);
- 			break;
-+		case SO_KEEPALIVE:
-+			if (sk->sk_prot->keepalive)
-+				sk->sk_prot->keepalive(sk, valbool);
-+			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-+			break;
- 		default:
- 			ret = -EINVAL;
- 		}
-@@ -4421,6 +4427,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			ret = tcp_set_congestion_control(sk, name, false,
- 							 reinit, true);
- 		} else {
-+			struct inet_connection_sock *icsk = inet_csk(sk);
- 			struct tcp_sock *tp = tcp_sk(sk);
- 
- 			if (optlen != sizeof(int))
-@@ -4449,6 +4456,33 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 				else
- 					tp->save_syn = val;
- 				break;
-+			case TCP_KEEPIDLE:
-+				ret = tcp_sock_set_keepidle_locked(sk, val);
-+				break;
-+			case TCP_KEEPINTVL:
-+				if (val < 1 || val > MAX_TCP_KEEPINTVL)
-+					ret = -EINVAL;
-+				else
-+					tp->keepalive_intvl = val * HZ;
-+				break;
-+			case TCP_KEEPCNT:
-+				if (val < 1 || val > MAX_TCP_KEEPCNT)
-+					ret = -EINVAL;
-+				else
-+					tp->keepalive_probes = val;
-+				break;
-+			case TCP_SYNCNT:
-+				if (val < 1 || val > MAX_TCP_SYNCNT)
-+					ret = -EINVAL;
-+				else
-+					icsk->icsk_syn_retries = val;
-+				break;
-+			case TCP_USER_TIMEOUT:
-+				if (val < 0)
-+					ret = -EINVAL;
-+				else
-+					icsk->icsk_user_timeout = val;
-+				break;
- 			default:
- 				ret = -EINVAL;
- 			}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 1968481..1df0df1 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1621,10 +1621,13 @@ union bpf_attr {
-  *
-  * 		* **SOL_SOCKET**, which supports the following *optname*\ s:
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-- * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**.
-+ * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-+ * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-- * 		  **TCP_BPF_SNDCWND_CLAMP**.
-+ * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-+ * 		  **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
-+ * 		  **TCP_SYNCNT**, **TCP_USER_TIMEOUT**.
-  * 		* **IPPROTO_IP**, which supports *optname* **IP_TOS**.
-  * 		* **IPPROTO_IPV6**, which supports *optname* **IPV6_TCLASS**.
-  * 	Return
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
-index 1ab2c5e..b1b2773 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -104,6 +104,30 @@ static __inline int bind_to_device(struct bpf_sock_addr *ctx)
- 	return 0;
- }
- 
-+static __inline int set_keepalive(struct bpf_sock_addr *ctx)
-+{
-+	int zero = 0, one = 1;
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_KEEPALIVE, &one, sizeof(one)))
-+		return 1;
-+	if (ctx->type == SOCK_STREAM) {
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPIDLE, &one, sizeof(one)))
-+			return 1;
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPINTVL, &one, sizeof(one)))
-+			return 1;
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPCNT, &one, sizeof(one)))
-+			return 1;
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_SYNCNT, &one, sizeof(one)))
-+			return 1;
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_USER_TIMEOUT, &one, sizeof(one)))
-+			return 1;
-+	}
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_KEEPALIVE, &zero, sizeof(zero)))
-+		return 1;
-+
-+	return 0;
-+}
-+
- SEC("cgroup/connect4")
- int connect_v4_prog(struct bpf_sock_addr *ctx)
- {
-@@ -121,6 +145,9 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
- 	if (bind_to_device(ctx))
- 		return 0;
- 
-+	if (set_keepalive(ctx))
-+		return 0;
-+
- 	if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
- 		return 0;
- 	else if (ctx->type == SOCK_STREAM)
--- 
-2.7.4
+However, all values in `i` appear to be 0 (i[MM_FILEPAGES], etc), as if no data gets copied.  I'm about 100% confident that this is caused by a glaring oversight on my part.
 
+Any advice or documentation I could sift through would be greatly appreciated.  Thanks.
+
+
+Matt Pallissard
