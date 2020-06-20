@@ -2,200 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EA5201F67
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 03:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ACB201F85
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 03:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbgFTBJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 21:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        id S1731511AbgFTBqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 21:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731251AbgFTBJT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:09:19 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1608C06174E
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:09:18 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id 9so10970996ilg.12
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:09:18 -0700 (PDT)
+        with ESMTP id S1731480AbgFTBqS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 21:46:18 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE03C06174E
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:46:16 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x16so887592wmj.1
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UhpiekcL/osjMfUbk2t4fa9K4n9IVTXK5qtITfS7wb0=;
-        b=GfqBm5RdsHI42oHaK/oBjBSImguZ28HHD8MDzpPr8hBFhP58BbmwDERtuo2xgQ2tJQ
-         d25O+ywySM7cRgg7R7R+0zvBs20a7atV9qkWE41Y5b0SXqG5XbPsTYOx5Mg2Bb1uh6qW
-         ClGSpE06XoQsHl5THJRbScZIH5IMgDYix51oriyBO0NQzdC8gq6prQwRSzlWLlDUWUj9
-         Nj4BE3yC/T0tethFc7a7ATI3Jb4RVV5iROLYk/Bw1RXrZ23fKShgGDhDAHvXyw96Fiiw
-         uJNmMewzvOilrNnaR5vgZ4sRNSPNihjXtqM99vzKmk2Tb6kLGQ0/D1dgjdn+azEjRJbN
-         5KyA==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ko+VujLUWbzJ7NWaZ7oUZgBjXDF0cE6d6Vn+/QjIizw=;
+        b=hRfTAJAx0WS4t6gfz1US62xDp+BxkluGX5MirFMKdcAXseKPd3SWSi5cIotLxKj/SV
+         pxxGWzrQAX3eYfkhK1zf5O4zk0hxhEe0gSVdBC4Rc1lJghqyRybxHxkSeFQ/UTR9vZKa
+         G1C88NjjQsgfQ2pWD5bBxMxVXGG66Trmk17wKyMNYEMBoD1wR1b5eKAdutzYSkC8uWUH
+         vOq7pHu8x+RBuuXKOKu5suGvqY03sYpc/UqdKeWGv5xw7f3tN881m/lEEz9e2P1Er5PJ
+         Nx7+wxCcK7zV+BI7HHJF0rIJgGb/z943X60fAogP6STaKSxTf+wAy3zDvw1bv4inHjKy
+         SAKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UhpiekcL/osjMfUbk2t4fa9K4n9IVTXK5qtITfS7wb0=;
-        b=DtE+vh58Zeh1tLtOEQXTBcaQrs6RqKNQs+pbDrPbsBVf3tVmITMlLetYKP/q93btWT
-         UON1UuaTWmeS89KxBonkZzfctpJgU6YhpMaFuwuCqIEM1libVRjehV4QyjuxOe9KMpHP
-         v2CZGeC0V7Wn5CjxZYsyqEtC1tqT+dX0EAbCq7c8KaaEVN+4Ne2XaUngDN+KkEUcOMtB
-         Gng5WU3v3Fr9hb6AIVpBfvXdsL3g5Mrga+xArmwCie7M26TccPAICT6SwtYUeHV6wt5o
-         7RAfluXcRekI5chsESIFOJJTne8Tfz+YU7RDVPU8FDCNkMRgW2i4u66iUxzE6i/g+ycx
-         icpQ==
-X-Gm-Message-State: AOAM5339hNnFcTd1t5DSTNu7OSIjcE3BT0o5mgweP84bNoy2IyCddx1p
-        t8/mRhwKebpgHIvT1NqQ0afHgvU0AzBKMTCrRuJabQ==
-X-Google-Smtp-Source: ABdhPJxIoLpD5Q1uOBA4YmvfB8qMILvfC1Mq0gFbBu0+slUj482v69aao7f9YrQHgHctYLzJpsJ0dqoonX3Gfbahrr4=
-X-Received: by 2002:a92:1f15:: with SMTP id i21mr5744544ile.61.1592615358238;
- Fri, 19 Jun 2020 18:09:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200619231703.738941-1-andriin@fb.com> <20200619231703.738941-4-andriin@fb.com>
-In-Reply-To: <20200619231703.738941-4-andriin@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 19 Jun 2020 18:09:06 -0700
-Message-ID: <CA+khW7gMZrKcwkzCkc4f3nfQ4PStiN6PJDjYb0F4uD+M4QPWug@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/9] selftests/bpf: add __ksym extern selftest
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ko+VujLUWbzJ7NWaZ7oUZgBjXDF0cE6d6Vn+/QjIizw=;
+        b=Nt3RR3ZjHQSk6COiZnAYCXZ/OhTxY7kqvd4i5zC4q5vBKv0vlj5v1qE8iq9eESSVU7
+         34MXZkeb1F7TMiVCX7ogLLgOE7xAyYtIzMS78lV9TJgWdHjpUe2ykxsA06rnQgqAbCus
+         44p1ew21pxnQfARwSGvnM6GfeLm6lh36515IRWSwa7A27+mwDWu5gmk6kjAQApwgnlQ8
+         NacBapE/sIbUFlh0k7sUVQHrS0iyMTb6WuUhn4T+ZSe3yo59qo0pmwqCKNuF0WbPxyob
+         7wTuJvnzE+sQRDadqpccwSHXZj3jwaPEAJhYiRkKRdqhLmw/9i/h66aWfuich/A38eWb
+         5xkQ==
+X-Gm-Message-State: AOAM532m9eGpEw62lAqVD+vBp8bK8dcIfwPctTww7rUgoPW+RYVO12DO
+        cv23ddM7+Rafoh8xcci+9N8XwQ==
+X-Google-Smtp-Source: ABdhPJwXUGhjppbE6zvMZV+L6jdPqmJ9aaEYYtvdF9pNo60N3hwLrbdSExWhtbWMAnPQ7hSGFpo34A==
+X-Received: by 2002:a1c:a74b:: with SMTP id q72mr6350090wme.122.1592617575345;
+        Fri, 19 Jun 2020 18:46:15 -0700 (PDT)
+Received: from [192.168.1.10] ([194.53.184.63])
+        by smtp.gmail.com with ESMTPSA id z6sm8855895wrh.79.2020.06.19.18.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 18:46:14 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 8/9] tools/bpftool: show info for processes
+ holding BPF map/prog/link/btf FDs
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Hao Luo <haoluo@google.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <songliubraving@fb.com>
+References: <20200619231703.738941-1-andriin@fb.com>
+ <20200619231703.738941-9-andriin@fb.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <72692317-ee96-1b4d-3f93-c0b148baa7ec@isovalent.com>
+Date:   Sat, 20 Jun 2020 02:46:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200619231703.738941-9-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Reviewed-by: Hao Luo <haoluo@google.com>
-
-
-On Fri, Jun 19, 2020 at 4:19 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Validate libbpf is able to handle weak and strong kernel symbol externs in BPF
-> code correctly.
->
+2020-06-19 16:17 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
+> Add bpf_iter-based way to find all the processes that hold open FDs against
+> BPF object (map, prog, link, btf). bpftool always attempts to discover this,
+> but will silently give up if kernel doesn't yet support bpf_iter BPF programs.
+> Process name and PID are emitted for each process (task group).
+> 
+> Sample output for each of 4 BPF objects:
+> 
+> $ sudo ./bpftool prog show
+> 2694: cgroup_device  tag 8c42dee26e8cd4c2  gpl
+>         loaded_at 2020-06-16T15:34:32-0700  uid 0
+>         xlated 648B  jited 409B  memlock 4096B
+>         pids systemd(1)
+> 2907: cgroup_skb  name egress  tag 9ad187367cf2b9e8  gpl
+>         loaded_at 2020-06-16T18:06:54-0700  uid 0
+>         xlated 48B  jited 59B  memlock 4096B  map_ids 2436
+>         btf_id 1202
+>         pids test_progs(2238417), test_progs(2238445)
+> 
+> $ sudo ./bpftool map show
+> 2436: array  name test_cgr.bss  flags 0x400
+>         key 4B  value 8B  max_entries 1  memlock 8192B
+>         btf_id 1202
+>         pids test_progs(2238417), test_progs(2238445)
+> 2445: array  name pid_iter.rodata  flags 0x480
+>         key 4B  value 4B  max_entries 1  memlock 8192B
+>         btf_id 1214  frozen
+>         pids bpftool(2239612)
+> 
+> $ sudo ./bpftool link show
+> 61: cgroup  prog 2908
+>         cgroup_id 375301  attach_type egress
+>         pids test_progs(2238417), test_progs(2238445)
+> 62: cgroup  prog 2908
+>         cgroup_id 375344  attach_type egress
+>         pids test_progs(2238417), test_progs(2238445)
+> 
+> $ sudo ./bpftool btf show
+> 1202: size 1527B  prog_ids 2908,2907  map_ids 2436
+>         pids test_progs(2238417), test_progs(2238445)
+> 1242: size 34684B
+>         pids bpftool(2258892)
+> 
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../testing/selftests/bpf/prog_tests/ksyms.c  | 71 +++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_ksyms.c  | 32 +++++++++
->  2 files changed, 103 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> new file mode 100644
-> index 000000000000..e3d6777226a8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
-> +
-> +#include <test_progs.h>
-> +#include "test_ksyms.skel.h"
-> +#include <sys/stat.h>
-> +
-> +static int duration;
-> +
-> +static __u64 kallsyms_find(const char *sym)
-> +{
-> +       char type, name[500];
-> +       __u64 addr, res = 0;
-> +       FILE *f;
-> +
-> +       f = fopen("/proc/kallsyms", "r");
-> +       if (CHECK(!f, "kallsyms_fopen", "failed to open: %d\n", errno))
-> +               return 0;
-> +
-> +       while (fscanf(f, "%llx %c %499s%*[^\n]\n", &addr, &type, name) > 0) {
-> +               if (strcmp(name, sym) == 0) {
-> +                       res = addr;
-> +                       goto out;
-> +               }
-> +       }
-> +
-> +       CHECK(false, "not_found", "symbol %s not found\n", sym);
-> +out:
-> +       fclose(f);
-> +       return res;
-> +}
-> +
-> +void test_ksyms(void)
-> +{
-> +       __u64 link_fops_addr = kallsyms_find("bpf_link_fops");
-> +       const char *btf_path = "/sys/kernel/btf/vmlinux";
-> +       struct test_ksyms *skel;
-> +       struct test_ksyms__data *data;
-> +       struct stat st;
-> +       __u64 btf_size;
-> +       int err;
-> +
-> +       if (CHECK(stat(btf_path, &st), "stat_btf", "err %d\n", errno))
-> +               return;
-> +       btf_size = st.st_size;
-> +
-> +       skel = test_ksyms__open_and_load();
-> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-> +               return;
-> +
-> +       err = test_ksyms__attach(skel);
-> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +               goto cleanup;
-> +
-> +       /* trigger tracepoint */
-> +       usleep(1);
-> +
-> +       data = skel->data;
-> +       CHECK(data->out__bpf_link_fops != link_fops_addr, "bpf_link_fops",
-> +             "got 0x%llx, exp 0x%llx\n",
-> +             data->out__bpf_link_fops, link_fops_addr);
-> +       CHECK(data->out__bpf_link_fops1 != 0, "bpf_link_fops1",
-> +             "got %llu, exp %llu\n", data->out__bpf_link_fops1, (__u64)0);
-> +       CHECK(data->out__btf_size != btf_size, "btf_size",
-> +             "got %llu, exp %llu\n", data->out__btf_size, btf_size);
-> +       CHECK(data->out__per_cpu_start != 0, "__per_cpu_start",
-> +             "got %llu, exp %llu\n", data->out__per_cpu_start, (__u64)0);
-> +
-> +cleanup:
-> +       test_ksyms__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_ksyms.c b/tools/testing/selftests/bpf/progs/test_ksyms.c
-> new file mode 100644
-> index 000000000000..6c9cbb5a3bdf
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_ksyms.c
-> @@ -0,0 +1,32 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
-> +
-> +#include <stdbool.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +__u64 out__bpf_link_fops = -1;
-> +__u64 out__bpf_link_fops1 = -1;
-> +__u64 out__btf_size = -1;
-> +__u64 out__per_cpu_start = -1;
-> +
-> +extern const void bpf_link_fops __ksym;
-> +extern const void __start_BTF __ksym;
-> +extern const void __stop_BTF __ksym;
-> +extern const void __per_cpu_start __ksym;
-> +/* non-existing symbol, weak, default to zero */
-> +extern const void bpf_link_fops1 __ksym __weak;
-> +
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       out__bpf_link_fops = (__u64)&bpf_link_fops;
-> +       out__btf_size = (__u64)(&__stop_BTF - &__start_BTF);
-> +       out__per_cpu_start = (__u64)&__per_cpu_start;
-> +
-> +       out__bpf_link_fops1 = (__u64)&bpf_link_fops1;
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.24.1
->
+
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
