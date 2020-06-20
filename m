@@ -2,88 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98C3201F9C
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 03:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EB72021CC
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 08:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731633AbgFTB7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 21:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        id S1725800AbgFTGEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Jun 2020 02:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731607AbgFTB7m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:59:42 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A47C06174E
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:59:42 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id k15so8761429otp.8
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:59:42 -0700 (PDT)
+        with ESMTP id S1725794AbgFTGEw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Jun 2020 02:04:52 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEDCC06174E
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 23:04:51 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id y5so13702068iob.12
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 23:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EmjYBfcthFLPAfNoGJ7hw7/jo1fvXpgJwBGS5L4D8b4=;
-        b=JUu9wN8tB2mQGhbfk1UAnnZ9RfWt4vRSHqS2c2IR/dDaG+FIbAsKkLZRIQyien00EQ
-         h9KP5bUiwUuxThdXBJnhHhKQ3NUyEUCpXIDVd6KXKy/RZXWlZik5fOv5H5HJse3g+rzA
-         +2eNGrjp9nXosSb0gLylF/fvzLTFe5Bh7t7iqkVUZ8oFXvGbkODTc6rIdWgTvANKv8hs
-         l1mHPVv/nhAS8hEpN03JOIQhBvXIeQfmmEZTsZzRzlpDcJdtD8sZLOVCcKZ9JPNydrK2
-         k8mi4ewOpjsqC5iycw7eBK1uiYCTrNmiMQNfut3Py0/rVADgwixBtiFqg+EROPzk36EG
-         vpeA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Y/tGRAMZ13s3vYUb6hbdRvpajhhqrYoN7qhO7d0pY3k=;
+        b=Z6pyXhzj9V8Ru9YpSRR1n+ah0l6LNz0n8r7CIYiXkkOkVDDsS1LMs/r7lS0dEEKC6q
+         jQPWBx69JJru/SwYagA4DmmfNRArRv0KEh+TIpiGhOSat0JzrPXi3+jKqIOY+BgbctZA
+         s0muLSfsaL9R7w/I2Q+JEux3ly/mcTl3MQsDuj5o7YjeXJQ6oxOaCa3Y1VOZIssTE1Zb
+         i6h6W623ouAfLw9/358DBqeGaKqjRwQPYkfOUmIa6Lm+pKPyedqRwfn0R9Xm6rrP9YVB
+         /apek/WnN9MuBXw+194F1w5TgnOU6iIIQrIXWUnEB3PlXz3YPIU2vCwYtPd6XGIUzgaR
+         g0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EmjYBfcthFLPAfNoGJ7hw7/jo1fvXpgJwBGS5L4D8b4=;
-        b=me+SKucV3xUHtZWqMDK74tQ01WbtehmYvllwSNFCePgIJ7zrtnNCGKfTdqPghtC1z2
-         7pkfyYYikSrpmFX6YFm/pmO9A6+qhwQV2FTpGQwWkmlQsAxRJYjGT71ePkrCZthXAuXg
-         iAcqStF9L3bqM8TtxsCGwqb6C6MbXwnhvPv6PI7HfGWRqGBgSawoDRQfYldswE1ZrQZz
-         1/fAAAqx9vsacBIq5K1pV3yPNI2Ra7JvDBCHiI+SKeQxQom3G6Le60klYAxYAaImOzVK
-         rWxhFNTYxsZXT7/5zeV87cHo2LYZWEIS2fyQ8MIWU8soCdwF1vTAhWk0DmFU2KEHmY9g
-         QuSQ==
-X-Gm-Message-State: AOAM530egqx+EdU/g4zgh/OjwNNqLW4mqSf1StWdn+Sleu0VsdK8+Rtd
-        KixYkoJdhkWPDENW3ripym2nvUk1kJTTGfj0l6vDxA==
-X-Google-Smtp-Source: ABdhPJxpYhBG2nZ2YN90j9UbA2QJ1Y14NL9UvQ43Bq0YaLX35Ie768LFhckIRxykRS2R2MN0bp+CuBRT0OC7XsbkHFY=
-X-Received: by 2002:a9d:26:: with SMTP id 35mr5141074ota.352.1592618380818;
- Fri, 19 Jun 2020 18:59:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHo-OoxJ6XBrBDXUxhCr0J58eOGq3FZu5+Rg6GLeeCjThrA8rg@mail.gmail.com>
- <CAADnVQKXbd986SrW2u4nxY-0nNuC7VoVM29=3LeD9potOJTdZQ@mail.gmail.com>
- <CAHo-Ooz4smKgTDTit4NAnaasUDLJLkX7iRcYouv4KY=AG5SUaA@mail.gmail.com>
- <CALAqxLXgnqSM16=a3O1NyqYae1n_rMyw4_hcx5APm9s-h3TBtQ@mail.gmail.com> <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
-In-Reply-To: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 19 Jun 2020 18:59:29 -0700
-Message-ID: <CALAqxLWLAVcYWk9qx-3ZvwG0urZmHfgbDd=wEx8rBLtC-OEv3A@mail.gmail.com>
-Subject: Re: capable_bpf_net_admin()
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Amit Pundir <amit.pundir@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Y/tGRAMZ13s3vYUb6hbdRvpajhhqrYoN7qhO7d0pY3k=;
+        b=tkGowVuGVBaFvX7RBxvZJmSIELeBW9z14oTCUPd14qPxu8SC/yvMWBw2M2CWuydofl
+         1bYwwOCh7uUn8V+jd2ouGkRe7U0QAum9onuPY2hH5SLWVZNCCNCq9hljqPisPPZMaIDw
+         Gvlm2to2J5Jriz1A7NSlrkIZppbkTpq0S5MAhS14C37cA6c/fYP7+TVQtRGequB65XEP
+         q5l+ukoDfZYBeetWfvA29Ffw8LdIsBCCPOdZyyFvpzG9dTxYNNpiZ9hvCwnydwVnt+U5
+         FkkclW+ObRPZi2otedGUKm2DOcGiEoNAZAQnMrBPXeZEkZaDvtxM+4DP7lhGVcOEK6mN
+         XN4w==
+X-Gm-Message-State: AOAM531lt/hdWE5qa5O5bQJsFak6ayeB13UipI6P0NP8B98HkFw7akAi
+        CqZpkGuXk13KL8L924IkvsA=
+X-Google-Smtp-Source: ABdhPJwO8E09QuDrLmO2Ri3ICHAlOBBXHAHH1BtV3/NY01UfvXTJ6yLlWmJtttD5hZXrgjTC5b0UbA==
+X-Received: by 2002:a02:94e6:: with SMTP id x93mr7208688jah.116.1592633091099;
+        Fri, 19 Jun 2020 23:04:51 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id v14sm4622577ioj.46.2020.06.19.23.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 23:04:50 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 23:04:41 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Cc:     Andrey Ignatov <rdna@fb.com>, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, andriin@fb.com, kernel-team@fb.com
+Message-ID: <5eeda6f98d9e8_38742acbd4fa45b8ab@john-XPS-13-9370.notmuch>
+In-Reply-To: <6e12d5c3e8a3d552925913ef73a695dd1bb27800.1592600985.git.rdna@fb.com>
+References: <cover.1592600985.git.rdna@fb.com>
+ <6e12d5c3e8a3d552925913ef73a695dd1bb27800.1592600985.git.rdna@fb.com>
+Subject: RE: [PATCH v2 bpf-next 1/5] bpf: Switch btf_parse_vmlinux to
+ btf_find_by_name_kind
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 12:22 PM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> Ok so I think
->
-> > +       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
-> > +               return -EPERM;
->
-> should be
->
-> > +       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && =
-!capable(CAP_SYS_ADMIN))
-> > +               return -EPERM;
->
-> and presumably similar change just below that for perfmon.
+Andrey Ignatov wrote:
+> btf_parse_vmlinux() implements manual search for struct bpf_ctx_convert
+> since at the time of implementing btf_find_by_name_kind() was not
+> available.
+> 
+> Later btf_find_by_name_kind() was introduced in 27ae7997a661 ("bpf:
+> Introduce BPF_PROG_TYPE_STRUCT_OPS"). It provides similar search
+> functionality and can be leveraged in btf_parse_vmlinux(). Do it.
+> 
+> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-Looks ok to me. Do you want to send out such a patch? If not I'll do
-so on Monday.
-
-thanks
--john
+Acked-by: John Fastabend <john.fastabend@gmail.com>
