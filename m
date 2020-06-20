@@ -2,84 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EF4201F87
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 03:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98C3201F9C
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 03:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731522AbgFTBra (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jun 2020 21:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S1731633AbgFTB7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jun 2020 21:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731506AbgFTBr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:47:29 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A50C06174E
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:47:29 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l26so10027332wme.3
-        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:47:29 -0700 (PDT)
+        with ESMTP id S1731607AbgFTB7m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jun 2020 21:59:42 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A47C06174E
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:59:42 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id k15so8761429otp.8
+        for <bpf@vger.kernel.org>; Fri, 19 Jun 2020 18:59:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RRI80pA92+WHPe9JHb6RmDr21aTeoF611uNGQOBLC6U=;
-        b=HF6GUPMnU7PJza0RCjFsXIUBRgrINKzJIF85lCW72p84EM7R/7KrucBsh20kjrvDUN
-         xemgR8iT9cYQM+EL++L6aGp/PEzm4ZUBSAOfmm5ByD5ALMkpf0R2/Iq2C97vqML+81/a
-         oHf5BBnhheLu1zAt5mIe6MhpGxlxcsXC38u34HQ0WvdglzzMVXT1xc7NcgAjbl8NqbQ5
-         wWftD7wWylDbY2gY6hb4wVrvBn1c7akZGxlVJ4wHnIJbt7tOr6YpOLaB4ZVgN9lLTMd/
-         kfgHZ1Gr2DoqIsBalOPZjNCc55qFtdLRV8SVbz0ZWJS4+HUBahXLolxTfbp75HXiymlx
-         u14A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EmjYBfcthFLPAfNoGJ7hw7/jo1fvXpgJwBGS5L4D8b4=;
+        b=JUu9wN8tB2mQGhbfk1UAnnZ9RfWt4vRSHqS2c2IR/dDaG+FIbAsKkLZRIQyien00EQ
+         h9KP5bUiwUuxThdXBJnhHhKQ3NUyEUCpXIDVd6KXKy/RZXWlZik5fOv5H5HJse3g+rzA
+         +2eNGrjp9nXosSb0gLylF/fvzLTFe5Bh7t7iqkVUZ8oFXvGbkODTc6rIdWgTvANKv8hs
+         l1mHPVv/nhAS8hEpN03JOIQhBvXIeQfmmEZTsZzRzlpDcJdtD8sZLOVCcKZ9JPNydrK2
+         k8mi4ewOpjsqC5iycw7eBK1uiYCTrNmiMQNfut3Py0/rVADgwixBtiFqg+EROPzk36EG
+         vpeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RRI80pA92+WHPe9JHb6RmDr21aTeoF611uNGQOBLC6U=;
-        b=r/QOsz0IBcHSpxftLGf8K0QetbxPLmSQxYBL2tWm/KsOefITgBZ7Y/7jLgAPwDqleI
-         YRgCcRcOyVQXqgf6UmSTyI5KoU3qwrZumo1CO0sGhLycrxSdfYTJpf+QcgjUyTpnoUGw
-         85LdpMH9yNoa0+1xk0iyjQdprWw1SmudDH8evDtwI88e4uC6ik5C9eNHpZpJx5p5vplr
-         ZfEl0JFVX3dzxpW9r4MN9X1t3THPjxQHwM0vvGqttM/Wu+1liSb4U6jcdTIIRdJhg2/T
-         PJrC6H6UY0ukpN+9FabyP3MNgi7IXjxfjjgL6sDHCkX/wINN3ljkNRH3bRmfHdzZKchO
-         e3NQ==
-X-Gm-Message-State: AOAM531GgEPp2YAYKfh/yw7XEkBOzZsSKqvYNkw7Y+bfA0waRtwmeRa7
-        N/VOK9JtAR2qR8k17oMkI7WL+Q==
-X-Google-Smtp-Source: ABdhPJwr/DxFHYX7yqC/YFIi3AclIK7SUR4dWewKjzMchrhWDMSNhDWeCOIjHFtcZQL7ViaeJY3MhA==
-X-Received: by 2002:a1c:4105:: with SMTP id o5mr6293936wma.168.1592617647867;
-        Fri, 19 Jun 2020 18:47:27 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id z16sm9034442wrm.70.2020.06.19.18.47.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 18:47:27 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 9/9] tools/bpftool: add documentation and
- sample output for process info
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Hao Luo <haoluo@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-References: <20200619231703.738941-1-andriin@fb.com>
- <20200619231703.738941-10-andriin@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <03d5040d-eb51-1984-4042-c6f461828063@isovalent.com>
-Date:   Sat, 20 Jun 2020 02:47:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EmjYBfcthFLPAfNoGJ7hw7/jo1fvXpgJwBGS5L4D8b4=;
+        b=me+SKucV3xUHtZWqMDK74tQ01WbtehmYvllwSNFCePgIJ7zrtnNCGKfTdqPghtC1z2
+         7pkfyYYikSrpmFX6YFm/pmO9A6+qhwQV2FTpGQwWkmlQsAxRJYjGT71ePkrCZthXAuXg
+         iAcqStF9L3bqM8TtxsCGwqb6C6MbXwnhvPv6PI7HfGWRqGBgSawoDRQfYldswE1ZrQZz
+         1/fAAAqx9vsacBIq5K1pV3yPNI2Ra7JvDBCHiI+SKeQxQom3G6Le60klYAxYAaImOzVK
+         rWxhFNTYxsZXT7/5zeV87cHo2LYZWEIS2fyQ8MIWU8soCdwF1vTAhWk0DmFU2KEHmY9g
+         QuSQ==
+X-Gm-Message-State: AOAM530egqx+EdU/g4zgh/OjwNNqLW4mqSf1StWdn+Sleu0VsdK8+Rtd
+        KixYkoJdhkWPDENW3ripym2nvUk1kJTTGfj0l6vDxA==
+X-Google-Smtp-Source: ABdhPJxpYhBG2nZ2YN90j9UbA2QJ1Y14NL9UvQ43Bq0YaLX35Ie768LFhckIRxykRS2R2MN0bp+CuBRT0OC7XsbkHFY=
+X-Received: by 2002:a9d:26:: with SMTP id 35mr5141074ota.352.1592618380818;
+ Fri, 19 Jun 2020 18:59:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200619231703.738941-10-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <CAHo-OoxJ6XBrBDXUxhCr0J58eOGq3FZu5+Rg6GLeeCjThrA8rg@mail.gmail.com>
+ <CAADnVQKXbd986SrW2u4nxY-0nNuC7VoVM29=3LeD9potOJTdZQ@mail.gmail.com>
+ <CAHo-Ooz4smKgTDTit4NAnaasUDLJLkX7iRcYouv4KY=AG5SUaA@mail.gmail.com>
+ <CALAqxLXgnqSM16=a3O1NyqYae1n_rMyw4_hcx5APm9s-h3TBtQ@mail.gmail.com> <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
+In-Reply-To: <CAHo-OoyU5OHQuqpTEo-uAQcwcLpzkXezFY6Re-Hv6jGM9aSFSA@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 19 Jun 2020 18:59:29 -0700
+Message-ID: <CALAqxLWLAVcYWk9qx-3ZvwG0urZmHfgbDd=wEx8rBLtC-OEv3A@mail.gmail.com>
+Subject: Re: capable_bpf_net_admin()
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-06-19 16:17 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
-> Add statements about bpftool being able to discover process info, holding
-> reference to BPF map, prog, link, or BTF. Show example output as well.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+On Thu, Jun 18, 2020 at 12:22 PM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> Ok so I think
+>
+> > +       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
+> > +               return -EPERM;
+>
+> should be
+>
+> > +       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && =
+!capable(CAP_SYS_ADMIN))
+> > +               return -EPERM;
+>
+> and presumably similar change just below that for perfmon.
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Looks ok to me. Do you want to send out such a patch? If not I'll do
+so on Monday.
 
-Thanks!
-
+thanks
+-john
