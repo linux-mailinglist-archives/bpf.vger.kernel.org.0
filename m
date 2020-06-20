@@ -2,92 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E4920264E
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 22:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA312026D6
+	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 23:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgFTUHH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Jun 2020 16:07:07 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45691 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728665AbgFTUHH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Jun 2020 16:07:07 -0400
-Received: by mail-il1-f195.google.com with SMTP id 9so12526003ilg.12
-        for <bpf@vger.kernel.org>; Sat, 20 Jun 2020 13:07:06 -0700 (PDT)
+        id S1729010AbgFTV11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Jun 2020 17:27:27 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42854 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728960AbgFTV11 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Jun 2020 17:27:27 -0400
+Received: by mail-pg1-f194.google.com with SMTP id e9so6202133pgo.9;
+        Sat, 20 Jun 2020 14:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pallissard.net; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2gNMr1S/xIykhwvOgtv8/8rjXyrli61zWUkcTHzpKvU=;
-        b=WaV1CCeAOfGcm9IuM/Rcn8FYRtQTIdy4XeqG7yFirIXiXGOWl5qEjSPFy6RRczOJuz
-         88QMNvFp8/Dtj3FT+8X7j8CP46q6sB1MiRvrj+FLRmQNNYaAuC+e8Lq0Dk7plbUEafKK
-         dx5bH/w+wplddxLOfCtrzxgaEKNIxWk6qEbgiULCr3rl5tp5cNbYz0ZUvgJ38lhPqI+i
-         rkjvlth/F4WpfYUZOXXSOWJfit5TTJr4ZjOPRBT4Ewtq8lH4hEu29wPH2brYubHt/jT8
-         b5ncMFMm+wFoXm6Tvs82DE+mPQgfAHltMBkDh0eZdxAtm4xiQM7D+TAQR3UudV525oeu
-         7xrQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0X0DDjflRu40U/YjqFAViv4c+Dopp8yvdpsJ3G4W+d4=;
+        b=ZzWwEs6iC/AJfANlnwkhyBE2ml+iCExSzoUh4PxqnM+UB0rp2p7inTJW3YJjVzRj7M
+         iVVE98iK6SEnCdNOexAEbjlhBGBaKcPecwkyUnNYj+A5RHcRHpDrYtw4B5Mx7xR/IeDD
+         cIMvXa4Oi4SeEqM2E8l3wqKcVuedfr7hrmgOcQ+TmmbYDNkVA1YWONTbgngpYhX3khXU
+         Bur2dxc8ZUcPTOOxIcxt+edxyH/YC0bEgs5LuA5eIfgE61e5wM2XSlJW3dx6bmAXgiQu
+         FsePeuwmBFmOLkN6o0D6h1kC0KRkQ/bCax+cV+AWfAKSo7Fe7433Ik09vXOh++L90Xmo
+         TafA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2gNMr1S/xIykhwvOgtv8/8rjXyrli61zWUkcTHzpKvU=;
-        b=YJm3UY36SLVzs91aFliYZZX/A9YW84+vN5DJL2cR5KbP1g7t7MObCbTY3GKCIxiwXJ
-         y21M8i3QxYzyM/83iqd7y/e0JIBADDA8slayHQJFsrisqertwaP5VFHMkcaK62OawJwT
-         B1f6YiLDzccJxKVInEge0dJjK2nZusul8I64bsOyI77r/Ljvcpq7Mc9vUBgUbLWqwpA8
-         1mhKdvSmi3t28gUrKKSu2LszQtdeulfi8Olk+3R0GGQIPnghb9l5lN4/dGiNW8WX5meE
-         wvq7eebv7EIWqlTXLNslk/VK81HYj0LQ3QMVYAWJqvtVDlb7R68qe1QYhb/WUmcskqwx
-         zp+w==
-X-Gm-Message-State: AOAM532tZUHeB2bDqaDED0AHCI6l4HZgU1lsfZyZbo5uYyc6EFGD1ipa
-        KgOXvW1tiho3r7XOTW58i2LwMQ==
-X-Google-Smtp-Source: ABdhPJwROj7DasB8wnmYqcZOxsZxp4sSX7dZNMoiPXqrA4txHVoXSKGeeQ3Dn05qd9I9+pUkU35LJA==
-X-Received: by 2002:a05:6e02:605:: with SMTP id t5mr9982030ils.231.1592683566141;
-        Sat, 20 Jun 2020 13:06:06 -0700 (PDT)
-Received: from mail.matt.pallissard.net (223.91.188.35.bc.googleusercontent.com. [35.188.91.223])
-        by smtp.gmail.com with ESMTPSA id s190sm986216ilc.28.2020.06.20.13.06.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0X0DDjflRu40U/YjqFAViv4c+Dopp8yvdpsJ3G4W+d4=;
+        b=audSLqMYoQPl+TuaZHUooXfUtEpAv9aDhqFUCdChX0h5xVEewrwCv6eI6s2ZLQwMiI
+         5ZKP0xvKaMZI5MFPP0ZK0JD5Q/GkijdXH26uqwTlEwQKckG9kwzPJlMeZs1g2zzJpksM
+         AbghqtCLIoHQxSS48f608arY8VB0Z+v4UQO2XUCaRqkWJebj+m1nUZ7jNFVyvBDOZY73
+         hCnAupB0D3/Q/JRxxsoVXoZtivVK7mUElXGPU9exDtT6kD3IufqQ3AC7E26xGAIL7DF0
+         6MIbUnkEfG/qm7UH8J6v+eEFShvsCtnLhA1zqpItvWU/mojD4IowP2fz5al6xtqi7Bd2
+         p0yw==
+X-Gm-Message-State: AOAM533ft7rtOHc1euzmj0ZNU6SDcqApkpBoMSyb9yplMPag3PpbZ5Iu
+        U5QxURhmO69muTce48+6bQg=
+X-Google-Smtp-Source: ABdhPJzcvjmtq3PMeDSVQKIdeWm9GAgtrPAZsQj5iFKq3SU7vplD5hrN58E21f0/s+oCsj/qFUmAjg==
+X-Received: by 2002:a63:b956:: with SMTP id v22mr4574957pgo.242.1592688386037;
+        Sat, 20 Jun 2020 14:26:26 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
+        by smtp.gmail.com with ESMTPSA id f14sm7808825pgj.62.2020.06.20.14.26.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 13:06:05 -0700 (PDT)
-Date:   Sat, 20 Jun 2020 13:06:02 -0700
-From:   Matt Pallissard <matt@pallissard.net>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: Accessing mm_rss_stat fields with btf/BPF_CORE_READ_INTO
-Message-ID: <20200620200602.ax7tjx5jrtgyj6vs@matt-gen-laptop-p01>
-References: <20200620162216.2ioyj6uzlpc45jzx@matt-gen-desktop-p01.matt.pallissard.net>
- <4889d766-578e-1e20-119f-9f97621e766f@fb.com>
+        Sat, 20 Jun 2020 14:26:25 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        John Stultz <john.stultz@linaro.org>
+Subject: [PATCH bpf v2] restore behaviour of CAP_SYS_ADMIN allowing the loading of networking bpf programs
+Date:   Sat, 20 Jun 2020 14:26:16 -0700
+Message-Id: <20200620212616.93894-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+In-Reply-To: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
+References: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4889d766-578e-1e20-119f-9f97621e766f@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Maciej Żenczykowski <maze@google.com>
 
+This is a fix for a regression introduced in 5.8-rc1 by:
+  commit 2c78ee898d8f10ae6fb2fa23a3fbaec96b1b7366
+  'bpf: Implement CAP_BPF'
 
+Before the above commit it was possible to load network bpf programs
+with just the CAP_SYS_ADMIN privilege.
 
-On 2020-06-20T11:11:55 -0700, Yonghong Song wrote:
->
->
-> On 6/20/20 9:22 AM, Matt Pallissard wrote:
-> > New to bpf here.
-> >
-> > I'm trying to read values out of of mm_struct.  I have code like this;
-> >
-> > unsigned long i[10] = {};
-> > struct task_struct *t;
-> > struct mm_rss_stat *rss;
-> >
-> > t = (struct task_struct *)bpf_get_current_task();
-> > BPF_CORE_READ_INTO(&rss, t, mm, rss_stat);
-> > BPF_CORE_READ_INTO(i, rss, count);
-> >
-> > However, all values in `i` appear to be 0 (i[MM_FILEPAGES], etc), as if no data gets copied.  I'm about 100% confident that this is caused by a glaring oversight on my part.
->
-> Maybe you want to check the return value of BPF_CORE_READ_INTO.
-> Underlying it is using bpf_probe_read and bpf_probe_read may fail e.g., due
-> to major fault.
+The Android bpfloader happens to run in such a configuration (it has
+SYS_ADMIN but not NET_ADMIN) and creates maps and loads bpf programs
+for later use by Android's netd (which has NET_ADMIN but not SYS_ADMIN).
 
-Doh, I should have known to check the return codes!  Yes, it was failing.  I knew I was overlooking something trivial.
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Reported-by: John Stultz <john.stultz@linaro.org>
+Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks a bunch.
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8da159936bab..7d946435587d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2121,7 +2121,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	    !bpf_capable())
+ 		return -EPERM;
+ 
+-	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
++	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	if (is_perfmon_prog_type(type) && !perfmon_capable())
+ 		return -EPERM;
+-- 
+2.27.0.111.gc72c7da667-goog
 
-Matt Pallissard
