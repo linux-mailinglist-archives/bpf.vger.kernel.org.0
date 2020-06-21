@@ -2,106 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA312026D6
-	for <lists+bpf@lfdr.de>; Sat, 20 Jun 2020 23:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CC220281B
+	for <lists+bpf@lfdr.de>; Sun, 21 Jun 2020 05:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgFTV11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Jun 2020 17:27:27 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:42854 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728960AbgFTV11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Jun 2020 17:27:27 -0400
-Received: by mail-pg1-f194.google.com with SMTP id e9so6202133pgo.9;
-        Sat, 20 Jun 2020 14:27:26 -0700 (PDT)
+        id S1729214AbgFUDHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Jun 2020 23:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728992AbgFUDHO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Jun 2020 23:07:14 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F12C061794;
+        Sat, 20 Jun 2020 20:07:13 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id q198so4874703qka.2;
+        Sat, 20 Jun 2020 20:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0X0DDjflRu40U/YjqFAViv4c+Dopp8yvdpsJ3G4W+d4=;
-        b=ZzWwEs6iC/AJfANlnwkhyBE2ml+iCExSzoUh4PxqnM+UB0rp2p7inTJW3YJjVzRj7M
-         iVVE98iK6SEnCdNOexAEbjlhBGBaKcPecwkyUnNYj+A5RHcRHpDrYtw4B5Mx7xR/IeDD
-         cIMvXa4Oi4SeEqM2E8l3wqKcVuedfr7hrmgOcQ+TmmbYDNkVA1YWONTbgngpYhX3khXU
-         Bur2dxc8ZUcPTOOxIcxt+edxyH/YC0bEgs5LuA5eIfgE61e5wM2XSlJW3dx6bmAXgiQu
-         FsePeuwmBFmOLkN6o0D6h1kC0KRkQ/bCax+cV+AWfAKSo7Fe7433Ik09vXOh++L90Xmo
-         TafA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WWJ0LfTE1o+QFSDrB22aIlwytmbwPgLM4+MVpi+Ikgw=;
+        b=fveFj3UpqLfYSUpKJL37oIPqu30gkaIHWbPP2fZR8/SzF+U63sRE3eRxrMd/yWiIZk
+         xNx47IZyUqnusomqYTzLJ1/PxM+JlO8ncbwizneMTilZVltV1QbRBmj0umcDF7dsaumJ
+         LLmdtLqVBU6H259/fYqiH2D9RqPswA1f0FUXTlaHATKvdkDFUtNbuDPvldUpVdViUD+f
+         ArCwaDiK8/YQYuLzzB7uEqmKyCvAuWNPQSOzFneOI6GjrvSXIWjRqkcLz63ty8PLwKOY
+         WeZlbcNooqGrr87G77pdEfPgvKqt96OfJLg9wnE7yEsrgFP/a8pXHqsL0vSbRVAgdUop
+         RUcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0X0DDjflRu40U/YjqFAViv4c+Dopp8yvdpsJ3G4W+d4=;
-        b=audSLqMYoQPl+TuaZHUooXfUtEpAv9aDhqFUCdChX0h5xVEewrwCv6eI6s2ZLQwMiI
-         5ZKP0xvKaMZI5MFPP0ZK0JD5Q/GkijdXH26uqwTlEwQKckG9kwzPJlMeZs1g2zzJpksM
-         AbghqtCLIoHQxSS48f608arY8VB0Z+v4UQO2XUCaRqkWJebj+m1nUZ7jNFVyvBDOZY73
-         hCnAupB0D3/Q/JRxxsoVXoZtivVK7mUElXGPU9exDtT6kD3IufqQ3AC7E26xGAIL7DF0
-         6MIbUnkEfG/qm7UH8J6v+eEFShvsCtnLhA1zqpItvWU/mojD4IowP2fz5al6xtqi7Bd2
-         p0yw==
-X-Gm-Message-State: AOAM533ft7rtOHc1euzmj0ZNU6SDcqApkpBoMSyb9yplMPag3PpbZ5Iu
-        U5QxURhmO69muTce48+6bQg=
-X-Google-Smtp-Source: ABdhPJzcvjmtq3PMeDSVQKIdeWm9GAgtrPAZsQj5iFKq3SU7vplD5hrN58E21f0/s+oCsj/qFUmAjg==
-X-Received: by 2002:a63:b956:: with SMTP id v22mr4574957pgo.242.1592688386037;
-        Sat, 20 Jun 2020 14:26:26 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
-        by smtp.gmail.com with ESMTPSA id f14sm7808825pgj.62.2020.06.20.14.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 14:26:25 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        John Stultz <john.stultz@linaro.org>
-Subject: [PATCH bpf v2] restore behaviour of CAP_SYS_ADMIN allowing the loading of networking bpf programs
-Date:   Sat, 20 Jun 2020 14:26:16 -0700
-Message-Id: <20200620212616.93894-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-In-Reply-To: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
-References: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WWJ0LfTE1o+QFSDrB22aIlwytmbwPgLM4+MVpi+Ikgw=;
+        b=rqrs32nwEX5lx1p+ugAbFfr4SJzJNLOCULSr6xLRvx3i2l514einD31t4jp7tr1lFo
+         Mn7+pIM0IGR1zu6Ymj4KjdLAYZ9bAc1Aw0mxjVEifQjFV7GSrWBHAV2TCvPKDj1NOFsH
+         je0z61VlNyxLxtK1/NaHWJmh8tfsmub9FSzb16+3Q7Q4RrzOieqOGTXeAVYNtb0kayGj
+         au1AXkTiouNMnYQzxqZXJxSgBaEWzqbAUC59fAIVa87szixHTy6x4qxAeYR5gQeNIbYy
+         Obvdz60bK3H0Iep5CxxYJFyInb6Dj4ybUc1QkYQW28YDpQEmLjszPkkPjFDHQiACRsWV
+         BZvA==
+X-Gm-Message-State: AOAM533skPft1altB1CAAZBwdAULRZZFLRHeLDXvOr9N2HCIaELPub4M
+        Nhzc85RGMi1pl8WQefGwVpSu8qqjtvruyrFjnpI=
+X-Google-Smtp-Source: ABdhPJzubCzdPaAx75pzX69wRc5pty/dtSLC6+VPXYzATmwkrylHkYNBsn2OEm9TFkfLEYbBGB4SzaNitvD86YCeSl0=
+X-Received: by 2002:a37:d0b:: with SMTP id 11mr11032477qkn.449.1592708832182;
+ Sat, 20 Jun 2020 20:07:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200430071506.1408910-1-songliubraving@fb.com>
+ <20200430071506.1408910-3-songliubraving@fb.com> <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
+ <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
+In-Reply-To: <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 20 Jun 2020 20:07:01 -0700
+Message-ID: <CAEf4BzY5G1+Uw9MFw_Lywi+5kA07Z78GoSpMNmH_BB7TzgkJcA@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 2/3] libbpf: add support for command BPF_ENABLE_STATS
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+On Mon, May 4, 2020 at 10:47 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On May 2, 2020, at 1:00 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
+l.com> wrote:
+> >
+> > On Thu, Apr 30, 2020 at 12:15 AM Song Liu <songliubraving@fb.com> wrote=
+:
+> >>
+> >> bpf_enable_stats() is added to enable given stats.
+> >>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> > ...
+> >> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> >> index 335b457b3a25..1901b2777854 100644
+> >> --- a/tools/lib/bpf/bpf.h
+> >> +++ b/tools/lib/bpf/bpf.h
+> >> @@ -231,6 +231,7 @@ LIBBPF_API int bpf_load_btf(void *btf, __u32 btf_s=
+ize, char *log_buf,
+> >> LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *b=
+uf,
+> >>                                 __u32 *buf_len, __u32 *prog_id, __u32 =
+*fd_type,
+> >>                                 __u64 *probe_offset, __u64 *probe_addr=
+);
+> >> +LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+> >
+> > I see odd warning here while building selftests
+> >
+> > In file included from runqslower.c:10:
+> > .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
+> > warning: =E2=80=98enum bpf_stats_type=E2=80=99 declared inside paramete=
+r list will not
+> > be visible outside of this definition or declaration
+> >  234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+> >
+> > Since this warning is printed only when building runqslower
+> > and the rest of selftests are fine, I'm guessing
+> > it's a makefile issue with order of includes?
+> >
+> > Andrii, could you please take a look ?
+> > Not urgent. Just flagging for visibility.
+>
+> The following should fix it.
+>
+> Thanks,
+> Song
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D 8< =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> From 485c28c8e2cbcc22aa8fcda82f8f599411faa755 Mon Sep 17 00:00:00 2001
+> From: Song Liu <songliubraving@fb.com>
+> Date: Mon, 4 May 2020 10:36:26 -0700
+> Subject: [PATCH bpf-next] runqslower: include proper uapi/bpf.h
+>
+> runqslower doesn't specify include path for uapi/bpf.h. This causes the
+> following warning:
+>
+> In file included from runqslower.c:10:
+> .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
+> warning: 'enum bpf_stats_type' declared inside parameter list will not
+> be visible outside of this definition or declaration
+>   234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+>
+> Fix this by adding -I tools/includ/uapi to the Makefile.
+>
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  tools/bpf/runqslower/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
+e
+> index 8a6f82e56a24..722a29a988cd 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -8,7 +8,8 @@ BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+>  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
+>  BPFOBJ :=3D $(OUTPUT)/libbpf.a
+>  BPF_INCLUDE :=3D $(OUTPUT)
+> -INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../lib)
+> +INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../lib)       =
+ \
+> +       -I$(abspath ../../include/uapi)
+>  CFLAGS :=3D -g -Wall
+>
+>  # Try to detect best kernel BTF source
+> --
+> 2.24.1
+>
 
-This is a fix for a regression introduced in 5.8-rc1 by:
-  commit 2c78ee898d8f10ae6fb2fa23a3fbaec96b1b7366
-  'bpf: Implement CAP_BPF'
-
-Before the above commit it was possible to load network bpf programs
-with just the CAP_SYS_ADMIN privilege.
-
-The Android bpfloader happens to run in such a configuration (it has
-SYS_ADMIN but not NET_ADMIN) and creates maps and loads bpf programs
-for later use by Android's netd (which has NET_ADMIN but not SYS_ADMIN).
-
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Reported-by: John Stultz <john.stultz@linaro.org>
-Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- kernel/bpf/syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8da159936bab..7d946435587d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2121,7 +2121,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	    !bpf_capable())
- 		return -EPERM;
- 
--	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN))
-+	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 	if (is_perfmon_prog_type(type) && !perfmon_capable())
- 		return -EPERM;
--- 
-2.27.0.111.gc72c7da667-goog
-
+This is a partial work-around just for runqslower, which has a luxury
+to access the very latest linux/bpf.h. Any other system that doesn't
+have the very latest bpf.h header will get warnings about undefined
+`enum bpf_stats_type` definition, even if they don't use
+bpf_stats_enable(). I think the proper fix here is to add forward
+declaration of this enum in libbpf/bpf.h. I'll send a patch in a few
+minutes.
