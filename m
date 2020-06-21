@@ -2,90 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDBE202B0D
-	for <lists+bpf@lfdr.de>; Sun, 21 Jun 2020 16:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA31202B4B
+	for <lists+bpf@lfdr.de>; Sun, 21 Jun 2020 17:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbgFUOeN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Jun 2020 10:34:13 -0400
-Received: from mail.qboosh.pl ([217.73.31.61]:58107 "EHLO mail.qboosh.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgFUOeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Jun 2020 10:34:12 -0400
-X-Greylist: delayed 564 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Jun 2020 10:34:12 EDT
-Received: from stranger.qboosh.pl (159-205-219-225.adsl.inetia.pl [159.205.219.225])
-        by mail.qboosh.pl (Postfix) with ESMTPSA id 24FE61A26DA9;
-        Sun, 21 Jun 2020 16:24:48 +0200 (CEST)
-Received: from stranger.qboosh.pl (localhost [127.0.0.1])
-        by stranger.qboosh.pl (8.15.2/8.15.2) with ESMTP id 05LEQ0WP025677;
-        Sun, 21 Jun 2020 16:26:00 +0200
-Received: (from qboosh@localhost)
-        by stranger.qboosh.pl (8.15.2/8.15.2/Submit) id 05LEPxrr025675;
-        Sun, 21 Jun 2020 16:25:59 +0200
-Date:   Sun, 21 Jun 2020 16:25:59 +0200
-From:   Jakub Bogusz <qboosh@pld-linux.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH] fix libbpf hashmap with size_t shorter than long long
-Message-ID: <20200621142559.GA25517@stranger.qboosh.pl>
+        id S1730268AbgFUPPc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Jun 2020 11:15:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41910 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730235AbgFUPPc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Jun 2020 11:15:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592752530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zasjBbKc5HCggRAKraXGEFWYp6Xob3zmzKq6nO0rQ8o=;
+        b=JnETsw8nV4WCsu+UgAO37egs/NUvPMGm2MGo80zmXRXxFKe1aL50AMcXWC/Oz6fDfL9yfl
+        iNO5IFipsrv7EeuAblS3i6UB+KNauxJOnOT6VXCpjbenAmp5jJTgDiJ6P/g/gtxJXNnjG2
+        Y4vK7TsnnH5azrDQ/6yDYY7ru52T/+A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-RCIhFm_oNlOKCzRSEQPLLA-1; Sun, 21 Jun 2020 11:15:28 -0400
+X-MC-Unique: RCIhFm_oNlOKCzRSEQPLLA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C9B3835B41;
+        Sun, 21 Jun 2020 15:15:27 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83F3B5D9D5;
+        Sun, 21 Jun 2020 15:15:15 +0000 (UTC)
+Date:   Sun, 21 Jun 2020 17:15:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
+        David Ahern <dahern@digitalocean.com>, brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next 1/8] net: Refactor xdp_convert_buff_to_frame
+Message-ID: <20200621171513.066e78ed@carbon>
+In-Reply-To: <dfeb25e5274b0895f29fc1960e1cbd6c01157f8a.1592606391.git.lorenzo@kernel.org>
+References: <cover.1592606391.git.lorenzo@kernel.org>
+        <dfeb25e5274b0895f29fc1960e1cbd6c01157f8a.1592606391.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="huq684BweRXVnRxX"
-Content-Disposition: inline
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, 20 Jun 2020 00:57:17 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> From: David Ahern <dahern@digitalocean.com>
+> 
+> Move the guts of xdp_convert_buff_to_frame to a new helper,
+> xdp_update_frame_from_buff so it can be reused removing code duplication
+> 
+> Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Signed-off-by: David Ahern <dahern@digitalocean.com>
+> ---
+>  include/net/xdp.h | 35 ++++++++++++++++++++++-------------
+>  1 file changed, 22 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 609f819ed08b..ab1c503808a4 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -121,39 +121,48 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
+>  	xdp->frame_sz = frame->frame_sz;
+>  }
+>  
+> -/* Convert xdp_buff to xdp_frame */
+>  static inline
+> -struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+> +int xdp_update_frame_from_buff(struct xdp_buff *xdp,
+> +			       struct xdp_frame *xdp_frame)
+>  {
+> -	struct xdp_frame *xdp_frame;
+> -	int metasize;
+> -	int headroom;
+> -
+> -	if (xdp->rxq->mem.type == MEM_TYPE_XSK_BUFF_POOL)
+> -		return xdp_convert_zc_to_xdp_frame(xdp);
+> +	int metasize, headroom;
+>  
+>  	/* Assure headroom is available for storing info */
+>  	headroom = xdp->data - xdp->data_hard_start;
+>  	metasize = xdp->data - xdp->data_meta;
+>  	metasize = metasize > 0 ? metasize : 0;
+>  	if (unlikely((headroom - metasize) < sizeof(*xdp_frame)))
+> -		return NULL;
+> +		return -ENOMEM;
 
-Hello,
+IMHO I think ENOMEM is reserved for memory allocations failures.
+I think ENOSPC will be more appropriate here (or EOVERFLOW).
 
-I noticed that _bpftool crashes when building kernel tools (5.7.x) for
-32-bit targets because in libbpf hashmap implementation hash_bits()
-function returning numbers exceeding hashmap buckets capacity.
+>  
+>  	/* Catch if driver didn't reserve tailroom for skb_shared_info */
+>  	if (unlikely(xdp->data_end > xdp_data_hard_end(xdp))) {
+>  		XDP_WARN("Driver BUG: missing reserved tailroom");
+> -		return NULL;
+> +		return -ENOMEM;
 
-Attached patch fixes this problem.
+Same here.
+
+>  	}
+>  
+> -	/* Store info in top of packet */
+> -	xdp_frame = xdp->data_hard_start;
+> -
+>  	xdp_frame->data = xdp->data;
+>  	xdp_frame->len  = xdp->data_end - xdp->data;
+>  	xdp_frame->headroom = headroom - sizeof(*xdp_frame);
+>  	xdp_frame->metasize = metasize;
+>  	xdp_frame->frame_sz = xdp->frame_sz;
+>  
+> +	return 0;
+> +}
+> +
+> +/* Convert xdp_buff to xdp_frame */
+> +static inline
+> +struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+> +{
+> +	struct xdp_frame *xdp_frame;
+> +
+> +	if (xdp->rxq->mem.type == MEM_TYPE_XSK_BUFF_POOL)
+> +		return xdp_convert_zc_to_xdp_frame(xdp);
+> +
+> +	/* Store info in top of packet */
+> +	xdp_frame = xdp->data_hard_start;
+> +	if (unlikely(xdp_update_frame_from_buff(xdp, xdp_frame) < 0))
+> +		return NULL;
+> +
+>  	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
+>  	xdp_frame->mem = xdp->rxq->mem;
+>  
 
 
-Regards,
 
 -- 
-Jakub Bogusz    http://qboosh.pl/
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="kernel-tools-bpf-hashmap.patch"
-
-Ensure that hash_bits returns value fits in given bits (for bits > 0):
-multiplier is long long (which is the same or wider than size_t), so shift bits
-must be based on long long size, not __WORDSIZE.
-
-Signed-off-by: Jakub Bogusz <qboosh@pld-linux.org>
-
---- linux-5.7/tools/lib/bpf/hashmap.h.orig	2020-06-01 01:49:15.000000000 +0200
-+++ linux-5.7/tools/lib/bpf/hashmap.h	2020-06-21 15:22:07.298466419 +0200
-@@ -10,17 +10,12 @@
- 
- #include <stdbool.h>
- #include <stddef.h>
--#ifdef __GLIBC__
--#include <bits/wordsize.h>
--#else
--#include <bits/reg.h>
--#endif
- #include "libbpf_internal.h"
- 
- static inline size_t hash_bits(size_t h, int bits)
- {
- 	/* shuffle bits and return requested number of upper bits */
--	return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
-+	return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits);
- }
- 
- typedef size_t (*hashmap_hash_fn)(const void *key, void *ctx);
-
---huq684BweRXVnRxX--
