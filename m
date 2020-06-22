@@ -2,134 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431F82033EB
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 11:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDB1203620
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 13:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgFVJs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 05:48:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55516 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726515AbgFVJs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:48:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592819335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cf6nDCtN7M7tXSP4Nc4eZ+rkXRJDalbgveDT6DSJ+XQ=;
-        b=DRX/N8DEeEnmxrT3z9LN+0xxsQPO07YCCSsKYqPfPmnTx7/dbvEfN8JLPX/GPqXLiMS6id
-        /PStSzcbunjR5IuvQko9mTZU5WyXopBY54k8KgJNFzru2ihdI8Z0SmcyOSathxv2cCtTJn
-        VhAhY0ltuz552RNcasg66Lxk/yD/jp0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-aSyqZULhPo2_nCin_g1Xzw-1; Mon, 22 Jun 2020 05:48:52 -0400
-X-MC-Unique: aSyqZULhPo2_nCin_g1Xzw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727887AbgFVLsV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 07:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727048AbgFVLsU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 07:48:20 -0400
+Received: from localhost (unknown [151.48.138.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB535835B41;
-        Mon, 22 Jun 2020 09:48:50 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DBBA1A265;
-        Mon, 22 Jun 2020 09:48:38 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 11:48:37 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D48720716;
+        Mon, 22 Jun 2020 11:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592826500;
+        bh=WPIiRB4JSgUsHWtHb0b4M8XEW1JUPgE6hoxT2mGm6ek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FD/umBmF9ODVSj6/3qqYiCgpwaBKbVWqbtvR9vAMLTh3NH0PRbW88bVq1IwLHuqo1
+         77ytEQmdpR5xTSA42WA5+UEBmy270NE5IJ6vyLAvgaIaTD+cSSo4kwTdVmGwhaccPT
+         uK+la5HcUo/grBvy2iOb5zA2cR7T6ei6xWq74opM=
+Date:   Mon, 22 Jun 2020 13:48:15 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
         ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org, brouer@redhat.com
-Subject: Re: [PATCH v2 bpf-next 4/8] bpf: cpumap: add the possibility to
- attach an eBPF program to cpumap
-Message-ID: <20200622114837.278adefa@carbon>
-In-Reply-To: <734113565894cb8447d1526e6a93eaf6ae994c2d.1592606391.git.lorenzo@kernel.org>
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
+        David Ahern <dahern@digitalocean.com>
+Subject: Re: [PATCH v2 bpf-next 1/8] net: Refactor xdp_convert_buff_to_frame
+Message-ID: <20200622114815.GA14425@localhost.localdomain>
 References: <cover.1592606391.git.lorenzo@kernel.org>
-        <734113565894cb8447d1526e6a93eaf6ae994c2d.1592606391.git.lorenzo@kernel.org>
+ <dfeb25e5274b0895f29fc1960e1cbd6c01157f8a.1592606391.git.lorenzo@kernel.org>
+ <20200621171513.066e78ed@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
+Content-Disposition: inline
+In-Reply-To: <20200621171513.066e78ed@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 20 Jun 2020 00:57:20 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> +static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
-> +				    void **xdp_frames, int n,
-> +				    struct xdp_cpumap_stats *stats)
-> +{
-> +	struct xdp_rxq_info rxq;
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I do think we can merge this code as-is (and I actually re-factored this
-code offlist), but I have some optimizations I would like to try out.
+> On Sat, 20 Jun 2020 00:57:17 +0200
+> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>=20
+> > From: David Ahern <dahern@digitalocean.com>
+> >=20
 
-E.g. as I've tried to explain over IRC, it will be possible to avoid
-having to reconstruct xdp_rxq_info here, as we can use the
-expected_attach_type and remap the BPF instructions to use info from
-xdp_frame.  I want to benchmark it first, to see if it is worth it (we
-will only save 2 store operations in a likely cache-hot area).
+[...]
 
+> >  	if (unlikely((headroom - metasize) < sizeof(*xdp_frame)))
+> > -		return NULL;
+> > +		return -ENOMEM;
+>=20
+> IMHO I think ENOMEM is reserved for memory allocations failures.
+> I think ENOSPC will be more appropriate here (or EOVERFLOW).
 
-> +	struct bpf_prog *prog;
-> +	struct xdp_buff xdp;
-> +	int i, nframes = 0;
-> +
-> +	if (!rcpu->prog)
-> +		return n;
-> +
-> +	xdp_set_return_frame_no_direct();
-> +	xdp.rxq = &rxq;
-> +
-> +	rcu_read_lock();
-> +
-> +	prog = READ_ONCE(rcpu->prog);
-> +	for (i = 0; i < n; i++) {
-> +		struct xdp_frame *xdpf = xdp_frames[i];
-> +		u32 act;
-> +		int err;
-> +
-> +		rxq.dev = xdpf->dev_rx;
-> +		rxq.mem = xdpf->mem;
-> +		/* TODO: report queue_index to xdp_rxq_info */
-> +
-> +		xdp_convert_frame_to_buff(xdpf, &xdp);
-> +
-> +		act = bpf_prog_run_xdp(prog, &xdp);
-> +		switch (act) {
-> +		case XDP_PASS:
-> +			err = xdp_update_frame_from_buff(&xdp, xdpf);
-> +			if (err < 0) {
-> +				xdp_return_frame(xdpf);
-> +				stats->drop++;
-> +			} else {
-> +				xdp_frames[nframes++] = xdpf;
-> +				stats->pass++;
-> +			}
-> +			break;
-> +		default:
-> +			bpf_warn_invalid_xdp_action(act);
-> +			/* fallthrough */
-> +		case XDP_DROP:
-> +			xdp_return_frame(xdpf);
-> +			stats->drop++;
-> +			break;
-> +		}
-> +	}
-> +
-> +	rcu_read_unlock();
-> +	xdp_clear_return_frame_no_direct();
-> +
-> +	return nframes;
-> +}
+ack, I will fix it in v3
 
+Regards,
+Lorenzo
 
+>=20
+> > =20
+> >  	/* Catch if driver didn't reserve tailroom for skb_shared_info */
+> >  	if (unlikely(xdp->data_end > xdp_data_hard_end(xdp))) {
+> >  		XDP_WARN("Driver BUG: missing reserved tailroom");
+> > -		return NULL;
+> > +		return -ENOMEM;
+>=20
+> Same here.
+>=20
+> >  	}
+> > =20
+> > -	/* Store info in top of packet */
+> > -	xdp_frame =3D xdp->data_hard_start;
+> > -
+> >  	xdp_frame->data =3D xdp->data;
+> >  	xdp_frame->len  =3D xdp->data_end - xdp->data;
+> >  	xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
+> >  	xdp_frame->metasize =3D metasize;
+> >  	xdp_frame->frame_sz =3D xdp->frame_sz;
+> > =20
+> > +	return 0;
+> > +}
+> > +
+> > +/* Convert xdp_buff to xdp_frame */
+> > +static inline
+> > +struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+> > +{
+> > +	struct xdp_frame *xdp_frame;
+> > +
+> > +	if (xdp->rxq->mem.type =3D=3D MEM_TYPE_XSK_BUFF_POOL)
+> > +		return xdp_convert_zc_to_xdp_frame(xdp);
+> > +
+> > +	/* Store info in top of packet */
+> > +	xdp_frame =3D xdp->data_hard_start;
+> > +	if (unlikely(xdp_update_frame_from_buff(xdp, xdp_frame) < 0))
+> > +		return NULL;
+> > +
+> >  	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
+> >  	xdp_frame->mem =3D xdp->rxq->mem;
+> > =20
+>=20
+>=20
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+--0OAP2g/MAC+5xKAE
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXvCafAAKCRA6cBh0uS2t
+rAIxAP9c/hvo/7R8oLOusEVUOdJe0fUG7NbYdz4YhnSfAHPN/gD/dZf8jki+MJzg
+etgdLe62+fTtRQeSyvdS1kmm4m/aNQ8=
+=c8Lq
+-----END PGP SIGNATURE-----
+
+--0OAP2g/MAC+5xKAE--
