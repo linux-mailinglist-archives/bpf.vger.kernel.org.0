@@ -2,116 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA96203629
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 13:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBE22036AA
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgFVLuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 07:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727952AbgFVLuM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:50:12 -0400
-Received: from localhost (unknown [151.48.138.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78892206D7;
-        Mon, 22 Jun 2020 11:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592826612;
-        bh=ZH+00OZclsORf8w1jSz2YeR4TOIxjgPqi0ljLU4FRO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d/1Ql+jckicAzmjC1XjxQcn4wp7jMqZWN4lBWxYQLmNhDbU7LFi107FITy1YmFvoM
-         Xh6L7ZB/dSnsqYx2QEnECa/H3R47hSWvVQ3mH1s5/+numE/qfqSUeb5tgsMSwuoED6
-         Bws7Q345ozIHu3YJR58x6j4by/mp1+14GWuinw/I=
-Date:   Mon, 22 Jun 2020 13:50:07 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org
-Subject: Re: [PATCH v2 bpf-next 3/8] cpumap: formalize map value as a named
- struct
-Message-ID: <20200622115007.GB14425@localhost.localdomain>
-References: <cover.1592606391.git.lorenzo@kernel.org>
- <804b20c4f6fdda24f81e946c5c67c37c55d9f590.1592606391.git.lorenzo@kernel.org>
- <20200622113313.6f56244d@carbon>
+        id S1728044AbgFVMZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 08:25:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33618 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727852AbgFVMZk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:25:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592828738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gTNATydljRDXc8kpeNmwHEday5gWAyzDt0KL/m3GWgg=;
+        b=RBfN/6AZl/JolQtpatn1ZlHVVTHLs6V6P1llnMMlIWic65zuA/Wqjs5J3fC3mj/19rJZN5
+        YUEJbIIx9J/KSDc/ax3yLcdMUZst45MMJGGbsjj4TUOSRlsxpsjoFEy1oxHYXmdmIIWNaW
+        r/PrMhyCHLd5+qvDv+JVitoaRsYkhtE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-Ehmdp5fJMR6XK9aNyOINOg-1; Mon, 22 Jun 2020 08:25:37 -0400
+X-MC-Unique: Ehmdp5fJMR6XK9aNyOINOg-1
+Received: by mail-wm1-f69.google.com with SMTP id p24so9273016wmc.1
+        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 05:25:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=gTNATydljRDXc8kpeNmwHEday5gWAyzDt0KL/m3GWgg=;
+        b=eYVvl6afg+ou+pitPqxS3DyEqz2qF3+cTQUTdZKSshV4rkw2FUApEok4c6krTsNcrk
+         g1wrrXKGfFxX8nmtolas3GYo3MUc+OdJ0ly1tsW/8uPszEc0SbOlIHny4IoLQTiEnjsq
+         n3bAFkRQFKqhhHL39715HEozsNcPKN8R4L1AeHTuXReS6c4hj/GT9hWYd1vd2gEDeTsm
+         z0K6/sLM4MkwIRxwCdPdlLdjoAwicwL+Rr+4nvWITO7BIIiFsfOTC61CgRu/HIcPvFo/
+         K/u+lZatSCNDOSDbR+nedJEnT6X/Afs3Ob4rie06KNasIimFGnQcM4RiM5el8W1LPvzn
+         fxRA==
+X-Gm-Message-State: AOAM532FEcrMcHmCroS68++mfwqObkSsf17Uein5ofMpYIhNq21Av6u1
+        K6u31Aqs2xBdHOm+RLRWsIrzzV29KGG3Y/dGbQj2oKWTjhVijGRdFoh53KuZj8DQbp/OapUF9Ie
+        4KTfOHKPPNNwm
+X-Received: by 2002:adf:82f4:: with SMTP id 107mr18606257wrc.163.1592828736267;
+        Mon, 22 Jun 2020 05:25:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlW9JmXyeDhC/4XAHiKD+ODx7ZaqBmWyf3RIOEM2zaljWjq9f/EE5Dt+X9wT+tl2NekZO9Ew==
+X-Received: by 2002:adf:82f4:: with SMTP id 107mr18606243wrc.163.1592828736064;
+        Mon, 22 Jun 2020 05:25:36 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k14sm17446948wrq.97.2020.06.22.05.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 05:25:35 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AAF3C1814F6; Mon, 22 Jun 2020 14:25:32 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: add a bunch of attribute getters/setters for map definitions
+In-Reply-To: <20200621062112.3006313-1-andriin@fb.com>
+References: <20200621062112.3006313-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 22 Jun 2020 14:25:32 +0200
+Message-ID: <87zh8vthhf.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JP+T4n/bALQSJXh8"
-Content-Disposition: inline
-In-Reply-To: <20200622113313.6f56244d@carbon>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Andrii Nakryiko <andriin@fb.com> writes:
 
---JP+T4n/bALQSJXh8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Add a bunch of getter for various aspects of BPF map. Some of these attri=
+bute
+> (e.g., key_size, value_size, type, etc) are available right now in struct
+> bpf_map_def, but this patch adds getter allowing to fetch them individual=
+ly.
+> bpf_map_def approach isn't very scalable, when ABI stability requirements=
+ are
+> taken into account. It's much easier to extend libbpf and add support for=
+ new
+> features, when each aspect of BPF map has separate getter/setter.
 
-> On Sat, 20 Jun 2020 00:57:19 +0200
-> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->=20
-> > As it has been already done for devmap, introduce 'struct bpf_cpumap_va=
-l'
-> > to formalize the expected values that can be passed in for a CPUMAP.
-> > Update cpumap code to use the struct.
-> >=20
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       |  9 +++++++++
-> >  kernel/bpf/cpumap.c            | 25 +++++++++++++------------
-> >  tools/include/uapi/linux/bpf.h |  9 +++++++++
-> >  3 files changed, 31 insertions(+), 12 deletions(-)
-> >=20
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 19684813faae..a45d61bc886e 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3774,6 +3774,15 @@ struct bpf_devmap_val {
-> >  	} bpf_prog;
-> >  };
-> > =20
-> > +/* CPUMAP map-value layout
-> > + *
-> > + * The struct data-layout of map-value is a configuration interface.
-> > + * New members can only be added to the end of this structure.
-> > + */
-> > +struct bpf_cpumap_val {
-> > +	__u32 qsize;	/* queue size */
-> > +};
-> > +
->=20
-> Nitpicking the comment: /* queue size */
-> It doesn't provide much information to the end-user.
->=20
-> What about changing it to: /* queue size to remote target CPU */
++1, good idea!
 
-Yes, I agree. I will fix it in v3.
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-Regards,
-Lorenzo
-
-> ?
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
-
---JP+T4n/bALQSJXh8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXvCa7AAKCRA6cBh0uS2t
-rCd1AP9onNtkqFasFYqxr5CQgKqke1VhKA84xUnqcvPlTizm2gD/Z8Lb0quCYSKl
-UoRNWBvoXHrAYZXaeczMsEgwLdKhNgo=
-=tMRP
------END PGP SIGNATURE-----
-
---JP+T4n/bALQSJXh8--
