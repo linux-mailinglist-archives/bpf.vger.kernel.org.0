@@ -2,241 +2,265 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7255B204282
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 23:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBCB204285
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 23:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730327AbgFVVS4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 17:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728555AbgFVVSz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jun 2020 17:18:55 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E13DC061573;
-        Mon, 22 Jun 2020 14:18:55 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y5so21163573iob.12;
-        Mon, 22 Jun 2020 14:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=MEMXMHskXHFKTsNmFRzR88S3DczJXOF771UOMMZICDQ=;
-        b=BDTN880+g/wQZzh0n2EQC7J1FXVMK4IYiddokm0N603fK0R9wtMhW1Ikvrg7HsfljY
-         niGvZJyoXq3kfL9KRFPhd0sHdh0cfI5bB/ST8ey/RjWCqnvU8Cx5IbaFAPXX7KDTOWZJ
-         31ud3757FA1PeVoutDBhtUEvR4cO+CrQE8ojfkEuhdmrKbdPKRGoDjKSfrpBqQTCTWqH
-         NPa73hsVshBedm5VStt13pqozk0+JFyUCc4jIA+H2m2hIUCpGPbZfM8Y5svwkTuiH001
-         OoAryVpqUAS4oLI52URcROufqCUzT+UUw2LMtbYqVL/D1LM1JSvjoYOoM3pcSAPEHHlw
-         w86g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=MEMXMHskXHFKTsNmFRzR88S3DczJXOF771UOMMZICDQ=;
-        b=ftrPaVlu3k0905xXgs2l26WKkiTjZyt59hdxYC3qEQMhTTWgBtN15lg1UxWV/Kf4Ht
-         xm3fmXyheRUdqq2ea1vz+wOGZV9zmyaOrwuPBNYDJrY0R9nVa1Y30WDXrOA9NazdGOkN
-         PCOYZBSVr6hX2hxJrwUwLkUxjm85kDnqLsIijcUw1cp+OB45UMDZERQFfMwA58v7//d4
-         EwpQpaD8tDYEzdIwDnthVItBxx1VzyLN3NZvHyWX5FncQnsX2uOx/1V4CE0MjJW06Z4I
-         yz2ieiErqFiTbHDTFUUdTmCHFFs9IlL4F0LG1bD0yzTdBtBilp/V7hwsWvOZjkefEWoV
-         TFwg==
-X-Gm-Message-State: AOAM530rLPIQGsvU0nw29vVmFvlfNk6Wq4rhARkfzCiHiu3zZJcWXDp7
-        dT3j8rpNThJg7V6cU/F1UBQ=
-X-Google-Smtp-Source: ABdhPJzKsR9KWkhszGBzLf8zlwCZMiqEFtJ4i8QKyHXacrAvLS2sRfxgkRRZ9kdzLhQV+xuOek3+cw==
-X-Received: by 2002:a02:998d:: with SMTP id a13mr21127690jal.6.1592860734324;
-        Mon, 22 Jun 2020 14:18:54 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n7sm723033iob.44.2020.06.22.14.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 14:18:53 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 14:18:44 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Message-ID: <5ef12034da033_47842ac6d2ff65b8bd@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZFiXsPYW64RZ4FyNviRwqsqSzhaP-6m9BexUOwHD63tw@mail.gmail.com>
-References: <20200617202112.2438062-1-andriin@fb.com>
- <5eeb0e5dcb010_8712abba49be5bc91@john-XPS-13-9370.notmuch>
- <CAEf4BzZi5pMTC9Fq53Mi_mXUm-EQZDyqS_pxEYuGoc0J1ETGUA@mail.gmail.com>
- <5eebb95299a20_6d292ad5e7a285b835@john-XPS-13-9370.notmuch>
- <CAEf4BzZmWO=hO0kmtwkACEfHZm+H7+FZ+5moaLie2=13U3xU=g@mail.gmail.com>
- <5eebf9321e11a_519a2abc9795c5bc21@john-XPS-13-9370.notmuch>
- <5eec09418954e_27ce2adb0816a5b8f7@john-XPS-13-9370.notmuch>
- <45321002-2676-0f5b-c729-5526e503ebd2@iogearbox.net>
- <CAEf4Bzb-nqK0Z=GaWWejriSqqGd6D5Cz_w689N7_51D+daGyvw@mail.gmail.com>
- <24ac4e42-5831-f698-02f4-5f63d4620f1c@iogearbox.net>
- <CAEf4Bza6uGaxFURJaZirjVUt5yfFg5r-0mzaNPRg-irnA9CkcQ@mail.gmail.com>
- <5ef0f8ac51fad_1c442b1627ad65c09d@john-XPS-13-9370.notmuch>
- <CAEf4BzadWaEcXHMTAmg34Of4Y_QQAx1-_Rd9w5938nBHPCSPsQ@mail.gmail.com>
- <5ef1099fb5f9c_1c442b1627ad65c058@john-XPS-13-9370.notmuch>
- <CAEf4BzZFiXsPYW64RZ4FyNviRwqsqSzhaP-6m9BexUOwHD63tw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: switch most helper return values from
- 32-bit int to 64-bit long
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1730053AbgFVVU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 17:20:27 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29790 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728555AbgFVVU0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Jun 2020 17:20:26 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05MLJmGR029506;
+        Mon, 22 Jun 2020 14:19:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=vyQFJDvjk+EjHmS0BtpB/Vctu3tEKNI5t0TQPs/ucOk=;
+ b=clyPQ/GhOF+a8VyxPs+30qbt4pmC1blkCCxIA16bes9Tir2+mSvWATOO+K6G6FDZBlxS
+ 8/ESOkvKwWR/C8brObb/yz/ZN9Tmhp3LUprvQUWnhAYy8p2XlxSqNgY4YZmrt0ey2LVo
+ MC32yuDnJGN7K+Rl60e5JlkiflmXajxt4Q8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 31se4njnn6-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 22 Jun 2020 14:19:52 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 22 Jun 2020 14:19:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RejNmd/BDzBCRmgt7+w1EVk6MSX/bEO/OSGvyM1WXoBo8hBBGiH+D/4cDi9GDH7FYt/nmxUUxyKuUzIfMGdgmVGFev3bkq9LurbogwrCQ/ORoZjiKfB3WbSZZ4LSMYtu86333ZksDqG/mfT/ri0LIlMATf5FN9AyD8S9DNqpBvG+azALzAOSHLkO2Gk7SWeowxCvVzUf0N7utkb8G73BG++AZgg3wvHwIJOTfbR3WbFNl3K6GMFu3GpFGwBEScZIfhVI0xkiZq5xkzHU3bNgtEiDX9UlIHFoTmkvLLTcbk20F1r1LUBvyD0ZMDfGDOngqrHtrzPfo2rNU7xQkHrhjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vyQFJDvjk+EjHmS0BtpB/Vctu3tEKNI5t0TQPs/ucOk=;
+ b=Q5HmljcqtBGChstRRCil19g+y5aLo+AP6TxYC2r6P0VksQ/Cz28WTO+MQLFOiZAfiHkAlayN8lFYCFLmd4l47aBNieSICB2LHgo3qwunjL9Gzy4D5GB8yHHIQz50dOassXYYqraEP/q40Z3IDIINhGEp83+LKOxq83cui5FiCwldwbH0hr5WGo8iqO7v97fXBBc+gmhF4FIc1X62CI12uLedItY7BRnUNT624ZUXgCWB4kBD7SRFKJoyjEWFPrNjKwVtPlG8KNgiB03V4/yXPmq3rBlc1QyQpe1zi0+uKjBC3heR1dszyipmxnrKDwkFmd27202y4fvjsDqgP7AR8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vyQFJDvjk+EjHmS0BtpB/Vctu3tEKNI5t0TQPs/ucOk=;
+ b=WfNCzkpZSRk+6bLpGnj28eiOuHb1YsVftO5LAtMxMobyfTSmsrQtYbDFl6QOoWSzbivPOdVU1nkkrVLZBbJ6Ebh8RobvTqHv7Er/76+9Yz5GNIa7XH1xcdW0JhsZ00tEb6fPgbz6UMcNrw8qOz/Acu2jEjJyTYGiP9Ufc0hzC9M=
+Received: from DM6PR15MB3580.namprd15.prod.outlook.com (2603:10b6:5:1f9::10)
+ by DM6PR15MB2393.namprd15.prod.outlook.com (2603:10b6:5:8f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Mon, 22 Jun
+ 2020 21:18:57 +0000
+Received: from DM6PR15MB3580.namprd15.prod.outlook.com
+ ([fe80::88ab:3896:e702:55e4]) by DM6PR15MB3580.namprd15.prod.outlook.com
+ ([fe80::88ab:3896:e702:55e4%6]) with mapi id 15.20.3109.025; Mon, 22 Jun 2020
+ 21:18:57 +0000
+Date:   Mon, 22 Jun 2020 14:18:55 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v2 06/15] bpf: add
+ bpf_skc_to_{tcp,tcp_timewait,tcp_request}_sock() helpers
+Message-ID: <20200622211855.r3xlhbchanlpbhbp@kafai-mbp.dhcp.thefacebook.com>
+References: <20200621055459.2629116-1-yhs@fb.com>
+ <20200621055506.2629891-1-yhs@fb.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200621055506.2629891-1-yhs@fb.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: BY3PR10CA0015.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::20) To DM6PR15MB3580.namprd15.prod.outlook.com
+ (2603:10b6:5:1f9::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:a594) by BY3PR10CA0015.namprd10.prod.outlook.com (2603:10b6:a03:255::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 21:18:56 +0000
+X-Originating-IP: [2620:10d:c090:400::5:a594]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 356bd5ef-fd0e-4532-01e8-08d816f1dfe6
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2393:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB239377BE059931AC325B36BFD5970@DM6PR15MB2393.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 0442E569BC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NIvosp7vAyubYzP8cuZTUo4oFDC67PEVXKGOd5IZPmfNZIhDYJvMCn9Z+jqG5HrjP+//fkntO40OEb3PitaEpST92HYqG7mpEN1CqvfYNRZ+i5iquXHobE/ZDL++PP1JZr1FOeaP9LSi9eiXSJcwFErxWX2/wEOaRgRRNzyOCuis10gpgE/W4ImAIBl4EPgS+LNHtmVPMY7GAzBLVJX3Xv4pwclv5NB7iPpIKdstNMYJWVjv+7zAWH3LIG66xzJf2WfKicbA/SVwp9Blf88PKeof+4EeIzEiYdd+dmQ7QcLXLLZdHjFx/GCLynI3UT7PJJzjnNKA18dxuDNgACCt/aECvGgd5vD+HCYr9IdbqSStDIxQTAjYd4NSyp1330BC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB3580.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(39860400002)(366004)(396003)(6636002)(86362001)(8936002)(1076003)(5660300002)(8676002)(66476007)(83380400001)(66556008)(66946007)(6506007)(186003)(6862004)(4326008)(16526019)(9686003)(55016002)(2906002)(478600001)(52116002)(316002)(7696005)(54906003)(142933001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 5DSoO5UNsOgQGQwH6fWu1MGsGgM8teBNi3GTttjlbDWJQ+hVz+hdPk6JEHx5ANtdMlLPs4WkHxQMHcuaBVOyv/u7MWfAOznhE9VmfYuQQDr1a3wxljdhm8bMiygyS7DcxYzn9QOyUr+glA2c7BVGlNQT2+UYPF/c3salP5UIbFzgM+gYN218XZB15XyLE+Zz1+KpaJNVpo0lWSSZt58Kc6I8ytJnw15hL/Q32LvX19hgvScWriYFDy91rB3nBp2VBAHkTHmKoAb5IMgaQX7OJC023AYALIGyV5EXaLd4SMprpWsQ3GbY4ODNoFYwnTH9++pPClxs2x6+4MwALfebrDFzLW1JdT1BRe4mjaseOm0vPb+XSpZHs1FoJWfZ6VfThryhIgapJrxAnqQDLUG4H3aEFZKyhY7Az/8+3w1Ova74pP7MZpJ+M2sCOkaie4uKA/uVWkUbrrHZ/Qrkx5GitSBDw3GkLZdgw7SHZJeSYK+Acn/7jGZzYO+aJ5z3y0hEscr6gTzgKEtPRvzlPtdHmQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 356bd5ef-fd0e-4532-01e8-08d816f1dfe6
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 21:18:57.3906
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zK0v4BtnX1/LYGkartlXGBZhjbLT9vWpqn1BMP8XQwKlsuf7SLyOhZufbT8aHG0q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2393
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_12:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ cotscore=-2147483648 adultscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006220138
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Mon, Jun 22, 2020 at 12:42 PM John Fastabend
-> <john.fastabend@gmail.com> wrote:
-> >
-> > Andrii Nakryiko wrote:
-> > > On Mon, Jun 22, 2020 at 11:30 AM John Fastabend
-> > > <john.fastabend@gmail.com> wrote:
-> > > >
-> > > > Andrii Nakryiko wrote:
-> > > > > On Fri, Jun 19, 2020 at 3:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > > >
-> > > > > > On 6/19/20 8:41 PM, Andrii Nakryiko wrote:
-> > > > > > > On Fri, Jun 19, 2020 at 6:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > > > >> On 6/19/20 2:39 AM, John Fastabend wrote:
-> > > > > > >>> John Fastabend wrote:
-> > > > > > >>>> Andrii Nakryiko wrote:
-> > > > > > >>>>> On Thu, Jun 18, 2020 at 11:58 AM John Fastabend
-> > > > > > >>>>> <john.fastabend@gmail.com> wrote:
-> > > > > > >>>
-> > > > > > >>> [...]
-> > > > > > >>>
-> > > > > > >>>>> That would be great. Self-tests do work, but having more testing with
-> > > > > > >>>>> real-world application would certainly help as well.
-> > > > > > >>>>
-> > > > > > >>>> Thanks for all the follow up.
-> > > > > > >>>>
-> > > > > > >>>> I ran the change through some CI on my side and it passed so I can
-> > > > > > >>>> complain about a few shifts here and there or just update my code or
-> > > > > > >>>> just not change the return types on my side but I'm convinced its OK
-> > > > > > >>>> in most cases and helps in some so...
-> > > > > > >>>>
-> > > > > > >>>> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > > > > > >>>
-> > > > > > >>> I'll follow this up with a few more selftests to capture a couple of our
-> > > > > > >>> patterns. These changes are subtle and I worry a bit that additional
-> > > > > > >>> <<,s>> pattern could have the potential to break something.
-> > > > > > >>>
-> > > > > > >>> Another one we didn't discuss that I found in our code base is feeding
-> > > > > > >>> the output of a probe_* helper back into the size field (after some
-> > > > > > >>> alu ops) of subsequent probe_* call. Unfortunately, the tests I ran
-> > > > > > >>> today didn't cover that case.
-> > > > > > >>>
-> > > > > > >>> I'll put it on the list tomorrow and encode these in selftests. I'll
-> > > > > > >>> let the mainainers decide if they want to wait for those or not.
-> > > > > > >>
-> > > > > > >> Given potential fragility on verifier side, my preference would be that we
-> > > > > > >> have the known variations all covered in selftests before moving forward in
-> > > > > > >> order to make sure they don't break in any way. Back in [0] I've seen mostly
-> > > > > > >> similar cases in the way John mentioned in other projects, iirc, sysdig was
-> > > > > > >> another one. If both of you could hack up the remaining cases we need to
-> > > > > > >> cover and then submit a combined series, that would be great. I don't think
-> > > > > > >> we need to rush this optimization w/o necessary selftests.
-> > > > > > >
-> > > > > > > There is no rush, but there is also no reason to delay it. I'd rather
-> > > > > > > land it early in the libbpf release cycle and let people try it in
-> > > > > > > their prod environments, for those concerned about such code patterns.
-> > > > > >
-> > > > > > Andrii, define 'delay'. John mentioned above to put together few more
-> > > > > > selftests today so that there is better coverage at least, why is that
-> > > > > > an 'issue'? I'm not sure how you read 'late in release cycle' out of it,
-> > > > > > it's still as early. The unsigned optimization for len <= MAX_LEN is
-> > > > > > reasonable and makes sense, but it's still one [specific] variant only.
-> > > > >
-> > > > > I'm totally fine waiting for John's tests, but I read your reply as a
-> > > > > request to go dig up some more examples from sysdig and other
-> > > > > projects, which I don't think I can commit to. So if it's just about
-> > > > > waiting for John's examples, that's fine and sorry for
-> > > > > misunderstanding.
-> > > > >
-> > > > > >
-> > > > > > > I don't have a list of all the patterns that we might need to test.
-> > > > > > > Going through all open-source BPF source code to identify possible
-> > > > > > > patterns and then coding them up in minimal selftests is a bit too
-> > > > > > > much for me, honestly.
-> > > > > >
-> > > > > > I think we're probably talking past each other. John wrote above:
-> > > > >
-> > > > > Yep, sorry, I assumed more general context, not specifically John's reply.
-> > > > >
-> > > > > >
-> > > > > >  >>> I'll follow this up with a few more selftests to capture a couple of our
-> > > > > >  >>> patterns. These changes are subtle and I worry a bit that additional
-> > > > > >  >>> <<,s>> pattern could have the potential to break something.
-> > > > > >
-> > > > > > So submitting this as a full series together makes absolutely sense to me,
-> > > > > > so there's maybe not perfect but certainly more confidence that also other
-> > > > > > patterns where the shifts optimized out in one case are then appearing in
-> > > > > > another are tested on a best effort and run our kselftest suite.
-> > > > > >
-> > > > > > Thanks,
-> > > > > > Daniel
-> > > >
-> > > > Hi Andrii,
-> > > >
-> > > > How about adding this on-top of your selftests patch? It will cover the
-> > > > cases we have now with 'len < 0' check vs 'len > MAX'. I had another case
-> > > > where we feed the out 'len' back into other probes but this requires more
-> > > > hackery than I'm willing to encode in a selftests. There seems to be
-> > > > some better options to improve clang side + verifier and get a clean
-> > > > working version in the future.
-> > >
-> > > Ok, sounds good. I'll add it as an extra patch. Not sure about all the
-> > > conventions with preserving Signed-off-by. Would just keeping your
-> > > Signed-off-by be ok? If you don't mind, though, I'll keep each
-> > > handler{32,64}_{gt,lt} as 4 independent BPF programs, so that if any
-> > > of them is unverifiable, it's easier to inspect the BPF assembly. Yell
-> > > if you don't like this.
-> >
-> > works for me, go for it.
-> >
-> > >
-> > > >
-> > > > On the clang/verifier side though I think the root cause is we do a poor
-> > > > job of tracking >>32, s<<32 case. How about we add a sign-extend instruction
-> > > > to BPF? Then clang can emit BPF_SEXT_32_64 and verifier can correctly
-> > > > account for it and finally backends can generate better code. This
-> > > > will help here, but also any other place we hit the sext codegen.
-> > > >
-> > > > Alexei, Yonghong, any opinions for/against adding new insn? I think we
-> > > > talked about doing it earlier.
-> > >
-> > > Seems like an overkill to me, honestly. I'd rather spend effort on
-> > > teaching Clang to always generate `w1 = w0` for such a case (for
-> > > alu32). For no-ALU32 recommendation would be to switch to ALU32, if
-> > > you want to work with int instead of long and care about two bitshift
-> > > operations. If you can stick to longs on no-ALU32, then no harm, no
-> > > foul.
-> > >
-> >
-> > Do you have an example of where clang doesn't generate just `w1 = w0`
-> > for the alu32 case? It really should at this point I'm not aware of
-> > any cases where it doesn't. I think you might have mentioned this
-> > earlier but I'm not seeing it.
+On Sat, Jun 20, 2020 at 10:55:06PM -0700, Yonghong Song wrote:
+> Three more helpers are added to cast a sock_common pointer to
+> an tcp_sock, tcp_timewait_sock or a tcp_request_sock for
+> tracing programs.
 > 
-> Yeah, ALU32 + LONG for helpers + u32 for len variable. I actually call
-> this out explicitly in the commit message for this patch.
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf.h            |  3 ++
+>  include/uapi/linux/bpf.h       | 23 ++++++++++++++-
+>  kernel/trace/bpf_trace.c       |  6 ++++
+>  net/core/filter.c              | 51 ++++++++++++++++++++++++++++++++++
+>  scripts/bpf_helpers_doc.py     |  6 ++++
+>  tools/include/uapi/linux/bpf.h | 23 ++++++++++++++-
+>  6 files changed, 110 insertions(+), 2 deletions(-)
 > 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 0c658f78e939..b17e682454e5 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1637,6 +1637,9 @@ extern const struct bpf_func_proto bpf_ringbuf_submit_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_discard_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_query_proto;
+>  extern const struct bpf_func_proto bpf_skc_to_tcp6_sock_proto;
+> +extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
+> +extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
+> +extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
+>  
+>  const struct bpf_func_proto *bpf_tracing_func_proto(
+>  	enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 394fcba27b6a..e256417d94c2 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3258,6 +3258,24 @@ union bpf_attr {
+>   *		Dynamically cast a *sk* pointer to a *tcp6_sock* pointer.
+>   *	Return
+>   *		*sk* if casting is valid, or NULL otherwise.
+> + *
+> + * struct tcp_sock *bpf_skc_to_tcp_sock(void *sk)
+> + *	Description
+> + *		Dynamically cast a *sk* pointer to a *tcp_sock* pointer.
+> + *	Return
+> + *		*sk* if casting is valid, or NULL otherwise.
+> + *
+> + * struct tcp_timewait_sock *bpf_skc_to_tcp_timewait_sock(void *sk)
+> + * 	Description
+> + *		Dynamically cast a *sk* pointer to a *tcp_timewait_sock* pointer.
+> + *	Return
+> + *		*sk* if casting is valid, or NULL otherwise.
+> + *
+> + * struct tcp_request_sock *bpf_skc_to_tcp_request_sock(void *sk)
+> + * 	Description
+> + *		Dynamically cast a *sk* pointer to a *tcp_request_sock* pointer.
+> + *	Return
+> + *		*sk* if casting is valid, or NULL otherwise.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -3396,7 +3414,10 @@ union bpf_attr {
+>  	FN(ringbuf_discard),		\
+>  	FN(ringbuf_query),		\
+>  	FN(csum_level),			\
+> -	FN(skc_to_tcp6_sock),
+> +	FN(skc_to_tcp6_sock),		\
+> +	FN(skc_to_tcp_sock),		\
+> +	FN(skc_to_tcp_timewait_sock),	\
+> +	FN(skc_to_tcp_request_sock),
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>   * function eBPF program intends to call
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 478c10d1ec33..de5fbe66e1ca 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1517,6 +1517,12 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  		return &bpf_xdp_output_proto;
+>  	case BPF_FUNC_skc_to_tcp6_sock:
+>  		return &bpf_skc_to_tcp6_sock_proto;
+> +	case BPF_FUNC_skc_to_tcp_sock:
+> +		return &bpf_skc_to_tcp_sock_proto;
+> +	case BPF_FUNC_skc_to_tcp_timewait_sock:
+> +		return &bpf_skc_to_tcp_timewait_sock_proto;
+> +	case BPF_FUNC_skc_to_tcp_request_sock:
+> +		return &bpf_skc_to_tcp_request_sock_proto;
+>  #endif
+>  	case BPF_FUNC_seq_printf:
+>  		return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 8ca365c5bd10..d26ce3b5e3d5 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -9271,3 +9271,54 @@ const struct bpf_func_proto bpf_skc_to_tcp6_sock_proto = {
+>  	.check_btf_id		= check_arg_btf_id,
+>  	.ret_btf_id		= &sock_cast_btf_ids[SOCK_CAST_TCP6_SOCK],
+>  };
+> +
+> +BPF_CALL_1(bpf_skc_to_tcp_sock, struct sock *, sk)
+> +{
+> +	if (sk_fullsock(sk) && sk->sk_protocol == IPPROTO_TCP)
+> +		return (unsigned long)sk;
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+> +const struct bpf_func_proto bpf_skc_to_tcp_sock_proto = {
+> +	.func			= bpf_skc_to_tcp_sock,
+> +	.gpl_only		= true,
+s/true/false/
+and for other bpf_func_proto below.
 
-Maybe we are just saying the same thing but the <<32, s>>32 pattern
-from the ALU32 + LONG for helpers + u32 is becuase llvm generated a
-LLVM IR sext instruction. We need the sext because its promoting a
-u32 type to a long. We can't just replace those with MOV instructions
-like we do with zext giving the `w1=w0`. We would have to "know" the
-helper call zero'd the upper bits but this isn't C standard. My
-suggestion to fix this is to generate a BPF_SEXT and then let the
-verifier handle it and JITs generate good code for it. On x86
-we have a sign-extending move MOVSX for example.
+> +	.ret_type		= RET_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg1_type		= ARG_PTR_TO_BTF_ID,
+> +	.check_btf_id		= check_arg_btf_id,
+> +	.ret_btf_id		= &sock_cast_btf_ids[SOCK_CAST_TCP_SOCK],
+> +};
+> +
+> +BPF_CALL_1(bpf_skc_to_tcp_timewait_sock, struct sock *, sk)
+> +{
+> +	if (sk->sk_state == TCP_TIME_WAIT)
+Not sure if checking TCP_TIME_WAIT can guarantee a tcp_timewait_sock.
+dccp seems to have the same state aliased to DCCP_TIME_WAIT.
+The same goes for the TCP_NEW_SYN_RECV check.
 
-Trying to go the other way and enforce callees zero upper bits of
-return register seems inconsistent and more difficult to implement.
+may be checking sk->sk_prot instead?
 
-> >
-> > There are other cases where sext gets generated in normal code and
-> > it would be nice to not always have to work around it.
-
-
+> +		return (unsigned long)sk;
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+> +const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto = {
+> +	.func			= bpf_skc_to_tcp_timewait_sock,
+> +	.gpl_only		= true,
+> +	.ret_type		= RET_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg1_type		= ARG_PTR_TO_BTF_ID,
+> +	.check_btf_id		= check_arg_btf_id,
+> +	.ret_btf_id		= &sock_cast_btf_ids[SOCK_CAST_TCP_TW_SOCK],
+> +};
+> +
+> +BPF_CALL_1(bpf_skc_to_tcp_request_sock, struct sock *, sk)
+> +{
+> +	if (sk->sk_state == TCP_NEW_SYN_RECV)
+> +		return (unsigned long)sk;
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+> +const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto = {
+> +	.func			= bpf_skc_to_tcp_request_sock,
+> +	.gpl_only		= true,
+> +	.ret_type		= RET_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg1_type		= ARG_PTR_TO_BTF_ID,
+> +	.check_btf_id		= check_arg_btf_id,
+> +	.ret_btf_id		= &sock_cast_btf_ids[SOCK_CAST_TCP_REQ_SOCK],
+> +};
