@@ -2,146 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B4F20339C
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 11:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431F82033EB
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 11:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgFVJkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 05:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgFVJku (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:40:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2432AC061795
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 02:40:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id q2so13508301wrv.8
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 02:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tOdN8Os3uQ1Vbd/a4os7DGJTbk++99An6ASi1Ba/kec=;
-        b=CloD2p5IV2JOh6H0z15M5xN+pD/IFDVTRV8gwJl6o7iAUEs0z0BMsK9Y5PhuZBHZgo
-         Jvx5hRyJQjVAPdvCcMHLuWk+B3NsTiMoujvQhr6npjcQFct7Fn62NI0gKd7ElDGwsMZY
-         cdIfF9paZXIQtJkvcczi0uEGFSKGYf/n1atUAZzId1B9uylH5bKpJnLyrSfZqVTys0co
-         +iIPqy9B6m8P/M3NP88RoESotaaTBmKgwFIkok59t0pG4M+r82DP+S64LlgOxem77Tov
-         LIxXDcNa1Ia+nbcdoFc/07QpFoM0HEJ2WXmxuDUs58pwx7YfHmPw4WeG5oZMeui15g6T
-         xaoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tOdN8Os3uQ1Vbd/a4os7DGJTbk++99An6ASi1Ba/kec=;
-        b=LdU52qA8fYJ8TcGjsDK9eEt4YFXtO1UwdaF0GWbNWTEmAiNCfk/WXQP1ysw6LbHDKx
-         w0hYjqx6afdTX7avsWh7JMBf8SfZ23kucz36cy9TVx16P9xDtpl3eKgXl5fm3XbjG0zK
-         YKuRexs318lCDJTWDuFAUuzO7vjhE/Hp++bARG1YpgUrGCLGo8cqubBtHpXMFG/BsOp9
-         T5gWMFJk1mt/QEsx9mGlSCPwHoReoFDhDEEvjdz8Wc4kskML3dLQy9xbpVySbPGiB0CN
-         wvf+E1dgDQq7eYwdJaL4QS/BHpNE8ebhbKUATRda7//NJaPaQYRv8s/WbsRYnxWdnL+a
-         2lTg==
-X-Gm-Message-State: AOAM531aGHiLk76wDNNaPBkmjPpVgIlxFeymLnMcNPhiXS8WdNGeqP1l
-        i29MsF66zhOojbDCIdqIzpYh4g==
-X-Google-Smtp-Source: ABdhPJx0NL1GSWefd73+pLmzg/cyxn/QzWJMXWk6+Zx1EZmeNfOg2s3SOiG4GF/5Nh84Z5r7vCnAKg==
-X-Received: by 2002:a5d:4f01:: with SMTP id c1mr17311626wru.190.1592818847834;
-        Mon, 22 Jun 2020 02:40:47 -0700 (PDT)
-Received: from [192.168.1.12] ([194.53.184.240])
-        by smtp.gmail.com with ESMTPSA id g18sm16038083wme.17.2020.06.22.02.40.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 02:40:47 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: Implement bpf_local_storage for
- inodes
-To:     KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>
-References: <20200617202941.3034-1-kpsingh@chromium.org>
- <20200617202941.3034-3-kpsingh@chromium.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <1bb2c24c-bedd-50b4-3d81-3cbb9507ed86@isovalent.com>
-Date:   Mon, 22 Jun 2020 10:40:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726666AbgFVJs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 05:48:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55516 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726515AbgFVJs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 05:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592819335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cf6nDCtN7M7tXSP4Nc4eZ+rkXRJDalbgveDT6DSJ+XQ=;
+        b=DRX/N8DEeEnmxrT3z9LN+0xxsQPO07YCCSsKYqPfPmnTx7/dbvEfN8JLPX/GPqXLiMS6id
+        /PStSzcbunjR5IuvQko9mTZU5WyXopBY54k8KgJNFzru2ihdI8Z0SmcyOSathxv2cCtTJn
+        VhAhY0ltuz552RNcasg66Lxk/yD/jp0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-aSyqZULhPo2_nCin_g1Xzw-1; Mon, 22 Jun 2020 05:48:52 -0400
+X-MC-Unique: aSyqZULhPo2_nCin_g1Xzw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB535835B41;
+        Mon, 22 Jun 2020 09:48:50 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DBBA1A265;
+        Mon, 22 Jun 2020 09:48:38 +0000 (UTC)
+Date:   Mon, 22 Jun 2020 11:48:37 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next 4/8] bpf: cpumap: add the possibility to
+ attach an eBPF program to cpumap
+Message-ID: <20200622114837.278adefa@carbon>
+In-Reply-To: <734113565894cb8447d1526e6a93eaf6ae994c2d.1592606391.git.lorenzo@kernel.org>
+References: <cover.1592606391.git.lorenzo@kernel.org>
+        <734113565894cb8447d1526e6a93eaf6ae994c2d.1592606391.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200617202941.3034-3-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-06-17 22:29 UTC+0200 ~ KP Singh <kpsingh@chromium.org>
-> From: KP Singh <kpsingh@google.com>
-> 
-> Similar to bpf_local_storage for sockets, add local storage for inodes.
-> The life-cycle of storage is managed with the life-cycle of the inode.
-> i.e. the storage is destroyed along with the owning inode.
-> 
-> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
-> security blob which are now stackable and can co-exist with other LSMs.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
+On Sat, 20 Jun 2020 00:57:20 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index c5fac8068ba1..e8fbafb3e87b 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-> @@ -49,6 +49,7 @@ const char * const map_type_name[] = {
->  	[BPF_MAP_TYPE_STACK]			= "stack",
->  	[BPF_MAP_TYPE_SK_STORAGE]		= "sk_storage",
->  	[BPF_MAP_TYPE_STRUCT_OPS]		= "struct_ops",
-> +	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
->  };
->  
->  const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
+> +static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+> +				    void **xdp_frames, int n,
+> +				    struct xdp_cpumap_stats *stats)
+> +{
+> +	struct xdp_rxq_info rxq;
 
-Thanks for the update on bpftool map types, could you also change the
-relevant help message, man page and bash completion please? (See below.)
+I do think we can merge this code as-is (and I actually re-factored this
+code offlist), but I have some optimizations I would like to try out.
 
+E.g. as I've tried to explain over IRC, it will be possible to avoid
+having to reconstruct xdp_rxq_info here, as we can use the
+expected_attach_type and remap the BPF instructions to use info from
+xdp_frame.  I want to benchmark it first, to see if it is worth it (we
+will only save 2 store operations in a likely cache-hot area).
+
+
+> +	struct bpf_prog *prog;
+> +	struct xdp_buff xdp;
+> +	int i, nframes = 0;
+> +
+> +	if (!rcpu->prog)
+> +		return n;
+> +
+> +	xdp_set_return_frame_no_direct();
+> +	xdp.rxq = &rxq;
+> +
+> +	rcu_read_lock();
+> +
+> +	prog = READ_ONCE(rcpu->prog);
+> +	for (i = 0; i < n; i++) {
+> +		struct xdp_frame *xdpf = xdp_frames[i];
+> +		u32 act;
+> +		int err;
+> +
+> +		rxq.dev = xdpf->dev_rx;
+> +		rxq.mem = xdpf->mem;
+> +		/* TODO: report queue_index to xdp_rxq_info */
+> +
+> +		xdp_convert_frame_to_buff(xdpf, &xdp);
+> +
+> +		act = bpf_prog_run_xdp(prog, &xdp);
+> +		switch (act) {
+> +		case XDP_PASS:
+> +			err = xdp_update_frame_from_buff(&xdp, xdpf);
+> +			if (err < 0) {
+> +				xdp_return_frame(xdpf);
+> +				stats->drop++;
+> +			} else {
+> +				xdp_frames[nframes++] = xdpf;
+> +				stats->pass++;
+> +			}
+> +			break;
+> +		default:
+> +			bpf_warn_invalid_xdp_action(act);
+> +			/* fallthrough */
+> +		case XDP_DROP:
+> +			xdp_return_frame(xdpf);
+> +			stats->drop++;
+> +			break;
+> +		}
+> +	}
+> +
+> +	rcu_read_unlock();
+> +	xdp_clear_return_frame_no_direct();
+> +
+> +	return nframes;
+> +}
+
+
+
+-- 
 Best regards,
-Quentin
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-------
-
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index 31101643e57c..a9cd15ed7187 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -49,7 +49,7 @@ MAP COMMANDS
- |		| **lru_percpu_hash** | **lpm_trie** | **array_of_maps** | **hash_of_maps**
- |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
- |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
--|		| **queue** | **stack** | **sk_storage** | **struct_ops** }
-+|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **inode_storage** }
- 
- DESCRIPTION
- ===========
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 25b25aca1112..34cadc081a78 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -688,7 +688,8 @@ _bpftool()
-                                 lru_percpu_hash lpm_trie array_of_maps \
-                                 hash_of_maps devmap devmap_hash sockmap cpumap \
-                                 xskmap sockhash cgroup_storage reuseport_sockarray \
--                                percpu_cgroup_storage queue stack' -- \
-+                                percpu_cgroup_storage queue stack sk_storage \
-+                                struct_ops inode_storage' -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c5fac8068ba1..f1b48a97b378 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1590,7 +1590,7 @@ static int do_help(int argc, char **argv)
- 		"                 lru_percpu_hash | lpm_trie | array_of_maps | hash_of_maps |\n"
- 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
- 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
--		"                 queue | stack | sk_storage | struct_ops }\n"
-+		"                 queue | stack | sk_storage | struct_ops | inode_storage }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
- 		"",
- 		bin_name, argv[-2]);
