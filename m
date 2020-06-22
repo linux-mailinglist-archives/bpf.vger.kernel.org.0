@@ -2,110 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10702032AB
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 11:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DB0203372
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 11:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgFVJCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 05:02:16 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58887 "EHLO
+        id S1727041AbgFVJdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 05:33:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30951 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725904AbgFVJCQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Jun 2020 05:02:16 -0400
+        by vger.kernel.org with ESMTP id S1726931AbgFVJdc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Jun 2020 05:33:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592816534;
+        s=mimecast20190719; t=1592818411;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=le78y5frfkNmsXZTYDe6cPJby+DCPkzGDKyYNl1SlEc=;
-        b=Pj/fsRhhR07AeaZsMzofAtDq2O5oEGCaeKznkANb6hiV+axGmzWuHF/rtVkH0JByWL4F3z
-        IL/BlNwzEZGWpGozV7xcmVw5rIgoSeucEnBW3Qan7GNv3nTAKc6qM0OQTzmBaud8tbOeg2
-        Dx3PvZMRlITXbtRV6DWZz8/UyMebwp4=
+        bh=taAm+yHynsWGizuM/1HFA84Om2/vElU4MDzfMW/Lhrk=;
+        b=UxRVDJsYU/rPEe1qkxsI+cwjgObueqjiRg3Nlfukc8C0CMM/e+UyZhT2A+LZFAueMSvFzX
+        FqqkXyuiBdbuqS3+NHZIQ6OU+hsynI07uLN3Pjbdiy2d6Lry5dH+6fAdC2WdBxeO5U8DeD
+        yoE7GPxg17hRH1DjlHD+xwfkYgYSOVI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-9M2q-_1-NjyluP2mb3xrrA-1; Mon, 22 Jun 2020 05:02:12 -0400
-X-MC-Unique: 9M2q-_1-NjyluP2mb3xrrA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-251-cedfWghFM4-CLIdk6K1KeA-1; Mon, 22 Jun 2020 05:33:27 -0400
+X-MC-Unique: cedfWghFM4-CLIdk6K1KeA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40E1C835B40;
-        Mon, 22 Jun 2020 09:02:10 +0000 (UTC)
-Received: from krava (unknown [10.40.193.171])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 64F6C7166E;
-        Mon, 22 Jun 2020 09:02:06 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 11:02:05 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 09/11] bpf: Add d_path helper
-Message-ID: <20200622090205.GD2556590@krava>
-References: <20200616100512.2168860-1-jolsa@kernel.org>
- <20200616100512.2168860-10-jolsa@kernel.org>
- <CAEf4BzY=d5y_-fXvomG7SjkbK7DZn5=-f+sdCYRdZh9qeynQrQ@mail.gmail.com>
- <20200619133124.GJ2465907@krava>
- <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CD3E1005512;
+        Mon, 22 Jun 2020 09:33:26 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5C6410013D2;
+        Mon, 22 Jun 2020 09:33:14 +0000 (UTC)
+Date:   Mon, 22 Jun 2020 11:33:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next 3/8] cpumap: formalize map value as a named
+ struct
+Message-ID: <20200622113313.6f56244d@carbon>
+In-Reply-To: <804b20c4f6fdda24f81e946c5c67c37c55d9f590.1592606391.git.lorenzo@kernel.org>
+References: <cover.1592606391.git.lorenzo@kernel.org>
+        <804b20c4f6fdda24f81e946c5c67c37c55d9f590.1592606391.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 11:25:27AM -0700, Andrii Nakryiko wrote:
+On Sat, 20 Jun 2020 00:57:19 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-SNIP
-
-> > > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > > >   * function eBPF program intends to call
-> > > > diff --git a/kernel/bpf/btf_ids.c b/kernel/bpf/btf_ids.c
-> > > > index d8d0df162f04..853c8fd59b06 100644
-> > > > --- a/kernel/bpf/btf_ids.c
-> > > > +++ b/kernel/bpf/btf_ids.c
-> > > > @@ -13,3 +13,14 @@ BTF_ID(struct, seq_file)
-> > > >
-> > > >  BTF_ID_LIST(bpf_xdp_output_btf_ids)
-> > > >  BTF_ID(struct, xdp_buff)
-> > > > +
-> > > > +BTF_ID_LIST(bpf_d_path_btf_ids)
-> > > > +BTF_ID(struct, path)
-> > > > +
-> > > > +BTF_WHITELIST_ENTRY(btf_whitelist_d_path)
-> > > > +BTF_ID(func, vfs_truncate)
-> > > > +BTF_ID(func, vfs_fallocate)
-> > > > +BTF_ID(func, dentry_open)
-> > > > +BTF_ID(func, vfs_getattr)
-> > > > +BTF_ID(func, filp_close)
-> > > > +BTF_WHITELIST_END(btf_whitelist_d_path)
-> > >
-> > > Oh, so that's why you added btf_ids.c. Do you think centralizing all
-> > > those BTF ID lists in one file is going to be more convenient? I lean
-> > > towards keeping them closer to where they are used, as it was with all
-> > > those helper BTF IDS. But I wonder what others think...
-> >
-> > either way works for me, but then BTF_ID_* macros needs to go
-> > to include/linux/btf_ids.h header right?
-> >
+> As it has been already done for devmap, introduce 'struct bpf_cpumap_val'
+> to formalize the expected values that can be passed in for a CPUMAP.
+> Update cpumap code to use the struct.
 > 
-> given it's internal API, I'd probably just put it in
-> include/linux/btf.h or include/linux/bpf.h, don't think we need extra
-> header just for these
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/uapi/linux/bpf.h       |  9 +++++++++
+>  kernel/bpf/cpumap.c            | 25 +++++++++++++------------
+>  tools/include/uapi/linux/bpf.h |  9 +++++++++
+>  3 files changed, 31 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 19684813faae..a45d61bc886e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3774,6 +3774,15 @@ struct bpf_devmap_val {
+>  	} bpf_prog;
+>  };
+>  
+> +/* CPUMAP map-value layout
+> + *
+> + * The struct data-layout of map-value is a configuration interface.
+> + * New members can only be added to the end of this structure.
+> + */
+> +struct bpf_cpumap_val {
+> +	__u32 qsize;	/* queue size */
+> +};
+> +
 
-actually, I might end up with extra header, so it's possible
-to add selftest for this
+Nitpicking the comment: /* queue size */
+It doesn't provide much information to the end-user.
 
-jirka
+What about changing it to: /* queue size to remote target CPU */
+?
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
