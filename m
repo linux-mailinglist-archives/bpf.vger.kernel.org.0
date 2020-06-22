@@ -2,127 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3FE202D5F
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 00:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843242032A3
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 10:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgFUWVn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Jun 2020 18:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgFUWVm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Jun 2020 18:21:42 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5564FC061795
-        for <bpf@vger.kernel.org>; Sun, 21 Jun 2020 15:21:42 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u26so12331160wmn.1
-        for <bpf@vger.kernel.org>; Sun, 21 Jun 2020 15:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KcxfYlAyKzbITdSbFArzA2umqb7j1yl/HuXhhiSDWMM=;
-        b=a89qNGlRNmNNNIPKu7EIHagX5mdQzBSxnYrV/zChfLnMlFSPXSzMPmDWl39DcPMLrU
-         tGKk1mBkfW+78JxrtnG24tyNRhwQTUebFotv9ur4f+f04Nkcw4nhb3Qn/fl30t0MbJ8r
-         U5V1+mBMZBSElcmF5STvUO47mAX3euxFVJKTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KcxfYlAyKzbITdSbFArzA2umqb7j1yl/HuXhhiSDWMM=;
-        b=QQJcjK5ceZuqeTW6/wr9+A2lfeA7zQmLOHnki5AaidHLJkxyfUJxUp2+Ad51kp63FU
-         ODDTfVjlt/zlW8/SLupfvdgyc1OyA4CalthTzMoVavjqyM+WfBUYV9IgFkYiHnIfdBGK
-         SOqkB0kSrWAqdMP0Qf0JGtnSZwC342wfVAtzNNEQzSNAiRMRA6izUs+s2Vo2YecDzdJf
-         bMBnIMmhfI18eBvyxWbYPWlWbc2H4+DNfI3SfubIS6Hgrl93dsxV2j3nYdxM7ZgkgrPK
-         D1Peue19xw3nrjJ0zoCrUubk3kUajUeIrgXYv6Tu2n4McLHcBccPkQnSvjXYBLTGnxIg
-         0M8A==
-X-Gm-Message-State: AOAM5310DGEed8lSFv2ocsRYs1r7m7i+lIS5/UWPKn2BSBBANJ+Pj/fJ
-        PJOKjjWH6Qpxx1T6YEs7iXgu+zF8W8w=
-X-Google-Smtp-Source: ABdhPJyawXdwUDr2apHIXHwsbzgybV9TIbkv/UlOjUZZRmH3JVPJoMesK5eIu0YntqTgef+D0vJGFQ==
-X-Received: by 2002:a7b:cd07:: with SMTP id f7mr4047196wmj.115.1592778100686;
-        Sun, 21 Jun 2020 15:21:40 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id f2sm13936251wmj.39.2020.06.21.15.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jun 2020 15:21:40 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1725928AbgFVI7i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 04:59:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21971 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725819AbgFVI7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:59:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592816377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ehg/zjb8Q2TUGPWepfVX4VSAfCywde6YjingIHKbRfo=;
+        b=L9QdGVERrJ15Hvr450/GE+2aYD1pXCB6NjWBr2ac76Fj0GXwrl32i00fR85ZK0AsU5uI3H
+        gzXPyjdA45krvqjpNb/kwFK+6VTHQ3ZT/m1xxz5/PiI4sz6Dmj4eMb0zTyP9tGj9Ds2wk4
+        DKt0Lxmv+Cd9R0TOYS6iO0tSSIrnUP8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-xQtGER3jMi-IsqBlPHuzwQ-1; Mon, 22 Jun 2020 04:59:33 -0400
+X-MC-Unique: xQtGER3jMi-IsqBlPHuzwQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 371BEEC1A2;
+        Mon, 22 Jun 2020 08:59:31 +0000 (UTC)
+Received: from krava (unknown [10.40.193.171])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 60C597C1FD;
+        Mon, 22 Jun 2020 08:59:27 +0000 (UTC)
+Date:   Mon, 22 Jun 2020 10:59:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jann Horn <jannh@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Kees Cook <keescook@chromium.org>,
-        James Morris <jmorris@namei.org>
-Subject: [PATCH] security: Fix hook iteration and default value for inode_copy_up_xattr
-Date:   Mon, 22 Jun 2020 00:21:35 +0200
-Message-Id: <20200621222135.9136-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 01/11] bpf: Add btfid tool to resolve BTF IDs in ELF
+ object
+Message-ID: <20200622085926.GC2556590@krava>
+References: <20200616100512.2168860-1-jolsa@kernel.org>
+ <20200616100512.2168860-2-jolsa@kernel.org>
+ <CAEf4BzbB0ZMfWHrhiPhv79sMVZ9L0gMj54uXKn_-+mTawPiBqw@mail.gmail.com>
+ <20200619130354.GB2465907@krava>
+ <CAEf4BzbK4q9fTTYA5Apyn_wn0tb5K1_Vm7DX_OwM133V6XHB7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbK4q9fTTYA5Apyn_wn0tb5K1_Vm7DX_OwM133V6XHB7g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Fri, Jun 19, 2020 at 11:12:29AM -0700, Andrii Nakryiko wrote:
 
-inode_copy_up_xattr returns 0 to indicate the acceptance of the xattr
-and 1 to reject it. If the LSM does not know about the xattr, it's
-expected to return -EOPNOTSUPP, which is the correct default value for
-this hook. BPF LSM, currently, uses 0 as the default value and thereby
-falsely allows all overlay fs xattributes to be copied up.
+SNIP
 
-The iteration logic is also updated from the "bail-on-fail"
-call_int_hook to continue on the non-decisive -EOPNOTSUPP and bail out
-on other values.
+> >
+> > ok
+> >
+> > >
+> > > > +                       root = &obj->funcs;
+> > > > +                       nr = &nr_funcs;
+> > > > +               } else if (BTF_INFO_KIND(type->info) == BTF_KIND_STRUCT && nr_structs) {
+> > >
+> > > same as above: btf_is_struct
+> > >
+> > > But I think you also need to support unions?
+> > >
+> > > Also what about typedefs? A lot of types are typedefs to struct/func_proto/etc.
+> >
+> > I added only types which are needed at the moment, but maybe
+> > we can add the basic types now, so we don't need to bother later,
+> > when we forget how this all work ;-)
+> 
+> yeah, exactly. Once this works, no one will want to go and revisit it,
+> so I'd rather make it generic from the get go, especially that it's
+> really easy in this case, right?
 
-Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- include/linux/lsm_hook_defs.h |  2 +-
- security/security.c           | 17 ++++++++++++++++-
- 2 files changed, 17 insertions(+), 2 deletions(-)
+right, I'll add the basic types
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 6791813cd439..f4b2e54162ae 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -150,7 +150,7 @@ LSM_HOOK(int, 0, inode_listsecurity, struct inode *inode, char *buffer,
- 	 size_t buffer_size)
- LSM_HOOK(void, LSM_RET_VOID, inode_getsecid, struct inode *inode, u32 *secid)
- LSM_HOOK(int, 0, inode_copy_up, struct dentry *src, struct cred **new)
--LSM_HOOK(int, 0, inode_copy_up_xattr, const char *name)
-+LSM_HOOK(int, -EOPNOTSUPP, inode_copy_up_xattr, const char *name)
- LSM_HOOK(int, 0, kernfs_init_security, struct kernfs_node *kn_dir,
- 	 struct kernfs_node *kn)
- LSM_HOOK(int, 0, file_permission, struct file *file, int mask)
-diff --git a/security/security.c b/security/security.c
-index 0ce3e73edd42..70a7ad357bc6 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1414,7 +1414,22 @@ EXPORT_SYMBOL(security_inode_copy_up);
- 
- int security_inode_copy_up_xattr(const char *name)
- {
--	return call_int_hook(inode_copy_up_xattr, -EOPNOTSUPP, name);
-+	struct security_hook_list *hp;
-+	int rc;
-+
-+	/*
-+	 * The implementation can return 0 (accept the xattr), 1 (discard the
-+	 * xattr), -EOPNOTSUPP if it does not know anything about the xattr or
-+	 * any other error code incase of an error.
-+	 */
-+	hlist_for_each_entry(hp,
-+		&security_hook_heads.inode_copy_up_xattr, list) {
-+		rc = hp->hook.inode_copy_up_xattr(name);
-+		if (rc != LSM_RET_DEFAULT(inode_copy_up_xattr))
-+			return rc;
-+	}
-+
-+	return LSM_RET_DEFAULT(inode_copy_up_xattr);
- }
- EXPORT_SYMBOL(security_inode_copy_up_xattr);
- 
--- 
-2.27.0.111.gc72c7da667-goog
+SNIP
+
+> > >
+> > > nit: should these elf_end/close properly on error?
+> >
+> > I wrote in the comment above that I intentionaly do not cleanup
+> > on error path.. I wanted to save some time, but actualy I think
+> > that would not be so expensive, I can add it
+> 
+> as in save CPU time in error case? Who cares about that? If saving
+> developer time, well... `goto cleanup` is common and simple pattern ;)
+
+the sooner you see the error the better ;-) ok
+
+jirka
 
