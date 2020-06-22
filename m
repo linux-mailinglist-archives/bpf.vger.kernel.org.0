@@ -2,118 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDB1203620
-	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 13:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA96203629
+	for <lists+bpf@lfdr.de>; Mon, 22 Jun 2020 13:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgFVLsV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 07:48:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53164 "EHLO mail.kernel.org"
+        id S1728043AbgFVLuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 07:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727048AbgFVLsU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:48:20 -0400
+        id S1727952AbgFVLuM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 07:50:12 -0400
 Received: from localhost (unknown [151.48.138.186])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D48720716;
-        Mon, 22 Jun 2020 11:48:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78892206D7;
+        Mon, 22 Jun 2020 11:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592826500;
-        bh=WPIiRB4JSgUsHWtHb0b4M8XEW1JUPgE6hoxT2mGm6ek=;
+        s=default; t=1592826612;
+        bh=ZH+00OZclsORf8w1jSz2YeR4TOIxjgPqi0ljLU4FRO0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FD/umBmF9ODVSj6/3qqYiCgpwaBKbVWqbtvR9vAMLTh3NH0PRbW88bVq1IwLHuqo1
-         77ytEQmdpR5xTSA42WA5+UEBmy270NE5IJ6vyLAvgaIaTD+cSSo4kwTdVmGwhaccPT
-         uK+la5HcUo/grBvy2iOb5zA2cR7T6ei6xWq74opM=
-Date:   Mon, 22 Jun 2020 13:48:15 +0200
+        b=d/1Ql+jckicAzmjC1XjxQcn4wp7jMqZWN4lBWxYQLmNhDbU7LFi107FITy1YmFvoM
+         Xh6L7ZB/dSnsqYx2QEnECa/H3R47hSWvVQ3mH1s5/+numE/qfqSUeb5tgsMSwuoED6
+         Bws7Q345ozIHu3YJR58x6j4by/mp1+14GWuinw/I=
+Date:   Mon, 22 Jun 2020 13:50:07 +0200
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
         ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        David Ahern <dahern@digitalocean.com>
-Subject: Re: [PATCH v2 bpf-next 1/8] net: Refactor xdp_convert_buff_to_frame
-Message-ID: <20200622114815.GA14425@localhost.localdomain>
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org
+Subject: Re: [PATCH v2 bpf-next 3/8] cpumap: formalize map value as a named
+ struct
+Message-ID: <20200622115007.GB14425@localhost.localdomain>
 References: <cover.1592606391.git.lorenzo@kernel.org>
- <dfeb25e5274b0895f29fc1960e1cbd6c01157f8a.1592606391.git.lorenzo@kernel.org>
- <20200621171513.066e78ed@carbon>
+ <804b20c4f6fdda24f81e946c5c67c37c55d9f590.1592606391.git.lorenzo@kernel.org>
+ <20200622113313.6f56244d@carbon>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
+        protocol="application/pgp-signature"; boundary="JP+T4n/bALQSJXh8"
 Content-Disposition: inline
-In-Reply-To: <20200621171513.066e78ed@carbon>
+In-Reply-To: <20200622113313.6f56244d@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---0OAP2g/MAC+5xKAE
+--JP+T4n/bALQSJXh8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-> On Sat, 20 Jun 2020 00:57:17 +0200
+> On Sat, 20 Jun 2020 00:57:19 +0200
 > Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >=20
-> > From: David Ahern <dahern@digitalocean.com>
+> > As it has been already done for devmap, introduce 'struct bpf_cpumap_va=
+l'
+> > to formalize the expected values that can be passed in for a CPUMAP.
+> > Update cpumap code to use the struct.
 > >=20
-
-[...]
-
-> >  	if (unlikely((headroom - metasize) < sizeof(*xdp_frame)))
-> > -		return NULL;
-> > +		return -ENOMEM;
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  include/uapi/linux/bpf.h       |  9 +++++++++
+> >  kernel/bpf/cpumap.c            | 25 +++++++++++++------------
+> >  tools/include/uapi/linux/bpf.h |  9 +++++++++
+> >  3 files changed, 31 insertions(+), 12 deletions(-)
+> >=20
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 19684813faae..a45d61bc886e 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3774,6 +3774,15 @@ struct bpf_devmap_val {
+> >  	} bpf_prog;
+> >  };
+> > =20
+> > +/* CPUMAP map-value layout
+> > + *
+> > + * The struct data-layout of map-value is a configuration interface.
+> > + * New members can only be added to the end of this structure.
+> > + */
+> > +struct bpf_cpumap_val {
+> > +	__u32 qsize;	/* queue size */
+> > +};
+> > +
 >=20
-> IMHO I think ENOMEM is reserved for memory allocations failures.
-> I think ENOSPC will be more appropriate here (or EOVERFLOW).
+> Nitpicking the comment: /* queue size */
+> It doesn't provide much information to the end-user.
+>=20
+> What about changing it to: /* queue size to remote target CPU */
 
-ack, I will fix it in v3
+Yes, I agree. I will fix it in v3.
 
 Regards,
 Lorenzo
 
->=20
-> > =20
-> >  	/* Catch if driver didn't reserve tailroom for skb_shared_info */
-> >  	if (unlikely(xdp->data_end > xdp_data_hard_end(xdp))) {
-> >  		XDP_WARN("Driver BUG: missing reserved tailroom");
-> > -		return NULL;
-> > +		return -ENOMEM;
->=20
-> Same here.
->=20
-> >  	}
-> > =20
-> > -	/* Store info in top of packet */
-> > -	xdp_frame =3D xdp->data_hard_start;
-> > -
-> >  	xdp_frame->data =3D xdp->data;
-> >  	xdp_frame->len  =3D xdp->data_end - xdp->data;
-> >  	xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
-> >  	xdp_frame->metasize =3D metasize;
-> >  	xdp_frame->frame_sz =3D xdp->frame_sz;
-> > =20
-> > +	return 0;
-> > +}
-> > +
-> > +/* Convert xdp_buff to xdp_frame */
-> > +static inline
-> > +struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
-> > +{
-> > +	struct xdp_frame *xdp_frame;
-> > +
-> > +	if (xdp->rxq->mem.type =3D=3D MEM_TYPE_XSK_BUFF_POOL)
-> > +		return xdp_convert_zc_to_xdp_frame(xdp);
-> > +
-> > +	/* Store info in top of packet */
-> > +	xdp_frame =3D xdp->data_hard_start;
-> > +	if (unlikely(xdp_update_frame_from_buff(xdp, xdp_frame) < 0))
-> > +		return NULL;
-> > +
-> >  	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
-> >  	xdp_frame->mem =3D xdp->rxq->mem;
-> > =20
->=20
->=20
+> ?
 >=20
 > --=20
 > Best regards,
@@ -122,15 +103,15 @@ Lorenzo
 >   LinkedIn: http://www.linkedin.com/in/brouer
 >=20
 
---0OAP2g/MAC+5xKAE
+--JP+T4n/bALQSJXh8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXvCafAAKCRA6cBh0uS2t
-rAIxAP9c/hvo/7R8oLOusEVUOdJe0fUG7NbYdz4YhnSfAHPN/gD/dZf8jki+MJzg
-etgdLe62+fTtRQeSyvdS1kmm4m/aNQ8=
-=c8Lq
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXvCa7AAKCRA6cBh0uS2t
+rCd1AP9onNtkqFasFYqxr5CQgKqke1VhKA84xUnqcvPlTizm2gD/Z8Lb0quCYSKl
+UoRNWBvoXHrAYZXaeczMsEgwLdKhNgo=
+=tMRP
 -----END PGP SIGNATURE-----
 
---0OAP2g/MAC+5xKAE--
+--JP+T4n/bALQSJXh8--
