@@ -2,121 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7CB204EB5
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 12:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A0E204F19
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 12:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732041AbgFWKCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 06:02:42 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60906 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732005AbgFWKCm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 06:02:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592906560;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iwxh+z69eT3Q20JzDvpmUhs5YuUjLOPx+brTpOQ/Lrs=;
-        b=hvtJI6jBmDNWEw9szKDJnQhZhPfQe92B9tljKQGgGFWggB75MZyliZ7CAzo2osvCPJsLQc
-        WOwUc2/GYRR2Ht3aufiy2UTufQLQA/FKPu/JHoBVYqWrHqHqeuJVEeNy+XRCpUio7ZhYqg
-        2YE3v9b0sfB7C8rLqObquHVEFJVUDco=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-OCmOTH2hOWGe3M-Wt7W-Pg-1; Tue, 23 Jun 2020 06:02:38 -0400
-X-MC-Unique: OCmOTH2hOWGe3M-Wt7W-Pg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AB4E8031C2;
-        Tue, 23 Jun 2020 10:02:35 +0000 (UTC)
-Received: from krava (unknown [10.40.195.33])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9AC236106A;
-        Tue, 23 Jun 2020 10:02:31 +0000 (UTC)
-Date:   Tue, 23 Jun 2020 12:02:30 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 09/11] bpf: Add d_path helper
-Message-ID: <20200623100230.GA2619137@krava>
-References: <20200616100512.2168860-1-jolsa@kernel.org>
- <20200616100512.2168860-10-jolsa@kernel.org>
- <CAEf4BzY=d5y_-fXvomG7SjkbK7DZn5=-f+sdCYRdZh9qeynQrQ@mail.gmail.com>
- <20200619133124.GJ2465907@krava>
- <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
- <20200622090205.GD2556590@krava>
- <CAEf4BzZOph2EJLfq9FCYUhesi5NP0L_OQTrEKE-s0NPmt3HmWw@mail.gmail.com>
+        id S1732172AbgFWKfD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 06:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732076AbgFWKfC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 06:35:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC82C061755
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 03:35:02 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s1so22867077ljo.0
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 03:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ckNZyFhILcN6tTy3sbdLcXRbhqu7O7I6+l82jLAf/oo=;
+        b=gcLnIZwmr46yO7C7Aw8/ee5lRzLULbGM2uebrVAIdF/WaITv2S6PkqlN8HPJN7F8fk
+         KlVEzPOK4FhzfWA7TCTNqdSvVMPujpG0zMLbSQlVm1/jL8uULEifZnww0qRHh8MpPWe2
+         TQgl0WrDjPkhJayWRcvGb4SdJY9R1ZAJYCfa0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ckNZyFhILcN6tTy3sbdLcXRbhqu7O7I6+l82jLAf/oo=;
+        b=h5XBWcpnlUQ2yoVIh+xD1AOVTjgllVbo4sxXz/mP1fiK8VdXFVRKvbK8ntPrvj6W5r
+         lGOT2wQn92IoYDShIU6p8pZbdQkLqC7QwmPqvzaTfb82176mZ0LP/pi9nucNHSVKa8Mb
+         cP923hqdaKBydlNcyVUGZ01lrtbg9/UiPwqwDdUR7WaYXaWLycZF9ncK3fQsdspNdRrJ
+         kLwzw1eGwJi6wUyCbSQ4kPwgVRD5MdxZ+/0hDTDWknwBAo2bbv9D3iAnYRNPDloH+Kuh
+         RC/ltDp3Hmgm1nZexhYfrPRT1YpdJGluBqhfzS9JIb34aBx0D0AjL+M/5zEpIWGjpenp
+         KTiQ==
+X-Gm-Message-State: AOAM530bQxj84fA2McMS3v9x6LCJhMJh7W8F3rxRLqW5A0P4PY3rNvpE
+        JsquuHHLGUzdzsqabfsU+du9sWUf8Ni0ow==
+X-Google-Smtp-Source: ABdhPJxD7hsOiiFUc+D1OLjeylemR8lyswAtHxnKLHjYnJUMSYZkyKFIXWfnI/I7ZiePV8v4vmkhQA==
+X-Received: by 2002:a2e:b814:: with SMTP id u20mr11807935ljo.261.1592908500718;
+        Tue, 23 Jun 2020 03:35:00 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id w20sm2871301lfe.66.2020.06.23.03.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 03:35:00 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: [PATCH bpf-next v2 0/3] bpf, netns: Prepare for multi-prog attachment
+Date:   Tue, 23 Jun 2020 12:34:56 +0200
+Message-Id: <20200623103459.697774-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZOph2EJLfq9FCYUhesi5NP0L_OQTrEKE-s0NPmt3HmWw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:18:19PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jun 22, 2020 at 2:02 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, Jun 19, 2020 at 11:25:27AM -0700, Andrii Nakryiko wrote:
-> >
-> > SNIP
-> >
-> > > > > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > > > > >   * function eBPF program intends to call
-> > > > > > diff --git a/kernel/bpf/btf_ids.c b/kernel/bpf/btf_ids.c
-> > > > > > index d8d0df162f04..853c8fd59b06 100644
-> > > > > > --- a/kernel/bpf/btf_ids.c
-> > > > > > +++ b/kernel/bpf/btf_ids.c
-> > > > > > @@ -13,3 +13,14 @@ BTF_ID(struct, seq_file)
-> > > > > >
-> > > > > >  BTF_ID_LIST(bpf_xdp_output_btf_ids)
-> > > > > >  BTF_ID(struct, xdp_buff)
-> > > > > > +
-> > > > > > +BTF_ID_LIST(bpf_d_path_btf_ids)
-> > > > > > +BTF_ID(struct, path)
-> > > > > > +
-> > > > > > +BTF_WHITELIST_ENTRY(btf_whitelist_d_path)
-> > > > > > +BTF_ID(func, vfs_truncate)
-> > > > > > +BTF_ID(func, vfs_fallocate)
-> > > > > > +BTF_ID(func, dentry_open)
-> > > > > > +BTF_ID(func, vfs_getattr)
-> > > > > > +BTF_ID(func, filp_close)
-> > > > > > +BTF_WHITELIST_END(btf_whitelist_d_path)
-> > > > >
-> > > > > Oh, so that's why you added btf_ids.c. Do you think centralizing all
-> > > > > those BTF ID lists in one file is going to be more convenient? I lean
-> > > > > towards keeping them closer to where they are used, as it was with all
-> > > > > those helper BTF IDS. But I wonder what others think...
-> > > >
-> > > > either way works for me, but then BTF_ID_* macros needs to go
-> > > > to include/linux/btf_ids.h header right?
-> > > >
-> > >
-> > > given it's internal API, I'd probably just put it in
-> > > include/linux/btf.h or include/linux/bpf.h, don't think we need extra
-> > > header just for these
-> >
-> > actually, I might end up with extra header, so it's possible
-> > to add selftest for this
-> >
-> 
-> How does extra header help with selftest?
+This patch set prepares ground for link-based multi-prog attachment for
+future netns attach types, with BPF_SK_LOOKUP attach type in mind [0].
 
-to create binary with various lists defined like we do in kernel
-using the same macros..  and check they are properly made/sorted
+Two changes are needed in order to attach and run a series of BPF programs:
 
-jirka
+  1) an bpf_prog_array of programs to run (patch #2), and
+  2) a list of attached links to keep track of attachments (patch #3).
+
+I've been using these patches with the next iteration of BPF socket lookup
+hook patches, and saw that they are self-contained and can be split out to
+ease the review burden.
+
+Nothing changes for BPF flow_dissector. That is at most one prog can be
+attached.
+
+Thanks,
+-jkbs
+
+[0] https://lore.kernel.org/bpf/20200511185218.1422406-1-jakub@cloudflare.com/
+
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Stanislav Fomichev <sdf@google.com>
+
+v1 -> v2:
+
+- Show with a (void) cast that bpf_prog_array_replace_item() return value
+  is ignored on purpose. (Andrii)
+- Explain why bpf-cgroup cannot replace programs in bpf_prog_array based
+  on bpf_prog pointer comparison in patch #2 description. (Andrii)
+
+Jakub Sitnicki (3):
+  flow_dissector: Pull BPF program assignment up to bpf-netns
+  bpf, netns: Keep attached programs in bpf_prog_array
+  bpf, netns: Keep a list of attached bpf_link's
+
+ include/linux/bpf.h          |   3 +
+ include/net/flow_dissector.h |   3 +-
+ include/net/netns/bpf.h      |   7 +-
+ kernel/bpf/core.c            |  20 +++-
+ kernel/bpf/net_namespace.c   | 189 +++++++++++++++++++++++++----------
+ net/core/flow_dissector.c    |  34 +++----
+ 6 files changed, 173 insertions(+), 83 deletions(-)
+
+-- 
+2.25.4
 
