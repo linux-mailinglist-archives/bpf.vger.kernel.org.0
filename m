@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0326D204A20
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 08:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2B7204A42
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 08:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730583AbgFWGqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 02:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
+        id S1730586AbgFWG4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 02:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730489AbgFWGqI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:46:08 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D069C061573;
-        Mon, 22 Jun 2020 23:46:08 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l17so17848094qki.9;
-        Mon, 22 Jun 2020 23:46:08 -0700 (PDT)
+        with ESMTP id S1730583AbgFWG4W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:56:22 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A746C061573;
+        Mon, 22 Jun 2020 23:56:22 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id i16so14618949qtr.7;
+        Mon, 22 Jun 2020 23:56:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z37O1JhZblGRR9XyeVvzQt8v1tfzmZa9sqvhTNuDXR0=;
-        b=a4dXtCMUKhjvq82EQaksXpU9Olew8u4YngTHDwdGwu2Bf8dUHli+wBECGT0PObT5xg
-         xBb+CW4Oykt2C6fCl+LDq15KWMqg7NuchoPFD/simFayiK+L8LNRKn+6//mT1sPSL5D2
-         r8g3+LMmPqsVFEx0gAghFPq74uSh35+y5SOA+cWioJpHLPtkUhjEQOynQgP4R+vtRDh7
-         yGkIO3t36kD/F3xQaQAWK6vqerh4M07RyxOYSWXQErwSmRHg0XHGPyUWpJz0TpA4WptE
-         cN4MWPLPZACP96accfU/kcouzbp3+xgO0c1PxRNH2Wp7gvH8/NEGnXRd74RyXNakjR0q
-         776A==
+        bh=tUBJjNtTMQFGN+holuFcQjhryb9trvn8k0jvRFsvvl4=;
+        b=gGSFnbV34EGSmg+8IFJtm8rHkI6BqknBjNEOMAP35gjv+6o4Mf55XdnGWZ5dQHlYdD
+         VhMt/wJnpqknqUQgs0M75dHj+FUlrOm7bwVZ/htl6Fnn+d7hmzqVVm8ASue+SXhJt63y
+         l2zbZyC0q5EsYEn9PF3jSiPbVC38nmyI3PhQS+s78klxTgTn59UNdqO9WwdDPomGJSur
+         1jiQiWVU4K6goRP+W3lP1ZFShW/chbPXlY8KIibmHNq0TGrxooHM5bUT5t5dxiZ5vYEo
+         NERSpA8EBhXVBtMdPxpOBWwCR6ESxGTvfCMySpwoD5PyPoVMPwQMeEHwmxrG+v1j3T5H
+         NedA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z37O1JhZblGRR9XyeVvzQt8v1tfzmZa9sqvhTNuDXR0=;
-        b=Ul3NhH6IJXM392SRxvUOpdWtntwTQ4+5FOLxFPOA4MRHaDdb4r33CCpcHw5Z+YfoT9
-         oyvvZUgn5lzMA999ZrRS41vAqjptuLFEFVXjQgdaMbr9uEieO1EiWkLeJYbaqEt0Jzr8
-         f/0db2s077oBiRaO9sOcvRnjPeZ5CEoUJHtRygFtH+etUBNhUXx6RLcOX4mCBYMljmE1
-         CafQupzmDycz4CFCJLc35n8E1te4VKKYPPxzvde3PyfmlXdkT+EkNI0HUED7LI0ALqpk
-         v6LMe4VXCAK/KQWZ0uuM2aicSRiMJ/8oUu4O1/BmNbSNR3gBi8JYc73Zp5YMVd7LEdOU
-         7kpw==
-X-Gm-Message-State: AOAM531+D9NWrO4tXtFWPq+HF0A8fAUrcM8thsjcNReQsAgeDbEAjCdJ
-        fhn48hNGFlVXq3Pie0O7aSKILhmkRUFWDJbBstk=
-X-Google-Smtp-Source: ABdhPJz0F6jCPxfp8XsJiy3z3Sw3QXB2x2H0kZHBbkyaZF3Ze5Yf6PeKkacGoWpGoigXM2H+9N8u+NJej+BhDipo2LM=
-X-Received: by 2002:a05:620a:b84:: with SMTP id k4mr19217297qkh.39.1592894767726;
- Mon, 22 Jun 2020 23:46:07 -0700 (PDT)
+        bh=tUBJjNtTMQFGN+holuFcQjhryb9trvn8k0jvRFsvvl4=;
+        b=I7SjjLSZYVva+wIq/mBnDCbHsZN4ruh8GlLd3L8YDtQu1H6Gs1QtYT9NRm/L57UGXI
+         ygRPnvajCzeB77QNlrI5ePxO28Am7ECcttCbaOlgokQGK6EaH34vnq3nLj0PtZaVA+79
+         DOpuLq5CwU5Ymroewlud5M9PClUmn/hXW1Kva46otyqiAMXGc6rsa2YgDaJWTBJcCcKx
+         gwZHOit3pfXhY3P0upwKB38Q8LQD+iFNXj4PlTVUbL163BXKSjTsa1zhP4KkzwLvv021
+         kY7drbZ4CCNpE/G/khJW2jSeExA/QLOJGbCOvcT8p+/LW2dnlybSS3M44cbZfHe8FuBq
+         VCUA==
+X-Gm-Message-State: AOAM532FOc060COl6C1gG5D/pv+UMQ6BwC7noFHRoBIblr/rVbmAa5TL
+        XdDnMCl0r1V4/ngtiqPVN2v8j87R9zR8HaWorTI=
+X-Google-Smtp-Source: ABdhPJyvplbRScpoV9iwi2MifFsdUscZPK1KUKm6qDY+15v/kqtPJHDkP6FJOBl4VA/7ueX3Q95JwFWsgaUe+oYsCnk=
+X-Received: by 2002:ac8:42ce:: with SMTP id g14mr20117869qtm.117.1592895381571;
+ Mon, 22 Jun 2020 23:56:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200623003626.3072825-1-yhs@fb.com> <20200623003638.3074707-1-yhs@fb.com>
-In-Reply-To: <20200623003638.3074707-1-yhs@fb.com>
+References: <20200623003626.3072825-1-yhs@fb.com> <20200623003641.3074883-1-yhs@fb.com>
+In-Reply-To: <20200623003641.3074883-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Jun 2020 23:45:56 -0700
-Message-ID: <CAEf4BzYaEb+2uhQ4MaLAttibTE8HCAbRqFaQjSs-yyx8kxROuA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 11/15] tools/bpf: refactor some net macros to
- libbpf bpf_tracing_net.h
+Date:   Mon, 22 Jun 2020 23:56:10 -0700
+Message-ID: <CAEf4BzatNEOJSuM2t-1eLQuT4E8gcRLB38B=rqZU3G=vVGkizQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 13/15] tools/bpf: selftests: implement sample
+ tcp/tcp6 bpf_iter programs
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -65,67 +65,145 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Jun 22, 2020 at 5:38 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Refactor bpf_iter_ipv6_route.c and bpf_iter_netlink.c
-> so net macros, originally from various include/linux header
-> files, are moved to a new libbpf installable header file
-> bpf_tracing_net.h. The goal is to improve reuse so
-> networking tracing programs do not need to
-> copy these macros every time they use them.
+> In my VM, I got identical result compared to /proc/net/{tcp,tcp6}.
+> For tcp6:
+>   $ cat /proc/net/tcp6
+>     sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+>      0: 00000000000000000000000000000000:0016 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000001 00000000     0        0 17955 1 000000003eb3102e 100 0 0 10 0
+>
+>   $ cat /sys/fs/bpf/p1
+>     sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+>      0: 00000000000000000000000000000000:0016 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 17955 1 000000003eb3102e 100 0 0 10 0
+>
+> For tcp:
+>   $ cat /proc/net/tcp
+>   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+>    0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2666 1 000000007152e43f 100 0 0 10 0
+>   $ cat /sys/fs/bpf/p2
+>   sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+>    1: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2666 1 000000007152e43f 100 0 0 10 0
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/lib/bpf/Makefile                           |  1 +
->  tools/lib/bpf/bpf_tracing_net.h                  | 16 ++++++++++++++++
->  .../selftests/bpf/progs/bpf_iter_ipv6_route.c    |  7 +------
->  .../selftests/bpf/progs/bpf_iter_netlink.c       |  4 +---
->  4 files changed, 19 insertions(+), 9 deletions(-)
->  create mode 100644 tools/lib/bpf/bpf_tracing_net.h
+
+Looks reasonable, to the extent possible ;)
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/testing/selftests/bpf/progs/bpf_iter.h  |  15 ++
+>  .../selftests/bpf/progs/bpf_iter_tcp4.c       | 235 ++++++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_tcp6.c       | 250 ++++++++++++++++++
+>  3 files changed, 500 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
 >
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index bf8ed134cb8a..3d766c80eb78 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -257,6 +257,7 @@ install_headers: $(BPF_HELPER_DEFS)
->                 $(call do_install,bpf_helpers.h,$(prefix)/include/bpf,644); \
->                 $(call do_install,$(BPF_HELPER_DEFS),$(prefix)/include/bpf,644); \
->                 $(call do_install,bpf_tracing.h,$(prefix)/include/bpf,644); \
-> +               $(call do_install,bpf_tracing_net.h,$(prefix)/include/bpf,644); \
->                 $(call do_install,bpf_endian.h,$(prefix)/include/bpf,644); \
->                 $(call do_install,bpf_core_read.h,$(prefix)/include/bpf,644);
->
-> diff --git a/tools/lib/bpf/bpf_tracing_net.h b/tools/lib/bpf/bpf_tracing_net.h
-> new file mode 100644
-> index 000000000000..1f38a1098727
-> --- /dev/null
-> +++ b/tools/lib/bpf/bpf_tracing_net.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> +#ifndef __BPF_TRACING_NET_H__
-> +#define __BPF_TRACING_NET_H__
-> +
-> +#define IFNAMSIZ               16
-> +
-> +#define RTF_GATEWAY            0x0002
-> +
-> +#define fib_nh_dev             nh_common.nhc_dev
-> +#define fib_nh_gw_family       nh_common.nhc_gw_family
-> +#define fib_nh_gw6             nh_common.nhc_gw.ipv6
-> +
-> +#define sk_rmem_alloc          sk_backlog.rmem_alloc
-> +#define sk_refcnt              __sk_common.skc_refcnt
 
-Question to networking guys. How probable it is for these and similar
-definitions to ever be changed?
+[...]
 
-I'm a bit hesitant to make any stability guarantees (which is implied
-by libbpf-provided headers). I don't want us to get into the game of
-trying to maintain this across multiple kernel versions, if they are
-going to be changed.
+> +static int hlist_unhashed_lockless(const struct hlist_node *h)
+> +{
+> +        return !(h->pprev);
+> +}
+> +
+> +static int timer_pending(const struct timer_list * timer)
+> +{
+> +       return !hlist_unhashed_lockless(&timer->entry);
+> +}
+> +
+> +extern unsigned CONFIG_HZ __kconfig __weak;
 
-Let's for now keep bpf_tracing_net.h under selftests/bpf? It's still
-good to have these definitions, because we can point people to it.
+Why the __weak? We expect to have /proc/kconfig.gz in other tests
+anyway? __weak will make CONFIG_HZ to be a zero and you'll get a bunch
+of divisions by zero.
 
 > +
-> +#endif
+> +#define USER_HZ                100
+> +#define NSEC_PER_SEC   1000000000ULL
+> +static clock_t jiffies_to_clock_t(unsigned long x)
+> +{
+> +       /* The implementation here tailored to a particular
+> +        * setting of USER_HZ.
+> +        */
+> +       u64 tick_nsec = (NSEC_PER_SEC + CONFIG_HZ/2) / CONFIG_HZ;
+> +       u64 user_hz_nsec = NSEC_PER_SEC / USER_HZ;
+> +
+> +       if ((tick_nsec % user_hz_nsec) == 0) {
+> +               if (CONFIG_HZ < USER_HZ)
+> +                       return x * (USER_HZ / CONFIG_HZ);
+> +               else
+> +                       return x / (CONFIG_HZ / USER_HZ);
+> +       }
+> +       return x * tick_nsec/user_hz_nsec;
+> +}
+> +
+
+[...]
+
+> +       if (sk_common->skc_family != AF_INET)
+> +               return 0;
+> +
+> +       tp = bpf_skc_to_tcp_sock(sk_common);
+> +       if (tp) {
+> +               return dump_tcp_sock(seq, tp, uid, seq_num);
+> +       }
+
+nit: unnecessary {}
+
+> +
+> +       tw = bpf_skc_to_tcp_timewait_sock(sk_common);
+> +       if (tw)
+> +               return dump_tw_sock(seq, tw, uid, seq_num);
+> +
+> +       req = bpf_skc_to_tcp_request_sock(sk_common);
+> +       if (req)
+> +               return dump_req_sock(seq, req, uid, seq_num);
+> +
+> +       return 0;
+> +}
+
+[...]
+
+> +static int timer_pending(const struct timer_list * timer)
+> +{
+> +       return !hlist_unhashed_lockless(&timer->entry);
+> +}
+> +
+> +extern unsigned CONFIG_HZ __kconfig __weak;
+
+same about __weak here
+
+> +
+> +#define USER_HZ                100
+> +#define NSEC_PER_SEC   1000000000ULL
+> +static clock_t jiffies_to_clock_t(unsigned long x)
+> +{
+> +       /* The implementation here tailored to a particular
+> +        * setting of USER_HZ.
+> +        */
+> +       u64 tick_nsec = (NSEC_PER_SEC + CONFIG_HZ/2) / CONFIG_HZ;
+> +       u64 user_hz_nsec = NSEC_PER_SEC / USER_HZ;
+> +
+> +       if ((tick_nsec % user_hz_nsec) == 0) {
+> +               if (CONFIG_HZ < USER_HZ)
+> +                       return x * (USER_HZ / CONFIG_HZ);
+> +               else
+> +                       return x / (CONFIG_HZ / USER_HZ);
+> +       }
+> +       return x * tick_nsec/user_hz_nsec;
+> +}
+
+nit: jiffies_to_clock_t() implementation looks like an overkill for
+this use case... Would it be just `x / CONFIG_HZ * NSEC_PER_SEC` with
+some potential rounding error?
+
+> +
+> +static clock_t jiffies_delta_to_clock_t(long delta)
+> +{
+> +       if (delta <= 0)
+> +               return 0;
+> +
+> +       return jiffies_to_clock_t(delta);
+> +}
+> +
 
 [...]
