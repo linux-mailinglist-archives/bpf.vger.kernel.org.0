@@ -2,167 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEE9205841
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 19:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D62205854
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 19:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732969AbgFWRHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 13:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S1732548AbgFWRN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 13:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732610AbgFWRHW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:07:22 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67813C061755
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 10:07:22 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id s13so17369958otd.7
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 10:07:22 -0700 (PDT)
+        with ESMTP id S1732408AbgFWRNZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:13:25 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4ACC061573;
+        Tue, 23 Jun 2020 10:13:25 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id s18so24612631ioe.2;
+        Tue, 23 Jun 2020 10:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=otxfWiaSA/n5sj0rsbDV574kgaL1ginU3evlOR2FDIc=;
-        b=sfyM3u3vrf7YbmVUKU2Qfhu8AbqOzRZGgvymHGjmLWjwIwYkmKYt9Qg3u0Wfnr/mBm
-         bGjcXobsDVaPbCWSKeoep02eos3cRJXaHknp/RpGLh1Gud66EI3DiUg+1MA0C1C6mjQU
-         6WBSqr41Zu+2lwcCuBk1TjltP+pMXSCS5YbQw=
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=gav8ijUBF61wP1+X8OQ02YRSM92QldsTlZ+CycghqWQ=;
+        b=cdzV+ETP07I33HudSyeKrDtsRTaXJVyKI6vcuiVFuqW6RbsOyMreTaswG5KebPHMO0
+         vyyhfzNfTH4k/xeIqEkZKWpIOtTLJ8XX+KUq4H0G8l6B9kMh3tUiTpGYaeCuCjtNNHCz
+         Csqk9sdFVrALNuRa9trFy8cNUMHSfOceduV4w2k7adIFgmh8o2rqxes1Ixc+yzgXnMLd
+         KtslowaXpmf5KdRKd96ZSUqoYcFH+YT59KplCA6rdIu1U/z5VkZNNJ58N0A4WLFmF6Lq
+         Tey7yiCB6HjFKKvSF8SlMw2X9N6cwzAGBrykZDepGtDDzfdzGvn+EbDncRqXKOiaMvHy
+         f/rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=otxfWiaSA/n5sj0rsbDV574kgaL1ginU3evlOR2FDIc=;
-        b=mQHWE/x96ouAaBTBoXV5tcl+8qI8NSZXaNGKcaHC89caBkqI5x7agXCQS8EBBPCl32
-         BKCZ3V56fhW9bP3SdK16FrGYmpT2iaGJ5Rtmy0KupMleMYNN5x76XEoUM/n4O2e5tuMH
-         37nwLCD8G4v645qRLQkfQdat9EZvyrC5WrVlQjp7/kNT25M3w/ooQFiUgGnb0xuVEvN2
-         DrWrWFCHUerS5F+4sFDlB3WZ5yVMVicxuL3D5M8t5N5UexkCXvL9RhTa4PdAa2lM0gZU
-         s+Lxm0TuiIbtNlqoX6uxkWn/mQ2iQUfSMak8U+RXnprUq09GV0vlRm6bcTINWEOLaIZs
-         tGVg==
-X-Gm-Message-State: AOAM530X2eydbENwpGOh0O57fciAhmxVRVVxXMhnnhZXbjWUF58CclPG
-        Se4zoAtepsdBXjZBEvIgBIpRKlezahHrxguLx0fS9g==
-X-Google-Smtp-Source: ABdhPJypkkGtNpV9FtWpGdQh9OjDA35TIQfAHV66hnOT9hMeyeCueyU/SKcI91G9Asj9Qvj956bjE7mfiV/bI3UUKVU=
-X-Received: by 2002:a9d:7751:: with SMTP id t17mr20156459otl.334.1592932041728;
- Tue, 23 Jun 2020 10:07:21 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=gav8ijUBF61wP1+X8OQ02YRSM92QldsTlZ+CycghqWQ=;
+        b=PGhRxok5sBr/haXEu5ZjAAnTnbp6x2TuDL2C1cZ7PygT66kOH6/IiNoXDv9mZVSnG7
+         9cAFyGlILZz1W1mSIre2IBvfXb5VrFi4Z0sgs+srmMngb812CGeQFHS8S1VG5qhJFHY5
+         zc6rDoQFeqmIln3Rf0gpTnCe0Ab5dhmakhfxI9gnAVXrBRM0IXaDx8RHmVCVFsQM8kPN
+         463lhqwkh00iITulfHbmMvBUczP8CAXJy3VlOs4hEB659/TVpaDnoEh2jrBSSgHC4VLk
+         RJayKbadVYLR5ZgxL8nQpt7pCb0P8hoJj8Uez7uHaCintE1V9rOfOm0OucuvybxOkNCO
+         cqGQ==
+X-Gm-Message-State: AOAM532j7ix0ihDXCteb0p1pEyLWySaXE81tZaCpOjVqympcf32+XLuF
+        kQT9aM6cIx0BsiQJgD/ZG6M=
+X-Google-Smtp-Source: ABdhPJysdFzYXvC1j93G3qEsquf7FXPHR9CcklrrqqoU1stw2CZaEvMVlbtS1FupazdvvJ6WmJLCpA==
+X-Received: by 2002:a6b:f40a:: with SMTP id i10mr26246091iog.155.1592932404992;
+        Tue, 23 Jun 2020 10:13:24 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id u15sm4107579iog.18.2020.06.23.10.13.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jun 2020 10:13:24 -0700 (PDT)
+Subject: [bpf PATCH] bpf: do not allow btf_ctx_access with __int128 types
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     jolsa@kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com
+Date:   Tue, 23 Jun 2020 10:13:12 -0700
+Message-ID: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-References: <20200612160141.188370-1-lmb@cloudflare.com> <CAADnVQ+owOvkZ03qyodmh+4NkZD=1LpgTN+YJqiKgr0_OKqRtA@mail.gmail.com>
- <CACAyw9-Jy+r2t5Yy83EEZ8GDnxEsGOPdrqr2JSfVqcC2E6dYmQ@mail.gmail.com>
- <CAADnVQJP_i+KsP771L=GwxousnE=w9o2KckZ7ZCbc064EqSq6w@mail.gmail.com>
- <CACAyw99Szs3nUTx=DSmh0x8iTBLNF9TTLGC0GQLZ=FifVnbzBA@mail.gmail.com>
- <CAADnVQLXEq5+ko_ojmuh1Oc84HiPrfLF-7Cdh1xwwm-PhoFwBQ@mail.gmail.com> <5ee9bcefda5a3_1d4a2af9b18625c4c0@john-XPS-13-9370.notmuch>
-In-Reply-To: <5ee9bcefda5a3_1d4a2af9b18625c4c0@john-XPS-13-9370.notmuch>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 23 Jun 2020 18:07:09 +0100
-Message-ID: <CACAyw98OCJs7qUomP9oGbZdZpbtYRN+tdS6roUze_4K7zj4eFA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: reject invalid attach_flags
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 17 Jun 2020 at 07:49, John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Alexei Starovoitov wrote:
-> > On Tue, Jun 16, 2020 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > >
-> > > On Tue, 16 Jun 2020 at 04:55, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jun 15, 2020 at 7:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > >
-> > > > > On Fri, 12 Jun 2020 at 23:36, Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jun 12, 2020 at 9:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > > > >
-> > > > > > > Using BPF_PROG_ATTACH on a flow dissector program supports neither flags
-> > > > > > > nor target_fd but accepts any value. Return EINVAL if either are non-zero.
-> > > > > > >
-> > > > > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > > > > > Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
-> > > > > > > ---
-> > > > > > >  kernel/bpf/net_namespace.c | 3 +++
-> > > > > > >  1 file changed, 3 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > > > > > > index 78cf061f8179..56133e78ae4f 100644
-> > > > > > > --- a/kernel/bpf/net_namespace.c
-> > > > > > > +++ b/kernel/bpf/net_namespace.c
-> > > > > > > @@ -192,6 +192,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > > > > > >         struct net *net;
-> > > > > > >         int ret;
-> > > > > > >
-> > > > > > > +       if (attr->attach_flags || attr->target_fd)
-> > > > > > > +               return -EINVAL;
-> > > > > > > +
-> > > > > >
-> > > > > > In theory it makes sense, but how did you test it?
-> > > > >
-> > > > > Not properly it seems, sorry!
-> > > > >
-> > > > > > test_progs -t flow
-> > > > > > fails 5 tests.
-> > > > >
-> > > > > I spent today digging through this, and the issue is actually more annoying than
-> > > > > I thought. BPF_PROG_DETACH for sockmap and flow_dissector ignores
-> > > > > attach_bpf_fd. The cgroup and lirc2 attach point use this to make sure that the
-> > > > > program being detached is actually what user space expects. We actually have
-> > > > > tests that set attach_bpf_fd for these to attach points, which tells
-> > > > > me that this is
-> > > > > an easy mistake to make.
->
-> In sockmap case I didn't manage to think what multiple programs of the same type
-> on the same map would look like so we can just remove whatever program is there.
-> Is there a problem with this or is it that we just want the sanity check.
->
-> > > > >
-> > > > > Unfortunately I can't come up with a good fix that seems backportable:
-> > > > > - Making sockmap and flow_dissector have the same semantics as cgroup
-> > > > >   and lirc2 requires a bunch of changes (probably a new function for sockmap)
-> > > >
-> > > > making flow dissector pass prog_fd as cg and lirc is certainly my preference.
-> > > > Especially since tests are passing fd user code is likely doing the same,
-> > > > so breakage is unlikely. Also it wasn't done that long ago, so
-> > > > we can backport far enough.
-> > > > It will remove cap_net_admin ugly check in bpf_prog_detach()
-> > > > which is the only exception now in cap model.
-> > >
-> > > SGTM. What about sockmap though? The code for that has been around for ages.
-> >
-> > you mean the second patch that enforces sock_map_get_from_fd doesn't
-> > use attach_flags?
-> > I think it didn't break anything, so enforcing is fine.
->
-> I'm ok with enforcing it.
->
-> >
-> > or the detach part that doesn't use prog_fd ?
-> > I'm not sure what's the best here.
-> > At least from cap perspective it's fine because map_fd is there.
-> >
-> > John, wdyt?
->
-> I think we can keep the current detach without the prog_fd as-is. And
-> then add logic so that if the prog_fd is included we check it?
+To ensure btf_ctx_access() is safe the verifier checks that the BTF
+arg type is an int, enum, or pointer. When the function does the
+BTF arg lookup it uses the calculation 'arg = off / 8'  using the
+fact that registers are 8B. This requires that the first arg is
+in the first reg, the second in the second, and so on. However,
+for __int128 the arg will consume two registers by default LLVM
+implementation. So this will cause the arg layout assumed by the
+'arg = off / 8' calculation to be incorrect.
 
-Do you know of users that rely on this? FWIW all of the selftests actually
-pass attach_bpf_fd when detaching from sockmap (on a recent bpf-next at least).
+Because __int128 is uncommon this patch applies the easiest fix and
+will force int types to be sizeof(u64) or smaller so that they will
+fit in a single register.
 
-It'd be nice if I could make sockmap require this to be present, just
-so that it's consistent with flow_dissector and other BPF_PROG_DETACH
-users.
+Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ include/linux/btf.h |    5 +++++
+ kernel/bpf/btf.c    |    4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-OTOH I'm not sure if this is backport material after all.
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 5c1ea99..35642f6 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -82,6 +82,11 @@ static inline bool btf_type_is_int(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
+ }
+ 
++static inline bool btf_type_is_small_int(const struct btf_type *t)
++{
++	return btf_type_is_int(t) && (t->size <= sizeof(u64));
++}
++
+ static inline bool btf_type_is_enum(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 58c9af1..9a1a98d 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3746,7 +3746,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 				return false;
+ 
+ 			t = btf_type_skip_modifiers(btf, t->type, NULL);
+-			if (!btf_type_is_int(t)) {
++			if (!btf_type_is_small_int(t)) {
+ 				bpf_log(log,
+ 					"ret type %s not allowed for fmod_ret\n",
+ 					btf_kind_str[BTF_INFO_KIND(t->info)]);
+@@ -3768,7 +3768,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 	/* skip modifiers */
+ 	while (btf_type_is_modifier(t))
+ 		t = btf_type_by_id(btf, t->type);
+-	if (btf_type_is_int(t) || btf_type_is_enum(t))
++	if (btf_type_is_small_int(t) || btf_type_is_enum(t))
+ 		/* accessing a scalar */
+ 		return true;
+ 	if (!btf_type_is_ptr(t)) {
 
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
