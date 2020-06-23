@@ -2,213 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B482044FB
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 02:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46EF204546
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 02:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731482AbgFWAJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 20:09:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20558 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731467AbgFWAJ1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Jun 2020 20:09:27 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05N09Ml4017347
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 17:09:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=VVRkw0mNMzliyUAcnBvWOxYyVmvpyV4erL4y1PLHQeo=;
- b=DGoa18aFwi2CZj5Hnx9vNq1f8RJxqxNPGOl4YnZ/k9tRg88qnJSNDoDSuAW6razcV/If
- wsiajoJ+2rdbaP2ghqHO7VX6bX/lJiMzcBJQ1ZVlxQcpnjyImhGBe0uw/g9pPwSmu33U
- N+kfNkWCE98mRN0IhXDWJ84qIFodpJOyFPo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 31sdxyuar9-16
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 17:09:25 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 22 Jun 2020 17:09:12 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 9E92C2EC3BAF; Mon, 22 Jun 2020 17:09:10 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add variable-length data concat pattern less than test
-Date:   Mon, 22 Jun 2020 17:09:04 -0700
-Message-ID: <20200623000905.3076979-3-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200623000905.3076979-1-andriin@fb.com>
-References: <20200623000905.3076979-1-andriin@fb.com>
+        id S1731622AbgFWAZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jun 2020 20:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731824AbgFWAYz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:24:55 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0DFC061573;
+        Mon, 22 Jun 2020 17:24:55 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id jz3so707135pjb.0;
+        Mon, 22 Jun 2020 17:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yAEyjq/JNyJP7uSbKOdpv01lLUkb3wgH1Jl7u5iMWD0=;
+        b=Bc7WZNBTLajK/WN/L2BEbD7yuMaov3KmP+LSG2dHLv6aj4p282Jvlp0FHk8IL3rHyw
+         QMc9EwVsqYD3j993NXG2GRlsNV2TAT08OtRGKOpT+Ra3G//7prE41XV7DAiZY9PdOvYp
+         QSIxPAIzjGfxqmQdD2oKy5AF9Zb0myFlSoy2YhzBnJuAhUQGgae5AW7JLwahfHPjxKl5
+         3a2Zv66+Oo/4RCTDxzkq4/MkCr8TUzk7+Lz+7Gu1NG/wh+7VHVyQ2YkVGl0ITgvvx7R+
+         LG+0KWH1XDPLYYLar1D33qwbbiglCage9pb/V9YZt8jyimKJxN3NWCjVwBA09bQWVFNi
+         ydcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yAEyjq/JNyJP7uSbKOdpv01lLUkb3wgH1Jl7u5iMWD0=;
+        b=NLbKW7+mYsnVGFNVGxKdc532aUXtjNmVvJSjWBpDW3UwnwdGd0Ob3gMk5BAC0+sadB
+         6Oy36PqIQop31eYhH10LgjRuh3SPq9pKRW4ZRswV7alvTRAySj6PdYxso0JShAdbZ52a
+         1MpwReLuWT8n0eBJH375D7TE9wqowWNcGp0FusDvafUDX9JJYjchCeqS0/V6I9ZkpA/U
+         96AyGq72NuiBrDb6zNWvrC3qLqNTFzbHQFc71JTF4NU7hLsZLni2jMlD9pxCMClU6zq7
+         fwwx7ZbH4znuXwfvTBELH5p/8j6bU33vHXysDt+H4xhxry95M4+ZKDV3L+kkmggrzQne
+         94qQ==
+X-Gm-Message-State: AOAM533DKXzptcWphF4oJMNyiqr9hYjKGebNzhtOUlFnsHtRVSSPY8tq
+        vE8OVMrQJEWHAqZbz8i8HnE=
+X-Google-Smtp-Source: ABdhPJx1WdeaWl17PhYPKGwCFeDrrWeCanzwdiOB3SC2A8v9jXT32bUmsFJc0B7KXeSX06/3MYK2Aw==
+X-Received: by 2002:a17:90b:fc8:: with SMTP id gd8mr20946736pjb.142.1592871894651;
+        Mon, 22 Jun 2020 17:24:54 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:739c])
+        by smtp.gmail.com with ESMTPSA id e124sm14655581pfh.140.2020.06.22.17.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:24:53 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 17:24:51 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH v3 bpf-next 8/9] tools/bpftool: show info for processes
+ holding BPF map/prog/link/btf FDs
+Message-ID: <20200623002451.egxxppsm35q2dg5l@ast-mbp.dhcp.thefacebook.com>
+References: <20200619231703.738941-1-andriin@fb.com>
+ <20200619231703.738941-9-andriin@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_15:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- phishscore=0 mlxscore=0 lowpriorityscore=0 cotscore=-2147483648
- adultscore=0 spamscore=0 impostorscore=0 bulkscore=0 mlxlogscore=551
- malwarescore=0 clxscore=1015 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220162
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619231703.738941-9-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend original variable-length tests with a case to catch a common
-existing pattern of testing for < 0 for errors. Note because
-verifier also tracks upper bounds and we know it can not be greater
-than MAX_LEN here we can skip upper bound check.
+On Fri, Jun 19, 2020 at 04:17:02PM -0700, Andrii Nakryiko wrote:
+> Add bpf_iter-based way to find all the processes that hold open FDs against
+> BPF object (map, prog, link, btf). bpftool always attempts to discover this,
+> but will silently give up if kernel doesn't yet support bpf_iter BPF programs.
+> Process name and PID are emitted for each process (task group).
+> 
+> Sample output for each of 4 BPF objects:
+> 
+> $ sudo ./bpftool prog show
+> 2694: cgroup_device  tag 8c42dee26e8cd4c2  gpl
+>         loaded_at 2020-06-16T15:34:32-0700  uid 0
+>         xlated 648B  jited 409B  memlock 4096B
+>         pids systemd(1)
+> 2907: cgroup_skb  name egress  tag 9ad187367cf2b9e8  gpl
+>         loaded_at 2020-06-16T18:06:54-0700  uid 0
+>         xlated 48B  jited 59B  memlock 4096B  map_ids 2436
+>         btf_id 1202
+>         pids test_progs(2238417), test_progs(2238445)
+> 
+> $ sudo ./bpftool map show
+> 2436: array  name test_cgr.bss  flags 0x400
+>         key 4B  value 8B  max_entries 1  memlock 8192B
+>         btf_id 1202
+>         pids test_progs(2238417), test_progs(2238445)
+> 2445: array  name pid_iter.rodata  flags 0x480
+>         key 4B  value 4B  max_entries 1  memlock 8192B
+>         btf_id 1214  frozen
+>         pids bpftool(2239612)
 
-In ALU64 enabled compilation converting from long->int return types
-in probe helpers results in extra instruction pattern, <<=3D 32, s >>=3D =
-32.
-The trade-off is the non-ALU64 case works. If you really care about
-every extra insn (XDP case?) then you probably should be using original
-int type.
+Overall it's a massive improvement, so I've applied the set.
 
-In addition adding a sext insn to bpf might help the verifier in the
-general case to avoid these types of tricks.
+But above 'map show' probably needs a comment in the output.
+bpftool is showing a map that was loaded temporarily.
+It doesn't do so for programs though.
+I think somehow highlighting that above map is bpftool's own map
+that was used to generate this output would be good.
+Filtering it completely out is probably not correct.
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../testing/selftests/bpf/prog_tests/varlen.c | 12 +++
- .../testing/selftests/bpf/progs/test_varlen.c | 74 ++++++++++++++++++-
- 2 files changed, 82 insertions(+), 4 deletions(-)
+> $ sudo ./bpftool btf show
+> 1202: size 1527B  prog_ids 2908,2907  map_ids 2436
+>         pids test_progs(2238417), test_progs(2238445)
+> 1242: size 34684B
+>         pids bpftool(2258892)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/varlen.c b/tools/test=
-ing/selftests/bpf/prog_tests/varlen.c
-index 7533565e096d..c75525eab02c 100644
---- a/tools/testing/selftests/bpf/prog_tests/varlen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/varlen.c
-@@ -51,6 +51,18 @@ void test_varlen(void)
- 	CHECK_VAL(data->total2, size1 + size2);
- 	CHECK(memcmp(data->payload2, exp_str, size1 + size2), "content_check",
- 	      "doesn't match!");
-+
-+	CHECK_VAL(data->payload3_len1, size1);
-+	CHECK_VAL(data->payload3_len2, size2);
-+	CHECK_VAL(data->total3, size1 + size2);
-+	CHECK(memcmp(data->payload3, exp_str, size1 + size2), "content_check",
-+	      "doesn't match!");
-+
-+	CHECK_VAL(data->payload4_len1, size1);
-+	CHECK_VAL(data->payload4_len2, size2);
-+	CHECK_VAL(data->total4, size1 + size2);
-+	CHECK(memcmp(data->payload4, exp_str, size1 + size2), "content_check",
-+	      "doesn't match!");
- cleanup:
- 	test_varlen__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_varlen.c b/tools/test=
-ing/selftests/bpf/progs/test_varlen.c
-index 09691852debf..622ee9f075a4 100644
---- a/tools/testing/selftests/bpf/progs/test_varlen.c
-+++ b/tools/testing/selftests/bpf/progs/test_varlen.c
-@@ -26,8 +26,18 @@ int payload2_len2 =3D -1;
- int total2 =3D -1;
- char payload2[MAX_LEN + MAX_LEN] =3D { 1 };
-=20
-+int payload3_len1 =3D -1;
-+int payload3_len2 =3D -1;
-+int total3=3D -1;
-+char payload3[MAX_LEN + MAX_LEN] =3D { 1 };
-+
-+int payload4_len1 =3D -1;
-+int payload4_len2 =3D -1;
-+int total4=3D -1;
-+char payload4[MAX_LEN + MAX_LEN] =3D { 1 };
-+
- SEC("raw_tp/sys_enter")
--int handler64(void *regs)
-+int handler64_gt(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload1;
-@@ -54,8 +64,36 @@ int handler64(void *regs)
- 	return 0;
- }
-=20
--SEC("tp_btf/sys_enter")
--int handler32(void *regs)
-+SEC("raw_tp/sys_exit")
-+int handler64_lt(void *regs)
-+{
-+	int pid =3D bpf_get_current_pid_tgid() >> 32;
-+	void *payload =3D payload3;
-+	long len;
-+
-+	/* ignore irrelevant invocations */
-+	if (test_pid !=3D pid || !capture)
-+		return 0;
-+
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-+	if (len < 0)
-+		goto next_lt_long;
-+	payload +=3D len;
-+	payload3_len1 =3D len;
-+next_lt_long:
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
-+	if (len < 0)
-+		goto done_lt_long;
-+	payload +=3D len;
-+	payload3_len2 =3D len;
-+done_lt_long:
-+	total3 =3D payload - (void *)payload3;
-+
-+	return 0;
-+}
-+
-+SEC("tp/raw_syscalls/sys_enter")
-+int handler32_gt(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload2;
-@@ -82,7 +120,35 @@ int handler32(void *regs)
- 	return 0;
- }
-=20
--SEC("tp_btf/sys_exit")
-+SEC("tp/raw_syscalls/sys_exit")
-+int handler32_lt(void *regs)
-+{
-+	int pid =3D bpf_get_current_pid_tgid() >> 32;
-+	void *payload =3D payload4;
-+	int len;
-+
-+	/* ignore irrelevant invocations */
-+	if (test_pid !=3D pid || !capture)
-+		return 0;
-+
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-+	if (len < 0)
-+		goto next_lt_int;
-+	payload +=3D len;
-+	payload4_len1 =3D len;
-+next_lt_int:
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
-+	if (len < 0)
-+		goto done_lt_int;
-+	payload +=3D len;
-+	payload4_len2 =3D len;
-+done_lt_int:
-+	total4 =3D payload - (void *)payload4;
-+
-+	return 0;
-+}
-+
-+SEC("tp/syscalls/sys_exit_getpid")
- int handler_exit(void *regs)
- {
- 	long bla;
---=20
-2.24.1
+similar.
 
+I've also noticed that 'test_progs -t btf_map_in_map' leaks 'inner_map2'.
+Doesn't look like the test is pinning it, so I'm guessing
+a recent kernel regression? I haven't debugged it.
