@@ -2,102 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985B0205A8F
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3F1205ADE
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733224AbgFWS1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 14:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S1733197AbgFWSdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 14:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733149AbgFWS1y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:27:54 -0400
+        with ESMTP id S1733174AbgFWSdr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:33:47 -0400
 Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6F2C061573;
-        Tue, 23 Jun 2020 11:27:53 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id h18so982901qvl.3;
-        Tue, 23 Jun 2020 11:27:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08EDC061573;
+        Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cv17so10115670qvb.13;
+        Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1O7Td08iMpY38VhWo9qpN3mfhIo1AkQ4yxdxtTVUSKI=;
-        b=C4Z6PxZ7dPp2FeUzakh1U0BaGjvPDOVJwIY3BF01MLMyoe3J+Au1dDJSl3pGewmUm6
-         a4iAcdnBLbNR66P2UX4zNNnhFO+kb7pY1mOcrWJwyGXyHBi63rVN1eZEln3HbSWvrxAK
-         iKgpasZP1z9hJ/QdxQvESY1EKV2rTz2wCdb3t2vX08JDzuA86D+mrnx5B+1Y5P3AVPPT
-         7RBJIMv3Q69svIIzcPaPaTLWarwk5nQWXJUk4FVztpASTPSH+sVFdrASMsxAg7Iw5Xst
-         mMmwh2Y1mtnjxjG2ceEuzuVb4PKOzVdMRH35zCk90sQyTkJLDa9oVvq9oUKNhAKUL/iD
-         O0ug==
+         :cc;
+        bh=QCcgoWpqsPBIRGWIpIPXz560VFo4wTsrkocxos1a58M=;
+        b=l9OA6O1coHeRAOluEwFNfdZqF+YQs441fSxNEpkuWFaZa2peWeekfb+Ex2QDO4hPCH
+         B05HGXwQaaFq3eYG6xbEHXOLpESM6t0Fc3U/o50LatiC9kh0xBfYoZZeTcJwmZgQiv3v
+         4VYgWmg5e5FiM+8CiS6u9svdaMj/LwsEtoF27joWHP0a0N56uCHNJ78ZudXBXtcAqXKt
+         CW63XrUUmvb8SOffxRHZs6ukeOxvKVVD1zqeUfoviQeuNgdDDVRqYFj0BbwKSvB9Ox1J
+         F+vCt87GT4boOFlx5YFe+3Jb0wgqsqC3/Rl+KEKRTu7NRIfaeciNEVzZdR7pfQmpGbMv
+         DVqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1O7Td08iMpY38VhWo9qpN3mfhIo1AkQ4yxdxtTVUSKI=;
-        b=GkeCVYN36PwzQ61p9GTvyMRHPb34eQXYAL30GeRBHPuvOILge11DnZXQCiRN9CjXbh
-         ecIFD++ffgYkPOGR88r3PmoXmLXDLmm9AcorNPLhYD7WvaOlValoLdfeIe1sUbHGWYuV
-         hKFVVSDyVF0QWX/ATtCMZS6DkfgZnZ4UnKZ0bjS1RTrEnIxTnp93eXZjfbKrcRhijPKz
-         d3ORVod1SbFEY187G12pf0yX5G/IHwLYecw+7B0IvbKZLVkpby/lpUtM2TGGAVeYvYPz
-         0Pc9xiuoSOZklRdkYjERCzSw7rUXxogJgcDmuJC61bWOiCOWs0YrN5LKuDKb+os2nbyt
-         XH5A==
-X-Gm-Message-State: AOAM533byE6k3HqMYvJaaHtc1BiWIHoXNjFncubqPIF8tP+t0ykb3s0I
-        lpgz3n3h5ZwaFQaDirLdoIdyg9rPF2FFT1S0jN0=
-X-Google-Smtp-Source: ABdhPJwJmXrjSQDs/EBrVI5rSGdFDfk7TBwk2HUW4cUl5dpqT4pVxde1BjC+9Z5vvDIlXuOAPdvHqMucrK+LPBTCMY0=
-X-Received: by 2002:a0c:f388:: with SMTP id i8mr27473026qvk.224.1592936872342;
- Tue, 23 Jun 2020 11:27:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=QCcgoWpqsPBIRGWIpIPXz560VFo4wTsrkocxos1a58M=;
+        b=X04M2tpvfwLc5v3QgOjVRGovJt3joLcvTixhYV8vQEhjUoUmCSexGMtNpuR355EZDf
+         oImL953aKqkxZNQHvxUoFNYtqKD4U8AYru/PfouUrSoiTFWR5e4fAcfLVFB2wd6BNp9U
+         vybX/fgQHBuGlZg7CukpfVBCibvOZgSLah7w6D06rK4+hWDpcAvzfnpihCzo/EhgHz6K
+         2qVuxuBNFrq0cswF1qIPZfcoIPwT81jyUo2lt95C5u7eOBQARpHeuBcHRcmdVJc/jfCw
+         eUo/vsKkXf5pggkJ+z48r7XxnDKsiNfXX8v/isgk3djRGDK96BAdOreHtHUD7g2UO5Iz
+         FvRQ==
+X-Gm-Message-State: AOAM53254p39f3n4U66pPWfiXbFLTu4ndjonz6lwNLGxUMaaRnRQapHC
+        zb/ex+SDJnkUDPkPrNC/lsHxAOxZMv7Ii+FCB3c=
+X-Google-Smtp-Source: ABdhPJwHJSkVMEZZfrs1A9V4SFyNTNjbEcAYxoCqkKfZJubvMzx11W9wdAo6fwC3JYxHSCY0aqt965G+XIQSW8wYuEM=
+X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr26930339qvf.247.1592937226066;
+ Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200623155157.13082-1-quentin@isovalent.com>
-In-Reply-To: <20200623155157.13082-1-quentin@isovalent.com>
+References: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
+In-Reply-To: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Jun 2020 11:27:41 -0700
-Message-ID: <CAEf4BzYeP784xwgnSsoCn=vy37-bLa4=jZUDW35t3MNMUGVdmA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools: bpftool: do not pass json_wtr to emit_obj_refs_json()
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 23 Jun 2020 11:33:35 -0700
+Message-ID: <CAEf4BzYZBoffuYUfssw+wBgz2SQx9E=AAP0VvOQDMc3Y3y1zLA@mail.gmail.com>
+Subject: Re: [bpf PATCH] bpf: do not allow btf_ctx_access with __int128 types
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 8:54 AM Quentin Monnet <quentin@isovalent.com> wrot=
-e:
+On Tue, Jun 23, 2020 at 10:14 AM John Fastabend
+<john.fastabend@gmail.com> wrote:
 >
-> Building bpftool yields the following complaint:
+> To ensure btf_ctx_access() is safe the verifier checks that the BTF
+> arg type is an int, enum, or pointer. When the function does the
+> BTF arg lookup it uses the calculation 'arg = off / 8'  using the
+> fact that registers are 8B. This requires that the first arg is
+> in the first reg, the second in the second, and so on. However,
+> for __int128 the arg will consume two registers by default LLVM
+> implementation. So this will cause the arg layout assumed by the
+> 'arg = off / 8' calculation to be incorrect.
 >
->     pids.c: In function =E2=80=98emit_obj_refs_json=E2=80=99:
->     pids.c:175:80: warning: declaration of =E2=80=98json_wtr=E2=80=99 sha=
-dows a global declaration [-Wshadow]
->       175 | void emit_obj_refs_json(struct obj_refs_table *table, __u32 i=
-d, json_writer_t *json_wtr)
->           |                                                              =
-   ~~~~~~~~~~~~~~~^~~~~~~~
->     In file included from pids.c:11:
->     main.h:141:23: note: shadowed declaration is here
->       141 | extern json_writer_t *json_wtr;
->           |                       ^~~~~~~~
+> Because __int128 is uncommon this patch applies the easiest fix and
+> will force int types to be sizeof(u64) or smaller so that they will
+> fit in a single register.
 >
-> json_wtr being exposed in main.h (included in pids.c) as an extern, it
-> is directly available and there is no need to pass it through the
-> function. Let's simply use the global variable.
-
-I don't think it's a good approach to assume that emit_obj_refs_json
-is always going to be using a global json writer. I think this shadow
-warning is bogus in this case, honestly. But if it bothers you, let's
-just rename json_wtr into whatever other name of argument you prefer.
-
->
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 > ---
->  tools/bpf/bpftool/btf.c  | 2 +-
->  tools/bpf/bpftool/link.c | 2 +-
->  tools/bpf/bpftool/main.h | 3 +--
->  tools/bpf/bpftool/map.c  | 2 +-
->  tools/bpf/bpftool/pids.c | 2 +-
->  tools/bpf/bpftool/prog.c | 2 +-
->  6 files changed, 6 insertions(+), 7 deletions(-)
->
 
-[...]
+"small int" for u64 looks funny, but naming is hard :)
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  include/linux/btf.h |    5 +++++
+>  kernel/bpf/btf.c    |    4 ++--
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 5c1ea99..35642f6 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -82,6 +82,11 @@ static inline bool btf_type_is_int(const struct btf_type *t)
+>         return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
+>  }
+>
+> +static inline bool btf_type_is_small_int(const struct btf_type *t)
+> +{
+> +       return btf_type_is_int(t) && (t->size <= sizeof(u64));
+
+nit: unnecessary (), () are usually used to disambiguate | and &  vs
+|| and &&; this is not the case, though.
+
+> +}
+> +
+>  static inline bool btf_type_is_enum(const struct btf_type *t)
+>  {
+>         return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 58c9af1..9a1a98d 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3746,7 +3746,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>                                 return false;
+>
+>                         t = btf_type_skip_modifiers(btf, t->type, NULL);
+> -                       if (!btf_type_is_int(t)) {
+> +                       if (!btf_type_is_small_int(t)) {
+>                                 bpf_log(log,
+>                                         "ret type %s not allowed for fmod_ret\n",
+>                                         btf_kind_str[BTF_INFO_KIND(t->info)]);
+> @@ -3768,7 +3768,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>         /* skip modifiers */
+>         while (btf_type_is_modifier(t))
+>                 t = btf_type_by_id(btf, t->type);
+> -       if (btf_type_is_int(t) || btf_type_is_enum(t))
+> +       if (btf_type_is_small_int(t) || btf_type_is_enum(t))
+>                 /* accessing a scalar */
+>                 return true;
+>         if (!btf_type_is_ptr(t)) {
+>
