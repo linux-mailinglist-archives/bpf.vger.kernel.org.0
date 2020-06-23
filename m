@@ -2,86 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D1C204975
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 08:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF22049C8
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 08:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbgFWGDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 02:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
+        id S1730877AbgFWGUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 02:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730362AbgFWGDB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:03:01 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96391C061573;
-        Mon, 22 Jun 2020 23:03:00 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id z2so12498299qts.5;
-        Mon, 22 Jun 2020 23:03:00 -0700 (PDT)
+        with ESMTP id S1730510AbgFWGUk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:20:40 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA68C061573
+        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 23:20:40 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id h23so7461150qtr.0
+        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 23:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WjxM9sg38cEaNOwA1lwrcYCBuLoMTzlRPxPZDKD8IhA=;
-        b=oN5Z1+CrEv9B3MX7RP9AZssrvlObTqawZ/NNXCD8cZRCnBW3WzqEhhVqFRXujnwkMG
-         +no7EIo6sFTIxRZDo8SJj6L1nU6rjzLFp+0z7QZd42EqxNE+p9HgJ6tgt+zEzLCQP3Tg
-         4GUFxtqNYyd+ZkUWeY40LSMZq/0zW0IaUGQqjOUdLT88HNPTD8QuSI4LvP+WLg16jUVI
-         tJ9O4FRIAV4NjTQhSe8raqwj9wfc8XoXq01kqyO++zC5BjtnHbRtF2/4Lsdo53OEGNYn
-         Fu3T73deeF3tG2NP+vAVBoiCPQeGXFQJgNPdHa4Pyf/VgBSmiIVFMrytOkSb1Sm50EEX
-         Xnug==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=77dIgLqokyJR5uLJs7A2qr5345Przw4e50lni9ODQpI=;
+        b=p3f2vKOXzNM5DcnEKLGT3ePnmBp3wWljshaM4Cg78pSR+gNjAWPODug8ZnkRRjjmL5
+         FQQNH6uYqLH1amjeh4mEWHRPlLOetOAW74zVF9PfTdspDqVeojIjr1nXd1eA+2NpMGwD
+         3zxMAZjD6a5yNSPWAePCotdgN9EQffkpLeYukelGJL7HS+QcREOADu3FwIiEkTapwVvv
+         TT5NDQwPvnGYHMgugw7XN232w8zRWAVovo1pl8t5zUm168vIixTu9aYeEeKdRb+XupBg
+         OzMAAyI3OhoD7suUg0uZb79iF+vRQJdZ9YtiV8/bo+QWdBNW8WVjbsOVftNp7A76AqvS
+         Casg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WjxM9sg38cEaNOwA1lwrcYCBuLoMTzlRPxPZDKD8IhA=;
-        b=XI2N7oBZu4GK8wU+o87D/cCYiZaLBhJgU/M3/Dd0oNeqLy76a3nDUO9QmS2C3DDQ5I
-         /je+I4pTp1B8uAGg9YchY83KqjRLVNiJ2hIy6p+LVu9GE1Gg6fKtUnQUGjsetrxpieCn
-         G+9nGFSAMX1doEO5H0qeXTUe5Ax5Fiv+jqmpOuOtBJDBhRNVoa+t0SIuO3SaCg/BbI3R
-         AhYSKavPvKkj6kQotIZNNgEDHMOX0P+brVDl0ednhs3Q1RY0qow24Pm2UlOnflkD8ZPi
-         mhfceTjABeOeHUFZ4qkbxvRU9uGyL4bxogJAyqN6IuwLE0GTOlFjMB0lbyiPif7+s+jS
-         s/HA==
-X-Gm-Message-State: AOAM532c6MrKzAXooYgczuh3FtDpE0hyA8u3ZJ1yjKPzcWY8QxXWrfQs
-        ochtZugEqrlbP3U7B13sSHw0nuXNalFtrywxGzQ=
-X-Google-Smtp-Source: ABdhPJxR+7SbwOohoazZHosm+/zIqUBaCi5dvAtoeJ8f0K3FBFsGlwHIKEXqxGD5Z0Ifs5zg866RVpLOr/ywKSv1bME=
-X-Received: by 2002:ac8:2dc3:: with SMTP id q3mr19714217qta.141.1592892179884;
- Mon, 22 Jun 2020 23:02:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=77dIgLqokyJR5uLJs7A2qr5345Przw4e50lni9ODQpI=;
+        b=tTNR7Kf1LpnjR2tTarUAFfA8dCUDzOMzhlpDCKHCU/W7+tTKqTPUx7LxiTnHdOBUOA
+         1/3zUKZzmwlPsVCqT8wOhB882YbBuehy8YtPgaw+mRSZdtKg1wglrJcqMGVu0+DdnekX
+         PKVuDzWmnmZ0YsiVOlovdH3NWCtvmtRw8JnoMqiaKKBzR62T6LfzV713Ni1vAbkY12aw
+         /8+vBfjQme9WIWJJbLWpVye/1v7TeEMPMQexFW/kJetRWef5crzYzudhbw2m8AF//jVD
+         0RTr3fI+MrgqzPgx0CryAYMjuVfZVuVaQTVnPYdODtMwJNSJNU50ty9jgoy12vseNXBV
+         zt0g==
+X-Gm-Message-State: AOAM531UBW5LiXPgKKRFWLh6G1eQN32lPLTBXgpRrzB754l7MVjPrFqq
+        OG9BUADN/wt3USLBP6bTwGRNNDvfq9fDaDffGFqMD0mF
+X-Google-Smtp-Source: ABdhPJx9qidJw+o/fO5in+yQGD7L3Tp2IP51NmLt0t+awavo0ROAmmlCUo24Ntl00KLtUNT/YkIvYgT5YQo56982INE=
+X-Received: by 2002:ac8:8c6:: with SMTP id y6mr14027785qth.99.1592893239394;
+ Mon, 22 Jun 2020 23:20:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200622160300.636567-1-jakub@cloudflare.com> <20200622160300.636567-2-jakub@cloudflare.com>
-In-Reply-To: <20200622160300.636567-2-jakub@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Jun 2020 23:02:49 -0700
-Message-ID: <CAEf4BzZ0_01j4g-APS9HQ-jqKf3=qTerYWCkRmYscWWo2R0xwg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] flow_dissector: Pull BPF program assignment
- up to bpf-netns
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
+From:   Yahui Chen <goodluckwillcomesoon@gmail.com>
+Date:   Tue, 23 Jun 2020 14:20:27 +0800
+Message-ID: <CAPydje97m+hG3_Cqg560uHoq8aKG9eDpTHA1eJC=hLuKtMf_vw@mail.gmail.com>
+Subject: Talk about AF_XDP support multithread concurrently receive packet
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 9:03 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Prepare for using bpf_prog_array to store attached programs by moving out
-> code that updates the attached program out of flow dissector.
->
-> Managing bpf_prog_array is more involved than updating a single bpf_prog
-> pointer. This will let us do it all from one place, bpf/net_namespace.c, in
-> the subsequent patch.
->
-> No functional change intended.
->
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
+I have make an issue for the libbpf in github, issue number 163.
 
-LGTM.
+Andrii suggest me sending a mail here. So ,I paste out the content of the issue:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Currently, libbpf do not support concurrently receive pkts using AF_XDP.
 
->  include/net/flow_dissector.h |  3 ++-
->  kernel/bpf/net_namespace.c   | 20 ++++++++++++++++++--
->  net/core/flow_dissector.c    | 13 ++-----------
->  3 files changed, 22 insertions(+), 14 deletions(-)
->
+For example: I create 4 af_xdp sockets on nic's ring 0. Four sockets
+receiving packets concurrently can't work correctly because the API of
+cq `xsk_ring_prod__reserve` and `xsk_ring_prod__submit` don't support
+concurrence.
 
-[...]
+So, my question is why libbpf was designed non-concurrent mode, is the
+limit of kernel or other reason? I want to change the code to support
+concurrent receive pkts, therefore I want to find out whether this is
+theoretically supported.
+
+Thx.
