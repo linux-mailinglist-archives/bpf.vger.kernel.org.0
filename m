@@ -2,107 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49041204DB0
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 11:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE510204E9F
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 11:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732142AbgFWJSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 05:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732011AbgFWJSN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:18:13 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90063C061573
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 02:18:13 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id b6so19703027wrs.11
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 02:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UnehdSmJu3VpfmqqB8u47UeykU8okvY4+bNOQYSwr8Y=;
-        b=LXQXzQKo3KNPMdDvcV5HlHUhcRzbFF1Da7B4mx8PwhpDuenzllpj0h+FBFzyMx/d7w
-         s/2HTzu8Ad/lg0r93LYpCvJUeX7mrcUWVpHq5vT2V5Zv5+HTHl3GoaTakL7cVEqi6OzB
-         GQpuNHb521sj235p/EVttwpdZr9p5/99r/7sYbns8TUbPvK4h1lDlm0udpsOYsZbyg0o
-         YwvhN8lNAJE4PIfbk92qBCShEnPBkmuEuHRYuRbBSTJbTK+0a0UDkKM3IdDRbzYb8jbg
-         dk1LCYKAKm3QMXoo6jhya3IYMQaK/gdewY5c7F1+yY7FNrHQiFo3LSyaCjHli0oRvgum
-         10qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UnehdSmJu3VpfmqqB8u47UeykU8okvY4+bNOQYSwr8Y=;
-        b=Abh0japI9e5YEFFsMbHws/G3OnRgNq6KybcQBL9MGD5ajuY1J09xbkYP7yePV+nT6Y
-         ej2SvUvkwai4GagKRyyqQ3B1F2TZCVexVn9nsNtKDyYiQSMb4vBW1PDWOoUtemygIxwq
-         6Waz1h2oRqCBm/E1TQ3mgHpunJ/garep4as4isJJP+0enK+DZYpyHRIQafYyPZLZOEtX
-         nDmPHScj+b8mK+DzKh6Mhp3viAJ2FInSLv4n/vbeLhJV2JGmO+LR835Gi+ZwDax9OX8w
-         zTi2ocwbcn4ptTF/HIAI4tlk3/wLpmBzn2vIZ3/zB0UUcrH0IAdiET7pOSmhhw8QdZB8
-         nHTQ==
-X-Gm-Message-State: AOAM531h7M9A8PoFWgodkFydHeLZhiA9O7UDhZGiAo/2iV8BQZ2Dxx/S
-        eNPdkOR5Mvekw7K/5B5wyDo9mUY1eu5NgNy/Oec=
-X-Google-Smtp-Source: ABdhPJyrFZVl5DUJzi6r5oHyshLOkeuxgNYAvc4OUslJGSZLmfKskSVrCIXS/U7VciPd3y0DguyDU0iFzo6HHqmQK3Q=
-X-Received: by 2002:a5d:504b:: with SMTP id h11mr16878244wrt.160.1592903892270;
- Tue, 23 Jun 2020 02:18:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200622090824.41cff8a3@hermes.lan> <CAJ+HfNhhpZoeoZC5gS93Lbc5GvDUO9m0RrKNFU=kU0v+AXe=ig@mail.gmail.com>
- <CAJ+HfNgG4dBTf7Ei2CmuedQLnv-nOqpf4Nuep+FB9Oxob+zhdA@mail.gmail.com> <CAPydje_AdWjOoS4AJ5BMyFYLEsNciyNv_8YwkEMbO2B+Co0DfA@mail.gmail.com>
-In-Reply-To: <CAPydje_AdWjOoS4AJ5BMyFYLEsNciyNv_8YwkEMbO2B+Co0DfA@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 23 Jun 2020 11:18:00 +0200
-Message-ID: <CAJ+HfNjOUsJAOMmz6wq3zoxRQ5HtBjFzkJ64eCWiPWxkFWDGnQ@mail.gmail.com>
-Subject: Re: Fw: [Bug 208275] New: kernel hang occasionally while running the
- sample of xdpsock
-To:     Yahui Chen <goodluckwillcomesoon@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1732099AbgFWJ6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 05:58:23 -0400
+Received: from sym2.noone.org ([178.63.92.236]:43150 "EHLO sym2.noone.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731947AbgFWJ6X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:58:23 -0400
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 49rhYT49Z7zvjc1; Tue, 23 Jun 2020 11:58:21 +0200 (CEST)
+Date:   Tue, 23 Jun 2020 11:58:20 +0200
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] tools, bpftool: Define prog_type_name array
+ only once
+Message-ID: <20200623095820.3xiwsfaxsxyyosbt@distanz.ch>
+References: <20200622140007.4922-1-tklauser@distanz.ch>
+ <20200622140007.4922-2-tklauser@distanz.ch>
+ <c961c0ee-424a-6f3b-942e-42fdc7ee9b95@isovalent.com>
+ <20200622150510.nk6pkzsof2diolwt@distanz.ch>
+ <2df810b0-b31d-641a-9d81-47eb11c3f0a4@isovalent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2df810b0-b31d-641a-9d81-47eb11c3f0a4@isovalent.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 05:45, Yahui Chen <goodluckwillcomesoon@gmail.com> w=
-rote:
->
-> Hi, Bjorn, Thank your response.
-> Could you describe it more clearly? I can not get it exactly.
-> Thx.
->
+On 2020-06-22 at 17:17:04 +0200, Quentin Monnet <quentin@isovalent.com> wrote:
+> 2020-06-22 17:05 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
+> > On 2020-06-22 at 16:26:17 +0200, Quentin Monnet <quentin@isovalent.com> wrote:
+> >> 2020-06-22 16:00 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
+> >>> Follow the same approach as for map_type_name. This leads to a slight
+> >>
+> >> map_type_name looks unchanged in this series, could you please check
+> >> your commit log?
+> > 
+> > Yes this patch intentionally shouldn't change map_type_name. The idea
+> > was to say "do the same thing for prog_type_name name as is already done
+> > for map_type_name". I can rephrase that to become more clear if you
+> > want.
+> 
+> Ok sorry, I thought you meant map_type_name had been moved to reduce the
+> size as well. I think I got confused by "Follow the same approach",
+> since map_type_name has always been in map.c, but it's both
+> prog_type_name and attach_type_name that were moved to main.h from their
+> original files some time ago (so not much to "follow" from map_type_name).
+> 
+> Anyway, minor confusion on my side, no need to respin just for that.
+> Thanks for the clarification.
 
-When XDP is enabled, the ixgbe NIC does a (somewhat heavy)
-reconfiguration. During the reconfiguration, for some reason, the
-rx_buffer->page is NULL in the following call chain:
-  ixgbe_down()->ixgbe_clean_all_rx_rings()->ixgbe_clean_rx_ring()->__page_f=
-rag_cache_drain()
+Will send a v2 to address Andrii's comment on patch 2/2, so I'll
+rephrase the commit message on this patch to be less confusing.
 
-This results in that when __page_frag_cache_drain() want to touch the
-reference counter, you get a NULL pointer dereference.
-
-[277994.329145] BUG: kernel NULL pointer dereference, address: 000000000000=
-0034
-...
-[277994.329428] RIP: 0010:__page_frag_cache_drain+0x5/0x40
-[277994.329463] Code: d2 ff ff 31 f6 84 c0 74 04 0f b6 73 51 48 89 df
-e8 70 ff ff ff eb dc 48 83 eb 01 eb d0 0f 1f 84 00 00 00 00 00 0f 1f
-44 00 00 <f0> 29 77 34 74 01 c3 48 8b 07 55 48 89 e5 a9 00 00 01 00 74
-0f 0f
-
-2a:*    f0 29 77 34              lock sub %esi,0x34(%rdi)        <--
-trapping instruction
-
-I tried to reproduce the issue, but without success so far. I'll keep
-looking for the bug. Hopefully someone from Intel with better insight
-into ixgbe can help!
-
-
-Bj=C3=B6rn
+Tobias
