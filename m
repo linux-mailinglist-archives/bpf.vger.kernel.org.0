@@ -2,132 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3F1205ADE
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4465D205AE4
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733197AbgFWSdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 14:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S2387455AbgFWSf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 14:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733174AbgFWSdr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:33:47 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08EDC061573;
-        Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cv17so10115670qvb.13;
-        Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
+        with ESMTP id S2387410AbgFWSfY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:35:24 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79546C061573;
+        Tue, 23 Jun 2020 11:35:24 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s10so10272546pgm.0;
+        Tue, 23 Jun 2020 11:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QCcgoWpqsPBIRGWIpIPXz560VFo4wTsrkocxos1a58M=;
-        b=l9OA6O1coHeRAOluEwFNfdZqF+YQs441fSxNEpkuWFaZa2peWeekfb+Ex2QDO4hPCH
-         B05HGXwQaaFq3eYG6xbEHXOLpESM6t0Fc3U/o50LatiC9kh0xBfYoZZeTcJwmZgQiv3v
-         4VYgWmg5e5FiM+8CiS6u9svdaMj/LwsEtoF27joWHP0a0N56uCHNJ78ZudXBXtcAqXKt
-         CW63XrUUmvb8SOffxRHZs6ukeOxvKVVD1zqeUfoviQeuNgdDDVRqYFj0BbwKSvB9Ox1J
-         F+vCt87GT4boOFlx5YFe+3Jb0wgqsqC3/Rl+KEKRTu7NRIfaeciNEVzZdR7pfQmpGbMv
-         DVqQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AQ/e5sEh4Ldk6IXzWL/y51NsKG35Zs68anCke7z6z/s=;
+        b=dKJ9nmNCJ+mPmEBiBGGewsP8s8aWxQEcaHIQDSRKzOJ9/hC+J9YXD/CaJ2z3tEscXJ
+         f/7IBOhx640GOZzY04ZSgQPVsl0/Ew0ie85ObaEiVTyP5+kqRkh5tvpxuSgsy8gOnoWf
+         vWBaR0QK638Qci3adZPSQQ5tkf9e6QeFZrzKEgKhU1Qc/oK/YJ3+p7oDmIvQl49YfLU2
+         iPkJMRdgkwFGkez0R2SiQ5wDGaqcNPg+V7q5K4TkLLugSP2yBMpPW7Oqwoy3PcoAyS3J
+         2lYmRQQXjeYUxfVu959Nx0e6BnO16L3pSh3VuiYPB3h3FqrHoEyt55mhJyTh/JPPYsI+
+         j6iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QCcgoWpqsPBIRGWIpIPXz560VFo4wTsrkocxos1a58M=;
-        b=X04M2tpvfwLc5v3QgOjVRGovJt3joLcvTixhYV8vQEhjUoUmCSexGMtNpuR355EZDf
-         oImL953aKqkxZNQHvxUoFNYtqKD4U8AYru/PfouUrSoiTFWR5e4fAcfLVFB2wd6BNp9U
-         vybX/fgQHBuGlZg7CukpfVBCibvOZgSLah7w6D06rK4+hWDpcAvzfnpihCzo/EhgHz6K
-         2qVuxuBNFrq0cswF1qIPZfcoIPwT81jyUo2lt95C5u7eOBQARpHeuBcHRcmdVJc/jfCw
-         eUo/vsKkXf5pggkJ+z48r7XxnDKsiNfXX8v/isgk3djRGDK96BAdOreHtHUD7g2UO5Iz
-         FvRQ==
-X-Gm-Message-State: AOAM53254p39f3n4U66pPWfiXbFLTu4ndjonz6lwNLGxUMaaRnRQapHC
-        zb/ex+SDJnkUDPkPrNC/lsHxAOxZMv7Ii+FCB3c=
-X-Google-Smtp-Source: ABdhPJwHJSkVMEZZfrs1A9V4SFyNTNjbEcAYxoCqkKfZJubvMzx11W9wdAo6fwC3JYxHSCY0aqt965G+XIQSW8wYuEM=
-X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr26930339qvf.247.1592937226066;
- Tue, 23 Jun 2020 11:33:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
-In-Reply-To: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Jun 2020 11:33:35 -0700
-Message-ID: <CAEf4BzYZBoffuYUfssw+wBgz2SQx9E=AAP0VvOQDMc3Y3y1zLA@mail.gmail.com>
-Subject: Re: [bpf PATCH] bpf: do not allow btf_ctx_access with __int128 types
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AQ/e5sEh4Ldk6IXzWL/y51NsKG35Zs68anCke7z6z/s=;
+        b=ijyW5hcKY5KyGkYy6Fd0TDarpUFPm/X90ygqGddvCmL8vHrpSpGFGzR5Kd4GMugjB4
+         sk4fiGzb0ezaOEAQ9EoAC6GWljdruWsXFhABCJRI6wKGnZSCbWf+ua9IJXDAr75IDqz/
+         IU0GSmV9tYK34su5y4SvchQhWtYdfoePkyi7Y0qUkv5BvQvpJHmoyA/6BK00iUv6Yt71
+         KbeIoc4nMWEul3wbVAfokFJqfGlPJWHiIo62nynDub3VdCep8BzXDLU4H0hMHEjijNlr
+         fD9Vv1TidnyAOlW7mmPHyjXtSJCKCEy6ebMoZjP/x74+pi3+WJZW8Nj35pRuZu+D1k1a
+         uDKw==
+X-Gm-Message-State: AOAM532OsugUoxScJU3JwvWUMHbvK1CHN6v6spU5lHeSXraSM17Ldmxu
+        gu0YTnppKvrb5TAOPVlvL5c=
+X-Google-Smtp-Source: ABdhPJz4xrsrL7BmMRFrYv1otPe1IxIPy1IbscbS3JFyG63yahruWjjbACaZB3Otqprxu6LPZHkqFw==
+X-Received: by 2002:a62:1654:: with SMTP id 81mr26744482pfw.137.1592937323995;
+        Tue, 23 Jun 2020 11:35:23 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4e7a])
+        by smtp.gmail.com with ESMTPSA id f3sm3176496pjw.57.2020.06.23.11.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 11:35:23 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 11:35:20 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+References: <87r1uo2ejt.fsf@x220.int.ebiederm.org>
+ <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
+ <87d066vd4y.fsf@x220.int.ebiederm.org>
+ <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+ <87bllngirv.fsf@x220.int.ebiederm.org>
+ <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+ <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+ <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7v1pskt.fsf@x220.int.ebiederm.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 10:14 AM John Fastabend
-<john.fastabend@gmail.com> wrote:
->
-> To ensure btf_ctx_access() is safe the verifier checks that the BTF
-> arg type is an int, enum, or pointer. When the function does the
-> BTF arg lookup it uses the calculation 'arg = off / 8'  using the
-> fact that registers are 8B. This requires that the first arg is
-> in the first reg, the second in the second, and so on. However,
-> for __int128 the arg will consume two registers by default LLVM
-> implementation. So this will cause the arg layout assumed by the
-> 'arg = off / 8' calculation to be incorrect.
->
-> Because __int128 is uncommon this patch applies the easiest fix and
-> will force int types to be sizeof(u64) or smaller so that they will
-> fit in a single register.
->
-> Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
+On Tue, Jun 23, 2020 at 01:04:02PM -0500, Eric W. Biederman wrote:
+> 
+> Sigh.  I was busy last week so I left reading this until now in the
+> hopes I would see something reasonable.
+> 
+> What I see is rejecting of everything that is said to you.
+> 
+> What I do not see are patches fixing issues.  I will await patches.
 
-"small int" for u64 looks funny, but naming is hard :)
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  include/linux/btf.h |    5 +++++
->  kernel/bpf/btf.c    |    4 ++--
->  2 files changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 5c1ea99..35642f6 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -82,6 +82,11 @@ static inline bool btf_type_is_int(const struct btf_type *t)
->         return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
->  }
->
-> +static inline bool btf_type_is_small_int(const struct btf_type *t)
-> +{
-> +       return btf_type_is_int(t) && (t->size <= sizeof(u64));
-
-nit: unnecessary (), () are usually used to disambiguate | and &  vs
-|| and &&; this is not the case, though.
-
-> +}
-> +
->  static inline bool btf_type_is_enum(const struct btf_type *t)
->  {
->         return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 58c9af1..9a1a98d 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3746,7 +3746,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->                                 return false;
->
->                         t = btf_type_skip_modifiers(btf, t->type, NULL);
-> -                       if (!btf_type_is_int(t)) {
-> +                       if (!btf_type_is_small_int(t)) {
->                                 bpf_log(log,
->                                         "ret type %s not allowed for fmod_ret\n",
->                                         btf_kind_str[BTF_INFO_KIND(t->info)]);
-> @@ -3768,7 +3768,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->         /* skip modifiers */
->         while (btf_type_is_modifier(t))
->                 t = btf_type_by_id(btf, t->type);
-> -       if (btf_type_is_int(t) || btf_type_is_enum(t))
-> +       if (btf_type_is_small_int(t) || btf_type_is_enum(t))
->                 /* accessing a scalar */
->                 return true;
->         if (!btf_type_is_ptr(t)) {
->
+huh?
+I can say exactly the same. You keep ignoring numerous points I brought up.
+You still haven't showed what kind of refactoring you have in mind and
+why fork_blob is in its way.
