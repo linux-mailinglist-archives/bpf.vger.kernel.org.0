@@ -2,222 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA7D20495C
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 07:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F9A20496A
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 07:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgFWFzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 01:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        id S1730395AbgFWF62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 01:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728800AbgFWFzr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 01:55:47 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FEBC061573;
-        Mon, 22 Jun 2020 22:55:45 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f18so17841901qkh.1;
-        Mon, 22 Jun 2020 22:55:45 -0700 (PDT)
+        with ESMTP id S1730370AbgFWF61 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 01:58:27 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D5FC061573
+        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 22:58:27 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id l17so17777456qki.9
+        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 22:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Chr9DxTgyC1O01lU8vGmKQECBfgvN4hwBinx6d+lMdU=;
-        b=Q/oGQUVV/TVr3D3b3rBY2cKjjh2x2VYuYMsi6gTuzeZ2zAfK7Xvkw3kdSjUzKblqcF
-         ouk/pnl+H7pKVXkusvUN4val9yVuBq7VGPp9+wE4c4/oS/Xs95vqkFN6Uzd8KGnENHSo
-         jvbbibNCzA0EZegw8wlgbAlMGoRaxfJTBzbpDUcHPXgS5oo6x0iIT+vyofaHXhOow7kR
-         jmkmDAZ94nOVFj6nvgxsekmHyCdl9ls+gKz9OdN1OEpcXL5A37x4xf/OzJzjS3zPRzO0
-         LMVAQBI5Ovbr0jNSodYHdyLPRUM5HOE2xFjc+2AHAOijtZNYiAUj+slpjAmdLVcXaexP
-         nbvA==
+        bh=+RgxG+qk6INCm32IfyNPa8oTVGm+U12PQv4jEF33YDY=;
+        b=JaG5xEkD3cM3ISI5PwRgYZ1vYdqqN3rJK05vYA+yJMJGctpeU6OM/eCx6ek7nOeA0+
+         0FTucaLgFLYKCqa7kQUZ3/Cee0cWtcg9eAooGvzZMe3LWD3Izg6ea1LcbWdxNQrj7Eq6
+         OuIPUk+djdTBcpPoJP0qkifa/4ucpqicLqsZ7i89KHJoV1wGlFDZpfOn6NcZYoXz3u4g
+         uTzUZFqhVFaPRmPHpUsI7YmmWJBYmu69GVjGXSyrVp9OK4IufopBHYcSLhcWsTtFyGqa
+         9+uznyWUF8CqhjAe9tEDlgyCWn4FlXKptOaaWZItSk5Hs5zbtHMxfUAA9shbdANfJDXv
+         WSYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Chr9DxTgyC1O01lU8vGmKQECBfgvN4hwBinx6d+lMdU=;
-        b=sgqDgEP5NXHFtZOOOwFXHvKJoBvZnq/QyhogcPWJMNdLgD/Mgv5aZxSa5Z0WHe/l+h
-         nHrVsvXqZQcP0Ahr0A/dyiF5OwF4oiBB2+ptf654yRpxNpRm3eJjAUbn0LvBonwKZrUc
-         9i9ygAvyVrzU6aoR/KNq1tp7CY6wFJc4WJsB38YOdV7sTX0AWX8GwbHMDqLOwb/fWvvm
-         TuSGjVbsLHq9IcqfaMbs+iZo+yahbqfHcwGYFvEMJ5JCHjKaeTjgvmpep2FDkeyi28B2
-         I3IF2NByOWxFCYSYPCo6+2SQEF5zK85tlDxNidz3IZOeVSJehRQIYofLtqgxqiMAKaCq
-         R9ww==
-X-Gm-Message-State: AOAM533w3jqGB4rLLiOOSFSrgHu4V2INnVQ6yoN2MZFkayv747GbDhAg
-        nSSTCoBsQJ8ARPg4TSXmqlmK55JElLfmOCAx8eExuhzH
-X-Google-Smtp-Source: ABdhPJxVqWlUAfGdEORsLr2PmbdYNz0H34jF8xEmoK7/FhUoH76MEf8K/xHx3fJQOxjOhaqrWX/1Q5RdMYjP3AvjlyQ=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr18626718qkk.92.1592891744951;
- Mon, 22 Jun 2020 22:55:44 -0700 (PDT)
+        bh=+RgxG+qk6INCm32IfyNPa8oTVGm+U12PQv4jEF33YDY=;
+        b=dh53jIHQtrR9mXF3Y62yquXmmIBjvH8WCNxTn7I33g75XY8NM+kDWf2UuADT2WaNpF
+         6W2aeiR2LRhlUejmZCnTCt9D1hBnPb8d3dRhLq6jd9KO9jVs8aymiwjqnqLF20f3Ch4n
+         ZcKJCal7Yft9/K7RVJ72wt5cAhoNCYeV+rcUAvAuJnZ2LW4QdlqhbV7rWUKeVvo5zgRk
+         J+yPG/oGPdvY+qvV5cEdeR8HJw4Z2hdYlLMqxqzqjkB6dcZZ5hqQ1IXuqQz6267iuogG
+         ShbPaMmsuna/pSNird15xSC4SqC5hIPrYXSMP2Fa4o4M0SG0LzjGQIKiO4UDRQ67GSpQ
+         ErGQ==
+X-Gm-Message-State: AOAM531ts82NON6epX0R7/ZB7Z2Z5ZfBet1WZk76YPC0TmWrPlwZfisW
+        2EaDYtQ0zmcp4FS8NLdYbvZ76mIXWeCRYsOMF+4=
+X-Google-Smtp-Source: ABdhPJx7xLLN/eT50mZ9vKrrSuEwaSxNEi8/FvQGRlDw0Ku7TKMhdZ4PdOBHrLpcAFPTJdSk17wQ5dRsDFpZGBbuTIY=
+X-Received: by 2002:a37:d0b:: with SMTP id 11mr20141284qkn.449.1592891906166;
+ Mon, 22 Jun 2020 22:58:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1592606391.git.lorenzo@kernel.org> <ebad39bb3d961a65733c33ed530b9d1ade916afa.1592606391.git.lorenzo@kernel.org>
-In-Reply-To: <ebad39bb3d961a65733c33ed530b9d1ade916afa.1592606391.git.lorenzo@kernel.org>
+References: <20200622140007.4922-1-tklauser@distanz.ch> <20200622140007.4922-3-tklauser@distanz.ch>
+In-Reply-To: <20200622140007.4922-3-tklauser@distanz.ch>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Jun 2020 22:55:34 -0700
-Message-ID: <CAEf4BzbroU6o8yp=ca0JQqSS6WEZ9VQRcufq+T0vkCOoQsjB2w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 8/8] selftest: add tests for XDP programs in
- CPUMAP entries
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+Date:   Mon, 22 Jun 2020 22:58:15 -0700
+Message-ID: <CAEf4Bzau9o_0bAUmnjxCLODAMuReR+Vg3ZzV1=zg8k_-wvWi3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] tools, bpftool: Define attach_type_name
+ array only once
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        lorenzo.bianconi@redhat.com, David Ahern <dsahern@kernel.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 9:55 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Mon, Jun 22, 2020 at 7:00 AM Tobias Klauser <tklauser@distanz.ch> wrote:
 >
-> Similar to what have been done for DEVMAP, introduce tests to verify
-> ability to add a XDP program to an entry in a CPUMAP.
-> Verify CPUMAP programs can not be attached to devices as a normal
-> XDP program, and only programs with BPF_XDP_CPUMAP attach type can
-> be loaded in a CPUMAP.
+> Follow the same approach as for map_type_name and prog_type_name. This
+> leads to a slight decrease in the binary size of bpftool.
 >
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Before:
+>
+>    text    data     bss     dec     hex filename
+>  399024   11168 1573160 1983352  1e4378 bpftool
+>
+> After:
+>
+>    text    data     bss     dec     hex filename
+>  398256   10880 1573160 1982296  1e3f58 bpftool
+>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 > ---
->  .../bpf/prog_tests/xdp_cpumap_attach.c        | 70 +++++++++++++++++++
->  .../bpf/progs/test_xdp_with_cpumap_helpers.c  | 38 ++++++++++
->  2 files changed, 108 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+>  tools/bpf/bpftool/cgroup.c | 36 ++++++++++++++++++++++++++++++++++++
+>  tools/bpf/bpftool/main.h   | 36 +-----------------------------------
+>  2 files changed, 37 insertions(+), 35 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> new file mode 100644
-> index 000000000000..2baa41689f40
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> @@ -0,0 +1,70 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <uapi/linux/bpf.h>
-> +#include <linux/if_link.h>
-> +#include <test_progs.h>
-> +
-> +#include "test_xdp_with_cpumap_helpers.skel.h"
-> +
-> +#define IFINDEX_LO     1
-> +
-> +void test_xdp_with_cpumap_helpers(void)
-> +{
-> +       struct test_xdp_with_cpumap_helpers *skel;
-> +       struct bpf_prog_info info = {};
-> +       struct bpf_cpumap_val val = {
-> +               .qsize = 192,
-> +       };
-> +       __u32 duration = 0, idx = 0;
-> +       __u32 len = sizeof(info);
-> +       int err, prog_fd, map_fd;
-> +
-> +       skel = test_xdp_with_cpumap_helpers__open_and_load();
-> +       if (CHECK_FAIL(!skel)) {
-> +               perror("test_xdp_with_cpumap_helpers__open_and_load");
-> +               return;
-> +       }
-> +
-> +       /* can not attach program with cpumaps that allow programs
-> +        * as xdp generic
-> +        */
-> +       prog_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
-> +       err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
-> +       CHECK(err == 0, "Generic attach of program with 8-byte CPUMAP",
-> +             "should have failed\n");
-> +
-> +       prog_fd = bpf_program__fd(skel->progs.xdp_dummy_cm);
-> +       map_fd = bpf_map__fd(skel->maps.cpu_map);
-> +       err = bpf_obj_get_info_by_fd(prog_fd, &info, &len);
-> +       if (CHECK_FAIL(err))
-> +               goto out_close;
-> +
-> +       val.bpf_prog.fd = prog_fd;
-> +       err = bpf_map_update_elem(map_fd, &idx, &val, 0);
-> +       CHECK(err, "Add program to cpumap entry", "err %d errno %d\n",
-> +             err, errno);
-> +
-> +       err = bpf_map_lookup_elem(map_fd, &idx, &val);
-> +       CHECK(err, "Read cpumap entry", "err %d errno %d\n", err, errno);
-> +       CHECK(info.id != val.bpf_prog.id, "Expected program id in cpumap entry",
-> +             "expected %u read %u\n", info.id, val.bpf_prog.id);
-> +
-> +       /* can not attach BPF_XDP_CPUMAP program to a device */
-> +       err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
-> +       CHECK(err == 0, "Attach of BPF_XDP_CPUMAP program",
-> +             "should have failed\n");
-> +
-> +       val.qsize = 192;
-> +       val.bpf_prog.fd = bpf_program__fd(skel->progs.xdp_dummy_prog);
-> +       err = bpf_map_update_elem(map_fd, &idx, &val, 0);
-> +       CHECK(err == 0, "Add non-BPF_XDP_CPUMAP program to cpumap entry",
-> +             "should have failed\n");
-> +
-> +out_close:
-> +       test_xdp_with_cpumap_helpers__destroy(skel);
-> +}
-> +
-> +void test_xdp_cpumap_attach(void)
-> +{
-> +       if (test__start_subtest("CPUMAP with programs in entries"))
-
-These subtest names are supposed to be short and follow test names
-(i.e., being more or less valid C identifiers). It makes it easier to
-select or blacklist them (with -t and -b params). So something like
-cpumap_with_progs or similar would be better in that regard and would
-make it easier for me to maintain a blacklist of tests/subtests for
-Travis CI, for instance.
-
-I think there is similarly verbose DEVMAP subtest name, I'd love it to
-be "simplified" as well... But can't get my hands on everything,
-unfortunately.
-
-> +               test_xdp_with_cpumap_helpers();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-> new file mode 100644
-> index 000000000000..acbbc62efa55
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_CPUMAP);
-> +       __uint(key_size, sizeof(__u32));
-> +       __uint(value_size, sizeof(struct bpf_cpumap_val));
-> +       __uint(max_entries, 4);
-> +} cpu_map SEC(".maps");
-> +
-> +SEC("xdp_redir")
-> +int xdp_redir_prog(struct xdp_md *ctx)
-> +{
-> +       return bpf_redirect_map(&cpu_map, 1, 0);
-> +}
-> +
-> +SEC("xdp_dummy")
-> +int xdp_dummy_prog(struct xdp_md *ctx)
-> +{
-> +       return XDP_PASS;
-> +}
-> +
-> +SEC("xdp_cpumap")
-> +int xdp_dummy_cm(struct xdp_md *ctx)
-> +{
-> +       char fmt[] = "devmap redirect: dev %u len %u\n";
-> +       void *data_end = (void *)(long)ctx->data_end;
-> +       void *data = (void *)(long)ctx->data;
-> +       unsigned int len = data_end - data;
-> +
-> +       bpf_trace_printk(fmt, sizeof(fmt), ctx->ingress_ifindex, len);
-
-Is there any reason to use bpf_trace_printk as opposed to saving
-ctx->ingress_ifindex into a global variable? bpf_trace_printk isn't
-really testing anything, just pollutes trace_pipe.
-
-> +
-> +       return XDP_PASS;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.26.2
+> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+> index d901cc1b904a..542050a4f071 100644
+> --- a/tools/bpf/bpftool/cgroup.c
+> +++ b/tools/bpf/bpftool/cgroup.c
+> @@ -30,6 +30,42 @@
+>         "                        sendmsg6 | recvmsg4 | recvmsg6 |\n"           \
+>         "                        sysctl | getsockopt | setsockopt }"
 >
+> +const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
+
+Let's move it into common.c instead. It's not really cgroup-specific.
+
+[...]
