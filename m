@@ -2,271 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107AD2061FE
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215FA2061F1
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390260AbgFWUx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 16:53:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47210 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392856AbgFWUqo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 16:46:44 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NKGKCC019902;
-        Tue, 23 Jun 2020 13:46:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=FJkbm/pwU5vUP5LN87/6wfeVe94xGeWXfE8rjpLkUIQ=;
- b=Hn1SYQ4SeDfow8BpyRISXjbA93Eq6lCsL0vQxG121Ymi/UQmSNxqxPzaUGtTbrD5fXyA
- vqHH/e49zoGPF5wLR/qg65lR1cktOlM1JpuzZI6JhRRveTL7qhdC+wVxJRrwCiDLkM2U
- MwSbviw7iie5PajiGFB057RGBzI3toTN5yE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31uk2uj3nv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Jun 2020 13:46:28 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 13:46:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UVC5IfAbHJPXuUx+SUp6EwalM7HEAl3f4rsZpoQzyARI5RfAp+gYbmzWsM8pwVXnISqNsGj/3hQJxIQrq/oIBNEGYraWxZkLObhSduDJ/1q8F2ZwtSFxq4mwl4pv0zHvX4fOWj8RUmUNUJuu3YOJ5sifmlglOCQUbRE0C6/VkzozbhpKbWz4TQ68L/gkbUQMcjzgYwb6czw2UgCTasOjXSWxsswjpT1Kui7uRrvwLC+xqvvNdETxnqB2WPLI4XPRI9Wm5v4TB5HqEWfY/w3lIPxTSZWp8EHNO/zOx/UlKH0oFpBywBGLYsN/f+5AT+gnpRq7tznGFeD0iJqiyAiZrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FJkbm/pwU5vUP5LN87/6wfeVe94xGeWXfE8rjpLkUIQ=;
- b=Wrs1JknD37YHE/aJYADE5nNauAOjBY2hGGz7yHZp9hAHlKRCL9BG7kiZP+olCYDBPA/t8xiiqoaXzDy12J0yCPq58n0hlYfVud2RPxoGPH1c5CBJyIDx0ktHbBYbTR7nD4RapP7RoH23OLKL24e/hIBzsOk8BJwkHKi2+al3nbvoXIQC6WNOIa18/F6AddikUQKW+McMfN5jG8k+eG735/qnQ1ESRM1U3XCeokFKv/BVpsvPFxSWWTb1gDQ+fq5fgxi9XNkY3v1IekKokRg6lx1fCQXHeiNpcRLmT0FJHZfacxSCYrHqKnGw3Yv9W1UZaR2RrcbqV6vQ0nxvI7sFJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FJkbm/pwU5vUP5LN87/6wfeVe94xGeWXfE8rjpLkUIQ=;
- b=TD3cn+BoA1jdGIGyTRHEExfhtYyQqRbdPIHkmU7n3MPkbw+79iB7TA7F9KpffLC04JDzuh3ukQM9Kz/Bmm6oL3GvRjlAELkKrcqoK8bRFw9bEofbKZb4y6h71z7rAFdHgeHaIaEvxQnJb4swV2Nbw7H8u0g99s/xXtOGyP5CPJk=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3569.namprd15.prod.outlook.com (2603:10b6:a03:1ff::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.25; Tue, 23 Jun
- 2020 20:46:24 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
- 20:46:24 +0000
-Subject: Re: [PATCH bpf-next v3 05/15] bpf: add bpf_skc_to_tcp6_sock() helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200623003626.3072825-1-yhs@fb.com>
- <20200623003631.3073864-1-yhs@fb.com>
- <CAEf4BzaGWuAYzN2-+Gy9X8N2YPb341ZGugKzk78qiPURMgv7rw@mail.gmail.com>
- <26d6f7ee-28ea-80ba-fd76-e3b2f0327163@fb.com>
- <CAEf4BzYvra0bijcbzpBbwwtFQg4_8Uy3tGLwYYj=9CpkMPW=-w@mail.gmail.com>
- <bfd134a9-d808-d66d-3870-361f8f5aab64@fb.com>
- <CAEf4BzYMG7xu2ot-8OVJjYG7w14OciKgN=hZombOqo=7d5oUNQ@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <051dab4c-bbde-320e-c2bf-da63a7994fc4@fb.com>
-Date:   Tue, 23 Jun 2020 13:46:22 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <CAEf4BzYMG7xu2ot-8OVJjYG7w14OciKgN=hZombOqo=7d5oUNQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0027.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::40) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S2404087AbgFWUwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 16:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403908AbgFWUwg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:52:36 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10B2C061573;
+        Tue, 23 Jun 2020 13:52:35 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 80so8351645qko.7;
+        Tue, 23 Jun 2020 13:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6jp0ubT0ytXPNlZ+kvpMhbKPSShNoZWoDASuHeV3U4w=;
+        b=HeVDeJEedkTT34Y6u0qDxY68f7PJE43gZ9KGfchNkNzJDbI0BlurtccYR2wakUH1sq
+         XiOoEPVZCcY//cTh/UXLaQlNGBUs5vxjgXMZNLx1IHQhrT9ZSE071hGoy4AkwGIkvbhv
+         5wWcJlNROMPvCve+XQYU6erv1qM54m7f8ojQKs4COxRhfh/LWAok8M3ysxwNqWAhq9z5
+         0bSf4iMsuaVunMTxUrXMYjWdtMFciUrmTahRgyttOpf+WhH6xtzXSkVeR7pl3XtCVngn
+         o29rDmIJfXqGTw6iOb2tw1G2k/NjyG3KAKA0TYXW41Qhkq9GId4YyhKcCAtSzAyoQool
+         R4pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6jp0ubT0ytXPNlZ+kvpMhbKPSShNoZWoDASuHeV3U4w=;
+        b=LhcZbjtlAjSlfWGMbiJP26NjdQAl+FoU71XZPD5DKsWCd9l2cbtPQ2ouB4rCn02YGf
+         pWKKsCdk/81HCx5s7qhyaadUEv6gE2k+HjJ3ZVQ/5En75yqmBxfPP1YqlofdKhywMHw1
+         6pVe0JmEHLYJ1NO743ESsko5QgQ1cWBk1V3eF7Z1A9KWSirqgBNgGIjZpH1W+IqQjM2b
+         ZWzp6CQDK/zhsRrnhQeO1ySLTbPRwZnKhqWwVfqqkdguTAXCKQ4v4h2l3jGiCZmq69wV
+         3FHpR/4rJiBRkWCgeM7VydMmd2npkgcyn7Dcnj9fU/bfwOJ7aRwJaeVgyMJj8YH/Koxf
+         KPig==
+X-Gm-Message-State: AOAM532pBGnL0DPOFt7IJORWLCv6pZhuPmyDzbnCL06UtyEM6uMOgZRU
+        m0l4VRn+ZJn+CS+rnZVW56MQBiMG6yHyLNZ9F2w=
+X-Google-Smtp-Source: ABdhPJyI+9nIuV13mzQT+cdNrzFc6mevg13NB61n79/IEPnHwoiN5Vj16C3X3vAbnosJ/LeVulJEkprhQ4zPSlJNuoA=
+X-Received: by 2002:a37:d0b:: with SMTP id 11mr23572611qkn.449.1592945554997;
+ Tue, 23 Jun 2020 13:52:34 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1926] (2620:10d:c090:400::5:d956) by BYAPR02CA0027.namprd02.prod.outlook.com (2603:10b6:a02:ee::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Tue, 23 Jun 2020 20:46:23 +0000
-X-Originating-IP: [2620:10d:c090:400::5:d956]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a88992fc-3748-49f4-aa05-08d817b67e48
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3569:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3569621E809FD13D1A61BD3DD3940@BY5PR15MB3569.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-Forefront-PRVS: 04433051BF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pgRNSH0HDQO2aXhzDXrtoq4YlXQkHRdG2XksY277ZmsHCH0FiYWNWEdEW0qW7Ov4GoZpF3Ktdd9+PQA7S0vsLuxpZRxl9v6TgYbFD6X3JPGH2QN1Sl5zRFE+/z9Ww/MjwdOOguAYojiZH7z+SJeN26nQuc8I3p5qa9VhRAf27sbEhqVlUpfTllU46sMj5DR4eKvDXGEnT/qm5jHwHTD8G0LxfoOJPiFZaNS5IcooFHqf9fbKGBxBB/B/TN+Kj48BarsDY1VO0scyatPpp89oSJacVd2EjuyUAFdtH6++XQIxB7Dx0CsXFuJ7UPZIvkSvqoLoCPAuB9oYzqqJVSsgp4ye8ahlcSBBTjAF1tE5wVrYdRmB/82qrXSL5diW6+tg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(136003)(346002)(376002)(366004)(31686004)(5660300002)(2616005)(6486002)(478600001)(31696002)(66946007)(66556008)(66476007)(316002)(6916009)(53546011)(54906003)(8936002)(52116002)(2906002)(83380400001)(8676002)(86362001)(186003)(4326008)(16526019)(36756003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: tVa+KleguvNigXh4WPML9HLP6umBNF7+4afOWgyQO1YBWKlVVNKXtHT9nwDFKKOjkjiUXBw7tuTXqMv7JKN2jQz1/3KsztXR8j3HLHUKTBZmNhZ8xwY3Vc0jDHjmyWu1qw05CmmQ7q6xNL4WSoIISlTAde/AYbu6gXPd6Igz32ev+sxra42mapFzxPJQQlsIIGySWRR42Qx58jKL6i21NMB8D2+GYNQdr5c/2JhcALfxnx/t02EP8YGa2XCIEL1Kgasvu4uTGbPRVdZAOHxEwuLPtlvJ9+9QFJWE2DezmbzujPhBeoxy+FbuX9m8jLJx4NPjT2hxd/WG73NjSj3o3qMojxJwZLeBXvaXux1Evq5Kt+nosgwPuw7LB43SIvrF4nfsksjBB3mGs91NmRWf0JM1FoUgaHJoJikp40IITZBMDNW65qnDLpsu/WGSJTUX4Lc0Rp+Fb+j2kuCtKnkJL+rmawlumbh36XbqHgrrMQuQWsfHYalym5WfMWPSGlW3/fTRYkTiWXm3w6Ue7LcBkQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: a88992fc-3748-49f4-aa05-08d817b67e48
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 20:46:24.4282
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b24KcPU5iFe4upjbayDg9LHep+Fkgvt5yoE9+KUBB+DFtyYVlXD0S/8U1WDT44eh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3569
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_13:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 spamscore=0 malwarescore=0 suspectscore=0
- adultscore=0 clxscore=1015 phishscore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230139
-X-FB-Internal: deliver
+References: <20200623032224.4020118-1-andriin@fb.com> <20200623032224.4020118-2-andriin@fb.com>
+ <7ed6ada5-2539-3090-0db7-0f65b67e4699@iogearbox.net>
+In-Reply-To: <7ed6ada5-2539-3090-0db7-0f65b67e4699@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 23 Jun 2020 13:52:24 -0700
+Message-ID: <CAEf4BzbsRyt5Y4-oMaKTUNu_ijnRD09+WW3iA+bfGLZcLpd77w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/3] selftests/bpf: add variable-length data
+ concatenation pattern test
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jun 23, 2020 at 1:39 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Hey Andrii,
+>
+> On 6/23/20 5:22 AM, Andrii Nakryiko wrote:
+> > Add selftest that validates variable-length data reading and concatentation
+> > with one big shared data array. This is a common pattern in production use for
+> > monitoring and tracing applications, that potentially can read a lot of data,
+> > but overall read much less. Such pattern allows to determine precisely what
+> > amount of data needs to be sent over perfbuf/ringbuf and maximize efficiency.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Currently getting the below errors on these tests. My last clang/llvm git build
+> is on 4676cf444ea2 ("[Clang] Skip adding begin source location for PragmaLoopHint'd
+> loop when[...]"):
+>
 
+Yeah, you need 02553b91da5d ("bpf: bpf_probe_read_kernel_str() has to
+return amount of data read on success") from bpf tree.
 
-On 6/23/20 1:11 PM, Andrii Nakryiko wrote:
-> On Tue, Jun 23, 2020 at 12:47 PM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 6/23/20 11:23 AM, Andrii Nakryiko wrote:
->>> On Tue, Jun 23, 2020 at 7:52 AM Yonghong Song <yhs@fb.com> wrote:
->>>>
->>>>
->>>>
->>>> On 6/22/20 11:39 PM, Andrii Nakryiko wrote:
->>>>> On Mon, Jun 22, 2020 at 5:38 PM Yonghong Song <yhs@fb.com> wrote:
->>>>>>
->>>>>> The helper is used in tracing programs to cast a socket
->>>>>> pointer to a tcp6_sock pointer.
->>>>>> The return value could be NULL if the casting is illegal.
->>>>>>
->>>>>> A new helper return type RET_PTR_TO_BTF_ID_OR_NULL is added
->>>>>> so the verifier is able to deduce proper return types for the helper.
->>>>>>
->>>>>> Different from the previous BTF_ID based helpers,
->>>>>> the bpf_skc_to_tcp6_sock() argument can be several possible
->>>>>> btf_ids. More specifically, all possible socket data structures
->>>>>> with sock_common appearing in the first in the memory layout.
->>>>>> This patch only added socket types related to tcp and udp.
->>>>>>
->>>>>> All possible argument btf_id and return value btf_id
->>>>>> for helper bpf_skc_to_tcp6_sock() are pre-calculcated and
->>>>>> cached. In the future, it is even possible to precompute
->>>>>> these btf_id's at kernel build time.
->>>>>>
->>>>>> Acked-by: Martin KaFai Lau <kafai@fb.com>
->>>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
->>>>>> ---
->>>>>
->>>>> Looks good to me as is, but see a few suggestions, they will probably
->>>>> save me time at some point as well :)
->>>>>
->>>>> Acked-by: Andrii Nakryiko <andriin@fb.com>
->>>>>
->>>>>
->>>>>>     include/linux/bpf.h            | 12 +++++
->>>>>>     include/uapi/linux/bpf.h       |  9 +++-
->>>>>>     kernel/bpf/btf.c               |  1 +
->>>>>>     kernel/bpf/verifier.c          | 43 +++++++++++++-----
->>>>>>     kernel/trace/bpf_trace.c       |  2 +
->>>>>>     net/core/filter.c              | 80 ++++++++++++++++++++++++++++++++++
->>>>>>     scripts/bpf_helpers_doc.py     |  2 +
->>>>>>     tools/include/uapi/linux/bpf.h |  9 +++-
->>>>>>     8 files changed, 146 insertions(+), 12 deletions(-)
->>>>>>
->>>>>
->>>>> [...]
->>>>>
->>>>>> @@ -4815,6 +4826,18 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
->>>>>>                    regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
->>>>>>                    regs[BPF_REG_0].id = ++env->id_gen;
->>>>>>                    regs[BPF_REG_0].mem_size = meta.mem_size;
->>>>>> +       } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
->>>>>> +               int ret_btf_id;
->>>>>> +
->>>>>> +               mark_reg_known_zero(env, regs, BPF_REG_0);
->>>>>> +               regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
->>>>>> +               ret_btf_id = *fn->ret_btf_id;
-[...]
->>>
->>>>
->>>>>
->>>>>> +               if (ret_btf_id == 0) {
->>>>>
->>>>> This also has to be struct/union (after typedef/mods stripping, of
->>>>> course). Or are there other cases?
->>>>
->>>> This is an "int". The func_proto difinition is below:
->>>> int *ret_btf_id; /* return value btf_id */
->>>
->>> I meant the BTF type itself that this btf_id points to. Is there any
->>> use case where this won't be a pointer to struct/union and instead
->>> something like a pointer to an int?
->>
->> Maybe you misunderstood. The mechanism is similar to the argument btf_id
->> encoding in func_proto's:
->>
->> static int bpf_seq_printf_btf_ids[5];
->> ...
->>           .btf_id         = bpf_seq_printf_btf_ids,
->>
->> func_proto->ret_btf_id will be a pointer to int which encodes the
->> btf_id, not the btf_type.
-> 
-> I understand that. Say it points to value 25. BTF type with ID=25 is
-> going to be BTF_KIND_PTR -> BTF_KIND_STRUCT. I was wondering if we
-> want/need to check that it's always BTF_KIND_PTR -> (modifier)* ->
-> BTF_KIND_STRUCT/BTF_KIND_UNION. That's it.
+I'm eagerly awaiting bpf being merged into bpf-next :)
 
-Just to be clear. The ret_btf_id returned here is the btf id is the
-type id of the pointee, so in this case it is BTF_KIND_STRUCT/....
-
-These id's are pre-calculated and stored in memory. Unless the whole
-thing is mess up, there is no need to check...
-
-> 
->>
->>>
->>>>
->>>>>
->>>>>> +                       verbose(env, "invalid return type %d of func %s#%d\n",
->>>>>> +                               fn->ret_type, func_id_name(func_id), func_id);
->>>>>> +                       return -EINVAL;
->>>>>> +               }
->>>>>> +               regs[BPF_REG_0].btf_id = ret_btf_id;
->>>>>>            } else {
->>>>>>                    verbose(env, "unknown return type %d of func %s#%d\n",
->>>>>>                            fn->ret_type, func_id_name(func_id), func_id);
->>>>>
->>>>> [...]
->>>>>
->>>>>> +void init_btf_sock_ids(struct btf *btf)
->>>>>> +{
->>>>>> +       int i, btf_id;
->>>>>> +
->>>>>> +       for (i = 0; i < MAX_BTF_SOCK_TYPE; i++) {
->>>>>> +               btf_id = btf_find_by_name_kind(btf, bpf_sock_types[i],
->>>>>> +                                              BTF_KIND_STRUCT);
->>>>>> +               if (btf_id > 0)
->>>>>> +                       btf_sock_ids[i] = btf_id;
->>>>>> +       }
->>>>>> +}
->>>>>
->>>>> This will hopefully go away with Jiri's work on static BTF IDs, right?
->>>>> So looking forward to that :)
->>>>
->>>> Yes. That's the plan.
->>>>
->>>>>
->>>>>> +
->>>>>> +static bool check_arg_btf_id(u32 btf_id, u32 arg)
->>>>>> +{
->>>>>> +       int i;
->>>>>> +
->>>>>> +       /* only one argument, no need to check arg */
->>>>>> +       for (i = 0; i < MAX_BTF_SOCK_TYPE; i++)
->>>>>> +               if (btf_sock_ids[i] == btf_id)
->>>>>> +                       return true;
->>>>>> +       return false;
->>>>>> +}
->>>>>> +
->>>>>
->>>>> [...]
->>>>>
+> # ./test_progs -t varlen
+> test_varlen:PASS:skel_open 0 nsec
+> test_varlen:PASS:skel_attach 0 nsec
+> test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!
+> #87 varlen:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> # ./test_progs-no_alu32 -t varlen
+> Switching to flavor 'no_alu32' subdirectory...
+> test_varlen:PASS:skel_open 0 nsec
+> test_varlen:PASS:skel_attach 0 nsec
+> test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!test_varlen:FAIL:check got 0 != exp 8
+> test_varlen:FAIL:check got 0 != exp 7
+> test_varlen:FAIL:check got 0 != exp 15
+> test_varlen:FAIL:content_check doesn't match!
+> #87 varlen:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> Thanks,
+> Daniel
