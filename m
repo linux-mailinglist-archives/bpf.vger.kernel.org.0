@@ -2,104 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318D8205A28
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C52C205A50
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733085AbgFWSIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 14:08:32 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:41350 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732549AbgFWSIb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:08:31 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jnnLP-0004f4-6l; Tue, 23 Jun 2020 12:08:27 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jnnLO-0004Sd-82; Tue, 23 Jun 2020 12:08:26 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
-        <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
-        <87r1uo2ejt.fsf@x220.int.ebiederm.org>
-        <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
-        <87d066vd4y.fsf@x220.int.ebiederm.org>
-        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
-        <87bllngirv.fsf@x220.int.ebiederm.org>
-        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
-        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
-        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
-        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
-Date:   Tue, 23 Jun 2020 13:04:02 -0500
-In-Reply-To: <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
-        (Alexei Starovoitov's message of "Mon, 15 Jun 2020 18:55:52 -0700")
-Message-ID: <87h7v1pskt.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1732988AbgFWSLD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 14:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728916AbgFWSLC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:11:02 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C175EC061573;
+        Tue, 23 Jun 2020 11:11:02 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id m9so3655207qvx.5;
+        Tue, 23 Jun 2020 11:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O2wmligUR27w8LA2Qy6DCUHjNf5DcVfeHO3NE5QalRg=;
+        b=q2DgWoiwA41+vZSqa9q4lYg5lefCQ5pBj1OKVRc3QFMO/VEwf0CSp6LChqXn9vhcK5
+         5knsHVqhxmw14JrJ4L6DNgnbkMaUakObvz1c5gsBy+hm/C28HegM26QkN+CVtFiaaCdO
+         WfV+smqfxYAR3RSpVd5Bw1d14VP1EIWlTE4+ETE7iYgBGafhD8q1hjC0TdfsXVcd2o0o
+         VY/nwipQdYLD5xwOxVIz2D8kXL3tg7zjXqqyrBKKRCIH03XX9pxLdUc5dlAgaLIbjYvx
+         UlKYZYCVu/hrVKydNCR8h221s7Ufo5J1sWUVpszrxR9wRk7Mte8ctiBZk52SHV/0ErFc
+         GNVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O2wmligUR27w8LA2Qy6DCUHjNf5DcVfeHO3NE5QalRg=;
+        b=c6PNB9LU6pV6FWoH8uBB6t064y+BMYjIO7Q58IKxKMtv0UyFie6d6xBRPcJqQ8D0e2
+         s6orS1UBArEkBfJ/WQFhA36jz7dp8tC2fnYEjx2h/Dj5HLwLZ26pN/b7eTh4ry55xiC6
+         vi+YGtTTtAW03ZgTYcpRWDp2EsqMITOpZUc6Pbhc3SCpG3KUnddbLo5Xqxzq3lxBy/DY
+         e14CeHLJ2Lfob4sAWY7Zv63eX3xM6DuNVcQuBhA2q8SWst6WbTm5K2za5zZzkJq3dB9i
+         /ej07xhbSw+V/nTNhcm5pQ0unc/g4i3YJHSyziDHgiRBtxHuB/46+MqIu5+GFvhEHW3s
+         Mcuw==
+X-Gm-Message-State: AOAM530gsVMb+/pf713MY9D0gINN8lqNO+dynTjVJpUY4Lpg9UZI7Ypo
+        ZaRQw7l4ohon7rLF8yS1J71YCkbz47IMohVL9I0=
+X-Google-Smtp-Source: ABdhPJynTBryGmWIyZKFCAIgnndqiVQ1+rbKyR4fBn2vqHUS+frkjBcCW/jfBu9w4E5HddgMdZxD3PjfbLgNdF91Euk=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr15019911qvb.228.1592935861871;
+ Tue, 23 Jun 2020 11:11:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jnnLO-0004Sd-82;;;mid=<87h7v1pskt.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/D9R08/Ve1p34FW4iCYwH1q+46Ss+IpyY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4896]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 454 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 12 (2.7%), b_tie_ro: 10 (2.3%), parse: 1.44
-        (0.3%), extract_message_metadata: 3.5 (0.8%), get_uri_detail_list:
-        0.41 (0.1%), tests_pri_-1000: 4.5 (1.0%), tests_pri_-950: 1.42 (0.3%),
-        tests_pri_-900: 1.09 (0.2%), tests_pri_-90: 144 (31.8%), check_bayes:
-        143 (31.5%), b_tokenize: 6 (1.2%), b_tok_get_all: 30 (6.5%),
-        b_comp_prob: 1.88 (0.4%), b_tok_touch_all: 102 (22.4%), b_finish: 1.08
-        (0.2%), tests_pri_0: 268 (59.0%), check_dkim_signature: 0.61 (0.1%),
-        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.54 (0.1%), tests_pri_10:
-        2.3 (0.5%), tests_pri_500: 6 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20200623124726.5039-1-cneirabustos@gmail.com>
+In-Reply-To: <20200623124726.5039-1-cneirabustos@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 23 Jun 2020 11:10:51 -0700
+Message-ID: <CAEf4BzYSKXE2aYkbE2XKa9z1Wc8Zv9-bkTmh=8unOM+Za-6uMw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] fold test_current_pid_tgid_new_ns into into test_progs
+To:     Carlos Neira <cneirabustos@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jun 23, 2020 at 5:48 AM Carlos Neira <cneirabustos@gmail.com> wrote:
+>
+> folds tests from test_current_pid_tgid_new_ns into test_progs.
+>
+> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   3 +-
+>  .../bpf/prog_tests/ns_current_pid_tgid.c      | 112 +++++++++++-
+>  .../bpf/test_current_pid_tgid_new_ns.c        | 159 ------------------
+>  3 files changed, 112 insertions(+), 162 deletions(-)
+>  delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 22aaec74ea0a..7b2ea7adccb0 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -36,8 +36,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+>         test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+>         test_cgroup_storage \
+>         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+> -       test_progs-no_alu32 \
+> -       test_current_pid_tgid_new_ns
+> +       test_progs-no_alu32
 
-Sigh.  I was busy last week so I left reading this until now in the
-hopes I would see something reasonable.
+Please update .gitignore as well.
 
-What I see is rejecting of everything that is said to you.
+>
+>  # Also test bpf-gcc, if present
+>  ifneq ($(BPF_GCC),)
 
-What I do not see are patches fixing issues.  I will await patches.
+[...]
 
-Eric
+> +
+> +       snprintf(nspath, sizeof(nspath) - 1, "/proc/%d/ns/pid", ppid);
+> +       pidns_fd = open(nspath, O_RDONLY);
+> +
+> +       if (CHECK(unshare(CLONE_NEWPID),
+> +               "unshare CLONE_NEWPID",
+> +               "error: %s\n", strerror(errno)))
+> +               return;
+> +
+> +       pid = vfork();
+
+is vfork necessary()? Maybe just stick to fork(), as in original implementation?
+
+> +       if (CHECK(pid < 0, "ns_current_pid_tgid_new_ns", "vfork error: %s\n",
+> +           strerror(errno))) {
+> +               return;
+> +       }
+> +       if (pid > 0) {
+> +       printf("waiting pid is %u\n", pid);
+
+indentation off?
+
+> +               usleep(5);
+> +               wait(NULL);
+
+waitpid() for specific child would be more reliable, no?
+
+> +               return;
+> +       } else {
+
+what if fork failed?
+
+> +               const char *probe_name = "raw_tracepoint/sys_enter";
+> +               const char *file = "test_ns_current_pid_tgid.o";
+> +               int err, key = 0, duration = 0;
+> +               struct bpf_link *link = NULL;
+> +               struct bpf_program *prog;
+> +               struct bpf_map *bss_map;
+> +               struct bpf_object *obj;
+> +               struct bss bss;
+> +               struct stat st;
+> +               __u64 id;
+> +
+
+[...]
+
+> +               err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
+> +               if (CHECK(err, "set_bss", "failed to get bss : %d\n", err))
+> +                       goto cleanup;
+> +
+> +               if (CHECK(id != bss.pid_tgid, "Compare user pid/tgid vs bpf pid/tgid",
+> +                       "User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
+> +                       goto cleanup;
 
 
+Good half of all this code could be removed if you used BPF skeleton,
+see other tests utilizing *.skel.h for inspiration.
+
+> +cleanup:
+> +               setns(pidns_fd, CLONE_NEWPID);
+> +               bpf_link__destroy(link);
+> +               bpf_object__close(obj);
+> +       }
+> +}
+> +
+> +void test_ns_current_pid_tgid(void)
+> +{
+> +       if (test__start_subtest("ns_current_pid_tgid_global_ns"))
+> +               test_ns_current_pid_tgid_global_ns();
+> +       if (test__start_subtest("ns_current_pid_tgid_new_ns"))
+> +               test_ns_current_pid_tgid_new_ns();
+> +}
+
+[...]
