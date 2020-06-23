@@ -2,172 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E55C205652
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 17:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485FF2056F0
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 18:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732935AbgFWPwD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 11:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731870AbgFWPwD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:52:03 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8994C061795
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 08:52:02 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y20so3782224wmi.2
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 08:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yxmcfIOE7dhhF4zAwl3j/L17uwzHuScL84R3y8ffPus=;
-        b=2BZNSEglDW3VkozxnIlIyqjYvTqCxV4pfO9TmPcJeWIszqyctWLYMVQ+3bPxeexYCv
-         hL62apnqoqDUHUbG9j44oceHZeItLAF1FOnb/ule9Ll4eYd+SQdzUYWTK4XJXMkRmD8+
-         nd2tcSlGlq4dAJGJAqI+QQZjrQrci4TiTtdSEDX2c/KcDCOP0fzcynUrcrasbR3lTjgU
-         2YaruNDBdiWoIGxvxP5Hkfs1Ny0Q4zst34VPiVBBHes80qoXPnzyIEliLPEwqqh++IsK
-         DtCDUQ7XjHO4Y5WDOm8BvqXEPU90gb7oEDlS88uP8BxZ0JAaPb29sNnEYkUfyzl80WQh
-         m/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yxmcfIOE7dhhF4zAwl3j/L17uwzHuScL84R3y8ffPus=;
-        b=n0ZwFfnn6D5ZyLB+9Bkp3ezvcU05xaD8rIHgnN4+VtxQqPXLP/MB7iyWwR01RGto9v
-         nhfFlJei0UAuwJ0rY3T2PV8b6lUjnUvOSzVKRmi5G4I7HAIh0/HU4vrztESvxrDkMIR5
-         2YVLBGpxPvwT2CQKg8HuSZdyEsgW3EW2Rl4nmR07rNfYpAB+UfMzIC5iLDajoTbeM+fj
-         TRxbH290bRcmbf8ydx0oJMph+2JPEme0j7Ur7MndHfiBZIfnduo732mqLfyPWZXcVimW
-         L4J0hmK3uvz9L5q4C47oiYsm5imVUzOms6dp51g5TS2VSo6rRxV75udo1jiXZsTBYHAB
-         CIxw==
-X-Gm-Message-State: AOAM532J22cimYQv58hi+0MZRsJbrNTusQWXdK/xImmRUJkMrVX+idVU
-        EwitWgG/Gj/yncFaXYl46YqcAg==
-X-Google-Smtp-Source: ABdhPJyo5LLG9ZwvmfoFZ6oIbA0BVX03atnMtQ8w8+VbnX8ImmBB43aQwPQNlBimYV11NA+lBHs+xQ==
-X-Received: by 2002:a05:600c:c1:: with SMTP id u1mr10330291wmm.48.1592927521531;
-        Tue, 23 Jun 2020 08:52:01 -0700 (PDT)
-Received: from localhost.localdomain ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id x18sm11844282wrq.13.2020.06.23.08.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 08:52:01 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next] tools: bpftool: do not pass json_wtr to emit_obj_refs_json()
-Date:   Tue, 23 Jun 2020 16:51:57 +0100
-Message-Id: <20200623155157.13082-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
+        id S1732909AbgFWQR4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 12:17:56 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5522 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732482AbgFWQR4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 12:17:56 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NG4Mu8004820
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 09:17:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=YNIqS7v+8mCPGdTL+b1JbhQquhMUiAuwgSI/fMO+tJQ=;
+ b=MD2FCFHccgaFW1LJO4qiWK+vkysoL5/rZZtHlc4YxXUeuPwVWq1wEfrEWyfRVRcbMJEz
+ o+NwvgwBD9Ai+aWu7crNk6UW8XjX0AnderbdHBlt9ulunNSkcIxUduaoOjHJTMQM7Qw4
+ 3aLMgOi6rmJG7qDYzSM6N0vCi5Z1scoHrp0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31uk2ugpkf-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 09:17:54 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 23 Jun 2020 09:17:53 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 14DE0370330A; Tue, 23 Jun 2020 09:17:49 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v4 00/15] implement bpf iterator for tcp and udp sockets
+Date:   Tue, 23 Jun 2020 09:17:49 -0700
+Message-ID: <20200623161749.2500196-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_10:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ bulkscore=0 priorityscore=1501 spamscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 clxscore=1015 phishscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230120
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Building bpftool yields the following complaint:
+bpf iterator implments traversal of kernel data structures and these
+data structures are passed to a bpf program for processing.
+This gives great flexibility for users to examine kernel data
+structure without using e.g. /proc/net which has limited and
+fixed format.
 
-    pids.c: In function ‘emit_obj_refs_json’:
-    pids.c:175:80: warning: declaration of ‘json_wtr’ shadows a global declaration [-Wshadow]
-      175 | void emit_obj_refs_json(struct obj_refs_table *table, __u32 id, json_writer_t *json_wtr)
-          |                                                                 ~~~~~~~~~~~~~~~^~~~~~~~
-    In file included from pids.c:11:
-    main.h:141:23: note: shadowed declaration is here
-      141 | extern json_writer_t *json_wtr;
-          |                       ^~~~~~~~
+Commit 138d0be35b14 ("net: bpf: Add netlink and ipv6_route bpf_iter targe=
+ts")
+implemented bpf iterators for netlink and ipv6_route.
+This patch set intends to implement bpf iterators for tcp and udp.
 
-json_wtr being exposed in main.h (included in pids.c) as an extern, it
-is directly available and there is no need to pass it through the
-function. Let's simply use the global variable.
+Currently, /proc/net/tcp is used to print tcp4 stats and /proc/net/tcp6
+is used to print tcp6 stats. /proc/net/udp[6] have similar usage model.
+In contrast, only one tcp iterator is implemented and it is bpf program
+resposibility to filter based on socket family. The same is for udp.
+This will avoid another unnecessary traversal pass if users want
+to check both tcp4 and tcp6.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/btf.c  | 2 +-
- tools/bpf/bpftool/link.c | 2 +-
- tools/bpf/bpftool/main.h | 3 +--
- tools/bpf/bpftool/map.c  | 2 +-
- tools/bpf/bpftool/pids.c | 2 +-
- tools/bpf/bpftool/prog.c | 2 +-
- 6 files changed, 6 insertions(+), 7 deletions(-)
+Several helpers are also implemented in this patch
+  bpf_skc_to_{tcp, tcp6, tcp_timewait, tcp_request, udp6}_sock
+The argument for these helpers is not a fixed btf_id. For example,
+  bpf_skc_to_tcp(struct sock_common *), or
+  bpf_skc_to_tcp(struct sock *), or
+  bpf_skc_to_tcp(struct inet_sock *), ...
+are all valid. At runtime, the helper will check whether pointer cast
+is legal or not. Please see Patch #5 for details.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index fc9bc7a23db6..81a1c301ccf4 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -843,7 +843,7 @@ show_btf_json(struct bpf_btf_info *info, int fd,
- 	}
- 	jsonw_end_array(json_wtr);	/* map_ids */
- 
--	emit_obj_refs_json(&refs_table, info->id, json_wtr); /* pids */
-+	emit_obj_refs_json(&refs_table, info->id); /* pids */
- 
- 	jsonw_end_object(json_wtr);	/* btf object */
- }
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 7329f3134283..ac39b1f80838 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -144,7 +144,7 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
- 		jsonw_end_array(json_wtr);
- 	}
- 
--	emit_obj_refs_json(&refs_table, info->id, json_wtr);
-+	emit_obj_refs_json(&refs_table, info->id);
- 
- 	jsonw_end_object(json_wtr);
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index ce26271e5f0c..ad5a67bf6cf1 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -197,8 +197,7 @@ void delete_pinned_obj_table(struct pinned_obj_table *tab);
- __weak int build_obj_refs_table(struct obj_refs_table *table,
- 				enum bpf_obj_type type);
- __weak void delete_obj_refs_table(struct obj_refs_table *table);
--__weak void emit_obj_refs_json(struct obj_refs_table *table, __u32 id,
--			       json_writer_t *json_wtr);
-+__weak void emit_obj_refs_json(struct obj_refs_table *table, __u32 id);
- __weak void emit_obj_refs_plain(struct obj_refs_table *table, __u32 id,
- 				const char *prefix);
- void print_dev_plain(__u32 ifindex, __u64 ns_dev, __u64 ns_inode);
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index 0a6a5d82d380..0f88f1de1500 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -509,7 +509,7 @@ static int show_map_close_json(int fd, struct bpf_map_info *info)
- 		jsonw_end_array(json_wtr);
- 	}
- 
--	emit_obj_refs_json(&refs_table, info->id, json_wtr);
-+	emit_obj_refs_json(&refs_table, info->id);
- 
- 	jsonw_end_object(json_wtr);
- 
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index 3474a91743ff..d5dc55641230 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -172,7 +172,7 @@ void delete_obj_refs_table(struct obj_refs_table *table)
- 	}
- }
- 
--void emit_obj_refs_json(struct obj_refs_table *table, __u32 id, json_writer_t *json_wtr)
-+void emit_obj_refs_json(struct obj_refs_table *table, __u32 id)
- {
- 	struct obj_refs *refs;
- 	struct obj_ref *ref;
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index e21fa8ad2efa..0095fb3faa17 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -190,7 +190,7 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
- 		jsonw_end_array(json_wtr);
- 	}
- 
--	emit_obj_refs_json(&refs_table, info->id, json_wtr);
-+	emit_obj_refs_json(&refs_table, info->id);
- 
- 	jsonw_end_object(json_wtr);
- }
--- 
-2.25.1
+Since btf_id's for both arguments and return value are known at
+build time, the btf_id's are pre-computed once vmlinux btf becomes
+valid. Jiri's "adding d_path helper" patch set
+  https://lore.kernel.org/bpf/20200616100512.2168860-1-jolsa@kernel.org/T=
+/
+provides a way to pre-compute btf id during vmlinux build time.
+This can be applied here as well. A followup patch can convert
+to build time btf id computation after Jiri's patch landed.
+
+Changelogs:
+  v3 -> v4:
+    - fix bpf_skc_to_{tcp_timewait, tcp_request} helper implementation
+      as just checking sk->sk_state is not enough (Martin)
+    - fix a few kernel test robot reported failures
+    - move bpf_tracing_net.h from libbpf to selftests (Andrii)
+    - remove __weak attribute from selftests CONFIG_HZ variables (Andrii)
+  v2 -> v3:
+    - change sock_cast*/SOCK_CAST* names to btf_sock* names for generalit=
+y (Martin)
+    - change gpl_license to false (Martin)
+    - fix helper to cast to tcp timewait/request socket. (Martin)
+  v1 -> v2:
+    - guard init_sock_cast_types() defination properly with CONFIG_NET (M=
+artin)
+    - reuse the btf_ids, computed for new helper argument, for return
+      values (Martin)
+    - using BTF_TYPE_EMIT to express intent of btf type generation (Andri=
+i)
+    - abstract out common net macros into bpf_tracing_net.h (Andrii)
+
+Yonghong Song (15):
+  net: bpf: add bpf_seq_afinfo in tcp_iter_state
+  net: bpf: implement bpf iterator for tcp
+  bpf: support 'X' in bpf_seq_printf() helper
+  bpf: allow tracing programs to use bpf_jiffies64() helper
+  bpf: add bpf_skc_to_tcp6_sock() helper
+  bpf: add bpf_skc_to_{tcp,tcp_timewait,tcp_request}_sock() helpers
+  net: bpf: add bpf_seq_afinfo in udp_iter_state
+  net: bpf: implement bpf iterator for udp
+  bpf: add bpf_skc_to_udp6_sock() helper
+  selftests/bpf: move newer bpf_iter_* type redefining to a new header
+    file
+  selftests/bpf: refactor some net macros to bpf_tracing_net.h
+  selftests/bpf: add more common macros to bpf_tracing_net.h
+  selftests/bpf: implement sample tcp/tcp6 bpf_iter programs
+  selftests/bpf: implement sample udp/udp6 bpf_iter programs
+  selftests/bpf: add tcp/udp iterator programs to selftests
+
+ include/linux/bpf.h                           |  16 ++
+ include/net/tcp.h                             |   1 +
+ include/net/udp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  37 ++-
+ kernel/bpf/btf.c                              |   1 +
+ kernel/bpf/verifier.c                         |  43 ++-
+ kernel/trace/bpf_trace.c                      |  15 +-
+ net/core/filter.c                             | 166 ++++++++++++
+ net/ipv4/tcp_ipv4.c                           | 153 ++++++++++-
+ net/ipv4/udp.c                                | 144 +++++++++-
+ scripts/bpf_helpers_doc.py                    |  10 +
+ tools/include/uapi/linux/bpf.h                |  37 ++-
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  68 +++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |  80 ++++++
+ .../selftests/bpf/progs/bpf_iter_bpf_map.c    |  18 +-
+ .../selftests/bpf/progs/bpf_iter_ipv6_route.c |  25 +-
+ .../selftests/bpf/progs/bpf_iter_netlink.c    |  22 +-
+ .../selftests/bpf/progs/bpf_iter_task.c       |  18 +-
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |  20 +-
+ .../selftests/bpf/progs/bpf_iter_tcp4.c       | 234 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_tcp6.c       | 250 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_test_kern3.c |  17 +-
+ .../selftests/bpf/progs/bpf_iter_test_kern4.c |  17 +-
+ .../bpf/progs/bpf_iter_test_kern_common.h     |  18 +-
+ .../selftests/bpf/progs/bpf_iter_udp4.c       |  71 +++++
+ .../selftests/bpf/progs/bpf_iter_udp6.c       |  79 ++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |  51 ++++
+ 27 files changed, 1443 insertions(+), 169 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_udp4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_udp6.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_tracing_net.h
+
+--=20
+2.24.1
 
