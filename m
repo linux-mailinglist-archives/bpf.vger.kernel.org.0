@@ -2,60 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3A6206601
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C5E206643
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393752AbgFWVgO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 17:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389132AbgFWVgM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:36:12 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0414C061755
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 14:36:12 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a6so115953wrm.4
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 14:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q0et8A1jvBs+4gpipR2Yxk3Lns2E2/sXQjUw7PswoOA=;
-        b=nBH37Fqimk/4BvTltMrYF76tcLtVwn+B/szjczHcXOGaHlOCWeq6TKpb//WqkHnR7p
-         NDt7WuLTD+WHrHyr2cmmG+TK/go0r7bQh1dCTVIXXzA3lZlL1IyUc/9dF2ktMYxJcstq
-         dSutNqazaL8zIS3rFapjJXVaSDZ2pk/Ias2OzqmhhSMkuIk+AzdihZ69AlCi2bQhrr1G
-         EIaa69qsocbLjyjXB85B1pjWlj6TuS+/DzoTfWgG45sD68iCAOFojh/cl16+OxYDJNMn
-         BPBUjdeJ42X5zzFhwkn5rc3iSPaKlXeUMGe98EmlYN5ZItzU8t1nT1Mf3gDCqTGV0U+V
-         CE8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q0et8A1jvBs+4gpipR2Yxk3Lns2E2/sXQjUw7PswoOA=;
-        b=QjwtywM6u5BovGcQEmi1fscxf7a1Ohp2UTQYH1EOwQz80kCCbNEvQ+NF30/c3uqfIx
-         ZZ4n9pY2v5RmwyPQIywyS5m8lbFY0EhJngB/7jzLowTQHoDfwK6ykKrPDFJ5l5p0fatH
-         Q/oVb+ZZDY3Tl6TDra7bBY9izaQHmRoRzNmdFDQ4LvH/DiTWuV3XQKMFw0o+i8yrC5dR
-         jyasuqY8b44wTUHUNS4UhpCBMctRUw1gvIFLi+GniLrDp1dDwYlFOXnGmdlQoWwUfaDB
-         zegkd08HUyiwZWiTieCGGy9E4RZYVGxdxZpgu7RimSvo17vZxLuRHxKiTURhQFjAyoe3
-         Tf/g==
-X-Gm-Message-State: AOAM530yfPDwAByI3ln7LmeE+m001hu2WUP6VEIzaLIqe85GiRhDYeO4
-        lDgawADm/sKiDt5PMWdFOA4kPwLxLPZtNw==
-X-Google-Smtp-Source: ABdhPJxdq2/Xj1pkXyaS20CuheymStjrbpHd/M5NN2CLPlqx5eCXK1hwbLtayPo7dZ8S5UYZyyMSZg==
-X-Received: by 2002:adf:c441:: with SMTP id a1mr27004567wrg.130.1592948171317;
-        Tue, 23 Jun 2020 14:36:11 -0700 (PDT)
-Received: from localhost.localdomain ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id v7sm3885686wmj.11.2020.06.23.14.36.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 14:36:10 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2] tools: bpftool: fix variable shadowing in emit_obj_refs_json()
-Date:   Tue, 23 Jun 2020 22:36:00 +0100
-Message-Id: <20200623213600.16643-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
+        id S2389128AbgFWVjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 17:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393755AbgFWVjp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 17:39:45 -0400
+Received: from localhost.localdomain.com (unknown [151.48.138.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0630C206E2;
+        Tue, 23 Jun 2020 21:39:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592948384;
+        bh=d15JfdjSaqZ4cdsJeNwFCoC0FewLDtPLhaRGD1/qs8U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OZOcsvZ6rcZHpR2nq4lzb4X2WmDmK6Nd04+6I0+B1krceFg0PvvKKOEr861bZagvY
+         ahEtJsTY5nHKUeFHegXHRo+AKYUzX2p1jVPkqxY6udKSw6xXVCurDHlUjxY6OI6Hkg
+         7GJonQ8Fi0hoODNFiYPF63SBWWoIQdZ6iV6FKDHk=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
+        daniel@iogearbox.net, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org, andrii.nakryiko@gmail.com
+Subject: [PATCH v3 bpf-next 0/9] introduce support for XDP programs in CPUMAP
+Date:   Tue, 23 Jun 2020 23:39:25 +0200
+Message-Id: <cover.1592947694.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -63,67 +39,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Building bpftool yields the following complaint:
+Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+capability to attach and run a XDP program to CPUMAP entries.
+The idea behind this feature is to add the possibility to define on which CPU
+run the eBPF program if the underlying hw does not support RSS.
+I respin patch 1/6 from a previous series sent by David [2].
+The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+Detailed tests results can be found here:
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap04-map-xdp-prog.org
 
-    pids.c: In function 'emit_obj_refs_json':
-    pids.c:175:80: warning: declaration of 'json_wtr' shadows a global declaration [-Wshadow]
-      175 | void emit_obj_refs_json(struct obj_refs_table *table, __u32 id, json_writer_t *json_wtr)
-          |                                                                 ~~~~~~~~~~~~~~~^~~~~~~~
-    In file included from pids.c:11:
-    main.h:141:23: note: shadowed declaration is here
-      141 | extern json_writer_t *json_wtr;
-          |                       ^~~~~~~~
+Changes since v2:
+- improved comments
+- fix return value in xdp_convert_buff_to_frame
+- added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_batched"
+- do not run kmem_cache_alloc_bulk if all frames have been consumed by the XDP
+  program attached to the CPUMAP entry
+- removed bpf_trace_printk in kselftest
 
-Let's rename the variable.
+Changes since v1:
+- added performance test results
+- added kselftest support
+- fixed memory accounting with page_pool
+- extended xdp_redirect_cpu_user.c to load an external program to perform
+  redirect
+- reported ifindex to attached eBPF program
+- moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
 
-v2:
-- Rename the variable instead of calling the global json_wtr directly.
+[1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.75383-1-dsahern@kernel.org/
+[2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.40418-2-dsahern@kernel.org/
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
-v1 was "tools: bpftool: do not pass json_wtr to emit_obj_refs_json()"
----
- tools/bpf/bpftool/pids.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+David Ahern (1):
+  net: Refactor xdp_convert_buff_to_frame
 
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index 3474a91743ff..2709be4de2b1 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -172,7 +172,8 @@ void delete_obj_refs_table(struct obj_refs_table *table)
- 	}
- }
- 
--void emit_obj_refs_json(struct obj_refs_table *table, __u32 id, json_writer_t *json_wtr)
-+void emit_obj_refs_json(struct obj_refs_table *table, __u32 id,
-+			json_writer_t *json_writer)
- {
- 	struct obj_refs *refs;
- 	struct obj_ref *ref;
-@@ -187,16 +188,16 @@ void emit_obj_refs_json(struct obj_refs_table *table, __u32 id, json_writer_t *j
- 		if (refs->ref_cnt == 0)
- 			break;
- 
--		jsonw_name(json_wtr, "pids");
--		jsonw_start_array(json_wtr);
-+		jsonw_name(json_writer, "pids");
-+		jsonw_start_array(json_writer);
- 		for (i = 0; i < refs->ref_cnt; i++) {
- 			ref = &refs->refs[i];
--			jsonw_start_object(json_wtr);
--			jsonw_int_field(json_wtr, "pid", ref->pid);
--			jsonw_string_field(json_wtr, "comm", ref->comm);
--			jsonw_end_object(json_wtr);
-+			jsonw_start_object(json_writer);
-+			jsonw_int_field(json_writer, "pid", ref->pid);
-+			jsonw_string_field(json_writer, "comm", ref->comm);
-+			jsonw_end_object(json_writer);
- 		}
--		jsonw_end_array(json_wtr);
-+		jsonw_end_array(json_writer);
- 		break;
- 	}
- }
+Jesper Dangaard Brouer (1):
+  cpumap: use non-locked version __ptr_ring_consume_batched
+
+Lorenzo Bianconi (7):
+  samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+    loop
+  cpumap: formalize map value as a named struct
+  bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+  bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+    entries
+  libbpf: add SEC name for xdp programs attached to CPUMAP
+  samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+  selftest: add tests for XDP programs in CPUMAP entries
+
+ include/linux/bpf.h                           |   6 +
+ include/net/xdp.h                             |  41 ++--
+ include/trace/events/xdp.h                    |  16 +-
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/cpumap.c                           | 160 +++++++++++---
+ net/core/dev.c                                |   8 +
+ samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+ samples/bpf/xdp_redirect_cpu_user.c           | 208 ++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  40 ++++
+ 12 files changed, 532 insertions(+), 72 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+
 -- 
-2.20.1
+2.26.2
 
