@@ -2,181 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E662064C5
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E59206545
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 23:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390681AbgFWV1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 17:27:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389229AbgFWUQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:16:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D36012145D;
-        Tue, 23 Jun 2020 20:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943419;
-        bh=iremO8qJ45paftYAO3M1qTShaKNRP4EwjN7wWH9FyL0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tld/yRDocRi67pnPWJ4WoBIkWt3fIK75DIo2kIuo+2YzSEa63pLRefVPa0BSDF41t
-         gXVLUQ6qE1fievZJ/FOp3pJOJ8gIydgAe6sdWPT0IZWxWPK4ta1i8/ertwjBRwvjMY
-         EGWaS0ENp58uBUxKtzk1nM2Xt7Y+ik4eS5L3OgqI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        bpf@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 385/477] perf probe: Fix user attribute access in kprobes
-Date:   Tue, 23 Jun 2020 21:56:22 +0200
-Message-Id: <20200623195425.725155460@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2388913AbgFWUMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 16:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388912AbgFWULy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:11:54 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BEAC061573;
+        Tue, 23 Jun 2020 13:11:54 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h23so9318599qtr.0;
+        Tue, 23 Jun 2020 13:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nDwWByC8Ar56Z4zR3w5yx/IeXP1wkHtIj67Ct0+hsF8=;
+        b=lziI7Y5pEMhhUHyHcGhVXL6VPqikxtRVMS4Xy4Z2yG93PRpKqwmaHlV3W8/n/1VEHi
+         w45xDzMHS6yzfwz7TeO5vXkH70X8WAm3vDRb24D4OTa8bABIVx8mwcvVaHDBINgDtdLM
+         GdyAQzPR8TXdJn/4IKo3Ol5dxqbsfuKoDf3SC3FpGzEenV9RypM9QGgFGpwO24i5Y2ly
+         FS09D3bU32C2YBiK3kFGhB+rr75W23Xhh4tG27aBAMPgoSyAc/MvpYiiN17qZWc0ytHa
+         avX8+FmTzv/XzM5IhfPy3fDQZhg3F9SvW+ykJBISzj08wUrRMD3ALiaprpwBvesJLsuW
+         V95w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nDwWByC8Ar56Z4zR3w5yx/IeXP1wkHtIj67Ct0+hsF8=;
+        b=VBe37vCGAPQbfwjrU7gH0D+6Yw6RpTb1pWy+9buSCJK/SREEpjdeNuOz0SjyCQkyci
+         D5zH2AY9APiDRJsYfpFBPsfm3bKW9BD4IgtTC3HFVW1c8r3iLJyd1IrWsu77ZYFycVeC
+         hnlmCdBpFqhKxWpTH4ZbS3s2XPdPup0Q8GaZGEj4PKNzaTLcQOcwNUAfPUWQ9pCvNBD2
+         xbpBL15doSdPbsp51b/E0WXm4JZpIILsNbVYHvvKBoZsP7F1PR2env9pM/v64D89lnSF
+         ULoPsBSbBfLUrsup0KzCV8TW7yMzyPVxQYCdEpvKjOlMlYQaNcjWKakzof84Q7Y3eSx2
+         A5ng==
+X-Gm-Message-State: AOAM53128R04u1ifxAwxY1B6yALq66iyIGTKgjxnxOGlyuz5IbNeFa3q
+        4/SHn2BH2FsiH5jxSNtFSzjyCLtcCMcZDhKsTUtfZ1I2xbE=
+X-Google-Smtp-Source: ABdhPJzpujLHGAOv3FOGumXzobOFnJX1IAMHmcycgQMqUboTFJDbal3lAymtGRg3XM3l2TfOT0gnC3Wv2eXDhXPa3Hk=
+X-Received: by 2002:ac8:1991:: with SMTP id u17mr16003839qtj.93.1592943113685;
+ Tue, 23 Jun 2020 13:11:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200623003626.3072825-1-yhs@fb.com> <20200623003631.3073864-1-yhs@fb.com>
+ <CAEf4BzaGWuAYzN2-+Gy9X8N2YPb341ZGugKzk78qiPURMgv7rw@mail.gmail.com>
+ <26d6f7ee-28ea-80ba-fd76-e3b2f0327163@fb.com> <CAEf4BzYvra0bijcbzpBbwwtFQg4_8Uy3tGLwYYj=9CpkMPW=-w@mail.gmail.com>
+ <bfd134a9-d808-d66d-3870-361f8f5aab64@fb.com>
+In-Reply-To: <bfd134a9-d808-d66d-3870-361f8f5aab64@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 23 Jun 2020 13:11:42 -0700
+Message-ID: <CAEf4BzYMG7xu2ot-8OVJjYG7w14OciKgN=hZombOqo=7d5oUNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 05/15] bpf: add bpf_skc_to_tcp6_sock() helper
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Sumanth Korikkar <sumanthk@linux.ibm.com>
+On Tue, Jun 23, 2020 at 12:47 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 6/23/20 11:23 AM, Andrii Nakryiko wrote:
+> > On Tue, Jun 23, 2020 at 7:52 AM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 6/22/20 11:39 PM, Andrii Nakryiko wrote:
+> >>> On Mon, Jun 22, 2020 at 5:38 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>
+> >>>> The helper is used in tracing programs to cast a socket
+> >>>> pointer to a tcp6_sock pointer.
+> >>>> The return value could be NULL if the casting is illegal.
+> >>>>
+> >>>> A new helper return type RET_PTR_TO_BTF_ID_OR_NULL is added
+> >>>> so the verifier is able to deduce proper return types for the helper.
+> >>>>
+> >>>> Different from the previous BTF_ID based helpers,
+> >>>> the bpf_skc_to_tcp6_sock() argument can be several possible
+> >>>> btf_ids. More specifically, all possible socket data structures
+> >>>> with sock_common appearing in the first in the memory layout.
+> >>>> This patch only added socket types related to tcp and udp.
+> >>>>
+> >>>> All possible argument btf_id and return value btf_id
+> >>>> for helper bpf_skc_to_tcp6_sock() are pre-calculcated and
+> >>>> cached. In the future, it is even possible to precompute
+> >>>> these btf_id's at kernel build time.
+> >>>>
+> >>>> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> >>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >>>> ---
+> >>>
+> >>> Looks good to me as is, but see a few suggestions, they will probably
+> >>> save me time at some point as well :)
+> >>>
+> >>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >>>
+> >>>
+> >>>>    include/linux/bpf.h            | 12 +++++
+> >>>>    include/uapi/linux/bpf.h       |  9 +++-
+> >>>>    kernel/bpf/btf.c               |  1 +
+> >>>>    kernel/bpf/verifier.c          | 43 +++++++++++++-----
+> >>>>    kernel/trace/bpf_trace.c       |  2 +
+> >>>>    net/core/filter.c              | 80 ++++++++++++++++++++++++++++++++++
+> >>>>    scripts/bpf_helpers_doc.py     |  2 +
+> >>>>    tools/include/uapi/linux/bpf.h |  9 +++-
+> >>>>    8 files changed, 146 insertions(+), 12 deletions(-)
+> >>>>
+> >>>
+> >>> [...]
+> >>>
+> >>>> @@ -4815,6 +4826,18 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+> >>>>                   regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+> >>>>                   regs[BPF_REG_0].id = ++env->id_gen;
+> >>>>                   regs[BPF_REG_0].mem_size = meta.mem_size;
+> >>>> +       } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
+> >>>> +               int ret_btf_id;
+> >>>> +
+> >>>> +               mark_reg_known_zero(env, regs, BPF_REG_0);
+> >>>> +               regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
+> >>>> +               ret_btf_id = *fn->ret_btf_id;
+> >>>
+> >>> might be a good idea to check fb->ret_btf_id for NULL and print a
+> >>> warning + return -EFAULT. It's not supposed to happen on properly
+> >>> configured kernel, but during development this will save a bunch of
+> >>> time and frustration for next person trying to add something with
+> >>> RET_PTR_TO_BTF_ID_OR_NULL.
+> >>
+> >> I would like prefer to delay this with current code. Otherwise,
+> >> it gives an impression fn->ret_btf_id might be NULL and it is
+> >> actually never NULL. We can add NULL check if the future change
+> >> requires it. I am not sure what the future change could be,
+> >> but you need some way to get the return btf_id, the above is
+> >> one of them.
+> >
+> > It's not **supposed** to be NULL, same as a bunch of other invariants
+> > about BPF helper proto definitions, but verifier does check sanity for
+> > such cases, instead of crashing. But up to you. I'm pretty sure
+> > someone will trip up on this.
+>
+> I think there are certain expectation for argument reg_state vs. certain
+> fields in the structure.
+>
+> int btf_resolve_helper_id(struct bpf_verifier_log *log,
+>                            const struct bpf_func_proto *fn, int arg)
+> {
+>          int *btf_id = &fn->btf_id[arg];
+>          int ret;
+>
+>          if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID)
+>                  return -EINVAL;
+>
+>          ret = READ_ONCE(*btf_id);
+>         ...
+> }
+>
+> If ARG_PTR_TO_BTF_ID, the verifier did not really check
+> whether btf_id pointer is valid or not. It just use it.
 
-[ Upstream commit 9256c3031eb9beafa3957c61093104c3c75a6148 ]
+Right, it's not a universal rule. But grep for "misconfigured" in
+kernel/bpf/verifier.c to see a bunch of places where the verifier
+could crash on NULL dereference, but instead emits an error message
+and returns failure.
 
-Issue:
+This was a suggestion, I'll stop asking for this :)
 
-  # perf probe -a 'do_sched_setscheduler pid policy param->sched_priority@user'
+>
+> The same applies to the new return type. If in func_proto,
+> somebody sets RET_PTR_TO_BTF_ID_OR_NULL, it is expected
+> that func_proto->ret_btf_id is valid.
+>
+> Code review or feature selftest should catch errors
+> if they are out-of-sync.
+>
+> >
+> >>
+> >>>
+> >>>> +               if (ret_btf_id == 0) {
+> >>>
+> >>> This also has to be struct/union (after typedef/mods stripping, of
+> >>> course). Or are there other cases?
+> >>
+> >> This is an "int". The func_proto difinition is below:
+> >> int *ret_btf_id; /* return value btf_id */
+> >
+> > I meant the BTF type itself that this btf_id points to. Is there any
+> > use case where this won't be a pointer to struct/union and instead
+> > something like a pointer to an int?
+>
+> Maybe you misunderstood. The mechanism is similar to the argument btf_id
+> encoding in func_proto's:
+>
+> static int bpf_seq_printf_btf_ids[5];
+> ...
+>          .btf_id         = bpf_seq_printf_btf_ids,
+>
+> func_proto->ret_btf_id will be a pointer to int which encodes the
+> btf_id, not the btf_type.
 
-did not work before.
+I understand that. Say it points to value 25. BTF type with ID=25 is
+going to be BTF_KIND_PTR -> BTF_KIND_STRUCT. I was wondering if we
+want/need to check that it's always BTF_KIND_PTR -> (modifier)* ->
+BTF_KIND_STRUCT/BTF_KIND_UNION. That's it.
 
-Fix:
-
-Make:
-
-  # perf probe -a 'do_sched_setscheduler pid policy param->sched_priority@user'
-
-output equivalent to ftrace:
-
-  # echo 'p:probe/do_sched_setscheduler _text+517384 pid=%r2:s32 policy=%r3:s32 sched_priority=+u0(%r4):s32' > /sys/kernel/debug/tracing/kprobe_events
-
-Other:
-
-1. Right now, __match_glob() does not handle [u]<offset>. For now, use
-  *u]<offset>.
-
-2. @user attribute was introduced in commit 1e032f7cfa14 ("perf-probe:
-   Add user memory access attribute support")
-
-Test:
-1. perf probe -a 'do_sched_setscheduler  pid policy
-   param->sched_priority@user'
-
-2 ./perf script
-   sched 305669 [000] 1614458.838675: perf_bpf_probe:func: (2904e508)
-   pid=261614 policy=2 sched_priority=1
-
-3. cat /sys/kernel/debug/tracing/trace
-   <...>-309956 [006] .... 1616098.093957: 0: prio: 1
-
-Committer testing:
-
-Before:
-
-  # perf probe -a 'do_sched_setscheduler pid policy param->sched_priority@user'
-  param(type:sched_param) has no member sched_priority@user.
-    Error: Failed to add events.
-  # pahole sched_param
-  struct sched_param {
-  	int                        sched_priority;       /*     0     4 */
-
-  	/* size: 4, cachelines: 1, members: 1 */
-  	/* last cacheline: 4 bytes */
-  };
-  #
-
-After:
-
-  # perf probe -a 'do_sched_setscheduler pid policy param->sched_priority@user'
-  Added new event:
-    probe:do_sched_setscheduler (on do_sched_setscheduler with pid policy sched_priority=param->sched_priority)
-
-  You can now use it in all perf tools, such as:
-
-  	perf record -e probe:do_sched_setscheduler -aR sleep 1
-
-  # cat /sys/kernel/debug/tracing/kprobe_events
-  p:probe/do_sched_setscheduler _text+1113792 pid=%di:s32 policy=%si:s32 sched_priority=+u0(%dx):s32
-  #
-
-Fixes: 1e032f7cfa14 ("perf-probe: Add user memory access attribute support")
-Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: bpf@vger.kernel.org
-LPU-Reference: 20200609081019.60234-2-sumanthk@linux.ibm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/probe-event.c | 7 +++++--
- tools/perf/util/probe-file.c  | 2 +-
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index a08f373d33056..df713a5d1e26a 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -1575,7 +1575,7 @@ static int parse_perf_probe_arg(char *str, struct perf_probe_arg *arg)
- 	}
- 
- 	tmp = strchr(str, '@');
--	if (tmp && tmp != str && strcmp(tmp + 1, "user")) { /* user attr */
-+	if (tmp && tmp != str && !strcmp(tmp + 1, "user")) { /* user attr */
- 		if (!user_access_is_supported()) {
- 			semantic_error("ftrace does not support user access\n");
- 			return -EINVAL;
-@@ -1995,7 +1995,10 @@ static int __synthesize_probe_trace_arg_ref(struct probe_trace_arg_ref *ref,
- 		if (depth < 0)
- 			return depth;
- 	}
--	err = strbuf_addf(buf, "%+ld(", ref->offset);
-+	if (ref->user_access)
-+		err = strbuf_addf(buf, "%s%ld(", "+u", ref->offset);
-+	else
-+		err = strbuf_addf(buf, "%+ld(", ref->offset);
- 	return (err < 0) ? err : depth;
- }
- 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index 8c852948513e3..064b63a6a3f31 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -1044,7 +1044,7 @@ static struct {
- 	DEFINE_TYPE(FTRACE_README_PROBE_TYPE_X, "*type: * x8/16/32/64,*"),
- 	DEFINE_TYPE(FTRACE_README_KRETPROBE_OFFSET, "*place (kretprobe): *"),
- 	DEFINE_TYPE(FTRACE_README_UPROBE_REF_CTR, "*ref_ctr_offset*"),
--	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*[u]<offset>*"),
-+	DEFINE_TYPE(FTRACE_README_USER_ACCESS, "*u]<offset>*"),
- 	DEFINE_TYPE(FTRACE_README_MULTIPROBE_EVENT, "*Create/append/*"),
- 	DEFINE_TYPE(FTRACE_README_IMMEDIATE_VALUE, "*\\imm-value,*"),
- };
--- 
-2.25.1
-
-
-
+>
+> >
+> >>
+> >>>
+> >>>> +                       verbose(env, "invalid return type %d of func %s#%d\n",
+> >>>> +                               fn->ret_type, func_id_name(func_id), func_id);
+> >>>> +                       return -EINVAL;
+> >>>> +               }
+> >>>> +               regs[BPF_REG_0].btf_id = ret_btf_id;
+> >>>>           } else {
+> >>>>                   verbose(env, "unknown return type %d of func %s#%d\n",
+> >>>>                           fn->ret_type, func_id_name(func_id), func_id);
+> >>>
+> >>> [...]
+> >>>
+> >>>> +void init_btf_sock_ids(struct btf *btf)
+> >>>> +{
+> >>>> +       int i, btf_id;
+> >>>> +
+> >>>> +       for (i = 0; i < MAX_BTF_SOCK_TYPE; i++) {
+> >>>> +               btf_id = btf_find_by_name_kind(btf, bpf_sock_types[i],
+> >>>> +                                              BTF_KIND_STRUCT);
+> >>>> +               if (btf_id > 0)
+> >>>> +                       btf_sock_ids[i] = btf_id;
+> >>>> +       }
+> >>>> +}
+> >>>
+> >>> This will hopefully go away with Jiri's work on static BTF IDs, right?
+> >>> So looking forward to that :)
+> >>
+> >> Yes. That's the plan.
+> >>
+> >>>
+> >>>> +
+> >>>> +static bool check_arg_btf_id(u32 btf_id, u32 arg)
+> >>>> +{
+> >>>> +       int i;
+> >>>> +
+> >>>> +       /* only one argument, no need to check arg */
+> >>>> +       for (i = 0; i < MAX_BTF_SOCK_TYPE; i++)
+> >>>> +               if (btf_sock_ids[i] == btf_id)
+> >>>> +                       return true;
+> >>>> +       return false;
+> >>>> +}
+> >>>> +
+> >>>
+> >>> [...]
+> >>>
