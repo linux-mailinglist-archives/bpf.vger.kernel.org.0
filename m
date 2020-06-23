@@ -2,178 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1897204A83
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 09:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D27F204AFC
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 09:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730781AbgFWHI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 03:08:29 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27638 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731163AbgFWHI2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 03:08:28 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N76T7u005343
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 00:08:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=n7+ccP8jkYjwvnQfwcVf+CiZN1OfCu4uUc86RW/6OMQ=;
- b=Cxmm6F5Xgu9XPMOioiIWa58UL4l+B4I+1aLfMvGu6jVk+3mgPupnvD3bqJDwTajQtdRE
- Hd/cCCqe/bzGW0U6hfc9HKw0G3qXajCq3es9D3yXEnAeDKHqZzkBYOE6KHwbURlwoMO1
- fWkewyt9TOEMMD9lLIloRCe0m7/7ERjmD/I= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31t2qq1k2x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 00:08:27 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 00:08:26 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 5CBD562E50B5; Tue, 23 Jun 2020 00:08:24 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add bpf_iter test with bpf_get_task_stack_trace()
-Date:   Tue, 23 Jun 2020 00:08:02 -0700
-Message-ID: <20200623070802.2310018-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200623070802.2310018-1-songliubraving@fb.com>
-References: <20200623070802.2310018-1-songliubraving@fb.com>
+        id S1731202AbgFWH1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 03:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731145AbgFWH1R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:27:17 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9BBC061573;
+        Tue, 23 Jun 2020 00:27:17 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id y20so2070304wmi.2;
+        Tue, 23 Jun 2020 00:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YSf1VMixS4/MhdwnpIJAY01v6Njpn3cj81WloMPQ2nM=;
+        b=tIQMGLF0oaj7fV5xjzTUfIHHdYV6QIpPUavaOYOyVNiRBoOzMv4tysRDd42CcCuSqq
+         XS6beEy7yYXCi1tQcr8Vl2BwsNnS6vRUImfkGGUIeiWLKLGh6KqBuwLqMbcCSVJpI99z
+         zndVY+xaIwAcsbRJf3SpcgbESTSGyBWoSH0b4vxhHNB+VIbrHVcfp4fBc4UbQvqzkzIq
+         FDdKMjfDCJAv05ZgctMec9UTivJeiFMJZylbpeZBleo2DdFO/QFHrgGMwnuhPa/Fu8eq
+         4wVIsepnnfGEYY2pCaLwbq/DeIapMMCsOpwh3O+iTK3JeYJOKANB6gxmjtZszYGefQ/u
+         9gXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YSf1VMixS4/MhdwnpIJAY01v6Njpn3cj81WloMPQ2nM=;
+        b=WFGjxjCxPSbFUlywz6ID5/4rpjtg9tSxSbEt+sYTp1A2O9DGj1GrChrfHhi6zv8MPN
+         9o8jn7nNVX3qDicLlF3f9aMDL/MLyy5G2u2lbRyXIzG6Kq/q7U8ohCNzcbULjGWqjTGR
+         YOEqdL/vKJZ5eVm6SKMvJ1yCl70Y28Q3i2BKjnk7TKWKVF3abl7J9ZuHtFRMlTwyOAaT
+         7m4ObuqPBoRi5sdao+w09nbFbaPCqnlOWjxwl4PAx7vc3LDhi8QV8w8wMPmOAD4b9qLZ
+         BhlLPRsei7Ucwx4aCGvs7vg5CEqDGZKAkqQcfAFDlDIsOOXhUdC4qeIA0wPCMgmHEuVj
+         LNXQ==
+X-Gm-Message-State: AOAM531CtNfDICywPUhxHZFFLCQ5frSOGovak7itpBUV2Gv8eQXKLn3s
+        JCiWPbTlQ3UyGH/SgM2+QFtn6WpXa8hSwUcHlfs=
+X-Google-Smtp-Source: ABdhPJyKnBFpSUFzuIaP7YB37PaQJr7RqTCo17MtjKztZM2lUnj2peTtX/LbtbzjwHjE+2tcMR4pKRUtsEyP90JNcI0=
+X-Received: by 2002:a7b:c041:: with SMTP id u1mr23622951wmc.56.1592897234836;
+ Tue, 23 Jun 2020 00:27:14 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAPydje97m+hG3_Cqg560uHoq8aKG9eDpTHA1eJC=hLuKtMf_vw@mail.gmail.com>
+In-Reply-To: <CAPydje97m+hG3_Cqg560uHoq8aKG9eDpTHA1eJC=hLuKtMf_vw@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 23 Jun 2020 09:27:03 +0200
+Message-ID: <CAJ+HfNgi5wEwmFTgKpR1KemVm3p0FCPTd8V+BBWC6C59OO9O8Q@mail.gmail.com>
+Subject: Re: Talk about AF_XDP support multithread concurrently receive packet
+To:     Yahui Chen <goodluckwillcomesoon@gmail.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Xdp <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_04:2020-06-22,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 cotscore=-2147483648 adultscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 phishscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=8 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006230055
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The new test is similar to other bpf_iter tests.
+On Tue, 23 Jun 2020 at 08:21, Yahui Chen <goodluckwillcomesoon@gmail.com> w=
+rote:
+>
+> I have make an issue for the libbpf in github, issue number 163.
+>
+> Andrii suggest me sending a mail here. So ,I paste out the content of the=
+ issue:
+>
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++++
- .../selftests/bpf/progs/bpf_iter_task_stack.c | 50 +++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
-.c
+Yes, and the xdp-newsbies is an even better list for these kinds of
+discussions (added).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 87c29dde1cf96..baa83328f810d 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -5,6 +5,7 @@
- #include "bpf_iter_netlink.skel.h"
- #include "bpf_iter_bpf_map.skel.h"
- #include "bpf_iter_task.skel.h"
-+#include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
- #include "bpf_iter_test_kern1.skel.h"
- #include "bpf_iter_test_kern2.skel.h"
-@@ -106,6 +107,20 @@ static void test_task(void)
- 	bpf_iter_task__destroy(skel);
- }
-=20
-+static void test_task_stack(void)
-+{
-+	struct bpf_iter_task_stack *skel;
-+
-+	skel =3D bpf_iter_task_stack__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_task_stack__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_task_stack);
-+
-+	bpf_iter_task_stack__destroy(skel);
-+}
-+
- static void test_task_file(void)
- {
- 	struct bpf_iter_task_file *skel;
-@@ -392,6 +407,8 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_stack"))
-+		test_task_stack();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
- 	if (test__start_subtest("anon"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/to=
-ols/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-new file mode 100644
-index 0000000000000..4fc939e0fca77
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+/* "undefine" structs in vmlinux.h, because we "override" them below */
-+#define bpf_iter_meta bpf_iter_meta___not_used
-+#define bpf_iter__task bpf_iter__task___not_used
-+#include "vmlinux.h"
-+#undef bpf_iter_meta
-+#undef bpf_iter__task
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct bpf_iter_meta {
-+	struct seq_file *seq;
-+	__u64 session_id;
-+	__u64 seq_num;
-+} __attribute__((preserve_access_index));
-+
-+struct bpf_iter__task {
-+	struct bpf_iter_meta *meta;
-+	struct task_struct *task;
-+} __attribute__((preserve_access_index));
-+
-+#define MAX_STACK_TRACE_DEPTH   64
-+unsigned long entries[MAX_STACK_TRACE_DEPTH];
-+
-+SEC("iter/task")
-+int dump_task_stack(struct bpf_iter__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	unsigned int i, num_entries;
-+
-+	if (task =3D=3D (void *)0)
-+		return 0;
-+
-+	num_entries =3D bpf_get_task_stack_trace(task, entries, MAX_STACK_TRACE=
-_DEPTH);
-+
-+	BPF_SEQ_PRINTF(seq, "pid: %8u\n", task->pid);
-+
-+	for (i =3D 0; i < MAX_STACK_TRACE_DEPTH; i++) {
-+		if (num_entries > i)
-+			BPF_SEQ_PRINTF(seq, "[<0>] %pB\n", (void *)entries[i]);
-+	}
-+
-+	BPF_SEQ_PRINTF(seq, "\n");
-+
-+	return 0;
-+}
---=20
-2.24.1
+> Currently, libbpf do not support concurrently receive pkts using AF_XDP.
+>
+> For example: I create 4 af_xdp sockets on nic's ring 0. Four sockets
+> receiving packets concurrently can't work correctly because the API of
+> cq `xsk_ring_prod__reserve` and `xsk_ring_prod__submit` don't support
+> concurrence.
+>
 
+In other words, you are using shared umem sockets. The 4 sockets can
+potentially receive packets from queue 0, depending on how the XDP
+program is done.
+
+> So, my question is why libbpf was designed non-concurrent mode, is the
+> limit of kernel or other reason? I want to change the code to support
+> concurrent receive pkts, therefore I want to find out whether this is
+> theoretically supported.
+>
+
+You are right that the AF_XDP functionality in libbpf is *not* by
+itself multi-process/thread safe, and this is deliberate. From the
+libbpf perspective we cannot know how a user will construct the
+application, and we don't want to penalize the single-thread/process
+case.
+
+It's entirely up to you to add explicit locking, if the
+single-producer/single-consumer queues are shared between
+threads/processes. Explicit synchronization is required using, say,
+POSIX mutexes.
+
+Does that clear things up?
+
+
+Cheers,
+Bj=C3=B6rn
+
+> Thx.
