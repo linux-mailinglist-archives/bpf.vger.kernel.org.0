@@ -2,65 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE510204E9F
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 11:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7CB204EB5
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 12:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732099AbgFWJ6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 05:58:23 -0400
-Received: from sym2.noone.org ([178.63.92.236]:43150 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731947AbgFWJ6X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:58:23 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 49rhYT49Z7zvjc1; Tue, 23 Jun 2020 11:58:21 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 11:58:20 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1732041AbgFWKCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 06:02:42 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60906 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732005AbgFWKCm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 06:02:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592906560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iwxh+z69eT3Q20JzDvpmUhs5YuUjLOPx+brTpOQ/Lrs=;
+        b=hvtJI6jBmDNWEw9szKDJnQhZhPfQe92B9tljKQGgGFWggB75MZyliZ7CAzo2osvCPJsLQc
+        WOwUc2/GYRR2Ht3aufiy2UTufQLQA/FKPu/JHoBVYqWrHqHqeuJVEeNy+XRCpUio7ZhYqg
+        2YE3v9b0sfB7C8rLqObquHVEFJVUDco=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-OCmOTH2hOWGe3M-Wt7W-Pg-1; Tue, 23 Jun 2020 06:02:38 -0400
+X-MC-Unique: OCmOTH2hOWGe3M-Wt7W-Pg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AB4E8031C2;
+        Tue, 23 Jun 2020 10:02:35 +0000 (UTC)
+Received: from krava (unknown [10.40.195.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9AC236106A;
+        Tue, 23 Jun 2020 10:02:31 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 12:02:30 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] tools, bpftool: Define prog_type_name array
- only once
-Message-ID: <20200623095820.3xiwsfaxsxyyosbt@distanz.ch>
-References: <20200622140007.4922-1-tklauser@distanz.ch>
- <20200622140007.4922-2-tklauser@distanz.ch>
- <c961c0ee-424a-6f3b-942e-42fdc7ee9b95@isovalent.com>
- <20200622150510.nk6pkzsof2diolwt@distanz.ch>
- <2df810b0-b31d-641a-9d81-47eb11c3f0a4@isovalent.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 09/11] bpf: Add d_path helper
+Message-ID: <20200623100230.GA2619137@krava>
+References: <20200616100512.2168860-1-jolsa@kernel.org>
+ <20200616100512.2168860-10-jolsa@kernel.org>
+ <CAEf4BzY=d5y_-fXvomG7SjkbK7DZn5=-f+sdCYRdZh9qeynQrQ@mail.gmail.com>
+ <20200619133124.GJ2465907@krava>
+ <CAEf4BzZDCtW-5r5rN+ufZi1hUXjw8QCF+CiyT5sOvQQEEOqtiQ@mail.gmail.com>
+ <20200622090205.GD2556590@krava>
+ <CAEf4BzZOph2EJLfq9FCYUhesi5NP0L_OQTrEKE-s0NPmt3HmWw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2df810b0-b31d-641a-9d81-47eb11c3f0a4@isovalent.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <CAEf4BzZOph2EJLfq9FCYUhesi5NP0L_OQTrEKE-s0NPmt3HmWw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-06-22 at 17:17:04 +0200, Quentin Monnet <quentin@isovalent.com> wrote:
-> 2020-06-22 17:05 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
-> > On 2020-06-22 at 16:26:17 +0200, Quentin Monnet <quentin@isovalent.com> wrote:
-> >> 2020-06-22 16:00 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
-> >>> Follow the same approach as for map_type_name. This leads to a slight
-> >>
-> >> map_type_name looks unchanged in this series, could you please check
-> >> your commit log?
-> > 
-> > Yes this patch intentionally shouldn't change map_type_name. The idea
-> > was to say "do the same thing for prog_type_name name as is already done
-> > for map_type_name". I can rephrase that to become more clear if you
-> > want.
+On Mon, Jun 22, 2020 at 12:18:19PM -0700, Andrii Nakryiko wrote:
+> On Mon, Jun 22, 2020 at 2:02 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Fri, Jun 19, 2020 at 11:25:27AM -0700, Andrii Nakryiko wrote:
+> >
+> > SNIP
+> >
+> > > > > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > > > > >   * function eBPF program intends to call
+> > > > > > diff --git a/kernel/bpf/btf_ids.c b/kernel/bpf/btf_ids.c
+> > > > > > index d8d0df162f04..853c8fd59b06 100644
+> > > > > > --- a/kernel/bpf/btf_ids.c
+> > > > > > +++ b/kernel/bpf/btf_ids.c
+> > > > > > @@ -13,3 +13,14 @@ BTF_ID(struct, seq_file)
+> > > > > >
+> > > > > >  BTF_ID_LIST(bpf_xdp_output_btf_ids)
+> > > > > >  BTF_ID(struct, xdp_buff)
+> > > > > > +
+> > > > > > +BTF_ID_LIST(bpf_d_path_btf_ids)
+> > > > > > +BTF_ID(struct, path)
+> > > > > > +
+> > > > > > +BTF_WHITELIST_ENTRY(btf_whitelist_d_path)
+> > > > > > +BTF_ID(func, vfs_truncate)
+> > > > > > +BTF_ID(func, vfs_fallocate)
+> > > > > > +BTF_ID(func, dentry_open)
+> > > > > > +BTF_ID(func, vfs_getattr)
+> > > > > > +BTF_ID(func, filp_close)
+> > > > > > +BTF_WHITELIST_END(btf_whitelist_d_path)
+> > > > >
+> > > > > Oh, so that's why you added btf_ids.c. Do you think centralizing all
+> > > > > those BTF ID lists in one file is going to be more convenient? I lean
+> > > > > towards keeping them closer to where they are used, as it was with all
+> > > > > those helper BTF IDS. But I wonder what others think...
+> > > >
+> > > > either way works for me, but then BTF_ID_* macros needs to go
+> > > > to include/linux/btf_ids.h header right?
+> > > >
+> > >
+> > > given it's internal API, I'd probably just put it in
+> > > include/linux/btf.h or include/linux/bpf.h, don't think we need extra
+> > > header just for these
+> >
+> > actually, I might end up with extra header, so it's possible
+> > to add selftest for this
+> >
 > 
-> Ok sorry, I thought you meant map_type_name had been moved to reduce the
-> size as well. I think I got confused by "Follow the same approach",
-> since map_type_name has always been in map.c, but it's both
-> prog_type_name and attach_type_name that were moved to main.h from their
-> original files some time ago (so not much to "follow" from map_type_name).
-> 
-> Anyway, minor confusion on my side, no need to respin just for that.
-> Thanks for the clarification.
+> How does extra header help with selftest?
 
-Will send a v2 to address Andrii's comment on patch 2/2, so I'll
-rephrase the commit message on this patch to be less confusing.
+to create binary with various lists defined like we do in kernel
+using the same macros..  and check they are properly made/sorted
 
-Tobias
+jirka
+
