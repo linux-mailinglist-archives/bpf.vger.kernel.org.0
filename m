@@ -2,104 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA1820507E
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 13:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DE520509C
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 13:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732510AbgFWLQ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 07:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S1732294AbgFWL1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 07:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732521AbgFWLQx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:16:53 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67889C0617BD
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 04:16:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so20085378wrs.11
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 04:16:51 -0700 (PDT)
+        with ESMTP id S1732189AbgFWL1T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:27:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD96C061573;
+        Tue, 23 Jun 2020 04:27:19 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l17so18360385qki.9;
+        Tue, 23 Jun 2020 04:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=E6E/hlNpiM6PnoAOVZ+7voPc9wpxPmWA12rEiYoj/bAUsYe0AJbyTzI9pZwPUUDdPP
-         2sshPYcb9oIsA99JTikTl0u76qfHNPIW2jIbz6C+DLselDK71HuKa++SqaGTSZ4p4+te
-         gTQ9UTEVmk4+r2eFXVbrvBf8ptXVBuknudxlYS3vrFAv18ZetPr28ECYav3lG+E2L5JM
-         St9yzES6OGBMLQpZbQAQLmSOp9Akg+wflxGB71dvTLo/TJoexQV6LE+g+JoBlfC2QAg7
-         b+ja973yyVQOwbfrTF90BaaIQGUXchEhek4sdIUmlBpL8Ak1D79EOMoTbcuGCplWvTHT
-         W4hA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cMD8in+tcSZ+cxLcLApA3NSEHIECL6G2aR2hs0xW3CM=;
+        b=tScBdMx+HCr8IkPx+oY+4m3Qx2Y9c1/rjC8ioAfphyv/ELknRv571qL7I4AJrwXPUL
+         B9buMDByA8fU2FEv3t1GElqrIdDCZ6QVWe8yfhOf0VfPuL+GePi9Vb+7d/wZTIdDpZq5
+         8watSm6p/PgvpQ/yqIP7pmCGKJlX3LNLIaXZy4XpW5BdZJTccG5eezk5f0SK9jQhrlMZ
+         nIIohI+oVp3TadiSEH6Yep55iMSzQW4+f6DJvPXoTgTqIs1Q7Aed19gBe/Ez5sHLXV5w
+         Tr5AcMW0mGZo+g7T1LGFRCbtwoB2uAXWAXbepkm5pwcaV4fiPENj+EYPhRckkINyaUd+
+         vmRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=huAj6b9Z4Ah33qOCN3UWhYDpqbIZ2GYhAW/1kkjMG0GLF+yO45NYQ0xjNlDbBTgqwh
-         CWIKaBR477fx9PSJSEwKh9woUC6JhK2ycRtnrn8zOzy/0EzjA+zfYtGjoCzDZLJE6rw6
-         dY1UsRDgBV0YnMGn1hbLlYTbXmIBAH5E1j95YByepfb/D7jMD8KHQScyyRgay4OXVAv7
-         cBr9HvX5PY23r4mqyiRDC8/V8wu8fqP883tj8W66J0pNhDsFISjfia1l9U5R+VFkpP7P
-         T1Es1NDMqEBDxNQr8XJb4wQzhQbbxXS2iXboRXthgQsR9V5JzosGvFLOKE5bk2DOlp89
-         XV8A==
-X-Gm-Message-State: AOAM531SWLBqSwcqW0lLCb6xWxs4JBTqsvpvBVEOvPYTrfwOkodgPtC5
-        c9EDETtXI1YgKqDnQvORFGbADOlM+CL7jAFz4zg=
-X-Google-Smtp-Source: ABdhPJzZ1QWBbLEVEJDiR8ozgNL3BKht/bHhiiCQZFbEUfR5i8VLBKqhwlX7a4NXmF6FqxDOEk5UW9nntOQTLpvDlps=
-X-Received: by 2002:a5d:62d1:: with SMTP id o17mr24071305wrv.162.1592911009833;
- Tue, 23 Jun 2020 04:16:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cMD8in+tcSZ+cxLcLApA3NSEHIECL6G2aR2hs0xW3CM=;
+        b=NE933Q+X4EO+ETDBCdh5yTYBvolY0DKK0EGv2p8Wv9tCeB1bMlbEq9IknTtB4mJLLW
+         qV6VWf3gVXyaHY7jbti2s5iuCguLbpNYZWFfb+jKjKlHU5EIVBQ+JDgEUkke/lbn4FdV
+         rbpeJ5HAhD+RvB20ecEayJaMLw4MwXMdw9BQqQ1tyq9/yoxd0d/Y6Fc545QYdjzcgNSh
+         1IyqWVTI7UmC9jQoNVrPnfCQLF+GsTYBSlDaQGUhO4wMrpFrbGaLohh8kExP/hZycIG1
+         NjdZlGgP+0ofdzRkOerfTY7i3zoQjEGtx+pKAn8b8cLOA422YUD4grdrDtTAT7/snsc9
+         ywEg==
+X-Gm-Message-State: AOAM530qnKhRGyZpfzCQrG5kzQWDWLeVW4c8OEdX6yKuELlPt9GqQkBU
+        cJMa3BSATMAgnxZxw7JmXvQ30x5w/CFM5u9pxfs=
+X-Google-Smtp-Source: ABdhPJzA0PI8zSWVsq7NsZXokgRHQ67Muc5QOK414TzszbhAwWE1zmIwGyxjtOIcjCdAHxNAxVMv1xuMgiK9/IHzebs=
+X-Received: by 2002:a05:620a:148d:: with SMTP id w13mr20318528qkj.248.1592911638820;
+ Tue, 23 Jun 2020 04:27:18 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a1c:f002:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:16:49
- -0700 (PDT)
-Reply-To: sarahkoffi389@yahoo.co.jp
-From:   Sarah Koffi <paulwiliam782@gmail.com>
-Date:   Tue, 23 Jun 2020 12:16:49 +0100
-Message-ID: <CAHqcnY16ZzcoYpU31SEco0sXeb2W5Dq2VVpzQr8ZENW9eKiFTA@mail.gmail.com>
-Subject: Greetings From Mrs. Sarah Koffi
-To:     sarahkoffi389@yahoo.co.jp
+References: <CAPydje97m+hG3_Cqg560uHoq8aKG9eDpTHA1eJC=hLuKtMf_vw@mail.gmail.com>
+ <CAJ+HfNgi5wEwmFTgKpR1KemVm3p0FCPTd8V+BBWC6C59OO9O8Q@mail.gmail.com>
+In-Reply-To: <CAJ+HfNgi5wEwmFTgKpR1KemVm3p0FCPTd8V+BBWC6C59OO9O8Q@mail.gmail.com>
+From:   Yahui Chen <goodluckwillcomesoon@gmail.com>
+Date:   Tue, 23 Jun 2020 19:27:06 +0800
+Message-ID: <CAPydje-tiJ6F5i9=o9VLMJK0_j+KV5XGOok3Wq+okHdOS9k0Aw@mail.gmail.com>
+Subject: Re: Talk about AF_XDP support multithread concurrently receive packet
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Xdp <xdp-newbies@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings From Mrs. Sarah Koffi
+Hi Bj=C3=B6rn,
+Thx for your clarification.
 
-I'm contacting you based on your good profiles I read and for a good
-reasons, I am in search of a property to buy in your country as I
-intended to come over to your
-country for investment, Though I have not meet with you before but I
-believe that one has to risk confiding in someone to succeed sometimes
-in life.
+Lock-free queue may be a better choice, which almost does not impact
+performance. The XDP mode is multi-producer/single-consumer for the
+filling queue when receiving packets, and single-producer/multi-consumer
+for the complete queue when sending packets.
 
-My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
-Federal Government of Sudan and he has a personal Oil firm in Bentiu
-Oil zone town and Upper
-Nile city. What I have experience physically, I don't wish to
-experience it again in my life due to the recent civil Ethnic war
-cause by our President Mr. Salva Kiir
-and the rebel leader Mr Riek Machar, I have been Under United Nation
-refuge camp in chad to save my life and that of my little daughter.
+So, the date structure for lock-free queue could be defined blow:
 
-Though, I do not know how you will feel to my proposal, but the truth
-is that I sneaked into Chad our neighboring country where I am living
-now as a refugee.
-I escaped with my little daughter when the rebels bust into our house
-and killed my husband as one of the big oil dealers in the country,
-ever since then, I have being on the run.
+$ git diff xsk.h
+diff --git a/src/xsk.h b/src/xsk.h
+index 584f682..2e24bc8 100644
+--- a/src/xsk.h
++++ b/src/xsk.h
+@@ -23,20 +23,26 @@ extern "C" {
+ #endif
 
-I left my country and move to Chad our neighboring country with the
-little ceasefire we had, due to the face to face peace meeting accord
-coordinated by the US Secretary of State, Mr John Kerry and United
-Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
-and the rebel leader Mr Riek Machar to stop this war.
+ /* Do not access these members directly. Use the functions below. */
+-#define DEFINE_XSK_RING(name) \
+-struct name { \
+-       __u32 cached_prod; \
+-       __u32 cached_cons; \
+-       __u32 mask; \
+-       __u32 size; \
+-       __u32 *producer; \
+-       __u32 *consumer; \
+-       void *ring; \
+-       __u32 *flags; \
+-}
+-
+-DEFINE_XSK_RING(xsk_ring_prod);
+-DEFINE_XSK_RING(xsk_ring_cons);
++struct xsk_ring_prod{
++       __u32 cached_prod_head;
++       __u32 cached_prod_tail;
++       __u32 cached_cons;
++       __u32 size;
++       __u32 *producer;
++       __u32 *consumer;
++       void *ring;
++       __u32 *flags;
++};
++struct xsk_ring_cons{
++       __u32 cached_prod;
++       __u32 cached_cons_head;
++       __u32 cached_cons_tail;
++       __u32 size;
++       __u32 *producer;
++       __u32 *consumer;
++       void *ring;
++       __u32 *flags;
++};
 
-I want to solicit for your partnership with trust to invest the $8
-million dollars deposited by my late husband in Bank because my life
-is no longer safe in our country, since the rebels are looking for the
-families of all the oil business men in the country to kill, saying
-that they are they one that is milking the country dry.
+The element mask, is equal `size - 1`, could be removed to remain the
+structure size unchanged.
 
-I will offer you 20% of the total fund for your help while I will
-partner with you for the investment in your country.
-If I get your reply.
+To sum up, it's possible to consider impelementing lock-free queue
+function to support mc/sp and sc/mp.
 
-I will wait to hear from you so as to give you details.With love from
+Thx.
 
- i need you to contact me here sarahkoffi389@yahoo.co.jp
 
-Mrs. Sarah Koffi
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =E4=BA=8E2020=E5=B9=B46=E6=9C=
+=8823=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=883:27=E5=86=99=E9=81=93=
+=EF=BC=9A
+>
+> On Tue, 23 Jun 2020 at 08:21, Yahui Chen <goodluckwillcomesoon@gmail.com>=
+ wrote:
+> >
+> > I have make an issue for the libbpf in github, issue number 163.
+> >
+> > Andrii suggest me sending a mail here. So ,I paste out the content of t=
+he issue:
+> >
+>
+> Yes, and the xdp-newsbies is an even better list for these kinds of
+> discussions (added).
+>
+> > Currently, libbpf do not support concurrently receive pkts using AF_XDP=
+.
+> >
+> > For example: I create 4 af_xdp sockets on nic's ring 0. Four sockets
+> > receiving packets concurrently can't work correctly because the API of
+> > cq `xsk_ring_prod__reserve` and `xsk_ring_prod__submit` don't support
+> > concurrence.
+> >
+>
+> In other words, you are using shared umem sockets. The 4 sockets can
+> potentially receive packets from queue 0, depending on how the XDP
+> program is done.
+>
+> > So, my question is why libbpf was designed non-concurrent mode, is the
+> > limit of kernel or other reason? I want to change the code to support
+> > concurrent receive pkts, therefore I want to find out whether this is
+> > theoretically supported.
+> >
+>
+> You are right that the AF_XDP functionality in libbpf is *not* by
+> itself multi-process/thread safe, and this is deliberate. From the
+> libbpf perspective we cannot know how a user will construct the
+> application, and we don't want to penalize the single-thread/process
+> case.
+>
+> It's entirely up to you to add explicit locking, if the
+> single-producer/single-consumer queues are shared between
+> threads/processes. Explicit synchronization is required using, say,
+> POSIX mutexes.
+>
+> Does that clear things up?
+>
+>
+> Cheers,
+> Bj=C3=B6rn
+>
+> > Thx.
