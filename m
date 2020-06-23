@@ -2,71 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82E42055E1
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1026120562B
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbgFWP3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 11:29:39 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58380 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732920AbgFWP3j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:29:39 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jnkri-00019m-2I; Tue, 23 Jun 2020 17:29:38 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jnkrh-0002CW-Pu; Tue, 23 Jun 2020 17:29:37 +0200
-Subject: Re: [PATCH bpf-next 2/3] bpf: allow %pB in bpf_seq_printf()
-To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     ast@kernel.org, kernel-team@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org
-References: <20200623070802.2310018-1-songliubraving@fb.com>
- <20200623070802.2310018-3-songliubraving@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <677dc8f7-d4e9-7717-5def-935340a23cd2@iogearbox.net>
-Date:   Tue, 23 Jun 2020 17:29:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1732994AbgFWPjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 11:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732934AbgFWPjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:39:55 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4822EC061755
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 08:39:54 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q15so1762920wmj.2
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 08:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D9ozNhUdhTvoDo2UDE/WIR6fJuBHsCc1YFhc4yTa3xM=;
+        b=XQTkjdNVdRu3QtuwwbKoABMuENO7Mkfjn9WBzUQ+/tHgp0ZmZHFYwUMV06NW0nxmEr
+         qrM8NVtviiHVX1LnjtHB/OV9zlLZFyNoWwXiq3i/OdltX01HAFxViMkjU5i9gn5OvZUB
+         XfugnODZxO7YTCK75d4Yn93Gg+0KueyyGPkrmWNbVrixKcGzCyd3P7i+8ml6CDC+IjaN
+         /S8ocZwgEfSiM437sJLK818CcaU3CX7EVtC/zZFtoBoBXXl/LSEJTXYINT5xFThqp8Ws
+         QiQ51/dfvZyZ4v0rwJ/YPUlOyN6/NwXlBzriwNc9ozq+WRI9qjTDQi9GGkpfddUJr9oh
+         lOrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D9ozNhUdhTvoDo2UDE/WIR6fJuBHsCc1YFhc4yTa3xM=;
+        b=aiiKz/dtURfeZgY7CCdVFvDhCH6dUa+bcnLC3GMmJjHYGKQ41Q0vqU7IoOiFEUXEgk
+         XhIQcE/bVbpMR1ivruzQSTmPWdDlWK3JpF1y2gAZEmuf5+0gbJ6GWBuIn17UXmZUt/kq
+         +lUqvmxoUqPx1iMq2+mQecnSGcfH7Ra4QU6KuhdrKvrQEET6d/y0pH0VuXhtzh+vQgVD
+         7m5gE0vdFiLVFohV6iDEKnkMOJALxiZ4iEWrdgsOnRneZBkDfES/IQC56IBp/V56e5wp
+         Z2hURf6A5GhFJkuM8+EtmVUz/UHJyEx5RyfMnRrOZ7JMpGwhcbsg2HlTCoyU5ovJwYf7
+         nElA==
+X-Gm-Message-State: AOAM533NQ4FIhTnIXc1l/vIkQVbWxSigUk2by/lF9mJsbj2ZosD68fh2
+        KfBhHPp4vS4WB0Ycf6RqVy/0gUUo43NCWA==
+X-Google-Smtp-Source: ABdhPJwTVRx1uQKeadWlbGeCtkA0hLxkH0Fs1zv2RSql0K4biwZQMI07KsIi2jmGYOqR7AwV2+BEWg==
+X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr24474689wmg.88.1592926793024;
+        Tue, 23 Jun 2020 08:39:53 -0700 (PDT)
+Received: from localhost.localdomain ([194.53.184.63])
+        by smtp.gmail.com with ESMTPSA id l17sm4310662wmi.16.2020.06.23.08.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 08:39:52 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf] bpf: fix formatting in documentation for BPF helpers
+Date:   Tue, 23 Jun 2020 16:39:35 +0100
+Message-Id: <20200623153935.6215-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200623070802.2310018-3-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25852/Tue Jun 23 15:09:58 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/23/20 9:08 AM, Song Liu wrote:
-> This makes it easy to dump stack trace with bpf_seq_printf().
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->   kernel/trace/bpf_trace.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 2c13bcb5c2bce..ced3176801ae8 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -636,7 +636,8 @@ BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size,
->   		if (fmt[i] == 'p') {
->   			if (fmt[i + 1] == 0 ||
->   			    fmt[i + 1] == 'K' ||
-> -			    fmt[i + 1] == 'x') {
-> +			    fmt[i + 1] == 'x' ||
-> +			    fmt[i + 1] == 'B') {
->   				/* just kernel pointers */
->   				params[fmt_cnt] = args[fmt_cnt];
->   				fmt_cnt++;
-> 
+When producing the bpf-helpers.7 man page from the documentation from
+the BPF user space header file, rst2man complains:
 
-Why only bpf_seq_printf(), what about bpf_trace_printk()?
+    <stdin>:2636: (ERROR/3) Unexpected indentation.
+    <stdin>:2640: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+
+Let's fix formatting for the relevant chunk (item list in
+bpf_ringbuf_query()'s description), and for a couple other functions.
+
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ include/uapi/linux/bpf.h | 41 ++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 974a71342aea..8bd33050b7bb 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3171,13 +3171,12 @@ union bpf_attr {
+  * int bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 flags)
+  * 	Description
+  * 		Copy *size* bytes from *data* into a ring buffer *ringbuf*.
+- * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
+- * 		new data availability is sent.
+- * 		IF BPF_RB_FORCE_WAKEUP is specified in *flags*, notification of
+- * 		new data availability is sent unconditionally.
++ * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
++ * 		of new data availability is sent.
++ * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
++ * 		of new data availability is sent unconditionally.
+  * 	Return
+- * 		0, on success;
+- * 		< 0, on error.
++ * 		0 on success, or a negative error in case of failure.
+  *
+  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
+  * 	Description
+@@ -3189,20 +3188,20 @@ union bpf_attr {
+  * void bpf_ringbuf_submit(void *data, u64 flags)
+  * 	Description
+  * 		Submit reserved ring buffer sample, pointed to by *data*.
+- * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
+- * 		new data availability is sent.
+- * 		IF BPF_RB_FORCE_WAKEUP is specified in *flags*, notification of
+- * 		new data availability is sent unconditionally.
++ * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
++ * 		of new data availability is sent.
++ * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
++ * 		of new data availability is sent unconditionally.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+  * void bpf_ringbuf_discard(void *data, u64 flags)
+  * 	Description
+  * 		Discard reserved ring buffer sample, pointed to by *data*.
+- * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
+- * 		new data availability is sent.
+- * 		IF BPF_RB_FORCE_WAKEUP is specified in *flags*, notification of
+- * 		new data availability is sent unconditionally.
++ * 		If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notification
++ * 		of new data availability is sent.
++ * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
++ * 		of new data availability is sent unconditionally.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+@@ -3210,16 +3209,18 @@ union bpf_attr {
+  *	Description
+  *		Query various characteristics of provided ring buffer. What
+  *		exactly is queries is determined by *flags*:
+- *		  - BPF_RB_AVAIL_DATA - amount of data not yet consumed;
+- *		  - BPF_RB_RING_SIZE - the size of ring buffer;
+- *		  - BPF_RB_CONS_POS - consumer position (can wrap around);
+- *		  - BPF_RB_PROD_POS - producer(s) position (can wrap around);
+- *		Data returned is just a momentary snapshots of actual values
++ *
++ *		* **BPF_RB_AVAIL_DATA**: Amount of data not yet consumed.
++ *		* **BPF_RB_RING_SIZE**: The size of ring buffer.
++ *		* **BPF_RB_CONS_POS**: Consumer position (can wrap around).
++ *		* **BPF_RB_PROD_POS**: Producer(s) position (can wrap around).
++ *
++ *		Data returned is just a momentary snapshot of actual values
+  *		and could be inaccurate, so this facility should be used to
+  *		power heuristics and for reporting, not to make 100% correct
+  *		calculation.
+  *	Return
+- *		Requested value, or 0, if flags are not recognized.
++ *		Requested value, or 0, if *flags* are not recognized.
+  *
+  * int bpf_csum_level(struct sk_buff *skb, u64 level)
+  * 	Description
+-- 
+2.20.1
+
