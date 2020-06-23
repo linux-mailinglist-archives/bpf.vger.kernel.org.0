@@ -2,162 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB335205313
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 15:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBAD2053BB
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 15:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732619AbgFWNLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 09:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        id S1732658AbgFWNor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 09:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732602AbgFWNLY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 09:11:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBF3C061755
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 06:11:23 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n23so23326526ljh.7
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 06:11:23 -0700 (PDT)
+        with ESMTP id S1729504AbgFWNor (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 09:44:47 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2701EC061573
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 06:44:47 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id n123so10895735ybf.11
+        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 06:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mlmFSSdTWebFxD2gTR/U29ddRq9uUBP28CsLIBv6hs0=;
-        b=RYlKqMV3+NySqvFz+sBwz2KeTHKcjpS/dM0JwloCcBbV8uUEstmlFACm9YxX/NANg3
-         Ghx3BgLjT2+w8PE2V34IwjKR3CFsGFavuzjA0zPR6mPcmeOc/+x3Q/fCfqPbTUo4whNo
-         Sszc0p3cz8OpjPgoF8szHgCswA9YVRWOm7cH0=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CoJGFVma3x58KlvJ7kmP7Y3F+vMlVbG6Is36lPddlZY=;
+        b=EVsSVDYnj9csneMo0OHHWbVOw+wbvPo0t+DaZHuR53juLmeXsVKkIjhiE57jTFijj/
+         5WpKxnW1CszPSZWBYaC8oyf/VFR0PKCG8uV+jZnlLFnEYVN8pzCnp9AFd0ke8WwuNCAN
+         zt2VeVTUQaSGcYnC12SZhvMbe8W0EQBnEOjGXnpTiAmyGrWcONeKOBraxMkY4Pd9LNpk
+         cKYKqEHIus9rnChd9Ns89KPtEbilbSnjWhnfmpt+GjRz4tgeVZ6Gezb1qwyKPLbrQgPQ
+         TJPvAAH2cQ1LCBAfXUHHyMjwDd/LgkTfR/WigSyRtjUHSzhNgoE4f412C61d5rO3w0fy
+         FNkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mlmFSSdTWebFxD2gTR/U29ddRq9uUBP28CsLIBv6hs0=;
-        b=E4jF3e2NQjnAHju6//hhbXv45WI5C1seDpUqgA0CPdEUu/P6pbRbS1Dpu0anAej+Pj
-         W4dWdaRBHYVQDvEroXaFN3CDXtr9cY+n1fMz+GNi6d2bE5WErrL64S98TsGkBEYHEw0O
-         8l6hzB8tR8E2jNitLvOa+0ECPoCo9xiYl46dvc0XbkxfEVph1MYDwFtGzJiDgdWskkEQ
-         3TCLJJaj4qhW+caPdbHlkfR4rhS9jvc8LOTNF91++GqqAckpqMKzXpcGskKUBzJ776Jy
-         WcHoyIVCKCLu6T+R00Cuy2p9BewJeMr38Ur0Bsz4eqwuAQQY71bMmLJcpqjRzvWbYsJb
-         n8dA==
-X-Gm-Message-State: AOAM533Pz+516+bp9l4gQqkwZuXrZ67FAGPI2WVyjUHPIihdwSfP/mWz
-        YKn57jUqwU15uEvdVODZWMKAbQ==
-X-Google-Smtp-Source: ABdhPJxu21nt5X4UswcI9f1ogE/YOaFoaQd0pqW/XIjXnAoxz5Vlxfzpj+BU0iyXwf5ee3FamMHkaA==
-X-Received: by 2002:a2e:8847:: with SMTP id z7mr10509130ljj.300.1592917881527;
-        Tue, 23 Jun 2020 06:11:21 -0700 (PDT)
-Received: from [172.21.3.181] ([87.54.42.112])
-        by smtp.gmail.com with ESMTPSA id j12sm3288234ljg.15.2020.06.23.06.11.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 06:11:20 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 4/8] printk: add type-printing %pT format
- specifier which uses BTF
-To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
-        arnaldo.melo@gmail.com
-Cc:     kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, joe@perches.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com>
- <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <9ff219a4-dcae-95a1-584b-054d0d5e4ebb@rasmusvillemoes.dk>
-Date:   Tue, 23 Jun 2020 15:11:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CoJGFVma3x58KlvJ7kmP7Y3F+vMlVbG6Is36lPddlZY=;
+        b=ci1GrfdZv6Lsv+S8wMJq/vkElV2WTKuQzi6jG5bragI6LUdQv0TN1VfjB/2FI8u8J0
+         odLuzkSjoaaayD7K1veegIb0678BNrs2SNA8A95gFGY2AnjG5u50DkAZ4+BJDjGRZhKm
+         p0/SV7YRU1c/HkbsGshWKN+Jl85iHmJNJsCgYBsUm8r/OrUud9o/qvRK1CF/voZYKtBb
+         ZUxwyx7ukaiGCctj0qf9T0EmXFhlGyjBAvJytwOS5smsXlxz2Qhs98APlCNvYZPvclY0
+         4n3eM3OWeoB8at/eABk0eLvpeuoqtBrpdwaPxb/7Wc+61mgmlRyLLjaXH53TaszdyIly
+         47gg==
+X-Gm-Message-State: AOAM533iAw40cM02G1aXSJYJTFy8YPtXZ+QwEE61ENpMJ+ceGy1ALz/K
+        29Ue2QqG2O7F97h9Vx1RX3RZahlKa3QJ1ExYfgo=
+X-Google-Smtp-Source: ABdhPJzy430G5CK7lOYqRIc3J6Ssox9cn8ygxeT5/o14AaaJptPz0NHL4u87KOn0roejP6HahrIEFadRYEhHQcmq6u8=
+X-Received: by 2002:a25:c052:: with SMTP id c79mr36522837ybf.23.1592919885528;
+ Tue, 23 Jun 2020 06:44:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHhV9ES1aUO-Zfpz6uCnFhY3Rgi3ZS1pn4ztz2iXYFO-KX75BQ@mail.gmail.com>
+ <CAHhV9EShCxg=W2Yhsehx6KQGYPQ9KjF7jmteoxiNO-8ma-WmLw@mail.gmail.com> <CAGn_itxdtnNTukVGdb94Qg==RU7_F=8jabgSDd8kzH-73Gg28Q@mail.gmail.com>
+In-Reply-To: <CAGn_itxdtnNTukVGdb94Qg==RU7_F=8jabgSDd8kzH-73Gg28Q@mail.gmail.com>
+From:   Abhishek Vijeev <abhishek.vijeev@gmail.com>
+Date:   Tue, 23 Jun 2020 19:14:34 +0530
+Message-ID: <CAHhV9EQLNjzV3cExpbVUsOi57q7t-S8bT_rAeBMx9OBi6J66MA@mail.gmail.com>
+Subject: Re: Checkpoint/Restore of BPF Map Data
+To:     Anton Protopopov <aspsk2@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, criu@openvz.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23/06/2020 14.07, Alan Maguire wrote:
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index fc8f03c..8f8f5d2 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -618,4 +618,20 @@ static inline void print_hex_dump_debug(const char *prefix_str, int prefix_type,
->  #define print_hex_dump_bytes(prefix_str, prefix_type, buf, len)	\
->  	print_hex_dump_debug(prefix_str, prefix_type, 16, 1, buf, len, true)
->  
-> +/**
-> + * struct btf_ptr is used for %pT (typed pointer) display; the
-> + * additional type string/BTF id are used to render the pointer
-> + * data as the appropriate type.
-> + */
-> +struct btf_ptr {
-> +	void *ptr;
-> +	const char *type;
-> +	u32 id;
-> +};
-> +
-> +#define	BTF_PTR_TYPE(ptrval, typeval) \
-> +	(&((struct btf_ptr){.ptr = ptrval, .type = #typeval}))
-> +
-> +#define BTF_PTR_ID(ptrval, idval) \
-> +	(&((struct btf_ptr){.ptr = ptrval, .id = idval}))
+This is great, thank you Anton. Will check it out!
 
-Isn't there some better place to put this than printk.h? Anyway, you
-probably want the ptr member to be "const void*", to avoid "... discards
-const qualifier" warnings when somebody happens to have a "const struct
-foobar *".
-
->  #endif
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 259e558..c0d209d 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -44,6 +44,7 @@
->  #ifdef CONFIG_BLOCK
->  #include <linux/blkdev.h>
->  #endif
-> +#include <linux/btf.h>
->  
->  #include "../mm/internal.h"	/* For the trace_print_flags arrays */
->  
-> @@ -2092,6 +2093,87 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
->  	return widen_string(buf, buf - buf_start, end, spec);
->  }
->  
-> +#define btf_modifier_flag(c)	(c == 'c' ? BTF_SHOW_COMPACT :	\
-> +				 c == 'N' ? BTF_SHOW_NONAME :	\
-> +				 c == 'x' ? BTF_SHOW_PTR_RAW :	\
-> +				 c == 'u' ? BTF_SHOW_UNSAFE : \
-> +				 c == '0' ? BTF_SHOW_ZERO : 0)
-> +
-> +static noinline_for_stack
-> +char *btf_string(char *buf, char *end, void *ptr, struct printf_spec spec,
-> +		 const char *fmt)
-> +{
-> +	struct btf_ptr *bp = (struct btf_ptr *)ptr;
-> +	u8 btf_kind = BTF_KIND_TYPEDEF;
-> +	const struct btf_type *t;
-> +	const struct btf *btf;
-> +	char *buf_start = buf;
-> +	const char *btf_type;
-> +	u64 flags = 0, mod;
-> +	s32 btf_id;
-> +
-> +	if (check_pointer(&buf, end, ptr, spec))
-> +		return buf;
-> +
-> +	if (check_pointer(&buf, end, bp->ptr, spec))
-> +		return buf;
-> +
-> +	while (isalnum(*fmt)) {
-> +		mod = btf_modifier_flag(*fmt);
-> +		if (!mod)
-> +			break;
-> +		flags |= mod;
-> +		fmt++;
-> +	}
-> +
-> +	btf = bpf_get_btf_vmlinux();
-
-AFAICT, this function is only compiled if CONFIG_BPF=y and
-CONFIG_BPF_SYSCALL=y, and I don't see any static inline stub defined
-anywhere. Have you built the kernel with one or both of those turned off?
-
-Rasmus
+On Mon, Jun 22, 2020 at 10:45 PM Anton Protopopov <aspsk2@gmail.com> wrote:
+>
+> =D0=BF=D0=BD, 22 =D0=B8=D1=8E=D0=BD. 2020 =D0=B3. =D0=B2 13:01, Abhishek =
+Vijeev <abhishek.vijeev@gmail.com>:
+> >
+> > + CRIU Mailing List
+> >
+> >
+> > On Mon, Jun 22, 2020 at 10:29 PM Abhishek Vijeev
+> > <abhishek.vijeev@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I've been working with the CRIU project to enable CRIU to checkpoint
+> > > and restore BPF map files.
+> > > (https://github.com/checkpoint-restore/criu/issues/777).
+> > >
+> > > A key component of the solution involves dumping the data contained i=
+n
+> > > BPF maps. However, I have
+> > > been unable to do this due to the following reason - as far as I'm
+> > > aware, Linux does not provide an
+> > > interface to directly retrieve the key-value pairs stored in a BPF ma=
+p
+> > > without prior knowledge about
+> > > the nature of data stored in it.
+>
+> Try BPF_MAP_LOOKUP_BATCH, here is an example:
+> https://github.com/iovisor/bcc/blob/master/libbpf-tools/syscount.c#L193
+> (the bpf_map_lookup_and_delete_batch is used there, but
+> bpf_map_lookup_batch case should be the same).
