@@ -2,179 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF896205709
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 18:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0865320572E
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 18:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733065AbgFWQSa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 12:18:30 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28694 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732648AbgFWQS3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 12:18:29 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05NG8Jp8010630
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 09:18:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=GvZxXTAJ14WkX/SiXlPuXYHlUeACjSRc+0ivmicJW7c=;
- b=KwcVSCau5n8uy/NXHGdrlQ0R+JCjE934Ry6u3Y7Lrm1aY/gDRX6EPk6l3cWU0KbkxkkX
- CrpU56WFU2p41i0fW8meTJDfdZRATavLdXjFhZtts/9fcaPBUiefyz7mU2Vfi/UTHgQK
- iyENde3vA+C1je6JZmixAMj/mO3/8dZ0yK0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 31uk100qnu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 09:18:28 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 09:18:13 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 0FEB93701557; Tue, 23 Jun 2020 09:18:08 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v4 15/15] selftests/bpf: add tcp/udp iterator programs to selftests
-Date:   Tue, 23 Jun 2020 09:18:08 -0700
-Message-ID: <20200623161808.2502077-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200623161749.2500196-1-yhs@fb.com>
-References: <20200623161749.2500196-1-yhs@fb.com>
+        id S1732613AbgFWQ13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 12:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732212AbgFWQ12 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:27:28 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF54C061573;
+        Tue, 23 Jun 2020 09:27:28 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ne5so1679423pjb.5;
+        Tue, 23 Jun 2020 09:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zPA26VQSEKAOa0rfhz3zW4u7FT323RiZzt+Zev3RAO4=;
+        b=sMLRTHSV9EJwf6H4bWAsaQcE/FHOFhvDTfZqVhCrLt2LPWJvDbzl8dWf5IAlnTtU4P
+         TeCRYtoPi/ruLjcM7FiX1BxCHbeMEHHhJg8AEDnVdJIe8bzi5nx+z7JWNGneOSKCl1nw
+         G2ja7K+CbiaCBXVB6NRdrfrZV7TrIg5wJbhn4yhAbBgO7XYJfZUTgx0BzowEb29AQtpE
+         ayDRy88WU4pYBX/ZE0AyOYK6DfjqbrcLuhMYeNr4xJnhj75IabHKISHAyhyUXnZ8rj+l
+         OFNS468xEj24RKAPOrWVH+0nIOYBy6h5NEcNpbeb9GT5p3ADdnRyMJdVeWzElGOSy/+T
+         PeXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zPA26VQSEKAOa0rfhz3zW4u7FT323RiZzt+Zev3RAO4=;
+        b=r5Jr4ro+HoqWtKmwP2l4sv/Me0ajXnsd1S/1afSSRYUTTErK6/aisyR8gIMjgvdCEN
+         UEmztbGFXMChCvdYWY6jctZyGtH0uAX1+OoWhsYuiIJBaN8rQ0c5Aq2vYlcgUwYQEQFx
+         4n5GoaZd1yA8n+o+VQyaQjGJT0LWG/KY2lGqRzb6/5Fv+S13+1LNbpslytY+E04ImRge
+         hs3uxEsFLJEJo/osBRr9QmeeihOXtE07GLkY/y9w7MGqnw9I0e3YgR0dEpO36O9t0/30
+         knzdTG7PinNBSJnNkeWSk4l0Ydy3nO16821CMJzfVDcHSgUEJfqQeI2C3PL0ERGoCmlL
+         bEEQ==
+X-Gm-Message-State: AOAM532cLP5eOXbdip26YGKhY7iPJY6ZW+FeNPy0Z7zF5biFGpvFQ/Ni
+        Pvje7N4i7L+efeMK+KWeGI0N20K6
+X-Google-Smtp-Source: ABdhPJx+VmrkAc0ZE7xHDGvo224LzKBjbSzM8YoTgjTbubNQPu+8V2pcaTE7md471ebJV1k8cUa0Cw==
+X-Received: by 2002:a17:90b:915:: with SMTP id bo21mr24341349pjb.52.1592929647915;
+        Tue, 23 Jun 2020 09:27:27 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id u25sm17182337pfm.115.2020.06.23.09.27.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 09:27:26 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v3 09/15] bpf: add bpf_skc_to_udp6_sock() helper
+To:     Yonghong Song <yhs@fb.com>, Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <kafai@fb.com>
+References: <20200623003626.3072825-1-yhs@fb.com>
+ <20200623003636.3074473-1-yhs@fb.com>
+ <d0a594f6-bd83-bb48-01ce-bb960fdf8eb3@gmail.com>
+ <a721817d-7382-f3d1-9cd0-7e6564b70f8b@fb.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <37d6021e-1f93-259e-e90a-5cda7fddcb21@gmail.com>
+Date:   Tue, 23 Jun 2020 09:27:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_10:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- impostorscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0
- mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230120
-X-FB-Internal: deliver
+In-Reply-To: <a721817d-7382-f3d1-9cd0-7e6564b70f8b@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Added tcp{4,6} and udp{4,6} bpf programs into test_progs
-selftest so that they at least can load successfully.
-  $ ./test_progs -n 3
-  ...
-  #3/7 tcp4:OK
-  #3/8 tcp6:OK
-  #3/9 udp4:OK
-  #3/10 udp6:OK
-  ...
-  #3 bpf_iter:OK
-  Summary: 1/16 PASSED, 0 SKIPPED, 0 FAILED
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 68 +++++++++++++++++++
- 1 file changed, 68 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 87c29dde1cf9..1e2e0fced6e8 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -6,6 +6,10 @@
- #include "bpf_iter_bpf_map.skel.h"
- #include "bpf_iter_task.skel.h"
- #include "bpf_iter_task_file.skel.h"
-+#include "bpf_iter_tcp4.skel.h"
-+#include "bpf_iter_tcp6.skel.h"
-+#include "bpf_iter_udp4.skel.h"
-+#include "bpf_iter_udp6.skel.h"
- #include "bpf_iter_test_kern1.skel.h"
- #include "bpf_iter_test_kern2.skel.h"
- #include "bpf_iter_test_kern3.skel.h"
-@@ -120,6 +124,62 @@ static void test_task_file(void)
- 	bpf_iter_task_file__destroy(skel);
- }
-=20
-+static void test_tcp4(void)
-+{
-+	struct bpf_iter_tcp4 *skel;
-+
-+	skel =3D bpf_iter_tcp4__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_tcp4__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_tcp4);
-+
-+	bpf_iter_tcp4__destroy(skel);
-+}
-+
-+static void test_tcp6(void)
-+{
-+	struct bpf_iter_tcp6 *skel;
-+
-+	skel =3D bpf_iter_tcp6__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_tcp6__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_tcp6);
-+
-+	bpf_iter_tcp6__destroy(skel);
-+}
-+
-+static void test_udp4(void)
-+{
-+	struct bpf_iter_udp4 *skel;
-+
-+	skel =3D bpf_iter_udp4__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_udp4__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_udp4);
-+
-+	bpf_iter_udp4__destroy(skel);
-+}
-+
-+static void test_udp6(void)
-+{
-+	struct bpf_iter_udp6 *skel;
-+
-+	skel =3D bpf_iter_udp6__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_udp6__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_udp6);
-+
-+	bpf_iter_udp6__destroy(skel);
-+}
-+
- /* The expected string is less than 16 bytes */
- static int do_read_with_fd(int iter_fd, const char *expected,
- 			   bool read_one_char)
-@@ -394,6 +454,14 @@ void test_bpf_iter(void)
- 		test_task();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
-+	if (test__start_subtest("tcp4"))
-+		test_tcp4();
-+	if (test__start_subtest("tcp6"))
-+		test_tcp6();
-+	if (test__start_subtest("udp4"))
-+		test_udp4();
-+	if (test__start_subtest("udp6"))
-+		test_udp6();
- 	if (test__start_subtest("anon"))
- 		test_anon_iter(false);
- 	if (test__start_subtest("anon-read-one-char"))
---=20
-2.24.1
+On 6/22/20 7:22 PM, Yonghong Song wrote:
+> 
+> 
+> On 6/22/20 6:47 PM, Eric Dumazet wrote:
+&
+>>
+>> Why is the sk_fullsock(sk) needed ?
+> 
+> The parameter 'sk' could be a sock_common. That is why the
+> helper name bpf_skc_to_udp6_sock implies. The sock_common cannot
+> access sk_protocol, hence we requires sk_fullsock(sk) here.
+> Did I miss anything?
+
+OK, if arbitrary sockets can land here, you need also to check sk_type
+
 
