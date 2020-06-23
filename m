@@ -2,141 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D33205B12
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDB5205B4A
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733178AbgFWSqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 14:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733138AbgFWSqE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:46:04 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5983C061573;
-        Tue, 23 Jun 2020 11:46:03 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id cv17so10134305qvb.13;
-        Tue, 23 Jun 2020 11:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=za1LKKD9EFDuXlpTMDU9rDuuS7ZxTYoV0j3nOYrgg8Y=;
-        b=MQFLcnnzYv0qm78JGPqIhgJJ43qBk+LC9drirbqEAaokRqGOY36z/Ogrvfzt9jUrlr
-         cSVwjWdJX0yFWKSvhRo+bK7LzbGA6gTXRo+/+oiUEyj9n6Mlcr3cwKBVhML+apnpFUb2
-         nfzNW2oJdQOqxkdbXXGoCIwr2lNZM2KGmCjJwT1MCazsb3trLG5bgNy4nFvOQvdkfdh2
-         Tkr6LefNqzzN4ZRK7l5kMcePxXwqot+va2OYPyWxbanhQ+Fkt6SAAcWWRDSlI2+LzUlK
-         KhbsIkofFyCV7nvSttBGN+o+ELXkPjsseTn4iX80rMmFeNGLLxysV+x/aZuCE7voIx6Q
-         UrMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=za1LKKD9EFDuXlpTMDU9rDuuS7ZxTYoV0j3nOYrgg8Y=;
-        b=MqtssoPVyn+ykcksNjKQeclK15KsAJlCVwWDdINksrgA5X7XbeH9EukfHq22YCIBPj
-         l11NONAGnmfnfDQRecKCmCK+35p+qa0Mt8zUMu1Dp01NPozM44/E90rne2rrm+dN5UlR
-         bJpNR7USKVFsWD4/dwI77s9QodiILmZ2Gk9Oji6mrsJCbVGhMlMOmFnpaUmJGkO4YI7M
-         15/RYvU/rhn0w5opmjbvQTP5gzx2DPJmuNyk9IKgFneQWLUQi24E1HXGC8yXeDMUSGng
-         VaBAChbpOYpPbrP4LOP3gtQtUAXMZfnmM7xwBNvHW1pdf9a9ydGrr278LIN2C3HDYGQh
-         a8pg==
-X-Gm-Message-State: AOAM5319vf8i5PMA1jgD6YhS26KsiQ0qZ6XLK5B3LDFdSU/6BvvPMwMN
-        E4t1EsaIV/8sbTARV94LmpYHIcyo/evZhTFIwHY=
-X-Google-Smtp-Source: ABdhPJxo1Lac7Ic7jCIc+nCyYrGDSZg3RTPoBUYi6k9fGkHRKu+t2t5e353JfBVrRnbRUiduvtGsBg6YM3tp9m7yEds=
-X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr26973278qvf.247.1592937963129;
- Tue, 23 Jun 2020 11:46:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200623070802.2310018-1-songliubraving@fb.com> <20200623070802.2310018-2-songliubraving@fb.com>
-In-Reply-To: <20200623070802.2310018-2-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Jun 2020 11:45:52 -0700
-Message-ID: <CAEf4Bzb3_oAyOKKEQ8+Ub5H6aaYQPh15NqyAdQQ+BXjur2Yswg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: introduce helper bpf_get_task_stack_trace()
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id S1733200AbgFWS6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 14:58:20 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:41676 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733138AbgFWS6T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:58:19 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jno7Z-0004g1-A5; Tue, 23 Jun 2020 12:58:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jno7Y-0004Sv-7m; Tue, 23 Jun 2020 12:58:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <87r1uo2ejt.fsf@x220.int.ebiederm.org>
+        <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
+        <87d066vd4y.fsf@x220.int.ebiederm.org>
+        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+        <87bllngirv.fsf@x220.int.ebiederm.org>
+        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+        <87h7v1pskt.fsf@x220.int.ebiederm.org>
+        <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+Date:   Tue, 23 Jun 2020 13:53:48 -0500
+In-Reply-To: <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+        (Alexei Starovoitov's message of "Tue, 23 Jun 2020 11:35:20 -0700")
+Message-ID: <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1jno7Y-0004Sv-7m;;;mid=<87h7v1mx4z.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18/RJglEZjLIMbAudmB45pz7qaMdYp7mJU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 660 ms - load_scoreonly_sql: 0.17 (0.0%),
+        signal_user_changed: 15 (2.3%), b_tie_ro: 13 (2.0%), parse: 1.47
+        (0.2%), extract_message_metadata: 4.3 (0.6%), get_uri_detail_list:
+        1.38 (0.2%), tests_pri_-1000: 4.3 (0.6%), tests_pri_-950: 1.27 (0.2%),
+        tests_pri_-900: 1.14 (0.2%), tests_pri_-90: 171 (25.9%), check_bayes:
+        169 (25.6%), b_tokenize: 6 (1.0%), b_tok_get_all: 9 (1.4%),
+        b_comp_prob: 3.0 (0.4%), b_tok_touch_all: 145 (22.0%), b_finish: 1.42
+        (0.2%), tests_pri_0: 445 (67.3%), check_dkim_signature: 0.82 (0.1%),
+        check_dkim_adsp: 2.8 (0.4%), poll_dns_idle: 1.23 (0.2%), tests_pri_10:
+        2.1 (0.3%), tests_pri_500: 7 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 12:08 AM Song Liu <songliubraving@fb.com> wrote:
->
-> This helper can be used with bpf_iter__task to dump all /proc/*/stack to
-> a seq_file.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  include/uapi/linux/bpf.h       | 10 +++++++++-
->  kernel/trace/bpf_trace.c       | 21 +++++++++++++++++++++
->  scripts/bpf_helpers_doc.py     |  2 ++
->  tools/include/uapi/linux/bpf.h | 10 +++++++++-
->  4 files changed, 41 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 19684813faaed..a30416b822fe3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3252,6 +3252,13 @@ union bpf_attr {
->   *             case of **BPF_CSUM_LEVEL_QUERY**, the current skb->csum_level
->   *             is returned or the error code -EACCES in case the skb is not
->   *             subject to CHECKSUM_UNNECESSARY.
-> + *
-> + * int bpf_get_task_stack_trace(struct task_struct *task, void *entries, u32 size)
-> + *     Description
-> + *             Save a task stack trace into array *entries*. This is a wrapper
-> + *             over stack_trace_save_tsk().
-> + *     Return
-> + *             Number of trace entries stored.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3389,7 +3396,8 @@ union bpf_attr {
->         FN(ringbuf_submit),             \
->         FN(ringbuf_discard),            \
->         FN(ringbuf_query),              \
-> -       FN(csum_level),
-> +       FN(csum_level),                 \
-> +       FN(get_task_stack_trace),
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-We have get_stackid and get_stack, I think to stay consistent it
-should be named get_task_stack
-
+> On Tue, Jun 23, 2020 at 01:04:02PM -0500, Eric W. Biederman wrote:
+>> 
+>> Sigh.  I was busy last week so I left reading this until now in the
+>> hopes I would see something reasonable.
+>> 
+>> What I see is rejecting of everything that is said to you.
+>> 
+>> What I do not see are patches fixing issues.  I will await patches.
 >
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index e729c9e587a07..2c13bcb5c2bce 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1488,6 +1488,23 @@ static const struct bpf_func_proto bpf_get_stack_proto_raw_tp = {
->         .arg4_type      = ARG_ANYTHING,
->  };
->
-> +BPF_CALL_3(bpf_get_task_stack_trace, struct task_struct *, task,
-> +          void *, entries, u32, size)
+> huh?
+> I can say exactly the same. You keep ignoring numerous points I brought up.
+> You still haven't showed what kind of refactoring you have in mind and
+> why fork_blob is in its way.
 
-See get_stack definition, this one needs to support flags as well. And
-we should probably support BPF_F_USER_BUILD_ID as well. And
-BPF_F_USER_STACK is also a good idea, I presume?
+That is correct.  What I wind up doing with exec is irrelevant.
 
-> +{
-> +       return stack_trace_save_tsk(task, (unsigned long *)entries, size, 0);
-> +}
-> +
-> +static int bpf_get_task_stack_trace_btf_ids[5];
-> +static const struct bpf_func_proto bpf_get_task_stack_trace_proto = {
-> +       .func           = bpf_get_task_stack_trace,
-> +       .gpl_only       = true,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_BTF_ID,
-> +       .arg2_type      = ARG_PTR_TO_MEM,
-> +       .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
-> +       .btf_id         = bpf_get_task_stack_trace_btf_ids,
-> +};
-> +
+What is relevant is getting correct working code on the fork_blob path.
+Something that is clean enough that whatever weird things it winds up
+doing are readable.  The way things are intermingled today it took 2
+years for someone to realize there was a basic reference counting bug.
 
-[...]
+This isn't work anyone else can do because there are not yet any real in
+tree users of fork_blob.  The fact that no one else can make
+substantials changes to the code because it has no users is what gets in
+the way of maintenance.
+
+
+One of the 2 year old bugs that needs to be fixed is that some LSMs
+work in terms of paths.  Tetsuo has been very gracious in pointing that
+out.  Either a path needs to be provided or the LSMs that work in terms
+of paths need to be fixed.
+
+
+
+Now I really don't care how the bugs are fixed.
+
+
+My recomendation for long term maintenance is to split fork_blob into 2
+functions: fs_from_blob, and the ordinary call_usermodehelper_exec.
+That removes the need for any special support for anything in the exec
+path because your blob will also have a path for your file, and the
+file in the filesystem can be reused for restart.
+
+That feels like the least long term work on everyone.
+
+But with no in-tree users none of us can do anything bug guess what
+the actual requirements of fork_usermode_blob are.
+
+
+So patches to fix the bugs please.
+
+Eric
+
+
+
+
