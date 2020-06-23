@@ -2,212 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7212047E8
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 05:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3D42048F7
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 07:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731909AbgFWDWk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jun 2020 23:22:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1462 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731803AbgFWDWj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Jun 2020 23:22:39 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N3Fseg025247
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 20:22:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=jGEd8Qm8VYhVNHEomGb8YOl2uMOuG8pc+dweqhO0500=;
- b=ofhWpTG1CQ1SCDp2xE+HKKhUiZNPvpmE+eKQJ1TgtcSGYkSiiYkIoa5hqwtigUQ7fcBq
- HWm4JF4hPmpAYCXFlj17FOzGA6CtfC51veduL8jXydzqAWn+rlED6eFXQpsY7W6VR37T
- VWe5zL9YZMRejFAJf2nyVAe5xT7pidDAwHA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31t2a2gx9x-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Jun 2020 20:22:38 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 22 Jun 2020 20:22:36 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 9DD882EC33D1; Mon, 22 Jun 2020 20:22:29 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 3/3] selftests/bpf: add variable-length data concat pattern less than test
-Date:   Mon, 22 Jun 2020 20:22:23 -0700
-Message-ID: <20200623032224.4020118-3-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200623032224.4020118-1-andriin@fb.com>
-References: <20200623032224.4020118-1-andriin@fb.com>
+        id S1727087AbgFWFJc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 01:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgFWFJb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 01:09:31 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E75EC061573;
+        Mon, 22 Jun 2020 22:09:31 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id u8so2044980qvj.12;
+        Mon, 22 Jun 2020 22:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s9f/p29ohWj4FvY/+powBlWlSrIwViVzf8xNOW0hWec=;
+        b=gYWsA0J1xXgDR/zQw/9AhF9NrKhV95kNKYYO3mcT/4zgiatQqNM1LKjXAFMjAxH+hD
+         +WaTQqon4nnFxc3C28YMYNX6SnTTIOrRkv+kB5aNf4iWMOGkwIWdAJx9RtHLPebh+voQ
+         l8czbT9yc+8/666kDzjVdJHYSKX2LVxVO0uIkb5IixUg3UlJbR1ipswfUXUA0gU8o+kA
+         D4cbRvhtKBANJ68EcqXnar+qhF7qm8/eqrt4BjX+JyKWGcrwrB3TuymerphUvddPmYot
+         AI4rJKY3X/DZmK4n8LiP2POugMBGXhbirZLdxxGG4xgzhJBC5YIMtozuAKDa0iq6ojKF
+         N4oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s9f/p29ohWj4FvY/+powBlWlSrIwViVzf8xNOW0hWec=;
+        b=WPS8FGsv2qBIPDansl6MZGu3E+iGvsnkqFQ8NHJQWM0Q8kdpsYe+TAWssOZ0xOu4Ox
+         tlmA5Wv87mK1JfodMxXBx+vSyMWfz0x9YBpOa6R+FO1hlCfshc0hZOT7NbxzhBfm0qaW
+         867h9nKbY6RhawJ/b29aFGijeygmFxme79+sOhDV5v4GqJhTTnGYAxbSPDjoDnSxUxaj
+         LmXAzBho/wCWZnseDlTI5DX2bQmME5cLY2J9FO8n91sVxQJgxeBk3740rEx4Vghvoq6S
+         se1Va/vmsFh2PVtPvu6pGLil1p8fOGaQtoJ78gGiVvsKgdQSj6qC2+kTJPG5WnCKCqgP
+         kcUQ==
+X-Gm-Message-State: AOAM5338MrEpY1Ezsl4k9nmKNfI6fX3/DmYIj96GLj8K3Sueukz1d4A1
+        EPizYW3em6z6O1rFWM3Zu5tzCNEI09l37jd3Xac=
+X-Google-Smtp-Source: ABdhPJys2bF+XkgobWL69PfleUqVyBRM4h6D5j7P7P7BnW+IhYZ11nqvximWJlsU5rC86p7Kc20cG5mATo/x58+Nvqs=
+X-Received: by 2002:ad4:598f:: with SMTP id ek15mr24864170qvb.196.1592888970665;
+ Mon, 22 Jun 2020 22:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_16:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 phishscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=534 bulkscore=0 cotscore=-2147483648 mlxscore=0
- impostorscore=0 suspectscore=8 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006230024
-X-FB-Internal: deliver
+References: <20200619231703.738941-1-andriin@fb.com> <20200619231703.738941-9-andriin@fb.com>
+ <20200623002451.egxxppsm35q2dg5l@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200623002451.egxxppsm35q2dg5l@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 22 Jun 2020 22:09:19 -0700
+Message-ID: <CAEf4BzYYas7Lz3cxUhUigo=f-PKCfa-ZOwsD_cfmVkbSVy3qCQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 8/9] tools/bpftool: show info for processes
+ holding BPF map/prog/link/btf FDs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+On Mon, Jun 22, 2020 at 5:24 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jun 19, 2020 at 04:17:02PM -0700, Andrii Nakryiko wrote:
+> > Add bpf_iter-based way to find all the processes that hold open FDs against
+> > BPF object (map, prog, link, btf). bpftool always attempts to discover this,
+> > but will silently give up if kernel doesn't yet support bpf_iter BPF programs.
+> > Process name and PID are emitted for each process (task group).
+> >
+> > Sample output for each of 4 BPF objects:
+> >
+> > $ sudo ./bpftool prog show
+> > 2694: cgroup_device  tag 8c42dee26e8cd4c2  gpl
+> >         loaded_at 2020-06-16T15:34:32-0700  uid 0
+> >         xlated 648B  jited 409B  memlock 4096B
+> >         pids systemd(1)
+> > 2907: cgroup_skb  name egress  tag 9ad187367cf2b9e8  gpl
+> >         loaded_at 2020-06-16T18:06:54-0700  uid 0
+> >         xlated 48B  jited 59B  memlock 4096B  map_ids 2436
+> >         btf_id 1202
+> >         pids test_progs(2238417), test_progs(2238445)
+> >
+> > $ sudo ./bpftool map show
+> > 2436: array  name test_cgr.bss  flags 0x400
+> >         key 4B  value 8B  max_entries 1  memlock 8192B
+> >         btf_id 1202
+> >         pids test_progs(2238417), test_progs(2238445)
+> > 2445: array  name pid_iter.rodata  flags 0x480
+> >         key 4B  value 4B  max_entries 1  memlock 8192B
+> >         btf_id 1214  frozen
+> >         pids bpftool(2239612)
+>
+> Overall it's a massive improvement, so I've applied the set.
+>
+> But above 'map show' probably needs a comment in the output.
+> bpftool is showing a map that was loaded temporarily.
+> It doesn't do so for programs though.
 
-Extend original variable-length tests with a case to catch a common
-existing pattern of testing for < 0 for errors. Note because
-verifier also tracks upper bounds and we know it can not be greater
-than MAX_LEN here we can skip upper bound check.
+Yeah, and that confused me enough to just spend a bunch of time trying
+to understand why. It seems like all the files are closed properly and
+it just so happens that program and link is cleaned up in kernel soon
+enough for bpftool to never get it with BPF_PROG_GET_NEXT_ID, while
+map and btf destruction is delayed and they do get returned.
 
-In ALU64 enabled compilation converting from long->int return types
-in probe helpers results in extra instruction pattern, <<=3D 32, s >>=3D =
-32.
-The trade-off is the non-ALU64 case works. If you really care about
-every extra insn (XDP case?) then you probably should be using original
-int type.
+> I think somehow highlighting that above map is bpftool's own map
+> that was used to generate this output would be good.
+> Filtering it completely out is probably not correct.
 
-In addition adding a sext insn to bpf might help the verifier in the
-general case to avoid these types of tricks.
+If you have an example of a message you'd like to see, let me know.
+But given detecting that this is a "special bpftool's" map/btf is the
+same as filtering out in terms of reliability (e.g., by PID or by
+map/btf id), I actually think that filtering it out would be less
+confusing (and simpler for bpftool output code).
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../testing/selftests/bpf/prog_tests/varlen.c | 12 ++++
- .../testing/selftests/bpf/progs/test_varlen.c | 70 +++++++++++++++++--
- 2 files changed, 78 insertions(+), 4 deletions(-)
+>
+> > $ sudo ./bpftool btf show
+> > 1202: size 1527B  prog_ids 2908,2907  map_ids 2436
+> >         pids test_progs(2238417), test_progs(2238445)
+> > 1242: size 34684B
+> >         pids bpftool(2258892)
+>
+> similar.
+>
+> I've also noticed that 'test_progs -t btf_map_in_map' leaks 'inner_map2'.
+> Doesn't look like the test is pinning it, so I'm guessing
+> a recent kernel regression? I haven't debugged it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/varlen.c b/tools/test=
-ing/selftests/bpf/prog_tests/varlen.c
-index 7533565e096d..c75525eab02c 100644
---- a/tools/testing/selftests/bpf/prog_tests/varlen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/varlen.c
-@@ -51,6 +51,18 @@ void test_varlen(void)
- 	CHECK_VAL(data->total2, size1 + size2);
- 	CHECK(memcmp(data->payload2, exp_str, size1 + size2), "content_check",
- 	      "doesn't match!");
-+
-+	CHECK_VAL(data->payload3_len1, size1);
-+	CHECK_VAL(data->payload3_len2, size2);
-+	CHECK_VAL(data->total3, size1 + size2);
-+	CHECK(memcmp(data->payload3, exp_str, size1 + size2), "content_check",
-+	      "doesn't match!");
-+
-+	CHECK_VAL(data->payload4_len1, size1);
-+	CHECK_VAL(data->payload4_len2, size2);
-+	CHECK_VAL(data->total4, size1 + size2);
-+	CHECK(memcmp(data->payload4, exp_str, size1 + size2), "content_check",
-+	      "doesn't match!");
- cleanup:
- 	test_varlen__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_varlen.c b/tools/test=
-ing/selftests/bpf/progs/test_varlen.c
-index 09691852debf..cd4b72c55dfe 100644
---- a/tools/testing/selftests/bpf/progs/test_varlen.c
-+++ b/tools/testing/selftests/bpf/progs/test_varlen.c
-@@ -26,8 +26,18 @@ int payload2_len2 =3D -1;
- int total2 =3D -1;
- char payload2[MAX_LEN + MAX_LEN] =3D { 1 };
-=20
-+int payload3_len1 =3D -1;
-+int payload3_len2 =3D -1;
-+int total3=3D -1;
-+char payload3[MAX_LEN + MAX_LEN] =3D { 1 };
-+
-+int payload4_len1 =3D -1;
-+int payload4_len2 =3D -1;
-+int total4=3D -1;
-+char payload4[MAX_LEN + MAX_LEN] =3D { 1 };
-+
- SEC("raw_tp/sys_enter")
--int handler64(void *regs)
-+int handler64_unsigned(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload1;
-@@ -54,8 +64,34 @@ int handler64(void *regs)
- 	return 0;
- }
-=20
--SEC("tp_btf/sys_enter")
--int handler32(void *regs)
-+SEC("raw_tp/sys_exit")
-+int handler64_signed(void *regs)
-+{
-+	int pid =3D bpf_get_current_pid_tgid() >> 32;
-+	void *payload =3D payload3;
-+	long len;
-+
-+	/* ignore irrelevant invocations */
-+	if (test_pid !=3D pid || !capture)
-+		return 0;
-+
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-+	if (len >=3D 0) {
-+		payload +=3D len;
-+		payload3_len1 =3D len;
-+	}
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
-+	if (len >=3D 0) {
-+		payload +=3D len;
-+		payload3_len2 =3D len;
-+	}
-+	total3 =3D payload - (void *)payload3;
-+
-+	return 0;
-+}
-+
-+SEC("tp/raw_syscalls/sys_enter")
-+int handler32_unsigned(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload2;
-@@ -82,7 +118,33 @@ int handler32(void *regs)
- 	return 0;
- }
-=20
--SEC("tp_btf/sys_exit")
-+SEC("tp/raw_syscalls/sys_exit")
-+int handler32_signed(void *regs)
-+{
-+	int pid =3D bpf_get_current_pid_tgid() >> 32;
-+	void *payload =3D payload4;
-+	int len;
-+
-+	/* ignore irrelevant invocations */
-+	if (test_pid !=3D pid || !capture)
-+		return 0;
-+
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
-+	if (len >=3D 0) {
-+		payload +=3D len;
-+		payload4_len1 =3D len;
-+	}
-+	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
-+	if (len >=3D 0) {
-+		payload +=3D len;
-+		payload4_len2 =3D len;
-+	}
-+	total4 =3D payload - (void *)payload4;
-+
-+	return 0;
-+}
-+
-+SEC("tp/syscalls/sys_exit_getpid")
- int handler_exit(void *regs)
- {
- 	long bla;
---=20
-2.24.1
-
+Yep, neither it's pinned, nor any process has an FD open against it,
+so must be kernel reference leak...
