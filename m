@@ -2,106 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F210205A0B
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318D8205A28
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 20:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732913AbgFWSAD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 14:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728916AbgFWSAD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:00:03 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA39C061573
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 11:00:03 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b4so19625463qkn.11
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 11:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NTz+lh+xtUQgi1Y6Zn/t6QUyWx66KVZDJO+I/2WoyIY=;
-        b=n0RLb984gZv+rIE2rqNPd1sNhZYymwfCNMqjwzdzPL0YVzylJUjBGI+Fm5pjDonkjo
-         IjZXbSQkKT/0H0zSa+alpM59IgY9MuN431QYboB/7wc1jXd6UqzkQzQ8CFA5Yw25/1uk
-         p5ZKyqoY0kd8KKVihLReF9oqhgxpMWLxEklIGlEGI+zWdA1+zWQDPhV8sM0eY848mUGO
-         MWRZb+b0OVBxj17eHFlOkC7OiCXtOwGN/ctGY/iLm2gRJSNwn1wM1kRErvguG01YQHih
-         f3CrLxQzN5stjNtrWtRFZHXVp/Ux0P/TOWC33DTkvbU7DprjdGFRr6LRlmyU1/DagqR/
-         4Vdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NTz+lh+xtUQgi1Y6Zn/t6QUyWx66KVZDJO+I/2WoyIY=;
-        b=jPKi3nKa4sN2i33s7fN1cJMFSxSSy5PE1PZxca/J5d2lm3KnwWVpk/8low6Tf3c577
-         UqpHi5cwyV7TG9jKqRA38EgJ5beVC0J6YPXK2I4hhCU3Obfyve2zYLNTsHlYP4Osj11r
-         1CKZMju8fOh7YpWKeY81hCTMDvJDlqp3dQYgVwWTfdi16B47JJ+iiCqYQaLweWPJjaNp
-         LQuZgy4Y/sfzt6SMgNsGmTd82WCalWzAotGqm9b4dyh9MpbXwPgVwYpoolDadn85iQVE
-         mGNltVB7ihfkYtmE9jwz1/+ktsCsKckc0JSMkdwzBX0wgB5Vxe/ZKjtRezDth+/uDZfg
-         /Dkg==
-X-Gm-Message-State: AOAM533bEf9vPYH3NBc3GeUrkvRRfUvutAXgpa/VjtyzzNZkEQMc7G+0
-        EcmhSo2xotFdaQSoOUCLHKEuwreJ92cTO2gvQwU=
-X-Google-Smtp-Source: ABdhPJyd1euduH15BKYtSLSYgLyer+Sm7bkSeW6o9c1rH8alBKAiKSQQNTkveUoCgcy+v45ZLDHnFL2/Rmv/jv2xGCs=
-X-Received: by 2002:a37:a89:: with SMTP id 131mr21148364qkk.92.1592935202414;
- Tue, 23 Jun 2020 11:00:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200623103710.10370-1-tklauser@distanz.ch>
-In-Reply-To: <20200623103710.10370-1-tklauser@distanz.ch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Jun 2020 10:59:51 -0700
-Message-ID: <CAEf4BzZ51uRdSkZNU=SwJd0rHJVCjxumpxz7pmMvDetvXckwvg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools, bpftool: Correctly evaluate
- $(BUILD_BPF_SKELS) in Makefile
-To:     Tobias Klauser <tklauser@distanz.ch>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1733085AbgFWSIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 14:08:32 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:41350 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732549AbgFWSIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:08:31 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jnnLP-0004f4-6l; Tue, 23 Jun 2020 12:08:27 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jnnLO-0004Sd-82; Tue, 23 Jun 2020 12:08:26 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <33cf7a57-0afa-9bb9-f831-61cca6c19eba@i-love.sakura.ne.jp>
+        <20200608162306.iu35p4xoa2kcp3bu@ast-mbp.dhcp.thefacebook.com>
+        <87r1uo2ejt.fsf@x220.int.ebiederm.org>
+        <20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com>
+        <87d066vd4y.fsf@x220.int.ebiederm.org>
+        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+        <87bllngirv.fsf@x220.int.ebiederm.org>
+        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+Date:   Tue, 23 Jun 2020 13:04:02 -0500
+In-Reply-To: <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+        (Alexei Starovoitov's message of "Mon, 15 Jun 2020 18:55:52 -0700")
+Message-ID: <87h7v1pskt.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1jnnLO-0004Sd-82;;;mid=<87h7v1pskt.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/D9R08/Ve1p34FW4iCYwH1q+46Ss+IpyY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4896]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 454 ms - load_scoreonly_sql: 0.08 (0.0%),
+        signal_user_changed: 12 (2.7%), b_tie_ro: 10 (2.3%), parse: 1.44
+        (0.3%), extract_message_metadata: 3.5 (0.8%), get_uri_detail_list:
+        0.41 (0.1%), tests_pri_-1000: 4.5 (1.0%), tests_pri_-950: 1.42 (0.3%),
+        tests_pri_-900: 1.09 (0.2%), tests_pri_-90: 144 (31.8%), check_bayes:
+        143 (31.5%), b_tokenize: 6 (1.2%), b_tok_get_all: 30 (6.5%),
+        b_comp_prob: 1.88 (0.4%), b_tok_touch_all: 102 (22.4%), b_finish: 1.08
+        (0.2%), tests_pri_0: 268 (59.0%), check_dkim_signature: 0.61 (0.1%),
+        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.54 (0.1%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 6 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 3:37 AM Tobias Klauser <tklauser@distanz.ch> wrote:
->
-> Currently, if the clang-bpf-co-re feature is not available, the build
-> fails with e.g.
->
->   CC       prog.o
-> prog.c:1462:10: fatal error: profiler.skel.h: No such file or directory
->  1462 | #include "profiler.skel.h"
->       |          ^~~~~~~~~~~~~~~~~
->
-> This is due to the fact that the BPFTOOL_WITHOUT_SKELETONS macro is not
-> defined, despite BUILD_BPF_SKELS not being set. Fix this by correctly
-> evaluating $(BUILD_BPF_SKELS) when deciding on whether to add
-> -DBPFTOOL_WITHOUT_SKELETONS to CFLAGS.
->
-> Fixes: 05aca6da3b5a ("tools/bpftool: Generalize BPF skeleton support and generate vmlinux.h")
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> ---
->  tools/bpf/bpftool/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 06f436e8191a..8c6563e56ffc 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -155,7 +155,7 @@ $(OUTPUT)pids.o: $(OUTPUT)pid_iter.skel.h
->  endif
->  endif
->
-> -CFLAGS += $(if BUILD_BPF_SKELS,,-DBPFTOOL_WITHOUT_SKELETONS)
-> +CFLAGS += $(if $(BUILD_BPF_SKELS),,-DBPFTOOL_WITHOUT_SKELETONS)
 
-Oh, what a rookie mistake :) Thanks for fixing!
+Sigh.  I was busy last week so I left reading this until now in the
+hopes I would see something reasonable.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+What I see is rejecting of everything that is said to you.
 
->
->  $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
->         $(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
-> --
-> 2.27.0
->
+What I do not see are patches fixing issues.  I will await patches.
+
+Eric
+
+
