@@ -2,117 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C06205753
-	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 18:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92225205816
+	for <lists+bpf@lfdr.de>; Tue, 23 Jun 2020 18:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732551AbgFWQgE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 12:36:04 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51862 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729481AbgFWQgE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 12:36:04 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NGOdsJ026791;
-        Tue, 23 Jun 2020 09:36:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=jo9UUkz+wXK5tc85Re9Dpp6Pgp49YYWVqDXIKpufOVU=;
- b=eAle5Kv35tzvXW612h/mbY1NKDlLyjePkYAwF7zIkKu04zjofChZsDh/NklN6+38kVrq
- eR1Nczllq8umpVuApuf40AE6YcnUmLIoSBnUInUIo7uvp3dcrE2veegIpfSSgdlAbl+e
- ycjtMLj6UYqA6hylLMbAfQ3b/1WWUCn3Bwk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31uk21gt3s-2
+        id S1732725AbgFWQ7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 12:59:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19626 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728916AbgFWQ7o (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jun 2020 12:59:44 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NGovxQ032296;
+        Tue, 23 Jun 2020 09:59:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=+8G6DIOIPfOUl8GfXxhobUtXqXWObNu4M2i4VEFb5KU=;
+ b=IrXlD6cdh49uVSXNe9Rw1GOGU8LzxcO+3J3S9T2bRlDF1t61QUHA+RKLk/bNjXLHswga
+ xf2KWPqdDrDTOHtsVQvVIFasmKfTldyPCmUDWbnoL65UUu6AWzzuCOof8Mp9H+79VGlq
+ D+fpRr+SGNj+/Quvi4nPLyJxnaQp9kd7qGg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31uk3cgwn2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Jun 2020 09:36:00 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Tue, 23 Jun 2020 09:59:29 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 09:35:57 -0700
+ 15.1.1979.3; Tue, 23 Jun 2020 09:59:28 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jc1TcAUd9NQU8E+3PeOvJOsNS+BIlOmyKSs1WhA3LicRqcFc88vttEju/B1age3n+Xz9lq/J78xEFaUe+JAQkJ7rEKRrZOOe7trGdu5gKcaaAC++UxVihS+6ltf0NLfqHtALkQ91ft6TW+8aota0lCqbmTeXwotvSepiNytGQXcDkZQCSYibfBQWB5SAwPtIrunA7ivDmHYejy3MuQCJOW2oeFdodHwzbbXkNfiOLc9jjaaxyjTXwPo9Ols8qcCa5J1XsKQC1TZTRaNRKP4LyHdf+qUtU4peWG73YDS7QxpsZ2M2UPq6zZlmqLrJeOjkq4poPA47Rwf87an+LRpcQA==
+ b=bv4Xt7z6eoIPUnqGvnL6B0N+6Dr1qSVZo7U0Wvj2zg19DmAm0MoJ/g1/LqRsJb6HY7MbFLHWxIn4FAXN/CXbz9NUDG5MBGnk2pf1LV7r5IamEqFFfxjsjFgOkboEAxjWnnOULBtKLroY5npc+Ny5ey3zbyK73nh/9eQlLMeN2EqM9NZ5yVQob+JVZulIelS6f8bOhaLSiUjfT/di/gJLArfYcZVflTrsYCcJ7uEzA8RQs8Q4lqKrgjAJ5mF2Exupw3zPDLc7tCoFsvLmKwpwnmKbgg0ioLm1V+dm6XF+ckz0qOm/GNcfMtL3PhSPN+OyU33c940+Gbd8YfyHYsEgHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jo9UUkz+wXK5tc85Re9Dpp6Pgp49YYWVqDXIKpufOVU=;
- b=jqvMOxYV8855EiiZrXBYLW7Wh1k5mXbez8kcpoEwyY1hNp4MIEmXngCRqp7H/VKKflMh8U+aUGe8tJMLTAH2QKyeLE8twVa44mt7fdj9/J/jQuCIp5trvTkNSBwOtYM1vUXJivxrAAnCH/zvxtqQHS5N6slp6OLtLdsr7Jy9YdApCEmP5gvHO4MSPrSc2yLTamVyYkGAA7Ls3jm5I8YHRkUu0g1o58eSro0BLdi4J/bQPTskPmcViq+6wXssciU5TbffsueWq3MSw/36z+4xcFmtoVtA8AwCQdaKUASaVHiJjuMYTCqy2LEJGnCgy7Sg3aUn0P58X/LlRh9yIaq9SA==
+ bh=+8G6DIOIPfOUl8GfXxhobUtXqXWObNu4M2i4VEFb5KU=;
+ b=KeZLjgJO+DKUfSCblBEeLbr2NToxAxPt94sf66QpIyaWJYYDDiSOE106o7qXuR8pY7ndSeK53n1X/UZglsrgQljiTNzKdyHNCa+td7DhGJ4oX2hjmkDy9ugFz2TeOIU3xaBsKPir6DpTEdZ46R5OKG4QaniEjdPSR4WoEqxWZeeDp/9oediRh1hmVuXgOSIDpCvKuT4Zon9iIdcm8A+9FfQI7xWNEIf8lGHHrZAOipOchB2qtSNQ821YJlvqXfdStFuw46W7HmHrFUgYZIlmfYeLNgGFsWYJOKBZ3lvY2VJg7dqTsTfTvyhf+KAm6KOXbjDibUOk9gUdwgtJndPXiw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jo9UUkz+wXK5tc85Re9Dpp6Pgp49YYWVqDXIKpufOVU=;
- b=amEgHqw2iHLxFkfiWv5SRpGgakV2MZyNI3G8ZZLWKCYmBhotr4gxMxcilpAelP41Xb3DpuG0a5LAmtU5usKB9qBehGxj5DEs53yjow3o6L4G164gh70G6aHeGHt6UUbbTvp0c10pgqhydmOEgsKDNEchlIPZvvdisAlu110hOjI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3617.namprd15.prod.outlook.com (2603:10b6:a03:1fc::28) with
+ bh=+8G6DIOIPfOUl8GfXxhobUtXqXWObNu4M2i4VEFb5KU=;
+ b=F15hpho/TFX288DgrnbbyQf/S1ehM6BtoZLzr0UssrUUcLMgkQl4P5ecYgNw7+esGFHmm1krbgPsSEdYPZIzdHKfWNdpotwRKgQbnmOValUP2zreCsCISFiYmTAdqhmjBS4qAHG4SlgkrMLs9QxLaOWRa3Ys3gMdVm0lMJtBWgY=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Tue, 23 Jun
- 2020 16:35:56 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
- 16:35:56 +0000
-Subject: Re: Accessing mm_rss_stat fields with btf/BPF_CORE_READ_INTO
-To:     Matt Pallissard <matt@pallissard.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>
-References: <20200620162216.2ioyj6uzlpc45jzx@matt-gen-desktop-p01.matt.pallissard.net>
- <4889d766-578e-1e20-119f-9f97621e766f@fb.com>
- <20200620200602.ax7tjx5jrtgyj6vs@matt-gen-laptop-p01>
- <CAEf4Bzb1x5iGbb+mX0mz-mjLWvRvr9tn2SeQ3yVgd5eBagBc5w@mail.gmail.com>
- <20200621154428.pf6foowywrq3wxt2@matt-gen-laptop-p01>
- <20200622150128.hjwe3uak2sy7po22@matt-gen-desktop-p01.matt.pallissard.net>
- <CAEf4BzZt-aAo-t-eV=r3SNfgJh3rfqS8EFufz32VYKX9zOfXMQ@mail.gmail.com>
- <20200622171902.4q3pypddgyyp5p5r@matt-gen-desktop-p01.matt.pallissard.net>
- <CAEf4Bzb8U3SRQbxzLtTZihG3X=-OtQcYQApmJUhmuwqtXZaucg@mail.gmail.com>
- <20200623145429.zusbbebj52scumcr@matt-gen-desktop-p01.matt.pallissard.net>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8ffec8ff-664d-fd3e-12eb-49eac339b612@fb.com>
-Date:   Tue, 23 Jun 2020 09:35:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <20200623145429.zusbbebj52scumcr@matt-gen-desktop-p01.matt.pallissard.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Tue, 23 Jun
+ 2020 16:59:27 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
+ 16:59:27 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 1/3] bpf: introduce helper
+ bpf_get_task_stack_trace()
+Thread-Topic: [PATCH bpf-next 1/3] bpf: introduce helper
+ bpf_get_task_stack_trace()
+Thread-Index: AQHWSS0VOUl6AqeRSEG9pyL6IiSf06jmUOoAgAAcCQA=
+Date:   Tue, 23 Jun 2020 16:59:27 +0000
+Message-ID: <FF92494E-D1EB-4B84-9D2F-8CD43FEAB164@fb.com>
+References: <20200623070802.2310018-1-songliubraving@fb.com>
+ <20200623070802.2310018-2-songliubraving@fb.com>
+ <CAADnVQJxinR1fY69hf_rLShdbi947DjGXAH+55eZQDTtm4VBRg@mail.gmail.com>
+In-Reply-To: <CAADnVQJxinR1fY69hf_rLShdbi947DjGXAH+55eZQDTtm4VBRg@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR17CA0007.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::20) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:d062]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f633d802-9433-4ac1-9058-08d81796c9f2
+x-ms-traffictypediagnostic: BYAPR15MB3461:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3461444769DC07610301A5E3B3940@BYAPR15MB3461.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 04433051BF
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: w4naRFQltOvYjPALr+jNWncG0eMP7FFD0grgHIjJEKO53IXqVdKCO3kryjE4ZarYImm8Cyws1iP27Z5d7y0GN1tM2Cjwn6zSn1FEgyFgrI+6mLd/2JtYSuv+8HoIEBYkCwtSgQf426z+tpqNXYwo1V29kh4Aj3203U8/ow8kvK6ARj3CMoNQFsDWJStHigBZvNKl454UBTTH4SExoB8LFs8zMUF45Y8d+IgI/2c2N0uMHhf5Msljdz8RvB8aFmjp9nLtqHZMJIMJZRQqTvymbPXoFyiIldcFo/xuX7LCzWoyQbJHCOmsQaeeGxmfOVGxMmTKj7X2BI+O3XIPxDwGxg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(39860400002)(396003)(376002)(366004)(316002)(4326008)(478600001)(6512007)(83380400001)(5660300002)(2906002)(86362001)(2616005)(36756003)(54906003)(6486002)(53546011)(6506007)(71200400001)(186003)(6916009)(33656002)(66946007)(66476007)(76116006)(8936002)(8676002)(66556008)(66446008)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: cquLbCDM/G/mbZlLAPZiCRFDWEf0Wgnf8BZhw3PW/FimgKiEYtcQTK3FzObFlJFMht/YqrPmRNh63XjRemA3m/4SQyVO+Km3eIVFU3tJnPqEXkjh/IE3I+KSlNseqD4jTsISi1OIU669kLT/6uRUCJgUmABUPKQ3IxjFuOvKzI9QFNhJTXX8HF3Kcs7Nwch0ng1lhisZSk8InP5V+scU5wc9zoKybblbhyOXMbnkbGOuDfjiOWgKU/nruU1faigP2t8UM/bGFQjC7W3tkAt+dVohsoLU2Sc2rpSZfn61L1CW4gnwC0r945LJ2NSTQJprMwwP4YTgUlHCh6xqxc/4Sp8aqmHUNIcvmazvs9IZ8qeuOLFO0kpTdYAG8ZM00CWguzVeAnxNpbKhNAuGscAZjJVeM7iOXNdL5raNxBRPJE+WxFVOybd5QrO6lRJnuf1Ok4ggsF7fmxQog9Ximh3CNLTo6DoGjpG80SyYswplVzFyuzxurTQB2qm+Ipjxhtx/gdXb8tBLRlgDBoWjqNhFFQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <086A530C4809BF4AAEBE21B729C5D505@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1377] (2620:10d:c090:400::5:7789) by BY5PR17CA0007.namprd17.prod.outlook.com (2603:10b6:a03:1b8::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Tue, 23 Jun 2020 16:35:55 +0000
-X-Originating-IP: [2620:10d:c090:400::5:7789]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 442b51e4-0784-4c75-9770-08d8179380ad
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3617:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB36172F8C955E7CE1680AAA9DD3940@BY5PR15MB3617.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 04433051BF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yGBGHQx94eaQatp3YsZLJkiXOb2/Eb3bwASmCYhzK1EpdSJt2pePPkBp9yX7TDQQ+Zk3qjcE0hcxAzZcN7wC3LjRi7cUFUNqF2HI+1ciPu6u7pqiAFEXuURovKLNJs7H59DRJZG+lLFoQguKXbN0U5dQ6lsve49u8No60CvhwFhF6qCO/k8OY+ZyVmbRwIq/K3g8Y0Fmv2zChaD0Usw3lFDZQ6rR4UFxFhnq06r0wQ59JdxU1LaIGTgdY4+mfswmAafDjTN0yi3xopTl0eOnN3LkLfPKDPeWiVJfsKgXUS95wTm/BgU2OeJO7+TyA0uf/Vi5HNzHpXbOyVNo1ASZPJrUr3U5eX5Xpm7W6vVNNLZk1UScs6XqKzGp2JLaD014mjD8dPPB9iP6V7m7gTidEqnPw27/0wv1MA8yoDLIUPLTlKVqV+mfDTlUGp/E9LtlQszB822JqE9i15Tej+likw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(136003)(346002)(366004)(376002)(8936002)(31686004)(53546011)(83380400001)(966005)(478600001)(66476007)(52116002)(66556008)(66946007)(316002)(2616005)(110136005)(4326008)(2906002)(186003)(16526019)(8676002)(86362001)(36756003)(6486002)(31696002)(5660300002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: CGhlpuMtift0Q++wmzMcJuE4EVm1emGJN2L4PXyf5FMgZJym1gGZ+VF5tp62MWYWeDLyx79rQqXVRwy0mPaFEey+CUe/vf6fOYo4CmANMwWOwsdkA9d5MxYNgYLMr9p6Yd8QN+sSphnjMg1649teSIatbhH42bi7vPZt2Cue3dapUdjpD9T/K4d/IL3RlB/iaxDHV30kgYY6l4tGbsfOJu2MTvYB+BsKLGfw87ylE9ZGRN74EIccDBOB5jii3bTCdupla2qrW8kwRzwNOWyEXNv6E4zQeBhDRle4axCgfM3O7syzPbFlmMszKblACIqLqysuXZSQVQGL/iI1uuMLlwYtAi+/gTJZDS9XD4XBY3EfYjYoWpCytpPZameZPc8RiEsy+FXdE3MWB6QpPxXASFIvtjYHxWcHpqPM4feA+c0jhFePpngeEFPHThnYTkbkTRO6uGO/Vq4LAW1f8Z5eujCGU7yXGZyhfHSq94V12HCt4pv2mHklgzn+mimFvdD+9fVPlgkN792jeB3qeIVOPg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 442b51e4-0784-4c75-9770-08d8179380ad
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 16:35:56.0895
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f633d802-9433-4ac1-9058-08d81796c9f2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2020 16:59:27.1736
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CEWanGnQlCH1sj0R8F/FpH+QsOZd5a3/FtNRY+5SHgQ2/xnKi6q/ywVFbzeAkSuE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3617
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0JmHSZK1L43D1/8Bn78SPtZyU/JkV9RKdLck6FcIhPvo8zlUEwXXaAPg2L108SxppbuZu9KcE8GHczJ/ym9xgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_10:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 adultscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230121
+ definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ impostorscore=0 suspectscore=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230122
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -121,99 +124,80 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 6/23/20 7:54 AM, Matt Pallissard wrote:
-> 
-> On 2020-06-22T15:09:57 -0700, Andrii Nakryiko wrote:
->> On Mon, Jun 22, 2020 at 10:19 AM Matt Pallissard <matt@pallissard.net> wrote:
->>>
->>> On 2020-06-22T09:20:03 -0700, Andrii Nakryiko wrote:
->>>> On Mon, Jun 22, 2020 at 8:01 AM Matt Pallissard <matt@pallissard.net> wrote:
->>>>> On 2020-06-21T08:44:28 -0700, Matt Pallissard wrote:
->>>>>> On 2020-06-20T20:29:43 -0700, Andrii Nakryiko wrote:
->>>>>>> On Sat, Jun 20, 2020 at 1:07 PM Matt Pallissard <matt@pallissard.net> wrote:
->>>>>>>> On 2020-06-20T11:11:55 -0700, Yonghong Song wrote:
->>>>>>>>> On 6/20/20 9:22 AM, Matt Pallissard wrote:
->>>>>>>>>> New to bpf here.
->>>>>>>>>>
->>>>>>>>>> I'm trying to read values out of of mm_struct.  I have code like this;
->>>>>>>>>>
->>>>>>>>>> unsigned long i[10] = {};
->>>>>>>>>> struct task_struct *t;
->>>>>>>>>> struct mm_rss_stat *rss;
->>>>>>>>>>
->>>>>>>>>> t = (struct task_struct *)bpf_get_current_task();
->>>>>>>>>> BPF_CORE_READ_INTO(&rss, t, mm, rss_stat);
->>>>>>>>>> BPF_CORE_READ_INTO(i, rss, count);
->>>>>>>>>>
->>>>>>>>>> However, all values in `i` appear to be 0 (i[MM_FILEPAGES], etc), as if no data gets copied.  I'm about 100% confident that this is caused by a glaring oversight on my part.
->>>>>>>>>
->>>>>>>>> Maybe you want to check the return value of BPF_CORE_READ_INTO.
->>>>>>>>> Underlying it is using bpf_probe_read and bpf_probe_read may fail e.g., due
->>>>>>>>> to major fault.
->>>>>>>>
->>>>>>>> Doh, I should have known to check the return codes!  Yes, it was failing.  I knew I was overlooking something trivial.
->>>>>>>>
->>>>>>>
->>>>>>> I wrote exactly such piece of code a while ago. Here's part of it for
->>>>>>> reference, I think it will be helpful:
->>>>>>>
->>>>>>>    struct task_struct *task = (struct task_struct *)bpf_get_current_task();
->>>>>>>    const struct mm_struct *mm = BPF_CORE_READ(task, mm);
->>>>>>>
->>>>>>>    if (mm) {
->>>>>>>        u64 hiwater_rss = BPF_CORE_READ(mm, hiwater_rss);
->>>>>>>        u64 file_pages = BPF_CORE_READ(mm, rss_stat.count[MM_FILEPAGES].counter);
->>>>>>>        u64 anon_pages = BPF_CORE_READ(mm, rss_stat.count[MM_ANONPAGES].counter);
->>>>>>>        u64 shmem_pages = BPF_CORE_READ(mm,
->>>>>>> rss_stat.count[MM_SHMEMPAGES].counter);
->>>>>>>        u64 active_rss = file_pages + anon_pages + shmem_pages;
->>>>>>>        /* ... */
->>>>>>
->>>>>> Thank you,
->>>>>>
->>>>>> After realizing that I was referencing the struct incorrectly, I wound up with a similar block of code.  However, as I started testing it against /proc/pid/smaps[,_rollup] I noticed that my numbers didn't match up.  Always smaller.
->>>>>>
->>>>>> I took a quick glance at fs/proc/task_mmu.c.  I think I'll have to walk some sort of accounting structure.
->>>>>
->>>>>
->>>>> I started to take a hard look at fs/proc/task_mmu.c.  With all the locking, globals, and compile-time constants, I'm not sure that it's even possible to correctly walk `vm_area_struct` in bpf.
->>>>
->>>> Yes, you can't take all those locks from BPF. But reading atomic
->>>> counters from BPF should be no problem. You might get a slightly out
->>>> of sync readings, but whatever you are doing shouldn't expect to have
->>>> 100% correct values anyways, because they might change so fast after
->>>> you read them.
->>>
->>> That was my initial thought.  I didn't care to much about stale data, my only real concern was walking vm_area_struct and having memory freed.  I wasn't sure if that could break the list underneath me.  Although, that shouldn't be too difficult to get to the bottom of.
->>>
->>
->> Not sure about vm_area_struct (where is it in the example above?), but
->> mm_struct won't go away, because current task won't go away, because
->> BPF program is running in the context of current. Similarly for
->> bpf_iter, bpf_iter will actually take a refcnt on tast_struct. So I
->> think you don't have to worry about that.
-> 
-> I didn't mention it explicitly in the example above.  But when I originally mentioned walking an accounting structure, as procfs does, it winds up being `mm_struct->mmap,vm_[next,prev]`, with mmap being a `vm_area_struct`.  But, it sounds like I should be abandoning that path and iterating over all the tasks.
-> 
-> 
->>>>> If anyone has suggestions for getting memory numbers from an entire process, not just a task/thread, I'd love to hear them.  If not, I'll pursue this on my own.
->>>>
->>>> For this, you'd need to iterate across many tasks and aggregate their
->>>> results based on tasks's tgid. Check iter/task programs in selftests
->>>> (progs/bpf_iter_task.c, I think).
-> 
-> 
-> When I try to replicate some of the selftest task logic. I run into some errors when I call bpf_object__load.  `libbpf: task is not found in vmlinux BTF.`  I'll try matching the selftest code more closely and digging into that further.
+> On Jun 23, 2020, at 8:19 AM, Alexei Starovoitov <alexei.starovoitov@gmail=
+.com> wrote:
+>=20
+> On Tue, Jun 23, 2020 at 12:08 AM Song Liu <songliubraving@fb.com> wrote:
+>>=20
 
-Somehow libbpf did not prepend `task` with `bpf_iter_` prefix. Not sure 
-what is the exact issue. Yes, please mimic what selftests did.
+[...]
 
-> 
-> As an aside; is there any documentation for bpf_iter outside of the selftests?
+>>=20
+>> +BPF_CALL_3(bpf_get_task_stack_trace, struct task_struct *, task,
+>> +          void *, entries, u32, size)
+>> +{
+>> +       return stack_trace_save_tsk(task, (unsigned long *)entries, size=
+, 0);
+>> +}
+>> +
+>> +static int bpf_get_task_stack_trace_btf_ids[5];
+>> +static const struct bpf_func_proto bpf_get_task_stack_trace_proto =3D {
+>> +       .func           =3D bpf_get_task_stack_trace,
+>> +       .gpl_only       =3D true,
+>=20
+> why?
 
-Unfortunately, no. The commit messages of the original patch set might help.
-https://lore.kernel.org/bpf/20200507053916.1542319-1-yhs@fb.com/T/#mf973843af65fc51ac9b3e3673962cd3e87f705e8
+Actually, I am not sure when we should use gpl_only =3D true.=20
 
-> 
-> Matt Pallissard
-> 
+>=20
+>> +       .ret_type       =3D RET_INTEGER,
+>> +       .arg1_type      =3D ARG_PTR_TO_BTF_ID,
+>> +       .arg2_type      =3D ARG_PTR_TO_MEM,
+>> +       .arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
+>=20
+> OR_ZERO ? why?
+
+Will fix.=20
+
+>=20
+>> +       .btf_id         =3D bpf_get_task_stack_trace_btf_ids,
+>> +};
+>> +
+>> static const struct bpf_func_proto *
+>> raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
+prog)
+>> {
+>> @@ -1521,6 +1538,10 @@ tracing_prog_func_proto(enum bpf_func_id func_id,=
+ const struct bpf_prog *prog)
+>>                return prog->expected_attach_type =3D=3D BPF_TRACE_ITER ?
+>>                       &bpf_seq_write_proto :
+>>                       NULL;
+>> +       case BPF_FUNC_get_task_stack_trace:
+>> +               return prog->expected_attach_type =3D=3D BPF_TRACE_ITER =
+?
+>> +                       &bpf_get_task_stack_trace_proto :
+>=20
+> why limit to iter only?
+
+I guess it is also useful for other types. Maybe move to bpf_tracing_func_p=
+roto()?
+
+>=20
+>> + *
+>> + * int bpf_get_task_stack_trace(struct task_struct *task, void *entries=
+, u32 size)
+>> + *     Description
+>> + *             Save a task stack trace into array *entries*. This is a =
+wrapper
+>> + *             over stack_trace_save_tsk().
+>=20
+> size is not documented and looks wrong.
+> the verifier checks it in bytes, but it's consumed as number of u32s.
+
+I am not 100% sure, but verifier seems check it correctly. And I think it i=
+s consumed
+as u64s?
+
+Thanks,
+Song
+
