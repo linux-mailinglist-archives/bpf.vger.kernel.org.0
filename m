@@ -2,115 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B789B206D2D
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 08:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35444206D44
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 09:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728948AbgFXG76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 02:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388568AbgFXG75 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 02:59:57 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F856C061573;
-        Tue, 23 Jun 2020 23:59:52 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id v19so887484qtq.10;
-        Tue, 23 Jun 2020 23:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SX0LkdckOxLVzccpso8HMeVTakB6cir0xF7K9saKPIY=;
-        b=YGqOcSP2oAtE5odrudLj+tHnhO6dwPgzln7AI1N4pSibHdMGZBB5QJjtb9J2jXaeyN
-         2mqKmM+qNIWf2O0Le9t+fbbeXp8oWZz4LiKdy6a9yKPp47aYhs8wGEcsBAgAg8XLcTo3
-         lUNGQ34LOzVsjOpD9lZE8dU9eD0xirp1lkB6m7TlAMT+WX0n2eGsvItE8jOg90CN3JI2
-         MxGn25/AEwuBZ9ApK2dSZVy5c5568i1s1oePl8T3AhuLHzCLc7IeoGm/CY2n6U7bt3hP
-         O6VW5NiwuqwAhSFPAQMLrkmaVpeTw13AjJCMDWYslmVOaH4klPfQng6VCsN4kLYtaJy1
-         RrGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SX0LkdckOxLVzccpso8HMeVTakB6cir0xF7K9saKPIY=;
-        b=IMIJXz+bF0afEMHZUj7KYGx6uGxEPoPEZXblmAXBGKR+/2raLgJ5pv4G4MER4rkIfa
-         qJcUkqo5WWJ0a/WCMTEMoQQ0N+3rJ2CvhjuQlsmrhwpBAtXtonNYwQx0fSeNVZZbBjFc
-         AAEjT/o+qoEideHm0uTPpmQajjh6qGJJUp5hKJNguLSSUB1m4BaQsc/jIzBaTlk1QJnW
-         Se7X/e443Ch3AcySPu4xDBOyZSt3Z8r8s4FeIbBajAGyqDJOV6iv4VCiBAhMYCT4pyRC
-         DDgV4GDhDsBAtsEinlTT1wM5kxc8znNskck8Sbct44l0JWieq8rGI6qY9iA+CfrEjBGM
-         8e8g==
-X-Gm-Message-State: AOAM532dBzqToI5xYCkR5lbknWD9q7uWqOIBbQf7KahrG9+cYCcuYNbx
-        vpRmK0fp+aTwqJWJ6PRXG6m4ZwnyhKOzdfwqIs8=
-X-Google-Smtp-Source: ABdhPJxF+Pncc7pVwU67aWWppZm2yalgH3we0won1lk2yzs4IINDKU4pea6PtsnxAM1gwh/he4i4XvWFHBvOU4QvBc4=
-X-Received: by 2002:ac8:2bba:: with SMTP id m55mr24979504qtm.171.1592981991389;
- Tue, 23 Jun 2020 23:59:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200624003340.802375-1-andriin@fb.com> <CAADnVQJ_4WhyK3UvtzodMrg+a-xQR7bFiCCi5nz_qq=AGX_FbQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJ_4WhyK3UvtzodMrg+a-xQR7bFiCCi5nz_qq=AGX_FbQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Jun 2020 23:59:40 -0700
-Message-ID: <CAEf4BzYKV=A+Sd1ByA2=7CG7WJedB0CRAU7RGN6jO8B9ykpHiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: add debug message for each created program
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S2389394AbgFXHHB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 03:07:01 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60608 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389349AbgFXHHB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:07:01 -0400
+Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05O75k31091412;
+        Wed, 24 Jun 2020 16:05:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
+ Wed, 24 Jun 2020 16:05:46 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05O75jhA091408
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 24 Jun 2020 16:05:45 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     linux-security-module <linux-security-module@vger.kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+ <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
+ <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
+ <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
+ <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <321b85b4-95f0-2f9b-756a-8405adc97230@i-love.sakura.ne.jp>
+Date:   Wed, 24 Jun 2020 16:05:45 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 11:47 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jun 23, 2020 at 5:34 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Similar message for map creation is extremely useful, so add similar for BPF
-> > programs.
->
-> 'extremely useful' is quite subjective.
-> If we land this patch then everyone will be allowed to add pr_debug()
-> everywhere in libbpf with the same reasoning: "it's extremely useful pr_debug".
+Forwarding to LSM-ML again. Any comments?
 
-We print this for maps, making it clear which maps and with which FD
-were created. Having this for programs is just as useful. It doesn't
-overwhelm output (and it's debug one either way). "everyone will be
-allowed to add pr_debug()" is a big stretch, you can't just sneak in
-or force random pr_debug, we do review patches and if something
-doesn't make sense we can and we do reject it, regardless of claimed
-usefulness by the patch author.
+On 2020/06/24 15:39, Alexei Starovoitov wrote:
+> On Wed, Jun 24, 2020 at 01:58:33PM +0900, Tetsuo Handa wrote:
+>> On 2020/06/24 13:00, Alexei Starovoitov wrote:
+>>>> However, regarding usermode_blob, although the byte array (which contains code / data)
+>>>> might be initially loaded from the kernel space (which is protected), that byte array
+>>>> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
+>>>> in the user address space. Thus, LSM modules (including pathname based security) want
+>>>> to control how that byte array can behave.
+>>>
+>>> It's privileged memory regardless. root can poke into kernel or any process memory.
+>>
+>> LSM is there to restrict processes running as "root".
+> 
+> hmm. do you really mean that it's possible for an LSM to restrict CAP_SYS_ADMIN effectively?
+> LSM can certainly provide extra level of foolproof-ness against accidental
+> mistakes, but it's not a security boundary.
+> 
+>> Your "root can poke into kernel or any process memory." response is out of step with the times.
+>>
+>> Initial byte array used for usermode blob might be protected because of "part of .rodata or
+>> .init.rodata of kernel module", but that byte array after started in userspace is no longer
+>> protected. 
+>>
+>> I don't trust such byte array as "part of kernel module", and I'm asking you how
+>> such byte array does not interfere (or be interfered by) the rest of the system.
+> 
+> Could you please explain the attack vector that you see in such scenario?
+> How elf binaries embedded in the kernel modules different from pid 1?
+> If anything can peek into their memory the system is compromised.
+> Say, there are no user blobs in kernel modules. How pid 1 memory is different
+> from all the JITed images? How is it different for all memory regions shared
+> between kernel and user processes?
+> I see an opportunity for an LSM to provide a protection against non-security
+> bugs when system is running trusted apps, but not when arbitrary code can
+> execute under root.
+> 
 
-So far, libbpf debug logs were extremely helpful (subjective, of
-course, but what isn't?) to debug "remotely" various issues that BPF
-users had. They don't feel overwhelmingly verbose and don't have a lot
-of unnecessary info. Adding a few lines (how many BPF programs are
-there per each BPF object?) for listing BPF programs is totally ok.
-
-But I'm not going to fight it, up to you, of course.
-
->
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 18461deb1b19..f24a90c86c58 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -5379,8 +5379,9 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >         }
-> >
-> >         ret = bpf_load_program_xattr(&load_attr, log_buf, log_buf_size);
-> > -
-> >         if (ret >= 0) {
-> > +               pr_debug("prog '%s' ('%s'): created successfully, fd=%d\n",
-> > +                        prog->name, prog->section_name, ret);
-> >                 if (log_buf && load_attr.log_level)
-> >                         pr_debug("verifier log:\n%s", log_buf);
-> >                 *pfd = ret;
-> > --
-> > 2.24.1
-> >
