@@ -2,103 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985D320692D
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 02:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BD2206949
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 03:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387853AbgFXAzA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 20:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S2388284AbgFXBC6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jun 2020 21:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387757AbgFXAy7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 20:54:59 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EB5C061755;
-        Tue, 23 Jun 2020 17:54:59 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d21so352928lfb.6;
-        Tue, 23 Jun 2020 17:54:59 -0700 (PDT)
+        with ESMTP id S2388240AbgFXBC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jun 2020 21:02:57 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53ED8C061573;
+        Tue, 23 Jun 2020 18:02:57 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n23so649876ljh.7;
+        Tue, 23 Jun 2020 18:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SELmzgReg+iVHTahgJ6371+YxkQAf2+VAlTqmhfhQZo=;
-        b=cjm1L/wqIptfZr5x8pU2JkKdOAtu7JqBjyEKy4fB44k9+UJuDN2Eq1lL7CkW8p5L85
-         5vGpTmpgCkeeswMlvxMrNmFE57s/nxkGn948SblHhhnDX5O0TGMyuPpRWcEl/p0u5pNr
-         usUcghxjxuQeNK87WSgwTIz55tpj8qYEwqxK8CqDN8SiwHQ9nMdP5m/C3CPyzTwm8wty
-         dw3FZFwdtf85AbQTzTKfIFfMnxeXGo/Wr+fudv5aIK60EaWz7/+l6uXdX5OmHHR/GU5d
-         9jzRaO2hatTE/vVE3Wbqh0kbuhO8/JY5jg1r7pN3xO/RazbA5GcpcbqPApqTVyBu/FIn
-         z/XA==
+         :cc;
+        bh=ZfjkORTpcf3tAvl4U+UVM7GM+AI0XbxZRU+YKtkIZxk=;
+        b=jncS4s5rJ+HKtwZtFZBQQoOU6pEuyHYj8wbU1k/LNZui65o1ol1QaASs1cJdLB8Eg/
+         VRNOoDInwluj6tZ075XPaxBTtQnGAATpWTfgF4yfyD36Qvfyh7RmqvwHiNebci/iy5hH
+         9oMpN/S/ktRIld/9z0Bshdm9g1iDxvyo4yy5nP7+Vl4Xq8rOjml+qlkoDUZjnHUvfzOH
+         0xE/J/QiyiYdnGVod57dJ3PXbEW+LCbBcK7BEg4EikVjvcObPyca844E7dowwk1CSiVc
+         1H8xGMsGutNhQDYbRucPM2DLnUcCU1jqSnsIcwIXWq+9VKDzlifdqVRnMF20lllOkmPq
+         TyPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SELmzgReg+iVHTahgJ6371+YxkQAf2+VAlTqmhfhQZo=;
-        b=F0xu9pmJ45BuPE42a/Z2djk/wNvsQNGmBnNm0BrDh1WZ34MNW+CfTci4hNF4wlYaxf
-         S50r18EhlCzDEyoKHeiXY8PCq8ytstBrl6rzNN8hIRo+mnjiSsTLYjExFQNOjfFn4CQg
-         jpYOXIFLorH2JOvgUmNrEJN3QISYn4zNbSP38oYqwJoTzvAfWXx4Ea40NblP3ag5IamD
-         LfOXNzp2XUm/PdB3eyiiN82bKjErCCUq/JlxPEBSVu1G318+JvjaWlCNpPlGu6mc5piJ
-         AlNLb9kMJ8hG4xJ9nackWbJZ5/KomVOR1gR/BOJtFTydKCkpUXDYvlVTFHbslTFa6gpI
-         wvUw==
-X-Gm-Message-State: AOAM5314LjFYDamuxR12+97bPsEvLlZPA9zLQGB2aIs+YcMBM8QpYfe4
-        jSekVG9My8/bUnfenyw8bWFOV9dp4qsNc4Q02FevWg==
-X-Google-Smtp-Source: ABdhPJzCSvOsbrXcmQd/TYWAgOjemkPC4Im/Bu/7EQrDLmukBVCfqTq30O8ThuYksFmuP216BQ761tc/uSzHOR5Cjmk=
-X-Received: by 2002:a19:4143:: with SMTP id o64mr13922941lfa.157.1592960097892;
- Tue, 23 Jun 2020 17:54:57 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ZfjkORTpcf3tAvl4U+UVM7GM+AI0XbxZRU+YKtkIZxk=;
+        b=r+GBOTQOkX/jNqAS+fwBjWLe1/b7ilKmSiizk/wB9eNHq+dz1ARDH3QNRG028t+tzL
+         xhjAGqZChYKVFHyXsDcq86cP5G/5w70h1xPAydPhGDBDyXsYH9RQToG0Eixz/kQLPZ5V
+         Auu0bZnBC9J6IteRl7RYH+VW0QZn2UQvT4VTIz74QKV3NTQwZPTwiDzEgOVnODrOy7E9
+         LcwDp7ABr369iiHXEnTotGY+30oEJJ9ohSETjz8QX1LPBWnBcy4lyDdmM8hMBzzCMIoJ
+         x9wB1OyiJXBk45hBZMliyoIQDO2GZDmLZdGvL2dZScRnmegoPZtUfGqkF6PyB43UWfum
+         kYBw==
+X-Gm-Message-State: AOAM530NjNmptZNWcQHvsOKRk+kgsvUmYyhG4usu3ohH3pDWQXBLBQ5m
+        dbNtgVyBB1mwZKC/sD6Myaq6JsHEb47Oz9wgAsE=
+X-Google-Smtp-Source: ABdhPJw62Iq6Z3Kjfjk6T17vMR7BP2pkRPRDwDSFn1GyEBHpbqdcPGPvfmmw8IqByNlGqCGuB6VOpSN5D4wBXk/Wgeo=
+X-Received: by 2002:a2e:974a:: with SMTP id f10mr12943432ljj.283.1592960575864;
+ Tue, 23 Jun 2020 18:02:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
- <20200620212616.93894-1-zenczykowski@gmail.com> <CALAqxLVeg=EE06Eh5yMBoXtb2KTHLKKnBLXwGu-yGV4aGgoVMA@mail.gmail.com>
-In-Reply-To: <CALAqxLVeg=EE06Eh5yMBoXtb2KTHLKKnBLXwGu-yGV4aGgoVMA@mail.gmail.com>
+References: <20200623153935.6215-1-quentin@isovalent.com>
+In-Reply-To: <20200623153935.6215-1-quentin@isovalent.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 23 Jun 2020 17:54:46 -0700
-Message-ID: <CAADnVQJOpsQhT0oY5GZikf00MT1=pR3vpCZkn+Z4hp2_duUFSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] restore behaviour of CAP_SYS_ADMIN allowing the
- loading of networking bpf programs
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 23 Jun 2020 18:02:44 -0700
+Message-ID: <CAADnVQJwtac0C+DgAhQbVrofSwV7BeG7RoEdQAj5sQZGvxNeLA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix formatting in documentation for BPF helpers
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:44 PM John Stultz <john.stultz@linaro.org> wrote=
-:
+On Tue, Jun 23, 2020 at 8:39 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> On Sat, Jun 20, 2020 at 2:26 PM Maciej =C5=BBenczykowski
-> <zenczykowski@gmail.com> wrote:
-> >
-> > From: Maciej =C5=BBenczykowski <maze@google.com>
-> >
-> > This is a fix for a regression introduced in 5.8-rc1 by:
-> >   commit 2c78ee898d8f10ae6fb2fa23a3fbaec96b1b7366
-> >   'bpf: Implement CAP_BPF'
-> >
-> > Before the above commit it was possible to load network bpf programs
-> > with just the CAP_SYS_ADMIN privilege.
-> >
-> > The Android bpfloader happens to run in such a configuration (it has
-> > SYS_ADMIN but not NET_ADMIN) and creates maps and loads bpf programs
-> > for later use by Android's netd (which has NET_ADMIN but not SYS_ADMIN)=
-.
-> >
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Reported-by: John Stultz <john.stultz@linaro.org>
-> > Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-> > Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> When producing the bpf-helpers.7 man page from the documentation from
+> the BPF user space header file, rst2man complains:
 >
-> Thanks so much for helping narrow this regression down and submitting thi=
-s fix!
-> It's much appreciated!
+>     <stdin>:2636: (ERROR/3) Unexpected indentation.
+>     <stdin>:2640: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
 >
-> Tested-by: John Stultz <john.stultz@linaro.org>
+> Let's fix formatting for the relevant chunk (item list in
+> bpf_ringbuf_query()'s description), and for a couple other functions.
+>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  include/uapi/linux/bpf.h | 41 ++++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 20 deletions(-)
 
-Applied to bpf tree. Thanks
+Applied to bpf tree and added similar fix to tools/include/.../bpf.h
+Please don't forget it next time.
