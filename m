@@ -2,127 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E805207AF0
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F77C207B06
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405860AbgFXRyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 13:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405750AbgFXRyN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:54:13 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92009C061573;
-        Wed, 24 Jun 2020 10:54:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u8so1446099pje.4;
-        Wed, 24 Jun 2020 10:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qkIGmRvWdpvpHWZiXHmBkZ272P9SkiCAZcuaQC1DR14=;
-        b=EP2vP1xji6pfUVDlXaugEghw2F92U4Nkz06IgV2PEZGPI7N9buIZ5/e6VeSeDGwNs9
-         qvaOn2JuNtYGl/lO9wde2fwNqSF25+mLosYSQrpovtkD2OpgITU6sMjuzIb7TPuBMpl+
-         hYAUlPbUE+UCvJ21x8Ymg4oMl/ejjDGPihy6PXoC733JRbqAvXi3ASgShVzST2HJlkX/
-         bSes6nXdsi6s8sllYMUoxBmf42T32IqZCC7gGdtEN3H2JtRXCHrDe/PG9fov8W8Dlfyr
-         9guNeDjDA9qFv8zQzadgHr0pbyBkJ/PLW+7t57GRJNWFSptJzJDJcWnn+9aJQ8Hy4rFy
-         68VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qkIGmRvWdpvpHWZiXHmBkZ272P9SkiCAZcuaQC1DR14=;
-        b=UiL7mCDLWUya98H0TOEcF2J4xJkwMqyMRYMKapzRgg5KuZ61h41w5MzQDJCKLOo2eO
-         fJBM3jthYQEnAv+ziHIbAl8Tg3+4WB9NYAt4E2rvwhSONqmYvqhGtgCKActqA3X9SNx7
-         K3kZ15uFizoZg8D7Vdh5fTrL5E8rmgA8giG0YmJIZ5h019jGm4dpU7S41GgM8Me2+D9m
-         J3HPhbETGC2cQf7lrQjVoGG9bVEYxanXrwPoYzW2URiWH2cUqVVWpdnpkLbtVBm9C3ze
-         9hZGUw8bcaiymwCv17uvAuk/y6ZNe5iouLwhPDZ8Qcairq8Rcm2Iu2PQlItnx2eYV3dq
-         viWw==
-X-Gm-Message-State: AOAM5330I+5bY1p7PmXTta5pymI56OjiudWo2RbiVQjvyRlUqDdwTsat
-        h9Y6GgSPtAIKeZLMDVHhj9nw6DBR
-X-Google-Smtp-Source: ABdhPJxrBCQujbDJG/wG2RTZOr8JlWcKTxN8MVE5jK8kMoXC8OVOMg9sN8RbTWAjb7YmBTk+Al/tlA==
-X-Received: by 2002:a17:902:6b87:: with SMTP id p7mr26942728plk.275.1593021252980;
-        Wed, 24 Jun 2020 10:54:12 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:d17e])
-        by smtp.gmail.com with ESMTPSA id f207sm5491841pfa.107.2020.06.24.10.54.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 10:54:12 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 10:54:08 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-Message-ID: <20200624175408.kwc562ofnfhmy674@ast-mbp.dhcp.thefacebook.com>
-References: <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
- <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
- <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
- <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
- <321b85b4-95f0-2f9b-756a-8405adc97230@i-love.sakura.ne.jp>
- <748ef005-7f64-ab9b-c767-c617ec995df4@schaufler-ca.com>
+        id S2405869AbgFXR55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 13:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405743AbgFXR55 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:57:57 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 480082078E;
+        Wed, 24 Jun 2020 17:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593021476;
+        bh=QhcLJu5XeabSx4iawRJSemJSRZyIebuJjQB6tYl8B5c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vn4DGikepn6Cwcr5GONOveuq+gSy3somBP4NvHgYUR6vL9BltCdSfAAEBie5zEmll
+         Zqugc9efXjjclkICYIfHA5HODRmEA8UxK+DwhRUlyMR4iM6YCYqBD+PNvmXjQkblwt
+         52zkA+I+fFH5FvD8aHvhOcD757MEZtLcDswxAo8M=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5E4AD405FF; Wed, 24 Jun 2020 14:57:54 -0300 (-03)
+Date:   Wed, 24 Jun 2020 14:57:54 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        dwarves@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>
+Subject: Re: pahole generates invalid BTF for code compiled with recent clang
+Message-ID: <20200624175754.GD20203@kernel.org>
+References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
+ <CAEf4BzbSc-wykq1_62CQwtszO+76rkudz_B=GkzE6ZheMUAusw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <748ef005-7f64-ab9b-c767-c617ec995df4@schaufler-ca.com>
+In-Reply-To: <CAEf4BzbSc-wykq1_62CQwtszO+76rkudz_B=GkzE6ZheMUAusw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 08:41:37AM -0700, Casey Schaufler wrote:
-> On 6/24/2020 12:05 AM, Tetsuo Handa wrote:
-> > Forwarding to LSM-ML again. Any comments?
+Em Wed, Jun 24, 2020 at 10:41:10AM -0700, Andrii Nakryiko escreveu:
+> On Wed, Jun 24, 2020 at 4:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > Hi,
+> >
+> > If pahole -J is used on an ELF that has BTF info from clang, it
+> > produces an invalid
+> > output. This is because pahole rewrites the .BTF section (which
+> > includes a new string
+> > table) but it doesn't touch .BTF.ext at all.
 > 
-> Hey, BPF folks - you *really* need to do better about keeping the LSM
-> community in the loop when you're discussing LSM issues. 
+> Why do you run `pahole -J` on BPF .o file? Clang already generates
+> .BTF (and .BTF.ext, of course) for you.
+> 
+> pahole -J is supposed to be used for vmlinux, not for clang-compiled
+> -target BPF object files.
+
+yeah, I was thinking this was for a vmlinux generated by clang, which,
+from the commands below (the suffix _prog.o) should have told me this is
+a target BPF object file.
+
+But then, if one insists for some reason in generating BTF from the
+DWARF in a BPF target object file, stripping .BTF.ext, if present, is
+the right thing to do at this point.
+
+- Arnaldo
+ 
+> >
+> > To demonstrate, on a recent check out of bpf-next:
+> >     $ cp connect4_prog.o connect4_pahole.o
+> >     $ pahole -J connect4_pahole.o
+> >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
+> > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
+> >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
+> > .BTF.ext=btf-ext.bin connect4_prog.o
+> >     $ sha1sum *.bin
+> >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
+> >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
+> >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
+> >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
+> >
+> > This problem crops up when compiling old kernels like 4.19 which have
+> > an extra pahole
+> > build step with clang-10.
+> 
+> I was under impression that clang generates .BTF and .BTF.ext only for
+> -target BPF. In this case, kernel is compiled for "real" target arch,
+> so there shouldn't be .BTF.ext in the first place? If that's not the
+> case, then I guess it's a bug in Clang.
 > 
 > >
-> > On 2020/06/24 15:39, Alexei Starovoitov wrote:
-> >> On Wed, Jun 24, 2020 at 01:58:33PM +0900, Tetsuo Handa wrote:
-> >>> On 2020/06/24 13:00, Alexei Starovoitov wrote:
-> >>>>> However, regarding usermode_blob, although the byte array (which contains code / data)
-> >>>>> might be initially loaded from the kernel space (which is protected), that byte array
-> >>>>> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
-> >>>>> in the user address space. Thus, LSM modules (including pathname based security) want
-> >>>>> to control how that byte array can behave.
-> >>>> It's privileged memory regardless. root can poke into kernel or any process memory.
-> >>> LSM is there to restrict processes running as "root".
-> >> hmm. do you really mean that it's possible for an LSM to restrict CAP_SYS_ADMIN effectively?
-> 
-> I think that SELinux works hard to do just that. SELinux implements it's own
-> privilege model that is tangential to the capabilities model.
+> > I think a possible fix is to strip .BTF.ext if .BTF is rewritten.
+> >
+> > Best
+> > Lorenz
+> >
+> > --
+> > Lorenz Bauer  |  Systems Engineer
+> > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> >
+> > www.cloudflare.com
 
-of course. no argument here.
+-- 
 
-> More directly, it is simple to create a security module to provide finer privilege
-> granularity than capabilities. I have one lurking in a source tree, and I would
-> be surprised if it's the only one waiting for the next round of LSM stacking.
-
-no one is arguing with that either.
-
-> 
-> >> LSM can certainly provide extra level of foolproof-ness against accidental
-> >> mistakes, but it's not a security boundary.
-> 
-> Gasp! Them's fight'n words. How do you justify such an outrageous claim?
-
-.. for root user processes.
-What's outrageous about that?
-Did you capture the context or just replying to few sentences out of the context?
+- Arnaldo
