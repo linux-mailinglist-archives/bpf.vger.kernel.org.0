@@ -2,182 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0402D207C61
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 21:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3E8207D8F
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 22:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391349AbgFXTsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 15:48:52 -0400
-Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:41189
-        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391287AbgFXTsv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Jun 2020 15:48:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1593028129; bh=7LhNJLz4g/G53x6mte5Ednv74jq/i1xGZKI6lb6VndM=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=PD7enlToaK05zSfXLx0TWcF+GuekhJ2MOetfAk+Lgkg25AJ5lE2/rhoLbwFv+ipxTyAgqzXMqx8FFHrrxKrL0y/FU6QfWtjSJrzN5lAI931loXcoQ6ZU5kKeEPBHKa+bhqNeT6L5EcSv/ez3lf9tRlKBvVEh75WTuOinNK3EcXyXYTsFUwv43Bk/RozQ4ea2Ota5gfx/jnVJC/sJca7EVh/hp77se9CkdZGAFh+2YqDbVzEoGoun9XmNaSkXhxPO8pI17tgcipRZmZrioGyr2w7XaJSZHb/PmJAUWMXbNcUt9s1sRg6iUkz1ybiGzhbxXWCTmu3XWkiKv/CIOlDUcw==
-X-YMail-OSG: 4dNH4BUVM1l.hgeQja.X_7x47MkG8C1khh7boptzvTd0QYMFZbZxotrz7Rd5d70
- sLOuzFVxZogjvza78gAHqZpToDPhGjk5V8.Gefl8T7e_t3CTHD5M.yRodGvZaKLp59Lk3HihY5TV
- tvr1MFvrBC4SMnwBdmxxx0pRpXdIZuj1tEu55r_0fQG7P3MSFFkOeKqb3Bf5.eXbLef6lWqW.gQo
- g4Up8zNVtCjdLu18kgTTcLjrY9tw7rXjPi9NjfGUeB5FuQYx2_0J2RVMYHLVXV3DH0AJkr824bji
- cKYep0MOosUOjDH2gK5f936H.bGuayUyPzj5oTXJI62.y6blBDha8GEiVLwmt4HZc2z3habBRAiV
- LEvxc0XT0DTJmLtW3N7g2RWqYhTZjtY5tzqifjhBvxli__MvEvV4j3kMx_ogOCxPnhiZZXLd1aFs
- pzx3kykV6miYPBmppKAGeacPg8fC_HdGrACOQwj2WQsTqROizeAmv0iaBGChPQSfw4OshapqyNqw
- uzuRK0hfMtjlvd0Wf.7CEJIyclIMGrZOUVUHdtgD7RayxL9HMXYp0lTikzDsVmbSfgOsfXxb5N1f
- l9qhnrRZJ.LA6U26dw3nQLue.EfFPnEhqRTx13fm8I7Gmj_8qjhQ5ZCqYLrsdS9DMoJY3iJHFXEB
- 6qf3eixny3_jvt4IZMQcytEYMmyI2HxCt5nkq7ccS70QlJFmrG_xEkuJgDJX6qTOxlmXqn43mtfH
- 6JEOXRBDSrF3RRBZQ1t6mTtu2T0sxz2K13_cFWMvHwLMa5P9_iWWtz6NKlS7YpMSPDYkf1hKPG5j
- ski0OfGekrEvfhktvtP.bd9WVPkNAdOG3wehfcrEB9wCVN4uAaeyt0wdm_aTlLzieJY2HPZwIdH.
- IHE0D5fb4IqdtomH1jUAoo0L6aAURV8fgBheLPkwhBtkVQ2f53PPDEGVT0PwHBq2o5MRGY6vevJS
- m1CKbL20UYud17JwmNFKKm6wsMRE0X_11tRRQ2XexHU6r6ikHy8W0Wtf8uZ.bkt4L9TmZbZel3VM
- dIthO9PKSvEHRhuFHlfWCt0c1SurI_tWgbZy7wa9kAnB7AYNa_SN2IQ_vO1uuovRulgMyqtn33S.
- 9xOzPSZ7UPmPNCdAxqjY0hpyYJYlrxZ0stIGdOwo2Ds99mDu1k151MRZCWU5utltmVs7CZdO1_Vy
- B3hY7lR2EvDPu8U4AuYC_QNXJ0GjjCtYfr.rUZnkLcWmNQ9GBjqSU79ylqACP9mEIhuF95pxCWZN
- Urvq7HAzKtk6DPXw9fXJvh_QUhCkBQ0kWWqKZitHamUsHAQ2ecQzBndacUcIzvr6IY_VE3Z0ibib
- dSUw7.2rr_QbpAS0sdRR.hhtM4gp4aFRVT59j5XFd693uvIu56c1Y3yIkESd.ruhHYvJWX_mgZO6
- fF8o05nQbdgnbJz4RS_KI8XgD9k0-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Wed, 24 Jun 2020 19:48:49 +0000
-Received: by smtp425.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID da9a592d2a59cb9cfca3dabc33561ece;
-          Wed, 24 Jun 2020 19:48:47 +0000 (UTC)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
- <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
- <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
- <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
- <321b85b4-95f0-2f9b-756a-8405adc97230@i-love.sakura.ne.jp>
- <748ef005-7f64-ab9b-c767-c617ec995df4@schaufler-ca.com>
- <20200624175408.kwc562ofnfhmy674@ast-mbp.dhcp.thefacebook.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- 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
- abzjfg==
-Message-ID: <8330277b-c399-c1d1-bf28-f253ba584c1a@schaufler-ca.com>
-Date:   Wed, 24 Jun 2020 12:48:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200624175408.kwc562ofnfhmy674@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S2391449AbgFXUh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 16:37:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20262 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729833AbgFXUhZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Jun 2020 16:37:25 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OKVUfU026795;
+        Wed, 24 Jun 2020 13:37:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=Si7jD0Oc/WrCdHCCcq8KqZUAe2LIOQ8qHrGiJ9t4WKk=;
+ b=iPiMsbuVG4k4zby85+Dgq8Rx1q2q6NoiTQSgSAcuY8F0zjTncO9MAaXKXIcwDFdrSg0X
+ EarDz7wtJsipZUNKP0YCGr6bxTSoe+rJKV+aQPKZTNETZ3cHbvdP8y7FvJAeS9XDXj0t
+ SqYtPYjwHaelCuQ+6jJL/pi/SuntfTyKgYk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux0xmayn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 24 Jun 2020 13:37:09 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 24 Jun 2020 13:37:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JDnc39h87XKYa4tfwsNRep9s8db37BkyTedki8mV5AJyd+ahzSLTT2eZrwErof2iIqyF6J0OwRfF3Anyfnj+BroP+/M6b/SnHJlY0t5gCJoEuPjWzggnCHgftqyydNgpyw9+NKTw4QFe6EtTanz/bcLu/jIIfwRWDjcu0e3kDFjmMK7OqTrLaIfxmMUW8JAbxlXHwODM205EjNDu6Gaq7E7ivsc3SrmFezbZjaYDNCDLcaZftMcavCOH6oPh4nh2hB7sLMHNS4+LtRzEn2c6BCGKCQGn99NezVa6awzj+ryPpuuVShYxEVLa3LTgaabFd91ccmYf9xmN+ccZsXYQGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Si7jD0Oc/WrCdHCCcq8KqZUAe2LIOQ8qHrGiJ9t4WKk=;
+ b=R8smNOKhIehrzxMoVYlGdy8r/iZpi6Je3jBA0FL6ZQ0DmqQmk/onrd9v14d4WuKuQmW2t2pJcVA7Gs2b6QPcC/ORAX/+DowqPfaTOkdjAz4ecC6WDRM4mZkgF9DNL24NQo8QPhpucU3VtQRSyosaviUu1d/Sb9pcWTAAukEcWtrtl1w0oeyq8h2U3GkslQk7lAdXnaxAMWMo/ae3cFMJsMsnto+kK35eZ0iLXpePhYeEE7FBiiQFE7K6jqTSxn/WECX89RurLU22kDr25T5prk5OCO/yXa/l5AsEGx6ymkgK+gN18fa43Kw1dIBy9HongspWiei7lPgMc6rqn7Dbaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Si7jD0Oc/WrCdHCCcq8KqZUAe2LIOQ8qHrGiJ9t4WKk=;
+ b=SnDUKlSSLnuX904xS8J8ZJDFDtR7/FEDaMItcvINbd3rp+/7PuyjvXC/dTZS2uxHSQ+o5RWnlerUOa7CMhECYYHJg62JQ+gTXxbIF88MKPGsfIvndrQCSlaLvRC5fvPVGbG3xJhrel3dn4RDCI0i/RwNJqUbwbiX8Rnr1RsInOw=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3045.namprd15.prod.outlook.com (2603:10b6:a03:f9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Wed, 24 Jun
+ 2020 20:37:07 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3109.027; Wed, 24 Jun 2020
+ 20:37:07 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add bpf_iter test with
+ bpf_get_task_stack_trace()
+Thread-Topic: [PATCH bpf-next 3/3] selftests/bpf: add bpf_iter test with
+ bpf_get_task_stack_trace()
+Thread-Index: AQHWSS0YqPPKE0Yf2kWel2Uo2kKqj6jmjfIAgAA1IgCAAAWTgIABc3EA
+Date:   Wed, 24 Jun 2020 20:37:07 +0000
+Message-ID: <03A78005-BDCD-4A90-BD27-724DA6056D9B@fb.com>
+References: <20200623070802.2310018-1-songliubraving@fb.com>
+ <20200623070802.2310018-4-songliubraving@fb.com>
+ <445e1e04-882f-7ff7-9bd4-ebcf679cebbb@fb.com>
+ <78BB08A3-D049-4795-8702-470C5841062C@fb.com>
+ <dda0849f-f106-18d9-b805-5fe1edb72e42@fb.com>
+In-Reply-To: <dda0849f-f106-18d9-b805-5fe1edb72e42@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Mailer: WebService/1.1.16138 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+x-originating-ip: [2620:10d:c091:480::1:3bf5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0c8296dd-f6f5-4d83-1ea5-08d8187e5d17
+x-ms-traffictypediagnostic: BYAPR15MB3045:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB30457D0198E7ED767435A30CB3950@BYAPR15MB3045.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-forefront-prvs: 0444EB1997
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 096MJV2yCd/CfL1cIFjNib2VAi/cTU3orVg4j5Y7kLdHC9bdpi+RxaCVesUyOs1NEC310ptvWn7owphnGxTmCTGnS1u0G1b/hQ6pRlP3zJmPoD64xHVFuCDIv15B0tEYDDumSlLPWh2Ozy2hQpbhVjHkf0De+MTQG6hoYQye1kKZyCC7smyqBzNT/MZCCHob0amuUf+KzVOE+URyq8EE2Dl4rtd6WoSXdPxlSy/PZ78yl1aZs40WdjQ4V5Peqx8JnzkLp4wnMrfLIZWat3ydKNMLjdp6UsdxuE7ZqjgnQ6tjkdyyoc7wbnMXo6zXmckr33/XACqcGR83csj9T+YcRg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(39860400002)(136003)(346002)(366004)(54906003)(316002)(2616005)(5660300002)(86362001)(6512007)(8936002)(66476007)(76116006)(91956017)(8676002)(4326008)(6862004)(6636002)(66946007)(83380400001)(66446008)(71200400001)(64756008)(33656002)(186003)(37006003)(478600001)(2906002)(36756003)(53546011)(6506007)(66556008)(6486002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Lgx8icA7ZnEnkL3VmJ8mtbrfUfM+OHPbDYsGg0egkPaBP3fc+uFz8dJfrtFj+D6SpZeoUpt+vJFyhZhLyCB8q+5rg39HdMKmi6un0gj30awM+HkoPyY8oP+xoZEt8tWgwh9LJIt2Ahgr9CmMCc4V1YUfXNTkixOAVayvtHiG6t6g/m9bl2IY2cE8cnKKhPq+xtxXM1vERp5kYAIkOLrxdrKFMbrR8+MKLWQHc3nheQOr9Dj0Lq99BhoWmwN0fehPtuq8v7LC7X+UlLJNCM3n663QA7DUER0digucVFpHxuAzVoEi8wGsS6hFr/rDdGop/gjncGzpRZKzVq+boGCRTBOC6cWHR8CSOGEyYWfYLU95DveOaFJLBVkocwpxWI59OSjEqZSfsjcDbcfUZPNlP3v6ehaAcB4sk2pxuG4Gy3IFnwWQHRj1BNYRa9oHlwQ3Zma9XFP3jF9aKdKrGZ2U7u+YPQNQsfZWtYDHLfWZrzSTLbrxVhTycfV7Z35y5V9ZR0haoYNm2JpcArG5T8W0bQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <88F5368B695BE8448835BF40B289EDE9@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c8296dd-f6f5-4d83-1ea5-08d8187e5d17
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2020 20:37:07.8008
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1mu5jbT+NF6OeybOq+cBYPIVATOU6K8PAsuWeiz9jXXRuH9guwyZ09r4Sgiu37O+dIKBIgQ2j9sZBEoTOibqVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3045
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_16:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ spamscore=0 mlxscore=0 impostorscore=0 cotscore=-2147483648 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 clxscore=1015 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006240133
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/24/2020 10:54 AM, Alexei Starovoitov wrote:
-> On Wed, Jun 24, 2020 at 08:41:37AM -0700, Casey Schaufler wrote:
->> On 6/24/2020 12:05 AM, Tetsuo Handa wrote:
->>> Forwarding to LSM-ML again. Any comments?
->> Hey, BPF folks - you *really* need to do better about keeping the LSM
->> community in the loop when you're discussing LSM issues.=20
->>
->>> On 2020/06/24 15:39, Alexei Starovoitov wrote:
->>>> On Wed, Jun 24, 2020 at 01:58:33PM +0900, Tetsuo Handa wrote:
->>>>> On 2020/06/24 13:00, Alexei Starovoitov wrote:
->>>>>>> However, regarding usermode_blob, although the byte array (which =
-contains code / data)
->>>>>>> might be initially loaded from the kernel space (which is protect=
-ed), that byte array
->>>>>>> is no longer protected (e.g. SIGKILL, strace()) when executed bec=
-ause they are placed
->>>>>>> in the user address space. Thus, LSM modules (including pathname =
-based security) want
->>>>>>> to control how that byte array can behave.
->>>>>> It's privileged memory regardless. root can poke into kernel or an=
-y process memory.
->>>>> LSM is there to restrict processes running as "root".
->>>> hmm. do you really mean that it's possible for an LSM to restrict CA=
-P_SYS_ADMIN effectively?
->> I think that SELinux works hard to do just that. SELinux implements it=
-'s own
->> privilege model that is tangential to the capabilities model.
-> of course. no argument here.
->
->> More directly, it is simple to create a security module to provide fin=
-er privilege
->> granularity than capabilities. I have one lurking in a source tree, an=
-d I would
->> be surprised if it's the only one waiting for the next round of LSM st=
-acking.
-> no one is arguing with that either.
->
->>>> LSM can certainly provide extra level of foolproof-ness against acci=
-dental
->>>> mistakes, but it's not a security boundary.
->> Gasp! Them's fight'n words. How do you justify such an outrageous clai=
-m?
-> .. for root user processes.
-> What's outrageous about that?
-> Did you capture the context or just replying to few sentences out of th=
-e context?
 
-As I mentioned above, you need to include the LSM list in these discussio=
-ns.
-If you don't want "out of context" comments. I replied to what's presente=
-d.
-And regardless of the context, saying that an LSM can't provide a securit=
-y
-boundary for "root user processes" is just wrong. Obviously there's been =
-more
-to the conversation than is included here.
 
+> On Jun 23, 2020, at 3:27 PM, Yonghong Song <yhs@fb.com> wrote:
+>=20
+>=20
+>=20
+> On 6/23/20 3:07 PM, Song Liu wrote:
+>>> On Jun 23, 2020, at 11:57 AM, Yonghong Song <yhs@fb.com> wrote:
+>>>=20
+>>>=20
+>>>=20
+>>> On 6/23/20 12:08 AM, Song Liu wrote:
+>>>> The new test is similar to other bpf_iter tests.
+>>>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>>>> ---
+>>>>  .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++++
+>>>>  .../selftests/bpf/progs/bpf_iter_task_stack.c | 50 ++++++++++++++++++=
++
+>>>>  2 files changed, 67 insertions(+)
+>>>>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_st=
+ack.c
+>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools=
+/testing/selftests/bpf/prog_tests/bpf_iter.c
+>>>> index 87c29dde1cf96..baa83328f810d 100644
+>>>> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+>>>> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+>>>> @@ -5,6 +5,7 @@
+>>>>  #include "bpf_iter_netlink.skel.h"
+>>>>  #include "bpf_iter_bpf_map.skel.h"
+>>>>  #include "bpf_iter_task.skel.h"
+>>>> +#include "bpf_iter_task_stack.skel.h"
+>>>>  #include "bpf_iter_task_file.skel.h"
+>>>>  #include "bpf_iter_test_kern1.skel.h"
+>>>>  #include "bpf_iter_test_kern2.skel.h"
+>>>> @@ -106,6 +107,20 @@ static void test_task(void)
+>>>>  	bpf_iter_task__destroy(skel);
+>>>>  }
+>>>>  +static void test_task_stack(void)
+>>>> +{
+>>>> +	struct bpf_iter_task_stack *skel;
+>>>> +
+>>>> +	skel =3D bpf_iter_task_stack__open_and_load();
+>>>> +	if (CHECK(!skel, "bpf_iter_task_stack__open_and_load",
+>>>> +		  "skeleton open_and_load failed\n"))
+>>>> +		return;
+>>>> +
+>>>> +	do_dummy_read(skel->progs.dump_task_stack);
+>>>> +
+>>>> +	bpf_iter_task_stack__destroy(skel);
+>>>> +}
+>>>> +
+>>>>  static void test_task_file(void)
+>>>>  {
+>>>>  	struct bpf_iter_task_file *skel;
+>>>> @@ -392,6 +407,8 @@ void test_bpf_iter(void)
+>>>>  		test_bpf_map();
+>>>>  	if (test__start_subtest("task"))
+>>>>  		test_task();
+>>>> +	if (test__start_subtest("task_stack"))
+>>>> +		test_task_stack();
+>>>>  	if (test__start_subtest("task_file"))
+>>>>  		test_task_file();
+>>>>  	if (test__start_subtest("anon"))
+>>>> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b=
+/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+>>>> new file mode 100644
+>>>> index 0000000000000..4fc939e0fca77
+>>>> --- /dev/null
+>>>> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+>>>> @@ -0,0 +1,50 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/* Copyright (c) 2020 Facebook */
+>>>> +/* "undefine" structs in vmlinux.h, because we "override" them below =
+*/
+>>>> +#define bpf_iter_meta bpf_iter_meta___not_used
+>>>> +#define bpf_iter__task bpf_iter__task___not_used
+>>>> +#include "vmlinux.h"
+>>>> +#undef bpf_iter_meta
+>>>> +#undef bpf_iter__task
+>>>> +#include <bpf/bpf_helpers.h>
+>>>> +#include <bpf/bpf_tracing.h>
+>>>> +
+>>>> +char _license[] SEC("license") =3D "GPL";
+>>>> +
+>>>> +struct bpf_iter_meta {
+>>>> +	struct seq_file *seq;
+>>>> +	__u64 session_id;
+>>>> +	__u64 seq_num;
+>>>> +} __attribute__((preserve_access_index));
+>>>> +
+>>>> +struct bpf_iter__task {
+>>>> +	struct bpf_iter_meta *meta;
+>>>> +	struct task_struct *task;
+>>>> +} __attribute__((preserve_access_index));
+>>>> +
+>>>> +#define MAX_STACK_TRACE_DEPTH   64
+>>>> +unsigned long entries[MAX_STACK_TRACE_DEPTH];
+>>>> +
+>>>> +SEC("iter/task")
+>>>> +int dump_task_stack(struct bpf_iter__task *ctx)
+>>>> +{
+>>>> +	struct seq_file *seq =3D ctx->meta->seq;
+>>>> +	struct task_struct *task =3D ctx->task;
+>>>> +	unsigned int i, num_entries;
+>>>> +
+>>>> +	if (task =3D=3D (void *)0)
+>>>> +		return 0;
+>>>> +
+>>>> +	num_entries =3D bpf_get_task_stack_trace(task, entries, MAX_STACK_TR=
+ACE_DEPTH);
+>>>> +
+>>>> +	BPF_SEQ_PRINTF(seq, "pid: %8u\n", task->pid);
+>>>> +
+>>>> +	for (i =3D 0; i < MAX_STACK_TRACE_DEPTH; i++) {
+>>>> +		if (num_entries > i)
+>>>> +			BPF_SEQ_PRINTF(seq, "[<0>] %pB\n", (void *)entries[i]);
+>>>=20
+>>> We may have an issue on 32bit issue.
+>>> On 32bit system, the following is called in the kernel
+>>> +	return stack_trace_save_tsk(task, (unsigned long *)entries, size, 0);
+>>> it will pack addresses at 4 byte increment.
+>>> But in BPF program, the reading is in 8 byte increment.
+>> Can we avoid potential issues by requiring size % 8 =3D=3D 0? Or maybe r=
+ound down
+>> size to closest multiple of 8?
+>=20
+> This is what I mean:
+>  for bpf program: "long" means u64, so we allocate 64 * 8 buffer size
+>                   and pass it to the helper
+>  in the helper, the address will be increased along sizeof(long), which
+>                 is 4 for 32bit system.
+>          So address is recorded at buf, buf + 4, buf + 8, buf + 12, ...
+>  After the helper returns, the bpf program tries to retrieve
+>          the address at buf, buf + 8, buf + 16.
+>=20
+> The helper itself is okay. But BPF_SEQ_PRINTF above is wrong.
+> Is this interpretation correct?
+
+Thanks for the clarification. I guess the best solution is to fix this=20
+once in the kernel, so BPF programs don't have to worry about it.=20
+
+Song
 
