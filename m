@@ -2,98 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24769207F46
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 00:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2237D209700
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 01:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388453AbgFXWYI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 18:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728798AbgFXWYH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 18:24:07 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C04C061573;
-        Wed, 24 Jun 2020 15:24:06 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id x18so3609808ilp.1;
-        Wed, 24 Jun 2020 15:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=XizXk/rIjA4/OAmJT1uOxFYKdrsnWWaaSfnW9C/glhw=;
-        b=FEI12gvcdheEM1J7794lpIXYN1eDVBS7JCQm5F8ZMb1ylGZIr8KpklKNRXWGSl33BB
-         mKLIAKLsYGGDJNdP5XR0/pmY2iMky+8F2ed9S2Gdpy+tlh2RsmepzloAGQarPQARWgLq
-         kDrzbeTkc23bNZoqf9Czzc/prpjfWCB43td3urRBonfg5JmHm1mstV7nJb5iLbMfgeI7
-         sNFTqAWMWoSO+KhTPqqD/79dfWM1SOhPUqmyCXxoY9v+bhoSaWtj/g2b3SvtBTZV9G04
-         Qz/83cvzHOK9SOMvUlfActGprvxX/L661UQK2hp5SsEu8kagJi5lLlRKp2sHw0QKyK07
-         I5+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=XizXk/rIjA4/OAmJT1uOxFYKdrsnWWaaSfnW9C/glhw=;
-        b=rcuMp9G3Eiw9CgMaEEXbXe6vN9hHBrOHId3PiIeQlgDbYOp23i3YcOrCO8zYQ95Gru
-         VK02pFYBZ3O5kkaj3kRJC7rwppAYS0MEKt9xanpirHrEyqyHENDy4EbEPn7q8GurdXAu
-         7++O6HuAwssXUOoQAIblD8seedVgDdiigC4wEuoFNh0JiRlJaA5F1GSC6++poVPlhZGm
-         zUOnccDsWOpmJmjq9/9bxwy2h4hDsc+SA65qCHymLyLyqSx/IsTSOd5fmI7YFdBGeJ7h
-         lihxAhgFhb8YhXaGx0+b6XuLdeE+pVSY//EOobUVEn30yvIaGNmSKeykxLZwG6htLvBj
-         owQA==
-X-Gm-Message-State: AOAM532iqYemXbImpQI4yjyb8sz//fG/UgsqTd9XBM8k1eMXpcBO1tgW
-        3d5T0CzcGCU1a55ZQqRjc8yELOIuUf8=
-X-Google-Smtp-Source: ABdhPJwEQ3JMLwH7aM2EbAgU5iyvE4fJm1OeuBO1yUuMxygU4w9uYJWtneu0103wC5plGzpibRKcNw==
-X-Received: by 2002:a05:6e02:cd:: with SMTP id r13mr24675613ilq.119.1593037445874;
-        Wed, 24 Jun 2020 15:24:05 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id t1sm12309700iob.16.2020.06.24.15.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 15:24:05 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 15:23:58 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S2388123AbgFXXPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 19:15:25 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:55849 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728035AbgFXXPZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 19:15:25 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05ONEOlM034642;
+        Thu, 25 Jun 2020 08:14:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Thu, 25 Jun 2020 08:14:24 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05ONEOBd034639
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Thu, 25 Jun 2020 08:14:24 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <5ef3d27e224bd_7c272b1cd50b45c474@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzYZBoffuYUfssw+wBgz2SQx9E=AAP0VvOQDMc3Y3y1zLA@mail.gmail.com>
-References: <159293239241.32225.12338844121877017327.stgit@john-Precision-5820-Tower>
- <CAEf4BzYZBoffuYUfssw+wBgz2SQx9E=AAP0VvOQDMc3Y3y1zLA@mail.gmail.com>
-Subject: Re: [bpf PATCH] bpf: do not allow btf_ctx_access with __int128 types
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <87d066vd4y.fsf@x220.int.ebiederm.org>
+ <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+ <87bllngirv.fsf@x220.int.ebiederm.org>
+ <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+ <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+ <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <878sgck6g0.fsf@x220.int.ebiederm.org>
+ <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
+Date:   Thu, 25 Jun 2020 08:14:20 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Tue, Jun 23, 2020 at 10:14 AM John Fastabend
-> <john.fastabend@gmail.com> wrote:
-> >
-> > To ensure btf_ctx_access() is safe the verifier checks that the BTF
-> > arg type is an int, enum, or pointer. When the function does the
-> > BTF arg lookup it uses the calculation 'arg = off / 8'  using the
-> > fact that registers are 8B. This requires that the first arg is
-> > in the first reg, the second in the second, and so on. However,
-> > for __int128 the arg will consume two registers by default LLVM
-> > implementation. So this will cause the arg layout assumed by the
-> > 'arg = off / 8' calculation to be incorrect.
-> >
-> > Because __int128 is uncommon this patch applies the easiest fix and
-> > will force int types to be sizeof(u64) or smaller so that they will
-> > fit in a single register.
-> >
-> > Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
+On 2020/06/24 23:26, Alexei Starovoitov wrote:
+> On Wed, Jun 24, 2020 at 5:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>>> On Tue, Jun 23, 2020 at 01:53:48PM -0500, Eric W. Biederman wrote:
+>>
+>>> There is no refcnt bug. It was a user error on tomoyo side.
+>>> fork_blob() works as expected.
+>>
+>> Nope.  I have independently confirmed it myself.
 > 
-> "small int" for u64 looks funny, but naming is hard :)
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> I guess you've tried Tetsuo's fork_blob("#!/bin/true") kernel module ?
+> yes. that fails. It never meant to be used for this.
+> With elf blob it works, but breaks if there are rejections
+> in things like security_bprm_creds_for_exec().
+> In my mind that path was 'must succeed or kernel module is toast'.
+> Like passing NULL into a function that doesn't check for it.
+> Working on a fix for that since Tetsuo cares.
 > 
 
-Fixed up the parens and sent a v2 keeping the ACK. I don't have any
-better ideas for the name, let me know if you have a preference for
-something else.
+What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
+a file with empty filename. I can imagine that somebody would start abusing
+fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
+udevd and sshd. When such situation happened, how fork_usermode_blob() provides
+information for identifying the intent of such execve() requests?
+
+fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
+SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
+to associate appropriate security labels based on the content of the byte array
+because files are created on-demand. Is fork_usermode_blob() friendly to inode
+based LSMs?
