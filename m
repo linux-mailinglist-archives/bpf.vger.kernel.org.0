@@ -2,127 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150EB2078F9
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 18:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA2D207944
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 18:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404885AbgFXQXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 12:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        id S2404926AbgFXQfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 12:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404723AbgFXQXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:23:11 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C001EC0613ED
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 09:23:11 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id s21so2313150oic.9
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 09:23:11 -0700 (PDT)
+        with ESMTP id S2404952AbgFXQfH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:35:07 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E450C0613ED;
+        Wed, 24 Jun 2020 09:35:07 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id cv17so1308601qvb.13;
+        Wed, 24 Jun 2020 09:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3dDW1JKBhkhDXwU/i8u3/S0XHEs1yQQBBDrmoehDAVE=;
-        b=qGSVVcS1dWMWOpmEwg8RmYFLKMaY9TvfytN4zW0OJnLbjW49I6K5twHHJdVf+UyrKe
-         XRTUUxF0ddCNOKVxE2eLz5rhxoGccl2vMBItIjC8jQg/94AckSBvcuPO1Bo1avkzZBCH
-         fUaQm1uQUnP+BZl8Uaj3Bmufb/SHqU33AVUzw=
+        bh=lDn4TidR4qxH9VOW6mcMSR+f5fQgbVg5so95pf6069k=;
+        b=ROLM4SJ34XlWaQFKwc2CQNOVLZ9kDhK4rDyw0xNWABvN1TnHekqFvl3v5ir+gkn9wR
+         6cLJFhXOHa99yGaU4sgHyita3rksUWY2I191ABsjox/JYBED886lsdJioA64S9UJ7Dzr
+         PJArX6io3EcKf1ZWVlZXa+N+1BOivU4opRo91pPJA6hmrDqT7Ng6mfFXOAcyaWRkjECD
+         M3PUo8+WRo0h77UeyV3fFwXoCE03OslOqmnvM+6IIheNBaJCdVsHKJfp2AaD1EmaSLAQ
+         YMV1B41BpZIq8Ts2VXOicqoVN0eRwa04GNG7QCfekZXZCpiM3nm+mzJ2DTdzqupvbrfI
+         spxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3dDW1JKBhkhDXwU/i8u3/S0XHEs1yQQBBDrmoehDAVE=;
-        b=HCQt4VXyVkJJei0AvFxFjPNd4ZAf+8xIlpb44xsA4UuIhH3FtkoWf+ZjYUQStXfRow
-         TiIA8K7sqWBfyKrcZL/+IQ6QiL/+NnozfGpwhqHX+OvJ211SWGvNpybmHW6mwpUp5qFp
-         UTLBW0VdN4biR7IVWp45rpxCRxjNcdZogRKMyPzQYMKjREDIVG/ZBVhLC+vTmClX0oMd
-         XImT3y7zfSabry2ROUnG8k4aoe9n2dUIfj8hmHzZrk1bd9wyAWAcnaNxYZoeV4Mqr5DO
-         OSJ5dw7j3KBm7AGOzxetAZvDyAt5yiV3LS4rHgKhD1KprU9z0vrhkb8pJ8GN/VDxphBl
-         dQCg==
-X-Gm-Message-State: AOAM530tsO0grv6qakOuH33JFCJAwIbe29nS0nVFnplMCMtUhArqBSa5
-        YwIfsbSiWuQM+u4ijC+pYs3n2UWYkLHZgD5JDyvkRg==
-X-Google-Smtp-Source: ABdhPJxPrquYfsHLe+2acfIL+e6vWH2E1ClxXg6x+dcP5wITB6QZFh4MAcJuDh/BOMDhcwx0qJOyQEoT8bWriAsXFdI=
-X-Received: by 2002:a05:6808:34f:: with SMTP id j15mr4927088oie.102.1593015791041;
- Wed, 24 Jun 2020 09:23:11 -0700 (PDT)
+        bh=lDn4TidR4qxH9VOW6mcMSR+f5fQgbVg5so95pf6069k=;
+        b=jwfqVQLxSs/h8A+opaxsolkQ4uVtMj55d5IKidcMosAx2jA3M1cqVlPdC+OfKACkXv
+         8Scg+t5II8Sy91uZCFVekWpvAf1n47pA2NYKdmwR0cSnGWYE1H6FGIYKYQfYoRKdctLs
+         T32c41mNBn+o0drBJuDhjygosOQzg0bqjB3ij9uuGnwqP/oOJ3Q7I4gCDmCPKie1oPqv
+         1i0oIR/FnQi5koNDy2YjpBuyvWIBYiXAmLBmFxB7NzxaWn5GgS6X1oRbVRn7rVjXWct4
+         RIr2vHkyjOxONYJ1N7yYArnyiHGKZx6hRmEl2mk4za5PZWnf7WaxFMIKnJ71XJMc13hR
+         SVNQ==
+X-Gm-Message-State: AOAM530Hslkb/mv0qqxaAiXQ76YMejel9YsmCsL3CAua7mY5DPUwS0pY
+        paM90Fn3KJgiFdi2qXFsWTT6rBDbwTiR9qQtVyU=
+X-Google-Smtp-Source: ABdhPJxv2vbKd0+529OflCA51otsX32YPHc+nJbcHmJ11PjU1wnIU1L1Qn0WKAvZp3PJ6QGyRoKMrGJGBJHyspgIA4E=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr19252356qvb.228.1593016506056;
+ Wed, 24 Jun 2020 09:35:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
- <20200624160659.GA20203@kernel.org>
-In-Reply-To: <20200624160659.GA20203@kernel.org>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 24 Jun 2020 17:22:59 +0100
-Message-ID: <CACAyw9-zLLDJ4vXo7jGS_XoYsiiv4c5NmUCjCnAf0eZBXU3dVA@mail.gmail.com>
-Subject: Re: pahole generates invalid BTF for code compiled with recent clang
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>
+References: <20200624003340.802375-1-andriin@fb.com> <CAADnVQJ_4WhyK3UvtzodMrg+a-xQR7bFiCCi5nz_qq=AGX_FbQ@mail.gmail.com>
+ <CAEf4BzYKV=A+Sd1ByA2=7CG7WJedB0CRAU7RGN6jO8B9ykpHiA@mail.gmail.com> <20200624145235.73mysssbdew7eody@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200624145235.73mysssbdew7eody@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 24 Jun 2020 09:34:52 -0700
+Message-ID: <CAEf4Bzay9fErW5wooMBkmrHPK9T=e8O82cJc5NNq+wmugTznjQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: add debug message for each created program
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Jun 2020 at 17:07, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Wed, Jun 24, 2020 at 7:52 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Em Wed, Jun 24, 2020 at 12:05:50PM +0100, Lorenz Bauer escreveu:
-> > Hi,
+> On Tue, Jun 23, 2020 at 11:59:40PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 23, 2020 at 11:47 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jun 23, 2020 at 5:34 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> > > >
+> > > > Similar message for map creation is extremely useful, so add similar for BPF
+> > > > programs.
+> > >
+> > > 'extremely useful' is quite subjective.
+> > > If we land this patch then everyone will be allowed to add pr_debug()
+> > > everywhere in libbpf with the same reasoning: "it's extremely useful pr_debug".
 > >
-> > If pahole -J is used on an ELF that has BTF info from clang, it
-> > produces an invalid
-> > output. This is because pahole rewrites the .BTF section (which
-> > includes a new string
-> > table) but it doesn't touch .BTF.ext at all.
->
-> > To demonstrate, on a recent check out of bpf-next:
-> >     $ cp connect4_prog.o connect4_pahole.o
-> >     $ pahole -J connect4_pahole.o
-> >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
-> > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
-> >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
-> > .BTF.ext=btf-ext.bin connect4_prog.o
-> >     $ sha1sum *.bin
-> >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
-> >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
-> >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
-> >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
+> > We print this for maps, making it clear which maps and with which FD
+> > were created. Having this for programs is just as useful. It doesn't
+> > overwhelm output (and it's debug one either way). "everyone will be
+> > allowed to add pr_debug()" is a big stretch, you can't just sneak in
+> > or force random pr_debug, we do review patches and if something
+> > doesn't make sense we can and we do reject it, regardless of claimed
+> > usefulness by the patch author.
 > >
-> > This problem crops up when compiling old kernels like 4.19 which have
-> > an extra pahole
-> > build step with clang-10.
+> > So far, libbpf debug logs were extremely helpful (subjective, of
+> > course, but what isn't?) to debug "remotely" various issues that BPF
+> > users had. They don't feel overwhelmingly verbose and don't have a lot
+> > of unnecessary info. Adding a few lines (how many BPF programs are
+> > there per each BPF object?) for listing BPF programs is totally ok.
 >
->
-> > I think a possible fix is to strip .BTF.ext if .BTF is rewritten.
->
-> Agreed.
->
-> Longer term pahole needs to generate the .BTF.ext from DWARF, but then,
-> if clang is generating it already, why use pahole -J?
+> None of the above were mentioned in the commit log.
+> And no examples were given where this extra line would actually help.
 
-Beats me, but then sometimes you don't have control over the workflow, see
-my v4.19 kernel example.
+I used it just 2 days ago trying to understand why bpftool doesn't
+show its own bpf_iter program, but shows maps. I discovered with
+surprise that we actually don't log FDs of loaded programs.
 
 >
-> Does clang do deduplication for multi-object binaries?
+> I think libbpf pr_debug is extremely verbose instead of extremely useful.
+> Just typical output:
+> ./test_progs -vv -t lsm
+> libbpf: loading object 'lsm' from buffer
+> libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
+> libbpf: skip section(1) .strtab
+> libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+> libbpf: skip section(2) .text
+> libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
+> libbpf: found program lsm/file_mprotect
+> libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
+> libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6, type=1
+> libbpf: found program lsm/bprm_committed_creds
+> libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags 0, type=9
 >
-> Also its nice to see that the BTF generated ends up with the same
-> sha1sum, cool :-)
+> How's above useful for anyone?
+> libbpf says that there are '.strtab' and '.text' sections in the elf file.
+> That's wet water. Any elf file has that.
+> Then it says it's skipping '.text' ?
+> That reads surprising. Why library would skip the code?
+> And so on and so forth.
 
-Unfortunately it's the .BTF.ext section that has the same sha1, because
-pahole doesn't touch it ;(
+I can pick a few more not-so-useful (usually) pr_debug-level log lines
+as well, I don't think it disproves that debug logs are useful.
+
+> That output is useful to only few core libbpf developers.
+
+Yes, and I don't expect typical BPF developers to have them turned on
+by default. They are *DEBUG*-level output, after all, users shouldn't
+care about them, only INFO and WARN/ERR ones, I'd hope. But it's #1
+thing that I ask users to provide when they come with any questions
+about BPF or libbpf.
+
+So yeah, as a core libbpf developer and a person helping people with
+various (often non-libbpf-specific) BPF problems both online and
+within my company, I stand by my claim that libbpf debug logs are
+extremely useful and helped debug and understand numerous issues.
+
+Just yesterday (or two days ago, maybe), having those CO-RE relocation
+logs, which I fought to keep when I added CO-RE relocs initially,
+immediately shown that a person doesn't have bpf_iter compiled in its
+running kernel, despite the claims otherwise.
 
 >
-> > Best
-> > Lorenz
-> >
-> > --
-> > Lorenz Bauer  |  Systems Engineer
-> > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-> >
-> > www.cloudflare.com
->
-> --
->
-> - Arnaldo
+> I don't mind more thought through debug prints, but
+> saying that existing pr_debugs are 'extremely useful' is a stretch.
 
+Some lines are extremely useful, yes, some less so. But then again,
+depending on the situation. Not all parts of the log are relevant 100%
+of the time, but sometimes even these ELF parsing logs are important.
+How many people add and debug libbpf functionality that deals with
+interpreting ELF sections/relocations/etc to be able to claim about
+their usefulness anyway?
 
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Regardless, we've spent way too much time on this, I don't care about
+this particular pr_debug() enough to argue further.
