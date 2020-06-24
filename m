@@ -2,209 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00316207A96
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E805207AF0
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405556AbgFXRrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 13:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S2405860AbgFXRyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 13:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405546AbgFXRri (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:47:38 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208E3C061573;
-        Wed, 24 Jun 2020 10:47:37 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id j80so2670648qke.0;
-        Wed, 24 Jun 2020 10:47:37 -0700 (PDT)
+        with ESMTP id S2405750AbgFXRyN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:54:13 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92009C061573;
+        Wed, 24 Jun 2020 10:54:13 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u8so1446099pje.4;
+        Wed, 24 Jun 2020 10:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FDeplexJYKJFCmTXHzaNlUT1Wfw0viZhbSjttAQq4LI=;
-        b=glVB/WzKznagnqZDGM8md/Q8riLN5132elJ75PCMplN141a0dEEICbCNnSNaqHGvik
-         GnWA5H2jkJ2QAcdSYiFZR0WiKNch9UssTnitvtLis256n6IZIe4iE1e4II+seDlGM6le
-         81JXCRgJ8OL96NNH6HjpMjxmqinuqbqmUEa6XWC16wjUErSno9MJzBH9GWPH/wIu9GgU
-         s8BnbwyQDZ8Plrpiv5KHqUndIP+DXIrYdxKEtK7YfBoQNOp0rYl0Onb9F4jbwiIdDc6c
-         EMaaQmkU0fmi2u5j+2Cn8oyZIlkw0uIxCpz0oL5n/DTiUTc8gmreVxQIl7pFfGoXDXz6
-         5TDA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qkIGmRvWdpvpHWZiXHmBkZ272P9SkiCAZcuaQC1DR14=;
+        b=EP2vP1xji6pfUVDlXaugEghw2F92U4Nkz06IgV2PEZGPI7N9buIZ5/e6VeSeDGwNs9
+         qvaOn2JuNtYGl/lO9wde2fwNqSF25+mLosYSQrpovtkD2OpgITU6sMjuzIb7TPuBMpl+
+         hYAUlPbUE+UCvJ21x8Ymg4oMl/ejjDGPihy6PXoC733JRbqAvXi3ASgShVzST2HJlkX/
+         bSes6nXdsi6s8sllYMUoxBmf42T32IqZCC7gGdtEN3H2JtRXCHrDe/PG9fov8W8Dlfyr
+         9guNeDjDA9qFv8zQzadgHr0pbyBkJ/PLW+7t57GRJNWFSptJzJDJcWnn+9aJQ8Hy4rFy
+         68VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FDeplexJYKJFCmTXHzaNlUT1Wfw0viZhbSjttAQq4LI=;
-        b=seD09HkU+isHvgyVWHZnXrPBNrvLYmr1RM8e35lvEzV5an9P08d4VGIzKa3qIWwQAj
-         U0ufxofvetem1Bl8Ev94NEXKiREhx7pruVDLZ7/H33eRXSMU0hDruQ1QtD9Ayvz5KVA7
-         fgY/qh08KGAolvEpQp6x7V7Lnctufre1hbJLLuO5AG2p3Wa83aZb+mJNQ5O6CL0f50Rb
-         aPZGlsnXAZYbgbfDkImqxHsnihPDV5ieUHfe4avMfEBExqZSf4nc5VzxnegKh9K1tWYg
-         ACy/lbOf/aTPVMu+f3hEyKxlXed4yIBy0Pb0Q75gXQohxNT7vAA1XIBdnKrn0sC8UM0O
-         dLNQ==
-X-Gm-Message-State: AOAM533uQHyEQmJdSwxkHwv5/tPZBL2a5YQ/46TmvfkYk//AS3HJW4f6
-        mRSwKatnAUBuAsM/l6knRrOXR4dYejHAcPj+J4U=
-X-Google-Smtp-Source: ABdhPJz6uDyVsH4O0gdOogOtMBxKskLO+U90ygxqrR7eZ2ML+RC/gG9gO6T4Yw1xaFOKljkc/CtcILQU4CFxLvZ7pV8=
-X-Received: by 2002:a05:620a:2409:: with SMTP id d9mr20555327qkn.36.1593020856292;
- Wed, 24 Jun 2020 10:47:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qkIGmRvWdpvpHWZiXHmBkZ272P9SkiCAZcuaQC1DR14=;
+        b=UiL7mCDLWUya98H0TOEcF2J4xJkwMqyMRYMKapzRgg5KuZ61h41w5MzQDJCKLOo2eO
+         fJBM3jthYQEnAv+ziHIbAl8Tg3+4WB9NYAt4E2rvwhSONqmYvqhGtgCKActqA3X9SNx7
+         K3kZ15uFizoZg8D7Vdh5fTrL5E8rmgA8giG0YmJIZ5h019jGm4dpU7S41GgM8Me2+D9m
+         J3HPhbETGC2cQf7lrQjVoGG9bVEYxanXrwPoYzW2URiWH2cUqVVWpdnpkLbtVBm9C3ze
+         9hZGUw8bcaiymwCv17uvAuk/y6ZNe5iouLwhPDZ8Qcairq8Rcm2Iu2PQlItnx2eYV3dq
+         viWw==
+X-Gm-Message-State: AOAM5330I+5bY1p7PmXTta5pymI56OjiudWo2RbiVQjvyRlUqDdwTsat
+        h9Y6GgSPtAIKeZLMDVHhj9nw6DBR
+X-Google-Smtp-Source: ABdhPJxrBCQujbDJG/wG2RTZOr8JlWcKTxN8MVE5jK8kMoXC8OVOMg9sN8RbTWAjb7YmBTk+Al/tlA==
+X-Received: by 2002:a17:902:6b87:: with SMTP id p7mr26942728plk.275.1593021252980;
+        Wed, 24 Jun 2020 10:54:12 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:d17e])
+        by smtp.gmail.com with ESMTPSA id f207sm5491841pfa.107.2020.06.24.10.54.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 10:54:12 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 10:54:08 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200624175408.kwc562ofnfhmy674@ast-mbp.dhcp.thefacebook.com>
+References: <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
+ <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
+ <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
+ <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
+ <321b85b4-95f0-2f9b-756a-8405adc97230@i-love.sakura.ne.jp>
+ <748ef005-7f64-ab9b-c767-c617ec995df4@schaufler-ca.com>
 MIME-Version: 1.0
-References: <20200623103459.697774-1-jakub@cloudflare.com> <20200623103459.697774-3-jakub@cloudflare.com>
- <87o8p8mlfx.fsf@cloudflare.com>
-In-Reply-To: <87o8p8mlfx.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Jun 2020 10:47:25 -0700
-Message-ID: <CAEf4BzYZLTYmLcaSrrXptD8fOX3O9TdT2yQcbbGZiaqt6s3k4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf, netns: Keep attached programs in bpf_prog_array
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <748ef005-7f64-ab9b-c767-c617ec995df4@schaufler-ca.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 10:19 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Tue, Jun 23, 2020 at 12:34 PM CEST, Jakub Sitnicki wrote:
-> > Prepare for having multi-prog attachments for new netns attach types by
-> > storing programs to run in a bpf_prog_array, which is well suited for
-> > iterating over programs and running them in sequence.
+On Wed, Jun 24, 2020 at 08:41:37AM -0700, Casey Schaufler wrote:
+> On 6/24/2020 12:05 AM, Tetsuo Handa wrote:
+> > Forwarding to LSM-ML again. Any comments?
+> 
+> Hey, BPF folks - you *really* need to do better about keeping the LSM
+> community in the loop when you're discussing LSM issues. 
+> 
 > >
-> > Because bpf_prog_array is dynamically resized, after this change a
-> > potentially blocking memory allocation in bpf(PROG_QUERY) callback can
-> > happen, in order to collect program IDs before copying the values to
-> > user-space supplied buffer. This forces us to adapt how we protect access
-> > to the attached program in the callback. As bpf_prog_array_copy_to_user()
-> > helper can sleep, we switch from an RCU read lock to holding a mutex that
-> > serializes updaters.
-> >
-> > To handle bpf(PROG_ATTACH) scenario when we are replacing an already
-> > attached program, we introduce a new bpf_prog_array helper called
-> > bpf_prog_array_replace_item that will exchange the old program with a new
-> > one. bpf-cgroup does away with such helper by computing an index into the
-> > array from a program position in an external list of attached
-> > programs/links. Such approach fails when a dummy prog is left in the array
-> > after a memory allocation failure on link release, but is necessary in
-> > bpf-cgroup case because the same BPF program can be present in the array
-> > multiple times due to inheritance, and attachment cannot be reliably
-> > identified by bpf_prog pointer comparison.
-> >
-> > No functional changes intended.
-> >
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > ---
-> >  include/linux/bpf.h        |   3 +
-> >  include/net/netns/bpf.h    |   5 +-
-> >  kernel/bpf/core.c          |  20 ++++--
-> >  kernel/bpf/net_namespace.c | 137 +++++++++++++++++++++++++++----------
-> >  net/core/flow_dissector.c  |  21 +++---
-> >  5 files changed, 132 insertions(+), 54 deletions(-)
-> >
->
-> [...]
->
-> > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-> > index b951dab2687f..593523a22168 100644
-> > --- a/kernel/bpf/net_namespace.c
-> > +++ b/kernel/bpf/net_namespace.c
->
-> [...]
->
-> > @@ -93,8 +108,16 @@ static int bpf_netns_link_update_prog(struct bpf_link *link,
-> >               goto out_unlock;
-> >       }
-> >
-> > +     run_array = rcu_dereference_protected(net->bpf.run_array[type],
-> > +                                           lockdep_is_held(&netns_bpf_mutex));
-> > +     if (run_array)
-> > +             ret = bpf_prog_array_replace_item(run_array, link->prog, new_prog);
->
-> Thinking about this some more, link update should fail with -EINVAL if
-> new_prog already exists in run_array. Same as PROG_ATTACH fails with
-> -EINVAL when trying to attach the same prog for the second time.
->
-> Otherwise, LINK_UPDATE can lead to having same BPF prog present multiple
-> times in the prog_array, once attaching more than one prog gets enabled.
->
-> Then we would we end up with the same challenge as bpf-cgroup, that is
-> how to find the program index into the prog_array in presence of
-> dummy_prog's.
+> > On 2020/06/24 15:39, Alexei Starovoitov wrote:
+> >> On Wed, Jun 24, 2020 at 01:58:33PM +0900, Tetsuo Handa wrote:
+> >>> On 2020/06/24 13:00, Alexei Starovoitov wrote:
+> >>>>> However, regarding usermode_blob, although the byte array (which contains code / data)
+> >>>>> might be initially loaded from the kernel space (which is protected), that byte array
+> >>>>> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
+> >>>>> in the user address space. Thus, LSM modules (including pathname based security) want
+> >>>>> to control how that byte array can behave.
+> >>>> It's privileged memory regardless. root can poke into kernel or any process memory.
+> >>> LSM is there to restrict processes running as "root".
+> >> hmm. do you really mean that it's possible for an LSM to restrict CAP_SYS_ADMIN effectively?
+> 
+> I think that SELinux works hard to do just that. SELinux implements it's own
+> privilege model that is tangential to the capabilities model.
 
-If you attach 5 different links having the same bpf_prog, it should be
-allowed and all five bpf_progs should be attached and called 5 times.
-They are independent links, that's the main thing. What specific BPF
-program is attached by the link (or later updated to) shouldn't be of
-any concern here (relative to other attached links/programs).
+of course. no argument here.
 
-Attaching the same *link* twice shouldn't be allowed, though.
+> More directly, it is simple to create a security module to provide finer privilege
+> granularity than capabilities. I have one lurking in a source tree, and I would
+> be surprised if it's the only one waiting for the next round of LSM stacking.
 
->
-> > +     else
-> > +             ret = -ENOENT;
-> > +     if (ret)
-> > +             goto out_unlock;
-> > +
-> >       old_prog = xchg(&link->prog, new_prog);
-> > -     rcu_assign_pointer(net->bpf.progs[type], new_prog);
-> >       bpf_prog_put(old_prog);
-> >
-> >  out_unlock:
->
-> [...]
->
-> > @@ -217,14 +249,25 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> >       if (ret)
-> >               goto out_unlock;
-> >
-> > -     attached = rcu_dereference_protected(net->bpf.progs[type],
-> > -                                          lockdep_is_held(&netns_bpf_mutex));
-> > +     attached = net->bpf.progs[type];
-> >       if (attached == prog) {
-> >               /* The same program cannot be attached twice */
-> >               ret = -EINVAL;
-> >               goto out_unlock;
-> >       }
-> > -     rcu_assign_pointer(net->bpf.progs[type], prog);
-> > +
-> > +     run_array = rcu_dereference_protected(net->bpf.run_array[type],
-> > +                                           lockdep_is_held(&netns_bpf_mutex));
-> > +     if (run_array) {
-> > +             ret = bpf_prog_array_replace_item(run_array, attached, prog);
->
-> I didn't consider here that there can be a run_array with a dummy_prog
-> from a link release that failed to allocate memory.
->
-> In such case bpf_prog_array_replace_item will fail, while we actually
-> want to replace the dummy_prog.
->
-> The right thing to do is to replace the first item in prog array:
->
->         if (run_array) {
->                 WRITE_ONCE(run_array->items[0].prog, prog);
->         } else {
->                 /* allocate a bpf_prog_array */
->         }
->
-> This leaves just one user of bpf_prog_array_replace_item(), so I think
-> I'm just going to fold it into its only caller, that is the update_prog
-> callback.
+no one is arguing with that either.
 
-That will change relative order of BPF programs, which I think is bad.
-So I agree that bpf_prog_array_replace_item is not all that useful and
-probably should be dropped. And the right way is to know the position
-of bpf_prog you are trying to replace/delete, just like cgroup case.
-Except cgroup case is even more complicated due to inheritance and
-hierarchy, which luckily you don't have to deal with here.
+> 
+> >> LSM can certainly provide extra level of foolproof-ness against accidental
+> >> mistakes, but it's not a security boundary.
+> 
+> Gasp! Them's fight'n words. How do you justify such an outrageous claim?
 
->
-> > +     } else {
-> > +             ret = bpf_prog_array_copy(NULL, NULL, prog, &run_array);
-> > +             rcu_assign_pointer(net->bpf.run_array[type], run_array);
-> > +     }
-> > +     if (ret)
-> > +             goto out_unlock;
-> > +
-> > +     net->bpf.progs[type] = prog;
-> >       if (attached)
-> >               bpf_prog_put(attached);
-> >
->
-> [...]
+.. for root user processes.
+What's outrageous about that?
+Did you capture the context or just replying to few sentences out of the context?
