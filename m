@@ -2,201 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6111207C20
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 21:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADB3207C27
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 21:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391250AbgFXT0F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 15:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S2391257AbgFXT1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 15:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387801AbgFXT0F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 15:26:05 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1137DC061573;
-        Wed, 24 Jun 2020 12:26:04 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f18so3010194qkh.1;
-        Wed, 24 Jun 2020 12:26:03 -0700 (PDT)
+        with ESMTP id S2391250AbgFXT1a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 15:27:30 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33777C061573;
+        Wed, 24 Jun 2020 12:27:29 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id e13so2992965qkg.5;
+        Wed, 24 Jun 2020 12:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TJzD23XP+N+oVXCfa5f5yROYzZhuKcdi0skLPrhl3W4=;
-        b=rkLDTlmkAkoCm1KcE36aMQqcmc6CmtNRoJQHQun7bgldwm0vOqEFlVI4Kq53VeLvCS
-         sVhln3Or3Wkhur3Bhryj76CbG2CGQbuNfFSHDSCQwKp0c1fxKS1VO62BzYoR0GpmstQb
-         cMiYEa4HdEa3gRrLjrhx+vhY7mfENHRtcRAAfoIozAoW28Jukh/PaCmLokwl2XtiY4tn
-         QRDkoDOag/UOtIgAnW0UqYnsKHkqwZthbtZaZLo8Pv4XwGciRWXkaT+z1XjXpBxfWujU
-         GFfDLgqSc2MfKVl3Q/LoTJyiTXZ3d47G3u4eo+sqQ5lUE3mfbT8+M/+BJtVaHK/9Mezp
-         om9w==
+         :cc:content-transfer-encoding;
+        bh=cVgR+y2rl1A0O/fcIfcloIxbYTjgzf+SX0xSidJWfM4=;
+        b=bTNjmNtZMYFpbvCFyALTaIIDPoxFnxSQLQEu7xaZJqXTSwv+MG0RtESgNGGIgiApEU
+         0Z+8jj1Vp+nrpKyICKhkiJXDbCJBqwVIHJsxN/rEelAGgBbLGIMlG6nexL0CEyfaaSYP
+         algjcHmUyNbmpNkA4tWOnptKJqO2ehR+vPSpwovlwa0KwGiuikQwQOvc03oaUSvCTT7G
+         MOYP3W8DHfTm5/eUVoG2GGgsJ9fAiGgpAckUTUow+gF8gx11sGpyj8OCxJzJe8yvKLAA
+         s0GTw8VKCCAGwQHlh/gEo52If+hmGcDdqGBVifFijdzYmFrFZkIoeEqB+JNLvw7THseK
+         hKFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TJzD23XP+N+oVXCfa5f5yROYzZhuKcdi0skLPrhl3W4=;
-        b=P6BprV7Z2z19cWfm5TmIWK22UH1xOcjcc2SWLrcEHe1TJR96bmt+N3Q/HRwHXaUGf2
-         CnbDcpXvZlZvwmBUiRaLfcarsbi5UOy60qRSVeLGqWdv0bO0nvG9DR9l8ubzxMW7WKd3
-         S3R+Ow16eGBQyJlW1Xyhixb4tC/ZXiYI3uwrrexEE+qUCwR9wkdylGnmnnVAS4LC30o5
-         aRi38fIOF9W59AuCfXptJkI/C8UccuCJUXwfVvUAIjpKVaplDydGJ9GQqyuV9Lsw3I5R
-         xAJUebMZT2hVehSpMVMj4G8qBb3mDAdtN/omLUbRUrER8DptpelOBuzhu2kZyC/ogEP9
-         YQlg==
-X-Gm-Message-State: AOAM530x020TckyNyhkzXUiyS1G7x7Xr2kOdUDWYHryPUCVUHFf0hvQA
-        +eBJMH3FaPoxcxhlAnubnZZ2+S+Pt1G4LNsY9tZ+hA==
-X-Google-Smtp-Source: ABdhPJxAL1vTKfbKpnj3dXD9F5LsrzE4kB7CFbFCfCyiW4Udidj6krdKwzC7Bc5Of2ri2AB2PlpC9xiVNcdX9QXeT1I=
-X-Received: by 2002:a05:620a:b84:: with SMTP id k4mr26929091qkh.39.1593026762842;
- Wed, 24 Jun 2020 12:26:02 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cVgR+y2rl1A0O/fcIfcloIxbYTjgzf+SX0xSidJWfM4=;
+        b=SR9nXsdBREWNdBMvPjVq9UnKTkrxmZuvFOyziPyXHl0pNQcFS6GWQcQXR0g+biQPXa
+         2XFDrJj8wzRAHxd/1ItC6U6D3XYWUxO7UWlvBWEeWNsOsaio2EoDFUheIYb642B+Blo6
+         bybQTdmtBZvT+5T5do3/Vqj1xtKkNIImq5WHws4yTq3Q0i6dLvya4rx9kxGkpMrIvzy5
+         JvUOPCxomNm8k2/+SMXY+Z9hgFKmQXvDflzzMJhVEBX71AVAH3t9PaAsLcNaXSGasLPE
+         PH4/zW1lpwXKeiSEsTXoFsG3Hw+Kj5Ohj2ynAQHNtsFDmplKNpzrGziCBcrx43Krzj53
+         OAtw==
+X-Gm-Message-State: AOAM532n6dX2QM2W1BrXS89vk8o2wGx49ptURDK5VI6LkUeih9ZExF17
+        3NJxxN41NBrNmvOtxI9Sd+B4lFqcT5IJ/IsGAzE=
+X-Google-Smtp-Source: ABdhPJx+/poaDqENTiUEwjVUVn3Mpk70zyLPDpJAkQY/9iPuPw0pdc/p7KxYXqjJt72cTVCkKFR+MuZlBTgpijOKDMM=
+X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr27821595qkl.437.1593026848420;
+ Wed, 24 Jun 2020 12:27:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
- <CAEf4BzbSc-wykq1_62CQwtszO+76rkudz_B=GkzE6ZheMUAusw@mail.gmail.com>
- <20200624175754.GD20203@kernel.org> <CAEf4BzY8b71tE5B4rw5sfy=xajtgqUGHVaoHNf_YzVtQ9aLCBg@mail.gmail.com>
- <20200624185737.GA25807@kernel.org> <CAEf4Bza=ZT1yZvoJNMK72pYm6VGwGp22detc7kgC_24OBt4-FA@mail.gmail.com>
- <20200624191159.GB25807@kernel.org>
-In-Reply-To: <20200624191159.GB25807@kernel.org>
+References: <2020062414452752504112@gmail.com>
+In-Reply-To: <2020062414452752504112@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Jun 2020 12:25:51 -0700
-Message-ID: <CAEf4BzYABe7++b8mKESWZCV3gsJ2TgZKyVPhqW0uoQO29qwxsg@mail.gmail.com>
-Subject: Re: pahole generates invalid BTF for code compiled with recent clang
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>
+Date:   Wed, 24 Jun 2020 12:27:17 -0700
+Message-ID: <CAEf4BzakcsdDcoeUN4uwigFti6iJrAu2Ge3EPfJm1cHyUq5W=Q@mail.gmail.com>
+Subject: Re: tools/bpf: build failed with defconfig(x86_64) on v5.6 and v5.7
+To:     Li Xinhai <lixinhai.lxh@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 12:12 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Tue, Jun 23, 2020 at 11:46 PM Li Xinhai <lixinhai.lxh@gmail.com> wrote:
 >
-> Em Wed, Jun 24, 2020 at 12:06:24PM -0700, Andrii Nakryiko escreveu:
-> > On Wed, Jun 24, 2020 at 11:57 AM Arnaldo Carvalho de Melo
-> > <arnaldo.melo@gmail.com> wrote:
-> > >
-> > > Em Wed, Jun 24, 2020 at 11:40:21AM -0700, Andrii Nakryiko escreveu:
-> > > > On Wed, Jun 24, 2020 at 10:57 AM Arnaldo Carvalho de Melo
-> > > > <arnaldo.melo@gmail.com> wrote:
-> > > > >
-> > > > > Em Wed, Jun 24, 2020 at 10:41:10AM -0700, Andrii Nakryiko escreveu:
-> > > > > > On Wed, Jun 24, 2020 at 4:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > > > >
-> > > > > > > Hi,
-> > > > > > >
-> > > > > > > If pahole -J is used on an ELF that has BTF info from clang, it
-> > > > > > > produces an invalid
-> > > > > > > output. This is because pahole rewrites the .BTF section (which
-> > > > > > > includes a new string
-> > > > > > > table) but it doesn't touch .BTF.ext at all.
-> > > > > >
-> > > > > > Why do you run `pahole -J` on BPF .o file? Clang already generates
-> > > > > > .BTF (and .BTF.ext, of course) for you.
-> > > > > >
-> > > > > > pahole -J is supposed to be used for vmlinux, not for clang-compiled
-> > > > > > -target BPF object files.
-> > > > >
-> > > > > yeah, I was thinking this was for a vmlinux generated by clang, which,
-> > > > > from the commands below (the suffix _prog.o) should have told me this is
-> > > > > a target BPF object file.
-> > > > >
-> > > > > But then, if one insists for some reason in generating BTF from the
-> > > > > DWARF in a BPF target object file, stripping .BTF.ext, if present, is
-> > > > > the right thing to do at this point.
-> > > >
-> > > > I disagree. Those who insist probably have some wrong conceptual
-> > > > understanding and it's better to fix that (understanding), rather than
-> > > > lose focus and bend tool to do what it's not supposed to do and
-> > > > ultimately cause more confusion.
-> > >
-> > > So we can instead notice the presence of .BTF.ext when the user calls
-> > > 'pahole -J' on a target BPF object file and bail out, only allowing it
-> > > to convert from DWARF to BTF and thus encode the .BTF elf section when
-> > > .BTF.ext isn't present, as we can't easily figure out if the present of
-> > > just .BTF section was done by clang or pahole on a BTF target object
-> > > file built without -g.
-> >
-> > Can't we check ELF's target machine and reject if it's a BPF one?
+> - information of machine
+> Linux localhost.localdomain 4.18.0-193.6.3.el8_2.x86_64 #1 SMP Wed Jun 10=
+ 11:09:32 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
 >
-> I think there is value in allowing pahole to convert DWARF to BTF even
-> for a BPF target object file, say in some case people may think clang is
-> not generating correct BTF so one may want to see what pahole generates
-> and compare.
-
-sure, and will the warning for wrong architecture would give a hint
-that it's not the right thing to do, probably. Or we could have more
-specific message for BPF target. I don't care all that much.
-
-
+> - configurations
+> make defconfig
+> make kvmconfig
 >
-> > Someday we might also support "cross-compilation" to be able to dedup
-> > arm ELF from x86 machine. It's sort of ok today for little-endian
-> > ARMs, so maybe not outright reject if architecture is not the same as
-> > the local one?
+> - failed logs on v5.6
+> ```
+>   LINK     /mnt/build/1_build/05_build_v5.6/bpf/bpftool//libbpf/libbpf.a
+>   LINK     /mnt/build/1_build/05_build_v5.6/bpf/bpftool/bpftool
+>   DESCEND  runqslower
+>   GEN      /mnt/build/0_code/0_linux/linux/tools/bpf/runqslower/.output/b=
+pf_helper_defs.h
+> make[4]: *** No rule to make target '/mnt/build/0_code/0_linux/linux/tool=
+s/include/linux/build_bug.h', needed by '/mnt/build/0_code/0_linux/linux/to=
+ols/bpf/runqslower/.output/staticobjs/libbpf.o'.  Stop.
+> make[3]: *** [Makefile:183: /mnt/build/0_code/0_linux/linux/tools/bpf/run=
+qslower/.output/staticobjs/libbpf-in.o] Error 2
+> make[2]: *** [Makefile:79: .output/libbpf.a] Error 2
+> make[1]: *** [Makefile:119: runqslower] Error 2
+> make: *** [Makefile:68: bpf] Error 2
+> ```
 >
-> I think outright reject if arch is not t he same it not necessary.
->
-> We may warn the user that using -g in clang is the preferred method for
-> generating BTF, wdyt?
+> - failed logs on v5.7
+> ```
+> In file included from /mnt/build/0_code/0_linux/linux/tools/include/linux=
+/build_bug.h:5,
+>                  from /mnt/build/0_code/0_linux/linux/tools/include/linux=
+/kernel.h:8,
+>                  from /mnt/build/0_code/0_linux/linux/kernel/bpf/disasm.h=
+:10,
+>                  from /mnt/build/0_code/0_linux/linux/kernel/bpf/disasm.c=
+:8:
+> /mnt/build/0_code/0_linux/linux/kernel/bpf/disasm.c: In function =E2=80=
+=98__func_get_name=E2=80=99:
+> /mnt/build/0_code/0_linux/linux/tools/include/linux/compiler.h:37:38: war=
+ning: nested extern declaration of =E2=80=98__compiletime_assert_0=E2=80=99=
+ [-Wnested-externs]
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                       ^~~~~~~~~~~~~~~~~~~~~
+> /mnt/build/0_code/0_linux/linux/tools/include/linux/compiler.h:16:15: not=
+e: in definition of macro =E2=80=98__compiletime_assert=E2=80=99
+>    extern void prefix ## suffix(void) __compiletime_error(msg); \
+>                ^~~~~~
+> /mnt/build/0_code/0_linux/linux/tools/include/linux/compiler.h:37:2: note=
+: in expansion of macro =E2=80=98_compiletime_assert=E2=80=99
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>   ^~~~~~~~~~~~~~~~~~~
+> /mnt/build/0_code/0_linux/linux/tools/include/linux/build_bug.h:39:37: no=
+te: in expansion of macro =E2=80=98compiletime_assert=E2=80=99
+>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                      ^~~~~~~~~~~~~~~~~~
+> /mnt/build/0_code/0_linux/linux/tools/include/linux/build_bug.h:50:2: not=
+e: in expansion of macro =E2=80=98BUILD_BUG_ON_MSG=E2=80=99
+>   BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>   ^~~~~~~~~~~~~~~~
+> /mnt/build/0_code/0_linux/linux/kernel/bpf/disasm.c:20:2: note: in expans=
+ion of macro =E2=80=98BUILD_BUG_ON=E2=80=99
+>   BUILD_BUG_ON(ARRAY_SIZE(func_id_str) !=3D __BPF_FUNC_MAX_ID);
+>   ^~~~~~~~~~~~
+> ```
 >
 
-sounds reasonable
+This one I've seen and I have no idea why this is happening (suddenly)
+and how to fix that.
 
-> - Arnaldo
+> and
+> ```
+>   LINK     /mnt/build/0_code/0_linux/linux/tools/bpf/runqslower/.output/l=
+ibbpf.a
+>   GEN      vmlinux.h
+>   BPF      runqslower.bpf.o
+> In file included from runqslower.bpf.c:3:
+> .output/vmlinux.h:5:15: error: attribute 'preserve_access_index' is not s=
+upported by '#pragma clang attribute'
+> #pragma clang attribute push (__attribute__((preserve_access_index)), app=
+ly_to =3D record)
+>               ^
+> .output/vmlinux.h:98607:15: error: '#pragma clang attribute pop' with no =
+matching '#pragma clang attribute push'
+> #pragma clang attribute pop
+>               ^
+> 2 errors generated.
+> make[2]: *** [Makefile:57: .output/runqslower.bpf.o] Error 1
+> make[1]: *** [Makefile:119: runqslower] Error 2
+> make: *** [Makefile:68: bpf] Error 2
+> ```
 >
-> > >
-> > > - Arnaldo
-> > >
-> > > > pahole's BTF conversion is really driven towards kernel use-case
-> > > > (e.g., with global variables, etc). I wouldn't distract ourselves with
-> > > > supporting de-duplicating BPF object files. Single .o's BTF is already
-> > > > deduplicated as produced by Clang. Once we add static linking of
-> > > > multiple BPF .o's (which I hope to start working on very soon), that
-> > > > de-duplication will be handled automatically by libbpf (and hopefully
-> > > > integrated into lld as well), among many other things that need to
-> > > > happen to make static linking work.
-> > > >
-> > > > >
-> > > > > - Arnaldo
-> > > > >
-> > > > > > >
-> > > > > > > To demonstrate, on a recent check out of bpf-next:
-> > > > > > >     $ cp connect4_prog.o connect4_pahole.o
-> > > > > > >     $ pahole -J connect4_pahole.o
-> > > > > > >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
-> > > > > > > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
-> > > > > > >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
-> > > > > > > .BTF.ext=btf-ext.bin connect4_prog.o
-> > > > > > >     $ sha1sum *.bin
-> > > > > > >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
-> > > > > > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
-> > > > > > >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
-> > > > > > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
-> > > > > > >
-> > > > > > > This problem crops up when compiling old kernels like 4.19 which have
-> > > > > > > an extra pahole
-> > > > > > > build step with clang-10.
-> > > > > >
-> > > > > > I was under impression that clang generates .BTF and .BTF.ext only for
-> > > > > > -target BPF. In this case, kernel is compiled for "real" target arch,
-> > > > > > so there shouldn't be .BTF.ext in the first place? If that's not the
-> > > > > > case, then I guess it's a bug in Clang.
-> > > > > >
-> > > > > > >
-> > > > > > > I think a possible fix is to strip .BTF.ext if .BTF is rewritten.
-> > > > > > >
-> > > > > > > Best
-> > > > > > > Lorenz
-> > > > > > >
-> > > > > > > --
-> > > > > > > Lorenz Bauer  |  Systems Engineer
-> > > > > > > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-> > > > > > >
-> > > > > > > www.cloudflare.com
-> > > > >
-> > > > > --
-> > > > >
-> > > > > - Arnaldo
-> > >
-> > > --
-> > >
-> > > - Arnaldo
+
+This just means you don't have recent-enough Clang on your system. You
+need Clang 10 at least.
+
+
+> On this same machine and with same configuration, I've tried v5.4 and v5.=
+5, no failures.
 >
-> --
 >
-> - Arnaldo
