@@ -2,143 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1F6206B4F
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 06:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C135D206B76
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 06:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgFXEia (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 00:38:30 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32422 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727862AbgFXEi3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Jun 2020 00:38:29 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05O4W75k024000
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 21:38:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=3AzvELCBJnKMvHSgbHT4AqvyHP0fR8lFsSr95PwDW/E=;
- b=d29wAui7nBOsbUZPN6AhPeek5wX0PrbcNngxukk8TivshPfD6QtSd7zE7kLGHd53+Xvm
- TTUr0GXxcKlQLNBEX8XBtscaNXP0BNg/8fJ2Dm7bkraHaC5JALKxtO0foasGgVB8wlKR
- Vqqur57+/YSH8J5dlWFnvq89mvXS41mXHa4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux1bgcsm-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 23 Jun 2020 21:38:29 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 21:38:28 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2B6C92EC3938; Tue, 23 Jun 2020 21:38:24 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: prevent loading vmlinux BTF twice
-Date:   Tue, 23 Jun 2020 21:38:05 -0700
-Message-ID: <20200624043805.1794620-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728766AbgFXE7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 00:59:21 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58415 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbgFXE7V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 00:59:21 -0400
+Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05O4wXwK066260;
+        Wed, 24 Jun 2020 13:58:33 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
+ Wed, 24 Jun 2020 13:58:33 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05O4wXR6066257
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 24 Jun 2020 13:58:33 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <87bllngirv.fsf@x220.int.ebiederm.org>
+ <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+ <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+ <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
+ <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
+Date:   Wed, 24 Jun 2020 13:58:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-24_01:2020-06-23,2020-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=25
- malwarescore=0 mlxscore=0 lowpriorityscore=0 cotscore=-2147483648
- mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240033
-X-FB-Internal: deliver
+In-Reply-To: <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prevent loading/parsing vmlinux BTF twice in some cases: for CO-RE reloca=
-tions
-and for BTF-aware hooks (tp_btf, fentry/fexit, etc).
+On 2020/06/24 13:00, Alexei Starovoitov wrote:
+>> However, regarding usermode_blob, although the byte array (which contains code / data)
+>> might be initially loaded from the kernel space (which is protected), that byte array
+>> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
+>> in the user address space. Thus, LSM modules (including pathname based security) want
+>> to control how that byte array can behave.
+> 
+> It's privileged memory regardless. root can poke into kernel or any process memory.
 
-Fixes: a6ed02cac690 ("libbpf: Load btf_vmlinux only once per object.")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
+LSM is there to restrict processes running as "root".
+Your "root can poke into kernel or any process memory." response is out of step with the times.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 18461deb1b19..1e77bbfe6c63 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2504,22 +2504,31 @@ static inline bool libbpf_prog_needs_vmlinux_btf(=
-struct bpf_program *prog)
-=20
- static int bpf_object__load_vmlinux_btf(struct bpf_object *obj)
- {
-+	bool need_vmlinux_btf =3D false;
- 	struct bpf_program *prog;
- 	int err;
-=20
-+	/* CO-RE relocations need kernel BTF */
-+	if (obj->btf_ext && obj->btf_ext->field_reloc_info.len)
-+		need_vmlinux_btf =3D true;
-+
- 	bpf_object__for_each_program(prog, obj) {
- 		if (libbpf_prog_needs_vmlinux_btf(prog)) {
--			obj->btf_vmlinux =3D libbpf_find_kernel_btf();
--			if (IS_ERR(obj->btf_vmlinux)) {
--				err =3D PTR_ERR(obj->btf_vmlinux);
--				pr_warn("Error loading vmlinux BTF: %d\n", err);
--				obj->btf_vmlinux =3D NULL;
--				return err;
--			}
--			return 0;
-+			need_vmlinux_btf =3D true;
-+			break;
- 		}
- 	}
-=20
-+	if (!need_vmlinux_btf)
-+		return 0;
-+
-+	obj->btf_vmlinux =3D libbpf_find_kernel_btf();
-+	if (IS_ERR(obj->btf_vmlinux)) {
-+		err =3D PTR_ERR(obj->btf_vmlinux);
-+		pr_warn("Error loading vmlinux BTF: %d\n", err);
-+		obj->btf_vmlinux =3D NULL;
-+		return err;
-+	}
- 	return 0;
- }
-=20
-@@ -4945,8 +4954,8 @@ bpf_core_reloc_fields(struct bpf_object *obj, const=
- char *targ_btf_path)
- 	if (targ_btf_path)
- 		targ_btf =3D btf__parse_elf(targ_btf_path, NULL);
- 	else
--		targ_btf =3D libbpf_find_kernel_btf();
--	if (IS_ERR(targ_btf)) {
-+		targ_btf =3D obj->btf_vmlinux;
-+	if (IS_ERR_OR_NULL(targ_btf)) {
- 		pr_warn("failed to get target BTF: %ld\n", PTR_ERR(targ_btf));
- 		return PTR_ERR(targ_btf);
- 	}
-@@ -4987,7 +4996,9 @@ bpf_core_reloc_fields(struct bpf_object *obj, const=
- char *targ_btf_path)
- 	}
-=20
- out:
--	btf__free(targ_btf);
-+	/* obj->btf_vmlinux is freed at the end of object load phase */
-+	if (targ_btf !=3D obj->btf_vmlinux)
-+		btf__free(targ_btf);
- 	if (!IS_ERR_OR_NULL(cand_cache)) {
- 		hashmap__for_each_entry(cand_cache, entry, i) {
- 			bpf_core_free_cands(entry->value);
---=20
-2.24.1
-
+Initial byte array used for usermode blob might be protected because of "part of .rodata or
+.init.rodata of kernel module", but that byte array after started in userspace is no longer
+protected. I don't trust such byte array as "part of kernel module", and I'm asking you how
+such byte array does not interfere (or be interfered by) the rest of the system.
