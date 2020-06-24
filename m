@@ -2,108 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35444206D44
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 09:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CCD206DD1
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 09:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389394AbgFXHHB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 03:07:01 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:60608 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389349AbgFXHHB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:07:01 -0400
-Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05O75k31091412;
-        Wed, 24 Jun 2020 16:05:46 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
- Wed, 24 Jun 2020 16:05:46 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05O75jhA091408
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 24 Jun 2020 16:05:45 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     linux-security-module <linux-security-module@vger.kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        id S2388375AbgFXHdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 03:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387871AbgFXHdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:33:44 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16057C061573
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 00:33:44 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f139so1487749wmf.5
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 00:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KP04hHKJxj++Af7LDnpBlZtxcM5bSpRC0i4e+5DsQMk=;
+        b=SCLIZQVGWBvmM73pUCYbK7GVgRKm2EpN+0Pglu5ink8fTxpqFq04OCrm4rL5jzWR8v
+         n9eS7JmMnG9V0bByXMa2mEx1VUNXFeGJFk4ZSXKXkQgH9FbbewlDsuJGR1mj5DZR1PFX
+         CdcJQg6h2+6XHEn0blSmFU33mZ49umwkR0MbT6gp4OGI4EbKCMl1Dj7pQzRt0zL4CTHi
+         ioeCC3YHHzUpVDPDcoCHumYCME1OnbvxeryGd1WfGFA4NW4fzgcVhR9NfbdNhHlvh5tK
+         TBJGJfoMAlGVlEgJ2Ix9sqe0NKwACoT24JD508vDUWegW6DiT9Dps0ufx9LMjT79DKan
+         ctCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KP04hHKJxj++Af7LDnpBlZtxcM5bSpRC0i4e+5DsQMk=;
+        b=cRdnE00RxKE/ziq2jW8ZJqzEvAyPBS7U+JR233SB/RqHDKfIteQ2HaZ5PVxJyYz4P5
+         2aO0y3nIPTM24mlo/0nNdUYi8oXw9Axp8f1AwPjrA/bppnSiUfHKabt6lXjDo85BOLBz
+         EtFcnYw9t6yXkEC/5PoDJt2e6oAdFEq7DRyjfBlTJceu/VN3mgDxAjnXCOJd3sJgkdd/
+         GjlhR2xhWvki8Rewl6JgBgKqVF+k8Yo1HMVk4W9GMHGuFVHsC+usU4xctXNvrfxfAFaq
+         Pljipn20irnSE5gYKr8PJiKIND1TB7boa2n7gPaq3eAhkdMJw+4Ru7qFNed7x2pHMSjb
+         bFgg==
+X-Gm-Message-State: AOAM532yVP9PajOcZN5ZVeMRaSq1qPVZqnuBZtnrzviIYf3ckKTm0su6
+        y9vn8lMhlrWpLKqSCLEWWRB4u9uL39+Eow==
+X-Google-Smtp-Source: ABdhPJzFGoXUSW/x8T7T82pthX70aVL9NLyYE3uOEVxcDYmvfUzgp5xGcDO3W4QInlLR1ZNr7rhJ7Q==
+X-Received: by 2002:a7b:cb18:: with SMTP id u24mr28878791wmj.67.1592984022834;
+        Wed, 24 Jun 2020 00:33:42 -0700 (PDT)
+Received: from [192.168.1.12] ([194.53.184.63])
+        by smtp.gmail.com with ESMTPSA id 67sm26841371wrk.49.2020.06.24.00.33.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jun 2020 00:33:42 -0700 (PDT)
+Subject: Re: [PATCH bpf] bpf: fix formatting in documentation for BPF helpers
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
- <87ftaxd7ky.fsf@x220.int.ebiederm.org>
- <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
- <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
- <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
- <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
- <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <321b85b4-95f0-2f9b-756a-8405adc97230@i-love.sakura.ne.jp>
-Date:   Wed, 24 Jun 2020 16:05:45 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+References: <20200623153935.6215-1-quentin@isovalent.com>
+ <CAADnVQJwtac0C+DgAhQbVrofSwV7BeG7RoEdQAj5sQZGvxNeLA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <c3819c00-23f2-a3c4-35ae-3de9b1d469ec@isovalent.com>
+Date:   Wed, 24 Jun 2020 08:33:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200624063940.ctzhf4nnh3cjyxqi@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <CAADnVQJwtac0C+DgAhQbVrofSwV7BeG7RoEdQAj5sQZGvxNeLA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Forwarding to LSM-ML again. Any comments?
-
-On 2020/06/24 15:39, Alexei Starovoitov wrote:
-> On Wed, Jun 24, 2020 at 01:58:33PM +0900, Tetsuo Handa wrote:
->> On 2020/06/24 13:00, Alexei Starovoitov wrote:
->>>> However, regarding usermode_blob, although the byte array (which contains code / data)
->>>> might be initially loaded from the kernel space (which is protected), that byte array
->>>> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
->>>> in the user address space. Thus, LSM modules (including pathname based security) want
->>>> to control how that byte array can behave.
->>>
->>> It's privileged memory regardless. root can poke into kernel or any process memory.
+2020-06-23 18:02 UTC-0700 ~ Alexei Starovoitov
+<alexei.starovoitov@gmail.com>
+> On Tue, Jun 23, 2020 at 8:39 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >>
->> LSM is there to restrict processes running as "root".
-> 
-> hmm. do you really mean that it's possible for an LSM to restrict CAP_SYS_ADMIN effectively?
-> LSM can certainly provide extra level of foolproof-ness against accidental
-> mistakes, but it's not a security boundary.
-> 
->> Your "root can poke into kernel or any process memory." response is out of step with the times.
+>> When producing the bpf-helpers.7 man page from the documentation from
+>> the BPF user space header file, rst2man complains:
 >>
->> Initial byte array used for usermode blob might be protected because of "part of .rodata or
->> .init.rodata of kernel module", but that byte array after started in userspace is no longer
->> protected. 
+>>     <stdin>:2636: (ERROR/3) Unexpected indentation.
+>>     <stdin>:2640: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
 >>
->> I don't trust such byte array as "part of kernel module", and I'm asking you how
->> such byte array does not interfere (or be interfered by) the rest of the system.
+>> Let's fix formatting for the relevant chunk (item list in
+>> bpf_ringbuf_query()'s description), and for a couple other functions.
+>>
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>>  include/uapi/linux/bpf.h | 41 ++++++++++++++++++++--------------------
+>>  1 file changed, 21 insertions(+), 20 deletions(-)
 > 
-> Could you please explain the attack vector that you see in such scenario?
-> How elf binaries embedded in the kernel modules different from pid 1?
-> If anything can peek into their memory the system is compromised.
-> Say, there are no user blobs in kernel modules. How pid 1 memory is different
-> from all the JITed images? How is it different for all memory regions shared
-> between kernel and user processes?
-> I see an opportunity for an LSM to provide a protection against non-security
-> bugs when system is running trusted apps, but not when arbitrary code can
-> execute under root.
+> Applied to bpf tree and added similar fix to tools/include/.../bpf.h
+> Please don't forget it next time.
 > 
 
+Right, sorry. Thank you for fixing it this time.
+Quentin
