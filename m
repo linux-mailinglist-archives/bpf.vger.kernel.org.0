@@ -2,34 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86AA2069D9
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 03:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F3F206AD5
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 06:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388065AbgFXBwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jun 2020 21:52:10 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49258 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388035AbgFXBwK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jun 2020 21:52:10 -0400
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05O1pHbH083981;
-        Wed, 24 Jun 2020 10:51:17 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Wed, 24 Jun 2020 10:51:17 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05O1pGv7083968
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 24 Jun 2020 10:51:17 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1725931AbgFXEA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 00:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgFXEA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 00:00:58 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F56C061573;
+        Tue, 23 Jun 2020 21:00:58 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h10so719994pgq.10;
+        Tue, 23 Jun 2020 21:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WokCtReRqQ4npkuhRh+Pfv3SxLZISJ46jpj8on+jnkI=;
+        b=P+PxYDY9SRnYNMWqBYfMQ15SGzD/AUQ45NOUAgGvJRqAHkoxsSB+/cXdvOHH9uQ9Iw
+         zvT02uM19A/ye6hhphs3JdF1zSQ1tPDFjtTeIlqntJiBMrtDMC3yLzRJw+xfi/g+tqab
+         Ksx17/BV8dpD1zv1w5dqTHURkcURRVW2hqr/h9vfpHoFaGNtor3+36UQUhh3auG1ytEm
+         9UcwtfrHzfJFIfX4fxHCxKH5uc1ofG7nJklw/gml+hclRzrIlu7ITVKlUnTtjJD1P4d7
+         +aJ1A5eCLnpbAh800WQNuiB+pMKD3b5pdH23Aj8KJVpM2wgW3E1QOCkmUc36hSli/wTt
+         QgNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WokCtReRqQ4npkuhRh+Pfv3SxLZISJ46jpj8on+jnkI=;
+        b=rKsXKIem0zbBwL3ZbfSdh+KCtWDvGxAyJfxHqjPOfSZxZtcbLQMSo4BpdOTsN8ezXa
+         L68Vnfg+AZnj6qrQ5yg8XaZZxAe9RHYKUn4MPm/0S+LtRSzRV7UIAhnKsFPvOLBAT+2a
+         abhfRjO6tWotLg9jqr2DDJnBuaubDsrGSbpq5v3X2Zsx4mEPJrGGolnjgvUzUecoO1tu
+         jgDK160TUdfJiMi+ovbm7ud3yJBHVE+SKLu8CA2SCE/80oF+wmGv4S6OQmbl0vNzzvlV
+         A2STGoktrsVfmDHO+m3Ns5OmdqmHTjJGvWs75ViHZkOGSnvQ5B61F0d6l6wvOCmaFBPT
+         LB/A==
+X-Gm-Message-State: AOAM5316jSxGy8yEV+wHPw72y5F5GOW90pAYfgAsg+goWWf6XEon323C
+        wJz47d68zxhWebV8jl82dYI=
+X-Google-Smtp-Source: ABdhPJxFe1q9ZKK1WhqmZXvZXrG1RJ2omGkkh8vAUN3K3NADNExTsXlc54hbTzvACxWT1DiOLDMqrA==
+X-Received: by 2002:a63:2a8a:: with SMTP id q132mr19423102pgq.279.1592971257997;
+        Tue, 23 Jun 2020 21:00:57 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4e7a])
+        by smtp.gmail.com with ESMTPSA id y4sm1781920pfn.28.2020.06.23.21.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 21:00:57 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 21:00:54 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -40,9 +62,10 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <87d066vd4y.fsf@x220.int.ebiederm.org>
- <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
- <87bllngirv.fsf@x220.int.ebiederm.org>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
+References: <87bllngirv.fsf@x220.int.ebiederm.org>
  <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
  <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
  <87ftaxd7ky.fsf@x220.int.ebiederm.org>
@@ -51,83 +74,94 @@ References: <87d066vd4y.fsf@x220.int.ebiederm.org>
  <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
  <87h7v1mx4z.fsf@x220.int.ebiederm.org>
  <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
-Date:   Wed, 24 Jun 2020 10:51:15 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-In-Reply-To: <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/24 4:40, Alexei Starovoitov wrote:
-> There is no refcnt bug. It was a user error on tomoyo side.
-> fork_blob() works as expected.
+On Wed, Jun 24, 2020 at 10:51:15AM +0900, Tetsuo Handa wrote:
+> On 2020/06/24 4:40, Alexei Starovoitov wrote:
+> > There is no refcnt bug. It was a user error on tomoyo side.
+> > fork_blob() works as expected.
+> 
+> Absolutely wrong! Any check which returns an error during current->in_execve == 1
+> will cause this refcnt bug. You are simply ignoring that there is possibility
+> that execve() fails.
 
-Absolutely wrong! Any check which returns an error during current->in_execve == 1
-will cause this refcnt bug. You are simply ignoring that there is possibility
-that execve() fails.
+you mean security_bprm_creds_for_exec() denying exec?
+hmm. got it. refcnt model needs to change then.
 
-> Not true again.
-> usermode_blob is part of the kernel module.
+> > Not true again.
+> > usermode_blob is part of the kernel module.
+> 
+> Disagree.
 
-Disagree.
+Disagree with what? that blob is part of kernel module? huh?
+what is it then?
 
-> Kernel module when loaded doesn't have path.
+> 
+> > Kernel module when loaded doesn't have path.
+> 
+> Disagree.
+> 
+> Kernel modules can be trusted via module signature mechanism, and the byte array
+> (which contains code / data) is protected by keeping that byte array within the
+> kernel address space. Therefore, pathname based security does not need to complain
+> that there is no pathname when kernel module is loaded.
 
-Disagree.
+I already explained upthread that blob is part of .rodata or .init.rodata
+of kernel module and covered by the same signature mechanism.
 
-Kernel modules can be trusted via module signature mechanism, and the byte array
-(which contains code / data) is protected by keeping that byte array within the
-kernel address space. Therefore, pathname based security does not need to complain
-that there is no pathname when kernel module is loaded.
+> However, regarding usermode_blob, although the byte array (which contains code / data)
+> might be initially loaded from the kernel space (which is protected), that byte array
+> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
+> in the user address space. Thus, LSM modules (including pathname based security) want
+> to control how that byte array can behave.
 
-However, regarding usermode_blob, although the byte array (which contains code / data)
-might be initially loaded from the kernel space (which is protected), that byte array
-is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
-in the user address space. Thus, LSM modules (including pathname based security) want
-to control how that byte array can behave.
+It's privileged memory regardless. root can poke into kernel or any process memory.
 
-> tomoyo has to fix itself.
+> On 2020/06/24 3:53, Eric W. Biederman wrote:
+> > This isn't work anyone else can do because there are not yet any real in
+> > tree users of fork_blob.  The fact that no one else can make
+> > substantials changes to the code because it has no users is what gets in
+> > the way of maintenance.
+> 
+> It sounds to me that fork_blob() is a dangerous interface which anonymously
+> allows arbitrary behavior in an unprotected environment. Therefore,
 
-TOMOYO needs to somehow handle /dev/fd/ case from execveat(), but fork_blob() is a
-different story.
+I think you missed the part that user blob is signed as part of kernel module.
 
-On 2020/06/24 3:53, Eric W. Biederman wrote:
-> This isn't work anyone else can do because there are not yet any real in
-> tree users of fork_blob.  The fact that no one else can make
-> substantials changes to the code because it has no users is what gets in
-> the way of maintenance.
+> > Either a path needs to be provided or the LSMs that work in terms
+> > of paths need to be fixed.
+> 
+> LSM modules want to control how that byte array can behave. But Alexei
+> still does not explain how information for LSM modules can be provided.
 
-It sounds to me that fork_blob() is a dangerous interface which anonymously
-allows arbitrary behavior in an unprotected environment. Therefore,
+huh?
+please see net/bpfilter/.
 
-> Either a path needs to be provided or the LSMs that work in terms
-> of paths need to be fixed.
+> 
+> > My recomendation for long term maintenance is to split fork_blob into 2
+> > functions: fs_from_blob, and the ordinary call_usermodehelper_exec.
+> > That removes the need for any special support for anything in the exec
+> > path because your blob will also have a path for your file, and the
+> > file in the filesystem can be reused for restart.
+> 
+> Yes, that would be an approach for providing information for LSM modules.
+> 
+> > But with no in-tree users none of us can do anything bug guess what
+> > the actual requirements of fork_usermode_blob are.
+> 
+> Exactly. Since it is not explained why the usermode process started by
+> fork_usermode_blob() cannot interfere (or be interfered by) the rest of
+> the system (including normal usermode processes), the byte array comes from
+> the kernel address space is insufficient for convincing LSM modules to
+> ignore what that byte array can do.
 
-LSM modules want to control how that byte array can behave. But Alexei
-still does not explain how information for LSM modules can be provided.
-
-> My recomendation for long term maintenance is to split fork_blob into 2
-> functions: fs_from_blob, and the ordinary call_usermodehelper_exec.
-> That removes the need for any special support for anything in the exec
-> path because your blob will also have a path for your file, and the
-> file in the filesystem can be reused for restart.
-
-Yes, that would be an approach for providing information for LSM modules.
-
-> But with no in-tree users none of us can do anything bug guess what
-> the actual requirements of fork_usermode_blob are.
-
-Exactly. Since it is not explained why the usermode process started by
-fork_usermode_blob() cannot interfere (or be interfered by) the rest of
-the system (including normal usermode processes), the byte array comes from
-the kernel address space is insufficient for convincing LSM modules to
-ignore what that byte array can do.
-
+Sounds like tomoyo doesn't trust kernel modules. I don't think that is
+fixable with any amount of explantation.
