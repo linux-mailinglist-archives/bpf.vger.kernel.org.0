@@ -2,109 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4CA206EF9
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 10:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E841F206F0B
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 10:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgFXIc2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 04:32:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41865 "EHLO
+        id S2389371AbgFXIgc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 04:36:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46826 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387606AbgFXIc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 04:32:27 -0400
+        with ESMTP id S2389042AbgFXIga (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 04:36:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592987546;
+        s=mimecast20190719; t=1592987789;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OSrhU2U4QyjO2CsAB/VdgS7GwuU/GZnPP9rBRWDJ5zk=;
-        b=KViPmV72ZfavUjfGAVKrWWd0P5f3TKOEgzHZiGUo1uZ2KSc2/sbbXQqcorfLd5nmQcgE1A
-        wbm8uPHJufWE00K/0FWVjH395+X0jjFR3QFmmAUau2du5dlCYmVZU0gic/0bEZcgVcF7hM
-        fAKK9J8dQgwxwcgr/fGYsyEJBPGCw6g=
+        bh=wxUFZ5mib77mHObsO3l63IepVrrXcAMLemjg0wGcyDs=;
+        b=edWTKzs6P4hbuL+e38e+jN1QotIXOLXNiWmu2R1hLgkd1p7wlr9tVr99FbERHgS5PWMx94
+        c+VKUDL+q1JpZNKx3usazx8e4KDhBPLseAHQiRn2z0s1JavTibQ0xveKzuivX1OGK6ajAI
+        pLdJpbfSqFM8bd0OQ274VnJnQPPEA3k=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-f44SuL3XMJiILXpXOpK1KA-1; Wed, 24 Jun 2020 04:32:24 -0400
-X-MC-Unique: f44SuL3XMJiILXpXOpK1KA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-104-x6chqOo3OtSwPHe3iQrFcg-1; Wed, 24 Jun 2020 04:36:25 -0400
+X-MC-Unique: x6chqOo3OtSwPHe3iQrFcg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DED0805EE1;
-        Wed, 24 Jun 2020 08:32:23 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1E11107ACF2;
+        Wed, 24 Jun 2020 08:36:23 +0000 (UTC)
 Received: from carbon (unknown [10.40.208.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 113D01A835;
-        Wed, 24 Jun 2020 08:32:10 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 10:32:09 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10992512FE;
+        Wed, 24 Jun 2020 08:36:10 +0000 (UTC)
+Date:   Wed, 24 Jun 2020 10:36:09 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH v3 bpf-next 6/9] bpf: cpumap: implement XDP_REDIRECT for
- eBPF programs attached to map entries
-Message-ID: <20200624103209.18276e44@carbon>
-In-Reply-To: <cad5c3a21ba8ac953b2a6e7fb70b39ae49c597ac.1592947694.git.lorenzo@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        lorenzo.bianconi@redhat.com, David Ahern <dsahern@kernel.org>,
+        brouer@redhat.com
+Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: add SEC name for xdp programs
+ attached to CPUMAP
+Message-ID: <20200624103609.69ccdff9@carbon>
+In-Reply-To: <CAEf4BzbiZLtr8Vhwef=Zjd_=OVqKBozyg76Djae7qw3rgd7q8g@mail.gmail.com>
 References: <cover.1592947694.git.lorenzo@kernel.org>
-        <cad5c3a21ba8ac953b2a6e7fb70b39ae49c597ac.1592947694.git.lorenzo@kernel.org>
+        <372755fa10bdbe9b5db4e207db6b0829e18513fe.1592947694.git.lorenzo@kernel.org>
+        <CAEf4BzbiZLtr8Vhwef=Zjd_=OVqKBozyg76Djae7qw3rgd7q8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Jun 2020 23:39:31 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Tue, 23 Jun 2020 22:49:02 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-> Introduce XDP_REDIRECT support for eBPF programs attached to cpumap
-> entries.
-> This patch has been tested on Marvell ESPRESSObin using a modified
-> version of xdp_redirect_cpu sample in order to attach a XDP program
-> to CPUMAP entries to perform a redirect on the mvneta interface.
-> In particular the following scenario has been tested:
-> 
-> rq (cpu0) --> mvneta - XDP_REDIRECT (cpu0) --> CPUMAP - XDP_REDIRECT (cpu1) --> mvneta
-> 
-> $./xdp_redirect_cpu -p xdp_cpu_map0 -d eth0 -c 1 -e xdp_redirect \
-> 	-f xdp_redirect_kern.o -m tx_port -r eth0
-> 
-> tx: 285.2 Kpps rx: 285.2 Kpps
-> 
-> Attacching a simple XDP program on eth0 to perform XDP_TX gives
-  ^^^^^^^^^^
+> On Tue, Jun 23, 2020 at 2:40 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> >
+> > As for DEVMAP, support SEC("xdp_cpumap*") as a short cut for loading
+                                ^^^^^^^^^^^
 
-Spelling/typo.
+Maybe update desc to include the "/" ?
+  
+> > the program with type BPF_PROG_TYPE_XDP and expected attach type
+> > BPF_XDP_CPUMAP.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---  
+> 
+> Thanks!
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> comparable results:
-> 
-> tx: 288.4 Kpps rx: 288.4 Kpps
-> 
-> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+I like this extra "/".
 
 Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-> ---
->  include/net/xdp.h          |  1 +
->  include/trace/events/xdp.h |  6 ++++--
->  kernel/bpf/cpumap.c        | 17 +++++++++++++++--
->  3 files changed, 20 insertions(+), 4 deletions(-)
-[...]
+If we agree, I hope we can also adjust this for devmap in bpf-tree ?
 
-> @@ -276,7 +286,10 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->  		}
->  	}
->  
-> -	rcu_read_unlock();
-> +	if (stats->redirect)
-> +		xdp_do_flush_map();
-> +
-> +	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
 
-I've tested (on x86) that this extra resched point does not cause sched issues.
+> >  tools/lib/bpf/libbpf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 18461deb1b19..16fa3b84ac38 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -6866,6 +6866,8 @@ static const struct bpf_sec_def section_defs[] = {
+> >                 .attach_fn = attach_iter),
+> >         BPF_EAPROG_SEC("xdp_devmap",            BPF_PROG_TYPE_XDP,
+> >                                                 BPF_XDP_DEVMAP),
+> > +       BPF_EAPROG_SEC("xdp_cpumap/",           BPF_PROG_TYPE_XDP,
+> > +                                               BPF_XDP_CPUMAP),
+> >         BPF_PROG_SEC("xdp",                     BPF_PROG_TYPE_XDP),
+> >         BPF_PROG_SEC("perf_event",              BPF_PROG_TYPE_PERF_EVENT),
+> >         BPF_PROG_SEC("lwt_in",                  BPF_PROG_TYPE_LWT_IN),
+> > --
 
 -- 
 Best regards,
