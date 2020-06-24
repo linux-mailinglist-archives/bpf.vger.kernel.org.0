@@ -2,108 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C332207326
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 14:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386BC207564
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 16:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403921AbgFXMRt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 08:17:49 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:41092 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403917AbgFXMRs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:17:48 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jo4LY-00030v-LA; Wed, 24 Jun 2020 06:17:44 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jo4LX-0000Hb-QF; Wed, 24 Jun 2020 06:17:44 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <87d066vd4y.fsf@x220.int.ebiederm.org>
-        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
-        <87bllngirv.fsf@x220.int.ebiederm.org>
-        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
-        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
-        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
-        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
-        <87h7v1pskt.fsf@x220.int.ebiederm.org>
-        <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
-        <87h7v1mx4z.fsf@x220.int.ebiederm.org>
-        <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
-Date:   Wed, 24 Jun 2020 07:13:19 -0500
-In-Reply-To: <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
-        (Alexei Starovoitov's message of "Tue, 23 Jun 2020 12:40:23 -0700")
-Message-ID: <878sgck6g0.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2390005AbgFXOOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 10:14:18 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36596 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389583AbgFXOOS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 10:14:18 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jo6AH-0003Dn-Fs; Wed, 24 Jun 2020 16:14:13 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jo6AH-0004nF-6s; Wed, 24 Jun 2020 16:14:13 +0200
+Subject: Re: [PATCH bpf-next v2 2/2] tools, bpftool: Define attach_type_name
+ array only once
+To:     Tobias Klauser <tklauser@distanz.ch>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
+References: <20200623104227.11435-1-tklauser@distanz.ch>
+ <20200623104227.11435-3-tklauser@distanz.ch>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fcb30532-e596-1381-6a67-387b5eca6281@iogearbox.net>
+Date:   Wed, 24 Jun 2020 16:14:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jo4LX-0000Hb-QF;;;mid=<878sgck6g0.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18AWL6e2YVEkkYGAkiCdIEi6OTnVRVCYkY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4969]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 388 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 11 (2.7%), b_tie_ro: 9 (2.4%), parse: 0.79 (0.2%),
-         extract_message_metadata: 2.3 (0.6%), get_uri_detail_list: 0.56
-        (0.1%), tests_pri_-1000: 4.1 (1.0%), tests_pri_-950: 1.23 (0.3%),
-        tests_pri_-900: 1.01 (0.3%), tests_pri_-90: 55 (14.2%), check_bayes:
-        54 (13.8%), b_tokenize: 6 (1.4%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 1.68 (0.4%), b_tok_touch_all: 37 (9.6%), b_finish: 0.92
-        (0.2%), tests_pri_0: 296 (76.4%), check_dkim_signature: 0.48 (0.1%),
-        check_dkim_adsp: 2.2 (0.6%), poll_dns_idle: 0.55 (0.1%), tests_pri_10:
-        2.3 (0.6%), tests_pri_500: 6 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20200623104227.11435-3-tklauser@distanz.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25853/Wed Jun 24 15:13:27 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On 6/23/20 12:42 PM, Tobias Klauser wrote:
+> Define attach_type_name in common.c instead of main.h so it is only
+> defined once. This leads to a slight decrease in the binary size of
+> bpftool.
+> 
+> Before:
+> 
+>     text	   data	    bss	    dec	    hex	filename
+>   399024	  11168	1573160	1983352	 1e4378	bpftool
+> 
+> After:
+> 
+>     text	   data	    bss	    dec	    hex	filename
+>   398256	  10880	1573160	1982296	 1e3f58	bpftool
+> 
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> ---
+> v2: move attach_type_name to common.c instead of cgroup.c as suggested
+>      by Andrii
+> 
+>   tools/bpf/bpftool/common.c | 36 ++++++++++++++++++++++++++++++++++++
+>   tools/bpf/bpftool/main.h   | 36 +-----------------------------------
+>   2 files changed, 37 insertions(+), 35 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index 6c864c3683fc..3c767dd114c7 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -29,6 +29,42 @@
+>   #define BPF_FS_MAGIC		0xcafe4a11
+>   #endif
+>   
+> +const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
+> +	[BPF_CGROUP_INET_INGRESS] = "ingress",
+> +	[BPF_CGROUP_INET_EGRESS] = "egress",
+> +	[BPF_CGROUP_INET_SOCK_CREATE] = "sock_create",
+> +	[BPF_CGROUP_SOCK_OPS] = "sock_ops",
+> +	[BPF_CGROUP_DEVICE] = "device",
+> +	[BPF_CGROUP_INET4_BIND] = "bind4",
+> +	[BPF_CGROUP_INET6_BIND] = "bind6",
+> +	[BPF_CGROUP_INET4_CONNECT] = "connect4",
+> +	[BPF_CGROUP_INET6_CONNECT] = "connect6",
+> +	[BPF_CGROUP_INET4_POST_BIND] = "post_bind4",
+> +	[BPF_CGROUP_INET6_POST_BIND] = "post_bind6",
+> +	[BPF_CGROUP_INET4_GETPEERNAME] = "getpeername4",
+> +	[BPF_CGROUP_INET6_GETPEERNAME] = "getpeername6",
+> +	[BPF_CGROUP_INET4_GETSOCKNAME] = "getsockname4",
+> +	[BPF_CGROUP_INET6_GETSOCKNAME] = "getsockname6",
+> +	[BPF_CGROUP_UDP4_SENDMSG] = "sendmsg4",
+> +	[BPF_CGROUP_UDP6_SENDMSG] = "sendmsg6",
+> +	[BPF_CGROUP_SYSCTL] = "sysctl",
+> +	[BPF_CGROUP_UDP4_RECVMSG] = "recvmsg4",
+> +	[BPF_CGROUP_UDP6_RECVMSG] = "recvmsg6",
+> +	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
+> +	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
+> +
+> +	[BPF_SK_SKB_STREAM_PARSER] = "sk_skb_stream_parser",
+> +	[BPF_SK_SKB_STREAM_VERDICT] = "sk_skb_stream_verdict",
+> +	[BPF_SK_MSG_VERDICT] = "sk_msg_verdict",
+> +	[BPF_LIRC_MODE2] = "lirc_mode2",
+> +	[BPF_FLOW_DISSECTOR] = "flow_dissector",
+> +	[BPF_TRACE_RAW_TP] = "raw_tp",
+> +	[BPF_TRACE_FENTRY] = "fentry",
+> +	[BPF_TRACE_FEXIT] = "fexit",
+> +	[BPF_MODIFY_RETURN] = "mod_ret",
+> +	[BPF_LSM_MAC] = "lsm_mac",
 
-> On Tue, Jun 23, 2020 at 01:53:48PM -0500, Eric W. Biederman wrote:
+Just a small nit given we touch these here, could you properly align the strings
+such that it looks similarly to prog_type_name[] one? That plus the typo fix that
+Quentin mentioned, and it's good to go.
 
-> There is no refcnt bug. It was a user error on tomoyo side.
-> fork_blob() works as expected.
-
-Nope.  I have independently confirmed it myself.
-
-fork_usermode_blob holds a reference and puts that reference.  An
-additional reference is needed for execve to hold and put.
-
-Now can you write some patches to make that obvious please?
-
-Eric
+Thanks,
+Daniel
