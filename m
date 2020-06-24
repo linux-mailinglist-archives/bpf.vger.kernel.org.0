@@ -2,172 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B6207BA3
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 20:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C6B207BB1
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 20:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405938AbgFXShM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 14:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S2406015AbgFXSke (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 14:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405581AbgFXShM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 14:37:12 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE56AC061573
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 11:37:11 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id x18so3719817lji.1
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 11:37:11 -0700 (PDT)
+        with ESMTP id S2405581AbgFXSkd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 14:40:33 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F46AC061573;
+        Wed, 24 Jun 2020 11:40:33 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f18so2833126qkh.1;
+        Wed, 24 Jun 2020 11:40:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=TCdFezLAxuIFeRMQ9JhebSRAgIYY7N1hbNSIjffmr90=;
-        b=cv8dIKhanHVtGIezLLmtlB9m7uyfYAAD7TKMppjLafXATdQ7GnhVTXxO162ZqitZFI
-         x8EAzHhAnJ0F6VGQhukXvGxqFeRNzcxaCvyNLej60y2/ebtcRUU3umQpgm7pjhnzF3+d
-         u6kclpquSYcnxqd5llUOrChNEG8Aa6DvViQSA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=np+3VMD3sWFoAs+D/eifBj3EX1hOKSgQjHt7XBKDv/g=;
+        b=QsfosbVAj1A/cFUNhOkLrxNQnoCAworiq4FFv18qIw5Ey7Sl07SXn5Kkp1ujAVPgc4
+         wLfBd0327Zcy9O8JlfuHk4DivgZIphMoYRM2NHfzXizBKN6hY3G+PqS5Kh7tywZoO6k6
+         ZqLHsrUw9qY27emKz9OKPNx4zoejvTy3q2SoHBlRhgyuk5A5D+TlI7YpGg5/jqoMgqOP
+         5Um+qwEPmFpazON0YGTqgs88XdQpkITu9Z1XrtL6Rv7jg3InRxhmRRHQOb3+Wb3VbORE
+         V1GjA5kVzG/GzH1ZZvf1h6ihMyL4dQW3ZUMQ9WPh83a9FzC9DuurxiyeCPRxHVuRpAZu
+         nygA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=TCdFezLAxuIFeRMQ9JhebSRAgIYY7N1hbNSIjffmr90=;
-        b=Ge2Yx+v6haNDlKDo1FaysvuqJNd2SeGTCVj/py8cPKxyNJBanBFiEVlqeqbsNauL41
-         GDB6/8BkMx5T5yBSfqANtY3QviJaRX5OFIbpBCNutty1wfDeDSizxz4Ih45G1T239PoY
-         TMnZhlGk8+fnNjEkmY2Sua8hhSNrX/Q4LvYdNYXHVHr99Ei6j0I6qJCdTIZ8ONXDVbbt
-         sF1E5XWbk/o1rwePyGyqkwXwRaTVcXOMbO5E8Y7hd48TZX09pOVXoUtDq97IEj8UBiQ5
-         CGGEi2gIVgj0o2sxgLJKn/L28H1Jle6x3pkCG6HYiyCM0iGqZIatf7u6k6H7cGcbRBCK
-         byuA==
-X-Gm-Message-State: AOAM533Wfhq2fEyxrVvo/mVVb3r/IBMJ20/jUtI4J67N3Bcv9Fr5XmS3
-        2hknG25zUJU17tko9KNQI27uIg==
-X-Google-Smtp-Source: ABdhPJyc6BwO9sf2g1d19br23n3gpn66w55pQ73gwmjLaoyyLymofT6D3KZIhCZiKRlBobtphc7taA==
-X-Received: by 2002:a2e:871a:: with SMTP id m26mr5700467lji.418.1593023830365;
-        Wed, 24 Jun 2020 11:37:10 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id r23sm4329188ljh.86.2020.06.24.11.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 11:37:09 -0700 (PDT)
-References: <20200623103459.697774-1-jakub@cloudflare.com> <20200623103459.697774-3-jakub@cloudflare.com> <87o8p8mlfx.fsf@cloudflare.com> <CAEf4BzYZLTYmLcaSrrXptD8fOX3O9TdT2yQcbbGZiaqt6s3k4g@mail.gmail.com> <87lfkcmiw0.fsf@cloudflare.com> <CAEf4BzZYjPL+TmqFfuEFgzm+qUh_T2zHsRZjq-BE+LMu+25=ZQ@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf, netns: Keep attached programs in bpf_prog_array
-In-reply-to: <CAEf4BzZYjPL+TmqFfuEFgzm+qUh_T2zHsRZjq-BE+LMu+25=ZQ@mail.gmail.com>
-Date:   Wed, 24 Jun 2020 20:37:04 +0200
-Message-ID: <87k0zwmhtb.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=np+3VMD3sWFoAs+D/eifBj3EX1hOKSgQjHt7XBKDv/g=;
+        b=pDpVG8wnU+stHRm/4eZ1YFjICU0wqcZ3FP0W1JZEKUyrS36aIgufVZYuL+ZB4ATBQd
+         0w3pOPGdwFqCdD77hZny0HMXrBEgBY2hHQnlu77IjzF9sSWvJuYu1ac3kGktKcjmxTmu
+         Q4TYsuOFXxeAdfsSKqhtKgmDeiKc32bW9mJOUmdrjDO4bd5HUkfUuecaWobKlmdbyD0D
+         fLDptNyLNJzfj9Tm5P90HDK1ZqMFXKB5BTww9V2JddPKq0WC295DAuB16QaZJiRr2qWA
+         PMTrYIs6bj33oUBGP7uf6KfjnNb8iwdxZF59H3jjLxdWzpivk6ttDh2tVRXlaY495p/R
+         wH9w==
+X-Gm-Message-State: AOAM533fC8jeAHlIyXSYzDByTuyXkNaIxP3BCJ/GMRPL7PSiZnEcPjCq
+        G8ZCYHarbY710s9kTzR7l4IWssuTwmEFbC6PkYU=
+X-Google-Smtp-Source: ABdhPJzIbNsdQ8w4ZquEYWK1+SLgtNl1+duqZVFWNTtgfadTN2/Zf4YCudWkLjFZ/nhuDqoUBqLQyVemOfA8zA3S3BY=
+X-Received: by 2002:a37:a89:: with SMTP id 131mr26064560qkk.92.1593024032419;
+ Wed, 24 Jun 2020 11:40:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
+ <CAEf4BzbSc-wykq1_62CQwtszO+76rkudz_B=GkzE6ZheMUAusw@mail.gmail.com> <20200624175754.GD20203@kernel.org>
+In-Reply-To: <20200624175754.GD20203@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 24 Jun 2020 11:40:21 -0700
+Message-ID: <CAEf4BzY8b71tE5B4rw5sfy=xajtgqUGHVaoHNf_YzVtQ9aLCBg@mail.gmail.com>
+Subject: Re: pahole generates invalid BTF for code compiled with recent clang
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        dwarves@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 08:24 PM CEST, Andrii Nakryiko wrote:
-> On Wed, Jun 24, 2020 at 11:16 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Wed, Jun 24, 2020 at 07:47 PM CEST, Andrii Nakryiko wrote:
->> > On Wed, Jun 24, 2020 at 10:19 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->> >>
->> >> On Tue, Jun 23, 2020 at 12:34 PM CEST, Jakub Sitnicki wrote:
->> >> > Prepare for having multi-prog attachments for new netns attach types by
->> >> > storing programs to run in a bpf_prog_array, which is well suited for
->> >> > iterating over programs and running them in sequence.
->> >> >
->> >> > Because bpf_prog_array is dynamically resized, after this change a
->> >> > potentially blocking memory allocation in bpf(PROG_QUERY) callback can
->> >> > happen, in order to collect program IDs before copying the values to
->> >> > user-space supplied buffer. This forces us to adapt how we protect access
->> >> > to the attached program in the callback. As bpf_prog_array_copy_to_user()
->> >> > helper can sleep, we switch from an RCU read lock to holding a mutex that
->> >> > serializes updaters.
->> >> >
->> >> > To handle bpf(PROG_ATTACH) scenario when we are replacing an already
->> >> > attached program, we introduce a new bpf_prog_array helper called
->> >> > bpf_prog_array_replace_item that will exchange the old program with a new
->> >> > one. bpf-cgroup does away with such helper by computing an index into the
->> >> > array from a program position in an external list of attached
->> >> > programs/links. Such approach fails when a dummy prog is left in the array
->> >> > after a memory allocation failure on link release, but is necessary in
->> >> > bpf-cgroup case because the same BPF program can be present in the array
->> >> > multiple times due to inheritance, and attachment cannot be reliably
->> >> > identified by bpf_prog pointer comparison.
->> >> >
->> >> > No functional changes intended.
->> >> >
->> >> > Acked-by: Andrii Nakryiko <andriin@fb.com>
->> >> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> >> > ---
->> >> >  include/linux/bpf.h        |   3 +
->> >> >  include/net/netns/bpf.h    |   5 +-
->> >> >  kernel/bpf/core.c          |  20 ++++--
->> >> >  kernel/bpf/net_namespace.c | 137 +++++++++++++++++++++++++++----------
->> >> >  net/core/flow_dissector.c  |  21 +++---
->> >> >  5 files changed, 132 insertions(+), 54 deletions(-)
->> >> >
->> >>
->> >> [...]
->> >>
->> >> > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
->> >> > index b951dab2687f..593523a22168 100644
->> >> > --- a/kernel/bpf/net_namespace.c
->> >> > +++ b/kernel/bpf/net_namespace.c
->> >>
->> >> [...]
->> >>
->> >> > @@ -93,8 +108,16 @@ static int bpf_netns_link_update_prog(struct bpf_link *link,
->> >> >               goto out_unlock;
->> >> >       }
->> >> >
->> >> > +     run_array = rcu_dereference_protected(net->bpf.run_array[type],
->> >> > +                                           lockdep_is_held(&netns_bpf_mutex));
->> >> > +     if (run_array)
->> >> > +             ret = bpf_prog_array_replace_item(run_array, link->prog, new_prog);
->> >>
->> >> Thinking about this some more, link update should fail with -EINVAL if
->> >> new_prog already exists in run_array. Same as PROG_ATTACH fails with
->> >> -EINVAL when trying to attach the same prog for the second time.
->> >>
->> >> Otherwise, LINK_UPDATE can lead to having same BPF prog present multiple
->> >> times in the prog_array, once attaching more than one prog gets enabled.
->> >>
->> >> Then we would we end up with the same challenge as bpf-cgroup, that is
->> >> how to find the program index into the prog_array in presence of
->> >> dummy_prog's.
->> >
->> > If you attach 5 different links having the same bpf_prog, it should be
->> > allowed and all five bpf_progs should be attached and called 5 times.
->> > They are independent links, that's the main thing. What specific BPF
->> > program is attached by the link (or later updated to) shouldn't be of
->> > any concern here (relative to other attached links/programs).
->> >
->> > Attaching the same *link* twice shouldn't be allowed, though.
->>
->> Thanks for clarifying. I need to change the approach then:
->>
->>  1) find the prog index into prog_array by iterating the list of links,
->>  2) adjust the index for any dummy progs in prog_array below the index.
->>
->> That might work for bpf-cgroup too.
->>
+On Wed, Jun 24, 2020 at 10:57 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> I thought that's what bpf-cgroup already does... Except right now
-> there could be no dummy progs, but if we do non-failing detachment,
-> there might be. Then hierarchies can get out of sync and we need to
-> handle that nicely. It's not super straightforward, that's why I said
-> that it's a nice challenge to consider :)
-
-Now I get it... bpf-cgroup doesn't use bpf_prog_array_delete_safe(). I
-was confusing it with what I saw in bpf_trace all along.
-
-> But here we don't have hierarchy, it's a happy place to be in :)
-
-It feels like there are some war stories to tell about bpf-cgroup.
-
->> The only other alternative I can think of it to copy the prog array to
->> filter out dummy_progs, before replacing the prog on link update.
+> Em Wed, Jun 24, 2020 at 10:41:10AM -0700, Andrii Nakryiko escreveu:
+> > On Wed, Jun 24, 2020 at 4:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > If pahole -J is used on an ELF that has BTF info from clang, it
+> > > produces an invalid
+> > > output. This is because pahole rewrites the .BTF section (which
+> > > includes a new string
+> > > table) but it doesn't touch .BTF.ext at all.
+> >
+> > Why do you run `pahole -J` on BPF .o file? Clang already generates
+> > .BTF (and .BTF.ext, of course) for you.
+> >
+> > pahole -J is supposed to be used for vmlinux, not for clang-compiled
+> > -target BPF object files.
 >
-> Probably over-complication. I'd filter dummy progs only on new link
-> attachment or detachment. Update can be kept very simple.
+> yeah, I was thinking this was for a vmlinux generated by clang, which,
+> from the commands below (the suffix _prog.o) should have told me this is
+> a target BPF object file.
+>
+> But then, if one insists for some reason in generating BTF from the
+> DWARF in a BPF target object file, stripping .BTF.ext, if present, is
+> the right thing to do at this point.
 
-OK, I know what I need to do.
+I disagree. Those who insist probably have some wrong conceptual
+understanding and it's better to fix that (understanding), rather than
+lose focus and bend tool to do what it's not supposed to do and
+ultimately cause more confusion.
 
-[...]
+pahole's BTF conversion is really driven towards kernel use-case
+(e.g., with global variables, etc). I wouldn't distract ourselves with
+supporting de-duplicating BPF object files. Single .o's BTF is already
+deduplicated as produced by Clang. Once we add static linking of
+multiple BPF .o's (which I hope to start working on very soon), that
+de-duplication will be handled automatically by libbpf (and hopefully
+integrated into lld as well), among many other things that need to
+happen to make static linking work.
+
+>
+> - Arnaldo
+>
+> > >
+> > > To demonstrate, on a recent check out of bpf-next:
+> > >     $ cp connect4_prog.o connect4_pahole.o
+> > >     $ pahole -J connect4_pahole.o
+> > >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
+> > > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
+> > >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
+> > > .BTF.ext=btf-ext.bin connect4_prog.o
+> > >     $ sha1sum *.bin
+> > >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
+> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
+> > >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
+> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
+> > >
+> > > This problem crops up when compiling old kernels like 4.19 which have
+> > > an extra pahole
+> > > build step with clang-10.
+> >
+> > I was under impression that clang generates .BTF and .BTF.ext only for
+> > -target BPF. In this case, kernel is compiled for "real" target arch,
+> > so there shouldn't be .BTF.ext in the first place? If that's not the
+> > case, then I guess it's a bug in Clang.
+> >
+> > >
+> > > I think a possible fix is to strip .BTF.ext if .BTF is rewritten.
+> > >
+> > > Best
+> > > Lorenz
+> > >
+> > > --
+> > > Lorenz Bauer  |  Systems Engineer
+> > > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> > >
+> > > www.cloudflare.com
+>
+> --
+>
+> - Arnaldo
