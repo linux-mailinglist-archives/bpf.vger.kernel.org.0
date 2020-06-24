@@ -2,83 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C135D206B76
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 06:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E3B206BF4
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 07:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgFXE7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 00:59:21 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:58415 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgFXE7V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 00:59:21 -0400
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05O4wXwK066260;
-        Wed, 24 Jun 2020 13:58:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Wed, 24 Jun 2020 13:58:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05O4wXR6066257
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 24 Jun 2020 13:58:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <87bllngirv.fsf@x220.int.ebiederm.org>
- <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
- <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
- <87ftaxd7ky.fsf@x220.int.ebiederm.org>
- <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
- <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <b4a805e7-e009-dfdf-d011-be636ce5c4f5@i-love.sakura.ne.jp>
- <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <5254444e-465e-6dee-287b-bef58526b724@i-love.sakura.ne.jp>
-Date:   Wed, 24 Jun 2020 13:58:33 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2388854AbgFXFtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 01:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388280AbgFXFtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 01:49:13 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB429C061573;
+        Tue, 23 Jun 2020 22:49:13 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id z1so830916qtn.2;
+        Tue, 23 Jun 2020 22:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ShBKJ5keCGjO85LfMFG5uvPBt0RApJJ415V16FVa8lY=;
+        b=US423nVi5aKM1j92nsirmLWseieDRI/RfjX0Vom/oyRdR70u/NHtE/6J/bzX1NIdol
+         e7YMz+aS/1UgKb/NEQVRsnUdMeGkwWHYNPtyRzZAj3IDLMdx24jubmqpi2C13RvbZs3m
+         V/f490C8vdbEbmBufbqE/J7Q3JTXhif7RChf0Ucetwnugyb+5oV9mmOjoqm4ACxvZJDh
+         hHmEB7+YLloLTyuhkRMw1AX2IgMvrxjDu/M2V1zlhXlTKw4ELM6/VoJEFMvH6Xjo65IT
+         37uiw+RJ/HuISYBIjCh+u7NqhlWB/UTg3RWNCdM5kOnrJ0qqCDe9ipyzSb3scR31xfVn
+         5KPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ShBKJ5keCGjO85LfMFG5uvPBt0RApJJ415V16FVa8lY=;
+        b=A3XjHBwNoo3lGNefNAYas7K5ecm19VnhJ6lSzT7A885HEOPgo4n1nXDxAwhdMX8jQo
+         Awozj0kbY75F3MJa6GNTUSiQSvjnzH8UQPX//x4kwNJHLqvXtjnzOlAKiaOFmyAeyyzI
+         gzOdmvSe2mbNpge2Y5ttEOVzmC6noX5TnF7bby3deKBNygGsFrCAhPzeDUh0rh6Dl509
+         lVEEIIDGKKZ4UleHtOdPIAodQd+bVKsRVWGxx4WoiM/LVU63FA+NiaR9jC3dw9ESQSQw
+         r6uexs86SCEAitwHTOuhkqvQVC2Naki7ziBk74/ZfbX/Wwq5wyIZYr9bwcSwYBQH3Mum
+         TbTQ==
+X-Gm-Message-State: AOAM530/OpSRGg1/TJdSlZ3miPaltr6zNtJn7sEOH4sTlUNy6DViYfHf
+        gZDseWzsnZRUfDtiHK8LBDVWly9s+dL6G7KMlvW6/Fuf
+X-Google-Smtp-Source: ABdhPJxPTNbM7vq7EcJ2YWjjVsaLih0edfJdV7moTXHap+OsWLU1RsQ/YrNYz8pKZBYBHmpvE2qhB4Tg0zAH3pQWHAQ=
+X-Received: by 2002:ac8:5306:: with SMTP id t6mr1543904qtn.59.1592977753090;
+ Tue, 23 Jun 2020 22:49:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200624040054.x5xzkuhiw67cywzl@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1592947694.git.lorenzo@kernel.org> <372755fa10bdbe9b5db4e207db6b0829e18513fe.1592947694.git.lorenzo@kernel.org>
+In-Reply-To: <372755fa10bdbe9b5db4e207db6b0829e18513fe.1592947694.git.lorenzo@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 23 Jun 2020 22:49:02 -0700
+Message-ID: <CAEf4BzbiZLtr8Vhwef=Zjd_=OVqKBozyg76Djae7qw3rgd7q8g@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: add SEC name for xdp programs
+ attached to CPUMAP
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        lorenzo.bianconi@redhat.com, David Ahern <dsahern@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/24 13:00, Alexei Starovoitov wrote:
->> However, regarding usermode_blob, although the byte array (which contains code / data)
->> might be initially loaded from the kernel space (which is protected), that byte array
->> is no longer protected (e.g. SIGKILL, strace()) when executed because they are placed
->> in the user address space. Thus, LSM modules (including pathname based security) want
->> to control how that byte array can behave.
-> 
-> It's privileged memory regardless. root can poke into kernel or any process memory.
+On Tue, Jun 23, 2020 at 2:40 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> As for DEVMAP, support SEC("xdp_cpumap*") as a short cut for loading
+> the program with type BPF_PROG_TYPE_XDP and expected attach type
+> BPF_XDP_CPUMAP.
+>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
 
-LSM is there to restrict processes running as "root".
-Your "root can poke into kernel or any process memory." response is out of step with the times.
+Thanks!
 
-Initial byte array used for usermode blob might be protected because of "part of .rodata or
-.init.rodata of kernel module", but that byte array after started in userspace is no longer
-protected. I don't trust such byte array as "part of kernel module", and I'm asking you how
-such byte array does not interfere (or be interfered by) the rest of the system.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/lib/bpf/libbpf.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 18461deb1b19..16fa3b84ac38 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -6866,6 +6866,8 @@ static const struct bpf_sec_def section_defs[] = {
+>                 .attach_fn = attach_iter),
+>         BPF_EAPROG_SEC("xdp_devmap",            BPF_PROG_TYPE_XDP,
+>                                                 BPF_XDP_DEVMAP),
+> +       BPF_EAPROG_SEC("xdp_cpumap/",           BPF_PROG_TYPE_XDP,
+> +                                               BPF_XDP_CPUMAP),
+>         BPF_PROG_SEC("xdp",                     BPF_PROG_TYPE_XDP),
+>         BPF_PROG_SEC("perf_event",              BPF_PROG_TYPE_PERF_EVENT),
+>         BPF_PROG_SEC("lwt_in",                  BPF_PROG_TYPE_LWT_IN),
+> --
+> 2.26.2
+>
