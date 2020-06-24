@@ -2,96 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98C3207A2E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A63207A59
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 19:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405444AbgFXRXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 13:23:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405318AbgFXRXx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:23:53 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E83052078D;
-        Wed, 24 Jun 2020 17:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593019433;
-        bh=miVQth6ABM24hU+hhLIcj8DIJS2NZK9J6PN4sLx3d5E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t0UtHl7xpO5+H9Bza1SBwpN5hUENsJBWNKz27FCpXBObRJ3o+wCMhbkB0CLDnhZ78
-         GGBq/xheEbQiB03YvlD16PAgZpOZlEN0UpOD4vExzkY/yLZKbzKU3QX8hfIuSXlLPa
-         HPpMdflauza7R7KcfogG9T4/ldeYh2gNOR+V6Ptw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 097D5405FF; Wed, 24 Jun 2020 14:23:50 -0300 (-03)
-Date:   Wed, 24 Jun 2020 14:23:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>
-Subject: Re: pahole generates invalid BTF for code compiled with recent clang
-Message-ID: <20200624172350.GB20203@kernel.org>
-References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
- <20200624160659.GA20203@kernel.org>
- <CACAyw9-zLLDJ4vXo7jGS_XoYsiiv4c5NmUCjCnAf0eZBXU3dVA@mail.gmail.com>
+        id S2405477AbgFXRd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 13:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405427AbgFXRd5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:33:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29943C0613ED
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 10:33:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so3453100ljm.11
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 10:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=iiHMhZF69KlR9UB7HSYz9fQ/aeh9jk93OgbnYgxEBXY=;
+        b=ScsiTYV8uNyU30PVPDMD0T7EexDW39n6cYbCFCTNfyHYOosV3+kFLigdhwvgh6xtPR
+         Big/v/Y6ROy6Dn7areLwW+7Te6g1w3tPXn5KdIohKA/pNxzj01ZvTyx8ge7rq4jaDVVj
+         nZc2dIgF6l4l8q0F5rwg3eOLaHQVWFsGe3oTs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=iiHMhZF69KlR9UB7HSYz9fQ/aeh9jk93OgbnYgxEBXY=;
+        b=IOMUd2aCmzrzrhY0o4rQGFJjuTs6paSpqQSWVi7aCWr+vh5sV/SVsPHb7VwoHHUal6
+         jvtxaneKORzaMJUdTpDxrUuY4j34FkcoSoxpFd2N+4vsgqRorg5eoNYoRAxnGRw5hn3u
+         gzSQYYFrhUYJXkaBJKS0AzCMB7rYaGfnyqOefw+B+I31y0pNiQ0L+gu+cMcf2ePzkxfq
+         Rejj1IGMebXVQKYO5PhLOY3VxVTW2QhO0cPDrOxSirBa6b8DtIPxH16CZuB1uw147AIB
+         fep5pYf6nYUxaysxVSryDPCLFPufVFToKfHBGB9dOc7GMeOPV9ExeC6crx5tvV+H87dN
+         5BpQ==
+X-Gm-Message-State: AOAM531we5GB5ZVPto6JDo+eWUk27q4vFTqgNckrT9qC7NNLze44Hw4O
+        a3R2EMFCjrgFndD1IRl9czRjwoSE69KCDw==
+X-Google-Smtp-Source: ABdhPJw4MKvn4GhOd5M6j5CDLK2VmBawL9tmkw5N8ROHo4Ixkd9k3lqI6Vg5lFfyu7pyVS712ie6Tw==
+X-Received: by 2002:a2e:b0fa:: with SMTP id h26mr14008147ljl.148.1593020034482;
+        Wed, 24 Jun 2020 10:33:54 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id t4sm5364941lfp.21.2020.06.24.10.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 10:33:53 -0700 (PDT)
+References: <20200623103459.697774-1-jakub@cloudflare.com> <20200623103459.697774-3-jakub@cloudflare.com> <20200623193352.4mdmfg4mfmgfeku4@kafai-mbp.dhcp.thefacebook.com> <87sgelmrba.fsf@cloudflare.com> <20200623212452.titgpyrxx56u3lyd@kafai-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf, netns: Keep attached programs in bpf_prog_array
+In-reply-to: <20200623212452.titgpyrxx56u3lyd@kafai-mbp.dhcp.thefacebook.com>
+Date:   Wed, 24 Jun 2020 19:33:51 +0200
+Message-ID: <87mu4smkqo.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAyw9-zLLDJ4vXo7jGS_XoYsiiv4c5NmUCjCnAf0eZBXU3dVA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jun 24, 2020 at 05:22:59PM +0100, Lorenz Bauer escreveu:
-> On Wed, 24 Jun 2020 at 17:07, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > Em Wed, Jun 24, 2020 at 12:05:50PM +0100, Lorenz Bauer escreveu:
-> > > Hi,
-> > >
-> > > If pahole -J is used on an ELF that has BTF info from clang, it
-> > > produces an invalid
-> > > output. This is because pahole rewrites the .BTF section (which
-> > > includes a new string
-> > > table) but it doesn't touch .BTF.ext at all.
-> >
-> > > To demonstrate, on a recent check out of bpf-next:
-> > >     $ cp connect4_prog.o connect4_pahole.o
-> > >     $ pahole -J connect4_pahole.o
-> > >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
-> > > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
-> > >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
-> > > .BTF.ext=btf-ext.bin connect4_prog.o
-> > >     $ sha1sum *.bin
-> > >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
-> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
-> > >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
-> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
-> > >
-> > > This problem crops up when compiling old kernels like 4.19 which have
-> > > an extra pahole
-> > > build step with clang-10.
+On Tue, Jun 23, 2020 at 11:24 PM CEST, Martin KaFai Lau wrote:
+> On Tue, Jun 23, 2020 at 10:59:37PM +0200, Jakub Sitnicki wrote:
+>> On Tue, Jun 23, 2020 at 09:33 PM CEST, Martin KaFai Lau wrote:
+>> > On Tue, Jun 23, 2020 at 12:34:58PM +0200, Jakub Sitnicki wrote:
+>> >
+>> > [ ... ]
+>> >
+>> >> @@ -93,8 +108,16 @@ static int bpf_netns_link_update_prog(struct bpf_link *link,
+>> >>  		goto out_unlock;
+>> >>  	}
+>> >>
+>> >> +	run_array = rcu_dereference_protected(net->bpf.run_array[type],
+>> >> +					      lockdep_is_held(&netns_bpf_mutex));
+>> >> +	if (run_array)
+>> >> +		ret = bpf_prog_array_replace_item(run_array, link->prog, new_prog);
+>> >> +	else
+>> > When will this happen?
+>>
+>> This will never happen, unless there is a bug. As long as there is a
+>> link attached, run_array should never be detached (null). Because it can
+>> be handled gracefully, we fail the bpf(LINK_UPDATE) syscall.
+>>
+>> Your question makes me think that perhaps it should trigger a warning,
+>> with WARN_ON_ONCE, to signal clearly to the reader that this is an
+>> unexpected state.
+>>
+>> WDYT?
+> Thanks for confirming and the explanation.
+>
+> If it will never happen, I would skip the "if (run_array)".  That
+> will help the code reading in the future.
+>
+> I would not WARN also.
 
-> > > I think a possible fix is to strip .BTF.ext if .BTF is rewritten.
-> >
-> > Agreed.
+Best code is no code :-)
 
-> > Longer term pahole needs to generate the .BTF.ext from DWARF, but then,
-> > if clang is generating it already, why use pahole -J?
- 
-> Beats me, but then sometimes you don't have control over the workflow, see
-> my v4.19 kernel example.
- 
-> > Does clang do deduplication for multi-object binaries?
+I realized that bpf_prog_array_replace_item() cannot fail either, unless
+there is a bug how we compile the prog_array. So I plan to remove that
+error check as well.
 
-> > Also its nice to see that the BTF generated ends up with the same
-> > sha1sum, cool :-)
- 
-> Unfortunately it's the .BTF.ext section that has the same sha1, because
-> pahole doesn't touch it ;(
-
-My bad... I guess I saw what I wanted to see... ;-\
-
-- Arnaldo
+Thanks for feedback.
