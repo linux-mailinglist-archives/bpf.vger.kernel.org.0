@@ -2,97 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2BF207B7C
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 20:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333B6207BA3
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 20:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405832AbgFXS0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 14:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
+        id S2405938AbgFXShM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 14:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404995AbgFXS0p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 14:26:45 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E61EC061573;
-        Wed, 24 Jun 2020 11:26:45 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q198so2780962qka.2;
-        Wed, 24 Jun 2020 11:26:45 -0700 (PDT)
+        with ESMTP id S2405581AbgFXShM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 14:37:12 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE56AC061573
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 11:37:11 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id x18so3719817lji.1
+        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 11:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0656yG2r9Ums4nGOghSQqH0qThSj3hBocwJfZfFJF1o=;
-        b=rV2CPu81WNoz8NMjP8lK8gzG5vduZEbY31yPYXU0EVLbpMethgL3n8d/TcYZbp6cOa
-         C/cvIUbrT3cBB0LXqZvddG2R1SJ+fOPdWAf+K/iRyOZxiKofEPeGv5w54sE37aMpZasr
-         /CJE+THR1eANzX54pQaz6YeqV4lCPB9i3zRtgHnB3Yartq+Dl6BTD/j3OgzeSCGcco+R
-         q3VJ3VQ3Dk5R5JHUxUw5Kyk3ThbUTu0cx+mKnEhA1JwGfCAl21TF98KJ/i+lvReux+eF
-         +CVnH4SY2dv/t0vBJ7LnbYIy5/f7+vLRDbnRhMm3I+7eEiwx+MaKc9HnESr6wkL7d0Zw
-         GAWg==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=TCdFezLAxuIFeRMQ9JhebSRAgIYY7N1hbNSIjffmr90=;
+        b=cv8dIKhanHVtGIezLLmtlB9m7uyfYAAD7TKMppjLafXATdQ7GnhVTXxO162ZqitZFI
+         x8EAzHhAnJ0F6VGQhukXvGxqFeRNzcxaCvyNLej60y2/ebtcRUU3umQpgm7pjhnzF3+d
+         u6kclpquSYcnxqd5llUOrChNEG8Aa6DvViQSA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0656yG2r9Ums4nGOghSQqH0qThSj3hBocwJfZfFJF1o=;
-        b=YawBWB1mVqWMapqmCEFDXQzcuVkrZ+syGTyYkWKsVEz2QpSr5H/nnBubuEQHe/7Dju
-         Vdt754yw5FkoTDps5jLfmbSS/4Ug0F4jqt/7KY+gGFIXDY/Lm/5u/BEUvg3KbNl2js75
-         yc1KMFYZbneOJPc11hViBZRnKo9EUygrAfFgH4h1Vu0qfTuqsQUcVg9jjMT36W4IEjJI
-         JO1PXuBX0XUOVbT+507OKKpCmfkrd2hZDD2OPv6k9wu+nUQ4zbnAiXY4pAEL6CygNaAL
-         xN1m/7mwj5g2UFVJzjU2pdjTTyAYvmEOjSOaBEChmrMvbqpZjx5eY+hcVr4RMnM+yolL
-         fNlA==
-X-Gm-Message-State: AOAM533DO+qDWhyyH6/JU6SfczvD/V1Fqdzz01w5fdjsBIzXpN6ai9ee
-        Gmje1SQ0gI8JdsMjlZIw5M32UptltSZU7VWQ85w=
-X-Google-Smtp-Source: ABdhPJwk97eEhPOtGcC58WFjn7ghvOnUiZKrHGFi8uKXpJRFw2BakCLuEieQuy5FkY3kEUM9tJ1KGo6gN1fQrGJg3XY=
-X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr27566660qkl.437.1593023204363;
- Wed, 24 Jun 2020 11:26:44 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=TCdFezLAxuIFeRMQ9JhebSRAgIYY7N1hbNSIjffmr90=;
+        b=Ge2Yx+v6haNDlKDo1FaysvuqJNd2SeGTCVj/py8cPKxyNJBanBFiEVlqeqbsNauL41
+         GDB6/8BkMx5T5yBSfqANtY3QviJaRX5OFIbpBCNutty1wfDeDSizxz4Ih45G1T239PoY
+         TMnZhlGk8+fnNjEkmY2Sua8hhSNrX/Q4LvYdNYXHVHr99Ei6j0I6qJCdTIZ8ONXDVbbt
+         sF1E5XWbk/o1rwePyGyqkwXwRaTVcXOMbO5E8Y7hd48TZX09pOVXoUtDq97IEj8UBiQ5
+         CGGEi2gIVgj0o2sxgLJKn/L28H1Jle6x3pkCG6HYiyCM0iGqZIatf7u6k6H7cGcbRBCK
+         byuA==
+X-Gm-Message-State: AOAM533Wfhq2fEyxrVvo/mVVb3r/IBMJ20/jUtI4J67N3Bcv9Fr5XmS3
+        2hknG25zUJU17tko9KNQI27uIg==
+X-Google-Smtp-Source: ABdhPJyc6BwO9sf2g1d19br23n3gpn66w55pQ73gwmjLaoyyLymofT6D3KZIhCZiKRlBobtphc7taA==
+X-Received: by 2002:a2e:871a:: with SMTP id m26mr5700467lji.418.1593023830365;
+        Wed, 24 Jun 2020 11:37:10 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id r23sm4329188ljh.86.2020.06.24.11.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 11:37:09 -0700 (PDT)
+References: <20200623103459.697774-1-jakub@cloudflare.com> <20200623103459.697774-3-jakub@cloudflare.com> <87o8p8mlfx.fsf@cloudflare.com> <CAEf4BzYZLTYmLcaSrrXptD8fOX3O9TdT2yQcbbGZiaqt6s3k4g@mail.gmail.com> <87lfkcmiw0.fsf@cloudflare.com> <CAEf4BzZYjPL+TmqFfuEFgzm+qUh_T2zHsRZjq-BE+LMu+25=ZQ@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf, netns: Keep attached programs in bpf_prog_array
+In-reply-to: <CAEf4BzZYjPL+TmqFfuEFgzm+qUh_T2zHsRZjq-BE+LMu+25=ZQ@mail.gmail.com>
+Date:   Wed, 24 Jun 2020 20:37:04 +0200
+Message-ID: <87k0zwmhtb.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20200623032224.4020118-1-andriin@fb.com> <20200623032224.4020118-2-andriin@fb.com>
- <7ed6ada5-2539-3090-0db7-0f65b67e4699@iogearbox.net> <CAEf4BzbsRyt5Y4-oMaKTUNu_ijnRD09+WW3iA+bfGLZcLpd77w@mail.gmail.com>
- <ee6df475-b7d4-b8ed-dc91-560e42d2e7fc@iogearbox.net> <20200623232503.yzm4g24rwx7khudf@ast-mbp.dhcp.thefacebook.com>
- <f1ec2d3b-4897-1a40-e373-51bed4fd3b87@fb.com> <CAEf4BzZTWyii7k6MjdygJP+VfAHnnr8jbxjG1Ge96ioKq5ZEeQ@mail.gmail.com>
- <5ef2ecf4b7bd9_37452b132c4de5bcc@john-XPS-13-9370.notmuch>
- <CAEf4BzZN+iH1zcH9VfYhe8CLS3LOrBW97e2e6SCsCTC=cThRqA@mail.gmail.com> <CAADnVQK4kWGUiM0z=-xaqs5-VENVDQmhVYAeByHmXC-pE69dNQ@mail.gmail.com>
-In-Reply-To: <CAADnVQK4kWGUiM0z=-xaqs5-VENVDQmhVYAeByHmXC-pE69dNQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Jun 2020 11:26:33 -0700
-Message-ID: <CAEf4BzaZOkgiuhVYbXpVSfDVHZ5CeqoKENsCo1UeY5kWEB6m+g@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/3] selftests/bpf: add variable-length data
- concatenation pattern test
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 11:19 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Jun 24, 2020 at 08:24 PM CEST, Andrii Nakryiko wrote:
+> On Wed, Jun 24, 2020 at 11:16 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> On Wed, Jun 24, 2020 at 07:47 PM CEST, Andrii Nakryiko wrote:
+>> > On Wed, Jun 24, 2020 at 10:19 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> >>
+>> >> On Tue, Jun 23, 2020 at 12:34 PM CEST, Jakub Sitnicki wrote:
+>> >> > Prepare for having multi-prog attachments for new netns attach types by
+>> >> > storing programs to run in a bpf_prog_array, which is well suited for
+>> >> > iterating over programs and running them in sequence.
+>> >> >
+>> >> > Because bpf_prog_array is dynamically resized, after this change a
+>> >> > potentially blocking memory allocation in bpf(PROG_QUERY) callback can
+>> >> > happen, in order to collect program IDs before copying the values to
+>> >> > user-space supplied buffer. This forces us to adapt how we protect access
+>> >> > to the attached program in the callback. As bpf_prog_array_copy_to_user()
+>> >> > helper can sleep, we switch from an RCU read lock to holding a mutex that
+>> >> > serializes updaters.
+>> >> >
+>> >> > To handle bpf(PROG_ATTACH) scenario when we are replacing an already
+>> >> > attached program, we introduce a new bpf_prog_array helper called
+>> >> > bpf_prog_array_replace_item that will exchange the old program with a new
+>> >> > one. bpf-cgroup does away with such helper by computing an index into the
+>> >> > array from a program position in an external list of attached
+>> >> > programs/links. Such approach fails when a dummy prog is left in the array
+>> >> > after a memory allocation failure on link release, but is necessary in
+>> >> > bpf-cgroup case because the same BPF program can be present in the array
+>> >> > multiple times due to inheritance, and attachment cannot be reliably
+>> >> > identified by bpf_prog pointer comparison.
+>> >> >
+>> >> > No functional changes intended.
+>> >> >
+>> >> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+>> >> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> >> > ---
+>> >> >  include/linux/bpf.h        |   3 +
+>> >> >  include/net/netns/bpf.h    |   5 +-
+>> >> >  kernel/bpf/core.c          |  20 ++++--
+>> >> >  kernel/bpf/net_namespace.c | 137 +++++++++++++++++++++++++++----------
+>> >> >  net/core/flow_dissector.c  |  21 +++---
+>> >> >  5 files changed, 132 insertions(+), 54 deletions(-)
+>> >> >
+>> >>
+>> >> [...]
+>> >>
+>> >> > diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+>> >> > index b951dab2687f..593523a22168 100644
+>> >> > --- a/kernel/bpf/net_namespace.c
+>> >> > +++ b/kernel/bpf/net_namespace.c
+>> >>
+>> >> [...]
+>> >>
+>> >> > @@ -93,8 +108,16 @@ static int bpf_netns_link_update_prog(struct bpf_link *link,
+>> >> >               goto out_unlock;
+>> >> >       }
+>> >> >
+>> >> > +     run_array = rcu_dereference_protected(net->bpf.run_array[type],
+>> >> > +                                           lockdep_is_held(&netns_bpf_mutex));
+>> >> > +     if (run_array)
+>> >> > +             ret = bpf_prog_array_replace_item(run_array, link->prog, new_prog);
+>> >>
+>> >> Thinking about this some more, link update should fail with -EINVAL if
+>> >> new_prog already exists in run_array. Same as PROG_ATTACH fails with
+>> >> -EINVAL when trying to attach the same prog for the second time.
+>> >>
+>> >> Otherwise, LINK_UPDATE can lead to having same BPF prog present multiple
+>> >> times in the prog_array, once attaching more than one prog gets enabled.
+>> >>
+>> >> Then we would we end up with the same challenge as bpf-cgroup, that is
+>> >> how to find the program index into the prog_array in presence of
+>> >> dummy_prog's.
+>> >
+>> > If you attach 5 different links having the same bpf_prog, it should be
+>> > allowed and all five bpf_progs should be attached and called 5 times.
+>> > They are independent links, that's the main thing. What specific BPF
+>> > program is attached by the link (or later updated to) shouldn't be of
+>> > any concern here (relative to other attached links/programs).
+>> >
+>> > Attaching the same *link* twice shouldn't be allowed, though.
+>>
+>> Thanks for clarifying. I need to change the approach then:
+>>
+>>  1) find the prog index into prog_array by iterating the list of links,
+>>  2) adjust the index for any dummy progs in prog_array below the index.
+>>
+>> That might work for bpf-cgroup too.
+>>
 >
-> On Tue, Jun 23, 2020 at 11:51 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > long
-> > represent reality, it causes more straightforward code generation, if
-> > you don't aritifically down-cast types.
->
-> yep. s/int/long/ conversion in bpf_helpers_def.h definitely improves
-> generated code.
->
-> > But even better is to just fix types of your local variables to match
-> > native BPF size.
->
-> I've applied int to long conversion for test_get_stack_rawtp.c test for now.
->
-> Let's try to keep 100% passing rate for test_progs and test_progs-no_alu32 :)
+> I thought that's what bpf-cgroup already does... Except right now
+> there could be no dummy progs, but if we do non-failing detachment,
+> there might be. Then hierarchies can get out of sync and we need to
+> handle that nicely. It's not super straightforward, that's why I said
+> that it's a nice challenge to consider :)
 
-Yeah, my bad. I was 100% sure that I tested both back when I did the
-change, but nothing is 100% in this world, apparently :)
+Now I get it... bpf-cgroup doesn't use bpf_prog_array_delete_safe(). I
+was confusing it with what I saw in bpf_trace all along.
 
-As for test_progs-no_alu32, I'll add them to Travis CI as well (right
-now we only run test_progs), that will help. But I'll try to keep
-test_progs-no_alu32 in mind when doing tests locally as well.
+> But here we don't have hierarchy, it's a happy place to be in :)
+
+It feels like there are some war stories to tell about bpf-cgroup.
+
+>> The only other alternative I can think of it to copy the prog array to
+>> filter out dummy_progs, before replacing the prog on link update.
+>
+> Probably over-complication. I'd filter dummy progs only on new link
+> attachment or detachment. Update can be kept very simple.
+
+OK, I know what I need to do.
+
+[...]
