@@ -2,92 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997432075EA
-	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 16:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F90F20761B
+	for <lists+bpf@lfdr.de>; Wed, 24 Jun 2020 16:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390423AbgFXOmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 10:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S2404000AbgFXOwk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 10:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389836AbgFXOmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:42:39 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0B4C061573
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 07:42:39 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l2so1299906wmf.0
-        for <bpf@vger.kernel.org>; Wed, 24 Jun 2020 07:42:39 -0700 (PDT)
+        with ESMTP id S2403998AbgFXOwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 10:52:40 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A201C061573;
+        Wed, 24 Jun 2020 07:52:39 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id cm23so1252932pjb.5;
+        Wed, 24 Jun 2020 07:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iAEHHwMrscIWMwLBQnaOeXe50PWMSaYe8y+aPo1L5UE=;
-        b=alq3xU+aBZE+m295YkBSs9z1pYc6MBLCTyeam5hy92qrG/uF43yj2xx3e4kI3ggTNn
-         /BFzNGAWqb3qmmUkSEFOSe8xyH+7pdIVkoZbSsewl2ynSdLLr8z5AB6BVwN6FYYAVPfR
-         vEaoXWkJaoTtFSlGcFglJrNVuVuri63CpYGFr7nymxx9yLJCx2qqL4eEjaQ+5Gw6rq3B
-         KiophX/mMQYJrVi9lZYUjytXANoRlsPalhxgNwS09k4Wcr20vgLuFejVrCkymAYVnieY
-         zZixlyGdUMlDtv6ujsNHPxoc7oL2kDcDpge9oV6+vS5AdkXQypcuQ8M9GJ7+qrI6U5Vy
-         6gfA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fOLDKqzIW3CYjRBee9F+nMiLkzzr2nCu5CkBFKnlBa0=;
+        b=avLEVKQmaST9Rweu7Q5bW6VQLtgqRFCjKQ8vSOyLnMZkJECDki6u337HKv+VAXPcGP
+         0LUNjDs3jWnno1gpBn0XMfHZ93hh4hsd5fAjbyYPwb1SspY4EzeJXwjKRQdO+pXEurvq
+         hzbkhiYWGrzOIBjTaT4d5v6ARvXUV4Mfru7pkofivoX6INrfWVP332eBKZMdw3aoB5uu
+         ZTLwMq6s+AXCB8q2fcl0MWh7KhtBFK/Hk+adbxUBmsC2vJ20nPXxcOFb9adqbjMB95Vz
+         jd18yKgT29/pmTwZh2ZXP42lk38JaVhG1R3lRqtYXTMMeIL4mNeN+vt91Bm0saWCFzuJ
+         4hCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iAEHHwMrscIWMwLBQnaOeXe50PWMSaYe8y+aPo1L5UE=;
-        b=mXBbFZqntKA1PxwkqstaDHPqbQwu7E1HmUb4M40rDdRcjcE5ZEl0pIcX7b1F/Br6e2
-         uAUQuX5JA43up9dYhdTuLb7xcaUAbWWhsgE69zO1O0ZxIoSKriFHp3a5m9zBat1Eryde
-         lQpirfV7R6pzuvcGMgKBOzLKlUG7WDrz0D9WepJudDwEWE8YFDEkQcUwpXqYInGse9+Y
-         sk+7tmiwVztPz2FDwdwdm9hS+jVgYc2Qtp3P+5qzv+BzI557AoDuR4J41RUWoiAnMuCL
-         ABAbej15oV4Auc/oSAZlO1/0tN99GphgzVr3ynqXXc59oTXjcH/sFGrUkzo7cwVkSDsw
-         bfDg==
-X-Gm-Message-State: AOAM5317H3kvUj5uDpkhx1OKwboX/w+DJb4OGH/H2JP6eutVshb3BmTM
-        TLFbEYhXPl6pPMU7ClxbVHNNNR9r10+xig==
-X-Google-Smtp-Source: ABdhPJzDlpofBeKJOsFqbPeR91C9T0+rmM//9JTWSonvS7OUoymAPqof1qszBAnPPihxZwSL04MVgg==
-X-Received: by 2002:a1c:3c82:: with SMTP id j124mr7513415wma.155.1593009757444;
-        Wed, 24 Jun 2020 07:42:37 -0700 (PDT)
-Received: from [192.168.1.12] ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id m1sm2440393wrv.37.2020.06.24.07.42.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 07:42:37 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v3 2/2] tools, bpftool: Define attach_type_name
- array only once
-To:     Tobias Klauser <tklauser@distanz.ch>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
-References: <20200623104227.11435-3-tklauser@distanz.ch>
- <20200624143154.13145-1-tklauser@distanz.ch>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <fa41804a-faf1-8347-ea8b-89d92b87efbb@isovalent.com>
-Date:   Wed, 24 Jun 2020 15:42:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fOLDKqzIW3CYjRBee9F+nMiLkzzr2nCu5CkBFKnlBa0=;
+        b=W9tY1H2hFqYvNAfSveVQVvezyxQx+qV0Qf2omQJ+z1n7Q7v6pT1j2AuKZtwcnidDs6
+         hNCc51bkUFCZ7x0St8q4VkdPwHtnZ+soYIAADaL8w9X5XPDzhLf6859xafIPHY4FCbgO
+         FEieDszC1xxSlwY666vtSTCwzmjnXJSOU1k/kqjqcsRe4LXQ/4T+vacM80MvpLR6T6F6
+         4IsxZzEVVtfKDb1kbarQ9l/hc2ZAtH7oUp8X9PKHOCn4Gf9U3yOmO9gKYsfvZx1Zxqb6
+         afGeRyZmEdMU6qQY899e3uegTrA1gZ86X2qTzTb9SF6sSK80hGsqGEP736z3AzLG/C+L
+         JAng==
+X-Gm-Message-State: AOAM533tkzuRwokrtEvxdRR9VDmgyx9sNW+F8aMNJV36T5+PyO1RtBip
+        avjBpguhwsCLYB3OpfcY4M4=
+X-Google-Smtp-Source: ABdhPJyFswuggpcL8K0lkr1rIgPRkdyMBXVhF9q5QrMG1m1wgMK2EjMjygn0pkS0t9pxXfs1NNz4Bg==
+X-Received: by 2002:a17:90a:32cb:: with SMTP id l69mr6791685pjb.205.1593010358852;
+        Wed, 24 Jun 2020 07:52:38 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:d17e])
+        by smtp.gmail.com with ESMTPSA id o207sm21167315pfd.56.2020.06.24.07.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 07:52:38 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 07:52:35 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: add debug message for each created
+ program
+Message-ID: <20200624145235.73mysssbdew7eody@ast-mbp.dhcp.thefacebook.com>
+References: <20200624003340.802375-1-andriin@fb.com>
+ <CAADnVQJ_4WhyK3UvtzodMrg+a-xQR7bFiCCi5nz_qq=AGX_FbQ@mail.gmail.com>
+ <CAEf4BzYKV=A+Sd1ByA2=7CG7WJedB0CRAU7RGN6jO8B9ykpHiA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200624143154.13145-1-tklauser@distanz.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYKV=A+Sd1ByA2=7CG7WJedB0CRAU7RGN6jO8B9ykpHiA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-06-24 16:31 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
-> Define attach_type_name in common.c instead of main.h so it is only
-> defined once. This leads to a slight decrease in the binary size of
-> bpftool.
+On Tue, Jun 23, 2020 at 11:59:40PM -0700, Andrii Nakryiko wrote:
+> On Tue, Jun 23, 2020 at 11:47 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jun 23, 2020 at 5:34 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> > >
+> > > Similar message for map creation is extremely useful, so add similar for BPF
+> > > programs.
+> >
+> > 'extremely useful' is quite subjective.
+> > If we land this patch then everyone will be allowed to add pr_debug()
+> > everywhere in libbpf with the same reasoning: "it's extremely useful pr_debug".
 > 
-> Before:
+> We print this for maps, making it clear which maps and with which FD
+> were created. Having this for programs is just as useful. It doesn't
+> overwhelm output (and it's debug one either way). "everyone will be
+> allowed to add pr_debug()" is a big stretch, you can't just sneak in
+> or force random pr_debug, we do review patches and if something
+> doesn't make sense we can and we do reject it, regardless of claimed
+> usefulness by the patch author.
 > 
->    text	   data	    bss	    dec	    hex	filename
->  399024	  11168	1573160	1983352	 1e4378	bpftool
-> 
-> After:
-> 
->    text	   data	    bss	    dec	    hex	filename
->  398256	  10880	1573160	1982296	 1e3f58	bpftool
-> 
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> So far, libbpf debug logs were extremely helpful (subjective, of
+> course, but what isn't?) to debug "remotely" various issues that BPF
+> users had. They don't feel overwhelmingly verbose and don't have a lot
+> of unnecessary info. Adding a few lines (how many BPF programs are
+> there per each BPF object?) for listing BPF programs is totally ok.
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+None of the above were mentioned in the commit log.
+And no examples were given where this extra line would actually help.
 
-(You can keep the tag for minor changes.)
+I think libbpf pr_debug is extremely verbose instead of extremely useful.
+Just typical output:
+./test_progs -vv -t lsm
+libbpf: loading object 'lsm' from buffer
+libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
+libbpf: skip section(1) .strtab
+libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+libbpf: skip section(2) .text
+libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
+libbpf: found program lsm/file_mprotect
+libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
+libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6, type=1
+libbpf: found program lsm/bprm_committed_creds
+libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags 0, type=9
+
+How's above useful for anyone?
+libbpf says that there are '.strtab' and '.text' sections in the elf file.
+That's wet water. Any elf file has that.
+Then it says it's skipping '.text' ?
+That reads surprising. Why library would skip the code?
+And so on and so forth.
+That output is useful to only few core libbpf developers.
+
+I don't mind more thought through debug prints, but
+saying that existing pr_debugs are 'extremely useful' is a stretch.
