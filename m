@@ -2,116 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B172099CA
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 08:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146672099ED
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 08:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389962AbgFYGWW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 02:22:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33874 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728725AbgFYGWV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Jun 2020 02:22:21 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05P6FGwQ011212;
-        Wed, 24 Jun 2020 23:22:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=RqrdcAjV8piMh7efwTNJ3YAj385hrSyDzyumCYpUo+w=;
- b=XbIDj3KlDOcE26ESMTHAaupmUDeBBxh3eMSOOxM2FM/tWEysL2sjthNsgFmoipWusChp
- JUq+vTJqo1cx9JPaMxjaO0XdXXEfUK5pdPe2KuoaLV9qWC7/dn4mn7ZPj9fxz2F9pTyl
- 3Bes39SXB70C10aPQSEkRAn93cQNrV7ODOQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux0vx7mh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 24 Jun 2020 23:22:06 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 24 Jun 2020 23:22:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QGD1LtQMYLP0P4rS4HdCntZM2R+V32leDh5CwelHlrTObtOqbewXRJN8qPTWhHQneqO21tbgjkzY9Ogk3T5E0UbHsRLhwI+g582mWqOhNPNeppQWmE7hGMl5otgB+y3rBpayO5UZMPMo9NCGrzGTxDjsk6KsLpc3/uESPwNVw2sdtQ4oEdKCo/aF3OLXY5UrpN/F7JJ2vOGpACxQpIpYj6W/VjpsTMD+hdM47ouDNc5pPa2Lt7ApYUfnPPf/fLZ9fy+0+hV1j09QLpbhcRoti0kjXsL/nGjKYP2vTaA5+UKan6NhpGMtP5Q6eCw84ta3aZLovxfQMN07O2XzBBmZJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RqrdcAjV8piMh7efwTNJ3YAj385hrSyDzyumCYpUo+w=;
- b=Vx0AuYC+lTt9aN3UQdO1wQ+17XMPp3waNoUvESLw58LCMfYJ6UtpzOxhTCRmry2Nyuxp0drZKZt+6Ccq/F/tduOZm34U5HuzAnaot7dRSH98YwI0da0tOPKuZw73u0HAb6USRfas8WzjNUVa5mcgPsXOt8QKdtI/L5wfUd30s2HkxR1XZjgFaew/aESVnW3BFwMXEldDN+Di33FitFhw8Lb+r2yznAJIcekcivzc7uYpBsAL/Vwv6u5ClV20/R0xTUahWYxMyR2jGuX0vvlWn3nfuIQonRKtd2sxeANRf6ujnb3qQaL+S1o+03TT9WiGav61EVX5Kafej2GNL6Wc2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RqrdcAjV8piMh7efwTNJ3YAj385hrSyDzyumCYpUo+w=;
- b=jk8GmeS4/8CgZYUzUOHDSzUAXGFlEaAoELn9lIHYVF3ak9d67hiOHgEbBoK/p36f+aRnL5Uf6Kc5Cb8I01ZoDUMVU6dxQsiNfAStLMXkvMardbPUZ/tjtjabZXJXOxe9wLY2TAryObuz6tKr5huKvsw6aP3w0Q4MM6eZCPhC3Zk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from DM6PR15MB3580.namprd15.prod.outlook.com (2603:10b6:5:1f9::10)
- by DM6PR15MB3738.namprd15.prod.outlook.com (2603:10b6:5:1fb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Thu, 25 Jun
- 2020 06:22:05 +0000
-Received: from DM6PR15MB3580.namprd15.prod.outlook.com
- ([fe80::c8f5:16eb:3f57:b3dc]) by DM6PR15MB3580.namprd15.prod.outlook.com
- ([fe80::c8f5:16eb:3f57:b3dc%5]) with mapi id 15.20.3131.021; Thu, 25 Jun 2020
- 06:22:05 +0000
-Date:   Wed, 24 Jun 2020 23:22:02 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-CC:     <jakub@cloudflare.com>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [bpf PATCH] bpf, sockmap: RCU splat with TLS redirect and
- strparser
-Message-ID: <20200625062202.jyt5dzcdbanwkah2@kafai-mbp.dhcp.thefacebook.com>
-References: <159303296342.360.5487181450879978407.stgit@john-XPS-13-9370>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159303296342.360.5487181450879978407.stgit@john-XPS-13-9370>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BY5PR13CA0005.namprd13.prod.outlook.com
- (2603:10b6:a03:180::18) To DM6PR15MB3580.namprd15.prod.outlook.com
- (2603:10b6:5:1f9::10)
+        id S2389501AbgFYGj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 02:39:26 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54324 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbgFYGjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 02:39:25 -0400
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05P6cEwX080687;
+        Thu, 25 Jun 2020 15:38:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Thu, 25 Jun 2020 15:38:14 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05P6cEJh080683
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Thu, 25 Jun 2020 15:38:14 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+ <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <878sgck6g0.fsf@x220.int.ebiederm.org>
+ <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+ <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
+ <20200625013518.chuqehybelk2k27x@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <b83831ba-c330-7eb8-e6d5-5087de68a9b8@i-love.sakura.ne.jp>
+Date:   Thu, 25 Jun 2020 15:38:14 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:24c0) by BY5PR13CA0005.namprd13.prod.outlook.com (2603:10b6:a03:180::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.10 via Frontend Transport; Thu, 25 Jun 2020 06:22:04 +0000
-X-Originating-IP: [2620:10d:c090:400::5:24c0]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 62e23594-75f9-4fc6-a28e-08d818d01461
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3738:
-X-Microsoft-Antispam-PRVS: <DM6PR15MB3738B4FA9FB64C06186FC417D5920@DM6PR15MB3738.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0445A82F82
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ov6bZ0MyEWnYq8HIRcah1arAKwhdGfeMIN74TQwNBlml0tSzhNfDPxAK1TyiY6K0qJpeVt3ZUPM1CZqnYHRp5hNj6vYBenTP5CZvZP1+b1u3Ep7UM91OLwXcnZZ67X1G3sik2C50KGGWau4bRDe/mirQI9ZLbE4+lEeMNX7GHJeOXqTgOhHuTZ4PDBoKXqq0CCUZRo/p27T/F9RbOTrZahYZ/h9yvjoK/YAzVO/NzLuP4xwZedwgrBSv3U36CmZMzWsdcB2BRaN0f7fIMr2Im6p89BzfTkrDW0kvrTr+zb8nl+qudzeegBRGf5l8GdnK1DquKycCIyira+dZDbZxA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB3580.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(39860400002)(396003)(376002)(136003)(346002)(66946007)(4744005)(4326008)(66476007)(5660300002)(6916009)(8936002)(478600001)(66556008)(86362001)(8676002)(83380400001)(6506007)(7696005)(16526019)(1076003)(52116002)(55016002)(316002)(2906002)(9686003)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: TQk25Cn8bhHGn3/S/ZuwEZKU7gOSbjHa+ANT0M6gj3zvNq6ZPuOlXOduoI9Uslf64413GR/gJB4cUwQnBHPjE6WW6YuPCsu7E9XL1uK7EGZO8yu38ky9MRfC1u7oLhsTbV2QdawsDd4AG5EtKXsoYP2VciSQ+Bx8VBG75YHuGx+VcoVmRGG6X5SPHS7UTxBrJd0ja6Dcj88LRzJNY/p6/KJBw6k7sl9P4aBlxa/cKv3On/aFtsXm7oUP5ZPmKzWLxKuw5jqKNJmW7ZtdnFxVrK7rLt+oejpGalpCinbqD/6YyV5iT7SHfwqq15WmgbVnuIITVgFG3JYJNeOcXopPBZcUl/QMJvr4uC37AWrWi6hyOzrhz4l9W6+HyeSQfODe9ifiFz2CCJhwTLuZhFL37VM+4Q81AWpzBfXb7bRBS2TFg82HagD4zSgthDmy0e5yNTWhXuuhAqaT3PUUd7/a6Sdw6vJUsC2vAs5crmikDxqKifRWwS4Ko1M4V7vlCiJq4qvNQD2Pl2vLlhflBoYlPA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62e23594-75f9-4fc6-a28e-08d818d01461
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2020 06:22:04.9610
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ySxcTDPeiuTHJcos/XWcBEETNs1x+JB8exz0zPz1KjcqNcGhGnguBOelNNaH5A/C
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3738
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-25_02:2020-06-24,2020-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 cotscore=-2147483648 mlxscore=0 suspectscore=0 adultscore=0
- phishscore=0 clxscore=1015 spamscore=0 mlxlogscore=824 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006250037
-X-FB-Internal: deliver
+In-Reply-To: <20200625013518.chuqehybelk2k27x@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 02:09:23PM -0700, John Fastabend wrote:
-> Redirect on non-TLS sockmap side has RCU lock held from sockmap code
-> path but when called from TLS this is no longer true. The RCU section
-> is needed because we use rcu dereference to fetch the psock of the
-> socket we are redirecting to.
-sk_psock_verdict_apply() is also called by sk_psock_strp_read() after
-rcu_read_unlock().  This issue should not be limited to tls?
+On 2020/06/25 10:35, Alexei Starovoitov wrote:
+>> What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
+>> a file with empty filename. I can imagine that somebody would start abusing
+>> fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
+>> udevd and sshd. When such situation happened, how fork_usermode_blob() provides
+>> information for identifying the intent of such execve() requests?
+>>
+>> fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
+>> SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
+>> to associate appropriate security labels based on the content of the byte array
+>> because files are created on-demand. Is fork_usermode_blob() friendly to inode
+>> based LSMs?
+> 
+> blob is started by a kernel module. Regardless of path existence that kernel module
+> could have disabled any LSM and any kernel security mechanism.
+> People who write out of tree kernel modules found ways to bypass EXPORT_SYMBOL
+> with and without _GPL. Modules can do anything. It's only the number of hoops
+> they need to jump through to get what they want.
+
+So what? I know that. That's irrelevant to my questions.
+
+> Signed and in-tree kernel module is the only way to protect the integrity of the system.
+> That's why user blob is part of kernel module elf object and it's covered by the same
+> module signature verification logic.
+
+My questions are:
+
+(1) "Signed and in-tree kernel module" assertion is pointless.
+    In future, some of in-tree kernel modules might start using fork_usermode_blob()
+    instead of call_usermodehelper(), with instructions containing what your initial
+    use case does not use. There is no guarantee that such thing can't happen.
+    Assuming that there will be multiple blobs, we need a way to identify these blobs.
+    How does fork_usermode_blob() provide information for identification?
+
+(2) Running some blob in usermode means that permission checks by LSM modules will
+    be enforced. For example, socket's shutdown operation via shutdown() syscall from
+    usermode blob will involve security_socket_shutdown() check.
+    
+    ----------
+    int kernel_sock_shutdown(struct socket *sock, enum sock_shutdown_cmd how)
+    {
+            return sock->ops->shutdown(sock, how);
+    }
+    ----------
+    
+    ----------
+    int __sys_shutdown(int fd, int how)
+    {
+            int err, fput_needed;
+            struct socket *sock;
+    
+            sock = sockfd_lookup_light(fd, &err, &fput_needed);
+            if (sock != NULL) {
+                    err = security_socket_shutdown(sock, how);
+                    if (!err)
+                            err = sock->ops->shutdown(sock, how);
+                    fput_light(sock->file, fput_needed);
+            }
+            return err;
+    }
+    
+    SYSCALL_DEFINE2(shutdown, int, fd, int, how)
+    {
+            return __sys_shutdown(fd, how);
+    }
+    ----------
+    
+    I don't know what instructions your blob would contain. But even if the blobs
+    containing your initial use case use only setsockopt()/getsockopt() syscalls,
+    LSM modules have rights to inspect and reject these requests from usermode blobs
+    via security_socket_setsockopt()/security_socket_getsockopt() hooks. In order to
+    inspect these requests, LSM modules need information (so called "security context"),
+    and fork_usermode_blob() has to be able to somehow teach that information to LSM
+    modules. Pathname is one of information for pathname based LSM modules. Inode's
+    security label is one of information for inode based LSM modules.
+    
+    call_usermodehelper() can teach LSM modules via pre-existing file's pathname and
+    inode's security label at security_bprm_creds_for_exec()/security_bprm_check() etc.
+    But since fork_usermode_blob() accepts only "byte array" and "length of byte array"
+    arguments, I'm not sure whether LSM modules can obtain information needed for
+    inspection. How does fork_usermode_blob() tell that information?
+
+(3) Again, "root can poke into kernel or any process memory." assertion is pointless.
+    Answering to your questions
+
+      > hmm. do you really mean that it's possible for an LSM to restrict CAP_SYS_ADMIN effectively?
+      Not every LSM module restricts CAP_* flags. But LSM modules can implement finer grained
+      restrictions than plain CAP_* flags.
+
+      > How elf binaries embedded in the kernel modules different from pid 1?
+      No difference.
+
+      > If anything can peek into their memory the system is compromised.
+      Permission checks via LSM modules are there to prevent such behavior.
+
+      > Say, there are no user blobs in kernel modules. How pid 1 memory is different
+      > from all the JITed images? How is it different for all memory regions shared
+      > between kernel and user processes?
+      I don't know what "the JITed images" means. But I guess that the answer is
+      "No difference".
+
+    Then, I ask you back.
+
+    Although the byte array (which contains code / data) might be initially loaded from
+    the kernel space (which is protected), that byte array is no longer protected (e.g.
+    SIGKILL, ptrace()) when executed because they are placed in the user address space.
+
+    Why the usermode process started by fork_usermode_blob() cannot interfere (or be
+    interfered by) the rest of the system (including normal usermode processes) ?
+    And I guess that your answer is "the usermode process started by fork_usermode_blob()
+    _can_ (and be interfered by) the rest of the system, for they are nothing but
+    normal usermode processes."
+
+    Thus, LSM modules (including pathname based security) want to control how that byte
+    array can behave. And how does fork_usermode_blob() tell necessary information?
+
+Your answers up to now did not convince LSM modules to ignore what the usermode process
+started by fork_usermode_blob() can do. If you again don't answer my questions, I'll
+ack to https://lkml.kernel.org/r/875zc4c86z.fsf_-_@x220.int.ebiederm.org .
+
