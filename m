@@ -2,129 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077C4209842
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 03:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39733209846
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 03:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389070AbgFYBfY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jun 2020 21:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S2388977AbgFYBpp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jun 2020 21:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388778AbgFYBfX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jun 2020 21:35:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2F4C061573;
-        Wed, 24 Jun 2020 18:35:23 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g67so1612115pgc.8;
-        Wed, 24 Jun 2020 18:35:23 -0700 (PDT)
+        with ESMTP id S2388930AbgFYBpp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jun 2020 21:45:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A0C061573;
+        Wed, 24 Jun 2020 18:45:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id q19so4711179lji.2;
+        Wed, 24 Jun 2020 18:45:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8AMsEtMPyIPz6aBefbbRCpn0EeTLWAujh7PMXD7e1o8=;
-        b=cq1CjO0kZr/+PAPlvrG/fQJoirloBWo1rePn7DpGhXyiH9F2MrGMM8WAYk4XYdyt3w
-         Amfxo/TrQnaWMyNZhHffznZVKFzClxR8Fegt2IkYDMzlLLBfIdmv8Dv2gmDq1JuolNez
-         kSJcawlAbMnTLngkG5rrLlKeYbkoX0De/X29DlIfA+sxjPRXzh4SpuTX7DThx2TBdtlI
-         LW7oThAK7Mt6Yexc9T9bF+j8YD9QlcvP2qP6e5iquL9az/rKWWTIRLKaNjJoqOfxkGa6
-         s7eRelgmn3wCX0BCJimdZhgMoDlDB0+f7pnjfl96FHbIzWyBt0VXPlkQhBtC+6tWwmA5
-         W4+g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ALVNKGiM3CJvd8q/KVeerYAKvNB9aY24L8Fa5c/hTAQ=;
+        b=D1Z6klhf3Dp4ZRcLUn7g3mmWaia+8zR7HGM6qursEq7yXcEEaw47z/L1W/v4S+8PIU
+         DdIiBJQGFePS+EY3tr3oSaj5/9ZNR57DMr9eBYvAzl5x8CPAW8A6YDQD2vJ5+dODuA+B
+         UQ+4t5YQ5e3lNgdaYkll5N+s2URCOv8rAU0rcyPw9YyuPg9bKA9nDmt0snUAZhPdkxpO
+         o4W24duLAOVplW3wDv4Qf/TViJWLUjfikKskkUZK3YgBzLMdFj5AuZRw2ygl1gLTlElU
+         XpeTSFw2pj2RSQpZfumn3v6phSIVfPerEVCbH+4BCP9S5abCRTAgpE9o3oPvaW+6/ocv
+         OnaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8AMsEtMPyIPz6aBefbbRCpn0EeTLWAujh7PMXD7e1o8=;
-        b=A/JqOTPudqGMkDaf3d8ckjXgKhY3uDqsCYQyB+eSPyuBmVE8igLJ/102m4nmcmFxfh
-         FQ0O4C+l+GmlG6G5NzM+L4Jw23pwugzEPrHu09TXX42w3zYaarD1o4vzqwMkoWcjDZR0
-         Pm7ok9EqKjVAofY3bl+v/IYJ6mD6P6uk4w/GQIGVT7q8PO0PlsBLTh7xJx7PgjcctUXq
-         hQtG3+36CR12q/97NpZkj/AtGwBq2FOLSjFfJklPGTGk3MWfoaFYyjjsreleTjFuqxb0
-         f0gS2gRFPh3Gsf9BolIz2xt3WBVdR+QuFnLo/k83rm6nGB/Xpa3MMADQg0DljabqQc++
-         5Now==
-X-Gm-Message-State: AOAM531Rda9L2iJvs72aa0KeKt0Vnp8XXCoIdJfQWJFYXn1qOxVlA7/b
-        7L112wrh+mmpsrwr/sr6zxA=
-X-Google-Smtp-Source: ABdhPJwPzIwR/mkiShfwMRVPGJlUyMzAyo+HgWskH9F7Zm1ygoIOpHCUm3f6WP9QMUV+wdjmx7VAJA==
-X-Received: by 2002:a63:d912:: with SMTP id r18mr21144784pgg.358.1593048922749;
-        Wed, 24 Jun 2020 18:35:22 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b86c])
-        by smtp.gmail.com with ESMTPSA id u12sm6100176pjy.37.2020.06.24.18.35.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 18:35:21 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 18:35:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-Message-ID: <20200625013518.chuqehybelk2k27x@ast-mbp.dhcp.thefacebook.com>
-References: <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
- <87ftaxd7ky.fsf@x220.int.ebiederm.org>
- <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
- <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <878sgck6g0.fsf@x220.int.ebiederm.org>
- <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
- <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ALVNKGiM3CJvd8q/KVeerYAKvNB9aY24L8Fa5c/hTAQ=;
+        b=nwMsgOnPqEH8qE6r3y+WOOzZCHGFGDGNYKbaPRSxmTGsGu34brRo3kKr4M+yuHWSIF
+         JTEw/eOiSIw2MNkuqVy5+jXDGOyyl0/B0zGlJnLr8J4sU2Nswve3n2yV9Iyx7MBDsbRl
+         T6OVkt4sYl14nb8C3S8S43zrFQa3okh+cUClba6hSCzsk4QVKJU0XW2m5ioAQIc3kGsZ
+         nm4MF/K8Ot0AecPnKJFne8wQntH7sALx3Eu39npI461nAS/jzx7D5aJS+ai6jjviDCAf
+         TvnVAVXErFG0gYenLw3D9lm00IQGMBGBEctCIXnLpVBfKiWaN6oCwsxB3XbFYwjN30kT
+         SRYA==
+X-Gm-Message-State: AOAM533dvWoJpdutRaYOO9e/ECOCyBqvdGQKLpCC2XZmFTbK1OV71T2i
+        hs0E5YAcpkGUajPsFdcXZh+jfxBR6TOrarfgjS0=
+X-Google-Smtp-Source: ABdhPJznpa1c96xDNPmJW4jYrrBEIOS6bVFFPsDJZ8+dYZ6+fmygFvWhSo/tWiYyd3uXoiifINfomPlIwrj5QEI4X4o=
+X-Received: by 2002:a2e:9187:: with SMTP id f7mr15772176ljg.450.1593049543222;
+ Wed, 24 Jun 2020 18:45:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
+References: <20200623230803.3987674-1-yhs@fb.com>
+In-Reply-To: <20200623230803.3987674-1-yhs@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 24 Jun 2020 18:45:31 -0700
+Message-ID: <CAADnVQJiEeZe1v=612etTLpawZ1hHmTFWbJau1UBX_KegTX1Mg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 00/15] implement bpf iterator for tcp and udp sockets
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 08:14:20AM +0900, Tetsuo Handa wrote:
-> On 2020/06/24 23:26, Alexei Starovoitov wrote:
-> > On Wed, Jun 24, 2020 at 5:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >>
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >>
-> >>> On Tue, Jun 23, 2020 at 01:53:48PM -0500, Eric W. Biederman wrote:
-> >>
-> >>> There is no refcnt bug. It was a user error on tomoyo side.
-> >>> fork_blob() works as expected.
-> >>
-> >> Nope.  I have independently confirmed it myself.
-> > 
-> > I guess you've tried Tetsuo's fork_blob("#!/bin/true") kernel module ?
-> > yes. that fails. It never meant to be used for this.
-> > With elf blob it works, but breaks if there are rejections
-> > in things like security_bprm_creds_for_exec().
-> > In my mind that path was 'must succeed or kernel module is toast'.
-> > Like passing NULL into a function that doesn't check for it.
-> > Working on a fix for that since Tetsuo cares.
-> > 
-> 
-> What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
-> a file with empty filename. I can imagine that somebody would start abusing
-> fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
-> udevd and sshd. When such situation happened, how fork_usermode_blob() provides
-> information for identifying the intent of such execve() requests?
-> 
-> fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
-> SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
-> to associate appropriate security labels based on the content of the byte array
-> because files are created on-demand. Is fork_usermode_blob() friendly to inode
-> based LSMs?
+On Tue, Jun 23, 2020 at 4:08 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> bpf iterator implments traversal of kernel data structures and these
+> data structures are passed to a bpf program for processing.
+> This gives great flexibility for users to examine kernel data
+> structure without using e.g. /proc/net which has limited and
+> fixed format.
+>
+> Commit 138d0be35b14 ("net: bpf: Add netlink and ipv6_route bpf_iter targets")
+> implemented bpf iterators for netlink and ipv6_route.
+> This patch set intends to implement bpf iterators for tcp and udp.
+>
+> Currently, /proc/net/tcp is used to print tcp4 stats and /proc/net/tcp6
+> is used to print tcp6 stats. /proc/net/udp[6] have similar usage model.
+> In contrast, only one tcp iterator is implemented and it is bpf program
+> resposibility to filter based on socket family. The same is for udp.
+> This will avoid another unnecessary traversal pass if users want
+> to check both tcp4 and tcp6.
+>
+> Several helpers are also implemented in this patch
+>   bpf_skc_to_{tcp, tcp6, tcp_timewait, tcp_request, udp6}_sock
+> The argument for these helpers is not a fixed btf_id. For example,
+>   bpf_skc_to_tcp(struct sock_common *), or
+>   bpf_skc_to_tcp(struct sock *), or
+>   bpf_skc_to_tcp(struct inet_sock *), ...
+> are all valid. At runtime, the helper will check whether pointer cast
+> is legal or not. Please see Patch #5 for details.
+>
+> Since btf_id's for both arguments and return value are known at
+> build time, the btf_id's are pre-computed once vmlinux btf becomes
+> valid. Jiri's "adding d_path helper" patch set
+>   https://lore.kernel.org/bpf/20200616100512.2168860-1-jolsa@kernel.org/T/
+> provides a way to pre-compute btf id during vmlinux build time.
+> This can be applied here as well. A followup patch can convert
+> to build time btf id computation after Jiri's patch landed.
+>
+> Changelogs:
+>   v4 -> v5:
+>     - fix bpf_skc_to_udp6_sock helper as besides sk_protocol, sk_family,
+>       sk_type == SOCK_DGRAM is also needed to differentiate from
+>       SOCK_RAW (Eric)
 
-blob is started by a kernel module. Regardless of path existence that kernel module
-could have disabled any LSM and any kernel security mechanism.
-People who write out of tree kernel modules found ways to bypass EXPORT_SYMBOL
-with and without _GPL. Modules can do anything. It's only the number of hoops
-they need to jump through to get what they want. 
-Signed and in-tree kernel module is the only way to protect the integrity of the system.
-That's why user blob is part of kernel module elf object and it's covered by the same
-module signature verification logic.
+Applied. Thanks
