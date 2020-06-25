@@ -2,122 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF8020A34D
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 18:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F157820A36B
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 18:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390996AbgFYQrF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 12:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S2391050AbgFYQ4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 12:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390952AbgFYQrF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:47:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D128C08C5C1;
-        Thu, 25 Jun 2020 09:47:05 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id f23so6800309iof.6;
-        Thu, 25 Jun 2020 09:47:05 -0700 (PDT)
+        with ESMTP id S2390448AbgFYQ4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 12:56:24 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A49C08C5C1;
+        Thu, 25 Jun 2020 09:56:24 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id e13so5994644qkg.5;
+        Thu, 25 Jun 2020 09:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=4guapXVx48kUC/LvtMX6uMczAsJmUT2cwWBwWn8bi/c=;
-        b=JzNuLVFgeFpHlOegYcUBbjvZYCwX2eNLUDXjqZziBXaxpbn1YXDVPyy2iCCsVUHpaR
-         yns94qY+Dja9IE3sh87Ba70uk3Qw+aEw3DNndFIcOduBGUb76LAJb4v7+gJLdxZHNlSk
-         f9zVNPjX9Pwa9n7Q2w8o8XYMKFDgr2luf67c13gGhg4r6JFL5uAtv8cOp4zZb3YhxSPe
-         E+GWKktN4NYRn5GmGTIUEgPKEzPfH6kJNxY7BM9FxyHtlLkWdOF4h7kOa8grZdPBUUjJ
-         7aZBHvPY4a8JtPJT0QBEnjKskbQ6WJROz9SLjaoG9jrylgS0K2imZRFs9s5S6AdwePBA
-         FEug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XntfPp9x/dThHar2Ksm7UlU1IVcMyZZWD0IkWLmVdDk=;
+        b=sTR+L0hFppu63nZVax+B8qs+aKnoY7CgGWXmzgmwl2m4LTOcGnnjQ3w91Jen0+i97c
+         ZsuXfm1rQ2jCuwDR3wIr36LP7q3g+pXsiaSPZEAfI9x/g4vPVJ09z3+bqx5U62pgDuDe
+         1hL8ocdrao3738o+iDRfAZztWOHuSeCNBbfFyyD6qjODmgejN3O5vDFva8FBPlfBxqYO
+         2/SYvGisUca/1KdGBP41l9V9YX/9GI4nYqP+Cfs/kslZogn03HuXovIZMDklWvMRpCtz
+         lfIxWy02tklUXGUkwxbJAfnaB2dDDyIQtSwiATo/7RGlm9b605RywoBkYlk6M7El7u8N
+         QeMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=4guapXVx48kUC/LvtMX6uMczAsJmUT2cwWBwWn8bi/c=;
-        b=UytsJmEC5HN5LckOhfJOovTWb/EtRlSIw6gJYBGOtrbR5YWvDazrLxEbPlpQ/RZ4ww
-         Iv9Ziw930okpdFrvCbG3NJaWJldUcp5ENSbweLSUF9m2Xig5yPSyu1BMgqIA9Kgrhw8V
-         9jKpVYZO0H146wagNyuG2WlYbtG09rGSJ5jh91PjBHmczv5Kdz2/4r2QlSbRNH9YM3mx
-         Xa1P55sU7HTbO/S+1dfANXF2js9DjIgIGzDk8y7WFlhkKNCY8Da0WzCzUmuGoBQwgq5k
-         gqnw/fTkIA6Zfa35oxsnF6Vgw5KljJH3tfd1NzjUvv9y4H90sJmVBEQjt7rTVVBPhofI
-         h7Pg==
-X-Gm-Message-State: AOAM5307uw9a/GcUVk6RbV2E17+C86DutIxYY92l8MJeHSVh/w2eRHCe
-        znmCZrhxFVOHsf9ymfMGIkI=
-X-Google-Smtp-Source: ABdhPJzYWsXSU0Ububc95B2hSm1o0I+lzKESn0HmCj7sCrunFKp9XSCYFvl4+LwJ10Du28S4n1qfFw==
-X-Received: by 2002:a6b:8f04:: with SMTP id r4mr37768697iod.160.1593103624457;
-        Thu, 25 Jun 2020 09:47:04 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id y20sm3895829ioc.30.2020.06.25.09.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:47:03 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 09:46:55 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     jakub@cloudflare.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <5ef4d4ffa74d3_12d32af9eaf485bc9e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200625062202.jyt5dzcdbanwkah2@kafai-mbp.dhcp.thefacebook.com>
-References: <159303296342.360.5487181450879978407.stgit@john-XPS-13-9370>
- <20200625062202.jyt5dzcdbanwkah2@kafai-mbp.dhcp.thefacebook.com>
-Subject: Re: [bpf PATCH] bpf, sockmap: RCU splat with TLS redirect and
- strparser
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XntfPp9x/dThHar2Ksm7UlU1IVcMyZZWD0IkWLmVdDk=;
+        b=GfR92i4jttQMs+XLZ/+Y/TvawxMZ4hyFPXsp3aAesMIhSK0RXo5MBcqxyZoxgZ4IbM
+         VLhABjfOL1EvDVcz8h09vhTYIWPan2A5HZjXlk7DWOVAWsg0zxX1kJhN8YVeHLgoHC9f
+         pLOvrAAoxzvhzn2qQso4Cu+lKBzqIu8Y4yW39b2OlSIuDi3YPgU/BvmWy//i1SCpCNY6
+         g67/hisBxtFy2wI4nNB6hX201hE17C0eIOyOGWl+wC/6OikEl9ROXmpT+6vIGIKCa1Fv
+         KUDNpcOYdfScqlaOcZSrfwCNv3NTRPOeh/bkimUyAYaK/Z3dLnlEAd7H2KLHpOToZ9BV
+         UHkg==
+X-Gm-Message-State: AOAM533hF9nCBt3fqU31ZnHP5fmho1BAf69GxCkrfw9cLNKOOcaitny9
+        8zNR6bD3IUWqk7zx5H+lQl40fpI/UL0QZNy/OeI=
+X-Google-Smtp-Source: ABdhPJxKOpzNOrG8XLFP+i8hISrALbQfOnebx35dTrL6IqS68EUAj+Ork5fBOXVsBxwLHWWt/fX/6IREG4G0WtN21yg=
+X-Received: by 2002:a37:d0b:: with SMTP id 11mr33038594qkn.449.1593104183213;
+ Thu, 25 Jun 2020 09:56:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAyw9-cinpz=U+8tjV-GMWuth71jrOYLQ05Q7_c34TCeMJxMg@mail.gmail.com>
+ <CAEf4BzbSc-wykq1_62CQwtszO+76rkudz_B=GkzE6ZheMUAusw@mail.gmail.com> <CACAyw98ojwGjQm+Xk+_-B8Ah-hEt-Tgv_LQ1BdH4yBLYgVwpiA@mail.gmail.com>
+In-Reply-To: <CACAyw98ojwGjQm+Xk+_-B8Ah-hEt-Tgv_LQ1BdH4yBLYgVwpiA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Jun 2020 09:56:11 -0700
+Message-ID: <CAEf4BzYjge6fijFadwuuHf-vr2VUqneT5b0k-GgQSkLMTj=UAA@mail.gmail.com>
+Subject: Re: pahole generates invalid BTF for code compiled with recent clang
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau wrote:
-> On Wed, Jun 24, 2020 at 02:09:23PM -0700, John Fastabend wrote:
-> > Redirect on non-TLS sockmap side has RCU lock held from sockmap code
-> > path but when called from TLS this is no longer true. The RCU section
-> > is needed because we use rcu dereference to fetch the psock of the
-> > socket we are redirecting to.
-> sk_psock_verdict_apply() is also called by sk_psock_strp_read() after
-> rcu_read_unlock().  This issue should not be limited to tls?
+On Thu, Jun 25, 2020 at 2:25 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Wed, 24 Jun 2020 at 18:41, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Jun 24, 2020 at 4:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > If pahole -J is used on an ELF that has BTF info from clang, it
+> > > produces an invalid
+> > > output. This is because pahole rewrites the .BTF section (which
+> > > includes a new string
+> > > table) but it doesn't touch .BTF.ext at all.
+> >
+> > Why do you run `pahole -J` on BPF .o file? Clang already generates
+> > .BTF (and .BTF.ext, of course) for you.
+>
+> You're missing the point. The kernel build system does it. Try the following:
 
-The base case is covered because the non-TLS case is wrapped in
-rcu_read_lock/unlock here,
+Yeah, I clearly am, because "compiling old kernels like 4.19" made me
+think that we are talking about building kernel, not selftests.
 
- static void sk_psock_strp_data_ready(struct sock *sk)
- {
-	struct sk_psock *psock;
+>
+> * Get the v4.19 sources
+> * Make sure that clang --version is 10
+> * Make sure you have pahole (I used v1.17)
+> * Build selftests
+>
+> The resulting object files will have bogus .BTF.ext sections due the
+> bug I have described. Does it make sense to run pahole -J on these?
+> No, but it still happens.
+>
 
-	rcu_read_lock();
-	psock = sk_psock(sk);
-	if (likely(psock)) {
-		if (tls_sw_has_ctx_rx(sk)) {
-			psock->parser.saved_data_ready(sk);
-		} else {
-			write_lock_bh(&sk->sk_callback_lock);
-			strp_data_ready(&psock->parser.strp);
-			write_unlock_bh(&sk->sk_callback_lock);
-		}
-	}
-	rcu_read_unlock();
- }
+Yeah, because back in the day Clang didn't know how to generate .BTF,
+so using pahole to generate .BTF for BPF object files was a solution.
 
-There is a case that has existed for awhile where if a skb_clone()
-fails or alloc_skb_for_msg() fails when building a merged skb. We
-could call back into sk_psock_strp_read() from a workqueue in
-strparser that would not be covered by above sk_psock_strp_data_ready().
-This would hit the sk_psock_verdict_apply() you caught above.
+> I think it's reasonable to expect to get valid BPF ELFs out of this process.
 
-We don't actually see this from selftests because in selftests we
-always return skb->len indicating a msg is a single skb. In our
-use cases this is all we've ever used to date so we've not actually
-hit the case you call out. Another case that might hit this, based
-on code review, is some of the zero copy TX cases.
+We should probably update Makefile for old kernel selftest to not call
+pahole -J, if Clang is recent enough and/or if .o file already has
+.BTF. That shouldn't be hard.
 
-To fix the above case I think its best to submit another patch
-because the Fixes tag will be different. Sound OK? I could push
-them as a two patch series if that is easier to understand.
+>
+> >
+> > pahole -J is supposed to be used for vmlinux, not for clang-compiled
+> > -target BPF object files.
+> >
+> > >
+> > > To demonstrate, on a recent check out of bpf-next:
+> > >     $ cp connect4_prog.o connect4_pahole.o
+> > >     $ pahole -J connect4_pahole.o
+> > >     $ llvm-objcopy-10 --dump-section .BTF=pahole-btf.bin
+> > > --dump-section .BTF.ext=pahole-btf-ext.bin connect4_pahole.o
+> > >     $ llvm-objcopy-10 --dump-section .BTF=btf.bin --dump-section
+> > > .BTF.ext=btf-ext.bin connect4_prog.o
+> > >     $ sha1sum *.bin
+> > >     1b5c7407dd9fd13f969931d32f6b864849e66a68  btf.bin
+> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  btf-ext.bin
+> > >     2a60767a3a037de66a8d963110601769fa0f198e  pahole-btf.bin
+> > >     4c43efcc86d3cd908ddc77c15fc4a35af38d842b  pahole-btf-ext.bin
+> > >
+> > > This problem crops up when compiling old kernels like 4.19 which have
+> > > an extra pahole
+> > > build step with clang-10.
+> >
+> > I was under impression that clang generates .BTF and .BTF.ext only for
+> > -target BPF. In this case, kernel is compiled for "real" target arch,
+> > so there shouldn't be .BTF.ext in the first place? If that's not the
+> > case, then I guess it's a bug in Clang.
+>
+> connect4_prog.o is BPF:
+>
+> $ readelf -h connect4_prog.o | grep BPF
+>   Machine:                           Linux BPF
+>
+> Maybe I misunderstand what you're trying to say.
+>
 
-Also I should have a patch shortly to allow users to skip setting
-up a parse_msg hook for the strparser. This helps because the
-vast majority of use cases I've seen just use skb->len as the
-message deliminator. It also bypasses above concern.
+I was talking/thinking about building kernel, you were talking about
+building BPF object files in selftests. Just to avoid confusion in the
+future, let's not talk about compiling kernel, when we are talking
+about compiling selftests. See my suggestion for a fix above. Would
+that work?
 
-Thanks,
-John
+> Best
+> Lorenz
+>
+> --
+> Lorenz Bauer  |  Systems Engineer
+> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> www.cloudflare.com
