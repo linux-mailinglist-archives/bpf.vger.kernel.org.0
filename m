@@ -2,175 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1D820A77C
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 23:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0605320A805
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 00:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390859AbgFYV3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 17:29:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33648 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390722AbgFYV3M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:29:12 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1joZQa-0002nD-Ee; Thu, 25 Jun 2020 23:29:00 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1joZQa-000BQB-2e; Thu, 25 Jun 2020 23:29:00 +0200
-Subject: Re: [PATCH v4 bpf-next 6/9] bpf: cpumap: implement XDP_REDIRECT for
- eBPF programs attached to map entries
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
-        toke@redhat.com, lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com
-References: <cover.1593012598.git.lorenzo@kernel.org>
- <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <01248413-7675-d35e-323e-7d2e69128b45@iogearbox.net>
-Date:   Thu, 25 Jun 2020 23:28:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2406337AbgFYWNT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 25 Jun 2020 18:13:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24322 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2406185AbgFYWNS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 18:13:18 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-178-sShIDDoUPDaa4RAhz2TmdQ-1; Thu, 25 Jun 2020 18:13:12 -0400
+X-MC-Unique: sShIDDoUPDaa4RAhz2TmdQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13519804001;
+        Thu, 25 Jun 2020 22:13:10 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3EFC7932F;
+        Thu, 25 Jun 2020 22:13:05 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH v4 bpf-next 00/14] bpf: Add d_path helper
+Date:   Fri, 26 Jun 2020 00:12:50 +0200
+Message-Id: <20200625221304.2817194-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25854/Thu Jun 25 15:16:08 2020)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/24/20 5:33 PM, Lorenzo Bianconi wrote:
-> Introduce XDP_REDIRECT support for eBPF programs attached to cpumap
-> entries.
-> This patch has been tested on Marvell ESPRESSObin using a modified
-> version of xdp_redirect_cpu sample in order to attach a XDP program
-> to CPUMAP entries to perform a redirect on the mvneta interface.
-> In particular the following scenario has been tested:
-> 
-> rq (cpu0) --> mvneta - XDP_REDIRECT (cpu0) --> CPUMAP - XDP_REDIRECT (cpu1) --> mvneta
-> 
-> $./xdp_redirect_cpu -p xdp_cpu_map0 -d eth0 -c 1 -e xdp_redirect \
-> 	-f xdp_redirect_kern.o -m tx_port -r eth0
-> 
-> tx: 285.2 Kpps rx: 285.2 Kpps
-> 
-> Attaching a simple XDP program on eth0 to perform XDP_TX gives
-> comparable results:
-> 
-> tx: 288.4 Kpps rx: 288.4 Kpps
-> 
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->   include/net/xdp.h          |  1 +
->   include/trace/events/xdp.h |  6 ++++--
->   kernel/bpf/cpumap.c        | 17 +++++++++++++++--
->   3 files changed, 20 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index 83b9e0142b52..5be0d4d65b94 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -99,6 +99,7 @@ struct xdp_frame {
->   };
->   
->   struct xdp_cpumap_stats {
-> +	unsigned int redirect;
->   	unsigned int pass;
->   	unsigned int drop;
->   };
-> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-> index e2c99f5bee39..cd24e8a59529 100644
-> --- a/include/trace/events/xdp.h
-> +++ b/include/trace/events/xdp.h
-> @@ -190,6 +190,7 @@ TRACE_EVENT(xdp_cpumap_kthread,
->   		__field(int, sched)
->   		__field(unsigned int, xdp_pass)
->   		__field(unsigned int, xdp_drop)
-> +		__field(unsigned int, xdp_redirect)
->   	),
->   
->   	TP_fast_assign(
-> @@ -201,18 +202,19 @@ TRACE_EVENT(xdp_cpumap_kthread,
->   		__entry->sched	= sched;
->   		__entry->xdp_pass	= xdp_stats->pass;
->   		__entry->xdp_drop	= xdp_stats->drop;
-> +		__entry->xdp_redirect	= xdp_stats->redirect;
->   	),
->   
->   	TP_printk("kthread"
->   		  " cpu=%d map_id=%d action=%s"
->   		  " processed=%u drops=%u"
->   		  " sched=%d"
-> -		  " xdp_pass=%u xdp_drop=%u",
-> +		  " xdp_pass=%u xdp_drop=%u xdp_redirect=%u",
->   		  __entry->cpu, __entry->map_id,
->   		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
->   		  __entry->processed, __entry->drops,
->   		  __entry->sched,
-> -		  __entry->xdp_pass, __entry->xdp_drop)
-> +		  __entry->xdp_pass, __entry->xdp_drop, __entry->xdp_redirect)
->   );
->   
->   TRACE_EVENT(xdp_cpumap_enqueue,
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 4e4cd240f07b..c0b2f265ccb2 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -240,7 +240,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   	xdp_set_return_frame_no_direct();
->   	xdp.rxq = &rxq;
->   
-> -	rcu_read_lock();
-> +	rcu_read_lock_bh();
->   
->   	prog = READ_ONCE(rcpu->prog);
->   	for (i = 0; i < n; i++) {
-> @@ -266,6 +266,16 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   				stats->pass++;
->   			}
->   			break;
-> +		case XDP_REDIRECT:
-> +			err = xdp_do_redirect(xdpf->dev_rx, &xdp,
-> +					      prog);
-> +			if (unlikely(err)) {
-> +				xdp_return_frame(xdpf);
-> +				stats->drop++;
-> +			} else {
-> +				stats->redirect++;
-> +			}
+hi,
+adding d_path helper to return full path for 'path' object.
 
-Could we do better with all the accounting and do this from /inside/ BPF tracing prog
-instead (otherwise too bad we need to have it here even if the tracepoint is disabled)?
+In a preparation for that, this patchset also adds support for BTF ID
+whitelists, because d_path can't be called from any probe due to its
+locks usage. The whitelists allow verifier to check if the caller is
+one of the functions from the whitelist.
 
-> +			break;
->   		default:
->   			bpf_warn_invalid_xdp_action(act);
->   			/* fallthrough */
-> @@ -276,7 +286,10 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   		}
->   	}
->   
-> -	rcu_read_unlock();
-> +	if (stats->redirect)
-> +		xdp_do_flush_map();
-> +
-> +	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
->   	xdp_clear_return_frame_no_direct();
+The whitelist is implemented in a generic way. This patchset introduces
+macros that allow to define lists of BTF IDs, which are compiled in
+the kernel image in a new .BTF.ids ELF section.
 
-Hm, this looks incorrect. Why do you call the xdp_clear_return_frame_no_direct() /after/
-the possibility where there is a rescheduling point for softirq?
+The generic way of BTF ID lists allows us to use them in other places
+in kernel (than just for whitelists), that could use static BTF ID
+values compiled in and it's also implemented in this patchset.
 
->   	return nframes;
-> 
+I originally added and used 'file_path' helper, which did the same,
+but used 'struct file' object. Then realized that file_path is just
+a wrapper for d_path, so we'd cover more calling sites if we add
+d_path helper and allowed resolving BTF object within another object,
+so we could call d_path also with file pointer, like:
+
+  bpf_d_path(&file->f_path, buf, size);
+
+This feature is mainly to be able to add dpath (filepath originally)
+function to bpftrace:
+
+  # bpftrace -e 'kfunc:vfs_open { printf("%s\n", dpath(args->path)); }'
+
+v4 changes:
+  - added ID sanity checks in btf_resolve_helper_id [Andrii]
+  - resolve bpf_ctx_convert via BTF_ID [Andrii]
+  - keep bpf_access_type in btf_struct_access [Andrii]
+  - rename whitelist to se and use struct btf_id_set [Andrii]
+  - several fixes for d_path prog/verifier tests [Andrii]
+  - added union and typedefs types support [Andrii]
+  - rename btfid to resolve_btfids [Andrii]
+  - fix segfault in resolve_btfids [John]
+  - rename section from .BTF_ids .BTF.ids (following .BTF.ext example)
+  - add .BTF.ids section info into btf.rst [John]
+  - updated over letter with more details [John]
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/d_path
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (14):
+      bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
+      bpf: Compile resolve_btfids tool at kernel compilation start
+      bpf: Add BTF_ID_LIST/BTF_ID macros
+      bpf: Resolve BTF IDs in vmlinux image
+      bpf: Remove btf_id helpers resolving
+      bpf: Use BTF_ID to resolve bpf_ctx_convert struct
+      bpf: Allow nested BTF object to be refferenced by BTF object + offset
+      bpf: Add BTF_SET_START/END macros
+      bpf: Add info about .BTF.ids section to btf.rst
+      bpf: Add d_path helper
+      tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
+      selftests/bpf: Add verifier test for d_path helper
+      selftests/bpf: Add test for d_path helper
+      selftests/bpf: Add test for resolve_btfids
+
+ Documentation/bpf/btf.rst                         |  53 ++++++++
+ Makefile                                          |  25 +++-
+ include/asm-generic/vmlinux.lds.h                 |   4 +
+ include/linux/bpf.h                               |   7 +
+ include/linux/btf_ids.h                           | 108 ++++++++++++++++
+ include/uapi/linux/bpf.h                          |  14 +-
+ kernel/bpf/btf.c                                  | 169 ++++++++++++------------
+ kernel/bpf/verifier.c                             |  42 ++++--
+ kernel/trace/bpf_trace.c                          |  56 +++++++-
+ net/core/filter.c                                 |   9 +-
+ scripts/bpf_helpers_doc.py                        |   2 +
+ scripts/link-vmlinux.sh                           |   6 +
+ tools/Makefile                                    |   3 +
+ tools/bpf/Makefile                                |   5 +-
+ tools/bpf/resolve_btfids/Build                    |  26 ++++
+ tools/bpf/resolve_btfids/Makefile                 |  76 +++++++++++
+ tools/bpf/resolve_btfids/main.c                   | 716 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/btf_ids.h                     | 108 ++++++++++++++++
+ tools/include/linux/compiler.h                    |   4 +
+ tools/include/uapi/linux/bpf.h                    |  14 +-
+ tools/testing/selftests/bpf/Makefile              |  20 ++-
+ tools/testing/selftests/bpf/prog_tests/d_path.c   | 145 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_d_path.c   |  50 +++++++
+ tools/testing/selftests/bpf/test_resolve_btfids.c | 201 +++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/test_verifier.c       |  19 ++-
+ tools/testing/selftests/bpf/verifier/d_path.c     |  37 ++++++
+ 26 files changed, 1806 insertions(+), 113 deletions(-)
+ create mode 100644 include/linux/btf_ids.h
+ create mode 100644 tools/bpf/resolve_btfids/Build
+ create mode 100644 tools/bpf/resolve_btfids/Makefile
+ create mode 100644 tools/bpf/resolve_btfids/main.c
+ create mode 100644 tools/include/linux/btf_ids.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_d_path.c
+ create mode 100644 tools/testing/selftests/bpf/test_resolve_btfids.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/d_path.c
 
