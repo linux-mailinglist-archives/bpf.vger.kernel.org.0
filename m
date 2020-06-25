@@ -2,37 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1942C20A17D
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 17:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D6C20A17F
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 17:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405701AbgFYPBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 11:01:44 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33038 "EHLO
+        id S2405425AbgFYPCj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 11:02:39 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33142 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405502AbgFYPBn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 11:01:43 -0400
+        with ESMTP id S2405405AbgFYPCj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 11:02:39 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1joTNl-0004JI-4m; Thu, 25 Jun 2020 17:01:41 +0200
+        id 1joTOa-0004NW-OD; Thu, 25 Jun 2020 17:02:34 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1joTNk-000FIn-St; Thu, 25 Jun 2020 17:01:40 +0200
-Subject: Re: [bpf PATCH] bpf: Do not allow btf_ctx_access with __int128 types
-To:     John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        andrii.nakryiko@gmail.com, ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <159303723962.11287.13309537171132420717.stgit@john-Precision-5820-Tower>
+        id 1joTOa-000ItY-D6; Thu, 25 Jun 2020 17:02:32 +0200
+Subject: Re: [PATCH bpf-next v3 1/2] tools, bpftool: Define prog_type_name
+ array only once
+To:     Tobias Klauser <tklauser@distanz.ch>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
+References: <20200623104227.11435-2-tklauser@distanz.ch>
+ <20200624143124.12914-1-tklauser@distanz.ch>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d53db444-8473-a48c-179f-4baf13a97674@iogearbox.net>
-Date:   Thu, 25 Jun 2020 17:01:40 +0200
+Message-ID: <a4167f05-04f9-4534-1475-3ed4376e7ceb@iogearbox.net>
+Date:   Thu, 25 Jun 2020 17:02:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <159303723962.11287.13309537171132420717.stgit@john-Precision-5820-Tower>
+In-Reply-To: <20200624143124.12914-1-tklauser@distanz.ch>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,24 +46,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/25/20 12:20 AM, John Fastabend wrote:
-> To ensure btf_ctx_access() is safe the verifier checks that the BTF
-> arg type is an int, enum, or pointer. When the function does the
-> BTF arg lookup it uses the calculation 'arg = off / 8'  using the
-> fact that registers are 8B. This requires that the first arg is
-> in the first reg, the second in the second, and so on. However,
-> for __int128 the arg will consume two registers by default LLVM
-> implementation. So this will cause the arg layout assumed by the
-> 'arg = off / 8' calculation to be incorrect.
+On 6/24/20 4:31 PM, Tobias Klauser wrote:
+> Define prog_type_name in prog.c instead of main.h so it is only defined
+> once. This leads to a slight decrease in the binary size of bpftool.
 > 
-> Because __int128 is uncommon this patch applies the easiest fix and
-> will force int types to be sizeof(u64) or smaller so that they will
-> fit in a single register.
+> Before:
 > 
-> v2: remove unneeded parens per Andrii's feedback
+>     text	   data	    bss	    dec	    hex	filename
+>   401032	  11936	1573160	1986128	 1e4e50	bpftool
 > 
-> Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> After:
+> 
+>     text	   data	    bss	    dec	    hex	filename
+>   399024	  11168	1573160	1983352	 1e4378	bpftool
+> 
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-Applied, thanks!
+Both applied, thanks!
