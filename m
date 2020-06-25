@@ -2,160 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483C120A8AA
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 01:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D9720A8D5
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 01:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407700AbgFYXNw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 19:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406631AbgFYXNw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 19:13:52 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF4C08C5C1;
-        Thu, 25 Jun 2020 16:13:52 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id e64so2985922iof.12;
-        Thu, 25 Jun 2020 16:13:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=2dDp4wdTOXkTlMfK+S1sLZUdmr8B+CfJrwoh3NxWVt8=;
-        b=e/5wXZyNhEhlZ5rpDWJ2/3vVtIupUKHBD/sDdHvqFyE+Bt2HefyUme/ogAM/y9cXYC
-         +8xGgC44veimAb0dTz0SNFhk9Dr6GJzY087XRqtPvmqIOJcs+ecRnjUQQMFjvpDk6JgD
-         w7BLdP8rQoxlFSVSR5vIyZvpi3tMPlovb3cVQj3/+NqDMWaLI/OSQe2cuay7Az7XoSyw
-         LZ1ED3UaSiWAG8pd7LxwG1NET81umigHarqt0BdYkJXwurkZ6RtpKhxza2APssgoj18Y
-         asPGcJ1aPKRb/b4WLXz6tSQdWUMjgO46v+CBT31njbD+coCMkh9aMHgWs7CGybl4lEbo
-         S9LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=2dDp4wdTOXkTlMfK+S1sLZUdmr8B+CfJrwoh3NxWVt8=;
-        b=bhME/MMILqjvL0zkive0yvH04EazZt6GuvvwVR4T7/qvy+71JTS8b7PRUQy0yDeQCU
-         n4VGn6K/IQv59g0G8a7UWNeZjRiJ7fK2ehepQ6Oo5Jmttz5oQqY297XqDW5Io0/xyR+Z
-         0xdzOC+TBkm1PZOcWX9UPgDatUixR4ctE4bRScyujgylaYQxgQ6frupmRIlvaPiWAg5O
-         TT83C4TauZmo0mLJyHyzbGpuB8vG1HxvLQMPJ2N6x4UQepOJiAcBRbCm6Kzc5ysb+ic8
-         sgAZed4copV6/Y1vEYAYEaryIMfc1YbXjUNaBiniDFabBf1ewTThVsi5TUzAg3acJyg/
-         Wq1Q==
-X-Gm-Message-State: AOAM533TC5Hz5oEysMTfZnpnHp0l3Z2p2M3M8J7/VFVvxSiqFjMqnY6u
-        8NUVC8cnqqqJsBig6RwnOBE=
-X-Google-Smtp-Source: ABdhPJyeAHc7ZaCtUtouKsmYR+vIfTgTh+QRzXwQoaMUp9ppuRgtnlOCho+dG7XIv7hvcdkuAczElA==
-X-Received: by 2002:a05:6602:2dd4:: with SMTP id l20mr502009iow.13.1593126831515;
-        Thu, 25 Jun 2020 16:13:51 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id e12sm13744538ili.68.2020.06.25.16.13.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 16:13:50 -0700 (PDT)
-Subject: [bpf PATCH v2 3/3] bpf,
- sockmap: Add ingres skb tests that utilize merge skbs
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     kafai@fb.com, jakub@cloudflare.com, daniel@iogearbox.net,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Thu, 25 Jun 2020 16:13:38 -0700
-Message-ID: <159312681884.18340.4922800172600252370.stgit@john-XPS-13-9370>
-In-Reply-To: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
-References: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.17.1-dirty
+        id S2407824AbgFYX0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 19:26:48 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46538 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407819AbgFYX0r (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Jun 2020 19:26:47 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05PNPE7c001179
+        for <bpf@vger.kernel.org>; Thu, 25 Jun 2020 16:26:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=xHvaJCjS5W4fLW1ZiRlnErBKkcBhTdM0kQ+/ka3syqk=;
+ b=pWUBgyv7wm4Ohp+VHcsxsYe3oNI5eBPMRdp+U4Do7/lNXAQy3VMbtSeZPW8JRihUp46J
+ /nk5lzsi6J7JEDi2KHeFNGLLoEWs6xXWeY9wSsaO1VeNq21XinIcuD/7Q3NE2rJGExkI
+ B+riKRfLNdlrPZWwH0yk1KMMBghgsSncjQM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 31ux0ntp74-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 25 Jun 2020 16:26:45 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Jun 2020 16:26:43 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 7EDA72EC3954; Thu, 25 Jun 2020 16:26:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/2] Support disabling auto-loading of BPF programs
+Date:   Thu, 25 Jun 2020 16:26:27 -0700
+Message-ID: <20200625232629.3444003-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_19:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 cotscore=-2147483648 spamscore=0 suspectscore=8
+ adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
+ clxscore=1015 malwarescore=0 phishscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250136
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test to check strparser merging skbs is working.
+Add ability to turn off default auto-loading of each BPF program by libbp=
+f on
+BPF object load. This is the feature that allows BPF applications to have
+optional functionality, which is only excercised on kernel that support
+necessary features, while falling back to reduced/less performant
+functionality, if kernel is outdated.
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/progs/test_sockmap_kern.h        |    8 +++++++-
- tools/testing/selftests/bpf/test_sockmap.c         |   18 ++++++++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
+Andrii Nakryiko (2):
+  libbpf: support disabling auto-loading BPF programs
+  selftests/bpf: test auto-load disabling logic for BPF programs
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-index 057036ca1111..3dca4c2e2418 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-@@ -79,7 +79,7 @@ struct {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 2);
-+	__uint(max_entries, 3);
- 	__type(key, int);
- 	__type(value, int);
- } sock_skb_opts SEC(".maps");
-@@ -94,6 +94,12 @@ struct {
- SEC("sk_skb1")
- int bpf_prog1(struct __sk_buff *skb)
- {
-+	int *f, two = 2;
-+
-+	f = bpf_map_lookup_elem(&sock_skb_opts, &two);
-+	if (f && *f) {
-+		return *f;
-+	}
- 	return skb->len;
- }
- 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 37695fc8096a..78789b27e573 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -85,6 +85,7 @@ int txmsg_ktls_skb_drop;
- int txmsg_ktls_skb_redir;
- int ktls;
- int peek_flag;
-+int skb_use_parser;
- 
- static const struct option long_options[] = {
- 	{"help",	no_argument,		NULL, 'h' },
-@@ -174,6 +175,7 @@ static void test_reset(void)
- 	txmsg_apply = txmsg_cork = 0;
- 	txmsg_ingress = txmsg_redir_skb = 0;
- 	txmsg_ktls_skb = txmsg_ktls_skb_drop = txmsg_ktls_skb_redir = 0;
-+	skb_use_parser = 0;
- }
- 
- static int test_start_subtest(const struct _test *t, struct sockmap_options *o)
-@@ -1211,6 +1213,11 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
- 		}
- 	}
- 
-+	if (skb_use_parser) {
-+		i = 2;
-+		err = bpf_map_update_elem(map_fd[7], &i, &skb_use_parser, BPF_ANY);
-+	}
-+
- 	if (txmsg_drop)
- 		options->drop_expected = true;
- 
-@@ -1650,6 +1657,16 @@ static void test_txmsg_cork(int cgrp, struct sockmap_options *opt)
- 	test_send(opt, cgrp);
- }
- 
-+static void test_txmsg_ingress_parser(int cgrp, struct sockmap_options *opt)
-+{
-+	txmsg_pass = 1;
-+	skb_use_parser = 512;
-+	opt->iov_length = 256;
-+	opt->iov_count = 1;
-+	opt->rate = 2;
-+	test_exec(cgrp, opt);
-+}
-+
- char *map_names[] = {
- 	"sock_map",
- 	"sock_map_txmsg",
-@@ -1748,6 +1765,7 @@ struct _test test[] = {
- 	{"txmsg test pull-data", test_txmsg_pull},
- 	{"txmsg test pop-data", test_txmsg_pop},
- 	{"txmsg test push/pop data", test_txmsg_push_pop},
-+	{"txmsg text ingress parser", test_txmsg_ingress_parser},
- };
- 
- static int check_whitelist(struct _test *t, struct sockmap_options *opt)
+ tools/lib/bpf/libbpf.c                        | 48 +++++++++++++++----
+ tools/lib/bpf/libbpf.h                        |  2 +
+ tools/lib/bpf/libbpf.map                      |  2 +
+ .../selftests/bpf/prog_tests/autoload.c       | 41 ++++++++++++++++
+ .../selftests/bpf/progs/test_autoload.c       | 40 ++++++++++++++++
+ 5 files changed, 125 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/autoload.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_autoload.c
+
+--=20
+2.24.1
 
