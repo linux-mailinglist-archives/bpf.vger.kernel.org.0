@@ -2,64 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17003209EEE
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 14:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC78B209FC9
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 15:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404285AbgFYM4W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 08:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403941AbgFYM4W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 08:56:22 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DC0C061573;
-        Thu, 25 Jun 2020 05:56:22 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id p82so4861860oif.1;
-        Thu, 25 Jun 2020 05:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BGKi64WQintPpZ0PiJ6dW4tMBiq9KIeg0n+W/5g1/1c=;
-        b=qXFNVuI1GGW2k3Ub8vf0pIfZerRDNDUPm4nHq11ub38zVd0nCBMQw5b/FyZJ1uqSsh
-         TH8gF8Es+pfp+S1FwVMF9S7sgNuNrOGAavQ41jEE/9bNtqQgdE8EUE40zexH4C7w8JI+
-         D/yF1gydpJHTeEfEOgF1at+ol9s8ZooATsbrmqsGq26ISSzTGloSCsI5xJdK8HLovNIq
-         58xBf42fE/2+v97ZZoqxPCvx0heSwtqrDoZBFGAOafrOKpA5UhzqB3hwdkhQgZpXTdyh
-         c5D5+bMcvqrclRuvLUq2PuxPsR7RHnTgCqJpFMW5MaGn/seqRDqNqDPi59jqHNAHcnHN
-         gVGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BGKi64WQintPpZ0PiJ6dW4tMBiq9KIeg0n+W/5g1/1c=;
-        b=HzHMTodCEmqsTQMgrWb96WFlCiv/D/FeUT8w1dFL64bt66qEo946ogOj++uRIZCydZ
-         owCXrHAl96PVk8bCvQiddDaLXDaIbI3EM5T2wSbB3MifvvE40bURJOvQOUKH0QXIUBSc
-         KtqN4ccII05F+Ml4mPk6tZHzFIriluvsArMC9T2rBDMlk8FPLS3595YoYOfOPJ8mLA8K
-         FgjpGQZlwYKGc73fFYhzrd5GQWBwUu8gtX2Uniuf/gHuPcLq8NtKKqHhzdIOadxQVfZQ
-         K2Jl8PtrwnlXLV1L/KNGCEZ9flAXpjy+ed/BRulWLNfkUFc2io29B6ibpl9VOVeETV+a
-         2VeA==
-X-Gm-Message-State: AOAM533bsq0xfkTvW/ZAOmnFH7r5fgtkXI3tk1dHkTthT/AUJu2rnPWx
-        Vwq4eS/eI16IpWWJNfeeo+LXoI1vzOm5HKhXnRY=
-X-Google-Smtp-Source: ABdhPJyoY1+FUwr2b7djALCSD/8Mjarm6gnmnjoZTM4ivo29bOovJFfTo6/3Hq7pq3SSrj7/mGNoKbm2E34rC02dJz0=
-X-Received: by 2002:aca:3283:: with SMTP id y125mr2042257oiy.140.1593089781523;
- Thu, 25 Jun 2020 05:56:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <87d066vd4y.fsf@x220.int.ebiederm.org> <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
- <87bllngirv.fsf@x220.int.ebiederm.org> <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
- <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
- <87ftaxd7ky.fsf@x220.int.ebiederm.org> <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
- <87h7v1pskt.fsf@x220.int.ebiederm.org> <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org> <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <878sgck6g0.fsf@x220.int.ebiederm.org> <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
- <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
-In-Reply-To: <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 25 Jun 2020 08:56:10 -0400
-Message-ID: <CAEjxPJ4e9rWWssp0CyM7GM7NP_QKkswHK7URwLZFqo5+wGecQw@mail.gmail.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S2404917AbgFYNZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 09:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404888AbgFYNZy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 09:25:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1837420702;
+        Thu, 25 Jun 2020 13:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593091554;
+        bh=Zo4VA4OcklTBlXrdN2hk4i87r+8uEzcz/Mh/YqPzpUk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KcqK+e0oDQ9Bpi9lykZcRJYfUEzV7tu5PvAuVo/S5XenzmdpbGv9aNveQVMJeSagz
+         w+rsxzNuhdD6ctUlFx4MaF6h8wZKVcYodeWmMhRYXBhoGd52ad5aX1yYx4KKIdBt1q
+         gY2MOFFjAii+Vk4/6byOgMBslnXLzK/1C1rjQJpU=
+Date:   Thu, 25 Jun 2020 15:25:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Kees Cook <keescook@chromium.org>,
@@ -74,52 +42,80 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
         linux-security-module <linux-security-module@vger.kernel.org>,
         Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200625132551.GB3526980@kroah.com>
+References: <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+ <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1pskt.fsf@x220.int.ebiederm.org>
+ <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+ <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+ <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+ <878sgck6g0.fsf@x220.int.ebiederm.org>
+ <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+ <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
+ <CAEjxPJ4e9rWWssp0CyM7GM7NP_QKkswHK7URwLZFqo5+wGecQw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEjxPJ4e9rWWssp0CyM7GM7NP_QKkswHK7URwLZFqo5+wGecQw@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 7:16 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
-> a file with empty filename. I can imagine that somebody would start abusing
-> fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
-> udevd and sshd. When such situation happened, how fork_usermode_blob() provides
-> information for identifying the intent of such execve() requests?
->
-> fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
-> SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
-> to associate appropriate security labels based on the content of the byte array
-> because files are created on-demand. Is fork_usermode_blob() friendly to inode
-> based LSMs?
+On Thu, Jun 25, 2020 at 08:56:10AM -0400, Stephen Smalley wrote:
+> On Wed, Jun 24, 2020 at 7:16 PM Tetsuo Handa
+> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> > What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
+> > a file with empty filename. I can imagine that somebody would start abusing
+> > fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
+> > udevd and sshd. When such situation happened, how fork_usermode_blob() provides
+> > information for identifying the intent of such execve() requests?
+> >
+> > fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
+> > SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
+> > to associate appropriate security labels based on the content of the byte array
+> > because files are created on-demand. Is fork_usermode_blob() friendly to inode
+> > based LSMs?
+> 
+> No, because we cannot label the inode based on the program's purpose
+> and therefore cannot configure an automatic transition to a suitable
+> security context for the process, unlike call_usermodehelper().
 
-No, because we cannot label the inode based on the program's purpose
-and therefore cannot configure an automatic transition to a suitable
-security context for the process, unlike call_usermodehelper(). It is
-important to note that the goal of such transitions is not merely to
-restrict the program from doing bad things but also to protect the
-program from untrustworthy inputs, e.g. one can run kmod/modprobe in a
-domain that can only read from authorized kernel modules, prevent
-following untrusted symlinks, etc.  Further, at present, the
-implementation creates the inode via shmem_kernel_file_setup(), which
-is supposed to be for inodes private to the kernel not exposed to
-userspace (hence marked S_PRIVATE), which I believe in this case will
-end up leaving the inode unlabeled but still end up firing checks in
-the bprm hooks on the file inode, thereby potentially yielding denials
-in SELinux on the exec of unlabeled files.  Not exactly what we would
-want.  If users were to switch from using call_usermodehelper() to
-fork_usermode_blob() we would need them to label the inode in some
-manner to reflect the program purpose prior to exec.  I suppose they
-could pass in some string key and SELinux could look it up in policy
-to get a context to use or something.
+Why, what prevents this?  Can you not just do that based on the "blob
+address" or signature of it or something like that?  Right now you all
+do this based on inode of a random file on a disk, what's the difference
+between a random blob in memory?
 
-On a different note, will the usermode blob be measured by IMA prior
-to execution?  What ensures that the blob was actually embedded in the
-kernel image and wasn't just supplied as data through exploitation of
-a kernel vulnerability or malicious kernel module?  Yes, things are
-already bad at that point but it would be good to be able to detect
-launch of the malicious userspace payload regardless (kernel exploit
-can't undo the measurement extended into the TPM even if it tampers
-with the IMA measurement list in the kernel, nor fake a quote signed
-by the TPM).
+> It is
+> important to note that the goal of such transitions is not merely to
+> restrict the program from doing bad things but also to protect the
+> program from untrustworthy inputs, e.g. one can run kmod/modprobe in a
+> domain that can only read from authorized kernel modules, prevent
+> following untrusted symlinks, etc.  Further, at present, the
+> implementation creates the inode via shmem_kernel_file_setup(), which
+> is supposed to be for inodes private to the kernel not exposed to
+> userspace (hence marked S_PRIVATE), which I believe in this case will
+> end up leaving the inode unlabeled but still end up firing checks in
+> the bprm hooks on the file inode, thereby potentially yielding denials
+> in SELinux on the exec of unlabeled files.  Not exactly what we would
+> want.  If users were to switch from using call_usermodehelper() to
+> fork_usermode_blob() we would need them to label the inode in some
+> manner to reflect the program purpose prior to exec.  I suppose they
+> could pass in some string key and SELinux could look it up in policy
+> to get a context to use or something.
+
+Sure, that would work.
+
+> On a different note, will the usermode blob be measured by IMA prior
+> to execution?  What ensures that the blob was actually embedded in the
+> kernel image and wasn't just supplied as data through exploitation of
+> a kernel vulnerability or malicious kernel module?
+
+No reason it couldn't be passed to IMA for measuring, if people want to
+do that.
+
+thanks,
+
+greg k-h
