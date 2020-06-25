@@ -2,120 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC78B209FC9
-	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 15:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0678520A0A6
+	for <lists+bpf@lfdr.de>; Thu, 25 Jun 2020 16:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404917AbgFYNZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jun 2020 09:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404888AbgFYNZy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jun 2020 09:25:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1837420702;
-        Thu, 25 Jun 2020 13:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593091554;
-        bh=Zo4VA4OcklTBlXrdN2hk4i87r+8uEzcz/Mh/YqPzpUk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KcqK+e0oDQ9Bpi9lykZcRJYfUEzV7tu5PvAuVo/S5XenzmdpbGv9aNveQVMJeSagz
-         w+rsxzNuhdD6ctUlFx4MaF6h8wZKVcYodeWmMhRYXBhoGd52ad5aX1yYx4KKIdBt1q
-         gY2MOFFjAii+Vk4/6byOgMBslnXLzK/1C1rjQJpU=
-Date:   Thu, 25 Jun 2020 15:25:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-Message-ID: <20200625132551.GB3526980@kroah.com>
-References: <87ftaxd7ky.fsf@x220.int.ebiederm.org>
- <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
- <87h7v1pskt.fsf@x220.int.ebiederm.org>
- <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
- <87h7v1mx4z.fsf@x220.int.ebiederm.org>
- <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
- <878sgck6g0.fsf@x220.int.ebiederm.org>
- <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
- <2f55102e-5d11-5569-8248-13618d517e93@i-love.sakura.ne.jp>
- <CAEjxPJ4e9rWWssp0CyM7GM7NP_QKkswHK7URwLZFqo5+wGecQw@mail.gmail.com>
+        id S2405363AbgFYOOD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jun 2020 10:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405359AbgFYOOC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jun 2020 10:14:02 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E522C08C5DB
+        for <bpf@vger.kernel.org>; Thu, 25 Jun 2020 07:14:02 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s1so6716263ljo.0
+        for <bpf@vger.kernel.org>; Thu, 25 Jun 2020 07:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ldn6FBnq77DB/yy/XXlMExQzH2a0FQzjuDXigv4+ejk=;
+        b=d+d5TAasDL3beWsWjtWjkBkMWstxF9TJO5DH5OlLAaQ9c9ShjBooa0622Q8PfpH2kC
+         F5iCdXwutjHic5+M8O6rk8DxWnqVuoiBFi7+cRHPJGL8SgCDR7/zwvB3Ft0ODaGXN6Mw
+         mNHbA6pgB0CSm2AU3MoHohtNLIqU/oad+FxNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ldn6FBnq77DB/yy/XXlMExQzH2a0FQzjuDXigv4+ejk=;
+        b=iN3wGhtfu+UaKSbEO456vqEerOOjSKPsDLsvGesJtmwDA5e0NdtuDkEc9ouwYVeD3e
+         IyLHSXayCz4n5IlAEniMejTMkmtYJrWu51Q244GcUF+j6VXR5MuqfTCIVQ4foe059Il0
+         p7CCC27g2FX5upvpBCPnCWB0ubctBbhXm4TNM2r25xlqyZ8LZUUS4iTdOb37GIDU5fJF
+         z2WkRwvjs7C6wzaPJSdbMGeOadowQjlGAumiKQknePerl+/t1x9ZpEmfYP3T8P5a8uIZ
+         i+MLHjQC6A/lp2M4GWERIqzqB39ktOH5qPRCLbdCr0U3Gp3/OZnbty4Pb8NFzotA5p80
+         8EPw==
+X-Gm-Message-State: AOAM533KrsHmZovRWX9+FFHg3lz7nD5J7y5pe9kGpHE9YvWGMPIFk1/D
+        St6C+eN9ae6ddVXSgyeOyK1oh8C8JA6EEw==
+X-Google-Smtp-Source: ABdhPJwwFS1QNZO155U1/cGCWMoyVuUuoyBNOXZB1e4mVW1gwol8Rd4yERtyfBw6vj+9q5SbvvEONQ==
+X-Received: by 2002:a2e:9cd4:: with SMTP id g20mr16570156ljj.371.1593094440144;
+        Thu, 25 Jun 2020 07:14:00 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id z2sm5609698ljh.72.2020.06.25.07.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 07:13:59 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: [PATCH bpf-next v3 0/4] bpf, netns: Prepare for multi-prog attachment
+Date:   Thu, 25 Jun 2020 16:13:53 +0200
+Message-Id: <20200625141357.910330-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEjxPJ4e9rWWssp0CyM7GM7NP_QKkswHK7URwLZFqo5+wGecQw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 08:56:10AM -0400, Stephen Smalley wrote:
-> On Wed, Jun 24, 2020 at 7:16 PM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > What is unhappy for pathname based LSMs is that fork_usermode_blob() creates
-> > a file with empty filename. I can imagine that somebody would start abusing
-> > fork_usermode_blob() as an interface for starting programs like modprobe, hotplug,
-> > udevd and sshd. When such situation happened, how fork_usermode_blob() provides
-> > information for identifying the intent of such execve() requests?
-> >
-> > fork_usermode_blob() might also be an unhappy behavior for inode based LSMs (like
-> > SELinux and Smack) because it seems that fork_usermode_blob() can't have a chance
-> > to associate appropriate security labels based on the content of the byte array
-> > because files are created on-demand. Is fork_usermode_blob() friendly to inode
-> > based LSMs?
-> 
-> No, because we cannot label the inode based on the program's purpose
-> and therefore cannot configure an automatic transition to a suitable
-> security context for the process, unlike call_usermodehelper().
+This patch set prepares ground for link-based multi-prog attachment for
+future netns attach types, with BPF_SK_LOOKUP attach type in mind [0].
 
-Why, what prevents this?  Can you not just do that based on the "blob
-address" or signature of it or something like that?  Right now you all
-do this based on inode of a random file on a disk, what's the difference
-between a random blob in memory?
+Two changes are needed in order to attach and run a series of BPF programs:
 
-> It is
-> important to note that the goal of such transitions is not merely to
-> restrict the program from doing bad things but also to protect the
-> program from untrustworthy inputs, e.g. one can run kmod/modprobe in a
-> domain that can only read from authorized kernel modules, prevent
-> following untrusted symlinks, etc.  Further, at present, the
-> implementation creates the inode via shmem_kernel_file_setup(), which
-> is supposed to be for inodes private to the kernel not exposed to
-> userspace (hence marked S_PRIVATE), which I believe in this case will
-> end up leaving the inode unlabeled but still end up firing checks in
-> the bprm hooks on the file inode, thereby potentially yielding denials
-> in SELinux on the exec of unlabeled files.  Not exactly what we would
-> want.  If users were to switch from using call_usermodehelper() to
-> fork_usermode_blob() we would need them to label the inode in some
-> manner to reflect the program purpose prior to exec.  I suppose they
-> could pass in some string key and SELinux could look it up in policy
-> to get a context to use or something.
+  1) an bpf_prog_array of programs to run (patch #2), and
+  2) a list of attached links to keep track of attachments (patch #3).
 
-Sure, that would work.
+Nothing changes for BPF flow_dissector. Just as before only one program can
+be attached to netns.
 
-> On a different note, will the usermode blob be measured by IMA prior
-> to execution?  What ensures that the blob was actually embedded in the
-> kernel image and wasn't just supplied as data through exploitation of
-> a kernel vulnerability or malicious kernel module?
 
-No reason it couldn't be passed to IMA for measuring, if people want to
-do that.
+In v3 I've simplified patch #2 that introduces bpf_prog_array to take
+advantage of the fact that it will hold at most one program for now.
 
-thanks,
+In particular, I'm no longer using bpf_prog_array_copy. It turned out to be
+less suitable for link operations than I thought as it fails to append the
+same BPF program.
 
-greg k-h
+bpf_prog_array_replace_item is also gone, because we know we always want to
+replace the first element in prog_array.
+
+Naturally the code that handles bpf_prog_array will need change once
+more when there is a program type that allows multi-prog attachment. But I
+feel it will be better to do it gradually and present it together with
+tests that actually exercise multi-prog code paths.
+
+Thanks,
+-jkbs
+
+[0] https://lore.kernel.org/bpf/20200511185218.1422406-1-jakub@cloudflare.com/
+
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Stanislav Fomichev <sdf@google.com>
+
+v2 -> v3:
+- Don't check if run_array is null in link update callback. (Martin)
+- Allow updating the link with the same BPF program. (Andrii)
+- Add patch #4 with a test for the above case.
+- Kill bpf_prog_array_replace_item. Access the run_array directly.
+- Switch from bpf_prog_array_copy() to bpf_prog_array_alloc(1, ...).
+- Replace rcu_deref_protected & RCU_INIT_POINTER with rcu_replace_pointer.
+- Drop Andrii's Ack from patch #2. Code changed.
+
+v1 -> v2:
+
+- Show with a (void) cast that bpf_prog_array_replace_item() return value
+  is ignored on purpose. (Andrii)
+- Explain why bpf-cgroup cannot replace programs in bpf_prog_array based
+  on bpf_prog pointer comparison in patch #2 description. (Andrii)
+
+Jakub Sitnicki (4):
+  flow_dissector: Pull BPF program assignment up to bpf-netns
+  bpf, netns: Keep attached programs in bpf_prog_array
+  bpf, netns: Keep a list of attached bpf_link's
+  selftests/bpf: Test updating flow_dissector link with same program
+
+ include/net/flow_dissector.h                  |   3 +-
+ include/net/netns/bpf.h                       |   7 +-
+ kernel/bpf/net_namespace.c                    | 162 ++++++++++++------
+ net/core/flow_dissector.c                     |  32 ++--
+ .../bpf/prog_tests/flow_dissector_reattach.c  |  32 +++-
+ 5 files changed, 160 insertions(+), 76 deletions(-)
+
+-- 
+2.25.4
+
