@@ -2,179 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE1D20B6D1
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541CF20B79F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgFZRWO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 13:22:14 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:38286 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgFZRWO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 13:22:14 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jos3F-00056A-ME; Fri, 26 Jun 2020 11:22:09 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jos3E-00066Y-OC; Fri, 26 Jun 2020 11:22:09 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        id S1725833AbgFZRzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 13:55:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17970 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726408AbgFZRzS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:55:18 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHsukp019446
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=Z0Ny/UbkwzOX/BfPlSa3nxytQzuq06lhHGd51wiSH3Y=;
+ b=Vwx75lQ8G9wev3YOA7kgL0J4G2aKRSxLoy1IwrjskmTZbnrhgJ7Jc7aLBHEIOeZ2ew6K
+ 1xpxSN+Yu5Ism/fMA2eoZJpO43jP/G33q0jDIgU9bqKfd0vAl3trdtgBjsiyoaojLoFk
+ gRKNb8xnS+AEp258y1CkupYQc3nEgIi7eCo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux1exn05-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:17 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 26 Jun 2020 10:55:04 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id D8C672942E38; Fri, 26 Jun 2020 10:55:01 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200625095725.GA3303921@kroah.com>
-        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
-        <20200625120725.GA3493334@kroah.com>
-        <20200625.123437.2219826613137938086.davem@davemloft.net>
-        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
-        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
-        <20200626164055.5iasnou57yrtt6wz@ast-mbp.dhcp.thefacebook.com>
-Date:   Fri, 26 Jun 2020 12:17:40 -0500
-In-Reply-To: <20200626164055.5iasnou57yrtt6wz@ast-mbp.dhcp.thefacebook.com>
-        (Alexei Starovoitov's message of "Fri, 26 Jun 2020 09:40:55 -0700")
-Message-ID: <87sgeh926j.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Neal Cardwell <ncardwell@google.com>, <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 00/10] BPF TCP header options
+Date:   Fri, 26 Jun 2020 10:55:01 -0700
+Message-ID: <20200626175501.1459961-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jos3E-00066Y-OC;;;mid=<87sgeh926j.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19iYzMwx7bCBaPQ2l8NqBFdNQa296MM+Fw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 511 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.5 (0.9%), b_tie_ro: 3.1 (0.6%), parse: 1.21
-        (0.2%), extract_message_metadata: 5.0 (1.0%), get_uri_detail_list: 2.7
-        (0.5%), tests_pri_-1000: 3.9 (0.8%), tests_pri_-950: 1.08 (0.2%),
-        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 139 (27.3%), check_bayes:
-        138 (26.9%), b_tokenize: 8 (1.5%), b_tok_get_all: 11 (2.1%),
-        b_comp_prob: 3.5 (0.7%), b_tok_touch_all: 113 (22.0%), b_finish: 0.77
-        (0.2%), tests_pri_0: 337 (66.0%), check_dkim_signature: 0.40 (0.1%),
-        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 1.16 (0.2%), tests_pri_10:
-        2.7 (0.5%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_10:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 cotscore=-2147483648 spamscore=0 mlxlogscore=383 bulkscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ suspectscore=13 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006260126
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+The earlier effort in BPF-TCP-CC allows the TCP Congestion Control
+algorithm to be written in BPF.  It opens up opportunities to allow
+a faster turnaround time in testing/releasing new congestion control
+ideas to production environment.
 
-> On Fri, Jun 26, 2020 at 07:51:41AM -0500, Eric W. Biederman wrote:
->> 
->> Asking for people to fix their bugs in this user mode driver code has
->> been remarkably unproductive.  So here are my bug fixes.
->> 
->> I have tested them by booting with the code compiled in and
->> by killing "bpfilter_umh" and running iptables -vnL to restart
->> the userspace driver.
->> 
->> I have split the changes into small enough pieces so they should be
->> easily readable and testable.  
->> 
->> The changes lean into the preexisting interfaces in the kernel and
->> remove special cases for user mode driver code in favor of solutions
->> that don't need special cases.  This results in smaller code with
->> fewer bugs.
->> 
->> At a practical level this removes the maintenance burden of the
->> user mode drivers from the user mode helper code and from exec as
->> the special cases are removed.
->> 
->> Similarly the LSM interaction bugs are fixed by not having unnecessary
->> special cases for user mode drivers.
->> 
->> Please let me know if you see any bugs.  Once the code review is
->> finished I plan to take this through my tree.
->
-> I did a quick look and I like the cleanup. Thanks!
+The same flexibility can be extended to writing TCP header option.
+It is not uncommon that people want to test new TCP header option
+to improve the TCP performance.  Another use case is for data-center
+that has a more controlled environment and has more flexibility in
+putting header options for internal traffic only.
+   =20
+This patch set introduces the necessary BPF logic and API to
+allow bpf program (BPF_PROG_TYPE_SOCK_OPS) to write and parse
+TCP options under experimental kind(254) and 16bit-magic(0xeB9F).
+The experimental kind(254) usage is defined in RFC 6994.
 
-Good then we have a path forward.
+There are also some changes to TCP and they are mostly to provide
+the needed sk and skb info to the bpf program to make decision.
 
-> The end result looks good.
-> The only problem that you keep breaking the build between patches,
-> so series will not be bisectable.
+Patch 4 is the main patch and has more details on the API and design.
 
-Keep breaking?  There is an issue with patch 5/14 where the build breaks
-when bpfilter is not enabled.  Do you see any others? I know I tested
-each patch individually.  But I was only testing with CONFIG_BPFILTER
-enabled so I missed one.
+The set ends with an example which sends the max delay ack in
+the BPF TCP header option and the receiving side can
+then adjust its RTO accordingly.
 
-So there should not be things that break
-but things slip through occassionally.
+Martin KaFai Lau (10):
+  tcp: Use a struct to represent a saved_syn
+  tcp: bpf: Parse BPF experimental header option
+  bpf: sock_ops: Change some members of sock_ops_kern from u32 to u8
+  bpf: tcp: Allow bpf prog to write and parse BPF TCP header option
+  bpf: selftests: A few improvements to network_helpers.c
+  bpf: selftests: Add fastopen_connect to network_helpers
+  bpf: selftests: Restore netns after each test
+  bpf: selftests: tcp header options
+  tcp: bpf: Add TCP_BPF_DELACK_MAX and TCP_BPF_RTO_MIN to bpf_setsockopt
+  bpf: selftest: Add test for TCP_BPF_DELACK_MAX and TCP_BPF_RTO_MIN
 
-I will resend this shortly with the fix and any others that I can find.
+ include/linux/bpf-cgroup.h                    |  25 +
+ include/linux/filter.h                        |  10 +-
+ include/linux/tcp.h                           |  11 +-
+ include/net/inet_connection_sock.h            |   2 +
+ include/net/request_sock.h                    |   8 +-
+ include/net/tcp.h                             |  58 +-
+ include/uapi/linux/bpf.h                      | 189 ++++-
+ net/core/filter.c                             | 236 +++++-
+ net/ipv4/tcp.c                                |  13 +-
+ net/ipv4/tcp_fastopen.c                       |   2 +-
+ net/ipv4/tcp_input.c                          |  99 ++-
+ net/ipv4/tcp_ipv4.c                           |   4 +-
+ net/ipv4/tcp_minisocks.c                      |   1 +
+ net/ipv4/tcp_output.c                         | 188 ++++-
+ net/ipv6/tcp_ipv6.c                           |   4 +-
+ tools/include/uapi/linux/bpf.h                | 189 ++++-
+ tools/testing/selftests/bpf/network_helpers.c | 182 +++--
+ tools/testing/selftests/bpf/network_helpers.h |  11 +-
+ .../bpf/prog_tests/cgroup_skb_sk_lookup.c     |  12 +-
+ .../bpf/prog_tests/connect_force_port.c       |  10 +-
+ .../bpf/prog_tests/load_bytes_relative.c      |   4 +-
+ .../bpf/prog_tests/tcp_hdr_options.c          | 522 +++++++++++++
+ .../selftests/bpf/prog_tests/tcp_rtt.c        |   4 +-
+ .../bpf/progs/test_tcp_hdr_options.c          | 708 ++++++++++++++++++
+ tools/testing/selftests/bpf/test_progs.c      |  21 +
+ tools/testing/selftests/bpf/test_progs.h      |   2 +
+ .../selftests/bpf/test_tcp_hdr_options.h      |  34 +
+ 27 files changed, 2426 insertions(+), 123 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_hdr_option=
+s.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_hdr_option=
+s.c
+ create mode 100644 tools/testing/selftests/bpf/test_tcp_hdr_options.h
 
-> blob_to_mnt is a great idea. Much better than embedding fs you advocated earlier.
-
-I was lazy and not overdesigning but I still suspect the blob will
-benefit from becoming a cpio in the future.
-
-> I'm swamped with other stuff today and will test the set Sunday/Monday
-> with other patches that I'm working on.
-> I'm not sure why you want to rename the interface. Seems
-> pointless. But fine.
-
-For maintainability I think the code very much benefits from a clear
-separation between the user mode driver code from the user mode helper
-code.
-
-> As far as routing trees. Do you mind I'll take it via bpf-next ?
-> As I said countless times we're working on bpf_iter using fork_blob.
-> If you take this set via your tree we would need to wait the whole kernel release.
-> Which is 8+ weeks before we can use the interface (due to renaming and overall changes).
-> I'd really like to avoid this huge delay.
-> Unless you can land it into 5.8-rc2 or rc3.
-
-I also want to build upon this code.
-
-How about when the review is done I post a frozen branch based on
-v5.8-rc1 that you can merge into the bpf-next tree, and I can merge into
-my branch.  That way we both can build upon this code.  That is the way
-conflicts like this are usually handled.
-
-Further I will leave any further enhancements to the user mode driver
-infrastructure that people have suggested to you.
-
-I will probably replace do_execve with a kernel_execve that doesn't need
-set_fs() to copy the command line argument.  I haven't seen Christoph
-Hellwig address that yet, and it looks pretty straight foward at this
-point.
-
-
-Eric
+--=20
+2.24.1
 
