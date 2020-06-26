@@ -2,157 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC0F20BCDD
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2DD20BCE0
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgFZWpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 18:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgFZWpP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 18:45:15 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF06AC03E979;
-        Fri, 26 Jun 2020 15:45:15 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 145so7803203qke.9;
-        Fri, 26 Jun 2020 15:45:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JOWRcyY9gvpW3nOyF3LW36rst3A+5ICBETxqyuINX4E=;
-        b=SK1wqZuj+ij/rBmmw0cHun4LNs56Aeq/otCXRr258jB+ek7yfkAbQYMa5YuveAPKli
-         6DSEXqdj61CHuitAIFRKL65UEug11WMXW6UyCDKJEQ6aujX1zIjZ9dBLU/lrK3FfXena
-         4IRoBp3e3HRApMcZ9CqYp8+fKi45/mSs4KORhRGrCgRPFDg+92OB7kzJuY7q1WvrTFqE
-         0E2DYhxbKB6SIb/4eHpUzVNtBnJbeFTRPHGMUL0ewv80FUZ6YRJOmr6Hp8prhdtz660c
-         LvBB+bdwpvv2+1O8fyMrCWxu145oD21S0Euw0wITFONuB9RCaWUDVP7E+mkTJfNPF1Zu
-         mMFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JOWRcyY9gvpW3nOyF3LW36rst3A+5ICBETxqyuINX4E=;
-        b=MSscgeHWwGCHux3Lx+SsQnYNF4E/F3rMi1/5P/ldOgwKdzYUAwauM/Vw4bbMc4wv8Z
-         RVsXdn+CPa5dnwuratqn+r8KF30U43tXbLhYAWp+J48NFBNdeB56x6r7YyaS5bB+Wxj7
-         ICsvXwH9iGtBwo9sTF2o9u/x3MgZ4sy81dQj03bFawVT6QJ0+XEekAev0AZxgR9mH6cB
-         /XOya8U2lwrPY0FHM6/+o4fy8cUSPrmd1kpUC1661LPTXKpqhXz/HoIakyKc3ggEKrE5
-         8edjI5dC3D+DH1wUN13OQx+16E13yoZXJd7VA8oGKZICX49/seBUngiTWbPMpJwozyLt
-         ilKQ==
-X-Gm-Message-State: AOAM5318QkrLKO4RPkUVZbde6XxybMtXjg1JKxvqVQ0I3rLyRmwCQvdB
-        Sn1/WSt7/xZVykxiLgoYOtd2EIbQFElP+5gWu4M=
-X-Google-Smtp-Source: ABdhPJxSmGUWdD4CBVH4cuMnLOH/6F6O147csKqvSDbL2ts9nUQw7/M9UBCOc2YWtVA3s8GATIUQhqLIyJZb7znTEWI=
-X-Received: by 2002:a37:270e:: with SMTP id n14mr4369946qkn.92.1593211514964;
- Fri, 26 Jun 2020 15:45:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200626175501.1459961-1-kafai@fb.com> <20200626175545.1462191-1-kafai@fb.com>
-In-Reply-To: <20200626175545.1462191-1-kafai@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Jun 2020 15:45:04 -0700
-Message-ID: <CAEf4BzZ3Jb296zJ7bfsntk7v5fkynrBcKncGQgrSHJ2zqifgsA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 07/10] bpf: selftests: Restore netns after each test
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1725883AbgFZWqB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 18:46:01 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:24322 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725836AbgFZWqB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 18:46:01 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05QMjMTK014708;
+        Fri, 26 Jun 2020 15:45:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=H+bnfQBBWFjSY2Vx7UTjeinaNzpXdPhUkj7ltmAyu3M=;
+ b=C78rmZxt1nAZMZnrA/zAnsoAV5U0R+vgzNDdXufnD5TRjH4jaXUKL1ocx64g5z4BTs4S
+ REWqiQDXlF2N90Kdann5BEqVbAjULfvYdBvJipUNMQCZEeLy60vKuJAh4kG06LHAeoOY
+ 5jJn2I5y6O6P95LdgkQnoy/pzOpWyfbg+Ok= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 31ux0nysen-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 26 Jun 2020 15:45:45 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 26 Jun 2020 15:45:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dnqsIiLIX9eEeeWfTO5R2z2aAtyfgctw09VjMqTaXgU1+mur0WpTcLg1AMpRdLkQkPGDXgpr+EKckZRd2Du1v5MS7vXThm9EQ+DNPJI2FIzcSsxQ/W+4wtnGMC9swlaTyczT83KLhdOe+eFxyNvhHkJkjBhwh/whXLydMRlgiLRFA4iccYP5alhzRsxKmbN/8ZRWtzi1f6dx1VDzWF30pcS342hBhw89VFB7cq920aWPds0gxxw8y1idGWfukEOTF3GE05gd6eVcBsmd3tZFt70LU72g7x8UMQdxLTyej5NTSmXE5Qxq1exQa1BgZCOyNkjyOvQX9IcF38vbuP1sgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+bnfQBBWFjSY2Vx7UTjeinaNzpXdPhUkj7ltmAyu3M=;
+ b=RvvaF+JgyXiX3mJ6ARSd2NAueI5HXnbC1mpBAcbbYtyQbfnXsqfZhxycc5dgzuqJIkVDpIaE5PRHdJ18qqz8F2F03cbLoV8G2kud9MTzLjx/9C6nINYjQjtPjLbBOb+/UH3xwQ761DBa29l2N8BlSyinqZQTAs+ufylU2lffddn2+a+r44le+d5j076sCcNmQxap1YHIcOoy4KHO+EN77gutabM6gl0jPjalPbAmSyLohid6JFvfwXPrJEJekeZOx0NtzAeHEth3xKCaz2D7y2BelQwau3hL2vK8qHMfMiPtHK80dIjoFuAVWfDvh5kd/LFU8O1Qa932zUFTjVBAcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+bnfQBBWFjSY2Vx7UTjeinaNzpXdPhUkj7ltmAyu3M=;
+ b=Xocw/294mFdWor41zxoDXANNqgb167y1A5br5gDuz6qbB+4FQTRf6obCNNyYzykRubaYNqY2oaFIcranTiW6cztA4md6nOUAjE7RrU0tXnlIH/K5rMBGHDPEkg0RqLYKyWr2uJyfbWTOG/7K8irxSOA11zrSbB1584LCtI62pkY=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3366.namprd15.prod.outlook.com (2603:10b6:a03:10d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Fri, 26 Jun
+ 2020 22:45:39 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3109.027; Fri, 26 Jun 2020
+ 22:45:39 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Networking <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Kernel Team" <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        "KP Singh" <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 bpf-next 2/4] bpf: introduce helper bpf_get_task_stak()
+Thread-Topic: [PATCH v2 bpf-next 2/4] bpf: introduce helper
+ bpf_get_task_stak()
+Thread-Index: AQHWS06r1sTuO7iWZUmEIP/wOjIJvqjrVxKAgAApV4A=
+Date:   Fri, 26 Jun 2020 22:45:39 +0000
+Message-ID: <C3B6DD3E-1B69-4D0C-8A55-4EB81C21C619@fb.com>
+References: <20200626001332.1554603-1-songliubraving@fb.com>
+ <20200626001332.1554603-3-songliubraving@fb.com>
+ <CAEf4BzZ6-s-vqp+bLiCAVgS2kmp09a1WdaSvaL_jJySx7s7inA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ6-s-vqp+bLiCAVgS2kmp09a1WdaSvaL_jJySx7s7inA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:1a00]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3f890e48-7a57-48f8-ab79-08d81a22a68b
+x-ms-traffictypediagnostic: BYAPR15MB3366:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB33667AEDA5D6B0A5D937BC8BB3930@BYAPR15MB3366.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0446F0FCE1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: S0+SKyxgDYq29OPT8cxR7iMbyS681TmJWk8zqZbGLOli5GxZzpEZtJCks+yzdDpu2ZLo/XQTu4IClTf0Ug8SfNypdvfXHkh+TI0cQXGVn1BhqxsOvWZIcXTuTdU/WMdCPC3XrVHDRXmVHYXbh65ZdpOVVn18BvfJuEifVKKnMeOg0fGH0wd6HL6Kavg2sjwIciQY45B4/e2bDgidK0mhMXpv7pOO5wMSQOvbApHPFB+cV6HCfrfkWJOjKUoqObZSJ3VgbQ+Oj3eRkG1JvNGq1gFiojduzB3PiDpaVMuMiJHeaSQiJ1g8lPjKXK2+8pgoPvO5eSV0AE5sSQc+4vYGNA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(136003)(39860400002)(376002)(396003)(6512007)(54906003)(6506007)(316002)(478600001)(36756003)(2906002)(53546011)(86362001)(4326008)(2616005)(33656002)(83380400001)(186003)(71200400001)(66476007)(66446008)(66946007)(66556008)(8936002)(6486002)(6916009)(8676002)(5660300002)(76116006)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MGoqaKip1zptm5y6IImPtHkh9HR+cIH6uCn2iNl6/R/g9dp4AuKuwrCUccs2nGCYyKrCyH1ttXX0J/s3zUrfid3lnmRFrtNkvaFcCW9M2bOdONn7+4uyvBpxcIzdhC4Zx8qLQkSEeirf9dWqVCTruBVZX3SICxCyPJ0Vne8nCO0U+zEmUnUL9K11oslbBNysNs6xdIVy0JEbpCxVQiGYFs7GWvm2gibd8f+doGqm3KhNrx6DqSWStz7Qp+UAzoIUDW0f0BJf5+zBj1lM2fhiNEEGNYAWXk4ZaSIf9KRQiJZRuZtGfWv2mB24XJ7XJR2GFDW54NMl30ME0VXo1JJUjK3miR9Y0Hpl88IkqHO1i5QXpJX5MmpqN3ZcxG4zkJSrwdt/FXWG2y2cN/VYYCmdGfZpT7UNGavC4tvdJbApugYqSzbfr+pBBNFrxTWGsFMzOnRdL15xB/qbcBv++ZPSomkDqvCfcRMocJzd8aSkJxtPZ1CiaCPN5EGLE8iLFsrd8baocC/trqRGfNRPoOuBcQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DDD403D82D86084CACDB808E9059641A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f890e48-7a57-48f8-ab79-08d81a22a68b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2020 22:45:39.7047
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nm0O3qPoHcbn88kx0dexvNdPw0Z0utEcKHgdwzreUnup3DaXGQcmlfiSt3Ac75q5hkWZK1FB34w1rEjA54gkyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3366
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-26_12:2020-06-26,2020-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 cotscore=-2147483648 spamscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=854 priorityscore=1501
+ clxscore=1015 malwarescore=0 phishscore=0 bulkscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260160
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 10:56 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> It is common for networking tests creating its netns and making its own
-> setting under this new netns (e.g. changing tcp sysctl).  If the test
-> forgot to restore to the original netns, it would affect the
-> result of other tests.
->
-> This patch saves the original netns at the beginning and then restores it
-> after every test.  Since the restore "setns()" is not expensive, it does it
-> on all tests without tracking if a test has created a new netns or not.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  tools/testing/selftests/bpf/test_progs.c | 21 +++++++++++++++++++++
->  tools/testing/selftests/bpf/test_progs.h |  2 ++
->  2 files changed, 23 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 54fa5fa688ce..b521ce366381 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -121,6 +121,24 @@ static void reset_affinity() {
->         }
->  }
->
-> +static void save_netns(void)
-> +{
-> +       env.saved_netns_fd = open("/proc/self/ns/net", O_RDONLY);
-> +       if (env.saved_netns_fd == -1) {
-> +               perror("open(/proc/self/ns/net)");
-> +               exit(-1);
-> +       }
-> +}
-> +
-> +static void restore_netns(void)
-> +{
-> +       if (setns(env.saved_netns_fd, CLONE_NEWNET) == -1) {
-> +               stdio_restore();
-> +               perror("setns(CLONE_NEWNS)");
-> +               exit(-1);
-> +       }
-> +}
-> +
->  void test__end_subtest()
->  {
->         struct prog_test_def *test = env.test;
-> @@ -643,6 +661,7 @@ int main(int argc, char **argv)
->                 return -1;
->         }
->
-> +       save_netns();
 
-you should probably do this also after each sub-test in test__end_subtest()?
 
-Otherwise everything looks good.
+> On Jun 26, 2020, at 1:17 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
+wrote:
+>=20
+> On Thu, Jun 25, 2020 at 5:14 PM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>> Introduce helper bpf_get_task_stack(), which dumps stack trace of given
+>> task. This is different to bpf_get_stack(), which gets stack track of
+>> current task. One potential use case of bpf_get_task_stack() is to call
+>> it from bpf_iter__task and dump all /proc/<pid>/stack to a seq_file.
+>>=20
+>> bpf_get_task_stack() uses stack_trace_save_tsk() instead of
+>> get_perf_callchain() for kernel stack. The benefit of this choice is tha=
+t
+>> stack_trace_save_tsk() doesn't require changes in arch/. The downside of
+>> using stack_trace_save_tsk() is that stack_trace_save_tsk() dumps the
+>> stack trace to unsigned long array. For 32-bit systems, we need to
+>> translate it to u64 array.
+>>=20
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> ---
+>=20
+> Looks great, I just think that there are cases where user doesn't
+> necessarily has valid task_struct pointer, just pid, so would be nice
+> to not artificially restrict such cases by having extra helper.
+>=20
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->         stdio_hijack();
->         for (i = 0; i < prog_test_cnt; i++) {
->                 struct prog_test_def *test = &prog_test_defs[i];
-> @@ -673,6 +692,7 @@ int main(int argc, char **argv)
->                         test->error_cnt ? "FAIL" : "OK");
->
->                 reset_affinity();
-> +               restore_netns();
->                 if (test->need_cgroup_cleanup)
->                         cleanup_cgroup_environment();
->         }
-> @@ -686,6 +706,7 @@ int main(int argc, char **argv)
->         free_str_set(&env.subtest_selector.blacklist);
->         free_str_set(&env.subtest_selector.whitelist);
->         free(env.subtest_selector.num_set);
-> +       close(env.saved_netns_fd);
->
->         return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
->  }
-> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> index f4503c926aca..b80924603918 100644
-> --- a/tools/testing/selftests/bpf/test_progs.h
-> +++ b/tools/testing/selftests/bpf/test_progs.h
-> @@ -78,6 +78,8 @@ struct test_env {
->         int sub_succ_cnt; /* successful sub-tests */
->         int fail_cnt; /* total failed tests + sub-tests */
->         int skip_cnt; /* skipped tests */
-> +
-> +       int saved_netns_fd;
->  };
->
->  extern struct test_env env;
-> --
-> 2.24.1
->
+Thanks!
+
+>=20
+>> include/linux/bpf.h            |  1 +
+>> include/uapi/linux/bpf.h       | 35 ++++++++++++++-
+>> kernel/bpf/stackmap.c          | 79 ++++++++++++++++++++++++++++++++--
+>> kernel/trace/bpf_trace.c       |  2 +
+>> scripts/bpf_helpers_doc.py     |  2 +
+>> tools/include/uapi/linux/bpf.h | 35 ++++++++++++++-
+>> 6 files changed, 149 insertions(+), 5 deletions(-)
+>>=20
+>=20
+> [...]
+>=20
+>> +       /* stack_trace_save_tsk() works on unsigned long array, while
+>> +        * perf_callchain_entry uses u64 array. For 32-bit systems, it i=
+s
+>> +        * necessary to fix this mismatch.
+>> +        */
+>> +       if (__BITS_PER_LONG !=3D 64) {
+>> +               unsigned long *from =3D (unsigned long *) entry->ip;
+>> +               u64 *to =3D entry->ip;
+>> +               int i;
+>> +
+>> +               /* copy data from the end to avoid using extra buffer */
+>> +               for (i =3D entry->nr - 1; i >=3D (int)init_nr; i--)
+>> +                       to[i] =3D (u64)(from[i]);
+>=20
+> doing this forward would be just fine as well, no? First iteration
+> will cast and overwrite low 32-bits, all the subsequent iterations
+> won't even overlap.
+
+I think first iteration will write zeros to higher 32 bits, no?
+
+>=20
+>> +       }
+>> +
+>> +exit_put:
+>> +       put_callchain_entry(rctx);
+>> +
+>> +       return entry;
+>> +}
+>> +
+>=20
+> [...]
+>=20
+>> +BPF_CALL_4(bpf_get_task_stack, struct task_struct *, task, void *, buf,
+>> +          u32, size, u64, flags)
+>> +{
+>> +       struct pt_regs *regs =3D task_pt_regs(task);
+>> +
+>> +       return __bpf_get_stack(regs, task, buf, size, flags);
+>> +}
+>=20
+>=20
+> So this takes advantage of BTF and having a direct task_struct
+> pointer. But for kprobes/tracepoint I think it would also be extremely
+> helpful to be able to request stack trace by PID. How about one more
+> helper which will wrap this one with get/put task by PID, e.g.,
+> bpf_get_pid_stack(int pid, void *buf, u32 size, u64 flags)? Would that
+> be a problem?
+
+That should work. Let me add that in a follow up patch.=20
+
