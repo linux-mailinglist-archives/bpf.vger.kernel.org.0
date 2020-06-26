@@ -2,157 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB5520BBF5
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 23:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5795820BC16
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgFZVzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 17:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S1725866AbgFZWCa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 18:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgFZVzq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 17:55:46 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9952AC03E979;
-        Fri, 26 Jun 2020 14:55:46 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id e11so10228210qkm.3;
-        Fri, 26 Jun 2020 14:55:46 -0700 (PDT)
+        with ESMTP id S1725803AbgFZWC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 18:02:28 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFC8C03E979;
+        Fri, 26 Jun 2020 15:02:28 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j10so8616071qtq.11;
+        Fri, 26 Jun 2020 15:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o1EHNnZCUnXFxkUA/oLBF3fOGOdmCt42NiXP+2hmzMc=;
-        b=qQHcC4ZBJ3zZSfu/9SLFDvUPeQpMk00iHBTURli5JnGOvhrzQod/U0aMQXL8l2WLG/
-         UdAZVxNGnDBusFtWZubNNh86F5UBYmLkt6XupCSaVXg6HK7NXrTscQvRQ5Uo1P0J5yAc
-         jDsMCE4n98h5RkPe52YuSXnbOLhi1vfJk1FD6HxIwHvIhpmabOVA34bvPLXHsYU32zMb
-         rWYiHX8Rql0A/sJ4johS406y7QAh5Ex1CIQ/B5fvVQS2vPf8m/dbgDUDfrpb19nb7T1c
-         GnSo9XY1/x7CLqJKddYFVZ9MX1wjRJEeL2WdJkk7kdyBhPteyT3ACn53hodPXgMynDD8
-         FriA==
+        bh=8WIKkmkw+zJ2eirAiqoKIREjztn56T5W1fT71uuN8TE=;
+        b=Txofs5OWaYLB9cmfw2Ok2XpEXQGf2YraycZiLYYlQ+ZHAnxXy4QmbONusW/btRdRC2
+         ykTIQYg2/+1KmnQgDtUKtI8laPJ2gBOGRNHnBmNXYMBjAisBTJJgTa8AEU3Q+Lm4U0/s
+         lhOtlatI8x+ggwuChjqOgp+/9atMHxdc2NY7Jxh3wPENFep5ahuRluRxDUEyOuM5ose1
+         4wSL+7LyvjCbUiqvIq3moskvJ+crFxGgelkgEmF4ufTMobuMOFLu1z4WLB39wF94li2L
+         NHUiCE7HyyKdzI+V0ssVw/2/pXFmdGaaRRYn+85jaj0304Jatjpb7blEw7nYRPYexr3x
+         SBAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o1EHNnZCUnXFxkUA/oLBF3fOGOdmCt42NiXP+2hmzMc=;
-        b=iCBZ+nqRdArFD1vivu+MuE2nW4WHoYNbpzIjHtUdbOCF8TYTbz4jmoTGrsX4yenFTj
-         OyjE7y9T6q3BPhpRG2u9FqcnUTtNoOiqbVXQAjh513zACyNa937Pnqsf6AStskt04xUJ
-         P6L0w8+oOwc027yv8/PuDqryK+m04q9RNfd4Kq0w8j1ZX2MGwgUOr58cWe6QPalbOltb
-         edEOfJn2OGwjdfN7AtasDZ5Zi23XhNuPw7ZwGZb32x6+bxjWDlY9xIkQo4RtEKcT40ql
-         KrrRTdVLmmUbJv8qBRI6CnAywuE3qutVm3uQEAoYWZ/zijSu3EbrCrf+0qP9Anv4cu3K
-         E84Q==
-X-Gm-Message-State: AOAM532FEAJjcCPTGqFBgnNR1Wi8k7vkZulox7uzJbLn5gm+JjEeGCdU
-        BklvgN1Zmlst6DuXdlj6zaGQrVGndARckik3rpI=
-X-Google-Smtp-Source: ABdhPJwkA9ekJJ9M8nqEHrMlYL2BD3BJZ1mDRCivll8aPnTAeCKrvH2tOpIbus7du/BAuyYE2COpbUReYKxns3Hn8Uw=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr2667132qkc.39.1593208545856;
- Fri, 26 Jun 2020 14:55:45 -0700 (PDT)
+        bh=8WIKkmkw+zJ2eirAiqoKIREjztn56T5W1fT71uuN8TE=;
+        b=QjmiTkNyvLIwypJu2RwdQVNWil24CxgoTY9zNplD1WnjjvUidr4zPA6S43dGvpRFnu
+         RqbdV8VG/cPm0e3QGMujYuiF37wlYipmZIbNjgfKJ2FvALZg5BdAVtLfUQRUVpH06FYZ
+         /OhTWl/jtijg1wkPfEj0L7H8f0Kk8vWghKSliYCH67XN71iRyncDQW8CnozTd2CPxyw6
+         WxwjktOmNgi37IlnlNGP+FIP5+qBkzBSjaeWanYMfrRi6Mj3IkLZwWeWPmZt8KgnUjrE
+         iSIQBllwaVG6eP/n5FGty1gzNau5taGB1xdbNXcjMOFhFx+vWuFqO9vaUxdQWh6kTpId
+         ORzg==
+X-Gm-Message-State: AOAM5311rNrT4kmrSL1HGjuIaVXrbwTRYHeaBKVts9wPyZAuK/ssbbLi
+        D1z7ksnn8VS7UUmkEcPO+l8oBK5xLRbtqR2MGsg=
+X-Google-Smtp-Source: ABdhPJx6yw1UL6PXyiP69OS+m9EzYL17y6eIW2RYq+0ln3CCZdvxJ21a78JpMZ2s201gHVKH3AsxbDDpJPpAt+la4ec=
+X-Received: by 2002:ac8:2bba:: with SMTP id m55mr4970417qtm.171.1593208947777;
+ Fri, 26 Jun 2020 15:02:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200625221304.2817194-1-jolsa@kernel.org> <20200625221304.2817194-14-jolsa@kernel.org>
-In-Reply-To: <20200625221304.2817194-14-jolsa@kernel.org>
+References: <20200626000929.217930-1-sdf@google.com> <20200626000929.217930-2-sdf@google.com>
+In-Reply-To: <20200626000929.217930-2-sdf@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Jun 2020 14:55:34 -0700
-Message-ID: <CAEf4BzYpYXN6nZc1CT3ZHUoeYfALK_SY2cLUZ7G72ka5GL_33Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 13/14] selftests/bpf: Add test for d_path helper
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+Date:   Fri, 26 Jun 2020 15:02:16 -0700
+Message-ID: <CAEf4Bza+j4KsuCs3pyRGNUvUTWmJ=qc4GRUYNkca3F6XFvrvAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] libbpf: add support for BPF_CGROUP_INET_SOCK_RELEASE
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 4:49 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jun 25, 2020 at 5:13 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Adding test for d_path helper which is pretty much
-> copied from Wenbo Zhang's test for bpf_get_fd_path,
-> which never made it in.
+> Add auto-detection for the cgroup/sock_release programs.
 >
-> I've failed so far to compile the test with <linux/fs.h>
-> kernel header, so for now adding 'struct file' with f_path
-> member that has same offset as kernel's file object.
->
-> Original-patch-by: Wenbo Zhang <ethercflow@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  .../testing/selftests/bpf/prog_tests/d_path.c | 145 ++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_d_path.c |  50 ++++++
->  2 files changed, 195 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_d_path.c
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+
+>  tools/include/uapi/linux/bpf.h | 1 +
+>  tools/lib/bpf/libbpf.c         | 2 ++
+>  2 files changed, 3 insertions(+)
 >
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index c65b374a5090..d7aea1d0167a 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -226,6 +226,7 @@ enum bpf_attach_type {
+>         BPF_CGROUP_INET4_GETSOCKNAME,
+>         BPF_CGROUP_INET6_GETSOCKNAME,
+>         BPF_XDP_DEVMAP,
+> +       BPF_CGROUP_INET_SOCK_RELEASE,
+>         __MAX_BPF_ATTACH_TYPE
+>  };
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 7f01be2b88b8..acbab6d0672d 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -6670,6 +6670,8 @@ static const struct bpf_sec_def section_defs[] = {
+>         BPF_APROG_SEC("cgroup_skb/egress",      BPF_PROG_TYPE_CGROUP_SKB,
+>                                                 BPF_CGROUP_INET_EGRESS),
+>         BPF_APROG_COMPAT("cgroup/skb",          BPF_PROG_TYPE_CGROUP_SKB),
+> +       BPF_EAPROG_SEC("cgroup/sock_release",   BPF_PROG_TYPE_CGROUP_SOCK,
+> +                                               BPF_CGROUP_INET_SOCK_RELEASE),
+>         BPF_APROG_SEC("cgroup/sock",            BPF_PROG_TYPE_CGROUP_SOCK,
 
-[...]
+might want to add another alias to match _release: "cgroup/sock_create"?
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> new file mode 100644
-> index 000000000000..6096aef2bafc
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define MAX_PATH_LEN           128
-> +#define MAX_EVENT_NUM          16
-> +
-> +pid_t my_pid;
-> +__u32 cnt_stat;
-> +__u32 cnt_close;
-> +char paths_stat[MAX_EVENT_NUM][MAX_PATH_LEN];
-> +char paths_close[MAX_EVENT_NUM][MAX_PATH_LEN];
-> +
-> +SEC("fentry/vfs_getattr")
-> +int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
-> +            __u32 request_mask, unsigned int query_flags)
-> +{
-> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid != my_pid)
-> +               return 0;
-> +
-> +       if (cnt_stat >= MAX_EVENT_NUM)
-> +               return 0;
-> +
-> +       bpf_d_path(path, paths_stat[cnt_stat], MAX_PATH_LEN);
-> +       cnt_stat++;
-> +       return 0;
-> +}
-> +
-> +SEC("fentry/filp_close")
-> +int BPF_PROG(prog_close, struct file *file, void *id)
-> +{
-> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid != my_pid)
-> +               return 0;
-> +
-> +       if (cnt_close >= MAX_EVENT_NUM)
-> +               return 0;
-> +
-> +       bpf_d_path((struct path *) &file->f_path,
-> +                  paths_close[cnt_close], MAX_PATH_LEN);
-
-Can you please capture the return result of bpf_d_path() (here and
-above) and validate that it's correct? That will help avoid future
-breakages if anyone changes this.
-
-> +       cnt_close++;
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+>                                                 BPF_CGROUP_INET_SOCK_CREATE),
+>         BPF_EAPROG_SEC("cgroup/post_bind4",     BPF_PROG_TYPE_CGROUP_SOCK,
 > --
-> 2.25.4
+> 2.27.0.111.gc72c7da667-goog
 >
