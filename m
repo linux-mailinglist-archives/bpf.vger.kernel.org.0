@@ -2,113 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE3E20AEDC
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 11:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5882F20AF2F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 11:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725876AbgFZJTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 05:19:10 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44995 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725820AbgFZJTK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 05:19:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593163148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aCgtTgtqCADvhdvPI+E6n05c+gvKKnCWOp088pMih8E=;
-        b=UMvkEx8sCdgEdlbZ24DwZNj39fUi0Tos8msSrnN6dY21a0/VVrKJwcb7aGOJd8muLIeKwH
-        NcItDfzlnK+QBrb1mJhfvFhZk8mMODuYV6NuE9xqZyfG/v3p7khRZ3Wmxhd4LLiU9aHNNW
-        3N4uNYdtCIrhqUk46fP0sIsKNVIHclM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-4VK0J0DFOiml0TzaQMeHzw-1; Fri, 26 Jun 2020 05:19:05 -0400
-X-MC-Unique: 4VK0J0DFOiml0TzaQMeHzw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20BCAEC1A0;
-        Fri, 26 Jun 2020 09:19:04 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4478019C58;
-        Fri, 26 Jun 2020 09:18:51 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 11:18:50 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        toke@redhat.com, lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH v4 bpf-next 6/9] bpf: cpumap: implement XDP_REDIRECT for
- eBPF programs attached to map entries
-Message-ID: <20200626111850.3ccfa8ac@carbon>
-In-Reply-To: <01248413-7675-d35e-323e-7d2e69128b45@iogearbox.net>
-References: <cover.1593012598.git.lorenzo@kernel.org>
-        <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
-        <01248413-7675-d35e-323e-7d2e69128b45@iogearbox.net>
+        id S1726838AbgFZJpw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 05:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgFZJpw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 05:45:52 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF60C08C5C1
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 02:45:51 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id i3so9666126ljg.3
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 02:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=5XWtFWgwZnD66tBDM/3i+lmk/MTgyC/Rg07cXurUlV8=;
+        b=mJW7dH1liKL64hBpVLiWMMacAp5RmxEToSnRzbALmrc8CTk7EhcIDsLbXtzD7HKjoG
+         tFgSic4SueaSPjTyvSSc921loJilw6ile5F8SqNObI6Wqtk8pfyYZOKfQXD9ZmuZI6P6
+         yowUcEJcL85BNQ60LXU8ymxE9NMnD6ySR9qGA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=5XWtFWgwZnD66tBDM/3i+lmk/MTgyC/Rg07cXurUlV8=;
+        b=At1D62iy5ReXo5a5Tm6C6xGf3St8OPLyiZi7Z5m7cIEjZZ3E1Vw/Z3IGC88ieedIVL
+         G0yUVenxmZaDJld6kfBbxmkdo9HshNlnl9sSPqJV4ngm0xl/u8k37iepl/g5mZwubk6S
+         5vZjEg5wIxukeny/nC51XtawJjRUYH6acVW4Yi5lL4JJ0Qg6T7+7n/CpU+YYsmNnqNQk
+         fOSJaRKBknXKyclevhjTralkvefkZ+suyWMN9H8rq93yShs8qCgULeN2w5rL/+R1t+ID
+         QzLheln+Bjr5MWNbSaaxW9UWAH3/w+euBKezdHPzqDNJ3xTu0XEa0iE7rIDeaib9WuT2
+         ZAiQ==
+X-Gm-Message-State: AOAM533sWSbc09LqcALiaqBEDS/iE5CePbWoglZw2UXBFjxVlt35dBbW
+        lqb4Xqt8QE8cnCBX6ZaHHLrKRk8rxYdYsA==
+X-Google-Smtp-Source: ABdhPJyQhsH57f44jLnzS4ztkkIc8i1c/lOljaceK1e1Z14DG2IMs8pEpfRegX8FeRB7md053E3jLg==
+X-Received: by 2002:a2e:991:: with SMTP id 139mr1004349ljj.314.1593164750141;
+        Fri, 26 Jun 2020 02:45:50 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id n8sm6292176lji.126.2020.06.26.02.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 02:45:49 -0700 (PDT)
+References: <20200625141357.910330-1-jakub@cloudflare.com> <20200625141357.910330-3-jakub@cloudflare.com> <CAEf4Bzar93mCMm5vgMiYu6_m2N=icv2Wgmy2ohuKoQr810Kk1w@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf, netns: Keep attached programs in bpf_prog_array
+In-reply-to: <CAEf4Bzar93mCMm5vgMiYu6_m2N=icv2Wgmy2ohuKoQr810Kk1w@mail.gmail.com>
+Date:   Fri, 26 Jun 2020 11:45:48 +0200
+Message-ID: <87imfema7n.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 25 Jun 2020 23:28:59 +0200
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Thu, Jun 25, 2020 at 10:50 PM CEST, Andrii Nakryiko wrote:
+> On Thu, Jun 25, 2020 at 7:17 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> Prepare for having multi-prog attachments for new netns attach types by
+>> storing programs to run in a bpf_prog_array, which is well suited for
+>> iterating over programs and running them in sequence.
+>>
+>> After this change bpf(PROG_QUERY) may block to allocate memory in
+>> bpf_prog_array_copy_to_user() for collected program IDs. This forces a
+>> change in how we protect access to the attached program in the query
+>> callback. Because bpf_prog_array_copy_to_user() can sleep, we switch from
+>> an RCU read lock to holding a mutex that serializes updaters.
+>>
+>> Because we allow only one BPF flow_dissector program to be attached to
+>> netns at all times, the bpf_prog_array pointed by net->bpf.run_array is
+>> always either detached (null) or one element long.
+>>
+>> No functional changes intended.
+>>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>
+> I wonder if instead of NULL prog_array, it's better to just use a
+> dummy empty (but allocated) array. Might help eliminate some of the
+> IFs, maybe even in the hot path.
 
-> > diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> > index 4e4cd240f07b..c0b2f265ccb2 100644
-> > --- a/kernel/bpf/cpumap.c
-> > +++ b/kernel/bpf/cpumap.c
-> > @@ -240,7 +240,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
-> >   	xdp_set_return_frame_no_direct();
-> >   	xdp.rxq = &rxq;
-> >   
-> > -	rcu_read_lock();
-> > +	rcu_read_lock_bh();
-> >   
-> >   	prog = READ_ONCE(rcpu->prog);
-> >   	for (i = 0; i < n; i++) {
-> > @@ -266,6 +266,16 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
-> >   				stats->pass++;
-> >   			}
-> >   			break;
-> > +		case XDP_REDIRECT:
-> > +			err = xdp_do_redirect(xdpf->dev_rx, &xdp,
-> > +					      prog);
-> > +			if (unlikely(err)) {
-> > +				xdp_return_frame(xdpf);
-> > +				stats->drop++;
+That was my initial approach, which I abandoned seeing that it leads to
+replacing NULL prog_array checks in flow_dissector with
+bpf_prog_array_is_empty() checks to determine which netns has a BPF
+program attached. So no IFs gone there.
 
-I consider if this should be a redir_err counter.
+While on the hot path, where we run the program, we probably would still
+be left with an IF checking for empty prog_array to avoid building the
+context if no progs will RUN.
 
-> > +			} else {
-> > +				stats->redirect++;
-> > +			}  
-> 
-> Could we do better with all the accounting and do this from /inside/ BPF tracing prog
-> instead (otherwise too bad we need to have it here even if the tracepoint is disabled)?
+The checks I'm referring to are on attach path, in
+flow_dissector_bpf_prog_attach_check(), and hot-path,
+__skb_flow_dissect().
 
-I'm on-the-fence with this one...
+>
+>
+>>  include/net/netns/bpf.h    |   5 +-
+>>  kernel/bpf/net_namespace.c | 120 +++++++++++++++++++++++++------------
+>>  net/core/flow_dissector.c  |  19 +++---
+>>  3 files changed, 96 insertions(+), 48 deletions(-)
+>>
+>
+> [...]
+>
+>
+>>
+>> +/* Must be called with netns_bpf_mutex held. */
+>> +static int __netns_bpf_prog_query(const union bpf_attr *attr,
+>> +                                 union bpf_attr __user *uattr,
+>> +                                 struct net *net,
+>> +                                 enum netns_bpf_attach_type type)
+>> +{
+>> +       __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+>> +       struct bpf_prog_array *run_array;
+>> +       u32 prog_cnt = 0, flags = 0;
+>> +
+>> +       run_array = rcu_dereference_protected(net->bpf.run_array[type],
+>> +                                             lockdep_is_held(&netns_bpf_mutex));
+>> +       if (run_array)
+>> +               prog_cnt = bpf_prog_array_length(run_array);
+>> +
+>> +       if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+>> +               return -EFAULT;
+>> +       if (copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
+>> +               return -EFAULT;
+>> +       if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
+>> +               return 0;
+>> +
+>> +       return bpf_prog_array_copy_to_user(run_array, prog_ids,
+>> +                                          attr->query.prog_cnt);
+>
+> It doesn't seem like bpf_prog_array_copy_to_user can handle NULL run_array
 
-First of all the BPF-prog cannot see the return code of xdp_do_redirect.
-So, it cannot give the correct/needed stats without this counter. It
-would basically report the redirects as successful redirects. (This is
-actually a re-occuring support issue, when end-users misconfigure
-xdp_redirect sample and think they get good performance, even-though
-packets are dropped).
+Correct. And we never invoke it when run_array is NULL because then
+prog_cnt == 0.
 
-Specifically for XDP_REDIRECT we need to update some state anyhow, such
-that we know to call xdp_do_flush_map(). Thus removing the counter
-would not gain much performance wise.
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+>
+>> +}
+>> +
+>>  int netns_bpf_prog_query(const union bpf_attr *attr,
+>>                          union bpf_attr __user *uattr)
+>>  {
+>> -       __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+>> -       u32 prog_id, prog_cnt = 0, flags = 0;
+>>         enum netns_bpf_attach_type type;
+>> -       struct bpf_prog *attached;
+>>         struct net *net;
+>> +       int ret;
+>>
+>>         if (attr->query.query_flags)
+>>                 return -EINVAL;
+>
+> [...]
