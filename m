@@ -2,217 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0227A20B20E
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 15:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCBE20B2C0
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 15:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgFZNE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 09:04:27 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:41312 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFZNE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 09:04:26 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1joo1p-0001xN-H9; Fri, 26 Jun 2020 07:04:25 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1joo1o-0002IL-Hn; Fri, 26 Jun 2020 07:04:25 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200625095725.GA3303921@kroah.com>
-        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
-        <20200625120725.GA3493334@kroah.com>
-        <20200625.123437.2219826613137938086.davem@davemloft.net>
-        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
-        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
-Date:   Fri, 26 Jun 2020 07:59:57 -0500
-In-Reply-To: <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Fri, 26 Jun 2020 07:51:41 -0500")
-Message-ID: <87bll6dlte.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1728538AbgFZNoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 09:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgFZNoQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 09:44:16 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8C3C03E979;
+        Fri, 26 Jun 2020 06:44:16 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id d6so4967944pjs.3;
+        Fri, 26 Jun 2020 06:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=avkaKRtJK4C0IAHcq+LgUh9i3fWucO3C6govd2RCQI0=;
+        b=dcJ0FJknKLnYp0ga1Ly2ebZkojK7vfLDvm1cFtpino4WqSydYNS6PifR1dp21sPuM3
+         h4GMTldhYK/E2qm/UPo2mUSuHWW+HjdWwzECiZjVL7hM6GhAN3dAOpqRxGNFUX5Z+oM2
+         /Af0OFiRH/V8M/P/mU5TBDt/R024f/t9PtXu91LrbfIJexhu33p+XZh/oe2PU6YEkZFc
+         l37flrqK/cwCV1EohHKpLZZCOli6daX2RrzVgHICm+aFBOrA7CS0F2mvnf2vKFBkom2/
+         uWbPxwR6GrpjNvAi1YGAsNb6lU5vO1D2/omYnJvWTehvt6SM+/QldpwvlW6E8emf6qtG
+         w4Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=avkaKRtJK4C0IAHcq+LgUh9i3fWucO3C6govd2RCQI0=;
+        b=qwQM4ShAshrev3dOW9rsyRm1b86Bpb5H/F3wn7JyMseK/YZjTirvAVN13+gxDcZJAG
+         ID3EX5ZfV1lj4tAXArN7NjBpKCNwTnHCMk1Xa8FeiFGePQgdj3JaGkqHIruxJd6f5JGC
+         Ct/89JeQPJ7aEeM1AgjOwx/GSKdrzKjktqHYHa3WVJSiLqBQUb5okAfhOE5Ftwi9vFOL
+         qyW7MijN7ZkECQuZBRvwilNoLNsFQVqS1WV+alH5PxjQOG/3ROqy/yOA8fM0ASIWrZW8
+         45Xe9AlhFEJ/jZv83Bpqru2PzM9x8ycYSFulOp09GgRwpQyMbRWox1HvIWMuYLswf7I5
+         T6YA==
+X-Gm-Message-State: AOAM530hQsVZxDXCi5Zapkuo+PoY57mVL+KDZxHYaA7Ph58YbPvaMnNF
+        jnoiafeYQsrhfNEAa06w3UH1OD2j+tY=
+X-Google-Smtp-Source: ABdhPJwXVaAP8zWzcfa3qPXnxgqZhMnY5s5cL3q4YKh0yMe6Q1AWmLz7Shr3jpNlzvRs3S7LfHl7Eg==
+X-Received: by 2002:a17:90a:9606:: with SMTP id v6mr1304478pjo.110.1593179055280;
+        Fri, 26 Jun 2020 06:44:15 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.gmail.com with ESMTPSA id k7sm15584523pgh.46.2020.06.26.06.44.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 06:44:14 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        hch@lst.de, davem@davemloft.net, konrad.wilk@oracle.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, maximmi@mellanox.com, bjorn.topel@gmail.com,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com
+Subject: [PATCH net] xsk: remove cheap_dma optimization
+Date:   Fri, 26 Jun 2020 15:43:58 +0200
+Message-Id: <20200626134358.90122-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1joo1o-0002IL-Hn;;;mid=<87bll6dlte.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/ktlOV/iIh/MDWj4PBehdloeChZvIKhmU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 600 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 12 (2.0%), b_tie_ro: 11 (1.8%), parse: 1.03
-        (0.2%), extract_message_metadata: 12 (2.0%), get_uri_detail_list: 2.1
-        (0.3%), tests_pri_-1000: 14 (2.3%), tests_pri_-950: 1.26 (0.2%),
-        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 189 (31.5%), check_bayes:
-        188 (31.3%), b_tokenize: 11 (1.9%), b_tok_get_all: 10 (1.6%),
-        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 160 (26.7%), b_finish: 0.89
-        (0.1%), tests_pri_0: 358 (59.6%), check_dkim_signature: 1.06 (0.2%),
-        check_dkim_adsp: 3.2 (0.5%), poll_dns_idle: 0.69 (0.1%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 7 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 14/14] umd: Remove exit_umh
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Björn Töpel <bjorn.topel@intel.com>
 
-The bffilter code no longer uses the umd_info.cleanup callback.  This
-callback is what exit_umh exists to call.  So remove exit_umh and all
-of it's associated booking.
+When the AF_XDP buffer allocation API was introduced it had an
+optimization, "cheap_dma". The idea was that when the umem was DMA
+mapped, the pool also checked whether the mapping required a
+synchronization (CPU to device, and vice versa). If not, it would be
+marked as "cheap_dma" and the synchronization would be elided.
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+In [1] Christoph points out that the optimization above breaks the DMA
+API abstraction, and should be removed. Further, Christoph points out
+that optimizations like this should be done within the DMA mapping
+core, and not elsewhere.
+
+Unfortunately this has implications for the packet rate
+performance. The AF_XDP rxdrop scenario shows a 9% decrease in packets
+per second.
+
+[1] https://lore.kernel.org/netdev/20200626074725.GA21790@lst.de/
+
+Cc: Christoph Hellwig <hch@lst.de>
+Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- include/linux/sched.h |  9 ---------
- include/linux/umd.h   |  2 --
- kernel/exit.c         |  2 --
- kernel/umd.c          | 28 ----------------------------
- 4 files changed, 41 deletions(-)
+ include/net/xsk_buff_pool.h | 16 +++------
+ net/xdp/xsk_buff_pool.c     | 69 ++-----------------------------------
+ 2 files changed, 6 insertions(+), 79 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b62e6aaf28f0..edb2020875ad 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1511,7 +1511,6 @@ extern struct pid *cad_pid;
- #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
- #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
- #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
--#define PF_UMH			0x02000000	/* I'm an Usermodehelper process */
- #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_mask */
- #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
- #define PF_MEMALLOC_NOCMA	0x10000000	/* All allocation request will have _GFP_MOVABLE cleared */
-@@ -2020,14 +2019,6 @@ static inline void rseq_execve(struct task_struct *t)
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index a4ff226505c9..3ea9b9654632 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -40,7 +40,6 @@ struct xsk_buff_pool {
+ 	u32 headroom;
+ 	u32 chunk_size;
+ 	u32 frame_len;
+-	bool cheap_dma;
+ 	bool unaligned;
+ 	void *addrs;
+ 	struct device *dev;
+@@ -77,24 +76,17 @@ static inline dma_addr_t xp_get_frame_dma(struct xdp_buff_xsk *xskb)
+ 	return xskb->frame_dma;
+ }
  
- #endif
- 
--void __exit_umh(struct task_struct *tsk);
+-void xp_dma_sync_for_cpu_slow(struct xdp_buff_xsk *xskb);
+ static inline void xp_dma_sync_for_cpu(struct xdp_buff_xsk *xskb)
+ {
+-	if (xskb->pool->cheap_dma)
+-		return;
 -
--static inline void exit_umh(struct task_struct *tsk)
+-	xp_dma_sync_for_cpu_slow(xskb);
++	dma_sync_single_range_for_cpu(xskb->pool->dev, xskb->dma, 0,
++				      xskb->pool->frame_len, DMA_BIDIRECTIONAL);
+ }
+ 
+-void xp_dma_sync_for_device_slow(struct xsk_buff_pool *pool, dma_addr_t dma,
+-				 size_t size);
+ static inline void xp_dma_sync_for_device(struct xsk_buff_pool *pool,
+ 					  dma_addr_t dma, size_t size)
+ {
+-	if (pool->cheap_dma)
+-		return;
+-
+-	xp_dma_sync_for_device_slow(pool, dma, size);
++	dma_sync_single_range_for_device(pool->dev, dma, 0,
++					 size, DMA_BIDIRECTIONAL);
+ }
+ 
+ /* Masks for xdp_umem_page flags.
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 540ed75e4482..c330e5f3aadf 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -2,9 +2,6 @@
+ 
+ #include <net/xsk_buff_pool.h>
+ #include <net/xdp_sock.h>
+-#include <linux/dma-direct.h>
+-#include <linux/dma-noncoherent.h>
+-#include <linux/swiotlb.h>
+ 
+ #include "xsk_queue.h"
+ 
+@@ -55,7 +52,6 @@ struct xsk_buff_pool *xp_create(struct page **pages, u32 nr_pages, u32 chunks,
+ 	pool->free_heads_cnt = chunks;
+ 	pool->headroom = headroom;
+ 	pool->chunk_size = chunk_size;
+-	pool->cheap_dma = true;
+ 	pool->unaligned = unaligned;
+ 	pool->frame_len = chunk_size - headroom - XDP_PACKET_HEADROOM;
+ 	INIT_LIST_HEAD(&pool->free_list);
+@@ -125,48 +121,6 @@ static void xp_check_dma_contiguity(struct xsk_buff_pool *pool)
+ 	}
+ }
+ 
+-static bool __maybe_unused xp_check_swiotlb_dma(struct xsk_buff_pool *pool)
 -{
--	if (unlikely(tsk->flags & PF_UMH))
--		__exit_umh(tsk);
+-#if defined(CONFIG_SWIOTLB)
+-	phys_addr_t paddr;
+-	u32 i;
+-
+-	for (i = 0; i < pool->dma_pages_cnt; i++) {
+-		paddr = dma_to_phys(pool->dev, pool->dma_pages[i]);
+-		if (is_swiotlb_buffer(paddr))
+-			return false;
+-	}
+-#endif
+-	return true;
 -}
 -
- #ifdef CONFIG_DEBUG_RSEQ
- 
- void rseq_syscall(struct pt_regs *regs);
-diff --git a/include/linux/umd.h b/include/linux/umd.h
-index 1c4579d79bce..71d8f4a41ad7 100644
---- a/include/linux/umd.h
-+++ b/include/linux/umd.h
-@@ -8,8 +8,6 @@ struct umd_info {
- 	const char *driver_name;
- 	struct file *pipe_to_umh;
- 	struct file *pipe_from_umh;
--	struct list_head list;
--	void (*cleanup)(struct umd_info *info);
- 	struct path wd;
- 	struct pid *tgid;
- };
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 671d5066b399..42f079eb71e5 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -804,8 +804,6 @@ void __noreturn do_exit(long code)
- 	exit_task_namespaces(tsk);
- 	exit_task_work(tsk);
- 	exit_thread(tsk);
--	if (group_dead)
--		exit_umh(tsk);
- 
- 	/*
- 	 * Flush inherited counters to the parent - before the parent
-diff --git a/kernel/umd.c b/kernel/umd.c
-index 0db9ce3f56c9..de2f542191e5 100644
---- a/kernel/umd.c
-+++ b/kernel/umd.c
-@@ -8,9 +8,6 @@
- #include <linux/fs_struct.h>
- #include <linux/umd.h>
- 
--static LIST_HEAD(umh_list);
--static DEFINE_MUTEX(umh_list_lock);
+-static bool xp_check_cheap_dma(struct xsk_buff_pool *pool)
+-{
+-#if defined(CONFIG_HAS_DMA)
+-	const struct dma_map_ops *ops = get_dma_ops(pool->dev);
 -
- static struct vfsmount *blob_to_mnt(const void *data, size_t len, const char *name)
+-	if (ops) {
+-		return !ops->sync_single_for_cpu &&
+-			!ops->sync_single_for_device;
+-	}
+-
+-	if (!dma_is_direct(ops))
+-		return false;
+-
+-	if (!xp_check_swiotlb_dma(pool))
+-		return false;
+-
+-	if (!dev_is_dma_coherent(pool->dev)) {
+-#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) ||		\
+-	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) ||	\
+-	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE)
+-		return false;
+-#endif
+-	}
+-#endif
+-	return true;
+-}
+-
+ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
+ 	       unsigned long attrs, struct page **pages, u32 nr_pages)
  {
- 	struct file_system_type *type;
-@@ -129,7 +126,6 @@ static int umd_setup(struct subprocess_info *info, struct cred *new)
- 	umd_info->pipe_to_umh = to_umh[1];
- 	umd_info->pipe_from_umh = from_umh[0];
- 	umd_info->tgid = get_pid(task_tgid(current));
--	current->flags |= PF_UMH;
+@@ -195,7 +149,6 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
+ 		xp_check_dma_contiguity(pool);
+ 
+ 	pool->dev = dev;
+-	pool->cheap_dma = xp_check_cheap_dma(pool);
  	return 0;
  }
+ EXPORT_SYMBOL(xp_dma_map);
+@@ -280,11 +233,8 @@ struct xdp_buff *xp_alloc(struct xsk_buff_pool *pool)
+ 	xskb->xdp.data = xskb->xdp.data_hard_start + XDP_PACKET_HEADROOM;
+ 	xskb->xdp.data_meta = xskb->xdp.data;
  
-@@ -177,11 +173,6 @@ int fork_usermode_driver(struct umd_info *info)
- 		goto out;
- 
- 	err = call_usermodehelper_exec(sub_info, UMH_WAIT_EXEC);
--	if (!err) {
--		mutex_lock(&umh_list_lock);
--		list_add(&info->list, &umh_list);
--		mutex_unlock(&umh_list_lock);
+-	if (!pool->cheap_dma) {
+-		dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
+-						 pool->frame_len,
+-						 DMA_BIDIRECTIONAL);
 -	}
- out:
- 	if (argv)
- 		argv_free(argv);
-@@ -189,23 +180,4 @@ int fork_usermode_driver(struct umd_info *info)
++	dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
++					 pool->frame_len, DMA_BIDIRECTIONAL);
+ 	return &xskb->xdp;
  }
- EXPORT_SYMBOL_GPL(fork_usermode_driver);
- 
--void __exit_umh(struct task_struct *tsk)
--{
--	struct umd_info *info;
--	struct pid *tgid = task_tgid(tsk);
+ EXPORT_SYMBOL(xp_alloc);
+@@ -319,18 +269,3 @@ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
+ 		(addr & ~PAGE_MASK);
+ }
+ EXPORT_SYMBOL(xp_raw_get_dma);
 -
--	mutex_lock(&umh_list_lock);
--	list_for_each_entry(info, &umh_list, list) {
--		if (info->tgid == tgid) {
--			list_del(&info->list);
--			mutex_unlock(&umh_list_lock);
--			goto out;
--		}
--	}
--	mutex_unlock(&umh_list_lock);
--	return;
--out:
--	if (info->cleanup)
--		info->cleanup(info);
+-void xp_dma_sync_for_cpu_slow(struct xdp_buff_xsk *xskb)
+-{
+-	dma_sync_single_range_for_cpu(xskb->pool->dev, xskb->dma, 0,
+-				      xskb->pool->frame_len, DMA_BIDIRECTIONAL);
 -}
- 
+-EXPORT_SYMBOL(xp_dma_sync_for_cpu_slow);
+-
+-void xp_dma_sync_for_device_slow(struct xsk_buff_pool *pool, dma_addr_t dma,
+-				 size_t size)
+-{
+-	dma_sync_single_range_for_device(pool->dev, dma, 0,
+-					 size, DMA_BIDIRECTIONAL);
+-}
+-EXPORT_SYMBOL(xp_dma_sync_for_device_slow);
+
+base-commit: 4a21185cda0fbb860580eeeb4f1a70a9cda332a4
 -- 
-2.25.0
+2.25.1
 
