@@ -2,146 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D2020AF7A
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 12:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F14A20AFE6
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 12:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgFZKP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 06:15:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42226 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgFZKP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 06:15:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2DDA2AED6;
-        Fri, 26 Jun 2020 10:15:24 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 12:15:23 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
-        arnaldo.melo@gmail.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux@rasmusvillemoes.dk, joe@perches.com,
-        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 bpf-next 4/8] printk: add type-printing %pT format
- specifier which uses BTF
-Message-ID: <20200626101523.GM8444@alley>
-References: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com>
- <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
+        id S1728027AbgFZKkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 06:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbgFZKkK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 06:40:10 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23663C08C5DB
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 03:40:10 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h22so2648996lji.9
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 03:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=yB42FIdlaXuGcBA5JHEjJpviYDlsFT6iBhIqQaCjtTA=;
+        b=Ud1H9p6XGO0mXDpH4vRAGBFoB/eqqlXgQdkzqDD3wG1nYJRo6YakRjSYmzge8d3IUz
+         mwIdjt3Dv+jiXadPbvVMCPg52rNFbbNBYDW8Zt8h/OgHQO0vqoVrlQW6QY3U9dR8D0I6
+         4NIKD3ZJA5iAkoqDEuSKnibNjzbsQ+sj2I0K0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=yB42FIdlaXuGcBA5JHEjJpviYDlsFT6iBhIqQaCjtTA=;
+        b=GS9QrAoXcQ7jiLBmCW7qeTn+z7pZr4nkf1SrV7DIoSq/gB+Q2CUUuv2MvakcWUrZyD
+         XFcoMILvp+w7ypju9qqF+vZLiG6AqCDt2WICHw7pTtOQhY9Hu+Si5Xcs5a4cFWwB4wHZ
+         sziaVfu3mMmGuxWBL3IjYCfDCioWTSvEVpOLCkisORZM+24gCYUxAnGNe/crZ5Cvlo6k
+         Dgco/sH4vPCFK7+99DQjQuETT+kHdCZw9bFZ6lBIlbHvxKNatqPvjBtvB4E/AUlMVui8
+         9/1M+BYEowV5719YuZADcLGIpAMrOyN86hvGbQBCBHiBHxkxVXeA4hZwgIwNa+WtTt61
+         tfwQ==
+X-Gm-Message-State: AOAM533nBgJxbxnOD0VWwB0FkHLjzkMx4WhApKD0rQXWrX0IHWz0lPBX
+        vj/MZCboKXepF5dZUyNB/t+NRg==
+X-Google-Smtp-Source: ABdhPJwbSNs8Dd+VNp9wiaxQWPJSM7GoaiYqRDDe7+akgUu9u952VEoB7wWN+UwKAfjpzlsW/6SzSg==
+X-Received: by 2002:a2e:9a09:: with SMTP id o9mr1080190lji.323.1593168008344;
+        Fri, 26 Jun 2020 03:40:08 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id 193sm7805655lfa.90.2020.06.26.03.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 03:40:07 -0700 (PDT)
+References: <20200625141357.910330-1-jakub@cloudflare.com> <20200625141357.910330-3-jakub@cloudflare.com> <20200626054105.rpz6py7jqc34vzyl@kafai-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next v3 2/4] bpf, netns: Keep attached programs in bpf_prog_array
+In-reply-to: <20200626054105.rpz6py7jqc34vzyl@kafai-mbp.dhcp.thefacebook.com>
+Date:   Fri, 26 Jun 2020 12:40:06 +0200
+Message-ID: <87h7uym7p5.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 2020-06-23 13:07:07, Alan Maguire wrote:
-> printk supports multiple pointer object type specifiers (printing
-> netdev features etc).  Extend this support using BTF to cover
-> arbitrary types.  "%pT" specifies the typed format, and the pointer
-> argument is a "struct btf_ptr *" where struct btf_ptr is as follows:
-> 
-> struct btf_ptr {
->         void *ptr;
->         const char *type;
->         u32 id;
-> };
-> 
-> Either the "type" string ("struct sk_buff") or the BTF "id" can be
-> used to identify the type to use in displaying the associated "ptr"
-> value.  A convenience function to create and point at the struct
-> is provided:
-> 
->         printk(KERN_INFO "%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> 
-> When invoked, BTF information is used to traverse the sk_buff *
-> and display it.  Support is present for structs, unions, enums,
-> typedefs and core types (though in the latter case there's not
-> much value in using this feature of course).
-> 
-> Default output is indented, but compact output can be specified
-> via the 'c' option.  Type names/member values can be suppressed
-> using the 'N' option.  Zero values are not displayed by default
-> but can be using the '0' option.  Pointer values are obfuscated
-> unless the 'x' option is specified.  As an example:
-> 
->   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
->   pr_info("%pT", BTF_PTR_TYPE(skb, struct sk_buff));
-> 
-> ...gives us:
-> 
-> (struct sk_buff){
->  .transport_header = (__u16)65535,
->  .mac_header = (__u16)65535,
->  .end = (sk_buff_data_t)192,
->  .head = (unsigned char *)0x000000006b71155a,
->  .data = (unsigned char *)0x000000006b71155a,
->  .truesize = (unsigned int)768,
->  .users = (refcount_t){
->   .refs = (atomic_t){
->    .counter = (int)1,
->   },
->  },
->  .extensions = (struct skb_ext *)0x00000000f486a130,
-> }
-> 
-> printk output is truncated at 1024 bytes.  For cases where overflow
-> is likely, the compact/no type names display modes may be used.
+On Fri, Jun 26, 2020 at 07:41 AM CEST, Martin KaFai Lau wrote:
+> On Thu, Jun 25, 2020 at 04:13:55PM +0200, Jakub Sitnicki wrote:
+>> Prepare for having multi-prog attachments for new netns attach types by
+>> storing programs to run in a bpf_prog_array, which is well suited for
+>> iterating over programs and running them in sequence.
+>>
+>> After this change bpf(PROG_QUERY) may block to allocate memory in
+>> bpf_prog_array_copy_to_user() for collected program IDs. This forces a
+>> change in how we protect access to the attached program in the query
+>> callback. Because bpf_prog_array_copy_to_user() can sleep, we switch from
+>> an RCU read lock to holding a mutex that serializes updaters.
+>>
+>> Because we allow only one BPF flow_dissector program to be attached to
+>> netns at all times, the bpf_prog_array pointed by net->bpf.run_array is
+>> always either detached (null) or one element long.
+>>
+>> No functional changes intended.
+>>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>  include/net/netns/bpf.h    |   5 +-
+>>  kernel/bpf/net_namespace.c | 120 +++++++++++++++++++++++++------------
+>>  net/core/flow_dissector.c  |  19 +++---
+>>  3 files changed, 96 insertions(+), 48 deletions(-)
+>>
+>> diff --git a/include/net/netns/bpf.h b/include/net/netns/bpf.h
+>> index a8dce2a380c8..a5015bda9979 100644
+>> --- a/include/net/netns/bpf.h
+>> +++ b/include/net/netns/bpf.h
+>> @@ -9,9 +9,12 @@
+>>  #include <linux/bpf-netns.h>
+>>
+>>  struct bpf_prog;
+>> +struct bpf_prog_array;
+>>
+>>  struct netns_bpf {
+>> -	struct bpf_prog __rcu *progs[MAX_NETNS_BPF_ATTACH_TYPE];
+>> +	/* Array of programs to run compiled from progs or links */
+>> +	struct bpf_prog_array __rcu *run_array[MAX_NETNS_BPF_ATTACH_TYPE];
+>> +	struct bpf_prog *progs[MAX_NETNS_BPF_ATTACH_TYPE];
+>>  	struct bpf_link *links[MAX_NETNS_BPF_ATTACH_TYPE];
+> With the new run_array, I think the "*progs[]" is not needed.
+> It seems the original "*progs[]" is only used to tell
+> if it is in the prog_attach mode or the newer link mode.
+> There is other ways to do that.
+>
+> It is something to think about when there is more clarity on how
+> multi netns prog will look like in the next set.
 
-Hmm, this scares me:
+Having just the run_array without *progs[] is something I've tried
+initially but ended up rewriting it. The end result was confusing to me.
+I couldn't convince myself to sign off on it and present it.
 
-   1. The long message and many lines are going to stretch printk
-      design in another dimensions.
+Adding back the pointer to bpf_prog was counterintutivive, because it is
+wasteful, but it actually made the code readable.
 
-   2. vsprintf() is important for debugging the system. It has to be
-      stable. But the btf code is too complex.
+Best I can articulate why it didn't work out great (should have tagged
+the branch...) is that without *progs[] the run_array holds bpf_prog
+pointers sometimes with ref-count on the prog (old mode), and sometimes
+without one (new mode). This mixed state manifests itself mostly on
+netns teardown, where we need to access the prog_array to put the prog,
+but only if we're not using links.
 
-I would strongly prefer to keep this outside vsprintf and printk.
-Please, invert the logic and convert it into using separate printk()
-call for each printed line.
+Then again, perhaps I simply messsed up the code back then, and it
+deserves another shot. Either way, getting rid of *progs[] is a
+potential optimization.
 
-
-More details:
-
-Add 1: Long messages with many lines:
-
-  IMHO, all existing printk() users are far below this limit. And this is
-  even worse because there are many short lines. They would require
-  double space to add prefixes (loglevel, timestamp, caller id) when
-  printing to console.
-
-  You might argue that 1024bytes are enough for you. But for how long?
-
-  Now, we have huge troubles to make printk() lockless and thus more
-  reliable. There is no way to allocate any internal buffers
-  dynamically. People using kernel on small devices have problem
-  with large static buffers.
-
-  printk() is primary designed to print single line messages. There are
-  many use cases where many lines are needed and they are solved by
-  many separate printk() calls.
-
-
-Add 2: Complex code:
-
-  vsprintf() is currently called in printk() under logbuf_lock. It
-  might block printk() on the entire system.
-
-  Most existing %p<modifier> handlers are implemented by relatively
-  simple routines inside lib/vsprinf.c. The other external routines
-  look simple as well.
-
-  btf looks like a huge beast to me. For example, probe_kernel_read()
-  prevented boot recently, see the commit 2ac5a3bf7042a1c4abb
-  ("vsprintf: Do not break early boot with probing addresses").
-
-
-Best Regards,
-Petr
+[...]
