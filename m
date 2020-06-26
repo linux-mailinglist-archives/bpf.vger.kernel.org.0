@@ -2,156 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457F320BC42
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F14B20BC45
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgFZWOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 18:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgFZWOa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 18:14:30 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4502DC03E979;
-        Fri, 26 Jun 2020 15:14:30 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id e197so1143039yba.5;
-        Fri, 26 Jun 2020 15:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5hHb3fXLwI6RRtMD9b/SQRRJExFm/2hYDLQ5mTPyybM=;
-        b=f5l5O+7uYmWDvyL+K9n1e5E+LYBFxs5lyTnRIzqvGmwBKgmN87kyx9pGecU8M4qC6l
-         BdWqPN0VtjyAxTGwHun+gBuJUmCHWqiuZcvgBIeNVtNSrKi865aeAuHfF9MCWy7uwE+/
-         NJS8iYAfszwf98UhWdP0NRE5f0Hm+aweb011PEJ8iCDucBe25ZnZ+94iyfwFHy9K8WZE
-         XaLYjqvQKPXXaG2FUV3MAcGOpY70eBhPLmUraY+Yy/N05wa3kdS+Ntf5o6tEYpwELOHr
-         R6CDeNrtW2kFHPcdmjNNDsI4fSvIaJoPN/w2GHwf72n9cuk8UgNCMMVEqhS8elvwKyrx
-         eHfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5hHb3fXLwI6RRtMD9b/SQRRJExFm/2hYDLQ5mTPyybM=;
-        b=VkXNlzEZxZUSqM6oJizY7Z1sf8xqJ1KGM2mswy978ajhMhh5fgwDI+SScuFd1JjGSa
-         PnLBtIrey5O33J1blDU8Jj1OGVfOCbQTt38ErpFum9gzAqOSnep0OV+q878Rd6D6NYfn
-         RwNO/dXW/8CIp14JRNgvoitiwhB8dQdFfuURuXvVCTfuUUenUD/2F0BpNbGimF97NEtJ
-         wFRErApKtmOIQTuY5wDKYGKv09xF4CPf8Z5BqGGFijgErMG6e0Ezd4yXLYVAEtgydUks
-         AeJS6E6e/h4Hs+PSIB0ETtdGMJeQPDxLwyk7QsdTaK7JhgBlw7CButm0qZX1nElY5gCc
-         aKHg==
-X-Gm-Message-State: AOAM533ftr5KXBmCM69iIQcMV4Ha9iQd3TSR/AZCpNNpzOYy8kZya1kq
-        dGcOc8/yjfB4H0c8F2fN+bLochZt/k/HrQ0OvA==
-X-Google-Smtp-Source: ABdhPJxCL2CWN88xo/XK/yJl7JdvCokdz2xFJqgdui7FViyhlZ9Icq1WDwSRSjNFaGHf8+DFXR/6PUMFEoLCshZk3CI=
-X-Received: by 2002:a25:a2c2:: with SMTP id c2mr7969960ybn.333.1593209669488;
- Fri, 26 Jun 2020 15:14:29 -0700 (PDT)
+        id S1725803AbgFZWPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 18:15:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbgFZWPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 18:15:02 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F9BE20663;
+        Fri, 26 Jun 2020 22:14:57 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 18:14:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
+Message-ID: <20200626181455.155912d9@oasis.local.home>
+In-Reply-To: <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+References: <20200624084524.259560-1-drinkcat@chromium.org>
+        <20200624120408.12c8fa0d@oasis.local.home>
+        <CAADnVQKDJb5EXZtEONaXx4XHtMMgEezPOuRUvEo18Rc7K+2_Pw@mail.gmail.com>
+        <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
+        <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200626081720.5546-1-danieltimlee@gmail.com> <20200626081720.5546-3-danieltimlee@gmail.com>
- <CAEf4BzbGk2xSGAkLEXKSg3NhrL28o+cmW9jTq2=EhggJEYT=5Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzbGk2xSGAkLEXKSg3NhrL28o+cmW9jTq2=EhggJEYT=5Q@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Sat, 27 Jun 2020 07:14:14 +0900
-Message-ID: <CAEKGpziJWYDhnq=DWvcFdSAA-jnGk=Vrci2A-9ktY6g5_4Ki8Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] samples: bpf: refactor BPF map in map test with libbpf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 5:30 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jun 26, 2020 at 1:18 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
-> >
-> > From commit 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map
-> > support"), a way to define internal map in BTF-defined map has been
-> > added.
-> >
-> > Instead of using previous 'inner_map_idx' definition, the structure to
-> > be used for the inner map can be directly defined using array directive.
-> >
-> >     __array(values, struct inner_map)
-> >
-> > This commit refactors map in map test program with libbpf by explicitly
-> > defining inner map with BTF-defined format.
-> >
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > ---
->
-> Thanks for the clean up, looks good except that prog NULL check.
->
+On Wed, 24 Jun 2020 20:59:13 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-I'll fix this NULL check as well too.
+> > >
+> > > Nack.
 
-> It also seems like this is the last use of bpf_map_def_legacy, do you
-> mind removing it as well?
->
+I nack your nack ;-)
 
-Actually, there is one more place that uses bpf_map_def_legacy.
-map_perf_test_kern.c is the one, and I'm currently working on it, but
-I'm having difficulty with refactoring this file at the moment.
+> > > The message is bogus. It's used in production kernels.
+> > > bpf_trace_printk() calls it.  
+> > 
+> > Interesting. BTW, the same information (trace_printk is for debugging
+> > only) is repeated all over the place, including where bpf_trace_printk
+> > is documented:
+> > https://elixir.bootlin.com/linux/latest/source/include/linux/kernel.h#L757
+> > https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/bpf.h#L706
+> > https://elixir.bootlin.com/linux/latest/source/kernel/trace/trace.c#L3157
+> > 
+> > Steven added that warning (2184db46e425c ("tracing: Print nasty banner
+> > when trace_printk() is in use")), so maybe he can confirm if it's
+> > still relevant.  
+> 
+> The banner is nasty and it's actively causing harm.
 
-It has a hash_map map definition named inner_lru_hash_map with
-BPF_F_NUMA_NODE flag and '.numa_node = 0'.
+And it's doing exactly what it was intended on doing!
 
-The bpf_map_def in libbpf has the attribute name map_flags but
-it does not have the numa_node attribute. Because the numa node
-for bpf_map_def cannot be explicitly specified, this means that there
-is no way to set the numa node where the map will be placed at the
-time of bpf_object__load.
+> Every few month I have to explain to users that it's absolulte ok to
+> ignore that banner. Nothing bad is happening with the kernel.
+> The kernel is still perfectly safe for production use.
+> It's not a debug kernel.
+> 
+> What bpf_trace_printk() doc is saying that it's not recommended to use
+> this helper for production bpf programs. There are better alternatives.
+> It is absolutely fine to use bpf_trace_printk() to debug production and
+> experimental bpf programs on production servers, android phones and
+> everywhere else.
 
-The only approach currently available is not to use libbbpf to handle
-everything (bpf_object_load), but instead to create a map directly with
-specifying numa node (bpf_load approach).
+Now I do have an answer for you that I believe is a great compromise.
 
-    bpf_create_map_in_map_node
-    bpf_create_map_node
+There's something you can call (and even call it from a module). It's
+called "trace_array_vprintk()". But has one caveat, and that is, you
+can not write to the main top level trace buffer with it (I have
+patches for the next merge window to enforce that). And that's what
+I've been trying to avoid trace_printk() from doing, as that's what it
+does by default. It writes to /sys/kernel/tracing/trace.
 
-I'm trying to stick with the libbpf implementation only, and I'm wondering
-If I have to create bpf maps manually at _user.c program.
+Now what you can do, is have bpf create
+a /sys/kernel/tracing/instances/bpf_trace/ instance, and use
+trace_array_printk(), to print into that, and you will never have to
+see that warning again! It shows up in your own
+tracefs/instances/bpf_trace/trace file!
 
-Any advice and suggestions will be greatly appreciated.
+If you need more details, let me know, and I can give you all you need
+to know to create you very own trace instance (that can enable events,
+kprobe events, uprobe events, function tracing, and soon function graph
+tracing). And the bonus, you get trace_array_vprintk() and no more
+complaining. :-) :-) :-)
 
-Thanks for your time and effort for the review.
-Daniel.
-
->
-> >  samples/bpf/Makefile               |  2 +-
-> >  samples/bpf/test_map_in_map_kern.c | 85 +++++++++++++++---------------
-> >  samples/bpf/test_map_in_map_user.c | 53 +++++++++++++++++--
-> >  3 files changed, 91 insertions(+), 49 deletions(-)
-> >
->
-> [...]
->
-> >
-> >         snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-> > +       obj = bpf_object__open_file(filename, NULL);
-> > +       if (libbpf_get_error(obj)) {
->
-> this is right, but...
->
-> > +               fprintf(stderr, "ERROR: opening BPF object file failed\n");
-> > +               return 0;
-> > +       }
-> >
-> > -       if (load_bpf_file(filename)) {
-> > -               printf("%s", bpf_log_buf);
-> > -               return 1;
-> > +       prog = bpf_object__find_program_by_name(obj, "trace_sys_connect");
-> > +       if (libbpf_get_error(prog)) {
->
-> this is wrong. Just NULL check. libbpf APIs are not very consistent
-> with what they return, unfortunately.
->
-> > +               printf("finding a prog in obj file failed\n");
-> > +               goto cleanup;
-> > +       }
-> > +
->
-> [...]
+-- Steve
