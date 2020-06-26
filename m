@@ -2,165 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9309620ABE4
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 07:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D67420ABE6
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 07:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgFZFlZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 01:41:25 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2102 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725855AbgFZFlY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 01:41:24 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05Q5YcRM023374;
-        Thu, 25 Jun 2020 22:41:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=nhpRJo6y1oxwYMpONKwMh2Z6sHweTUMOZfKzzj8KB2Q=;
- b=g21meispwktOnZ7V053OZoOo12D1crGzxAl1lyoI7+98ZzlH77Ce9qS5Qac1UAwMXQ3M
- /t3M6KziJ2psEIU5B/T5CtZX//krG7NK0+ZGVjWK7/knq/4h6RGFtRXZU33kWm7qM25p
- bpku+Y9EfZbCNqG11UQFmA2JCYgtHcwVZjk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux1eus39-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 25 Jun 2020 22:41:22 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 25 Jun 2020 22:41:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KIQoPMlKsCIPLR1YgpU8Dil6cVRPOUYd/fUH3msTLCxk8lpv1pToSn1IFZfW7UINBeBaeC7IWDaQDjStrrXzvx4tb/OeigHltSjlmbXJXSgCrXEonjcBzvKcRqbZzW93EbJyd94k/q5+FeZD1ji3hHGyCxtNmmYylG+W8W3yW+TowzW/roRJ3x60hyhTQcGyNUIvEY2jnboe+TtrdxBxAnbj/HRLBAOLjNCB3v5VDzBVDYU99NV+cEgV0Qw9wzyyLmYmu4YHnMyDadMN2i8ux5k7bGDf+y70grnvjQwMhCCjG18PKc6/wj4KtJHsqYONDbqvpmjdqkJVHNvp4ERbOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nhpRJo6y1oxwYMpONKwMh2Z6sHweTUMOZfKzzj8KB2Q=;
- b=Lx6U9ob31RiLAW4MgchsPDGkoqXkp3v1vHN1XvTCHst4pMDb+2cBX2xTdswCBsenAG9S2AP6RdAEG1GWuoWKx82SbToKm7X81u25ODeL1p9c8F5ix6Sx0YFjHk0CNp79Eh1u0KD8Q3FkxsXCwo+W4s+JEMGAfQ1m8Zxs7PlSFRtNqHBUJsl0UtQnUzytor3XAdP0PfXvBWsiQGIJHaNkKKj4GUZ5lB2LHwniMHVBGJnlezetQb6cgiFqEk7gGcDt7Yf8IPwTl6LK1H4jg0w733Rwel7dRXJAILuJ1CIaGGZdIG9Zh0jZlOkViqDbAnrWTh61PHa2B9fd3DE2zaGe/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nhpRJo6y1oxwYMpONKwMh2Z6sHweTUMOZfKzzj8KB2Q=;
- b=fRT4pDocAz4mUeILbm6AXkUBZk9zxWPtNutve0fCBtcr5qo5t8ch38y6qi/KbgaX75VNC1F19YdjiMnrjDLJhBO72qC3gb1qTp9FZNG3ljQGjmzbv5z3fo4Qpl0VaC+x/D+56DSrEkDdevXyMFKPZIWOBHMYECvJp8DBbggg9o8=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from DM6PR15MB3580.namprd15.prod.outlook.com (2603:10b6:5:1f9::10)
- by DM6PR15MB2316.namprd15.prod.outlook.com (2603:10b6:5:8d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Fri, 26 Jun
- 2020 05:41:07 +0000
-Received: from DM6PR15MB3580.namprd15.prod.outlook.com
- ([fe80::c8f5:16eb:3f57:b3dc]) by DM6PR15MB3580.namprd15.prod.outlook.com
- ([fe80::c8f5:16eb:3f57:b3dc%5]) with mapi id 15.20.3131.021; Fri, 26 Jun 2020
- 05:41:07 +0000
-Date:   Thu, 25 Jun 2020 22:41:05 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf, netns: Keep attached programs in
- bpf_prog_array
-Message-ID: <20200626054105.rpz6py7jqc34vzyl@kafai-mbp.dhcp.thefacebook.com>
-References: <20200625141357.910330-1-jakub@cloudflare.com>
- <20200625141357.910330-3-jakub@cloudflare.com>
+        id S1728029AbgFZFln (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 01:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgFZFlm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 01:41:42 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6233AC08C5C1;
+        Thu, 25 Jun 2020 22:41:42 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so3860374plo.7;
+        Thu, 25 Jun 2020 22:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lTU5RxZlw9EIdbm5Ab2jgsTpj+Wc9/GQtGH0O0TVDuU=;
+        b=c+Fiu5kLiBtFFvq4WH0MbfxaDLLi0MjB39efcKDE7nwMBvF9QGfJ4QpEVz03Uk5iSS
+         vvHR2OCt9VLWPR9feXAkDJb9QDotRSJO7akrcRdgdq95qymWPEmI7PQQp82Q7h9GcchM
+         aRskRGSOfgwHTwmuvLFrlyiOLI5LnFZ54DGiwoKBdEpQZMa5xWVX8FxxMH6k9vc2Z/d/
+         dbnsPNQRchnOCcr4QbsmOmasABOSdazhOi+Me3Qj46Ap90kcNlR1MtZLDYVv+6yzxO4a
+         tUCbC8q5sDrroQDojHYPStRPfdQ41eboE7AvzZ+ZgpTBsTiBstePdN2kfqhhDJlZwx0m
+         D55g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lTU5RxZlw9EIdbm5Ab2jgsTpj+Wc9/GQtGH0O0TVDuU=;
+        b=RbTV46IVGAkXf17U/3gy0ujpOtxg6IczWuRnmWjf1ocOFR9Cg8LxJiwhVtcpO2p4QE
+         aRvfJqD77J88oT9Se75rcEIz0C4Es1jXrxwvmocnZ0/iB4eovSX17/ZKBeqg1hJWlE8z
+         k6OZ46rlPHuS4nOb45koKXObiSTjXOf6eRc3q5hHGw+xkkdpA8hoTopplkk87DbBmpwV
+         2GU8RLCohA4GnN10CV1+o34FHQnw+TgWdHvM+IzfwvDOUProgUfkawj7U5HIrar8yqYa
+         OpZY4mqcfbhdSRVniMwL1gL0H4U/OHmqF/U52bxTHTF68b6mIEoNJffv6AzzCOpSZpRG
+         LNFg==
+X-Gm-Message-State: AOAM531foa6Zni7jEWZRhmUZqLf4kI0ijsMXXJhgKN4Spo9eTBOTD4J5
+        S17JnAfzuBndDGWdJAyiWBU=
+X-Google-Smtp-Source: ABdhPJxRhtaYOkNCmfev9wJGmuPQcApvTJFDA4Igpsl6AQsBbNWdkwIRAPOD8X2ousk7ndZjg5uWeA==
+X-Received: by 2002:a17:902:8204:: with SMTP id x4mr1185866pln.153.1593150101589;
+        Thu, 25 Jun 2020 22:41:41 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:986f])
+        by smtp.gmail.com with ESMTPSA id lt14sm9727117pjb.52.2020.06.25.22.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 22:41:40 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 22:41:37 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200626054137.m44jpsvlapuyslzw@ast-mbp.dhcp.thefacebook.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <20200626015121.qpxkdaqtsywe3zqx@ast-mbp.dhcp.thefacebook.com>
+ <eb3bec08-9de4-c708-fb8e-b6a47145eb5e@i-love.sakura.ne.jp>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200625141357.910330-3-jakub@cloudflare.com>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BYAPR03CA0005.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::18) To DM6PR15MB3580.namprd15.prod.outlook.com
- (2603:10b6:5:1f9::10)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:7d5a) by BYAPR03CA0005.namprd03.prod.outlook.com (2603:10b6:a02:a8::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Fri, 26 Jun 2020 05:41:06 +0000
-X-Originating-IP: [2620:10d:c090:400::5:7d5a]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e1072e61-4318-4fff-7b85-08d8199385de
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2316:
-X-Microsoft-Antispam-PRVS: <DM6PR15MB23168FBF7D0424499C5D6D73D5930@DM6PR15MB2316.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0446F0FCE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5TSzwxRUIWGQx2PQoTXd+MDUM2i5cV97roSh4nnvbxAWs6JRh0hV/D6P/kodD12B+5kEM4ry5mQiAEKMWe+DRu1CwvC42QcEoWVBB2LBPMWr+lg2ooVj5E3AG+Um1X3jSp9cepSUxSjYthlRHMMb18UAYuAD5TNVb//MzsahY4SvXOorgYTiTN26H8VLOLTZn4q9dq5LPafJnt4RSjLlDYNLz7W91+LeS7AFbhm2pwV9H/NNvGUWsXQdPIwmttBgFydzyiT/AmljNdmnqQBYyIkvmsZXLv25WIipvIuIMCNtr5VOMK4L1vKOyFtxdQ0Vkq/QJT3C915ZBI57aL/lZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB3580.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(346002)(39860400002)(136003)(396003)(316002)(8936002)(6916009)(2906002)(9686003)(1076003)(66946007)(7696005)(4326008)(52116002)(66556008)(8676002)(66476007)(83380400001)(86362001)(16526019)(6506007)(478600001)(55016002)(186003)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Wsw3QJPQIu6h5Tv9Z7GheG/f0Q4yNjlgZH7iLpRx7DKPUou6Ys26e+aTo2Xs9NgGYZcY0YerkDjZWqt1tRV5VIKfLcCCk+c1ZP3R4IOrqX32xgRmILThdqyJOjIhuI0b5DtnFrCEkz9YjfNUwl3FC+tNz69aRkNyFhi4eQH1UsNuzrZLU+6uHFkm6g4Kxwru2zGz6aaK5pOqGF66dRbQdmxyFgqpeMd1EOGhoNkIm3vF+NU7lxUARUUsaOml2uv4SGDpjG8BRCo/RKfsf5fzicBMqB16gOvkQgKV58WGjVxdtnl9/REkCd9nh6vmtvk+98rYurtC4TuEUNybeF150Rjt8RnoZCqw5ucsIdDJQggnHwx1aANIdXFVZc2sthAalnQm5m7RTpNjUM+vn2uDTyhMar/n77B7rS7oRuWRm70rMXr+C2WbocsgmvFedWUKx+sOhyXPnYOWK4jzPQAz/YV6VJbDDvaJrdux6ibbpGeFHY2BExvrV2UH3k1SidoNpKuGpJlEjahjk10zqLkjeg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1072e61-4318-4fff-7b85-08d8199385de
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB3580.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2020 05:41:07.6648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AZunjjoSoDgw1o44ETZA5mqdJVythLppKbdhacCv4LxCfv5nczIrMgylfdtQuvHP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2316
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-26_01:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 cotscore=-2147483648 spamscore=0 mlxlogscore=999 bulkscore=0
- adultscore=0 phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006260040
-X-FB-Internal: deliver
+In-Reply-To: <eb3bec08-9de4-c708-fb8e-b6a47145eb5e@i-love.sakura.ne.jp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 04:13:55PM +0200, Jakub Sitnicki wrote:
-> Prepare for having multi-prog attachments for new netns attach types by
-> storing programs to run in a bpf_prog_array, which is well suited for
-> iterating over programs and running them in sequence.
+On Fri, Jun 26, 2020 at 01:58:35PM +0900, Tetsuo Handa wrote:
+> On 2020/06/26 10:51, Alexei Starovoitov wrote:
+> > On Thu, Jun 25, 2020 at 06:36:34PM -0700, Linus Torvalds wrote:
+> >> On Thu, Jun 25, 2020 at 12:34 PM David Miller <davem@davemloft.net> wrote:
+> >>>
+> >>> It's kernel code executing in userspace.  If you don't trust the
+> >>> signed code you don't trust the signed code.
+> >>>
+> >>> Nothing is magic about a piece of code executing in userspace.
+> >>
+> >> Well, there's one real issue: the most likely thing that code is going
+> >> to do is execute llvm to generate more code.
 > 
-> After this change bpf(PROG_QUERY) may block to allocate memory in
-> bpf_prog_array_copy_to_user() for collected program IDs. This forces a
-> change in how we protect access to the attached program in the query
-> callback. Because bpf_prog_array_copy_to_user() can sleep, we switch from
-> an RCU read lock to holding a mutex that serializes updaters.
-> 
-> Because we allow only one BPF flow_dissector program to be attached to
-> netns at all times, the bpf_prog_array pointed by net->bpf.run_array is
-> always either detached (null) or one element long.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
->  include/net/netns/bpf.h    |   5 +-
->  kernel/bpf/net_namespace.c | 120 +++++++++++++++++++++++++------------
->  net/core/flow_dissector.c  |  19 +++---
->  3 files changed, 96 insertions(+), 48 deletions(-)
-> 
-> diff --git a/include/net/netns/bpf.h b/include/net/netns/bpf.h
-> index a8dce2a380c8..a5015bda9979 100644
-> --- a/include/net/netns/bpf.h
-> +++ b/include/net/netns/bpf.h
-> @@ -9,9 +9,12 @@
->  #include <linux/bpf-netns.h>
->  
->  struct bpf_prog;
-> +struct bpf_prog_array;
->  
->  struct netns_bpf {
-> -	struct bpf_prog __rcu *progs[MAX_NETNS_BPF_ATTACH_TYPE];
-> +	/* Array of programs to run compiled from progs or links */
-> +	struct bpf_prog_array __rcu *run_array[MAX_NETNS_BPF_ATTACH_TYPE];
-> +	struct bpf_prog *progs[MAX_NETNS_BPF_ATTACH_TYPE];
->  	struct bpf_link *links[MAX_NETNS_BPF_ATTACH_TYPE];
-With the new run_array, I think the "*progs[]" is not needed.
-It seems the original "*progs[]" is only used to tell
-if it is in the prog_attach mode or the newer link mode.
-There is other ways to do that.
+> Wow! Are we going to allow execution of such complicated programs?
 
-It is something to think about when there is more clarity on how
-multi netns prog will look like in the next set.
+No. llvm was _never_ intended to be run from the blob.
+bpfilter was envisioned as self contained binary. If it needed to do
+optimizations on generated bpf code it would have to do them internally.
 
-Other lgtm,
+> I was hoping that fork_usermode_blob() accepts only simple program
+> like the content of "hello64" generated by
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+pretty much. statically compiled elf that is self contained.
 
-Please continue the other discussion.
+> For example, a usermode process started by fork_usermode_blob() which was initially
+> containing
+> 
+> ----------
+> while (read(0, &uid, sizeof(uid)) == sizeof(uid)) {
+>     if (uid == 0)
+>         write(1, "OK\n", 3);
+>     else
+>         write(1, "NG\n", 3);
+> }
+> ----------
+> 
+> can be somehow tampered like
+> 
+> ----------
+> while (read(0, &uid, sizeof(uid)) == sizeof(uid)) {
+>     if (uid != 0)
+>         write(1, "OK\n", 3);
+>     else
+>         write(1, "NG\n", 3);
+> }
+> ----------
+> 
+> due to interference from the rest of the system, how can we say "we trust kernel
+> code executing in userspace" ?
+
+I answered this already in the previous email.
+Use security_ptrace_access_check() LSM hook to make sure that no other process
+can tamper with blob's memory when it's running as user process.
+In the future it would be trivial to add a new ptrace flag to
+make sure that blob's memory is not ptraceable from the start.
+
+> My question is: how is the byte array (which was copied from kernel space) kept secure/intact
+> under "root can poke into kernel or any process memory." environment? It is obvious that
+> we can't say "we trust kernel code executing in userspace" without some mechanism.
+
+Already answered.
+
+> Currently fork_usermode_blob() is not providing security context for the byte array to be
+> executed. We could modify fork_usermode_blob() to provide security context for LSMs, but
+> I'll be more happy if we can implement that mechanism without counting on in-tree LSMs, for
+> SELinux is too complicated to support.
+
+I'm pretty sure it was answered in the upthread by selinux folks.
+Quick recap: we can add security labels, sha, strings, you_name_it to the blob that
+lsm hooks can track.
+We can also add another LSM hook to fork_usermode_blob(), so if tomoyo is so worried
+about blobs it would be able to reject all of them without too much work.
+
+> 
+> > I think that's Tetsuo's point about lack of LSM hooks is kernel_sock_shutdown().
+> > Obviously, kernel_sock_shutdown() can be called by kernel only.
+> 
+> I can't catch what you mean. The kernel code executing in userspace uses syscall
+> interface (e.g. SYSCALL_DEFINE2(shutdown, int, fd, int, how) path), doesn't it?
+
+yes.
+
+> > I suspect he's imaging a hypothetical situation where kernel bits of kernel module
+> > interact with userblob bits of kernel module.
+> > Then another root process tampers with memory of userblob.
+> 
+> Yes, how to protect the memory of userblob is a concern. The memory of userblob can
+> interfere (or can be interfered by) the rest of the system is a problem.
+
+answered.
+
+> > I think this is trivially enforceable without creating new features.
+> > Existing security_ptrace_access_check() LSM hook can prevent tampering with
+> > memory of userblob.
+> 
+> There is security_ptrace_access_check() LSM hook, but no zero-configuration
+> method is available.
+
+huh?
+tomoyo is not using that hook, but selinux and many other LSMs do.
+please learn from others.
+
+> > security label can carry that execution context.
+> 
+> If files get a chance to be associated with appropriate pathname and
+> security label.
+
+I can easily add a fake pathname to the blob, but it won't help tomoyo.
+That's what I was saying all along.
+pathname based security provides false sense of security.
+
+I'm pretty sure this old blog has been read by many folks who
+are following this thread, but it's worth reminding again:
+https://securityblog.org/2006/04/19/security-anti-pattern-path-based-access-control/
+I cannot agree more with Joshua.
+Here is a quote:
+"The most obvious problem with this is that not all objects are files and thus do not have paths."
+
+> >> My personally strongest argument for remoiving this kernel code is
+> >> that it's been there for a couple of years now, and it has never
+> >> actually done anything useful, and there's no actual sign that it ever
+> >> will, or that there is a solid plan in place for it.
+> > 
+> > you probably missed the detailed plan:
+> > https://lore.kernel.org/bpf/20200609235631.ukpm3xngbehfqthz@ast-mbp.dhcp.thefacebook.com/
+> > 
+> > The project #3 is the above is the one we're working on right now.
+> > It should be ready to post in a week.
+> 
+> I got a question on project #3. Given that "cat /sys/fs/bpf/my_ipv6_route"
+> produces the same human output as "cat /proc/net/ipv6_route", how security
+> checks which are done for "cat /proc/net/ipv6_route" can be enforced for
+> "cat /sys/fs/bpf/my_ipv6_route" ? Unless same security checks (e.g. permission
+> to read /proc/net/ipv6_route ) is enforced, such bpf usage sounds like a method
+> for bypassing existing security mechanisms.
+
+Standard file permissions. Nothing to do with bpf.
