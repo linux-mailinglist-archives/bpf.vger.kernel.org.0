@@ -2,294 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E290A20AE57
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 10:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE3E20AEDC
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 11:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgFZIRf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 04:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729026AbgFZIRf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 04:17:35 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F125C08C5C1;
-        Fri, 26 Jun 2020 01:17:35 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 35so4018897ple.0;
-        Fri, 26 Jun 2020 01:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JWjnj5urweNDXfj9TgpouqBlRlztM4LhGOoTn1UsOnc=;
-        b=SS5ZsFBc2beqagie3eppyfwlio4WcUltevULAcskOdoox8UQ+EaeMkhLI74GU18VEq
-         4gSnfM/pxKg6LhS3A0CMPxiRtoj6GdibU35feT7bZgzmppDXXTvR5WUI9gYcHCo2UEkp
-         +QpXg36xpyuWrSDFa5JC3tucTpmHlYNBZFgix5Yi9qtZK282Lmc4NStsN2Ykuuvq1nZg
-         +x+8ZNsb027OdHlVgZeBdHEYw/6B8NXL2z4iY2Jpm1F9I7PqjHem27AYjjpWin6RcO16
-         1kY+0NIcl13pH7rdJzYx6Bv4QNLH4b5qYT+QzpOHb3DnpBFHl0g+T7RAgS+O2dapy8iT
-         W8vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JWjnj5urweNDXfj9TgpouqBlRlztM4LhGOoTn1UsOnc=;
-        b=QyXvBjk/i+1ZtFRHnplLlnWtO2I64RVqTMIMNE+AnsisW6nwrXJ2yCg9ML3zkiZvjk
-         kLtsnOhs8bS6tKgZxlW8YAJ9Ay4AQG8VvnIHA88xEmq29FuXEv5+sK//gFFPLfRhzOWZ
-         s3G+Kne16/HTRywomdPVVTRLJ6pVNIoReWQR6TCjMo2y1wASi4Z3CF7Kh2bduTKiNckZ
-         wfzS8zdtxRRe4CfiVj2aHouSey+Ppgdshs0uwFqAikLGswHOmMszBac1SC+58yJAK9Bg
-         /b1Eb72UM8YFWwkt5BUyqglB5qJnwFT+wpNI7IBXbvdlzCI000kMVvEGrzJGhjbsMY3H
-         vwVQ==
-X-Gm-Message-State: AOAM5322ihJ/RgRKmtPO7lsgB5TCubPtnDJY0BbMpMqjyiCAbHViajB+
-        DOCozJ6HACTd9tU+kanfoQ==
-X-Google-Smtp-Source: ABdhPJyrNBiPQRrnoKQ7f5HY3Y2JSzkjR9AO/DwS0YPkm65Q5iF3nAjel1GPtvvP9VcjVTuqzPryOw==
-X-Received: by 2002:a17:902:9b97:: with SMTP id y23mr1562334plp.54.1593159455110;
-        Fri, 26 Jun 2020 01:17:35 -0700 (PDT)
-Received: from localhost.localdomain ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id s22sm16514023pgv.43.2020.06.26.01.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 01:17:34 -0700 (PDT)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 3/3] samples: bpf: refactor BPF map in map test with libbpf
-Date:   Fri, 26 Jun 2020 17:17:20 +0900
-Message-Id: <20200626081720.5546-3-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200626081720.5546-1-danieltimlee@gmail.com>
-References: <20200626081720.5546-1-danieltimlee@gmail.com>
+        id S1725876AbgFZJTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 05:19:10 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44995 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725820AbgFZJTK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 05:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593163148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aCgtTgtqCADvhdvPI+E6n05c+gvKKnCWOp088pMih8E=;
+        b=UMvkEx8sCdgEdlbZ24DwZNj39fUi0Tos8msSrnN6dY21a0/VVrKJwcb7aGOJd8muLIeKwH
+        NcItDfzlnK+QBrb1mJhfvFhZk8mMODuYV6NuE9xqZyfG/v3p7khRZ3Wmxhd4LLiU9aHNNW
+        3N4uNYdtCIrhqUk46fP0sIsKNVIHclM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-4VK0J0DFOiml0TzaQMeHzw-1; Fri, 26 Jun 2020 05:19:05 -0400
+X-MC-Unique: 4VK0J0DFOiml0TzaQMeHzw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20BCAEC1A0;
+        Fri, 26 Jun 2020 09:19:04 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4478019C58;
+        Fri, 26 Jun 2020 09:18:51 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 11:18:50 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        toke@redhat.com, lorenzo.bianconi@redhat.com, dsahern@kernel.org,
+        andrii.nakryiko@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH v4 bpf-next 6/9] bpf: cpumap: implement XDP_REDIRECT for
+ eBPF programs attached to map entries
+Message-ID: <20200626111850.3ccfa8ac@carbon>
+In-Reply-To: <01248413-7675-d35e-323e-7d2e69128b45@iogearbox.net>
+References: <cover.1593012598.git.lorenzo@kernel.org>
+        <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
+        <01248413-7675-d35e-323e-7d2e69128b45@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From commit 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map
-support"), a way to define internal map in BTF-defined map has been
-added.
+On Thu, 25 Jun 2020 23:28:59 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-Instead of using previous 'inner_map_idx' definition, the structure to
-be used for the inner map can be directly defined using array directive.
+> > diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> > index 4e4cd240f07b..c0b2f265ccb2 100644
+> > --- a/kernel/bpf/cpumap.c
+> > +++ b/kernel/bpf/cpumap.c
+> > @@ -240,7 +240,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+> >   	xdp_set_return_frame_no_direct();
+> >   	xdp.rxq = &rxq;
+> >   
+> > -	rcu_read_lock();
+> > +	rcu_read_lock_bh();
+> >   
+> >   	prog = READ_ONCE(rcpu->prog);
+> >   	for (i = 0; i < n; i++) {
+> > @@ -266,6 +266,16 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+> >   				stats->pass++;
+> >   			}
+> >   			break;
+> > +		case XDP_REDIRECT:
+> > +			err = xdp_do_redirect(xdpf->dev_rx, &xdp,
+> > +					      prog);
+> > +			if (unlikely(err)) {
+> > +				xdp_return_frame(xdpf);
+> > +				stats->drop++;
 
-    __array(values, struct inner_map)
+I consider if this should be a redir_err counter.
 
-This commit refactors map in map test program with libbpf by explicitly
-defining inner map with BTF-defined format.
+> > +			} else {
+> > +				stats->redirect++;
+> > +			}  
+> 
+> Could we do better with all the accounting and do this from /inside/ BPF tracing prog
+> instead (otherwise too bad we need to have it here even if the tracepoint is disabled)?
 
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
----
- samples/bpf/Makefile               |  2 +-
- samples/bpf/test_map_in_map_kern.c | 85 +++++++++++++++---------------
- samples/bpf/test_map_in_map_user.c | 53 +++++++++++++++++--
- 3 files changed, 91 insertions(+), 49 deletions(-)
+I'm on-the-fence with this one...
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index ffd0fda536da..78678d4e6842 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -93,7 +93,7 @@ sampleip-objs := sampleip_user.o $(TRACE_HELPERS)
- tc_l2_redirect-objs := bpf_load.o tc_l2_redirect_user.o
- lwt_len_hist-objs := bpf_load.o lwt_len_hist_user.o
- xdp_tx_iptunnel-objs := xdp_tx_iptunnel_user.o
--test_map_in_map-objs := bpf_load.o test_map_in_map_user.o
-+test_map_in_map-objs := test_map_in_map_user.o
- per_socket_stats_example-objs := cookie_uid_helper_example.o
- xdp_redirect-objs := xdp_redirect_user.o
- xdp_redirect_map-objs := xdp_redirect_map_user.o
-diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
-index b1562ba2f025..d3f56ed78541 100644
---- a/samples/bpf/test_map_in_map_kern.c
-+++ b/samples/bpf/test_map_in_map_kern.c
-@@ -11,66 +11,65 @@
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/in6.h>
- #include <bpf/bpf_helpers.h>
--#include "bpf_legacy.h"
- #include <bpf/bpf_tracing.h>
- 
- #define MAX_NR_PORTS 65536
- 
- /* map #0 */
--struct bpf_map_def_legacy SEC("maps") port_a = {
--	.type = BPF_MAP_TYPE_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(int),
--	.max_entries = MAX_NR_PORTS,
--};
-+struct inner_a {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, int);
-+	__uint(max_entries, MAX_NR_PORTS);
-+} port_a SEC(".maps");
- 
- /* map #1 */
--struct bpf_map_def_legacy SEC("maps") port_h = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(int),
--	.max_entries = 1,
--};
-+struct inner_h {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, u32);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+} port_h SEC(".maps");
- 
- /* map #2 */
--struct bpf_map_def_legacy SEC("maps") reg_result_h = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(int),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, u32);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+} reg_result_h SEC(".maps");
- 
- /* map #3 */
--struct bpf_map_def_legacy SEC("maps") inline_result_h = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(int),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, u32);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+} inline_result_h SEC(".maps");
- 
- /* map #4 */ /* Test case #0 */
--struct bpf_map_def_legacy SEC("maps") a_of_port_a = {
--	.type = BPF_MAP_TYPE_ARRAY_OF_MAPS,
--	.key_size = sizeof(u32),
--	.inner_map_idx = 0, /* map_fd[0] is port_a */
--	.max_entries = MAX_NR_PORTS,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, MAX_NR_PORTS);
-+	__uint(key_size, sizeof(u32));
-+	__array(values, struct inner_a); /* use inner_a as inner map */
-+} a_of_port_a SEC(".maps");
- 
- /* map #5 */ /* Test case #1 */
--struct bpf_map_def_legacy SEC("maps") h_of_port_a = {
--	.type = BPF_MAP_TYPE_HASH_OF_MAPS,
--	.key_size = sizeof(u32),
--	.inner_map_idx = 0, /* map_fd[0] is port_a */
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(u32));
-+	__array(values, struct inner_a); /* use inner_a as inner map */
-+} h_of_port_a SEC(".maps");
- 
- /* map #6 */ /* Test case #2 */
--struct bpf_map_def_legacy SEC("maps") h_of_port_h = {
--	.type = BPF_MAP_TYPE_HASH_OF_MAPS,
--	.key_size = sizeof(u32),
--	.inner_map_idx = 1, /* map_fd[1] is port_h */
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(u32));
-+	__array(values, struct inner_h); /* use inner_h as inner map */
-+} h_of_port_h SEC(".maps");
- 
- static __always_inline int do_reg_lookup(void *inner_map, u32 port)
- {
-diff --git a/samples/bpf/test_map_in_map_user.c b/samples/bpf/test_map_in_map_user.c
-index eb29bcb76f3f..e5bddfff696f 100644
---- a/samples/bpf/test_map_in_map_user.c
-+++ b/samples/bpf/test_map_in_map_user.c
-@@ -11,7 +11,9 @@
- #include <stdlib.h>
- #include <stdio.h>
- #include <bpf/bpf.h>
--#include "bpf_load.h"
-+#include <bpf/libbpf.h>
-+
-+static int map_fd[7];
- 
- #define PORT_A		(map_fd[0])
- #define PORT_H		(map_fd[1])
-@@ -113,18 +115,59 @@ static void test_map_in_map(void)
- int main(int argc, char **argv)
- {
- 	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
-+	struct bpf_link *link = NULL;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
- 	char filename[256];
- 
--	assert(!setrlimit(RLIMIT_MEMLOCK, &r));
-+	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
-+		perror("setrlimit(RLIMIT_MEMLOCK)");
-+		return 1;
-+	}
- 
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-+	obj = bpf_object__open_file(filename, NULL);
-+	if (libbpf_get_error(obj)) {
-+		fprintf(stderr, "ERROR: opening BPF object file failed\n");
-+		return 0;
-+	}
- 
--	if (load_bpf_file(filename)) {
--		printf("%s", bpf_log_buf);
--		return 1;
-+	prog = bpf_object__find_program_by_name(obj, "trace_sys_connect");
-+	if (libbpf_get_error(prog)) {
-+		printf("finding a prog in obj file failed\n");
-+		goto cleanup;
-+	}
-+
-+	/* load BPF program */
-+	if (bpf_object__load(obj)) {
-+		fprintf(stderr, "ERROR: loading BPF object file failed\n");
-+		goto cleanup;
-+	}
-+
-+	map_fd[0] = bpf_object__find_map_fd_by_name(obj, "port_a");
-+	map_fd[1] = bpf_object__find_map_fd_by_name(obj, "port_h");
-+	map_fd[2] = bpf_object__find_map_fd_by_name(obj, "reg_result_h");
-+	map_fd[3] = bpf_object__find_map_fd_by_name(obj, "inline_result_h");
-+	map_fd[4] = bpf_object__find_map_fd_by_name(obj, "a_of_port_a");
-+	map_fd[5] = bpf_object__find_map_fd_by_name(obj, "h_of_port_a");
-+	map_fd[6] = bpf_object__find_map_fd_by_name(obj, "h_of_port_h");
-+	if (map_fd[0] < 0 || map_fd[1] < 0 || map_fd[2] < 0 ||
-+	    map_fd[3] < 0 || map_fd[4] < 0 || map_fd[5] < 0 || map_fd[6] < 0) {
-+		fprintf(stderr, "ERROR: finding a map in obj file failed\n");
-+		goto cleanup;
-+	}
-+
-+	link = bpf_program__attach(prog);
-+	if (libbpf_get_error(link)) {
-+		fprintf(stderr, "ERROR: bpf_program__attach failed\n");
-+		link = NULL;
-+		goto cleanup;
- 	}
- 
- 	test_map_in_map();
- 
-+cleanup:
-+	bpf_link__destroy(link);
-+	bpf_object__close(obj);
- 	return 0;
- }
+First of all the BPF-prog cannot see the return code of xdp_do_redirect.
+So, it cannot give the correct/needed stats without this counter. It
+would basically report the redirects as successful redirects. (This is
+actually a re-occuring support issue, when end-users misconfigure
+xdp_redirect sample and think they get good performance, even-though
+packets are dropped).
+
+Specifically for XDP_REDIRECT we need to update some state anyhow, such
+that we know to call xdp_do_flush_map(). Thus removing the counter
+would not gain much performance wise.
+
+
 -- 
-2.25.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
