@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5F520B7A4
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B2320B7A3
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgFZRzj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 13:55:39 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41472 "EHLO
+        id S1725977AbgFZRz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 13:55:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63494 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726621AbgFZRzj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:55:39 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHtT8U008184
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:38 -0700
+        by vger.kernel.org with ESMTP id S1726946AbgFZRz2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:55:28 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHssvq019322
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:27 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=+5gX+pClJaFpnEtzx25mq9s0SmaUpVNIkxWYhJOUFrM=;
- b=jjbj+HQ1lXA9ZrMc6d9UdOLZPcE/7YXWuSgF1bJANngB32IvlmN04TbZKCoWDSTLADdp
- XATfKmuBwcI3khZHsmETzVIaBlZfYru6t15ZfdRy99GNh584znvxplXF7C0aTst4D6t0
- 2HmKeOKvbquCPL3B+xC4QEMdHpFKSBpiYp0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux0u6jms-15
+ bh=znNTPRNyXLzzPQruPP5HgKBxQ3n/j1DseZqoGcyxpv4=;
+ b=pQKT8OsA9ZQUZo4TMaiSxNtXk9pnbYlkv6GXDEdHFp1ElQERSWI/zf5lBQsaQZ7WlYYZ
+ QdPVXWAM/BsiGTzHFkwEk7i7x+nsFeJ+V8S059VcptlQAiiNUWEqWPKrSzThem08D/bE
+ ATF2bllztCxLaGJ8MCCV2vq9Dwg5GK+Btzk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux1exn12-12
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:38 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:26 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Jun 2020 10:55:17 -0700
+ 15.1.1979.3; Fri, 26 Jun 2020 10:55:21 -0700
 Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 59D572942E38; Fri, 26 Jun 2020 10:55:14 -0700 (PDT)
+        id B05D92942E38; Fri, 26 Jun 2020 10:55:20 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Martin KaFai Lau <kafai@fb.com>
 Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
@@ -42,9 +42,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Neal Cardwell <ncardwell@google.com>, <netdev@vger.kernel.org>,
         Yuchung Cheng <ycheng@google.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 02/10] tcp: bpf: Parse BPF experimental header option
-Date:   Fri, 26 Jun 2020 10:55:14 -0700
-Message-ID: <20200626175514.1460570-1-kafai@fb.com>
+Subject: [PATCH bpf-next 03/10] bpf: sock_ops: Change some members of sock_ops_kern from u32 to u8
+Date:   Fri, 26 Jun 2020 10:55:20 -0700
+Message-ID: <20200626175520.1460850-1-kafai@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200626175501.1459961-1-kafai@fb.com>
 References: <20200626175501.1459961-1-kafai@fb.com>
@@ -54,132 +54,81 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-26_10:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
- cotscore=-2147483648 mlxlogscore=607 lowpriorityscore=0 clxscore=1015
- mlxscore=0 bulkscore=0 phishscore=0 suspectscore=13 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006260126
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 cotscore=-2147483648 spamscore=0 mlxlogscore=737 bulkscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ suspectscore=13 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006260126
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds logic to parse experimental kind 254 with 16 bit magic
-0xeB9F.  The latter patch will allow bpf prog to write and parse data
-under this experimental kind and magic.
-
-A one byte bpf_hdr_opt_off is added to tcp_skb_cb by using an existing
-4 byte hole.  It is only used in rx.  It stores the offset to the
-bpf experimental option and will be made available to BPF prog
-in a latter patch.  This offset is also stored in the saved_syn.
+A latter patch needs to add a few pointers and a few u8 to
+sock_ops_kern.  Hence, this patch saves some spaces by moving
+some of the existing members from u32 to u8 so that the latter
+patch can still fit everything in a cacheline.
 
 Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 ---
- include/net/request_sock.h | 1 +
- include/net/tcp.h          | 3 +++
- net/ipv4/tcp_input.c       | 6 ++++++
- net/ipv4/tcp_ipv4.c        | 1 +
- net/ipv6/tcp_ipv6.c        | 1 +
- 5 files changed, 12 insertions(+)
+ include/linux/filter.h |  4 ++--
+ net/core/filter.c      | 15 ++++++++++-----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/include/net/request_sock.h b/include/net/request_sock.h
-index d77237ec9fb4..55297286c066 100644
---- a/include/net/request_sock.h
-+++ b/include/net/request_sock.h
-@@ -43,6 +43,7 @@ int inet_rtx_syn_ack(const struct sock *parent, struct =
-request_sock *req);
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 259377723603..aae52cbda670 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1236,13 +1236,13 @@ struct bpf_sock_addr_kern {
 =20
- struct saved_syn {
- 	u32 network_hdrlen;
-+	u32 bpf_hdr_opt_off;
- 	u8 data[];
- };
-=20
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index eab1c7d0facb..07a9dfe35242 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -191,6 +191,7 @@ void tcp_time_wait(struct sock *sk, int state, int ti=
-meo);
-  */
- #define TCPOPT_FASTOPEN_MAGIC	0xF989
- #define TCPOPT_SMC_MAGIC	0xE2D4C3D9
-+#define TCPOPT_BPF_MAGIC	0xEB9F
-=20
- /*
-  *     TCP option lengths
-@@ -204,6 +205,7 @@ void tcp_time_wait(struct sock *sk, int state, int ti=
-meo);
- #define TCPOLEN_FASTOPEN_BASE  2
- #define TCPOLEN_EXP_FASTOPEN_BASE  4
- #define TCPOLEN_EXP_SMC_BASE   6
-+#define TCPOLEN_EXP_BPF_BASE   4
-=20
- /* But this is what stacks really send out. */
- #define TCPOLEN_TSTAMP_ALIGNED		12
-@@ -857,6 +859,7 @@ struct tcp_skb_cb {
- 			has_rxtstamp:1,	/* SKB has a RX timestamp	*/
- 			unused:5;
- 	__u32		ack_seq;	/* Sequence number ACK'd	*/
-+	__u8            bpf_hdr_opt_off;/* offset to bpf hdr option. rx only. *=
-/
+ struct bpf_sock_ops_kern {
+ 	struct	sock *sk;
+-	u32	op;
  	union {
- 		struct {
- 			/* There is space for up to 24 bytes */
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index eb0e32b2def9..640408a80b3d 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3924,6 +3924,10 @@ void tcp_parse_options(const struct net *net,
- 					tcp_parse_fastopen_option(opsize -
- 						TCPOLEN_EXP_FASTOPEN_BASE,
- 						ptr + 2, th->syn, foc, true);
-+				else if (opsize >=3D TCPOLEN_EXP_BPF_BASE &&
-+					 get_unaligned_be16(ptr) =3D=3D
-+					 TCPOPT_BPF_MAGIC)
-+					TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D (ptr - 2) - (unsigned char *)t=
-h;
- 				else
- 					smc_parse_options(th, opt_rx, ptr,
- 							  opsize);
-@@ -6562,6 +6566,8 @@ static void tcp_reqsk_record_syn(const struct sock =
-*sk,
- 		saved_syn =3D kmalloc(len + sizeof(*saved_syn), GFP_ATOMIC);
- 		if (saved_syn) {
- 			saved_syn->network_hdrlen =3D skb_network_header_len(skb);
-+			saved_syn->bpf_hdr_opt_off =3D
-+				TCP_SKB_CB(skb)->bpf_hdr_opt_off;
- 			memcpy(saved_syn->data, skb_network_header(skb), len);
- 			req->saved_syn =3D saved_syn;
- 		}
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index ea0df9fd7618..a3535b7fe002 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1864,6 +1864,7 @@ static void tcp_v4_fill_cb(struct sk_buff *skb, con=
-st struct iphdr *iph,
- 	TCP_SKB_CB(skb)->sacked	 =3D 0;
- 	TCP_SKB_CB(skb)->has_rxtstamp =3D
- 			skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
-+	TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D 0;
- }
+ 		u32 args[4];
+ 		u32 reply;
+ 		u32 replylong[4];
+ 	};
+-	u32	is_fullsock;
++	u8	op;
++	u8	is_fullsock;
+ 	u64	temp;			/* temp and everything after is not
+ 					 * initialized to 0 before calling
+ 					 * the BPF program. New fields that
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 19dbcc8448d8..1dd07972c5c7 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8355,17 +8355,22 @@ static u32 sock_ops_convert_ctx_access(enum bpf_a=
+ccess_type type,
+ 		return insn - insn_buf;
 =20
- /*
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index f67d45ff00b4..8356d0562279 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -1545,6 +1545,7 @@ static void tcp_v6_fill_cb(struct sk_buff *skb, con=
-st struct ipv6hdr *hdr,
- 	TCP_SKB_CB(skb)->sacked =3D 0;
- 	TCP_SKB_CB(skb)->has_rxtstamp =3D
- 			skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
-+	TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D 0;
- }
-=20
- INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+ 	switch (si->off) {
+-	case offsetof(struct bpf_sock_ops, op) ...
++	case offsetof(struct bpf_sock_ops, op):
++		*insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_sock_ops_kern,
++						       op),
++				      si->dst_reg, si->src_reg,
++				      offsetof(struct bpf_sock_ops_kern, op));
++		break;
++
++	case offsetof(struct bpf_sock_ops, replylong[0]) ...
+ 	     offsetof(struct bpf_sock_ops, replylong[3]):
+-		BUILD_BUG_ON(sizeof_field(struct bpf_sock_ops, op) !=3D
+-			     sizeof_field(struct bpf_sock_ops_kern, op));
+ 		BUILD_BUG_ON(sizeof_field(struct bpf_sock_ops, reply) !=3D
+ 			     sizeof_field(struct bpf_sock_ops_kern, reply));
+ 		BUILD_BUG_ON(sizeof_field(struct bpf_sock_ops, replylong) !=3D
+ 			     sizeof_field(struct bpf_sock_ops_kern, replylong));
+ 		off =3D si->off;
+-		off -=3D offsetof(struct bpf_sock_ops, op);
+-		off +=3D offsetof(struct bpf_sock_ops_kern, op);
++		off -=3D offsetof(struct bpf_sock_ops, replylong[0]);
++		off +=3D offsetof(struct bpf_sock_ops_kern, replylong[0]);
+ 		if (type =3D=3D BPF_WRITE)
+ 			*insn++ =3D BPF_STX_MEM(BPF_W, si->dst_reg, si->src_reg,
+ 					      off);
 --=20
 2.24.1
 
