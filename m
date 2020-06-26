@@ -2,125 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6D620B098
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 13:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8AE20B0A7
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 13:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgFZLfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 07:35:20 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:56806 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgFZLfT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:35:19 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jomdY-0007pG-CV; Fri, 26 Jun 2020 05:35:16 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jomdX-0000K5-C2; Fri, 26 Jun 2020 05:35:16 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
-References: <87d066vd4y.fsf@x220.int.ebiederm.org>
-        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
-        <87bllngirv.fsf@x220.int.ebiederm.org>
-        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
-        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
-        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
-        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
-        <87h7v1pskt.fsf@x220.int.ebiederm.org>
-        <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
-        <87h7v1mx4z.fsf@x220.int.ebiederm.org>
-        <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
-        <878sgck6g0.fsf@x220.int.ebiederm.org>
-        <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
-Date:   Fri, 26 Jun 2020 06:30:48 -0500
-In-Reply-To: <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
-        (Alexei Starovoitov's message of "Wed, 24 Jun 2020 07:26:22 -0700")
-Message-ID: <87sgeihxnb.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726706AbgFZLig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 07:38:36 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43042 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgFZLig (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 07:38:36 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QBMOVP125906;
+        Fri, 26 Jun 2020 11:37:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=k2A3eJ2ev4HDGAoi2Ne+4n6xqAdh/imn+vWwXQjLWzU=;
+ b=j5M9iuTlzEUvPm3T5WQ6uV9FaMr+GFMRwOYnQs/tNV5ToMVJKXMHbEp7A33Z+ZL1JaTo
+ lcQb6UfUx0XhGB4DQFS9kO0+9jonM7D0rpBuTFENqePps6gTQl1fC3kX3aseQqa0wD04
+ 61RXyTm1YBj45MnGJFRI6tIMcPKbLkPY3UC8g7vK02Hi3E3m+TWGc+PRjbpPzk6YhxyA
+ gL673T/vNuBX/JADNIeHK24era6rfZRMH3F0RHTSlEaPQdwghaUd4ycLg4y1j4JpCihu
+ ZMrr8LNYKJTsuFFKQRzmmGKGg+AIaSlzVhjTZGL9qVAFhJ1EeakAxZPm4CJaU9nG+rpU Vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31wg3bg1hj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Jun 2020 11:37:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05QBIKMG066286;
+        Fri, 26 Jun 2020 11:37:40 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 31uurc27cg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Jun 2020 11:37:39 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05QBbWZf007459;
+        Fri, 26 Jun 2020 11:37:33 GMT
+Received: from dhcp-10-175-206-62.vpn.oracle.com (/10.175.206.62)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Jun 2020 11:37:32 +0000
+Date:   Fri, 26 Jun 2020 12:37:19 +0100 (IST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Petr Mladek <pmladek@suse.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com,
+        Linus Torvalds <torvalds@linux-foundation.org>, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
+        arnaldo.melo@gmail.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux@rasmusvillemoes.dk, joe@perches.com,
+        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 bpf-next 4/8] printk: add type-printing %pT format
+ specifier which uses BTF
+In-Reply-To: <20200626101523.GM8444@alley>
+Message-ID: <alpine.LRH.2.21.2006261147130.417@localhost>
+References: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com> <1592914031-31049-5-git-send-email-alan.maguire@oracle.com> <20200626101523.GM8444@alley>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jomdX-0000K5-C2;;;mid=<87sgeihxnb.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/z/QlJLLbv8fWfozhts4apX0qJqt5rpEs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 570 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 14 (2.4%), b_tie_ro: 12 (2.1%), parse: 1.09
-        (0.2%), extract_message_metadata: 12 (2.1%), get_uri_detail_list: 1.29
-        (0.2%), tests_pri_-1000: 13 (2.3%), tests_pri_-950: 1.29 (0.2%),
-        tests_pri_-900: 1.12 (0.2%), tests_pri_-90: 102 (17.9%), check_bayes:
-        100 (17.5%), b_tokenize: 6 (1.0%), b_tok_get_all: 8 (1.5%),
-        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 78 (13.7%), b_finish: 1.28
-        (0.2%), tests_pri_0: 413 (72.5%), check_dkim_signature: 0.72 (0.1%),
-        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 1.17 (0.2%), tests_pri_10:
-        2.5 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 spamscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=3 phishscore=0
+ malwarescore=0 cotscore=-2147483648 adultscore=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006260083
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Wed, Jun 24, 2020 at 5:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Tue, Jun 23, 2020 at 01:53:48PM -0500, Eric W. Biederman wrote:
->>
->> > There is no refcnt bug. It was a user error on tomoyo side.
->> > fork_blob() works as expected.
->>
->> Nope.  I have independently confirmed it myself.
+On Fri, 26 Jun 2020, Petr Mladek wrote:
+
+> On Tue 2020-06-23 13:07:07, Alan Maguire wrote:
+> > printk supports multiple pointer object type specifiers (printing
+> > netdev features etc).  Extend this support using BTF to cover
+> > arbitrary types.  "%pT" specifies the typed format, and the pointer
+> > argument is a "struct btf_ptr *" where struct btf_ptr is as follows:
+> > 
+> > struct btf_ptr {
+> >         void *ptr;
+> >         const char *type;
+> >         u32 id;
+> > };
+> > 
+> > Either the "type" string ("struct sk_buff") or the BTF "id" can be
+> > used to identify the type to use in displaying the associated "ptr"
+> > value.  A convenience function to create and point at the struct
+> > is provided:
+> > 
+> >         printk(KERN_INFO "%pT", BTF_PTR_TYPE(skb, struct sk_buff));
+> > 
+> > When invoked, BTF information is used to traverse the sk_buff *
+> > and display it.  Support is present for structs, unions, enums,
+> > typedefs and core types (though in the latter case there's not
+> > much value in using this feature of course).
+> > 
+> > Default output is indented, but compact output can be specified
+> > via the 'c' option.  Type names/member values can be suppressed
+> > using the 'N' option.  Zero values are not displayed by default
+> > but can be using the '0' option.  Pointer values are obfuscated
+> > unless the 'x' option is specified.  As an example:
+> > 
+> >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> >   pr_info("%pT", BTF_PTR_TYPE(skb, struct sk_buff));
+> > 
+> > ...gives us:
+> > 
+> > (struct sk_buff){
+> >  .transport_header = (__u16)65535,
+> >  .mac_header = (__u16)65535,
+> >  .end = (sk_buff_data_t)192,
+> >  .head = (unsigned char *)0x000000006b71155a,
+> >  .data = (unsigned char *)0x000000006b71155a,
+> >  .truesize = (unsigned int)768,
+> >  .users = (refcount_t){
+> >   .refs = (atomic_t){
+> >    .counter = (int)1,
+> >   },
+> >  },
+> >  .extensions = (struct skb_ext *)0x00000000f486a130,
+> > }
+> > 
+> > printk output is truncated at 1024 bytes.  For cases where overflow
+> > is likely, the compact/no type names display modes may be used.
+> 
+> Hmm, this scares me:
+> 
+>    1. The long message and many lines are going to stretch printk
+>       design in another dimensions.
+> 
+>    2. vsprintf() is important for debugging the system. It has to be
+>       stable. But the btf code is too complex.
 >
-> I guess you've tried Tetsuo's fork_blob("#!/bin/true") kernel module ?
-> yes. that fails. It never meant to be used for this.
-> With elf blob it works, but breaks if there are rejections
-> in things like security_bprm_creds_for_exec().
-> In my mind that path was 'must succeed or kernel module is toast'.
-> Like passing NULL into a function that doesn't check for it.
-> Working on a fix for that since Tetsuo cares.
 
-No.  The reference counting issue is present with the elf blob.
+Right on both points, and there's no way around that really. Representing 
+even small data structures will stretch us to or beyond the 1024 byte 
+limit.  This can be mitigated by using compact display mode and not 
+printing field names, but the output becomes hard to parse then.
 
-It is very straight forward to see when you take a minute to look.
+I think a better approach might be to start small, adding the core
+btf_show functionality to BPF, allowing consumers to use it there,
+perhaps via a custom helper. In the current model bpf_trace_printk()
+inherits the functionality to display data from core printk, so a
+different approach would be needed there.  Other consumers outside of BPF
+could potentially avail of the show functionality directly via the btf_show
+functions in the future, but at least it would have one consumer at the 
+outset, and wouldn't present problems like these for printk.
+ 
+> I would strongly prefer to keep this outside vsprintf and printk.
+> Please, invert the logic and convert it into using separate printk()
+> call for each printed line.
+> 
 
-The file is created with shmem_kernel_file_setup in fork_usermode_blob.
-The file is put in fork_usermode_blob
-The file is put in free_bprm by exec.
+I think the above is in line with what you're suggesting?
 
-Eric
+> 
+> More details:
+> 
+> Add 1: Long messages with many lines:
+> 
+>   IMHO, all existing printk() users are far below this limit. And this is
+>   even worse because there are many short lines. They would require
+>   double space to add prefixes (loglevel, timestamp, caller id) when
+>   printing to console.
+> 
+>   You might argue that 1024bytes are enough for you. But for how long?
+> 
+>   Now, we have huge troubles to make printk() lockless and thus more
+>   reliable. There is no way to allocate any internal buffers
+>   dynamically. People using kernel on small devices have problem
+>   with large static buffers.
+> 
+>   printk() is primary designed to print single line messages. There are
+>   many use cases where many lines are needed and they are solved by
+>   many separate printk() calls.
+> 
+> 
+> Add 2: Complex code:
+> 
+>   vsprintf() is currently called in printk() under logbuf_lock. It
+>   might block printk() on the entire system.
+> 
+>   Most existing %p<modifier> handlers are implemented by relatively
+>   simple routines inside lib/vsprinf.c. The other external routines
+>   look simple as well.
+> 
+>   btf looks like a huge beast to me. For example, probe_kernel_read()
+>   prevented boot recently, see the commit 2ac5a3bf7042a1c4abb
+>   ("vsprintf: Do not break early boot with probing addresses").
+> 
+> 
+
+Yep, no way round this either. I'll try a different approach. Thanks for 
+taking a look!
+
+Alan
+
+> Best Regards,
+> Petr
+> 
