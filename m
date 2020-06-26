@@ -2,113 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F14B20BC45
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EC420BC48
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 00:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgFZWPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 18:15:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbgFZWPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 18:15:02 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F9BE20663;
-        Fri, 26 Jun 2020 22:14:57 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 18:14:55 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Will Deacon <will@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
-Message-ID: <20200626181455.155912d9@oasis.local.home>
-In-Reply-To: <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
-References: <20200624084524.259560-1-drinkcat@chromium.org>
-        <20200624120408.12c8fa0d@oasis.local.home>
-        <CAADnVQKDJb5EXZtEONaXx4XHtMMgEezPOuRUvEo18Rc7K+2_Pw@mail.gmail.com>
-        <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
-        <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725909AbgFZWPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 18:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgFZWPw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 18:15:52 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468F4C03E979;
+        Fri, 26 Jun 2020 15:15:52 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o38so8665102qtf.6;
+        Fri, 26 Jun 2020 15:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvKAOhqSkH1kVxnAWsMOooM0tK/9pcmWBxtwkslUDWY=;
+        b=iXSbgvSsrpHE8VacUnaenru4F7slMEtM0HZaPWGM59r0G8qHw11QqhXM0RjXdjsol6
+         lv/1zlB4x8r2CEfiix03k53AGqsZZbSypbvyO9aE6ptvjS90pkpfCFk+DmaJ0Hsrqg6s
+         YBEKG/weT6ntsYUtzS60k52v0BOQSycPfCqrdkl0tstKHqow2RmCU0SlI7jRcgVd0TqJ
+         CWkypRYyckJP2fsuISJkLsvrTyVP6hnlaWscUUs4A9x+lQ6bfEBRzSvelpZxlVtc3B0u
+         uwWu9fG2rm4XgupMBr2RblfGqTtubBAlIBBBU4N1VSQvoQUNK0fINJtR2C/M8ub1CPza
+         3/vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tvKAOhqSkH1kVxnAWsMOooM0tK/9pcmWBxtwkslUDWY=;
+        b=NZAD1BJ6g79zAUpHLeh7RKWP3yy4Zf3P06wjKpKRyXlouL022mSakvuvJ4YwDID/Xk
+         HmsgO6te21MhEMA2D1Rzpthy5CC0WTt2KQU+ulGoKGhjJI/i+fW/rwM9gx0ThCa1ZIyJ
+         znireZZtemtbE4Za5X9i4n/zKupTmriwcsZxDa42mhIu2hMXvuoImbwKUi8VT0cN+xUZ
+         yes75IAkHizOlaNUWFCYO/siJ17SD5ojOYytglZnaLpSM2CyPzRH7iSIiOCWQPIojTwE
+         iuXYw5U85pGCRM12EQ9tMArHznhEDlPH/aZGV+blx3GDp31ljXZpJv4/FtUZJqNnTlIG
+         CDeQ==
+X-Gm-Message-State: AOAM5319962nxDbzMZlB4P02Ng8M8mnT9ACGheXLO0+yUM7b/YJVkTAV
+        ghGyyyMT59ecJKvrwD9NzlBdPhrUbkJq0gwA7g4=
+X-Google-Smtp-Source: ABdhPJzsJj/tilxMC0Huj//M6MSqliTjJ59CWX7mmx0iG1P+YOSvTp7bMrOsLvYjGCb0etsRk4BnDDJruic1+tvzg78=
+X-Received: by 2002:ac8:19c4:: with SMTP id s4mr800782qtk.117.1593209751465;
+ Fri, 26 Jun 2020 15:15:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200625141357.910330-1-jakub@cloudflare.com> <20200625141357.910330-3-jakub@cloudflare.com>
+ <CAEf4Bzar93mCMm5vgMiYu6_m2N=icv2Wgmy2ohuKoQr810Kk1w@mail.gmail.com>
+ <87imfema7n.fsf@cloudflare.com> <CAEf4BzbW+xVRmxhmm35CbArzXTTaXJ_ByK2UKB3XCnvwhNE7xg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbW+xVRmxhmm35CbArzXTTaXJ_ByK2UKB3XCnvwhNE7xg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Jun 2020 15:15:40 -0700
+Message-ID: <CAEf4Bza+LMb+ewvsVasOJhv-KLvri-wHS64ndZmuYf7hD_Oo9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf, netns: Keep attached programs in bpf_prog_array
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Jun 2020 20:59:13 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
+On Fri, Jun 26, 2020 at 3:13 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jun 26, 2020 at 2:45 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >
+> > On Thu, Jun 25, 2020 at 10:50 PM CEST, Andrii Nakryiko wrote:
+> > > On Thu, Jun 25, 2020 at 7:17 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> > >>
+> > >> Prepare for having multi-prog attachments for new netns attach types by
+> > >> storing programs to run in a bpf_prog_array, which is well suited for
+> > >> iterating over programs and running them in sequence.
+> > >>
+> > >> After this change bpf(PROG_QUERY) may block to allocate memory in
+> > >> bpf_prog_array_copy_to_user() for collected program IDs. This forces a
+> > >> change in how we protect access to the attached program in the query
+> > >> callback. Because bpf_prog_array_copy_to_user() can sleep, we switch from
+> > >> an RCU read lock to holding a mutex that serializes updaters.
+> > >>
+> > >> Because we allow only one BPF flow_dissector program to be attached to
+> > >> netns at all times, the bpf_prog_array pointed by net->bpf.run_array is
+> > >> always either detached (null) or one element long.
+> > >>
+> > >> No functional changes intended.
+> > >>
+> > >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > >> ---
 > > >
-> > > Nack.
+> > > I wonder if instead of NULL prog_array, it's better to just use a
+> > > dummy empty (but allocated) array. Might help eliminate some of the
+> > > IFs, maybe even in the hot path.
+> >
+> > That was my initial approach, which I abandoned seeing that it leads to
+> > replacing NULL prog_array checks in flow_dissector with
+> > bpf_prog_array_is_empty() checks to determine which netns has a BPF
+> > program attached. So no IFs gone there.
+> >
+> > While on the hot path, where we run the program, we probably would still
+> > be left with an IF checking for empty prog_array to avoid building the
+> > context if no progs will RUN.
+> >
+> > The checks I'm referring to are on attach path, in
+> > flow_dissector_bpf_prog_attach_check(), and hot-path,
+> > __skb_flow_dissect().
+> >
+>
+> Fair enough.
+>
 
-I nack your nack ;-)
-
-> > > The message is bogus. It's used in production kernels.
-> > > bpf_trace_printk() calls it.  
-> > 
-> > Interesting. BTW, the same information (trace_printk is for debugging
-> > only) is repeated all over the place, including where bpf_trace_printk
-> > is documented:
-> > https://elixir.bootlin.com/linux/latest/source/include/linux/kernel.h#L757
-> > https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/bpf.h#L706
-> > https://elixir.bootlin.com/linux/latest/source/kernel/trace/trace.c#L3157
-> > 
-> > Steven added that warning (2184db46e425c ("tracing: Print nasty banner
-> > when trace_printk() is in use")), so maybe he can confirm if it's
-> > still relevant.  
-> 
-> The banner is nasty and it's actively causing harm.
-
-And it's doing exactly what it was intended on doing!
-
-> Every few month I have to explain to users that it's absolulte ok to
-> ignore that banner. Nothing bad is happening with the kernel.
-> The kernel is still perfectly safe for production use.
-> It's not a debug kernel.
-> 
-> What bpf_trace_printk() doc is saying that it's not recommended to use
-> this helper for production bpf programs. There are better alternatives.
-> It is absolutely fine to use bpf_trace_printk() to debug production and
-> experimental bpf programs on production servers, android phones and
-> everywhere else.
-
-Now I do have an answer for you that I believe is a great compromise.
-
-There's something you can call (and even call it from a module). It's
-called "trace_array_vprintk()". But has one caveat, and that is, you
-can not write to the main top level trace buffer with it (I have
-patches for the next merge window to enforce that). And that's what
-I've been trying to avoid trace_printk() from doing, as that's what it
-does by default. It writes to /sys/kernel/tracing/trace.
-
-Now what you can do, is have bpf create
-a /sys/kernel/tracing/instances/bpf_trace/ instance, and use
-trace_array_printk(), to print into that, and you will never have to
-see that warning again! It shows up in your own
-tracefs/instances/bpf_trace/trace file!
-
-If you need more details, let me know, and I can give you all you need
-to know to create you very own trace instance (that can enable events,
-kprobe events, uprobe events, function tracing, and soon function graph
-tracing). And the bonus, you get trace_array_vprintk() and no more
-complaining. :-) :-) :-)
-
--- Steve
+Acked-by: Andrii Nakryiko <andriin@fb.com>
