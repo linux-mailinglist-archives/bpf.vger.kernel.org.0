@@ -2,100 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B420BA54
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 22:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DD220BA65
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 22:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725793AbgFZUb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 16:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        id S1725828AbgFZUij (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 16:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgFZUb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:31:26 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6078CC03E979;
-        Fri, 26 Jun 2020 13:31:26 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id k18so9996637qke.4;
-        Fri, 26 Jun 2020 13:31:26 -0700 (PDT)
+        with ESMTP id S1725823AbgFZUij (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 16:38:39 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349CBC03E979;
+        Fri, 26 Jun 2020 13:38:39 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id g11so5100490qvs.2;
+        Fri, 26 Jun 2020 13:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eof9kMs8jL4m6B3bkkxpZJKoV0jcxriCOuihfNwFNd4=;
-        b=lKs7Yj5TTaUb/bnWA/wULWR+8YSUEeOQr5UrhO/xgYSsHqOX0nYxHPz6keCoVia5/h
-         WNNx4YCxtG8VyZjeCNB7pId/tCAiWkO86GHIQeD9T+1Pv5ePa+PSDtquYQBgoRFk1foS
-         aMIHmzyPbdcls1Qwlo1FvimEwM8T98X7q3WWri0SW8LgtiFFf0YVlfnJre02MPjiUyT4
-         7wW8kHPpcRUtD+rkhaY9Pr9z6OsXRFcJmsJ5xGJgyHUkKVkU3qLGGjO2EtvPABgNTmlE
-         OXyn/WSGyFTIwvzCNhMXPQYb2FA43uscMt5AVrai00Zp7kClKdBH8t8RzHRXqTPIwVUO
-         l0uQ==
+        bh=5A9KYnY7QhqaDBDdTCfkkhegKzoduuLb+R/8pScFTXs=;
+        b=SrmREoXa7FATyxyS7+R5Bj6v2piiHMWwzm/HmjsH/3bhpZVVMFjsyrJ2U4RQtQD/0m
+         VEN0dwAFOog5suhp2g8rTFvwW8YBc9mtXp3X4lE+XPuUvj0KESwixP2Oc8LmCWcUtM1u
+         TNEYtadTLXMycBpnAL3IBCG54f1QCMIct+bDwIO3onF3a8P6F/z20Qu3ElKzpW2i+8zd
+         0b5oHMfHHc0k4PdvlifEPWgJTSLEKbpoq5a+GLpi6HCnxD6cdjjebEC0oyYeiTQSOYe2
+         EfySQLCF2twa9pOqYO9MC7ZNQtTtDU7tGPFegDzDN3E+zLiqjfWjgB4r6zvyQLu8DyX8
+         SHMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eof9kMs8jL4m6B3bkkxpZJKoV0jcxriCOuihfNwFNd4=;
-        b=osmjgoWSDiggL091NY9jDY6h80D7sBcg5dGp3LLBVJ72OftsFxSsFtXFE7mjALXql/
-         HVmMlJiQKptaeWwmx4vTC2gKn52OOVpgM8ZjLWApSggWq27LWL7rDQWpVeTs0RnwukUK
-         QoxAI6HQqr/9RKZCBeLQw8fs1OJzer0/Ee+iTXHQb1yfEYLsGv5WjJfiePOI9MnrNOyC
-         d/CjK8ok6vzasKit4drVsgt+h8VFCvsHEq1aDDjouZyVJRsvfIZT1XbA43gh3TSHDoU8
-         F2wsHKP5Yzrj6Pu1JUbIaBzJSCamiSpbwBquXHH5uonROOhfo/W2gz5DzfTFw/S7T32x
-         n+gw==
-X-Gm-Message-State: AOAM531U0A8NJ6X/QmP+p8HusQr1cp04AC0attEvkmZbiM0S1Ql/DrOG
-        r38FpwiUSyDv29Zu0EXicXJ6XfVQEvZIPcHjvqI=
-X-Google-Smtp-Source: ABdhPJwSTUcuWAacrwFuB4AP+cYQGpDPOywV5LAg6WsL/QbIqPW/Ilu7CZqPntflaUh+6RVoU4/GJ2ed48uCMj4/nCg=
-X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr4668453qkl.437.1593203485628;
- Fri, 26 Jun 2020 13:31:25 -0700 (PDT)
+        bh=5A9KYnY7QhqaDBDdTCfkkhegKzoduuLb+R/8pScFTXs=;
+        b=gOR0/dXQ+rDtFNV40UVb/IA7wT9thYJKRB4UTtKKKXGLjbY/gwXPaTDshZavt5PiWE
+         aXxGcgpnWn6qDo4XpSE7CWP0dxeG3W0CTH3zjjy8hn6SkC26WbABKerm4xJbzZ3cQycv
+         LygMo0dCWQe2Cc5dCOCUadW+6lEFzi/3mmnbc9eFW0Nit6Oe31M9oeTUePnCcHfNplHv
+         ttA18FzL84LYo87o0hN3/UhdrHT5YOEUXP6aPbKM4lhRrymOpbFtrWD0e4UZu4EObWXT
+         6E/2EK5/WO5QEn+69Uv3fMfwVhJ9CWgDiqEyla+SoNO9xRdrFrQB4Za9n/tVv6J4O2WW
+         ToBQ==
+X-Gm-Message-State: AOAM532AoldFmkcboL+JTxN22yyNH7++VB3KxEvbUIynsMMsA1I6Ptot
+        jFGhzPreh2GUEqTWyeZhwDOGYc/Atinrgu+U7qg=
+X-Google-Smtp-Source: ABdhPJwet2e9VD3QkUSQfL35dFttS91K8oCX8GtWYXii57P1aViL3HKt2bSlE2cXZO9aIDqUSmDdhdrSLQMpOsTkBbw=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr4701485qvb.228.1593203918349;
+ Fri, 26 Jun 2020 13:38:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626081720.5546-1-danieltimlee@gmail.com>
-In-Reply-To: <20200626081720.5546-1-danieltimlee@gmail.com>
+References: <20200625221304.2817194-1-jolsa@kernel.org> <20200625221304.2817194-11-jolsa@kernel.org>
+In-Reply-To: <20200625221304.2817194-11-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Jun 2020 13:31:14 -0700
-Message-ID: <CAEf4Bzamp+H7ea28JhaCV2O+c=0nA8Dv1Cs4-4XiX1jOKuSztg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] samples: bpf: fix bpf programs with
- kprobe/sys_connect event
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+Date:   Fri, 26 Jun 2020 13:38:27 -0700
+Message-ID: <CAEf4BzY4EqkbB7Ob9EZAJrWdBRtH_k3sL=4JZzAiqkMXjYjNKA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 10/14] bpf: Add d_path helper
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
         Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 1:18 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+On Thu, Jun 25, 2020 at 4:49 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Currently, BPF programs with kprobe/sys_connect does not work properly.
+> Adding d_path helper function that returns full path
+> for give 'struct path' object, which needs to be the
+> kernel BTF 'path' object.
 >
-> Commit 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> This commit modifies the bpf_load behavior of kprobe events in the x64
-> architecture. If the current kprobe event target starts with "sys_*",
-> add the prefix "__x64_" to the front of the event.
+> The helper calls directly d_path function.
 >
-> Appending "__x64_" prefix with kprobe/sys_* event was appropriate as a
-> solution to most of the problems caused by the commit below.
+> Updating also bpf.h tools uapi header and adding
+> 'path' to bpf_helpers_doc.py script.
 >
->     commit d5a00528b58c ("syscalls/core, syscalls/x86: Rename struct
->     pt_regs-based sys_*() to __x64_sys_*()")
->
-> However, there is a problem with the sys_connect kprobe event that does
-> not work properly. For __sys_connect event, parameters can be fetched
-> normally, but for __x64_sys_connect, parameters cannot be fetched.
->
-> Because of this problem, this commit fixes the sys_connect event by
-> specifying the __sys_connect directly and this will bypass the
-> "__x64_" appending rule of bpf_load.
->
-> Fixes: 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  samples/bpf/map_perf_test_kern.c         | 2 +-
->  samples/bpf/test_map_in_map_kern.c       | 2 +-
->  samples/bpf/test_probe_write_user_kern.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+>  include/uapi/linux/bpf.h       | 14 +++++++++-
+>  kernel/trace/bpf_trace.c       | 47 ++++++++++++++++++++++++++++++++++
+>  scripts/bpf_helpers_doc.py     |  2 ++
+>  tools/include/uapi/linux/bpf.h | 14 +++++++++-
+>  4 files changed, 75 insertions(+), 2 deletions(-)
 >
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0cb8ec948816..23274c81f244 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3285,6 +3285,17 @@ union bpf_attr {
+>   *             Dynamically cast a *sk* pointer to a *udp6_sock* pointer.
+>   *     Return
+>   *             *sk* if casting is valid, or NULL otherwise.
+> + *
+> + * int bpf_d_path(struct path *path, char *buf, u32 sz)
+> + *     Description
+> + *             Return full path for given 'struct path' object, which
+> + *             needs to be the kernel BTF 'path' object. The path is
+> + *             returned in buffer provided 'buf' of size 'sz'.
+> + *
+> + *     Return
+> + *             length of returned string on success, or a negative
+> + *             error in case of failure
+
+It's important to note whether string is always zero-terminated (I'm
+guessing it is, right?).
+
+> + *
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -3427,7 +3438,8 @@ union bpf_attr {
+>         FN(skc_to_tcp_sock),            \
+>         FN(skc_to_tcp_timewait_sock),   \
+>         FN(skc_to_tcp_request_sock),    \
+> -       FN(skc_to_udp6_sock),
+> +       FN(skc_to_udp6_sock),           \
+> +       FN(d_path),
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>   * function eBPF program intends to call
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index b124d468688c..6f31e21565b6 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1060,6 +1060,51 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
+>         .arg1_type      = ARG_ANYTHING,
+>  };
+>
+> +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+> +{
+> +       char *p = d_path(path, buf, sz - 1);
+> +       int len;
+> +
+> +       if (IS_ERR(p)) {
+> +               len = PTR_ERR(p);
+> +       } else {
+> +               len = strlen(p);
+> +               if (len && p != buf) {
+> +                       memmove(buf, p, len);
+> +                       buf[len] = 0;
+
+if len above is zero, you won't zero-terminate it, so probably better
+to move buf[len] = 0 out of if to do unconditionally
+
+> +               }
+> +       }
+> +
+> +       return len;
+> +}
+> +
+> +BTF_SET_START(btf_whitelist_d_path)
+> +BTF_ID(func, vfs_truncate)
+> +BTF_ID(func, vfs_fallocate)
+> +BTF_ID(func, dentry_open)
+> +BTF_ID(func, vfs_getattr)
+> +BTF_ID(func, filp_close)
+> +BTF_SET_END(btf_whitelist_d_path)
+> +
+> +static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+> +{
+> +       return btf_id_set_contains(&btf_whitelist_d_path, prog->aux->attach_btf_id);
+> +}
+> +
+
+This looks pretty great and clean, considering what's happening under
+the covers. Nice work, thanks a lot!
+
+> +BTF_ID_LIST(bpf_d_path_btf_ids)
+> +BTF_ID(struct, path)
+
+this is a bit more confusing to read and error-prone, but I couldn't
+come up with any better way to do this... Still better than
+alternatives.
+
+> +
+> +static const struct bpf_func_proto bpf_d_path_proto = {
+> +       .func           = bpf_d_path,
+> +       .gpl_only       = true,
+
+Does it have to be GPL-only? What's the criteria? Sorry if this was
+brought up previously.
+
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_BTF_ID,
+> +       .arg2_type      = ARG_PTR_TO_MEM,
+> +       .arg3_type      = ARG_CONST_SIZE,
+> +       .btf_id         = bpf_d_path_btf_ids,
+> +       .allowed        = bpf_d_path_allowed,
+> +};
+> +
 
 [...]
