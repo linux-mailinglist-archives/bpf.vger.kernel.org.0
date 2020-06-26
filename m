@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC34720B79E
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5F520B7A4
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgFZRzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 13:55:18 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30996 "EHLO
+        id S1726955AbgFZRzj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 13:55:39 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41472 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725833AbgFZRzQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:55:16 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHt5oC020002
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:15 -0700
+        by vger.kernel.org with ESMTP id S1726621AbgFZRzj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:55:39 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHtT8U008184
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:38 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=fNk8fwe90WPy8Og2xFMAGWElPpQdJ4rSphcfyurgQrs=;
- b=jnfJ5tm9m8I3y4WWXExPvN7j5K/Yn4+u93wdO+x3LOqXuZ5LLhUnlntpWJyv8/APlm2i
- a8xl2sicRQOHDNu+nkJTJGW4/hjDURhqZJpVHeYyyEA7uDQN5J1aWMOTnVbZ8KlaEU/C
- 7OALsfb8h+ILZjZnVpTf6aAV9/6OpQR2UrA= 
+ bh=+5gX+pClJaFpnEtzx25mq9s0SmaUpVNIkxWYhJOUFrM=;
+ b=jjbj+HQ1lXA9ZrMc6d9UdOLZPcE/7YXWuSgF1bJANngB32IvlmN04TbZKCoWDSTLADdp
+ XATfKmuBwcI3khZHsmETzVIaBlZfYru6t15ZfdRy99GNh584znvxplXF7C0aTst4D6t0
+ 2HmKeOKvbquCPL3B+xC4QEMdHpFKSBpiYp0= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux1exn0e-1
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux0u6jms-15
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:15 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:55:38 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Jun 2020 10:55:14 -0700
+ 15.1.1979.3; Fri, 26 Jun 2020 10:55:17 -0700
 Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 24A112942E38; Fri, 26 Jun 2020 10:55:08 -0700 (PDT)
+        id 59D572942E38; Fri, 26 Jun 2020 10:55:14 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Martin KaFai Lau <kafai@fb.com>
 Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
@@ -42,9 +42,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Neal Cardwell <ncardwell@google.com>, <netdev@vger.kernel.org>,
         Yuchung Cheng <ycheng@google.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 01/10] tcp: Use a struct to represent a saved_syn
-Date:   Fri, 26 Jun 2020 10:55:08 -0700
-Message-ID: <20200626175508.1460345-1-kafai@fb.com>
+Subject: [PATCH bpf-next 02/10] tcp: bpf: Parse BPF experimental header option
+Date:   Fri, 26 Jun 2020 10:55:14 -0700
+Message-ID: <20200626175514.1460570-1-kafai@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200626175501.1459961-1-kafai@fb.com>
 References: <20200626175501.1459961-1-kafai@fb.com>
@@ -54,175 +54,132 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-26_10:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 cotscore=-2147483648 spamscore=0 mlxlogscore=534 bulkscore=0
- adultscore=0 phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
- suspectscore=38 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006260126
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
+ cotscore=-2147483648 mlxlogscore=607 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 phishscore=0 suspectscore=13 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006260126
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The total length of the saved syn packet is currently stored in
-the first 4 bytes (u32) and the actual packet data is stored after that.
+This patch adds logic to parse experimental kind 254 with 16 bit magic
+0xeB9F.  The latter patch will allow bpf prog to write and parse data
+under this experimental kind and magic.
 
-A latter patch will also want to store an offset (bpf_hdr_opt_off) to
-a TCP header option which the bpf program will be interested in parsing.
-Instead of anonymously storing this offset into the second 4 bytes,
-this patch creates a struct for the existing saved_syn.
-It can give a readable name to the stored lengths instead of implicitly
-using the first few u32(s) to do that.
-
-The new TCP bpf header offset (bpf_hdr_opt_off) added in a latter patch i=
-s
-an offset from the tcp header instead of from the network header.
-It will make the bpf programming side easier.  Thus, this patch stores
-the network header length instead of the total length of the syn
-header.  The total length can be obtained by the
-"network header len + tcp_hdrlen".  The latter patch can
-then also gets the offset to the TCP bpf header option by
-"network header len + bpf_hdr_opt_off".
+A one byte bpf_hdr_opt_off is added to tcp_skb_cb by using an existing
+4 byte hole.  It is only used in rx.  It stores the offset to the
+bpf experimental option and will be made available to BPF prog
+in a latter patch.  This offset is also stored in the saved_syn.
 
 Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 ---
- include/linux/tcp.h        | 11 ++++++++++-
- include/net/request_sock.h |  7 ++++++-
- net/core/filter.c          |  4 ++--
- net/ipv4/tcp.c             |  9 +++++----
- net/ipv4/tcp_input.c       | 12 ++++++------
- 5 files changed, 29 insertions(+), 14 deletions(-)
+ include/net/request_sock.h | 1 +
+ include/net/tcp.h          | 3 +++
+ net/ipv4/tcp_input.c       | 6 ++++++
+ net/ipv4/tcp_ipv4.c        | 1 +
+ net/ipv6/tcp_ipv6.c        | 1 +
+ 5 files changed, 12 insertions(+)
 
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 3bdec31ce8f4..9d50132d95e6 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -404,7 +404,7 @@ struct tcp_sock {
- 	 * socket. Used to retransmit SYNACKs etc.
- 	 */
- 	struct request_sock __rcu *fastopen_rsk;
--	u32	*saved_syn;
-+	struct saved_syn *saved_syn;
- };
-=20
- enum tsq_enum {
-@@ -482,6 +482,15 @@ static inline void tcp_saved_syn_free(struct tcp_soc=
-k *tp)
- 	tp->saved_syn =3D NULL;
- }
-=20
-+static inline u32 tcp_saved_syn_len(const struct saved_syn *saved_syn)
-+{
-+	const struct tcphdr *th;
-+
-+	th =3D (void *)saved_syn->data + saved_syn->network_hdrlen;
-+
-+	return saved_syn->network_hdrlen + __tcp_hdrlen(th);
-+}
-+
- struct sk_buff *tcp_get_timestamping_opt_stats(const struct sock *sk);
-=20
- static inline u16 tcp_mss_clamp(const struct tcp_sock *tp, u16 mss)
 diff --git a/include/net/request_sock.h b/include/net/request_sock.h
-index cf8b33213bbc..d77237ec9fb4 100644
+index d77237ec9fb4..55297286c066 100644
 --- a/include/net/request_sock.h
 +++ b/include/net/request_sock.h
-@@ -41,6 +41,11 @@ struct request_sock_ops {
+@@ -43,6 +43,7 @@ int inet_rtx_syn_ack(const struct sock *parent, struct =
+request_sock *req);
 =20
- int inet_rtx_syn_ack(const struct sock *parent, struct request_sock *req=
-);
-=20
-+struct saved_syn {
-+	u32 network_hdrlen;
-+	u8 data[];
-+};
-+
- /* struct request_sock - mini sock to represent a connection request
-  */
- struct request_sock {
-@@ -60,7 +65,7 @@ struct request_sock {
- 	struct timer_list		rsk_timer;
- 	const struct request_sock_ops	*rsk_ops;
- 	struct sock			*sk;
--	u32				*saved_syn;
-+	struct saved_syn		*saved_syn;
- 	u32				secid;
- 	u32				peer_secid;
+ struct saved_syn {
+ 	u32 network_hdrlen;
++	u32 bpf_hdr_opt_off;
+ 	u8 data[];
  };
-diff --git a/net/core/filter.c b/net/core/filter.c
-index c796e141ea8e..19dbcc8448d8 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4522,9 +4522,9 @@ static int _bpf_getsockopt(struct sock *sk, int lev=
-el, int optname,
- 			tp =3D tcp_sk(sk);
 =20
- 			if (optlen <=3D 0 || !tp->saved_syn ||
--			    optlen > tp->saved_syn[0])
-+			    optlen > tcp_saved_syn_len(tp->saved_syn))
- 				goto err_clear;
--			memcpy(optval, tp->saved_syn + 1, optlen);
-+			memcpy(optval, tp->saved_syn->data, optlen);
- 			break;
- 		default:
- 			goto err_clear;
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index de36c91d32ea..60093a211f4d 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3805,20 +3805,21 @@ static int do_tcp_getsockopt(struct sock *sk, int=
- level,
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index eab1c7d0facb..07a9dfe35242 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -191,6 +191,7 @@ void tcp_time_wait(struct sock *sk, int state, int ti=
+meo);
+  */
+ #define TCPOPT_FASTOPEN_MAGIC	0xF989
+ #define TCPOPT_SMC_MAGIC	0xE2D4C3D9
++#define TCPOPT_BPF_MAGIC	0xEB9F
 =20
- 		lock_sock(sk);
- 		if (tp->saved_syn) {
--			if (len < tp->saved_syn[0]) {
--				if (put_user(tp->saved_syn[0], optlen)) {
-+			if (len < tcp_saved_syn_len(tp->saved_syn)) {
-+				if (put_user(tcp_saved_syn_len(tp->saved_syn),
-+					     optlen)) {
- 					release_sock(sk);
- 					return -EFAULT;
- 				}
- 				release_sock(sk);
- 				return -EINVAL;
- 			}
--			len =3D tp->saved_syn[0];
-+			len =3D tcp_saved_syn_len(tp->saved_syn);
- 			if (put_user(len, optlen)) {
- 				release_sock(sk);
- 				return -EFAULT;
- 			}
--			if (copy_to_user(optval, tp->saved_syn + 1, len)) {
-+			if (copy_to_user(optval, tp->saved_syn->data, len)) {
- 				release_sock(sk);
- 				return -EFAULT;
- 			}
+ /*
+  *     TCP option lengths
+@@ -204,6 +205,7 @@ void tcp_time_wait(struct sock *sk, int state, int ti=
+meo);
+ #define TCPOLEN_FASTOPEN_BASE  2
+ #define TCPOLEN_EXP_FASTOPEN_BASE  4
+ #define TCPOLEN_EXP_SMC_BASE   6
++#define TCPOLEN_EXP_BPF_BASE   4
+=20
+ /* But this is what stacks really send out. */
+ #define TCPOLEN_TSTAMP_ALIGNED		12
+@@ -857,6 +859,7 @@ struct tcp_skb_cb {
+ 			has_rxtstamp:1,	/* SKB has a RX timestamp	*/
+ 			unused:5;
+ 	__u32		ack_seq;	/* Sequence number ACK'd	*/
++	__u8            bpf_hdr_opt_off;/* offset to bpf hdr option. rx only. *=
+/
+ 	union {
+ 		struct {
+ 			/* There is space for up to 24 bytes */
 diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 12fda8f27b08..eb0e32b2def9 100644
+index eb0e32b2def9..640408a80b3d 100644
 --- a/net/ipv4/tcp_input.c
 +++ b/net/ipv4/tcp_input.c
-@@ -6557,13 +6557,13 @@ static void tcp_reqsk_record_syn(const struct soc=
-k *sk,
- {
- 	if (tcp_sk(sk)->save_syn) {
- 		u32 len =3D skb_network_header_len(skb) + tcp_hdrlen(skb);
--		u32 *copy;
-+		struct saved_syn *saved_syn;
-=20
--		copy =3D kmalloc(len + sizeof(u32), GFP_ATOMIC);
--		if (copy) {
--			copy[0] =3D len;
--			memcpy(&copy[1], skb_network_header(skb), len);
--			req->saved_syn =3D copy;
-+		saved_syn =3D kmalloc(len + sizeof(*saved_syn), GFP_ATOMIC);
-+		if (saved_syn) {
-+			saved_syn->network_hdrlen =3D skb_network_header_len(skb);
-+			memcpy(saved_syn->data, skb_network_header(skb), len);
-+			req->saved_syn =3D saved_syn;
+@@ -3924,6 +3924,10 @@ void tcp_parse_options(const struct net *net,
+ 					tcp_parse_fastopen_option(opsize -
+ 						TCPOLEN_EXP_FASTOPEN_BASE,
+ 						ptr + 2, th->syn, foc, true);
++				else if (opsize >=3D TCPOLEN_EXP_BPF_BASE &&
++					 get_unaligned_be16(ptr) =3D=3D
++					 TCPOPT_BPF_MAGIC)
++					TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D (ptr - 2) - (unsigned char *)t=
+h;
+ 				else
+ 					smc_parse_options(th, opt_rx, ptr,
+ 							  opsize);
+@@ -6562,6 +6566,8 @@ static void tcp_reqsk_record_syn(const struct sock =
+*sk,
+ 		saved_syn =3D kmalloc(len + sizeof(*saved_syn), GFP_ATOMIC);
+ 		if (saved_syn) {
+ 			saved_syn->network_hdrlen =3D skb_network_header_len(skb);
++			saved_syn->bpf_hdr_opt_off =3D
++				TCP_SKB_CB(skb)->bpf_hdr_opt_off;
+ 			memcpy(saved_syn->data, skb_network_header(skb), len);
+ 			req->saved_syn =3D saved_syn;
  		}
- 	}
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index ea0df9fd7618..a3535b7fe002 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1864,6 +1864,7 @@ static void tcp_v4_fill_cb(struct sk_buff *skb, con=
+st struct iphdr *iph,
+ 	TCP_SKB_CB(skb)->sacked	 =3D 0;
+ 	TCP_SKB_CB(skb)->has_rxtstamp =3D
+ 			skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
++	TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D 0;
  }
+=20
+ /*
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index f67d45ff00b4..8356d0562279 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1545,6 +1545,7 @@ static void tcp_v6_fill_cb(struct sk_buff *skb, con=
+st struct ipv6hdr *hdr,
+ 	TCP_SKB_CB(skb)->sacked =3D 0;
+ 	TCP_SKB_CB(skb)->has_rxtstamp =3D
+ 			skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
++	TCP_SKB_CB(skb)->bpf_hdr_opt_off =3D 0;
+ }
+=20
+ INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
 --=20
 2.24.1
 
