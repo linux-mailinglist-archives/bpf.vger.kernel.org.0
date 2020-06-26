@@ -2,165 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B4B20B7B0
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 19:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE68A20B80C
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 20:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgFZR4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 13:56:13 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5774 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgFZR4N (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 13:56:13 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05QHtTbN008180
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:56:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=UHFQQFqYSY8aevwSYLHh6Hobk6A4dxuODVh5qoz6O0I=;
- b=KZ8kGK6tZ2/Y2glbND15vFuJBXyR6zlf7Rs3Hq7BRSRTZVPPpECLI65lbAsaACOyuZM3
- uxcFi/BheiBqUc66daSqCV35+KPjbo+vbY+QkAyozwVAhVYaTkMPT8ycND/yQw1q9lbo
- +EXuGnq1n+jY3NfxE8gqaM/Zi2wdaQMjTSY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31ux0u6jrk-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 10:56:12 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Jun 2020 10:56:09 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id CA5942942E38; Fri, 26 Jun 2020 10:56:04 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1725823AbgFZSWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 14:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725275AbgFZSWn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 14:22:43 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566ACC03E979;
+        Fri, 26 Jun 2020 11:22:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d10so4559324pls.5;
+        Fri, 26 Jun 2020 11:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gPRKQHqm6sZx4nx7rIc/Ck2wASuw3VV19IQZEQ741Rk=;
+        b=dTvRyJfQ3Blfhxf3pDzLJQwwrEmprE8++A3HaLXLp5Q+DGxrsGf3W0PhKwPUCHr8Ry
+         pkaowC8SyUb1avgQo4c1xh1e+H2QWb5XKQxYoe9EzntrriWIgsG8lqurzmaFn3HKittV
+         o335AIa8IFUg+7UzR+3CcBXz9H9Fzj9ABI47CB+eujOCgIfNqehkk/2+QNDwZzsjdjyD
+         fwj/lp4D0hbQY5Qg/IUmp8bV6lzIyMM0qjN+UdleejA5nTpd/ezcIzBQMpTDNfbdwT1A
+         VlKf7ISr76mmdi2IKAKQ0JQQQYvJ2ClEvNQw2UNG2OUiAaGeAJRbvm8NPiay3VTbUFIz
+         Zr0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gPRKQHqm6sZx4nx7rIc/Ck2wASuw3VV19IQZEQ741Rk=;
+        b=duIKc92dOOZaS2Ar+AsyhqnBqxvzfWLNm6EdfsUBkUwlPpLQ/elBkwzXdll2DitXxd
+         sgqXj01ZPkvWQlQ/OVaa+mdRo3w/f/xS+wzi/bQcDT0IIvcdCIO6z36ww3fekW5zciFv
+         mMcp+qaPQhBcXirQwB0VnGNUhCZsdyM/bOUxp4MWzipVe/xL1593qsYhZ5p/VgFum3Og
+         QFn6EEslxZnXktr9bErnRYG5cOwJu+dTGXyxrxP/sExJTelR8HL1wC8AeucRdBrBiE+u
+         lRge1A6AwpvzATKmh5dJNnAlmzyZt3iv9TK+Yq0GRQdCV2psGqUsQP3/anhbq0IiP0vq
+         eVOw==
+X-Gm-Message-State: AOAM532we8qW2FOAIIPpXVrphQzEvf1JLf4mIXoteKzJxpYKqHwoH8Hh
+        syvczP84EeBRFBqtVvM68DQ=
+X-Google-Smtp-Source: ABdhPJyuluSpkCCzQlqONsfwK+vF/2NvmP24zQveFjTNg93fMAPJ1DVKjH3L8mEHTOn7VSfkm2sxlQ==
+X-Received: by 2002:a17:90a:e983:: with SMTP id v3mr4750105pjy.71.1593195762787;
+        Fri, 26 Jun 2020 11:22:42 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:52bf])
+        by smtp.gmail.com with ESMTPSA id j36sm23889057pgj.39.2020.06.26.11.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jun 2020 11:22:42 -0700 (PDT)
+Date:   Fri, 26 Jun 2020 11:22:39 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>, <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 10/10] bpf: selftest: Add test for TCP_BPF_DELACK_MAX and TCP_BPF_RTO_MIN
-Date:   Fri, 26 Jun 2020 10:56:04 -0700
-Message-ID: <20200626175604.1462935-1-kafai@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200626175501.1459961-1-kafai@fb.com>
-References: <20200626175501.1459961-1-kafai@fb.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
+Message-ID: <20200626182239.in7lsupe257zlz5x@ast-mbp.dhcp.thefacebook.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <20200626164055.5iasnou57yrtt6wz@ast-mbp.dhcp.thefacebook.com>
+ <87sgeh926j.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-26_10:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
- cotscore=-2147483648 mlxlogscore=739 lowpriorityscore=0 clxscore=1015
- mlxscore=0 bulkscore=0 phishscore=0 suspectscore=13 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006260126
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sgeh926j.fsf@x220.int.ebiederm.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch tests a bpf prog that parses/writes a max_delack_ms bpf header
-option and also bpf_setsockopt its TCP_BPF_DELACK_MAX/TCP_BPF_RTO_MIN
-accordingly.
+On Fri, Jun 26, 2020 at 12:17:40PM -0500, Eric W. Biederman wrote:
+> 
+> > I'm swamped with other stuff today and will test the set Sunday/Monday
+> > with other patches that I'm working on.
+> > I'm not sure why you want to rename the interface. Seems
+> > pointless. But fine.
+> 
+> For maintainability I think the code very much benefits from a clear
+> separation between the user mode driver code from the user mode helper
+> code.
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../bpf/prog_tests/tcp_hdr_options.c          |  6 ++--
- .../bpf/progs/test_tcp_hdr_options.c          | 34 +++++++++++++++++++
- 2 files changed, 38 insertions(+), 2 deletions(-)
+you mean different name gives that separation? makes sense.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c b/t=
-ools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c
-index f8daf36783f3..5a58f60d2889 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_hdr_options.c
-@@ -447,11 +447,13 @@ static void simple_estab(void)
- 	struct bpf_link *link;
- 	struct sk_fds sk_fds;
-=20
--	exp_passive_estab_in.flags =3D OPTION_F_MAGIC;
-+	exp_passive_estab_in.flags =3D OPTION_F_MAGIC | OPTION_F_MAX_DELACK_MS;
- 	exp_passive_estab_in.magic =3D 0xfa;
-+	exp_passive_estab_in.max_delack_ms =3D 11;
-=20
--	exp_active_estab_in.flags =3D OPTION_F_MAGIC;
-+	exp_active_estab_in.flags =3D OPTION_F_MAGIC | OPTION_F_MAX_DELACK_MS;
- 	exp_active_estab_in.magic =3D 0xce;
-+	exp_active_estab_in.max_delack_ms =3D 22;
-=20
- 	prepare_out();
-=20
-diff --git a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c b/t=
-ools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-index 631181bfb4cc..eb3b3c2a21f9 100644
---- a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
-@@ -465,6 +465,24 @@ static __always_inline int handle_write_hdr_opt(stru=
-ct bpf_sock_ops *skops)
- 	return write_nodata_opt(skops);
- }
-=20
-+static __always_inline int set_delack_max(struct bpf_sock_ops *skops,
-+					  __u8 max_delack_ms)
-+{
-+	__u32 max_delack_us =3D max_delack_ms * 1000;
-+
-+	return bpf_setsockopt(skops, SOL_TCP, TCP_BPF_DELACK_MAX,
-+			      &max_delack_us, sizeof(max_delack_us));
-+}
-+
-+static __always_inline int set_rto_min(struct bpf_sock_ops *skops,
-+				       __u8 peer_max_delack_ms)
-+{
-+	__u32 min_rto_us =3D peer_max_delack_ms * 1000;
-+
-+	return bpf_setsockopt(skops, SOL_TCP, TCP_BPF_RTO_MIN, &min_rto_us,
-+			      sizeof(min_rto_us));
-+}
-+
- static __always_inline int handle_active_estab(struct bpf_sock_ops *skop=
-s)
- {
- 	__u8 bpf_hdr_opt_off =3D skops->skb_bpf_hdr_opt_off;
-@@ -505,6 +523,14 @@ static __always_inline int handle_active_estab(struc=
-t bpf_sock_ops *skops)
- 		/* No options will be written from now */
- 		clear_hdr_cb_flags(skops);
-=20
-+	if (active_syn_out.max_delack_ms &&
-+	    set_delack_max(skops, active_syn_out.max_delack_ms))
-+		RET_CG_ERR(skops);
-+
-+	if (active_estab_in.max_delack_ms &&
-+	    set_rto_min(skops, active_estab_in.max_delack_ms))
-+		RET_CG_ERR(skops);
-+
- 	return CG_OK;
- }
-=20
-@@ -590,6 +616,14 @@ static __always_inline int handle_passive_estab(stru=
-ct bpf_sock_ops *skops)
- 		/* No options will be written from now */
- 		clear_hdr_cb_flags(skops);
-=20
-+	if (passive_synack_out.max_delack_ms &&
-+	    set_delack_max(skops, passive_synack_out.max_delack_ms))
-+		RET_CG_ERR(skops);
-+
-+	if (passive_estab_in.max_delack_ms &&
-+	    set_rto_min(skops, passive_estab_in.max_delack_ms))
-+		RET_CG_ERR(skops);
-+
- 	return CG_OK;
- }
-=20
---=20
-2.24.1
+> > As far as routing trees. Do you mind I'll take it via bpf-next ?
+> > As I said countless times we're working on bpf_iter using fork_blob.
+> > If you take this set via your tree we would need to wait the whole kernel release.
+> > Which is 8+ weeks before we can use the interface (due to renaming and overall changes).
+> > I'd really like to avoid this huge delay.
+> > Unless you can land it into 5.8-rc2 or rc3.
+> 
+> I also want to build upon this code.
+> 
+> How about when the review is done I post a frozen branch based on
+> v5.8-rc1 that you can merge into the bpf-next tree, and I can merge into
+> my branch.  That way we both can build upon this code.  That is the way
+> conflicts like this are usually handled.
 
+sure. that works too.
+
+> Further I will leave any further enhancements to the user mode driver
+> infrastructure that people have suggested to you.
+
+ok
