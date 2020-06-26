@@ -2,121 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6F520AF66
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 12:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D2020AF7A
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 12:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725283AbgFZKGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 06:06:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24947 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726740AbgFZKGw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 06:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593166012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wgbgTYfJQqu3PeczY55F3LlScD7j+20EVBpY3jbcgkU=;
-        b=hGh44t0XnHSd/VUf3bhH6VwlB32Iv546mVRrekxIdkDlznuhOOW8RmZVAVjsD/fNi81ZPD
-        20B1qrkqtBj7hil8LHAYcGYsUP6xh9UWAMvXbNR8K1dC1GZgGCYNaVSmyFoTO1hddRQqcG
-        l1aTvxqo2gTNL/MlY70OeiOP2D1uccM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-4fd7yTYYNzutoc07BVtp1Q-1; Fri, 26 Jun 2020 06:06:48 -0400
-X-MC-Unique: 4fd7yTYYNzutoc07BVtp1Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 314DB18585A2;
-        Fri, 26 Jun 2020 10:06:46 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 541FC70915;
-        Fri, 26 Jun 2020 10:06:34 +0000 (UTC)
-Date:   Fri, 26 Jun 2020 12:06:32 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH v4 bpf-next 6/9] bpf: cpumap: implement XDP_REDIRECT for
- eBPF programs attached to map entries
-Message-ID: <20200626120632.6ef16b5c@carbon>
-In-Reply-To: <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
-References: <cover.1593012598.git.lorenzo@kernel.org>
-        <ef1a456ba3b76a61b7dc6302974f248a21d906dd.1593012598.git.lorenzo@kernel.org>
+        id S1727124AbgFZKP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 06:15:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42226 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726531AbgFZKP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 06:15:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2DDA2AED6;
+        Fri, 26 Jun 2020 10:15:24 +0000 (UTC)
+Date:   Fri, 26 Jun 2020 12:15:23 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
+        arnaldo.melo@gmail.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux@rasmusvillemoes.dk, joe@perches.com,
+        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 bpf-next 4/8] printk: add type-printing %pT format
+ specifier which uses BTF
+Message-ID: <20200626101523.GM8444@alley>
+References: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com>
+ <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592914031-31049-5-git-send-email-alan.maguire@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Jun 2020 17:33:55 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Tue 2020-06-23 13:07:07, Alan Maguire wrote:
+> printk supports multiple pointer object type specifiers (printing
+> netdev features etc).  Extend this support using BTF to cover
+> arbitrary types.  "%pT" specifies the typed format, and the pointer
+> argument is a "struct btf_ptr *" where struct btf_ptr is as follows:
+> 
+> struct btf_ptr {
+>         void *ptr;
+>         const char *type;
+>         u32 id;
+> };
+> 
+> Either the "type" string ("struct sk_buff") or the BTF "id" can be
+> used to identify the type to use in displaying the associated "ptr"
+> value.  A convenience function to create and point at the struct
+> is provided:
+> 
+>         printk(KERN_INFO "%pT", BTF_PTR_TYPE(skb, struct sk_buff));
+> 
+> When invoked, BTF information is used to traverse the sk_buff *
+> and display it.  Support is present for structs, unions, enums,
+> typedefs and core types (though in the latter case there's not
+> much value in using this feature of course).
+> 
+> Default output is indented, but compact output can be specified
+> via the 'c' option.  Type names/member values can be suppressed
+> using the 'N' option.  Zero values are not displayed by default
+> but can be using the '0' option.  Pointer values are obfuscated
+> unless the 'x' option is specified.  As an example:
+> 
+>   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+>   pr_info("%pT", BTF_PTR_TYPE(skb, struct sk_buff));
+> 
+> ...gives us:
+> 
+> (struct sk_buff){
+>  .transport_header = (__u16)65535,
+>  .mac_header = (__u16)65535,
+>  .end = (sk_buff_data_t)192,
+>  .head = (unsigned char *)0x000000006b71155a,
+>  .data = (unsigned char *)0x000000006b71155a,
+>  .truesize = (unsigned int)768,
+>  .users = (refcount_t){
+>   .refs = (atomic_t){
+>    .counter = (int)1,
+>   },
+>  },
+>  .extensions = (struct skb_ext *)0x00000000f486a130,
+> }
+> 
+> printk output is truncated at 1024 bytes.  For cases where overflow
+> is likely, the compact/no type names display modes may be used.
 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index 83b9e0142b52..5be0d4d65b94 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -99,6 +99,7 @@ struct xdp_frame {
->  };
->  
->  struct xdp_cpumap_stats {
-> +	unsigned int redirect;
->  	unsigned int pass;
->  	unsigned int drop;
->  };
-> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-> index e2c99f5bee39..cd24e8a59529 100644
-> --- a/include/trace/events/xdp.h
-> +++ b/include/trace/events/xdp.h
-> @@ -190,6 +190,7 @@ TRACE_EVENT(xdp_cpumap_kthread,
->  		__field(int, sched)
->  		__field(unsigned int, xdp_pass)
->  		__field(unsigned int, xdp_drop)
-> +		__field(unsigned int, xdp_redirect)
->  	),
->  
->  	TP_fast_assign(
-> @@ -201,18 +202,19 @@ TRACE_EVENT(xdp_cpumap_kthread,
->  		__entry->sched	= sched;
->  		__entry->xdp_pass	= xdp_stats->pass;
->  		__entry->xdp_drop	= xdp_stats->drop;
-> +		__entry->xdp_redirect	= xdp_stats->redirect;
->  	),
+Hmm, this scares me:
 
-Let me stress, that I think can do this in a followup patch (but before
-a release).
+   1. The long message and many lines are going to stretch printk
+      design in another dimensions.
 
-I'm considering that we should store/give a pointer to xdp_stats
-(struct xdp_cpumap_stats) and let the BPF tracing program do the
-"decoding"/struct access to get these values.  (We will go from storing
-12 bytes to 8 bytes (on 64-bit), so I don't expect much gain).
+   2. vsprintf() is important for debugging the system. It has to be
+      stable. But the btf code is too complex.
+
+I would strongly prefer to keep this outside vsprintf and printk.
+Please, invert the logic and convert it into using separate printk()
+call for each printed line.
 
 
->  	TP_printk("kthread"
->  		  " cpu=%d map_id=%d action=%s"
->  		  " processed=%u drops=%u"
->  		  " sched=%d"
-> -		  " xdp_pass=%u xdp_drop=%u",
-> +		  " xdp_pass=%u xdp_drop=%u xdp_redirect=%u",
->  		  __entry->cpu, __entry->map_id,
->  		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
->  		  __entry->processed, __entry->drops,
->  		  __entry->sched,
-> -		  __entry->xdp_pass, __entry->xdp_drop)
-> +		  __entry->xdp_pass, __entry->xdp_drop, __entry->xdp_redirect)
->  );
->  
+More details:
+
+Add 1: Long messages with many lines:
+
+  IMHO, all existing printk() users are far below this limit. And this is
+  even worse because there are many short lines. They would require
+  double space to add prefixes (loglevel, timestamp, caller id) when
+  printing to console.
+
+  You might argue that 1024bytes are enough for you. But for how long?
+
+  Now, we have huge troubles to make printk() lockless and thus more
+  reliable. There is no way to allocate any internal buffers
+  dynamically. People using kernel on small devices have problem
+  with large static buffers.
+
+  printk() is primary designed to print single line messages. There are
+  many use cases where many lines are needed and they are solved by
+  many separate printk() calls.
 
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Add 2: Complex code:
 
+  vsprintf() is currently called in printk() under logbuf_lock. It
+  might block printk() on the entire system.
+
+  Most existing %p<modifier> handlers are implemented by relatively
+  simple routines inside lib/vsprinf.c. The other external routines
+  look simple as well.
+
+  btf looks like a huge beast to me. For example, probe_kernel_read()
+  prevented boot recently, see the commit 2ac5a3bf7042a1c4abb
+  ("vsprintf: Do not break early boot with probing addresses").
+
+
+Best Regards,
+Petr
