@@ -2,32 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E61720AC37
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 08:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95B920AC6E
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 08:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgFZGVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 02:21:33 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62741 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgFZGVd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 02:21:33 -0400
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05Q6KZQp052060;
-        Fri, 26 Jun 2020 15:20:35 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Fri, 26 Jun 2020 15:20:35 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05Q6KZjY052040
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 26 Jun 2020 15:20:35 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
- unmantained
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S1728082AbgFZGjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 02:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727960AbgFZGjJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 02:39:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA92C08C5C1;
+        Thu, 25 Jun 2020 23:39:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b5so4229113pfp.9;
+        Thu, 25 Jun 2020 23:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UdtlRZYBAmqNtbxp3vxoceKnVQSi5KT5PeHxRiAdxF4=;
+        b=KaIVObdIVTftVUV4YuvDeA1+kJCxSZ9VcdtNHrraPGZvtTpMha8XqQStSu4it6II5M
+         wRsMe2+L8ExFyQytMstxSR5xoV4VHFQ/ePPPZyGRFXhvXuxh7ajO/oeoqeC22tRXbSd3
+         9lpAFaWq+Z6WxR9FWvJO2/Kxg1vNWYhq3EWqWzgAVXsAjdxru68TiDBtnqcDkkwHVMA+
+         Vg2wSMMbMIegHRn5vwO8LNGzbCP0BmyQhWFs8PyG/ySl6uN/V8T71wAlg8LXVQgwmw6g
+         kyN6A+SDbso7gTAxT3G0cW4M/87CVxlBIWl046j1SwFOgZ+nqYjg1XrKkSD8J2N2DX5x
+         tBYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UdtlRZYBAmqNtbxp3vxoceKnVQSi5KT5PeHxRiAdxF4=;
+        b=cjfE/2XZh/gMHuNujHTinGTq4B0Opls+AqWYBWYE7wEnqxlLz9/c3UJ9AxGhzQLqxa
+         AnhlgK2d90g/XYWo3MZTEZAGwfljSozhVRlWp6pbnx18t3PJcvLZ1qdgRFnkevVHRIjd
+         4AIQCYW6j5g/QgOtIvHDcmx6KyqTNVyXdWmiPViLyNes3mH06fhYPFGr0UvO51MnRlXO
+         JIG+/MIjtb3HbwJFd3lq82eUhIOvFEkXhD799dp+SWuH8JR3IpScLLD1Rox+KP83oEhx
+         cPwMBzW87XdVIURdMOUYA6k53FWtzJAfkdu2SJxItzIdvlrYSGt3P5caZG2i3moXlL8i
+         JM5A==
+X-Gm-Message-State: AOAM5311B0OL2oN9M3nAmYWy9tEM1lfNP8vyDr519D1Q3bwHyJooPTKq
+        Uh/d4NbvVnEhacN4C9rHa8c=
+X-Google-Smtp-Source: ABdhPJzFOMeDT+zK4n/8TEjDpPVElQCAZ0+e1YOcub/ZhaYFE/ZkS0oeDZygipuBcMfnsBcTJegnrg==
+X-Received: by 2002:a63:4d53:: with SMTP id n19mr1502294pgl.60.1593153549424;
+        Thu, 25 Jun 2020 23:39:09 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:986f])
+        by smtp.gmail.com with ESMTPSA id ng12sm10919706pjb.15.2020.06.25.23.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 23:39:08 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 23:39:05 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         David Miller <davem@davemloft.net>,
         Greg Kroah-Hartman <greg@kroah.com>,
@@ -43,6 +65,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
         LSM List <linux-security-module@vger.kernel.org>,
         Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently
+ unmantained
+Message-ID: <20200626063905.lvtjqp5iipdgvrer@ast-mbp.dhcp.thefacebook.com>
 References: <20200625095725.GA3303921@kroah.com>
  <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
  <20200625120725.GA3493334@kroah.com>
@@ -51,90 +76,37 @@ References: <20200625095725.GA3303921@kroah.com>
  <20200626015121.qpxkdaqtsywe3zqx@ast-mbp.dhcp.thefacebook.com>
  <eb3bec08-9de4-c708-fb8e-b6a47145eb5e@i-love.sakura.ne.jp>
  <20200626054137.m44jpsvlapuyslzw@ast-mbp.dhcp.thefacebook.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <c9a9c2b5-68cc-c35d-72c2-34de79ebfb15@i-love.sakura.ne.jp>
-Date:   Fri, 26 Jun 2020 15:20:35 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ <c9a9c2b5-68cc-c35d-72c2-34de79ebfb15@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-In-Reply-To: <20200626054137.m44jpsvlapuyslzw@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9a9c2b5-68cc-c35d-72c2-34de79ebfb15@i-love.sakura.ne.jp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/26 14:41, Alexei Starovoitov wrote:
->> I was hoping that fork_usermode_blob() accepts only simple program
->> like the content of "hello64" generated by
+On Fri, Jun 26, 2020 at 03:20:35PM +0900, Tetsuo Handa wrote:
+> On 2020/06/26 14:41, Alexei Starovoitov wrote:
+> >> I was hoping that fork_usermode_blob() accepts only simple program
+> >> like the content of "hello64" generated by
+> > 
+> > pretty much. statically compiled elf that is self contained.
 > 
-> pretty much. statically compiled elf that is self contained.
+> But fork_usermode_blob() itself does not check that.
 
-But fork_usermode_blob() itself does not check that.
+As I said few emails back it's trivial to add such check.
 
->> due to interference from the rest of the system, how can we say "we trust kernel
->> code executing in userspace" ?
+> > In the future it would be trivial to add a new ptrace flag to
+> > make sure that blob's memory is not ptraceable from the start.
 > 
-> I answered this already in the previous email.
+> I guess it is some PF_* flag (like PF_KTHREAD is used for avoiding some interference).
 
-Previous post is mostly summary for David Miller who responded
+Kinda.
+I was thinking about PTRACE_MODE_xxx flag.
 
-  It's kernel code executing in userspace.  If you don't trust the
-  signed code you don't trust the signed code.
+> What I am hoping is that we can restrict interference between usermode blob processes
+> and other processes without using LSMs,
 
-  Nothing is magic about a piece of code executing in userspace.
-
-without understanding my concerns.
-
-> Use security_ptrace_access_check() LSM hook to make sure that no other process
-> can tamper with blob's memory when it's running as user process.
-
-Yes, security_ptrace_access_check() hook is there. But see the reality explained later.
-
-> In the future it would be trivial to add a new ptrace flag to
-> make sure that blob's memory is not ptraceable from the start.
-
-I guess it is some PF_* flag (like PF_KTHREAD is used for avoiding some interference).
-
->> There is security_ptrace_access_check() LSM hook, but no zero-configuration
->> method is available.
-> 
-> huh?
-> tomoyo is not using that hook, but selinux and many other LSMs do.
-> please learn from others.
-
-What I am hoping is that we can restrict interference between usermode blob processes
-and other processes without using LSMs, for the reality is
-
-  (1) Linux kernel community does not allow legally accessing LSM infrastructure from
-      loadable kernel modules since Linux 2.6.24.
-  (2) Red Hat folks enable only SELinux in their kernels.
-  (3) Customers I'm working for cannot afford enabling SELinux in their environments.
-
-and therefore
-
-  (4) I have to maintain loadable kernel module version of LSM modules which illegally
-      access LSM infrastructure in order to implement single function LSM modules.
-
-Implementing security_ptrace_access_check() hook in TOMOYO is not a solution.
-
->>> security label can carry that execution context.
->>
->> If files get a chance to be associated with appropriate pathname and
->> security label.
-> 
-> I can easily add a fake pathname to the blob, but it won't help tomoyo.
-> That's what I was saying all along.
-> pathname based security provides false sense of security.
-> 
-> I'm pretty sure this old blog has been read by many folks who
-> are following this thread, but it's worth reminding again:
-> https://securityblog.org/2006/04/19/security-anti-pattern-path-based-access-control/
-> I cannot agree more with Joshua.
-> Here is a quote:
-> "The most obvious problem with this is that not all objects are files and thus do not have paths."
-
-Don't you know that TOMOYO can coexist with SELinux/Smack/AppArmor since Linux 5.1 ? ;-)
-
+I don't see why not.
+Extra piece of mind that blob memory is untouchable by other root processes is nice to have.
