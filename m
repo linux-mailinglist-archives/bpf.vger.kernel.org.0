@@ -2,153 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DD120B03C
-	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 13:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6D620B098
+	for <lists+bpf@lfdr.de>; Fri, 26 Jun 2020 13:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgFZLLs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 07:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728326AbgFZLLs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 07:11:48 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9CCC08C5DB
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 04:11:47 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id x18so9928053lji.1
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 04:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=fLyUyrnIraTTpfTBbRFScydYdf7yAcbWPMDOJapXD6U=;
-        b=nvD+WbJ7WQ6b1NkW1bGU1bZkIG2ZBN2lsbGL7nzV9THvNmlvxxgQVMLVDz7UzJSuZs
-         dZSndWr7PAzTeyRUyzwDXU49SyEQdL5fOyjtXXVdU770qB6N8aC0zpZpgImxIxm1kdOV
-         0c63BZi2JMX+Sw1Tby6J1E00n5yrnNh0LJoyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=fLyUyrnIraTTpfTBbRFScydYdf7yAcbWPMDOJapXD6U=;
-        b=MoUlSMnKena01nLkPN8F+CZ0PAcdgki+90nTiyoHHLOkV7w9K44xhbiqZePXuzyKM2
-         pvtrO4V602THsq4zRWuIcCtsVqbUzAigoyuhBjLMlXNWm0T2zUMEVwzdoEX7SyZqKmkL
-         mOoB3Rj/DtWiffdGomqSvt0ucOQzyhtaDBYx1l3qXoyt4px0OLiG5DAOQi9SrO/eYiMN
-         Awc+gF6/InZhDZqMkInw7F9yLGhtXTfWOt4J35v0zv0kuh1TKAKqMxryPZEOTgm28hqT
-         ruWoRS55cR7tFxwBv5yF0CCVihqQ8DTprmZ/2ARgPkCufklLv0vg+1zI+Nn0txgCWQVg
-         qNqQ==
-X-Gm-Message-State: AOAM531rXGoF/kydjg122NqiBiG0ycW3NsvBD+zxXg/5n/8Q+2k1qDGg
-        0igQbJtuHctU58K4P0s2/cs+nw==
-X-Google-Smtp-Source: ABdhPJyY7grFB+FUHoAumppz78d55l3p8fs4cTmkW/pav2IKafYOmPI0jy6l8m6Kmh2sjhVORv+1iw==
-X-Received: by 2002:a2e:6c17:: with SMTP id h23mr1241873ljc.48.1593169906097;
-        Fri, 26 Jun 2020 04:11:46 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id 15sm2212059ljj.104.2020.06.26.04.11.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 04:11:45 -0700 (PDT)
-References: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370> <159312677907.18340.11064813152758406626.stgit@john-XPS-13-9370>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     kafai@fb.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [bpf PATCH v2 1/3] bpf, sockmap: RCU splat with redirect and strparser error or TLS
-In-reply-to: <159312677907.18340.11064813152758406626.stgit@john-XPS-13-9370>
-Date:   Fri, 26 Jun 2020 13:11:44 +0200
-Message-ID: <87ftaim68f.fsf@cloudflare.com>
+        id S1726335AbgFZLfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 07:35:20 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:56806 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgFZLfT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 07:35:19 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jomdY-0007pG-CV; Fri, 26 Jun 2020 05:35:16 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jomdX-0000K5-C2; Fri, 26 Jun 2020 05:35:16 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>
+References: <87d066vd4y.fsf@x220.int.ebiederm.org>
+        <20200611233134.5vofl53dj5wpwp5j@ast-mbp.dhcp.thefacebook.com>
+        <87bllngirv.fsf@x220.int.ebiederm.org>
+        <CAADnVQ+qNxFjTYBpYW9ZhStMh_oJBS5C_FsxSS=0Mzy=u54MSg@mail.gmail.com>
+        <CAADnVQLuGYX=LamARhrZcze1ej4ELj-y99fLzOCgz60XLPw_cQ@mail.gmail.com>
+        <87ftaxd7ky.fsf@x220.int.ebiederm.org>
+        <20200616015552.isi6j5x732okiky4@ast-mbp.dhcp.thefacebook.com>
+        <87h7v1pskt.fsf@x220.int.ebiederm.org>
+        <20200623183520.5e7fmlt3omwa2lof@ast-mbp.dhcp.thefacebook.com>
+        <87h7v1mx4z.fsf@x220.int.ebiederm.org>
+        <20200623194023.lzl34qt2wndhcehk@ast-mbp.dhcp.thefacebook.com>
+        <878sgck6g0.fsf@x220.int.ebiederm.org>
+        <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+Date:   Fri, 26 Jun 2020 06:30:48 -0500
+In-Reply-To: <CAADnVQL8WrfV74v1ChvCKE=pQ_zo+A5EtEBB3CbD=P5ote8_MA@mail.gmail.com>
+        (Alexei Starovoitov's message of "Wed, 24 Jun 2020 07:26:22 -0700")
+Message-ID: <87sgeihxnb.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-XM-SPF: eid=1jomdX-0000K5-C2;;;mid=<87sgeihxnb.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/z/QlJLLbv8fWfozhts4apX0qJqt5rpEs=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 570 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (2.4%), b_tie_ro: 12 (2.1%), parse: 1.09
+        (0.2%), extract_message_metadata: 12 (2.1%), get_uri_detail_list: 1.29
+        (0.2%), tests_pri_-1000: 13 (2.3%), tests_pri_-950: 1.29 (0.2%),
+        tests_pri_-900: 1.12 (0.2%), tests_pri_-90: 102 (17.9%), check_bayes:
+        100 (17.5%), b_tokenize: 6 (1.0%), b_tok_get_all: 8 (1.5%),
+        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 78 (13.7%), b_finish: 1.28
+        (0.2%), tests_pri_0: 413 (72.5%), check_dkim_signature: 0.72 (0.1%),
+        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 1.17 (0.2%), tests_pri_10:
+        2.5 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] net/bpfilter: Remove this broken and apparently unmantained
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:12 AM CEST, John Fastabend wrote:
-> There are two paths to generate the below RCU splat the first and
-> most obvious is the result of the BPF verdict program issuing a
-> redirect on a TLS socket (This is the splat shown below). Unlike
-> the non-TLS case the caller of the *strp_read() hooks does not
-> wrap the call in a rcu_read_lock/unlock. Then if the BPF program
-> issues a redirect action we hit the RCU splat.
->
-> However, in the non-TLS socket case the splat appears to be
-> relatively rare, because the skmsg caller into the strp_data_ready()
-> is wrapped in a rcu_read_lock/unlock. Shown here,
->
->  static void sk_psock_strp_data_ready(struct sock *sk)
->  {
-> 	struct sk_psock *psock;
->
-> 	rcu_read_lock();
-> 	psock = sk_psock(sk);
-> 	if (likely(psock)) {
-> 		if (tls_sw_has_ctx_rx(sk)) {
-> 			psock->parser.saved_data_ready(sk);
-> 		} else {
-> 			write_lock_bh(&sk->sk_callback_lock);
-> 			strp_data_ready(&psock->parser.strp);
-> 			write_unlock_bh(&sk->sk_callback_lock);
-> 		}
-> 	}
-> 	rcu_read_unlock();
->  }
->
-> If the above was the only way to run the verdict program we
-> would be safe. But, there is a case where the strparser may throw an
-> ENOMEM error while parsing the skb. This is a result of a failed
-> skb_clone, or alloc_skb_for_msg while building a new merged skb when
-> the msg length needed spans multiple skbs. This will in turn put the
-> skb on the strp_wrk workqueue in the strparser code. The skb will
-> later be dequeued and verdict programs run, but now from a
-> different context without the rcu_read_lock()/unlock() critical
-> section in sk_psock_strp_data_ready() shown above. In practice
-> I have not seen this yet, because as far as I know most users of the
-> verdict programs are also only working on single skbs. In this case no
-> merge happens which could trigger the above ENOMEM errors. In addition
-> the system would need to be under memory pressure. For example, we
-> can't hit the above case in selftests because we missed having tests
-> to merge skbs. (Added in later patch)
->
-> To fix the below splat extend the rcu_read_lock/unnlock block to
-> include the call to sk_psock_tls_verdict_apply(). This will fix both
-> TLS redirect case and non-TLS redirect+error case. Also remove
-> psock from the sk_psock_tls_verdict_apply() function signature its
-> not used there.
->
-> [ 1095.937597] WARNING: suspicious RCU usage
-> [ 1095.940964] 5.7.0-rc7-02911-g463bac5f1ca79 #1 Tainted: G        W
-> [ 1095.944363] -----------------------------
-> [ 1095.947384] include/linux/skmsg.h:284 suspicious rcu_dereference_check() usage!
-> [ 1095.950866]
-> [ 1095.950866] other info that might help us debug this:
-> [ 1095.950866]
-> [ 1095.957146]
-> [ 1095.957146] rcu_scheduler_active = 2, debug_locks = 1
-> [ 1095.961482] 1 lock held by test_sockmap/15970:
-> [ 1095.964501]  #0: ffff9ea6b25de660 (sk_lock-AF_INET){+.+.}-{0:0}, at: tls_sw_recvmsg+0x13a/0x840 [tls]
-> [ 1095.968568]
-> [ 1095.968568] stack backtrace:
-> [ 1095.975001] CPU: 1 PID: 15970 Comm: test_sockmap Tainted: G        W         5.7.0-rc7-02911-g463bac5f1ca79 #1
-> [ 1095.977883] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [ 1095.980519] Call Trace:
-> [ 1095.982191]  dump_stack+0x8f/0xd0
-> [ 1095.984040]  sk_psock_skb_redirect+0xa6/0xf0
-> [ 1095.986073]  sk_psock_tls_strp_read+0x1d8/0x250
-> [ 1095.988095]  tls_sw_recvmsg+0x714/0x840 [tls]
->
-> v2: Improve commit message to identify non-TLS redirect plus error case
->     condition as well as more common TLS case. In the process I decided
->     doing the rcu_read_unlock followed by the lock/unlock inside branches
->     was unnecessarily complex. We can just extend the current rcu block
->     and get the same effeective without the shuffling and branching.
->     Thanks Martin!
->
-> Fixes: e91de6afa81c1 ("bpf: Fix running sk_skb program types with ktls")
-> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Thanks for the detailed explanation.
+> On Wed, Jun 24, 2020 at 5:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Tue, Jun 23, 2020 at 01:53:48PM -0500, Eric W. Biederman wrote:
+>>
+>> > There is no refcnt bug. It was a user error on tomoyo side.
+>> > fork_blob() works as expected.
+>>
+>> Nope.  I have independently confirmed it myself.
+>
+> I guess you've tried Tetsuo's fork_blob("#!/bin/true") kernel module ?
+> yes. that fails. It never meant to be used for this.
+> With elf blob it works, but breaks if there are rejections
+> in things like security_bprm_creds_for_exec().
+> In my mind that path was 'must succeed or kernel module is toast'.
+> Like passing NULL into a function that doesn't check for it.
+> Working on a fix for that since Tetsuo cares.
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+No.  The reference counting issue is present with the elf blob.
 
-[...]
+It is very straight forward to see when you take a minute to look.
+
+The file is created with shmem_kernel_file_setup in fork_usermode_blob.
+The file is put in fork_usermode_blob
+The file is put in free_bprm by exec.
+
+Eric
