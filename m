@@ -2,193 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD0420C358
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 19:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161E620C408
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 22:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgF0Rlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jun 2020 13:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S1726726AbgF0UZP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jun 2020 16:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgF0Rlo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jun 2020 13:41:44 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726FCC061794
-        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:41:44 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id e197so2111285yba.5
-        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:41:44 -0700 (PDT)
+        with ESMTP id S1725900AbgF0UZO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jun 2020 16:25:14 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D010FC061794
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 13:25:13 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id k18so11999316qke.4
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 13:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xRe8sWy60YaY/7mbOXD0PIdOGZMU8jUZOhmSrisijAQ=;
-        b=aA0sJKtUTkS8N2vr2zU4XmGBqtqDpQzgj0okpMJCFM9eIyVJiqff2k1BWhaIV4FZOt
-         opRxEwnHRD3453BuhoMzF40+sBlrST+msAaUNXXkHTLfy8phZ3DI5CVJl/Rx285sLmmd
-         C292Y5twzPlp2bNNPdxNJlHa2ZoDBvIX5TRMEEVLJQgAmcW6UYPnAmWgQoLf12e0re+n
-         HOgqIoI2GL9uVeplF00QXa5RAHlh80J0od8XEUcHXXchfKktRQiLcP6m87VUz2FI/8FF
-         RsODMAt8wIvyvPUKeg48eIEvBNSFK1FxxQ/RO5jcIh41zlo4MgoJC9+2LFyjaBxsa/cm
-         WSJQ==
+        bh=4uBYnlxWAKKP1kg7JgxLJxuSTUv74qaZNHuzbecYul4=;
+        b=BasWyTzoexj23J7/7cT+EmAzH6y02lwTxmlNSYbK14seTCUKx+XT8/N4M0i91R7XsW
+         L5cHSBmU7CN/97u3WpFWRzaHxFivrZc/Y8ko9dOFEXwsgnWd9h3FybsZkFO1WeIpSzWL
+         iQhSudOo1D7/c+LJ2s+clm0A4DO0mbLCjrzZoGNWdeXdxKbfSFTnbDHuvhYV+w2E96yk
+         IBiAvWauFb36Hqmf9nH3A/LEngc2wweHESkTjhhSj2/e0+49WsedI4YJAsqfjHNE/M4v
+         QKHi7Apxebd8+/lgEjc5FUUAWInXydBgCXMepiWpKXmZr2d0GS6sxKSequu8YkdbEokE
+         3cUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xRe8sWy60YaY/7mbOXD0PIdOGZMU8jUZOhmSrisijAQ=;
-        b=pwRzAdzNrtOp0MbKh7jT8MBlGoFLs9RJ8KtTaQns16maZWiorvLyTnH5h+s8way4vE
-         oS2IjZI0VS5ifNKB/P23qVjG1VOKBtz/gBzj5/540udfvdBg6fKNFSUVtjm1tnR+4cBV
-         VfKVB/Y5bnuRk1EJNK0jLS2czxLVpJmM2Q8STgJ4JWNGqdtSehC5/KSkr7h/uiNUFmg5
-         XAfHJ/+c928gL4K2E0F1w12xWFTGII6seyFPF5O5KXE8JNamkaz55SNq0ilakONRZBfC
-         vZewv/kDOnJIcuBmccy7AIaHh8k+7WdxC1p519gp2Jd65d+VjQ5Gjt819dNOIRIrcF4S
-         kugw==
-X-Gm-Message-State: AOAM530fQePNSYK5NXYoRRHjV3qXCe3s7qxiJVN8wFP+JiAyAAyi5vgd
-        yEfLqKs/2V50VqAf/MTOnvfAs0Aa35M6n8yZmetQQA==
-X-Google-Smtp-Source: ABdhPJwaqP+Ck9iMWmz/N7+/xPVTwBsvxwtfMHTQNUbCyHdPnqyqyw0z+Q8YD+g5Rj/8b3OkxfwTFrXIbu4kDk/VYow=
-X-Received: by 2002:a25:b8c6:: with SMTP id g6mr15103507ybm.101.1593279703314;
- Sat, 27 Jun 2020 10:41:43 -0700 (PDT)
+        bh=4uBYnlxWAKKP1kg7JgxLJxuSTUv74qaZNHuzbecYul4=;
+        b=Wz346y9RBPlmiFiqCV+PB2sKHZxNQcrHYo2787cYeN8rA7bl4773O/uTrKNJsZw5Oq
+         D69HyO6XrbZaDfTNyipsQcRjGOdAWbj+rvnBVNyq3onH48yU4bGD4kAl6mlRvXWkvfIN
+         u1fslJautXMlgusC6Q2t1zoi7gaZvonuROjRGqyQWAVuD4kGTL2zHwex+BoGGnDQQb9x
+         IHI87/JK+Dvg7qpBdl85ReG4n7Pypb6OD5xJ56M4mtecpvpnPUjK1VUNwCg5QT77xPbc
+         zK9NJbSeR9+vCGkk2rZtZCeIHEOlsVLWpt/m3GwVpBxC8KSBQMJz/nwx7MJcoJ/IpPts
+         BDfw==
+X-Gm-Message-State: AOAM530EowGqH4m1A1D8BJyqR6KKkxl9/pW3o92+h0STmAGp3h9Qa5fd
+        qFMJ7nfZGjiZlsWNREbrh7hPmAJuR1JVUDpYwxg=
+X-Google-Smtp-Source: ABdhPJxKw3DzY/j1wGWdA/LeZY9VGiYkuD7KDbQ3wFLnzv2pCTgcB8p47f5yFn36v9ITJAQ9G/kNpXJgVBlqWrFl3TI=
+X-Received: by 2002:a05:620a:12d2:: with SMTP id e18mr8964055qkl.437.1593289512822;
+ Sat, 27 Jun 2020 13:25:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626175501.1459961-1-kafai@fb.com> <20200626175508.1460345-1-kafai@fb.com>
-In-Reply-To: <20200626175508.1460345-1-kafai@fb.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 27 Jun 2020 10:41:32 -0700
-Message-ID: <CANn89iLJNWh6bkH7DNhy_kmcAexuUCccqERqe7z2QsvPhGrYPQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] tcp: Use a struct to represent a saved_syn
-To:     Martin KaFai Lau <kafai@fb.com>
+References: <20200621142559.GA25517@stranger.qboosh.pl> <CAEf4BzafxBFCa=sm-MoG71iwMA77Rj4OS-6w4U1OahP3+cH_wQ@mail.gmail.com>
+ <20200623192917.GA6342@mail> <CAEf4BzbKo1-61emwL5nWHRVTeabvedZC6QX01u=pthgkcL3iag@mail.gmail.com>
+ <20200627090713.GA9141@mail>
+In-Reply-To: <20200627090713.GA9141@mail>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 27 Jun 2020 13:25:01 -0700
+Message-ID: <CAEf4BzbL0LTf9tsBAfyvLho5195a1Kwya8zw3r1_Gc3XMEr54g@mail.gmail.com>
+Subject: Re: [PATCH] fix libbpf hashmap with size_t shorter than long long
+To:     Jakub Bogusz <qboosh@pld-linux.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@fb.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        netdev <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 10:55 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Sat, Jun 27, 2020 at 2:07 AM Jakub Bogusz <qboosh@pld-linux.org> wrote:
 >
-> The total length of the saved syn packet is currently stored in
-> the first 4 bytes (u32) and the actual packet data is stored after that.
+> On Tue, Jun 23, 2020 at 12:40:02PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 23, 2020 at 12:29 PM Jakub Bogusz <qboosh@pld-linux.org> wrote:
+> > >
+> > > On Mon, Jun 22, 2020 at 10:44:56PM -0700, Andrii Nakryiko wrote:
+> > > > On Sun, Jun 21, 2020 at 7:34 AM Jakub Bogusz <qboosh@pld-linux.org> wrote:
+> > > > >
+> > > > > Hello,
+> > > > >
+> > > > > I noticed that _bpftool crashes when building kernel tools (5.7.x) for
+> > > > > 32-bit targets because in libbpf hashmap implementation hash_bits()
+> > > > > function returning numbers exceeding hashmap buckets capacity.
+> > > > >
+> > > > > Attached patch fixes this problem.
+> > > > >
+> > > >
+> > > > Thanks! But this was already fixed by Arnaldo Carvalho de Melo <acme@kernel.org>
+> > > > in 8ca8d4a84173 ("libbpf: Define __WORDSIZE if not available").
+> > >
+> > > No, it's not:
+> > > This change worked around __WORDSIZE not always being available.
+> > >
+> > > But the issue on (I)LP32 platforms is that 64-bit value is shifted by
+> > > (32-bits) instead of (64-bits).
+> > >
+> > > (__SIZEOF_LONG__ * 8) is 32 on such architectures (i686, arm).
+> > > I used __SIZEOF_LONG_LONG__ to get proper bit shift both on (I)LP32 and
+> > > LP64 architectures.
+> > >
+> >
+> > Ah, I see. I actually mentioned __SIZEOF_ constants on the original
+> > fix patch. But I think in this case it has to use __SIZEOF_SIZE_T,
+> > which on 32-bit should be 4, right?
 >
-> A latter patch will also want to store an offset (bpf_hdr_opt_off) to
-> a TCP header option which the bpf program will be interested in parsing.
-> Instead of anonymously storing this offset into the second 4 bytes,
-> this patch creates a struct for the existing saved_syn.
-> It can give a readable name to the stored lengths instead of implicitly
-> using the first few u32(s) to do that.
+> After changing constant to 32-bit, yes (to be precise, it should use maximum
+> of __SIZEOF_SIZE_T__ and __SIZEOF_LONG__ if constant is specified with
+> UL suffix; there is no constant suffix available for size_t).
 >
-> The new TCP bpf header offset (bpf_hdr_opt_off) added in a latter patch is
-> an offset from the tcp header instead of from the network header.
-> It will make the bpf programming side easier.  Thus, this patch stores
-> the network header length instead of the total length of the syn
-> header.  The total length can be obtained by the
-> "network header len + tcp_hdrlen".  The latter patch can
-> then also gets the offset to the TCP bpf header option by
-> "network header len + bpf_hdr_opt_off".
+> > > Should I provide an updated patch to apply on top of acme change?
+> >
+> > Yes, that would be good. But I think there is no need to penalize
+> > 32-bit arches with use of 64-bit long longs, and instead it's better
+> > to use #ifdef for 32-bit case vs 64-bit case. The multiplication
+> > constant will change, of course, should be 2654435769. I'd appreciate
+> > it if you can do the patch, thanks!
 >
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  include/linux/tcp.h        | 11 ++++++++++-
->  include/net/request_sock.h |  7 ++++++-
->  net/core/filter.c          |  4 ++--
->  net/ipv4/tcp.c             |  9 +++++----
->  net/ipv4/tcp_input.c       | 12 ++++++------
->  5 files changed, 29 insertions(+), 14 deletions(-)
+> OK, so now the patch provides two variants:
+> - "long long" case for LP64 architectures
+> - "long" case for (I)LP32 architectures
+> (selected basing of __SIZEOF_ constants)
+> matter)
 >
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index 3bdec31ce8f4..9d50132d95e6 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -404,7 +404,7 @@ struct tcp_sock {
->          * socket. Used to retransmit SYNACKs etc.
->          */
->         struct request_sock __rcu *fastopen_rsk;
-> -       u32     *saved_syn;
-> +       struct saved_syn *saved_syn;
->  };
 >
->  enum tsq_enum {
-> @@ -482,6 +482,15 @@ static inline void tcp_saved_syn_free(struct tcp_sock *tp)
->         tp->saved_syn = NULL;
->  }
->
-> +static inline u32 tcp_saved_syn_len(const struct saved_syn *saved_syn)
-> +{
-> +       const struct tcphdr *th;
-> +
-> +       th = (void *)saved_syn->data + saved_syn->network_hdrlen;
-> +
-> +       return saved_syn->network_hdrlen + __tcp_hdrlen(th);
-> +}
 
+Change looks good, thanks! But it would be more convenient for
+everyone if you submitted it not as an attachment, but as a proper
+patch email message.
 
-Ah... We have a patch extending TCP_SAVE_SYN to save all headers, so
-keeping the length in a proper field would be better than going back
-to TCP header to get __tcp_hdrlen(th)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-I am not sure why trying to save 4 bytes in this saved_syn would matter ;)
-
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index c9fcfa4ec43f3f0d75763e2bc6773e15bd38d68f..8ecdc5f87788439c7a08d3b72f9567e6369e7c4e
-100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -258,7 +258,7 @@ struct tcp_sock {
-                fastopen_connect:1, /* FASTOPEN_CONNECT sockopt */
-                fastopen_no_cookie:1, /* Allow send/recv SYN+data
-without a cookie */
-                is_sack_reneg:1,    /* in recovery from loss with SACK reneg? */
--               unused:2;
-+               save_syn:2;     /* Save headers of SYN packet */
-        u8      nonagle     : 4,/* Disable Nagle algorithm?             */
-                thin_lto    : 1,/* Use linear timeouts for thin streams */
-                recvmsg_inq : 1,/* Indicate # of bytes in queue upon recvmsg */
-@@ -270,7 +270,7 @@ struct tcp_sock {
-                syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
-                syn_fastopen_ch:1, /* Active TFO re-enabling probe */
-                syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
--               save_syn:1,     /* Save headers of SYN packet */
-+               unused_save_syn:1,      /* Moved above */
-                is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
-                syn_smc:1;      /* SYN includes SMC */
-        u32     tlp_high_seq;   /* snd_nxt at the time of TLP retransmit. */
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index fa62baf509c8075cb7da30ee0f65059ac35c1c60..7e108de07fb4e45a994d3d75331489ad82f9deb7
-100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3097,7 +3097,8 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
-                break;
-
-        case TCP_SAVE_SYN:
--               if (val < 0 || val > 1)
-+               /* 0: disable, 1: enable, 2: start from ether_header */
-+               if (val < 0 || val > 2)
-                        err = -EINVAL;
-                else
-                        tp->save_syn = val;
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 7ce5bad2308134954133f612ec129cf56946d9a1..5513f8aaae9f6c0303fac4d2c590ead1a6076502
-100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -6708,11 +6708,19 @@ static void tcp_reqsk_record_syn(const struct sock *sk,
-        if (tcp_sk(sk)->save_syn) {
-                u32 len = skb_network_header_len(skb) + tcp_hdrlen(skb);
-                u32 *copy;
-+               void *base;
-+
-+               if (tcp_sk(sk)->save_syn == 2) {  /* Save full header. */
-+                       len += skb->network_header - skb->mac_header;
-+                       base = skb_mac_header(skb);
-+               } else {
-+                       base = skb_network_header(skb);
-+               }
-
-                copy = kmalloc(len + sizeof(u32), GFP_ATOMIC);
-                if (copy) {
-                        copy[0] = len;
--                       memcpy(&copy[1], skb_network_header(skb), len);
-+                       memcpy(&copy[1], base, len);
-                        req->saved_syn = copy;
-                }
-        }
+> Regards,
+>
+> --
+> Jakub Bogusz    http://qboosh.pl/
