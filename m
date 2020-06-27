@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EED20BD7A
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 02:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336D320BD71
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 02:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgF0A30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 20:29:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29878 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726101AbgF0A3S (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 20:29:18 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05R0FNvT023087
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 17:29:17 -0700
+        id S1726531AbgF0A0b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 20:26:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32162 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726520AbgF0A03 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jun 2020 20:26:29 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05R0Eu99014979
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 17:26:28 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=PXwo5w25H1G3trFLqpf6ijaWoyxKihUhCvb9tnUjxmk=;
- b=odF6NMD8YIbMvoo09KZr6IoAUUDHIEYxGC47yE7Qf6eJMxfNO0KT6mRTMxT/2omjfJow
- 0U/bs5e6HT5aLNCrrchL+gLBGwelwpehyDIU3BdYjSYEdUF90n5b4fB4B7h0d30wR0nJ
- 1DfFD5iALLNNhaJLc1y5Yvm95tF+MEhZdCs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 31wudn81g0-6
+ bh=EAJkxsNtexKjSp+KcY5IBffLZgA2IuM2cxuG6XehJ/c=;
+ b=M06SN2nX7KtRsa5NPRG+fsS8Zhhi3sqEqKz3AXCtvxYv06KXJbEVgRn4n4Z6ol0r6VJ1
+ 91BFLRXfrh1c6RKQ1ZvDXskqZ90781qKjV1TR3zBj7pt776aztkPOlaPZehgku1fbAfp
+ UBEDc44KUv8dPnYVZRpNi9yuiEAF1N8J4NU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31ux1f06am-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 17:29:17 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 17:26:28 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Jun 2020 17:29:14 -0700
+ 15.1.1979.3; Fri, 26 Jun 2020 17:26:27 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id C4AAD62E4EB1; Fri, 26 Jun 2020 17:26:20 -0700 (PDT)
+        id 6E0F362E4FC1; Fri, 26 Jun 2020 17:26:22 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Song Liu <songliubraving@fb.com>
 Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
@@ -38,12 +38,11 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <kernel-team@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>
+        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 3/4] bpf: allow %pB in bpf_seq_printf() and bpf_trace_printk()
-Date:   Fri, 26 Jun 2020 17:26:08 -0700
-Message-ID: <20200627002609.3222870-5-songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 4/4] selftests/bpf: add bpf_iter test with bpf_get_task_stack()
+Date:   Fri, 26 Jun 2020 17:26:09 -0700
+Message-ID: <20200627002609.3222870-6-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200627002609.3222870-1-songliubraving@fb.com>
 References: <20200627002609.3222870-1-songliubraving@fb.com>
@@ -53,10 +52,10 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-26_12:2020-06-26,2020-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- suspectscore=8 priorityscore=1501 phishscore=0 lowpriorityscore=0
- cotscore=-2147483648 adultscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 cotscore=-2147483648 spamscore=0 mlxlogscore=999 bulkscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ suspectscore=8 impostorscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2004280000 definitions=main-2006270000
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
@@ -64,52 +63,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This makes it easy to dump stack trace in text.
+The new test is similar to other bpf_iter tests.
 
-Acked-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- kernel/trace/bpf_trace.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 17 ++++++
+ .../selftests/bpf/progs/bpf_iter_task_stack.c | 53 +++++++++++++++++++
+ 2 files changed, 70 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
+.c
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 977ba3b6f6c64..1d874d8e4384b 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -376,7 +376,7 @@ static void bpf_trace_copy_string(char *buf, void *un=
-safe_ptr, char fmt_ptype,
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+index 1e2e0fced6e81..fed42755416db 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -5,6 +5,7 @@
+ #include "bpf_iter_netlink.skel.h"
+ #include "bpf_iter_bpf_map.skel.h"
+ #include "bpf_iter_task.skel.h"
++#include "bpf_iter_task_stack.skel.h"
+ #include "bpf_iter_task_file.skel.h"
+ #include "bpf_iter_tcp4.skel.h"
+ #include "bpf_iter_tcp6.skel.h"
+@@ -110,6 +111,20 @@ static void test_task(void)
+ 	bpf_iter_task__destroy(skel);
+ }
 =20
- /*
-  * Only limited trace_printk() conversion specifiers allowed:
-- * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pks %pus %s
-+ * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
-  */
- BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 	   u64, arg2, u64, arg3)
-@@ -420,6 +420,11 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_s=
-ize, u64, arg1,
- 				goto fmt_str;
- 			}
-=20
-+			if (fmt[i + 1] =3D=3D 'B') {
-+				i++;
-+				goto fmt_next;
-+			}
++static void test_task_stack(void)
++{
++	struct bpf_iter_task_stack *skel;
 +
- 			/* disallow any further format extensions */
- 			if (fmt[i + 1] !=3D 0 &&
- 			    !isspace(fmt[i + 1]) &&
-@@ -636,7 +641,8 @@ BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char=
- *, fmt, u32, fmt_size,
- 		if (fmt[i] =3D=3D 'p') {
- 			if (fmt[i + 1] =3D=3D 0 ||
- 			    fmt[i + 1] =3D=3D 'K' ||
--			    fmt[i + 1] =3D=3D 'x') {
-+			    fmt[i + 1] =3D=3D 'x' ||
-+			    fmt[i + 1] =3D=3D 'B') {
- 				/* just kernel pointers */
- 				params[fmt_cnt] =3D args[fmt_cnt];
- 				fmt_cnt++;
++	skel =3D bpf_iter_task_stack__open_and_load();
++	if (CHECK(!skel, "bpf_iter_task_stack__open_and_load",
++		  "skeleton open_and_load failed\n"))
++		return;
++
++	do_dummy_read(skel->progs.dump_task_stack);
++
++	bpf_iter_task_stack__destroy(skel);
++}
++
+ static void test_task_file(void)
+ {
+ 	struct bpf_iter_task_file *skel;
+@@ -452,6 +467,8 @@ void test_bpf_iter(void)
+ 		test_bpf_map();
+ 	if (test__start_subtest("task"))
+ 		test_task();
++	if (test__start_subtest("task_stack"))
++		test_task_stack();
+ 	if (test__start_subtest("task_file"))
+ 		test_task_file();
+ 	if (test__start_subtest("tcp4"))
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/to=
+ols/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+new file mode 100644
+index 0000000000000..39b21df17c3ee
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Facebook */
++/* "undefine" structs in vmlinux.h, because we "override" them below */
++#define bpf_iter_meta bpf_iter_meta___not_used
++#define bpf_iter__task bpf_iter__task___not_used
++#include "vmlinux.h"
++#undef bpf_iter_meta
++#undef bpf_iter__task
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++struct bpf_iter_meta {
++	struct seq_file *seq;
++	__u64 session_id;
++	__u64 seq_num;
++} __attribute__((preserve_access_index));
++
++struct bpf_iter__task {
++	struct bpf_iter_meta *meta;
++	struct task_struct *task;
++} __attribute__((preserve_access_index));
++
++#define MAX_STACK_TRACE_DEPTH   64
++unsigned long entries[MAX_STACK_TRACE_DEPTH];
++#define SIZE_OF_ULONG (sizeof(unsigned long))
++
++SEC("iter/task")
++int dump_task_stack(struct bpf_iter__task *ctx)
++{
++	struct seq_file *seq =3D ctx->meta->seq;
++	struct task_struct *task =3D ctx->task;
++	long i, retlen;
++
++	if (task =3D=3D (void *)0)
++		return 0;
++
++	retlen =3D bpf_get_task_stack(task, entries,
++				    MAX_STACK_TRACE_DEPTH * SIZE_OF_ULONG, 0);
++	if (retlen < 0)
++		return 0;
++
++	BPF_SEQ_PRINTF(seq, "pid: %8u num_entries: %8u\n", task->pid,
++		       retlen / SIZE_OF_ULONG);
++	for (i =3D 0; i < MAX_STACK_TRACE_DEPTH; i++) {
++		if (retlen > i * SIZE_OF_ULONG)
++			BPF_SEQ_PRINTF(seq, "[<0>] %pB\n", (void *)entries[i]);
++	}
++	BPF_SEQ_PRINTF(seq, "\n");
++
++	return 0;
++}
 --=20
 2.24.1
 
