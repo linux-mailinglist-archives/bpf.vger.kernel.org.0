@@ -2,89 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99ED620BD42
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 01:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CAE20BD58
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 02:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgFZXwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jun 2020 19:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        id S1726256AbgF0AGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jun 2020 20:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgFZXwg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jun 2020 19:52:36 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4106EC03E97A
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 16:52:36 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l6so10425809qkc.6
-        for <bpf@vger.kernel.org>; Fri, 26 Jun 2020 16:52:36 -0700 (PDT)
+        with ESMTP id S1726086AbgF0AGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jun 2020 20:06:36 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC77C03E979;
+        Fri, 26 Jun 2020 17:06:36 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id u17so8862412qtq.1;
+        Fri, 26 Jun 2020 17:06:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kAA8ABCzwjipcqq8eM4x/9IKsZ3JzkSLkDu0d2A7seM=;
-        b=atoEPKv0ZD7lgPzK0HKGk3ChdTczB/1U8jJ1FL7VjlLurFsNZnE3le7Ht9lSGM2Iwm
-         3spOQy4iM3JXj3mcswIhuEu7cJztBrd/nfJ0IBjAzqi2YxZEeGMgAXIIwebQnCH1Eue+
-         rzKbmDNXsN0mhJUjGxqdB6DVMp58/deO9zTrVzqL7unznPI80yRaf45lKgoeSTjcCiAY
-         hFdsE7rnzxY+h0ZMtx1fmPNO2sYDJlXReT95xSi7pkjpfbZP6r1y3/KWqkhCYev0PubX
-         Q4C+vnzZOPE9LQmhAenVR6UoaQgumu3VnccqUHRTgEcJTjoZVc6Y1VNat2eUk+oWHArP
-         Qw6Q==
+        bh=udBllLsYA6lB00cOOJeSI526QRhFyN1UuKw5hU7KkHo=;
+        b=febIOE8be8srwpirNRekGtuSASef3Zu8G9ORyVKjmYgcKvf3IAu/EwRI7QJA5s9B/N
+         9868iMPjM0OFZaxWhKExEh2ykodEtbpFhCfvumLlH+hRxklCxE8AKH4yhK/gAlwnvMWQ
+         kkMhttGQYvOcdHYJis2B87ZT2ajqVkhYVyxFB1GyNfyedwKHVPZT4uWQsNZpAnOfQ5Yc
+         0zEmUg5QTLwt1TzOPN+WQTqftA+O8mmi7bczGKtOVT9j9A1U7keM7z9PO/RMzAXwvePf
+         b6ZAf+nMvtrtc6lawua5zQLI6kDnEbPrm4ahPvf18ImFrhyqhymGPsYCIwi/gKMwFyiX
+         a+lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kAA8ABCzwjipcqq8eM4x/9IKsZ3JzkSLkDu0d2A7seM=;
-        b=KAIBt52gNx1uGzEaMwdO4pMJ0KmkiSCp409hVxMUNBVxH/zBAk28VFgjI654AZ0DpA
-         5dkZsfByWjP4Kg7T9pvJi2lXs2uPBu7RUQkbQJ7Q1hUl9BNPN2D01CiM06Di+CPOrs6O
-         5TpcMjB5j8ABXZArOVKPE0ZccBdLy8jZvpIlP5dQ0gaW+68E/fzhETjV9cZ/H4EqhDJ5
-         irncDJX6cKNEvat+ed0xqZqCZdk8tcsuePgUo359kNLDcw2iag0YA0lDlQKw29KtFFp7
-         DbVTVJu9CD92Ju9rpzAaKttL75Y+LOkuE9CTM7qmuFzLuLIXxOiffZ0mFcyvoRT3ZnfF
-         pY5g==
-X-Gm-Message-State: AOAM5309if069OSag+5q3kzu+lBKKQVmjgDhhTImT8bH9FJOyoEkEukd
-        PJQOmKnCuQHK/qYFk65OHMaCSP4pp23VPyv7gd8ak6g7
-X-Google-Smtp-Source: ABdhPJx21jIeSfIWsfpASN600xu4ofZ8Uf4WmEKHzEysehzmxGp3lEMXwwozacZ7zIdCGuTj9CugQAcGtbs6YxPIyBE=
-X-Received: by 2002:a37:8a02:: with SMTP id m2mr5025080qkd.17.1593215555254;
- Fri, 26 Jun 2020 16:52:35 -0700 (PDT)
+        bh=udBllLsYA6lB00cOOJeSI526QRhFyN1UuKw5hU7KkHo=;
+        b=Mxx+SR86CYUPIg5FSiWSE2csxDHwrXoph9uW6en6XAmNlKH1ajvPnx1BwMQdYvstfE
+         0I2mtYWqoLtmldPBkihPrEBMswmNS9yZb8T9RMpyH0X/P/MWLU2nrUONIaWSKoi7k4yh
+         HnMGCDKDQnLV23Gf/XUWPqdvncHPBIzJO+lQp2L8Fiel4XlALGZwYy4+vV4sqOHRrIiQ
+         PtMG3I6bpn7ILseOzTVnErxyByaEnIpDjhvHH7cqwaIB6BCfTbDEO+4sgMOJIlXV5I2P
+         KB2nJBlsCId1BmtkRgGyeisJ4kPphaXwM5pYENfxToaMEI2GjJUGOhtctJu42FtZSOHs
+         yLCw==
+X-Gm-Message-State: AOAM5302MaKWJ8S64nRz55RKec2vrenyO9Jzx6sG0ESKm49CJZtIlUue
+        +M4JK7kkPVbpKIw6ZuUEbyy2Y5WWnIPaOh1WG6Y=
+X-Google-Smtp-Source: ABdhPJzHtkpQ4mcoJjnIF7AdtA+0kYcRkb2AhTvezqXZVa2Kg9FixR+Q8uqSgoJy7UVMbQkcs3AaFOB12M+mSWc7VA4=
+X-Received: by 2002:ac8:1991:: with SMTP id u17mr5271867qtj.93.1593216395389;
+ Fri, 26 Jun 2020 17:06:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626165231.672001-1-sdf@google.com> <20200626165231.672001-3-sdf@google.com>
- <862111f0-b71a-0b7a-1f52-4f2fed28b8ff@iogearbox.net>
-In-Reply-To: <862111f0-b71a-0b7a-1f52-4f2fed28b8ff@iogearbox.net>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 26 Jun 2020 16:52:24 -0700
-Message-ID: <CAKH8qBvmdV=4xh0qBReB4DTmyzjrUJQY2R8-naaAyvfPJ5iBTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpftool: support BPF_CGROUP_INET_SOCK_RELEASE
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>
+References: <20200626001332.1554603-1-songliubraving@fb.com>
+ <20200626001332.1554603-3-songliubraving@fb.com> <CAEf4BzZ6-s-vqp+bLiCAVgS2kmp09a1WdaSvaL_jJySx7s7inA@mail.gmail.com>
+ <C3B6DD3E-1B69-4D0C-8A55-4EB81C21C619@fb.com> <CAEf4BzaC1Dqn3PXBJmczPRaUmjKc7pcg6_mjyKymBek-sDKv7Q@mail.gmail.com>
+ <AD7AE0B3-94F9-4430-990C-85B9CF431EC7@fb.com>
+In-Reply-To: <AD7AE0B3-94F9-4430-990C-85B9CF431EC7@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Jun 2020 17:06:24 -0700
+Message-ID: <CAEf4BzZSioccpzc-OXEZqRo-VLP6RE8nEtxXEWEmAOpnmPWWvw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] bpf: introduce helper bpf_get_task_stak()
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 4:08 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Fri, Jun 26, 2020 at 4:47 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> On 6/26/20 6:52 PM, Stanislav Fomichev wrote:
-> > Support attaching to sock_release from the bpftool.
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >   tools/bpf/bpftool/main.h | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> > index 5cdf0bc049bd..0a281d3cceb8 100644
-> > --- a/tools/bpf/bpftool/main.h
-> > +++ b/tools/bpf/bpftool/main.h
-> > @@ -92,6 +92,7 @@ static const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
-> >       [BPF_CGROUP_INET_INGRESS] = "ingress",
-> >       [BPF_CGROUP_INET_EGRESS] = "egress",
-> >       [BPF_CGROUP_INET_SOCK_CREATE] = "sock_create",
-> > +     [BPF_CGROUP_INET_SOCK_RELEASE] = "sock_release",
-> >       [BPF_CGROUP_SOCK_OPS] = "sock_ops",
-> >       [BPF_CGROUP_DEVICE] = "device",
-> >       [BPF_CGROUP_INET4_BIND] = "bind4",
 >
-> This one is not on latest bpf-next, needs rebase due to 16d37ee3d2b1 ("tools, bpftool: Define
-> attach_type_name array only once").
-Sure, will follow up with a v3 to address Andrii's suggestions + will
-rebase on top of the latest bpf-next!
+>
+> > On Jun 26, 2020, at 3:51 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Jun 26, 2020 at 3:45 PM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >>
+> >>
+> >>> On Jun 26, 2020, at 1:17 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> On Thu, Jun 25, 2020 at 5:14 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>>
+> >>>> Introduce helper bpf_get_task_stack(), which dumps stack trace of given
+> >>>> task. This is different to bpf_get_stack(), which gets stack track of
+> >>>> current task. One potential use case of bpf_get_task_stack() is to call
+> >>>> it from bpf_iter__task and dump all /proc/<pid>/stack to a seq_file.
+> >>>>
+> >>>> bpf_get_task_stack() uses stack_trace_save_tsk() instead of
+> >>>> get_perf_callchain() for kernel stack. The benefit of this choice is that
+> >>>> stack_trace_save_tsk() doesn't require changes in arch/. The downside of
+> >>>> using stack_trace_save_tsk() is that stack_trace_save_tsk() dumps the
+> >>>> stack trace to unsigned long array. For 32-bit systems, we need to
+> >>>> translate it to u64 array.
+> >>>>
+> >>>> Signed-off-by: Song Liu <songliubraving@fb.com>
+> >>>> ---
+> >>>
+> >>> Looks great, I just think that there are cases where user doesn't
+> >>> necessarily has valid task_struct pointer, just pid, so would be nice
+> >>> to not artificially restrict such cases by having extra helper.
+> >>>
+> >>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >>
+> >> Thanks!
+> >>
+> >>>
+> >>>> include/linux/bpf.h            |  1 +
+> >>>> include/uapi/linux/bpf.h       | 35 ++++++++++++++-
+> >>>> kernel/bpf/stackmap.c          | 79 ++++++++++++++++++++++++++++++++--
+> >>>> kernel/trace/bpf_trace.c       |  2 +
+> >>>> scripts/bpf_helpers_doc.py     |  2 +
+> >>>> tools/include/uapi/linux/bpf.h | 35 ++++++++++++++-
+> >>>> 6 files changed, 149 insertions(+), 5 deletions(-)
+> >>>>
+> >>>
+> >>> [...]
+> >>>
+> >>>> +       /* stack_trace_save_tsk() works on unsigned long array, while
+> >>>> +        * perf_callchain_entry uses u64 array. For 32-bit systems, it is
+> >>>> +        * necessary to fix this mismatch.
+> >>>> +        */
+> >>>> +       if (__BITS_PER_LONG != 64) {
+> >>>> +               unsigned long *from = (unsigned long *) entry->ip;
+> >>>> +               u64 *to = entry->ip;
+> >>>> +               int i;
+> >>>> +
+> >>>> +               /* copy data from the end to avoid using extra buffer */
+> >>>> +               for (i = entry->nr - 1; i >= (int)init_nr; i--)
+> >>>> +                       to[i] = (u64)(from[i]);
+> >>>
+> >>> doing this forward would be just fine as well, no? First iteration
+> >>> will cast and overwrite low 32-bits, all the subsequent iterations
+> >>> won't even overlap.
+> >>
+> >> I think first iteration will write zeros to higher 32 bits, no?
+> >
+> > Oh, wait, I completely misread what this is doing. It up-converts from
+> > 32-bit to 64-bit, sorry. Yeah, ignore me on this :)
+> >
+> > But then I have another question. How do you know that entry->ip has
+> > enough space to keep the same number of 2x bigger entries?
+>
+> The buffer is sized for sysctl_perf_event_max_stack u64 numbers.
+> stack_trace_save_tsk() will put at most stack_trace_save_tsk unsigned
+> long in it (init_nr == 0). So the buffer is big enough.
+>
+
+Awesome, thanks for clarification!
+
+> Thanks,
+> Song
