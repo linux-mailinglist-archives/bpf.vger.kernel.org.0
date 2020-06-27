@@ -2,134 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3100120C067
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 11:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB02120C10D
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgF0JHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jun 2020 05:07:15 -0400
-Received: from mail.qboosh.pl ([217.73.31.61]:57656 "EHLO mail.qboosh.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgF0JHP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jun 2020 05:07:15 -0400
-Received: by mail.qboosh.pl (Postfix, from userid 1000)
-        id C5C491A26DA9; Sat, 27 Jun 2020 11:07:13 +0200 (CEST)
-Date:   Sat, 27 Jun 2020 11:07:13 +0200
-From:   Jakub Bogusz <qboosh@pld-linux.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH] fix libbpf hashmap with size_t shorter than long long
-Message-ID: <20200627090713.GA9141@mail>
-References: <20200621142559.GA25517@stranger.qboosh.pl> <CAEf4BzafxBFCa=sm-MoG71iwMA77Rj4OS-6w4U1OahP3+cH_wQ@mail.gmail.com> <20200623192917.GA6342@mail> <CAEf4BzbKo1-61emwL5nWHRVTeabvedZC6QX01u=pthgkcL3iag@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="huq684BweRXVnRxX"
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbKo1-61emwL5nWHRVTeabvedZC6QX01u=pthgkcL3iag@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S1726175AbgF0Ljj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jun 2020 07:39:39 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57236 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgF0Ljj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jun 2020 07:39:39 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05RBcbc8066660;
+        Sat, 27 Jun 2020 20:38:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Sat, 27 Jun 2020 20:38:37 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05RBcZq7066652
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Sat, 27 Jun 2020 20:38:36 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <40720db5-92f0-4b5b-3d8a-beb78464a57f@i-love.sakura.ne.jp>
+Date:   Sat, 27 Jun 2020 20:38:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2020/06/26 21:51, Eric W. Biederman wrote:
+> Please let me know if you see any bugs.  Once the code review is
+> finished I plan to take this through my tree.
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series needs some sanity checks.
 
-On Tue, Jun 23, 2020 at 12:40:02PM -0700, Andrii Nakryiko wrote:
-> On Tue, Jun 23, 2020 at 12:29 PM Jakub Bogusz <qboosh@pld-linux.org> wrote:
-> >
-> > On Mon, Jun 22, 2020 at 10:44:56PM -0700, Andrii Nakryiko wrote:
-> > > On Sun, Jun 21, 2020 at 7:34 AM Jakub Bogusz <qboosh@pld-linux.org> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > I noticed that _bpftool crashes when building kernel tools (5.7.x) for
-> > > > 32-bit targets because in libbpf hashmap implementation hash_bits()
-> > > > function returning numbers exceeding hashmap buckets capacity.
-> > > >
-> > > > Attached patch fixes this problem.
-> > > >
-> > >
-> > > Thanks! But this was already fixed by Arnaldo Carvalho de Melo <acme@kernel.org>
-> > > in 8ca8d4a84173 ("libbpf: Define __WORDSIZE if not available").
-> >
-> > No, it's not:
-> > This change worked around __WORDSIZE not always being available.
-> >
-> > But the issue on (I)LP32 platforms is that 64-bit value is shifted by
-> > (32-bits) instead of (64-bits).
-> >
-> > (__SIZEOF_LONG__ * 8) is 32 on such architectures (i686, arm).
-> > I used __SIZEOF_LONG_LONG__ to get proper bit shift both on (I)LP32 and
-> > LP64 architectures.
-> >
-> 
-> Ah, I see. I actually mentioned __SIZEOF_ constants on the original
-> fix patch. But I think in this case it has to use __SIZEOF_SIZE_T,
-> which on 32-bit should be 4, right?
-
-After changing constant to 32-bit, yes (to be precise, it should use maximum
-of __SIZEOF_SIZE_T__ and __SIZEOF_LONG__ if constant is specified with
-UL suffix; there is no constant suffix available for size_t).
-
-> > Should I provide an updated patch to apply on top of acme change?
-> 
-> Yes, that would be good. But I think there is no need to penalize
-> 32-bit arches with use of 64-bit long longs, and instead it's better
-> to use #ifdef for 32-bit case vs 64-bit case. The multiplication
-> constant will change, of course, should be 2654435769. I'd appreciate
-> it if you can do the patch, thanks!
-
-OK, so now the patch provides two variants:
-- "long long" case for LP64 architectures
-- "long" case for (I)LP32 architectures
-(selected basing of __SIZEOF_ constants)
-matter)
-
-
-Regards,
-
--- 
-Jakub Bogusz    http://qboosh.pl/
-
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="kernel-tools-bpf-hashmap.patch"
-
-Fix libbpf hashmap on (I)LP32 architectures
-
-On ILP32, 64-bit result was shifted by value calculated for 32-bit long type
-and returned value was much outside hashmap capacity.
-As advised by Andrii Nakryiko, this patch uses different hashing variant for
-architectures with size_t shorter than long long.
-
-Signed-off-by: Jakub Bogusz <qboosh@pld-linux.org>
-
---- linux/tools/lib/bpf/hashmap.h.orig	2020-06-01 01:49:15.000000000 +0200
-+++ linux/tools/lib/bpf/hashmap.h	2020-06-21 15:22:07.298466419 +0200
-@@ -11,14 +11,18 @@
- #include <stdbool.h>
- #include <stddef.h>
- #include <limits.h>
--#ifndef __WORDSIZE
--#define __WORDSIZE (__SIZEOF_LONG__ * 8)
--#endif
+diff --git a/kernel/umd.c b/kernel/umd.c
+index de2f542191e5..f3e0227a3012 100644
+--- a/kernel/umd.c
++++ b/kernel/umd.c
+@@ -47,15 +47,18 @@ static struct vfsmount *blob_to_mnt(const void *data, size_t len, const char *na
  
- static inline size_t hash_bits(size_t h, int bits)
+ /**
+  * umd_load_blob - Remember a blob of bytes for fork_usermode_driver
+- * @info: information about usermode driver
+- * @data: a blob of bytes that can be executed as a file
+- * @len:  The lentgh of the blob
++ * @info: information about usermode driver (shouldn't be NULL)
++ * @data: a blob of bytes that can be executed as a file (shouldn't be NULL)
++ * @len:  The lentgh of the blob (shouldn't be 0)
+  *
+  */
+ int umd_load_blob(struct umd_info *info, const void *data, size_t len)
  {
- 	/* shuffle bits and return requested number of upper bits */
--	return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
-+#if (__SIZEOF_SIZE_T__ == __SIZEOF_LONG_LONG__)
-+	/* LP64 case */
-+	return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits);
-+#elif (__SIZEOF_SIZE_T__ <= __SIZEOF_LONG__)
-+	return (h * 2654435769lu) >> (__SIZEOF_LONG__ * 8 - bits);
-+#else
-+#	error "Unsupported size_t size"
-+#endif
- }
+ 	struct vfsmount *mnt;
  
- typedef size_t (*hashmap_hash_fn)(const void *key, void *ctx);
++	if (!info || !info->driver_name || !data || !len)
++		return -EINVAL;
++
+ 	if (WARN_ON_ONCE(info->wd.dentry || info->wd.mnt))
+ 		return -EBUSY;
+ 
+@@ -158,6 +161,9 @@ int fork_usermode_driver(struct umd_info *info)
+ 	char **argv = NULL;
+ 	int err;
+ 
++	if (!info || !info->driver_name)
++		return -EINVAL;
++
+ 	if (WARN_ON_ONCE(info->tgid))
+ 		return -EBUSY;
+ 
+But loading
 
---huq684BweRXVnRxX--
+----- test.c -----
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/umd.h>
+
+static int __init test_init(void)
+{
+	const char blob[464] = {
+		"\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x02\x00\x3e\x00\x01\x00\x00\x00\x80\x00\x40\x00\x00\x00\x00\x00"
+		"\x40\x00\x00\x00\x00\x00\x00\x00\xd0\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x40\x00\x38\x00\x01\x00\x40\x00\x04\x00\x03\x00"
+		"\x01\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x40\x00\x00\x00\x00\x00\x00\x00\x40\x00\x00\x00\x00\x00"
+		"\xb4\x00\x00\x00\x00\x00\x00\x00\xb4\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x20\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\xb8\x01\x00\x00\x00\xbf\x01\x00\x00\x00\x48\xbe\xa8\x00\x40\x00"
+		"\x00\x00\x00\x00\xba\x0c\x00\x00\x00\x0f\x05\xb8\xe7\x00\x00\x00"
+		"\xbf\x00\x00\x00\x00\x0f\x05\x00\x48\x65\x6c\x6c\x6f\x20\x77\x6f"
+		"\x72\x6c\x64\x0a\x00\x2e\x73\x68\x73\x74\x72\x74\x61\x62\x00\x2e"
+		"\x74\x65\x78\x74\x00\x2e\x72\x6f\x64\x61\x74\x61\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x0b\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00"
+		"\x80\x00\x40\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x00\x00\x00"
+		"\x27\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x11\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00"
+		"\xa8\x00\x40\x00\x00\x00\x00\x00\xa8\x00\x00\x00\x00\x00\x00\x00"
+		"\x0c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x01\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00\xb4\x00\x00\x00\x00\x00\x00\x00"
+		"\x19\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+	};
+	struct umd_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
+	
+	if (!info)
+		return -ENOMEM;
+	info->driver_name = kstrdup("my test driver", GFP_KERNEL);
+	printk("umd_load_blob()=%d\n", umd_load_blob(info, blob, 464));
+	//printk("fork_usermode_driver()=%d\n", fork_usermode_driver(info));
+	return -EINVAL;
+}
+
+module_init(test_init);
+MODULE_LICENSE("GPL");
+----- test.c -----
+
+causes
+
+   BUG_ON(!(task->flags & PF_KTHREAD));
+
+in __fput_sync(). Do we want to forbid umd_load_blob() from process context (e.g.
+upon module initialization time) ?
+
+Also, since umd_load_blob() uses info->driver_name as filename, info->driver_name has to
+satisfy strchr(info->driver_name, '/') == NULL && strlen(info->driver_name) <= NAME_MAX
+in order to avoid -ENOENT failure. On the other hand, since fork_usermode_driver() uses
+info->driver_name as argv[], info->driver_name has to use ' ' within this constraint.
+This might be inconvenient...
