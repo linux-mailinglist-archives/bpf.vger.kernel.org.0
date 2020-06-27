@@ -2,177 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569B320C1E6
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 15:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3B520C323
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 18:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgF0N6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jun 2020 09:58:11 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56481 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgF0N6L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:58:11 -0400
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05RDvCLq005289;
-        Sat, 27 Jun 2020 22:57:12 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Sat, 27 Jun 2020 22:57:12 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05RDvBus005282
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sat, 27 Jun 2020 22:57:12 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <40720db5-92f0-4b5b-3d8a-beb78464a57f@i-love.sakura.ne.jp>
- <87366g8y1e.fsf@x220.int.ebiederm.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <aa737d87-cf38-55d6-32f1-2d989a5412ea@i-love.sakura.ne.jp>
-Date:   Sat, 27 Jun 2020 22:57:10 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1725900AbgF0QpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jun 2020 12:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgF0QpI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jun 2020 12:45:08 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F791C061794
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 09:45:08 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id d13so6077398ybk.8
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 09:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pGYuTB7Gxg8gZ0ohgXDiu6lF7XBieoWtYmjZGWoanV8=;
+        b=UfJuM87I21pr1UoCheQzK/rruP7k3+nndL1n6lixzQIal7DcsIimFGAxwK8JvR0Szz
+         GWl/4wmUcdKkePz/78A0ZYaDfkq5i924wz9zWVzLzxtuhzO3tWUmFLMnvGI6njxhd+hu
+         G20WrAFTV29W8fJ3FMR4yuKKJKL/o2HHtUCJMn+1m39z33A+UJ3Zuy1OHe6vdOfwAhu9
+         q7ewA/R882mfUpNzrkNfyjU/YEHQUr8DQ/OhOOOccqK+p43q+QNKty7UWImJ67Hu8hsO
+         cYlzMs0voM6GRcHOCcjcAqAK6ZDiXf2bvt9QQHDX4ZUKHXqPuGeeh6Sv7mR51XEUibuv
+         BJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pGYuTB7Gxg8gZ0ohgXDiu6lF7XBieoWtYmjZGWoanV8=;
+        b=IQBG0w7ZuYXVYFtzLvcA3pVRq9mZJiFmCHrI59KFaF/3UZlt3Bz1ZHQ46/jWklaPLq
+         jph/377+pYkSxXr+odAqOlEcGeUxCZeWznyH4wzWtoXv1QOs+fitQQGvCUYXkE57ybq8
+         KcAyngWbzoltC2NHrO/HORSz2mGTQt1KikKwCP5ng92kCn0k6q7qT+VGSM1+MSVUrn+B
+         MC8Il6CCMzeneFOwe1h/fVZ+Op6DkNDFbFjckuIVfMMuxPSssTaijdjkopMVZqnWx9eD
+         gkkthgHbThIRz7U7K5WS50ZNmZumf8E/GS3+mCLqUCY9olWAaVq12FLgkzw1rR0MoaVB
+         o8yw==
+X-Gm-Message-State: AOAM532FyW+3ZYa0YMZy3g+Ke27XEXKjLzBxAzFztxhW4fSR2anLC32Y
+        IcqY9+Fww2ozUcX06ikR5Fwt0Q87OZLj0XL1mHl7DIvo
+X-Google-Smtp-Source: ABdhPJzkiBEMN7bNzBI+g5X8Invc3/JttoE2M+cex6nZJDJQrcq0RpYgAMWSDuZsZNFDgh0gTFpQ5t118wbhWIwHJYs=
+X-Received: by 2002:a25:d28e:: with SMTP id j136mr14480748ybg.408.1593276307441;
+ Sat, 27 Jun 2020 09:45:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87366g8y1e.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200626175501.1459961-1-kafai@fb.com> <20200626175514.1460570-1-kafai@fb.com>
+In-Reply-To: <20200626175514.1460570-1-kafai@fb.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 27 Jun 2020 09:44:55 -0700
+Message-ID: <CANn89i+=bpj6p85MMT+6RvTq9Da1LFMnde5j5d8qgU062SM_NQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/10] tcp: bpf: Parse BPF experimental header option
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/06/27 21:59, Eric W. Biederman wrote:
-> Can you try replacing the __fput_sync with:
-> 	fput(file);
->         flush_delayed_fput();
->         task_work_run();
-
-With below change, TOMOYO can obtain pathname like "tmpfs:/my\040test\040driver".
-
-Please avoid WARN_ON() if printk() is sufficient (for friendliness to panic_on_warn=1 environments).
-For argv[], I guess that fork_usermode_driver() should receive argv[] as argument rather than
-trying to split info->driver_name, for somebody might want to pass meaningful argv[] (and
-TOMOYO wants to use meaningful argv[] as a hint for identifying the intent).
-
-diff --git a/kernel/umd.c b/kernel/umd.c
-index de2f542191e5..ae6e85283f13 100644
---- a/kernel/umd.c
-+++ b/kernel/umd.c
-@@ -7,6 +7,7 @@
- #include <linux/mount.h>
- #include <linux/fs_struct.h>
- #include <linux/umd.h>
-+#include <linux/task_work.h>
- 
- static struct vfsmount *blob_to_mnt(const void *data, size_t len, const char *name)
- {
-@@ -25,7 +26,7 @@ static struct vfsmount *blob_to_mnt(const void *data, size_t len, const char *na
- 	if (IS_ERR(mnt))
- 		return mnt;
- 
--	file = file_open_root(mnt->mnt_root, mnt, name, O_CREAT | O_WRONLY, 0700);
-+	file = file_open_root(mnt->mnt_root, mnt, name, O_CREAT | O_WRONLY | O_EXCL, 0700);
- 	if (IS_ERR(file)) {
- 		mntput(mnt);
- 		return ERR_CAST(file);
-@@ -41,23 +42,33 @@ static struct vfsmount *blob_to_mnt(const void *data, size_t len, const char *na
- 		return ERR_PTR(err);
- 	}
- 
--	__fput_sync(file);
-+	if (current->flags & PF_KTHREAD) {
-+		__fput_sync(file);
-+	} else {
-+		fput(file);
-+		flush_delayed_fput();
-+		task_work_run();
-+	}
- 	return mnt;
- }
- 
- /**
-  * umd_load_blob - Remember a blob of bytes for fork_usermode_driver
-- * @info: information about usermode driver
-- * @data: a blob of bytes that can be executed as a file
-- * @len:  The lentgh of the blob
-+ * @info: information about usermode driver (shouldn't be NULL)
-+ * @data: a blob of bytes that can be executed as a file (shouldn't be NULL)
-+ * @len:  The lentgh of the blob (shouldn't be 0)
-  *
-  */
- int umd_load_blob(struct umd_info *info, const void *data, size_t len)
- {
- 	struct vfsmount *mnt;
- 
--	if (WARN_ON_ONCE(info->wd.dentry || info->wd.mnt))
-+	if (!info || !info->driver_name || !data || !len)
-+		return -EINVAL;
-+	if (info->wd.dentry || info->wd.mnt) {
-+		pr_info("%s already loaded.\n", info->driver_name);
- 		return -EBUSY;
-+	}
- 
- 	mnt = blob_to_mnt(data, len, info->driver_name);
- 	if (IS_ERR(mnt))
-@@ -71,14 +82,14 @@ EXPORT_SYMBOL_GPL(umd_load_blob);
- 
- /**
-  * umd_unload_blob - Disassociate @info from a previously loaded blob
-- * @info: information about usermode driver
-+ * @info: information about usermode driver (shouldn't be NULL)
-  *
-  */
- int umd_unload_blob(struct umd_info *info)
- {
--	if (WARN_ON_ONCE(!info->wd.mnt ||
--			 !info->wd.dentry ||
--			 info->wd.mnt->mnt_root != info->wd.dentry))
-+	if (!info || !info->driver_name || !info->wd.dentry || !info->wd.mnt)
-+		return -EINVAL;
-+	if (WARN_ON_ONCE(info->wd.mnt->mnt_root != info->wd.dentry))
- 		return -EINVAL;
- 
- 	kern_unmount(info->wd.mnt);
-@@ -158,8 +169,14 @@ int fork_usermode_driver(struct umd_info *info)
- 	char **argv = NULL;
- 	int err;
- 
--	if (WARN_ON_ONCE(info->tgid))
-+	if (!info || !info->driver_name || !info->wd.dentry || !info->wd.mnt)
-+		return -EINVAL;
-+	if (WARN_ON_ONCE(info->wd.mnt->mnt_root != info->wd.dentry))
-+		return -EINVAL;
-+	if (info->tgid) {
-+		pr_info("%s already running.\n", info->driver_name);
- 		return -EBUSY;
-+	}
- 
- 	err = -ENOMEM;
- 	argv = argv_split(GFP_KERNEL, info->driver_name, NULL);
-
-
-
+On Fri, Jun 26, 2020 at 10:55 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> This patch adds logic to parse experimental kind 254 with 16 bit magic
+> 0xeB9F.  The latter patch will allow bpf prog to write and parse data
+> under this experimental kind and magic.
+>
+> A one byte bpf_hdr_opt_off is added to tcp_skb_cb by using an existing
+> 4 byte hole.  It is only used in rx.  It stores the offset to the
+> bpf experimental option and will be made available to BPF prog
+> in a latter patch.  This offset is also stored in the saved_syn.
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  include/net/request_sock.h | 1 +
+>  include/net/tcp.h          | 3 +++
+>  net/ipv4/tcp_input.c       | 6 ++++++
+>  net/ipv4/tcp_ipv4.c        | 1 +
+>  net/ipv6/tcp_ipv6.c        | 1 +
+>  5 files changed, 12 insertions(+)
+>
+> diff --git a/include/net/request_sock.h b/include/net/request_sock.h
+> index d77237ec9fb4..55297286c066 100644
+> --- a/include/net/request_sock.h
+> +++ b/include/net/request_sock.h
+> @@ -43,6 +43,7 @@ int inet_rtx_syn_ack(const struct sock *parent, struct request_sock *req);
+>
+>  struct saved_syn {
+>         u32 network_hdrlen;
+> +       u32 bpf_hdr_opt_off;
+>         u8 data[];
+>  };
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index eab1c7d0facb..07a9dfe35242 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -191,6 +191,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo);
+>   */
+>  #define TCPOPT_FASTOPEN_MAGIC  0xF989
+>  #define TCPOPT_SMC_MAGIC       0xE2D4C3D9
+> +#define TCPOPT_BPF_MAGIC       0xEB9F
+>
+>  /*
+>   *     TCP option lengths
+> @@ -204,6 +205,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo);
+>  #define TCPOLEN_FASTOPEN_BASE  2
+>  #define TCPOLEN_EXP_FASTOPEN_BASE  4
+>  #define TCPOLEN_EXP_SMC_BASE   6
+> +#define TCPOLEN_EXP_BPF_BASE   4
+>
+>  /* But this is what stacks really send out. */
+>  #define TCPOLEN_TSTAMP_ALIGNED         12
+> @@ -857,6 +859,7 @@ struct tcp_skb_cb {
+>                         has_rxtstamp:1, /* SKB has a RX timestamp       */
+>                         unused:5;
+>         __u32           ack_seq;        /* Sequence number ACK'd        */
+> +       __u8            bpf_hdr_opt_off;/* offset to bpf hdr option. rx only. */
+>         union {
+>                 struct {
+>                         /* There is space for up to 24 bytes */
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index eb0e32b2def9..640408a80b3d 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -3924,6 +3924,10 @@ void tcp_parse_options(const struct net *net,
+>                                         tcp_parse_fastopen_option(opsize -
+>                                                 TCPOLEN_EXP_FASTOPEN_BASE,
+>                                                 ptr + 2, th->syn, foc, true);
+> +                               else if (opsize >= TCPOLEN_EXP_BPF_BASE &&
+> +                                        get_unaligned_be16(ptr) ==
+> +                                        TCPOPT_BPF_MAGIC)
+> +                                       TCP_SKB_CB(skb)->bpf_hdr_opt_off = (ptr - 2) - (unsigned char *)th;
+>                                 else
+>                                         smc_parse_options(th, opt_rx, ptr,
+>                                                           opsize);
+> @@ -6562,6 +6566,8 @@ static void tcp_reqsk_record_syn(const struct sock *sk,
+>                 saved_syn = kmalloc(len + sizeof(*saved_syn), GFP_ATOMIC);
+>                 if (saved_syn) {
+>                         saved_syn->network_hdrlen = skb_network_header_len(skb);
+> +                       saved_syn->bpf_hdr_opt_off =
+> +                               TCP_SKB_CB(skb)->bpf_hdr_opt_off;
+>                         memcpy(saved_syn->data, skb_network_header(skb), len);
+>                         req->saved_syn = saved_syn;
+>                 }
+> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> index ea0df9fd7618..a3535b7fe002 100644
+> --- a/net/ipv4/tcp_ipv4.c
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -1864,6 +1864,7 @@ static void tcp_v4_fill_cb(struct sk_buff *skb, const struct iphdr *iph,
+>         TCP_SKB_CB(skb)->sacked  = 0;
+>         TCP_SKB_CB(skb)->has_rxtstamp =
+>                         skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
+> +       TCP_SKB_CB(skb)->bpf_hdr_opt_off = 0;
+>  }
+>
+>  /*
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index f67d45ff00b4..8356d0562279 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -1545,6 +1545,7 @@ static void tcp_v6_fill_cb(struct sk_buff *skb, const struct ipv6hdr *hdr,
+>         TCP_SKB_CB(skb)->sacked = 0;
+>         TCP_SKB_CB(skb)->has_rxtstamp =
+>                         skb->tstamp || skb_hwtstamps(skb)->hwtstamp;
+> +       TCP_SKB_CB(skb)->bpf_hdr_opt_off = 0;
+>  }
+>
+>  INDIRECT_CALLABLE_SCOPE int tcp_v6_rcv(struct sk_buff *skb)
+> --
+> 2.24.1
+>
