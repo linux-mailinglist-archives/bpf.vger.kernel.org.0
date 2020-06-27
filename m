@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D863020C351
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 19:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD0420C358
+	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 19:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgF0RaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jun 2020 13:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
+        id S1725932AbgF0Rlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jun 2020 13:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgF0RaY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jun 2020 13:30:24 -0400
+        with ESMTP id S1725828AbgF0Rlo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jun 2020 13:41:44 -0400
 Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8466CC061794
-        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:30:24 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id m16so6128576ybf.4
-        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:30:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726FCC061794
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:41:44 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id e197so2111285yba.5
+        for <bpf@vger.kernel.org>; Sat, 27 Jun 2020 10:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GME1JBq+HspVyApgfrLuROed4w0qcKFS1lRk/ZMZtMU=;
-        b=fjrtmxbZLJy+OjMHl0dGb4e4N2N1iKyUosgpgi9Y9fn5Kz+UO8N5aj2mvow4qDEo9L
-         9lrfaPQWhc9JPKRH3UDE60hzMZNfqhe6CpkiZqrB8NqFHW+xNqSYrSBg4JeZWG5Nzoz+
-         J5OhrTX3zZQuDjMVCipKzOkOAeAYUmxYmKPfMMU4haWqOwUYy8m53QYg45a4aw0LlaMI
-         g+WVfdoSMwI/I6gNaVOH3+KOO32aQC5aeUDqaGjqSwIAStmv0RAjWk2WU2XhLyh6Y+iQ
-         Y81VN9ohukfBVhEhogxacfGO3Tp7R7up7rEN11jY0FjwxeCZiTubckyzhP39OO7vTK6i
-         8Fzg==
+        bh=xRe8sWy60YaY/7mbOXD0PIdOGZMU8jUZOhmSrisijAQ=;
+        b=aA0sJKtUTkS8N2vr2zU4XmGBqtqDpQzgj0okpMJCFM9eIyVJiqff2k1BWhaIV4FZOt
+         opRxEwnHRD3453BuhoMzF40+sBlrST+msAaUNXXkHTLfy8phZ3DI5CVJl/Rx285sLmmd
+         C292Y5twzPlp2bNNPdxNJlHa2ZoDBvIX5TRMEEVLJQgAmcW6UYPnAmWgQoLf12e0re+n
+         HOgqIoI2GL9uVeplF00QXa5RAHlh80J0od8XEUcHXXchfKktRQiLcP6m87VUz2FI/8FF
+         RsODMAt8wIvyvPUKeg48eIEvBNSFK1FxxQ/RO5jcIh41zlo4MgoJC9+2LFyjaBxsa/cm
+         WSJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GME1JBq+HspVyApgfrLuROed4w0qcKFS1lRk/ZMZtMU=;
-        b=U3AOTmpUaU+e7CACqbBHWGiXjIDN1MWwvKF2NesP7e/8W0oED0uddvDUEly8686CkB
-         AARt41lpf+NgdXjl9OHp3S2CLkQxzHTk3Pe9lftGreIjHyG5pkiBhxWF/D32qnpSgq0u
-         VoIW/C/e/+zITFc6Vn8CsNmA5SRTG9BonPgExqJS8X14Kjf9FzHVNYaernpykQTy/TBm
-         WAoQQz8j1Du1zL/hgGmTwztqN3GR1AruQffx+VZtN34lKhfptLNWmMo+QWlcXzYU+0i2
-         GiT/fk4MdhiuFY3NuRbKMNavfUyrtDr3fX0E+AO0wPT0SkMPuvWvlf5MnmSstCXIqxUZ
-         FftA==
-X-Gm-Message-State: AOAM531ebnAzWUCK7fQyZJiA0NsMqslR03DKmvaUBX0WTDrb5Go8YSwo
-        JQPxTyKPkGoO/Ghru1lR7vRcTjD+QaZLmmlDvmagmQ==
-X-Google-Smtp-Source: ABdhPJx6c688b24t77YorKJzYmcPzKK5z4r6QqYJZi9ydc7RDLBeYO8rli+QuHthtyA3GyIvRbAxWTpxcIucOh/qTKE=
-X-Received: by 2002:a25:7003:: with SMTP id l3mr13634767ybc.380.1593279022730;
- Sat, 27 Jun 2020 10:30:22 -0700 (PDT)
+        bh=xRe8sWy60YaY/7mbOXD0PIdOGZMU8jUZOhmSrisijAQ=;
+        b=pwRzAdzNrtOp0MbKh7jT8MBlGoFLs9RJ8KtTaQns16maZWiorvLyTnH5h+s8way4vE
+         oS2IjZI0VS5ifNKB/P23qVjG1VOKBtz/gBzj5/540udfvdBg6fKNFSUVtjm1tnR+4cBV
+         VfKVB/Y5bnuRk1EJNK0jLS2czxLVpJmM2Q8STgJ4JWNGqdtSehC5/KSkr7h/uiNUFmg5
+         XAfHJ/+c928gL4K2E0F1w12xWFTGII6seyFPF5O5KXE8JNamkaz55SNq0ilakONRZBfC
+         vZewv/kDOnJIcuBmccy7AIaHh8k+7WdxC1p519gp2Jd65d+VjQ5Gjt819dNOIRIrcF4S
+         kugw==
+X-Gm-Message-State: AOAM530fQePNSYK5NXYoRRHjV3qXCe3s7qxiJVN8wFP+JiAyAAyi5vgd
+        yEfLqKs/2V50VqAf/MTOnvfAs0Aa35M6n8yZmetQQA==
+X-Google-Smtp-Source: ABdhPJwaqP+Ck9iMWmz/N7+/xPVTwBsvxwtfMHTQNUbCyHdPnqyqyw0z+Q8YD+g5Rj/8b3OkxfwTFrXIbu4kDk/VYow=
+X-Received: by 2002:a25:b8c6:: with SMTP id g6mr15103507ybm.101.1593279703314;
+ Sat, 27 Jun 2020 10:41:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200626175501.1459961-1-kafai@fb.com> <20200626175558.1462731-1-kafai@fb.com>
-In-Reply-To: <20200626175558.1462731-1-kafai@fb.com>
+References: <20200626175501.1459961-1-kafai@fb.com> <20200626175508.1460345-1-kafai@fb.com>
+In-Reply-To: <20200626175508.1460345-1-kafai@fb.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 27 Jun 2020 10:30:11 -0700
-Message-ID: <CANn89iJKO+As==L-NCteYjLakqSJkZsYg-TxbAkS21yNDYwENA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] tcp: bpf: Add TCP_BPF_DELACK_MAX and
- TCP_BPF_RTO_MIN to bpf_setsockopt
+Date:   Sat, 27 Jun 2020 10:41:32 -0700
+Message-ID: <CANn89iLJNWh6bkH7DNhy_kmcAexuUCccqERqe7z2QsvPhGrYPQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/10] tcp: Use a struct to represent a saved_syn
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,21 +64,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 10:56 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Fri, Jun 26, 2020 at 10:55 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> This change is mostly from an internal patch and adapts it from sysctl
-> config to the bpf_setsockopt setup.
+> The total length of the saved syn packet is currently stored in
+> the first 4 bytes (u32) and the actual packet data is stored after that.
 >
-> The bpf_prog can set the max delay ack by using
-> bpf_setsockopt(TCP_BPF_DELACK_MAX).  This max delay ack can be communicated
-> to its peer through bpf header option.  The receiving peer can then use
-> this max delay ack and set a potentially lower rto by using
-> bpf_setsockopt(TCP_BPF_RTO_MIN).  A latter patch will use it
-> like this in a test as an example.
+> A latter patch will also want to store an offset (bpf_hdr_opt_off) to
+> a TCP header option which the bpf program will be interested in parsing.
+> Instead of anonymously storing this offset into the second 4 bytes,
+> this patch creates a struct for the existing saved_syn.
+> It can give a readable name to the stored lengths instead of implicitly
+> using the first few u32(s) to do that.
+>
+> The new TCP bpf header offset (bpf_hdr_opt_off) added in a latter patch is
+> an offset from the tcp header instead of from the network header.
+> It will make the bpf programming side easier.  Thus, this patch stores
+> the network header length instead of the total length of the syn
+> header.  The total length can be obtained by the
+> "network header len + tcp_hdrlen".  The latter patch can
+> then also gets the offset to the TCP bpf header option by
+> "network header len + bpf_hdr_opt_off".
 >
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
+>  include/linux/tcp.h        | 11 ++++++++++-
+>  include/net/request_sock.h |  7 ++++++-
+>  net/core/filter.c          |  4 ++--
+>  net/ipv4/tcp.c             |  9 +++++----
+>  net/ipv4/tcp_input.c       | 12 ++++++------
+>  5 files changed, 29 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index 3bdec31ce8f4..9d50132d95e6 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -404,7 +404,7 @@ struct tcp_sock {
+>          * socket. Used to retransmit SYNACKs etc.
+>          */
+>         struct request_sock __rcu *fastopen_rsk;
+> -       u32     *saved_syn;
+> +       struct saved_syn *saved_syn;
+>  };
+>
+>  enum tsq_enum {
+> @@ -482,6 +482,15 @@ static inline void tcp_saved_syn_free(struct tcp_sock *tp)
+>         tp->saved_syn = NULL;
+>  }
+>
+> +static inline u32 tcp_saved_syn_len(const struct saved_syn *saved_syn)
+> +{
+> +       const struct tcphdr *th;
+> +
+> +       th = (void *)saved_syn->data + saved_syn->network_hdrlen;
+> +
+> +       return saved_syn->network_hdrlen + __tcp_hdrlen(th);
+> +}
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-This could be split in two patches, but no big deal.
+Ah... We have a patch extending TCP_SAVE_SYN to save all headers, so
+keeping the length in a proper field would be better than going back
+to TCP header to get __tcp_hdrlen(th)
+
+I am not sure why trying to save 4 bytes in this saved_syn would matter ;)
+
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index c9fcfa4ec43f3f0d75763e2bc6773e15bd38d68f..8ecdc5f87788439c7a08d3b72f9567e6369e7c4e
+100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -258,7 +258,7 @@ struct tcp_sock {
+                fastopen_connect:1, /* FASTOPEN_CONNECT sockopt */
+                fastopen_no_cookie:1, /* Allow send/recv SYN+data
+without a cookie */
+                is_sack_reneg:1,    /* in recovery from loss with SACK reneg? */
+-               unused:2;
++               save_syn:2;     /* Save headers of SYN packet */
+        u8      nonagle     : 4,/* Disable Nagle algorithm?             */
+                thin_lto    : 1,/* Use linear timeouts for thin streams */
+                recvmsg_inq : 1,/* Indicate # of bytes in queue upon recvmsg */
+@@ -270,7 +270,7 @@ struct tcp_sock {
+                syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
+                syn_fastopen_ch:1, /* Active TFO re-enabling probe */
+                syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
+-               save_syn:1,     /* Save headers of SYN packet */
++               unused_save_syn:1,      /* Moved above */
+                is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
+                syn_smc:1;      /* SYN includes SMC */
+        u32     tlp_high_seq;   /* snd_nxt at the time of TLP retransmit. */
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index fa62baf509c8075cb7da30ee0f65059ac35c1c60..7e108de07fb4e45a994d3d75331489ad82f9deb7
+100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3097,7 +3097,8 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
+                break;
+
+        case TCP_SAVE_SYN:
+-               if (val < 0 || val > 1)
++               /* 0: disable, 1: enable, 2: start from ether_header */
++               if (val < 0 || val > 2)
+                        err = -EINVAL;
+                else
+                        tp->save_syn = val;
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 7ce5bad2308134954133f612ec129cf56946d9a1..5513f8aaae9f6c0303fac4d2c590ead1a6076502
+100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -6708,11 +6708,19 @@ static void tcp_reqsk_record_syn(const struct sock *sk,
+        if (tcp_sk(sk)->save_syn) {
+                u32 len = skb_network_header_len(skb) + tcp_hdrlen(skb);
+                u32 *copy;
++               void *base;
++
++               if (tcp_sk(sk)->save_syn == 2) {  /* Save full header. */
++                       len += skb->network_header - skb->mac_header;
++                       base = skb_mac_header(skb);
++               } else {
++                       base = skb_network_header(skb);
++               }
+
+                copy = kmalloc(len + sizeof(u32), GFP_ATOMIC);
+                if (copy) {
+                        copy[0] = len;
+-                       memcpy(&copy[1], skb_network_header(skb), len);
++                       memcpy(&copy[1], base, len);
+                        req->saved_syn = copy;
+                }
+        }
