@@ -2,97 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90A320C8BD
-	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 17:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F8320C924
+	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 19:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgF1Pky (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Jun 2020 11:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S1726060AbgF1RPo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Jun 2020 13:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgF1Pky (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Jun 2020 11:40:54 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F28C03E979;
-        Sun, 28 Jun 2020 08:40:54 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id t25so10819146lji.12;
-        Sun, 28 Jun 2020 08:40:53 -0700 (PDT)
+        with ESMTP id S1726059AbgF1RPo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Jun 2020 13:15:44 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED5CC03E979;
+        Sun, 28 Jun 2020 10:15:43 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b25so11938348ljp.6;
+        Sun, 28 Jun 2020 10:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HarAlCwkF8vycmbAHhvY+j2zfx6VqJcDXojxN9P70YM=;
-        b=KYPNsOZqWLJ2rQsDuMy01cwUz2FM1jZknJRHkAjPh06+ZXp8Ny52TY6BSF0jw3Ad11
-         R3AGewzbR7A4KSdB3bOQh8V2tmuUpDN0r26MLSCKeMnoMA+lS/Q1Huw8gV3k/pvs9FoZ
-         tS9wLC16+gf61DhluaSQmn5CrE9y+CysXm+nz4KLjJgt4+39RvKoN7N5RltlsrJFR0iB
-         L6LACKaAKGWbJWEleDhwp4cjsxkpDnxKhXV2xy62MjmCyOgbzQEtLAcNFNYW0AM3nTxK
-         GEN35fWW3/BV7XX7z+hm91fXGErxh+le0PUd2w4lG0VT9lQGkQxRdONp6aNOGHQBDowN
-         dq1g==
+        bh=HQ2RjhuVKKUDNgqtcSsfkIbE3XmuXBJBGNDy0dFEg+M=;
+        b=p6Iw25gD7v44lVIWuQM9oSSev9wv/F/+ZCV+rjeJKHoSg/qL7ItU5Osiqs5oM2CpCv
+         FqZXJBdLOyazYZdRK9PfZBCXCwr0HWjEqOGm9n4Bv0WFxxX6PKU/JAlHFF+8hR977H6j
+         YYLmBTBotBLfwEx7+3STg6tzehahHe6nWYO4A3EW+BUlwDviusGqPfvShoHe2LCT2YZv
+         rM14sFhhIKtkfULP9cjT2Y+qYyg/HQFuvLQsNUv+f2gKGhwoCPoB993M2cY2+9d2xEhA
+         70xfALkmiI7WFPJr6tMD09F7cPSG6zQ/+BzSFroHlXqiJjKeSozDGy6wp2dp1JAcoGb1
+         3gdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HarAlCwkF8vycmbAHhvY+j2zfx6VqJcDXojxN9P70YM=;
-        b=FhmyJR4FgkbHc3Mnq4NEbAo6yW1dla4gfrxArK/zphg2Ji9jcG09Tmmo0Y0qZ4gbAy
-         nLuJB+JdzsJ9R00VTBGIx07igYbCaB5yz+jUbJwk83wo8IHDf3VjUWkPjUedQUqj3rTO
-         /rug3wA+TNXNYauR5UErXJDvmMScSrvFzf4zYvW8k2vbVI5Tkov4IHGxguvjoAF57clg
-         4+YZYoa8p/Bna1y+yWUY7LRPT9PAqdXBZnED0jkIqAh/AhR3LexpClO5tPj6XZ2JM+j2
-         kilOCkDcOtIdT9ELjSfb7/Ze6vPT9qG476qEtd6GUgg7VMEjnED2FE5advTlF3mQZW//
-         5z2A==
-X-Gm-Message-State: AOAM5332GzCLzEgG9h1zLVp5qxWrSnJj7oYBBFyt8Yk/gZnaLlS6m7ZY
-        09lyJ6ET1VPwYXNmRr+3WlLRa6wk7rpYYKtq8Oc=
-X-Google-Smtp-Source: ABdhPJyYCCY9odZ98IgDnOOrtmExRX89Tkxvkfq4Jl8K9sZRyy4BAeGYN47EvtKIuksgqbNyWB3lQpMwN31NUNeLOvc=
-X-Received: by 2002:a05:651c:308:: with SMTP id a8mr4638241ljp.2.1593358852386;
- Sun, 28 Jun 2020 08:40:52 -0700 (PDT)
+        bh=HQ2RjhuVKKUDNgqtcSsfkIbE3XmuXBJBGNDy0dFEg+M=;
+        b=H+2ai4xfYZr5a36ahGEhbW3bO6M22TyaLf3sxtixgxE+h80LarowcxxzhUphgEnH2b
+         y4jjwR7VXf3FUAZprEWzE4ZF9437/vNUXghq6M9UJBWAZHL7wMrjcXw/btLlgNj+wQ0E
+         IUyoPn3yVAZumbOZ1ITnJUXOoNnr1/mVDrAUIxY6rRoSnL6QiRCAk4YU9zaMel14T8ft
+         YLH6o4IM6vTju3VNrKyDkqUNXHQVOl4cmUnj3nKKLAGtKbcDrfqmJKbFTxIWgNw9OlRX
+         FiImLphKKLcbL35xw3x0+AJHupSBxkinmX5qLulZMF/PCVgdGibpxoS7SLjtFUdqOjVg
+         6GFA==
+X-Gm-Message-State: AOAM531TPiTql3REw5CPY9CW3hUsr/26pKNOdrpncuCMtPyI13YZKxrQ
+        Px3Qevu/5WDUWnbgv6+BejebS3mpe5IiZ0leolk=
+X-Google-Smtp-Source: ABdhPJwUWfJH29SjGv+sYepnCk+u4L93htGk4C8+wBLPU1CNCz88/UzhFx8AJSCbhjMqbKK1J58ReDBchEWjXHqJQjM=
+X-Received: by 2002:a2e:9a0f:: with SMTP id o15mr6436666lji.450.1593364542025;
+ Sun, 28 Jun 2020 10:15:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
-In-Reply-To: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
+References: <20200625232629.3444003-1-andriin@fb.com> <20200626201113.vzkhhqov4zzdrrnn@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200626201113.vzkhhqov4zzdrrnn@kafai-mbp.dhcp.thefacebook.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 28 Jun 2020 08:40:41 -0700
-Message-ID: <CAADnVQLJo6PFBm8USM1gbAxFMTE297XbDtvhuFTUYPdJG9WpaA@mail.gmail.com>
-Subject: Re: [bpf PATCH v2 0/3] Sockmap RCU splat fix
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Sun, 28 Jun 2020 10:15:30 -0700
+Message-ID: <CAADnVQLveT1_KOYAp40VPv8AiRfUPYXd5xr1yoNJv6MPt1bcMg@mail.gmail.com>
+Subject: Re: [Potential Spoof] [PATCH bpf-next 0/2] Support disabling
+ auto-loading of BPF programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 4:12 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Fri, Jun 26, 2020 at 1:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Fix a splat introduced by recent changes to avoid skipping ingress policy
-> when kTLS is enabled. The RCU splat was introduced because in the non-TLS
-> case the caller is wrapped in an rcu_read_lock/unlock. But, in the TLS
-> case we have a reference to the psock and the caller did not wrap its
-> call in rcu_read_lock/unlock.
->
-> To fix extend the RCU section to include the redirect case which was
-> missed. From v1->v2 I changed the location a bit to simplify the code
-> some. See patch 1.
->
-> But, then Martin asked why it was not needed in the non-TLS case. The
-> answer for patch 1 was, as stated above, because the caller has the
-> rcu read lock. However, there was still a missing case where a BPF
-> user could in-theory line up a set of parameters to hit a case
-> where the code was entered from strparser side from a different context
-> then the initial caller. To hit this user would need a parser program
-> to return value greater than skb->len then an ENOMEM error could happen
-> in the strparser codepath triggering strparser to retry from a workqueue
-> and without rcu_read_lock original caller used. See patch 2 for details.
->
-> Finally, we don't actually have any selftests for parser returning a
-> value geater than skb->len so add one in patch 3. This is especially
-> needed because at least I don't have any code that uses the parser
-> to return value greater than skb->len. So I wouldn't have caught any
-> errors here in my own testing.
->
-> Thanks, John
->
-> v1->v2: simplify code in patch 1 some and add patches 2 and 3.
+> On Thu, Jun 25, 2020 at 04:26:27PM -0700, Andrii Nakryiko wrote:
+> > Add ability to turn off default auto-loading of each BPF program by libbpf on
+> > BPF object load. This is the feature that allows BPF applications to have
+> > optional functionality, which is only excercised on kernel that support
+> > necessary features, while falling back to reduced/less performant
+> > functionality, if kernel is outdated.
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
 Applied. Thanks
