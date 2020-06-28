@@ -2,118 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3CD20C984
-	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 20:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB6A20C9B2
+	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 20:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgF1SYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Jun 2020 14:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgF1SYb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Jun 2020 14:24:31 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA20C03E979;
-        Sun, 28 Jun 2020 11:24:30 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l63so7251100pge.12;
-        Sun, 28 Jun 2020 11:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CDyu5XxyUZj+ZAwyaUkvNAVQsuKCLx90g4IgowK3j8I=;
-        b=l+uo/daZ87u8J02fhuKrKZ8vlZFo/Wbtdw+K+PcSpeOm6FqHH5j9T2OMnFHpJ81hdI
-         +HoR5VKjKg7xpFs+sH2qUId3aI1Nlp4QzNMELcUyYsSOOfoBTtPsZ2D+Cikf3DFZXoKN
-         VwyKEB224j9nnmQdgTcKNkF8ByrNj9TkJ4hlY+VMotyUBzwLEoUlutinMiyx+FWBNZ3w
-         Ishh1oANf+7PrukmhO1AAF2eCoOdnj3fg3ntCTUmLnxg/ODAGPcfjuiKmxIfBAg04oBE
-         QDqSGyN4YG/8GeNCv7DHZHV5zx777wd2YWmfpHqGXhwKr9ar+ZBwj03kZhQElxX/jYgc
-         c7bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CDyu5XxyUZj+ZAwyaUkvNAVQsuKCLx90g4IgowK3j8I=;
-        b=tjokY503g00YNGbmfzBsZ+FmXvmE90wDmZBNUv0hiYw6C8/NQSI3WJk42S0rNBCAdO
-         eCwP3cwOqIVL1BInHd6Lvmf0s5Uk5HEnJLQK5RGlSdO1ou6K0bQM0bM238d63Ycs2qw/
-         PHZnljG7qFR13dcq8444TTfEJ2YybgxMrNzWvI8SltCGJRZSMqFpZvzaMMJIWaHmvvGp
-         7afoeT9OjW3oAsa2szcHeFFmOQAizmAbdZwoIC22aGenBFRNPYrvB0GuwfOJ2uy+qXp4
-         Z6I+DXoNzF7WSqA7YOJpLVRWglCx92sy3KT0XGO7JwkgQBrPrfrEbCu2INXAdpkGiYXq
-         itww==
-X-Gm-Message-State: AOAM5300lGP6MaaAxWs5gTpa8wKeMrS59qgz1gavwffS4s02OvSszxf5
-        8iaY16swxa3H0K9t6ZClGgp1le4F
-X-Google-Smtp-Source: ABdhPJwSNzlWjP1DUsgRh+08q+7nveKR42Nx/Wo/4AqB1IvjmJkx1UOu1LFvTIDKHXtoHfKECvtchg==
-X-Received: by 2002:aa7:9630:: with SMTP id r16mr5808749pfg.144.1593368670425;
-        Sun, 28 Jun 2020 11:24:30 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:616])
-        by smtp.gmail.com with ESMTPSA id y69sm32663688pfg.207.2020.06.28.11.24.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jun 2020 11:24:29 -0700 (PDT)
-Date:   Sun, 28 Jun 2020 11:24:27 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, kernel-team@fb.com,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>, netdev@vger.kernel.org,
-        Yuchung Cheng <ycheng@google.com>
-Subject: Re: [PATCH bpf-next 04/10] bpf: tcp: Allow bpf prog to write and
- parse BPF TCP header option
-Message-ID: <20200628182427.qt7vpjohwkxvixfi@ast-mbp.dhcp.thefacebook.com>
-References: <20200626175501.1459961-1-kafai@fb.com>
- <20200626175526.1461133-1-kafai@fb.com>
+        id S1726699AbgF1SqU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Jun 2020 14:46:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726636AbgF1SqU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Jun 2020 14:46:20 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5523206C0;
+        Sun, 28 Jun 2020 18:46:17 +0000 (UTC)
+Date:   Sun, 28 Jun 2020 14:46:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
+Message-ID: <20200628144616.52f09152@oasis.local.home>
+In-Reply-To: <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
+References: <20200624084524.259560-1-drinkcat@chromium.org>
+        <20200624120408.12c8fa0d@oasis.local.home>
+        <CAADnVQKDJb5EXZtEONaXx4XHtMMgEezPOuRUvEo18Rc7K+2_Pw@mail.gmail.com>
+        <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
+        <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+        <20200626181455.155912d9@oasis.local.home>
+        <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200626175526.1461133-1-kafai@fb.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 10:55:26AM -0700, Martin KaFai Lau wrote:
-> 
-> Parsing BPF Header Option
-> ─────────────────────────
-> 
-> As mentioned earlier, the received SYN/SYNACK/ACK during the 3WHS
-> will be available to some specific CB (e.g. the *_ESTABLISHED_CB)
-> 
-> For established connection, if the kernel finds a bpf header
-> option (i.e. option with kind:254 and magic:0xeB9F) and the
-> the "PARSE_HDR_OPT_CB_FLAG" flag is set,  the
-> bpf prog will be called in the "BPF_SOCK_OPS_PARSE_HDR_OPT_CB" op.
-> The received skb will be available through sock_ops->skb_data
-> and the bpf header option offset will also be specified
-> in sock_ops->skb_bpf_hdr_opt_off.
+On Sun, 28 Jun 2020 10:27:00 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-TCP noob question:
-- can tcp header have two or more options with the same kind and magic?
-I scanned draft-ietf-tcpm-experimental-options-00.txt and it seems
-it's not prohibiting collisions.
-So should be ok?
-Why I'm asking... I think existing bpf_sock_ops style of running
-multiple bpf progs is gonna be awkward to use.
-Picking the max of bpf_reserve_hdr_opt() from many calls and let
-parent bpf progs override children written headers feels a bit hackish.
-I feel the users will thank us if we design the progs to be more
-isolated and independent somehow.
-I was thinking may be each bpf prog will bpf_reserve_hdr_opt()
-and bpf_store_hdr_opt() into their own option?
-Then during option writing side the tcp header will have two or more
-options with the same kind and magic.
-Obviously it creates a headache during parsing. Which bpf prog
-should be called for each option?
+> On Fri, Jun 26, 2020 at 06:14:55PM -0400, Steven Rostedt wrote:
+> > On Wed, 24 Jun 2020 20:59:13 -0700
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >   
+> > > > >
+> > > > > Nack.  
+> > 
+> > I nack your nack ;-)  
+> 
+> ok. let's take it up to Linus to decide.
 
-I suspect tcp draft actually prefers all options to have unique kind+magic.
-Can we add an attribute to prog load time that will request particular magic ?
-Then only that _one_ program will be called for the given kind+magic.
-We can still have multiple progs attached to a cgroup (likely root cgroup)
-and different progs will take care of parsing and writing their own option.
-cgroup attaching side can make sure that multi progs have different magics.
+I'm fine with that.
 
-Saving multiple bpf_hdr_opt_off in patch 2 for different magics becomes
-problematic. So clearly the implementation complexity shots through the roof
-with above proposal, but it feels more flexible and more user friendly?
-Not a strong opinion. The feature is great as-is.
+> 
+> >   
+> > > > > The message is bogus. It's used in production kernels.
+> > > > > bpf_trace_printk() calls it.    
+> > > > 
+> > > > Interesting. BTW, the same information (trace_printk is for debugging
+> > > > only) is repeated all over the place, including where bpf_trace_printk
+> > > > is documented:
+> > > > https://elixir.bootlin.com/linux/latest/source/include/linux/kernel.h#L757
+> > > > https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/bpf.h#L706
+> > > > https://elixir.bootlin.com/linux/latest/source/kernel/trace/trace.c#L3157
+> > > > 
+> > > > Steven added that warning (2184db46e425c ("tracing: Print nasty banner
+> > > > when trace_printk() is in use")), so maybe he can confirm if it's
+> > > > still relevant.    
+> > > 
+> > > The banner is nasty and it's actively causing harm.  
+> > 
+> > And it's doing exactly what it was intended on doing!  
+> 
+> I disagree. The message is _lying_ about the state of the kernel.
+> It's not a debug kernel and it's absolutely fine for production.
+
+No it is not!
+
+It causes the trace buffer to be filled with crap that can not be
+easily disabled. That's the reason I only allowed trace_printk() for
+debug kernels. And the only way to prevent people from sticking it in
+their code and making an API out of it was for this banner.
+
+I refuse to remove that banner. It's my API!
+
+> > 
+> > Now I do have an answer for you that I believe is a great compromise.
+> > 
+> > There's something you can call (and even call it from a module). It's
+> > called "trace_array_vprintk()". But has one caveat, and that is, you
+> > can not write to the main top level trace buffer with it (I have
+> > patches for the next merge window to enforce that). And that's what
+> > I've been trying to avoid trace_printk() from doing, as that's what it
+> > does by default. It writes to /sys/kernel/tracing/trace.
+> > 
+> > Now what you can do, is have bpf create
+> > a /sys/kernel/tracing/instances/bpf_trace/ instance, and use
+> > trace_array_printk(), to print into that, and you will never have to
+> > see that warning again! It shows up in your own
+> > tracefs/instances/bpf_trace/trace file!
+> > 
+> > If you need more details, let me know, and I can give you all you need
+> > to know to create you very own trace instance (that can enable events,
+> > kprobe events, uprobe events, function tracing, and soon function graph
+> > tracing). And the bonus, you get trace_array_vprintk() and no more
+> > complaining. :-) :-) :-)  
+> 
+> We added a bunch of code to libbcc in the past to support instances,
+> but eventually removed it all due to memory overhead per instance.
+> If I recall it was ~8Mbyte per instance. That was couple years ago.
+
+I'd like to see where that 8 MB per instance came from. You can control
+the size of the instance buffers. If size is still an issue, I'll be
+happy to work with you to fix it.
+
+
+> 
+> By now everyone has learned to use bpf_trace_printk() and expects
+> to see the output in /sys/kernel/debug/tracing/trace.
+> It's documented in uapi/bpf.h and various docs.
+
+Re-teach them, or are you finally admitting that the tracing system is
+a permanent API?  This is the reason people are refusing to add trace
+points into their subsystems. Because user space may make it required.
+
+I see no reason why you can't create a dedicated BPF tracing instance
+(you only need one) to add all your trace_array_printk()s to.
+
+-- Steve
+
