@@ -2,102 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FD620CAB8
-	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 23:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D6E20CAD6
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 00:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgF1VUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Jun 2020 17:20:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57250 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726104AbgF1VUa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Jun 2020 17:20:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593379229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PRgc2g0Ojg/UFEUY5mUxOQF8F4RTlNOReX7eEYTBsx0=;
-        b=OlJSOD3jwzcOWGlzgQyCVv9ijcl6y9bRLVX/CPFMFN2Gn5MIgTwxZT8sZvDRLk/bujeS9t
-        MksJagxhTsgzxjTNt4gwwLzzl7vaFxtwc7grNvEbMbQNC+zJp57LmA9DjJYRyKhqqfMP7Q
-        OqNQJaBdD6P2JWtS3vToyNU5STssG50=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-kKf1MKz5MYKNWyxVqENnPw-1; Sun, 28 Jun 2020 17:20:26 -0400
-X-MC-Unique: kKf1MKz5MYKNWyxVqENnPw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B256818C35A0;
-        Sun, 28 Jun 2020 21:20:24 +0000 (UTC)
-Received: from krava (unknown [10.40.192.56])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2ED6C7166A;
-        Sun, 28 Jun 2020 21:20:20 +0000 (UTC)
-Date:   Sun, 28 Jun 2020 23:20:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v4 bpf-next 05/14] bpf: Remove btf_id helpers resolving
-Message-ID: <20200628212019.GH2988321@krava>
-References: <20200625221304.2817194-1-jolsa@kernel.org>
- <20200625221304.2817194-6-jolsa@kernel.org>
- <7480f7b2-01f0-f575-7e4f-cf3bde851c3f@fb.com>
- <20200628201608.GG2988321@krava>
- <7c0a5ea0-9425-071d-0f41-b7e5c5ef04f0@fb.com>
+        id S1726138AbgF1WCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Jun 2020 18:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgF1WCO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Jun 2020 18:02:14 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A7BC03E979;
+        Sun, 28 Jun 2020 15:02:14 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id h22so7158570pjf.1;
+        Sun, 28 Jun 2020 15:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VqS8bhh7NwFVANMN9R3qApVh1yAOo5mpLwb4AxLehrs=;
+        b=pSoQPHn8B/aKIukyq684XfojXbHedNxAIZMz8csdJVWfnKT8rRpYl7Xg05MrMtyKxY
+         FE2qs/skTluTscm0tc5npNQwMOG/DKZooTZd7+/pFBXG4nfR79VPuBbhjNh4F3pLxmqM
+         mgPq5G0mkd8ZKsNXImsfUQO/vR1F2PufphUTXPu1/cy/+tE4Y4lXgDOmWU2zmrRHy3YI
+         Ig19n6i5NFcAIqd2UyME+9QMkG7LFUcqtnNjxnihoEbndbemMKjfKZv6ku/8oLCjbfD9
+         P8uP6CuYIDRBut49iWJOQMxntxjFpF9ugH+QlveancJV9OTzfGOS5OCzE6+mwaBj29ON
+         zgJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VqS8bhh7NwFVANMN9R3qApVh1yAOo5mpLwb4AxLehrs=;
+        b=j4Gu9wgQX7+ZQSHMuD/Aoyce3FLg1dJq7o2j6EGvczeiiT7MHUUwmVjhxP3tfv451P
+         WnUXSiimbNEf9ki3vXdqKLhjDRa4ixwImGVPiNhD5e37u0tyeWwW4PQz9h22sr3u7/yb
+         zVNA5KZk4m21L1FbmYZ+wh+d4y3aOMQi4HWnKX4vTsWuWbv1Sud7IQm9uTw9Sxrs4F4H
+         E3HX1phx2av2udKqiVG45PMQf8edXYOK9B+O/WiwDz1rieFbiaFkB6Vq5BD+AZrTVzeA
+         mQ7SIQ6wQI63HQFp4SYaHT2UgIlvXgd4TaN1GTS2NDwdYaA0XB56m9/U2K9iO0pZW9iL
+         hPeA==
+X-Gm-Message-State: AOAM530LXYheumkSjCN4zyf0jnzUiRAujDXXf9UxOQ0xK8Ogt9MQcaid
+        io7JMLP3dKleUBtJ6VY+LAs=
+X-Google-Smtp-Source: ABdhPJyYpBT/Hwn+BAItA3VjPPwHiNXJpf6HpsMFV91E5xL65/OYaRSP16zH/g+mwDzEr0KZFoS/Og==
+X-Received: by 2002:a17:90a:26c6:: with SMTP id m64mr391100pje.215.1593381733480;
+        Sun, 28 Jun 2020 15:02:13 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:616])
+        by smtp.gmail.com with ESMTPSA id m14sm17098356pjv.12.2020.06.28.15.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 15:02:12 -0700 (PDT)
+Date:   Sun, 28 Jun 2020 15:02:09 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
+Message-ID: <20200628220209.3oztcjnzsotlfria@ast-mbp.dhcp.thefacebook.com>
+References: <20200624084524.259560-1-drinkcat@chromium.org>
+ <20200624120408.12c8fa0d@oasis.local.home>
+ <CAADnVQKDJb5EXZtEONaXx4XHtMMgEezPOuRUvEo18Rc7K+2_Pw@mail.gmail.com>
+ <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
+ <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+ <20200626181455.155912d9@oasis.local.home>
+ <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
+ <20200628144616.52f09152@oasis.local.home>
+ <20200628192107.sa3ppfmxtgxh7sfs@ast-mbp.dhcp.thefacebook.com>
+ <20200628154331.2c69d43e@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7c0a5ea0-9425-071d-0f41-b7e5c5ef04f0@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200628154331.2c69d43e@oasis.local.home>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 01:59:54PM -0700, Yonghong Song wrote:
-
-SNIP
-
-> > > 
-> > > The corresponding BTF_ID definition here is:
-> > >    BTF_ID_LIST(bpf_skb_output_btf_ids)
-> > >    BTF_ID(struct, sk_buff)
-> > > 
-> > > The bpf helper writer needs to ensure proper declarations
-> > > of BTF_IDs like the above matching helpers definition.
-> > > Support we have arg1 and arg3 as BTF_ID. then the list
-> > > definition may be
-> > > 
-> > >    BTF_ID_LIST(bpf_skb_output_btf_ids)
-> > >    BTF_ID(struct, sk_buff)
-> > >    BTF_ID(struct, __unused)
-> > >    BTF_ID(struct, task_struct)
-> > > 
-> > > This probably okay, I guess.
-> > 
-> > right, AFAIK we don't have such case yet, but would be good
-> > to be ready and have something like
-> > 
-> >    BTF_ID(struct, __unused)
-> > 
-> > maybe adding new type for that will be better:
-> > 
-> >    BTF_ID(none, unused)
+On Sun, Jun 28, 2020 at 03:43:31PM -0400, Steven Rostedt wrote:
+>  On Sun, 28 Jun 2020 12:21:07 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 > 
-> Maybe we can have a separate macro BTF_ID_UNUSED macro
-> which simply adds 4 bytes hole in the .btf_ids* section.
+> > > Re-teach them, or are you finally admitting that the tracing system is
+> > > a permanent API?  This is the reason people are refusing to add trace
+> > > points into their subsystems. Because user space may make it required.
+> > > 
+> > > I see no reason why you can't create a dedicated BPF tracing instance
+> > > (you only need one) to add all your trace_array_printk()s to.  
+> > 
+> > All bpf helpers are stable api. We cannot remove bpf_trace_printk() and
+> > cannot change the fact that it has to print into /sys/kernel/debug/tracing/trace.
+> 
+> Then do a bpf trace event and enable it when a bpf_trace_printk() is
+> loaded. It will work the same for your users.
 
-right, we don't need symbols for that
+I'm not sure I follow. How that would preserve the expectation
+to see the output in /sys/kernel/debug/tracing/trace ?
 
-jirka
+> > If we do so a lot of users will complain. Loudly.
+> > If you really want to see the flames, go ahead and rename 'trace_pipe'
+> > into something else.
+> 
+> The layout of the tracefs system *is* a stable API. No argument there.
+> 
+> > This has nothing to do with tracing in general and tracepoints.
+> > Those come and go.
+> 
+> And in this case, trace_printk() is no different than any other trace
+> event. Obviously, your use case doesn't let it go. If some tool starts
+> relying on another trace event (say someone adds another bpf handler that
+> enables a trace event, and is documented) then under your scenario,
+> it's a stable API.
 
+not quite. Documneting kprobe+bpf as an example and writing a blog and a book
+about it doesn't make it stable.
+
+> 
+> Hence, your "tracepoints come and go" is not universal, and there's no
+> telling which ones will end up being a stable API.
+> 
+> 
+> > If you really want to nuke trace_printk from the kernel we need time
+> > to work on replacement and give users at least few releases of helper
+> > deprecation time.
+> 
+> I never said I would nuke it. This patch in question makes it so those
+> that don't want that banner to ever show up can do so. A trace-printk()
+> is something to add via compiling. And since I and others use it
+> heavily for debugging, I would have this option not be a default, but
+> something that others can enable.
+> 
+> > We've never done in the past though.
+> > There could be flames even if we deprecate it gradually.
+> > Looking how unyielding you're about this banner I guess we have to start
+> > working on replacement sooner than later. Oh well.
+> 
+> Hmm, so you are happier to bully and burn bridges with me to deprecate
+> the trace_printk() interface, than to work with me and add an update to
+> look into an instance for the print instead of the top level? That's
+> not very collaborative.
+
+I'm seeing it differently.
+I'm saying bpf users are complaining about misleading dmesg warning.
+You're saying 'screw your users I want to keep that warning'.
+Though the warning is lying with a straight face. The only thing happened
+is few pages were allocated that will never be freed. The kernel didn't
+suddenly become non-production. It didn't become slower. No debug features
+were turned on.
