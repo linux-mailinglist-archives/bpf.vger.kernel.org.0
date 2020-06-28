@@ -2,193 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EAA20C9ED
-	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 21:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D1B20C9EE
+	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 21:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgF1Tmz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Jun 2020 15:42:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36752 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726733AbgF1Tmz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Jun 2020 15:42:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593373373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qn8LpID6vlMXVlee8uuBX1nH9942F9auzaGbi0XYOzY=;
-        b=S02R2POFq/VyZFAyKxUYk8IGGr+Yscg1xGwk9aTQgH5/dggCT3wgATrwUHtCiv2Tj88Wi3
-        jlI2uUJC0t8IAYgg3itX0yXqdJRAF0TV5TWxO/kTe2plkCK/zWLNH0NkuIfdo/HlfHQFyd
-        +AFwwYrAnfqDy5sA710HxoEaCbCVx6s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-DRjyZkxOPie65meza3Aj7g-1; Sun, 28 Jun 2020 15:42:48 -0400
-X-MC-Unique: DRjyZkxOPie65meza3Aj7g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726712AbgF1Tng (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Jun 2020 15:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726675AbgF1Tng (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Jun 2020 15:43:36 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A75E5107ACCA;
-        Sun, 28 Jun 2020 19:42:46 +0000 (UTC)
-Received: from krava (unknown [10.40.192.56])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 28EF85C1B2;
-        Sun, 28 Jun 2020 19:42:42 +0000 (UTC)
-Date:   Sun, 28 Jun 2020 21:42:42 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v4 bpf-next 10/14] bpf: Add d_path helper
-Message-ID: <20200628194242.GB2988321@krava>
-References: <20200625221304.2817194-1-jolsa@kernel.org>
- <20200625221304.2817194-11-jolsa@kernel.org>
- <CAEf4BzY4EqkbB7Ob9EZAJrWdBRtH_k3sL=4JZzAiqkMXjYjNKA@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 92FF9206A1;
+        Sun, 28 Jun 2020 19:43:33 +0000 (UTC)
+Date:   Sun, 28 Jun 2020 15:43:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
+Message-ID: <20200628154331.2c69d43e@oasis.local.home>
+In-Reply-To: <20200628192107.sa3ppfmxtgxh7sfs@ast-mbp.dhcp.thefacebook.com>
+References: <20200624084524.259560-1-drinkcat@chromium.org>
+        <20200624120408.12c8fa0d@oasis.local.home>
+        <CAADnVQKDJb5EXZtEONaXx4XHtMMgEezPOuRUvEo18Rc7K+2_Pw@mail.gmail.com>
+        <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
+        <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+        <20200626181455.155912d9@oasis.local.home>
+        <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
+        <20200628144616.52f09152@oasis.local.home>
+        <20200628192107.sa3ppfmxtgxh7sfs@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzY4EqkbB7Ob9EZAJrWdBRtH_k3sL=4JZzAiqkMXjYjNKA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 01:38:27PM -0700, Andrii Nakryiko wrote:
-> On Thu, Jun 25, 2020 at 4:49 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding d_path helper function that returns full path
-> > for give 'struct path' object, which needs to be the
-> > kernel BTF 'path' object.
-> >
-> > The helper calls directly d_path function.
-> >
-> > Updating also bpf.h tools uapi header and adding
-> > 'path' to bpf_helpers_doc.py script.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       | 14 +++++++++-
-> >  kernel/trace/bpf_trace.c       | 47 ++++++++++++++++++++++++++++++++++
-> >  scripts/bpf_helpers_doc.py     |  2 ++
-> >  tools/include/uapi/linux/bpf.h | 14 +++++++++-
-> >  4 files changed, 75 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 0cb8ec948816..23274c81f244 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3285,6 +3285,17 @@ union bpf_attr {
-> >   *             Dynamically cast a *sk* pointer to a *udp6_sock* pointer.
-> >   *     Return
-> >   *             *sk* if casting is valid, or NULL otherwise.
-> > + *
-> > + * int bpf_d_path(struct path *path, char *buf, u32 sz)
-> > + *     Description
-> > + *             Return full path for given 'struct path' object, which
-> > + *             needs to be the kernel BTF 'path' object. The path is
-> > + *             returned in buffer provided 'buf' of size 'sz'.
-> > + *
-> > + *     Return
-> > + *             length of returned string on success, or a negative
-> > + *             error in case of failure
-> 
-> It's important to note whether string is always zero-terminated (I'm
-> guessing it is, right?).
+ On Sun, 28 Jun 2020 12:21:07 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-right, will add
+> > Re-teach them, or are you finally admitting that the tracing system is
+> > a permanent API?  This is the reason people are refusing to add trace
+> > points into their subsystems. Because user space may make it required.
+> > 
+> > I see no reason why you can't create a dedicated BPF tracing instance
+> > (you only need one) to add all your trace_array_printk()s to.  
+> 
+> All bpf helpers are stable api. We cannot remove bpf_trace_printk() and
+> cannot change the fact that it has to print into /sys/kernel/debug/tracing/trace.
 
-> 
-> > + *
-> >   */
-> >  #define __BPF_FUNC_MAPPER(FN)          \
-> >         FN(unspec),                     \
-> > @@ -3427,7 +3438,8 @@ union bpf_attr {
-> >         FN(skc_to_tcp_sock),            \
-> >         FN(skc_to_tcp_timewait_sock),   \
-> >         FN(skc_to_tcp_request_sock),    \
-> > -       FN(skc_to_udp6_sock),
-> > +       FN(skc_to_udp6_sock),           \
-> > +       FN(d_path),
-> >
-> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> >   * function eBPF program intends to call
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index b124d468688c..6f31e21565b6 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1060,6 +1060,51 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
-> >         .arg1_type      = ARG_ANYTHING,
-> >  };
-> >
-> > +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-> > +{
-> > +       char *p = d_path(path, buf, sz - 1);
-> > +       int len;
-> > +
-> > +       if (IS_ERR(p)) {
-> > +               len = PTR_ERR(p);
-> > +       } else {
-> > +               len = strlen(p);
-> > +               if (len && p != buf) {
-> > +                       memmove(buf, p, len);
-> > +                       buf[len] = 0;
-> 
-> if len above is zero, you won't zero-terminate it, so probably better
-> to move buf[len] = 0 out of if to do unconditionally
+Then do a bpf trace event and enable it when a bpf_trace_printk() is
+loaded. It will work the same for your users.
 
-good catch, will change
+> If we do so a lot of users will complain. Loudly.
+> If you really want to see the flames, go ahead and rename 'trace_pipe'
+> into something else.
 
-> 
-> > +               }
-> > +       }
-> > +
-> > +       return len;
-> > +}
-> > +
-> > +BTF_SET_START(btf_whitelist_d_path)
-> > +BTF_ID(func, vfs_truncate)
-> > +BTF_ID(func, vfs_fallocate)
-> > +BTF_ID(func, dentry_open)
-> > +BTF_ID(func, vfs_getattr)
-> > +BTF_ID(func, filp_close)
-> > +BTF_SET_END(btf_whitelist_d_path)
-> > +
-> > +static bool bpf_d_path_allowed(const struct bpf_prog *prog)
-> > +{
-> > +       return btf_id_set_contains(&btf_whitelist_d_path, prog->aux->attach_btf_id);
-> > +}
-> > +
-> 
-> This looks pretty great and clean, considering what's happening under
-> the covers. Nice work, thanks a lot!
-> 
-> > +BTF_ID_LIST(bpf_d_path_btf_ids)
-> > +BTF_ID(struct, path)
-> 
-> this is a bit more confusing to read and error-prone, but I couldn't
-> come up with any better way to do this... Still better than
-> alternatives.
-> 
-> > +
-> > +static const struct bpf_func_proto bpf_d_path_proto = {
-> > +       .func           = bpf_d_path,
-> > +       .gpl_only       = true,
-> 
-> Does it have to be GPL-only? What's the criteria? Sorry if this was
-> brought up previously.
+The layout of the tracefs system *is* a stable API. No argument there.
 
-I don't think it's needed to be gpl_only, I'll set it to false
+> This has nothing to do with tracing in general and tracepoints.
+> Those come and go.
 
-thanks,
-jirka
+And in this case, trace_printk() is no different than any other trace
+event. Obviously, your use case doesn't let it go. If some tool starts
+relying on another trace event (say someone adds another bpf handler that
+enables a trace event, and is documented) then under your scenario,
+it's a stable API.
 
+Hence, your "tracepoints come and go" is not universal, and there's no
+telling which ones will end up being a stable API.
+
+
+> If you really want to nuke trace_printk from the kernel we need time
+> to work on replacement and give users at least few releases of helper
+> deprecation time.
+
+I never said I would nuke it. This patch in question makes it so those
+that don't want that banner to ever show up can do so. A trace-printk()
+is something to add via compiling. And since I and others use it
+heavily for debugging, I would have this option not be a default, but
+something that others can enable.
+
+> We've never done in the past though.
+> There could be flames even if we deprecate it gradually.
+> Looking how unyielding you're about this banner I guess we have to start
+> working on replacement sooner than later. Oh well.
+
+Hmm, so you are happier to bully and burn bridges with me to deprecate
+the trace_printk() interface, than to work with me and add an update to
+look into an instance for the print instead of the top level? That's
+not very collaborative.
+
+-- Steve
