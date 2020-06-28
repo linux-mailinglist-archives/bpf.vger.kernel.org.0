@@ -2,114 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF40420C41A
-	for <lists+bpf@lfdr.de>; Sat, 27 Jun 2020 22:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90A320C8BD
+	for <lists+bpf@lfdr.de>; Sun, 28 Jun 2020 17:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725806AbgF0UgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jun 2020 16:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S1726011AbgF1Pky (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Jun 2020 11:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgF0UgH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jun 2020 16:36:07 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF7AC061794;
-        Sat, 27 Jun 2020 13:36:07 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id i3so10079664qtq.13;
-        Sat, 27 Jun 2020 13:36:07 -0700 (PDT)
+        with ESMTP id S1725970AbgF1Pky (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Jun 2020 11:40:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F28C03E979;
+        Sun, 28 Jun 2020 08:40:54 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id t25so10819146lji.12;
+        Sun, 28 Jun 2020 08:40:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QF9f+Rg1YYuEeJsfnLdQA699aX0YoszaiVUdkbqvUyA=;
-        b=l2qSYlPPxLlgC2C+QFkcIrtXuiyv+/P8+5eYXssNmYZ6JJxfuhIJ5i5WuNMVoRfEiQ
-         wVXDZG60QWkC++AEiY2eAuksz90jYnk1ci303IvHnzeTUCTDbXEXBEE71jq+6PqdMC5N
-         7KfOtJNs9270hgOu4hAUxv+M9dcUzSvJMdoJ2/DrRvwcgbua96U7vPeMVeavJ5ssMI0S
-         rFkdT/cHnwa0w+0W0rslpdP7ENKcNuSUNp3bPK1KA6eAkzbquvX/fnjz+COPRmXDtjmf
-         iuzMBefUOW9msE+3Hg+tlNoyeS+QMGSR8vDG+ecHOq6b7YAEo6Nd7LPWZCguiEkTuQPH
-         +GQA==
+        bh=HarAlCwkF8vycmbAHhvY+j2zfx6VqJcDXojxN9P70YM=;
+        b=KYPNsOZqWLJ2rQsDuMy01cwUz2FM1jZknJRHkAjPh06+ZXp8Ny52TY6BSF0jw3Ad11
+         R3AGewzbR7A4KSdB3bOQh8V2tmuUpDN0r26MLSCKeMnoMA+lS/Q1Huw8gV3k/pvs9FoZ
+         tS9wLC16+gf61DhluaSQmn5CrE9y+CysXm+nz4KLjJgt4+39RvKoN7N5RltlsrJFR0iB
+         L6LACKaAKGWbJWEleDhwp4cjsxkpDnxKhXV2xy62MjmCyOgbzQEtLAcNFNYW0AM3nTxK
+         GEN35fWW3/BV7XX7z+hm91fXGErxh+le0PUd2w4lG0VT9lQGkQxRdONp6aNOGHQBDowN
+         dq1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QF9f+Rg1YYuEeJsfnLdQA699aX0YoszaiVUdkbqvUyA=;
-        b=NJMC1TYbCxE/XRfvH5j381++l/9hlpe7aq1KEoVuibzAXl9eH7pjdtXgLJ5y/pUiJ9
-         kxVXHBn57F/hII396wRalhWskZpu0yGZfKZkQZ97p7Gr6HDSiYnDAQkxsPwKKDWmgS6G
-         yhM+8XBsMSdUrtC3s1bYtKeBmuhC1DmIJT4smfwY4c3NUZtWkvZsYkdeXR1vBIBlxjUs
-         qgfR3V5n4T0KmFh8zAEFur2S9MV0NCnFzd7fDoxNib2/HEdGpa3/8W6UY0KBW8PCdAY3
-         +1z+ILZcTfMbuGBYzvuvga9tpp1ylhiA/OLwAJUPG527OMA1ugxPCWC7kEfLr13f9iOV
-         mLCQ==
-X-Gm-Message-State: AOAM531NZC1u5ot+pYBZQQo/F+xfTU/j5HqdHC3pIhr8KquewWqxWbso
-        HdbETm+WlPhBb71cVQWYJfXnjF19QHuyj04bWqg=
-X-Google-Smtp-Source: ABdhPJxsAtwdz6pVOxkxKggJEhfpff6cRTCOX2gNYQKs1fXG/B3V7AdUGWSBrutxY1dYHFbzGjJgdEIr08ZUArfKk/g=
-X-Received: by 2002:ac8:4714:: with SMTP id f20mr8949678qtp.141.1593290166497;
- Sat, 27 Jun 2020 13:36:06 -0700 (PDT)
+        bh=HarAlCwkF8vycmbAHhvY+j2zfx6VqJcDXojxN9P70YM=;
+        b=FhmyJR4FgkbHc3Mnq4NEbAo6yW1dla4gfrxArK/zphg2Ji9jcG09Tmmo0Y0qZ4gbAy
+         nLuJB+JdzsJ9R00VTBGIx07igYbCaB5yz+jUbJwk83wo8IHDf3VjUWkPjUedQUqj3rTO
+         /rug3wA+TNXNYauR5UErXJDvmMScSrvFzf4zYvW8k2vbVI5Tkov4IHGxguvjoAF57clg
+         4+YZYoa8p/Bna1y+yWUY7LRPT9PAqdXBZnED0jkIqAh/AhR3LexpClO5tPj6XZ2JM+j2
+         kilOCkDcOtIdT9ELjSfb7/Ze6vPT9qG476qEtd6GUgg7VMEjnED2FE5advTlF3mQZW//
+         5z2A==
+X-Gm-Message-State: AOAM5332GzCLzEgG9h1zLVp5qxWrSnJj7oYBBFyt8Yk/gZnaLlS6m7ZY
+        09lyJ6ET1VPwYXNmRr+3WlLRa6wk7rpYYKtq8Oc=
+X-Google-Smtp-Source: ABdhPJyYCCY9odZ98IgDnOOrtmExRX89Tkxvkfq4Jl8K9sZRyy4BAeGYN47EvtKIuksgqbNyWB3lQpMwN31NUNeLOvc=
+X-Received: by 2002:a05:651c:308:: with SMTP id a8mr4638241ljp.2.1593358852386;
+ Sun, 28 Jun 2020 08:40:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200627002609.3222870-1-songliubraving@fb.com> <20200627002609.3222870-4-songliubraving@fb.com>
-In-Reply-To: <20200627002609.3222870-4-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Jun 2020 13:35:55 -0700
-Message-ID: <CAEf4BzbnkL3zGiDSGeOmcw2T8vA9tkuNbysky_Rc+WEF9PodGg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/4] bpf: introduce helper bpf_get_task_stack()
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
+In-Reply-To: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 28 Jun 2020 08:40:41 -0700
+Message-ID: <CAADnVQLJo6PFBm8USM1gbAxFMTE297XbDtvhuFTUYPdJG9WpaA@mail.gmail.com>
+Subject: Re: [bpf PATCH v2 0/3] Sockmap RCU splat fix
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 5:29 PM Song Liu <songliubraving@fb.com> wrote:
+On Thu, Jun 25, 2020 at 4:12 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Introduce helper bpf_get_task_stack(), which dumps stack trace of given
-> task. This is different to bpf_get_stack(), which gets stack track of
-> current task. One potential use case of bpf_get_task_stack() is to call
-> it from bpf_iter__task and dump all /proc/<pid>/stack to a seq_file.
+> Fix a splat introduced by recent changes to avoid skipping ingress policy
+> when kTLS is enabled. The RCU splat was introduced because in the non-TLS
+> case the caller is wrapped in an rcu_read_lock/unlock. But, in the TLS
+> case we have a reference to the psock and the caller did not wrap its
+> call in rcu_read_lock/unlock.
 >
-> bpf_get_task_stack() uses stack_trace_save_tsk() instead of
-> get_perf_callchain() for kernel stack. The benefit of this choice is that
-> stack_trace_save_tsk() doesn't require changes in arch/. The downside of
-> using stack_trace_save_tsk() is that stack_trace_save_tsk() dumps the
-> stack trace to unsigned long array. For 32-bit systems, we need to
-> translate it to u64 array.
+> To fix extend the RCU section to include the redirect case which was
+> missed. From v1->v2 I changed the location a bit to simplify the code
+> some. See patch 1.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       | 36 +++++++++++++++-
->  kernel/bpf/stackmap.c          | 75 ++++++++++++++++++++++++++++++++--
->  kernel/bpf/verifier.c          |  4 +-
->  kernel/trace/bpf_trace.c       |  2 +
->  scripts/bpf_helpers_doc.py     |  2 +
->  tools/include/uapi/linux/bpf.h | 36 +++++++++++++++-
->  7 files changed, 150 insertions(+), 6 deletions(-)
+> But, then Martin asked why it was not needed in the non-TLS case. The
+> answer for patch 1 was, as stated above, because the caller has the
+> rcu read lock. However, there was still a missing case where a BPF
+> user could in-theory line up a set of parameters to hit a case
+> where the code was entered from strparser side from a different context
+> then the initial caller. To hit this user would need a parser program
+> to return value greater than skb->len then an ENOMEM error could happen
+> in the strparser codepath triggering strparser to retry from a workqueue
+> and without rcu_read_lock original caller used. See patch 2 for details.
 >
+> Finally, we don't actually have any selftests for parser returning a
+> value geater than skb->len so add one in patch 3. This is especially
+> needed because at least I don't have any code that uses the parser
+> to return value greater than skb->len. So I wouldn't have caught any
+> errors here in my own testing.
+>
+> Thanks, John
+>
+> v1->v2: simplify code in patch 1 some and add patches 2 and 3.
 
-[...]
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 7de98906ddf4a..b608185e1ffd5 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4864,7 +4864,9 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
->         if (err)
->                 return err;
->
-> -       if (func_id == BPF_FUNC_get_stack && !env->prog->has_callchain_buf) {
-> +       if ((func_id == BPF_FUNC_get_stack ||
-> +            func_id == BPF_FUNC_get_task_stack) &&
-> +           !env->prog->has_callchain_buf) {
->                 const char *err_str;
->
-
-I'm glad it was so simple :) Thanks for checking!
-
-[...]
+Applied. Thanks
