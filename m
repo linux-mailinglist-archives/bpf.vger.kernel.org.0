@@ -2,306 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0765F20DFEF
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C370820DFD7
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387923AbgF2UlH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 16:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S1732209AbgF2UkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 16:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731661AbgF2TOI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:14:08 -0400
-Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D32C0086E1
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:33:39 -0700 (PDT)
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 49wMk91CqqzvjdY; Mon, 29 Jun 2020 11:33:36 +0200 (CEST)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Wang YanQing <udknight@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org
-Subject: [PATCH bpf-next 2/2] bpf, x86: Factor out get_cond_jmp_opcode and use for 64bit x86
-Date:   Mon, 29 Jun 2020 11:33:36 +0200
-Message-Id: <20200629093336.20963-3-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200629093336.20963-1-tklauser@distanz.ch>
-References: <20200629093336.20963-1-tklauser@distanz.ch>
+        with ESMTP id S1731712AbgF2TOM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:14:12 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F13C008640
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s10so15854369wrw.12
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IAaMon7PoyrZX3q0I4IJTvqbNcCBFKr4aXa1atrLwm8=;
+        b=cplsWQXJjW+tLIs6ePCa8ACMhZ3nHnpxRQ1GdkyBDU7KAtvJDLEJlHUXELif24tBRZ
+         V90M3+PBHs4bBE6cOi70twQOtYuLbwYAybpFMJYhZW5Ir3iGXY9QR5+O6Lcd8W34R7uE
+         VpCpbobkUdpFdLFthDdocXGyuMfamRBdvJWEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IAaMon7PoyrZX3q0I4IJTvqbNcCBFKr4aXa1atrLwm8=;
+        b=l9RwrYqK24PmvQbl1RFhYoXI+ZxPq6yVF0ZszADEyV4EnMY9xIhtrRyMWwXS0iNVLg
+         YdYCNwzRJK2vhLR3Nq3V019IX88fZ9OfMaAN9BnfN4Jk/H5dHpBUd79+5WImmh2whZPR
+         j1Pnb3301gTdaPXuD+kX66bui4QaNc5F6ayFnOZ13+QikYVoGpugBNpnitrOwT4HkT5j
+         giy+T5bF+Yz4DYMPKnP7jZO8312CVG3bcteory/mWUJSKebNVpE6Qi8ljP7pGPmAx4Ds
+         WhBW1RK5Skm8DNWhLmlcYvGMCzZzqx2w064sU0Rlf59yQUZhEuxd19HN6MV/Aa3gXWia
+         yDiA==
+X-Gm-Message-State: AOAM533sASSRMMlRYFtDLne+b8fvVN0++tpF7wTiUwzU2ISe8ut2Bagf
+        ywPNAZTkW0W33fJbufveT7y9ZQ==
+X-Google-Smtp-Source: ABdhPJw6aTvEKV/iiJj0fT6ZG80zObh21uc3SDgh3TtVE/Nuy32j1DWjqYJLlPD6RnC1mQsv8/ZzSw==
+X-Received: by 2002:adf:ab08:: with SMTP id q8mr15873184wrc.216.1593424783641;
+        Mon, 29 Jun 2020 02:59:43 -0700 (PDT)
+Received: from antares.lan (d.b.7.8.9.b.a.6.9.b.2.7.e.d.5.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:55de:72b9:6ab9:87bd])
+        by smtp.gmail.com with ESMTPSA id y7sm42565369wrt.11.2020.06.29.02.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 02:59:43 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, daniel@iogearbox.net, sdf@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com
+Cc:     kernel-team@cloudflare.com, bpf@vger.kernel.org,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf v2 0/6] Fix attach / detach uapi for sockmap and flow_dissector
+Date:   Mon, 29 Jun 2020 10:56:24 +0100
+Message-Id: <20200629095630.7933-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Factor out get_cond_jmp_opcode from bpf_jit_comp64.c and use it in
-bpf_jit_comp64.c instead of open-coding it.
+Both sockmap and flow_dissector ingnore various arguments passed to
+BPF_PROG_ATTACH and BPF_PROG_DETACH. We can fix the attach case by
+checking that the unused arguments are zero. I considered requiring
+target_fd to be -1 instead of 0, but this leads to a lot of churn
+in selftests. There is also precedent in that bpf_iter already
+expects 0 for a similar field. I think that we can come up with a
+work around for fd 0 should we need to in the future.
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- arch/x86/net/Makefile         |  2 +
- arch/x86/net/bpf_jit.h        |  4 ++
- arch/x86/net/bpf_jit_comp32.c | 71 --------------------------------
- arch/x86/net/bpf_jit_comp64.c | 46 ++-------------------
- arch/x86/net/bpf_jit_core.c   | 76 +++++++++++++++++++++++++++++++++++
- 5 files changed, 85 insertions(+), 114 deletions(-)
- create mode 100644 arch/x86/net/bpf_jit_core.c
+The detach case is more problematic: both cgroups and lirc2 verify
+that attach_bpf_fd matches the currently attached program. This
+way you need access to the program fd to be able to remove it.
+Neither sockmap nor flow_dissector do this. flow_dissector even
+has a check for CAP_NET_ADMIN because of this. The patch set
+addresses this by implementing the desired behaviour.
 
-diff --git a/arch/x86/net/Makefile b/arch/x86/net/Makefile
-index bf71548fad2c..541544cab139 100644
---- a/arch/x86/net/Makefile
-+++ b/arch/x86/net/Makefile
-@@ -3,6 +3,8 @@
- # Arch-specific network modules
- #
- 
-+obj-$(CONFIG_BPF_JIT) += bpf_jit_core.o
-+
- ifeq ($(CONFIG_X86_32),y)
-         obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
- else
-diff --git a/arch/x86/net/bpf_jit.h b/arch/x86/net/bpf_jit.h
-index 44cbab10962a..355d96bfe9b3 100644
---- a/arch/x86/net/bpf_jit.h
-+++ b/arch/x86/net/bpf_jit.h
-@@ -76,6 +76,10 @@ static inline int bpf_size_to_x86_bytes(int bpf_size)
- #define X86_JLE 0x7E
- #define X86_JG  0x7F
- 
-+#define COND_JMP_OPCODE_INVALID	(0xFF)
-+
-+u8 get_cond_jmp_opcode(const u8 op, bool is_cmp_lo);
-+
- /* Maximum number of bytes emitted while JITing one eBPF insn */
- #define BPF_MAX_INSN_SIZE	128
- #define BPF_INSN_SAFETY		64
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index aabb44e08737..90738fade68e 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -62,8 +62,6 @@
- #define IA32_EBP	(0x5)
- #define IA32_ESP	(0x4)
- 
--#define COND_JMP_OPCODE_INVALID	(0xFF)
--
- /*
-  * Map eBPF registers to IA32 32bit registers or stack scratch space.
-  *
-@@ -1307,75 +1305,6 @@ static inline void emit_push_r64(const u8 src[], u8 **pprog)
- 	*pprog = prog;
- }
- 
--static u8 get_cond_jmp_opcode(const u8 op, bool is_cmp_lo)
--{
--	u8 jmp_cond;
--
--	/* Convert BPF opcode to x86 */
--	switch (op) {
--	case BPF_JEQ:
--		jmp_cond = X86_JE;
--		break;
--	case BPF_JSET:
--	case BPF_JNE:
--		jmp_cond = X86_JNE;
--		break;
--	case BPF_JGT:
--		/* GT is unsigned '>', JA in x86 */
--		jmp_cond = X86_JA;
--		break;
--	case BPF_JLT:
--		/* LT is unsigned '<', JB in x86 */
--		jmp_cond = X86_JB;
--		break;
--	case BPF_JGE:
--		/* GE is unsigned '>=', JAE in x86 */
--		jmp_cond = X86_JAE;
--		break;
--	case BPF_JLE:
--		/* LE is unsigned '<=', JBE in x86 */
--		jmp_cond = X86_JBE;
--		break;
--	case BPF_JSGT:
--		if (!is_cmp_lo)
--			/* Signed '>', GT in x86 */
--			jmp_cond = X86_JG;
--		else
--			/* GT is unsigned '>', JA in x86 */
--			jmp_cond = X86_JA;
--		break;
--	case BPF_JSLT:
--		if (!is_cmp_lo)
--			/* Signed '<', LT in x86 */
--			jmp_cond = X86_JL;
--		else
--			/* LT is unsigned '<', JB in x86 */
--			jmp_cond = X86_JB;
--		break;
--	case BPF_JSGE:
--		if (!is_cmp_lo)
--			/* Signed '>=', GE in x86 */
--			jmp_cond = X86_JGE;
--		else
--			/* GE is unsigned '>=', JAE in x86 */
--			jmp_cond = X86_JAE;
--		break;
--	case BPF_JSLE:
--		if (!is_cmp_lo)
--			/* Signed '<=', LE in x86 */
--			jmp_cond = X86_JLE;
--		else
--			/* LE is unsigned '<=', JBE in x86 */
--			jmp_cond = X86_JBE;
--		break;
--	default: /* to silence GCC warning */
--		jmp_cond = COND_JMP_OPCODE_INVALID;
--		break;
--	}
--
--	return jmp_cond;
--}
--
- static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 		  int oldproglen, struct jit_context *ctx)
- {
-diff --git a/arch/x86/net/bpf_jit_comp64.c b/arch/x86/net/bpf_jit_comp64.c
-index e8d0f784ab14..40462fe869f6 100644
---- a/arch/x86/net/bpf_jit_comp64.c
-+++ b/arch/x86/net/bpf_jit_comp64.c
-@@ -1122,50 +1122,10 @@ xadd:			if (is_imm8(insn->off))
- 			else
- 				EMIT2_off32(0x81, add_1reg(0xF8, dst_reg), imm32);
- 
--emit_cond_jmp:		/* Convert BPF opcode to x86 */
--			switch (BPF_OP(insn->code)) {
--			case BPF_JEQ:
--				jmp_cond = X86_JE;
--				break;
--			case BPF_JSET:
--			case BPF_JNE:
--				jmp_cond = X86_JNE;
--				break;
--			case BPF_JGT:
--				/* GT is unsigned '>', JA in x86 */
--				jmp_cond = X86_JA;
--				break;
--			case BPF_JLT:
--				/* LT is unsigned '<', JB in x86 */
--				jmp_cond = X86_JB;
--				break;
--			case BPF_JGE:
--				/* GE is unsigned '>=', JAE in x86 */
--				jmp_cond = X86_JAE;
--				break;
--			case BPF_JLE:
--				/* LE is unsigned '<=', JBE in x86 */
--				jmp_cond = X86_JBE;
--				break;
--			case BPF_JSGT:
--				/* Signed '>', GT in x86 */
--				jmp_cond = X86_JG;
--				break;
--			case BPF_JSLT:
--				/* Signed '<', LT in x86 */
--				jmp_cond = X86_JL;
--				break;
--			case BPF_JSGE:
--				/* Signed '>=', GE in x86 */
--				jmp_cond = X86_JGE;
--				break;
--			case BPF_JSLE:
--				/* Signed '<=', LE in x86 */
--				jmp_cond = X86_JLE;
--				break;
--			default: /* to silence GCC warning */
-+emit_cond_jmp:
-+			jmp_cond = get_cond_jmp_opcode(BPF_OP(insn->code), false);
-+			if (jmp_cond == COND_JMP_OPCODE_INVALID)
- 				return -EFAULT;
--			}
- 			jmp_offset = addrs[i + insn->off] - addrs[i];
- 			if (is_imm8(jmp_offset)) {
- 				EMIT2(jmp_cond, jmp_offset);
-diff --git a/arch/x86/net/bpf_jit_core.c b/arch/x86/net/bpf_jit_core.c
-new file mode 100644
-index 000000000000..a4991d36b517
---- /dev/null
-+++ b/arch/x86/net/bpf_jit_core.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Common functionality for x86 32bit and 64bit BPF JIT compilers
-+ */
-+
-+#include <linux/bpf.h>
-+#include "bpf_jit.h"
-+
-+u8 get_cond_jmp_opcode(const u8 op, bool is_cmp_lo)
-+{
-+	u8 jmp_cond;
-+
-+	/* Convert BPF opcode to x86 */
-+	switch (op) {
-+	case BPF_JEQ:
-+		jmp_cond = X86_JE;
-+		break;
-+	case BPF_JSET:
-+	case BPF_JNE:
-+		jmp_cond = X86_JNE;
-+		break;
-+	case BPF_JGT:
-+		/* GT is unsigned '>', JA in x86 */
-+		jmp_cond = X86_JA;
-+		break;
-+	case BPF_JLT:
-+		/* LT is unsigned '<', JB in x86 */
-+		jmp_cond = X86_JB;
-+		break;
-+	case BPF_JGE:
-+		/* GE is unsigned '>=', JAE in x86 */
-+		jmp_cond = X86_JAE;
-+		break;
-+	case BPF_JLE:
-+		/* LE is unsigned '<=', JBE in x86 */
-+		jmp_cond = X86_JBE;
-+		break;
-+	case BPF_JSGT:
-+		if (!is_cmp_lo)
-+			/* Signed '>', GT in x86 */
-+			jmp_cond = X86_JG;
-+		else
-+			/* GT is unsigned '>', JA in x86 */
-+			jmp_cond = X86_JA;
-+		break;
-+	case BPF_JSLT:
-+		if (!is_cmp_lo)
-+			/* Signed '<', LT in x86 */
-+			jmp_cond = X86_JL;
-+		else
-+			/* LT is unsigned '<', JB in x86 */
-+			jmp_cond = X86_JB;
-+		break;
-+	case BPF_JSGE:
-+		if (!is_cmp_lo)
-+			/* Signed '>=', GE in x86 */
-+			jmp_cond = X86_JGE;
-+		else
-+			/* GE is unsigned '>=', JAE in x86 */
-+			jmp_cond = X86_JAE;
-+		break;
-+	case BPF_JSLE:
-+		if (!is_cmp_lo)
-+			/* Signed '<=', LE in x86 */
-+			jmp_cond = X86_JLE;
-+		else
-+			/* LE is unsigned '<=', JBE in x86 */
-+			jmp_cond = X86_JBE;
-+		break;
-+	default: /* to silence GCC warning */
-+		jmp_cond = COND_JMP_OPCODE_INVALID;
-+		break;
-+	}
-+
-+	return jmp_cond;
-+}
+There is a possibility for user space breakage: any callers that
+don't provide the correct fd will fail with ENOENT. For sockmap
+the risk is low: even the selftests assume that sockmap works
+the way I described. For flow_dissector the story is less
+straightforward, and the selftests use a variety of arguments.
+
+I've includes fixes tags for the oldest commits that allow an easy
+backport, however the behaviour dates back to when sockmap and
+flow_dissector were introduced. What is the best way to handle these?
+
+This set is based on top of Jakub's work "bpf, netns: Prepare
+for multi-prog attachment" available at
+https://lore.kernel.org/bpf/87k0zwmhtb.fsf@cloudflare.com/T/
+
+Since v1:
+- Adjust selftests
+- Implement detach behaviour
+
+Lorenz Bauer (6):
+  bpf: flow_dissector: check value of unused flags to BPF_PROG_ATTACH
+  bpf: flow_dissector: check value of unused flags to BPF_PROG_DETACH
+  bpf: sockmap: check value of unused args to BPF_PROG_ATTACH
+  bpf: sockmap: require attach_bpf_fd when detaching a program
+  selftests: bpf: pass program and target_fd in flow_dissector_reattach
+  selftests: bpf: pass program to bpf_prog_detach in flow_dissector
+
+ include/linux/bpf-netns.h                     |  5 +-
+ include/linux/bpf.h                           | 13 ++++-
+ include/linux/skmsg.h                         | 13 +++++
+ kernel/bpf/net_namespace.c                    | 22 ++++++--
+ kernel/bpf/syscall.c                          |  6 +--
+ net/core/sock_map.c                           | 53 +++++++++++++++++--
+ .../selftests/bpf/prog_tests/flow_dissector.c |  4 +-
+ .../bpf/prog_tests/flow_dissector_reattach.c  | 12 ++---
+ 8 files changed, 103 insertions(+), 25 deletions(-)
+
 -- 
-2.27.0
+2.25.1
 
