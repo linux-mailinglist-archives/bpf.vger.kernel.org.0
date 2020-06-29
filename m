@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE6720E11F
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B711120E19A
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgF2Uw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 16:52:27 -0400
+        id S1731263AbgF2U5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 16:57:50 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731369AbgF2TN1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:27 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8708C008644
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so14757471wme.5
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:49 -0700 (PDT)
+        with ESMTP id S1729778AbgF2TNG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:13:06 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E71C008645
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:51 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g10so1958128wmc.1
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 02:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oFfXGUJ5tvK97U58LQIn0NKX672onJPqp41bujeJCXE=;
-        b=h7oYUfvrC3xot+cEiTG2VjZ8Kso5bLdXrVOsqfSBjHbv97QeHI2E/CM9cBddbLeZ02
-         n/xOu90a6kB91tMUIC5lYjilqbTFwjNGrDn3vNIj+QvQc0uAv/e1HqHQj3mGShOmYUG4
-         v1ajfZJdem+3WCV033nM3guNV4FKC1sKEBtfE=
+        bh=YW2cEsPoVOANORC8b/EG6UO/ChXsjB8EetXmH7OMF1M=;
+        b=JcFgNg0sycST8PeN/Ca68zgTFUh+34pry02M4AXkF6JwEzpxpZpXIwUzC8Tt7cjJU4
+         C70t3H+bcpRoW/3Pdh5BELZ1NTg7BEZ8ARksDrpbw15l6V6moFJ1ngJfLVAHZ89mE7PM
+         3iMJlTiihQUXI3AIfpnT3S3PYrFcRgDzg98YM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oFfXGUJ5tvK97U58LQIn0NKX672onJPqp41bujeJCXE=;
-        b=A76h49zkwCDa/YvCyZFnArn3XEA2w3I2qrTz8rTELtjqWmRTbHQODlzTLrN+qleARo
-         ooDXj9i2M+0eotE88GAIntcSgqynhwMdtBSYMCc/PAhCp2wc23lCDuUjUovr700hd2x2
-         SlLvgYkLpHlzGyhH52ASUgtVsuDqGUqgB3+8ITamLWy61F9h8vio8LTOSHArN4P8PRzX
-         rOnK1TmYeYRdrW2wcwr2RHruyMgP8Z58VQ7HfILC9pish1kVU35CmBVCNMeZiSJhBKXK
-         3W1eNu0LMpJ5B8wxfCeMr5kBSh0Lxaq9z/aFtyPPuA0aapot3Phlotpg1pkdHNfxjRaX
-         2AwA==
-X-Gm-Message-State: AOAM532I5BVvgniQuAYypHirP8q/tHubniclX7Jcc/YD4ZDKxciV7Wva
-        mGNQjCFDvPsHdb4xAcWWO8vZkmDtoZ9FMA==
-X-Google-Smtp-Source: ABdhPJwSR0cXrAQoAqc1/x0C7VFPJzbnrYCX47BAGZ0Ed9MBKo5K/KYizablzaeC3OdK1ndLrGm5Dw==
-X-Received: by 2002:a7b:c250:: with SMTP id b16mr8783236wmj.30.1593424788562;
-        Mon, 29 Jun 2020 02:59:48 -0700 (PDT)
+        bh=YW2cEsPoVOANORC8b/EG6UO/ChXsjB8EetXmH7OMF1M=;
+        b=FsGWPNIEpzdEsJJ0gglTajI5xXTO9wpwEWNuUzmDFOHmluazTMsY6PV0fTxl/iet11
+         QJhydjlisBQVkq0vie1nIB5E9x8ZzakdqY11eFa1gEfXhZeE8KWZnmzHscKZq20ZpvS8
+         TS/qbsgWllINJRh7r6ItaNUISv1IUFfiDiQZwOJZJW7JPZeYjFwoRwjUVYy5t8ps6eHQ
+         ReNYcZK3FXDIx+W0C9ISZGecDNRMwbubVrJr2L/Dzn5mGXeti2Ac5g16SMOjkxSLXdgK
+         QDfpwNuXqlXANM2X+AQZ0vXDfjQIV0yKs7e32nGInPfbRyfSRZFX70jS3/wx0Jp98kJr
+         7GGQ==
+X-Gm-Message-State: AOAM5302BDr1S7DjChAJSLPjSI6OKHT27gkiLZN5WD0bvNQ982FtnyWA
+        5yUf7rpjAQ8n8qZc4wyZd7ra3g==
+X-Google-Smtp-Source: ABdhPJyCMTTI5fepeVzQW/4K8YIvYXMEERDWihv0e+7RbHjTB4L35LYo47ifNzqXI18r4+xZL/pjvg==
+X-Received: by 2002:a1c:8094:: with SMTP id b142mr13990136wmd.122.1593424789741;
+        Mon, 29 Jun 2020 02:59:49 -0700 (PDT)
 Received: from antares.lan (d.b.7.8.9.b.a.6.9.b.2.7.e.d.5.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:55de:72b9:6ab9:87bd])
-        by smtp.gmail.com with ESMTPSA id y7sm42565369wrt.11.2020.06.29.02.59.47
+        by smtp.gmail.com with ESMTPSA id y7sm42565369wrt.11.2020.06.29.02.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 02:59:47 -0700 (PDT)
+        Mon, 29 Jun 2020 02:59:49 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
 To:     ast@kernel.org, daniel@iogearbox.net, sdf@google.com,
         jakub@cloudflare.com, john.fastabend@gmail.com
 Cc:     kernel-team@cloudflare.com, bpf@vger.kernel.org,
         Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf v2 4/6] bpf: sockmap: require attach_bpf_fd when detaching a program
-Date:   Mon, 29 Jun 2020 10:56:28 +0100
-Message-Id: <20200629095630.7933-5-lmb@cloudflare.com>
+Subject: [PATCH bpf v2 5/6] selftests: bpf: pass program and target_fd in flow_dissector_reattach
+Date:   Mon, 29 Jun 2020 10:56:29 +0100
+Message-Id: <20200629095630.7933-6-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200629095630.7933-1-lmb@cloudflare.com>
 References: <20200629095630.7933-1-lmb@cloudflare.com>
@@ -62,182 +62,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The sockmap code currently ignores the value of attach_bpf_fd when
-detaching a program. This is contrary to the usual behaviour of
-checking that attach_bpf_fd represents the currently attached
-program.
-
-Ensure that attach_bpf_fd is indeed the currently attached
-program. It turns out that all sockmap selftests already do this,
-which indicates that this is unlikely to cause breakage.
+Pass 0 as target_fd when attaching and detaching flow dissector.
+Additionally, pass the expected program when detaching.
 
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Fixes: 1f043f87bb59 ("selftests/bpf: Add tests for attaching bpf_link to netns")
 ---
- include/linux/bpf.h   | 13 +++++++++--
- include/linux/skmsg.h | 13 +++++++++++
- kernel/bpf/syscall.c  |  2 +-
- net/core/sock_map.c   | 50 ++++++++++++++++++++++++++++++++++++++-----
- 4 files changed, 70 insertions(+), 8 deletions(-)
+ .../bpf/prog_tests/flow_dissector_reattach.c         | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5d0506f46f24..6c3160fbae0b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1555,13 +1555,16 @@ static inline void bpf_map_offload_map_free(struct bpf_map *map)
- #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+index 15cb554a66d8..d70adbc7309a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
++++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+@@ -116,7 +116,7 @@ static void test_prog_attach_prog_attach(int netns, int prog1, int prog2)
+ 	CHECK_FAIL(query_attached_prog_id(netns) != query_prog_id(prog2));
  
- #if defined(CONFIG_BPF_STREAM_PARSER)
--int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog, u32 which);
-+int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
-+			 struct bpf_prog *old, u32 which);
- int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
-+int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
- void sock_map_unhash(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
- static inline int sock_map_prog_update(struct bpf_map *map,
--				       struct bpf_prog *prog, u32 which)
-+				       struct bpf_prog *prog,
-+				       struct bpf_prog *old, u32 which)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -1571,6 +1574,12 @@ static inline int sock_map_get_from_fd(const union bpf_attr *attr,
- {
- 	return -EINVAL;
- }
-+
-+static inline int sock_map_prog_detach(const union bpf_attr *attr,
-+				       enum bpf_prog_type ptype)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_BPF_STREAM_PARSER */
+ out_detach:
+-	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
++	err = bpf_prog_detach2(prog2, 0, BPF_FLOW_DISSECTOR);
+ 	if (CHECK_FAIL(err))
+ 		perror("bpf_prog_detach");
+ 	CHECK_FAIL(prog_is_attached(netns));
+@@ -152,7 +152,7 @@ static void test_prog_attach_link_create(int netns, int prog1, int prog2)
+ 	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
+ 	int err, link;
  
- #if defined(CONFIG_INET) && defined(CONFIG_BPF_SYSCALL)
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 08674cd14d5a..1e9ed840b9fc 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -430,6 +430,19 @@ static inline void psock_set_prog(struct bpf_prog **pprog,
- 		bpf_prog_put(prog);
- }
+-	err = bpf_prog_attach(prog1, -1, BPF_FLOW_DISSECTOR, 0);
++	err = bpf_prog_attach(prog1, 0, BPF_FLOW_DISSECTOR, 0);
+ 	if (CHECK_FAIL(err)) {
+ 		perror("bpf_prog_attach(prog1)");
+ 		return;
+@@ -168,7 +168,7 @@ static void test_prog_attach_link_create(int netns, int prog1, int prog2)
+ 		close(link);
+ 	CHECK_FAIL(query_attached_prog_id(netns) != query_prog_id(prog1));
  
-+static inline int psock_replace_prog(struct bpf_prog **pprog,
-+				     struct bpf_prog *prog,
-+				     struct bpf_prog *old)
-+{
-+	if (cmpxchg(pprog, old, prog) != old)
-+		return -ENOENT;
-+
-+	if (old)
-+		bpf_prog_put(old);
-+
-+	return 0;
-+}
-+
- static inline void psock_progs_drop(struct sk_psock_progs *progs)
- {
- 	psock_set_prog(&progs->msg_parser, NULL);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c0ec572f056c..77340045b071 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2893,7 +2893,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
- 	switch (ptype) {
- 	case BPF_PROG_TYPE_SK_MSG:
- 	case BPF_PROG_TYPE_SK_SKB:
--		return sock_map_get_from_fd(attr, NULL);
-+		return sock_map_prog_detach(attr, ptype);
- 	case BPF_PROG_TYPE_LIRC_MODE2:
- 		return lirc_prog_detach(attr);
- 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index db45c1453d39..119f52a99dc1 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -77,7 +77,42 @@ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog)
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map))
- 		return PTR_ERR(map);
--	ret = sock_map_prog_update(map, prog, attr->attach_type);
-+	ret = sock_map_prog_update(map, prog, NULL, attr->attach_type);
-+	fdput(f);
-+	return ret;
-+}
-+
-+int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype)
-+{
-+	u32 ufd = attr->target_fd;
-+	struct bpf_prog *prog;
-+	struct bpf_map *map;
-+	struct fd f;
-+	int ret;
-+
-+	if (attr->attach_flags || attr->replace_bpf_fd)
-+		return -EINVAL;
-+
-+	f = fdget(ufd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	prog = bpf_prog_get(attr->attach_bpf_fd);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto put_map;
-+	}
-+
-+	if (prog->type != ptype) {
-+		ret = -EINVAL;
-+		goto put_prog;
-+	}
-+
-+	ret = sock_map_prog_update(map, NULL, prog, attr->attach_type);
-+put_prog:
-+	bpf_prog_put(prog);
-+put_map:
- 	fdput(f);
- 	return ret;
- }
-@@ -1212,27 +1247,32 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
- }
+-	err = bpf_prog_detach(-1, BPF_FLOW_DISSECTOR);
++	err = bpf_prog_detach2(prog1, 0, BPF_FLOW_DISSECTOR);
+ 	if (CHECK_FAIL(err))
+ 		perror("bpf_prog_detach");
+ 	CHECK_FAIL(prog_is_attached(netns));
+@@ -188,7 +188,7 @@ static void test_link_create_prog_attach(int netns, int prog1, int prog2)
  
- int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
--			 u32 which)
-+			 struct bpf_prog *old, u32 which)
- {
- 	struct sk_psock_progs *progs = sock_map_progs(map);
-+	struct bpf_prog **pprog;
+ 	/* Expect failure attaching prog when link exists */
+ 	errno = 0;
+-	err = bpf_prog_attach(prog2, -1, BPF_FLOW_DISSECTOR, 0);
++	err = bpf_prog_attach(prog2, 0, BPF_FLOW_DISSECTOR, 0);
+ 	if (CHECK_FAIL(!err || errno != EEXIST))
+ 		perror("bpf_prog_attach(prog2) expected EEXIST");
+ 	CHECK_FAIL(query_attached_prog_id(netns) != query_prog_id(prog1));
+@@ -211,7 +211,7 @@ static void test_link_create_prog_detach(int netns, int prog1, int prog2)
  
- 	if (!progs)
- 		return -EOPNOTSUPP;
- 
- 	switch (which) {
- 	case BPF_SK_MSG_VERDICT:
--		psock_set_prog(&progs->msg_parser, prog);
-+		pprog = &progs->msg_parser;
- 		break;
- 	case BPF_SK_SKB_STREAM_PARSER:
--		psock_set_prog(&progs->skb_parser, prog);
-+		pprog = &progs->skb_parser;
- 		break;
- 	case BPF_SK_SKB_STREAM_VERDICT:
--		psock_set_prog(&progs->skb_verdict, prog);
-+		pprog = &progs->skb_verdict;
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
+ 	/* Expect failure detaching prog when link exists */
+ 	errno = 0;
+-	err = bpf_prog_detach(-1, BPF_FLOW_DISSECTOR);
++	err = bpf_prog_detach2(prog1, 0, BPF_FLOW_DISSECTOR);
+ 	if (CHECK_FAIL(!err || errno != EINVAL))
+ 		perror("bpf_prog_detach expected EINVAL");
+ 	CHECK_FAIL(query_attached_prog_id(netns) != query_prog_id(prog1));
+@@ -231,7 +231,7 @@ static void test_prog_attach_detach_query(int netns, int prog1, int prog2)
  	}
+ 	CHECK_FAIL(query_attached_prog_id(netns) != query_prog_id(prog1));
  
-+	if (old)
-+		return psock_replace_prog(pprog, prog, old);
-+
-+	psock_set_prog(pprog, prog);
- 	return 0;
- }
- 
+-	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
++	err = bpf_prog_detach2(prog1, 0, BPF_FLOW_DISSECTOR);
+ 	if (CHECK_FAIL(err)) {
+ 		perror("bpf_prog_detach");
+ 		return;
 -- 
 2.25.1
 
