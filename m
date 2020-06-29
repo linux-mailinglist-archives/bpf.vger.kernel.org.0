@@ -2,120 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75A320E889
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 00:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EDD20E8A4
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 01:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgF2WMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 18:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgF2WMf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 18:12:35 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C171C061755;
-        Mon, 29 Jun 2020 15:12:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id 35so7648612ple.0;
-        Mon, 29 Jun 2020 15:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bYbnK/1xSCVq1/TiUVXXGtkJjMs/M1Q7KN0EtGsVY6o=;
-        b=QGGZu2c4OuikWTRSNeoe1sVM3jGJOC1AUrzjW5WMAQvvuH9XL+s1wpFivhaniiLEx9
-         6NZSaIGqhCzd2ykSYS1W4q5M0bwY8B9KZq82eYI88v/NWkm9FC8VcubCh2qCmdp3gmUF
-         N6zR5kwYnq7Ar8uTIsswnVYWdH8c+IWLnf6Sr69rCa+GY2Ce0LW6ixZ96NMmUAHji/wj
-         fRKp+Ea8+q1atMhnQ4bpScUYSWdMEGqJ3K6iaZvh/Mmw6zupppbQQC3YPOD7Ur4Gs3Iz
-         oCM4IGld1+je/nS1r2/OKSmScpyzGj3A254T4DmwGHMZBYPadtzyZs4UYKJ1cnF7/K0U
-         IDnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bYbnK/1xSCVq1/TiUVXXGtkJjMs/M1Q7KN0EtGsVY6o=;
-        b=JN7wj/kJj00cpzHQuR53iIlG5fhr/Ottj9/aTaqUiYnx71JIIcjrhTyq7wyG+rBBoK
-         nRjF3r0SUTR8MGiEJVYdcJk8sBoohPZOucXKPZHJfQBaxlbaX345lqTHpfQz4i78IHGg
-         +kPyJdCn/yBCtadHKq/meetBBsXeW7cLipRIXDiuf09EKWtE3lsFFOQ3dY+qTIS5Col9
-         Vj4wqraTRHA/WTMayfL+8C3D/W310rOf8HZcDESIsFeCb/rbsgDMTszSL01M6QcTZ2Sp
-         5qjrRhS9Dq5x4H458kqzF0yTaCK46sX+D7Ex3mOV2tvg7vYF0HVjuSLKjGOE/xsvf5hR
-         bTWg==
-X-Gm-Message-State: AOAM530Ez5SdgemWMm71rVzRcsOwk/56HrNA2kKU7UTM4Pd/kw7Q1QDR
-        PiRRrYhwFP2TR+vEwXQFQ4W0Kqge
-X-Google-Smtp-Source: ABdhPJxOc+HpDNzP+2988YFqOG8eD5PnPjzwgrx3K2bOdH27XDD3MYifNIiTyYCfMU3Elj4SI7z0KA==
-X-Received: by 2002:a17:90b:1c12:: with SMTP id oc18mr18176746pjb.160.1593468754943;
-        Mon, 29 Jun 2020 15:12:34 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:592])
-        by smtp.gmail.com with ESMTPSA id cv3sm419878pjb.45.2020.06.29.15.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2020 15:12:34 -0700 (PDT)
-Date:   Mon, 29 Jun 2020 15:12:31 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
-Message-ID: <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        id S1727929AbgF2WRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 18:17:52 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54796 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726194AbgF2WRw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Jun 2020 18:17:52 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TMGphZ005367
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 15:17:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=//dAw8OLW7wKWC7xyY9Jkx6utz5nCmZdiOWVC7Xn2oE=;
+ b=P7tfMNhI9Ux9wW8fkzxUSAfZ/dCid2c2pQ81rRH0HQMPwpQTV6s6die0eGu8HBO99rKs
+ DhOoU72XDS5A79g2FtM7i4RBd/J3r6MEMIoxRUG5mhWNQeHCzxMSI1Ge7NXxOEztLb89
+ 5AAiMQKHKRdtAXtBRdu1EXEaIA7wUV/mNjo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31xny26vky-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 15:17:51 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 29 Jun 2020 15:17:50 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 840112EC3BDC; Mon, 29 Jun 2020 15:17:48 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: enforce BPF ringbuf size to be the power of 2
+Date:   Mon, 29 Jun 2020 15:17:46 -0700
+Message-ID: <20200629221746.4033122-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ spamscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 suspectscore=8
+ bulkscore=0 impostorscore=0 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006290141
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:55:05PM -0500, Eric W. Biederman wrote:
-> 
-> I have tested thes changes by booting with the code compiled in and
-> by killing "bpfilter_umh" and running iptables -vnL to restart
-> the userspace driver.
-> 
-> I have compiled tested each change with and without CONFIG_BPFILTER
-> enabled.
+BPF ringbuf assumes the size to be a multiple of page size and the power =
+of
+2 value. The latter is important to avoid division while calculating posi=
+tion
+inside the ring buffer and using (N-1) mask instead. This patch fixes omi=
+ssion
+to enforce power-of-2 size rule.
 
-With
-CONFIG_BPFILTER=y
-CONFIG_BPFILTER_UMH=m
-it doesn't build:
+Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support=
+ for it")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/ringbuf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-ERROR: modpost: "kill_pid_info" [net/bpfilter/bpfilter.ko] undefined!
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 180414bb0d3e..dcc8e8b9df10 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -132,7 +132,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t d=
+ata_sz, int numa_node)
+ {
+ 	struct bpf_ringbuf *rb;
+=20
+-	if (!data_sz || !PAGE_ALIGNED(data_sz))
++	if (!is_power_of_2(data_sz) || !PAGE_ALIGNED(data_sz))
+ 		return ERR_PTR(-EINVAL);
+=20
+ #ifdef CONFIG_64BIT
+@@ -166,7 +166,8 @@ static struct bpf_map *ringbuf_map_alloc(union bpf_at=
+tr *attr)
+ 		return ERR_PTR(-EINVAL);
+=20
+ 	if (attr->key_size || attr->value_size ||
+-	    attr->max_entries =3D=3D 0 || !PAGE_ALIGNED(attr->max_entries))
++	    !is_power_of_2(attr->max_entries) ||
++	    !PAGE_ALIGNED(attr->max_entries))
+ 		return ERR_PTR(-EINVAL);
+=20
+ 	rb_map =3D kzalloc(sizeof(*rb_map), GFP_USER);
+--=20
+2.24.1
 
-I've added:
-+EXPORT_SYMBOL(kill_pid_info);
-to continue testing...
-
-And then did:
-while true; do iptables -L;rmmod bpfilter; done
- 
-Unfortunately sometimes 'rmmod bpfilter' hangs in wait_event().
-
-I suspect patch 13 is somehow responsible:
-+	if (tgid) {
-+		kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
-+		wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
-+		bpfilter_umh_cleanup(info);
-+	}
-
-I cannot figure out why it hangs. Some sort of race ?
-Since adding short delay between kill and wait makes it work.
