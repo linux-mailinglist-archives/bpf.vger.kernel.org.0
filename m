@@ -2,183 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C3520E41B
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 00:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75A320E889
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 00:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbgF2VVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 17:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S1726738AbgF2WMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 18:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729782AbgF2Sws (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:52:48 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E36C031C78;
-        Mon, 29 Jun 2020 11:13:19 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id e13so16136897qkg.5;
-        Mon, 29 Jun 2020 11:13:19 -0700 (PDT)
+        with ESMTP id S1725937AbgF2WMf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 18:12:35 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C171C061755;
+        Mon, 29 Jun 2020 15:12:35 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id 35so7648612ple.0;
+        Mon, 29 Jun 2020 15:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=twS0SHJ0tpWW/RvveG6R48ty/BejMf4B4mz8JuPn66w=;
-        b=H97Sem+km39dRzORyaBMgYjQdrf0E87yvhB5vb1d3KG7EtSdQC/jT/udV4OSsrBPYS
-         FOz007h8GjgqkQ6XSQ5uZHIuWmtUoFD23nQ4eIB7XnoI+3DJYoPh46H+QhHRXPcp1o1j
-         RVuVKfu9Sh2xIO2d70XOemWpNc84ACJ53AfYVgqE+p2CF2yW2GQqecAFJu9OghkAIQgi
-         E0RhGFAiB9s8d7QimvKn0Vao3M0q1cnchey54wCRsitEFviVBLipbxvqbBquhMbrUATu
-         U+FymgZYhXxw1lGemyQq2TTzU8fVn/jU7SgnXpS2GHj9fRiymrvGhN+UZyIGYceCPHEL
-         AfnA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bYbnK/1xSCVq1/TiUVXXGtkJjMs/M1Q7KN0EtGsVY6o=;
+        b=QGGZu2c4OuikWTRSNeoe1sVM3jGJOC1AUrzjW5WMAQvvuH9XL+s1wpFivhaniiLEx9
+         6NZSaIGqhCzd2ykSYS1W4q5M0bwY8B9KZq82eYI88v/NWkm9FC8VcubCh2qCmdp3gmUF
+         N6zR5kwYnq7Ar8uTIsswnVYWdH8c+IWLnf6Sr69rCa+GY2Ce0LW6ixZ96NMmUAHji/wj
+         fRKp+Ea8+q1atMhnQ4bpScUYSWdMEGqJ3K6iaZvh/Mmw6zupppbQQC3YPOD7Ur4Gs3Iz
+         oCM4IGld1+je/nS1r2/OKSmScpyzGj3A254T4DmwGHMZBYPadtzyZs4UYKJ1cnF7/K0U
+         IDnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=twS0SHJ0tpWW/RvveG6R48ty/BejMf4B4mz8JuPn66w=;
-        b=KoSXbFlnYGpWBowpy0sUWV/7s/ZiXg4SsQRcH7ZUfijeMors7mmyCUkfX4RGCn32Ao
-         pMmQl7OxfqSjAyU1juW0K+lHlFOjnANV40zB2scDBpKCh2QUumP8lhd6hQFw8DcN9dJ+
-         nE1qmpHJjEQuFBMLmiudOBq4XEiXMI+6HBQ+Wj3VzfDCtxiv6VJqi+3vTAw4RP4fkeou
-         RltQl6UTqbj3p9bB9sa8Mii29RBTkwyJWb/YflVySRkIpXxsIDmYI/F0maYFZKo6WA9Z
-         sZe7M/m0kk1dl/0pw/bcGInTu/pC4rjt5UE26DmV8srW5OssrADUI+lMAQ8ksnMP8Csq
-         mM8w==
-X-Gm-Message-State: AOAM533V3nWeLDiBxagn256nQbvSOe+bWNMvTeCrXR+iQISCjLQAur6D
-        piZh3vZRd5LJMTRyP1gmHsKlZsNNnQrAA1Wx35s=
-X-Google-Smtp-Source: ABdhPJw/yYtDpU4X41/hDDEG4/K8emuKLEH++AyXZZZ9xr88Ao2OlH+ddshOxSY/LB+Js7NQ8FEIGok9UouZGj/aR3w=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr13834622qkc.39.1593454398945;
- Mon, 29 Jun 2020 11:13:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200626175501.1459961-1-kafai@fb.com> <20200626175545.1462191-1-kafai@fb.com>
- <CAEf4BzZ3Jb296zJ7bfsntk7v5fkynrBcKncGQgrSHJ2zqifgsA@mail.gmail.com>
- <20200627002302.3tqklvjxxuetjoxr@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzZevDLp8Hzax3T8XzHLsMm85upCONULVVOEOyAxVGe4dA@mail.gmail.com> <20200629180035.huq42fif7wktfbja@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200629180035.huq42fif7wktfbja@kafai-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Jun 2020 11:13:07 -0700
-Message-ID: <CAEf4Bzbke6B9Pf21xD0XXz_NGmuZMZcaWxbfgjdxBaNHc=zf1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 07/10] bpf: selftests: Restore netns after each test
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bYbnK/1xSCVq1/TiUVXXGtkJjMs/M1Q7KN0EtGsVY6o=;
+        b=JN7wj/kJj00cpzHQuR53iIlG5fhr/Ottj9/aTaqUiYnx71JIIcjrhTyq7wyG+rBBoK
+         nRjF3r0SUTR8MGiEJVYdcJk8sBoohPZOucXKPZHJfQBaxlbaX345lqTHpfQz4i78IHGg
+         +kPyJdCn/yBCtadHKq/meetBBsXeW7cLipRIXDiuf09EKWtE3lsFFOQ3dY+qTIS5Col9
+         Vj4wqraTRHA/WTMayfL+8C3D/W310rOf8HZcDESIsFeCb/rbsgDMTszSL01M6QcTZ2Sp
+         5qjrRhS9Dq5x4H458kqzF0yTaCK46sX+D7Ex3mOV2tvg7vYF0HVjuSLKjGOE/xsvf5hR
+         bTWg==
+X-Gm-Message-State: AOAM530Ez5SdgemWMm71rVzRcsOwk/56HrNA2kKU7UTM4Pd/kw7Q1QDR
+        PiRRrYhwFP2TR+vEwXQFQ4W0Kqge
+X-Google-Smtp-Source: ABdhPJxOc+HpDNzP+2988YFqOG8eD5PnPjzwgrx3K2bOdH27XDD3MYifNIiTyYCfMU3Elj4SI7z0KA==
+X-Received: by 2002:a17:90b:1c12:: with SMTP id oc18mr18176746pjb.160.1593468754943;
+        Mon, 29 Jun 2020 15:12:34 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:592])
+        by smtp.gmail.com with ESMTPSA id cv3sm419878pjb.45.2020.06.29.15.12.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 15:12:34 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 15:12:31 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Networking <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
+Message-ID: <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <87y2oac50p.fsf@x220.int.ebiederm.org>
+ <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bll17ili.fsf_-_@x220.int.ebiederm.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 11:00 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Sat, Jun 27, 2020 at 01:31:42PM -0700, Andrii Nakryiko wrote:
-> > On Fri, Jun 26, 2020 at 5:23 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Fri, Jun 26, 2020 at 03:45:04PM -0700, Andrii Nakryiko wrote:
-> > > > On Fri, Jun 26, 2020 at 10:56 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > >
-> > > > > It is common for networking tests creating its netns and making its own
-> > > > > setting under this new netns (e.g. changing tcp sysctl).  If the test
-> > > > > forgot to restore to the original netns, it would affect the
-> > > > > result of other tests.
-> > > > >
-> > > > > This patch saves the original netns at the beginning and then restores it
-> > > > > after every test.  Since the restore "setns()" is not expensive, it does it
-> > > > > on all tests without tracking if a test has created a new netns or not.
-> > > > >
-> > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/test_progs.c | 21 +++++++++++++++++++++
-> > > > >  tools/testing/selftests/bpf/test_progs.h |  2 ++
-> > > > >  2 files changed, 23 insertions(+)
-> > > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > > > > index 54fa5fa688ce..b521ce366381 100644
-> > > > > --- a/tools/testing/selftests/bpf/test_progs.c
-> > > > > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > > > > @@ -121,6 +121,24 @@ static void reset_affinity() {
-> > > > >         }
-> > > > >  }
-> > > > >
-> > > > > +static void save_netns(void)
-> > > > > +{
-> > > > > +       env.saved_netns_fd = open("/proc/self/ns/net", O_RDONLY);
-> > > > > +       if (env.saved_netns_fd == -1) {
-> > > > > +               perror("open(/proc/self/ns/net)");
-> > > > > +               exit(-1);
-> > > > > +       }
-> > > > > +}
-> > > > > +
-> > > > > +static void restore_netns(void)
-> > > > > +{
-> > > > > +       if (setns(env.saved_netns_fd, CLONE_NEWNET) == -1) {
-> > > > > +               stdio_restore();
-> > > > > +               perror("setns(CLONE_NEWNS)");
-> > > > > +               exit(-1);
-> > > > > +       }
-> > > > > +}
-> > > > > +
-> > > > >  void test__end_subtest()
-> > > > >  {
-> > > > >         struct prog_test_def *test = env.test;
-> > > > > @@ -643,6 +661,7 @@ int main(int argc, char **argv)
-> > > > >                 return -1;
-> > > > >         }
-> > > > >
-> > > > > +       save_netns();
-> > > >
-> > > > you should probably do this also after each sub-test in test__end_subtest()?
-> > > You mean restore_netns()?
-> >
-> > oops, yeah :)
-> >
-> > >
-> > > It is a tough call.
-> > > Some tests may only want to create a netns at the beginning for all the subtests
-> > > to use (e.g. sk_assign.c).  restore_netns() after each subtest may catch
-> > > tester in surprise that the netns is not in its full control while its
-> > > own test is running.
-> >
-> > Wouldn't it be better to update such self-tests to setns on each
-> > sub-test properly? It should be a simple code re-use exercise, unless
-> > I'm missing some other implications of having to do it before each
-> > sub-test?
-> It should be simple, I think.  Haven't looked into details of each test.
-> However, I won't count re-running the same piece of code in a for-loop
-> as a re-use exercise ;)
->
-> In my vm, a quick try in forcing sk_assign.c to reconfigure netns in each
-> subtest in the for loop increased the runtime from 1s to 8s.
-> I guess it is not a big deal for test_progs.
+On Mon, Jun 29, 2020 at 02:55:05PM -0500, Eric W. Biederman wrote:
+> 
+> I have tested thes changes by booting with the code compiled in and
+> by killing "bpfilter_umh" and running iptables -vnL to restart
+> the userspace driver.
+> 
+> I have compiled tested each change with and without CONFIG_BPFILTER
+> enabled.
 
-Oh, no, thank you very much, no one needs extra 7 seconds of
-test_progs run. Can you please remove reset_affinity() from sub-test
-clean up then, and consistently do clean ups only between tests?
+With
+CONFIG_BPFILTER=y
+CONFIG_BPFILTER_UMH=m
+it doesn't build:
 
->
-> >
-> > The idea behind sub-test is (at least it was so far) that it's
-> > independent from other sub-tests and tests, and it's only co-located
-> > with other sub-tests for the purpose of code reuse and logical
-> > grouping. Which is why we reset CPU affinity, for instance.
-> >
-> > >
-> > > I think an individual test should have managed the netns properly within its
-> > > subtests already if it wants a correct test result.  It can unshare at the
-> > > beginning of each subtest to get a clean state (e.g. in patch 8).
-> > > test_progs.c only ensures a config made by an earlier test does
-> > > not affect the following tests.
-> >
-> > It's true that it gives more flexibility for test setup, but if we go
-> > that way, we should do it consistently for CPU affinity resetting and
-> > whatever else we do per-subtest. I wonder what your answers would be
-> > for the above questions. We can go either way, just let's be
-> > consistent.
-> Right, I also don't feel strongly about which way to go for netns.
-> I noticed reset_affinity().  cgroup cleanup is also per test though.
-> I think netns is more close to cgroup in terms of bpf prog is running under it,
-> so this patch picked the current way.
->
-> If it is decided to stay with reset_affinity's way,  I can make netns change
-> to other tests (there are two if i grep properly).
->
-> It seems there is no existing subtest requires to reset_affinity.
+ERROR: modpost: "kill_pid_info" [net/bpfilter/bpfilter.ko] undefined!
+
+I've added:
++EXPORT_SYMBOL(kill_pid_info);
+to continue testing...
+
+And then did:
+while true; do iptables -L;rmmod bpfilter; done
+ 
+Unfortunately sometimes 'rmmod bpfilter' hangs in wait_event().
+
+I suspect patch 13 is somehow responsible:
++	if (tgid) {
++		kill_pid_info(SIGKILL, SEND_SIG_PRIV, tgid);
++		wait_event(tgid->wait_pidfd, !pid_task(tgid, PIDTYPE_TGID));
++		bpfilter_umh_cleanup(info);
++	}
+
+I cannot figure out why it hangs. Some sort of race ?
+Since adding short delay between kill and wait makes it work.
