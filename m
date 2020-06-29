@@ -2,146 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA7320D3ED
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 21:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0642720D3F6
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 21:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgF2TDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 15:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbgF2TCn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E833C02A551;
-        Mon, 29 Jun 2020 06:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=3zpdI8UmwBB+KQo6imlBDm+KZhNuWD0HZ+7/RXg0Qeo=; b=NJadWazrl8uT+evvJdr4n8PtH2
-        nN4b5x1zFCfERhYewoAOFG4wWd05hgltRhZJ0RGPRTXLipdAAzLtI8PU9/BoDctoMat+0tzS0xzFQ
-        TD793hEyiDS8nNPtuOmVPI07LqkXURV44OS9OVYTMC0afYGlKfdBTtgOeHix3ULRykZOMaA2KOmCH
-        TBkXODizBHR/Whz0vP73PdKkyl66g0m6sjBpYr7cfhODudFhNyJpn4/dV5gAY+bX++GifzTFMWF0m
-        S/U6RvBOjEB/pHXtjc5GMOf2jTKtkMhUVXhrdnnFbCdWNy27QVeyacAys15VwZtdrpUlgF4iREWq1
-        Ea+R8kNw==;
-Received: from [2001:4bb8:184:76e3:c71:f334:376b:cf5f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jptSB-0004Xt-ER; Mon, 29 Jun 2020 13:04:08 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
+        id S1729531AbgF2TDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 15:03:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:9632 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730590AbgF2TDb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:03:31 -0400
+IronPort-SDR: LwE34Gs+AV+xokjb3JndDrLgxWFdQYFDnQfGmEkhIUuDm+zdREct9rAW8Pew3uqAO3uU/20UGf
+ dW/vm24w2Ufw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9666"; a="125593307"
+X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
+   d="scan'208";a="125593307"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2020 06:39:04 -0700
+IronPort-SDR: GOBMqQlGojLcDdG+5mlKFZRG9gJ8QV2ZkbkGgaSD2pc2JsK2FTpzVwlf29Xfp9W1iEJ4QONxVB
+ TPoq3jVsldWw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,294,1589266800"; 
+   d="scan'208";a="313048269"
+Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.252.54.90])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Jun 2020 06:39:02 -0700
+Subject: Re: add an API to check if a streamming mapping needs sync calls
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] xsk: use dma_need_sync instead of reimplenting it
-Date:   Mon, 29 Jun 2020 15:03:59 +0200
-Message-Id: <20200629130359.2690853-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629130359.2690853-1-hch@lst.de>
 References: <20200629130359.2690853-1-hch@lst.de>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <b97104e1-433c-8e35-59c6-b4dad047464c@intel.com>
+Date:   Mon, 29 Jun 2020 15:39:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200629130359.2690853-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use the dma_need_sync helper instead of (not always entirely correctly)
-poking into the dma-mapping internals.
+On 2020-06-29 15:03, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series lifts the somewhat hacky checks in the XSK code if a DMA
+> streaming mapping needs dma_sync_single_for_{device,cpu} calls to the
+> DMA API.
+>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- net/xdp/xsk_buff_pool.c | 50 +++--------------------------------------
- 1 file changed, 3 insertions(+), 47 deletions(-)
+Thanks a lot for working on, and fixing this, Christoph!
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 6733e2c59e4835..08b80669f64955 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -2,9 +2,6 @@
- 
- #include <net/xsk_buff_pool.h>
- #include <net/xdp_sock.h>
--#include <linux/dma-direct.h>
--#include <linux/dma-noncoherent.h>
--#include <linux/swiotlb.h>
- 
- #include "xsk_queue.h"
- 
-@@ -124,48 +121,6 @@ static void xp_check_dma_contiguity(struct xsk_buff_pool *pool)
- 	}
- }
- 
--static bool __maybe_unused xp_check_swiotlb_dma(struct xsk_buff_pool *pool)
--{
--#if defined(CONFIG_SWIOTLB)
--	phys_addr_t paddr;
--	u32 i;
--
--	for (i = 0; i < pool->dma_pages_cnt; i++) {
--		paddr = dma_to_phys(pool->dev, pool->dma_pages[i]);
--		if (is_swiotlb_buffer(paddr))
--			return false;
--	}
--#endif
--	return true;
--}
--
--static bool xp_check_cheap_dma(struct xsk_buff_pool *pool)
--{
--#if defined(CONFIG_HAS_DMA)
--	const struct dma_map_ops *ops = get_dma_ops(pool->dev);
--
--	if (ops) {
--		return !ops->sync_single_for_cpu &&
--			!ops->sync_single_for_device;
--	}
--
--	if (!dma_is_direct(ops))
--		return false;
--
--	if (!xp_check_swiotlb_dma(pool))
--		return false;
--
--	if (!dev_is_dma_coherent(pool->dev)) {
--#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) ||		\
--	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) ||	\
--	defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE)
--		return false;
--#endif
--	}
--#endif
--	return true;
--}
--
- int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 	       unsigned long attrs, struct page **pages, u32 nr_pages)
- {
-@@ -179,6 +134,7 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 
- 	pool->dev = dev;
- 	pool->dma_pages_cnt = nr_pages;
-+	pool->dma_need_sync = false;
- 
- 	for (i = 0; i < pool->dma_pages_cnt; i++) {
- 		dma = dma_map_page_attrs(dev, pages[i], 0, PAGE_SIZE,
-@@ -187,13 +143,13 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 			xp_dma_unmap(pool, attrs);
- 			return -ENOMEM;
- 		}
-+		if (dma_need_sync(dev, dma))
-+			pool->dma_need_sync = true;
- 		pool->dma_pages[i] = dma;
- 	}
- 
- 	if (pool->unaligned)
- 		xp_check_dma_contiguity(pool);
--
--	pool->dma_need_sync = !xp_check_cheap_dma(pool);
- 	return 0;
- }
- EXPORT_SYMBOL(xp_dma_map);
--- 
-2.26.2
+I took the series for a spin, and there are (obviously) no performance
+regressions.
 
+Would the patches go through the net/bpf trees or somewhere else?
+
+For the series:
+Tested-by: Björn Töpel <bjorn.topel@intel.com>
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+
+
+Björn
+
+> 
+> Diffstat:
+>   Documentation/core-api/dma-api.rst |    8 +++++
+>   include/linux/dma-direct.h         |    1
+>   include/linux/dma-mapping.h        |    5 +++
+>   include/net/xsk_buff_pool.h        |    6 ++--
+>   kernel/dma/direct.c                |    6 ++++
+>   kernel/dma/mapping.c               |   10 ++++++
+>   net/xdp/xsk_buff_pool.c            |   54 ++-----------------------------------
+>   7 files changed, 37 insertions(+), 53 deletions(-)
+> 
