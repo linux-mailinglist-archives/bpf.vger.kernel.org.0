@@ -2,254 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCE620E0FA
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FF820E129
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 23:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388148AbgF2UvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 16:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S1729973AbgF2Uwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 16:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731396AbgF2TN3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:13:29 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48370C08EB18
-        for <bpf@vger.kernel.org>; Sun, 28 Jun 2020 23:24:21 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c139so14284909qkg.12
-        for <bpf@vger.kernel.org>; Sun, 28 Jun 2020 23:24:21 -0700 (PDT)
+        with ESMTP id S1731343AbgF2TNY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:13:24 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5722C0A893C
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 00:42:26 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id o4so8522095lfi.7
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 00:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I+9rONQeuHOsu3qMdgTJ+1vhBaAyS+WyXumKr7aVa88=;
-        b=aOW+qVyu+cAJrEFyr2OOYQbC7EPzzBdv9SL6DONgDOkJvwNLlF+j/aL8R9V4Xn+7qb
-         baxHuaH5JauKzV4CXS5ZQGNCa3IU+H0c0zqco3BNzMjKbUwT+XI2Tb9OM74XUA7/VoKl
-         UHqSo/S+E1+VgoGo8ycKZok83JbcfigoiCDoTVvnKDDVntKieB/5GlaoIiN2OMcBoV5b
-         acZnHvC04wAwI6vUjz0F9W0S6u22X4kBJTIAUZs7N0xTwE7Rxsn8PjWmSzVDLYPBCGFO
-         VOhqMFCniSBXYmxTSOg4Mir8WLT8SQM4po04EcAbeAQVQqPHQ/ZbxP0VujyQ+7RSQ+mx
-         WsDw==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=dehoAPWG1C4zFRAsM2Hgz51wnypP3bkZmHH0inC/SE4=;
+        b=HfRHaYe1bLPiZrP3enkwPCpjwaVwCHWeRiz6TUInU4PWdR2CQVF7DKY4T13zP/B4K4
+         0EaxCRhvHXARTsFJKg9BnUm3QshCsc8n2IqVG/rX6v/vgukiSK8MnTL+wENyeG88SaLn
+         PqCaBwQ0rgrxjbUKT+S/rYT2c3iQoxOIOO3Wk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+9rONQeuHOsu3qMdgTJ+1vhBaAyS+WyXumKr7aVa88=;
-        b=pxbLOe6ulT61kYw0lx5OVx8p4bwuZ+wuzDduoqCzKwzX8v5bDXFEh//dt7AwkQHPeb
-         rkAHNz8Eyjbn8L6WFvxvnr9dFm6cMBjJdjLDBMa1oUk7fMjX1Qi1N6jVWNhyqBZwpYvz
-         574/PA+EmvbB6n9tmwqOlvGHjNFPfNDi+cier7ps/51EgiOQ/xcv8Z3bZ3IkYZWRBY70
-         5AfPx88u5onhw9IfS2sEXutwXSw93hOD3P7oqQ7qoNgyGfin9MSAFzedcMsXqjmcgMJ/
-         mcnVwGFK8pJgPelX3eu341if3Wxe8OtMlNxP5HqMHQD7xN4p7p7TaYEXEqG3K8TMrk0C
-         s+ig==
-X-Gm-Message-State: AOAM5309POJ92qFt7P+abUmQpJA78Cc3j0nGaKBEn6bk/9wC6Co2ivOI
-        ruJmPDndXSNRHMjlScEyD13UDvOR7dIcqB8iXrU=
-X-Google-Smtp-Source: ABdhPJwho7K28lYagQ7QPUK2ABQvuyirg1B+ihN/tj9RD3Okt6gJv+NmY5QeLfs+v7YVcCjzC7ArDx2woJx8DV+YmHU=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr2486882qkg.437.1593411860312;
- Sun, 28 Jun 2020 23:24:20 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=dehoAPWG1C4zFRAsM2Hgz51wnypP3bkZmHH0inC/SE4=;
+        b=uREGFwCj5D5giJrEbpF9UGCs3fIL1jYErl0iKEuB4PVE/VaAnZjFORXNG9bsqvPUOU
+         q/8r/Czpu2vidtLYEFA+/GuEAnjvE8uoNx6cfCnf1oqlBe5CShmKDkx6Tp3Tr0hx3i8h
+         dgB28iwBTX9B2PZz71TXx9AHobD4GSQpeViFdu3gLwLq1AU2A64Hcqdx8gD9dinFY12q
+         Xl6a+Q4VOLZO0xXqYCfOUQMWjL4YCWZsqMT12P/ZGrUFBqtGl1L07Cb/7ybWEOIEZZAT
+         QXeluptO5gTT0Y8dlK3kC7XE8ZNx8PGHybDxpAc77hbfyV0Pdqy+EB7bOePegFcu//hT
+         Wcog==
+X-Gm-Message-State: AOAM533ojW2EoDNkdmG1kjQMloPRwmt8eWIqV+lUY8BWu5yLV0R5fYBf
+        WA1DuDU+xZYg0E2asjfLIpI4EXuMW2u4AQ==
+X-Google-Smtp-Source: ABdhPJwrtWoK6TAjkCMcGUSuVkzv9DxW/3FrqZvLStmAWpY/6EKvwNcFbQyy9OA4Sq7EnCigTcNxqA==
+X-Received: by 2002:a05:6512:3398:: with SMTP id h24mr8399914lfg.135.1593416545225;
+        Mon, 29 Jun 2020 00:42:25 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id e29sm7826437lfc.51.2020.06.29.00.42.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 00:42:24 -0700 (PDT)
+References: <159312606846.18340.6821004346409614051.stgit@john-XPS-13-9370> <159312679888.18340.15248924071966273998.stgit@john-XPS-13-9370>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     kafai@fb.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [bpf PATCH v2 2/3] bpf, sockmap: RCU dereferenced psock may be used outside RCU block
+In-reply-to: <159312679888.18340.15248924071966273998.stgit@john-XPS-13-9370>
+Date:   Mon, 29 Jun 2020 09:42:23 +0200
+Message-ID: <87d05imi74.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <CABtjQmYObfTxZ_mZdhDBw_mmShJMofR3VeCH+GgATLrWD1x9+g@mail.gmail.com>
-In-Reply-To: <CABtjQmYObfTxZ_mZdhDBw_mmShJMofR3VeCH+GgATLrWD1x9+g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 28 Jun 2020 23:24:09 -0700
-Message-ID: <CAEf4BzY1FFr0qJtDZ=XREZ=YHkCJEp4ZskHamYnCXKY+Bpmkhg@mail.gmail.com>
-Subject: Re: tp_btf: if (!struct->pointer_member) always actually false
- although pointer_member == NULL
-To:     Wenbo Zhang <ethercflow@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 10:25 PM Wenbo Zhang <ethercflow@gmail.com> wrote:
+On Fri, Jun 26, 2020 at 01:13 AM CEST, John Fastabend wrote:
+> If an ingress verdict program specifies message sizes greater than
+> skb->len and there is an ENOMEM error due to memory pressure we
+> may call the rcv_msg handler outside the strp_data_ready() caller
+> context. This is because on an ENOMEM error the strparser will
+> retry from a workqueue. The caller currently protects the use of
+> psock by calling the strp_data_ready() inside a rcu_read_lock/unlock
+> block.
 >
-> I found in tp_btf program, direct access struct's pointer member's
-> behaviour isn't consistent with
-> BPF_CORE_READ. for example:
+> But, in above workqueue error case the psock is accessed outside
+> the read_lock/unlock block of the caller. So instead of using
+> psock directly we must do a look up against the sk again to
+> ensure the psock is available.
 >
-> SEC("tp_btf/block_rq_issue")
-> int BPF_PROG(tp_btf__block_rq_issue, struct request_queue *q,
->     struct request *rq)
-> {
->         /* After echo none > /sys/block/$dev/queue/scheduler,
->          * the $dev's q->elevator will be set to NULL.
->          */
->         if (!q->elevator)
->                 bpf_printk("direct access: noop\n");
->         if (!BPF_CORE_READ(q, elevator))
->                 bpf_printk("FROM CORE READ: noop\n");
->         return 0;
-> }
+> There is an an ugly piece here where we must handle
+> the case where we paused the strp and removed the psock. On
+> psock removal we first pause the strparser and then remove
+> the psock. If the strparser is paused while an skb is
+> scheduled on the workqueue the skb will be dropped on the
+> flow and kfree_skb() is called. If the workqueue manages
+> to get called before we pause the strparser but runs the rcvmsg
+> callback after the psock is removed we will hit the unlikely
+> case where we run the sockmap rcvmsg handler but do not have
+> a psock. For now we will follow strparser logic and drop the
+> skb on the floor with skb_kfree(). This is ugly because the
+> data is dropped. To date this has not caused problems in practice
+> because either the application controlling the sockmap is
+> coordinating with the datapath so that skbs are "flushed"
+> before removal or we simply wait for the sock to be closed before
+> removing it.
 >
-> Although its value is NULL, from trace_pipe I can only see
+> This patch fixes the describe RCU bug and dropping the skb doesn't
+> make things worse. Future patches will improve this by allowing
+> the normal case where skbs are not merged to skip the strparser
+> altogether. In practice many (most?) use cases have no need to
+> merge skbs so its both a code complexity hit as seen above and
+> a performance issue. For example, in the Cilium case we always
+> set the strparser up to return sbks 1:1 without any merging and
+> have avoided above issues.
 >
-> > FROM CORE READ: noop
->
-> So it seems  `if (!q->elevator)` always return false.
->
-> I tested it with kernel 5.7.0-rc7+ and 5.8.0-rc1+, both have this problem.
-> clang version: clang version 10.0.0-4ubuntu1~18.04.1
->
-> Reproduce step:
-> 1. Run this bpf prog;
-> 2. Run `cat /sys/kernel/debug/tracing/trace_pipe` in other window;
-> 3. Run `echo none > /sys/block/sdc/queue/scheduler`;  # please replace
-> sdc to your device;
-> 4. Run `dd if=/dev/zero of=/dev/sdc  bs=1MiB count=200 oflag=direct`;
->
+> Fixes: e91de6afa81c1 ("bpf: Fix running sk_skb program types with ktls")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
 
-Thanks a lot for detailed bug report. I haven't executed it, but I can
-see from BPF assembly in kernel that there is a bug in a kernel. See
-below.
-
->
-> The output of  `llvm-objdump-10 -D bio.bpf.o` is:
-
-Next time please use -d or -S, that way it will disassemble only
-actual code, not all of the sections. Just FYI.
-
->
->
-> bio.bpf.o:      file format ELF64-BPF
->
->
-> Disassembly of section tp_btf/block_rq_issue:
->
-> 0000000000000000 tp_btf__block_rq_issue:
->        0:       b7 02 00 00 08 00 00 00 r2 = 8
->        1:       79 11 00 00 00 00 00 00 r1 = *(u64 *)(r1 + 0)
->        2:       bf 16 00 00 00 00 00 00 r6 = r1
->        3:       0f 26 00 00 00 00 00 00 r6 += r2
->        4:       79 11 08 00 00 00 00 00 r1 = *(u64 *)(r1 + 8)
->        5:       55 01 0e 00 00 00 00 00 if r1 != 0 goto +14 <LBB0_2>
->        6:       b7 01 00 00 00 00 00 00 r1 = 0
->        7:       73 1a fc ff 00 00 00 00 *(u8 *)(r10 - 4) = r1
->        8:       b7 01 00 00 6f 6f 70 0a r1 = 175140719
->        9:       63 1a f8 ff 00 00 00 00 *(u32 *)(r10 - 8) = r1
->       10:       18 01 00 00 63 63 65 73 00 00 00 00 73 3a 20 6e r1 =
-> 7935406810958488419 ll
->       12:       7b 1a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r1
->       13:       18 01 00 00 64 69 72 65 00 00 00 00 63 74 20 61 r1 =
-> 6998721791186332004 ll
->       15:       7b 1a e8 ff 00 00 00 00 *(u64 *)(r10 - 24) = r1
->       16:       bf a1 00 00 00 00 00 00 r1 = r10
->       17:       07 01 00 00 e8 ff ff ff r1 += -24
->       18:       b7 02 00 00 15 00 00 00 r2 = 21
->       19:       85 00 00 00 06 00 00 00 call 6
->
-> 00000000000000a0 LBB0_2:
->       20:       bf a1 00 00 00 00 00 00 r1 = r10
->       21:       07 01 00 00 e8 ff ff ff r1 += -24
->       22:       b7 02 00 00 08 00 00 00 r2 = 8
->       23:       bf 63 00 00 00 00 00 00 r3 = r6
->       24:       85 00 00 00 04 00 00 00 call 4
->       25:       79 a1 e8 ff 00 00 00 00 r1 = *(u64 *)(r10 - 24)
->       26:       55 01 0e 00 00 00 00 00 if r1 != 0 goto +14 <LBB0_4>
->       27:       b7 01 00 00 0a 00 00 00 r1 = 10
->       28:       6b 1a fc ff 00 00 00 00 *(u16 *)(r10 - 4) = r1
->       29:       b7 01 00 00 6e 6f 6f 70 r1 = 1886351214
->       30:       63 1a f8 ff 00 00 00 00 *(u32 *)(r10 - 8) = r1
->       31:       18 01 00 00 45 20 52 45 00 00 00 00 41 44 3a 20 r1 =
-> 2322243604989485125 ll
->       33:       7b 1a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r1
->       34:       18 01 00 00 46 52 4f 4d 00 00 00 00 20 43 4f 52 r1 =
-> 5931033040285291078 ll
->       36:       7b 1a e8 ff 00 00 00 00 *(u64 *)(r10 - 24) = r1
->       37:       bf a1 00 00 00 00 00 00 r1 = r10
->       38:       07 01 00 00 e8 ff ff ff r1 += -24
->       39:       b7 02 00 00 16 00 00 00 r2 = 22
->       40:       85 00 00 00 06 00 00 00 call 6
->
-> 0000000000000148 LBB0_4:
->       41:       b7 00 00 00 00 00 00 00 r0 = 0
->       42:       95 00 00 00 00 00 00 00 exit
->
-
-There are two relocations on instruction #0 and #4, I double-checked,
-libbpf correctly resolves them to 8 (byte offset of elevator field
-within request_queue). This code dump also looks correct, so Clang
-generates everything properly.
-
-But if you dump loaded BPF program assembly, it becomes clear that
-verifier is not doing the right thing. Here's in-kernel version dump:
-
-[vmuser@archvm bpftool]$ sudo bpftool p d x id 3468
-int tp_btf__block_rq_issue(long long unsigned int * ctx):
-; int BPF_PROG(tp_btf__block_rq_issue, struct request_queue *q,
-   0: (b7) r2 = 8
-; int BPF_PROG(tp_btf__block_rq_issue, struct request_queue *q,
-   1: (79) r1 = *(u64 *)(r1 +0)
-   2: (bf) r6 = r1
-   3: (0f) r6 += r2
-; if (!q->elevator)
-   4: (79) r1 = *(u64 *)(r1 +8)
-; bpf_printk("direct access: noop\n");
-
-Here verifier's analysis for whatever reason concluded that r1 is
-always going to be != 0 and it eliminated entire if block.
-
-It's a bit too late here for me to dig into this, I might take a look
-tomorrow, unless someone beats me to it. But yeah, there clearly is a
-bug in verifier branch prediction.
-
-
-   5: (bf) r1 = r10
-;
-   6: (07) r1 += -24
-; if (!BPF_CORE_READ(q, elevator))
-   7: (b7) r2 = 8
-   8: (bf) r3 = r6
-   9: (85) call bpf_probe_read_compat#-147792
-; if (!BPF_CORE_READ(q, elevator))
-  10: (79) r1 = *(u64 *)(r10 -24)
-; if (!BPF_CORE_READ(q, elevator))
-  11: (55) if r1 != 0x0 goto pc+14
-  12: (b7) r1 = 10
-; bpf_printk("FROM CORE READ: noop\n");
-  13: (6b) *(u16 *)(r10 -4) = r1
-  14: (b7) r1 = 1886351214
-  15: (63) *(u32 *)(r10 -8) = r1
-  16: (18) r1 = 0x203a444145522045
-  18: (7b) *(u64 *)(r10 -16) = r1
-  19: (18) r1 = 0x524f43204d4f5246
-  21: (7b) *(u64 *)(r10 -24) = r1
-  22: (bf) r1 = r10
-  23: (07) r1 += -24
-  24: (b7) r2 = 22
-  25: (85) call bpf_trace_printk#-150256
-; int BPF_PROG(tp_btf__block_rq_issue, struct request_queue *q,
-  26: (b7) r0 = 0
-  27: (95) exit
-
-
-[...]
-
->
->
-> BTW, the llvm-objdump will core dump after output the above info:
->
-> Stack dump:
-> 0. Program arguments: llvm-objdump-10 -D bio.bpf.o
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(_ZN4llvm3sys15PrintStackTraceERNS_11raw_ostreamE+0x1f)[0x7f7636d5dc3f]
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(_ZN4llvm3sys17RunSignalHandlersEv+0x50)[0x7f7636d5bf00]
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(+0x978205)[0x7f7636d5e205]
-> /lib/x86_64-linux-gnu/libpthread.so.0(+0x12890)[0x7f76361d9890]
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(+0x21bbed3)[0x7f76385a1ed3]
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(+0x21baefb)[0x7f76385a0efb]
-> /usr/lib/x86_64-linux-gnu/libLLVM-10.so.1(+0x21bc0ce)[0x7f76385a20ce]
-> llvm-objdump-10[0x41b78c]
-> llvm-objdump-10[0x425278]
-> llvm-objdump-10[0x41f502]
-> llvm-objdump-10[0x41a473]
-> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7)[0x7f763546db97]
-> llvm-objdump-10[0x41542a]
-> [1]    21636 segmentation fault (core dumped)
-
-This is not good, though dumping .BTF section as assembly is not a
-usual case ;) Maybe Yonghong has some insights on this one, though.
-
->
-> llvm-objdump-10 --version
-> LLVM (http://llvm.org/):
->   LLVM version 10.0.0
->
-
-[...]
+LGTM. Sorry for the delay, needed to make sure I understand this.
