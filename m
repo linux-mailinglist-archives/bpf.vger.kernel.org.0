@@ -2,134 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8D320D66C
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 22:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF99920D844
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 22:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730188AbgF2TT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 15:19:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:39574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728684AbgF2TT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:19:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3E111516;
-        Mon, 29 Jun 2020 08:41:20 -0700 (PDT)
-Received: from [10.57.21.32] (unknown [10.57.21.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD4A13F73C;
-        Mon, 29 Jun 2020 08:41:18 -0700 (PDT)
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     maximmi@mellanox.com, konrad.wilk@oracle.com,
-        jonathan.lemon@gmail.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, magnus.karlsson@intel.com
-References: <20200626134358.90122-1-bjorn.topel@gmail.com>
- <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
- <20200627070406.GB11854@lst.de>
- <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
-Date:   Mon, 29 Jun 2020 16:41:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731017AbgF2Thu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 15:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387458AbgF2Thp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:37:45 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34C5C0307B4
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 09:01:04 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r12so17019472wrj.13
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 09:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5yWLAmrjP+HUE9xuw2mUWHUEAQL6o66O+XdJK9Xwzm0=;
+        b=BEJizO2GxVqUFqQaVQ53DedgK+SmvRgtkazROcEAyi+qU9DZyMgtfuQXTUIqMcgA2J
+         SzLrFz6+XuNM5oeI7mXOi0I4Z32kZM5iAZ399LbQh1+/w8spKIHvkv/iQXvv6N4KZ4Iw
+         wqD+gsyVzZ2jEGO9PSc59JbNCQEMzfXkbg7Ck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5yWLAmrjP+HUE9xuw2mUWHUEAQL6o66O+XdJK9Xwzm0=;
+        b=CKnruYnzTXBBPi/esWC31wDKMjRwINd3erUPZXyllF1JCC37MxtGmuI7eyV4m/TsUa
+         TnMa0QKD6xbEAf1eR1Htg8weKqCPDqxb200QYcBlhTHKUNDd7/xurudCTVeUx23uXD5A
+         XrioNA6EnXbLW+0n6J9R7NCSEZ+RNz21iwf2x27tCBUsQqx+N8jjLENOLn8xtV3gKqFx
+         qoW2/4ESL8XGKNsQhZ3Uq7Esy0Mhvs57FUxUVbRJsu3MLnHRneRq5bheCceWu7Xv8R81
+         K5q1vYjh7pPvLU0xXxm8NSwSjZswoB8D0WpOEg2kJcMTua+HCoIDSYNou37vVK9aAXYa
+         7E1Q==
+X-Gm-Message-State: AOAM532E5pqO/iRK67OOGQGtHlFIPOxKcILrLGPIF0/3vQee6e6p7BQ7
+        A9cbxLbzO6Fh1WoiDBolinRCEw==
+X-Google-Smtp-Source: ABdhPJzCgc7NzKu0yVjVQT4tYYa6mOFm31PXB1QzHZcJG8Pbw4bv5l43oogdQqOAc4bA8wMDk4OgVg==
+X-Received: by 2002:a5d:420b:: with SMTP id n11mr17554602wrq.91.1593446463496;
+        Mon, 29 Jun 2020 09:01:03 -0700 (PDT)
+Received: from google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id r3sm173899wrg.70.2020.06.29.09.01.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 09:01:02 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Mon, 29 Jun 2020 18:01:00 +0200
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: Generalize bpf_sk_storage
+Message-ID: <20200629160100.GA171259@google.com>
+References: <20200617202941.3034-1-kpsingh@chromium.org>
+ <20200617202941.3034-2-kpsingh@chromium.org>
+ <20200619064332.fycpxuegmmkbfe54@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619064332.fycpxuegmmkbfe54@kafai-mbp.dhcp.thefacebook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-06-28 18:16, Björn Töpel wrote:
-> 
-> On 2020-06-27 09:04, Christoph Hellwig wrote:
->> On Sat, Jun 27, 2020 at 01:00:19AM +0200, Daniel Borkmann wrote:
->>> Given there is roughly a ~5 weeks window at max where this removal could
->>> still be applied in the worst case, could we come up with a fix / 
->>> proposal
->>> first that moves this into the DMA mapping core? If there is 
->>> something that
->>> can be agreed upon by all parties, then we could avoid re-adding the 9%
->>> slowdown. :/
->>
->> I'd rather turn it upside down - this abuse of the internals blocks work
->> that has basically just missed the previous window and I'm not going
->> to wait weeks to sort out the API misuse.  But we can add optimizations
->> back later if we find a sane way.
->>
-> 
-> I'm not super excited about the performance loss, but I do get
-> Christoph's frustration about gutting the DMA API making it harder for
-> DMA people to get work done. Lets try to solve this properly using
-> proper DMA APIs.
-> 
-> 
->> That being said I really can't see how this would make so much of a
->> difference.  What architecture and what dma_ops are you using for
->> those measurements?  What is the workload?
->>
-> 
-> The 9% is for an AF_XDP (Fast raw Ethernet socket. Think AF_PACKET, but 
-> faster.) benchmark: receive the packet from the NIC, and drop it. The 
-> DMA syncs stand out in the perf top:
-> 
->    28.63%  [kernel]                   [k] i40e_clean_rx_irq_zc
->    17.12%  [kernel]                   [k] xp_alloc
->     8.80%  [kernel]                   [k] __xsk_rcv_zc
->     7.69%  [kernel]                   [k] xdp_do_redirect
->     5.35%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
->     4.77%  [kernel]                   [k] xsk_rcv.part.0
->     4.07%  [kernel]                   [k] __xsk_map_redirect
->     3.80%  [kernel]                   [k] dma_direct_sync_single_for_cpu
->     3.03%  [kernel]                   [k] dma_direct_sync_single_for_device
->     2.76%  [kernel]                   [k] i40e_alloc_rx_buffers_zc
->     1.83%  [kernel]                   [k] xsk_flush
-> ...
-> 
-> For this benchmark the dma_ops are NULL (dma_is_direct() == true), and
-> the main issue is that SWIOTLB is now unconditionally enabled [1] for
-> x86, and for each sync we have to check that if is_swiotlb_buffer()
-> which involves a some costly indirection.
-> 
-> That was pretty much what my hack avoided. Instead we did all the checks
-> upfront, since AF_XDP has long-term DMA mappings, and just set a flag
-> for that.
-> 
-> Avoiding the whole "is this address swiotlb" in
-> dma_direct_sync_single_for_{cpu, device]() per-packet
-> would help a lot.
+Thanks for your feedback! Apologies it took some time for me
+to incorporate this into another revision.
 
-I'm pretty sure that's one of the things we hope to achieve with the 
-generic bypass flag :)
-
-> Somewhat related to the DMA API; It would have performance benefits for
-> AF_XDP if the DMA range of the mapped memory was linear, i.e. by IOMMU
-> utilization. I've started hacking a thing a little bit, but it would be
-> nice if such API was part of the mapping core.
+On 18-Jun 23:43, Martin KaFai Lau wrote:
+> On Wed, Jun 17, 2020 at 10:29:38PM +0200, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> > 
+> > Refactor the functionality in bpf_sk_storage.c so that concept of
+> > storage linked to kernel objects can be extended to other objects like
+> > inode, task_struct etc.
+> > 
+> > bpf_sk_storage is updated to be bpf_local_storage with a union that
+> > contains a pointer to the owner object. The type of the
+> > bpf_local_storage can be determined using the newly added
+> > bpf_local_storage_type enum.
+> > 
+> > Each new local storage will still be a separate map and provide its own
+> > set of helpers. This allows for future object specific extensions and
+> > still share a lot of the underlying implementation.
+> Thanks for taking up this effort to refactor sk_local_storage.
 > 
-> Input: array of pages Output: array of dma addrs (and obviously dev,
-> flags and such)
+> I took a quick look.  I have some comments and would like to explore
+> some thoughts.
 > 
-> For non-IOMMU len(array of pages) == len(array of dma addrs)
-> For best-case IOMMU len(array of dma addrs) == 1 (large linear space)
+> > --- a/net/core/bpf_sk_storage.c
+> > +++ b/kernel/bpf/bpf_local_storage.c
+> > @@ -1,19 +1,22 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /* Copyright (c) 2019 Facebook  */
+> > +#include "linux/bpf.h"
+> > +#include "asm-generic/bug.h"
+> > +#include "linux/err.h"
+> "<" ">"
 > 
-> But that's for later. :-)
+> >  #include <linux/rculist.h>
+> >  #include <linux/list.h>
+> >  #include <linux/hash.h>
+> >  #include <linux/types.h>
+> >  #include <linux/spinlock.h>
+> >  #include <linux/bpf.h>
+> > -#include <net/bpf_sk_storage.h>
+> > +#include <linux/bpf_local_storage.h>
+> >  #include <net/sock.h>
+> >  #include <uapi/linux/sock_diag.h>
+> >  #include <uapi/linux/btf.h>
+> >  
+> >  static atomic_t cache_idx;
+> inode local storage and sk local storage probably need a separate
+> cache_idx.  An improvement on picking cache_idx has just been
+> landed also.
 
-FWIW you will typically get that behaviour from IOMMU-based 
-implementations of dma_map_sg() right now, although it's not strictly 
-guaranteed. If you can weather some additional setup cost of calling 
-sg_alloc_table_from_pages() plus walking the list after mapping to test 
-whether you did get a contiguous result, you could start taking 
-advantage of it as some of the dma-buf code in DRM and v4l2 does already 
-(although those cases actually treat it as a strict dependency rather 
-than an optimisation).
+I see, thanks! I rebased and I now see that cache_idx is now a:
 
-I'm inclined to agree that if we're going to see more of these cases, a 
-new API call that did formally guarantee a DMA-contiguous mapping 
-(either via IOMMU or bounce buffering) or failure might indeed be handy.
+  static u64 cache_idx_usage_counts[BPF_STORAGE_CACHE_SIZE];
 
-Robin.
+which tracks the free cache slots rather than using a single atomic
+cache_idx. I guess all types of local storage can share this now
+right?
+
+> 
+> [ ... ]
+> 
+> > +struct bpf_local_storage {
+> > +	struct bpf_local_storage_data __rcu *cache[BPF_STORAGE_CACHE_SIZE];
+> >  	return NULL;
+
+[...]
+
+> >  }
+> >  
+> > -/* sk_storage->lock must be held and selem->sk_storage == sk_storage.
+> > +static void __unlink_local_storage(struct bpf_local_storage *local_storage,
+> > +				   bool uncharge_omem)
+> Nit. indent is off.  There are a few more cases like this.
+
+Thanks, will fix this. (note to self: don't trust the editor's
+clang-format blindly).
+
+> 
+> > +{
+> > +	struct sock *sk;
+> > +
+> > +	switch (local_storage->stype) {
+> Does it need a new bpf_local_storage_type?  Is map_type as good?
+> 
+> Instead of adding any new member (e.g. stype) to
+> "struct bpf_local_storage",  can the smap pointer be directly used
+> here instead?
+> 
+> For example in __unlink_local_storage() here, it should
+> have a hold to the selem which then has a hold to smap.
+
+Good point, Updated to using the map->map_type.
+
+> 
+> > +	case BPF_LOCAL_STORAGE_SK:
+> > +		sk = local_storage->sk;
+> > +		if (uncharge_omem)
+> > +			atomic_sub(sizeof(struct bpf_local_storage),
+> > +				   &sk->sk_omem_alloc);
+> > +
+> > +		/* After this RCU_INIT, sk may be freed and cannot be used */
+> > +		RCU_INIT_POINTER(sk->sk_bpf_storage, NULL);
+> > +		local_storage->sk = NULL;
+> > +		break;
+> > +	}
+> Another thought on the stype switch cases.
+> 
+> Instead of having multiple switches on stype in bpf_local_storage.c which may
+> not be scalable soon if we are planning to support a few more kernel objects,
+> have you considered putting them into its own "ops".  May be a few new
+> ops can be added to bpf_map_ops to do local storage unlink/update/alloc...etc.
+
+Good idea, I was able to refactor this with the following ops:
+
+        /* Functions called by bpf_local_storage maps */
+	void (*map_local_storage_unlink)(struct bpf_local_storage *local_storage,
+                                         bool uncharge_omem);
+	struct bpf_local_storage_elem *(*map_selem_alloc)(
+		struct bpf_local_storage_map *smap, void *owner, void *value,
+		bool charge_omem);
+	struct bpf_local_storage_data *(*map_local_storage_update)(
+		void  *owner, struct bpf_map *map, void *value, u64 flags);
+	int (*map_local_storage_alloc)(void *owner,
+				       struct bpf_local_storage_map *smap,
+				       struct bpf_local_storage_elem *elem);
+
+Let me know if you have any particular thoughts/suggestions about
+this.
+
+> 
+> > +}
+> > +
+> > +/* local_storage->lock must be held and selem->local_storage == local_storage.
+> >   * The caller must ensure selem->smap is still valid to be
+> >   * dereferenced for its smap->elem_size and smap->cache_idx.
+> > + *
+> > + * uncharge_omem is only relevant when:
+
+[...]
+
+> > +	/* bpf_local_storage_map is currently limited to CAP_SYS_ADMIN as
+> >  	 * the map_alloc_check() side also does.
+> >  	 */
+> >  	if (!bpf_capable())
+> > @@ -1025,10 +1127,10 @@ bpf_sk_storage_diag_alloc(const struct nlattr *nla_stgs)
+> >  }
+> >  EXPORT_SYMBOL_GPL(bpf_sk_storage_diag_alloc);
+> Would it be cleaner to leave bpf_sk specific function, map_ops, and func_proto
+> in net/core/bpf_sk_storage.c?
+
+Sure, I can also keep the sk_clone code their as well for now.
+
+> 
+> There is a test in map_tests/sk_storage_map.c, in case you may not notice.
+
+I will try to make it generic as a part of this series. If it takes
+too much time, I will send a separate patch for testing
+inode_storage_map and till then we have some assurance with
+test_local_storage in test_progs.
+
+- KP
