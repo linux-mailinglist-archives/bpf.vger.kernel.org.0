@@ -2,77 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336DE20D42E
-	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 21:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9DC20D4CA
+	for <lists+bpf@lfdr.de>; Mon, 29 Jun 2020 21:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgF2TGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 15:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730406AbgF2TCn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 15:02:43 -0400
-X-Greylist: delayed 1419 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 29 Jun 2020 07:16:46 PDT
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337D4C02E2E8;
-        Mon, 29 Jun 2020 07:16:46 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jpuDM-0001DH-6o; Mon, 29 Jun 2020 15:52:52 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jpuDL-0002Xa-QH; Mon, 29 Jun 2020 15:52:51 +0200
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, davem@davemloft.net,
-        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        maximmi@mellanox.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-References: <20200626134358.90122-1-bjorn.topel@gmail.com>
- <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
- <20200627070406.GB11854@lst.de>
- <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e879bcc8-5f7d-b1b3-9b66-1032dec6245d@iogearbox.net>
-Date:   Mon, 29 Jun 2020 15:52:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730276AbgF2TLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 15:11:39 -0400
+Received: from verein.lst.de ([213.95.11.211]:59074 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728452AbgF2TLg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 15:11:36 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 590416736F; Mon, 29 Jun 2020 16:22:25 +0200 (CEST)
+Date:   Mon, 29 Jun 2020 16:22:25 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: add an API to check if a streamming mapping needs sync calls
+Message-ID: <20200629142225.GA22336@lst.de>
+References: <20200629130359.2690853-1-hch@lst.de> <b97104e1-433c-8e35-59c6-b4dad047464c@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25857/Sun Jun 28 15:28:36 2020)
+In-Reply-To: <b97104e1-433c-8e35-59c6-b4dad047464c@intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/28/20 7:16 PM, BjÃ¶rn TÃ¶pel wrote:
-> On 2020-06-27 09:04, Christoph Hellwig wrote:
->> On Sat, Jun 27, 2020 at 01:00:19AM +0200, Daniel Borkmann wrote:
->>> Given there is roughly a ~5 weeks window at max where this removal could
->>> still be applied in the worst case, could we come up with a fix / proposal
->>> first that moves this into the DMA mapping core? If there is something that
->>> can be agreed upon by all parties, then we could avoid re-adding the 9%
->>> slowdown. :/
+On Mon, Jun 29, 2020 at 03:39:01PM +0200, Björn Töpel wrote:
+> On 2020-06-29 15:03, Christoph Hellwig wrote:
+>> Hi all,
 >>
->> I'd rather turn it upside down - this abuse of the internals blocks work
->> that has basically just missed the previous window and I'm not going
->> to wait weeks to sort out the API misuse.Â  But we can add optimizations
->> back later if we find a sane way.
-> 
-> I'm not super excited about the performance loss, but I do get
-> Christoph's frustration about gutting the DMA API making it harder for
-> DMA people to get work done. Lets try to solve this properly using
-> proper DMA APIs.
+>> this series lifts the somewhat hacky checks in the XSK code if a DMA
+>> streaming mapping needs dma_sync_single_for_{device,cpu} calls to the
+>> DMA API.
+>>
+>
+> Thanks a lot for working on, and fixing this, Christoph!
+>
+> I took the series for a spin, and there are (obviously) no performance
+> regressions.
+>
+> Would the patches go through the net/bpf trees or somewhere else?
 
-Ok, fair enough, please work with DMA folks to get this properly integrated and
-restored then. Applied, thanks!
+either the net tree or (my) dma-mapping tree would be fine with me.
