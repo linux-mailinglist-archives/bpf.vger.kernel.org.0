@@ -2,254 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A7F20F7EC
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54DE20F7F1
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 17:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgF3PI6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 11:08:58 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:17224 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726087AbgF3PI6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jun 2020 11:08:58 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05UF19nl011041;
-        Tue, 30 Jun 2020 08:08:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=4KBQdfW8b+YlHJDNBRCW+LXTjYA656HPUdSLnr/YOfI=;
- b=l/pHigIpgM+KBnMHq5TfGWitO64RLfuv68WVeyZ2eKe1jdcYV4FhojZxTUyH6oKLXqmb
- rtg+/u3Rq/vvTnWiGgSo8Er9jBp1fDhhyCdTNYUL0fKiKpG+zfcoMhVduADO0l5ycuDE
- 4PDA8fJUgKgPmawLdP08K4XrtxYZLmIu6fw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xny2aapk-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 30 Jun 2020 08:08:40 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 30 Jun 2020 08:08:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RGqQwuHb3LInQn5vMlR3WyOmDWLOVIaCykTrYVgVvtn74nG981nicYFb9ku9Z7JfRiTONC57o7XyHI5ERbxP/u8wic0O9w2UZ9VGhz1AxwaiHMHxOyLpuREaWksk7XOu/+HbQdyrIx/6M/6MRlOLoiiazN5G0lytMWcdqHbZWk8pZctA+6EL1WJh6FrKJTSFb8K7mEjjitHnv12YNMFFgeX6iKPOzuJh8M9W/Bu2vdVDNGkXgsO3tALDgQK+LsQmKVuLzj9Q8ZtmXsvS/J9O3Rjn9bPLiD6vAKZteeVET6cB1g7ARmFC7kHl4Gty6CUPjR3QePHRiwrlcNzFjxwKyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4KBQdfW8b+YlHJDNBRCW+LXTjYA656HPUdSLnr/YOfI=;
- b=HJPR2kVoAdQZ+V6E2WNb43UeShoGv1QyUMWvS9BcdyDrT2+M5LDMoW0PLw4059NaZMlI/JHPboTM82hcCFXutNvc6BlJ17QrN565KeLEI6j/uom1pArT2s+SnN/YpT/vWDqdpn9LZ9N/+bRIkTv7pvfLLzAxvotD3TpfysJQ8tYfhSxthMrWT1PSZBydVtU7C2WYH2ghRdA9R/ksNpZreJI0IZ9QgVmGjR+BQ2cgkP3G5/5WeZHjDOXo0mShjrEDQoEHDQxt6pMKD2CndqQ4lnQJw+CM4zYrDKpz5wKL+KeZpx5kyPgTetrY7NoCWOH5r/epiMEw2Jrc7OXL9/5X1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4KBQdfW8b+YlHJDNBRCW+LXTjYA656HPUdSLnr/YOfI=;
- b=OtNze9VXwEXSeHngetd6C2eUfLXv483RJlwAjWdddxlhPc74xVPl3m3W1UtnIh/sHhOy2rnM/io54HyW/NFxCg5bkicViuyu/ChfSBwFLA1xKgAnPdARPelvgM1td6FJ0K00i5qoI9oqwtwW34OBXD/K6hgqlC6RlccJm+uGAQA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Tue, 30 Jun
- 2020 15:08:36 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 15:08:36 +0000
-Subject: Re: [PATCH bpf v2 0/6] Fix attach / detach uapi for sockmap and
- flow_dissector
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>
-References: <20200629095630.7933-1-lmb@cloudflare.com>
- <07d10dab-64f7-d7af-25b9-a61b39c8daf2@fb.com>
- <CACAyw9_5Dg=dTMk3TQiYFE3vzUuq68V2-NcpZCuiQqJFPn-0Dw@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8fcf1a4c-5a5a-280a-65eb-fa8bc8a298c1@fb.com>
-Date:   Tue, 30 Jun 2020 08:08:33 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <CACAyw9_5Dg=dTMk3TQiYFE3vzUuq68V2-NcpZCuiQqJFPn-0Dw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR11CA0050.namprd11.prod.outlook.com
- (2603:10b6:a03:80::27) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::15c2] (2620:10d:c090:400::5:c3b5) by BYAPR11CA0050.namprd11.prod.outlook.com (2603:10b6:a03:80::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Tue, 30 Jun 2020 15:08:35 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c3b5]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 539602ab-5612-4c3d-b9e3-08d81d07767c
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3191940E5178FB21608011B0D36F0@BYAPR15MB3191.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0450A714CB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0h74q/bhhnpAk2mIbLnAP7V2UYukDxa1GUGf1xRI/41BcoxaLUrQHuOIpaaffVafu8LXiBGYNs1eSQIJiITF5wA4YDHA8wLKqlleclkqZenmhC3FarPHm1+30fR09XEPmWdE1Qfng526iRJRrEPw9v5cb2CZ44ZwOzaLRNZR0CtaeKv5V51A/hajUNBdzqYL40HFB4IQOLs/Iwa3DYWyCxyUiT3Q5Kd2RB4w/AryvJRuY7J4h9v+zR7JDebpqihK/UzNhdj6mk+EsGutHFBdOtes85T6vMvDwcQfhcOFU2vzNwxJpBCHzHW1V/u1b2MCl2sQsPTWFcA/hC4TVAKldXZBJSKJiWrLnzQJhcLgDkptH60hQABY88NU1GaEH9FQhVSw02Hudnqhiq8DeUrVbykq1c8xJsPIwCY7d9ENP8S9QjOrewbRwP99eZxQ2Tw6LHpmptZzPIZg8DgQlA+9Pw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(136003)(39860400002)(346002)(366004)(5660300002)(66556008)(66476007)(66946007)(8676002)(2616005)(8936002)(6486002)(6916009)(2906002)(478600001)(966005)(53546011)(52116002)(54906003)(36756003)(316002)(31696002)(83380400001)(4326008)(16526019)(186003)(31686004)(86362001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 44WJvBvj1NIpDwv1NYYHcue5vFGyHksug6HHCWPQarN9vMbsTTWjL24GFASDS6afzd6xslCmDbWo7vIkGlKCTETAYoD1tuhE5ATFkEc5VMPRuOD0Pa6TjrU3/qpkafaGau5p/DRepwqreQTu2jwHKEW2DXmGAL8SOdzY2+t1Bp0l3Wu1WkqzAngKSNJM8ppWI3LexPeFwCm2WmGYDZkCe44EaDETZeh0tpTjFgiblhT6wV8grpHB+TxtxZ1tG3bjW/Y+/VtpaVm9fGdxT21OGDV1uxBHTGzrTFwWMUPsZvt2TApkbiyWZZyRgilxe/MDY/5PEUQgyiF5wbtQnV3v8PAYDGXTK8sQ+PjWN/MlU6yM9M9gWE0axMHM6ycyZqlTjKkWXNEW4nDEexysdh9y5vr7jv+y8asKaVEH4k9jM4Hxrek433tEq2+YLDNHtQApoJlH6PPyzPy5YhoIoxSIJLs3IwyYbLfa0JRVytPIgIvCxzc7U76mBuN4AJcM6wR8LDtjHP/KTlcUvlJQC6mTMQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 539602ab-5612-4c3d-b9e3-08d81d07767c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2020 15:08:36.5085
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wmZbnHULfmkyADa2JXMdSgfT3tfVRKJ9jnNcNe1A0tfv11VzLneA3IQLlzZIKOEd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 suspectscore=0
- bulkscore=0 impostorscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300110
-X-FB-Internal: deliver
+        id S2389250AbgF3PLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 11:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729051AbgF3PLW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 11:11:22 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD35C061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 08:11:22 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id z2so15827359qts.5
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 08:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=content-transfer-encoding:from:mime-version:subject:message-id:date
+         :to;
+        bh=KQ6gr29d/5+jXmz6sVRFgEVXBkDgsGJg63eNJKo4rkM=;
+        b=nEowNO0xC7cTbD41ouWF/XhQZq0L4hS2iYt4UkkHPhU0uo1ZVqSwTTY7SuY0/fFhd5
+         rT16zgpz8JDN9dcsxvFwY07ogTdUAXciV5tvJfbxO6YW+Wkk0TtJJtfZrYqb1SX50Zkz
+         Zvi15/PFlk92bBnHwU2JdgXpKGtE5hAZ9zKZ1RPMV9Xq+BpxqPDkbXKNn6g80Ypxh5Nv
+         0WG/JPVctIXI44EYF46/e+XpPPacRAZVEyQAILgFOmJfICkNZ7CJsPlXqN/Ryr2QNp4q
+         hE1b8CteCJFmBxSYam4zxWDjHmaK/Kn1LJirOMIFOo24JCf4PoU7H6v0s7Bwd64IHah0
+         k8xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:message-id:date:to;
+        bh=KQ6gr29d/5+jXmz6sVRFgEVXBkDgsGJg63eNJKo4rkM=;
+        b=fzE9sX/KskE5TFsVm4xdP5qWDVcfQUHNoDUo3kFq7vc799ZsuuPNo1/E+sRick6rpQ
+         DuMyhuOixft7e8gwMlKBVe+Bed4l3TxorlMklOe/M1InrqCwUipqB42hqy3Zc+for4h1
+         T9zv5+ZIKnwt1aSn0/AMIUxDYZuw1q0DBFpn0Gb/NALWQ+ehQ0mok7A11gOome9wa3uL
+         WSU3hB8THlP4gjnCdIm4Qzi9ezx2C1dgjvOmGdUICFJTB3MWS75Du8Cs5hhPIvJ5KLm5
+         vNYqxAZ0qFdxOs5wObT7qoSDEzRXMBtvG1GsRIPd8JDFC+S8HrIQUkqJeiBku+SrSNel
+         tKBg==
+X-Gm-Message-State: AOAM533I4QdzvWo0ArrP9eZrLrZpQTNjbI/AFnoaCr/KckH08K8ADD4r
+        qNjYUjMhtjYMSNEwMI3YpZoidmTAOQ==
+X-Google-Smtp-Source: ABdhPJz8tJ71R2JwLQ5W6eqTXAMp+iQP3TCTxZE9219Xm5hwUnKti8+W6GlzlSAEombIzFj+5ZoJ0g==
+X-Received: by 2002:ac8:1bad:: with SMTP id z42mr22039848qtj.110.1593529881250;
+        Tue, 30 Jun 2020 08:11:21 -0700 (PDT)
+Received: from [10.6.1.102] ([212.102.33.102])
+        by smtp.gmail.com with ESMTPSA id j52sm3501311qtc.49.2020.06.30.08.11.18
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 08:11:20 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Rudi Ratloser <reimth@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re:  BUG: kernel NULL pointer dereference in __cgroup_bpf_run_filter_skb
+Message-Id: <92DF6A0A-6EFD-4D5A-B2A4-367ADB8B4979@gmail.com>
+Date:   Tue, 30 Jun 2020 17:11:17 +0200
+To:     bpf@vger.kernel.org
+X-Mailer: iPhone Mail (17A878)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+=EF=BB=BF
+> We have experienced a kernel BPF null pointer dereference issue on all
+> our machines since mid of June. It might be related to an upgrade of
+> libvirt/kvm/qemu at that point of time. But we=E2=80=99re not sure.
+...
+> We experienced the kernel freeze on following Arch Linux kernels:
+> - 5.7.0 (5.7.0-3-MANJARO x64)
+> - 5.6.16 (5.6.16-1-MANJARO x64)
+> - 5.4.44 (5.4.44-1-MANJARO x64)
+> - 4.19.126 (4.19.126-1-MANJARO x64)
+> - 4.14.183 (4.14.183-1-MANJARO x64)
+> Kernel configs can be taken from https://gitlab.manjaro.org/packages/core.=
 
+>=20
+> Subsequent e-mails will contain the relevant extracts from journal or
+> netconsole logs.
 
-On 6/30/20 1:39 AM, Lorenz Bauer wrote:
-> On Tue, 30 Jun 2020 at 06:48, Yonghong Song <yhs@fb.com> wrote:
->>
->> Since bpf_iter is mentioned here, I would like to provide a little
->> context on how target_fd in link_create is treated there.
-> 
-> Thanks!
-> 
->> Currently, target_fd is always 0 as it is not used. This is
->> just easier if we want to use it in the future.
->>
->> In the future, bpf_iter can maintain that target_fd must be 0
->> or it may not so. For example, it can add a flag value in
->> link_create such that when flag is set it will take whatever
->> value in target_fd and use it. Or it may just take a non-0
->> target_fd as an indication of the flag is set. I have not
->> finalized patches yet. I intend to do the latter, i.e.,
->> taking a non-0 target_fd. But we will see once my bpf_iter
->> patches for map elements are out.
-> 
-> I had a piece of code for sockmap which did something like this:
-> 
->      prog = bpf_prog_get(attr->attach_bpf_fd)
->      if (IS_ERR(prog))
->          if (!attr->attach_bpf_fd)
->              // fall back to old behaviour
->          else
->              return PTR_ERR(prog)
->      else if (prog->type != TYPE)
->          return -EINVAL
-> 
-> The benefit is that it continues to work if a binary is invoked with
-> stdin closed, which could lead to a BPF program with fd 0.
+Kernel 5.7.0 (5.7.0-3-MANJARO x64)
 
-For bpf_iter, there is no legacy. So I will have something like
-     // somecondition could be new attr->flags, or some kernel internal 
-checking
-     if (somecondition) {
-       /* not accepting fd 0 */
-       if (attr->attach_bpf_fd == 0)
-         return -EINVAL;
-       prog = bpf_prog_get(attr->attach_bpf_fd)
-       if (IS_ERR(prog))
-         return PTR_ERR(prog)
-     } else if (attr->attach_bpf_fd != 0)
-       return -EINVAL;
-or I could have
-     if (somecondition) {
-       /* accepting any fd */
-       prog = bpf_prog_get(attr->attach_bpf_fd)
-       if (IS_ERR(prog))
-         return PTR_ERR(prog)
-     } else if (attr->attach_bpf_fd != 0)
-       return -EINVAL;
+BUG: kernel NULL pointer dereference, address: 0000000000000010
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP PTI
+CPU: 1 PID: 1132 Comm: nfsd Not tainted 5.7.0-3-MANJARO #1
+Hardware name: ASUS All Series/CS-B, BIOS 3602 03/26/2018
+RIP: 0010:__cgroup_bpf_run_filter_skb+0x196/0x230
+Code: 48 89 73 18 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 31 c0 c3 c3 e=
+8 d8 cb ec ff e8 93 12 f2 ff 48 8b 85 38 06 00 00 31 ed <48> 8b 78 10 4c 8d 7=
+0 10 48 85 ff 74 34 49 8b 46 08 65 48 89 05 01
+RSP: 0018:ffffaddac09eba20 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff93e20832d0e0 RCX: 0000000000000034
+RDX: 0000000000000000 RSI: ffff93e1f0af0000 RDI: ffffffff9b7f6888
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff93e20fe80000(0000) knlGS:0000000000000000=
 
-This "somecondition" is false for the current bpf_iter, so existing
-behavior attr->attach_bpf_fd == 0 is still enforced.
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000010 CR3: 00000003d158e004 CR4: 00000000001626e0
+Call Trace:
+ip_finish_output+0x68/0xa0
+ip_output+0x76/0x130
+? __ip_finish_output+0x1e0/0x1e0
+__ip_queue_xmit+0x186/0x440
+? __switch_to_asm+0x34/0x70
+? __switch_to_asm+0x40/0x70
+__tcp_transmit_skb+0x53e/0xbf0
+? __switch_to_asm+0x34/0x70
+tcp_write_xmit+0x391/0x11b0
+__tcp_push_pending_frames+0x32/0xf0
+tcp_sendmsg_locked+0xa3c/0xb50
+tcp_sendmsg+0x28/0x40
+sock_sendmsg+0x57/0x60
+xprt_sock_sendmsg+0xe8/0x2b0 [sunrpc]
+? nfsd_destroy+0x60/0x60 [nfsd]
+svc_tcp_sendto+0x77/0xd0 [sunrpc]
+svc_send+0x80/0x1f0 [sunrpc]
+nfsd+0xed/0x150 [nfsd]
+kthread+0x13e/0x160
+? __kthread_bind_mask+0x60/0x60
+ret_from_fork+0x35/0x40
+Modules linked in: rpcsec_gss_krb5 scsi_transport_iscsi veth xt_CHECKSUM vho=
+st_net vhost tap vhost_iotlb tun ebtable_filter ebtables ip6table_filter ip6=
+_tables xt_MASQUERADE xt_recent xt_comment ipt_REJECT nf_reject_ipv4 xt_addr=
+type br_netfilter xt_physdev iptable_nat xt_mark iptable_mangle xt_TCPMSS xt=
+_hashlimit xt_tcpudp xt_CT iptable_raw xt_multiport xt_conntrack nfnetlink_l=
+og xt_NFLOG nf_log_ipv4 nf_log_common xt_LOG nf_nat_tftp nf_nat_snmp_basic n=
+f_conntrack_snmp nf_nat_sip nf_nat_pptp nf_nat_irc nf_nat_h323 nf_nat_ftp nf=
+_nat_amanda ts_kmp nf_conntrack_amanda nf_nat nf_conntrack_sane nf_conntrack=
+_tftp nf_conntrack_sip nf_conntrack_pptp nf_conntrack_netlink nfnetlink nf_c=
+onntrack_netbios_ns nf_conntrack_broadcast nf_conntrack_irc nf_conntrack_h32=
+3 nf_conntrack_ftp nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_filter=
+ bridge stp llc fuse nct6775 hwmon_vid nls_iso8859_1 nls_cp437 vfat fat inte=
+l_rapl_msr intel_rapl_common snd_hda_codec_hdmi x86_pkg_temp_thermal
+intel_powerclamp coretemp kvm_intel kvm irqbypass crct10dif_pclmul crc32_pcl=
+mul ghash_clmulni_intel ofpart cmdlinepart intel_spi_platform intel_spi mei_=
+hdcp i915 eeepc_wmi spi_nor asus_wmi mtd iTCO_wdt iTCO_vendor_support batter=
+y snd_hda_codec_realtek sparse_keymap wmi_bmof rfkill snd_hda_codec_generic a=
+esni_intel ledtrig_audio crypto_simd snd_hda_intel snd_intel_dspcfg cryptd g=
+lue_helper i2c_algo_bit snd_hda_codec intel_cstate intel_uncore snd_hda_core=
+ snd_hwdep drm_kms_helper r8169 intel_rapl_perf snd_pcm joydev realtek i2c_i=
+801 libphy snd_timer mousedev cec snd rc_core mei_me input_leds intel_gtt sy=
+scopyarea sysfillrect e1000e lpc_ich sysimgblt mei soundcore fb_sys_fops wmi=
+ evdev mac_hid nfsd usbip_host drm usbip_core nfs_acl auth_rpcgss lockd grac=
+e uinput crypto_user sunrpc agpgart ip_tables x_tables ext4 crc16 mbcache jb=
+d2 hid_logitech_hidpp hid_logitech_dj hid_generic usbhid hid dm_thin_pool dm=
+_persistent_data libcrc32c crc32c_generic dm_bio_prison dm_bufio dm_mod
+crc32c_intel sr_mod cdrom xhci_pci xhci_hcd ehci_pci ehci_hcd
+CR2: 0000000000000010
+---[ end trace 6fe9bf5a0db7a0b9 ]---
+RIP: 0010:__cgroup_bpf_run_filter_skb+0x196/0x230
+Code: 48 89 73 18 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 31 c0 c3 c3 e=
+8 d8 cb ec ff e8 93 12 f2 ff 48 8b 85 38 06 00 00 31 ed <48> 8b 78 10 4c 8d 7=
+0 10 48 85 ff 74 34 49 8b 46 08 65 48 89 05 01
+RSP: 0018:ffffaddac09eba20 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff93e20832d0e0 RCX: 0000000000000034
+RDX: 0000000000000000 RSI: ffff93e1f0af0000 RDI: ffffffff9b7f6888
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff93e20fe80000(0000) knlGS:0000000000000000=
 
-> 
-> Could this work for bpf_iter as well?
-> 
->>
->> There is another example where 0 and non-0 prog_fd make a difference.
->> The attach_prog_fd field when doing prog_load.
->> When attach_prog_fd is 0, it means attaching to vmlinux through
->> attach_btf_id. If attach_prog_fd is not 0, it means attaching to
->> another bpf program (replace). So user space (libbpf) may
->> already need to pay attention to this.
-> 
-> That is unfortunate. What was the reason to use 0 instead of -1 to
-> attach to vmlinux?
-
-attaching to vmlinux happens first and at that time attach_prog_fd
-does not exist. Later when replace prog feature is introduced,
-attach_prog_fd is added. This field is used to differentiate
-between vmlinux func attachment vs. bpf_prog attachment. A little
-bit unfortunate, but using 0 is easier as we have check_attr
-in the kernel to ensure all kernel-unsupported fields must be 0.
-using -1 will break that.
-
-> 
->>
->>> work around for fd 0 should we need to in the future.
->>>
->>> The detach case is more problematic: both cgroups and lirc2 verify
->>> that attach_bpf_fd matches the currently attached program. This
->>> way you need access to the program fd to be able to remove it.
->>> Neither sockmap nor flow_dissector do this. flow_dissector even
->>> has a check for CAP_NET_ADMIN because of this. The patch set
->>> addresses this by implementing the desired behaviour.
->>>
->>> There is a possibility for user space breakage: any callers that
->>> don't provide the correct fd will fail with ENOENT. For sockmap
->>> the risk is low: even the selftests assume that sockmap works
->>> the way I described. For flow_dissector the story is less
->>> straightforward, and the selftests use a variety of arguments.
->>>
->>> I've includes fixes tags for the oldest commits that allow an easy
->>> backport, however the behaviour dates back to when sockmap and
->>> flow_dissector were introduced. What is the best way to handle these?
->>>
->>> This set is based on top of Jakub's work "bpf, netns: Prepare
->>> for multi-prog attachment" available at
->>> https://lore.kernel.org/bpf/87k0zwmhtb.fsf@cloudflare.com/T/
->>>
->>> Since v1:
->>> - Adjust selftests
->>> - Implement detach behaviour
->>>
->>> Lorenz Bauer (6):
->>>     bpf: flow_dissector: check value of unused flags to BPF_PROG_ATTACH
->>>     bpf: flow_dissector: check value of unused flags to BPF_PROG_DETACH
->>>     bpf: sockmap: check value of unused args to BPF_PROG_ATTACH
->>>     bpf: sockmap: require attach_bpf_fd when detaching a program
->>>     selftests: bpf: pass program and target_fd in flow_dissector_reattach
->>>     selftests: bpf: pass program to bpf_prog_detach in flow_dissector
->>>
->>>    include/linux/bpf-netns.h                     |  5 +-
->>>    include/linux/bpf.h                           | 13 ++++-
->>>    include/linux/skmsg.h                         | 13 +++++
->>>    kernel/bpf/net_namespace.c                    | 22 ++++++--
->>>    kernel/bpf/syscall.c                          |  6 +--
->>>    net/core/sock_map.c                           | 53 +++++++++++++++++--
->>>    .../selftests/bpf/prog_tests/flow_dissector.c |  4 +-
->>>    .../bpf/prog_tests/flow_dissector_reattach.c  | 12 ++---
->>>    8 files changed, 103 insertions(+), 25 deletions(-)
->>>
-> 
-> 
-> 
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000010 CR3: 00000003d158e004 CR4: 00000000001626e0
+note: nfsd[1132] exited with preempt_count 1
+-- Reboot --
