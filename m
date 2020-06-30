@@ -2,89 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96EE20F5DD
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 15:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A3320F61D
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 15:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgF3NiO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 09:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgF3NiO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:38:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079BAC061755;
-        Tue, 30 Jun 2020 06:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=peNiu7obudJ+iIiHoebhj0Cx80UUqQKMz/3V6VsewcA=; b=OfGszqe3liARav2iSE515YirEx
-        Rnqq9NA3fuI8sdsGAgobESsESiY51vgA7FJAtE7nA/mdf2yKvas0Wre3fDlcxa0AiDIRWiDQZ4/Le
-        PPcntnez3mv8Otw7TG8VEuAHY7nKnbCiH13UrvVGGrnNYNdQIZxhscd/odT1lWDwV1aHMYRIoZ7wp
-        EXVQA+L0Ai1FffXuWtoGkeISpyfPunrQcV1gy/602zLdFjQxzHGHK95DEs0Y+ZJ2foV0oRE8K2eki
-        YL7fHzkJ9ZnyfXddig2AIiS5XQ2K0fp+mv6+0l4DFT+PGnICeJjFMwPARJldzwSa9tLr+wZNX7PQw
-        142+hsbw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqGSY-0007s1-CQ; Tue, 30 Jun 2020 13:38:02 +0000
-Date:   Tue, 30 Jun 2020 14:38:02 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 10/15] exec: Remove do_execve_file
-Message-ID: <20200630133802.GA30093@infradead.org>
-References: <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
- <87lfk54p0m.fsf_-_@x220.int.ebiederm.org>
- <20200630054313.GB27221@infradead.org>
- <87a70k21k0.fsf@x220.int.ebiederm.org>
+        id S1728243AbgF3Nri (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 09:47:38 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36798 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbgF3Nri (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 09:47:38 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jqGbZ-00070l-Fh; Tue, 30 Jun 2020 15:47:21 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jqGbZ-0003zd-6p; Tue, 30 Jun 2020 15:47:21 +0200
+Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, davem@davemloft.net,
+        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        maximmi@mellanox.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+References: <20200626134358.90122-1-bjorn.topel@gmail.com>
+ <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
+ <20200627070406.GB11854@lst.de>
+ <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
+ <e879bcc8-5f7d-b1b3-9b66-1032dec6245d@iogearbox.net>
+ <81aec200-c1a0-6d57-e3b6-26dad30790b8@intel.com>
+ <903c646c-dc74-a15c-eb33-e1b67bc7da0d@iogearbox.net>
+ <20200630050712.GA26840@lst.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7bd1f3ad-f1c7-6f8c-ef14-ec450050edf2@iogearbox.net>
+Date:   Tue, 30 Jun 2020 15:47:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a70k21k0.fsf@x220.int.ebiederm.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200630050712.GA26840@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25858/Mon Jun 29 15:30:49 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 07:14:23AM -0500, Eric W. Biederman wrote:
-> Christoph Hellwig <hch@infradead.org> writes:
+On 6/30/20 7:07 AM, Christoph Hellwig wrote:
+> On Mon, Jun 29, 2020 at 05:18:38PM +0200, Daniel Borkmann wrote:
+>> On 6/29/20 5:10 PM, Björn Töpel wrote:
+>>> On 2020-06-29 15:52, Daniel Borkmann wrote:
+>>>>
+>>>> Ok, fair enough, please work with DMA folks to get this properly integrated and
+>>>> restored then. Applied, thanks!
+>>>
+>>> Daniel, you were too quick! Please revert this one; Christoph just submitted a 4-patch-series that addresses both the DMA API, and the perf regression!
+>>
+>> Nice, tossed from bpf tree then! (Looks like it didn't land on the bpf list yet,
+>> but seems other mails are currently stuck as well on vger. I presume it will be
+>> routed to Linus via Christoph?)
 > 
-> > FYI, this clashes badly with my exec rework.  I'd suggest you
-> > drop everything touching exec here for now, and I can then
-> > add the final file based exec removal to the end of my series.
-> 
-> I have looked and I haven't even seen any exec work.  Where can it be
-> found?
-> 
-> I have working and cleaning up exec for what 3 cycles now.  There is
-> still quite a ways to go before it becomes possible to fix some of the
-> deep problems in exec.  Removing all of these broken exec special cases
-> is quite frankly the entire point of this patchset.
-> 
-> Sight unseen I suggest you send me your exec work and I can merge it
-> into my branch if we are going to conflict badly.
+> I send the patches to the bpf list, did you get them now that vger
+> is unclogged?  Thinking about it the best route might be through
+> bpf/net, so if that works for you please pick it up.
 
-https://lore.kernel.org/linux-fsdevel/20200627072704.2447163-1-hch@lst.de/T/#t
+Yeah, that's fine, I just applied your series to the bpf tree. Thanks!
