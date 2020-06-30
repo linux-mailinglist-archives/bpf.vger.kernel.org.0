@@ -2,145 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EE620F3CE
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 13:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EB420F3D0
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 13:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733136AbgF3LuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 07:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S1732222AbgF3Lup (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 07:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgF3LuA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:50:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6031BC03E979
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so16807271wrw.1
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:00 -0700 (PDT)
+        with ESMTP id S1728419AbgF3Luo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 07:50:44 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B21DC03E979
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:44 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l17so18536235wmj.0
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Hm99DwMfRW6Yrn3tUagzkyRAZ9V3WiaXuRVl4bieKDk=;
-        b=c/i+r8l16IvmJHjNCI6NSEnbnhhTryuHilmSuq9nRPKgVxnTS2uVAk6mFFhrjesy/N
-         cD3AeBuT0MGPVc1Z4atrCHi4kpXXFvvY6taRE2W244YMvI5fxjwNF2u2+Ue4P6qNoNzX
-         VQ9gDQ8v65t9lJ6EcyaufWQIC5CyMz3j0Mme0=
+        bh=GWV+iQuRtCpfYYNtAK9+bSfnvyQdFNs1dv+1er5dsU8=;
+        b=EwcjwlqNUbnEZ6IaVQ/ouTVjAi+5W0gXxwIwgJx5L2q5OidBLRmG3492wCWCmiVYiE
+         IvHiU0kX/UxnCdXYxe4fRfAbp/JroR7rbdhyeu3GnuTSrLA3c7k1jft/XAiU03BUbZE0
+         XXgcqG/Qhna6vb/sUq0KoiYVJf6DOkKbhRzHo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Hm99DwMfRW6Yrn3tUagzkyRAZ9V3WiaXuRVl4bieKDk=;
-        b=Koi/hwjtAEU0x8P4KpCUUiuuBDZhJ8ywV1JYXBAQn2lzyJjt/lcOezf3CwJCnwuQPs
-         gI1+507dzyWG2kGHp4QJ054TuTiNTqHwasfYw3sMH9jhAR3jzZH6BLeuggrHgvTg7x2h
-         upYkVQBJTO8nXp4RkkL3eHQRSalD1N7JMSgK/lTOhe5DxAx/p6wEVpYa4HaOQQtI/Gn8
-         C3RxMOZ/wq7sFd3rnvuiadTzjwa44j4xjUvgyejmhm276Zz9YTTScAVD7mrxIhSHNrTv
-         iqK0kuQIf6fdE4mpF+7WtdbvT/igO4B7RoPuUpu8Wdh1j/D5m1waIOjPSeRJh57vnKlc
-         /rkw==
-X-Gm-Message-State: AOAM533VCQLgiiylm0Amf6nLk89RRsFu/ILxV5XOUg+XJU5sPMXM/TSp
-        Us/RF69Qes004MAnXx3ZOICcKw==
-X-Google-Smtp-Source: ABdhPJzHOV39ukk2h81FYtYP2PJLbg+uZqHvfmTlT2Zf2OBkJDS4/55jtC5jQc2CYfF2o8W/1Gc1kQ==
-X-Received: by 2002:adf:f9c8:: with SMTP id w8mr21133678wrr.354.1593517799060;
-        Tue, 30 Jun 2020 04:49:59 -0700 (PDT)
+        bh=GWV+iQuRtCpfYYNtAK9+bSfnvyQdFNs1dv+1er5dsU8=;
+        b=BZt4IAReU6cZGOAWy8jHEE5jsvkaHvMqWRlKjoMoe9nGE3CfB1bEegS4+lwHxLm5S7
+         1woOJSgI+xPmAz6ePj7DgDfTPAXcf6kZf0NrEFARnhTT/lOlXgNRkC6WxjKY4Tg+LXaA
+         WSuR8+aFQhGK0yP9bzOiFKHppaGXD1OIVybvJeAN7Jnpk+1OjnHgsqw6ePGfNYijdY+H
+         WPwXsf6vgP9g+fSFj7mWhnFpBKJP1oyuZ4KI+4sadMLIbx2q79vjWHwY6eLxADdBUusG
+         kGEwxr/95X30u/4HMomHLCmTtz4t3WuWmLgXaS2km2RTnSa1i49GdBbKSUU4vyqkYYcZ
+         KxCw==
+X-Gm-Message-State: AOAM533xH3InqudMNVFpbSATfy5R1jr1AhbS3z+My/iEnhoygBib5FLz
+        xe+UV8KPujrKgSyWLP2n0uJ7iA==
+X-Google-Smtp-Source: ABdhPJxVsZfzjzet5KchM2IaO/5rCJy/Ok+q7SabeQRomMWOldOTToa7odVxlDAtJPgSuqKpO2M1Mw==
+X-Received: by 2002:a05:600c:2154:: with SMTP id v20mr22983992wml.185.1593517843162;
+        Tue, 30 Jun 2020 04:50:43 -0700 (PDT)
 Received: from google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id c5sm3248089wmb.24.2020.06.30.04.49.58
+        by smtp.gmail.com with ESMTPSA id k11sm3730872wrd.23.2020.06.30.04.50.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 04:49:58 -0700 (PDT)
+        Tue, 30 Jun 2020 04:50:42 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
 X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 30 Jun 2020 13:49:56 +0200
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
+Date:   Tue, 30 Jun 2020 13:50:41 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
         linux-security-module@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: Implement bpf_local_storage for
- inodes
-Message-ID: <20200630114956.GA421824@google.com>
+Subject: Re: [PATCH bpf-next v2 4/4] bpf: Add selftests for local_storage
+Message-ID: <20200630115041.GB421824@google.com>
 References: <20200617202941.3034-1-kpsingh@chromium.org>
- <20200617202941.3034-3-kpsingh@chromium.org>
- <20200619065245.t755bkffk6zleoi2@kafai-mbp.dhcp.thefacebook.com>
+ <20200617202941.3034-5-kpsingh@chromium.org>
+ <CAEf4BzZdUWUSLzT1Y-o1Yvy3tTETkJEVU7RyZufZY_yEKzwOSg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200619065245.t755bkffk6zleoi2@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4BzZdUWUSLzT1Y-o1Yvy3tTETkJEVU7RyZufZY_yEKzwOSg@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 18-Jun 23:52, Martin KaFai Lau wrote:
-> On Wed, Jun 17, 2020 at 10:29:39PM +0200, KP Singh wrote:
-> [ ... ]
+On 18-Jun 11:16, Andrii Nakryiko wrote:
+> On Wed, Jun 17, 2020 at 1:31 PM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > inode_local_storage:
+> >
+> > * Hook to the file_open and inode_unlink LSM hooks.
+> > * Create and unlink a temporary file.
+> > * Store some information in the inode's bpf_local_storage during
+> >   file_open.
+> > * Verify that this information exists when the file is unlinked.
+> >
+> > sk_local_storage:
+> >
+> > * Hook to the socket_post_create and socket_bind LSM hooks.
+> > * Open and bind a socket and set the sk_storage in the
+> >   socket_post_create hook using the start_server helper.
+> > * Verify if the information is set in the socket_bind hook.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
+> >  .../selftests/bpf/progs/local_storage.c       | 137 ++++++++++++++++++
+> >  2 files changed, 197 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+> >
 > 
-> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > index af74712af585..8efd7562e3de 100644
-> > --- a/include/linux/bpf_lsm.h
-> > +++ b/include/linux/bpf_lsm.h
-> > @@ -17,9 +17,24 @@
-> >  #include <linux/lsm_hook_defs.h>
-> >  #undef LSM_HOOK
-> >  
-> > +struct bpf_storage_blob {
-> > +	struct bpf_local_storage __rcu *storage;
-> > +};
-> > +
-> > +extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
-> > +
-> >  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> >  			const struct bpf_prog *prog);
-> >  
-> > +static inline struct bpf_storage_blob *bpf_inode(
-> > +	const struct inode *inode)
-> > +{
-> > +	if (unlikely(!inode->i_security))
-> > +		return NULL;
-> > +
-> > +	return inode->i_security + bpf_lsm_blob_sizes.lbs_inode;
-> > +}
-> > +
-> >  #else /* !CONFIG_BPF_LSM */
-> >  
-> >  static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> > @@ -28,6 +43,12 @@ static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> >  	return -EOPNOTSUPP;
-> >  }
-> >  
-> > +static inline struct bpf_storage_blob *bpf_inode_storage(
-> This does not seem to match the newly added "bpf_inode()"
-> above for the "CONFIG_BPF_LSM" case.
+> [...]
 > 
-> A typo?  May be a good idea to test compiling with !CONFIG_BPF_LSM.
+> > diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
+> > new file mode 100644
+> > index 000000000000..38954e6a1edc
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/local_storage.c
+> > @@ -0,0 +1,137 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * Copyright 2020 Google LLC.
+> > + */
+> > +
+> > +#include <errno.h>
+> > +#include <linux/bpf.h>
+> > +#include <stdbool.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +__u32 _version SEC("version") = 1;
+> 
+> version is anachronism, please drop it.
 
-Sorry about that, yeah it was a last minute lazy rename. Will
-compile test the series with !CONFIG_BPF_LSM and !CONFIG_NET. Thanks.
+Removed.
 
 > 
-> > +	const struct inode *inode)
-> > +{
-> > +	return NULL;
-> > +}
-> > +
-> >  #endif /* CONFIG_BPF_LSM */
-> >  
-> >  #endif /* _LINUX_BPF_LSM_H */
-> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> > index a18ae82a298a..881e7954c956 100644
-> > --- a/include/linux/bpf_types.h
-> > +++ b/include/linux/bpf_types.h
-> > @@ -101,6 +101,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_HASH_OF_MAPS, htab_of_maps_map_ops)
-> >  BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
-> >  BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
-> >  BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
-> > +BPF_MAP_TYPE(BPF_MAP_TYPE_INODE_STORAGE, inode_storage_map_ops)
-> sk_storage is under CONFIG_NET.
-> 
-> inode_storage should be CONFIG_BPF_LSM?
+> Otherwise, LGTM.
 
-Thanks, updated.
+Thanks
 
 - KP
 
 > 
-> >  #if defined(CONFIG_BPF_STREAM_PARSER)
-> >  BPF_MAP_TYPE(BPF_MAP_TYPE_SOCKMAP, sock_map_ops)
-> >  BPF_MAP_TYPE(BPF_MAP_TYPE_SOCKHASH, sock_hash_ops)
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> [...]
