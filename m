@@ -2,61 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA3420FC9D
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 21:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E2A20FCB4
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 21:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgF3TUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 15:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S1727817AbgF3TYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 15:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgF3TUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:20:33 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6A4C061755
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 12:20:33 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id v19so16475123qtq.10
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 12:20:33 -0700 (PDT)
+        with ESMTP id S1726065AbgF3TYF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 15:24:05 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952F0C061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 12:24:05 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id z63so19736620qkb.8
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 12:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qyBHqzcxZqZaVy+lYU+69uzFhTFasCGQqeJ1yC56LIE=;
-        b=b4CM5574ju4IHjaQ1sv/vlPOWKAxsVCZMTgKgBUUzKX/pBN4Wu/ks+xWRstRar+kv3
-         HimR+4gXIiS4TPTszgQPYRl0zSexTI51IEr7uqQERU9oVOjuqenZAEuB+ZbwJQdUnDmW
-         0ueUyJQrcCa8TUTjYbrsrEn4prZPZtJYqVGUo9jprd4QOk7aKc74oYZlKojjfostLFSz
-         RupQ9xhsWFFzLth2OfOM9K9nPvcc4iLjxkXQiKkaerZc0zkoZ+q7FwFO0QMDCX4JYzrh
-         2OdI7n8YFUv6/bJnCraGGr+5otagSbPFOxtj5KxJ2MzUOWr3KepcJRhRFq1aeQGM5umw
-         H3kg==
+        bh=WG0PVAJaY9m6Bbo5rnedHvIHgcHLQFKN9oqROlWXEL4=;
+        b=FcpLiCKiO7KFr4cPLWGdSw7uLR4a8CK32dLcd5psYtjK84k2cQ9HLOu5EvQtchp7GR
+         Ksm6GvIO/ujEpptWdg3pv2o/3R6iazlTl7UJLdf43x2wcR0AjhSwS3SF1mX9KDBlFqe/
+         9fFm/KUVe0wcpl8ur91SRtXenM+sWUd57ImBetUQxZlVvGYV5bMxLKwjP9+d/jMcmsS1
+         gbL61lMdkAYlx2sC7tg30x4h4/pEbY3/63ufnG0pKpZR4OnI3eX14gnHevVyNnd2wzk3
+         LFNE9hTp+pGYNd2UDdW94AgLJ6rBZJ6GYeYD6fJVUO0TU0X7wEuhsPyoS2/s02mNzrgZ
+         s/Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qyBHqzcxZqZaVy+lYU+69uzFhTFasCGQqeJ1yC56LIE=;
-        b=s0E/LKAaMsuRTTgXHxmDmu57C/yeUbTvvrqVu2rlGcengoeG0pE04rVrS7oBmwGBng
-         QgNEHRZ1/oEufByygFd0mWuIg/4SFSmZpEBy/cNT9C/h+WDAal0g4a8lf4OB5UrDJN7O
-         sSsSrjQLXPWfGJMxTzYXd243IwRGR6QqxamLVRLWh6KlelTSG9grNwda7BEVgXAzQy9N
-         V1QeKBmkdz/mnt3RR58KIQZ/5Z8wLqFQHTXQMn6pNdA1mlojRxKOKHmp87LoIRCr5au8
-         I3VyB9aj0yaFRdxzordcFmG/6f+KtbZFlraiGy6HzoUGzAvlb8UgDuytAwg8dnamyYWW
-         yjgA==
-X-Gm-Message-State: AOAM532+CVMyELdZ3mRhjMannO0uAA/BWDFUXDf1tOX0ctCJiByX048e
-        wbrl7oxweCYq3XR8pY3HYwgchaB+gXEkW6Uygys=
-X-Google-Smtp-Source: ABdhPJyJ543sHR5j6/hrsBgk1D9BD8bUN69b9o1KwkB6b+75qTcSBbbdJWQ4fcXNjuw//xbi58KlYGbeEP3+S12/bDk=
-X-Received: by 2002:ac8:19c4:: with SMTP id s4mr18128277qtk.117.1593544832170;
- Tue, 30 Jun 2020 12:20:32 -0700 (PDT)
+        bh=WG0PVAJaY9m6Bbo5rnedHvIHgcHLQFKN9oqROlWXEL4=;
+        b=Jo5KXf1sJCcoWTjOi+W9TA1KTsk4MZF6pECAJtmgN4uwNLMDFz4GwDMJZYlRpDaB/I
+         6h+d8WUVD4uMk09RS38ixtGPTi27uMeLZOMQ+eFeVp1FVYChyJoX7glxjX1TzIt19bdf
+         HoEcBJ2gpb0oFqVLwoKnpcNdktXRQMmbaMNfl5+GUTyb0KzWGNOJeZo0nEGfMAnwFZOk
+         Qmj4dfRsSz4dSaH9c4xR14HXUWUPffN4l9/nhvfrTAFgR2EFst0TmX7sBoDOUVUFcCW8
+         9U+3rDxIV/ofqzw7GzrATpwNNBTugN3Nwp1/yMQVogY2fNHvtb2Zga1Kp2Amh6Wp5LfF
+         JnsA==
+X-Gm-Message-State: AOAM531+dF2EAHPCakD2NFvdw+DWhOn8mPqrxncAgqmIdkzANKFSkhLZ
+        0Uo1foso37V629ZK6tltRJ2GDUD38TUl519IM14=
+X-Google-Smtp-Source: ABdhPJxFlk6y2Ow3kXqV1bVBnUz9SaLZ1XA3AnNuZpgE2qP5o0eP2pvJA9b2QxJLGgH8UejRDLMgh21aU/SHm4txAF0=
+X-Received: by 2002:ae9:f002:: with SMTP id l2mr10612904qkg.437.1593545044453;
+ Tue, 30 Jun 2020 12:24:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200630171240.2523628-1-yhs@fb.com> <20200630171240.2523722-1-yhs@fb.com>
- <5efb7ba67bae6_3792b063d0145b4b4@john-XPS-13-9370.notmuch>
-In-Reply-To: <5efb7ba67bae6_3792b063d0145b4b4@john-XPS-13-9370.notmuch>
+References: <20200630171240.2523628-1-yhs@fb.com> <20200630171241.2523875-1-yhs@fb.com>
+In-Reply-To: <20200630171241.2523875-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Jun 2020 12:20:20 -0700
-Message-ID: <CAEf4Bza5Lvy0V=VHkMzUHe_urj5v5YFWbFZtkOweFPaDXnEnsw@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: fix an incorrect branch elimination by verifier
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 30 Jun 2020 12:23:53 -0700
+Message-ID: <CAEf4BzbfKWaJH3i3+L1kc79zytO1xAhFCiF-4bPd6dqBPA+SSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] bpf: add tests for PTR_TO_BTF_ID vs. null comparison
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Wenbo Zhang <ethercflow@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -64,71 +63,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 12:09 PM John Fastabend
-<john.fastabend@gmail.com> wrote:
+On Tue, Jun 30, 2020 at 11:46 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Yonghong Song wrote:
-> > Wenbo reported an issue in [1] where a checking of null
-> > pointer is evaluated as always false. In this particular
-> > case, the program type is tp_btf and the pointer to
-> > compare is a PTR_TO_BTF_ID.
-> >
-> > The current verifier considers PTR_TO_BTF_ID always
-> > reprents a non-null pointer, hence all PTR_TO_BTF_ID compares
-> > to 0 will be evaluated as always not-equal, which resulted
-> > in the branch elimination.
-> >
-> > For example,
-> >  struct bpf_fentry_test_t {
-> >      struct bpf_fentry_test_t *a;
-> >  };
-> >  int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
-> >  {
-> >      if (arg == 0)
-> >          test7_result = 1;
-> >      return 0;
-> >  }
-> >  int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
-> >  {
-> >      if (arg->a == 0)
-> >          test8_result = 1;
-> >      return 0;
-> >  }
-> >
-> > In above bpf programs, both branch arg == 0 and arg->a == 0
-> > are removed. This may not be what developer expected.
-> >
-> > The bug is introduced by Commit cac616db39c2 ("bpf: Verifier
-> > track null pointer branch_taken with JNE and JEQ"),
-> > where PTR_TO_BTF_ID is considered to be non-null when evaluting
-> > pointer vs. scalar comparison. This may be added
-> > considering we have PTR_TO_BTF_ID_OR_NULL in the verifier
-> > as well.
-> >
-> > PTR_TO_BTF_ID_OR_NULL is added to explicitly requires
-> > a non-NULL testing in selective cases. The current generic
-> > pointer tracing framework in verifier always
-> > assigns PTR_TO_BTF_ID so users does not need to
-> > check NULL pointer at every pointer level like a->b->c->d.
+> Add two tests for PTR_TO_BTF_ID vs. null ptr comparison,
+> one for PTR_TO_BTF_ID in the ctx structure and the
+> other for PTR_TO_BTF_ID after one level pointer chasing.
+> In both cases, the test ensures condition is not
+> removed.
 >
-> Thanks for fixing this.
+> For example, for this test
+>  struct bpf_fentry_test_t {
+>      struct bpf_fentry_test_t *a;
+>  };
+>  int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>  {
+>      if (arg == 0)
+>          test7_result = 1;
+>      return 0;
+>  }
+> Before the previous verifier change, we have xlated codes:
+>   int test7(long long unsigned int * ctx):
+>   ; int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>      0: (79) r1 = *(u64 *)(r1 +0)
+>   ; int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>      1: (b4) w0 = 0
+>      2: (95) exit
+> After the previous verifier change, we have:
+>   int test7(long long unsigned int * ctx):
+>   ; int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>      0: (79) r1 = *(u64 *)(r1 +0)
+>   ; if (arg == 0)
+>      1: (55) if r1 != 0x0 goto pc+4
+>   ; test7_result = 1;
+>      2: (18) r1 = map[id:6][0]+48
+>      4: (b7) r2 = 1
+>      5: (7b) *(u64 *)(r1 +0) = r2
+>   ; int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>      6: (b4) w0 = 0
+>      7: (95) exit
 >
-> But, don't we really need to check for null? I'm trying to
-> understand how we can avoid the check. If b is NULL above
-> we will have a problem no?
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Wenbo Zhang <ethercflow@gmail.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-BPF JIT installs an exception handler for each direct memory access,
-so that if it turns out to be NULL, it will be caught and 0 will be
-assigned to the target register and BPF program will continue
-execution. In that sense, it simulates bpf_probe_read() behavior and
-significantly improves usability.
+LGTM, two nits below.
 
->
-> Also, we probably shouldn't name the type PTR_TO_BTF_ID if
-> it can be NULL. How about renaming it in bpf-next then although
-> it will be code churn... Or just fix the comments? Probably
-> bpf-next content though. wdyt? In my opinion the comments and
-> type names are really misleading as it stands.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  net/bpf/test_run.c                            | 19 +++++++++++++++-
+>  .../selftests/bpf/prog_tests/fentry_fexit.c   |  2 +-
+>  .../testing/selftests/bpf/progs/fentry_test.c | 22 +++++++++++++++++++
+>  .../testing/selftests/bpf/progs/fexit_test.c  | 22 +++++++++++++++++++
+>  4 files changed, 63 insertions(+), 2 deletions(-)
 >
 
 [...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
+> index 9365b686f84b..5f645fdaba6f 100644
+> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
+> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+> @@ -55,3 +55,25 @@ int BPF_PROG(test6, __u64 a, void *b, short c, int d, void * e, __u64 f)
+>                 e == (void *)20 && f == 21;
+>         return 0;
+>  }
+> +
+> +struct bpf_fentry_test_t {
+> +       struct bpf_fentry_test_t *a;
+> +};
+
+nit: __attribute__((preserve_access_index)) ?
+
+> +
+> +__u64 test7_result = 0;
+> +SEC("fentry/bpf_fentry_test7")
+> +int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+> +{
+> +       if (arg == 0)
+> +               test7_result = 1;
+> +       return 0;
+> +}
+> +
+> +__u64 test8_result = 0;
+> +SEC("fentry/bpf_fentry_test8")
+> +int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+> +{
+> +       if (arg->a == 0)
+> +               test8_result = 1;
+> +       return 0;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
+> index bd1e17d8024c..0952affb22a6 100644
+> --- a/tools/testing/selftests/bpf/progs/fexit_test.c
+> +++ b/tools/testing/selftests/bpf/progs/fexit_test.c
+> @@ -56,3 +56,25 @@ int BPF_PROG(test6, __u64 a, void *b, short c, int d, void *e, __u64 f, int ret)
+>                 e == (void *)20 && f == 21 && ret == 111;
+>         return 0;
+>  }
+> +
+> +struct bpf_fentry_test_t {
+> +       struct bpf_fentry_test *a;
+> +};
+
+same nit
+
+> +
+> +__u64 test7_result = 0;
+> +SEC("fexit/bpf_fentry_test7")
+> +int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+> +{
+> +       if (arg == 0)
+> +               test7_result = 1;
+> +       return 0;
+> +}
+> +
+> +__u64 test8_result = 0;
+> +SEC("fexit/bpf_fentry_test8")
+> +int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+> +{
+> +       if (arg->a == 0)
+> +               test8_result = 1;
+> +       return 0;
+> +}
+> --
+> 2.24.1
+>
