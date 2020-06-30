@@ -2,108 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A94020EB40
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 04:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C120EBAC
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 04:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgF3CFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 22:05:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28500 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726072AbgF3CFr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Jun 2020 22:05:47 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05U23JTv023278
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 19:05:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=AQbyH6FhX7YokLQGzHLfntIs/WN/l6/Es650iL5gwoo=;
- b=Yk6FfY4JxRpwscSoPQneiDznSQ1VEchqMR4c57Y2xVTaG4ljY64U1zYd8fhPd8V45gp8
- t9NqafVf2pG3Jwu+jSEW/eobT5J15iWgmrgERuIq8K6GVfQEYyYDj7SR1XwSuxaKVIsm
- VxxpIoa3fwb2jo5+ZBrfZXTdKVFze5Y9iho= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 31ykcj2kbh-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 19:05:46 -0700
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 19:05:44 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 92E072EC3BFB; Mon, 29 Jun 2020 19:05:40 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: make bpf_endian co-exist with vmlinux.h
-Date:   Mon, 29 Jun 2020 19:05:38 -0700
-Message-ID: <20200630020539.787781-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726941AbgF3C4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 22:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgF3C4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 22:56:18 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05685C061755;
+        Mon, 29 Jun 2020 19:56:18 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id cv18so3643611pjb.1;
+        Mon, 29 Jun 2020 19:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W7q2+5HVCtv5eeWz4jRKHnOS3HWL+VbRb2Ed3X03CNk=;
+        b=rCRS+xJbQgf1jcWJCuT270yV4UI1ynm8b7XmHawRXJy2pPEyAkOaBQu2YkfqeZPBz9
+         JKUsi5xH6T3bY7xjcACaaXSqKAAW9ZwvRiDZpA5E40UjX6CmN2uBzB5OeTPtIZDzfmTn
+         IJ5q/5+aVuKSzIlSUdkX5B1sk4Fgom5gWcSnPezs6sT1m4VSmiioU85wUKpVPGJNNL6x
+         VO3HET7WRC6x4vcZqdJqoCiX1G3ELmeBjsDV4Bj1gdix9ahqHKivM4uzTNTBmW0COvpo
+         Zvd4DRkedi9v2p/S4EUkI6mz7tHTB2byKF5ZUWPKjbHVkl7zhrlUwql+a4aqMguoeMjx
+         yGSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W7q2+5HVCtv5eeWz4jRKHnOS3HWL+VbRb2Ed3X03CNk=;
+        b=MKRACEB4DKYcL53EWdCLYXsf4xuN330gDdQ8l5FvkTnWGnmcOZfmH1KY96I/NiqQO2
+         ddAjyKde0hE0+9LHFR0mA3Rn4c22r9YyQSN5iYHCjZ9Fw+i2NNFIGsOF/Bv7vCpPc1xm
+         02RJIa1h5Q1+qiNSEmx/Wia/dhFUauWphDDAiaHxymGOB0rqHL69gmXucbVOlxTCwHsT
+         U/BKm5YWvqSB/ExB1x3ltaCKcHGVnK0WnYfjefzj3DpaKsPCZxQiqznDCgCRSvWf/EJR
+         T2BBA38Mgqc5eBLykXmrpWH7yQtYmLz+zjixyIcBwo2Zorvf+5ZIWR++CR7F/oGOzFxK
+         Kq4w==
+X-Gm-Message-State: AOAM533St5UK3aFIVeRTiY7YRnCPXye6DA9bcnQY4kq2RKO1DfGrTZPr
+        bu0OgiPfBJHfQNIW1PU2qis=
+X-Google-Smtp-Source: ABdhPJwANgMJsb+QSVrPHQpLichx9FTQ2lzwB3I7wI0KuN7mswc+ztWtShNPKpOUCzkSw//kHeP8rQ==
+X-Received: by 2002:a17:902:469:: with SMTP id 96mr15715171ple.93.1593485777245;
+        Mon, 29 Jun 2020 19:56:17 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:140c])
+        by smtp.gmail.com with ESMTPSA id e128sm870027pfe.196.2020.06.29.19.56.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 19:56:16 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 19:56:13 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v4 bpf-next 1/5] bpf: Remove redundant synchronize_rcu.
+Message-ID: <20200630025613.scvhmqootlnxp7sx@ast-mbp.dhcp.thefacebook.com>
+References: <20200630003441.42616-1-alexei.starovoitov@gmail.com>
+ <20200630003441.42616-2-alexei.starovoitov@gmail.com>
+ <CAEf4BzaLJ619mcN9pBQkupkJOcFfXWiuM8oy0Qjezy65Rpd_vA@mail.gmail.com>
+ <CAEf4BzZ4oEbONjbW5D5rngeiuT-BzREMKBz9H_=gzfdvBbvMOQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=405 clxscore=1015 suspectscore=8 lowpriorityscore=0
- adultscore=0 spamscore=0 bulkscore=0 impostorscore=0 cotscore=-2147483648
- mlxscore=0 malwarescore=0 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300013
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ4oEbONjbW5D5rngeiuT-BzREMKBz9H_=gzfdvBbvMOQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Copy over few #defines from UAPI swab.h header to make all the rest of
-bpf_endian.h work and not rely on any extra headers. This way it can be u=
-sed
-both with linux header includes, as well with a vmlinux.h. This has been
-a frequent complaint from users, that need this header.
+On Mon, Jun 29, 2020 at 06:08:48PM -0700, Andrii Nakryiko wrote:
+> On Mon, Jun 29, 2020 at 5:58 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Jun 29, 2020 at 5:35 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > bpf_free_used_maps() or close(map_fd) will trigger map_free callback.
+> > > bpf_free_used_maps() is called after bpf prog is no longer executing:
+> > > bpf_prog_put->call_rcu->bpf_prog_free->bpf_free_used_maps.
+> > > Hence there is no need to call synchronize_rcu() to protect map elements.
+> > >
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > ---
+> >
+> > Seems correct. And nice that maps don't have to care about this anymore.
+> >
+> 
+> Actually, what about the map-in-map case?
+> 
+> What if you had an array-of-maps with an inner map element. It is the
+> last reference to that map. Now you have two BPF prog executions in
+> parallel. One looked up that inner map and is updating it at the
+> moment. Another execution at the same time deletes that map. That
+> deletion will call bpf_map_put(), which without synchronize_rcu() will
+> free memory. All the while the former BPF program execution is still
+> working with that map.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/bpf_endian.h | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/bpf_endian.h b/tools/lib/bpf/bpf_endian.h
-index fbe28008450f..a4be8a70845c 100644
---- a/tools/lib/bpf/bpf_endian.h
-+++ b/tools/lib/bpf/bpf_endian.h
-@@ -2,8 +2,26 @@
- #ifndef __BPF_ENDIAN__
- #define __BPF_ENDIAN__
-=20
--#include <linux/stddef.h>
--#include <linux/swab.h>
-+/* copied from include/uapi/linux/swab.h */
-+#define ___constant_swab16(x) ((__u16)(				\
-+	(((__u16)(x) & (__u16)0x00ffU) << 8) |			\
-+	(((__u16)(x) & (__u16)0xff00U) >> 8)))
-+
-+#define ___constant_swab32(x) ((__u32)(				\
-+	(((__u32)(x) & (__u32)0x000000ffUL) << 24) |		\
-+	(((__u32)(x) & (__u32)0x0000ff00UL) <<  8) |		\
-+	(((__u32)(x) & (__u32)0x00ff0000UL) >>  8) |		\
-+	(((__u32)(x) & (__u32)0xff000000UL) >> 24)))
-+
-+#define ___constant_swab64(x) ((__u64)(				\
-+	(((__u64)(x) & (__u64)0x00000000000000ffULL) << 56) |	\
-+	(((__u64)(x) & (__u64)0x000000000000ff00ULL) << 40) |	\
-+	(((__u64)(x) & (__u64)0x0000000000ff0000ULL) << 24) |	\
-+	(((__u64)(x) & (__u64)0x00000000ff000000ULL) <<  8) |	\
-+	(((__u64)(x) & (__u64)0x000000ff00000000ULL) >>  8) |	\
-+	(((__u64)(x) & (__u64)0x0000ff0000000000ULL) >> 24) |	\
-+	(((__u64)(x) & (__u64)0x00ff000000000000ULL) >> 40) |	\
-+	(((__u64)(x) & (__u64)0xff00000000000000ULL) >> 56)))
-=20
- /* LLVM's BPF target selects the endianness of the CPU
-  * it compiles on, or the user specifies (bpfel/bpfeb),
---=20
-2.24.1
-
+The delete of that inner map can only be done via sys_bpf() and there
+we do maybe_wait_bpf_programs() exactly to avoid this kind of problems.
+It's also necessary for user space. When the user is doing map_update/delete
+of inner map as soon as syscall returns the user can process
+old map with guarantees that no bpf prog is touching inner map.
