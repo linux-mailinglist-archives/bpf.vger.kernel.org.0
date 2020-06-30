@@ -2,199 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B5F20EEAF
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 08:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBCF20F0A5
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 10:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730190AbgF3Glt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 02:41:49 -0400
-Received: from condef-02.nifty.com ([202.248.20.67]:37176 "EHLO
-        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbgF3Glt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 02:41:49 -0400
-X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jun 2020 02:41:48 EDT
-Received: from conssluserg-01.nifty.com ([10.126.8.80])by condef-02.nifty.com with ESMTP id 05U6VLE1009899;
-        Tue, 30 Jun 2020 15:31:21 +0900
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 05U6UgIb011232;
-        Tue, 30 Jun 2020 15:30:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 05U6UgIb011232
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593498643;
-        bh=hWw/PnfkqdzxZlXBfdr5ZsRULyy797gdejQ+pX6AzaU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZhAbYh7zx1kczWaedEG6cKzY69GueVLOcznv9ldVPHTsWHek3NL2YwuGkV7kFDLGb
-         rQ5l8dVh5CvsJuOb1srMpPqZWRgRMoK9XMkZ+kR8BOisxy5RRixhan8Di1eMdS70DG
-         eXQL+diXuQWzA+yu+sapyFhsvHF+sDUGvy0dwyOe4lFIey6+M+3iBzGbIEMBOiJsv5
-         pBK5sCVtscl3TgYquXJkI/OjtavekrEye92GSHIP/NYQ2KuOvgWq8W2KHHerjjRxJ0
-         bUo+IVFBqiZNVhF17AEz79MgMIj/ZkC4gM/aET2SMUSqSNo7cOdqmefnUN+yB7YAVx
-         jHxb8KRPbWGUw==
-X-Nifty-SrcIP: [209.85.222.51]
-Received: by mail-ua1-f51.google.com with SMTP id z47so6122322uad.5;
-        Mon, 29 Jun 2020 23:30:42 -0700 (PDT)
-X-Gm-Message-State: AOAM5325Udae0HlR72Y6pRI2WvJ7cLJfoiMJc/1E7rjJpBkfJAtOedQ1
-        gG6+3TxHQwzkxEoWy7dJZ5cRf6wxdqQgm/irAKA=
-X-Google-Smtp-Source: ABdhPJw4WXNDTVroElfgeqLVDMNI7bd4mrYrp5LWdLRuCY5G094o1kEYH5ERVBEamOeUfiHOcfZYY7koTqlFDLQ6t3M=
-X-Received: by 2002:ab0:156d:: with SMTP id p42mr13408863uae.121.1593498641294;
- Mon, 29 Jun 2020 23:30:41 -0700 (PDT)
+        id S1728450AbgF3Ijk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 04:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbgF3Ijj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:39:39 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326E9C061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 01:39:39 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id 95so7136465otw.10
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 01:39:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xJMt4WVmYovPqG5eJVjJcpMYP+qk+CQvvpa2yfUPoJE=;
+        b=CI8s6J1+81ZNf9IDuMD/68vcGy+z2xDpHKKxiuq7PM87KyXIVyQglQ1EBxvsZqodjN
+         fZm3ZC0b6llsPxfUK7D7zb+n0l/13p2scgftUA8bcfwcG244iGIjd1jOk70s0Hb4Bsv7
+         tljappofaTMumv4dTjLTS5EmDYkA6YzPa34wk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xJMt4WVmYovPqG5eJVjJcpMYP+qk+CQvvpa2yfUPoJE=;
+        b=JEHbc+sZEyVSIqAm9as4/hG7qyQvuhgag8veOmFlLTYM7klfsLzFTcuQ4HslRetKoR
+         LfkN8JXK93xkff2PSvRvZDNhMUnHNDIhoww/ZPokTNDH3YLo65M9+L2ltikfpoSS+Bqs
+         xaPuhv0vem6KV5jmrRscLrL5QH/l/PL6Aw3MQQZL+isSEgV7k61BZST9fwK28wehEvSu
+         tgtD9t9SR1KgHFV1Op1eQ3Ag+hsD/sAQlUh2n5bgIO+Z0746VnAptE6Wh0konC0QkI2p
+         lQlN4T0PJS4ZJChHQz5sS5xs/lxEcDM6SHTrHzmGcFieEFlzANEtqEXmfzNLypIfp/hK
+         6YCA==
+X-Gm-Message-State: AOAM532ZjwxMwSuxnWFwNzgC9ELltlyJd+CKXgxQP6RPfBwKltESXyki
+        vdetNSlZKmK3qBO90UeUyL27z9UmuopvU6EjWxMtb9cATBqObw==
+X-Google-Smtp-Source: ABdhPJyN2PMuHBwjKjZJQTuUYkcM08Rh13ohklAV8GkroOFBsso25c2Wrms37bkFf2rdyGB53GFDFa6AXRiZhsAoawE=
+X-Received: by 2002:a9d:1c7:: with SMTP id e65mr15423971ote.147.1593506378463;
+ Tue, 30 Jun 2020 01:39:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-5-masahiroy@kernel.org>
- <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-In-Reply-To: <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 30 Jun 2020 15:30:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
-Message-ID: <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
-To:     Michal Kubecek <mkubecek@suse.cz>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+References: <20200629095630.7933-1-lmb@cloudflare.com> <07d10dab-64f7-d7af-25b9-a61b39c8daf2@fb.com>
+In-Reply-To: <07d10dab-64f7-d7af-25b9-a61b39c8daf2@fb.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 30 Jun 2020 09:39:27 +0100
+Message-ID: <CACAyw9_5Dg=dTMk3TQiYFE3vzUuq68V2-NcpZCuiQqJFPn-0Dw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 0/6] Fix attach / detach uapi for sockmap and flow_dissector
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Michal, Alexei,
-
-On Mon, Jun 8, 2020 at 8:56 PM Michal Kubecek <mkubecek@suse.cz> wrote:
+On Tue, 30 Jun 2020 at 06:48, Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, Apr 23, 2020 at 04:39:17PM +0900, Masahiro Yamada wrote:
-> > The user mode helper should be compiled for the same architecture as
-> > the kernel.
-> >
-> > This Makefile reuses the 'hostprogs' syntax by overriding HOSTCC with CC.
-> >
-> > Now that Kbuild provides the syntax 'userprogs', use it to fix the
-> > Makefile mess.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > ---
-> >
-> >  net/bpfilter/Makefile | 11 ++++-------
-> >  1 file changed, 4 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> > index 36580301da70..6ee650c6badb 100644
-> > --- a/net/bpfilter/Makefile
-> > +++ b/net/bpfilter/Makefile
-> > @@ -3,17 +3,14 @@
-> >  # Makefile for the Linux BPFILTER layer.
-> >  #
-> >
-> > -hostprogs := bpfilter_umh
-> > +userprogs := bpfilter_umh
-> >  bpfilter_umh-objs := main.o
-> > -KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> > -HOSTCC := $(CC)
-> > +user-ccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> >
-> > -ifeq ($(CONFIG_BPFILTER_UMH), y)
-> > -# builtin bpfilter_umh should be compiled with -static
-> > +# builtin bpfilter_umh should be linked with -static
-> >  # since rootfs isn't mounted at the time of __init
-> >  # function is called and do_execv won't find elf interpreter
-> > -KBUILD_HOSTLDFLAGS += -static
-> > -endif
-> > +bpfilter_umh-ldflags += -static
-> >
-> >  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
+> Since bpf_iter is mentioned here, I would like to provide a little
+> context on how target_fd in link_create is treated there.
+
+Thanks!
+
+> Currently, target_fd is always 0 as it is not used. This is
+> just easier if we want to use it in the future.
 >
-> Hello,
+> In the future, bpf_iter can maintain that target_fd must be 0
+> or it may not so. For example, it can add a flag value in
+> link_create such that when flag is set it will take whatever
+> value in target_fd and use it. Or it may just take a non-0
+> target_fd as an indication of the flag is set. I have not
+> finalized patches yet. I intend to do the latter, i.e.,
+> taking a non-0 target_fd. But we will see once my bpf_iter
+> patches for map elements are out.
+
+I had a piece of code for sockmap which did something like this:
+
+    prog = bpf_prog_get(attr->attach_bpf_fd)
+    if (IS_ERR(prog))
+        if (!attr->attach_bpf_fd)
+            // fall back to old behaviour
+        else
+            return PTR_ERR(prog)
+    else if (prog->type != TYPE)
+        return -EINVAL
+
+The benefit is that it continues to work if a binary is invoked with
+stdin closed, which could lead to a BPF program with fd 0.
+
+Could this work for bpf_iter as well?
+
 >
-> I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
-> drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
-> passed to the linker even if bpfilter_umh is built as a module which
-> wasn't the case in v5.7.
+> There is another example where 0 and non-0 prog_fd make a difference.
+> The attach_prog_fd field when doing prog_load.
+> When attach_prog_fd is 0, it means attaching to vmlinux through
+> attach_btf_id. If attach_prog_fd is not 0, it means attaching to
+> another bpf program (replace). So user space (libbpf) may
+> already need to pay attention to this.
+
+That is unfortunate. What was the reason to use 0 instead of -1 to
+attach to vmlinux?
+
 >
-> This is not mentioned in the commit message and the comment still says
-> "*builtin* bpfilter_umh should be linked with -static" so this change
-> doesn't seem to be intentional. Did I miss something?
->
-> Michal Kubecek
+> > work around for fd 0 should we need to in the future.
+> >
+> > The detach case is more problematic: both cgroups and lirc2 verify
+> > that attach_bpf_fd matches the currently attached program. This
+> > way you need access to the program fd to be able to remove it.
+> > Neither sockmap nor flow_dissector do this. flow_dissector even
+> > has a check for CAP_NET_ADMIN because of this. The patch set
+> > addresses this by implementing the desired behaviour.
+> >
+> > There is a possibility for user space breakage: any callers that
+> > don't provide the correct fd will fail with ENOENT. For sockmap
+> > the risk is low: even the selftests assume that sockmap works
+> > the way I described. For flow_dissector the story is less
+> > straightforward, and the selftests use a variety of arguments.
+> >
+> > I've includes fixes tags for the oldest commits that allow an easy
+> > backport, however the behaviour dates back to when sockmap and
+> > flow_dissector were introduced. What is the best way to handle these?
+> >
+> > This set is based on top of Jakub's work "bpf, netns: Prepare
+> > for multi-prog attachment" available at
+> > https://lore.kernel.org/bpf/87k0zwmhtb.fsf@cloudflare.com/T/
+> >
+> > Since v1:
+> > - Adjust selftests
+> > - Implement detach behaviour
+> >
+> > Lorenz Bauer (6):
+> >    bpf: flow_dissector: check value of unused flags to BPF_PROG_ATTACH
+> >    bpf: flow_dissector: check value of unused flags to BPF_PROG_DETACH
+> >    bpf: sockmap: check value of unused args to BPF_PROG_ATTACH
+> >    bpf: sockmap: require attach_bpf_fd when detaching a program
+> >    selftests: bpf: pass program and target_fd in flow_dissector_reattach
+> >    selftests: bpf: pass program to bpf_prog_detach in flow_dissector
+> >
+> >   include/linux/bpf-netns.h                     |  5 +-
+> >   include/linux/bpf.h                           | 13 ++++-
+> >   include/linux/skmsg.h                         | 13 +++++
+> >   kernel/bpf/net_namespace.c                    | 22 ++++++--
+> >   kernel/bpf/syscall.c                          |  6 +--
+> >   net/core/sock_map.c                           | 53 +++++++++++++++++--
+> >   .../selftests/bpf/prog_tests/flow_dissector.c |  4 +-
+> >   .../bpf/prog_tests/flow_dissector_reattach.c  | 12 ++---
+> >   8 files changed, 103 insertions(+), 25 deletions(-)
+> >
 
-I was away for a while from this because I saw long discussion in
-"net/bpfilter: Remove this broken and apparently unmaintained"
-
-
-Please let me resume this topic now.
-
-
-The original behavior of linking umh was like this:
-  - If CONFIG_BPFILTER_UMH=y, bpfilter_umh was linked with -static
-  - If CONFIG_BPFILTER_UMH=m, bpfilter_umh was linked without -static
-
-
-
-Restoring the original behavior will add more complexity because
-now we have CONFIG_CC_CAN_LINK and CONFIG_CC_CAN_LINK_STATIC
-since commit b1183b6dca3e0d5
-
-If CONFIG_BPFILTER_UMH=y, we need to check CONFIG_CC_CAN_LINK_STATIC.
-If CONFIG_BPFILTER_UMH=m, we need to check CONFIG_CC_CAN_LINK.
-This would make the Kconfig dependency logic too complicated.
-
-
-To make it simpler, I'd like to suggest two options.
-
-
-
-Idea 1:
-
-  Always use -static irrespective of whether
-  CONFIG_BPFILTER_UMH is y or m.
-
-  Add two more lines to clarify this
-  in the comment in net/bpfilter/Makefile:
-
-  # builtin bpfilter_umh should be linked with -static
-  # since rootfs isn't mounted at the time of __init
-  # function is called and do_execv won't find elf interpreter.
-  # Static linking is not required when bpfilter is modular, but
-  # we always pass -static to keep the 'depends on' in Kconfig simple.
-
-
-
-Idea 2:
-
-   Allow umh to become only modular,
-   and drop -static flag entirely.
-
-   If you look at net/bpfilter/Kconfig,
-   BPFILTER_UMH already has 'default m'.
-   So, I assume the most expected use-case
-   is modular.
-
-   My suggestion is to replace 'default m' with 'depends on m'.
-
-   config BPFILTER_UMH
-           tristate "bpfilter kernel module with user mode helper"
-           depends on CC_CAN_LINK
-           depends on m
-
-   Then BPFILTER_UMH will be restricted to either m or n.
-   Link umh dynamically because we can expect rootfs
-   is already mounted for the module case.
-
-
-
-
-
-
-Comments are appreciated.
 
 
 -- 
-Best Regards
-Masahiro Yamada
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
