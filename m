@@ -2,93 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F012E21007A
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 01:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54640210086
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 01:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgF3Xfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 19:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        id S1726356AbgF3XlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 19:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgF3Xfd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 19:35:33 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71709C03E979
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 16:35:33 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id j19so7982105ybj.1
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 16:35:33 -0700 (PDT)
+        with ESMTP id S1725930AbgF3XlU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 19:41:20 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B4FC061755;
+        Tue, 30 Jun 2020 16:41:20 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o22so5148692pjw.2;
+        Tue, 30 Jun 2020 16:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0F8vRF7FG/PmZ2g7D4qS+C0vzq8AzEmPQZfZWSdh8t8=;
-        b=JQNj0YwGs1q0Op3C1DQ/IyH20Fk6fr1hMAmR2ZG9OBuvn2Wk4vGsbXSBqQQbdclmvS
-         AjdEOk/C8Nv7674b1/7TWuoOmMjfQ/rzo35mFoVXwGkRIFbDet5yazY9TGYE8d8rPz0F
-         7wutxLf/s3kyFQHjLJvyx13dYxJrONWXqkvHOgHGNHNAfnKGLXv6CJCnoMNktvWxRHrY
-         bBgz/ck5v5+AzMfHBkHP1tDQOT3DbkYtwGbR5rDLmVVbK9PMxy39nc8dvJhmsnzvU+mk
-         aGazopAfZ4FunEfTmohq2edxbE1YP3roL1Lga2KMIL6qatIZcSduTcGSU7J83kQg9rR0
-         1AdA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=546eyQZzdn5dQ5fv+SxUu0FgZG591hjvbFsj/UlLnBo=;
+        b=lnz2fqgGhmgGVgtoRUETlZRJHWPONNa+KVRMofgll+5Xz2UGVIuL3lg1xcaTipGfIa
+         NIYgkgN457aNQRntT5cK41WgPo8f0ZYIymmXx01EQhQhdHNixVegl7VMDqPfkypeOoPs
+         Aa3TMAxQSh/xGrhHPp56KJo63MP8UbU7RTUhhQQVwxZceCEUGzqJmDhZZTqLRRqPpjbC
+         As1xxPkfQ+/QYvxbSL3mNSy7bfMPQrT10B7SYZi/n8BUHTH7e/bUz1brvk3mZpfEyJkg
+         RMqmIlroIG8zpevGr5/EN4r8cfQmz/wP8if6CXvoMPgUCZL5VnohGqyICnY1wQglhu9t
+         RycQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0F8vRF7FG/PmZ2g7D4qS+C0vzq8AzEmPQZfZWSdh8t8=;
-        b=lC4RwIeUBN+urs9F1+UA9AYj4TEDy3rTkNrW0oexfoHloPjNrF0VkaafpaRUO826cH
-         vn4GEXYv1HjPmkblIxl/lQB2W4kAWGi6GMlifKDOhUiAB6puXU9+pFh8NRJbtO3taUeX
-         U1TGbKoah16tjiLpCRD8D75Qtik288ZXcj8AZtSACVFYzmvyn529dvLpfHJVwScIrhkl
-         WN7TkI/KpTxxXJVmfNi5mPalbOUFkBSGsokeYGFlf7Tyf3eMj7Ezivs/LptVNM5lN7xJ
-         uVbQRHqPAzV/vgJP+V5TDTRvvGEWT0hfMOuhrQf7HcFy5XN9VqK/3DhNn4XguXZoC2Tc
-         qS/A==
-X-Gm-Message-State: AOAM533M46Q82Zb4j6b/EeeL2qT/PdbKwvoiQaQLYoyTRL39Zpb0/z97
-        gbP7+wrnI4lKJKm7qKRC7EfjnMzSeVOgKjijMFWaLA==
-X-Google-Smtp-Source: ABdhPJwfI5teRlieTKunjXebBLbTtdL6FHmmt7Dnqbioh0wVFJe6Ug7M0TYPDKZumu8hXK10U6N36FjIBdZZsfSFUFU=
-X-Received: by 2002:a25:7003:: with SMTP id l3mr36625730ybc.380.1593560132411;
- Tue, 30 Jun 2020 16:35:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=546eyQZzdn5dQ5fv+SxUu0FgZG591hjvbFsj/UlLnBo=;
+        b=BphZ1ndaXMz/dTkIjDuRyBk2f1GP74YiW2yHk9wZa1ZZ8esH0sbVkBgCHR3zQ1oksE
+         VgIzs4rl8BOBnDrzrpNwEZgJqxCFRKXV8OZiWyWpeK9HyNuvDFVn4rXEx1diXNZrnq1p
+         jGi6Jrr94qAmp70mpZ+/ZdC+YCMH7ouIvzaEQ/hGOtN+4wX82rD+EsYizTWb7WV2QvOa
+         QGC428N2GO2f9/7gNql617RsAeMN1kNiEAt6BRcpWRx66nmbUtwY3AywtHQRZWP7XQMy
+         pNDRa9eg5YomVQ3rg+BEojMCRqjJXoHeKhwuFolGM3BcxES3wvDhphSOBOoMkXKE6HAJ
+         DSRA==
+X-Gm-Message-State: AOAM532oTdCBx3JUrW0SehnCaoQLekvKilzGP8d0sbkMUcFPohzm0hUQ
+        Ku1OEybfy+AaT/KGVTjcIjg=
+X-Google-Smtp-Source: ABdhPJyxWh+/D3J665jbjoRLmIrHsRP+/hFmZwcwsbrJ1l1YbnPNB+2q+Ip3swgXEpwJZq2RFXutpw==
+X-Received: by 2002:a17:90b:94f:: with SMTP id dw15mr13087287pjb.209.1593560480189;
+        Tue, 30 Jun 2020 16:41:20 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e083])
+        by smtp.gmail.com with ESMTPSA id c27sm3380300pfj.163.2020.06.30.16.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 16:41:19 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 16:41:17 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, paulmck@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 bpf-next 2/5] bpf: Introduce sleepable BPF programs
+Message-ID: <20200630234117.arqmjpbivy5fhhmk@ast-mbp.dhcp.thefacebook.com>
+References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
+ <20200630043343.53195-3-alexei.starovoitov@gmail.com>
+ <d0c6b6a6-7b82-e620-8ced-8a1acfaf6f6d@iogearbox.net>
 MIME-Version: 1.0
-References: <20200626175501.1459961-1-kafai@fb.com> <20200626175508.1460345-1-kafai@fb.com>
- <CANn89iLJNWh6bkH7DNhy_kmcAexuUCccqERqe7z2QsvPhGrYPQ@mail.gmail.com> <20200630232406.3ozanjlyx5a2mv6i@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200630232406.3ozanjlyx5a2mv6i@kafai-mbp.dhcp.thefacebook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 30 Jun 2020 16:35:20 -0700
-Message-ID: <CANn89iKj-okNmJhUnOmzdGVbOHi8zdF+=oO4RUFOo2X6M1kZHw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] tcp: Use a struct to represent a saved_syn
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@fb.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        netdev <netdev@vger.kernel.org>,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0c6b6a6-7b82-e620-8ced-8a1acfaf6f6d@iogearbox.net>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 4:24 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Wed, Jul 01, 2020 at 01:26:44AM +0200, Daniel Borkmann wrote:
+> On 6/30/20 6:33 AM, Alexei Starovoitov wrote:
+> [...]
+> > +/* list of non-sleepable kernel functions that are otherwise
+> > + * available to attach by bpf_lsm or fmod_ret progs.
+> > + */
+> > +static int check_sleepable_blacklist(unsigned long addr)
+> > +{
+> > +#ifdef CONFIG_BPF_LSM
+> > +	if (addr == (long)bpf_lsm_task_free)
+> > +		return -EINVAL;
+> > +#endif
+> > +#ifdef CONFIG_SECURITY
+> > +	if (addr == (long)security_task_free)
+> > +		return -EINVAL;
+> > +#endif
+> > +	return 0;
+> > +}
+> 
+> Would be nice to have some sort of generic function annotation to describe
+> that code cannot sleep inside of it, and then filter based on that. Anyway,
+> is above from manual code inspection?
 
-> Interesting idea.  I don't have an immediate use case in the mac header of
-> the SYN but I think it may be useful going forward.
->
-> Although bpf_hdr_opt_off may be no longer needed in v2,
-> it will still be convenient for the bpf prog to be able to get the TCP header
-> only instead of reparsing from the mac/ip[46] and also save some stack space
-> of the bpf prog.  Thus, storing the length of each hdr would still be nice
-> so that the bpf helper can directly offset to the start of the required
-> header.
->
-> Do you prefer to incorporate this "save_syn:2" idea in this set
-> so that mac hdrlen can be stored in the "struct saved_syn"?
+yep. all manual. I don't think there is a way to automate it.
+At least I cannot think of one.
 
-Sure, please go ahead.
+> What about others like security_sock_rcv_skb() for example which could be
+> bh_lock_sock()'ed (or, generally hooks running in softirq context)?
 
->
-> This "unused:2" bits have already been used by "fastopen_client_fail:2".
+ahh. it's in running in bh at that point? then it should be added to blacklist.
 
-Oh that is possible, I have sent the patch as it was when we merged it
-years ago.
-
-> May be get 2 bits from repair_queue?
-
-Hmm... this repair_queue is used in fast path, I would rather keep it
-as u8 for better code generation.
+The rough idea I had is to try all lsm_* and security_* hooks with all
+debug kernel flags and see which ones will complain. Then add them to blacklist.
+Unfortunately I'm completely swamped and cannot promise to do that
+in the coming months.
+So either we wait for somebody to do due diligence or land it knowing
+that blacklist is incomplete and fix it up one by one.
+I think the folks who're waiting on sleepable work would prefer the latter.
+I'm fine whichever way.
