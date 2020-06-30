@@ -2,123 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B567720FEB5
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 23:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA920FFA0
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 23:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729795AbgF3V0f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 17:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730694AbgF3V0e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 17:26:34 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138CBC061755;
-        Tue, 30 Jun 2020 14:26:34 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 80so20159881qko.7;
-        Tue, 30 Jun 2020 14:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u6QrfK0w5ybbH9fi34xXU8b52YrlyrA/11EhFWPjHcY=;
-        b=CqI5q8x8tEfzpcgQJRXsrlzwKqVx+wSi8n79eup4ry7b6IboG8x3Mo5ta+oAtr6eao
-         1am7Wn0i/Uv0SJ6VTpa5eBmBnp+9xy/x+bEisQE5ZlhxVjJWCyOa4cDwY+hue3zb2+j5
-         j+h6l6giCeAFx5TefdU1ML9TNV4SFpFD91ZvzwAxHPj2Gm2frJI+s+JacWMiAKVnNHVp
-         OhoZhO5O6ui0V4njxE3Pg+SFDtt9Rpo5cKZZQ3UNYJRgXEdJW08Sx82AIQrZI7uouNUw
-         sM1Vt2FerL4pXP5AQu6BVts9FOnYKboA+BPb8w2Ed3J7+aD5NlhNJRkvTxi9d/tLDKnk
-         51Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6QrfK0w5ybbH9fi34xXU8b52YrlyrA/11EhFWPjHcY=;
-        b=UI5tSun2jrcj88D91B5J+fXwmpgUmN4QPlAoVvU1yfoh6qojEXvIPeReH2VtywhZVA
-         Y5zurzQBlj/4d6A3iJDMtefGhSrRF3hdwYcu8LqeA15Kt8R2pO2FAVVO5bxI0uaCnVN+
-         +pBsgNmcV32++UiZRDLrHSK02IOA8RDvPz/00o5VNAXZz/yV6KdKhsoCV6A7GJXh/VX+
-         c4o3xmTs66YJS9Bo3Wm8PsDPmsNk8D3QgqhnIhXQ4tTG/qBV/rcRlacXiCFfSkXS3hyr
-         qIgbzoNymK0g3LJSrcwOBV7s7oPeROGJLqA7sOqvb1HP7fGBySDGh6QHAAaQUpIyZnft
-         5Cdg==
-X-Gm-Message-State: AOAM533fNLeFO3C1E+TGEqnfKYaajboPX3feKrQ0PuZYCnQq3EFdqrxU
-        o8Me8C+ga3RtBMkSudhkKUNbgtrHu4mZJur83Zk=
-X-Google-Smtp-Source: ABdhPJzNTMwPYp9iv+oRxOsQCp2yESwoibyek38j7BPYdMXfXDzKD6C5b60bb9+VFoBgf+eNaEiI78MjsxtvU5aRFpY=
-X-Received: by 2002:a37:270e:: with SMTP id n14mr20807794qkn.92.1593552393299;
- Tue, 30 Jun 2020 14:26:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630184922.455439-1-haoluo@google.com>
-In-Reply-To: <20200630184922.455439-1-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Jun 2020 14:26:21 -0700
-Message-ID: <CAEf4BzaH3TJWMsNHFPUTgEotErX0WS8R8ds1LYs6eXvLy1YbxQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        id S1726995AbgF3Vz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 17:55:57 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60078 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726376AbgF3Vz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:55:57 -0400
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05ULscxI032871;
+        Wed, 1 Jul 2020 06:54:38 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Wed, 01 Jul 2020 06:54:38 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05ULsbqs032867
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 1 Jul 2020 06:54:37 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <40720db5-92f0-4b5b-3d8a-beb78464a57f@i-love.sakura.ne.jp>
+ <87366g8y1e.fsf@x220.int.ebiederm.org>
+ <aa737d87-cf38-55d6-32f1-2d989a5412ea@i-love.sakura.ne.jp>
+ <20200628194440.puzh7nhdnk6i4rqj@ast-mbp.dhcp.thefacebook.com>
+ <c99d0cfc-8526-0daf-90b5-33e560efdede@i-love.sakura.ne.jp>
+ <874kqt39qo.fsf@x220.int.ebiederm.org>
+ <6a9dd8be-333a-fd21-d125-ec20fb7c81df@i-love.sakura.ne.jp>
+ <20200630164817.txa2jewfvk4stajy@ast-mbp.dhcp.thefacebook.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <c7d4df91-d78e-5134-2161-192426fc51cd@i-love.sakura.ne.jp>
+Date:   Wed, 1 Jul 2020 06:54:35 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200630164817.txa2jewfvk4stajy@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 1:47 PM Hao Luo <haoluo@google.com> wrote:
->
-> The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
-> programs. But it seems Clang may have done an aggressive optimization,
-> causing fentry and kprobe to not hook on this function properly on a
-> Clang build kernel.
->
-> A possible fix is switching to use a more reliable function, e.g. the
-> ones exported to kernel modules such as hrtimer_range_start_ns. After
-> we switch to using hrtimer_range_start_ns, the test passes again even
-> on a clang build kernel.
->
-> Tested:
->  In a clang build kernel, the test fail even when the flags
->  {fentry, kprobe}_called are set unconditionally in handle__kprobe()
->  and handle__fentry(), which implies the programs do not hook on
->  hrtimer_nanosleep() properly. This could be because clang's code
->  transformation is too aggressive.
->
->  test_vmlinux:PASS:skel_open 0 nsec
->  test_vmlinux:PASS:skel_attach 0 nsec
->  test_vmlinux:PASS:tp 0 nsec
->  test_vmlinux:PASS:raw_tp 0 nsec
->  test_vmlinux:PASS:tp_btf 0 nsec
->  test_vmlinux:FAIL:kprobe not called
->  test_vmlinux:FAIL:fentry not called
->
->  After we switch to hrtimer_range_start_ns, the test passes.
->
->  test_vmlinux:PASS:skel_open 0 nsec
->  test_vmlinux:PASS:skel_attach 0 nsec
->  test_vmlinux:PASS:tp 0 nsec
->  test_vmlinux:PASS:raw_tp 0 nsec
->  test_vmlinux:PASS:tp_btf 0 nsec
->  test_vmlinux:PASS:kprobe 0 nsec
->  test_vmlinux:PASS:fentry 0 nsec
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
+On 2020/07/01 1:48, Alexei Starovoitov wrote:
+> On Tue, Jun 30, 2020 at 03:28:49PM +0900, Tetsuo Handa wrote:
+>> On 2020/06/30 5:19, Eric W. Biederman wrote:
+>>> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
+>>>
+>>>> On 2020/06/29 4:44, Alexei Starovoitov wrote:
+>>>>> But all the defensive programming kinda goes against general kernel style.
+>>>>> I wouldn't do it. Especially pr_info() ?!
+>>>>> Though I don't feel strongly about it.
+>>>>
+>>>> Honestly speaking, caller should check for errors and print appropriate
+>>>> messages. info->wd.mnt->mnt_root != info->wd.dentry indicates that something
+>>>> went wrong (maybe memory corruption). But other conditions are not fatal.
+>>>> That is, I consider even pr_info() here should be unnecessary.
+>>>
+>>> They were all should never happen cases.  Which is why my patches do:
+>>> if (WARN_ON_ONCE(...))
+>>
+>> No. Fuzz testing (which uses panic_on_warn=1) will trivially hit them.
+> 
+> I don't believe that's true.
+> Please show fuzzing stack trace to prove your point.
+> 
 
-Took me a bit of jumping around to find how it is related to nanosleep
-call :) But seems like it's unconditionally called, so should be fine.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
-
->  tools/testing/selftests/bpf/progs/test_vmlinux.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-
-[...]
+Please find links containing "WARNING" from https://syzkaller.appspot.com/upstream . ;-)
