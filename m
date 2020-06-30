@@ -2,102 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5154210033
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 00:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6038921004A
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 01:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgF3Ws5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 18:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgF3Ws4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:48:56 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38713C03E97A
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 15:48:56 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id e22so17799538edq.8
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 15:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s3xaSnjPwOz/gfRv2/K99Xg/qf7pM+PnO4Lm4xuaoC0=;
-        b=ASbXZJLtG8XUPSKV+h/SVuJS8yIbMCdkYnwmz9GVGBHSAM+DAluDsY/UItNHh5PPjN
-         ojeIFIQdrQrB5TO+YJ4T17S3IX4uNxtZRu3ECARMr+8G3RfHGY0MFD8NQQoegMH9WYgw
-         DplT/XHY6xm7t+KEUlRVK5cBeygKp2aVxTDa84GvXZysfxGk/Hd43n9zJJmazHKD3iF7
-         MSte5VrVqWlbM/EjzGkN8q90OIsCct0GzstiUZJV+IHJlsi4kupmFdqViSPPqCacYpia
-         CJDgVFsqebVGLJTdh2JQ2zFzHI2FGtHwawNpHLQReD555gWw11/dCwr4oRXqFYgLWD0/
-         0J0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s3xaSnjPwOz/gfRv2/K99Xg/qf7pM+PnO4Lm4xuaoC0=;
-        b=VRRllrjT5d9JxURoOjbN82KnRgL/Sa5PCz8Qtc0tRYPVL9wan/VOa9Dp1Pq4YkL+ZW
-         Y3a56WSMvpiAzINr5aLc47S/ytEkY85IvwU4mEQrJ5YArMsTDAZqCGgWUsoYEwnj6tzq
-         cTRc+5Fgu+ZJILujgbPQot7iWTtMDonXgoKcM6bFTBBDwqJdmz+1gbkvYszlGRh7qxXP
-         sx3W+8m4IVi0J1si5ycjDKly0nSKL8iQf0YqPn6sGo3xsbT8RLv4M4jjr1h+29ta9bnz
-         H7xF7HaJd9J+uYVc0m/qRVJGDEgQnu/SECESjRnq5LCtY+kutbFkaDmbtkbz14K2bDAN
-         wr3Q==
-X-Gm-Message-State: AOAM532lUDH0LCfzIAHUfKFoDKuWMBt8bmWY80dDCDQa9nsXAXATs+kH
-        BqQoUrklU2ZlfGB4u8UHxMLY+Zpjv1Q4QdS+IfJgyQ==
-X-Google-Smtp-Source: ABdhPJwdBVIhV+aZ5jKNHZ7ssWSX+SueBydRHGEF9sWtuWG2VuYiEFyUS9TQX3p7Jbl+uP6IBTsIxp0Q6Z8QAuI+cho=
-X-Received: by 2002:aa7:d5cd:: with SMTP id d13mr691466eds.370.1593557334562;
- Tue, 30 Jun 2020 15:48:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630184922.455439-1-haoluo@google.com> <49df8306-ecc7-b979-d887-b023275e4842@fb.com>
-In-Reply-To: <49df8306-ecc7-b979-d887-b023275e4842@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 30 Jun 2020 15:48:43 -0700
-Message-ID: <CA+khW7iJu2tzcz36XzL6gBq4poq+5Qt0vbrmPRdYuvC-c5U4_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kselftest@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        id S1726117AbgF3W77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 18:59:59 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51934 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgF3W77 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 18:59:59 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05UMx2ox072030;
+        Wed, 1 Jul 2020 07:59:02 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Wed, 01 Jul 2020 07:59:02 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05UMx1ds071983
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 1 Jul 2020 07:59:02 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <40720db5-92f0-4b5b-3d8a-beb78464a57f@i-love.sakura.ne.jp>
+ <87366g8y1e.fsf@x220.int.ebiederm.org>
+ <aa737d87-cf38-55d6-32f1-2d989a5412ea@i-love.sakura.ne.jp>
+ <20200628194440.puzh7nhdnk6i4rqj@ast-mbp.dhcp.thefacebook.com>
+ <c99d0cfc-8526-0daf-90b5-33e560efdede@i-love.sakura.ne.jp>
+ <874kqt39qo.fsf@x220.int.ebiederm.org>
+ <6a9dd8be-333a-fd21-d125-ec20fb7c81df@i-love.sakura.ne.jp>
+ <20200630164817.txa2jewfvk4stajy@ast-mbp.dhcp.thefacebook.com>
+ <c7d4df91-d78e-5134-2161-192426fc51cd@i-love.sakura.ne.jp>
+ <CAADnVQKrRpjQpc9-xMizCPr1E12_jXrvH-kaKwxBmvQ03n_uiw@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <12eba0ed-c345-b564-9b99-883615dd89f3@i-love.sakura.ne.jp>
+Date:   Wed, 1 Jul 2020 07:58:59 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQKrRpjQpc9-xMizCPr1E12_jXrvH-kaKwxBmvQ03n_uiw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 1:37 PM Yonghong Song <yhs@fb.com> wrote:
->
-> On 6/30/20 11:49 AM, Hao Luo wrote:
-> > The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
-> > programs. But it seems Clang may have done an aggressive optimization,
-> > causing fentry and kprobe to not hook on this function properly on a
-> > Clang build kernel.
->
-> Could you explain why it does not on clang built kernel? How did you
-> build the kernel? Did you use [thin]lto?
->
-> hrtimer_nanosleep is a global function who is called in several
-> different files. I am curious how clang optimization can make
-> function disappear, or make its function signature change, or
-> rename the function?
->
+On 2020/07/01 6:57, Alexei Starovoitov wrote:
+>>>>> They were all should never happen cases.  Which is why my patches do:
+>>>>> if (WARN_ON_ONCE(...))
+>>>>
+>>>> No. Fuzz testing (which uses panic_on_warn=1) will trivially hit them.
+>>>
+>>> I don't believe that's true.
+>>> Please show fuzzing stack trace to prove your point.
+>>>
+>>
+>> Please find links containing "WARNING" from https://syzkaller.appspot.com/upstream . ;-)
+> 
+> Is it a joke? Do you understand how syzbot works?
+> If so, please explain how it can invoke umd_* interface.
+> 
 
-Yonghong,
-
-We didn't enable LTO. It also puzzled me. But I can confirm those
-fentry/kprobe test failures via many different experiments I've done.
-After talking to my colleague on kernel compiling tools (Bill, cc'ed),
-we suspected this could be because of clang's aggressive inlining. We
-also noticed that all the callsites of hrtimer_nanosleep() are tail
-calls.
-
-For a better explanation, I can reach out to the people who are more
-familiar to clang in the compiler team to see if they have any
-insights. This may not be of high priority for them though.
-
-Hao
+Currently syzkaller can't invoke umd_* interface because this interface is used by only
+bpfilter_umh module. But I can imagine that someone starts using this interface in a way
+syzkaller can somehow invoke. Thus, how can it be a joke? I don't understand your question.
