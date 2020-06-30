@@ -2,366 +2,518 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6EF20FFC6
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 00:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AFD20FFD6
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 00:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgF3WAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 18:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgF3WAW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:00:22 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D4AC03E979
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 15:00:22 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f18so21054555wml.3
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 15:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZT4eHqjgLgFbZKFz6Fnx3WNj/UXI1/Z0pVKwqarFcV0=;
-        b=fRCgUmkrKGY4NUiCGeHxlRFYvoP4oHLkuEi7UxCJZKH0m8LNPSbuqYnA03qm1bSiZn
-         SL2VayIjaHDu3FaHilsdLJywPiHnBiDltqzcjwrKJAZLZ0T4W+OHidGzQE06e6lY11mh
-         aCt6OhAdjklhbaPCn/6iM3OBvnXRSEvUzP7k0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZT4eHqjgLgFbZKFz6Fnx3WNj/UXI1/Z0pVKwqarFcV0=;
-        b=dD7hFXrzTY4TwqKoDkuCJTiZNKJ1HK5mE4VjqqHXzgFFkL+qDSO5mGsB5TBcP7XqCt
-         HqMK8ZbYhP60ackrYEWIjBH+Xha6QigB5WBBpoFbzuRy/fyCN407Y+0IGhszKtxtAe5v
-         UjuyQfMCTjcsDhQoCBNc9aKXgxS/FTkYqVyCVHWT0hM9pSumzmJo3jqwXx1/TRURezwN
-         fwVXekko1VTJ3HFIzNSUraYn7mHaizK76nhci6feY7+wF8v2rP0zFljTxxXAuvkBVjbu
-         4+Pi7pW+VOeCL8ELxUyx74pZrCqiTrXmeTgdKBWuO/87LFmSK06F7a5qixUi5X1FK14j
-         DZyg==
-X-Gm-Message-State: AOAM5323yh835Za1/YD+PFyL9hUGnJaKBRLN+ctrb8ML4xnyH7p3cpQ3
-        mVEd9QtlhBSMEDbb9ciqB0Yi7Q==
-X-Google-Smtp-Source: ABdhPJwTu6HslTgQfYGxFAVfgvr2yi/bUFHZj8+mi7ueGqmJrYDHJJIbygTqEK6BqVzFXH4VFc3RXA==
-X-Received: by 2002:a1c:44d7:: with SMTP id r206mr16032764wma.7.1593554420819;
-        Tue, 30 Jun 2020 15:00:20 -0700 (PDT)
-Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id 65sm5285566wma.48.2020.06.30.15.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 15:00:20 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 22:00:18 +0000
-From:   KP Singh <kpsingh@chromium.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: Generalize bpf_sk_storage
-Message-ID: <CACYkzJ6Vr3TtKQnTrJyB0L47goAMTC0uHoLpsNF8Vo2QySWECw@mail.gmail.com>
-References: <20200617202941.3034-1-kpsingh@chromium.org>
- <20200617202941.3034-2-kpsingh@chromium.org>
- <20200619064332.fycpxuegmmkbfe54@kafai-mbp.dhcp.thefacebook.com>
- <20200629160100.GA171259@google.com>
- <20200630193441.kdwnkestulg5erii@kafai-mbp.dhcp.thefacebook.com>
+        id S1726074AbgF3WEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 18:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726117AbgF3WEe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 18:04:34 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 642F620771;
+        Tue, 30 Jun 2020 22:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593554672;
+        bh=2wugWzeu8nwYrhTMn0eWrfhk1yIIyT1bXFZZ4dVx6Yg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tsj2L96FE3NRlDUt11qYy3C56FWOrRJV9jW6ctcM0HRQd7/gJ3oNINeP9vsuYAmYP
+         olvsvJBPTVWt7PIHpbRqLH1r/Ts6v4UgXUdDuHpXvyG+K0Z73QtuR8lVrtIoJG7oxZ
+         hh8S2HVJ3zgnlhFsUWqyAdN5cUVFkYKCWoKemwwM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4DA073522673; Tue, 30 Jun 2020 15:04:32 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 15:04:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 bpf-next 2/5] bpf: Introduce sleepable BPF programs
+Message-ID: <20200630220432.GK9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
+ <20200630043343.53195-3-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200630193441.kdwnkestulg5erii@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200630043343.53195-3-alexei.starovoitov@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 09:33:40PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Introduce sleepable BPF programs that can request such property for themselves
+> via BPF_F_SLEEPABLE flag at program load time. In such case they will be able
+> to use helpers like bpf_copy_from_user() that might sleep. At present only
+> fentry/fexit/fmod_ret and lsm programs can request to be sleepable and only
+> when they are attached to kernel functions that are known to allow sleeping.
+> 
+> The non-sleepable programs are relying on implicit rcu_read_lock() and
+> migrate_disable() to protect life time of programs, maps that they use and
+> per-cpu kernel structures used to pass info between bpf programs and the
+> kernel. The sleepable programs cannot be enclosed into rcu_read_lock().
+> migrate_disable() maps to preempt_disable() in non-RT kernels, so the progs
+> should not be enclosed in migrate_disable() as well. Therefore
+> rcu_read_lock_trace is used to protect the life time of sleepable progs.
+> 
+> There are many networking and tracing program types. In many cases the
+> 'struct bpf_prog *' pointer itself is rcu protected within some other kernel
+> data structure and the kernel code is using rcu_dereference() to load that
+> program pointer and call BPF_PROG_RUN() on it. All these cases are not touched.
+> Instead sleepable bpf programs are allowed with bpf trampoline only. The
+> program pointers are hard-coded into generated assembly of bpf trampoline and
+> synchronize_rcu_tasks_trace() is used to protect the life time of the program.
+> The same trampoline can hold both sleepable and non-sleepable progs.
+> 
+> When rcu_read_lock_trace is held it means that some sleepable bpf program is running
+> from bpf trampoline. Those programs can use bpf arrays and preallocated hash/lru
+> maps. These map types are waiting on programs to complete via
+> synchronize_rcu_tasks_trace();
+> 
+> Updates to trampoline now has to do synchronize_rcu_tasks_trace() and
+> synchronize_rcu_tasks() to wait for sleepable progs to finish and for
+> trampoline assembly to finish.
+> 
+> This is the first step of introducing sleepable progs.
+> 
+> After that dynamically allocated hash maps can be allowed. All map elements
+> would have to be rcu_trace protected instead of normal rcu.
+> per-cpu maps will be allowed. Either via the following pattern:
+> void *elem = bpf_map_lookup_elem(map, key);
+> if (elem) {
+>    // access elem
+>    bpf_map_release_elem(map, elem);
+> }
+> where modified lookup() helper will do migrate_disable() and
+> new bpf_map_release_elem() will do corresponding migrate_enable().
+> Or explicit bpf_migrate_disable/enable() helpers will be introduced.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
+From an RCU viewpoint:
 
-On Tue, Jun 30, 2020 at 9:35 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Mon, Jun 29, 2020 at 06:01:00PM +0200, KP Singh wrote:
-> > > >
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-[...]
+I was going to suggest that BPF maps could just use RCU throughout,
+but it appears that this would require an asynchronous wait for both
+an RCU and an RCU tasks trace grace period.  Such a thing is possible,
+but the price is a reference count, multiple rcu_head structures, and
+with each rcu_head structure, a pointer to the reference count.  Which
+just might not be worth it.
 
-> > > >  static atomic_t cache_idx;
-> > > inode local storage and sk local storage probably need a separate
-> > > cache_idx.  An improvement on picking cache_idx has just been
-> > > landed also.
-> >
-> > I see, thanks! I rebased and I now see that cache_idx is now a:
-> >
-> >   static u64 cache_idx_usage_counts[BPF_STORAGE_CACHE_SIZE];
-> >
-> > which tracks the free cache slots rather than using a single atomic
-> > cache_idx. I guess all types of local storage can share this now
-> > right?
-> I believe they have to be separated.  A sk-storage will not be cached/stored
-> in inode.  Caching a sk-storage at idx=0 of a sk should not stop
-> an inode-storage to be cached at the same idx of a inode.
-
-Ah yes, I see.
-
-I came up with some macros to solve this. Let me know what you think:
-(this is on top of the refactoring I did, so some function names may seem new,
-but it should, hopefully, convey the general idea).
-
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index 3067774cc640..1dc2e6d72091 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -79,6 +79,26 @@ struct bpf_local_storage_elem {
- #define SDATA(_SELEM) (&(_SELEM)->sdata)
- #define BPF_STORAGE_CACHE_SIZE	16
- 
-+u16 bpf_ls_cache_idx_get(spinlock_t *cache_idx_lock,
-+			   u64 *cache_idx_usage_count);
-+
-+void bpf_ls_cache_idx_free(spinlock_t *cache_idx_lock,
-+			   u64 *cache_idx_usage_counts, u16 idx);
-+
-+#define DEFINE_BPF_STORAGE_CACHE(type)					\
-+static DEFINE_SPINLOCK(cache_idx_lock_##type);				\
-+static u64 cache_idx_usage_counts_##type[BPF_STORAGE_CACHE_SIZE];	\
-+static u16 cache_idx_get_##type(void)					\
-+{									\
-+	return bpf_ls_cache_idx_get(&cache_idx_lock_##type,		\
-+				    cache_idx_usage_counts_##type);	\
-+}									\
-+static void cache_idx_free_##type(u16 idx)				\
-+{									\
-+	return bpf_ls_cache_idx_free(&cache_idx_lock_##type,		\
-+				     cache_idx_usage_counts_##type,	\
-+				     idx);				\
-+}
- 
- /* U16_MAX is much more than enough for sk local storage
-  * considering a tcp_sock is ~2k.
-@@ -105,13 +125,14 @@ struct bpf_local_storage {
- 
- /* Helper functions for bpf_local_storage */
- int bpf_local_storage_map_alloc_check(union bpf_attr *attr);
--struct bpf_map *bpf_local_storage_map_alloc(union bpf_attr *attr);
-+struct bpf_local_storage_map *
-+bpf_local_storage_map_alloc(union bpf_attr *attr);
- 
- struct bpf_local_storage_data *
- bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
- 	struct bpf_local_storage_map *smap, bool cacheit_lockit);
- 
--void bpf_local_storage_map_free(struct bpf_map *map);
-+void bpf_local_storage_map_free(struct bpf_local_storage_map *smap);
- 
- int bpf_local_storage_map_check_btf(const struct bpf_map *map,
- 	const struct btf *btf, const struct btf_type *key_type,
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index fb589a5715f5..2bc04f8d1e35 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -17,9 +17,6 @@
- 	container_of((_SDATA), struct bpf_local_storage_elem, sdata)
- #define SDATA(_SELEM) (&(_SELEM)->sdata)
- 
--static DEFINE_SPINLOCK(cache_idx_lock);
--static u64 cache_idx_usage_counts[BPF_STORAGE_CACHE_SIZE];
--
- static struct bucket *select_bucket(struct bpf_local_storage_map *smap,
- 				    struct bpf_local_storage_elem *selem)
- {
-@@ -460,12 +457,13 @@ static struct bpf_local_storage_data *inode_storage_update(
- 					map_flags);
- }
- 
--static u16 cache_idx_get(void)
-+u16 bpf_ls_cache_idx_get(spinlock_t *cache_idx_lock,
-+			 u64 *cache_idx_usage_counts)
- {
- 	u64 min_usage = U64_MAX;
- 	u16 i, res = 0;
- 
--	spin_lock(&cache_idx_lock);
-+	spin_lock(cache_idx_lock);
- 
- 	for (i = 0; i < BPF_STORAGE_CACHE_SIZE; i++) {
- 		if (cache_idx_usage_counts[i] < min_usage) {
-@@ -479,16 +477,17 @@ static u16 cache_idx_get(void)
- 	}
- 	cache_idx_usage_counts[res]++;
- 
--	spin_unlock(&cache_idx_lock);
-+	spin_unlock(cache_idx_lock);
- 
- 	return res;
- }
- 
--static void cache_idx_free(u16 idx)
-+void bpf_ls_cache_idx_free(spinlock_t *cache_idx_lock,
-+			   u64 *cache_idx_usage_counts, u16 idx)
- {
--	spin_lock(&cache_idx_lock);
-+	spin_lock(cache_idx_lock);
- 	cache_idx_usage_counts[idx]--;
--	spin_unlock(&cache_idx_lock);
-+	spin_unlock(cache_idx_lock);
- }
- 
- static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
-@@ -552,17 +551,12 @@ void bpf_inode_storage_free(struct inode *inode)
- 		kfree_rcu(local_storage, rcu);
- }
- 
--void bpf_local_storage_map_free(struct bpf_map *map)
-+void bpf_local_storage_map_free(struct bpf_local_storage_map *smap)
- {
- 	struct bpf_local_storage_elem *selem;
--	struct bpf_local_storage_map *smap;
- 	struct bucket *b;
- 	unsigned int i;
- 
--	smap = (struct bpf_local_storage_map *)map;
--
--	cache_idx_free(smap->cache_idx);
--
- 	/* Note that this map might be concurrently cloned from
- 	 * bpf_sk_storage_clone. Wait for any existing bpf_sk_storage_clone
- 	 * RCU read section to finish before proceeding. New RCU
-@@ -607,7 +601,7 @@ void bpf_local_storage_map_free(struct bpf_map *map)
- 	synchronize_rcu();
- 
- 	kvfree(smap->buckets);
--	kfree(map);
-+	kfree(smap);
- }
- 
- int bpf_local_storage_map_alloc_check(union bpf_attr *attr)
-@@ -629,8 +623,7 @@ int bpf_local_storage_map_alloc_check(union bpf_attr *attr)
- 	return 0;
- }
- 
--
--struct bpf_map *bpf_local_storage_map_alloc(union bpf_attr *attr)
-+struct bpf_local_storage_map *bpf_local_storage_map_alloc(union bpf_attr *attr)
- {
- 	struct bpf_local_storage_map *smap;
- 	unsigned int i;
-@@ -670,9 +663,8 @@ struct bpf_map *bpf_local_storage_map_alloc(union bpf_attr *attr)
- 
- 	smap->elem_size =
- 		sizeof(struct bpf_local_storage_elem) + attr->value_size;
--	smap->cache_idx = cache_idx_get();
- 
--	return &smap->map;
-+	return smap;
- }
- 
- int bpf_local_storage_map_check_btf(const struct bpf_map *map,
-@@ -768,11 +760,34 @@ static int notsupp_get_next_key(struct bpf_map *map, void *key,
- 	return -ENOTSUPP;
- }
- 
-+DEFINE_BPF_STORAGE_CACHE(inode);
-+
-+struct bpf_map *inode_storage_map_alloc(union bpf_attr *attr)
-+{
-+	struct bpf_local_storage_map *smap;
-+
-+	smap = bpf_local_storage_map_alloc(attr);
-+	if (IS_ERR(smap))
-+		return ERR_CAST(smap);
-+
-+	smap->cache_idx = cache_idx_get_inode();
-+	return &smap->map;
-+}
-+
-+void inode_storage_map_free(struct bpf_map *map)
-+{
-+	struct bpf_local_storage_map *smap;
-+
-+	smap = (struct bpf_local_storage_map *)map;
-+	cache_idx_free_inode(smap->cache_idx);
-+	bpf_local_storage_map_free(smap);
-+}
-+
- static int inode_storage_map_btf_id;
- const struct bpf_map_ops inode_storage_map_ops = {
- 	.map_alloc_check = bpf_local_storage_map_alloc_check,
--	.map_alloc = bpf_local_storage_map_alloc,
--	.map_free = bpf_local_storage_map_free,
-+	.map_alloc = inode_storage_map_alloc,
-+	.map_free = inode_storage_map_free,
- 	.map_get_next_key = notsupp_get_next_key,
- 	.map_lookup_elem = bpf_inode_storage_lookup_elem,
- 	.map_update_elem = bpf_inode_storage_update_elem,
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 0ec44e819bfe..add0340e9ad3 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -396,11 +396,34 @@ static int notsupp_get_next_key(struct bpf_map *map, void *key,
- 	return -ENOTSUPP;
- }
- 
-+DEFINE_BPF_STORAGE_CACHE(sk);
-+
-+struct bpf_map *sk_storage_map_alloc(union bpf_attr *attr)
-+{
-+	struct bpf_local_storage_map *smap;
-+
-+	smap = bpf_local_storage_map_alloc(attr);
-+	if (IS_ERR(smap))
-+		return ERR_CAST(smap);
-+
-+	smap->cache_idx = cache_idx_get_sk();
-+	return &smap->map;
-+}
-+
-+void sk_storage_map_free(struct bpf_map *map)
-+{
-+	struct bpf_local_storage_map *smap;
-+
-+	smap = (struct bpf_local_storage_map *)map;
-+	cache_idx_free_sk(smap->cache_idx);
-+	bpf_local_storage_map_free(smap);
-+}
-+
- static int sk_storage_map_btf_id;
- const struct bpf_map_ops sk_storage_map_ops = {
- 	.map_alloc_check = bpf_local_storage_map_alloc_check,
--	.map_alloc = bpf_local_storage_map_alloc,
--	.map_free = bpf_local_storage_map_free,
-+	.map_alloc = sk_storage_map_alloc,
-+	.map_free = sk_storage_map_free,
- 	.map_get_next_key = notsupp_get_next_key,
- 	.map_lookup_elem = bpf_sk_storage_lookup_elem,
- 	.map_update_elem = bpf_sk_storage_update_elem,
-
->
-
-[...]
-
-> >
-> > Sure, I can also keep the sk_clone code their as well for now.
-> Just came to my mind.  For easier review purpose, may be
-> first do the refactoring/renaming within bpf_sk_storage.c first and
-> then create another patch to move the common parts to a new
-> file bpf_local_storage.c.
->
-> Not sure if it will be indeed easier to read the diff in practice.
-> I probably should be able to follow it either way.
-
-Since I already refactored it. I will send the next version with the refactoring
-and split done as a part of the Generalize bpf_sk_storage patch.
-If it becomes too hard to review, please let me know and I can split it. :)
-
-
->
-> >
-> > >
-> > > There is a test in map_tests/sk_storage_map.c, in case you may not notice.
-> >
-> > I will try to make it generic as a part of this series. If it takes
-> > too much time, I will send a separate patch for testing
-> > inode_storage_map and till then we have some assurance with
-> > test_local_storage in test_progs.
-> Sure. no problem.  It is mostly for you to test sk_storage to ensure things ;)
-> Also give some ideas on what racing conditions have
-> been considered in the sk_storage test and may be the inode storage
-> test want to stress similar code path.
-
-Thanks! I ran test_maps and it passes. I will send a separate patch
-that generalizes the sk_storage_map.c.
-
-- KP
+> ---
+>  arch/x86/net/bpf_jit_comp.c    | 32 ++++++++++++------
+>  include/linux/bpf.h            |  3 ++
+>  include/uapi/linux/bpf.h       |  8 +++++
+>  init/Kconfig                   |  1 +
+>  kernel/bpf/arraymap.c          |  1 +
+>  kernel/bpf/hashtab.c           | 12 +++----
+>  kernel/bpf/syscall.c           | 13 +++++--
+>  kernel/bpf/trampoline.c        | 28 +++++++++++++--
+>  kernel/bpf/verifier.c          | 62 +++++++++++++++++++++++++++++++++-
+>  tools/include/uapi/linux/bpf.h |  8 +++++
+>  10 files changed, 144 insertions(+), 24 deletions(-)
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 42b6709e6dc7..7d9ea7b41c71 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1379,10 +1379,15 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>  	u8 *prog = *pprog;
+>  	int cnt = 0;
+>  
+> -	if (emit_call(&prog, __bpf_prog_enter, prog))
+> -		return -EINVAL;
+> -	/* remember prog start time returned by __bpf_prog_enter */
+> -	emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
+> +	if (p->aux->sleepable) {
+> +		if (emit_call(&prog, __bpf_prog_enter_sleepable, prog))
+> +			return -EINVAL;
+> +	} else {
+> +		if (emit_call(&prog, __bpf_prog_enter, prog))
+> +			return -EINVAL;
+> +		/* remember prog start time returned by __bpf_prog_enter */
+> +		emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
+> +	}
+>  
+>  	/* arg1: lea rdi, [rbp - stack_size] */
+>  	EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+> @@ -1402,13 +1407,18 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>  	if (mod_ret)
+>  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>  
+> -	/* arg1: mov rdi, progs[i] */
+> -	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32,
+> -		       (u32) (long) p);
+> -	/* arg2: mov rsi, rbx <- start time in nsec */
+> -	emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+> -	if (emit_call(&prog, __bpf_prog_exit, prog))
+> -		return -EINVAL;
+> +	if (p->aux->sleepable) {
+> +		if (emit_call(&prog, __bpf_prog_exit_sleepable, prog))
+> +			return -EINVAL;
+> +	} else {
+> +		/* arg1: mov rdi, progs[i] */
+> +		emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32,
+> +			       (u32) (long) p);
+> +		/* arg2: mov rsi, rbx <- start time in nsec */
+> +		emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+> +		if (emit_call(&prog, __bpf_prog_exit, prog))
+> +			return -EINVAL;
+> +	}
+>  
+>  	*pprog = prog;
+>  	return 0;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3d2ade703a35..e2b1581b2195 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -495,6 +495,8 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
+>  /* these two functions are called from generated trampoline */
+>  u64 notrace __bpf_prog_enter(void);
+>  void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
+> +void notrace __bpf_prog_enter_sleepable(void);
+> +void notrace __bpf_prog_exit_sleepable(void);
+>  
+>  struct bpf_ksym {
+>  	unsigned long		 start;
+> @@ -687,6 +689,7 @@ struct bpf_prog_aux {
+>  	bool offload_requested;
+>  	bool attach_btf_trace; /* true if attaching to BTF-enabled raw tp */
+>  	bool func_proto_unreliable;
+> +	bool sleepable;
+>  	enum bpf_tramp_prog_type trampoline_prog_type;
+>  	struct bpf_trampoline *trampoline;
+>  	struct hlist_node tramp_hlist;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0cb8ec948816..73f9e3f84b77 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -332,6 +332,14 @@ enum bpf_link_type {
+>  /* The verifier internal test flag. Behavior is undefined */
+>  #define BPF_F_TEST_STATE_FREQ	(1U << 3)
+>  
+> +/* If BPF_F_SLEEPABLE is used in BPF_PROG_LOAD command, the verifier will
+> + * restrict map and helper usage for such programs. Sleepable BPF programs can
+> + * only be attached to hooks where kernel execution context allows sleeping.
+> + * Such programs are allowed to use helpers that may sleep like
+> + * bpf_copy_from_user().
+> + */
+> +#define BPF_F_SLEEPABLE		(1U << 4)
+> +
+>  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+>   * two extensions:
+>   *
+> diff --git a/init/Kconfig b/init/Kconfig
+> index a46aa8f3174d..62687583f822 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1663,6 +1663,7 @@ config BPF_SYSCALL
+>  	bool "Enable bpf() system call"
+>  	select BPF
+>  	select IRQ_WORK
+> +	select TASKS_TRACE_RCU
+>  	default n
+>  	help
+>  	  Enable the bpf() system call that allows to manipulate eBPF
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index c66e8273fccd..b07abcd58785 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/filter.h>
+>  #include <linux/perf_event.h>
+>  #include <uapi/linux/btf.h>
+> +#include <linux/rcupdate_trace.h>
+>  
+>  #include "map_in_map.h"
+>  
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index d4378d7d442b..65a7919e189d 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/rculist_nulls.h>
+>  #include <linux/random.h>
+>  #include <uapi/linux/btf.h>
+> +#include <linux/rcupdate_trace.h>
+>  #include "percpu_freelist.h"
+>  #include "bpf_lru_list.h"
+>  #include "map_in_map.h"
+> @@ -577,8 +578,7 @@ static void *__htab_map_lookup_elem(struct bpf_map *map, void *key)
+>  	struct htab_elem *l;
+>  	u32 hash, key_size;
+>  
+> -	/* Must be called with rcu_read_lock. */
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>  
+>  	key_size = map->key_size;
+>  
+> @@ -935,7 +935,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  		/* unknown flags */
+>  		return -EINVAL;
+>  
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>  
+>  	key_size = map->key_size;
+>  
+> @@ -1026,7 +1026,7 @@ static int htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  		/* unknown flags */
+>  		return -EINVAL;
+>  
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>  
+>  	key_size = map->key_size;
+>  
+> @@ -1214,7 +1214,7 @@ static int htab_map_delete_elem(struct bpf_map *map, void *key)
+>  	u32 hash, key_size;
+>  	int ret = -ENOENT;
+>  
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>  
+>  	key_size = map->key_size;
+>  
+> @@ -1246,7 +1246,7 @@ static int htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+>  	u32 hash, key_size;
+>  	int ret = -ENOENT;
+>  
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>  
+>  	key_size = map->key_size;
+>  
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 8da159936bab..782b2b029539 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/bpf_lsm.h>
+>  #include <linux/poll.h>
+>  #include <linux/bpf-netns.h>
+> +#include <linux/rcupdate_trace.h>
+>  
+>  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+>  			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+> @@ -1728,10 +1729,14 @@ static void __bpf_prog_put_noref(struct bpf_prog *prog, bool deferred)
+>  	btf_put(prog->aux->btf);
+>  	bpf_prog_free_linfo(prog);
+>  
+> -	if (deferred)
+> -		call_rcu(&prog->aux->rcu, __bpf_prog_put_rcu);
+> -	else
+> +	if (deferred) {
+> +		if (prog->aux->sleepable)
+> +			call_rcu_tasks_trace(&prog->aux->rcu, __bpf_prog_put_rcu);
+> +		else
+> +			call_rcu(&prog->aux->rcu, __bpf_prog_put_rcu);
+> +	} else {
+>  		__bpf_prog_put_rcu(&prog->aux->rcu);
+> +	}
+>  }
+>  
+>  static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+> @@ -2096,6 +2101,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>  	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
+>  				 BPF_F_ANY_ALIGNMENT |
+>  				 BPF_F_TEST_STATE_FREQ |
+> +				 BPF_F_SLEEPABLE |
+>  				 BPF_F_TEST_RND_HI32))
+>  		return -EINVAL;
+>  
+> @@ -2151,6 +2157,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>  	}
+>  
+>  	prog->aux->offload_requested = !!attr->prog_ifindex;
+> +	prog->aux->sleepable = attr->prog_flags & BPF_F_SLEEPABLE;
+>  
+>  	err = security_bpf_prog_alloc(prog->aux);
+>  	if (err)
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 9be85aa4ec5f..c2b76545153c 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -7,6 +7,8 @@
+>  #include <linux/rbtree_latch.h>
+>  #include <linux/perf_event.h>
+>  #include <linux/btf.h>
+> +#include <linux/rcupdate_trace.h>
+> +#include <linux/rcupdate_wait.h>
+>  
+>  /* dummy _ops. The verifier will operate on target program's ops. */
+>  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+> @@ -210,9 +212,12 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
+>  	 * updates to trampoline would change the code from underneath the
+>  	 * preempted task. Hence wait for tasks to voluntarily schedule or go
+>  	 * to userspace.
+> +	 * The same trampoline can hold both sleepable and non-sleepable progs.
+> +	 * synchronize_rcu_tasks_trace() is needed to make sure all sleepable
+> +	 * programs finish executing.
+> +	 * Wait for these two grace periods together.
+>  	 */
+> -
+> -	synchronize_rcu_tasks();
+> +	synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
+>  
+>  	err = arch_prepare_bpf_trampoline(new_image, new_image + PAGE_SIZE / 2,
+>  					  &tr->func.model, flags, tprogs,
+> @@ -344,7 +349,14 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+>  	if (WARN_ON_ONCE(!hlist_empty(&tr->progs_hlist[BPF_TRAMP_FEXIT])))
+>  		goto out;
+>  	bpf_image_ksym_del(&tr->ksym);
+> -	/* wait for tasks to get out of trampoline before freeing it */
+> +	/* This code will be executed when all bpf progs (both sleepable and
+> +	 * non-sleepable) went through
+> +	 * bpf_prog_put()->call_rcu[_tasks_trace]()->bpf_prog_free_deferred().
+> +	 * Hence no need for another synchronize_rcu_tasks_trace() here,
+> +	 * but synchronize_rcu_tasks() is still needed, since trampoline
+> +	 * may not have had any sleepable programs and we need to wait
+> +	 * for tasks to get out of trampoline code before freeing it.
+> +	 */
+>  	synchronize_rcu_tasks();
+>  	bpf_jit_free_exec(tr->image);
+>  	hlist_del(&tr->hlist);
+> @@ -394,6 +406,16 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
+>  	rcu_read_unlock();
+>  }
+>  
+> +void notrace __bpf_prog_enter_sleepable(void)
+> +{
+> +	rcu_read_lock_trace();
+> +}
+> +
+> +void notrace __bpf_prog_exit_sleepable(void)
+> +{
+> +	rcu_read_unlock_trace();
+> +}
+> +
+>  int __weak
+>  arch_prepare_bpf_trampoline(void *image, void *image_end,
+>  			    const struct btf_func_model *m, u32 flags,
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 7de98906ddf4..05aa990ba9a4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9112,6 +9112,23 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (prog->aux->sleepable)
+> +		switch (map->map_type) {
+> +		case BPF_MAP_TYPE_HASH:
+> +		case BPF_MAP_TYPE_LRU_HASH:
+> +		case BPF_MAP_TYPE_ARRAY:
+> +			if (!is_preallocated_map(map)) {
+> +				verbose(env,
+> +					"Sleepable programs can only use preallocated hash maps\n");
+> +				return -EINVAL;
+> +			}
+> +			break;
+> +		default:
+> +			verbose(env,
+> +				"Sleepable programs can only use array and hash maps\n");
+> +			return -EINVAL;
+> +		}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -10722,6 +10739,22 @@ static int check_attach_modify_return(struct bpf_prog *prog, unsigned long addr)
+>  	return -EINVAL;
+>  }
+>  
+> +/* list of non-sleepable kernel functions that are otherwise
+> + * available to attach by bpf_lsm or fmod_ret progs.
+> + */
+> +static int check_sleepable_blacklist(unsigned long addr)
+> +{
+> +#ifdef CONFIG_BPF_LSM
+> +	if (addr == (long)bpf_lsm_task_free)
+> +		return -EINVAL;
+> +#endif
+> +#ifdef CONFIG_SECURITY
+> +	if (addr == (long)security_task_free)
+> +		return -EINVAL;
+> +#endif
+> +	return 0;
+> +}
+> +
+>  static int check_attach_btf_id(struct bpf_verifier_env *env)
+>  {
+>  	struct bpf_prog *prog = env->prog;
+> @@ -10739,6 +10772,12 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>  	long addr;
+>  	u64 key;
+>  
+> +	if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
+> +	    prog->type != BPF_PROG_TYPE_LSM) {
+> +		verbose(env, "Only fentry/fexit/fmod_ret and lsm programs can be sleepable\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS)
+>  		return check_struct_ops_btf_id(env);
+>  
+> @@ -10952,8 +10991,29 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>  			if (ret)
+>  				verbose(env, "%s() is not modifiable\n",
+>  					prog->aux->attach_func_name);
+> +		} else if (prog->aux->sleepable) {
+> +			switch (prog->type) {
+> +			case BPF_PROG_TYPE_TRACING:
+> +				/* fentry/fexit progs can be sleepable only if they are
+> +				 * attached to ALLOW_ERROR_INJECTION or security_*() funcs.
+> +				 */
+> +				ret = check_attach_modify_return(prog, addr);
+> +				if (!ret)
+> +					ret = check_sleepable_blacklist(addr);
+> +				break;
+> +			case BPF_PROG_TYPE_LSM:
+> +				/* LSM progs check that they are attached to bpf_lsm_*() funcs
+> +				 * which are sleepable too.
+> +				 */
+> +				ret = check_sleepable_blacklist(addr);
+> +				break;
+> +			default:
+> +				break;
+> +			}
+> +			if (ret)
+> +				verbose(env, "%s is not sleepable\n",
+> +					prog->aux->attach_func_name);
+>  		}
+> -
+>  		if (ret)
+>  			goto out;
+>  		tr->func.addr = (void *)addr;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 0cb8ec948816..73f9e3f84b77 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -332,6 +332,14 @@ enum bpf_link_type {
+>  /* The verifier internal test flag. Behavior is undefined */
+>  #define BPF_F_TEST_STATE_FREQ	(1U << 3)
+>  
+> +/* If BPF_F_SLEEPABLE is used in BPF_PROG_LOAD command, the verifier will
+> + * restrict map and helper usage for such programs. Sleepable BPF programs can
+> + * only be attached to hooks where kernel execution context allows sleeping.
+> + * Such programs are allowed to use helpers that may sleep like
+> + * bpf_copy_from_user().
+> + */
+> +#define BPF_F_SLEEPABLE		(1U << 4)
+> +
+>  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+>   * two extensions:
+>   *
+> -- 
+> 2.23.0
+> 
