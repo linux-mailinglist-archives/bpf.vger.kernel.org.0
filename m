@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A104720F80C
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 17:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C53B20F81C
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 17:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389320AbgF3PPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 11:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        id S2389312AbgF3PSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 11:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389258AbgF3PPq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 11:15:46 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AC9C061755;
-        Tue, 30 Jun 2020 08:15:47 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q198so18931798qka.2;
-        Tue, 30 Jun 2020 08:15:46 -0700 (PDT)
+        with ESMTP id S1729565AbgF3PSX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 11:18:23 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9BCC061755;
+        Tue, 30 Jun 2020 08:18:23 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id e3so3110309qvo.10;
+        Tue, 30 Jun 2020 08:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TBWBW0OxQzn1SK9RkG16YT4BA8nuVUsehysg/82t6P8=;
-        b=OoEEqp0iL9D7XxCKrYNrh3ZGtEsg9rmgVJdfB7pjEfvD4dQQhpxDbjkt2EEB26i5lE
-         IAknb6gwJwqc9kUYoOYk1zAFR9KOeQ6OEM/Iyczu/ktanF2x/WlAx1/5pb2wGGehQrEu
-         hTZ5M+spa/SkL/P/Obc3C3BWJb0dUNu9uzfn91loILXhgw4RyvR1f1A/Gz1anhzSMRmX
-         n+a663wrjDOpKfCnYcQVnzQxTDdSx6I4MJdFDLMB9ZpgktOEAPqy/S7rav7L0YJT6cXU
-         kOr+B+/5aQJi+Go3oK/TheblCAbT9Y8TBrvBLcvaGqqnfPHpGTinYGJ4xfonC8bF/h7s
-         0MNw==
+        bh=+FSu8z0tCpTjTyhcFsYCancQEtUH7C/nlaNSLslO+iw=;
+        b=ec2eHS/2YLc02lNvg090m2cz2nGDnBKDS3AFAzeK26DYHpGAuZa/YGNbP4LuZzthtE
+         vG2OEFrDZQHL3vqgDt+chyeGPwHdZYoIfLoA+P2tEjMepo7sZVd9qxUUenEzehz9LIYZ
+         HDJyZiSi4dJKnkDj4/t7Rf1FKDHYzFoOv4RdNtq3ZKiVXSivsG0YxlxAFZqOPXHgocC2
+         UDr7Rb+rlBuPnOqhiLdRp/pVO0omyZz5ceVVECl9vs7nlJMjCnztSrmNdOpuM8K3oUI/
+         ItwLdsz6DVLCInU+0CTSZf3vrLeUFgQnMB0Mht/C/FH0sFNITCNNf7WONaLBslBSIB6E
+         RRhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TBWBW0OxQzn1SK9RkG16YT4BA8nuVUsehysg/82t6P8=;
-        b=h4jiWDU6G9XoV9qbY7OhS69SNK71E4RO80d9g2w0yq6FIJgIqZ+vzlgD2I63//GH5K
-         utRo3+kpR7T8tKIfYT+HJ7TjuX7K56gtH3jvTSC8LJvJ1Mp74GFq2rVTfA5HxHaOEt2Q
-         LBUkhcLrwbkdi21TwkzL/A3H7NOgFioVBtOaXUjkQEVCfrm6uHCA4wjq7+C+4Yn/0k6X
-         f4X9I5dwQcAzJndgkA1UzBByvlTRLe/e4nx+BDPwU7l6DAzHCNdb9ZJTiQoH9AGEOVJ0
-         yhrt89iIfa9/Kdb4v9RdipHsloQ8YlNeyWmZIeliMAsoAhPys/s+GNILvf0vPfVKh9I6
-         mWHg==
-X-Gm-Message-State: AOAM530d1osebH4XIlhj3OyzkvNqhIsfwYbtEf5FPZmn0gta5THeS/dR
-        2dAlXKf2EEb2VGPGcQPfvJIU1ElPqfhhl4HSsZY=
-X-Google-Smtp-Source: ABdhPJwAtKezoBo0RIUK+2AQwEIl47CIk0idcnmPK5e+H6Xbb9oUJc3lNcYkoliupi4BM567tzltqUDUUpGRHOblgq8=
-X-Received: by 2002:a05:620a:2409:: with SMTP id d9mr21160370qkn.36.1593530145511;
- Tue, 30 Jun 2020 08:15:45 -0700 (PDT)
+        bh=+FSu8z0tCpTjTyhcFsYCancQEtUH7C/nlaNSLslO+iw=;
+        b=g8SO69FYb1VCSCRhuED/aXRxI3xgTC+pFor1T5PfmzHie08XeD2/EXvqK8vCSYMBgx
+         qI4iaOb7GBMAHXEpE1joQypxBs3T5zPf5xDk/oVnHSGPOGopkNHIYLxHvs2VdgY3K9Ah
+         BZtEnYVKVAcG1wlrWPh1fUj0djNThEXOW8WHqYsivv0auHOYzLEFNhvbRkUSgXufjHpY
+         5vRZe+IwnAOv8S3z8RmdrQ1DrHizhqr9diXPLolxTfu+pCyN2v81EcpJ2Voov5csuaNJ
+         RCp4EocmySmHsU/Yfg0nIh5IkVRCjlRmTGhfLFoDrtX++bN9Mo8hCO1KR7IaHTVaL0Js
+         AMFQ==
+X-Gm-Message-State: AOAM5332pMYMsfnjk9DuHvn4ALJDB0YcyXbtqdjGqduPaEI3B6pftUfO
+        76fx98126MxyN7UMvD/AAA40Fc5qiyCgwWnNDYE=
+X-Google-Smtp-Source: ABdhPJyITefbnmkLfBNTGBm+HEBpDniCuZzmxJWtcO5+Jsr5qtsyv/Ga8anZ1/HZpkQg1FIVS8S3A56jlL+mXyDrrAA=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr19373199qvb.228.1593530297739;
+ Tue, 30 Jun 2020 08:18:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200630061500.1804799-1-andriin@fb.com> <285e32b1-daa5-1be4-5939-c86249680311@iogearbox.net>
-In-Reply-To: <285e32b1-daa5-1be4-5939-c86249680311@iogearbox.net>
+References: <20200630060739.1722733-1-andriin@fb.com> <20200630060739.1722733-3-andriin@fb.com>
+ <cd88906d-2ca7-e37b-9214-6094571d41fc@iogearbox.net>
+In-Reply-To: <cd88906d-2ca7-e37b-9214-6094571d41fc@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Jun 2020 08:15:33 -0700
-Message-ID: <CAEf4BzZDJyEfSqnnDv0pe6J8GZwQVE8tucJWs3hHNeQemwVN9w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf] bpf: enforce BPF ringbuf size to be the power of 2
+Date:   Tue, 30 Jun 2020 08:18:06 -0700
+Message-ID: <CAEf4BzZsEJDAzeY6vJG5873Y4nnB9b+NrSiSzAHQWATMKfnO_w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add byte swapping selftest
 To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -61,40 +62,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 7:52 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Tue, Jun 30, 2020 at 7:09 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On 6/30/20 8:15 AM, Andrii Nakryiko wrote:
-> > BPF ringbuf assumes the size to be a multiple of page size and the power of
-> > 2 value. The latter is important to avoid division while calculating position
-> > inside the ring buffer and using (N-1) mask instead. This patch fixes omission
-> > to enforce power-of-2 size rule.
+> On 6/30/20 8:07 AM, Andrii Nakryiko wrote:
+> > Add simple selftest validating byte swap built-ins and compile-time macros.
 > >
-> > Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >   .../testing/selftests/bpf/prog_tests/endian.c | 53 +++++++++++++++++++
+> >   .../testing/selftests/bpf/progs/test_endian.c | 37 +++++++++++++
+> >   2 files changed, 90 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/endian.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/test_endian.c
 >
-> Lgtm, applied, thanks!
+> This fails the build for me with:
 >
-
-Thanks, Daniel!
-
 > [...]
-> > @@ -166,9 +157,16 @@ static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
-> >               return ERR_PTR(-EINVAL);
-> >
-> >       if (attr->key_size || attr->value_size ||
-> > -         attr->max_entries == 0 || !PAGE_ALIGNED(attr->max_entries))
-> > +         !is_power_of_2(attr->max_entries) ||
-> > +         !PAGE_ALIGNED(attr->max_entries))
->
-> Technically !IS_ALIGNED(attr->max_entries, PAGE_SIZE) might have been a bit cleaner
-> since PAGE_ALIGNED() is only intended for pointers, though, not wrong here given
-> max_entries is u32.
+>    GEN-SKEL [test_progs] tailcall3.skel.h
+>    GEN-SKEL [test_progs] test_endian.skel.h
+> libbpf: invalid relo for 'const16' in special section 0xfff2; forgot to initialize global var?..
+> Error: failed to open BPF object file: 0
+> Makefile:372: recipe for target '/root/bpf-next/tools/testing/selftests/bpf/test_endian.skel.h' failed
+> make: *** [/root/bpf-next/tools/testing/selftests/bpf/test_endian.skel.h] Error 255
+> make: *** Deleting file '/root/bpf-next/tools/testing/selftests/bpf/test_endian.skel.h'
 
-I've found a bunch of uses on non-pointers, e.g., `if
-(!PAGE_ALIGNED(fs_info->nodesize)) {` in BTRFS code, so assumed it's
-intended to be used more generically. But let me know if you want me
-to do IS_ALIGNED change.
+Interesting. You must have a bit of an older Clang. I noticed people
+submit code without explicit initialization of global variables, which
+is ok now, because I think Clang doesn't emit it into the COM section
+anymore. I'm surprised you don't get other compilation errors.
 
->
-> Thanks,
-> Daniel
+But regardless, I'll respin with explicit zero-initialization to fix this.
