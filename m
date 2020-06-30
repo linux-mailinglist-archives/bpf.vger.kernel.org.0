@@ -2,104 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EDD20E8A4
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 01:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F9920EA2D
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 02:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgF2WRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 18:17:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54796 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726194AbgF2WRw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Jun 2020 18:17:52 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05TMGphZ005367
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 15:17:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=//dAw8OLW7wKWC7xyY9Jkx6utz5nCmZdiOWVC7Xn2oE=;
- b=P7tfMNhI9Ux9wW8fkzxUSAfZ/dCid2c2pQ81rRH0HQMPwpQTV6s6die0eGu8HBO99rKs
- DhOoU72XDS5A79g2FtM7i4RBd/J3r6MEMIoxRUG5mhWNQeHCzxMSI1Ge7NXxOEztLb89
- 5AAiMQKHKRdtAXtBRdu1EXEaIA7wUV/mNjo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xny26vky-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 15:17:51 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 15:17:50 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 840112EC3BDC; Mon, 29 Jun 2020 15:17:48 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] bpf: enforce BPF ringbuf size to be the power of 2
-Date:   Mon, 29 Jun 2020 15:17:46 -0700
-Message-ID: <20200629221746.4033122-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726713AbgF3A2e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 20:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726346AbgF3A2d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 20:28:33 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B77C061755;
+        Mon, 29 Jun 2020 17:28:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 9so20428049ljv.5;
+        Mon, 29 Jun 2020 17:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ky/GcqGHNaQbW8UyC2DFIfTmH0DfzCBsbbNZVB1undo=;
+        b=PDvZIDfPz9cUHUS1zuwWurhdqVVSONkTw+pjfhNDfAf9rNY1g3XyAwIdeMYfNLmvYs
+         GaRWySHkYzcJZva7/E9UybcgDCFGd68g4RIXm0oBTy7gVi2xw768HGXOzX/iYPy+0I4o
+         u/Vnh6oQUFcgkYfWuF30nRm02Eq2hR5yWzw2x/UgiEad2+qynAite+mf1ldBimPJCBHN
+         rAhXfFuwqN1w9XENokTU12rqEQgLPQEP49EdKUVYWr9Q/WcygPxive53Lg5/UW/FjQ3R
+         9Cwdxkmwf6IxLAzAR6D9i5ldwMSEBYrAGu/XPNGsUbT3Jvbvk5HmO+RprAQUa7ShJfUr
+         5PPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ky/GcqGHNaQbW8UyC2DFIfTmH0DfzCBsbbNZVB1undo=;
+        b=jHdpbQfHvNPaxKVfOILeh3uklnCzr7fg0iwbjA+MhU4S3Ds9jj+e3SjIgjDD1KGB2V
+         FVLJ8K8OSnp1/qfNEP2dTIOB/t1JW5KLXuAzKCjK4trnA3A91GLORxNHvIIK5hTgdLL9
+         0bbzAkM71sC/f6lc/1eRUwnzkNlBN4UtACMkH47SNqstv4PpMP4AJpgp+bwd+1wFExPZ
+         49Y8AHUk39XTNYLPrpTZRuuhhyZURsgIvDEfr/OC7lGcw8GlzgSgGzIUUxTb9Lf2XXcn
+         PW6LPJtTBpwNcr2RLoooFsOryvo4ozFBOQDoSKRoWAhAzQGZBtIkvS0IDZ64FIVjitPo
+         q94g==
+X-Gm-Message-State: AOAM5332YN4vUWmLfaGjzUtxryomsQPLZ2+Yx/U3wl5EAKwpfmO2eo4P
+        7aJMr3eMxXv2x0cWa1zM040naJHt7U29OhnqAtc=
+X-Google-Smtp-Source: ABdhPJyWxK7dXcJnSKKEK0aQfFIf5QctEzHq84IT726/g/OmBAqYj+EpptULTmpLcjsMi69G/YRtF3bFFONlkxPqIQU=
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr6705738ljc.51.1593476911358;
+ Mon, 29 Jun 2020 17:28:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 suspectscore=8
- bulkscore=0 impostorscore=0 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006290141
-X-FB-Internal: deliver
+References: <20200611222340.24081-1-alexei.starovoitov@gmail.com>
+ <20200611222340.24081-3-alexei.starovoitov@gmail.com> <CAEf4BzYbvuZoQb7Sz4Q7McyEA4khHm5RaQPR3bL67owLoyv1RQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYbvuZoQb7Sz4Q7McyEA4khHm5RaQPR3bL67owLoyv1RQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 29 Jun 2020 17:28:20 -0700
+Message-ID: <CAADnVQ+ubYj8yA1_cO3aw-trShTHBRMJxSvZrLW75i8fM=mpvQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 bpf-next 2/4] bpf: Add bpf_copy_from_user() helper.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF ringbuf assumes the size to be a multiple of page size and the power =
-of
-2 value. The latter is important to avoid division while calculating posi=
-tion
-inside the ring buffer and using (N-1) mask instead. This patch fixes omi=
-ssion
-to enforce power-of-2 size rule.
+On Thu, Jun 18, 2020 at 3:33 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > + *
+> > + * int bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
+>
+> Can we also add bpf_copy_str_from_user (or bpf_copy_from_user_str,
+> whichever makes more sense) as well?
 
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support=
- for it")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- kernel/bpf/ringbuf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 180414bb0d3e..dcc8e8b9df10 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -132,7 +132,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t d=
-ata_sz, int numa_node)
- {
- 	struct bpf_ringbuf *rb;
-=20
--	if (!data_sz || !PAGE_ALIGNED(data_sz))
-+	if (!is_power_of_2(data_sz) || !PAGE_ALIGNED(data_sz))
- 		return ERR_PTR(-EINVAL);
-=20
- #ifdef CONFIG_64BIT
-@@ -166,7 +166,8 @@ static struct bpf_map *ringbuf_map_alloc(union bpf_at=
-tr *attr)
- 		return ERR_PTR(-EINVAL);
-=20
- 	if (attr->key_size || attr->value_size ||
--	    attr->max_entries =3D=3D 0 || !PAGE_ALIGNED(attr->max_entries))
-+	    !is_power_of_2(attr->max_entries) ||
-+	    !PAGE_ALIGNED(attr->max_entries))
- 		return ERR_PTR(-EINVAL);
-=20
- 	rb_map =3D kzalloc(sizeof(*rb_map), GFP_USER);
---=20
-2.24.1
-
+Those would have to wait. I think strings need better long term design.
+That would be separate patches.
