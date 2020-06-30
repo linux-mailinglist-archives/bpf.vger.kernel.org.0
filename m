@@ -2,150 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6799F20EB20
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 03:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A94020EB40
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 04:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgF3Byn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 21:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgF3Bym (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 21:54:42 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFD7C061755;
-        Mon, 29 Jun 2020 18:54:42 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id u17so14500826qtq.1;
-        Mon, 29 Jun 2020 18:54:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CvphssloF01xi3Q7XYZt+Pl7trcIGdQwWIvxrzOy9NE=;
-        b=m68gKPZ0Y83T98hVDxcgTcmLJxbymiFZjTYPxwWka1Uku0hWazgl8EB/lr257WJp6A
-         JGdwn0elmHRMrumySX2n1+02xOf0ljJYuCCrD3jNiiMDDBzS3bFQvJS26yp2/r2fAd6Q
-         iTcF+Q8wrS0hPaLjuqICgL9mOT1MVwW9HnT9CfCxIT999twhgPcs23q2LIoF71jG+jdA
-         2ypdMwE0oNjU6PpH4Z7a7dPkHYlhy4Agscb8tH2HM7o3ZMpxWUWP7YVkhyXmbesRYRd9
-         Jli43gZEg+2NvHyRzeogxA3MGmvwPgr1CNk8j0nxDRdnQORCkdjetUXE6cniMj8p1oXQ
-         5p2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CvphssloF01xi3Q7XYZt+Pl7trcIGdQwWIvxrzOy9NE=;
-        b=gwoy7zL6Ogq8WHKSU0S8c4O//jfOQTCpoZ8Yxvun2m0Ma4QH8BVJRvSC/1AAiW6t7B
-         6rpqiAwiANIXPU+Q51F+ADDNNlLbWo8LOc8DcyzwtxvclbV70X4wKqcG6pY+DZXTAaGf
-         oNj5iFJUA2UVOLGfVKVvCSvhxEoeWYDtvFmQsIvcwRLAV6JcJyCfGZAf59fgg7VrZn8Z
-         cL4eN5j9DXPIuR/hH/dIAhsZuoMPnz7CWQYwBiE6Y5c1rSFho9fIAujZui9Gg1cmtBA2
-         TMW2dSpD2QP6Lt0qFOlKUrxX3ucuI9ob9QC1o2WUZKlZuMVfHVn05vRbc87hoMWD+yAf
-         JMBQ==
-X-Gm-Message-State: AOAM530ElgW2Gc9hw9/H+pq2G+TnZhJTwpPh5qTLovC1mwSguJ3TrEL5
-        hMc0Ze2a23h2qlSQ9C7mkeuT/LpdcSY5aksDTzU=
-X-Google-Smtp-Source: ABdhPJxhYdE3N3DLu7s2mN5efVqNKNiIP9Q7BxaHj4EtPmsH0+LZCmEL3hWKqVvLp55fIEHn0ImP1pHipzAGCCqVdRM=
-X-Received: by 2002:aed:2cc5:: with SMTP id g63mr18558349qtd.59.1593482081916;
- Mon, 29 Jun 2020 18:54:41 -0700 (PDT)
+        id S1726342AbgF3CFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 22:05:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28500 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726072AbgF3CFr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Jun 2020 22:05:47 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05U23JTv023278
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 19:05:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=AQbyH6FhX7YokLQGzHLfntIs/WN/l6/Es650iL5gwoo=;
+ b=Yk6FfY4JxRpwscSoPQneiDznSQ1VEchqMR4c57Y2xVTaG4ljY64U1zYd8fhPd8V45gp8
+ t9NqafVf2pG3Jwu+jSEW/eobT5J15iWgmrgERuIq8K6GVfQEYyYDj7SR1XwSuxaKVIsm
+ VxxpIoa3fwb2jo5+ZBrfZXTdKVFze5Y9iho= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 31ykcj2kbh-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 19:05:46 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 29 Jun 2020 19:05:44 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 92E072EC3BFB; Mon, 29 Jun 2020 19:05:40 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: make bpf_endian co-exist with vmlinux.h
+Date:   Mon, 29 Jun 2020 19:05:38 -0700
+Message-ID: <20200630020539.787781-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200625221304.2817194-1-jolsa@kernel.org>
-In-Reply-To: <20200625221304.2817194-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Jun 2020 18:54:30 -0700
-Message-ID: <CAEf4BzbMND3VGxzqYU38agbTd+EVquD7J1Spx9LeR=569qMyEg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/14] bpf: Add d_path helper
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ mlxlogscore=405 clxscore=1015 suspectscore=8 lowpriorityscore=0
+ adultscore=0 spamscore=0 bulkscore=0 impostorscore=0 cotscore=-2147483648
+ mlxscore=0 malwarescore=0 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006300013
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 4:47 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> hi,
-> adding d_path helper to return full path for 'path' object.
->
-> In a preparation for that, this patchset also adds support for BTF ID
-> whitelists, because d_path can't be called from any probe due to its
-> locks usage. The whitelists allow verifier to check if the caller is
-> one of the functions from the whitelist.
->
-> The whitelist is implemented in a generic way. This patchset introduces
-> macros that allow to define lists of BTF IDs, which are compiled in
-> the kernel image in a new .BTF.ids ELF section.
->
-> The generic way of BTF ID lists allows us to use them in other places
-> in kernel (than just for whitelists), that could use static BTF ID
-> values compiled in and it's also implemented in this patchset.
->
-> I originally added and used 'file_path' helper, which did the same,
-> but used 'struct file' object. Then realized that file_path is just
-> a wrapper for d_path, so we'd cover more calling sites if we add
-> d_path helper and allowed resolving BTF object within another object,
-> so we could call d_path also with file pointer, like:
->
->   bpf_d_path(&file->f_path, buf, size);
->
-> This feature is mainly to be able to add dpath (filepath originally)
-> function to bpftrace:
->
->   # bpftrace -e 'kfunc:vfs_open { printf("%s\n", dpath(args->path)); }'
->
-> v4 changes:
->   - added ID sanity checks in btf_resolve_helper_id [Andrii]
->   - resolve bpf_ctx_convert via BTF_ID [Andrii]
->   - keep bpf_access_type in btf_struct_access [Andrii]
->   - rename whitelist to se and use struct btf_id_set [Andrii]
->   - several fixes for d_path prog/verifier tests [Andrii]
->   - added union and typedefs types support [Andrii]
->   - rename btfid to resolve_btfids [Andrii]
->   - fix segfault in resolve_btfids [John]
->   - rename section from .BTF_ids .BTF.ids (following .BTF.ext example)
->   - add .BTF.ids section info into btf.rst [John]
->   - updated over letter with more details [John]
->
-> Also available at:
->   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   bpf/d_path
->
-> thanks,
-> jirka
->
->
-> ---
+Copy over few #defines from UAPI swab.h header to make all the rest of
+bpf_endian.h work and not rely on any extra headers. This way it can be u=
+sed
+both with linux header includes, as well with a vmlinux.h. This has been
+a frequent complaint from users, that need this header.
 
-Have you considered splitting this series into two? One with BTF ID
-resolution and corresponding patches. I'm pretty confident in that one
-and it seems ready (with some minor selftest changes). Then,
-separately, d_path and that sub-struct address logic. That one depends
-on the first one, but shouldn't really block BTF ID resolution from
-going in sooner.
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/bpf_endian.h | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-> Jiri Olsa (14):
->       bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
->       bpf: Compile resolve_btfids tool at kernel compilation start
->       bpf: Add BTF_ID_LIST/BTF_ID macros
->       bpf: Resolve BTF IDs in vmlinux image
->       bpf: Remove btf_id helpers resolving
->       bpf: Use BTF_ID to resolve bpf_ctx_convert struct
->       bpf: Allow nested BTF object to be refferenced by BTF object + offset
->       bpf: Add BTF_SET_START/END macros
->       bpf: Add info about .BTF.ids section to btf.rst
->       bpf: Add d_path helper
->       tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
->       selftests/bpf: Add verifier test for d_path helper
->       selftests/bpf: Add test for d_path helper
->       selftests/bpf: Add test for resolve_btfids
->
+diff --git a/tools/lib/bpf/bpf_endian.h b/tools/lib/bpf/bpf_endian.h
+index fbe28008450f..a4be8a70845c 100644
+--- a/tools/lib/bpf/bpf_endian.h
++++ b/tools/lib/bpf/bpf_endian.h
+@@ -2,8 +2,26 @@
+ #ifndef __BPF_ENDIAN__
+ #define __BPF_ENDIAN__
+=20
+-#include <linux/stddef.h>
+-#include <linux/swab.h>
++/* copied from include/uapi/linux/swab.h */
++#define ___constant_swab16(x) ((__u16)(				\
++	(((__u16)(x) & (__u16)0x00ffU) << 8) |			\
++	(((__u16)(x) & (__u16)0xff00U) >> 8)))
++
++#define ___constant_swab32(x) ((__u32)(				\
++	(((__u32)(x) & (__u32)0x000000ffUL) << 24) |		\
++	(((__u32)(x) & (__u32)0x0000ff00UL) <<  8) |		\
++	(((__u32)(x) & (__u32)0x00ff0000UL) >>  8) |		\
++	(((__u32)(x) & (__u32)0xff000000UL) >> 24)))
++
++#define ___constant_swab64(x) ((__u64)(				\
++	(((__u64)(x) & (__u64)0x00000000000000ffULL) << 56) |	\
++	(((__u64)(x) & (__u64)0x000000000000ff00ULL) << 40) |	\
++	(((__u64)(x) & (__u64)0x0000000000ff0000ULL) << 24) |	\
++	(((__u64)(x) & (__u64)0x00000000ff000000ULL) <<  8) |	\
++	(((__u64)(x) & (__u64)0x000000ff00000000ULL) >>  8) |	\
++	(((__u64)(x) & (__u64)0x0000ff0000000000ULL) >> 24) |	\
++	(((__u64)(x) & (__u64)0x00ff000000000000ULL) >> 40) |	\
++	(((__u64)(x) & (__u64)0xff00000000000000ULL) >> 56)))
+=20
+ /* LLVM's BPF target selects the endianness of the CPU
+  * it compiles on, or the user specifies (bpfel/bpfeb),
+--=20
+2.24.1
 
-[...]
