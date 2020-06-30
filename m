@@ -2,153 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C304420ED42
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 07:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EEC20ED47
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 07:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgF3FOc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 01:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        id S1726793AbgF3FRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 01:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgF3FOa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 01:14:30 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57F5C061755;
-        Mon, 29 Jun 2020 22:14:30 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id u17so14716026qtq.1;
-        Mon, 29 Jun 2020 22:14:30 -0700 (PDT)
+        with ESMTP id S1725845AbgF3FRE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 01:17:04 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3D8C061755;
+        Mon, 29 Jun 2020 22:17:04 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x8so7107736plm.10;
+        Mon, 29 Jun 2020 22:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2nmhZc8pm0sRpbKQTG6rJbFvpc1bwe11GwaDWI19db4=;
-        b=i/diRNn5XBW4i77XeaTs269iAH5xXndnrlMJKEQKp+Gx4gsv2DkDDLXvMhbakaizPm
-         EZpLxLI+zCSyZXFTh8NDvbrOIEuFXtU8OP6ktu8/ANxVmJqJOAALZJq9gbWp4Nyd9Xvh
-         9xWnyCdpODnxGHI7ud6A6+IMk+QPRKuFdHpaLsknwgCx4VGrewz/2gCRgo47IUACZt4V
-         /sXMVHzieroBwzCcEyv6/hnUYBMr2ZGfSslaQNUoBYOdhO5pGbwlChJDFraNCpKmhBN3
-         Bhj3KwRJYnf68qHdNibfTLmXU6uM+PpCNzt6UOJ7nU40p0GDTeV3CrQcehDX0EcsN9ew
-         mZwA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hp+HnDhs/4eD0oclIHVQN7L3ud8iDGI74HhAm9juhsw=;
+        b=lQCPK4Dlt4VIzph2W3LXFszIK1ohIrBI7n9kuUNFAVxsLkM+WGDPqRzMDJi4kU42pY
+         wAKEHaywQgwb7/1s3AUx49llgM/iSlkAcmsVTgBLY3s4fQ9CsVPXW7qkHRBzCoiH7X7W
+         XVCcuSVNuiDZ35YY5dcGpegczFd4LlYGmB/yq5P8kMv+O3FtAscY7iDW30xKPXEcTIRN
+         biVsBtbIOOiNL0ExmRzx1i3fGdBjiA4OrtzQLMoP8faT4GGeFXEe5PcVRyCwulABVk63
+         f0M09Q3UIl7Da7ZcNh1o9X06jlyvFtdIF2CX7EV7vcf5n4WfPuH68OI23LdXUlZsoZVr
+         Q5dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2nmhZc8pm0sRpbKQTG6rJbFvpc1bwe11GwaDWI19db4=;
-        b=dBOoh8JbytAB+4xh+h45neR6mxjNtlHYbJUV7lKeQpEnws5Zzy4mBf5Ax8q14Mw48H
-         4KgEWKdp1rPPMO7bNiBWvPBCHUWy2yPmBT/Gtn+30kAoBpU/6EEWeJ8gNQ8/qiJCwD6N
-         /D0JKHJytfdTA2lW3N/kYt1kDBAXwGvna6qZ2zrqXg+kQDSoZXHNMKJMq5dhys7bkVgX
-         5WLUrpEBSIpBwFsVOYYug8kTR/5IEwZgOQL7fSoycrJgaV4I3ig1f9ID0z0TGyUsm7Rb
-         N+cBCMKe0ylGbyFFGCfwU9xx58p7i4T5htlPXSicJYsSedFSdNR22CY6gB7px1inbfti
-         9AEA==
-X-Gm-Message-State: AOAM5336jmQySeSDZF9RmtNvRWZ7FeiVuFG4KYdNXq7Ie6BRjqKZIyuZ
-        FxuVxtKMAz3FCK7Swhky8WmK20NO8IGpIP0TYi0=
-X-Google-Smtp-Source: ABdhPJwUCKD48jXksKVUbAXS7zaohoSu3rOdKkoxfjUmSsb79rUG4NRk8rEJVMt/WhbIS2BG+q4jPZ5azzUqrPjiCwA=
-X-Received: by 2002:aed:2cc5:: with SMTP id g63mr19052303qtd.59.1593494069918;
- Mon, 29 Jun 2020 22:14:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hp+HnDhs/4eD0oclIHVQN7L3ud8iDGI74HhAm9juhsw=;
+        b=mXoBEnFS0LpjnUHfm7Uxs9hHKKt6E9hdiojfc8Mhx1aoZDrLcCZWmjun5fE97HE5ZB
+         i3UmPjBBh/ZA1coxZN8VBu21ykSzDYs/UJe3DiNPojB29DaI1LIJDv2SHsU5B8/ALthO
+         mkV3GRVXamXTdrDqFAqNF5yL6WYFpSMK3HqkuGryg0fmBHefYEk51+pkJDP7l6x/ADVL
+         JvxxR8KuguEqCiP8K8a9nZdPCZrk9siwJqMPiP5TiltlspnWUvI9Chv2gmbdjeebI0OS
+         EesOhvEUAQstfMGVUN7HX/JfBYv0zCcvszmgI+AtSnVmU7XJiYCrI0MF/8oSUELOawwq
+         5eVg==
+X-Gm-Message-State: AOAM532gRZJ8IdbDwGFi98AJu061u0oFMc6Ow0FJldadU0ZgZmIxS/N4
+        +YS6VLeeYO2A4LZlNS016ew=
+X-Google-Smtp-Source: ABdhPJzaAWpAzzSp+Qi2HKKoLwoETD9wPt0PvMKWn9nVb71tk7lC9Zoq/oQIjSFLzcSIs0jlV4+n9g==
+X-Received: by 2002:a17:90a:8b91:: with SMTP id z17mr19898205pjn.151.1593494223497;
+        Mon, 29 Jun 2020 22:17:03 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:140c])
+        by smtp.gmail.com with ESMTPSA id r1sm952646pjd.47.2020.06.29.22.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 22:17:02 -0700 (PDT)
+Date:   Mon, 29 Jun 2020 22:16:59 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
+Message-ID: <20200630051659.uqnkkwaho3lvvnu7@ast-mbp.dhcp.thefacebook.com>
+References: <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
+ <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
+ <20200626181455.155912d9@oasis.local.home>
+ <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
+ <20200628144616.52f09152@oasis.local.home>
+ <20200628192107.sa3ppfmxtgxh7sfs@ast-mbp.dhcp.thefacebook.com>
+ <20200628154331.2c69d43e@oasis.local.home>
+ <20200628220209.3oztcjnzsotlfria@ast-mbp.dhcp.thefacebook.com>
+ <20200628182842.2abb0de2@oasis.local.home>
+ <20200628194334.6238b933@oasis.local.home>
 MIME-Version: 1.0
-References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Jun 2020 22:14:18 -0700
-Message-ID: <CAEf4BzYG2drMiUvjgAF5vgdjAo5+N3zL+5TTvCoUUK=Z3ErVwA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf: Introduce minimal support for
- sleepable progs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200628194334.6238b933@oasis.local.home>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 9:34 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> v4->v5:
-> - addressed Andrii's feedback.
->
-> v3->v4:
-> - fixed synchronize_rcu_tasks_trace() usage and accelerated with synchronize_rcu_mult().
-> - removed redundant synchronize_rcu(). Otherwise it won't be clear why
->   synchronize_rcu_tasks_trace() is not needed in free_map callbacks.
-> - improved test coverage.
->
-> v2->v3:
-> - switched to rcu_trace
-> - added bpf_copy_from_user
->
-> Here is 'perf report' differences:
-> sleepable with SRCU:
->    3.86%  bench     [k] __srcu_read_unlock
->    3.22%  bench     [k] __srcu_read_lock
->    0.92%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry_sleep
->    0.50%  bench     [k] bpf_trampoline_10297
->    0.26%  bench     [k] __bpf_prog_exit_sleepable
->    0.21%  bench     [k] __bpf_prog_enter_sleepable
->
-> sleepable with RCU_TRACE:
->    0.79%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry_sleep
->    0.72%  bench     [k] bpf_trampoline_10381
->    0.31%  bench     [k] __bpf_prog_exit_sleepable
->    0.29%  bench     [k] __bpf_prog_enter_sleepable
->
-> non-sleepable with RCU:
->    0.88%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry
->    0.84%  bench     [k] bpf_trampoline_10297
->    0.13%  bench     [k] __bpf_prog_enter
->    0.12%  bench     [k] __bpf_prog_exit
->
-> Happy to confirm that rcu_trace overhead is negligible.
->
-> v1->v2:
-> - split fmod_ret fix into separate patch
-> - added blacklist
->
-> v1:
-> This patch set introduces the minimal viable support for sleepable bpf programs.
-> In this patch only fentry/fexit/fmod_ret and lsm progs can be sleepable.
-> Only array and pre-allocated hash and lru maps allowed.
->
-> Alexei Starovoitov (5):
->   bpf: Remove redundant synchronize_rcu.
->   bpf: Introduce sleepable BPF programs
->   bpf: Add bpf_copy_from_user() helper.
->   libbpf: support sleepable progs
->   selftests/bpf: Add sleepable tests
->
->  arch/x86/net/bpf_jit_comp.c                   | 32 +++++----
->  include/linux/bpf.h                           |  4 ++
->  include/uapi/linux/bpf.h                      | 19 +++++-
->  init/Kconfig                                  |  1 +
->  kernel/bpf/arraymap.c                         | 10 +--
->  kernel/bpf/hashtab.c                          | 20 +++---
->  kernel/bpf/helpers.c                          | 22 +++++++
->  kernel/bpf/lpm_trie.c                         |  5 --
->  kernel/bpf/queue_stack_maps.c                 |  7 --
->  kernel/bpf/reuseport_array.c                  |  2 -
->  kernel/bpf/ringbuf.c                          |  7 --
->  kernel/bpf/stackmap.c                         |  3 -
->  kernel/bpf/syscall.c                          | 13 +++-
->  kernel/bpf/trampoline.c                       | 28 +++++++-
->  kernel/bpf/verifier.c                         | 62 ++++++++++++++++-
->  kernel/trace/bpf_trace.c                      |  2 +
->  tools/include/uapi/linux/bpf.h                | 19 +++++-
->  tools/lib/bpf/libbpf.c                        | 25 ++++++-
->  tools/testing/selftests/bpf/bench.c           |  2 +
->  .../selftests/bpf/benchs/bench_trigger.c      | 17 +++++
->  .../selftests/bpf/prog_tests/test_lsm.c       |  9 +++
->  tools/testing/selftests/bpf/progs/lsm.c       | 66 ++++++++++++++++++-
->  .../selftests/bpf/progs/trigger_bench.c       |  7 ++
->  23 files changed, 315 insertions(+), 67 deletions(-)
->
-> --
-> 2.23.0
->
+On Sun, Jun 28, 2020 at 07:43:34PM -0400, Steven Rostedt wrote:
+> On Sun, 28 Jun 2020 18:28:42 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > You create a bpf event just like you create any other event. When a bpf
+> > program that uses a bpf_trace_printk() is loaded, you can enable that
+> > event from within the kernel. Yes, there's internal interfaces to
+> > enabled and disable events just like echoing 1 into
+> > tracefs/events/system/event/enable. See trace_set_clr_event().
+> 
+> I just started playing with what the code would look like and have
+> this. It can be optimized with per-cpu sets of buffers to remove the
+> spin lock. I also didn't put in the enabling of the event, but I'm sure
+> you can figure that out.
+> 
+> Warning, not even compiled tested.
 
-For the series:
+Thanks! I see what you mean now.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> -- Steve
+> 
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index 6575bb0a0434..aeba5ee7325a 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+> @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
+>  GCOV_PROFILE := y
+>  endif
+>  
+> +CFLAGS_bpf_trace.o := -I$(src)
+
+not following. why this is needed?
+
+> +
+>  CFLAGS_trace_benchmark.o := -I$(src)
+>  CFLAGS_trace_events_filter.o := -I$(src)
+>  
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index dc05626979b8..01bedf335b2e 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -19,6 +19,9 @@
+>  #include "trace_probe.h"
+>  #include "trace.h"
+>  
+> +#define CREATE_TRACE_EVENTS
+
+CREATE_TRACE_POINTS ?
+
+> +#include "bpf_trace.h"
+> +
+>  #define bpf_event_rcu_dereference(p)					\
+>  	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
+>  
+> @@ -473,13 +476,29 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+>  		fmt_cnt++;
+>  	}
+>  
+> +static DEFINE_SPINLOCK(trace_printk_lock);
+> +#define BPF_TRACE_PRINTK_SIZE	1024
+> +
+> +static inline void do_trace_printk(const char *fmt, ...)
+> +{
+> +	static char buf[BPF_TRACE_PRINT_SIZE];
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&trace_printk_lock, flags);
+> +	va_start(ap, fmt);
+> +	vsnprintf(buf, BPF_TRACE_PRINT_SIZE, fmt, ap);
+> +	va_end(ap);
+> +
+> +	trace_bpf_trace_printk(buf);
+> +	spin_unlock_irqrestore(&trace_printk_lock, flags);
+
+interesting. I don't think anyone would care about spin_lock overhead.
+It's better because 'trace_bpf_trace_printk' would be a separate event
+that can be individually enabled/disabled?
+I guess it can work.
+Thanks!
