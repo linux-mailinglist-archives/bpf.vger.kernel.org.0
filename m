@@ -2,150 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C94420FB02
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 19:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CC620FB0D
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 19:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388681AbgF3RuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 13:50:01 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40354 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726047AbgF3RuB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jun 2020 13:50:01 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05UHmxUY006082;
-        Tue, 30 Jun 2020 10:49:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=R+TKyG0PD8v+MBRwTVyBMIxa+fw7pq1xQM/xn0mtEws=;
- b=lcgNQ23I7zIoOZh1mNblhPqqUgHZSGdYoxiFU4jdi/oclQUo+gEtAWNDt0xx9EZXbuPb
- 5htK58LwJt/MEcpWvARS5rHoFMEm9FZfJd8q1ZTcxLDIl79okAWbDdUwEk4UUsLIzsl5
- RAxlocKz2sBJV5nc1F/i5U7uUJRga1tKeN0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xp39b8k7-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 30 Jun 2020 10:49:37 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 30 Jun 2020 10:49:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nwbn8BayK2ZfwL5Bte6QeIzpIGdyCyziJLeSvb47lVxoXFJMirnlrCnPJzvR565t3H3wRV5ullrcHLMaYn9oL8E63K/mFmHo7xkgUU7YHvIAEEsjf7JQb2sLC4yFME5Oq/rUkiI9EbhtX80LKK/0NuC1IKJtG3om++xN+eo9kLfDzvAjtCcDkHryXrw+F3vg73mlM9ByC5M15KsEsu3cnN02dh3Gsyfl9bWwtYhpRfG/OWnjwPPTKJdvQtwq60VAMu6qbDE6UqUDZ14QYCD1m/+0YyhjCMVdPvABbAmNKGSvjiDl7oTCUHbsyYm/q+Xd3AfSn2cmazK7h/N/GUZ5KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R+TKyG0PD8v+MBRwTVyBMIxa+fw7pq1xQM/xn0mtEws=;
- b=mEnIUjyjkHs80QlrCHIGJYDQrXK2g6C7XhIENvuDNssC8xH8CCnofNB5xYydxiUNvLVVCtK0TZ/2R/Ik34ErlnhXiO+LMN+cudry+xxekYOlyn353CboqIOk4+BUtEzDl89/gsnZxThJaWIYyccqvzanI19PCpYFpHNtFaM1lPgpPHilI3b6gVV279ft/EpNfZ+4f+2uFpofl37Y26lVAnFw6K6CXn8/roTN2ZZ1NVXTp7xZGyKEomZ+5jC15Se3D1oMEKXkFFT6X1+qeLPDbbRMmwUfZJI55uQeaTWIaT7jnaKaB5XUkWNDswvWlKmmKQPrlwFQ+Utf1y9WdYGwiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R+TKyG0PD8v+MBRwTVyBMIxa+fw7pq1xQM/xn0mtEws=;
- b=HJTyzgzyUuJBjbdftY6O2Hmkg5IG9lh0DJTgH3oEkGjCW16BRSo7v7vYNa25xZzkl519tQh8ZNZkO1eG7z8BPIbfgWHHxoO+hGKgJUoHjDARMN+0IXNCFkI+Yc/AHtrK9w2imLbRfWvkY7/5Ill6XtFEzSkxRJTvVxvzMSIYezY=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2695.namprd15.prod.outlook.com (2603:10b6:a03:150::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Tue, 30 Jun
- 2020 17:49:17 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 17:49:17 +0000
-Subject: Re: [PATCH -next] bpf: fix net/core/filter build errors when INET is
- not enabled
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        id S2389199AbgF3Rvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 13:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388339AbgF3Rvp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 13:51:45 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55CEC061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 10:51:45 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id a11so10281423ilk.0
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 10:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=fSQ9XpM5Ld8qwtBBeLZYGyimgoEpyChks7ukmC998PI=;
+        b=ZGb9GD0fqNajYf8+UvHcpp0uc3voK2UXL1ENW5T2vvk2SC22k1YG+o56dzAVNkmdxW
+         R/43K4dhooH0j+wrHEtamMpwpqIUtBO9AFkcMw9wjIPhYCgGAufYbnR6FpzkJntrlI22
+         3JKNzY/qfm0WSZjGm59XxSamXpnVKhgbruNF8fVTI5MggRCR00KpJrZH/JCgcbYSaNxZ
+         JQboVUxx5v2RFL0ARb1Jtp03gnILlPefcO0qLo01rRLfsZI+hlCi8bV87YT4dxvcnB6K
+         hLooc13hIVF8AnvGj4gIeBnJaz4YBDIBxo9CxcxT2aMBIbP6a1EVlLFoawdVkKsAbrNO
+         z5bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=fSQ9XpM5Ld8qwtBBeLZYGyimgoEpyChks7ukmC998PI=;
+        b=lNYVwChvFctAkfVOT9D/xMMtqqC2KlyyK9Wr5HeUrQlZ+6ZnsyQ0WzEREXwW/naKGu
+         cfz3gjcs+wVndVLDHBGBYCyTsXfBM8Rpg4WOdH7k89UexZC0uScI1iqFJNTwCdqxmqr+
+         qScC3XOpvfCOCHK+5SYFsy9kuo/HWU84df3vXYeNvltQg8nBWZyEaIoTyz6GvyROVSZy
+         Op8+I3L72hPn7MPRlH1e7utfcu9A17UE6ijtZlMZcghVUBK2ZvDwHGII5tfnoLt3E9Dt
+         mmG8rpso7mHuwERtWEQ3Snmqh3ga7ZXEJoa6wUMT/ER62Cs/qTc1ygcz6bnNqY9QIL+m
+         U1yg==
+X-Gm-Message-State: AOAM531idp8d1RupEHQrxDMVjbDSv6w5wMhWjfEQ14vzzWEoC7Wlnwhn
+        VLWEKkg7ifm1sZspBM/pyNg=
+X-Google-Smtp-Source: ABdhPJzbeUJv9GcEtjykpXqGijC2SWT7hL0uL/+tE/TgU83P+YmOsUhRdmKswTOFMeqUdatcZR66nQ==
+X-Received: by 2002:a92:940f:: with SMTP id c15mr4028952ili.204.1593539505098;
+        Tue, 30 Jun 2020 10:51:45 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id x16sm1757552iob.35.2020.06.30.10.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 10:51:44 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 10:51:34 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        David Miller <davem@davemloft.net>
-References: <b1a858ec-7e04-56bc-248a-62cb9bbee726@infradead.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a4c90264-c77b-8cfe-d3ff-3526d6229da7@fb.com>
-Date:   Tue, 30 Jun 2020 10:49:12 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <b1a858ec-7e04-56bc-248a-62cb9bbee726@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Wenbo Zhang <ethercflow@gmail.com>
+Message-ID: <5efb7ba67bae6_3792b063d0145b4b4@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200630171240.2523722-1-yhs@fb.com>
+References: <20200630171240.2523628-1-yhs@fb.com>
+ <20200630171240.2523722-1-yhs@fb.com>
+Subject: RE: [PATCH bpf 1/2] bpf: fix an incorrect branch elimination by
+ verifier
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR04CA0003.namprd04.prod.outlook.com
- (2603:10b6:a03:217::8) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::15c2] (2620:10d:c090:400::5:c3b5) by BY3PR04CA0003.namprd04.prod.outlook.com (2603:10b6:a03:217::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20 via Frontend Transport; Tue, 30 Jun 2020 17:49:15 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c3b5]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1c9f35f3-d0d5-4625-4d73-08d81d1de90d
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2695:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2695AA1E31A8C66857A584F4D36F0@BYAPR15MB2695.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-Forefront-PRVS: 0450A714CB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AdEMb5MnZzOU9HpGbPCp6HreYTKSahOpKFgXZ//XsvELHKW0o2wojoYU+t84eD+hDyrqoHJNBXB77jew7bS1yTh+REZ1LYRqP2Fuv9kLZ+Z14+89AwXlVTT0Xw9Ig+hUXpHceZ9N3j+Q6xNIQpH9IzO34eabLNfjLTSatukUEFVPKHztDKNEAvkNfUxDoWycxtoDQgk/t7DhSECjAjBjf2iLLS9YxGmQl6QBbu7jPP8KLpS2AmrvaVHfepz0GW21r/M7lg8bvfdef0eyh9XStrvccOGpw8+aLc+VyXK3J88wvpDH54JPV0AlYFpFzAZaWTQG2nAw72eextXM10VQZQG4fH6CS/IX9lewcZOewheYZE0seNXQH1UVmz4iShgo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(136003)(376002)(346002)(39860400002)(478600001)(316002)(8936002)(4744005)(4326008)(110136005)(8676002)(54906003)(5660300002)(66946007)(66556008)(66476007)(2906002)(6486002)(52116002)(16526019)(186003)(53546011)(31686004)(2616005)(31696002)(6666004)(86362001)(36756003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: e6fYxAqkjgLq6QI4exSAV2u99ZjTAC4s6tHwA91Yv1NFReQZbKFgahgycNKzi2/WA58Ne6pU92t7TdAeTg8O/qpPr/3V8kV4fVambdkb2aKrv2MJgqQNTGncKQPt+hhC85pi9Xdzm+vinubytlOgbF/zodXRJRkRuEvh2c4z8wfrPlnQois51rKvg88Q+kjUlKRAMlFS4ybaPSUF6VRV/UIpOIbCjRjCYXXaOxdoiHIKjR0xLlBLw6qRQ3Nb/qLkedQmm6lwy5v9WgDhU6X2JjoDd82QYJIdrfC3nCGBtCelXgk1/1JaiT6gt6G8u3Rh4M4rcJdZAnvU4g1HBk8YBbFLlyWLzssq/ZX5neqhj1UEwV5qDdB2Cj3+k+d0rWWdZau8nHk0VNlb+E+I4ZbeNvEXjfEzhxffIXamor5M51IojeKJtaaBnnZjrhCmKglf7k8oZ1YgaflATSI+drESMbTLduXwXLBVppzSFL2BDD5RObss+KLsBQJ48jDeryL9f3xRsTTfJ/kB/DD3Dl6KSQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c9f35f3-d0d5-4625-4d73-08d81d1de90d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2020 17:49:17.6124
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oDNF/RHPb1+1J5Ji8+3wukpGbPr0DcSjcBgTVyMh/UReZEXKXfXpEgK4okZIfNmQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2695
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_06:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- impostorscore=0 phishscore=0 cotscore=-2147483648 malwarescore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1011
- priorityscore=1501 bulkscore=0 spamscore=0 mlxlogscore=999 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300123
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Yonghong Song wrote:
+> Wenbo reported an issue in [1] where a checking of null
+> pointer is evaluated as always false. In this particular
+> case, the program type is tp_btf and the pointer to
+> compare is a PTR_TO_BTF_ID.
+> 
+> The current verifier considers PTR_TO_BTF_ID always
+> reprents a non-null pointer, hence all PTR_TO_BTF_ID compares
+> to 0 will be evaluated as always not-equal, which resulted
+> in the branch elimination.
+> 
+> For example,
+>  struct bpf_fentry_test_t {
+>      struct bpf_fentry_test_t *a;
+>  };
+>  int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>  {
+>      if (arg == 0)
+>          test7_result = 1;
+>      return 0;
+>  }
+>  int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+>  {
+>      if (arg->a == 0)
+>          test8_result = 1;
+>      return 0;
+>  }
+> 
+> In above bpf programs, both branch arg == 0 and arg->a == 0
+> are removed. This may not be what developer expected.
+> 
+> The bug is introduced by Commit cac616db39c2 ("bpf: Verifier
+> track null pointer branch_taken with JNE and JEQ"),
+> where PTR_TO_BTF_ID is considered to be non-null when evaluting
+> pointer vs. scalar comparison. This may be added
+> considering we have PTR_TO_BTF_ID_OR_NULL in the verifier
+> as well.
+> 
+> PTR_TO_BTF_ID_OR_NULL is added to explicitly requires
+> a non-NULL testing in selective cases. The current generic
+> pointer tracing framework in verifier always
+> assigns PTR_TO_BTF_ID so users does not need to
+> check NULL pointer at every pointer level like a->b->c->d.
 
+Thanks for fixing this.
 
-On 6/30/20 10:29 AM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+But, don't we really need to check for null? I'm trying to
+understand how we can avoid the check. If b is NULL above
+we will have a problem no?
+
+Also, we probably shouldn't name the type PTR_TO_BTF_ID if
+it can be NULL. How about renaming it in bpf-next then although
+it will be code churn... Or just fix the comments? Probably
+bpf-next content though. wdyt? In my opinion the comments and
+type names are really misleading as it stands.
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 3d2ade703a35..18051440f886 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -337,7 +337,7 @@ enum bpf_reg_type {
+ 	PTR_TO_TCP_SOCK_OR_NULL, /* reg points to struct tcp_sock or NULL */
+ 	PTR_TO_TP_BUFFER,	 /* reg points to a writable raw tp's buffer */
+ 	PTR_TO_XDP_SOCK,	 /* reg points to struct xdp_sock */
+-	PTR_TO_BTF_ID,		 /* reg points to kernel struct */
++	PTR_TO_BTF_ID,		 /* reg points to kernel struct or NULL */
+ 	PTR_TO_BTF_ID_OR_NULL,	 /* reg points to kernel struct or NULL */
+ 	PTR_TO_MEM,		 /* reg points to valid memory region */
+ 	PTR_TO_MEM_OR_NULL,	 /* reg points to valid memory region or NULL */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7de98906ddf4..7412f9d2f0b5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -500,7 +500,7 @@ static const char * const reg_type_str[] = {
+ 	[PTR_TO_TCP_SOCK_OR_NULL] = "tcp_sock_or_null",
+ 	[PTR_TO_TP_BUFFER]	= "tp_buffer",
+ 	[PTR_TO_XDP_SOCK]	= "xdp_sock",
+-	[PTR_TO_BTF_ID]		= "ptr_",
++	[PTR_TO_BTF_ID]		= "ptr_or_null_",
+ 	[PTR_TO_BTF_ID_OR_NULL]	= "ptr_or_null_",
+ 	[PTR_TO_MEM]		= "mem",
+ 	[PTR_TO_MEM_OR_NULL]	= "mem_or_null",
+
 > 
-> Fix build errors when CONFIG_INET is not set/enabled.
+> We may not want to assign every PTR_TO_BTF_ID as
+> PTR_TO_BTF_ID_OR_NULL as this will require a null test
+> before pointer dereference which may cause inconvenience
+> for developers. But we could avoid branch elimination
+> to preserve original code intention.
 > 
-> (.text+0x2b1b): undefined reference to `tcp_prot'
-> (.text+0x2b3b): undefined reference to `tcp_prot'
+> This patch simply removed PTR_TO_BTD_ID from reg_type_not_null()
+> in verifier, which prevented the above branches from being eliminated.
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
+>  [1]: https://lore.kernel.org/bpf/79dbb7c0-449d-83eb-5f4f-7af0cc269168@fb.com/T/
+> 
+> Fixes: cac616db39c2 ("bpf: Verifier track null pointer branch_taken with JNE and JEQ")
 > Cc: Andrii Nakryiko <andriin@fb.com>
 > Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@chromium.org>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-
-Thanks for the fix!
-
-Acked-by: Yonghong Song <yhs@fb.com>
+> Cc: Wenbo Zhang <ethercflow@gmail.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  kernel/bpf/verifier.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8911d0576399..94cead5a43e5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -399,8 +399,7 @@ static bool reg_type_not_null(enum bpf_reg_type type)
+>  	return type == PTR_TO_SOCKET ||
+>  		type == PTR_TO_TCP_SOCK ||
+>  		type == PTR_TO_MAP_VALUE ||
+> -		type == PTR_TO_SOCK_COMMON ||
+> -	        type == PTR_TO_BTF_ID;
+> +		type == PTR_TO_SOCK_COMMON;
+>  }
+>  
+>  static bool reg_type_may_be_null(enum bpf_reg_type type)
+> -- 
+> 2.24.1
+> 
