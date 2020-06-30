@@ -2,129 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4717220EE77
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 08:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A57B20EE7A
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 08:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgF3G3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 02:29:00 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50748 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730183AbgF3G27 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jun 2020 02:28:59 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U6QPwk009582
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 23:28:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=ATAIZRyF5LF5Ymt6TlkUCcEq7zggg+i+C8LAuUJjSjU=;
- b=fY7q+dyrU9O3KHHf1c7Dkel+wQFs1sj9DvNCBMuaxaShpdAzRCEKa7QAoVLxxRwtOEnJ
- e8dDtpYsgQn9xmnvbe1HuUVONKA0vlnYw6ygCU7LEXRGma+K8i8CIKan7U1LD9rKPzsY
- 4S/N6Qfows/1fJs8wnBKfw8X78I1W5dnPPQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xpcnrc2h-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Jun 2020 23:28:58 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 23:28:54 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 593F062E51C7; Mon, 29 Jun 2020 23:28:50 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <peterz@infradead.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v5 bpf-next 0/4] bpf: introduce bpf_get_task_stack()
-Date:   Mon, 29 Jun 2020 23:28:42 -0700
-Message-ID: <20200630062846.664389-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1730105AbgF3G3m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 02:29:42 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58740 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730089AbgF3G3l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 02:29:41 -0400
+Received: from fsav404.sakura.ne.jp (fsav404.sakura.ne.jp [133.242.250.103])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 05U6SrH8086585;
+        Tue, 30 Jun 2020 15:28:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav404.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp);
+ Tue, 30 Jun 2020 15:28:53 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 05U6Sr7Q086582
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 30 Jun 2020 15:28:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 00/14] Make the user mode driver code a better citizen
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <40720db5-92f0-4b5b-3d8a-beb78464a57f@i-love.sakura.ne.jp>
+ <87366g8y1e.fsf@x220.int.ebiederm.org>
+ <aa737d87-cf38-55d6-32f1-2d989a5412ea@i-love.sakura.ne.jp>
+ <20200628194440.puzh7nhdnk6i4rqj@ast-mbp.dhcp.thefacebook.com>
+ <c99d0cfc-8526-0daf-90b5-33e560efdede@i-love.sakura.ne.jp>
+ <874kqt39qo.fsf@x220.int.ebiederm.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <6a9dd8be-333a-fd21-d125-ec20fb7c81df@i-love.sakura.ne.jp>
+Date:   Tue, 30 Jun 2020 15:28:49 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-30_01:2020-06-30,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0
- impostorscore=0 bulkscore=0 cotscore=-2147483648 suspectscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300048
-X-FB-Internal: deliver
+In-Reply-To: <874kqt39qo.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This set introduces a new helper bpf_get_task_stack(). The primary use ca=
-se
-is to dump all /proc/*/stack to seq_file via bpf_iter__task.
+On 2020/06/30 5:19, Eric W. Biederman wrote:
+> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
+> 
+>> On 2020/06/29 4:44, Alexei Starovoitov wrote:
+>>> But all the defensive programming kinda goes against general kernel style.
+>>> I wouldn't do it. Especially pr_info() ?!
+>>> Though I don't feel strongly about it.
+>>
+>> Honestly speaking, caller should check for errors and print appropriate
+>> messages. info->wd.mnt->mnt_root != info->wd.dentry indicates that something
+>> went wrong (maybe memory corruption). But other conditions are not fatal.
+>> That is, I consider even pr_info() here should be unnecessary.
+> 
+> They were all should never happen cases.  Which is why my patches do:
+> if (WARN_ON_ONCE(...))
 
-A few different approaches have been explored and compared:
+No. Fuzz testing (which uses panic_on_warn=1) will trivially hit them.
+This bug was unfortunately not found by syzkaller because this path is
+not easily reachable via syscall interface.
 
-  1. A simple wrapper around stack_trace_save_tsk(), as v1 [1].
+> 
+> That let's the caller know the messed up very clearly while still
+> providing a change to continue.
+> 
+> If they were clearly corruption no ones kernel should ever continue
+> BUG_ON would be appropriate.
 
-     This approach introduces new syntax, which is different to existing
-     helper bpf_get_stack(). Therefore, this is not ideal.
+Please use BUG_ON() (to only corruption case) like I suggested in my updated diff.
 
-  2. Extend get_perf_callchain() to support "task" as argument.
-
-     This approach reuses most of bpf_get_stack(). However, extending
-     get_perf_callchain() requires non-trivial changes to architecture
-     specific code. Which is error prone.
-
-  3. Current (v2) approach, leverages most of existing bpf_get_stack(), a=
-nd
-     uses stack_trace_save_tsk() to handle architecture specific logic.
-
-[1] https://lore.kernel.org/netdev/20200623070802.2310018-1-songliubravin=
-g@fb.com/
-
-Changes v4 =3D> v5:
-1. Rebase and work around git-am issue. (Alexei)
-2. Update commit log for 4/4. (Yonghong)
-
-Changes v3 =3D> v4:
-1. Simplify the selftests with bpf_iter.h. (Yonghong)
-2. Add example output to commit log of 4/4. (Yonghong)
-
-Changes v2 =3D> v3:
-1. Rebase on top of bpf-next. (Yonghong)
-2. Sanitize get_callchain_entry(). (Peter)
-3. Use has_callchain_buf for bpf_get_task_stack. (Andrii)
-4. Other small clean up. (Yonghong, Andrii).
-
-Changes v1 =3D> v2:
-1. Reuse most of bpf_get_stack() logic. (Andrii)
-2. Fix unsigned long vs. u64 mismatch for 32-bit systems. (Yonghong)
-3. Add %pB support in bpf_trace_printk(). (Daniel)
-4. Fix buffer size to bytes.
-
-Song Liu (4):
-  perf: expose get/put_callchain_entry()
-  bpf: introduce helper bpf_get_task_stack()
-  bpf: allow %pB in bpf_seq_printf() and bpf_trace_printk()
-  selftests/bpf: add bpf_iter test with bpf_get_task_stack()
-
- include/linux/bpf.h                           |  1 +
- include/linux/perf_event.h                    |  2 +
- include/uapi/linux/bpf.h                      | 36 ++++++++-
- kernel/bpf/stackmap.c                         | 77 ++++++++++++++++++-
- kernel/bpf/verifier.c                         |  4 +-
- kernel/events/callchain.c                     | 13 ++--
- kernel/trace/bpf_trace.c                      | 12 ++-
- scripts/bpf_helpers_doc.py                    |  2 +
- tools/include/uapi/linux/bpf.h                | 36 ++++++++-
- .../selftests/bpf/prog_tests/bpf_iter.c       | 17 ++++
- .../selftests/bpf/progs/bpf_iter_task_stack.c | 37 +++++++++
- 11 files changed, 221 insertions(+), 16 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_stack=
-.c
-
---
-2.24.1
