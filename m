@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ECC20EACB
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 03:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A2320EAD9
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 03:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgF3BSt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 21:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S1726460AbgF3BZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 21:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgF3BSt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Jun 2020 21:18:49 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612B8C061755;
-        Mon, 29 Jun 2020 18:18:49 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c30so13292050qka.10;
-        Mon, 29 Jun 2020 18:18:49 -0700 (PDT)
+        with ESMTP id S1726436AbgF3BZu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 21:25:50 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C09C061755;
+        Mon, 29 Jun 2020 18:25:50 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 80so17175774qko.7;
+        Mon, 29 Jun 2020 18:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=d8tAMwICXqgKPvOzjahMVAzDJDS8NleEPw2GGyNN/2U=;
-        b=ndhXs9yeqlT5U78P3dbddL3NvAwigxMvkx+Cr4dXlaa0XLnw6aZtgVEcLm9xEuyjDw
-         1Yd+a6c9qHnfnF52G+M77lp+WdVZX3mS8FWu33cpQEmBPoMjx0CCyrLGdM+ktClczjI3
-         qmwvRKCvS0jP5FEwGmqatU5EYT1gSahpwCO8JH7tx2eFsfsCHlexWTNOAoiRwDx0VWuI
-         h4PV/cdMrpQQMkU8u6cWIftVa4TTp/s7I2FkQxf6Q0mmBs/iNWYQzYbOjIbu0W2sFoLx
-         pZmvRQZZP4cHytcPEAUvH6DCdR8zHcEd0ew+KlWAQqA0PA4qCPsJ8lDDYtZCtG8JMZ32
-         8TlA==
+        bh=gHHO1/s+KcAJZl8plSzZePPHr61XW6/FU8wj+hanOag=;
+        b=AI1tHnAOc0T3nNg1Pq0TME2im0KlJiwhCIfSpesUfHxJQFRYJ6WY1Ivnf7sb8ysiWA
+         kK0xxhOdZt/xA0XUoWbnIeIfa0mS1hBzq5E0T+np1Qpku495WdOhRE1t7DknhzRdG9xb
+         js7HJTKblLfftHy4R5E1hMcUtdS9U4CISasdZJh/Y2eJpegCnrvZEExmSP5oaSFJQ0Xy
+         DJCD45pksSZYliu6XFf1Afyg4vBVCDUZqOXdgfUZ1JACUJ4qy18gx9WhhOLHTppWUo3r
+         hSd9sE8v0C+w7CySlqQ2my8bCvbTBZumTTTYFLn6KffxgDrzuiDuehB+7YtBbJtx5KyI
+         G2aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=d8tAMwICXqgKPvOzjahMVAzDJDS8NleEPw2GGyNN/2U=;
-        b=Fz+ninBzr1kDlrTMrdMT1kaoNyEwB6SREZEuErkJDq4zkwAn7+BD3DAoP4ihSdOTmK
-         UJgboBZdVOW+2nGiGctc8RHex6QW1o/xWmAe2aVy2Xk7pS3sO2NPHsCTOBghJtOdIhZn
-         26wuAqkAoq6A52metpSMvBsr2rjf0480FfEiMrWbzxM9umr2s5NTVBHo97ODRjuPPhRL
-         pwYO4gQC+wrYWnqlJd5PCCQIpi80F6b+2WyV6gYAe42vG0xXL89Nnvq1BEO4MkKSxEYX
-         Ku+lArFdQl5HZZRjZcsK0Gpc0hkXXpvrNAGtGvZ9Uc9+gMRZc2WQznqjDGvsRJRQGJO9
-         es9w==
-X-Gm-Message-State: AOAM531V5g6No2VmueODUDUc7n2oM/jh4wuu5NYSCtAcCDVxM7chgHsW
-        FrIZjy+Mpjq88hH2QyKIVO2Z06nCe8x15Zzuux8=
-X-Google-Smtp-Source: ABdhPJxA/2GwwRG+MrzupQDYE8NUyQBkIhjOFFypsT4PBrge/kfCAJG2fCTXx5+N9/Jim+6xApq4RFES1UPnBrDlb00=
-X-Received: by 2002:a37:270e:: with SMTP id n14mr16635482qkn.92.1593479928606;
- Mon, 29 Jun 2020 18:18:48 -0700 (PDT)
+        bh=gHHO1/s+KcAJZl8plSzZePPHr61XW6/FU8wj+hanOag=;
+        b=DgPpiDmKTNpp3Im7arwt8BASK6UY+q375ZZC+uvh5gf4rGs0Erv8U9winPkCb5UYBe
+         o9NWQPX9PbZhk/V5ZGp7kv+hM1/crhOh469tmrHVBFuD1fxVarGc4PJ9M3LybGV0kpZQ
+         8ihDcAuKTX5t2ins6HDwMUcCvsAFtblBwMfk6qD47k75nQMRtjVIYEfw1C8kdvX4fNir
+         Cj32sdSUhFwhs7yrsQI8CNPrHengoUUI9KtlTvVG6TFyoInhZdSsiap0nzX0xMeKzJ2F
+         pmKeV4i1a47II0YnEnPip0OCIlv6Z+o/lSNWwmxSsNOLrofBSgeKxHpUHofzLX2ORD1q
+         kzUA==
+X-Gm-Message-State: AOAM530xf3nfJPBOFt2Lyp22EiJu+qrAirU03ELv14SfhI/uORW4YKB0
+        8Wey6hlS08JkSzVPIoo/QOtuvDTjf1wuUFg8gcI=
+X-Google-Smtp-Source: ABdhPJzmni681BES0Ghmq/qreIqv8IU76HJR+692CiltUzx2VOEJNJ2BJWnCjP0uF2uPxaljfJBd5WpGqD2kqLD2d8M=
+X-Received: by 2002:a05:620a:2409:: with SMTP id d9mr18401354qkn.36.1593480349328;
+ Mon, 29 Jun 2020 18:25:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200630003441.42616-1-alexei.starovoitov@gmail.com> <20200630003441.42616-4-alexei.starovoitov@gmail.com>
-In-Reply-To: <20200630003441.42616-4-alexei.starovoitov@gmail.com>
+References: <20200630003441.42616-1-alexei.starovoitov@gmail.com> <20200630003441.42616-6-alexei.starovoitov@gmail.com>
+In-Reply-To: <20200630003441.42616-6-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 29 Jun 2020 18:18:37 -0700
-Message-ID: <CAEf4BzZ_ZGkMXRYV7VeudCVs=A3xY=1Mz97GLbbazXv-KUcnRw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/5] bpf: Add bpf_copy_from_user() helper.
+Date:   Mon, 29 Jun 2020 18:25:38 -0700
+Message-ID: <CAEf4BzaH367tNd77puOvwrDHCeGqoNAHPYxdy4tXtWghXqyFSQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 5/5] selftests/bpf: Add sleepable tests
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,59 +67,80 @@ On Mon, Jun 29, 2020 at 5:35 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Sleepable BPF programs can now use copy_from_user() to access user memory.
+> Modify few tests to sanity test sleepable bpf functionality.
+>
+> Running 'bench trig-fentry-sleep' vs 'bench trig-fentry' and 'perf report':
+> sleepable with SRCU:
+>    3.86%  bench     [k] __srcu_read_unlock
+>    3.22%  bench     [k] __srcu_read_lock
+>    0.92%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry_sleep
+>    0.50%  bench     [k] bpf_trampoline_10297
+>    0.26%  bench     [k] __bpf_prog_exit_sleepable
+>    0.21%  bench     [k] __bpf_prog_enter_sleepable
+>
+> sleepable with RCU_TRACE:
+>    0.79%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry_sleep
+>    0.72%  bench     [k] bpf_trampoline_10381
+>    0.31%  bench     [k] __bpf_prog_exit_sleepable
+>    0.29%  bench     [k] __bpf_prog_enter_sleepable
+>
+> non-sleepable with RCU:
+>    0.88%  bench     [k] bpf_prog_740d4210cdcd99a3_bench_trigger_fentry
+>    0.84%  bench     [k] bpf_trampoline_10297
+>    0.13%  bench     [k] __bpf_prog_enter
+>    0.12%  bench     [k] __bpf_prog_exit
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Acked-by: KP Singh <kpsingh@google.com>
 > ---
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       | 11 ++++++++++-
->  kernel/bpf/helpers.c           | 22 ++++++++++++++++++++++
->  kernel/trace/bpf_trace.c       |  2 ++
->  tools/include/uapi/linux/bpf.h | 11 ++++++++++-
->  5 files changed, 45 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/bpf/bench.c           |  2 +
+>  .../selftests/bpf/benchs/bench_trigger.c      | 17 +++++
+>  .../selftests/bpf/prog_tests/test_lsm.c       |  9 +++
+>  tools/testing/selftests/bpf/progs/lsm.c       | 64 ++++++++++++++++++-
+>  .../selftests/bpf/progs/trigger_bench.c       |  7 ++
+>  5 files changed, 97 insertions(+), 2 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index e2b1581b2195..c9f27d5fdb7c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1657,6 +1657,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
->  extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
->  extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
->  extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
-> +extern const struct bpf_func_proto bpf_copy_from_user_proto;
->
->  const struct bpf_func_proto *bpf_tracing_func_proto(
->         enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 73f9e3f84b77..6b347454dedc 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3293,6 +3293,13 @@ union bpf_attr {
->   *             Dynamically cast a *sk* pointer to a *udp6_sock* pointer.
->   *     Return
->   *             *sk* if casting is valid, or NULL otherwise.
-> + *
-> + * long bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
-> + *     Description
-> + *             Read *size* bytes from user space address *user_ptr* and store
-> + *             the data in *dst*. This is a wrapper of copy_from_user().
-> + *     Return
-> + *             0 on success, or a negative error in case of failure.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3435,7 +3442,9 @@ union bpf_attr {
->         FN(skc_to_tcp_sock),            \
->         FN(skc_to_tcp_timewait_sock),   \
->         FN(skc_to_tcp_request_sock),    \
-> -       FN(skc_to_udp6_sock),
-> +       FN(skc_to_udp6_sock),           \
-> +       FN(copy_from_user),             \
-> +       /* */
-
-Thank you for this! Those trivial merge conflicts due to '\' were
-really annoying.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
 
 [...]
+
+> +
+> +SEC("fentry.s/__x64_sys_setdomainname")
+> +int BPF_PROG(test_sys_setdomainname, struct pt_regs *regs)
+> +{
+> +       int buf = 0;
+> +       long ret;
+> +
+> +       ret = bpf_copy_from_user(&buf, sizeof(buf), (void *)regs->di);
+> +       if (regs->si == -2 && ret == 0 && buf == 1234)
+> +               copy_test++;
+> +       if (regs->si == -3 && ret == -EFAULT)
+> +               copy_test++;
+> +       if (regs->si == -4 && ret == -EFAULT)
+> +               copy_test++;
+
+regs->si and regs->di won't compile on non-x86 arches, better to use
+PT_REGS_PARM1() and PT_REGS_PARM2() from bpf_tracing.h.
+
+> +       return 0;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
+> index 8b36b6640e7e..9a4d09590b3d 100644
+> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
+> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
+> @@ -39,6 +39,13 @@ int bench_trigger_fentry(void *ctx)
+>         return 0;
+>  }
+>
+> +SEC("fentry.s/__x64_sys_getpgid")
+> +int bench_trigger_fentry_sleep(void *ctx)
+> +{
+> +       __sync_add_and_fetch(&hits, 1);
+> +       return 0;
+> +}
+> +
+>  SEC("fmod_ret/__x64_sys_getpgid")
+>  int bench_trigger_fmodret(void *ctx)
+>  {
+> --
+> 2.23.0
+>
