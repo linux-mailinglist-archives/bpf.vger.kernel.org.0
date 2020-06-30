@@ -2,132 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D7020F0F8
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 10:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04DA20F2E3
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 12:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731726AbgF3I5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 04:57:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40932 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgF3I5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:57:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87A42AE61;
-        Tue, 30 Jun 2020 08:57:06 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id E8BAB604DC; Tue, 30 Jun 2020 10:57:05 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 10:57:05 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build
- bpfilter_umh
-Message-ID: <20200630085705.txwn62zixvxxs7rt@lion.mk-sys.cz>
-References: <20200423073929.127521-1-masahiroy@kernel.org>
- <20200423073929.127521-5-masahiroy@kernel.org>
- <20200608115628.osizkpo76cgn2ci7@lion.mk-sys.cz>
- <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
+        id S1732315AbgF3Kn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 06:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732238AbgF3KnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 06:43:25 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A11C061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 03:43:25 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id i4so20415604iov.11
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 03:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=fsCe4U/7wjRdb2DTtn1aQc5ygylfzKBl8XbVVMuY+kg=;
+        b=ZBWZNgyflFot85d9cOxV1zTlYKFba4gpOf6/xkaTi1/KCLNXWheIIMIcuPHwiKxsUT
+         5iBCDzTb39l0+UC7GPhp2Acp1RUvLIFaOVx/BwEx19SAmAMRvoV0p66fxiUKpKJSOY8a
+         BjlflHrHBBUtxQVX5CEdNTW6AkTIiep6oZJDf7+02MKJe05ZE77HjAFG8iZh01l4TBy7
+         dE384HeVYwcELbDe1iAX/SVKD0+Zt2Pfnu6TTuND00FNeg0c+D3pCKM0uSDV2vuovK2f
+         m/Ixtt2HnTf39cxQU9a66goxoDY7dvlsXV40Mnw1NcxVFweiBJ+HqIw3RJWq/E2s+lIi
+         03og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=fsCe4U/7wjRdb2DTtn1aQc5ygylfzKBl8XbVVMuY+kg=;
+        b=ZjLEQkaLCms3W3i3ze2OgjlxtKN9/cYaVvfs83D4n/IvyCJm5sc8JOKYq347tSXuPq
+         Qy1l4JKJgsEzSONCocdnA/Be6TmFeUm7PJFlJ06/03MzekhZTKpHDgYK44DtCr6HrL6U
+         FhiDs0qCCF2fH1ZJ5gzdqNBOMXZqP3x0uQR9IM7kKxtiBaaA0cKbyxLU1lDYvmObYJlY
+         BKd0vdoByio8fOWsGpWyFUaRZ7BShW8BVTjQPmLfLmWvrVN4g8BCYImXUs3lPNc/JeBE
+         qDxQoOjFfpgvaCAa/F5FTgONIGZbk5BEouGlRJ73Q8vMFIEfFefhqfTrs65w7e6oT4p/
+         9u1A==
+X-Gm-Message-State: AOAM532vOyllSQ3EThZzKU4HmnZnawc+4b7vLQ6KOPjR/ZDAeNCtKUa+
+        JjD2Y+j7T0ROwQ9kD4anC6ZR6+Qb/ZUsNIhAP0s=
+X-Google-Smtp-Source: ABdhPJwUfP6zW/qBOlonSpyB8/bjJAEkGmWhjoxEzGxdkp7FC7ZqdkrD0Cx+SlllK5O0Em5C8sqPn5csu9WjYAa6PMQ=
+X-Received: by 2002:a5e:dc03:: with SMTP id b3mr19816776iok.97.1593513804813;
+ Tue, 30 Jun 2020 03:43:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARGKCyWbfWUOX3nLLOBS3gi1QU3acdXLPVK4C+ErMDLpA@mail.gmail.com>
+Received: by 2002:a5d:8b02:0:0:0:0:0 with HTTP; Tue, 30 Jun 2020 03:43:24
+ -0700 (PDT)
+Reply-To: mrs.victoria.alexander2@gmail.com
+From:   " Mrs. Victoria Alexander  " <mrssamiraali20@gmail.com>
+Date:   Tue, 30 Jun 2020 03:43:24 -0700
+Message-ID: <CAOch3DhstXRRpzJU+1nk-pmmP1MJtJJt0oTCKQHpJ+SFpphrxQ@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 03:30:04PM +0900, Masahiro Yamada wrote:
-> On Mon, Jun 8, 2020 at 8:56 PM Michal Kubecek <mkubecek@suse.cz> wrote:
-> >
-> > I just noticed that this patch (now in mainline as commit 8a2cc0505cc4)
-> > drops the test if CONFIG_BPFILTER_UMH is "y" so that -static is now
-> > passed to the linker even if bpfilter_umh is built as a module which
-> > wasn't the case in v5.7.
-> >
-> > This is not mentioned in the commit message and the comment still says
-> > "*builtin* bpfilter_umh should be linked with -static" so this change
-> > doesn't seem to be intentional. Did I miss something?
-> 
-> I was away for a while from this because I saw long discussion in
-> "net/bpfilter: Remove this broken and apparently unmaintained"
-> 
-> 
-> Please let me resume this topic now.
-> 
-> 
-> The original behavior of linking umh was like this:
->   - If CONFIG_BPFILTER_UMH=y, bpfilter_umh was linked with -static
->   - If CONFIG_BPFILTER_UMH=m, bpfilter_umh was linked without -static
-> 
-> 
-> 
-> Restoring the original behavior will add more complexity because
-> now we have CONFIG_CC_CAN_LINK and CONFIG_CC_CAN_LINK_STATIC
-> since commit b1183b6dca3e0d5
-> 
-> If CONFIG_BPFILTER_UMH=y, we need to check CONFIG_CC_CAN_LINK_STATIC.
-> If CONFIG_BPFILTER_UMH=m, we need to check CONFIG_CC_CAN_LINK.
-> This would make the Kconfig dependency logic too complicated.
-> 
-> 
-> To make it simpler, I'd like to suggest two options.
-> 
-> 
-> 
-> Idea 1:
-> 
->   Always use -static irrespective of whether
->   CONFIG_BPFILTER_UMH is y or m.
-> 
->   Add two more lines to clarify this
->   in the comment in net/bpfilter/Makefile:
-> 
->   # builtin bpfilter_umh should be linked with -static
->   # since rootfs isn't mounted at the time of __init
->   # function is called and do_execv won't find elf interpreter.
->   # Static linking is not required when bpfilter is modular, but
->   # we always pass -static to keep the 'depends on' in Kconfig simple.
+Dear friend,
 
-I wouldn't be very happy with this solution as that would mean adding an
-extra build dependency which we don't really need. We might even
-consider disabling CONFIG_BPFILTER_UMH instead.
 
-> Idea 2:
-> 
->    Allow umh to become only modular,
->    and drop -static flag entirely.
-> 
->    If you look at net/bpfilter/Kconfig,
->    BPFILTER_UMH already has 'default m'.
->    So, I assume the most expected use-case
->    is modular.
-> 
->    My suggestion is to replace 'default m' with 'depends on m'.
-> 
->    config BPFILTER_UMH
->            tristate "bpfilter kernel module with user mode helper"
->            depends on CC_CAN_LINK
->            depends on m
-> 
->    Then BPFILTER_UMH will be restricted to either m or n.
->    Link umh dynamically because we can expect rootfs
->    is already mounted for the module case.
+I have a business container transaction what that some of( $13million dollars)
 
-This wouldn't be a problem for me or openSUSE kernels as we already have
-CONFIG_BPFILTER_UMH=m. But I can't speak for others, I'm not sure if
-there are some use cases requiring CONFIG_BPFILTER_UMH=y.
+ I would like to discuss with you. If you are interested, please
+contact my email
 
-Michal
+address (mrs.victoria.alexander2@gmail.com)
+
+My WhatsApp number but only message +19293737780
+
+Please do not reply if you are not ready
+Thanks
