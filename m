@@ -2,151 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBFC20F4D6
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 14:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA1A20F507
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 14:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732042AbgF3MjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 08:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44222 "EHLO mail.kernel.org"
+        id S2387860AbgF3Muq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 08:50:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387773AbgF3MjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 08:39:16 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S2387847AbgF3Mup (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:50:45 -0400
+Received: from localhost.localdomain.com (unknown [151.48.138.186])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAF772078B;
-        Tue, 30 Jun 2020 12:39:13 +0000 (UTC)
-Date:   Tue, 30 Jun 2020 08:39:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Will Deacon <will@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] kernel/trace: Add TRACING_ALLOW_PRINTK config option
-Message-ID: <20200630083912.40a6c50d@oasis.local.home>
-In-Reply-To: <20200630051659.uqnkkwaho3lvvnu7@ast-mbp.dhcp.thefacebook.com>
-References: <CANMq1KCAUfxy-njMJj0=+02Jew_1rJGwxLzp6BRTE=9CL2DZNA@mail.gmail.com>
-        <20200625035913.z4setdowrgt4sqpd@ast-mbp.dhcp.thefacebook.com>
-        <20200626181455.155912d9@oasis.local.home>
-        <20200628172700.5ea422tmw77otadn@ast-mbp.dhcp.thefacebook.com>
-        <20200628144616.52f09152@oasis.local.home>
-        <20200628192107.sa3ppfmxtgxh7sfs@ast-mbp.dhcp.thefacebook.com>
-        <20200628154331.2c69d43e@oasis.local.home>
-        <20200628220209.3oztcjnzsotlfria@ast-mbp.dhcp.thefacebook.com>
-        <20200628182842.2abb0de2@oasis.local.home>
-        <20200628194334.6238b933@oasis.local.home>
-        <20200630051659.uqnkkwaho3lvvnu7@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6638206B6;
+        Tue, 30 Jun 2020 12:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593521444;
+        bh=aevTkSOGYSd4a0RxWhQzJx88ppG9jptXfOculOrXjn4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zHDkJsJE0aX99w5zLhqiAx3+ewdzOJFcpQ2/uLvFkCXrqUVr8Ruq4yN4yCcOCbHtN
+         uOH2he9XdzA3xd7i1Zzv6vqKyiRmsSYwiGLHD7XhlEMos7sZvaDrMziJf1A0JrUabr
+         tvgN0bW23S3TReRR7UDehFLBFMFfIi2bNxvdjvbo=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
+        daniel@iogearbox.net, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org, andrii.nakryiko@gmail.com
+Subject: [PATCH v5 bpf-next 0/9] introduce support for XDP programs in CPUMAP
+Date:   Tue, 30 Jun 2020 14:49:35 +0200
+Message-Id: <cover.1593521029.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 29 Jun 2020 22:16:59 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+capability to attach and run a XDP program to CPUMAP entries.
+The idea behind this feature is to add the possibility to define on which CPU
+run the eBPF program if the underlying hw does not support RSS.
+I respin patch 1/6 from a previous series sent by David [2].
+The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+Detailed tests results can be found here:
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap04-map-xdp-prog.org
 
-> > 
-> > Warning, not even compiled tested.  
-> 
-> Thanks! I see what you mean now.
+Changes since v4:
+- move xdp_clear_return_frame_no_direct inside rcu section
+- update David Ahern's email address
 
-Great! :-)
+Changes since v3:
+- fix typo in commit message
+- fix access to ctx->ingress_ifindex in cpumap bpf selftest
 
-> 
-> > 
-> > -- Steve
-> > 
-> > diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> > index 6575bb0a0434..aeba5ee7325a 100644
-> > --- a/kernel/trace/Makefile
-> > +++ b/kernel/trace/Makefile
-> > @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
-> >  GCOV_PROFILE := y
-> >  endif
-> >  
-> > +CFLAGS_bpf_trace.o := -I$(src)  
-> 
-> not following. why this is needed?
+Changes since v2:
+- improved comments
+- fix return value in xdp_convert_buff_to_frame
+- added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_batched"
+- do not run kmem_cache_alloc_bulk if all frames have been consumed by the XDP
+  program attached to the CPUMAP entry
+- removed bpf_trace_printk in kselftest
 
-It's required in order to have the TRACE_EVENT macro magic work. More
-info about it here:
+Changes since v1:
+- added performance test results
+- added kselftest support
+- fixed memory accounting with page_pool
+- extended xdp_redirect_cpu_user.c to load an external program to perform
+  redirect
+- reported ifindex to attached eBPF program
+- moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/trace_events/Makefile
+[1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.75383-1-dsahern@kernel.org/
+[2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.40418-2-dsahern@kernel.org/
 
+David Ahern (1):
+  net: refactor xdp_convert_buff_to_frame
 
-> 
-> > +
-> >  CFLAGS_trace_benchmark.o := -I$(src)
-> >  CFLAGS_trace_events_filter.o := -I$(src)
-> >  
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index dc05626979b8..01bedf335b2e 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -19,6 +19,9 @@
-> >  #include "trace_probe.h"
-> >  #include "trace.h"
-> >  
-> > +#define CREATE_TRACE_EVENTS  
-> 
-> CREATE_TRACE_POINTS ?
+Jesper Dangaard Brouer (1):
+  cpumap: use non-locked version __ptr_ring_consume_batched
 
+Lorenzo Bianconi (7):
+  samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+    loop
+  cpumap: formalize map value as a named struct
+  bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+  bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+    entries
+  libbpf: add SEC name for xdp programs attached to CPUMAP
+  samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+  selftest: add tests for XDP programs in CPUMAP entries
 
-Doh, yeah. I did say it wasn't even compiled tested ;-)
+ include/linux/bpf.h                           |   6 +
+ include/net/xdp.h                             |  41 ++--
+ include/trace/events/xdp.h                    |  16 +-
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/cpumap.c                           | 161 +++++++++++---
+ net/core/dev.c                                |   9 +
+ samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+ samples/bpf/xdp_redirect_cpu_user.c           | 209 ++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  36 +++
+ 12 files changed, 531 insertions(+), 72 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
 
-> 
-> > +#include "bpf_trace.h"
-> > +
-> >  #define bpf_event_rcu_dereference(p)					\
-> >  	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
-> >  
-> > @@ -473,13 +476,29 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
-> >  		fmt_cnt++;
-> >  	}
-> >  
-> > +static DEFINE_SPINLOCK(trace_printk_lock);
-> > +#define BPF_TRACE_PRINTK_SIZE	1024
-> > +
-> > +static inline void do_trace_printk(const char *fmt, ...)
-> > +{
-> > +	static char buf[BPF_TRACE_PRINT_SIZE];
-> > +	unsigned long flags;
-> > +
-> > +	spin_lock_irqsave(&trace_printk_lock, flags);
-> > +	va_start(ap, fmt);
-> > +	vsnprintf(buf, BPF_TRACE_PRINT_SIZE, fmt, ap);
-> > +	va_end(ap);
-> > +
-> > +	trace_bpf_trace_printk(buf);
-> > +	spin_unlock_irqrestore(&trace_printk_lock, flags);  
-> 
-> interesting. I don't think anyone would care about spin_lock overhead.
-> It's better because 'trace_bpf_trace_printk' would be a separate event
-> that can be individually enabled/disabled?
-> I guess it can work.
-> Thanks!
+-- 
+2.26.2
 
-I hope this does everything you need for bpf_trace_printk. If there's
-something  that's not working for you, PLEASE reach out to me and ask
-what you need.
-
-Cheers!
-
--- Steve
