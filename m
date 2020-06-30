@@ -2,135 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EB420F3D0
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 13:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5621820F464
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 14:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732222AbgF3Lup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 07:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgF3Luo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 07:50:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B21DC03E979
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:44 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l17so18536235wmj.0
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 04:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GWV+iQuRtCpfYYNtAK9+bSfnvyQdFNs1dv+1er5dsU8=;
-        b=EwcjwlqNUbnEZ6IaVQ/ouTVjAi+5W0gXxwIwgJx5L2q5OidBLRmG3492wCWCmiVYiE
-         IvHiU0kX/UxnCdXYxe4fRfAbp/JroR7rbdhyeu3GnuTSrLA3c7k1jft/XAiU03BUbZE0
-         XXgcqG/Qhna6vb/sUq0KoiYVJf6DOkKbhRzHo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GWV+iQuRtCpfYYNtAK9+bSfnvyQdFNs1dv+1er5dsU8=;
-        b=BZt4IAReU6cZGOAWy8jHEE5jsvkaHvMqWRlKjoMoe9nGE3CfB1bEegS4+lwHxLm5S7
-         1woOJSgI+xPmAz6ePj7DgDfTPAXcf6kZf0NrEFARnhTT/lOlXgNRkC6WxjKY4Tg+LXaA
-         WSuR8+aFQhGK0yP9bzOiFKHppaGXD1OIVybvJeAN7Jnpk+1OjnHgsqw6ePGfNYijdY+H
-         WPwXsf6vgP9g+fSFj7mWhnFpBKJP1oyuZ4KI+4sadMLIbx2q79vjWHwY6eLxADdBUusG
-         kGEwxr/95X30u/4HMomHLCmTtz4t3WuWmLgXaS2km2RTnSa1i49GdBbKSUU4vyqkYYcZ
-         KxCw==
-X-Gm-Message-State: AOAM533xH3InqudMNVFpbSATfy5R1jr1AhbS3z+My/iEnhoygBib5FLz
-        xe+UV8KPujrKgSyWLP2n0uJ7iA==
-X-Google-Smtp-Source: ABdhPJxVsZfzjzet5KchM2IaO/5rCJy/Ok+q7SabeQRomMWOldOTToa7odVxlDAtJPgSuqKpO2M1Mw==
-X-Received: by 2002:a05:600c:2154:: with SMTP id v20mr22983992wml.185.1593517843162;
-        Tue, 30 Jun 2020 04:50:43 -0700 (PDT)
-Received: from google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id k11sm3730872wrd.23.2020.06.30.04.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 04:50:42 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 30 Jun 2020 13:50:41 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
+        id S1732816AbgF3MTI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 08:19:08 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:33564 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732509AbgF3MTH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 08:19:07 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFE5-00081m-AD; Tue, 30 Jun 2020 06:19:01 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jqFE0-00084E-2g; Tue, 30 Jun 2020 06:19:01 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v2 4/4] bpf: Add selftests for local_storage
-Message-ID: <20200630115041.GB421824@google.com>
-References: <20200617202941.3034-1-kpsingh@chromium.org>
- <20200617202941.3034-5-kpsingh@chromium.org>
- <CAEf4BzZdUWUSLzT1Y-o1Yvy3tTETkJEVU7RyZufZY_yEKzwOSg@mail.gmail.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <87lfk54p0m.fsf_-_@x220.int.ebiederm.org>
+        <20200630054313.GB27221@infradead.org>
+Date:   Tue, 30 Jun 2020 07:14:23 -0500
+In-Reply-To: <20200630054313.GB27221@infradead.org> (Christoph Hellwig's
+        message of "Tue, 30 Jun 2020 06:43:13 +0100")
+Message-ID: <87a70k21k0.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZdUWUSLzT1Y-o1Yvy3tTETkJEVU7RyZufZY_yEKzwOSg@mail.gmail.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1jqFE0-00084E-2g;;;mid=<87a70k21k0.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18dJcHLmm8/3QJGbuxrMA4/Ld4nXUEMj/w=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4944]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Christoph Hellwig <hch@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4796 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 9 (0.2%), b_tie_ro: 7 (0.2%), parse: 0.88 (0.0%),
+        extract_message_metadata: 11 (0.2%), get_uri_detail_list: 0.73 (0.0%),
+        tests_pri_-1000: 6 (0.1%), tests_pri_-950: 1.27 (0.0%),
+        tests_pri_-900: 1.03 (0.0%), tests_pri_-90: 167 (3.5%), check_bayes:
+        165 (3.4%), b_tokenize: 7 (0.1%), b_tok_get_all: 7 (0.1%),
+        b_comp_prob: 1.91 (0.0%), b_tok_touch_all: 146 (3.0%), b_finish: 0.86
+        (0.0%), tests_pri_0: 221 (4.6%), check_dkim_signature: 0.54 (0.0%),
+        check_dkim_adsp: 2.3 (0.0%), poll_dns_idle: 4353 (90.8%),
+        tests_pri_10: 2.2 (0.0%), tests_pri_500: 4374 (91.2%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [PATCH v2 10/15] exec: Remove do_execve_file
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 18-Jun 11:16, Andrii Nakryiko wrote:
-> On Wed, Jun 17, 2020 at 1:31 PM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > inode_local_storage:
-> >
-> > * Hook to the file_open and inode_unlink LSM hooks.
-> > * Create and unlink a temporary file.
-> > * Store some information in the inode's bpf_local_storage during
-> >   file_open.
-> > * Verify that this information exists when the file is unlinked.
-> >
-> > sk_local_storage:
-> >
-> > * Hook to the socket_post_create and socket_bind LSM hooks.
-> > * Open and bind a socket and set the sk_storage in the
-> >   socket_post_create hook using the start_server helper.
-> > * Verify if the information is set in the socket_bind hook.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
-> >  .../selftests/bpf/progs/local_storage.c       | 137 ++++++++++++++++++
-> >  2 files changed, 197 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-> >
-> 
-> [...]
-> 
-> > diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-> > new file mode 100644
-> > index 000000000000..38954e6a1edc
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/local_storage.c
-> > @@ -0,0 +1,137 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Copyright 2020 Google LLC.
-> > + */
-> > +
-> > +#include <errno.h>
-> > +#include <linux/bpf.h>
-> > +#include <stdbool.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +__u32 _version SEC("version") = 1;
-> 
-> version is anachronism, please drop it.
+Christoph Hellwig <hch@infradead.org> writes:
 
-Removed.
+> FYI, this clashes badly with my exec rework.  I'd suggest you
+> drop everything touching exec here for now, and I can then
+> add the final file based exec removal to the end of my series.
 
-> 
-> Otherwise, LGTM.
+I have looked and I haven't even seen any exec work.  Where can it be
+found?
 
-Thanks
+I have working and cleaning up exec for what 3 cycles now.  There is
+still quite a ways to go before it becomes possible to fix some of the
+deep problems in exec.  Removing all of these broken exec special cases
+is quite frankly the entire point of this patchset.
 
-- KP
+Sight unseen I suggest you send me your exec work and I can merge it
+into my branch if we are going to conflict badly.
 
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> [...]
+Eric
+
