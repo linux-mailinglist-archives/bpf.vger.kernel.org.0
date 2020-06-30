@@ -2,130 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F28820EBDB
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 05:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B17D20EBFF
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 05:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgF3DMu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Jun 2020 23:12:50 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57680 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727826AbgF3DMt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Jun 2020 23:12:49 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05U33ZVr014151;
-        Mon, 29 Jun 2020 20:12:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=137hJM6nbkiqpYTeYulMxfZMjIg3l3Pnu/miHR9RMeg=;
- b=SO6vRZW2oapRFQiY0ZPLMrWHcoMm8DMrJ9unZ2XcIvP8lPcRlNj7lSnfSUPOm1CQfDFe
- liq4exmUZXlxdREkBUJzXQL9TV9bcTXRtE2f7xdhRoha2NmnjF5dKeCLnnoPiGthe8io
- e+SLh00THyLQVGllRiDZqAtZW0oMCwYckKc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31x3xgtbjy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 29 Jun 2020 20:12:34 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 29 Jun 2020 20:12:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J2jbTpGRX5cNnlqoWqRwJx//f2Bakx7NrA8juY+G4Whmgg2tlDEl8z7THCbf5uTMrI1zj4iscy5L5MCwTYvLqY6ZOKdGy13XsdqU6aky5AvJKWD8m/rM1kdD0C5blTQ7X+Tj30GHjOd4gGqHoC6tFhuhBOSNR0B942qLWZxmTYgntzhIMnYVymEOAPYCuREw2xPxIlAh0n29cKzRh0ccMMNojssZgfMbeH98skmDUG+/9ZGADe3eQt0mhxvjk2D9raCh8tMk+quWoiizngKANIIzWORAGayC29dQXMF3JLcC8NUyEPt7Se1nwDDPAxyfd3nK9XT/WMAUnc/JxmOU2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=137hJM6nbkiqpYTeYulMxfZMjIg3l3Pnu/miHR9RMeg=;
- b=iB5jFfoB9PPQ30YjyMGdZ8sat3jO+jciOcEXR/j/IPGcwGXVujnKQ6lNpypdYzz4gxztRM3VfGRYCJo2PKHzDb2YxH+WFtekexLxe+tYxpI9wvuX2RVQg5PwOh6CV9FUT858ZxY/Ng/kHhSTviqjGTqB53sYOjLemOsOZ3ITIZa6XGCNtCyDxFVWd7dFzG3vwYvVfQALufFWko8cY8ZZxEMKGOmcYP9hgb9o9Hafwfp+tOI+pelTaPKVvDXjM1qWG+BPz4mY2NDKa51oFtJhrCuMuucO4p67QyMzZFe/1nHDsL66rMexn9Nf6vZuoYQ51DE1NVyYYxQtd4f8enKvTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=137hJM6nbkiqpYTeYulMxfZMjIg3l3Pnu/miHR9RMeg=;
- b=AT58hFCTN67BNfkx9ARa1QqQSF+upOk2F9fDv/5EwekXmV2gHn1EHxJOki0c12EX5FOtcyhWMAlaj/VIL+W/03qj3F8jUKms+llKKX/4ZBzDRiGUI02EM68sILLslRLfzt4t1dsmeol/KGFrX7yyvPeHpHLWzvJL2AVy9tu8MuI=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2949.namprd15.prod.outlook.com (2603:10b6:a03:f8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Tue, 30 Jun
- 2020 03:12:32 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Tue, 30 Jun 2020
- 03:12:32 +0000
-Subject: Re: [PATCH bpf-next 1/2] tools/bpftool: allow substituting custom
- vmlinux.h for the build
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>
-References: <20200630004759.521530-1-andriin@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <9a407c84-bd5d-7eba-6c23-0642a8d4b2f4@fb.com>
-Date:   Mon, 29 Jun 2020 20:12:30 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <20200630004759.521530-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR04CA0007.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::17) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1729052AbgF3Dbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jun 2020 23:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbgF3Dbo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jun 2020 23:31:44 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90570C061755;
+        Mon, 29 Jun 2020 20:31:44 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z2so14593407qts.5;
+        Mon, 29 Jun 2020 20:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5v2qbSgvYFYLL4nXDhogeZKd+1461LNxvZOE6jg3PCs=;
+        b=QxJ98V3GBzeDpSYq5LUJGDXiN7jCXibwwMESDNYez7oBJkc0Bor+ecU8LeUM1Hs3jJ
+         EkZ0oInYqiaQyxnxOUpNsNLMpvb35sD0Ci5ATzYsGaQfuAzzD1d4CVY+qbb/975gmCi1
+         3VdsQnn7WmYUDXu40wJUosjFT5h8NSKwpwBhR0IfcHMXo9Itz7/ARxHDCE0Dodqw2wxQ
+         pbHJtBW3Ys8dHBKL/DaApzFI9i2NPHlrjC3IA3uHW2YHvhhYudnRe2gV7hLpvSiFUb4c
+         g8aVZM62Z32yeLhdefUANZTHzMRuAtE5ULZmHgDoLgK3YvsPAlu6pwY+s1f2gkD5jfoY
+         iusw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5v2qbSgvYFYLL4nXDhogeZKd+1461LNxvZOE6jg3PCs=;
+        b=LDjdRCyZgrpiX94zNq37C+n0f6WUOM4EiG8e8vOVbLIqSoJABR2h/1s9MY8K6x7F5q
+         jWgZoJymgaIRWFodcls0akIY8pZphxekwuy7g4gnD5HmZRA6UviLmWdTQ+Yjjiwbm0ga
+         wHmnFDl2Pds8JYA4HCTI0JWc3NVTsxpQFkWB2Qeg3gmMSMOOpa716XV6lLCY1ThH4aaN
+         P+PdbNQYO0QvIPc/CpzAKfn9GLkVUeAJ02+jrV6CrQ31U4PNsHbhaDxWdNBpOe2dOtQP
+         znXg+rfWjhZ1klnFvjS6Rq/WiQXZBSfHjtr+0exIneNDQeK3SKOyhCohg73BQ9PCSj5J
+         oHKw==
+X-Gm-Message-State: AOAM532Q2PNwDUy4QD7dN+8ZzyMxIRIdzYo9prTLA0vHXAcQrv6sVLvT
+        GVbWVdBr69DxFqom8VftxeRlGhmuyYwaiEUKtlU=
+X-Google-Smtp-Source: ABdhPJw0KNjTZEZnsb2ejWJxWQi/vGZNRBiFNuvycwFnIjTcXMpEvDwpZ6r+DpoSbEP1ra2Jc1k6MfWKxUw2kFu0NGs=
+X-Received: by 2002:ac8:19c4:: with SMTP id s4mr14640168qtk.117.1593487903781;
+ Mon, 29 Jun 2020 20:31:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::15c2] (2620:10d:c090:400::5:46d9) by BY5PR04CA0007.namprd04.prod.outlook.com (2603:10b6:a03:1d0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Tue, 30 Jun 2020 03:12:31 +0000
-X-Originating-IP: [2620:10d:c090:400::5:46d9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98450566-ed3b-4ce5-525c-08d81ca36df2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2949:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB29495DCDEEDCC45502741BA2D36F0@BYAPR15MB2949.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 0450A714CB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7lv4IGzifZarAMp+UOIzYt94FCAJNFw7pZBZpDwnOX34S7/jEAeHeM15uCJ7lIYN90e+QVVHpxIgoBiPwglVMKdkyzaJPYxvKWpP8fIlw9p8s7oStkxk6sGREopg92LLLH9OS99VXTux7rVkdEgNjgPtUHiVxc5dHA1wyO6PSl4irCMp/wck02F8elJBcTQmcZKlbpxp54FEhHTAd2zJc99WlBgzjOogvON36c9pHo3M2G/GPAUdzrkKfbfI3Cc6nmjn5tzPXGS73qmv86FCrzteqUS3/t4duXCPKtKehlJGW1X8MAhRdCi973x59jUfZOGnXpcvB9HdRGhPs36tHMfzM1lc+56dqTP1eet6XIMn+lBov2OtJzPPd1U8oxqK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(376002)(346002)(366004)(136003)(186003)(16526019)(86362001)(8676002)(53546011)(2906002)(66556008)(66476007)(2616005)(66946007)(36756003)(52116002)(31686004)(8936002)(4744005)(478600001)(31696002)(316002)(4326008)(6486002)(5660300002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: i3Uyz1XDCzJSOdtw4kJj0NsDvEufba6qFP7QRP2Jb4dbfwUVHt7tzjqrhJ88omlZaYShuRVw4SnMgM7Uy9BdwBcUkJyvC7zXGU+c4GXAI56fiYjO35DexLMOitlrEjSVJBBtki9EsbmD/8BWCLHCpibgA/ED+Sc5q5m690Ttd0wuByzFcPAZxSPDW4N+eVplTnGd768qwsFcAsvt6GrJ+M9u4/STtx7pWWPkd3LcTW3YrF6nd8aaKjJ4AYEExuTxZ/lZSzFbNkQvUTU3OU9pG64s99x/Rnndz5aNjJg5yMq+7YS3TouVy3vF57b1jVhtQXNfP+lJNg6kdptgptgN/Uvav1PZ2wqb9dI2eXI7smvy2OPA4Z7JJ64O8Blo1j1cyAZGWFbiWbS5I6B+xgAF5QyOI0v8cX+A+Dz5Lczh8L2/ckuNL72EAMNaYyC5WrLwl34RUo7IWlyNa+xOqzkXN4b25EiUjaISPbg4+OuJk+yJwwWdnsZKu4G+U68fhjFoWHnvhwADsyiKA6/1TXC5Ag==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98450566-ed3b-4ce5-525c-08d81ca36df2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2020 03:12:32.5038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 70lmkG0/TIbAHHtFVwdFLcLWPISAWGN+gjeTdvoy9Ht2/vCDCtJdTSGQFT/XCsxM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2949
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-06-29_21:2020-06-29,2020-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxlogscore=867
- bulkscore=0 priorityscore=1501 mlxscore=0 impostorscore=0 spamscore=0
- clxscore=1015 cotscore=-2147483648 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006300022
-X-FB-Internal: deliver
+References: <20200630003441.42616-1-alexei.starovoitov@gmail.com>
+ <20200630003441.42616-2-alexei.starovoitov@gmail.com> <CAEf4BzaLJ619mcN9pBQkupkJOcFfXWiuM8oy0Qjezy65Rpd_vA@mail.gmail.com>
+ <CAEf4BzZ4oEbONjbW5D5rngeiuT-BzREMKBz9H_=gzfdvBbvMOQ@mail.gmail.com> <20200630025613.scvhmqootlnxp7sx@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200630025613.scvhmqootlnxp7sx@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 29 Jun 2020 20:31:32 -0700
+Message-ID: <CAEf4BzYjFUJq9ODZgHx6XpoE7JXGrkKqMpaARs7wshxCrU0daw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/5] bpf: Remove redundant synchronize_rcu.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jun 29, 2020 at 7:56 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 29, 2020 at 06:08:48PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Jun 29, 2020 at 5:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Jun 29, 2020 at 5:35 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > >
+> > > > bpf_free_used_maps() or close(map_fd) will trigger map_free callback.
+> > > > bpf_free_used_maps() is called after bpf prog is no longer executing:
+> > > > bpf_prog_put->call_rcu->bpf_prog_free->bpf_free_used_maps.
+> > > > Hence there is no need to call synchronize_rcu() to protect map elements.
+> > > >
+> > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > > ---
+> > >
+> > > Seems correct. And nice that maps don't have to care about this anymore.
+> > >
+> >
+> > Actually, what about the map-in-map case?
+> >
+> > What if you had an array-of-maps with an inner map element. It is the
+> > last reference to that map. Now you have two BPF prog executions in
+> > parallel. One looked up that inner map and is updating it at the
+> > moment. Another execution at the same time deletes that map. That
+> > deletion will call bpf_map_put(), which without synchronize_rcu() will
+> > free memory. All the while the former BPF program execution is still
+> > working with that map.
+>
+> The delete of that inner map can only be done via sys_bpf() and there
+> we do maybe_wait_bpf_programs() exactly to avoid this kind of problems.
+> It's also necessary for user space. When the user is doing map_update/delete
+> of inner map as soon as syscall returns the user can process
+> old map with guarantees that no bpf prog is touching inner map.
 
-
-On 6/29/20 5:47 PM, Andrii Nakryiko wrote:
-> In some build contexts (e.g., Travis CI build for outdated kernel), vmlinux.h,
-> generated from available kernel, doesn't contain all the types necessary for
-> BPF program compilation. For such set up, the most maintainable way to deal
-> with this problem is to keep pre-generated (almost up-to-date) vmlinux.h
-> checked in and use it for compilation purposes. bpftool after that can deal
-> with kernel missing some of the features in runtime with no problems.
-> 
-> To that effect, allow to specify path to custom vmlinux.h to bpftool's
-> Makefile with VMLINUX_H variable.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-
-Acked-by: Yonghong Song <yhs@fb.com>
+Ah, that's what I missed. I also constantly forget that map-in-map
+can't be updated from BPF side. Thanks!
