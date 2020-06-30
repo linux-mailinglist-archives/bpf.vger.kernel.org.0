@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2520F6E2
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 16:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F9220F6E5
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 16:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388788AbgF3OLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 10:11:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46754 "EHLO
+        id S2388693AbgF3OMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 10:12:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47112 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbgF3OLU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:11:20 -0400
+        with ESMTP id S1729908AbgF3OMF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:12:05 -0400
 Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jqGyl-0000qD-AR; Tue, 30 Jun 2020 16:11:19 +0200
+        id 1jqGzT-0000ul-1t; Tue, 30 Jun 2020 16:12:03 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jqGyl-000XWF-4U; Tue, 30 Jun 2020 16:11:19 +0200
-Subject: Re: [PATCH bpf-next] selftests/bpf: test_progs option for getting
- number of tests
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Hangbin Liu <haliu@redhat.com>
-References: <159344647797.836609.7781883615056725815.stgit@firesoul>
+        id 1jqGzS-0002BZ-Rn; Tue, 30 Jun 2020 16:12:02 +0200
+Subject: Re: [PATCH bpf-next 1/2] tools/bpftool: allow substituting custom
+ vmlinux.h for the build
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200630004759.521530-1-andriin@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6e7543fa-f496-a6d2-a6d5-70dff9f84090@iogearbox.net>
-Date:   Tue, 30 Jun 2020 16:11:15 +0200
+Message-ID: <74b531fe-d55c-7698-4a13-8119793c5edc@iogearbox.net>
+Date:   Tue, 30 Jun 2020 16:12:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <159344647797.836609.7781883615056725815.stgit@firesoul>
+In-Reply-To: <20200630004759.521530-1-andriin@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,16 +44,17 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/29/20 6:01 PM, Jesper Dangaard Brouer wrote:
-> It can be practial to get the number of tests that test_progs
-> contain.  This could for example be used to create a shell
-> for-loop construct that runs the individual tests.
+On 6/30/20 2:47 AM, Andrii Nakryiko wrote:
+> In some build contexts (e.g., Travis CI build for outdated kernel), vmlinux.h,
+> generated from available kernel, doesn't contain all the types necessary for
+> BPF program compilation. For such set up, the most maintainable way to deal
+> with this problem is to keep pre-generated (almost up-to-date) vmlinux.h
+> checked in and use it for compilation purposes. bpftool after that can deal
+> with kernel missing some of the features in runtime with no problems.
 > 
-> Like:
->   for N in $(seq 1 $(./test_progs -c)); do
->     ./test_progs -n $N 2>&1 > result_test_${N}.log &
->   done ; wait
+> To that effect, allow to specify path to custom vmlinux.h to bpftool's
+> Makefile with VMLINUX_H variable.
 > 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Applied, thanks!
+Both applied, thanks!
