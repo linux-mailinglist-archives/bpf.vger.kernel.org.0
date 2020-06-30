@@ -2,203 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6084020FE3A
-	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 22:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB0A20FE4C
+	for <lists+bpf@lfdr.de>; Tue, 30 Jun 2020 23:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgF3UzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 16:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbgF3UzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jun 2020 16:55:25 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFE49206C0;
-        Tue, 30 Jun 2020 20:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593550523;
-        bh=8/jfzl09QncvCdMs7Y7cl0VwPtLXwxjLIFP2mihj2kM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=i+u9BBRpzJ4mw+mQCTJHn6sDG4S9opjeqrd7nDBKby95kKy9q/nBd51wzOERXCV3a
-         Em9A/pdsu7B7iBubS611V11b+hnoXxjzp00oHZ/Pk7vG7c16kVGXmuyYCZgpIvJ4Sh
-         zYSvrg8cnrxjG9Wj63zc8/SXvHEkYqULeFHl3hbo=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B0AE43522640; Tue, 30 Jun 2020 13:55:23 -0700 (PDT)
-Date:   Tue, 30 Jun 2020 13:55:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 bpf-next 1/5] bpf: Remove redundant synchronize_rcu.
-Message-ID: <20200630205523.GJ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
- <20200630043343.53195-2-alexei.starovoitov@gmail.com>
+        id S1726759AbgF3VAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jun 2020 17:00:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43670 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgF3VAL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jun 2020 17:00:11 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jqNMP-0000mb-0F; Tue, 30 Jun 2020 23:00:09 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-06-30
+Date:   Tue, 30 Jun 2020 23:00:08 +0200
+Message-Id: <20200630210008.16989-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630043343.53195-2-alexei.starovoitov@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25859/Tue Jun 30 15:38:05 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 09:33:39PM -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> bpf_free_used_maps() or close(map_fd) will trigger map_free callback.
-> bpf_free_used_maps() is called after bpf prog is no longer executing:
-> bpf_prog_put->call_rcu->bpf_prog_free->bpf_free_used_maps.
-> Hence there is no need to call synchronize_rcu() to protect map elements.
-> 
-> Note that hash_of_maps and array_of_maps update/delete inner maps via
-> sys_bpf() that calls maybe_wait_bpf_programs() and synchronize_rcu().
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+Hi David,
 
-From an RCU perspective:
+The following pull-request contains BPF updates for your *net* tree.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+We've added 28 non-merge commits during the last 9 day(s) which contain
+a total of 35 files changed, 486 insertions(+), 232 deletions(-).
 
-> ---
->  kernel/bpf/arraymap.c         | 9 ---------
->  kernel/bpf/hashtab.c          | 8 +++-----
->  kernel/bpf/lpm_trie.c         | 5 -----
->  kernel/bpf/queue_stack_maps.c | 7 -------
->  kernel/bpf/reuseport_array.c  | 2 --
->  kernel/bpf/ringbuf.c          | 7 -------
->  kernel/bpf/stackmap.c         | 3 ---
->  7 files changed, 3 insertions(+), 38 deletions(-)
-> 
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index ec5cd11032aa..c66e8273fccd 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -386,13 +386,6 @@ static void array_map_free(struct bpf_map *map)
->  {
->  	struct bpf_array *array = container_of(map, struct bpf_array, map);
->  
-> -	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
-> -	 * so the programs (can be more than one that used this map) were
-> -	 * disconnected from events. Wait for outstanding programs to complete
-> -	 * and free the array
-> -	 */
-> -	synchronize_rcu();
-> -
->  	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
->  		bpf_array_free_percpu(array);
->  
-> @@ -546,8 +539,6 @@ static void fd_array_map_free(struct bpf_map *map)
->  	struct bpf_array *array = container_of(map, struct bpf_array, map);
->  	int i;
->  
-> -	synchronize_rcu();
-> -
->  	/* make sure it's empty */
->  	for (i = 0; i < array->map.max_entries; i++)
->  		BUG_ON(array->ptrs[i] != NULL);
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index acd06081d81d..d4378d7d442b 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1290,12 +1290,10 @@ static void htab_map_free(struct bpf_map *map)
->  {
->  	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
->  
-> -	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
-> -	 * so the programs (can be more than one that used this map) were
-> -	 * disconnected from events. Wait for outstanding critical sections in
-> -	 * these programs to complete
-> +	/* bpf_free_used_maps() or close(map_fd) will trigger this map_free callback.
-> +	 * bpf_free_used_maps() is called after bpf prog is no longer executing.
-> +	 * There is no need to synchronize_rcu() here to protect map elements.
->  	 */
-> -	synchronize_rcu();
->  
->  	/* some of free_htab_elem() callbacks for elements of this map may
->  	 * not have executed. Wait for them.
-> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-> index 1abd4e3f906d..44474bf3ab7a 100644
-> --- a/kernel/bpf/lpm_trie.c
-> +++ b/kernel/bpf/lpm_trie.c
-> @@ -589,11 +589,6 @@ static void trie_free(struct bpf_map *map)
->  	struct lpm_trie_node __rcu **slot;
->  	struct lpm_trie_node *node;
->  
-> -	/* Wait for outstanding programs to complete
-> -	 * update/lookup/delete/get_next_key and free the trie.
-> -	 */
-> -	synchronize_rcu();
-> -
->  	/* Always start at the root and walk down to a node that has no
->  	 * children. Then free that node, nullify its reference in the parent
->  	 * and start over.
-> diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-> index 80c66a6d7c54..44184f82916a 100644
-> --- a/kernel/bpf/queue_stack_maps.c
-> +++ b/kernel/bpf/queue_stack_maps.c
-> @@ -101,13 +101,6 @@ static void queue_stack_map_free(struct bpf_map *map)
->  {
->  	struct bpf_queue_stack *qs = bpf_queue_stack(map);
->  
-> -	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
-> -	 * so the programs (can be more than one that used this map) were
-> -	 * disconnected from events. Wait for outstanding critical sections in
-> -	 * these programs to complete
-> -	 */
-> -	synchronize_rcu();
-> -
->  	bpf_map_area_free(qs);
->  }
->  
-> diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-> index a09922f656e4..3625c4fcc65c 100644
-> --- a/kernel/bpf/reuseport_array.c
-> +++ b/kernel/bpf/reuseport_array.c
-> @@ -96,8 +96,6 @@ static void reuseport_array_free(struct bpf_map *map)
->  	struct sock *sk;
->  	u32 i;
->  
-> -	synchronize_rcu();
-> -
->  	/*
->  	 * ops->map_*_elem() will not be able to access this
->  	 * array now. Hence, this function only races with
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index dbf37aff4827..13a8d3967e07 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -215,13 +215,6 @@ static void ringbuf_map_free(struct bpf_map *map)
->  {
->  	struct bpf_ringbuf_map *rb_map;
->  
-> -	/* at this point bpf_prog->aux->refcnt == 0 and this map->refcnt == 0,
-> -	 * so the programs (can be more than one that used this map) were
-> -	 * disconnected from events. Wait for outstanding critical sections in
-> -	 * these programs to complete
-> -	 */
-> -	synchronize_rcu();
-> -
->  	rb_map = container_of(map, struct bpf_ringbuf_map, map);
->  	bpf_ringbuf_free(rb_map->rb);
->  	kfree(rb_map);
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 27dc9b1b08a5..071f98d0f7c6 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -604,9 +604,6 @@ static void stack_map_free(struct bpf_map *map)
->  {
->  	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
->  
-> -	/* wait for bpf programs to complete before freeing stack map */
-> -	synchronize_rcu();
-> -
->  	bpf_map_area_free(smap->elems);
->  	pcpu_freelist_destroy(&smap->freelist);
->  	bpf_map_area_free(smap);
-> -- 
-> 2.23.0
-> 
+The main changes are:
+
+1) Fix an incorrect verifier branch elimination for PTR_TO_BTF_ID pointer
+   types, from Yonghong Song.
+
+2) Fix UAPI for sockmap and flow_dissector progs that were ignoring various
+   arguments passed to BPF_PROG_{ATTACH,DETACH}, from Lorenz Bauer & Jakub Sitnicki.
+
+3) Fix broken AF_XDP DMA hacks that are poking into dma-direct and swiotlb
+   internals and integrate it properly into DMA core, from Christoph Hellwig.
+
+4) Fix RCU splat from recent changes to avoid skipping ingress policy when
+   kTLS is enabled, from John Fastabend.
+
+5) Fix BPF ringbuf map to enforce size to be the power of 2 in order for its
+   position masking to work, from Andrii Nakryiko.
+
+6) Fix regression from CAP_BPF work to re-allow CAP_SYS_ADMIN for loading
+   of network programs, from Maciej Żenczykowski.
+
+7) Fix libbpf section name prefix for devmap progs, from Jesper Dangaard Brouer.
+
+8) Fix formatting in UAPI documentation for BPF helpers, from Quentin Monnet.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Jakub Sitnicki, John Fastabend, John Stultz, kernel 
+test robot, Martin KaFai Lau, Song Liu, Wenbo Zhang, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit b0c34bde72a59c05e826bf0a5aeca0d73f38f791:
+
+  MAINTAINERS: update email address for Felix Fietkau (2020-06-22 12:57:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to d923021c2ce12acb50dc7086a1bf66eed82adf6a:
+
+  bpf: Add tests for PTR_TO_BTF_ID vs. null comparison (2020-06-30 22:21:29 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (3):
+      Merge branch 'fix-sockmap'
+      Merge branch 'bpf-multi-prog-prep'
+      Merge branch 'fix-sockmap-flow_dissector-uapi'
+
+Andrii Nakryiko (3):
+      libbpf: Forward-declare bpf_stats_type for systems with outdated UAPI headers
+      libbpf: Fix CO-RE relocs against .text section
+      bpf: Enforce BPF ringbuf size to be the power of 2
+
+Christoph Hellwig (4):
+      dma-mapping: Add a new dma_need_sync API
+      xsk: Replace the cheap_dma flag with a dma_need_sync flag
+      xsk: Remove a double pool->dev assignment in xp_dma_map
+      xsk: Use dma_need_sync instead of reimplenting it
+
+Jakub Sitnicki (5):
+      flow_dissector: Pull BPF program assignment up to bpf-netns
+      bpf, netns: Keep attached programs in bpf_prog_array
+      bpf, netns: Keep a list of attached bpf_link's
+      selftests/bpf: Test updating flow_dissector link with same program
+      bpf, netns: Fix use-after-free in pernet pre_exit callback
+
+Jesper Dangaard Brouer (1):
+      libbpf: Adjust SEC short cut for expected attach type BPF_XDP_DEVMAP
+
+John Fastabend (4):
+      bpf: Do not allow btf_ctx_access with __int128 types
+      bpf, sockmap: RCU splat with redirect and strparser error or TLS
+      bpf, sockmap: RCU dereferenced psock may be used outside RCU block
+      bpf, sockmap: Add ingres skb tests that utilize merge skbs
+
+Lorenz Bauer (6):
+      bpf: flow_dissector: Check value of unused flags to BPF_PROG_ATTACH
+      bpf: flow_dissector: Check value of unused flags to BPF_PROG_DETACH
+      bpf: sockmap: Check value of unused args to BPF_PROG_ATTACH
+      bpf: sockmap: Require attach_bpf_fd when detaching a program
+      selftests: bpf: Pass program and target_fd in flow_dissector_reattach
+      selftests: bpf: Pass program to bpf_prog_detach in flow_dissector
+
+Maciej Żenczykowski (1):
+      bpf: Restore behaviour of CAP_SYS_ADMIN allowing the loading of networking bpf programs
+
+Quentin Monnet (1):
+      bpf: Fix formatting in documentation for BPF helpers
+
+Yonghong Song (3):
+      bpf: Set the number of exception entries properly for subprograms
+      bpf: Fix an incorrect branch elimination by verifier
+      bpf: Add tests for PTR_TO_BTF_ID vs. null comparison
+
+ Documentation/core-api/dma-api.rst                 |   8 +
+ include/linux/bpf-netns.h                          |   5 +-
+ include/linux/bpf.h                                |  13 +-
+ include/linux/btf.h                                |   5 +
+ include/linux/dma-direct.h                         |   1 +
+ include/linux/dma-mapping.h                        |   5 +
+ include/linux/skmsg.h                              |  13 ++
+ include/net/flow_dissector.h                       |   3 +-
+ include/net/netns/bpf.h                            |   7 +-
+ include/net/xsk_buff_pool.h                        |   6 +-
+ include/uapi/linux/bpf.h                           |  41 ++---
+ kernel/bpf/btf.c                                   |   4 +-
+ kernel/bpf/net_namespace.c                         | 194 ++++++++++++++-------
+ kernel/bpf/ringbuf.c                               |  18 +-
+ kernel/bpf/syscall.c                               |   8 +-
+ kernel/bpf/verifier.c                              |  13 +-
+ kernel/dma/direct.c                                |   6 +
+ kernel/dma/mapping.c                               |  10 ++
+ net/bpf/test_run.c                                 |  19 +-
+ net/core/flow_dissector.c                          |  32 ++--
+ net/core/skmsg.c                                   |  23 ++-
+ net/core/sock_map.c                                |  53 +++++-
+ net/xdp/xsk_buff_pool.c                            |  54 +-----
+ tools/include/uapi/linux/bpf.h                     |  41 ++---
+ tools/lib/bpf/bpf.h                                |   2 +
+ tools/lib/bpf/libbpf.c                             |  10 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c        |   2 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c      |   4 +-
+ .../bpf/prog_tests/flow_dissector_reattach.c       |  44 +++--
+ .../testing/selftests/bpf/progs/bpf_iter_netlink.c |   2 +-
+ tools/testing/selftests/bpf/progs/fentry_test.c    |  22 +++
+ tools/testing/selftests/bpf/progs/fexit_test.c     |  22 +++
+ .../selftests/bpf/progs/test_sockmap_kern.h        |   8 +-
+ .../bpf/progs/test_xdp_with_devmap_helpers.c       |   2 +-
+ tools/testing/selftests/bpf/test_sockmap.c         |  18 ++
+ 35 files changed, 486 insertions(+), 232 deletions(-)
