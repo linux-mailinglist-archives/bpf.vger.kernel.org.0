@@ -2,99 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AD3211437
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 22:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82BC211495
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 22:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgGAUTP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 16:19:15 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:54967 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726049AbgGAUTP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 16:19:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593634753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nEpLa92itLbIaK0rWrJJY4HDP/pyUCqwTL+6awhsh50=;
-        b=CPxLyUsk8J1lMpXghxMHes2H6JU67UqQczktww6h2IciFPhkp4Sqt4E1SS52wQrL6+3xQS
-        nvhVwBgNsq1uAB2L+IrdfXdU1nrzU3VdXLzxwbnBRjY3g07N8uN0BoXvC00JpWrDvvhl/9
-        lY0oTZsaZFwrptzppCYOw42z7RMXrcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-yVBgf4E5M2KJb2w9QGZyNg-1; Wed, 01 Jul 2020 16:19:11 -0400
-X-MC-Unique: yVBgf4E5M2KJb2w9QGZyNg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9441F8015F6;
-        Wed,  1 Jul 2020 20:19:10 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D0355C220;
-        Wed,  1 Jul 2020 20:19:10 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 4DB54300003EB;
-        Wed,  1 Jul 2020 22:19:09 +0200 (CEST)
-Subject: [PATCH bpf-next V2 3/3] selftests/bpf: test_progs indicate to shell
- on non-actions
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <haliu@redhat.com>,
+        id S1725535AbgGAUvf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 16:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgGAUve (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 16:51:34 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2702DC08C5C1
+        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 13:51:34 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id e13so23607713qkg.5
+        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 13:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/1ioNmDaMh6MGwC3yLPD2ogSEfWXGly5kwatxUJEInk=;
+        b=HdV0tLmCdp1K5ACH/D84fG9+2YyIm3xbtr84xOAcveg077EoLlFs8IYE56/91mRjsG
+         qM4qs2oh0EcrYj6lsT99Xghu2JBDumS9D/ATwOmJlMn2E4OySfu6oI4mP1X7SKJJ8hOr
+         Hwt5DV46Fe/nL7nCt3PywbQhk/sGJJ+aLab0/22C+jy3whUvVV1MvcCgZb8buebJlp7W
+         xrq1nEZz5AUhOjv1Nesps+5nd557l7qfnnwh6qNs1qIIsD+Qw2z4gSBw8RRfo9ruwDq9
+         wDiKWJNsZyAMfRYdtbAlwol7H18FV1eNhe3B1BlfOXkeQ5V/Ii+HyV2uUY2VAFFiouAG
+         S9Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/1ioNmDaMh6MGwC3yLPD2ogSEfWXGly5kwatxUJEInk=;
+        b=Jcc4cWBJjRqBavJhk+yNhyQr9WPr8I9F5b+BLmsZanWJgBGMMkCZSuc6NLCotwPpho
+         dPGiMB1oVSrDSgTuawKDVehh0EuD5aI+LOGEWnF3y19MgbfQkjMAFEUrESHRoWyve8ZN
+         tpVaLfspR4+wTZuW0YK7oOmAhmq+l0b2NO/xVy4lyvwbzq3eA8QlWyLMhDRHO/ILjX6C
+         gQ6SOEalTknt4ZanblZJK8l607m21+DAQDr++OdzjvGdshpO4HIwWgnrSmz5i/Z0PwXw
+         niLRcSeVlcKiIfwGilIra2RmKXg1om8boY0UOKEcfGBCD5g4huYloXQKdMgBWvrXssvy
+         K/BQ==
+X-Gm-Message-State: AOAM531rsvKpSK3ujG6I6FH6SS3pwpFGrN9qELlSNNoO0z7Md8Sn7X9r
+        V16rTWhPaqszlx1sLRmWzfCNrBLOe09R/af7ndm+Zm5ILA0=
+X-Google-Smtp-Source: ABdhPJyCmr5otb4u1SAxz9OYYIOH9b6JZxhPQ8f6eVNXM449y8fPrbmIQB/UpOEppZPg3QU935lInmTjo3naPcMdtjw=
+X-Received: by 2002:a05:620a:1666:: with SMTP id d6mr27459283qko.449.1593636693350;
+ Wed, 01 Jul 2020 13:51:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <159363468114.929474.3089726346933732131.stgit@firesoul> <159363474417.929474.570677654666099808.stgit@firesoul>
+In-Reply-To: <159363474417.929474.570677654666099808.stgit@firesoul>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Jul 2020 13:51:22 -0700
+Message-ID: <CAEf4BzaXA=jnuwhXdQapJba+7JrtOtTOrC7w-AEvk+-kzLKQzw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V2 2/3] selftests/bpf: test_progs option for
+ listing test names
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        vkabatov@redhat.com, jbenc@redhat.com
-Date:   Wed, 01 Jul 2020 22:19:09 +0200
-Message-ID: <159363474925.929474.15491499711324280696.stgit@firesoul>
-In-Reply-To: <159363468114.929474.3089726346933732131.stgit@firesoul>
-References: <159363468114.929474.3089726346933732131.stgit@firesoul>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a user selects a non-existing test the summary is printed with
-indication 0 for all info types, and shell "success" (EXIT_SUCCESS) is
-indicated. This can be understood by a human end-user, but for shell
-scripting is it useful to indicate a shell failure (EXIT_FAILURE).
+On Wed, Jul 1, 2020 at 1:19 PM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+> The program test_progs have some very useful ability to specify a list of
+> test name substrings for selecting which tests to run.
+>
+> This patch add the ability to list the selected test names without running
+> them. This is practical for seeing which tests gets selected with given
+> select arguments (which can also contain a exclude list via --name-blacklist).
+>
+> This output can also be used by shell-scripts in a for-loop:
+>
+>  for N in $(./test_progs --list -t xdp); do \
+>    ./test_progs -t $N 2>&1 > result_test_${N}.log & \
+>  done ; wait
+>
+> This features can also be used for looking up a test number and returning
+> a testname. If the selection was empty then a shell EXIT_FAILURE is
+> returned.  This is useful for scripting. e.g. like this:
+>
+>  n=1;
+>  while [ $(./test_progs --list -n $n) ] ; do \
+>    ./test_progs -n $n ; n=$(( n+1 )); \
+>  done
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c |   18 ++++++++++++++++++
+>  tools/testing/selftests/bpf/test_progs.h |    1 +
+>  2 files changed, 19 insertions(+)
+>
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- tools/testing/selftests/bpf/test_progs.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 3345cd977c10..75cf5b13cbd6 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -706,11 +706,8 @@ int main(int argc, char **argv)
- 		goto out;
- 	}
- 
--	if (env.list_test_names) {
--		if (env.succ_cnt == 0)
--			env.fail_cnt = 1;
-+	if (env.list_test_names)
- 		goto out;
--	}
- 
- 	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
- 		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
-@@ -723,5 +720,9 @@ int main(int argc, char **argv)
- 	free_str_set(&env.subtest_selector.whitelist);
- 	free(env.subtest_selector.num_set);
- 
-+	/* Return EXIT_FAILURE when options resulted in no actions */
-+	if (!env.succ_cnt && !env.fail_cnt && !env.skip_cnt)
-+		env.fail_cnt = 1;
-+
- 	return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
- }
+> +       if (env.list_test_names) {
+> +               if (env.succ_cnt == 0)
+> +                       env.fail_cnt = 1;
+> +               goto out;
+> +       }
+> +
 
+How about making it a failure if no tests were selected in general,
+regardless of --count, --list or normal case? It seems sensible that
+if you specified wrong selection, that's not what you wanted?
 
+>         fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+>                 env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+>
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index 0030584619c3..ec31f382e7fd 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -67,6 +67,7 @@ struct test_env {
+>
+>         bool jit_enabled;
+>         bool get_test_cnt;
+> +       bool list_test_names;
+>
+>         struct prog_test_def *test;
+>         FILE *stdout;
+>
+>
