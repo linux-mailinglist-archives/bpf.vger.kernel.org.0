@@ -2,116 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A59821149D
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 22:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6932114A5
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 23:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgGAUyx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 16:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
+        id S1726051AbgGAVBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 17:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgGAUyx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 16:54:53 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07112C08C5C1
-        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 13:54:53 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id u17so19610049qtq.1
-        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 13:54:52 -0700 (PDT)
+        with ESMTP id S1725535AbgGAVBU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 17:01:20 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D881C08C5C1;
+        Wed,  1 Jul 2020 14:01:20 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id g13so19587597qtv.8;
+        Wed, 01 Jul 2020 14:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iUzPEedrZfxHTuGNM+CtEDSJO7aB9PR9Ziy/8hq3fyk=;
-        b=FCaIYCInpcoKg8NABvAX8yD+EuuVOsTDHsdrAFTvV1yT45/Pu017LYQDKbWezqDIgY
-         5ZFzSo/GAkyHwjxtfm2R5BztHpaCbmtEA+OicSEKEk1wGTFF0H39sOFk7OBNd0kgRJzm
-         pT9nE67SwFOu3OSjnqxKkBLw0gKjTPAi1ys4ug3rrImLJVXD6b6NlKACfrSfhkX8fskw
-         QKQ3qTnIF142+ligN7Pdtu6+OgJzfME0FhC99Ldnh2CXNsVOIfij+IPIN+59pMRZcwL+
-         EMcCJ0iBHnOXepzFVv2w0k2dh/Zm56M3mEhXUW/sfUVt1KYuDu5pBG4o5kC4sZShcPwd
-         4eMg==
+        bh=dfjEswI4f5ZfjSVMaT2VMATewg6pW92LXU97L+Hb8kE=;
+        b=TjuF+vQF/XkqDZ1l9gZLylVT9+Rq+0LO67iJSbfO5NonZr0chOjYH7UFT27V4Bn0By
+         z3nybExvRPNcG7YCjMRbgVrpCrML4m0YaS+dFivSet5FdWaFhi2dBD/6Tw46u2wVAuUD
+         Y11Z2EvRsGfcPK53ltJJSRjeEu8LS6jh8OJggqPk+oL/TM4tTCAgS11ZHr2I9TBuRv0d
+         hJhuqkYcdUFZqfxJZeBKDJyy8xc0efAYHdhlU+kBhsZy5lho7KeflHaAcj0hRp4z9xsg
+         Ooae6gZgt4SlB8jk+3xQ1vs3iE9yRbxlKE4zeBNeG5gHJ9Mb6y/K4JN/+IfwVna6HdY5
+         Y+SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iUzPEedrZfxHTuGNM+CtEDSJO7aB9PR9Ziy/8hq3fyk=;
-        b=XzgnsGNBz3KEYz7Nkig6ImDfuaBYtlpFYWo1KIeTH/QC8dYVZxK1Htrx5hTWbONUJT
-         oKayX7EcSFUvcDGP+8TzFGRvP9zcPdynXbhcVJOwhSlJUz9F/WtBEYzzvKyAbnVPq+a+
-         mFadPQfX9LzGOvtr8VSTuazTXtKjDSUI8GmZWQ87xHTB/jxEdnRlEgYKsAsL0oyT+eoY
-         vunvGexuOepansZCz/GCA6s12ha+NA89v9/ovNkKZ21N0o6ofe/lBa5w6l8iPcZ7cjHy
-         byJvufQT7UmebPSMhOdvTtW/67jP7qZFhZ9L8iJOYF6NkQE1kzStTPWCXwgdL4KFAlBP
-         J5jw==
-X-Gm-Message-State: AOAM530btYuiqnuzaenbj/HI/xGr6B2artdXZ+76WxIqCn+xKv3TFQYY
-        vetvgKnWMPgwfdBAzZSDdoC73NfihelqKTAHXmc=
-X-Google-Smtp-Source: ABdhPJwsNFyWKeIRZKdeOp/aiUpoTahYX6zTBU11vrxFMR27eq8ZcqSbvc4AipzA8/HqqQceWilQXLBxPCqmblXxhnk=
-X-Received: by 2002:ac8:1991:: with SMTP id u17mr26957750qtj.93.1593636892188;
- Wed, 01 Jul 2020 13:54:52 -0700 (PDT)
+        bh=dfjEswI4f5ZfjSVMaT2VMATewg6pW92LXU97L+Hb8kE=;
+        b=i/i/nNX/Nxt9iR5SJRA55m3QsxQtFq0HKUCQymjp8XuyKnzwf1MBPa+TThyDSR9lod
+         FD15TTVdx4OwTfPLi026ePi80wGskOVOycoHQ271wiBmuLbHVl+6I2JAwmK2Q8cmyOP3
+         JzMEZan8s/olexLmy+R73SqKUjyLXNDQI28ww27KNL8IlKtiDJa9hJ43xETZzNjK7a2u
+         5s2gHjq/EEOKkhVqYXijVCRUA8kMPj+yAp8bkhCG+PtgoYtSBxH2i5DV6xaTrcqB+ioR
+         W9onr1nOnLU6EMHVyN9vJDrnPEapE9ow4RFrbKObhVKCDmYcTCf21xUbQ6WYHSeT693u
+         aX5w==
+X-Gm-Message-State: AOAM533L2qfEOThhhHfGvEHfFlBwV9ORDHDD1qcVZLwb59Pjx/3n2lsl
+        A7E+oa844iy1rLU3wrp9C9IKu2j8tObYKGqPBYg=
+X-Google-Smtp-Source: ABdhPJxXCAp0AoVWZI9q/uHwKapEjiWQYSEyVqJb2yZTfvMXZqVNP5fq3ed7qqSwMkN1PptoITlhTSX4Cd1zxFAOseE=
+X-Received: by 2002:aed:2cc5:: with SMTP id g63mr27896945qtd.59.1593637279196;
+ Wed, 01 Jul 2020 14:01:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <159363468114.929474.3089726346933732131.stgit@firesoul> <159363474925.929474.15491499711324280696.stgit@firesoul>
-In-Reply-To: <159363474925.929474.15491499711324280696.stgit@firesoul>
+References: <20200701201307.855717-1-sdf@google.com> <20200701201307.855717-5-sdf@google.com>
+In-Reply-To: <20200701201307.855717-5-sdf@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Jul 2020 13:54:41 -0700
-Message-ID: <CAEf4BzYXAHMC=7DTEzqH563zuMsuZuMbDaBPN9TmX4P8PG49jA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V2 3/3] selftests/bpf: test_progs indicate to
- shell on non-actions
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>
+Date:   Wed, 1 Jul 2020 14:01:08 -0700
+Message-ID: <CAEf4BzYqQ_mSpadEoj2SD8QM8CSmfaiprERBjub2tGa6NxKvNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/4] selftests/bpf: test BPF_CGROUP_INET_SOCK_RELEASE
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 1:19 PM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Wed, Jul 1, 2020 at 1:14 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> When a user selects a non-existing test the summary is printed with
-> indication 0 for all info types, and shell "success" (EXIT_SUCCESS) is
-> indicated. This can be understood by a human end-user, but for shell
-> scripting is it useful to indicate a shell failure (EXIT_FAILURE).
+> Simple test that enforces a single SOCK_DGRAM socker per cgroup.
 >
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  tools/testing/selftests/bpf/test_progs.c |    9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  .../selftests/bpf/prog_tests/udp_limit.c      | 72 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/udp_limit.c | 42 +++++++++++
+>  2 files changed, 114 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_limit.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/udp_limit.c
 >
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 3345cd977c10..75cf5b13cbd6 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -706,11 +706,8 @@ int main(int argc, char **argv)
->                 goto out;
->         }
->
-> -       if (env.list_test_names) {
-> -               if (env.succ_cnt == 0)
-> -                       env.fail_cnt = 1;
-> +       if (env.list_test_names)
->                 goto out;
-> -       }
->
->         fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
->                 env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
-> @@ -723,5 +720,9 @@ int main(int argc, char **argv)
->         free_str_set(&env.subtest_selector.whitelist);
->         free(env.subtest_selector.num_set);
->
-> +       /* Return EXIT_FAILURE when options resulted in no actions */
-> +       if (!env.succ_cnt && !env.fail_cnt && !env.skip_cnt)
-> +               env.fail_cnt = 1;
+
+[...]
+
+> +       fd1 = socket(AF_INET, SOCK_DGRAM, 0);
+> +       if (CHECK(fd1 < 0, "fd1", "errno %d", errno))
+> +               goto close_skeleton;
+> +
+> +       fd2 = socket(AF_INET, SOCK_DGRAM, 0);
+> +       if (CHECK(fd2 >= 0, "fd2", "errno %d", errno))
+
+close(fd2);
+
+> +               goto close_fd1;
 > +
 
-Heh, just suggested something like this in the previous patch. I think
-this change should go first in patch series and not churn on
-env.list_test_names above.
+[...]
 
-I'd also rewrite it as (no need to muck around with fail_cnt, less
-negation for integers):
+> +close_fd1:
+> +       close(fd1);
+> +close_skeleton:
+> +       udp_limit__destroy(skel);
+> +close_cgroup_fd:
+> +       close(cgroup_fd);
 
-if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
-    return EXIT_FAILURE;
+nit: choosing between close_fd1 and close_skeleton (which also
+alternates!) is hard to keep track of. When clean up gets one step
+beyond trivial, I usually just initialize variables properly and do
+clean up for all exit scenario in one block:
 
->         return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
->  }
->
->
+if (fd1 >= 0)
+    close(fd1);
+udp_limit__destroy(skel);
+close(cgroup_fd);
+
+It also makes later extensions simpler.
+
+
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/udp_limit.c b/tools/testing/selftests/bpf/progs/udp_limit.c
+> new file mode 100644
+> index 000000000000..af1154bfb946
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/udp_limit.c
+> @@ -0,0 +1,42 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <sys/socket.h>
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +int invocations, in_use;
+
+uninitialized globals can leads to libbpf refusing to load them (due
+to COM section), Daniel just recently had this problem. So better to
+always zero-initialize them.
+
+[...]
