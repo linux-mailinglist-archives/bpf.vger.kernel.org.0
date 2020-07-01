@@ -2,86 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7030210EFF
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 17:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E75210F3D
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 17:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731645AbgGAPV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 11:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731586AbgGAPV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:21:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960E9C08C5C1;
-        Wed,  1 Jul 2020 08:21:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b25so23936729ljp.6;
-        Wed, 01 Jul 2020 08:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9aa8D6GnHFA/FGZ0poDZjtaJSCr13wpNPHW3T9d8QOI=;
-        b=QFAvMwW+ZsBsJCq8e9J3fOYOYfeF4MhAKqPOOPS7IfMxZHOAHag40m8z4D/OV7HaHS
-         7R0X1lb6RpGAUaooIGhukVLZIhaOnrhlh7XchyWkbPACYpVDnp/LtLm/u8Vbw+Fic66A
-         +78haoKDrftLN6kTIh8Rm6FaUzCmsDLi8cXgqxrhUtwSUedt4lxRwKD53p8Ce5Vhhjgd
-         kize7rZTx27P8lSUybv8ls7JWbQQUXaH5g4c7xbBQA35o+xljTG/M6S254lfpLArRn+y
-         2sIhFbulC+rFkw1AgrdhLNG5fL4dmeem0Tu/NOq5JNBdLevF4XYCS9TVC7zKRV8mUYwN
-         hsgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9aa8D6GnHFA/FGZ0poDZjtaJSCr13wpNPHW3T9d8QOI=;
-        b=WKfneJG1Pw5UMCgk5v3jmzA3IjHmJx6ofPNCg3j6XBUCAFtd4KEoc04smxVkQxZVc1
-         m+C3jfpscdBuatrYk5VNKHcFlhATnAh1vmOa10N3Zbb5gp1bzY9+xZS3WQWXrmHzRmJ5
-         AfreNC6V2ooZ/as8KTjUMcvSfs+nh5nkVR8zmDCfhQwanJSLHMmUaclsAXGUoLGW2e1X
-         wTE9YNolwY+08JvltAfZQZsGTJc3bbdt7OGTGG1uOmSQBYIN/adNu5lcDvTJHh3post3
-         Z20Z82h/yicEN96qVUUtQDRcR3G5lybjOkU4t37v01UF8vU3RNCkFRtEwhqPzLuJOnOg
-         5uTw==
-X-Gm-Message-State: AOAM5311mrlZObhG9FwL1iXmh95Tyc7nuTGk+gAZtiWvxzM430O9FKef
-        sKEn484xq/oX4yeebHqVn+Z3QQfuys4fd5wlONw=
-X-Google-Smtp-Source: ABdhPJzJBXM9K1IaGexv5ofLOLjuL58H1BH26jahlj5Dt5OEmKGNj/BwhPFWKUhT4EUUfIuhmMUDKA6VyPXsLpoP23A=
-X-Received: by 2002:a2e:8216:: with SMTP id w22mr7274311ljg.2.1593616885061;
- Wed, 01 Jul 2020 08:21:25 -0700 (PDT)
+        id S1731608AbgGAP2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 11:28:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7330 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732091AbgGAP2E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:28:04 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4D3A14C9271524C7A94B;
+        Wed,  1 Jul 2020 23:27:57 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 1 Jul 2020 23:27:48 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <hulkci@huawei.com>, Ariel Elior <aelior@marvell.com>,
+        <GR-everest-linux-l2@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next] qed: Make symbol 'qed_hw_err_type_descr' static
+Date:   Wed, 1 Jul 2020 23:38:03 +0800
+Message-ID: <20200701153803.69360-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
- <20200630043343.53195-3-alexei.starovoitov@gmail.com> <d0c6b6a6-7b82-e620-8ced-8a1acfaf6f6d@iogearbox.net>
- <20200630234117.arqmjpbivy5fhhmk@ast-mbp.dhcp.thefacebook.com>
- <CACYkzJ5kGxxA1E70EKah_hWbsb7hoUy8s_Y__uCeSyYxVezaBA@mail.gmail.com> <5596445c-7474-9913-6765-5d699c6c5c4e@iogearbox.net>
-In-Reply-To: <5596445c-7474-9913-6765-5d699c6c5c4e@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Jul 2020 08:21:13 -0700
-Message-ID: <CAADnVQLoVfPWNBR-_56ofgaUFv8k3NT2aiGjV9jj_gOt0aoJ5g@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/5] bpf: Introduce sleepable BPF programs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 2:34 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> +1, I think augmenting mid-term would be the best given check_sleepable_blacklist()
-> is rather a very fragile workaround^hack and it's also a generic lsm/sec hooks issue
+From: Hulk Robot <hulkci@huawei.com>
 
-I tried to make that crystal clear back in march during bpf virtual conference.
-imo whitelist is just as fragile as blacklist. Underlying
-implementation can change.
+Fix sparse build warning:
 
-> (at least for BPF_PROG_TYPE_LSM type & for the sake of documenting it for other LSMs).
-> Perhaps there are function attributes that could be used and later retrieved via BTF?
+drivers/net/ethernet/qlogic/qed/qed_main.c:2480:6: warning:
+ symbol 'qed_hw_err_type_descr' was not declared. Should it be static?
 
-Even if we convince gcc folks to add another function attribute it
-won't appear in dwarf.
-So we won't be able to convert it to BTF in pahole.
-Looking at how we failed to extend address_space() attribute to
-support existing __rcu
-and __user annotations I don't have high hopes of achieving annotations
-via compiler (either gcc or clang). So plan B is to engage with sparse folks and
-make it emit BTF with __rcu, __user and other annotations.
+Signed-off-by: Hulk Robot <hulkci@huawei.com>
+---
+ drivers/net/ethernet/qlogic/qed/qed_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 11367a248d55..0a23b788b842 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -2477,7 +2477,7 @@ void qed_schedule_recovery_handler(struct qed_hwfn *p_hwfn)
+ 		ops->schedule_recovery_handler(cookie);
+ }
+ 
+-char *qed_hw_err_type_descr[] = {
++static char *qed_hw_err_type_descr[] = {
+ 	[QED_HW_ERR_FAN_FAIL]		= "Fan Failure",
+ 	[QED_HW_ERR_MFW_RESP_FAIL]	= "MFW Response Failure",
+ 	[QED_HW_ERR_HW_ATTN]		= "HW Attention",
+
