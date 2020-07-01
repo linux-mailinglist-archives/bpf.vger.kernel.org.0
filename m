@@ -2,206 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14682115B0
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 00:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92F62115BC
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 00:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgGAWOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 18:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S1726419AbgGAWRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 18:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgGAWOU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:14:20 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D478BC08C5C1
-        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 15:14:20 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k23so26705802iom.10
-        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 15:14:20 -0700 (PDT)
+        with ESMTP id S1725771AbgGAWRV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 18:17:21 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5076BC08C5C1;
+        Wed,  1 Jul 2020 15:17:21 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id z24so4210425ljn.8;
+        Wed, 01 Jul 2020 15:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=fSRicxWgake9vxZjXuZD0+LkBrM9C2wpn0Zc59YZzKMhlykKNj9VivQcfSAhQtGmIs
-         A5ixJKYb96baQEtLQvjstlwpUGYBHbud9b4JAsUjE+BiieqZf7f2NTWgIpizYU5IR82Q
-         xIM2u0CrNmUDy8xNChj0bTG5ROIxGCGCJjcrWwAwnXBRNidgjPtuzGhucxk+dkqx7Evn
-         i7mRWBBLz4/DeytwdaGHKCoi9FAiQP4wEXb2uxgjpRw/gVfuqBzFFgmdJry3/pyFKWoS
-         +8zfWZoE6a/h4cbYMkASEa5sdIi6IDRyYGWaGE0VORpbOXH/FzNMg2Zop4+XKOxa8YVp
-         42NQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0hjOP2xWJYBFB1lJ44pZ1iwrgg794l/jK5E/p4AXI4Y=;
+        b=Xgu2wjxM8gR3RdyappZ8oWPk1hZNwzaHxbRsdwv1ih9IYYRvRIqKdKk+NPPFJMIgGf
+         tuGmbf6th2afvmfrQgZ17KsSvoXzw3M/DdERL+haWnWYQ/yivIh04Il/0SVpOwIJChfl
+         nXaI+90956OkrqnzY6idFn3fR1CkNiI5oxM4OI6aNVN+5CqeuerOXeXz9wcOK4mEwFS2
+         U56SI4t7ivgqYcuMz2DZjhfloweXi09Cjg5M/y/YDMDXPgOxjXBlw2JdLi09TJrwyhFJ
+         day/jgYuHZH1a/2z0VXf3QdBEoV+fYkMqyeFxhJwrcFsfZvEJ/UtDGJgzS0li4MLQMx+
+         A5Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=ifjpge0qPO5NccImo3Q1jGt0Xb0zBQg3wfBTeB70VcLRS4dAAlo293hI32k76xKrE4
-         5t4DqoPCNaNlW3SvVzRsZHM19MzMK0Q1zUkqiSsHsOCfn1jjucRICo3jy5jK5ec2K+T6
-         nnZJIctcc3bq8XMY1vjfThmC5nM6cpyFZ9oQbJmXKi4xkLDI/QODdkSeUVNqo54W43hO
-         pR+Zigx3at4FQXwGJAvUnOHzw+jA/OaVQGcR1CZ6EQ4xs1a2cbjUOS1CNMEx5n5Nv41f
-         uuou8aK9RT3Ftje6yzeSpSjuA2GSmXs2Y66OQ7Iz80wOMXP9n0+v9F58nEborf/Tkp+P
-         16aA==
-X-Gm-Message-State: AOAM531UJ0kdcLYBQ0wX/aO/+VCZQRE9KznX3DSp45ngJMOWVYFbeC9B
-        wLnFVRJ2N3I1HOppuyGttxzUhbQb4J9l0Q==
-X-Google-Smtp-Source: ABdhPJw7hjCPZ8OSsjjqn0JNB8JP96r/Tx6M5qgimKTpQ+RA4oAAhmnZEd6F+T3QsZZvVOE10yL/CQ==
-X-Received: by 2002:a5e:cb42:: with SMTP id h2mr4378666iok.43.1593641660001;
-        Wed, 01 Jul 2020 15:14:20 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-2.tnkngak.clients.pavlovmedia.com. [173.230.99.2])
-        by smtp.gmail.com with ESMTPSA id t83sm4051543ilb.47.2020.07.01.15.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 15:14:19 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>, YiFei Zhu <zhuyifei@google.com>
-Subject: [RFC PATCH bpf-next 5/5] Documentation/bpf: Document CGROUP_STORAGE map type
-Date:   Wed,  1 Jul 2020 17:13:58 -0500
-Message-Id: <973011eb5b8734cf49d4b9f8b95198ff6ee4d987.1593638618.git.zhuyifei@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593638618.git.zhuyifei@google.com>
-References: <cover.1593638618.git.zhuyifei@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0hjOP2xWJYBFB1lJ44pZ1iwrgg794l/jK5E/p4AXI4Y=;
+        b=tEggY2p9BWi6NCXwIeCK+9b1GLianUnoRbEoDcSz6TiF5G4PFWKBogJSjTHCFzUZdz
+         jA0x0HknrpKx5kOH9UJ8bERPQ7cor4LnZXZKFfEWRRWp+x4xnS80aIUKRqKJdNMt0Q4d
+         klGwKrqNFq/2RYk8pDKtqZW5Hxh/jUqBY13nJfZHXUnel06iGS8Kl3j9u+0S0ZUOvfGW
+         1/L9vq66m0ZY6BVj5n+SiUXrK9T5oekQLkD2gtF6Aaf6LiBryn2VgOb1x/QkvQe1aG2v
+         WPs8/LEEL9JLPXySfxgVi4GC79K8x/BcMwhqryQW4xNqQRF0pfmCWVVCjSlpNGpP8EsU
+         Ou9g==
+X-Gm-Message-State: AOAM533A/LUpocLk4YMG6jg1Ofl17r70xz+ituTUXxEWG19TwBz8owyw
+        8bjVbOpX6utFYI24JR0SEKLYw+PU4D8FdcWEDqg=
+X-Google-Smtp-Source: ABdhPJy5vPSx7u8xpYmsgb/HuUaDybMaWgfQGMlx4w2etWh/E2gQtbxZbUoCO0Vwt7DaK6VEGMyi7t2ve6zYyr4FuE8=
+X-Received: by 2002:a2e:9bc3:: with SMTP id w3mr6345365ljj.121.1593641839001;
+ Wed, 01 Jul 2020 15:17:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200701175315.1161242-1-haoluo@google.com> <aab03e4b-2779-3b71-44ea-735a7b92a70f@fb.com>
+In-Reply-To: <aab03e4b-2779-3b71-44ea-735a7b92a70f@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 1 Jul 2020 15:17:07 -0700
+Message-ID: <CAADnVQK5o1uhJOXLKAbf9Hp_Y0fVsowD3DwRWwBd_++KTTOJHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Hao Luo <haoluo@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei@google.com>
+On Wed, Jul 1, 2020 at 11:04 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/1/20 10:53 AM, Hao Luo wrote:
+> > The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
+> > programs. But in a kernel built by clang, which performs more aggresive
+> > inlining, that function gets inlined into its caller SyS_nanosleep.
+> > Therefore, even though fentry and kprobe do hook on the function,
+> > they aren't triggered by the call to nanosleep in the test.
+> >
+> > A possible fix is switching to use a function that is less likely to
+> > be inlined, such as hrtimer_range_start_ns. The EXPORT_SYMBOL functions
+> > shouldn't be inlined based on the description of [1], therefore safe
+> > to use for this test. Also the arguments of this function include the
+> > duration of sleep, therefore suitable for test verification.
+> >
+> > [1] af3b56289be1 time: don't inline EXPORT_SYMBOL functions
+> >
+> > Tested:
+> >   In a clang build kernel, before this change, the test fails:
+> >
+> >   test_vmlinux:PASS:skel_open 0 nsec
+> >   test_vmlinux:PASS:skel_attach 0 nsec
+> >   test_vmlinux:PASS:tp 0 nsec
+> >   test_vmlinux:PASS:raw_tp 0 nsec
+> >   test_vmlinux:PASS:tp_btf 0 nsec
+> >   test_vmlinux:FAIL:kprobe not called
+> >   test_vmlinux:FAIL:fentry not called
+> >
+> >   After switching to hrtimer_range_start_ns, the test passes:
+> >
+> >   test_vmlinux:PASS:skel_open 0 nsec
+> >   test_vmlinux:PASS:skel_attach 0 nsec
+> >   test_vmlinux:PASS:tp 0 nsec
+> >   test_vmlinux:PASS:raw_tp 0 nsec
+> >   test_vmlinux:PASS:tp_btf 0 nsec
+> >   test_vmlinux:PASS:kprobe 0 nsec
+> >   test_vmlinux:PASS:fentry 0 nsec
+> >
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Thanks!
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-The machanics and usage are not very straightforward. Given the
-changes it's better to document how it works and how to use it,
-rather than having to rely on the examples and implementation to
-infer what is going on.
-
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- Documentation/bpf/index.rst              |  9 +++
- Documentation/bpf/map_cgroup_storage.rst | 95 ++++++++++++++++++++++++
- 2 files changed, 104 insertions(+)
- create mode 100644 Documentation/bpf/map_cgroup_storage.rst
-
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 38b4db8be7a2..26f4bb3107fc 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -48,6 +48,15 @@ Program types
-    bpf_lsm
- 
- 
-+Map types
-+=========
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   map_cgroup_storage
-+
-+
- Testing and debugging BPF
- =========================
- 
-diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
-new file mode 100644
-index 000000000000..b7210cb3f294
---- /dev/null
-+++ b/Documentation/bpf/map_cgroup_storage.rst
-@@ -0,0 +1,95 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2020 Google LLC.
-+
-+===========================
-+BPF_MAP_TYPE_CGROUP_STORAGE
-+===========================
-+
-+The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
-+storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
-+attach to cgroups; the programs are made available by the same config. The
-+storage is identified by the cgroup the program is attached to.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGROUP_STORAGE`` map type. Some of its behaviors was changed in
-+Linux 5.9 and this document will describe the differences.
-+
-+Usage
-+=====
-+
-+The map uses key of type ``struct bpf_cgroup_storage_key``, declared in
-+``linux/bpf.h``::
-+
-+    struct bpf_cgroup_storage_key {
-+            __u64 cgroup_inode_id;
-+            __u32 attach_type;
-+    };
-+
-+``cgroup_inode_id`` is the inode id of the cgroup directory.
-+``attach_type`` was the the program's attach type prior to Linux 5.9, since 5.9
-+it is ignored and kept for backwards compatibility.
-+
-+To access the storage in a program, use ``bpf_get_local_storage``::
-+
-+    void *bpf_get_local_storage(void *map, u64 flags)
-+
-+``flags`` is reserved for future use and must be 0.
-+
-+There is no implicit synchronization. Storages of ``BPF_MAP_TYPE_CGROUP_STORAGE``
-+can be accessed by multiple programs across different CPUs, and user should
-+take care of synchronization by themselves.
-+
-+Example usage::
-+
-+    #include <linux/bpf.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+            __type(key, struct bpf_cgroup_storage_key);
-+            __type(value, __u32);
-+    } cgroup_storage SEC(".maps");
-+
-+    int program(struct __sk_buff *skb)
-+    {
-+            __u32 *ptr = bpf_get_local_storage(&cgroup_storage, 0);
-+            __sync_fetch_and_add(ptr_cg_storage-, 1);
-+
-+            return 0;
-+    }
-+
-+Semantics
-+=========
-+
-+``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`` is a variant of this map type. This
-+per-CPU variant will have different memory regions for each CPU for each
-+storage. The non-per-CPU will have the same memory region for each storage.
-+
-+Prior to Linux 5.9, the lifetime of a storage is precisely per-attachment, and
-+for a single ``CGROUP_STORAGE`` map, there can be at most one program loaded
-+that uses the map. A program may be attached to multiple cgroups or have
-+multiple attach types, and each attach creates a fresh zeroed storage. The
-+storage is freed upon detach.
-+
-+Userspace may use the the attach parameters of cgroup and attach type pair
-+in ``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment.
-+
-+Since Linux 5.9, storage can be shared by multiple programs, and attach type
-+is ignored. When a program is attached to a cgroup, the kernel would create a
-+new storage only if the map does not already contain an entry for the cgroup,
-+or else the old storage is reused for the new attachment. Storage is freed
-+only when either the map or the cgroup attached to is being freed. Detaching
-+will not directly free the storage, but it may cause the reference to the map
-+to reach zero and indirectly freeing all storage in the map.
-+
-+Userspace may use the the attach parameters of cgroup only in
-+``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment. The struct also contains an
-+``attach_type`` field; this field is ignored.
-+
-+In all versions, the storage is bound at attach time. Even if the program is
-+attached to parent and triggers in child, the storage still belongs to the
-+parent.
-+
-+Userspace cannot create a new entry in the map or delete an existing entry.
-+Program test runs always use a temporary storage.
--- 
-2.27.0
-
+Applied. Thanks
