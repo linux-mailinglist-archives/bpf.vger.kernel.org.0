@@ -2,88 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A212115CA
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 00:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E752115CC
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 00:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgGAWXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 18:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgGAWXF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 18:23:05 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF38C08C5C1
-        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 15:23:05 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id d21so14643033lfb.6
-        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 15:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EPbcu96BJ5hfMvTUm07h118zB3h4xgj1aTtS4OK8Wos=;
-        b=PgNxnj0GERc+cw3V9suJzdpMRAm00xRLfxrtDq3pJ1cgWQ7KQLfX48eQcIaMJBKe7A
-         40hD2l/T7jh779PYvcE1eFOoKhtVrik7+tFMiX3xVaH/9pYrVOXRdYzP6UXbuAvcjeVR
-         +jjmCZb51gwvXJZtlHEOA5NptVUTe+1id116y5VKn0IDVVQc5MZsPy9joiZEtPv+KE0m
-         4eXQGZORUtNmuNHfzX3UBc0LNyboqh06aNWBdfa6W6ZBAdM/KY05vecjuRdXqZ8aUxnW
-         UxrQEYriKVcnaH41BNq/KQ2fTc4PhLunoLuyVJTU385cwvQUptXlBj8lb+VWfxR1rV+e
-         oDJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EPbcu96BJ5hfMvTUm07h118zB3h4xgj1aTtS4OK8Wos=;
-        b=IAMiCEz8cf/+7YDPWKHAxri+GLtGs0Fp78g12qR9LBtZo/1gbxPx41MZ5NWCu7FJe3
-         8GaXegCvaA+T4PlgbimjklngPDZGz1E0Ky4xRm3y8SG5IDOy13+mb36aukStN/ro7z1x
-         nXEwcsM9MxrGQq+VhbdnurqQ+aw7I2E2GrjkeS3sVN1qHL/xQM0lCbHz98R6Gu2ZN5eg
-         lGvnXYq/cjB4cMSTqfVbSSkf9P37dC+kg/0H8Y+IM8Y/WhkxPYtcXhCf04qdI/lVJm2x
-         CAYON5fsJ2W+BITyG3s4vD+QfnGaG2/aPITZ6R34E0RJAJjdow2pP+T8/TDIH1c4VeDN
-         rjiA==
-X-Gm-Message-State: AOAM531+EyOQaKb6HVmtImth/vYfmavxXfqxLImOiYb5N4QrR6VpGHW5
-        7sSbx9NZqfS0wEUfRBdfElBeCMcKX/Hj1WxQTRQ=
-X-Google-Smtp-Source: ABdhPJxRk7Fzix32zRt9GxspFbuMz017m01cg7PAHs9GzZJcQiItBctqElZ09LpRKZHAOx9aUb4RsuIZxDHd4rvlJ6U=
-X-Received: by 2002:a05:6512:54d:: with SMTP id h13mr16432546lfl.8.1593642183637;
- Wed, 01 Jul 2020 15:23:03 -0700 (PDT)
+        id S1726116AbgGAWXM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 18:23:12 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39652 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727853AbgGAWXM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 18:23:12 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jql8H-0004G6-Ql; Thu, 02 Jul 2020 00:23:09 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jql8H-000NNc-L5; Thu, 02 Jul 2020 00:23:09 +0200
+Subject: Re: [PATCH bpf-next] tools/bpftool: turn off -Wnested-externs warning
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200701212816.2072340-1-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <73e6534d-dc3c-7ecf-f10f-218707c6bb2a@iogearbox.net>
+Date:   Thu, 2 Jul 2020 00:23:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <159363976938.930467.11835380146293463365.stgit@firesoul>
-In-Reply-To: <159363976938.930467.11835380146293463365.stgit@firesoul>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Jul 2020 15:22:51 -0700
-Message-ID: <CAADnVQKd2hoRaNxC4jy5yh2zG4_1vkzXTaViG1Ox6QCgXYkTLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V3 0/3] BPF selftests test runner test_progs
- improvement for scripting
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200701212816.2072340-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25860/Wed Jul  1 15:40:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 2:44 PM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->
-> V3: Reorder patches to cause less code churn.
->
-> The BPF selftest 'test_progs' contains many tests, that cover all the
-> different areas of the kernel where BPF is used.  The CI system sees this
-> as one test, which is impractical for identifying what team/engineer is
-> responsible for debugging the problem.
->
-> This patchset add some options that makes it easier to create a shell
-> for-loop that invoke each (top-level) test avail in test_progs. Then each
-> test FAIL/PASS result can be presented the CI system to have a separate
-> bullet. (For Red Hat use-case in Beaker https://beaker-project.org/)
->
-> Created a public script[1] that uses these features in an advanced way.
-> Demonstrating howto reduce the number of (top-level) tests by grouping tests
-> together via using the existing test pattern selection feature, and then
-> using the new --list feature combined with exclude (-b) to get a list of
-> remaining test names that was not part of the groups.
->
-> [1] https://github.com/netoptimizer/prototype-kernel/blob/master/scripts/bpf_selftests_grouping.sh
+On 7/1/20 11:28 PM, Andrii Nakryiko wrote:
+> Turn off -Wnested-externs to avoid annoying warnings in BUILD_BUG_ON macro when
+> compiling bpftool:
+> 
+> In file included from /data/users/andriin/linux/tools/include/linux/build_bug.h:5,
+>                   from /data/users/andriin/linux/tools/include/linux/kernel.h:8,
+>                   from /data/users/andriin/linux/kernel/bpf/disasm.h:10,
+>                   from /data/users/andriin/linux/kernel/bpf/disasm.c:8:
+> /data/users/andriin/linux/kernel/bpf/disasm.c: In function ‘__func_get_name’:
+> /data/users/andriin/linux/tools/include/linux/compiler.h:37:38: warning: nested extern declaration of ‘__compiletime_assert_0’ [-Wnested-externs]
+>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                        ^~~~~~~~~~~~~~~~~~~~~
+> /data/users/andriin/linux/tools/include/linux/compiler.h:16:15: note: in definition of macro ‘__compiletime_assert’
+>     extern void prefix ## suffix(void) __compiletime_error(msg); \
+>                 ^~~~~~
+> /data/users/andriin/linux/tools/include/linux/compiler.h:37:2: note: in expansion of macro ‘_compiletime_assert’
+>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>    ^~~~~~~~~~~~~~~~~~~
+> /data/users/andriin/linux/tools/include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+>   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                       ^~~~~~~~~~~~~~~~~~
+> /data/users/andriin/linux/tools/include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+>    BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>    ^~~~~~~~~~~~~~~~
+> /data/users/andriin/linux/kernel/bpf/disasm.c:20:2: note: in expansion of macro ‘BUILD_BUG_ON’
+>    BUILD_BUG_ON(ARRAY_SIZE(func_id_str) != __BPF_FUNC_MAX_ID);
+>    ^~~~~~~~~~~~
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Applied. Thanks
+Lgtm, thanks for fixing, applied!
