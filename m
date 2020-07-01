@@ -2,191 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F23210208
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 04:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D4C2102B5
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 06:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgGAC0g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jun 2020 22:26:36 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11152 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725988AbgGAC0f (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jun 2020 22:26:35 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0612PgO6021112;
-        Tue, 30 Jun 2020 19:26:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=XzVwesyXppnhHor1c093K65mOOFh7rGEx8HYY3wRhes=;
- b=WQj71VD+40nL5ohfqASlPtfV0WERo31ODOGDOy/AaMZUJtfiyuncqsglfOgpVE95BFKD
- RcTdXP0RK6dIEFebvzXX1YhXo8p6nprD9B4plCr2xZq57oKgspVuJ7nd6SA05LOgANpa
- s8idjv+i/pjuVFWImA+QzjfL7eufoJUvXKI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31x3xgymmf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 30 Jun 2020 19:26:19 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 30 Jun 2020 19:26:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QOa1re290sy08wHaCwUMzWqZw3wRte2ymcOm7h4fCQvVcBblxuTo+Y5clNKwx40NoMXPjlB1keDxgeBlrrVpK4w9fx90Imb1F9XsuSRb9hByD0nRj4VihDSDOC3aU3W4P/lYusACNis980ixUkzpgIp7DiFcHl2/cr0xGJOdIKJEI6tCA0ihcKGrrdXzvs8uWrokD9BTe9bEoG2tWk28EYCGP0wwDII1wVRBJ5vp2jjnu7yqZM5mteHtcIl9uwG5yKqO00L+G6yaoLMTqlNstzhlWMMmgJA1YjTAqVUrnVHOJnE/YzIJvbGNfsFhs2Sxg5BPHNearkX7DcMRBMtBAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XzVwesyXppnhHor1c093K65mOOFh7rGEx8HYY3wRhes=;
- b=kctZ/lzxuR7VeEqVXKyrJtwKZODzaOlE0M8swa8yBB4GpbEdoKpXWzbQzc+Lugv7b/KgTevYoy3OzG2OOQcZj01PSqrjhtCsJcTl3oenHUy/EPXzoHBYVuAthCFlwR1d7kBtawcO8F19PiEtYh2u8hLE94drCITLlA6ZebrAD230jBVaYLjLugBZOThOi1QY7dcq4SIsVbDscGjE2W5A5iJXtTA9+7V+cCQYBvtrutuhnpj5u6DlIKxiDAGU1ZWScLBUJTeculMBp/9g1E2ZgsgCjmhiv2AkFAME/kznZPAi52/hZ2nbsgPOHlNV57L7MEljuspeqiRgQz0h2uFJhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XzVwesyXppnhHor1c093K65mOOFh7rGEx8HYY3wRhes=;
- b=iAicbsmgdRGIHk3V6YLxWOD7mI9xrMyOG9GTc8biUE3JW5CvLRgATXWhkz/2t4zMqfkW7t26ik+r2flKty6v2kI4/REG+apbgWPprMeAY+MldjLKUr3YvkhhbIh5751zoCrdpdojo0YOIVn2FK8bHrQGvCVi0CWYVOWAcruyGAI=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2822.namprd15.prod.outlook.com (2603:10b6:a03:15b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Wed, 1 Jul
- 2020 02:26:05 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.027; Wed, 1 Jul 2020
- 02:26:05 +0000
-Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use
- hrtimer_range_start_ns.
-To:     Hao Luo <haoluo@google.com>
-CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>,
-        <linux-kselftest@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1725862AbgGAEVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 00:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725272AbgGAEVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 00:21:09 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC8DC061755;
+        Tue, 30 Jun 2020 21:21:08 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so8380600pfu.1;
+        Tue, 30 Jun 2020 21:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ny/z+Jdd18J3qFH3pTJLjZ7QO1/jG7qWaJcFCq021tQ=;
+        b=i3ixCpMnPwfTvM+yia3+SHJHu0H7jX6w5f/ANMHzPUNOW9Vjz/QYsYVkbGU/ePrCf5
+         6yu7G5yxuqahMfkMQETAgwYEuGxJDnUamD+mLQlIIiptJENZpCfkf92WqyE8CqwIKapP
+         ztghzb75m9Ic8Puj+Ee7sTk+MyEp0MvQMVTZu+AmyPRGqXRQ2EXIDSfs3/Vy7LAOZzOJ
+         hbDXdEVVGevjAs1UmhMrpLZxE5YdhZyUVMWR/ob79wt4FBbkNwNzRweWImSGtZNClGvK
+         rc6EkoyH1NAVXBA1KvBKhGyTOiQ6VMKjYMPVD+Xg3hZ32gVXnTA3rO1Vt2QvclZTt/E2
+         LsJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ny/z+Jdd18J3qFH3pTJLjZ7QO1/jG7qWaJcFCq021tQ=;
+        b=bhFOR+K3zBE6uJMp10xDICWAaRcLeQZ/uha6dRdHY+dDlsALKMlYAWln0ToQzNX9sN
+         QeKFR2YBhOP/DK0b+/KmisNBRpitO9awnEvQ0oWVXHA167IkkEYbRZKrt2sGd9bE/LiJ
+         95C2LS0PPfQrOKTa1soUkibFwrmJHfX4y3kcBTkNAReUJjMRh+mIlLktMlQjaF65uhPM
+         yuZekWfqhlZyAIvaFWSKVXZ+OGq71HehSyMqWFZOg1v0Sd+8lADn71VgprYNDRZOezk4
+         3KXg7Ck9+PliQH06pMPUvzlEwiS/jmEwjCEBkzrtdahA/fZ9qaPmRMC6JqXvpyAkaVov
+         hKTA==
+X-Gm-Message-State: AOAM533CkxHEi/jkWdHUTED2sJUXY0SXNtbNgDAHjq4NGqESNG1zi/ci
+        pKmzIhe7+PbvTDy4ABqRfGAAmQqycLU=
+X-Google-Smtp-Source: ABdhPJzDA/JkSBc1s+/vG2JEcaaUqaFmrOWW1ftR61z2pNE7ZTWsGDOlBXQb51sTRlSNnrtElaOOUw==
+X-Received: by 2002:aa7:9630:: with SMTP id r16mr16871051pfg.144.1593577268145;
+        Tue, 30 Jun 2020 21:21:08 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id h9sm3420227pjs.50.2020.06.30.21.21.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2020 21:21:07 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Bill Wendling <morbo@google.com>
-References: <20200630184922.455439-1-haoluo@google.com>
- <49df8306-ecc7-b979-d887-b023275e4842@fb.com>
- <CA+khW7iJu2tzcz36XzL6gBq4poq+5Qt0vbrmPRdYuvC-c5U4_A@mail.gmail.com>
- <CA+khW7jNqVMqq2dzf6Dy0pWCZYjHrG7Vm_sUEKKLS-L-ptzEtQ@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <46fc8e13-fb3e-6464-b794-60cf90d16543@fb.com>
-Date:   Tue, 30 Jun 2020 19:26:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-In-Reply-To: <CA+khW7jNqVMqq2dzf6Dy0pWCZYjHrG7Vm_sUEKKLS-L-ptzEtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv5 bpf-next 0/3] xdp: add a new helper for dev map multicast support
+Date:   Wed,  1 Jul 2020 12:19:35 +0800
+Message-Id: <20200701041938.862200-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200526140539.4103528-1-liuhangbin@gmail.com>
+References: <20200526140539.4103528-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::15c2] (2620:10d:c090:400::5:5757) by BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20 via Frontend Transport; Wed, 1 Jul 2020 02:26:04 +0000
-X-Originating-IP: [2620:10d:c090:400::5:5757]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe7cf668-a757-44c5-073c-08d81d661b4a
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2822:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB282280E82F7163680D1DB04CD36C0@BYAPR15MB2822.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 04519BA941
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ifpBzi4u4HCaEZUd7rZgVjIjbdlP1V3dXNdJP0RGQmBCWTOGXwte7a5EEGGn0SqbjFAJbwISYeoke8E5lGSdDEvF7+QNndHxAV97KEbOsq/NV4d17LuQPFjxkD6lvSgAfLRm8nUo334U0fHOxbf9uecbXqhFvhtc5T5W9DfffrbSuQDQctiKisW0zX94u44Dgp5snXeVur52DMrHBj1wLXTWfGZFBZbfOXGuLTBF2dPoshtGcOJjlhacn2FLNKCEJG2G/TeMidzeEKzAFSJDUwuph4hOo2fUsEd+aQPT7kIYEhVVoZMzwQQS+l83eRJcE+wxVEsOj9eAqanR6n9tP/Wn0hgxb0wl6QvfKtF72EXED1kDx/+x2STwu4h5PBph
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(366004)(39860400002)(136003)(396003)(376002)(6486002)(36756003)(54906003)(83380400001)(478600001)(16526019)(4326008)(7416002)(186003)(316002)(52116002)(31686004)(8676002)(66556008)(66476007)(66946007)(2906002)(53546011)(8936002)(31696002)(86362001)(6916009)(5660300002)(2616005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: f9zp8w1hG1APb2Tl4OZ95sHtDIukIECvslDY9RLM41mySPiLtP8AREcrU8uEfeHpRvfjTG352ldBU/quW+V5rparNbXsg2VZu2C1yxlddmjzVV/rxEpDyHZnob9bcHXS3hUEWaYzMEPXktc1CHuy1aqzN8TV/nGvDBl4EzCoUYZyRhMSSAuaFrVXy0xeMHvFfsgN+ptVAg/gBFVSTSivoPcCR+DspMI90jMhtFXOgeaE6M9tfjFzafTc+Lsp9TSOGTIaHJjw/1enrQMQMry1x66KhRn0SIME0X8X7pbPHwgv6GaDntPGkrYVFMUtxRUAoZGX5hTm6XDWIvD8wREnkawlrWI5e+M59xpaKyGX6fbg14s+yb2NNVVd1OGnN88NXQUsaaBrAtF4f6oe2ARLuel9CT2M2+pMFKkjbBdi/h4Ai0Pji4AqGmbJCusrGC9/CnfauEKn/qYLtk1u5GaqjgvYoSWVyorNyJGKGNHXtf2+Z46yjVEhOCL6VTV7cmM/27xdiNF9y43hVtfHii2xoQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe7cf668-a757-44c5-073c-08d81d661b4a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2020 02:26:05.7609
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IxjnbgR6fAHJpXpJotXdyNxFlCrSkLlUfxSQDV34hvX6b8aakSzE3Mv5VT0nN4d6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2822
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-01_01:2020-06-30,2020-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 mlxscore=0 impostorscore=0 spamscore=0
- clxscore=1011 cotscore=-2147483648 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007010013
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch is for xdp multicast support. which has been discussed before[0],
+The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
+a software switch that can forward XDP frames to multiple ports.
 
+To achieve this, an application needs to specify a group of interfaces
+to forward a packet to. It is also common to want to exclude one or more
+physical interfaces from the forwarding operation - e.g., to forward a
+packet to all interfaces in the multicast group except the interface it
+arrived on. While this could be done simply by adding more groups, this
+quickly leads to a combinatorial explosion in the number of groups an
+application has to maintain.
 
-On 6/30/20 5:10 PM, Hao Luo wrote:
-> Ok, with the help of my colleague Ian Rogers, I think we solved the
-> mystery. Clang actually inlined hrtimer_nanosleep() inside
-> SyS_nanosleep(), so there is no call to that function throughout the
-> path of the nanosleep syscall. I've been looking at the function body
-> of hrtimer_nanosleep for quite some time, but clearly overlooked the
-> caller of hrtimer_nanosleep. hrtimer_nanosleep is pretty short and
-> there are many constants, inlining would not be too surprising.
+To avoid the combinatorial explosion, we propose to include the ability
+to specify an "exclude group" as part of the forwarding operation. This
+needs to be a group (instead of just a single port index), because a
+physical interface can be part of a logical grouping, such as a bond
+device.
 
-Oh thanks for explanation. inlining makes sense. We have many other
-instances like this in the past where kprobe won't work properly.
+Thus, the logical forwarding operation becomes a "set difference"
+operation, i.e. "forward to all ports in group A that are not also in
+group B". This series implements such an operation using device maps to
+represent the groups. This means that the XDP program specifies two
+device maps, one containing the list of netdevs to redirect to, and the
+other containing the exclude list.
 
-Could you reword your commit message then?
+To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+to accept two maps, the forwarding map and exclude map. If user
+don't want to use exclude map and just want simply stop redirecting back
+to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
 
- > causing fentry and kprobe to not hook on this function properly on a
- > Clang build kernel.
+The 2nd and 3rd patches are for usage sample and testing purpose, so there
+is no effort has been made on performance optimisation. I did same tests
+with pktgen(pkt size 64) to compire with xdp_redirect_map(). Here is the
+test result(the veth peer has a dummy xdp program with XDP_DROP directly):
 
-The above is a little vague on what happens. What really happens is
-fentry/kprobe does hook on this function but has no effect since
-its caller has inlined the function.
+Version         | Test                                   | Native | Generic
+5.8 rc1         | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+5.8 rc1         | xdp_redirect_map       i40e->veth      |  12.7M |   1.6M
+5.8 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+5.8 rc1 + patch | xdp_redirect_map       i40e->veth      |  12.3M |   1.6M
+5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   7.2M |   1.5M
+5.8 rc1 + patch | xdp_redirect_map_multi i40e->veth      |   8.5M |   1.3M
+5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.0M |  0.98M
 
+The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+the arrays and do clone skb/xdpf. The native path is slower than generic
+path as we send skbs by pktgen. So the result looks reasonable.
 
-> Sigh...
-> 
-> Hao
-> 
-> On Tue, Jun 30, 2020 at 3:48 PM Hao Luo <haoluo@google.com> wrote:
->>
->> On Tue, Jun 30, 2020 at 1:37 PM Yonghong Song <yhs@fb.com> wrote:
->>>
->>> On 6/30/20 11:49 AM, Hao Luo wrote:
->>>> The test_vmlinux test uses hrtimer_nanosleep as hook to test tracing
->>>> programs. But it seems Clang may have done an aggressive optimization,
->>>> causing fentry and kprobe to not hook on this function properly on a
->>>> Clang build kernel.
->>>
->>> Could you explain why it does not on clang built kernel? How did you
->>> build the kernel? Did you use [thin]lto?
->>>
->>> hrtimer_nanosleep is a global function who is called in several
->>> different files. I am curious how clang optimization can make
->>> function disappear, or make its function signature change, or
->>> rename the function?
->>>
->>
->> Yonghong,
->>
->> We didn't enable LTO. It also puzzled me. But I can confirm those
->> fentry/kprobe test failures via many different experiments I've done.
->> After talking to my colleague on kernel compiling tools (Bill, cc'ed),
->> we suspected this could be because of clang's aggressive inlining. We
->> also noticed that all the callsites of hrtimer_nanosleep() are tail
->> calls.
->>
->> For a better explanation, I can reach out to the people who are more
->> familiar to clang in the compiler team to see if they have any
->> insights. This may not be of high priority for them though.
->>
->> Hao
+Last but not least, thanks a lot to Jiri, Eelco, Toke and Jesper for
+suggestions and help on implementation.
+
+[0] https://xdp-project.net/#Handling-multicast
+
+v5:
+a) Check devmap_get_next_key() return value.
+b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
+c) In function dev_map_enqueue_multi(), consume xdpf for the last
+   obj instead of the first on.
+d) Update helper description and code comments to explain that we
+   use NULL target value to distinguish multicast and unicast
+   forwarding.
+e) Update memory model, memory id and frame_sz in xdpf_clone().
+f) Split the tests from sample and add a bpf kernel selftest patch.
+
+v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
+
+v3: Based on Toke's suggestion, do the following update
+a) Update bpf_redirect_map_multi() description in bpf.h.
+b) Fix exclude_ifindex checking order in dev_in_exclude_map().
+c) Fix one more xdpf clone in dev_map_enqueue_multi().
+d) Go find next one in dev_map_enqueue_multi() if the interface is not
+   able to forward instead of abort the whole loop.
+e) Remove READ_ONCE/WRITE_ONCE for ex_map.
+
+v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
+include/exclude maps directly.
+
+Hangbin Liu (3):
+  xdp: add a new helper for dev map multicast support
+  sample/bpf: add xdp_redirect_map_multicast test
+  selftests/bpf: add xdp_redirect_multi test
+
+ include/linux/bpf.h                           |  20 ++
+ include/linux/filter.h                        |   1 +
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  25 ++-
+ kernel/bpf/devmap.c                           | 154 ++++++++++++++++
+ kernel/bpf/verifier.c                         |   6 +
+ net/core/filter.c                             | 109 ++++++++++-
+ net/core/xdp.c                                |  29 +++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  57 ++++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 166 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  25 ++-
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  90 +++++++++
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 164 +++++++++++++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 173 ++++++++++++++++++
+ 16 files changed, 1019 insertions(+), 8 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.25.4
+
