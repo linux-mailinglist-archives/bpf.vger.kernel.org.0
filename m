@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C1921166E
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 01:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47E32116B6
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 01:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgGAXCh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 19:02:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43310 "EHLO
+        id S1726464AbgGAXjo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 19:39:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46244 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgGAXCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 19:02:36 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        with ESMTP id S1726438AbgGAXjo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 19:39:44 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jqlkJ-0007yr-JA; Thu, 02 Jul 2020 01:02:27 +0200
+        id 1jqmKL-0003z1-H3; Thu, 02 Jul 2020 01:39:41 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jqlkJ-000J0J-B6; Thu, 02 Jul 2020 01:02:27 +0200
+        id 1jqmKL-000HRJ-8B; Thu, 02 Jul 2020 01:39:41 +0200
 Subject: Re: [PATCH v5 bpf-next 5/9] bpf: cpumap: add the possibility to
  attach an eBPF program to cpumap
 To:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
@@ -31,8 +31,8 @@ Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
 References: <cover.1593521029.git.lorenzo@kernel.org>
  <a6bb83a429f3b073e97f81ec3935b8ebe89fbd71.1593521030.git.lorenzo@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <cb2f7b80-7c0f-4f96-6285-87cc615c7484@iogearbox.net>
-Date:   Thu, 2 Jul 2020 01:02:26 +0200
+Message-ID: <1f4af1f3-10cf-57ca-4171-11d3bff51c99@iogearbox.net>
+Date:   Thu, 2 Jul 2020 01:39:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
@@ -49,64 +49,6 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On 6/30/20 2:49 PM, Lorenzo Bianconi wrote:
 [...]
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 52d71525c2ff..0ac7b11302c2 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -226,6 +226,7 @@ enum bpf_attach_type {
->   	BPF_CGROUP_INET4_GETSOCKNAME,
->   	BPF_CGROUP_INET6_GETSOCKNAME,
->   	BPF_XDP_DEVMAP,
-> +	BPF_XDP_CPUMAP,
->   	__MAX_BPF_ATTACH_TYPE
->   };
->   
-> @@ -3819,6 +3820,10 @@ struct bpf_devmap_val {
->    */
->   struct bpf_cpumap_val {
->   	__u32 qsize;	/* queue size to remote target CPU */
-> +	union {
-> +		int   fd;	/* prog fd on map write */
-> +		__u32 id;	/* prog id on map read */
-> +	} bpf_prog;
->   };
->   
->   enum sk_action {
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 7e8eec4f7089..32f627bfc67c 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -67,6 +67,7 @@ struct bpf_cpu_map_entry {
->   	struct rcu_head rcu;
->   
->   	struct bpf_cpumap_val value;
-> +	struct bpf_prog *prog;
->   };
->   
->   struct bpf_cpu_map {
-> @@ -81,6 +82,7 @@ static int bq_flush_to_queue(struct xdp_bulk_queue *bq);
->   
->   static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
->   {
-> +	u32 value_size = attr->value_size;
->   	struct bpf_cpu_map *cmap;
->   	int err = -ENOMEM;
->   	u64 cost;
-> @@ -91,7 +93,9 @@ static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
->   
->   	/* check sanity of attributes */
->   	if (attr->max_entries == 0 || attr->key_size != 4 ||
-> -	    attr->value_size != 4 || attr->map_flags & ~BPF_F_NUMA_NODE)
-> +	    (value_size != offsetofend(struct bpf_cpumap_val, qsize) &&
-> +	     value_size != offsetofend(struct bpf_cpumap_val, bpf_prog.fd)) ||
-> +	    attr->map_flags & ~BPF_F_NUMA_NODE)
->   		return ERR_PTR(-EINVAL);
->   
->   	cmap = kzalloc(sizeof(*cmap), GFP_USER);
-> @@ -221,6 +225,64 @@ static void put_cpu_map_entry(struct bpf_cpu_map_entry *rcpu)
->   	}
->   }
->   
 > +static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
 > +				    void **frames, int n,
 > +				    struct xdp_cpumap_stats *stats)
@@ -125,13 +67,6 @@ On 6/30/20 2:49 PM, Lorenzo Bianconi wrote:
 > +	xdp.rxq = &rxq;
 > +
 > +	prog = READ_ONCE(rcpu->prog);
-
-What purpose does the READ_ONCE() have here, also given you don't use it in above check?
-Since upon map update you realloc, repopulate and then xchg() the rcpu entry itself, there
-is never the case where you xchg() or WRITE_ONCE() the rcpu->prog, so what does READ_ONCE()
-serve in this context? Imho, it should probably just be deleted and plain rcpu->prog used
-to avoid confusion.
-
 > +	for (i = 0; i < n; i++) {
 > +		struct xdp_frame *xdpf = frames[i];
 > +		u32 act;
@@ -171,32 +106,89 @@ to avoid confusion.
 > +
 > +	return nframes;
 > +}
+> +
+>   #define CPUMAP_BATCH 8
+>   
+>   static int cpu_map_kthread_run(void *data)
+> @@ -235,11 +297,12 @@ static int cpu_map_kthread_run(void *data)
+>   	 * kthread_stop signal until queue is empty.
+>   	 */
+>   	while (!kthread_should_stop() || !__ptr_ring_empty(rcpu->queue)) {
+> +		struct xdp_cpumap_stats stats = {}; /* zero stats */
+> +		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+>   		unsigned int drops = 0, sched = 0;
+>   		void *frames[CPUMAP_BATCH];
+>   		void *skbs[CPUMAP_BATCH];
+> -		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+> -		int i, n, m;
+> +		int i, n, m, nframes;
+>   
+>   		/* Release CPU reschedule checks */
+>   		if (__ptr_ring_empty(rcpu->queue)) {
+> @@ -260,8 +323,8 @@ static int cpu_map_kthread_run(void *data)
+>   		 * kthread CPU pinned. Lockless access to ptr_ring
+>   		 * consume side valid as no-resize allowed of queue.
+>   		 */
+> -		n = __ptr_ring_consume_batched(rcpu->queue, frames, CPUMAP_BATCH);
+> -
+> +		n = __ptr_ring_consume_batched(rcpu->queue, frames,
+> +					       CPUMAP_BATCH);
+>   		for (i = 0; i < n; i++) {
+>   			void *f = frames[i];
+>   			struct page *page = virt_to_page(f);
+> @@ -273,15 +336,19 @@ static int cpu_map_kthread_run(void *data)
+>   			prefetchw(page);
+>   		}
+>   
+> -		m = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, n, skbs);
+> -		if (unlikely(m == 0)) {
+> -			for (i = 0; i < n; i++)
+> -				skbs[i] = NULL; /* effect: xdp_return_frame */
+> -			drops = n;
+> +		/* Support running another XDP prog on this CPU */
+> +		nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, n, &stats);
+> +		if (nframes) {
+> +			m = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
+> +			if (unlikely(m == 0)) {
+> +				for (i = 0; i < nframes; i++)
+> +					skbs[i] = NULL; /* effect: xdp_return_frame */
+> +				drops += nframes;
+> +			}
+>   		}
+>   
+>   		local_bh_disable();
+> -		for (i = 0; i < n; i++) {
+> +		for (i = 0; i < nframes; i++) {
+>   			struct xdp_frame *xdpf = frames[i];
+>   			struct sk_buff *skb = skbs[i];
+>   			int ret;
+> @@ -298,7 +365,7 @@ static int cpu_map_kthread_run(void *data)
+>   				drops++;
+>   		}
+>   		/* Feedback loop via tracepoint */
+> -		trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched);
+> +		trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched, &stats);
+>   
+>   		local_bh_enable(); /* resched point, may call do_softirq() */
+>   	}
+> @@ -308,13 +375,38 @@ static int cpu_map_kthread_run(void *data)
+>   	return 0;
+>   }
 [...]
-> +bool cpu_map_prog_allowed(struct bpf_map *map)
-> +{
-> +	return map->map_type == BPF_MAP_TYPE_CPUMAP &&
-> +	       map->value_size != offsetofend(struct bpf_cpumap_val, qsize);
-> +}
-> +
-> +static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu, int fd)
-> +{
-> +	struct bpf_prog *prog;
-> +
-> +	prog = bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP, false);
+> @@ -415,6 +510,8 @@ static void __cpu_map_entry_replace(struct bpf_cpu_map *cmap,
+>   
+>   	old_rcpu = xchg(&cmap->cpu_map[key_cpu], rcpu);
+>   	if (old_rcpu) {
+> +		if (old_rcpu->prog)
+> +			bpf_prog_put(old_rcpu->prog);
+>   		call_rcu(&old_rcpu->rcu, __cpu_map_entry_free);
+>   		INIT_WORK(&old_rcpu->kthread_stop_wq, cpu_map_kthread_stop);
+>   		schedule_work(&old_rcpu->kthread_stop_wq);
 
-Nit: why the _dev variant; just use bpf_prog_get_type()?
+Hm, not quite sure I follow the logic here. Why is the bpf_prog_put() not placed inside
+__cpu_map_entry_free(), for example? Wouldn't this at least leave a potential small race
+window of UAF given the rest is still live? If we already piggy-back from RCU side on
+rcpu entry, why not having it in __cpu_map_entry_free()?
 
-> +	if (IS_ERR(prog))
-> +		return PTR_ERR(prog);
-> +
-> +	if (prog->expected_attach_type != BPF_XDP_CPUMAP) {
-> +		bpf_prog_put(prog);
-> +		return -EINVAL;
-> +	}
-> +
-> +	rcpu->value.bpf_prog.id = prog->aux->id;
-> +	rcpu->prog = prog;
-> +
-> +	return 0;
-> +}
-> +
+Thanks,
+Daniel
