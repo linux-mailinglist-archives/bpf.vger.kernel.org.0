@@ -2,124 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0152211520
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 23:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25A4211540
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 23:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgGAV20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 17:28:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33666 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727883AbgGAV20 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 17:28:26 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061LGGpS009952
-        for <bpf@vger.kernel.org>; Wed, 1 Jul 2020 14:28:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=ImuQ/pcsPbh8Tb6FKSwCSOd7ITPakKzlYlr5H24zEBQ=;
- b=pneKoYu+uly1oNkHUIqknKlch5QtSEBLwY4ZxIDYIio73LOxyRI3yI89UWJaAJjBbijB
- 9AB/InKTKRa0zWfIRZooMUXm+nkMS8e9VX869J9f7wv81N5V91fpDG6jq2ieWzA1oUnL
- rCxFhvZRHpbgagu9BRA5Yw0Vda5uJLaphcs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xntc1pv0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 14:28:25 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 1 Jul 2020 14:28:24 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 0F7D52EC3A77; Wed,  1 Jul 2020 14:28:21 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] tools/bpftool: turn off -Wnested-externs warning
-Date:   Wed, 1 Jul 2020 14:28:16 -0700
-Message-ID: <20200701212816.2072340-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726144AbgGAVim (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 17:38:42 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53622 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726441AbgGAVim (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 17:38:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593639521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTKdvSy+TelK931YCuByBbSYqDmHNiiPh6m/HOqLb9A=;
+        b=A5g3Yw0zbBiXi6VovgwREZ+IXrCgYQa89m7pzufe9aBXy6Ro6XM32vtlaGhiFqWIbukvvs
+        9BgiifRTN6jBOC6h0gskhGIu1IjF8j08TQgL+D7SP8LoRwB8enh2HAN63yS3M8b82qcdlR
+        bO73OZRnjj2DDKNlH2tHg0iCnRvrH+E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-p67-zZ7uP0ik2fdHPeyeTg-1; Wed, 01 Jul 2020 17:38:38 -0400
+X-MC-Unique: p67-zZ7uP0ik2fdHPeyeTg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F12A80183C;
+        Wed,  1 Jul 2020 21:38:37 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1079B1002388;
+        Wed,  1 Jul 2020 21:38:31 +0000 (UTC)
+Date:   Wed, 1 Jul 2020 23:38:30 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V2 3/3] selftests/bpf: test_progs indicate to
+ shell on non-actions
+Message-ID: <20200701233830.19ee0ec8@carbon>
+In-Reply-To: <CAEf4BzYXAHMC=7DTEzqH563zuMsuZuMbDaBPN9TmX4P8PG49jA@mail.gmail.com>
+References: <159363468114.929474.3089726346933732131.stgit@firesoul>
+        <159363474925.929474.15491499711324280696.stgit@firesoul>
+        <CAEf4BzYXAHMC=7DTEzqH563zuMsuZuMbDaBPN9TmX4P8PG49jA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-01_12:2020-07-01,2020-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- cotscore=-2147483648 lowpriorityscore=0 mlxscore=0 clxscore=1015
- bulkscore=0 spamscore=0 suspectscore=8 impostorscore=0 priorityscore=1501
- adultscore=0 mlxlogscore=972 phishscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007010148
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Turn off -Wnested-externs to avoid annoying warnings in BUILD_BUG_ON macr=
-o when
-compiling bpftool:
+On Wed, 1 Jul 2020 13:54:41 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-In file included from /data/users/andriin/linux/tools/include/linux/build=
-_bug.h:5,
-                 from /data/users/andriin/linux/tools/include/linux/kerne=
-l.h:8,
-                 from /data/users/andriin/linux/kernel/bpf/disasm.h:10,
-                 from /data/users/andriin/linux/kernel/bpf/disasm.c:8:
-/data/users/andriin/linux/kernel/bpf/disasm.c: In function =E2=80=98__fun=
-c_get_name=E2=80=99:
-/data/users/andriin/linux/tools/include/linux/compiler.h:37:38: warning: =
-nested extern declaration of =E2=80=98__compiletime_assert_0=E2=80=99 [-W=
-nested-externs]
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^~~~~~~~~~~~~~~~~~~~~
-/data/users/andriin/linux/tools/include/linux/compiler.h:16:15: note: in =
-definition of macro =E2=80=98__compiletime_assert=E2=80=99
-   extern void prefix ## suffix(void) __compiletime_error(msg); \
-               ^~~~~~
-/data/users/andriin/linux/tools/include/linux/compiler.h:37:2: note: in e=
-xpansion of macro =E2=80=98_compiletime_assert=E2=80=99
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-/data/users/andriin/linux/tools/include/linux/build_bug.h:39:37: note: in=
- expansion of macro =E2=80=98compiletime_assert=E2=80=99
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-/data/users/andriin/linux/tools/include/linux/build_bug.h:50:2: note: in =
-expansion of macro =E2=80=98BUILD_BUG_ON_MSG=E2=80=99
-  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-  ^~~~~~~~~~~~~~~~
-/data/users/andriin/linux/kernel/bpf/disasm.c:20:2: note: in expansion of=
- macro =E2=80=98BUILD_BUG_ON=E2=80=99
-  BUILD_BUG_ON(ARRAY_SIZE(func_id_str) !=3D __BPF_FUNC_MAX_ID);
-  ^~~~~~~~~~~~
+> On Wed, Jul 1, 2020 at 1:19 PM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+> >
+> > When a user selects a non-existing test the summary is printed with
+> > indication 0 for all info types, and shell "success" (EXIT_SUCCESS) is
+> > indicated. This can be understood by a human end-user, but for shell
+> > scripting is it useful to indicate a shell failure (EXIT_FAILURE).
+> >
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  tools/testing/selftests/bpf/test_progs.c |    9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > index 3345cd977c10..75cf5b13cbd6 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -706,11 +706,8 @@ int main(int argc, char **argv)
+> >                 goto out;
+> >         }
+> >
+> > -       if (env.list_test_names) {
+> > -               if (env.succ_cnt == 0)
+> > -                       env.fail_cnt = 1;
+> > +       if (env.list_test_names)
+> >                 goto out;
+> > -       }
+> >
+> >         fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+> >                 env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+> > @@ -723,5 +720,9 @@ int main(int argc, char **argv)
+> >         free_str_set(&env.subtest_selector.whitelist);
+> >         free(env.subtest_selector.num_set);
+> >
+> > +       /* Return EXIT_FAILURE when options resulted in no actions */
+> > +       if (!env.succ_cnt && !env.fail_cnt && !env.skip_cnt)
+> > +               env.fail_cnt = 1;
+> > +  
+> 
+> Heh, just suggested something like this in the previous patch. I think
+> this change should go first in patch series and not churn on
+> env.list_test_names above.
+> 
+> I'd also rewrite it as (no need to muck around with fail_cnt, less
+> negation for integers):
+> 
+> if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
+>     return EXIT_FAILURE;
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All good suggestions, I'll respin.
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 273da1615503..51bd520ed437 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -40,7 +40,7 @@ bash_compdir ?=3D /usr/share/bash-completion/completion=
-s
-=20
- CFLAGS +=3D -O2
- CFLAGS +=3D -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-in=
-itializers
--CFLAGS +=3D $(filter-out -Wswitch-enum,$(EXTRA_WARNINGS))
-+CFLAGS +=3D $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS=
-))
- CFLAGS +=3D -DPACKAGE=3D'"bpftool"' -D__EXPORTED_HEADERS__ \
- 	-I$(if $(OUTPUT),$(OUTPUT),.) \
- 	-I$(srctree)/kernel/bpf/ \
---=20
-2.24.1
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
