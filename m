@@ -2,67 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E75210F3D
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D63210F65
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 17:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731608AbgGAP2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 11:28:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7330 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732091AbgGAP2E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 11:28:04 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4D3A14C9271524C7A94B;
-        Wed,  1 Jul 2020 23:27:57 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 1 Jul 2020 23:27:48 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <hulkci@huawei.com>, Ariel Elior <aelior@marvell.com>,
-        <GR-everest-linux-l2@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next] qed: Make symbol 'qed_hw_err_type_descr' static
-Date:   Wed, 1 Jul 2020 23:38:03 +0800
-Message-ID: <20200701153803.69360-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1731779AbgGAPeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 11:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731399AbgGAPeW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 11:34:22 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0526C08C5C1;
+        Wed,  1 Jul 2020 08:34:21 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y13so13896331lfe.9;
+        Wed, 01 Jul 2020 08:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ji/aWMKUqT6RYTQlnVH4aDe8ZxPXlTerZVcj20JTnV8=;
+        b=LzeiiOnfLz5CztM3Ca002SX7hgfAQAKxFfXbtgKBSLs8e58SRqI85YT6CXCVHDQ33d
+         11rRa6MazDUNzyOae1lrAOYdc1LufLM7YlqL/J1qFU+tZ9AppbywT6KphuUqgQ89VeEN
+         N5va/CPu6pnHxtcUTe0A6rJV9KdPtrLGp6MFx0HTdW6l4HfmlGKEpKP77jX/u/h12OWP
+         +B/V3J7gbtG/EnpdVUJ5g+H94eQA4a/adNot4SxdhdQC8nl0O7FZ685CAXXURkuM53cP
+         BiOgZ4i0ecB0o56mvy8BR2F2M1z+waPBEn7+ddXGqKcHiAeK6gKTNieS59nKGSaE9inC
+         rqtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ji/aWMKUqT6RYTQlnVH4aDe8ZxPXlTerZVcj20JTnV8=;
+        b=gorlX9CYvOtXEVCsWFejREDQcUxtpjjOeFINCh8XqadPVBR3pyrvhqdUTrlPLHVhmY
+         Ojdu28zXoTiaRIl2CVA4jUVdnLSesugs8k4YY8/a+snfFoB9xE2BCtSkMcgXueieXdN3
+         +K85LEEX2DMVREvQk7sV+west+TdYw8hAekkqmpim0/jpKyVcsxs7/IW8ib0UTkFGrXR
+         19DFilhlNPcmXexEHnRBn25Vr0lGG7lmtQdz2WmEW4Q9Dua3dzZhdp2eC9H+oGfO9+I3
+         DBMH3OoDjFZkd7OCd8c82PdE19bUXHB5Wmzqa7I9bl0oLp+BnCxG7I9uFvG61OQiDAIy
+         I99w==
+X-Gm-Message-State: AOAM532/RBIdr8j54VKmkR1yBN4jAw+QINc1mbE9FtXXfx7n5IRtZP4W
+        yZWa5QGb8o91vxsNAag3IbIY1iGHB/aexhl8J3g=
+X-Google-Smtp-Source: ABdhPJyxyTOjkX9SPrREeZQd29/XQHfd4gtioo0AtDFbHpLaA0A3CCyBUnb0iGQXuvS+QSKBwBkBKPkSH+qrPeJxa/c=
+X-Received: by 2002:ac2:5e29:: with SMTP id o9mr15022359lfg.196.1593617660140;
+ Wed, 01 Jul 2020 08:34:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+References: <20200630062846.664389-1-songliubraving@fb.com>
+In-Reply-To: <20200630062846.664389-1-songliubraving@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 1 Jul 2020 08:34:09 -0700
+Message-ID: <CAADnVQ+HFjn9+cXM9PRLEsopiEVfJ5vjVDBNrWUjZT8P8_kiVA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 0/4] bpf: introduce bpf_get_task_stack()
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hulk Robot <hulkci@huawei.com>
+On Mon, Jun 29, 2020 at 11:28 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> This set introduces a new helper bpf_get_task_stack(). The primary use case
+> is to dump all /proc/*/stack to seq_file via bpf_iter__task.
+>
+> A few different approaches have been explored and compared:
+>
+>   1. A simple wrapper around stack_trace_save_tsk(), as v1 [1].
+>
+>      This approach introduces new syntax, which is different to existing
+>      helper bpf_get_stack(). Therefore, this is not ideal.
+>
+>   2. Extend get_perf_callchain() to support "task" as argument.
+>
+>      This approach reuses most of bpf_get_stack(). However, extending
+>      get_perf_callchain() requires non-trivial changes to architecture
+>      specific code. Which is error prone.
+>
+>   3. Current (v2) approach, leverages most of existing bpf_get_stack(), and
+>      uses stack_trace_save_tsk() to handle architecture specific logic.
+>
+> [1] https://lore.kernel.org/netdev/20200623070802.2310018-1-songliubraving@fb.com/
+>
+> Changes v4 => v5:
+> 1. Rebase and work around git-am issue. (Alexei)
+> 2. Update commit log for 4/4. (Yonghong)
 
-Fix sparse build warning:
-
-drivers/net/ethernet/qlogic/qed/qed_main.c:2480:6: warning:
- symbol 'qed_hw_err_type_descr' was not declared. Should it be static?
-
-Signed-off-by: Hulk Robot <hulkci@huawei.com>
----
- drivers/net/ethernet/qlogic/qed/qed_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
-index 11367a248d55..0a23b788b842 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_main.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
-@@ -2477,7 +2477,7 @@ void qed_schedule_recovery_handler(struct qed_hwfn *p_hwfn)
- 		ops->schedule_recovery_handler(cookie);
- }
- 
--char *qed_hw_err_type_descr[] = {
-+static char *qed_hw_err_type_descr[] = {
- 	[QED_HW_ERR_FAN_FAIL]		= "Fan Failure",
- 	[QED_HW_ERR_MFW_RESP_FAIL]	= "MFW Response Failure",
- 	[QED_HW_ERR_HW_ATTN]		= "HW Attention",
-
+Applied. Thanks
+I've added /* */ tweak to BPF_FUNC_MAPPER, so we stop having
+ongoing merge conflicts and preserve better 'git blame' for helpers.
