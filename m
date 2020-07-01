@@ -2,141 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9CD210337
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 07:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EE0210417
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 08:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgGAFJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 01:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgGAFJw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 01:09:52 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D565CC061755;
-        Tue, 30 Jun 2020 22:09:51 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id q22so11009963qtl.2;
-        Tue, 30 Jun 2020 22:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zqV/UpQm42TyjbBOS0aVKjc65sxASToDyPti3Rp2Pks=;
-        b=u11v4HA83pTSMBQcV5+6JELg8FTDxzQlVF7K5K6o+Tk21Oj+bOp0yagHq/si5xYM+8
-         cFWN6BlxG0nhvfFINj5+3AjuhTUJ0ecmT595e9sFFx2hCvg4lesLXCV8+tSF+WECheUs
-         5tWWgvez5o3yI+c8KaPOg+QdHpB+8TBmd82OAJV0TYYlXjT2x80gROnsoFmNePZa2nEN
-         eDp3Q3v73AnN9cFIi6DSH3dPPEbR4f2ie2cIJPhrZZ5GKbUddb+mOAu5Nw6TZAH6GFbp
-         IQHT2D18seVCyl0Nfq5nm1acBJ7amGXcAKyuDOh5aADkq8DjSlcGtiiPZyLqmf2pvSb/
-         f5GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zqV/UpQm42TyjbBOS0aVKjc65sxASToDyPti3Rp2Pks=;
-        b=P/Beh4Xx5SXA0NtZG51W0A+8Xwe538Uo8ZGeBXETsN9rBd1Q/MNb5Wakzj0LwX3RhP
-         7J3BYi+c06gYTMu+oNw8fMLCUpl7n1tqtMvCSnhMTrV0TdQ9hO3oQCh/YDWNMcvhWcNS
-         KLNPm1x04W7Ay9WVYVaNG7jIkk4+xDg8cFQDle/YL9ie1k7WRrgTr9+2QiRinpQb0sW3
-         wC84GfQdWizye7/go14zL0DZhceB2pKEy8aI6do5bUgEBeD6omUVGdOw9XY+2thZamt3
-         q1C6VXCHeo0qy6LYzmY2ZhWaYMgTRi2RqOJPNJby+MCv7dda/cUgMjpB/QsvQCVcNmm+
-         yU/w==
-X-Gm-Message-State: AOAM533ymzH9NwWbSrQ7AjqoD3RyC1EBU9Hv3A5R37muLtuV5Vao0X63
-        YciUvEDj8RGwcd9uSDpJQLd1BqAmGBBVFhihGzg=
-X-Google-Smtp-Source: ABdhPJwyg39qOXnU68YZj2xjLcwFkqeriuEqjxQWoyBekFQrX+V7cPJlwwDolRE654WUJZHp16Xl3yFsJLuHp1rSPIg=
-X-Received: by 2002:ac8:2bba:: with SMTP id m55mr24119361qtm.171.1593580190904;
- Tue, 30 Jun 2020 22:09:50 -0700 (PDT)
+        id S1727944AbgGAGpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 02:45:33 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14972 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726287AbgGAGpc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 02:45:32 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0616dwRr014837
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:45:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=6ahtOnzc8oMo0v0y+QQ+BQUGjdqT6t2aJ6YMPMb9+KE=;
+ b=XLLs9SHEE4XD4tlpdo7mmzIzTXM8y/J0RbsFXW/eY+Lj1DileaXdTCKpff6iDR44GlCZ
+ jzSe7eTBbkGgIkINTENDxDaKkGLGZc8W0FzXnLmRbznzDgpnYK9EyqAMXkrVmHUa8YRZ
+ BeOT6lpnZzkYVnfpk4RPyC2XNMN+8ApY4n8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 320anf2gus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:45:31 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 30 Jun 2020 23:45:30 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 1A2D22EC3A2B; Tue, 30 Jun 2020 23:45:29 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Anton Protopopov <a.s.protopopov@gmail.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/3] Strip away modifiers from BPF skeleton global variables
+Date:   Tue, 30 Jun 2020 23:45:22 -0700
+Message-ID: <20200701064527.3158178-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200526140539.4103528-1-liuhangbin@gmail.com>
- <20200701041938.862200-1-liuhangbin@gmail.com> <20200701041938.862200-2-liuhangbin@gmail.com>
-In-Reply-To: <20200701041938.862200-2-liuhangbin@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Jun 2020 22:09:39 -0700
-Message-ID: <CAEf4BzZmwDjWZJJiuiPWD+ByDqugVA3GQSe6OJDZdd0+zf-8JA@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 1/3] xdp: add a new helper for dev map
- multicast support
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_03:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ mlxlogscore=690 lowpriorityscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 cotscore=-2147483648 phishscore=0 impostorscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 clxscore=1015 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010047
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 9:21 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
->
-> This patch is for xdp multicast support. In this implementation we
-> add a new helper to accept two maps: forward map and exclude map.
-> We will redirect the packet to all the interfaces in *forward map*, but
-> exclude the interfaces that in *exclude map*.
->
-> To achive this I add a new ex_map for struct bpf_redirect_info.
-> in the helper I set tgt_value to NULL to make a difference with
-> bpf_xdp_redirect_map()
->
-> We also add a flag *BPF_F_EXCLUDE_INGRESS* incase you don't want to
-> create a exclude map for each interface and just want to exclude the
-> ingress interface.
->
-> The general data path is kept in net/core/filter.c. The native data
-> path is in kernel/bpf/devmap.c so we can use direct calls to
-> get better performace.
->
-> v5:
-> a) Check devmap_get_next_key() return value.
-> b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
-> c) In function dev_map_enqueue_multi(), consume xdpf for the last
->    obj instead of the first on.
-> d) Update helper description and code comments to explain that we
->    use NULL target value to distinguish multicast and unicast
->    forwarding.
-> e) Update memory model, memory id and frame_sz in xdpf_clone().
->
-> v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
->
-> v3: Based on Toke's suggestion, do the following update
-> a) Update bpf_redirect_map_multi() description in bpf.h.
-> b) Fix exclude_ifindex checking order in dev_in_exclude_map().
-> c) Fix one more xdpf clone in dev_map_enqueue_multi().
-> d) Go find next one in dev_map_enqueue_multi() if the interface is not
->    able to forward instead of abort the whole loop.
-> e) Remove READ_ONCE/WRITE_ONCE for ex_map.
->
-> v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
-> include/exclude maps directly.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  include/linux/bpf.h            |  20 +++++
->  include/linux/filter.h         |   1 +
->  include/net/xdp.h              |   1 +
->  include/uapi/linux/bpf.h       |  25 +++++-
->  kernel/bpf/devmap.c            | 154 +++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c          |   6 ++
->  net/core/filter.c              | 109 +++++++++++++++++++++--
->  net/core/xdp.c                 |  29 +++++++
->  tools/include/uapi/linux/bpf.h |  25 +++++-
->  9 files changed, 363 insertions(+), 7 deletions(-)
->
+Fix bpftool logic of stripping away const/volatile modifiers for all glob=
+al
+variables during BPF skeleton generation. See patch #1 for details on whe=
+n
+existing logic breaks and why it's important. Support special .strip_mods=
+=3Dtrue
+mode in btf_dump. Add selftests validating that everything works as expec=
+ted.
 
-[...]
+Recent example of when this has caused problems can be found in [0].
 
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 0cb8ec948816..d7de6c0b32e4 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3285,6 +3285,23 @@ union bpf_attr {
->   *             Dynamically cast a *sk* pointer to a *udp6_sock* pointer.
->   *     Return
->   *             *sk* if casting is valid, or NULL otherwise.
-> + *
-> + * int bpf_redirect_map_multi(struct bpf_map *map, struct bpf_map *ex_map, u64 flags)
+  [0] https://github.com/iovisor/bcc/pull/2994#issuecomment-650588533
 
-We've recently converted all return types for helpers from int to
-long, please update accordingly. Thanks.
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>
 
-[...]
+Andrii Nakryiko (3):
+  libbpf: support stripping modifiers for btf_dump
+  selftests/bpf: add selftest validating btf_dump's mod-stripping output
+  tools/bpftool: strip away modifiers from global variables
+
+ tools/bpf/bpftool/gen.c                       | 13 ++---
+ tools/lib/bpf/btf.h                           |  6 +++
+ tools/lib/bpf/btf_dump.c                      | 18 +++++--
+ .../selftests/bpf/prog_tests/btf_dump.c       |  5 +-
+ .../selftests/bpf/prog_tests/skeleton.c       |  6 +--
+ .../bpf/progs/btf_dump_test_case_strip_mods.c | 50 +++++++++++++++++++
+ .../selftests/bpf/progs/test_skeleton.c       |  6 ++-
+ 7 files changed, 84 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_=
+strip_mods.c
+
+--=20
+2.24.1
+
