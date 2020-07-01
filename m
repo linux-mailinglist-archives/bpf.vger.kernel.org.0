@@ -2,196 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE8B21041F
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 08:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9098F210424
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 08:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgGAGpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 02:45:49 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31812 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727888AbgGAGpt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 02:45:49 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0616ht8C015150
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:45:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=st9dicXue3nwPwPszDUQv4oirfmRwPAKDRm+vyeM0+A=;
- b=kbbMI/Cz2jbjkLW4EQukuV67JLVG+tc9duJXRY2JLYFdqXKoewQBDercYeWTwVvlPuMy
- mYk1khQJftaikWUs+GhvhD5AmJZFM+RvVenH2fz67rFaiE+qNwymQo1YA0KQtD6RqmEh
- ERL2/Bwdwn4t3aSDcrJbYB90OwfcuJ2DfwA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31xp3rnwdm-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:45:48 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 30 Jun 2020 23:45:47 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id B34542EC3A2B; Tue, 30 Jun 2020 23:45:37 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Anton Protopopov <a.s.protopopov@gmail.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] tools/bpftool: strip away modifiers from global variables
-Date:   Tue, 30 Jun 2020 23:45:26 -0700
-Message-ID: <20200701064527.3158178-5-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200701064527.3158178-1-andriin@fb.com>
-References: <20200701064527.3158178-1-andriin@fb.com>
+        id S1727970AbgGAGqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 02:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727983AbgGAGqO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 02:46:14 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A573C061755
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:46:14 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id dm19so12311359edb.13
+        for <bpf@vger.kernel.org>; Tue, 30 Jun 2020 23:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=mbtyM9C6tIaeDH6188xMQVtPI/2NAU5SP6lAavmLutg=;
+        b=ceuQgeRxepXXjHFShtmxKo2sKjqlxOXxjz8uVScA3XOCN7dWeWuwMkvyw/WptQ8O/1
+         SkuOyYcw3YJEQHB1tPrnxfx+wq60/sZKwf2msZ8OKxNiRS5zNL79Hit5VGyCluHTWHjL
+         LJhObqhaHRtkVFAF4OtFHJWnqurD8oKXGaFV/S7bx6kM2SRxr4Qk/fETnY9gylTeuM0v
+         Fplpz8ePm3WnM9QbMKl3jFyYWQj+aGl4aTo2e1ZNNHYXheNE5MBNCwxhAKsldc1rrGTa
+         CWabIUIRAObhfKrF9ZmxUVm4gA9aYedcZc8h7Kzgk5y3GhNQqh2QQ+zXTY6Z/doOAPUs
+         900Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=mbtyM9C6tIaeDH6188xMQVtPI/2NAU5SP6lAavmLutg=;
+        b=rYSJg+stk/ynKUA2SDbcNUlNr8VnLO3X2BHbwtq26NicYHqDbUV3ZfAW81JgpKJc8L
+         b9OCqVSYOxib5oG9Z3ISqNwvxFLNwYNnTnEHss4XG0DQyBveQJkbcoINrm4+NHDgg69q
+         zGTmCzR91gkAS3T+Qri/C4u7plB03eHq2RUflDxHQEevOqtDdalAZJkUN7GGUVNlu9sT
+         hSdTXDzC1m9CbmKKGekY2u138t03ZuO+xnilrBdzraoISz8neALLcx0EaZS1vVqxzG3E
+         rmneKZJNcKeu7EqFbIr3v+Vr/eOoDFf5Xcfh6mjd96D534WvZBAj4B2swqC+mmDqXm+V
+         /+TQ==
+X-Gm-Message-State: AOAM532qSRe5h6HOdnd06SXIbjQvDDhxBiz5M8f1YRHPCX3G8OwFcmsS
+        umtLFSsweQdU0aWpVQY9PM0n+nlNfA==
+X-Google-Smtp-Source: ABdhPJwrTQ8GhqyRRMkWXwrBtHEcHOgWMBpEKQhT9jsuAZPPwvqeU1lpPU3mIjDxDen+LAGfn4ivsA==
+X-Received: by 2002:aa7:db06:: with SMTP id t6mr22859774eds.369.1593585972723;
+        Tue, 30 Jun 2020 23:46:12 -0700 (PDT)
+Received: from [192.168.254.199] (x4d0c3c5b.dyn.telefonica.de. [77.12.60.91])
+        by smtp.gmail.com with ESMTPSA id j16sm3752825ejn.77.2020.06.30.23.46.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 23:46:12 -0700 (PDT)
+Subject: Re: BUG: kernel NULL pointer dereference in
+ __cgroup_bpf_run_filter_skb
+From:   Thomas Reim <reimth@gmail.com>
+To:     bpf@vger.kernel.org
+References: <CAOLRBTUSkRbku25rbw6Fyb019wFqFvEN=6xGM+RgFJFQ=NH4KQ@mail.gmail.com>
+Cc:     reimth@gmail.com
+Message-ID: <14498254-3673-bda9-a163-4b6db4999cbd@gmail.com>
+Date:   Wed, 1 Jul 2020 08:46:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-01_03:2020-07-01,2020-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=829
- adultscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- phishscore=0 spamscore=0 priorityscore=1501 suspectscore=8 clxscore=1015
- cotscore=-2147483648 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007010047
-X-FB-Internal: deliver
+In-Reply-To: <CAOLRBTUSkRbku25rbw6Fyb019wFqFvEN=6xGM+RgFJFQ=NH4KQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Reliably remove all the type modifiers from global variable definitions,
-including cases of inner field const modifiers and arrays of const values=
-.
+:
+> We have experienced a kernel BPF null pointer dereference issue on all
+> our machines since mid of June. It might be related to an upgrade of
+> libvirt/kvm/qemu at that point of time. But we’re not sure.
+>
+...
+> We experienced the kernel freeze on following Arch Linux kernels:
+> - 5.7.0 (5.7.0-3-MANJARO x64)
+> - 5.6.16 (5.6.16-1-MANJARO x64)
+> - 5.4.44 (5.4.44-1-MANJARO x64)
+> - 4.19.126 (4.19.126-1-MANJARO x64)
+> - 4.14.183 (4.14.183-1-MANJARO x64)
+> Kernel configs can be taken from https://gitlab.manjaro.org/packages/core.
+>
+> Subsequent e-mails will contain the relevant extracts from journal or
+> netconsole logs.
+>
+> Help and support on this issue is welcome.
+>
+Linux Kernel 5.6.16 (5.6.16-1-MANJARO x64)
 
-Also modify one of selftests to ensure that const volatile struct doesn't
-prevent user-space from modifying .rodata variable.
-
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/gen.c                           | 13 ++++---------
- tools/testing/selftests/bpf/prog_tests/skeleton.c |  6 +++---
- tools/testing/selftests/bpf/progs/test_skeleton.c |  6 ++++--
- 3 files changed, 11 insertions(+), 14 deletions(-)
-
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 10de76b296ba..2a13114896c2 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -88,7 +88,7 @@ static const char *get_map_ident(const struct bpf_map *=
-map)
- 		return NULL;
- }
-=20
--static void codegen_btf_dump_printf(void *ct, const char *fmt, va_list a=
-rgs)
-+static void codegen_btf_dump_printf(void *ctx, const char *fmt, va_list =
-args)
- {
- 	vprintf(fmt, args);
- }
-@@ -126,13 +126,6 @@ static int codegen_datasec_def(struct bpf_object *ob=
-j,
- 		);
- 		int need_off =3D sec_var->offset, align_off, align;
- 		__u32 var_type_id =3D var->type;
--		const struct btf_type *t;
--
--		t =3D btf__type_by_id(btf, var_type_id);
--		while (btf_is_mod(t)) {
--			var_type_id =3D t->type;
--			t =3D btf__type_by_id(btf, var_type_id);
--		}
-=20
- 		if (off > need_off) {
- 			p_err("Something is wrong for %s's variable #%d: need offset %d, alre=
-ady at %d.\n",
-@@ -176,12 +169,14 @@ static int codegen_datasec_def(struct bpf_object *o=
-bj,
-=20
- static int codegen_datasecs(struct bpf_object *obj, const char *obj_name=
-)
- {
-+	/* strip out const/volatile/restrict modifiers for datasecs */
-+	DECLARE_LIBBPF_OPTS(btf_dump_opts, opts, .strip_mods =3D true);
- 	struct btf *btf =3D bpf_object__btf(obj);
- 	int n =3D btf__get_nr_types(btf);
- 	struct btf_dump *d;
- 	int i, err =3D 0;
-=20
--	d =3D btf_dump__new(btf, NULL, NULL, codegen_btf_dump_printf);
-+	d =3D btf_dump__new(btf, NULL, &opts, codegen_btf_dump_printf);
- 	if (IS_ERR(d))
- 		return PTR_ERR(d);
-=20
-diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/te=
-sting/selftests/bpf/prog_tests/skeleton.c
-index fa153cf67b1b..fe87b77af459 100644
---- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-@@ -41,7 +41,7 @@ void test_skeleton(void)
- 	CHECK(bss->in4 !=3D 0, "in4", "got %lld !=3D exp %lld\n", bss->in4, 0LL=
-);
- 	CHECK(bss->out4 !=3D 0, "out4", "got %lld !=3D exp %lld\n", bss->out4, =
-0LL);
-=20
--	CHECK(rodata->in6 !=3D 0, "in6", "got %d !=3D exp %d\n", rodata->in6, 0=
-);
-+	CHECK(rodata->in.in6 !=3D 0, "in6", "got %d !=3D exp %d\n", rodata->in.=
-in6, 0);
- 	CHECK(bss->out6 !=3D 0, "out6", "got %d !=3D exp %d\n", bss->out6, 0);
-=20
- 	/* validate we can pre-setup global variables, even in .bss */
-@@ -49,7 +49,7 @@ void test_skeleton(void)
- 	data->in2 =3D 11;
- 	bss->in3 =3D 12;
- 	bss->in4 =3D 13;
--	rodata->in6 =3D 14;
-+	rodata->in.in6 =3D 14;
-=20
- 	err =3D test_skeleton__load(skel);
- 	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-@@ -60,7 +60,7 @@ void test_skeleton(void)
- 	CHECK(data->in2 !=3D 11, "in2", "got %lld !=3D exp %lld\n", data->in2, =
-11LL);
- 	CHECK(bss->in3 !=3D 12, "in3", "got %d !=3D exp %d\n", bss->in3, 12);
- 	CHECK(bss->in4 !=3D 13, "in4", "got %lld !=3D exp %lld\n", bss->in4, 13=
-LL);
--	CHECK(rodata->in6 !=3D 14, "in6", "got %d !=3D exp %d\n", rodata->in6, =
-14);
-+	CHECK(rodata->in.in6 !=3D 14, "in6", "got %d !=3D exp %d\n", rodata->in=
-.in6, 14);
-=20
- 	/* now set new values and attach to get them into outX variables */
- 	data->in1 =3D 1;
-diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/te=
-sting/selftests/bpf/progs/test_skeleton.c
-index 77ae86f44db5..374ccef704e1 100644
---- a/tools/testing/selftests/bpf/progs/test_skeleton.c
-+++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
-@@ -20,7 +20,9 @@ long long in4 __attribute__((aligned(64))) =3D 0;
- struct s in5 =3D {};
-=20
- /* .rodata section */
--const volatile int in6 =3D 0;
-+const volatile struct {
-+	const int in6;
-+} in =3D {};
-=20
- /* .data section */
- int out1 =3D -1;
-@@ -46,7 +48,7 @@ int handler(const void *ctx)
- 	out3 =3D in3;
- 	out4 =3D in4;
- 	out5 =3D in5;
--	out6 =3D in6;
-+	out6 =3D in.in6;
-=20
- 	bpf_syscall =3D CONFIG_BPF_SYSCALL;
- 	kern_ver =3D LINUX_KERNEL_VERSION;
---=20
-2.24.1
+BUG: kernel NULL pointer dereference, address: 0000000000000010
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP PTI
+CPU: 2 PID: 988 Comm: nfsd Not tainted 5.6.16-1-MANJARO #1
+Hardware name: ASUS All Series/CS-B, BIOS 3602 03/26/2018
+RIP: 0010:__cgroup_bpf_run_filter_skb+0x196/0x230
+Code: 48 89 73 18 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 31 c0 c3 c3 e8 38 ef ec ff e8 f3 2d f2 ff 48 8b 85 38 06 00 00 31 ed <48> 8b 78 10 4c 8d 70 10 48 85 ff 74 34 49 8b 46 08 65 48 89 05 d1
+RSP: 0018:ffffa3e54097f9f0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff962908bb82e0 RCX: 0000000000000034
+RDX: 0000000000000000 RSI: ffff962907408900 RDI: ffffffffa2df2178
+RBP: 0000000000000000 R08: ffff96290981ed20 R09: 000000000000fa4c
+R10: 0000000000007d26 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff96290ff00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000010 CR3: 00000003e185e005 CR4: 00000000001626e0
+Call Trace:
+  ? __local_bh_enable_ip+0x33/0x70
+  ip_finish_output+0x68/0xa0
+  ip_output+0x76/0x130
+  ? __ip_local_out+0x4b/0x170
+  __ip_queue_xmit+0x186/0x440
+  ? __switch_to_asm+0x34/0x70
+  ? __switch_to_asm+0x40/0x70
+  __tcp_transmit_skb+0x53e/0xbf0
+  ? __switch_to_asm+0x34/0x70
+  tcp_write_xmit+0x391/0x11b0
+  __tcp_push_pending_frames+0x32/0xf0
+  do_tcp_sendpages+0x5f8/0x630
+  tcp_sendpage+0x48/0x80
+  inet_sendpage+0x52/0x90
+  kernel_sendpage+0x1a/0x30
+  svc_send_common+0x62/0x150 [sunrpc]
+  svc_sendto+0xd7/0x240 [sunrpc]
+  svc_tcp_sendto+0x36/0x50 [sunrpc]
+  svc_send+0x7b/0x190 [sunrpc]
+  nfsd+0xed/0x150 [nfsd]
+  ? nfsd_destroy+0x60/0x60 [nfsd]
+  kthread+0x117/0x130
+  ? __kthread_bind_mask+0x60/0x60
+  ret_from_fork+0x35/0x40
+Modules linked in: rpcsec_gss_krb5 vhost_net vhost tap tun fuse bridge stp llc nct6775 hwmon_vid nls_iso8859_1 nls_cp437 vfat fat joydev mousedev input_leds intel_rapl_msr ofpart cmdlinepart intel_spi_platform intel_spi mei_wdt mei_hdcp spi_nor mtd iTCO_wdt iTCO_vendor_support eeepc_wmi asus_wmi battery sparse_keymap rfkill wmi_bmof intel_rapl_common snd_hda_codec_hdmi x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm i915 irqbypass crct10dif_pclmul snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio crc32_pclmul snd_hda_intel i2c_algo_bit ghash_clmulni_intel snd_intel_dspcfg aesni_intel crypto_simd snd_hda_codec drm_kms_helper cryptd glue_helper intel_cstate pcspkr i2c_i801 intel_uncore snd_hda_core intel_rapl_perf snd_hwdep cec snd_pcm r8169 rc_core realtek intel_gtt snd_timer syscopyarea mei_me libphy lpc_ich snd mei e1000e sysfillrect soundcore sysimgblt fb_sys_fops wmi evdev mac_hid nfsd nfsv4 dns_resolver nfs_acl nfs lockd auth_rpcgss grace drm sunrpc
+  fscache agpgart ip_tables x_tables ext4 crc16 mbcache jbd2 hid_logitech_hidpp hid_logitech_dj dm_thin_pool dm_persistent_data libcrc32c crc32c_generic dm_bio_prison dm_bufio hid_generic usbhid hid dm_mod crc32c_intel sr_mod xhci_pci cdrom xhci_hcd ehci_pci ehci_hcd
+CR2: 0000000000000010
+---[ end trace 50bcc1a93a161137 ]---
+RIP: 0010:__cgroup_bpf_run_filter_skb+0x196/0x230
+Code: 48 89 73 18 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 31 c0 c3 c3 e8 38 ef ec ff e8 f3 2d f2 ff 48 8b 85 38 06 00 00 31 ed <48> 8b 78 10 4c 8d 70 10 48 85 ff 74 34 49 8b 46 08 65 48 89 05 d1
+RSP: 0018:ffffa3e54097f9f0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff962908bb82e0 RCX: 0000000000000034
+RDX: 0000000000000000 RSI: ffff962907408900 RDI: ffffffffa2df2178
+RBP: 0000000000000000 R08: ffff96290981ed20 R09: 000000000000fa4c
+R10: 0000000000007d26 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff96290ff00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000010 CR3: 00000003e185e005 CR4: 00000000001626e0
+note: nfsd[988] exited with preempt_count 1
+-- Reboot --
 
