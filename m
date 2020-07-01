@@ -2,104 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE4C211368
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 21:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F64B2113D3
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 21:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725771AbgGATSs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 15:18:48 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36635 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726290AbgGATSr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 15:18:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593631126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xVbq41HYiUuhXfB/SOS513rA/0EbUDHepxgXv4IoTvs=;
-        b=eBNWrmdQQ/8JOTPccqBKRQCTvIQHxTd73L1N678HWIvmBiPGV+S/2fSAvqkszq6TrygXgs
-        Ro/+h3lEqaGhQAXWscEescdkce72JqY6hQrIUcB/nRMNJpFnVitBQgcaXAt4mbAPc4lo+j
-        nMEeQO7DHKuCU7hvlcnyVZvzmxgHqR0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-1yYkT_APM7Ce7kXnFly36A-1; Wed, 01 Jul 2020 15:18:42 -0400
-X-MC-Unique: 1yYkT_APM7Ce7kXnFly36A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39C7819200CF;
-        Wed,  1 Jul 2020 19:18:40 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 76E7F60BE1;
-        Wed,  1 Jul 2020 19:18:32 +0000 (UTC)
-Date:   Wed, 1 Jul 2020 21:18:30 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Sven Auhagen <sven.auhagen@voleatech.de>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
-        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next 0/4] mvpp2: XDP support
-Message-ID: <20200701211830.74a2f53c@carbon>
-In-Reply-To: <20200630180930.87506-1-mcroce@linux.microsoft.com>
-References: <20200630180930.87506-1-mcroce@linux.microsoft.com>
+        id S1727068AbgGATqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 15:46:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:17534 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726021AbgGATqO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Jul 2020 15:46:14 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 061JeDEg001861
+        for <bpf@vger.kernel.org>; Wed, 1 Jul 2020 12:46:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=VmvHXNXa8l7U9I+uEbIWGGSOhuxl/mzP83Ugw+e8pRc=;
+ b=XVVY9P+Be1NRT5Ag2SRwCYrGtY2zzLyo/sLEyO7M3MBCfQWz9J6sXCN5Das9rn/H8U1y
+ EqoHWiQ06XVejFQAH4QKhw4A5ACraCKP4w4n+YqRg7N88PRgCaeSqwPfGW0GKzS7qCYH
+ WfL2ilZBA6JHZmuXJ5F7ccU0u1L4CPP17bM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31xntc18kg-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 12:46:14 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 1 Jul 2020 12:46:11 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id E515A2943DD9; Wed,  1 Jul 2020 12:46:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/2] bpf: selftests: A few changes to network_helpers and netns-reset
+Date:   Wed, 1 Jul 2020 12:46:00 -0700
+Message-ID: <20200701194600.948847-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-01_12:2020-07-01,2020-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ cotscore=-2147483648 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ bulkscore=0 spamscore=0 suspectscore=1 impostorscore=0 priorityscore=1501
+ adultscore=0 mlxlogscore=662 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007010138
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey Ilias,
+This set is separated out from the bpf tcp header option series [1] since
+I think it is in general useful for other network related tests.
+e.g. enforce socket-fd related timeout and restore netns after each test.
 
-Could you please review this driver mvpp2 for XDP and page_pool usage?
+[1]: https://lore.kernel.org/netdev/20200626175501.1459961-1-kafai@fb.com=
+/
 
+Martin KaFai Lau (2):
+  bpf: selftests: A few improvements to network_helpers.c
+  bpf: selftests: Restore netns after each test
 
-On Tue, 30 Jun 2020 20:09:26 +0200
-Matteo Croce <mcroce@linux.microsoft.com> wrote:
+ tools/testing/selftests/bpf/network_helpers.c | 157 +++++++++++-------
+ tools/testing/selftests/bpf/network_helpers.h |   9 +-
+ .../bpf/prog_tests/cgroup_skb_sk_lookup.c     |  12 +-
+ .../bpf/prog_tests/connect_force_port.c       |  10 +-
+ .../bpf/prog_tests/load_bytes_relative.c      |   4 +-
+ .../selftests/bpf/prog_tests/tcp_rtt.c        |   4 +-
+ tools/testing/selftests/bpf/test_progs.c      |  23 ++-
+ tools/testing/selftests/bpf/test_progs.h      |   2 +
+ 8 files changed, 133 insertions(+), 88 deletions(-)
 
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> Add XDP support to mvpp2. This series converts the driver to the
-> page_pool API for RX buffer management, and adds native XDP support.
-> 
-> These are the performance numbers, as measured by Sven:
-> 
-> SKB fwd page pool:
-> Rx bps     390.38 Mbps
-> Rx pps     762.46 Kpps
-> 
-> XDP fwd:
-> Rx bps     1.39 Gbps
-> Rx pps     2.72 Mpps
-> 
-> XDP Drop:
-> eth0: 12.9 Mpps
-> eth1: 4.1 Mpps
-> 
-> Matteo Croce (4):
->   mvpp2: refactor BM pool init percpu code
->   mvpp2: use page_pool allocator
->   mvpp2: add basic XDP support
->   mvpp2: XDP TX support
-> 
->  drivers/net/ethernet/marvell/Kconfig          |   1 +
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h    |  49 +-
->  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 600 ++++++++++++++++--
->  3 files changed, 588 insertions(+), 62 deletions(-)
-> 
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+--=20
+2.24.1
 
