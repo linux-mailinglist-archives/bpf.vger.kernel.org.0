@@ -2,155 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B00210B64
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 14:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C36C210E19
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 16:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730649AbgGAM5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 08:57:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60264 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730581AbgGAM5t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 08:57:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A6BAEADE2;
-        Wed,  1 Jul 2020 12:57:47 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 13244604DC; Wed,  1 Jul 2020 14:57:47 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 14:57:47 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Song Liu <songliubraving@fb.com>,
-        Valdis Kl =?utf-8?B?xJM=?= tnieks <valdis.kletnieks@vt.edu>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH] bpfilter: allow to build bpfilter_umh as a module
- without static library
-Message-ID: <20200701125747.wu6442a5vr5phzoh@lion.mk-sys.cz>
-References: <20200701092644.762234-1-masahiroy@kernel.org>
+        id S1731518AbgGAOxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 10:53:54 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49848 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731441AbgGAOxy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 10:53:54 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jqe7T-0007mh-RS; Wed, 01 Jul 2020 16:53:51 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jqe7T-000EbJ-Ko; Wed, 01 Jul 2020 16:53:51 +0200
+Subject: Re: [PATCH v3 bpf-next 0/2] Make bpf_endian.h compatible with
+ vmlinux.h
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200630152125.3631920-1-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2170175d-a97e-6ca5-003c-bc6d6d1b936a@iogearbox.net>
+Date:   Wed, 1 Jul 2020 16:53:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gyz6kzseltosq2ow"
-Content-Disposition: inline
-In-Reply-To: <20200701092644.762234-1-masahiroy@kernel.org>
+In-Reply-To: <20200630152125.3631920-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25860/Wed Jul  1 15:40:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 6/30/20 5:21 PM, Andrii Nakryiko wrote:
+> Change libbpf's bpf_endian.h header to be compatible when used with system
+> headers and when using just vmlinux.h. This is a frequent request for users
+> writing BPF CO-RE applications. Do this by re-implementing byte swap
+> compile-time macros. Also add simple tests validating correct results both for
+> byte-swapping built-ins and macros.
+> 
+> v2->v3:
+> - explicit zero-initialization of global variables (Daniel);
+> 
+> v1->v2:
+> - reimplement byte swapping macros (Alexei).
+> 
+> Andrii Nakryiko (2):
+>    libbpf: make bpf_endian co-exist with vmlinux.h
+>    selftests/bpf: add byte swapping selftest
+> 
+>   tools/lib/bpf/bpf_endian.h                    | 43 ++++++++++++---
+>   .../testing/selftests/bpf/prog_tests/endian.c | 53 +++++++++++++++++++
+>   .../testing/selftests/bpf/progs/test_endian.c | 37 +++++++++++++
+>   3 files changed, 125 insertions(+), 8 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/endian.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_endian.c
+> 
 
---gyz6kzseltosq2ow
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 01, 2020 at 06:26:44PM +0900, Masahiro Yamada wrote:
-> Originally, bpfilter_umh was linked with -static only when
-> CONFIG_BPFILTER_UMH=3Dy.
->=20
-> Commit 8a2cc0505cc4 ("bpfilter: use 'userprogs' syntax to build
-> bpfilter_umh") silently, accidentally dropped the CONFIG_BPFILTER_UMH=3Dy
-> test in the Makefile. Revive it in order to link it dynamically when
-> CONFIG_BPFILTER_UMH=3Dm.
->=20
-> Since commit b1183b6dca3e ("bpfilter: check if $(CC) can link static
-> libc in Kconfig"), the compiler must be capable of static linking to
-> enable CONFIG_BPFILTER_UMH, but it requires more than needed.
->=20
-> To loosen the compiler requirement, I changed the dependency as follows:
->=20
->     depends on CC_CAN_LINK
->     depends on m || CC_CAN_LINK_STATIC
->=20
-> If CONFIG_CC_CAN_LINK_STATIC in unset, CONFIG_BPFILTER_UMH is restricted
-> to 'm' or 'n'.
->=20
-> In theory, CONFIG_CC_CAN_LINK is not required for CONFIG_BPFILTER_UMH=3Dy,
-> but I did not come up with a good way to describe it.
->=20
-> Fixes: 8a2cc0505cc4 ("bpfilter: use 'userprogs' syntax to build bpfilter_=
-umh")
-> Reported-by: Michal Kubecek <mkubecek@suse.cz>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Tested-by: Michal Kubecek <mkubecek@suse.cz>
-
-Thank you,
-Michal
-
-> ---
->=20
->  net/bpfilter/Kconfig  | 10 ++++++----
->  net/bpfilter/Makefile |  2 ++
->  2 files changed, 8 insertions(+), 4 deletions(-)
->=20
-> diff --git a/net/bpfilter/Kconfig b/net/bpfilter/Kconfig
-> index 84015ef3ee27..73d0b12789f1 100644
-> --- a/net/bpfilter/Kconfig
-> +++ b/net/bpfilter/Kconfig
-> @@ -9,12 +9,14 @@ menuconfig BPFILTER
->  if BPFILTER
->  config BPFILTER_UMH
->  	tristate "bpfilter kernel module with user mode helper"
-> -	depends on CC_CAN_LINK_STATIC
-> +	depends on CC_CAN_LINK
-> +	depends on m || CC_CAN_LINK_STATIC
->  	default m
->  	help
->  	  This builds bpfilter kernel module with embedded user mode helper
-> =20
-> -	  Note: your toolchain must support building static binaries, since
-> -	  rootfs isn't mounted at the time when __init functions are called
-> -	  and do_execv won't be able to find the elf interpreter.
-> +	  Note: To compile this as built-in, your toolchain must support
-> +	  building static binaries, since rootfs isn't mounted at the time
-> +	  when __init functions are called and do_execv won't be able to find
-> +	  the elf interpreter.
->  endif
-> diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> index f23b53294fba..cdac82b8c53a 100644
-> --- a/net/bpfilter/Makefile
-> +++ b/net/bpfilter/Makefile
-> @@ -7,10 +7,12 @@ userprogs :=3D bpfilter_umh
->  bpfilter_umh-objs :=3D main.o
->  userccflags +=3D -I $(srctree)/tools/include/ -I $(srctree)/tools/includ=
-e/uapi
-> =20
-> +ifeq ($(CONFIG_BPFILTER_UMH), y)
->  # builtin bpfilter_umh should be linked with -static
->  # since rootfs isn't mounted at the time of __init
->  # function is called and do_execv won't find elf interpreter
->  userldflags +=3D -static
-> +endif
-> =20
->  $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
-> =20
-> --=20
-> 2.25.1
->=20
-
---gyz6kzseltosq2ow
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAl78iEoACgkQ538sG/LR
-dpWAzAf/anZ96cIZ4DlFNa9GThY9O1+XsFFj/6av5YNogxsfciAMQZECXJvtdYhQ
-JlMcWVS2mFxSURSdP8U2fuOnT58SsZ1cc+/Zy4z3576i8ovIV2TZocOcfxtC0azh
-/SO2kZFHIDot+rdxWv56bPoa6XKJEJguk2Am8JUf0C6WBaRHZiY+Wl6DbrmKeZTd
-DOIh5KSR1+ovROcfX6iHiciQi0r5f2sYENNuXeJ8RJJOcM0PYIk1a0bc4HQpQlo8
-1vU8lfZywgtC2PIGlYHA4I5GL3b1wDghZ3GHkMxyXFzrNb29AObaFhwSLOT5swmf
-Y9NPAkvFEVT7SGu7LOi6pF85jlSTdw==
-=DLqC
------END PGP SIGNATURE-----
-
---gyz6kzseltosq2ow--
+All good now & applied, thanks!
