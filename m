@@ -2,119 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CCA21083E
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 11:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C59621091B
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 12:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbgGAJer (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 05:34:47 -0400
-Received: from www62.your-server.de ([213.133.104.62]:54622 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgGAJer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 05:34:47 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jqZ8c-00060n-GJ; Wed, 01 Jul 2020 11:34:42 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jqZ8c-000Nz6-8n; Wed, 01 Jul 2020 11:34:42 +0200
-Subject: Re: [PATCH v5 bpf-next 2/5] bpf: Introduce sleepable BPF programs
-To:     KP Singh <kpsingh@chromium.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, paulmck@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200630043343.53195-1-alexei.starovoitov@gmail.com>
- <20200630043343.53195-3-alexei.starovoitov@gmail.com>
- <d0c6b6a6-7b82-e620-8ced-8a1acfaf6f6d@iogearbox.net>
- <20200630234117.arqmjpbivy5fhhmk@ast-mbp.dhcp.thefacebook.com>
- <CACYkzJ5kGxxA1E70EKah_hWbsb7hoUy8s_Y__uCeSyYxVezaBA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5596445c-7474-9913-6765-5d699c6c5c4e@iogearbox.net>
-Date:   Wed, 1 Jul 2020 11:34:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729849AbgGAKRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 06:17:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:65263 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729226AbgGAKRy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 06:17:54 -0400
+IronPort-SDR: UA7j/NGZc672E0pj279sLbEV3EM8ayOjoZr8CDync9Uh8LCi3f0vUmjR1XQMwhWN8ddVrZFHPB
+ WVnJrnxbD/og==
+X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="231405050"
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="231405050"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 03:17:54 -0700
+IronPort-SDR: 5MoAoKthMtffAjAf4xbx0GXdGvaC7TB4m9gWvV0bQ0XO+4ddVOvXKSxFN+AdHJEQMv2szwRaNc
+ OGuQIuRAbGYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
+   d="scan'208";a="481542314"
+Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.249.43.154])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Jul 2020 03:17:51 -0700
+Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     maximmi@mellanox.com, konrad.wilk@oracle.com,
+        jonathan.lemon@gmail.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, magnus.karlsson@intel.com
+References: <20200626134358.90122-1-bjorn.topel@gmail.com>
+ <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net>
+ <20200627070406.GB11854@lst.de>
+ <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com>
+ <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <b8e1ef0d-20ae-0ea1-3c29-fc8db96e2afb@intel.com>
+Date:   Wed, 1 Jul 2020 12:17:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CACYkzJ5kGxxA1E70EKah_hWbsb7hoUy8s_Y__uCeSyYxVezaBA@mail.gmail.com>
+In-Reply-To: <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25859/Tue Jun 30 15:38:05 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/1/20 11:15 AM, KP Singh wrote:
-> On Wed, Jul 1, 2020 at 1:41 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> On Wed, Jul 01, 2020 at 01:26:44AM +0200, Daniel Borkmann wrote:
->>> On 6/30/20 6:33 AM, Alexei Starovoitov wrote:
->>> [...]
->>>> +/* list of non-sleepable kernel functions that are otherwise
->>>> + * available to attach by bpf_lsm or fmod_ret progs.
->>>> + */
->>>> +static int check_sleepable_blacklist(unsigned long addr)
->>>> +{
->>>> +#ifdef CONFIG_BPF_LSM
->>>> +   if (addr == (long)bpf_lsm_task_free)
->>>> +           return -EINVAL;
->>>> +#endif
->>>> +#ifdef CONFIG_SECURITY
->>>> +   if (addr == (long)security_task_free)
->>>> +           return -EINVAL;
->>>> +#endif
->>>> +   return 0;
->>>> +}
->>>
->>> Would be nice to have some sort of generic function annotation to describe
->>> that code cannot sleep inside of it, and then filter based on that. Anyway,
->>> is above from manual code inspection?
+On 2020-06-29 17:41, Robin Murphy wrote:
+> On 2020-06-28 18:16, Björn Töpel wrote:
+[...]>
+>> Somewhat related to the DMA API; It would have performance benefits for
+>> AF_XDP if the DMA range of the mapped memory was linear, i.e. by IOMMU
+>> utilization. I've started hacking a thing a little bit, but it would be
+>> nice if such API was part of the mapping core.
 >>
->> yep. all manual. I don't think there is a way to automate it.
->> At least I cannot think of one.
+>> Input: array of pages Output: array of dma addrs (and obviously dev,
+>> flags and such)
 >>
->>> What about others like security_sock_rcv_skb() for example which could be
->>> bh_lock_sock()'ed (or, generally hooks running in softirq context)?
+>> For non-IOMMU len(array of pages) == len(array of dma addrs)
+>> For best-case IOMMU len(array of dma addrs) == 1 (large linear space)
 >>
->> ahh. it's in running in bh at that point? then it should be added to blacklist.
->>
->> The rough idea I had is to try all lsm_* and security_* hooks with all
->> debug kernel flags and see which ones will complain. Then add them to blacklist.
->> Unfortunately I'm completely swamped and cannot promise to do that
->> in the coming months.
->> So either we wait for somebody to do due diligence or land it knowing
->> that blacklist is incomplete and fix it up one by one.
->> I think the folks who're waiting on sleepable work would prefer the latter.
->> I'm fine whichever way.
+>> But that's for later. :-)
 > 
-> Chiming in since I belong to the folks who are waiting on sleepable BPF patches:
+> FWIW you will typically get that behaviour from IOMMU-based 
+> implementations of dma_map_sg() right now, although it's not strictly 
+> guaranteed. If you can weather some additional setup cost of calling 
+> sg_alloc_table_from_pages() plus walking the list after mapping to test 
+> whether you did get a contiguous result, you could start taking 
+> advantage of it as some of the dma-buf code in DRM and v4l2 does already 
+> (although those cases actually treat it as a strict dependency rather 
+> than an optimisation).
 > 
-> 1. Let's obviously add security_sock_rcv_skb to the list.
-> 2. I can help in combing through the LSM hooks (at least the comments)
->       to look for any other obvious candidates.
-> 3. I think it's okay (for us) for this list to be a WIP and build on it with
->      proper warnings (in the changelog / comments).
-> 4. To make it easier for figuring out which hooks cannot sleep,
->       It would be nice if we could:
-> 
->      * Have a helper say, bool bpf_cant_sleep(), available when
->         DEBUG_ATOMIC_SLEEP is enabled.
->      * Attach LSM programs to all hooks which call this helper and gather data.
->      * Let this run on dev machines, run workloads which use the LSM hooks .
-> 
-> 4. Finally, once we do the hard work. We can also think of augmenting the
->      LSM_HOOK macro to have structured access to whether a hook is sleepable
->      or not (instead of relying on comments).
+> I'm inclined to agree that if we're going to see more of these cases, a 
+> new API call that did formally guarantee a DMA-contiguous mapping 
+> (either via IOMMU or bounce buffering) or failure might indeed be handy.
+>
 
-+1, I think augmenting mid-term would be the best given check_sleepable_blacklist()
-is rather a very fragile workaround^hack and it's also a generic lsm/sec hooks issue
-(at least for BPF_PROG_TYPE_LSM type & for the sake of documenting it for other LSMs).
-Perhaps there are function attributes that could be used and later retrieved via BTF?
+I forgot to reply to this one! My current hack is using the iommu code 
+directly, similar to what vfio-pci does (hopefully not gutting the API 
+this time ;-)).
 
-Thanks,
-Daniel
+Your approach sound much nicer, and easier. I'll try that out! Thanks a 
+lot for the pointers, and I might be back with more questions.
+
+
+Cheers,
+Björn
+
+> Robin.
