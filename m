@@ -2,80 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16447210542
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 09:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D087F21060D
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 10:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgGAHpF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 03:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        id S1728581AbgGAIVc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 04:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgGAHpE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:45:04 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D11EC061755
-        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 00:45:04 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id z17so18726344edr.9
-        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 00:45:04 -0700 (PDT)
+        with ESMTP id S1728477AbgGAIVb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 04:21:31 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE37C061755
+        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 01:21:31 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id t18so7971408otq.5
+        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 01:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=A6/wD5TOmbPrbVpYq666ibenBocLd+0FXv5RuujEH1I=;
-        b=D1CRevDt9/d8zVypC6pHJANDd5sgEFK8q7/V3PlkQ3XYm8D7emKlOvPUz+Zw0OX+Nd
-         K9Hl6xyWGQ6eSlfyMwKvc5nJr5KNFUyX1jimBQ8fqUHkxDGA+gccBij/W7S2GdIavlhv
-         5moaYQ8PztsojTV1sFEkKcLr1cr7BSzIATqt8=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hqExo5Jw0bQAD+SXNaCf+imeb9HHNW5VMCs6CwOkkqw=;
+        b=a654SJhWY7FkNgvlxxLh9jePzHg+D94V3T8B1gH3r5HN4rEzzMQIdeLL69S4g7jvzl
+         7nNoB7z4SYjFinH4ZUSKG35u8WcfoUcZs7KZYqtIQ1wVKjZ8H09+RZL1p2xpnNghkMag
+         2WKp0/dEpD35in8AAHysLjLFW1aohj918wZSw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=A6/wD5TOmbPrbVpYq666ibenBocLd+0FXv5RuujEH1I=;
-        b=Qz62mVkbPgMbdIqHoWZwzTMO+68FueWuAkOSdF2T4ISSp9ngmvGaXGN/LiQCgsuPN+
-         IuMqSsBDZtwlXqmAMPpOM1XYEZTvWw7hHigLsAT9xPfhgmU8vj5vyti7bmUHbmIwL9f7
-         +qJed2Wujx0hJhFt5TNfh6BhfZ2npx4BtdNJwL+3Lka6+iiuJPonbW+YK5kXRo9jzpk6
-         g2E/gWhsfy+hEKO/mCvPiKM6pbDdKTQfKip7QMa1M/Mn4SvZaLPLuqQtMQUiHn1UERwX
-         wdMTqTe74u5SC5gRIT1IjyOTmBhl+C6TcR5u2WeUQs+eP3rqwqUw6CIUsfrVWUxbfafW
-         CoXw==
-X-Gm-Message-State: AOAM530noJMG1i78dFsYRbm7ih0xfPASZE8gWh4AShtWWhB8QSIEYteM
-        nlgRmBpTG1kM1SdwCJ+2gQDmjA==
-X-Google-Smtp-Source: ABdhPJwSrEyxYrHVCZRvG4my6oExIWUFsLIFxKmP0b+vLCficclBhHc+zbdsUe+L7ZYK1jnzrH5/Xg==
-X-Received: by 2002:aa7:dd10:: with SMTP id i16mr25324750edv.227.1593589503025;
-        Wed, 01 Jul 2020 00:45:03 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id g21sm5549271edu.2.2020.07.01.00.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 00:45:02 -0700 (PDT)
-References: <20200629095630.7933-1-lmb@cloudflare.com> <CAADnVQ+VN6nUCQC51nByeKa+uHG=O-GyzeEpWQgJ8OP815RB2A@mail.gmail.com> <878sg4mmlm.fsf@cloudflare.com> <CAADnVQJ6ZxCwik7r-XW3bt+h5p37Uq3WL=Rm=yChbkHQSHaj-w@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf v2 0/6] Fix attach / detach uapi for sockmap and flow_dissector
-In-reply-to: <CAADnVQJ6ZxCwik7r-XW3bt+h5p37Uq3WL=Rm=yChbkHQSHaj-w@mail.gmail.com>
-Date:   Wed, 01 Jul 2020 09:45:01 +0200
-Message-ID: <877dvnn0g2.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hqExo5Jw0bQAD+SXNaCf+imeb9HHNW5VMCs6CwOkkqw=;
+        b=tuwYmmQcDzHzkBNr1tJq1byKdGJHuogJBeLccAiz1oRyhqeQ1DRM4v53prVJ1t6oAw
+         NbqbUFV+35bSkgSyTcguNgsts2JDLVnUcwjIP4ZS5jdHsjBBLIs8uby7lXYAQd5mr5/o
+         ny4Rk5vB/7e6XILLg8Ec8mbd5Qj6OmlNbRdmpObjU/xpqLas2YfBC8ErZmyqA2gSuI7T
+         tLaPvvTUPlir5DPRAOz5gJqyiFqNcnYPvdX2H42XssdNyKJDY/hLZw5DQYFzEF9JqAkf
+         9zAx5dc2DBVNceg9zJp+wLX3WmjIIwNw5nyMaYoWk6MHMm/qDuAlzRUqbAbnAqLOJ00h
+         gZqQ==
+X-Gm-Message-State: AOAM5301khNMp1cI+6GMoAx+nQhjXEOa6b7UUXaBFI07H5e79uU+L4Ov
+        kF+Krgt/Ndy46hXvw9D1d2sUcb1VFgTXmSOw6dnenA==
+X-Google-Smtp-Source: ABdhPJyk9FhaRkjzfH+jQQEVvB08wPP6j7V2ZV/wVi8ODX6cOU3d5bWpX3EY6djQ2YZEebFia/DQwUe2URO7y3Wpsso=
+X-Received: by 2002:a05:6830:1313:: with SMTP id p19mr18624358otq.132.1593591690678;
+ Wed, 01 Jul 2020 01:21:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200630164541.1329993-1-jakub@cloudflare.com>
+In-Reply-To: <20200630164541.1329993-1-jakub@cloudflare.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 1 Jul 2020 09:21:19 +0100
+Message-ID: <CACAyw98SeKeZemGcPbmMwokfsSd+eSLgPaeRnOYRo3b=Rvudjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, netns: Fix use-after-free in pernet
+ pre_exit callback
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:42 PM CEST, Alexei Starovoitov wrote:
-> On Tue, Jun 30, 2020 at 11:31 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> But if you decide to keep my patchset in 'bpf', then can you please also
->> apply the today's fixup [1]? Or I can resend with correct subject prefix
->> tomorrow.
+On Tue, 30 Jun 2020 at 17:45, Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Already did.
-> I found it in patchworks, but not in my mailbox.
-> Please cc myself and Daniel in the future.
-> vger can be unreliable some times.
+> Iterating over BPF links attached to network namespace in pre_exit hook is
+> not safe, even if there is just one. Once link gets auto-detached, that is
+> its back-pointer to net object is set to NULL, the link can be released and
+> freed without waiting on netns_bpf_mutex, effectively causing the list
+> element we are operating on to be freed.
+>
+> This leads to use-after-free when trying to access the next element on the
+> list, as reported by KASAN. Bug can be triggered by destroying a network
+> namespace, while also releasing a link attached to this network namespace.
 
-Noted. Will do from now on.
+Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+
+>
+> | ==================================================================
+> | BUG: KASAN: use-after-free in netns_bpf_pernet_pre_exit+0xd9/0x130
+> | Read of size 8 at addr ffff888119e0d778 by task kworker/u8:2/177
+> |
+> | CPU: 3 PID: 177 Comm: kworker/u8:2 Not tainted 5.8.0-rc1-00197-ga0c04c9d1008-dirty #776
+> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> | Workqueue: netns cleanup_net
+> | Call Trace:
+> |  dump_stack+0x9e/0xe0
+> |  print_address_description.constprop.0+0x3a/0x60
+> |  ? netns_bpf_pernet_pre_exit+0xd9/0x130
+> |  kasan_report.cold+0x1f/0x40
+> |  ? netns_bpf_pernet_pre_exit+0xd9/0x130
+> |  netns_bpf_pernet_pre_exit+0xd9/0x130
+> |  cleanup_net+0x30b/0x5b0
+> |  ? unregister_pernet_device+0x50/0x50
+> |  ? rcu_read_lock_bh_held+0xb0/0xb0
+> |  ? _raw_spin_unlock_irq+0x24/0x50
+> |  process_one_work+0x4d1/0xa10
+> |  ? lock_release+0x3e0/0x3e0
+> |  ? pwq_dec_nr_in_flight+0x110/0x110
+> |  ? rwlock_bug.part.0+0x60/0x60
+> |  worker_thread+0x7a/0x5c0
+> |  ? process_one_work+0xa10/0xa10
+> |  kthread+0x1e3/0x240
+> |  ? kthread_create_on_node+0xd0/0xd0
+> |  ret_from_fork+0x1f/0x30
+> |
+> | Allocated by task 280:
+> |  save_stack+0x1b/0x40
+> |  __kasan_kmalloc.constprop.0+0xc2/0xd0
+> |  netns_bpf_link_create+0xfe/0x650
+> |  __do_sys_bpf+0x153a/0x2a50
+> |  do_syscall_64+0x59/0x300
+> |  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> |
+> | Freed by task 198:
+> |  save_stack+0x1b/0x40
+> |  __kasan_slab_free+0x12f/0x180
+> |  kfree+0xed/0x350
+> |  process_one_work+0x4d1/0xa10
+> |  worker_thread+0x7a/0x5c0
+> |  kthread+0x1e3/0x240
+> |  ret_from_fork+0x1f/0x30
+> |
+> | The buggy address belongs to the object at ffff888119e0d700
+> |  which belongs to the cache kmalloc-192 of size 192
+> | The buggy address is located 120 bytes inside of
+> |  192-byte region [ffff888119e0d700, ffff888119e0d7c0)
+> | The buggy address belongs to the page:
+> | page:ffffea0004678340 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+> | flags: 0x2fffe0000000200(slab)
+> | raw: 02fffe0000000200 ffffea00045ba8c0 0000000600000006 ffff88811a80ea80
+> | raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+> | page dumped because: kasan: bad access detected
+> |
+> | Memory state around the buggy address:
+> |  ffff888119e0d600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> |  ffff888119e0d680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+> | >ffff888119e0d700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> |                                                                 ^
+> |  ffff888119e0d780: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+> |  ffff888119e0d800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> | ==================================================================
+>
+> Remove the "fast-path" for releasing a link that got auto-detached by a
+> dying network namespace to fix it. This way as long as link is on the list
+> and netns_bpf mutex is held, we have a guarantee that link memory can be
+> accessed.
+>
+> An alternative way to fix this issue would be to safely iterate over the
+> list of links and ensure there is no access to link object after detaching
+> it. But, at the moment, optimizing synchronization overhead on link release
+> without a workload in mind seems like an overkill.
+>
+> Fixes: 7233adc8b69b ("bpf, netns: Keep a list of attached bpf_link's")
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+>  kernel/bpf/net_namespace.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+> index 7a34a8caf954..247543380fa6 100644
+> --- a/kernel/bpf/net_namespace.c
+> +++ b/kernel/bpf/net_namespace.c
+> @@ -43,15 +43,11 @@ static void bpf_netns_link_release(struct bpf_link *link)
+>         enum netns_bpf_attach_type type = net_link->netns_type;
+>         struct net *net;
+>
+> -       /* Link auto-detached by dying netns. */
+> -       if (!net_link->net)
+> -               return;
+> -
+>         mutex_lock(&netns_bpf_mutex);
+>
+> -       /* Recheck after potential sleep. We can race with cleanup_net
+> -        * here, but if we see a non-NULL struct net pointer pre_exit
+> -        * has not happened yet and will block on netns_bpf_mutex.
+> +       /* We can race with cleanup_net, but if we see a non-NULL
+> +        * struct net pointer, pre_exit has not run yet and wait for
+> +        * netns_bpf_mutex.
+>          */
+>         net = net_link->net;
+>         if (!net)
+> --
+> 2.25.4
+>
+
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
