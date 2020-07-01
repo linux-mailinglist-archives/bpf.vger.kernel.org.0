@@ -2,121 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22AE2110C7
-	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 18:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2788121117D
+	for <lists+bpf@lfdr.de>; Wed,  1 Jul 2020 19:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgGAQgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 12:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S1732639AbgGARDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jul 2020 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731394AbgGAQgy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 12:36:54 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2397C08C5C1;
-        Wed,  1 Jul 2020 09:36:53 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b92so11264611pjc.4;
-        Wed, 01 Jul 2020 09:36:53 -0700 (PDT)
+        with ESMTP id S1732625AbgGARDB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jul 2020 13:03:01 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9A9C08C5DD
+        for <bpf@vger.kernel.org>; Wed,  1 Jul 2020 10:03:01 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e15so20707783edr.2
+        for <bpf@vger.kernel.org>; Wed, 01 Jul 2020 10:03:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GgioNzSta8sSjK2l1P/5dr6v68UV138xyv8W1eB/1gY=;
-        b=V58Y5n//HCW652zIm/606vN7NhzBHLyRDKhGIc/xUqQezqiMAawldBH7AbpsuNbD7L
-         ieU3j0zkzxEKToD+T8zCXhgulCOB/M0Pma6lbBBBnUgcVTSz1Mv92Z/DvbRRicm3aOaT
-         n6B1AtyclpiP/ZjsppnLteXfFNqA9uwK8+VgAfubP6zaU2sZxxwtXRSnLnfegE3e5aBS
-         0nSpYYxh+Fq+ayrLiGOgPG9AM7MJeZ80vovNLjuwNCX6W+Bnku1CV2n0o2mu5vKLl527
-         Vbe6HCxKSIh1Q8tfjBMTd5fXJHdwmsMmmoeU6NlyRyX48LRNf2UGRI78g0r7xaFvg2MX
-         /Ngg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sXLocZuYa5LyRW+7c8dY9wi1ppvduxYFU7Sa4aAHUQ0=;
+        b=FNRiKjGOLujr2GHcouB/onGnSBkqERG4/SfGtF+Ui+ASREDVq0YOFGgipw9Hvu1XeC
+         q8heD9a6c0iKic1AFiHslIDWRsk3kJuygMm66NNQI3CKH+rjWm7qheoPxrMSMqJirLId
+         u0O6QB0nEFLdDv+1vKCf2hb9UR/WD5bow+KZtf+Yai71jqQEIysBGBLVTL5bXK91wveb
+         aW19JVd27lMuXuDtDqanawo4WQLJ1PS+jkTc68VMGHm6mJimVzgSBzRTHIDNYK5Wuy8e
+         MdEyachNYELHOsU4Av3kBkd99S9yklbFxhFQ6+0bJLfrFOw8CzsQH0eP8+R4xf2mYRJs
+         VJTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GgioNzSta8sSjK2l1P/5dr6v68UV138xyv8W1eB/1gY=;
-        b=dqScTTL7HyPigq9pNdPpz1IADP5aOCQjKJ2AnpMeT6lnT6goda5Ee0SrgiR/3J7EOo
-         PJ8AprYt54Wk4H2ztHpig/twNWIgMhiGsZD1r0RtWLobzkZn1wjwpbTU4Pr54gQYe2ey
-         wcJbQH7yhmgEIfwRCw7buRpQokxZsXGqlXXKL8wIumyLF7IVN4E7pzbHk4ADA6CIw+ES
-         dj8FHDk0nl6T3ePR4OAEbXBXjxlq29MreAKvygmkp7AIK1sZ2abhM/s+WwlbTQfgLSWv
-         7jTH5E/NRi6phmLf2pD6tyWXpRv9dLgMP7Fg9l0JgAn9nOOj5KA6Ta6Bg6B0i7thgO5c
-         gFFQ==
-X-Gm-Message-State: AOAM532vgZF7D5Wx+HE4TK3ncu2Lt1Kp/XNKjhx0dZHQykAPeE+vlkA2
-        nU7VPYJa9Ba9x3EwdWCc80I=
-X-Google-Smtp-Source: ABdhPJy+3zrMbkxQP0lAB9c1Mv2U7SWy+vkKt0J4REeA/Z+IDhJFrMwnA4UP8i6s+3ZYUdIV8sejyg==
-X-Received: by 2002:a17:90a:1b42:: with SMTP id q60mr5761677pjq.78.1593621413431;
-        Wed, 01 Jul 2020 09:36:53 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:7882])
-        by smtp.gmail.com with ESMTPSA id y12sm6357791pfm.158.2020.07.01.09.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 09:36:52 -0700 (PDT)
-Date:   Wed, 1 Jul 2020 09:36:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Strip away modifiers from BPF skeleton
- global variables
-Message-ID: <20200701163650.qoxr5xgjmz5mpzgn@ast-mbp.dhcp.thefacebook.com>
-References: <20200701064527.3158178-1-andriin@fb.com>
- <CAADnVQLGQB9MeOpT0vGpbwV4Ye7j1A9bJVQzF-krWQY_gNfcpA@mail.gmail.com>
- <CAEf4BzbtPBLXU9OKCxeqOKr2WkUHz3P8zO6hD-602htLr21RvQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sXLocZuYa5LyRW+7c8dY9wi1ppvduxYFU7Sa4aAHUQ0=;
+        b=KOuuF/0sPb6Ht0pN+4UO8lO7LdSArRjToSVvigvuUhRQFXxFSDHjGDqyvvsJLWx06C
+         ulK0aaoLw01/214/VoLEvmZRjNheqZSwLHEZiHYbDeufH/n1bjM1tZRRVuhjTquA6+Il
+         HpkFaE9StDlHTGYSAwG0K+WYvSJAlHTM9zQuLCseCVyptl88cs380AlVIS19mF9uWnhk
+         M2nAP4KuGyOjc9gFMb5Kt0zkEkMgknsgygm9fqhKaW1JlS3q2qeIjG+x0MH6hTcMSkBP
+         kuayYfCSoWSJKdhymK1RCVm37TCB0+clx0XIqowgQ7O3efXeFQ/2sQphip1zLBDX81sF
+         DxuQ==
+X-Gm-Message-State: AOAM530UBrW8wtm+XRUsB+Yg3UQNkfbeaORXPu8H8H6dyhVbhB7QS3Ob
+        lFq5aN9NfGqqrY3QEormgQU35G+gaenHDtHmTHSmoQ==
+X-Google-Smtp-Source: ABdhPJx8LUrrdnwmBIDiSNRuGB4f6C/45FYDSPt9e8ZYnDUngrST9sVe5bZuefihx+MmlBauk2XZmDEsc574ZFY6EU0=
+X-Received: by 2002:a50:c355:: with SMTP id q21mr27751649edb.121.1593622979559;
+ Wed, 01 Jul 2020 10:02:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbtPBLXU9OKCxeqOKr2WkUHz3P8zO6hD-602htLr21RvQ@mail.gmail.com>
+References: <20200630184922.455439-1-haoluo@google.com> <49df8306-ecc7-b979-d887-b023275e4842@fb.com>
+ <CA+khW7iJu2tzcz36XzL6gBq4poq+5Qt0vbrmPRdYuvC-c5U4_A@mail.gmail.com>
+ <CA+khW7jNqVMqq2dzf6Dy0pWCZYjHrG7Vm_sUEKKLS-L-ptzEtQ@mail.gmail.com> <46fc8e13-fb3e-6464-b794-60cf90d16543@fb.com>
+In-Reply-To: <46fc8e13-fb3e-6464-b794-60cf90d16543@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 1 Jul 2020 10:02:48 -0700
+Message-ID: <CA+khW7hLL+=sZwCT_6gHHjHTZnmbNk5Pju9vsLOJF4VjyHY-iA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Switch test_vmlinux to use hrtimer_range_start_ns.
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kselftest@vger.kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Bill Wendling <morbo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 09:08:45AM -0700, Andrii Nakryiko wrote:
-> On Wed, Jul 1, 2020 at 8:02 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Jun 30, 2020 at 11:46 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> > >
-> > > Fix bpftool logic of stripping away const/volatile modifiers for all global
-> > > variables during BPF skeleton generation. See patch #1 for details on when
-> > > existing logic breaks and why it's important. Support special .strip_mods=true
-> > > mode in btf_dump. Add selftests validating that everything works as expected.
-> >
-> > Why bother with the flag?
-> 
-> You mean btf_dump should do this always? That's a bit too invasive a
-> change, I don't like it.
-> 
-> > It looks like bugfix to me.
-> 
-> It can be considered a bug fix for bpftool's skeleton generation, but
-> it depends on non-trivial changes in libbpf, which are not bug fix per
-> se, so should probably better go through bpf-next.
+On Tue, Jun 30, 2020 at 7:26 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 6/30/20 5:10 PM, Hao Luo wrote:
+> > Ok, with the help of my colleague Ian Rogers, I think we solved the
+> > mystery. Clang actually inlined hrtimer_nanosleep() inside
+> > SyS_nanosleep(), so there is no call to that function throughout the
+> > path of the nanosleep syscall. I've been looking at the function body
+> > of hrtimer_nanosleep for quite some time, but clearly overlooked the
+> > caller of hrtimer_nanosleep. hrtimer_nanosleep is pretty short and
+> > there are many constants, inlining would not be too surprising.
+>
+> Oh thanks for explanation. inlining makes sense. We have many other
+> instances like this in the past where kprobe won't work properly.
+>
+> Could you reword your commit message then?
+>
+>  > causing fentry and kprobe to not hook on this function properly on a
+>  > Clang build kernel.
+>
+> The above is a little vague on what happens. What really happens is
+> fentry/kprobe does hook on this function but has no effect since
+> its caller has inlined the function.
 
-I'm not following.
-Without tweaking opts and introducing new flag the actual fix is only
-two hunks in patch 1:
+Sure, sending a v2 with a more accurate description of the issue.
 
-@@ -1045,6 +1050,10 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
-
- 	stack_start = d->decl_stack_cnt;
- 	for (;;) {
-+		t = btf__type_by_id(d->btf, id);
-+		if (btf_is_mod(t))
-+			goto skip_mod;
-+
- 		err = btf_dump_push_decl_stack_id(d, id);
- 		if (err < 0) {
- 			/*
-@@ -1056,12 +1065,11 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
- 			d->decl_stack_cnt = stack_start;
- 			return;
- 		}
--
-+skip_mod:
- 		/* VOID */
- 		if (id == 0)
- 			break;
-
--		t = btf__type_by_id(d->btf, id);
-
+Hao
