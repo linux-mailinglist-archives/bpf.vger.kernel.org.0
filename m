@@ -2,273 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1151221300D
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 01:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9B3213043
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 01:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgGBX06 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 19:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgGBX0q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:26:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E12FC08C5E3
-        for <bpf@vger.kernel.org>; Thu,  2 Jul 2020 16:26:46 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x8so11007616plm.10
-        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 16:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qF2CZLD/R1jGbARFMDcuALfF7zwKKffMFtAaWgLK3W0=;
-        b=i9T8ozZ9ILF7cYgT0p8o+yUm2cFKjkJXBGmvy79jB5e88qD3+7WZFNa+uSSHVHSFJd
-         EwEBbQ8tE9q532P4nAt96j1X64DwrXyFjcqNDRCZg7Gfgub7t+fL2hufnw5nF5Kyer+T
-         5i79oPAisVKS5G1ySfNLaEKNytZQ7DaEPquhA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qF2CZLD/R1jGbARFMDcuALfF7zwKKffMFtAaWgLK3W0=;
-        b=UO4SeMKwYDrKyjYNHXCGms1PfSFK2VAg/ljqIR0/70ft6zxc3SZj/Ujsc4qoJoDpmE
-         CoO24Gx0Tu/X8/LlYRvhV0xkI0CybhN+NahVNVX20+oQxfGcabpVVVFPS/BkNbtLjyCY
-         SlzYMbp1z1x3zPty4498xsDfIfsiQThecKhw+3mOegBUJ9C5//oN20ShOQIS4v5wKkRg
-         f/NitdFDxCYjJd5D9g63MHitG3p0h9F3oaDdvfz1jqQ/MGgj8B5mQuddc4bMdTuO8/Dr
-         y8WPAUejDJ4V5JzQEpUkN7YpOh7z3vpMhDYLmSe6rTE2fBwrku75OY1LBWMCAGvmRBZh
-         NzHg==
-X-Gm-Message-State: AOAM530DWB1y04PLs0Je/uIuwtVDTyCbNPFFU7/VECPSd64Owvofz5H6
-        g868uHt1C4zqZXq/dhBTEG7XLQ==
-X-Google-Smtp-Source: ABdhPJz+z5PcmwjIbTbZn2qz8H3DMOipoQ1ecGl4gDxfvJgwEl9tv9acCNS3vGQ8KUBm7wSNRITMkw==
-X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr27506485pjv.58.1593732405796;
-        Thu, 02 Jul 2020 16:26:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q24sm9468589pgg.3.2020.07.02.16.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 16:26:44 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Dominik Czarnota <dominik.czarnota@trailofbits.com>
-Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1726072AbgGBXws (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 19:52:48 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:50211 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgGBXws (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 19:52:48 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 062NpYvX013592;
+        Fri, 3 Jul 2020 08:51:34 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Fri, 03 Jul 2020 08:51:33 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 062NpXER013497
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Fri, 3 Jul 2020 08:51:33 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v3 00/16] Make the user mode driver code a better citizen
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matteo Croce <mcroce@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
-Date:   Thu,  2 Jul 2020 16:26:38 -0700
-Message-Id: <20200702232638.2946421-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702232638.2946421-1-keescook@chromium.org>
-References: <20200702232638.2946421-1-keescook@chromium.org>
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <87y2oac50p.fsf@x220.int.ebiederm.org>
+ <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+ <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <7f6f0c1a-360a-c37f-de4e-854f0b97f3d3@i-love.sakura.ne.jp>
+Date:   Fri, 3 Jul 2020 08:51:32 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When evaluating access control over kallsyms visibility, credentials at
-open() time need to be used, not the "current" creds (though in BPF's
-case, this has likely always been the same). Plumb access to associated
-file->f_cred down through bpf_dump_raw_ok() and its callers now that
-kallsysm_show_value() has been refactored to take struct cred.
+On 2020/07/03 1:40, Eric W. Biederman wrote:
+> 
+> This is the third round of my changeset to split the user mode driver
+> code from the user mode helper code, and to make the code use common
+> facilities to get things done instead of recreating them just
+> for the user mode driver code.
 
-Cc: stable@vger.kernel.org
-Fixes: 7105e828c087 ("bpf: allow for correlation of maps and helpers in dump")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- include/linux/filter.h     |  4 ++--
- kernel/bpf/syscall.c       | 37 +++++++++++++++++++++----------------
- net/core/sysctl_net_core.c |  2 +-
- 3 files changed, 24 insertions(+), 19 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 55104f6c78e8..0b0144752d78 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -884,12 +884,12 @@ void bpf_jit_compile(struct bpf_prog *prog);
- bool bpf_jit_needs_zext(void);
- bool bpf_helper_changes_pkt_data(void *func);
- 
--static inline bool bpf_dump_raw_ok(void)
-+static inline bool bpf_dump_raw_ok(const struct cred *cred)
- {
- 	/* Reconstruction of call-sites is dependent on kallsyms,
- 	 * thus make dump the same restriction.
- 	 */
--	return kallsyms_show_value(current_cred());
-+	return kallsyms_show_value(cred);
- }
- 
- struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8da159936bab..859053ddf05b 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3139,7 +3139,8 @@ static const struct bpf_map *bpf_map_from_imm(const struct bpf_prog *prog,
- 	return NULL;
- }
- 
--static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
-+static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog,
-+					      const struct cred *f_cred)
- {
- 	const struct bpf_map *map;
- 	struct bpf_insn *insns;
-@@ -3165,7 +3166,7 @@ static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
- 		    code == (BPF_JMP | BPF_CALL_ARGS)) {
- 			if (code == (BPF_JMP | BPF_CALL_ARGS))
- 				insns[i].code = BPF_JMP | BPF_CALL;
--			if (!bpf_dump_raw_ok())
-+			if (!bpf_dump_raw_ok(f_cred))
- 				insns[i].imm = 0;
- 			continue;
- 		}
-@@ -3221,7 +3222,8 @@ static int set_info_rec_size(struct bpf_prog_info *info)
- 	return 0;
- }
- 
--static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
-+static int bpf_prog_get_info_by_fd(struct file *file,
-+				   struct bpf_prog *prog,
- 				   const union bpf_attr *attr,
- 				   union bpf_attr __user *uattr)
- {
-@@ -3290,11 +3292,11 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 		struct bpf_insn *insns_sanitized;
- 		bool fault;
- 
--		if (prog->blinded && !bpf_dump_raw_ok()) {
-+		if (prog->blinded && !bpf_dump_raw_ok(file->f_cred)) {
- 			info.xlated_prog_insns = 0;
- 			goto done;
- 		}
--		insns_sanitized = bpf_insn_prepare_dump(prog);
-+		insns_sanitized = bpf_insn_prepare_dump(prog, file->f_cred);
- 		if (!insns_sanitized)
- 			return -ENOMEM;
- 		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
-@@ -3328,7 +3330,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 	}
- 
- 	if (info.jited_prog_len && ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			uinsns = u64_to_user_ptr(info.jited_prog_insns);
- 			ulen = min_t(u32, info.jited_prog_len, ulen);
- 
-@@ -3363,7 +3365,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 	ulen = info.nr_jited_ksyms;
- 	info.nr_jited_ksyms = prog->aux->func_cnt ? : 1;
- 	if (ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			unsigned long ksym_addr;
- 			u64 __user *user_ksyms;
- 			u32 i;
-@@ -3394,7 +3396,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 	ulen = info.nr_jited_func_lens;
- 	info.nr_jited_func_lens = prog->aux->func_cnt ? : 1;
- 	if (ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			u32 __user *user_lens;
- 			u32 func_len, i;
- 
-@@ -3451,7 +3453,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 	else
- 		info.nr_jited_line_info = 0;
- 	if (info.nr_jited_line_info && ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			__u64 __user *user_linfo;
- 			u32 i;
- 
-@@ -3497,7 +3499,8 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 	return 0;
- }
- 
--static int bpf_map_get_info_by_fd(struct bpf_map *map,
-+static int bpf_map_get_info_by_fd(struct file *file,
-+				  struct bpf_map *map,
- 				  const union bpf_attr *attr,
- 				  union bpf_attr __user *uattr)
- {
-@@ -3540,7 +3543,8 @@ static int bpf_map_get_info_by_fd(struct bpf_map *map,
- 	return 0;
- }
- 
--static int bpf_btf_get_info_by_fd(struct btf *btf,
-+static int bpf_btf_get_info_by_fd(struct file *file,
-+				  struct btf *btf,
- 				  const union bpf_attr *attr,
- 				  union bpf_attr __user *uattr)
- {
-@@ -3555,7 +3559,8 @@ static int bpf_btf_get_info_by_fd(struct btf *btf,
- 	return btf_get_info_by_fd(btf, attr, uattr);
- }
- 
--static int bpf_link_get_info_by_fd(struct bpf_link *link,
-+static int bpf_link_get_info_by_fd(struct file *file,
-+				  struct bpf_link *link,
- 				  const union bpf_attr *attr,
- 				  union bpf_attr __user *uattr)
- {
-@@ -3608,15 +3613,15 @@ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
- 		return -EBADFD;
- 
- 	if (f.file->f_op == &bpf_prog_fops)
--		err = bpf_prog_get_info_by_fd(f.file->private_data, attr,
-+		err = bpf_prog_get_info_by_fd(f.file, f.file->private_data, attr,
- 					      uattr);
- 	else if (f.file->f_op == &bpf_map_fops)
--		err = bpf_map_get_info_by_fd(f.file->private_data, attr,
-+		err = bpf_map_get_info_by_fd(f.file, f.file->private_data, attr,
- 					     uattr);
- 	else if (f.file->f_op == &btf_fops)
--		err = bpf_btf_get_info_by_fd(f.file->private_data, attr, uattr);
-+		err = bpf_btf_get_info_by_fd(f.file, f.file->private_data, attr, uattr);
- 	else if (f.file->f_op == &bpf_link_fops)
--		err = bpf_link_get_info_by_fd(f.file->private_data,
-+		err = bpf_link_get_info_by_fd(f.file, f.file->private_data,
- 					      attr, uattr);
- 	else
- 		err = -EINVAL;
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index f93f8ace6c56..6ada114bbcca 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -274,7 +274,7 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
- 	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
- 	if (write && !ret) {
- 		if (jit_enable < 2 ||
--		    (jit_enable == 2 && bpf_dump_raw_ok())) {
-+		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
- 			*(int *)table->data = jit_enable;
- 			if (jit_enable == 2)
- 				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
--- 
-2.25.1
-
+I won't test this version, for you are ignoring my comments.
