@@ -2,167 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0512121E6
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 13:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DBD212226
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 13:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgGBLOF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 07:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
+        id S1728413AbgGBLYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 07:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgGBLOE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:14:04 -0400
+        with ESMTP id S1728009AbgGBLYe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:24:34 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE73C08C5C1;
-        Thu,  2 Jul 2020 04:14:04 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id o4so13618702ybp.0;
-        Thu, 02 Jul 2020 04:14:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FABC08C5C1;
+        Thu,  2 Jul 2020 04:24:34 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h39so13604647ybj.3;
+        Thu, 02 Jul 2020 04:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eNvvTDpk4HWu29heGzOFchBAHnDIkOKQa3sXxkbmF+w=;
-        b=MkyKPBZsRw+l7HS1mxyE6nHXMKCx6+1jDsKhYBJ80MPzouH7gE+R5B0XqHNOicBohn
-         amvUzsaM+gv3yXW2eubQRRygqo9EXHJxmNesj/H24qZ+51M9wTOsgH8sblT8JhEL1sCH
-         PHT/IKoVli8ZipD6eJGZItJKPvPOQP5CzfpgstVJjhhI7CbKwnIKb6k68ETE1NakEHMd
-         J2B9VFzCWseq7m3ns7BlJjt2vcGU7sbIdg99ylv9LZRaDH0ZCQkXPv4sEnAmaDhsZMqI
-         qG5F/NxIqo7pI6RmaKgsbk+4hpnXzymOBSqFn8qKBv0DLXPjPSbrg5VQ3tcUnnepOK/G
-         kClA==
+        bh=xfLhyiqMmx1NCC5JE+0HxGjF069HkR8d5YN5c8Btfo4=;
+        b=C35MPbNLIuMq732j0GgyfPbKMsobyWCOwn8hHThTspTJTptBqeAUt6mGaqyIMGR9V2
+         HsSJ261NJD3SHV3RfpzFpUXwPOweaMfL7nq7+hZXfdkcQu5i1D6aetwb6yZHPKG3tdo3
+         tGNZGLjbynfhGbRffIQr+Iqd9yDSt3PHobxRTBIAA+mvt3xPxKv7zi966/lA2kKeWicP
+         jCB2h3PtY5St3xT4z0H/4zNtcNlP65uXYVpjaDWszEkcdn+SxA0d5yeWriRqjat2wSW8
+         b2Niphpig/aYz1+StJenifN6TdoahhJtQtVEr9FPVzfQtIjHWSOt+6F3Sj6DvUNqz7WX
+         a5ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eNvvTDpk4HWu29heGzOFchBAHnDIkOKQa3sXxkbmF+w=;
-        b=LS6oGgLM6kjeuJD5Bonk6i6dwL7x6Zq+sZofKNBuV490jHCvMFcAypQcSZwMWA1f3x
-         AkbKetu3WHFsweyTGQjpqqwohzxUGX7MaXlXSebuAdKb4uIOYNowFzy5NiUmzwU2CMdN
-         1f6ih0AKWGgadFSYb2to9ALGMt+yyd/s9388pVNg9BV+Ts37GDj3iZiT8Pv1aUxe9QI2
-         l3UMP3Fk4hpXP3qcdTphA/kbPNSuCVALBYMRzuYFuLsZmHGCD08u7dcQfXJ/cS8Wbt5q
-         sCiqL/MRq/GcbFSMdYmatpMCigwM13oGVKEzcS/OMCtnCZlGgwNx9EPUtNwDIQlmGCX/
-         YWDA==
-X-Gm-Message-State: AOAM5339sBpWStlyXKvwf80XY3SG6NeH4PkzXbGNJ3PokLpmfFPJJW+5
-        DoXSpDVNQWNn/hmdc9QujI5xtijPvKfPIoOkhA==
-X-Google-Smtp-Source: ABdhPJyLCuTCqLQ8C6dUzBAU31+jgZvFtvJpIelHa7KG4qOEVqH3GeFVe4z6WRkT7RTtLLbh0FCoKWbLDMQ+xMx0rik=
-X-Received: by 2002:a05:6902:1021:: with SMTP id x1mr49046792ybt.464.1593688443451;
- Thu, 02 Jul 2020 04:14:03 -0700 (PDT)
+        bh=xfLhyiqMmx1NCC5JE+0HxGjF069HkR8d5YN5c8Btfo4=;
+        b=PwkN0hPZGHAOy87xsEw2962ST0JYe4deqXm9S83hXP1emG55WNeZUTG2cuyFuBF3pW
+         ruVVfd1pK9O3yjWOimG+hCaSlvEMM/HdUtlLvCmt3VmomSUoN+0t6K/vTMf0COGGS33u
+         kantBzVApyHsAZPWmSoUdlex+QWWW5DPbonAKbsy9oYCogcGoEByVYrT77hMk5sBElQF
+         A3tDnLrx4/V+IrAQmQGKTCfOzkLi7hoxapntyKEfBexC+sAVi6S/HpT/TfnOJthk+TLs
+         MvNApYDSi/UBH4ktGU09ztv94Y7KqihgKOI9d3xgY2G2A8ET52VhlqalH3xUOyNmtpJ/
+         taqA==
+X-Gm-Message-State: AOAM531xvMtKhZdU5hJ1ho/14L2ouFR6JBjonJo2xT3PR5GACsvnJL6n
+        RfO2bzIPIhGH7YzOJcVBaxl1xzkQnseW+oqc5g==
+X-Google-Smtp-Source: ABdhPJy7uwt23VfDJUKKp8sgkdJXhClQkyVpVNzPbbnm1avKdbGjBHHb/mZU/zqx6ie1Cxq5fXFnmu9TQ3SczWuqZo0=
+X-Received: by 2002:a05:6902:692:: with SMTP id i18mr50181764ybt.164.1593689073502;
+ Thu, 02 Jul 2020 04:24:33 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200702021646.90347-1-danieltimlee@gmail.com>
- <20200702021646.90347-2-danieltimlee@gmail.com> <c4061b5f-b42e-4ecc-e3fb-7a70206da417@fb.com>
-In-Reply-To: <c4061b5f-b42e-4ecc-e3fb-7a70206da417@fb.com>
+ <20200702021646.90347-4-danieltimlee@gmail.com> <CAEf4BzZsx+pkkdjhJt1AHaUy6=B=nqZdpR+TrRrjreNa0GMWug@mail.gmail.com>
+In-Reply-To: <CAEf4BzZsx+pkkdjhJt1AHaUy6=B=nqZdpR+TrRrjreNa0GMWug@mail.gmail.com>
 From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Thu, 2 Jul 2020 20:13:47 +0900
-Message-ID: <CAEKGpzhU31p=i=xbD3Fk2vJh_btrk73CgkJXMXDgM1umsEaEpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] samples: bpf: fix bpf programs with
- kprobe/sys_connect event
-To:     Yonghong Song <yhs@fb.com>
+Date:   Thu, 2 Jul 2020 20:24:17 +0900
+Message-ID: <CAEKGpzikhnamOsh=qnmYPJ+6Lr2c4arOdqhuACdHTXmwEF1naQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] samples: bpf: refactor BPF map performance
+ test with libbpf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 2:13 PM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Jul 2, 2020 at 1:34 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
->
->
-> On 7/1/20 7:16 PM, Daniel T. Lee wrote:
-> > Currently, BPF programs with kprobe/sys_connect does not work properly.
+> On Wed, Jul 1, 2020 at 7:17 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 > >
-> > Commit 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> > This commit modifies the bpf_load behavior of kprobe events in the x64
-> > architecture. If the current kprobe event target starts with "sys_*",
-> > add the prefix "__x64_" to the front of the event.
+> > Previously, in order to set the numa_node attribute at the time of map
+> > creation using "libbpf", it was necessary to call bpf_create_map_node()
+> > directly (bpf_load approach), instead of calling bpf_object_load()
+> > that handles everything on its own, including map creation. And because
+> > of this problem, this sample had problems with refactoring from bpf_load
+> > to libbbpf.
 > >
-> > Appending "__x64_" prefix with kprobe/sys_* event was appropriate as a
-> > solution to most of the problems caused by the commit below.
+> > However, by commit 1bdb6c9a1c43 ("libbpf: Add a bunch of attribute
+> > getters/setters for map definitions"), a helper function which allows
+> > the numa_node attribute to be set in the map prior to calling
+> > bpf_object_load() has been added.
 > >
-> >      commit d5a00528b58c ("syscalls/core, syscalls/x86: Rename struct
-> >      pt_regs-based sys_*() to __x64_sys_*()")
+> > By using libbpf instead of bpf_load, the inner map definition has
+> > been explicitly declared with BTF-defined format. And for this reason
+> > some logic in fixup_map() was not needed and changed or removed.
 > >
-> > However, there is a problem with the sys_connect kprobe event that does
-> > not work properly. For __sys_connect event, parameters can be fetched
-> > normally, but for __x64_sys_connect, parameters cannot be fetched.
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > ---
+> >  samples/bpf/Makefile             |   2 +-
+> >  samples/bpf/map_perf_test_kern.c | 180 +++++++++++++++----------------
+> >  samples/bpf/map_perf_test_user.c | 130 +++++++++++++++-------
+> >  3 files changed, 181 insertions(+), 131 deletions(-)
 > >
-> > Because of this problem, this commit fixes the sys_connect event by
-> > specifying the __sys_connect directly and this will bypass the
-> > "__x64_" appending rule of bpf_load.
 >
-> In the kernel code, we have
+> [...]
 >
-> SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
->                  int, addrlen)
-> {
->          return __sys_connect(fd, uservaddr, addrlen);
-> }
+> > +struct inner_lru {
+> > +       __uint(type, BPF_MAP_TYPE_LRU_HASH);
+> > +       __type(key, u32);
+> > +       __type(value, long);
+> > +       __uint(max_entries, MAX_ENTRIES);
+> > +       __uint(map_flags, BPF_F_NUMA_NODE); /* from _user.c, set numa_node to 0 */
+> > +} inner_lru_hash_map SEC(".maps");
 >
-> Depending on compiler, there is no guarantee that __sys_connect will
-> not be inlined. I would prefer to still use the entry point
-> __x64_sys_* e.g.,
->     SEC("kprobe/" SYSCALL(sys_write))
+> you can declaratively set numa_node here with __uint(numa_node, 0),
+> which is actually a default, but for explicitness it's better
 >
 
-As you mentioned, there is clearly a possibility that problems may arise
-because the symbol does not exist according to the compiler.
+It would make _user.c code cleaner, but as you said,
+I'll keep with this implementation.
 
-However, in x64, when using Kprobe for __x64_sys_connect event, the
-tests are not working properly because the parameters cannot be fetched,
-and the test under selftests/bpf is using "kprobe/_sys_connect" directly.
+> > +
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
+> > +       __uint(max_entries, MAX_NR_CPUS);
+> > +       __uint(key_size, sizeof(u32));
+> > +       __array(values, struct inner_lru); /* use inner_lru as inner map */
+> > +} array_of_lru_hashs SEC(".maps");
+> > +
+>
+> [...]
+>
+> > -static void fixup_map(struct bpf_map_data *map, int idx)
+> > +static void fixup_map(struct bpf_object *obj)
+> >  {
+> > +       struct bpf_map *map;
+> >         int i;
+> >
+> > -       if (!strcmp("inner_lru_hash_map", map->name)) {
+> > -               inner_lru_hash_idx = idx;
+> > -               inner_lru_hash_size = map->def.max_entries;
+> > -       }
+> > +       bpf_object__for_each_map(map, obj) {
+> > +               const char *name = bpf_map__name(map);
+> >
+> > -       if (!strcmp("array_of_lru_hashs", map->name)) {
+>
+> I'm a bit too lazy right now to figure out exact logic here, but just
+> wanted to mention that it is possible to statically set inner map
+> elements for array_of_maps and hash_of_maps. Please check
+> tools/testing/selftests/bpf/progs/test_btf_map_in_map.c and see if you
+> can use this feature to simplify this logic a bit.
+>
 
-I'm not sure how to deal with this problem. Any advice and suggestions
-will be greatly appreciated.
+Thanks for the feedback! But I'm not sure I'm following properly.
+
+If what you are talking about is specifying the inner_map_idx of
+array_of_lru_hashes, I've changed it by using the __array() directives
+of the BTF-defined MAP.
+
+Since inner_map_idx logic has been replaced with BTF-defined map
+definition, the only thing left at here fixup_map() is just resizing map size
+with bpf_map__resize.
 
 Thanks for your time and effort for the review.
 Daniel
 
+> > -               if (inner_lru_hash_idx == -1) {
+> > -                       printf("inner_lru_hash_map must be defined before array_of_lru_hashs\n");
+> > -                       exit(1);
+> > +               /* Only change the max_entries for the enabled test(s) */
+> > +               for (i = 0; i < NR_TESTS; i++) {
+> > +                       if (!strcmp(test_map_names[i], name) &&
+> > +                           (check_test_flags(i))) {
+> > +                               bpf_map__resize(map, num_map_entries);
+> > +                               continue;
+> > +                       }
+> >                 }
+> > -               map->def.inner_map_idx = inner_lru_hash_idx;
+> > -               array_of_lru_hashs_idx = idx;
+> >         }
 > >
-> > Fixes: 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > ---
-> >   samples/bpf/map_perf_test_kern.c         | 2 +-
-> >   samples/bpf/test_map_in_map_kern.c       | 2 +-
-> >   samples/bpf/test_probe_write_user_kern.c | 2 +-
-> >   3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/samples/bpf/map_perf_test_kern.c b/samples/bpf/map_perf_test_kern.c
-> > index 12e91ae64d4d..cebe2098bb24 100644
-> > --- a/samples/bpf/map_perf_test_kern.c
-> > +++ b/samples/bpf/map_perf_test_kern.c
-> > @@ -154,7 +154,7 @@ int stress_percpu_hmap_alloc(struct pt_regs *ctx)
-> >       return 0;
-> >   }
-> >
-> > -SEC("kprobe/sys_connect")
-> > +SEC("kprobe/__sys_connect")
-> >   int stress_lru_hmap_alloc(struct pt_regs *ctx)
-> >   {
-> >       char fmt[] = "Failed at stress_lru_hmap_alloc. ret:%dn";
-> > diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
-> > index 6cee61e8ce9b..b1562ba2f025 100644
-> > --- a/samples/bpf/test_map_in_map_kern.c
-> > +++ b/samples/bpf/test_map_in_map_kern.c
-> > @@ -102,7 +102,7 @@ static __always_inline int do_inline_hash_lookup(void *inner_map, u32 port)
-> >       return result ? *result : -ENOENT;
-> >   }
-> >
-> > -SEC("kprobe/sys_connect")
-> > +SEC("kprobe/__sys_connect")
-> >   int trace_sys_connect(struct pt_regs *ctx)
-> >   {
-> >       struct sockaddr_in6 *in6;
-> > diff --git a/samples/bpf/test_probe_write_user_kern.c b/samples/bpf/test_probe_write_user_kern.c
-> > index 6579639a83b2..9b3c3918c37d 100644
-> > --- a/samples/bpf/test_probe_write_user_kern.c
-> > +++ b/samples/bpf/test_probe_write_user_kern.c
-> > @@ -26,7 +26,7 @@ struct {
-> >    * This example sits on a syscall, and the syscall ABI is relatively stable
-> >    * of course, across platforms, and over time, the ABI may change.
-> >    */
-> > -SEC("kprobe/sys_connect")
-> > +SEC("kprobe/__sys_connect")
-> >   int bpf_prog1(struct pt_regs *ctx)
-> >   {
-> >       struct sockaddr_in new_addr, orig_addr = {};
-> >
+>
+> [...]
