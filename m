@@ -2,327 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01389211F89
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 11:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AB2211FB8
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 11:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgGBJOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 05:14:22 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23382 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726042AbgGBJOV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:14:21 -0400
-IronPort-SDR: 1pM0XYQ8czn6/azOdUo2KdUeB0M5AWbwiUg8fazHGaG0ZyF8/5KtBLnYDkAaj7au1yjdEXGfZU
- 0USz0wvMkX7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="135136498"
-X-IronPort-AV: E=Sophos;i="5.75,303,1589266800"; 
-   d="scan'208";a="135136498"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 02:14:21 -0700
-IronPort-SDR: ob2KALT8d+veQd2xjJsrWCqHjkNAnIaBniEu2PpOTlPr2EEQ1sHr6T0lEfZxdPvxxOGzm6mDb4
- DtsqNS8JZUjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,303,1589266800"; 
-   d="scan'208";a="295840816"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jul 2020 02:14:17 -0700
-Date:   Thu, 2 Jul 2020 11:09:56 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     ilias.apalodimas@linaro.org
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
+        id S1726183AbgGBJYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 05:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728008AbgGBJYU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:24:20 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE550C08C5DC
+        for <bpf@vger.kernel.org>; Thu,  2 Jul 2020 02:24:19 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id f12so2247380eja.9
+        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 02:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d/9xPYZP4tLOP1W2+YlZxcJGdaiixZnhV8pfC4vwDAA=;
+        b=QbS+tkAFAXuQTXOC4fE2+NS+XmgWM2jkwpfoFJvXXVMJ165Zt7/QrcN6zuxFepN8a/
+         Z3Tgyg02LyL2/daSiV1lTNV2P98V/DVSiw6RWLoGIpADB4wEjWrXUBbCjOHdvoNOW7sD
+         wOfCdPTzR9lPTQWEbIQo5Id7TTPQefXFmUOjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d/9xPYZP4tLOP1W2+YlZxcJGdaiixZnhV8pfC4vwDAA=;
+        b=o6akyTmBQZfRqUzEQm/FwVE6ApWnwcXfgIDi2K/mvpe32kkwqRNK6tbyW7dZ0X7+iK
+         99zQaea1udVcvOuYgtxHwwwS/5itJfR8ESb4v/OGRIzboK1rDpM7AfXirkhQY8oCNwwS
+         fnQP/7kN5br90GZV+mrEq8SroFD5eRukSz4xVeFEXF7E7ySU6BKy7wNIRWunPv3ftT/X
+         Lrg9TBgJDftJU0HwaFbQNLqevKvnrUk9Wr0NB9j9WIJ4PTKHn6BSJp4LJWFZXHxpl8yE
+         J5roQdcdDGHW/8aDvmtldmd2qC+h1R6Nrl/7JbZGHe+ikolZP8xhqn6ZWtfW5dfXHAuY
+         8pyw==
+X-Gm-Message-State: AOAM530o1bypVMG08/Yzi/QmiN87x+SqwmyxW2jYFsy8X01TWv0QZsDn
+        5+fFYy5y7bwn05OYivP4bZ5hHrPQ/CT4Zg==
+X-Google-Smtp-Source: ABdhPJxFJaSsmQI2MneR+jGl0ep3G5IO6L+X2SCsAZl8EajIIG0cFNhTPDox/CkBQmO8OmMmXZ6bWQ==
+X-Received: by 2002:a17:907:94cf:: with SMTP id dn15mr28754396ejc.457.1593681857991;
+        Thu, 02 Jul 2020 02:24:17 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id d26sm6489054ejw.89.2020.07.02.02.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 02:24:17 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
-        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH net-next 3/4] mvpp2: add basic XDP support
-Message-ID: <20200702090956.GA7682@ranger.igk.intel.com>
-References: <20200630180930.87506-1-mcroce@linux.microsoft.com>
- <20200630180930.87506-4-mcroce@linux.microsoft.com>
- <20200702080819.GA499364@apalos.home>
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next v3 00/16] Run a BPF program on socket lookup
+Date:   Thu,  2 Jul 2020 11:24:00 +0200
+Message-Id: <20200702092416.11961-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702080819.GA499364@apalos.home>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:08:19AM +0300, ilias.apalodimas@linaro.org wrote:
-> On Tue, Jun 30, 2020 at 08:09:29PM +0200, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > 
-> > Add XDP native support.
-> > By now only XDP_DROP, XDP_PASS and XDP_REDIRECT
-> > verdicts are supported.
-> > 
-> > Co-developed-by: Sven Auhagen <sven.auhagen@voleatech.de>
-> > Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
-> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> > ---
-> 
-> [...]
-> 
-> >  }
-> >  
-> > +static int
-> > +mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
-> > +	      struct bpf_prog *prog, struct xdp_buff *xdp,
-> > +	      struct page_pool *pp)
-> > +{
-> > +	unsigned int len, sync, err;
-> > +	struct page *page;
-> > +	u32 ret, act;
-> > +
-> > +	len = xdp->data_end - xdp->data_hard_start - MVPP2_SKB_HEADROOM;
-> > +	act = bpf_prog_run_xdp(prog, xdp);
-> > +
-> > +	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-> > +	sync = xdp->data_end - xdp->data_hard_start - MVPP2_SKB_HEADROOM;
-> > +	sync = max(sync, len);
-> > +
-> > +	switch (act) {
-> > +	case XDP_PASS:
-> > +		ret = MVPP2_XDP_PASS;
-> > +		break;
-> > +	case XDP_REDIRECT:
-> > +		err = xdp_do_redirect(port->dev, xdp, prog);
-> > +		if (unlikely(err)) {
-> > +			ret = MVPP2_XDP_DROPPED;
-> > +			page = virt_to_head_page(xdp->data);
-> > +			page_pool_put_page(pp, page, sync, true);
-> > +		} else {
-> > +			ret = MVPP2_XDP_REDIR;
-> > +		}
-> > +		break;
-> > +	default:
-> > +		bpf_warn_invalid_xdp_action(act);
-> > +		fallthrough;
-> > +	case XDP_ABORTED:
-> > +		trace_xdp_exception(port->dev, prog, act);
-> > +		fallthrough;
-> > +	case XDP_DROP:
-> > +		page = virt_to_head_page(xdp->data);
-> > +		page_pool_put_page(pp, page, sync, true);
-> > +		ret = MVPP2_XDP_DROPPED;
-> > +		break;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  /* Main rx processing */
-> >  static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >  		    int rx_todo, struct mvpp2_rx_queue *rxq)
-> >  {
-> >  	struct net_device *dev = port->dev;
-> > +	struct bpf_prog *xdp_prog;
-> > +	struct xdp_buff xdp;
-> >  	int rx_received;
-> >  	int rx_done = 0;
-> > +	u32 xdp_ret = 0;
-> >  	u32 rcvd_pkts = 0;
-> >  	u32 rcvd_bytes = 0;
-> >  
-> > +	rcu_read_lock();
-> > +
-> > +	xdp_prog = READ_ONCE(port->xdp_prog);
-> > +
-> >  	/* Get number of received packets and clamp the to-do */
-> >  	rx_received = mvpp2_rxq_received(port, rxq->id);
-> >  	if (rx_todo > rx_received)
-> > @@ -3060,7 +3115,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >  		dma_addr_t dma_addr;
-> >  		phys_addr_t phys_addr;
-> >  		u32 rx_status;
-> > -		int pool, rx_bytes, err;
-> > +		int pool, rx_bytes, err, ret;
-> >  		void *data;
-> >  
-> >  		rx_done++;
-> > @@ -3096,6 +3151,33 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >  		else
-> >  			frag_size = bm_pool->frag_size;
-> >  
-> > +		if (xdp_prog) {
-> > +			xdp.data_hard_start = data;
-> > +			xdp.data = data + MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM;
-> > +			xdp.data_end = xdp.data + rx_bytes;
-> > +			xdp.frame_sz = PAGE_SIZE;
-> > +
-> > +			if (bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE)
-> > +				xdp.rxq = &rxq->xdp_rxq_short;
-> > +			else
-> > +				xdp.rxq = &rxq->xdp_rxq_long;
-> > +
-> > +			xdp_set_data_meta_invalid(&xdp);
-> > +
-> > +			ret = mvpp2_run_xdp(port, rxq, xdp_prog, &xdp, pp);
-> > +
-> > +			if (ret) {
-> > +				xdp_ret |= ret;
-> > +				err = mvpp2_rx_refill(port, bm_pool, pp, pool);
-> > +				if (err) {
-> > +					netdev_err(port->dev, "failed to refill BM pools\n");
-> > +					goto err_drop_frame;
-> > +				}
-> > +
-> > +				continue;
-> > +			}
-> > +		}
-> > +
-> >  		skb = build_skb(data, frag_size);
-> >  		if (!skb) {
-> >  			netdev_warn(port->dev, "skb build failed\n");
-> > @@ -3118,7 +3200,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >  		rcvd_pkts++;
-> >  		rcvd_bytes += rx_bytes;
-> >  
-> > -		skb_reserve(skb, MVPP2_MH_SIZE + NET_SKB_PAD);
-> > +		skb_reserve(skb, MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM);
-> >  		skb_put(skb, rx_bytes);
-> >  		skb->protocol = eth_type_trans(skb, dev);
-> >  		mvpp2_rx_csum(port, rx_status, skb);
-> > @@ -3133,6 +3215,8 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >  		mvpp2_bm_pool_put(port, pool, dma_addr, phys_addr);
-> >  	}
-> >  
-> > +	rcu_read_unlock();
-> > +
-> >  	if (rcvd_pkts) {
-> >  		struct mvpp2_pcpu_stats *stats = this_cpu_ptr(port->stats);
-> >  
-> > @@ -3608,6 +3692,8 @@ static void mvpp2_start_dev(struct mvpp2_port *port)
-> >  	}
-> >  
-> >  	netif_tx_start_all_queues(port->dev);
-> > +
-> > +	clear_bit(0, &port->state);
-> >  }
-> >  
-> >  /* Set hw internals when stopping port */
-> > @@ -3615,6 +3701,8 @@ static void mvpp2_stop_dev(struct mvpp2_port *port)
-> >  {
-> >  	int i;
-> >  
-> > +	set_bit(0, &port->state);
-> > +
-> >  	/* Disable interrupts on all threads */
-> >  	mvpp2_interrupts_disable(port);
-> >  
-> > @@ -4021,6 +4109,10 @@ static int mvpp2_change_mtu(struct net_device *dev, int mtu)
-> >  	}
-> >  
-> >  	if (MVPP2_RX_PKT_SIZE(mtu) > MVPP2_BM_LONG_PKT_SIZE) {
-> > +		if (port->xdp_prog) {
-> > +			netdev_err(dev, "Jumbo frames are not supported with XDP\n");
-> 
-> Does it make sense to switch to NL_SET_ERR_MSG_MOD() here, so the user can get
-> an immediate feedback?
+Overview
+========
 
-ndo_change_mtu does not provide netlink's extack, so that's not possible
-here AFAIK.
+(Same as in v2. Please skip to next section if you've read it.)
 
-> 
-> > +			return -EINVAL;
-> > +		}
-> >  		if (priv->percpu_pools) {
-> >  			netdev_warn(dev, "mtu %d too high, switching to shared buffers", mtu);
-> >  			mvpp2_bm_switch_buffers(priv, false);
-> > @@ -4159,6 +4251,73 @@ static int mvpp2_set_features(struct net_device *dev,
-> >  	return 0;
-> >  }
-> >  
-> > +static int mvpp2_xdp_setup(struct mvpp2_port *port, struct netdev_bpf *bpf)
-> > +{
-> > +	struct bpf_prog *prog = bpf->prog, *old_prog;
-> > +	bool running = netif_running(port->dev);
-> > +	bool reset = !prog != !port->xdp_prog;
-> > +
-> > +	if (port->dev->mtu > ETH_DATA_LEN) {
-> > +		netdev_err(port->dev, "Jumbo frames are not supported by XDP, current MTU %d.\n",
-> > +			   port->dev->mtu);
-> 
-> ditto
+This series proposes a new BPF program type named BPF_PROG_TYPE_SK_LOOKUP,
+or BPF sk_lookup for short.
 
-Here I agree and for every other netdev_err within mvpp2_xdp_setup().
+BPF sk_lookup program runs when transport layer is looking up a listening
+socket for a new connection request (TCP), or when looking up an
+unconnected socket for a packet (UDP).
 
-> 
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	if (!port->priv->percpu_pools) {
-> > +		netdev_err(port->dev, "Per CPU Pools required for XDP");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	/* device is up and bpf is added/removed, must setup the RX queues */
-> > +	if (running && reset) {
-> > +		mvpp2_stop_dev(port);
-> > +		mvpp2_cleanup_rxqs(port);
-> > +		mvpp2_cleanup_txqs(port);
-> > +	}
-> > +
-> > +	old_prog = xchg(&port->xdp_prog, prog);
-> > +	if (old_prog)
-> > +		bpf_prog_put(old_prog);
-> > +
-> > +	/* bpf is just replaced, RXQ and MTU are already setup */
-> > +	if (!reset)
-> > +		return 0;
-> > +
-> > +	/* device was up, restore the link */
-> > +	if (running) {
-> > +		int ret = mvpp2_setup_rxqs(port);
-> > +
-> > +		if (ret) {
-> > +			netdev_err(port->dev, "mvpp2_setup_rxqs failed\n");
-> > +			return ret;
-> > +		}
-> > +		ret = mvpp2_setup_txqs(port);
-> > +		if (ret) {
-> > +			netdev_err(port->dev, "mvpp2_setup_txqs failed\n");
-> > +			return ret;
-> > +		}
-> > +
-> > +		mvpp2_start_dev(port);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int mvpp2_xdp(struct net_device *dev, struct netdev_bpf *xdp)
-> > +{
-> > +	struct mvpp2_port *port = netdev_priv(dev);
-> > +
-> > +	switch (xdp->command) {
-> > +	case XDP_SETUP_PROG:
-> > +		return mvpp2_xdp_setup(port, xdp);
-> > +	case XDP_QUERY_PROG:
-> > +		xdp->prog_id = port->xdp_prog ? port->xdp_prog->aux->id : 0;
-> > +		return 0;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +}
-> > +
-> >  /* Ethtool methods */
-> >  
-> >  static int mvpp2_ethtool_nway_reset(struct net_device *dev)
-> > @@ -4509,6 +4668,7 @@ static const struct net_device_ops mvpp2_netdev_ops = {
-> >  	.ndo_vlan_rx_add_vid	= mvpp2_vlan_rx_add_vid,
-> >  	.ndo_vlan_rx_kill_vid	= mvpp2_vlan_rx_kill_vid,
-> >  	.ndo_set_features	= mvpp2_set_features,
-> > +	.ndo_bpf		= mvpp2_xdp,
-> >  };
-> >  
-> >  static const struct ethtool_ops mvpp2_eth_tool_ops = {
-> > -- 
-> > 2.26.2
-> > 
+This serves as a mechanism to overcome the limits of what bind() API allows
+to express. Two use-cases driving this work are:
+
+ (1) steer packets destined to an IP range, fixed port to a single socket
+
+     192.0.2.0/24, port 80 -> NGINX socket
+
+ (2) steer packets destined to an IP address, any port to a single socket
+
+     198.51.100.1, any port -> L7 proxy socket
+
+In its context, program receives information about the packet that
+triggered the socket lookup. Namely IP version, L4 protocol identifier, and
+address 4-tuple.
+
+To select a socket BPF program fetches it from a map holding socket
+references, like SOCKMAP or SOCKHASH, calls bpf_sk_assign(ctx, sk, ...)
+helper to record the selection, and returns BPF_REDIRECT code. Transport
+layer then uses the selected socket as a result of socket lookup.
+
+Alternatively, program can also fail the lookup (BPF_DROP), or let the
+lookup continue as usual (BPF_OK).
+
+This lets the user match packets with listening (TCP) or receiving (UDP)
+sockets freely at the last possible point on the receive path, where we
+know that packets are destined for local delivery after undergoing
+policing, filtering, and routing.
+
+Program is attached to a network namespace, similar to BPF flow_dissector.
+We add a new attach type, BPF_SK_LOOKUP, for this.
+
+Series structure
+================
+
+Patches are organized as so:
+
+ 1: enabled multiple link-based prog attachments for bpf-netns
+ 2: introduces sk_lookup program type
+ 3-4: hook up the program to run on ipv4/tcp socket lookup
+ 5-6: hook up the program to run on ipv6/tcp socket lookup
+ 7-8: hook up the program to run on ipv4/udp socket lookup
+ 9-10: hook up the program to run on ipv6/udp socket lookup
+ 11-13: libbpf & bpftool support for sk_lookup
+ 14-16: verifier and selftests for sk_lookup
+
+Patches are also available on GH:
+
+  https://github.com/jsitnicki/linux/commits/bpf-inet-lookup-v3
+
+Performance considerations
+==========================
+
+I'm re-running udp6 small packet flood test, the scenario for which we had
+performance concerns in [v2], to measure pps hit after the changes called
+out in change log below.
+
+Will follow up with results. But I'm posting the patches early for review
+since there is a fair amount of code changes.
+
+Further work
+============
+
+- user docs for new prog type, Documentation/bpf/prog_sk_lookup.rst
+  I'm looking for consensus on multi-prog semantics outlined in patch #4
+  description before drafting the document.
+
+- timeout on accept() in tests
+  I need to extract a helper for it into network_helpers in
+  selftests/bpf/. Didn't want to make this series any longer.
+
+Note to maintainers
+===================
+
+This patch series depends on bpf-netns multi-prog changes that went
+recently into 'bpf' [0]. It won't apply onto 'bpf-next' until 'bpf' gets
+merged into 'bpf-next'.
+
+Changelog
+=========
+
+v3 brings the following changes based on feedback:
+
+1. switch to link-based program attachment,
+2. support for multi-prog attachment,
+3. ability to skip reuseport socket selection,
+4. code on RX path is guarded by a static key,
+5. struct in6_addr's are no longer copied into BPF prog context,
+6. BPF prog context is initialized as late as possible.
+
+v2 -> v3:
+- Changes called out in patches 1-2, 4, 6, 8, 10-14, 16
+- Patches dropped:
+  01/17 flow_dissector: Extract attach/detach/query helpers
+  03/17 inet: Store layer 4 protocol in inet_hashinfo
+  08/17 udp: Store layer 4 protocol in udp_table
+
+v1 -> v2:
+- Changes called out in patches 2, 13-15, 17
+- Rebase to recent bpf-next (b4563facdcae)
+
+RFCv2 -> v1:
+
+- Switch to fetching a socket from a map and selecting a socket with
+  bpf_sk_assign, instead of having a dedicated helper that does both.
+- Run reuseport logic on sockets selected by BPF sk_lookup.
+- Allow BPF sk_lookup to fail the lookup with no match.
+- Go back to having just 2 hash table lookups in UDP.
+
+RFCv1 -> RFCv2:
+
+- Make socket lookup redirection map-based. BPF program now uses a
+  dedicated helper and a SOCKARRAY map to select the socket to redirect to.
+  A consequence of this change is that bpf_inet_lookup context is now
+  read-only.
+- Look for connected UDP sockets before allowing redirection from BPF.
+  This makes connected UDP socket work as expected in the presence of
+  inet_lookup prog.
+- Share the code for BPF_PROG_{ATTACH,DETACH,QUERY} with flow_dissector,
+  the only other per-netns BPF prog type.
+
+[RFCv1] https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
+[RFCv2] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+[v1] https://lore.kernel.org/bpf/20200511185218.1422406-18-jakub@cloudflare.com/
+[v2] https://lore.kernel.org/bpf/20200506125514.1020829-1-jakub@cloudflare.com/
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=951f38cf08350884e72e0936adf147a8d764cc5d
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+Cc: Marek Majkowski <marek@cloudflare.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+
+Jakub Sitnicki (16):
+  bpf, netns: Handle multiple link attachments
+  bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+  inet: Extract helper for selecting socket from reuseport group
+  inet: Run SK_LOOKUP BPF program on socket lookup
+  inet6: Extract helper for selecting socket from reuseport group
+  inet6: Run SK_LOOKUP BPF program on socket lookup
+  udp: Extract helper for selecting socket from reuseport group
+  udp: Run SK_LOOKUP BPF program on socket lookup
+  udp6: Extract helper for selecting socket from reuseport group
+  udp6: Run SK_LOOKUP BPF program on socket lookup
+  bpf: Sync linux/bpf.h to tools/
+  libbpf: Add support for SK_LOOKUP program type
+  tools/bpftool: Add name mappings for SK_LOOKUP prog and attach type
+  selftests/bpf: Add verifier tests for bpf_sk_lookup context access
+  selftests/bpf: Rename test_sk_lookup_kern.c to test_ref_track_kern.c
+  selftests/bpf: Tests for BPF_SK_LOOKUP attach point
+
+ include/linux/bpf-netns.h                     |    3 +
+ include/linux/bpf.h                           |   33 +
+ include/linux/bpf_types.h                     |    2 +
+ include/linux/filter.h                        |   99 ++
+ include/uapi/linux/bpf.h                      |   74 +
+ kernel/bpf/core.c                             |   22 +
+ kernel/bpf/net_namespace.c                    |  125 +-
+ kernel/bpf/syscall.c                          |    9 +
+ net/core/filter.c                             |  188 +++
+ net/ipv4/inet_hashtables.c                    |   60 +-
+ net/ipv4/udp.c                                |   93 +-
+ net/ipv6/inet6_hashtables.c                   |   66 +-
+ net/ipv6/udp.c                                |   97 +-
+ scripts/bpf_helpers_doc.py                    |    9 +-
+ tools/bpf/bpftool/common.c                    |    1 +
+ tools/bpf/bpftool/prog.c                      |    3 +-
+ tools/include/uapi/linux/bpf.h                |   74 +
+ tools/lib/bpf/libbpf.c                        |    3 +
+ tools/lib/bpf/libbpf.h                        |    2 +
+ tools/lib/bpf/libbpf.map                      |    2 +
+ tools/lib/bpf/libbpf_probes.c                 |    3 +
+ .../bpf/prog_tests/reference_tracking.c       |    2 +-
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 1353 +++++++++++++++++
+ .../selftests/bpf/progs/test_ref_track_kern.c |  181 +++
+ .../selftests/bpf/progs/test_sk_lookup_kern.c |  462 ++++--
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    |  219 +++
+ 26 files changed, 2995 insertions(+), 190 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ref_track_kern.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
+
+-- 
+2.25.4
+
