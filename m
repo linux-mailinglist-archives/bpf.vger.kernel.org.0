@@ -2,115 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8AE212033
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 11:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8DE212071
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 11:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgGBJmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 05:42:39 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44466 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgGBJmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:42:39 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4892B20B4908;
-        Thu,  2 Jul 2020 02:42:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4892B20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1593682958;
-        bh=yeT/YZEI04dXnABBuQyfYr8dFBGFkuBpRxXtbalM76w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iVEP/cK8yHqJpsyxDMO8ZfwOPci1aNNYB2lNs9aXM0g7tBc/CzUiFarfASqlIE090
-         PkUMLNcGk2mtccCo8JMlYKzzxO1O4t4A+yGeYP8TA1WGZYr1sjWf4v3UCABSDo3wzo
-         LFG2zjSzDbgQxIK6NCjiRbAmalBYEFWbM6CziNfo=
-Received: by mail-qv1-f41.google.com with SMTP id dm12so12334814qvb.9;
-        Thu, 02 Jul 2020 02:42:37 -0700 (PDT)
-X-Gm-Message-State: AOAM530jsiKX0HB6+pM5RljyWu/oqgBjefxSeUnVjP3ZamkzbhUB3yye
-        PGZt9BFZzZk9pYH8uX2Sr2vG5uSw8RmXRTQlDXg=
-X-Google-Smtp-Source: ABdhPJzleLEvjXKmUACvkuYWy6CKyhad1vLj/r7ezZendZV2h4CwO3Ilr5pEHllRzgRwvP1cfZmYJ5QD88guKY/H3pA=
-X-Received: by 2002:ad4:4672:: with SMTP id z18mr29940458qvv.104.1593682956992;
- Thu, 02 Jul 2020 02:42:36 -0700 (PDT)
+        id S1728077AbgGBJ6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 05:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726862AbgGBJ6W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:58:22 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6433CC08C5C1;
+        Thu,  2 Jul 2020 02:58:22 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id k18so13470126ybm.13;
+        Thu, 02 Jul 2020 02:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q4Q8t7uL35sXBBCoF+XW2mk0lJ0GhsK/RQJ/uVmPN1Y=;
+        b=JAQYYi7FuUZDX5GDNMeehGaTB6YVByiX8/Z2IOkFvMFiNU/13MA8qwVNa4ZS36kKr1
+         RlIAznCGEiPOPo8DZukWbd4+/sMY+JXYlUd6PzL042Fxs58UsSSic+UY2WmjHWavgual
+         FS+PaKIHUYiMO8hBurOd4E7FhF/u7iVVhhaGZNqB2NJXbsNDGuyC/Pz5a2mDfODXNVxi
+         oW95lwxOLhJHy5Qovd6scaaUeUNUXWMjaTnEL7dCsHbj6dYBEVpRbvYBvwaKp1nkmli4
+         ahVwEtUfxOTglZvgCEP/GDCALpArd1mxTNH4ez8bLJIkQ/FxRBybe0KTsHiuLRIgUql9
+         vsmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q4Q8t7uL35sXBBCoF+XW2mk0lJ0GhsK/RQJ/uVmPN1Y=;
+        b=FDEtWbODi2pZIAMoiPo85/MMHFZpabVX0WwU+hu6D0zCsc7W0vpzn99GWdBAYV0Eah
+         h3msGFuRji/yGElYqTXqr2Twhx1myWA7IW94ZNXyDzcDrgIcczmtKothMGn3cW1ZXmmg
+         1QdAdhLYqkmHbKJUfSK7DmvOgk18shXDNcknrkriYWMm6bv1/Avk+i268gfQ4jfqR8V5
+         +1XU5T2tz8SylTJjbwY9CqHcPyyXjMvA5ZyKs74tJk23g+BrZF8SdQceMwt7EVhdkuDB
+         0gW8E8p7dE0Y44c8Bab79oURw6nFN5rXdPtS3WZr67JRc8s/H8JrIY/NmIf4MlLEVl9y
+         v9Bg==
+X-Gm-Message-State: AOAM530mcNORXD9yz7JYvK3fu8v7iMGgEBnSrwCWrvaI/RzvXxrII1xm
+        Rk7uulzwMAuuZ9oYF48ZRzu5suzH5tvFpvYqMQ==
+X-Google-Smtp-Source: ABdhPJz13ndccTnHFXkGvxoOr5/ecUVDsDLiLXqJ4ALKVf9Z+Kto2x87ZHtWCLuLv536HeWa0R4MA4wlwAbUYv2xofQ=
+X-Received: by 2002:a25:c507:: with SMTP id v7mr46475765ybe.306.1593683901579;
+ Thu, 02 Jul 2020 02:58:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200630180930.87506-1-mcroce@linux.microsoft.com>
- <20200630180930.87506-3-mcroce@linux.microsoft.com> <20200702073104.GA496703@apalos.home>
-In-Reply-To: <20200702073104.GA496703@apalos.home>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 2 Jul 2020 11:42:01 +0200
-X-Gmail-Original-Message-ID: <CAFnufp09fvsyDxqJB0Hx0ag35h-XHrQt4=022cnBnRH_6iVD5g@mail.gmail.com>
-Message-ID: <CAFnufp09fvsyDxqJB0Hx0ag35h-XHrQt4=022cnBnRH_6iVD5g@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/4] mvpp2: use page_pool allocator
-To:     ilias.apalodimas@linaro.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Sven Auhagen <sven.auhagen@voleatech.de>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
-        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com
+References: <20200702021646.90347-1-danieltimlee@gmail.com>
+ <20200702021646.90347-3-danieltimlee@gmail.com> <CAEf4BzbtsHdRWWu__ri17e8PMRW-RcNc1g3okH8+U9RW=BVdig@mail.gmail.com>
+In-Reply-To: <CAEf4BzbtsHdRWWu__ri17e8PMRW-RcNc1g3okH8+U9RW=BVdig@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Thu, 2 Jul 2020 18:58:01 +0900
+Message-ID: <CAEKGpzhDjReJmmWXdtDct3KiuMzk127FdBbz4eM4jNakcsNxQQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] samples: bpf: refactor BPF map in map test
+ with libbpf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 9:31 AM <ilias.apalodimas@linaro.org> wrote:
+On Thu, Jul 2, 2020 at 1:26 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Hi Matteo,
->
-> Thanks for working on this!
->
-
-:)
-
-> On Tue, Jun 30, 2020 at 08:09:28PM +0200, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > -static void *mvpp2_frag_alloc(const struct mvpp2_bm_pool *pool)
-> > +/* Returns a struct page if page_pool is set, otherwise a buffer */
-> > +static void *mvpp2_frag_alloc(const struct mvpp2_bm_pool *pool,
-> > +                           struct page_pool *page_pool)
-> >  {
-> > +     if (page_pool)
-> > +             return page_pool_alloc_pages(page_pool,
-> > +                                          GFP_ATOMIC | __GFP_NOWARN);
->
-> page_pool_dev_alloc_pages() can set these flags for you, instead of explicitly
-> calling them
->
-
-Ok
-
+> On Wed, Jul 1, 2020 at 7:17 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 > >
-> > +     if (priv->percpu_pools) {
-> > +             err = xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, rxq->id);
-> > +             if (err < 0)
-> > +                     goto err_free_dma;
-> > +
-> > +             err = xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, rxq->id);
-> > +             if (err < 0)
-> > +                     goto err_unregister_rxq_short;
-> > +
-> > +             /* Every RXQ has a pool for short and another for long packets */
-> > +             err = xdp_rxq_info_reg_mem_model(&rxq->xdp_rxq_short,
-> > +                                              MEM_TYPE_PAGE_POOL,
-> > +                                              priv->page_pool[rxq->logic_rxq]);
-> > +             if (err < 0)
-> > +                     goto err_unregister_rxq_short;
-> > +
-> > +             err = xdp_rxq_info_reg_mem_model(&rxq->xdp_rxq_long,
-> > +                                              MEM_TYPE_PAGE_POOL,
-> > +                                              priv->page_pool[rxq->logic_rxq +
-> > +                                                              port->nrxqs]);
-> > +             if (err < 0)
-> > +                     goto err_unregister_rxq_long;
+> > From commit 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map
+> > support"), a way to define internal map in BTF-defined map has been
+> > added.
+> >
+> > Instead of using previous 'inner_map_idx' definition, the structure to
+> > be used for the inner map can be directly defined using array directive.
+> >
+> >     __array(values, struct inner_map)
+> >
+> > This commit refactors map in map test program with libbpf by explicitly
+> > defining inner map with BTF-defined format.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > ---
+> >  samples/bpf/Makefile               |  2 +-
+> >  samples/bpf/test_map_in_map_kern.c | 85 +++++++++++++++---------------
+> >  samples/bpf/test_map_in_map_user.c | 53 +++++++++++++++++--
+> >  3 files changed, 91 insertions(+), 49 deletions(-)
+> >
 >
-> Since mvpp2_rxq_init() will return an error shouldn't we unregister the short
-> memory pool as well?
+> [...]
+>
+> > -       if (load_bpf_file(filename)) {
+> > -               printf("%s", bpf_log_buf);
+> > -               return 1;
+> > +       prog = bpf_object__find_program_by_name(obj, "trace_sys_connect");
+> > +       if (libbpf_get_error(prog)) {
+>
+> still wrong, just `if (!prog)`
 >
 
-Ok, I'll add another label like:
+Oops, my bad.
+Will fix right away.
 
-err_unregister_mem_rxq_short:
-        xdp_rxq_info_unreg_mem_model(&rxq->xdp_rxq_short);
+Thanks for your time and effort for the review.
+Daniel.
 
--- 
-per aspera ad upstream
+> > +               printf("finding a prog in obj file failed\n");
+> > +               goto cleanup;
+> > +       }
+> > +
+>
+> [...]
