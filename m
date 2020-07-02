@@ -2,104 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D21211A07
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 04:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6409C211B0D
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 06:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgGBCRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jul 2020 22:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
+        id S1726047AbgGBE0D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 00:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgGBCRM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jul 2020 22:17:12 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD34C08C5C1;
-        Wed,  1 Jul 2020 19:17:12 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id m9so1570120pfh.0;
-        Wed, 01 Jul 2020 19:17:12 -0700 (PDT)
+        with ESMTP id S1725857AbgGBE0D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 00:26:03 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0E7C08C5C1;
+        Wed,  1 Jul 2020 21:26:03 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id j10so20261642qtq.11;
+        Wed, 01 Jul 2020 21:26:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7RW9GAycy/jYfe9G8gcHSdEtkDOt5RXoXGNV39lXC5Y=;
-        b=RhjxyAsKkFT03Yq41wnm8qaneC+trRbRkIh8eclDKadEuXVRzm8dYYaKDj37kBOfYD
-         uTNN74EYsDhwKWhGxAMtC4Ov/+0xwcRXvP/dQZWsl2PnD/ju1dA68rUtOGkIw1BXEF0h
-         ESdQGHAXyQFckaTqsmcHhecy9AJuoBuCdOi8GGAdyXs9xqtoWquQ0uIkNG1I4sm1vSc5
-         ednb5Sy1t+hnDQhGRUgA+ta0iocgVeNp6Yt0ptPtav6qJqROh2w2SdUzTr/TC3MbDEJd
-         aCPscGYfmgmhJ0R4t0YgM/Ng37OmqM3etnP3gaR1iT2yRa5ky4hgrqGz9qeXFSXCffio
-         MfMQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PaY40v1MJNPlf27pHh51B9hv4Zqb30lQdG8/nYOAwRE=;
+        b=JViK+uY6kyqL83sprf9gSzle9bJ94OMWuE82MP/X0QJR2iX+GSEjf7auW87VeMrDIV
+         4LoUWVqZd0pgnA1r35pKcgJWmNC20jMaR5Kzg8sCYhXP8sj19ymE7EaW1iPEES+CZ9aj
+         cMxyEAEN839HrolhbQ39QwvCwtI4ZPx5DLHGxPJxe7ZFb03tWHxBraPTZ1FkMaiVmB6T
+         +BcxOqU8UbVeQbdynNFUZ8lywAV88F1Lr3X2nWoPpAcY5l7RNOeWq8acLjGaUcFy1HxM
+         GaYtqh7XY4JTxLD8zXcVugNcThWB3jZ98JFyrCAKUx1B0IUss9un6TQl87Cm7THWvcPU
+         ZJ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7RW9GAycy/jYfe9G8gcHSdEtkDOt5RXoXGNV39lXC5Y=;
-        b=haEus1j8Ioge5NXVlhZK7rWqaUxwRJzlbxG8M50DMam4/vtjML8QPf/y3usjQAv6x0
-         YAuoISmZOdwU/ZIWX1/JbMvwbnWrshckikq2GRbX1FOIhtCBZJgd//F4iz7uKcl6L1Xh
-         QtTmDkrpiqoByqXOI1mFTBSiYQMLz8vQ9b1phhhclfSST65NDd0B1mF00x7xMu4PvmV3
-         vAo0znbS3y+N5sacRHERxrHbsI8hHH6tUJg48U65lK5hONQsLg1HUozvtmHEptLQ+2wh
-         mN3zUHGGcPi27b5ZowcHxBua9hR162OaZvTIUeM+vi/hptLBJDuxNr2E1HfntXbFuxtm
-         uw7Q==
-X-Gm-Message-State: AOAM531hhuW1Gqv0x5PMHECwliI/t2BU0gCwPBfBQVpbjW2WKrjhUxaW
-        l5uZAd3yUTemF6UCP5kG/g==
-X-Google-Smtp-Source: ABdhPJxBEvLQHAQgF8jj/Z6523bo3tbcOzmFaSa3gsVxtRhqDCMgm9bpm4JJcHby/Ql18emBNfEzCA==
-X-Received: by 2002:a65:6150:: with SMTP id o16mr8013698pgv.237.1593656232162;
-        Wed, 01 Jul 2020 19:17:12 -0700 (PDT)
-Received: from localhost.localdomain ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id s1sm6428828pjp.14.2020.07.01.19.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 19:17:11 -0700 (PDT)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PaY40v1MJNPlf27pHh51B9hv4Zqb30lQdG8/nYOAwRE=;
+        b=JPh5+2ZShdYfiLspFCuy3My3w2Ogz5zaPigBs/S+AmsqiR8hqT+rXv7FPyLbybNHan
+         wcyrRUWiKVu3iYLkJrx90t740yM9/igrHGOPtiYPB2uhongsKRlLH7vnvwxOPl/50l57
+         QuU0LD0YSTqnt8Nc/LDxKkGPgD1Y4KbKsRKw5czEDTWgV3HLMYhcZdQSsgUaXS0G9S2T
+         TBoYvgsHMbHykprgpJ2hP5NQT3OSAbZQUBJAz+osG4tyKIv2byZbsGJdQoq1nYmhYFAz
+         5im9XajfgzTuuQh2WdyRXxS6OHHvXbLnkzgLjYJ8woQlxlf3RO+fD0I6l6dcWmyvndLI
+         xHuQ==
+X-Gm-Message-State: AOAM533pFNjfvN5i7+QrqlLX9WeLDMPBipSLnem+2kYsUW2+W/YitjLZ
+        sTS/FzJbXC0GXkAcSjJ+d0Kur3gd9IkzwtvZP4Q=
+X-Google-Smtp-Source: ABdhPJzz/VJ2C8tzZ8zm+gpsj2fJ+Um8f6F9IyDdYN7OVCp0vUW1jeyrtMJ/mWR1mh+AzQzljqIZD6pZ2nfIcKvP+24=
+X-Received: by 2002:ac8:345c:: with SMTP id v28mr312976qtb.171.1593663962416;
+ Wed, 01 Jul 2020 21:26:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200702021646.90347-1-danieltimlee@gmail.com> <20200702021646.90347-3-danieltimlee@gmail.com>
+In-Reply-To: <20200702021646.90347-3-danieltimlee@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Jul 2020 21:25:51 -0700
+Message-ID: <CAEf4BzbtsHdRWWu__ri17e8PMRW-RcNc1g3okH8+U9RW=BVdig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] samples: bpf: refactor BPF map in map test
+ with libbpf
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 4/4] selftests: bpf: remove unused bpf_map_def_legacy struct
-Date:   Thu,  2 Jul 2020 11:16:46 +0900
-Message-Id: <20200702021646.90347-5-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702021646.90347-1-danieltimlee@gmail.com>
-References: <20200702021646.90347-1-danieltimlee@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-samples/bpf no longer use bpf_map_def_legacy and instead use the
-libbpf's bpf_map_def or new BTF-defined MAP format. This commit removes
-unused bpf_map_def_legacy struct from selftests/bpf/bpf_legacy.h.
+On Wed, Jul 1, 2020 at 7:17 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+>
+> From commit 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map
+> support"), a way to define internal map in BTF-defined map has been
+> added.
+>
+> Instead of using previous 'inner_map_idx' definition, the structure to
+> be used for the inner map can be directly defined using array directive.
+>
+>     __array(values, struct inner_map)
+>
+> This commit refactors map in map test program with libbpf by explicitly
+> defining inner map with BTF-defined format.
+>
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/Makefile               |  2 +-
+>  samples/bpf/test_map_in_map_kern.c | 85 +++++++++++++++---------------
+>  samples/bpf/test_map_in_map_user.c | 53 +++++++++++++++++--
+>  3 files changed, 91 insertions(+), 49 deletions(-)
+>
 
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
----
- tools/testing/selftests/bpf/bpf_legacy.h | 14 --------------
- 1 file changed, 14 deletions(-)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/bpf_legacy.h b/tools/testing/selftests/bpf/bpf_legacy.h
-index 6f8988738bc1..719ab56cdb5d 100644
---- a/tools/testing/selftests/bpf/bpf_legacy.h
-+++ b/tools/testing/selftests/bpf/bpf_legacy.h
-@@ -2,20 +2,6 @@
- #ifndef __BPF_LEGACY__
- #define __BPF_LEGACY__
- 
--/*
-- * legacy bpf_map_def with extra fields supported only by bpf_load(), do not
-- * use outside of samples/bpf
-- */
--struct bpf_map_def_legacy {
--	unsigned int type;
--	unsigned int key_size;
--	unsigned int value_size;
--	unsigned int max_entries;
--	unsigned int map_flags;
--	unsigned int inner_map_idx;
--	unsigned int numa_node;
--};
--
- #define BPF_ANNOTATE_KV_PAIR(name, type_key, type_val)		\
- 	struct ____btf_map_##name {				\
- 		type_key key;					\
--- 
-2.25.1
+> -       if (load_bpf_file(filename)) {
+> -               printf("%s", bpf_log_buf);
+> -               return 1;
+> +       prog = bpf_object__find_program_by_name(obj, "trace_sys_connect");
+> +       if (libbpf_get_error(prog)) {
 
+still wrong, just `if (!prog)`
+
+> +               printf("finding a prog in obj file failed\n");
+> +               goto cleanup;
+> +       }
+> +
+
+[...]
