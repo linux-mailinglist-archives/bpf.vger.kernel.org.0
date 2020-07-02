@@ -2,93 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39111212B29
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 19:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2872B212BC1
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 19:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgGBRZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 13:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgGBRZW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:25:22 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79B9C08C5C1;
-        Thu,  2 Jul 2020 10:25:22 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id t18so4985336ilh.2;
-        Thu, 02 Jul 2020 10:25:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=5a1L/cUU/PyyphLNAPTJUUU499uUA25oZAeEw3ikCBs=;
-        b=h28wOu+rsB2L+YvdUIZkUdK6TnWcw0TcHqS3Sr2Mgc6FzScgrTa/MiueKDBf0rwwLz
-         lxm8QqtRm+XhSNu4QKYCQBPCn4HorvlBlQ5ljtw8TcKA8QJ0iUaOmB9L1OTztjNQO9gx
-         UpcGMN3i4YU6fK5G/jEkMNFO/X94aEj8XTz0XG7KRCfZ1J27A37tKuttcckFbU9hvgBK
-         YCAezlKrvFLTnr9+17ibidczPbQtdeapfqa5cXXYv8uN57ZOsNYPOFz9ulN1xuXL23Cq
-         kJ98Nwf1oH5kp3DiNJkP/Pcvd+Pk+WC9s2uhZpwyU5EoggXfZi9+ASrdp7jlhoPIU0Uq
-         ECYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=5a1L/cUU/PyyphLNAPTJUUU499uUA25oZAeEw3ikCBs=;
-        b=ALt7QD1HTPbyPHhhHBC1KIA/jD2uTVkusY3OJgmAf3YPMIg08s2STBRcGX8Yj5xWUO
-         rrD8VsoXNrf6EVumaXj2GfKfmMHcxEf2G6i3/GWaAGAO6m1Edw9Tmizd/dfC05rI0fwB
-         5HoqLXhN0gYZYMLHzonQvjS45pxXFCKcWZ+7LvqsHKQsjoIxb5g0RehF2Id5Lx6BV4Yt
-         OV0eQC6hDYPhNtPy2j9SOZ/k8ViQ74cxHaDYPmsYZB6yLipxmDMN6goqMeoqgFuRyDdy
-         md8s3qZ0yKv4vI7pOoums/uPzRMZjBV+gqN51pURqSkFOt7bnksdcok7xLXKTjHRxACs
-         UE0g==
-X-Gm-Message-State: AOAM530DM9N9/YhyPE4IuFwpPO+C5PD1Bxu+DCoA3YsQVQ0z9+SZi7zP
-        zMEj4Cl8A58dYyp9b96P+Vg=
-X-Google-Smtp-Source: ABdhPJzeSwv0FOtn5Vxz3chkswCucMf2bs3yG+egyYK48UchHv32z0UF9AilXbQCOtNUWP8CRiqQ2A==
-X-Received: by 2002:a92:290d:: with SMTP id l13mr12563679ilg.62.1593710722005;
-        Thu, 02 Jul 2020 10:25:22 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k3sm5129399ils.8.2020.07.02.10.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 10:25:21 -0700 (PDT)
-Subject: [bpf-next PATCH] bpf: fix bpftool without skeleton code enabled
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     andriin@fb.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Thu, 02 Jul 2020 10:25:08 -0700
-Message-ID: <159371070880.18158.837974429614447605.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.17.1-dirty
+        id S1726349AbgGBR7v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 13:59:51 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49605 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727932AbgGBR7u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Jul 2020 13:59:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593712788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NRhtPMhqlhqnOe1hdlLHWlYessgAjO4kXt3vnlCbry4=;
+        b=IFN3aBFF9sLc/EYTAPApOPf8exLgt2p5N41u0btBtK26HhcTaUR6KClcZKAjv+XiyJho5m
+        6hDQjH5d0Qm37DGWVfQlUn9+IVfBV0KWPTZrzKPVRyHdkFhafyCXcMax1VEmriMKLWsuTc
+        NN959+zsk4676x1QJECutMu7XlQRh7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-f7AwhQoIONKPyqDrgL9Nmg-1; Thu, 02 Jul 2020 13:59:45 -0400
+X-MC-Unique: f7AwhQoIONKPyqDrgL9Nmg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1414B185B3BA;
+        Thu,  2 Jul 2020 17:59:44 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E0AE571678;
+        Thu,  2 Jul 2020 17:59:40 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id E09AF300003EB;
+        Thu,  2 Jul 2020 19:59:39 +0200 (CEST)
+Subject: [PATCH bpf-next] selftests/bpf: test_progs use another shell exit on
+ non-actions
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        vkabatov@redhat.com, jbenc@redhat.com
+Date:   Thu, 02 Jul 2020 19:59:39 +0200
+Message-ID: <159371277981.942611.89883359210042038.stgit@firesoul>
+In-Reply-To: <20200702154728.6700e790@carbon>
+References: <20200702154728.6700e790@carbon>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix segfault from bpftool by adding emit_obj_refs_plain when skeleton
-code is disabled.
+This is a follow up adjustment to commit 6c92bd5cd465 ("selftests/bpf:
+Test_progs indicate to shell on non-actions"), that returns shell exit
+indication EXIT_FAILURE (value 1) when user selects a non-existing test.
 
-Tested by deleting BUILD_BPF_SKELS in Makefile.
+The problem with using EXIT_FAILURE is that a shell script cannot tell
+the difference between a non-existing test and the test failing.
 
-# ./bpftool prog show
-Error: bpftool built without PID iterator support
-3: cgroup_skb  tag 7be49e3934a125ba  gpl
-        loaded_at 2020-07-01T08:01:29-0700  uid 0
-Segmentation fault
+This patch uses value 2 as shell exit indication.
+(Aside note unrecognized option parameters use value 64).
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Fixes: 6c92bd5cd465 ("selftests/bpf: Test_progs indicate to shell on non-actions")
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 ---
- tools/bpf/bpftool/pids.c |    1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/bpf/test_progs.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index 2709be4de2b1..7d5416667c85 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -19,6 +19,7 @@ int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
- 	return -ENOTSUP;
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 104e833d0087..e8f7cd5dbae4 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -12,6 +12,8 @@
+ #include <string.h>
+ #include <execinfo.h> /* backtrace */
+ 
++#define EXIT_NO_TEST 2
++
+ /* defined in test_progs.h */
+ struct test_env env = {};
+ 
+@@ -740,7 +742,7 @@ int main(int argc, char **argv)
+ 	close(env.saved_netns_fd);
+ 
+ 	if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
+-		return EXIT_FAILURE;
++		return EXIT_NO_TEST;
+ 
+ 	return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
  }
- void delete_obj_refs_table(struct obj_refs_table *table) {}
-+void emit_obj_refs_plain(struct obj_refs_table *table, __u32 id, const char *prefix) {}
- 
- #else /* BPFTOOL_WITHOUT_SKELETONS */
- 
+
 
