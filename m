@@ -2,507 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CF7212D9C
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 22:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D293212E6B
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 23:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgGBUFk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 16:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBUFk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:05:40 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A69C08C5C1;
-        Thu,  2 Jul 2020 13:05:39 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id E7A52BC078;
-        Thu,  2 Jul 2020 20:05:28 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, shuah@kernel.org, sdf@google.com,
-        quentin@isovalent.com, rdna@fb.com, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: BPF (Safe dynamic programs and tools)
-Date:   Thu,  2 Jul 2020 22:05:16 +0200
-Message-Id: <20200702200516.13324-1-grandmaster@al2klimov.de>
+        id S1726106AbgGBVBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 17:01:39 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33210 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726028AbgGBVBj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Jul 2020 17:01:39 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 062Khpi7005541;
+        Thu, 2 Jul 2020 14:01:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=rdlE3BxLox0eriDfYZZdeUQbYpQe8//VnbKGOsLz/iE=;
+ b=IbIoxZE0EqHb5wUqXUzmKTLSzMfWm65NdhKWf7vHctEnmzGaeN5sexg05a530sp/hAyM
+ dFy25xGNKYYnAAndkPNxNzxOBoTbu0y2u1TKauJfQnq6nAR3dR69xQtkAGDnkwhV++Ez
+ 782oUbmYRt07O5+cl5pRI4oqsV8nHgLa4es= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 321ncg8knf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 02 Jul 2020 14:01:24 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 2 Jul 2020 14:01:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lBs2vMNE3MEeDlHGRWZzDoqVJGSaTncnGQt4k1lUniYqFMNHiVqP2AJ+NLjzUcccFEZpbCNLZ3HSsyTFrxdfHSF0vsWikyFKsRJSYAQLmxkPjCn0vJZhmmgQ608ArWD8ih94oQXT+PHtHSOeRlDKle2pSMhQAJFW38CnmHHcz03VXw1AWYOv2SPJupu/qnetVeZGdf3BkHeDfQQ7HqfyEY0KDE+OV0XXWMe3riI2SjTZ21pZMmQkO7Jk4AeGCXFqWZ1vC6/7j7G8UQ9Tfw7UJdjmR/UFM/BQj4jYwMFFW9js8ZeQ65vYFYyAUGOkDbWUt2bbsC/b18oJP7U+7hmZdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rdlE3BxLox0eriDfYZZdeUQbYpQe8//VnbKGOsLz/iE=;
+ b=bmZp/5xgYI0gvppyUwxK3qD9qcUt3i2tmqVnBoAtTlFsHXfqtqEdYHjPdjpZzmYw707uGcNRHL5wXYbRGzcGC7DfT4PGkN3SXAsfWQrjx6OJxtSEYfuiprvmTIeEil3ftWefR2RO1iYu9c1mhGzIEl89KBqcyoYr4+NSLtfTW/sgsHtHxrKrXv2NlwZcbtN0SSZdmSaT4N6Ur9kp8JuhMtTgR3yci2Xw9mVVzl/OczuzxZ/ZIPdibZB/ESJxExD3QUqFHGnEpQ0cXp+li9LR46DcZD331VF4WuI9ebFJQktzn1NhMEkhIpe3dHjXsfSv3Nt+Y+TqQalFHYjAUj8loQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rdlE3BxLox0eriDfYZZdeUQbYpQe8//VnbKGOsLz/iE=;
+ b=B8pgZKvJSblDBA9ASge7s2Ei525ZVa6ZOneHWlNzXC8a2eN3hT213GkxmP+keO64b91cmdcSC78RMCIUAiqfVhqujUk5RUFnjCsjxPq2c8ql9wWxxDQkWRKFFch16HZjOjX1yJLr9aMCuBaxruxvR3MyRhQD3M7fLNawDvAu8pI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3510.namprd15.prod.outlook.com (2603:10b6:a03:112::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23; Thu, 2 Jul
+ 2020 21:01:22 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3131.036; Thu, 2 Jul 2020
+ 21:01:22 +0000
+Subject: Re: [bpf-next PATCH] bpf: fix bpftool without skeleton code enabled
+To:     John Fastabend <john.fastabend@gmail.com>, <andriin@fb.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <159371070880.18158.837974429614447605.stgit@john-XPS-13-9370>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <fe42b22b-c3d6-136e-a659-8bd189302afd@fb.com>
+Date:   Thu, 2 Jul 2020 14:01:20 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
+In-Reply-To: <159371070880.18158.837974429614447605.stgit@john-XPS-13-9370>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR11CA0088.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::29) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::10fa] (2620:10d:c090:400::5:1771) by BYAPR11CA0088.namprd11.prod.outlook.com (2603:10b6:a03:f4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 21:01:21 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1771]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 44035a99-c621-4f7c-7a1b-08d81ecb1314
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3510:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3510EECC485D15F5D86FF778D36D0@BYAPR15MB3510.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Forefront-PRVS: 0452022BE1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xbfxtOTZf7NhctYgFf3dWS3708eT0+yOEvEAOZSL02Q4cecOB3RgZhsYAVBiEa6RJrW45c/ChqN3Rd9+91SWofP4TRg+aytKkqil8wqKUV0Dat3jvJsQWiuc2wuN2kAv4riZ8v6vqLCZbKH0Ka6vYg+2vj07qRtf2SehMEhaURC4SE54PmQfKsdSdcZSk5UvR8JYnCVTmSsLk1HlelbTMwbJKb2HMS4gDlvCrpyAtv8ETnJBzWrCbQB3mdnBV7x6C9ZHEQoYTcZb6ImdfNLxkRdgaMcIOf5y+qXOwUINFFiZ87BPzWwNYmxo5zu6AlVX/Rt4QoRjp4pCm7wedM8zzdM/MwN9zQpoMlQUOFyCvAi/8r2xW8Aun/01cf18yW4p
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(346002)(396003)(39860400002)(136003)(186003)(16526019)(316002)(36756003)(2906002)(6486002)(31686004)(478600001)(66556008)(66476007)(66946007)(8936002)(5660300002)(8676002)(52116002)(4326008)(53546011)(86362001)(2616005)(83380400001)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: O++ra+ef57VpEAI677l1QHSm5j/4ShdfVitVoyDCk4y6AcqQk1QAEb9TmfKLX3dJ6FqYE5G8MRk3JK3jbNPe04Ch81h49o27BWpS7/A/YAzmE5jsK6scq5cfdVyiLuGNOtaZEcg3OL/oCq9hUWMlP1w2TqzHfPrtU2vX6iMWOq08WJu1RLVE7oZLOgtn3CMK0GnI+jCgOWDciQguA0utxGGJjtvkcuogHP2kcc8theMMDTbISMDkXnvtmX1vMr9zbAXssqULKfVLypZgmSFO9yENiyWQSr2KMKLG1VOSbM6eV2+h5fQDlYBX1PzKI1uLL1fdetn71/PV+5mxHPtyrc2S2lN1lizZnVXJsOYHN1H0w2uukOUV2HsyCYG0XuFor6p3iExOOVVADTevRVl6uCeK2ffzUWKhv5d48M4U7GiornfZATb7Ad6Z/Dca03wix+jSSjlJqbGbXe0YU9aiPGkW6f2cw/LuGe1xxutI4xzQlmBgTR7YaZVv32+bqxZ4mSV7TVExkqRe/hE84ABSCg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44035a99-c621-4f7c-7a1b-08d81ecb1314
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 21:01:22.3446
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vc1nSdlxjWaRpKqUIzYWfp4rnwr6fv5i3l653WsSoeiz75yD5/HUyXo5Nt0C1Ob0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3510
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-02_09:2020-07-02,2020-07-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ phishscore=0 bulkscore=0 adultscore=0 impostorscore=0 suspectscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ cotscore=-2147483648 clxscore=1015 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007020138
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-          If both the HTTP and HTTPS versions
-          return 200 OK and serve the same content:
-            Replace HTTP with HTTPS.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
+On 7/2/20 10:25 AM, John Fastabend wrote:
+> Fix segfault from bpftool by adding emit_obj_refs_plain when skeleton
+> code is disabled.
+> 
+> Tested by deleting BUILD_BPF_SKELS in Makefile.
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also https://lkml.org/lkml/2020/6/27/64
+You probably hit this issue with a different way, right?
+Old clang, or anything? I would be good to clarify in
+the commit message. People in general do not tweak Makefile
+to find bugs, I guess.
 
- If there are any valid, but yet not changed URLs:
- See https://lkml.org/lkml/2020/6/26/837
+> 
+> # ./bpftool prog show
+> Error: bpftool built without PID iterator support
+> 3: cgroup_skb  tag 7be49e3934a125ba  gpl
+>          loaded_at 2020-07-01T08:01:29-0700  uid 0
+> Segmentation fault
+> 
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 
- Documentation/bpf/bpf_devel_QA.rst          | 4 ++--
- Documentation/bpf/index.rst                 | 2 +-
- Documentation/networking/af_xdp.rst         | 2 +-
- Documentation/networking/filter.rst         | 2 +-
- arch/x86/net/bpf_jit_comp.c                 | 2 +-
- include/linux/bpf.h                         | 2 +-
- include/linux/bpf_verifier.h                | 2 +-
- include/uapi/linux/bpf.h                    | 2 +-
- kernel/bpf/arraymap.c                       | 2 +-
- kernel/bpf/core.c                           | 2 +-
- kernel/bpf/disasm.c                         | 2 +-
- kernel/bpf/disasm.h                         | 2 +-
- kernel/bpf/hashtab.c                        | 2 +-
- kernel/bpf/helpers.c                        | 2 +-
- kernel/bpf/syscall.c                        | 2 +-
- kernel/bpf/verifier.c                       | 2 +-
- kernel/trace/bpf_trace.c                    | 2 +-
- lib/test_bpf.c                              | 2 +-
- net/core/filter.c                           | 2 +-
- samples/bpf/lathist_kern.c                  | 2 +-
- samples/bpf/lathist_user.c                  | 2 +-
- samples/bpf/sockex3_kern.c                  | 2 +-
- samples/bpf/tracex1_kern.c                  | 2 +-
- samples/bpf/tracex2_kern.c                  | 2 +-
- samples/bpf/tracex3_kern.c                  | 2 +-
- samples/bpf/tracex3_user.c                  | 2 +-
- samples/bpf/tracex4_kern.c                  | 2 +-
- samples/bpf/tracex4_user.c                  | 2 +-
- samples/bpf/tracex5_kern.c                  | 2 +-
- tools/include/uapi/linux/bpf.h              | 2 +-
- tools/lib/bpf/bpf.c                         | 2 +-
- tools/lib/bpf/bpf.h                         | 2 +-
- tools/testing/selftests/bpf/test_maps.c     | 2 +-
- tools/testing/selftests/bpf/test_verifier.c | 2 +-
- 34 files changed, 35 insertions(+), 35 deletions(-)
+Ack with request for better description in the commit message.
 
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 0b3db91dc100..fffb832d27d6 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -478,7 +478,7 @@ LLVM's static compiler lists the supported targets through
- ``llc --version``, make sure BPF targets are listed. Example::
- 
-      $ llc --version
--     LLVM (http://llvm.org/):
-+     LLVM (https://llvm.org/):
-        LLVM version 6.0.0svn
-        Optimized build.
-        Default target: x86_64-unknown-linux-gnu
-@@ -496,7 +496,7 @@ BPF back end, it is advisable to run the latest LLVM releases. Support
- for new BPF kernel features such as additions to the BPF instruction
- set are often developed together.
- 
--All LLVM releases can be found at: http://releases.llvm.org/
-+All LLVM releases can be found at: https://releases.llvm.org/
- 
- Q: Got it, so how do I build LLVM manually anyway?
- --------------------------------------------------
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 38b4db8be7a2..576ccfe5d560 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -62,4 +62,4 @@ Testing and debugging BPF
- .. _Documentation/networking/filter.rst: ../networking/filter.txt
- .. _man-pages: https://www.kernel.org/doc/man-pages/
- .. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
--.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
-+.. _BPF and XDP Reference Guide: https://cilium.readthedocs.io/en/latest/bpf/
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index 5bc55a4e3bce..8c0e27e151f0 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -12,7 +12,7 @@ packet processing.
- 
- This document assumes that the reader is familiar with BPF and XDP. If
- not, the Cilium project has an excellent reference guide at
--http://cilium.readthedocs.io/en/latest/bpf/.
-+https://cilium.readthedocs.io/en/latest/bpf/.
- 
- Using the XDP_REDIRECT action from an XDP program, the program can
- redirect ingress frames to other XDP enabled netdevs, using the
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index a1d3e192b9fa..c203a2d58a6f 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -56,7 +56,7 @@ Steven McCanne and Van Jacobson. 1993. The BSD packet filter: a new
- architecture for user-level packet capture. In Proceedings of the
- USENIX Winter 1993 Conference Proceedings on USENIX Winter 1993
- Conference Proceedings (USENIX'93). USENIX Association, Berkeley,
--CA, USA, 2-2. [http://www.tcpdump.org/papers/bpf-usenix93.pdf]
-+CA, USA, 2-2. [https://www.tcpdump.org/papers/bpf-usenix93.pdf]
- 
- Structure
- ---------
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 42b6709e6dc7..41bd7725f503 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3,7 +3,7 @@
-  * bpf_jit_comp.c: BPF JIT compiler
-  *
-  * Copyright (C) 2011-2013 Eric Dumazet (eric.dumazet@gmail.com)
-- * Internal BPF Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+ * Internal BPF Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- #include <linux/netdevice.h>
- #include <linux/filter.h>
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 07052d44bca1..94b9ee4495ed 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- #ifndef _LINUX_BPF_H
- #define _LINUX_BPF_H 1
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index ca08db4ffb5f..52e2aeedc3de 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- #ifndef _LINUX_BPF_VERIFIER_H
- #define _LINUX_BPF_VERIFIER_H 1
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 974a71342aea..40af03e740aa 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 11584618e861..43781c13f303 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016,2017 Facebook
-  */
- #include <linux/bpf.h>
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 9df4cc9a2907..10698be9d633 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -5,7 +5,7 @@
-  * Based on the design of the Berkeley Packet Filter. The new
-  * internal format has been designed by PLUMgrid:
-  *
-- *	Copyright (c) 2011 - 2014 PLUMgrid, http://plumgrid.com
-+ *	Copyright (c) 2011 - 2014 PLUMgrid, https://plumgrid.com
-  *
-  * Authors:
-  *
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index b44d8c447afd..6953c6a3b6fe 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  */
- 
-diff --git a/kernel/bpf/disasm.h b/kernel/bpf/disasm.h
-index e546b18d27da..cbac62e32f62 100644
---- a/kernel/bpf/disasm.h
-+++ b/kernel/bpf/disasm.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  */
- 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index b4b288a3c3c9..eeaa94cffa44 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  */
- #include <linux/bpf.h>
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index be43ab3e619f..ce20177f4801 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- #include <linux/bpf.h>
- #include <linux/rcupdate.h>
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8da159936bab..922d899940fc 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- #include <linux/bpf.h>
- #include <linux/bpf_trace.h>
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 34cde841ab68..987e0a91b123 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
-  */
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7bc3d6175868..26dd5f2fea9f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/* Copyright (c) 2011-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2015 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  */
- #include <linux/kernel.h>
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index a5fddf9ebcb7..17eb6fb13c90 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -2,7 +2,7 @@
- /*
-  * Testsuite for BPF interpreter and BPF JIT compiler
-  *
-- * Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+ * Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 73395384afe2..211612018b75 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5,7 +5,7 @@
-  * Based on the design of the Berkeley Packet Filter. The new
-  * internal format has been designed by PLUMgrid:
-  *
-- *	Copyright (c) 2011 - 2014 PLUMgrid, http://plumgrid.com
-+ *	Copyright (c) 2011 - 2014 PLUMgrid, https://plumgrid.com
-  *
-  * Authors:
-  *
-diff --git a/samples/bpf/lathist_kern.c b/samples/bpf/lathist_kern.c
-index ca9c2e4e69aa..56dbce51b47f 100644
---- a/samples/bpf/lathist_kern.c
-+++ b/samples/bpf/lathist_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2015 BMW Car IT GmbH
-  *
-  * This program is free software; you can redistribute it and/or
-diff --git a/samples/bpf/lathist_user.c b/samples/bpf/lathist_user.c
-index 2ff2839a52d5..500cec2f81c2 100644
---- a/samples/bpf/lathist_user.c
-+++ b/samples/bpf/lathist_user.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2015 BMW Car IT GmbH
-  */
- #include <stdio.h>
-diff --git a/samples/bpf/sockex3_kern.c b/samples/bpf/sockex3_kern.c
-index cab9cca0b8eb..6908f30617f5 100644
---- a/samples/bpf/sockex3_kern.c
-+++ b/samples/bpf/sockex3_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/samples/bpf/tracex1_kern.c b/samples/bpf/tracex1_kern.c
-index 8e2610e14475..28f86724ff2e 100644
---- a/samples/bpf/tracex1_kern.c
-+++ b/samples/bpf/tracex1_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
-index 5bc696bac27d..9f764ead80a3 100644
---- a/samples/bpf/tracex2_kern.c
-+++ b/samples/bpf/tracex2_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/samples/bpf/tracex3_kern.c b/samples/bpf/tracex3_kern.c
-index 659613c19a82..19a6a2a8eb03 100644
---- a/samples/bpf/tracex3_kern.c
-+++ b/samples/bpf/tracex3_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/samples/bpf/tracex3_user.c b/samples/bpf/tracex3_user.c
-index 70e987775c15..873c959cc07d 100644
---- a/samples/bpf/tracex3_user.c
-+++ b/samples/bpf/tracex3_user.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
-  */
- #include <stdio.h>
- #include <stdlib.h>
-diff --git a/samples/bpf/tracex4_kern.c b/samples/bpf/tracex4_kern.c
-index eb0f8fdd14bf..0be7ed2ad74a 100644
---- a/samples/bpf/tracex4_kern.c
-+++ b/samples/bpf/tracex4_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/samples/bpf/tracex4_user.c b/samples/bpf/tracex4_user.c
-index e8faf8f184ae..e819692b23d7 100644
---- a/samples/bpf/tracex4_user.c
-+++ b/samples/bpf/tracex4_user.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
-  */
- #include <stdio.h>
- #include <stdlib.h>
-diff --git a/samples/bpf/tracex5_kern.c b/samples/bpf/tracex5_kern.c
-index 32b49e8ab6bd..92fa02e2194d 100644
---- a/samples/bpf/tracex5_kern.c
-+++ b/samples/bpf/tracex5_kern.c
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 974a71342aea..40af03e740aa 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-+/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of version 2 of the GNU General Public
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index a7329b671c41..bdd4a32c6f2a 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -18,7 +18,7 @@
-  * GNU Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-+ * License along with this program; if not,  see <https://www.gnu.org/licenses>
-  */
- 
- #include <stdlib.h>
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 1b6015b21ba8..da4c8b1f2bbf 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -18,7 +18,7 @@
-  * GNU Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-- * License along with this program; if not,  see <http://www.gnu.org/licenses>
-+ * License along with this program; if not,  see <https://www.gnu.org/licenses>
-  */
- #ifndef __LIBBPF_BPF_H
- #define __LIBBPF_BPF_H
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 6a12a0e01e07..694021bddba4 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -2,7 +2,7 @@
- /*
-  * Testsuite for eBPF maps
-  *
-- * Copyright (c) 2014 PLUMgrid, http://plumgrid.com
-+ * Copyright (c) 2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2016 Facebook
-  */
- 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 78a6bae56ea6..18027c373763 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -2,7 +2,7 @@
- /*
-  * Testsuite for eBPF verifier
-  *
-- * Copyright (c) 2014 PLUMgrid, http://plumgrid.com
-+ * Copyright (c) 2014 PLUMgrid, https://plumgrid.com
-  * Copyright (c) 2017 Facebook
-  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
-  */
--- 
-2.27.0
+Acked-by: Yonghong Song <yhs@fb.com>
 
+> ---
+>   tools/bpf/bpftool/pids.c |    1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> index 2709be4de2b1..7d5416667c85 100644
+> --- a/tools/bpf/bpftool/pids.c
+> +++ b/tools/bpf/bpftool/pids.c
+> @@ -19,6 +19,7 @@ int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
+>   	return -ENOTSUP;
+>   }
+>   void delete_obj_refs_table(struct obj_refs_table *table) {}
+> +void emit_obj_refs_plain(struct obj_refs_table *table, __u32 id, const char *prefix) {}
+>   
+>   #else /* BPFTOOL_WITHOUT_SKELETONS */
+>   
+> 
