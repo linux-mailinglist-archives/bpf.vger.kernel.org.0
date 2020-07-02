@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFC5213013
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 01:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E2521301A
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 01:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgGBX1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 19:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S1726855AbgGBX1V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 19:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgGBX0p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:26:45 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C63C08C5E1
-        for <bpf@vger.kernel.org>; Thu,  2 Jul 2020 16:26:44 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id c1so5898674pja.5
-        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 16:26:44 -0700 (PDT)
+        with ESMTP id S1726469AbgGBX0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 19:26:43 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE857C08C5DD
+        for <bpf@vger.kernel.org>; Thu,  2 Jul 2020 16:26:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id g17so11894993plq.12
+        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 16:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Be8/RXHNUg3guKcAU0wzFOahH212pJR/5S0VSq/hiLk=;
-        b=AZNXg5cAGqKc/O1ef4Kc/yy3qUbP8UuKWLzdKUZA44cFM8OkYapLq3J29luk4nI4ms
-         xZlrbLj6B/RkKmXJeAwDSYoGxQU0jiD1te9ioq8uMs2I3waXWUfWcElsMjAEAshyT9y5
-         dvNbYPegQb9XnQnvHreZbZu6+7+uuOFy6Gv8U=
+        bh=q1PVeb6fv9O4tcp1xeI7Kv1tDhwIRUamp8uOCGfdP9I=;
+        b=nLitFGMZ3iJQ+NRe4yjSjJbhuNgzdznGk3v2RtpFpP1PwlQyUH1mf7WdnvMVmN1Cnh
+         xvPi9UCeh1KJ97EtRpXU8S0CGS0Ah25ME5FCI5J+l7/VWtNFrQ49fbHVY7DSeQEHd6Wr
+         7fXIVlmNBDLWtmc/JFkRnpElggzpZi018W3FQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Be8/RXHNUg3guKcAU0wzFOahH212pJR/5S0VSq/hiLk=;
-        b=lzxfNAhOF1eYyZeitdeNcBkW80IeJs7HloLyIZcRX5kP17q/RfUcZzSXh4OZW/cOW2
-         EQRvUtqO9pbyD/mZgRIU9LG7aYbAwxnigAFQMpZGA88ehzV8mQFpClGFiyFnQ4aw3kH4
-         buaFJidDR2m2Im1Vi6bm6h+LOMWmyvT7K4/w4u3UKh4inD1Q9N13jQtL4pXElJHZebx9
-         Xz0PvQe5pqrivEnEa4xprejP9v+TDbmePReKuz1CSIA2pU2ECM+gC2+HDnIztar9JZTF
-         n64EZEbd2AE4ok86ZwG7WZgotdUJRCfIr2/ZWHVGchnGeJe+BKRZfB2O8nqnrUY6HPzQ
-         EcXw==
-X-Gm-Message-State: AOAM532vBLNRN18NNnCYN7GxbhBfNOGYHmLm6I3Q+EPu98i2zKV9BVYq
-        9GFsDxGC/lYge5k93dOavyhJ3A==
-X-Google-Smtp-Source: ABdhPJxTnpQERPtJv7OGqHQCc+gfp34thsR2FhSVKFIpGMpGOmREcUT37nlgZdRzgpRwqbSxEkGurg==
-X-Received: by 2002:a17:902:8a82:: with SMTP id p2mr27275418plo.316.1593732403984;
+        bh=q1PVeb6fv9O4tcp1xeI7Kv1tDhwIRUamp8uOCGfdP9I=;
+        b=YBjbG49g4/8pTi681Fo1Lw6+BRTp2Tx6nBd/c9ze4iBQZQaQuKcWrJZDKLeSHuHiJC
+         9zd1+xEhtfnRSMH+Ss9KWw9WvU1lilrz+UN/N0hN20J2ScpIW0acWcNRGEIbiP4IYknE
+         rX+PctkD2Ky9MK1RU2Be9m4fC3x1ri+2AEJIyDlk2xskOW7q0OQv4mi2iP31WWBBtuS6
+         fW+PqR4lwIO/1rsrTxKpGPHaYfXmskBPRBXjy376szYc6xO96JYaoGNR8PhSymB7C7Jv
+         XoKQ78xd6JjTZ/OJg+6/u8/zvCbhSW/9JdxJ0Vh9zkr4clfCjgrCQvQdriQlUHvthtYl
+         Xc8g==
+X-Gm-Message-State: AOAM531ICXY/YjM0/FtiorXfF9C/S6oJFiaTCHlZNGY+4OFkqocroe+m
+        q3bzENIiMmV76md150GO/yN8Eg==
+X-Google-Smtp-Source: ABdhPJyfu/BBE/tRGfv7q63oFA9soDlr/Q/7lQtwkudUknUb/EPWGsu38RkavOGbv6Eo5VV1Ay7F3w==
+X-Received: by 2002:a17:90a:840b:: with SMTP id j11mr26740951pjn.188.1593732403292;
         Thu, 02 Jul 2020 16:26:43 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 2sm9791094pfa.110.2020.07.02.16.26.41
+        by smtp.gmail.com with ESMTPSA id e6sm2120192pfh.176.2020.07.02.16.26.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 02 Jul 2020 16:26:41 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -76,9 +76,9 @@ Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
         Thomas Richter <tmricht@linux.ibm.com>,
         Ingo Molnar <mingo@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] module: Do not expose section addresses to non-CAP_SYSLOG
-Date:   Thu,  2 Jul 2020 16:26:36 -0700
-Message-Id: <20200702232638.2946421-4-keescook@chromium.org>
+Subject: [PATCH 4/5] kprobes: Do not expose probe addresses to non-CAP_SYSLOG
+Date:   Thu,  2 Jul 2020 16:26:37 -0700
+Message-Id: <20200702232638.2946421-5-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702232638.2946421-1-keescook@chromium.org>
 References: <20200702232638.2946421-1-keescook@chromium.org>
@@ -89,62 +89,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The printing of section addresses in /sys/module/*/sections/* was not
-using the correct credentials to evaluate visibility.
-
-Before:
-
- # cat /sys/module/*/sections/.*text
- 0xffffffffc0458000
- ...
- # capsh --drop=CAP_SYSLOG -- -c "cat /sys/module/*/sections/.*text"
- 0xffffffffc0458000
- ...
-
-After:
-
- # cat /sys/module/*/sections/*.text
- 0xffffffffc0458000
- ...
- # capsh --drop=CAP_SYSLOG -- -c "cat /sys/module/*/sections/.*text"
- 0x0000000000000000
- ...
-
-Additionally replaces the existing (safe) /proc/modules check with
-file->f_cred for consistency.
+The kprobe show() functions were using "current"'s creds instead
+of the file opener's creds for kallsyms visibility. Fix to use
+seq_file->file->f_cred.
 
 Cc: stable@vger.kernel.org
-Reported-by: Dominik Czarnota <dominik.czarnota@trailofbits.com>
-Fixes: be71eda5383f ("module: Fix display of wrong module .text address")
+Fixes: 81365a947de4 ("kprobes: Show address of kprobes if kallsyms does")
+Fixes: ffb9bd68ebdb ("kprobes: Show blacklist addresses as same as kallsyms does")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- kernel/module.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/kprobes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 9e2954519259..e6c7571092cb 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1530,8 +1530,8 @@ static ssize_t module_sect_read(struct file *file, struct kobject *kobj,
- 	if (pos != 0)
- 		return -EINVAL;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index d4de217e4a91..2e97febeef77 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2448,7 +2448,7 @@ static void report_probe(struct seq_file *pi, struct kprobe *p,
+ 	else
+ 		kprobe_type = "k";
  
--	return sprintf(buf, "0x%px\n", kptr_restrict < 2 ?
--		       (void *)sattr->address : NULL);
-+	return sprintf(buf, "0x%px\n",
-+		       kallsyms_show_value(file->f_cred) ? (void *)sattr->address : NULL);
- }
+-	if (!kallsyms_show_value(current_cred()))
++	if (!kallsyms_show_value(pi->file->f_cred))
+ 		addr = NULL;
  
- static void free_sect_attrs(struct module_sect_attrs *sect_attrs)
-@@ -4380,7 +4380,7 @@ static int modules_open(struct inode *inode, struct file *file)
- 
- 	if (!err) {
- 		struct seq_file *m = file->private_data;
--		m->private = kallsyms_show_value(current_cred()) ? NULL : (void *)8ul;
-+		m->private = kallsyms_show_value(file->f_cred) ? NULL : (void *)8ul;
- 	}
- 
- 	return err;
+ 	if (sym)
+@@ -2540,7 +2540,7 @@ static int kprobe_blacklist_seq_show(struct seq_file *m, void *v)
+ 	 * If /proc/kallsyms is not showing kernel address, we won't
+ 	 * show them here either.
+ 	 */
+-	if (!kallsyms_show_value(current_cred()))
++	if (!kallsyms_show_value(m->file->f_cred))
+ 		seq_printf(m, "0x%px-0x%px\t%ps\n", NULL, NULL,
+ 			   (void *)ent->start_addr);
+ 	else
 -- 
 2.25.1
 
