@@ -2,531 +2,507 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79BF212D8F
-	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 22:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CF7212D9C
+	for <lists+bpf@lfdr.de>; Thu,  2 Jul 2020 22:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgGBUDm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 16:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        id S1726169AbgGBUFk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 16:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgGBUDj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:03:39 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B53C08C5DD;
-        Thu,  2 Jul 2020 13:03:38 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id l6so9793309pjq.1;
-        Thu, 02 Jul 2020 13:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tk135JHzV7qH/T5n3/WTwMeX7W2AnYVAmGL6vTYVe2c=;
-        b=YYjR8z3ZI2nD+I7Peh4OacxP3RHXXguyXG0s15YzJGd+O4m2TXGAVuJDeO9C6/YM5i
-         xcSVV/e+9VddUGNf4g9FF8JCsVmTYBdYYOaaokgxQ1tSAFay/PatSyn5il0qzxSdVXf9
-         A9GLcdRhTNLULBZc6Xu4tgr6TnOAEyouVX9UxKc0BTohLwfRM2GUsl9zPBy2/2FkMVkl
-         OAphaa59SJLvSc7hQtuAILksjuPSfba9ItJoANrN6gUL1xVS4MhTuo9eH4P1TrGwe/vL
-         837NEE77kITDqj/XxwdW4KGnFApdC95ut4IYtf+n86Ui2UhfMkqSvOfrBgqpGCix6cQ1
-         +SeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tk135JHzV7qH/T5n3/WTwMeX7W2AnYVAmGL6vTYVe2c=;
-        b=bCUg10yZN6fZCQ5pKX5OIFWOKwWBZ1M3XO+OlQDluQLN2sPKe+ZwmG89toMHH9WZ2e
-         PbGYamztSgAV8VyNgq8I5H2FDdBFMbo12fpnurBbv7UvNhu9iLbbmjamN41WxDcPWpY6
-         4JeOIpZt6UstbSynkaZZjERYMSKrbfLSCb00oG/L9AZt/hodQzLWnoW4kdeKkCkW/iC0
-         ZgS/oTt4cmTTC5INWHwxl36oQYH+1nqIipZrED+6nndWjxVhjiq4NMwSg2qlES878TBU
-         8llx39qP0ppbynO9vR4RKTyFukLeGMNSd5mnLN8FM9OFe/Yu3LoMsJvhrvEp/HlN26jb
-         JRiw==
-X-Gm-Message-State: AOAM530uc2kigtUgwohZ/hCkLmkdeFrjrsYuz1OEfOOIOemHIij/8xa/
-        NNkV/iWSSYtyGJAhTnN89uM=
-X-Google-Smtp-Source: ABdhPJwGrHI453Ukc2qSDITPBmFnTGgYg6uozwJmDGie2aD0ZICAMC2z84ZtWvvXEwN0/QXhRz5D1Q==
-X-Received: by 2002:a17:902:b706:: with SMTP id d6mr28557059pls.304.1593720218285;
-        Thu, 02 Jul 2020 13:03:38 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id 83sm9663466pfu.60.2020.07.02.13.03.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Jul 2020 13:03:37 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     torvalds@linux-foundation.org
-Cc:     davem@davemloft.net, daniel@iogearbox.net, ebiederm@xmission.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf-next 3/3] bpf: Add kernel module with user mode driver that populates bpffs.
-Date:   Thu,  2 Jul 2020 13:03:29 -0700
-Message-Id: <20200702200329.83224-4-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
-In-Reply-To: <20200702200329.83224-1-alexei.starovoitov@gmail.com>
-References: <20200702200329.83224-1-alexei.starovoitov@gmail.com>
+        with ESMTP id S1725915AbgGBUFk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 16:05:40 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A69C08C5C1;
+        Thu,  2 Jul 2020 13:05:39 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id E7A52BC078;
+        Thu,  2 Jul 2020 20:05:28 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, shuah@kernel.org, sdf@google.com,
+        quentin@isovalent.com, rdna@fb.com, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: BPF (Safe dynamic programs and tools)
+Date:   Thu,  2 Jul 2020 22:05:16 +0200
+Message-Id: <20200702200516.13324-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Add kernel module with user mode driver that populates bpffs with
-BPF iterators.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+          If both the HTTP and HTTPS versions
+          return 200 OK and serve the same content:
+            Replace HTTP with HTTPS.
 
-$ mount bpffs /sys/fs/bpf/ -t bpf
-$ ls -la /sys/fs/bpf/
-total 4
-drwxrwxrwt  2 root root    0 Jul  2 00:27 .
-drwxr-xr-x 19 root root 4096 Jul  2 00:09 ..
--rw-------  1 root root    0 Jul  2 00:27 maps
--rw-------  1 root root    0 Jul  2 00:27 progs
-
-The user mode driver will load BPF Type Formats, create BPF maps, populate BPF
-maps, load two BPF programs, attach them to BPF iterators, and finally send two
-bpf_link IDs back to the kernel.
-The kernel will pin two bpf_links into newly mounted bpffs instance under
-names "progs" and "maps". These two files become human readable.
-
-$ cat /sys/fs/bpf/progs
-  id name            pages attached
-  11    dump_bpf_map     1 bpf_iter_bpf_map
-  12   dump_bpf_prog     1 bpf_iter_bpf_prog
-  27 test_pkt_access     1
-  32       test_main     1 test_pkt_access test_pkt_access
-  33   test_subprog1     1 test_pkt_access_subprog1 test_pkt_access
-  34   test_subprog2     1 test_pkt_access_subprog2 test_pkt_access
-  35   test_subprog3     1 test_pkt_access_subprog3 test_pkt_access
-  36 new_get_skb_len     1 get_skb_len test_pkt_access
-  37 new_get_skb_ifi     1 get_skb_ifindex test_pkt_access
-  38 new_get_constan     1 get_constant test_pkt_access
-
-The BPF program dump_bpf_prog() in iterators.bpf.c is printing this data about
-all BPF programs currently loaded in the system. This information is unstable
-and will change from kernel to kernel.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- init/Kconfig                                  |  2 +
- kernel/bpf/Makefile                           |  1 +
- kernel/bpf/inode.c                            | 75 ++++++++++++++++
- kernel/bpf/preload/Kconfig                    | 15 ++++
- kernel/bpf/preload/Makefile                   | 21 +++++
- kernel/bpf/preload/bpf_preload.h              | 15 ++++
- kernel/bpf/preload/bpf_preload_kern.c         | 87 +++++++++++++++++++
- kernel/bpf/preload/bpf_preload_umd_blob.S     |  7 ++
- .../preload/iterators/bpf_preload_common.h    |  8 ++
- kernel/bpf/preload/iterators/iterators.c      | 81 +++++++++++++++++
- 10 files changed, 312 insertions(+)
- create mode 100644 kernel/bpf/preload/Kconfig
- create mode 100644 kernel/bpf/preload/Makefile
- create mode 100644 kernel/bpf/preload/bpf_preload.h
- create mode 100644 kernel/bpf/preload/bpf_preload_kern.c
- create mode 100644 kernel/bpf/preload/bpf_preload_umd_blob.S
- create mode 100644 kernel/bpf/preload/iterators/bpf_preload_common.h
- create mode 100644 kernel/bpf/preload/iterators/iterators.c
+ Continuing my work started at 93431e0607e5.
 
-diff --git a/init/Kconfig b/init/Kconfig
-index a46aa8f3174d..278975a5daf2 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2313,3 +2313,5 @@ config ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
- # <asm/syscall_wrapper.h>.
- config ARCH_HAS_SYSCALL_WRAPPER
- 	def_bool n
-+
-+source "kernel/bpf/preload/Kconfig"
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index e6eb9c0402da..19e137aae40e 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -29,3 +29,4 @@ ifeq ($(CONFIG_BPF_JIT),y)
- obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
- obj-${CONFIG_BPF_LSM} += bpf_lsm.o
- endif
-+obj-$(CONFIG_BPF_PRELOAD) += preload/
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index fb878ba3f22f..8d33edd5c69c 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -20,6 +20,7 @@
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See https://lkml.org/lkml/2020/6/26/837
+
+ Documentation/bpf/bpf_devel_QA.rst          | 4 ++--
+ Documentation/bpf/index.rst                 | 2 +-
+ Documentation/networking/af_xdp.rst         | 2 +-
+ Documentation/networking/filter.rst         | 2 +-
+ arch/x86/net/bpf_jit_comp.c                 | 2 +-
+ include/linux/bpf.h                         | 2 +-
+ include/linux/bpf_verifier.h                | 2 +-
+ include/uapi/linux/bpf.h                    | 2 +-
+ kernel/bpf/arraymap.c                       | 2 +-
+ kernel/bpf/core.c                           | 2 +-
+ kernel/bpf/disasm.c                         | 2 +-
+ kernel/bpf/disasm.h                         | 2 +-
+ kernel/bpf/hashtab.c                        | 2 +-
+ kernel/bpf/helpers.c                        | 2 +-
+ kernel/bpf/syscall.c                        | 2 +-
+ kernel/bpf/verifier.c                       | 2 +-
+ kernel/trace/bpf_trace.c                    | 2 +-
+ lib/test_bpf.c                              | 2 +-
+ net/core/filter.c                           | 2 +-
+ samples/bpf/lathist_kern.c                  | 2 +-
+ samples/bpf/lathist_user.c                  | 2 +-
+ samples/bpf/sockex3_kern.c                  | 2 +-
+ samples/bpf/tracex1_kern.c                  | 2 +-
+ samples/bpf/tracex2_kern.c                  | 2 +-
+ samples/bpf/tracex3_kern.c                  | 2 +-
+ samples/bpf/tracex3_user.c                  | 2 +-
+ samples/bpf/tracex4_kern.c                  | 2 +-
+ samples/bpf/tracex4_user.c                  | 2 +-
+ samples/bpf/tracex5_kern.c                  | 2 +-
+ tools/include/uapi/linux/bpf.h              | 2 +-
+ tools/lib/bpf/bpf.c                         | 2 +-
+ tools/lib/bpf/bpf.h                         | 2 +-
+ tools/testing/selftests/bpf/test_maps.c     | 2 +-
+ tools/testing/selftests/bpf/test_verifier.c | 2 +-
+ 34 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 0b3db91dc100..fffb832d27d6 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -478,7 +478,7 @@ LLVM's static compiler lists the supported targets through
+ ``llc --version``, make sure BPF targets are listed. Example::
+ 
+      $ llc --version
+-     LLVM (http://llvm.org/):
++     LLVM (https://llvm.org/):
+        LLVM version 6.0.0svn
+        Optimized build.
+        Default target: x86_64-unknown-linux-gnu
+@@ -496,7 +496,7 @@ BPF back end, it is advisable to run the latest LLVM releases. Support
+ for new BPF kernel features such as additions to the BPF instruction
+ set are often developed together.
+ 
+-All LLVM releases can be found at: http://releases.llvm.org/
++All LLVM releases can be found at: https://releases.llvm.org/
+ 
+ Q: Got it, so how do I build LLVM manually anyway?
+ --------------------------------------------------
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 38b4db8be7a2..576ccfe5d560 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -62,4 +62,4 @@ Testing and debugging BPF
+ .. _Documentation/networking/filter.rst: ../networking/filter.txt
+ .. _man-pages: https://www.kernel.org/doc/man-pages/
+ .. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
+-.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
++.. _BPF and XDP Reference Guide: https://cilium.readthedocs.io/en/latest/bpf/
+diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+index 5bc55a4e3bce..8c0e27e151f0 100644
+--- a/Documentation/networking/af_xdp.rst
++++ b/Documentation/networking/af_xdp.rst
+@@ -12,7 +12,7 @@ packet processing.
+ 
+ This document assumes that the reader is familiar with BPF and XDP. If
+ not, the Cilium project has an excellent reference guide at
+-http://cilium.readthedocs.io/en/latest/bpf/.
++https://cilium.readthedocs.io/en/latest/bpf/.
+ 
+ Using the XDP_REDIRECT action from an XDP program, the program can
+ redirect ingress frames to other XDP enabled netdevs, using the
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index a1d3e192b9fa..c203a2d58a6f 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -56,7 +56,7 @@ Steven McCanne and Van Jacobson. 1993. The BSD packet filter: a new
+ architecture for user-level packet capture. In Proceedings of the
+ USENIX Winter 1993 Conference Proceedings on USENIX Winter 1993
+ Conference Proceedings (USENIX'93). USENIX Association, Berkeley,
+-CA, USA, 2-2. [http://www.tcpdump.org/papers/bpf-usenix93.pdf]
++CA, USA, 2-2. [https://www.tcpdump.org/papers/bpf-usenix93.pdf]
+ 
+ Structure
+ ---------
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 42b6709e6dc7..41bd7725f503 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3,7 +3,7 @@
+  * bpf_jit_comp.c: BPF JIT compiler
+  *
+  * Copyright (C) 2011-2013 Eric Dumazet (eric.dumazet@gmail.com)
+- * Internal BPF Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++ * Internal BPF Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
+ #include <linux/netdevice.h>
  #include <linux/filter.h>
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 07052d44bca1..94b9ee4495ed 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
+ #ifndef _LINUX_BPF_H
+ #define _LINUX_BPF_H 1
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index ca08db4ffb5f..52e2aeedc3de 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
+ #ifndef _LINUX_BPF_VERIFIER_H
+ #define _LINUX_BPF_VERIFIER_H 1
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 974a71342aea..40af03e740aa 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 11584618e861..43781c13f303 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016,2017 Facebook
+  */
+ #include <linux/bpf.h>
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9df4cc9a2907..10698be9d633 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -5,7 +5,7 @@
+  * Based on the design of the Berkeley Packet Filter. The new
+  * internal format has been designed by PLUMgrid:
+  *
+- *	Copyright (c) 2011 - 2014 PLUMgrid, http://plumgrid.com
++ *	Copyright (c) 2011 - 2014 PLUMgrid, https://plumgrid.com
+  *
+  * Authors:
+  *
+diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+index b44d8c447afd..6953c6a3b6fe 100644
+--- a/kernel/bpf/disasm.c
++++ b/kernel/bpf/disasm.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  */
+ 
+diff --git a/kernel/bpf/disasm.h b/kernel/bpf/disasm.h
+index e546b18d27da..cbac62e32f62 100644
+--- a/kernel/bpf/disasm.h
++++ b/kernel/bpf/disasm.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  */
+ 
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index b4b288a3c3c9..eeaa94cffa44 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  */
+ #include <linux/bpf.h>
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index be43ab3e619f..ce20177f4801 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
+ #include <linux/bpf.h>
+ #include <linux/rcupdate.h>
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8da159936bab..922d899940fc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
  #include <linux/bpf.h>
  #include <linux/bpf_trace.h>
-+#include "preload/bpf_preload.h"
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 34cde841ab68..987e0a91b123 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
+  */
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 7bc3d6175868..26dd5f2fea9f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2011-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2015 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  */
+ #include <linux/kernel.h>
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index a5fddf9ebcb7..17eb6fb13c90 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -2,7 +2,7 @@
+ /*
+  * Testsuite for BPF interpreter and BPF JIT compiler
+  *
+- * Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++ * Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  */
  
- enum bpf_type {
- 	BPF_TYPE_UNSPEC	= 0,
-@@ -409,6 +410,26 @@ static const struct inode_operations bpf_dir_iops = {
- 	.unlink		= simple_unlink,
- };
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 73395384afe2..211612018b75 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5,7 +5,7 @@
+  * Based on the design of the Berkeley Packet Filter. The new
+  * internal format has been designed by PLUMgrid:
+  *
+- *	Copyright (c) 2011 - 2014 PLUMgrid, http://plumgrid.com
++ *	Copyright (c) 2011 - 2014 PLUMgrid, https://plumgrid.com
+  *
+  * Authors:
+  *
+diff --git a/samples/bpf/lathist_kern.c b/samples/bpf/lathist_kern.c
+index ca9c2e4e69aa..56dbce51b47f 100644
+--- a/samples/bpf/lathist_kern.c
++++ b/samples/bpf/lathist_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2015 BMW Car IT GmbH
+  *
+  * This program is free software; you can redistribute it and/or
+diff --git a/samples/bpf/lathist_user.c b/samples/bpf/lathist_user.c
+index 2ff2839a52d5..500cec2f81c2 100644
+--- a/samples/bpf/lathist_user.c
++++ b/samples/bpf/lathist_user.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2015 BMW Car IT GmbH
+  */
+ #include <stdio.h>
+diff --git a/samples/bpf/sockex3_kern.c b/samples/bpf/sockex3_kern.c
+index cab9cca0b8eb..6908f30617f5 100644
+--- a/samples/bpf/sockex3_kern.c
++++ b/samples/bpf/sockex3_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/samples/bpf/tracex1_kern.c b/samples/bpf/tracex1_kern.c
+index 8e2610e14475..28f86724ff2e 100644
+--- a/samples/bpf/tracex1_kern.c
++++ b/samples/bpf/tracex1_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+index 5bc696bac27d..9f764ead80a3 100644
+--- a/samples/bpf/tracex2_kern.c
++++ b/samples/bpf/tracex2_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/samples/bpf/tracex3_kern.c b/samples/bpf/tracex3_kern.c
+index 659613c19a82..19a6a2a8eb03 100644
+--- a/samples/bpf/tracex3_kern.c
++++ b/samples/bpf/tracex3_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/samples/bpf/tracex3_user.c b/samples/bpf/tracex3_user.c
+index 70e987775c15..873c959cc07d 100644
+--- a/samples/bpf/tracex3_user.c
++++ b/samples/bpf/tracex3_user.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2013-2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2013-2015 PLUMgrid, https://plumgrid.com
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/samples/bpf/tracex4_kern.c b/samples/bpf/tracex4_kern.c
+index eb0f8fdd14bf..0be7ed2ad74a 100644
+--- a/samples/bpf/tracex4_kern.c
++++ b/samples/bpf/tracex4_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/samples/bpf/tracex4_user.c b/samples/bpf/tracex4_user.c
+index e8faf8f184ae..e819692b23d7 100644
+--- a/samples/bpf/tracex4_user.c
++++ b/samples/bpf/tracex4_user.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
+  */
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/samples/bpf/tracex5_kern.c b/samples/bpf/tracex5_kern.c
+index 32b49e8ab6bd..92fa02e2194d 100644
+--- a/samples/bpf/tracex5_kern.c
++++ b/samples/bpf/tracex5_kern.c
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2015 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2015 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 974a71342aea..40af03e740aa 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-/* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
++/* Copyright (c) 2011-2014 PLUMgrid, https://plumgrid.com
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of version 2 of the GNU General Public
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index a7329b671c41..bdd4a32c6f2a 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -18,7 +18,7 @@
+  * GNU Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
++ * License along with this program; if not,  see <https://www.gnu.org/licenses>
+  */
  
-+static int bpf_link_pin_kernel(struct dentry *parent,
-+			       const char *name, struct bpf_link *link)
-+{
-+	umode_t mode = S_IFREG | S_IRUSR | S_IWUSR;
-+	struct dentry *dentry;
-+	int ret;
-+
-+	inode_lock(parent->d_inode);
-+	dentry = lookup_one_len(name, parent, strlen(name));
-+	if (IS_ERR(dentry)) {
-+		inode_unlock(parent->d_inode);
-+		return PTR_ERR(dentry);
-+	}
-+	ret = bpf_mkobj_ops(dentry, mode, link, &bpf_link_iops,
-+			    &bpf_iter_fops);
-+	dput(dentry);
-+	inode_unlock(parent->d_inode);
-+	return ret;
-+}
-+
- static int bpf_obj_do_pin(const char __user *pathname, void *raw,
- 			  enum bpf_type type)
- {
-@@ -638,6 +659,57 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	return 0;
- }
+ #include <stdlib.h>
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 1b6015b21ba8..da4c8b1f2bbf 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -18,7 +18,7 @@
+  * GNU Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+- * License along with this program; if not,  see <http://www.gnu.org/licenses>
++ * License along with this program; if not,  see <https://www.gnu.org/licenses>
+  */
+ #ifndef __LIBBPF_BPF_H
+ #define __LIBBPF_BPF_H
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 6a12a0e01e07..694021bddba4 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -2,7 +2,7 @@
+ /*
+  * Testsuite for eBPF maps
+  *
+- * Copyright (c) 2014 PLUMgrid, http://plumgrid.com
++ * Copyright (c) 2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2016 Facebook
+  */
  
-+struct bpf_preload_ops bpf_preload_ops = { .info.driver_name = "bpf_preload" };
-+EXPORT_SYMBOL_GPL(bpf_preload_ops);
-+
-+static int populate_bpffs(struct dentry *parent)
-+{
-+	struct bpf_link *links[BPF_PRELOAD_LINKS] = {};
-+	u32 link_id[BPF_PRELOAD_LINKS] = {};
-+	int err = 0, i;
-+
-+	mutex_lock(&bpf_preload_ops.lock);
-+	if (!bpf_preload_ops.do_preload) {
-+		mutex_unlock(&bpf_preload_ops.lock);
-+		request_module("bpf_preload");
-+		mutex_lock(&bpf_preload_ops.lock);
-+
-+		if (!bpf_preload_ops.do_preload) {
-+			pr_err("bpf_preload module is missing.\n"
-+			       "bpffs will not have iterators.\n");
-+			goto out;
-+		}
-+	}
-+
-+	if (!bpf_preload_ops.info.tgid) {
-+		err = bpf_preload_ops.do_preload(link_id);
-+		if (err)
-+			goto out;
-+		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-+			links[i] = bpf_link_by_id(link_id[i]);
-+			if (IS_ERR(links[i])) {
-+				err = PTR_ERR(links[i]);
-+				goto out;
-+			}
-+		}
-+		err = bpf_link_pin_kernel(parent, "maps", links[0]);
-+		if (err)
-+			goto out;
-+		err = bpf_link_pin_kernel(parent, "progs", links[1]);
-+		if (err)
-+			goto out;
-+		err = bpf_preload_ops.do_finish();
-+		if (err)
-+			goto out;
-+	}
-+out:
-+	mutex_unlock(&bpf_preload_ops.lock);
-+	for (i = 0; i < BPF_PRELOAD_LINKS && err; i++)
-+		if (!IS_ERR_OR_NULL(links[i]))
-+			bpf_link_put(links[i]);
-+	return err;
-+}
-+
- static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	static const struct tree_descr bpf_rfiles[] = { { "" } };
-@@ -656,6 +728,7 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode->i_mode &= ~S_IALLUGO;
- 	inode->i_mode |= S_ISVTX | opts->mode;
- 
-+	populate_bpffs(sb->s_root);
- 	return 0;
- }
- 
-@@ -705,6 +778,8 @@ static int __init bpf_init(void)
- {
- 	int ret;
- 
-+	mutex_init(&bpf_preload_ops.lock);
-+
- 	ret = sysfs_create_mount_point(fs_kobj, "bpf");
- 	if (ret)
- 		return ret;
-diff --git a/kernel/bpf/preload/Kconfig b/kernel/bpf/preload/Kconfig
-new file mode 100644
-index 000000000000..b737ce4c2bab
---- /dev/null
-+++ b/kernel/bpf/preload/Kconfig
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menuconfig BPF_PRELOAD
-+	bool "Load kernel specific BPF programs at kernel boot time (BPF_PRELOAD)"
-+	depends on BPF
-+	help
-+	  tbd
-+
-+if BPF_PRELOAD
-+config BPF_PRELOAD_UMD
-+	tristate "bpf_preload kernel module with user mode driver"
-+	depends on CC_CAN_LINK_STATIC
-+	default m
-+	help
-+	  This builds bpf_preload kernel module with embedded user mode driver
-+endif
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-new file mode 100644
-index 000000000000..191d82209842
---- /dev/null
-+++ b/kernel/bpf/preload/Makefile
-@@ -0,0 +1,21 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+LIBBPF := $(srctree)/../../tools/lib/bpf
-+userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi -I $(LIBBPF) \
-+	-I $(srctree)/tools/lib/ \
-+	-I $(srctree)/kernel/bpf/preload/iterators/ -Wno-int-conversion \
-+	-DCOMPAT_NEED_REALLOCARRAY
-+
-+userprogs := bpf_preload_umd
-+
-+LIBBPF_O := $(LIBBPF)/bpf.o $(LIBBPF)/libbpf.o $(LIBBPF)/btf.o $(LIBBPF)/libbpf_errno.o \
-+	$(LIBBPF)/str_error.o $(LIBBPF)/hashmap.o $(LIBBPF)/libbpf_probes.o
-+
-+bpf_preload_umd-objs := iterators/iterators.o $(LIBBPF_O)
-+
-+userldflags += -lelf -lz
-+
-+$(obj)/bpf_preload_umd_blob.o: $(obj)/bpf_preload_umd
-+
-+obj-$(CONFIG_BPF_PRELOAD_UMD) += bpf_preload.o
-+bpf_preload-objs += bpf_preload_kern.o bpf_preload_umd_blob.o
-diff --git a/kernel/bpf/preload/bpf_preload.h b/kernel/bpf/preload/bpf_preload.h
-new file mode 100644
-index 000000000000..0d852574c02a
---- /dev/null
-+++ b/kernel/bpf/preload/bpf_preload.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BPF_PRELOAD_H
-+#define _BPF_PRELOAD_H
-+
-+#include <linux/usermode_driver.h>
-+
-+struct bpf_preload_ops {
-+        struct umd_info info;
-+        struct mutex lock;
-+	int (*do_preload)(u32 *);
-+	int (*do_finish)(void);
-+};
-+extern struct bpf_preload_ops bpf_preload_ops;
-+#define BPF_PRELOAD_LINKS 2
-+#endif
-diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-new file mode 100644
-index 000000000000..bfcd1fb3891c
---- /dev/null
-+++ b/kernel/bpf/preload/bpf_preload_kern.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/pid.h>
-+#include <linux/fs.h>
-+#include <linux/sched/signal.h>
-+#include "bpf_preload.h"
-+#include "iterators/bpf_preload_common.h"
-+
-+extern char bpf_preload_umd_start;
-+extern char bpf_preload_umd_end;
-+
-+static int do_preload(u32 *link_id)
-+{
-+	int magic = BPF_PRELOAD_START;
-+	struct pid *tgid;
-+	int id, i, err;
-+	loff_t pos;
-+	ssize_t n;
-+
-+	err = fork_usermode_driver(&bpf_preload_ops.info);
-+	if (err)
-+		return err;
-+	tgid = bpf_preload_ops.info.tgid;
-+
-+	/* send the start magic to let UMD proceed with loading BPF progs */
-+	n = __kernel_write(bpf_preload_ops.info.pipe_to_umh,
-+			   &magic, sizeof(magic), &pos);
-+	if (n != sizeof(magic))
-+		return -EPIPE;
-+
-+	/* receive bpf_link IDs from UMD */
-+	pos = 0;
-+	for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-+		n = kernel_read(bpf_preload_ops.info.pipe_from_umh,
-+				&id, sizeof(id), &pos);
-+		if (n != sizeof(id))
-+			return -EPIPE;
-+		link_id[i] = id;
-+	}
-+	return 0;
-+}
-+
-+static int do_finish(void)
-+{
-+	int magic = BPF_PRELOAD_END;
-+	struct pid *tgid;
-+	loff_t pos;
-+	ssize_t n;
-+
-+	/* send the last magic to UMD. It will do a normal exit. */
-+	n = __kernel_write(bpf_preload_ops.info.pipe_to_umh,
-+			   &magic, sizeof(magic), &pos);
-+	if (n != sizeof(magic))
-+		return -EPIPE;
-+	tgid = bpf_preload_ops.info.tgid;
-+	wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
-+	bpf_preload_ops.info.tgid = NULL;
-+	return 0;
-+}
-+
-+static int __init load_umd(void)
-+{
-+	int err;
-+
-+	err = umd_load_blob(&bpf_preload_ops.info, &bpf_preload_umd_start,
-+			    &bpf_preload_umd_end - &bpf_preload_umd_start);
-+	if (err)
-+		return err;
-+	bpf_preload_ops.do_preload = do_preload;
-+	bpf_preload_ops.do_finish = do_finish;
-+	return err;
-+}
-+
-+static void __exit fini_umd(void)
-+{
-+	bpf_preload_ops.do_preload = NULL;
-+	bpf_preload_ops.do_finish = NULL;
-+	/* kill UMD in case it's still there due to earlier error */
-+	kill_pid(bpf_preload_ops.info.tgid, SIGKILL, 1);
-+	bpf_preload_ops.info.tgid = NULL;
-+	umd_unload_blob(&bpf_preload_ops.info);
-+}
-+late_initcall(load_umd);
-+module_exit(fini_umd);
-+MODULE_LICENSE("GPL");
-diff --git a/kernel/bpf/preload/bpf_preload_umd_blob.S b/kernel/bpf/preload/bpf_preload_umd_blob.S
-new file mode 100644
-index 000000000000..d0fe58c0734a
---- /dev/null
-+++ b/kernel/bpf/preload/bpf_preload_umd_blob.S
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+	.section .init.rodata, "a"
-+	.global bpf_preload_umd_start
-+bpf_preload_umd_start:
-+	.incbin "bpf_preload_umd"
-+	.global bpf_preload_umd_end
-+bpf_preload_umd_end:
-diff --git a/kernel/bpf/preload/iterators/bpf_preload_common.h b/kernel/bpf/preload/iterators/bpf_preload_common.h
-new file mode 100644
-index 000000000000..f2e77711cd95
---- /dev/null
-+++ b/kernel/bpf/preload/iterators/bpf_preload_common.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BPF_PRELOAD_COMMON_H
-+#define _BPF_PRELOAD_COMMON_H
-+
-+#define BPF_PRELOAD_START 0x5555
-+#define BPF_PRELOAD_END 0xAAAA
-+
-+#endif
-diff --git a/kernel/bpf/preload/iterators/iterators.c b/kernel/bpf/preload/iterators/iterators.c
-new file mode 100644
-index 000000000000..74f23580b25f
---- /dev/null
-+++ b/kernel/bpf/preload/iterators/iterators.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include <argp.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include <sys/mount.h>
-+#include "iterators.skel.h"
-+#include "bpf_preload_common.h"
-+
-+int to_kernel = -1;
-+int from_kernel = 0;
-+
-+static int send_id_to_kernel(struct bpf_link *link)
-+{
-+	struct bpf_link_info info = {};
-+	__u32 info_len = sizeof(info);
-+	int err;
-+
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &info, &info_len);
-+	if (err)
-+		return err;
-+	if (write(to_kernel, &info.id, sizeof(info.id)) != sizeof(info.id))
-+		return -EPIPE;
-+	return 0;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct iterators_bpf *skel;
-+	int err, magic;
-+	int debug_fd;
-+
-+	debug_fd = open("/dev/console", O_WRONLY | O_NOCTTY | O_CLOEXEC);
-+	if (debug_fd < 0)
-+		return -1;
-+	to_kernel = dup(1);
-+	close(1);
-+	dup(debug_fd);
-+	/* now stdin and stderr point to /dev/console */
-+
-+	read(from_kernel, &magic, sizeof(magic));
-+	if (magic != BPF_PRELOAD_START) {
-+		printf("bad start magic %d\n", magic);
-+		return -1;
-+	}
-+
-+	/* libbpf opens BPF object and loads it into the kernel */
-+	skel = iterators_bpf__open_and_load();
-+	if (!skel)
-+		return -1;
-+
-+	err = iterators_bpf__attach(skel);
-+	if (err)
-+		goto cleanup;
-+
-+	/* send two bpf_link IDs to the kernel */
-+	err = send_id_to_kernel(skel->links.dump_bpf_map);
-+	if (err)
-+		goto cleanup;
-+	err = send_id_to_kernel(skel->links.dump_bpf_prog);
-+	if (err)
-+		goto cleanup;
-+
-+	/* The kernel will proceed with pinnging the links in bpffs.
-+	 * UMD will wait on read from pipe.
-+	 */
-+	read(from_kernel, &magic, sizeof(magic));
-+	if (magic != BPF_PRELOAD_END) {
-+		printf("bad final magic %d\n", magic);
-+		err = -EINVAL;
-+	}
-+cleanup:
-+	iterators_bpf__destroy(skel);
-+
-+	return err != 0;
-+}
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 78a6bae56ea6..18027c373763 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -2,7 +2,7 @@
+ /*
+  * Testsuite for eBPF verifier
+  *
+- * Copyright (c) 2014 PLUMgrid, http://plumgrid.com
++ * Copyright (c) 2014 PLUMgrid, https://plumgrid.com
+  * Copyright (c) 2017 Facebook
+  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
+  */
 -- 
-2.23.0
+2.27.0
 
