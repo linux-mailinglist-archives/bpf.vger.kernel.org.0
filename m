@@ -2,97 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF41A2132E5
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 06:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD3F2133CF
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 08:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725764AbgGCEcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jul 2020 00:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCEcP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jul 2020 00:32:15 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A55C08C5C1;
-        Thu,  2 Jul 2020 21:32:14 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q8so31211396iow.7;
-        Thu, 02 Jul 2020 21:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=ZrqaGeIV7JcQYbYQPx6QK/8ocSgakcVhj4omU7ByHzE=;
-        b=TlyiPcoTjguDZ6RfPOkeLZTg0AXhK+9Q1s6Lc3e3zMSooG9WRBj+gKsr3VXC8KtAir
-         hoO4aV9dhkdVo6YV581s8hng7uxD+bm6I3QeefGKkgmsLl0KlGq/I9Rzd1JqgGpwEVzH
-         lokCJyjqaZxTyS8dxdGfa0ppzsqJHxU/MzEvcLmcrFlHX6tSmgN3S1762FLPForVEqGz
-         wYO2AIQRkbmHe1VmskayaaOm4ZGz1PIe7kVpeL2Si1odOqDWBYuMzgYA8mKDilbYPI5x
-         QwKtNcBoM3g+cpnuVNAsHeTghQcU6M7qriusVYQ+IP3x9yO5BwVtX0KGZ9w3uf3Q3djw
-         U6BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=ZrqaGeIV7JcQYbYQPx6QK/8ocSgakcVhj4omU7ByHzE=;
-        b=fs2PDW8G2IqnBz6IJGl4KZ8U/lZrdqyS73vFI2CGFAMg3Dl/I7QSKFUnk8Swu4//8K
-         WrshOVahIZZvYnBuwHv8UDloo+dpyqDqpqDTtlTxnF+cDU+PZKLW+LZKtZD44OJPsFWm
-         U3AULAtkElFendwzfatBP+wkxG0atprhmE7obGtGmizGb+aDg5hP9kGKGTZH+G4h3eVJ
-         UxTktD70g0438Mo9qDWBhPeSYam6wHgL8Q8boyUKd4ANuE0GumX6jWfgLRhA/9XGizmw
-         FYge0RqTfiaW0xvA9Un1it27ANaGiHbVaYrSk80bZdmhM4M8kjbOuKDjBTstFGYCn+ul
-         bGEw==
-X-Gm-Message-State: AOAM532tNK4lW9je0cmjzdLaz1CXONKS8g9KYMnSwvgmFPWBdV2pW5PH
-        8YnTOdmmfSa9/Kf44NASlHY=
-X-Google-Smtp-Source: ABdhPJzoyB0aa8z+8JinyotD1ciZshsW1GYEJvA5wUyWnRyGkR7j0Eib5tq8GVRKLwDiywJFRHxsqQ==
-X-Received: by 2002:a05:6638:223:: with SMTP id f3mr37580442jaq.144.1593750734090;
-        Thu, 02 Jul 2020 21:32:14 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w16sm5712219iom.27.2020.07.02.21.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 21:32:13 -0700 (PDT)
-Subject: [bpf-next PATCH v2] bpf: fix bpftool without skeleton code enabled
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     yhs@fb.com, andriin@fb.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Thu, 02 Jul 2020 21:31:59 -0700
-Message-ID: <159375071997.14984.17404504293832961401.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.17.1-dirty
+        id S1726082AbgGCGCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jul 2020 02:02:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725648AbgGCGCL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jul 2020 02:02:11 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E82F220771;
+        Fri,  3 Jul 2020 06:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593756130;
+        bh=HIbJqRSFMbUgRkZxtvG3aCNp0wd5skVeN76Mqr6ZKlI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ks5iQI9moJ0UD4VvJm9ozWnH28lwPOVOnLsnopJbPFPBQsEaiok8uVnUYwa7UR9Em
+         zT/zdo82iWrWjIV6wKofQC1UNdIGd6arNQdcSpV/VEzGzCyBuTWsW+bcVIydzXWYF+
+         qweWZjyKubece8hBub0Wh9BvVjYTG8pxDay2iy7Q=
+Date:   Fri, 3 Jul 2020 08:02:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dominik Czarnota <dominik.czarnota@trailofbits.com>,
+        stable@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matteo Croce <mcroce@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] module: Refactor section attr into bin attribute
+Message-ID: <20200703060207.GA6344@kroah.com>
+References: <20200702232638.2946421-1-keescook@chromium.org>
+ <20200702232638.2946421-3-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702232638.2946421-3-keescook@chromium.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix segfault from bpftool by adding emit_obj_refs_plain when skeleton
-code is disabled.
+On Thu, Jul 02, 2020 at 04:26:35PM -0700, Kees Cook wrote:
+> In order to gain access to the open file's f_cred for kallsym visibility
+> permission checks, refactor the module section attributes to use the
+> bin_attribute instead of attribute interface. Additionally removes the
+> redundant "name" struct member.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  kernel/module.c | 45 ++++++++++++++++++++++++---------------------
+>  1 file changed, 24 insertions(+), 21 deletions(-)
+> 
+> diff --git a/kernel/module.c b/kernel/module.c
+> index a5022ae84e50..9e2954519259 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -1510,8 +1510,7 @@ static inline bool sect_empty(const Elf_Shdr *sect)
+>  }
+>  
+>  struct module_sect_attr {
+> -	struct module_attribute mattr;
+> -	char *name;
+> +	struct bin_attribute battr;
+>  	unsigned long address;
+>  };
+>  
+> @@ -1521,11 +1520,16 @@ struct module_sect_attrs {
+>  	struct module_sect_attr attrs[];
+>  };
+>  
+> -static ssize_t module_sect_show(struct module_attribute *mattr,
+> -				struct module_kobject *mk, char *buf)
+> +static ssize_t module_sect_read(struct file *file, struct kobject *kobj,
+> +				struct bin_attribute *battr,
+> +				char *buf, loff_t pos, size_t count)
+>  {
+>  	struct module_sect_attr *sattr =
+> -		container_of(mattr, struct module_sect_attr, mattr);
+> +		container_of(battr, struct module_sect_attr, battr);
+> +
+> +	if (pos != 0)
+> +		return -EINVAL;
+> +
+>  	return sprintf(buf, "0x%px\n", kptr_restrict < 2 ?
+>  		       (void *)sattr->address : NULL);
+>  }
+> @@ -1535,7 +1539,7 @@ static void free_sect_attrs(struct module_sect_attrs *sect_attrs)
+>  	unsigned int section;
+>  
+>  	for (section = 0; section < sect_attrs->nsections; section++)
+> -		kfree(sect_attrs->attrs[section].name);
+> +		kfree(sect_attrs->attrs[section].battr.attr.name);
+>  	kfree(sect_attrs);
+>  }
+>  
+> @@ -1544,42 +1548,41 @@ static void add_sect_attrs(struct module *mod, const struct load_info *info)
+>  	unsigned int nloaded = 0, i, size[2];
+>  	struct module_sect_attrs *sect_attrs;
+>  	struct module_sect_attr *sattr;
+> -	struct attribute **gattr;
+> +	struct bin_attribute **gattr;
+>  
+>  	/* Count loaded sections and allocate structures */
+>  	for (i = 0; i < info->hdr->e_shnum; i++)
+>  		if (!sect_empty(&info->sechdrs[i]))
+>  			nloaded++;
+>  	size[0] = ALIGN(struct_size(sect_attrs, attrs, nloaded),
+> -			sizeof(sect_attrs->grp.attrs[0]));
+> -	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.attrs[0]);
+> +			sizeof(sect_attrs->grp.bin_attrs[0]));
+> +	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.bin_attrs[0]);
+>  	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
+>  	if (sect_attrs == NULL)
+>  		return;
+>  
+>  	/* Setup section attributes. */
+>  	sect_attrs->grp.name = "sections";
+> -	sect_attrs->grp.attrs = (void *)sect_attrs + size[0];
+> +	sect_attrs->grp.bin_attrs = (void *)sect_attrs + size[0];
+>  
+>  	sect_attrs->nsections = 0;
+>  	sattr = &sect_attrs->attrs[0];
+> -	gattr = &sect_attrs->grp.attrs[0];
+> +	gattr = &sect_attrs->grp.bin_attrs[0];
+>  	for (i = 0; i < info->hdr->e_shnum; i++) {
+>  		Elf_Shdr *sec = &info->sechdrs[i];
+>  		if (sect_empty(sec))
+>  			continue;
+> +		sysfs_bin_attr_init(&sattr->battr);
+>  		sattr->address = sec->sh_addr;
+> -		sattr->name = kstrdup(info->secstrings + sec->sh_name,
+> -					GFP_KERNEL);
+> -		if (sattr->name == NULL)
+> +		sattr->battr.attr.name =
+> +			kstrdup(info->secstrings + sec->sh_name, GFP_KERNEL);
+> +		if (sattr->battr.attr.name == NULL)
+>  			goto out;
+>  		sect_attrs->nsections++;
+> -		sysfs_attr_init(&sattr->mattr.attr);
+> -		sattr->mattr.show = module_sect_show;
+> -		sattr->mattr.store = NULL;
+> -		sattr->mattr.attr.name = sattr->name;
+> -		sattr->mattr.attr.mode = S_IRUSR;
+> -		*(gattr++) = &(sattr++)->mattr.attr;
+> +		sattr->battr.read = module_sect_read;
+> +		sattr->battr.size = 3 /* "0x", "\n" */ + (BITS_PER_LONG / 4);
+> +		sattr->battr.attr.mode = 0400;
+> +		*(gattr++) = &(sattr++)->battr;
+>  	}
+>  	*gattr = NULL;
+>  
+> @@ -1669,7 +1672,7 @@ static void add_notes_attrs(struct module *mod, const struct load_info *info)
+>  			continue;
+>  		if (info->sechdrs[i].sh_type == SHT_NOTE) {
+>  			sysfs_bin_attr_init(nattr);
+> -			nattr->attr.name = mod->sect_attrs->attrs[loaded].name;
+> +			nattr->attr.name = mod->sect_attrs->attrs[loaded].battr.attr.name;
+>  			nattr->attr.mode = S_IRUGO;
+>  			nattr->size = info->sechdrs[i].sh_size;
+>  			nattr->private = (void *) info->sechdrs[i].sh_addr;
+> -- 
+> 2.25.1
+> 
 
-Tested by deleting BUILD_BPF_SKELS in Makefile. We found this doing
-backports for Cilium when a testing image pulled in latest bpf-next
-bpftool, but kept using an older clang-7.
+They get a correct "size" value now, nice!
 
-# ./bpftool prog show
-Error: bpftool built without PID iterator support
-3: cgroup_skb  tag 7be49e3934a125ba  gpl
-        loaded_at 2020-07-01T08:01:29-0700  uid 0
-Segmentation fault
-
-Reported-by: Joe Stringer <joe@wand.net.nz>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- tools/bpf/bpftool/pids.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index 2709be4de2b1..7d5416667c85 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -19,6 +19,7 @@ int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
- 	return -ENOTSUP;
- }
- void delete_obj_refs_table(struct obj_refs_table *table) {}
-+void emit_obj_refs_plain(struct obj_refs_table *table, __u32 id, const char *prefix) {}
- 
- #else /* BPFTOOL_WITHOUT_SKELETONS */
- 
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
