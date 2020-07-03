@@ -2,161 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466D1213AC6
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 15:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2640213BED
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 16:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgGCNU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jul 2020 09:20:26 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64056 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgGCNUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:20:25 -0400
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 063DJNb2024792;
-        Fri, 3 Jul 2020 22:19:23 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Fri, 03 Jul 2020 22:19:23 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 063DJMxC024786
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 3 Jul 2020 22:19:23 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
- <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
- <87eepwzqhd.fsf@x220.int.ebiederm.org>
- <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
- <87pn9euks9.fsf@x220.int.ebiederm.org>
- <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
- <87h7upucqi.fsf@x220.int.ebiederm.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <d0266a24-dfab-83d0-e178-aa67c9f5ebc0@i-love.sakura.ne.jp>
-Date:   Fri, 3 Jul 2020 22:19:17 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726147AbgGCOix (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jul 2020 10:38:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21614 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726035AbgGCOix (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jul 2020 10:38:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593787131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A4SNg/veuGUGeQ/9H0uknMrOgPhRtVROAG/gdjJq4Sk=;
+        b=ZXXzV4G4rPHaktenP262jIYgfWQlIJWkEMEvW41naVGMq0k2zFLpTeT/0jED0sa+W8eAKv
+        LulzAv2xrBBj3wV95L7hURN74hjIqO8ei5K3GM77p6mFBMSVc5TqbR9aHKqwuXbMzhqYFY
+        jbj9+sqaSj7gk9QjQr7SqA26jUhzvhM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-o9PVE-C9MtiG7FVWoGrILw-1; Fri, 03 Jul 2020 10:38:46 -0400
+X-MC-Unique: o9PVE-C9MtiG7FVWoGrILw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20CAE107ACCA;
+        Fri,  3 Jul 2020 14:38:45 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 33A227BD58;
+        Fri,  3 Jul 2020 14:38:39 +0000 (UTC)
+Date:   Fri, 3 Jul 2020 16:38:37 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     BPF-dev-list <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Cc:     brouer@redhat.com, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Build errors in tools/testing/selftests/bpf/ at 046cc3dd9a25
+Message-ID: <20200703163837.0611d26a@carbon>
 MIME-Version: 1.0
-In-Reply-To: <87h7upucqi.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/07/02 22:08, Eric W. Biederman wrote:
->> By the way, commit 4a9d4b024a3102fc ("switch fput to task_work_add") says
->> that use of flush_delayed_fput() has to be careful. Al, is it safe to call
->> flush_delayed_fput() from blob_to_mnt() from umd_load_blob() (which might be
->> called from both kernel thread and from process context (e.g. init_module()
->> syscall by /sbin/insmod )) ?
-> 
-> And __fput_sync needs to be even more careful.
-> umd_load_blob is called in these changes without any locks held.
+Hi Song,
 
-But where is the guarantee that a thread which called flush_delayed_fput() waits for
-the completion of processing _all_ "struct file" linked into delayed_fput_list ?
-If some other thread or delayed_fput_work (scheduled by fput_many()) called
-flush_delayed_fput() between blob_to_mnt()'s fput(file) and flush_delayed_fput()
-sequence? blob_to_mnt()'s flush_delayed_fput() can miss the "struct file" which
-needs to be processed before execve(), can't it?
+I' getting this compile error in tools/testing/selftests/bpf/ on
+bpf-next git tree with HEAD 046cc3dd9a25 ("bpf: Fix build without
+CONFIG_STACKTRACE"):
 
-Also, I don't know how convoluted the dependency of all "struct file" linked into
-delayed_fput_list might be, for there can be "struct file" which will not be a
-simple close of tmpfs file created by blob_to_mnt()'s file_open_root() request.
-
-On the other hand, although __fput_sync() cannot be called from !PF_KTHREAD threads,
-there is a guarantee that __fput_sync() waits for the completion of "struct file"
-which needs to be flushed before execve(), isn't there?
-
-> 
-> We fundamentally AKA in any correct version of this code need to flush
-> the file descriptor before we call exec or exec can not open it a
-> read-only denying all writes from any other opens.
-> 
-> The use case of flush_delayed_fput is exactly the same as that used
-> when loading the initramfs.
-
-When loading the initramfs, the number of threads is quite few (which
-means that the possibility of hitting the race window and convoluted
-dependency is small).
-
-But like EXPORT_SYMBOL_GPL(umd_load_blob) indicates, blob_to_mnt()'s
-flush_delayed_fput() might be called after many number of threads already
-started running.
+ $ pwd
+ /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf
+ $ make 
+ Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'
+ Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'
+   INSTALL  headers
+   GEN-SKEL [test_progs] bpf_iter_task_stack.skel.h
+ libbpf: invalid relo for 'entries' in special section 0xfff2; forgot to initialize global var?..
+ Error: failed to open BPF object file: 0
+ make: *** [Makefile:372: /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.skel.h] Error 255
+ make: *** Deleting file '/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.skel.h'
 
 
+If I revert c7568114bc56 ("selftests/bpf: Add bpf_iter test with
+bpf_get_task_stack()") (Author: Song Liu) then it compiles again.
 
-On 2020/07/03 1:02, Eric W. Biederman wrote:
->>>> On 2020/06/30 21:29, Eric W. Biederman wrote:
->>>>> Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
->>>>> release_task is called so there is a race.  As it is possible to wake
->>>>> up and then go back to sleep before pid_has_task becomes false.
->>>>
->>>> What is the reason we want to wait until pid_has_task() becomes false?
->>>>
->>>> - wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
->>>> + while (!wait_event_timeout(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID), 1));
->>>
->>> So that it is safe to call bpfilter_umh_cleanup.  The previous code
->>> performed the wait by having a callback in do_exit.
->>
->> But bpfilter_umh_cleanup() does only
->>
->> 	fput(info->pipe_to_umh);
->> 	fput(info->pipe_from_umh);
->> 	put_pid(info->tgid);
->> 	info->tgid = NULL;
->>
->> which is (I think) already safe regardless of the usermode process because
->> bpfilter_umh_cleanup() merely closes one side of two pipes used between
->> two processes and forgets about the usermode process.
-> 
-> It is not safe.
-> 
-> Baring bugs there is only one use of shtudown_umh that matters.  The one
-> in fini_umh.  The use of the file by the mm must be finished before
-> umd_unload_blob.  AKA unmount.  Which completely frees the filesystem.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-Do we really need to mount upon umd_load_blob() and unmount upon umd_unload_blob() ?
-LSM modules might prefer only one instance of filesystem for umd blobs.
+More details:
 
-For pathname based LSMs, since that filesystem is not visible from mount tree, only
-info->driver_name can be used for distinction. Therefore, one instance of filesystem
-with files created with file_open_root(O_CREAT | O_WRONLY | O_EXCL) might be preferable.
+$ clang --version
+clang version 10.0.0 (https://github.com/llvm/llvm-project.git 90c78073f73eac58f4f8b4772a896dc8aac023bc)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/bin
 
-For inode based LSMs, reusing one instance of filesystem created upon early boot might
-be convenient for labeling.
+ llc --version
+LLVM (http://llvm.org/):
+  LLVM version 10.0.0git
+  Optimized build.
+  Default target: x86_64-unknown-linux-gnu
+  Host CPU: ivybridge
 
-Also, we might want a dedicated filesystem (say, "umdfs") instead of regular tmpfs in
-order to implement protections without labeling files. Then, we might also be able to
-implement minimal protections without LSMs.
+  Registered Targets:
+    bpf    - BPF (host endian)
+    bpfeb  - BPF (big endian)
+    bpfel  - BPF (little endian)
+    x86    - 32-bit X86: Pentium-Pro and above
+    x86-64 - 64-bit X86: EM64T and AMD64
+
+
+make V=1
+(clang  -g -D__TARGET_ARCH_x86 -mlittle-endian -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/tools/include -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf -I/home/jbrouer/git/kernel/bpf-next/tools/include/uapi -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/usr/include -idirafter /usr/local/include -idirafter /usr/local/stow/llvm-10.0.0-rc2/lib/clang/10.0.0/include -idirafter /usr/include -Wno-compare-distinct-pointer-types -O2 -target bpf -emit-llvm -c progs/bpf_iter_task_stack.c -o - || echo "BPF obj compilation failed") | llc -mattr=dwarfris -march=bpf -mcpu=v3  -mattr=+alu32 -filetype=obj -o /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.o
+
+/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/tools/sbin/bpftool gen skeleton /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.o > /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.skel.h
+libbpf: invalid relo for 'entries' in special section 0xfff2; forgot to initialize global var?..
+Error: failed to open BPF object file: 0
+make: *** [Makefile:372: /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.skel.h] Error 255
+make: *** Deleting file '/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/bpf_iter_task_stack.skel.h'
 
