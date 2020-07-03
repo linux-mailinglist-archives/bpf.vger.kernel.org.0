@@ -2,322 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB85C21381E
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 11:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38231213937
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 13:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725796AbgGCJwI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jul 2020 05:52:08 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32499 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgGCJwH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Jul 2020 05:52:07 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-Tz0clC4DMHm8R-5KXzlMHQ-1; Fri, 03 Jul 2020 05:52:01 -0400
-X-MC-Unique: Tz0clC4DMHm8R-5KXzlMHQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CBA9800C64;
-        Fri,  3 Jul 2020 09:51:59 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E58B7275E31;
-        Fri,  3 Jul 2020 09:51:55 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH v5 bpf-next 9/9] selftests/bpf: Add test for resolve_btfids
-Date:   Fri,  3 Jul 2020 11:51:11 +0200
-Message-Id: <20200703095111.3268961-10-jolsa@kernel.org>
-In-Reply-To: <20200703095111.3268961-1-jolsa@kernel.org>
-References: <20200703095111.3268961-1-jolsa@kernel.org>
+        id S1726283AbgGCLSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jul 2020 07:18:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52518 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726039AbgGCLSu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jul 2020 07:18:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593775129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VnNbDSyZiB0HaDH6CJ+U6VCjcauNgCOYO5OdcxEql90=;
+        b=cisMUDvT519712T5vbiOcVXOWYUHeL50qu/H4hsaIqDLQQTwLu8/OAnJSZgjsHVbjWJ/Dp
+        CCoS90j3aFP1MRWaoafFtv9cLSYS7X3g81Zv0en+UiBC1q7SFQRieGNy5mh6gxYyfIMzij
+        ZwsMcD1xPCnsXzwzwtP3VxIiNR7RAU4=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-GplrlIPDPnWCY3uSunVRDA-1; Fri, 03 Jul 2020 07:18:47 -0400
+X-MC-Unique: GplrlIPDPnWCY3uSunVRDA-1
+Received: by mail-qk1-f199.google.com with SMTP id i3so15225345qkf.0
+        for <bpf@vger.kernel.org>; Fri, 03 Jul 2020 04:18:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=VnNbDSyZiB0HaDH6CJ+U6VCjcauNgCOYO5OdcxEql90=;
+        b=bokv06I+tqm+rtqZocHQnhiG5i15Lsg+F1nPfr7pcsJZb96BYRGDXl6+uQacOSg3Qd
+         IKqDL9LhKRfkekn41sCPNmp4NKf/mSUxyLk1xT2TCwl0exnQdaZb5/1FHS/YmYossjPm
+         dW28fTYWdl60wvOKsfpsCxuF1cJGWhICIEPOG4aHLajB38p8Awbdu1AJHjTlTktQBXUY
+         00ZX2VgSxMA8GEou0uA5fp7xCFlbrGjj6ppArAGuJrzpSBREo2r8WZpKYCcxLai+HBAw
+         BF0iBOfODBWe6mSmXLQ0Y4QeNJ2sChlEx0Ua2ipoqgkKMA4fpA3YtL5sRwa0UPb7IWgM
+         epLg==
+X-Gm-Message-State: AOAM533UKhCbUDp7Unrnd5O2xPaJiSUxUPuJHCg0O/mtKawkbkWIoSpu
+        joPNMhPhWCVP+uLVpWmDPguM+5U71DEMbVirAfNO36jtUcLyQZVnofIyPEoSYkjXS3OsHP3Ud/u
+        Hbyn+NGfQLcdO
+X-Received: by 2002:ac8:4297:: with SMTP id o23mr35414864qtl.74.1593775126998;
+        Fri, 03 Jul 2020 04:18:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR3OmpQC0Xa7GAi77/M9aOuWPvkRLcqu/FU0NnpYuzSBGofEM9/0NVuNOtdx9D3mZmwqWL8g==
+X-Received: by 2002:ac8:4297:: with SMTP id o23mr35414850qtl.74.1593775126794;
+        Fri, 03 Jul 2020 04:18:46 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id q28sm11633046qtk.13.2020.07.03.04.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 04:18:45 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0573E1828E4; Fri,  3 Jul 2020 13:18:43 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        torvalds@linux-foundation.org
+Cc:     davem@davemloft.net, daniel@iogearbox.net, ebiederm@xmission.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 0/3] bpf: Populate bpffs with map and prog iterators
+In-Reply-To: <20200702200329.83224-1-alexei.starovoitov@gmail.com>
+References: <20200702200329.83224-1-alexei.starovoitov@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 03 Jul 2020 13:18:43 +0200
+Message-ID: <878sg0etik.fsf@toke.dk>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding resolve_btfids test under test_progs suite.
+> The user mode driver will load BPF Type Formats, create BPF maps, populate BPF
+> maps, load two BPF programs, attach them to BPF iterators, and finally send two
+> bpf_link IDs back to the kernel.
+> The kernel will pin two bpf_links into newly mounted bpffs instance under
+> names "progs" and "maps". These two files become human readable.
+>
+> $ cat /sys/fs/bpf/progs
+>   id name            pages attached
+>   11    dump_bpf_map     1 bpf_iter_bpf_map
+>   12   dump_bpf_prog     1 bpf_iter_bpf_prog
+>   27 test_pkt_access     1
+>   32       test_main     1 test_pkt_access test_pkt_access
+>   33   test_subprog1     1 test_pkt_access_subprog1 test_pkt_access
+>   34   test_subprog2     1 test_pkt_access_subprog2 test_pkt_access
+>   35   test_subprog3     1 test_pkt_access_subprog3 test_pkt_access
+>   36 new_get_skb_len     1 get_skb_len test_pkt_access
+>   37 new_get_skb_ifi     1 get_skb_ifindex test_pkt_access
+>   38 new_get_constan     1 get_constant test_pkt_access
 
-It's possible to use btf_ids.h header and its logic in
-user space application, so we can add easy test for it.
+Do the iterators respect namespace boundaries? Or will I see all
+programs/maps on the host if I cat the file inside a container?
 
-The test defines BTF_ID_LIST and checks it gets properly
-resolved.
+> Few interesting observations:
+> - though bpffs comes with two human readble files "progs" and "maps" they
+>   can be removed. 'rm -f /sys/fs/bpf/progs' will remove bpf_link and kernel
+>   will automatically unload corresponding BPF progs, maps, BTFs.
 
-For this reason the test_progs binary (and other binaries
-that use TRUNNER* macros) is processed with resolve_btfids
-tool, which resolves BTF IDs in .BTF.ids section.
+Is there any way to get the files back if one does this by mistake
+(other than re-mounting the bpffs)?
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          |  22 ++-
- .../selftests/bpf/prog_tests/resolve_btfids.c | 170 ++++++++++++++++++
- 2 files changed, 190 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 1f9c696b3edf..b47a685d12bd 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -190,6 +190,16 @@ else
- 	cp "$(VMLINUX_H)" $@
- endif
- 
-+$(SCRATCH_DIR)/resolve_btfids: $(BPFOBJ)				\
-+			       $(TOOLSDIR)/bpf/resolve_btfids/main.c	\
-+			       $(TOOLSDIR)/lib/rbtree.c			\
-+			       $(TOOLSDIR)/lib/zalloc.c			\
-+			       $(TOOLSDIR)/lib/string.c			\
-+			       $(TOOLSDIR)/lib/ctype.c			\
-+			       $(TOOLSDIR)/lib/str_error_r.c
-+	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids	\
-+	OUTPUT=$(SCRATCH_DIR)/ BPFOBJ=$(BPFOBJ)
-+
- # Get Clang's default includes on this system, as opposed to those seen by
- # '-target bpf'. This fixes "missing" files on some architectures/distros,
- # such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-@@ -333,7 +343,8 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      $(TRUNNER_BPF_SKELS)				\
- 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
- 	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
--	cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-+	cd $$(@D) && $$(CC) -I. $$(CFLAGS) $(TRUNNER_EXTRA_CFLAGS)	\
-+	-c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
- 
- $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 		       %.c						\
-@@ -355,6 +366,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
- 	$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-+	$(TRUNNER_BINARY_EXTRA_CMD)
- 
- endef
- 
-@@ -365,7 +377,10 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 flow_dissector_load.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
--		       $(wildcard progs/btf_dump_test_case_*.c)
-+		       $(wildcard progs/btf_dump_test_case_*.c)		\
-+		       $(SCRATCH_DIR)/resolve_btfids
-+TRUNNER_EXTRA_CFLAGS := -D"BUILD_STR(s)=\#s" -DVMLINUX_BTF="BUILD_STR($(VMLINUX_BTF))"
-+TRUNNER_BINARY_EXTRA_CMD := $(SCRATCH_DIR)/resolve_btfids --btf $(VMLINUX_BTF) test_progs
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
- TRUNNER_BPF_LDFLAGS := -mattr=+alu32
-@@ -373,6 +388,7 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs))
- 
- # Define test_progs-no_alu32 test runner.
- TRUNNER_BPF_BUILD_RULE := CLANG_NOALU32_BPF_BUILD_RULE
-+TRUNNER_BINARY_EXTRA_CMD := $(SCRATCH_DIR)/resolve_btfids --btf $(VMLINUX_BTF) test_progs-no_alu32
- TRUNNER_BPF_LDFLAGS :=
- $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
- 
-@@ -392,6 +408,8 @@ TRUNNER_EXTRA_FILES :=
- TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
- TRUNNER_BPF_CFLAGS :=
- TRUNNER_BPF_LDFLAGS :=
-+TRUNNER_EXTRA_CFLAGS :=
-+TRUNNER_BINARY_EXTRA_CMD :=
- $(eval $(call DEFINE_TEST_RUNNER,test_maps))
- 
- # Define test_verifier test runner.
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-new file mode 100644
-index 000000000000..6b7b5f736181
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+#include <stdio.h>
-+#include <sys/stat.h>
-+#include <stdio.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <linux/err.h>
-+#include <stdlib.h>
-+#include <bpf/btf.h>
-+#include <bpf/libbpf.h>
-+#include <linux/btf.h>
-+#include <linux/kernel.h>
-+#include <linux/btf_ids.h>
-+#include "test_progs.h"
-+
-+static int duration;
-+
-+static struct btf *btf__parse_raw(const char *file)
-+{
-+	struct btf *btf;
-+	struct stat st;
-+	__u8 *buf;
-+	FILE *f;
-+
-+	if (stat(file, &st))
-+		return NULL;
-+
-+	f = fopen(file, "rb");
-+	if (!f)
-+		return NULL;
-+
-+	buf = malloc(st.st_size);
-+	if (!buf) {
-+		btf = ERR_PTR(-ENOMEM);
-+		goto exit_close;
-+	}
-+
-+	if ((size_t) st.st_size != fread(buf, 1, st.st_size, f)) {
-+		btf = ERR_PTR(-EINVAL);
-+		goto exit_free;
-+	}
-+
-+	btf = btf__new(buf, st.st_size);
-+
-+exit_free:
-+	free(buf);
-+exit_close:
-+	fclose(f);
-+	return btf;
-+}
-+
-+static bool is_btf_raw(const char *file)
-+{
-+	__u16 magic = 0;
-+	int fd, nb_read;
-+
-+	fd = open(file, O_RDONLY);
-+	if (fd < 0)
-+		return false;
-+
-+	nb_read = read(fd, &magic, sizeof(magic));
-+	close(fd);
-+	return nb_read == sizeof(magic) && magic == BTF_MAGIC;
-+}
-+
-+static struct btf *btf_open(const char *path)
-+{
-+	if (is_btf_raw(path))
-+		return btf__parse_raw(path);
-+	else
-+		return btf__parse_elf(path, NULL);
-+}
-+
-+BTF_ID_LIST(test_list)
-+BTF_ID_UNUSED
-+BTF_ID(typedef, pid_t)
-+BTF_ID(struct,  sk_buff)
-+BTF_ID(union,   thread_union)
-+BTF_ID(func,    memcpy)
-+
-+struct symbol {
-+	const char	*name;
-+	int		 type;
-+	int		 id;
-+};
-+
-+struct symbol test_symbols[] = {
-+	{ "unused",       -1,                0 },
-+	{ "pid_t",        BTF_KIND_TYPEDEF, -1 },
-+	{ "sk_buff",      BTF_KIND_STRUCT,  -1 },
-+	{ "thread_union", BTF_KIND_UNION,   -1 },
-+	{ "memcpy",       BTF_KIND_FUNC,    -1 },
-+};
-+
-+static int
-+__resolve_symbol(struct btf *btf, int type_id)
-+{
-+	const struct btf_type *type;
-+	const char *str;
-+	unsigned int i;
-+
-+	type = btf__type_by_id(btf, type_id);
-+	if (!type) {
-+		PRINT_FAIL("Failed to get type for ID %d\n", type_id);
-+		return -1;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(test_symbols); i++) {
-+		if (test_symbols[i].id != -1)
-+			continue;
-+
-+		if (BTF_INFO_KIND(type->info) != test_symbols[i].type)
-+			continue;
-+
-+		str = btf__name_by_offset(btf, type->name_off);
-+		if (!str) {
-+			PRINT_FAIL("Failed to get name for BTF ID %d\n", type_id);
-+			return -1;
-+		}
-+
-+		if (!strcmp(str, test_symbols[i].name))
-+			test_symbols[i].id = type_id;
-+	}
-+
-+	return 0;
-+}
-+
-+static int resolve_symbols(void)
-+{
-+	const char *path = VMLINUX_BTF;
-+	struct btf *btf;
-+	int type_id;
-+	__u32 nr;
-+
-+	btf = btf_open(path);
-+	if (CHECK(libbpf_get_error(btf), "resolve",
-+		  "Failed to load BTF from %s\n", path))
-+		return -1;
-+
-+	nr = btf__get_nr_types(btf);
-+
-+	for (type_id = 1; type_id <= nr; type_id++) {
-+		if (__resolve_symbol(btf, type_id))
-+			break;
-+	}
-+
-+	btf__free(btf);
-+	return 0;
-+}
-+
-+int test_resolve_btfids(void)
-+{
-+	unsigned int i;
-+	int ret = 0;
-+
-+	if (resolve_symbols())
-+		return -1;
-+
-+	/* Check BTF_ID_LIST(test_list) IDs */
-+	for (i = 0; i < ARRAY_SIZE(test_symbols) && !ret; i++) {
-+		ret = CHECK(test_list[i] != test_symbols[i].id,
-+			    "id_check",
-+			    "wrong ID for %s (%d != %d)\n", test_symbols[i].name,
-+			    test_list[i], test_symbols[i].id);
-+	}
-+
-+	return 0;
-+}
--- 
-2.25.4
+-Toke
 
