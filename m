@@ -2,171 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC25E213454
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 08:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72FA21380B
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 11:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgGCGjI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jul 2020 02:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgGCGjH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:39:07 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BE0C08C5C1;
-        Thu,  2 Jul 2020 23:39:07 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id CEA5DBC146;
-        Fri,  3 Jul 2020 06:38:53 +0000 (UTC)
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: BPF (Safe dynamic
- programs and tools)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
+        id S1725796AbgGCJv1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jul 2020 05:51:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25893 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726106AbgGCJv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jul 2020 05:51:27 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-szJDNIuGMyuT3Wq-PL38Mg-1; Fri, 03 Jul 2020 05:51:19 -0400
+X-MC-Unique: szJDNIuGMyuT3Wq-PL38Mg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24F91186A206;
+        Fri,  3 Jul 2020 09:51:17 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CD3C29CA0;
+        Fri,  3 Jul 2020 09:51:12 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-References: <20200702200516.13324-1-grandmaster@al2klimov.de>
- <CAADnVQKaL7cX2oCFLU7MW+CMf4ySbJf3tC3YqajDxgbuPCY-Cg@mail.gmail.com>
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Message-ID: <b06e1efb-b2e6-b06b-bf24-1369c42e8ace@al2klimov.de>
-Date:   Fri, 3 Jul 2020 08:38:52 +0200
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH v5 bpf-next 0/9] bpf: Add d_path helper - preparation changes
+Date:   Fri,  3 Jul 2020 11:51:02 +0200
+Message-Id: <20200703095111.3268961-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQKaL7cX2oCFLU7MW+CMf4ySbJf3tC3YqajDxgbuPCY-Cg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +
-X-Spam-Level: *
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+hi,
+this patchset does preparation work for adding d_path helper,
+which still needs more work, but the initial set of patches
+is ready and useful to have.
+
+This patchset adds:
+  - support to generate BTF ID lists that are resolved during
+    kernel linking and usable within kernel code with following
+    macros:
+
+      BTF_ID_LIST(bpf_skb_output_btf_ids)
+      BTF_ID(struct, sk_buff)
+
+    and access it in kernel code via:
+      extern u32 bpf_skb_output_btf_ids[];
+
+  - resolve_btfids tool that scans elf object for .BTF_ids
+    section and resolves its symbols with BTF ID values
+  - resolving of bpf_ctx_convert struct and several other
+    objects with BTF_ID_LIST
 
 
-Am 03.07.20 um 00:08 schrieb Alexei Starovoitov:
-> On Thu, Jul 2, 2020 at 1:05 PM Alexander A. Klimov
-> <grandmaster@al2klimov.de> wrote:
->>
->> Rationale:
->> Reduces attack surface on kernel devs opening the links for MITM
->> as HTTPS traffic is much harder to manipulate.
->>
->> Deterministic algorithm:
->> For each file:
->>    If not .svg:
->>      For each line:
->>        If doesn't contain `\bxmlns\b`:
->>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->>            If both the HTTP and HTTPS versions
->>            return 200 OK and serve the same content:
->>              Replace HTTP with HTTPS.
->>
->> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
->> ---
->>   Continuing my work started at 93431e0607e5.
->>
->>   If there are any URLs to be removed completely or at least not HTTPSified:
->>   Just clearly say so and I'll *undo my change*.
->>   See also https://lkml.org/lkml/2020/6/27/64
->>
->>   If there are any valid, but yet not changed URLs:
->>   See https://lkml.org/lkml/2020/6/26/837
->>
->>   Documentation/bpf/bpf_devel_QA.rst          | 4 ++--
->>   Documentation/bpf/index.rst                 | 2 +-
->>   Documentation/networking/af_xdp.rst         | 2 +-
->>   Documentation/networking/filter.rst         | 2 +-
->>   arch/x86/net/bpf_jit_comp.c                 | 2 +-
->>   include/linux/bpf.h                         | 2 +-
->>   include/linux/bpf_verifier.h                | 2 +-
->>   include/uapi/linux/bpf.h                    | 2 +-
->>   kernel/bpf/arraymap.c                       | 2 +-
->>   kernel/bpf/core.c                           | 2 +-
->>   kernel/bpf/disasm.c                         | 2 +-
->>   kernel/bpf/disasm.h                         | 2 +-
->>   kernel/bpf/hashtab.c                        | 2 +-
->>   kernel/bpf/helpers.c                        | 2 +-
->>   kernel/bpf/syscall.c                        | 2 +-
->>   kernel/bpf/verifier.c                       | 2 +-
->>   kernel/trace/bpf_trace.c                    | 2 +-
->>   lib/test_bpf.c                              | 2 +-
->>   net/core/filter.c                           | 2 +-
->>   samples/bpf/lathist_kern.c                  | 2 +-
->>   samples/bpf/lathist_user.c                  | 2 +-
->>   samples/bpf/sockex3_kern.c                  | 2 +-
->>   samples/bpf/tracex1_kern.c                  | 2 +-
->>   samples/bpf/tracex2_kern.c                  | 2 +-
->>   samples/bpf/tracex3_kern.c                  | 2 +-
->>   samples/bpf/tracex3_user.c                  | 2 +-
->>   samples/bpf/tracex4_kern.c                  | 2 +-
->>   samples/bpf/tracex4_user.c                  | 2 +-
->>   samples/bpf/tracex5_kern.c                  | 2 +-
->>   tools/include/uapi/linux/bpf.h              | 2 +-
->>   tools/lib/bpf/bpf.c                         | 2 +-
->>   tools/lib/bpf/bpf.h                         | 2 +-
->>   tools/testing/selftests/bpf/test_maps.c     | 2 +-
->>   tools/testing/selftests/bpf/test_verifier.c | 2 +-
->>   34 files changed, 35 insertions(+), 35 deletions(-)
-> 
-> Nacked-by: Alexei Starovoitov <ast@kernel.org>
-> 
-> Pls don't touch anything bpf related with such changes.
-https://lore.kernel.org/linux-doc/20200526060544.25127-1-grandmaster@al2klimov.de/
-– merged.
+v5 changes:
+  - added acks to patches I did not change in this version
+  - split the original patchset into 2 parts and sending the first one
+    where the support to define BTF list is added, the BTF set support
+    will be posted later on [Andrii]
+  - used u32 instead of int in btf_ids.h [Andrii]
+  - changed the btf_ids.h define guard [Andrii]
+  - added resolve_btfids_clean target [Andrii]
+  - moved resolve_btfids test into prog_tests suite [Andrii]
+  - fixed BTF type iteration index in test [Andrii]
+  - removed btf_id checks in bpf_ctx_convert resolve code [Yonghong]
+  - removed WARN_ON_ONCE from btf_resolve_helper_id [Yonghong]
+  - added BTF_ID_UNUSED macro [Yonghong]
+  - fixed out of the tree build failure [0day bot]
 
-https://lore.kernel.org/linux-doc/20200608181649.74883-1-grandmaster@al2klimov.de/
-– applied.
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/d_path
 
-https://lore.kernel.org/linux-doc/20200620075402.22347-1-grandmaster@al2klimov.de/
-– applied.
+thanks,
+jirka
 
-https://lore.kernel.org/linux-doc/20200621133512.46311-1-grandmaster@al2klimov.de/
-– applied.
 
-https://lore.kernel.org/linux-doc/20200621133552.46371-1-grandmaster@al2klimov.de/
-– applied.
+---
+Jiri Olsa (9):
+      bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
+      bpf: Compile resolve_btfids tool at kernel compilation start
+      bpf: Add BTF_ID_LIST/BTF_ID/BTF_ID_UNUSED macros
+      bpf: Resolve BTF IDs in vmlinux image
+      bpf: Remove btf_id helpers resolving
+      bpf: Use BTF_ID to resolve bpf_ctx_convert struct
+      bpf: Add info about .BTF.ids section to btf.rst
+      tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
+      selftests/bpf: Add test for resolve_btfids
 
-https://lore.kernel.org/linux-doc/20200621133630.46435-1-grandmaster@al2klimov.de/
-– applied.
+ Documentation/bpf/btf.rst                               |  36 +++++
+ Makefile                                                |  25 +++-
+ include/asm-generic/vmlinux.lds.h                       |   4 +
+ include/linux/btf_ids.h                                 |  87 ++++++++++++
+ kernel/bpf/btf.c                                        | 103 ++------------
+ kernel/trace/bpf_trace.c                                |   9 +-
+ net/core/filter.c                                       |   9 +-
+ scripts/link-vmlinux.sh                                 |   6 +
+ tools/Makefile                                          |   3 +
+ tools/bpf/Makefile                                      |   9 +-
+ tools/bpf/resolve_btfids/Build                          |  26 ++++
+ tools/bpf/resolve_btfids/Makefile                       |  77 +++++++++++
+ tools/bpf/resolve_btfids/main.c                         | 716 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/btf_ids.h                           |  87 ++++++++++++
+ tools/include/linux/compiler.h                          |   4 +
+ tools/testing/selftests/bpf/Makefile                    |  22 ++-
+ tools/testing/selftests/bpf/prog_tests/resolve_btfids.c | 170 +++++++++++++++++++++++
+ 17 files changed, 1289 insertions(+), 104 deletions(-)
+ create mode 100644 include/linux/btf_ids.h
+ create mode 100644 tools/bpf/resolve_btfids/Build
+ create mode 100644 tools/bpf/resolve_btfids/Makefile
+ create mode 100644 tools/bpf/resolve_btfids/main.c
+ create mode 100644 tools/include/linux/btf_ids.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
 
-https://lore.kernel.org/linux-doc/20200627103050.71712-1-grandmaster@al2klimov.de/
-– applied.
-
-https://lore.kernel.org/linux-doc/20200627103125.71828-1-grandmaster@al2klimov.de/
-– reviewed.
-
-https://lore.kernel.org/linux-doc/20200627103151.71942-1-grandmaster@al2klimov.de/
-– reviewed.
-
-This one – no, pls not.
-
-Why exactly not? Are these URLs not being opened at all (What they're 
-doing there then?) or have all who open them the HTTPS everywhere 
-browser addon installed?
-
-> 
