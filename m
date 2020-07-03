@@ -2,76 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AD7213237
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 05:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DAA21323D
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 05:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgGCDag (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 23:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S1726108AbgGCDei (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 23:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgGCDag (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:30:36 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C710C08C5C1;
-        Thu,  2 Jul 2020 20:30:36 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id z24so10179193ljn.8;
-        Thu, 02 Jul 2020 20:30:36 -0700 (PDT)
+        with ESMTP id S1726033AbgGCDeh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 23:34:37 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7EFC08C5C1
+        for <bpf@vger.kernel.org>; Thu,  2 Jul 2020 20:34:36 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id k15so17557258lfc.4
+        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 20:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fMHCiIT2igJGwMje+1cDDRM9eOFHpROEjGTjyJAQ6UA=;
-        b=cUvReugxvHXq0NF/DEFSRH0pIuBN+80rWrWaSAF7RBrmx6Mbd4uL+mrZjbd0Xm9JJK
-         lA5tx3QnaRgImf5ANt03B1zmXajLL+nrRpsl7Nun+p90uzzfOx0RnWw98J9vrYNaxSY6
-         HrXixvE7OL2pbIxsHdBlrv4DIPAl87Ev/o+qoddTCv9LYvmcyQsCbG8a31LbIN4PaWux
-         Ana6knxghyN7RbLSKA+Ne56q7bhtB+lzGwiWde7sbYHVK1dIZIlZfKlVI6wyZpw7OLxJ
-         QzCJaB5Mb0GBTW5CdofhfILZO9i0Z3upiST3DVEBZMK5phveLbBe+KQdBPzK5FE4sU4S
-         14oA==
+        bh=4wli8ZcJVLYQtZApOQ4JVDxFTolfDVKYqXzyK7UfBOE=;
+        b=XkXiNIaFugtsbR5MF0IvoekJeeOpbXuPFGZ5DuEEReeRvY3Jg69vp+irshARRv8GRT
+         dFOpxpATFrJ36zAWxQIxPZ86OZe7w/NSoYwqQ0MEpjCplgxLXcnZwTk8yKUXpfchQw5R
+         AafWJzGSEByYHSIXtQjx9ZMAT17Ww4IKv2954=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fMHCiIT2igJGwMje+1cDDRM9eOFHpROEjGTjyJAQ6UA=;
-        b=qhfTYrI4f8VsZUgOUulAuC/5SND0SEWVNX14bchd0f1O9uQ65BLEvqKcnqYnyh2XdQ
-         wZCapi82kbjxor1sshtCa7au2Hz8y+O0rIllmbz09gVcLadjZcaDv/Ex1PU5r0KLcvU4
-         TRurMO2YHmAa1bdBBu+TL8hKJH2cxZjVCzMev/MVV0awXs7mbxHaVHQB8jfpeILa8QBx
-         j9DF9siqPnQaMANwqgjXItKv8kLDLpWI+p/9LE+Aa7y7zlDWRJOHcA2R0mquxqUvAg64
-         bxiK9vVymYvjcJcGepjpg8tP2lTZC42Vf5NWeQtQE3YqAhaBguBLfNu+fqZe4ztftAHE
-         AYpQ==
-X-Gm-Message-State: AOAM530NwgscnPfRWXqDhH+Nw0iXCZCevjxAzayi0Rwx+rpg21tTF6nQ
-        jJg2YfsMYXxAzUCc+IoVhB5J0xJXdyKGqXL9CLk=
-X-Google-Smtp-Source: ABdhPJwvHXVhM286nvN0jfNw6TZ+YFd2D9K4jSUIJiWaOqcFEKj0X5NIE6+LEvJwNzZX0SI9kMNnV4zB7OhTcSTuTiM=
-X-Received: by 2002:a2e:8ec8:: with SMTP id e8mr8364149ljl.51.1593747034572;
- Thu, 02 Jul 2020 20:30:34 -0700 (PDT)
+        bh=4wli8ZcJVLYQtZApOQ4JVDxFTolfDVKYqXzyK7UfBOE=;
+        b=Uc3vEGbu2lprIJkOxwpfQY1ilIQaFDG5EnEoW2ntwLn7xiamm1hrflrTPV/VMlY4z7
+         aws0jgDLfiV4u3OrSeMom/YpZV0wdpIKCkIfBVS26rwr0pSvXhn5NgkEdQdx8SFiEX74
+         i7Fi73W0R71AEsofD7l+whS9o0koRXO6rypDEQOZsyaXR5AgTXrI12/VBLU4H4AUs/Ch
+         akpN/FOh3onOf9pW6uzUxDoiweVQ4pBmVTtOm1deFXhygw3Op6ZIe2WYSF6GskvgQtuj
+         UrEOrCToWP3qZiZ62dy+vHui2mIuZIBDGCfYCTPqF/9jWTrIJQLBxwAaa24wkfit1aou
+         6VlQ==
+X-Gm-Message-State: AOAM531bx35kp+R52lzo/vW4Dc9R5UvLvATtXxPcERRo9cZLww0696qC
+        MNlGASpA8oRAz9assJRK7fGtkls5OqE=
+X-Google-Smtp-Source: ABdhPJwwNSBSSQwBHH21YJIrXNKvVhN8eNSjR4472A2bUBW6IVo86HXODsyYjRyFDfN80MGG/eajPA==
+X-Received: by 2002:a19:2292:: with SMTP id i140mr20344792lfi.95.1593747274302;
+        Thu, 02 Jul 2020 20:34:34 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id 2sm4125108lfr.48.2020.07.02.20.34.33
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 20:34:33 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id e4so35123735ljn.4
+        for <bpf@vger.kernel.org>; Thu, 02 Jul 2020 20:34:33 -0700 (PDT)
+X-Received: by 2002:a05:651c:1b6:: with SMTP id c22mr15442024ljn.421.1593747272949;
+ Thu, 02 Jul 2020 20:34:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200703024537.79971-1-songliubraving@fb.com>
-In-Reply-To: <20200703024537.79971-1-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Jul 2020 20:30:23 -0700
-Message-ID: <CAADnVQK+7MrnvjowvuNzBJFp9i7L8WK_Zi_9y=+dtaRC6BzXAw@mail.gmail.com>
-Subject: Re: [bpf-next] bpf: fix build without CONFIG_STACKTRACE
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20200702200329.83224-1-alexei.starovoitov@gmail.com>
+ <20200702200329.83224-4-alexei.starovoitov@gmail.com> <CAHk-=wgP8g-9RdVh_AHHi9=Jpw2Qn=sSL8j9DqhqGyTtG+MWBA@mail.gmail.com>
+ <20200703023547.qpu74obn45qvb2k7@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200703023547.qpu74obn45qvb2k7@ast-mbp.dhcp.thefacebook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Jul 2020 20:34:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiBi3sjtL0JNzcPTYEOFomU9Oqz_vD=oHznxyQYGBRi5Q@mail.gmail.com>
+Message-ID: <CAHk-=wiBi3sjtL0JNzcPTYEOFomU9Oqz_vD=oHznxyQYGBRi5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpf: Add kernel module with user mode driver
+ that populates bpffs.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        kernel test robot <lkp@intel.com>
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 7:45 PM Song Liu <songliubraving@fb.com> wrote:
+On Thu, Jul 2, 2020 at 7:35 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Without CONFIG_STACKTRACE stack_trace_save_tsk() is not defined. Let
-> get_callchain_entry_for_task() to always return NULL in such cases.
+> On Thu, Jul 02, 2020 at 06:05:29PM -0700, Linus Torvalds wrote:
+> > On Thu, Jul 2, 2020 at 1:03 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > The BPF program dump_bpf_prog() in iterators.bpf.c is printing this data about
+> > > all BPF programs currently loaded in the system. This information is unstable
+> > > and will change from kernel to kernel.
+> >
+> > If so, it should probably be in debugfs, not in /sys/fs/
 >
-> Fixes: fa28dcb82a38 ("bpf: Introduce helper bpf_get_task_stack()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+> /sys/fs/bpf/ is just a historic location where we chose to mount bpffs.
 
-Applied. Thanks
+It's more the "information is unstable and will change from kernel to kernel"
+
+No such interfaces exist. If people start parsing it and depending it,
+it's suddenly an ABI, whether you want to or not (and whether you
+documented it or not).
+
+At least if it's in /sys/kernel/debug/bpf/ or something, it's less
+likely that anybody will do that.
+
+               Linus
