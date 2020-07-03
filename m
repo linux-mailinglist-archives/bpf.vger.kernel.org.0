@@ -2,38 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0476D2140BC
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 23:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89A92140D8
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 23:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgGCVWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jul 2020 17:22:54 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60170 "EHLO
+        id S1726885AbgGCVa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jul 2020 17:30:59 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60954 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgGCVWx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:22:53 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S1726874AbgGCVa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jul 2020 17:30:59 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jrT8z-0007MC-V1; Fri, 03 Jul 2020 23:22:50 +0200
+        id 1jrTGs-0007uq-1i; Fri, 03 Jul 2020 23:30:58 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jrT8z-000KUz-O9; Fri, 03 Jul 2020 23:22:49 +0200
-Subject: Re: [bpf-next PATCH v2] bpf: fix bpftool without skeleton code
- enabled
-To:     John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
-        andriin@fb.com, ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <159375071997.14984.17404504293832961401.stgit@john-XPS-13-9370>
+        id 1jrTGr-00049V-Re; Fri, 03 Jul 2020 23:30:57 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation error of
+ bpf_iter_task_stack.c
+To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     ast@kernel.org, kernel-team@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, brouer@redhat.com
+References: <20200703181719.3747072-1-songliubraving@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <613cfcd0-a4e2-d193-6d23-883f27a35a4a@iogearbox.net>
-Date:   Fri, 3 Jul 2020 23:22:49 +0200
+Message-ID: <1c82c7d9-4f3e-feb1-05b2-a655acada7e3@iogearbox.net>
+Date:   Fri, 3 Jul 2020 23:30:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <159375071997.14984.17404504293832961401.stgit@john-XPS-13-9370>
+In-Reply-To: <20200703181719.3747072-1-songliubraving@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,22 +45,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/3/20 6:31 AM, John Fastabend wrote:
-> Fix segfault from bpftool by adding emit_obj_refs_plain when skeleton
-> code is disabled.
+On 7/3/20 8:17 PM, Song Liu wrote:
+> selftests/bpf shows compilation error as
 > 
-> Tested by deleting BUILD_BPF_SKELS in Makefile. We found this doing
-> backports for Cilium when a testing image pulled in latest bpf-next
-> bpftool, but kept using an older clang-7.
+>    libbpf: invalid relo for 'entries' in special section 0xfff2; forgot to
+>    initialize global var?..
 > 
-> # ./bpftool prog show
-> Error: bpftool built without PID iterator support
-> 3: cgroup_skb  tag 7be49e3934a125ba  gpl
->          loaded_at 2020-07-01T08:01:29-0700  uid 0
-> Segmentation fault
+> Fix it by initializing 'entries' to zeros.
 > 
-> Reported-by: Joe Stringer <joe@wand.net.nz>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
+> Fixes: c7568114bc56 ("selftests/bpf: Add bpf_iter test with bpf_get_task_stack()")
+> Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
 Applied, thanks!
