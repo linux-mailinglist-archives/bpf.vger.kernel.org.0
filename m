@@ -2,77 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9B3213043
-	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 01:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC0421308A
+	for <lists+bpf@lfdr.de>; Fri,  3 Jul 2020 02:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgGBXws (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jul 2020 19:52:48 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:50211 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBXws (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:52:48 -0400
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 062NpYvX013592;
-        Fri, 3 Jul 2020 08:51:34 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Fri, 03 Jul 2020 08:51:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 062NpXER013497
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 3 Jul 2020 08:51:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v3 00/16] Make the user mode driver code a better citizen
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1726028AbgGCApS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jul 2020 20:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgGCApS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jul 2020 20:45:18 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A368C08C5C1;
+        Thu,  2 Jul 2020 17:45:18 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cv18so6738519pjb.1;
+        Thu, 02 Jul 2020 17:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xxCISvRtfhl8oL/cHz8IcSytvLoDXt2VBe6qFVBHxUE=;
+        b=nJjrrEkUAQCGFmGDNhnb5PVExZ3pDaEIWh7BZWYbQZD2UR9o86pnVnUTyuKaTuTJDW
+         Jpv6HrHW6Wd96BITv2uK8OH5weHw4hI8kcRDXFq3O1XzNvOlUrd+DUkufbneM1Hsi6JO
+         v3E0y8rkNX6xX9HKg44GveDw1iZsMMTNN8nogn4UObvseMisxlDOj+eeiCbfVr/pr/0m
+         JVMZVayOQCVBgveyiz63ZuW/T6mj4yECIx+Ui3dqVTXvj4WHXz2SXPuuaVC4XL8uWQvP
+         o8ct/VHBaCQkVA3WFDpmBrAzUREPYlYXnmBY40tobsjxomCu7nyheU/mGfpxUiCtZ5Fz
+         uPag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xxCISvRtfhl8oL/cHz8IcSytvLoDXt2VBe6qFVBHxUE=;
+        b=eKUpemZ8+x+FBdCqiH1eJGSJmZAnnrzKXgXRansfe/SNLmlIad3NilrcaOhK0zGH98
+         jj+NZufn8HJWjCR0Us6OAYCPZ8CXFm88tIE8unbomcfaPitCN31NQ8Uu/DFMYXR2tJp9
+         oOYiC3er2gJAmSUSM3BLEwcfnqlu0DfIuA4emtNYnKuu2ZiBnxXoUqWYPSZGHUfhSxP8
+         AA6MY6zbpsT5/Tu1/y2+279qEZHRK7ABgyct5OJiUoeoMfvBT+Ot/x4DnNmAAZY11jv+
+         T9EJ6N+klwYNLf3xyrP15u0GjLT6onEZ1/2SG5B59goF+RUxvknbAnrydVyU7L819QpA
+         mJ4g==
+X-Gm-Message-State: AOAM530OIiyzeaf6A7xxHA4Xf7wcMXBmKH/sJ2UiHnphUyVbJiv9m7LJ
+        c2H9FpawIfRWfH422DGiqzZm4huXj9o=
+X-Google-Smtp-Source: ABdhPJz+qnIK30TK5zKdKNpuN2jPEhIs1H8VMPfoPIeYzhAgJgFZjY/TlqevmnyCB1cDQRYUNKAH3A==
+X-Received: by 2002:a17:902:369:: with SMTP id 96mr6833712pld.214.1593737117645;
+        Thu, 02 Jul 2020 17:45:17 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 125sm9302049pff.130.2020.07.02.17.45.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 Jul 2020 17:45:17 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 17:45:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     rentao.bupt@gmail.com
+Cc:     Jean Delvare <jdelvare@suse.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
- <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <7f6f0c1a-360a-c37f-de4e-854f0b97f3d3@i-love.sakura.ne.jp>
-Date:   Fri, 3 Jul 2020 08:51:32 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        openbmc@lists.ozlabs.org,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>, taoren@fb.com
+Subject: Re: [PATCH] hwmon: (pmbus) fix a typo in Kconfig SENSORS_IR35221
+ option
+Message-ID: <20200703004516.GA100326@roeck-us.net>
+References: <20200702221349.18139-1-rentao.bupt@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702221349.18139-1-rentao.bupt@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/07/03 1:40, Eric W. Biederman wrote:
+On Thu, Jul 02, 2020 at 03:13:49PM -0700, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
 > 
-> This is the third round of my changeset to split the user mode driver
-> code from the user mode helper code, and to make the code use common
-> facilities to get things done instead of recreating them just
-> for the user mode driver code.
+> Fix a typo in SENSORS_IR35221 option: module name should be "ir35221"
+> instead of "ir35521".
+> 
+> Fixes: 8991ebd9c9a6 ("hwmon: (pmbus) Add client driver for IR35221")
+> 
+> Cc: Samuel Mendoza-Jonas <sam@mendozajonas.com>
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 
-I won't test this version, for you are ignoring my comments.
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  drivers/hwmon/pmbus/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index 3ad97fd5ce03..e35db489b76f 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -71,7 +71,7 @@ config SENSORS_IR35221
+>  	  Infineon IR35221 controller.
+>  
+>  	  This driver can also be built as a module. If so, the module will
+> -	  be called ir35521.
+> +	  be called ir35221.
+>  
+>  config SENSORS_IR38064
+>  	tristate "Infineon IR38064"
