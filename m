@@ -2,177 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A111B214BBA
-	for <lists+bpf@lfdr.de>; Sun,  5 Jul 2020 11:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E24214E95
+	for <lists+bpf@lfdr.de>; Sun,  5 Jul 2020 20:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgGEJyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Jul 2020 05:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726933AbgGEJyk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Jul 2020 05:54:40 -0400
-Received: from localhost.localdomain (unknown [151.48.133.17])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49ADD20874;
-        Sun,  5 Jul 2020 09:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593942880;
-        bh=xGGCwJyQKttxcdjHl94Sw5BX3hMVWjAz+iq1Fv6tWZI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jlxTVY2Byh6k5yDHAAxKIV+pOcMLQj9mkjZ9RYM274kI5rlNKsc4lvxiWjy8rxaQw
-         44f2qFiXgX/f5x2xbdpfG/DU1Y7q1etOTyffl+C2uzbTXM3yByEKT9mxYYZl3jKEkz
-         pG4Vk+/izaRQT8dBN31Lr1Vn0tfbBg19u4DAfx1U=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
-        daniel@iogearbox.net, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        dsahern@kernel.org, andrii.nakryiko@gmail.com
-Subject: [PATCH v6 bpf-next 9/9] selftest: add tests for XDP programs in CPUMAP entries
-Date:   Sun,  5 Jul 2020 11:54:00 +0200
-Message-Id: <68c7c81e809b96497f5f24d712e8fd398971381b.1593941896.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1593941895.git.lorenzo@kernel.org>
-References: <cover.1593941895.git.lorenzo@kernel.org>
+        id S1727948AbgGESlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Jul 2020 14:41:21 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33929 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727843AbgGESlU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Jul 2020 14:41:20 -0400
+Received: by mail-il1-f199.google.com with SMTP id y3so14373450ily.1
+        for <bpf@vger.kernel.org>; Sun, 05 Jul 2020 11:41:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wwEam32TmxH45e9sLjA3XeLOu5dFb4Fi6bFCRKi5JYw=;
+        b=PDAxi1Bba3HE0p2p2HPuIJ01BKLY/BYFXxN8qWzAk/iGYMMFDNx9daJ3pRD+OWx2H5
+         aTVL64Ig5AYXTmEHY/cYVAQddkvHOUjSX+/L0Ltn8Rf1QTFfzeDnSzI3z/7SOdRI7vyL
+         nOPlrXPDyRF6lieoBWbx4q+3l7zut0kk/lftX30Key4xeisAZZGBuT7XvN2Zo+uATGt4
+         UEIt63GAWDO/oCVRliOKOQxrPfMYqSANIwmVWn4PM2aYiQpuQyQTjVTQBILlZUvGp0GN
+         r0d9sAjYviVt56kFKwC6rPdcka7MGe6yZapYoMlQBT3LHTOZAIqTw6LLiTty0gab23iR
+         zoCw==
+X-Gm-Message-State: AOAM533IhafmUs4ovaMIFrS/rFmpxoZd+nUVHgNw9dKp2jTIvDWjb1rL
+        SlYGqnYPN26R1UZu5OevhXLJ5t8W6JJQcnfFGAoIetwgH9Wx
+X-Google-Smtp-Source: ABdhPJyx4TFwKSNypIjQEOlcBOSjN8j+FzwTS1I52dhkPmJTXGgkqmNZurlrxqIgQJw++74hijOceMDZ7OHK315H+Vhwfw5Lfxmz
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:8f0b:: with SMTP id f11mr22021918iof.200.1593974479552;
+ Sun, 05 Jul 2020 11:41:19 -0700 (PDT)
+Date:   Sun, 05 Jul 2020 11:41:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a2851c05a9b61ad8@google.com>
+Subject: general protection fault in __btf_resolve_helper_id
+From:   syzbot <syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similar to what have been done for DEVMAP, introduce tests to verify
-ability to add a XDP program to an entry in a CPUMAP.
-Verify CPUMAP programs can not be attached to devices as a normal
-XDP program, and only programs with BPF_XDP_CPUMAP attach type can
-be loaded in a CPUMAP.
+Hello,
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+syzbot found the following crash on:
+
+HEAD commit:    9e50b94b Add linux-next specific files for 20200703
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10327e6d100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f99cc0faa1476ed6
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee09bda7017345f1fbe6
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d9e39b100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b597d3100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000009: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
+CPU: 0 PID: 6799 Comm: syz-executor682 Not tainted 5.8.0-rc3-next-20200703-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__btf_resolve_helper_id+0x149/0xb10 kernel/bpf/btf.c:4102
+Code: 80 3c 03 00 0f 85 dd 08 00 00 48 8b 05 70 46 0a 0b 48 8d 78 48 48 89 04 24 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 50 09 00 00 48 8b 04 24 31 ff
+RSP: 0018:ffffc90001637378 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 1ffffffff1926068 RCX: ffffffff816aa4b6
+RDX: 0000000000000009 RSI: ffffffff8188bcb1 RDI: 0000000000000048
+RBP: ffffffff818ba3d0 R08: ffffc900016373e4 R09: ffffc90001637670
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff888096648260 R15: ffff888096648000
+FS:  0000000000cc2880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000282 CR3: 00000000a6dbe000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ btf_resolve_helper_id+0x10c/0x1c0 kernel/bpf/btf.c:4164
+ check_helper_call+0x1641/0x5650 kernel/bpf/verifier.c:4721
+ do_check kernel/bpf/verifier.c:8938 [inline]
+ do_check_common+0x7253/0xc2d0 kernel/bpf/verifier.c:10574
+ do_check_main kernel/bpf/verifier.c:10640 [inline]
+ bpf_check+0x857f/0xce51 kernel/bpf/verifier.c:11093
+ bpf_prog_load+0xdaf/0x1b50 kernel/bpf/syscall.c:2194
+ __do_sys_bpf+0x1edf/0x4b10 kernel/bpf/syscall.c:4112
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:367
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440379
+Code: Bad RIP value.
+RSP: 002b:00007ffee37aa6d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440379
+RDX: 0000000000000048 RSI: 0000000020000080 RDI: 0000000000000005
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401c00
+R13: 0000000000401c90 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace d5a7c4fec6f343c9 ]---
+RIP: 0010:__btf_resolve_helper_id+0x149/0xb10 kernel/bpf/btf.c:4102
+Code: 80 3c 03 00 0f 85 dd 08 00 00 48 8b 05 70 46 0a 0b 48 8d 78 48 48 89 04 24 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 50 09 00 00 48 8b 04 24 31 ff
+RSP: 0018:ffffc90001637378 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 1ffffffff1926068 RCX: ffffffff816aa4b6
+RDX: 0000000000000009 RSI: ffffffff8188bcb1 RDI: 0000000000000048
+RBP: ffffffff818ba3d0 R08: ffffc900016373e4 R09: ffffc90001637670
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff888096648260 R15: ffff888096648000
+FS:  0000000000cc2880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000282 CR3: 00000000a6dbe000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- .../bpf/prog_tests/xdp_cpumap_attach.c        | 70 +++++++++++++++++++
- .../bpf/progs/test_xdp_with_cpumap_helpers.c  | 36 ++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-new file mode 100644
-index 000000000000..0176573fe4e7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <uapi/linux/bpf.h>
-+#include <linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include "test_xdp_with_cpumap_helpers.skel.h"
-+
-+#define IFINDEX_LO	1
-+
-+void test_xdp_with_cpumap_helpers(void)
-+{
-+	struct test_xdp_with_cpumap_helpers *skel;
-+	struct bpf_prog_info info = {};
-+	struct bpf_cpumap_val val = {
-+		.qsize = 192,
-+	};
-+	__u32 duration = 0, idx = 0;
-+	__u32 len = sizeof(info);
-+	int err, prog_fd, map_fd;
-+
-+	skel = test_xdp_with_cpumap_helpers__open_and_load();
-+	if (CHECK_FAIL(!skel)) {
-+		perror("test_xdp_with_cpumap_helpers__open_and_load");
-+		return;
-+	}
-+
-+	/* can not attach program with cpumaps that allow programs
-+	 * as xdp generic
-+	 */
-+	prog_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
-+	err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
-+	CHECK(err == 0, "Generic attach of program with 8-byte CPUMAP",
-+	      "should have failed\n");
-+
-+	prog_fd = bpf_program__fd(skel->progs.xdp_dummy_cm);
-+	map_fd = bpf_map__fd(skel->maps.cpu_map);
-+	err = bpf_obj_get_info_by_fd(prog_fd, &info, &len);
-+	if (CHECK_FAIL(err))
-+		goto out_close;
-+
-+	val.bpf_prog.fd = prog_fd;
-+	err = bpf_map_update_elem(map_fd, &idx, &val, 0);
-+	CHECK(err, "Add program to cpumap entry", "err %d errno %d\n",
-+	      err, errno);
-+
-+	err = bpf_map_lookup_elem(map_fd, &idx, &val);
-+	CHECK(err, "Read cpumap entry", "err %d errno %d\n", err, errno);
-+	CHECK(info.id != val.bpf_prog.id, "Expected program id in cpumap entry",
-+	      "expected %u read %u\n", info.id, val.bpf_prog.id);
-+
-+	/* can not attach BPF_XDP_CPUMAP program to a device */
-+	err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
-+	CHECK(err == 0, "Attach of BPF_XDP_CPUMAP program",
-+	      "should have failed\n");
-+
-+	val.qsize = 192;
-+	val.bpf_prog.fd = bpf_program__fd(skel->progs.xdp_dummy_prog);
-+	err = bpf_map_update_elem(map_fd, &idx, &val, 0);
-+	CHECK(err == 0, "Add non-BPF_XDP_CPUMAP program to cpumap entry",
-+	      "should have failed\n");
-+
-+out_close:
-+	test_xdp_with_cpumap_helpers__destroy(skel);
-+}
-+
-+void test_xdp_cpumap_attach(void)
-+{
-+	if (test__start_subtest("cpumap_with_progs"))
-+		test_xdp_with_cpumap_helpers();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-new file mode 100644
-index 000000000000..59ee4f182ff8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define IFINDEX_LO	1
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CPUMAP);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_cpumap_val));
-+	__uint(max_entries, 4);
-+} cpu_map SEC(".maps");
-+
-+SEC("xdp_redir")
-+int xdp_redir_prog(struct xdp_md *ctx)
-+{
-+	return bpf_redirect_map(&cpu_map, 1, 0);
-+}
-+
-+SEC("xdp_dummy")
-+int xdp_dummy_prog(struct xdp_md *ctx)
-+{
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp_cpumap/dummy_cm")
-+int xdp_dummy_cm(struct xdp_md *ctx)
-+{
-+	if (ctx->ingress_ifindex == IFINDEX_LO)
-+		return XDP_DROP;
-+
-+	return XDP_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.26.2
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
