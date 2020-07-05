@@ -2,79 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C851214EF1
-	for <lists+bpf@lfdr.de>; Sun,  5 Jul 2020 21:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E414214F35
+	for <lists+bpf@lfdr.de>; Sun,  5 Jul 2020 22:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgGETmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Jul 2020 15:42:36 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24042 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727892AbgGETmg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 5 Jul 2020 15:42:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593978155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Nre+vcTZuioR9qndvPPDHYxrgwQ/M91HckbWLUZ5+GI=;
-        b=GEhJ6DMgET96C3B5LDrSaFxlRGouJP2lWaD+lNXEm6k4UADU+/7IKA/86f232D+6ejcNvW
-        1Z1DiVE6boUnQrBM1zJURodjhzFU1Skx0WtB0rGTEH5R1pi7N5DLC4Rjj70kLgjOwVKtRD
-        IZQNbMq1Q6Clya4BsbepTO6Fov0uHQA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-C0tMnLRYPvyuwOP0ZQNRZA-1; Sun, 05 Jul 2020 15:42:33 -0400
-X-MC-Unique: C0tMnLRYPvyuwOP0ZQNRZA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BC321005510;
-        Sun,  5 Jul 2020 19:42:31 +0000 (UTC)
-Received: from krava (unknown [10.40.192.42])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D40AB7BD7F;
-        Sun,  5 Jul 2020 19:42:25 +0000 (UTC)
-Date:   Sun, 5 Jul 2020 21:42:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     linux-s390@vger.kernel.org,
-        Sumanth Korikkar <Sumanth.Korikkar@ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, bas@baslab.org,
-        Matheus Marchini <mat@mmarchini.me>, Daniel Xu <dxu@dxuuu.xyz>
-Subject: bpf: bpf_probe_read helper restriction on s390x
-Message-ID: <20200705194225.GB3356590@krava>
+        id S1728244AbgGEUSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Jul 2020 16:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728128AbgGEUSD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Jul 2020 16:18:03 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E28AC061794
+        for <bpf@vger.kernel.org>; Sun,  5 Jul 2020 13:18:03 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id c11so21416794lfh.8
+        for <bpf@vger.kernel.org>; Sun, 05 Jul 2020 13:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bli7823nzgPd4+zzTvhEWYIQlQOolCEdTUm/wr04xHI=;
+        b=R7tVqK4S06XyeSJoTsJjrNQfFwww4cEHoPm/CtrrugENTDy1vqCVO+sDyMGWTFks1W
+         5RawwMRBiS/INbOjWFg3B9vdk7NUoOnjuO+5/kBRz+Eb+sT5BIBi86j23t13MrcW941E
+         tjh8GC9eV5hPjYuXImtn6v1yDp1zlaW2xJOOU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bli7823nzgPd4+zzTvhEWYIQlQOolCEdTUm/wr04xHI=;
+        b=jlFc8NK4nnkLqGtBKWWicO35kzpo3snehDfaxNp2EkphMmyPqKtG3TcXK5DQgoQV/d
+         ZW02YH8IFTngtU32REr7pFCOgQTjMQEvInHB0RnCNxcBRpAvLtGVb6Gi73zz0gGvHSHZ
+         wITaHJ7yuHZYAJ7bnA/MaxL1BfaDI6wk7ov8JZqhNWjqiJkvTg9FO4YHMuDfq9QZNpig
+         KHXLHiFXkVnIfOaHGBGSNVghCTA7VJEpSrmQEgeJVdlZrfJd+wJhvALmGlBMMcEuqMtR
+         977uJLdP5bo652GY0cO+YZr4kMJMpqSZWGU4oapbHtqLNWC41yfhPkJBGId6fG45ascf
+         kT+g==
+X-Gm-Message-State: AOAM533sX+g0i6YBBt9w23hWsSkICjGxq5AwdJzoYdOnEnrbQ+7ea23p
+        3hT+otluMsQDTBoXltnJVAfRARJUtik=
+X-Google-Smtp-Source: ABdhPJyfcSJYsyUJJtnRrBO8mBfnYhMgSEAIRouDIAtjmZeKK5wI/y+mWGztOvbvr7HKqV8Uyb3W9w==
+X-Received: by 2002:a19:4209:: with SMTP id p9mr28392254lfa.198.1593980281728;
+        Sun, 05 Jul 2020 13:18:01 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id u19sm9826867ljk.0.2020.07.05.13.18.01
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jul 2020 13:18:01 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id e4so42960582ljn.4
+        for <bpf@vger.kernel.org>; Sun, 05 Jul 2020 13:18:01 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr24759339ljj.102.1593979869955;
+ Sun, 05 Jul 2020 13:11:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200702232638.2946421-1-keescook@chromium.org>
+ <20200702232638.2946421-5-keescook@chromium.org> <CAHk-=wiZi-v8Xgu_B3wV0B4RQYngKyPeONdiXNgrHJFU5jbe1w@mail.gmail.com>
+ <202007030848.265EA58@keescook>
+In-Reply-To: <202007030848.265EA58@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 5 Jul 2020 13:10:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgEkTsNRvEM9W_JiVN6t70SnPuP=-1=LyhLS_BJ25Q4sQ@mail.gmail.com>
+Message-ID: <CAHk-=wgEkTsNRvEM9W_JiVN6t70SnPuP=-1=LyhLS_BJ25Q4sQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] kprobes: Do not expose probe addresses to non-CAP_SYSLOG
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dominik Czarnota <dominik.czarnota@trailofbits.com>,
+        stable <stable@vger.kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matteo Croce <mcroce@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-with following commit:
-  0ebeea8ca8a4 bpf: Restrict bpf_probe_read{, str}() only to archs where they work
+On Fri, Jul 3, 2020 at 8:50 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> With 67 kthreads on a booted system, this patch does not immediately
+> blow up...
 
-the bpf_probe_read BPF helper is restricted on architectures that
-have 'non overlapping address space' and select following config:
+Did you try making read/write inc/dec that thing too? Or does that
+just blow up with tons of warnings?
 
-   select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-
-there's also nice explanation in this commit's changelog:
-  6ae08ae3dea2 bpf: Add probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers
-
-
-We have a problem with bpftrace not working properly on s390x because
-bpf_probe_read is no longer available, and bpftrace does not use
-bpf_probe_read_(user/kernel) variants yet.
-
-My question is if s390x is 'arch with overlapping address space' and we
-could fix this by adding ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE for s390x
-or we need to fix bpftrace to detect this, which we probably need to do
-in any case ;-)
-
-thanks,
-jirka
-
+                 Linus
