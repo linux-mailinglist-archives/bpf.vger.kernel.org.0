@@ -2,125 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDDF2152A2
-	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 08:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F5F21543C
+	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgGFGV0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 02:21:26 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52125 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728907AbgGFGVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 02:21:25 -0400
-Received: by mail-io1-f70.google.com with SMTP id l1so1385569ioh.18
-        for <bpf@vger.kernel.org>; Sun, 05 Jul 2020 23:21:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bifEgsdlIbIjEg7pabMBEtW7TXHbbAKTyRXUw/iOlU8=;
-        b=P/akjTrUDsxHzpJpgkC/sKhunQ4qJ8B/8aYek+IjkiOAtCvxrpbH0ZEmiK1QPIEq/H
-         P5sLULmVOgbYkAta+LWgiGkpdWiHYAYsYnmOepLILodmP3mKR88nXaGRPBvqiO3enQmo
-         OroAL91sNW8jTA/UYsEpE9CItqqw2omQFC9jtI2mNBi3G0HCPSecysU34zErsYkrY/kQ
-         3R4+WYkhQdE7kP69yIIHww8GI3Ykv35CidCb4nBE09dmIb5YXfDp74UW314L/NT3x90z
-         XYmA2OmXdNC36b3OkCr9IfzuYo8v0Q74VpVdUfwYyM8hkuPt1w5WyThoX57xKOyPWpwR
-         NQeA==
-X-Gm-Message-State: AOAM531RlHOu7S8f84od9aufyLh66nNGamKRZaWVdUccL+VPlHNeqUpz
-        1QA2rdphzPTmPO76nHXwuCohgDnO1TA/lwlvPImF3XGJQozZ
-X-Google-Smtp-Source: ABdhPJw6BPaOH2iRFAYDzIDQMa6riVilt/mJUZnFImpXe7w6tQdhMjaeBAfMXo/O+u1Nxwguoe7XvpMby02Oa+p5AWim5fzXw0F0
-MIME-Version: 1.0
-X-Received: by 2002:a6b:e20b:: with SMTP id z11mr23417921ioc.2.1594016484899;
- Sun, 05 Jul 2020 23:21:24 -0700 (PDT)
-Date:   Sun, 05 Jul 2020 23:21:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059437305a9bfe2a2@google.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in bpf_prog_ADDR_L
-From:   syzbot <syzbot+a4c6e533af740abd3922@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1728530AbgGFIz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jul 2020 04:55:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44082 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728321AbgGFIz5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 6 Jul 2020 04:55:57 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0668XxYm126782;
+        Mon, 6 Jul 2020 04:55:41 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 322nx10ccc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 04:55:41 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0668Y0Ak126893;
+        Mon, 6 Jul 2020 04:55:41 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 322nx10cbh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 04:55:41 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0668ajOF002840;
+        Mon, 6 Jul 2020 08:55:39 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 322h1h236g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 08:55:39 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0668tap552429026
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Jul 2020 08:55:36 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D73742042;
+        Mon,  6 Jul 2020 08:55:36 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2108A4203F;
+        Mon,  6 Jul 2020 08:55:36 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Jul 2020 08:55:36 +0000 (GMT)
+From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
+To:     jolsa@redhat.com
+Cc:     Sumanth.Korikkar@ibm.com, sumanthk@linux.ibm.com,
+        agordeev@linux.ibm.com, ast@kernel.org, bas@baslab.org,
+        bpf@vger.kernel.org, brendan.d.gregg@gmail.com,
+        daniel@iogearbox.net, dxu@dxuuu.xyz, linux-s390@vger.kernel.org,
+        mat@mmarchini.me, netdev@vger.kernel.org,
+        yauheni.kaliuta@redhat.com
+Subject: Re: bpf: bpf_probe_read helper restriction on s390x
+Date:   Mon,  6 Jul 2020 10:54:56 +0200
+Message-Id: <20200706085456.48306-1-sumanthk@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200705194225.GB3356590@krava>
+References: <20200705194225.GB3356590@krava>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-06_04:2020-07-06,2020-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ impostorscore=0 mlxscore=0 malwarescore=0 mlxlogscore=769
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0
+ adultscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007060064
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi Jiri,
 
-syzbot found the following crash on:
+Sorry about the noise. My email seems to be rejected to the list. Resending
+with plain text.
 
-HEAD commit:    cb8e59cc Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1446cfd3100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a16ddbc78955e3a9
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4c6e533af740abd3922
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+s390 has overlapping address space. As suggested by the commit,
+ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should not be enabled for s390 kernel.
+This should be changed in bpftrace application.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Even if we enable ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, bpf_probe_read will
+only work in certain cases like kernel pointer deferences (kprobes).  User
+pointer deferences in uprobes/kprobes/etc will fail or have some invalid data
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a4c6e533af740abd3922@syzkaller.appspotmail.com
+I am looking forward to this fix: https://github.com/iovisor/bpftrace/pull/1141
+OR probe split in bpftrace.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 85748067 P4D 85748067 PUD 61918067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 4768 Comm: syz-executor.0 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_prog_6df1c5236f32720a_L+0x1f/0xa18
-Code: cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 55 48 89 e5 48 81 ec 00 00 00 00 53 41 55 41 56 41 57 6a 00 31 c0 48 8b 7f 28 <48> 8b 7f 00 8b bf 00 01 00 00 5b 41 5f 41 5e 41 5d 5b c9 c3 cc cc
-RSP: 0018:ffffc90001ee7ac0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffc900022ea000
-RDX: 0000000000000230 RSI: ffffc90000cb8038 RDI: 0000000000000000
-RBP: ffffc90001ee7ae8 R08: ffff88805dc5e200 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90000cb8000
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffff88805dc5e200
-FS:  00007fc83e30f700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000008c0f4000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- bpf_prog_run_xdp include/linux/filter.h:734 [inline]
- bpf_test_run+0x226/0xc70 net/bpf/test_run.c:47
- bpf_prog_test_run_xdp+0x2ca/0x510 net/bpf/test_run.c:507
- bpf_prog_test_run kernel/bpf/syscall.c:2998 [inline]
- __do_sys_bpf+0x28ce/0x4a80 kernel/bpf/syscall.c:4138
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45cb29
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fc83e30ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004dade0 RCX: 000000000045cb29
-RDX: 0000000000000040 RSI: 0000000020000040 RDI: 000000000000000a
-RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000005d R14: 00000000004c32db R15: 00007fc83e30f6d4
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 6c5d2c7e681a670d ]---
-RIP: 0010:bpf_prog_6df1c5236f32720a_L+0x1f/0xa18
-Code: cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 55 48 89 e5 48 81 ec 00 00 00 00 53 41 55 41 56 41 57 6a 00 31 c0 48 8b 7f 28 <48> 8b 7f 00 8b bf 00 01 00 00 5b 41 5f 41 5e 41 5d 5b c9 c3 cc cc
-RSP: 0018:ffffc90001ee7ac0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffc900022ea000
-RDX: 0000000000000230 RSI: ffffc90000cb8038 RDI: 0000000000000000
-RBP: ffffc90001ee7ae8 R08: ffff88805dc5e200 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90000cb8000
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffff88805dc5e200
-FS:  00007fc83e30f700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000008c0f4000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Thank you
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best Regards
+Sumanth
