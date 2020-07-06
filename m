@@ -2,134 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A222155FE
-	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 12:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE3821564A
+	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 13:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728980AbgGFK7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 06:59:16 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:38550 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728831AbgGFK7Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 06:59:16 -0400
-Received: by mail-io1-f71.google.com with SMTP id l13so23397099ioj.5
-        for <bpf@vger.kernel.org>; Mon, 06 Jul 2020 03:59:15 -0700 (PDT)
+        id S1728815AbgGFLZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jul 2020 07:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728764AbgGFLZE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jul 2020 07:25:04 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9439C08C5DF
+        for <bpf@vger.kernel.org>; Mon,  6 Jul 2020 04:25:03 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id n23so44867679ljh.7
+        for <bpf@vger.kernel.org>; Mon, 06 Jul 2020 04:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=uvjy6TQw4BzmhpYm8sKke8+oa4SeXvV80srNJ1pxzBM=;
+        b=wE4ZoJI0Wa20MnwOtb4Mb97jm90seDCaqKaJWq5waebC75dAHt0mW+CJ3qrY2XZobm
+         jdeIRJnSJlbj0b9ub87VirYe0xU/P7VsquePEYHeTgefv1id4GihqoSirDZteVa6g1r1
+         SWBWyQF0JJM9ZAOD1hfB33oDNJvatVM7xf4jU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=T4RpfvTzhxjKATtZUtnzpG2blvqRzQy3JNJvC30eupo=;
-        b=AQ7a7SyBIfCC2Fwc6VHa5dg1TIbAmLSbKFFinfrMhoDiMs+FOSnyGeOZjFhLwO7zqg
-         +8rocWpYR2gu/Ew4wYip5S3uvgx8BZ38sx8teJIAMw46qLncd1txlNbisX0gkfBmT2za
-         UDBiB57lkDy2Li/z7rdz7keK+UNHUYAM5+MWErMS7UJUeEjFWBzRBqB7n0ZzeSd2PNRz
-         Ggs+zTuNEi0JtOUWfk0e0WfX3H+GQUku2behnWQv6gYlpFIL5eSwVRTD/1exiThAgB0H
-         8MnQUSXNvez4esoFax4uvC/OQ/NhXn2jYsDyXUhq7yhxitrFXzHMGdzw/9YcuJ5tC0EN
-         8s9A==
-X-Gm-Message-State: AOAM5311cBbNoDGL3ErVhCQY+7XTvfL+pOMjlbhXzpEsEH7J/o0AY326
-        vOMnGsFcZm6XCaNIJnKPywwnFvUSAXJsadhkEMDh9wiglzUh
-X-Google-Smtp-Source: ABdhPJz9bxB5JTkD1JA24MtdSVUbGWLRSgS863neUybfKjrmznz/FD+obvjwhRnuPJO1m8dmR3K+/FdW7wtxD+N7RUbvsYeYOWQS
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=uvjy6TQw4BzmhpYm8sKke8+oa4SeXvV80srNJ1pxzBM=;
+        b=fFwmfRIZeUuxdaIjd1nHVu4MTXW69sAZoz3wWBWsnW6fIFRctpYlh8A3DRxBdZMlS+
+         ah96/gJszfFHivpEhnLvDvQh186jSP/xAzWYzVa3ZX7k+eVFbUZwzbWx6I7acodgk6iR
+         5OlEVQ0YBVNPR334JjOx4tN+QbhfZmXnXrTid/2mmNHRTxvKkrVglXg+J+g9G+iYVbOR
+         jaaemPu8RL/6/8lZ9kiwYzz9TWUkCMh3ilYLjpjkS3VRSNM7AlFENZdE08tl8+cdRAqm
+         PUgNU3hcsF+zL/VRcO/FumOsiz9N7+aX08KtbQ5mSvsbMHfx3r2tBUqDyIecS9dYlSPD
+         wzkQ==
+X-Gm-Message-State: AOAM533O8/kWyQB6V1b6aii5dT92S/2HxdZ17mrf/+9I4DHihJ1IxfRR
+        k1oNlp/ltX8xqefcaJ6/4xUZPg==
+X-Google-Smtp-Source: ABdhPJwr+j4Vg2Avgd+1vx/ZdU7eaZPJNeYx9LviwOJHQRjWclCi0PlzWGiAw3fJiMrxlhrL+XfmnQ==
+X-Received: by 2002:a2e:984e:: with SMTP id e14mr14411490ljj.169.1594034702088;
+        Mon, 06 Jul 2020 04:25:02 -0700 (PDT)
+Received: from cloudflare.com (apn-31-0-46-84.dynamic.gprs.plus.pl. [31.0.46.84])
+        by smtp.gmail.com with ESMTPSA id d6sm7789132lja.77.2020.07.06.04.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 04:25:01 -0700 (PDT)
+References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-5-jakub@cloudflare.com> <CACAyw9-6OCPqg3eoPOPeKYy=kBNVJT8-qbLh6QOo=8aEV6pWjw@mail.gmail.com> <87mu4inky6.fsf@cloudflare.com> <CACAyw98MsdcVkFPpXatr3F6j6F79KuTqcpwpB6TNpLBVuGKJTQ@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 04/16] inet: Run SK_LOOKUP BPF program on socket lookup
+In-reply-to: <CACAyw98MsdcVkFPpXatr3F6j6F79KuTqcpwpB6TNpLBVuGKJTQ@mail.gmail.com>
+Date:   Mon, 06 Jul 2020 13:24:59 +0200
+Message-ID: <87k0zgj378.fsf@cloudflare.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:dd3:: with SMTP id m19mr54095902jaj.106.1594033155348;
- Mon, 06 Jul 2020 03:59:15 -0700 (PDT)
-Date:   Mon, 06 Jul 2020 03:59:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fc1fb505a9c3c319@google.com>
-Subject: general protection fault in perf_tp_event (2)
-From:   syzbot <syzbot+740e88e3bac50daed3e2@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Thu, Jul 02, 2020 at 03:19 PM CEST, Lorenz Bauer wrote:
+> On Thu, 2 Jul 2020 at 13:46, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> On Thu, Jul 02, 2020 at 12:27 PM CEST, Lorenz Bauer wrote:
+>> > On Thu, 2 Jul 2020 at 10:24, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> >>
+>> >> Run a BPF program before looking up a listening socket on the receive path.
+>> >> Program selects a listening socket to yield as result of socket lookup by
+>> >> calling bpf_sk_assign() helper and returning BPF_REDIRECT (7) code.
+>> >>
+>> >> Alternatively, program can also fail the lookup by returning with
+>> >> BPF_DROP (1), or let the lookup continue as usual with BPF_OK (0) on
+>> >> return. Other return values are treated the same as BPF_OK.
+>> >
+>> > I'd prefer if other values were treated as BPF_DROP, with other semantics
+>> > unchanged. Otherwise we won't be able to introduce new semantics
+>> > without potentially breaking user code.
+>>
+>> That might be surprising or even risky. If you attach a badly written
+>> program that say returns a negative value, it will drop all TCP SYNs and
+>> UDP traffic.
+>
+> I think if you do that all bets are off anyways. No use in trying to stagger on.
+> Being stricter here will actually make it easier to for a developer to ensure
+> that their program is doing the right thing.
+>
+> My point about future extensions also still stands.
 
-syzbot found the following crash on:
+We've chatted with Lorenz off-list about pros & cons of defaulting to
+drop on illegal return code from a BPF program.
 
-HEAD commit:    cd77006e Merge tag 'hyperv-fixes-signed' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ef7755100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=740e88e3bac50daed3e2
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+On the upside, it is consistent with XDP, SK_REUSEPORT, and SK_SKB
+(sockmap) program types.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+TC BPF ignores illegal return values, unspecified action means no
+action, so no drop. While CGROUP_INET_INGRESS and SOCKET_FILTER look
+only at the lowest bit ("ret & 1"), so it is a roulette.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+740e88e3bac50daed3e2@syzkaller.appspotmail.com
+Then there is also the extensibility argument. If we allow traffic to
+pass to regular socket lookup on illegal return code from BPF, and users
+start to rely on that, then it will be hard or impossible to repurpose
+an illegal return value for something else.
 
-general protection fault, probably for non-canonical address 0xe000025d40802049: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x000032ea04010248-0x000032ea0401024f]
-CPU: 0 PID: 13034 Comm: syz-executor.1 Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9226 [inline]
-RIP: 0010:perf_tp_event+0x1bf/0xa70 kernel/events/core.c:9277
-Code: 00 00 48 8b 44 24 40 4c 8d b0 88 00 00 00 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 49 8d 9c 24 d8 01 00 00 48 89 d8 48 c1 e8 03 <42> 0f b6 04 38 84 c0 0f 85 c2 01 00 00 8b 1b 89 de 83 e6 01 31 ff
-RSP: 0018:ffffc9000dc4f740 EFLAGS: 00010003
-RAX: 0000065d40802049 RBX: 000032ea0401024c RCX: ffffffff8177b911
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88804aa30480
-RBP: ffffc9000dc4f9c8 R08: dffffc0000000000 R09: ffffed1009546091
-R10: ffffed1009546091 R11: 0000000000000000 R12: 000032ea04010074
-R13: ffff8880ae800000 R14: ffff8880ae8317f8 R15: dffffc0000000000
-FS:  00007f5d24ad7700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd68dc03b8 CR3: 00000000a2cbd000 CR4: 00000000001426f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- perf_trace_run_bpf_submit+0x106/0x1a0 kernel/events/core.c:9252
- perf_trace_sched_wakeup_template+0x289/0x3c0 include/trace/events/sched.h:57
- trace_sched_wakeup+0xb2/0x190 include/trace/events/sched.h:96
- ttwu_do_wakeup+0x4e/0x300 kernel/sched/core.c:2204
- ttwu_do_activate kernel/sched/core.c:2248 [inline]
- ttwu_queue kernel/sched/core.c:2412 [inline]
- try_to_wake_up+0x901/0xc10 kernel/sched/core.c:2663
- wake_up_process kernel/sched/core.c:2733 [inline]
- wake_up_q+0x8c/0xe0 kernel/sched/core.c:498
- __mutex_unlock_slowpath+0x565/0x590 kernel/locking/mutex.c:1280
- perf_try_init_event+0x30a/0x3a0 kernel/events/core.c:10797
- perf_init_event kernel/events/core.c:10834 [inline]
- perf_event_alloc+0xdb1/0x2870 kernel/events/core.c:11110
- __do_sys_perf_event_open kernel/events/core.c:11605 [inline]
- __se_sys_perf_event_open+0x6e2/0x3fa0 kernel/events/core.c:11479
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb29
-Code: Bad RIP value.
-RSP: 002b:00007f5d24ad6c78 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 00000000004fa6e0 RCX: 000000000045cb29
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000100
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000003
-R13: 0000000000000842 R14: 00000000004cb34b R15: 00007f5d24ad76d4
-Modules linked in:
----[ end trace 11dff03731370b11 ]---
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9226 [inline]
-RIP: 0010:perf_tp_event+0x1bf/0xa70 kernel/events/core.c:9277
-Code: 00 00 48 8b 44 24 40 4c 8d b0 88 00 00 00 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 49 8d 9c 24 d8 01 00 00 48 89 d8 48 c1 e8 03 <42> 0f b6 04 38 84 c0 0f 85 c2 01 00 00 8b 1b 89 de 83 e6 01 31 ff
-RSP: 0018:ffffc9000dc4f740 EFLAGS: 00010003
-RAX: 0000065d40802049 RBX: 000032ea0401024c RCX: ffffffff8177b911
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88804aa30480
-RBP: ffffc9000dc4f9c8 R08: dffffc0000000000 R09: ffffed1009546091
-R10: ffffed1009546091 R11: 0000000000000000 R12: 000032ea04010074
-R13: ffff8880ae800000 R14: ffff8880ae8317f8 R15: dffffc0000000000
-FS:  00007f5d24ad7700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd68dc03b8 CR3: 00000000a2cbd000 CR4: 00000000001426f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Downside of defaulting to drop is that you can accidentally lock
+yourself out, e.g. lose SSH access, by attaching a buggy program.
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Being consistent with other existing program types is what convinces me
+most to set default to drop, so I'll make the change in v4 unless there
+are objections.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[...]
