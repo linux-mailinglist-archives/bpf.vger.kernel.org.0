@@ -2,206 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2BA2160B4
-	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 22:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8404216163
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 00:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgGFUyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 16:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
+        id S1727076AbgGFWSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jul 2020 18:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgGFUyQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 16:54:16 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C894C08C5DF
-        for <bpf@vger.kernel.org>; Mon,  6 Jul 2020 13:54:16 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id h16so10798971ilj.11
-        for <bpf@vger.kernel.org>; Mon, 06 Jul 2020 13:54:16 -0700 (PDT)
+        with ESMTP id S1726583AbgGFWSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jul 2020 18:18:09 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE16FC061755;
+        Mon,  6 Jul 2020 15:18:08 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id b4so36371843qkn.11;
+        Mon, 06 Jul 2020 15:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=fkZoe5d/m0c2LeXelBCmU/VHs/BXpH+6MBlgCpXckmE/9oDVwGKNDYovz1EFXcO+uy
-         z60fz9pERVrMDP+320YxNAJ2fh1YuUXfxJh8/H9W9CdFk4nrInbL8Wjl2xvmEr+eVXw3
-         h1Ti4AWk5ewb/LT7sVg0siCaAFqDJNT5BZVqMxycRVBVnCGHqTTDWu+kuEGFYMHUjtrR
-         w0LGOvv0inE322nGXnZ2YD0EUMqL1Vf5CLKKKhXzvCV5arTxMjTBqLn0fuOf8oAMWzwY
-         e6OHkrbjFI7nWDZMuSY973n/QeQ/7GMjl6WWYU45pnCdgHTcLHb/sYW+9qbWvCFdLhbJ
-         4D6A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BAKFmZIs1G8CtS7wHOv+MKY/i5HK754lis1gMlux8dg=;
+        b=eYsAlaKs4wLd8NNHQicr6SHL7gZHeNmIGGIq3mhLQYLEClWclb+hXlgcvyQ0jK0RPx
+         wUAo+rswEAUonsS04Y2PdQ54ofwloXf9k0mc+VTDPzHJmrE52Zmw9uidqfTU7yJ1kEYH
+         eKY4MMsJU05dHMyduQPBqC6QGLf4Les4QXDsrVB2l5nyigFo/q/EKVUMKNxJZCRhtN+J
+         M5VjNK++Lmx0yH8/zYW2aeOVMtJQAEV6ttdGdX5S8/J4ntFQq9Jrh9v9+zU1mom7IRJQ
+         ybXffiBKVU/QA+OiZK4vlNWbCkMr+PrFXF/udeMEE9oiqHl2fuUnU/YqDfcUUn4yhSs6
+         jXGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=ed62C29bXXkEllmvctT5dlK2/BM3COQNXpwzDASXOb57dvndtHiLiK+GnXfjgUet2f
-         3Aqkhv5U+fZjLkzdXUpoIjPH/FdoI7DLS2YGE9OvBytYqLcwyxyMLzmHsrAg+MmYalwa
-         xrA/Vlqh72VL2vYzT/oIkp+ZSwyqsdPpgSbs16vaHAvlORmiLj20i39u0spSYP7eLgAW
-         PzJBlN0Q4Gh3CycDAk7lNbVo6cG7d5McDHHtf6me4X2rIL47u/q6bp5LmajqL4e2Z1t6
-         Qk7zDm4cQAmQyBhlNd/0v6k0g9zZTPvWeneHClgcrFsHcuDTXaNfsIS5c+AxYacLExj5
-         lnCg==
-X-Gm-Message-State: AOAM531qQMlUiv8KsjNckgNQz3B8+zYtHlPnpQZRDhauMn5zKAC+qlOF
-        0wv9SQOvv427W0R5OHSpMJIqkkvM55g=
-X-Google-Smtp-Source: ABdhPJzPlpDYUGKr6TgJekcHRkvbWTdDmBAK/qxV+GbqfePxknvne9iBydButqC0Mc0F9zKJERsK5A==
-X-Received: by 2002:a92:dc4a:: with SMTP id x10mr32479545ilq.111.1594068855600;
-        Mon, 06 Jul 2020 13:54:15 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-2.tnkngak.clients.pavlovmedia.com. [173.230.99.2])
-        by smtp.gmail.com with ESMTPSA id r124sm10744198iod.40.2020.07.06.13.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 13:54:14 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>, YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH bpf-next 5/5] Documentation/bpf: Document CGROUP_STORAGE map type
-Date:   Mon,  6 Jul 2020 15:51:22 -0500
-Message-Id: <bcf53373664dcc1faf08a7244cdf1e4c596e655b.1594065127.git.zhuyifei@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1594065127.git.zhuyifei@google.com>
-References: <cover.1594065127.git.zhuyifei@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BAKFmZIs1G8CtS7wHOv+MKY/i5HK754lis1gMlux8dg=;
+        b=Lqls8uPRrVP/yb2SqsnqD6Wv0Y+T6MJF2ETNo6rcUmguFbLPcbEvv5g61Bcdb5youU
+         ADawUik8t6SmOjEbk4W7/Ty7S3nbh0GLifv5yiByEx2mMi60nZsjkzK+wcWDxmXQnZ1R
+         4liNR1YvsMEz/itSnyE1lJmY+hfDVBT2iVEqIL/HtCjwqObIKe5xEdt1bTqQR8DzbJAT
+         FyZEnpTXC+QO48mI6FZrYWKf+yxhdP2TzW9DeSppEtZm2AbCljEaBhec6yhw0kjRWkKy
+         LpSFz7HRTnYilyHgIeA30q4MfsN6zzXdHAvsn+r9eWP/BxN2ZiUM03kDqxQaXImJGunh
+         IbSQ==
+X-Gm-Message-State: AOAM5307Jxy+8aCEQf1UZo9a0/AMr6QxrTbWSWNBq2lLks7fZOPlwf4P
+        o0kbCw6XXiC/UWqGnMl9rOKZdV5tv63NTmIUNw0AYA4z
+X-Google-Smtp-Source: ABdhPJxKOC8A13HZEDlQ878ADrOy3eAA5+QZcmuP48JPxVLjR4wDcsMcgWbmSJvgOypelf2HbEzzDyAUpDhfi3gwPpQ=
+X-Received: by 2002:a37:270e:: with SMTP id n14mr47279362qkn.92.1594073888185;
+ Mon, 06 Jul 2020 15:18:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <159405478968.1091613.16934652228902650021.stgit@firesoul> <159405481655.1091613.6475075949369245359.stgit@firesoul>
+In-Reply-To: <159405481655.1091613.6475075949369245359.stgit@firesoul>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Jul 2020 15:17:57 -0700
+Message-ID: <CAEf4BzZ=v1fMxfxP9XdtEOmQV97XdwJ+Ago++VyVN19-TmeF3A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V2 2/2] selftests/bpf: test_progs avoid minus
+ shell exit codes
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei@google.com>
+On Mon, Jul 6, 2020 at 10:00 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> There are a number of places in test_progs that use minus-1 as the argument
+> to exit(). This improper use as a process exit status is masked to be a
+> number between 0 and 255 as defined in man exit(3).
 
-The machanics and usage are not very straightforward. Given the
-changes it's better to document how it works and how to use it,
-rather than having to rely on the examples and implementation to
-infer what is going on.
+nit: I wouldn't call it improper use, as it's a well defined behavior
+(lower byte of returned integer).
 
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- Documentation/bpf/index.rst              |  9 +++
- Documentation/bpf/map_cgroup_storage.rst | 95 ++++++++++++++++++++++++
- 2 files changed, 104 insertions(+)
- create mode 100644 Documentation/bpf/map_cgroup_storage.rst
+>
+> This patch use two different positive exit codes instead, to allow a shell
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 38b4db8be7a2..26f4bb3107fc 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -48,6 +48,15 @@ Program types
-    bpf_lsm
- 
- 
-+Map types
-+=========
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   map_cgroup_storage
-+
-+
- Testing and debugging BPF
- =========================
- 
-diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
-new file mode 100644
-index 000000000000..b7210cb3f294
---- /dev/null
-+++ b/Documentation/bpf/map_cgroup_storage.rst
-@@ -0,0 +1,95 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2020 Google LLC.
-+
-+===========================
-+BPF_MAP_TYPE_CGROUP_STORAGE
-+===========================
-+
-+The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
-+storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
-+attach to cgroups; the programs are made available by the same config. The
-+storage is identified by the cgroup the program is attached to.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGROUP_STORAGE`` map type. Some of its behaviors was changed in
-+Linux 5.9 and this document will describe the differences.
-+
-+Usage
-+=====
-+
-+The map uses key of type ``struct bpf_cgroup_storage_key``, declared in
-+``linux/bpf.h``::
-+
-+    struct bpf_cgroup_storage_key {
-+            __u64 cgroup_inode_id;
-+            __u32 attach_type;
-+    };
-+
-+``cgroup_inode_id`` is the inode id of the cgroup directory.
-+``attach_type`` was the the program's attach type prior to Linux 5.9, since 5.9
-+it is ignored and kept for backwards compatibility.
-+
-+To access the storage in a program, use ``bpf_get_local_storage``::
-+
-+    void *bpf_get_local_storage(void *map, u64 flags)
-+
-+``flags`` is reserved for future use and must be 0.
-+
-+There is no implicit synchronization. Storages of ``BPF_MAP_TYPE_CGROUP_STORAGE``
-+can be accessed by multiple programs across different CPUs, and user should
-+take care of synchronization by themselves.
-+
-+Example usage::
-+
-+    #include <linux/bpf.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+            __type(key, struct bpf_cgroup_storage_key);
-+            __type(value, __u32);
-+    } cgroup_storage SEC(".maps");
-+
-+    int program(struct __sk_buff *skb)
-+    {
-+            __u32 *ptr = bpf_get_local_storage(&cgroup_storage, 0);
-+            __sync_fetch_and_add(ptr_cg_storage-, 1);
-+
-+            return 0;
-+    }
-+
-+Semantics
-+=========
-+
-+``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`` is a variant of this map type. This
-+per-CPU variant will have different memory regions for each CPU for each
-+storage. The non-per-CPU will have the same memory region for each storage.
-+
-+Prior to Linux 5.9, the lifetime of a storage is precisely per-attachment, and
-+for a single ``CGROUP_STORAGE`` map, there can be at most one program loaded
-+that uses the map. A program may be attached to multiple cgroups or have
-+multiple attach types, and each attach creates a fresh zeroed storage. The
-+storage is freed upon detach.
-+
-+Userspace may use the the attach parameters of cgroup and attach type pair
-+in ``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment.
-+
-+Since Linux 5.9, storage can be shared by multiple programs, and attach type
-+is ignored. When a program is attached to a cgroup, the kernel would create a
-+new storage only if the map does not already contain an entry for the cgroup,
-+or else the old storage is reused for the new attachment. Storage is freed
-+only when either the map or the cgroup attached to is being freed. Detaching
-+will not directly free the storage, but it may cause the reference to the map
-+to reach zero and indirectly freeing all storage in the map.
-+
-+Userspace may use the the attach parameters of cgroup only in
-+``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment. The struct also contains an
-+``attach_type`` field; this field is ignored.
-+
-+In all versions, the storage is bound at attach time. Even if the program is
-+attached to parent and triggers in child, the storage still belongs to the
-+parent.
-+
-+Userspace cannot create a new entry in the map or delete an existing entry.
-+Program test runs always use a temporary storage.
--- 
-2.27.0
+typo: uses
 
+> script to tell the two error cases apart.
+>
+> Fixes: fd27b1835e70 ("selftests/bpf: Reset process and thread affinity after each test/sub-test")
+> Fixes: 811d7e375d08 ("bpf: selftests: Restore netns after each test")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c |   12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index e8f7cd5dbae4..50803b080593 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -12,7 +12,9 @@
+>  #include <string.h>
+>  #include <execinfo.h> /* backtrace */
+>
+> -#define EXIT_NO_TEST 2
+> +#define EXIT_NO_TEST           2
+> +#define EXIT_ERR_NETNS         3
+> +#define EXIT_ERR_RESET_AFFINITY        4
+
+Let's not overdo this with too granular error codes? All of those seem
+to be just a failure, is there any practical need to differentiate
+between NETNS vs RESET_AFFINITY failure?
+
+I'd go with 3 values:
+
+1 - at least one test failed
+2 - no tests were selected
+3 - "infra" (not a test-specific failure) error (like netns or affinity failed).
+
+Thoughts?
+
+
+[...]
