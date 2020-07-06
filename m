@@ -2,127 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B373D215173
-	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 06:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A521529C
+	for <lists+bpf@lfdr.de>; Mon,  6 Jul 2020 08:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgGFEYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 00:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgGFEYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 00:24:51 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF0BC061794;
-        Sun,  5 Jul 2020 21:24:51 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f2so14829016plr.8;
-        Sun, 05 Jul 2020 21:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NhQuh/M+EWr/H+2AN4zsqP1K1gI1NFzEkYpBnUNzwu8=;
-        b=tzabOV92NsrmrViHXK0nWYnzKyxMnXybz1c5LHrpbDZvsULkOEjoUwyg0SEJZWfv2j
-         ke044ICDxjqm31S6SUtqUtsSNgikx9OupmoDwcqP4bmuxNg3IK1qbyy3SvLCR2/I2pur
-         VxoNfSeScLptOrJjsstSIQo9lvVctL3xwjCOl0BpXU1wfF3hp3IWqZsRLp8zzqIqGJAK
-         BzdKyAYWRXGcwRVo6Xb5F9dbkqkuQunR5ZZ/I/wk4eNu8OWhQ+ROPxtuaCJbZuj0Ga6i
-         C3CW4lXhSdwsxT8A5EMFgsQGQs/5JFpeTr7wKEz4Wbdhzew5aHKRXnYJMH00J12AbpKe
-         nIQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NhQuh/M+EWr/H+2AN4zsqP1K1gI1NFzEkYpBnUNzwu8=;
-        b=dgPFk/51CzJw8R9ZVRxcDygIgYefCG+chT1YaRoI9qCI/hERgKF8AK51jFryTSRyd9
-         g3yez9UZcooGb/5AoF/5fLO1b7dr+JZVfssJ3856i0aK9QmnxMxhA/XqP3Z1a0HBF+EP
-         K2XD7mbV62BaDVvVCDaFzQy0hXtsywDJbmy5VAmcBirqKjcp87fOygSxr4rE8kky0v8Y
-         u45ohCddemDqlOiJyDgl+1hpH8yzl2TbRO4ctPmOJhxBctXnkitg1CS2wTVTii2A/jkd
-         99oiy9TB4xo4nIDa0UmIpR/nQN090K/FdDQC5tysXYgr/SB8dKUxwAmUNvNBa/8e9lng
-         zqOQ==
-X-Gm-Message-State: AOAM532EYscvjbIBMpkcgMbTnWT9wgilWno87E+Bm1eyejEdBhbJsRpq
-        K/VSn6ES8CJrpytPxK6zukM=
-X-Google-Smtp-Source: ABdhPJyHCUXMwb1alkHT6aU83lgl85yKQ4N8yg8Bm1A7RfvY/tx7kGh5nrkaA6qdA1Cf5r2jzEe7Sw==
-X-Received: by 2002:a17:902:684e:: with SMTP id f14mr11268525pln.166.1594009490929;
-        Sun, 05 Jul 2020 21:24:50 -0700 (PDT)
-Received: from [172.20.20.103] ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id d14sm298902pjc.20.2020.07.05.21.24.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jul 2020 21:24:50 -0700 (PDT)
-Subject: Re: [PATCH net v3] sched: consistently handle layer3 header accesses
- in the presence of VLANs
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        cake@lists.bufferbloat.net, Davide Caratti <dcaratti@redhat.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Roman Mashak <mrv@mojatatu.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Ilya Ponetayev <i.ponetaev@ndmsystems.com>
-References: <20200703202643.12919-1-toke@redhat.com>
- <ada37763-16cd-7b51-f9ce-41e8d313bf96@gmail.com> <878sfzms4p.fsf@toke.dk>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <b62fcd67-1b0a-ab7f-850d-22e62faf3a23@gmail.com>
-Date:   Mon, 6 Jul 2020 13:24:42 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1728883AbgGFGU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jul 2020 02:20:57 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:35063 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728804AbgGFGU5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 6 Jul 2020 02:20:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594016455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=92GZ3FW44LhK6ZPwgvJk40XZq6/hfhz1RbVOBgdDt9s=;
+        b=PoWy7xmvIVuGtPJayjJesOo7g0uP0UkDy6g4ndSoIexsqg5uBmnRp5qsSlqU/6263AOuJG
+        TSyk/BkSOtVhkC11IhfRVHZjBveRoyl/ErYQeVGaOFS6RMZ++nF6qgcW3KMoSstleNLjoU
+        eXnSb0Q1Wb9rkQ5ugjfF5WH1r7UclPI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-180-rgku8C6SNBGrib4AcC-GFw-1; Mon, 06 Jul 2020 02:20:46 -0400
+X-MC-Unique: rgku8C6SNBGrib4AcC-GFw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2616107ACCD;
+        Mon,  6 Jul 2020 06:20:43 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F8972DE72;
+        Mon,  6 Jul 2020 06:20:33 +0000 (UTC)
+Date:   Mon, 6 Jul 2020 08:20:31 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     syzbot <syzbot+c3157bda041952444952@syzkaller.appspotmail.com>
+Cc:     brouer@redhat.com, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: WARNING in bpf_xdp_adjust_tail
+Message-ID: <20200706082031.3e9f206e@carbon>
+In-Reply-To: <0000000000001936ab05a9ac97d1@google.com>
+References: <0000000000001936ab05a9ac97d1@google.com>
 MIME-Version: 1.0
-In-Reply-To: <878sfzms4p.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/07/04 20:33, Toke Høiland-Jørgensen wrote:
-> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->> On 2020/07/04 5:26, Toke Høiland-Jørgensen wrote:
->> ...
->>> +/* A getter for the SKB protocol field which will handle VLAN tags consistently
->>> + * whether VLAN acceleration is enabled or not.
->>> + */
->>> +static inline __be16 skb_protocol(const struct sk_buff *skb, bool skip_vlan)
->>> +{
->>> +	unsigned int offset = skb_mac_offset(skb) + sizeof(struct ethhdr);
->>> +	__be16 proto = skb->protocol;
->>> +
->>> +	if (!skip_vlan)
->>> +		/* VLAN acceleration strips the VLAN header from the skb and
->>> +		 * moves it to skb->vlan_proto
->>> +		 */
->>> +		return skb_vlan_tag_present(skb) ? skb->vlan_proto : proto;
->>> +
->>> +	while (eth_type_vlan(proto)) {
->>> +		struct vlan_hdr vhdr, *vh;
->>> +
->>> +		vh = skb_header_pointer(skb, offset, sizeof(vhdr), &vhdr);
->>> +		if (!vh)
->>> +			break;
->>> +
->>> +		proto = vh->h_vlan_encapsulated_proto;
->>> +		offset += sizeof(vhdr);
->>> +	}
->>
->> Why don't you use __vlan_get_protocol() here? It looks quite similar.
->> Is there any problem with using that?
+On Sun, 05 Jul 2020 00:20:18 -0700
+syzbot <syzbot+c3157bda041952444952@syzkaller.appspotmail.com> wrote:
+
+> Hello,
 > 
-> TBH, I completely missed that helper. It seems to have side effects,
-> though (pskb_may_pull()), which is one of the things the original patch
-> to sch_cake that initiated all of this was trying to avoid.
+> syzbot found the following crash on:
 
-Sorry for not completely following the discussion...
-Pulling data is wrong for cake or other schedulers?
+It is WARN that trigger this, due to panic_on_warn set.
 
-> I guess I could just fix that, though, and switch __vlan_get_protocol()
-> over to using skb_header_pointer(). Will send a follow-up to do that.
+It's great to see that syzbot report these, as the WARN_ONCE is meant
+to catch drivers that forget to init xdp->frame_sz.  In this case it is
+XDP-generic that manage to get an oversized SKB run through this code
+path.
+
+
+> HEAD commit:    2ce578ca net: ipv4: Fix wrong type conversion from hint to..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1190cf23100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bf3aec367b9ab569
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c3157bda041952444952
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
 > 
-> Any opinion on whether it's a good idea to limit the max parse depth
-> while I'm at it (see Daniel's reply)?
+> Unfortunately, I don't have any reproducer for this crash yet.
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+c3157bda041952444952@syzkaller.appspotmail.com
+> 
 
-The logic was originally introduced by skb_network_protocol() back in v3.10,
-and I have never heard of security report about that. But yes, I guess it
-potentially can be used for DoS attack.
+It would be practical to get the WARN message here (from console output):
+ [  511.164212][T22595] Too BIG xdp->frame_sz = 131072
 
-Toshiaki Makita
+As call-stack indicate this is XDP-generic (do_xdp_generic).
+Thus the xdp->frame_sz calc comes from:
+
+	xdp->data_hard_start = skb->data - skb_headroom(skb);
+	/* SKB "head" area always have tailroom for skb_shared_info */
+	xdp->frame_sz  = (void *)skb_end_pointer(skb) - xdp->data_hard_start;
+	xdp->frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+
+I'm surprised to see a 128KiB (128*1024) sized SKB here (in "head" area).
+How can this happen?
+
+
+> WARNING: CPU: 0 PID: 22595 at net/core/filter.c:3463 ____bpf_xdp_adjust_tail net/core/filter.c:3463 [inline]
+> WARNING: CPU: 0 PID: 22595 at net/core/filter.c:3463 bpf_xdp_adjust_tail+0x18e/0x1e0 net/core/filter.c:3452
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 22595 Comm: syz-executor.4 Not tainted 5.8.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  panic+0x2e3/0x75c kernel/panic.c:231
+>  __warn.cold+0x20/0x45 kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  exc_invalid_op+0x24d/0x400 arch/x86/kernel/traps.c:235
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:563
+> RIP: 0010:____bpf_xdp_adjust_tail net/core/filter.c:3463 [inline]
+> RIP: 0010:bpf_xdp_adjust_tail+0x18e/0x1e0 net/core/filter.c:3452
+> Code: 37 fb 84 db 74 09 49 c7 c4 ea ff ff ff eb c7 e8 f8 f5 37 fb 44 89 e6 48 c7 c7 e0 fc fd 88 c6 05 dc f5 6d 04 01 e8 94 3b 09 fb <0f> 0b eb d8 e8 d9 48 77 fb e9 c5 fe ff ff e8 df 48 77 fb e9 92 fe
+> RSP: 0018:ffffc900018878e0 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000040000 RSI: ffffffff815ce8d7 RDI: fffff52000310f0e
+> RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8880ae620fcb
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000020000
+> R13: ffff88804c20feef R14: ffff88804c20feef R15: 0000000000000000
+>  bpf_prog_4add87e5301a4105+0x20/0x818
+>  bpf_prog_run_xdp include/linux/filter.h:734 [inline]
+>  netif_receive_generic_xdp+0x70f/0x1760 net/core/dev.c:4647
+>  do_xdp_generic net/core/dev.c:4735 [inline]
+>  do_xdp_generic+0x96/0x1a0 net/core/dev.c:4728
+>  tun_get_user+0x22d2/0x35b0 drivers/net/tun.c:1905
+>  tun_chr_write_iter+0xba/0x151 drivers/net/tun.c:1999
+>  call_write_iter include/linux/fs.h:1907 [inline]
+>  new_sync_write+0x422/0x650 fs/read_write.c:484
+>  __vfs_write+0xc9/0x100 fs/read_write.c:497
+>  vfs_write+0x268/0x5d0 fs/read_write.c:559
+>  ksys_write+0x12d/0x250 fs/read_write.c:612
+>  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x416661
+> Code: Bad RIP value.
+> RSP: 002b:00007f8bc3971c60 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 00000000005095a0 RCX: 0000000000416661
+> RDX: 000000000000fdef RSI: 0000000020000080 RDI: 00000000000000f0
+> RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00007f8bc39729d0 R11: 0000000000000293 R12: 00000000ffffffff
+> R13: 0000000000000bfd R14: 00000000004ce559 R15: 00007f8bc39726d4
+> Kernel Offset: disabled
+> 
+> 
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
