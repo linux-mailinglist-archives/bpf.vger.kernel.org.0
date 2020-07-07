@@ -2,266 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9992217590
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 19:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B684D2176C7
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 20:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgGGRtg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 13:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728404AbgGGRte (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:49:34 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCA2C061755;
-        Tue,  7 Jul 2020 10:49:34 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id h18so19216558qvl.3;
-        Tue, 07 Jul 2020 10:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3A9pj/+sDYtaBhomGrTHi/WUOTb74PSiC/HfOmJjW14=;
-        b=gJPHZ3UWU8w8Dm/sJn1RXPqHp3zQGIHQFn+jZnl/eGc3uXdlDvsMZrWp5Xe/iTOOzJ
-         9WZBaxX4tAq6LSWVbNX55qYHrmmiyuo+cpTUuPqJQ4QAQ3oIKzypnahVOxIYK4jTXxyH
-         wjUCZUtWMqa5fEkNwSypDiF3jL0jnckLAk2ibxvRbhBV8IxOJtea0X/S8ztq1VGMmLJD
-         vtjYvs2BL/QopwGX2m2gySyY+CiWrQwdbV9k5P98AT/+Zt7HhFbBytZhqtlcuKoqMnnO
-         oZrwuPFnwB1Uny82nCL+oj04zi7Wv+uxQ50vA/Fu05FMtHW4yVEFnaTTzNrIi6oh34vi
-         2nRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3A9pj/+sDYtaBhomGrTHi/WUOTb74PSiC/HfOmJjW14=;
-        b=J9r3j7D4RExs3/dINshuNHRqD6PH0c2I+Ep5+F5W7JTjFIzdGdd3OVBIvIiQ4mKjw5
-         3bj/5Umdow4pYDdadFLKXeOKqu1LTslok1+PsxxAdhSy0l/iIyZd54GNwWeFF6hQWfrJ
-         +BSQqyvgONguMjfP/Iyn/xUwQsq2Tgl/QilF+MUXN/oZOmY5QvMOWdjAh4LHV4m6Mqe6
-         xrRlQxKHvDpt9iYOKj3RADEAzJrf6cVoQbTnhhU9+Bv0JzOt1TutfSaKOSIudyVVh8V4
-         6sIt7+/7NbGNvvwY7wPrOJBidR8DjxMHt8KNP19xxPMl3CwQTrlY5kdgjIm8gG5pnEnO
-         0PkA==
-X-Gm-Message-State: AOAM532i8NhL8dFGhLkjrIT3X9ugH5PQuiv6+Epdrv8OT15rNYx4MA0H
-        sVLGxcnORB0WkVqBI1S76k661v3S0L2/2Oq4z4A=
-X-Google-Smtp-Source: ABdhPJwpgAdg0XLESfNsVoQN5Z+oZOVlu1shESUM6aVfeAdDbkXBFf4Q3RogUcHlbqlcS62CELGU7SQ0tDXp4DyOuxw=
-X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr50215654qvb.228.1594144173515;
- Tue, 07 Jul 2020 10:49:33 -0700 (PDT)
+        id S1728036AbgGGSci (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 14:32:38 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28542 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728272AbgGGSci (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Jul 2020 14:32:38 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 067IWVlw020142;
+        Tue, 7 Jul 2020 11:32:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=qrMYpKMKKD3x0zLPdvL6fEt+Rc0WS26BEjGVPXs7C3Y=;
+ b=fmUYY5ISelhdBRCIEEcoTNsewY0VpbIR0CFx7n0MLNa30lsWuW4mjwQW3ZJyPqaLS9jB
+ 0heDzcOr/XnzOlvxhNyt574FnCKuErfsCQXraCaKpmv7fpk0xNcil0O6YoEECDEf+bf6
+ Ivut45J+tOJTnkfuM2xJ2+9gLhy25LsKCO8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 322nekp1wj-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 07 Jul 2020 11:32:35 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 7 Jul 2020 11:32:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IShN2Wpxsm2UxTTME9eDHz4PK2TwP+9dY5ETxLB/yRwqQ644b/LK2lbvwzqqY0otBvdevEadhZ9G2OJ6sa3B88CiusOsjoly1j5gu9z90dq50fxxdxZ7yrVcoo+Ma40FUw/8n6RTy0zTq1SUB3i6DjACB977nI51zBoFDvqE+Ai665lo4qkwh6nZ29RSVwYe2kGR1AnmjgQvWb6n0/jSQ7Cvy5vEllmu//EbFcrlAJKsS9DgdXd4D5hFm4X44Gh+JryUghxOSJWWh3qUjkvyI5kGp2ndqBnkfXbG7OeDWn2DcAaoEfc2/L1AOY6TphMYTLK8vqSlOuHotXdHUb6uuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qrMYpKMKKD3x0zLPdvL6fEt+Rc0WS26BEjGVPXs7C3Y=;
+ b=QqivrzPCHdB34wGpSZb2QGHJH1ZTyBxAW0lcKRiCofmAwBGjEZNCljdj9JCLEwK+ZFCU48zE0szQxQCBfyZfB/KcJto2nulKi2V5hoAIJW5huRtwVF5a/Ycvo6msj7/4aS8RN1+QQ51/gosPJQRdoY9Qy3YGe0v+QyqsXmHmvtxeqOTS7JVGXNBQJ8utlCyi+TAjJSD11ABBEyhfHk9Q8fvXZdSx52euwu4j0JpzR/anV0cXFwylTog9umfavbte7zCscBkSoLHkahl8+HZYA9Do0chLfEIdxsYyRjNNlxqvZCHV1RwxDbZbDWClrWuHfHELxDOd62zrdRQNxFMBAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qrMYpKMKKD3x0zLPdvL6fEt+Rc0WS26BEjGVPXs7C3Y=;
+ b=E08GjNovGCV8y6rf4MynfTKLeUpzO7stihl+yqYD9rlznn0R473wU7Ze+hu+c8S1mzfx5cVUi+wlYQN15FAEU+7nsCkER1adw2l37qZUk337vm97G/1zrcVkws0cixGmM1jnxwrRxyHZSSDHFAK1Axofna1YJjw8X4RcMwaH6TA=
+Authentication-Results: katalix.com; dkim=none (message not signed)
+ header.d=none;katalix.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2824.namprd15.prod.outlook.com (2603:10b6:a03:158::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.27; Tue, 7 Jul
+ 2020 18:32:32 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
+ 18:32:32 +0000
+Date:   Tue, 7 Jul 2020 11:32:31 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     James Chapman <jchapman@katalix.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: bpf's usage of sk_user_data
+Message-ID: <20200707183231.hfxtzfpfcf7g3jwp@kafai-mbp>
+References: <20200707093730.GC21324@katalix.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707093730.GC21324@katalix.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: BY5PR20CA0006.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::19) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <20200703095111.3268961-1-jolsa@kernel.org> <20200703095111.3268961-10-jolsa@kernel.org>
- <CAEf4BzYuDU2mARcP5GVAv+WiknSnWuzGyNqQx0TiJ23CWA8NiA@mail.gmail.com> <20200707155720.GI3424581@krava>
-In-Reply-To: <20200707155720.GI3424581@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Jul 2020 10:49:22 -0700
-Message-ID: <CAEf4BzYYHEwDZ9YqqyfzSZsk-8=DrL-WVEee-gisBLQRZWUTHw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 9/9] selftests/bpf: Add test for resolve_btfids
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:6c3d) by BY5PR20CA0006.namprd20.prod.outlook.com (2603:10b6:a03:1f4::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Tue, 7 Jul 2020 18:32:32 +0000
+X-Originating-IP: [2620:10d:c090:400::5:6c3d]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a30dd510-b7cf-4178-1d09-08d822a41c8d
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2824:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2824DE927131792F127C83C2D5660@BYAPR15MB2824.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:549;
+X-Forefront-PRVS: 0457F11EAF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: N07N13blLC43dkH7LAy5CmvXlxR9kSIn7TZv/7KD7eIsueTrwqv8onJJZlsn9paBnG8B1mwW752uFck7MHo3IrUECpPRXAcTK6tgNy2+x5w9UmtruhI1ZiNmc8kN7JUIeujjZ+W3E7Ttn7sTdmXcMFwE3cZIrKaTPl47w5NAtHI701gxQXbkgFj8fEXWYvOj9hBGU8foKlneWMn+lwWzFb3sjGgDszeE6qmtBBTQ2F/FsTIBBH5HFi4AjFWo/0jXcLRkmvPI8geL06/6AIqJD61xGEG2wQQU2m7VkYQhOkYoz6Jnl554OX8L/+hQA3hWIH8D9RrAwKsuHv7Vzucmq4vn39pz34PMsB10qY6UJyCqE2VQArot7PqVCy+1hW1INIH3BqHFcO8pH5OmRciZtDl378YdFlUNVrehlVb6q/G6IDPL8aWGWHxsd3lPL1he8A3anqWmcxFBNlMAKLXc6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(366004)(39860400002)(376002)(396003)(346002)(6496006)(8936002)(83080400001)(86362001)(66946007)(33716001)(66476007)(66556008)(478600001)(55016002)(316002)(9686003)(966005)(1076003)(8676002)(4326008)(52116002)(16526019)(186003)(5660300002)(2906002)(6916009)(99710200001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: abu1NPOA2lq/j3oKnU+JQ+E56fhWiDdKY4iQ0gKNJU+iZ6UzYPMaUR+Bl65xkKbREcBir8dRUjP4mEODZOIhaZlp61YjriHon8D7Y4RX1sf5/LvSpLQnym/ong99foGBBZ0wVUhK4jzHeLvf2jSPbHiElhh9C1Jg+xJs7BvylGRzQZ8tw8vnBYdYB3mgmJbgAaLoVI45mpcDAPaDX/DCLoObzTzAoPuvv9kGa9I2waPWm84Ek6UcoMF+mb0fiaTDTgqvehA3oOD7jf1mHlZouSJFrExKvYBRUlWZdvNriy0o9pxfT6WTEJsAEZ5bdb61E+edFcwNG8b+xWx0lqEPnhYcBdepy1HTzcTx7mSNXxG0TB188IzyH2sezwLgvkhXuexWJrELXMsYVVG+lndp24q/vvNUCsmgm8X+FqF6ce8oLaewdBh+kzA4W0Z2XZHbZcxl9SJIOptpvZ6FC3ZDvxZhSkeGrfGOA6jxM9tqJ/3aEMBJHLzcovj8bPYVMtSkr0c/6zRpiMtHMJ8qfqTccA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: a30dd510-b7cf-4178-1d09-08d822a41c8d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 18:32:32.3415
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H8iij9jCoW+hDY/KV7JANR5YLmfF5VdvW/wL/AGE4LTjHpx0pg0LF6ZDG5mwp+PU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2824
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_10:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 spamscore=0 cotscore=-2147483648
+ malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007070124
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 8:57 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Jul 06, 2020 at 06:26:28PM -0700, Andrii Nakryiko wrote:
-> > On Fri, Jul 3, 2020 at 2:54 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding resolve_btfids test under test_progs suite.
-> > >
-> > > It's possible to use btf_ids.h header and its logic in
-> > > user space application, so we can add easy test for it.
-> > >
-> > > The test defines BTF_ID_LIST and checks it gets properly
-> > > resolved.
-> > >
-> > > For this reason the test_progs binary (and other binaries
-> > > that use TRUNNER* macros) is processed with resolve_btfids
-> > > tool, which resolves BTF IDs in .BTF.ids section.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/Makefile          |  22 ++-
-> > >  .../selftests/bpf/prog_tests/resolve_btfids.c | 170 ++++++++++++++++++
-> > >  2 files changed, 190 insertions(+), 2 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 1f9c696b3edf..b47a685d12bd 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -190,6 +190,16 @@ else
-> > >         cp "$(VMLINUX_H)" $@
-> > >  endif
-> > >
-> > > +$(SCRATCH_DIR)/resolve_btfids: $(BPFOBJ)                               \
-> > > +                              $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
-> > > +                              $(TOOLSDIR)/lib/rbtree.c                 \
-> > > +                              $(TOOLSDIR)/lib/zalloc.c                 \
-> > > +                              $(TOOLSDIR)/lib/string.c                 \
-> > > +                              $(TOOLSDIR)/lib/ctype.c                  \
-> > > +                              $(TOOLSDIR)/lib/str_error_r.c
-> > > +       $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids \
-> > > +       OUTPUT=$(SCRATCH_DIR)/ BPFOBJ=$(BPFOBJ)
-> > > +
-> >
-> > please indent OUTPUT, so it doesn't look like it's a separate command
->
-> ok
->
-> >
-> > >  # Get Clang's default includes on this system, as opposed to those seen by
-> > >  # '-target bpf'. This fixes "missing" files on some architectures/distros,
-> > >  # such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> > > @@ -333,7 +343,8 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
-> > >                       $(TRUNNER_BPF_SKELS)                              \
-> > >                       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
-> > >         $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
-> > > -       cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-> > > +       cd $$(@D) && $$(CC) -I. $$(CFLAGS) $(TRUNNER_EXTRA_CFLAGS)      \
-> > > +       -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-> > >
-> > >  $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:                          \
-> > >                        %.c                                              \
-> > > @@ -355,6 +366,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
-> > >                              | $(TRUNNER_BINARY)-extras
-> > >         $$(call msg,BINARY,,$$@)
-> > >         $$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-> > > +       $(TRUNNER_BINARY_EXTRA_CMD)
-> >
-> > no need to make this generic, just write out resolve_btfids here explicitly
->
-> currently resolve_btfids fails if there's no .BTF.ids section found,
-> but we can make it silently pass i nthis case and then we can invoke
-> it for all the binaries
-
-ah, I see. Yeah, either we can add an option to resolve_btfids to not
-error when .BTF_ids is missing (probably best), or we can check
-whether the test has .BTF_ids section, and if it does - run
-resolve_btfids on it. Just ignoring errors always is more error-prone,
-because we won't know if it's a real problem we are ignoring, or
-missing .BTF_ids.
-
->
-> >
-> > >
-> > >  endef
-> > >
-> > > @@ -365,7 +377,10 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c     \
-> > >                          network_helpers.c testing_helpers.c            \
-> > >                          flow_dissector_load.h
-> > >  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
-> > > -                      $(wildcard progs/btf_dump_test_case_*.c)
-> > > +                      $(wildcard progs/btf_dump_test_case_*.c)         \
-> > > +                      $(SCRATCH_DIR)/resolve_btfids
-> > > +TRUNNER_EXTRA_CFLAGS := -D"BUILD_STR(s)=\#s" -DVMLINUX_BTF="BUILD_STR($(VMLINUX_BTF))"
-> > > +TRUNNER_BINARY_EXTRA_CMD := $(SCRATCH_DIR)/resolve_btfids --btf $(VMLINUX_BTF) test_progs
-> >
-> > I hope we can get rid of this, see suggestion below.
-> >
-> > >  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> > >  TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> > >  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
-> > > @@ -373,6 +388,7 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-> > >
-> >
-> > [...]
-> >
-> > > +
-> > > +static int duration;
-> > > +
-> > > +static struct btf *btf__parse_raw(const char *file)
-> >
-> > another copy here...
->
-> ok
->
-> >
-> > > +{
-> > > +       struct btf *btf;
-> > > +       struct stat st;
-> > > +       __u8 *buf;
-> > > +       FILE *f;
-> > > +
-> >
-> > [...]
-> >
-> > > +
-> > > +BTF_ID_LIST(test_list)
-> > > +BTF_ID_UNUSED
-> > > +BTF_ID(typedef, pid_t)
-> > > +BTF_ID(struct,  sk_buff)
-> > > +BTF_ID(union,   thread_union)
-> > > +BTF_ID(func,    memcpy)
-> > > +
-> > > +struct symbol {
-> > > +       const char      *name;
-> > > +       int              type;
-> > > +       int              id;
-> > > +};
-> > > +
-> > > +struct symbol test_symbols[] = {
-> > > +       { "unused",       -1,                0 },
-> >
-> > could use BTF_KIND_UNKN here instead of -1
->
-> ok
->
-> >
-> > > +       { "pid_t",        BTF_KIND_TYPEDEF, -1 },
-> > > +       { "sk_buff",      BTF_KIND_STRUCT,  -1 },
-> > > +       { "thread_union", BTF_KIND_UNION,   -1 },
-> > > +       { "memcpy",       BTF_KIND_FUNC,    -1 },
-> > > +};
-> > > +
-> >
-> > [...]
-> >
-> > > +
-> > > +static int resolve_symbols(void)
-> > > +{
-> > > +       const char *path = VMLINUX_BTF;
-> >
-> >
-> > This build-time parameter passing to find the original VMLINUX_BTF
-> > really sucks, IMO.
-> >
-> > Why not use the btf_dump tests approach and have our own small
-> > "vmlinux BTF", which resolve_btfids would use to resolve these IDs?
-> > See how btf_dump_xxx.c files define BTFs that are used in tests. You
-> > can do something similar here, and use a well-known BPF object file as
-> > a source of BTF, both here in a test and in Makefile for --btf param
-> > to resolve_btfids?
->
-> well VMLINUX_BTF is there and those types are used are not going
-> away any time soon ;-) but yea, we can do that.. we do this also
-> for bpftrace, it's nicer
-
-
-"VMLINUX_BTF is there" is not really true in a lot of more complicated
-setups, which is why I'd like to avoid that assumption. E.g., for
-libbpf Travis CI, we build self-tests in one VM, but run the binary in
-a different VM. So either vmlinux itself or the path to it might
-change.
-
-Also, having full control over **small** BTF allows to create various
-test situations that might be harder to pinpoint in real vmlinux BTF,
-e.g., same-named entities with different KINDS (typedef vs struct,
-etc). Then if that fails, debugging this on a small BTF is much-much
-easier than on a real thing. Real vmlinux BTF is being tested each
-time you build a kernel and run selftests inside VM either way, so I
-don't think we lose anything in terms of coverage.
-
-
->
-> jirka
->
+On Tue, Jul 07, 2020 at 10:37:30AM +0100, James Chapman wrote:
+> I'm investigating a crash found by syzbot which turns out to be caused
+> by bpf_sk_reuseport_detach assuming ownership of sk_user_data in the
+> UDP socket destroy path and corrupts metadata of a UDP socket user (l2tp).
+> 
+> Here's the syzbot report:
+> https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_bug-3Fextid-3D9f092552ba9a5efca5df&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=VQnoQ7LvghIj0gVEaiQSUw&m=p6aRc9baiGL-RnWqirYKbVXROY5Qc1x4T5-HWjxEp0g&s=mPnfVsw-U-eTV_dezjfYUahIbSiW8wEg4jC44e-mris&e= 
+> 
+> I submitted a patch to l2tp to workaround this by having l2tp refuse
+> to use a UDP socket with SO_REUSEPORT set. But this isn't the right
+> fix. Can BPF be changed to store its metadata elsewhere such that
+> other socket users which use sk_user_data can co-exist with BPF?
+> 
+> The email thread discussing this is at:
+> https://lore.kernel.org/netdev/20200706.124536.774178117550894539.davem@davemloft.net/
+I have replied on the original thread.  Thanks.
