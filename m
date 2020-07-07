@@ -2,147 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EE9217B24
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 00:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEF5217BD4
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 01:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729375AbgGGWnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 18:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
+        id S1728467AbgGGXnN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 19:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729376AbgGGWnI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 18:43:08 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E048DC08C5E2
-        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 15:43:07 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id v6so31302666iob.4
-        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 15:43:07 -0700 (PDT)
+        with ESMTP id S1727895AbgGGXnM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 19:43:12 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D36C061755
+        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 16:43:12 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id m9so19694993qvx.5
+        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 16:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iDT2wQ6J4h+87qDBUhlp4TuMhMXrSWXEfWUyXKkkJng=;
-        b=uhrH/HCtZSwkpWLUY/Df5afxBCSCudrmeuxMlf9H7haYNfkzvxC0Z+it2xpaI5ioWc
-         rGYX5nCkVcFKtno6kYuGaw52mIgV9gw5R4UE1Ow0WkFVsznxzJNwPjmjz/PGGKSfjuRW
-         gc7A4EmTabwcKvVbvozWLADmltK1cKUqf280/LPglIPA+Gq7sRKcRhnUpOD6ANNdowBP
-         kFVHLbUhXjNYYmgoGYDHUlEwzo9ih0OMdwJryFc7f8/UK79qy0f+itHEx8CG38XZbxVz
-         9b/wzypkxaq/S8rmBu9GkHrslCKBMJZwtB3sR6Un5Lw5YNPQYJ5/ZG1jX0ZyEVdL0RzW
-         gRzw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cmWkChBOm7uv9Qi/VSd44MmxzAvZM2JfZ31Ol0Qkgio=;
+        b=eGZxd2CqNjJdPxW4PKwiFIxZurR/YcgQXqMU8+nB1Fxuuc3jSMGNgEzCS8cyThyoN9
+         u11t0mCBT/4fECQw4FgYUj+t8DhVCNQEDPMzi0s3qK6xBRPvDVNFmQHY6xkijPOYyYml
+         IXGeyEpaA/IWjdBOy6q6LroMNvaHwpE3az92OP1AkohvyRiO000UEtPsPGBLGAE8kJXp
+         ywHUtkpdhQ+bLvDu4pqmvyZiZTZdkQuaigL3ZF4uXyQfoIQputJER668xu87ATYw6VU6
+         Bc/iD0Z9/26YjR1v08j/4uIzMMJ16utfeb9x/gazsHt011smfJe1eLyYVmJF8G5ZEPru
+         6kTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iDT2wQ6J4h+87qDBUhlp4TuMhMXrSWXEfWUyXKkkJng=;
-        b=RA88zTw2d5lL7+lOnkSSbveGlS8r6Nru2E6rFxEAorI4+ZaaMcwJaTXpmdpngWYH6R
-         67yTj98R9l6xjBWIDtZFOOWl3Sob3d2+FGQpoz++Gk0tekFEG8RDEp2ZNHwqcQCPjv7k
-         Ax0oZr7L+o8K9qc33VpQx8bVWaw5FuErmL7udUaAwTFzDvULfPWdHF6/xfCI93Catcqh
-         ZrcOtYz4upXZHAqRiLoWjx23Ro+cpKKj46990xWJJdjXS5m/s5GurE5uKnTMBLNbvgmY
-         g9NSPqNAccEiOPJRBQhY5/yTYvmodCHfSdxriF6Ni6EnXK5RcA/9376zknL9BFd1DS5+
-         GxAg==
-X-Gm-Message-State: AOAM533E33CrxkeiqQ1L1ZEDgsk1R7yfzaRB6R1HhUwtUPKzbDH0/W1J
-        NxV0VgogdAoUk/JnXMB9Mgz05mjfvh+ynw==
-X-Google-Smtp-Source: ABdhPJzMRtkce+ggsdgfwSlBshSpV7Ueb655JwaMnFpFZEsNymVNcYYmcDwgllaQDUGKlyJf64kZOg==
-X-Received: by 2002:a02:9182:: with SMTP id p2mr15366024jag.69.1594161786763;
-        Tue, 07 Jul 2020 15:43:06 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id t83sm14076997ilb.47.2020.07.07.15.43.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 15:43:06 -0700 (PDT)
-Subject: Re: [PATCH] bitfield.h: don't compile-time validate _val in FIELD_FIT
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20200707211642.1106946-1-ndesaulniers@google.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <bca8cff8-3ffe-e5ab-07a5-2ab29d5e394a@linaro.org>
-Date:   Tue, 7 Jul 2020 17:43:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cmWkChBOm7uv9Qi/VSd44MmxzAvZM2JfZ31Ol0Qkgio=;
+        b=hE+y8e7ygblY+K4RcVaOQ/+s3ZN6nv41ot3rXY04hhXolp2Wq8EG7Dt0sDm+lcDCFW
+         meyAWruaXKAskAbTcK6VFVWdQttL5B650RPBMxXIYJqitO0j2Dpulvwt/YUriZUMA//A
+         JMUSTntNN9du/VQ4XL1zQW1hdmB1lWODgdXGIY2QtWixl6k9+zfmTteVsHWs661GrN8D
+         8fiGuUBzTvM7N6jhcEfGF7SrdmfAPyqXxTMDbDZFpykE1zArDESi2E6IzNL5rtQiRPXc
+         5u7CjS/FToTTKpBGipNZsoX6M36Cxf6Q5ikeA8JMMtBIT1PwyApwVZ671bGpbIKxeCU4
+         dfuQ==
+X-Gm-Message-State: AOAM533j3rMLk1nE8jZA4L9Yhexg+WdRD6Llu3fdUVsfL373F5Eol+lz
+        u1t5PPkdn2ZpsDjCc+ebmGaoUUlm2MT41eeSojsfkw==
+X-Google-Smtp-Source: ABdhPJwm2C8vpGh6FQWP03gIxcACOUzrhGSkRPB+m9AAnbpcIPqptbq1wZpWUf6SPPj39ug7cu+UVVw4KinEggudN8Q=
+X-Received: by 2002:a05:6214:a43:: with SMTP id ee3mr52277095qvb.51.1594165391210;
+ Tue, 07 Jul 2020 16:43:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200707211642.1106946-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200706230128.4073544-1-sdf@google.com> <20200706230128.4073544-2-sdf@google.com>
+ <CAEf4Bzb=vHUC2dgxNEE2fvCZrk9+crmZAp+6kb5U1wLF293cHQ@mail.gmail.com> <073ac0af-5de7-0a61-4e11-e4ca292f6456@iogearbox.net>
+In-Reply-To: <073ac0af-5de7-0a61-4e11-e4ca292f6456@iogearbox.net>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 7 Jul 2020 16:43:00 -0700
+Message-ID: <CAKH8qBujza3yn0+YXTV6zg7csWLUaA7RxEiompE5yz4QJsULoA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/4] bpf: add BPF_CGROUP_INET_SOCK_RELEASE hook
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/7/20 4:16 PM, Nick Desaulniers wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> 
-> When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
-> compiler to deduce a case where _val can only have the value of -1 at
-> compile time. Specifically,
-> 
-> /* struct bpf_insn: _s32 imm */
-> u64 imm = insn->imm; /* sign extend */
-> if (imm >> 32) { /* non-zero only if insn->imm is negative */
->   /* inlined from ur_load_imm_any */
->   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
->   if (__builtin_constant_p(__imm) && __imm > 255)
->     compiletime_assert_XXX()
-> 
-> This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
-> checks that a given value is representable in one byte (interpreted as
-> unsigned).
-
-Why does FIELD_FIT() pass an unsigned long long value as the second
-argument to __BF_FIELD_CHECK()?  Could it pass (typeof(_mask))0 instead?
-It wouldn't fix this particular case, because UR_REG_IMM_MAX is also
-defined with that type.  But (without working through this in more
-detail) it seems like there might be a solution that preserves the
-compile-time checking.
-
-A second comment about this is that it might be nice to break
-__BF_FIELD_CHECK() into the parts that verify the mask (which
-could be used by FIELD_FIT() here) and the parts that verify
-other things.
-
-That's all--just questions, I have no problem with the patch...
-
-					-Alex
-
-
-
-
-> FIELD_FIT() should return true or false at runtime for whether a value
-> can fit for not. Don't break the build over a value that's too large for
-> the mask. We'd prefer to keep the inlining and compiler optimizations
-> though we know this case will always return false.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
-> Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-> Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  include/linux/bitfield.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-> index 48ea093ff04c..4e035aca6f7e 100644
-> --- a/include/linux/bitfield.h
-> +++ b/include/linux/bitfield.h
-> @@ -77,7 +77,7 @@
->   */
->  #define FIELD_FIT(_mask, _val)						\
->  	({								\
-> -		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
-> +		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
->  		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
->  	})
->  
-> 
-
+On Tue, Jul 7, 2020 at 2:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/7/20 1:42 AM, Andrii Nakryiko wrote:
+> > On Mon, Jul 6, 2020 at 4:02 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >>
+> >> Implement BPF_CGROUP_INET_SOCK_RELEASE hook that triggers
+> >> on inet socket release. It triggers only for userspace
+> >> sockets, the same semantics as existing BPF_CGROUP_INET_SOCK_CREATE.
+> >>
+> >> The only questionable part here is the sock->sk check
+> >> in the inet_release. Looking at the places where we
+> >> do 'sock->sk = NULL', I don't understand how it can race
+> >> with inet_release and why the check is there (it's been
+> >> there since the initial git import). Otherwise, the
+> >> change itself is pretty simple, we add a BPF hook
+> >> to the inet_release and avoid calling it for kernel
+> >> sockets.
+> >>
+> >> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >> ---
+> >>   include/linux/bpf-cgroup.h | 4 ++++
+> >>   include/uapi/linux/bpf.h   | 1 +
+> >>   kernel/bpf/syscall.c       | 3 +++
+> >>   net/core/filter.c          | 1 +
+> >>   net/ipv4/af_inet.c         | 3 +++
+> >>   5 files changed, 12 insertions(+)
+> >>
+> >
+> > Looks good overall, but I have no idea about sock->sk NULL case.
+>
+> +1, looks good & very useful hook. For the sock->sk NULL case here's a related
+> discussion on why it's needed [0].
+Thanks for the pointer! I'll resend a v5 with s/sock/sock_create/ you
+mentioned and will clean up the commit description a bit.
