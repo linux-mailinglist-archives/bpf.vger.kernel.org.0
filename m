@@ -2,131 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7424F21663A
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 08:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568852166AA
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 08:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgGGGJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 02:09:19 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52095 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727871AbgGGGJR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Jul 2020 02:09:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594102154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6vzX4pgRklp7CNc1swxRtrbo/Er7OvueNgs+gb+Ros=;
-        b=dseWV9OMncioVOwJjG1CJWmsXwPcn1bZbsj0QsgtXLUWhVWNpYnyytwns0H2oEP0DCiadN
-        CvgeqYDb/wkWqLhx4vF31iYIJWdx51A2HDRlb3z/ax0KhsPkz2TjfiMm+LJDybES+HuwFW
-        hUsircRXOuYTgbJfHrwpvQwqLFBxaoQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-sQPcG_A1O8m0LYGZvKO0OQ-1; Tue, 07 Jul 2020 02:09:09 -0400
-X-MC-Unique: sQPcG_A1O8m0LYGZvKO0OQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6975880058A;
-        Tue,  7 Jul 2020 06:09:08 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 528D25C1B2;
-        Tue,  7 Jul 2020 06:08:59 +0000 (UTC)
-Date:   Tue, 7 Jul 2020 08:08:57 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V2 2/2] selftests/bpf: test_progs avoid minus
- shell exit codes
-Message-ID: <20200707080857.29d45856@carbon>
-In-Reply-To: <CAEf4BzZ=v1fMxfxP9XdtEOmQV97XdwJ+Ago++VyVN19-TmeF3A@mail.gmail.com>
-References: <159405478968.1091613.16934652228902650021.stgit@firesoul>
-        <159405481655.1091613.6475075949369245359.stgit@firesoul>
-        <CAEf4BzZ=v1fMxfxP9XdtEOmQV97XdwJ+Ago++VyVN19-TmeF3A@mail.gmail.com>
+        id S1726788AbgGGGrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 02:47:33 -0400
+Received: from verein.lst.de ([213.95.11.211]:57348 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725825AbgGGGrd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 02:47:33 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AD38268AFE; Tue,  7 Jul 2020 08:47:30 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 08:47:30 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dma-mapping: add a new dma_need_sync API
+Message-ID: <20200707064730.GA23602@lst.de>
+References: <20200629130359.2690853-1-hch@lst.de> <20200629130359.2690853-2-hch@lst.de> <20200706194227.vfhv5o4lporxjxmq@bsd-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706194227.vfhv5o4lporxjxmq@bsd-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 6 Jul 2020 15:17:57 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Mon, Jul 6, 2020 at 10:00 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > There are a number of places in test_progs that use minus-1 as the argument
-> > to exit(). This improper use as a process exit status is masked to be a
-> > number between 0 and 255 as defined in man exit(3).  
+On Mon, Jul 06, 2020 at 12:42:27PM -0700, Jonathan Lemon wrote:
+> On Mon, Jun 29, 2020 at 03:03:56PM +0200, Christoph Hellwig wrote:
+> > Add a new API to check if calls to dma_sync_single_for_{device,cpu} are
+> > required for a given DMA streaming mapping.
+> > 
+> > +::
+> > +
+> > +	bool
+> > +	dma_need_sync(struct device *dev, dma_addr_t dma_addr);
+> > +
+> > +Returns %true if dma_sync_single_for_{device,cpu} calls are required to
+> > +transfer memory ownership.  Returns %false if those calls can be skipped.
 > 
-> nit: I wouldn't call it improper use, as it's a well defined behavior
-> (lower byte of returned integer).
+> Hi Christoph -
 > 
-> >
-> > This patch use two different positive exit codes instead, to allow a shell  
-> 
-> typo: uses
-> 
-> > script to tell the two error cases apart.
-> >
-> > Fixes: fd27b1835e70 ("selftests/bpf: Reset process and thread affinity after each test/sub-test")
-> > Fixes: 811d7e375d08 ("bpf: selftests: Restore netns after each test")
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  tools/testing/selftests/bpf/test_progs.c |   12 +++++++-----
-> >  1 file changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > index e8f7cd5dbae4..50803b080593 100644
-> > --- a/tools/testing/selftests/bpf/test_progs.c
-> > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > @@ -12,7 +12,9 @@
-> >  #include <string.h>
-> >  #include <execinfo.h> /* backtrace */
-> >
-> > -#define EXIT_NO_TEST 2
-> > +#define EXIT_NO_TEST           2
-> > +#define EXIT_ERR_NETNS         3
-> > +#define EXIT_ERR_RESET_AFFINITY        4  
-> 
-> Let's not overdo this with too granular error codes? All of those seem
-> to be just a failure, is there any practical need to differentiate
-> between NETNS vs RESET_AFFINITY failure?
+> Thie call above is for a specific dma_addr.  For correctness, would I
+> need to check every addr, or can I assume that for a specific memory
+> type (pages returned from malloc), that the answer would be identical?
 
-I agree, because both cases (NETNS vs RESET_AFFINITY) print to stderr,
-which makes it possible to troubleshoot for a human afterwards.  The
-shell script just need to differentiate that is an "infra" setup issue,
-as we e.g. might want to allow the RPM build to continue in those cases.
-
-
-> I'd go with 3 values:
-> 
-> 1 - at least one test failed
-> 2 - no tests were selected
-> 3 - "infra" (not a test-specific failure) error (like netns or affinity failed).
-> 
-> Thoughts?
-
-Sure, I can do this.
-
-What define name reflect this best:
- EXIT_ERR_SETUP ?
- EXIT_ERR_INFRA ?
- EXIT_ERR_SETUP_INFRA ?
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+You need to check every mapping.  E.g. this API pairs with a
+dma_map_single/page call.  For S/G mappings you'd need to call it for
+each entry, although if you have a use case for that we really should
+add a dma_sg_need_sync helper instea of open coding the scatterlist walk.
