@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D98216412
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 04:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D26F2165D7
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 07:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgGGCdq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 22:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        id S1727777AbgGGFPU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 01:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgGGCdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 22:33:46 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07575C061755;
-        Mon,  6 Jul 2020 19:33:46 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id j202so19895182ybg.6;
-        Mon, 06 Jul 2020 19:33:45 -0700 (PDT)
+        with ESMTP id S1726906AbgGGFPT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 01:15:19 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C86C061755;
+        Mon,  6 Jul 2020 22:15:19 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id a32so597736qtb.5;
+        Mon, 06 Jul 2020 22:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jwg9JBylbv/mt3zy7tsoj2gPTnZdsmGTQJYmuhzzU2k=;
-        b=f9njYXtSl/MI/zWIxxyFsktgTHGv/YhUD2LN05DcUef3rmwgG/bO6eTl2Q0RjPGrwo
-         ujGHmLg+Li2sbscsyYPNm+n+PVeGsvGDGRYvRhXXJC/8POs7s9zM7QYz7yDKibRfyG9a
-         3MPScBDlVtG0hDP51M6iqNspumfvJVB66a9YVmcW66G1l2aizLvChrZQUJeLmb520Qtw
-         4YBKOCW+b/g25Nkxpkpsbs2bgujDGu6OfrDpiSpg40ESkddKnRwoZ/t4iSu7e7AHsJmE
-         wKPr1yGb8+Od6fPQSsiVyRzRIf76cHGP7Pk6eihT8hmCyAShVBYmdfD/1j9aUKbaOxES
-         PEBA==
+        bh=FrGu3k4LEO5ifNJJ/x8Y51cGL1ewzzEAMvn+CLSzWwE=;
+        b=Acxjcp6Uo4H4QDWgltMdr46OZVc06Rmk64Vlxy7g9YQxMfovbKTHQwBQP3aqJVT1+4
+         oflt0dyTPCcOnIg6cIfplFWMZ+9g4ZmAY7MZ7/hGeM1Gqlcep1XT6sud3AhWWHHabK+1
+         QwahthI38Ithony7B1g02joSZN0Zo0attNaZQLir4su3ibP1XL0JOGmoppT8gZDDYdLL
+         cwRR4p0pSw7JTJC+fw4HydI9C9bfz9VgwMPBfettrlh/jGZnyT/zvnNenaYSGBkXI60D
+         YnhHPOSqjtgabvEVEDlDbOKmxHkye3GSbdAn0DazGQMwBb0hFhXA18fjX8vfmZxfB8WI
+         Kvtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jwg9JBylbv/mt3zy7tsoj2gPTnZdsmGTQJYmuhzzU2k=;
-        b=Sfo17fV453ZM/fxWjk17c3HFv1lX9KF8rPANlaMZLAeI0zM/1PVGN9xnCJUKBGKpC4
-         lovGU1rtJg98ra8cplyYpz2LF04t32arVG1vH1CgWVUUrbBf1k57zVLyium+4o/VCpbl
-         QyG/rV64vEQNcIk1kHKPt9yb5vD4b+NA+XPJVAymWfnLvH+7kkOIJLesVynb+IXHo+Ue
-         vvPMf8y+JDupCwkIsBoRB8z2q8vUT3rDUYCxRl1JuVOfZLYPqhspwfOrOTVNgLNVNm4L
-         01MNeUOVBuz3uCHXAWhN752bdaC9bGxL7B726qlePhpDwyV9bWG3j46/ZAFIA1uG6ukl
-         fE1g==
-X-Gm-Message-State: AOAM5332bSa3C5R1w8CZx234s0qAt3Dn4soNvNGnQzJ13b3ULgM3luAK
-        n/nWm70jN/hDpU6mIgrinLkYc74D9k4CHFq6vA==
-X-Google-Smtp-Source: ABdhPJxqAfpg+87PDMwE3OEGT0C7FztkBglcboOMTqBXe6F1KTDv00tYkhzLTkP98Zj8sQLPgxcNszToEdny5GB7Zpc=
-X-Received: by 2002:a25:a505:: with SMTP id h5mr612590ybi.419.1594089225208;
- Mon, 06 Jul 2020 19:33:45 -0700 (PDT)
+        bh=FrGu3k4LEO5ifNJJ/x8Y51cGL1ewzzEAMvn+CLSzWwE=;
+        b=MEN/XP4KmNgkfsD9NY2H3eXYqB5y0xR8gH+CTzEeswlaAgGU5C8rCU05anaHz6T+FB
+         dKHsdRpRoIyMMFYQmBkquqn05Am2qvGhJI9Phbv2brfLK8ViHeS5oDKIS+TnuUHdTDKg
+         N1mDtBf9NnB6iJqvEB5rmyLHJJi0dEXPItnFgekr8Jr3aCTrBFjWgveN54K7OplyfM7Z
+         G63zdrY01odjvnlAc57o7EQB6r4ba/9YQsVZtD8lYRdFP4jcnl+5OV6C/1qhsNTSVX4G
+         ZSpccQ5J4L7C1rnQWbv3EV4Io4EqXfj+pCYAkRn0OXLvcaz6+pi9CPSFYO+tEftFyDEs
+         C9TA==
+X-Gm-Message-State: AOAM531O4IUxyfQBa2xDD5VLmLb3InCHuRYLjDu3kO2v2J5UsTc0jL8x
+        JQ6TgbFtXupJnls0SqIoUc1NIPkr2d604EkDMZQ=
+X-Google-Smtp-Source: ABdhPJwIueYIiY5HenfNSXHJ3c+nqySzWBhmYbrvwqRyTWgkhcl6GqmVQw9YltB73yoE8rmYQbMs8CI2w0ussurCZF8=
+X-Received: by 2002:ac8:1991:: with SMTP id u17mr50760173qtj.93.1594098918762;
+ Mon, 06 Jul 2020 22:15:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200702021646.90347-1-danieltimlee@gmail.com>
  <20200702021646.90347-2-danieltimlee@gmail.com> <c4061b5f-b42e-4ecc-e3fb-7a70206da417@fb.com>
  <CAEKGpzhU31p=i=xbD3Fk2vJh_btrk73CgkJXMXDgM1umsEaEpg@mail.gmail.com>
  <41ca5ad1-2b79-dbc2-5f6e-e466712fe7a9@fb.com> <CAEKGpzjpm36YFnqSqTxh7RsS_PH6Xk31NM3174gd74ABbMNVWw@mail.gmail.com>
- <CAEf4BzYx8dT3nFx69-oXXqmwBXia62bTbjG3Nb9X7vz=OxefFg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYx8dT3nFx69-oXXqmwBXia62bTbjG3Nb9X7vz=OxefFg@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Tue, 7 Jul 2020 11:33:26 +0900
-Message-ID: <CAEKGpzi65SaHbaF3RHCB5P9Ro+Wt7_4HFJZxRd2HSXhg07P_Gg@mail.gmail.com>
+ <CAEf4BzYx8dT3nFx69-oXXqmwBXia62bTbjG3Nb9X7vz=OxefFg@mail.gmail.com> <CAEKGpzi65SaHbaF3RHCB5P9Ro+Wt7_4HFJZxRd2HSXhg07P_Gg@mail.gmail.com>
+In-Reply-To: <CAEKGpzi65SaHbaF3RHCB5P9Ro+Wt7_4HFJZxRd2HSXhg07P_Gg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Jul 2020 22:15:05 -0700
+Message-ID: <CAEf4BzZJnm3Hhwc+NpHwUqgs8zuzh8Ug6_ZDHc+qTK8DjAGm5Q@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/4] samples: bpf: fix bpf programs with
  kprobe/sys_connect event
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
 Cc:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -67,217 +67,188 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 8:50 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Jul 6, 2020 at 7:33 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 >
-> On Mon, Jul 6, 2020 at 3:28 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> On Tue, Jul 7, 2020 at 8:50 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On Fri, Jul 3, 2020 at 1:04 AM Yonghong Song <yhs@fb.com> wrote:
+> > On Mon, Jul 6, 2020 at 3:28 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 > > >
-> > >
-> > >
-> > > On 7/2/20 4:13 AM, Daniel T. Lee wrote:
-> > > > On Thu, Jul 2, 2020 at 2:13 PM Yonghong Song <yhs@fb.com> wrote:
-> > > >>
-> > > >>
-> > > >>
-> > > >> On 7/1/20 7:16 PM, Daniel T. Lee wrote:
-> > > >>> Currently, BPF programs with kprobe/sys_connect does not work properly.
-> > > >>>
-> > > >>> Commit 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> > > >>> This commit modifies the bpf_load behavior of kprobe events in the x64
-> > > >>> architecture. If the current kprobe event target starts with "sys_*",
-> > > >>> add the prefix "__x64_" to the front of the event.
-> > > >>>
-> > > >>> Appending "__x64_" prefix with kprobe/sys_* event was appropriate as a
-> > > >>> solution to most of the problems caused by the commit below.
-> > > >>>
-> > > >>>       commit d5a00528b58c ("syscalls/core, syscalls/x86: Rename struct
-> > > >>>       pt_regs-based sys_*() to __x64_sys_*()")
-> > > >>>
-> > > >>> However, there is a problem with the sys_connect kprobe event that does
-> > > >>> not work properly. For __sys_connect event, parameters can be fetched
-> > > >>> normally, but for __x64_sys_connect, parameters cannot be fetched.
-> > > >>>
-> > > >>> Because of this problem, this commit fixes the sys_connect event by
-> > > >>> specifying the __sys_connect directly and this will bypass the
-> > > >>> "__x64_" appending rule of bpf_load.
-> > > >>
-> > > >> In the kernel code, we have
-> > > >>
-> > > >> SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
-> > > >>                   int, addrlen)
-> > > >> {
-> > > >>           return __sys_connect(fd, uservaddr, addrlen);
-> > > >> }
-> > > >>
-> > > >> Depending on compiler, there is no guarantee that __sys_connect will
-> > > >> not be inlined. I would prefer to still use the entry point
-> > > >> __x64_sys_* e.g.,
-> > > >>      SEC("kprobe/" SYSCALL(sys_write))
-> > > >>
+> > > On Fri, Jul 3, 2020 at 1:04 AM Yonghong Song <yhs@fb.com> wrote:
 > > > >
-> > > > As you mentioned, there is clearly a possibility that problems may arise
-> > > > because the symbol does not exist according to the compiler.
 > > > >
-> > > > However, in x64, when using Kprobe for __x64_sys_connect event, the
-> > > > tests are not working properly because the parameters cannot be fetched,
-> > > > and the test under selftests/bpf is using "kprobe/_sys_connect" directly.
+> > > >
+> > > > On 7/2/20 4:13 AM, Daniel T. Lee wrote:
+> > > > > On Thu, Jul 2, 2020 at 2:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > >>
+> > > > >>
+> > > > >>
+> > > > >> On 7/1/20 7:16 PM, Daniel T. Lee wrote:
+> > > > >>> Currently, BPF programs with kprobe/sys_connect does not work properly.
+> > > > >>>
+> > > > >>> Commit 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
+> > > > >>> This commit modifies the bpf_load behavior of kprobe events in the x64
+> > > > >>> architecture. If the current kprobe event target starts with "sys_*",
+> > > > >>> add the prefix "__x64_" to the front of the event.
+> > > > >>>
+> > > > >>> Appending "__x64_" prefix with kprobe/sys_* event was appropriate as a
+> > > > >>> solution to most of the problems caused by the commit below.
+> > > > >>>
+> > > > >>>       commit d5a00528b58c ("syscalls/core, syscalls/x86: Rename struct
+> > > > >>>       pt_regs-based sys_*() to __x64_sys_*()")
+> > > > >>>
+> > > > >>> However, there is a problem with the sys_connect kprobe event that does
+> > > > >>> not work properly. For __sys_connect event, parameters can be fetched
+> > > > >>> normally, but for __x64_sys_connect, parameters cannot be fetched.
+> > > > >>>
+> > > > >>> Because of this problem, this commit fixes the sys_connect event by
+> > > > >>> specifying the __sys_connect directly and this will bypass the
+> > > > >>> "__x64_" appending rule of bpf_load.
+> > > > >>
+> > > > >> In the kernel code, we have
+> > > > >>
+> > > > >> SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
+> > > > >>                   int, addrlen)
+> > > > >> {
+> > > > >>           return __sys_connect(fd, uservaddr, addrlen);
+> > > > >> }
+> > > > >>
+> > > > >> Depending on compiler, there is no guarantee that __sys_connect will
+> > > > >> not be inlined. I would prefer to still use the entry point
+> > > > >> __x64_sys_* e.g.,
+> > > > >>      SEC("kprobe/" SYSCALL(sys_write))
+> > > > >>
+> > > > >
+> > > > > As you mentioned, there is clearly a possibility that problems may arise
+> > > > > because the symbol does not exist according to the compiler.
+> > > > >
+> > > > > However, in x64, when using Kprobe for __x64_sys_connect event, the
+> > > > > tests are not working properly because the parameters cannot be fetched,
+> > > > > and the test under selftests/bpf is using "kprobe/_sys_connect" directly.
+> > > >
+> > > > This is the assembly code for __x64_sys_connect.
+> > > >
+> > > > ffffffff818d3520 <__x64_sys_connect>:
+> > > > ffffffff818d3520: e8 fb df 32 00        callq   0xffffffff81c01520
+> > > > <__fentry__>
+> > > > ffffffff818d3525: 48 8b 57 60           movq    96(%rdi), %rdx
+> > > > ffffffff818d3529: 48 8b 77 68           movq    104(%rdi), %rsi
+> > > > ffffffff818d352d: 48 8b 7f 70           movq    112(%rdi), %rdi
+> > > > ffffffff818d3531: e8 1a ff ff ff        callq   0xffffffff818d3450
+> > > > <__sys_connect>
+> > > > ffffffff818d3536: 48 98                 cltq
+> > > > ffffffff818d3538: c3                    retq
+> > > > ffffffff818d3539: 0f 1f 80 00 00 00 00  nopl    (%rax)
+> > > >
+> > > > In bpf program, the step is:
+> > > >        struct pt_regs *real_regs = PT_REGS_PARM1(pt_regs);
+> > > >        param1 = PT_REGS_PARM1(real_regs);
+> > > >        param2 = PT_REGS_PARM2(real_regs);
+> > > >        param3 = PT_REGS_PARM3(real_regs);
+> > > > The same for s390.
+> > > >
 > > >
-> > > This is the assembly code for __x64_sys_connect.
+> > > I'm sorry that I seem to get it wrong,
+> > > But is it available to access 'struct pt_regs *' recursively?
 > > >
-> > > ffffffff818d3520 <__x64_sys_connect>:
-> > > ffffffff818d3520: e8 fb df 32 00        callq   0xffffffff81c01520
-> > > <__fentry__>
-> > > ffffffff818d3525: 48 8b 57 60           movq    96(%rdi), %rdx
-> > > ffffffff818d3529: 48 8b 77 68           movq    104(%rdi), %rsi
-> > > ffffffff818d352d: 48 8b 7f 70           movq    112(%rdi), %rdi
-> > > ffffffff818d3531: e8 1a ff ff ff        callq   0xffffffff818d3450
-> > > <__sys_connect>
-> > > ffffffff818d3536: 48 98                 cltq
-> > > ffffffff818d3538: c3                    retq
-> > > ffffffff818d3539: 0f 1f 80 00 00 00 00  nopl    (%rax)
+> > > It seems nested use of PT_REGS_PARM causes invalid memory access.
 > > >
-> > > In bpf program, the step is:
-> > >        struct pt_regs *real_regs = PT_REGS_PARM1(pt_regs);
-> > >        param1 = PT_REGS_PARM1(real_regs);
-> > >        param2 = PT_REGS_PARM2(real_regs);
-> > >        param3 = PT_REGS_PARM3(real_regs);
-> > > The same for s390.
+> > >     $ sudo ./test_probe_write_user
+> > >     libbpf: load bpf program failed: Permission denied
+> > >     libbpf: -- BEGIN DUMP LOG ---
+> > >     libbpf:
+> > >     Unrecognized arg#0 type PTR
+> > >     ; struct pt_regs *real_regs = PT_REGS_PARM1(ctx);
+> > >     0: (79) r1 = *(u64 *)(r1 +112)
+> > >     ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
+> > >     1: (79) r6 = *(u64 *)(r1 +104)
+> > >     R1 invalid mem access 'inv'
+> > >     processed 2 insns (limit 1000000) max_states_per_insn 0
+> > > total_states 0 peak_states 0 mark_read 0
 > > >
+> > >     libbpf: -- END LOG --
+> > >     libbpf: failed to load program 'kprobe/__x64_sys_connect'
+> > >     libbpf: failed to load object './test_probe_write_user_kern.o'
+> > >     ERROR: loading BPF object file failed
+> > >
+> > > I'm not fully aware of the BPF verifier's internal structure.
+> > > Is there any workaround to solve this problem?
 > >
-> > I'm sorry that I seem to get it wrong,
-> > But is it available to access 'struct pt_regs *' recursively?
+> > You need to use bpf_probe_read_kernel() to get those arguments from
+> > real_args. Or better just use PT_REGS_PARM1_CORE(x) and others, which
+> > does that for you (+ CO-RE relocation).
 > >
-> > It seems nested use of PT_REGS_PARM causes invalid memory access.
 > >
-> >     $ sudo ./test_probe_write_user
-> >     libbpf: load bpf program failed: Permission denied
-> >     libbpf: -- BEGIN DUMP LOG ---
-> >     libbpf:
-> >     Unrecognized arg#0 type PTR
-> >     ; struct pt_regs *real_regs = PT_REGS_PARM1(ctx);
-> >     0: (79) r1 = *(u64 *)(r1 +112)
-> >     ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
-> >     1: (79) r6 = *(u64 *)(r1 +104)
-> >     R1 invalid mem access 'inv'
-> >     processed 2 insns (limit 1000000) max_states_per_insn 0
-> > total_states 0 peak_states 0 mark_read 0
-> >
-> >     libbpf: -- END LOG --
-> >     libbpf: failed to load program 'kprobe/__x64_sys_connect'
-> >     libbpf: failed to load object './test_probe_write_user_kern.o'
-> >     ERROR: loading BPF object file failed
-> >
-> > I'm not fully aware of the BPF verifier's internal structure.
-> > Is there any workaround to solve this problem?
 >
-> You need to use bpf_probe_read_kernel() to get those arguments from
-> real_args. Or better just use PT_REGS_PARM1_CORE(x) and others, which
-> does that for you (+ CO-RE relocation).
+> Thanks for the tip!
 >
+> I've just tried the old hack '_(P)':
+> (which is similar implementation with BPF_CORE_READ())
+>
+>     #define _(P) ({typeof(P) val = 0; bpf_probe_read(&val,
+> sizeof(val), &P); val;})
+>     [...]
+>     struct pt_regs *regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+>     void *sockaddr_arg = (void *)_(PT_REGS_PARM2(regs));
+>     int sockaddr_len = (int)_(PT_REGS_PARM3(regs));
+>
+> and it works properly.
+>
+> Just wondering, why is the pointer chasing of the original ctx
+> considered as an unsafe pointer here?
+>
+>     ; struct pt_regs *real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+>     0: (79) r1 = *(u64 *)(r1 +112)
+>     [...]
+>     ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
+>     4: (79) r6 = *(u64 *)(r1 +104)
+>
+> Is it considered as an unsafe pointer since it is unknown what exists
+> in the pointer (r1 + 104), but the instruction is trying to access it?
 >
 
-Thanks for the tip!
+Yes.
+Because after the initial pointer read, the verifier assumes that you
+are reading a random piece of memory.
 
-I've just tried the old hack '_(P)':
-(which is similar implementation with BPF_CORE_READ())
+>
+> I am a little concerned about using PT_REGS_PARM1_CORE
+> because it is not a CORE-related patch, but if using CORE is the
+> direction BPF wants to take, I will use PT_REGS_PARM1_CORE()
+> instead of _(P) hack using bpf_probe_read().
 
-    #define _(P) ({typeof(P) val = 0; bpf_probe_read(&val,
-sizeof(val), &P); val;})
-    [...]
-    struct pt_regs *regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
-    void *sockaddr_arg = (void *)_(PT_REGS_PARM2(regs));
-    int sockaddr_len = (int)_(PT_REGS_PARM3(regs));
+bpf_probe_read() works as well. But yeah, BPF CO-RE is the way modern
+tracing applications are leaning, look at selftests and see how many
+are using CO-RE already. It's pretty much the only way to write
+portable tracing BPF applications, short of taking Clang/LLVM
+**runtime** dependency, the way BCC makes you do.
 
-and it works properly.
-
-Just wondering, why is the pointer chasing of the original ctx
-considered as an unsafe pointer here?
-
-    ; struct pt_regs *real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
-    0: (79) r1 = *(u64 *)(r1 +112)
-    [...]
-    ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
-    4: (79) r6 = *(u64 *)(r1 +104)
-
-Is it considered as an unsafe pointer since it is unknown what exists
-in the pointer (r1 + 104), but the instruction is trying to access it?
-
-
-I am a little concerned about using PT_REGS_PARM1_CORE
-because it is not a CORE-related patch, but if using CORE is the
-direction BPF wants to take, I will use PT_REGS_PARM1_CORE()
-instead of _(P) hack using bpf_probe_read().
-
-In addition, PT_REGS_PARM1_CORE() allows me to write code
-neatly without having to define additional macro _(P).
-
-Thank you for your time and effort for the review.
-Daniel
-
-> >
-> > Thanks for your time and effort for the review.
-> > Daniel.
-> >
+>
+> In addition, PT_REGS_PARM1_CORE() allows me to write code
+> neatly without having to define additional macro _(P).
+>
+> Thank you for your time and effort for the review.
+> Daniel
+>
 > > >
-> > > For other architectures, no above indirection is needed.
-> > >
-> > > I guess you can abstract the above into trace_common.h?
+> > > Thanks for your time and effort for the review.
+> > > Daniel.
 > > >
 > > > >
-> > > > I'm not sure how to deal with this problem. Any advice and suggestions
-> > > > will be greatly appreciated.
+> > > > For other architectures, no above indirection is needed.
 > > > >
-> > > > Thanks for your time and effort for the review.
-> > > > Daniel
+> > > > I guess you can abstract the above into trace_common.h?
 > > > >
-> > > >>>
-> > > >>> Fixes: 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
-> > > >>> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > > >>> ---
-> > > >>>    samples/bpf/map_perf_test_kern.c         | 2 +-
-> > > >>>    samples/bpf/test_map_in_map_kern.c       | 2 +-
-> > > >>>    samples/bpf/test_probe_write_user_kern.c | 2 +-
-> > > >>>    3 files changed, 3 insertions(+), 3 deletions(-)
-> > > >>>
-> > > >>> diff --git a/samples/bpf/map_perf_test_kern.c b/samples/bpf/map_perf_test_kern.c
-> > > >>> index 12e91ae64d4d..cebe2098bb24 100644
-> > > >>> --- a/samples/bpf/map_perf_test_kern.c
-> > > >>> +++ b/samples/bpf/map_perf_test_kern.c
-> > > >>> @@ -154,7 +154,7 @@ int stress_percpu_hmap_alloc(struct pt_regs *ctx)
-> > > >>>        return 0;
-> > > >>>    }
-> > > >>>
-> > > >>> -SEC("kprobe/sys_connect")
-> > > >>> +SEC("kprobe/__sys_connect")
-> > > >>>    int stress_lru_hmap_alloc(struct pt_regs *ctx)
-> > > >>>    {
-> > > >>>        char fmt[] = "Failed at stress_lru_hmap_alloc. ret:%dn";
-> > > >>> diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
-> > > >>> index 6cee61e8ce9b..b1562ba2f025 100644
-> > > >>> --- a/samples/bpf/test_map_in_map_kern.c
-> > > >>> +++ b/samples/bpf/test_map_in_map_kern.c
-> > > >>> @@ -102,7 +102,7 @@ static __always_inline int do_inline_hash_lookup(void *inner_map, u32 port)
-> > > >>>        return result ? *result : -ENOENT;
-> > > >>>    }
-> > > >>>
-> > > >>> -SEC("kprobe/sys_connect")
-> > > >>> +SEC("kprobe/__sys_connect")
-> > > >>>    int trace_sys_connect(struct pt_regs *ctx)
-> > > >>>    {
-> > > >>>        struct sockaddr_in6 *in6;
-> > > >>> diff --git a/samples/bpf/test_probe_write_user_kern.c b/samples/bpf/test_probe_write_user_kern.c
-> > > >>> index 6579639a83b2..9b3c3918c37d 100644
-> > > >>> --- a/samples/bpf/test_probe_write_user_kern.c
-> > > >>> +++ b/samples/bpf/test_probe_write_user_kern.c
-> > > >>> @@ -26,7 +26,7 @@ struct {
-> > > >>>     * This example sits on a syscall, and the syscall ABI is relatively stable
-> > > >>>     * of course, across platforms, and over time, the ABI may change.
-> > > >>>     */
-> > > >>> -SEC("kprobe/sys_connect")
-> > > >>> +SEC("kprobe/__sys_connect")
-> > > >>>    int bpf_prog1(struct pt_regs *ctx)
-> > > >>>    {
-> > > >>>        struct sockaddr_in new_addr, orig_addr = {};
-> > > >>>
+> > > > >
+> > > > > I'm not sure how to deal with this problem. Any advice and suggestions
+> > > > > will be greatly appreciated.
+> > > > >
+> > > > > Thanks for your time and effort for the review.
+> > > > > Daniel
+> > > > >
+> > > > >>>
+> > > > >>> Fixes: 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
+> > > > >>> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > > > >>> ---
+
+[...]
