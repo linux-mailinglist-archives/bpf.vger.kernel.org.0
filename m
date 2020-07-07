@@ -2,100 +2,344 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24E121674D
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 09:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191B72168E7
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 11:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgGGHYA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 03:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
+        id S1726839AbgGGJV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 05:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgGGHYA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 03:24:00 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1BDC061755;
-        Tue,  7 Jul 2020 00:24:00 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id z63so37231202qkb.8;
-        Tue, 07 Jul 2020 00:24:00 -0700 (PDT)
+        with ESMTP id S1725825AbgGGJV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:21:27 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB24C08C5DB
+        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 02:21:27 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id c11so24312952lfh.8
+        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 02:21:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TUUobSdNBrJuF1EW+dIJdI5D+Jjq/ev7F+J15Oa8C9Q=;
-        b=YZObO+C6WuoXFjMmxg/9UDWawj60dvqkpoNj4mqu9yFcyqHn4G8vR/bfVzQrtqUCk9
-         /38EPWQQx9oy2h4U2FkCeRn0QXB8RmKe6LOowfQfg/h+5UMUFbjRj87puqupYKKeU2oz
-         8/7Dv7PTAAHGxIzPRZD/Y9mp0TuZJGi284VnX/16uU2EmOhnay0KibNZB8p2UoeIHtqq
-         vJHkapVoo7CBkf33NzoZva098D4yJuetQcEclWlIb/kew10lFcLnA/PZBfW1Nkxu6YeK
-         Ma58lL6pTXP8py5hUi96wSsnQC6gOieWz8GauUihu7Qi2guzXap1/iZkUmEf6ZUmlRIA
-         oOQQ==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=HJr9LhqyMQXqf+LV8MxkvGH0oBFP5TNlhtG5mgpxnu4=;
+        b=vl1xXaeXYHJMb6iua0OzzmcWSXu/oMcc07eNiv6ArIqf7WYwr6BfFHoAf4SpEBl+s4
+         FSBxxZ2bQyjBg6MHz5io8FT9+nhWYr9B2bKJEeaQbrUJxpw8tQwT0C8pMKMOYY1orAv8
+         T9EDd5ngfyDctOPGGXUon3HTQkFeOM8YLmKGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TUUobSdNBrJuF1EW+dIJdI5D+Jjq/ev7F+J15Oa8C9Q=;
-        b=steYoq5Ab2/pmyteAJJHe2vIOF1VeY5mQ4mthYUxnoZmA0LiI3d1lv3KzWyQehQ6bl
-         9KDpBIxxH6EjUhgPBrb97IUlOdwnpmSkQNbEE10Oxw2re9gXM4k3ASx3BAG1wM/9DatK
-         nOTGb+inopTh9XcdFn/EJ5rZR/chCvcg/67EsG02QorL+IG/4qlQ47NUalAoEFQP5j0A
-         nvMRcepNbdS9yK+cHNawRuNG0oXdjSfipciiPy7+G2bJlEt4Wia2WzjZCBOkYMlpZWkJ
-         ba3AOmKdXqs54GrUsTHvhUein1CilOeo6a9VmL0aS26AbO/QwtVsxVN9L2Ry2ZcDKRCE
-         Xh1g==
-X-Gm-Message-State: AOAM530+sz5AX1DC1oA7jJUKfF8WQZzPOMJA0jz9R/Ntjw213xepVwRB
-        opJrQTuFdRl6J9prBcq3Ky4LRPIs9SyqgHwEpNY=
-X-Google-Smtp-Source: ABdhPJxBQfF7heAYoEgSKht4+fIfPmJ4ngreCUqxM96ndAYK2PAmq94ztrEuft/Y5So7ikOwEA06muPnntfXkmMjnu8=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr48103373qkc.39.1594106639361;
- Tue, 07 Jul 2020 00:23:59 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=HJr9LhqyMQXqf+LV8MxkvGH0oBFP5TNlhtG5mgpxnu4=;
+        b=GBpfXDYLrYKCmy5AqkYbaKo+3Zv1GFabiVtjyVGS01p3KPZSkDVGA4bEWrz7lyeXSf
+         yik+fvl4le79jZfzVTFHzuZlDQbuBp4NA5tJuk56t87fe1vOJiPQFmsIFA5vP8JpLD8x
+         9tTZ8BF6w+YKj477U7H99M+mc9iOi9DTHmJMy4wG3iY49VonD2xncU0AgWtr2cWYLBRc
+         BMatIYqMWIqhQjZfOomAuNzN5kjA5DtuXOAQZD5dlQfjiis9OymJUPYtbI0nDWLZ+fIm
+         fKMo7TspIp2m3ODxCMkbAB5p/B5SPVZTBtlCGN7iEURzoLqLhqzDImwevzSowQIq4nw7
+         sFNw==
+X-Gm-Message-State: AOAM532YYZmPOd8n/WLhzcvJnwDeTMKe71A30ERSligqKCvf+DZ0NYeb
+        Nq0herDdLCaruUIBXEmYyDhQD551QYSOmg==
+X-Google-Smtp-Source: ABdhPJzHIZMbY2eRqvT8/2aE2AqMRfnj0jXb+i8GddzUohlBZuSbGLJGbgtD0xHIvSlxeTIRtytUEg==
+X-Received: by 2002:a05:6512:64:: with SMTP id i4mr32555737lfo.113.1594113684710;
+        Tue, 07 Jul 2020 02:21:24 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id q1sm9409742lfp.42.2020.07.07.02.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 02:21:24 -0700 (PDT)
+References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-3-jakub@cloudflare.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 02/16] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+In-reply-to: <20200702092416.11961-3-jakub@cloudflare.com>
+Date:   Tue, 07 Jul 2020 11:21:23 +0200
+Message-ID: <87lfjvadf0.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <159410590190.1093222.8436994742373578091.stgit@firesoul>
-In-Reply-To: <159410590190.1093222.8436994742373578091.stgit@firesoul>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Jul 2020 00:23:48 -0700
-Message-ID: <CAEf4Bzb07mdCQ5DS_gao4b9GSyeg406wpteC9uDaGdfOAHXFVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V3 0/2] BPF selftests test runner 'test_progs'
- use proper shell exit codes
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 12:12 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
+On Thu, Jul 02, 2020 at 11:24 AM CEST, Jakub Sitnicki wrote:
+> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
+> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
+> when looking up a listening socket for a new connection request for
+> connection oriented protocols, or when looking up an unconnected socket for
+> a packet for connection-less protocols.
 >
-> This patchset makes it easier to use test_progs from shell scripts, by using
-> proper shell exit codes. The process's exit status should be a number
-> between 0 and 255 as defined in man exit(3) else it will be masked to comply.
+> When called, SK_LOOKUP BPF program can select a socket that will receive
+> the packet. This serves as a mechanism to overcome the limits of what
+> bind() API allows to express. Two use-cases driving this work are:
 >
-> Shell exit codes used by programs should be below 127. As 127 and above are
-> used for indicating signals. E.g. 139 means 11=SIGSEGV $((139 & 127))=11.
-> POSIX defines in man wait(3p) signal check if WIFSIGNALED(STATUS) and
-> WTERMSIG(139)=11. (Hint: cmd 'kill -l' list signals and their numbers).
+>  (1) steer packets destined to an IP range, on fixed port to a socket
 >
-> Using Segmentation fault as an example, as these have happened before with
-> different tests (that are part of test_progs). CI people writing these
-> shell-scripts could pickup these hints and report them, if that makes sense.
+>      192.0.2.0/24, port 80 -> NGINX socket
 >
+>  (2) steer packets destined to an IP address, on any port to a socket
+>
+>      198.51.100.1, any port -> L7 proxy socket
+>
+> In its run-time context program receives information about the packet that
+> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
+> address 4-tuple. Context can be further extended to include ingress
+> interface identifier.
+>
+> To select a socket BPF program fetches it from a map holding socket
+> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
+> helper to record the selection. Transport layer then uses the selected
+> socket as a result of socket lookup.
+>
+> This patch only enables the user to attach an SK_LOOKUP program to a
+> network namespace. Subsequent patches hook it up to run on local delivery
+> path in ipv4 and ipv6 stacks.
+>
+> Suggested-by: Marek Majkowski <marek@cloudflare.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
 >
-> Jesper Dangaard Brouer (2):
->       selftests/bpf: test_progs use another shell exit on non-actions
->       selftests/bpf: test_progs avoid minus shell exit codes
+> Notes:
+>     v3:
+>     - Allow bpf_sk_assign helper to replace previously selected socket only
+>       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
+>       programs running in series to accidentally override each other's verdict.
+>     - Let BPF program decide that load-balancing within a reuseport socket group
+>       should be skipped for the socket selected with bpf_sk_assign() by passing
+>       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
+>     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
+>       the selected socket with an intention for multiple attached program
+>       running in series to see each other's choices. However, currently the
+>       verifier doesn't allow checking if pointer is set.
+>     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
+>     - Get rid of macros in convert_ctx_access to make it easier to read.
+>     - Disallow 1-,2-byte access to context fields containing IP addresses.
 >
+>     v2:
+>     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
+>       Update bpf_sk_assign docs accordingly. (Martin)
+>     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
+>     - Fix broken build when CONFIG_INET is not selected. (Martin)
+>     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
+>     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
 >
->  tools/testing/selftests/bpf/test_progs.c |   13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
->
-> --
+>  include/linux/bpf-netns.h  |   3 +
+>  include/linux/bpf_types.h  |   2 +
+>  include/linux/filter.h     |  19 ++++
+>  include/uapi/linux/bpf.h   |  74 +++++++++++++++
+>  kernel/bpf/net_namespace.c |   5 +
+>  kernel/bpf/syscall.c       |   9 ++
+>  net/core/filter.c          | 186 +++++++++++++++++++++++++++++++++++++
+>  scripts/bpf_helpers_doc.py |   9 +-
+>  8 files changed, 306 insertions(+), 1 deletion(-)
 >
 
-For the series:
+[...]
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index c796e141ea8e..286f90e0c824 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -9219,6 +9219,192 @@ const struct bpf_verifier_ops sk_reuseport_verifier_ops = {
+>
+>  const struct bpf_prog_ops sk_reuseport_prog_ops = {
+>  };
+> +
+> +BPF_CALL_3(bpf_sk_lookup_assign, struct bpf_sk_lookup_kern *, ctx,
+> +	   struct sock *, sk, u64, flags)
+> +{
+> +	if (unlikely(flags & ~(BPF_SK_LOOKUP_F_REPLACE |
+> +			       BPF_SK_LOOKUP_F_NO_REUSEPORT)))
+> +		return -EINVAL;
+> +	if (unlikely(sk_is_refcounted(sk)))
+> +		return -ESOCKTNOSUPPORT; /* reject non-RCU freed sockets */
+> +	if (unlikely(sk->sk_state == TCP_ESTABLISHED))
+> +		return -ESOCKTNOSUPPORT; /* reject connected sockets */
+> +
+> +	/* Check if socket is suitable for packet L3/L4 protocol */
+> +	if (sk->sk_protocol != ctx->protocol)
+> +		return -EPROTOTYPE;
+> +	if (sk->sk_family != ctx->family &&
+> +	    (sk->sk_family == AF_INET || ipv6_only_sock(sk)))
+> +		return -EAFNOSUPPORT;
+> +
+> +	if (ctx->selected_sk && !(flags & BPF_SK_LOOKUP_F_REPLACE))
+> +		return -EEXIST;
+> +
+> +	/* Select socket as lookup result */
+> +	ctx->selected_sk = sk;
+> +	ctx->no_reuseport = flags & BPF_SK_LOOKUP_F_NO_REUSEPORT;
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_sk_lookup_assign_proto = {
+> +	.func		= bpf_sk_lookup_assign,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_CTX,
+> +	.arg2_type	= ARG_PTR_TO_SOCKET,
+> +	.arg3_type	= ARG_ANYTHING,
+> +};
+> +
+> +static const struct bpf_func_proto *
+> +sk_lookup_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> +{
+> +	switch (func_id) {
+> +	case BPF_FUNC_sk_assign:
+> +		return &bpf_sk_lookup_assign_proto;
+> +	case BPF_FUNC_sk_release:
+> +		return &bpf_sk_release_proto;
+> +	default:
+> +		return bpf_base_func_proto(func_id);
+> +	}
+> +}
+> +
+> +static bool sk_lookup_is_valid_access(int off, int size,
+> +				      enum bpf_access_type type,
+> +				      const struct bpf_prog *prog,
+> +				      struct bpf_insn_access_aux *info)
+> +{
+> +	if (off < 0 || off >= sizeof(struct bpf_sk_lookup))
+> +		return false;
+> +	if (off % size != 0)
+> +		return false;
+> +	if (type != BPF_READ)
+> +		return false;
+> +
+> +	switch (off) {
+> +	case bpf_ctx_range(struct bpf_sk_lookup, family):
+> +	case bpf_ctx_range(struct bpf_sk_lookup, protocol):
+> +	case bpf_ctx_range(struct bpf_sk_lookup, remote_ip4):
+> +	case bpf_ctx_range(struct bpf_sk_lookup, local_ip4):
+> +	case bpf_ctx_range_till(struct bpf_sk_lookup, remote_ip6[0], remote_ip6[3]):
+> +	case bpf_ctx_range_till(struct bpf_sk_lookup, local_ip6[0], local_ip6[3]):
+> +	case bpf_ctx_range(struct bpf_sk_lookup, remote_port):
+> +	case bpf_ctx_range(struct bpf_sk_lookup, local_port):
+> +		return size == sizeof(__u32);
+> +
+> +	case offsetof(struct bpf_sk_lookup, sk):
+> +		info->reg_type = PTR_TO_SOCKET;
 
-My preference was shorter EXIT_ERR_SETUP, but it doesn't matter.
+There's a bug here. bpf_sk_lookup 'sk' field is initially NULL.
+reg_type should be PTR_TO_SOCKET_OR_NULL to inform the verifier.
+Will fix in v4.
+
+> +		return size == sizeof(__u64);
+> +
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+> +static u32 sk_lookup_convert_ctx_access(enum bpf_access_type type,
+> +					const struct bpf_insn *si,
+> +					struct bpf_insn *insn_buf,
+> +					struct bpf_prog *prog,
+> +					u32 *target_size)
+> +{
+> +	struct bpf_insn *insn = insn_buf;
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +	int off;
+> +#endif
+> +
+> +	switch (si->off) {
+> +	case offsetof(struct bpf_sk_lookup, family):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, family) != 2);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, family));
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, protocol):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, protocol) != 2);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, protocol));
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, remote_ip4):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, v4.saddr) != 4);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, v4.saddr));
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, local_ip4):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, v4.daddr) != 4);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, v4.daddr));
+> +		break;
+> +
+> +	case bpf_ctx_range_till(struct bpf_sk_lookup,
+> +				remote_ip6[0], remote_ip6[3]):
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +		BUILD_BUG_ON(sizeof_field(struct in6_addr, s6_addr32[0]) != 4);
+> +
+> +		off = si->off;
+> +		off -= offsetof(struct bpf_sk_lookup, remote_ip6[0]);
+> +		off += offsetof(struct in6_addr, s6_addr32[0]);
+> +		*insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, v6.saddr));
+> +		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg, off);
+> +#else
+> +		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
+> +#endif
+> +		break;
+> +
+> +	case bpf_ctx_range_till(struct bpf_sk_lookup,
+> +				local_ip6[0], local_ip6[3]):
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +		BUILD_BUG_ON(sizeof_field(struct in6_addr, s6_addr32[0]) != 4);
+> +
+> +		off = si->off;
+> +		off -= offsetof(struct bpf_sk_lookup, local_ip6[0]);
+> +		off += offsetof(struct in6_addr, s6_addr32[0]);
+> +		*insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, v6.daddr));
+> +		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg, off);
+> +#else
+> +		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
+> +#endif
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, remote_port):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, sport) != 2);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, sport));
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, local_port):
+> +		BUILD_BUG_ON(sizeof_field(struct bpf_sk_lookup_kern, dport) != 2);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, dport));
+> +		break;
+> +
+> +	case offsetof(struct bpf_sk_lookup, sk):
+> +		*insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_sk_lookup_kern, selected_sk));
+> +		break;
+> +	}
+> +
+> +	return insn - insn_buf;
+> +}
+> +
+> +const struct bpf_prog_ops sk_lookup_prog_ops = {
+> +};
+> +
+> +const struct bpf_verifier_ops sk_lookup_verifier_ops = {
+> +	.get_func_proto		= sk_lookup_func_proto,
+> +	.is_valid_access	= sk_lookup_is_valid_access,
+> +	.convert_ctx_access	= sk_lookup_convert_ctx_access,
+> +};
+> +
+>  #endif /* CONFIG_INET */
+>
+>  DEFINE_BPF_DISPATCHER(xdp)
+
+[...]
