@@ -2,224 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7691B216351
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 03:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D98216412
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 04:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgGGB0l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jul 2020 21:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        id S1727800AbgGGCdq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jul 2020 22:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgGGB0l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jul 2020 21:26:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BD1C061755;
-        Mon,  6 Jul 2020 18:26:41 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c30so32898263qka.10;
-        Mon, 06 Jul 2020 18:26:41 -0700 (PDT)
+        with ESMTP id S1726900AbgGGCdq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jul 2020 22:33:46 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07575C061755;
+        Mon,  6 Jul 2020 19:33:46 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id j202so19895182ybg.6;
+        Mon, 06 Jul 2020 19:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=e4xqdfLrpFxIxIS6jRVgn6BEI1F3SAijjrL00fECzWc=;
-        b=ucReTtDk4WXDHJ4Nh9KGiVsV93iDURg9L0Gi8l3LuaeAhASu+VVU695eVsqEvKNqRQ
-         k0qRoa8+PRRJylQMJMgPFsjEcri0c8ciNW/w9KxkC2KggVPJun+7mPZCHDPWvqeYg33q
-         vUOoiShyXwYBy47mRR2zXVbdwpKY+M4SSkyCv/P7mfA/xUQ6kU2Fj8k+0uH5Z0Dj76cv
-         VHG5xO5chdA+k2g8gEaquxu5i5sV9Q+T6rmYzL2vjJAmz37rtWWkNKN7qukXkBs+a470
-         h8je3a5Q5HMjcFdZJt8jE+bPphf+VxYiMd66OY2KzFf7rC4MMqwTYtMwzLzxe3G55rYr
-         UayA==
+        bh=jwg9JBylbv/mt3zy7tsoj2gPTnZdsmGTQJYmuhzzU2k=;
+        b=f9njYXtSl/MI/zWIxxyFsktgTHGv/YhUD2LN05DcUef3rmwgG/bO6eTl2Q0RjPGrwo
+         ujGHmLg+Li2sbscsyYPNm+n+PVeGsvGDGRYvRhXXJC/8POs7s9zM7QYz7yDKibRfyG9a
+         3MPScBDlVtG0hDP51M6iqNspumfvJVB66a9YVmcW66G1l2aizLvChrZQUJeLmb520Qtw
+         4YBKOCW+b/g25Nkxpkpsbs2bgujDGu6OfrDpiSpg40ESkddKnRwoZ/t4iSu7e7AHsJmE
+         wKPr1yGb8+Od6fPQSsiVyRzRIf76cHGP7Pk6eihT8hmCyAShVBYmdfD/1j9aUKbaOxES
+         PEBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=e4xqdfLrpFxIxIS6jRVgn6BEI1F3SAijjrL00fECzWc=;
-        b=leo2gOyqyGaDell+uADR0stHV38rXelOO+QqH3C9iwpLvybXC4T4AMP4aYszZ530B1
-         2aipnAX6OPAxpdM/1j5tvTWGEgPEZnXzt/YWG/iQD+e31MXImBfQeswE50ZdarciF+65
-         DnAzbHgzvVwZ7elLJ2mPZ6vZb9UGpqxs8aRNTqsjbDRyI9lZ/zS2yYwibX4VcoK3SOzZ
-         7h3KO+qHoHUjDu8sutlCABDvA9W1qqvSboqp/3H+9xJuyN6ZbXxWcqfZN8kR39HdsVPm
-         k7k/h3JvL33RAhpen0WOazh8jRzWgPsjawndUrGsCoroGhwsh8pmgYapQUojultzuOsO
-         9L7w==
-X-Gm-Message-State: AOAM530c9XhZN68fAhSCKA3mk7fbPTRSl67BOQcFim6iwiQS9e216ilX
-        BVNQheJqWHOY0E9Eg++OYidosrR/m+8LU8dG4eY=
-X-Google-Smtp-Source: ABdhPJycuUAC8QWgdUN5ilLsksr0M5Q1mcz3AJA3sgqxxxnXmCI1YjJJfIZlmK2COjSeEZJrWheMIs9QBJo+81TIVHQ=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr39832822qkg.437.1594085200271;
- Mon, 06 Jul 2020 18:26:40 -0700 (PDT)
+        bh=jwg9JBylbv/mt3zy7tsoj2gPTnZdsmGTQJYmuhzzU2k=;
+        b=Sfo17fV453ZM/fxWjk17c3HFv1lX9KF8rPANlaMZLAeI0zM/1PVGN9xnCJUKBGKpC4
+         lovGU1rtJg98ra8cplyYpz2LF04t32arVG1vH1CgWVUUrbBf1k57zVLyium+4o/VCpbl
+         QyG/rV64vEQNcIk1kHKPt9yb5vD4b+NA+XPJVAymWfnLvH+7kkOIJLesVynb+IXHo+Ue
+         vvPMf8y+JDupCwkIsBoRB8z2q8vUT3rDUYCxRl1JuVOfZLYPqhspwfOrOTVNgLNVNm4L
+         01MNeUOVBuz3uCHXAWhN752bdaC9bGxL7B726qlePhpDwyV9bWG3j46/ZAFIA1uG6ukl
+         fE1g==
+X-Gm-Message-State: AOAM5332bSa3C5R1w8CZx234s0qAt3Dn4soNvNGnQzJ13b3ULgM3luAK
+        n/nWm70jN/hDpU6mIgrinLkYc74D9k4CHFq6vA==
+X-Google-Smtp-Source: ABdhPJxqAfpg+87PDMwE3OEGT0C7FztkBglcboOMTqBXe6F1KTDv00tYkhzLTkP98Zj8sQLPgxcNszToEdny5GB7Zpc=
+X-Received: by 2002:a25:a505:: with SMTP id h5mr612590ybi.419.1594089225208;
+ Mon, 06 Jul 2020 19:33:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200703095111.3268961-1-jolsa@kernel.org> <20200703095111.3268961-10-jolsa@kernel.org>
-In-Reply-To: <20200703095111.3268961-10-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Jul 2020 18:26:28 -0700
-Message-ID: <CAEf4BzYuDU2mARcP5GVAv+WiknSnWuzGyNqQx0TiJ23CWA8NiA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 9/9] selftests/bpf: Add test for resolve_btfids
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+References: <20200702021646.90347-1-danieltimlee@gmail.com>
+ <20200702021646.90347-2-danieltimlee@gmail.com> <c4061b5f-b42e-4ecc-e3fb-7a70206da417@fb.com>
+ <CAEKGpzhU31p=i=xbD3Fk2vJh_btrk73CgkJXMXDgM1umsEaEpg@mail.gmail.com>
+ <41ca5ad1-2b79-dbc2-5f6e-e466712fe7a9@fb.com> <CAEKGpzjpm36YFnqSqTxh7RsS_PH6Xk31NM3174gd74ABbMNVWw@mail.gmail.com>
+ <CAEf4BzYx8dT3nFx69-oXXqmwBXia62bTbjG3Nb9X7vz=OxefFg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYx8dT3nFx69-oXXqmwBXia62bTbjG3Nb9X7vz=OxefFg@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Tue, 7 Jul 2020 11:33:26 +0900
+Message-ID: <CAEKGpzi65SaHbaF3RHCB5P9Ro+Wt7_4HFJZxRd2HSXhg07P_Gg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] samples: bpf: fix bpf programs with
+ kprobe/sys_connect event
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
         Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 2:54 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Jul 7, 2020 at 8:50 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Adding resolve_btfids test under test_progs suite.
+> On Mon, Jul 6, 2020 at 3:28 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > On Fri, Jul 3, 2020 at 1:04 AM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > >
+> > > On 7/2/20 4:13 AM, Daniel T. Lee wrote:
+> > > > On Thu, Jul 2, 2020 at 2:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > >>
+> > > >>
+> > > >>
+> > > >> On 7/1/20 7:16 PM, Daniel T. Lee wrote:
+> > > >>> Currently, BPF programs with kprobe/sys_connect does not work properly.
+> > > >>>
+> > > >>> Commit 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
+> > > >>> This commit modifies the bpf_load behavior of kprobe events in the x64
+> > > >>> architecture. If the current kprobe event target starts with "sys_*",
+> > > >>> add the prefix "__x64_" to the front of the event.
+> > > >>>
+> > > >>> Appending "__x64_" prefix with kprobe/sys_* event was appropriate as a
+> > > >>> solution to most of the problems caused by the commit below.
+> > > >>>
+> > > >>>       commit d5a00528b58c ("syscalls/core, syscalls/x86: Rename struct
+> > > >>>       pt_regs-based sys_*() to __x64_sys_*()")
+> > > >>>
+> > > >>> However, there is a problem with the sys_connect kprobe event that does
+> > > >>> not work properly. For __sys_connect event, parameters can be fetched
+> > > >>> normally, but for __x64_sys_connect, parameters cannot be fetched.
+> > > >>>
+> > > >>> Because of this problem, this commit fixes the sys_connect event by
+> > > >>> specifying the __sys_connect directly and this will bypass the
+> > > >>> "__x64_" appending rule of bpf_load.
+> > > >>
+> > > >> In the kernel code, we have
+> > > >>
+> > > >> SYSCALL_DEFINE3(connect, int, fd, struct sockaddr __user *, uservaddr,
+> > > >>                   int, addrlen)
+> > > >> {
+> > > >>           return __sys_connect(fd, uservaddr, addrlen);
+> > > >> }
+> > > >>
+> > > >> Depending on compiler, there is no guarantee that __sys_connect will
+> > > >> not be inlined. I would prefer to still use the entry point
+> > > >> __x64_sys_* e.g.,
+> > > >>      SEC("kprobe/" SYSCALL(sys_write))
+> > > >>
+> > > >
+> > > > As you mentioned, there is clearly a possibility that problems may arise
+> > > > because the symbol does not exist according to the compiler.
+> > > >
+> > > > However, in x64, when using Kprobe for __x64_sys_connect event, the
+> > > > tests are not working properly because the parameters cannot be fetched,
+> > > > and the test under selftests/bpf is using "kprobe/_sys_connect" directly.
+> > >
+> > > This is the assembly code for __x64_sys_connect.
+> > >
+> > > ffffffff818d3520 <__x64_sys_connect>:
+> > > ffffffff818d3520: e8 fb df 32 00        callq   0xffffffff81c01520
+> > > <__fentry__>
+> > > ffffffff818d3525: 48 8b 57 60           movq    96(%rdi), %rdx
+> > > ffffffff818d3529: 48 8b 77 68           movq    104(%rdi), %rsi
+> > > ffffffff818d352d: 48 8b 7f 70           movq    112(%rdi), %rdi
+> > > ffffffff818d3531: e8 1a ff ff ff        callq   0xffffffff818d3450
+> > > <__sys_connect>
+> > > ffffffff818d3536: 48 98                 cltq
+> > > ffffffff818d3538: c3                    retq
+> > > ffffffff818d3539: 0f 1f 80 00 00 00 00  nopl    (%rax)
+> > >
+> > > In bpf program, the step is:
+> > >        struct pt_regs *real_regs = PT_REGS_PARM1(pt_regs);
+> > >        param1 = PT_REGS_PARM1(real_regs);
+> > >        param2 = PT_REGS_PARM2(real_regs);
+> > >        param3 = PT_REGS_PARM3(real_regs);
+> > > The same for s390.
+> > >
+> >
+> > I'm sorry that I seem to get it wrong,
+> > But is it available to access 'struct pt_regs *' recursively?
+> >
+> > It seems nested use of PT_REGS_PARM causes invalid memory access.
+> >
+> >     $ sudo ./test_probe_write_user
+> >     libbpf: load bpf program failed: Permission denied
+> >     libbpf: -- BEGIN DUMP LOG ---
+> >     libbpf:
+> >     Unrecognized arg#0 type PTR
+> >     ; struct pt_regs *real_regs = PT_REGS_PARM1(ctx);
+> >     0: (79) r1 = *(u64 *)(r1 +112)
+> >     ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
+> >     1: (79) r6 = *(u64 *)(r1 +104)
+> >     R1 invalid mem access 'inv'
+> >     processed 2 insns (limit 1000000) max_states_per_insn 0
+> > total_states 0 peak_states 0 mark_read 0
+> >
+> >     libbpf: -- END LOG --
+> >     libbpf: failed to load program 'kprobe/__x64_sys_connect'
+> >     libbpf: failed to load object './test_probe_write_user_kern.o'
+> >     ERROR: loading BPF object file failed
+> >
+> > I'm not fully aware of the BPF verifier's internal structure.
+> > Is there any workaround to solve this problem?
 >
-> It's possible to use btf_ids.h header and its logic in
-> user space application, so we can add easy test for it.
+> You need to use bpf_probe_read_kernel() to get those arguments from
+> real_args. Or better just use PT_REGS_PARM1_CORE(x) and others, which
+> does that for you (+ CO-RE relocation).
 >
-> The test defines BTF_ID_LIST and checks it gets properly
-> resolved.
->
-> For this reason the test_progs binary (and other binaries
-> that use TRUNNER* macros) is processed with resolve_btfids
-> tool, which resolves BTF IDs in .BTF.ids section.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  22 ++-
->  .../selftests/bpf/prog_tests/resolve_btfids.c | 170 ++++++++++++++++++
->  2 files changed, 190 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 1f9c696b3edf..b47a685d12bd 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -190,6 +190,16 @@ else
->         cp "$(VMLINUX_H)" $@
->  endif
->
-> +$(SCRATCH_DIR)/resolve_btfids: $(BPFOBJ)                               \
-> +                              $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
-> +                              $(TOOLSDIR)/lib/rbtree.c                 \
-> +                              $(TOOLSDIR)/lib/zalloc.c                 \
-> +                              $(TOOLSDIR)/lib/string.c                 \
-> +                              $(TOOLSDIR)/lib/ctype.c                  \
-> +                              $(TOOLSDIR)/lib/str_error_r.c
-> +       $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids \
-> +       OUTPUT=$(SCRATCH_DIR)/ BPFOBJ=$(BPFOBJ)
-> +
-
-please indent OUTPUT, so it doesn't look like it's a separate command
-
->  # Get Clang's default includes on this system, as opposed to those seen by
->  # '-target bpf'. This fixes "missing" files on some architectures/distros,
->  # such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> @@ -333,7 +343,8 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
->                       $(TRUNNER_BPF_SKELS)                              \
->                       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
->         $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
-> -       cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-> +       cd $$(@D) && $$(CC) -I. $$(CFLAGS) $(TRUNNER_EXTRA_CFLAGS)      \
-> +       -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
->
->  $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:                          \
->                        %.c                                              \
-> @@ -355,6 +366,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
->                              | $(TRUNNER_BINARY)-extras
->         $$(call msg,BINARY,,$$@)
->         $$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-> +       $(TRUNNER_BINARY_EXTRA_CMD)
-
-no need to make this generic, just write out resolve_btfids here explicitly
-
->
->  endef
->
-> @@ -365,7 +377,10 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c     \
->                          network_helpers.c testing_helpers.c            \
->                          flow_dissector_load.h
->  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
-> -                      $(wildcard progs/btf_dump_test_case_*.c)
-> +                      $(wildcard progs/btf_dump_test_case_*.c)         \
-> +                      $(SCRATCH_DIR)/resolve_btfids
-> +TRUNNER_EXTRA_CFLAGS := -D"BUILD_STR(s)=\#s" -DVMLINUX_BTF="BUILD_STR($(VMLINUX_BTF))"
-> +TRUNNER_BINARY_EXTRA_CMD := $(SCRATCH_DIR)/resolve_btfids --btf $(VMLINUX_BTF) test_progs
-
-I hope we can get rid of this, see suggestion below.
-
->  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
->  TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
->  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
-> @@ -373,6 +388,7 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs))
 >
 
-[...]
+Thanks for the tip!
 
-> +
-> +static int duration;
-> +
-> +static struct btf *btf__parse_raw(const char *file)
+I've just tried the old hack '_(P)':
+(which is similar implementation with BPF_CORE_READ())
 
-another copy here...
+    #define _(P) ({typeof(P) val = 0; bpf_probe_read(&val,
+sizeof(val), &P); val;})
+    [...]
+    struct pt_regs *regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+    void *sockaddr_arg = (void *)_(PT_REGS_PARM2(regs));
+    int sockaddr_len = (int)_(PT_REGS_PARM3(regs));
 
-> +{
-> +       struct btf *btf;
-> +       struct stat st;
-> +       __u8 *buf;
-> +       FILE *f;
-> +
+and it works properly.
 
-[...]
+Just wondering, why is the pointer chasing of the original ctx
+considered as an unsafe pointer here?
 
-> +
-> +BTF_ID_LIST(test_list)
-> +BTF_ID_UNUSED
-> +BTF_ID(typedef, pid_t)
-> +BTF_ID(struct,  sk_buff)
-> +BTF_ID(union,   thread_union)
-> +BTF_ID(func,    memcpy)
-> +
-> +struct symbol {
-> +       const char      *name;
-> +       int              type;
-> +       int              id;
-> +};
-> +
-> +struct symbol test_symbols[] = {
-> +       { "unused",       -1,                0 },
+    ; struct pt_regs *real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+    0: (79) r1 = *(u64 *)(r1 +112)
+    [...]
+    ; void *sockaddr_arg = (void *)PT_REGS_PARM2(real_regs);
+    4: (79) r6 = *(u64 *)(r1 +104)
 
-could use BTF_KIND_UNKN here instead of -1
-
-> +       { "pid_t",        BTF_KIND_TYPEDEF, -1 },
-> +       { "sk_buff",      BTF_KIND_STRUCT,  -1 },
-> +       { "thread_union", BTF_KIND_UNION,   -1 },
-> +       { "memcpy",       BTF_KIND_FUNC,    -1 },
-> +};
-> +
-
-[...]
-
-> +
-> +static int resolve_symbols(void)
-> +{
-> +       const char *path = VMLINUX_BTF;
+Is it considered as an unsafe pointer since it is unknown what exists
+in the pointer (r1 + 104), but the instruction is trying to access it?
 
 
-This build-time parameter passing to find the original VMLINUX_BTF
-really sucks, IMO.
+I am a little concerned about using PT_REGS_PARM1_CORE
+because it is not a CORE-related patch, but if using CORE is the
+direction BPF wants to take, I will use PT_REGS_PARM1_CORE()
+instead of _(P) hack using bpf_probe_read().
 
-Why not use the btf_dump tests approach and have our own small
-"vmlinux BTF", which resolve_btfids would use to resolve these IDs?
-See how btf_dump_xxx.c files define BTFs that are used in tests. You
-can do something similar here, and use a well-known BPF object file as
-a source of BTF, both here in a test and in Makefile for --btf param
-to resolve_btfids?
+In addition, PT_REGS_PARM1_CORE() allows me to write code
+neatly without having to define additional macro _(P).
 
+Thank you for your time and effort for the review.
+Daniel
 
-> +       struct btf *btf;
-> +       int type_id;
-> +       __u32 nr;
-> +
-
-[...]
+> >
+> > Thanks for your time and effort for the review.
+> > Daniel.
+> >
+> > >
+> > > For other architectures, no above indirection is needed.
+> > >
+> > > I guess you can abstract the above into trace_common.h?
+> > >
+> > > >
+> > > > I'm not sure how to deal with this problem. Any advice and suggestions
+> > > > will be greatly appreciated.
+> > > >
+> > > > Thanks for your time and effort for the review.
+> > > > Daniel
+> > > >
+> > > >>>
+> > > >>> Fixes: 34745aed515c ("samples/bpf: fix kprobe attachment issue on x64")
+> > > >>> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > > >>> ---
+> > > >>>    samples/bpf/map_perf_test_kern.c         | 2 +-
+> > > >>>    samples/bpf/test_map_in_map_kern.c       | 2 +-
+> > > >>>    samples/bpf/test_probe_write_user_kern.c | 2 +-
+> > > >>>    3 files changed, 3 insertions(+), 3 deletions(-)
+> > > >>>
+> > > >>> diff --git a/samples/bpf/map_perf_test_kern.c b/samples/bpf/map_perf_test_kern.c
+> > > >>> index 12e91ae64d4d..cebe2098bb24 100644
+> > > >>> --- a/samples/bpf/map_perf_test_kern.c
+> > > >>> +++ b/samples/bpf/map_perf_test_kern.c
+> > > >>> @@ -154,7 +154,7 @@ int stress_percpu_hmap_alloc(struct pt_regs *ctx)
+> > > >>>        return 0;
+> > > >>>    }
+> > > >>>
+> > > >>> -SEC("kprobe/sys_connect")
+> > > >>> +SEC("kprobe/__sys_connect")
+> > > >>>    int stress_lru_hmap_alloc(struct pt_regs *ctx)
+> > > >>>    {
+> > > >>>        char fmt[] = "Failed at stress_lru_hmap_alloc. ret:%dn";
+> > > >>> diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
+> > > >>> index 6cee61e8ce9b..b1562ba2f025 100644
+> > > >>> --- a/samples/bpf/test_map_in_map_kern.c
+> > > >>> +++ b/samples/bpf/test_map_in_map_kern.c
+> > > >>> @@ -102,7 +102,7 @@ static __always_inline int do_inline_hash_lookup(void *inner_map, u32 port)
+> > > >>>        return result ? *result : -ENOENT;
+> > > >>>    }
+> > > >>>
+> > > >>> -SEC("kprobe/sys_connect")
+> > > >>> +SEC("kprobe/__sys_connect")
+> > > >>>    int trace_sys_connect(struct pt_regs *ctx)
+> > > >>>    {
+> > > >>>        struct sockaddr_in6 *in6;
+> > > >>> diff --git a/samples/bpf/test_probe_write_user_kern.c b/samples/bpf/test_probe_write_user_kern.c
+> > > >>> index 6579639a83b2..9b3c3918c37d 100644
+> > > >>> --- a/samples/bpf/test_probe_write_user_kern.c
+> > > >>> +++ b/samples/bpf/test_probe_write_user_kern.c
+> > > >>> @@ -26,7 +26,7 @@ struct {
+> > > >>>     * This example sits on a syscall, and the syscall ABI is relatively stable
+> > > >>>     * of course, across platforms, and over time, the ABI may change.
+> > > >>>     */
+> > > >>> -SEC("kprobe/sys_connect")
+> > > >>> +SEC("kprobe/__sys_connect")
+> > > >>>    int bpf_prog1(struct pt_regs *ctx)
+> > > >>>    {
+> > > >>>        struct sockaddr_in new_addr, orig_addr = {};
+> > > >>>
