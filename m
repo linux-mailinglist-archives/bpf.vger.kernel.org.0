@@ -2,110 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD1E21776C
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 21:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FF1217A0F
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgGGTBY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 15:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        id S1728908AbgGGVOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 17:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgGGTBY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:01:24 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E316AC061755;
-        Tue,  7 Jul 2020 12:01:23 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id a14so19327064qvq.6;
-        Tue, 07 Jul 2020 12:01:23 -0700 (PDT)
+        with ESMTP id S1728204AbgGGVOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:14:54 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8213DC08C5DC
+        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 14:14:54 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id i3so23260583qkf.0
+        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 14:14:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6MlKFZsb65XMk2FLiCoPqp4gBUptFzxLdjsvpN/u+Vk=;
-        b=nzKY6J57O92oJYl79Kdvn7qhi9AhJWkhY+JZRi531jPTmHmRHaEdmZ4rQeSjWM0KQ4
-         04CrgUD7FT6noHnW9KqnIApqRco9s4OGhvWaHatLMoNPo7mYgtA2Sp0MXo75Wnl6TIMh
-         vuRVhMokQ+iUIBujlJmB9Po27v8+90xJynucfHlN/+g95xjV6K9jHWRv919SBu2lhEBn
-         qc2FHyJaCa3jIT32cosjY3fo4DQud/2MsnZO2jxWLHdDnB+KEzh5BGLEgLh3uGLOhSTb
-         KeSlcT1IkZ7DuxnvSJ/SIKLvwfUFBH8KOUtVsyYL292Ts+9AP8gNEE5HQ5BRmLzCT9xn
-         ftWw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
+        b=NpttPX4lE/KU7Nm0bJYE/p4jYzLQMfv+GHpHKNOzf6UyPqa0Gp4+76X3XGeuO+SXTV
+         nxXA/QOjtZHr8zrC18uOgoYZPubDfwhPRExz7mV1sSv/WCDVk7rSil8JAKB82C3+PuX/
+         9PA6gy1V4MjX5usNyjtpTu8Ri0XzAEs/n6bkMZizqZtcIrCsTLio07SKKLIygBOPy8B3
+         yU/R2xvDU9Own06aGUtf9wIQtXBICRWwf/gWlmgMcy/4QfzQJ9zZclq/xmahiZEmhQqE
+         Von6X666O+hyizXf2P7+qN4Ufq6EwWt0d9nz8HKmBL2eGXdFpKA2bQH+jmHDAdvaJtTS
+         63SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6MlKFZsb65XMk2FLiCoPqp4gBUptFzxLdjsvpN/u+Vk=;
-        b=jPjmBdoY05ZDJINIq1U5AW7jaYpSAfyNFQmp2bGTlH+GAlBB81KAQKjecROGFi0yAZ
-         yRFimjTRBClzEo1JiuzAEfHxTYv+0+0oXXZDOUUpxfxqfDf31t4zNc5RuTFn+zaEX9Q/
-         d7FbeQqnmTNH1G3eZqrPENZ09tgXy8QwVsbLZAqr8313e63AxTa7r+vnF5IzFxjqn3fJ
-         Gd0BRQ3uCwzUF+L4xFKYW2X9Z0Jp9ubhwSlAC1eKyntemFAITi1LXkmoKr/h++sSUHH6
-         id+gNir36AmZmL8lYe2A05uF0TEqkkDj6v5LR2evSAtK2DI35euu1uLae9VFn2ECYXsR
-         QuBQ==
-X-Gm-Message-State: AOAM532ej2wxexejnuNJzhesLjqc2ONuF+BqwThh4A/MIyQdCfFe81JL
-        +ADmiN1qC+YM/76L6m/w+4Zr+8+e9lwGvpvyCeg=
-X-Google-Smtp-Source: ABdhPJwRkH2kVW1XXOL6S+lCsM2wXTLA0kUHZiHJZ6AQELbqcV22n6QQ+1vtluS6HtP8lIETbTcT00Rgeymhq0MvitQ=
-X-Received: by 2002:a05:6214:bce:: with SMTP id ff14mr52879615qvb.196.1594148483169;
- Tue, 07 Jul 2020 12:01:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200707184855.30968-1-danieltimlee@gmail.com>
-In-Reply-To: <20200707184855.30968-1-danieltimlee@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Jul 2020 12:01:11 -0700
-Message-ID: <CAEf4BzY1JQcq6LBpwjSi8XwK_7+ktwz53ZR4vk=imLQkZn1xXA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/4] samples: bpf: refactor BPF map test with libbpf
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
+        b=Vph84rBZlBFoScmU00kI/4ozbSVbs0nW2BgQZJmTXcMr0iYQ0XoiT0kI5elU88Do8+
+         BFAEghRvkyaINawPlOGoZ1vGJEwsnren/wvpaLNM3RQFE80NRiQ7uDs+iRVr5u6IPiED
+         lUk17euf4WjSaIAcJZtKbXzeIEcrxIL6fAWv0RsSnKDJfFH5n+7AeqHI21Binez/InRv
+         f5F+DI7ULm1it75b0dUQ5bcUC5TWW8vzj/WzJEOqaNC6j7nx1n29A2yiEppyIBLIM7ve
+         P3E7vUDQjYxVfj2HX7wf/Fnr0PZgrv2vkpxFJgv1Nx78C//H4hmhZkAjq7JFr13lVJwS
+         T8CQ==
+X-Gm-Message-State: AOAM531yLDT8jWE9tgugbjftIjfKxkos6ZmKq9CU44kveuihpoA3/XR/
+        ccUs2OFB2Uqv91suAmHcvuK0yREEjUWr
+X-Google-Smtp-Source: ABdhPJz11nAFayeFkeDlsq5u5viuPaf3vPkR1JHcLuMxQm3bAygcsTZwF4wZeLIxLQEz07pF9vLNjfqglMvx
+X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr20609878qvb.210.1594156493566;
+ Tue, 07 Jul 2020 14:14:53 -0700 (PDT)
+Date:   Tue,  7 Jul 2020 14:14:49 -0700
+Message-Id: <20200707211449.3868944-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+Subject: [PATCH] perf parse-events: report bpf errors
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 11:49 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
->
-> There have been many changes in how the current bpf program defines
-> map. The development of libbbpf has led to the new method called
-> BTF-defined map, which is a new way of defining BPF maps, and thus has
-> a lot of differences from the existing MAP definition method.
->
-> Although bpf_load was also internally using libbbpf, fragmentation in
-> its implementation began to occur, such as using its own structure,
-> bpf_load_map_def, to define the map.
->
-> Therefore, in this patch set, map test programs, which are closely
-> related to changes in the definition method of BPF map, were refactored
-> with libbbpf.
->
-> ---
+Setting the parse_events_error directly doesn't increment num_errors
+causing the error message not to be displayed. Use the
+parse_events__handle_error function that sets num_errors and handle
+multiple errors.
 
-For the series:
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/parse-events.c | 38 ++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index c4906a6a9f1a..e88e4c7a2a9a 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -767,8 +767,8 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
+ 
+ 	return 0;
+ errout:
+-	parse_state->error->help = strdup("(add -v to see detail)");
+-	parse_state->error->str = strdup(errbuf);
++	parse_events__handle_error(parse_state->error, 0,
++				strdup(errbuf), strdup("(add -v to see detail)"));
+ 	return err;
+ }
+ 
+@@ -784,36 +784,38 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
+ 		return 0;
+ 
+ 	list_for_each_entry(term, head_config, list) {
+-		char errbuf[BUFSIZ];
+ 		int err;
+ 
+ 		if (term->type_term != PARSE_EVENTS__TERM_TYPE_USER) {
+-			snprintf(errbuf, sizeof(errbuf),
+-				 "Invalid config term for BPF object");
+-			errbuf[BUFSIZ - 1] = '\0';
+-
+-			parse_state->error->idx = term->err_term;
+-			parse_state->error->str = strdup(errbuf);
++			parse_events__handle_error(parse_state->error, term->err_term,
++						strdup("Invalid config term for BPF object"),
++						NULL);
+ 			return -EINVAL;
+ 		}
+ 
+ 		err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
+ 		if (err) {
++			char errbuf[BUFSIZ];
++			int idx;
++
+ 			bpf__strerror_config_obj(obj, term, parse_state->evlist,
+ 						 &error_pos, err, errbuf,
+ 						 sizeof(errbuf));
+-			parse_state->error->help = strdup(
++
++			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
++				idx = term->err_val;
++			else
++				idx = term->err_term + error_pos;
++
++			parse_events__handle_error(parse_state->error, idx,
++						strdup(errbuf),
++						strdup(
+ "Hint:\tValid config terms:\n"
+ "     \tmap:[<arraymap>].value<indices>=[value]\n"
+ "     \tmap:[<eventmap>].event<indices>=[event]\n"
+ "\n"
+ "     \twhere <indices> is something like [0,3...5] or [all]\n"
+-"     \t(add -v to see detail)");
+-			parse_state->error->str = strdup(errbuf);
+-			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
+-				parse_state->error->idx = term->err_val;
+-			else
+-				parse_state->error->idx = term->err_term + error_pos;
++"     \t(add -v to see detail)"));
+ 			return err;
+ 		}
+ 	}
+@@ -877,8 +879,8 @@ int parse_events_load_bpf(struct parse_events_state *parse_state,
+ 						   -err, errbuf,
+ 						   sizeof(errbuf));
+ 
+-		parse_state->error->help = strdup("(add -v to see detail)");
+-		parse_state->error->str = strdup(errbuf);
++		parse_events__handle_error(parse_state->error, 0,
++					strdup(errbuf), strdup("(add -v to see detail)"));
+ 		return err;
+ 	}
+ 
+-- 
+2.27.0.383.g050319c2ae-goog
 
-> Changes in V2:
->  - instead of changing event from __x64_sys_connect to __sys_connect,
->  fetch and set register values directly
->  - fix wrong error check logic with bpf_program
->  - set numa_node 0 declaratively at map definition instead of setting it
->  from user-space
->  - static initialization of ARRAY_OF_MAPS element with '.values'
->
-> Daniel T. Lee (4):
->   samples: bpf: fix bpf programs with kprobe/sys_connect event
->   samples: bpf: refactor BPF map in map test with libbpf
->   samples: bpf: refactor BPF map performance test with libbpf
->   selftests: bpf: remove unused bpf_map_def_legacy struct
->
->  samples/bpf/Makefile                     |   2 +-
->  samples/bpf/map_perf_test_kern.c         | 188 ++++++++++++-----------
->  samples/bpf/map_perf_test_user.c         | 164 +++++++++++++-------
->  samples/bpf/test_map_in_map_kern.c       |  94 ++++++------
->  samples/bpf/test_map_in_map_user.c       |  53 ++++++-
->  samples/bpf/test_probe_write_user_kern.c |   9 +-
->  tools/testing/selftests/bpf/bpf_legacy.h |  14 --
->  7 files changed, 305 insertions(+), 219 deletions(-)
->
-> --
-> 2.25.1
->
