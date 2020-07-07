@@ -2,216 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C41D217ACE
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EE9217B24
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 00:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgGGV6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 17:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S1729375AbgGGWnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 18:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728296AbgGGV6c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:58:32 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB98C061755;
-        Tue,  7 Jul 2020 14:58:32 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b4so39643145qkn.11;
-        Tue, 07 Jul 2020 14:58:32 -0700 (PDT)
+        with ESMTP id S1729376AbgGGWnI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 18:43:08 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E048DC08C5E2
+        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 15:43:07 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id v6so31302666iob.4
+        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 15:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mRl2g7a2YbbpymqHGFR0TKGIinBWou5sIwQBTXYNhZQ=;
-        b=cgaAnoCv17bwa9CIAyoY2pMXRf0AmK8OcJdztI3Nh3Z1e81FUOk+z6/x2zKNIfA4GL
-         jT2QmvmVfaGCowZX+B9KjsmuVwcekGunsKiP47RTWi9Z9TC/9DK8U8b2F216uVHYsTGB
-         p/oPuAbvAuYHMxAvzvKnAvrlGMou9zJFLWSAg6XOAUtLar9HE2PSOqyZyrBKLsL2Q1tp
-         XO6O1Km/+CaWyDlqcIiL+XOgL59Mo8YEP3OyJPeoragHSExY8Nt0jRaYAHlEBzrQEky+
-         bKnRg4+0xV5Bbvekty7/KgLCvR2yxBWS9D1GrOrohSdDJCJlQ0RCh30K2CF8s2X31TcL
-         tuOg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iDT2wQ6J4h+87qDBUhlp4TuMhMXrSWXEfWUyXKkkJng=;
+        b=uhrH/HCtZSwkpWLUY/Df5afxBCSCudrmeuxMlf9H7haYNfkzvxC0Z+it2xpaI5ioWc
+         rGYX5nCkVcFKtno6kYuGaw52mIgV9gw5R4UE1Ow0WkFVsznxzJNwPjmjz/PGGKSfjuRW
+         gc7A4EmTabwcKvVbvozWLADmltK1cKUqf280/LPglIPA+Gq7sRKcRhnUpOD6ANNdowBP
+         kFVHLbUhXjNYYmgoGYDHUlEwzo9ih0OMdwJryFc7f8/UK79qy0f+itHEx8CG38XZbxVz
+         9b/wzypkxaq/S8rmBu9GkHrslCKBMJZwtB3sR6Un5Lw5YNPQYJ5/ZG1jX0ZyEVdL0RzW
+         gRzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mRl2g7a2YbbpymqHGFR0TKGIinBWou5sIwQBTXYNhZQ=;
-        b=Qe4y+FU1O8D/iKhF5ChBdICCeiFaYA8AgM4Lu3/mdOHTZy1kjjU/nLnbsNvn8vhiDI
-         oV4b6glIJ2M4EdNHJ6QRlpIVEN2/+O5LYKzT2C21LHDvriSPe15W25bEoUoT+c9Oc5mD
-         7hjn7AQK6UwEKe0k1Ppt1i+McVNYOCd9w/jp1P3J8RCsMYUWTFlKyIxglotU4IEYgPoO
-         uz/eJ5nFNLiXaH7umHPTwrPJHMFd8rU17MWBQGi+wua+ZqTX3wqhGw3nodZflr9c3JDq
-         CXRtcmGO0ADbcHXklFXCJqVx8v6dkzIzd6wytHDnS5tVE81fgHXaxRivDFUBKAG0c2rK
-         KiKg==
-X-Gm-Message-State: AOAM533IyrV7uhIhkul+pnf+ubsVxGXhLQuAGRRhRCsEV/XQfxmAEBgo
-        ZzOtjn3prOH49u4KL5JUqUbW7ojt3WvouE4/jgM=
-X-Google-Smtp-Source: ABdhPJwP+fRBt7x8g1bmhda5bnRf++sR6lOGVWE4speDn3m1Ju4k9NQc5Mo5YMbF4ahh66HajvB3+Q8GyjEibi9X5YI=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr51549294qkc.39.1594159111707;
- Tue, 07 Jul 2020 14:58:31 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iDT2wQ6J4h+87qDBUhlp4TuMhMXrSWXEfWUyXKkkJng=;
+        b=RA88zTw2d5lL7+lOnkSSbveGlS8r6Nru2E6rFxEAorI4+ZaaMcwJaTXpmdpngWYH6R
+         67yTj98R9l6xjBWIDtZFOOWl3Sob3d2+FGQpoz++Gk0tekFEG8RDEp2ZNHwqcQCPjv7k
+         Ax0oZr7L+o8K9qc33VpQx8bVWaw5FuErmL7udUaAwTFzDvULfPWdHF6/xfCI93Catcqh
+         ZrcOtYz4upXZHAqRiLoWjx23Ro+cpKKj46990xWJJdjXS5m/s5GurE5uKnTMBLNbvgmY
+         g9NSPqNAccEiOPJRBQhY5/yTYvmodCHfSdxriF6Ni6EnXK5RcA/9376zknL9BFd1DS5+
+         GxAg==
+X-Gm-Message-State: AOAM533E33CrxkeiqQ1L1ZEDgsk1R7yfzaRB6R1HhUwtUPKzbDH0/W1J
+        NxV0VgogdAoUk/JnXMB9Mgz05mjfvh+ynw==
+X-Google-Smtp-Source: ABdhPJzMRtkce+ggsdgfwSlBshSpV7Ueb655JwaMnFpFZEsNymVNcYYmcDwgllaQDUGKlyJf64kZOg==
+X-Received: by 2002:a02:9182:: with SMTP id p2mr15366024jag.69.1594161786763;
+        Tue, 07 Jul 2020 15:43:06 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id t83sm14076997ilb.47.2020.07.07.15.43.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 15:43:06 -0700 (PDT)
+Subject: Re: [PATCH] bitfield.h: don't compile-time validate _val in FIELD_FIT
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200707211642.1106946-1-ndesaulniers@google.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <bca8cff8-3ffe-e5ab-07a5-2ab29d5e394a@linaro.org>
+Date:   Tue, 7 Jul 2020 17:43:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200706230128.4073544-1-sdf@google.com> <20200706230128.4073544-5-sdf@google.com>
- <294755e5-58e7-5512-a2f5-2dc37f200acf@iogearbox.net>
-In-Reply-To: <294755e5-58e7-5512-a2f5-2dc37f200acf@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Jul 2020 14:58:20 -0700
-Message-ID: <CAEf4BzYbEzbEsPKYOt8d+431yhNHXBf4oEP4W9M_07crC8x7rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/4] selftests/bpf: test BPF_CGROUP_INET_SOCK_RELEASE
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200707211642.1106946-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 2:45 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 7/7/20 1:01 AM, Stanislav Fomichev wrote:
-> > Simple test that enforces a single SOCK_DGRAM socker per cgroup.
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >   .../selftests/bpf/prog_tests/udp_limit.c      | 75 +++++++++++++++++++
-> >   tools/testing/selftests/bpf/progs/udp_limit.c | 42 +++++++++++
-> >   2 files changed, 117 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_limit.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/udp_limit.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/udp_limit.c b/tools/testing/selftests/bpf/prog_tests/udp_limit.c
-> > new file mode 100644
-> > index 000000000000..2aba09d4d01b
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/udp_limit.c
-> > @@ -0,0 +1,75 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +#include "udp_limit.skel.h"
-> > +
-> > +#include <sys/types.h>
-> > +#include <sys/socket.h>
-> > +
-> > +static int duration;
-> > +
-> > +void test_udp_limit(void)
-> > +{
-> > +     struct udp_limit *skel;
-> > +     int fd1 = -1, fd2 = -1;
-> > +     int cgroup_fd;
-> > +
-> > +     cgroup_fd = test__join_cgroup("/udp_limit");
-> > +     if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
-> > +             return;
-> > +
-> > +     skel = udp_limit__open_and_load();
-> > +     if (CHECK(!skel, "skel-load", "errno %d", errno))
-> > +             goto close_cgroup_fd;
-> > +
-> > +     skel->links.sock = bpf_program__attach_cgroup(skel->progs.sock, cgroup_fd);
-> > +     skel->links.sock_release = bpf_program__attach_cgroup(skel->progs.sock_release, cgroup_fd);
-> > +     if (CHECK(IS_ERR(skel->links.sock) || IS_ERR(skel->links.sock_release),
-> > +               "cg-attach", "sock %ld sock_release %ld",
-> > +               PTR_ERR(skel->links.sock),
-> > +               PTR_ERR(skel->links.sock_release)))
-> > +             goto close_skeleton;
-> > +
-> > +     /* BPF program enforces a single UDP socket per cgroup,
-> > +      * verify that.
-> > +      */
-> > +     fd1 = socket(AF_INET, SOCK_DGRAM, 0);
-> > +     if (CHECK(fd1 < 0, "fd1", "errno %d", errno))
-> > +             goto close_skeleton;
-> > +
-> > +     fd2 = socket(AF_INET, SOCK_DGRAM, 0);
-> > +     if (CHECK(fd2 >= 0, "fd2", "errno %d", errno))
-> > +             goto close_skeleton;
-> > +
-> > +     /* We can reopen again after close. */
-> > +     close(fd1);
-> > +     fd1 = -1;
-> > +
-> > +     fd1 = socket(AF_INET, SOCK_DGRAM, 0);
-> > +     if (CHECK(fd1 < 0, "fd1-again", "errno %d", errno))
-> > +             goto close_skeleton;
-> > +
-> > +     /* Make sure the program was invoked the expected
-> > +      * number of times:
-> > +      * - open fd1           - BPF_CGROUP_INET_SOCK_CREATE
-> > +      * - attempt to openfd2 - BPF_CGROUP_INET_SOCK_CREATE
-> > +      * - close fd1          - BPF_CGROUP_INET_SOCK_RELEASE
-> > +      * - open fd1 again     - BPF_CGROUP_INET_SOCK_CREATE
-> > +      */
-> > +     if (CHECK(skel->bss->invocations != 4, "bss-invocations",
-> > +               "invocations=%d", skel->bss->invocations))
-> > +             goto close_skeleton;
-> > +
-> > +     /* We should still have a single socket in use */
-> > +     if (CHECK(skel->bss->in_use != 1, "bss-in_use",
-> > +               "in_use=%d", skel->bss->in_use))
-> > +             goto close_skeleton;
-> > +
-> > +close_skeleton:
-> > +     if (fd1 >= 0)
-> > +             close(fd1);
-> > +     if (fd2 >= 0)
-> > +             close(fd2);
-> > +     udp_limit__destroy(skel);
-> > +close_cgroup_fd:
-> > +     close(cgroup_fd);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/udp_limit.c b/tools/testing/selftests/bpf/progs/udp_limit.c
-> > new file mode 100644
-> > index 000000000000..edbb30a27e63
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/udp_limit.c
-> > @@ -0,0 +1,42 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +#include <sys/socket.h>
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +int invocations = 0, in_use = 0;
-> > +
-> > +SEC("cgroup/sock")
->
-> nit: Doesn't matter overly much, but given you've added `cgroup/sock_create`
-> earlier in patch 2/4 intention was probably to use it as well. But either is
-> fine as it resolved to the same.
+On 7/7/20 4:16 PM, Nick Desaulniers wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> 
+> When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
+> compiler to deduce a case where _val can only have the value of -1 at
+> compile time. Specifically,
+> 
+> /* struct bpf_insn: _s32 imm */
+> u64 imm = insn->imm; /* sign extend */
+> if (imm >> 32) { /* non-zero only if insn->imm is negative */
+>   /* inlined from ur_load_imm_any */
+>   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
+>   if (__builtin_constant_p(__imm) && __imm > 255)
+>     compiletime_assert_XXX()
+> 
+> This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
+> checks that a given value is representable in one byte (interpreted as
+> unsigned).
 
-heh, had the same thought, but didn't want to be too nitpicky :)
+Why does FIELD_FIT() pass an unsigned long long value as the second
+argument to __BF_FIELD_CHECK()?  Could it pass (typeof(_mask))0 instead?
+It wouldn't fix this particular case, because UR_REG_IMM_MAX is also
+defined with that type.  But (without working through this in more
+detail) it seems like there might be a solution that preserves the
+compile-time checking.
+
+A second comment about this is that it might be nice to break
+__BF_FIELD_CHECK() into the parts that verify the mask (which
+could be used by FIELD_FIT() here) and the parts that verify
+other things.
+
+That's all--just questions, I have no problem with the patch...
+
+					-Alex
 
 
->
-> > +int sock(struct bpf_sock *ctx)
-> > +{
-> > +     __u32 key;
-> > +
-> > +     if (ctx->type != SOCK_DGRAM)
-> > +             return 1;
-> > +
-> > +     __sync_fetch_and_add(&invocations, 1);
-> > +
-> > +     if (in_use > 0) {
-> > +             /* BPF_CGROUP_INET_SOCK_RELEASE is _not_ called
-> > +              * when we return an error from the BPF
-> > +              * program!
-> > +              */
-> > +             return 0;
-> > +     }
-> > +
-> > +     __sync_fetch_and_add(&in_use, 1);
-> > +     return 1;
-> > +}
-> > +
-> > +SEC("cgroup/sock_release")
-> > +int sock_release(struct bpf_sock *ctx)
-> > +{
-> > +     __u32 key;
-> > +
-> > +     if (ctx->type != SOCK_DGRAM)
-> > +             return 1;
-> > +
-> > +     __sync_fetch_and_add(&invocations, 1);
-> > +     __sync_fetch_and_add(&in_use, -1);
-> > +     return 1;
-> > +}
-> >
->
+
+
+> FIELD_FIT() should return true or false at runtime for whether a value
+> can fit for not. Don't break the build over a value that's too large for
+> the mask. We'd prefer to keep the inlining and compiler optimizations
+> though we know this case will always return false.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
+> Reported-by: Masahiro Yamada <masahiroy@kernel.org>
+> Debugged-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  include/linux/bitfield.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+> index 48ea093ff04c..4e035aca6f7e 100644
+> --- a/include/linux/bitfield.h
+> +++ b/include/linux/bitfield.h
+> @@ -77,7 +77,7 @@
+>   */
+>  #define FIELD_FIT(_mask, _val)						\
+>  	({								\
+> -		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
+> +		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
+>  		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
+>  	})
+>  
+> 
+
