@@ -2,126 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D975E217AB3
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C41D217ACE
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgGGVtu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 17:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        id S1728517AbgGGV6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 17:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728528AbgGGVtt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:49:49 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79785C08C5E1
-        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 14:49:49 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g67so19728657pgc.8
-        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 14:49:49 -0700 (PDT)
+        with ESMTP id S1728296AbgGGV6c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:58:32 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB98C061755;
+        Tue,  7 Jul 2020 14:58:32 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b4so39643145qkn.11;
+        Tue, 07 Jul 2020 14:58:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mpd18shi8GLEcLMxPZWWvNdFFRedl4Y7uuQSPmBzhFo=;
-        b=kXnMCEke8ckvQzbnSwGYSKdBvP77PeU0ZTB8dUWQKCYfEmsKqGvVCAIFkLFUqw/J9k
-         zPdyXNQfxd5evbDSecLwG7iNEVK+rkYwTE/Bx5FW1DBAZPW6/pgjeG6j1nk8racRlVeK
-         F7IJi3FYMrPxxpgm8Ao9AgHxdjZ9CjEJAEof2KeYWlkD87KrCWwfRdXFO0+m0TrbZkC7
-         6UZpU3xpfuhO6rrx0MoEquHkD2V6l3GYnCk58rXNBW1yzz4hLvchS44ukh0D6/51blCw
-         sHCPDVqeVgzbrREIxCySaJSN1v/+mtaL19mvi9+2QJVAVsjSUQvbXxr8mjwXoy63tymT
-         YvIw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mRl2g7a2YbbpymqHGFR0TKGIinBWou5sIwQBTXYNhZQ=;
+        b=cgaAnoCv17bwa9CIAyoY2pMXRf0AmK8OcJdztI3Nh3Z1e81FUOk+z6/x2zKNIfA4GL
+         jT2QmvmVfaGCowZX+B9KjsmuVwcekGunsKiP47RTWi9Z9TC/9DK8U8b2F216uVHYsTGB
+         p/oPuAbvAuYHMxAvzvKnAvrlGMou9zJFLWSAg6XOAUtLar9HE2PSOqyZyrBKLsL2Q1tp
+         XO6O1Km/+CaWyDlqcIiL+XOgL59Mo8YEP3OyJPeoragHSExY8Nt0jRaYAHlEBzrQEky+
+         bKnRg4+0xV5Bbvekty7/KgLCvR2yxBWS9D1GrOrohSdDJCJlQ0RCh30K2CF8s2X31TcL
+         tuOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mpd18shi8GLEcLMxPZWWvNdFFRedl4Y7uuQSPmBzhFo=;
-        b=S3lhpdcvGy1JNok1YmTjrPOLiHf1mNiwy1tvNORcVUrmePapqWRAZ6/nokWyZTNM08
-         DRBzrFUSqCfGQ4UMpSaiQWot7v8LHFgdVaq3Bwq+npcSJBNJsfgTs5ELaSa/M9guD/U0
-         NSv8WnIPdmvjDJZtMP8uu8Y+auqaj2dQQCfWi4I4Q32CVx3v8fZRFnr3kZZ9QUmXkxFX
-         x2jUmV3w6KdO28Aky/A6h9d7Jny05PrJpbnlur0wc/Qie5/4NhTLv1oMp/B02O/WdteM
-         3eQXZ8kLIfCb0WPURIyiugtVlI9htzBnuMAcaCI2ldGghc8wfwcNEUuq5qEGppZLMnv2
-         lW5g==
-X-Gm-Message-State: AOAM531bMf9dIhqut7/YVU/JGT6SzgXW49Rsz3kou+bCG1gp5tfNYecq
-        84HKcL+moQS5Deb6UHjl6SkN8w==
-X-Google-Smtp-Source: ABdhPJxeP51izVsbYdKGLkHwWWCPzaEWOyEa3CCdyZ/nZhUjxXxfcCCV2AbikppoE4JtYZqnFgHPLg==
-X-Received: by 2002:a62:8489:: with SMTP id k131mr51423400pfd.4.1594158588710;
-        Tue, 07 Jul 2020 14:49:48 -0700 (PDT)
-Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
-        by smtp.gmail.com with ESMTPSA id m16sm24965238pfd.101.2020.07.07.14.49.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 14:49:48 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 14:49:42 -0700
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Alex Elder <elder@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] bitfield.h: don't compile-time validate _val in FIELD_FIT
-Message-ID: <20200707214942.GA1723912@google.com>
-References: <20200707211642.1106946-1-ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mRl2g7a2YbbpymqHGFR0TKGIinBWou5sIwQBTXYNhZQ=;
+        b=Qe4y+FU1O8D/iKhF5ChBdICCeiFaYA8AgM4Lu3/mdOHTZy1kjjU/nLnbsNvn8vhiDI
+         oV4b6glIJ2M4EdNHJ6QRlpIVEN2/+O5LYKzT2C21LHDvriSPe15W25bEoUoT+c9Oc5mD
+         7hjn7AQK6UwEKe0k1Ppt1i+McVNYOCd9w/jp1P3J8RCsMYUWTFlKyIxglotU4IEYgPoO
+         uz/eJ5nFNLiXaH7umHPTwrPJHMFd8rU17MWBQGi+wua+ZqTX3wqhGw3nodZflr9c3JDq
+         CXRtcmGO0ADbcHXklFXCJqVx8v6dkzIzd6wytHDnS5tVE81fgHXaxRivDFUBKAG0c2rK
+         KiKg==
+X-Gm-Message-State: AOAM533IyrV7uhIhkul+pnf+ubsVxGXhLQuAGRRhRCsEV/XQfxmAEBgo
+        ZzOtjn3prOH49u4KL5JUqUbW7ojt3WvouE4/jgM=
+X-Google-Smtp-Source: ABdhPJwP+fRBt7x8g1bmhda5bnRf++sR6lOGVWE4speDn3m1Ju4k9NQc5Mo5YMbF4ahh66HajvB3+Q8GyjEibi9X5YI=
+X-Received: by 2002:a37:7683:: with SMTP id r125mr51549294qkc.39.1594159111707;
+ Tue, 07 Jul 2020 14:58:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707211642.1106946-1-ndesaulniers@google.com>
+References: <20200706230128.4073544-1-sdf@google.com> <20200706230128.4073544-5-sdf@google.com>
+ <294755e5-58e7-5512-a2f5-2dc37f200acf@iogearbox.net>
+In-Reply-To: <294755e5-58e7-5512-a2f5-2dc37f200acf@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 7 Jul 2020 14:58:20 -0700
+Message-ID: <CAEf4BzYbEzbEsPKYOt8d+431yhNHXBf4oEP4W9M_07crC8x7rw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/4] selftests/bpf: test BPF_CGROUP_INET_SOCK_RELEASE
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 02:16:41PM -0700, Nick Desaulniers wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> 
-> When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
-> compiler to deduce a case where _val can only have the value of -1 at
-> compile time. Specifically,
-> 
-> /* struct bpf_insn: _s32 imm */
-> u64 imm = insn->imm; /* sign extend */
-> if (imm >> 32) { /* non-zero only if insn->imm is negative */
->   /* inlined from ur_load_imm_any */
->   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
->   if (__builtin_constant_p(__imm) && __imm > 255)
->     compiletime_assert_XXX()
-> 
-> This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
-> checks that a given value is representable in one byte (interpreted as
-> unsigned).
-> 
-> FIELD_FIT() should return true or false at runtime for whether a value
-> can fit for not. Don't break the build over a value that's too large for
-> the mask. We'd prefer to keep the inlining and compiler optimizations
-> though we know this case will always return false.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
-> Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-> Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  include/linux/bitfield.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-> index 48ea093ff04c..4e035aca6f7e 100644
-> --- a/include/linux/bitfield.h
-> +++ b/include/linux/bitfield.h
-> @@ -77,7 +77,7 @@
->   */
->  #define FIELD_FIT(_mask, _val)						\
->  	({								\
-> -		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
-> +		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
->  		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
->  	})
->  
+On Tue, Jul 7, 2020 at 2:45 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/7/20 1:01 AM, Stanislav Fomichev wrote:
+> > Simple test that enforces a single SOCK_DGRAM socker per cgroup.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/udp_limit.c      | 75 +++++++++++++++++++
+> >   tools/testing/selftests/bpf/progs/udp_limit.c | 42 +++++++++++
+> >   2 files changed, 117 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_limit.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/udp_limit.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/udp_limit.c b/tools/testing/selftests/bpf/prog_tests/udp_limit.c
+> > new file mode 100644
+> > index 000000000000..2aba09d4d01b
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/udp_limit.c
+> > @@ -0,0 +1,75 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +#include "udp_limit.skel.h"
+> > +
+> > +#include <sys/types.h>
+> > +#include <sys/socket.h>
+> > +
+> > +static int duration;
+> > +
+> > +void test_udp_limit(void)
+> > +{
+> > +     struct udp_limit *skel;
+> > +     int fd1 = -1, fd2 = -1;
+> > +     int cgroup_fd;
+> > +
+> > +     cgroup_fd = test__join_cgroup("/udp_limit");
+> > +     if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
+> > +             return;
+> > +
+> > +     skel = udp_limit__open_and_load();
+> > +     if (CHECK(!skel, "skel-load", "errno %d", errno))
+> > +             goto close_cgroup_fd;
+> > +
+> > +     skel->links.sock = bpf_program__attach_cgroup(skel->progs.sock, cgroup_fd);
+> > +     skel->links.sock_release = bpf_program__attach_cgroup(skel->progs.sock_release, cgroup_fd);
+> > +     if (CHECK(IS_ERR(skel->links.sock) || IS_ERR(skel->links.sock_release),
+> > +               "cg-attach", "sock %ld sock_release %ld",
+> > +               PTR_ERR(skel->links.sock),
+> > +               PTR_ERR(skel->links.sock_release)))
+> > +             goto close_skeleton;
+> > +
+> > +     /* BPF program enforces a single UDP socket per cgroup,
+> > +      * verify that.
+> > +      */
+> > +     fd1 = socket(AF_INET, SOCK_DGRAM, 0);
+> > +     if (CHECK(fd1 < 0, "fd1", "errno %d", errno))
+> > +             goto close_skeleton;
+> > +
+> > +     fd2 = socket(AF_INET, SOCK_DGRAM, 0);
+> > +     if (CHECK(fd2 >= 0, "fd2", "errno %d", errno))
+> > +             goto close_skeleton;
+> > +
+> > +     /* We can reopen again after close. */
+> > +     close(fd1);
+> > +     fd1 = -1;
+> > +
+> > +     fd1 = socket(AF_INET, SOCK_DGRAM, 0);
+> > +     if (CHECK(fd1 < 0, "fd1-again", "errno %d", errno))
+> > +             goto close_skeleton;
+> > +
+> > +     /* Make sure the program was invoked the expected
+> > +      * number of times:
+> > +      * - open fd1           - BPF_CGROUP_INET_SOCK_CREATE
+> > +      * - attempt to openfd2 - BPF_CGROUP_INET_SOCK_CREATE
+> > +      * - close fd1          - BPF_CGROUP_INET_SOCK_RELEASE
+> > +      * - open fd1 again     - BPF_CGROUP_INET_SOCK_CREATE
+> > +      */
+> > +     if (CHECK(skel->bss->invocations != 4, "bss-invocations",
+> > +               "invocations=%d", skel->bss->invocations))
+> > +             goto close_skeleton;
+> > +
+> > +     /* We should still have a single socket in use */
+> > +     if (CHECK(skel->bss->in_use != 1, "bss-in_use",
+> > +               "in_use=%d", skel->bss->in_use))
+> > +             goto close_skeleton;
+> > +
+> > +close_skeleton:
+> > +     if (fd1 >= 0)
+> > +             close(fd1);
+> > +     if (fd2 >= 0)
+> > +             close(fd2);
+> > +     udp_limit__destroy(skel);
+> > +close_cgroup_fd:
+> > +     close(cgroup_fd);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/udp_limit.c b/tools/testing/selftests/bpf/progs/udp_limit.c
+> > new file mode 100644
+> > index 000000000000..edbb30a27e63
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/udp_limit.c
+> > @@ -0,0 +1,42 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +#include <sys/socket.h>
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +int invocations = 0, in_use = 0;
+> > +
+> > +SEC("cgroup/sock")
+>
+> nit: Doesn't matter overly much, but given you've added `cgroup/sock_create`
+> earlier in patch 2/4 intention was probably to use it as well. But either is
+> fine as it resolved to the same.
 
-I confirmied that this fixes the issue. Thanks for sending the patch!
+heh, had the same thought, but didn't want to be too nitpicky :)
 
-Sami
+
+>
+> > +int sock(struct bpf_sock *ctx)
+> > +{
+> > +     __u32 key;
+> > +
+> > +     if (ctx->type != SOCK_DGRAM)
+> > +             return 1;
+> > +
+> > +     __sync_fetch_and_add(&invocations, 1);
+> > +
+> > +     if (in_use > 0) {
+> > +             /* BPF_CGROUP_INET_SOCK_RELEASE is _not_ called
+> > +              * when we return an error from the BPF
+> > +              * program!
+> > +              */
+> > +             return 0;
+> > +     }
+> > +
+> > +     __sync_fetch_and_add(&in_use, 1);
+> > +     return 1;
+> > +}
+> > +
+> > +SEC("cgroup/sock_release")
+> > +int sock_release(struct bpf_sock *ctx)
+> > +{
+> > +     __u32 key;
+> > +
+> > +     if (ctx->type != SOCK_DGRAM)
+> > +             return 1;
+> > +
+> > +     __sync_fetch_and_add(&invocations, 1);
+> > +     __sync_fetch_and_add(&in_use, -1);
+> > +     return 1;
+> > +}
+> >
+>
