@@ -2,164 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FF1217A0F
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869D8217A21
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 23:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgGGVOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 17:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        id S1728911AbgGGVQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 17:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728204AbgGGVOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:14:54 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8213DC08C5DC
-        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 14:14:54 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id i3so23260583qkf.0
-        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 14:14:54 -0700 (PDT)
+        with ESMTP id S1728280AbgGGVQx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:16:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B122C08C5E1
+        for <bpf@vger.kernel.org>; Tue,  7 Jul 2020 14:16:53 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id r17so48674831ybj.22
+        for <bpf@vger.kernel.org>; Tue, 07 Jul 2020 14:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
-        b=NpttPX4lE/KU7Nm0bJYE/p4jYzLQMfv+GHpHKNOzf6UyPqa0Gp4+76X3XGeuO+SXTV
-         nxXA/QOjtZHr8zrC18uOgoYZPubDfwhPRExz7mV1sSv/WCDVk7rSil8JAKB82C3+PuX/
-         9PA6gy1V4MjX5usNyjtpTu8Ri0XzAEs/n6bkMZizqZtcIrCsTLio07SKKLIygBOPy8B3
-         yU/R2xvDU9Own06aGUtf9wIQtXBICRWwf/gWlmgMcy/4QfzQJ9zZclq/xmahiZEmhQqE
-         Von6X666O+hyizXf2P7+qN4Ufq6EwWt0d9nz8HKmBL2eGXdFpKA2bQH+jmHDAdvaJtTS
-         63SQ==
+        bh=LK+EBRynEXsucfX04gFvi+gNnB4EOZ/bB2WzuaaMYIc=;
+        b=Rug8tm+xa2icYOqvro5VOiB7Xb1MvWVSdcHzdKmC5ojZ1nEeGXG4Z7+A9IpOHkU3id
+         vZ14aeY8oW8KS5Ms4Y6CcnEvMMZQEwc+KXXJzM7uvknJPWiNLF4FHQh+MLvz5eK9+1WK
+         2UAS1N5Te+mjL/j3pUa9f+zrdmJxEb2wWf12T6FvlND+IIRhzsmnIW4/SZQ2hGc6GYjy
+         RDRASgQOSHIrzI+59CFyx7vDoXfZ9OoDQObliOx+xsar02qBSpqWD4G4IvCWoOm0jg+U
+         GR+s9JWZ9b2WkUIUCDq6tdDhQ7aR9zUNdO5VOjyfHmebj6JwnfZIBbmQFBZ7md/5ZlTg
+         FdsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
-        b=Vph84rBZlBFoScmU00kI/4ozbSVbs0nW2BgQZJmTXcMr0iYQ0XoiT0kI5elU88Do8+
-         BFAEghRvkyaINawPlOGoZ1vGJEwsnren/wvpaLNM3RQFE80NRiQ7uDs+iRVr5u6IPiED
-         lUk17euf4WjSaIAcJZtKbXzeIEcrxIL6fAWv0RsSnKDJfFH5n+7AeqHI21Binez/InRv
-         f5F+DI7ULm1it75b0dUQ5bcUC5TWW8vzj/WzJEOqaNC6j7nx1n29A2yiEppyIBLIM7ve
-         P3E7vUDQjYxVfj2HX7wf/Fnr0PZgrv2vkpxFJgv1Nx78C//H4hmhZkAjq7JFr13lVJwS
-         T8CQ==
-X-Gm-Message-State: AOAM531yLDT8jWE9tgugbjftIjfKxkos6ZmKq9CU44kveuihpoA3/XR/
-        ccUs2OFB2Uqv91suAmHcvuK0yREEjUWr
-X-Google-Smtp-Source: ABdhPJz11nAFayeFkeDlsq5u5viuPaf3vPkR1JHcLuMxQm3bAygcsTZwF4wZeLIxLQEz07pF9vLNjfqglMvx
-X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr20609878qvb.210.1594156493566;
- Tue, 07 Jul 2020 14:14:53 -0700 (PDT)
-Date:   Tue,  7 Jul 2020 14:14:49 -0700
-Message-Id: <20200707211449.3868944-1-irogers@google.com>
+        bh=LK+EBRynEXsucfX04gFvi+gNnB4EOZ/bB2WzuaaMYIc=;
+        b=WtYiz3Espr2p80CGg8xFwiWsruY4VVU69Bv2bqquBMmrmkkCwsnuD5llY1YRrK3VbH
+         QVQgqkVp+gEjmxVz+xUtiEu2ksSBNh/WWRrGlSdPF/D1l4AEUcXtqT2vb5xWv2IU1C/w
+         OGKTkJTYXtgnZGxJNLiwhLbC1nj3+FQTjYV5Uzye49gl59DTCiTcAPg+6ILbqYOYVhoT
+         DSQqBho7B7p3xQ86sIJzrwfJZLHZ5oHuaiieisbgP4YEPPQdXAYLM0PqS3nQRbpXbDBP
+         Wr7IzryKymfOasKmR4s4DzZ0O/LA3Mb3AMPtALAjPk4vAV00rJDe8BaS9sNRfZRZteAl
+         1xcg==
+X-Gm-Message-State: AOAM533L2ClRWnUaRCF20QlX3ibBsXhuM9vxwZcU1GUCMyGTIGiI1zfm
+        xq5dFGBmd5feMgdhGU67J3tO+hW5nyqhXm23f0A=
+X-Google-Smtp-Source: ABdhPJzn9lxSCriqI2ToiXXIRoLSzrjmr41xe5HIRNGl0I0vjbYHXb13MWkUw/9ODphxfJt2wWrtcsLV1Vf1u8OuiVg=
+X-Received: by 2002:a25:21c5:: with SMTP id h188mr36451509ybh.468.1594156612336;
+ Tue, 07 Jul 2020 14:16:52 -0700 (PDT)
+Date:   Tue,  7 Jul 2020 14:16:41 -0700
+Message-Id: <20200707211642.1106946-1-ndesaulniers@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-Subject: [PATCH] perf parse-events: report bpf errors
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+Subject: [PATCH] bitfield.h: don't compile-time validate _val in FIELD_FIT
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        KP Singh <kpsingh@chromium.org>, Alex Elder <elder@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Setting the parse_events_error directly doesn't increment num_errors
-causing the error message not to be displayed. Use the
-parse_events__handle_error function that sets num_errors and handle
-multiple errors.
+From: Jakub Kicinski <kuba@kernel.org>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
+compiler to deduce a case where _val can only have the value of -1 at
+compile time. Specifically,
+
+/* struct bpf_insn: _s32 imm */
+u64 imm = insn->imm; /* sign extend */
+if (imm >> 32) { /* non-zero only if insn->imm is negative */
+  /* inlined from ur_load_imm_any */
+  u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
+  if (__builtin_constant_p(__imm) && __imm > 255)
+    compiletime_assert_XXX()
+
+This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
+checks that a given value is representable in one byte (interpreted as
+unsigned).
+
+FIELD_FIT() should return true or false at runtime for whether a value
+can fit for not. Don't break the build over a value that's too large for
+the mask. We'd prefer to keep the inlining and compiler optimizations
+though we know this case will always return false.
+
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
+Reported-by: Masahiro Yamada <masahiroy@kernel.org>
+Debugged-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- tools/perf/util/parse-events.c | 38 ++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+ include/linux/bitfield.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c4906a6a9f1a..e88e4c7a2a9a 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -767,8 +767,8 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
- 
- 	return 0;
- errout:
--	parse_state->error->help = strdup("(add -v to see detail)");
--	parse_state->error->str = strdup(errbuf);
-+	parse_events__handle_error(parse_state->error, 0,
-+				strdup(errbuf), strdup("(add -v to see detail)"));
- 	return err;
- }
- 
-@@ -784,36 +784,38 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
- 		return 0;
- 
- 	list_for_each_entry(term, head_config, list) {
--		char errbuf[BUFSIZ];
- 		int err;
- 
- 		if (term->type_term != PARSE_EVENTS__TERM_TYPE_USER) {
--			snprintf(errbuf, sizeof(errbuf),
--				 "Invalid config term for BPF object");
--			errbuf[BUFSIZ - 1] = '\0';
--
--			parse_state->error->idx = term->err_term;
--			parse_state->error->str = strdup(errbuf);
-+			parse_events__handle_error(parse_state->error, term->err_term,
-+						strdup("Invalid config term for BPF object"),
-+						NULL);
- 			return -EINVAL;
- 		}
- 
- 		err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
- 		if (err) {
-+			char errbuf[BUFSIZ];
-+			int idx;
-+
- 			bpf__strerror_config_obj(obj, term, parse_state->evlist,
- 						 &error_pos, err, errbuf,
- 						 sizeof(errbuf));
--			parse_state->error->help = strdup(
-+
-+			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
-+				idx = term->err_val;
-+			else
-+				idx = term->err_term + error_pos;
-+
-+			parse_events__handle_error(parse_state->error, idx,
-+						strdup(errbuf),
-+						strdup(
- "Hint:\tValid config terms:\n"
- "     \tmap:[<arraymap>].value<indices>=[value]\n"
- "     \tmap:[<eventmap>].event<indices>=[event]\n"
- "\n"
- "     \twhere <indices> is something like [0,3...5] or [all]\n"
--"     \t(add -v to see detail)");
--			parse_state->error->str = strdup(errbuf);
--			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
--				parse_state->error->idx = term->err_val;
--			else
--				parse_state->error->idx = term->err_term + error_pos;
-+"     \t(add -v to see detail)"));
- 			return err;
- 		}
- 	}
-@@ -877,8 +879,8 @@ int parse_events_load_bpf(struct parse_events_state *parse_state,
- 						   -err, errbuf,
- 						   sizeof(errbuf));
- 
--		parse_state->error->help = strdup("(add -v to see detail)");
--		parse_state->error->str = strdup(errbuf);
-+		parse_events__handle_error(parse_state->error, 0,
-+					strdup(errbuf), strdup("(add -v to see detail)"));
- 		return err;
- 	}
+diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+index 48ea093ff04c..4e035aca6f7e 100644
+--- a/include/linux/bitfield.h
++++ b/include/linux/bitfield.h
+@@ -77,7 +77,7 @@
+  */
+ #define FIELD_FIT(_mask, _val)						\
+ 	({								\
+-		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
++		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
+ 		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
+ 	})
  
 -- 
 2.27.0.383.g050319c2ae-goog
