@@ -2,206 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84252174D6
-	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 19:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9992217590
+	for <lists+bpf@lfdr.de>; Tue,  7 Jul 2020 19:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgGGRN4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jul 2020 13:13:56 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:33938 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgGGRNz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:13:55 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jsrAC-0004jJ-2G; Tue, 07 Jul 2020 11:13:48 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jsrAA-0000lm-TW; Tue, 07 Jul 2020 11:13:47 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
-        <20200702164140.4468-13-ebiederm@xmission.com>
-        <20200703203021.paebx25miovmaxqt@ast-mbp.dhcp.thefacebook.com>
-        <873668s2j8.fsf@x220.int.ebiederm.org>
-        <20200704155052.kmrest5useyxcfnu@wittgenstein>
-Date:   Tue, 07 Jul 2020 12:09:05 -0500
-In-Reply-To: <20200704155052.kmrest5useyxcfnu@wittgenstein> (Christian
-        Brauner's message of "Sat, 4 Jul 2020 17:50:52 +0200")
-Message-ID: <87mu4bjlqm.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1728652AbgGGRtg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jul 2020 13:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728404AbgGGRte (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:49:34 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCA2C061755;
+        Tue,  7 Jul 2020 10:49:34 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id h18so19216558qvl.3;
+        Tue, 07 Jul 2020 10:49:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3A9pj/+sDYtaBhomGrTHi/WUOTb74PSiC/HfOmJjW14=;
+        b=gJPHZ3UWU8w8Dm/sJn1RXPqHp3zQGIHQFn+jZnl/eGc3uXdlDvsMZrWp5Xe/iTOOzJ
+         9WZBaxX4tAq6LSWVbNX55qYHrmmiyuo+cpTUuPqJQ4QAQ3oIKzypnahVOxIYK4jTXxyH
+         wjUCZUtWMqa5fEkNwSypDiF3jL0jnckLAk2ibxvRbhBV8IxOJtea0X/S8ztq1VGMmLJD
+         vtjYvs2BL/QopwGX2m2gySyY+CiWrQwdbV9k5P98AT/+Zt7HhFbBytZhqtlcuKoqMnnO
+         oZrwuPFnwB1Uny82nCL+oj04zi7Wv+uxQ50vA/Fu05FMtHW4yVEFnaTTzNrIi6oh34vi
+         2nRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3A9pj/+sDYtaBhomGrTHi/WUOTb74PSiC/HfOmJjW14=;
+        b=J9r3j7D4RExs3/dINshuNHRqD6PH0c2I+Ep5+F5W7JTjFIzdGdd3OVBIvIiQ4mKjw5
+         3bj/5Umdow4pYDdadFLKXeOKqu1LTslok1+PsxxAdhSy0l/iIyZd54GNwWeFF6hQWfrJ
+         +BSQqyvgONguMjfP/Iyn/xUwQsq2Tgl/QilF+MUXN/oZOmY5QvMOWdjAh4LHV4m6Mqe6
+         xrRlQxKHvDpt9iYOKj3RADEAzJrf6cVoQbTnhhU9+Bv0JzOt1TutfSaKOSIudyVVh8V4
+         6sIt7+/7NbGNvvwY7wPrOJBidR8DjxMHt8KNP19xxPMl3CwQTrlY5kdgjIm8gG5pnEnO
+         0PkA==
+X-Gm-Message-State: AOAM532i8NhL8dFGhLkjrIT3X9ugH5PQuiv6+Epdrv8OT15rNYx4MA0H
+        sVLGxcnORB0WkVqBI1S76k661v3S0L2/2Oq4z4A=
+X-Google-Smtp-Source: ABdhPJwpgAdg0XLESfNsVoQN5Z+oZOVlu1shESUM6aVfeAdDbkXBFf4Q3RogUcHlbqlcS62CELGU7SQ0tDXp4DyOuxw=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr50215654qvb.228.1594144173515;
+ Tue, 07 Jul 2020 10:49:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jsrAA-0000lm-TW;;;mid=<87mu4bjlqm.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18xg/9AOxJCx9+kag+rX8lbj8yMBnwD6cc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_XM_PhishingBody,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,XMSubLong,XM_B_Phish66 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4355]
-        *  0.7 XMSubLong Long Subject
-        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Christian Brauner <christian.brauner@ubuntu.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 670 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 11 (1.7%), b_tie_ro: 9 (1.4%), parse: 1.95 (0.3%),
-         extract_message_metadata: 23 (3.5%), get_uri_detail_list: 4.8 (0.7%),
-        tests_pri_-1000: 15 (2.3%), tests_pri_-950: 1.35 (0.2%),
-        tests_pri_-900: 1.10 (0.2%), tests_pri_-90: 106 (15.8%), check_bayes:
-        104 (15.5%), b_tokenize: 13 (2.0%), b_tok_get_all: 11 (1.7%),
-        b_comp_prob: 4.0 (0.6%), b_tok_touch_all: 71 (10.5%), b_finish: 1.10
-        (0.2%), tests_pri_0: 493 (73.6%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 8 (1.1%), poll_dns_idle: 0.29 (0.0%), tests_pri_10:
-        2.1 (0.3%), tests_pri_500: 11 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 13/16] exit: Factor thread_group_exited out of pidfd_poll
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200703095111.3268961-1-jolsa@kernel.org> <20200703095111.3268961-10-jolsa@kernel.org>
+ <CAEf4BzYuDU2mARcP5GVAv+WiknSnWuzGyNqQx0TiJ23CWA8NiA@mail.gmail.com> <20200707155720.GI3424581@krava>
+In-Reply-To: <20200707155720.GI3424581@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 7 Jul 2020 10:49:22 -0700
+Message-ID: <CAEf4BzYYHEwDZ9YqqyfzSZsk-8=DrL-WVEee-gisBLQRZWUTHw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 9/9] selftests/bpf: Add test for resolve_btfids
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
-
-> On Fri, Jul 03, 2020 at 04:37:47PM -0500, Eric W. Biederman wrote:
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->> 
->> > On Thu, Jul 02, 2020 at 11:41:37AM -0500, Eric W. Biederman wrote:
->> >> Create an independent helper thread_group_exited report return true
->> >> when all threads have passed exit_notify in do_exit.  AKA all of the
->> >> threads are at least zombies and might be dead or completely gone.
->> >> 
->> >> Create this helper by taking the logic out of pidfd_poll where
->> >> it is already tested, and adding a missing READ_ONCE on
->> >> the read of task->exit_state.
->> >> 
->> >> I will be changing the user mode driver code to use this same logic
->> >> to know when a user mode driver needs to be restarted.
->> >> 
->> >> Place the new helper thread_group_exited in kernel/exit.c and
->> >> EXPORT it so it can be used by modules.
->> >> 
->> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> >> ---
->> >>  include/linux/sched/signal.h |  2 ++
->> >>  kernel/exit.c                | 24 ++++++++++++++++++++++++
->> >>  kernel/fork.c                |  6 +-----
->> >>  3 files changed, 27 insertions(+), 5 deletions(-)
->> >> 
->> >> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
->> >> index 0ee5e696c5d8..1bad18a1d8ba 100644
->> >> --- a/include/linux/sched/signal.h
->> >> +++ b/include/linux/sched/signal.h
->> >> @@ -674,6 +674,8 @@ static inline int thread_group_empty(struct task_struct *p)
->> >>  #define delay_group_leader(p) \
->> >>  		(thread_group_leader(p) && !thread_group_empty(p))
->> >>  
->> >> +extern bool thread_group_exited(struct pid *pid);
->> >> +
->> >>  extern struct sighand_struct *__lock_task_sighand(struct task_struct *task,
->> >>  							unsigned long *flags);
->> >>  
->> >> diff --git a/kernel/exit.c b/kernel/exit.c
->> >> index d3294b611df1..a7f112feb0f6 100644
->> >> --- a/kernel/exit.c
->> >> +++ b/kernel/exit.c
->> >> @@ -1713,6 +1713,30 @@ COMPAT_SYSCALL_DEFINE5(waitid,
->> >>  }
->> >>  #endif
->> >>  
->> >> +/**
->> >> + * thread_group_exited - check that a thread group has exited
->> >> + * @pid: tgid of thread group to be checked.
->> >> + *
->> >> + * Test if thread group is has exited (all threads are zombies, dead
->> >> + * or completely gone).
->> >> + *
->> >> + * Return: true if the thread group has exited. false otherwise.
->> >> + */
->> >> +bool thread_group_exited(struct pid *pid)
->> >> +{
->> >> +	struct task_struct *task;
->> >> +	bool exited;
->> >> +
->> >> +	rcu_read_lock();
->> >> +	task = pid_task(pid, PIDTYPE_PID);
->> >> +	exited = !task ||
->> >> +		(READ_ONCE(task->exit_state) && thread_group_empty(task));
->> >> +	rcu_read_unlock();
->> >> +
->> >> +	return exited;
->> >> +}
->> >
->> > I'm not sure why you think READ_ONCE was missing.
->> > It's different in wait_consider_task() where READ_ONCE is needed because
->> > of multiple checks. Here it's done once.
->> 
->> In practice it probably has no effect on the generated code.  But
->> READ_ONCE is about telling the compiler not to be clever.  Don't use
->> tearing loads or stores etc.  When all of the other readers are using
->> READ_ONCE I just get nervous if we have a case that doesn't.
+On Tue, Jul 7, 2020 at 8:57 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> That's not true. The only place where READ_ONCE(->exit_state) is used is
-> in wait_consider_task() and nowhere else. We had that discussion a while
-> ago where I or someone proposed to simply place a READ_ONCE() around all
-> accesses to exit_state for the sake of kcsan and we agreed that it's
-> unnecessary and not to do this.
-> But it obviously doesn't hurt to have it.
+> On Mon, Jul 06, 2020 at 06:26:28PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Jul 3, 2020 at 2:54 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding resolve_btfids test under test_progs suite.
+> > >
+> > > It's possible to use btf_ids.h header and its logic in
+> > > user space application, so we can add easy test for it.
+> > >
+> > > The test defines BTF_ID_LIST and checks it gets properly
+> > > resolved.
+> > >
+> > > For this reason the test_progs binary (and other binaries
+> > > that use TRUNNER* macros) is processed with resolve_btfids
+> > > tool, which resolves BTF IDs in .BTF.ids section.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/testing/selftests/bpf/Makefile          |  22 ++-
+> > >  .../selftests/bpf/prog_tests/resolve_btfids.c | 170 ++++++++++++++++++
+> > >  2 files changed, 190 insertions(+), 2 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > > index 1f9c696b3edf..b47a685d12bd 100644
+> > > --- a/tools/testing/selftests/bpf/Makefile
+> > > +++ b/tools/testing/selftests/bpf/Makefile
+> > > @@ -190,6 +190,16 @@ else
+> > >         cp "$(VMLINUX_H)" $@
+> > >  endif
+> > >
+> > > +$(SCRATCH_DIR)/resolve_btfids: $(BPFOBJ)                               \
+> > > +                              $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
+> > > +                              $(TOOLSDIR)/lib/rbtree.c                 \
+> > > +                              $(TOOLSDIR)/lib/zalloc.c                 \
+> > > +                              $(TOOLSDIR)/lib/string.c                 \
+> > > +                              $(TOOLSDIR)/lib/ctype.c                  \
+> > > +                              $(TOOLSDIR)/lib/str_error_r.c
+> > > +       $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids \
+> > > +       OUTPUT=$(SCRATCH_DIR)/ BPFOBJ=$(BPFOBJ)
+> > > +
+> >
+> > please indent OUTPUT, so it doesn't look like it's a separate command
+>
+> ok
+>
+> >
+> > >  # Get Clang's default includes on this system, as opposed to those seen by
+> > >  # '-target bpf'. This fixes "missing" files on some architectures/distros,
+> > >  # such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
+> > > @@ -333,7 +343,8 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
+> > >                       $(TRUNNER_BPF_SKELS)                              \
+> > >                       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+> > >         $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+> > > -       cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
+> > > +       cd $$(@D) && $$(CC) -I. $$(CFLAGS) $(TRUNNER_EXTRA_CFLAGS)      \
+> > > +       -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
+> > >
+> > >  $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:                          \
+> > >                        %.c                                              \
+> > > @@ -355,6 +366,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
+> > >                              | $(TRUNNER_BINARY)-extras
+> > >         $$(call msg,BINARY,,$$@)
+> > >         $$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
+> > > +       $(TRUNNER_BINARY_EXTRA_CMD)
+> >
+> > no need to make this generic, just write out resolve_btfids here explicitly
+>
+> currently resolve_btfids fails if there's no .BTF.ids section found,
+> but we can make it silently pass i nthis case and then we can invoke
+> it for all the binaries
 
-There is a larger discussion to be had around the proper handling of
-exit_state.
+ah, I see. Yeah, either we can add an option to resolve_btfids to not
+error when .BTF_ids is missing (probably best), or we can check
+whether the test has .BTF_ids section, and if it does - run
+resolve_btfids on it. Just ignoring errors always is more error-prone,
+because we won't know if it's a real problem we are ignoring, or
+missing .BTF_ids.
 
-In this particular case because we are accessing exit_state with
-only rcu_read_lock protection, because the outcome of the read
-is about correctness, and because the compiler has nothing else
-telling it not to re-read exit_state, I believe we actually need
-the READ_ONCE.
+>
+> >
+> > >
+> > >  endef
+> > >
+> > > @@ -365,7 +377,10 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c     \
+> > >                          network_helpers.c testing_helpers.c            \
+> > >                          flow_dissector_load.h
+> > >  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
+> > > -                      $(wildcard progs/btf_dump_test_case_*.c)
+> > > +                      $(wildcard progs/btf_dump_test_case_*.c)         \
+> > > +                      $(SCRATCH_DIR)/resolve_btfids
+> > > +TRUNNER_EXTRA_CFLAGS := -D"BUILD_STR(s)=\#s" -DVMLINUX_BTF="BUILD_STR($(VMLINUX_BTF))"
+> > > +TRUNNER_BINARY_EXTRA_CMD := $(SCRATCH_DIR)/resolve_btfids --btf $(VMLINUX_BTF) test_progs
+> >
+> > I hope we can get rid of this, see suggestion below.
+> >
+> > >  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+> > >  TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+> > >  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
+> > > @@ -373,6 +388,7 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+> > >
+> >
+> > [...]
+> >
+> > > +
+> > > +static int duration;
+> > > +
+> > > +static struct btf *btf__parse_raw(const char *file)
+> >
+> > another copy here...
+>
+> ok
+>
+> >
+> > > +{
+> > > +       struct btf *btf;
+> > > +       struct stat st;
+> > > +       __u8 *buf;
+> > > +       FILE *f;
+> > > +
+> >
+> > [...]
+> >
+> > > +
+> > > +BTF_ID_LIST(test_list)
+> > > +BTF_ID_UNUSED
+> > > +BTF_ID(typedef, pid_t)
+> > > +BTF_ID(struct,  sk_buff)
+> > > +BTF_ID(union,   thread_union)
+> > > +BTF_ID(func,    memcpy)
+> > > +
+> > > +struct symbol {
+> > > +       const char      *name;
+> > > +       int              type;
+> > > +       int              id;
+> > > +};
+> > > +
+> > > +struct symbol test_symbols[] = {
+> > > +       { "unused",       -1,                0 },
+> >
+> > could use BTF_KIND_UNKN here instead of -1
+>
+> ok
+>
+> >
+> > > +       { "pid_t",        BTF_KIND_TYPEDEF, -1 },
+> > > +       { "sk_buff",      BTF_KIND_STRUCT,  -1 },
+> > > +       { "thread_union", BTF_KIND_UNION,   -1 },
+> > > +       { "memcpy",       BTF_KIND_FUNC,    -1 },
+> > > +};
+> > > +
+> >
+> > [...]
+> >
+> > > +
+> > > +static int resolve_symbols(void)
+> > > +{
+> > > +       const char *path = VMLINUX_BTF;
+> >
+> >
+> > This build-time parameter passing to find the original VMLINUX_BTF
+> > really sucks, IMO.
+> >
+> > Why not use the btf_dump tests approach and have our own small
+> > "vmlinux BTF", which resolve_btfids would use to resolve these IDs?
+> > See how btf_dump_xxx.c files define BTFs that are used in tests. You
+> > can do something similar here, and use a well-known BPF object file as
+> > a source of BTF, both here in a test and in Makefile for --btf param
+> > to resolve_btfids?
+>
+> well VMLINUX_BTF is there and those types are used are not going
+> away any time soon ;-) but yea, we can do that.. we do this also
+> for bpftrace, it's nicer
 
-At the same time it would take a pretty special compiler to want to
-reaccess that field in thread_group_exited.
 
-I have looked through and I don't find any of the other access of
-exit_state where the result is about correctness (so that we care)
-and we don't hold tasklist_lock.
+"VMLINUX_BTF is there" is not really true in a lot of more complicated
+setups, which is why I'd like to avoid that assumption. E.g., for
+libbpf Travis CI, we build self-tests in one VM, but run the binary in
+a different VM. So either vmlinux itself or the path to it might
+change.
 
-But I have removed the necessary wording from the commit comment.
+Also, having full control over **small** BTF allows to create various
+test situations that might be harder to pinpoint in real vmlinux BTF,
+e.g., same-named entities with different KINDS (typedef vs struct,
+etc). Then if that fails, debugging this on a small BTF is much-much
+easier than on a real thing. Real vmlinux BTF is being tested each
+time you build a kernel and run selftests inside VM either way, so I
+don't think we lose anything in terms of coverage.
 
-There is a much larger discussion to be had about what to do with
-exit_state, because I think I found about half the accesses were
-slightly buggy in one form or another.
 
-Eric
-
-
+>
+> jirka
+>
