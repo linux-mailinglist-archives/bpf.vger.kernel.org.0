@@ -2,105 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AA1218F92
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 20:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCE6218FE4
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 20:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgGHSQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 14:16:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24735 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725949AbgGHSQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:16:59 -0400
+        id S1726444AbgGHSrp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 14:47:45 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41047 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725937AbgGHSrp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Jul 2020 14:47:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594232218;
+        s=mimecast20190719; t=1594234064;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iAQg13RIc/6fdgwYC3LjOS6qKUgfGuA+h5I0+AO5bfM=;
-        b=gedCFhC+dsOd8J2wsomTQOYAxWsNj4YjbxJk3lMuZrUxiodeRO3AHZ7ff1N6BAtbL7bZ+S
-        TrEUtG52b5qxpDNzq59FIy6iF74oxhD7UlieqiNlSmIfnFYfqQc3GYAOCPfecoC2toTeQY
-        5yzLjoUonvCgCOMIb1Fo7ElEIrIPrxk=
+        bh=fcsHqKvyEn+7TUlrftNO7s3T6e7eg/prGJp2vr2tLls=;
+        b=g3sMSZfu2QI791LF/HUR8RVvOUob4km53kYKE0ZV+ZloRtXvXWEjv7P0W8r+O2IId35zgl
+        A8RgsNZPcE6akXAnG7YLT+q/BaYQctDr5ZEs5JFp5pEQJ5OTRps+x15HJfhsHu33hHEgWX
+        /FLPfI5p7BpSu90DcK8Y33ZqgIU1xkQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-nqZOZTZQPemOdt1FTRxOpw-1; Wed, 08 Jul 2020 14:16:54 -0400
-X-MC-Unique: nqZOZTZQPemOdt1FTRxOpw-1
+ us-mta-50-l8cy0SDLO6CVRyfWjFLFnw-1; Wed, 08 Jul 2020 14:47:40 -0400
+X-MC-Unique: l8cy0SDLO6CVRyfWjFLFnw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6A8F1800D42;
-        Wed,  8 Jul 2020 18:16:52 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDD8C5BAC3;
-        Wed,  8 Jul 2020 18:16:45 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 20:16:44 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V3 0/2] BPF selftests test runner 'test_progs'
- use proper shell exit codes
-Message-ID: <20200708201644.0a02602a@carbon>
-In-Reply-To: <CAEf4Bzb07mdCQ5DS_gao4b9GSyeg406wpteC9uDaGdfOAHXFVA@mail.gmail.com>
-References: <159410590190.1093222.8436994742373578091.stgit@firesoul>
-        <CAEf4Bzb07mdCQ5DS_gao4b9GSyeg406wpteC9uDaGdfOAHXFVA@mail.gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9521719057A0;
+        Wed,  8 Jul 2020 18:47:37 +0000 (UTC)
+Received: from krava (unknown [10.40.195.124])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 358367F8A7;
+        Wed,  8 Jul 2020 18:47:33 +0000 (UTC)
+Date:   Wed, 8 Jul 2020 20:47:32 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf parse-events: report bpf errors
+Message-ID: <20200708184732.GC3581918@krava>
+References: <20200707211449.3868944-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707211449.3868944-1-irogers@google.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 7 Jul 2020 00:23:48 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Tue, Jul 7, 2020 at 12:12 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > This patchset makes it easier to use test_progs from shell scripts, by using
-> > proper shell exit codes. The process's exit status should be a number
-> > between 0 and 255 as defined in man exit(3) else it will be masked to comply.
-> >
-> > Shell exit codes used by programs should be below 127. As 127 and above are
-> > used for indicating signals. E.g. 139 means 11=SIGSEGV $((139 & 127))=11.
-> > POSIX defines in man wait(3p) signal check if WIFSIGNALED(STATUS) and
-> > WTERMSIG(139)=11. (Hint: cmd 'kill -l' list signals and their numbers).
-> >
-> > Using Segmentation fault as an example, as these have happened before with
-> > different tests (that are part of test_progs). CI people writing these
-> > shell-scripts could pickup these hints and report them, if that makes sense.
-> >
-> > ---
-> >
-> > Jesper Dangaard Brouer (2):
-> >       selftests/bpf: test_progs use another shell exit on non-actions
-> >       selftests/bpf: test_progs avoid minus shell exit codes
-> >
-> >
-> >  tools/testing/selftests/bpf/test_progs.c |   13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> >
-> > --
-> >  
+On Tue, Jul 07, 2020 at 02:14:49PM -0700, Ian Rogers wrote:
+> Setting the parse_events_error directly doesn't increment num_errors
+> causing the error message not to be displayed. Use the
+> parse_events__handle_error function that sets num_errors and handle
+> multiple errors.
 > 
-> For the series:
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> My preference was shorter EXIT_ERR_SETUP, but it doesn't matter.
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-I can just resend the patchset, if you prefer?
+looks good
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
 
