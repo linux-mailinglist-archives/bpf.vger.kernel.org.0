@@ -2,161 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247822185ED
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 13:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92142218714
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 14:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgGHLTi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 07:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47236 "EHLO mail.kernel.org"
+        id S1728803AbgGHMTo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 08:19:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:35029 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728763AbgGHLTi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:19:38 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.179.83.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C87220739;
-        Wed,  8 Jul 2020 11:19:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594207177;
-        bh=eUgIo/46QmRmLemfChQoEWZQ6jErzhl1bOJQgWf5Cz4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x2Cu0abvdpzB9DdgFpKtPVV61a7eK8lqrnKy3W8XW016M3yrVw7i73ZvlO7RMDgrF
-         E9tEmq2EMV8PPcrt82ifFv4mqaQOY/Rwk8CTmRBIFoygAV2uNes8aRkDbFpNX2uIvx
-         08/pHGKDZ71HWeeNx37QeQazCES7qVb4xA7C3FI4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 529E1405FF; Wed,  8 Jul 2020 08:19:35 -0300 (-03)
-Date:   Wed, 8 Jul 2020 08:19:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728723AbgGHMTo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:19:44 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B235068AFE; Wed,  8 Jul 2020 14:19:40 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 14:19:40 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf parse-events: report bpf errors
-Message-ID: <20200708111935.GK1320@kernel.org>
-References: <20200707211449.3868944-1-irogers@google.com>
+        "maximmi@mellanox.com" <maximmi@mellanox.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>
+Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
+Message-ID: <20200708121940.GA19619@lst.de>
+References: <20200626134358.90122-1-bjorn.topel@gmail.com> <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net> <20200627070406.GB11854@lst.de> <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com> <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com> <20200708065014.GA5694@lst.de> <B926444035E5E2439431908E3842AFD255E99A@DGGEMI525-MBS.china.huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707211449.3868944-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <B926444035E5E2439431908E3842AFD255E99A@DGGEMI525-MBS.china.huawei.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Jul 07, 2020 at 02:14:49PM -0700, Ian Rogers escreveu:
-> Setting the parse_events_error directly doesn't increment num_errors
-> causing the error message not to be displayed. Use the
-> parse_events__handle_error function that sets num_errors and handle
-> multiple errors.
-
-What was the command line you used to exercise the error and then the
-fix?
-
-- Arnaldo
-
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.c | 38 ++++++++++++++++++----------------
->  1 file changed, 20 insertions(+), 18 deletions(-)
+On Wed, Jul 08, 2020 at 07:57:23AM +0000, Song Bao Hua (Barry Song) wrote:
+> > int dma_map_batch_start(struct device *dev, size_t rounded_len,
+> > 	enum dma_data_direction dir, unsigned long attrs, dma_addr_t *addr);
+> > int dma_map_batch_add(struct device *dev, dma_addr_t *addr, struct page
+> > *page,
+> > 		unsigned long offset, size_t size);
+> > int dma_map_batch_end(struct device *dev, int ret, dma_addr_t start_addr);
+> > 
 > 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index c4906a6a9f1a..e88e4c7a2a9a 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -767,8 +767,8 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
->  
->  	return 0;
->  errout:
-> -	parse_state->error->help = strdup("(add -v to see detail)");
-> -	parse_state->error->str = strdup(errbuf);
-> +	parse_events__handle_error(parse_state->error, 0,
-> +				strdup(errbuf), strdup("(add -v to see detail)"));
->  	return err;
->  }
->  
-> @@ -784,36 +784,38 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
->  		return 0;
->  
->  	list_for_each_entry(term, head_config, list) {
-> -		char errbuf[BUFSIZ];
->  		int err;
->  
->  		if (term->type_term != PARSE_EVENTS__TERM_TYPE_USER) {
-> -			snprintf(errbuf, sizeof(errbuf),
-> -				 "Invalid config term for BPF object");
-> -			errbuf[BUFSIZ - 1] = '\0';
-> -
-> -			parse_state->error->idx = term->err_term;
-> -			parse_state->error->str = strdup(errbuf);
-> +			parse_events__handle_error(parse_state->error, term->err_term,
-> +						strdup("Invalid config term for BPF object"),
-> +						NULL);
->  			return -EINVAL;
->  		}
->  
->  		err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
->  		if (err) {
-> +			char errbuf[BUFSIZ];
-> +			int idx;
-> +
->  			bpf__strerror_config_obj(obj, term, parse_state->evlist,
->  						 &error_pos, err, errbuf,
->  						 sizeof(errbuf));
-> -			parse_state->error->help = strdup(
-> +
-> +			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
-> +				idx = term->err_val;
-> +			else
-> +				idx = term->err_term + error_pos;
-> +
-> +			parse_events__handle_error(parse_state->error, idx,
-> +						strdup(errbuf),
-> +						strdup(
->  "Hint:\tValid config terms:\n"
->  "     \tmap:[<arraymap>].value<indices>=[value]\n"
->  "     \tmap:[<eventmap>].event<indices>=[event]\n"
->  "\n"
->  "     \twhere <indices> is something like [0,3...5] or [all]\n"
-> -"     \t(add -v to see detail)");
-> -			parse_state->error->str = strdup(errbuf);
-> -			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
-> -				parse_state->error->idx = term->err_val;
-> -			else
-> -				parse_state->error->idx = term->err_term + error_pos;
-> +"     \t(add -v to see detail)"));
->  			return err;
->  		}
->  	}
-> @@ -877,8 +879,8 @@ int parse_events_load_bpf(struct parse_events_state *parse_state,
->  						   -err, errbuf,
->  						   sizeof(errbuf));
->  
-> -		parse_state->error->help = strdup("(add -v to see detail)");
-> -		parse_state->error->str = strdup(errbuf);
-> +		parse_events__handle_error(parse_state->error, 0,
-> +					strdup(errbuf), strdup("(add -v to see detail)"));
->  		return err;
->  	}
->  
-> -- 
-> 2.27.0.383.g050319c2ae-goog
+> Hello Christoph,
 > 
+> What is the different between dma_map_batch_add() and adding the buffer to sg of dma_map_sg()?
 
--- 
-
-- Arnaldo
+There is not struct scatterlist involved in this API, avoiding the
+overhead to allocate it (which is kinda the point).
