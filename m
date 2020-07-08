@@ -2,99 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73A62193EE
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 00:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F7C219432
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 01:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgGHW6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 18:58:41 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34048 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgGHW6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 18:58:40 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtJ1S-0000SC-LY; Thu, 09 Jul 2020 00:58:38 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtJ1S-000NfG-ET; Thu, 09 Jul 2020 00:58:38 +0200
-Subject: Re: [PATCH bpf-next 0/6] Improve libbpf support of old kernels
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Matthew Lim <matthewlim@fb.com>
-References: <20200708015318.3827358-1-andriin@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7851cece-001e-40d2-a9b0-3689d4be2e5e@iogearbox.net>
-Date:   Thu, 9 Jul 2020 00:58:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726174AbgGHXQn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 19:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgGHXQm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 19:16:42 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88670C08C5C1
+        for <bpf@vger.kernel.org>; Wed,  8 Jul 2020 16:16:41 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id q17so16194pls.9
+        for <bpf@vger.kernel.org>; Wed, 08 Jul 2020 16:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Xz83zbMBS1ciMi4HP8F5AMInxsp8lIOMa2E1ookzEnM=;
+        b=ZzxSL3jE8TfZozJ+lUu5EWR8aD1tJwnYAK9Rn7Z7nImkfg7B/XXRCmyi8+tK0R92N1
+         /Stwcle6e+18anI9CK//KGt1cZmJd0DyMHlEP4hTTwuOuq7nExSNEYQsGsrBeGlQ7C/b
+         1hJ6p9N0VQwEZpNtgSUyrG6baMnNJ9biO4ikg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Xz83zbMBS1ciMi4HP8F5AMInxsp8lIOMa2E1ookzEnM=;
+        b=O3IspKyyhcIuGAtxwWnPR0JQtDf8K+gJpHofF31nmbjV4mkplFE6IQwIjCOqsDtY47
+         v/zF4Vkk4bnufEg8/W2FQk6fs/3E53QkeMk5uNGPCeKzonIq6lErWKWUIzwEA62tGKaX
+         sJw9RG8OtzN8mduZ7DcJTmBMh4jHVBxf/hyFskbwDE7JylHxbQeb4UdqrYGDnf/EvSI3
+         TlQ6G+U6iIFm1Cp5lUfJ7bk08K4Vo1rJNcH52xPwPShRRrRAH0GGJyQ0Ex50uCTKfKlB
+         v+fN2mPa3ruU2H9yO8+I1GVWcXvmgAmn1667W+xMhqbTYF+qAAJop2v+GIYPo/dlwH1r
+         RVNA==
+X-Gm-Message-State: AOAM530UqnX4xc8e5siLmK/vuwt8AoNYWVbiKpbp6HLF8nKpboJQ+I91
+        wE01Uvz+BSygVcz57HlYd7BvMw==
+X-Google-Smtp-Source: ABdhPJyo85bWfKc7dmUbm6uwAqu7RbmKNA71lY/V6RFecIv5/ryA0rj3xviymXs4MMndMmbtr18M+Q==
+X-Received: by 2002:a17:902:6544:: with SMTP id d4mr9149663pln.138.1594250201062;
+        Wed, 08 Jul 2020 16:16:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z62sm734522pfb.47.2020.07.08.16.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 16:16:40 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 16:16:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dominik Czarnota <dominik.czarnota@trailofbits.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] kallsyms_show_value() refactoring for v5.8-rc5
+Message-ID: <202007081608.AB6F0E96@keescook>
 MIME-Version: 1.0
-In-Reply-To: <20200708015318.3827358-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25867/Wed Jul  8 15:50:39 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/8/20 3:53 AM, Andrii Nakryiko wrote:
-> This patch set improves libbpf's support of old kernels, missing features like
-> BTF support, global variables support, etc.
-> 
-> Most critical one is a silent drop of CO-RE relocations if libbpf fails to
-> load BTF (despite sanitization efforts). This is frequently the case for
-> kernels that have no BTF support whatsoever. There are still useful BPF
-> applications that could work on such kernels and do rely on CO-RE. To that
-> end, this series revamps the way BTF is handled in libbpf. Failure to load BTF
-> into kernel doesn't prevent libbpf from using BTF in its full capability
-> (e.g., for CO-RE relocations) internally.
-> 
-> Another issue that was identified was reliance of perf_buffer__new() on
-> BPF_OBJ_GET_INFO_BY_FD command, which is more recent that perf_buffer support
-> itself. Furthermore, BPF_OBJ_GET_INFO_BY_FD is needed just for some sanity
-> checks to provide better user errors, so could be safely omitted if kernel
-> doesn't provide it.
-> 
-> Perf_buffer selftest was adjusted to use skeleton, instead of bpf_prog_load().
-> The latter uses BPF_F_TEST_RND_HI32 flag, which is a relatively recent
-> addition and unnecessary fails selftest in libbpf's Travis CI tests. By using
-> skeleton we both get a shorter selftest and it work on pretty ancient kernels,
-> giving better libbpf test coverage.
-> 
-> One new selftest was added that relies on basic CO-RE features, but otherwise
-> doesn't expect any recent features (like global variables) from kernel. Again,
-> it's good to have better coverage of old kernels in libbpf testing.
-> 
-> Cc: Matthew Lim <matthewlim@fb.com>
-> 
-> Andrii Nakryiko (6):
->    libbpf: make BTF finalization strict
->    libbpf: add btf__set_fd() for more control over loaded BTF FD
->    libbpf: improve BTF sanitization handling
->    selftests/bpf: add test relying only on CO-RE and no recent kernel
->      features
->    libbpf: handle missing BPF_OBJ_GET_INFO_BY_FD gracefully in
->      perf_buffer
->    selftests/bpf: switch perf_buffer test to tracepoint and skeleton
-> 
->   tools/lib/bpf/btf.c                           |   7 +-
->   tools/lib/bpf/btf.h                           |   1 +
->   tools/lib/bpf/libbpf.c                        | 150 ++++++++++--------
->   tools/lib/bpf/libbpf.map                      |   1 +
->   .../selftests/bpf/prog_tests/core_retro.c     |  33 ++++
->   .../selftests/bpf/prog_tests/perf_buffer.c    |  42 ++---
->   .../selftests/bpf/progs/test_core_retro.c     |  30 ++++
->   .../selftests/bpf/progs/test_perf_buffer.c    |   4 +-
->   8 files changed, 167 insertions(+), 101 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/core_retro.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_core_retro.c
-> 
+Hi Linus,
 
-Applied, thanks!
+Please pull this kallsyms_show_value() refactoring for v5.8-rc5. I'm not
+delighted by the timing of getting these changes to you, but it does fix
+a handful of kernel address exposures, and no one has screamed yet at the
+patches nor their existence in -next for a few days. Folks have reviewed
+(and even tested!) the series. :)
+
+(I'm leaving the more experimental current_cred() WARN() stuff for
+later, obviously.)
+
+Thanks!
+
+-Kees
+
+The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+
+  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/kallsyms_show_value-v5.8-rc5
+
+for you to fetch changes up to 2c79583927bb8154ecaa45a67dde97661d895ecd:
+
+  selftests: kmod: Add module address visibility test (2020-07-08 16:01:36 -0700)
+
+----------------------------------------------------------------
+Refactor kallsyms_show_value() users for correct cred
+
+Several users of kallsyms_show_value() were performing checks not
+during "open". Refactor everything needed to gain proper checks against
+file->f_cred for modules, kprobes, and bpf.
+
+----------------------------------------------------------------
+Kees Cook (6):
+      kallsyms: Refactor kallsyms_show_value() to take cred
+      module: Refactor section attr into bin attribute
+      module: Do not expose section addresses to non-CAP_SYSLOG
+      kprobes: Do not expose probe addresses to non-CAP_SYSLOG
+      bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
+      selftests: kmod: Add module address visibility test
+
+ include/linux/filter.h               |  4 +--
+ include/linux/kallsyms.h             |  5 ++--
+ kernel/bpf/syscall.c                 | 37 +++++++++++++++-----------
+ kernel/kallsyms.c                    | 17 +++++++-----
+ kernel/kprobes.c                     |  4 +--
+ kernel/module.c                      | 51 +++++++++++++++++++-----------------
+ net/core/sysctl_net_core.c           |  2 +-
+ tools/testing/selftests/kmod/kmod.sh | 36 +++++++++++++++++++++++++
+ 8 files changed, 103 insertions(+), 53 deletions(-)
+
+-- 
+Kees Cook
