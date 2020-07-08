@@ -2,147 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA70219247
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 23:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315282192EA
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 23:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgGHVSz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 17:18:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56223 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725787AbgGHVSy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 17:18:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594243132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSibTsf2Tmt/F++kFCgdv25YlYSJRrS5Z/yFkhUz0yA=;
-        b=guPGUHVmXhDambeq6Ml0KfVbFyHoEsXEJcncjBumAUvV3SUHsR7M1dmzST1H6UQC1PWUZ3
-        X3sYmKNClyNOCu4gkuyWmFF03Pgh8oKaSJbWUOBgAs8lOSM1h6RC9VFCCLNk9CsKtP2BuG
-        NlAtJFjtH6q1cp/mAd7sJXW+z1oyKSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-hcoEgA-sMxOcnH7LvnHgXA-1; Wed, 08 Jul 2020 17:18:49 -0400
-X-MC-Unique: hcoEgA-sMxOcnH7LvnHgXA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3511107ACCD;
-        Wed,  8 Jul 2020 21:18:46 +0000 (UTC)
-Received: from krava (unknown [10.40.195.124])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 60FF36FEC7;
-        Wed,  8 Jul 2020 21:18:40 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 23:18:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v5 bpf-next 9/9] selftests/bpf: Add test for
- resolve_btfids
-Message-ID: <20200708211839.GE3581918@krava>
-References: <20200703095111.3268961-1-jolsa@kernel.org>
- <20200703095111.3268961-10-jolsa@kernel.org>
- <CAEf4BzYuDU2mARcP5GVAv+WiknSnWuzGyNqQx0TiJ23CWA8NiA@mail.gmail.com>
- <20200707155720.GI3424581@krava>
- <CAEf4BzYYHEwDZ9YqqyfzSZsk-8=DrL-WVEee-gisBLQRZWUTHw@mail.gmail.com>
+        id S1725787AbgGHV4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 17:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgGHV4C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 17:56:02 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EEDC061A0B;
+        Wed,  8 Jul 2020 14:56:01 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ed14so60382qvb.2;
+        Wed, 08 Jul 2020 14:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7O5VagG2AewCrkpK9SMpTigVOJGwjJDU9ZCind3bOZY=;
+        b=dX/HRH8lGDtiuEUwwQcPIB6Rmp/9hPAxbL0QYrRNCh6Eqp1LDjrDX5gOCd4bIqt9M1
+         UDFACw6mrIVAHw0JCDeS1oxy1kKTkRpi7jITFmUcLK2Q8tDZ1oP9l7JSgzoQ81XCpSrZ
+         BoBLH8eko/OoiKxjFBUHGxm2DdGqpNVIf4lKBFPZ03Ik1D9DR2RW089tY9C4kuIvo0Cb
+         PLGbsYluvaJX0pG4bgW0ocikXHpxCBcDJmTKWEIN6YrBmvqpJcqxYGCT/HbdaokuD4ss
+         wUeJmGvHlsByzWxDyEixF7AYcFHLIB8Px69+GM+YwnL+ufmd75i5TXknaEaGrAjPVizl
+         8rxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7O5VagG2AewCrkpK9SMpTigVOJGwjJDU9ZCind3bOZY=;
+        b=W8iAgbW9h2YKt2n0s7jqkxU09KZi28mqRd2mr4qlG6WhP2DuLl5aAnG4V8oDLkcSFx
+         SVspV3vX0bIhWWWgVtpg8+SOS7KpHpA5YafYofTJLQwpr408GF3uvV/0kvzGZm+sD/S9
+         r0IV8QBjrF8B5n+zArybNqyQ42tow1sH1wzCf6J7z8hrndnuJQaEQskkJeiIx4Kfbzgb
+         bjMxfheOC0E8YZHui5Xa7/ECP/Gd/vXB2dCuATMnUZaj5Cu9Nn5SI89dGhnLORzcNrH5
+         XSdXsapr/uH8PD4Zm2lhStF8FzQQadvGA7LvDRRUL/obZZEDiC0bL7p3Jj0YGtC3TJx3
+         OV/Q==
+X-Gm-Message-State: AOAM530zXKYw8Y5VZGZO8HXo+2tEh7IDPw+jCKgcktgYwPBq+HiVSqIY
+        Zm+XkdI6s+f7AuhJsWWcCKAJdVIu2q/+Jgtu3GM=
+X-Google-Smtp-Source: ABdhPJw/d+8nsahqn0k5Lz5akcXmd5Qp6ML0LT/JIo4ucIXeBVVHslifRz0qD0McRxEzbwzuatQ75/NLkwe3KpO7MRU=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr55992303qvb.228.1594245361141;
+ Wed, 08 Jul 2020 14:56:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYYHEwDZ9YqqyfzSZsk-8=DrL-WVEee-gisBLQRZWUTHw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200702200329.83224-1-alexei.starovoitov@gmail.com> <20200702200329.83224-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20200702200329.83224-3-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Jul 2020 14:55:50 -0700
+Message-ID: <CAEf4BzZA3_eXuUQtUCUF6hMk5winEYgsUeT1HoJCFnz9REkjZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add BPF program and map iterators as
+ built-in BPF programs.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 10:49:22AM -0700, Andrii Nakryiko wrote:
+On Thu, Jul 2, 2020 at 1:04 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> The program and map iterators work similar to seq_file-s.
+> Once the program is pinned in bpffs it can be read with "cat" tool
+> to print human readable output. In this case about BPF programs and maps.
+> For example:
+> $ cat /sys/fs/bpf/progs
+>   id name            pages attached
+>    5    dump_bpf_map     1 bpf_iter_bpf_map
+>    6   dump_bpf_prog     1 bpf_iter_bpf_prog
 
-SNIP
 
-> > > >  # Get Clang's default includes on this system, as opposed to those seen by
-> > > >  # '-target bpf'. This fixes "missing" files on some architectures/distros,
-> > > >  # such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> > > > @@ -333,7 +343,8 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
-> > > >                       $(TRUNNER_BPF_SKELS)                              \
-> > > >                       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
-> > > >         $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
-> > > > -       cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-> > > > +       cd $$(@D) && $$(CC) -I. $$(CFLAGS) $(TRUNNER_EXTRA_CFLAGS)      \
-> > > > +       -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
-> > > >
-> > > >  $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:                          \
-> > > >                        %.c                                              \
-> > > > @@ -355,6 +366,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
-> > > >                              | $(TRUNNER_BINARY)-extras
-> > > >         $$(call msg,BINARY,,$$@)
-> > > >         $$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-> > > > +       $(TRUNNER_BINARY_EXTRA_CMD)
-> > >
-> > > no need to make this generic, just write out resolve_btfids here explicitly
-> >
-> > currently resolve_btfids fails if there's no .BTF.ids section found,
-> > but we can make it silently pass i nthis case and then we can invoke
-> > it for all the binaries
-> 
-> ah, I see. Yeah, either we can add an option to resolve_btfids to not
-> error when .BTF_ids is missing (probably best), or we can check
-> whether the test has .BTF_ids section, and if it does - run
-> resolve_btfids on it. Just ignoring errors always is more error-prone,
-> because we won't know if it's a real problem we are ignoring, or
-> missing .BTF_ids.
 
-ok, sounds good
+> $ cat /sys/fs/bpf/maps
+>   id name            pages
+>    3 iterator.rodata     2
+>
+> To avoid kernel build dependency on clang 10 separate bpf skeleton generation
+> into manual "make" step and instead check-in generated .skel.h into git.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  kernel/bpf/preload/iterators/.gitignore       |   2 +
+>  kernel/bpf/preload/iterators/Makefile         |  57 +++
+>  kernel/bpf/preload/iterators/README           |   4 +
+>  kernel/bpf/preload/iterators/iterators.bpf.c  |  81 ++++
+>  kernel/bpf/preload/iterators/iterators.skel.h | 359 ++++++++++++++++++
+>  5 files changed, 503 insertions(+)
+>  create mode 100644 kernel/bpf/preload/iterators/.gitignore
+>  create mode 100644 kernel/bpf/preload/iterators/Makefile
+>  create mode 100644 kernel/bpf/preload/iterators/README
+>  create mode 100644 kernel/bpf/preload/iterators/iterators.bpf.c
+>  create mode 100644 kernel/bpf/preload/iterators/iterators.skel.h
+>
 
-> > > > +static int resolve_symbols(void)
-> > > > +{
-> > > > +       const char *path = VMLINUX_BTF;
-> > >
-> > >
-> > > This build-time parameter passing to find the original VMLINUX_BTF
-> > > really sucks, IMO.
-> > >
-> > > Why not use the btf_dump tests approach and have our own small
-> > > "vmlinux BTF", which resolve_btfids would use to resolve these IDs?
-> > > See how btf_dump_xxx.c files define BTFs that are used in tests. You
-> > > can do something similar here, and use a well-known BPF object file as
-> > > a source of BTF, both here in a test and in Makefile for --btf param
-> > > to resolve_btfids?
-> >
-> > well VMLINUX_BTF is there and those types are used are not going
-> > away any time soon ;-) but yea, we can do that.. we do this also
-> > for bpftrace, it's nicer
-> 
-> 
-> "VMLINUX_BTF is there" is not really true in a lot of more complicated
-> setups, which is why I'd like to avoid that assumption. E.g., for
-> libbpf Travis CI, we build self-tests in one VM, but run the binary in
-> a different VM. So either vmlinux itself or the path to it might
-> change.
+[...]
 
-ok
+> +struct seq_file;
+> +struct bpf_iter_meta {
+> +       struct seq_file *seq;
+> +       __u64 session_id;
+> +       __u64 seq_num;
+> +} __attribute__((preserve_access_index));
+> +
+> +struct bpf_map_memory {
+> +       __u32 pages;
+> +};
 
-> 
-> Also, having full control over **small** BTF allows to create various
-> test situations that might be harder to pinpoint in real vmlinux BTF,
-> e.g., same-named entities with different KINDS (typedef vs struct,
-> etc). Then if that fails, debugging this on a small BTF is much-much
-> easier than on a real thing. Real vmlinux BTF is being tested each
-> time you build a kernel and run selftests inside VM either way, so I
-> don't think we lose anything in terms of coverage.
+forgot __attribute__((preserve_access_index)) here?
 
-agreed, will add that
+> +struct bpf_map {
+> +       __u32 id;
+> +       struct bpf_map_memory memory;
+> +       char name[16];
+> +} __attribute__((preserve_access_index));
+> +
 
-thanks,
-jirka
+[...]
 
+> +SEC("iter/bpf_map")
+> +int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
+> +{
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       __u64 seq_num = ctx->meta->seq_num;
+> +       struct bpf_map *map = ctx->map;
+> +
+> +       if (!map)
+> +               return 0;
+> +
+> +       if (seq_num == 0)
+> +               BPF_SEQ_PRINTF(seq, "  id name            pages\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%4u%16s%6d\n", map->id, map->name, map->memory.pages);
+
+Here and below, please use %-16s for left-aligned strings for map name
+and prog name.
+
+> +       return 0;
+> +}
+> +
+> +SEC("iter/bpf_prog")
+> +int dump_bpf_prog(struct bpf_iter__bpf_prog *ctx)
+> +{
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       __u64 seq_num = ctx->meta->seq_num;
+> +       struct bpf_prog *prog = ctx->prog;
+> +       struct bpf_prog_aux *aux;
+> +
+> +       if (!prog)
+> +               return 0;
+> +
+> +       aux = prog->aux;
+> +       if (seq_num == 0)
+> +               BPF_SEQ_PRINTF(seq, "  id name            pages attached\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%4u%16s%6d %s %s\n", aux->id, aux->name, prog->pages,
+> +                      aux->attach_func_name, aux->linked_prog->aux->name);
+> +       return 0;
+> +}
+> +char LICENSE[] SEC("license") = "GPL";
+
+[...]
