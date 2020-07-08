@@ -2,131 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2EC217FA3
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 08:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BE3217FCB
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 08:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgGHGf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 02:35:29 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41408 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728603AbgGHGf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:35:28 -0400
-Received: by mail-pl1-f196.google.com with SMTP id f2so17761763plr.8;
-        Tue, 07 Jul 2020 23:35:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wcGsk/H34ADHkkcrhevzy9A6V7aeuvW0VaA+xIQKcJI=;
-        b=ebFUpcFPAHeH/k++QKEcZ8gP7s929BeGB/rko+35QUexuF8CrBKs1YW5xkPb1hhokH
-         HAWpCoFoA7E15lV7yrUqkJiqWGK3fMTRdFe/JLcie6SQVORLq5URnkHeF943/pgXg12V
-         ftzxE+LeqB1Qlmwomul6Smkqt3jlZ5LVGZwdsddDzDBaSp9HkiRXiOmFQ49647l0nGNy
-         yenp8gYOl82EkiBuw2W/3AveMUc3qr8N8cnGJ1Ajan3KfZO0Lkj7HdzSbBykWb4eZW7W
-         zxPr5JrDRb0xUMvdVH37YCvhavaw/yxgfWPQ4VUXbr+hI6uevPEpGmAgaON2Fsx8Lmcl
-         p4tw==
-X-Gm-Message-State: AOAM5305zuY+FfCltfMl7+ucwIrvs/hg70+pKz/0PBqucBUwl7PfSO+m
-        HHNf4mgwhrnFkeyMmzjiSCRkGtVxsVA=
-X-Google-Smtp-Source: ABdhPJwRXovytVEyyAT/lpHCAHItwhk1xn4NAYtBTkSi6xafA4n3ZPFiHU6WnOqp9vfv8jYYmkuKgw==
-X-Received: by 2002:a17:90a:e017:: with SMTP id u23mr8047308pjy.179.1594190127774;
-        Tue, 07 Jul 2020 23:35:27 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id u23sm2791327pgn.26.2020.07.07.23.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 23:35:26 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 62403400DB; Wed,  8 Jul 2020 06:35:25 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 06:35:25 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 10/16] exec: Remove do_execve_file
-Message-ID: <20200708063525.GC4332@42.do-not-panic.com>
-References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
- <20200702164140.4468-10-ebiederm@xmission.com>
+        id S1729539AbgGHGuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 02:50:18 -0400
+Received: from verein.lst.de ([213.95.11.211]:33833 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbgGHGuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:50:18 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 94BAE68AFE; Wed,  8 Jul 2020 08:50:14 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 08:50:14 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Borkmann <daniel@iogearbox.net>, maximmi@mellanox.com,
+        konrad.wilk@oracle.com, jonathan.lemon@gmail.com,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
+Message-ID: <20200708065014.GA5694@lst.de>
+References: <20200626134358.90122-1-bjorn.topel@gmail.com> <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net> <20200627070406.GB11854@lst.de> <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com> <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200702164140.4468-10-ebiederm@xmission.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:41:34AM -0500, Eric W. Biederman wrote:
-> Now that the last callser has been removed remove this code from exec.
-> 
-> For anyone thinking of resurrecing do_execve_file please note that
-> the code was buggy in several fundamental ways.
-> 
-> - It did not ensure the file it was passed was read-only and that
->   deny_write_access had been called on it.  Which subtlely breaks
->   invaniants in exec.
-> 
-> - The caller of do_execve_file was expected to hold and put a
->   reference to the file, but an extra reference for use by exec was
->   not taken so that when exec put it's reference to the file an
->   underflow occured on the file reference count.
+On Mon, Jun 29, 2020 at 04:41:16PM +0100, Robin Murphy wrote:
+> On 2020-06-28 18:16, Björn Töpel wrote:
+>>
+>> On 2020-06-27 09:04, Christoph Hellwig wrote:
+>>> On Sat, Jun 27, 2020 at 01:00:19AM +0200, Daniel Borkmann wrote:
+>>>> Given there is roughly a ~5 weeks window at max where this removal could
+>>>> still be applied in the worst case, could we come up with a fix / 
+>>>> proposal
+>>>> first that moves this into the DMA mapping core? If there is something 
+>>>> that
+>>>> can be agreed upon by all parties, then we could avoid re-adding the 9%
+>>>> slowdown. :/
+>>>
+>>> I'd rather turn it upside down - this abuse of the internals blocks work
+>>> that has basically just missed the previous window and I'm not going
+>>> to wait weeks to sort out the API misuse.  But we can add optimizations
+>>> back later if we find a sane way.
+>>>
+>>
+>> I'm not super excited about the performance loss, but I do get
+>> Christoph's frustration about gutting the DMA API making it harder for
+>> DMA people to get work done. Lets try to solve this properly using
+>> proper DMA APIs.
+>>
+>>
+>>> That being said I really can't see how this would make so much of a
+>>> difference.  What architecture and what dma_ops are you using for
+>>> those measurements?  What is the workload?
+>>>
+>>
+>> The 9% is for an AF_XDP (Fast raw Ethernet socket. Think AF_PACKET, but 
+>> faster.) benchmark: receive the packet from the NIC, and drop it. The DMA 
+>> syncs stand out in the perf top:
+>>
+>>    28.63%  [kernel]                   [k] i40e_clean_rx_irq_zc
+>>    17.12%  [kernel]                   [k] xp_alloc
+>>     8.80%  [kernel]                   [k] __xsk_rcv_zc
+>>     7.69%  [kernel]                   [k] xdp_do_redirect
+>>     5.35%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
+>>     4.77%  [kernel]                   [k] xsk_rcv.part.0
+>>     4.07%  [kernel]                   [k] __xsk_map_redirect
+>>     3.80%  [kernel]                   [k] dma_direct_sync_single_for_cpu
+>>     3.03%  [kernel]                   [k] dma_direct_sync_single_for_device
+>>     2.76%  [kernel]                   [k] i40e_alloc_rx_buffers_zc
+>>     1.83%  [kernel]                   [k] xsk_flush
+>> ...
+>>
+>> For this benchmark the dma_ops are NULL (dma_is_direct() == true), and
+>> the main issue is that SWIOTLB is now unconditionally enabled [1] for
+>> x86, and for each sync we have to check that if is_swiotlb_buffer()
+>> which involves a some costly indirection.
+>>
+>> That was pretty much what my hack avoided. Instead we did all the checks
+>> upfront, since AF_XDP has long-term DMA mappings, and just set a flag
+>> for that.
+>>
+>> Avoiding the whole "is this address swiotlb" in
+>> dma_direct_sync_single_for_{cpu, device]() per-packet
+>> would help a lot.
+>
+> I'm pretty sure that's one of the things we hope to achieve with the 
+> generic bypass flag :)
+>
+>> Somewhat related to the DMA API; It would have performance benefits for
+>> AF_XDP if the DMA range of the mapped memory was linear, i.e. by IOMMU
+>> utilization. I've started hacking a thing a little bit, but it would be
+>> nice if such API was part of the mapping core.
+>>
+>> Input: array of pages Output: array of dma addrs (and obviously dev,
+>> flags and such)
+>>
+>> For non-IOMMU len(array of pages) == len(array of dma addrs)
+>> For best-case IOMMU len(array of dma addrs) == 1 (large linear space)
+>>
+>> But that's for later. :-)
+>
+> FWIW you will typically get that behaviour from IOMMU-based implementations 
+> of dma_map_sg() right now, although it's not strictly guaranteed. If you 
+> can weather some additional setup cost of calling 
+> sg_alloc_table_from_pages() plus walking the list after mapping to test 
+> whether you did get a contiguous result, you could start taking advantage 
+> of it as some of the dma-buf code in DRM and v4l2 does already (although 
+> those cases actually treat it as a strict dependency rather than an 
+> optimisation).
 
-Maybe its my growing love with testing, but I'm going to have to partly
-blame here that we added a new API without any respective testing.
-Granted, I recall this this patch set could have used more wider review
-and a bit more patience... but just mentioning this so we try to avoid
-new api-without-testing with more reason in the future.
+Yikes.
 
-But more importantly, *how* could we have caught this? Or how can we
-catch this sort of stuff better in the future?
+> I'm inclined to agree that if we're going to see more of these cases, a new 
+> API call that did formally guarantee a DMA-contiguous mapping (either via 
+> IOMMU or bounce buffering) or failure might indeed be handy.
 
-> - The point of the interface was so that a pathname did not need to
->   exist.  Which breaks pathname based LSMs.
+I was planning on adding a dma-level API to add more pages to an
+IOMMU batch, but was waiting for at least the intel IOMMU driver to be
+converted to the dma-iommu code (and preferably arm32 and s390 as well).
 
-Perhaps so but this fails to do justice of the LSM consideration done
-for the patch which added this during patch review [0], and I
-particularly recall I called out LSM folks to bring their ray guns out at
-this patch. It didn't get much attention.
+Here is my old pseudo-code sketch for what I was aiming for from the
+block/nvme perspective.  I haven't even implemented it yet, so there might
+be some holes in the design:
 
-Let me recap a few points I think your commit log should somehow
-consider. You do as you please.
 
-Users of shmem_kernel_file_setup() spawned out of the desire to                                                                                                      
-*avoid* LSMs since it didn't make sense in their case as their inodes                                                                                                      
-are never exposed to userspace. Such is the case for ipc/shm.c and                                                                                                         
-security/keys/big_key.c. Refer to commit c7277090927a5 ("security: shmem:                                                                                                  
-implement kernel private shmem inodes") and then commit e1832f2923ec9                                                                                                      
-("ipc: use private shmem or hugetlbfs inodes for shm segments").
+/*
+ * Returns 0 if batching is possible, postitive number of segments required
+ * if batching is not possible, or negatie values on error.
+ */
+int dma_map_batch_start(struct device *dev, size_t rounded_len,
+	enum dma_data_direction dir, unsigned long attrs, dma_addr_t *addr);
+int dma_map_batch_add(struct device *dev, dma_addr_t *addr, struct page *page,
+		unsigned long offset, size_t size);
+int dma_map_batch_end(struct device *dev, int ret, dma_addr_t start_addr);
 
-And the umh module approach was doing:
+int blk_dma_map_rq(struct device *dev, struct request *rq, 
+		enum dma_data_direction dir, unsigned long attrs,
+		dma_addr_t *start_addr, size_t *len)
+{
+	struct req_iterator iter;
+	struct bio_vec bvec;
+	dma_addr_t next_addr;
+	int ret;
 
- a) mapping data already extracted by the kernel somehow from
-    a file somehow, presumably from /lib/modules/ path somewhere, but
-    again this is not visible to umc.c, as it just gets called with:
-                                                                                                                                                                          
-     fork_usermode_blob(void *data, size_t len, struct umh_info *info)
-                                                                                                                                                                          
- b) Creating the respective tmpfs file with shmem_kernel_file_setup()
- c) Populating the file created and stuffing it with our data passed
- d) Calling do_execve_file() on it.
+	if (number_of_segments(req) == 1) {
+		// plain old dma_map_page();
+		return 0;
+	}
 
-So, although I was hoping LSM folks would chime in for things I may have
-missed during my patch review, my recollection from the patch thread was
-that this becuase of a) it in theory could skip out on dealing with LSMs.
+	// XXX: block helper for rounded_len?
+	*len = length_of_request(req);
+	ret = dma_map_batch_start(dev, *len, dir, attrs, start_addr);
+	if (ret)
+		return ret;
 
-[0] https://lkml.kernel.org/r/20180509022526.hertzfpvy7apz6ny@ast-mbp               
+	next_addr = *start_addr;
+	rq_for_each_segment(bvec, rq, iter) {
+		ret = dma_map_batch_add(dev, &next_addr, bvec.bv_page,
+				bvec.bv_offset, bvev.bv_len);
+		if (ret)
+			break;
+	}
 
-  Luis
+	return dma_map_batch_end(dev, ret, *start_addr);
+}
+
+dma_addr_t blk_dma_map_bvec(struct device *dev, struct bio_vec *bvec,
+		enum dma_data_direction dir, unsigned long attrs)
+{
+	return dma_map_page_attrs(dev, bv_page, bvec.bv_offset, bvev.bv_len,
+			dir, attrs);
+}
+
+int queue_rq()
+{
+	dma_addr_t addr;
+	int ret;
+
+	ret = blk_dma_map_rq(dev, rq, dir, attrs. &addr, &len);
+	if (ret < 0)
+		return ret;
+
+	if (ret == 0) {
+		if (use_sgl()) {
+			nvme_pci_sgl_set_data(&cmd->dptr.sgl, addr, len);
+		} else {
+			set_prps();
+		}
+		return;
+	}
+
+	if (use_sgl()) {
+		alloc_one_sgl_per_segment();
+
+		rq_for_each_segment(bvec, rq, iter) {
+			addr = blk_dma_map_bvec(dev, &bdev, dir, 0);
+			set_one_sgl();
+		}
+	} else {
+		alloc_one_prp_per_page();
+
+		rq_for_each_segment(bvec, rq, iter) {
+			ret = blk_dma_map_bvec(dev, &bdev, dir, 0);
+			if (ret)
+				break;
+			set_prps();
+	}
+}
