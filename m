@@ -2,81 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCE6218FE4
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE4C219016
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 20:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgGHSrp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 14:47:45 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41047 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725937AbgGHSrp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Jul 2020 14:47:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594234064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fcsHqKvyEn+7TUlrftNO7s3T6e7eg/prGJp2vr2tLls=;
-        b=g3sMSZfu2QI791LF/HUR8RVvOUob4km53kYKE0ZV+ZloRtXvXWEjv7P0W8r+O2IId35zgl
-        A8RgsNZPcE6akXAnG7YLT+q/BaYQctDr5ZEs5JFp5pEQJ5OTRps+x15HJfhsHu33hHEgWX
-        /FLPfI5p7BpSu90DcK8Y33ZqgIU1xkQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-l8cy0SDLO6CVRyfWjFLFnw-1; Wed, 08 Jul 2020 14:47:40 -0400
-X-MC-Unique: l8cy0SDLO6CVRyfWjFLFnw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9521719057A0;
-        Wed,  8 Jul 2020 18:47:37 +0000 (UTC)
-Received: from krava (unknown [10.40.195.124])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 358367F8A7;
-        Wed,  8 Jul 2020 18:47:33 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 20:47:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf parse-events: report bpf errors
-Message-ID: <20200708184732.GC3581918@krava>
-References: <20200707211449.3868944-1-irogers@google.com>
+        id S1726338AbgGHS6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 14:58:46 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:44052 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726751AbgGHS6p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 14:58:45 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 5CAACBC118;
+        Wed,  8 Jul 2020 18:58:40 +0000 (UTC)
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data
+ Path)
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        mchehab+samsung@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20200708135737.14660-1-grandmaster@al2klimov.de>
+ <20200708080239.2ce729f3@lwn.net>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
+Date:   Wed, 8 Jul 2020 20:58:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707211449.3868944-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200708080239.2ce729f3@lwn.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +
+X-Spam-Level: *
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 02:14:49PM -0700, Ian Rogers wrote:
-> Setting the parse_events_error directly doesn't increment num_errors
-> causing the error message not to be displayed. Use the
-> parse_events__handle_error function that sets num_errors and handle
-> multiple errors.
+
+
+Am 08.07.20 um 16:02 schrieb Jonathan Corbet:
+> On Wed,  8 Jul 2020 15:57:37 +0200
+> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+>>   Documentation/arm/ixp4xx.rst | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> That's not XDP; something went awry in there somewhere.
+RoFL. Now as you said it I... noticed it at all... (*sigh*, the curse of
+automation) and I absolutely agree with you. But I've literally no idea...
 
-looks good
+➜  linux git:(master) perl scripts/get_maintainer.pl --nogit{,-fallback} 
+--nol 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
+Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+Alexei Starovoitov <ast@kernel.org> (supporter:XDP (eXpress Data Path))
+Daniel Borkmann <daniel@iogearbox.net> (supporter:XDP (eXpress Data Path))
+"David S. Miller" <davem@davemloft.net> (supporter:XDP (eXpress Data Path))
+Jakub Kicinski <kuba@kernel.org> (supporter:XDP (eXpress Data Path))
+Jesper Dangaard Brouer <hawk@kernel.org> (supporter:XDP (eXpress Data Path))
+John Fastabend <john.fastabend@gmail.com> (supporter:XDP (eXpress Data 
+Path))
+➜  linux git:(master) cat 
+0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
+ From 40aee4678ab84b925ab21581030a2cc0b988fbf9 Mon Sep 17 00:00:00 2001
+From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Date: Wed, 8 Jul 2020 08:00:39 +0200
+Subject: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data Path)
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-thanks,
-jirka
+Deterministic algorithm:
+For each file:
+   If not .svg:
+     For each line:
+       If doesn't contain `\bxmlns\b`:
+         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+             If both the HTTP and HTTPS versions
+             return 200 OK and serve the same content:
+               Replace HTTP with HTTPS.
 
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+  Documentation/arm/ixp4xx.rst | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/arm/ixp4xx.rst b/Documentation/arm/ixp4xx.rst
+index a57235616294..d94188b8624f 100644
+--- a/Documentation/arm/ixp4xx.rst
++++ b/Documentation/arm/ixp4xx.rst
+@@ -119,14 +119,14 @@ http://www.gateworks.com/support/overview.php
+     the expansion bus.
+
+  Intel IXDP425 Development Platform
+-http://www.intel.com/design/network/products/npfamily/ixdpg425.htm
++https://www.intel.com/design/network/products/npfamily/ixdpg425.htm
+
+     This is Intel's standard reference platform for the IXDP425 and is
+     also known as the Richfield board. It contains 4 PCI slots, 16MB
+     of flash, two 10/100 ports and one ADSL port.
+
+  Intel IXDP465 Development Platform
+-http://www.intel.com/design/network/products/npfamily/ixdp465.htm
++https://www.intel.com/design/network/products/npfamily/ixdp465.htm
+
+     This is basically an IXDP425 with an IXP465 and 32M of flash instead
+     of just 16.
+--
+2.27.0
+
+➜  linux git:(master)
+
+> 
+> jon
+> 
