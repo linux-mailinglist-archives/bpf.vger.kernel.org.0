@@ -2,58 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92142218714
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 14:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F882187D3
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 14:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgGHMTo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 08:19:44 -0400
-Received: from verein.lst.de ([213.95.11.211]:35029 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728723AbgGHMTo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:19:44 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B235068AFE; Wed,  8 Jul 2020 14:19:40 +0200 (CEST)
-Date:   Wed, 8 Jul 2020 14:19:40 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        id S1729000AbgGHMlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 08:41:51 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:37587 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729127AbgGHMlv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:41:51 -0400
+Received: by mail-pj1-f68.google.com with SMTP id o22so1140049pjw.2;
+        Wed, 08 Jul 2020 05:41:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9NsmHNMKtMo6heddAwR0Jo8rbD18ro99vFEXj/9cbns=;
+        b=gU5v9fPXEQpDNDazXWVqBd8QqxNIHTLza+/bB592uGJNiZxNKB1il8bRnarzCNHNul
+         T5P4mYSRJ7zeYncoL7HwoOWzTibv3ZVbGbgTu4WhkcfsozCCz0UKblIxnufnqVpb1h2Z
+         0f/jTm5wG2tSRmSiFpe4sBUJEMVq//UvNIlLZVlCl3jn4yKt1mj6H5Rcvx3QZkwBVxS3
+         +4UUj41wG/lKJ5myY1HumBfIaWJ2ZnhKOql9QnZEL2yw4192aSKuWdYoSEYGUt9Mu367
+         vWNV1a+uYtM2Du5BhDK4ikua4/0ZD4+/Pu1pVGxXbG6eMCNer4fUZVTpGLoIniJPCSaT
+         cxbQ==
+X-Gm-Message-State: AOAM531TXk4nuewkAj5vO460c828ivetn/VCkfFbzvSFGVG2kHDoeaRL
+        Om6zA+NmuITN0s8KlFQsjs0=
+X-Google-Smtp-Source: ABdhPJwELa0l63JqQ1sECDcd+rWg4PVJ50CjKNicqhYyEjnD+tSNYgEHmSQ3lqhAlX4VC2yD5V81Fg==
+X-Received: by 2002:a17:90b:190d:: with SMTP id mp13mr9911274pjb.211.1594212110549;
+        Wed, 08 Jul 2020 05:41:50 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id 204sm14369397pfx.3.2020.07.08.05.41.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 05:41:49 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id BF77C401AE; Wed,  8 Jul 2020 12:41:48 +0000 (UTC)
+Date:   Wed, 8 Jul 2020 12:41:48 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "maximmi@mellanox.com" <maximmi@mellanox.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>
-Subject: Re: [PATCH net] xsk: remove cheap_dma optimization
-Message-ID: <20200708121940.GA19619@lst.de>
-References: <20200626134358.90122-1-bjorn.topel@gmail.com> <c60dfb5a-2bf3-20bd-74b3-6b5e215f73f8@iogearbox.net> <20200627070406.GB11854@lst.de> <88d27e1b-dbda-301c-64ba-2391092e3236@intel.com> <878626a2-6663-0d75-6339-7b3608aa4e42@arm.com> <20200708065014.GA5694@lst.de> <B926444035E5E2439431908E3842AFD255E99A@DGGEMI525-MBS.china.huawei.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 10/16] exec: Remove do_execve_file
+Message-ID: <20200708124148.GP13911@42.do-not-panic.com>
+References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
+ <20200702164140.4468-10-ebiederm@xmission.com>
+ <20200708063525.GC4332@42.do-not-panic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <B926444035E5E2439431908E3842AFD255E99A@DGGEMI525-MBS.china.huawei.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200708063525.GC4332@42.do-not-panic.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 07:57:23AM +0000, Song Bao Hua (Barry Song) wrote:
-> > int dma_map_batch_start(struct device *dev, size_t rounded_len,
-> > 	enum dma_data_direction dir, unsigned long attrs, dma_addr_t *addr);
-> > int dma_map_batch_add(struct device *dev, dma_addr_t *addr, struct page
-> > *page,
-> > 		unsigned long offset, size_t size);
-> > int dma_map_batch_end(struct device *dev, int ret, dma_addr_t start_addr);
+On Wed, Jul 08, 2020 at 06:35:25AM +0000, Luis Chamberlain wrote:
+> On Thu, Jul 02, 2020 at 11:41:34AM -0500, Eric W. Biederman wrote:
+> > Now that the last callser has been removed remove this code from exec.
 > > 
+> > For anyone thinking of resurrecing do_execve_file please note that
+> > the code was buggy in several fundamental ways.
+> > 
+> > - It did not ensure the file it was passed was read-only and that
+> >   deny_write_access had been called on it.  Which subtlely breaks
+> >   invaniants in exec.
+> > 
+> > - The caller of do_execve_file was expected to hold and put a
+> >   reference to the file, but an extra reference for use by exec was
+> >   not taken so that when exec put it's reference to the file an
+> >   underflow occured on the file reference count.
 > 
-> Hello Christoph,
+> Maybe its my growing love with testing, but I'm going to have to partly
+> blame here that we added a new API without any respective testing.
+> Granted, I recall this this patch set could have used more wider review
+> and a bit more patience... but just mentioning this so we try to avoid
+> new api-without-testing with more reason in the future.
 > 
-> What is the different between dma_map_batch_add() and adding the buffer to sg of dma_map_sg()?
+> But more importantly, *how* could we have caught this? Or how can we
+> catch this sort of stuff better in the future?
 
-There is not struct scatterlist involved in this API, avoiding the
-overhead to allocate it (which is kinda the point).
+Of all the issues you pointed out with do_execve_file(), since upon
+review the assumption *by design* was that LSMs/etc would pick up issues
+with the file *prior* to processing, I think that this file reference
+count issue comes to my attention as the more serious issue which I
+wish we could address *first* before this crusade.
+
+So I have to ask, has anyone *really tried* to give a crack at fixing
+this refcount issue in a smaller way first? Alexei?
+
+I'm not opposed to the removal of do_execve_file(), however if there
+is a reproducible crash / issue with the existing user, this sledge
+hammer seems a bit overkill for older kernels.
+
+  Luis
