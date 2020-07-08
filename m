@@ -2,121 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE4C219016
-	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 20:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4989C21911C
+	for <lists+bpf@lfdr.de>; Wed,  8 Jul 2020 22:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgGHS6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jul 2020 14:58:46 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:44052 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726751AbgGHS6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:58:45 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 5CAACBC118;
-        Wed,  8 Jul 2020 18:58:40 +0000 (UTC)
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data
- Path)
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        mchehab+samsung@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200708135737.14660-1-grandmaster@al2klimov.de>
- <20200708080239.2ce729f3@lwn.net>
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Message-ID: <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
-Date:   Wed, 8 Jul 2020 20:58:39 +0200
+        id S1725915AbgGHUDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jul 2020 16:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgGHUDY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:03:24 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13188C061A0B;
+        Wed,  8 Jul 2020 13:03:24 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id e12so35544640qtr.9;
+        Wed, 08 Jul 2020 13:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i49nZfqplLeUNgNmhVsMpyrZjPj0G4Gmj53+u8HKe1A=;
+        b=QF2yUcqDB8G3avHQFhDMwNJN0Q2NGjzvstW1yG9g+BJ85JiacL2VFDdh9iiJ/pa0Ti
+         l8RSQsOjDQ9DNA5m0cz8mKZc7IheyfAQDlT3xXcPdBSdncWSwCkGtXz7TvV+7m9VuN13
+         eDxfVJ8yEMudMJ1Bx/hocwSSIH0Lr4pU5ebKInFxPXoYguCCaIAIfZxvvRX9963398d7
+         4nnxhY138F5OeNCvL5AVrJcNJJ9HSB7r6M2r+Z+u2Dhlr4srtpR+j/HabAdZdiNDdGHa
+         x1Egp6+cPl7rR84JPyPDSZ7smFz8nqsy9VPeSdniX6ERn8TdFi7AUCAxHkYClICAR/B+
+         XJ6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i49nZfqplLeUNgNmhVsMpyrZjPj0G4Gmj53+u8HKe1A=;
+        b=DTUQ2dOVvPl6F3tGllFsNBoe0oCHUNuNGVD9kMlhzYJ+27Tq2aGpRocj+onUNh6Jnc
+         dyJYyafcrxEydtQ8u1iWwCELm+azUIrwnmxGHu6j5gEdtm0e9gvVPcTGuyoKQXvJlYvZ
+         j66NUHAh0wmzpo9PbJLoXZeTfoGracvtiZU4DetGK4BAylGoLN8cM5iKFJBiWXKwgi4k
+         8Dulqw1+uaclzUo4sGByOhgvdv/iEV5G5ZFmlxoM8gJ6v+RWoaAh9alLOca9ac4W4BxC
+         zLLJLE5KTUl6bGaaTwMGm+kVH3DvD8KDi8ldtgGWO8t+LJsuQANzcNLQPM+NgaYq7v2l
+         +khQ==
+X-Gm-Message-State: AOAM530CCvuARmDlAuVIjan4uNtvVmtYLf6b+92mUv84uGptry46Daio
+        FkVLyk41DOxUclFAuxyrf3t3ov3lGJBParb/DSHTAG1o
+X-Google-Smtp-Source: ABdhPJwQYOzkBDcj3qj7ZUAkBHuldvrKrbmPvHTlbEjsMSdJCVk+v965V7I0tpd9rVH59cJG5sT5gOWMHdOokrkZKhs=
+X-Received: by 2002:ac8:4714:: with SMTP id f20mr61165369qtp.141.1594238603091;
+ Wed, 08 Jul 2020 13:03:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200708080239.2ce729f3@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +
-X-Spam-Level: *
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <159410590190.1093222.8436994742373578091.stgit@firesoul>
+ <CAEf4Bzb07mdCQ5DS_gao4b9GSyeg406wpteC9uDaGdfOAHXFVA@mail.gmail.com> <20200708201644.0a02602a@carbon>
+In-Reply-To: <20200708201644.0a02602a@carbon>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Jul 2020 13:03:11 -0700
+Message-ID: <CAEf4BzZhjKeNN3eVi2UedRSGZR6Jt51hSK-Cy0UBfUP3WGG4Ew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V3 0/2] BPF selftests test runner 'test_progs'
+ use proper shell exit codes
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Jul 8, 2020 at 11:16 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> On Tue, 7 Jul 2020 00:23:48 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > On Tue, Jul 7, 2020 at 12:12 AM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >
+> > > This patchset makes it easier to use test_progs from shell scripts, by using
+> > > proper shell exit codes. The process's exit status should be a number
+> > > between 0 and 255 as defined in man exit(3) else it will be masked to comply.
+> > >
+> > > Shell exit codes used by programs should be below 127. As 127 and above are
+> > > used for indicating signals. E.g. 139 means 11=SIGSEGV $((139 & 127))=11.
+> > > POSIX defines in man wait(3p) signal check if WIFSIGNALED(STATUS) and
+> > > WTERMSIG(139)=11. (Hint: cmd 'kill -l' list signals and their numbers).
+> > >
+> > > Using Segmentation fault as an example, as these have happened before with
+> > > different tests (that are part of test_progs). CI people writing these
+> > > shell-scripts could pickup these hints and report them, if that makes sense.
+> > >
+> > > ---
+> > >
+> > > Jesper Dangaard Brouer (2):
+> > >       selftests/bpf: test_progs use another shell exit on non-actions
+> > >       selftests/bpf: test_progs avoid minus shell exit codes
+> > >
+> > >
+> > >  tools/testing/selftests/bpf/test_progs.c |   13 ++++++++-----
+> > >  1 file changed, 8 insertions(+), 5 deletions(-)
+> > >
+> > > --
+> > >
+> >
+> > For the series:
+> >
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >
+> > My preference was shorter EXIT_ERR_SETUP, but it doesn't matter.
+>
+> I can just resend the patchset, if you prefer?
 
+Doesn't matter to me, you can keep it as is.
 
-Am 08.07.20 um 16:02 schrieb Jonathan Corbet:
-> On Wed,  8 Jul 2020 15:57:37 +0200
-> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
-> 
->>   Documentation/arm/ixp4xx.rst | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> That's not XDP; something went awry in there somewhere.
-RoFL. Now as you said it I... noticed it at all... (*sigh*, the curse of
-automation) and I absolutely agree with you. But I've literally no idea...
-
-➜  linux git:(master) perl scripts/get_maintainer.pl --nogit{,-fallback} 
---nol 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
-Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
-Alexei Starovoitov <ast@kernel.org> (supporter:XDP (eXpress Data Path))
-Daniel Borkmann <daniel@iogearbox.net> (supporter:XDP (eXpress Data Path))
-"David S. Miller" <davem@davemloft.net> (supporter:XDP (eXpress Data Path))
-Jakub Kicinski <kuba@kernel.org> (supporter:XDP (eXpress Data Path))
-Jesper Dangaard Brouer <hawk@kernel.org> (supporter:XDP (eXpress Data Path))
-John Fastabend <john.fastabend@gmail.com> (supporter:XDP (eXpress Data 
-Path))
-➜  linux git:(master) cat 
-0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
- From 40aee4678ab84b925ab21581030a2cc0b988fbf9 Mon Sep 17 00:00:00 2001
-From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Date: Wed, 8 Jul 2020 08:00:39 +0200
-Subject: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data Path)
-
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
-
-Deterministic algorithm:
-For each file:
-   If not .svg:
-     For each line:
-       If doesn't contain `\bxmlns\b`:
-         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-             If both the HTTP and HTTPS versions
-             return 200 OK and serve the same content:
-               Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
-  Documentation/arm/ixp4xx.rst | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/arm/ixp4xx.rst b/Documentation/arm/ixp4xx.rst
-index a57235616294..d94188b8624f 100644
---- a/Documentation/arm/ixp4xx.rst
-+++ b/Documentation/arm/ixp4xx.rst
-@@ -119,14 +119,14 @@ http://www.gateworks.com/support/overview.php
-     the expansion bus.
-
-  Intel IXDP425 Development Platform
--http://www.intel.com/design/network/products/npfamily/ixdpg425.htm
-+https://www.intel.com/design/network/products/npfamily/ixdpg425.htm
-
-     This is Intel's standard reference platform for the IXDP425 and is
-     also known as the Richfield board. It contains 4 PCI slots, 16MB
-     of flash, two 10/100 ports and one ADSL port.
-
-  Intel IXDP465 Development Platform
--http://www.intel.com/design/network/products/npfamily/ixdp465.htm
-+https://www.intel.com/design/network/products/npfamily/ixdp465.htm
-
-     This is basically an IXDP425 with an IXP465 and 32M of flash instead
-     of just 16.
---
-2.27.0
-
-➜  linux git:(master)
-
-> 
-> jon
-> 
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
