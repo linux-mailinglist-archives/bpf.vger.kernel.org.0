@@ -2,134 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A888B219C83
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 11:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F66219D27
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 12:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgGIJoT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 05:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        id S1726440AbgGIKMo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 06:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgGIJoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:44:18 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDDCC08C5CE
-        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 02:44:18 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l17so1142770wmj.0
-        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 02:44:17 -0700 (PDT)
+        with ESMTP id S1726302AbgGIKMo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:12:44 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01717C08C5CE
+        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 03:12:44 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o11so1717126wrv.9
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 03:12:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PLl8OGvUeLOUUHW/T0CxgP8wd4Pzfx4sJngI6R0Dk2g=;
-        b=RCWQxaOwpdUwdEFhduGiA6uwtsGwtdmZmu/w2hP7tQ/eos6XNZ/YlES+c4PwzEKj+Y
-         HQkos90UhTQasFzNe/cDxsHfeoGRKNVhLdznUCEVYfDUT7E3jRkULn72PsOU0lvjAntJ
-         Ma6SaS+g2yKKTYX09rwBQQ2IPFgTl+ifezp4Y=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F6g7fDptGIzcY72zTri5KBvJJQVzV3/1jzTXQNV3HuM=;
+        b=coFPDVVuvafd81nThgtSu0cQL7bq1mh93sEFCf+KGqyoIo5FBqkxkIUod13S1KaPLu
+         uXLU67/XWgjX/Knt7+yNrZdrx90+sADqntqOb2FgqXvmg+UFOcdAkEHE7pZEaVwfCD6n
+         TpydZ84o6TTExBrj92STaQRWNhRTmdKhfvhEs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PLl8OGvUeLOUUHW/T0CxgP8wd4Pzfx4sJngI6R0Dk2g=;
-        b=QHbGnxzHWnPjoIl0pVkkkfZuFcKb6YgAAY0sN45AM+9m7kV/ZWtKiHNl0W9W/divV8
-         MeedjHP0LbZG6KA+JOoiUzO4XIuADMGQiNQcZaRFxdsdjEwWkqtLRExx80nKLb3AdOqM
-         iGpfwgWZRGi2irrfVOS28UoWDZlctdmjpWGiRMwcrXCEMqOFVkG2OBq+BofI2gR/LlHE
-         WwDhJwGnqz/EhzzPMs1bgwGs960gpPCoDRNvO4bqjKxmaf2fej2uJT4sRS0qhmb8dev4
-         miaNKjLX9rerMQptDK/YS4bE1H0LPHI0YHwkFFDQ3KZOmQuJUyoqIHLk9n41t7bB0/Ux
-         /VCA==
-X-Gm-Message-State: AOAM533Y2Mzfs9/DHQvZZ0jnF/O8DeFUH1/fIvW+k1AeI0fn+u3RJPC1
-        hXV77nyrRMrmmHLBlJUCkyIf8g==
-X-Google-Smtp-Source: ABdhPJyRm2EixjAzjNZ646eajs00dz37zv870XnIyWv48JP6xCPL/xdYrDA1J4Cc5c8ZCKytU4546Q==
-X-Received: by 2002:a1c:3142:: with SMTP id x63mr12801199wmx.62.1594287856715;
-        Thu, 09 Jul 2020 02:44:16 -0700 (PDT)
-Received: from google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id w17sm4761445wra.42.2020.07.09.02.44.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F6g7fDptGIzcY72zTri5KBvJJQVzV3/1jzTXQNV3HuM=;
+        b=qDfVJmMeSiOCKRhUfEX1abKSCkjNY00r1HTZdKjKc2GsCSPIaviKPEOoZFOTDcyLsu
+         UTh2MR1rXCOyf8dnwHA37etj1wgZedji+9vfp6AfyAH3rS0P3l7dR1KEwymYOk/u9bGj
+         axEoMkZ8jbvnd19Qo5wENkLzqR0TIhh6PZbExaznMHHQaTXIjQxpYJ4vYPi3H8/YRt7E
+         6bs+6zwC67Ls30E6Jkw5sVajADJ9dBQqz+oC14NNU7vq90XMDfv7DM0DYiMDcBKZKeNY
+         TSf6+0aOtY3wfQ8kTGHiE92Ufv8c3UkKzGealbOLwKyeUDC9iPIPyA8K5Qywan/Nhhhv
+         8DFg==
+X-Gm-Message-State: AOAM533A1D/ETjFXjU3RAjDxIYNE1BCWAi4HlxN1Ae4+Ddpn6xQVviVc
+        OHCtZrNTMuvSePte7aEsZe+OKA==
+X-Google-Smtp-Source: ABdhPJztxd9ybzuPdUmBiF9b0n0gq1IqMMvtclokdmjAg/DXj6rkBJNamKoGI+PesauLp51wDgEtRg==
+X-Received: by 2002:adf:e546:: with SMTP id z6mr58343987wrm.99.1594289562595;
+        Thu, 09 Jul 2020 03:12:42 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id g3sm5538287wrb.59.2020.07.09.03.12.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 02:44:16 -0700 (PDT)
+        Thu, 09 Jul 2020 03:12:42 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 9 Jul 2020 11:44:14 +0200
-To:     kernel test robot <lkp@intel.com>
-Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf: Implement bpf_local_storage for
- inodes
-Message-ID: <20200709094414.GB3743174@google.com>
-References: <20200709005654.3324272-3-kpsingh@chromium.org>
- <202007091250.vqzrSanp%lkp@intel.com>
+Subject: [PATCH bpf-next v4 0/4] Generalizing bpf_local_storage
+Date:   Thu,  9 Jul 2020 12:12:35 +0200
+Message-Id: <20200709101239.3829793-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202007091250.vqzrSanp%lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09-Jul 12:37, kernel test robot wrote:
-> Hi KP,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on bpf-next/master]
-> 
-> url:    https://github.com/0day-ci/linux/commits/KP-Singh/Generalizing-bpf_local_storage/20200709-085810
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: mips-allyesconfig (attached as .config)
-> compiler: mips-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> kernel/bpf/bpf_inode_storage.c:274:17: warning: no previous prototype for 'inode_storage_map_alloc' [-Wmissing-prototypes]
->      274 | struct bpf_map *inode_storage_map_alloc(union bpf_attr *attr)
->          |                 ^~~~~~~~~~~~~~~~~~~~~~~
-> >> kernel/bpf/bpf_inode_storage.c:286:6: warning: no previous prototype for 'inode_storage_map_free' [-Wmissing-prototypes]
->      286 | void inode_storage_map_free(struct bpf_map *map)
->          |      ^~~~~~~~~~~~~~~~~~~~~~
+From: KP Singh <kpsingh@google.com>
 
-Thanks! Should have been static. Fixed these. Will send a v4 with
-these fixes.
+# v3 -> v4
 
-- KP 
+- Fixed a missing include to bpf_sk_storage.h in bpf_sk_storage.c
+- Fixed some functions that were not marked as static which led to
+  W=1 compilation warnings.
 
-> 
-> vim +/inode_storage_map_alloc +274 kernel/bpf/bpf_inode_storage.c
-> 
->    273	
->  > 274	struct bpf_map *inode_storage_map_alloc(union bpf_attr *attr)
->    275	{
->    276		struct bpf_local_storage_map *smap;
->    277	
->    278		smap = bpf_local_storage_map_alloc(attr);
->    279		if (IS_ERR(smap))
->    280			return ERR_CAST(smap);
->    281	
->    282		smap->cache_idx = cache_idx_get_inode();
->    283		return &smap->map;
->    284	}
->    285	
->  > 286	void inode_storage_map_free(struct bpf_map *map)
->    287	{
->    288		struct bpf_local_storage_map *smap;
->    289	
->    290		smap = (struct bpf_local_storage_map *)map;
->    291		cache_idx_free_inode(smap->cache_idx);
->    292		bpf_local_storage_map_free(smap);
->    293	}
->    294	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+# v2 -> v3
 
+* Restructured the code as per Martin's suggestions:
+  - Common functionality in bpf_local_storage.c
+  - bpf_sk_storage functionality remains in net/bpf_sk_storage.
+  - bpf_inode_storage is kept separate as it is enabled only with
+    CONFIG_BPF_LSM.
+* A separate cache for inode and sk storage with macros to define it.
+* Use the ops style approach as suggested by Martin instead of the
+  enum + switch style.
+* Added the inode map to bpftool bash completion and docs.
+* Rebase and indentation fixes.
+
+# v1 -> v2
+
+* Use the security blob pointer instead of dedicated member in
+  struct inode.
+* Better code re-use as suggested by Alexei.
+* Dropped the inode count arithmetic as pointed out by Alexei.
+* Minor bug fixes and rebase.
+
+bpf_sk_storage can already be used by some BPF program types to annotate
+socket objects. These annotations are managed with the life-cycle of the
+object (i.e. freed when the object is freed) which makes BPF programs
+much simpler and less prone to errors and leaks.
+
+This patch series:
+
+* Generalizes the bpf_sk_storage infrastructure to allow easy
+  implementation of local storage for other objects
+* Implements local storage for inodes
+* Makes both bpf_{sk, inode}_storage available to LSM programs.
+
+Local storage is safe to use in LSM programs as the attachment sites are
+limited and the owning object won't be freed, however, this is not the
+case for tracing. Usage in tracing is expected to follow a white-list
+based approach similar to the d_path helper
+(https://lore.kernel.org/bpf/20200506132946.2164578-1-jolsa@kernel.org).
+
+Access to local storage would allow LSM programs to implement stateful
+detections like detecting the unlink of a running executable from the
+examples shared as a part of the KRSI series
+https://lore.kernel.org/bpf/20200329004356.27286-1-kpsingh@chromium.org/
+and
+https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+
+
+KP Singh (4):
+  bpf: Generalize bpf_sk_storage
+  bpf: Implement bpf_local_storage for inodes
+  bpf: Allow local storage to be used from LSM programs
+  bpf: Add selftests for local_storage
+
+ include/linux/bpf.h                           |  14 +
+ include/linux/bpf_local_storage.h             | 190 ++++
+ include/linux/bpf_lsm.h                       |  21 +
+ include/linux/bpf_types.h                     |   3 +
+ include/net/bpf_sk_storage.h                  |   2 +
+ include/net/sock.h                            |   4 +-
+ include/uapi/linux/bpf.h                      |  54 +-
+ kernel/bpf/Makefile                           |   2 +
+ kernel/bpf/bpf_inode_storage.c                | 333 +++++++
+ kernel/bpf/bpf_local_storage.c                | 517 +++++++++++
+ kernel/bpf/bpf_lsm.c                          |  21 +-
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  10 +
+ net/core/bpf_sk_storage.c                     | 825 ++++--------------
+ security/bpf/hooks.c                          |   7 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  54 +-
+ tools/lib/bpf/libbpf_probes.c                 |   5 +-
+ .../bpf/prog_tests/test_local_storage.c       |  60 ++
+ .../selftests/bpf/progs/local_storage.c       | 136 +++
+ 22 files changed, 1599 insertions(+), 670 deletions(-)
+ create mode 100644 include/linux/bpf_local_storage.h
+ create mode 100644 kernel/bpf/bpf_inode_storage.c
+ create mode 100644 kernel/bpf/bpf_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+
+-- 
+2.27.0.389.gc38d7665816-goog
 
