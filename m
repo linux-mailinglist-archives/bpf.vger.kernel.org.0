@@ -2,63 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C6421970E
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 06:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C95921972A
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 06:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgGIEJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 00:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        id S1726119AbgGIEXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 00:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgGIEJI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 00:09:08 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDD3C061A0B;
-        Wed,  8 Jul 2020 21:09:08 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id j80so633009qke.0;
-        Wed, 08 Jul 2020 21:09:08 -0700 (PDT)
+        with ESMTP id S1726064AbgGIEXj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 00:23:39 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25A5C061A0B;
+        Wed,  8 Jul 2020 21:23:38 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id m8so400437qvk.7;
+        Wed, 08 Jul 2020 21:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4T0B1JNM/xfIf6XmjXBdKP/42DB3QZSBsE93ncBiJ54=;
-        b=kMY/5+QHHhCB6b9pDdnWJPNCfZlG979ODrxstjfIh80Dd9xVrgLhi8aBhdp1muT/gI
-         qTZ1ANu3aqltClYPODMQfA/IxnmBUPujA8kmRYop/bKzeL5Iw2wS1/3WeuWX9qFanaAY
-         rbAQkEQA0UWZRlJAWUL/hdWQYGZ1MzO8EdyLTHynSn143lWyOPmcN7YPNMsdZOiWQgHw
-         g3PBu6HDMWC9pZmJigxce2roSJuanBwSdn7MFtz9haUD6Eq17oztmFraqq3R+iMPzUYE
-         1pnviMQuEiW2BgWQ//FxYaJO5jROPazNMEGyJJXpP+LIGXW/pef8U5oiMA89bX4GC2G0
-         68Dw==
+        bh=BI6WIEp2vA5C++YoVlosdSBgzk51TzlOu3ElCQWiUPc=;
+        b=PO7UoS1VP7MLs4qudbrhEMGU/wXEdlBpnqzbtep6RObHLrY1E7BwsQ2ZsMsJZDcUq0
+         fWeKt+rQQOkODGUvyaU8SWqiDjdAJgv5s2nGSn8msJWTsMVPQzTMnbxhcLfICsGWV5BQ
+         2fu32tvp5iFEXGPXFiU/TK8e8mGzOlyPOElRVJsEjYDj5TCCRPr6URWbgUBcrdu+4suD
+         /YjVm33zp/AdF1g1y9HPmazVGrl3Lx7Z+Y1aq/DDBgtWmbMruTrcgs3DavID9CC/H0Lo
+         ZVs3GBRFwUGXNVcA+2RtiPHv3OUIt49dBp+UKKhUrufvswPiHeYcWpH0xQ3sq66yYnyh
+         SR+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4T0B1JNM/xfIf6XmjXBdKP/42DB3QZSBsE93ncBiJ54=;
-        b=aW+t77VslprgV+PLKbBIwehLn4ZQ2pfujipmnC4R0quFeu0cWowbZ9fKk99z8vSBeX
-         Ac3JFB0tVtNTjCs3lSuRCJ4ZLd7y5nSKnJw7YSsM93R0EDr9oOS5SmKTMu/HAKMm3kUT
-         qeA3rT+EzmvxF8UX/Xxwn4sn2jKsXmqRE6emjIVRo+s7fkXGRRMPoC30f3thZZN81B8w
-         xNwZ2hK1Hhtz3zRchmKKsxx+BUEFi9Pc95agGZrF2W+jWbPpKpznyo4LrKtkivYGO5BD
-         qq298ic3/5lquHy1st13MKIK3ker4x05oXUc0x4KaYoyTWPSlFQoDlIzaQakahVCzZuz
-         znYQ==
-X-Gm-Message-State: AOAM531P50r62WRNNwi55a/Mw8lNWQPo+Jy/c6RqXYbi9z3L+lIGMLzA
-        Dfg9MpfWi95efrDnrAQitxIGp2z25k2sRL/Zbzw=
-X-Google-Smtp-Source: ABdhPJzorzByhLzmq+OOz6FlHzXOOX33AXpRe21AxVtiqoNjFnHUj4udrUvVp9gvqltQlUwtYxAIuiWeyQUDNGGjoYY=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr51106154qkg.437.1594267747788;
- Wed, 08 Jul 2020 21:09:07 -0700 (PDT)
+        bh=BI6WIEp2vA5C++YoVlosdSBgzk51TzlOu3ElCQWiUPc=;
+        b=gJp6vptfzvMoF0ES5rUc1NmcwE1MCPoZj1oSZ0hpZgOrohqJ2jOxAzXe/XnMX5sW5k
+         7ZjpTfbOaa2VoKRbP/um1TUBek05ioMRm5uQ6THmZ2jss0pL5aYNNkUip+QyHocSFt5H
+         Bd/MvW5Jbj1TALK8CVZ1NS0aNva8HDsSBvPo2bhWA6KuLO1rt2MosBi4wsHhkWb2wJBa
+         BWdHx33x+/GhJimhtaJfcQ9uaFIyfswIUAjC7vj97zTT3z0XbPbTeEygY4hdRIEQi6I8
+         sdXjAXO/aobGGCmDw9b615lBx+ApkZAV5JOuCBo9qEWM8S48uYcmgGha5qMHoHna4FIj
+         LybQ==
+X-Gm-Message-State: AOAM5302d8VNv1N3UiUO7IXCzkIwbm7OcOI49DU0q0LdJQteKGMgJ5D1
+        KTPHKG7Z06fUvsjfXtVIZyUn/kASPFAQSYo8/qHk5NJe+eU=
+X-Google-Smtp-Source: ABdhPJxY8qBHhb8uZdj35CzHXBBkV1m//S4ulsmfQmkxpqfkpiJnfBub3tMoOZSNEP/pgjQbGbtjQ7aqZAf6wBIerxY=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr57148481qvb.228.1594268617982;
+ Wed, 08 Jul 2020 21:23:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-3-jakub@cloudflare.com>
-In-Reply-To: <20200702092416.11961-3-jakub@cloudflare.com>
+References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-13-jakub@cloudflare.com>
+In-Reply-To: <20200702092416.11961-13-jakub@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Jul 2020 21:08:56 -0700
-Message-ID: <CAEf4BzZ7-0TFD4+NqpK9X=Yuiem89Ug27v90fev=nn+3anCTpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 02/16] bpf: Introduce SK_LOOKUP program type
- with a dedicated attach point
+Date:   Wed, 8 Jul 2020 21:23:27 -0700
+Message-ID: <CAEf4BzbrUZhpxfw_eeJJCoo46_x1Y8naE19qoVUWi5sTSNSdzA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 12/16] libbpf: Add support for SK_LOOKUP
+ program type
 To:     Jakub Sitnicki <jakub@cloudflare.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         kernel-team <kernel-team@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -67,175 +66,99 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Jul 2, 2020 at 2:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
-> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
-> when looking up a listening socket for a new connection request for
-> connection oriented protocols, or when looking up an unconnected socket for
-> a packet for connection-less protocols.
+> Make libbpf aware of the newly added program type, and assign it a
+> section name.
 >
-> When called, SK_LOOKUP BPF program can select a socket that will receive
-> the packet. This serves as a mechanism to overcome the limits of what
-> bind() API allows to express. Two use-cases driving this work are:
->
->  (1) steer packets destined to an IP range, on fixed port to a socket
->
->      192.0.2.0/24, port 80 -> NGINX socket
->
->  (2) steer packets destined to an IP address, on any port to a socket
->
->      198.51.100.1, any port -> L7 proxy socket
->
-> In its run-time context program receives information about the packet that
-> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
-> address 4-tuple. Context can be further extended to include ingress
-> interface identifier.
->
-> To select a socket BPF program fetches it from a map holding socket
-> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
-> helper to record the selection. Transport layer then uses the selected
-> socket as a result of socket lookup.
->
-> This patch only enables the user to attach an SK_LOOKUP program to a
-> network namespace. Subsequent patches hook it up to run on local delivery
-> path in ipv4 and ipv6 stacks.
->
-> Suggested-by: Marek Majkowski <marek@cloudflare.com>
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
 >
 > Notes:
 >     v3:
->     - Allow bpf_sk_assign helper to replace previously selected socket only
->       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
->       programs running in series to accidentally override each other's verdict.
->     - Let BPF program decide that load-balancing within a reuseport socket group
->       should be skipped for the socket selected with bpf_sk_assign() by passing
->       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
->     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
->       the selected socket with an intention for multiple attached program
->       running in series to see each other's choices. However, currently the
->       verifier doesn't allow checking if pointer is set.
->     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
->     - Get rid of macros in convert_ctx_access to make it easier to read.
->     - Disallow 1-,2-byte access to context fields containing IP addresses.
+>     - Move new libbpf symbols to version 0.1.0.
+>     - Set expected_attach_type in probe_load for new prog type.
 >
 >     v2:
->     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
->       Update bpf_sk_assign docs accordingly. (Martin)
->     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
->     - Fix broken build when CONFIG_INET is not selected. (Martin)
->     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
->     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
+>     - Add new libbpf symbols to version 0.0.9. (Andrii)
 >
->  include/linux/bpf-netns.h  |   3 +
->  include/linux/bpf_types.h  |   2 +
->  include/linux/filter.h     |  19 ++++
->  include/uapi/linux/bpf.h   |  74 +++++++++++++++
->  kernel/bpf/net_namespace.c |   5 +
->  kernel/bpf/syscall.c       |   9 ++
->  net/core/filter.c          | 186 +++++++++++++++++++++++++++++++++++++
->  scripts/bpf_helpers_doc.py |   9 +-
->  8 files changed, 306 insertions(+), 1 deletion(-)
+>  tools/lib/bpf/libbpf.c        | 3 +++
+>  tools/lib/bpf/libbpf.h        | 2 ++
+>  tools/lib/bpf/libbpf.map      | 2 ++
+>  tools/lib/bpf/libbpf_probes.c | 3 +++
+>  4 files changed, 10 insertions(+)
 >
-> diff --git a/include/linux/bpf-netns.h b/include/linux/bpf-netns.h
-> index 4052d649f36d..cb1d849c5d4f 100644
-> --- a/include/linux/bpf-netns.h
-> +++ b/include/linux/bpf-netns.h
-> @@ -8,6 +8,7 @@
->  enum netns_bpf_attach_type {
->         NETNS_BPF_INVALID = -1,
->         NETNS_BPF_FLOW_DISSECTOR = 0,
-> +       NETNS_BPF_SK_LOOKUP,
->         MAX_NETNS_BPF_ATTACH_TYPE
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4ea7f4f1a691..ddcbb5dd78df 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -6793,6 +6793,7 @@ BPF_PROG_TYPE_FNS(perf_event, BPF_PROG_TYPE_PERF_EVENT);
+>  BPF_PROG_TYPE_FNS(tracing, BPF_PROG_TYPE_TRACING);
+>  BPF_PROG_TYPE_FNS(struct_ops, BPF_PROG_TYPE_STRUCT_OPS);
+>  BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
+> +BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
+>
+>  enum bpf_attach_type
+>  bpf_program__get_expected_attach_type(struct bpf_program *prog)
+> @@ -6969,6 +6970,8 @@ static const struct bpf_sec_def section_defs[] = {
+>         BPF_EAPROG_SEC("cgroup/setsockopt",     BPF_PROG_TYPE_CGROUP_SOCKOPT,
+>                                                 BPF_CGROUP_SETSOCKOPT),
+>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
+> +       BPF_EAPROG_SEC("sk_lookup",             BPF_PROG_TYPE_SK_LOOKUP,
+> +                                               BPF_SK_LOOKUP),
+
+So it's a BPF_PROG_TYPE_SK_LOOKUP with attach type BPF_SK_LOOKUP. What
+other potential attach types could there be for
+BPF_PROG_TYPE_SK_LOOKUP? How the section name will look like in that
+case?
+
 >  };
 >
-
-[...]
-
-> +struct bpf_sk_lookup_kern {
-> +       u16             family;
-> +       u16             protocol;
-> +       union {
-> +               struct {
-> +                       __be32 saddr;
-> +                       __be32 daddr;
-> +               } v4;
-> +               struct {
-> +                       const struct in6_addr *saddr;
-> +                       const struct in6_addr *daddr;
-> +               } v6;
-> +       };
-> +       __be16          sport;
-> +       u16             dport;
-> +       struct sock     *selected_sk;
-> +       bool            no_reuseport;
-> +};
-> +
->  #endif /* __LINUX_FILTER_H__ */
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 0cb8ec948816..8dd6e6ce5de9 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -189,6 +189,7 @@ enum bpf_prog_type {
->         BPF_PROG_TYPE_STRUCT_OPS,
->         BPF_PROG_TYPE_EXT,
->         BPF_PROG_TYPE_LSM,
-> +       BPF_PROG_TYPE_SK_LOOKUP,
->  };
+>  #undef BPF_PROG_SEC_IMPL
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 2335971ed0bd..c2272132e929 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -350,6 +350,7 @@ LIBBPF_API int bpf_program__set_perf_event(struct bpf_program *prog);
+>  LIBBPF_API int bpf_program__set_tracing(struct bpf_program *prog);
+>  LIBBPF_API int bpf_program__set_struct_ops(struct bpf_program *prog);
+>  LIBBPF_API int bpf_program__set_extension(struct bpf_program *prog);
+> +LIBBPF_API int bpf_program__set_sk_lookup(struct bpf_program *prog);
 >
->  enum bpf_attach_type {
-> @@ -226,6 +227,7 @@ enum bpf_attach_type {
->         BPF_CGROUP_INET4_GETSOCKNAME,
->         BPF_CGROUP_INET6_GETSOCKNAME,
->         BPF_XDP_DEVMAP,
-> +       BPF_SK_LOOKUP,
-
-
-Point not specific to your changes, but I wanted to bring it up for a
-while now, so thought this one might be as good an opportunity as any.
-
-It seems like enum bpf_attach_type originally was intended for only
-cgroup BPF programs. To that end, cgroup_bpf has a bunch of fields
-with sizes proportional to MAX_BPF_ATTACH_TYPE. It costs at least
-8+4+16=28 bytes for each different type *per each cgroup*. At this
-point, we have 22 cgroup-specific attach types, and this will be the
-13th non-cgroup attach type. So cgroups pay a price for each time we
-extend bpf_attach_type with a new non-cgroup attach type. cgroup_bpf
-is now 336 bytes bigger than it needs to be.
-
-So I wanted to propose that we do the same thing for cgroup_bpf as you
-did for net_ns with netns_bpf_attach_type: have a densely-packed enum
-just for cgroup attach types and translate now generic bpf_attach_type
-to cgroup-specific cgroup_bpf_attach_type.
-
-I wonder what people think? Is that a good idea? Is anyone up for doing this?
-
->         __MAX_BPF_ATTACH_TYPE
->  };
+>  LIBBPF_API enum bpf_prog_type bpf_program__get_type(struct bpf_program *prog);
+>  LIBBPF_API void bpf_program__set_type(struct bpf_program *prog,
+> @@ -377,6 +378,7 @@ LIBBPF_API bool bpf_program__is_perf_event(const struct bpf_program *prog);
+>  LIBBPF_API bool bpf_program__is_tracing(const struct bpf_program *prog);
+>  LIBBPF_API bool bpf_program__is_struct_ops(const struct bpf_program *prog);
+>  LIBBPF_API bool bpf_program__is_extension(const struct bpf_program *prog);
+> +LIBBPF_API bool bpf_program__is_sk_lookup(const struct bpf_program *prog);
 >
-
-[...]
-
-> +
-> +static u32 sk_lookup_convert_ctx_access(enum bpf_access_type type,
-> +                                       const struct bpf_insn *si,
-> +                                       struct bpf_insn *insn_buf,
-> +                                       struct bpf_prog *prog,
-> +                                       u32 *target_size)
-
-Would it be too extreme to rely on BTF and direct memory access
-(similar to tp_raw, fentry/fexit, etc) for accessing context fields,
-instead of all this assembly rewrites? So instead of having
-bpf_sk_lookup and bpf_sk_lookup_kern, it will always be a full variant
-(bpf_sk_lookup_kern, or however we'd want to name it then) and
-verifier will just ensure that direct memory reads go to the right
-field boundaries?
-
-> +{
-> +       struct bpf_insn *insn = insn_buf;
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +       int off;
-> +#endif
-> +
-
-[...]
+>  /*
+>   * No need for __attribute__((packed)), all members of 'bpf_map_def'
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 6544d2cd1ed6..04b99f63a45c 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -287,5 +287,7 @@ LIBBPF_0.1.0 {
+>                 bpf_map__type;
+>                 bpf_map__value_size;
+>                 bpf_program__autoload;
+> +               bpf_program__is_sk_lookup;
+>                 bpf_program__set_autoload;
+> +               bpf_program__set_sk_lookup;
+>  } LIBBPF_0.0.9;
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index 10cd8d1891f5..5a3d3f078408 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -78,6 +78,9 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
+>         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+>                 xattr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
+>                 break;
+> +       case BPF_PROG_TYPE_SK_LOOKUP:
+> +               xattr.expected_attach_type = BPF_SK_LOOKUP;
+> +               break;
+>         case BPF_PROG_TYPE_KPROBE:
+>                 xattr.kern_version = get_kernel_version();
+>                 break;
+> --
+> 2.25.4
+>
