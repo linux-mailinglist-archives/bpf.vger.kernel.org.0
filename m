@@ -2,307 +2,314 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D43F2198EA
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 08:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB1A219C7F
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 11:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgGIGzD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 02:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        id S1726568AbgGIJn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 05:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgGIGzD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 02:55:03 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87A5C061A0B;
-        Wed,  8 Jul 2020 23:55:02 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id h1so199394vkn.12;
-        Wed, 08 Jul 2020 23:55:02 -0700 (PDT)
+        with ESMTP id S1726514AbgGIJn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 05:43:26 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B89C08C5CE
+        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 02:43:25 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a6so5860768wmm.0
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 02:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kfl7xEGDrIl6D4KKtWSYsZNMmEPY/8miTymFzcOgOcY=;
-        b=pq/zBE5Jou88bB+aKyq3rQ9zrbMsh6dyQIXp3QUWlYedyL09pik2oxx4u/STgyAxjF
-         sleSdQjOC60HA6vogy0QCrb0Kt7pSvZvT8XIwSHc4cFDrPuQH2V5Duk82Zb7IHRVp8He
-         doVbUJOFXXs2hr1UY/j+q7bICI1kfeNJroKV15T3/2BGyoVSAjKZDSOgjSt4iCkdTNlM
-         yNxjlvOACZHXbDyorKu9u2G2zduMRBGmvhMsmvJ+l1ZyBxqfKEXhfmerW1Jaw6uFWB3q
-         1d7hNEabL8/ioTd41AiA7vvRxbp0jtCidM6HDaEDJiIsxXzdNiH3qgVqt1hnyHKzZNBr
-         oljw==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cht/NznGsyhV/VjILZ7KDdK2/MBSjy6wZhcgzjIJzCo=;
+        b=MZ4XPBeXJUDIEfOODtbz4jVrmmL/QfudpKaLhWOCKlLgzisiQWqCv10tLVV6400cIH
+         2dRDQT5aDnKpw/GuFwZBqFQDl2oKWHI0lTE/yq++BHywB03mePOMHpwO7CMvPDMRBMLP
+         wQ4EZyEejYpkEbLPV90CP6L+5k4srdfDVDr6k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kfl7xEGDrIl6D4KKtWSYsZNMmEPY/8miTymFzcOgOcY=;
-        b=PVX4NheX1lNIj1pjj+R6e05pJydM0qi/oZz4pmXkDX64krBtQ6PNLKOUTbr/C8BGwD
-         7e31rv6Ere51faQRV4SpcNzoy+w24iWWm9hiQhsfXBTKru55Hd4mjpZa4pleOkOyA4m9
-         iZT7Z2TOse0MFGqYNO4NOVKry0VvG2hWu0EMnZCg4jB+eGMfyEo8souNP1mGA2/qDetw
-         clLwknyrVvVRnH4bJQTvq93HdnOD3r4H2hQ0Cbzm6vAHM+4Wk6tfnmSb0nB3WuLrMVxW
-         1yBxr7gsXxzgrd/rcuk3mL1FOP32yqT0qlI93SfO6oIWTjm24AyX5YJkVTtHP5aO9v2l
-         FKVg==
-X-Gm-Message-State: AOAM532Kx3Cwzahh+wV6CAYSVmU63D3hyb9gvWYS3tnBf1LhDbNv6zlZ
-        oGsQa5rzbUWdwaqjlYdmrQMcip4KnXwPkhtcf80=
-X-Google-Smtp-Source: ABdhPJyY396zXJ1Mm0Yz24yfNg5c5l5b6xuYgRV8XDREt8mj5sCUZrvwHr38zwjqzynETmuW6V++dod127MbZ9wLta4=
-X-Received: by 2002:a1f:eec8:: with SMTP id m191mr44396249vkh.47.1594277701646;
- Wed, 08 Jul 2020 23:55:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <1593692353-15102-1-git-send-email-magnus.karlsson@intel.com> <5cf948fe-be1c-a639-2c58-377ef31d28fa@mellanox.com>
-In-Reply-To: <5cf948fe-be1c-a639-2c58-377ef31d28fa@mellanox.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 9 Jul 2020 08:54:50 +0200
-Message-ID: <CAJ8uoz2sud5wBFpWKfC-i4n9E77KnQWGPsKLysumsA23pHEjEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/14] xsk: support shared umems between devices
- and queues
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cht/NznGsyhV/VjILZ7KDdK2/MBSjy6wZhcgzjIJzCo=;
+        b=bB0PGr7gw2qaBcjKXwtbgsvy3QZb9blal2lHCzh1aCAa54cym6pqOVpwPklr9F3En/
+         h+BZ5Huo8GIMa6GIitLNWeveo0uWZ4SKAuqnUSoX1GHhSG0Ibh3WZR/x729uLqNkMUs5
+         Uzfj5cR4fUwj7CYrDySyTtEf6PiDSIaeeqKEIZaQC/gpGJqRV3dVhvAKLpBSEDk+5EY2
+         wBCksCW+OefGcAiFV4LBcf2R6h0nD2AaMqgxc6OzK0rsMbxWQ30Y/Od1vWUJJuW8MNVb
+         msRO6vmPaSKPJcFTfHgLay+i+KWpBPUeaWMgIf0NWJYM+OgeL3Dc4n0DHxh6Fqke1oNW
+         sBlA==
+X-Gm-Message-State: AOAM532K21PYPomsRalAvBje5+9HL90gx5dzIFQhnDGjtDxsrnm7XoBm
+        9vb5usRSA9g9m8ydIpdsn3qH2w==
+X-Google-Smtp-Source: ABdhPJy8EOcTDCXtURXnKBTx5Dn6ijFW3NaePTz2b0DTpkMhuckvt3IMv6aV06oC8GkmXE4KhS9Mcw==
+X-Received: by 2002:a1c:9e45:: with SMTP id h66mr13059898wme.15.1594287804037;
+        Thu, 09 Jul 2020 02:43:24 -0700 (PDT)
+Received: from google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id f9sm4653870wru.47.2020.07.09.02.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 02:43:23 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 9 Jul 2020 11:43:21 +0200
+To:     kernel test robot <lkp@intel.com>
+Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        cristian.dumitrescu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: Generalize bpf_sk_storage
+Message-ID: <20200709094321.GA3743174@google.com>
+References: <20200709005654.3324272-2-kpsingh@chromium.org>
+ <202007091053.Se7i8FMj%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202007091053.Se7i8FMj%lkp@intel.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 5:02 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
->
-> On 2020-07-02 15:18, Magnus Karlsson wrote:
-> > This patch set adds support to share a umem between AF_XDP sockets
-> > bound to different queue ids on the same device or even between
-> > devices. It has already been possible to do this by registering the
-> > umem multiple times, but this wastes a lot of memory. Just imagine
-> > having 10 threads each having 10 sockets open sharing a single
-> > umem. This means that you would have to register the umem 100 times
-> > consuming large quantities of memory.
->
-> Just to clarify: the main memory savings are achieved, because we don't
-> need to store an array of pages in struct xdp_umem multiple times, right?
->
-> I guess there is one more drawback of sharing a UMEM the old way
-> (register it multiple times): it would map (DMA) the same pages multiple
-> times.
+On 09-Jul 10:49, kernel test robot wrote:
+> Hi KP,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on bpf-next/master]
+> 
+> url:    https://github.com/0day-ci/linux/commits/KP-Singh/Generalizing-bpf_local_storage/20200709-085810
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> config: alpha-allyesconfig (attached as .config)
+> compiler: alpha-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=alpha 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> net/core/bpf_sk_storage.c:170:6: warning: no previous prototype for 'bpf_sk_storage_free' [-Wmissing-prototypes]
+>      170 | void bpf_sk_storage_free(struct sock *sk)
 
-Both are correct. The main saving is from only having to DMA map the
-device once, your second comment.
+Thanks! Fixed with a missing include to bpf_sk_storage.h in
+bpf_sk_storage.c
 
-> > Instead, we extend the existing XDP_SHARED_UMEM flag to also work when
-> > sharing a umem between different queue ids as well as devices. If you
-> > would like to share umem between two sockets, just create the first
-> > one as would do normally. For the second socket you would not register
-> > the same umem using the XDP_UMEM_REG setsockopt. Instead attach one
-> > new fill ring and one new completion ring to this second socket and
-> > then use the XDP_SHARED_UMEM bind flag supplying the file descriptor of
-> > the first socket in the sxdp_shared_umem_fd field to signify that it
-> > is the umem of the first socket you would like to share.
-> >
-> > One important thing to note in this example, is that there needs to be
-> > one fill ring and one completion ring per unique device and queue id
-> > bound to. This so that the single-producer and single-consumer semantics
-> > of the rings can be upheld. To recap, if you bind multiple sockets to
-> > the same device and queue id (already supported without this patch
-> > set), you only need one pair of fill and completion rings. If you bind
-> > multiple sockets to multiple different queues or devices, you need one
-> > fill and completion ring pair per unique device,queue_id tuple.
-> >
-> > The implementation is based around extending the buffer pool in the
-> > core xsk code. This is a structure that exists on a per unique device
-> > and queue id basis. So, a number of entities that can now be shared
-> > are moved from the umem to the buffer pool. Information about DMA
-> > mappings are also moved from the buffer pool, but as these are per
-> > device independent of the queue id, they are now hanging off the
-> > netdev.
->
-> Basically, you want to map a pair of (netdev, UMEM) to DMA info. The
-> current implementation of xp_find_dma_map stores a list of UMEMs in the
-> netdev and goes over that list to find the corresponding DMA info. It
-> would be more effective to do it vice-versa, i.e. to store the list of
-> netdevs inside of a UMEM, because you normally have fewer netdevs in the
-> system than sockets, and you'll have fewer list items to traverse. Of
-> course, it has no effect on the data path, but it will improve the time
-> to open a socket (i.e. connection rate).
+>          |      ^~~~~~~~~~~~~~~~~~~
+> >> net/core/bpf_sk_storage.c:280:5: warning: no previous prototype for 'bpf_sk_storage_clone' [-Wmissing-prototypes]
+>      280 | int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+>          |     ^~~~~~~~~~~~~~~~~~~~
+> >> net/core/bpf_sk_storage.c:401:17: warning: no previous prototype for 'sk_storage_map_alloc' [-Wmissing-prototypes]
+>      401 | struct bpf_map *sk_storage_map_alloc(union bpf_attr *attr)
+>          |                 ^~~~~~~~~~~~~~~~~~~~
 
-Good idea. Will fix.
+should have been static. Fixed.
 
-> > In summary after this patch set, there is one xdp_sock struct
-> > per socket created. This points to an xsk_buff_pool for which there is
-> > one per unique device and queue id. The buffer pool points to a DMA
-> > mapping structure for which there is one per device that a umem has
-> > been bound to. And finally, the buffer pool also points to a xdp_umem
-> > struct, for which there is only one per umem registration.
-> >
-> > Before:
-> >
-> > XSK -> UMEM -> POOL
-> >
-> > Now:
-> >
-> > XSK -> POOL -> DMA
-> >              \
-> >            > UMEM
-> >
-> > Patches 1-8 only rearrange internal structures to support the buffer
-> > pool carrying this new information, while patch 9 improves performance
-> > as we now have rearrange the internal structures quite a bit. Finally,
-> > patches 10-14 introduce the new functionality together with libbpf
-> > support, samples, and documentation.
-> >
-> > Libbpf has also been extended to support sharing of umems between
-> > sockets bound to different devices and queue ids by introducing a new
-> > function called xsk_socket__create_shared(). The difference between
-> > this and the existing xsk_socket__create() is that the former takes a
-> > reference to a fill ring and a completion ring as these need to be
-> > created. This new function needs to be used for the second and
-> > following sockets that binds to the same umem. The first one can be
-> > created by either function as it will also have called
-> > xsk_umem__create().
-> >
-> > There is also a new sample xsk_fwd that demonstrates this new
-> > interface and capability.
-> >
-> > Note to Maxim at Mellanox. I do not have a mlx5 card, so I have not
-> > been able to test the changes to your driver. It compiles, but that is
-> > all I can say, so it would be great if you could test it. Also, I did
-> > change the name of many functions and variables from umem to pool as a
-> > buffer pool is passed down to the driver in this patch set instead of
-> > the umem. I did not change the name of the files umem.c and
-> > umem.h. Please go through the changes and change things to your
-> > liking.
->
-> I looked through the mlx5 patches, and I see the changes are minor, and
-> most importantly, the functionality is not broken (tested with xdpsock).
-> I would still like to make some cosmetic amendments - I'll send you an
-> updated patch.
+> >> net/core/bpf_sk_storage.c:413:6: warning: no previous prototype for 'sk_storage_map_free' [-Wmissing-prototypes]
+>      413 | void sk_storage_map_free(struct bpf_map *map)
+>          |      ^~~~~~~~~~~~~~~~~~~
 
-Appreciated. Thanks.
+Ditto. Fixed.
 
-> > Performance for the non-shared umem case is unchanged for the xdpsock
-> > sample application with this patch set.
->
-> I also tested it on mlx5 (ConnectX-5 Ex), and the performance hasn't
-> been hurt.
 
-Good to hear. I might include another patch in the v2 that improves
-performance with 3% for the l2fwd sample app on my system. It is in
-common code so should benefit everyone. Though, it is dependent on a
-new DMA interface patch set from Christof making it from bpf to
-bpf-next. If it makes it over in time, I will include it. Otherwise,
-it will be submitted later.
+- KP
 
-/Magnus
+> >> net/core/bpf_sk_storage.c:483:6: warning: no previous prototype for 'bpf_sk_storage_diag_free' [-Wmissing-prototypes]
+>      483 | void bpf_sk_storage_diag_free(struct bpf_sk_storage_diag *diag)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~
+> >> net/core/bpf_sk_storage.c:511:1: warning: no previous prototype for 'bpf_sk_storage_diag_alloc' [-Wmissing-prototypes]
+>      511 | bpf_sk_storage_diag_alloc(const struct nlattr *nla_stgs)
+>          | ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> net/core/bpf_sk_storage.c:658:5: warning: no previous prototype for 'bpf_sk_storage_diag_put' [-Wmissing-prototypes]
+>      658 | int bpf_sk_storage_diag_put(struct bpf_sk_storage_diag *diag,
+>          |     ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> vim +/bpf_sk_storage_free +170 net/core/bpf_sk_storage.c
+> 
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  168  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  169  /* Called by __sk_destruct() & bpf_sk_storage_clone() */
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26 @170  void bpf_sk_storage_free(struct sock *sk)
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  171  {
+> 9af362a775d83f KP Singh           2020-07-09  172  	struct bpf_local_storage_elem *selem;
+> 9af362a775d83f KP Singh           2020-07-09  173  	struct bpf_local_storage *sk_storage;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  174  	bool free_sk_storage = false;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  175  	struct hlist_node *n;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  176  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  177  	rcu_read_lock();
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  178  	sk_storage = rcu_dereference(sk->sk_bpf_storage);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  179  	if (!sk_storage) {
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  180  		rcu_read_unlock();
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  181  		return;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  182  	}
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  183  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  184  	/* Netiher the bpf_prog nor the bpf-map's syscall
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  185  	 * could be modifying the sk_storage->list now.
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  186  	 * Thus, no elem can be added-to or deleted-from the
+> 9af362a775d83f KP Singh           2020-07-09  187  	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  188  	 *
+> 9af362a775d83f KP Singh           2020-07-09  189  	 * It is racing with bpf_local_storage_map_free() alone
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  190  	 * when unlinking elem from the sk_storage->list and
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  191  	 * the map's bucket->list.
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  192  	 */
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  193  	raw_spin_lock_bh(&sk_storage->lock);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  194  	hlist_for_each_entry_safe(selem, n, &sk_storage->list, snode) {
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  195  		/* Always unlink from map before unlinking from
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  196  		 * sk_storage.
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  197  		 */
+> 9af362a775d83f KP Singh           2020-07-09  198  		bpf_selem_unlink_map(selem);
+> 9af362a775d83f KP Singh           2020-07-09  199  		free_sk_storage = bpf_selem_unlink(sk_storage, selem, true);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  200  	}
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  201  	raw_spin_unlock_bh(&sk_storage->lock);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  202  	rcu_read_unlock();
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  203  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  204  	if (free_sk_storage)
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  205  		kfree_rcu(sk_storage, rcu);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  206  }
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  207  
+> 9af362a775d83f KP Singh           2020-07-09  208  static void *bpf_sk_storage_lookup_elem(struct bpf_map *map, void *key)
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  209  {
+> 9af362a775d83f KP Singh           2020-07-09  210  	struct bpf_local_storage_data *sdata;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  211  	struct socket *sock;
+> 9af362a775d83f KP Singh           2020-07-09  212  	int fd, err = -EINVAL;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  213  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  214  	fd = *(int *)key;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  215  	sock = sockfd_lookup(fd, &err);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  216  	if (sock) {
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  217  		sdata = sk_storage_lookup(sock->sk, map, true);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  218  		sockfd_put(sock);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  219  		return sdata ? sdata->data : NULL;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  220  	}
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  221  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  222  	return ERR_PTR(err);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  223  }
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  224  
+> 9af362a775d83f KP Singh           2020-07-09  225  static int bpf_sk_storage_update_elem(struct bpf_map *map, void *key,
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  226  				      void *value, u64 map_flags)
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  227  {
+> 9af362a775d83f KP Singh           2020-07-09  228  	struct bpf_local_storage_data *sdata;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  229  	struct socket *sock;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  230  	int fd, err;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  231  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  232  	fd = *(int *)key;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  233  	sock = sockfd_lookup(fd, &err);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  234  	if (sock) {
+> 9af362a775d83f KP Singh           2020-07-09  235  		sdata = map->ops->map_local_storage_update(sock->sk, map, value,
+> 9af362a775d83f KP Singh           2020-07-09  236  							   map_flags);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  237  		sockfd_put(sock);
+> 71f150f4c2af5f YueHaibing         2019-04-29  238  		return PTR_ERR_OR_ZERO(sdata);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  239  	}
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  240  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  241  	return err;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  242  }
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  243  
+> 9af362a775d83f KP Singh           2020-07-09  244  static int bpf_sk_storage_delete_elem(struct bpf_map *map, void *key)
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  245  {
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  246  	struct socket *sock;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  247  	int fd, err;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  248  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  249  	fd = *(int *)key;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  250  	sock = sockfd_lookup(fd, &err);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  251  	if (sock) {
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  252  		err = sk_storage_delete(sock->sk, map);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  253  		sockfd_put(sock);
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  254  	}
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  255  
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  256  	return err;
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  257  }
+> 6ac99e8f23d4b1 Martin KaFai Lau   2019-04-26  258  
+> 9af362a775d83f KP Singh           2020-07-09  259  static struct bpf_local_storage_elem *
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  260  bpf_sk_storage_clone_elem(struct sock *newsk,
+> 9af362a775d83f KP Singh           2020-07-09  261  			  struct bpf_local_storage_map *smap,
+> 9af362a775d83f KP Singh           2020-07-09  262  			  struct bpf_local_storage_elem *selem)
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  263  {
+> 9af362a775d83f KP Singh           2020-07-09  264  	struct bpf_local_storage_elem *copy_selem;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  265  
+> 9af362a775d83f KP Singh           2020-07-09  266  	copy_selem = sk_selem_alloc(smap, newsk, NULL, true);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  267  	if (!copy_selem)
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  268  		return NULL;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  269  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  270  	if (map_value_has_spin_lock(&smap->map))
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  271  		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  272  				      SDATA(selem)->data, true);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  273  	else
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  274  		copy_map_value(&smap->map, SDATA(copy_selem)->data,
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  275  			       SDATA(selem)->data);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  276  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  277  	return copy_selem;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  278  }
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  279  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14 @280  int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  281  {
+> 9af362a775d83f KP Singh           2020-07-09  282  	struct bpf_local_storage *new_sk_storage = NULL;
+> 9af362a775d83f KP Singh           2020-07-09  283  	struct bpf_local_storage *sk_storage;
+> 9af362a775d83f KP Singh           2020-07-09  284  	struct bpf_local_storage_elem *selem;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  285  	int ret = 0;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  286  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  287  	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  288  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  289  	rcu_read_lock();
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  290  	sk_storage = rcu_dereference(sk->sk_bpf_storage);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  291  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  292  	if (!sk_storage || hlist_empty(&sk_storage->list))
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  293  		goto out;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  294  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  295  	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> 9af362a775d83f KP Singh           2020-07-09  296  		struct bpf_local_storage_elem *copy_selem;
+> 9af362a775d83f KP Singh           2020-07-09  297  		struct bpf_local_storage_map *smap;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  298  		struct bpf_map *map;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  299  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  300  		smap = rcu_dereference(SDATA(selem)->smap);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  301  		if (!(smap->map.map_flags & BPF_F_CLONE))
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  302  			continue;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  303  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  304  		/* Note that for lockless listeners adding new element
+> 9af362a775d83f KP Singh           2020-07-09  305  		 * here can race with cleanup in bpf_local_storage_map_free.
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  306  		 * Try to grab map refcnt to make sure that it's still
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  307  		 * alive and prevent concurrent removal.
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  308  		 */
+> 1e0bd5a091e5d9 Andrii Nakryiko    2019-11-17  309  		map = bpf_map_inc_not_zero(&smap->map);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  310  		if (IS_ERR(map))
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  311  			continue;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  312  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  313  		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  314  		if (!copy_selem) {
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  315  			ret = -ENOMEM;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  316  			bpf_map_put(map);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  317  			goto out;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  318  		}
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  319  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  320  		if (new_sk_storage) {
+> 9af362a775d83f KP Singh           2020-07-09  321  			bpf_selem_link_map(smap, copy_selem);
+> 9af362a775d83f KP Singh           2020-07-09  322  			bpf_selem_link(new_sk_storage, copy_selem);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  323  		} else {
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  324  			ret = sk_storage_alloc(newsk, smap, copy_selem);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  325  			if (ret) {
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  326  				kfree(copy_selem);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  327  				atomic_sub(smap->elem_size,
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  328  					   &newsk->sk_omem_alloc);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  329  				bpf_map_put(map);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  330  				goto out;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  331  			}
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  332  
+> 9af362a775d83f KP Singh           2020-07-09  333  			new_sk_storage =
+> 9af362a775d83f KP Singh           2020-07-09  334  				rcu_dereference(copy_selem->local_storage);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  335  		}
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  336  		bpf_map_put(map);
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  337  	}
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  338  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  339  out:
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  340  	rcu_read_unlock();
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  341  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  342  	/* In case of an error, don't free anything explicitly here, the
+> 9af362a775d83f KP Singh           2020-07-09  343  	 * caller is responsible to call bpf_local_storage_free.
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  344  	 */
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  345  
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  346  	return ret;
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  347  }
+> 8f51dfc73bf181 Stanislav Fomichev 2019-08-14  348  
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-> > For workloads that share a
-> > umem, this patch set can give rise to added performance benefits due
-> > to the decrease in memory usage.
-> >
-> > This patch has been applied against commit 91f77560e473 ("Merge branch 'test_progs-improvements'")
-> >
-> > Structure of the patch set:
-> >
-> > Patch 1: Pass the buffer pool to the driver instead of the umem. This
-> >           because the driver needs one buffer pool per napi context
-> >           when we later introduce sharing of the umem between queue ids
-> >           and devices.
-> > Patch 2: Rename the xsk driver interface so they have better names
-> >           after the move to the buffer pool
-> > Patch 3: There is one buffer pool per device and queue, while there is
-> >           only one umem per registration. The buffer pool needs to be
-> >           created and destroyed independently of the umem.
-> > Patch 4: Move fill and completion rings to the buffer pool as there will
-> >           be one set of these per device and queue
-> > Patch 5: Move queue_id, dev and need_wakeup to buffer pool again as these
-> >           will now be per buffer pool as the umem can be shared between
-> >           devices and queues
-> > Patch 6: Move xsk_tx_list and its lock to buffer pool
-> > Patch 7: Move the creation/deletion of addrs from buffer pool to umem
-> > Patch 8: Enable sharing of DMA mappings when multiple queues of the
-> >           same device are bound
-> > Patch 9: Rearrange internal structs for better performance as these
-> >           have been substantially scrambled by the previous patches
-> > Patch 10: Add shared umem support between queue ids
-> > Patch 11: Add shared umem support between devices
-> > Patch 12: Add support for this in libbpf
-> > Patch 13: Add a new sample that demonstrates this new feature by
-> >            forwarding packets between different netdevs and queues
-> > Patch 14: Add documentation
-> >
-> > Thanks: Magnus
-> >
-> > Cristian Dumitrescu (1):
-> >    samples/bpf: add new sample xsk_fwd.c
-> >
-> > Magnus Karlsson (13):
-> >    xsk: i40e: ice: ixgbe: mlx5: pass buffer pool to driver instead of
-> >      umem
-> >    xsk: i40e: ice: ixgbe: mlx5: rename xsk zero-copy driver interfaces
-> >    xsk: create and free context independently from umem
-> >    xsk: move fill and completion rings to buffer pool
-> >    xsk: move queue_id, dev and need_wakeup to context
-> >    xsk: move xsk_tx_list and its lock to buffer pool
-> >    xsk: move addrs from buffer pool to umem
-> >    xsk: net: enable sharing of dma mappings
-> >    xsk: rearrange internal structs for better performance
-> >    xsk: add shared umem support between queue ids
-> >    xsk: add shared umem support between devices
-> >    libbpf: support shared umems between queues and devices
-> >    xsk: documentation for XDP_SHARED_UMEM between queues and netdevs
-> >
-> >   Documentation/networking/af_xdp.rst                |   68 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |    2 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_main.c        |   29 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_txrx.c        |   10 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_txrx.h        |    2 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   79 +-
-> >   drivers/net/ethernet/intel/i40e/i40e_xsk.h         |    4 +-
-> >   drivers/net/ethernet/intel/ice/ice.h               |   18 +-
-> >   drivers/net/ethernet/intel/ice/ice_base.c          |   16 +-
-> >   drivers/net/ethernet/intel/ice/ice_lib.c           |    2 +-
-> >   drivers/net/ethernet/intel/ice/ice_main.c          |   10 +-
-> >   drivers/net/ethernet/intel/ice/ice_txrx.c          |    8 +-
-> >   drivers/net/ethernet/intel/ice/ice_txrx.h          |    2 +-
-> >   drivers/net/ethernet/intel/ice/ice_xsk.c           |  142 +--
-> >   drivers/net/ethernet/intel/ice/ice_xsk.h           |    7 +-
-> >   drivers/net/ethernet/intel/ixgbe/ixgbe.h           |    2 +-
-> >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   34 +-
-> >   .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |    7 +-
-> >   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   61 +-
-> >   drivers/net/ethernet/mellanox/mlx5/core/en.h       |   19 +-
-> >   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |    5 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.h    |   10 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.c |   12 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.h |    2 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    |   12 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.h    |    6 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.c  |  108 +-
-> >   .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.h  |   14 +-
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   46 +-
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |   16 +-
-> >   include/linux/netdevice.h                          |   13 +-
-> >   include/net/xdp_sock.h                             |   28 +-
-> >   include/net/xdp_sock_drv.h                         |  115 ++-
-> >   include/net/xsk_buff_pool.h                        |   47 +-
-> >   net/core/dev.c                                     |    3 +
-> >   net/ethtool/channels.c                             |    2 +-
-> >   net/ethtool/ioctl.c                                |    2 +-
-> >   net/xdp/xdp_umem.c                                 |  221 +---
-> >   net/xdp/xdp_umem.h                                 |    6 -
-> >   net/xdp/xsk.c                                      |  213 ++--
-> >   net/xdp/xsk.h                                      |    3 +
-> >   net/xdp/xsk_buff_pool.c                            |  314 +++++-
-> >   net/xdp/xsk_diag.c                                 |   14 +-
-> >   net/xdp/xsk_queue.h                                |   12 +-
-> >   samples/bpf/Makefile                               |    3 +
-> >   samples/bpf/xsk_fwd.c                              | 1075 ++++++++++++++++++++
-> >   tools/lib/bpf/libbpf.map                           |    1 +
-> >   tools/lib/bpf/xsk.c                                |  376 ++++---
-> >   tools/lib/bpf/xsk.h                                |    9 +
-> >   49 files changed, 2327 insertions(+), 883 deletions(-)
-> >   create mode 100644 samples/bpf/xsk_fwd.c
-> >
-> > --
-> > 2.7.4
-> >
->
+
