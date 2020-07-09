@@ -2,136 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E5C21A9BD
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 23:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6426D21A9D3
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 23:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgGIV1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 17:27:35 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36782 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726830AbgGIV1e (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 17:27:34 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069L8kM9014679;
-        Thu, 9 Jul 2020 14:27:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=l5qUOcDF4zNcBrB47aXMCP0zUZamw+Eof0I4QVyb24A=;
- b=CsY/Rdo8PmhVaGdsyHLR93YwiNX0W8+f0SZKt+BjJt8rbHMIh+XExjuv4VOvrIqPqT6/
- fqCrOpiIQ+Uy9TYi10kBz6UMgyF43u9wiDGj2k6cqy84Q32ldRWLeahTjGtmmQVP5uha
- 76bECRKoXofBHkQNWGNoWfLZsw84RtPz4Co= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 325k2cetgg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 09 Jul 2020 14:27:19 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 9 Jul 2020 14:27:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j2CwN1+XoFARcuLfwb1aLGLI/2bub7QH7PjlRPDzb9If5JM41uhxYeX+DgVm6o4Lh+l0Mk10Y9cao6hf0XTWsoo5eSG/IVwfiwu4wLTJ3/bcrgKwYQj+3nJnlK5qm/u6zmGlnMuH0ifEwSFcpdfpyWvt80SdEP5oXYBgleH0VNdkdwjWZHsL7HGI6sl0aq2ycaAqtnRs+BfR1XYTew6IKAQZaUL2XX4TQUuwTSKVrTWo5x7N2C/O5oSxgXDXSPoJ7ttFjJ+s8wWDz5LvwjzhRjUHGgKhwBnYrGaIef6vIjnX4RFSaE/Eb6/zmoFGENl1MQRFT6p/sjtxF2C8dnXEMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l5qUOcDF4zNcBrB47aXMCP0zUZamw+Eof0I4QVyb24A=;
- b=PmPjoC57LpkmAPKxIutdkNAyP5gWoOgyz2vAhMdWCYiXpCExzBNigkoptttBMSF9KHG4F5J1I6gBoZvZdZPW9I+UnzSo1IcmluNAr/s4NVAh90aRn7XZilcioWLdwgD3sXON2rMD7bIcG+D+56ToF7sUwqUbabwq9/MGpzOsjxj9DpLUqTz9B33pZIkICA4zLU1gknl5YYflXQMc4l3IhjqgDXwPXcJD5ppHbXdWl6K/5WlHxnpuA9tjwnXc5q+KzKvpcnz0dT3evPSKaFaJKpTZq4ry5rNeILaczM5mDYRpLqN5B9W4qz7E9Z8La5g3Qm7ICYt9o3u+gQfwO7UVRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l5qUOcDF4zNcBrB47aXMCP0zUZamw+Eof0I4QVyb24A=;
- b=T4ZSD01mRSUkOhNhDXANKRNQdQ8d09tPvsv1XAa7/XTT2yiSCkqoLmLMqjGX16XgWChc4ObrJCg7DB7k+OvZvgvHr9KZe1zh5KTi1co63hJKD2EHFia8nVsd4mFEKbaRxd8RtcCvAoIRwulfWM3OfX5C1bzuPRv1Dki5Yo5AwrY=
-Authentication-Results: iogearbox.net; dkim=none (message not signed)
- header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2406.namprd15.prod.outlook.com (2603:10b6:a02:84::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Thu, 9 Jul
- 2020 21:27:17 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3174.023; Thu, 9 Jul 2020
- 21:27:17 +0000
-Date:   Thu, 9 Jul 2020 14:27:16 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        <kernel-team@fb.com>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf 1/2] bpf: net: Avoid copying sk_user_data of
- reuseport_array during sk_clone
-Message-ID: <20200709212716.fvuas7m5dvlotwnj@kafai-mbp>
-References: <20200709061057.4018499-1-kafai@fb.com>
- <20200709061104.4018798-1-kafai@fb.com>
- <7535d0e3-e442-8611-3c35-cbc9f4cace8c@iogearbox.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7535d0e3-e442-8611-3c35-cbc9f4cace8c@iogearbox.net>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BY3PR04CA0011.namprd04.prod.outlook.com
- (2603:10b6:a03:217::16) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1726265AbgGIVlZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 17:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgGIVlY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 17:41:24 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E8B920708;
+        Thu,  9 Jul 2020 21:41:22 +0000 (UTC)
+Date:   Thu, 9 Jul 2020 17:41:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     mingo@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
+ instead of trace_printk()
+Message-ID: <20200709174120.0ae45ca4@oasis.local.home>
+In-Reply-To: <1593787468-29931-2-git-send-email-alan.maguire@oracle.com>
+References: <1593787468-29931-1-git-send-email-alan.maguire@oracle.com>
+        <1593787468-29931-2-git-send-email-alan.maguire@oracle.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:e463) by BY3PR04CA0011.namprd04.prod.outlook.com (2603:10b6:a03:217::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Thu, 9 Jul 2020 21:27:17 +0000
-X-Originating-IP: [2620:10d:c090:400::5:e463]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 99fb4cf2-5084-4f5f-e95a-08d8244edb0b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2406:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB24060525C666C73F2307DBACD5640@BYAPR15MB2406.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2150;
-X-Forefront-PRVS: 04599F3534
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: esqVdFd7lebLAw4M+CY4AJW/bowamWNiTITHLjs8ahl/LOfh6697O3eLIOVbeu5k2ER30NWoK8g3JaSpMihSs8FpItV9So1tmxDMrXfUPmG1a9I+MPRTb1H7PIFfvjZ5SUt9xhf//J6+hQn9BBCEKE1pjpHByd7Ndpe4WQ+jVZpMd1wd7KHZQyY+F6t+rwnzRl6fq2En1L4Vwtdb7jWZO4zTur8WnB+ppIVsdXEdYH+hxhCQppFEh4IbXGMmFDDkV/dky/yDimxugpSPLaz7ULytx3HEEvkPumxLhTU4cpIXA2/p9G/AE2rq7NYCzbubuiZy7Kfsw1wftLWWrqjv6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(396003)(39860400002)(366004)(136003)(33716001)(2906002)(83380400001)(8676002)(478600001)(316002)(53546011)(5660300002)(186003)(8936002)(16526019)(66946007)(52116002)(66476007)(66556008)(1076003)(6916009)(6496006)(4326008)(86362001)(9686003)(55016002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: HQXtLtqvRtsYPiuhke9k/UEE+12FMdPCXGwtCZl2hN5d08I9Pwr71pABLKq9Dvgknw6wPMmfgYN0Br5PE79U8JEo76aoOa/0l5pBUVSQ6mm9mDYmhdLR2YZID8Kfq47X1R1TOYIaq1NoTWudoepuSj3XAh8YpUGqPrm+DhJmx9t1gLHHw7U9vUteQ1tWOd2fMGw8xfEuZSsxGJQupbufxxmDZyKfteuj368WI9jYGZVTeYevINgr5gWi3humjqCPCucQwH9+oXYaSZrEMBxUOUizbJZwWNV9CzU7pDyDsf2QaHy36cJx7anFn6ZF4i4dIMBdHvIhoiGxQ9ocexc9fxTuV5JROAVLKvEpkdwkSJMQUobJJjK8Toi8goXTsuj7wB6yyuhyt4K8TK6/qH1UfzM0pCUUSy+S2h7uS9sNulCzpRoMLPcwHfgnogx2l74i3ZazDQ8MrkmowPtyxBxDqU44Z5T6zsF/gs9gCOh6cdQQ4tRWWKb5xqIhGzD+ViZsCyevsxZyfAr1V4+SV7Eipg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99fb4cf2-5084-4f5f-e95a-08d8244edb0b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2020 21:27:17.6303
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a2RD/80muyZYxpdd4TRYvkoWR+ypc9fYsM/IM2eS4jLSYfbz7MGTxqgvSTZMSRNB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2406
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_11:2020-07-09,2020-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 bulkscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007090143
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 10:07:59PM +0200, Daniel Borkmann wrote:
-> On 7/9/20 8:11 AM, Martin KaFai Lau wrote:
-> > It makes little sense for copying sk_user_data of reuseport_array during
-> > sk_clone_lock().  This patch reuses the SK_USER_DATA_NOCOPY bit introduced in
-> > commit f1ff5ce2cd5e ("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
-> > It is used to mark the sk_user_data is not supposed to be copied to its clone.
-> > 
-> > Although the cloned sk's sk_user_data will not be used/freed in
-> > bpf_sk_reuseport_detach(), this change can still allow the cloned
-> > sk's sk_user_data to be used by some other means.
-> > 
-> > Freeing the reuseport_array's sk_user_data does not require a rcu grace
-> > period.  Thus, the existing rcu_assign_sk_user_data_nocopy() is not
-> > used.
-> 
-> nit: Would have been nice though to add a nonrcu API for this nevertheless
-> instead of open coding.
-Agreed.  I will create a follow-up patch to bpf-next later.
+On Fri,  3 Jul 2020 15:44:27 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
 
-I had created (READ|WRITE)_ONCE_SK_USER_DATA() earlier but then noticed
-there is no use on the READ_ONCE in that particular call, so ditched the
-idea.  I think it does not matter much and should just use READ_ONCE also.
+> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
+> This leads to an alarming warning message originating from trace
+> buffer allocation which occurs the first time a program using
+> bpf_trace_printk() is loaded.
+> 
+> We can instead create a trace event for bpf_trace_printk() and enable
+> it in-kernel when/if we encounter a program using the
+> bpf_trace_printk() helper.  With this approach, trace_printk()
+> is not used directly and no warning message appears.
+> 
+> This work was started by Steven (see Link) and finished by Alan; added
+> Steven's Signed-off-by with his permission.
+> 
+> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  kernel/trace/Makefile    |  2 ++
+>  kernel/trace/bpf_trace.c | 41 +++++++++++++++++++++++++++++++++++++----
+>  kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 73 insertions(+), 4 deletions(-)
+>  create mode 100644 kernel/trace/bpf_trace.h
+> 
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index 6575bb0..aeba5ee 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+> @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
+>  GCOV_PROFILE := y
+>  endif
+>  
+> +CFLAGS_bpf_trace.o := -I$(src)
+> +
+>  CFLAGS_trace_benchmark.o := -I$(src)
+>  CFLAGS_trace_events_filter.o := -I$(src)
+>  
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 1d874d8..cdbafc4 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2,6 +2,10 @@
+>  /* Copyright (c) 2011-2015 PLUMgrid, http://plumgrid.com
+>   * Copyright (c) 2016 Facebook
+>   */
+> +#define CREATE_TRACE_POINTS
+> +
+> +#include "bpf_trace.h"
+> +
+
+Note, it's probably best to include the above after all the other
+headers. The CREATE_TRACE_POINTS might cause issues if a header has
+other trace event headers included.
+
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+>  #include <linux/slab.h>
+> @@ -11,6 +15,7 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/ctype.h>
+>  #include <linux/kprobes.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/error-injection.h>
+>  
+> @@ -374,6 +379,28 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>  	}
+>  }
+>  
+> +static DEFINE_SPINLOCK(trace_printk_lock);
+
+I wonder if we should make this a RAW_SPINLOCK(). That way it wont
+cause any issues on PREEMPT_RT if a bpf trace event is called within
+other raw spinlocks.
+
+> +
+> +#define BPF_TRACE_PRINTK_SIZE   1024
+> +
+> +static inline int bpf_do_trace_printk(const char *fmt, ...)
+> +{
+> +	static char buf[BPF_TRACE_PRINTK_SIZE];
+> +	unsigned long flags;
+> +	va_list ap;
+> +	int ret;
+> +
+> +	spin_lock_irqsave(&trace_printk_lock, flags);
+> +	va_start(ap, fmt);
+> +	ret = vsnprintf(buf, BPF_TRACE_PRINTK_SIZE, fmt, ap);
+> +	va_end(ap);
+> +	if (ret > 0)
+> +		trace_bpf_trace_printk(buf);
+> +	spin_unlock_irqrestore(&trace_printk_lock, flags);
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Only limited trace_printk() conversion specifiers allowed:
+>   * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
+> @@ -483,8 +510,7 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>   */
+>  #define __BPF_TP_EMIT()	__BPF_ARG3_TP()
+>  #define __BPF_TP(...)							\
+> -	__trace_printk(0 /* Fake ip */,					\
+> -		       fmt, ##__VA_ARGS__)
+> +	bpf_do_trace_printk(fmt, ##__VA_ARGS__)
+>  
+>  #define __BPF_ARG1_TP(...)						\
+>  	((mod[0] == 2 || (mod[0] == 1 && __BITS_PER_LONG == 64))	\
+> @@ -518,13 +544,20 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>  	.arg2_type	= ARG_CONST_SIZE,
+>  };
+>  
+> +int bpf_trace_printk_enabled;
+> +
+>  const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>  {
+>  	/*
+>  	 * this program might be calling bpf_trace_printk,
+> -	 * so allocate per-cpu printk buffers
+> +	 * so enable the associated bpf_trace/bpf_trace_printk event.
+>  	 */
+> -	trace_printk_init_buffers();
+> +	if (!bpf_trace_printk_enabled) {
+> +		if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
+
+If you just keep it enabled, it may be best to always call this. It
+doesn't hurt if you call it when it is already enabled.
+
+This is because if someone were to disable the bpf_trace_printk via
+tracefs, and then load another bpf program with another
+bpf_trace_printk in it, that program wont re-enable the
+bpf_trace_printk trace event again do to this check.
+
+The rest looks fine to me.
+
+-- Steve
+
+
+> +			pr_warn_ratelimited("could not enable bpf_trace_printk events");
+> +		else
+> +			bpf_trace_printk_enabled = 1;
+> +	}
+>  
+>  	return &bpf_trace_printk_proto;
+>  }
+> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
+> new file mode 100644
+> index 0000000..9acbc11
+> --- /dev/null
+> +++ b/kernel/trace/bpf_trace.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM bpf_trace
+> +
+> +#if !defined(_TRACE_BPF_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
+> +
+> +#define _TRACE_BPF_TRACE_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(bpf_trace_printk,
+> +
+> +	TP_PROTO(const char *bpf_string),
+> +
+> +	TP_ARGS(bpf_string),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(bpf_string, bpf_string)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(bpf_string, bpf_string);
+> +	),
+> +
+> +	TP_printk("%s", __get_str(bpf_string))
+> +);
+> +
+> +#endif /* _TRACE_BPF_TRACE_H */
+> +
+> +#undef TRACE_INCLUDE_PATH
+> +#define TRACE_INCLUDE_PATH .
+> +#define TRACE_INCLUDE_FILE bpf_trace
+> +
+> +#include <trace/define_trace.h>
+
