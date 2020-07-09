@@ -2,64 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71C1219E7B
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 12:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C65219F0E
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 13:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgGIK6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 06:58:37 -0400
-Received: from mail.katalix.com ([3.9.82.81]:33710 "EHLO mail.katalix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbgGIK6g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:58:36 -0400
-Received: from localhost (unknown [IPv6:2a02:8010:6359:1:21b:21ff:fe6a:7e96])
-        (Authenticated sender: james)
-        by mail.katalix.com (Postfix) with ESMTPSA id 91EAE91533;
-        Thu,  9 Jul 2020 11:58:33 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=katalix.com; s=mail;
-        t=1594292313; bh=M42LuGOML2ltF7KHw5lwhmsnznXUYtYGge15d/m6rbg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AEHTYoqeDYbSRuAAgOqgGlH9/Xq/97z71pNIfYDs7xNT2W2nUGRexwmovgtq4yzT+
-         GEqArjYQEEpeQXQqsX/tlnSoi4ry8z7S4DU2pVpKiEEK39Wa/ZlsCZR3s+CBzSFCKh
-         w1Tg6cONe4y2WQOWnzIlomlk2U41cQLZdYupcnGGT40vQmzszC4W/Imb6ft7t7pUv5
-         5Wm8QPgHCvv/8s4u9pzACTKZKvizasoPnKhtOLU2mH5TEOGHLLS4szz9cMJO6QN0Yi
-         TdXoOetN0ci2rw4ic3K9qVEJHv1rFhzEg741bwKuSJVSHrIey6Hpn4FMuyHCTKI0Ip
-         I/cibIUVCBPFQ==
-Date:   Thu, 9 Jul 2020 11:58:33 +0100
-From:   James Chapman <jchapman@katalix.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v2 bpf 2/2] bpf: net: Avoid incorrect
- bpf_sk_reuseport_detach call
-Message-ID: <20200709105833.GA1761@katalix.com>
-References: <20200709061057.4018499-1-kafai@fb.com>
- <20200709061110.4019316-1-kafai@fb.com>
+        id S1726575AbgGIL00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 07:26:26 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50529 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726782AbgGIL00 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 07:26:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594293984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gB/jRVI1prkorpTFE+RHZKDPeMWYsL/X1nUnMDyfQyk=;
+        b=Il7UvBzYI7U4xptYn1ZSP3TILyKq72lyYsrUIZlU/DiE6vIQ3M+iC+vwpl3Q3Vus5vy3Hu
+        3lJO1isbMGaSRZGymiTo7kq+DNJtGRRE9S974zDJRCe0qf73ufEwRFOfxcmxKfsqfc4yeh
+        MXrNaMdHP34wAQ6qqG24y3q7btXJJBg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-Vlh-uILLPiGVKrj3BhSYyQ-1; Thu, 09 Jul 2020 07:26:18 -0400
+X-MC-Unique: Vlh-uILLPiGVKrj3BhSYyQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13A0B800EB6;
+        Thu,  9 Jul 2020 11:26:16 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9918290E63;
+        Thu,  9 Jul 2020 11:26:11 +0000 (UTC)
+Date:   Thu, 9 Jul 2020 13:26:07 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        mchehab+samsung@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data
+ Path)
+Message-ID: <20200709132607.7fb42415@carbon>
+In-Reply-To: <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
+References: <20200708135737.14660-1-grandmaster@al2klimov.de>
+        <20200708080239.2ce729f3@lwn.net>
+        <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709061110.4019316-1-kafai@fb.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On  Wed, Jul 08, 2020 at 23:11:10 -0700, Martin KaFai Lau wrote:
-> bpf_sk_reuseport_detach is currently called when sk->sk_user_data
-> is not NULL.  It is incorrect because sk->sk_user_data may not be
-> managed by the bpf's reuseport_array.  It has been reported in [1] that,
-> the bpf_sk_reuseport_detach() which is called from udp_lib_unhash() has
-> corrupted the sk_user_data managed by l2tp.
-> 
-> This patch solves it by using another bit (defined as SK_USER_DATA_BPF)
-> of the sk_user_data pointer value.  It marks that a sk_user_data is
-> managed/owned by BPF.
+On Wed, 8 Jul 2020 20:58:39 +0200
+"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 
-I have reservations about using a bit in sk_user_data to indicate
-ownership of that pointer. But putting that aside, I confirm that the
-patch fixes the problem.
+> Am 08.07.20 um 16:02 schrieb Jonathan Corbet:
+> > On Wed,  8 Jul 2020 15:57:37 +0200
+> > "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+> >  =20
+> >>   Documentation/arm/ixp4xx.rst | 4 ++--
+> >>   1 file changed, 2 insertions(+), 2 deletions(-) =20
+> >=20
+> > That's not XDP; something went awry in there somewhere. =20
+>
+> RoFL. Now as you said it I... noticed it at all... (*sigh*, the curse of
+> automation) and I absolutely agree with you. But I've literally no idea...
 
-Acked-by: James Chapman <jchapman@katalix.com>
-Tested-by: James Chapman <jchapman@katalix.com>
-Reported-by: syzbot+9f092552ba9a5efca5df@syzkaller.appspotmail.com
+Yes, we know that scripts/get_maintainer.pl gives false positives for
+XDP, but we choose this to capture drivers that implement XDP.
+
+As you can see here, the chip name IXDP425 contains "XDP", which is why
+it matches...
+
+=20
+> =E2=9E=9C  linux git:(master) perl scripts/get_maintainer.pl --nogit{,-fa=
+llback}=20
+> --nol 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
+> Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+> Alexei Starovoitov <ast@kernel.org> (supporter:XDP (eXpress Data Path))
+> Daniel Borkmann <daniel@iogearbox.net> (supporter:XDP (eXpress Data Path))
+> "David S. Miller" <davem@davemloft.net> (supporter:XDP (eXpress Data Path=
+))
+> Jakub Kicinski <kuba@kernel.org> (supporter:XDP (eXpress Data Path))
+> Jesper Dangaard Brouer <hawk@kernel.org> (supporter:XDP (eXpress Data Pat=
+h))
+> John Fastabend <john.fastabend@gmail.com> (supporter:XDP (eXpress Data=20
+> Path))
+> =E2=9E=9C  linux git:(master) cat=20
+> 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
+>  From 40aee4678ab84b925ab21581030a2cc0b988fbf9 Mon Sep 17 00:00:00 2001
+> From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+> Date: Wed, 8 Jul 2020 08:00:39 +0200
+> Subject: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data Pa=
+th)
+>=20
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>=20
+> Deterministic algorithm:
+> For each file:
+>    If not .svg:
+>      For each line:
+>        If doesn't contain `\bxmlns\b`:
+>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>              If both the HTTP and HTTPS versions
+>              return 200 OK and serve the same content:
+>                Replace HTTP with HTTPS.
+>=20
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>   Documentation/arm/ixp4xx.rst | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/arm/ixp4xx.rst b/Documentation/arm/ixp4xx.rst
+> index a57235616294..d94188b8624f 100644
+> --- a/Documentation/arm/ixp4xx.rst
+> +++ b/Documentation/arm/ixp4xx.rst
+> @@ -119,14 +119,14 @@ http://www.gateworks.com/support/overview.php
+>      the expansion bus.
+>=20
+>   Intel IXDP425 Development Platform
+> -http://www.intel.com/design/network/products/npfamily/ixdpg425.htm
+> +https://www.intel.com/design/network/products/npfamily/ixdpg425.htm
+>=20
+>      This is Intel's standard reference platform for the IXDP425 and is
+>      also known as the Richfield board. It contains 4 PCI slots, 16MB
+>      of flash, two 10/100 ports and one ADSL port.
+>=20
+>   Intel IXDP465 Development Platform
+> -http://www.intel.com/design/network/products/npfamily/ixdp465.htm
+> +https://www.intel.com/design/network/products/npfamily/ixdp465.htm
+>=20
+>      This is basically an IXDP425 with an IXP465 and 32M of flash instead
+>      of just 16.
+> --
+> 2.27.0
+
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
