@@ -2,154 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C65219F0E
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 13:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A477219F53
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 13:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgGIL00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 07:26:26 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50529 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726782AbgGIL00 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 07:26:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594293984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gB/jRVI1prkorpTFE+RHZKDPeMWYsL/X1nUnMDyfQyk=;
-        b=Il7UvBzYI7U4xptYn1ZSP3TILyKq72lyYsrUIZlU/DiE6vIQ3M+iC+vwpl3Q3Vus5vy3Hu
-        3lJO1isbMGaSRZGymiTo7kq+DNJtGRRE9S974zDJRCe0qf73ufEwRFOfxcmxKfsqfc4yeh
-        MXrNaMdHP34wAQ6qqG24y3q7btXJJBg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-Vlh-uILLPiGVKrj3BhSYyQ-1; Thu, 09 Jul 2020 07:26:18 -0400
-X-MC-Unique: Vlh-uILLPiGVKrj3BhSYyQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13A0B800EB6;
-        Thu,  9 Jul 2020 11:26:16 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9918290E63;
-        Thu,  9 Jul 2020 11:26:11 +0000 (UTC)
-Date:   Thu, 9 Jul 2020 13:26:07 +0200
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        mchehab+samsung@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data
- Path)
-Message-ID: <20200709132607.7fb42415@carbon>
-In-Reply-To: <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
-References: <20200708135737.14660-1-grandmaster@al2klimov.de>
-        <20200708080239.2ce729f3@lwn.net>
-        <2aefc870-bf17-9528-958e-bc5b76de85dd@al2klimov.de>
-Organization: Red Hat Inc.
+        id S1727076AbgGILwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 07:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726433AbgGILwV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 07:52:21 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB2CC061A0B
+        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 04:52:21 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o8so1467884wmh.4
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 04:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RgnLFkfDlMduGKE/ztPFGecYYc7s1DxZ/PWGRQJJLRs=;
+        b=ZtbKjxMvYP/9FTODupwovxGroCNIJmYSlsUpzaQ0CEcJTMNqQB9k02e8gNtpuMlUGS
+         YkOAXNIFqxplT/lIOV1voPg4Xw2jsXMdoOM5W+quL5iJp77pYnViJ+wsOj/m8VRnNOiY
+         4lHtvYKQRtS7Msyq1+AbHrymke6YGaWmtisdc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RgnLFkfDlMduGKE/ztPFGecYYc7s1DxZ/PWGRQJJLRs=;
+        b=GPRmZeWVOTg05CD5KQPK28w47SgJScLR+JXLYBOMuTC7c7CqqMKbJv2wiwLMwCCFw0
+         yiLhJrowgRU66SDhj+FKpucFpeHY8ckf3OJIY3WHD02eu6p+SOpsu3cATuOZkWqS4e3F
+         jngPtzZMNWZCgdas3aR32U6uRh4G72mktF4VJEFv2f87MzLRME98MhlEpRvbrNgop6GH
+         kH5nXs4UXDqpmaoTUHiRG590BuH859sTmhQADfClBLXIRlDo+OsKOZ1W03MJGIQUdUZB
+         oYyfEpbpw984SRp++boSN6rwcHsAk02RXmTF4L4KwhF50hWkNwX/aON+CSkaXFao6gl1
+         1+qQ==
+X-Gm-Message-State: AOAM533EHBfAxRMWKRK+mu0kn/5PVQ4BDDYZ2q0JPJgeB6XEov3b5oC+
+        EMJaXvVtOoRZBRTRr8fzYrJk7Q==
+X-Google-Smtp-Source: ABdhPJw2JnRN/XTa6+WZL2sIDnwotc3qUGVnnswUvYbo913hMwzPuzrdX231q7/X1v5wKPOQ0hYQ4A==
+X-Received: by 2002:a1c:7916:: with SMTP id l22mr13271541wme.115.1594295539736;
+        Thu, 09 Jul 2020 04:52:19 -0700 (PDT)
+Received: from antares.lan (6.b.4.5.a.4.9.1.1.9.d.d.1.2.d.8.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:8d21:dd91:194a:54b6])
+        by smtp.gmail.com with ESMTPSA id u1sm6331001wrb.78.2020.07.09.04.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 04:52:18 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     kernel-team@cloudflare.com, Martin KaFai Lau <kafai@fb.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] selftests: bpf: fix detach from sockmap tests
+Date:   Thu,  9 Jul 2020 12:51:51 +0100
+Message-Id: <20200709115151.75829-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 8 Jul 2020 20:58:39 +0200
-"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+Fix sockmap tests which rely on old bpf_prog_dispatch behaviour.
+In the first case, the tests check that detaching without giving
+a program succeeds. Since these are not the desired semantics,
+invert the condition. In the second case, the clean up code doesn't
+supply the necessary program fds.
 
-> Am 08.07.20 um 16:02 schrieb Jonathan Corbet:
-> > On Wed,  8 Jul 2020 15:57:37 +0200
-> > "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
-> >  =20
-> >>   Documentation/arm/ixp4xx.rst | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-) =20
-> >=20
-> > That's not XDP; something went awry in there somewhere. =20
->
-> RoFL. Now as you said it I... noticed it at all... (*sigh*, the curse of
-> automation) and I absolutely agree with you. But I've literally no idea...
+Reported-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Fixes: bb0de3131f4c ("bpf: sockmap: Require attach_bpf_fd when detaching a program")
+---
+ tools/testing/selftests/bpf/test_maps.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Yes, we know that scripts/get_maintainer.pl gives false positives for
-XDP, but we choose this to capture drivers that implement XDP.
-
-As you can see here, the chip name IXDP425 contains "XDP", which is why
-it matches...
-
-=20
-> =E2=9E=9C  linux git:(master) perl scripts/get_maintainer.pl --nogit{,-fa=
-llback}=20
-> --nol 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
-> Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
-> Alexei Starovoitov <ast@kernel.org> (supporter:XDP (eXpress Data Path))
-> Daniel Borkmann <daniel@iogearbox.net> (supporter:XDP (eXpress Data Path))
-> "David S. Miller" <davem@davemloft.net> (supporter:XDP (eXpress Data Path=
-))
-> Jakub Kicinski <kuba@kernel.org> (supporter:XDP (eXpress Data Path))
-> Jesper Dangaard Brouer <hawk@kernel.org> (supporter:XDP (eXpress Data Pat=
-h))
-> John Fastabend <john.fastabend@gmail.com> (supporter:XDP (eXpress Data=20
-> Path))
-> =E2=9E=9C  linux git:(master) cat=20
-> 0003-Replace-HTTP-links-with-HTTPS-ones-XDP-eXpress-Data-.patch
->  From 40aee4678ab84b925ab21581030a2cc0b988fbf9 Mon Sep 17 00:00:00 2001
-> From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-> Date: Wed, 8 Jul 2020 08:00:39 +0200
-> Subject: [PATCH] Replace HTTP links with HTTPS ones: XDP (eXpress Data Pa=
-th)
->=20
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
->=20
-> Deterministic algorithm:
-> For each file:
->    If not .svg:
->      For each line:
->        If doesn't contain `\bxmlns\b`:
->          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->              If both the HTTP and HTTPS versions
->              return 200 OK and serve the same content:
->                Replace HTTP with HTTPS.
->=20
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->   Documentation/arm/ixp4xx.rst | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/arm/ixp4xx.rst b/Documentation/arm/ixp4xx.rst
-> index a57235616294..d94188b8624f 100644
-> --- a/Documentation/arm/ixp4xx.rst
-> +++ b/Documentation/arm/ixp4xx.rst
-> @@ -119,14 +119,14 @@ http://www.gateworks.com/support/overview.php
->      the expansion bus.
->=20
->   Intel IXDP425 Development Platform
-> -http://www.intel.com/design/network/products/npfamily/ixdpg425.htm
-> +https://www.intel.com/design/network/products/npfamily/ixdpg425.htm
->=20
->      This is Intel's standard reference platform for the IXDP425 and is
->      also known as the Richfield board. It contains 4 PCI slots, 16MB
->      of flash, two 10/100 ports and one ADSL port.
->=20
->   Intel IXDP465 Development Platform
-> -http://www.intel.com/design/network/products/npfamily/ixdp465.htm
-> +https://www.intel.com/design/network/products/npfamily/ixdp465.htm
->=20
->      This is basically an IXDP425 with an IXP465 and 32M of flash instead
->      of just 16.
-> --
-> 2.27.0
-
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 6a12a0e01e07..754cf611723e 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -789,19 +789,19 @@ static void test_sockmap(unsigned int tasks, void *data)
+ 	}
+ 
+ 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_PARSER);
+-	if (err) {
++	if (!err) {
+ 		printf("Failed empty parser prog detach\n");
+ 		goto out_sockmap;
+ 	}
+ 
+ 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_VERDICT);
+-	if (err) {
++	if (!err) {
+ 		printf("Failed empty verdict prog detach\n");
+ 		goto out_sockmap;
+ 	}
+ 
+ 	err = bpf_prog_detach(fd, BPF_SK_MSG_VERDICT);
+-	if (err) {
++	if (!err) {
+ 		printf("Failed empty msg verdict prog detach\n");
+ 		goto out_sockmap;
+ 	}
+@@ -1090,19 +1090,19 @@ static void test_sockmap(unsigned int tasks, void *data)
+ 		assert(status == 0);
+ 	}
+ 
+-	err = bpf_prog_detach(map_fd_rx, __MAX_BPF_ATTACH_TYPE);
++	err = bpf_prog_detach2(parse_prog, map_fd_rx, __MAX_BPF_ATTACH_TYPE);
+ 	if (!err) {
+ 		printf("Detached an invalid prog type.\n");
+ 		goto out_sockmap;
+ 	}
+ 
+-	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
++	err = bpf_prog_detach2(parse_prog, map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
+ 	if (err) {
+ 		printf("Failed parser prog detach\n");
+ 		goto out_sockmap;
+ 	}
+ 
+-	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
++	err = bpf_prog_detach2(verdict_prog, map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
+ 	if (err) {
+ 		printf("Failed parser prog detach\n");
+ 		goto out_sockmap;
+-- 
+2.25.1
 
