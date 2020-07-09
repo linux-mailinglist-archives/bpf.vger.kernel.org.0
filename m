@@ -2,133 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D00D21A50D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDEA21A6C3
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 20:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgGIQqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 12:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
+        id S1726261AbgGISV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 14:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgGIQqx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 12:46:53 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AEFC08C5DC
-        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 09:46:53 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id z24so3149856ljn.8
-        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 09:46:53 -0700 (PDT)
+        with ESMTP id S1726196AbgGISV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 14:21:28 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE4DC08E6DC
+        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 11:21:27 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id 9so3489106ljv.5
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 11:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PsNWt03yJwDxgqEiluuHTjUcko/N47fgiVune7ahsmI=;
-        b=NZ6EwJ5G1Kh3hCesuqRM8Wfewg39SZuNsnlO4wzwDamTOayKRMAVEC5Y6DKQLH43OH
-         l4fYWbA8Sq6MSWkw/PXmkZvQ+hPfiTFLJnjhDtGX2LLqy7Nt/ZMPodaQyKoL+WSyqvdd
-         uRryhPN8kZHcWZcfxGcbZ9AmejOG71A4oxnNk=
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=11gPwvbTzhcBYbo+vwPUgMj7SJcAk2yAyF7jDQyYrDQ=;
+        b=L2ZWb2PTR19zzCqVEjb9Xmg361g/AUvEoxd18yaexoIIIvj4/Uzz4hmrNv96qSuZN/
+         sjxlAngpsGDhag86wEs9xg1hvFA7pr+jyFrHN0+OqdUCJ3IqRn5mCpLu8FW2nx6TNYVu
+         GeNVqzhJX+JufNDuVCUt81ZikTeRMxc/LFTIE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PsNWt03yJwDxgqEiluuHTjUcko/N47fgiVune7ahsmI=;
-        b=iY9dvv2pCr+LYF111mBLXY0U7IiIn2Zbyti5aLrbUxkLJz6MIu+KnYuWMro6rpDvdo
-         QQkezVRS2yd3NEe0i5qV3YmQn5Ed4avgxGU8eZ5n33IYseEsv9DbQ6VhNHsC+axTAELH
-         /sobt0KClkVGHiuq6hIUkCUTKyT7peVUBv+6sJnMuvimr9cjIJHI8zUgyKK+0eiIr8ad
-         VhxCQ6Z4kGGWbje8UT9fhr4tox+z1W3YB+Ho6E4ciUGg5LkR98JoOre2uQofuNzBmsYp
-         kZa32FccqlgUC0FchEEWzEgYdZ09kaQg2lZAN5tEqIDytOnqr0I0E9UxaQPn9k7eiR33
-         b+7g==
-X-Gm-Message-State: AOAM530Onaj1Rh2iWvJv7vlWPcoH7ekSreEz+G80L3VnZghC8SVrcN5n
-        PBArGnBzEPwRduhXc6mYt5QMJw==
-X-Google-Smtp-Source: ABdhPJwExpf84u+/tlg3znyLzqv5rc6XPOUbxxAFKhpqgDs9ap3nnkXnefnvqL9jQKlavC6k5U9L5w==
-X-Received: by 2002:a2e:8e68:: with SMTP id t8mr29409154ljk.335.1594313211493;
-        Thu, 09 Jul 2020 09:46:51 -0700 (PDT)
-Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id a23sm1116071lfb.10.2020.07.09.09.46.50
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=11gPwvbTzhcBYbo+vwPUgMj7SJcAk2yAyF7jDQyYrDQ=;
+        b=VzIGxj+0bkHp1OtXQHiOmPRHNjr/SQu4jXn2yZ3CjrVBR0gQ+ubWZJx7ei1zytjeKK
+         R7qJRBii7pPG253uiXhsB4lvOfUdFaZw0NNg3hzv83/F5nK0q3xEML86OgTD2aq3/dAb
+         zKw4lPQC69hoth+ds0w5TGG6O+ogXHbd/U3DVS+PSLtyCl3yeE4P0QVkr9LDvsMqCLqZ
+         PRhAmTyxIVM24Z1Pldc/r8ZAyW+jbvbw6/2KeonZnPxB7lDaDL1KwOBsBx1VC5FI3iTr
+         3iLqHqC59Q5ZmXleZhZDA5JxIG3O/A3iS8yP1xHsQmOFCGOHDjw32B0GgkTnF4h0FTyz
+         WMxA==
+X-Gm-Message-State: AOAM533jb4o6Q1jRdpcmwmS1vkw1GR7RSb8jIcF1wh5X5i5VONiSTKHB
+        V3819Owrot8rbpP48Bn7rYYf4A==
+X-Google-Smtp-Source: ABdhPJyIvtZvgCwJDBk4N9jrMxUsGzwvy61eu1Iyl0GjXzmKDzz2OB1s/2QZ0X3uo4XDOaYUuQ5PGA==
+X-Received: by 2002:a2e:9b41:: with SMTP id o1mr25390840ljj.360.1594318885862;
+        Thu, 09 Jul 2020 11:21:25 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id m9sm1212543lfb.5.2020.07.09.11.21.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 09:46:51 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 18:46:03 +0200
+        Thu, 09 Jul 2020 11:21:25 -0700 (PDT)
+References: <20200709115151.75829-1-lmb@cloudflare.com>
+User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf 1/2] bpf: net: Avoid copying sk_user_data of
- reuseport_array during sk_clone
-Message-ID: <20200709184603.5afe6db2@toad>
-In-Reply-To: <20200709061104.4018798-1-kafai@fb.com>
-References: <20200709061057.4018499-1-kafai@fb.com>
-        <20200709061104.4018798-1-kafai@fb.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team@cloudflare.com, Martin KaFai Lau <kafai@fb.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf] selftests: bpf: fix detach from sockmap tests
+In-reply-to: <20200709115151.75829-1-lmb@cloudflare.com>
+Date:   Thu, 09 Jul 2020 20:21:24 +0200
+Message-ID: <87eepka6sb.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 09 Jul 2020 06:11:04 +0000
-Martin KaFai Lau <kafai@fb.com> wrote:
-
-> It makes little sense for copying sk_user_data of reuseport_array during
-> sk_clone_lock().  This patch reuses the SK_USER_DATA_NOCOPY bit introduced in
-> commit f1ff5ce2cd5e ("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
-> It is used to mark the sk_user_data is not supposed to be copied to its clone.
-> 
-> Although the cloned sk's sk_user_data will not be used/freed in
-> bpf_sk_reuseport_detach(), this change can still allow the cloned
-> sk's sk_user_data to be used by some other means.
-> 
-> Freeing the reuseport_array's sk_user_data does not require a rcu grace
-> period.  Thus, the existing rcu_assign_sk_user_data_nocopy() is not
-> used.
-> 
-> Fixes: 5dc4c4b7d4e8 ("bpf: Introduce BPF_MAP_TYPE_REUSEPORT_SOCKARRAY")
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+On Thu, Jul 09, 2020 at 01:51 PM CEST, Lorenz Bauer wrote:
+> Fix sockmap tests which rely on old bpf_prog_dispatch behaviour.
+> In the first case, the tests check that detaching without giving
+> a program succeeds. Since these are not the desired semantics,
+> invert the condition. In the second case, the clean up code doesn't
+> supply the necessary program fds.
+>
+> Reported-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Fixes: bb0de3131f4c ("bpf: sockmap: Require attach_bpf_fd when detaching a program")
 > ---
->  kernel/bpf/reuseport_array.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-> index 21cde24386db..a95bc8d7e812 100644
-> --- a/kernel/bpf/reuseport_array.c
-> +++ b/kernel/bpf/reuseport_array.c
-> @@ -20,11 +20,14 @@ static struct reuseport_array *reuseport_array(struct bpf_map *map)
->  /* The caller must hold the reuseport_lock */
->  void bpf_sk_reuseport_detach(struct sock *sk)
->  {
-> -	struct sock __rcu **socks;
-> +	uintptr_t sk_user_data;
+>  tools/testing/selftests/bpf/test_maps.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+> index 6a12a0e01e07..754cf611723e 100644
+> --- a/tools/testing/selftests/bpf/test_maps.c
+> +++ b/tools/testing/selftests/bpf/test_maps.c
+> @@ -789,19 +789,19 @@ static void test_sockmap(unsigned int tasks, void *data)
+>  	}
 >  
->  	write_lock_bh(&sk->sk_callback_lock);
-> -	socks = sk->sk_user_data;
-> -	if (socks) {
-> +	sk_user_data = (uintptr_t)sk->sk_user_data;
-> +	if (sk_user_data) {
-> +		struct sock __rcu **socks;
-> +
-> +		socks = (void *)(sk_user_data & SK_USER_DATA_PTRMASK);
->  		WRITE_ONCE(sk->sk_user_data, NULL);
->  		/*
->  		 * Do not move this NULL assignment outside of
-> @@ -252,6 +255,7 @@ int bpf_fd_reuseport_array_update_elem(struct bpf_map *map, void *key,
->  	struct sock *free_osk = NULL, *osk, *nsk;
->  	struct sock_reuseport *reuse;
->  	u32 index = *(u32 *)key;
-> +	uintptr_t sk_user_data;
->  	struct socket *socket;
->  	int err, fd;
+>  	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_PARSER);
+> -	if (err) {
+> +	if (!err) {
+>  		printf("Failed empty parser prog detach\n");
+>  		goto out_sockmap;
+>  	}
 >  
-> @@ -305,7 +309,8 @@ int bpf_fd_reuseport_array_update_elem(struct bpf_map *map, void *key,
->  	if (err)
->  		goto put_file_unlock;
+>  	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_VERDICT);
+> -	if (err) {
+> +	if (!err) {
+>  		printf("Failed empty verdict prog detach\n");
+>  		goto out_sockmap;
+>  	}
 >  
-> -	WRITE_ONCE(nsk->sk_user_data, &array->ptrs[index]);
-> +	sk_user_data = (uintptr_t)&array->ptrs[index] | SK_USER_DATA_NOCOPY;
-> +	WRITE_ONCE(nsk->sk_user_data, (void *)sk_user_data);
->  	rcu_assign_pointer(array->ptrs[index], nsk);
->  	free_osk = osk;
->  	err = 0;
-
-Thanks for fixing this before I got around to it.
-Now we can use reuseport with sockmap splicing :-)
+>  	err = bpf_prog_detach(fd, BPF_SK_MSG_VERDICT);
+> -	if (err) {
+> +	if (!err) {
+>  		printf("Failed empty msg verdict prog detach\n");
+>  		goto out_sockmap;
+>  	}
+> @@ -1090,19 +1090,19 @@ static void test_sockmap(unsigned int tasks, void *data)
+>  		assert(status == 0);
+>  	}
+>  
+> -	err = bpf_prog_detach(map_fd_rx, __MAX_BPF_ATTACH_TYPE);
+> +	err = bpf_prog_detach2(parse_prog, map_fd_rx, __MAX_BPF_ATTACH_TYPE);
+>  	if (!err) {
+>  		printf("Detached an invalid prog type.\n");
+>  		goto out_sockmap;
+>  	}
+>  
+> -	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
+> +	err = bpf_prog_detach2(parse_prog, map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
+>  	if (err) {
+>  		printf("Failed parser prog detach\n");
+>  		goto out_sockmap;
+>  	}
+>  
+> -	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
+> +	err = bpf_prog_detach2(verdict_prog, map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
+>  	if (err) {
+>  		printf("Failed parser prog detach\n");
+>  		goto out_sockmap;
 
 Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
