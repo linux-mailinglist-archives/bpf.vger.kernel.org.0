@@ -2,65 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A2A21A89D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 22:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C395621A8CC
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 22:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgGIUIC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 16:08:02 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49868 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgGIUIB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:08:01 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtcps-0001CD-8M; Thu, 09 Jul 2020 22:08:00 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtcpr-000OIV-Vb; Thu, 09 Jul 2020 22:08:00 +0200
-Subject: Re: [PATCH v2 bpf 1/2] bpf: net: Avoid copying sk_user_data of
- reuseport_array during sk_clone
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
-        netdev@vger.kernel.org
-References: <20200709061057.4018499-1-kafai@fb.com>
- <20200709061104.4018798-1-kafai@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7535d0e3-e442-8611-3c35-cbc9f4cace8c@iogearbox.net>
-Date:   Thu, 9 Jul 2020 22:07:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20200709061104.4018798-1-kafai@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25868/Thu Jul  9 15:58:00 2020)
+        id S1726193AbgGIUUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 16:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgGIUUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 16:20:04 -0400
+Subject: Re: [GIT PULL] kallsyms_show_value() refactoring for v5.8-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594326004;
+        bh=HRptW16geXbMF/1JQz2D9qCQCfAOGAmvnBukdC9XItU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=TD1LKAZjcjOakg7+S/fRXGhPdDuzAql+CuGNCIE9UJA9xFvTxpPu3fCoarIlfZZ0h
+         V+Ur+89VBFaDgF5/C87vpkA9ag8XLbi1ZXPEudPTC5yBTpoaOumjcsfAA83xjq3tPv
+         OUJ8rl62tMue2NKHqWm21BHJpjPbLYtbiJB4Jwj4=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <202007081608.AB6F0E96@keescook>
+References: <202007081608.AB6F0E96@keescook>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <202007081608.AB6F0E96@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
+ tags/kallsyms_show_value-v5.8-rc5
+X-PR-Tracked-Commit-Id: 2c79583927bb8154ecaa45a67dde97661d895ecd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ce69fb3b392fbfd6c255aeb0ee371652478c716f
+Message-Id: <159432600415.22213.6510320407732971510.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Jul 2020 20:20:04 +0000
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dominik Czarnota <dominik.czarnota@trailofbits.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/9/20 8:11 AM, Martin KaFai Lau wrote:
-> It makes little sense for copying sk_user_data of reuseport_array during
-> sk_clone_lock().  This patch reuses the SK_USER_DATA_NOCOPY bit introduced in
-> commit f1ff5ce2cd5e ("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
-> It is used to mark the sk_user_data is not supposed to be copied to its clone.
-> 
-> Although the cloned sk's sk_user_data will not be used/freed in
-> bpf_sk_reuseport_detach(), this change can still allow the cloned
-> sk's sk_user_data to be used by some other means.
-> 
-> Freeing the reuseport_array's sk_user_data does not require a rcu grace
-> period.  Thus, the existing rcu_assign_sk_user_data_nocopy() is not
-> used.
+The pull request you sent on Wed, 8 Jul 2020 16:16:39 -0700:
 
-nit: Would have been nice though to add a nonrcu API for this nevertheless
-instead of open coding.
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/kallsyms_show_value-v5.8-rc5
 
-> Fixes: 5dc4c4b7d4e8 ("bpf: Introduce BPF_MAP_TYPE_REUSEPORT_SOCKARRAY")
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ce69fb3b392fbfd6c255aeb0ee371652478c716f
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
