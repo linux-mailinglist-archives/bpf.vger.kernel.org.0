@@ -2,173 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0103B2197D7
-	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 07:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4A0219842
+	for <lists+bpf@lfdr.de>; Thu,  9 Jul 2020 08:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgGIFZP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 01:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgGIFZP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 01:25:15 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8461CC061A0B
-        for <bpf@vger.kernel.org>; Wed,  8 Jul 2020 22:25:14 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id dm12so437377qvb.9
-        for <bpf@vger.kernel.org>; Wed, 08 Jul 2020 22:25:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OtXViVDmhQpSsmNLrFxMQguvHOspx8hEJmDnkF5dknM=;
-        b=Xr+i/aFzmDUgeNasuAms4R1deOEiQbswaTIJhGsRzOGcoGJpw8NZBkxEOuUaMlAxu9
-         DZ5pcyRWA8AeLhTcWvVbSc9Y5QgIwshQscbPiTyawZIPdTJPTVuUcYWXu8TesJmyrypC
-         H9m0RDNOl96gm4EqXNO4IbgzMMscfiiv1ga6udn9BEIQp4LFJfTjHhPppdQThHtJ+nq3
-         2LWnsuACen4MCon/d8Y1+5zcNPM0FaH7s8Nn/8MOiQqPYMCmJV3KDyxoKCS4s12MOLg8
-         HBvdq5qhUlpeUNEkhEJ+Dmf7QJEHg26NGajejWe6SRQCNxrKJ6oqLzl6rkyB5GIeu7eq
-         3liA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OtXViVDmhQpSsmNLrFxMQguvHOspx8hEJmDnkF5dknM=;
-        b=Rz7Akx+sgQHyXZX1GGSutpsXBiaAHCIzwJ9/UxwYT5WqfByZU44VY0JAYuJ82Wb5e+
-         wSECNx6XtxFo+mF7LjQMxWzhkSQVuKPPDqJtnmj7Ob70M8AOL8vnsbnPd0eYwUPQxgpL
-         tJoqLsIZD8b5U2kfrQPfr9xKtSqlVn9PBkK+MS57WMoPIWknGVY/n3PXC33OVgDOIoaN
-         8MeRrnsjUDX6rQONYAxtd7p5oSVE2hfbosjFYFzinY+5PyZErGmyW83Woibs7/9CKY01
-         34JDxccEG+0G3xaXNHX3lY6oRwbSxuaT+9PpLSRZdpX1tIj7wbfAFfA+Tg7CF2/9k3M9
-         Zbeg==
-X-Gm-Message-State: AOAM532V2bSA8OygjDF/N6Csa1wuzdafq2sMtt3rOnXvzR6A6/he2fdS
-        zSSZFUoUg1wOo6Gog8hk6/KPZceB1C1MLt/diq0=
-X-Google-Smtp-Source: ABdhPJy6Zjw9HqsMSH2zLz2TDOgWfr/jB8c8ePT5ijFNWLwSeL7lpQc+fEcsllKHookq4CtFR15IpzFvcuVxzguFjgg=
-X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr59161016qvf.247.1594272313730;
- Wed, 08 Jul 2020 22:25:13 -0700 (PDT)
+        id S1726519AbgGIGLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 02:11:15 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14190 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725787AbgGIGLO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 02:11:14 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0696BDuY015503
+        for <bpf@vger.kernel.org>; Wed, 8 Jul 2020 23:11:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=9w/W7gadCnPV8FsAX9sFMZ/0YEwhyKmbyL970+hTteU=;
+ b=LsmU5CAH0J7SN5gMEc0CqM7xtaSFHA0/PZDpIYC3K7jqU4hwHegB4UMa5Ea5UdFh5qNJ
+ 3U6OXdFKBsPlZRwdpDkruKO5gBviq7y+C3+CJXh8bSZBGt2hZHkzEvoyigRdkRZ/jBC+
+ YQMv7Cc3Mm46LQ5wj4WH7UahbT1e6bpesAI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 325jysjyb8-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 08 Jul 2020 23:11:14 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 8 Jul 2020 23:10:59 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id F26452945AE1; Wed,  8 Jul 2020 23:10:57 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf 0/2] bpf: net: Fixes in sk_user_data of reuseport_array
+Date:   Wed, 8 Jul 2020 23:10:57 -0700
+Message-ID: <20200709061057.4018499-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <cover.1594065127.git.zhuyifei@google.com> <cf91469d82c2b9954779e5e786c2fa852694e14e.1594065127.git.zhuyifei@google.com>
-In-Reply-To: <cf91469d82c2b9954779e5e786c2fa852694e14e.1594065127.git.zhuyifei@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Jul 2020 22:25:02 -0700
-Message-ID: <CAEf4BzaNuStoxHe6YQiAF3bo3uUi=rrfTp83Z1129W2+-QP6OA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: Add test for CGROUP_STORAGE
- map on multiple attaches
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>, YiFei Zhu <zhuyifei@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_01:2020-07-08,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=382 suspectscore=13 adultscore=0 phishscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007090049
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 1:54 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
->
-> From: YiFei Zhu <zhuyifei@google.com>
->
-> This test creates a parent cgroup, and a child of that cgroup.
-> It attaches a cgroup_skb/egress program that simply counts packets,
-> to a global variable (ARRAY map), and to a CGROUP_STORAGE map.
-> The program is first attached to the parent cgroup only, then to
-> parent and child.
->
-> The test cases sends a message within the child cgroup, and because
-> the program is inherited across parent / child cgroups, it will
-> trigger the egress program for both the parent and child, if they
-> exist. The program, when looking up a CGROUP_STORAGE map, uses the
-> cgroup and attach type of the attachment parameters; therefore,
-> both attaches uses different cgroup storages.
->
-> We assert that all packet counts returns what we expects.
->
-> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> ---
->  .../bpf/prog_tests/cg_storage_multi.c         | 154 ++++++++++++++++++
->  .../bpf/progs/cg_storage_multi_egress_only.c  |  30 ++++
->  2 files changed, 184 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
->  create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_egress_only.c
->
+This set fixes two issues on sk_user_data when a sk is added to
+a reuseport_array.
 
-[...]
+The first patch is to avoid the sk_user_data being copied
+to a cloned sk.  The second patch avoids doing bpf_sk_reuseport_detach()
+on sk_user_data that is not managed by reuseport_array.
 
-> +
-> +static bool assert_storage(struct bpf_map *map, const char *cgroup_path,
-> +                          __u32 expected)
-> +{
-> +       struct bpf_cgroup_storage_key key = {0};
-> +       __u32 value;
-> +       int map_fd;
-> +
-> +       map_fd = bpf_map__fd(map);
-> +
-> +       key.cgroup_inode_id = get_cgroup_id(cgroup_path);
-> +       key.attach_type = BPF_CGROUP_INET_EGRESS;
-> +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value) < 0))
+Since the changes are mostly related to bpf reuseport_array, so it is
+currently tagged as bpf fixes.
 
-please don't use CHECK_FAIL, use CHECK instead
+v2:
+- Avoid ~3UL (Andrii)
 
-> +               return true;
-> +       if (CHECK_FAIL(value != expected))
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
+Martin KaFai Lau (2):
+  bpf: net: Avoid copying sk_user_data of reuseport_array during
+    sk_clone
+  bpf: net: Avoid incorrect bpf_sk_reuseport_detach call
 
-[...]
+ include/net/sock.h           |  3 ++-
+ kernel/bpf/reuseport_array.c | 14 ++++++++++----
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
-> +
-> +static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
-> +{
-> +       struct cg_storage_multi_egress_only *obj;
-> +       int err;
-> +
-> +       if (!test__start_subtest("egress_only"))
-> +               return;
+--=20
+2.24.1
 
-subtest check should be done in test_cg_storage_multi, otherwise it's
-not even clear that this test has subtests
-
-> +
-> +       obj = cg_storage_multi_egress_only__open_and_load();
-> +       if (CHECK_FAIL(!obj))
-> +               return;
-> +
-> +       /* Attach to parent cgroup, trigger packet from child.
-> +        * Assert that there is only one run and in that run the storage is
-> +        * parent cgroup's storage.
-> +        * Also assert that child cgroup's storage does not exist
-> +        */
-> +       err = bpf_prog_attach(bpf_program__fd(obj->progs.egress),
-> +                             parent_cgroup_fd,
-> +                             BPF_CGROUP_INET_EGRESS, BPF_F_ALLOW_MULTI);
-
-please use bpf_program__attach_cgroup() instead
-
-> +       if (CHECK_FAIL(err))
-> +               goto close_bpf_object;
-> +       err = connect_send(CHILD_CGROUP);
-> +       if (CHECK_FAIL(err))
-> +               goto close_bpf_object;
-> +       if (CHECK_FAIL(obj->bss->invocations != 1))
-> +               goto close_bpf_object;
-> +       if (CHECK_FAIL(assert_storage(obj->maps.cgroup_storage,
-> +                                     PARENT_CGROUP, 1)))
-> +               goto close_bpf_object;
-> +       if (CHECK_FAIL(assert_storage_noexist(obj->maps.cgroup_storage,
-> +                                             CHILD_CGROUP)))
-> +               goto close_bpf_object;
-> +
-> +       /* Attach to parent and child cgroup, trigger packet from child.
-> +        * Assert that there are two additional runs, one that run with parent
-> +        * cgroup's storage and one with child cgroup's storage.
-> +        */
-> +       err = bpf_prog_attach(bpf_program__fd(obj->progs.egress),
-> +                             child_cgroup_fd,
-> +                             BPF_CGROUP_INET_EGRESS, BPF_F_ALLOW_MULTI);
-
-Here as well.
-
-[...]
