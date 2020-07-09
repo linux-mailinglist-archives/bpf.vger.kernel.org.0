@@ -2,208 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977F821AB02
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 00:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D5421AB05
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 00:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgGIWzP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 18:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgGIWzO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 18:55:14 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC013C08C5CE
-        for <bpf@vger.kernel.org>; Thu,  9 Jul 2020 15:55:14 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id f23so4097825iof.6
-        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 15:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=jfDnvR7wHaiyhX5r367wpginjQgQYnzr0DxGaEzdCOwmb8DxG8N+jhDvdj8UJsL8ph
-         Qv4mAxgRdl+MSstM8jB5lgnyY/psB5PwDJZdUterzNEIc7kpuSykrgK6eYp0F6EeuNEr
-         V/t0W7Sf9vZ3o4xGjj3FzP8JM+HD4eUWAwgTdhc1R3jtSuLKYz5ubML03k8Pf/Vgsfto
-         d18DNH6a6KcBgKT825nsqm9T6B9/qJIwvOT5l7qO/MqYzkETJ3jngQUxo4Z99FNRG7xQ
-         bSKlrMeMZE8Dc6defADvOfhvLsauYpkq6K+/3mqyVgR2YYs95pGoC27yLDCwx9cS7iS9
-         6n5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
-        b=NkzssQ/49dG8fpAkT4xssfU8oQ9A2CMQj9/g9XSH0s2K41XN4wPqjeVsdg5vmmpQES
-         jmUn+gMn8dj1Cc2lJK+Z8rEhajzOs2ln9hLf9eg/NesKipbFWPoOLi6PSXIJrkVsYYfq
-         KuSHldPDSZ4HgoboeYpE1NnedKLI5PHat52rns2r4oHJN+BCK9i7mdfbQkXUBhozsvHm
-         s/aApzUSQ5n38bXKFaiyR+496E2g1tK7kbmtRcfVvI1LE8px9e+ENdccx0k85FVWxwWd
-         l/Tbm/liAFltPn2t4XRG87bjYa+/ZjtfaiZs4aA5xdi0BkNK5FxERj4jp3EFQvzMfyEG
-         y/fQ==
-X-Gm-Message-State: AOAM533B4cM6ni40Cn7GpwV2NDFr0ryYoA/WDd+4iGRDgCPtIA8NdUsC
-        tp7lek0dyYLTgNroOMlkcJRPqT+bLS1Yyg==
-X-Google-Smtp-Source: ABdhPJwyG02BjZK6OUX7B0u5MLo5D0NZigR/lFsX1epX9OnJ9qPwiK7Ng6GkgfMKNFdhmiLcz92xlQ==
-X-Received: by 2002:a6b:acc7:: with SMTP id v190mr45088969ioe.53.1594335313783;
-        Thu, 09 Jul 2020 15:55:13 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
-        by smtp.gmail.com with ESMTPSA id q2sm2552416ilp.82.2020.07.09.15.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 15:55:13 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH v2 bpf-next 5/5] Documentation/bpf: Document CGROUP_STORAGE map type
-Date:   Thu,  9 Jul 2020 17:54:51 -0500
-Message-Id: <acdbc41fbc921d1b134080c39d041fecf47a5bed.1594333800.git.zhuyifei@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1594333800.git.zhuyifei@google.com>
-References: <cover.1594333800.git.zhuyifei@google.com>
+        id S1726449AbgGIW5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 18:57:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34084 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgGIW5l (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 18:57:41 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069MtHS0022854
+        for <bpf@vger.kernel.org>; Thu, 9 Jul 2020 15:57:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=UN39p7LT33Yse9/2SnztHGUhfsyx3mPntaq1jstnlZo=;
+ b=Ff4u9Bz87TXtbH1DmuQdTbETrNS86BwqBjV0jaq5M7dj2gidjLAPC83NYoB9ndQD4Dxz
+ YLDQvfX/vaQEcFBpuD7uIPFy6qZ71cgTYN11IzsBMFjMo4fYv19IQWFcxZUPxMipU6yA
+ OvhJmAfiRyH80y5DDoMOiU2jH+ATqbjfBCU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 325k2hq4vq-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 15:57:39 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 9 Jul 2020 15:57:37 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id A677C2EC3C49; Thu,  9 Jul 2020 15:57:28 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <qboosh@pld-linux.org>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] libbpf: Fix libbpf hashmap on (I)LP32 architectures
+Date:   Thu, 9 Jul 2020 15:57:23 -0700
+Message-ID: <20200709225723.1069937-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_11:2020-07-09,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=740 clxscore=1015 suspectscore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007090152
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei@google.com>
+From: Jakub Bogusz <qboosh@pld-linux.org>
 
-The machanics and usage are not very straightforward. Given the
-changes it's better to document how it works and how to use it,
-rather than having to rely on the examples and implementation to
-infer what is going on.
+On ILP32, 64-bit result was shifted by value calculated for 32-bit long t=
+ype
+and returned value was much outside hashmap capacity.
+As advised by Andrii Nakryiko, this patch uses different hashing variant =
+for
+architectures with size_t shorter than long long.
 
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+Fixes: e3b924224028 ("libbpf: add resizable non-thread safe internal hash=
+map")
+Signed-off-by: Jakub Bogusz <qboosh@pld-linux.org>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- Documentation/bpf/index.rst              |  9 +++
- Documentation/bpf/map_cgroup_storage.rst | 95 ++++++++++++++++++++++++
- 2 files changed, 104 insertions(+)
- create mode 100644 Documentation/bpf/map_cgroup_storage.rst
+ tools/lib/bpf/hashmap.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 38b4db8be7a2..26f4bb3107fc 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -48,6 +48,15 @@ Program types
-    bpf_lsm
- 
- 
-+Map types
-+=========
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   map_cgroup_storage
-+
-+
- Testing and debugging BPF
- =========================
- 
-diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
-new file mode 100644
-index 000000000000..b7210cb3f294
---- /dev/null
-+++ b/Documentation/bpf/map_cgroup_storage.rst
-@@ -0,0 +1,95 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2020 Google LLC.
-+
-+===========================
-+BPF_MAP_TYPE_CGROUP_STORAGE
-+===========================
-+
-+The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
-+storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
-+attach to cgroups; the programs are made available by the same config. The
-+storage is identified by the cgroup the program is attached to.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGROUP_STORAGE`` map type. Some of its behaviors was changed in
-+Linux 5.9 and this document will describe the differences.
-+
-+Usage
-+=====
-+
-+The map uses key of type ``struct bpf_cgroup_storage_key``, declared in
-+``linux/bpf.h``::
-+
-+    struct bpf_cgroup_storage_key {
-+            __u64 cgroup_inode_id;
-+            __u32 attach_type;
-+    };
-+
-+``cgroup_inode_id`` is the inode id of the cgroup directory.
-+``attach_type`` was the the program's attach type prior to Linux 5.9, since 5.9
-+it is ignored and kept for backwards compatibility.
-+
-+To access the storage in a program, use ``bpf_get_local_storage``::
-+
-+    void *bpf_get_local_storage(void *map, u64 flags)
-+
-+``flags`` is reserved for future use and must be 0.
-+
-+There is no implicit synchronization. Storages of ``BPF_MAP_TYPE_CGROUP_STORAGE``
-+can be accessed by multiple programs across different CPUs, and user should
-+take care of synchronization by themselves.
-+
-+Example usage::
-+
-+    #include <linux/bpf.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+            __type(key, struct bpf_cgroup_storage_key);
-+            __type(value, __u32);
-+    } cgroup_storage SEC(".maps");
-+
-+    int program(struct __sk_buff *skb)
-+    {
-+            __u32 *ptr = bpf_get_local_storage(&cgroup_storage, 0);
-+            __sync_fetch_and_add(ptr_cg_storage-, 1);
-+
-+            return 0;
-+    }
-+
-+Semantics
-+=========
-+
-+``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`` is a variant of this map type. This
-+per-CPU variant will have different memory regions for each CPU for each
-+storage. The non-per-CPU will have the same memory region for each storage.
-+
-+Prior to Linux 5.9, the lifetime of a storage is precisely per-attachment, and
-+for a single ``CGROUP_STORAGE`` map, there can be at most one program loaded
-+that uses the map. A program may be attached to multiple cgroups or have
-+multiple attach types, and each attach creates a fresh zeroed storage. The
-+storage is freed upon detach.
-+
-+Userspace may use the the attach parameters of cgroup and attach type pair
-+in ``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment.
-+
-+Since Linux 5.9, storage can be shared by multiple programs, and attach type
-+is ignored. When a program is attached to a cgroup, the kernel would create a
-+new storage only if the map does not already contain an entry for the cgroup,
-+or else the old storage is reused for the new attachment. Storage is freed
-+only when either the map or the cgroup attached to is being freed. Detaching
-+will not directly free the storage, but it may cause the reference to the map
-+to reach zero and indirectly freeing all storage in the map.
-+
-+Userspace may use the the attach parameters of cgroup only in
-+``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
-+update the storage for a given attachment. The struct also contains an
-+``attach_type`` field; this field is ignored.
-+
-+In all versions, the storage is bound at attach time. Even if the program is
-+attached to parent and triggers in child, the storage still belongs to the
-+parent.
-+
-+Userspace cannot create a new entry in the map or delete an existing entry.
-+Program test runs always use a temporary storage.
--- 
-2.27.0
+diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
+index df59fd4fc95b..e0af36b0e5d8 100644
+--- a/tools/lib/bpf/hashmap.h
++++ b/tools/lib/bpf/hashmap.h
+@@ -11,14 +11,18 @@
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <limits.h>
+-#ifndef __WORDSIZE
+-#define __WORDSIZE (__SIZEOF_LONG__ * 8)
+-#endif
+=20
+ static inline size_t hash_bits(size_t h, int bits)
+ {
+ 	/* shuffle bits and return requested number of upper bits */
+-	return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
++#if (__SIZEOF_SIZE_T__ =3D=3D __SIZEOF_LONG_LONG__)
++	/* LP64 case */
++	return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bit=
+s);
++#elif (__SIZEOF_SIZE_T__ <=3D __SIZEOF_LONG__)
++	return (h * 2654435769lu) >> (__SIZEOF_LONG__ * 8 - bits);
++#else
++#	error "Unsupported size_t size"
++#endif
+ }
+=20
+ typedef size_t (*hashmap_hash_fn)(const void *key, void *ctx);
+--=20
+2.24.1
 
