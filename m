@@ -2,109 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9345021BEBB
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 22:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8471F21BEC9
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 22:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgGJUrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 16:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        id S1727906AbgGJUzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 16:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgGJUrr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 16:47:47 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8933AC08C5DC
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 13:47:47 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q198so6630524qka.2
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 13:47:47 -0700 (PDT)
+        with ESMTP id S1726832AbgGJUzW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 16:55:22 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA6FC08C5DC;
+        Fri, 10 Jul 2020 13:55:22 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q198so6649807qka.2;
+        Fri, 10 Jul 2020 13:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QmFhT5YJS2BvLLS2Yiuq0X86CgA2uNKdbH9GMkWSN4I=;
-        b=CEInXCrgI8E96N7NzclHeURL9Cf1aTCe0iHnDxbAQ+GVZMyqHyiTp8cNX9FMQoFiNX
-         GjA8cxakVe7bZcgJCVmmFHRZS3B1LNVHnVuPWk2D3HQHjLXyrQ/vJxJa9Q9gY6EdukPz
-         q8LRR/9pJCnX91eRrDeSOCsndM107OTRtrY5QGyAQsURMsMHY+ifTrQBTRh5R6Ti25GM
-         91+QpbHqUsPmQTNWFPJAp3NONGFYdFgfdvyHr0rYj+eh946FXLaEcjvUxSLskreyv/WN
-         3C3S0Gt1enYOgVQPvYlcUsEM9zJKLOMk4JMekyfp2kKWZEoae7KBStkhjD3t+C8Zv1jE
-         FmFw==
+        bh=pmcDlrw4meZJFYWX3EhmB3yugEQBs6tKcBmf6yeQHvQ=;
+        b=WnOw1ejXVtSEmc0a/5XFQfNAbtJXvGUudGY5lnwPZf2AeHXAk2y7EYAGND69nYtczt
+         QVFWnZl3wmOUzZqqqIFXFxNf/Ifi+U7xmHUU++nwJ1Q/WyqxwRhgczrYFxRk5W7EO6q1
+         wxNvtnhOAJB6RBPB+Ns2xrYOGAz4qdZtZI5dOts5a1fnfSodSjsQuEL7v29hTf4/cqxc
+         sZTlSu/cGHtxh0ewQQo2o5Pg26oOsIccjfApZLhyzrx6i5PFHahBWIsvWbUrqZnxD4tF
+         YTpAbpN/qiTMOduTmwdXTeNUsWZdACs1765rTR8jbqyoieKE1AJJtQlezBe0lnv+/tOm
+         dwzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QmFhT5YJS2BvLLS2Yiuq0X86CgA2uNKdbH9GMkWSN4I=;
-        b=Df0BHMEcAFrt3ZI+tz/unvGd4wguLej2HU27ekNXQOQH13UvEuC40JC16iFUsot7+C
-         F4JEUlR1RqutdZMLet+G2kUbibPWrOK8Lkj16xSEZN7aNZn+qFsEriruqnjRDp5gyoVo
-         BtyTURoHwAFT8NhnsL6Gmg3QB+hN2P88ulVAGIFNLId6zAG4JnuYxTPX8nUwxiz/gdZA
-         EgQ4cwJ6Zn234VrV44rDExqlBX2lExxBlFTOPpa68nW5QuVngXOu5bX3gLqFpre7KMV1
-         AkhJRITc3S4YIpM7kPyWxxLO0O0H/sVs7ykHv1hz9JBbcRYICZxLQfh9b5HotfBwAvZX
-         ejAA==
-X-Gm-Message-State: AOAM532k0pfemUrlDdFi4qLzl9/r3VgSYGVzLXtqGSiA9YgDEoih9IBw
-        uXpve0DgFqX5aizaZaiSFqHDcHgW4GpDpw/Rqro=
-X-Google-Smtp-Source: ABdhPJytAnp6Hzdp4r8PGVBfdn/hmVRzaaqrinthaIZd3waRTZ+fa84vf98ZBrjMZvowZpZ3SMWn0QH6IT9W5TikvQk=
-X-Received: by 2002:a05:620a:2409:: with SMTP id d9mr72851439qkn.36.1594414066768;
- Fri, 10 Jul 2020 13:47:46 -0700 (PDT)
+        bh=pmcDlrw4meZJFYWX3EhmB3yugEQBs6tKcBmf6yeQHvQ=;
+        b=cTYZ9JvnM0a5sVXpmh+7LKENnae703fE/f93xVSOJxaJrZBR1ACs7ijfhv1aV0nM0D
+         1/9k2jL8TRjP4Jcy9c6nJ2P9gZV2Ie8LOXOiAtZqfLMeEcmNUR/B8Cclnu2zPBJ987Dq
+         R6dV+QGHyvEiTQBES30J6RRDg4nhzC1Z3QIZX6GbazThrk4deZ/J9wzgzJ95ECY62/mV
+         sERB5tLbVRZ9/J51kOfH+trfdeIZ7ojFRBisTacEPSkesA2KoVHfwQuvuG+RswDGxgYq
+         x6oVJvWuDewiNpkbkbWSLAU74UqNy6R9d22w9hNFMM8qD6S6YXgtQcq+2EbP5ydP9wGp
+         Lhcg==
+X-Gm-Message-State: AOAM5336+Tbq5+l5y2DXDK43Gb0uuwFaQJy6nxTZxjx83w1/fRlARsP9
+        ybgOFvrk0H2m/QXGFN/cg8VYn/SGbiQTzRjYODQ=
+X-Google-Smtp-Source: ABdhPJzFvrDqynOy0aH+oFH6/6mPgh59gkw370MYYW2U+aV4cG+M1arimhQoEW5JcEPzj3BSsAp7rrSaKInRMZKMaqs=
+X-Received: by 2002:ae9:f002:: with SMTP id l2mr61156551qkg.437.1594414521627;
+ Fri, 10 Jul 2020 13:55:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com>
- <20200710202056.GA184844@google.com>
-In-Reply-To: <20200710202056.GA184844@google.com>
+References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com> <1594390953-31757-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1594390953-31757-3-git-send-email-alan.maguire@oracle.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Jul 2020 13:47:35 -0700
-Message-ID: <CAEf4BzZ9FdU84xYm_MOjxFAo3=JMbPMEbyLkeuUceHZ4FsGfNA@mail.gmail.com>
-Subject: Re: Occasionally hanging sockopts selftests
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Fri, 10 Jul 2020 13:55:10 -0700
+Message-ID: <CAEf4BzZ4X67E7dxWA8sdiBpuyFfeWZ4yNAagQpwho+FncJv=GQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftests verifying
+ bpf_trace_printk() behaviour
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 1:20 PM <sdf@google.com> wrote:
+On Fri, Jul 10, 2020 at 7:25 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On 07/10, Andrii Nakryiko wrote:
-> > Hey Stanislav,
+> Simple selftests that verifies bpf_trace_printk() returns a sensible
+> value and tracing messages appear.
 >
-> > I've noticed that on 5.5 kernel libbpf Travis CI test runs
-> > occasionally fail due to selftests hanging indefinitely. It seems like
-> > it always happens after sockopt tests succeed, and while
-> > sockopt_inherit test is running. Doesn't seem like the latest kernel
-> > is affected (I haven't found hangs for the latest kernel in recent
-> > history).
->
-> > This is the latest version of selftests, but running on an older (5.5)
-> > version of kernel. So whatever fixes went into selftests are there
-> > already. So I wonder if there were any kernel bugs that were fixed
-> > already but could cause hangs on 5.5?
->
-> > I can disable that specific test for 5.5, but though I should bring
-> > this up first, just in case there are still some bugs in selftests.
->
-> > Thanks for checking!
->
-> > Two most recent failures (not that they are helpful, because there is
-> > no output until tests completes, but still):
->
-> >    - https://travis-ci.com/github/libbpf/libbpf/jobs/359067538
-> >    - https://travis-ci.com/github/libbpf/libbpf/jobs/359784775
-> Nothing pops up, I don't think we did any fixes to address any
-> occasional failles like that.
->
-> The only fixes we did are:
-> d8fe449a9c51 - bpf: Don't return EINVAL from {get,set}sockopt when optlen >
-> PAGE_SIZE
-> 9babe825da76 - bpf: always allocate at least 16 bytes for setsockopt hook
->
-> And I don't see how this test can hang without any of those (should
-> either always pass or fail).
->
-> Let's maybe try to disable it, as you suggested, and see if that's
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-I'm pretty sure it's sockopt_inherit, because I compared what's the
-next test after sockopt in the normal case. So there is no doubt at
-which test it hangs, but why is a different matter. I'll leave it
-enabled for now, it doesn't fail very often, so it's ok.
+see pedantic note below, but I don't think that's an issue in practice
 
-> indeed this sockopt_inherit test that's misbehaving?
-> I can try to find some time next week to reproduce.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Thanks!
+>  .../selftests/bpf/prog_tests/trace_printk.c        | 74 ++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/trace_printk.c   | 21 ++++++
+>  2 files changed, 95 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_printk.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/trace_printk.c
+>
+
+[...]
+
+> +
+> +       /* verify our search string is in the trace buffer */
+> +       while (read(fd, buf, sizeof(buf)) >= 0 || errno == EAGAIN) {
+
+There is a minor chance that "testing,testing" won't be found, if it
+so happened that the first part is in the first read buffer, and the
+second is in the second. I don't think it's ever the case for our CI
+and for my local testing setup, but could be a cause of some
+instability if there is something else emitting data to trace_pipe,
+right?
+
+Maybe line-based reading would be more reliable (unless printk can
+intermix, not sure about that, in which case there is simply no way to
+solve this 100% reliably).
+
+
+> +               if (strstr(buf, SEARCHMSG) != NULL)
+> +                       found++;
+> +               if (found == bss->trace_printk_ran)
+> +                       break;
+> +               if (++iter > 1000)
+> +                       break;
+> +       }
+> +
+> +       if (CHECK(!found, "message from bpf_trace_printk not found",
+> +                 "no instance of %s in %s", SEARCHMSG, TRACEBUF))
+> +               goto cleanup;
+> +
+> +       printf("ran %d times; last return value %d, with %d instances of msg\n",
+> +              bss->trace_printk_ran, bss->trace_printk_ret, found);
+
+Is this needed or it's some debug leftover?
+
+> +cleanup:
+> +       trace_printk__destroy(skel);
+> +       if (fd != -1)
+> +               close(fd);
+> +}
+
+[...]
