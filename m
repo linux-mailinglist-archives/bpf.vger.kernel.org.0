@@ -2,91 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775E121B21B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 11:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E129B21B52B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 14:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgGJJUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 05:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgGJJUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:20:46 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6128C08C5CE;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so4344618pjb.0;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
-        b=V2AkEhpMUH+KvSbxIjWFzekdSoByVCjiHrqM6j0Af5aT1HNGdfs/S13m1HgEk8L8uH
-         /N+ZRBJbte83Mbv+EqjVgM/73jc2jrMwIV8u//7tMQkcsk7L9YOWqF9En11idEEYHNUo
-         CoFyial+U9c+L8f3mh2CK0T76qzCiwTTrSwOqeJdmzbdvMlHPpCISev+77I/QmPj/KLk
-         vfMLTuVDyLw+HrB5h9VhB3i3+k7CHItB+1q4s9QvbMAma+BU/qBRnXzpfolepnmrB7tY
-         SLvZJGLljmjxie1ca/3PxOPcHsiBnIFdfWkfrd7fnmW3/SkvKfmwJcWpZrj77T5+5aAq
-         I7mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
-        b=PyDxvRIQITpInFu2a5HprzWpFB+lbuN4KFYZIGDUD/SepqwL9EYDHWCi6I46uEJ1n1
-         YqPG7wvrP8eDW1sJDV8K6ys+0f9mtX4oBDi5T5/+RJj94cdzlIZPojukGeo/XMyBKYqe
-         Y9CEPuNN5abo9OrGxxHB7Gc9IaN2ngj86V8a2j07SRda8Mzy3bkgxQqn8snKCzxdWo+H
-         Cu9ybHeWUlvqeI3Ti52+FGNGXRuc0iF+eMqt+Nk1VqBHWKRRWpZT/24SdVf7R5Ai/7eT
-         pDphIztqAbBljebQO72U+73MIVHAvcqUkAxi8UEXnSwv0JM/A9eT6hP6nc+yYVuZQs8f
-         acxA==
-X-Gm-Message-State: AOAM5319VXECIGJxIupDPTiWebWkLCmCI98wDS0cP7u1Z2pCq0kHE/DN
-        a3xPSKxeHMkj/3uYUNAOLniDDqgygsxHzsj8
-X-Google-Smtp-Source: ABdhPJx0z3oN+10frWzUngzJ8rZr4E4WNMuJsBdU4vBk4Qe3hRr1WE3NechrtXApQrlpC1p3cSZsiQ==
-X-Received: by 2002:a17:90a:2a4d:: with SMTP id d13mr4505138pjg.195.1594372846367;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-Received: from ubuntu-18.04-x8664 ([119.28.181.184])
-        by smtp.gmail.com with ESMTPSA id i23sm5580924pfq.206.2020.07.10.02.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-From:   Wenbo Zhang <ethercflow@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ethercflow@gmail.com
-Subject: [PATCH] bpf: fix fds_example SIGSEGV error
-Date:   Fri, 10 Jul 2020 05:20:35 -0400
-Message-Id: <20200710092035.28919-1-ethercflow@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726950AbgGJMhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 08:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726725AbgGJMhR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 08:37:17 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.179.81.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C621720772;
+        Fri, 10 Jul 2020 12:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594384637;
+        bh=kGJSTjLX0V52wppHj+UqmzpCnQZBkGJku76RlUsl9IQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qXxIu8yfnGBbvXH1IjXDI5x8qklJlWhqn7QbYvHbyfR1s5D+HmnYDNuO0dKitIgX7
+         PY1uKxWMqwOf/sikSyaNFOgbIcW/pX+lMw/CQQ6EwXMZhWEykazbwtKML+GDfPUmGf
+         jyMhiAMoXsz87nauJQZze1mZn+WzxUymM8sLxOmI=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 37AF1405FF; Fri, 10 Jul 2020 09:37:14 -0300 (-03)
+Date:   Fri, 10 Jul 2020 09:37:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf parse-events: report bpf errors
+Message-ID: <20200710123714.GD22500@kernel.org>
+References: <20200707211449.3868944-1-irogers@google.com>
+ <20200708184732.GC3581918@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708184732.GC3581918@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The `BPF_LOG_BUF_SIZE`'s value is `UINT32_MAX >> 8`, so define an array
-with it on stack caused an overflow.
+Em Wed, Jul 08, 2020 at 08:47:32PM +0200, Jiri Olsa escreveu:
+> On Tue, Jul 07, 2020 at 02:14:49PM -0700, Ian Rogers wrote:
+> > Setting the parse_events_error directly doesn't increment num_errors
+> > causing the error message not to be displayed. Use the
+> > parse_events__handle_error function that sets num_errors and handle
+> > multiple errors.
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> looks good
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
----
- samples/bpf/fds_example.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/samples/bpf/fds_example.c b/samples/bpf/fds_example.c
-index d5992f787232..59f45fef5110 100644
---- a/samples/bpf/fds_example.c
-+++ b/samples/bpf/fds_example.c
-@@ -30,6 +30,8 @@
- #define BPF_M_MAP	1
- #define BPF_M_PROG	2
- 
-+char bpf_log_buf[BPF_LOG_BUF_SIZE];
-+
- static void usage(void)
- {
- 	printf("Usage: fds_example [...]\n");
-@@ -57,7 +59,6 @@ static int bpf_prog_create(const char *object)
- 		BPF_EXIT_INSN(),
- 	};
- 	size_t insns_cnt = sizeof(insns) / sizeof(struct bpf_insn);
--	char bpf_log_buf[BPF_LOG_BUF_SIZE];
- 	struct bpf_object *obj;
- 	int prog_fd;
- 
--- 
-2.17.1
-
+- Arnaldo
