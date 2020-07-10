@@ -2,137 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F5521AB46
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 01:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AC521AC63
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 03:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgGIXNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 19:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgGIXNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:13:17 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC10C08C5CE;
-        Thu,  9 Jul 2020 16:13:17 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id p7so1768504qvl.4;
-        Thu, 09 Jul 2020 16:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hv/1Nf2WjXXW88VGgmWkF0dU2MUYEL1DwubrJtO8Eow=;
-        b=Ip5okX5jeu5mlT40XvDq8dLDIczHVgE3UdL1P62H9KxBUKCUEAkIhI3mOsY8Pz+umC
-         JynLQ5RvpDzY73z01/IG1COJavuXcI9AwNVMdI+j1nGCTxvRQmODZWpFqxD1y8zYb61Q
-         k2q8LNwyaX4nFXM1ON09UmdgYZ9e3fuCOHb9/0tomhRatA9o/XpfmrmnwzlFntdijYhC
-         btfYk+Kqau9PcvX1+fjDhJIbDdkqEdTpx09hOFrG/S8tD5PBdUZtP6gnwl/yVkL7ryIf
-         vjC+CNoz57M42/nMel7oh17WsBjVqlN4Qz4aUr8amLH40BgpTyjQBk/hqevqHGdw4fA3
-         8w/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hv/1Nf2WjXXW88VGgmWkF0dU2MUYEL1DwubrJtO8Eow=;
-        b=YEuXKUQrrTt3gbNpznVa0fwDqVRQWAZLMwoBjhdIaigGGTLhOKISAov1Jw3oWaolXz
-         XQ2AzTYOvJLwtqUTrYwXboQtGOme3KW8Iqd68+Mzf5Q3nZ6aUfZlferSJmm2RWbY6XbG
-         TPYfK+w0ZLTCOn+s8jprAPnokr0hRMRHfyVeSYW65CZWpiyR+U9Jpa+B4Ztt4sPaPcPM
-         82oM2z0/rf6O3y+1LOAcip7/18eBpwhUVoDDKgiCO2lPXrZz5vqb3JaJAyW9TeUgR4dr
-         3d1fE+9zc1ZXfVN5X51snNx195V578w0TH93LSfA4CKkD1Qm0FH22+Q64m418NymmXEJ
-         MVyg==
-X-Gm-Message-State: AOAM532+bF/Nop6yvyOBtXHfVzv4G1ru+D/Fm3Ll0QQbr2Hc4zyG8l2Y
-        eX2ltlZKbvGPHNeIffCh3ZbMBfxmm4C1FPWs4zQ=
-X-Google-Smtp-Source: ABdhPJzcFhwi3fSE6PLc9JeTQLnwNR1a/CX2jqkuyNq8LWrc/P4Y0nCoZHlYY0UXDG3Su0Gzlvbi3ZD7jwbh4AsE7J4=
-X-Received: by 2002:a05:6214:946:: with SMTP id dn6mr54508659qvb.224.1594336394598;
- Thu, 09 Jul 2020 16:13:14 -0700 (PDT)
+        id S1726495AbgGJBKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 21:10:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43358 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726446AbgGJBKe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 21:10:34 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06A0qGhL014318
+        for <bpf@vger.kernel.org>; Thu, 9 Jul 2020 18:10:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=xfAknqrzBkEU4BjOQfd350WpBtIFa49QBe655gjJm08=;
+ b=E2x6hFbw43k1Hj4Kihmkc/8Kki5w7oUCB1BSEtoNfWuSudR7MrVKRiVVHc+R4yVrV+Ca
+ o4gkOxinIgc2OsBAlH6kkXCVHtOJ9cyfviUgcDU8EApHuFibsjM6fbIi7dBHSi0btFg/
+ wQ7EdKgyhDYcx2o5dJlidWXIMdaZjDrlIzg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 325jyyyk50-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 18:10:33 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 9 Jul 2020 18:10:32 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 4363F2EC3C81; Thu,  9 Jul 2020 18:10:28 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: fix memory leak and optimize BTF sanitization
+Date:   Thu, 9 Jul 2020 18:10:23 -0700
+Message-ID: <20200710011023.1655008-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-13-jakub@cloudflare.com>
- <CAEf4BzbrUZhpxfw_eeJJCoo46_x1Y8naE19qoVUWi5sTSNSdzA@mail.gmail.com> <87h7ugadpt.fsf@cloudflare.com>
-In-Reply-To: <87h7ugadpt.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Jul 2020 16:13:03 -0700
-Message-ID: <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 12/16] libbpf: Add support for SK_LOOKUP
- program type
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_11:2020-07-09,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0 spamscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=25
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007100001
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 8:51 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Thu, Jul 09, 2020 at 06:23 AM CEST, Andrii Nakryiko wrote:
-> > On Thu, Jul 2, 2020 at 2:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >>
-> >> Make libbpf aware of the newly added program type, and assign it a
-> >> section name.
-> >>
-> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> >> ---
-> >>
-> >> Notes:
-> >>     v3:
-> >>     - Move new libbpf symbols to version 0.1.0.
-> >>     - Set expected_attach_type in probe_load for new prog type.
-> >>
-> >>     v2:
-> >>     - Add new libbpf symbols to version 0.0.9. (Andrii)
-> >>
-> >>  tools/lib/bpf/libbpf.c        | 3 +++
-> >>  tools/lib/bpf/libbpf.h        | 2 ++
-> >>  tools/lib/bpf/libbpf.map      | 2 ++
-> >>  tools/lib/bpf/libbpf_probes.c | 3 +++
-> >>  4 files changed, 10 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 4ea7f4f1a691..ddcbb5dd78df 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -6793,6 +6793,7 @@ BPF_PROG_TYPE_FNS(perf_event, BPF_PROG_TYPE_PERF_EVENT);
-> >>  BPF_PROG_TYPE_FNS(tracing, BPF_PROG_TYPE_TRACING);
-> >>  BPF_PROG_TYPE_FNS(struct_ops, BPF_PROG_TYPE_STRUCT_OPS);
-> >>  BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
-> >> +BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
-> >>
-> >>  enum bpf_attach_type
-> >>  bpf_program__get_expected_attach_type(struct bpf_program *prog)
-> >> @@ -6969,6 +6970,8 @@ static const struct bpf_sec_def section_defs[] = {
-> >>         BPF_EAPROG_SEC("cgroup/setsockopt",     BPF_PROG_TYPE_CGROUP_SOCKOPT,
-> >>                                                 BPF_CGROUP_SETSOCKOPT),
-> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
-> >> +       BPF_EAPROG_SEC("sk_lookup",             BPF_PROG_TYPE_SK_LOOKUP,
-> >> +                                               BPF_SK_LOOKUP),
-> >
-> > So it's a BPF_PROG_TYPE_SK_LOOKUP with attach type BPF_SK_LOOKUP. What
-> > other potential attach types could there be for
-> > BPF_PROG_TYPE_SK_LOOKUP? How the section name will look like in that
-> > case?
->
-> BPF_PROG_TYPE_SK_LOOKUP won't have any other attach types that I can
-> forsee. There is a single attach type shared by tcp4, tcp6, udp4, and
-> udp6 hook points. If we hook it up in the future say to sctp, I expect
-> the same attach point will be reused.
+Coverity's static analysis helpfully reported a memory leak introduced by
+0f0e55d8247c ("libbpf: Improve BTF sanitization handling"). While fixing =
+it,
+I realized that btf__new() already creates a memory copy, so there is no =
+need
+to do this. So this patch also fixes misleading btf__new() signature to m=
+ake
+data into a `const void *` input parameter. And it avoids unnecessary mem=
+ory
+allocation and copy in BTF sanitization code altogether.
 
-So you needed to add to bpf_attach_type just to fit into link_create
-model of attach_type -> prog_type, right? As I mentioned extending
-bpf_attach_type has a real cost on each cgroup, so we either need to
-solve that problem (and I think that would be the best) or we can
-change link_create logic to not require attach_type for programs like
-SK_LOOKUP, where it's clear without attach type.
+Fixes: 0f0e55d8247c ("libbpf: Improve BTF sanitization handling")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/btf.c    |  2 +-
+ tools/lib/bpf/btf.h    |  2 +-
+ tools/lib/bpf/libbpf.c | 11 +++--------
+ 3 files changed, 5 insertions(+), 10 deletions(-)
 
-Second order question was if we have another attach type, having
-SEC("sk_lookup/just_kidding_something_else") would be a bit weird :)
-But it seems like that's not a concern.
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index c8861c9e3635..c9e760e120dc 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -397,7 +397,7 @@ void btf__free(struct btf *btf)
+ 	free(btf);
+ }
+=20
+-struct btf *btf__new(__u8 *data, __u32 size)
++struct btf *btf__new(const void *data, __u32 size)
+ {
+ 	struct btf *btf;
+ 	int err;
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 173eff23c472..a3b7ef9b737f 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -63,7 +63,7 @@ struct btf_ext_header {
+ };
+=20
+ LIBBPF_API void btf__free(struct btf *btf);
+-LIBBPF_API struct btf *btf__new(__u8 *data, __u32 size);
++LIBBPF_API struct btf *btf__new(const void *data, __u32 size);
+ LIBBPF_API struct btf *btf__parse_elf(const char *path,
+ 				      struct btf_ext **btf_ext);
+ LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *bt=
+f);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6602eb479596..25e4f77be8d7 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2533,17 +2533,12 @@ static int bpf_object__sanitize_and_load_btf(stru=
+ct bpf_object *obj)
+=20
+ 	sanitize =3D btf_needs_sanitization(obj);
+ 	if (sanitize) {
+-		const void *orig_data;
+-		void *san_data;
++		const void *raw_data;
+ 		__u32 sz;
+=20
+ 		/* clone BTF to sanitize a copy and leave the original intact */
+-		orig_data =3D btf__get_raw_data(obj->btf, &sz);
+-		san_data =3D malloc(sz);
+-		if (!san_data)
+-			return -ENOMEM;
+-		memcpy(san_data, orig_data, sz);
+-		kern_btf =3D btf__new(san_data, sz);
++		raw_data =3D btf__get_raw_data(obj->btf, &sz);
++		kern_btf =3D btf__new(raw_data, sz);
+ 		if (IS_ERR(kern_btf))
+ 			return PTR_ERR(kern_btf);
+=20
+--=20
+2.24.1
 
->
-> >
-> >>  };
-> >>
-
-[...]
