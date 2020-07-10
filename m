@@ -2,83 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9758521B92B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 17:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D282821BA27
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 18:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgGJPPB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 11:15:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51252 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728022AbgGJPOl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:14:41 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtujO-0007hb-D9; Fri, 10 Jul 2020 17:14:30 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jtujO-0004pb-2z; Fri, 10 Jul 2020 17:14:30 +0200
+        id S1727074AbgGJQAw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 12:00:52 -0400
+Received: from smtprelay0092.hostedemail.com ([216.40.44.92]:35094 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726925AbgGJQAv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 12:00:51 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 79AB018224D66;
+        Fri, 10 Jul 2020 16:00:50 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3165:3353:3622:3653:3865:3866:3867:3868:3870:3872:3873:4321:5007:6119:6737:7903:10004:10400:10848:11232:11473:11658:11914:12043:12048:12297:12555:12679:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: swim81_190e06826ecf
+X-Filterd-Recvd-Size: 2357
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 10 Jul 2020 16:00:48 +0000 (UTC)
+Message-ID: <a2f48c734bdc6b865a41ad684e921ac04b221821.camel@perches.com>
 Subject: Re: [PATCH] MAINTAINERS: XDP: restrict N: and K:
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>, ast@kernel.org,
+From:   Joe Perches <joe@perches.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>, ast@kernel.org,
         davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
         john.fastabend@gmail.com, mchehab+huawei@kernel.org,
         robh@kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
+Date:   Fri, 10 Jul 2020 09:00:46 -0700
+In-Reply-To: <7d4427cc-a57c-ca99-1119-1674d509ba9d@iogearbox.net>
 References: <20200709194257.26904-1-grandmaster@al2klimov.de>
- <d7689340-55fc-5f3f-60ee-b9c952839cab@iogearbox.net>
- <19a4a48b-3b83-47b9-ac48-e0a95a50fc5e@al2klimov.de>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7d4427cc-a57c-ca99-1119-1674d509ba9d@iogearbox.net>
-Date:   Fri, 10 Jul 2020 17:14:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+         <d7689340-55fc-5f3f-60ee-b9c952839cab@iogearbox.net>
+         <19a4a48b-3b83-47b9-ac48-e0a95a50fc5e@al2klimov.de>
+         <7d4427cc-a57c-ca99-1119-1674d509ba9d@iogearbox.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <19a4a48b-3b83-47b9-ac48-e0a95a50fc5e@al2klimov.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25869/Fri Jul 10 16:01:45 2020)
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/10/20 8:17 AM, Alexander A. Klimov wrote:
-> Am 09.07.20 um 22:37 schrieb Daniel Borkmann:
->> On 7/9/20 9:42 PM, Alexander A. Klimov wrote:
->>> Rationale:
->>> Documentation/arm/ixp4xx.rst contains "xdp" as part of "ixdp465"
->>> which has nothing to do with XDP.
->>>
->>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
->>> ---
->>>   See also: https://lore.kernel.org/lkml/20200709132607.7fb42415@carbon/
->>>
->>>   MAINTAINERS | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 1d4aa7f942de..2bb7feb838af 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -18708,8 +18708,8 @@ F:    include/trace/events/xdp.h
->>>   F:    kernel/bpf/cpumap.c
->>>   F:    kernel/bpf/devmap.c
->>>   F:    net/core/xdp.c
->>> -N:    xdp
->>> -K:    xdp
->>> +N:    (?:\b|_)xdp(?:\b|_)
->>> +K:    (?:\b|_)xdp(?:\b|_)
->>
->> Please also include \W to generally match on non-alphanumeric char given you
->> explicitly want to avoid [a-z0-9] around the term xdp.
-> Aren't \W, ^ and $ already covered by \b?
+On Fri, 2020-07-10 at 17:14 +0200, Daniel Borkmann wrote:
+> On 7/10/20 8:17 AM, Alexander A. Klimov wrote:
+> > Am 09.07.20 um 22:37 schrieb Daniel Borkmann:
+> > > On 7/9/20 9:42 PM, Alexander A. Klimov wrote:
+> > > > Rationale:
+> > > > Documentation/arm/ixp4xx.rst contains "xdp" as part of "ixdp465"
+> > > > which has nothing to do with XDP.
+[]
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> > > > @@ -18708,8 +18708,8 @@ F:    include/trace/events/xdp.h
+> > > >   F:    kernel/bpf/cpumap.c
+> > > >   F:    kernel/bpf/devmap.c
+> > > >   F:    net/core/xdp.c
+> > > > -N:    xdp
+> > > > -K:    xdp
+> > > > +N:    (?:\b|_)xdp(?:\b|_)
+> > > > +K:    (?:\b|_)xdp(?:\b|_)
+> > > 
+> > > Please also include \W to generally match on non-alphanumeric char given you
+> > > explicitly want to avoid [a-z0-9] around the term xdp.
+> > Aren't \W, ^ and $ already covered by \b?
+> 
+> Ah, true; it says '\b really means (?:(?<=\w)(?!\w)|(?<!\w)(?=\w))', so all good.
+> In case this goes via net or net-next tree:
 
-Ah, true; it says '\b really means (?:(?<=\w)(?!\w)|(?<!\w)(?=\w))', so all good.
-In case this goes via net or net-next tree:
+This N: pattern does not match files like:
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+	samples/bpf/xdp1_kern.c
+
+and does match files like:
+
+	drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+
+Should it?
+
+
