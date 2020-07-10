@@ -2,211 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6649621B1C3
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775E121B21B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 11:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgGJIz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 04:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        id S1726615AbgGJJUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 05:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgGJIz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 04:55:57 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DF8C08C5DC
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:55:57 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d21so2773844lfb.6
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:55:57 -0700 (PDT)
+        with ESMTP id S1726288AbgGJJUq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 05:20:46 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6128C08C5CE;
+        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gc15so4344618pjb.0;
+        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=QccdIZKRXUqOaE8BtOB8jfCZKEDsRDKoroB6FCGuL50=;
-        b=JGtpL0HJhef3NnGqn75JQI2adHAjHJ48cCk8icUZo/9kjmekmPUI/d+5i3BBOLjKB2
-         9XoqMqBfllKXh7VjvGobE+pFFUql+ZG2zYh95u0+l0TS/8xa5JUZ3x3YEmOeb0Z0OaTY
-         l4rhTR8j5eEYtY+9ul7fZ8ZuTlVJI9N6/Ct7Y=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
+        b=V2AkEhpMUH+KvSbxIjWFzekdSoByVCjiHrqM6j0Af5aT1HNGdfs/S13m1HgEk8L8uH
+         /N+ZRBJbte83Mbv+EqjVgM/73jc2jrMwIV8u//7tMQkcsk7L9YOWqF9En11idEEYHNUo
+         CoFyial+U9c+L8f3mh2CK0T76qzCiwTTrSwOqeJdmzbdvMlHPpCISev+77I/QmPj/KLk
+         vfMLTuVDyLw+HrB5h9VhB3i3+k7CHItB+1q4s9QvbMAma+BU/qBRnXzpfolepnmrB7tY
+         SLvZJGLljmjxie1ca/3PxOPcHsiBnIFdfWkfrd7fnmW3/SkvKfmwJcWpZrj77T5+5aAq
+         I7mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=QccdIZKRXUqOaE8BtOB8jfCZKEDsRDKoroB6FCGuL50=;
-        b=k9ZEdbkdxOSjnKh4bbICqXxQTg16NAsdAILue+HWSqWSAhutDXX8/IWPJZarC8kzZe
-         j+b89jucmnlGkFVNhscSHlxJt6mqiIxB5sUqR5sZJtBLMq84XRUZgGXotseZA+ysMiJR
-         V9TdmR39lVT3kizKsRLH6dJWix4ECZoAWZPdXOmVMZ40xeQ10AjDN0ZxPURBdK9JTjzR
-         /Zejs0Ri3B4N8LDvHQ06YnX+NpxObxED1J+mtqMh8rAVDca6Fa0SV0/U9hG428rtUxnq
-         xbcBFlzGX/rFwJ2Na12OC5JcuTHIIYppCYNegDVZQkx0xUwQZotE862YhLqgEefW08Gt
-         a+8A==
-X-Gm-Message-State: AOAM533jd7u1weB9EvCfbVXYNuuietp9K2uHJNBAX15Y7SA9oFrjIsYP
-        fZZaMQdesKiXgBfCoE1N2ApqNA==
-X-Google-Smtp-Source: ABdhPJwGqa/r8/8mhRGEbPQih2JFWDEZEIcqG8/4L6auWAmXlkYT6pzEudAuSm9BX6KdKsACHdwH5A==
-X-Received: by 2002:a05:6512:3153:: with SMTP id s19mr30319594lfi.25.1594371355292;
-        Fri, 10 Jul 2020 01:55:55 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id e16sm1698904ljn.12.2020.07.10.01.55.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
+        b=PyDxvRIQITpInFu2a5HprzWpFB+lbuN4KFYZIGDUD/SepqwL9EYDHWCi6I46uEJ1n1
+         YqPG7wvrP8eDW1sJDV8K6ys+0f9mtX4oBDi5T5/+RJj94cdzlIZPojukGeo/XMyBKYqe
+         Y9CEPuNN5abo9OrGxxHB7Gc9IaN2ngj86V8a2j07SRda8Mzy3bkgxQqn8snKCzxdWo+H
+         Cu9ybHeWUlvqeI3Ti52+FGNGXRuc0iF+eMqt+Nk1VqBHWKRRWpZT/24SdVf7R5Ai/7eT
+         pDphIztqAbBljebQO72U+73MIVHAvcqUkAxi8UEXnSwv0JM/A9eT6hP6nc+yYVuZQs8f
+         acxA==
+X-Gm-Message-State: AOAM5319VXECIGJxIupDPTiWebWkLCmCI98wDS0cP7u1Z2pCq0kHE/DN
+        a3xPSKxeHMkj/3uYUNAOLniDDqgygsxHzsj8
+X-Google-Smtp-Source: ABdhPJx0z3oN+10frWzUngzJ8rZr4E4WNMuJsBdU4vBk4Qe3hRr1WE3NechrtXApQrlpC1p3cSZsiQ==
+X-Received: by 2002:a17:90a:2a4d:: with SMTP id d13mr4505138pjg.195.1594372846367;
+        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
+Received: from ubuntu-18.04-x8664 ([119.28.181.184])
+        by smtp.gmail.com with ESMTPSA id i23sm5580924pfq.206.2020.07.10.02.20.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 01:55:54 -0700 (PDT)
-References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-3-jakub@cloudflare.com> <CAEf4BzZ7-0TFD4+NqpK9X=Yuiem89Ug27v90fev=nn+3anCTpA@mail.gmail.com> <87imewakhz.fsf@cloudflare.com> <CAEf4Bza7URA60jnLJsPV__PwmhV8G8+cCihdqqsKDSdQ1CYr_w@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>
-Subject: Re: [PATCH bpf-next v3 02/16] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
-In-reply-to: <CAEf4Bza7URA60jnLJsPV__PwmhV8G8+cCihdqqsKDSdQ1CYr_w@mail.gmail.com>
-Date:   Fri, 10 Jul 2020 10:55:53 +0200
-Message-ID: <87blknagva.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
+From:   Wenbo Zhang <ethercflow@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ethercflow@gmail.com
+Subject: [PATCH] bpf: fix fds_example SIGSEGV error
+Date:   Fri, 10 Jul 2020 05:20:35 -0400
+Message-Id: <20200710092035.28919-1-ethercflow@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 01:09 AM CEST, Andrii Nakryiko wrote:
-> On Thu, Jul 9, 2020 at 6:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Thu, Jul 09, 2020 at 06:08 AM CEST, Andrii Nakryiko wrote:
->> > On Thu, Jul 2, 2020 at 2:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->> >>
->> >> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
->> >> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
->> >> when looking up a listening socket for a new connection request for
->> >> connection oriented protocols, or when looking up an unconnected socket for
->> >> a packet for connection-less protocols.
->> >>
->> >> When called, SK_LOOKUP BPF program can select a socket that will receive
->> >> the packet. This serves as a mechanism to overcome the limits of what
->> >> bind() API allows to express. Two use-cases driving this work are:
->> >>
->> >>  (1) steer packets destined to an IP range, on fixed port to a socket
->> >>
->> >>      192.0.2.0/24, port 80 -> NGINX socket
->> >>
->> >>  (2) steer packets destined to an IP address, on any port to a socket
->> >>
->> >>      198.51.100.1, any port -> L7 proxy socket
->> >>
->> >> In its run-time context program receives information about the packet that
->> >> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
->> >> address 4-tuple. Context can be further extended to include ingress
->> >> interface identifier.
->> >>
->> >> To select a socket BPF program fetches it from a map holding socket
->> >> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
->> >> helper to record the selection. Transport layer then uses the selected
->> >> socket as a result of socket lookup.
->> >>
->> >> This patch only enables the user to attach an SK_LOOKUP program to a
->> >> network namespace. Subsequent patches hook it up to run on local delivery
->> >> path in ipv4 and ipv6 stacks.
->> >>
->> >> Suggested-by: Marek Majkowski <marek@cloudflare.com>
->> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> >> ---
->> >>
->> >> Notes:
->> >>     v3:
->> >>     - Allow bpf_sk_assign helper to replace previously selected socket only
->> >>       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
->> >>       programs running in series to accidentally override each other's verdict.
->> >>     - Let BPF program decide that load-balancing within a reuseport socket group
->> >>       should be skipped for the socket selected with bpf_sk_assign() by passing
->> >>       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
->> >>     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
->> >>       the selected socket with an intention for multiple attached program
->> >>       running in series to see each other's choices. However, currently the
->> >>       verifier doesn't allow checking if pointer is set.
->> >>     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
->> >>     - Get rid of macros in convert_ctx_access to make it easier to read.
->> >>     - Disallow 1-,2-byte access to context fields containing IP addresses.
->> >>
->> >>     v2:
->> >>     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
->> >>       Update bpf_sk_assign docs accordingly. (Martin)
->> >>     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
->> >>     - Fix broken build when CONFIG_INET is not selected. (Martin)
->> >>     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
->> >>     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
->> >>
->> >>  include/linux/bpf-netns.h  |   3 +
->> >>  include/linux/bpf_types.h  |   2 +
->> >>  include/linux/filter.h     |  19 ++++
->> >>  include/uapi/linux/bpf.h   |  74 +++++++++++++++
->> >>  kernel/bpf/net_namespace.c |   5 +
->> >>  kernel/bpf/syscall.c       |   9 ++
->> >>  net/core/filter.c          | 186 +++++++++++++++++++++++++++++++++++++
->> >>  scripts/bpf_helpers_doc.py |   9 +-
->> >>  8 files changed, 306 insertions(+), 1 deletion(-)
->> >>
->>
->> [...]
->>
->> >> +
->> >> +static u32 sk_lookup_convert_ctx_access(enum bpf_access_type type,
->> >> +                                       const struct bpf_insn *si,
->> >> +                                       struct bpf_insn *insn_buf,
->> >> +                                       struct bpf_prog *prog,
->> >> +                                       u32 *target_size)
->> >
->> > Would it be too extreme to rely on BTF and direct memory access
->> > (similar to tp_raw, fentry/fexit, etc) for accessing context fields,
->> > instead of all this assembly rewrites? So instead of having
->> > bpf_sk_lookup and bpf_sk_lookup_kern, it will always be a full variant
->> > (bpf_sk_lookup_kern, or however we'd want to name it then) and
->> > verifier will just ensure that direct memory reads go to the right
->> > field boundaries?
->>
->> Sounds like a decision related to long-term vision. I'd appreciate input
->> from maintainers if this is the direction we want to go in.
->>
->> From implementation PoV - hard for me to say what would be needed to get
->> it working, I'm not familiar how BPF_TRACE_* attach types provide access
->> to context, so I'd need to look around and prototype it
->> first. (Actually, I'm not sure if you're asking if it is doable or you
->> already know?)
->
-> I'm pretty sure it's doable with what we have in verifier, but I'm not
-> sure about all the details and amount of work. So consider this an
-> initiation of a medium-term discussion. I was also curious to hear an
-> opinion from Alexei and Daniel whether that's would be the right way
-> to do this moving forward (not necessarily with your changes, though).
+The `BPF_LOG_BUF_SIZE`'s value is `UINT32_MAX >> 8`, so define an array
+with it on stack caused an overflow.
 
-From my side I can vouch that getting convert_ctx_access is not easy to
-get right (at least for me) when backing structure is non-trivial,
-e.g. has pointers or unions.
+Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+---
+ samples/bpf/fds_example.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-v4 will contain two fixes exactly in this area. I also have a patch for
-how verifier handles narrow loads when load size <= target field size <
-ctx field size.
+diff --git a/samples/bpf/fds_example.c b/samples/bpf/fds_example.c
+index d5992f787232..59f45fef5110 100644
+--- a/samples/bpf/fds_example.c
++++ b/samples/bpf/fds_example.c
+@@ -30,6 +30,8 @@
+ #define BPF_M_MAP	1
+ #define BPF_M_PROG	2
+ 
++char bpf_log_buf[BPF_LOG_BUF_SIZE];
++
+ static void usage(void)
+ {
+ 	printf("Usage: fds_example [...]\n");
+@@ -57,7 +59,6 @@ static int bpf_prog_create(const char *object)
+ 		BPF_EXIT_INSN(),
+ 	};
+ 	size_t insns_cnt = sizeof(insns) / sizeof(struct bpf_insn);
+-	char bpf_log_buf[BPF_LOG_BUF_SIZE];
+ 	struct bpf_object *obj;
+ 	int prog_fd;
+ 
+-- 
+2.17.1
 
-That is to say, any alternative approach that "automates" this would be
-very welcome.
-
-I've accumulated quite a few changes already since v3, so I was planning
-to roll out v4 to keep things moving while we continue the discussion.
-
->
->>
->> Off the top of my head, I have one concern, I'm exposing the selected
->> socket in the context. This is for the benefit of one program being
->> aware of other program's selection, if multiple programs are attached.
->>
->> I understand that any piece of data reachable from struct sock *, would
->> be readable by SK_LOOKUP prog (writes can be blocked in
->> is_valid_access). And that this is a desired property for tracing. Not
->> sure how to limit it for a network program that doesn't need all that
->> info.
->>
->> >
->> >> +{
->> >> +       struct bpf_insn *insn = insn_buf;
->> >> +#if IS_ENABLED(CONFIG_IPV6)
->> >> +       int off;
->> >> +#endif
->> >> +
->> >
->> > [...]
