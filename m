@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F85021B174
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 10:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6649621B1C3
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 10:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgGJIhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 04:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
+        id S1727932AbgGJIz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 04:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgGJIhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 04:37:08 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7038AC08C5CE
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:37:08 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d17so5525764ljl.3
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:37:08 -0700 (PDT)
+        with ESMTP id S1727818AbgGJIz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 04:55:57 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DF8C08C5DC
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:55:57 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d21so2773844lfb.6
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:55:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=fejdS5oXDBhA7SCXC2ps+GSa09Mm4PzKTz47mMKeznA=;
-        b=c3x2FiQT6TXoFMi/lEyaa5Bcxv2wDEzGBOkaSSkCiIp5nsVGuNPzUTudrN7fLc1cMo
-         WNHvoLDD8rVMEStHW0YH5o6c2RpKi07IJPBFRptIYSQ0yGqfoOz7QqoLjW+fNThOnmv2
-         XHkH7cmyfWtQKQnlTZ6SaWN8R0i0IapKfj540=
+        bh=QccdIZKRXUqOaE8BtOB8jfCZKEDsRDKoroB6FCGuL50=;
+        b=JGtpL0HJhef3NnGqn75JQI2adHAjHJ48cCk8icUZo/9kjmekmPUI/d+5i3BBOLjKB2
+         9XoqMqBfllKXh7VjvGobE+pFFUql+ZG2zYh95u0+l0TS/8xa5JUZ3x3YEmOeb0Z0OaTY
+         l4rhTR8j5eEYtY+9ul7fZ8ZuTlVJI9N6/Ct7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=fejdS5oXDBhA7SCXC2ps+GSa09Mm4PzKTz47mMKeznA=;
-        b=HCgXucIuTAolP37hAiXOC+rIdgFSHQUGOMHvZxKZN2bQRltyckDvZ91/lGV6kNduQM
-         qx40LQikRyOFIGcci0O1u6L4SxgLZo9FTBwYbTSKF1rXh1k+1dU+9ifrQOrz34qV4xoN
-         2t1x4I2ExssMVHn8e1JcO2lvx8QTOgMgimfKxoqIH0pMhxS2/EdBgaDmjKyq+ibNmieQ
-         idW2AQKLmkPJxnXcdDJYygTtaLCjAFic1xv9JIIfTL2/Lrvm5hb7x4TxtBBqnd+65nUW
-         cpe6Q0RpqEW/OGQh1LgXw8YJ7IzXKNIwvR1CZ4tR4sKGmJ3WKBa8Zr7EzG5UnB99l46H
-         Y7BQ==
-X-Gm-Message-State: AOAM530IOW6wus1fav0AUXm6IKeUwGuNJR8TRClHHzAxmDSbmKwn+QN0
-        QDAj470vXlvdAqNW2YCC+Cc/Tg==
-X-Google-Smtp-Source: ABdhPJyDO+qq/oCenn+hN8r63rNpM0pYXwg+q/LIjKEgOWJ8pfCfGAw0CTosqI9qnesX4M/iqbRfTg==
-X-Received: by 2002:a2e:9a47:: with SMTP id k7mr27428157ljj.96.1594370226759;
-        Fri, 10 Jul 2020 01:37:06 -0700 (PDT)
+        bh=QccdIZKRXUqOaE8BtOB8jfCZKEDsRDKoroB6FCGuL50=;
+        b=k9ZEdbkdxOSjnKh4bbICqXxQTg16NAsdAILue+HWSqWSAhutDXX8/IWPJZarC8kzZe
+         j+b89jucmnlGkFVNhscSHlxJt6mqiIxB5sUqR5sZJtBLMq84XRUZgGXotseZA+ysMiJR
+         V9TdmR39lVT3kizKsRLH6dJWix4ECZoAWZPdXOmVMZ40xeQ10AjDN0ZxPURBdK9JTjzR
+         /Zejs0Ri3B4N8LDvHQ06YnX+NpxObxED1J+mtqMh8rAVDca6Fa0SV0/U9hG428rtUxnq
+         xbcBFlzGX/rFwJ2Na12OC5JcuTHIIYppCYNegDVZQkx0xUwQZotE862YhLqgEefW08Gt
+         a+8A==
+X-Gm-Message-State: AOAM533jd7u1weB9EvCfbVXYNuuietp9K2uHJNBAX15Y7SA9oFrjIsYP
+        fZZaMQdesKiXgBfCoE1N2ApqNA==
+X-Google-Smtp-Source: ABdhPJwGqa/r8/8mhRGEbPQih2JFWDEZEIcqG8/4L6auWAmXlkYT6pzEudAuSm9BX6KdKsACHdwH5A==
+X-Received: by 2002:a05:6512:3153:: with SMTP id s19mr30319594lfi.25.1594371355292;
+        Fri, 10 Jul 2020 01:55:55 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id v19sm1897418lfi.65.2020.07.10.01.37.05
+        by smtp.gmail.com with ESMTPSA id e16sm1698904ljn.12.2020.07.10.01.55.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 01:37:06 -0700 (PDT)
-References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-13-jakub@cloudflare.com> <CAEf4BzbrUZhpxfw_eeJJCoo46_x1Y8naE19qoVUWi5sTSNSdzA@mail.gmail.com> <87h7ugadpt.fsf@cloudflare.com> <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com>
+        Fri, 10 Jul 2020 01:55:54 -0700 (PDT)
+References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-3-jakub@cloudflare.com> <CAEf4BzZ7-0TFD4+NqpK9X=Yuiem89Ug27v90fev=nn+3anCTpA@mail.gmail.com> <87imewakhz.fsf@cloudflare.com> <CAEf4Bza7URA60jnLJsPV__PwmhV8G8+cCihdqqsKDSdQ1CYr_w@mail.gmail.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
@@ -53,11 +53,12 @@ Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf-next v3 12/16] libbpf: Add support for SK_LOOKUP program type
-In-reply-to: <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com>
-Date:   Fri, 10 Jul 2020 10:37:04 +0200
-Message-ID: <87d053ahqn.fsf@cloudflare.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 02/16] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+In-reply-to: <CAEf4Bza7URA60jnLJsPV__PwmhV8G8+cCihdqqsKDSdQ1CYr_w@mail.gmail.com>
+Date:   Fri, 10 Jul 2020 10:55:53 +0200
+Message-ID: <87blknagva.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -65,96 +66,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 01:13 AM CEST, Andrii Nakryiko wrote:
-> On Thu, Jul 9, 2020 at 8:51 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Fri, Jul 10, 2020 at 01:09 AM CEST, Andrii Nakryiko wrote:
+> On Thu, Jul 9, 2020 at 6:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >>
->> On Thu, Jul 09, 2020 at 06:23 AM CEST, Andrii Nakryiko wrote:
+>> On Thu, Jul 09, 2020 at 06:08 AM CEST, Andrii Nakryiko wrote:
 >> > On Thu, Jul 2, 2020 at 2:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >> >>
->> >> Make libbpf aware of the newly added program type, and assign it a
->> >> section name.
+>> >> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
+>> >> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
+>> >> when looking up a listening socket for a new connection request for
+>> >> connection oriented protocols, or when looking up an unconnected socket for
+>> >> a packet for connection-less protocols.
 >> >>
+>> >> When called, SK_LOOKUP BPF program can select a socket that will receive
+>> >> the packet. This serves as a mechanism to overcome the limits of what
+>> >> bind() API allows to express. Two use-cases driving this work are:
+>> >>
+>> >>  (1) steer packets destined to an IP range, on fixed port to a socket
+>> >>
+>> >>      192.0.2.0/24, port 80 -> NGINX socket
+>> >>
+>> >>  (2) steer packets destined to an IP address, on any port to a socket
+>> >>
+>> >>      198.51.100.1, any port -> L7 proxy socket
+>> >>
+>> >> In its run-time context program receives information about the packet that
+>> >> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
+>> >> address 4-tuple. Context can be further extended to include ingress
+>> >> interface identifier.
+>> >>
+>> >> To select a socket BPF program fetches it from a map holding socket
+>> >> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
+>> >> helper to record the selection. Transport layer then uses the selected
+>> >> socket as a result of socket lookup.
+>> >>
+>> >> This patch only enables the user to attach an SK_LOOKUP program to a
+>> >> network namespace. Subsequent patches hook it up to run on local delivery
+>> >> path in ipv4 and ipv6 stacks.
+>> >>
+>> >> Suggested-by: Marek Majkowski <marek@cloudflare.com>
 >> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 >> >> ---
 >> >>
 >> >> Notes:
 >> >>     v3:
->> >>     - Move new libbpf symbols to version 0.1.0.
->> >>     - Set expected_attach_type in probe_load for new prog type.
+>> >>     - Allow bpf_sk_assign helper to replace previously selected socket only
+>> >>       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
+>> >>       programs running in series to accidentally override each other's verdict.
+>> >>     - Let BPF program decide that load-balancing within a reuseport socket group
+>> >>       should be skipped for the socket selected with bpf_sk_assign() by passing
+>> >>       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
+>> >>     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
+>> >>       the selected socket with an intention for multiple attached program
+>> >>       running in series to see each other's choices. However, currently the
+>> >>       verifier doesn't allow checking if pointer is set.
+>> >>     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
+>> >>     - Get rid of macros in convert_ctx_access to make it easier to read.
+>> >>     - Disallow 1-,2-byte access to context fields containing IP addresses.
 >> >>
 >> >>     v2:
->> >>     - Add new libbpf symbols to version 0.0.9. (Andrii)
+>> >>     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
+>> >>       Update bpf_sk_assign docs accordingly. (Martin)
+>> >>     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
+>> >>     - Fix broken build when CONFIG_INET is not selected. (Martin)
+>> >>     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
+>> >>     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
 >> >>
->> >>  tools/lib/bpf/libbpf.c        | 3 +++
->> >>  tools/lib/bpf/libbpf.h        | 2 ++
->> >>  tools/lib/bpf/libbpf.map      | 2 ++
->> >>  tools/lib/bpf/libbpf_probes.c | 3 +++
->> >>  4 files changed, 10 insertions(+)
+>> >>  include/linux/bpf-netns.h  |   3 +
+>> >>  include/linux/bpf_types.h  |   2 +
+>> >>  include/linux/filter.h     |  19 ++++
+>> >>  include/uapi/linux/bpf.h   |  74 +++++++++++++++
+>> >>  kernel/bpf/net_namespace.c |   5 +
+>> >>  kernel/bpf/syscall.c       |   9 ++
+>> >>  net/core/filter.c          | 186 +++++++++++++++++++++++++++++++++++++
+>> >>  scripts/bpf_helpers_doc.py |   9 +-
+>> >>  8 files changed, 306 insertions(+), 1 deletion(-)
 >> >>
->> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> >> index 4ea7f4f1a691..ddcbb5dd78df 100644
->> >> --- a/tools/lib/bpf/libbpf.c
->> >> +++ b/tools/lib/bpf/libbpf.c
->> >> @@ -6793,6 +6793,7 @@ BPF_PROG_TYPE_FNS(perf_event, BPF_PROG_TYPE_PERF_EVENT);
->> >>  BPF_PROG_TYPE_FNS(tracing, BPF_PROG_TYPE_TRACING);
->> >>  BPF_PROG_TYPE_FNS(struct_ops, BPF_PROG_TYPE_STRUCT_OPS);
->> >>  BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
->> >> +BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
->> >>
->> >>  enum bpf_attach_type
->> >>  bpf_program__get_expected_attach_type(struct bpf_program *prog)
->> >> @@ -6969,6 +6970,8 @@ static const struct bpf_sec_def section_defs[] = {
->> >>         BPF_EAPROG_SEC("cgroup/setsockopt",     BPF_PROG_TYPE_CGROUP_SOCKOPT,
->> >>                                                 BPF_CGROUP_SETSOCKOPT),
->> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
->> >> +       BPF_EAPROG_SEC("sk_lookup",             BPF_PROG_TYPE_SK_LOOKUP,
->> >> +                                               BPF_SK_LOOKUP),
->> >
->> > So it's a BPF_PROG_TYPE_SK_LOOKUP with attach type BPF_SK_LOOKUP. What
->> > other potential attach types could there be for
->> > BPF_PROG_TYPE_SK_LOOKUP? How the section name will look like in that
->> > case?
 >>
->> BPF_PROG_TYPE_SK_LOOKUP won't have any other attach types that I can
->> forsee. There is a single attach type shared by tcp4, tcp6, udp4, and
->> udp6 hook points. If we hook it up in the future say to sctp, I expect
->> the same attach point will be reused.
+>> [...]
+>>
+>> >> +
+>> >> +static u32 sk_lookup_convert_ctx_access(enum bpf_access_type type,
+>> >> +                                       const struct bpf_insn *si,
+>> >> +                                       struct bpf_insn *insn_buf,
+>> >> +                                       struct bpf_prog *prog,
+>> >> +                                       u32 *target_size)
+>> >
+>> > Would it be too extreme to rely on BTF and direct memory access
+>> > (similar to tp_raw, fentry/fexit, etc) for accessing context fields,
+>> > instead of all this assembly rewrites? So instead of having
+>> > bpf_sk_lookup and bpf_sk_lookup_kern, it will always be a full variant
+>> > (bpf_sk_lookup_kern, or however we'd want to name it then) and
+>> > verifier will just ensure that direct memory reads go to the right
+>> > field boundaries?
+>>
+>> Sounds like a decision related to long-term vision. I'd appreciate input
+>> from maintainers if this is the direction we want to go in.
+>>
+>> From implementation PoV - hard for me to say what would be needed to get
+>> it working, I'm not familiar how BPF_TRACE_* attach types provide access
+>> to context, so I'd need to look around and prototype it
+>> first. (Actually, I'm not sure if you're asking if it is doable or you
+>> already know?)
 >
-> So you needed to add to bpf_attach_type just to fit into link_create
-> model of attach_type -> prog_type, right? As I mentioned extending
-> bpf_attach_type has a real cost on each cgroup, so we either need to
-> solve that problem (and I think that would be the best) or we can
-> change link_create logic to not require attach_type for programs like
-> SK_LOOKUP, where it's clear without attach type.
+> I'm pretty sure it's doable with what we have in verifier, but I'm not
+> sure about all the details and amount of work. So consider this an
+> initiation of a medium-term discussion. I was also curious to hear an
+> opinion from Alexei and Daniel whether that's would be the right way
+> to do this moving forward (not necessarily with your changes, though).
 
-Right. I was thinking about that a bit. For prog types map 1:1 to an
-attach type, like flow_dissector or proposed sk_lookup, we don't really
-to know the attach type to attach the program.
+From my side I can vouch that getting convert_ctx_access is not easy to
+get right (at least for me) when backing structure is non-trivial,
+e.g. has pointers or unions.
 
-PROG_QUERY is more problematic though. But I imagine we could introduce
-a flag like BPF_QUERY_F_BY_PROG_TYPE that would make the kernel
-interpret attr->query.attach_type as prog type.
+v4 will contain two fixes exactly in this area. I also have a patch for
+how verifier handles narrow loads when load size <= target field size <
+ctx field size.
 
-PROG_DETACH is yet another story but sk_lookup uses only link-based
-attachment, so I'm ignoring it here.
+That is to say, any alternative approach that "automates" this would be
+very welcome.
 
-What also might get in the way is the fact that there is no
-bpf_attach_type value reserved for unspecified attach type at the
-moment. We would have to ensure that the first enum,
-BPF_CGROUP_INET_INGRESS, is not treated as an exact attach type.
+I've accumulated quite a few changes already since v3, so I was planning
+to roll out v4 to keep things moving while we continue the discussion.
 
 >
-> Second order question was if we have another attach type, having
-> SEC("sk_lookup/just_kidding_something_else") would be a bit weird :)
-> But it seems like that's not a concern.
-
-Yes. Sorry, I didn't mean to leave it unanswered. Just assumed that it
-was obvious that it's not the case.
-
-I've been happily using the part of section name following "sk_lookup"
-prefix to name the programs just to make section names in ELF object
-unique:
-
-  SEC("sk_lookup/lookup_pass")
-  SEC("sk_lookup/lookup_drop")
-  SEC("sk_lookup/redir_port")
+>>
+>> Off the top of my head, I have one concern, I'm exposing the selected
+>> socket in the context. This is for the benefit of one program being
+>> aware of other program's selection, if multiple programs are attached.
+>>
+>> I understand that any piece of data reachable from struct sock *, would
+>> be readable by SK_LOOKUP prog (writes can be blocked in
+>> is_valid_access). And that this is a desired property for tracing. Not
+>> sure how to limit it for a network program that doesn't need all that
+>> info.
+>>
+>> >
+>> >> +{
+>> >> +       struct bpf_insn *insn = insn_buf;
+>> >> +#if IS_ENABLED(CONFIG_IPV6)
+>> >> +       int off;
+>> >> +#endif
+>> >> +
+>> >
+>> > [...]
