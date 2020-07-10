@@ -2,140 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC40E21B049
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 09:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F85021B174
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 10:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgGJHhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 03:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S1726816AbgGJIhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 04:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgGJHhE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:37:04 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEDCC08C5CE;
-        Fri, 10 Jul 2020 00:37:04 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 1so2164946pfn.9;
-        Fri, 10 Jul 2020 00:37:04 -0700 (PDT)
+        with ESMTP id S1726644AbgGJIhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 04:37:08 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7038AC08C5CE
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:37:08 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d17so5525764ljl.3
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 01:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1rbQxhJD3OcVtjYVeMjpacjvkEB8PUL2KZQOSYDbhD4=;
-        b=EtSKDgvKc8+nvApGzNpeST1dvAt0kRH6GOt/jG/GjUFQOgsDr+YNNK2gMQth4IXjuM
-         HkPw5X03KVNeTakvh28uo6dZtdTN7tBnAepM90m7bNGD01PEWXnjhWYtuItH6IR4u6HM
-         s9OAjmJQuvTUEOLshf8jqKk5zkDlWo3P0OUAC1d+G/eYGmXtkwCYyfuu/nx5G2yuECQl
-         niDKY4UfDhUdUqgS+w5Q3fWdR7lmaCyfASCXztxJxCnb0e57wLElTG6VL+CXiD1w3CSB
-         OtUvtxb343UMrl5BWyDN8CBqXxbBX5dSTR1CY+ztMWalGZ1lXkmFQ2Q6eLLV6g5xTGCw
-         Uapw==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=fejdS5oXDBhA7SCXC2ps+GSa09Mm4PzKTz47mMKeznA=;
+        b=c3x2FiQT6TXoFMi/lEyaa5Bcxv2wDEzGBOkaSSkCiIp5nsVGuNPzUTudrN7fLc1cMo
+         WNHvoLDD8rVMEStHW0YH5o6c2RpKi07IJPBFRptIYSQ0yGqfoOz7QqoLjW+fNThOnmv2
+         XHkH7cmyfWtQKQnlTZ6SaWN8R0i0IapKfj540=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1rbQxhJD3OcVtjYVeMjpacjvkEB8PUL2KZQOSYDbhD4=;
-        b=N6Dl73JQQbEP548MnA6092k0DSNpSnJ385tNOP14fY59L/GkwRpI3FzOQdRW5PZFb4
-         ppp8Qhs5Bvctk5HPws8GIpgNU9ajYieY03oBDBrIKT9shJiOlvQg4pgzyas+hoE5hpw6
-         YSYoEQQwafJrYedTqetN/SeOeQWofLS5hFsyOh4NGzbJftng+OV27rLrwRF6GP1UcDNC
-         r2fdMXl8We8II4JS7235XGjpCxMrCfgMTZtYSO4xYTLkt6X46uhpgTKzNZQ/vHHrl52q
-         0NKnBWCIXyvukEWfpU0zZ434sjt3DFolWGt/0uVKl3ZCfmsl59Q0oPkO7BCBDKn5hZzy
-         QrHQ==
-X-Gm-Message-State: AOAM533yIf/Rjpur/z5982Wun+Adei8BafElmkVU4hK9WqK2+TQlAzQs
-        2YR2oMR2LrVPhJ5WSt00LKzdiJXlXLTwzQ==
-X-Google-Smtp-Source: ABdhPJyOpenU7ptfGvV3stvQoHFnUnpdgOVn6xBWt/KDE4Pm0dtZYhntD3mrkWe1cFRGSskI061Log==
-X-Received: by 2002:a62:7991:: with SMTP id u139mr2039555pfc.87.1594366623903;
-        Fri, 10 Jul 2020 00:37:03 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 22sm5014919pfx.94.2020.07.10.00.37.00
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=fejdS5oXDBhA7SCXC2ps+GSa09Mm4PzKTz47mMKeznA=;
+        b=HCgXucIuTAolP37hAiXOC+rIdgFSHQUGOMHvZxKZN2bQRltyckDvZ91/lGV6kNduQM
+         qx40LQikRyOFIGcci0O1u6L4SxgLZo9FTBwYbTSKF1rXh1k+1dU+9ifrQOrz34qV4xoN
+         2t1x4I2ExssMVHn8e1JcO2lvx8QTOgMgimfKxoqIH0pMhxS2/EdBgaDmjKyq+ibNmieQ
+         idW2AQKLmkPJxnXcdDJYygTtaLCjAFic1xv9JIIfTL2/Lrvm5hb7x4TxtBBqnd+65nUW
+         cpe6Q0RpqEW/OGQh1LgXw8YJ7IzXKNIwvR1CZ4tR4sKGmJ3WKBa8Zr7EzG5UnB99l46H
+         Y7BQ==
+X-Gm-Message-State: AOAM530IOW6wus1fav0AUXm6IKeUwGuNJR8TRClHHzAxmDSbmKwn+QN0
+        QDAj470vXlvdAqNW2YCC+Cc/Tg==
+X-Google-Smtp-Source: ABdhPJyDO+qq/oCenn+hN8r63rNpM0pYXwg+q/LIjKEgOWJ8pfCfGAw0CTosqI9qnesX4M/iqbRfTg==
+X-Received: by 2002:a2e:9a47:: with SMTP id k7mr27428157ljj.96.1594370226759;
+        Fri, 10 Jul 2020 01:37:06 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id v19sm1897418lfi.65.2020.07.10.01.37.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 00:37:03 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 15:36:52 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv6 bpf-next 0/3] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200710073652.GC2531@dhcp-12-153.nay.redhat.com>
-References: <20200701041938.862200-1-liuhangbin@gmail.com>
- <20200709013008.3900892-1-liuhangbin@gmail.com>
- <7c80ca4b-4c7d-0322-9483-f6f0465d6370@iogearbox.net>
+        Fri, 10 Jul 2020 01:37:06 -0700 (PDT)
+References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-13-jakub@cloudflare.com> <CAEf4BzbrUZhpxfw_eeJJCoo46_x1Y8naE19qoVUWi5sTSNSdzA@mail.gmail.com> <87h7ugadpt.fsf@cloudflare.com> <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf-next v3 12/16] libbpf: Add support for SK_LOOKUP program type
+In-reply-to: <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com>
+Date:   Fri, 10 Jul 2020 10:37:04 +0200
+Message-ID: <87d053ahqn.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c80ca4b-4c7d-0322-9483-f6f0465d6370@iogearbox.net>
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 12:37:59AM +0200, Daniel Borkmann wrote:
-> On 7/9/20 3:30 AM, Hangbin Liu wrote:
-> > This patch is for xdp multicast support. which has been discussed before[0],
-> > The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
-> > a software switch that can forward XDP frames to multiple ports.
-> > 
-> > To achieve this, an application needs to specify a group of interfaces
-> > to forward a packet to. It is also common to want to exclude one or more
-> > physical interfaces from the forwarding operation - e.g., to forward a
-> > packet to all interfaces in the multicast group except the interface it
-> > arrived on. While this could be done simply by adding more groups, this
-> > quickly leads to a combinatorial explosion in the number of groups an
-> > application has to maintain.
-> > 
-> > To avoid the combinatorial explosion, we propose to include the ability
-> > to specify an "exclude group" as part of the forwarding operation. This
-> > needs to be a group (instead of just a single port index), because a
-> > physical interface can be part of a logical grouping, such as a bond
-> > device.
-> > 
-> > Thus, the logical forwarding operation becomes a "set difference"
-> > operation, i.e. "forward to all ports in group A that are not also in
-> > group B". This series implements such an operation using device maps to
-> > represent the groups. This means that the XDP program specifies two
-> > device maps, one containing the list of netdevs to redirect to, and the
-> > other containing the exclude list.
-> 
-> Could you move this description as part of patch 1/3 instead of cover
-> letter? Mostly given this helps understanding the rationale wrt exclusion
-> map which is otherwise lacking from just looking at the patch itself.
+On Fri, Jul 10, 2020 at 01:13 AM CEST, Andrii Nakryiko wrote:
+> On Thu, Jul 9, 2020 at 8:51 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> On Thu, Jul 09, 2020 at 06:23 AM CEST, Andrii Nakryiko wrote:
+>> > On Thu, Jul 2, 2020 at 2:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> >>
+>> >> Make libbpf aware of the newly added program type, and assign it a
+>> >> section name.
+>> >>
+>> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> >> ---
+>> >>
+>> >> Notes:
+>> >>     v3:
+>> >>     - Move new libbpf symbols to version 0.1.0.
+>> >>     - Set expected_attach_type in probe_load for new prog type.
+>> >>
+>> >>     v2:
+>> >>     - Add new libbpf symbols to version 0.0.9. (Andrii)
+>> >>
+>> >>  tools/lib/bpf/libbpf.c        | 3 +++
+>> >>  tools/lib/bpf/libbpf.h        | 2 ++
+>> >>  tools/lib/bpf/libbpf.map      | 2 ++
+>> >>  tools/lib/bpf/libbpf_probes.c | 3 +++
+>> >>  4 files changed, 10 insertions(+)
+>> >>
+>> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> >> index 4ea7f4f1a691..ddcbb5dd78df 100644
+>> >> --- a/tools/lib/bpf/libbpf.c
+>> >> +++ b/tools/lib/bpf/libbpf.c
+>> >> @@ -6793,6 +6793,7 @@ BPF_PROG_TYPE_FNS(perf_event, BPF_PROG_TYPE_PERF_EVENT);
+>> >>  BPF_PROG_TYPE_FNS(tracing, BPF_PROG_TYPE_TRACING);
+>> >>  BPF_PROG_TYPE_FNS(struct_ops, BPF_PROG_TYPE_STRUCT_OPS);
+>> >>  BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
+>> >> +BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
+>> >>
+>> >>  enum bpf_attach_type
+>> >>  bpf_program__get_expected_attach_type(struct bpf_program *prog)
+>> >> @@ -6969,6 +6970,8 @@ static const struct bpf_sec_def section_defs[] = {
+>> >>         BPF_EAPROG_SEC("cgroup/setsockopt",     BPF_PROG_TYPE_CGROUP_SOCKOPT,
+>> >>                                                 BPF_CGROUP_SETSOCKOPT),
+>> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
+>> >> +       BPF_EAPROG_SEC("sk_lookup",             BPF_PROG_TYPE_SK_LOOKUP,
+>> >> +                                               BPF_SK_LOOKUP),
+>> >
+>> > So it's a BPF_PROG_TYPE_SK_LOOKUP with attach type BPF_SK_LOOKUP. What
+>> > other potential attach types could there be for
+>> > BPF_PROG_TYPE_SK_LOOKUP? How the section name will look like in that
+>> > case?
+>>
+>> BPF_PROG_TYPE_SK_LOOKUP won't have any other attach types that I can
+>> forsee. There is a single attach type shared by tcp4, tcp6, udp4, and
+>> udp6 hook points. If we hook it up in the future say to sctp, I expect
+>> the same attach point will be reused.
+>
+> So you needed to add to bpf_attach_type just to fit into link_create
+> model of attach_type -> prog_type, right? As I mentioned extending
+> bpf_attach_type has a real cost on each cgroup, so we either need to
+> solve that problem (and I think that would be the best) or we can
+> change link_create logic to not require attach_type for programs like
+> SK_LOOKUP, where it's clear without attach type.
 
-OK, I will
+Right. I was thinking about that a bit. For prog types map 1:1 to an
+attach type, like flow_dissector or proposed sk_lookup, we don't really
+to know the attach type to attach the program.
 
-> 
-> Assuming you have a bond, how does this look in practice for your mentioned
-> ovs-like data plane in XDP? The map for 'group A' is shared among all XDP
-> progs and the map for 'group B' is managed per prog? The BPF_F_EXCLUDE_INGRESS
+PROG_QUERY is more problematic though. But I imagine we could introduce
+a flag like BPF_QUERY_F_BY_PROG_TYPE that would make the kernel
+interpret attr->query.attach_type as prog type.
 
-Yes, kind of. Since we have two maps as parameter. The 'group A map'(include map)
-will be shared between the interfaces in same group/vlan. The 'group B map'
-(exclude map) is interface specific. Each interface will hold it's own exclude map.
+PROG_DETACH is yet another story but sk_lookup uses only link-based
+attachment, so I'm ignoring it here.
 
-As most time each interface only exclude itself, a null map + BPF_F_EXCLUDE_INGRESS
-should be enough.
+What also might get in the way is the fact that there is no
+bpf_attach_type value reserved for unspecified attach type at the
+moment. We would have to ensure that the first enum,
+BPF_CGROUP_INET_INGRESS, is not treated as an exact attach type.
 
-For bond situation. e.g. A active-backup bond0 with eth1 + eth2 as slaves.
-If eth1 is active interface, we can add eth2 to the exclude map.
+>
+> Second order question was if we have another attach type, having
+> SEC("sk_lookup/just_kidding_something_else") would be a bit weird :)
+> But it seems like that's not a concern.
 
-> is clear, but how would this look wrt forwarding from a phys dev /to/ the
-> bond iface w/ XDP?
+Yes. Sorry, I didn't mean to leave it unanswered. Just assumed that it
+was obvious that it's not the case.
 
-As bond interface doesn't support native XDP, This forwarding only works for
-physical slave interfaces.
+I've been happily using the part of section name following "sk_lookup"
+prefix to name the programs just to make section names in ELF object
+unique:
 
-For generic xdp, maybe we can forward to bond interface directly, but I
-haven't tried.
-
-> 
-> Also, what about tc BPF helper support for the case where not every device
-> might have native XDP (but they could still share the maps)?
-
-I haven't tried tc BPF. This helper works for both generic and native xdp
-forwarding. I think it should also works if we load the prog with native
-xdp mode in one interface and generic xdp mode in another interface, couldn't
-we?
-
-Thanks
-Hangbin
+  SEC("sk_lookup/lookup_pass")
+  SEC("sk_lookup/lookup_drop")
+  SEC("sk_lookup/redir_port")
