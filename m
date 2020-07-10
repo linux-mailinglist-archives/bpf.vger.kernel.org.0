@@ -2,224 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA721C07D
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 01:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3AE21C0B2
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 01:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgGJXFc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 19:05:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48604 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgGJXFc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 19:05:32 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ju24i-0004Pg-E8; Sat, 11 Jul 2020 01:05:00 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ju24i-000VO0-4H; Sat, 11 Jul 2020 01:05:00 +0200
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
- instead of trace_printk()
-To:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
-        mingo@redhat.com, ast@kernel.org, andriin@fb.com
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com>
- <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <10d713e3-c2d6-7331-a589-b567e8378944@iogearbox.net>
-Date:   Sat, 11 Jul 2020 01:04:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726465AbgGJX0R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 19:26:17 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39288 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726328AbgGJX0R (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 19:26:17 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ANOVJI000484
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 16:26:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=d80Mi8EwvifTnkw14/d1LZC8MymGdbwtk7pITsmLEEA=;
+ b=PuB8Mfb80Hj1xq4D7zGzlHKlTGoj/p5T1HQOewA206ui6ZR8PfjKs0ZSqXSFcouZdRG7
+ 2K+y1gGrkYJEGQBPxKIgnEaucqM6fHPjcKZ5WcVXVORtV71SRiHv04yabhUlGEQBWnBY
+ kim60gOXK1+4Bj3qYApT0uP/dLppf8koiug= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 325k2ccx15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 16:26:15 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 10 Jul 2020 16:26:14 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 8DCD22EC3D5F; Fri, 10 Jul 2020 16:26:10 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] tools/bpftool: remove warning about PID iterator support
+Date:   Fri, 10 Jul 2020 16:26:04 -0700
+Message-ID: <20200710232605.20918-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25869/Fri Jul 10 16:01:45 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_14:2020-07-10,2020-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=801
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007100154
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/10/20 4:22 PM, Alan Maguire wrote:
-> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
-> This leads to an alarming warning message originating from trace
-> buffer allocation which occurs the first time a program using
-> bpf_trace_printk() is loaded.
-> 
-> We can instead create a trace event for bpf_trace_printk() and enable
-> it in-kernel when/if we encounter a program using the
-> bpf_trace_printk() helper.  With this approach, trace_printk()
-> is not used directly and no warning message appears.
-> 
-> This work was started by Steven (see Link) and finished by Alan; added
-> Steven's Signed-off-by with his permission.
-> 
-> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->   kernel/trace/Makefile    |  2 ++
->   kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++-----
->   kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
->   3 files changed, 72 insertions(+), 5 deletions(-)
->   create mode 100644 kernel/trace/bpf_trace.h
-> 
-> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> index 6575bb0..aeba5ee 100644
-> --- a/kernel/trace/Makefile
-> +++ b/kernel/trace/Makefile
-> @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
->   GCOV_PROFILE := y
->   endif
->   
-> +CFLAGS_bpf_trace.o := -I$(src)
-> +
->   CFLAGS_trace_benchmark.o := -I$(src)
->   CFLAGS_trace_events_filter.o := -I$(src)
->   
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 1d874d8..1414bf5 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -11,6 +11,7 @@
->   #include <linux/uaccess.h>
->   #include <linux/ctype.h>
->   #include <linux/kprobes.h>
-> +#include <linux/spinlock.h>
->   #include <linux/syscalls.h>
->   #include <linux/error-injection.h>
->   
-> @@ -19,6 +20,9 @@
->   #include "trace_probe.h"
->   #include "trace.h"
->   
-> +#define CREATE_TRACE_POINTS
-> +#include "bpf_trace.h"
-> +
->   #define bpf_event_rcu_dereference(p)					\
->   	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
->   
-> @@ -374,6 +378,29 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->   	}
->   }
->   
-> +static DEFINE_RAW_SPINLOCK(trace_printk_lock);
-> +
-> +#define BPF_TRACE_PRINTK_SIZE   1024
-> +
-> +
+Don't emit warning that bpftool was built without PID iterator support. T=
+his
+error garbles JSON output of otherwise perfectly valid show commands.
 
-nit: double newline
+Reported-by: Andrey Ignatov <rdna@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/bpftool/pids.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> +static inline __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
-> +{
-> +	static char buf[BPF_TRACE_PRINTK_SIZE];
-> +	unsigned long flags;
-> +	va_list ap;
-> +	int ret;
-> +
-> +	raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> +	va_start(ap, fmt);
-> +	ret = vsnprintf(buf, BPF_TRACE_PRINTK_SIZE, fmt, ap);
-
-nit: s/BPF_TRACE_PRINTK_SIZE/sizeof(buf)/
-
-> +	va_end(ap);
-> +	if (ret >= 0)
-> +		trace_bpf_trace_printk(buf);
-
-Is there a specific reason you added the 'ret >= 0' check on top of [0]? Given
-the vsnprintf() internals you either return 0 or number of characters generated,
-no?
-
-   [0] https://lore.kernel.org/bpf/20200628194334.6238b933@oasis.local.home/
-
-Rest lgtm, thanks!
-
-> +	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> +
-> +	return ret;
-> +}
-> +
->   /*
->    * Only limited trace_printk() conversion specifiers allowed:
->    * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
-> @@ -483,8 +510,7 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->    */
->   #define __BPF_TP_EMIT()	__BPF_ARG3_TP()
->   #define __BPF_TP(...)							\
-> -	__trace_printk(0 /* Fake ip */,					\
-> -		       fmt, ##__VA_ARGS__)
-> +	bpf_do_trace_printk(fmt, ##__VA_ARGS__)
->   
->   #define __BPF_ARG1_TP(...)						\
->   	((mod[0] == 2 || (mod[0] == 1 && __BITS_PER_LONG == 64))	\
-> @@ -521,10 +547,15 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->   const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
->   {
->   	/*
-> -	 * this program might be calling bpf_trace_printk,
-> -	 * so allocate per-cpu printk buffers
-> +	 * This program might be calling bpf_trace_printk,
-> +	 * so enable the associated bpf_trace/bpf_trace_printk event.
-> +	 * Repeat this each time as it is possible a user has
-> +	 * disabled bpf_trace_printk events.  By loading a program
-> +	 * calling bpf_trace_printk() however the user has expressed
-> +	 * the intent to see such events.
->   	 */
-> -	trace_printk_init_buffers();
-> +	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
-> +		pr_warn_ratelimited("could not enable bpf_trace_printk events");
->   
->   	return &bpf_trace_printk_proto;
->   }
-> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
-> new file mode 100644
-> index 0000000..9acbc11
-> --- /dev/null
-> +++ b/kernel/trace/bpf_trace.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM bpf_trace
-> +
-> +#if !defined(_TRACE_BPF_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-> +
-> +#define _TRACE_BPF_TRACE_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(bpf_trace_printk,
-> +
-> +	TP_PROTO(const char *bpf_string),
-> +
-> +	TP_ARGS(bpf_string),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(bpf_string, bpf_string)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(bpf_string, bpf_string);
-> +	),
-> +
-> +	TP_printk("%s", __get_str(bpf_string))
-> +);
-> +
-> +#endif /* _TRACE_BPF_TRACE_H */
-> +
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH .
-> +#define TRACE_INCLUDE_FILE bpf_trace
-> +
-> +#include <trace/define_trace.h>
-> 
+diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+index c0d23ce4a6f4..e3b116325403 100644
+--- a/tools/bpf/bpftool/pids.c
++++ b/tools/bpf/bpftool/pids.c
+@@ -15,7 +15,6 @@
+=20
+ int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type=
+ type)
+ {
+-	p_err("bpftool built without PID iterator support");
+ 	return -ENOTSUP;
+ }
+ void delete_obj_refs_table(struct obj_refs_table *table) {}
+--=20
+2.24.1
 
