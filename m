@@ -2,161 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E02721BC42
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 19:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DD621BCB3
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 20:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgGJRb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 13:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
+        id S1727082AbgGJSCJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 14:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgGJRb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:31:27 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34329C08C5DD
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 10:31:27 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id z24so7342930ljn.8
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 10:31:27 -0700 (PDT)
+        with ESMTP id S1727046AbgGJSCJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 14:02:09 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0508EC08C5DC
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 11:02:09 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id 80so6131596qko.7
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 11:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gyfTdRlvk48RQpqSlUdGDYUN+fsDlxTcrasOugfbANc=;
-        b=x+2nod6w620w+mmkB2g/fFt25HghB479+SfBq260cDwG7PbrBne3LXAydGZcHveT5R
-         Jx3xiWopndxVdjl5OXUWeURsEVQnPEHQwBux8zX30DiA8aCeVe2R/G2QamJBtK8bJ2bl
-         5551VcKA31VlCqSsBES6Tw6JS1Y/zWeRy+hNI=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=yxdaYmWJ0NOnnWA41QhRZei2OHy9OJlGdk0eX4KhIqY=;
+        b=A+xitfHqgRcALn30pGssizM+A0fU8PUkNc1jPHW9yiekcEEkn2mg2h8qAcmgSSSGvP
+         vEvqOj7EAGlXGl8hilNqYlmMtP+cSeoO04WHU9ZsxfpBJPEOD9tXJ6L90nJ8cWJA96tD
+         oyIpbr+qO6LWVyw0j4nkDDKV7I4m1t8u4v1DNwOwew3G/TxWbda1mHMF80LoZwm5QciT
+         VC62HJMXDBaTuFWs1J9mQUPFEuBGuZfe9bO4Fl5iKPPfll6G0CvPFMYHcGwnln9FgjQB
+         KWYfOwJzyGstO6JFZ743/VP+qgbz8c4UippRscT4oGuXXZEQiqyBSJxdgc1BGX5zaN9s
+         47gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gyfTdRlvk48RQpqSlUdGDYUN+fsDlxTcrasOugfbANc=;
-        b=Z5MSycJROL2LsCdeoSs1JEJ/FSpfwLM8YJ+MR4NTdSraqPsMIg13qwqPTLeq/3lJjO
-         0cD6b3PXb3p9aPMHsbluoMiFmcuL6Dr2ATCdgAnVWvonmW28CTxRa9cDvmvomctIEmyu
-         NsYsWui3ypQY1nIaWTU1a6N43b20fzf80Mu4RfckbtfGt6Lc83jYD018RSKHDeTX8uUy
-         75/oW+ea8IOjFfRlb3y3XR34qQHlaQvhWXT0wdIwVJTelKzN3mAQCiIhGGjMKpJMf/bf
-         7xa7SuXwRs5eeJT1yGJb5g1dK/USh7jQtHMuKbzPHUR82D2FXAvx79bTgPmNU/aqX19w
-         cQkg==
-X-Gm-Message-State: AOAM531Cl8AtYbi73dYPoe+HghP4RizjG+bjpuGZJ578E24jm27DTKbH
-        4aps3X21Zn4U11K7F1GdLiN26Q4UVC++qg==
-X-Google-Smtp-Source: ABdhPJwiW5/0iXpjKSrSMd+naWu3dJ131Mf9XFQks4Y1LJ9nUvZY4l5DT1BK+HgOtDZI+sWOS21KHQ==
-X-Received: by 2002:a2e:8851:: with SMTP id z17mr37208115ljj.225.1594402285156;
-        Fri, 10 Jul 2020 10:31:25 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id n9sm2381111lfd.60.2020.07.10.10.31.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 10:31:24 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf] bpf: Shift and mask loads narrower than context field size
-Date:   Fri, 10 Jul 2020 19:31:23 +0200
-Message-Id: <20200710173123.427983-1-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.25.4
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=yxdaYmWJ0NOnnWA41QhRZei2OHy9OJlGdk0eX4KhIqY=;
+        b=CQ+5gMNws1+SnzxlGlkDhjJEmOPujXfyjjwQ49lZnehhRvT8/OdtaPttR9HbEyy+dx
+         KTcrLOab2pcG9yilw8th258+efWx49E2eLmufIIfgbeB+hdW2yYmYprZe3YjcKLdjLNz
+         mXLvoUol6jkx8CoTLv8ggoEPbveJky3pzt2G4DfPDTzoZRrUiGi4kOYGtfOagT3tLJ9N
+         P3X1aZy+VWP+9+Nygmv+8hR22YWJIDC725vtdIFdv2W1m1FLhmIh17qh6zz6XyRiT33B
+         3VSH1H8300t9lqqbp1+G8GZP7as1HtpQOX3OIvQGnmLNEbZCGK2lqytoe7LskUgQlTLx
+         Q7ww==
+X-Gm-Message-State: AOAM531/u8O3DngcMzeVUOxR3QnYMp2QPkOoaZWU91WPCt2fGogNU/6D
+        wVhNeW45REaXJdvtkQHNo1VfSrW+k4etWYUCYkQYG2Ez7Uk=
+X-Google-Smtp-Source: ABdhPJyqsV2rVO5ZPvJNVMZnhV/ul/MKOpsRteyPoUY+1vpMwP/RhctFl40Qf+F02qInDTt8XCCYFyPbwbJuaheb4j0=
+X-Received: by 2002:a05:620a:1666:: with SMTP id d6mr71887405qko.449.1594404128242;
+ Fri, 10 Jul 2020 11:02:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Jul 2020 11:01:57 -0700
+Message-ID: <CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com>
+Subject: Occasionally hanging sockopts selftests
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When size of load from context is the same as target field size, but less
-than context field size, the verifier does not emit the shift and mask
-instructions for loads at non-zero offset.
+Hey Stanislav,
 
-This has the unexpected effect of loading the same data no matter what the
-offset was. While the expected behavior would be to load zeros for offsets
-that are greater than target field size.
+I've noticed that on 5.5 kernel libbpf Travis CI test runs
+occasionally fail due to selftests hanging indefinitely. It seems like
+it always happens after sockopt tests succeed, and while
+sockopt_inherit test is running. Doesn't seem like the latest kernel
+is affected (I haven't found hangs for the latest kernel in recent
+history).
 
-For instance, u16 load from u32 context field backed by u16 target field at
-an offset of 2 bytes results in:
+This is the latest version of selftests, but running on an older (5.5)
+version of kernel. So whatever fixes went into selftests are there
+already. So I wonder if there were any kernel bugs that were fixed
+already but could cause hangs on 5.5?
 
-  SEC("sk_reuseport/narrow_half")
-  int reuseport_narrow_half(struct sk_reuseport_md *ctx)
-  {
-  	__u16 *half;
+I can disable that specific test for 5.5, but though I should bring
+this up first, just in case there are still some bugs in selftests.
 
-  	half = (__u16 *)&ctx->ip_protocol;
-  	if (half[0] == 0xaaaa)
-  		return SK_DROP;
-  	if (half[1] == 0xbbbb)
-  		return SK_DROP;
-  	return SK_PASS;
-  }
+Thanks for checking!
 
-  int reuseport_narrow_half(struct sk_reuseport_md * ctx):
-  ; int reuseport_narrow_half(struct sk_reuseport_md *ctx)
-     0: (b4) w0 = 0
-  ; if (half[0] == 0xaaaa)
-     1: (79) r2 = *(u64 *)(r1 +8)
-     2: (69) r2 = *(u16 *)(r2 +924)
-  ; if (half[0] == 0xaaaa)
-     3: (16) if w2 == 0xaaaa goto pc+5
-  ; if (half[1] == 0xbbbb)
-     4: (79) r1 = *(u64 *)(r1 +8)
-     5: (69) r1 = *(u16 *)(r1 +924)
-     6: (b4) w0 = 1
-  ; if (half[1] == 0xbbbb)
-     7: (56) if w1 != 0xbbbb goto pc+1
-     8: (b4) w0 = 0
-  ; }
-     9: (95) exit
+Two most recent failures (not that they are helpful, because there is
+no output until tests completes, but still):
 
-In this case half[0] == half[1] == sk->sk_protocol that backs the
-ctx->ip_protocol field.
-
-Fix it by shifting and masking any load from context that is narrower than
-context field size (is_narrower_load = size < ctx_field_size), in addition
-to loads that are narrower than target field size.
-
-The "size < target_size" check is left in place to cover the case when a
-context field is narrower than its target field, even if we might not have
-such case now. (It would have to be a u32 context field backed by a u64
-target field, with context fields all being 4-bytes or wider.)
-
-Going back to the example, with the fix in place, the upper half load from
-ctx->ip_protocol yields zero:
-
-  int reuseport_narrow_half(struct sk_reuseport_md * ctx):
-  ; int reuseport_narrow_half(struct sk_reuseport_md *ctx)
-     0: (b4) w0 = 0
-  ; if (half[0] == 0xaaaa)
-     1: (79) r2 = *(u64 *)(r1 +8)
-     2: (69) r2 = *(u16 *)(r2 +924)
-     3: (54) w2 &= 65535
-  ; if (half[0] == 0xaaaa)
-     4: (16) if w2 == 0xaaaa goto pc+7
-  ; if (half[1] == 0xbbbb)
-     5: (79) r1 = *(u64 *)(r1 +8)
-     6: (69) r1 = *(u16 *)(r1 +924)
-     7: (74) w1 >>= 16
-     8: (54) w1 &= 65535
-     9: (b4) w0 = 1
-  ; if (half[1] == 0xbbbb)
-    10: (56) if w1 != 0xbbbb goto pc+1
-    11: (b4) w0 = 0
-  ; }
-    12: (95) exit
-
-Fixes: f96da09473b5 ("bpf: simplify narrower ctx access")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 94cead5a43e5..1c4d0e24a5a2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9760,7 +9760,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 			return -EINVAL;
- 		}
- 
--		if (is_narrower_load && size < target_size) {
-+		if (is_narrower_load || size < target_size) {
- 			u8 shift = bpf_ctx_narrow_access_offset(
- 				off, size, size_default) * 8;
- 			if (ctx_field_size <= 4) {
--- 
-2.25.4
-
+  - https://travis-ci.com/github/libbpf/libbpf/jobs/359067538
+  - https://travis-ci.com/github/libbpf/libbpf/jobs/359784775
