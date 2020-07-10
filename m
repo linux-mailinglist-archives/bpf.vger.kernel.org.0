@@ -2,101 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7DD21BED1
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 22:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAE721BF02
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 23:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGJUzz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 16:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
+        id S1726306AbgGJVIC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 17:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgGJUzx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 16:55:53 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1990C08C5DC;
-        Fri, 10 Jul 2020 13:55:53 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id e11so6655850qkm.3;
-        Fri, 10 Jul 2020 13:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=umxzZ9l+zQBonEiIpx0tLenM6i//HJK3uk8ryAmYO6Y=;
-        b=IOKxiaGo3+r6vUQQY+pFq+PCP3gGqfYI8u28d8jT68pc7ASmi9ypo/72ZBbwbZEy7z
-         j/cqyqzx2h3OpdDCnDhvNe1jmVeNN+atM/KLzvK+swqIOD0/HSQw2qE00khhWaCBX/JN
-         OKQEMlACX2AcFIeIvbmgX42Y1OaiTy2RQvEGXM1WRkd6nJV3XAg+VTFPlSgKEKYzf/wD
-         0carPgvw1UTFCG6vIJWrXabmSBomeu+F1jM1jDTnvEi7XW9tFZAvnktZ3bHsAFlgextV
-         Li1E3HzNGLnDI78D5n3LgSHW/Z79RphQhm0hB9oIYbU7BIVdImsbae9Y93xXFUzR4yBw
-         b7oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=umxzZ9l+zQBonEiIpx0tLenM6i//HJK3uk8ryAmYO6Y=;
-        b=fGEr8+uLJb0QFBGcQfXZhXc/sMVEcgjhQq2eMwbc2alxi86pjt34uqg9tSIWCS47+N
-         QOC062u2II1T58m7AC+pjLe42WmtSx038zDtmAgl1Sv0kE/PW+wb0RQ4+BX8bAuG1BqX
-         lkbm/X910E7286pWTpoj/ztK9WieKPz9Fn9HizATgiTOG/KeFWwI4VR+7wUJA1wUKNR6
-         pLe/qAJiyO3w25OyfMxt9+jMMO++g/NzCOSVWzp64wCrRGmyOAlsmBvA9m4jknV+zUQw
-         jgMeWl5fMo56+/VlyPE4OO4AZa6xU0GfzMxeYRyAlkwsqdpgWPqkhRAiayGgxDK8SPA4
-         Rzaw==
-X-Gm-Message-State: AOAM532m0bNpOA3PaPQSRrcoLxVKuGGz6hsxruTOqJPMBonYB3PzqjJt
-        2vMJmSdeLPM5b+mm0I8jkFihuVTl13omrJUPUzijfoJA
-X-Google-Smtp-Source: ABdhPJzjNRIbTmxWF6b67i0FEABG0rtnFThtdCrOIHhzY52R63JviI5RQ7RYTS+b/7LuBpE6xn99Nux9ryyTRI57MWY=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr67674733qkc.39.1594414552906;
- Fri, 10 Jul 2020 13:55:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com> <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Jul 2020 13:55:41 -0700
-Message-ID: <CAEf4BzbYk_kmqMEDS6BZR-jYbPNHpSCQFxaG5uSwzkKmMO8UbA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
- instead of trace_printk()
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S1726251AbgGJVIC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jul 2020 17:08:02 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F41C08C5DC;
+        Fri, 10 Jul 2020 14:08:02 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id AD8E2128657B0;
+        Fri, 10 Jul 2020 14:08:01 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 14:08:01 -0700 (PDT)
+Message-Id: <20200710.140801.424974554237166792.davem@davemloft.net>
+To:     alexei.starovoitov@gmail.com
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: pull-request: bpf 2020-07-09
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200710024824.16936-1-alexei.starovoitov@gmail.com>
+References: <20200710024824.16936-1-alexei.starovoitov@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 10 Jul 2020 14:08:01 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 7:25 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
-> This leads to an alarming warning message originating from trace
-> buffer allocation which occurs the first time a program using
-> bpf_trace_printk() is loaded.
->
-> We can instead create a trace event for bpf_trace_printk() and enable
-> it in-kernel when/if we encounter a program using the
-> bpf_trace_printk() helper.  With this approach, trace_printk()
-> is not used directly and no warning message appears.
->
-> This work was started by Steven (see Link) and finished by Alan; added
-> Steven's Signed-off-by with his permission.
->
-> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu,  9 Jul 2020 19:48:24 -0700
 
-LGTM.
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 4 non-merge commits during the last 1 day(s) which contain
+> a total of 4 files changed, 26 insertions(+), 15 deletions(-).
+> 
+> The main changes are:
+> 
+> 1) fix crash in libbpf on 32-bit archs, from Jakub and Andrii.
+> 
+> 2) fix crash when l2tp and bpf_sk_reuseport conflict, from Martin.
+> 
+> Please consider pulling these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  kernel/trace/Makefile    |  2 ++
->  kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++-----
->  kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
->  3 files changed, 72 insertions(+), 5 deletions(-)
->  create mode 100644 kernel/trace/bpf_trace.h
->
-
-[...]
+Pulled, thanks Alexei.
