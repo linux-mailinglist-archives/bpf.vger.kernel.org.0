@@ -2,135 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AC521AC63
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 03:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA4121AD2B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 04:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgGJBKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jul 2020 21:10:34 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43358 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726446AbgGJBKe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jul 2020 21:10:34 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06A0qGhL014318
-        for <bpf@vger.kernel.org>; Thu, 9 Jul 2020 18:10:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=xfAknqrzBkEU4BjOQfd350WpBtIFa49QBe655gjJm08=;
- b=E2x6hFbw43k1Hj4Kihmkc/8Kki5w7oUCB1BSEtoNfWuSudR7MrVKRiVVHc+R4yVrV+Ca
- o4gkOxinIgc2OsBAlH6kkXCVHtOJ9cyfviUgcDU8EApHuFibsjM6fbIi7dBHSi0btFg/
- wQ7EdKgyhDYcx2o5dJlidWXIMdaZjDrlIzg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 325jyyyk50-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Jul 2020 18:10:33 -0700
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 9 Jul 2020 18:10:32 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 4363F2EC3C81; Thu,  9 Jul 2020 18:10:28 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: fix memory leak and optimize BTF sanitization
-Date:   Thu, 9 Jul 2020 18:10:23 -0700
-Message-ID: <20200710011023.1655008-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_11:2020-07-09,2020-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0 spamscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=25
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007100001
-X-FB-Internal: deliver
+        id S1726974AbgGJCsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jul 2020 22:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgGJCs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jul 2020 22:48:29 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9A5C08C5CE;
+        Thu,  9 Jul 2020 19:48:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m9so1894313pfh.0;
+        Thu, 09 Jul 2020 19:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=P95UtldEouKDTAy10OaU4pEDBDGzQSR+nZFkOOzzimY=;
+        b=sr6ITStG6tWbOZqzEsXXU99rOz2NF2cn37TAjtuD1vQAyEvQ/1w0CCXyZRem6ZPP13
+         IlWGoyHaUPgUJdV8+T64CMShDosBXcxy6KQhm5hWHWlNg6vvbJ3lmhEqT49GXI92ZY/3
+         RI9x/YMOVn2zcBYSF6OLJ/ZOT08Nw0W4voexosFib47WsRIbkmWFyfXWxGSGKPWWVwyD
+         C5quamlGFnPH6QxH9o0CblFCbiHe1/PtTC/ajxYmBVg7N18NJp//eRb/qyLrIHZcHlKY
+         oPZ43EXZztNWnYDcHdJFXYk9Rr3Uz4RwYvKfSW8onNsKPHDVZBiguse6svbe173GgNRz
+         hH9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=P95UtldEouKDTAy10OaU4pEDBDGzQSR+nZFkOOzzimY=;
+        b=KborWSgMeDOm2W5mI9z3JWYp7HLwXis5yd3nTbJijf+VhAVaMw7g2IdoQcSa+1Zz4s
+         /dAvyXIReWM6s6TGd/NHev+5dg095LlZYHQpzx0xdHwCVEZMfDOHHEESzHp64bQsLpMY
+         WerfKnlYjHQa1zqHp2n3QX7De8llmAL0jNCtrClBS1XjzlDk+LigKDAy40Nm2oVpXTLk
+         0FOIWYd+Y6EgtmHwD1pgfb06DRWz93rQlk70WDshKeKBHVeXcSR2/Zse8+oQxS3tgMA4
+         T6pzd+DjGbv5PGWameem57slf8QgKjQlGy5JkDKUR8mBHBm0UsSJYzOuPUxK3MSJMkJ0
+         QHNg==
+X-Gm-Message-State: AOAM531exftPjPJVJ9orHk7VP/eJo6FXUtG05S6K+PF0n4CYvEHjCfOP
+        wBwgPLCojLOdY4h4YoykJlnOD+6C
+X-Google-Smtp-Source: ABdhPJy55afd/4qoo5QXR1/6VT3dKEnTRFlm8EpJvfkZ3tb2BblYXX59ZztW7ahSaPY42uW1qVajrw==
+X-Received: by 2002:a63:d944:: with SMTP id e4mr56237659pgj.376.1594349308279;
+        Thu, 09 Jul 2020 19:48:28 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id u66sm4143509pfb.191.2020.07.09.19.48.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jul 2020 19:48:26 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: pull-request: bpf 2020-07-09
+Date:   Thu,  9 Jul 2020 19:48:24 -0700
+Message-Id: <20200710024824.16936-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Coverity's static analysis helpfully reported a memory leak introduced by
-0f0e55d8247c ("libbpf: Improve BTF sanitization handling"). While fixing =
-it,
-I realized that btf__new() already creates a memory copy, so there is no =
-need
-to do this. So this patch also fixes misleading btf__new() signature to m=
-ake
-data into a `const void *` input parameter. And it avoids unnecessary mem=
-ory
-allocation and copy in BTF sanitization code altogether.
+Hi David,
 
-Fixes: 0f0e55d8247c ("libbpf: Improve BTF sanitization handling")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/btf.c    |  2 +-
- tools/lib/bpf/btf.h    |  2 +-
- tools/lib/bpf/libbpf.c | 11 +++--------
- 3 files changed, 5 insertions(+), 10 deletions(-)
+The following pull-request contains BPF updates for your *net* tree.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index c8861c9e3635..c9e760e120dc 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -397,7 +397,7 @@ void btf__free(struct btf *btf)
- 	free(btf);
- }
-=20
--struct btf *btf__new(__u8 *data, __u32 size)
-+struct btf *btf__new(const void *data, __u32 size)
- {
- 	struct btf *btf;
- 	int err;
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 173eff23c472..a3b7ef9b737f 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -63,7 +63,7 @@ struct btf_ext_header {
- };
-=20
- LIBBPF_API void btf__free(struct btf *btf);
--LIBBPF_API struct btf *btf__new(__u8 *data, __u32 size);
-+LIBBPF_API struct btf *btf__new(const void *data, __u32 size);
- LIBBPF_API struct btf *btf__parse_elf(const char *path,
- 				      struct btf_ext **btf_ext);
- LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *bt=
-f);
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6602eb479596..25e4f77be8d7 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2533,17 +2533,12 @@ static int bpf_object__sanitize_and_load_btf(stru=
-ct bpf_object *obj)
-=20
- 	sanitize =3D btf_needs_sanitization(obj);
- 	if (sanitize) {
--		const void *orig_data;
--		void *san_data;
-+		const void *raw_data;
- 		__u32 sz;
-=20
- 		/* clone BTF to sanitize a copy and leave the original intact */
--		orig_data =3D btf__get_raw_data(obj->btf, &sz);
--		san_data =3D malloc(sz);
--		if (!san_data)
--			return -ENOMEM;
--		memcpy(san_data, orig_data, sz);
--		kern_btf =3D btf__new(san_data, sz);
-+		raw_data =3D btf__get_raw_data(obj->btf, &sz);
-+		kern_btf =3D btf__new(raw_data, sz);
- 		if (IS_ERR(kern_btf))
- 			return PTR_ERR(kern_btf);
-=20
---=20
-2.24.1
+We've added 4 non-merge commits during the last 1 day(s) which contain
+a total of 4 files changed, 26 insertions(+), 15 deletions(-).
 
+The main changes are:
+
+1) fix crash in libbpf on 32-bit archs, from Jakub and Andrii.
+
+2) fix crash when l2tp and bpf_sk_reuseport conflict, from Martin.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Jakub Sitnicki, James Chapman, Martin KaFai Lau
+
+----------------------------------------------------------------
+
+The following changes since commit 365f9ae4ee36037e2a9268fe7296065356840b4c:
+
+  ethtool: fix genlmsg_put() failure handling in ethnl_default_dumpit() (2020-07-09 12:35:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to b2f9f1535bb93ee5fa2ea30ac1c26fa0d676154c:
+
+  libbpf: Fix libbpf hashmap on (I)LP32 architectures (2020-07-09 19:38:55 -0700)
+
+----------------------------------------------------------------
+Jakub Bogusz (1):
+      libbpf: Fix libbpf hashmap on (I)LP32 architectures
+
+Lorenz Bauer (1):
+      selftests: bpf: Fix detach from sockmap tests
+
+Martin KaFai Lau (2):
+      bpf: net: Avoid copying sk_user_data of reuseport_array during sk_clone
+      bpf: net: Avoid incorrect bpf_sk_reuseport_detach call
+
+ include/net/sock.h                      |  3 ++-
+ kernel/bpf/reuseport_array.c            | 14 ++++++++++----
+ tools/lib/bpf/hashmap.h                 | 12 ++++++++----
+ tools/testing/selftests/bpf/test_maps.c | 12 ++++++------
+ 4 files changed, 26 insertions(+), 15 deletions(-)
