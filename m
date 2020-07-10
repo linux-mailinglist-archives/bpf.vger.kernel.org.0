@@ -2,86 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2178B21BD93
-	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 21:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB5521BDBE
+	for <lists+bpf@lfdr.de>; Fri, 10 Jul 2020 21:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGJTYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 15:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbgGJTYq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:24:46 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E2EC08C5DD
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 12:24:46 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id o4so3814102lfi.7
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 12:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=4Vr2AZgZniEXewC9xAQKzNmLuU22NOIzV1lBzaMmNY4=;
-        b=ICgcKrJdMrQVfzVYYyLc9LVDmgFs5iCW4N829rjqCff+MNewsk/ItBTvX3dZem4NqR
-         GF9A6EqK5RjnpNrvJh1P3RgDIxiCeYGlWjGvaRCi/rMRhMLaBvOigT//ViXCHMEc9gxg
-         C8BEhjg1S6Ykm9jwfIStnaNdWzShuhWGzH5ik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=4Vr2AZgZniEXewC9xAQKzNmLuU22NOIzV1lBzaMmNY4=;
-        b=TPZP4FnoXOtUW/RZCOivwfQhaSlk7VoRcPOmAuKtYQk3awo8tI3CLmNa07h1B/3WSN
-         mMAQoGBxAAwzgRTaPm47CkoCFUOugazmksMCthOTZ4GgrKG5UR57511lmxFBuw6WHsZi
-         94i5B932Fsc9CUdRqsJUtgXpMEzp2i51w3aY5zGJcv2s/QSwQ0IrI43LPh8I08CldpfM
-         HbJEA8g0Y5++g7bNjPdLBSgjwApwsCOSYF31ykp2uOLwhv+R/6lcBRCF6MlpjfTF6IXO
-         Co/Hy0ftrBzfEVo9XC5olvk7Yp1nmi7kWF2g51Eny4NF4Tma/aSZYk/rGBTA37m7+4R+
-         Cw4Q==
-X-Gm-Message-State: AOAM530q0iCUh46gJFrNFrXVHwEt6ualWbY/3Z9e890Gd57cxTIbtawM
-        ft2QjS2SDNRK2MfvB1sGunYD/g==
-X-Google-Smtp-Source: ABdhPJxSofShlNFCDTNj5wuUKktPnfqZkNqtTKb3WW9anql7gup+ARvEvEskOAvK9ZYrKZN9JHeOXw==
-X-Received: by 2002:a19:811:: with SMTP id 17mr42574455lfi.197.1594409084968;
-        Fri, 10 Jul 2020 12:24:44 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id r15sm2193032ljd.130.2020.07.10.12.24.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 12:24:44 -0700 (PDT)
-References: <20200702092416.11961-1-jakub@cloudflare.com> <20200702092416.11961-13-jakub@cloudflare.com> <CAEf4BzbrUZhpxfw_eeJJCoo46_x1Y8naE19qoVUWi5sTSNSdzA@mail.gmail.com> <87h7ugadpt.fsf@cloudflare.com> <CAEf4BzY75c+gARvkmQ8OtbpDbZvBkia4qMyxO7HCoOeu=B1AxQ@mail.gmail.com> <87d053ahqn.fsf@cloudflare.com> <CAEf4Bzbxiwk6reDxF78V36mRhavc9j=woQiib7SjsQ=LbcGJQg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728329AbgGJTiD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 10 Jul 2020 15:38:03 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29228 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726867AbgGJTiD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 15:38:03 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-MWjP_NGwNwSGjV9xeEjMGA-1; Fri, 10 Jul 2020 15:37:58 -0400
+X-MC-Unique: MWjP_NGwNwSGjV9xeEjMGA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E66761DE1;
+        Fri, 10 Jul 2020 19:37:56 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 406A31002391;
+        Fri, 10 Jul 2020 19:37:55 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf-next v3 12/16] libbpf: Add support for SK_LOOKUP program type
-In-reply-to: <CAEf4Bzbxiwk6reDxF78V36mRhavc9j=woQiib7SjsQ=LbcGJQg@mail.gmail.com>
-Date:   Fri, 10 Jul 2020 21:24:43 +0200
-Message-ID: <878sfr9nr8.fsf@cloudflare.com>
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v6 bpf-next 0/9] bpf: Add d_path helper - preparation changes
+Date:   Fri, 10 Jul 2020 21:37:45 +0200
+Message-Id: <20200710193754.3821104-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:55 PM CEST, Andrii Nakryiko wrote:
-> On Fri, Jul 10, 2020 at 1:37 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+hi,
+this patchset does preparation work for adding d_path helper,
+which still needs more work, but the initial set of patches
+is ready and useful to have.
 
-[...]
+This patchset adds:
+  - support to generate BTF ID lists that are resolved during
+    kernel linking and usable within kernel code with following
+    macros:
 
->> I've been happily using the part of section name following "sk_lookup"
->> prefix to name the programs just to make section names in ELF object
->> unique:
->>
->>   SEC("sk_lookup/lookup_pass")
->>   SEC("sk_lookup/lookup_drop")
->>   SEC("sk_lookup/redir_port")
->
-> oh, right, which reminds me: how about adding / to sk_lookup in that
-> libbpf table, so that it's always sk_lookup/<something> for section
-> name? We did similar change to xdp_devmap recently, and it seems like
-> a good trend overall to have / separation between program type and
-> whatever extra name user wants to give?
+      BTF_ID_LIST(bpf_skb_output_btf_ids)
+      BTF_ID(struct, sk_buff)
 
-Will do. Thanks for pointing out it. I didn't pick up on it.
+    and access it in kernel code via:
+      extern u32 bpf_skb_output_btf_ids[];
+
+  - resolve_btfids tool that scans elf object for .BTF_ids
+    section and resolves its symbols with BTF ID values
+  - resolving of bpf_ctx_convert struct and several other
+    objects with BTF_ID_LIST
+
+v6 changes:
+  - added acks
+  - added general make rule to resolve_btfids Build [Andrii]
+  - renamed .BTF.ids to .BTF_ids [Andrii]
+  - added --no-fail option to resolve_btfids [Andrii]
+  - changed resolve_btfids test to work over BTF from object
+    file, so we don't depend on vmlinux BTF [Andrii]
+  - fixed few typos [Andrii]
+  - fixed the out of tree build [Andrii]
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/d_path
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (9):
+      bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
+      bpf: Compile resolve_btfids tool at kernel compilation start
+      bpf: Add BTF_ID_LIST/BTF_ID/BTF_ID_UNUSED macros
+      bpf: Resolve BTF IDs in vmlinux image
+      bpf: Remove btf_id helpers resolving
+      bpf: Use BTF_ID to resolve bpf_ctx_convert struct
+      bpf: Add info about .BTF_ids section to btf.rst
+      tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
+      selftests/bpf: Add test for resolve_btfids
+
+ Documentation/bpf/btf.rst                               |  36 +++++
+ Makefile                                                |  25 +++-
+ include/asm-generic/vmlinux.lds.h                       |   4 +
+ include/linux/btf_ids.h                                 |  87 ++++++++++++
+ kernel/bpf/btf.c                                        | 103 ++------------
+ kernel/trace/bpf_trace.c                                |   9 +-
+ net/core/filter.c                                       |   9 +-
+ scripts/link-vmlinux.sh                                 |   6 +
+ tools/Makefile                                          |   3 +
+ tools/bpf/Makefile                                      |   9 +-
+ tools/bpf/resolve_btfids/Build                          |  10 ++
+ tools/bpf/resolve_btfids/Makefile                       |  77 +++++++++++
+ tools/bpf/resolve_btfids/main.c                         | 721 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/btf_ids.h                           |  87 ++++++++++++
+ tools/include/linux/compiler.h                          |   4 +
+ tools/testing/selftests/bpf/Makefile                    |  14 +-
+ tools/testing/selftests/bpf/prog_tests/resolve_btfids.c | 107 ++++++++++++++
+ tools/testing/selftests/bpf/progs/btf_data.c            |  26 ++++
+ 18 files changed, 1234 insertions(+), 103 deletions(-)
+ create mode 100644 include/linux/btf_ids.h
+ create mode 100644 tools/bpf/resolve_btfids/Build
+ create mode 100644 tools/bpf/resolve_btfids/Makefile
+ create mode 100644 tools/bpf/resolve_btfids/main.c
+ create mode 100644 tools/include/linux/btf_ids.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_data.c
+
