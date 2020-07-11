@@ -2,100 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2190421C507
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 18:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F6E21C565
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 19:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgGKQJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jul 2020 12:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgGKQJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Jul 2020 12:09:32 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73649C08C5DD;
-        Sat, 11 Jul 2020 09:09:32 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id w17so6439406otl.4;
-        Sat, 11 Jul 2020 09:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Qf07YRov7SfUOXWzDXUHuM7xMPAN7Piv/E000SBlNFU=;
-        b=ggJQ2solKBn76Lp4qQiFF/06ZAIL/U/B47K7vJ03+TFG50Km4wUQbE2oaAKTR1Jlvu
-         mFX/pCl1IADinOW8zdu0QLX82bhtp6PKZxtlE/3dxoTzFIXysuMoTegyON3urAs54wwM
-         7X5/NffHlc+wE36jp1RcVfDSuECfHJXhoy6RclmNSV7dx3kTIQ49kTJ/j6R8EIfqtseQ
-         qSddhf+2oFaC/KRcE7n12ewIVDY+jG+tu9BGtdyC6YkqtsMhv8MOz4DuPCYclxEwwV5q
-         3QFchQYJkv3LqLPg2DkBfRZB6iCIzJPjS56yIyCs3GkEUFfkKizH7XfXIqPk9u0fo3Xo
-         gz2w==
+        id S1728653AbgGKRDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jul 2020 13:03:21 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:38841 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728510AbgGKRDV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jul 2020 13:03:21 -0400
+Received: by mail-il1-f199.google.com with SMTP id c12so6005888ilf.5
+        for <bpf@vger.kernel.org>; Sat, 11 Jul 2020 10:03:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qf07YRov7SfUOXWzDXUHuM7xMPAN7Piv/E000SBlNFU=;
-        b=K2t/LdIsRxOj9j+5kl2sFbHEwJBqfWTazkk2COmnwnE7i9PZDFFixB3yc7hJxTzJbX
-         Em0GoeadiqutE1IrnCf1GQ8wYF5sT7fe2T1k/tZXZOsI4DlnR1IXQyp4noI3wakLqqgm
-         QWa4H2fGNMqD/mqCDU13BvlborLJ7PSfklizkSgkRPrIDR2aYlU/CWswFk7iDr4SjWMr
-         3E+ZuLeKzVfd0uPwMf+sE+NGOjyPrgm0QHHvNEdK1NBMnwaeujCtCH6X0ZMhANkCkIQ6
-         b8L4MPgZfTclDs+aJ116wTSvX3ao+sgu4E+1pFrecgzReJcH/DgwMe6gNoWgVAzOVWHn
-         0bcw==
-X-Gm-Message-State: AOAM530VgvUhzHCofQ1yeGUNT7eowk9kwGr7IU8lLySJNpz5CXPs5VSx
-        tDk2FqApJuoRavdjhifZmao=
-X-Google-Smtp-Source: ABdhPJzfOWcU4xfNAiLN664e4qCaxn2HXHza1c9nYzoGu6gyrkz4kWgPWcueMiBzeQM2LlfDNaDwXw==
-X-Received: by 2002:a9d:6acf:: with SMTP id m15mr2706065otq.40.1594483771751;
-        Sat, 11 Jul 2020 09:09:31 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:284:8202:10b0:b906:515d:5842:4217])
-        by smtp.googlemail.com with ESMTPSA id h4sm1760664otq.66.2020.07.11.09.09.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Jul 2020 09:09:31 -0700 (PDT)
-Subject: Re: [PATCHv6 bpf-next 1/3] xdp: add a new helper for dev map
- multicast support
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-References: <20200701041938.862200-1-liuhangbin@gmail.com>
- <20200709013008.3900892-1-liuhangbin@gmail.com>
- <20200709013008.3900892-2-liuhangbin@gmail.com>
- <efcdf373-7add-cce1-17a3-03ddf38e0749@gmail.com>
- <20200710065535.GB2531@dhcp-12-153.nay.redhat.com>
- <2212a795-4964-a828-4d63-92394585e684@gmail.com>
- <20200711002632.GE2531@dhcp-12-153.nay.redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <53bd6672-f70d-086c-7155-d0136b6e8364@gmail.com>
-Date:   Sat, 11 Jul 2020 10:09:29 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zx+wcMN9XwcOE9Jwr6b7EFyTsUN+BF3ioh+EWC9OsoU=;
+        b=LMav9oCt9Vb+ywwA/M4fdfiP/lIKVyE70vVfY/zIbJy4KCg0tCLbCILVUkpjAuJVZ1
+         BVR8SWrHcQt5tlBEPK5wxhEJ8iElfiYraIIdCGIBe+CfaD2eLFHu1OGk0cA+c/2HJmf7
+         zit+3Cr+8viUGmdkd2Hu3HYidVRg1gNHP3DXJwqQq4U2gbkQwBWJ9v4lGQKTsbfifYRE
+         8maxXOI/CYr01tuUxo7BzMXzgIFtm2QcjCF4IoK3PlgDJnKIGqdttn3A+yr6Hd9i/hE2
+         3FhQyb7/7HB52VlvYzt9fQX1y0P0wOzOG5n+FhKHLurZsy9wooRRiW3AROuqkLhqAJ3W
+         vpHg==
+X-Gm-Message-State: AOAM531uJ3+ZbIN6enT8aUOpPJCKzyjLM9zLdUgvCXXmcp/AiZoJ0UiB
+        EWAvn7iJGBFrbXgnWd3SlBJGNqtZJFNkQvV5DMpxL8DsBSgW
+X-Google-Smtp-Source: ABdhPJxCNrQ7mwfVu4cyIs1iVuRfd7CVfH485Y1eSUaP3CBGERIgIgOaI+mZPbaGNgwQVkMDXgoVmaJWisdQH/1M/dyre4UOH0UL
 MIME-Version: 1.0
-In-Reply-To: <20200711002632.GE2531@dhcp-12-153.nay.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5e:9b08:: with SMTP id j8mr6336861iok.116.1594486999819;
+ Sat, 11 Jul 2020 10:03:19 -0700 (PDT)
+Date:   Sat, 11 Jul 2020 10:03:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000392a0a05aa2d6faf@google.com>
+Subject: general protection fault in htab_elem_free_rcu
+From:   syzbot <syzbot+a9db0ab6a8e0ca14351d@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/10/20 6:26 PM, Hangbin Liu wrote:
->>
->> The point of DEVMAP_HASH is to allow map management where key == device
->> index (vs DEVMAP which for any non-trivial use case is going to require
->> key != device index). You could require the exclude map to be
->> DEVMAP_HASH and the key to be the index allowing you to do a direct
->> lookup. Having to roam the entire map looking for a match does not scale
->> and is going to have poor performance with increasing number of entries.
->> XDP is targeted at performance with expert level of control, so
->> constraints like this have to be part of the deal.
-> 
-> Yes, if we have this constraints the performance should have some improvement.
-> 
-> Do you think we should do it right now or in later performance update patch.
-> 
+Hello,
 
-It needs to be in the same release as the initial patches. Easiest to
-include with the initial set, but a followup is fine if it happens
-before this dev cycle is over.
+syzbot found the following crash on:
+
+HEAD commit:    d31958b3 Add linux-next specific files for 20200710
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13935857100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3fe4fccb94cbc1a6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a9db0ab6a8e0ca14351d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133db22b100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fe6f1f100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a9db0ab6a8e0ca14351d@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xf33bb70012bc003b: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0x99ddd80095e001d8-0x99ddd80095e001df]
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0-rc4-next-20200710-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:htab_elem_free kernel/bpf/hashtab.c:769 [inline]
+RIP: 0010:htab_elem_free_rcu+0x4a/0x110 kernel/bpf/hashtab.c:779
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bc 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b f8 48 8d 7d 18 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 82 00 00 00 44 8b 65 18 bf 05
+RSP: 0018:ffffc90000007e48 EFLAGS: 00010a03
+RAX: dffffc0000000000 RBX: ffff888084800010 RCX: 0000000000000001
+RDX: 133bbb0012bc003b RSI: ffffffff8186891e RDI: 99ddd80095e001de
+RBP: 99ddd80095e001c6 R08: 0000000000000000 R09: ffffffff8c5b09f7
+R10: fffffbfff18b613e R11: 0000000000000000 R12: ffffc90000007ed8
+R13: ffff888084800000 R14: 0000000000000000 R15: ffffffff89a86580
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c6368 CR3: 0000000009a79000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ rcu_do_batch kernel/rcu/tree.c:2418 [inline]
+ rcu_core+0x5dc/0x11d0 kernel/rcu/tree.c:2645
+ __do_softirq+0x34c/0xa60 kernel/softirq.c:292
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x111/0x170 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:387 [inline]
+ __irq_exit_rcu kernel/softirq.c:417 [inline]
+ irq_exit_rcu+0x229/0x270 kernel/softirq.c:429
+ sysvec_apic_timer_interrupt+0x54/0x120 arch/x86/kernel/apic/apic.c:1090
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:587
+RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
+Code: ff 4c 89 ef e8 93 66 c6 f9 e9 8e fe ff ff 48 89 df e8 86 66 c6 f9 eb 8a cc cc cc cc e9 07 00 00 00 0f 00 2d 34 9b 5b 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 24 9b 5b 00 f4 c3 cc cc 55 53 e8 09
+RSP: 0018:ffffffff89a07c70 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff89a86580 RSI: ffffffff87ed2968 RDI: ffffffff87ed293e
+RBP: ffff8880a6a93064 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880a6a93064
+R13: 1ffffffff1340f98 R14: ffff8880a6a93065 R15: 0000000000000001
+ arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
+ acpi_safe_halt+0x8d/0x110 drivers/acpi/processor_idle.c:111
+ acpi_idle_do_entry+0x15c/0x1b0 drivers/acpi/processor_idle.c:525
+ acpi_idle_enter+0x3f9/0xab0 drivers/acpi/processor_idle.c:651
+ cpuidle_enter_state+0xff/0x960 drivers/cpuidle/cpuidle.c:235
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:346
+ call_cpuidle kernel/sched/idle.c:126 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:214 [inline]
+ do_idle+0x431/0x6d0 kernel/sched/idle.c:276
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:372
+ start_kernel+0x9cb/0xa06 init/main.c:1045
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
+Modules linked in:
+---[ end trace 5ce7b44eaacf6c96 ]---
+RIP: 0010:htab_elem_free kernel/bpf/hashtab.c:769 [inline]
+RIP: 0010:htab_elem_free_rcu+0x4a/0x110 kernel/bpf/hashtab.c:779
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bc 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b f8 48 8d 7d 18 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 82 00 00 00 44 8b 65 18 bf 05
+RSP: 0018:ffffc90000007e48 EFLAGS: 00010a03
+RAX: dffffc0000000000 RBX: ffff888084800010 RCX: 0000000000000001
+RDX: 133bbb0012bc003b RSI: ffffffff8186891e RDI: 99ddd80095e001de
+RBP: 99ddd80095e001c6 R08: 0000000000000000 R09: ffffffff8c5b09f7
+R10: fffffbfff18b613e R11: 0000000000000000 R12: ffffc90000007ed8
+R13: ffff888084800000 R14: 0000000000000000 R15: ffffffff89a86580
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c6368 CR3: 0000000009a79000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
