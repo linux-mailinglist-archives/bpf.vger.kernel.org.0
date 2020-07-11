@@ -2,130 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC7621C3DF
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 13:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2190421C507
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 18:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgGKLKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jul 2020 07:10:19 -0400
-Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:58056 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726523AbgGKLKT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 11 Jul 2020 07:10:19 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 22C46100E7B42;
-        Sat, 11 Jul 2020 11:10:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3165:3355:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:4605:5007:6119:6742:7514:10004:10400:10848:10967:11232:11657:11658:11914:12043:12295:12297:12555:12663:12740:12895:12986:13439:13894:14093:14097:14181:14659:14721:21080:21451:21627:21740:30029:30054:30056:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: day58_420072326ed6
-X-Filterd-Recvd-Size: 3571
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 11 Jul 2020 11:10:15 +0000 (UTC)
-Message-ID: <02995ace8cc4524d44bf6e6db0282391c3f6d8e4.camel@perches.com>
-Subject: Re: [PATCH v2] MAINTAINERS: XDP: restrict N: and K:
-From:   Joe Perches <joe@perches.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        mchehab+huawei@kernel.org, robh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Sat, 11 Jul 2020 04:10:13 -0700
-In-Reply-To: <20200711102318.28ce29d6@carbon>
-References: <87tuyfi4fm.fsf@toke.dk>
-         <20200710190407.31269-1-grandmaster@al2klimov.de>
-         <28a81dfe62b1dc00ccc721ddb88669d13665252b.camel@perches.com>
-         <20200711102318.28ce29d6@carbon>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1728441AbgGKQJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jul 2020 12:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbgGKQJc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jul 2020 12:09:32 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73649C08C5DD;
+        Sat, 11 Jul 2020 09:09:32 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id w17so6439406otl.4;
+        Sat, 11 Jul 2020 09:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Qf07YRov7SfUOXWzDXUHuM7xMPAN7Piv/E000SBlNFU=;
+        b=ggJQ2solKBn76Lp4qQiFF/06ZAIL/U/B47K7vJ03+TFG50Km4wUQbE2oaAKTR1Jlvu
+         mFX/pCl1IADinOW8zdu0QLX82bhtp6PKZxtlE/3dxoTzFIXysuMoTegyON3urAs54wwM
+         7X5/NffHlc+wE36jp1RcVfDSuECfHJXhoy6RclmNSV7dx3kTIQ49kTJ/j6R8EIfqtseQ
+         qSddhf+2oFaC/KRcE7n12ewIVDY+jG+tu9BGtdyC6YkqtsMhv8MOz4DuPCYclxEwwV5q
+         3QFchQYJkv3LqLPg2DkBfRZB6iCIzJPjS56yIyCs3GkEUFfkKizH7XfXIqPk9u0fo3Xo
+         gz2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Qf07YRov7SfUOXWzDXUHuM7xMPAN7Piv/E000SBlNFU=;
+        b=K2t/LdIsRxOj9j+5kl2sFbHEwJBqfWTazkk2COmnwnE7i9PZDFFixB3yc7hJxTzJbX
+         Em0GoeadiqutE1IrnCf1GQ8wYF5sT7fe2T1k/tZXZOsI4DlnR1IXQyp4noI3wakLqqgm
+         QWa4H2fGNMqD/mqCDU13BvlborLJ7PSfklizkSgkRPrIDR2aYlU/CWswFk7iDr4SjWMr
+         3E+ZuLeKzVfd0uPwMf+sE+NGOjyPrgm0QHHvNEdK1NBMnwaeujCtCH6X0ZMhANkCkIQ6
+         b8L4MPgZfTclDs+aJ116wTSvX3ao+sgu4E+1pFrecgzReJcH/DgwMe6gNoWgVAzOVWHn
+         0bcw==
+X-Gm-Message-State: AOAM530VgvUhzHCofQ1yeGUNT7eowk9kwGr7IU8lLySJNpz5CXPs5VSx
+        tDk2FqApJuoRavdjhifZmao=
+X-Google-Smtp-Source: ABdhPJzfOWcU4xfNAiLN664e4qCaxn2HXHza1c9nYzoGu6gyrkz4kWgPWcueMiBzeQM2LlfDNaDwXw==
+X-Received: by 2002:a9d:6acf:: with SMTP id m15mr2706065otq.40.1594483771751;
+        Sat, 11 Jul 2020 09:09:31 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:284:8202:10b0:b906:515d:5842:4217])
+        by smtp.googlemail.com with ESMTPSA id h4sm1760664otq.66.2020.07.11.09.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Jul 2020 09:09:31 -0700 (PDT)
+Subject: Re: [PATCHv6 bpf-next 1/3] xdp: add a new helper for dev map
+ multicast support
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+References: <20200701041938.862200-1-liuhangbin@gmail.com>
+ <20200709013008.3900892-1-liuhangbin@gmail.com>
+ <20200709013008.3900892-2-liuhangbin@gmail.com>
+ <efcdf373-7add-cce1-17a3-03ddf38e0749@gmail.com>
+ <20200710065535.GB2531@dhcp-12-153.nay.redhat.com>
+ <2212a795-4964-a828-4d63-92394585e684@gmail.com>
+ <20200711002632.GE2531@dhcp-12-153.nay.redhat.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <53bd6672-f70d-086c-7155-d0136b6e8364@gmail.com>
+Date:   Sat, 11 Jul 2020 10:09:29 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200711002632.GE2531@dhcp-12-153.nay.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2020-07-11 at 10:23 +0200, Jesper Dangaard Brouer wrote:
-> On Fri, 10 Jul 2020 12:37:47 -0700
-> Joe Perches <joe@perches.com> wrote:
+On 7/10/20 6:26 PM, Hangbin Liu wrote:
+>>
+>> The point of DEVMAP_HASH is to allow map management where key == device
+>> index (vs DEVMAP which for any non-trivial use case is going to require
+>> key != device index). You could require the exclude map to be
+>> DEVMAP_HASH and the key to be the index allowing you to do a direct
+>> lookup. Having to roam the entire map looking for a match does not scale
+>> and is going to have poor performance with increasing number of entries.
+>> XDP is targeted at performance with expert level of control, so
+>> constraints like this have to be part of the deal.
 > 
-> > On Fri, 2020-07-10 at 21:04 +0200, Alexander A. Klimov wrote:
-> > > Rationale:
-> > > Documentation/arm/ixp4xx.rst contains "xdp" as part of "ixdp465"
-> > > which has nothing to do with XDP.
-> > > 
-> > > Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> > > ---
-> > >  Better?
-> > > 
-> > >  MAINTAINERS | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 1d4aa7f942de..735e2475e926 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -18708,8 +18708,8 @@ F:	include/trace/events/xdp.h
-> > >  F:	kernel/bpf/cpumap.c
-> > >  F:	kernel/bpf/devmap.c
-> > >  F:	net/core/xdp.c
-> > > -N:	xdp
-> > > -K:	xdp
-> > > +N:	(?:\b|_)xdp
-> > > +K:	(?:\b|_)xdp  
-> > 
-> > Generally, it's better to have comprehensive files lists
-> > rather than adding name matching regexes.
+> Yes, if we have this constraints the performance should have some improvement.
 > 
-> I like below more direct matching of the files we already know are XDP
-> related. The pattern match are meant to catch drivers containing XDP
-> related bits.
-
-That's what the K: entry is for no?
-
-Anyway, if you agree with using the appropriate F: patterns,
-please submit it.  I'm not going to.
-
-> (small typo in your patch below)
-> 
-> > Perhaps:
-> > ---
-> >  MAINTAINERS | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 16854e47e8cb..2e96cbf15b31 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18763,13 +18763,19 @@ M:	John Fastabend <john.fastabend@gmail.com>
-> >  L:	netdev@vger.kernel.org
-> >  L:	bpf@vger.kernel.org
-> >  S:	Supported
-> > -F:	include/net/xdp.h
-> > +F:	Documentation/networking/af_xdp.rst
-> > +F:	include/net/xdp*
-> >  F:	include/trace/events/xdp.h
-> > +F:	include/uapi/linux/if_xdp.h
-> > +F:	include/uapi/linux/xdp_diag.h
-> >  F:	kernel/bpf/cpumap.c
-> >  F:	kernel/bpf/devmap.c
-> >  F:	net/core/xdp.c
-> > -N:	xdp
-> > -K:	xdp
-> > +F:	net/xdp/
-> > +F:	samples/bpf/xdp*
-> > +F:	tools/testing/selftests/bfp/*xdp*
->                                ^^^^ 
-> Typo, should be "bpf"
-> 
-> > +F:	tools/testing/selftests/bfp/*/*xdp*
-> > +K:	(?:\b|_)xdp(?:\b|_)
-> >  
-> >  XDP SOCKETS (AF_XDP)
-> >  M:	Björn Töpel <bjorn.topel@intel.com>
-> > 
-> 
+> Do you think we should do it right now or in later performance update patch.
 > 
 
+It needs to be in the same release as the initial patches. Easiest to
+include with the initial set, but a followup is fine if it happens
+before this dev cycle is over.
