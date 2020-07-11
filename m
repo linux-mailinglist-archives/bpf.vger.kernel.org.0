@@ -2,62 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EC721C59F
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 20:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEE621C610
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 22:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbgGKSOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jul 2020 14:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728507AbgGKSOY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Jul 2020 14:14:24 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726628AbgGKUD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jul 2020 16:03:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47398 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726729AbgGKUD5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jul 2020 16:03:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594497835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hfhNn2+Z06JFLTqf0fcnWHz09eTkp1dfSJoM5LOrl+w=;
+        b=XAVxIZ/xmf20MHW+XvPMaM05bAmyxCcyv2f7enDCWGEJPDk8nNIeongG0tIpoz1VCTXgA9
+        bwrarMKDzc5jOfnl/oKghDZt/kk+xlEejvnSDBwhLK78RUTKSc+y0aNc2TCfQIjdlpnXcp
+        xMOMZAcnqu6ZrLpyXG0evqwPmpiPClo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-FUFWQOi7O8itz_7gSsXHpg-1; Sat, 11 Jul 2020 16:03:51 -0400
+X-MC-Unique: FUFWQOi7O8itz_7gSsXHpg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BE4E20748;
-        Sat, 11 Jul 2020 18:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594491263;
-        bh=C4F2CENFbh78oJsEaEEuAKtaOqXY1fqsIkGderiL3Uc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=akfY3X5EhzfmC0E1n9ECTfWogwsLEhG7SAoDP3E8firF3xjDxVbAsTbbUKxJu9Lvs
-         I0KFT38VtkyZUGxBHA7LC3eQl27KDE+O80Bk0s8+ip6z2tB1kfBG9VQHXlZ5crK/7k
-         Zaqie4utNg+faVOiZR3x/yyWl8sSnttuHNQcVcZk=
-Date:   Sat, 11 Jul 2020 11:14:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yahui Chen <goodluckwillcomesoon@gmail.com>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66C33800C64;
+        Sat, 11 Jul 2020 20:03:49 +0000 (UTC)
+Received: from krava (unknown [10.40.192.15])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5C7E8724C5;
+        Sat, 11 Jul 2020 20:03:47 +0000 (UTC)
+Date:   Sat, 11 Jul 2020 22:03:46 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        steven.zou@intel.com
-Subject: Re: [PATCH] xsk: ixgbe: solve the soft interrupt 100% CPU usage
- when xdp rx traffic congestion
-Message-ID: <20200711111421.0db76fa9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1594462239-19596-1-git-send-email-goodluckwillcomesoon@gmail.com>
-References: <1594462239-19596-1-git-send-email-goodluckwillcomesoon@gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 0/9] bpf: Add d_path helper - preparation
+ changes
+Message-ID: <20200711200346.GA5823@krava>
+References: <20200710193754.3821104-1-jolsa@kernel.org>
+ <CAEf4BzbejJeaG-kffJf-tM_a7kMDET7n3Nu4dJB+jKRicc90Qw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbejJeaG-kffJf-tM_a7kMDET7n3Nu4dJB+jKRicc90Qw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 11 Jul 2020 18:10:38 +0800 Yahui Chen wrote:
-> 2. If the wakeup mechanism is used, that is, use the
-> `XDP_UMEM_USES_NEED_WAKEUP` flag. This method takes advantage of the
-> interrupt delay function of ixgbe skillfully, thus solving the problem
-> that the si CPU is always 100%. However, it will cause other problems.
-> The port-level flow control will be triggered on 82599, and the pause
-> frame will be sent to the upstream sender. This will affect the other
-> packet receiving queues of the network card, resulting in the packet
-> receiving rate of all queues dropping to 10Kpps.
+On Fri, Jul 10, 2020 at 01:46:02PM -0700, Andrii Nakryiko wrote:
+> On Fri, Jul 10, 2020 at 12:38 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > this patchset does preparation work for adding d_path helper,
+> > which still needs more work, but the initial set of patches
+> > is ready and useful to have.
+> >
+> > This patchset adds:
+> >   - support to generate BTF ID lists that are resolved during
+> >     kernel linking and usable within kernel code with following
+> >     macros:
+> >
+> >       BTF_ID_LIST(bpf_skb_output_btf_ids)
+> >       BTF_ID(struct, sk_buff)
+> >
+> >     and access it in kernel code via:
+> >       extern u32 bpf_skb_output_btf_ids[];
+> >
+> >   - resolve_btfids tool that scans elf object for .BTF_ids
+> >     section and resolves its symbols with BTF ID values
+> >   - resolving of bpf_ctx_convert struct and several other
+> >     objects with BTF_ID_LIST
+> >
+> > v6 changes:
+> >   - added acks
+> >   - added general make rule to resolve_btfids Build [Andrii]
+> >   - renamed .BTF.ids to .BTF_ids [Andrii]
+> >   - added --no-fail option to resolve_btfids [Andrii]
+> >   - changed resolve_btfids test to work over BTF from object
+> >     file, so we don't depend on vmlinux BTF [Andrii]
+> >   - fixed few typos [Andrii]
+> >   - fixed the out of tree build [Andrii]
+> >
+> > Also available at:
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> >   bpf/d_path
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> 
+> You've missed fixing bpf_get_task_stack_proto with your
+> BTF_IDS_LIST/BTF_ID macro. It's currently failing in subtests. With
+> BTF_IDS_LIST/BTF_ID trivial fix it works again. Please fix that before
+> this can be applied.
 
-To me the current behavior sounds correct.. if you don't want pause
-frames to be generated you have to disable them completely. The point 
-of pause frames is to prevent drops.
+ugh.. moving fast ;-) some of the selftests are failing for me
+on regular basis, I overlooked this one, sry
+
+> 
+> btf_data.c could also use some name-conflicting entries, just to make
+> sure that kind (struct vs typedef) is taken into account. Maybe just
+> add some dummy `typedef int S;` or something?
+
+sure.. and I had to change resolve_btfids a bit because of that,
+so I'll not add your ack to first patch yet
+
+I'll send the new version shortly
+
+thanks,
+jirka
+
+> 
+> So with the above, please add for the next revision:
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Tested-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> > Jiri Olsa (9):
+> >       bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
+> >       bpf: Compile resolve_btfids tool at kernel compilation start
+> >       bpf: Add BTF_ID_LIST/BTF_ID/BTF_ID_UNUSED macros
+> >       bpf: Resolve BTF IDs in vmlinux image
+> >       bpf: Remove btf_id helpers resolving
+> >       bpf: Use BTF_ID to resolve bpf_ctx_convert struct
+> >       bpf: Add info about .BTF_ids section to btf.rst
+> >       tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
+> >       selftests/bpf: Add test for resolve_btfids
+> >
+> >  Documentation/bpf/btf.rst                               |  36 +++++
+> >  Makefile                                                |  25 +++-
+> >  include/asm-generic/vmlinux.lds.h                       |   4 +
+> >  include/linux/btf_ids.h                                 |  87 ++++++++++++
+> >  kernel/bpf/btf.c                                        | 103 ++------------
+> >  kernel/trace/bpf_trace.c                                |   9 +-
+> >  net/core/filter.c                                       |   9 +-
+> >  scripts/link-vmlinux.sh                                 |   6 +
+> >  tools/Makefile                                          |   3 +
+> >  tools/bpf/Makefile                                      |   9 +-
+> >  tools/bpf/resolve_btfids/Build                          |  10 ++
+> >  tools/bpf/resolve_btfids/Makefile                       |  77 +++++++++++
+> >  tools/bpf/resolve_btfids/main.c                         | 721 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tools/include/linux/btf_ids.h                           |  87 ++++++++++++
+> >  tools/include/linux/compiler.h                          |   4 +
+> >  tools/testing/selftests/bpf/Makefile                    |  14 +-
+> >  tools/testing/selftests/bpf/prog_tests/resolve_btfids.c | 107 ++++++++++++++
+> >  tools/testing/selftests/bpf/progs/btf_data.c            |  26 ++++
+> >  18 files changed, 1234 insertions(+), 103 deletions(-)
+> >  create mode 100644 include/linux/btf_ids.h
+> >  create mode 100644 tools/bpf/resolve_btfids/Build
+> >  create mode 100644 tools/bpf/resolve_btfids/Makefile
+> >  create mode 100644 tools/bpf/resolve_btfids/main.c
+> >  create mode 100644 tools/include/linux/btf_ids.h
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/btf_data.c
+> >
+> 
+
