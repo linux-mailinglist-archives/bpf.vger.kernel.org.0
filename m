@@ -2,193 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928C521C18F
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 03:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38A221C1BE
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 04:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgGKB3O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 21:29:14 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38728 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726605AbgGKB3O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 21:29:14 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06B1OTFb027668
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=Zt9u2EpjWjLtKzNqOLuW2yd8dLixE48PVNDjLnQBOGM=;
- b=cwzPqJzFj3nKDLXek/ZNIQ/9oxUu1edCuWpV3UbI6SQ3J12UrHs9ZJAHSADpnl9oMBoh
- kgl/ynnFLB0FjLoGiA8OFYivfDc69+gPJtRY5CChtOM6JW6e6C9USV94A0WzaMeLolBf
- Q7Nwj9uq1bzrNcTsjx79Jhv6CULRu39q5zU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 325k2cd84t-15
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:13 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        id S1726729AbgGKCJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 22:09:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59036 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726671AbgGKCJ0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 22:09:26 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06B22a1F004898;
+        Fri, 10 Jul 2020 19:09:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=YE8g9FAEG7B9beprHAs/kMpKuUfGzZnBUqtzRGzPRHw=;
+ b=Q3VAUtnle1/DLdvpvB49u55hvbidH3BByg2gk/ac81yTDqqdugV3mOL46OokqIHfHmVm
+ uxaDI7mSE3GVvFH1fA8fG65spJi+wSfGI6HU5Gq7YnSKz3L76QqYXSNKSgaAOcpluD29
+ A7pSvloAnPBe+n0Ywoag11bvORQkxMhuMR0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3265vt8a88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 10 Jul 2020 19:09:13 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 10 Jul 2020 18:29:09 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 56F4662E5296; Fri, 10 Jul 2020 18:27:00 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 5/5] selftests/bpf: add callchain_stackid
-Date:   Fri, 10 Jul 2020 18:26:39 -0700
-Message-ID: <20200711012639.3429622-6-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200711012639.3429622-1-songliubraving@fb.com>
-References: <20200711012639.3429622-1-songliubraving@fb.com>
+ 15.1.1979.3; Fri, 10 Jul 2020 19:09:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PubFFhG7Rq6AFOPXkvG4BrAQCK9cv1SO/yuXRyjOvjZfWJwhGsYd5WRQB7Bekhs9P/oUDk+rCHYv3NMK3RjW5Mk01X22ptMGzseYjYAK/3mhEvULQwkrxnjYpmEPUB607LLb8DelNgirCsPiQuxAUU4OpBkvmlAYrxmNUsxKNSZbfZziKJ+ohJ6pC5PXohBehvysIZ9HH+jnuz0qfRRfU7n7l9bM0gJY1ZswEg2qym4O2y7pJb4IhTQjW11B5jH0smRU2m8icL0Gyd3axdDKzBrylr+7QrVuwClDymDEwHdb9jJomn1hOxZ6X8ZcQsWZF9KePhJ62SmKwZr8kulxHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YE8g9FAEG7B9beprHAs/kMpKuUfGzZnBUqtzRGzPRHw=;
+ b=i8gi2O8mmHhKaz48SF/yv0psdpt4YAS49Bh6wKVzt61SnRCC812o5qGXdWD3X3PTCKU3j2KqZ90bwd4Xc7KUNoP5ZyJ7XMhS7nRzYt7Dtqk+FgNxiv5XMpsDUjZ4VsBeYO2feeJT8j9loGzI56xdOmwL1L4pCWcNi7ZzsI6fzWdCfbJ7pDFKwhSGDULakKVvAi6ON2edPEkJ7cJhYvjwo9rmu6pnGo8nr66zENSF6t6BjzU4uth4IhbslMlbhM0GL11Zivfat0lst3PTQ+iteetTCwAp0n+LBkuBK+JBj7eqWjAKRMCJuIGxga+nd85ljTWo5KVAeMsQJm+eo5tcVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YE8g9FAEG7B9beprHAs/kMpKuUfGzZnBUqtzRGzPRHw=;
+ b=GmbZwmdBhqzMjviNAnnzRuNdYlykSuz+1iXG7ABdk4SxazPmyp2YlT6SUA4nLLA7QYH+lHKR5QL6IfrZVmWaC3f5Ozkn5Ov48tsu9pbykgJiDreX0ts2Oax/x9n72S/WvN4IILCwoSSa+Sm90t0otjeKakNN8yMwHlP+E0gHu9c=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2839.namprd15.prod.outlook.com (2603:10b6:a03:fd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Sat, 11 Jul
+ 2020 02:09:05 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3153.032; Sat, 11 Jul 2020
+ 02:09:05 +0000
+Subject: Re: [PATCH bpf-next] tools/bpftool: remove warning about PID iterator
+ support
+To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrey Ignatov <rdna@fb.com>
+References: <20200710232605.20918-1-andriin@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <49d46a96-ad92-90dd-9723-893bd1e5a7bc@fb.com>
+Date:   Fri, 10 Jul 2020 19:09:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
+In-Reply-To: <20200710232605.20918-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR08CA0042.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::19) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::10fb] (2620:10d:c090:400::5:1b35) by BYAPR08CA0042.namprd08.prod.outlook.com (2603:10b6:a03:117::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Sat, 11 Jul 2020 02:09:04 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1b35]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 08c13d97-1960-4767-7e35-08d8253f6334
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2839:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2839955F0F01BC594A7645F2D3620@BYAPR15MB2839.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PUyBipwBckdAvIarMsW5grCrNPOS/Y/OT75maGTw+s5gDAz+CKgjBpCLniOZihy3a8/IxN+CT910LmmeU56OMoZsdan/MvwoxBUDMmpqgl9s0CUTT4OckzWQTUTEaoTnzFoxNGHye+lhXSB4N7e/foiywK8OIhrHpSVRc+FKXM1w67r2jFrpnKWUJ30zCgeiDfJpXybKglRmVGsbFWJtqhZq3SFYWQk2NrSON0cBU7YRW1zX2ch1/Py+BYXjkDeyh72q5SBBq52aV70UQaKQYk2NhsxauC5+YuIh0Xhc7VlJq6P+82tH67bSoEYxuK6aquEmO7I31+P+q+K9GWncL+BaAllqScQqvQtHDmpLRKr7YV085DN9t6eCyxMLl2Fa
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(366004)(376002)(136003)(39860400002)(186003)(8676002)(66476007)(66946007)(4744005)(36756003)(31686004)(86362001)(66556008)(5660300002)(478600001)(31696002)(8936002)(316002)(2906002)(83380400001)(4326008)(52116002)(16526019)(53546011)(6486002)(2616005)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: X3P3zRGcR8tcl6Jz4lEnalJyCbC/xZFchOhMIYF9wxqlxUxCWpBsMLCICJ/F7odig0F5x/+wPL6zX/QZvsBbinjo/MHKMabjY/oSgzIjkLJmCi3IqTZp1+Y/iobXg8U7GjURU7upJHHfZy6Ev9BXwiITtO0g+U8Xo63w6rGBCwDwgPDJE+iir51SJVKEyPbHVwHPr6bBN952/dmILkHHNHqJl9MSqVdYEwOP2kxUcDrvytGA9uqwf5FQK+tstX6n1sYj6jsw2p9ZtHmKMHBmyo0MFimJrGAumU1WtNXfJpfbRzKn3ZkdgI1zSPhKQ7F9tFV5uVC/OmbsidnulhxuIyDyTfzGN2Sl/126ZxLab0fbvzwGasnHl+eLk/xCqRJsYSleBRmN/QzQqxG7cLiVrzPm1TFV4sLzF+qbKOIucHGF7OvnSC9OddeFie6YbhVpKOlyXAiUufez6yCzCVDJETMsXdWi9M42pM7t0wIfbGfbnW9sPiLUIK/S3DPoPKVQG8BOS/wVC+zjNM2NFCZGCw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08c13d97-1960-4767-7e35-08d8253f6334
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2020 02:09:05.3555
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8KVWAmzyynHSfmBJJZiC2IswZfDbFkTjbMtPd3rWCWtRHNk3mgoDqE9xrnPs5zb5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2839
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-10_14:2020-07-10,2020-07-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007110006
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ malwarescore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007110012
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This tests new helper function bpf_get_callchain_stackid(), which is the
-alternative to bpf_get_stackid() for perf_event with PEBS entry.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/callchain_stackid.c        | 61 +++++++++++++++++++
- .../selftests/bpf/progs/callchain_stackid.c   | 37 +++++++++++
- 2 files changed, 98 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/callchain_stac=
-kid.c
- create mode 100644 tools/testing/selftests/bpf/progs/callchain_stackid.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c b=
-/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c
-new file mode 100644
-index 0000000000000..ebe6251324a1a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <test_progs.h>
-+#include "callchain_stackid.skel.h"
-+
-+void test_callchain_stackid(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 2,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
-+			PERF_SAMPLE_CALLCHAIN,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct callchain_stackid *skel;
-+	__u32 duration =3D 0;
-+	int pmu_fd, err;
-+
-+	skel =3D callchain_stackid__open();
-+
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
-+
-+	/* override program type */
-+	bpf_program__set_perf_event(skel->progs.oncpu);
-+
-+	err =3D callchain_stackid__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0) {
-+		printf("%s:SKIP:cpu doesn't support the event\n", __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
-+		  "err %ld\n", PTR_ERR(skel->links.oncpu))) {
-+		close(pmu_fd);
-+		goto cleanup;
-+	}
-+	usleep(500000);
-+
-+	CHECK(skel->data->total_val =3D=3D 1, "get_callchain_stack", "failed\n"=
-);
-+	close(pmu_fd);
-+
-+cleanup:
-+	callchain_stackid__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/callchain_stackid.c b/tool=
-s/testing/selftests/bpf/progs/callchain_stackid.c
-new file mode 100644
-index 0000000000000..aab2c736a0a45
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/callchain_stackid.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#ifndef PERF_MAX_STACK_DEPTH
-+#define PERF_MAX_STACK_DEPTH         127
-+#endif
-+
-+#ifndef BPF_F_USER_STACK
-+#define BPF_F_USER_STACK		(1ULL << 8)
-+#endif
-+
-+typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 16384);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(stack_trace_t));
-+} stackmap SEC(".maps");
-+
-+long total_val =3D 1;
-+
-+SEC("perf_event")
-+int oncpu(struct bpf_perf_event_data *ctx)
-+{
-+	long val;
-+
-+	val =3D bpf_get_callchain_stackid(ctx->callchain, &stackmap, 0);
-+
-+	if (val > 0)
-+		total_val +=3D val;
-+
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
---=20
-2.24.1
+On 7/10/20 4:26 PM, Andrii Nakryiko wrote:
+> Don't emit warning that bpftool was built without PID iterator support. This
+> error garbles JSON output of otherwise perfectly valid show commands.
+> 
+> Reported-by: Andrey Ignatov <rdna@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
+Thanks for the fix.
+Acked-by: Yonghong Song <yhs@fb.com>
+
+> ---
+>   tools/bpf/bpftool/pids.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> index c0d23ce4a6f4..e3b116325403 100644
+> --- a/tools/bpf/bpftool/pids.c
+> +++ b/tools/bpf/bpftool/pids.c
+> @@ -15,7 +15,6 @@
+>   
+>   int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
+>   {
+> -	p_err("bpftool built without PID iterator support");
+>   	return -ENOTSUP;
+>   }
+>   void delete_obj_refs_table(struct obj_refs_table *table) {}
+> 
