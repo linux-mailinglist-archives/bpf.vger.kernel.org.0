@@ -2,92 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C842A21C1F5
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 05:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F7D21C268
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 07:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgGKDxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 23:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgGKDxP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 23:53:15 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626AEC08C5DD;
-        Fri, 10 Jul 2020 20:53:15 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id j10so6075893qtq.11;
-        Fri, 10 Jul 2020 20:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z6AWxd/5FGxxwuquMSsRnXjurO0TQ1vFQCnKi381IDk=;
-        b=C6VcTj4xMiKCEMQoy5rLWrZmdNXOcvN+ZJWsPgA9F3KDPpSTwuPddnzlcvjzaKviDr
-         36i/TPtGiY1XVQCDCjvcjth6U2AL3ZxXYLYsQZSQ1recPIH7ulfuNjErU6j0rezNvOWM
-         5+GEBf+5tYDU3h9DQX5dC0ozoCRszTSkW6hoU2r+HeYbu8/JGVfZKxFFrzYOhJ6YQyxh
-         USF0vCFLTGo0LFcP91ac6lr7NIv1CICrork6aBlnlYwSIp5sVTUVSTJhhX7E9fh3v1xg
-         Yo8NotMYcQRJbM7zYazEa97OHP5uKQuXNsjTpCjrSg7KurH5U6wsmi1wdBCGJtSlD3q8
-         xTHA==
+        id S1727028AbgGKFeV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jul 2020 01:34:21 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:36612 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726958AbgGKFeU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jul 2020 01:34:20 -0400
+Received: by mail-io1-f72.google.com with SMTP id g17so4944420iob.3
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 22:34:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z6AWxd/5FGxxwuquMSsRnXjurO0TQ1vFQCnKi381IDk=;
-        b=uBA/1EffQo+rn7sr0ClHhi+bJurc/YBs+MIul7ZpkhMDn0IZwHxm73+rc46ZRhKMiF
-         vJfJf1/pS1ibZMrbd3ajNpH/t4NnXYiB2DrvSeItYbM69mH17RNk9wiedb6xSBOWIpOq
-         ixDrAKs8yE2HT7+8QvcL0lXm/gFwQZ2DqfNn5KhZ/vDt07kertgGXxThWFkNDXD7f+lX
-         C50rTVP+lsJjJ9qhtt0MYS7RYotaDDd9fOsoqvh7bUxo1Dqf/iJdN4xn7OfUHUJjTRlj
-         FwXrORCSShB9du2pGC0btyMjDvM4lcefjQacYZaim/ps+8WVTavlIUxKoP9+NwzIMcV1
-         bONg==
-X-Gm-Message-State: AOAM530oXK5seH8HX5Bw7ox6hWSrm4Wmw5m0lfDBItC3payNoQVHhcE+
-        p2palbTGGpqHg44MbufZDmdc5Vmo/MnyKypbCVw=
-X-Google-Smtp-Source: ABdhPJwgVQL48QhDtJJQVaXSbLNISPQqNbnZ3eCE90UTFVul8XrkkQj4mMMjzfQjXuY4Ls28ymvubqCEz1Bz8OM/M94=
-X-Received: by 2002:ac8:1991:: with SMTP id u17mr71393499qtj.93.1594439594578;
- Fri, 10 Jul 2020 20:53:14 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=xQqkzXJSiBOJC7uDqFIe38A+OBOOU1MTrcP1CTp3drI=;
+        b=qcUODtt30ZsQJpzDzWlPnBeO3K2ggJNihce4nVCnUVRrlWpR6xPI5Td61oY4xxDhsR
+         anbQbNOtD2cLUzaz3xPscUxIKCkh7dFykY78GDs6vm8WxpTTEJfth+tICnOhezdFJMc1
+         LiDrtwCJJwbgjuKPLzCsGquz4NIq5O0xNop4054PNUAmbr05h1dkg+LdJBzjEBm/bD+s
+         +1fLY1uIUC3eNKzWtZAflBlUYu2/LmWGXOlbG38o6vRxGX/K7ImsrHosIwN8mqbrEneV
+         QeYcVUzRTlSwB/IUpUtyxwhR5vyg7bfddZbAx/O+Js2yHdDIivGpP/jeek/qJEq3RMAX
+         vd0Q==
+X-Gm-Message-State: AOAM533g1OrVUZuJhP1Nb19B5IiRTK/h0zLE3RawRdXA8XyTUFk/9tov
+        8+ZrGFZvKFAgzMsuxEXnVXo3kTTNupzJ+F1gpNX/WJix/zTu
+X-Google-Smtp-Source: ABdhPJy3gXGHkaStF2y9rzpoQ6EvN0VBPV0QVIj+hwYXeTq8RkWJR/T8QvD8x+5OqQMBPfG1KhEoxyJ1abEqc9VmvIrdNLoy9KEE
 MIME-Version: 1.0
-References: <20200711012639.3429622-1-songliubraving@fb.com> <20200711012639.3429622-2-songliubraving@fb.com>
-In-Reply-To: <20200711012639.3429622-2-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Jul 2020 20:53:03 -0700
-Message-ID: <CAEf4BzaHAFNdEPp38ZnKOYTy3CfRCwaxDykS_Xir_VqDm0Kiug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: block bpf_get_[stack|stackid] on
- perf_event with PEBS entries
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>
+X-Received: by 2002:a92:a196:: with SMTP id b22mr25062377ill.303.1594445659724;
+ Fri, 10 Jul 2020 22:34:19 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 22:34:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029663005aa23cff4@google.com>
+Subject: WARNING in submit_bio_checks
+From:   syzbot <syzbot+4c50ac32e5b10e4133e1@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 6:30 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Calling get_perf_callchain() on perf_events from PEBS entries may cause
-> unwinder errors. To fix this issue, the callchain is fetched early. Such
-> perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
->
-> Similarly, calling bpf_get_[stack|stackid] on perf_events from PEBS may
-> also cause unwinder errors. To fix this, block bpf_get_[stack|stackid] on
-> these perf_events. Unfortunately, bpf verifier cannot tell whether the
-> program will be attached to perf_event with PEBS entries. Therefore,
-> block such programs during ioctl(PERF_EVENT_IOC_SET_BPF).
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
+Hello,
 
-Perhaps it's a stupid question, but why bpf_get_stack/bpf_get_stackid
-can't figure out automatically that they are called from
-__PERF_SAMPLE_CALLCHAIN_EARLY perf event and use different callchain,
-if necessary?
+syzbot found the following crash on:
 
-It is quite suboptimal from a user experience point of view to require
-two different BPF helpers depending on PEBS or non-PEBS perf events.
+HEAD commit:    9e50b94b Add linux-next specific files for 20200703
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=112aaa1f100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f99cc0faa1476ed6
+dashboard link: https://syzkaller.appspot.com/bug?extid=4c50ac32e5b10e4133e1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1111fb6d100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1218fa1f100000
 
-[...]
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4c50ac32e5b10e4133e1@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Trying to write to read-only block-device nullb0 (partno 0)
+WARNING: CPU: 0 PID: 6821 at block/blk-core.c:857 bio_check_ro block/blk-core.c:857 [inline]
+WARNING: CPU: 0 PID: 6821 at block/blk-core.c:857 submit_bio_checks+0x1aba/0x1f70 block/blk-core.c:985
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6821 Comm: syz-executor914 Not tainted 5.8.0-rc3-next-20200703-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x45 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:235
+ exc_invalid_op+0x13/0x40 arch/x86/kernel/traps.c:255
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:563
+RIP: 0010:bio_check_ro block/blk-core.c:857 [inline]
+RIP: 0010:submit_bio_checks+0x1aba/0x1f70 block/blk-core.c:985
+Code: 04 00 00 45 8b a4 24 a4 05 00 00 48 8d 74 24 68 48 89 ef e8 b8 21 fe ff 48 c7 c7 e0 ce 91 88 48 89 c6 44 89 e2 e8 08 df c0 fd <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 80 3c 02
+RSP: 0018:ffffc90001277338 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff8880a0cb2240 RCX: 0000000000000000
+RDX: ffff8880a8ebc180 RSI: ffffffff815d7d27 RDI: fffff5200024ee59
+RBP: ffff8880a03101c0 R08: 0000000000000001 R09: ffff8880ae6318e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff8880a03101c8 R14: 0000000000000000 R15: ffff8880a03101e8
+ submit_bio_noacct+0x89/0x12d0 block/blk-core.c:1198
+ submit_bio+0x263/0x5b0 block/blk-core.c:1283
+ submit_bh_wbc+0x685/0x8e0 fs/buffer.c:3105
+ __block_write_full_page+0x837/0x12e0 fs/buffer.c:1848
+ block_write_full_page+0x214/0x270 fs/buffer.c:3034
+ __writepage+0x60/0x170 mm/page-writeback.c:2311
+ write_cache_pages+0x736/0x11b0 mm/page-writeback.c:2246
+ generic_writepages mm/page-writeback.c:2337 [inline]
+ generic_writepages+0xe2/0x150 mm/page-writeback.c:2326
+ do_writepages+0xec/0x290 mm/page-writeback.c:2352
+ __filemap_fdatawrite_range+0x2a1/0x380 mm/filemap.c:422
+ filemap_write_and_wait_range mm/filemap.c:655 [inline]
+ filemap_write_and_wait_range+0xe1/0x1c0 mm/filemap.c:649
+ filemap_write_and_wait include/linux/fs.h:2629 [inline]
+ __sync_blockdev fs/block_dev.c:480 [inline]
+ sync_blockdev fs/block_dev.c:489 [inline]
+ __blkdev_put+0x69a/0x890 fs/block_dev.c:1863
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1947
+ __fput+0x33c/0x880 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:135
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb72/0x2a40 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:904
+ __do_sys_exit_group kernel/exit.c:915 [inline]
+ __se_sys_exit_group kernel/exit.c:913 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:913
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:367
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43ee48
+Code: Bad RIP value.
+RSP: 002b:00007ffdd4c8f808 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043ee48
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004be648 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d0180 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
