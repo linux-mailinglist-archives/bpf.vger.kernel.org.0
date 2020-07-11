@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C9C21C191
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 03:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF8721C192
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 03:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgGKB3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 21:29:17 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42720 "EHLO
+        id S1727075AbgGKB3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 21:29:21 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46376 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727005AbgGKB3P (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 21:29:15 -0400
+        by vger.kernel.org with ESMTP id S1727028AbgGKB3R (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 21:29:17 -0400
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06B1SpQn018695
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:14 -0700
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06B1SpSp018705
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=sCfAZ8R5XYksxd3Rvwf64+RwJ+YDSaUF1RQ9sffmk+Q=;
- b=HU43yetMXZDvRF3zsuYSQxsoMkUj8o5Mp1sTPmPYUor9xsV07JSLu0vRN6aok0fYhRVB
- 6hgegPFOxuyDYRsAzNQzqXC9u9VG8ZRtgdtKtYORJIICFh8YrypqbajzyTV8wEmCzM/G
- 9qxv26iR08PlFC9KZfeaiR7aF3QNYvpVOTI= 
+ bh=RUib/HXP+VBprzF23xQbf2Dp0Yp03NX2lImz1c9fDJE=;
+ b=iWQDjuYIdV7RPt0IGz7XVSPSDg0dibn2GeinZf7LAQ4ZURFFLOF6C7GjjPW2qI0CFGx1
+ yyySJfYlwTCSPuOQVdEUELZB2DRRvlG7qEOVIKo33Le89ZkueTr3gfhYLwyf4I6455m7
+ ionkgMMg+Qe6vyJmTwyeVsmOBI25iRwQ9FA= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 325k2cn9te-2
+        by mx0a-00082601.pphosted.com with ESMTP id 325k2cn9td-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:14 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:15 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.1979.3; Fri, 10 Jul 2020 18:29:12 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id DC9EE62E50B7; Fri, 10 Jul 2020 18:26:51 -0700 (PDT)
+        id 338A662E51D5; Fri, 10 Jul 2020 18:26:54 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Song Liu <songliubraving@fb.com>
 Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
@@ -41,9 +41,9 @@ CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
         <brouer@redhat.com>, <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 1/5] bpf: block bpf_get_[stack|stackid] on perf_event with PEBS entries
-Date:   Fri, 10 Jul 2020 18:26:35 -0700
-Message-ID: <20200711012639.3429622-2-songliubraving@fb.com>
+Subject: [PATCH bpf-next 2/5] bpf: add callchain to bpf_perf_event_data
+Date:   Fri, 10 Jul 2020 18:26:36 -0700
+Message-ID: <20200711012639.3429622-3-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200711012639.3429622-1-songliubraving@fb.com>
 References: <20200711012639.3429622-1-songliubraving@fb.com>
@@ -64,78 +64,198 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Calling get_perf_callchain() on perf_events from PEBS entries may cause
-unwinder errors. To fix this issue, the callchain is fetched early. Such
-perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
-
-Similarly, calling bpf_get_[stack|stackid] on perf_events from PEBS may
-also cause unwinder errors. To fix this, block bpf_get_[stack|stackid] on
-these perf_events. Unfortunately, bpf verifier cannot tell whether the
-program will be attached to perf_event with PEBS entries. Therefore,
-block such programs during ioctl(PERF_EVENT_IOC_SET_BPF).
+If the callchain is available, BPF program can use bpf_probe_read_kernel(=
+)
+to fetch the callchain, or use it in a BPF helper.
 
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- include/linux/filter.h |  3 ++-
- kernel/bpf/verifier.c  |  3 +++
- kernel/events/core.c   | 10 ++++++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+ include/linux/perf_event.h                |  5 -----
+ include/linux/trace_events.h              |  5 +++++
+ include/uapi/linux/bpf_perf_event.h       |  7 ++++++
+ kernel/bpf/btf.c                          |  5 +++++
+ kernel/trace/bpf_trace.c                  | 27 +++++++++++++++++++++++
+ tools/include/uapi/linux/bpf_perf_event.h |  8 +++++++
+ 6 files changed, 52 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 2593777236037..fb34dc40f039b 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -534,7 +534,8 @@ struct bpf_prog {
- 				is_func:1,	/* program is a bpf function */
- 				kprobe_override:1, /* Do we override a kprobe? */
- 				has_callchain_buf:1, /* callchain buffer allocated? */
--				enforce_expected_attach_type:1; /* Enforce expected_attach_type chec=
-king at attach time */
-+				enforce_expected_attach_type:1, /* Enforce expected_attach_type chec=
-king at attach time */
-+				call_get_perf_callchain:1; /* Do we call helpers that uses get_perf_=
-callchain()? */
- 	enum bpf_prog_type	type;		/* Type of BPF program */
- 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
- 	u32			len;		/* Number of filter blocks */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b608185e1ffd5..1e11b0f6fba31 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4884,6 +4884,9 @@ static int check_helper_call(struct bpf_verifier_en=
-v *env, int func_id, int insn
- 		env->prog->has_callchain_buf =3D true;
- 	}
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 00ab5efa38334..3a68c999f50d1 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -59,11 +59,6 @@ struct perf_guest_info_callbacks {
+ #include <linux/security.h>
+ #include <asm/local.h>
 =20
-+	if (func_id =3D=3D BPF_FUNC_get_stackid || func_id =3D=3D BPF_FUNC_get_=
-stack)
-+		env->prog->call_get_perf_callchain =3D true;
+-struct perf_callchain_entry {
+-	__u64				nr;
+-	__u64				ip[]; /* /proc/sys/kernel/perf_event_max_stack */
+-};
+-
+ struct perf_callchain_entry_ctx {
+ 	struct perf_callchain_entry *entry;
+ 	u32			    max_stack;
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5c69433540494..8e1e88f40eef9 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -631,6 +631,7 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map =
+*btp);
+ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id=
+,
+ 			    u32 *fd_type, const char **buf,
+ 			    u64 *probe_offset, u64 *probe_addr);
++int bpf_trace_init_btf_ids(struct btf *btf);
+ #else
+ static inline unsigned int trace_call_bpf(struct trace_event_call *call,=
+ void *ctx)
+ {
+@@ -672,6 +673,10 @@ static inline int bpf_get_perf_event_info(const stru=
+ct perf_event *event,
+ {
+ 	return -EOPNOTSUPP;
+ }
++int bpf_trace_init_btf_ids(struct btf *btf)
++{
++	return -EOPNOTSUPP;
++}
+ #endif
+=20
+ enum {
+diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/bpf=
+_perf_event.h
+index eb1b9d21250c6..40f4df80ab4fa 100644
+--- a/include/uapi/linux/bpf_perf_event.h
++++ b/include/uapi/linux/bpf_perf_event.h
+@@ -9,11 +9,18 @@
+ #define _UAPI__LINUX_BPF_PERF_EVENT_H__
+=20
+ #include <asm/bpf_perf_event.h>
++#include <linux/bpf.h>
 +
- 	if (changes_data)
- 		clear_all_pkt_pointers(env);
- 	return 0;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 856d98c36f562..f2f575a286bb4 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9544,6 +9544,16 @@ static int perf_event_set_bpf_handler(struct perf_=
-event *event, u32 prog_fd)
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
++struct perf_callchain_entry {
++	__u64				nr;
++	__u64				ip[]; /* /proc/sys/kernel/perf_event_max_stack */
++};
 =20
-+	if ((event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) &&
-+	    prog->call_get_perf_callchain) {
-+		/*
-+		 * The perf_event get_perf_callchain() early, the attached
-+		 * BPF program shouldn't call get_perf_callchain() again.
-+		 */
-+		bpf_prog_put(prog);
+ struct bpf_perf_event_data {
+ 	bpf_user_pt_regs_t regs;
+ 	__u64 sample_period;
+ 	__u64 addr;
++	__bpf_md_ptr(struct perf_callchain_entry *, callchain);
+ };
+=20
+ #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 4c3007f428b16..cb122e14dba38 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -20,6 +20,7 @@
+ #include <linux/btf.h>
+ #include <linux/skmsg.h>
+ #include <linux/perf_event.h>
++#include <linux/trace_events.h>
+ #include <net/sock.h>
+=20
+ /* BTF (BPF Type Format) is the meta data format which describes
+@@ -3673,6 +3674,10 @@ struct btf *btf_parse_vmlinux(void)
+ 	if (err < 0)
+ 		goto errout;
+=20
++	err =3D bpf_trace_init_btf_ids(btf);
++	if (err < 0)
++		goto errout;
++
+ 	bpf_struct_ops_init(btf, log);
+ 	init_btf_sock_ids(btf);
+=20
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e0b7775039ab9..c014846c2723c 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ #include <linux/slab.h>
+ #include <linux/bpf.h>
++#include <linux/btf.h>
+ #include <linux/bpf_perf_event.h>
+ #include <linux/filter.h>
+ #include <linux/uaccess.h>
+@@ -31,6 +32,20 @@ struct bpf_trace_module {
+ static LIST_HEAD(bpf_trace_modules);
+ static DEFINE_MUTEX(bpf_module_mutex);
+=20
++static u32 perf_callchain_entry_btf_id;
++
++int bpf_trace_init_btf_ids(struct btf *btf)
++{
++	s32 type_id;
++
++	type_id =3D btf_find_by_name_kind(btf, "perf_callchain_entry",
++					BTF_KIND_STRUCT);
++	if (type_id < 0)
 +		return -EINVAL;
-+	}
++	perf_callchain_entry_btf_id =3D type_id;
++	return 0;
++}
 +
- 	event->prog =3D prog;
- 	event->orig_overflow_handler =3D READ_ONCE(event->overflow_handler);
- 	WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
+ static struct bpf_raw_event_map *bpf_get_raw_tracepoint_module(const cha=
+r *name)
+ {
+ 	struct bpf_raw_event_map *btp, *ret =3D NULL;
+@@ -1650,6 +1665,10 @@ static bool pe_prog_is_valid_access(int off, int s=
+ize, enum bpf_access_type type
+ 		if (!bpf_ctx_narrow_access_ok(off, size, size_u64))
+ 			return false;
+ 		break;
++	case bpf_ctx_range(struct bpf_perf_event_data, callchain):
++		info->reg_type =3D PTR_TO_BTF_ID;
++		info->btf_id =3D perf_callchain_entry_btf_id;
++		break;
+ 	default:
+ 		if (size !=3D sizeof(long))
+ 			return false;
+@@ -1682,6 +1701,14 @@ static u32 pe_prog_convert_ctx_access(enum bpf_acc=
+ess_type type,
+ 				      bpf_target_off(struct perf_sample_data, addr, 8,
+ 						     target_size));
+ 		break;
++	case offsetof(struct bpf_perf_event_data, callchain):
++		*insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_perf_event_data_ke=
+rn,
++						       data), si->dst_reg, si->src_reg,
++				      offsetof(struct bpf_perf_event_data_kern, data));
++		*insn++ =3D BPF_LDX_MEM(BPF_DW, si->dst_reg, si->dst_reg,
++				      bpf_target_off(struct perf_sample_data, callchain,
++						     8, target_size));
++		break;
+ 	default:
+ 		*insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_perf_event_data_ke=
+rn,
+ 						       regs), si->dst_reg, si->src_reg,
+diff --git a/tools/include/uapi/linux/bpf_perf_event.h b/tools/include/ua=
+pi/linux/bpf_perf_event.h
+index 8f95303f9d807..40f4df80ab4fa 100644
+--- a/tools/include/uapi/linux/bpf_perf_event.h
++++ b/tools/include/uapi/linux/bpf_perf_event.h
+@@ -9,10 +9,18 @@
+ #define _UAPI__LINUX_BPF_PERF_EVENT_H__
+=20
+ #include <asm/bpf_perf_event.h>
++#include <linux/bpf.h>
++
++struct perf_callchain_entry {
++	__u64				nr;
++	__u64				ip[]; /* /proc/sys/kernel/perf_event_max_stack */
++};
+=20
+ struct bpf_perf_event_data {
+ 	bpf_user_pt_regs_t regs;
+ 	__u64 sample_period;
++	__u64 addr;
++	__bpf_md_ptr(struct perf_callchain_entry *, callchain);
+ };
+=20
+ #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
 --=20
 2.24.1
 
