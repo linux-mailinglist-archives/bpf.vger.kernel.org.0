@@ -2,104 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE4721C11E
-	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 02:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA58621C18D
+	for <lists+bpf@lfdr.de>; Sat, 11 Jul 2020 03:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgGKA0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jul 2020 20:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgGKA0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jul 2020 20:26:44 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EAEC08C5DC;
-        Fri, 10 Jul 2020 17:26:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gc9so3289980pjb.2;
-        Fri, 10 Jul 2020 17:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ioC5GlIAQw2jANKJm9jDrrwzH+U1xhkRkHlZAU86zzQ=;
-        b=KqFy+a5eeoq60rTgnPDnMZDPCGByCC4qsDVrdpRzqXpLIYuLay/TOgasL9LgLDzKs/
-         3M4M/1SLIUIl5kYxhevNbjBwtTS4teASEioyXvPGKAoZvaOFRlfBakAS2y2Mgeo0OzYj
-         gvIKvhrWC7wVPD726FeRkAwY/vF5nlPZLThmGV1NbhS0J2gpm6lBshtI5Y4jZNECbcKT
-         G/VdNwYRlAtbht4qzXllKFk26m5y6VI700I2MXUiOQ7O9Q7EFCSp5cHpAUHt4h515BPV
-         WShIgcbQQP9CVmfJQa6eJQ9NFL7RxX2vaFKOgjrXbqQZ0rD1jwYQbCicaWoCVoTT4zi7
-         5lFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ioC5GlIAQw2jANKJm9jDrrwzH+U1xhkRkHlZAU86zzQ=;
-        b=beuaQ54pUn9gYVUZClUgSjk+QK/+0/4RI0qNwxVkKBYIKvYRfAheGUSbNZMbCY6xMn
-         ydjZ5hYc68ZvEUCQNzAK6g4TFXLmGIJaFo7muOuzrR/sx7wE+BFyUj0SdhnStaDNtAJl
-         sck96NgKxUd4iRateUFAkpe00YM2m2KX3OcB6+onnMrx/+8Y1lfPCdLsuOkjDF+828Vg
-         uJAkZlyFA5iJp2bO5o/Px5XIhyZqE9NFifxh3fvWE2hBCR940LAlwVCsSz+jnBwZOA56
-         jKrI6U86zeE15CcEzLxXIYbouJGATEGLBspEwGTazytop9TGPvDFeL3yZA8bXduPtRVa
-         Q8Xw==
-X-Gm-Message-State: AOAM531PRRyv57AF2g/I/pnGfXgwoAcsdEhubk3GEIVliZqi6GUbx8Fk
-        wcTx5sD9kXM4pC47Pd+ZKmw=
-X-Google-Smtp-Source: ABdhPJzs1ifNqK061eFgKWidE55Ut6qOHThkYDkz/GAKJoQMCUC9V5Ypu9ZO6gqERl2p/KjnobCHLw==
-X-Received: by 2002:a17:90a:1a52:: with SMTP id 18mr7873239pjl.14.1594427203484;
-        Fri, 10 Jul 2020 17:26:43 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v3sm7309424pfb.207.2020.07.10.17.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 17:26:42 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 08:26:32 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv6 bpf-next 1/3] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200711002632.GE2531@dhcp-12-153.nay.redhat.com>
-References: <20200701041938.862200-1-liuhangbin@gmail.com>
- <20200709013008.3900892-1-liuhangbin@gmail.com>
- <20200709013008.3900892-2-liuhangbin@gmail.com>
- <efcdf373-7add-cce1-17a3-03ddf38e0749@gmail.com>
- <20200710065535.GB2531@dhcp-12-153.nay.redhat.com>
- <2212a795-4964-a828-4d63-92394585e684@gmail.com>
+        id S1726961AbgGKB3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jul 2020 21:29:11 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30258 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726927AbgGKB3L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jul 2020 21:29:11 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06B1OTFT027668
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=UkMus7+Vz7Uc0JQLrYIg82Co1meCRFb5ndzEGIP5M7A=;
+ b=S0xHc77zlybck52+BD/SPd8coZyfQcB+YYwSxpH1gvByjEKie2Tk+0Bx6H+nfPPQ5M5q
+ EDXUrmRe0XTCnQUIsF+kaco0XOWhxaS6NTahsccGg2HegeUU37LYg5CSLYK04ftdePJV
+ YhwxruwiiCZ8BXBX8z+BWpFLjD5+Q0v+mIo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 325k2cd84t-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 10 Jul 2020 18:29:10 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 10 Jul 2020 18:29:07 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 4AB3C62E4FE4; Fri, 10 Jul 2020 18:26:50 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/5] bpf: fix stackmap on perf_events with PEBS
+Date:   Fri, 10 Jul 2020 18:26:34 -0700
+Message-ID: <20200711012639.3429622-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2212a795-4964-a828-4d63-92394585e684@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_14:2020-07-10,2020-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007110006
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 07:46:18AM -0600, David Ahern wrote:
-> >>
-> >> I'm probably missing something fundamental, but why do you need to walk
-> >> the keys? Why not just do a lookup on the device index?
-> > 
-> > This functions is to check if the device index is in exclude map.
-> > 
-> > The device indexes are stored as values in the map. The user could store
-> > the values by any key number. There is no way to lookup the device index
-> > directly unless loop the map and check each values we stored.
-> 
-> Right.
-> 
-> The point of DEVMAP_HASH is to allow map management where key == device
-> index (vs DEVMAP which for any non-trivial use case is going to require
-> key != device index). You could require the exclude map to be
-> DEVMAP_HASH and the key to be the index allowing you to do a direct
-> lookup. Having to roam the entire map looking for a match does not scale
-> and is going to have poor performance with increasing number of entries.
-> XDP is targeted at performance with expert level of control, so
-> constraints like this have to be part of the deal.
+Calling get_perf_callchain() on perf_events from PEBS entries may cause
+unwinder errors. To fix this issue, perf subsystem fetches callchain earl=
+y,
+and marks perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
+Similar issue exists when BPF program calls get_perf_callchain() via
+helper functions. For more information about this issue, please refer to
+discussions in [1].
 
-Yes, if we have this constraints the performance should have some improvement.
+This set provides a solution for this problem.
 
-Do you think we should do it right now or in later performance update patch.
+1/5 blocks ioctl(PERF_EVENT_IOC_SET_BPF) attaching BPF program that calls
+    get_perf_callchain() to perf events with PEBS entries.
+2/5 exposes callchain fetched by perf subsystem to BPF program.
+3/5 introduces bpf_get_callchain_stackid(), which is alternative to
+    bpf_get_stackid() for perf_event with PEBS.
+4/5 adds selftests for 1/5.
+5/5 adds selftests for 2/5 and 3/5.
 
-Thanks
-Hangbin
+[1] https://lore.kernel.org/lkml/ED7B9430-6489-4260-B3C5-9CFA2E3AA87A@fb.=
+com/
+
+Song Liu (5):
+  bpf: block bpf_get_[stack|stackid] on perf_event with PEBS entries
+  bpf: add callchain to bpf_perf_event_data
+  bpf: introduce bpf_get_callchain_stackid
+  selftests/bpf: add get_stackid_cannot_attach
+  selftests/bpf: add callchain_stackid
+
+ include/linux/bpf.h                           |  1 +
+ include/linux/filter.h                        |  3 +-
+ include/linux/perf_event.h                    |  5 --
+ include/linux/trace_events.h                  |  5 ++
+ include/uapi/linux/bpf.h                      | 43 +++++++++++++
+ include/uapi/linux/bpf_perf_event.h           |  7 +++
+ kernel/bpf/btf.c                              |  5 ++
+ kernel/bpf/stackmap.c                         | 63 ++++++++++++++-----
+ kernel/bpf/verifier.c                         |  7 ++-
+ kernel/events/core.c                          | 10 +++
+ kernel/trace/bpf_trace.c                      | 29 +++++++++
+ scripts/bpf_helpers_doc.py                    |  2 +
+ tools/include/uapi/linux/bpf.h                | 43 +++++++++++++
+ tools/include/uapi/linux/bpf_perf_event.h     |  8 +++
+ .../bpf/prog_tests/callchain_stackid.c        | 61 ++++++++++++++++++
+ .../prog_tests/get_stackid_cannot_attach.c    | 57 +++++++++++++++++
+ .../selftests/bpf/progs/callchain_stackid.c   | 37 +++++++++++
+ 17 files changed, 364 insertions(+), 22 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/callchain_stac=
+kid.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_stackid_ca=
+nnot_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/callchain_stackid.c
+
+--
+2.24.1
