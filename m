@@ -2,175 +2,271 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0798B21DB81
-	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1DD21DEFB
+	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 19:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730132AbgGMQSG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 12:18:06 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44444 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730258AbgGMQSA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jul 2020 12:18:00 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DGFtOe011432
-        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 09:17:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=LvSh64EFN50fgOYnkaboyoF6ORGMB16JKZeFTQv/qa0=;
- b=Fey8/09QNn1dlmMJ/dcBG3gf8C06n+GtHXImzC0exsQ8EVKwN12fI5ahgQWh+YKMjkj6
- E2+CcSxpPFCr4JwhAHHrzoS49ljICmwN+dXCPYQhACIfmElNc/VeLOw9Bxv4pnnQn9zC
- ipyipgvkbKIbX18mHn15Ax5Gow+FXZ9M/60= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 327wppdab5-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 09:17:59 -0700
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 13 Jul 2020 09:17:55 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id F24943702065; Mon, 13 Jul 2020 09:17:54 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 13/13] selftests/bpf: add a test for out of bound rdonly buf access
-Date:   Mon, 13 Jul 2020 09:17:54 -0700
-Message-ID: <20200713161754.3077969-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200713161739.3076283-1-yhs@fb.com>
-References: <20200713161739.3076283-1-yhs@fb.com>
+        id S1729889AbgGMRq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 13:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729835AbgGMRq6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:46:58 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18185C061794
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:46:58 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so18936237ljg.13
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TRpJBauiW+Lt4nWLvereioGpgwaSO8ZbnUOAZytGcbo=;
+        b=u/e2ysGa5urdQfsgrlFz+jnEvR3Z+zUzVN6LP1JPwGOCMqsTH0a7NGTR86e+zTigvb
+         28Kfy4HpXkyMkdl49aqxxrFajySXmJ+/hCoyZ1csUIvP8Lxh+CWYo/rSKgNQZLrKPlSI
+         F4KiI0RoGGcDfeufqCqEiXPAFqMYY4GpuzYdU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TRpJBauiW+Lt4nWLvereioGpgwaSO8ZbnUOAZytGcbo=;
+        b=JIgnarqlSnhUlvhn7IPGCDIRzDOYLVoi1JVw+HImTUXTEQRBMG0xXXl6cRDBro7W8l
+         D7hcVqoJfNnH1BVOEsDZbqkIic4xb8R7oDuFgWG8YxWWXvJI7phBcYAZqN/cDNqKSdTb
+         XdeJKWrx83jKAdmbg4GT+oT+rbQMXbKXV6Px736tkL8S4mtNHv/RxN9BMIj5c8dQZ9cb
+         g32uuhzgjPkgyrJzlDMi6z7uNjscICDVFkAIscOQXDA7dRWymonqbbvtevi8XAZ+eC7m
+         RFOn38nZYrWDiY42iByDw4OmrDJkvfaIg9i3I1mWFfjAQ+biWNpIn19NIlKImRhmmIg6
+         LgPQ==
+X-Gm-Message-State: AOAM532Vi3PVc2CfRHCokqF2G/UKTdGG3eeOqnrGODPP3MhHbjlGx1T9
+        WVWtPZma9Scda17n55DEmHeDZINtAO5FrQ==
+X-Google-Smtp-Source: ABdhPJwBJhRa5leVwFa0ntdQG5mbh/UHSOPD1I0hInWZVHJD8hzoM9Bpb/pC7nX1EicRmAvkrxnrzg==
+X-Received: by 2002:a2e:9957:: with SMTP id r23mr410805ljj.127.1594662415903;
+        Mon, 13 Jul 2020 10:46:55 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id v20sm4750040lfe.46.2020.07.13.10.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 10:46:55 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf-next v4 00/16] Run a BPF program on socket lookup
+Date:   Mon, 13 Jul 2020 19:46:38 +0200
+Message-Id: <20200713174654.642628-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_15:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=8 phishscore=0 impostorscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 mlxscore=0 mlxlogscore=929
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130120
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the bpf program contains out of bound access w.r.t. a
-particular map key/value size, the verification will be
-still okay, e.g., it will be accepted by verifier. But
-it will be rejected during link_create time. A test
-is added here to ensure link_create failure did happen
-if out of bound access happened.
-  $ ./test_progs -n 4
-  ...
-  #4/23 rdonly-buf-out-of-bound:OK
-  ...
+Dependencies
+============
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 22 ++++++++++++
- .../selftests/bpf/progs/bpf_iter_test_kern5.c | 36 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern5=
-.c
+This patch series depends on:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index ecee834a7f60..54a7be25c613 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -20,6 +20,7 @@
- #include "bpf_iter_bpf_array_map.skel.h"
- #include "bpf_iter_bpf_percpu_array_map.skel.h"
- #include "bpf_iter_bpf_sk_storage_map.skel.h"
-+#include "bpf_iter_test_kern5.skel.h"
-=20
- static int duration;
-=20
-@@ -845,6 +846,25 @@ static void test_bpf_sk_storage_map(void)
- 	bpf_iter_bpf_sk_storage_map__destroy(skel);
- }
-=20
-+static void test_rdonly_buf_out_of_bound(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	struct bpf_iter_test_kern5 *skel;
-+	struct bpf_link *link;
-+
-+	skel =3D bpf_iter_test_kern5__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_test_kern5__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	opts.map_fd =3D bpf_map__fd(skel->maps.hashmap1);
-+	link =3D bpf_program__attach_iter(skel->progs.dump_bpf_hash_map, &opts)=
-;
-+	if (CHECK(!IS_ERR(link), "attach_iter", "unexpected success\n"))
-+		bpf_link__destroy(link);
-+
-+	bpf_iter_test_kern5__destroy(skel);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -891,4 +911,6 @@ void test_bpf_iter(void)
- 		test_bpf_percpu_array_map();
- 	if (test__start_subtest("bpf_sk_storage_map"))
- 		test_bpf_sk_storage_map();
-+	if (test__start_subtest("rdonly-buf-out-of-bound"))
-+		test_rdonly_buf_out_of_bound();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c b/to=
-ols/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-new file mode 100644
-index 000000000000..b6dac5afa64d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct key_t {
-+	int a;
-+	int b;
-+	int c;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 3);
-+	__type(key, struct key_t);
-+	__type(value, __u64);
-+} hashmap1 SEC(".maps");
-+
-+__u32 key_sum =3D 0;
-+
-+SEC("iter/bpf_map_elem")
-+int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	void *key =3D ctx->key;
-+
-+	if (key =3D=3D (void *)0)
-+		return 0;
-+
-+	/* out of bound access w.r.t. hashmap1 */
-+	key_sum +=3D *(__u32 *)(key + sizeof(struct key_t));
-+	return 0;
-+}
---=20
-2.24.1
+1. 'bpf-multi-prog-prep' series in 'bpf' [0]
+   (commit 951f38cf0835 ("Merge branch 'bpf-multi-prog-prep'"))
+2. "bpf: Shift and mask loads narrower than context field size" patch
+   https://lore.kernel.org/bpf/20200710173123.427983-1-jakub@cloudflare.com/
+
+Changelog
+=========
+
+v3 -> v4:
+- Reduce BPF prog return codes to SK_DROP/SK_PASS (Lorenz)
+- Default to drop on illegal return value from BPF prog (Lorenz)
+- Extend bpf_sk_assign to accept NULL socket pointer.
+- Switch to saner return values and add docs for new prog_array API (Andrii)
+- Add support for narrow loads from BPF context fields (Yonghong)
+- Fix broken build when IPv6 is compiled as a module (kernel test robot)
+- Fix null/wild-ptr-deref on BPF context access
+- Rebase to recent bpf-next (eef8a42d6ce0)
+- Other minor changes called out in per-patch changelogs,
+  see patches 1-2, 4, 6, 8, 10-12, 14, 16
+
+v2 -> v3:
+- Switch to link-based program attachment
+- Support for multi-prog attachment
+- Ability to skip reuseport socket selection
+- Code on RX path is guarded by a static key
+- struct in6_addr's are no longer copied into BPF prog context
+- BPF prog context is initialized as late as possible
+- Changes called out in patches 1-2, 4, 6, 8, 10-14, 16
+- Patches dropped:
+  01/17 flow_dissector: Extract attach/detach/query helpers
+  03/17 inet: Store layer 4 protocol in inet_hashinfo
+  08/17 udp: Store layer 4 protocol in udp_table
+
+v1 -> v2:
+- Changes called out in patches 2, 13-15, 17
+- Rebase to recent bpf-next (b4563facdcae)
+
+RFCv2 -> v1:
+
+- Switch to fetching a socket from a map and selecting a socket with
+  bpf_sk_assign, instead of having a dedicated helper that does both.
+- Run reuseport logic on sockets selected by BPF sk_lookup.
+- Allow BPF sk_lookup to fail the lookup with no match.
+- Go back to having just 2 hash table lookups in UDP.
+
+RFCv1 -> RFCv2:
+
+- Make socket lookup redirection map-based. BPF program now uses a
+  dedicated helper and a SOCKARRAY map to select the socket to redirect to.
+  A consequence of this change is that bpf_inet_lookup context is now
+  read-only.
+- Look for connected UDP sockets before allowing redirection from BPF.
+  This makes connected UDP socket work as expected in the presence of
+  inet_lookup prog.
+- Share the code for BPF_PROG_{ATTACH,DETACH,QUERY} with flow_dissector,
+  the only other per-netns BPF prog type.
+
+Overview
+========
+
+This series proposes a new BPF program type named BPF_PROG_TYPE_SK_LOOKUP,
+or BPF sk_lookup for short.
+
+BPF sk_lookup program runs when transport layer is looking up a listening
+socket for a new connection request (TCP), or when looking up an
+unconnected socket for a packet (UDP).
+
+This serves as a mechanism to overcome the limits of what bind() API allows
+to express. Two use-cases driving this work are:
+
+ (1) steer packets destined to an IP range, fixed port to a single socket
+
+     192.0.2.0/24, port 80 -> NGINX socket
+
+ (2) steer packets destined to an IP address, any port to a single socket
+
+     198.51.100.1, any port -> L7 proxy socket
+
+In its context, program receives information about the packet that
+triggered the socket lookup. Namely IP version, L4 protocol identifier, and
+address 4-tuple.
+
+To select a socket BPF program fetches it from a map holding socket
+references, like SOCKMAP or SOCKHASH, calls bpf_sk_assign(ctx, sk, ...)
+helper to record the selection, and returns SK_PASS code. Transport layer
+then uses the selected socket as a result of socket lookup.
+
+Alternatively, program can also fail the lookup (SK_DROP), or let the
+lookup continue as usual (SK_PASS without selecting a socket).
+
+This lets the user match packets with listening (TCP) or receiving (UDP)
+sockets freely at the last possible point on the receive path, where we
+know that packets are destined for local delivery after undergoing
+policing, filtering, and routing.
+
+Program is attached to a network namespace, similar to BPF flow_dissector.
+We add a new attach type, BPF_SK_LOOKUP, for this. Multiple programs can be
+attached at the same time, in which case their return values are aggregated
+according the rules outlined in patch #4 description.
+
+Series structure
+================
+
+Patches are organized as so:
+
+ 1: enables multiple link-based prog attachments for bpf-netns
+ 2: introduces sk_lookup program type
+ 3-4: hook up the program to run on ipv4/tcp socket lookup
+ 5-6: hook up the program to run on ipv6/tcp socket lookup
+ 7-8: hook up the program to run on ipv4/udp socket lookup
+ 9-10: hook up the program to run on ipv6/udp socket lookup
+ 11-13: libbpf & bpftool support for sk_lookup
+ 14-16: verifier and selftests for sk_lookup
+
+Patches are also available on GH:
+
+  https://github.com/jsitnicki/linux/commits/bpf-inet-lookup-v4
+
+Follow-up work
+==============
+
+I'll follow up with below items, which IMHO don't block the review:
+
+- benchmark results for udp6 small packet flood scenario,
+- user docs for new BPF prog type, Documentation/bpf/prog_sk_lookup.rst,
+- timeout for accept() in tests after extending network_helper.[ch].
+
+Thanks to the reviewers for their feedback to this patch series:
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+Cc: Marek Majkowski <marek@cloudflare.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+
+-jkbs
+
+[RFCv1] https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
+[RFCv2] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+[v1] https://lore.kernel.org/bpf/20200511185218.1422406-18-jakub@cloudflare.com/
+[v2] https://lore.kernel.org/bpf/20200506125514.1020829-1-jakub@cloudflare.com/
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=951f38cf08350884e72e0936adf147a8d764cc5d
+
+Jakub Sitnicki (16):
+  bpf, netns: Handle multiple link attachments
+  bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+  inet: Extract helper for selecting socket from reuseport group
+  inet: Run SK_LOOKUP BPF program on socket lookup
+  inet6: Extract helper for selecting socket from reuseport group
+  inet6: Run SK_LOOKUP BPF program on socket lookup
+  udp: Extract helper for selecting socket from reuseport group
+  udp: Run SK_LOOKUP BPF program on socket lookup
+  udp6: Extract helper for selecting socket from reuseport group
+  udp6: Run SK_LOOKUP BPF program on socket lookup
+  bpf: Sync linux/bpf.h to tools/
+  libbpf: Add support for SK_LOOKUP program type
+  tools/bpftool: Add name mappings for SK_LOOKUP prog and attach type
+  selftests/bpf: Add verifier tests for bpf_sk_lookup context access
+  selftests/bpf: Rename test_sk_lookup_kern.c to test_ref_track_kern.c
+  selftests/bpf: Tests for BPF_SK_LOOKUP attach point
+
+ include/linux/bpf-netns.h                     |    3 +
+ include/linux/bpf.h                           |    4 +
+ include/linux/bpf_types.h                     |    2 +
+ include/linux/filter.h                        |  163 +++
+ include/uapi/linux/bpf.h                      |   77 +
+ kernel/bpf/core.c                             |   55 +
+ kernel/bpf/net_namespace.c                    |  127 +-
+ kernel/bpf/syscall.c                          |    9 +
+ kernel/bpf/verifier.c                         |   10 +-
+ net/core/filter.c                             |  182 +++
+ net/ipv4/inet_hashtables.c                    |   60 +-
+ net/ipv4/udp.c                                |   93 +-
+ net/ipv6/inet6_hashtables.c                   |   66 +-
+ net/ipv6/udp.c                                |   97 +-
+ scripts/bpf_helpers_doc.py                    |    9 +-
+ tools/bpf/bpftool/common.c                    |    1 +
+ tools/bpf/bpftool/prog.c                      |    3 +-
+ tools/include/uapi/linux/bpf.h                |   77 +
+ tools/lib/bpf/libbpf.c                        |    3 +
+ tools/lib/bpf/libbpf.h                        |    2 +
+ tools/lib/bpf/libbpf.map                      |    2 +
+ tools/lib/bpf/libbpf_probes.c                 |    3 +
+ tools/testing/selftests/bpf/network_helpers.c |   58 +-
+ tools/testing/selftests/bpf/network_helpers.h |    2 +
+ .../bpf/prog_tests/reference_tracking.c       |    2 +-
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 1282 +++++++++++++++++
+ .../selftests/bpf/progs/test_ref_track_kern.c |  181 +++
+ .../selftests/bpf/progs/test_sk_lookup_kern.c |  688 +++++++--
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    |  471 ++++++
+ 29 files changed, 3521 insertions(+), 211 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ref_track_kern.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
+
+-- 
+2.25.4
 
