@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B89721DF01
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAF821DF02
 	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 19:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730386AbgGMRrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1730395AbgGMRrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 13 Jul 2020 13:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60280 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730297AbgGMRrD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 13:47:03 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE6AC061794
-        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:47:03 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y13so9600668lfe.9
-        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:47:03 -0700 (PDT)
+        with ESMTP id S1730319AbgGMRrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:47:06 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2255C08C5DD
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:47:05 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y13so9600749lfe.9
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 10:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jDSEEbaluBZs+0tECJKbkPZc+3U6GYzy2UWo7TMx4PQ=;
-        b=LXhwG2Ana8/kJY+LED0FuwqzhBaLI5+UE19TVBMjlpjp33lylKcgcw7e1tCm3DQS3R
-         XaMWDl0XAvahKKP/DUAKFxb/Ez/cIjRpkDBBXtcYC21XlLRnPB7fJZS42HNNQEgXaf/q
-         rPyc5a813qGJ6VEPTkfrBdrR83VMXwJb0pxzc=
+        bh=dcblGvWhBWCzM643yO1GenYw1yXlx9Mn/KsJt0ZGcP4=;
+        b=a1ct+skdVvh1aO+JIKVD9+N25TdD+eLWjFfuh96vrpH+GfEr3P/7OCAOojRnelTgs9
+         rJS6H9nFEcedN6kk3ttMiHCYzOVOmR3XzgnQDjU50uGHk8N5dTBeyIjInb7xEN+DWzSN
+         NORcgZtRZr4uo/Unc4D7VUPV5wT/Og5akrkt8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jDSEEbaluBZs+0tECJKbkPZc+3U6GYzy2UWo7TMx4PQ=;
-        b=nr43s5b5zcv+y6TUEV8fda/i5fzKCZ4KpZeefN8dCw46qx8b8Y03OTgEK/OPubwwnl
-         2BgY4v+apFpBcQ9TeaYkn9+98aOsr7YAH/lsNOvQUhUtM+bo2hl189wUCjcQKb+t7nUA
-         aZY5SJAISl++Z5mMU91yRhk/a9R6jkh+/+vZI3fOsz7xcxmW+JI24uzHjL858pwf3GrW
-         BohEzGY6Hpzo9/AjFAZrZpIJJGlQf3mVnXw6dVcbu7CkhUTg/JkS1pVl1Fyf2XrcfG45
-         A5JXtnRRBX+RPVMIkt867DUzmmG59RbgQyQMhf+UJhYLLKydFPABdfUIZTwez/69YJld
-         RStw==
-X-Gm-Message-State: AOAM530b96PeSue2o/gtRWdjsrJqqIQo+uWgO4mqSYKJD7tAxwsSGGic
-        aqXuxZ9CeUt7YEI/2WraHj+KsN4w3EHnvA==
-X-Google-Smtp-Source: ABdhPJytKuI10VUN5tx6g67NHROdnxuFoPpXxDYHGu+GqkdsG0zOStJQNKfZ1eHGJXHGQEit/WlQ5w==
-X-Received: by 2002:a19:c886:: with SMTP id y128mr170168lff.98.1594662421680;
-        Mon, 13 Jul 2020 10:47:01 -0700 (PDT)
+        bh=dcblGvWhBWCzM643yO1GenYw1yXlx9Mn/KsJt0ZGcP4=;
+        b=MaMTi2LR+sJJ+tAXKTGY63vDYqDh84qADX+kLKjaTmTFZuv8czLd+ZOqUmEFLP1HKr
+         Y5uDofjbIhtyHnWGgjTqsLHdmf21YfnXbenRmLBXy/TrNOiXb5ZkreKxjzWSest4XGlv
+         XusE8DNK00LTtziZ1yGDZgO3N5uL/iY8SJEyk6EL5y95l6w8hc9LxTgVArldFZgAEY/w
+         FB2kn85vrJO++gpXfjpmpdC8HWY9t+eZVHZUe2rygXYLhT6BGm7CfQr3LElCxTWXRbeg
+         gwD/uu3gSa+kSeDHfWJ+c1Lr3hlECVPDqQ0QQJv5gRPmDjn82b94/2iDzLZhMQpM7x0u
+         imNg==
+X-Gm-Message-State: AOAM530XqZEvM9UNfkxpngNmn0gmQ8ieZLlb5tw46QNSETEfv8NAnHP8
+        EAyNAS8Jpwt9drdB9pzaxsqA0HvVh/VP6Q==
+X-Google-Smtp-Source: ABdhPJzgtWnsFDRcL2v+crbBG+Jw4Sf07C9czStdGuHZanBVUu43t1WqdYkZH0Ovv+5NU9SJmtgtIg==
+X-Received: by 2002:a19:e05d:: with SMTP id g29mr142258lfj.217.1594662423437;
+        Mon, 13 Jul 2020 10:47:03 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id b11sm4736057lfa.50.2020.07.13.10.47.00
+        by smtp.gmail.com with ESMTPSA id l22sm5752360lje.81.2020.07.13.10.47.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 10:47:01 -0700 (PDT)
+        Mon, 13 Jul 2020 10:47:02 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next v4 03/16] inet: Extract helper for selecting socket from reuseport group
-Date:   Mon, 13 Jul 2020 19:46:41 +0200
-Message-Id: <20200713174654.642628-4-jakub@cloudflare.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: [PATCH bpf-next v4 04/16] inet: Run SK_LOOKUP BPF program on socket lookup
+Date:   Mon, 13 Jul 2020 19:46:42 +0200
+Message-Id: <20200713174654.642628-5-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200713174654.642628-1-jakub@cloudflare.com>
 References: <20200713174654.642628-1-jakub@cloudflare.com>
@@ -64,66 +65,300 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prepare for calling into reuseport from __inet_lookup_listener as well.
+Run a BPF program before looking up a listening socket on the receive path.
+Program selects a listening socket to yield as result of socket lookup by
+calling bpf_sk_assign() helper and returning SK_PASS code. Program can
+revert its decision by assigning a NULL socket with bpf_sk_assign().
 
+Alternatively, BPF program can also fail the lookup by returning with
+SK_DROP, or let the lookup continue as usual with SK_PASS on return, when
+no socket has not been selected with bpf_sk_assign(). Other return values
+are treated the same as SK_DROP.
+
+This lets the user match packets with listening sockets freely at the last
+possible point on the receive path, where we know that packets are destined
+for local delivery after undergoing policing, filtering, and routing.
+
+With BPF code selecting the socket, directing packets destined to an IP
+range or to a port range to a single socket becomes possible.
+
+In case multiple programs are attached, they are run in series in the order
+in which they were attached. The end result is determined from return codes
+of all the programs according to following rules:
+
+ 1. If any program returned SK_PASS and selected a valid socket, the socket
+    is used as result of socket lookup.
+ 2. If more than one program returned SK_PASS and selected a socket,
+    last selection takes effect.
+ 3. If any program returned SK_DROP or an invalid return code, and no
+    program returned SK_PASS and selected a socket, socket lookup fails
+    with -ECONNREFUSED.
+ 4. If all programs returned SK_PASS and none of them selected a socket,
+    socket lookup continues to htable-based lookup.
+
+Suggested-by: Marek Majkowski <marek@cloudflare.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/ipv4/inet_hashtables.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 2bbaaf0c7176..ab64834837c8 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -246,6 +246,21 @@ static inline int compute_score(struct sock *sk, struct net *net,
- 	return score;
- }
+Notes:
+    v4:
+    - Reduce BPF sk_lookup prog return codes to SK_PASS/SK_DROP. (Lorenz)
+    - Default to drop & warn on illegal return value from BPF prog. (Lorenz)
+    - Rename netns_bpf_attach_type_enable/disable to _need/unneed. (Lorenz)
+    - Export bpf_sk_lookup_enabled symbol for CONFIG_IPV6=m (kernel test robot)
+    - Invert return value from bpf_sk_lookup_run_v4 to true on skip reuseport.
+    - Move dedicated prog_array runner close to its callers in filter.h.
+    
+    v3:
+    - Use a static_key to minimize the hook overhead when not used. (Alexei)
+    - Adapt for running an array of attached programs. (Alexei)
+    - Adapt for optionally skipping reuseport selection. (Martin)
+
+ include/linux/filter.h     | 102 +++++++++++++++++++++++++++++++++++++
+ kernel/bpf/net_namespace.c |  32 +++++++++++-
+ net/core/filter.c          |   3 ++
+ net/ipv4/inet_hashtables.c |  31 +++++++++++
+ 4 files changed, 167 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 380746f47fa1..b9ad0fdabca5 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1295,4 +1295,106 @@ struct bpf_sk_lookup_kern {
+ 	bool		no_reuseport;
+ };
  
-+static inline struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-+					    struct sk_buff *skb, int doff,
-+					    __be32 saddr, __be16 sport,
-+					    __be32 daddr, unsigned short hnum)
-+{
-+	struct sock *reuse_sk = NULL;
-+	u32 phash;
++extern struct static_key_false bpf_sk_lookup_enabled;
 +
-+	if (sk->sk_reuseport) {
-+		phash = inet_ehashfn(net, daddr, hnum, saddr, sport);
-+		reuse_sk = reuseport_select_sock(sk, phash, skb, doff);
++/* Runners for BPF_SK_LOOKUP programs to invoke on socket lookup.
++ *
++ * Allowed return values for a BPF SK_LOOKUP program are SK_PASS and
++ * SK_DROP. Any other return value is treated as SK_DROP. Their
++ * meaning is as follows:
++ *
++ *  SK_PASS && ctx.selected_sk != NULL: use selected_sk as lookup result
++ *  SK_PASS && ctx.selected_sk == NULL: continue to htable-based socket lookup
++ *  SK_DROP                           : terminate lookup with -ECONNREFUSED
++ *
++ * This macro aggregates return values and selected sockets from
++ * multiple BPF programs according to following rules:
++ *
++ *  1. If any program returned SK_PASS and a non-NULL ctx.selected_sk,
++ *     macro result is SK_PASS and last ctx.selected_sk is used.
++ *  2. If any program returned non-SK_PASS return value,
++ *     macro result is the last non-SK_PASS return value.
++ *  3. Otherwise result is SK_PASS and ctx.selected_sk is NULL.
++ *
++ * Caller must ensure that the prog array is non-NULL, and that the
++ * array as well as the programs it contains remain valid.
++ */
++#define BPF_PROG_SK_LOOKUP_RUN_ARRAY(array, ctx, func)			\
++	({								\
++		struct bpf_sk_lookup_kern *_ctx = &(ctx);		\
++		struct bpf_prog_array_item *_item;			\
++		struct sock *_selected_sk;				\
++		struct bpf_prog *_prog;					\
++		u32 _ret, _last_ret;					\
++		bool _no_reuseport;					\
++									\
++		migrate_disable();					\
++		_last_ret = SK_PASS;					\
++		_selected_sk = NULL;					\
++		_no_reuseport = false;					\
++		_item = &(array)->items[0];				\
++		while ((_prog = READ_ONCE(_item->prog))) {		\
++			/* restore most recent selection */		\
++			_ctx->selected_sk = _selected_sk;		\
++			_ctx->no_reuseport = _no_reuseport;		\
++									\
++			_ret = func(_prog, _ctx);			\
++			if (_ret == SK_PASS) {				\
++				/* remember last non-NULL socket */	\
++				if (_ctx->selected_sk) {		\
++					_selected_sk = _ctx->selected_sk;	\
++					_no_reuseport = _ctx->no_reuseport;	\
++				}					\
++			} else {					\
++				/* remember last non-PASS ret code */	\
++				_last_ret = _ret;			\
++			}						\
++			_item++;					\
++		}							\
++		_ctx->selected_sk = _selected_sk;			\
++		_ctx->no_reuseport = _no_reuseport;			\
++		migrate_enable();					\
++		_ctx->selected_sk ? SK_PASS : _last_ret;		\
++	 })
++
++static inline bool bpf_sk_lookup_run_v4(struct net *net, int protocol,
++					const __be32 saddr, const __be16 sport,
++					const __be32 daddr, const u16 dport,
++					struct sock **psk)
++{
++	struct bpf_prog_array *run_array;
++	struct sock *selected_sk = NULL;
++	bool no_reuseport = false;
++
++	rcu_read_lock();
++	run_array = rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
++	if (run_array) {
++		struct bpf_sk_lookup_kern ctx = {
++			.family		= AF_INET,
++			.protocol	= protocol,
++			.v4.saddr	= saddr,
++			.v4.daddr	= daddr,
++			.sport		= sport,
++			.dport		= dport,
++		};
++		u32 act;
++
++		act = BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, BPF_PROG_RUN);
++		if (act == SK_PASS) {
++			selected_sk = ctx.selected_sk;
++			no_reuseport = ctx.no_reuseport;
++			goto unlock;
++		}
++
++		selected_sk = ERR_PTR(-ECONNREFUSED);
++		WARN_ONCE(act != SK_DROP,
++			  "Illegal BPF SK_LOOKUP return value %u, expect packet loss!\n",
++			  act);
 +	}
-+	return reuse_sk;
++unlock:
++	rcu_read_unlock();
++	*psk = selected_sk;
++	return no_reuseport;
 +}
 +
- /*
-  * Here are some nice properties to exploit here. The BSD API
-  * does not allow a listening sock to specify the remote port nor the
-@@ -265,21 +280,17 @@ static struct sock *inet_lhash2_lookup(struct net *net,
- 	struct inet_connection_sock *icsk;
- 	struct sock *sk, *result = NULL;
- 	int score, hiscore = 0;
--	u32 phash = 0;
+ #endif /* __LINUX_FILTER_H__ */
+diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+index 596c30b963f3..ee3599a51891 100644
+--- a/kernel/bpf/net_namespace.c
++++ b/kernel/bpf/net_namespace.c
+@@ -25,6 +25,28 @@ struct bpf_netns_link {
+ /* Protects updates to netns_bpf */
+ DEFINE_MUTEX(netns_bpf_mutex);
  
- 	inet_lhash2_for_each_icsk_rcu(icsk, &ilb2->head) {
- 		sk = (struct sock *)icsk;
- 		score = compute_score(sk, net, hnum, daddr,
- 				      dif, sdif, exact_dif);
- 		if (score > hiscore) {
--			if (sk->sk_reuseport) {
--				phash = inet_ehashfn(net, daddr, hnum,
--						     saddr, sport);
--				result = reuseport_select_sock(sk, phash,
--							       skb, doff);
--				if (result)
--					return result;
--			}
-+			result = lookup_reuseport(net, sk, skb, doff,
-+						  saddr, sport, daddr, hnum);
-+			if (result)
-+				return result;
++static void netns_bpf_attach_type_unneed(enum netns_bpf_attach_type type)
++{
++	switch (type) {
++	case NETNS_BPF_SK_LOOKUP:
++		static_branch_dec(&bpf_sk_lookup_enabled);
++		break;
++	default:
++		break;
++	}
++}
 +
- 			result = sk;
- 			hiscore = score;
- 		}
++static void netns_bpf_attach_type_need(enum netns_bpf_attach_type type)
++{
++	switch (type) {
++	case NETNS_BPF_SK_LOOKUP:
++		static_branch_inc(&bpf_sk_lookup_enabled);
++		break;
++	default:
++		break;
++	}
++}
++
+ /* Must be called with netns_bpf_mutex held. */
+ static void netns_bpf_run_array_detach(struct net *net,
+ 				       enum netns_bpf_attach_type type)
+@@ -91,6 +113,9 @@ static void bpf_netns_link_release(struct bpf_link *link)
+ 	if (!net)
+ 		goto out_unlock;
+ 
++	/* Mark attach point as unused */
++	netns_bpf_attach_type_unneed(type);
++
+ 	/* Remember link position in case of safe delete */
+ 	idx = link_index(net, type, net_link);
+ 	list_del(&net_link->node);
+@@ -414,6 +439,9 @@ static int netns_bpf_link_attach(struct net *net, struct bpf_link *link,
+ 					lockdep_is_held(&netns_bpf_mutex));
+ 	bpf_prog_array_free(run_array);
+ 
++	/* Mark attach point as used */
++	netns_bpf_attach_type_need(type);
++
+ out_unlock:
+ 	mutex_unlock(&netns_bpf_mutex);
+ 	return err;
+@@ -489,8 +517,10 @@ static void __net_exit netns_bpf_pernet_pre_exit(struct net *net)
+ 	mutex_lock(&netns_bpf_mutex);
+ 	for (type = 0; type < MAX_NETNS_BPF_ATTACH_TYPE; type++) {
+ 		netns_bpf_run_array_detach(net, type);
+-		list_for_each_entry(net_link, &net->bpf.links[type], node)
++		list_for_each_entry(net_link, &net->bpf.links[type], node) {
+ 			net_link->net = NULL; /* auto-detach link */
++			netns_bpf_attach_type_unneed(type);
++		}
+ 		if (net->bpf.progs[type])
+ 			bpf_prog_put(net->bpf.progs[type]);
+ 	}
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 81c462881133..3fcb9c8cec4c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9221,6 +9221,9 @@ const struct bpf_verifier_ops sk_reuseport_verifier_ops = {
+ const struct bpf_prog_ops sk_reuseport_prog_ops = {
+ };
+ 
++DEFINE_STATIC_KEY_FALSE(bpf_sk_lookup_enabled);
++EXPORT_SYMBOL(bpf_sk_lookup_enabled);
++
+ BPF_CALL_3(bpf_sk_lookup_assign, struct bpf_sk_lookup_kern *, ctx,
+ 	   struct sock *, sk, u64, flags)
+ {
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index ab64834837c8..4eb4cd8d20dd 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -299,6 +299,29 @@ static struct sock *inet_lhash2_lookup(struct net *net,
+ 	return result;
+ }
+ 
++static inline struct sock *inet_lookup_run_bpf(struct net *net,
++					       struct inet_hashinfo *hashinfo,
++					       struct sk_buff *skb, int doff,
++					       __be32 saddr, __be16 sport,
++					       __be32 daddr, u16 hnum)
++{
++	struct sock *sk, *reuse_sk;
++	bool no_reuseport;
++
++	if (hashinfo != &tcp_hashinfo)
++		return NULL; /* only TCP is supported */
++
++	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_TCP,
++					    saddr, sport, daddr, hnum, &sk);
++	if (no_reuseport || IS_ERR_OR_NULL(sk))
++		return sk;
++
++	reuse_sk = lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum);
++	if (reuse_sk)
++		sk = reuse_sk;
++	return sk;
++}
++
+ struct sock *__inet_lookup_listener(struct net *net,
+ 				    struct inet_hashinfo *hashinfo,
+ 				    struct sk_buff *skb, int doff,
+@@ -310,6 +333,14 @@ struct sock *__inet_lookup_listener(struct net *net,
+ 	struct sock *result = NULL;
+ 	unsigned int hash2;
+ 
++	/* Lookup redirect from BPF */
++	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
++		result = inet_lookup_run_bpf(net, hashinfo, skb, doff,
++					     saddr, sport, daddr, hnum);
++		if (result)
++			goto done;
++	}
++
+ 	hash2 = ipv4_portaddr_hash(net, daddr, hnum);
+ 	ilb2 = inet_lhash2_bucket(hashinfo, hash2);
+ 
 -- 
 2.25.4
 
