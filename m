@@ -2,42 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FAB21DF99
-	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 20:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D9E21DFE4
+	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 20:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgGMSZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 14:25:39 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:50848 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726396AbgGMSZi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jul 2020 14:25:38 -0400
-Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id E8D1B2E1520;
-        Mon, 13 Jul 2020 21:25:34 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id Ax2rUDHLt3-PYs0WUrW;
-        Mon, 13 Jul 2020 21:25:34 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1594664734; bh=jFK3JKbc4DJ8+menrIhytuE5eis3Psm77MfgY58tsR4=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=yte1IYclYTmOnUM3Cqq7JboWJpU8hegKSzGzpypxendTJQIkd5yG3kZ4o+aZS3QBE
-         9N7dpPG9af+mADVvsJX05n2+6UUaDHN8ATWxtyYD9sXBH7/XGbslW2/LtzSM7pg9jT
-         151qWuj0W2fKFonM4X++OF+di0Zg4XeiM22gULTY=
-Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 37.9.72.97-iva.dhcp.yndx.net (37.9.72.97-iva.dhcp.yndx.net [37.9.72.97])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id liA4tjrt5e-PYjqepNP;
-        Mon, 13 Jul 2020 21:25:34 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     sdf@google.com
-Subject: [PATCH bpf-next 4/4] bpf: try to use existing cgroup storage in bpf_prog_test_run_skb
-Date:   Mon, 13 Jul 2020 21:25:20 +0300
-Message-Id: <20200713182520.97606-5-zeil@yandex-team.ru>
-In-Reply-To: <20200713182520.97606-1-zeil@yandex-team.ru>
-References: <20200713182520.97606-1-zeil@yandex-team.ru>
+        id S1726400AbgGMShz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 14:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726788AbgGMShZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:37:25 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE104C08C5DB
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 11:37:25 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id x9so5890852plr.2
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 11:37:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ex9NjyWc3V6Bi5bAxe687NL7Tzc9ig6eAA5UMdHYprI=;
+        b=eIJXO0/If0B5aBd44ahb08ihRI2GtsNKFQ7pTlz/wT6/TJjKzO502T7CJcvZe9WdR5
+         u/qrS/5vxINqmyOT/yLBZZgVNkONvdkC5egbLzM2YycQsLldSIUq0FWKy51uV6YC91Lm
+         9apZeRbnW6mztFt+DWU+E4jyvTyoU0WgWdnQ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ex9NjyWc3V6Bi5bAxe687NL7Tzc9ig6eAA5UMdHYprI=;
+        b=B9RDsnvs5kZd3HqH2Yd5crP+q9zoa4d/LqyXlHecvFoZl7baqgulJVHWOAo/ZVRWLf
+         0HGOXhVMrAwPB6CqS87eWtU5e/JjtXxFb6gsi/KA7EUVpnmSxq6WQuZbvKolxrYmFzxh
+         +4NV1wKx2x5/ogtN8jehZVkCy9M0O8vgspkMYg+nxWY6ogMfVzw5VMs0vBBfvy9o0uOE
+         OTvQZJ5X0xF0a1g2u4ys3lwl9tJfnS+OBelK54t3aDs1BBvaoRzWXvU9+7nS3akfzvG9
+         taVmYBsb7tyz6OHT+21PXxDeH09a+m8QmHKR0ha+8/mMH+7X/ee0BLfQYH5rQXCdFCxn
+         YdGw==
+X-Gm-Message-State: AOAM532Ahe38x4NYQbP33kvNQFruS5wCJoo05PxpdPM5EZrcvK8CCU/K
+        ORwZSzQ78XCXIcNioWjCDu0os8hMavYRMQ==
+X-Google-Smtp-Source: ABdhPJwJZ4LXHG3AEpB4QbfoNcdQpuRpmEWG4B06RaqAn3egDPdZSGr1tTw7ZyXyNVuR3iTm+ixTgg==
+X-Received: by 2002:a17:90a:1b4a:: with SMTP id q68mr717791pjq.1.1594665444865;
+        Mon, 13 Jul 2020 11:37:24 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id ia13sm264985pjb.42.2020.07.13.11.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 11:37:24 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH bpf-next 0/3] bpf, riscv: Add compressed instructions to rv64 JIT
+Date:   Mon, 13 Jul 2020 11:37:08 -0700
+Message-Id: <20200713183711.762244-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -45,196 +71,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now we cannot check results in cgroup storage after running
-BPF_PROG_TEST_RUN command because it allocates dummy cgroup storage
-during test. This patch implements simple logic for searching already
-allocated cgroup storage through iterating effective programs of current
-cgroup and finding the first match. If match is not found fallback to
-temporary storage is happened.
+This patch series enables using compressed riscv (RVC) instructions
+in the rv64 BPF JIT.
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
----
- net/bpf/test_run.c                                 | 53 ++++++++++++++-
- .../selftests/bpf/prog_tests/cgroup_skb_prog_run.c | 78 ++++++++++++++++++++++
- 2 files changed, 128 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
+RVC is a standard riscv extension that adds a set of compressed,
+2-byte instructions that can replace some regular 4-byte instructions
+for improved code density.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 5c4835c..16808cb 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -15,15 +15,56 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
- 
-+static struct bpf_prog_array_item *bpf_prog_find_active(struct bpf_prog *prog,
-+							struct bpf_prog_array *effective)
-+{
-+	struct bpf_prog_array_item *item;
-+	struct bpf_prog_array *array;
-+	struct bpf_prog *p;
-+
-+	array = rcu_dereference(effective);
-+	if (!array)
-+		return NULL;
-+
-+	item = &array->items[0];
-+	while ((p = READ_ONCE(item->prog))) {
-+		if (p == prog)
-+			return item;
-+		item++;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct bpf_cgroup_storage **bpf_prog_find_active_storage(struct bpf_prog *prog)
-+{
-+	struct bpf_prog_array_item *item;
-+	struct cgroup *cgrp;
-+
-+	if (prog->type != BPF_PROG_TYPE_CGROUP_SKB)
-+		return NULL;
-+
-+	cgrp = task_dfl_cgroup(current);
-+
-+	item = bpf_prog_find_active(prog,
-+				    cgrp->bpf.effective[BPF_CGROUP_INET_INGRESS]);
-+	if (!item)
-+		item = bpf_prog_find_active(prog,
-+					    cgrp->bpf.effective[BPF_CGROUP_INET_EGRESS]);
-+
-+	return item ? item->cgroup_storage : NULL;
-+}
-+
- static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			u32 *retval, u32 *time, bool xdp)
- {
--	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = { NULL };
-+	struct bpf_cgroup_storage *dummy_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = { NULL };
-+	struct bpf_cgroup_storage **storage = dummy_storage;
- 	u64 time_start, time_spent = 0;
- 	int ret = 0;
- 	u32 i;
- 
--	ret = bpf_cgroup_storages_alloc(storage, prog);
-+	ret = bpf_cgroup_storages_alloc(dummy_storage, prog);
- 	if (ret)
- 		return ret;
- 
-@@ -31,6 +72,9 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 		repeat = 1;
- 
- 	rcu_read_lock();
-+	storage = bpf_prog_find_active_storage(prog);
-+	if (!storage)
-+		storage = dummy_storage;
- 	migrate_disable();
- 	time_start = ktime_get_ns();
- 	for (i = 0; i < repeat; i++) {
-@@ -54,6 +98,9 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			cond_resched();
- 
- 			rcu_read_lock();
-+			storage = bpf_prog_find_active_storage(prog);
-+			if (!storage)
-+				storage = dummy_storage;
- 			migrate_disable();
- 			time_start = ktime_get_ns();
- 		}
-@@ -65,7 +112,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 	do_div(time_spent, repeat);
- 	*time = time_spent > U32_MAX ? U32_MAX : (u32)time_spent;
- 
--	bpf_cgroup_storages_free(storage);
-+	bpf_cgroup_storages_free(dummy_storage);
- 
- 	return ret;
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
-new file mode 100644
-index 0000000..12ca881
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static char bpf_log_buf[BPF_LOG_BUF_SIZE];
-+
-+void test_cgroup_skb_prog_run(void)
-+{
-+	struct bpf_insn prog[] = {
-+		BPF_LD_MAP_FD(BPF_REG_1, 0), /* map fd */
-+		BPF_MOV64_IMM(BPF_REG_2, 0), /* flags, not used */
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_RAW_INSN(BPF_STX | BPF_XADD | BPF_W, BPF_REG_0, BPF_REG_1, 0, 0),
-+
-+		BPF_MOV64_IMM(BPF_REG_0, 1), /* r0 = 1 */
-+		BPF_EXIT_INSN(),
-+	};
-+	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
-+	int storage_fd = -1, prog_fd = -1, cg_fd = -1;
-+	struct bpf_cgroup_storage_key key;
-+	__u32 duration, retval, size;
-+	char buf[128];
-+	__u64 value;
-+	int err;
-+
-+	storage_fd = bpf_create_map(BPF_MAP_TYPE_CGROUP_STORAGE,
-+				    sizeof(struct bpf_cgroup_storage_key),
-+				    8, 0, 0);
-+	if (CHECK(storage_fd < 0, "create_map", "%s\n", strerror(errno)))
-+		goto out;
-+
-+	prog[0].imm = storage_fd;
-+
-+	prog_fd = bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+				   prog, insns_cnt, "GPL", 0,
-+				   bpf_log_buf, BPF_LOG_BUF_SIZE);
-+	if (CHECK(prog_fd < 0, "prog_load",
-+		  "verifier output:\n%s\n-------\n", bpf_log_buf))
-+		goto out;
-+
-+	if (CHECK_FAIL(setup_cgroup_environment()))
-+		goto out;
-+
-+	cg_fd = create_and_get_cgroup("/cg");
-+	if (CHECK_FAIL(cg_fd < 0))
-+		goto out;
-+
-+	if (CHECK_FAIL(join_cgroup("/cg")))
-+		goto out;
-+
-+	if (CHECK(bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_INET_EGRESS, 0),
-+		  "prog_attach", "%s\n", strerror(errno)))
-+		goto out;
-+
-+	err = bpf_prog_test_run(prog_fd, NUM_ITER, &pkt_v4, sizeof(pkt_v4),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval != 1, "prog_test_run",
-+	      "err %d errno %d retval %d\n", err, errno, retval);
-+
-+	/* check that cgroup storage results are available after test run */
-+
-+	err = bpf_map_get_next_key(storage_fd, NULL, &key);
-+	CHECK(err, "map_get_next_key", "%s\n", strerror(errno));
-+
-+	err = bpf_map_lookup_elem(storage_fd, &key, &value);
-+	CHECK(err || value != NUM_ITER,
-+	      "map_lookup_elem",
-+	      "err %d errno %d cnt %lld(%d)\n", err, errno, value, NUM_ITER);
-+out:
-+	close(storage_fd);
-+	close(prog_fd);
-+	close(cg_fd);
-+	cleanup_cgroup_environment();
-+}
+This series first modifies the JIT to support using 2-byte instructions
+(e.g., in jump offset computations), then adds RVC encoding and
+helper functions, and finally uses the helper functions to optimize
+the rv64 JIT.
+
+I used our formal verification framework, Serval, to verify the
+correctness of the RVC encodings and their uses in the rv64 JIT.
+
+The JIT continues to pass all tests in lib/test_bpf.c, and introduces
+no new failures to test_verifier; both with and without RVC being enabled.
+
+The following are examples of the JITed code for the verifier selftest
+"direct packet read test#3 for CGROUP_SKB OK", without and with RVC
+enabled, respectively. The former uses 178 bytes, and the latter uses 112,
+for a ~37% reduction in code size for this example.
+
+Without RVC:
+
+   0: 02000813    addi  a6,zero,32
+   4: fd010113    addi  sp,sp,-48
+   8: 02813423    sd    s0,40(sp)
+   c: 02913023    sd    s1,32(sp)
+  10: 01213c23    sd    s2,24(sp)
+  14: 01313823    sd    s3,16(sp)
+  18: 01413423    sd    s4,8(sp)
+  1c: 03010413    addi  s0,sp,48
+  20: 03056683    lwu   a3,48(a0)
+  24: 02069693    slli  a3,a3,0x20
+  28: 0206d693    srli  a3,a3,0x20
+  2c: 03456703    lwu   a4,52(a0)
+  30: 02071713    slli  a4,a4,0x20
+  34: 02075713    srli  a4,a4,0x20
+  38: 03856483    lwu   s1,56(a0)
+  3c: 02049493    slli  s1,s1,0x20
+  40: 0204d493    srli  s1,s1,0x20
+  44: 03c56903    lwu   s2,60(a0)
+  48: 02091913    slli  s2,s2,0x20
+  4c: 02095913    srli  s2,s2,0x20
+  50: 04056983    lwu   s3,64(a0)
+  54: 02099993    slli  s3,s3,0x20
+  58: 0209d993    srli  s3,s3,0x20
+  5c: 09056a03    lwu   s4,144(a0)
+  60: 020a1a13    slli  s4,s4,0x20
+  64: 020a5a13    srli  s4,s4,0x20
+  68: 00900313    addi  t1,zero,9
+  6c: 006a7463    bgeu  s4,t1,0x74
+  70: 00000a13    addi  s4,zero,0
+  74: 02d52823    sw    a3,48(a0)
+  78: 02e52a23    sw    a4,52(a0)
+  7c: 02952c23    sw    s1,56(a0)
+  80: 03252e23    sw    s2,60(a0)
+  84: 05352023    sw    s3,64(a0)
+  88: 00000793    addi  a5,zero,0
+  8c: 02813403    ld    s0,40(sp)
+  90: 02013483    ld    s1,32(sp)
+  94: 01813903    ld    s2,24(sp)
+  98: 01013983    ld    s3,16(sp)
+  9c: 00813a03    ld    s4,8(sp)
+  a0: 03010113    addi  sp,sp,48
+  a4: 00078513    addi  a0,a5,0
+  a8: 00008067    jalr  zero,0(ra)
+
+With RVC:
+
+   0:   02000813    addi    a6,zero,32
+   4:   7179        c.addi16sp  sp,-48
+   6:   f422        c.sdsp  s0,40(sp)
+   8:   f026        c.sdsp  s1,32(sp)
+   a:   ec4a        c.sdsp  s2,24(sp)
+   c:   e84e        c.sdsp  s3,16(sp)
+   e:   e452        c.sdsp  s4,8(sp)
+  10:   1800        c.addi4spn  s0,sp,48
+  12:   03056683    lwu     a3,48(a0)
+  16:   1682        c.slli  a3,0x20
+  18:   9281        c.srli  a3,0x20
+  1a:   03456703    lwu     a4,52(a0)
+  1e:   1702        c.slli  a4,0x20
+  20:   9301        c.srli  a4,0x20
+  22:   03856483    lwu     s1,56(a0)
+  26:   1482        c.slli  s1,0x20
+  28:   9081        c.srli  s1,0x20
+  2a:   03c56903    lwu     s2,60(a0)
+  2e:   1902        c.slli  s2,0x20
+  30:   02095913    srli    s2,s2,0x20
+  34:   04056983    lwu     s3,64(a0)
+  38:   1982        c.slli  s3,0x20
+  3a:   0209d993    srli    s3,s3,0x20
+  3e:   09056a03    lwu     s4,144(a0)
+  42:   1a02        c.slli  s4,0x20
+  44:   020a5a13    srli    s4,s4,0x20
+  48:   4325        c.li    t1,9
+  4a:   006a7363    bgeu    s4,t1,0x50
+  4e:   4a01        c.li    s4,0
+  50:   d914        c.sw    a3,48(a0)
+  52:   d958        c.sw    a4,52(a0)
+  54:   dd04        c.sw    s1,56(a0)
+  56:   03252e23    sw      s2,60(a0)
+  5a:   05352023    sw      s3,64(a0)
+  5e:   4781        c.li    a5,0
+  60:   7422        c.ldsp  s0,40(sp)
+  62:   7482        c.ldsp  s1,32(sp)
+  64:   6962        c.ldsp  s2,24(sp)
+  66:   69c2        c.ldsp  s3,16(sp)
+  68:   6a22        c.ldsp  s4,8(sp)
+  6a:   6145        c.addi16sp  sp,48
+  6c:   853e        c.mv    a0,a5
+  6e:   8082        c.jr    ra
+
+Luke Nelson (3):
+  bpf, riscv: Modify JIT ctx to support compressed instructions
+  bpf, riscv: Add encodings for compressed instructions
+  bpf, riscv: Use compressed instructions in the rv64 JIT
+
+ arch/riscv/net/bpf_jit.h        | 495 +++++++++++++++++++++++++++++++-
+ arch/riscv/net/bpf_jit_comp32.c |  14 +-
+ arch/riscv/net/bpf_jit_comp64.c | 287 +++++++++---------
+ arch/riscv/net/bpf_jit_core.c   |   6 +-
+ 4 files changed, 650 insertions(+), 152 deletions(-)
+
 -- 
-2.7.4
+2.25.1
 
