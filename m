@@ -2,79 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760BA21E326
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 00:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3335021E38E
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 01:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgGMWnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 18:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgGMWnS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 18:43:18 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33109C061755;
-        Mon, 13 Jul 2020 15:43:18 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id o4so10147642lfi.7;
-        Mon, 13 Jul 2020 15:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mXBHeeYbnyYnZoImg9lxJETKMT9BDtD3SLBQDkwKpUg=;
-        b=NS1sJFWMit7btLIextnomhwfsgvvCcoEI3bba4FYWzuqeQgAFhHeZ47giKEbA6zGD+
-         hV7v1wS/PljTvy9d48Zv0jeLe80MREPAbd6wQ30FGmKYHuee+M1lakFsKRfOqEh70THc
-         jM+WA9cok/IHAw5EHn2/k9CNJO7lWFCjwFkK8/6cRiK8YmPCUCseqnZsWZVdWEZT+cX1
-         Zq8Hip49UCvPJOWbMEAG4DHlZ8o0RzaLawe+jtX0SkPeS/IQys7OsKxvTbazJGjUY1Hu
-         3s2btJOcXZ+dU4qEXhy+IhfiNPHy5A9Qaa2+LtJaPD6b+yDwXxsAAUPej0H/iU5TcYHV
-         uRYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mXBHeeYbnyYnZoImg9lxJETKMT9BDtD3SLBQDkwKpUg=;
-        b=OySjHJaapc0Kw9VMfeR5rQTv3bkaAtdxz8Hf5WofjX2W6eSY5SodQSVgqYt5XdHpOx
-         HKyX336xBdof2DZ41qtSvMq715LCbMLWTLt+pBvjCWWD030CRLAMBuzEnwHcrIRCc93J
-         7tVcfzMRRHVc3a963UpZfD2GTBgIxELsMiH82+QMxNxXVeBrmgeGBYKhq91SqOFKyv9F
-         R0ag9rUbiddtw9H9R/0KeKSQlqrdurE2pRtfuNgckbQR3gQmqMCqnUXWMwmrfufHIwQ6
-         ydhEyy0r/4/HzWEfyBOd6QLWWKcu7w3fDUhU04Om1BIMHegnuv3TXogqTxmNNtkp9Gax
-         Cdwg==
-X-Gm-Message-State: AOAM530Mr4WyAK8jKzwRidT3a2ddy6M3CLm1DF13nPbZF7aRLq+cVGX2
-        ybuBY0hsKcth2qjTEiGR4nIdT3Q8tOYVFOZfr/9vrA==
-X-Google-Smtp-Source: ABdhPJxGwBpHHxf7US3jV7gyU20uWm4nZjl+J49kuJJSFwBwY3r30p+7aQ9GRrrL7T7IP1flfFxs32Xz2Ope2dstqMM=
-X-Received: by 2002:a19:815:: with SMTP id 21mr612446lfi.119.1594680196712;
- Mon, 13 Jul 2020 15:43:16 -0700 (PDT)
+        id S1726435AbgGMXYt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 19:24:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25344 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726374AbgGMXYt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jul 2020 19:24:49 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DNJ7tS013031
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 16:24:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=aDOwrjjpwdtnPySuqg0BsRMlSG1fuB2xzY3H2P0dP+o=;
+ b=Z3DVpg/KD2+gTFPkp3lzQznzVrYodGwjzkZofGjaa65HEKS505BsMXYZzBIkE9lJgjjR
+ YaGzIHCajzY1KyX0+O8FXtcW7pEySSnTmAiywA4pL/fnoIRnSEqgfKEJo6TKhEVKifR+
+ nsJk2P6URbOINx6AZpNpmUpvyVJ6SqhE+y0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 327b8ht9e8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 16:24:48 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 13 Jul 2020 16:24:46 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id A7C3D2EC4105; Mon, 13 Jul 2020 16:24:43 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Anton Protopopov <a.s.protopopov@gmail.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/2] Strip away modifiers from BPF skeleton global variables
+Date:   Mon, 13 Jul 2020 16:24:07 -0700
+Message-ID: <20200713232409.3062144-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200710232605.20918-1-andriin@fb.com> <49d46a96-ad92-90dd-9723-893bd1e5a7bc@fb.com>
-In-Reply-To: <49d46a96-ad92-90dd-9723-893bd1e5a7bc@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Jul 2020 15:43:05 -0700
-Message-ID: <CAADnVQ+rHWYq9nQT9S=6h3w7RMdF=tnGg0WBy55UFrHRvJsOzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/bpftool: remove warning about PID iterator support
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ mlxlogscore=648 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
+ spamscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130170
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 7:10 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/10/20 4:26 PM, Andrii Nakryiko wrote:
-> > Don't emit warning that bpftool was built without PID iterator support. This
-> > error garbles JSON output of otherwise perfectly valid show commands.
-> >
-> > Reported-by: Andrey Ignatov <rdna@fb.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Thanks for the fix.
-> Acked-by: Yonghong Song <yhs@fb.com>
+Fix bpftool logic of stripping away const/volatile modifiers for all glob=
+al
+variables during BPF skeleton generation. See patch #1 for details on whe=
+n
+existing logic breaks and why it's important. Support special .strip_mods=
+=3Dtrue
+mode in btf_dump__emit_type_decl.
 
-Applied. Thanks
+Recent example of when this has caused problems can be found in [0].
+
+  [0] https://github.com/iovisor/bcc/pull/2994#issuecomment-650588533
+
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>
+
+Andrii Nakryiko (2):
+  libbpf: support stripping modifiers for btf_dump
+  tools/bpftool: strip away modifiers from global variables
+
+ tools/bpf/bpftool/gen.c                       | 23 ++++++++-----------
+ tools/lib/bpf/btf.h                           |  4 +++-
+ tools/lib/bpf/btf_dump.c                      | 10 ++++++--
+ .../selftests/bpf/prog_tests/skeleton.c       |  6 ++---
+ .../selftests/bpf/progs/test_skeleton.c       |  6 +++--
+ 5 files changed, 28 insertions(+), 21 deletions(-)
+
+--=20
+2.24.1
+
