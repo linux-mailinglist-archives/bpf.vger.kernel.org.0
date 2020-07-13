@@ -2,192 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBED121D54F
-	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 13:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0911321D677
+	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 15:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbgGMLxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 07:53:40 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54056 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729621AbgGMLxj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:53:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DBqoYZ053984;
-        Mon, 13 Jul 2020 11:52:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=z/1QPWqbNyssbqBldMP+d1+QFcSjoQ7OXySDQDNPWcc=;
- b=nMuqAZb1fl7VT6hBcuSqplj5RvdkimFGmNkOOo04qXrpBVDfEhxxm9kO4Q3winHDZFA0
- jG7KAXmpxDa6wTPcX5sYxm6EuBfPiWSEd3Q0FDc1WuDMwoQbJ3qoElBmYab3EO1nuFUD
- xVEW7ebQvOVNZmTB8Uc+yUhOHpKFjwQnJYjjxgwW7yxv2a9A8ail3i2HOr605MencrWY
- yc5sAPInTV8NyGoWHklMcOLvIpAiIiH9Z5sYjGgzV7KVp8aYYs0XIlvC+cJXT531T14d
- frZdcjlJO76eGkLYxY/on25SbvqI97ZPlxuR+60fvBmexZKJIMADXBNZqB/TfyoCbC0u Qg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 32762n6dke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Jul 2020 11:52:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DBhlpf106797;
-        Mon, 13 Jul 2020 11:52:54 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 327q0m7usr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 11:52:54 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06DBqsvG020305;
-        Mon, 13 Jul 2020 11:52:54 GMT
-Received: from localhost.uk.oracle.com (/10.175.215.251)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jul 2020 04:52:53 -0700
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v3 bpf-next 2/2] selftests/bpf: add selftests verifying bpf_trace_printk() behaviour
-Date:   Mon, 13 Jul 2020 12:52:34 +0100
-Message-Id: <1594641154-18897-3-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1594641154-18897-1-git-send-email-alan.maguire@oracle.com>
-References: <1594641154-18897-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007130088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- bulkscore=0 suspectscore=2 phishscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007130089
+        id S1729545AbgGMNF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 09:05:26 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50711 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729523AbgGMNF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:05:26 -0400
+Received: by mail-wm1-f66.google.com with SMTP id l17so13257975wmj.0;
+        Mon, 13 Jul 2020 06:05:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYPVA3/IWlt5/iqZ14/INuvJMoGowNHfOcbfoeDX1w4=;
+        b=Z8+SOk+ddRMOxuGvqY//U2agvdda/z2FjAQsjbM7y8jpNdzw3pWsvFkBMdtXmJ3bU0
+         nRNLnnI0yqw/5V3OEaQhtI9fkp4P3f9FvPM2v/WneUA7T//pUg6+497e6OJfZJzcqYrd
+         yRI5A5P6QNTUIeWtKCNT8xM91/ejFHdD/2DVWhja3mrnNUlWKBiP92qY6uuS4BGWX/qx
+         AVgKRVdFGvPaJIg9SV3yjnEjJpK7c9cv7nNUMelw8tADlBliFV351UTOAMFQ8suF0gRN
+         PHOmwrF7YfY+YmtQsO3zHeA0xcVx2V0/2zwg83IdS4rnxfEq7s0U7Af9NXrTfYDBi4Ag
+         Tobg==
+X-Gm-Message-State: AOAM5304nFRzTRmv/rwnkS3zqaZlQcidBQqaLPy+DQXADeAEzyWkCbeV
+        B2/SxJXQ2lSwkZLYK3Zw9quW3Z9RJic=
+X-Google-Smtp-Source: ABdhPJz85xPwE/oBrRjnLqeI3v2s5MzJRWpQlOsdY+4ARsW45oGFKS9vsKmoCJp8fjwB/7owbWTW6g==
+X-Received: by 2002:a7b:c952:: with SMTP id i18mr20098254wml.65.1594645522770;
+        Mon, 13 Jul 2020 06:05:22 -0700 (PDT)
+Received: from msft-t490s.lan ([2001:b07:5d26:7f46:d7c1:f090:1563:f81f])
+        by smtp.gmail.com with ESMTPSA id g14sm24237208wrm.93.2020.07.13.06.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:05:21 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next] bpf: allow loading instructions from a fd
+Date:   Mon, 13 Jul 2020 15:05:11 +0200
+Message-Id: <20200713130511.6942-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Simple selftests that verifies bpf_trace_printk() returns a sensible
-value and tracing messages appear.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Allow to load the BPF instructons from a file descriptor,
+other than a pointer.
+
+This is required by the Integrity Subsystem to validate the source of
+the instructions.
+
+In bpf_attr replace 'insns', which is an u64, to a union containing also
+the file descriptor as int.
+A new BPF_F_LOAD_BY_FD flag tells bpf_prog_load() to load
+the instructions from file descriptor and ignore the pointer.
+
+As BPF files usually are regular ELF files, start reading from the
+current file position, so the userspace can skip the ELF header and jump
+to the right section.
+
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 ---
- .../selftests/bpf/prog_tests/trace_printk.c        | 75 ++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/trace_printk.c   | 21 ++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_printk.c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_printk.c
+ include/uapi/linux/bpf.h | 10 +++++-
+ kernel/bpf/syscall.c     | 69 +++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 73 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk.c b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-new file mode 100644
-index 0000000..39b0dec
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 8bd33050b7bb..4ef75198db21 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -332,6 +332,11 @@ enum bpf_link_type {
+ /* The verifier internal test flag. Behavior is undefined */
+ #define BPF_F_TEST_STATE_FREQ	(1U << 3)
+ 
++/* The BPF is loaded by the file descriptor in `prog_bpf_fd`
++ * instead of the buffer pointed by `insns`.
++ */
++#define BPF_F_LOAD_BY_FD	(1U << 4)
 +
-+#include <test_progs.h>
-+
-+#include "trace_printk.skel.h"
-+
-+#define TRACEBUF	"/sys/kernel/debug/tracing/trace_pipe"
-+#define SEARCHMSG	"testing,testing"
-+
-+void test_trace_printk(void)
+ /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+  * two extensions:
+  *
+@@ -482,7 +487,10 @@ union bpf_attr {
+ 	struct { /* anonymous struct used by BPF_PROG_LOAD command */
+ 		__u32		prog_type;	/* one of enum bpf_prog_type */
+ 		__u32		insn_cnt;
+-		__aligned_u64	insns;
++		union {
++			__aligned_u64	insns;		/* BPF instructions */
++			__u32		prog_bpf_fd;	/* fd pointing to BPF program */
++		};
+ 		__aligned_u64	license;
+ 		__u32		log_level;	/* verbosity level of verifier */
+ 		__u32		log_size;	/* size of user buffer */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0fd80ac81f70..b6b1ce34a72b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -24,6 +24,7 @@
+ #include <linux/ctype.h>
+ #include <linux/nospec.h>
+ #include <linux/audit.h>
++#include <linux/stat.h>
+ #include <uapi/linux/btf.h>
+ #include <linux/pgtable.h>
+ #include <linux/bpf_lsm.h>
+@@ -2082,6 +2083,55 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+ /* last field in 'union bpf_attr' used by this command */
+ #define	BPF_PROG_LOAD_LAST_FIELD attach_prog_fd
+ 
++static int bpf_load_from_fd(u32 fd, void *buf, loff_t insn_cnt)
 +{
-+	int err, iter = 0, duration = 0, found = 0;
-+	struct trace_printk__bss *bss;
-+	struct trace_printk *skel;
-+	char *buf = NULL;
-+	FILE *fp = NULL;
-+	size_t buflen;
++	ssize_t bytes, total = 0;
++	struct fd f = fdget(fd);
++	int ret = 0;
++	loff_t pos;
 +
-+	skel = trace_printk__open();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
++	if (!f.file)
++		return -EBADF;
 +
-+	err = trace_printk__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+
-+	err = trace_printk__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	fp = fopen(TRACEBUF, "r");
-+	if (CHECK(fp == NULL, "could not open trace buffer",
-+		  "error %d opening %s", errno, TRACEBUF))
-+		goto cleanup;
-+
-+	/* We do not want to wait forever if this test fails... */
-+	fcntl(fileno(fp), F_SETFL, O_NONBLOCK);
-+
-+	/* wait for tracepoint to trigger */
-+	usleep(1);
-+	trace_printk__detach(skel);
-+
-+	if (CHECK(bss->trace_printk_ran == 0,
-+		  "bpf_trace_printk never ran",
-+		  "ran == %d", bss->trace_printk_ran))
-+		goto cleanup;
-+
-+	if (CHECK(bss->trace_printk_ret <= 0,
-+		  "bpf_trace_printk returned <= 0 value",
-+		  "got %d", bss->trace_printk_ret))
-+		goto cleanup;
-+
-+	/* verify our search string is in the trace buffer */
-+	while (getline(&buf, &buflen, fp) >= 0 || errno == EAGAIN) {
-+		if (strstr(buf, SEARCHMSG) != NULL)
-+			found++;
-+		if (found == bss->trace_printk_ran)
-+			break;
-+		if (++iter > 1000)
-+			break;
++	if (!S_ISREG(file_inode(f.file)->i_mode)) {
++		ret = -EINVAL;
++		goto out_fd;
 +	}
 +
-+	if (CHECK(!found, "message from bpf_trace_printk not found",
-+		  "no instance of %s in %s", SEARCHMSG, TRACEBUF))
-+		goto cleanup;
++	ret = deny_write_access(f.file);
++	if (ret)
++		goto out_fd;
 +
-+cleanup:
-+	trace_printk__destroy(skel);
-+	free(buf);
-+	if (fp)
-+		fclose(fp);
++	ret = security_kernel_read_file(f.file, READING_UNKNOWN);
++	if (ret)
++		goto out;
++
++	pos = f.file->f_pos;
++
++	while (total < insn_cnt) {
++		bytes = kernel_read(f.file, buf + total, insn_cnt - total, &pos);
++		if (bytes < 0) {
++			ret = bytes;
++			goto out;
++		}
++
++		if (bytes == 0)
++			break;
++
++		total += bytes;
++		pos += bytes;
++	}
++
++	if (total != insn_cnt)
++		ret = -EIO;
++
++out:
++	allow_write_access(f.file);
++out_fd:
++	fdput(f);
++	return ret;
 +}
-diff --git a/tools/testing/selftests/bpf/progs/trace_printk.c b/tools/testing/selftests/bpf/progs/trace_printk.c
-new file mode 100644
-index 0000000..8ca7f39
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trace_printk.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020, Oracle and/or its affiliates.
 +
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int trace_printk_ret = 0;
-+int trace_printk_ran = 0;
-+
-+SEC("tp/raw_syscalls/sys_enter")
-+int sys_enter(void *ctx)
-+{
-+	static const char fmt[] = "testing,testing %d\n";
-+
-+	trace_printk_ret = bpf_trace_printk(fmt, sizeof(fmt),
-+					    ++trace_printk_ran);
-+	return 0;
-+}
+ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ {
+ 	enum bpf_prog_type type = attr->prog_type;
+@@ -2096,7 +2146,8 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
+ 				 BPF_F_ANY_ALIGNMENT |
+ 				 BPF_F_TEST_STATE_FREQ |
+-				 BPF_F_TEST_RND_HI32))
++				 BPF_F_TEST_RND_HI32 |
++				 BPF_F_LOAD_BY_FD))
+ 		return -EINVAL;
+ 
+ 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+@@ -2162,10 +2213,18 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 
+ 	prog->len = attr->insn_cnt;
+ 
+-	err = -EFAULT;
+-	if (copy_from_user(prog->insns, u64_to_user_ptr(attr->insns),
+-			   bpf_prog_insn_size(prog)) != 0)
+-		goto free_prog;
++	if (attr->prog_flags & BPF_F_LOAD_BY_FD) {
++		err = bpf_load_from_fd(attr->prog_bpf_fd, (void *)prog->insns,
++				       bpf_prog_insn_size(prog));
++		if (err)
++			goto free_prog;
++	} else {
++		if (copy_from_user(prog->insns, u64_to_user_ptr(attr->insns),
++				   bpf_prog_insn_size(prog)) != 0) {
++			err = -EFAULT;
++			goto free_prog;
++		}
++	}
+ 
+ 	prog->orig_prog = NULL;
+ 	prog->jited = 0;
 -- 
-1.8.3.1
+2.26.2
 
