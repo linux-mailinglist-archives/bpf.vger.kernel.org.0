@@ -2,101 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9791E21D88D
-	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 16:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E0F21DB68
+	for <lists+bpf@lfdr.de>; Mon, 13 Jul 2020 18:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgGMOce (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 10:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbgGMOcd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:32:33 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B11AC061755;
-        Mon, 13 Jul 2020 07:32:33 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id j11so11098805oiw.12;
-        Mon, 13 Jul 2020 07:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zZwbP0XmcIlrVcvFrOStVLKCtwWwRzObsjDhvNvGkV0=;
-        b=LUth4lsGIFbWOIWyqjUGwUEtMkh7ucn7ie31LCbFoM49wB64jcYpHa4Nj3pFeRqT/3
-         ERwjef323qCiCl9uodl9MFsooiRetN7qAg9GJCOxJ19gdFQKmnBMNas22EPMtmoYLDYt
-         dVWMlhKvDsub44I8qf3xpUWaqNRy2A579HDr12cIlaEQq/l6JGioG+8vlgNHMQz/Jnw7
-         iCTGDdFyljbZJ4MYIw02uob5Ayfe1NfIxVeXfmRcFrmN4GfBSL7qsdlzCzL7Rcn/gq1g
-         KOZ44u129s0Y55TAANi7vMWoPzuJ3d7rFWEYEPUUxjUiZ/kp6HXXB689dFEE1OUnVNOl
-         T2og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zZwbP0XmcIlrVcvFrOStVLKCtwWwRzObsjDhvNvGkV0=;
-        b=p8v5ZLXI4J1iugG7aSFHKJ8asoQ+nVOq+xp94PU8fR+e5QSvA7nZR7kAagj39q0DUZ
-         8O4JpGSwihiiYKt5KYcIdQ/zpSG0ns8oYYNnsDhHmHFY+1Mh6Ov9+fyNmvaz9dIgrZzo
-         YmO5QsoXXx4I6XnwxLxnTLi4UtBea+dVBjxOWCFq0X7EycmFtkv0PjRifclPng2DdHST
-         14MdoAlh9Wvava41Rt2Qjgoc25jt9zP97HT9Osr29MZ+i0TKZszT01q5PlCKbaW2v5Fy
-         uluLluTcbWIUXmeFat9t7DyBJvDoSHeagAwwLw31yOXBJHa6qT2Du3ndflp2bHREn4OR
-         sMyw==
-X-Gm-Message-State: AOAM532Ch8GGINUjS6t0JfklES8GU98ACf/S56D1jJb9QwW9zOp87apL
-        siyFYof3XbqmK5C8vNbJuBs=
-X-Google-Smtp-Source: ABdhPJwX9c+DYb0h3lVTjYdIV9MgdQFsbe4hiAc1+s1XZLsEwVHrQ1OBfVTOxbCDWIbuU0e9tJC5YQ==
-X-Received: by 2002:a05:6808:a19:: with SMTP id n25mr149036oij.84.1594650752806;
-        Mon, 13 Jul 2020 07:32:32 -0700 (PDT)
-Received: from ?IPv6:2601:284:8202:10b0:a406:dd0d:c1f5:683e? ([2601:284:8202:10b0:a406:dd0d:c1f5:683e])
-        by smtp.googlemail.com with ESMTPSA id u19sm2786287oic.10.2020.07.13.07.32.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 07:32:31 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 4/7] bpf: implement BPF XDP link-specific
- introspection APIs
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-References: <20200710224924.4087399-1-andriin@fb.com>
- <20200710224924.4087399-5-andriin@fb.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <7a68d9cc-f8dc-a11f-f1d4-7307519be866@gmail.com>
-Date:   Mon, 13 Jul 2020 08:32:30 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1729899AbgGMQQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 12:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729644AbgGMQQQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 12:16:16 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B304620773;
+        Mon, 13 Jul 2020 16:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594656976;
+        bh=viaWXYM+Hs+AEgp6HyUr4ayigk0ciBjuIkl+U4M6f14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s3bpwgfdoyqBtvh7sbQq/zZG4qK0G98JmqWEADCQBOiodMVRITO0V7ERDvTR7fZad
+         MMG7/bMEeQAQlhST0UqZrhqtF4uFHtq1NEgNHQIb21qIkICpYBBW3evZWakmoWa3sS
+         vjCLjBeh31uGK/Y6COna+guDJQT7ANGqoEJ3Zh8c=
+Date:   Mon, 13 Jul 2020 09:16:14 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     syzbot <syzbot+4c50ac32e5b10e4133e1@syzkaller.appspotmail.com>,
+        andriin@fb.com, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: WARNING in submit_bio_checks
+Message-ID: <20200713161614.GC1696@sol.localdomain>
+References: <00000000000029663005aa23cff4@google.com>
+ <20200713101836.GA536@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200710224924.4087399-5-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713101836.GA536@infradead.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/10/20 4:49 PM, Andrii Nakryiko wrote:
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 025687120442..a9c634be8dd7 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -8973,6 +8973,35 @@ static void bpf_xdp_link_dealloc(struct bpf_link *link)
->  	kfree(xdp_link);
->  }
->  
-> +static void bpf_xdp_link_show_fdinfo(const struct bpf_link *link,
-> +				     struct seq_file *seq)
-> +{
-> +	struct bpf_xdp_link *xdp_link = container_of(link, struct bpf_xdp_link, link);
-> +	u32 ifindex = 0;
-> +
-> +	rtnl_lock();
-> +	if (xdp_link->dev)
-> +		ifindex = xdp_link->dev->ifindex;
-> +	rtnl_unlock();
+On Mon, Jul 13, 2020 at 11:18:36AM +0100, Christoph Hellwig wrote:
+> On Fri, Jul 10, 2020 at 10:34:19PM -0700, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following crash on:
+> 
+> This is not a crash, but a WARN_ONCE.  A pre-existing one that just
+> slightly changed the printed message recently.
+> 
 
-Patch 2 you set dev but don't hold a refcnt on it which is why you need
-the locking here. How do you know that the dev pointer is even valid here?
+It doesn't really matter.  WARN is for indicating kernel bugs only.
+A user-triggable WARN is a bug.  Either the bug that makes the WARN
+reachable needs to be fixed, or if the WARN is legitimately user-reachable
+it needs to be removed or replaced with a proper ratelimited log message.
 
-If xdp_link is going to have dev reference you need to take the refcnt
-and you need to handle NETDEV notifications to cleanup the bpf_link when
-the device goes away.
+This one looks legitimately user-reachable, so we could do:
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index d9d632639bd1..354c51ad5c81 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -854,8 +854,8 @@ static inline bool bio_check_ro(struct bio *bio, struct hd_struct *part)
+ 		if (op_is_flush(bio->bi_opf) && !bio_sectors(bio))
+ 			return false;
+ 
+-		WARN_ONCE(1,
+-		       "Trying to write to read-only block-device %s (partno %d)\n",
++		pr_warn_ratelimited(
++		       "block: trying to write to read-only block-device %s (partno %d)\n",
+ 			bio_devname(bio, b), part->partno);
+ 		/* Older lvm-tools actually trigger this */
+ 		return false;
+
+
+We could also show current->comm and current->pid if they would be useful here.
+
+And yes, this is preexisting which is why syzbot has reported this before
+(https://syzkaller.appspot.com/bug?id=79eda145ab047a0dc7d03ca5fcb1cf12206eb481).
+Just no one has bothered to fix it yet.
+
+- Eric
