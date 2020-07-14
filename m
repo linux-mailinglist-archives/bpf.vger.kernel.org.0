@@ -2,64 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F26321FB6C
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 21:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25B921FD0C
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 21:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgGNTBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 15:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S1729427AbgGNTOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 15:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731129AbgGNS7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:59:24 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EEEC061755;
-        Tue, 14 Jul 2020 11:59:24 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id o38so13687149qtf.6;
-        Tue, 14 Jul 2020 11:59:24 -0700 (PDT)
+        with ESMTP id S1729370AbgGNTOV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:14:21 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD4DC061755;
+        Tue, 14 Jul 2020 12:14:21 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id m8so8008633qvk.7;
+        Tue, 14 Jul 2020 12:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=SQZ00sUCFnel9yqqo0aD/Thg+rH2CFzCWvrAhQAmR4Y=;
-        b=pxsPoBRNgvgtzt0s6ir/SJNqIKlL32pzRaRClpSjHM4nIAaK2ja06jP1LvSLIQi/xv
-         KZS+Rq1IJgP1HIQLxH/oi4G59H9yPHrkTkLv/YPxQgHckIqL7fST+TQrlcqqqMms3GNs
-         +FtkdH1QfzAfrVTsnRjWf7UDmdG21GXiPwH1o+Vfl/mpiGhdatCMFNOskh0R0Oy7p1ca
-         RV/QhKvUOynuSoQUY4WKI7KkFv7UFHwltEL5VpESvWioRvaOtCIBMRTpfbz52L/ShLv7
-         HWDJmj20tibJsZhJiPclW80ntkQYKOdfH1z/Nj3CeCOqKdOfu+T7R9IrJ3sUNQNwFcWW
-         0KsA==
+        bh=I+PdK0rwahmb3zk+3BAV8Hpg6T6H8DjNtUsVW1cpgnA=;
+        b=FNXmHmf7S7zWE0vwWk5wh7ntFN2kowYMvGto9Eu9FsDMCQz+VtuqmVVOvOn/wHv/8e
+         cSPnqhzk4Q21i1la11XD8UTbhMOCNfMnjkwooCmBQ2pMa9nYJg07A4aJZhedjaFZONdC
+         H6pt2PBCRFL462Xq5z2YE79lFCV97ttIGS4jDzn13pjRUXMzwVA304KMPeSLoTdI+NUh
+         Ra74rIemSpZhaH4yGJFBjNHosXOn4oeNo7Fv0y3ngJ/rMznsuftPc+v63DPYDJQipn5l
+         82U9cvDCEuylFLb0IGSAbJwRB7kf3Dl4canAcZsrf8SEfLRiBXcP3FbdltbDcaePR6nk
+         ANKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SQZ00sUCFnel9yqqo0aD/Thg+rH2CFzCWvrAhQAmR4Y=;
-        b=OZGeeEZmVdz8WVG90lJnauiExxg+ttvv3umW+FZDU/i6A7B8GeOG+FVerzogFn/5Xd
-         eXEifHbzlC9fAMKOMWE1l/b/fT6ELr1nDtfuA1QaDJRUHkOhAMk5Wv0NPhAf+2HvfaKz
-         e+5tead698VevXrzSXdbT9G/EJGOHvTSyARoFHyLRP8ZBxJYNSNLPF/rc0ECi8ZHyZ81
-         KJLY8HSGiBBFuXVKsYrw4nirCZyOpURUqpoG4Kb+xmecu2QrW5rjWAeXI0K/b3uwTIUs
-         WQup+JRdBUPL2y0w3E/LarDprwA+Zq4dxOF5dF5jpuqABLmQwW3VJJ/hQCD7jLyvGdLy
-         Usiw==
-X-Gm-Message-State: AOAM5338ypG9fx3BR+IpdaI8FsMq5P9QiFti9GYio6YNPIK6lWlA5rJr
-        /bo265nnIcIeBVcU0ECEB6JGJ/252gvpR6YZyUg=
-X-Google-Smtp-Source: ABdhPJwb14USRU4G8ZXT5ZjlT7X1fyeRX3VQtWRTBrwcDqM7dUb+nEpGX+g4bV7Ut4ai9tZApJIN6LtdU1zgMTOdklM=
-X-Received: by 2002:ac8:4714:: with SMTP id f20mr6181861qtp.141.1594753163239;
- Tue, 14 Jul 2020 11:59:23 -0700 (PDT)
+        bh=I+PdK0rwahmb3zk+3BAV8Hpg6T6H8DjNtUsVW1cpgnA=;
+        b=Qta0VXgNYRzIOLNEvS7/YrCXePZcPEfVMN9Ji/QGIrX/RhJM6c8Sx7Z95cE9lA740f
+         jSk/T5qYjv7R0R7+WFBCKsjItGn6zwefCMe6McliSEi95vcy//TMHKfr78TWNPG7WBOZ
+         hK/qb7szEHLtGnYRxVN1h8AVNSMphgPh0pKZNCjepnogTJcj/u5qwaX/X7yYHB3ymzQ0
+         Q9esBiKeJ5DsX5pWSpEKDXWYcHTXIo40jEBzmztUFD/yFtHhsVWrMu+dmNYgTpZeAZsy
+         HsxsgtAoXUbJL2k4SKSeYWZr16KZ9lSPdJbplfHOAOFSrXnh3QTEGZVGPaJmgCltK2aI
+         HbiA==
+X-Gm-Message-State: AOAM532a4Jp840CtCm76ZtSgJdyUaxTD3W32ZX1YMayOA6lKeD6XEYdc
+        ArLO2l/LE4RrDvIE3PMCrvyj/XZoorygzJFgClY=
+X-Google-Smtp-Source: ABdhPJxlU87KTuAUsHWkCbe+wLHqvA8an8R71+kuh/HVgPeuBVv8jWkG3O0cFtnM9YHyhNS2kw/ka6VPKOUfqTTt1cw=
+X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr5827198qvb.228.1594754059984;
+ Tue, 14 Jul 2020 12:14:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com>
- <877dv6gpxd.fsf@toke.dk>
-In-Reply-To: <877dv6gpxd.fsf@toke.dk>
+References: <159467113970.370286.17656404860101110795.stgit@toke.dk>
+ <159467114405.370286.1690821122507970067.stgit@toke.dk> <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
+ <87r1tegusj.fsf@toke.dk>
+In-Reply-To: <87r1tegusj.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:59:12 -0700
-Message-ID: <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
+Date:   Tue, 14 Jul 2020 12:14:09 -0700
+Message-ID: <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com>
+Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add
+ new members to bpf_attr.raw_tracepoint in bpf.h
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -67,97 +70,231 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 6:57 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+On Tue, Jul 14, 2020 at 5:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
-> Andrii Nakryiko <andriin@fb.com> writes:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> > Add bpf_link-based API (bpf_xdp_link) to attach BPF XDP program through
-> > BPF_LINK_CREATE command.
+> > On Mon, Jul 13, 2020 at 1:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >>
+> >> Sync addition of new members from main kernel tree.
+> >>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >>  tools/include/uapi/linux/bpf.h |    9 +++++++--
+> >>  1 file changed, 7 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux=
+/bpf.h
+> >> index da9bf35a26f8..662a15e4a1a1 100644
+> >> --- a/tools/include/uapi/linux/bpf.h
+> >> +++ b/tools/include/uapi/linux/bpf.h
+> >> @@ -573,8 +573,13 @@ union bpf_attr {
+> >>         } query;
+> >>
+> >>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN c=
+ommand */
+> >> -               __u64 name;
+> >> -               __u32 prog_fd;
+> >> +               __u64           name;
+> >> +               __u32           prog_fd;
+> >> +               __u32           log_level;      /* verbosity level of =
+log */
+> >> +               __u32           log_size;       /* size of user buffer=
+ */
+> >> +               __aligned_u64   log_buf;        /* user supplied buffe=
+r */
+> >> +               __u32           tgt_prog_fd;
+> >> +               __u32           tgt_btf_id;
+> >>         } raw_tracepoint;
+> >>
+> >>         struct { /* anonymous struct for BPF_BTF_LOAD */
+> >>
+> >
+> > I think BPF syscall would benefit from common/generalized log support
+> > across all commands, given how powerful/complex it already is.
+> > Sometimes it's literally impossible to understand why one gets -EINVAL
+> > without adding printk()s in the kernel.
 >
-> I'm still not convinced this is a good idea. As far as I can tell, at
-> this point adding this gets you three things:
->
-> 1. The ability to 'lock' an attachment in place.
->
-> 2. Automatic detach on fd close
->
-> 3. API unification with other uses of BPF_LINK_CREATE.
->
->
-> Of those, 1. is certainly useful, but can be trivially achieved with the
-> existing netlink API (add a flag on attach that prevents removal unless
-> the original prog_fd is supplied as EXPECTED_FD).
+> Yes, I agree! This is horrible UI!
 
-Given it's trivial to discover attached prog FD on a given ifindex, it
-doesn't add much of a peace of mind to the application that installs
-bpf_link. Any other XDP-enabled program (even some trivial test
-program) can unknowingly break other applications by deciding to
-"auto-cleanup" it's previous instance on restart ("what's my previous
-prog FD? let's replace it with my up-to-date program FD! What do you
-mean it wasn't my prog FD before?). We went over this discussion many
-times already: relying on the correct behavior of *other*
-applications, which you don't necessarily control, is not working well
-in real production use cases.
-
->
-> 2. is IMO the wrong model for XDP, as I believe I argued the last time
-> we discussed this :)
-> In particular, in a situation with multiple XDP programs attached
-> through a dispatcher, the 'owner' application of each program don't
-> 'own' the interface attachment anyway, so if using bpf_link for that it
-> would have to be pinned somewhere anyway. So the 'automatic detach'
-> feature is only useful in the "xdpd" deployment scenario, whereas in the
-> common usage model of command-line attachment ('ip link set xdp...') it
-> is something that needs to be worked around.
-
-Right, nothing changed since we last discussed. There are cases where
-one or another approach is more convenient. Having bpf_link for XDP
-finally gives an option to have an auto-detaching (on last FD close)
-approach, but you still insist there shouldn't be such an option. Why?
-
->
-> 3. would be kinda nice, I guess, if we were designing the API from
-> scratch. But we already have an existing API, so IMO the cost of
-> duplication outweighs any benefits of API unification.
-
-Not unification of BPF_LINK_CREATE, but unification of bpf_link
-infrastructure in general, with its introspection and discoverability
-APIs. bpftool can show which programs are attached where and it can
-show PIDs of processes that own the BPF link. With CAP_BPF you have
-also more options now how to control who can mess with your bpf_link.
+UI?.. It's a perfectly fine and extensible API for all functionality
+it provides, it just needs a better human-readable feedback mechanism,
+which is what I'm proposing. Error codes are not working when you have
+so many different situations that can result in error.
 
 >
-> So why is XDP worth it? I assume you weigh this differently, but please
-> explain how. Ideally, this should have been in the commit message
-> already...
+> > But it feels wrong to add log_level/log_size/log_buf fields to every
+> > section of bpf_attr and require the user to specify it differently for
+> > each command. So before we go and start adding per-command fields,
+> > let's discuss how we can do this more generically. I wonder if we can
+> > come up with a good way to do it in one common way and then gradually
+> > support that way throughout all BPF commands.
+> >
+> > Unfortunately it's too late to just add a few common fields to
+> > bpf_attr in front of all other per-command fields, but here's two more
+> > ideas just to start discussion. I hope someone can come up with
+> > something nicer.
+> >
+> > 1. Currently bpf syscall accepts 3 input arguments (cmd, uattr, size).
+> > We can extend it with two more optional arguments: one for pointer to
+> > log-defining attr (for log_buf pointer, log_size, log_level, maybe
+> > something more later) and another for the size of that log attr.
+> > Beyond that we'd need some way to specify that the user actually meant
+> > to provide those 2 optional args. The most straightforward way would
+> > be to use the highest bit of cmd argument. So instead of calling bpf()
+> > with BPF_MAP_CREATE command, you'd call it with BPF_MAP_CREATE |
+> > BPF_LOGGED, where BPF_LOGGED =3D 1<<31.
+>
+> Well, if only we'd had a 'flags' argument to the syscall... I don't
+> suppose we want a bpf2()? :)
+>
+> I like your idea of just using the top bits of the 'cmd' field as flag
+> bits, but in that case we should just define this explicitly, say
+> '#define BPF_CMD_FLAGS_MASK 0xFFFF0000'?
 
-It's the 6th BPF link class we are implementing, I didn't think I
-needed to go over all the same general points again. I can point to
-patches originally adding BPF link for justification, I suppose.
+sure
 
 >
-> > bpf_xdp_link is mutually exclusive with direct BPF program attachment,
-> > previous BPF program should be detached prior to attempting to create a=
- new
-> > bpf_xdp_link attachment (for a given XDP mode). Once link is attached, =
-it
-> > can't be replaced by other BPF program attachment or link attachment. I=
-t will
-> > be detached only when the last BPF link FD is closed.
+> And instead of adding new arguments, why not just change the meaning of
+> the 'attr' argument? Say we define:
 >
-> I was under the impression that forcible attachment of bpf_links was
-> already possible, but looking at the code now it doesn't appear to be?
-> Wasn't that the whole point of BPF_LINK_GET_FD_BY_ID? I.e., that a
-> sysadmin with CAP_SYS_ADMIN privs could grab the offending bpf_link FD
-> and force-remove it? I certainly think this should be added before we
-> expand bpf_link usage any more...
+> struct bpf_extended_attr {
+>        __u32 log_level;
+>        __u32 log_size;
+>        __aligned_u64 log_buf;
+>        __u8 reserved[48];
+>        union bpf_attr attr;
+> };
 
-I still maintain that killing processes that installed the bpf_link is
-the better approach. Instead of letting the process believe and act as
-if it has an active XDP program, while it doesn't, it's better to
-altogether kill/restart the process.
+because this is a major PITA for libraries, plus it's not very
+extensible, once you run out of 48 bytes? And when you don't need
+those 48 bytes, you still need to zero them out, the kernel still
+needs to copy them, etc. It just feels unclean to me.
+
+But before we argue that, is there a problem adding 2 more arguments
+which are never used/read unless we have an extra bit set in cmd?
+Honest question, are there any implications to user-space with such an
+approach? Backwards-compatibility issues or anything?
+
 
 >
+> And then define a new flag BPF_USES_EXTENDED_ATTR which will cause the
+> kernel to interpret the second argument of the syscall as a pointer to
+> that struct instead of to the bpf_attr union?
+>
+> > 2. A more "stateful" approach, would be to have an extra BPF command
+> > to set log buffer (and level) per thread. And if such a log is set, it
+> > would be overwritten with content on each bpf() syscall invocation
+> > (i.e., log position would be reset to 0 on each BPF syscall).
+>
+> I don't think adding something stateful is a good idea; that's bound to
+> lead to weird issues when someone messes up the state management in
+> userspace.
+
+I agree, I'd prefer a stateless approach, but wanted to lay out a
+stateful one for completeness as well.
+
+>
+> > Of course, the existing BPF_LOAD_PROG command would keep working with
+> > existing log, but could fall back to the "common one", if
+> > BPF_LOAD_PROG-specific one is not set.
+> >
+> > It also doesn't seem to be all that critical to signal when the log
+> > buffer is overflown. It's pretty easy to detect from user-space:
+> > - either last byte would be non-zero, if we don't care about
+> > guaranteeing zero-termination for truncated log;
+> > - of second-to-last byte would be non-zero, if BPF syscall will always
+> > zero-terminate the log.
+>
+> I think if we're doing this we should think about making the contents of
+> the log machine-readable, so applications can figure out what's going on
+> without having to parse the text strings. The simplest would be to make
+> this new log buffer use TLV-style messaging, say we define the log
+> buffer output to be a series of messages like these:
+>
+> struct bpf_log_msg {
+>        __u16 type;
+>        __u32 len;
+>        __u8 contents[]; /* of size 'len' */
+> } __attribute__((packed));
+>
+> To begin with we could define two types:
+>
+> struct bpf_log_msg_string {
+>        __u16 type; /* BPF_LOG_MSG_TYPE_STRING */
+>        __u32 len;
+>        char message[];
+> }  __attribute__((packed));
+>
+> struct bpf_log_msg_end {
+>        __u16 type; /* BPF_LOG_MSG_TYPE_END */
+>        __u32 len;
+>        __u16 num_truncations;
+> }  __attribute__((packed));
+>
+> The TYPE_STRING would just be a wrapper for the existing text-based
+> messages, but delimited so userspace can pick them apart. And the second
+> one would solve your 'has the log been truncated' issue above; the
+> kernel simply always reserves eight bytes at the end of the buffer and
+> ends with writing a TYPE_END message with the number of messages that
+> were dropped due to lack of space. That would make it trivial for
+> userspace to detect truncation.
+>
+
+Log truncation is not an issue, we can make bpf syscall to write back
+the actual size of emitted log (and optionally extra bool to mean
+"truncated") into the original log_size field.
+
+> We could then add new message types later for machine-consumption. Say,
+> and extended error code, or offsets into the BTF information, or
+> whatever we end up needing. But just wrapping the existing log messages
+> in TLVs like the ones above could be fairly straight-forwardly
+> implemented with the existing bpf_log() infrastructure in the kernel,
+> without having to settle on which machine-readable information is useful
+> ahead of time... And the TLV format makes it easy for userspace to just
+> skip message types it doesn't understand.
+>
+> WDYT?
+
+I think it's taking it a bit too far and adds more API on top of
+existing API. Now all those types become a fixed API, messages become
+an API, etc. Just more backwards compatibility stuff we need to
+support forever, for, what I believe, very little gain.
+
+In practice, using human-readable strings works just fine. If there is
+any kind of real issue, usually it involves humans reading debug logs
+and understanding what's going on.
+
+Also adopting these packet-like messages is not as straightforward
+through BPF code, as now you can't just construct a single log line
+with few calls to bpf_log().
+
+>
+> > Of course, if user code cares about such detection of log truncation,
+> > it will need to set last/second-to-last bytes to zero before each
+> > syscall.
+> >
+> > Both approaches have their pros/cons, we can dig into those later, but
+> > I'd like to start this discussion and see what other people think. I
+> > also wonder if there are other syscalls with similarly advanced input
+> > arguments (like bpf_attr) and common logging, we could learn from
+> > those.
+>
+> The first one that comes to mind is netlink extacks. Of course it's not
+> quite comparable since netlink already has message-based semantics, but
+> it does do sorta-kinda the same thing from a user PoV. The TLV format is
+> obviously inspired by netlink (or, well, binary networking protocols in
+> general).
+>
+
+Yeah, I'm aware of extack, but as you said, TLV is more of a netlink
+format, extack messages themselves are just strings. But my question
+was more of how this log could be done for complicated API calls using
+similar extendable attrs, like perf_event_open, clone3, openat2, etc.
+
 > -Toke
 >
