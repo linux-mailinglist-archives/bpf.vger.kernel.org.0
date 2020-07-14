@@ -2,148 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359BB21EF18
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305D121F06B
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 14:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgGNLUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 07:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgGNLSm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:18:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABC1C08E806
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id q5so20900061wru.6
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
-        b=b1sAb44WGmZFCdVAFpOnOB6gjm1ZuIfnH5qfH6jEl7r1V5Ot0bj2a/haai/zLlbGwZ
-         jyft/gXpKRKwhcAmBF6N1E3tVUv3FpyxaQDJbEMA+kzxFOdi5i/iC+SuVdGwUK3S7lkC
-         JCMyVtDbRUfFVhAZkbBSmtUupdpqKKxXkUPJTaoOYPu5dPFvyg6Blg9WrDMzB/cseVM+
-         rhmyyRlfWyztEMer+eWo6n3Do/AXv5WhKdZaS+4tgq6H2R8pELz1fQ3yZJcDDG53AKI8
-         o6mlh08h6jJhiGMzg1aEP83hrtSL2JwTrrM/lGjoC5Bpn1y65cxU+TAsW9GNOLI5/kNh
-         tUSw==
+        id S1728581AbgGNMMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 08:12:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49267 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728502AbgGNMMV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:12:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594728739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T/Uhd8kUIGVaFKfJlqqrQidFsSiRXLcUNXdQ5T/zyIQ=;
+        b=B8mZRGUV6KzMfti0uxHILljcP/nwb4ML6w9gm5ObH258tZr9AgiLDcU5/nyvJkmBwYI8Ow
+        6GolTYdJuotnRCobL0B1KSxg1zjv8FZwale88Pqx+DyoNM9BbgMPclQvg0uFLtUhAHOhsh
+        Dgih2OJ3Xxfuv9qLbCgKm3PSF42FNWE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-Eq_yGKOFN7WCmNbfrIi_pw-1; Tue, 14 Jul 2020 08:12:17 -0400
+X-MC-Unique: Eq_yGKOFN7WCmNbfrIi_pw-1
+Received: by mail-qv1-f70.google.com with SMTP id g17so9525273qvw.0
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 05:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
-        b=ZtX28jDlJtWRH68C8UXNelCncNZgQqL00QJL9OyO6fkXLd/A0q4fB5rJEmxvPN58fV
-         mQzPeGMfTq7nGPGO+kJF3o/x4IIUEeKE3kkqWl7zHSpUdPsiQyOCL/ymOwThfixxohVV
-         5iMtJM7pFTuPKXY04nLeW4NzfbwFX0q96OlPSiMXjR2rkvoQr9f69B0jbISBKfsld2XF
-         XFHeOJ6tEyx27PXWE/XRzfoYcR4fPs8MN/vFU72m4bMwctYwVV+sTYRmzahIy8TDxZwh
-         HwaKza/D1AjeOoQAdoMkp7uaIitslGvXk/tUkb/37yIhhHU7a/yaMnp3R6EVIkm86a7U
-         /v9A==
-X-Gm-Message-State: AOAM531bAfKnRAmggOYzIqyZmkMviIQXkTLjplZid8sMNTz10xPK4+g7
-        tNKb0lzblhBGL8xPPsYmXvN8Lg==
-X-Google-Smtp-Source: ABdhPJyAUbTKcS5Sll5KxkNhZWdfScOwNs01z+UT0g/DeH+FLBo8B9AbZI4twgzB3lN+ZB/l5mfLmQ==
-X-Received: by 2002:a5d:698e:: with SMTP id g14mr4923996wru.301.1594725364528;
-        Tue, 14 Jul 2020 04:16:04 -0700 (PDT)
-Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.03
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=T/Uhd8kUIGVaFKfJlqqrQidFsSiRXLcUNXdQ5T/zyIQ=;
+        b=J/ueBVOyYfzGN0oK2h0kCjtPjGi5J2TPPGfZUoGgH0g4aKkMGGhC7kNqwN/1BNKXZx
+         n4NuACjPu4kAUTgW9TjDBvTz7I33IlsFdTge2OM2co18SJKsa+/wjUeAHUrhIPyDuMKe
+         m10U0ZR8NqfjvghXMu3YyQE9Q/wPiqsz40HRlxoYnK2Dnq/eIBHwljrkvFX/uyfHHUBA
+         yiA87trvWLZ0HUAYjbOZD8IVFTWx+HjIyshEdHLjD2dEcpLYIgi/OfVA316NxX9Ef2t0
+         567B6WuKs7Ito0pcs/DKfvXGCdMyikUqhpslPJNKUu+wwbNMekeppgAKBnv8hfCHbK/q
+         YyGw==
+X-Gm-Message-State: AOAM530YmvC7B0vq2XLb6qUaA0KBp/xThoAB6zlnRhEqe0B9XJzbgL4Z
+        vNFhXKRz7j+yEc6H0yAp2pocnW/w9b1Je86pi15elsBh3hCWdl6MN+jfB8VG0IEyGdAG2fWtRm4
+        CLvM4sEsaBoOt
+X-Received: by 2002:ac8:1017:: with SMTP id z23mr4211702qti.147.1594728736971;
+        Tue, 14 Jul 2020 05:12:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSPGpZKO/MnucK03sbLp81g53VnsyNgLsmQQ0Xv+L+2+VWswllr93CSBw6ZziPBPVFsu75Mw==
+X-Received: by 2002:ac8:1017:: with SMTP id z23mr4211678qti.147.1594728736597;
+        Tue, 14 Jul 2020 05:12:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 19sm22323331qke.44.2020.07.14.05.12.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     dan.j.williams@intel.com, vkoul@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Tue, 14 Jul 2020 05:12:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id CB7EC180653; Tue, 14 Jul 2020 14:12:12 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 13/17] dma: nbpfaxi: Provide some missing attribute docs and split out slave info
-Date:   Tue, 14 Jul 2020 12:15:42 +0100
-Message-Id: <20200714111546.1755231-14-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
-References: <20200714111546.1755231-1-lee.jones@linaro.org>
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add new members to bpf_attr.raw_tracepoint in bpf.h
+In-Reply-To: <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
+References: <159467113970.370286.17656404860101110795.stgit@toke.dk> <159467114405.370286.1690821122507970067.stgit@toke.dk> <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Jul 2020 14:12:12 +0200
+Message-ID: <87r1tegusj.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
- drivers/dma/nbpfaxi.c:157: warning: Function parameter or member 'chan' not described in 'nbpf_desc'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'tasklet' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_addr' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_width' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_burst' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_addr' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_width' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_burst' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'running' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'paused' not described in 'nbpf_channel'
+> On Mon, Jul 13, 2020 at 1:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>
+>> Sync addition of new members from main kernel tree.
+>>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  tools/include/uapi/linux/bpf.h |    9 +++++++--
+>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/b=
+pf.h
+>> index da9bf35a26f8..662a15e4a1a1 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -573,8 +573,13 @@ union bpf_attr {
+>>         } query;
+>>
+>>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN com=
+mand */
+>> -               __u64 name;
+>> -               __u32 prog_fd;
+>> +               __u64           name;
+>> +               __u32           prog_fd;
+>> +               __u32           log_level;      /* verbosity level of lo=
+g */
+>> +               __u32           log_size;       /* size of user buffer */
+>> +               __aligned_u64   log_buf;        /* user supplied buffer =
+*/
+>> +               __u32           tgt_prog_fd;
+>> +               __u32           tgt_btf_id;
+>>         } raw_tracepoint;
+>>
+>>         struct { /* anonymous struct for BPF_BTF_LOAD */
+>>
+>
+> I think BPF syscall would benefit from common/generalized log support
+> across all commands, given how powerful/complex it already is.
+> Sometimes it's literally impossible to understand why one gets -EINVAL
+> without adding printk()s in the kernel.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/dma/nbpfaxi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Yes, I agree! This is horrible UI!
 
-diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
-index 594409a6e9752..74df621402e10 100644
---- a/drivers/dma/nbpfaxi.c
-+++ b/drivers/dma/nbpfaxi.c
-@@ -144,6 +144,7 @@ struct nbpf_link_desc {
-  * @async_tx:	dmaengine object
-  * @user_wait:	waiting for a user ack
-  * @length:	total transfer length
-+ * @chan:	associated DMAC channel
-  * @sg:		list of hardware descriptors, represented by struct nbpf_link_desc
-  * @node:	member in channel descriptor lists
-  */
-@@ -174,13 +175,17 @@ struct nbpf_desc_page {
- /**
-  * struct nbpf_channel - one DMAC channel
-  * @dma_chan:	standard dmaengine channel object
-+ * @tasklet:	channel specific tasklet used for callbacks
-  * @base:	register address base
-  * @nbpf:	DMAC
-  * @name:	IRQ name
-  * @irq:	IRQ number
-- * @slave_addr:	address for slave DMA
-- * @slave_width:slave data size in bytes
-- * @slave_burst:maximum slave burst size in bytes
-+ * @slave_src_addr:	source address for slave DMA
-+ * @slave_src_width:	source slave data size in bytes
-+ * @slave_src_burst:	maximum source slave burst size in bytes
-+ * @slave_dst_addr:	destination address for slave DMA
-+ * @slave_dst_width:	destination slave data size in bytes
-+ * @slave_dst_burst:	maximum destination slave burst size in bytes
-  * @terminal:	DMA terminal, assigned to this channel
-  * @dmarq_cfg:	DMA request line configuration - high / low, edge / level for NBPF_CHAN_CFG
-  * @flags:	configuration flags from DT
-@@ -191,6 +196,8 @@ struct nbpf_desc_page {
-  * @active:	list of descriptors, scheduled for processing
-  * @done:	list of completed descriptors, waiting post-processing
-  * @desc_page:	list of additionally allocated descriptor pages - if any
-+ * @running:	linked descriptor of running transaction
-+ * @paused:	are translations on this channel paused?
-  */
- struct nbpf_channel {
- 	struct dma_chan dma_chan;
--- 
-2.25.1
+> But it feels wrong to add log_level/log_size/log_buf fields to every
+> section of bpf_attr and require the user to specify it differently for
+> each command. So before we go and start adding per-command fields,
+> let's discuss how we can do this more generically. I wonder if we can
+> come up with a good way to do it in one common way and then gradually
+> support that way throughout all BPF commands.
+>
+> Unfortunately it's too late to just add a few common fields to
+> bpf_attr in front of all other per-command fields, but here's two more
+> ideas just to start discussion. I hope someone can come up with
+> something nicer.
+>
+> 1. Currently bpf syscall accepts 3 input arguments (cmd, uattr, size).
+> We can extend it with two more optional arguments: one for pointer to
+> log-defining attr (for log_buf pointer, log_size, log_level, maybe
+> something more later) and another for the size of that log attr.
+> Beyond that we'd need some way to specify that the user actually meant
+> to provide those 2 optional args. The most straightforward way would
+> be to use the highest bit of cmd argument. So instead of calling bpf()
+> with BPF_MAP_CREATE command, you'd call it with BPF_MAP_CREATE |
+> BPF_LOGGED, where BPF_LOGGED =3D 1<<31.
+
+Well, if only we'd had a 'flags' argument to the syscall... I don't
+suppose we want a bpf2()? :)
+
+I like your idea of just using the top bits of the 'cmd' field as flag
+bits, but in that case we should just define this explicitly, say
+'#define BPF_CMD_FLAGS_MASK 0xFFFF0000'?
+
+And instead of adding new arguments, why not just change the meaning of
+the 'attr' argument? Say we define:
+
+struct bpf_extended_attr {
+       __u32 log_level;
+       __u32 log_size;
+       __aligned_u64 log_buf;
+       __u8 reserved[48];
+       union bpf_attr attr;
+};
+
+And then define a new flag BPF_USES_EXTENDED_ATTR which will cause the
+kernel to interpret the second argument of the syscall as a pointer to
+that struct instead of to the bpf_attr union?
+
+> 2. A more "stateful" approach, would be to have an extra BPF command
+> to set log buffer (and level) per thread. And if such a log is set, it
+> would be overwritten with content on each bpf() syscall invocation
+> (i.e., log position would be reset to 0 on each BPF syscall).
+
+I don't think adding something stateful is a good idea; that's bound to
+lead to weird issues when someone messes up the state management in
+userspace.
+
+> Of course, the existing BPF_LOAD_PROG command would keep working with
+> existing log, but could fall back to the "common one", if
+> BPF_LOAD_PROG-specific one is not set.
+>
+> It also doesn't seem to be all that critical to signal when the log
+> buffer is overflown. It's pretty easy to detect from user-space:
+> - either last byte would be non-zero, if we don't care about
+> guaranteeing zero-termination for truncated log;
+> - of second-to-last byte would be non-zero, if BPF syscall will always
+> zero-terminate the log.
+
+I think if we're doing this we should think about making the contents of
+the log machine-readable, so applications can figure out what's going on
+without having to parse the text strings. The simplest would be to make
+this new log buffer use TLV-style messaging, say we define the log
+buffer output to be a series of messages like these:
+
+struct bpf_log_msg {
+       __u16 type;
+       __u32 len;
+       __u8 contents[]; /* of size 'len' */
+} __attribute__((packed));
+
+To begin with we could define two types:
+
+struct bpf_log_msg_string {
+       __u16 type; /* BPF_LOG_MSG_TYPE_STRING */
+       __u32 len;
+       char message[];
+}  __attribute__((packed));
+
+struct bpf_log_msg_end {
+       __u16 type; /* BPF_LOG_MSG_TYPE_END */
+       __u32 len;
+       __u16 num_truncations;
+}  __attribute__((packed));
+
+The TYPE_STRING would just be a wrapper for the existing text-based
+messages, but delimited so userspace can pick them apart. And the second
+one would solve your 'has the log been truncated' issue above; the
+kernel simply always reserves eight bytes at the end of the buffer and
+ends with writing a TYPE_END message with the number of messages that
+were dropped due to lack of space. That would make it trivial for
+userspace to detect truncation.
+
+We could then add new message types later for machine-consumption. Say,
+and extended error code, or offsets into the BTF information, or
+whatever we end up needing. But just wrapping the existing log messages
+in TLVs like the ones above could be fairly straight-forwardly
+implemented with the existing bpf_log() infrastructure in the kernel,
+without having to settle on which machine-readable information is useful
+ahead of time... And the TLV format makes it easy for userspace to just
+skip message types it doesn't understand.
+
+WDYT?
+
+> Of course, if user code cares about such detection of log truncation,
+> it will need to set last/second-to-last bytes to zero before each
+> syscall.
+>
+> Both approaches have their pros/cons, we can dig into those later, but
+> I'd like to start this discussion and see what other people think. I
+> also wonder if there are other syscalls with similarly advanced input
+> arguments (like bpf_attr) and common logging, we could learn from
+> those.
+
+The first one that comes to mind is netlink extacks. Of course it's not
+quite comparable since netlink already has message-based semantics, but
+it does do sorta-kinda the same thing from a user PoV. The TLV format is
+obviously inspired by netlink (or, well, binary networking protocols in
+general).
+
+-Toke
 
