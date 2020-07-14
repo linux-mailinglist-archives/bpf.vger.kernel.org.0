@@ -2,136 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7574321F132
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 14:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A2721F2BB
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 15:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgGNM3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 08:29:31 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:23713 "EHLO
+        id S1726624AbgGNNfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 09:35:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:42427 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726823AbgGNM3a (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 08:29:30 -0400
+        by vger.kernel.org with ESMTP id S1726801AbgGNNfO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 09:35:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594729769;
+        s=mimecast20190719; t=1594733711;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=M1tJQgrbek3QI28HACPK1H60w+RS294RJhZIW4zv/pw=;
-        b=h5OEfqHzMV+WvMeSILfle7ddIwZBXlNC7o71EtptiyoAzQka8mAWeT6vPbeZLM0osmQeh9
-        cR2ks39kepS+IhZKlxIp0bEovZhu7o2JTgPC/519LnybuBOrXm6Jqh0oLlC3td6ivzPUnR
-        ckJNyeZNSRX9H0/Ve5wz9V1R8JG/t8g=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-uacEqLArPvq0a4n8TNcyGQ-1; Tue, 14 Jul 2020 08:29:25 -0400
-X-MC-Unique: uacEqLArPvq0a4n8TNcyGQ-1
-Received: by mail-wr1-f69.google.com with SMTP id i12so21452227wrx.11
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 05:29:24 -0700 (PDT)
+        bh=YyXMs9kCrSxJtbUrGH5EMqms1GtICtU2BsMz6QmOyPw=;
+        b=UrxiSubF3KPJFSh9CnCTQf0OyTvLU5BQAgjO39lOnnQF8wnCeQCdBknhzWMmvE+TtXle4B
+        3MiT46ZmzIVqk24qAAEnoc07PfxDP16bz42hp0DoNTpueRiJGVX2ZRu9XxFvx+wiRRbQI7
+        bEBbj1wojvVclPk6eQLTAC/9B2r1mJc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-V6BK_C-pMMafqWzt-PgG3Q-1; Tue, 14 Jul 2020 09:35:05 -0400
+X-MC-Unique: V6BK_C-pMMafqWzt-PgG3Q-1
+Received: by mail-wr1-f71.google.com with SMTP id c6so21763283wru.7
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 06:35:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=M1tJQgrbek3QI28HACPK1H60w+RS294RJhZIW4zv/pw=;
-        b=YUTYu15iNByG/eN1EPORWT6ud7ATEKs3VJyOnjF764u/Oru5rYw42YlNswNudQCNTi
-         ipNe//ndMiomabBATodPCuL0ZVh5zSIjKUcsfDYv2arRSBue+xez4KHZF9t3DhJeVd3X
-         ghmqpWvnkK7KhIR4uPGOBgnf3oyt5hvg2RVhErWmwiHSKoSDBhlmuIN8l5nDxYeZ/Fr3
-         nUgaaLeWmDWvtDqqco7PHug7VLjxu6TvyAEPV4kAsyBmcvG4eThmiuV04/gK6M9Bni87
-         4j/hJDG3p0MFjSvZ01VkmHxaQ9o/HDCWumnaFZxpYorP3eRp0zMR/e+mZosP23DyA5Fz
-         6KpA==
-X-Gm-Message-State: AOAM532RJCSAk+sEV6Agk1IYj8STQPrj6PSwmTMlUm6IZhXGr1zp2dpw
-        OzWByL7ZWcBnZUkVEvOPtYsUzRwHNi0aYkFrMBI2pKZJgb7YGgAadSdj0DhJ8W1qlTgiVjw9sdO
-        Rd1IOs1D9xEUL
-X-Received: by 2002:a7b:c8c2:: with SMTP id f2mr4038476wml.57.1594729763849;
-        Tue, 14 Jul 2020 05:29:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMcLTiDBY47ikR7IpxmOAOaUvTQRyYGGqEG4fWigSZAdh7jGA66uqGW0xExbdW0gzRYc7fhA==
-X-Received: by 2002:a7b:c8c2:: with SMTP id f2mr4038448wml.57.1594729763602;
-        Tue, 14 Jul 2020 05:29:23 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id d18sm29804962wrj.8.2020.07.14.05.29.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YyXMs9kCrSxJtbUrGH5EMqms1GtICtU2BsMz6QmOyPw=;
+        b=jJiGiEnz54ECGJZV+zjCWjPFfc3a2GYuew2gNIeUH2Od/89RHs3DCxr0JmUPT4sr59
+         J2ZR1hfTyrH0AlO3txkNwxdyuT+htnp+CMa8AvK/blT3fx/Tb2bcCLQEyVzLgAo7jGho
+         6hFiblSonJEU1aKnMGFzQJg7S5cCXo1UIKCgm3ZLMEYfmDUvunG5Dwk3yB1XysZ3yymL
+         85sDPZHC2kJdWiIPU1nZjJdy15HfZ02JBrVVBf5tdy5SpD3j0YYwm79ZXv/bpBqODPAt
+         KVg3l0a4fvrJclVp0J9fzr1Dax8TNldyXLuX+1FcJt65TF4DSd4pfXHGot04oN0HbmsK
+         NjKw==
+X-Gm-Message-State: AOAM532bBfeNz9WWZYkCeZ3HVZAWM++06AMkMG/Jq2J6LJl9C6rnNXpc
+        HUZb0+UdeBsmRvxXClvHPR+YywHNeoJpsp/nWrrnydlbuLDnyCplK09WIeaciEsBt6EIYL7Eg2/
+        nsyTCqY74O4Ls
+X-Received: by 2002:a1c:1dc7:: with SMTP id d190mr4495209wmd.36.1594733701123;
+        Tue, 14 Jul 2020 06:35:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGh3/6sjDQU9IIgJHN4xz6oYipDxS/J68wQyfwoBRTwcDc4b5rRUUm8k18us3UqW0F0Yl7jw==
+X-Received: by 2002:a1c:1dc7:: with SMTP id d190mr4495179wmd.36.1594733700847;
+        Tue, 14 Jul 2020 06:35:00 -0700 (PDT)
+Received: from localhost ([151.48.133.17])
+        by smtp.gmail.com with ESMTPSA id g14sm29594650wrm.93.2020.07.14.06.34.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 05:29:22 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 34607180653; Tue, 14 Jul 2020 14:29:21 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [PATCHv7 bpf-next 0/3] xdp: add a new helper for dev map multicast support
-In-Reply-To: <20200714063257.1694964-1-liuhangbin@gmail.com>
-References: <20200709013008.3900892-1-liuhangbin@gmail.com> <20200714063257.1694964-1-liuhangbin@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Jul 2020 14:29:21 +0200
-Message-ID: <87imeqgtzy.fsf@toke.dk>
+        Tue, 14 Jul 2020 06:35:00 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 15:34:56 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        brouer@redhat.com, daniel@iogearbox.net, toke@redhat.com,
+        dsahern@kernel.org, andrii.nakryiko@gmail.com
+Subject: Re: [PATCH v6 bpf-next 0/9] introduce support for XDP programs in
+ CPUMAP
+Message-ID: <20200714133456.GB2174@localhost.localdomain>
+References: <cover.1593941895.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
+Content-Disposition: inline
+In-Reply-To: <cover.1593941895.git.lorenzo@kernel.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
 
-> This patch is for xdp multicast support. which has been discussed before[0],
-> The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
-> a software switch that can forward XDP frames to multiple ports.
->
-> To achieve this, an application needs to specify a group of interfaces
-> to forward a packet to. It is also common to want to exclude one or more
-> physical interfaces from the forwarding operation - e.g., to forward a
-> packet to all interfaces in the multicast group except the interface it
-> arrived on. While this could be done simply by adding more groups, this
-> quickly leads to a combinatorial explosion in the number of groups an
-> application has to maintain.
->
-> To avoid the combinatorial explosion, we propose to include the ability
-> to specify an "exclude group" as part of the forwarding operation. This
-> needs to be a group (instead of just a single port index), because there
-> may have multi interfaces you want to exclude.
->
-> Thus, the logical forwarding operation becomes a "set difference"
-> operation, i.e. "forward to all ports in group A that are not also in
-> group B". This series implements such an operation using device maps to
-> represent the groups. This means that the XDP program specifies two
-> device maps, one containing the list of netdevs to redirect to, and the
-> other containing the exclude list.
->
-> To achieve this, I re-implement a new helper bpf_redirect_map_multi()
-> to accept two maps, the forwarding map and exclude map. If user
-> don't want to use exclude map and just want simply stop redirecting back
-> to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
->
-> The 2nd and 3rd patches are for usage sample and testing purpose, so there
-> is no effort has been made on performance optimisation. I did same tests
-> with pktgen(pkt size 64) to compire with xdp_redirect_map(). Here is the
-> test result(the veth peer has a dummy xdp program with XDP_DROP directly):
->
-> Version         | Test                                   | Native | Generic
-> 5.8 rc1         | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
-> 5.8 rc1         | xdp_redirect_map       i40e->veth      |  12.7M |   1.6M
-> 5.8 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
-> 5.8 rc1 + patch | xdp_redirect_map       i40e->veth      |  12.3M |   1.6M
-> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   7.2M |   1.5M
-> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->veth      |   8.5M |   1.3M
-> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.0M |  0.98M
->
-> The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
-> the arrays and do clone skb/xdpf. The native path is slower than generic
-> path as we send skbs by pktgen. So the result looks reasonable.
->
-> Last but not least, thanks a lot to Jiri, Eelco, Toke and Jesper for
-> suggestions and help on implementation.
->
-> [0] https://xdp-project.net/#Handling-multicast
->
-> v7: Fix helper flag check
->     Limit the *ex_map* to use DEVMAP_HASH only and update function
->     dev_in_exclude_map() to get better performance.
+--BwCQnh7xodEAoBMC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Did it help? The performance numbers in the table above are the same as
-in v6...
+> Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+> capability to attach and run a XDP program to CPUMAP entries.
+> The idea behind this feature is to add the possibility to define on which=
+ CPU
+> run the eBPF program if the underlying hw does not support RSS.
+> I respin patch 1/6 from a previous series sent by David [2].
+> The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+> Detailed tests results can be found here:
+> https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpuma=
+p04-map-xdp-prog.org
+>=20
 
--Toke
+Hi Alexei and Daniel,
+
+I will post a v7 since v6 does not apply anymore to bpf-next.
+
+Regards,
+Lorenzo
+
+> Changes since v5:
+> - move bpf_prog_put() in put_cpu_map_entry()
+> - remove READ_ONCE(rcpu->prog) in cpu_map_bpf_prog_run_xdp
+> - rely on bpf_prog_get_type() instead of bpf_prog_get_type_dev() in
+>   __cpu_map_load_bpf_program()
+>=20
+> Changes since v4:
+> - move xdp_clear_return_frame_no_direct inside rcu section
+> - update David Ahern's email address
+>=20
+> Changes since v3:
+> - fix typo in commit message
+> - fix access to ctx->ingress_ifindex in cpumap bpf selftest
+>=20
+> Changes since v2:
+> - improved comments
+> - fix return value in xdp_convert_buff_to_frame
+> - added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_bat=
+ched"
+> - do not run kmem_cache_alloc_bulk if all frames have been consumed by th=
+e XDP
+>   program attached to the CPUMAP entry
+> - removed bpf_trace_printk in kselftest
+>=20
+> Changes since v1:
+> - added performance test results
+> - added kselftest support
+> - fixed memory accounting with page_pool
+> - extended xdp_redirect_cpu_user.c to load an external program to perform
+>   redirect
+> - reported ifindex to attached eBPF program
+> - moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
+>=20
+> [1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.7538=
+3-1-dsahern@kernel.org/
+> [2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.4041=
+8-2-dsahern@kernel.org/
+>=20
+> David Ahern (1):
+>   net: refactor xdp_convert_buff_to_frame
+>=20
+> Jesper Dangaard Brouer (1):
+>   cpumap: use non-locked version __ptr_ring_consume_batched
+>=20
+> Lorenzo Bianconi (7):
+>   samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+>     loop
+>   cpumap: formalize map value as a named struct
+>   bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+>   bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+>     entries
+>   libbpf: add SEC name for xdp programs attached to CPUMAP
+>   samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+>   selftest: add tests for XDP programs in CPUMAP entries
+>=20
+>  include/linux/bpf.h                           |   6 +
+>  include/net/xdp.h                             |  41 ++--
+>  include/trace/events/xdp.h                    |  16 +-
+>  include/uapi/linux/bpf.h                      |  14 ++
+>  kernel/bpf/cpumap.c                           | 159 ++++++++++---
+>  net/core/dev.c                                |   9 +
+>  samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+>  samples/bpf/xdp_redirect_cpu_user.c           | 209 ++++++++++++++++--
+>  tools/include/uapi/linux/bpf.h                |  14 ++
+>  tools/lib/bpf/libbpf.c                        |   2 +
+>  .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+>  .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  36 +++
+>  12 files changed, 529 insertions(+), 72 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_att=
+ach.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpuma=
+p_helpers.c
+>=20
+> --=20
+> 2.26.2
+>=20
+
+--BwCQnh7xodEAoBMC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXw20fQAKCRA6cBh0uS2t
+rHeXAQCy+/GADfP2TyJc0N1IAYYd2vttaLQXoZH9mY9QwAuqJAD/VFWuiHMHHJiG
+5DidFtIuEt+2kzOLg6eEdMDKcUyxqwU=
+=37K8
+-----END PGP SIGNATURE-----
+
+--BwCQnh7xodEAoBMC--
 
