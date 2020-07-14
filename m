@@ -2,112 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F35B21EDE8
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 12:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359BB21EF18
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 13:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgGNKZt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Jul 2020 06:25:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22368 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725955AbgGNKZs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:25:48 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-f3qbhDeFMLmPdKJy0VcQUw-1; Tue, 14 Jul 2020 06:25:44 -0400
-X-MC-Unique: f3qbhDeFMLmPdKJy0VcQUw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86C9E2CCE;
-        Tue, 14 Jul 2020 10:25:42 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.193.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D8B4710AD;
-        Tue, 14 Jul 2020 10:25:39 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1728030AbgGNLUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 07:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbgGNLSm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 07:18:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABC1C08E806
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id q5so20900061wru.6
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
+        b=b1sAb44WGmZFCdVAFpOnOB6gjm1ZuIfnH5qfH6jEl7r1V5Ot0bj2a/haai/zLlbGwZ
+         jyft/gXpKRKwhcAmBF6N1E3tVUv3FpyxaQDJbEMA+kzxFOdi5i/iC+SuVdGwUK3S7lkC
+         JCMyVtDbRUfFVhAZkbBSmtUupdpqKKxXkUPJTaoOYPu5dPFvyg6Blg9WrDMzB/cseVM+
+         rhmyyRlfWyztEMer+eWo6n3Do/AXv5WhKdZaS+4tgq6H2R8pELz1fQ3yZJcDDG53AKI8
+         o6mlh08h6jJhiGMzg1aEP83hrtSL2JwTrrM/lGjoC5Bpn1y65cxU+TAsW9GNOLI5/kNh
+         tUSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
+        b=ZtX28jDlJtWRH68C8UXNelCncNZgQqL00QJL9OyO6fkXLd/A0q4fB5rJEmxvPN58fV
+         mQzPeGMfTq7nGPGO+kJF3o/x4IIUEeKE3kkqWl7zHSpUdPsiQyOCL/ymOwThfixxohVV
+         5iMtJM7pFTuPKXY04nLeW4NzfbwFX0q96OlPSiMXjR2rkvoQr9f69B0jbISBKfsld2XF
+         XFHeOJ6tEyx27PXWE/XRzfoYcR4fPs8MN/vFU72m4bMwctYwVV+sTYRmzahIy8TDxZwh
+         HwaKza/D1AjeOoQAdoMkp7uaIitslGvXk/tUkb/37yIhhHU7a/yaMnp3R6EVIkm86a7U
+         /v9A==
+X-Gm-Message-State: AOAM531bAfKnRAmggOYzIqyZmkMviIQXkTLjplZid8sMNTz10xPK4+g7
+        tNKb0lzblhBGL8xPPsYmXvN8Lg==
+X-Google-Smtp-Source: ABdhPJyAUbTKcS5Sll5KxkNhZWdfScOwNs01z+UT0g/DeH+FLBo8B9AbZI4twgzB3lN+ZB/l5mfLmQ==
+X-Received: by 2002:a5d:698e:: with SMTP id g14mr4923996wru.301.1594725364528;
+        Tue, 14 Jul 2020 04:16:04 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     dan.j.williams@intel.com, vkoul@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 2/2] bpf: Fix cross build for CONFIG_DEBUG_INFO_BTF option
-Date:   Tue, 14 Jul 2020 12:25:34 +0200
-Message-Id: <20200714102534.299280-2-jolsa@kernel.org>
-In-Reply-To: <20200714102534.299280-1-jolsa@kernel.org>
-References: <20200714102534.299280-1-jolsa@kernel.org>
+Subject: [PATCH 13/17] dma: nbpfaxi: Provide some missing attribute docs and split out slave info
+Date:   Tue, 14 Jul 2020 12:15:42 +0100
+Message-Id: <20200714111546.1755231-14-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
+References: <20200714111546.1755231-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stephen and 0-DAY CI Kernel Test Service reported broken cross build
-for arm (arm-linux-gnueabi-gcc (GCC) 9.3.0), with following output:
+Fixes the following W=1 kernel build warning(s):
 
-   /tmp/ccMS5uth.s: Assembler messages:
-   /tmp/ccMS5uth.s:69: Error: unrecognized symbol type ""
-   /tmp/ccMS5uth.s:82: Error: unrecognized symbol type ""
+ drivers/dma/nbpfaxi.c:157: warning: Function parameter or member 'chan' not described in 'nbpf_desc'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'tasklet' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_addr' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_width' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_burst' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_addr' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_width' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_burst' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'running' not described in 'nbpf_channel'
+ drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'paused' not described in 'nbpf_channel'
 
-Having '@object' for .type  diretive is  wrong because '@' is comment
-character for some architectures. Using STT_OBJECT instead that should
-work everywhere.
-
-Also using HOST* variables to build resolve_btfids so it's properly
-build in crossbuilds (stolen from objtool's Makefile).
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@chromium.org>
+Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- include/linux/btf_ids.h           |  2 +-
- tools/bpf/resolve_btfids/Makefile | 14 ++++++++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ drivers/dma/nbpfaxi.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index b3c73db9587c..1cdb56950ffe 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -23,7 +23,7 @@
- asm(							\
- ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
- ".local " #symbol " ;                          \n"	\
--".type  " #symbol ", @object;                  \n"	\
-+".type  " #symbol ", STT_OBJECT;               \n"	\
- ".size  " #symbol ", 4;                        \n"	\
- #symbol ":                                     \n"	\
- ".zero 4                                       \n"	\
-diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-index 948378ca73d4..a88cd4426398 100644
---- a/tools/bpf/resolve_btfids/Makefile
-+++ b/tools/bpf/resolve_btfids/Makefile
-@@ -16,6 +16,20 @@ else
-   MAKEFLAGS=--no-print-directory
- endif
- 
-+# always use the host compiler
-+ifneq ($(LLVM),)
-+HOSTAR  ?= llvm-ar
-+HOSTCC  ?= clang
-+HOSTLD  ?= ld.lld
-+else
-+HOSTAR  ?= ar
-+HOSTCC  ?= gcc
-+HOSTLD  ?= ld
-+endif
-+AR       = $(HOSTAR)
-+CC       = $(HOSTCC)
-+LD       = $(HOSTLD)
-+
- OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
- 
- LIBBPF_SRC := $(srctree)/tools/lib/bpf/
+diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
+index 594409a6e9752..74df621402e10 100644
+--- a/drivers/dma/nbpfaxi.c
++++ b/drivers/dma/nbpfaxi.c
+@@ -144,6 +144,7 @@ struct nbpf_link_desc {
+  * @async_tx:	dmaengine object
+  * @user_wait:	waiting for a user ack
+  * @length:	total transfer length
++ * @chan:	associated DMAC channel
+  * @sg:		list of hardware descriptors, represented by struct nbpf_link_desc
+  * @node:	member in channel descriptor lists
+  */
+@@ -174,13 +175,17 @@ struct nbpf_desc_page {
+ /**
+  * struct nbpf_channel - one DMAC channel
+  * @dma_chan:	standard dmaengine channel object
++ * @tasklet:	channel specific tasklet used for callbacks
+  * @base:	register address base
+  * @nbpf:	DMAC
+  * @name:	IRQ name
+  * @irq:	IRQ number
+- * @slave_addr:	address for slave DMA
+- * @slave_width:slave data size in bytes
+- * @slave_burst:maximum slave burst size in bytes
++ * @slave_src_addr:	source address for slave DMA
++ * @slave_src_width:	source slave data size in bytes
++ * @slave_src_burst:	maximum source slave burst size in bytes
++ * @slave_dst_addr:	destination address for slave DMA
++ * @slave_dst_width:	destination slave data size in bytes
++ * @slave_dst_burst:	maximum destination slave burst size in bytes
+  * @terminal:	DMA terminal, assigned to this channel
+  * @dmarq_cfg:	DMA request line configuration - high / low, edge / level for NBPF_CHAN_CFG
+  * @flags:	configuration flags from DT
+@@ -191,6 +196,8 @@ struct nbpf_desc_page {
+  * @active:	list of descriptors, scheduled for processing
+  * @done:	list of completed descriptors, waiting post-processing
+  * @desc_page:	list of additionally allocated descriptor pages - if any
++ * @running:	linked descriptor of running transaction
++ * @paused:	are translations on this channel paused?
+  */
+ struct nbpf_channel {
+ 	struct dma_chan dma_chan;
 -- 
-2.25.4
+2.25.1
 
