@@ -2,185 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A2721F2BB
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 15:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D7E21F330
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 15:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgGNNfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 09:35:15 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:42427 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726801AbgGNNfO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 09:35:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594733711;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YyXMs9kCrSxJtbUrGH5EMqms1GtICtU2BsMz6QmOyPw=;
-        b=UrxiSubF3KPJFSh9CnCTQf0OyTvLU5BQAgjO39lOnnQF8wnCeQCdBknhzWMmvE+TtXle4B
-        3MiT46ZmzIVqk24qAAEnoc07PfxDP16bz42hp0DoNTpueRiJGVX2ZRu9XxFvx+wiRRbQI7
-        bEBbj1wojvVclPk6eQLTAC/9B2r1mJc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-V6BK_C-pMMafqWzt-PgG3Q-1; Tue, 14 Jul 2020 09:35:05 -0400
-X-MC-Unique: V6BK_C-pMMafqWzt-PgG3Q-1
-Received: by mail-wr1-f71.google.com with SMTP id c6so21763283wru.7
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 06:35:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YyXMs9kCrSxJtbUrGH5EMqms1GtICtU2BsMz6QmOyPw=;
-        b=jJiGiEnz54ECGJZV+zjCWjPFfc3a2GYuew2gNIeUH2Od/89RHs3DCxr0JmUPT4sr59
-         J2ZR1hfTyrH0AlO3txkNwxdyuT+htnp+CMa8AvK/blT3fx/Tb2bcCLQEyVzLgAo7jGho
-         6hFiblSonJEU1aKnMGFzQJg7S5cCXo1UIKCgm3ZLMEYfmDUvunG5Dwk3yB1XysZ3yymL
-         85sDPZHC2kJdWiIPU1nZjJdy15HfZ02JBrVVBf5tdy5SpD3j0YYwm79ZXv/bpBqODPAt
-         KVg3l0a4fvrJclVp0J9fzr1Dax8TNldyXLuX+1FcJt65TF4DSd4pfXHGot04oN0HbmsK
-         NjKw==
-X-Gm-Message-State: AOAM532bBfeNz9WWZYkCeZ3HVZAWM++06AMkMG/Jq2J6LJl9C6rnNXpc
-        HUZb0+UdeBsmRvxXClvHPR+YywHNeoJpsp/nWrrnydlbuLDnyCplK09WIeaciEsBt6EIYL7Eg2/
-        nsyTCqY74O4Ls
-X-Received: by 2002:a1c:1dc7:: with SMTP id d190mr4495209wmd.36.1594733701123;
-        Tue, 14 Jul 2020 06:35:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGh3/6sjDQU9IIgJHN4xz6oYipDxS/J68wQyfwoBRTwcDc4b5rRUUm8k18us3UqW0F0Yl7jw==
-X-Received: by 2002:a1c:1dc7:: with SMTP id d190mr4495179wmd.36.1594733700847;
-        Tue, 14 Jul 2020 06:35:00 -0700 (PDT)
-Received: from localhost ([151.48.133.17])
-        by smtp.gmail.com with ESMTPSA id g14sm29594650wrm.93.2020.07.14.06.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 06:35:00 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 15:34:56 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        brouer@redhat.com, daniel@iogearbox.net, toke@redhat.com,
+        id S1725906AbgGNN44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 09:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725821AbgGNN44 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:56:56 -0400
+Received: from localhost.localdomain.com (unknown [151.48.133.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B304B224D3;
+        Tue, 14 Jul 2020 13:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594735015;
+        bh=PmqcNVbRV1hgShO+aiRYwgYUAtvDzFkFjMB+4aQ34YI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kb2jtZugOXXoqAuJbzTVF+vko2O324wBqTxt4nAJVPq2jFaTdbs7kTydnEuzJaqJg
+         ESgd97x8tH7W39zPHy3KG5dELXKflBAnK220tJMc2hhLTLC5DtEElcf23+SRqdnB8n
+         PE/dI64PpLpAXNJJeo0/SmSU0hCI3ESSAOo69gYM=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
+        daniel@iogearbox.net, toke@redhat.com, lorenzo.bianconi@redhat.com,
         dsahern@kernel.org, andrii.nakryiko@gmail.com
-Subject: Re: [PATCH v6 bpf-next 0/9] introduce support for XDP programs in
- CPUMAP
-Message-ID: <20200714133456.GB2174@localhost.localdomain>
-References: <cover.1593941895.git.lorenzo@kernel.org>
+Subject: [PATCH v7 bpf-next 0/9] introduce support for XDP programs in CPUMAP
+Date:   Tue, 14 Jul 2020 15:56:33 +0200
+Message-Id: <cover.1594734381.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
-Content-Disposition: inline
-In-Reply-To: <cover.1593941895.git.lorenzo@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+capability to attach and run a XDP program to CPUMAP entries.
+The idea behind this feature is to add the possibility to define on which CPU
+run the eBPF program if the underlying hw does not support RSS.
+I respin patch 1/6 from a previous series sent by David [2].
+The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+Detailed tests results can be found here:
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap04-map-xdp-prog.org
 
---BwCQnh7xodEAoBMC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes since v6:
+- rebase on top of bpf-next
+- move bpf_cpumap_val and bpf_prog in the first bpf_cpu_map_entry cache-line
 
-> Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
-> capability to attach and run a XDP program to CPUMAP entries.
-> The idea behind this feature is to add the possibility to define on which=
- CPU
-> run the eBPF program if the underlying hw does not support RSS.
-> I respin patch 1/6 from a previous series sent by David [2].
-> The functionality has been tested on Marvell Espressobin, i40e and mlx5.
-> Detailed tests results can be found here:
-> https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpuma=
-p04-map-xdp-prog.org
->=20
+Changes since v5:
+- move bpf_prog_put() in put_cpu_map_entry()
+- remove READ_ONCE(rcpu->prog) in cpu_map_bpf_prog_run_xdp
+- rely on bpf_prog_get_type() instead of bpf_prog_get_type_dev() in
+  __cpu_map_load_bpf_program()
 
-Hi Alexei and Daniel,
+Changes since v4:
+- move xdp_clear_return_frame_no_direct inside rcu section
+- update David Ahern's email address
 
-I will post a v7 since v6 does not apply anymore to bpf-next.
+Changes since v3:
+- fix typo in commit message
+- fix access to ctx->ingress_ifindex in cpumap bpf selftest
 
-Regards,
-Lorenzo
+Changes since v2:
+- improved comments
+- fix return value in xdp_convert_buff_to_frame
+- added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_batched"
+- do not run kmem_cache_alloc_bulk if all frames have been consumed by the XDP
+  program attached to the CPUMAP entry
+- removed bpf_trace_printk in kselftest
 
-> Changes since v5:
-> - move bpf_prog_put() in put_cpu_map_entry()
-> - remove READ_ONCE(rcpu->prog) in cpu_map_bpf_prog_run_xdp
-> - rely on bpf_prog_get_type() instead of bpf_prog_get_type_dev() in
->   __cpu_map_load_bpf_program()
->=20
-> Changes since v4:
-> - move xdp_clear_return_frame_no_direct inside rcu section
-> - update David Ahern's email address
->=20
-> Changes since v3:
-> - fix typo in commit message
-> - fix access to ctx->ingress_ifindex in cpumap bpf selftest
->=20
-> Changes since v2:
-> - improved comments
-> - fix return value in xdp_convert_buff_to_frame
-> - added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_bat=
-ched"
-> - do not run kmem_cache_alloc_bulk if all frames have been consumed by th=
-e XDP
->   program attached to the CPUMAP entry
-> - removed bpf_trace_printk in kselftest
->=20
-> Changes since v1:
-> - added performance test results
-> - added kselftest support
-> - fixed memory accounting with page_pool
-> - extended xdp_redirect_cpu_user.c to load an external program to perform
->   redirect
-> - reported ifindex to attached eBPF program
-> - moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
->=20
-> [1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.7538=
-3-1-dsahern@kernel.org/
-> [2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.4041=
-8-2-dsahern@kernel.org/
->=20
-> David Ahern (1):
->   net: refactor xdp_convert_buff_to_frame
->=20
-> Jesper Dangaard Brouer (1):
->   cpumap: use non-locked version __ptr_ring_consume_batched
->=20
-> Lorenzo Bianconi (7):
->   samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
->     loop
->   cpumap: formalize map value as a named struct
->   bpf: cpumap: add the possibility to attach an eBPF program to cpumap
->   bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
->     entries
->   libbpf: add SEC name for xdp programs attached to CPUMAP
->   samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
->   selftest: add tests for XDP programs in CPUMAP entries
->=20
->  include/linux/bpf.h                           |   6 +
->  include/net/xdp.h                             |  41 ++--
->  include/trace/events/xdp.h                    |  16 +-
->  include/uapi/linux/bpf.h                      |  14 ++
->  kernel/bpf/cpumap.c                           | 159 ++++++++++---
->  net/core/dev.c                                |   9 +
->  samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
->  samples/bpf/xdp_redirect_cpu_user.c           | 209 ++++++++++++++++--
->  tools/include/uapi/linux/bpf.h                |  14 ++
->  tools/lib/bpf/libbpf.c                        |   2 +
->  .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
->  .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  36 +++
->  12 files changed, 529 insertions(+), 72 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_att=
-ach.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpuma=
-p_helpers.c
->=20
-> --=20
-> 2.26.2
->=20
+Changes since v1:
+- added performance test results
+- added kselftest support
+- fixed memory accounting with page_pool
+- extended xdp_redirect_cpu_user.c to load an external program to perform
+  redirect
+- reported ifindex to attached eBPF program
+- moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
 
---BwCQnh7xodEAoBMC
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.75383-1-dsahern@kernel.org/
+[2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.40418-2-dsahern@kernel.org/
 
------BEGIN PGP SIGNATURE-----
+David Ahern (1):
+  net: refactor xdp_convert_buff_to_frame
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXw20fQAKCRA6cBh0uS2t
-rHeXAQCy+/GADfP2TyJc0N1IAYYd2vttaLQXoZH9mY9QwAuqJAD/VFWuiHMHHJiG
-5DidFtIuEt+2kzOLg6eEdMDKcUyxqwU=
-=37K8
------END PGP SIGNATURE-----
+Jesper Dangaard Brouer (1):
+  cpumap: use non-locked version __ptr_ring_consume_batched
 
---BwCQnh7xodEAoBMC--
+Lorenzo Bianconi (7):
+  samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+    loop
+  cpumap: formalize map value as a named struct
+  bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+  bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+    entries
+  libbpf: add SEC name for xdp programs attached to CPUMAP
+  samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+  selftest: add tests for XDP programs in CPUMAP entries
+
+ include/linux/bpf.h                           |   6 +
+ include/net/xdp.h                             |  41 ++--
+ include/trace/events/xdp.h                    |  16 +-
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/cpumap.c                           | 162 +++++++++++---
+ net/core/dev.c                                |   9 +
+ samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+ samples/bpf/xdp_redirect_cpu_user.c           | 209 ++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  36 +++
+ 12 files changed, 531 insertions(+), 73 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+
+-- 
+2.26.2
 
