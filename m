@@ -2,265 +2,333 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F4E220035
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 23:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E05122004F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 23:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgGNVlr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 17:41:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29402 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726710AbgGNVlr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:41:47 -0400
+        id S1728083AbgGNVwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 17:52:25 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37459 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726446AbgGNVwY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 17:52:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594762905;
+        s=mimecast20190719; t=1594763542;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=m6CcsK9lQ0T7peyw2EoH6pxuK8zgNBdouqGLMs3Y5y4=;
-        b=OalF+tw7qb6HA9Ow8E+PbS2bLFgEFsEScXlDdSJeQHgAyqU9sVWo0d2NXq/qfPBfSVw1mj
-        7g2JccGJ9BOJQ8r+4NxV8uQrpD18Gg16cQw5CnWGLIjTVU2hjfzu/RNQd/P0Z7jsSulffX
-        hdYFhvUeqXFcZ/0FZfuW4iveiLbm5/4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-HW2-il5jN4-dok2NJrPWoA-1; Tue, 14 Jul 2020 17:41:43 -0400
-X-MC-Unique: HW2-il5jN4-dok2NJrPWoA-1
-Received: by mail-wr1-f72.google.com with SMTP id y16so23078278wrr.20
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 14:41:42 -0700 (PDT)
+        bh=k+fJy0z5kEmIHfoXEa76pGbILtJA4lF4lPbG0nrsZ3I=;
+        b=LNeapdbPd9vpAGAARc8h79u5ca6ZwKJI6QZLhlkB6p4dtHrzJGNnNbqNISHBCTh/6oPk5c
+        rvjA4AgV0qVAXaBBtYa4xiVmrIhbvB8PMuME605SY18qnDa2w5uS31WSD3V8bCOdU9wxGD
+        j3022Oz/adX3Tus21K12uNpbos13/pY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-83l3eyLTNqSqff7xX--d9Q-1; Tue, 14 Jul 2020 17:52:18 -0400
+X-MC-Unique: 83l3eyLTNqSqff7xX--d9Q-1
+Received: by mail-wm1-f72.google.com with SMTP id t18so69588wmj.5
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 14:52:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=m6CcsK9lQ0T7peyw2EoH6pxuK8zgNBdouqGLMs3Y5y4=;
-        b=CHMSEHJSpsPiY8MD7M56r/9jK9PR0xEYAqeEbRHdSHfkzjWUL91IFDEkmkBbZG7GDa
-         PnFXklDVte/x0n+K3KDUihdmh8ExnQ14sfZBR9t4btIWPa47UhRSuPmFf0eHdJjDAxgK
-         Kf/Vv9W1nzLXo749qvsqpo7Y1TjUDhyXVl1tMdPOlZigZ+ADKq45jjsgcB8B+7b3ZQvB
-         AsBzlnUPOkz13l8XYi0p6loa1pjZTmQ23qhTP0rbQNqSmF2DjXviudgzWNzGEguIOd6v
-         rt+hPFvnfRtoWsEvuCsuF2N5aoKmr2KP7MfltdW+CCF9c/uOBjYMkz822vl/sMii1mId
-         iiQg==
-X-Gm-Message-State: AOAM5306n4Wp4g+4O4SjY3pMZSqPheQwPI6ZKHoRNsMR3nGJme23OQQd
-        vDORArQ339P5boDr3fvDypWNSryST02LD50H6uJUgpux9OQUDj/KbknWkJOHFKB8kPLTxlAyv+b
-        oMJFOvDC9x3tv
-X-Received: by 2002:adf:c185:: with SMTP id x5mr8601313wre.403.1594762901724;
-        Tue, 14 Jul 2020 14:41:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPMawOntNMiufNo0APmWs17VTt00BelCJy/sK6UoE4WZVG3Ae2p8WXzqpo3xUanGzdgnPRzA==
-X-Received: by 2002:adf:c185:: with SMTP id x5mr8601286wre.403.1594762901286;
-        Tue, 14 Jul 2020 14:41:41 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y16sm15833wro.71.2020.07.14.14.41.40
+         :message-id:mime-version;
+        bh=k+fJy0z5kEmIHfoXEa76pGbILtJA4lF4lPbG0nrsZ3I=;
+        b=lJyJHzzFeG6V0Tq52gnsCvXfqGMdi2p/mS7P4GZZ54OMPWB1S7omqbn1M+46y7k2hT
+         bLP5IO+lHuEDZrc15rQNhj8blvUzaFNi/+7Gck0gVK0SiSrSO1ciVp+71N+IQnPZO+Jd
+         HvaWalN/Lu889Y6R/NEM9d/Ws7qU2FgONUaCnWCs+nSHCYroHnZ1V4Yb4h8Eb15ppBDf
+         2FqHrkxGX1n0kaVCxyyww5GnpX4ugjDw1Y46bZlgZrPVHab5BuKrYGaCb4Yd7swfY6cQ
+         PbG9PjRN05sUsw8Tf+5a7fT2EybLZWKP5ArhRJ9kACyS/bc+yjgV5eOBc1YgYcTaPvY1
+         ELmA==
+X-Gm-Message-State: AOAM531r8/jMqDbZ+T7TtDsBkScZMRujx9tV+nbiUvbM1MbOjt2BZ/80
+        efu0S/u5dVR9RR0kJ7Y7473gNqUVoF8N8cu0PmPbXKOkQ7sNeZ7+TEd6lxIhuouc5AsyvXyoSnI
+        XRVLoMJPlBpgk
+X-Received: by 2002:adf:e88b:: with SMTP id d11mr7709916wrm.378.1594763537152;
+        Tue, 14 Jul 2020 14:52:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWx2n+zEqAqx7YRwx0FAUCUcyFc1Y+If2BVbHKrwlkB7gA0taC5kOxNZWmx6YuYtSgoM1vRQ==
+X-Received: by 2002:adf:e88b:: with SMTP id d11mr7709897wrm.378.1594763536804;
+        Tue, 14 Jul 2020 14:52:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id e23sm178400wme.35.2020.07.14.14.52.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:41:40 -0700 (PDT)
+        Tue, 14 Jul 2020 14:52:15 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EB8281804F0; Tue, 14 Jul 2020 23:41:39 +0200 (CEST)
+        id 023661804F0; Tue, 14 Jul 2020 23:52:14 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>
-Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
-In-Reply-To: <CAEf4BzYVEqFUJybw3kjG6E6w12ocr2ncRz7j15GNNGG4BXJMTw@mail.gmail.com>
-References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com> <877dv6gpxd.fsf@toke.dk> <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com> <87v9ipg8jd.fsf@toke.dk> <CAEf4BzYVEqFUJybw3kjG6E6w12ocr2ncRz7j15GNNGG4BXJMTw@mail.gmail.com>
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [PATCHv7 bpf-next 1/3] xdp: add a new helper for dev map multicast support
+In-Reply-To: <20200714063257.1694964-2-liuhangbin@gmail.com>
+References: <20200709013008.3900892-1-liuhangbin@gmail.com> <20200714063257.1694964-1-liuhangbin@gmail.com> <20200714063257.1694964-2-liuhangbin@gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Jul 2020 23:41:39 +0200
-Message-ID: <87lfjlg4fg.fsf@toke.dk>
+Date:   Tue, 14 Jul 2020 23:52:14 +0200
+Message-ID: <87imepg3xt.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-> On Tue, Jul 14, 2020 at 1:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Tue, Jul 14, 2020 at 6:57 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Andrii Nakryiko <andriin@fb.com> writes:
->> >>
->> >> > Add bpf_link-based API (bpf_xdp_link) to attach BPF XDP program thr=
-ough
->> >> > BPF_LINK_CREATE command.
->> >>
->> >> I'm still not convinced this is a good idea. As far as I can tell, at
->> >> this point adding this gets you three things:
->> >>
->> >> 1. The ability to 'lock' an attachment in place.
->> >>
->> >> 2. Automatic detach on fd close
->> >>
->> >> 3. API unification with other uses of BPF_LINK_CREATE.
->> >>
->> >>
->> >> Of those, 1. is certainly useful, but can be trivially achieved with =
-the
->> >> existing netlink API (add a flag on attach that prevents removal unle=
-ss
->> >> the original prog_fd is supplied as EXPECTED_FD).
->> >
->> > Given it's trivial to discover attached prog FD on a given ifindex, it
->> > doesn't add much of a peace of mind to the application that installs
->> > bpf_link. Any other XDP-enabled program (even some trivial test
->> > program) can unknowingly break other applications by deciding to
->> > "auto-cleanup" it's previous instance on restart ("what's my previous
->> > prog FD? let's replace it with my up-to-date program FD! What do you
->> > mean it wasn't my prog FD before?). We went over this discussion many
->> > times already: relying on the correct behavior of *other*
->> > applications, which you don't necessarily control, is not working well
->> > in real production use cases.
->>
->> It's trivial to discover the attached *ID*. But the id-to-fd transition
->> requires CAP_SYS_ADMIN, which presumably you're not granting these
->> not-necessarily-well-behaved programs. Because if you are, what's
->> stopping them from just killing the owner of the bpf_link to clear it
->> ("oh, must be a previous instance of myself that's still running, let's
->> clear that up")? Or what else am I missing here?
+> This patch is for xdp multicast support. which has been discussed
+> before[0], The goal is to be able to implement an OVS-like data plane in XDP,
+> i.e., a software switch that can forward XDP frames to multiple ports.
 >
-> Well, I actually assumed CAP_SYS_ADMIN, given CAP_BPF is very-very
-> fresh. Without it yes, you can't go ID->FD.
+> To achieve this, an application needs to specify a group of interfaces
+> to forward a packet to. It is also common to want to exclude one or more
+> physical interfaces from the forwarding operation - e.g., to forward a
+> packet to all interfaces in the multicast group except the interface it
+> arrived on. While this could be done simply by adding more groups, this
+> quickly leads to a combinatorial explosion in the number of groups an
+> application has to maintain.
 >
-> But with CAP_SYS_ADMIN, you can't accidentally: 1) discover link ID,
-> 2) link ID-to-FD 3) query link to discover prog ID 4) prog ID-to-FD 5)
-> replace with EXPECTED_FD, because that's not expected flow with link.
-> With link you just have to assume that there is nothing attached to
-> ifindex, otherwise it's up to admin to "recover".
+> To avoid the combinatorial explosion, we propose to include the ability
+> to specify an "exclude group" as part of the forwarding operation. This
+> needs to be a group (instead of just a single port index), because there
+> may have multi interfaces you want to exclude.
 >
-> While with prog FD-based permanent attachment, you assume that you
-> have to 1) discover prog ID 2) prog ID-to-FD 3) replace with your new
-> prog FD, setting EXPECTED_FD, because you have to assume that if you
-> crashed before, your old prog FD is still attached and you have to
-> detach/replace it on restart. With such assumption, distinguishing
-> "your old BPF prog" vs "someone else's active BPF prog" isn't simple.
-> And you might not even think about the latter case.
+> Thus, the logical forwarding operation becomes a "set difference"
+> operation, i.e. "forward to all ports in group A that are not also in
+> group B". This series implements such an operation using device maps to
+> represent the groups. This means that the XDP program specifies two
+> device maps, one containing the list of netdevs to redirect to, and the
+> other containing the exclude list.
 >
-> There is no 100%-fool-proof case, but there are very different flows
-> and assumptions, which I, hopefully, outlined above.
+> To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+> to accept two maps, the forwarding map and exclude map. The forwarding
+> map could be DEVMAP or DEVMAP_HASH, but the exclude map *must* be
+> DEVMAP_HASH to get better performace. If user don't want to use exclude
+> map and just want simply stop redirecting back to ingress device, they
+> can use flag BPF_F_EXCLUDE_INGRESS.
+>
+> As both bpf_xdp_redirect_map() and this new helpers are using struct
+> bpf_redirect_info, I add a new ex_map and set tgt_value to NULL in the
+> new helper to make a difference with bpf_xdp_redirect_map().
+>
+> Also I keep the the general data path in net/core/filter.c, the native data
+> path in kernel/bpf/devmap.c so we can use direct calls to get better
+> performace.
+>
+> [0] https://xdp-project.net/#Handling-multicast
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>
+> ---
+> v7: Fix helper flag check
+>     Limit the *ex_map* to use DEVMAP_HASH only and update function
+>     dev_in_exclude_map() to get better performance.
+>
+> v6: converted helper return types from int to long
+>
+> v5:
+> a) Check devmap_get_next_key() return value.
+> b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
+> c) In function dev_map_enqueue_multi(), consume xdpf for the last
+>    obj instead of the first on.
+> d) Update helper description and code comments to explain that we
+>    use NULL target value to distinguish multicast and unicast
+>    forwarding.
+> e) Update memory model, memory id and frame_sz in xdpf_clone().
+>
+> v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
+>
+> v3: Based on Toke's suggestion, do the following update
+> a) Update bpf_redirect_map_multi() description in bpf.h.
+> b) Fix exclude_ifindex checking order in dev_in_exclude_map().
+> c) Fix one more xdpf clone in dev_map_enqueue_multi().
+> d) Go find next one in dev_map_enqueue_multi() if the interface is not
+>    able to forward instead of abort the whole loop.
+> e) Remove READ_ONCE/WRITE_ONCE for ex_map.
+>
+> v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
+> include/exclude maps directly.
+>
+> ---
+>  include/linux/bpf.h            |  20 +++++
+>  include/linux/filter.h         |   1 +
+>  include/net/xdp.h              |   1 +
+>  include/uapi/linux/bpf.h       |  26 ++++++
+>  kernel/bpf/devmap.c            | 140 +++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c          |   6 ++
+>  net/core/filter.c              | 111 ++++++++++++++++++++++++--
+>  net/core/xdp.c                 |  29 +++++++
+>  tools/include/uapi/linux/bpf.h |  26 ++++++
+>  9 files changed, 355 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 0cd7f6884c5c..b48d587b8b3b 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1264,6 +1264,11 @@ int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
+>  		    struct net_device *dev_rx);
+>  int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
+>  		    struct net_device *dev_rx);
+> +bool dev_in_exclude_map(struct bpf_dtab_netdev *obj, struct bpf_map *map,
+> +			int exclude_ifindex);
+> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
+> +			  struct bpf_map *map, struct bpf_map *ex_map,
+> +			  u32 flags);
+>  int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
+>  			     struct bpf_prog *xdp_prog);
+>  bool dev_map_can_have_prog(struct bpf_map *map);
+> @@ -1406,6 +1411,21 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
+>  	return 0;
+>  }
+>  
+> +static inline
+> +bool dev_in_exclude_map(struct bpf_dtab_netdev *obj, struct bpf_map *map,
+> +			int exclude_ifindex)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline
+> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
+> +			  struct bpf_map *map, struct bpf_map *ex_map,
+> +			  u32 flags)
+> +{
+> +	return 0;
+> +}
+> +
+>  struct sk_buff;
+>  
+>  static inline int dev_map_generic_redirect(struct bpf_dtab_netdev *dst,
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 259377723603..cf5b5b1d9ae5 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -612,6 +612,7 @@ struct bpf_redirect_info {
+>  	u32 tgt_index;
+>  	void *tgt_value;
+>  	struct bpf_map *map;
+> +	struct bpf_map *ex_map;
+>  	u32 kern_flags;
+>  };
+>  
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 609f819ed08b..deb6c104e698 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -110,6 +110,7 @@ void xdp_warn(const char *msg, const char *func, const int line);
+>  #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
+>  
+>  struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
+> +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
+>  
+>  static inline
+>  void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 548a749aebb3..ce0fb7c8bd5e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3319,6 +3319,26 @@ union bpf_attr {
+>   *		A non-negative value equal to or less than *size* on success,
+>   *		or a negative error in case of failure.
+>   *
+> + * long bpf_redirect_map_multi(struct bpf_map *map, struct bpf_map *ex_map, u64 flags)
+> + * 	Description
+> + * 		This is a multicast implementation for XDP redirect. It will
+> + * 		redirect the packet to ALL the interfaces in *map*, but
+> + * 		exclude the interfaces in *ex_map*.
+> + *
+> + * 		The frowarding *map* could be either BPF_MAP_TYPE_DEVMAP or
+> + * 		BPF_MAP_TYPE_DEVMAP_HASH. But the *ex_map* must be
+> + * 		BPF_MAP_TYPE_DEVMAP_HASH to get better performance.
+> + *
+> + * 		Currently the *flags* only supports *BPF_F_EXCLUDE_INGRESS*,
+> + * 		which additionally excludes the current ingress device.
+> + *
+> + * 		See also bpf_redirect_map() as a unicast implementation,
+> + * 		which supports redirecting packet to a specific ifindex
+> + * 		in the map. As both helpers use struct bpf_redirect_info
+> + * 		to store the redirect info, we will use a a NULL tgt_value
+> + * 		to distinguish multicast and unicast redirecting.
+> + * 	Return
+> + * 		**XDP_REDIRECT** on success, or **XDP_ABORTED** on error.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -3463,6 +3483,7 @@ union bpf_attr {
+>  	FN(skc_to_tcp_request_sock),	\
+>  	FN(skc_to_udp6_sock),		\
+>  	FN(get_task_stack),		\
+> +	FN(redirect_map_multi),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -3624,6 +3645,11 @@ enum bpf_lwt_encap_mode {
+>  	BPF_LWT_ENCAP_IP,
+>  };
+>  
+> +/* BPF_FUNC_redirect_map_multi flags. */
+> +enum {
+> +	BPF_F_EXCLUDE_INGRESS		= (1ULL << 0),
+> +};
+> +
+>  #define __bpf_md_ptr(type, name)	\
+>  union {					\
+>  	type name;			\
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 10abb06065bb..bef81f869728 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -512,6 +512,146 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
+>  	return __xdp_enqueue(dev, xdp, dev_rx);
+>  }
+>  
+> +/* Use direct call in fast path instead of map->ops->map_get_next_key() */
+> +static int devmap_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> +{
+> +
+> +	switch (map->map_type) {
+> +	case BPF_MAP_TYPE_DEVMAP:
+> +		return dev_map_get_next_key(map, key, next_key);
+> +	case BPF_MAP_TYPE_DEVMAP_HASH:
+> +		return dev_map_hash_get_next_key(map, key, next_key);
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return -ENOENT;
+> +}
+> +
+> +bool dev_in_exclude_map(struct bpf_dtab_netdev *obj, struct bpf_map *map,
+> +			int exclude_ifindex)
+> +{
+> +	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
+> +	struct bpf_dtab_netdev *dev;
+> +	struct hlist_head *head;
+> +	int i = 0;
+> +
+> +	if (obj->dev->ifindex == exclude_ifindex)
+> +		return true;
+> +
+> +	if (!map || map->map_type != BPF_MAP_TYPE_DEVMAP_HASH)
+> +		return false;
 
-Yup, that was helpful, thanks! I think our difference of opinion on this
-stems from the same place as our disagreement about point 2.: You are
-assuming that an application that uses XDP sticks around and holds on to
-its bpf_link, while I'm assuming it doesn't (and so has to rely on
-pinning for any persistence). In the latter case you don't really gain
-much from the bpf_link auto-cleanup, and whether it's a prog fd or a
-link fd you go find in your bpffs doesn't make that much difference...
+The map type should probably be checked earlier and the whole operation
+aborted if it is wrong...
 
->> >> 2. is IMO the wrong model for XDP, as I believe I argued the last time
->> >> we discussed this :)
->> >> In particular, in a situation with multiple XDP programs attached
->> >> through a dispatcher, the 'owner' application of each program don't
->> >> 'own' the interface attachment anyway, so if using bpf_link for that =
-it
->> >> would have to be pinned somewhere anyway. So the 'automatic detach'
->> >> feature is only useful in the "xdpd" deployment scenario, whereas in =
-the
->> >> common usage model of command-line attachment ('ip link set xdp...') =
-it
->> >> is something that needs to be worked around.
->> >
->> > Right, nothing changed since we last discussed. There are cases where
->> > one or another approach is more convenient. Having bpf_link for XDP
->> > finally gives an option to have an auto-detaching (on last FD close)
->> > approach, but you still insist there shouldn't be such an option. Why?
->>
->> Because the last time we discussed this, it was in the context of me
->> trying to extend the existing API and being told "no, don't do that, use
->> bpf_link instead". So I'm objecting to bpf_link being a *replacement*
->> for the exiting API; if that's not what you're intending, and we can
->> agree to keep both around and actively supported (including things like
->> adding that flag to the netlink API I talked about above), then that's a
->> totally different matter :)
->
-> Yes, we didn't want to extend what we still perceive as unsafe
-> error-prone API, given we had a better approach in mind. Thus the
-> opposition. But you've ultimately got EXPECTED_FD, so hopefully it
-> works well for your use cases.
->
-> There is no removal of APIs from the kernel. Prog FD attachment for
-> XDP is here to stay forever, did anyone ever indicate otherwise?
-> bpf_link is an alternative, just like bpf_link for cgroup is an
-> alternative to persistent BPF prog FD-based attachments, which we
-> can't remove, even if we want to.
->
->> >> 3. would be kinda nice, I guess, if we were designing the API from
->> >> scratch. But we already have an existing API, so IMO the cost of
->> >> duplication outweighs any benefits of API unification.
->> >
->> > Not unification of BPF_LINK_CREATE, but unification of bpf_link
->> > infrastructure in general, with its introspection and discoverability
->> > APIs. bpftool can show which programs are attached where and it can
->> > show PIDs of processes that own the BPF link.
->>
->> Right, sure, I was using BPF_LINK_CREATE as a shorthand for bpf_link in
->> general.
->>
->> > With CAP_BPF you have also more options now how to control who can
->> > mess with your bpf_link.
->>
->> What are those, exactly?
->
-> I meant ID->FD conversion restrictions flexibility with CAP_BPF. You
-> get all of BPF with CAP_BPF, but no ID->FD conversion to mess with
-> bpf_link (e.g., to update underlying program).
+> +
+> +	for (; i < dtab->n_buckets; i++) {
+> +		head = dev_map_index_hash(dtab, i);
+> +
+> +		dev = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),
+> +					    struct bpf_dtab_netdev,
+> +					    index_hlist);
+> +
+> +		if (dev && dev->idx == exclude_ifindex)
+> +			return true;
+> +	}
 
-Right, sure. I just don't consider that specific to bpf_link; that goes
-for any type of fd...
+This looks broken; why are you iterating through the buckets? Shouldn't
+this just be something like:
 
->> [...]
->>
->> >> I was under the impression that forcible attachment of bpf_links was
->> >> already possible, but looking at the code now it doesn't appear to be?
->> >> Wasn't that the whole point of BPF_LINK_GET_FD_BY_ID? I.e., that a
->> >> sysadmin with CAP_SYS_ADMIN privs could grab the offending bpf_link FD
->> >> and force-remove it? I certainly think this should be added before we
->> >> expand bpf_link usage any more...
->> >
->> > I still maintain that killing processes that installed the bpf_link is
->> > the better approach. Instead of letting the process believe and act as
->> > if it has an active XDP program, while it doesn't, it's better to
->> > altogether kill/restart the process.
->>
->> Killing the process seems like a very blunt tool, though. Say it's a
->> daemon that attaches XDP programs to all available interfaces, but you
->> want to bring down an interface for some one-off maintenance task, but
->> the daemon authors neglected to provide an interface to tell the daemon
->> to detach from specific interfaces. If your only option is to kill the
->> daemon, you can't bring down that interface without disrupting whatever
->> that daemon is doing with XDP on all the other interfaces.
->>
->
-> I'd rather avoid addressing made up hypothetical cases, really. Get
-> better and more flexible daemon?
-
-I know you guys don't consider an issue to be real until it has already
-crashed something in production. But some of us don't have the luxury of
-your fast issue-discovered-to-fix-shipped turnaround times; so instead
-we have to go with the old-fashioned way of thinking about how things
-can go wrong ahead of time, and making sure we're prepared to handle
-issues if (or, all too often, when) they occur. And it's frankly
-tiresome to have all such efforts be dismissed as "made up
-hypotheticals". Please consider that the whole world does not operate
-like your org, and that there may be legitimate reasons to do things
-differently.
-
-That being said...
-
-> This force-detach functionality isn't hard to add, but so far we had
-> no real reason to do that. Once we do have such use cases, we can add
-> it, if we agree it's still a good idea.
-
-...this is fair enough, and I guess I should just put this on my list of
-things to add. I was just somehow under the impression that this had
-already been added.
+return __dev_map_hash_lookup_elem(map, obj->dev->ifindex) != NULL;
 
 -Toke
 
