@@ -2,245 +2,430 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BED21E465
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 02:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5520321E496
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 02:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgGNARu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 20:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNARt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:17:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5DBC061755;
-        Mon, 13 Jul 2020 17:17:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id b9so6252120plx.6;
-        Mon, 13 Jul 2020 17:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=W5Yo48XifREcrPU/LdubCq4rKIKlFxNMZuxvX/PX0JA=;
-        b=nHQ42a9Q+lvSWY+G9YRV5Cjsi+FLrfk5iep8MvnOulh6l6XSiL9S6vvGWOdjE6VLSW
-         nlN9fC6DZluKbRSroD3pYCCJwlK9BHy76O01ezmWQWIUUA7PT5zDf9MeCsaSHDXWnvZ7
-         XDAf+tCOK18d6sEu6bEcBFN/qW+DFbOCXNAkUAtRhG3FIsbW7MpHZb0klOqy32hV7cVv
-         7nYtxaN/rwjVGhku7PwcwU/D9IwcazDkxI0sXJPgGuXgYCMz5ID6W2CrGTRGpX6pXrG4
-         YINzSwCtfp+eEu+s+vmpQs0yNeiC6QTiQrp/4+RW4cpugob+UYCPGG+zt9/g/if8RTyy
-         0EPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=W5Yo48XifREcrPU/LdubCq4rKIKlFxNMZuxvX/PX0JA=;
-        b=rso/SYN5H7xhYTNVrLToD8bfsXULOA9vbSYcL11j+4hii1HMImh1LP0Jo9pfVaOoWZ
-         PbjEK6DmfOns0L5ViVhqlXIDiL0HahtHNM2tOqdAN4WVdUOqsIwO/oHMJ3Q2ICT9x4++
-         6yqlCdFEjscT/tz4DXikkD6vAwfAk71R+gqSlJJLZT4hrSKBGc5+LU61pddNsmcnPb3C
-         gYgEj6O72QWo2yygQwCNSfjwi7drgTsQfqm2hkVjb8mlPr9XyHPbN++/OCbpBWGobJNh
-         nBnENTsucQnlgGeTqXZQrN/ft9Asitd+PHHaj6TiETcrsCVKcwo43r2erBAQpsmc1y9/
-         AlUg==
-X-Gm-Message-State: AOAM532DOWOKnLM+GEJYTDuNlg5rNisWJDK9YU8Hu37buUVHWBAzVfG0
-        z0/6roFmt0hME4l7cCti0L2c+V6T
-X-Google-Smtp-Source: ABdhPJzTC7+bne9apsibfkqSRI8klUP56FcQYoVbsLCFcLX04Q/cuYSvi9I+7BNq34tN8AOf9/6qdQ==
-X-Received: by 2002:a17:90a:ee95:: with SMTP id i21mr1940921pjz.77.1594685869193;
-        Mon, 13 Jul 2020 17:17:49 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id 4sm14156375pgk.68.2020.07.13.17.17.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Jul 2020 17:17:48 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: pull-request: bpf-next 2020-07-13
-Date:   Mon, 13 Jul 2020 17:17:46 -0700
-Message-Id: <20200714001746.33952-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
+        id S1726257AbgGNAfO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 20:35:14 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15423 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgGNAfN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 20:35:13 -0400
+IronPort-SDR: itqznSsi55zLu02ikidRtYxRpzksaOyQ0TFJt5E6ojmkw90+QkfArZxijB9IxIcnMqkr/aVHPC
+ woEmgQ+8haRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="147890032"
+X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
+   d="scan'208";a="147890032"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 17:27:11 -0700
+IronPort-SDR: EgjqHh+QbCUhqvDwypFsNqWbT8gwIDpAxBSw00crzGvRVQFlub2wnI4ye5lzhMnzWVvwy4F+GT
+ AsZsEDplX9hg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
+   d="scan'208";a="307660227"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Jul 2020 17:27:09 -0700
+Date:   Tue, 14 Jul 2020 02:22:33 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+Subject: Re: [RFC PATCH bpf-next 0/5] bpf: tailcalls in BPF subprograms
+Message-ID: <20200714002233.GA2435@ranger.igk.intel.com>
+References: <20200702134930.4717-1-maciej.fijalkowski@intel.com>
+ <20200711001008.dtklgbidwy37dsf7@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200711001008.dtklgbidwy37dsf7@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Fri, Jul 10, 2020 at 05:10:08PM -0700, Alexei Starovoitov wrote:
+> On Thu, Jul 02, 2020 at 03:49:25PM +0200, Maciej Fijalkowski wrote:
+> > Hello,
+> > 
+> > today bpf2bpf calls and tailcalls exclude each other. This set is a
+> > proposal to make them work together. It is still a RFC because we need
+> > to decide if the performance impact for BPF programs with tailcalls is
+> > acceptable or not. Note that I have been focused only on x86
+> > architecture, I am not sure if other architectures have some other
+> > restrictions that were stopping us to have tailcalls in BPF subprograms.
+> > 
+> > I would also like to get a feedback on prog_array_map_poke_run changes.
+> > 
+> > To give you an overview how this work started, previously I posted RFC
+> > that was targetted at getting rid of push/pop instructions for callee
+> > saved registers in x86-64 JIT that are not used by the BPF program.
+> > Alexei saw a potential that that work could be lifted a bit and
+> > tailcalls could work with BPF subprograms. More on that in [1], [2].
+> > 
+> > In [1], Alexei says:
+> > 
+> > "The prologue will look like:
+> > nop5
+> > xor eax,eax  // two new bytes if bpf_tail_call() is used in this
+> > function
+> > push rbp
+> > mov rbp, rsp
+> > sub rsp, rounded_stack_depth
+> > push rax // zero init tail_call counter
+> > variable number of push rbx,r13,r14,r15
+> > 
+> > Then bpf_tail_call will pop variable number rbx,..
+> > and final 'pop rax'
+> > Then 'add rsp, size_of_current_stack_frame'
+> > jmp to next function and skip over 'nop5; xor eax,eax; push rpb; mov
+> > rbp, rsp'
+> > 
+> > This way new function will set its own stack size and will init tail
+> > call counter with whatever value the parent had.
+> > 
+> > If next function doesn't use bpf_tail_call it won't have 'xor eax,eax'.
+> > Instead it would need to have 'nop2' in there."
+> > 
+> > So basically I gave a shot at that suggestion. Patch 4 has a description
+> > of implementation.
+> > 
+> > Quick overview of patches:
+> > Patch 1 changes BPF retpoline to use %rcx instead of %rax to store
+> > address of BPF tailcall target program
+> > Patch 2 relaxes verifier's restrictions about tailcalls being used with
+> > BPF subprograms
+> > Patch 3 propagates poke descriptors from main program to each subprogram
+> > Patch 4 is the main dish in this set. It implements new prologue layout
+> > that was suggested by Alexei and reworks tailcall handling.
+> > Patch 5 is the new selftest that proves tailcalls can be used from
+> > within BPF subprogram.
+> > 
+> > -------------------------------------------------------------------
+> > Debatable prog_array_map_poke_run changes:
+> > 
+> > Before the tailcall and with the new prologue layout, stack need to be
+> > unwinded and callee saved registers need to be popped. Instructions
+> > responsible for that are generated, but they should not be executed if
+> > target program is not present. To address that, new poke target 'ip_aux'
+> > is introduced to poke descriptor that will be used for skipping these
+> > instructions. This means there are two poke targets for handling direct
+> > tailcalls. Simplified flow can be presented as three sections:
+> > 
+> > 1. skip call or nop (poke->ip_aux)
+> > 2. stack unwind
+> > 3. call tail or nop (poke->ip)
+> > 
+> > It would be possible that one of CPU might be in point 2 and point 3 is
+> > not yet updated (nop), which would lead to problems mentioned in patch 4
+> > commit message, IOW unwind section should not be executed if there is no
+> > target program.
+> > 
+> > We can define the following state matrix for that (courtesy of Bjorn):
+> > A nop, unwind, nop
+> > B nop, unwind, tail
+> > C skip, unwind, nop
+> > D skip, unwind, tail
+> > 
+> > A is forbidden (lead to incorrectness). C is the starting state. What if
+> > we just make sure we *never* enter than state, and never return to C?
+> > 
+> > First install tail call f: C->D->B(f)
+> >  * poke the tailcall, after that get rid of the skip
+> > Update tail call f to f': B(f)->B(f')
+> >  * poke the tailcall (poke->ip) and do NOT touch the poke->ip_aux
+> > Remove tail call: B(f')->D(f')
+> >  * do NOT touch poke->ip, only poke the poke->ip_aux. Note that we do
+> >    not get back to C(f')
+> > Install new tail call (f''): D(f')->D(f'')->B(f'').
+> >  * poke both targets, first ->ip then ->ip_aux
+> > 
+> > So, by avoiding A and never going back to C another CPU can never be
+> > exposed to the "unwind, tail" state.
+> > 
+> > Right now, due to 'faking' the bpf_arch_text_poke,
+> > prog_array_map_poke_run looks a bit messy. I dropped the 'old' argument
+> > usage at all and instead I do the reverse calculation that is being done
+> > by emit_patch, so that the result of memcmp(ip, old_insn, X86_PATCH_SIZE)
+> > is 0 and we do the actual poking.
+> > 
+> > Presumably this is something to be fixed/improved, but at first, I would
+> > like to hear opinions of others and have some decision whether it is worth
+> > pursuing, or not.
+> 
+> above state transitions break my mind.
+> I replied in the patch 3. I hope we don't need this extra first nop5
+> and ip_aux.
+> 
+> > 
+> > -------------------------------------------------------------------
+> > Performance impact:
+> > 
+> > As requested, I'm including the performance numbers that show an
+> > impact of that set, but I did not analyze it. Let's do this on list.
+> > Also, please let me know if these scenarios make sense and are
+> > sufficient.
+> > 
+> > All of this work, as stated in [2], started as a way to speed up AF-XDP
+> > by dropping the push/pop of unused callee saved registers in prologue
+> > and epilogue. Impact is positive, 15% of performance gain.
+> > 
+> > However, it is obvious that it will have a negative impact on BPF
+> > programs that utilize tailcalls. I was asked to provide some numbers
+> > that will tell us how much actually are theses cases damaged by this
+> > set.
+> > 
+> > Below are te numbers from 'perf stat' for two scenarios.
+> > First scenario is the output of command:
+> > 
+> > $ sudo perf stat -ddd -r 1024 ./test_progs -t tailcalls
+> > 
+> > tailcalls kselftest was modified in a following way:
+> > - only taicall1 subtest is enabled
+> > - each of the bpf_prog_test_run() calls got set 'repeat' argument to
+> >   1000000
+> > 
+> > Numbers without this set:
+> > 
+> >  Performance counter stats for './test_progs -t tailcalls' (1024 runs):
+> > 
+> >             198.73 msec task-clock                #    0.997 CPUs utilized            ( +-  0.13% )
+> >                  6      context-switches          #    0.030 K/sec                    ( +-  0.75% )
+> >                  0      cpu-migrations            #    0.000 K/sec                    ( +- 22.15% )
+> >                108      page-faults               #    0.546 K/sec                    ( +-  0.03% )
+> >        693,910,413      cycles                    #    3.492 GHz                      ( +-  0.11% )  (30.26%)
+> >      1,067,635,122      instructions              #    1.54  insn per cycle           ( +-  0.03% )  (38.16%)
+> >        165,308,809      branches                  #  831.822 M/sec                    ( +-  0.02% )  (38.46%)
+> >          9,940,504      branch-misses             #    6.01% of all branches          ( +-  0.02% )  (38.77%)
+> >        226,741,985      L1-dcache-loads           # 1140.949 M/sec                    ( +-  0.02% )  (39.07%)
+> >            161,936      L1-dcache-load-misses     #    0.07% of all L1-dcache hits    ( +-  0.66% )  (39.12%)
+> >             43,777      LLC-loads                 #    0.220 M/sec                    ( +-  0.97% )  (31.07%)
+> >             11,773      LLC-load-misses           #   26.89% of all LL-cache hits     ( +-  0.99% )  (30.93%)
+> >    <not supported>      L1-icache-loads
+> >             97,692      L1-icache-load-misses                                         ( +-  0.51% )  (30.77%)
+> >        229,069,211      dTLB-loads                # 1152.659 M/sec                    ( +-  0.02% )  (30.62%)
+> >              1,031      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  1.28% )  (30.46%)
+> >              2,236      iTLB-loads                #    0.011 M/sec                    ( +-  1.28% )  (30.30%)
+> >                357      iTLB-load-misses          #   15.99% of all iTLB cache hits   ( +-  2.10% )  (30.16%)
+> >    <not supported>      L1-dcache-prefetches
+> >    <not supported>      L1-dcache-prefetch-misses
+> > 
+> >           0.199307 +- 0.000250 seconds time elapsed  ( +-  0.13% )
+> > 
+> > With:
+> > 
+> >  Performance counter stats for './test_progs -t tailcalls' (1024 runs):
+> > 
+> >             202.48 msec task-clock                #    0.997 CPUs utilized            ( +-  0.09% )
+> 
+> I think this extra overhead is totally acceptable for such important feature.
+> 
+> >                  6      context-switches          #    0.032 K/sec                    ( +-  1.86% )
+> >                  0      cpu-migrations            #    0.000 K/sec                    ( +- 30.00% )
+> >                108      page-faults               #    0.535 K/sec                    ( +-  0.03% )
+> >        718,001,313      cycles                    #    3.546 GHz                      ( +-  0.06% )  (30.12%)
+> >      1,041,618,306      instructions              #    1.45  insn per cycle           ( +-  0.03% )  (37.96%)
+> >        226,386,119      branches                  # 1118.091 M/sec                    ( +-  0.03% )  (38.35%)
+> >          9,882,436      branch-misses             #    4.37% of all branches          ( +-  0.02% )  (38.59%)
+> >        196,832,137      L1-dcache-loads           #  972.128 M/sec                    ( +-  0.02% )  (39.15%)
+> >            217,794      L1-dcache-load-misses     #    0.11% of all L1-dcache hits    ( +-  0.67% )  (39.23%)
+> >             70,690      LLC-loads                 #    0.349 M/sec                    ( +-  0.90% )  (31.15%)
+> >             18,802      LLC-load-misses           #   26.60% of all LL-cache hits     ( +-  0.84% )  (31.18%)
+> >    <not supported>      L1-icache-loads
+> >            106,461      L1-icache-load-misses                                         ( +-  0.51% )  (30.83%)
+> >        198,887,011      dTLB-loads                #  982.277 M/sec                    ( +-  0.02% )  (30.66%)
+> >              1,483      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  1.28% )  (30.50%)
+> >              4,064      iTLB-loads                #    0.020 M/sec                    ( +- 21.43% )  (30.23%)
+> >                488      iTLB-load-misses          #   12.00% of all iTLB cache hits   ( +-  1.95% )  (30.03%)
+> >    <not supported>      L1-dcache-prefetches
+> >    <not supported>      L1-dcache-prefetch-misses
+> > 
+> >           0.203081 +- 0.000187 seconds time elapsed  ( +-  0.09% )
+> > 
+> > 
+> > Second conducted measurement was on BPF kselftest flow_dissector that is
+> > using the progs/bpf_flow.c with 'repeat' argument on
+> > bpf_prog_test_run_xattr set also to 1000000.
+> > 
+> > Without:
+> > 
+> >  Performance counter stats for './test_progs -t flow_dissector' (1024 runs):
+> > 
+> >           1,340.52 msec task-clock                #    0.987 CPUs utilized            ( +-  0.05% )
+> >                 25      context-switches          #    0.018 K/sec                    ( +-  0.32% )
+> >                  0      cpu-migrations            #    0.000 K/sec                    ( +-  8.59% )
+> >                122      page-faults               #    0.091 K/sec                    ( +-  0.03% )
+> >      4,764,381,512      cycles                    #    3.554 GHz                      ( +-  0.04% )  (30.68%)
+> >      7,674,803,496      instructions              #    1.61  insn per cycle           ( +-  0.01% )  (38.41%)
+> >      1,118,346,714      branches                  #  834.261 M/sec                    ( +-  0.00% )  (38.46%)
+> >         29,132,651      branch-misses             #    2.60% of all branches          ( +-  0.00% )  (38.50%)
+> >      1,737,552,687      L1-dcache-loads           # 1296.174 M/sec                    ( +-  0.01% )  (38.55%)
+> >          1,064,105      L1-dcache-load-misses     #    0.06% of all L1-dcache hits    ( +-  1.28% )  (38.57%)
+> >             50,356      LLC-loads                 #    0.038 M/sec                    ( +-  1.42% )  (30.82%)
+> >             10,825      LLC-load-misses           #   21.50% of all LL-cache hits     ( +-  1.42% )  (30.79%)
+> >    <not supported>      L1-icache-loads
+> >            568,800      L1-icache-load-misses                                         ( +-  0.66% )  (30.77%)
+> >      1,741,511,307      dTLB-loads                # 1299.127 M/sec                    ( +-  0.01% )  (30.75%)
+> >              5,112      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  2.29% )  (30.73%)
+> >              2,128      iTLB-loads                #    0.002 M/sec                    ( +-  2.06% )  (30.70%)
+> >                571      iTLB-load-misses          #   26.85% of all iTLB cache hits   ( +-  3.10% )  (30.68%)
+> >    <not supported>      L1-dcache-prefetches
+> >    <not supported>      L1-dcache-prefetch-misses
+> > 
+> >           1.358653 +- 0.000741 seconds time elapsed  ( +-  0.05% )
+> > 
+> > 
+> > With:
+> > 
+> >  Performance counter stats for './test_progs -t flow_dissector' (1024 runs):
+> > 
+> >           1,426.95 msec task-clock                #    0.989 CPUs utilized            ( +-  0.04% )
+> 
+> are you saying the patches add ~6% overhead?
+> 
+> >                 23      context-switches          #    0.016 K/sec                    ( +-  0.40% )
+> >                  0      cpu-migrations            #    0.000 K/sec                    ( +-  6.38% )
+> >                122      page-faults               #    0.085 K/sec                    ( +-  0.03% )
+> >      4,772,798,523      cycles                    #    3.345 GHz                      ( +-  0.03% )  (30.70%)
+> >      7,837,101,633      instructions              #    1.64  insn per cycle           ( +-  0.00% )  (38.42%)
+> 
+> but the overhead cannot be due to extra instructions.
+> 
+> >      1,118,716,987      branches                  #  783.992 M/sec                    ( +-  0.00% )  (38.46%)
+> >         29,147,367      branch-misses             #    2.61% of all branches          ( +-  0.00% )  (38.51%)
+> >      1,797,232,091      L1-dcache-loads           # 1259.492 M/sec                    ( +-  0.00% )  (38.55%)
+> >          1,487,769      L1-dcache-load-misses     #    0.08% of all L1-dcache hits    ( +-  0.66% )  (38.55%)
+> >             50,180      LLC-loads                 #    0.035 M/sec                    ( +-  1.37% )  (30.81%)
+> >             14,709      LLC-load-misses           #   29.31% of all LL-cache hits     ( +-  1.11% )  (30.79%)
+> >    <not supported>      L1-icache-loads
+> >            626,633      L1-icache-load-misses                                         ( +-  0.58% )  (30.77%)
+> >      1,800,278,668      dTLB-loads                # 1261.627 M/sec                    ( +-  0.01% )  (30.75%)
+> >              3,809      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  2.71% )  (30.72%)
+> >              1,745      iTLB-loads                #    0.001 M/sec                    ( +-  3.90% )  (30.70%)
+> >             12,267      iTLB-load-misses          #  703.02% of all iTLB cache hits   ( +- 96.08% )  (30.68%)
+> 
+> Looks like that's where the perf is suffering. The number of iTLB misses jumps.
+> It could be due to ip_aux. Just a guess.
 
-The following pull-request contains BPF updates for your *net-next* tree.
+That's fishy to me. I can only hit this case of huge iTLB-load-misses once
+per tens of perf tests. The standard numbers are more or less as follows:
 
-We've added 36 non-merge commits during the last 7 day(s) which contain
-a total of 62 files changed, 2242 insertions(+), 468 deletions(-).
+ Performance counter stats for './test_progs -t flow_dissector' (1024 runs):
 
-The main changes are:
+          1,321.55 msec task-clock                #    0.989 CPUs utilized            ( +-  0.07% )
+                33      context-switches          #    0.025 K/sec                    ( +-  0.34% )
+                 0      cpu-migrations            #    0.000 K/sec                    ( +-  9.46% )
+               127      page-faults               #    0.096 K/sec                    ( +-  0.03% )
+     4,589,283,427      cycles                    #    3.473 GHz                      ( +-  0.03% )  (30.69%)
+     6,900,115,113      instructions              #    1.50  insn per cycle           ( +-  0.01% )  (38.42%)
+     1,129,942,194      branches                  #  855.011 M/sec                    ( +-  0.01% )  (38.47%)
+        29,146,505      branch-misses             #    2.58% of all branches          ( +-  0.01% )  (38.52%)
+     1,795,475,517      L1-dcache-loads           # 1358.610 M/sec                    ( +-  0.01% )  (38.57%)
+           656,831      L1-dcache-load-misses     #    0.04% of all L1-dcache hits    ( +-  0.65% )  (38.57%)
+            67,896      LLC-loads                 #    0.051 M/sec                    ( +-  0.91% )  (30.82%)
+            14,321      LLC-load-misses           #   21.09% of all LL-cache hits     ( +-  1.32% )  (30.79%)
+   <not supported>      L1-icache-loads
+           683,386      L1-icache-load-misses                                         ( +-  0.73% )  (30.77%)
+     1,801,883,740      dTLB-loads                # 1363.459 M/sec                    ( +-  0.01% )  (30.74%)
+             6,362      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  2.07% )  (30.72%)
+             2,901      iTLB-loads                #    0.002 M/sec                    ( +-  2.96% )  (30.69%)
+             1,195      iTLB-load-misses          #   41.18% of all iTLB cache hits   ( +-  2.14% )  (30.66%)
+   <not supported>      L1-dcache-prefetches
+   <not supported>      L1-dcache-prefetch-misses
 
-1) Avoid trace_printk warning banner by switching bpf_trace_printk to use
-   its own tracing event, from Alan.
+          1.335695 +- 0.000977 seconds time elapsed  ( +-  0.07% )
 
-2) Better libbpf support on older kernels, from Andrii.
+So these numbers seem acceptable to me.
 
-3) Additional AF_XDP stats, from Ciara.
+> 
+> Could you try unwind+nop5+push approach and compare before/after
+> but this time please share annotated 'perf report'.
 
-4) build time resolution of BTF IDs, from Jiri.
+perf record makes the iTLB-load-misses drop down to silly 2% of all iTLB
+cache hits, so I can't provide the report unfortunately :<
 
-5) BPF_CGROUP_INET_SOCK_RELEASE hook, from Stanislav.
+> If iTLB is still struggling 'perf report' should be able to pin point
+> the instruction that is causing it.
+> May be jmp target needs to be 16-byte aligned or something.
+> Or we simply got unlucky by pushing into different cache line.
 
-Please consider pulling these changes from:
+Probably we should align the jump target that is taken on poke->ip_aux, so
+we should place the nops right after the poke->ip. I would like to give it
+a shot and see if huge-but-sporadic iTLB-load-misses would still occur.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+I started to work on that, but I'm not there yet. I suppose it's better to
+share the struggle rather than being silent.
 
-Thanks a lot!
+With the dirty patch made on top of this series, pasted below:
 
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
+@@ -486,12 +525,14 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 				      u8 **pprog, int addr, u8 *image,
+ 				      bool *callee_regs_used, u32 stack_depth)
+ {
++	u8 *aligned_target;
+ 	u8 *prog = *pprog;
+ 	int pop_bytes = 0;
+ 	int off1 = 27;
+ 	int poke_off;
+ 	int cnt = 0;
+ 
++
+ 	/* count the additional bytes used for popping callee regs to stack
+ 	 * that need to be taken into account for offset that is used for
+ 	 * bailing out of the tail call limit is reached and the poke->ip
+@@ -524,7 +565,9 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 	poke->adj_off = X86_TAIL_CALL_OFFSET;
+ 	poke->ip = image + (addr - X86_PATCH_SIZE);
+ 
+-	emit_jump(&prog, (u8 *)poke->ip + X86_PATCH_SIZE, poke->ip_aux);
++	aligned_target = PTR_ALIGN((u8 *)poke->ip + X86_PATCH_SIZE, 16);
++	noplen = aligned_target - ((u8 *)poke->ip + X86_PATCH_SIZE);
++	emit_jump(&prog, aligned_target, poke->ip_aux);
+ 
+ 	*pprog = prog;
+ 	pop_callee_regs(pprog, callee_regs_used);
+@@ -535,8 +578,9 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 	memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
+ 	prog += X86_PATCH_SIZE;
+ 
+-	/* out: */
++	emit_nops(&prog, noplen);
+ 
++	/* out: */
+ 	*pprog = prog;
+ }
 
-Andrey Ignatov, Andrii Nakryiko, Anton Protopopov, Quentin Monnet, Simon 
-Horman, Yonghong Song
+I'm hitting the following check in do_jit():
 
-----------------------------------------------------------------
+	if (unlikely(proglen + ilen > oldproglen)) {
+		pr_err("bpf_jit: fatal error\n");
+		return -EFAULT;
+	}
 
-The following changes since commit 4e48978cd28ce51945c08650e5c5502ca41e1fcc:
+Presumably this is due to the fact that JIT image is shrinking throughout
+runs and number of nops needed might differ after each run? I need to do
+more digging.
 
-  mvpp2: fix pointer check (2020-07-07 13:03:21 -0700)
+Here's the instructions layout that we're striving for if this is the
+correct approach:
 
-are available in the Git repository at:
+ffffffffc0468777:  e9 14 00 00 00          jmpq   0xffffffffc0468790 // poke->ip_aux
+ffffffffc046877c:  5b                      pop    %rbx
+ffffffffc046877d:  58                      pop    %rax
+ffffffffc046877e:  48 81 c4 00 00 00 00    add    $0x0,%rsp
+ffffffffc0468785:  0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)   // poke->ip
+ffffffffc046878a:  66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)   // aligning nop
+ffffffffc0468790:  48 89 df                mov    %rbx,%rdi          // aligned target
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+> 
+> Also when you do this microbenchmarking please make sure
+> that bpf_jit_binary_alloc() does not use get_random_int().
+> It can cause nasty surprises and run-to-run variations.
 
-for you to fetch changes up to 8afb259a9840fa953efb9a7835356a083ac8ec74:
-
-  Merge branch 'strip-mods-from-global-vars' (2020-07-13 17:08:44 -0700)
-
-----------------------------------------------------------------
-Alan Maguire (2):
-      bpf: Use dedicated bpf_trace_printk event instead of trace_printk()
-      selftests/bpf: Add selftests verifying bpf_trace_printk() behaviour
-
-Alexei Starovoitov (4):
-      Merge branch 'resolve_btfids'
-      Merge branch 'af_xdp-stats'
-      Merge branch 'trace_printk-banner-remove'
-      Merge branch 'strip-mods-from-global-vars'
-
-Andrii Nakryiko (10):
-      libbpf: Make BTF finalization strict
-      libbpf: Add btf__set_fd() for more control over loaded BTF FD
-      libbpf: Improve BTF sanitization handling
-      selftests/bpf: Add test relying only on CO-RE and no recent kernel features
-      libbpf: Handle missing BPF_OBJ_GET_INFO_BY_FD gracefully in perf_buffer
-      selftests/bpf: Switch perf_buffer test to tracepoint and skeleton
-      libbpf: Fix memory leak and optimize BTF sanitization
-      tools/bpftool: Remove warning about PID iterator support
-      libbpf: Support stripping modifiers for btf_dump
-      tools/bpftool: Strip away modifiers from global variables
-
-Ciara Loftus (3):
-      xsk: Add new statistics
-      samples: bpf: Add an option for printing extra statistics in xdpsock
-      xsk: Add xdp statistics to xsk_diag
-
-Daniel Borkmann (1):
-      Merge branch 'bpf-libbpf-old-kernel'
-
-Daniel T. Lee (4):
-      samples: bpf: Fix bpf programs with kprobe/sys_connect event
-      samples: bpf: Refactor BPF map in map test with libbpf
-      samples: bpf: Refactor BPF map performance test with libbpf
-      selftests: bpf: Remove unused bpf_map_def_legacy struct
-
-Jesper Dangaard Brouer (2):
-      selftests/bpf: test_progs use another shell exit on non-actions
-      selftests/bpf: test_progs avoid minus shell exit codes
-
-Jiri Olsa (9):
-      bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object
-      bpf: Compile resolve_btfids tool at kernel compilation start
-      bpf: Add BTF_ID_LIST/BTF_ID/BTF_ID_UNUSED macros
-      bpf: Resolve BTF IDs in vmlinux image
-      bpf: Remove btf_id helpers resolving
-      bpf: Use BTF_ID to resolve bpf_ctx_convert struct
-      bpf: Add info about .BTF_ids section to btf.rst
-      tools headers: Adopt verbatim copy of btf_ids.h from kernel sources
-      selftests/bpf: Add test for resolve_btfids
-
-Louis Peens (1):
-      bpf: Fix another bpftool segfault without skeleton code enabled
-
-Stanislav Fomichev (4):
-      bpf: Add BPF_CGROUP_INET_SOCK_RELEASE hook
-      libbpf: Add support for BPF_CGROUP_INET_SOCK_RELEASE
-      bpftool: Add support for BPF_CGROUP_INET_SOCK_RELEASE
-      selftests/bpf: Test BPF_CGROUP_INET_SOCK_RELEASE
-
-Wenbo Zhang (1):
-      bpf: Fix fds_example SIGSEGV error
-
- Documentation/bpf/btf.rst                          |  36 +
- Makefile                                           |  25 +-
- include/asm-generic/vmlinux.lds.h                  |   4 +
- include/linux/bpf-cgroup.h                         |   4 +
- include/linux/btf_ids.h                            |  87 +++
- include/net/xdp_sock.h                             |   4 +
- include/uapi/linux/bpf.h                           |   1 +
- include/uapi/linux/if_xdp.h                        |   5 +-
- include/uapi/linux/xdp_diag.h                      |  11 +
- kernel/bpf/btf.c                                   | 103 +--
- kernel/bpf/stackmap.c                              |   5 +-
- kernel/bpf/syscall.c                               |   3 +
- kernel/trace/Makefile                              |   2 +
- kernel/trace/bpf_trace.c                           |  51 +-
- kernel/trace/bpf_trace.h                           |  34 +
- net/core/filter.c                                  |  10 +-
- net/ipv4/af_inet.c                                 |   3 +
- net/xdp/xsk.c                                      |  36 +-
- net/xdp/xsk_buff_pool.c                            |   1 +
- net/xdp/xsk_diag.c                                 |  17 +
- net/xdp/xsk_queue.h                                |   6 +
- samples/bpf/Makefile                               |   2 +-
- samples/bpf/fds_example.c                          |   3 +-
- samples/bpf/map_perf_test_kern.c                   | 188 +++---
- samples/bpf/map_perf_test_user.c                   | 164 +++--
- samples/bpf/test_map_in_map_kern.c                 |  94 +--
- samples/bpf/test_map_in_map_user.c                 |  53 +-
- samples/bpf/test_probe_write_user_kern.c           |   9 +-
- samples/bpf/xdpsock_user.c                         |  87 ++-
- scripts/link-vmlinux.sh                            |   6 +
- tools/Makefile                                     |   3 +
- tools/bpf/Makefile                                 |   9 +-
- tools/bpf/bpftool/common.c                         |   1 +
- tools/bpf/bpftool/gen.c                            |  23 +-
- tools/bpf/bpftool/pids.c                           |   2 +-
- tools/bpf/resolve_btfids/Build                     |  10 +
- tools/bpf/resolve_btfids/Makefile                  |  77 +++
- tools/bpf/resolve_btfids/main.c                    | 721 +++++++++++++++++++++
- tools/include/linux/btf_ids.h                      |  87 +++
- tools/include/linux/compiler.h                     |   4 +
- tools/include/uapi/linux/bpf.h                     |   1 +
- tools/include/uapi/linux/if_xdp.h                  |   5 +-
- tools/lib/bpf/btf.c                                |   9 +-
- tools/lib/bpf/btf.h                                |   7 +-
- tools/lib/bpf/btf_dump.c                           |  10 +-
- tools/lib/bpf/libbpf.c                             | 149 +++--
- tools/lib/bpf/libbpf.map                           |   1 +
- tools/testing/selftests/bpf/Makefile               |  15 +-
- tools/testing/selftests/bpf/bpf_legacy.h           |  14 -
- .../testing/selftests/bpf/prog_tests/core_retro.c  |  33 +
- .../testing/selftests/bpf/prog_tests/perf_buffer.c |  42 +-
- .../selftests/bpf/prog_tests/resolve_btfids.c      | 111 ++++
- tools/testing/selftests/bpf/prog_tests/skeleton.c  |   6 +-
- .../selftests/bpf/prog_tests/trace_printk.c        |  75 +++
- tools/testing/selftests/bpf/prog_tests/udp_limit.c |  75 +++
- tools/testing/selftests/bpf/progs/btf_data.c       |  50 ++
- .../testing/selftests/bpf/progs/test_core_retro.c  |  30 +
- .../testing/selftests/bpf/progs/test_perf_buffer.c |   4 +-
- tools/testing/selftests/bpf/progs/test_skeleton.c  |   6 +-
- tools/testing/selftests/bpf/progs/trace_printk.c   |  21 +
- tools/testing/selftests/bpf/progs/udp_limit.c      |  42 ++
- tools/testing/selftests/bpf/test_progs.c           |  13 +-
- 62 files changed, 2242 insertions(+), 468 deletions(-)
- create mode 100644 include/linux/btf_ids.h
- create mode 100644 kernel/trace/bpf_trace.h
- create mode 100644 tools/bpf/resolve_btfids/Build
- create mode 100644 tools/bpf/resolve_btfids/Makefile
- create mode 100644 tools/bpf/resolve_btfids/main.c
- create mode 100644 tools/include/linux/btf_ids.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/core_retro.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_printk.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_limit.c
- create mode 100644 tools/testing/selftests/bpf/progs/btf_data.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_retro.c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_printk.c
- create mode 100644 tools/testing/selftests/bpf/progs/udp_limit.c
+Can you explain under what circumstances bpf_jit_binary_alloc() would not
+use get_random_int() ? Out of curiosity as from a quick look I can't tell
+when.
