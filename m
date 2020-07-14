@@ -2,112 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4150821E4F2
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 03:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2CE21E4F0
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 03:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgGNBFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 21:05:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31826 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgGNBFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 21:05:25 -0400
-IronPort-SDR: 4xLgp83rXTxDp406/EqDrsDos3JBBgCzIeS3U/3s8ClUQd5TiGK50XEmeyk0/4NDlj7583xjht
- dmp9ghzggqFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="233617914"
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="233617914"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 18:05:24 -0700
-IronPort-SDR: 98vjgs5eu/nwB7CI/YFVjU6MdU0Pj29keJ84DwlyG79cWv0PKRnjAgfWBMG0qVYzVN2mvij0wS
- wUxto5wR8Mog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="429583509"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga004.jf.intel.com with ESMTP; 13 Jul 2020 18:05:22 -0700
-Date:   Tue, 14 Jul 2020 03:00:45 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: [RFC PATCH bpf-next 4/5] bpf, x64: rework pro/epilogue and
- tailcall handling in JIT
-Message-ID: <20200714010045.GB2435@ranger.igk.intel.com>
-References: <20200702134930.4717-1-maciej.fijalkowski@intel.com>
- <20200702134930.4717-5-maciej.fijalkowski@intel.com>
- <20200710235632.lhn6edwf4a2l3kiz@ast-mbp.dhcp.thefacebook.com>
- <CAADnVQJhhQnjQdrQgMCsx2EDDwELkCvY7Zpfdi_SJUmH6VzZYw@mail.gmail.com>
- <CAADnVQ+AD0T_xqwk-fhoWV25iANs-FMCMVnn2-PALDxdODfepA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+AD0T_xqwk-fhoWV25iANs-FMCMVnn2-PALDxdODfepA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        id S1726347AbgGNBEZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 21:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgGNBEY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 21:04:24 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10E1C061755;
+        Mon, 13 Jul 2020 18:04:24 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6690812987878;
+        Mon, 13 Jul 2020 18:04:24 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 18:04:23 -0700 (PDT)
+Message-Id: <20200713.180423.2061002929432189374.davem@davemloft.net>
+To:     alexei.starovoitov@gmail.com
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: pull-request: bpf-next 2020-07-13
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200714001746.33952-1-alexei.starovoitov@gmail.com>
+References: <20200714001746.33952-1-alexei.starovoitov@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 13 Jul 2020 18:04:24 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:25:20PM -0700, Alexei Starovoitov wrote:
-> On Fri, Jul 10, 2020 at 8:20 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > Of course you are right.
-> > pop+nop+push is incorrect.
-> >
-> > How about the following instead:
-> > - during JIT:
-> > emit_jump(to_skip_below)  <- poke->tailcall_bypass
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 13 Jul 2020 17:17:46 -0700
 
-That's the jump to the instruction right after the poke->tailcall_target.
-
-> > pop_callee_regs
-> > emit_jump(to_tailcall_target) <- poke->tailcall_target
-
-During JIT there's no tailcall_target so this will be nop5, right?
-
-> >
-> > - Transition from one target to another:
-> > text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
-> > if (new_jmp != NULL)
-> >   text_poke(poke->tailcall_bypass, MOD jmp into nop);
-> > else
-> >   text_poke(poke->tailcall_bypass, MOD nop into jmp);
+> The following pull-request contains BPF updates for your *net-next* tree.
 > 
-> One more correction. I meant:
+> We've added 36 non-merge commits during the last 7 day(s) which contain
+> a total of 62 files changed, 2242 insertions(+), 468 deletions(-).
 > 
-> if (new_jmp != NULL) {
->   text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
+> The main changes are:
+> 
+> 1) Avoid trace_printk warning banner by switching bpf_trace_printk to use
+>    its own tracing event, from Alan.
+> 
+> 2) Better libbpf support on older kernels, from Andrii.
+> 
+> 3) Additional AF_XDP stats, from Ciara.
+> 
+> 4) build time resolution of BTF IDs, from Jiri.
+> 
+> 5) BPF_CGROUP_INET_SOCK_RELEASE hook, from Stanislav.
+> 
+> Please consider pulling these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-Problem with having the old_jmp here is that you could have the
-tailcall_target removed followed by the new program being inserted. So for
-that case old_jmp is NULL but we decided to not poke the
-poke->tailcall_target when removing the program, only the tailcall_bypass
-is poked back to jmp from nop. IOW old_jmp is not equal to what
-poke->tailcall_target currently stores. This means that
-bpf_arch_text_poke() would not be successful for this update and that is
-the reason of faking it in this patch.
-
->   text_poke(poke->tailcall_bypass, MOD jmp into nop);
-> } else {
->   text_poke(poke->tailcall_bypass, MOD nop into jmp);
-> }
-
-I think that's what we currently (mostly) have. map_poke_run() is skipping
-the poke of poke->tailcall_target if new bpf_prog is NULL, just like
-you're proposing above. Of course I can rename the members in poke
-descriptor to names you're suggesting. I also assume that by text_poke you
-meant the bpf_arch_text_poke?
-
-I've been able to hide the nop5 detection within the bpf_arch_text_poke so
-map_poke_run() is arch-independent in that approach. My feeling is that
-we don't need the old bpf_prog at all.
-
-Some bits might change here due to the jump target alignment that I'm
-trying to introduce.
+Pulled, thank you.
