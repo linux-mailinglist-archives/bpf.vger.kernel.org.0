@@ -2,107 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3C721F999
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D83621F9EA
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgGNSjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 14:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgGNSjf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:39:35 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64F8C061755;
-        Tue, 14 Jul 2020 11:39:35 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g13so13615877qtv.8;
-        Tue, 14 Jul 2020 11:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0dgImjyNhW5JDCTf6TF6OJolyi6XBwPEJBCGzeL/cw8=;
-        b=OHMy4vhl7ZxeI3Kl/t3JWx0Xz61kUjwaCm3/rilgo91MGkY2AUHKICMwEyleYYoNLq
-         c1LBrUm7AMEUx9UBVpymALbcT1dT38/9jYjX/TNir7ERKOqwmTepfI6Q+FC/fso8ciTJ
-         7csvjy2i5Oie9rNwgrxPn5jLpgZkEG+/IsTPACWsebq4YndhTAiVbEj0pLz1tCY0i64G
-         mGCcAZkows7USToi8udEaouXXxYAUs1ueEGwc0Q86Cf6ZTzrESGMDZaHlYR6hHnUR7CM
-         W7m9E/wIYxk17LYpAiCe6T8939EbMUS0C0vwKs4SxPmAk7Ul3KFCc7R1o1uQeYDfHnwV
-         tq2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0dgImjyNhW5JDCTf6TF6OJolyi6XBwPEJBCGzeL/cw8=;
-        b=VAC+eGzIiGQWQvoxWpFMkG0F2w6mGo5hzWWnGzRIWU5e2i7FYzB28KaCRniMxZmqrz
-         wfNqjzlK/3EmLr4vDWYBrN7HeV9o+Fk5mYHVuZK9FKizZaBxRMzxh9kT2NTO9EMNRhyM
-         XSxG6hzwzyp/yur4ZUFBLQc6A0b0Ut8RcRO077hhID4qBTyWJTwawWJ+edJlq7wHdkzu
-         h8aViJABBiBRVP0+QpdSk0GynkudyorcrGfdYTA+myxHo2uaW/TANoxZ/0bLcaJVEYBm
-         KoSLWJ8Da3dSOPQQ3ojXi8wguE/PsR1F1m7qmg5avBxEJc8+2Fs2Ot/j2L+bkDgAaaBO
-         lP8Q==
-X-Gm-Message-State: AOAM531/2Vj1zf+iURz3SbKy/VcavEhfsKA8VR1wLJe1OSO+MgESBpA+
-        5YnZsqxUiCbUy4ohjappn84D23CjtYcyvBv+Ct6xJ3yI
-X-Google-Smtp-Source: ABdhPJzmeqCamgA/65SC4by2eUPBDMSyjxMhZJLwRc6HH+HaX3N4UhETbmyBlY9bH8tWjbveTowKcjtocbgVzRgfCag=
-X-Received: by 2002:aed:2cc5:: with SMTP id g63mr6029220qtd.59.1594751974709;
- Tue, 14 Jul 2020 11:39:34 -0700 (PDT)
+        id S1729785AbgGNSro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729800AbgGNSro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:44 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA01C22AB0;
+        Tue, 14 Jul 2020 18:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594752463;
+        bh=3IZOAH1JzmAHHLrSjFv8L+4I0CPz4n1x8Qm7XPVTi+s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=xsCZ/aqkG+M4cpCkTm0j1hVn/DXNWjI4DpZmLJD5uT0H9NX9Qcybmx+XvvsBCz52P
+         o7KN6HONelwCRC1n3bCCn3/4c+oNdJxi3Kt1box02prDbL7+BixIgLG+tJyxgh9Bv0
+         xqZcJwLwBDH+zyltLOJkSdx2YvJ8oTkLtqoRgSAk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 4.19 51/58] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
+Date:   Tue, 14 Jul 2020 20:44:24 +0200
+Message-Id: <20200714184058.704373310@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <20200714040643.1135876-4-andriin@fb.com> <202007141403.f8tW3jcQ%lkp@intel.com>
-In-Reply-To: <202007141403.f8tW3jcQ%lkp@intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:39:23 -0700
-Message-ID: <CAEf4Bza318pOd_3D_8k-ta7hRaFbwiNYMqWb=mE+RFr-hdt+0w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/8] bpf, xdp: add bpf_link-based XDP
- attachment API
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Team <kernel-team@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:40 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Andrii,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on bpf-next/master]
->
-> url:    https://github.com/0day-ci/linux/commits/Andrii-Nakryiko/BPF-XDP-link/20200714-120909
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: x86_64-defconfig (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 02946de3802d3bc65bc9f2eb9b8d4969b5a7add8)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
-> >> net/core/dev.c:8717:18: error: field has incomplete type 'struct bpf_link'
->            struct bpf_link link;
->                            ^
+From: Kees Cook <keescook@chromium.org>
 
-This is all due to bpf_link-related API is conditionally defined only
-#ifdef CONFIG_BPF_SYSCALL. I'm doing the same as is done for bpf_prog:
-moving it outside of CONFIG_BPF_SYSCALL-only region and adding stubs
-for generic API (init/settle/cleanup, inc/put, etc). Will add this as
-a separate pre-patch in the v3.
+commit 63960260457a02af2a6cb35d75e6bdb17299c882 upstream.
 
->    include/net/netns/bpf.h:15:9: note: forward declaration of 'struct bpf_link'
->            struct bpf_link *links[MAX_NETNS_BPF_ATTACH_TYPE];
->                   ^
+When evaluating access control over kallsyms visibility, credentials at
+open() time need to be used, not the "current" creds (though in BPF's
+case, this has likely always been the same). Plumb access to associated
+file->f_cred down through bpf_dump_raw_ok() and its callers now that
+kallsysm_show_value() has been refactored to take struct cred.
 
-[...]
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 7105e828c087 ("bpf: allow for correlation of maps and helpers in dump")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ include/linux/filter.h     |    4 ++--
+ kernel/bpf/syscall.c       |   32 ++++++++++++++++++--------------
+ net/core/sysctl_net_core.c |    2 +-
+ 3 files changed, 21 insertions(+), 17 deletions(-)
+
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -752,12 +752,12 @@ struct bpf_prog *bpf_int_jit_compile(str
+ void bpf_jit_compile(struct bpf_prog *prog);
+ bool bpf_helper_changes_pkt_data(void *func);
+ 
+-static inline bool bpf_dump_raw_ok(void)
++static inline bool bpf_dump_raw_ok(const struct cred *cred)
+ {
+ 	/* Reconstruction of call-sites is dependent on kallsyms,
+ 	 * thus make dump the same restriction.
+ 	 */
+-	return kallsyms_show_value(current_cred());
++	return kallsyms_show_value(cred);
+ }
+ 
+ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1903,7 +1903,8 @@ static const struct bpf_map *bpf_map_fro
+ 	return NULL;
+ }
+ 
+-static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
++static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog,
++					      const struct cred *f_cred)
+ {
+ 	const struct bpf_map *map;
+ 	struct bpf_insn *insns;
+@@ -1925,7 +1926,7 @@ static struct bpf_insn *bpf_insn_prepare
+ 		    insns[i].code == (BPF_JMP | BPF_CALL_ARGS)) {
+ 			if (insns[i].code == (BPF_JMP | BPF_CALL_ARGS))
+ 				insns[i].code = BPF_JMP | BPF_CALL;
+-			if (!bpf_dump_raw_ok())
++			if (!bpf_dump_raw_ok(f_cred))
+ 				insns[i].imm = 0;
+ 			continue;
+ 		}
+@@ -1942,7 +1943,7 @@ static struct bpf_insn *bpf_insn_prepare
+ 			continue;
+ 		}
+ 
+-		if (!bpf_dump_raw_ok() &&
++		if (!bpf_dump_raw_ok(f_cred) &&
+ 		    imm == (unsigned long)prog->aux) {
+ 			insns[i].imm = 0;
+ 			insns[i + 1].imm = 0;
+@@ -1953,7 +1954,8 @@ static struct bpf_insn *bpf_insn_prepare
+ 	return insns;
+ }
+ 
+-static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
++static int bpf_prog_get_info_by_fd(struct file *file,
++				   struct bpf_prog *prog,
+ 				   const union bpf_attr *attr,
+ 				   union bpf_attr __user *uattr)
+ {
+@@ -2010,11 +2012,11 @@ static int bpf_prog_get_info_by_fd(struc
+ 		struct bpf_insn *insns_sanitized;
+ 		bool fault;
+ 
+-		if (prog->blinded && !bpf_dump_raw_ok()) {
++		if (prog->blinded && !bpf_dump_raw_ok(file->f_cred)) {
+ 			info.xlated_prog_insns = 0;
+ 			goto done;
+ 		}
+-		insns_sanitized = bpf_insn_prepare_dump(prog);
++		insns_sanitized = bpf_insn_prepare_dump(prog, file->f_cred);
+ 		if (!insns_sanitized)
+ 			return -ENOMEM;
+ 		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
+@@ -2048,7 +2050,7 @@ static int bpf_prog_get_info_by_fd(struc
+ 	}
+ 
+ 	if (info.jited_prog_len && ulen) {
+-		if (bpf_dump_raw_ok()) {
++		if (bpf_dump_raw_ok(file->f_cred)) {
+ 			uinsns = u64_to_user_ptr(info.jited_prog_insns);
+ 			ulen = min_t(u32, info.jited_prog_len, ulen);
+ 
+@@ -2083,7 +2085,7 @@ static int bpf_prog_get_info_by_fd(struc
+ 	ulen = info.nr_jited_ksyms;
+ 	info.nr_jited_ksyms = prog->aux->func_cnt;
+ 	if (info.nr_jited_ksyms && ulen) {
+-		if (bpf_dump_raw_ok()) {
++		if (bpf_dump_raw_ok(file->f_cred)) {
+ 			u64 __user *user_ksyms;
+ 			ulong ksym_addr;
+ 			u32 i;
+@@ -2107,7 +2109,7 @@ static int bpf_prog_get_info_by_fd(struc
+ 	ulen = info.nr_jited_func_lens;
+ 	info.nr_jited_func_lens = prog->aux->func_cnt;
+ 	if (info.nr_jited_func_lens && ulen) {
+-		if (bpf_dump_raw_ok()) {
++		if (bpf_dump_raw_ok(file->f_cred)) {
+ 			u32 __user *user_lens;
+ 			u32 func_len, i;
+ 
+@@ -2132,7 +2134,8 @@ done:
+ 	return 0;
+ }
+ 
+-static int bpf_map_get_info_by_fd(struct bpf_map *map,
++static int bpf_map_get_info_by_fd(struct file *file,
++				  struct bpf_map *map,
+ 				  const union bpf_attr *attr,
+ 				  union bpf_attr __user *uattr)
+ {
+@@ -2174,7 +2177,8 @@ static int bpf_map_get_info_by_fd(struct
+ 	return 0;
+ }
+ 
+-static int bpf_btf_get_info_by_fd(struct btf *btf,
++static int bpf_btf_get_info_by_fd(struct file *file,
++				  struct btf *btf,
+ 				  const union bpf_attr *attr,
+ 				  union bpf_attr __user *uattr)
+ {
+@@ -2206,13 +2210,13 @@ static int bpf_obj_get_info_by_fd(const
+ 		return -EBADFD;
+ 
+ 	if (f.file->f_op == &bpf_prog_fops)
+-		err = bpf_prog_get_info_by_fd(f.file->private_data, attr,
++		err = bpf_prog_get_info_by_fd(f.file, f.file->private_data, attr,
+ 					      uattr);
+ 	else if (f.file->f_op == &bpf_map_fops)
+-		err = bpf_map_get_info_by_fd(f.file->private_data, attr,
++		err = bpf_map_get_info_by_fd(f.file, f.file->private_data, attr,
+ 					     uattr);
+ 	else if (f.file->f_op == &btf_fops)
+-		err = bpf_btf_get_info_by_fd(f.file->private_data, attr, uattr);
++		err = bpf_btf_get_info_by_fd(f.file, f.file->private_data, attr, uattr);
+ 	else
+ 		err = -EINVAL;
+ 
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -270,7 +270,7 @@ static int proc_dointvec_minmax_bpf_enab
+ 	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
+ 	if (write && !ret) {
+ 		if (jit_enable < 2 ||
+-		    (jit_enable == 2 && bpf_dump_raw_ok())) {
++		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
+ 			*(int *)table->data = jit_enable;
+ 			if (jit_enable == 2)
+ 				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
+
+
