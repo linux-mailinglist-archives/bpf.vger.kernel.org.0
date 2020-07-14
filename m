@@ -2,87 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8817E21F839
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 19:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F1F21F8CD
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgGNRb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 13:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S1728358AbgGNSK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 14:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNRb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:31:57 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9549DC061755;
-        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id q17so7861712pfu.8;
-        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
+        with ESMTP id S1728301AbgGNSK2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:10:28 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26A9C061755;
+        Tue, 14 Jul 2020 11:10:27 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id u12so13508019qth.12;
+        Tue, 14 Jul 2020 11:10:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p4yQKBD4fuwZyX2aETXM/9xgpuX9woM9ISDFBgC0eEo=;
-        b=hgdDu5IXgKoUF/NpPM3mJGnRCEDFXInBPWokzl3DS3yeuLSlVIr2+DWjzs99yFe8z1
-         JpqDSj05bcmw1cxyu79Uqa0D2ZKvneZq+bEJbQIkodfwEUvofIew2PljkoB0L7agyNBz
-         +RH94KpBuar0gPe+YNG0sLXCipU+jfW6M4WcLAdJr6XJ63fvKwFpgx6HCDDc83jOZ0WJ
-         EdGC7a708SugCkaPTC+CxN+lNWs40CRowBZMF0wzGl1288zbJShWB+XAx8n+GVgu6ag+
-         u2s8xgD2FVBVz7TfvLE2x6Mvf4Ux66G8PEWqLdvL3d/GoX6kWoF+eUXjn809ySXLtCyb
-         XyPw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZX4l9y/mb02MIUOaKSz1lj12ECx0wlEAm51QAfF6o/8=;
+        b=WsiJGXVqDNs9WargJT52mvIz/gaCVCuxb52bFJeFukAYzSUEIh2fdlkQeVqeuWbB0D
+         Bzbqn0r0doaRe/L6ZZIb3zStjHYGZ8RF2beyf9yjYgP8agdHAl0PAiSbAO4euheDv12l
+         8btObml9Y9hX6nYx8w01Xl2cH7DSo25hPOO4FJFsbXHDRP0OEfMtN0dqr2T/CmkEn3QC
+         pOonLTv9BirBHzAunpzAGUXm4OHH4ctLfxxq13swaSMV/LTuMoEKHkYbwWJA0nb4jEM7
+         7Ke2VPeIG86ZGrJ4GX1h39LqB8Ud3pcWPrGhbq8RY+MWZ+rPqXoJNibnsLvzBSqf90bk
+         QeSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p4yQKBD4fuwZyX2aETXM/9xgpuX9woM9ISDFBgC0eEo=;
-        b=V+N56I0btL/HrUb2Xr1J5AvxayjRuTsYH5Bz8+DA0kHG+mfCffhXTMO7ZOzAj2qYU6
-         Aj75TVT4kegMBuMkfGBHvT0XpPZyFycIKZkBdMtAYBS20P5zZ0ARGBoU4OGHRGvPWd+W
-         FeyEfJkZgCBQw31UWDYo3ycaPyFIFESRMHSdngKOzJDS8LEa1/cSl9eaKZCoTNRTVKd5
-         ScSLF9XLRoHXST8tbhNK6OFMNjE9fWE0qFwMphWqAwxB5miNGIhcLNVgkHEcCokz3aAT
-         Y5lan4fHjlQcZAzGyXB2y1mhbih4UCa0x+8RgRvM82PvKk2HrRv+rD6DvTch2eo9sFCZ
-         XMiQ==
-X-Gm-Message-State: AOAM531eOB3XQZpRJGuP7GTsdXw9xDRhTzjIatW1CJ0xfWZM8XMgCmDC
-        qSyVY6RK/G3EoRFCbTlI2wOXGf0m
-X-Google-Smtp-Source: ABdhPJzFRXKIoZ8eRflYavclbmHPZtFmEJ0GgvuIIIgy8GHja5RF5nIXHemnbhLV8L3FnH9d+OoR/g==
-X-Received: by 2002:a63:481:: with SMTP id 123mr3960220pge.2.1594747917115;
-        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:96f0])
-        by smtp.gmail.com with ESMTPSA id q6sm17745902pfg.76.2020.07.14.10.31.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZX4l9y/mb02MIUOaKSz1lj12ECx0wlEAm51QAfF6o/8=;
+        b=WK71pxN91y9WAgxJ1Gm/yHPuW91KAmwbGJnGDseTNRa445SVDVBhAkkW8sVHRLEuPd
+         SqHZ6F97P7CCk6BtDSbH0NQf04eR3vgRUIbOywAa4pXh1KlQTjkqVGgTpDQbL47RKlvS
+         9RzOi9xVrEuuTtKMQPDlK2j0IXWhn3jId1uOA/im9vxzPpCgEbdBn9EyQ2PVSM0NYpFM
+         e1NDWJVwCouTeWhVbSUOmnx2YFIrBb5U34ntq4uUa8HThl/zddlkzNBSY7zf+cDPwT4e
+         me+k/BLRReO0VbQwlO/VC41qwiRLj2XJFDD1r4a70o8mL8JeMs+DDQ4kMCLIjSJpspk4
+         JCww==
+X-Gm-Message-State: AOAM530SlVMg0pF7ewMbMJLxRkYDhfv+nxzPBG+E1DMbXlbzwSW5RVCB
+        v9i7lTg3ntGGtIix6rhL4w==
+X-Google-Smtp-Source: ABdhPJzIfX8uNaGelEtus3hlnEHUAzJCj9p6MTHvuiHUjgC4AFO0/AIzEJVEUS+Rr3I8EFtZYkxMRQ==
+X-Received: by 2002:ac8:3028:: with SMTP id f37mr5775930qte.351.1594750226967;
+        Tue, 14 Jul 2020 11:10:26 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id n64sm22663726qke.77.2020.07.14.11.10.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 10:31:56 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 10:31:54 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next] bpf: allow loading instructions from a fd
-Message-ID: <20200714173154.i2wxhm4n4ob7sfpd@ast-mbp.dhcp.thefacebook.com>
-References: <20200713130511.6942-1-mcroce@linux.microsoft.com>
+        Tue, 14 Jul 2020 11:10:26 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [Linux-kernel-mentees] [PATCH v3] bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
+Date:   Tue, 14 Jul 2020 14:09:04 -0400
+Message-Id: <20200714180904.277512-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
+References: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713130511.6942-1-mcroce@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 03:05:11PM +0200, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> Allow to load the BPF instructons from a file descriptor,
-> other than a pointer.
-> 
-> This is required by the Integrity Subsystem to validate the source of
-> the instructions.
-> 
-> In bpf_attr replace 'insns', which is an u64, to a union containing also
-> the file descriptor as int.
-> A new BPF_F_LOAD_BY_FD flag tells bpf_prog_load() to load
-> the instructions from file descriptor and ignore the pointer.
-> 
-> As BPF files usually are regular ELF files, start reading from the
-> current file position, so the userspace can skip the ELF header and jump
-> to the right section.
+Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
+as NULL. This patch fixes the following syzbot bug:
 
-That is not the case at all.
-Have you looked at amount of work libbpf is doing with elf file before
-raw instructions become suitable to be loaded by the kernel?
+    https://syzkaller.appspot.com/bug?id=f823224ada908fa5c207902a5a62065e53ca0fcc
+
+Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Sorry, I got the link wrong. Thank you for pointing that out.
+
+Change in v3:
+    - Fix incorrect syzbot dashboard link.
+
+Change in v2:
+    - Split NULL and IS_ERR cases.
+
+ kernel/bpf/btf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 30721f2c2d10..092116a311f4 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4088,6 +4088,11 @@ static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
+ 	const char *tname, *sym;
+ 	u32 btf_id, i;
+ 
++	if (!btf_vmlinux) {
++		bpf_log(log, "btf_vmlinux doesn't exist\n");
++		return -EINVAL;
++	}
++
+ 	if (IS_ERR(btf_vmlinux)) {
+ 		bpf_log(log, "btf_vmlinux is malformed\n");
+ 		return -EINVAL;
+-- 
+2.25.1
+
