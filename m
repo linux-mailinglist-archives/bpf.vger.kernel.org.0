@@ -2,106 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5777A21F827
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 19:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8817E21F839
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 19:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgGNR14 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 13:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
+        id S1728170AbgGNRb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 13:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNR1z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:27:55 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A32DC061755;
-        Tue, 14 Jul 2020 10:27:55 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h22so24081103lji.9;
-        Tue, 14 Jul 2020 10:27:55 -0700 (PDT)
+        with ESMTP id S1726364AbgGNRb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:31:57 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9549DC061755;
+        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so7861712pfu.8;
+        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJflZjiXOdQ2b9X0uINcJ4Ucju/qSppPTgvRYeR307M=;
-        b=mrk8nP8ZaXDxwoSsyA8k3vVqLdKjX86zxjouhivf+G7iTeVFciVWjDwblY2qlwRa9V
-         9emGm1OFwkHsv0RNh6k8KhURGH1D+FwH8FkT9vHm1WjxGSwkBcc7aO9Y48XsU2c2Ndfp
-         ncNp8CUw5jw3N9JSVvpdTbpMguEDLfXGvNBMVwFLUb+lT15MUcBJEF7DDDa2ApoKe2px
-         /yca6v25q5b+Ew54GU19aO3kaPD9/jBteoDRN5SWUr1u5ykP8GzprDDHxTAHJoLMATxH
-         L2Itbr80hoTwWdfBBNrcSmyBVo7l9b1xeyICzyCQG5N5jUV/3HnVVjmUfM6PWg6pxsNZ
-         6wcA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p4yQKBD4fuwZyX2aETXM/9xgpuX9woM9ISDFBgC0eEo=;
+        b=hgdDu5IXgKoUF/NpPM3mJGnRCEDFXInBPWokzl3DS3yeuLSlVIr2+DWjzs99yFe8z1
+         JpqDSj05bcmw1cxyu79Uqa0D2ZKvneZq+bEJbQIkodfwEUvofIew2PljkoB0L7agyNBz
+         +RH94KpBuar0gPe+YNG0sLXCipU+jfW6M4WcLAdJr6XJ63fvKwFpgx6HCDDc83jOZ0WJ
+         EdGC7a708SugCkaPTC+CxN+lNWs40CRowBZMF0wzGl1288zbJShWB+XAx8n+GVgu6ag+
+         u2s8xgD2FVBVz7TfvLE2x6Mvf4Ux66G8PEWqLdvL3d/GoX6kWoF+eUXjn809ySXLtCyb
+         XyPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJflZjiXOdQ2b9X0uINcJ4Ucju/qSppPTgvRYeR307M=;
-        b=ET10/RrCXX3P6owUfagMkf0F59cQkj4lMqorDfThTR08/3iHauj8+fW55m8TA/Vg88
-         qLZFkJZGsi4KatUVHxXehJBsyv3utbjY7xrDh8BCimVCF+TKkVo/3H/lMeqeHHBeTSaz
-         4+lRiHLYzrfPMf6NpDUnbXPfZCCIIYKfgGlaaHzDGUgwAqvvnKWAY121nd6itBt+DruG
-         SswYVc6sJ8DLxpRsnFfK0F29Kox+ZgXz9meTTDPPKy5aH0INGdq0hShlxKZgsxOA5bG/
-         DBIz3ogC8hg/7EmfPwEu0UY0LK0dpDHf4vQSXYZ3HchrZ+sTxr9f0khpbhNKhzLZORbL
-         Ip1g==
-X-Gm-Message-State: AOAM532BdN0pyMUdsKZOgY9jkGw8oBX6mDyl7p6M/TurDAcVc38mQSIp
-        mIUyrGtXqPfVKmBkFmw4CRMPqcrrSmQDhAeLeGj17A==
-X-Google-Smtp-Source: ABdhPJwXkCPdv8pEQTPBzV1xLgwG/Fk/yXhNz7NQyeZbo2FvwLmIalitSURyFPmgQdvxw6/FjTtTVnFu1TFItk7wtV8=
-X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr2946227ljj.283.1594747673686;
- Tue, 14 Jul 2020 10:27:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEf4BzZRGOsTiW3uFWd1aY6K5Yi+QBrTeC5FNOo6uVXviXuX4g@mail.gmail.com>
- <20200714012732.195466-1-yepeilin.cs@gmail.com> <CAEf4Bzas-C7hKX=AutcV1fz-F_q2P8+OCnrA37h-nCytLHPn1g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzas-C7hKX=AutcV1fz-F_q2P8+OCnrA37h-nCytLHPn1g@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p4yQKBD4fuwZyX2aETXM/9xgpuX9woM9ISDFBgC0eEo=;
+        b=V+N56I0btL/HrUb2Xr1J5AvxayjRuTsYH5Bz8+DA0kHG+mfCffhXTMO7ZOzAj2qYU6
+         Aj75TVT4kegMBuMkfGBHvT0XpPZyFycIKZkBdMtAYBS20P5zZ0ARGBoU4OGHRGvPWd+W
+         FeyEfJkZgCBQw31UWDYo3ycaPyFIFESRMHSdngKOzJDS8LEa1/cSl9eaKZCoTNRTVKd5
+         ScSLF9XLRoHXST8tbhNK6OFMNjE9fWE0qFwMphWqAwxB5miNGIhcLNVgkHEcCokz3aAT
+         Y5lan4fHjlQcZAzGyXB2y1mhbih4UCa0x+8RgRvM82PvKk2HrRv+rD6DvTch2eo9sFCZ
+         XMiQ==
+X-Gm-Message-State: AOAM531eOB3XQZpRJGuP7GTsdXw9xDRhTzjIatW1CJ0xfWZM8XMgCmDC
+        qSyVY6RK/G3EoRFCbTlI2wOXGf0m
+X-Google-Smtp-Source: ABdhPJzFRXKIoZ8eRflYavclbmHPZtFmEJ0GgvuIIIgy8GHja5RF5nIXHemnbhLV8L3FnH9d+OoR/g==
+X-Received: by 2002:a63:481:: with SMTP id 123mr3960220pge.2.1594747917115;
+        Tue, 14 Jul 2020 10:31:57 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:96f0])
+        by smtp.gmail.com with ESMTPSA id q6sm17745902pfg.76.2020.07.14.10.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 10:31:56 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 10:31:54 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 Jul 2020 10:27:42 -0700
-Message-ID: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH v2] bpf: Fix NULL pointer
- dereference in __btf_resolve_helper_id()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] bpf: allow loading instructions from a fd
+Message-ID: <20200714173154.i2wxhm4n4ob7sfpd@ast-mbp.dhcp.thefacebook.com>
+References: <20200713130511.6942-1-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713130511.6942-1-mcroce@linux.microsoft.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:38 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jul 13, 2020 at 6:29 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> >
-> > Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
-> > as NULL. This patch fixes the following syzbot bug:
-> >
-> >     https://syzkaller.appspot.com/bug?id=5edd146856fd513747c1992442732e5a0e9ba355
+On Mon, Jul 13, 2020 at 03:05:11PM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> Allow to load the BPF instructons from a file descriptor,
+> other than a pointer.
+> 
+> This is required by the Integrity Subsystem to validate the source of
+> the instructions.
+> 
+> In bpf_attr replace 'insns', which is an u64, to a union containing also
+> the file descriptor as int.
+> A new BPF_F_LOAD_BY_FD flag tells bpf_prog_load() to load
+> the instructions from file descriptor and ignore the pointer.
+> 
+> As BPF files usually are regular ELF files, start reading from the
+> current file position, so the userspace can skip the ELF header and jump
+> to the right section.
 
-The link looks wrong?
-Nothing in the stack trace indicates this issue.
-
-> > Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Thank you for reviewing my patch! I am new to Linux kernel development; would
-> > the log message and errno be appropriate for this case?
->
-> I think it's good enough, thanks for the fix.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> >
-> > Change in v2:
-> >     - Split NULL and IS_ERR cases.
-> >
-> >  kernel/bpf/btf.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
->
-> [...]
+That is not the case at all.
+Have you looked at amount of work libbpf is doing with elf file before
+raw instructions become suitable to be loaded by the kernel?
