@@ -2,110 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA52021E433
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 02:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90CA21E458
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 02:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgGNACH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 20:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
+        id S1726339AbgGNALR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jul 2020 20:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgGNACH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:02:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC251C061755;
-        Mon, 13 Jul 2020 17:02:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id d17so20285670ljl.3;
-        Mon, 13 Jul 2020 17:02:06 -0700 (PDT)
+        with ESMTP id S1726150AbgGNALQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jul 2020 20:11:16 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804FBC061755;
+        Mon, 13 Jul 2020 17:11:16 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y13so10272580lfe.9;
+        Mon, 13 Jul 2020 17:11:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t0cfrkzzv7XgU7cyUuzXAx+2nPotIXfhcv+12wgA2PU=;
-        b=Uo6J2KIaVi5iU9mYcgcqzhVJBqxlVa4sYe1wJAUnnbea4/LUpZMBgnxgFadQoedtGJ
-         OuH4hfjd0FSrVHyokDb3dobfnJ4J13kG23lMdkYO87RuDq5eac/8AGiIFFKlkS3C5Wat
-         71/xV22dzhJL5hiXv1sFI0Yayeo3aVTr3ML24asM2kGs0bkESZ8meoTLnDt6nH2byEfk
-         DnQ5PvOffeJq+oYlmdPsY52SsgTrCBY4M2PQxlbrsztQxfE6rg+fYiqUc7JodnftFm9k
-         ai34hbCWTYyLZc5L3zMpszTx2mAqL94AsWYfx5vlF+X27gkfbH8ZhjWwUt+5oW0T1fMN
-         HIPQ==
+        bh=VP82AmNODkIZDsrJHwS5EQOS87SFzy6wLeqD3456CTo=;
+        b=AleOdpkuAjavnDnuZoBwyuLmopaxMvFxNP1qetXY4FRj7VjcPdJeCto/nLfB2eIDyo
+         XNPxs8Bs5TUmrNDq8Ygk0CW+c7F4st5mjJ6hJZgL+QU2tM5lL/wbA2aZamWoP/525kZM
+         GTzWj32PqggRN2PP2UPh9QaxZBZizrX+ZTGg7Nn/bIg1fW3kfqlMLp3JxO630/FsJw6Z
+         o/yZ/kY1K5zXvlV1r2N+bvU8YifMUFp4L299EaI8aJ694ZsvnlO689dxt0S80WaDbuN1
+         6QtJ7MTYDIRg/LbCpaCZMapqiMnt3UMZBVRBVaBKeEpyOklVz2j7B0rT7JI9O3eIkrs7
+         6q/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t0cfrkzzv7XgU7cyUuzXAx+2nPotIXfhcv+12wgA2PU=;
-        b=gWxEDg768C8cFiD/pSziQoX/m/+LyaCZGnazjkTcU86OO5yCYuuSdC9q6eabLVDcPu
-         kmGvETX0z3SkmPO9j0R6sDi43wC7CilTd5dQ7iWtRsCoNR8Lp8QNka+up3e6VVoLY2dF
-         xxOkXc4gzCMw2sKwWKsSHpl0HIRAIRyR8QBjzau6j5zyTutTHFH08kFhUc665S5x5Z94
-         GsHSY8WRkZO5RqHIWhP3UVNeoPXoSlX5i3y3cU4lpUMjIiDtqfH2bl0jzqJDNUtvcaAf
-         jVQbeuUPZdPomb1SeCfNJzCmrs5yuFpidDL7OaLZI8RzRTTJGCv8vu90TBCgShnJEBV+
-         Xjqg==
-X-Gm-Message-State: AOAM530dvNfNOgO+MrdBhPQ8ZFXFqYO2O6ngiyzudmmAocTtlulF6vIC
-        xmIvuPeO5V0pPWQ4WrhNSc+SSwqTgAlo56YKfRY=
-X-Google-Smtp-Source: ABdhPJyWXrP4OKhLSQynsQ3WHaYu7RkyIxlewG61uW/dnYgJxXYryPcW5+IGLewX0Oxs/Mz1G5tjSbXwF94RYlStLms=
-X-Received: by 2002:a2e:8216:: with SMTP id w22mr985388ljg.2.1594684925231;
- Mon, 13 Jul 2020 17:02:05 -0700 (PDT)
+        bh=VP82AmNODkIZDsrJHwS5EQOS87SFzy6wLeqD3456CTo=;
+        b=hmC4nqxuN/djkZoD+gAiZTNKZ37Nq2sByXuXX6vX8xDYddr7Xl4zj2RuVGSTWIgP+8
+         ZM93c6qw4v3rJcO+kGezYyTrglbqqXljr+gnTTKfwyINhkE1dk3/JT/Zeo+CjsZcZkGB
+         RwL+/lC0A7Dy7ZYJezU+S6fsIP618Mcjs6/zErxn2DMB6O0ML2XZrbKz3Ss2mj2XQHMh
+         /J1WDTue4mdWXjSfSPqw+ekgOJY/08CkYhSSte79d1tYxnib/f9VlxmCbdM7H4t09+14
+         +Xdo9xVxnieKOfSNy+DpzwGBsgenJR1577sOKcxl21iQ/9p4NqSgyHhrK8ewK6Slzput
+         1Oyg==
+X-Gm-Message-State: AOAM533c6ceXdKXyTOTpikwm0aZsd5Pqdw7rv+Kx3HtTjzxlxyvWH7Kz
+        7P3+P74tKL1zY5swioxpgxxizu2vxSJtc8hbWGc=
+X-Google-Smtp-Source: ABdhPJyMA/JsNRIVo/OtHv/pkyeSkMUMJdicN1MguHhO8+QzhLnT/2aezd/gJaZ/bJqyU3qEg7EDGCq8EvdUjWTV4bU=
+X-Received: by 2002:a19:8307:: with SMTP id f7mr779411lfd.174.1594685474877;
+ Mon, 13 Jul 2020 17:11:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <1594641154-18897-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1594641154-18897-1-git-send-email-alan.maguire@oracle.com>
+References: <20200713232409.3062144-1-andriin@fb.com>
+In-Reply-To: <20200713232409.3062144-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Jul 2020 17:01:53 -0700
-Message-ID: <CAADnVQ+zBgz0DBJr0sLK3PsfCYgfSLp6fZMh=m7XtMKfSOupEQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/2] bpf: fix use of trace_printk() in BPF
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+Date:   Mon, 13 Jul 2020 17:11:03 -0700
+Message-ID: <CAADnVQKOS+kYfQTCyv5ezZFF+K9UZhDcdm9jP94Y4o4C5zzacg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/2] Strip away modifiers from BPF skeleton
+ global variables
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Anton Protopopov <a.s.protopopov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 4:53 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Mon, Jul 13, 2020 at 4:25 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Steven suggested a way to resolve the appearance of the warning banner
-> that appears as a result of using trace_printk() in BPF [1].
-> Applying the patch and testing reveals all works as expected; we
-> can call bpf_trace_printk() and see the trace messages in
-> /sys/kernel/debug/tracing/trace_pipe and no banner message appears.
+> Fix bpftool logic of stripping away const/volatile modifiers for all global
+> variables during BPF skeleton generation. See patch #1 for details on when
+> existing logic breaks and why it's important. Support special .strip_mods=true
+> mode in btf_dump__emit_type_decl.
 >
-> Also add a test prog to verify basic bpf_trace_printk() helper behaviour.
+> Recent example of when this has caused problems can be found in [0].
 >
-> Changes since v2:
->
-> - fixed stray newline in bpf_trace_printk(), use sizeof(buf)
->   rather than #defined value in vsnprintf() (Daniel, patch 1)
-> - Daniel also pointed out that vsnprintf() returns 0 on error rather
->   than a negative value; also turns out that a null byte is not
->   appended if the length of the string written is zero, so to fix
->   for cases where the string to be traced is zero length we set the
->   null byte explicitly (Daniel, patch 1)
-> - switch to using getline() for retrieving lines from trace buffer
->   to ensure we don't read a portion of the search message in one
->   read() operation and then fail to find it (Andrii, patch 2)
->
-> Changes since v1:
->
-> - reorder header inclusion in bpf_trace.c (Steven, patch 1)
-> - trace zero-length messages also (Andrii, patch 1)
-> - use a raw spinlock to ensure there are no issues for PREMMPT_RT
->   kernels when using bpf_trace_printk() within other raw spinlocks
->   (Steven, patch 1)
-> - always enable bpf_trace_printk() tracepoint when loading programs
->   using bpf_trace_printk() as this will ensure that a user disabling
->   that tracepoint will not prevent tracing output from being logged
->   (Steven, patch 1)
-> - use "tp/raw_syscalls/sys_enter" and a usleep(1) to trigger events
->   in the selftest ensuring test runs faster (Andrii, patch 2)
->
-> [1]  https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
+>   [0] https://github.com/iovisor/bcc/pull/2994#issuecomment-650588533
 
 Applied. Thanks
