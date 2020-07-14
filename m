@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D83621F9EA
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CFB21FA66
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgGNSro (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 14:47:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42916 "EHLO mail.kernel.org"
+        id S1730000AbgGNSwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 14:52:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729800AbgGNSro (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:44 -0400
+        id S1730499AbgGNSwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:52:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA01C22AB0;
-        Tue, 14 Jul 2020 18:47:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F422322B3B;
+        Tue, 14 Jul 2020 18:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752463;
-        bh=3IZOAH1JzmAHHLrSjFv8L+4I0CPz4n1x8Qm7XPVTi+s=;
+        s=default; t=1594752736;
+        bh=WvFWIqFZYs9Y+7C0fZkiSnGm3JTsVbzTEgc8EmWWUkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsCZ/aqkG+M4cpCkTm0j1hVn/DXNWjI4DpZmLJD5uT0H9NX9Qcybmx+XvvsBCz52P
-         o7KN6HONelwCRC1n3bCCn3/4c+oNdJxi3Kt1box02prDbL7+BixIgLG+tJyxgh9Bv0
-         xqZcJwLwBDH+zyltLOJkSdx2YvJ8oTkLtqoRgSAk=
+        b=k3Fx9PCoY94ckGYeZTZJPKiR9E/AIFuEe5jfNlmftZh9h6/CCfRQqo7iUR6SxP9S8
+         +LHFgVnS6AHfA7+2TXTp8E+fGpjMR6EKLH1WKq7+0GmpWWhunIospdcFciolNd2whf
+         sRSS02WLV0DQUzAvCYgI1OgNbEaoto++jHz6r4Es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
         Kees Cook <keescook@chromium.org>
-Subject: [PATCH 4.19 51/58] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
-Date:   Tue, 14 Jul 2020 20:44:24 +0200
-Message-Id: <20200714184058.704373310@linuxfoundation.org>
+Subject: [PATCH 5.4 091/109] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
+Date:   Tue, 14 Jul 2020 20:44:34 +0200
+Message-Id: <20200714184109.905060703@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -70,8 +70,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -752,12 +752,12 @@ struct bpf_prog *bpf_int_jit_compile(str
- void bpf_jit_compile(struct bpf_prog *prog);
+@@ -853,12 +853,12 @@ void bpf_jit_compile(struct bpf_prog *pr
+ bool bpf_jit_needs_zext(void);
  bool bpf_helper_changes_pkt_data(void *func);
  
 -static inline bool bpf_dump_raw_ok(void)
@@ -87,7 +87,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -1903,7 +1903,8 @@ static const struct bpf_map *bpf_map_fro
+@@ -2248,7 +2248,8 @@ static const struct bpf_map *bpf_map_fro
  	return NULL;
  }
  
@@ -97,7 +97,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
  	const struct bpf_map *map;
  	struct bpf_insn *insns;
-@@ -1925,7 +1926,7 @@ static struct bpf_insn *bpf_insn_prepare
+@@ -2271,7 +2272,7 @@ static struct bpf_insn *bpf_insn_prepare
  		    insns[i].code == (BPF_JMP | BPF_CALL_ARGS)) {
  			if (insns[i].code == (BPF_JMP | BPF_CALL_ARGS))
  				insns[i].code = BPF_JMP | BPF_CALL;
@@ -106,17 +106,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				insns[i].imm = 0;
  			continue;
  		}
-@@ -1942,7 +1943,7 @@ static struct bpf_insn *bpf_insn_prepare
- 			continue;
- 		}
- 
--		if (!bpf_dump_raw_ok() &&
-+		if (!bpf_dump_raw_ok(f_cred) &&
- 		    imm == (unsigned long)prog->aux) {
- 			insns[i].imm = 0;
- 			insns[i + 1].imm = 0;
-@@ -1953,7 +1954,8 @@ static struct bpf_insn *bpf_insn_prepare
- 	return insns;
+@@ -2323,7 +2324,8 @@ static int set_info_rec_size(struct bpf_
+ 	return 0;
  }
  
 -static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
@@ -125,7 +116,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				   const union bpf_attr *attr,
  				   union bpf_attr __user *uattr)
  {
-@@ -2010,11 +2012,11 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -2392,11 +2394,11 @@ static int bpf_prog_get_info_by_fd(struc
  		struct bpf_insn *insns_sanitized;
  		bool fault;
  
@@ -139,7 +130,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		if (!insns_sanitized)
  			return -ENOMEM;
  		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
-@@ -2048,7 +2050,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -2430,7 +2432,7 @@ static int bpf_prog_get_info_by_fd(struc
  	}
  
  	if (info.jited_prog_len && ulen) {
@@ -148,25 +139,34 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			uinsns = u64_to_user_ptr(info.jited_prog_insns);
  			ulen = min_t(u32, info.jited_prog_len, ulen);
  
-@@ -2083,7 +2085,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -2465,7 +2467,7 @@ static int bpf_prog_get_info_by_fd(struc
  	ulen = info.nr_jited_ksyms;
- 	info.nr_jited_ksyms = prog->aux->func_cnt;
- 	if (info.nr_jited_ksyms && ulen) {
+ 	info.nr_jited_ksyms = prog->aux->func_cnt ? : 1;
+ 	if (ulen) {
 -		if (bpf_dump_raw_ok()) {
 +		if (bpf_dump_raw_ok(file->f_cred)) {
+ 			unsigned long ksym_addr;
  			u64 __user *user_ksyms;
- 			ulong ksym_addr;
  			u32 i;
-@@ -2107,7 +2109,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -2496,7 +2498,7 @@ static int bpf_prog_get_info_by_fd(struc
  	ulen = info.nr_jited_func_lens;
- 	info.nr_jited_func_lens = prog->aux->func_cnt;
- 	if (info.nr_jited_func_lens && ulen) {
+ 	info.nr_jited_func_lens = prog->aux->func_cnt ? : 1;
+ 	if (ulen) {
 -		if (bpf_dump_raw_ok()) {
 +		if (bpf_dump_raw_ok(file->f_cred)) {
  			u32 __user *user_lens;
  			u32 func_len, i;
  
-@@ -2132,7 +2134,8 @@ done:
+@@ -2553,7 +2555,7 @@ static int bpf_prog_get_info_by_fd(struc
+ 	else
+ 		info.nr_jited_line_info = 0;
+ 	if (info.nr_jited_line_info && ulen) {
+-		if (bpf_dump_raw_ok()) {
++		if (bpf_dump_raw_ok(file->f_cred)) {
+ 			__u64 __user *user_linfo;
+ 			u32 i;
+ 
+@@ -2599,7 +2601,8 @@ done:
  	return 0;
  }
  
@@ -176,7 +176,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				  const union bpf_attr *attr,
  				  union bpf_attr __user *uattr)
  {
-@@ -2174,7 +2177,8 @@ static int bpf_map_get_info_by_fd(struct
+@@ -2641,7 +2644,8 @@ static int bpf_map_get_info_by_fd(struct
  	return 0;
  }
  
@@ -186,7 +186,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				  const union bpf_attr *attr,
  				  union bpf_attr __user *uattr)
  {
-@@ -2206,13 +2210,13 @@ static int bpf_obj_get_info_by_fd(const
+@@ -2673,13 +2677,13 @@ static int bpf_obj_get_info_by_fd(const
  		return -EBADFD;
  
  	if (f.file->f_op == &bpf_prog_fops)
@@ -205,7 +205,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
 --- a/net/core/sysctl_net_core.c
 +++ b/net/core/sysctl_net_core.c
-@@ -270,7 +270,7 @@ static int proc_dointvec_minmax_bpf_enab
+@@ -277,7 +277,7 @@ static int proc_dointvec_minmax_bpf_enab
  	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
  	if (write && !ret) {
  		if (jit_enable < 2 ||
