@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CFB21FA66
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F2E21FB81
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 21:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgGNSwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48950 "EHLO mail.kernel.org"
+        id S1731072AbgGNTCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 15:02:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730499AbgGNSwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:52:17 -0400
+        id S1730271AbgGNS6x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F422322B3B;
-        Tue, 14 Jul 2020 18:52:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56529207F5;
+        Tue, 14 Jul 2020 18:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752736;
-        bh=WvFWIqFZYs9Y+7C0fZkiSnGm3JTsVbzTEgc8EmWWUkQ=;
+        s=default; t=1594753131;
+        bh=xvpfu3OKYXrf/Hf0b94tFHvzshmHtSyVnvWgsY1rVjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k3Fx9PCoY94ckGYeZTZJPKiR9E/AIFuEe5jfNlmftZh9h6/CCfRQqo7iUR6SxP9S8
-         +LHFgVnS6AHfA7+2TXTp8E+fGpjMR6EKLH1WKq7+0GmpWWhunIospdcFciolNd2whf
-         sRSS02WLV0DQUzAvCYgI1OgNbEaoto++jHz6r4Es=
+        b=gEr+JsHo5FWDsKl+J0LSMSsdISCkCxKOMNZdnFa1RkgTeFVE8mPnIvc1YIWwOrw+E
+         JfUkwmB/BY96h775Z8FoA8Pb1b7I9KaQmfQKnLjQIOFGPJYTOj83eXXC85cIir16zZ
+         EWTsZZqrhTSIaGCOFFi4iwI1zTt+kqq7VlGvehwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
         Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.4 091/109] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
-Date:   Tue, 14 Jul 2020 20:44:34 +0200
-Message-Id: <20200714184109.905060703@linuxfoundation.org>
+Subject: [PATCH 5.7 132/166] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
+Date:   Tue, 14 Jul 2020 20:44:57 +0200
+Message-Id: <20200714184122.156831179@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -70,7 +70,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -853,12 +853,12 @@ void bpf_jit_compile(struct bpf_prog *pr
+@@ -888,12 +888,12 @@ void bpf_jit_compile(struct bpf_prog *pr
  bool bpf_jit_needs_zext(void);
  bool bpf_helper_changes_pkt_data(void *func);
  
@@ -87,7 +87,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -2248,7 +2248,8 @@ static const struct bpf_map *bpf_map_fro
+@@ -2918,7 +2918,8 @@ static const struct bpf_map *bpf_map_fro
  	return NULL;
  }
  
@@ -97,16 +97,16 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
  	const struct bpf_map *map;
  	struct bpf_insn *insns;
-@@ -2271,7 +2272,7 @@ static struct bpf_insn *bpf_insn_prepare
- 		    insns[i].code == (BPF_JMP | BPF_CALL_ARGS)) {
- 			if (insns[i].code == (BPF_JMP | BPF_CALL_ARGS))
+@@ -2944,7 +2945,7 @@ static struct bpf_insn *bpf_insn_prepare
+ 		    code == (BPF_JMP | BPF_CALL_ARGS)) {
+ 			if (code == (BPF_JMP | BPF_CALL_ARGS))
  				insns[i].code = BPF_JMP | BPF_CALL;
 -			if (!bpf_dump_raw_ok())
 +			if (!bpf_dump_raw_ok(f_cred))
  				insns[i].imm = 0;
  			continue;
  		}
-@@ -2323,7 +2324,8 @@ static int set_info_rec_size(struct bpf_
+@@ -3000,7 +3001,8 @@ static int set_info_rec_size(struct bpf_
  	return 0;
  }
  
@@ -116,7 +116,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				   const union bpf_attr *attr,
  				   union bpf_attr __user *uattr)
  {
-@@ -2392,11 +2394,11 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -3069,11 +3071,11 @@ static int bpf_prog_get_info_by_fd(struc
  		struct bpf_insn *insns_sanitized;
  		bool fault;
  
@@ -130,7 +130,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		if (!insns_sanitized)
  			return -ENOMEM;
  		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
-@@ -2430,7 +2432,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -3107,7 +3109,7 @@ static int bpf_prog_get_info_by_fd(struc
  	}
  
  	if (info.jited_prog_len && ulen) {
@@ -139,7 +139,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			uinsns = u64_to_user_ptr(info.jited_prog_insns);
  			ulen = min_t(u32, info.jited_prog_len, ulen);
  
-@@ -2465,7 +2467,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -3142,7 +3144,7 @@ static int bpf_prog_get_info_by_fd(struc
  	ulen = info.nr_jited_ksyms;
  	info.nr_jited_ksyms = prog->aux->func_cnt ? : 1;
  	if (ulen) {
@@ -148,7 +148,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			unsigned long ksym_addr;
  			u64 __user *user_ksyms;
  			u32 i;
-@@ -2496,7 +2498,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -3173,7 +3175,7 @@ static int bpf_prog_get_info_by_fd(struc
  	ulen = info.nr_jited_func_lens;
  	info.nr_jited_func_lens = prog->aux->func_cnt ? : 1;
  	if (ulen) {
@@ -157,7 +157,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			u32 __user *user_lens;
  			u32 func_len, i;
  
-@@ -2553,7 +2555,7 @@ static int bpf_prog_get_info_by_fd(struc
+@@ -3230,7 +3232,7 @@ static int bpf_prog_get_info_by_fd(struc
  	else
  		info.nr_jited_line_info = 0;
  	if (info.nr_jited_line_info && ulen) {
@@ -166,7 +166,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  			__u64 __user *user_linfo;
  			u32 i;
  
-@@ -2599,7 +2601,8 @@ done:
+@@ -3276,7 +3278,8 @@ done:
  	return 0;
  }
  
@@ -176,7 +176,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				  const union bpf_attr *attr,
  				  union bpf_attr __user *uattr)
  {
-@@ -2641,7 +2644,8 @@ static int bpf_map_get_info_by_fd(struct
+@@ -3319,7 +3322,8 @@ static int bpf_map_get_info_by_fd(struct
  	return 0;
  }
  
@@ -186,7 +186,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  				  const union bpf_attr *attr,
  				  union bpf_attr __user *uattr)
  {
-@@ -2673,13 +2677,13 @@ static int bpf_obj_get_info_by_fd(const
+@@ -3351,13 +3355,13 @@ static int bpf_obj_get_info_by_fd(const
  		return -EBADFD;
  
  	if (f.file->f_op == &bpf_prog_fops)
