@@ -2,113 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F1F21F8CD
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3C721F999
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgGNSK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 14:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        id S1728117AbgGNSjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 14:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgGNSK2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:10:28 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26A9C061755;
-        Tue, 14 Jul 2020 11:10:27 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id u12so13508019qth.12;
-        Tue, 14 Jul 2020 11:10:27 -0700 (PDT)
+        with ESMTP id S1726817AbgGNSjf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:39:35 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64F8C061755;
+        Tue, 14 Jul 2020 11:39:35 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id g13so13615877qtv.8;
+        Tue, 14 Jul 2020 11:39:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZX4l9y/mb02MIUOaKSz1lj12ECx0wlEAm51QAfF6o/8=;
-        b=WsiJGXVqDNs9WargJT52mvIz/gaCVCuxb52bFJeFukAYzSUEIh2fdlkQeVqeuWbB0D
-         Bzbqn0r0doaRe/L6ZZIb3zStjHYGZ8RF2beyf9yjYgP8agdHAl0PAiSbAO4euheDv12l
-         8btObml9Y9hX6nYx8w01Xl2cH7DSo25hPOO4FJFsbXHDRP0OEfMtN0dqr2T/CmkEn3QC
-         pOonLTv9BirBHzAunpzAGUXm4OHH4ctLfxxq13swaSMV/LTuMoEKHkYbwWJA0nb4jEM7
-         7Ke2VPeIG86ZGrJ4GX1h39LqB8Ud3pcWPrGhbq8RY+MWZ+rPqXoJNibnsLvzBSqf90bk
-         QeSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0dgImjyNhW5JDCTf6TF6OJolyi6XBwPEJBCGzeL/cw8=;
+        b=OHMy4vhl7ZxeI3Kl/t3JWx0Xz61kUjwaCm3/rilgo91MGkY2AUHKICMwEyleYYoNLq
+         c1LBrUm7AMEUx9UBVpymALbcT1dT38/9jYjX/TNir7ERKOqwmTepfI6Q+FC/fso8ciTJ
+         7csvjy2i5Oie9rNwgrxPn5jLpgZkEG+/IsTPACWsebq4YndhTAiVbEj0pLz1tCY0i64G
+         mGCcAZkows7USToi8udEaouXXxYAUs1ueEGwc0Q86Cf6ZTzrESGMDZaHlYR6hHnUR7CM
+         W7m9E/wIYxk17LYpAiCe6T8939EbMUS0C0vwKs4SxPmAk7Ul3KFCc7R1o1uQeYDfHnwV
+         tq2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZX4l9y/mb02MIUOaKSz1lj12ECx0wlEAm51QAfF6o/8=;
-        b=WK71pxN91y9WAgxJ1Gm/yHPuW91KAmwbGJnGDseTNRa445SVDVBhAkkW8sVHRLEuPd
-         SqHZ6F97P7CCk6BtDSbH0NQf04eR3vgRUIbOywAa4pXh1KlQTjkqVGgTpDQbL47RKlvS
-         9RzOi9xVrEuuTtKMQPDlK2j0IXWhn3jId1uOA/im9vxzPpCgEbdBn9EyQ2PVSM0NYpFM
-         e1NDWJVwCouTeWhVbSUOmnx2YFIrBb5U34ntq4uUa8HThl/zddlkzNBSY7zf+cDPwT4e
-         me+k/BLRReO0VbQwlO/VC41qwiRLj2XJFDD1r4a70o8mL8JeMs+DDQ4kMCLIjSJpspk4
-         JCww==
-X-Gm-Message-State: AOAM530SlVMg0pF7ewMbMJLxRkYDhfv+nxzPBG+E1DMbXlbzwSW5RVCB
-        v9i7lTg3ntGGtIix6rhL4w==
-X-Google-Smtp-Source: ABdhPJzIfX8uNaGelEtus3hlnEHUAzJCj9p6MTHvuiHUjgC4AFO0/AIzEJVEUS+Rr3I8EFtZYkxMRQ==
-X-Received: by 2002:ac8:3028:: with SMTP id f37mr5775930qte.351.1594750226967;
-        Tue, 14 Jul 2020 11:10:26 -0700 (PDT)
-Received: from localhost.localdomain ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id n64sm22663726qke.77.2020.07.14.11.10.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 11:10:26 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [Linux-kernel-mentees] [PATCH v3] bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
-Date:   Tue, 14 Jul 2020 14:09:04 -0400
-Message-Id: <20200714180904.277512-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
-References: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0dgImjyNhW5JDCTf6TF6OJolyi6XBwPEJBCGzeL/cw8=;
+        b=VAC+eGzIiGQWQvoxWpFMkG0F2w6mGo5hzWWnGzRIWU5e2i7FYzB28KaCRniMxZmqrz
+         wfNqjzlK/3EmLr4vDWYBrN7HeV9o+Fk5mYHVuZK9FKizZaBxRMzxh9kT2NTO9EMNRhyM
+         XSxG6hzwzyp/yur4ZUFBLQc6A0b0Ut8RcRO077hhID4qBTyWJTwawWJ+edJlq7wHdkzu
+         h8aViJABBiBRVP0+QpdSk0GynkudyorcrGfdYTA+myxHo2uaW/TANoxZ/0bLcaJVEYBm
+         KoSLWJ8Da3dSOPQQ3ojXi8wguE/PsR1F1m7qmg5avBxEJc8+2Fs2Ot/j2L+bkDgAaaBO
+         lP8Q==
+X-Gm-Message-State: AOAM531/2Vj1zf+iURz3SbKy/VcavEhfsKA8VR1wLJe1OSO+MgESBpA+
+        5YnZsqxUiCbUy4ohjappn84D23CjtYcyvBv+Ct6xJ3yI
+X-Google-Smtp-Source: ABdhPJzmeqCamgA/65SC4by2eUPBDMSyjxMhZJLwRc6HH+HaX3N4UhETbmyBlY9bH8tWjbveTowKcjtocbgVzRgfCag=
+X-Received: by 2002:aed:2cc5:: with SMTP id g63mr6029220qtd.59.1594751974709;
+ Tue, 14 Jul 2020 11:39:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200714040643.1135876-4-andriin@fb.com> <202007141403.f8tW3jcQ%lkp@intel.com>
+In-Reply-To: <202007141403.f8tW3jcQ%lkp@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 14 Jul 2020 11:39:23 -0700
+Message-ID: <CAEf4Bza318pOd_3D_8k-ta7hRaFbwiNYMqWb=mE+RFr-hdt+0w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/8] bpf, xdp: add bpf_link-based XDP
+ attachment API
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Team <kernel-team@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Takshak Chahande <ctakshak@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
-as NULL. This patch fixes the following syzbot bug:
+On Mon, Jul 13, 2020 at 11:40 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Andrii,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on bpf-next/master]
+>
+> url:    https://github.com/0day-ci/linux/commits/Andrii-Nakryiko/BPF-XDP-link/20200714-120909
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> config: x86_64-defconfig (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 02946de3802d3bc65bc9f2eb9b8d4969b5a7add8)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> net/core/dev.c:8717:18: error: field has incomplete type 'struct bpf_link'
+>            struct bpf_link link;
+>                            ^
 
-    https://syzkaller.appspot.com/bug?id=f823224ada908fa5c207902a5a62065e53ca0fcc
+This is all due to bpf_link-related API is conditionally defined only
+#ifdef CONFIG_BPF_SYSCALL. I'm doing the same as is done for bpf_prog:
+moving it outside of CONFIG_BPF_SYSCALL-only region and adding stubs
+for generic API (init/settle/cleanup, inc/put, etc). Will add this as
+a separate pre-patch in the v3.
 
-Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Sorry, I got the link wrong. Thank you for pointing that out.
+>    include/net/netns/bpf.h:15:9: note: forward declaration of 'struct bpf_link'
+>            struct bpf_link *links[MAX_NETNS_BPF_ATTACH_TYPE];
+>                   ^
 
-Change in v3:
-    - Fix incorrect syzbot dashboard link.
-
-Change in v2:
-    - Split NULL and IS_ERR cases.
-
- kernel/bpf/btf.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 30721f2c2d10..092116a311f4 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4088,6 +4088,11 @@ static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
- 	const char *tname, *sym;
- 	u32 btf_id, i;
- 
-+	if (!btf_vmlinux) {
-+		bpf_log(log, "btf_vmlinux doesn't exist\n");
-+		return -EINVAL;
-+	}
-+
- 	if (IS_ERR(btf_vmlinux)) {
- 		bpf_log(log, "btf_vmlinux is malformed\n");
- 		return -EINVAL;
--- 
-2.25.1
-
+[...]
