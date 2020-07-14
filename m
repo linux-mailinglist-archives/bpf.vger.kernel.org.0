@@ -2,182 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A97821E65E
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 05:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F4821E6A1
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 06:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgGNDge (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jul 2020 23:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgGNDge (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jul 2020 23:36:34 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E538AC061755;
-        Mon, 13 Jul 2020 20:36:33 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id m16so5241222pls.5;
-        Mon, 13 Jul 2020 20:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4pKtxXD5uW5bqrdDTHd+u/sbZZ6ngHW7Y1Ck/na4mqk=;
-        b=djxbHP+YYSXZr27XXad/vl4SP+097JssZiRic0/vKVqaPPBrMc82mdXZvfkrFZskT/
-         QF9aucsCvGRwOCc9tJXHgdNBIZ68jagxYUwYeRtzyXzT0Ap8u5KrgeRX9cSPWEN6d7n5
-         fIBgIpgBc+oKHUhV8ZQGjvwN19JBoyzOimFJ5CosNPeqrZinbwTrZ+5VBONiIMkbfRaG
-         aGktWcPzRBkU2GCtbufyaZoKZWde4wZvlkrvxY2pl/r7Jvd+sRVfDVGmZf4e0YYvh9g+
-         C9eH8pqKuJsOKZHNmb15wZbZ9SxOeC2FazcsbWzzK7iEmNnP9Mce4b6AL4f5rFDe0a40
-         HSgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4pKtxXD5uW5bqrdDTHd+u/sbZZ6ngHW7Y1Ck/na4mqk=;
-        b=SLA2+da1UBqJKLm0dLaGdW5jLJpUI0N5L6J+hqd7xvAxS3U0/go12k0ShJZZJlb26t
-         ki05Ab5Q7po5xbVylyTbDrBk5S5FDoXOGJEKQVRxJpUns4dsYxedd3JBht7gkN69mbZq
-         ipdaEP5lCUOJKNk2WgE5kZIIhXQjOPBthHYLsTrspBo+9sj6tkZ5K+sLwUWv59jIedZs
-         BkdqVqHs+3yy+AKafT8UIV8I/dfRQDVhGtO8nxDTU+71X6xKL3VOWyPv9zrCT/L9iFJn
-         AvaiyCvGECBLgMlez8xqJizaXo7MLLlJLsjlJP9ElL6NFPHQjKIsyJXKtWzcpo02MyY2
-         fA8w==
-X-Gm-Message-State: AOAM531MBke94lW+y1atfcAgVTnrs0IogfzUTJsSL0P7wY95/aMaCZby
-        spKl1i4TAQfNGGFjyOaAvIs=
-X-Google-Smtp-Source: ABdhPJy3R5A353cfZPZeoubFnI09Sx68y7klNumerUxc5EpOMcyJPVQjrjAj12VPdpFoMz7m9eIFMg==
-X-Received: by 2002:a17:90b:300a:: with SMTP id hg10mr2468786pjb.211.1594697793381;
-        Mon, 13 Jul 2020 20:36:33 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1ca])
-        by smtp.gmail.com with ESMTPSA id a2sm16255442pfg.120.2020.07.13.20.36.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 20:36:32 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 20:36:30 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: [RFC PATCH bpf-next 4/5] bpf, x64: rework pro/epilogue and
- tailcall handling in JIT
-Message-ID: <20200714033630.2fw5wzljbkkfle3j@ast-mbp.dhcp.thefacebook.com>
-References: <20200702134930.4717-1-maciej.fijalkowski@intel.com>
- <20200702134930.4717-5-maciej.fijalkowski@intel.com>
- <20200710235632.lhn6edwf4a2l3kiz@ast-mbp.dhcp.thefacebook.com>
- <CAADnVQJhhQnjQdrQgMCsx2EDDwELkCvY7Zpfdi_SJUmH6VzZYw@mail.gmail.com>
- <CAADnVQ+AD0T_xqwk-fhoWV25iANs-FMCMVnn2-PALDxdODfepA@mail.gmail.com>
- <20200714010045.GB2435@ranger.igk.intel.com>
+        id S1725781AbgGNEGu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 00:06:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56630 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725275AbgGNEGu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 00:06:50 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06E3wpp2000442
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 21:06:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=G0Rqs4Tre2Rgb0/VKT0JjbbEj5/6FGIgsxAmc7x6dto=;
+ b=Rt21xab75VAOp12a7iNeGO/hVMyI/6XT8VdqQ0ji3+SBnPukYszT1p5RLOsxoWkDYPNa
+ LbCLO3nrVM5yoRSgWAl3WwqphKG8crK/2Nk9otzdxctW+gCGFi1Jnl6CtpEq3zu4V+6C
+ W7jvFy1x4zPcD91GsP6qAH6QQsI187YzL8w= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 32793m3kp1-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Jul 2020 21:06:49 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 13 Jul 2020 21:06:45 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 6E5022EC402C; Mon, 13 Jul 2020 21:06:44 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <dsahern@gmail.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Takshak Chahande <ctakshak@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/8] BPF XDP link
+Date:   Mon, 13 Jul 2020 21:06:35 -0700
+Message-ID: <20200714040643.1135876-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714010045.GB2435@ranger.igk.intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 lowpriorityscore=0 mlxscore=0 adultscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 clxscore=1015 suspectscore=8
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140029
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 03:00:45AM +0200, Maciej Fijalkowski wrote:
-> On Fri, Jul 10, 2020 at 08:25:20PM -0700, Alexei Starovoitov wrote:
-> > On Fri, Jul 10, 2020 at 8:20 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > Of course you are right.
-> > > pop+nop+push is incorrect.
-> > >
-> > > How about the following instead:
-> > > - during JIT:
-> > > emit_jump(to_skip_below)  <- poke->tailcall_bypass
-> 
-> That's the jump to the instruction right after the poke->tailcall_target.
+Following cgroup and netns examples, implement bpf_link support for XDP.
 
-right. Mainly looking for better names than ip and ip_aux.
+The semantics is described in patch #2. Program and link attachments are
+mutually exclusive, in the sense that neither link can replace attached
+program nor program can replace attached link. Link can't replace attache=
+d
+link as well, as is the case for any other bpf_link implementation.
 
-> > > pop_callee_regs
-> > > emit_jump(to_tailcall_target) <- poke->tailcall_target
-> 
-> During JIT there's no tailcall_target so this will be nop5, right?
+Patch #1 refactors existing BPF program-based attachment API and centrali=
+zes
+high-level query/attach decisions in generic kernel code, while drivers a=
+re
+kept simple and are instructed with low-level decisions about attaching a=
+nd
+detaching specific bpf_prog. This also makes QUERY command unnecessary, a=
+nd
+patch #8 removes support for it from all kernel drivers. If that's a bad =
+idea,
+we can drop that patch altogether.
 
-I thought it will be always jmp, but with new info I agree that
-it will start with nop.
+With refactoring in patch #1, adding bpf_xdp_link is completely transpare=
+nt to
+drivers, they are still functioning at the level of "effective" bpf_prog,=
+ that
+should be called in XDP data path.
 
-> 
-> > >
-> > > - Transition from one target to another:
-> > > text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
-> > > if (new_jmp != NULL)
-> > >   text_poke(poke->tailcall_bypass, MOD jmp into nop);
-> > > else
-> > >   text_poke(poke->tailcall_bypass, MOD nop into jmp);
-> > 
-> > One more correction. I meant:
-> > 
-> > if (new_jmp != NULL) {
-> >   text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
-> 
-> Problem with having the old_jmp here is that you could have the
-> tailcall_target removed followed by the new program being inserted. So for
-> that case old_jmp is NULL but we decided to not poke the
-> poke->tailcall_target when removing the program, only the tailcall_bypass
-> is poked back to jmp from nop. IOW old_jmp is not equal to what
-> poke->tailcall_target currently stores. This means that
-> bpf_arch_text_poke() would not be successful for this update and that is
-> the reason of faking it in this patch.
+Corresponding libbpf support for BPF XDP link is added in patch #5.
 
-got it.
-I think it can be solved two ways:
-1. add synchronize_rcu() after poking of tailcall_bypass into jmp
-and then update tailcall_target into nop.
-so the race you've described in cover letter won't happen.
-In the future with sleepable progs we'd need to call sync_rcu_tasks_trace too.
-Which will make poke_run even slower.
+v1->v2:
+- fix prog refcounting bug (David);
+- split dev_change_xdp_fd() changes into 2 patches (David);
+- add extack messages to all user-induced errors (David).
 
-2. add a flag to bpf_arch_text_poke() to ignore 5 bytes in there
-and update tailcall_target to new jmp.
-The speed of poke_run will be faster,
-but considering the speed of text_poke_bp() it's starting to feel like
-premature optimization.
+Cc: Andrey Ignatov <rdna@fb.com>
+Cc: Takshak Chahande <ctakshak@fb.com>
 
-I think approach 1 is cleaner.
-Then the pseudo code will be:
-if (new_jmp != NULL) {
-   text_poke(poke->tailcall_target, MOD_JMP, old ? old_jmp : NULL, new_jmp);
-   if (!old)
-     text_poke(poke->tailcall_bypass, MOD_JMP, bypass_addr, NULL /* into nop */);
-} else {
-   text_poke(poke->tailcall_bypass, MOD_JMP, NULL /* from nop */, bypass_addr);
-   sync_rcu(); /* let progs finish */
-   text_poke(poke->tailcall_target, MOD_JMP, old_jmp, NULL /* into nop */)
-}
+Andrii Nakryiko (8):
+  bpf, xdp: maintain info on attached XDP BPF programs in net_device
+  bpf, xdp: extract commong XDP program attachment logic
+  bpf, xdp: add bpf_link-based XDP attachment API
+  bpf, xdp: implement LINK_UPDATE for BPF XDP link
+  bpf: implement BPF XDP link-specific introspection APIs
+  libbpf: add support for BPF XDP link
+  selftests/bpf: add BPF XDP link selftests
+  bpf, xdp: remove XDP_QUERY_PROG and XDP_QUERY_PROG_HW XDP commands
 
-> 
-> >   text_poke(poke->tailcall_bypass, MOD jmp into nop);
-> > } else {
-> >   text_poke(poke->tailcall_bypass, MOD nop into jmp);
-> > }
-> 
-> I think that's what we currently (mostly) have. map_poke_run() is skipping
-> the poke of poke->tailcall_target if new bpf_prog is NULL, just like
-> you're proposing above. Of course I can rename the members in poke
-> descriptor to names you're suggesting. I also assume that by text_poke you
-> meant the bpf_arch_text_poke?
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  |   6 -
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   4 -
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   3 -
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   3 -
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   3 -
+ drivers/net/ethernet/intel/ice/ice_main.c     |   3 -
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   4 -
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   6 -
+ drivers/net/ethernet/marvell/mvneta.c         |   5 -
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |   3 -
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  24 -
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  18 -
+ .../ethernet/netronome/nfp/nfp_net_common.c   |   4 -
+ .../net/ethernet/qlogic/qede/qede_filter.c    |   3 -
+ drivers/net/ethernet/sfc/efx.c                |   5 -
+ drivers/net/ethernet/socionext/netsec.c       |   3 -
+ drivers/net/ethernet/ti/cpsw_priv.c           |   3 -
+ drivers/net/hyperv/netvsc_bpf.c               |  21 +-
+ drivers/net/netdevsim/bpf.c                   |   4 -
+ drivers/net/netdevsim/netdevsim.h             |   2 +-
+ drivers/net/tun.c                             |  15 -
+ drivers/net/veth.c                            |  15 -
+ drivers/net/virtio_net.c                      |  17 -
+ drivers/net/xen-netfront.c                    |  21 -
+ include/linux/netdevice.h                     |  29 +-
+ include/net/xdp.h                             |   2 -
+ include/uapi/linux/bpf.h                      |  10 +-
+ kernel/bpf/syscall.c                          |   5 +
+ net/core/dev.c                                | 523 +++++++++++++-----
+ net/core/rtnetlink.c                          |   5 +-
+ net/core/xdp.c                                |   9 -
+ tools/include/uapi/linux/bpf.h                |  10 +-
+ tools/lib/bpf/libbpf.c                        |   9 +-
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/section_names.c  |   2 +-
+ .../selftests/bpf/prog_tests/xdp_link.c       | 137 +++++
+ .../selftests/bpf/progs/test_xdp_link.c       |  12 +
+ 38 files changed, 601 insertions(+), 350 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_link.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_link.c
 
-yep.
+--=20
+2.24.1
 
-> 
-> I've been able to hide the nop5 detection within the bpf_arch_text_poke so
-> map_poke_run() is arch-independent in that approach. My feeling is that
-> we don't need the old bpf_prog at all.
-> 
-> Some bits might change here due to the jump target alignment that I'm
-> trying to introduce.
-
-> Can you explain under what circumstances bpf_jit_binary_alloc() would not
-> use get_random_int() ? Out of curiosity as from a quick look I can't tell
-> when.
-
-I meant when you're doing benchmarking get rid of that randomization
-from bpf_jit_binary_alloc in your test kernel.
-
-> I'm hitting the following check in do_jit():
-
-I think aligning bypass_addr is a bit too much. Let it all be linear for now.
-Since iTLB is sporadic it could be due to randomization and nothing to do
-with additional jmp and unwind that this set is introducing.
