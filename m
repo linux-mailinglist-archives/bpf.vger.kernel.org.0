@@ -2,256 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0882021FE3F
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 22:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D71D21FE47
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 22:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbgGNUND (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 16:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729092AbgGNUNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:13:02 -0400
-Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F049CC061794;
-        Tue, 14 Jul 2020 13:13:01 -0700 (PDT)
-Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 886292E11DD;
-        Tue, 14 Jul 2020 23:13:00 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id cFKYEUW4na-Cxs0Uej8;
-        Tue, 14 Jul 2020 23:13:00 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1594757580; bh=ued7izyOQoiHrOno/il6Km3f4v4Tapg481qGbU9U7Dk=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=WGZI39P9V2o2Sj58mPdETV2EKfJ2tfo6jsjkwaWAuMYOqnrMg/lIfke3YLYG3W9oR
-         QWRyOUwi6fmePr9YV/UPjd/ebb3VvNfnPz6gJYfXhTJJ83Yo0zgsqglzNTnGvSlfuB
-         kJnc7LMPJG3G51PKmcOUoxuZ0GxNCfjqpbTO/0lM=
-Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 37.9.72.161-iva.dhcp.yndx.net (37.9.72.161-iva.dhcp.yndx.net [37.9.72.161])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id PwhVeBFRq1-CxjCQftL;
-        Tue, 14 Jul 2020 23:12:59 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     sdf@google.com
-Subject: [PATCH bpf-next v2 4/4] bpf: try to use existing cgroup storage in bpf_prog_test_run_skb
-Date:   Tue, 14 Jul 2020 23:12:45 +0300
-Message-Id: <20200714201245.99528-5-zeil@yandex-team.ru>
-In-Reply-To: <20200714201245.99528-1-zeil@yandex-team.ru>
-References: <20200714201245.99528-1-zeil@yandex-team.ru>
+        id S1728305AbgGNUNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 16:13:10 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54758 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726358AbgGNUNC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 16:13:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594757579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=epQzRWmEJ0TEVMCJclQkMZjp6uajfCoJPt5RjKAabKg=;
+        b=Upz8g/u6OkRZWKy0z25vZb8sOM91aegLaCXZ5ZcNv2bwAiqHQ/Vkp9Bbm55fZoj5Ff6dE+
+        uc7LlTENxFIzoWEH0KlxNXw0aAiVQAzomOsOL3emh9pGRt/rSHwuWnmvrgn1rD0z0hcPBo
+        M4jKo289dpu75nlxgDhd/hvUG76el58=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-N2Ed4zyrMEiLWFY_gm5ABQ-1; Tue, 14 Jul 2020 16:12:58 -0400
+X-MC-Unique: N2Ed4zyrMEiLWFY_gm5ABQ-1
+Received: by mail-qk1-f199.google.com with SMTP id j79so13889581qke.5
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 13:12:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=epQzRWmEJ0TEVMCJclQkMZjp6uajfCoJPt5RjKAabKg=;
+        b=SF4KRD1uzk9kz6pr9cyK0J8lJjMqK47YaDvl2Te9h7WSh3qYe5Q6Ad52cnDbqwjuBS
+         AnORyOKkLTExaq2Lw92yTiSpxl9ZeZrh8i1AgvoRcozOJBTmqmFOwviitYnO9+RyZ1rV
+         qDsqU98eorriuqEUWqAjf3CbQUnbF43+4VXt5pqg1YbNAVpC9ZA9maKbHPEEalYqKa/F
+         DUxKrE20cJ/vzCaJDg4lusUe+2E4RTU6a+kKCIg16PZKlo38HVrBEn9VaAsFA3WPaVcr
+         zfFeDYZXxs5itN/cV0uTz15K0q4cMsGpTTiNM+5vV2OdD38pJ8NhfRdw5M719Blnrrg3
+         u1GQ==
+X-Gm-Message-State: AOAM530EbTZ/0hw1K9luy/XHxAjeH0+wONjPEJzjbGvs6mR4umSqJMgT
+        nOcDg4o7Nzo53fjr0hqM76PvkXW+FQXk32AnstXM4MYEdV8nCKDww1ITNtdmKyU9Lb2djGb1/Lb
+        EGU89xuO3xl5X
+X-Received: by 2002:ad4:424a:: with SMTP id l10mr6393534qvq.29.1594757577602;
+        Tue, 14 Jul 2020 13:12:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+y9aS9yXrgvbZCrNrOp/eSMCyejrZWDa1jSC0/SGQAeR7GIrBilIVGztv4Wg0bXvSF6r/nQ==
+X-Received: by 2002:ad4:424a:: with SMTP id l10mr6393505qvq.29.1594757577273;
+        Tue, 14 Jul 2020 13:12:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id r2sm53431qtn.27.2020.07.14.13.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 13:12:56 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8A0CC1804F0; Tue, 14 Jul 2020 22:12:54 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Takshak Chahande <ctakshak@fb.com>
+Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
+In-Reply-To: <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com>
+References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com> <877dv6gpxd.fsf@toke.dk> <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Jul 2020 22:12:54 +0200
+Message-ID: <87v9ipg8jd.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now we cannot check results in cgroup storage after running
-BPF_PROG_TEST_RUN command because it allocates dummy cgroup storage
-during test. This patch implements simple logic for searching already
-allocated cgroup storage through iterating effective programs of current
-cgroup and finding the first match. If match is not found fallback to
-temporary storage is happened.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-v2:
-  - fix build without CONFIG_CGROUP_BPF (kernel test robot <lkp@intel.com>)
+> On Tue, Jul 14, 2020 at 6:57 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andriin@fb.com> writes:
+>>
+>> > Add bpf_link-based API (bpf_xdp_link) to attach BPF XDP program through
+>> > BPF_LINK_CREATE command.
+>>
+>> I'm still not convinced this is a good idea. As far as I can tell, at
+>> this point adding this gets you three things:
+>>
+>> 1. The ability to 'lock' an attachment in place.
+>>
+>> 2. Automatic detach on fd close
+>>
+>> 3. API unification with other uses of BPF_LINK_CREATE.
+>>
+>>
+>> Of those, 1. is certainly useful, but can be trivially achieved with the
+>> existing netlink API (add a flag on attach that prevents removal unless
+>> the original prog_fd is supplied as EXPECTED_FD).
+>
+> Given it's trivial to discover attached prog FD on a given ifindex, it
+> doesn't add much of a peace of mind to the application that installs
+> bpf_link. Any other XDP-enabled program (even some trivial test
+> program) can unknowingly break other applications by deciding to
+> "auto-cleanup" it's previous instance on restart ("what's my previous
+> prog FD? let's replace it with my up-to-date program FD! What do you
+> mean it wasn't my prog FD before?). We went over this discussion many
+> times already: relying on the correct behavior of *other*
+> applications, which you don't necessarily control, is not working well
+> in real production use cases.
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
----
- net/bpf/test_run.c                                 | 64 +++++++++++++++++-
- .../selftests/bpf/prog_tests/cgroup_skb_prog_run.c | 78 ++++++++++++++++++++++
- 2 files changed, 139 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
+It's trivial to discover the attached *ID*. But the id-to-fd transition
+requires CAP_SYS_ADMIN, which presumably you're not granting these
+not-necessarily-well-behaved programs. Because if you are, what's
+stopping them from just killing the owner of the bpf_link to clear it
+("oh, must be a previous instance of myself that's still running, let's
+clear that up")? Or what else am I missing here?
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 5c4835c..737b8c4 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -15,15 +15,67 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
- 
-+#ifdef CONFIG_CGROUP_BPF
-+
-+static struct bpf_prog_array_item *bpf_prog_find_active(struct bpf_prog *prog,
-+							struct bpf_prog_array *effective)
-+{
-+	struct bpf_prog_array_item *item;
-+	struct bpf_prog_array *array;
-+	struct bpf_prog *p;
-+
-+	array = rcu_dereference(effective);
-+	if (!array)
-+		return NULL;
-+
-+	item = &array->items[0];
-+	while ((p = READ_ONCE(item->prog))) {
-+		if (p == prog)
-+			return item;
-+		item++;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct bpf_cgroup_storage **bpf_prog_find_active_storage(struct bpf_prog *prog)
-+{
-+	struct bpf_prog_array_item *item;
-+	struct cgroup *cgrp;
-+
-+	if (prog->type != BPF_PROG_TYPE_CGROUP_SKB)
-+		return NULL;
-+
-+	cgrp = task_dfl_cgroup(current);
-+
-+	item = bpf_prog_find_active(prog,
-+				    cgrp->bpf.effective[BPF_CGROUP_INET_INGRESS]);
-+	if (!item)
-+		item = bpf_prog_find_active(prog,
-+					    cgrp->bpf.effective[BPF_CGROUP_INET_EGRESS]);
-+
-+	return item ? item->cgroup_storage : NULL;
-+}
-+
-+#else
-+
-+static struct bpf_cgroup_storage **bpf_prog_find_active_storage(struct bpf_prog *prog)
-+{
-+	return NULL;
-+}
-+
-+#endif
-+
- static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			u32 *retval, u32 *time, bool xdp)
- {
--	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = { NULL };
-+	struct bpf_cgroup_storage *dummy_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = { NULL };
-+	struct bpf_cgroup_storage **storage = dummy_storage;
- 	u64 time_start, time_spent = 0;
- 	int ret = 0;
- 	u32 i;
- 
--	ret = bpf_cgroup_storages_alloc(storage, prog);
-+	ret = bpf_cgroup_storages_alloc(dummy_storage, prog);
- 	if (ret)
- 		return ret;
- 
-@@ -31,6 +83,9 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 		repeat = 1;
- 
- 	rcu_read_lock();
-+	storage = bpf_prog_find_active_storage(prog);
-+	if (!storage)
-+		storage = dummy_storage;
- 	migrate_disable();
- 	time_start = ktime_get_ns();
- 	for (i = 0; i < repeat; i++) {
-@@ -54,6 +109,9 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			cond_resched();
- 
- 			rcu_read_lock();
-+			storage = bpf_prog_find_active_storage(prog);
-+			if (!storage)
-+				storage = dummy_storage;
- 			migrate_disable();
- 			time_start = ktime_get_ns();
- 		}
-@@ -65,7 +123,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 	do_div(time_spent, repeat);
- 	*time = time_spent > U32_MAX ? U32_MAX : (u32)time_spent;
- 
--	bpf_cgroup_storages_free(storage);
-+	bpf_cgroup_storages_free(dummy_storage);
- 
- 	return ret;
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
-new file mode 100644
-index 0000000..12ca881
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_prog_run.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static char bpf_log_buf[BPF_LOG_BUF_SIZE];
-+
-+void test_cgroup_skb_prog_run(void)
-+{
-+	struct bpf_insn prog[] = {
-+		BPF_LD_MAP_FD(BPF_REG_1, 0), /* map fd */
-+		BPF_MOV64_IMM(BPF_REG_2, 0), /* flags, not used */
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_local_storage),
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_RAW_INSN(BPF_STX | BPF_XADD | BPF_W, BPF_REG_0, BPF_REG_1, 0, 0),
-+
-+		BPF_MOV64_IMM(BPF_REG_0, 1), /* r0 = 1 */
-+		BPF_EXIT_INSN(),
-+	};
-+	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
-+	int storage_fd = -1, prog_fd = -1, cg_fd = -1;
-+	struct bpf_cgroup_storage_key key;
-+	__u32 duration, retval, size;
-+	char buf[128];
-+	__u64 value;
-+	int err;
-+
-+	storage_fd = bpf_create_map(BPF_MAP_TYPE_CGROUP_STORAGE,
-+				    sizeof(struct bpf_cgroup_storage_key),
-+				    8, 0, 0);
-+	if (CHECK(storage_fd < 0, "create_map", "%s\n", strerror(errno)))
-+		goto out;
-+
-+	prog[0].imm = storage_fd;
-+
-+	prog_fd = bpf_load_program(BPF_PROG_TYPE_CGROUP_SKB,
-+				   prog, insns_cnt, "GPL", 0,
-+				   bpf_log_buf, BPF_LOG_BUF_SIZE);
-+	if (CHECK(prog_fd < 0, "prog_load",
-+		  "verifier output:\n%s\n-------\n", bpf_log_buf))
-+		goto out;
-+
-+	if (CHECK_FAIL(setup_cgroup_environment()))
-+		goto out;
-+
-+	cg_fd = create_and_get_cgroup("/cg");
-+	if (CHECK_FAIL(cg_fd < 0))
-+		goto out;
-+
-+	if (CHECK_FAIL(join_cgroup("/cg")))
-+		goto out;
-+
-+	if (CHECK(bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_INET_EGRESS, 0),
-+		  "prog_attach", "%s\n", strerror(errno)))
-+		goto out;
-+
-+	err = bpf_prog_test_run(prog_fd, NUM_ITER, &pkt_v4, sizeof(pkt_v4),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval != 1, "prog_test_run",
-+	      "err %d errno %d retval %d\n", err, errno, retval);
-+
-+	/* check that cgroup storage results are available after test run */
-+
-+	err = bpf_map_get_next_key(storage_fd, NULL, &key);
-+	CHECK(err, "map_get_next_key", "%s\n", strerror(errno));
-+
-+	err = bpf_map_lookup_elem(storage_fd, &key, &value);
-+	CHECK(err || value != NUM_ITER,
-+	      "map_lookup_elem",
-+	      "err %d errno %d cnt %lld(%d)\n", err, errno, value, NUM_ITER);
-+out:
-+	close(storage_fd);
-+	close(prog_fd);
-+	close(cg_fd);
-+	cleanup_cgroup_environment();
-+}
--- 
-2.7.4
+>> 2. is IMO the wrong model for XDP, as I believe I argued the last time
+>> we discussed this :)
+>> In particular, in a situation with multiple XDP programs attached
+>> through a dispatcher, the 'owner' application of each program don't
+>> 'own' the interface attachment anyway, so if using bpf_link for that it
+>> would have to be pinned somewhere anyway. So the 'automatic detach'
+>> feature is only useful in the "xdpd" deployment scenario, whereas in the
+>> common usage model of command-line attachment ('ip link set xdp...') it
+>> is something that needs to be worked around.
+>
+> Right, nothing changed since we last discussed. There are cases where
+> one or another approach is more convenient. Having bpf_link for XDP
+> finally gives an option to have an auto-detaching (on last FD close)
+> approach, but you still insist there shouldn't be such an option. Why?
+
+Because the last time we discussed this, it was in the context of me
+trying to extend the existing API and being told "no, don't do that, use
+bpf_link instead". So I'm objecting to bpf_link being a *replacement*
+for the exiting API; if that's not what you're intending, and we can
+agree to keep both around and actively supported (including things like
+adding that flag to the netlink API I talked about above), then that's a
+totally different matter :)
+
+>> 3. would be kinda nice, I guess, if we were designing the API from
+>> scratch. But we already have an existing API, so IMO the cost of
+>> duplication outweighs any benefits of API unification.
+>
+> Not unification of BPF_LINK_CREATE, but unification of bpf_link
+> infrastructure in general, with its introspection and discoverability
+> APIs. bpftool can show which programs are attached where and it can
+> show PIDs of processes that own the BPF link.
+
+Right, sure, I was using BPF_LINK_CREATE as a shorthand for bpf_link in
+general.
+
+> With CAP_BPF you have also more options now how to control who can
+> mess with your bpf_link.
+
+What are those, exactly?
+
+[...]
+
+>> I was under the impression that forcible attachment of bpf_links was
+>> already possible, but looking at the code now it doesn't appear to be?
+>> Wasn't that the whole point of BPF_LINK_GET_FD_BY_ID? I.e., that a
+>> sysadmin with CAP_SYS_ADMIN privs could grab the offending bpf_link FD
+>> and force-remove it? I certainly think this should be added before we
+>> expand bpf_link usage any more...
+>
+> I still maintain that killing processes that installed the bpf_link is
+> the better approach. Instead of letting the process believe and act as
+> if it has an active XDP program, while it doesn't, it's better to
+> altogether kill/restart the process.
+
+Killing the process seems like a very blunt tool, though. Say it's a
+daemon that attaches XDP programs to all available interfaces, but you
+want to bring down an interface for some one-off maintenance task, but
+the daemon authors neglected to provide an interface to tell the daemon
+to detach from specific interfaces. If your only option is to kill the
+daemon, you can't bring down that interface without disrupting whatever
+that daemon is doing with XDP on all the other interfaces.
+
+-Toke
 
