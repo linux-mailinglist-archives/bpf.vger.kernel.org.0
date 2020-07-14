@@ -2,251 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305D121F06B
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 14:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7574321F132
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 14:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgGNMMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 08:12:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49267 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728502AbgGNMMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:12:21 -0400
+        id S1728069AbgGNM3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 08:29:31 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:23713 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726823AbgGNM3a (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 08:29:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594728739;
+        s=mimecast20190719; t=1594729769;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T/Uhd8kUIGVaFKfJlqqrQidFsSiRXLcUNXdQ5T/zyIQ=;
-        b=B8mZRGUV6KzMfti0uxHILljcP/nwb4ML6w9gm5ObH258tZr9AgiLDcU5/nyvJkmBwYI8Ow
-        6GolTYdJuotnRCobL0B1KSxg1zjv8FZwale88Pqx+DyoNM9BbgMPclQvg0uFLtUhAHOhsh
-        Dgih2OJ3Xxfuv9qLbCgKm3PSF42FNWE=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-Eq_yGKOFN7WCmNbfrIi_pw-1; Tue, 14 Jul 2020 08:12:17 -0400
-X-MC-Unique: Eq_yGKOFN7WCmNbfrIi_pw-1
-Received: by mail-qv1-f70.google.com with SMTP id g17so9525273qvw.0
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 05:12:17 -0700 (PDT)
+        bh=M1tJQgrbek3QI28HACPK1H60w+RS294RJhZIW4zv/pw=;
+        b=h5OEfqHzMV+WvMeSILfle7ddIwZBXlNC7o71EtptiyoAzQka8mAWeT6vPbeZLM0osmQeh9
+        cR2ks39kepS+IhZKlxIp0bEovZhu7o2JTgPC/519LnybuBOrXm6Jqh0oLlC3td6ivzPUnR
+        ckJNyeZNSRX9H0/Ve5wz9V1R8JG/t8g=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-uacEqLArPvq0a4n8TNcyGQ-1; Tue, 14 Jul 2020 08:29:25 -0400
+X-MC-Unique: uacEqLArPvq0a4n8TNcyGQ-1
+Received: by mail-wr1-f69.google.com with SMTP id i12so21452227wrx.11
+        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 05:29:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=T/Uhd8kUIGVaFKfJlqqrQidFsSiRXLcUNXdQ5T/zyIQ=;
-        b=J/ueBVOyYfzGN0oK2h0kCjtPjGi5J2TPPGfZUoGgH0g4aKkMGGhC7kNqwN/1BNKXZx
-         n4NuACjPu4kAUTgW9TjDBvTz7I33IlsFdTge2OM2co18SJKsa+/wjUeAHUrhIPyDuMKe
-         m10U0ZR8NqfjvghXMu3YyQE9Q/wPiqsz40HRlxoYnK2Dnq/eIBHwljrkvFX/uyfHHUBA
-         yiA87trvWLZ0HUAYjbOZD8IVFTWx+HjIyshEdHLjD2dEcpLYIgi/OfVA316NxX9Ef2t0
-         567B6WuKs7Ito0pcs/DKfvXGCdMyikUqhpslPJNKUu+wwbNMekeppgAKBnv8hfCHbK/q
-         YyGw==
-X-Gm-Message-State: AOAM530YmvC7B0vq2XLb6qUaA0KBp/xThoAB6zlnRhEqe0B9XJzbgL4Z
-        vNFhXKRz7j+yEc6H0yAp2pocnW/w9b1Je86pi15elsBh3hCWdl6MN+jfB8VG0IEyGdAG2fWtRm4
-        CLvM4sEsaBoOt
-X-Received: by 2002:ac8:1017:: with SMTP id z23mr4211702qti.147.1594728736971;
-        Tue, 14 Jul 2020 05:12:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSPGpZKO/MnucK03sbLp81g53VnsyNgLsmQQ0Xv+L+2+VWswllr93CSBw6ZziPBPVFsu75Mw==
-X-Received: by 2002:ac8:1017:: with SMTP id z23mr4211678qti.147.1594728736597;
-        Tue, 14 Jul 2020 05:12:16 -0700 (PDT)
+         :message-id:mime-version;
+        bh=M1tJQgrbek3QI28HACPK1H60w+RS294RJhZIW4zv/pw=;
+        b=YUTYu15iNByG/eN1EPORWT6ud7ATEKs3VJyOnjF764u/Oru5rYw42YlNswNudQCNTi
+         ipNe//ndMiomabBATodPCuL0ZVh5zSIjKUcsfDYv2arRSBue+xez4KHZF9t3DhJeVd3X
+         ghmqpWvnkK7KhIR4uPGOBgnf3oyt5hvg2RVhErWmwiHSKoSDBhlmuIN8l5nDxYeZ/Fr3
+         nUgaaLeWmDWvtDqqco7PHug7VLjxu6TvyAEPV4kAsyBmcvG4eThmiuV04/gK6M9Bni87
+         4j/hJDG3p0MFjSvZ01VkmHxaQ9o/HDCWumnaFZxpYorP3eRp0zMR/e+mZosP23DyA5Fz
+         6KpA==
+X-Gm-Message-State: AOAM532RJCSAk+sEV6Agk1IYj8STQPrj6PSwmTMlUm6IZhXGr1zp2dpw
+        OzWByL7ZWcBnZUkVEvOPtYsUzRwHNi0aYkFrMBI2pKZJgb7YGgAadSdj0DhJ8W1qlTgiVjw9sdO
+        Rd1IOs1D9xEUL
+X-Received: by 2002:a7b:c8c2:: with SMTP id f2mr4038476wml.57.1594729763849;
+        Tue, 14 Jul 2020 05:29:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwMcLTiDBY47ikR7IpxmOAOaUvTQRyYGGqEG4fWigSZAdh7jGA66uqGW0xExbdW0gzRYc7fhA==
+X-Received: by 2002:a7b:c8c2:: with SMTP id f2mr4038448wml.57.1594729763602;
+        Tue, 14 Jul 2020 05:29:23 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 19sm22323331qke.44.2020.07.14.05.12.15
+        by smtp.gmail.com with ESMTPSA id d18sm29804962wrj.8.2020.07.14.05.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 05:12:15 -0700 (PDT)
+        Tue, 14 Jul 2020 05:29:22 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CB7EC180653; Tue, 14 Jul 2020 14:12:12 +0200 (CEST)
+        id 34607180653; Tue, 14 Jul 2020 14:29:21 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add new members to bpf_attr.raw_tracepoint in bpf.h
-In-Reply-To: <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
-References: <159467113970.370286.17656404860101110795.stgit@toke.dk> <159467114405.370286.1690821122507970067.stgit@toke.dk> <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [PATCHv7 bpf-next 0/3] xdp: add a new helper for dev map multicast support
+In-Reply-To: <20200714063257.1694964-1-liuhangbin@gmail.com>
+References: <20200709013008.3900892-1-liuhangbin@gmail.com> <20200714063257.1694964-1-liuhangbin@gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Jul 2020 14:12:12 +0200
-Message-ID: <87r1tegusj.fsf@toke.dk>
+Date:   Tue, 14 Jul 2020 14:29:21 +0200
+Message-ID: <87imeqgtzy.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-> On Mon, Jul 13, 2020 at 1:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> Sync addition of new members from main kernel tree.
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  tools/include/uapi/linux/bpf.h |    9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/b=
-pf.h
->> index da9bf35a26f8..662a15e4a1a1 100644
->> --- a/tools/include/uapi/linux/bpf.h
->> +++ b/tools/include/uapi/linux/bpf.h
->> @@ -573,8 +573,13 @@ union bpf_attr {
->>         } query;
->>
->>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN com=
-mand */
->> -               __u64 name;
->> -               __u32 prog_fd;
->> +               __u64           name;
->> +               __u32           prog_fd;
->> +               __u32           log_level;      /* verbosity level of lo=
-g */
->> +               __u32           log_size;       /* size of user buffer */
->> +               __aligned_u64   log_buf;        /* user supplied buffer =
-*/
->> +               __u32           tgt_prog_fd;
->> +               __u32           tgt_btf_id;
->>         } raw_tracepoint;
->>
->>         struct { /* anonymous struct for BPF_BTF_LOAD */
->>
+> This patch is for xdp multicast support. which has been discussed before[0],
+> The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
+> a software switch that can forward XDP frames to multiple ports.
 >
-> I think BPF syscall would benefit from common/generalized log support
-> across all commands, given how powerful/complex it already is.
-> Sometimes it's literally impossible to understand why one gets -EINVAL
-> without adding printk()s in the kernel.
-
-Yes, I agree! This is horrible UI!
-
-> But it feels wrong to add log_level/log_size/log_buf fields to every
-> section of bpf_attr and require the user to specify it differently for
-> each command. So before we go and start adding per-command fields,
-> let's discuss how we can do this more generically. I wonder if we can
-> come up with a good way to do it in one common way and then gradually
-> support that way throughout all BPF commands.
+> To achieve this, an application needs to specify a group of interfaces
+> to forward a packet to. It is also common to want to exclude one or more
+> physical interfaces from the forwarding operation - e.g., to forward a
+> packet to all interfaces in the multicast group except the interface it
+> arrived on. While this could be done simply by adding more groups, this
+> quickly leads to a combinatorial explosion in the number of groups an
+> application has to maintain.
 >
-> Unfortunately it's too late to just add a few common fields to
-> bpf_attr in front of all other per-command fields, but here's two more
-> ideas just to start discussion. I hope someone can come up with
-> something nicer.
+> To avoid the combinatorial explosion, we propose to include the ability
+> to specify an "exclude group" as part of the forwarding operation. This
+> needs to be a group (instead of just a single port index), because there
+> may have multi interfaces you want to exclude.
 >
-> 1. Currently bpf syscall accepts 3 input arguments (cmd, uattr, size).
-> We can extend it with two more optional arguments: one for pointer to
-> log-defining attr (for log_buf pointer, log_size, log_level, maybe
-> something more later) and another for the size of that log attr.
-> Beyond that we'd need some way to specify that the user actually meant
-> to provide those 2 optional args. The most straightforward way would
-> be to use the highest bit of cmd argument. So instead of calling bpf()
-> with BPF_MAP_CREATE command, you'd call it with BPF_MAP_CREATE |
-> BPF_LOGGED, where BPF_LOGGED =3D 1<<31.
-
-Well, if only we'd had a 'flags' argument to the syscall... I don't
-suppose we want a bpf2()? :)
-
-I like your idea of just using the top bits of the 'cmd' field as flag
-bits, but in that case we should just define this explicitly, say
-'#define BPF_CMD_FLAGS_MASK 0xFFFF0000'?
-
-And instead of adding new arguments, why not just change the meaning of
-the 'attr' argument? Say we define:
-
-struct bpf_extended_attr {
-       __u32 log_level;
-       __u32 log_size;
-       __aligned_u64 log_buf;
-       __u8 reserved[48];
-       union bpf_attr attr;
-};
-
-And then define a new flag BPF_USES_EXTENDED_ATTR which will cause the
-kernel to interpret the second argument of the syscall as a pointer to
-that struct instead of to the bpf_attr union?
-
-> 2. A more "stateful" approach, would be to have an extra BPF command
-> to set log buffer (and level) per thread. And if such a log is set, it
-> would be overwritten with content on each bpf() syscall invocation
-> (i.e., log position would be reset to 0 on each BPF syscall).
-
-I don't think adding something stateful is a good idea; that's bound to
-lead to weird issues when someone messes up the state management in
-userspace.
-
-> Of course, the existing BPF_LOAD_PROG command would keep working with
-> existing log, but could fall back to the "common one", if
-> BPF_LOAD_PROG-specific one is not set.
+> Thus, the logical forwarding operation becomes a "set difference"
+> operation, i.e. "forward to all ports in group A that are not also in
+> group B". This series implements such an operation using device maps to
+> represent the groups. This means that the XDP program specifies two
+> device maps, one containing the list of netdevs to redirect to, and the
+> other containing the exclude list.
 >
-> It also doesn't seem to be all that critical to signal when the log
-> buffer is overflown. It's pretty easy to detect from user-space:
-> - either last byte would be non-zero, if we don't care about
-> guaranteeing zero-termination for truncated log;
-> - of second-to-last byte would be non-zero, if BPF syscall will always
-> zero-terminate the log.
-
-I think if we're doing this we should think about making the contents of
-the log machine-readable, so applications can figure out what's going on
-without having to parse the text strings. The simplest would be to make
-this new log buffer use TLV-style messaging, say we define the log
-buffer output to be a series of messages like these:
-
-struct bpf_log_msg {
-       __u16 type;
-       __u32 len;
-       __u8 contents[]; /* of size 'len' */
-} __attribute__((packed));
-
-To begin with we could define two types:
-
-struct bpf_log_msg_string {
-       __u16 type; /* BPF_LOG_MSG_TYPE_STRING */
-       __u32 len;
-       char message[];
-}  __attribute__((packed));
-
-struct bpf_log_msg_end {
-       __u16 type; /* BPF_LOG_MSG_TYPE_END */
-       __u32 len;
-       __u16 num_truncations;
-}  __attribute__((packed));
-
-The TYPE_STRING would just be a wrapper for the existing text-based
-messages, but delimited so userspace can pick them apart. And the second
-one would solve your 'has the log been truncated' issue above; the
-kernel simply always reserves eight bytes at the end of the buffer and
-ends with writing a TYPE_END message with the number of messages that
-were dropped due to lack of space. That would make it trivial for
-userspace to detect truncation.
-
-We could then add new message types later for machine-consumption. Say,
-and extended error code, or offsets into the BTF information, or
-whatever we end up needing. But just wrapping the existing log messages
-in TLVs like the ones above could be fairly straight-forwardly
-implemented with the existing bpf_log() infrastructure in the kernel,
-without having to settle on which machine-readable information is useful
-ahead of time... And the TLV format makes it easy for userspace to just
-skip message types it doesn't understand.
-
-WDYT?
-
-> Of course, if user code cares about such detection of log truncation,
-> it will need to set last/second-to-last bytes to zero before each
-> syscall.
+> To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+> to accept two maps, the forwarding map and exclude map. If user
+> don't want to use exclude map and just want simply stop redirecting back
+> to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
 >
-> Both approaches have their pros/cons, we can dig into those later, but
-> I'd like to start this discussion and see what other people think. I
-> also wonder if there are other syscalls with similarly advanced input
-> arguments (like bpf_attr) and common logging, we could learn from
-> those.
+> The 2nd and 3rd patches are for usage sample and testing purpose, so there
+> is no effort has been made on performance optimisation. I did same tests
+> with pktgen(pkt size 64) to compire with xdp_redirect_map(). Here is the
+> test result(the veth peer has a dummy xdp program with XDP_DROP directly):
+>
+> Version         | Test                                   | Native | Generic
+> 5.8 rc1         | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+> 5.8 rc1         | xdp_redirect_map       i40e->veth      |  12.7M |   1.6M
+> 5.8 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+> 5.8 rc1 + patch | xdp_redirect_map       i40e->veth      |  12.3M |   1.6M
+> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   7.2M |   1.5M
+> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->veth      |   8.5M |   1.3M
+> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.0M |  0.98M
+>
+> The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+> the arrays and do clone skb/xdpf. The native path is slower than generic
+> path as we send skbs by pktgen. So the result looks reasonable.
+>
+> Last but not least, thanks a lot to Jiri, Eelco, Toke and Jesper for
+> suggestions and help on implementation.
+>
+> [0] https://xdp-project.net/#Handling-multicast
+>
+> v7: Fix helper flag check
+>     Limit the *ex_map* to use DEVMAP_HASH only and update function
+>     dev_in_exclude_map() to get better performance.
 
-The first one that comes to mind is netlink extacks. Of course it's not
-quite comparable since netlink already has message-based semantics, but
-it does do sorta-kinda the same thing from a user PoV. The TLV format is
-obviously inspired by netlink (or, well, binary networking protocols in
-general).
+Did it help? The performance numbers in the table above are the same as
+in v6...
 
 -Toke
 
