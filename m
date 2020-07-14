@@ -2,352 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66021FEDA
-	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 22:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B11421FEF9
+	for <lists+bpf@lfdr.de>; Tue, 14 Jul 2020 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgGNUr6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jul 2020 16:47:58 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36732 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727847AbgGNUr6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jul 2020 16:47:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594759675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0MaXgRjPugCbTyz5Iy3UwDJY6zPZsf/bR3z6EVEFfZM=;
-        b=AqntVCpwJYoyPnaViHdy1DgE83HwAEMhSCuBOGX7WDjUXORMU1ZEm28NeVSRCwWtLft66K
-        pcTw5L9SZ2k0F85uq5JpxUsM1XsYpj8CSmguenJLGgnqbTRvaSXTU7fTq5J1Ri1bDkNcPe
-        YePHmnQLRS3O+2OsfDkSF0ycBcNl/28=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-2NCroZSPO9mjtmkwzQ4ROw-1; Tue, 14 Jul 2020 16:47:53 -0400
-X-MC-Unique: 2NCroZSPO9mjtmkwzQ4ROw-1
-Received: by mail-qk1-f199.google.com with SMTP id z2so13890000qkb.17
-        for <bpf@vger.kernel.org>; Tue, 14 Jul 2020 13:47:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=0MaXgRjPugCbTyz5Iy3UwDJY6zPZsf/bR3z6EVEFfZM=;
-        b=EBGMwwBnZu+d9M2bwqTVuiyWL2J7Qg+qvqTOJ0LeD0Q9h+aZ8GLd3fT2C7KdMMXXEE
-         YZ2vzxAiTg9CPULkOzOWNAkzcQCbYy0ghGkuCBjqve6jV3ojCVQt9VCKYOqArGNprhHM
-         fP8c0OmwOOfRCKweAClNkqgJeWx+SQ3qpWfWRhldgJwLJdAnuvMKTpZA4EGdEcCYFoBj
-         aAYaFsMmUG8sEOHQ5eTGwW0gTks3HyK0u0aMNwv39CpW3I/Xz6nM6qWzWRHN05+N8csQ
-         d6Xk9lwp/G8sToL4igDdbVf6A2GNHGlekS29iRqKa1++sW8xE3zA4j1C+QUR7p4Va1MU
-         9AyA==
-X-Gm-Message-State: AOAM533LgcewejOC/SEFOQRAGEA1LebiEFevIxUZBfic7urR9X/P8RP6
-        k9tm7tWyBZMyigNIgttbvow5B0CSEdZTe9G8eGiFq2RSxthIel3ktKPnSgDZ+i8ytsl5I8m9Zex
-        L+7IM6Puf+w63
-X-Received: by 2002:ac8:ac3:: with SMTP id g3mr6789477qti.178.1594759672602;
-        Tue, 14 Jul 2020 13:47:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6nR2xXy0jRiZMLGRj0TzghbtfvfbIEqz7vomQo5C8fD8NnQrKy39FQyz0IWfKbXO5iFSe+A==
-X-Received: by 2002:ac8:ac3:: with SMTP id g3mr6789461qti.178.1594759672187;
-        Tue, 14 Jul 2020 13:47:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 79sm24071619qkd.134.2020.07.14.13.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 13:47:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 86BD71804F0; Tue, 14 Jul 2020 22:47:48 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1728005AbgGNUzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jul 2020 16:55:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20282 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726442AbgGNUzS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jul 2020 16:55:18 -0400
+IronPort-SDR: 75zQywvAJzFQKIjIU+FsPwsBdtGaCbI05L67yPo0CECBqhSMQvgt8HwaZLtO3kj6wPhesYCKYZ
+ ku+M4RibfHeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="233883280"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="233883280"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 13:55:16 -0700
+IronPort-SDR: 4Bb7Ud4pg5UYrsINMHhYf2Us2HiHbTpdMC43AXIMganEoGpXt4dRn2gbXWyTC7Jkutb4S5CpCU
+ 649wf2MkOrPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="299670487"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2020 13:55:14 -0700
+Date:   Tue, 14 Jul 2020 22:50:35 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add new members to bpf_attr.raw_tracepoint in bpf.h
-In-Reply-To: <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com>
-References: <159467113970.370286.17656404860101110795.stgit@toke.dk> <159467114405.370286.1690821122507970067.stgit@toke.dk> <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com> <87r1tegusj.fsf@toke.dk> <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Jul 2020 22:47:48 +0200
-Message-ID: <87pn8xg6x7.fsf@toke.dk>
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: [RFC PATCH bpf-next 4/5] bpf, x64: rework pro/epilogue and
+ tailcall handling in JIT
+Message-ID: <20200714205035.GA4423@ranger.igk.intel.com>
+References: <20200702134930.4717-1-maciej.fijalkowski@intel.com>
+ <20200702134930.4717-5-maciej.fijalkowski@intel.com>
+ <20200710235632.lhn6edwf4a2l3kiz@ast-mbp.dhcp.thefacebook.com>
+ <CAADnVQJhhQnjQdrQgMCsx2EDDwELkCvY7Zpfdi_SJUmH6VzZYw@mail.gmail.com>
+ <CAADnVQ+AD0T_xqwk-fhoWV25iANs-FMCMVnn2-PALDxdODfepA@mail.gmail.com>
+ <20200714010045.GB2435@ranger.igk.intel.com>
+ <20200714033630.2fw5wzljbkkfle3j@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714033630.2fw5wzljbkkfle3j@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Mon, Jul 13, 2020 at 08:36:30PM -0700, Alexei Starovoitov wrote:
+> On Tue, Jul 14, 2020 at 03:00:45AM +0200, Maciej Fijalkowski wrote:
+> > On Fri, Jul 10, 2020 at 08:25:20PM -0700, Alexei Starovoitov wrote:
+> > > On Fri, Jul 10, 2020 at 8:20 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > Of course you are right.
+> > > > pop+nop+push is incorrect.
+> > > >
+> > > > How about the following instead:
+> > > > - during JIT:
+> > > > emit_jump(to_skip_below)  <- poke->tailcall_bypass
+> > 
+> > That's the jump to the instruction right after the poke->tailcall_target.
+> 
+> right. Mainly looking for better names than ip and ip_aux.
+> 
+> > > > pop_callee_regs
+> > > > emit_jump(to_tailcall_target) <- poke->tailcall_target
+> > 
+> > During JIT there's no tailcall_target so this will be nop5, right?
+> 
+> I thought it will be always jmp, but with new info I agree that
+> it will start with nop.
+> 
+> > 
+> > > >
+> > > > - Transition from one target to another:
+> > > > text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
+> > > > if (new_jmp != NULL)
+> > > >   text_poke(poke->tailcall_bypass, MOD jmp into nop);
+> > > > else
+> > > >   text_poke(poke->tailcall_bypass, MOD nop into jmp);
+> > > 
+> > > One more correction. I meant:
+> > > 
+> > > if (new_jmp != NULL) {
+> > >   text_poke(poke->tailcall_target, MOD_JMP, old_jmp, new_jmp)
+> > 
+> > Problem with having the old_jmp here is that you could have the
+> > tailcall_target removed followed by the new program being inserted. So for
+> > that case old_jmp is NULL but we decided to not poke the
+> > poke->tailcall_target when removing the program, only the tailcall_bypass
+> > is poked back to jmp from nop. IOW old_jmp is not equal to what
+> > poke->tailcall_target currently stores. This means that
+> > bpf_arch_text_poke() would not be successful for this update and that is
+> > the reason of faking it in this patch.
+> 
+> got it.
+> I think it can be solved two ways:
+> 1. add synchronize_rcu() after poking of tailcall_bypass into jmp
+> and then update tailcall_target into nop.
+> so the race you've described in cover letter won't happen.
+> In the future with sleepable progs we'd need to call sync_rcu_tasks_trace too.
+> Which will make poke_run even slower.
+> 
+> 2. add a flag to bpf_arch_text_poke() to ignore 5 bytes in there
+> and update tailcall_target to new jmp.
+> The speed of poke_run will be faster,
+> but considering the speed of text_poke_bp() it's starting to feel like
+> premature optimization.
+> 
+> I think approach 1 is cleaner.
+> Then the pseudo code will be:
+> if (new_jmp != NULL) {
+>    text_poke(poke->tailcall_target, MOD_JMP, old ? old_jmp : NULL, new_jmp);
+>    if (!old)
+>      text_poke(poke->tailcall_bypass, MOD_JMP, bypass_addr, NULL /* into nop */);
+> } else {
+>    text_poke(poke->tailcall_bypass, MOD_JMP, NULL /* from nop */, bypass_addr);
+>    sync_rcu(); /* let progs finish */
+>    text_poke(poke->tailcall_target, MOD_JMP, old_jmp, NULL /* into nop */)
+> }
 
-> On Tue, Jul 14, 2020 at 5:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Mon, Jul 13, 2020 at 1:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >>
->> >> Sync addition of new members from main kernel tree.
->> >>
->> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> ---
->> >>  tools/include/uapi/linux/bpf.h |    9 +++++++--
->> >>  1 file changed, 7 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linu=
-x/bpf.h
->> >> index da9bf35a26f8..662a15e4a1a1 100644
->> >> --- a/tools/include/uapi/linux/bpf.h
->> >> +++ b/tools/include/uapi/linux/bpf.h
->> >> @@ -573,8 +573,13 @@ union bpf_attr {
->> >>         } query;
->> >>
->> >>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN =
-command */
->> >> -               __u64 name;
->> >> -               __u32 prog_fd;
->> >> +               __u64           name;
->> >> +               __u32           prog_fd;
->> >> +               __u32           log_level;      /* verbosity level of=
- log */
->> >> +               __u32           log_size;       /* size of user buffe=
-r */
->> >> +               __aligned_u64   log_buf;        /* user supplied buff=
-er */
->> >> +               __u32           tgt_prog_fd;
->> >> +               __u32           tgt_btf_id;
->> >>         } raw_tracepoint;
->> >>
->> >>         struct { /* anonymous struct for BPF_BTF_LOAD */
->> >>
->> >
->> > I think BPF syscall would benefit from common/generalized log support
->> > across all commands, given how powerful/complex it already is.
->> > Sometimes it's literally impossible to understand why one gets -EINVAL
->> > without adding printk()s in the kernel.
->>
->> Yes, I agree! This is horrible UI!
->
-> UI?.. It's a perfectly fine and extensible API for all functionality
-> it provides, it just needs a better human-readable feedback mechanism,
-> which is what I'm proposing. Error codes are not working when you have
-> so many different situations that can result in error.
+Seems like this does the job :) clever stuff with sync_rcu.
+I tried this approach and one last thing that needs to be covered
+separately is the case of nop->nop update. We should simply avoid poking
+in this case. With this in place everything is functional.
 
-Yes. I was agreeing with you: the lack of understandable error messages
-means you have to play "guess where this EINVAL came from", which is a
-terrible user experience (should have been UX instead of UI, I guess,
-sorry about that).=20
+I will update the patch and descriptions and send the non-RFC revision, if
+you don't mind of course.
 
->> > But it feels wrong to add log_level/log_size/log_buf fields to every
->> > section of bpf_attr and require the user to specify it differently for
->> > each command. So before we go and start adding per-command fields,
->> > let's discuss how we can do this more generically. I wonder if we can
->> > come up with a good way to do it in one common way and then gradually
->> > support that way throughout all BPF commands.
->> >
->> > Unfortunately it's too late to just add a few common fields to
->> > bpf_attr in front of all other per-command fields, but here's two more
->> > ideas just to start discussion. I hope someone can come up with
->> > something nicer.
->> >
->> > 1. Currently bpf syscall accepts 3 input arguments (cmd, uattr, size).
->> > We can extend it with two more optional arguments: one for pointer to
->> > log-defining attr (for log_buf pointer, log_size, log_level, maybe
->> > something more later) and another for the size of that log attr.
->> > Beyond that we'd need some way to specify that the user actually meant
->> > to provide those 2 optional args. The most straightforward way would
->> > be to use the highest bit of cmd argument. So instead of calling bpf()
->> > with BPF_MAP_CREATE command, you'd call it with BPF_MAP_CREATE |
->> > BPF_LOGGED, where BPF_LOGGED =3D 1<<31.
->>
->> Well, if only we'd had a 'flags' argument to the syscall... I don't
->> suppose we want a bpf2()? :)
->>
->> I like your idea of just using the top bits of the 'cmd' field as flag
->> bits, but in that case we should just define this explicitly, say
->> '#define BPF_CMD_FLAGS_MASK 0xFFFF0000'?
->
-> sure
->
->>
->> And instead of adding new arguments, why not just change the meaning of
->> the 'attr' argument? Say we define:
->>
->> struct bpf_extended_attr {
->>        __u32 log_level;
->>        __u32 log_size;
->>        __aligned_u64 log_buf;
->>        __u8 reserved[48];
->>        union bpf_attr attr;
->> };
->
-> because this is a major PITA for libraries, plus it's not very
-> extensible, once you run out of 48 bytes? And when you don't need
-> those 48 bytes, you still need to zero them out, the kernel still
-> needs to copy them, etc. It just feels unclean to me.
->
-> But before we argue that, is there a problem adding 2 more arguments
-> which are never used/read unless we have an extra bit set in cmd?
-> Honest question, are there any implications to user-space with such an
-> approach? Backwards-compatibility issues or anything?
-
-No idea; I don't know enough about how the lower-level details of the
-syscall interface works to tell either way. Is it even *possible* to add
-arguments like that in a backwards-compatible way?
-
-However, assuming it *is* possible, my larger point was that we
-shouldn't add just a 'logging struct', but rather a 'common options
-struct' which can be extended further as needed. And if it is *not*
-possible to add new arguments to a syscall like you're proposing, my
-suggestion above would be a different way to achieve basically the same
-(at the cost of having to specify the maximum reserved space in advance).
-
->> And then define a new flag BPF_USES_EXTENDED_ATTR which will cause the
->> kernel to interpret the second argument of the syscall as a pointer to
->> that struct instead of to the bpf_attr union?
->>
->> > 2. A more "stateful" approach, would be to have an extra BPF command
->> > to set log buffer (and level) per thread. And if such a log is set, it
->> > would be overwritten with content on each bpf() syscall invocation
->> > (i.e., log position would be reset to 0 on each BPF syscall).
->>
->> I don't think adding something stateful is a good idea; that's bound to
->> lead to weird issues when someone messes up the state management in
->> userspace.
->
-> I agree, I'd prefer a stateless approach, but wanted to lay out a
-> stateful one for completeness as well.
-
-OK, cool.
-
->>
->> > Of course, the existing BPF_LOAD_PROG command would keep working with
->> > existing log, but could fall back to the "common one", if
->> > BPF_LOAD_PROG-specific one is not set.
->> >
->> > It also doesn't seem to be all that critical to signal when the log
->> > buffer is overflown. It's pretty easy to detect from user-space:
->> > - either last byte would be non-zero, if we don't care about
->> > guaranteeing zero-termination for truncated log;
->> > - of second-to-last byte would be non-zero, if BPF syscall will always
->> > zero-terminate the log.
->>
->> I think if we're doing this we should think about making the contents of
->> the log machine-readable, so applications can figure out what's going on
->> without having to parse the text strings. The simplest would be to make
->> this new log buffer use TLV-style messaging, say we define the log
->> buffer output to be a series of messages like these:
->>
->> struct bpf_log_msg {
->>        __u16 type;
->>        __u32 len;
->>        __u8 contents[]; /* of size 'len' */
->> } __attribute__((packed));
->>
->> To begin with we could define two types:
->>
->> struct bpf_log_msg_string {
->>        __u16 type; /* BPF_LOG_MSG_TYPE_STRING */
->>        __u32 len;
->>        char message[];
->> }  __attribute__((packed));
->>
->> struct bpf_log_msg_end {
->>        __u16 type; /* BPF_LOG_MSG_TYPE_END */
->>        __u32 len;
->>        __u16 num_truncations;
->> }  __attribute__((packed));
->>
->> The TYPE_STRING would just be a wrapper for the existing text-based
->> messages, but delimited so userspace can pick them apart. And the second
->> one would solve your 'has the log been truncated' issue above; the
->> kernel simply always reserves eight bytes at the end of the buffer and
->> ends with writing a TYPE_END message with the number of messages that
->> were dropped due to lack of space. That would make it trivial for
->> userspace to detect truncation.
->>
->
-> Log truncation is not an issue, we can make bpf syscall to write back
-> the actual size of emitted log (and optionally extra bool to mean
-> "truncated") into the original log_size field.
-
-So what was all that you were talking about with "check the
-second-to-last byte" in your previous email? I understood that to be
-about detecting truncation?
-
->> We could then add new message types later for machine-consumption. Say,
->> and extended error code, or offsets into the BTF information, or
->> whatever we end up needing. But just wrapping the existing log messages
->> in TLVs like the ones above could be fairly straight-forwardly
->> implemented with the existing bpf_log() infrastructure in the kernel,
->> without having to settle on which machine-readable information is useful
->> ahead of time... And the TLV format makes it easy for userspace to just
->> skip message types it doesn't understand.
->>
->> WDYT?
->
-> I think it's taking it a bit too far and adds more API on top of
-> existing API. Now all those types become a fixed API, messages become
-> an API, etc. Just more backwards compatibility stuff we need to
-> support forever, for, what I believe, very little gain.
->
-> In practice, using human-readable strings works just fine. If there is
-> any kind of real issue, usually it involves humans reading debug logs
-> and understanding what's going on.
-
-Let me give an example of what I want to be able to do. Just today I
-helped someone debug getting xdp-filter to run, and they were getting
-output like this:
-
-      libbpf: -- BEGIN DUMP LOG ---
-      libbpf:
-      xdpfilt_alw_all() is not a global function
-      processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-      peak_states 0 mark_read 0
-
-      libbpf: -- END LOG --
-
-I would like to have xdp-filter catch that, and turn it into a
-friendlier "your compiler is too old" message. Having to effectively
-grep through the free-form log output to pick out that message feels
-brittle and error prone, as opposed to just having the kernel add a
-machine-readable id ("err_func_linkage_not_global" or somesuch) and
-stick it in a machine-parsable TLV.
-
-> Also adopting these packet-like messages is not as straightforward
-> through BPF code, as now you can't just construct a single log line
-> with few calls to bpf_log().
-
-Why not? bpf_log() could just transparently write the four bytes of
-header (TYPE_STRING, followed by strlen(msg)) into the buffer before the
-string? And in the future, an enhanced version could take (say) an error
-ID as another parameter and transparently add that as a separate message.
-
->> > Of course, if user code cares about such detection of log truncation,
->> > it will need to set last/second-to-last bytes to zero before each
->> > syscall.
->> >
->> > Both approaches have their pros/cons, we can dig into those later, but
->> > I'd like to start this discussion and see what other people think. I
->> > also wonder if there are other syscalls with similarly advanced input
->> > arguments (like bpf_attr) and common logging, we could learn from
->> > those.
->>
->> The first one that comes to mind is netlink extacks. Of course it's not
->> quite comparable since netlink already has message-based semantics, but
->> it does do sorta-kinda the same thing from a user PoV. The TLV format is
->> obviously inspired by netlink (or, well, binary networking protocols in
->> general).
->>
->
-> Yeah, I'm aware of extack, but as you said, TLV is more of a netlink
-> format, extack messages themselves are just strings. But my question
-> was more of how this log could be done for complicated API calls using
-> similar extendable attrs, like perf_event_open, clone3, openat2, etc.
-
-Ah, right, no idea :)
-
--Toke
-
+> 
+> > 
+> > >   text_poke(poke->tailcall_bypass, MOD jmp into nop);
+> > > } else {
+> > >   text_poke(poke->tailcall_bypass, MOD nop into jmp);
+> > > }
+> > 
+> > I think that's what we currently (mostly) have. map_poke_run() is skipping
+> > the poke of poke->tailcall_target if new bpf_prog is NULL, just like
+> > you're proposing above. Of course I can rename the members in poke
+> > descriptor to names you're suggesting. I also assume that by text_poke you
+> > meant the bpf_arch_text_poke?
+> 
+> yep.
+> 
+> > 
+> > I've been able to hide the nop5 detection within the bpf_arch_text_poke so
+> > map_poke_run() is arch-independent in that approach. My feeling is that
+> > we don't need the old bpf_prog at all.
+> > 
+> > Some bits might change here due to the jump target alignment that I'm
+> > trying to introduce.
+> 
+> > Can you explain under what circumstances bpf_jit_binary_alloc() would not
+> > use get_random_int() ? Out of curiosity as from a quick look I can't tell
+> > when.
+> 
+> I meant when you're doing benchmarking get rid of that randomization
+> from bpf_jit_binary_alloc in your test kernel.
+> 
+> > I'm hitting the following check in do_jit():
+> 
+> I think aligning bypass_addr is a bit too much. Let it all be linear for now.
+> Since iTLB is sporadic it could be due to randomization and nothing to do
+> with additional jmp and unwind that this set is introducing.
