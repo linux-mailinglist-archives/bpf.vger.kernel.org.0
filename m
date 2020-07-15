@@ -2,97 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C692217E5
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 00:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDCC22182C
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 00:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgGOWlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 18:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
+        id S1727075AbgGOW7P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 18:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGOWlK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:41:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BEAC061755
-        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 15:41:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d202so4769412ybh.12
-        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 15:41:10 -0700 (PDT)
+        with ESMTP id S1726778AbgGOW7P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 18:59:15 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97A4C08C5DB
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 15:59:14 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ga4so4136023ejb.11
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 15:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=aSU4Bs0Q2l7iGfbtpqfDDGNT0dqQhvTHqnXOF17Zkrk=;
-        b=F7SPEUohE3HsmFaoxDiGmdi7AvIDvxiDvnfQu1nMBZkwP0p/6CQ2/BVoazmn3S+2Jq
-         r4Fh7ph8qwysbFPPElb2XoBx+YMa4WjzjL+E/twPtyVuIFGkaEiAV9w9cCHTz+JWATdh
-         0t1qL0cfGQUuGWwmzrWZWIsyl8xv1DJ3urC3QfmiDvZIWn1nA7LA4dgubvylQ3Kkf2k/
-         nR8yofojpGihaPy4N6wr5S63MZBX7r4OH6XXm4b7SYvd9jQeQR6euGwfdtSLjag9F6dY
-         6ITKL8l9DM2HC1OB52HIYJ6bEnUdBD36jcDJGePBscLpO1OLBJ7PCqfwDQ1gyEMzAQMR
-         SNKQ==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fZ1rBakSReO9Dn+EzmBi7QlVUTw5S5sAIhY6NkDcqpg=;
+        b=UyVYVGZ3tCLbe+5CH0LQ890sq2xoQmOnnE5A7hlJaGCoxZtFB624re+THIl7BI+lvO
+         eyyMilV41zbb2R7HS+QQp0qUghMOIUFFpGhvCz6uhonYxEZ2Lupsz+v2JGuO2SUposUC
+         wjZ0s+y5RtIISKMhBqUi/DW+mBLIJ4qpPEQ28=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=aSU4Bs0Q2l7iGfbtpqfDDGNT0dqQhvTHqnXOF17Zkrk=;
-        b=KIi7lczXeLgaEI/n5lbcquKHenWpL/xXCUd7KZ42d+anWJqsvS2NN47O19LywyjiHm
-         4r+O6fGDeS1+3Tmz76yNXyQR+0m6v4lw1s/1U/bh/GEmxi3LaQW+OsGAb2helANj/aV1
-         +b69ok1Smmi1QRZHJ/hfoeOgNAj+8Vy9gvj0pPGcSGT6cOOh0knUOjoUq3/1odWSL9j+
-         Dmm4XJiWwLptsbNR73UNSVyItO19fkb5P+6ZpylFQ8BaJpNtf2vQcZ4Ebc5lrrZc8xvQ
-         LE7+gtxy5MbdhKQ+OJs/QeOqE80ome+QFYJbGytmpP+lLBmXSOH3I753He8jrgJL71eN
-         j+uA==
-X-Gm-Message-State: AOAM533jlDV6UzBBIJ7gR7cw2etovPBItBdhEUXm9mCSJ/0ldZTQcLTR
-        HwKaZLWTqud9ihh0kozMEj07oUs=
-X-Google-Smtp-Source: ABdhPJyC3Gfw5x0x2bT4vx1BrrDQUHAjHWVkvT7gYBWbFuIUvf4eH5pg15CftZTfweshiZ+U2jFCllo=
-X-Received: by 2002:a25:4246:: with SMTP id p67mr2083832yba.385.1594852869523;
- Wed, 15 Jul 2020 15:41:09 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 15:41:07 -0700
-Message-Id: <20200715224107.3591967-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-Subject: [PATCH bpf-next] selftests/bpf: fix possible hang in sockopt_inherit
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fZ1rBakSReO9Dn+EzmBi7QlVUTw5S5sAIhY6NkDcqpg=;
+        b=IHUvG95lj778uZOYh5gohDjkDrbHb6rohAKHk3+S9MZnU0OtYADRQYnOvxFhZP4bNM
+         p1wujv2s+irWdy/92fCbijHlGAqENBC+vjzUd5CGzPIY2S9f2dKZxei+VZsP6wK4euP/
+         cQsOM6O4wL8spGbYmXNj2m/hvqnBFlzMlnMOeLP1JKHAzfPcUpQG7fFk+SLCkl9RiUpD
+         fgT1JqqeGd6fBs1NZEXsXs9zZfoliUuLS/nUKuEw8AHrgKO4V9nQTvNIgkmtHfLhDI5o
+         NVFUZTvDIq5SCIw/1kKnJ7MxuJvVSmORkcKN/ANmv+sgblS2ACLRPPoNfgqqNxLZjdKP
+         yG4g==
+X-Gm-Message-State: AOAM5309CtQXaFZvzYaB54mIzunHXnfCY5n1aeSCZKk5IJbJPkhqLbSH
+        ly5G6ZHtkB7eFb4qpjs/4RETow==
+X-Google-Smtp-Source: ABdhPJwtiT8rbD9B7KAQceCDxM9R1q9fPYU/TGYjl/rb8FPg4sH1QIcjoK1TO2tKm/WTJsefqNGf6A==
+X-Received: by 2002:a17:907:2149:: with SMTP id rk9mr1079014ejb.553.1594853953417;
+        Wed, 15 Jul 2020 15:59:13 -0700 (PDT)
+Received: from google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id hb8sm3307531ejb.8.2020.07.15.15.59.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 15:59:12 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 16 Jul 2020 00:59:11 +0200
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Implement bpf_local_storage for
+ inodes
+Message-ID: <20200715225911.GA1194150@google.com>
+References: <20200709101239.3829793-1-kpsingh@chromium.org>
+ <20200709101239.3829793-3-kpsingh@chromium.org>
+ <20200715215751.6llgungzff66iwxh@kafai-mbp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715215751.6llgungzff66iwxh@kafai-mbp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii reported that sockopt_inherit occasionally hangs up on 5.5 kernel [0].
-This can happen if server_thread runs faster than the main thread.
-In that case, pthread_cond_wait will wait forever because
-pthread_cond_signal was executed before the main thread was blocking.
-Let's move pthread_mutex_lock up a bit to make sure server_thread
-runs strictly after the main thread goes to sleep.
+On 15-Jul 14:57, Martin KaFai Lau wrote:
+> On Thu, Jul 09, 2020 at 12:12:37PM +0200, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> > 
+> > Similar to bpf_local_storage for sockets, add local storage for inodes.
+> > The life-cycle of storage is managed with the life-cycle of the inode.
+> > i.e. the storage is destroyed along with the owning inode.
+> > 
+> > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
+> > security blob which are now stackable and can co-exist with other LSMs.
+> > 
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> 
+> [ ... ]
+> 
+> 
+> > +static void *bpf_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+> > +{
+> > +	struct bpf_local_storage_data *sdata;
+> > +	struct inode *inode;
+> > +	int err = -EINVAL;
+> > +
+> > +	if (key) {
+> > +		inode = *(struct inode **)(key);
+> The bpf_inode_storage_lookup_elem() here and the (update|delete)_elem() below
+> are called from the userspace syscall.  How the userspace may provide this key?
 
-(Not sure why this is 5.5 specific, maybe scheduling is less
-deterministic? But I was able to confirm that it does indeed
-happen in a VM.)
+I realized this when I replied about the _fd_ name in the sk helpers.
+I am going to mark them as unsupported for now for inodes.
 
-[0] https://lore.kernel.org/bpf/CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com/
+We could, probably and separately, use a combination of the device
+and inode number as a key from userspace.
 
-Reported-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+- KP
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-index 8547ecbdc61f..ec281b0363b8 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-@@ -193,11 +193,10 @@ static void run_test(int cgroup_fd)
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_bpf_object;
- 
-+	pthread_mutex_lock(&server_started_mtx);
- 	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
- 				      (void *)&server_fd)))
- 		goto close_server_fd;
--
--	pthread_mutex_lock(&server_started_mtx);
- 	pthread_cond_wait(&server_started, &server_started_mtx);
- 	pthread_mutex_unlock(&server_started_mtx);
- 
--- 
-2.27.0.389.gc38d7665816-goog
-
+> 
+> > +		sdata = inode_storage_lookup(inode, map, true);
+> > +		return sdata ? sdata->data : NULL;
+> > +	}
+> > +
+> > +	return ERR_PTR(err);
+> > +}
+> > +
+> > +static int bpf_inode_storage_update_elem(struct bpf_map *map, void *key,
+> > +					 void *value, u64 map_flags)
+> > +{
+> > +	struct bpf_local_storage_data *sdata;
+> > +	struct inode *inode;
+> > +	int err = -EINVAL;
+> > +
+> > +	if (key) {
+> > +		inode = *(struct inode **)(key);
+> > +		sdata = map->ops->map_local_storage_update(inode, map, value,
+> > +							   map_flags);
+> > +		return PTR_ERR_OR_ZERO(sdata);
+> > +	}
+> > +	return err;
+> > +}
+> > +
+> > +static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
+> > +{
+> > +	struct bpf_local_storage_data *sdata;
+> > +
+> > +	sdata = inode_storage_lookup(inode, map, false);
+> > +	if (!sdata)
+> > +		return -ENOENT;
+> > +
+> > +	bpf_selem_unlink_map_elem(SELEM(sdata));
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int bpf_inode_storage_delete_elem(struct bpf_map *map, void *key)
+> > +{
+> > +	struct inode *inode;
+> > +	int err = -EINVAL;
+> > +
+> > +	if (key) {
+> > +		inode = *(struct inode **)(key);
+> > +		err = inode_storage_delete(inode, map);
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> 
+> [ ... ]
+> 
+> > +static int inode_storage_map_btf_id;
+> > +const struct bpf_map_ops inode_storage_map_ops = {
+> > +	.map_alloc_check = bpf_local_storage_map_alloc_check,
+> > +	.map_alloc = inode_storage_map_alloc,
+> > +	.map_free = inode_storage_map_free,
+> > +	.map_get_next_key = notsupp_get_next_key,
+> > +	.map_lookup_elem = bpf_inode_storage_lookup_elem,
+> > +	.map_update_elem = bpf_inode_storage_update_elem,
+> > +	.map_delete_elem = bpf_inode_storage_delete_elem,
+> > +	.map_check_btf = bpf_local_storage_map_check_btf,
+> > +	.map_btf_name = "bpf_local_storage_map",
+> > +	.map_btf_id = &inode_storage_map_btf_id,
+> > +	.map_local_storage_alloc = inode_storage_alloc,
+> > +	.map_selem_alloc = inode_selem_alloc,
+> > +	.map_local_storage_update = inode_storage_update,
+> > +	.map_local_storage_unlink = unlink_inode_storage,
+> > +};
+> > +
