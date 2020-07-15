@@ -2,112 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37E2216CB
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 23:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EDC221703
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 23:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgGOVHZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 17:07:25 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51196 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgGOVHY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:07:24 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jvocY-0003ol-AP; Wed, 15 Jul 2020 23:07:18 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jvocY-000Rp7-0q; Wed, 15 Jul 2020 23:07:18 +0200
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] bpf: Fix NULL pointer
- dereference in __btf_resolve_helper_id()
-To:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
- <20200714180904.277512-1-yepeilin.cs@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3b97c5bf-9f07-0353-ea4d-f90574fbcdc0@iogearbox.net>
-Date:   Wed, 15 Jul 2020 23:07:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726960AbgGOVa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 17:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgGOVa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 17:30:58 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D0FC061755;
+        Wed, 15 Jul 2020 14:30:58 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id k18so3036714qtm.10;
+        Wed, 15 Jul 2020 14:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qjW60+gubcNBB6a7AJGYsePrz262R1yPto5TElIKl/Q=;
+        b=ghpjkBMEPfSUaX4fAjzh/cXsigdEoAUUlpnUnFdNeC+71Cp5Zs3ITO6tlaULifzXCv
+         j0sqxcsijAYAI5BlYs0E1l+1H84aoz1GuoazO4r5pDw6vq/b51S/d8DR0gzDhk1Jeo/M
+         MoOxw/AbYjKwD3UyFI7ymvCswD53jtVi8sp5ejZjMVP5TXdKvUcye+GJhg6gpeo7/Xdm
+         gVeH0B7fzxVlel0+B3OTQEr/zvTsayBSMZ/uAxW33OieH+niahFP513oul3Y+YvSvgOI
+         4aeZ+hpiAYcZ9//nPm5Zb5cZa8rJG1UiGQtzwD3t63nbIs363GfEjfF8rKyU/jn2fJYk
+         NaBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qjW60+gubcNBB6a7AJGYsePrz262R1yPto5TElIKl/Q=;
+        b=SYPdy2ZryfyD+jo0vB7wn8uUTYGL4cNd/uYqpa3JxAveZC2BQRHoouC9P7Rjp5GWfr
+         MYvI8my7QBNRLkPqJG9Iy+5Y3GpC0CVgt08Fe+J872usu4OLYTANi+MrIMiQ071i73zW
+         J7Mas2CAWs/YGKFvABal2owu7hb0NQz0rl3GP1jj/4oQBtFVLZVe5/ex/eBGkWzPisHR
+         HXtyJMEIYIQCYafA28c758oEx9NawZZk0wfvjzMmd8DjsGmOCznTP/52R0iuHvK8AR/u
+         lYeMG2HDXjFJ5x0QEEiAX4lQW6/2cZgDll+q8QK0fcNhmMl6ouzV8fyz2p5srAhUVqDo
+         A1Fg==
+X-Gm-Message-State: AOAM533QM71TX6ijkZwiPKl2iGI4FCPgIt2K6LgYOC+9+KSPnNVN0owe
+        juhLT3EKDGI7gbew/kCNVvluRM6RM501vfkMN11A2+9w
+X-Google-Smtp-Source: ABdhPJwxVVYEmedyQlNdd6acBMdzkVGhcWaAIlUErSZct+uV5P8W/IbkzF7pXnUh8I58dLJvtocqm/ZzwbtbJxzfC/g=
+X-Received: by 2002:ac8:345c:: with SMTP id v28mr1915711qtb.171.1594848657701;
+ Wed, 15 Jul 2020 14:30:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200714180904.277512-1-yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25874/Wed Jul 15 16:18:08 2020)
+References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-2-jakub@cloudflare.com>
+In-Reply-To: <20200713174654.642628-2-jakub@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jul 2020 14:30:46 -0700
+Message-ID: <CAEf4BzZAvt4umMU7S=CAriDsaRkWmYBtAkXAo36KsdqSdCA8dA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 01/16] bpf, netns: Handle multiple link attachments
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/14/20 8:09 PM, Peilin Ye wrote:
-> Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
-> as NULL. This patch fixes the following syzbot bug:
-> 
->      https://syzkaller.appspot.com/bug?id=f823224ada908fa5c207902a5a62065e53ca0fcc
-> 
-> Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-
-Looks good, applied, thanks! As far as I can tell all the other occurrences are
-gated behind btf_parse_vmlinux() where we also init struct_opts, etc.
-
-So for bpf-next this would then end up looking like ...
-
-int btf_resolve_helper_id(struct bpf_verifier_log *log,
-                           const struct bpf_func_proto *fn, int arg)
-{
-         int id;
-
-         if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID)
-                 return -EINVAL;
-         id = fn->btf_id[arg];
-         if (!id || !btf_vmlinux || id > btf_vmlinux->nr_types)
-                 return -EINVAL;
-         return id;
-}
-
+On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> Extend the BPF netns link callbacks to rebuild (grow/shrink) or update the
+> prog_array at given position when link gets attached/updated/released.
+>
+> This let's us lift the limit of having just one link attached for the new
+> attach type introduced by subsequent patch.
+>
+> No functional changes intended.
+>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
-> Sorry, I got the link wrong. Thank you for pointing that out.
-> 
-> Change in v3:
->      - Fix incorrect syzbot dashboard link.
-> 
-> Change in v2:
->      - Split NULL and IS_ERR cases.
-> 
->   kernel/bpf/btf.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 30721f2c2d10..092116a311f4 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4088,6 +4088,11 @@ static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
->   	const char *tname, *sym;
->   	u32 btf_id, i;
->   
-> +	if (!btf_vmlinux) {
-> +		bpf_log(log, "btf_vmlinux doesn't exist\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	if (IS_ERR(btf_vmlinux)) {
->   		bpf_log(log, "btf_vmlinux is malformed\n");
->   		return -EINVAL;
-> 
 
+LGTM.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+[...]
