@@ -2,118 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927F9220CDF
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 14:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521A8220CF2
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 14:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbgGOMZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 08:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
+        id S1728461AbgGOMbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 08:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729198AbgGOMZ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 08:25:27 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E553C061755;
-        Wed, 15 Jul 2020 05:25:27 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n5so2999989pgf.7;
-        Wed, 15 Jul 2020 05:25:27 -0700 (PDT)
+        with ESMTP id S1726396AbgGOMbp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 08:31:45 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DD5C061755;
+        Wed, 15 Jul 2020 05:31:45 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id d4so3006988pgk.4;
+        Wed, 15 Jul 2020 05:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TI7B6uM5uAGiHWQ7sW+RUED1scSbU7lrfz9lYsJ7uGo=;
-        b=ZZOSLzlcXTNm4W3OZMnWVr1+NbaMIUUE5yV17q0Y4hA0+t/z3V/DgbwxNjZOanbfyT
-         P15BKhmOYeyEwe470CDsq1Gmh6KVZS/rD5dYEZuEMdGlTgsy6fo7YM200mud4SzH0dKV
-         Twpms/NYERwpRJ6Ld0N5HYqT1I6kHrXeygLJDKG2Q8CELbHJQV2VnDQAeVhue0RIsuat
-         RwI94CIbd26kZyjPO5k3PiVHO9N2kVxFvayyhowf1O+k+27pYy67195muiwxWYZ9bJT/
-         1LHiFDhF4SsTASoAzJLfMth+rvMP+4v18E1coy83mkD42/yd8buYrKmlRZ9NdRpeyVSC
-         y/xQ==
+        bh=EVdYeqKXqkfSiIHIdGhiNsRiFR/DiMIknNoE91P/+/Y=;
+        b=NprICiB9/dfFM3Va2F1zMt5hDyoEeKkj1Hq7pEy9zCSaWvdfCM/r76B3JlQW3O3OWK
+         kAo3MQrdB1ADlkVCSRSDMKW55STjsxqeNVc5B92YXGcj/pyqgPH2P6VvNIlWMUhEiN5+
+         tzby3Uka3PownLoP/KRDndJtVXN8vht4o935Tv3OIQX5ba/4zxgJahG0r+LpY1CsU5og
+         IN/o+MsxGipzLoX44cgO0BDiu/S3sD9jEI94b5ZHerjInM3wlXuuJyU4UnJf01F0usXE
+         JeQ5H/ETfoDgEI+VpATGW/zJcxuMAzq1EH5LlYMPDPAtU/oDFlI4sqQq5CTLc3uG3J0Q
+         rhrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=TI7B6uM5uAGiHWQ7sW+RUED1scSbU7lrfz9lYsJ7uGo=;
-        b=gBGGk3SSV1ZL3UwRXAbvPs+VkvSLphAreun5o0HKKdEHcs2Vs32Eh7YEW8laEhDRSR
-         /eIHj3hDBwUMYW4afeAQ5GuXhi7UvsW/dkmxX71dZPs77mO4YRF9+xLmtkbG8LoBXY2d
-         QPzCzgmKRq9hYiIUKLSDZVfsDnDo5NBoPYwZ+1JTI4fZowdkDvhtzx5RPlku7DMxk7w6
-         dfjvhzHoRDM6S5soeIpNmqKl8IrVy2M6BSvHsVy8xysU6usURVug2iXWNcK66DL5yW7f
-         O5mz11rby7cenWdI3sfcUUSPU+qhrzdha4ICiK6XCrdiH1GcVdMTpdwO3rLfkWcMUX+B
-         /yxA==
-X-Gm-Message-State: AOAM533kjgi999nYml5/rSTUTrJ9gwAxuwdq55aIuDf2hgv5i2nFUhOs
-        ZIgOsa3AtsrC1xailftjwCs=
-X-Google-Smtp-Source: ABdhPJy7yjmLA5XbVF7NyUuQoRirQ+f/S9NyKNnFW9PIFnpMFMxa9S5xH582iGEeSOVO1gAN4T5gDw==
-X-Received: by 2002:a63:b18:: with SMTP id 24mr8235755pgl.406.1594815926662;
-        Wed, 15 Jul 2020 05:25:26 -0700 (PDT)
+        bh=EVdYeqKXqkfSiIHIdGhiNsRiFR/DiMIknNoE91P/+/Y=;
+        b=j2e48gJqn54sK3dcBjZvpgxulCWdYzkYVGVoyq1r7ByJP+SwIFbpr65WGATrYoAe3c
+         raiXLfeZv3faBr87ernYlJCvUXSm6k10v1Mxdnsmbd3HwjRaSXdcmg3gpHU+H5sZ6/x8
+         dlm4NFM1yva4kOHfeir4LOPzVHeqKT8gxWc1fam48SoMmvKG8TE7QkMKgCZScegZu0Wg
+         xpn6HNB1LzrG7Z90dYSy/laLTzsTqWLGLrQrRHnGduRkyr2gyErNM8ASJrV2trG/wD/m
+         TRDip5AZQs7pYKRLUoUoMXChF2hcj5tqe+gllBP7Xeur41KeA8XAY8PkyZwrImVzLyrk
+         WoiA==
+X-Gm-Message-State: AOAM533YpfFIdVfOpnohJklZz87Wzs/P9iS6jt8h8MFvpkQSzFF441mr
+        l9kM5wHLVVN98cWAUzhw7vY=
+X-Google-Smtp-Source: ABdhPJxlGbetVv5TGncsu/rWFxN7GeZjGJ4z1Rw37Bg75ydvb84lnWZgFBeTglTnRR1OSPJre6c/XA==
+X-Received: by 2002:aa7:948c:: with SMTP id z12mr8687650pfk.47.1594816303609;
+        Wed, 15 Jul 2020 05:31:43 -0700 (PDT)
 Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id o2sm2121381pfh.160.2020.07.15.05.25.22
+        by smtp.gmail.com with ESMTPSA id t5sm2174519pgl.38.2020.07.15.05.31.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 05:25:25 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 20:25:14 +0800
+        Wed, 15 Jul 2020 05:31:42 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 20:31:32 +0800
 From:   Hangbin Liu <liuhangbin@gmail.com>
 To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
+Cc:     David Ahern <dsahern@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCHv7 bpf-next 1/3] xdp: add a new helper for dev map
+Subject: Re: [PATCHv7 bpf-next 0/3] xdp: add a new helper for dev map
  multicast support
-Message-ID: <20200715122514.GG2531@dhcp-12-153.nay.redhat.com>
+Message-ID: <20200715123132.GH2531@dhcp-12-153.nay.redhat.com>
 References: <20200709013008.3900892-1-liuhangbin@gmail.com>
  <20200714063257.1694964-1-liuhangbin@gmail.com>
- <20200714063257.1694964-2-liuhangbin@gmail.com>
- <87imepg3xt.fsf@toke.dk>
+ <87imeqgtzy.fsf@toke.dk>
+ <2941a6f5-8c6c-6338-2cea-f3d429a06133@gmail.com>
+ <87ft9tg3vz.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87imepg3xt.fsf@toke.dk>
+In-Reply-To: <87ft9tg3vz.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:52:14PM +0200, Toke Høiland-Jørgensen wrote:
-> > +bool dev_in_exclude_map(struct bpf_dtab_netdev *obj, struct bpf_map *map,
-> > +			int exclude_ifindex)
-> > +{
-> > +	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
-> > +	struct bpf_dtab_netdev *dev;
-> > +	struct hlist_head *head;
-> > +	int i = 0;
-> > +
-> > +	if (obj->dev->ifindex == exclude_ifindex)
-> > +		return true;
-> > +
-> > +	if (!map || map->map_type != BPF_MAP_TYPE_DEVMAP_HASH)
-> > +		return false;
+On Tue, Jul 14, 2020 at 11:53:20PM +0200, Toke Høiland-Jørgensen wrote:
+> >David Ahern <dsahern@gmail.com> writes:
+> >>> Version         | Test                                   | Native | Generic
+> >>> 5.8 rc1         | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+> >>> 5.8 rc1         | xdp_redirect_map       i40e->veth      |  12.7M |   1.6M
+> >>> 5.8 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.0M |   1.9M
+> >>> 5.8 rc1 + patch | xdp_redirect_map       i40e->veth      |  12.3M |   1.6M
+> >>> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   7.2M |   1.5M
+> >>> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->veth      |   8.5M |   1.3M
+> >>> 5.8 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.0M |  0.98M
+> >>>
+> >>> The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+> >>> the arrays and do clone skb/xdpf. The native path is slower than generic
+> >>> path as we send skbs by pktgen. So the result looks reasonable.
+> >>>
+> >>> Last but not least, thanks a lot to Jiri, Eelco, Toke and Jesper for
+> >>> suggestions and help on implementation.
+> >>>
+> >>> [0] https://xdp-project.net/#Handling-multicast
+> >>>
+> >>> v7: Fix helper flag check
+> >>>     Limit the *ex_map* to use DEVMAP_HASH only and update function
+> >>>     dev_in_exclude_map() to get better performance.
+> >> 
+> >> Did it help? The performance numbers in the table above are the same as
+> >> in v6...
+> >> 
+> >
+> > If there is only 1 entry in the exclude map, then the numbers should be
+> > about the same.
 > 
-> The map type should probably be checked earlier and the whole operation
-> aborted if it is wrong...
+> I would still expect the lack of the calls to devmap_get_next_key() to
+> at least provide a small speedup, no? That the numbers are completely
+> unchanged looks a bit suspicious...
 
-Yes, I have already checked it in the helper, there should no need to double
-check. I will remove this check.
+As I replied to David, I didn't re-run the test as I thought there should
+no much difference as the exclude map on has 1 entry.
 
-> 
-> > +
-> > +	for (; i < dtab->n_buckets; i++) {
-> > +		head = dev_map_index_hash(dtab, i);
-> > +
-> > +		dev = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),
-> > +					    struct bpf_dtab_netdev,
-> > +					    index_hlist);
-> > +
-> > +		if (dev && dev->idx == exclude_ifindex)
-> > +			return true;
-> > +	}
-> 
-> This looks broken; why are you iterating through the buckets? Shouldn't
-> this just be something like:
-> 
-> return __dev_map_hash_lookup_elem(map, obj->dev->ifindex) != NULL;
-
-Ah, yes, I forgot this. I will update the code.
+There should be a small speedup compared with previous patch. But as the
+test system re-installed and rebooted, there will be some jitter to the
+test result. It would be a little hard to observe the improvement.
 
 Thanks
 Hangbin
