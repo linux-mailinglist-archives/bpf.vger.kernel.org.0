@@ -2,82 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EDC221703
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 23:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C785221732
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 23:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgGOVa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 17:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S1727108AbgGOVnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 17:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgGOVa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:30:58 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D0FC061755;
-        Wed, 15 Jul 2020 14:30:58 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id k18so3036714qtm.10;
-        Wed, 15 Jul 2020 14:30:58 -0700 (PDT)
+        with ESMTP id S1726356AbgGOVnS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 17:43:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30C4C061755
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 14:43:18 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i203so4593362yba.9
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 14:43:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qjW60+gubcNBB6a7AJGYsePrz262R1yPto5TElIKl/Q=;
-        b=ghpjkBMEPfSUaX4fAjzh/cXsigdEoAUUlpnUnFdNeC+71Cp5Zs3ITO6tlaULifzXCv
-         j0sqxcsijAYAI5BlYs0E1l+1H84aoz1GuoazO4r5pDw6vq/b51S/d8DR0gzDhk1Jeo/M
-         MoOxw/AbYjKwD3UyFI7ymvCswD53jtVi8sp5ejZjMVP5TXdKvUcye+GJhg6gpeo7/Xdm
-         gVeH0B7fzxVlel0+B3OTQEr/zvTsayBSMZ/uAxW33OieH+niahFP513oul3Y+YvSvgOI
-         4aeZ+hpiAYcZ9//nPm5Zb5cZa8rJG1UiGQtzwD3t63nbIs363GfEjfF8rKyU/jn2fJYk
-         NaBw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WPW2jthcymgJJnDe4srAy8GflGzwLl52ZFtIA0Ixzqw=;
+        b=PvN9qtLWYSDsNHkgj/A27DsYxbLZ/Xnm+V0boSzvB8ey5BIexmosCy7fP6UkN8Zb4C
+         sjRU/+R5zu11ex3BuKYJXCu8Ou4nJO1JBvDeL/VWYvR9Ex4e5VutdUb9RQCUUB8sYUag
+         2w+3i8jQdmRvbG9KhMIy39jcQELLbsG//2Iy5fj3qTFiC12LFmrkC3diSfvc5Yuxy/9F
+         KtwNHAQwI/2lNQ+CS57Ti7gxaqePN96jkHJ039IoZCkJHRp1e/E5SdJmPZj6+/Kr/vMy
+         7T5pI1oyS6yTvXp3k+5+h5huvsrNOh7L4gpAnasiC27Ib9QLtf6R2tjZRCDElxuZLeOS
+         18uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qjW60+gubcNBB6a7AJGYsePrz262R1yPto5TElIKl/Q=;
-        b=SYPdy2ZryfyD+jo0vB7wn8uUTYGL4cNd/uYqpa3JxAveZC2BQRHoouC9P7Rjp5GWfr
-         MYvI8my7QBNRLkPqJG9Iy+5Y3GpC0CVgt08Fe+J872usu4OLYTANi+MrIMiQ071i73zW
-         J7Mas2CAWs/YGKFvABal2owu7hb0NQz0rl3GP1jj/4oQBtFVLZVe5/ex/eBGkWzPisHR
-         HXtyJMEIYIQCYafA28c758oEx9NawZZk0wfvjzMmd8DjsGmOCznTP/52R0iuHvK8AR/u
-         lYeMG2HDXjFJ5x0QEEiAX4lQW6/2cZgDll+q8QK0fcNhmMl6ouzV8fyz2p5srAhUVqDo
-         A1Fg==
-X-Gm-Message-State: AOAM533QM71TX6ijkZwiPKl2iGI4FCPgIt2K6LgYOC+9+KSPnNVN0owe
-        juhLT3EKDGI7gbew/kCNVvluRM6RM501vfkMN11A2+9w
-X-Google-Smtp-Source: ABdhPJwxVVYEmedyQlNdd6acBMdzkVGhcWaAIlUErSZct+uV5P8W/IbkzF7pXnUh8I58dLJvtocqm/ZzwbtbJxzfC/g=
-X-Received: by 2002:ac8:345c:: with SMTP id v28mr1915711qtb.171.1594848657701;
- Wed, 15 Jul 2020 14:30:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-2-jakub@cloudflare.com>
-In-Reply-To: <20200713174654.642628-2-jakub@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jul 2020 14:30:46 -0700
-Message-ID: <CAEf4BzZAvt4umMU7S=CAriDsaRkWmYBtAkXAo36KsdqSdCA8dA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 01/16] bpf, netns: Handle multiple link attachments
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WPW2jthcymgJJnDe4srAy8GflGzwLl52ZFtIA0Ixzqw=;
+        b=Iz+z3mXPahWelolofW3w7N/MspJItPyD3p6dX8iQSizra9FtKvG7mSBDtydD6sdrls
+         5ZLVNvUi8DlFFaMF2uZwOwb9quUxqH1CGG2eXF0b4dV3s5+iteXjJKMZ/wb5L8PAMSVz
+         dRVIpwfAShDp5N6CuEKLuv1frnXNSiZH8Lpli0Tq933sx7ElQpAHxLeNf3TdeaLuVvxP
+         g6gjhGPV0hUHn+XANOzJSeMtdQ3zdXQjPi/3yyHXOLMyI7OkAFeoJ6SXHEtrLb61EMAD
+         J0DhHWZJTvbfuXLC2PIcsboLVIrYveeLPzaOln6lb6f+P+Td+8D0xwyzjqsJko8V1yRx
+         5Z5A==
+X-Gm-Message-State: AOAM531FZcg/L9gJZZ8xU3+7lfxth8J7ROkz9BeR6vDWDPy6uho6f7uz
+        K/IUD0SQxsA2BkUxnQo1+HMwibNkAoo=
+X-Google-Smtp-Source: ABdhPJz/qTdRjOyD9NiyHcxQ5X4u25G5pK7DjjWbH8sfOQ6b1U0bIDyl+0KlG5qp/aUt1V0yHVOLYZN+VVE=
+X-Received: by 2002:a25:6c57:: with SMTP id h84mr1497780ybc.211.1594849397781;
+ Wed, 15 Jul 2020 14:43:17 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 14:43:10 -0700
+Message-Id: <20200715214312.2266839-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
+Subject: [RFC PATCH bpf-next 0/2] BTF support for ksyms
+From:   Hao Luo <haoluo@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Extend the BPF netns link callbacks to rebuild (grow/shrink) or update the
-> prog_array at given position when link gets attached/updated/released.
->
-> This let's us lift the limit of having just one link attached for the new
-> attach type introduced by subsequent patch.
->
-> No functional changes intended.
->
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
+This patch series extends the previously add __ksym externs with btf
+info.
 
-LGTM.
+Right now the __ksym externs are treated as pure 64-bit scalar value.
+Libbpf replaces ld_imm64 insn of __ksym by its kernel address at load
+time. This patch series extend those extern with their btf info. Note
+that btf support for __ksym must come with the btf that has VARs encoded
+to work properly. Therefore, these patches are tested against a btf
+generated by a patched pahole, whose change will available in released
+pahole soon.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+There are a couple of design choices that I would like feedbacks from
+bpf/btf experts.
 
-[...]
+ 1. Because the newly added pseudo_btf_id needs to carry both a kernel
+    address (64 bits) and a btf id (32 bits), I used the 'off' fields
+    of ld_imm insn to carry btf id. I wonder if this breaks anything or
+    if there is a better idea.
+ 2. Since only a subset of vars are going to be encoded into the new
+    btf, if a ksym that doesn't find its btf id, it doesn't get
+    converted into pseudo_btf_id. It is still treated as pure scalar
+    value. But we require kernel btf to be loaded in libbpf if there is
+    any ksym in the bpf prog.
+
+This is RFC as it requires pahole changes that encode kernel vars into
+btf.
+
+Hao Luo (2):
+  bpf: BTF support for __ksym externs
+  selftests/bpf: Test __ksym externs with BTF
+
+ include/uapi/linux/bpf.h                      | 37 ++++++++++----
+ kernel/bpf/verifier.c                         | 26 ++++++++--
+ tools/include/uapi/linux/bpf.h                | 37 ++++++++++----
+ tools/lib/bpf/libbpf.c                        | 50 ++++++++++++++++++-
+ .../testing/selftests/bpf/prog_tests/ksyms.c  |  2 +
+ .../testing/selftests/bpf/progs/test_ksyms.c  | 14 ++++++
+ 6 files changed, 143 insertions(+), 23 deletions(-)
+
+-- 
+2.27.0.389.gc38d7665816-goog
+
