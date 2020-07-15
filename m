@@ -2,413 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4423F22083A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 11:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC963220CA2
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 14:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgGOJJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 05:09:36 -0400
-Received: from mail-eopbgr60073.outbound.protection.outlook.com ([40.107.6.73]:61089
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725922AbgGOJJf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:09:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BtWp1bmopEkn4rUCOO4wSYl/ixRZ2XjyozW2o0B/e4+ErYdhlVDGrNWW01EJjjFLIgQsYxpxNC8UDx8LNsFaPEWQYv2nWyl697cxyqB9XvohWKEnNQj3lBYx0TZKJ2DESLE/MBnSXA8XrQc/adhM828Wlenw61emPQv9H0i6l3oPRO3YX6HuGMi0/ub5/m4s4Be/76doYYXrqHpeFTRnno5ivq8Jee/0U2iWIrbN7yA+rLWpOuFrWTTFhekrUdwnsCNUuwZnDwRpHms7BRZy7n+kxf2nsx3Nyhy8kxv58RM3zF6ErTR/vo6f0glONF/RcQBN5ghT8wZ85+7zyGaA1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sefK0izBrlXBba7nm9x0YC44rizNTTh1V7IKukh2Xig=;
- b=JhSEkn8ps6GJ9iW5JssRG5fgif39UCSJNgpAg0Ezkj76IgSTh2V8ul5h0gc41iSNv0ILG6zxhZN8JkRLtwpOZ7V/yj8l/dLoSM40/srB/sjd+5q7955eDxmC/CnrMeGCiU7fCvxipxkFd8jYLbnLcAeOXsiE+JOm2EcBI2BBGLlPs2dc4miFGYMfz0sApdKhnoRFW0SaJdoiS30t5I+3Lcb8g3tBCoZup1UTnJH9Kcd3ekO1oW5qvX4JJe5NS2qr8jRRXM8DHVqKlQNoYSX3y+x22lMmgbTc6e56d473TWyXTXXng2RMJRKLjmw7fvG2cRXpRkwvROCXegq7BOtX0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sefK0izBrlXBba7nm9x0YC44rizNTTh1V7IKukh2Xig=;
- b=thf3i9C8GU8ZoX/Zz+xaTvgCSFQmoMR5uy+KMYyIOpTC+l95v5IEF/3YV5EcDKubNrOGwO6EydtKas4r1oQYgHn6OhMt2x/c6vPyUfKPkfr/ig2DSoHQEnVp2+PvHTXQ6ml6nzL0E0AHrne4/I8jA1kcfEQSlLWzHUYnD+wSTEk=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB5974.eurprd05.prod.outlook.com (2603:10a6:20b:a7::12)
- by AM6PR05MB6056.eurprd05.prod.outlook.com (2603:10a6:20b:a9::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 15 Jul
- 2020 09:09:30 +0000
-Received: from AM6PR05MB5974.eurprd05.prod.outlook.com
- ([fe80::55:e9a6:86b0:8ba2]) by AM6PR05MB5974.eurprd05.prod.outlook.com
- ([fe80::55:e9a6:86b0:8ba2%7]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
- 09:09:30 +0000
-Subject: Re: [PATCH bpf-next v2 04/14] xsk: move fill and completion rings to
- buffer pool
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, jonathan.lemon@gmail.com,
-        bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
-        maciej.fijalkowski@intel.com, maciejromanfijalkowski@gmail.com,
-        cristian.dumitrescu@intel.com
-References: <1594390602-7635-1-git-send-email-magnus.karlsson@intel.com>
- <1594390602-7635-5-git-send-email-magnus.karlsson@intel.com>
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-Message-ID: <0f2ff47a-d1ce-78d3-bb96-6e5bc60dc04f@mellanox.com>
-Date:   Wed, 15 Jul 2020 12:09:27 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <1594390602-7635-5-git-send-email-magnus.karlsson@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR0302CA0001.eurprd03.prod.outlook.com
- (2603:10a6:205:2::14) To AM6PR05MB5974.eurprd05.prod.outlook.com
- (2603:10a6:20b:a7::12)
+        id S1729900AbgGOMFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 08:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726968AbgGOMFn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 08:05:43 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2E3C061755
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 05:05:43 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h1so1237781otq.12
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 05:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=fIgUJOEwl8SPjqh6tIIbJRELmoHHIy8JGC3d8waeLBA=;
+        b=QtMXXAoa8y60R2TGNvSsUEdN3zCxspEK7Wdk6/j4In495Yjz9R/PNnI66pM7Mx75Vr
+         7YfN6J9bkHUUQYcofLLF+gEA3DvozsM6NrpD5vYC9wH4MHAkHiuTksxx/HtKD9Z/OteC
+         zHBiF5JZsLfrL7vQKqQSI7zrZSQedrUfiHPj0kzsopkjpOIPTFJ23dLJlCK9pvM4mtSf
+         gD8i4aJjxsl5xhqT3O/nr0mFffaLt1B20mJUKlVy28yoNB4jPGn7+DtQKuQNVOioFsLX
+         dzuwA16VnkrUHqgrnF0uVK4BSEH6sI5qoGdrjxwx/nXqmIkTxEF0ee2BYmyDTMntsv1s
+         AEMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=fIgUJOEwl8SPjqh6tIIbJRELmoHHIy8JGC3d8waeLBA=;
+        b=AaEueSM5lcPGsTnz2EaUgOpAMIVJM6TXUbUoodI3T2L48sK5HYy7OoPk9PZbsHTkgY
+         FsJ8bQqQ5EeJt+mP2XLMekgS4kWTcF8A3tHVic1It4yRgylVox6lOHayyz88fDYIR/s8
+         1HgDpEZO8Nj8V2AucFUP+xxHGk+/Gmm0ilBEZUjCor6jdV3tJEx6vsbabT63Lj18vd3G
+         3n/nTR55CyT7wJkR5Cq2pdu+uFjNkFuSgwVaTzI/6VnAf6dCGFSMuAB3Z3On9ufsA+oo
+         EmI4ekCxpvMrSa//7vDCXI68arKdEg/mE+jofsNNGs5Dqly28xbJOjwLbxWCjcYwinaL
+         qpcg==
+X-Gm-Message-State: AOAM530fNHYht0rWQk87qJkZgHSTF2maGB+PK1bFGPQmYZB+oGcpJNvn
+        DHQLyhVMXHA3pNRcEo3wwSbFtg7+VM59rLPlcAQ=
+X-Google-Smtp-Source: ABdhPJwuiM8d31oMsiY2CkOluy59g+IRHvhPOkW0vLijxZ6U/JBmvYHzu8bt2YpJgrJ5D6c1e6/YbI1LLD1qZ70URyU=
+X-Received: by 2002:a9d:6e85:: with SMTP id a5mr8284193otr.90.1594814742910;
+ Wed, 15 Jul 2020 05:05:42 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.57.1.235] (159.224.90.213) by AM4PR0302CA0001.eurprd03.prod.outlook.com (2603:10a6:205:2::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Wed, 15 Jul 2020 09:09:29 +0000
-X-Originating-IP: [159.224.90.213]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 68846278-b595-4f8c-ae1b-08d8289ec84a
-X-MS-TrafficTypeDiagnostic: AM6PR05MB6056:
-X-Microsoft-Antispam-PRVS: <AM6PR05MB60563F50DF344D171769C3C5D17E0@AM6PR05MB6056.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:480;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6fm1VPpHFaiODEAXh6APeuGnwlEAduc9HP4DYKeZPqawXoylaipAamGW6dgVqto7qyl9Qhd7kzVetIK6/lUzVwGp1zJB0V6lyMumCWk7pcCQmQsXV1DOsFDb+kndbck/gzAo0EesjtE8kIMNVxMcc4nU4KgOrzV9skD9V16SprZWBTjonF457F87JRsbven9KnyOfq5AvT383RqCNjswXafvDctK+uoHa6hqSkSls0ZYzqm5zbeS7UPymCyH8b7cABTprlJ2OATdiustyzQtSY5/Qv1lVPSdz7P8evCHBBi788IgEawHIl1wus/fPCrILaPXQ1DXPsbpU9Gp2G9Nz6dE2aJR+su0kwtKhNGMnnHGtFBv/7l/CgKKeKvzh9l7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB5974.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(396003)(136003)(39860400002)(346002)(7416002)(16576012)(30864003)(6486002)(316002)(83380400001)(36756003)(8936002)(26005)(478600001)(86362001)(2906002)(5660300002)(8676002)(31696002)(66476007)(6916009)(52116002)(31686004)(956004)(53546011)(4326008)(55236004)(66556008)(66946007)(2616005)(16526019)(186003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 1i4QVuAeTr+/qf+5j4nElOM5bpF58hBxMHSXH+xaGP4eM9Zh0MrILZaZzG6srBnfh14mmXkIbZuynM4bmRdjN/1DfsbyZO0y8YrAQonjygtMyYuCWZIhJo8Ir9owhUnw8GjbCS+SP07ZCDMj3vqdnhv67H7n9z98tfnJww2vsytTnpd4WTqfeYM/OFqC5dZK8P8EoO0bruupArmmrPssdtSc4wz3wQYtclmFAJa7R1hYHJhJ9e0yvt5ZEv+PNXgQERz67sNJn3c3tcyjElFo9FAG67qANYSMe3vH3MtiOX7HzbfOOODeEi0w3eVRi0YS5sDtIMqCBDswHvDc8nrsZI0msbSlxbI2/1FhZRYnF8YUCYIIflStcY3ai31U6iL1ks89/b6M88sw/oXx/cCuwnTtITfwKvYMa/rNktB0baz2AbFR7A17peZdrC6SodnmHHN2ROK4TUAySA/ByEd1LTKY4Wa54EsJxzCqchH+dX7iVHoV+GxoqevV0rQEHJhc
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68846278-b595-4f8c-ae1b-08d8289ec84a
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB5974.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2020 09:09:30.4885
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xGq4Mib64mCguSWaRy7PDrYQcz7Zes1Wd968Xzk/w+DM0Fp1OH4hqOAIT3444RSJhO3ePFufiNwmAP3fQfKIVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6056
+Reply-To: yoshikoazumi9@gmail.com
+Received: by 2002:a9d:67:0:0:0:0:0 with HTTP; Wed, 15 Jul 2020 05:05:42 -0700 (PDT)
+From:   yoshiko azumi <yoshikoazumi09@gmail.com>
+Date:   Wed, 15 Jul 2020 15:05:42 +0300
+X-Google-Sender-Auth: recrTYE6f42Wh3va1ziMAe3SfnA
+Message-ID: <CAEDqf2fb8iWwuWVZSRxmhH_c0UW-VK3-i1xYYJfjvAt4CNZhKg@mail.gmail.com>
+Subject: =?UTF-8?B?6Imv44GE5LiA5pel?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-07-10 17:16, Magnus Karlsson wrote:
-> Move the fill and completion rings from the umem to the buffer
-> pool. This so that we in a later commit can share the umem
-> between multiple HW queue ids. In this case, we need one fill and
-> completion ring per queue id. As the buffer pool is per queue id
-> and napi id this is a natural place for it and one umem
-> struture can be shared between these buffer pools.
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->   include/net/xdp_sock.h      |  4 ++--
->   include/net/xsk_buff_pool.h |  2 +-
->   net/xdp/xdp_umem.c          | 15 ---------------
->   net/xdp/xsk.c               | 44 ++++++++++++++++++++++++--------------------
->   net/xdp/xsk_buff_pool.c     | 20 +++++++++++++++-----
->   net/xdp/xsk_diag.c          | 10 ++++++----
->   6 files changed, 48 insertions(+), 47 deletions(-)
-> 
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index b9bb118..5eb59b7 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -18,8 +18,6 @@ struct xsk_queue;
->   struct xdp_buff;
->   
->   struct xdp_umem {
-> -	struct xsk_queue *fq;
-> -	struct xsk_queue *cq;
->   	u64 size;
->   	u32 headroom;
->   	u32 chunk_size;
-> @@ -73,6 +71,8 @@ struct xdp_sock {
->   	struct list_head map_list;
->   	/* Protects map_list */
->   	spinlock_t map_list_lock;
-> +	struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
-> +	struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
->   };
->   
->   #ifdef CONFIG_XDP_SOCKETS
-> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-> index ff8592d5..0423303 100644
-> --- a/include/net/xsk_buff_pool.h
-> +++ b/include/net/xsk_buff_pool.h
-> @@ -30,6 +30,7 @@ struct xdp_buff_xsk {
->   
->   struct xsk_buff_pool {
->   	struct xsk_queue *fq;
-> +	struct xsk_queue *cq;
->   	struct list_head free_list;
->   	dma_addr_t *dma_pages;
->   	struct xdp_buff_xsk *heads;
-> @@ -57,7 +58,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
->   						struct xdp_umem *umem);
->   int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
->   		  u16 queue_id, u16 flags);
-> -void xp_set_fq(struct xsk_buff_pool *pool, struct xsk_queue *fq);
->   void xp_destroy(struct xsk_buff_pool *pool);
->   void xp_release(struct xdp_buff_xsk *xskb);
->   void xp_get_pool(struct xsk_buff_pool *pool);
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index f290345..7d86a63 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -85,16 +85,6 @@ static void xdp_umem_release(struct xdp_umem *umem)
->   
->   	ida_simple_remove(&umem_ida, umem->id);
->   
-> -	if (umem->fq) {
-> -		xskq_destroy(umem->fq);
-> -		umem->fq = NULL;
-> -	}
-> -
-> -	if (umem->cq) {
-> -		xskq_destroy(umem->cq);
-> -		umem->cq = NULL;
-> -	}
-> -
->   	xdp_umem_unpin_pages(umem);
->   
->   	xdp_umem_unaccount_pages(umem);
-> @@ -278,8 +268,3 @@ struct xdp_umem *xdp_umem_create(struct xdp_umem_reg *mr)
->   
->   	return umem;
->   }
-> -
-> -bool xdp_umem_validate_queues(struct xdp_umem *umem)
-> -{
-> -	return umem->fq && umem->cq;
-> -}
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index caaf298..b44b150 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -36,7 +36,7 @@ static DEFINE_PER_CPU(struct list_head, xskmap_flush_list);
->   bool xsk_is_setup_for_bpf_map(struct xdp_sock *xs)
->   {
->   	return READ_ONCE(xs->rx) &&  READ_ONCE(xs->umem) &&
-> -		READ_ONCE(xs->umem->fq);
-> +		(xs->pool->fq || READ_ONCE(xs->fq_tmp));
->   }
->   
->   void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
-> @@ -46,7 +46,7 @@ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
->   	if (umem->need_wakeup & XDP_WAKEUP_RX)
->   		return;
->   
-> -	umem->fq->ring->flags |= XDP_RING_NEED_WAKEUP;
-> +	pool->fq->ring->flags |= XDP_RING_NEED_WAKEUP;
->   	umem->need_wakeup |= XDP_WAKEUP_RX;
->   }
->   EXPORT_SYMBOL(xsk_set_rx_need_wakeup);
-> @@ -76,7 +76,7 @@ void xsk_clear_rx_need_wakeup(struct xsk_buff_pool *pool)
->   	if (!(umem->need_wakeup & XDP_WAKEUP_RX))
->   		return;
->   
-> -	umem->fq->ring->flags &= ~XDP_RING_NEED_WAKEUP;
-> +	pool->fq->ring->flags &= ~XDP_RING_NEED_WAKEUP;
->   	umem->need_wakeup &= ~XDP_WAKEUP_RX;
->   }
->   EXPORT_SYMBOL(xsk_clear_rx_need_wakeup);
-> @@ -254,7 +254,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp,
->   static void xsk_flush(struct xdp_sock *xs)
->   {
->   	xskq_prod_submit(xs->rx);
-> -	__xskq_cons_release(xs->umem->fq);
-> +	__xskq_cons_release(xs->pool->fq);
->   	sock_def_readable(&xs->sk);
->   }
->   
-> @@ -297,7 +297,7 @@ void __xsk_map_flush(void)
->   
->   void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
->   {
-> -	xskq_prod_submit_n(pool->umem->cq, nb_entries);
-> +	xskq_prod_submit_n(pool->cq, nb_entries);
->   }
->   EXPORT_SYMBOL(xsk_tx_completed);
->   
-> @@ -329,7 +329,7 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->   		 * if there is space in it. This avoids having to implement
->   		 * any buffering in the Tx path.
->   		 */
-> -		if (xskq_prod_reserve_addr(umem->cq, desc->addr))
-> +		if (xskq_prod_reserve_addr(pool->cq, desc->addr))
->   			goto out;
->   
->   		xskq_cons_release(xs->tx);
-> @@ -367,7 +367,7 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->   	unsigned long flags;
->   
->   	spin_lock_irqsave(&xs->tx_completion_lock, flags);
-> -	xskq_prod_submit_addr(xs->umem->cq, addr);
-> +	xskq_prod_submit_addr(xs->pool->cq, addr);
->   	spin_unlock_irqrestore(&xs->tx_completion_lock, flags);
->   
->   	sock_wfree(skb);
-> @@ -411,7 +411,7 @@ static int xsk_generic_xmit(struct sock *sk)
->   		 * if there is space in it. This avoids having to implement
->   		 * any buffering in the Tx path.
->   		 */
-> -		if (unlikely(err) || xskq_prod_reserve(xs->umem->cq)) {
-> +		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
->   			kfree_skb(skb);
->   			goto out;
->   		}
-> @@ -629,6 +629,11 @@ static struct socket *xsk_lookup_xsk_from_fd(int fd)
->   	return sock;
->   }
->   
-> +static bool xsk_validate_queues(struct xdp_sock *xs)
-> +{
-> +	return xs->fq_tmp && xs->cq_tmp;
-> +}
-> +
->   static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->   {
->   	struct sockaddr_xdp *sxdp = (struct sockaddr_xdp *)addr;
-> @@ -685,6 +690,12 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->   			goto out_unlock;
->   		}
->   
-> +		if (xs->fq_tmp || xs->cq_tmp) {
-> +			/* Do not allow setting your own fq or cq. */
-> +			err = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
->   		sock = xsk_lookup_xsk_from_fd(sxdp->sxdp_shared_umem_fd);
->   		if (IS_ERR(sock)) {
->   			err = PTR_ERR(sock);
-> @@ -709,7 +720,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->   		xdp_get_umem(umem_xs->umem);
->   		WRITE_ONCE(xs->umem, umem_xs->umem);
->   		sockfd_put(sock);
-> -	} else if (!xs->umem || !xdp_umem_validate_queues(xs->umem)) {
-> +	} else if (!xs->umem || !xsk_validate_queues(xs)) {
->   		err = -EINVAL;
->   		goto out_unlock;
->   	} else {
-> @@ -844,11 +855,9 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
->   			return -EINVAL;
->   		}
->   
-> -		q = (optname == XDP_UMEM_FILL_RING) ? &xs->umem->fq :
-> -			&xs->umem->cq;
-> +		q = (optname == XDP_UMEM_FILL_RING) ? &xs->fq_tmp :
-> +			&xs->cq_tmp;
->   		err = xsk_init_queue(entries, q, true);
-> -		if (optname == XDP_UMEM_FILL_RING)
-> -			xp_set_fq(xs->pool, *q);
->   		mutex_unlock(&xs->mutex);
->   		return err;
->   	}
-> @@ -995,7 +1004,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
->   	unsigned long size = vma->vm_end - vma->vm_start;
->   	struct xdp_sock *xs = xdp_sk(sock->sk);
->   	struct xsk_queue *q = NULL;
-> -	struct xdp_umem *umem;
->   	unsigned long pfn;
->   	struct page *qpg;
->   
-> @@ -1007,16 +1015,12 @@ static int xsk_mmap(struct file *file, struct socket *sock,
->   	} else if (offset == XDP_PGOFF_TX_RING) {
->   		q = READ_ONCE(xs->tx);
->   	} else {
-> -		umem = READ_ONCE(xs->umem);
-> -		if (!umem)
-> -			return -EINVAL;
-> -
->   		/* Matches the smp_wmb() in XDP_UMEM_REG */
->   		smp_rmb();
->   		if (offset == XDP_UMEM_PGOFF_FILL_RING)
-> -			q = READ_ONCE(umem->fq);
-> +			q = READ_ONCE(xs->fq_tmp);
->   		else if (offset == XDP_UMEM_PGOFF_COMPLETION_RING)
-> -			q = READ_ONCE(umem->cq);
-> +			q = READ_ONCE(xs->cq_tmp);
->   	}
->   
->   	if (!q)
-> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> index d450fb7..32720f2 100644
-> --- a/net/xdp/xsk_buff_pool.c
-> +++ b/net/xdp/xsk_buff_pool.c
-> @@ -66,6 +66,11 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
->   	INIT_LIST_HEAD(&pool->free_list);
->   	refcount_set(&pool->users, 1);
->   
-> +	pool->fq = xs->fq_tmp;
-> +	pool->cq = xs->cq_tmp;
-> +	xs->fq_tmp = NULL;
-> +	xs->cq_tmp = NULL;
-> +
->   	for (i = 0; i < pool->free_heads_cnt; i++) {
->   		xskb = &pool->heads[i];
->   		xskb->pool = pool;
-> @@ -82,11 +87,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
->   	return NULL;
->   }
->   
-> -void xp_set_fq(struct xsk_buff_pool *pool, struct xsk_queue *fq)
-> -{
-> -	pool->fq = fq;
-> -}
-> -
->   void xp_set_rxq_info(struct xsk_buff_pool *pool, struct xdp_rxq_info *rxq)
->   {
->   	u32 i;
-> @@ -190,6 +190,16 @@ static void xp_release_deferred(struct work_struct *work)
->   	xp_clear_dev(pool);
->   	rtnl_unlock();
->   
-> +	if (pool->fq) {
-> +		xskq_destroy(pool->fq);
-> +		pool->fq = NULL;
-> +	}
-> +
-> +	if (pool->cq) {
-> +		xskq_destroy(pool->cq);
-> +		pool->cq = NULL;
-> +	}
-> +
-
-It looks like xskq_destroy is missing for fq_tmp and cq_tmp, which is 
-needed in some cases, e.g., if bind() wasn't called at all, or if 
-xsk_bind failed with EINVAL.
-
->   	xdp_put_umem(pool->umem);
->   	xp_destroy(pool);
->   }
-> diff --git a/net/xdp/xsk_diag.c b/net/xdp/xsk_diag.c
-> index 0163b26..1936423 100644
-> --- a/net/xdp/xsk_diag.c
-> +++ b/net/xdp/xsk_diag.c
-> @@ -46,6 +46,7 @@ static int xsk_diag_put_rings_cfg(const struct xdp_sock *xs,
->   
->   static int xsk_diag_put_umem(const struct xdp_sock *xs, struct sk_buff *nlskb)
->   {
-> +	struct xsk_buff_pool *pool = xs->pool;
->   	struct xdp_umem *umem = xs->umem;
->   	struct xdp_diag_umem du = {};
->   	int err;
-> @@ -67,10 +68,11 @@ static int xsk_diag_put_umem(const struct xdp_sock *xs, struct sk_buff *nlskb)
->   
->   	err = nla_put(nlskb, XDP_DIAG_UMEM, sizeof(du), &du);
->   
-> -	if (!err && umem->fq)
-> -		err = xsk_diag_put_ring(umem->fq, XDP_DIAG_UMEM_FILL_RING, nlskb);
-> -	if (!err && umem->cq) {
-> -		err = xsk_diag_put_ring(umem->cq, XDP_DIAG_UMEM_COMPLETION_RING,
-> +	if (!err && pool->fq)
-> +		err = xsk_diag_put_ring(pool->fq,
-> +					XDP_DIAG_UMEM_FILL_RING, nlskb);
-> +	if (!err && pool->cq) {
-> +		err = xsk_diag_put_ring(pool->cq, XDP_DIAG_UMEM_COMPLETION_RING,
->   					nlskb);
->   	}
->   	return err;
-> 
-
+44GT44KT44Gr44Gh44Gv44CBDQrlj4vmg4XjgajmjKjmi7bjgpLnlLPjgZfkuIrjgZLjgb7jgZnj
+gILjgZPjga7miYvntJnjga/jgIHmgrLjgZfjgb/jgavmuoDjgaHjgZ/mhJ/mg4XnmoTjgarjg6nj
+g4Djg7zjga7prYLjgYvjgonmm7jjgYTjgabjgYTjgb7jgZnjgILjgZPjga7miYvntJnjga/jgIHn
+p4Hjga7mnIDlvozjga7poZjjgYTjgpLlrp/ooYzjgZnjgovjgZ/jgoHjgavjgIHopqrliIfjgafl
+loTmhI/jga7jgYLjgovkurrjgYvjgonjga7mgJ3jgYTjgoTjgorjgYzlv4XopoHjgafjgZnjgILj
+gajjgabjgoLmhJ/orJ3jgZfjgabjgYTjgb7jgZnjgILnp4Hjga/np4Hjga7kurrnlJ/jgpLoqpPj
+gYTjgb7jgZnjgILjgZ3jgZfjgabjgIHjgYLjgarjgZ/jga7lv4PjgYzntJTnsovjgafoqqDlrp/j
+gafjgYLjgovpmZDjgorjgIHjgYLjgarjgZ/jgYzjgZPjga7ml6XjgpLlvozmgpTjgZfjgarjgYTj
+gZPjgajjgpLntITmnZ/jgZfjgb7jgZnjgILml6XmnKzjga7jgYLjgZrjgb/jgojjgZfjgZPjgZXj
+gpPjgafjgZnjgIINCkdvb2dsZeOBp+OCouODoeODquOCq+WMu+WtpuOBrueglOeptuOCkuOBl+OB
+puOBhOOCi+OBqOOBjeOBq+OBguOBquOBn+OBruODoeODvOODq+OBq+WHuuOBj+OCj+OBl+OAgeOB
+guOBquOBn+OBruOCouOCq+OCpuODs+ODiOOCkuimi+OBpOOBkeOBvuOBl+OBn+OAguengeOBr+S5
+s+aIv+OBqOWWieOBrueZjOOBq+mVt+aZgumWk+e9ueaCo+OBl+OBpuOBiuOCiuOAgeOBmeOBueOB
+puOBruWFhuWAmeOBi+OCieOAgeengeOBrueKtuaFi+OBr+acrOW9k+OBq+aCquWMluOBl+OBpuOB
+hOOBpuOAgeaYjuOCieOBi+OBq+OAgeengeOBr+S7leS6i+OBjOOBp+OBjeOBquOBhOOBi+OAgeOC
+ueODiOODrOOCueOBruWkmuOBhOOBk+OBqOOCkuOBmeOCi+OBk+OBqOOBjOOBp+OBjeOBvuOBm+OC
+k+OAguWMu+W4q+OBq+OCiOOCi+OBqOOAgeW9vOOCieOBr+engeOBq+asoeOBrjLjgYvmnIjplpPk
+vY/jgpPjgafjgYTjgarjgYTlj6/og73mgKfjgYzjgYLjgovjgZ/jgoHjgIHnp4Hjga/jgZPjga7m
+qZ/kvJrjgpLliKnnlKjjgZfjgabjgIHjgojjgorlsJHjgarjgYTnibnmqKnjgajmhYjlloTlm6Pk
+vZPjgbjjga7np4Hjga7pgbrnlKPjgpLjgZnjgbnjgabniqDnibLjgavjgZfjgZ/jgYTjgajoqIDj
+gaPjgabjgYTjgb7jgZnjgILmr43jga7jgYTjgarjgYTotaTjgaHjgoPjgpPjga7lrrbjgYvjgono
+grLjgabjgonjgozjgIHjgqLjg6Hjg6rjgqvluILmsJHjgajntZDlqZrjgZfjgIHjgYzjgpPjga7n
+l4XmnJ/jgYzpnZ7luLjjgavmgqrljJbjgZfjgZ/jgZ/jgoHjgafjgZnjgILnp4Hjga/kuqHjgY/j
+garjgaPjgZ/lpKvjgagyMOW5tOmWk+WtkOS+m+OBquOBl+OBp+e1kOWpmuOBl+OBvuOBl+OBn+OA
+guOCouODoeODquOCq+Wkp+S9v+mkqOODr+OCt+ODs+ODiOODs0QuQ+OBpzEx5bm06ZaT5YON44GE
+44Gf5b6M44CB6Ie05ZG955qE44Gq6Ieq5YuV6LuK5LqL5pWF44Gn5Lqh44GP44Gq44Gj44Gf5b6M
+5pyf44Gu44Ki44Os44Kv44K144Oz44OJ44Op44Od44O844Or44CCDQoyMDEz5bm044Gr5b2844GM
+5Lqh44GP44Gq44Gj44Gf5b6M44CB56eB44Gv5YaN5ama44GX44Gq44GE44GT44Go44KS5rG644KB
+44CB57aZ5om/44GX44Gf44GZ44G544Gm44Gu5omA5pyJ54mp44KS5aOy5Y2044GX44CB5ZCI6KiI
+ODMw5LiH44OJ44Or77yIOOeZvuS4h+ODieODq+OAgTMw5LiH57Gz44OJ44Or77yJ44KS56eB44Gu
+6Z2e5bGF5L2P55So5Y+j5bqn44Gr6aCQ44GR44G+44GX44Gf44CC5Lqh44GP44Gq44Gj44Gf5aSr
+44Gu5YWE5byf44Gv44CB56eB44GL44KJMiw4MDAsMDAw44OJ44Or44KS5aWq44Gj44Gm6YCD44GS
+5Ye644GX44G+44GX44Gf44CC55+l44KJ44Gq44GE44GG44Gh44Gr44CB56eB44Gu5aSr44Gv56eB
+44Gu5ZCN5YmN44Gr44GE44GP44KJ44GL44Gu44GK6YeR44KS5q6L44GX44G+44GX44Gf44CC56eB
+44Gu5ZCN5YmN44Gr5q6L44GV44KM44Gf5ZCI6KiI6YeR6aGN44GvMzAw5LiH44OJ44Or44Gn44GX
+44Gf44CCDQo4MzDkuIfjg4njg6vjgIHjgZ3jgozjgpLjg4jjg6vjgrPjga7np4Hjga7pnZ7lsYXk
+vY/nlKjlj6PluqfjgavpoJDph5HjgZfjgb7jgZnjgILjgaDjgYvjgonnp4HjgYzku4rmjIHjgaPj
+gabjgYTjgovnt4/poY3jga84MzDkuIfjg4njg6vjgafjgZnjgILkuqHjgY/jgarjgaPjgZ/lpKvj
+ga7lhYTjga/jgIHnp4HjgpLmsJfjgavjgZvjgZrjgIHjgZ/jgaDmrbvjgpLmnJvjgpPjgafjgYTj
+govjgaDjgZHjgarjga7jgafjgIHkuozluqbjgajkvZXjgoLjgZfjgarjgYTjgZPjgajjgavjgZfj
+gb7jgZfjgZ/jgILnp4Hjga/lvJXpgIDjgZfjgZ/kuIrntJrnnIvorbfluKvjgajjgZfjgabmiJDl
+ip/jgZfjgb7jgZfjgZ/jgYzjgIHlvbzjga/np4HjgpLjgbvjgajjgpPjganlvbnjgavnq4vjgZ/j
+garjgY/jgZfjgb7jgZfjgZ/jgILnj77mmYLngrnjgafjga/jgIHlvbzjga/np4HjgYzjganjgZPj
+gavjgYTjgovjgYvjgIHoh6rliIbjga7pgZPjgYzjgo/jgYvjgonjgZrjgIHmsJfjgavjgZfjgabj
+gYTjgb7jgZvjgpPjgILnp4Hjga/jgZPjga7kurrnlJ/jgafku5bjgavoqrDjgoLjgYTjgb7jgZvj
+gpPjgIHjgZ3jgZfjgabjgZ3jga7mnIDjgoLoia/jgYTpg6jliIbjga/jgIHmlK/miZXpioDooYzj
+gYzoqLzmmI7jg6zjgr/jg7zjgafnp4Hjgavmib/oqo3jgZXjgozjgZ/mib/oqo3jgZXjgozjgZ/k
+urrjgavos4fph5HjgpLop6PmlL7jgZnjgovjgZPjgajjgYzjgafjgY3jgovjgajnp4Hjgavmib/o
+qo3jgZXjgozjgZ/jga7jgafjgIHos4fph5HjgYzkuJbnlYzkuK3jganjgZPjgafjgoLlvbzjgb7j
+gZ/jga/lvbzlpbPjga7pioDooYzlj6PluqfjgavpgIHph5HjgZXjgozjgb7jgZnjgILnj77lnKjj
+gIHnl4XmsJfjga7msrvnmYLjgpLlj5fjgZHjgabjgYTjgovjg63jg7Pjg4njg7Pjga7nl4XpmaLj
+gafjg6njg4Pjg5fjg4jjg4Pjg5fjgpLkvb/nlKjjgZfjgabjgYTjgb7jgZnjgILjgZ3jgozku6Xm
+naXnp4Hjga/oqbHjgZnog73lipvjgpLlpLHjgaPjgabjgYrjgorjgIHnp4Hjga7ljLvluKvjga/n
+p4HjgavnlJ/jgY3jgovjga7jgasy44GL5pyI44GX44GL44Gq44GE44Go6KiA44GE44G+44GX44Gf
+44CC44Gd44KM44Gv44CB44GT44Gu44GK6YeR44Gu5bCR44Gq44GP44Go44KCNjDvvIXjgYzjgYLj
+garjgZ/jga7pgbjmip7jgZfjgZ/ntYTnuZTjgavmipXos4cv5a+E5LuY44GV44KM44CB5YiG6YWN
+44GV44KM44KL44Gu44KS6KaL44KL44Gu44GM56eB44Gu5pyA5b6M44Gu6aGY44GE44Gn44GZ44CC
+5oWI5ZaE5Zuj5L2T44Gu6ZaT44Gu44Gd44KM44Gu44Gd44KM44Ge44KM44CB5L6L44GI44Gw6LKn
+44GX44GE5a6244CB5q+N44Gu44GE44Gq44GE6LWk44Gh44KD44KT44Gu5a6244CB56eB44GM55Sf
+44G+44KM44Gf5aC05omA44CB56eB44Gv44GT44Gu5LiW55WM44GrMuOBi+aciOS7peS4iuS9j+OC
+k+OBp+OBhOOBquOBhOOBruOBp+OAgTQw77yF44KS5L2/44Gj44Gm6Ieq5YiG44KS5Yqp44GR44KL
+44GT44Go44GM44Gn44GN44G+44GZ44CC56eB44GM5rGC44KB44Gm44GE44KL44Gu44Gv44CB5pyA
+5b6M44Gu6aGY44GE44KS5Y+244GI44Gm44GP44KM44KL6Kaq5YiH44Gn5YWD5rCX44Gq5Lq644Gn
+44GZ44CC5LuK5pel44GC44Gq44Gf44Gr5omL57SZ44KS5pu444GP5YmN44Gr44CB56eB44Gv44GT
+44Gu44Oh44OD44K744O844K444KS6YCB44KL44GT44Go44KS56WI44KK44CB56eB44Gu57K+56We
+44GM6Ieq5L+h44KS5LiO44GI44Gm44GP44KM44G+44GX44Gf44CC56eB44Gu5pmC6ZaT44Gv6ZaT
+44KC44Gq44GP57WC5LqG44GZ44KL44Gu44Gn44CB56eB44Gv5a6J5b+D44GX44Gm5LyR44KA5YmN
+44Gr44GT44Gu5rG65a6a44KS44GX44G+44GX44Gf44CC6L+U5L+h44GM44GC44KK5qyh56ys44CB
+5pSv5omV44GE6YqA6KGM44Gu6YCj57Wh5YWI5oOF5aCx44Go44CB44GT44Gu5Lu244Gr6Zai44GZ
+44KL6YCj57Wh5pa55rOV44Go6YCj57Wh5YWI44KS44GK55+l44KJ44Gb44GX44G+44GZ44CC56eB
+44Gv44G+44Gf44CB44GC44Gq44Gf44Gr5qip6ZmQ5pu444KS55m66KGM44GX44G+44GZ44CC44GT
+44KM44Gv44CB44GC44Gq44Gf44GM44GT44Gu6KiA44Gj44Gf6LOH6YeR44Gu5pyA5Yid44Gu5Y+X
+55uK6ICF44Gn44GC44KL44GT44Go44KS6Ki85piO44GX44G+44GZ44CC56We44Gv56eB44Gu576K
+6aO844GE44Gn44GZ44GL44KJ44CB44GE44Gk44KC56eB44Gu44Gf44KB44Gr56WI44Gj44Gm44GP
+44Gg44GV44GE44CC56eB44GM44GC44Gq44Gf44Gr5b+F6KaB44Gq44Gu44Gv44CB44GC44Gq44Gf
+44GM5Y+X44GR5Y+W44Gj44Gf6LOH6YeR44GM44Gd44Gu55uu55qE44Gu44Gf44KB44Gr5L2/44KP
+44KM44KL44Go44GE44GG56eY5a+G44Gu5L+d6Ki844Gn44GZ44CC5LuK5pel44CB5L+h6aC844GZ
+44KL44Gu44Gv6Zuj44GX44GE44Gn44GZ44GM44CB56eB44Gu57K+56We44GM44Gq44Gc44GT44KM
+44KS5Y+X44GR5YWl44KM44CB44GT44KM44Gr44Gk44GE44Gm44GC44Gq44Gf44Gr44Oh44OD44K7
+44O844K444KS6YCB44KL44GT44Go44KS5om/6KqN44GX44Gf44Gu44GL44CB56eB44Gr44Gv44KP
+44GL44KK44G+44Gb44KT44CC56eB44Gu44GK6YeR44Gn6YCD44GS44Gm44CB56eB44Gu6aGY44GE
+44KS5Y+244GI44Gq44GE5Lq644GM5qyy44GX44GP44Gq44GE44GL44KJ44Gn44GZ44CC44GC44Gq
+44Gf44GM44GT44Gu5Lu244Gr44Gk44GE44Gm56eB44GM6YCj57Wh44GZ44KL5pyA5Yid44Gn5pyA
+5b6M44Gu5Lq644Gn44GZ44CC56We44Gv56eB44Gu576K6aO844GE44Gn44GZ44GL44KJ44CB44GE
+44Gk44KC56eB44Gu44Gf44KB44Gr56WI44Gj44Gm44GP44Gg44GV44GE44CC56eB44Gu5bm444Gb
+44Gv56eB44GM56uL5rS+44Gq5Lq644Gu55Sf5rS744KS6YCB44Gj44Gm44GE44Gf44GT44Go44Gn
+44GZ44CC6L+U5L+h44GM6YGF44KM44KL44Go44CB5ZCM44GY55uu55qE44Gn5YCL5Lq644G+44Gf
+44Gv57WE57mU44KS6Kq/6YGU44GZ44KL5L2Z5Zyw44GM55Sf44G+44KM44G+44GZ44CC56eB44Go
+5LiA57eS44Gr44GT44KM44Gr6YCy44KT44Gn44GP44Gg44GV44GE44CC5oWI5ZaE5Zuj5L2T44Gu
+44Gf44KB44Gr44GT44Gu44GK6YeR44GuNjDvvIXjgpLkvb/nlKjjgZfjgIHjgZ3jgozjgbvjgann
+ibnmqKnjgpLmjIHjgZ/jgarjgYTjgojjgYbjgavliqrlipvjgZfjgIE0MO+8heOCkuiHquWIhueU
+qOOBq+S9v+eUqOOBl+OBpuOBj+OBoOOBleOBhOOAguOBl+OBi+OBl+OAgeengeOBr+OBk+OBruWP
+luW8leOBq+OBguOBquOBn+OBruS/oemgvOOCkuW/g+OBi+OCieaxguOCgeOBpuOBhOOBvuOBmeOA
+guOBk+OBruWPluW8leOBr+OAgeengeOBruiHqueUseOBquW/g+OBqOelnuOBi+OCieOBruiqoOWu
+n+OBquS6uuOBqOOBl+OBpuaPkOahiOOBl+OBvuOBmeOAguOCiOOCjeOBl+OBkeOCjOOBsOOBlOS6
+huaJv+OBj+OBoOOBleOBhOOAgue3iuaApeOBruOBlOi/lOS/oeOCkuOBiuW+heOBoeOBl+OBpuOB
+iuOCiuOBvuOBmeOAgg0K44KI44KN44GX44GP44CBDQrjgojjgZfjgZMNCg==
