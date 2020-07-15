@@ -2,201 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035E9221183
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 17:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3357A2212F7
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 18:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgGOPsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 11:48:14 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:35117 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725897AbgGOPsN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jul 2020 11:48:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594828091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAVCEGRw2hjVGzvX2wIOGOGQY8/1Rn8qD8f8geB5l10=;
-        b=BU7DH9M9H1td2Y6mrcCLQJl4+t85wXRxeGZJdWyFN4SEM1sX+E/k0Mn9jDYi2n5wosarda
-        6eIiGNhrjsuZAtHVdN2Bz4LZeSUWsOTpUin6Xfj8i4GHu0/d9h6prV1rchZBIMKwnl7Xe9
-        zehWcFmMNTe7tuGrINQ7ZJ9qNVrhSPE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-JImNEhLqPQOJoSwhxrHKOg-1; Wed, 15 Jul 2020 11:48:07 -0400
-X-MC-Unique: JImNEhLqPQOJoSwhxrHKOg-1
-Received: by mail-wr1-f71.google.com with SMTP id f5so1531013wrv.22
-        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 08:48:06 -0700 (PDT)
+        id S1726752AbgGOQtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 12:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgGOQtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:49:07 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D6EC08C5DB
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 09:49:07 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s10so3369665wrw.12
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 09:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hUz/UVXmFj5gZkksWixwGiXAm29+FzSoDE9Tp4/NL1g=;
+        b=XrZxDHa2amTrRfCa2T5Rp/q84MXJ1I7b+U90J1WhsNps3hWZdjZbsa02bucGaUTHBg
+         mEU3a1Bw6aEH6emRRQ8GFwROQJTPl18NYZKVKG9O2Mw9qhF596sToQvTQ0L2BvkL3uVn
+         Av2PBRokopzC+dq6d/9GEbgbYI+2m6Aj+xV0cLwOciEG9+R9cfDxT+AzOEFO2v+Z16df
+         9S5Q+yIWynYnu/0krW4BKngKk9I1xFRVrMBT00E2a90hfYYq2f1TahWze3GSwQ1f4FUK
+         iV/w0R6LawIh0SjtOOBoLF+67ZkBN43rOWo7Sxh/hwYqhKrCMNSZqOdtA+OXKSUqryCc
+         fomw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mAVCEGRw2hjVGzvX2wIOGOGQY8/1Rn8qD8f8geB5l10=;
-        b=eFK/hC0qMp1fe1gmrRbuXlxu3LPqtsA4/tLDnefUu9epGp77cURnzS1ESHeHToNtaI
-         fp7xx86UAb6UNB/wGIy4HQw0B5KTnpSKi85zWdBQ2mj/Pogufueoyrpsa03AYF9iEk0d
-         WOcfMI7F4zrFFYyVNOcdqIkq4Ed6M0sz+jwoibRlFBO71jRZu/Wof5VIrE28skBGMZNa
-         xMVEF8F3zb/ZWs5t7JMoQz6V2QKGJlTzyhs0ahIY0g9hsVGSk5ZZTgDTUuAJldMRf7rg
-         arS4z8+dRl9YoO2eUJEukZbUjxU/8tYZUKOeCe3KmVcVCQMKKMVA3i9yfgnLrRYeoF2+
-         YTAg==
-X-Gm-Message-State: AOAM531PIzFugd1OOWtsa2av1wJZtnj9nsCLxM2auJK/iklE8Jm3NkYv
-        AJYWu+9xX63WV35FtwK3eNvT7R86Da+KE2DRiogQ6dxw3dBzuXcXOG2TNgSYIM/PtBSxog2ftZ1
-        ufmVRAWZr85nk
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr89407wmc.129.1594828085616;
-        Wed, 15 Jul 2020 08:48:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzqEkoAIN0fbRpT8du/zOHwjP3wY76yjt+pclJP2f398IdbQ0VEbE2E+yJdDu42jOek70hBDA==
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr89361wmc.129.1594828085145;
-        Wed, 15 Jul 2020 08:48:05 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id q7sm3938344wrs.27.2020.07.15.08.48.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:48:04 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9649C1804F0; Wed, 15 Jul 2020 17:48:03 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>
-Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
-In-Reply-To: <CAEf4BzYMaKgJOA3koGkcThXriTGAOKGxjhQXYSNT9sVEFbS7ig@mail.gmail.com>
-References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com> <877dv6gpxd.fsf@toke.dk> <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com> <87v9ipg8jd.fsf@toke.dk> <CAEf4BzYVEqFUJybw3kjG6E6w12ocr2ncRz7j15GNNGG4BXJMTw@mail.gmail.com> <87lfjlg4fg.fsf@toke.dk> <CAEf4BzYMaKgJOA3koGkcThXriTGAOKGxjhQXYSNT9sVEFbS7ig@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 15 Jul 2020 17:48:03 +0200
-Message-ID: <87y2nkeq4s.fsf@toke.dk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hUz/UVXmFj5gZkksWixwGiXAm29+FzSoDE9Tp4/NL1g=;
+        b=K4OIG/HmfCHZT0IOkld5X+D8pZlvh9L4XAaIT4YU4sgpLcARHPQsCZKf9xGlHhKUEL
+         CFLEWDquEI4a/kEedPl8e+HfdMARTvmGvzfxPhiNWQTVqX3A+Wd9PL8Eqsnz5ydqsM5/
+         jdMauNsEuewDGqc4sdAhHxGmY376Gj0MAeHUPL2XU8s6ESdpHA808tAyAaJb2PMUYa8i
+         TRIK8HPuEwIHBZzDG30nJT7YhpdpxGbZMN+HX6pjJBctikGmIlIiLuUzYUYl9DlN4Gj2
+         o+0D1UvKNFq5+ceuf/kXWAeKNxL1rhKtgvN9Cfjvzu83bnwob8wbPCbmqWm6wKbcMkHX
+         BI7Q==
+X-Gm-Message-State: AOAM530gowkOkjlKKtUQ1DnmbhH1NT5ecdpmLQ2azZqQUGhlJ1CoIXDR
+        CNDxZUj5GcOlKqN00R5OI7FWHA==
+X-Google-Smtp-Source: ABdhPJz20Mxi0oSIWkoJNQFwJ7mmOvvCgI7hszvgLA57LfanXcsC/k6Sp0CzUZdQool/5nzby8X8DA==
+X-Received: by 2002:a5d:408c:: with SMTP id o12mr271208wrp.412.1594831745783;
+        Wed, 15 Jul 2020 09:49:05 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.117.124])
+        by smtp.gmail.com with ESMTPSA id f15sm4170272wmj.44.2020.07.15.09.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 09:49:05 -0700 (PDT)
+Subject: Re: [PATCH] tools/bpftool: Fix error return code in do_skeleton()
+To:     YueHaibing <yuehaibing@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200715031353.14692-1-yuehaibing@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <51033bf4-c718-2939-cf18-e5e219e7beb1@isovalent.com>
+Date:   Wed, 15 Jul 2020 17:49:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200715031353.14692-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+2020-07-15 11:13 UTC+0800 ~ YueHaibing <yuehaibing@huawei.com>
+> The error return code should be PTR_ERR(obj) other than
+> PTR_ERR(NULL).
+> 
+> Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside skeleton")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
->> Yup, that was helpful, thanks! I think our difference of opinion on this
->> stems from the same place as our disagreement about point 2.: You are
->> assuming that an application that uses XDP sticks around and holds on to
->> its bpf_link, while I'm assuming it doesn't (and so has to rely on
->> pinning for any persistence). In the latter case you don't really gain
->> much from the bpf_link auto-cleanup, and whether it's a prog fd or a
->> link fd you go find in your bpffs doesn't make that much difference...
->
-> Right. But if I had to pick just one implementation (prog fd-based vs
-> bpf_link), I'd stick with bpf_link because it is flexible enough to
-> "emulate" prog fd attachment (through BPF FS), but the same isn't true
-> about prog fd attachment emulating bpf_link. That's it. I really don't
-> enjoy harping on that point, but it feels to be silently dismissed all
-> the time based on one particular arrangement for particular existing
-> XDP flow.
 
-It can; kinda. But you introduce a dependency on bpffs that wasn't there
-before, and you end up with resources that are kept around in the kernel
-if the interface disappears (because they are still pinned). So I
-consider it a poor emulation.
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
->> >> >> I was under the impression that forcible attachment of bpf_links was
->> >> >> already possible, but looking at the code now it doesn't appear to be?
->> >> >> Wasn't that the whole point of BPF_LINK_GET_FD_BY_ID? I.e., that a
->> >> >> sysadmin with CAP_SYS_ADMIN privs could grab the offending bpf_link FD
->> >> >> and force-remove it? I certainly think this should be added before we
->> >> >> expand bpf_link usage any more...
->> >> >
->> >> > I still maintain that killing processes that installed the bpf_link is
->> >> > the better approach. Instead of letting the process believe and act as
->> >> > if it has an active XDP program, while it doesn't, it's better to
->> >> > altogether kill/restart the process.
->> >>
->> >> Killing the process seems like a very blunt tool, though. Say it's a
->> >> daemon that attaches XDP programs to all available interfaces, but you
->> >> want to bring down an interface for some one-off maintenance task, but
->> >> the daemon authors neglected to provide an interface to tell the daemon
->> >> to detach from specific interfaces. If your only option is to kill the
->> >> daemon, you can't bring down that interface without disrupting whatever
->> >> that daemon is doing with XDP on all the other interfaces.
->> >>
->> >
->> > I'd rather avoid addressing made up hypothetical cases, really. Get
->> > better and more flexible daemon?
->>
->> I know you guys don't consider an issue to be real until it has already
->> crashed something in production. But some of us don't have the luxury of
->> your fast issue-discovered-to-fix-shipped turnaround times; so instead
->> we have to go with the old-fashioned way of thinking about how things
->> can go wrong ahead of time, and making sure we're prepared to handle
->> issues if (or, all too often, when) they occur. And it's frankly
->> tiresome to have all such efforts be dismissed as "made up
->> hypotheticals". Please consider that the whole world does not operate
->> like your org, and that there may be legitimate reasons to do things
->> differently.
->>
->
-> Having something that breaks production is a very hard evidence of a
-> problem and makes it easier to better understand a **real** issue well
-> and argue why something has to be solved or prevented. But it's not a
-> necessary condition, of course. It's just that made up hypotheticals
-> aren't necessarily good ways to motivate a feature, because all too
-> often it turns out to be just that, hypothetical issue, while the real
-> issue is different enough to warrant a different and better solution.
-> By being conservative with adding features, we are trying to not make
-> unnecessary design and API mistakes, because in the kernel they are
-> here to stay forever.
-
-I do appreciate the need to be conservative with the interfaces we add,
-and I am aware of the maintenance burden. And it's not like I want
-contingencies for any hypothetical I can think of put into the kernel
-ahead of time (talk about a never-ending process :)). What I'm asking
-for is just that something be argued on its merits, instead of
-*automatically* being dismissed as "hypothetical". I.e., the difference
-between "that can be handled by..." or "that is not likely to occur
-because...", as opposed to "that has not happened yet, so come back when
-it does".
-
-> In your example, I'd argue that the design of that daemon is bad if it
-> doesn't allow you to control what's attached where, and how to detach
-> it without breaking completely independent network interfaces. That
-> should be the problem that has to be solved first, IMO. And just
-> because in some scenarios it might be **convenient** to force-detach
-> bpf_link, is in no way a good justification (in my book) to add that
-> feature, especially if there are other (and arguably safer) ways to
-> achieve the same **troubleshooting** effect.
-
-See this is actually what was I asking for - considering a question on
-its merits; so thank you! And yeah, it would be a poorly designed
-daemon, but I'm not quite convinced that such daemons won't show up and
-be put into production by, say, someone running an enterprise operating
-system :)
-
-Anyway, let's leave that particular issue aside for now, and I'll circle
-back to adding the force-remove if needed once I've thought this over a
-bit more.
-
->> That being said...
->>
->> > This force-detach functionality isn't hard to add, but so far we had
->> > no real reason to do that. Once we do have such use cases, we can add
->> > it, if we agree it's still a good idea.
->>
->> ...this is fair enough, and I guess I should just put this on my list of
->> things to add. I was just somehow under the impression that this had
->> already been added.
->>
->
-> So, overall, do I understand correctly that you are in principle not
-> opposed to adding BPF XDP link, or you still have some concerns that
-> were not addressed?
-
-Broadly speaking yeah, I am OK with adding this as a second interface. I
-am still concerned about the "locking in place" issued we discussed
-above, but that can be addressed later. I am also a little concerned
-about adding a second interface for configuring an interface that has to
-take the RTNL lock etc; but those are mostly details, I suppose.
-
-Unfortunately I won't have to review the latest version of your patch
-set to look at those details before I go on vacation (sorry about that :/).
-I guess I'll just have to leave that to you guys to take care of...
-
--Toke
-
+Thanks!
