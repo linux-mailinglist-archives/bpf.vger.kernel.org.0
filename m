@@ -2,87 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FA72215A1
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 21:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E822215C9
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 22:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgGOT6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 15:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgGOT6q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 15:58:46 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC1962065F;
-        Wed, 15 Jul 2020 19:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594843126;
-        bh=kgLUYhenQ2s182M/0+H610d75MLJhx48t/EpB1gdcmg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lKchPb2+RzyaC1rzDN3xOG/MasPpXqSJ1R0eZwfsqMKsVNaBY7OVwDhrjtC7/BHTj
-         SZAJFHoeJXORte+aFey289IMPWM4KFlzTQEfdP39to8y8pL7mif1Lp0mi0qOWfMgJX
-         Co7r3Joezmkl7lsi8rH7oxqSrn2kySAKK2l8sZSM=
-Date:   Wed, 15 Jul 2020 12:58:44 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, bpf@vger.kernel.org,
-        ilias.apalodimas@linaro.org, lorenzo.bianconi@redhat.com,
-        brouer@redhat.com, echaudro@redhat.com, sameehj@amazon.com
-Subject: Re: [PATCH 2/6] net: mvneta: move skb build after descriptors
- processing
-Message-ID: <20200715125844.567e5795@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <f5e95c08e22113d21e86662f1cf5ccce16ccbfca.1594309075.git.lorenzo@kernel.org>
-References: <cover.1594309075.git.lorenzo@kernel.org>
-        <f5e95c08e22113d21e86662f1cf5ccce16ccbfca.1594309075.git.lorenzo@kernel.org>
+        id S1727047AbgGOUI4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 16:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgGOUI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 16:08:56 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5561C061755;
+        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c80so7056023wme.0;
+        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
+        b=jnQVra4+13tS061DNIkTvsRN58izvTQtayCFy3EenQN3TZszDfT5iQLKl4CCwDqXac
+         mxK9lP5rUoskc/FzlXEjYSQ22MICw9Ui5tV3HckDCZIIFV+54zKHfWCZgYgTUk+/61nc
+         rCKSyiStxwsayPsHroTFsJkBZoB2PHBxrq/zRKBXKsRApgfUlHICMl6a5toV5myHQ/Ij
+         Tnn292G6AN8i7Yxz7kQTNMpq6TJF6bVlC9KWpmmPQ5tLqqLvKmon9O8RB9aSvc/bFnK9
+         lSmT5ex5uekMteqlOYR7EnNLWRxDWzM69X6xAGMJ0ujYqE03nCF6nbcps76viWv163se
+         /4ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
+        b=TMjffXnktfJTcJbbAQ629AR9Mg92zIQEBMLCOpiN1vUbCJlq9K0gxnybuJQ44C/cxP
+         FanScgvrxRUcDaA+gM4JEKYSIPrgnCIQc0k/70FEo7miqKHylMZKOb5Yb0RU7XVEgonx
+         6UwtW5xeeLyh4gett2xqw0t3B+D2qJt6gIKzFMs6nQO3oFhIlIj6+arHVHOCfxuUuSxv
+         9VYQBSHcYijl3DTszWFMf0S4LyP1Gj0TdsBX1SL4wdxVFSFPDCpnAPfHhKSOLMQdLfMr
+         JncmGcAkmQll1om1xoFnA5fRIvGDRZ/RqIthqIhzN78ykAoopBcRPMZjIuPzt0zwoNNh
+         rR+w==
+X-Gm-Message-State: AOAM530sAuHqJZI5FQ86WiZu6ko3KwM2i90bFyABA4+uDYWJGh9hUVF1
+        dDBbqeFFxKkQ3AM71nIIizJaBiioMthK8sXCbE0=
+X-Google-Smtp-Source: ABdhPJxxxn/p48diSigUNGjm4Jnah7ajXIZF5W1reXQTfbH4SrdS7LWBtgRqa0NxXagT2e1CXjGCce/zqJQ+MyLpXa8=
+X-Received: by 2002:a1c:ab56:: with SMTP id u83mr1111488wme.94.1594843734608;
+ Wed, 15 Jul 2020 13:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200713183711.762244-1-luke.r.nels@gmail.com> <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
+In-Reply-To: <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
+From:   Luke Nelson <luke.r.nels@gmail.com>
+Date:   Wed, 15 Jul 2020 13:08:43 -0700
+Message-ID: <CAB-e3NQFE9rsVZ55Y=jivuBsd1A+V4GWtceqjOz80qtmFsFQVA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf, riscv: Add compressed instructions
+ to rv64 JIT
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Luke Nelson <lukenels@cs.washington.edu>,
+        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Netdev <netdev@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  9 Jul 2020 17:57:19 +0200 Lorenzo Bianconi wrote:
-> +		frag->bv_offset = pp->rx_offset_correction;
-> +		skb_frag_size_set(frag, data_len);
-> +		frag->bv_page = page;
-> +		sinfo->nr_frags++;
+>
+> First of all; Really nice work. I like this, and it makes the code
+> easier to read as well (e.g. emit_mv). I'm a bit curious why you only
+> did it for RV64, and not RV32? I have some minor comments on the
+> patches. I strongly encourage you to submit this as a proper (non-RFC)
+> set for bpf-next.
+>
 
-nit: please use the skb_frag_* helpers, in case we have to rename those
-     fields again. You should also consider adding a helper for the
-     operation of appending a frag, I bet most drivers will needs this.
+Thanks for the feedback! I'll clean up the patches and address your
+comments in the next revision.
 
-> +static struct sk_buff *
-> +mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-> +		      struct xdp_buff *xdp, u32 desc_status)
-> +{
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> +	int i, num_frags = sinfo->nr_frags;
-> +	skb_frag_t frags[MAX_SKB_FRAGS];
-> +	struct sk_buff *skb;
-> +
-> +	memcpy(frags, sinfo->frags, sizeof(skb_frag_t) * num_frags);
-> +
-> +	skb = build_skb(xdp->data_hard_start, PAGE_SIZE);
-> +	if (!skb)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-> +
-> +	skb_reserve(skb, xdp->data - xdp->data_hard_start);
-> +	skb_put(skb, xdp->data_end - xdp->data);
-> +	mvneta_rx_csum(pp, desc_status, skb);
-> +
-> +	for (i = 0; i < num_frags; i++) {
-> +		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> +				frags[i].bv_page, frags[i].bv_offset,
-> +				skb_frag_size(&frags[i]), PAGE_SIZE);
-> +		page_pool_release_page(rxq->page_pool, frags[i].bv_page);
-> +	}
-> +
-> +	return skb;
-> +}
+The patch adding RVC to the RV32 JIT is forthcoming; some of the
+optimizations there are more difficult since the RV32 JIT makes more
+use of "internal" jumps whose offsets depend on the sizes of emitted
+instructions. I plan to clean up that code and add RVC support in a
+future series.
 
-Here as well - is the plan to turn more of this function into common
-code later on? Looks like most of this is not really driver specific.
+- Luke
