@@ -2,363 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8A1220DBA
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035E9221183
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgGONJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 09:09:16 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46186 "EHLO
+        id S1726784AbgGOPsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 11:48:14 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:35117 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731510AbgGONJO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jul 2020 09:09:14 -0400
+        by vger.kernel.org with ESMTP id S1725897AbgGOPsN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jul 2020 11:48:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594818552;
+        s=mimecast20190719; t=1594828091;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x96SXBplEGxAD/jULgj8dwWdPXka8RjLJb0pK+sT4Ho=;
-        b=LQyVg37ytrsb2vnVdsbjJLQ3ZAHd6EADQRMzlEo44L7y4OphBFJk4OnJqU2OuChTOsf1yi
-        rdiG1uC7827d2J1kGkHR2Qy5yHUm8kCBWi4nyJluQpPj5uy09YRzY8Z1Z95o1uDKgmJd24
-        p6w7gpL31iTYUY+DLofFGNHKJLGvsGc=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-r5TlJ2RQMvCVxFAhZjE91g-1; Wed, 15 Jul 2020 09:09:10 -0400
-X-MC-Unique: r5TlJ2RQMvCVxFAhZjE91g-1
-Received: by mail-qk1-f200.google.com with SMTP id s5so1450173qkj.1
-        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 06:09:10 -0700 (PDT)
+        bh=mAVCEGRw2hjVGzvX2wIOGOGQY8/1Rn8qD8f8geB5l10=;
+        b=BU7DH9M9H1td2Y6mrcCLQJl4+t85wXRxeGZJdWyFN4SEM1sX+E/k0Mn9jDYi2n5wosarda
+        6eIiGNhrjsuZAtHVdN2Bz4LZeSUWsOTpUin6Xfj8i4GHu0/d9h6prV1rchZBIMKwnl7Xe9
+        zehWcFmMNTe7tuGrINQ7ZJ9qNVrhSPE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-JImNEhLqPQOJoSwhxrHKOg-1; Wed, 15 Jul 2020 11:48:07 -0400
+X-MC-Unique: JImNEhLqPQOJoSwhxrHKOg-1
+Received: by mail-wr1-f71.google.com with SMTP id f5so1531013wrv.22
+        for <bpf@vger.kernel.org>; Wed, 15 Jul 2020 08:48:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=x96SXBplEGxAD/jULgj8dwWdPXka8RjLJb0pK+sT4Ho=;
-        b=Fy811rRaJZU7XSAaNWxKF+D4cRN1OQWXaHAQOtUlnLdRNgK0QkC0YMK7zWZohRIVcF
-         0zigNyqlfZAoRDjmiiA9Bl2pIO6v35OEEfbeAPR5PB2i6GJmC4vnkYV93+bAIqxBRzAh
-         cTTACZIRBLsf7om/aJMDvQo/iP/nR+ed+tjxmbuKCcOlZL1c+dx6+S1aBloZY0sS/NbX
-         vjYTKmPIyU3wiW6g/KioLm0Tc0rhoRXuhgUtvhcVVfNB/6zYNyn1SOi+/zLYgJKh1iD3
-         Ji3tesKxl5aKszBY532SABzdPdLSw0hzVfrjnSsGh9J/I9MULhGdl4OuTt9HI67n+c0x
-         KB+Q==
-X-Gm-Message-State: AOAM531ejdiHtx1ueDPi1Al+GxFk3zQRDmtf1vNEyMjEvFL+mSDN9f02
-        UhG68+TVtWj1wqZ67MbAEJQ0mYRWWOR+Tuv00+g6/H1/y1QQGCZJ3f9eDDRFYN9NVDtUxzwANta
-        nW0bPLVH5wnMK
-X-Received: by 2002:ac8:24e8:: with SMTP id t37mr10294585qtt.319.1594818549982;
-        Wed, 15 Jul 2020 06:09:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIvZ46oTrwnv9KIteD/SIrc/oeMfnprvkk5UVZV45W0Uy8P8xRF7E6yxcwAMdHxYVrAwZVTg==
-X-Received: by 2002:ac8:24e8:: with SMTP id t37mr10294552qtt.319.1594818549611;
-        Wed, 15 Jul 2020 06:09:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 19sm2376004qke.44.2020.07.15.06.09.06
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mAVCEGRw2hjVGzvX2wIOGOGQY8/1Rn8qD8f8geB5l10=;
+        b=eFK/hC0qMp1fe1gmrRbuXlxu3LPqtsA4/tLDnefUu9epGp77cURnzS1ESHeHToNtaI
+         fp7xx86UAb6UNB/wGIy4HQw0B5KTnpSKi85zWdBQ2mj/Pogufueoyrpsa03AYF9iEk0d
+         WOcfMI7F4zrFFYyVNOcdqIkq4Ed6M0sz+jwoibRlFBO71jRZu/Wof5VIrE28skBGMZNa
+         xMVEF8F3zb/ZWs5t7JMoQz6V2QKGJlTzyhs0ahIY0g9hsVGSk5ZZTgDTUuAJldMRf7rg
+         arS4z8+dRl9YoO2eUJEukZbUjxU/8tYZUKOeCe3KmVcVCQMKKMVA3i9yfgnLrRYeoF2+
+         YTAg==
+X-Gm-Message-State: AOAM531PIzFugd1OOWtsa2av1wJZtnj9nsCLxM2auJK/iklE8Jm3NkYv
+        AJYWu+9xX63WV35FtwK3eNvT7R86Da+KE2DRiogQ6dxw3dBzuXcXOG2TNgSYIM/PtBSxog2ftZ1
+        ufmVRAWZr85nk
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr89407wmc.129.1594828085616;
+        Wed, 15 Jul 2020 08:48:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzqEkoAIN0fbRpT8du/zOHwjP3wY76yjt+pclJP2f398IdbQ0VEbE2E+yJdDu42jOek70hBDA==
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr89361wmc.129.1594828085145;
+        Wed, 15 Jul 2020 08:48:05 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id q7sm3938344wrs.27.2020.07.15.08.48.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 06:09:08 -0700 (PDT)
+        Wed, 15 Jul 2020 08:48:04 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E63041804F0; Wed, 15 Jul 2020 15:09:05 +0200 (CEST)
-Subject: [PATCH bpf-next v2 6/6] selftests: add test for multiple attachments
- of freplace program
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Wed, 15 Jul 2020 15:09:05 +0200
-Message-ID: <159481854584.454654.7876264348597268466.stgit@toke.dk>
-In-Reply-To: <159481853923.454654.12184603524310603480.stgit@toke.dk>
-References: <159481853923.454654.12184603524310603480.stgit@toke.dk>
-User-Agent: StGit/0.23
+        id 9649C1804F0; Wed, 15 Jul 2020 17:48:03 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@gmail.com>,
+        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Takshak Chahande <ctakshak@fb.com>
+Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
+In-Reply-To: <CAEf4BzYMaKgJOA3koGkcThXriTGAOKGxjhQXYSNT9sVEFbS7ig@mail.gmail.com>
+References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com> <877dv6gpxd.fsf@toke.dk> <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com> <87v9ipg8jd.fsf@toke.dk> <CAEf4BzYVEqFUJybw3kjG6E6w12ocr2ncRz7j15GNNGG4BXJMTw@mail.gmail.com> <87lfjlg4fg.fsf@toke.dk> <CAEf4BzYMaKgJOA3koGkcThXriTGAOKGxjhQXYSNT9sVEFbS7ig@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 15 Jul 2020 17:48:03 +0200
+Message-ID: <87y2nkeq4s.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-This adds a selftest for attaching an freplace program to multiple targets
-simultaneously.
+>> Yup, that was helpful, thanks! I think our difference of opinion on this
+>> stems from the same place as our disagreement about point 2.: You are
+>> assuming that an application that uses XDP sticks around and holds on to
+>> its bpf_link, while I'm assuming it doesn't (and so has to rely on
+>> pinning for any persistence). In the latter case you don't really gain
+>> much from the bpf_link auto-cleanup, and whether it's a prog fd or a
+>> link fd you go find in your bpffs doesn't make that much difference...
+>
+> Right. But if I had to pick just one implementation (prog fd-based vs
+> bpf_link), I'd stick with bpf_link because it is flexible enough to
+> "emulate" prog fd attachment (through BPF FS), but the same isn't true
+> about prog fd attachment emulating bpf_link. That's it. I really don't
+> enjoy harping on that point, but it feels to be silently dismissed all
+> the time based on one particular arrangement for particular existing
+> XDP flow.
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  164 ++++++++++++++++----
- .../selftests/bpf/progs/freplace_get_constant.c    |   15 ++
- 2 files changed, 150 insertions(+), 29 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/freplace_get_constant.c
+It can; kinda. But you introduce a dependency on bpffs that wasn't there
+before, and you end up with resources that are kept around in the kernel
+if the interface disappears (because they are still pinned). So I
+consider it a poor emulation.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index a895bfed55db..feb3e11c5445 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -2,35 +2,78 @@
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
- #include <network_helpers.h>
-+#include <bpf/btf.h>
-+
-+typedef int (*test_cb)(struct bpf_object *obj);
-+
-+static int check_data_map(struct bpf_object *obj, int prog_cnt, bool reset)
-+{
-+	struct bpf_map *data_map, *map;
-+	const int zero = 0;
-+	u64 *result = NULL;
-+	__u32 duration = 0;
-+	int ret = -1, i;
-+
-+	result = malloc((prog_cnt + 32 /* spare */) * sizeof(u64));
-+	if (CHECK(!result, "alloc_memory", "failed to alloc memory"))
-+		return -ENOMEM;
-+
-+	bpf_object__for_each_map(map, obj)
-+		if (bpf_map__is_internal(map)) {
-+			data_map = map;
-+			break;
-+		}
-+	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
-+		goto out;
-+
-+	ret = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, result);
-+	if (CHECK(ret, "get_result",
-+		  "failed to get output data: %d\n", ret))
-+		goto out;
-+
-+	for (i = 0; i < prog_cnt; i++) {
-+		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %ld\n",
-+			  result[i]))
-+			goto out;
-+		result[i] = 0;
-+	}
-+	if (reset) {
-+		ret = bpf_map_update_elem(bpf_map__fd(data_map), &zero, result, 0);
-+		if (CHECK(ret, "reset_result", "failed to reset result\n"))
-+			goto out;
-+	}
-+
-+	ret = 0;
-+out:
-+	free(result);
-+	return ret;
-+}
- 
- static void test_fexit_bpf2bpf_common(const char *obj_file,
- 				      const char *target_obj_file,
- 				      int prog_cnt,
- 				      const char **prog_name,
--				      bool run_prog)
-+				      bool run_prog,
-+				      test_cb cb)
- {
--	struct bpf_object *obj = NULL, *pkt_obj;
--	int err, pkt_fd, i;
-+	struct bpf_object *obj = NULL, *tgt_obj;
-+	int err, tgt_fd, i;
- 	struct bpf_link **link = NULL;
- 	struct bpf_program **prog = NULL;
- 	__u32 duration = 0, retval;
--	struct bpf_map *data_map;
--	const int zero = 0;
--	u64 *result = NULL;
- 
- 	err = bpf_prog_load(target_obj_file, BPF_PROG_TYPE_UNSPEC,
--			    &pkt_obj, &pkt_fd);
-+			    &tgt_obj, &tgt_fd);
- 	if (CHECK(err, "tgt_prog_load", "file %s err %d errno %d\n",
- 		  target_obj_file, err, errno))
- 		return;
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
--			    .attach_prog_fd = pkt_fd,
-+			    .attach_prog_fd = tgt_fd,
- 			   );
- 
- 	link = calloc(sizeof(struct bpf_link *), prog_cnt);
- 	prog = calloc(sizeof(struct bpf_program *), prog_cnt);
--	result = malloc((prog_cnt + 32 /* spare */) * sizeof(u64));
--	if (CHECK(!link || !prog || !result, "alloc_memory",
-+	if (CHECK(!link || !prog, "alloc_memory",
- 		  "failed to alloc memory"))
- 		goto close_prog;
- 
-@@ -53,39 +96,33 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 			goto close_prog;
- 	}
- 
--	if (!run_prog)
--		goto close_prog;
-+	if (cb) {
-+		err = cb(obj);
-+		if (err)
-+			goto close_prog;
-+	}
- 
--	data_map = bpf_object__find_map_by_name(obj, "fexit_bp.bss");
--	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
-+	if (!run_prog)
- 		goto close_prog;
- 
--	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+	err = bpf_prog_test_run(tgt_fd, 1, &pkt_v6, sizeof(pkt_v6),
- 				NULL, NULL, &retval, &duration);
- 	CHECK(err || retval, "ipv6",
- 	      "err %d errno %d retval %d duration %d\n",
- 	      err, errno, retval, duration);
- 
--	err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, result);
--	if (CHECK(err, "get_result",
--		  "failed to get output data: %d\n", err))
-+	if (check_data_map(obj, prog_cnt, false))
- 		goto close_prog;
- 
--	for (i = 0; i < prog_cnt; i++)
--		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %ld\n",
--			  result[i]))
--			goto close_prog;
--
- close_prog:
- 	for (i = 0; i < prog_cnt; i++)
- 		if (!IS_ERR_OR_NULL(link[i]))
- 			bpf_link__destroy(link[i]);
- 	if (!IS_ERR_OR_NULL(obj))
- 		bpf_object__close(obj);
--	bpf_object__close(pkt_obj);
-+	bpf_object__close(tgt_obj);
- 	free(link);
- 	free(prog);
--	free(result);
- }
- 
- static void test_target_no_callees(void)
-@@ -96,7 +133,7 @@ static void test_target_no_callees(void)
- 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf_simple.o",
- 				  "./test_pkt_md_access.o",
- 				  ARRAY_SIZE(prog_name),
--				  prog_name, true);
-+				  prog_name, true, NULL);
- }
- 
- static void test_target_yes_callees(void)
-@@ -110,7 +147,7 @@ static void test_target_yes_callees(void)
- 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
- 				  "./test_pkt_access.o",
- 				  ARRAY_SIZE(prog_name),
--				  prog_name, true);
-+				  prog_name, true, NULL);
- }
- 
- static void test_func_replace(void)
-@@ -127,7 +164,7 @@ static void test_func_replace(void)
- 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
- 				  "./test_pkt_access.o",
- 				  ARRAY_SIZE(prog_name),
--				  prog_name, true);
-+				  prog_name, true, NULL);
- }
- 
- static void test_func_replace_verify(void)
-@@ -138,7 +175,75 @@ static void test_func_replace_verify(void)
- 	test_fexit_bpf2bpf_common("./freplace_connect4.o",
- 				  "./connect4_prog.o",
- 				  ARRAY_SIZE(prog_name),
--				  prog_name, false);
-+				  prog_name, false, NULL);
-+}
-+
-+static int test_second_attach(struct bpf_object *obj)
-+{
-+	const char *prog_name = "freplace/get_constant";
-+	const char *tgt_name = prog_name + 9; /* cut off freplace/ */
-+	const char *tgt_obj_file = "./test_pkt_access.o";
-+	int err = 0, tgt_fd, tgt_btf_id, link_fd = -1;
-+	struct bpf_program *prog = NULL;
-+	struct bpf_object *tgt_obj;
-+	__u32 duration = 0, retval;
-+	struct btf *btf;
-+
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog %s not found\n", prog_name))
-+		return -ENOENT;
-+
-+	err = bpf_prog_load(tgt_obj_file, BPF_PROG_TYPE_UNSPEC,
-+			    &tgt_obj, &tgt_fd);
-+	if (CHECK(err, "second_prog_load", "file %s err %d errno %d\n",
-+		  tgt_obj_file, err, errno))
-+		return err;
-+
-+	btf = bpf_object__btf(tgt_obj);
-+	tgt_btf_id = btf__find_by_name_kind(btf, tgt_name, BTF_KIND_FUNC);
-+	if (CHECK(tgt_btf_id < 0, "find_btf", "no BTF ID found for func %s\n", prog_name)) {
-+		err = -ENOENT;
-+		goto out;
-+	}
-+
-+	DECLARE_LIBBPF_OPTS(bpf_raw_tracepoint_opts, opts,
-+			    .tgt_prog_fd = tgt_fd,
-+			    .tgt_btf_id = tgt_btf_id,
-+			   );
-+	link_fd = bpf_raw_tracepoint_open_opts(NULL, bpf_program__fd(prog), &opts);
-+	if (CHECK(link_fd < 0, "second_link", "err %d errno %d",
-+		  link_fd, errno)) {
-+		err = link_fd;
-+		goto out;
-+	}
-+
-+	err = bpf_prog_test_run(tgt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+				NULL, NULL, &retval, &duration);
-+	if (CHECK(err || retval, "ipv6",
-+		  "err %d errno %d retval %d duration %d\n",
-+		  err, errno, retval, duration))
-+		goto out;
-+
-+	err = check_data_map(obj, 1, true);
-+	if (err)
-+		goto out;
-+
-+out:
-+	if (link_fd >= 0)
-+		close(link_fd);
-+	bpf_object__close(tgt_obj);
-+	return err;
-+}
-+
-+static void test_func_replace_multi(void)
-+{
-+	const char *prog_name[] = {
-+		"freplace/get_constant",
-+	};
-+	test_fexit_bpf2bpf_common("./freplace_get_constant.o",
-+				  "./test_pkt_access.o",
-+				  ARRAY_SIZE(prog_name),
-+				  prog_name, true, test_second_attach);
- }
- 
- void test_fexit_bpf2bpf(void)
-@@ -147,4 +252,5 @@ void test_fexit_bpf2bpf(void)
- 	test_target_yes_callees();
- 	test_func_replace();
- 	test_func_replace_verify();
-+	test_func_replace_multi();
- }
-diff --git a/tools/testing/selftests/bpf/progs/freplace_get_constant.c b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-new file mode 100644
-index 000000000000..8f0ecf94e533
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+volatile __u64 test_get_constant = 0;
-+SEC("freplace/get_constant")
-+int new_get_constant(long val)
-+{
-+	if (val != 123)
-+		return 0;
-+	test_get_constant = 1;
-+	return test_get_constant; /* original get_constant() returns val - 122 */
-+}
-+char _license[] SEC("license") = "GPL";
+>> >> >> I was under the impression that forcible attachment of bpf_links was
+>> >> >> already possible, but looking at the code now it doesn't appear to be?
+>> >> >> Wasn't that the whole point of BPF_LINK_GET_FD_BY_ID? I.e., that a
+>> >> >> sysadmin with CAP_SYS_ADMIN privs could grab the offending bpf_link FD
+>> >> >> and force-remove it? I certainly think this should be added before we
+>> >> >> expand bpf_link usage any more...
+>> >> >
+>> >> > I still maintain that killing processes that installed the bpf_link is
+>> >> > the better approach. Instead of letting the process believe and act as
+>> >> > if it has an active XDP program, while it doesn't, it's better to
+>> >> > altogether kill/restart the process.
+>> >>
+>> >> Killing the process seems like a very blunt tool, though. Say it's a
+>> >> daemon that attaches XDP programs to all available interfaces, but you
+>> >> want to bring down an interface for some one-off maintenance task, but
+>> >> the daemon authors neglected to provide an interface to tell the daemon
+>> >> to detach from specific interfaces. If your only option is to kill the
+>> >> daemon, you can't bring down that interface without disrupting whatever
+>> >> that daemon is doing with XDP on all the other interfaces.
+>> >>
+>> >
+>> > I'd rather avoid addressing made up hypothetical cases, really. Get
+>> > better and more flexible daemon?
+>>
+>> I know you guys don't consider an issue to be real until it has already
+>> crashed something in production. But some of us don't have the luxury of
+>> your fast issue-discovered-to-fix-shipped turnaround times; so instead
+>> we have to go with the old-fashioned way of thinking about how things
+>> can go wrong ahead of time, and making sure we're prepared to handle
+>> issues if (or, all too often, when) they occur. And it's frankly
+>> tiresome to have all such efforts be dismissed as "made up
+>> hypotheticals". Please consider that the whole world does not operate
+>> like your org, and that there may be legitimate reasons to do things
+>> differently.
+>>
+>
+> Having something that breaks production is a very hard evidence of a
+> problem and makes it easier to better understand a **real** issue well
+> and argue why something has to be solved or prevented. But it's not a
+> necessary condition, of course. It's just that made up hypotheticals
+> aren't necessarily good ways to motivate a feature, because all too
+> often it turns out to be just that, hypothetical issue, while the real
+> issue is different enough to warrant a different and better solution.
+> By being conservative with adding features, we are trying to not make
+> unnecessary design and API mistakes, because in the kernel they are
+> here to stay forever.
+
+I do appreciate the need to be conservative with the interfaces we add,
+and I am aware of the maintenance burden. And it's not like I want
+contingencies for any hypothetical I can think of put into the kernel
+ahead of time (talk about a never-ending process :)). What I'm asking
+for is just that something be argued on its merits, instead of
+*automatically* being dismissed as "hypothetical". I.e., the difference
+between "that can be handled by..." or "that is not likely to occur
+because...", as opposed to "that has not happened yet, so come back when
+it does".
+
+> In your example, I'd argue that the design of that daemon is bad if it
+> doesn't allow you to control what's attached where, and how to detach
+> it without breaking completely independent network interfaces. That
+> should be the problem that has to be solved first, IMO. And just
+> because in some scenarios it might be **convenient** to force-detach
+> bpf_link, is in no way a good justification (in my book) to add that
+> feature, especially if there are other (and arguably safer) ways to
+> achieve the same **troubleshooting** effect.
+
+See this is actually what was I asking for - considering a question on
+its merits; so thank you! And yeah, it would be a poorly designed
+daemon, but I'm not quite convinced that such daemons won't show up and
+be put into production by, say, someone running an enterprise operating
+system :)
+
+Anyway, let's leave that particular issue aside for now, and I'll circle
+back to adding the force-remove if needed once I've thought this over a
+bit more.
+
+>> That being said...
+>>
+>> > This force-detach functionality isn't hard to add, but so far we had
+>> > no real reason to do that. Once we do have such use cases, we can add
+>> > it, if we agree it's still a good idea.
+>>
+>> ...this is fair enough, and I guess I should just put this on my list of
+>> things to add. I was just somehow under the impression that this had
+>> already been added.
+>>
+>
+> So, overall, do I understand correctly that you are in principle not
+> opposed to adding BPF XDP link, or you still have some concerns that
+> were not addressed?
+
+Broadly speaking yeah, I am OK with adding this as a second interface. I
+am still concerned about the "locking in place" issued we discussed
+above, but that can be addressed later. I am also a little concerned
+about adding a second interface for configuring an interface that has to
+take the RTNL lock etc; but those are mostly details, I suppose.
+
+Unfortunately I won't have to review the latest version of your patch
+set to look at those details before I go on vacation (sorry about that :/).
+I guess I'll just have to leave that to you guys to take care of...
+
+-Toke
 
