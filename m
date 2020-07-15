@@ -2,92 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E822215C9
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 22:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03418221673
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 22:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgGOUI4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 16:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        id S1726786AbgGOUoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 16:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgGOUI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:08:56 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5561C061755;
-        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c80so7056023wme.0;
-        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
+        with ESMTP id S1725917AbgGOUoL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 16:44:11 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD37C061755;
+        Wed, 15 Jul 2020 13:44:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k71so3685651pje.0;
+        Wed, 15 Jul 2020 13:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
-        b=jnQVra4+13tS061DNIkTvsRN58izvTQtayCFy3EenQN3TZszDfT5iQLKl4CCwDqXac
-         mxK9lP5rUoskc/FzlXEjYSQ22MICw9Ui5tV3HckDCZIIFV+54zKHfWCZgYgTUk+/61nc
-         rCKSyiStxwsayPsHroTFsJkBZoB2PHBxrq/zRKBXKsRApgfUlHICMl6a5toV5myHQ/Ij
-         Tnn292G6AN8i7Yxz7kQTNMpq6TJF6bVlC9KWpmmPQ5tLqqLvKmon9O8RB9aSvc/bFnK9
-         lSmT5ex5uekMteqlOYR7EnNLWRxDWzM69X6xAGMJ0ujYqE03nCF6nbcps76viWv163se
-         /4ww==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=b9wGmkyoU9s5dIOAj0k6t8DcKYUAHntZJnHE7gCVBcA=;
+        b=VrRIXYaaGYQRUhjnzZUdAES35q+bkdSkH0eXl8wI4m2w4KkWvDCR46B7wgAB6ZGHvC
+         3Yb5K6D45ODuMXfO0Egrz+FzKjMRMv7GcGZdXrwuSJurBQT/1fe0C1bmt2yuHxeCwnWU
+         7weYp32nrMfgOTIVSsqBmxFFbk+Eb30cyL8AhqMt/XFH6TYEdgw1QTL3JQxa5Z/1coN8
+         IDk95ZYN1VwbMLKcM5oPZ1j9Ph6GfoE+o9vkwMM8yMTaWBIU7YP97WeFLyxyFG/u1CGB
+         L7fEJFujERsWtoycwGyuYg6lZf0AHkVdcpPuQZZdb92lAhvtcCQJDgBIMVKFxq0TZ98P
+         WS9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
-        b=TMjffXnktfJTcJbbAQ629AR9Mg92zIQEBMLCOpiN1vUbCJlq9K0gxnybuJQ44C/cxP
-         FanScgvrxRUcDaA+gM4JEKYSIPrgnCIQc0k/70FEo7miqKHylMZKOb5Yb0RU7XVEgonx
-         6UwtW5xeeLyh4gett2xqw0t3B+D2qJt6gIKzFMs6nQO3oFhIlIj6+arHVHOCfxuUuSxv
-         9VYQBSHcYijl3DTszWFMf0S4LyP1Gj0TdsBX1SL4wdxVFSFPDCpnAPfHhKSOLMQdLfMr
-         JncmGcAkmQll1om1xoFnA5fRIvGDRZ/RqIthqIhzN78ykAoopBcRPMZjIuPzt0zwoNNh
-         rR+w==
-X-Gm-Message-State: AOAM530sAuHqJZI5FQ86WiZu6ko3KwM2i90bFyABA4+uDYWJGh9hUVF1
-        dDBbqeFFxKkQ3AM71nIIizJaBiioMthK8sXCbE0=
-X-Google-Smtp-Source: ABdhPJxxxn/p48diSigUNGjm4Jnah7ajXIZF5W1reXQTfbH4SrdS7LWBtgRqa0NxXagT2e1CXjGCce/zqJQ+MyLpXa8=
-X-Received: by 2002:a1c:ab56:: with SMTP id u83mr1111488wme.94.1594843734608;
- Wed, 15 Jul 2020 13:08:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200713183711.762244-1-luke.r.nels@gmail.com> <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
-In-Reply-To: <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Date:   Wed, 15 Jul 2020 13:08:43 -0700
-Message-ID: <CAB-e3NQFE9rsVZ55Y=jivuBsd1A+V4GWtceqjOz80qtmFsFQVA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf, riscv: Add compressed instructions
- to rv64 JIT
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Luke Nelson <lukenels@cs.washington.edu>,
-        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=b9wGmkyoU9s5dIOAj0k6t8DcKYUAHntZJnHE7gCVBcA=;
+        b=q+hftw5bs9pQC+8ws4pttvKa5/lp6l2saV7Gni99QLQ5kFv15NdZ9Q0FcZxFotBbRt
+         PqpgF/DThL4AYTTYXUyIhsBgNIg1bfrTtDSsK3zmXwZ25NZHD3IDp3smvgE5MUlfZHlf
+         0KfaBFASREQcEsIhQ3sq3USs8ImN6fQ4pjiDcgVmTQXSf/pG4bCi5IqdbrvzVFjBETnU
+         ZoWPwx9B4ArTMJxdn/A6vVHJ1m3o3cZOiNtSfDwyWvP3stu+3rroTKT8pWyreB3tEpTo
+         0ywH8+9WHrKzTYy7as2eTUK09DHAHIZHbrCDQx0m9cHNspoC0OaOp7pWnVuOYI696Cbu
+         kUpA==
+X-Gm-Message-State: AOAM531H6doFb6XgP8/WX4cGbRVKOwxurBAIL3YBYjgZ2okJGttsfn9V
+        fGPe2hlVrUJY35sVRrWSioU=
+X-Google-Smtp-Source: ABdhPJxX/VPbjWIO3ObZylsx0MWauG1RuAI/3nz7R7py4ut5zTM+/Rt6+Ecsyx+Uqli6bBXRqGVZJw==
+X-Received: by 2002:a17:902:a60d:: with SMTP id u13mr1054443plq.46.1594845850378;
+        Wed, 15 Jul 2020 13:44:10 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:96f0])
+        by smtp.gmail.com with ESMTPSA id r16sm2860202pfh.64.2020.07.15.13.44.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 13:44:09 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 13:44:06 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: support attaching freplace programs
+ to multiple attach points
+Message-ID: <20200715204406.vt64vgvzsbr6kolm@ast-mbp.dhcp.thefacebook.com>
+References: <159481853923.454654.12184603524310603480.stgit@toke.dk>
+ <159481854255.454654.15065796817034016611.stgit@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <159481854255.454654.15065796817034016611.stgit@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> First of all; Really nice work. I like this, and it makes the code
-> easier to read as well (e.g. emit_mv). I'm a bit curious why you only
-> did it for RV64, and not RV32? I have some minor comments on the
-> patches. I strongly encourage you to submit this as a proper (non-RFC)
-> set for bpf-next.
->
+On Wed, Jul 15, 2020 at 03:09:02PM +0200, Toke Høiland-Jørgensen wrote:
+>  
+> +	if (tgt_prog_fd) {
+> +		/* For now we only allow new targets for BPF_PROG_TYPE_EXT */
+> +		if (prog->type != BPF_PROG_TYPE_EXT ||
+> +		    !btf_id) {
+> +			err = -EINVAL;
+> +			goto out_put_prog;
+> +		}
+> +		tgt_prog = bpf_prog_get(tgt_prog_fd);
+> +		if (IS_ERR(tgt_prog)) {
+> +			err = PTR_ERR(tgt_prog);
+> +			tgt_prog = NULL;
+> +			goto out_put_prog;
+> +		}
+> +
+> +	} else if (btf_id) {
+> +		err = -EINVAL;
+> +		goto out_put_prog;
+> +	} else {
+> +		btf_id = prog->aux->attach_btf_id;
+> +		tgt_prog = prog->aux->linked_prog;
+> +		if (tgt_prog)
+> +			bpf_prog_inc(tgt_prog); /* we call bpf_prog_put() on link release */
 
-Thanks for the feedback! I'll clean up the patches and address your
-comments in the next revision.
+so the first prog_load cmd will beholding the first target prog?
+This is complete non starter.
+You didn't mention such decision anywhere.
+The first ext prog will attach to the first dispatcher xdp prog,
+then that ext prog will multi attach to second dispatcher xdp prog and
+the first dispatcher prog will live in the kernel forever.
+That's not what we discussed back in April.
 
-The patch adding RVC to the RV32 JIT is forthcoming; some of the
-optimizations there are more difficult since the RV32 JIT makes more
-use of "internal" jumps whose offsets depend on the sizes of emitted
-instructions. I plan to clean up that code and add RVC support in a
-future series.
+> +	}
+> +	err = bpf_check_attach_target(NULL, prog, tgt_prog, btf_id,
+> +				      &fmodel, &addr, NULL, NULL);
 
-- Luke
+This is a second check for btf id match?
+What's the point? The first one was done at load time.
+When tgt_prog_fd/tgt_btf_id are zero there is no need to recheck.
+
+I really hope I'm misreading these patches, because they look very raw.
