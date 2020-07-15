@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF98220CF7
-	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 14:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395F4220CFA
+	for <lists+bpf@lfdr.de>; Wed, 15 Jul 2020 14:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbgGOMdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 08:33:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21864 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730602AbgGOMdb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jul 2020 08:33:31 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FCWF2K060777;
-        Wed, 15 Jul 2020 08:33:20 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32792w4w7b-1
+        id S1726652AbgGOMdt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 08:33:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38622 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726335AbgGOMdt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jul 2020 08:33:49 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FCXUhu045625;
+        Wed, 15 Jul 2020 08:33:35 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 327u1jk22j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 08:33:19 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06FCX8s6019160;
-        Wed, 15 Jul 2020 12:33:08 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 328rbqs1v3-1
+        Wed, 15 Jul 2020 08:33:33 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06FCUGJa011361;
+        Wed, 15 Jul 2020 12:33:19 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 329nmygmrj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 12:33:08 +0000
+        Wed, 15 Jul 2020 12:33:19 +0000
 Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06FCVeTW61473144
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06FCXEM012386394
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 12:31:40 GMT
+        Wed, 15 Jul 2020 12:33:14 GMT
 Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A3244C044;
-        Wed, 15 Jul 2020 12:33:03 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 566A44C044;
+        Wed, 15 Jul 2020 12:33:14 +0000 (GMT)
 Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F9284C040;
-        Wed, 15 Jul 2020 12:33:02 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id C2E774C050;
+        Wed, 15 Jul 2020 12:33:13 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.145.186.215])
         by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Jul 2020 12:33:02 +0000 (GMT)
+        Wed, 15 Jul 2020 12:33:13 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH 1/4] s390/kernel: unify EX_TABLE* implementations
-Date:   Wed, 15 Jul 2020 14:32:24 +0200
-Message-Id: <20200715123227.912866-2-iii@linux.ibm.com>
+Subject: [PATCH 2/4] s390/kernel: expand the exception table logic to allow new handling options
+Date:   Wed, 15 Jul 2020 14:32:25 +0200
+Message-Id: <20200715123227.912866-3-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200715123227.912866-1-iii@linux.ibm.com>
 References: <20200715123227.912866-1-iii@linux.ibm.com>
@@ -54,99 +54,234 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_10:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150102
+ definitions=2020-07-15_11:2020-07-15,2020-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999
+ suspectscore=0 phishscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150105
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace three implementations with one using using __stringify_in_c
-macro conveniently "borrowed" from powerpc and microblaze.
+This is a s390 port of commit 548acf19234d ("x86/mm: Expand the
+exception table logic to allow new handling options"), which is needed
+for implementing BPF_PROBE_MEM on s390.
+
+The new handler field is made 64-bit in order to allow pointing from
+dynamically allocated entries to handlers in kernel text. Unlike on x86,
+NULL is used instead of ex_handler_default. This is because exception
+tables are used by boot/text_dma.S, and it would be a pain to preserve
+ex_handler_default.
+
+The new infrastructure is ignored in early_pgm_check_handler, since
+there is no pt_regs.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
 ---
- arch/s390/include/asm/asm-const.h | 12 +++++++++++
- arch/s390/include/asm/linkage.h   | 34 ++++++++++---------------------
- 2 files changed, 23 insertions(+), 23 deletions(-)
- create mode 100644 arch/s390/include/asm/asm-const.h
+ arch/s390/include/asm/extable.h | 50 +++++++++++++++++++++++++++++----
+ arch/s390/include/asm/linkage.h |  3 +-
+ arch/s390/kernel/kprobes.c      |  4 +--
+ arch/s390/kernel/traps.c        |  7 ++---
+ arch/s390/mm/fault.c            |  4 +--
+ scripts/sorttable.c             | 25 +++++++++++++++++
+ 6 files changed, 76 insertions(+), 17 deletions(-)
 
-diff --git a/arch/s390/include/asm/asm-const.h b/arch/s390/include/asm/asm-const.h
-new file mode 100644
-index 000000000000..11f615eb0066
---- /dev/null
-+++ b/arch/s390/include/asm/asm-const.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_S390_ASM_CONST_H
-+#define _ASM_S390_ASM_CONST_H
+diff --git a/arch/s390/include/asm/extable.h b/arch/s390/include/asm/extable.h
+index ae27f756b409..8f0c60f2fe3a 100644
+--- a/arch/s390/include/asm/extable.h
++++ b/arch/s390/include/asm/extable.h
+@@ -1,12 +1,20 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef __S390_EXTABLE_H
+ #define __S390_EXTABLE_H
 +
-+#ifdef __ASSEMBLY__
-+#  define stringify_in_c(...)	__VA_ARGS__
-+#else
-+/* This version of stringify will deal with commas... */
-+#  define __stringify_in_c(...)	#__VA_ARGS__
-+#  define stringify_in_c(...)	__stringify_in_c(__VA_ARGS__) " "
-+#endif
-+#endif /* _ASM_S390_ASM_CONST_H */
++#include <asm/ptrace.h>
++#include <linux/compiler.h>
++
+ /*
+- * The exception table consists of pairs of addresses: the first is the
+- * address of an instruction that is allowed to fault, and the second is
+- * the address at which the program should continue.  No registers are
+- * modified, so it is entirely up to the continuation code to figure out
+- * what to do.
++ * The exception table consists of three addresses:
++ *
++ * - Address of an instruction that is allowed to fault.
++ * - Address at which the program should continue.
++ * - Optional address of handler that takes pt_regs * argument and runs in
++ *   interrupt context.
++ *
++ * No registers are modified, so it is entirely up to the continuation code
++ * to figure out what to do.
+  *
+  * All the routines below use bits of fixup code that are out of line
+  * with the main instruction path.  This means when everything is well,
+@@ -17,6 +25,7 @@
+ struct exception_table_entry
+ {
+ 	int insn, fixup;
++	long handler;
+ };
+ 
+ extern struct exception_table_entry *__start_dma_ex_table;
+@@ -29,6 +38,37 @@ static inline unsigned long extable_fixup(const struct exception_table_entry *x)
+ 	return (unsigned long)&x->fixup + x->fixup;
+ }
+ 
++typedef bool (*ex_handler_t)(const struct exception_table_entry *,
++			     struct pt_regs *);
++
++static inline ex_handler_t
++ex_fixup_handler(const struct exception_table_entry *x)
++{
++	return (ex_handler_t)((unsigned long)&x->handler + x->handler);
++}
++
++static inline bool ex_handle(const struct exception_table_entry *x,
++			     struct pt_regs *regs)
++{
++	ex_handler_t handler = ex_fixup_handler(x);
++
++	if (unlikely(handler))
++		return handler(x, regs);
++	regs->psw.addr = extable_fixup(x);
++	return true;
++}
++
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
++static inline void swap_ex_entry_fixup(struct exception_table_entry *a,
++				       struct exception_table_entry *b,
++				       struct exception_table_entry tmp,
++				       int delta)
++{
++	a->fixup = b->fixup + delta;
++	b->fixup = tmp.fixup - delta;
++	a->handler = b->handler + delta;
++	b->handler = tmp.handler - delta;
++}
++
+ #endif
 diff --git a/arch/s390/include/asm/linkage.h b/arch/s390/include/asm/linkage.h
-index 7f22262b0e46..1b52c07b5642 100644
+index 1b52c07b5642..83ff5a35d522 100644
 --- a/arch/s390/include/asm/linkage.h
 +++ b/arch/s390/include/asm/linkage.h
-@@ -2,38 +2,26 @@
- #ifndef __ASM_LINKAGE_H
- #define __ASM_LINKAGE_H
+@@ -14,9 +14,10 @@
  
-+#include <asm/asm-const.h>
- #include <linux/stringify.h>
+ #define __EX_TABLE(_section, _fault, _target)				\
+ 	stringify_in_c(.section	_section,"a";)				\
+-	stringify_in_c(.align	4;)					\
++	stringify_in_c(.align	8;)					\
+ 	stringify_in_c(.long	(_fault) - .;)				\
+ 	stringify_in_c(.long	(_target) - .;)				\
++	stringify_in_c(.quad	0 - .;)					\
+ 	stringify_in_c(.previous)
  
- #define __ALIGN .align 4, 0x07
- #define __ALIGN_STR __stringify(__ALIGN)
+ #define EX_TABLE(_fault, _target)					\
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index 548d0ea9808d..d2a71d872638 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -523,10 +523,8 @@ static int kprobe_trap_handler(struct pt_regs *regs, int trapnr)
+ 		 * zero, try to fix up.
+ 		 */
+ 		entry = s390_search_extables(regs->psw.addr);
+-		if (entry) {
+-			regs->psw.addr = extable_fixup(entry);
++		if (entry && ex_handle(entry, regs))
+ 			return 1;
+-		}
  
--#ifndef __ASSEMBLY__
--
- /*
-  * Helper macro for exception table entries
-  */
--#define EX_TABLE(_fault, _target)	\
--	".section __ex_table,\"a\"\n"	\
--	".align	4\n"			\
--	".long	(" #_fault ") - .\n"	\
--	".long	(" #_target ") - .\n"	\
--	".previous\n"
--
--#else /* __ASSEMBLY__ */
+ 		/*
+ 		 * fixup_exception() could not handle it,
+diff --git a/arch/s390/kernel/traps.c b/arch/s390/kernel/traps.c
+index ff9cc4c3290e..8d1e8a1a97df 100644
+--- a/arch/s390/kernel/traps.c
++++ b/arch/s390/kernel/traps.c
+@@ -50,11 +50,8 @@ void do_report_trap(struct pt_regs *regs, int si_signo, int si_code, char *str)
+         } else {
+                 const struct exception_table_entry *fixup;
+ 		fixup = s390_search_extables(regs->psw.addr);
+-                if (fixup)
+-			regs->psw.addr = extable_fixup(fixup);
+-		else {
++		if (!fixup || !ex_handle(fixup, regs))
+ 			die(regs, str);
+-		}
+         }
+ }
  
--#define EX_TABLE(_fault, _target)	\
--	.section __ex_table,"a"	;	\
--	.align	4 ;			\
--	.long	(_fault) - . ;		\
--	.long	(_target) - . ;		\
--	.previous
-+#define __EX_TABLE(_section, _fault, _target)				\
-+	stringify_in_c(.section	_section,"a";)				\
-+	stringify_in_c(.align	4;)					\
-+	stringify_in_c(.long	(_fault) - .;)				\
-+	stringify_in_c(.long	(_target) - .;)				\
-+	stringify_in_c(.previous)
+@@ -251,7 +248,7 @@ void monitor_event_exception(struct pt_regs *regs)
+ 	case BUG_TRAP_TYPE_NONE:
+ 		fixup = s390_search_extables(regs->psw.addr);
+ 		if (fixup)
+-			regs->psw.addr = extable_fixup(fixup);
++			ex_handle(fixup, regs);
+ 		break;
+ 	case BUG_TRAP_TYPE_WARN:
+ 		break;
+diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+index d53c2e2ea1fd..c4c6cafef3f4 100644
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -255,10 +255,8 @@ static noinline void do_no_context(struct pt_regs *regs)
  
--#define EX_TABLE_DMA(_fault, _target)	\
--	.section .dma.ex_table, "a" ;	\
--	.align	4 ;			\
--	.long	(_fault) - . ;		\
--	.long	(_target) - . ;		\
--	.previous
-+#define EX_TABLE(_fault, _target)					\
-+	__EX_TABLE(__ex_table, _fault, _target)
-+#define EX_TABLE_DMA(_fault, _target)					\
-+	__EX_TABLE(.dma.ex_table, _fault, _target)
+ 	/* Are we prepared to handle this kernel fault?  */
+ 	fixup = s390_search_extables(regs->psw.addr);
+-	if (fixup) {
+-		regs->psw.addr = extable_fixup(fixup);
++	if (fixup && ex_handle(fixup, regs))
+ 		return;
+-	}
  
--#endif /* __ASSEMBLY__ */
- #endif
+ 	/*
+ 	 * Oops. The kernel tried to access some bad page. We'll have to
+diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+index ec6b5e81eba1..a4b8415ba71c 100644
+--- a/scripts/sorttable.c
++++ b/scripts/sorttable.c
+@@ -255,6 +255,29 @@ static void x86_sort_relative_table(char *extab_image, int image_size)
+ 	}
+ }
+ 
++static void s390_sort_relative_table(char *extab_image, int image_size)
++{
++	int i;
++
++	for (i = 0; i < image_size; i += 16) {
++		char *loc = extab_image + i;
++
++		w(r((uint32_t *)loc) + i, (uint32_t *)loc);
++		w(r((uint32_t *)(loc + 4)) + (i + 4), (uint32_t *)(loc + 4));
++		w8(r8((uint64_t *)(loc + 8)) + (i + 8), (uint64_t *)(loc + 8));
++	}
++
++	qsort(extab_image, image_size / 16, 16, compare_relative_table);
++
++	for (i = 0; i < image_size; i += 16) {
++		char *loc = extab_image + i;
++
++		w(r((uint32_t *)loc) - i, (uint32_t *)loc);
++		w(r((uint32_t *)(loc + 4)) - (i + 4), (uint32_t *)(loc + 4));
++		w8(r8((uint64_t *)(loc + 8)) - (i + 8), (uint64_t *)(loc + 8));
++	}
++}
++
+ static int do_file(char const *const fname, void *addr)
+ {
+ 	int rc = -1;
+@@ -297,6 +320,8 @@ static int do_file(char const *const fname, void *addr)
+ 		custom_sort = x86_sort_relative_table;
+ 		break;
+ 	case EM_S390:
++		custom_sort = s390_sort_relative_table;
++		break;
+ 	case EM_AARCH64:
+ 	case EM_PARISC:
+ 	case EM_PPC:
 -- 
 2.25.4
 
