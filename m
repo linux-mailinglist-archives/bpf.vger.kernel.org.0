@@ -2,59 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83D2221AB
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 13:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19EA22223D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 14:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgGPLsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 07:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        id S1728123AbgGPMRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 08:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgGPLsN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:48:13 -0400
+        with ESMTP id S1728096AbgGPMRi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 08:17:38 -0400
 Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C746C08C5C0
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 04:48:13 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h22so6755468lji.9
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 04:48:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834B3C08C5C0
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:17:38 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f5so6853337ljj.10
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=/GvE5mLubde7FdkABAeWnyMsWpw4xjTaM1e3k7MWqIA=;
-        b=jg7ezTaJ0octejEhVxfpChAgTaEQI6MYYALNlnfRCxmAkRsEg6EMtaFNCKAX4GM8+J
-         biXYT+/h29AZtBgXvf2R572PzXzkhsFxo/Fs3nKykp4dsekjR+Yc1LPDKNKw7OGjGbkX
-         zwUROrUeShTrB27hdQsclp3ww/Slcm2l3wsCk=
+        bh=tscWjFcr/AdRUQgnIH2j5TMqV/ph1Tniwa7qjpNU7zU=;
+        b=yW3vYZAvEURuyXC+7AoFhhYT8ibwcm5EmWW9YQW0IIzF9V9RCC06cY4p8l5oVCI3J6
+         rV54te2CZsxX0GcqSmtZi30tbp2g38+FaRrMrs9Us5bnOdNzQObPEnPFTNlYZnsaxV+b
+         UVC8fWrzXZ5VSMSWy5+Ww6wdHdlHSmsS/3i1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=/GvE5mLubde7FdkABAeWnyMsWpw4xjTaM1e3k7MWqIA=;
-        b=DXpJstfSnO04HeaGlGCSam1gXBQJ0pewUHDMNI6n83cvqmRgXwzp+JYbUBuVTak5cx
-         oUWjp9VDUVxyuJuThJbg/T2B8iMpUFYafGlai92ZJMThsHBVK9xd3kmOt8UQnETFrKAH
-         7xFrnh9WhWH0ZhZBi/dI/4iXTY2gq8TWjAWs/9gcSyRdOUDiuJ4U7vdzgkI+uL1hdD8H
-         3vIr7m6X1X/viO2MTZKxhslmGa2IdOYi63G2ypaeDp7ZHwA6yLF897KOFIhDdTAAzc/7
-         qE9w6wvxfdBqYNn+Ou6Y6eudhh6wKCWs+Q+m0VjzYy04V4eLol2Xz5bbfmpsY3n51pUR
-         Wq3g==
-X-Gm-Message-State: AOAM530V9tLmrk125BEcQNbFttUaGYkfspOUZ3w8u0Lcbl7FtFZAi5xl
-        qPUZO/spOMN5t5GT5DiBEblPww==
-X-Google-Smtp-Source: ABdhPJxVQNiZterynrx2heHWJx0H3l7YAy9VRzzb1g5CjHd3YIGbnALJxgXOhIhiLFfYFwbDZlFTrw==
-X-Received: by 2002:a2e:9ac4:: with SMTP id p4mr1929744ljj.143.1594900091536;
-        Thu, 16 Jul 2020 04:48:11 -0700 (PDT)
+        bh=tscWjFcr/AdRUQgnIH2j5TMqV/ph1Tniwa7qjpNU7zU=;
+        b=EcDdULLQl1HG8HGe4/seGDx5EyXXkl558Xpw2DEPZJfUgCZkMAiCB9kVT/g85xc4tw
+         eCQzg98ZBaluoqcw7KvKuSePAq4fDSZDwjVC1QSYA5EqXtXOMpMJXnkIGFqCkHzcakUg
+         01+c2Ul5LdF+7qGDhFk6P0EoZqrBHlgOqVVGHzM29uLNxykqRC5YfDQln4uvPsjJdffS
+         dQ+NgBg3J5WM5zzfIDk8HPbJT/SxTOa3jC4ujDJZIFP92Ic6Jy8uAUCVrdE2fEyDkIgL
+         t7FrzzveCw64O5dcXpYUxEJSPMsGjRhiLLp5Z2nX+sQwtJ8u/Ks4L3IuFMI9HSL3KUh9
+         qN8A==
+X-Gm-Message-State: AOAM5317usFant7tY1fhiRB//0XAUz1j9N/JbEwBLUSagBEmdlwY3Dz8
+        qyFF7WK7yQqaS/+xa+kvQqiJww==
+X-Google-Smtp-Source: ABdhPJxqWgGyQoj+nCEkyDTqOzwSP09fMuf9WwjDRBm3afE6PoJaTuGhPMHsGh3o0//OnnSg7UOhzw==
+X-Received: by 2002:a2e:780e:: with SMTP id t14mr2000146ljc.444.1594901856795;
+        Thu, 16 Jul 2020 05:17:36 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id d22sm340396lfs.26.2020.07.16.04.48.10
+        by smtp.gmail.com with ESMTPSA id y26sm1017207ljk.26.2020.07.16.05.17.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 04:48:10 -0700 (PDT)
-References: <20200710173123.427983-1-jakub@cloudflare.com> <c98aaa5e-9347-c23f-cfa6-e267f2485c5b@fb.com> <87a700y3yb.fsf@cloudflare.com> <7c27726c-9bba-8d7c-55b4-69d7af287382@fb.com>
+        Thu, 16 Jul 2020 05:17:36 -0700 (PDT)
+References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-3-jakub@cloudflare.com> <CAEf4BzZd30RmiZaGvDju9X0jybkcdhgOk71fbcdySeJdPzmrAQ@mail.gmail.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf] bpf: Shift and mask loads narrower than context field size
-In-reply-to: <7c27726c-9bba-8d7c-55b4-69d7af287382@fb.com>
-Date:   Thu, 16 Jul 2020 13:48:09 +0200
-Message-ID: <878sfjy93a.fsf@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: Re: [PATCH bpf-next v4 02/16] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+In-reply-to: <CAEf4BzZd30RmiZaGvDju9X0jybkcdhgOk71fbcdySeJdPzmrAQ@mail.gmail.com>
+Date:   Thu, 16 Jul 2020 14:17:35 +0200
+Message-ID: <877dv3y7q8.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -62,196 +66,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:59 PM CEST, Yonghong Song wrote:
-> On 7/15/20 12:26 PM, Jakub Sitnicki wrote:
->> On Wed, Jul 15, 2020 at 08:44 AM CEST, Yonghong Song wrote:
->>> On 7/10/20 10:31 AM, Jakub Sitnicki wrote:
-
-[...]
-
->>>> The "size < target_size" check is left in place to cover the case when a
->>>> context field is narrower than its target field, even if we might not have
->>>> such case now. (It would have to be a u32 context field backed by a u64
->>>> target field, with context fields all being 4-bytes or wider.)
->>>>
->>>> Going back to the example, with the fix in place, the upper half load from
->>>> ctx->ip_protocol yields zero:
->>>>
->>>>     int reuseport_narrow_half(struct sk_reuseport_md * ctx):
->>>>     ; int reuseport_narrow_half(struct sk_reuseport_md *ctx)
->>>>        0: (b4) w0 = 0
->>>>     ; if (half[0] == 0xaaaa)
->>>>        1: (79) r2 = *(u64 *)(r1 +8)
->>>>        2: (69) r2 = *(u16 *)(r2 +924)
->>>>        3: (54) w2 &= 65535
->>>>     ; if (half[0] == 0xaaaa)
->>>>        4: (16) if w2 == 0xaaaa goto pc+7
->>>>     ; if (half[1] == 0xbbbb)
->>>>        5: (79) r1 = *(u64 *)(r1 +8)
->>>>        6: (69) r1 = *(u16 *)(r1 +924)
->>>
->>> The load is still from offset 0, 2 bytes with upper 48 bits as 0.
+On Thu, Jul 16, 2020 at 03:41 AM CEST, Andrii Nakryiko wrote:
+> On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >>
->> Yes, this is how narrow loads currently work, right? It is not specific
->> to the case I'm fixing.
+>> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
+>> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
+>> when looking up a listening socket for a new connection request for
+>> connection oriented protocols, or when looking up an unconnected socket for
+>> a packet for connection-less protocols.
 >>
->> To give an example - if you do a 1-byte load at offset 1, it will load
->> the value from offset 0, and shift it right by 1 byte. So it is expected
->> that the load is always from offset 0 with current implementation.
+>> When called, SK_LOOKUP BPF program can select a socket that will receive
+>> the packet. This serves as a mechanism to overcome the limits of what
+>> bind() API allows to express. Two use-cases driving this work are:
+>>
+>>  (1) steer packets destined to an IP range, on fixed port to a socket
+>>
+>>      192.0.2.0/24, port 80 -> NGINX socket
+>>
+>>  (2) steer packets destined to an IP address, on any port to a socket
+>>
+>>      198.51.100.1, any port -> L7 proxy socket
+>>
+>> In its run-time context program receives information about the packet that
+>> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
+>> address 4-tuple. Context can be further extended to include ingress
+>> interface identifier.
+>>
+>> To select a socket BPF program fetches it from a map holding socket
+>> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
+>> helper to record the selection. Transport layer then uses the selected
+>> socket as a result of socket lookup.
+>>
+>> This patch only enables the user to attach an SK_LOOKUP program to a
+>> network namespace. Subsequent patches hook it up to run on local delivery
+>> path in ipv4 and ipv6 stacks.
+>>
+>> Suggested-by: Marek Majkowski <marek@cloudflare.com>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>
+>> Notes:
+>>     v4:
+>>     - Reintroduce narrow load support for most BPF context fields. (Yonghong)
+>>     - Fix null-ptr-deref in BPF context access when IPv6 address not set.
+>>     - Unpack v4/v6 IP address union in bpf_sk_lookup context type.
+>>     - Add verifier support for ARG_PTR_TO_SOCKET_OR_NULL.
+>>     - Allow resetting socket selection with bpf_sk_assign(ctx, NULL).
+>>     - Document that bpf_sk_assign accepts a NULL socket.
+>>
+>>     v3:
+>>     - Allow bpf_sk_assign helper to replace previously selected socket only
+>>       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
+>>       programs running in series to accidentally override each other's verdict.
+>>     - Let BPF program decide that load-balancing within a reuseport socket group
+>>       should be skipped for the socket selected with bpf_sk_assign() by passing
+>>       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
+>>     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
+>>       the selected socket with an intention for multiple attached program
+>>       running in series to see each other's choices. However, currently the
+>>       verifier doesn't allow checking if pointer is set.
+>>     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
+>>     - Get rid of macros in convert_ctx_access to make it easier to read.
+>>     - Disallow 1-,2-byte access to context fields containing IP addresses.
+>>
+>>     v2:
+>>     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
+>>       Update bpf_sk_assign docs accordingly. (Martin)
+>>     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
+>>     - Fix broken build when CONFIG_INET is not selected. (Martin)
+>>     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
+>>     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
+>>
+>>  include/linux/bpf-netns.h  |   3 +
+>>  include/linux/bpf.h        |   1 +
+>>  include/linux/bpf_types.h  |   2 +
+>>  include/linux/filter.h     |  17 ++++
+>>  include/uapi/linux/bpf.h   |  77 ++++++++++++++++
+>>  kernel/bpf/net_namespace.c |   5 ++
+>>  kernel/bpf/syscall.c       |   9 ++
+>>  kernel/bpf/verifier.c      |  10 ++-
+>>  net/core/filter.c          | 179 +++++++++++++++++++++++++++++++++++++
+>>  scripts/bpf_helpers_doc.py |   9 +-
+>>  10 files changed, 308 insertions(+), 4 deletions(-)
+>>
 >
-> Yes, the load is always from offset 0. The confusion part is
-> it load offset 0 with 2 bytes and then right shifting 2 bytes
-> to get 0...
-
-Right, I see how silly is the generated instruction sequence. I guess
-I've accepted how <prog_type>_convert_ctx_access functions emit loads
-and didn't stop and question this part before.
-
->> SEC("sk_reuseport/narrow_byte")
->> int reuseport_narrow_byte(struct sk_reuseport_md *ctx)
->> {
->> 	__u8 *byte;
->>
->> 	byte = (__u8 *)&ctx->ip_protocol;
->> 	if (byte[0] == 0xaa)
->> 		return SK_DROP;
->> 	if (byte[1] == 0xbb)
->> 		return SK_DROP;
->> 	if (byte[2] == 0xcc)
->> 		return SK_DROP;
->> 	if (byte[3] == 0xdd)
->> 		return SK_DROP;
->> 	return SK_PASS;
->> }
->>
->> int reuseport_narrow_byte(struct sk_reuseport_md * ctx):
->> ; int reuseport_narrow_byte(struct sk_reuseport_md *ctx)
->>     0: (b4) w0 = 0
->> ; if (byte[0] == 0xaa)
->>     1: (79) r2 = *(u64 *)(r1 +8)
->>     2: (69) r2 = *(u16 *)(r2 +924)
->>     3: (54) w2 &= 255
->> ; if (byte[0] == 0xaa)
->>     4: (16) if w2 == 0xaa goto pc+17
->> ; if (byte[1] == 0xbb)
->>     5: (79) r2 = *(u64 *)(r1 +8)
->>     6: (69) r2 = *(u16 *)(r2 +924)
->>     7: (74) w2 >>= 8
->>     8: (54) w2 &= 255
->> ; if (byte[1] == 0xbb)
->>     9: (16) if w2 == 0xbb goto pc+12
->> ; if (byte[2] == 0xcc)
->>    10: (79) r2 = *(u64 *)(r1 +8)
->>    11: (69) r2 = *(u16 *)(r2 +924)
->>    12: (74) w2 >>= 16
->>    13: (54) w2 &= 255
->> ; if (byte[2] == 0xcc)
->>    14: (16) if w2 == 0xcc goto pc+7
->> ; if (byte[3] == 0xdd)
->>    15: (79) r1 = *(u64 *)(r1 +8)
->>    16: (69) r1 = *(u16 *)(r1 +924)
->>    17: (74) w1 >>= 24
->>    18: (54) w1 &= 255
->>    19: (b4) w0 = 1
->> ; if (byte[3] == 0xdd)
->>    20: (56) if w1 != 0xdd goto pc+1
->>    21: (b4) w0 = 0
->> ; }
->>    22: (95) exit
->>
->>>
->>>>        7: (74) w1 >>= 16
->>>
->>> w1 will be 0 now. so this will work.
->>>
->>>>        8: (54) w1 &= 65535
->>>
->>> For the above insns 5-8, verifier, based on target information can
->>> directly generate w1 = 0 since:
->>>    . target kernel field size is 2, ctx field size is 4.
->>>    . user tries to access offset 2 size 2.
->>>
->>> Here, we need to decide whether we permits user to do partial read beyond of
->>> kernel narrow field or not (e.g., this example)? I would
->>> say yes, but Daniel or Alexei can provide additional comments.
->>>
->>> If we allow such accesses, I would like verifier to generate better
->>> code as I illustrated in the above. This can be implemented in
->>> verifier itself with target passing additional kernel field size
->>> to the verifier. The target already passed the ctx field size back
->>> to the verifier.
->>
->> Keep in mind that the BPF user is writing their code under the
->> assumption that the context field has 4 bytes. IMHO it's reasonable to
->> expect that I can load 2 bytes at offset of 2 from a 4 byte field.
->>
->> Restricting it now to loads below the target field size, which is
->> unknown to the user, would mean rejecting programs that are working
->> today. Even if they are getting funny values.
->>
->> I think implementing what you suggest is doable without major
->> changes. We have load size, target field size, and context field size at
->> hand in convert_ctx_accesses(), so it seems like a matter of adding an
->> 'if' branch to handle better the case when we know the end result must
->> be 0. I'll give it a try.
+> Looks good, two suggestions below.
 >
-> Sounds good. The target_size is returned in convert_ctx_access(), which
-> is too late as the verifier already generated load instructions. You need to get
-> it earlier in is_valid_access().
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>
+> [...]
+>
+>> +
+>> +static const struct bpf_func_proto *
+>> +sk_lookup_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>> +{
+>> +       switch (func_id) {
+>> +       case BPF_FUNC_sk_assign:
+>> +               return &bpf_sk_lookup_assign_proto;
+>> +       case BPF_FUNC_sk_release:
+>> +               return &bpf_sk_release_proto;
+>> +       default:
+>
+> Wouldn't it be useful to have functions like
+> get_current_comm/get_current_pid_tgid/perf_event_output as well?
+> Similarly how they were added to a bunch of other socket-related BPF
+> program types recently?
 
-I have a feeling that I'm not following what you have in mind.
+I can certainly see value in perf_event_output as a way to log/trace
+prog decisions. Less so for helpers that provide access to current task,
+as the prog usually will be called in softirq context.
 
-True, target_size is only known after convert_ctx_access generated
-instructions. At this point, if we want to optimize the narrow loads
-that must return 0, we can pop however many instructions
-convert_ctx_access appended to insn_buf and emit BPF_MOV32/64_IMM.
+bpf_get_socket_cookie and bpf_get_netns_cookie have been on my mind, but
+first they need to be taught to accept ARG_PTR_TO_SOCKET.
 
-However, it sounds a bit more complex than what I hoped for initially,
-so I'm starting to doubt the value. Considering that narrow loads at an
-offset that matches or exceeds target field size must be a corner case,
-if the current "broken" behavior went unnoticed so far.
-
-I'll need to play with the code and see how it turns out. But for the
-moment please consider acking/nacking this one, as a simple way to fix
-the issue targeted at 'bpf' branch and stable kernels.
+That is to say, I expected the list of allowed helpers to grow.
 
 >
->>
->> But I do want to empahsize that I still think the fix in current form is
->> correct, or at least not worse than what we have already in place narrow
->> loads.
 >
-> I did agree that the fix in this patch is correct. It is just that we
-> could do better to fix this problem.
+>> +               return bpf_base_func_proto(func_id);
+>> +       }
+>> +}
+>> +
+>
+> [...]
+>
+>> +       case offsetof(struct bpf_sk_lookup, local_ip4):
+>> +               *insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
+>> +                                     bpf_target_off(struct bpf_sk_lookup_kern,
+>> +                                                    v4.daddr, 4, target_size));
+>> +               break;
+>> +
+>> +       case bpf_ctx_range_till(struct bpf_sk_lookup,
+>> +                               remote_ip6[0], remote_ip6[3]):
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>
+> nit: if you added {} to this case block, you could have combined the
+> above `int off` section with this one.
 
-I agree with your sentiment. Sorry if I got too defensive there.
+Nifty. Thanks.
 
 >
->>
->>>
->>>>        9: (b4) w0 = 1
->>>>     ; if (half[1] == 0xbbbb)
->>>>       10: (56) if w1 != 0xbbbb goto pc+1
->>>>       11: (b4) w0 = 0
->>>>     ; }
->>>>       12: (95) exit
->>>>
->>>> Fixes: f96da09473b5 ("bpf: simplify narrower ctx access")
->>>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->>>> ---
->>>>    kernel/bpf/verifier.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index 94cead5a43e5..1c4d0e24a5a2 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -9760,7 +9760,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
->>>>    			return -EINVAL;
->>>>    		}
->>>>    -		if (is_narrower_load && size < target_size) {
->>>> +		if (is_narrower_load || size < target_size) {
->>>>    			u8 shift = bpf_ctx_narrow_access_offset(
->>>>    				off, size, size_default) * 8;
->>>>    			if (ctx_field_size <= 4) {
->>>>
+>> +               off = si->off;
+>> +               off -= offsetof(struct bpf_sk_lookup, remote_ip6[0]);
+>> +               off += bpf_target_off(struct in6_addr, s6_addr32[0], 4, target_size);
+>> +               *insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg, si->src_reg,
+>> +                                     offsetof(struct bpf_sk_lookup_kern, v6.saddr));
+>> +               *insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 1);
+>> +               *insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg, off);
+>> +#else
+>> +               *insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
+>> +#endif
+>> +               break;
+>> +
+>
+> [...]
