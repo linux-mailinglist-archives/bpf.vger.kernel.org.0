@@ -2,85 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF401222B3A
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 20:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91CE222B5F
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 21:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729387AbgGPSsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 14:48:14 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34568 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbgGPSsO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:48:14 -0400
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4CDF520B490A;
-        Thu, 16 Jul 2020 11:48:13 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4CDF520B490A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594925293;
-        bh=hSCKLmYwUb9OLxJLhvxvNGSLQTyCxuEbUVTQgeO7+8g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XMgIJC7SVchgQ7K49aPLfrJI+ke9XlGIUP5pmBxYAQRtNRb/9dZzz46NyDI/Dd5Qd
-         Yzk0j3i59775q8dqA4WY1Llftl/NSytmlrwp24WEfOC4z0A48OtMTpbsOyLk94wnsj
-         SZ3Gu9oiTwKa7Fk4525U7ULHNaF4Ib6Fv0V4YyWc=
-Received: by mail-qt1-f171.google.com with SMTP id e12so5713772qtr.9;
-        Thu, 16 Jul 2020 11:48:13 -0700 (PDT)
-X-Gm-Message-State: AOAM5314qLCaSEfmC9OXNWolB0EAS2cbA0Av/vAAEo1h97YXU6bobohp
-        1J3jLwYnMegMexr4bJedII52OSt/8hmEdXY8FHU=
-X-Google-Smtp-Source: ABdhPJxq7RwG+/dBZSJZZ/zxJ6F7VxqgzZM5rCwzYUFKFvDRyySYx3XYuVT9FxsDs8MtjKh8Arn616rqVLihWFg2J04=
-X-Received: by 2002:ac8:5486:: with SMTP id h6mr6614141qtq.255.1594925292362;
- Thu, 16 Jul 2020 11:48:12 -0700 (PDT)
+        id S1728374AbgGPTB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 15:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728163AbgGPTB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:01:27 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517B9C061755;
+        Thu, 16 Jul 2020 12:01:27 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id o38so5770768qtf.6;
+        Thu, 16 Jul 2020 12:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FxrUAa9DGlPrHQT2WlyDA4zCEI8N+BKlM4JUFceSy/c=;
+        b=AtC0d0uboEYPfiO0CvojCod1/0ewrsAExcxKsfK8E0dDGlOsmeSj61hedFo6e26iF+
+         1tHAibarPOr/NcVzFcu+FKD1eZ/jZJ+OSvAzAntuBVqGzdMIPABEVQRdbbNfpC8Ods+6
+         RFv2vVAsE5aZP3FdMxuICBo3xVaS/NxykxqmBjvQVMU1ca1UbNTMcBNUH0xJMsA5EWJu
+         RcP5gBx6qUKgPrwfBUh3bx8efJMqso/e5udh7HS/Zwvt1HLAWam3pYaEYnMpB9p7hbv4
+         73ZwZfZGq1UezImMJDzrv2dB2jo3lSeSg9aW37UWRQkhrPun4B5YXLqX/X+BzwHep468
+         YaQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FxrUAa9DGlPrHQT2WlyDA4zCEI8N+BKlM4JUFceSy/c=;
+        b=idEizq7ks05Lt3Um1GpvkjDiXDrFm/Ojf4PXbJ5w4E2vwu+Oto6WcL6mSauJvEOSdU
+         bS9Vg8b2e6teXQ684ruhSTHB8dWN5qChPWeM2HxOjmf0htcHb7reHq0IBOVkCsfwEc4f
+         HbqPzJQ51X8Ldjg15AiGyfA02mfT7xhqIZ3/UieOW0uXcwwdY21OS2WoC0qV8ZvbKHim
+         lEIxymbdRsVQ4MgmK7ykPZFDy5Sy9KPCVUQtAduQLL2yyvOhsGaHHDh+2nC2mRBe8PhU
+         xNMOFft9r7MQgvvgXtSE11dchpDazQwh0nyJaV8piFzOP2aCnJsLkSskYxx5Tp1e5Cep
+         2U6Q==
+X-Gm-Message-State: AOAM530gtDBrIay49iP2mYnpd8eIHzJ7a8jX7d3dH6Sya0UqPtoV8oZy
+        umIiRcW1qRg3FQdvznq7j/Q=
+X-Google-Smtp-Source: ABdhPJzQRirUQrB8Mh+KTHcGMIQ5f1STXFvUWmFKzmAYnRwxt5CusEQQQI4UmfZypVdrxTc1CgwhLg==
+X-Received: by 2002:ac8:19c6:: with SMTP id s6mr6817617qtk.269.1594926085307;
+        Thu, 16 Jul 2020 12:01:25 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:c07e:4ca0:dde4:19ac? ([2601:282:803:7700:c07e:4ca0:dde4:19ac])
+        by smtp.googlemail.com with ESMTPSA id o18sm7229031qkk.91.2020.07.16.12.01.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 12:01:24 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 2/9] bpf, xdp: maintain info on attached XDP
+ BPF programs in net_device
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200716045602.3896926-1-andriin@fb.com>
+ <20200716045602.3896926-3-andriin@fb.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com>
+Date:   Thu, 16 Jul 2020 13:01:23 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200713130511.6942-1-mcroce@linux.microsoft.com> <20200714173154.i2wxhm4n4ob7sfpd@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200714173154.i2wxhm4n4ob7sfpd@ast-mbp.dhcp.thefacebook.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 16 Jul 2020 20:47:36 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2_vwyCR95Z=Dkd9XXRO8CTQ5NZtNPdJL+1oPRurv-feQ@mail.gmail.com>
-Message-ID: <CAFnufp2_vwyCR95Z=Dkd9XXRO8CTQ5NZtNPdJL+1oPRurv-feQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: allow loading instructions from a fd
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200716045602.3896926-3-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 7:31 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jul 13, 2020 at 03:05:11PM +0200, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >
-> > Allow to load the BPF instructons from a file descriptor,
-> > other than a pointer.
-> >
-> > This is required by the Integrity Subsystem to validate the source of
-> > the instructions.
-> >
-> > In bpf_attr replace 'insns', which is an u64, to a union containing also
-> > the file descriptor as int.
-> > A new BPF_F_LOAD_BY_FD flag tells bpf_prog_load() to load
-> > the instructions from file descriptor and ignore the pointer.
-> >
-> > As BPF files usually are regular ELF files, start reading from the
-> > current file position, so the userspace can skip the ELF header and jump
-> > to the right section.
->
-> That is not the case at all.
-> Have you looked at amount of work libbpf is doing with elf file before
-> raw instructions become suitable to be loaded by the kernel?
+On 7/15/20 10:55 PM, Andrii Nakryiko wrote:
+> Instead of delegating to drivers, maintain information about which BPF
+> programs are attached in which XDP modes (generic/skb, driver, or hardware)
+> locally in net_device. This effectively obsoletes XDP_QUERY_PROG command.
+> 
+> Such re-organization simplifies existing code already. But it also allows to
+> further add bpf_link-based XDP attachments without drivers having to know
+> about any of this at all, which seems like a good setup.
+> XDP_SETUP_PROG/XDP_SETUP_PROG_HW are just low-level commands to driver to
+> install/uninstall active BPF program. All the higher-level concerns about
+> prog/link interaction will be contained within generic driver-agnostic logic.
+> 
+> All the XDP_QUERY_PROG calls to driver in dev_xdp_uninstall() were removed.
+> It's not clear for me why dev_xdp_uninstall() were passing previous prog_flags
+> when resetting installed programs. That seems unnecessary, plus most drivers
+> don't populate prog_flags anyways. Having XDP_SETUP_PROG vs XDP_SETUP_PROG_HW
+> should be enough of an indicator of what is required of driver to correctly
+> reset active BPF program. dev_xdp_uninstall() is also generalized as an
+> iteration over all three supported mode.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  include/linux/netdevice.h |  17 +++-
+>  net/core/dev.c            | 158 +++++++++++++++++++++-----------------
 
-I see now what bpf_object__relocate() and all the *reloc* functions
-do, so it can't be done this way, I see.
+Similar to my comment on a v1 patch, this change is doing multiple
+things that really should be split into 2 patches - one moving code
+around and the second making the change you want. As is the patch is
+difficult to properly review.
 
-A malicious BPF file can be as bad as a malicious binary. Let's say I
-want to assert code integrity for BPF files, what could be a viable
-option?
-Perhaps a signature in the object file as we do with modules?
-
-Regards,
--- 
-per aspera ad upstream
+Given that you need a v4 anyways, can you split this patch into 2?
