@@ -2,109 +2,398 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30559221B77
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 06:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BBB221B81
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 06:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgGPEmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 00:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S1726198AbgGPEmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 00:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPEmD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 00:42:03 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B078EC061755;
-        Wed, 15 Jul 2020 21:42:03 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id d27so3955986qtg.4;
-        Wed, 15 Jul 2020 21:42:03 -0700 (PDT)
+        with ESMTP id S1725270AbgGPEmx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 00:42:53 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16D3C061755;
+        Wed, 15 Jul 2020 21:42:53 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id s192so1013517vkh.3;
+        Wed, 15 Jul 2020 21:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=d2+VUiTeP/3i8MXi5Fgv0f9682uC6rlMBdbv4Gmpydg=;
-        b=fTCJdwEFQMWzND2j301sY82VhTJvX5qbT3lnIiVew6+eUbp5X2ouDPO8rVA60lVV3J
-         ThPKTtDkkhbqZkcZIJKSkZ/dJjR/q4jIbKLTV0I6jWyYnr2z/zC/cig6jPBarMYK5uzb
-         6TaoaGW6Q0lE8hynufGxNg/zy9CGhxAETVl+K0J6wzBp8Prav34eqObQYHSdRSQmUW4e
-         IQQJKteP/6Qs9xJ/spi9amwVQUFgAYnhlw4LH5TneIp9KV0nKWE5DNbNNN2njmKhw9n3
-         qWhUZ5jeElnUqOtoCPpRIGGj8Am0+TcxAormyTVGKPdgad27A4IBoiuEQEhlO5Vhhu5h
-         RmQg==
+        bh=C90Ld5hDn2UDc5lBFaloxSrsSLODHsNCzSpkpNrIeCE=;
+        b=gBAb3yq7VpvF5+C/ITm0DeWw3h4XOUUiUTUb6E5/d/KK/8GbWUW5TQgPArmcjGH2Hm
+         7/qtMWIlBKpUusJoV7VFrIXZRUQ2sURK4j8dWOvEHwsUMJBhTUlozrxe1vXgcy8ulOa0
+         Wk0EDRKMu+kH/rZ99irhk0tGbazPiVBdWnl78Ors6YMHvqlOMbfAaAKlrAFQHPih8lfp
+         1TjB2cnRG3g5HnsHuZ3rJ7ddvoV/7sJ+Z5jiD/Iy55C2dHOH+CmqW8Wc3FLGZHYYBu/A
+         UDMGLcLU92yz3t0XUqjS9MZ90Vp8vOSlKL/L4+MJy0wmOQbUsgkJBJoQM1v0gOtBT5cA
+         SgyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=d2+VUiTeP/3i8MXi5Fgv0f9682uC6rlMBdbv4Gmpydg=;
-        b=RjJA+13mmFr2n6Q0pSloAn13PLIfmcTpajHe9isystEkL85r5cLB2egm4Z9bqGyNUi
-         0sXvbE+S/JSVG4V466hsWhwwn0iD0Fmdi63r3RzpS6QgomRGNOJ9DLNDhX5A679d+FKA
-         MNYWWS8to2nnYB/LtpMVOyGmPD5E9YqXkSTUc+jO4+m2fV38qS9YfikJVhh00GYiW0I2
-         zbH7hvRRwzJbe/TS2E4PDAa/2QyZU/p2GyjFqdfe2cZ+OAvoqLVq8xT01Pu1ZzS34blx
-         bv+AV1DBlxsmhUWiaGrOfu0EVz5IZP4gfQVUFLuDyhZHs+I6lTy8CkxyTRMRZYAOa9Xq
-         qTSg==
-X-Gm-Message-State: AOAM530S5ROLTusfQ0H1ql4klwjsfaDgcfAv7VH54MYdtyJWfKxF8m3J
-        Qw4Oztu4w7cDER3FitH+emQA3U7gC+5pFIbUL0g=
-X-Google-Smtp-Source: ABdhPJzkPqrqBp4OfozYc7EUsn04rJigqEDiiBnhB6HUDp2MhSYALix4jvYaRJNChTrVSv1EryJ3GItSwdTbO0J6Dxg=
-X-Received: by 2002:ac8:19c4:: with SMTP id s4mr3302089qtk.117.1594874522755;
- Wed, 15 Jul 2020 21:42:02 -0700 (PDT)
+        bh=C90Ld5hDn2UDc5lBFaloxSrsSLODHsNCzSpkpNrIeCE=;
+        b=ec41sXBlN+EYnE3FKX06rENuONH6vCVLQx+fcvUjqGymUtE+1jXSyUW5iglMJCYSLR
+         L9bsGaAzgfTn/ZWVYODJbrbsAp3D1ZC0RiNjH1rHTrTA01A9T2ojhAzWPiN6R/pPwPVC
+         sR72HabJFvBigaTvNCMiOi8HNeCaxkisbkOOopOX4fIcR6g+QOh8CaQx1L7t4jidSi7Z
+         b/7PLz6+cozqWe+7Q44xDqYIlHvyBkaRbJgBMHXCfSISeaXg4rZYSDVFe2Cix3l6SlKV
+         E5QxvdLjuUuWpmLarz6IyKYb+EF7I8JAqPaRkwsQaMLO0cwGwG2CHJuuLpg8Fn6nQ6LN
+         ms0Q==
+X-Gm-Message-State: AOAM530m/KRJSZY4dSkZSoeKGVfvxwhnr2xxkCClPM6cEYgw+96EYGmG
+        dkiggWKkzgIQqrRs7+igY4qk90xlD6YDmvs8WhS+k82/MmlnFg==
+X-Google-Smtp-Source: ABdhPJwny27/b/zWAAAzFYMp7mrI6fupUD4JNJOacgoqcnT1lvvb3f1fRCrcOewFPd26cPb2kMmBX5tw8UIXq+bC0zY=
+X-Received: by 2002:a1f:e2c4:: with SMTP id z187mr1926904vkg.14.1594874572737;
+ Wed, 15 Jul 2020 21:42:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200715224107.3591967-1-sdf@google.com>
-In-Reply-To: <20200715224107.3591967-1-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jul 2020 21:41:51 -0700
-Message-ID: <CAEf4Bzajc9zZM8MLhJBQ+1DgVVC8UEwVHMvgcBiePOatZ-rovQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix possible hang in sockopt_inherit
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+References: <1594390602-7635-1-git-send-email-magnus.karlsson@intel.com>
+ <1594390602-7635-5-git-send-email-magnus.karlsson@intel.com> <0f2ff47a-d1ce-78d3-bb96-6e5bc60dc04f@mellanox.com>
+In-Reply-To: <0f2ff47a-d1ce-78d3-bb96-6e5bc60dc04f@mellanox.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 16 Jul 2020 06:42:44 +0200
+Message-ID: <CAJ8uoz2BqQQMfz1Q=1CHxx7DS1RkYM0REp4kaTsq4mftq7L-eQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 04/14] xsk: move fill and completion rings to
+ buffer pool
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        cristian.dumitrescu@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 3:41 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Jul 15, 2020 at 11:29 AM Maxim Mikityanskiy
+<maximmi@mellanox.com> wrote:
 >
-> Andrii reported that sockopt_inherit occasionally hangs up on 5.5 kernel [0].
-> This can happen if server_thread runs faster than the main thread.
-> In that case, pthread_cond_wait will wait forever because
-> pthread_cond_signal was executed before the main thread was blocking.
-> Let's move pthread_mutex_lock up a bit to make sure server_thread
-> runs strictly after the main thread goes to sleep.
+> On 2020-07-10 17:16, Magnus Karlsson wrote:
+> > Move the fill and completion rings from the umem to the buffer
+> > pool. This so that we in a later commit can share the umem
+> > between multiple HW queue ids. In this case, we need one fill and
+> > completion ring per queue id. As the buffer pool is per queue id
+> > and napi id this is a natural place for it and one umem
+> > struture can be shared between these buffer pools.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >   include/net/xdp_sock.h      |  4 ++--
+> >   include/net/xsk_buff_pool.h |  2 +-
+> >   net/xdp/xdp_umem.c          | 15 ---------------
+> >   net/xdp/xsk.c               | 44 ++++++++++++++++++++++++--------------------
+> >   net/xdp/xsk_buff_pool.c     | 20 +++++++++++++++-----
+> >   net/xdp/xsk_diag.c          | 10 ++++++----
+> >   6 files changed, 48 insertions(+), 47 deletions(-)
+> >
+> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > index b9bb118..5eb59b7 100644
+> > --- a/include/net/xdp_sock.h
+> > +++ b/include/net/xdp_sock.h
+> > @@ -18,8 +18,6 @@ struct xsk_queue;
+> >   struct xdp_buff;
+> >
+> >   struct xdp_umem {
+> > -     struct xsk_queue *fq;
+> > -     struct xsk_queue *cq;
+> >       u64 size;
+> >       u32 headroom;
+> >       u32 chunk_size;
+> > @@ -73,6 +71,8 @@ struct xdp_sock {
+> >       struct list_head map_list;
+> >       /* Protects map_list */
+> >       spinlock_t map_list_lock;
+> > +     struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
+> > +     struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
+> >   };
+> >
+> >   #ifdef CONFIG_XDP_SOCKETS
+> > diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> > index ff8592d5..0423303 100644
+> > --- a/include/net/xsk_buff_pool.h
+> > +++ b/include/net/xsk_buff_pool.h
+> > @@ -30,6 +30,7 @@ struct xdp_buff_xsk {
+> >
+> >   struct xsk_buff_pool {
+> >       struct xsk_queue *fq;
+> > +     struct xsk_queue *cq;
+> >       struct list_head free_list;
+> >       dma_addr_t *dma_pages;
+> >       struct xdp_buff_xsk *heads;
+> > @@ -57,7 +58,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+> >                                               struct xdp_umem *umem);
+> >   int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
+> >                 u16 queue_id, u16 flags);
+> > -void xp_set_fq(struct xsk_buff_pool *pool, struct xsk_queue *fq);
+> >   void xp_destroy(struct xsk_buff_pool *pool);
+> >   void xp_release(struct xdp_buff_xsk *xskb);
+> >   void xp_get_pool(struct xsk_buff_pool *pool);
+> > diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+> > index f290345..7d86a63 100644
+> > --- a/net/xdp/xdp_umem.c
+> > +++ b/net/xdp/xdp_umem.c
+> > @@ -85,16 +85,6 @@ static void xdp_umem_release(struct xdp_umem *umem)
+> >
+> >       ida_simple_remove(&umem_ida, umem->id);
+> >
+> > -     if (umem->fq) {
+> > -             xskq_destroy(umem->fq);
+> > -             umem->fq = NULL;
+> > -     }
+> > -
+> > -     if (umem->cq) {
+> > -             xskq_destroy(umem->cq);
+> > -             umem->cq = NULL;
+> > -     }
+> > -
+> >       xdp_umem_unpin_pages(umem);
+> >
+> >       xdp_umem_unaccount_pages(umem);
+> > @@ -278,8 +268,3 @@ struct xdp_umem *xdp_umem_create(struct xdp_umem_reg *mr)
+> >
+> >       return umem;
+> >   }
+> > -
+> > -bool xdp_umem_validate_queues(struct xdp_umem *umem)
+> > -{
+> > -     return umem->fq && umem->cq;
+> > -}
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index caaf298..b44b150 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -36,7 +36,7 @@ static DEFINE_PER_CPU(struct list_head, xskmap_flush_list);
+> >   bool xsk_is_setup_for_bpf_map(struct xdp_sock *xs)
+> >   {
+> >       return READ_ONCE(xs->rx) &&  READ_ONCE(xs->umem) &&
+> > -             READ_ONCE(xs->umem->fq);
+> > +             (xs->pool->fq || READ_ONCE(xs->fq_tmp));
+> >   }
+> >
+> >   void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+> > @@ -46,7 +46,7 @@ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+> >       if (umem->need_wakeup & XDP_WAKEUP_RX)
+> >               return;
+> >
+> > -     umem->fq->ring->flags |= XDP_RING_NEED_WAKEUP;
+> > +     pool->fq->ring->flags |= XDP_RING_NEED_WAKEUP;
+> >       umem->need_wakeup |= XDP_WAKEUP_RX;
+> >   }
+> >   EXPORT_SYMBOL(xsk_set_rx_need_wakeup);
+> > @@ -76,7 +76,7 @@ void xsk_clear_rx_need_wakeup(struct xsk_buff_pool *pool)
+> >       if (!(umem->need_wakeup & XDP_WAKEUP_RX))
+> >               return;
+> >
+> > -     umem->fq->ring->flags &= ~XDP_RING_NEED_WAKEUP;
+> > +     pool->fq->ring->flags &= ~XDP_RING_NEED_WAKEUP;
+> >       umem->need_wakeup &= ~XDP_WAKEUP_RX;
+> >   }
+> >   EXPORT_SYMBOL(xsk_clear_rx_need_wakeup);
+> > @@ -254,7 +254,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp,
+> >   static void xsk_flush(struct xdp_sock *xs)
+> >   {
+> >       xskq_prod_submit(xs->rx);
+> > -     __xskq_cons_release(xs->umem->fq);
+> > +     __xskq_cons_release(xs->pool->fq);
+> >       sock_def_readable(&xs->sk);
+> >   }
+> >
+> > @@ -297,7 +297,7 @@ void __xsk_map_flush(void)
+> >
+> >   void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
+> >   {
+> > -     xskq_prod_submit_n(pool->umem->cq, nb_entries);
+> > +     xskq_prod_submit_n(pool->cq, nb_entries);
+> >   }
+> >   EXPORT_SYMBOL(xsk_tx_completed);
+> >
+> > @@ -329,7 +329,7 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+> >                * if there is space in it. This avoids having to implement
+> >                * any buffering in the Tx path.
+> >                */
+> > -             if (xskq_prod_reserve_addr(umem->cq, desc->addr))
+> > +             if (xskq_prod_reserve_addr(pool->cq, desc->addr))
+> >                       goto out;
+> >
+> >               xskq_cons_release(xs->tx);
+> > @@ -367,7 +367,7 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+> >       unsigned long flags;
+> >
+> >       spin_lock_irqsave(&xs->tx_completion_lock, flags);
+> > -     xskq_prod_submit_addr(xs->umem->cq, addr);
+> > +     xskq_prod_submit_addr(xs->pool->cq, addr);
+> >       spin_unlock_irqrestore(&xs->tx_completion_lock, flags);
+> >
+> >       sock_wfree(skb);
+> > @@ -411,7 +411,7 @@ static int xsk_generic_xmit(struct sock *sk)
+> >                * if there is space in it. This avoids having to implement
+> >                * any buffering in the Tx path.
+> >                */
+> > -             if (unlikely(err) || xskq_prod_reserve(xs->umem->cq)) {
+> > +             if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> >                       kfree_skb(skb);
+> >                       goto out;
+> >               }
+> > @@ -629,6 +629,11 @@ static struct socket *xsk_lookup_xsk_from_fd(int fd)
+> >       return sock;
+> >   }
+> >
+> > +static bool xsk_validate_queues(struct xdp_sock *xs)
+> > +{
+> > +     return xs->fq_tmp && xs->cq_tmp;
+> > +}
+> > +
+> >   static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+> >   {
+> >       struct sockaddr_xdp *sxdp = (struct sockaddr_xdp *)addr;
+> > @@ -685,6 +690,12 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+> >                       goto out_unlock;
+> >               }
+> >
+> > +             if (xs->fq_tmp || xs->cq_tmp) {
+> > +                     /* Do not allow setting your own fq or cq. */
+> > +                     err = -EINVAL;
+> > +                     goto out_unlock;
+> > +             }
+> > +
+> >               sock = xsk_lookup_xsk_from_fd(sxdp->sxdp_shared_umem_fd);
+> >               if (IS_ERR(sock)) {
+> >                       err = PTR_ERR(sock);
+> > @@ -709,7 +720,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+> >               xdp_get_umem(umem_xs->umem);
+> >               WRITE_ONCE(xs->umem, umem_xs->umem);
+> >               sockfd_put(sock);
+> > -     } else if (!xs->umem || !xdp_umem_validate_queues(xs->umem)) {
+> > +     } else if (!xs->umem || !xsk_validate_queues(xs)) {
+> >               err = -EINVAL;
+> >               goto out_unlock;
+> >       } else {
+> > @@ -844,11 +855,9 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+> >                       return -EINVAL;
+> >               }
+> >
+> > -             q = (optname == XDP_UMEM_FILL_RING) ? &xs->umem->fq :
+> > -                     &xs->umem->cq;
+> > +             q = (optname == XDP_UMEM_FILL_RING) ? &xs->fq_tmp :
+> > +                     &xs->cq_tmp;
+> >               err = xsk_init_queue(entries, q, true);
+> > -             if (optname == XDP_UMEM_FILL_RING)
+> > -                     xp_set_fq(xs->pool, *q);
+> >               mutex_unlock(&xs->mutex);
+> >               return err;
+> >       }
+> > @@ -995,7 +1004,6 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+> >       unsigned long size = vma->vm_end - vma->vm_start;
+> >       struct xdp_sock *xs = xdp_sk(sock->sk);
+> >       struct xsk_queue *q = NULL;
+> > -     struct xdp_umem *umem;
+> >       unsigned long pfn;
+> >       struct page *qpg;
+> >
+> > @@ -1007,16 +1015,12 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+> >       } else if (offset == XDP_PGOFF_TX_RING) {
+> >               q = READ_ONCE(xs->tx);
+> >       } else {
+> > -             umem = READ_ONCE(xs->umem);
+> > -             if (!umem)
+> > -                     return -EINVAL;
+> > -
+> >               /* Matches the smp_wmb() in XDP_UMEM_REG */
+> >               smp_rmb();
+> >               if (offset == XDP_UMEM_PGOFF_FILL_RING)
+> > -                     q = READ_ONCE(umem->fq);
+> > +                     q = READ_ONCE(xs->fq_tmp);
+> >               else if (offset == XDP_UMEM_PGOFF_COMPLETION_RING)
+> > -                     q = READ_ONCE(umem->cq);
+> > +                     q = READ_ONCE(xs->cq_tmp);
+> >       }
+> >
+> >       if (!q)
+> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> > index d450fb7..32720f2 100644
+> > --- a/net/xdp/xsk_buff_pool.c
+> > +++ b/net/xdp/xsk_buff_pool.c
+> > @@ -66,6 +66,11 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+> >       INIT_LIST_HEAD(&pool->free_list);
+> >       refcount_set(&pool->users, 1);
+> >
+> > +     pool->fq = xs->fq_tmp;
+> > +     pool->cq = xs->cq_tmp;
+> > +     xs->fq_tmp = NULL;
+> > +     xs->cq_tmp = NULL;
+> > +
+> >       for (i = 0; i < pool->free_heads_cnt; i++) {
+> >               xskb = &pool->heads[i];
+> >               xskb->pool = pool;
+> > @@ -82,11 +87,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+> >       return NULL;
+> >   }
+> >
+> > -void xp_set_fq(struct xsk_buff_pool *pool, struct xsk_queue *fq)
+> > -{
+> > -     pool->fq = fq;
+> > -}
+> > -
+> >   void xp_set_rxq_info(struct xsk_buff_pool *pool, struct xdp_rxq_info *rxq)
+> >   {
+> >       u32 i;
+> > @@ -190,6 +190,16 @@ static void xp_release_deferred(struct work_struct *work)
+> >       xp_clear_dev(pool);
+> >       rtnl_unlock();
+> >
+> > +     if (pool->fq) {
+> > +             xskq_destroy(pool->fq);
+> > +             pool->fq = NULL;
+> > +     }
+> > +
+> > +     if (pool->cq) {
+> > +             xskq_destroy(pool->cq);
+> > +             pool->cq = NULL;
+> > +     }
+> > +
 >
-> (Not sure why this is 5.5 specific, maybe scheduling is less
-> deterministic? But I was able to confirm that it does indeed
-> happen in a VM.)
->
-> [0] https://lore.kernel.org/bpf/CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com/
->
-> Reported-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+> It looks like xskq_destroy is missing for fq_tmp and cq_tmp, which is
+> needed in some cases, e.g., if bind() wasn't called at all, or if
+> xsk_bind failed with EINVAL.
 
-Great, thanks for figuring this out! Hopefully this is it.
+Thanks Max. Will spin a v3.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+/Magnus
 
->  tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-> index 8547ecbdc61f..ec281b0363b8 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-> @@ -193,11 +193,10 @@ static void run_test(int cgroup_fd)
->         if (CHECK_FAIL(server_fd < 0))
->                 goto close_bpf_object;
->
-> +       pthread_mutex_lock(&server_started_mtx);
->         if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
->                                       (void *)&server_fd)))
->                 goto close_server_fd;
-> -
-> -       pthread_mutex_lock(&server_started_mtx);
->         pthread_cond_wait(&server_started, &server_started_mtx);
->         pthread_mutex_unlock(&server_started_mtx);
->
-> --
-> 2.27.0.389.gc38d7665816-goog
+> >       xdp_put_umem(pool->umem);
+> >       xp_destroy(pool);
+> >   }
+> > diff --git a/net/xdp/xsk_diag.c b/net/xdp/xsk_diag.c
+> > index 0163b26..1936423 100644
+> > --- a/net/xdp/xsk_diag.c
+> > +++ b/net/xdp/xsk_diag.c
+> > @@ -46,6 +46,7 @@ static int xsk_diag_put_rings_cfg(const struct xdp_sock *xs,
+> >
+> >   static int xsk_diag_put_umem(const struct xdp_sock *xs, struct sk_buff *nlskb)
+> >   {
+> > +     struct xsk_buff_pool *pool = xs->pool;
+> >       struct xdp_umem *umem = xs->umem;
+> >       struct xdp_diag_umem du = {};
+> >       int err;
+> > @@ -67,10 +68,11 @@ static int xsk_diag_put_umem(const struct xdp_sock *xs, struct sk_buff *nlskb)
+> >
+> >       err = nla_put(nlskb, XDP_DIAG_UMEM, sizeof(du), &du);
+> >
+> > -     if (!err && umem->fq)
+> > -             err = xsk_diag_put_ring(umem->fq, XDP_DIAG_UMEM_FILL_RING, nlskb);
+> > -     if (!err && umem->cq) {
+> > -             err = xsk_diag_put_ring(umem->cq, XDP_DIAG_UMEM_COMPLETION_RING,
+> > +     if (!err && pool->fq)
+> > +             err = xsk_diag_put_ring(pool->fq,
+> > +                                     XDP_DIAG_UMEM_FILL_RING, nlskb);
+> > +     if (!err && pool->cq) {
+> > +             err = xsk_diag_put_ring(pool->cq, XDP_DIAG_UMEM_COMPLETION_RING,
+> >                                       nlskb);
+> >       }
+> >       return err;
+> >
 >
