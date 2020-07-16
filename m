@@ -2,105 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E46222C9F
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 22:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DCB222CDD
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 22:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgGPUTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 16:19:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38168 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729344AbgGPUTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:19:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594930752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oAKhQEv8kqbTsiiO7GkkYrOtrj4zaX5iatFNWMQEm90=;
-        b=fzA2N4E1LSH1A0VivB1168wBgP/m1Hl++TnIZjvkUHxSzijHOxPAEH2d+UXqWPYu1gF9ob
-        y3Sa2DK8/nbrWyeyJYpFfpTM3VC3SQXkCxc0WJ6oULgceI+oI16PBMRbpZCy1Shmlm+eWg
-        2bLg9YKfhYT4F3XG133/fU9QJKFht+Q=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-bgRVuWFUMoSM5U0Q2w_0HQ-1; Thu, 16 Jul 2020 16:19:11 -0400
-X-MC-Unique: bgRVuWFUMoSM5U0Q2w_0HQ-1
-Received: by mail-pl1-f200.google.com with SMTP id 65so5166684plf.1
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 13:19:10 -0700 (PDT)
+        id S1726528AbgGPUb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 16:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgGPUb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 16:31:28 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCE9C061755;
+        Thu, 16 Jul 2020 13:31:28 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id w34so6027805qte.1;
+        Thu, 16 Jul 2020 13:31:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q7fkaWy5BOtDK66VES6I+b2FcjwYtxNfF67s5vYVVds=;
+        b=TQVqXQTlQbyDYaO4gsISTQQfQmiO2VHodzKgRjm2AkLSVfH/bscXy/M4ukmL9Dww7Y
+         eu8Z1in18q8ssuF3uzYwVS6PLbdDkBKZgLDh5X1puh7JtVSquD0cHoSFxtnLozraH94X
+         8m5y4dQrec6fV+nnoXL/15UiOVn5CpFTeyPEHLv32yYLwfhODOPiAkGeug/VfRYC6bdv
+         O4+HwIvwKgGKG8T6IK1oAmXdAEFd47BxI7X24GNtVVWDakotZ8v/NeDJlXhAt3SBWjc0
+         RAZlgTUV0yCzKMCf76Jaf8IBgBnI2LBP3hFkZ4FQEdSTsbQ+LFd9viXkrXm0tk7IT2qo
+         fIrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=oAKhQEv8kqbTsiiO7GkkYrOtrj4zaX5iatFNWMQEm90=;
-        b=DkExPIopuXx5mnmtNkrqdq36j+N7Ou5GuTe6geMUjIX6bCSHDUNbjuXvu3PLYxnEvy
-         m/pS8h8MpLzS8M3z7helznJmZyCHJ9y7fHihXHQgmrjPW6+izTVw2FQa73+SWypxV2Y1
-         Z09vtVmlcvnGc/HJ/I9axmwAwl9UTdVoM79M+dxqArfDwslMy4aiNGFcmSnAHfL6bECn
-         +4+h3HyAMhcHl0fkFNP5QiGC2UYyXhv70lDQvlh/1Uf9fPWSo0NbmQOLl97MsN4AdHp+
-         4pXw5igydfd/G1iLf4SC9yEdDkTvrrhT2FXSvx2kt8hEODoR+WwMZ3T4W7eyIVFUojf/
-         v+eg==
-X-Gm-Message-State: AOAM532i7cOdTAbGJkQUNvzIr5mok07RMc8LPxmVNNGYcxg21OMD8Vn5
-        /mudP9CJxc2l/r0jR1S5DDkzJwTrNW+vRvp/7T/scLBWShWTJ4vrOnibODmKwaSKhWfz55yWPg+
-        rytYpNE4Sykeh
-X-Received: by 2002:a62:7505:: with SMTP id q5mr4749113pfc.262.1594930749910;
-        Thu, 16 Jul 2020 13:19:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQJAqwU80lmN2Fr6gcy27CcYUXMipS5Iggux57Bh9ZVxocDdGvGYaJ0/SXRyKkI5o9gsIdhw==
-X-Received: by 2002:a62:7505:: with SMTP id q5mr4749096pfc.262.1594930749659;
-        Thu, 16 Jul 2020 13:19:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id gn5sm787181pjb.23.2020.07.16.13.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 13:19:08 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8F77E181719; Thu, 16 Jul 2020 22:19:03 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Blake Matheny <bmatheny@fb.com>
-Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add new members to bpf_attr.raw_tracepoint in bpf.h
-In-Reply-To: <CAEf4BzbiD9Cuqip2=FGHGHLZs-7b8AziS-hJOpX1HuONTM4udQ@mail.gmail.com>
-References: <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com> <87r1tegusj.fsf@toke.dk> <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com> <87pn8xg6x7.fsf@toke.dk> <CAEf4BzYAoetyfyofTX45RQjtz3M-c9=YNeH1uRDbYgK4Ae0TwA@mail.gmail.com> <87d04xg2p4.fsf@toke.dk> <20200714231133.ap5qnalf6moptvfk@ast-mbp.dhcp.thefacebook.com> <874kq9ey2j.fsf@toke.dk> <20200715234123.rr7oj74t5hflzmsn@ast-mbp.dhcp.thefacebook.com> <CAEf4BzbodR-+=Q3wRE2UaiouBexvqfwpE-zJGm4Rr1cV2dgZHQ@mail.gmail.com> <20200716054408.so34cuc2g2iqcppr@ast-mbp.dhcp.thefacebook.com> <CAEf4BzbiD9Cuqip2=FGHGHLZs-7b8AziS-hJOpX1HuONTM4udQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 16 Jul 2020 22:19:03 +0200
-Message-ID: <87wo33cix4.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q7fkaWy5BOtDK66VES6I+b2FcjwYtxNfF67s5vYVVds=;
+        b=WrZLd7PiS0CGLA8yZMUyebwuBa20ieHRKvooI9XvsdrifLMIx4443bcYAHfpcUCz6k
+         14ANP+qBASbL535bo/4shx7MGPO8c37ON8wtkbMVp0l6OZ0OZNUf5N8mHKzRPc49LaPg
+         QG3hxRIBPLjOUdLid4PoX50AvylZSwxjhnxrQVYTuIZJsjDpHOavPSUPWxDMxXy5uAKO
+         BvlrIkL0Xms5KdGvAJrdLlHo18Nlpb1CSWwKdRdnL4/uvGyzv+2sqU6iLCYyjI2GhkhQ
+         rSXpGN5wjMwoIWlzpchiPR7rWEWv8OaYjAq6hWctj5krVUz3x9Cr2ouAlfS9NSSIt23X
+         Efqg==
+X-Gm-Message-State: AOAM533uu7ZdouVsq/pMgI+9cGJF4Ae4xmWdt0/Z5fdMwZLPX3mYCKCd
+        waF0bWVYeERrOL4TDvxlrlODyBcNPXG9GgdfurQ=
+X-Google-Smtp-Source: ABdhPJxApln5rpI1d+//DgIRGwBSpTw1+8LsChc+F4EET3NnZ2MTL43y1VVVDJTX4QYXOm0DEF0u2ClJp6p9RiXGDSk=
+X-Received: by 2002:ac8:345c:: with SMTP id v28mr6996098qtb.171.1594931487933;
+ Thu, 16 Jul 2020 13:31:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200716045602.3896926-1-andriin@fb.com> <20200716045602.3896926-3-andriin@fb.com>
+ <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com>
+In-Reply-To: <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jul 2020 13:31:17 -0700
+Message-ID: <CAEf4BzZVxTGM9mDoHMv478vQjV6Hmf_ts50=ABXkP4GxAG85eg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/9] bpf, xdp: maintain info on attached XDP
+ BPF programs in net_device
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
->> So myself and Toke are wearing 'bpf user' hat in that context.
->> Both of us indicated that libbpf output is too verbose.
->> Your response "just send a patch" is a sure way to turn away more users.
->>
+On Thu, Jul 16, 2020 at 12:01 PM David Ahern <dsahern@gmail.com> wrote:
 >
-> I can't find any such complaint from Toke in this thread, and can't
-> really recall something like that from recent discussions. I'd rather
-> have him speak for himself.
+> On 7/15/20 10:55 PM, Andrii Nakryiko wrote:
+> > Instead of delegating to drivers, maintain information about which BPF
+> > programs are attached in which XDP modes (generic/skb, driver, or hardware)
+> > locally in net_device. This effectively obsoletes XDP_QUERY_PROG command.
+> >
+> > Such re-organization simplifies existing code already. But it also allows to
+> > further add bpf_link-based XDP attachments without drivers having to know
+> > about any of this at all, which seems like a good setup.
+> > XDP_SETUP_PROG/XDP_SETUP_PROG_HW are just low-level commands to driver to
+> > install/uninstall active BPF program. All the higher-level concerns about
+> > prog/link interaction will be contained within generic driver-agnostic logic.
+> >
+> > All the XDP_QUERY_PROG calls to driver in dev_xdp_uninstall() were removed.
+> > It's not clear for me why dev_xdp_uninstall() were passing previous prog_flags
+> > when resetting installed programs. That seems unnecessary, plus most drivers
+> > don't populate prog_flags anyways. Having XDP_SETUP_PROG vs XDP_SETUP_PROG_HW
+> > should be enough of an indicator of what is required of driver to correctly
+> > reset active BPF program. dev_xdp_uninstall() is also generalized as an
+> > iteration over all three supported mode.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  include/linux/netdevice.h |  17 +++-
+> >  net/core/dev.c            | 158 +++++++++++++++++++++-----------------
+>
+> Similar to my comment on a v1 patch, this change is doing multiple
+> things that really should be split into 2 patches - one moving code
+> around and the second making the change you want. As is the patch is
+> difficult to properly review.
+>
 
-I think what I said (not in this thread, way back during some other
-discussion) was that I agreed that libbpf was being too verbose by
-dumping all the sections and relocations it finds when reading an ELF
-file, which causes the useful error messages to get lost. I would like
-to see those messages demoted to another log level, or removed
-altogether.
+You mean xdp_uninstall? In patch 1 leave it as three separate
+sections, but switch to different querying. And then in a separate
+patch do a loop?
 
-I won't have time to look more at this right now, but I do plan to
-circle back to it: I agree with you that we need to make this more
-friendly. And yes, I also think this should include finding a way to
-disambiguate between different conditions leading to the same error from
-the kernel. I've run into a lot of the same issues as you when
-supporting people who are new to BPF - thank you for the extensive list!
+Alright, I'll split that up as well. But otherwise I don't really see
+much more opportunities to split it.
 
--Toke
-
+> Given that you need a v4 anyways, can you split this patch into 2?
