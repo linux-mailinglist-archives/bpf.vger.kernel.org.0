@@ -2,143 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8412220F0
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 12:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF91222100
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 12:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgGPKwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 06:52:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24326 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726506AbgGPKwj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:52:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594896757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u0emrD91l1z5XCWO1WKDj+Gw8G208dDDkOGJ49Qf5lQ=;
-        b=eSX9IqAzTsf4aMRNFjDEw9z4bjIeb444x15LwjBB3L0AC76QAYE5b6IIfx2niem+agq4M3
-        IhQS8Kh+qR8lItRYuStIV52UCdXY1In4NI6lBJvirL/xCfMGHofkws5HDct/Sf5iskVxRn
-        oW+6trZFKsy77hSxiM6+buSuvC97HN4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-nWkmVVALPFW4J8ZEni20fA-1; Thu, 16 Jul 2020 06:52:35 -0400
-X-MC-Unique: nWkmVVALPFW4J8ZEni20fA-1
-Received: by mail-qt1-f199.google.com with SMTP id e6so3508188qtb.19
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 03:52:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=u0emrD91l1z5XCWO1WKDj+Gw8G208dDDkOGJ49Qf5lQ=;
-        b=srZGOCBtlycclBht5QI7Lso/Fcpe+JRbINFcuoO3Bh7WFlgdVKNG+L+5dTkFFrrAD1
-         if0Zxx7nMn30ZDUq6tKFpyc4clCFveJRiy5J2E3PEnsgG3bdxYF+/V16yffkwgPT6bsK
-         uE6VYcPACZnYsYqhIxA4cHxyYmNyDB2YoBpv9tNRXUkTzE/TDuWUIfmRHrOTG64NSHV8
-         awYQLDxT9CZH9ehZQjRJ0JLki5purf9r/2hMtFMVM5oPxnc4i6PGFCJ6uHhqcj50WRh7
-         P/LxWdoloB171Kq4AAQSW6d5Qmq+v8zmlFtlVLxUv8vqCW9UgjnxILUqs11uRnyQAoDw
-         vqfw==
-X-Gm-Message-State: AOAM532Zddwakj9k81b/n8Q9J8+06i6BCvbdJsPM2SukLyXUrkXx+6x6
-        RfOGn+QVs4vpJ2LFxkxeHl0Twpy9ttOKds9C59VWxAZNTCRWrF7x0vi/EqE0xwKEuWWpoCIB3+8
-        hnp+tI2JLX/8l
-X-Received: by 2002:a37:9bc9:: with SMTP id d192mr3240109qke.409.1594896754844;
-        Thu, 16 Jul 2020 03:52:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpWSsFvzAOLhwSiN5YNalt/1wgOF4BWd5F3Gjz+Ywb4DPSf5HiZyVcULexRdRVCD6eV4oG2g==
-X-Received: by 2002:a37:9bc9:: with SMTP id d192mr3240085qke.409.1594896754606;
-        Thu, 16 Jul 2020 03:52:34 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id u5sm6661991qke.32.2020.07.16.03.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 03:52:33 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 53F0C1804F0; Thu, 16 Jul 2020 12:52:32 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1726506AbgGPKz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 06:55:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgGPKz2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:55:28 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14921206C1;
+        Thu, 16 Jul 2020 10:55:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594896927;
+        bh=dRdXMiQCUcJiSH0FWlDV1Zin9+nV/pVzV5iDpzOreqo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PGXzo/KAaYPGqlUd0NFZAPiTQLgkFeRq+rrH2ovjTOK7EudaWVhA2lFteCNKajVER
+         0swTfYHC1C6rfac7O/APeeRWMdRXy2ECDo+4W4fgoOjx8h+TB5OuYtwT2IsWyuZClq
+         GazVkkMWw4zUnb5zjuxikWoGPSL1WSKE196gk1Uw=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@gmail.com>,
-        Jakub Kicinski <kicinski@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Takshak Chahande <ctakshak@fb.com>
-Subject: Re: [PATCH bpf-next 2/7] bpf, xdp: add bpf_link-based XDP attachment API
-In-Reply-To: <CAEf4BzbgPqN8xKX5xpHBRMJSZkhz_BBzBg7r_FPRo=j3ZmLNUQ@mail.gmail.com>
-References: <20200710224924.4087399-1-andriin@fb.com> <20200710224924.4087399-3-andriin@fb.com> <877dv6gpxd.fsf@toke.dk> <CAEf4BzY7qRsdcdhzf2--Bfgo-GB=ZoKKizOb+OHO7o2PMiNubA@mail.gmail.com> <87v9ipg8jd.fsf@toke.dk> <CAEf4BzYVEqFUJybw3kjG6E6w12ocr2ncRz7j15GNNGG4BXJMTw@mail.gmail.com> <87lfjlg4fg.fsf@toke.dk> <CAEf4BzYMaKgJOA3koGkcThXriTGAOKGxjhQXYSNT9sVEFbS7ig@mail.gmail.com> <87y2nkeq4s.fsf@toke.dk> <CAEf4BzbgPqN8xKX5xpHBRMJSZkhz_BBzBg7r_FPRo=j3ZmLNUQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 16 Jul 2020 12:52:32 +0200
-Message-ID: <87k0z3enpr.fsf@toke.dk>
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/cm: Protect access to remote_sidr_table
+Date:   Thu, 16 Jul 2020 13:55:19 +0300
+Message-Id: <20200716105519.1424266-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+From: Maor Gottlieb <maorg@mellanox.com>
 
-> On Wed, Jul 15, 2020 at 8:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> >> Yup, that was helpful, thanks! I think our difference of opinion on t=
-his
->> >> stems from the same place as our disagreement about point 2.: You are
->> >> assuming that an application that uses XDP sticks around and holds on=
- to
->> >> its bpf_link, while I'm assuming it doesn't (and so has to rely on
->> >> pinning for any persistence). In the latter case you don't really gain
->> >> much from the bpf_link auto-cleanup, and whether it's a prog fd or a
->> >> link fd you go find in your bpffs doesn't make that much difference...
->> >
->> > Right. But if I had to pick just one implementation (prog fd-based vs
->> > bpf_link), I'd stick with bpf_link because it is flexible enough to
->> > "emulate" prog fd attachment (through BPF FS), but the same isn't true
->> > about prog fd attachment emulating bpf_link. That's it. I really don't
->> > enjoy harping on that point, but it feels to be silently dismissed all
->> > the time based on one particular arrangement for particular existing
->> > XDP flow.
->>
->> It can; kinda. But you introduce a dependency on bpffs that wasn't there
->> before, and you end up with resources that are kept around in the kernel
->> if the interface disappears (because they are still pinned). So I
->> consider it a poor emulation.
->
-> Yes, it's not exactly 100% the same semantics.
-> It is possible with slight additions to API to support essentially
-> exactly the same semantics you want with prog attachment. E.g., we can
-> either have a flag at LINK_CREATE time, or a separate command (e.g.,
-> LINK_PIN or something), that would mark bpf_link as "sticky", bump
-> it's refcnt. What happens then is that even if last FD is closed,
-> there is still refcnt 1 there, and then there are two ways to detach
-> that link:
->
-> 1) interface/cgroup/whatever is destroyed and bpf_link is
-> auto-detached. At that point auto-detach handler will see that it's a
-> "sticky" bpf_link, will decrement refcnt and subsequently free
-> bpf_link kernel object (unless some application still has FD open, of
-> course).
->
-> 2) a new LINK_DESTROY BPF command will be introduced, which will only
-> work with "sticky" bpf_links. It will decrement refcnt and do the same
-> stuff as the auto-detach handler does today (so bpf_link->dev =3D NULL,
-> for XDP link).
->
-> I don't mind this, as long as this is not a default semantics and
-> require conscious opt-in from whoever creates the link.
+cm.lock must be held while access to remote_sidr_table.
+This fix the below NULL pointer dereference.
 
-Now *this* I would like to see! I have the issue with component progs of
-the multiprog dispatcher being pinned and making everything stick
-around.
+ [ 2666.146138] BUG: kernel NULL pointer dereference, address: 0000000000000000
+ [ 2666.151565] #PF: supervisor write access in kernel mode
+ [ 2666.152896] #PF: error_code(0x0002) - not-present page
+ [ 2666.154184] PGD 0 P4D 0
+ [ 2666.154911] Oops: 0002 [#1] SMP PTI
+ [ 2666.155859] CPU: 2 PID: 7288 Comm: udaddy Not tainted 5.7.0_for_upstream_perf_2020_06_09_15_14_20_38 #1
+ [ 2666.158123] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+ [ 2666.161909] RIP: 0010:rb_erase+0x10d/0x360
+ [ 2666.163549] Code: 00 00 00 48 89 c1 48 89 d0 48 8b 50 08 48 39 ca 74 48 f6 02 01 75 af 48 8b
+7a 10 48 89 c1 48 83 c9 01 48 89 78 08 48 89 42 10 <48> 89 0f 48 8b 08 48 89 0a 48 83 e1 fc 48
+ 89 10 0f 84 b1 00 00 00
+ [ 2666.169743] RSP: 0018:ffffc90000f77c30 EFLAGS: 00010086
+ [ 2666.171646] RAX: ffff8883df27d458 RBX: ffff8883df27da58 RCX: ffff8883df27d459
+ [ 2666.174026] RDX: ffff8883d183fa58 RSI: ffffffffa01e8d00 RDI: 0000000000000000
+ [ 2666.176325] RBP: ffff8883d62ac800 R08: 0000000000000000 R09: 00000000000000ce
+ [ 2666.178618] R10: 000000000000000a R11: 0000000000000000 R12: ffff8883df27da00
+ [ 2666.180919] R13: ffffc90000f77c98 R14: 0000000000000130 R15: 0000000000000000
+ [ 2666.183197] FS:  00007f009f877740(0000) GS:ffff8883f1a00000(0000) knlGS:0000000000000000
+ [ 2666.186318] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [ 2666.188293] CR2: 0000000000000000 CR3: 00000003d467e003 CR4: 0000000000160ee0
+ [ 2666.190614] Call Trace:
+ [ 2666.191896]  cm_send_sidr_rep_locked+0x15a/0x1a0 [ib_cm]
+ [ 2666.193902]  ib_send_cm_sidr_rep+0x2b/0x50 [ib_cm]
+ [ 2666.195695]  cma_send_sidr_rep+0x8b/0xe0 [rdma_cm]
+ [ 2666.197559]  __rdma_accept+0x21d/0x2b0 [rdma_cm]
+ [ 2666.199335]  ? ucma_get_ctx+0x2b/0xe0 [rdma_ucm]
+ [ 2666.201105]  ? _copy_from_user+0x30/0x60
+ [ 2666.202741]  ucma_accept+0x13e/0x1e0 [rdma_ucm]
+ [ 2666.204549]  ucma_write+0xb4/0x130 [rdma_ucm]
+ [ 2666.206306]  vfs_write+0xad/0x1a0
+ [ 2666.207780]  ksys_write+0x9d/0xb0
+ [ 2666.209316]  do_syscall_64+0x48/0x130
+ [ 2666.210915]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ [ 2666.212810] RIP: 0033:0x7f009ef60924
+ [ 2666.214354] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 80 00 00 00 00 8b
+05 2a ef 2c 00 48 63 ff 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3
+ 66 90 55 53 48 89 d5 48 89 f3 48 83
+ [ 2666.220512] RSP: 002b:00007fff843edf38 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+ [ 2666.223546] RAX: ffffffffffffffda RBX: 000055743042e1d0 RCX: 00007f009ef60924
+ [ 2666.225889] RDX: 0000000000000130 RSI: 00007fff843edf40 RDI: 0000000000000003
+ [ 2666.228228] RBP: 00007fff843ee0e0 R08: 0000000000000000 R09: 0000557430433090
+ [ 2666.230572] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
+ [ 2666.232931] R13: 00007fff843edf40 R14: 000000000000038c R15: 00000000ffffff00
+ [ 2666.235272] Modules linked in: nfsv3 nfs_acl rpcsec_gss_krb5
+auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache xt_MASQUERADE
+mlx5_ib nf_conntrack_netlink nfnetlink iptable_nat xt_addrtype
+iptable_filter bpfilter xt_conntrack br_netfilter bridge stp llc overlay
+rpcrdma ib_isert iscsi_target_mod ib_iser ib_srpt target_core_mod ib_srp
+ib_ipoib rdma_ucm ib_uverbs sb_edac mlx5_core kvm_intel iTCO_wdt
+iTCO_vendor_support kvm ib_umad mlxfw pci_hyperv_intf act_ct
+nf_flow_table irqbypass nf_nat rdma_cm crc32_pclmul rfkill nf_conntrack
+crc32c_intel ghash_clmulni_intel virtio_net ib_cm i2c_i801 pcspkr
+nf_defrag_ipv6 net_failover failover nf_defrag_ipv4 ptp i2c_core lpc_ich
+iw_cm pps_core mfd_core ib_core sunrpc sch_fq_codel ip_tables serio_raw
+ [ 2666.258905] CR2: 0000000000000000
+ [ 2666.260386] ---[ end trace 92a3d3f267f6faa3 ]---
+ [ 2666.262174] RIP: 0010:rb_erase+0x10d/0x360
+ [ 2666.263781] Code: 00 00 00 48 89 c1 48 89 d0 48 8b 50 08 48 39 ca 74
+48 f6 02 01 75 af 48 8b 7a 10 48 89 c1 48 83 c9 01 48 89 78 08 48 89 42
+   10 <48> 89 0f 48 8b 08 48 89 0a 48 83 e1 fc 48 89 10 0f 84 b1 00 00
+      00
+ [ 2666.269994] RSP: 0018:ffffc90000f77c30 EFLAGS: 00010086
+ [ 2666.272008] RAX: ffff8883df27d458 RBX: ffff8883df27da58 RCX: ffff8883df27d459
+ [ 2666.274465] RDX: ffff8883d183fa58 RSI: ffffffffa01e8d00 RDI: 0000000000000000
+ [ 2666.276978] RBP: ffff8883d62ac800 R08: 0000000000000000 R09: 00000000000000ce
+ [ 2666.279437] R10: 000000000000000a R11: 0000000000000000 R12: ffff8883df27da00
+ [ 2666.281941] R13: ffffc90000f77c98 R14: 0000000000000130 R15: 0000000000000000
+ [ 2666.284397] FS:  00007f009f877740(0000) GS:ffff8883f1a00000(0000) knlGS:0000000000000000
+ [ 2666.287708] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [ 2666.289817] CR2: 0000000000000000 CR3: 00000003d467e003 CR4: 0000000000160ee0
+ [ 2666.292274] Kernel panic - not syncing: Fatal exception
+ [ 2666.294689] Kernel Offset: disabled
+ [ 2666.296253] ---[ end Kernel panic - not syncing: Fatal exception]---
 
-[...]
+Fixes: 6a8824a74bc9 ("RDMA/cm: Allow ib_send_cm_sidr_rep() to be done under lock")
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/cm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> Sure, thanks, enjoy your vacation! I'll post v3 then with build fixes
-> I have so far.
-
-Thanks! :)
-
--Toke
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 0d1377232933..dc0558b23158 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -3676,10 +3676,12 @@ static int cm_send_sidr_rep_locked(struct cm_id_private *cm_id_priv,
+ 		return ret;
+ 	}
+ 	cm_id_priv->id.state = IB_CM_IDLE;
++	spin_lock_irq(&cm.lock);
+ 	if (!RB_EMPTY_NODE(&cm_id_priv->sidr_id_node)) {
+ 		rb_erase(&cm_id_priv->sidr_id_node, &cm.remote_sidr_table);
+ 		RB_CLEAR_NODE(&cm_id_priv->sidr_id_node);
+ 	}
++	spin_unlock_irq(&cm.lock);
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
 
