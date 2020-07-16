@@ -2,45 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36475222B63
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 21:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B12222B67
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 21:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgGPTCa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 15:02:30 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36450 "EHLO
+        id S1729515AbgGPTDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 15:03:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36614 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPTC3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:02:29 -0400
+        with ESMTP id S1729496AbgGPTDN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:03:13 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jw99D-0007pK-MD; Thu, 16 Jul 2020 21:02:23 +0200
+        id 1jw99q-0007tR-2w; Thu, 16 Jul 2020 21:03:02 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jw99D-000NPL-Dl; Thu, 16 Jul 2020 21:02:23 +0200
-Subject: Re: [PATCH] Revert "test_bpf: flag tests that cannot be jited on
- s390"
-To:     Seth Forshee <seth.forshee@canonical.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200716143931.330122-1-seth.forshee@canonical.com>
+        id 1jw99p-000PJA-TM; Thu, 16 Jul 2020 21:03:01 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix possible hang in
+ sockopt_inherit
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200715224107.3591967-1-sdf@google.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <daba54b3-e2c8-645c-76a6-cc6524ec0c96@iogearbox.net>
-Date:   Thu, 16 Jul 2020 21:02:22 +0200
+Message-ID: <c63f1825-bea8-b59c-20fe-e5717aae15c7@iogearbox.net>
+Date:   Thu, 16 Jul 2020 21:02:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200716143931.330122-1-seth.forshee@canonical.com>
+In-Reply-To: <20200715224107.3591967-1-sdf@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,15 +45,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/16/20 4:39 PM, Seth Forshee wrote:
-> This reverts commit 3203c9010060806ff88c9989aeab4dc8d9a474dc.
+On 7/16/20 12:41 AM, Stanislav Fomichev wrote:
+> Andrii reported that sockopt_inherit occasionally hangs up on 5.5 kernel [0].
+> This can happen if server_thread runs faster than the main thread.
+> In that case, pthread_cond_wait will wait forever because
+> pthread_cond_signal was executed before the main thread was blocking.
+> Let's move pthread_mutex_lock up a bit to make sure server_thread
+> runs strictly after the main thread goes to sleep.
 > 
-> The s390 bpf JIT previously had a restriction on the maximum
-> program size, which required some tests in test_bpf to be flagged
-> as expected failures. The program size limitation has been removed,
-> and the tests now pass, so these tests should no longer be flagged.
+> (Not sure why this is 5.5 specific, maybe scheduling is less
+> deterministic? But I was able to confirm that it does indeed
+> happen in a VM.)
 > 
-> Fixes: d1242b10ff03 ("s390/bpf: Remove JITed image size limitations")
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> [0] https://lore.kernel.org/bpf/CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com/
+> 
+> Reported-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
 Applied, thanks!
