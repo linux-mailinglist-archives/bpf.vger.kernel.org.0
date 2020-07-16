@@ -2,165 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F15222F19
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 01:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ED7222F57
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 01:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgGPXfS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 19:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgGPXfR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:35:17 -0400
-Received: from localhost.localdomain.com (unknown [151.48.133.17])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB03E20899;
-        Thu, 16 Jul 2020 22:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594937838;
-        bh=glVmAVBjlEt2NPzW7GvqW8dqC/B/Xub2wycXL0vZ0pw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X19CjIw5gA732WG19nKUu7qoxJgturik8DUp7lCn06hejTCBA+JpdV5nRvQ2lx01W
-         QZIe+XTFG50pR7KTEJIv06/d+9Wb5LRITUfxDlYLP6pgqWSbCV5pSf2miXpL3D5Oe+
-         3AdPovIxSZAhaFFPCzn2MjLVRwpf9DhpyIVbt4WQ=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, bpf@vger.kernel.org, kuba@kernel.org,
-        ilias.apalodimas@linaro.org, lorenzo.bianconi@redhat.com,
-        brouer@redhat.com, echaudro@redhat.com, sameehj@amazon.com
-Subject: [PATCH v2 net-next 6/6] net: mvneta: move rxq->left_size on the stack
-Date:   Fri, 17 Jul 2020 00:16:34 +0200
-Message-Id: <571d5b29a22c38f263743d45f22fbbd2f695473b.1594936660.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1594936660.git.lorenzo@kernel.org>
-References: <cover.1594936660.git.lorenzo@kernel.org>
+        id S1725980AbgGPXp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 19:45:58 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44006 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgGPXp6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jul 2020 19:45:58 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GMoKkY008939
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 16:01:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=LL2rGApnWJch90rgZTalBSdlaarxIQ3540QQIkq13K0=;
+ b=SEWq1E9UlTTJFt8WWCCY16XLbk/XwxiN0s3fI4RRBgSclvbQ27nKvvN3MODXhy5z/trt
+ yGpm+BBWl+nu01MIvnjPyVBtNyetJmqz98LYOOfjcZKc2bAQdviOBrrYnSVY+kJeuiwz
+ e0hP2dEvW4WQ3E5pbJ0gncxbQOvRoVgbdMI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32avg5h41h-15
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 16:01:51 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 16 Jul 2020 16:01:39 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id B453F62E523E; Thu, 16 Jul 2020 15:59:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 0/2] bpf: fix stackmap on perf_events with PEBS
+Date:   Thu, 16 Jul 2020 15:59:31 -0700
+Message-ID: <20200716225933.196342-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=994 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 clxscore=1015 impostorscore=0 phishscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160148
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allocate rxq->left_size on mvneta_rx_swbm stack since it is used just
-in sw bm napi_poll
+Calling get_perf_callchain() on perf_events from PEBS entries may cause
+unwinder errors. To fix this issue, perf subsystem fetches callchain earl=
+y,
+and marks perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
+Similar issue exists when BPF program calls get_perf_callchain() via
+helper functions. For more information about this issue, please refer to
+discussions in [1].
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- drivers/net/ethernet/marvell/mvneta.c | 29 ++++++++++++---------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+This set fixes this issue with helper proto bpf_get_stackid_pe and
+bpf_get_stack_pe.
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 8b7f6fcd4cca..2c9277e73cef 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -698,8 +698,6 @@ struct mvneta_rx_queue {
- 	/* Index of first RX DMA descriptor to refill */
- 	int first_to_refill;
- 	u32 refill_num;
--
--	int left_size;
- };
- 
- static enum cpuhp_state online_hpstate;
-@@ -2228,7 +2226,7 @@ static void
- mvneta_swbm_rx_frame(struct mvneta_port *pp,
- 		     struct mvneta_rx_desc *rx_desc,
- 		     struct mvneta_rx_queue *rxq,
--		     struct xdp_buff *xdp,
-+		     struct xdp_buff *xdp, int *size,
- 		     struct page *page,
- 		     struct mvneta_stats *stats)
- {
-@@ -2262,7 +2260,7 @@ mvneta_swbm_rx_frame(struct mvneta_port *pp,
- 	sinfo = xdp_get_shared_info_from_buff(xdp);
- 	sinfo->nr_frags = 0;
- 
--	rxq->left_size = rx_desc->data_size - len;
-+	*size = rx_desc->data_size - len;
- 	rx_desc->buf_phys_addr = 0;
- }
- 
-@@ -2270,7 +2268,7 @@ static void
- mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- 			    struct mvneta_rx_desc *rx_desc,
- 			    struct mvneta_rx_queue *rxq,
--			    struct xdp_buff *xdp,
-+			    struct xdp_buff *xdp, int *size,
- 			    struct page *page)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2278,11 +2276,11 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- 	enum dma_data_direction dma_dir;
- 	int data_len, len;
- 
--	if (rxq->left_size > MVNETA_MAX_RX_BUF_SIZE) {
-+	if (*size > MVNETA_MAX_RX_BUF_SIZE) {
- 		len = MVNETA_MAX_RX_BUF_SIZE;
- 		data_len = len;
- 	} else {
--		len = rxq->left_size;
-+		len = *size;
- 		data_len = len - ETH_FCS_LEN;
- 	}
- 	dma_dir = page_pool_get_dma_dir(rxq->page_pool);
-@@ -2300,7 +2298,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- 
- 		rx_desc->buf_phys_addr = 0;
- 	}
--	rxq->left_size -= len;
-+	*size -= len;
- }
- 
- static struct sk_buff *
-@@ -2341,7 +2339,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 			  struct mvneta_port *pp, int budget,
- 			  struct mvneta_rx_queue *rxq)
- {
--	int rx_proc = 0, rx_todo, refill;
-+	int rx_proc = 0, rx_todo, refill, size = 0;
- 	struct net_device *dev = pp->dev;
- 	struct xdp_buff xdp_buf = {
- 		.frame_sz = PAGE_SIZE,
-@@ -2378,25 +2376,25 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 				goto next;
- 			}
- 
--			frame_sz = rx_desc->data_size - ETH_FCS_LEN;
-+			size = rx_desc->data_size;
-+			frame_sz = size - ETH_FCS_LEN;
- 			desc_status = rx_desc->status;
- 
--			mvneta_swbm_rx_frame(pp, rx_desc, rxq, &xdp_buf, page,
--					     &ps);
-+			mvneta_swbm_rx_frame(pp, rx_desc, rxq, &xdp_buf,
-+					     &size, page, &ps);
- 		} else {
- 			if (unlikely(!xdp_buf.data_hard_start))
- 				continue;
- 
- 			mvneta_swbm_add_rx_fragment(pp, rx_desc, rxq, &xdp_buf,
--						    page);
-+						    &size, page);
- 		} /* Middle or Last descriptor */
- 
- 		if (!(rx_status & MVNETA_RXD_LAST_DESC))
- 			/* no last descriptor this time */
- 			continue;
- 
--		if (rxq->left_size) {
--			rxq->left_size = 0;
-+		if (size) {
- 			mvneta_xdp_put_buff(pp, rxq, &xdp_buf, -1, true);
- 			goto next;
- 		}
-@@ -3372,7 +3370,6 @@ static void mvneta_rxq_deinit(struct mvneta_port *pp,
- 	rxq->descs_phys        = 0;
- 	rxq->first_to_refill   = 0;
- 	rxq->refill_num        = 0;
--	rxq->left_size         = 0;
- }
- 
- static int mvneta_txq_sw_init(struct mvneta_port *pp,
--- 
-2.26.2
+[1] https://lore.kernel.org/lkml/ED7B9430-6489-4260-B3C5-9CFA2E3AA87A@fb.=
+com/
 
+Changes v2 =3D> v3:
+1. Fix handling of stackmap skip field. (Andrii)
+2. Simplify the code in a few places. (Andrii)
+
+Changes v1 =3D> v2:
+1. Simplify the design and avoid introducing new helper function. (Andrii=
+)
+
+Song Liu (2):
+  bpf: separate bpf_get_[stack|stackid] for perf events BPF
+  selftests/bpf: add callchain_stackid
+
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/stackmap.c                         | 202 ++++++++++++++++--
+ kernel/trace/bpf_trace.c                      |   4 +-
+ .../bpf/prog_tests/perf_event_stackmap.c      | 116 ++++++++++
+ .../selftests/bpf/progs/perf_event_stackmap.c |  59 +++++
+ 5 files changed, 363 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
+ckmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
+.c
+
+--
+2.24.1
