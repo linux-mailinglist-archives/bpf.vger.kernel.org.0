@@ -2,290 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9887B221BED
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 07:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C92221C0C
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 07:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgGPF3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 01:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        id S1726069AbgGPFoO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 01:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPF3t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 01:29:49 -0400
+        with ESMTP id S1725844AbgGPFoO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 01:44:14 -0400
 Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAC6C061755;
-        Wed, 15 Jul 2020 22:29:48 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ls15so4237607pjb.1;
-        Wed, 15 Jul 2020 22:29:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298FCC061755;
+        Wed, 15 Jul 2020 22:44:14 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id f16so4117714pjt.0;
+        Wed, 15 Jul 2020 22:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xggW8iaRIpjjsgUhKPAxCf9ytTaJmtsUx10hl+/oMsI=;
-        b=jZuL9BXAwT2VrHGdz1Gh9kSGX5iIsxt436+f4NtX5QqfGmGyoGjTiQIIC5uzT9N+Re
-         LzK+0VNIKb2XX0neH7gNyMsuhdpi9foMAonCQuyGkd/Yo6+HzVibiS65Dex3F9pf374W
-         +SDqpUiE/03SD+pRT0Bs9gmrECVT3IjRDz31+rwrRBCjPMkpZPDj0n8y9i/TzZ1YxBLZ
-         sEIU9m/+U15gVBJJNYlsn/H/30RulCYGLBbLCntygjvvCUc2NF+SC5P24/Ib9SqMRk1H
-         oGkw8R/mGEjMyezAi8yCu/bwtAw33T6iNKReiN/34hfa9Qwk9jPAC0Oqz6CWEpoYTqzu
-         Ajng==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sBQ5K8y3Wcj2yM8m9FnuFs7JEvOXkirRak/QLYiDMdI=;
+        b=eOYTfouAklGsav502XoosLPpFJC/7EimgtqYDwqN1I2HDGwO3tfG1bdzZvbG9Yu+dm
+         Rk0DI0CE1e5TzGBH45wsjk35S5sZ+ARQYAZ/4Chxwktgngkiei6JWoNZji9mogDlAIrL
+         6BS8LF8Y2jI4pT9t4r0sMJbpjKTpyu6B6vOWCcuTkM3LsUh1+g1VFWcKRfHji0h1xxty
+         6iFItecP/oNnJ4O2o8eZIjUrRR24yrzHYiu6Gmbbf2kl+P3ozJyqNGe5DbuSIRKFS6UP
+         dBZlVrLT26riTYvZ5J9nIcsGJnGpUt2+gqba2tPN0zrVx7GMMgGRQdI1WuzqIqsUKXom
+         HPaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=xggW8iaRIpjjsgUhKPAxCf9ytTaJmtsUx10hl+/oMsI=;
-        b=N7k/+7a6bYs/89VCgvP7omK1zZ7nXpQjRC+EX3+6uzQleNDPIaiJNSkcOyxZBIwP/R
-         52zyjO5qs4ZthtvhZLMRHcFPKzKGmICtaiZjx/hTIEpvc6N/HoH5TNondcBFY7fKVU2e
-         1b9/JjP4Gshd3la3as8Qk+g6XEXxbVOWAfLbByatJK6gOn4vqn2UzxSkuuEv3FFaFEox
-         lx0vCh/Kil0UyOV2kyu0kvkonc2LwH0oj0secLzIkvD40+9Mml6tWzviE/T82kkv9RD3
-         uVKasFv3wR5ubI4qP69KbcJGxFt5c0FnZ876pNT7hiHO0ctMj/azUPEur4zHLM22b7rL
-         PXEg==
-X-Gm-Message-State: AOAM532WqR8u3fMhX2yT6KtwMQfYj+SSpGU4juIBhpRJUij+opQCnWxC
-        Y8e1nzFXkon3l8WFS59nS5g=
-X-Google-Smtp-Source: ABdhPJzIZHYpo4BSVWNzRlHDhV+MdqGm1xQU7huFWMFuyYcRGFodVpwnhIuKarRiTz6hzGVVXiwrIQ==
-X-Received: by 2002:a17:90a:be06:: with SMTP id a6mr3165092pjs.136.1594877388306;
-        Wed, 15 Jul 2020 22:29:48 -0700 (PDT)
-Received: from ubuntu.lan ([2001:470:e92d:10:ddc5:f9e2:12b8:d43])
-        by smtp.gmail.com with ESMTPSA id i67sm3700556pfg.13.2020.07.15.22.29.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sBQ5K8y3Wcj2yM8m9FnuFs7JEvOXkirRak/QLYiDMdI=;
+        b=bryghKnfXSXaka2maATrzBD3gkecZkuIHUNx23VWED7miGCGBcDnfUa58JT2E22ON/
+         0PlntyMD5IUcUNzk8HxaOMYhBQorpV0LmJk+bZ9oNrn2MOPiLmFwOiw/Ft2++cCqeCLz
+         RpxmhN+Ey4flu1So7RPk2ke5EdgeG+EnkUzLMGuDM1nXi2J8tzjclucZ1AeOfrXyclVV
+         yDlMXJ2P9YBG1rAOpKtpQE5QYWx405KKpolcRLhWnFYbCrgAJvP/wJn3X7q+RH6ACcqa
+         hVMycb6h1pca2WbKPcBcCujIQOQFldDhzXQxHEhoEt1/++fsqeIdVXrDxrYFrF4C0+RO
+         tI1Q==
+X-Gm-Message-State: AOAM532XT8A6y1biImnE5qWE7+WmzADFTsPSUSN6gY/JyWeOqYYLhR1D
+        2AJf9RvVtDzyy6U3wzOtV0w=
+X-Google-Smtp-Source: ABdhPJyGOZRjaF9EP3KCntoWFXcaPkEMeP2NijLD1GFvpW+aPP6xTxIQpz21bSzBFqpyh1BCApseGg==
+X-Received: by 2002:a17:90a:3488:: with SMTP id p8mr3347352pjb.211.1594878253555;
+        Wed, 15 Jul 2020 22:44:13 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:96f0])
+        by smtp.gmail.com with ESMTPSA id 66sm3453157pfg.63.2020.07.15.22.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 22:29:47 -0700 (PDT)
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2] bpftool: use only nftw for file tree parsing
-Date:   Wed, 15 Jul 2020 22:29:26 -0700
-Message-Id: <20200716052926.10933-1-Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715051214.28099-1-Tony.Ambardar () gmail ! com>
-References: <20200715051214.28099-1-Tony.Ambardar () gmail ! com>
+        Wed, 15 Jul 2020 22:44:12 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 22:44:08 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add
+ new members to bpf_attr.raw_tracepoint in bpf.h
+Message-ID: <20200716054408.so34cuc2g2iqcppr@ast-mbp.dhcp.thefacebook.com>
+References: <CAEf4BzZ_-vXP_3hSEjuceW10VX_H+EeuXMiV=_meBPZn7izK8A@mail.gmail.com>
+ <87r1tegusj.fsf@toke.dk>
+ <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com>
+ <87pn8xg6x7.fsf@toke.dk>
+ <CAEf4BzYAoetyfyofTX45RQjtz3M-c9=YNeH1uRDbYgK4Ae0TwA@mail.gmail.com>
+ <87d04xg2p4.fsf@toke.dk>
+ <20200714231133.ap5qnalf6moptvfk@ast-mbp.dhcp.thefacebook.com>
+ <874kq9ey2j.fsf@toke.dk>
+ <20200715234123.rr7oj74t5hflzmsn@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbodR-+=Q3wRE2UaiouBexvqfwpE-zJGm4Rr1cV2dgZHQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbodR-+=Q3wRE2UaiouBexvqfwpE-zJGm4Rr1cV2dgZHQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpftool sources include code to walk file trees, but use multiple
-frameworks to do so: nftw and fts. While nftw conforms to POSIX/SUSv3 and
-is widely available, fts is not conformant and less common, especially on
-non-glibc systems. The inconsistent framework usage hampers maintenance
-and portability of bpftool, in particular for embedded systems.
+On Wed, Jul 15, 2020 at 06:11:39PM -0700, Andrii Nakryiko wrote:
+> >
+> > On Wed, Jul 15, 2020, Andrii Nakryiko wrote:
+> > >
+> > > Inability to figure out what's wrong when using BPF is at the top of
+> > > complaints from many users, together with hard to understand logs from
+> > > verifier.
+> >
+> > Only the second part is true. All users are complaining about the verifier.
+> > No one is complaing that failed prog attach is somehow lacking string message.
+> 
+> Ok, next time I'll be helping someone to figure out another -EINVAL,
+> I'll remember to reassure them that it's not really frustrating, not a
+> guess game, and not a time sink at all.
 
-Standardize code usage by rewriting one fts-based function to use nftw.
-Clean up related function warnings by using "const char *" arguments and
-fixing an unsafe call to dirname().
+When the next time the users hit EINVAL due to _their_ usage and not
+due to kernel or libbpf bug and libbpf couldn't do anything to make
+the error user friendly then yes please raise it up.
 
-These changes help in building bpftool against musl for OpenWrt.
+> > The users are also complaing about libbpf being too verbose.
+> 
+> Very well might be, but apart from your complaints on that patch
+> adding program loading debug message, I can't remember a single case
+> when someone complained about that. Do you have a link for me to get
+> some context?
+> 
+> > Yet you've refused to address the verbosity where it should be reduced and
+> 
+> It's open-source, everyone is welcome to submit their patches. Just
+> because I don't think we need to remove some log messages and thus not
+> am creating such patches, doesn't mean it can't be done by someone
+> else.
 
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
+So myself and Toke are wearing 'bpf user' hat in that context.
+Both of us indicated that libbpf output is too verbose.
+Your response "just send a patch" is a sure way to turn away more users.
 
-V2:
-* use _GNU_SOURCE to pull in getpagesize(), getline(), nftw() definitions
-* use "const char *" in open_obj_pinned() and open_obj_pinned_any()
-* make dirname() safely act on a string copy
+> > now refusing to add it where it's needed.
+> 
+> Can you point to or quote where I refused to add a helpful message to libbpf?
 
----
- tools/bpf/bpftool/common.c | 129 +++++++++++++++++++++----------------
- tools/bpf/bpftool/main.h   |   4 +-
- 2 files changed, 76 insertions(+), 57 deletions(-)
+see below for detailed example.
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 29f4e7611ae8..7c2e52fc5784 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -1,10 +1,11 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
- 
-+#define _GNU_SOURCE
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
--#include <fts.h>
-+#include <ftw.h>
- #include <libgen.h>
- #include <mntent.h>
- #include <stdbool.h>
-@@ -160,24 +161,36 @@ int mount_tracefs(const char *target)
- 	return err;
- }
- 
--int open_obj_pinned(char *path, bool quiet)
-+int open_obj_pinned(const char *path, bool quiet)
- {
--	int fd;
-+	char *pname;
-+	int fd = -1;
-+
-+	pname = strdup(path);
-+	if (pname == NULL) {
-+		if (!quiet)
-+			p_err("bpf obj get (%s): %s", path, strerror(errno));
-+		goto out_ret;
-+	}
-+
- 
--	fd = bpf_obj_get(path);
-+	fd = bpf_obj_get(pname);
- 	if (fd < 0) {
- 		if (!quiet)
--			p_err("bpf obj get (%s): %s", path,
--			      errno == EACCES && !is_bpffs(dirname(path)) ?
-+			p_err("bpf obj get (%s): %s", pname,
-+			      errno == EACCES && !is_bpffs(dirname(pname)) ?
- 			    "directory not in bpf file system (bpffs)" :
- 			    strerror(errno));
--		return -1;
-+		goto out_free;
- 	}
- 
-+out_free:
-+	free(pname);
-+out_ret:
- 	return fd;
- }
- 
--int open_obj_pinned_any(char *path, enum bpf_obj_type exp_type)
-+int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
- {
- 	enum bpf_obj_type type;
- 	int fd;
-@@ -367,68 +380,74 @@ void print_hex_data_json(uint8_t *data, size_t len)
- 	jsonw_end_array(json_wtr);
- }
- 
--int build_pinned_obj_table(struct pinned_obj_table *tab,
--			   enum bpf_obj_type type)
-+static struct pinned_obj_table *build_fn_table; /* params for nftw cb*/
-+static enum bpf_obj_type build_fn_type;
-+
-+static int do_build_table_cb(const char *fpath, const struct stat *sb,
-+			    int typeflag, struct FTW *ftwbuf)
- {
- 	struct bpf_prog_info pinned_info = {};
- 	struct pinned_obj *obj_node = NULL;
- 	__u32 len = sizeof(pinned_info);
--	struct mntent *mntent = NULL;
- 	enum bpf_obj_type objtype;
-+	int fd, err = 0;
-+
-+	if (typeflag != FTW_F)
-+		goto out_ret;
-+	fd = open_obj_pinned(fpath, true);
-+	if (fd < 0)
-+		goto out_ret;
-+
-+	objtype = get_fd_type(fd);
-+	if (objtype != build_fn_type)
-+		goto out_close;
-+
-+	memset(&pinned_info, 0, sizeof(pinned_info));
-+	if (bpf_obj_get_info_by_fd(fd, &pinned_info, &len)) {
-+		p_err("can't get obj info: %s", strerror(errno));
-+		goto out_close;
-+	}
-+
-+	obj_node = malloc(sizeof(*obj_node));
-+	if (!obj_node) {
-+		p_err("mem alloc failed");
-+		err = -1;
-+		goto out_close;
-+	}
-+
-+	memset(obj_node, 0, sizeof(*obj_node));
-+	obj_node->id = pinned_info.id;
-+	obj_node->path = strdup(fpath);
-+	hash_add(build_fn_table->table, &obj_node->hash, obj_node->id);
-+
-+out_close:
-+	close(fd);
-+out_ret:
-+	return err;
-+}
-+
-+int build_pinned_obj_table(struct pinned_obj_table *tab,
-+			   enum bpf_obj_type type)
-+{
-+	struct mntent *mntent = NULL;
- 	FILE *mntfile = NULL;
--	FTSENT *ftse = NULL;
--	FTS *fts = NULL;
--	int fd, err;
-+	int flags = FTW_PHYS;
-+	int nopenfd = 16;
- 
- 	mntfile = setmntent("/proc/mounts", "r");
- 	if (!mntfile)
- 		return -1;
- 
-+	build_fn_table = tab;
-+	build_fn_type = type;
-+
- 	while ((mntent = getmntent(mntfile))) {
--		char *path[] = { mntent->mnt_dir, NULL };
-+		char *path = mntent->mnt_dir;
- 
- 		if (strncmp(mntent->mnt_type, "bpf", 3) != 0)
- 			continue;
--
--		fts = fts_open(path, 0, NULL);
--		if (!fts)
--			continue;
--
--		while ((ftse = fts_read(fts))) {
--			if (!(ftse->fts_info & FTS_F))
--				continue;
--			fd = open_obj_pinned(ftse->fts_path, true);
--			if (fd < 0)
--				continue;
--
--			objtype = get_fd_type(fd);
--			if (objtype != type) {
--				close(fd);
--				continue;
--			}
--			memset(&pinned_info, 0, sizeof(pinned_info));
--			err = bpf_obj_get_info_by_fd(fd, &pinned_info, &len);
--			if (err) {
--				close(fd);
--				continue;
--			}
--
--			obj_node = malloc(sizeof(*obj_node));
--			if (!obj_node) {
--				close(fd);
--				fts_close(fts);
--				fclose(mntfile);
--				return -1;
--			}
--
--			memset(obj_node, 0, sizeof(*obj_node));
--			obj_node->id = pinned_info.id;
--			obj_node->path = strdup(ftse->fts_path);
--			hash_add(tab->table, &obj_node->hash, obj_node->id);
--
--			close(fd);
--		}
--		fts_close(fts);
-+		if (nftw(path, do_build_table_cb, nopenfd, flags) == -1)
-+			break;
- 	}
- 	fclose(mntfile);
- 	return 0;
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 78d34e860713..e3a79b5a9960 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -152,8 +152,8 @@ int cmd_select(const struct cmd *cmds, int argc, char **argv,
- int get_fd_type(int fd);
- const char *get_fd_type_name(enum bpf_obj_type type);
- char *get_fdinfo(int fd, const char *key);
--int open_obj_pinned(char *path, bool quiet);
--int open_obj_pinned_any(char *path, enum bpf_obj_type exp_type);
-+int open_obj_pinned(const char *path, bool quiet);
-+int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
- int mount_bpffs_for_pin(const char *name);
- int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
- int do_pin_fd(int fd, const char *name);
--- 
-2.17.1
+> 
+> > It's libbpf job to explain users kernel errors.
+> 
+> To the best of its ability, yes. Unfortunately there were many times
+> where I, as a human, couldn't figure it out without printk'ing my way
+> around the kernel. If I can't do that, I can't teach libbpf to do it.
+> Error codes are just not granular enough to allow distinguishing a lot
+> of error conditions, either by humans or automatically by libbpf.
 
+If there are such cases please bring it up. I'm sure kernel errnos
+can become more unique.
+
+> >
+> > The same thing is happening with perf_event_open syscall.
+> > Every one who's trying to code it directly complaining about the kernel. But
+> > not a single user is complaing about perf syscall when they use libraries and
+> > tools. Same thing with bpf syscall. libbpf is the interface. It needs to clear
+> > and to the point. Right now it's not doing it well. elf dump is too verbose and
+> > unnecessary whereas in other places it says nothing informative where it
+> > could have printed human hint.
+> >
+> > libbpf's pr_perm_msg() hint is the only one where libbpf cares about its users.
+> > All other messages are useful to libbpf developers and not its users.
+> 
+> "Couldn't load trivial BPF program. Make sure your kernel supports BPF
+> (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough
+> value."
+> "kernel doesn't support global data"
+> "can't attach BPF program w/o FD (did you load it?)"
+> "specified path %s is not on BPF FS"
+> "vmlinux BTF is not found" -- we should clearly add "you need a kernel
+> built with CONFIG_DEBUG_INFO_BTF=y"
+> "invalid relo for \'%s\' in special section 0x%x; forgot to initialize
+> global var?.."
+
+sure. those count too.
+
+> That doesn't mean, though, that the kernel itself can't do better in
+> terms of error reporting. But you clearly don't think it's a real
+> problem, so I'll let it rest, thank you.
+
+It is a real problem and libbpf has to step up to address it.
+The kernel does everything it can already.
+
+Let's take this raw_tp_open patches as an example.
+Currently raw_tp_open will EINVAL if prog_fd is incorrect, tp name
+is not specified or expected_attach_type doesn't match.
+If that happens it's a _libbpf_ bug. It's not a user mistake.
+With Toke's patches tgt prog_fd and btf_id are added.
+Both can be incorrect. If that happens it's most likely libbpf bug.
+The user is writing their bpf_prog.c file with SEC("freplace/name")
+libbpf could have messed up prog_fd and btf_id resolution.
+The user didn't specify btf_id as a raw integer.
+It was a libbpf job to convert user's string name into prog_fd
+and btf_id in the first place. If libbpf messes it it shouldn't rely
+on the kernel to catch such bugs. It's not a job of the kernel to
+point out bugs in the libraries that suppose to be tightly
+coupled with the kernel.
+When libbpf is doing its job correctly tgt_prog_fd and tgt_btf_id are
+valid and BTF of the extension prog can miscompare with BTF of
+target prog it's trying to attach to via raw_tp_open with these two
+arguments. Take a look at Toke's patches. That comparison is done via
+btf_check_type_match(). The most helpful kernel message in such case
+will be 'arg2 in foo() has size 4 while bar() has 2'.
+That's the best the kernel can do. Yet it's very user unfriendly.
+The kernel has no infra today to print BTF in a human friendly way.
+But libbpf has BTF dumper. btf_dump__emit_type_decl() alone is
+magnitude friendlier to users than kernel messages.
+When the kernel's raw_tp_open syscall realizes that BTFs don't match
+it can return single unique errno and libbpf can tell the user:
+"
+Function prototype of BPF prog:
+   int ext_bpf_prog(struct __sk_buff *);
+doesn't match function prototype of target prog:
+   int tgt_prog_name(struct xdp_md *);
+"
+Everything is available in libbpf to print such error in human friendly way.
+Whereas the kernel has no ability to do so.
+If that message was coming from the kernel it would have been from
+btf_check_type_match() and would be:
+"arg1 in ext_bpf_prog() is not a pointer to context".
+Compare that to above libbpf error message.
+I think the difference is pretty drastic.
+libbpf by far is a better place to print human friendly errors.
+
+I'm arguing that raw_tp_open with additional tgt_prog_fd and tgt_btf_id
+parameters is not much different from sys_kcmp syscall and from memcmp() libc
+function. They compare two objects and return equal or not.
+It's not a job of the kernel to say
+'objects are not equal because byte 2 is different'.
+Such message is not helpeful to users.
+It's libbpf job to print two BTFs in human friendly way when the kernel
+found them different. It's easier for human to glance over two function
+prototypes and spot the difference instead of 'arg1 is not a pointer to context'.
+
+So please make libbpf user friendly. Enough of pointing fingers at the kernel.
