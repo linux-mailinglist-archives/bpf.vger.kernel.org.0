@@ -2,106 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DCB222CDD
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 22:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B22222D10
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 22:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgGPUb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 16:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgGPUb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:31:28 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCE9C061755;
-        Thu, 16 Jul 2020 13:31:28 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id w34so6027805qte.1;
-        Thu, 16 Jul 2020 13:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q7fkaWy5BOtDK66VES6I+b2FcjwYtxNfF67s5vYVVds=;
-        b=TQVqXQTlQbyDYaO4gsISTQQfQmiO2VHodzKgRjm2AkLSVfH/bscXy/M4ukmL9Dww7Y
-         eu8Z1in18q8ssuF3uzYwVS6PLbdDkBKZgLDh5X1puh7JtVSquD0cHoSFxtnLozraH94X
-         8m5y4dQrec6fV+nnoXL/15UiOVn5CpFTeyPEHLv32yYLwfhODOPiAkGeug/VfRYC6bdv
-         O4+HwIvwKgGKG8T6IK1oAmXdAEFd47BxI7X24GNtVVWDakotZ8v/NeDJlXhAt3SBWjc0
-         RAZlgTUV0yCzKMCf76Jaf8IBgBnI2LBP3hFkZ4FQEdSTsbQ+LFd9viXkrXm0tk7IT2qo
-         fIrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q7fkaWy5BOtDK66VES6I+b2FcjwYtxNfF67s5vYVVds=;
-        b=WrZLd7PiS0CGLA8yZMUyebwuBa20ieHRKvooI9XvsdrifLMIx4443bcYAHfpcUCz6k
-         14ANP+qBASbL535bo/4shx7MGPO8c37ON8wtkbMVp0l6OZ0OZNUf5N8mHKzRPc49LaPg
-         QG3hxRIBPLjOUdLid4PoX50AvylZSwxjhnxrQVYTuIZJsjDpHOavPSUPWxDMxXy5uAKO
-         BvlrIkL0Xms5KdGvAJrdLlHo18Nlpb1CSWwKdRdnL4/uvGyzv+2sqU6iLCYyjI2GhkhQ
-         rSXpGN5wjMwoIWlzpchiPR7rWEWv8OaYjAq6hWctj5krVUz3x9Cr2ouAlfS9NSSIt23X
-         Efqg==
-X-Gm-Message-State: AOAM533uu7ZdouVsq/pMgI+9cGJF4Ae4xmWdt0/Z5fdMwZLPX3mYCKCd
-        waF0bWVYeERrOL4TDvxlrlODyBcNPXG9GgdfurQ=
-X-Google-Smtp-Source: ABdhPJxApln5rpI1d+//DgIRGwBSpTw1+8LsChc+F4EET3NnZ2MTL43y1VVVDJTX4QYXOm0DEF0u2ClJp6p9RiXGDSk=
-X-Received: by 2002:ac8:345c:: with SMTP id v28mr6996098qtb.171.1594931487933;
- Thu, 16 Jul 2020 13:31:27 -0700 (PDT)
+        id S1726530AbgGPUgM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 16:36:12 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52162 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgGPUgL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 16:36:11 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jwAbw-0001FI-Bm; Thu, 16 Jul 2020 22:36:08 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jwAbw-0009qD-4z; Thu, 16 Jul 2020 22:36:08 +0200
+Subject: Re: [PATCH bpf-next 1/5] bpf, x64: use %rcx instead of %rax for tail
+ call retpolines
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+References: <20200715233634.3868-1-maciej.fijalkowski@intel.com>
+ <20200715233634.3868-2-maciej.fijalkowski@intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d631a16d-2cf0-cf12-2ddc-82ac64e51f6e@iogearbox.net>
+Date:   Thu, 16 Jul 2020 22:36:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200716045602.3896926-1-andriin@fb.com> <20200716045602.3896926-3-andriin@fb.com>
- <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com>
-In-Reply-To: <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Jul 2020 13:31:17 -0700
-Message-ID: <CAEf4BzZVxTGM9mDoHMv478vQjV6Hmf_ts50=ABXkP4GxAG85eg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/9] bpf, xdp: maintain info on attached XDP
- BPF programs in net_device
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200715233634.3868-2-maciej.fijalkowski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25875/Thu Jul 16 16:46:30 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 12:01 PM David Ahern <dsahern@gmail.com> wrote:
->
-> On 7/15/20 10:55 PM, Andrii Nakryiko wrote:
-> > Instead of delegating to drivers, maintain information about which BPF
-> > programs are attached in which XDP modes (generic/skb, driver, or hardware)
-> > locally in net_device. This effectively obsoletes XDP_QUERY_PROG command.
-> >
-> > Such re-organization simplifies existing code already. But it also allows to
-> > further add bpf_link-based XDP attachments without drivers having to know
-> > about any of this at all, which seems like a good setup.
-> > XDP_SETUP_PROG/XDP_SETUP_PROG_HW are just low-level commands to driver to
-> > install/uninstall active BPF program. All the higher-level concerns about
-> > prog/link interaction will be contained within generic driver-agnostic logic.
-> >
-> > All the XDP_QUERY_PROG calls to driver in dev_xdp_uninstall() were removed.
-> > It's not clear for me why dev_xdp_uninstall() were passing previous prog_flags
-> > when resetting installed programs. That seems unnecessary, plus most drivers
-> > don't populate prog_flags anyways. Having XDP_SETUP_PROG vs XDP_SETUP_PROG_HW
-> > should be enough of an indicator of what is required of driver to correctly
-> > reset active BPF program. dev_xdp_uninstall() is also generalized as an
-> > iteration over all three supported mode.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  include/linux/netdevice.h |  17 +++-
-> >  net/core/dev.c            | 158 +++++++++++++++++++++-----------------
->
-> Similar to my comment on a v1 patch, this change is doing multiple
-> things that really should be split into 2 patches - one moving code
-> around and the second making the change you want. As is the patch is
-> difficult to properly review.
->
+On 7/16/20 1:36 AM, Maciej Fijalkowski wrote:
+> Currently, %rax is used to store the jump target when BPF program is
+> emitting the retpoline instructions that are handling the indirect
+> tailcall.
+> 
+> There is a plan to use %rax for different purpose, which is storing the
+> tail call counter. In order to preserve this value across the tailcalls,
+> use %rcx instead for jump target storage in retpoline instructions.
+> 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>   arch/x86/include/asm/nospec-branch.h | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> index e7752b4038ff..e491c3d9f227 100644
+> --- a/arch/x86/include/asm/nospec-branch.h
+> +++ b/arch/x86/include/asm/nospec-branch.h
+> @@ -314,19 +314,19 @@ static inline void mds_idle_clear_cpu_buffers(void)
+>    *    lfence
+>    *    jmp spec_trap
+>    *  do_rop:
+> - *    mov %rax,(%rsp) for x86_64
+> + *    mov %rcx,(%rsp) for x86_64
+>    *    mov %edx,(%esp) for x86_32
+>    *    retq
+>    *
+>    * Without retpolines configured:
+>    *
+> - *    jmp *%rax for x86_64
+> + *    jmp *%rcx for x86_64
+>    *    jmp *%edx for x86_32
+>    */
+>   #ifdef CONFIG_RETPOLINE
+>   # ifdef CONFIG_X86_64
+> -#  define RETPOLINE_RAX_BPF_JIT_SIZE	17
+> -#  define RETPOLINE_RAX_BPF_JIT()				\
+> +#  define RETPOLINE_RCX_BPF_JIT_SIZE	17
+> +#  define RETPOLINE_RCX_BPF_JIT()				\
+>   do {								\
+>   	EMIT1_off32(0xE8, 7);	 /* callq do_rop */		\
+>   	/* spec_trap: */					\
+> @@ -334,7 +334,7 @@ do {								\
+>   	EMIT3(0x0F, 0xAE, 0xE8); /* lfence */			\
+>   	EMIT2(0xEB, 0xF9);       /* jmp spec_trap */		\
+>   	/* do_rop: */						\
+> -	EMIT4(0x48, 0x89, 0x04, 0x24); /* mov %rax,(%rsp) */	\
+> +	EMIT4(0x48, 0x89, 0x0C, 0x24); /* mov %rcx,(%rsp) */	\
+>   	EMIT1(0xC3);             /* retq */			\
+>   } while (0)
+>   # else /* !CONFIG_X86_64 */
+> @@ -352,9 +352,9 @@ do {								\
+>   # endif
+>   #else /* !CONFIG_RETPOLINE */
+>   # ifdef CONFIG_X86_64
+> -#  define RETPOLINE_RAX_BPF_JIT_SIZE	2
+> -#  define RETPOLINE_RAX_BPF_JIT()				\
+> -	EMIT2(0xFF, 0xE0);       /* jmp *%rax */
+> +#  define RETPOLINE_RCX_BPF_JIT_SIZE	2
+> +#  define RETPOLINE_RCX_BPF_JIT()				\
+> +	EMIT2(0xFF, 0xE1);       /* jmp *%rcx */
 
-You mean xdp_uninstall? In patch 1 leave it as three separate
-sections, but switch to different querying. And then in a separate
-patch do a loop?
+Hmm, so the target prog gets loaded into rax in emit_bpf_tail_call_indirect()
+but then you jump into rcx? What am I missing? This still needs to be bisectable.
 
-Alright, I'll split that up as well. But otherwise I don't really see
-much more opportunities to split it.
+>   # else /* !CONFIG_X86_64 */
+>   #  define RETPOLINE_EDX_BPF_JIT()				\
+>   	EMIT2(0xFF, 0xE2)        /* jmp *%edx */
+> 
 
-> Given that you need a v4 anyways, can you split this patch into 2?
