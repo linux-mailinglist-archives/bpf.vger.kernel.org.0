@@ -2,135 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2AF221B6D
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 06:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30559221B77
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 06:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgGPEgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 00:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S1725908AbgGPEmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 00:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPEf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 00:35:59 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4531C061755;
-        Wed, 15 Jul 2020 21:35:59 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id h190so1003279vkh.6;
-        Wed, 15 Jul 2020 21:35:59 -0700 (PDT)
+        with ESMTP id S1725844AbgGPEmD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 00:42:03 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B078EC061755;
+        Wed, 15 Jul 2020 21:42:03 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so3955986qtg.4;
+        Wed, 15 Jul 2020 21:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Md0I7qZUYOfItQaUHXL1L1O2AfGxevzdjkYatV5C7vg=;
-        b=DdAtg4lH9GsswCGXo+CgsHouaJ+G2eQj2PNUfdZtyKsoLsveH+Bbuo9XsFV3cJbc7U
-         DYSTA19WVwP3ufiG0oQwyUmSJ+zBcxaRAnThPGRPLo8SE+R1fAIGLdoDUTa+UPEVo0l7
-         F86F+wyBfldj6LcJ68x+7pisJ61vn5aqsl9QJQGCMlctYlw69JuKXrBI1GJHp8hUnHXe
-         ur/2FkT+CWEpMKbrBI9fQvZy2H7zJzLbbq04tkEI3A/eTnfGWW+sUN9+F7a6CCvwgrXS
-         el2RlkK2dWd5R2dyj4cTPicvkX88Sm5L8qaqVzbn0KOdhBrRogi9UFuOPErgJmYr/u8a
-         gosw==
+        bh=d2+VUiTeP/3i8MXi5Fgv0f9682uC6rlMBdbv4Gmpydg=;
+        b=fTCJdwEFQMWzND2j301sY82VhTJvX5qbT3lnIiVew6+eUbp5X2ouDPO8rVA60lVV3J
+         ThPKTtDkkhbqZkcZIJKSkZ/dJjR/q4jIbKLTV0I6jWyYnr2z/zC/cig6jPBarMYK5uzb
+         6TaoaGW6Q0lE8hynufGxNg/zy9CGhxAETVl+K0J6wzBp8Prav34eqObQYHSdRSQmUW4e
+         IQQJKteP/6Qs9xJ/spi9amwVQUFgAYnhlw4LH5TneIp9KV0nKWE5DNbNNN2njmKhw9n3
+         qWhUZ5jeElnUqOtoCPpRIGGj8Am0+TcxAormyTVGKPdgad27A4IBoiuEQEhlO5Vhhu5h
+         RmQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Md0I7qZUYOfItQaUHXL1L1O2AfGxevzdjkYatV5C7vg=;
-        b=OO94qFxho1sM8npYIRapPYvy3EM1nXFQxUDfPCJfycdDZg6GuLsQcgOPm/MfsPIqyt
-         xb9dbxhf1snmB9uWwMTG510u5b9jXUL6a1eWTRT9Q6uLA67kdhPNHgwelMfiAwcIaZLG
-         vJx7jR0iPjhoM7b+wWYIzDh5lIbFOSE/Yq6QWPK+1OmpJgwHAHyafjeXhQEZjpZLFglD
-         AVVv7CuR8qf1vAEwEG4EQWWq/KL/WZYBdJ+GaaVIYhAcWxn49vKtIBsHMhGzqnHu1R0d
-         vszZ9Tx+zYxK4MzdT5YOp0bng7noLB9/cyhQsWSOuTnyuQ8ogYs3cHGHwb4y4gDhbXBr
-         YbzA==
-X-Gm-Message-State: AOAM531hrJ60KxNl9a0UKJzT1eNOQrklAfzBadV0/TCSMwwZ8nELgidc
-        Qm6972cNpvVWfH0xBA+nJxdTtojBl6Teqozc+xw=
-X-Google-Smtp-Source: ABdhPJyFs2cS92i9MiT7gqX1V1cUi1wRjFNO4OQ4Npy0TolsLKqhQAKSEn7ByGbBynG2Gk0l80P+PLhknyYnz93yAys=
-X-Received: by 2002:a1f:418f:: with SMTP id o137mr1743334vka.25.1594874158827;
- Wed, 15 Jul 2020 21:35:58 -0700 (PDT)
+        bh=d2+VUiTeP/3i8MXi5Fgv0f9682uC6rlMBdbv4Gmpydg=;
+        b=RjJA+13mmFr2n6Q0pSloAn13PLIfmcTpajHe9isystEkL85r5cLB2egm4Z9bqGyNUi
+         0sXvbE+S/JSVG4V466hsWhwwn0iD0Fmdi63r3RzpS6QgomRGNOJ9DLNDhX5A679d+FKA
+         MNYWWS8to2nnYB/LtpMVOyGmPD5E9YqXkSTUc+jO4+m2fV38qS9YfikJVhh00GYiW0I2
+         zbH7hvRRwzJbe/TS2E4PDAa/2QyZU/p2GyjFqdfe2cZ+OAvoqLVq8xT01Pu1ZzS34blx
+         bv+AV1DBlxsmhUWiaGrOfu0EVz5IZP4gfQVUFLuDyhZHs+I6lTy8CkxyTRMRZYAOa9Xq
+         qTSg==
+X-Gm-Message-State: AOAM530S5ROLTusfQ0H1ql4klwjsfaDgcfAv7VH54MYdtyJWfKxF8m3J
+        Qw4Oztu4w7cDER3FitH+emQA3U7gC+5pFIbUL0g=
+X-Google-Smtp-Source: ABdhPJzkPqrqBp4OfozYc7EUsn04rJigqEDiiBnhB6HUDp2MhSYALix4jvYaRJNChTrVSv1EryJ3GItSwdTbO0J6Dxg=
+X-Received: by 2002:ac8:19c4:: with SMTP id s4mr3302089qtk.117.1594874522755;
+ Wed, 15 Jul 2020 21:42:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1594390602-7635-1-git-send-email-magnus.karlsson@intel.com>
- <1594390602-7635-12-git-send-email-magnus.karlsson@intel.com> <fc6e254c-5153-aa72-77d1-693e24b49848@mellanox.com>
-In-Reply-To: <fc6e254c-5153-aa72-77d1-693e24b49848@mellanox.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 16 Jul 2020 06:35:48 +0200
-Message-ID: <CAJ8uoz30f_jbtH4bM-YAxyPq2+zqC1CC3c+eQFg-ECwgkOfzSw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 11/14] xsk: add shared umem support between devices
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+References: <20200715224107.3591967-1-sdf@google.com>
+In-Reply-To: <20200715224107.3591967-1-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jul 2020 21:41:51 -0700
+Message-ID: <CAEf4Bzajc9zZM8MLhJBQ+1DgVVC8UEwVHMvgcBiePOatZ-rovQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix possible hang in sockopt_inherit
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        cristian.dumitrescu@intel.com
+        Andrii Nakryiko <andriin@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:18 PM Maxim Mikityanskiy
-<maximmi@mellanox.com> wrote:
+On Wed, Jul 15, 2020 at 3:41 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On 2020-07-10 17:16, Magnus Karlsson wrote:
-> > Add support to share a umem between different devices. This mode
-> > can be invoked with the XDP_SHARED_UMEM bind flag. Previously,
-> > sharing was only supported within the same device. Note that when
-> > sharing a umem between devices, just as in the case of sharing a
-> > umem between queue ids, you need to create a fill ring and a
-> > completion ring and tie them to the socket (with two setsockopts,
-> > one for each ring) before you do the bind with the
-> > XDP_SHARED_UMEM flag. This so that the single-producer
-> > single-consumer semantics of the rings can be upheld.
+> Andrii reported that sockopt_inherit occasionally hangs up on 5.5 kernel [0].
+> This can happen if server_thread runs faster than the main thread.
+> In that case, pthread_cond_wait will wait forever because
+> pthread_cond_signal was executed before the main thread was blocking.
+> Let's move pthread_mutex_lock up a bit to make sure server_thread
+> runs strictly after the main thread goes to sleep.
 >
-> I'm not sure if you saw my comment under v1 asking about performance.
-> Could you share what performance numbers (packet rate) you see when
-> doing forwarding with xsk_fwd? I'm interested in:
+> (Not sure why this is 5.5 specific, maybe scheduling is less
+> deterministic? But I was able to confirm that it does indeed
+> happen in a VM.)
 >
-> 1. Forwarding between two queues of the same netdev.
+> [0] https://lore.kernel.org/bpf/CAEf4BzY0-bVNHmCkMFPgObs=isUAyg-dFzGDY7QWYkmm7rmTSg@mail.gmail.com/
 >
-> 2. Forwarding between two netdevs.
->
-> 3. xdpsock -l as the baseline.
+> Reported-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
 
-Sorry for the delay Max, but it is all due to vacation. I will provide
-you with the numbers once the weather turns sour and/or the family
-gets tired of me ;-). From what I can remember, it did not scale
-perfectly linearly, instead it hit some other bottleneck, though I did
-not examine what at that time.
+Great, thanks for figuring this out! Hopefully this is it.
 
-/Magnus
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> Thanks,
-> Max
+>  tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >   net/xdp/xsk.c | 11 ++++-------
-> >   1 file changed, 4 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 05fadd9..4bf47d3 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -695,14 +695,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
-> >                       sockfd_put(sock);
-> >                       goto out_unlock;
-> >               }
-> > -             if (umem_xs->dev != dev) {
-> > -                     err = -EINVAL;
-> > -                     sockfd_put(sock);
-> > -                     goto out_unlock;
-> > -             }
-> >
-> > -             if (umem_xs->queue_id != qid) {
-> > -                     /* Share the umem with another socket on another qid */
-> > +             if (umem_xs->queue_id != qid || umem_xs->dev != dev) {
-> > +                     /* Share the umem with another socket on another qid
-> > +                      * and/or device.
-> > +                      */
-> >                       xs->pool = xp_create_and_assign_umem(xs,
-> >                                                            umem_xs->umem);
-> >                       if (!xs->pool) {
-> >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
+> index 8547ecbdc61f..ec281b0363b8 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
+> @@ -193,11 +193,10 @@ static void run_test(int cgroup_fd)
+>         if (CHECK_FAIL(server_fd < 0))
+>                 goto close_bpf_object;
+>
+> +       pthread_mutex_lock(&server_started_mtx);
+>         if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
+>                                       (void *)&server_fd)))
+>                 goto close_server_fd;
+> -
+> -       pthread_mutex_lock(&server_started_mtx);
+>         pthread_cond_wait(&server_started, &server_started_mtx);
+>         pthread_mutex_unlock(&server_started_mtx);
+>
+> --
+> 2.27.0.389.gc38d7665816-goog
 >
