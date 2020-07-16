@@ -2,76 +2,256 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA0E222124
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 13:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D83D2221AB
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 13:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgGPLKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 07:10:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30292 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgGPLKS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jul 2020 07:10:18 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GB2mfC098564;
-        Thu, 16 Jul 2020 07:10:05 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329x5yq3vf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 07:10:05 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06GB9pi0021844;
-        Thu, 16 Jul 2020 11:10:03 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 329nmyhqrm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 11:10:03 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06GB8btK59048316
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 11:08:37 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8575DAE051;
-        Thu, 16 Jul 2020 11:10:00 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F8BDAE045;
-        Thu, 16 Jul 2020 11:10:00 +0000 (GMT)
-Received: from osiris (unknown [9.171.13.43])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 16 Jul 2020 11:10:00 +0000 (GMT)
-Date:   Thu, 16 Jul 2020 13:09:58 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v2 3/4] s390/bpf: implement BPF_PROBE_MEM
-Message-ID: <20200716110958.GA8484@osiris>
-References: <20200715233301.933201-1-iii@linux.ibm.com>
- <20200715233301.933201-4-iii@linux.ibm.com>
+        id S1727030AbgGPLsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 07:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgGPLsN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:48:13 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C746C08C5C0
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 04:48:13 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h22so6755468lji.9
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 04:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=/GvE5mLubde7FdkABAeWnyMsWpw4xjTaM1e3k7MWqIA=;
+        b=jg7ezTaJ0octejEhVxfpChAgTaEQI6MYYALNlnfRCxmAkRsEg6EMtaFNCKAX4GM8+J
+         biXYT+/h29AZtBgXvf2R572PzXzkhsFxo/Fs3nKykp4dsekjR+Yc1LPDKNKw7OGjGbkX
+         zwUROrUeShTrB27hdQsclp3ww/Slcm2l3wsCk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=/GvE5mLubde7FdkABAeWnyMsWpw4xjTaM1e3k7MWqIA=;
+        b=DXpJstfSnO04HeaGlGCSam1gXBQJ0pewUHDMNI6n83cvqmRgXwzp+JYbUBuVTak5cx
+         oUWjp9VDUVxyuJuThJbg/T2B8iMpUFYafGlai92ZJMThsHBVK9xd3kmOt8UQnETFrKAH
+         7xFrnh9WhWH0ZhZBi/dI/4iXTY2gq8TWjAWs/9gcSyRdOUDiuJ4U7vdzgkI+uL1hdD8H
+         3vIr7m6X1X/viO2MTZKxhslmGa2IdOYi63G2ypaeDp7ZHwA6yLF897KOFIhDdTAAzc/7
+         qE9w6wvxfdBqYNn+Ou6Y6eudhh6wKCWs+Q+m0VjzYy04V4eLol2Xz5bbfmpsY3n51pUR
+         Wq3g==
+X-Gm-Message-State: AOAM530V9tLmrk125BEcQNbFttUaGYkfspOUZ3w8u0Lcbl7FtFZAi5xl
+        qPUZO/spOMN5t5GT5DiBEblPww==
+X-Google-Smtp-Source: ABdhPJxVQNiZterynrx2heHWJx0H3l7YAy9VRzzb1g5CjHd3YIGbnALJxgXOhIhiLFfYFwbDZlFTrw==
+X-Received: by 2002:a2e:9ac4:: with SMTP id p4mr1929744ljj.143.1594900091536;
+        Thu, 16 Jul 2020 04:48:11 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id d22sm340396lfs.26.2020.07.16.04.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 04:48:10 -0700 (PDT)
+References: <20200710173123.427983-1-jakub@cloudflare.com> <c98aaa5e-9347-c23f-cfa6-e267f2485c5b@fb.com> <87a700y3yb.fsf@cloudflare.com> <7c27726c-9bba-8d7c-55b4-69d7af287382@fb.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf] bpf: Shift and mask loads narrower than context field size
+In-reply-to: <7c27726c-9bba-8d7c-55b4-69d7af287382@fb.com>
+Date:   Thu, 16 Jul 2020 13:48:09 +0200
+Message-ID: <878sfjy93a.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715233301.933201-4-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_05:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=820 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 suspectscore=1 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007160088
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 01:33:00AM +0200, Ilya Leoshkevich wrote:
-> This is a s390 port of x86 commit 3dec541b2e63 ("bpf: Add support for BTF
-> pointers to x86 JIT").
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/s390/net/bpf_jit_comp.c | 139 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 138 insertions(+), 1 deletion(-)
+On Wed, Jul 15, 2020 at 10:59 PM CEST, Yonghong Song wrote:
+> On 7/15/20 12:26 PM, Jakub Sitnicki wrote:
+>> On Wed, Jul 15, 2020 at 08:44 AM CEST, Yonghong Song wrote:
+>>> On 7/10/20 10:31 AM, Jakub Sitnicki wrote:
 
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+[...]
+
+>>>> The "size < target_size" check is left in place to cover the case when a
+>>>> context field is narrower than its target field, even if we might not have
+>>>> such case now. (It would have to be a u32 context field backed by a u64
+>>>> target field, with context fields all being 4-bytes or wider.)
+>>>>
+>>>> Going back to the example, with the fix in place, the upper half load from
+>>>> ctx->ip_protocol yields zero:
+>>>>
+>>>>     int reuseport_narrow_half(struct sk_reuseport_md * ctx):
+>>>>     ; int reuseport_narrow_half(struct sk_reuseport_md *ctx)
+>>>>        0: (b4) w0 = 0
+>>>>     ; if (half[0] == 0xaaaa)
+>>>>        1: (79) r2 = *(u64 *)(r1 +8)
+>>>>        2: (69) r2 = *(u16 *)(r2 +924)
+>>>>        3: (54) w2 &= 65535
+>>>>     ; if (half[0] == 0xaaaa)
+>>>>        4: (16) if w2 == 0xaaaa goto pc+7
+>>>>     ; if (half[1] == 0xbbbb)
+>>>>        5: (79) r1 = *(u64 *)(r1 +8)
+>>>>        6: (69) r1 = *(u16 *)(r1 +924)
+>>>
+>>> The load is still from offset 0, 2 bytes with upper 48 bits as 0.
+>>
+>> Yes, this is how narrow loads currently work, right? It is not specific
+>> to the case I'm fixing.
+>>
+>> To give an example - if you do a 1-byte load at offset 1, it will load
+>> the value from offset 0, and shift it right by 1 byte. So it is expected
+>> that the load is always from offset 0 with current implementation.
+>
+> Yes, the load is always from offset 0. The confusion part is
+> it load offset 0 with 2 bytes and then right shifting 2 bytes
+> to get 0...
+
+Right, I see how silly is the generated instruction sequence. I guess
+I've accepted how <prog_type>_convert_ctx_access functions emit loads
+and didn't stop and question this part before.
+
+>> SEC("sk_reuseport/narrow_byte")
+>> int reuseport_narrow_byte(struct sk_reuseport_md *ctx)
+>> {
+>> 	__u8 *byte;
+>>
+>> 	byte = (__u8 *)&ctx->ip_protocol;
+>> 	if (byte[0] == 0xaa)
+>> 		return SK_DROP;
+>> 	if (byte[1] == 0xbb)
+>> 		return SK_DROP;
+>> 	if (byte[2] == 0xcc)
+>> 		return SK_DROP;
+>> 	if (byte[3] == 0xdd)
+>> 		return SK_DROP;
+>> 	return SK_PASS;
+>> }
+>>
+>> int reuseport_narrow_byte(struct sk_reuseport_md * ctx):
+>> ; int reuseport_narrow_byte(struct sk_reuseport_md *ctx)
+>>     0: (b4) w0 = 0
+>> ; if (byte[0] == 0xaa)
+>>     1: (79) r2 = *(u64 *)(r1 +8)
+>>     2: (69) r2 = *(u16 *)(r2 +924)
+>>     3: (54) w2 &= 255
+>> ; if (byte[0] == 0xaa)
+>>     4: (16) if w2 == 0xaa goto pc+17
+>> ; if (byte[1] == 0xbb)
+>>     5: (79) r2 = *(u64 *)(r1 +8)
+>>     6: (69) r2 = *(u16 *)(r2 +924)
+>>     7: (74) w2 >>= 8
+>>     8: (54) w2 &= 255
+>> ; if (byte[1] == 0xbb)
+>>     9: (16) if w2 == 0xbb goto pc+12
+>> ; if (byte[2] == 0xcc)
+>>    10: (79) r2 = *(u64 *)(r1 +8)
+>>    11: (69) r2 = *(u16 *)(r2 +924)
+>>    12: (74) w2 >>= 16
+>>    13: (54) w2 &= 255
+>> ; if (byte[2] == 0xcc)
+>>    14: (16) if w2 == 0xcc goto pc+7
+>> ; if (byte[3] == 0xdd)
+>>    15: (79) r1 = *(u64 *)(r1 +8)
+>>    16: (69) r1 = *(u16 *)(r1 +924)
+>>    17: (74) w1 >>= 24
+>>    18: (54) w1 &= 255
+>>    19: (b4) w0 = 1
+>> ; if (byte[3] == 0xdd)
+>>    20: (56) if w1 != 0xdd goto pc+1
+>>    21: (b4) w0 = 0
+>> ; }
+>>    22: (95) exit
+>>
+>>>
+>>>>        7: (74) w1 >>= 16
+>>>
+>>> w1 will be 0 now. so this will work.
+>>>
+>>>>        8: (54) w1 &= 65535
+>>>
+>>> For the above insns 5-8, verifier, based on target information can
+>>> directly generate w1 = 0 since:
+>>>    . target kernel field size is 2, ctx field size is 4.
+>>>    . user tries to access offset 2 size 2.
+>>>
+>>> Here, we need to decide whether we permits user to do partial read beyond of
+>>> kernel narrow field or not (e.g., this example)? I would
+>>> say yes, but Daniel or Alexei can provide additional comments.
+>>>
+>>> If we allow such accesses, I would like verifier to generate better
+>>> code as I illustrated in the above. This can be implemented in
+>>> verifier itself with target passing additional kernel field size
+>>> to the verifier. The target already passed the ctx field size back
+>>> to the verifier.
+>>
+>> Keep in mind that the BPF user is writing their code under the
+>> assumption that the context field has 4 bytes. IMHO it's reasonable to
+>> expect that I can load 2 bytes at offset of 2 from a 4 byte field.
+>>
+>> Restricting it now to loads below the target field size, which is
+>> unknown to the user, would mean rejecting programs that are working
+>> today. Even if they are getting funny values.
+>>
+>> I think implementing what you suggest is doable without major
+>> changes. We have load size, target field size, and context field size at
+>> hand in convert_ctx_accesses(), so it seems like a matter of adding an
+>> 'if' branch to handle better the case when we know the end result must
+>> be 0. I'll give it a try.
+>
+> Sounds good. The target_size is returned in convert_ctx_access(), which
+> is too late as the verifier already generated load instructions. You need to get
+> it earlier in is_valid_access().
+
+I have a feeling that I'm not following what you have in mind.
+
+True, target_size is only known after convert_ctx_access generated
+instructions. At this point, if we want to optimize the narrow loads
+that must return 0, we can pop however many instructions
+convert_ctx_access appended to insn_buf and emit BPF_MOV32/64_IMM.
+
+However, it sounds a bit more complex than what I hoped for initially,
+so I'm starting to doubt the value. Considering that narrow loads at an
+offset that matches or exceeds target field size must be a corner case,
+if the current "broken" behavior went unnoticed so far.
+
+I'll need to play with the code and see how it turns out. But for the
+moment please consider acking/nacking this one, as a simple way to fix
+the issue targeted at 'bpf' branch and stable kernels.
+
+>
+>>
+>> But I do want to empahsize that I still think the fix in current form is
+>> correct, or at least not worse than what we have already in place narrow
+>> loads.
+>
+> I did agree that the fix in this patch is correct. It is just that we
+> could do better to fix this problem.
+
+I agree with your sentiment. Sorry if I got too defensive there.
+
+>
+>>
+>>>
+>>>>        9: (b4) w0 = 1
+>>>>     ; if (half[1] == 0xbbbb)
+>>>>       10: (56) if w1 != 0xbbbb goto pc+1
+>>>>       11: (b4) w0 = 0
+>>>>     ; }
+>>>>       12: (95) exit
+>>>>
+>>>> Fixes: f96da09473b5 ("bpf: simplify narrower ctx access")
+>>>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>>>> ---
+>>>>    kernel/bpf/verifier.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>> index 94cead5a43e5..1c4d0e24a5a2 100644
+>>>> --- a/kernel/bpf/verifier.c
+>>>> +++ b/kernel/bpf/verifier.c
+>>>> @@ -9760,7 +9760,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>>>>    			return -EINVAL;
+>>>>    		}
+>>>>    -		if (is_narrower_load && size < target_size) {
+>>>> +		if (is_narrower_load || size < target_size) {
+>>>>    			u8 shift = bpf_ctx_narrow_access_offset(
+>>>>    				off, size, size_default) * 8;
+>>>>    			if (ctx_field_size <= 4) {
+>>>>
