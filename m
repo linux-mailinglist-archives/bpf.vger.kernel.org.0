@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19EA22223D
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 14:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594E422225C
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 14:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgGPMRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 08:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S1728188AbgGPMcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 08:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728096AbgGPMRi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:17:38 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834B3C08C5C0
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:17:38 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f5so6853337ljj.10
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:17:38 -0700 (PDT)
+        with ESMTP id S1727990AbgGPMct (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 08:32:49 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BBDC08C5C0
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:32:49 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id z24so6911090ljn.8
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 05:32:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=tscWjFcr/AdRUQgnIH2j5TMqV/ph1Tniwa7qjpNU7zU=;
-        b=yW3vYZAvEURuyXC+7AoFhhYT8ibwcm5EmWW9YQW0IIzF9V9RCC06cY4p8l5oVCI3J6
-         rV54te2CZsxX0GcqSmtZi30tbp2g38+FaRrMrs9Us5bnOdNzQObPEnPFTNlYZnsaxV+b
-         UVC8fWrzXZ5VSMSWy5+Ww6wdHdlHSmsS/3i1Q=
+        bh=21RA+e4Ong/tEdD67nzo1deHFqPTX09b755P7erQrVw=;
+        b=q5JqW/m2Mm0DQZPnCTMK4hceDumfvX36K/sUPOlIJ3Ztu0krN7gT98EVc9kWyZFlgi
+         WcRA30uFbFfvJ4keeMcS54Qf7G6rHBEO000FyaVf+9QGPcu+Q6GmsLDHTY3rRVQtqpem
+         6NcCwGBjVNgV1I48rk4K+7z5oQRxWXTZU/Swo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=tscWjFcr/AdRUQgnIH2j5TMqV/ph1Tniwa7qjpNU7zU=;
-        b=EcDdULLQl1HG8HGe4/seGDx5EyXXkl558Xpw2DEPZJfUgCZkMAiCB9kVT/g85xc4tw
-         eCQzg98ZBaluoqcw7KvKuSePAq4fDSZDwjVC1QSYA5EqXtXOMpMJXnkIGFqCkHzcakUg
-         01+c2Ul5LdF+7qGDhFk6P0EoZqrBHlgOqVVGHzM29uLNxykqRC5YfDQln4uvPsjJdffS
-         dQ+NgBg3J5WM5zzfIDk8HPbJT/SxTOa3jC4ujDJZIFP92Ic6Jy8uAUCVrdE2fEyDkIgL
-         t7FrzzveCw64O5dcXpYUxEJSPMsGjRhiLLp5Z2nX+sQwtJ8u/Ks4L3IuFMI9HSL3KUh9
-         qN8A==
-X-Gm-Message-State: AOAM5317usFant7tY1fhiRB//0XAUz1j9N/JbEwBLUSagBEmdlwY3Dz8
-        qyFF7WK7yQqaS/+xa+kvQqiJww==
-X-Google-Smtp-Source: ABdhPJxqWgGyQoj+nCEkyDTqOzwSP09fMuf9WwjDRBm3afE6PoJaTuGhPMHsGh3o0//OnnSg7UOhzw==
-X-Received: by 2002:a2e:780e:: with SMTP id t14mr2000146ljc.444.1594901856795;
-        Thu, 16 Jul 2020 05:17:36 -0700 (PDT)
+        bh=21RA+e4Ong/tEdD67nzo1deHFqPTX09b755P7erQrVw=;
+        b=jlpKIzQRIyGPUHnbACtlOpAlas84r9h9weX0OatGH9b6Xmt+n7M9o0xngQeKiXi1MV
+         MUOEJasY/KemoCmzMgBFMCwjNZQ2/fa2NfwPMEPD3dApTZeDcw8/JLZLqrr+KDkUFed/
+         CTjgR9sCPrwmmr/YtOXqFZ9keNYD+zJMI79wcaxhzHd9N7C9kykzTeuZNzgPxG6SJw2M
+         stc3fEZFloVODXmRZECufk83ATMc+6KaTpZlain8gcI1HZTGqFi6o50JxGiarA3iO+SE
+         KSDyy1DZ4TXh+TAt/Bt2sW9JWahGnby4HsS5UvoRwGMigrSw3H8Iv4qA0KBwr/WWoniz
+         Wq6g==
+X-Gm-Message-State: AOAM530lgAbbF7Otw27gnnLyfindI1rizk5IUNnLisiSy/jDLsdwI5v/
+        1Wc0GOdo3TFs7zVcoVFlnciT/g==
+X-Google-Smtp-Source: ABdhPJwQVq+YukWG7I51hGixTG2HbtBNWskpJWU/vmOkgH8wJskFdoy3gEPPbm8BLGClETOJ/bWeFQ==
+X-Received: by 2002:a2e:9f4d:: with SMTP id v13mr1872162ljk.122.1594902767506;
+        Thu, 16 Jul 2020 05:32:47 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id y26sm1017207ljk.26.2020.07.16.05.17.35
+        by smtp.gmail.com with ESMTPSA id i10sm1017855ljg.80.2020.07.16.05.32.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 05:17:36 -0700 (PDT)
-References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-3-jakub@cloudflare.com> <CAEf4BzZd30RmiZaGvDju9X0jybkcdhgOk71fbcdySeJdPzmrAQ@mail.gmail.com>
+        Thu, 16 Jul 2020 05:32:46 -0700 (PDT)
+References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-5-jakub@cloudflare.com> <CAEf4BzY0Gc_FH=KUWY3xz6qG8yk+0U0mjXcAx7+39tWt_kQnGQ@mail.gmail.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
@@ -55,10 +55,10 @@ Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marek Majkowski <marek@cloudflare.com>
-Subject: Re: [PATCH bpf-next v4 02/16] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
-In-reply-to: <CAEf4BzZd30RmiZaGvDju9X0jybkcdhgOk71fbcdySeJdPzmrAQ@mail.gmail.com>
-Date:   Thu, 16 Jul 2020 14:17:35 +0200
-Message-ID: <877dv3y7q8.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v4 04/16] inet: Run SK_LOOKUP BPF program on socket lookup
+In-reply-to: <CAEf4BzY0Gc_FH=KUWY3xz6qG8yk+0U0mjXcAx7+39tWt_kQnGQ@mail.gmail.com>
+Date:   Thu, 16 Jul 2020 14:32:45 +0200
+Message-ID: <875zany70y.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -66,40 +66,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:41 AM CEST, Andrii Nakryiko wrote:
+On Thu, Jul 16, 2020 at 04:23 AM CEST, Andrii Nakryiko wrote:
 > On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >>
->> Add a new program type BPF_PROG_TYPE_SK_LOOKUP with a dedicated attach type
->> BPF_SK_LOOKUP. The new program kind is to be invoked by the transport layer
->> when looking up a listening socket for a new connection request for
->> connection oriented protocols, or when looking up an unconnected socket for
->> a packet for connection-less protocols.
+>> Run a BPF program before looking up a listening socket on the receive path.
+>> Program selects a listening socket to yield as result of socket lookup by
+>> calling bpf_sk_assign() helper and returning SK_PASS code. Program can
+>> revert its decision by assigning a NULL socket with bpf_sk_assign().
 >>
->> When called, SK_LOOKUP BPF program can select a socket that will receive
->> the packet. This serves as a mechanism to overcome the limits of what
->> bind() API allows to express. Two use-cases driving this work are:
+>> Alternatively, BPF program can also fail the lookup by returning with
+>> SK_DROP, or let the lookup continue as usual with SK_PASS on return, when
+>> no socket has not been selected with bpf_sk_assign(). Other return values
+>
+> you probably meant "no socket has been selected"?
+
+Yes, a typo. Will fix.
+
+>
+>> are treated the same as SK_DROP.
+>
+>
+> Why not enforce it instead? Check check_return_code() in verifier.c,
+> it's trivial to do it for SK_LOOKUP.
+
+That's a game changer D-: Thank you. This will simplify the prog
+runners.
+
+>
+>
 >>
->>  (1) steer packets destined to an IP range, on fixed port to a socket
+>> This lets the user match packets with listening sockets freely at the last
+>> possible point on the receive path, where we know that packets are destined
+>> for local delivery after undergoing policing, filtering, and routing.
 >>
->>      192.0.2.0/24, port 80 -> NGINX socket
+>> With BPF code selecting the socket, directing packets destined to an IP
+>> range or to a port range to a single socket becomes possible.
 >>
->>  (2) steer packets destined to an IP address, on any port to a socket
+>> In case multiple programs are attached, they are run in series in the order
+>> in which they were attached. The end result is determined from return codes
+>> of all the programs according to following rules:
 >>
->>      198.51.100.1, any port -> L7 proxy socket
->>
->> In its run-time context program receives information about the packet that
->> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
->> address 4-tuple. Context can be further extended to include ingress
->> interface identifier.
->>
->> To select a socket BPF program fetches it from a map holding socket
->> references, like SOCKMAP or SOCKHASH, and calls bpf_sk_assign(ctx, sk, ...)
->> helper to record the selection. Transport layer then uses the selected
->> socket as a result of socket lookup.
->>
->> This patch only enables the user to attach an SK_LOOKUP program to a
->> network namespace. Subsequent patches hook it up to run on local delivery
->> path in ipv4 and ipv6 stacks.
+>>  1. If any program returned SK_PASS and selected a valid socket, the socket
+>>     is used as result of socket lookup.
+>>  2. If more than one program returned SK_PASS and selected a socket,
+>>     last selection takes effect.
+>>  3. If any program returned SK_DROP or an invalid return code, and no
+>>     program returned SK_PASS and selected a socket, socket lookup fails
+>>     with -ECONNREFUSED.
+>>  4. If all programs returned SK_PASS and none of them selected a socket,
+>>     socket lookup continues to htable-based lookup.
 >>
 >> Suggested-by: Marek Majkowski <marek@cloudflare.com>
 >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
@@ -107,116 +122,109 @@ On Thu, Jul 16, 2020 at 03:41 AM CEST, Andrii Nakryiko wrote:
 >>
 >> Notes:
 >>     v4:
->>     - Reintroduce narrow load support for most BPF context fields. (Yonghong)
->>     - Fix null-ptr-deref in BPF context access when IPv6 address not set.
->>     - Unpack v4/v6 IP address union in bpf_sk_lookup context type.
->>     - Add verifier support for ARG_PTR_TO_SOCKET_OR_NULL.
->>     - Allow resetting socket selection with bpf_sk_assign(ctx, NULL).
->>     - Document that bpf_sk_assign accepts a NULL socket.
+>>     - Reduce BPF sk_lookup prog return codes to SK_PASS/SK_DROP. (Lorenz)
+>
+> your description above still assumes prog can return something besides
+> SK_PASS and SK_DROP?
+
+I should have written 'reduce allowed prog return codes'.
+
+>
+>>     - Default to drop & warn on illegal return value from BPF prog. (Lorenz)
+>>     - Rename netns_bpf_attach_type_enable/disable to _need/unneed. (Lorenz)
+>>     - Export bpf_sk_lookup_enabled symbol for CONFIG_IPV6=m (kernel test robot)
+>>     - Invert return value from bpf_sk_lookup_run_v4 to true on skip reuseport.
+>>     - Move dedicated prog_array runner close to its callers in filter.h.
 >>
 >>     v3:
->>     - Allow bpf_sk_assign helper to replace previously selected socket only
->>       when BPF_SK_LOOKUP_F_REPLACE flag is set, as a precaution for multiple
->>       programs running in series to accidentally override each other's verdict.
->>     - Let BPF program decide that load-balancing within a reuseport socket group
->>       should be skipped for the socket selected with bpf_sk_assign() by passing
->>       BPF_SK_LOOKUP_F_NO_REUSEPORT flag. (Martin)
->>     - Extend struct bpf_sk_lookup program context with an 'sk' field containing
->>       the selected socket with an intention for multiple attached program
->>       running in series to see each other's choices. However, currently the
->>       verifier doesn't allow checking if pointer is set.
->>     - Use bpf-netns infra for link-based multi-program attachment. (Alexei)
->>     - Get rid of macros in convert_ctx_access to make it easier to read.
->>     - Disallow 1-,2-byte access to context fields containing IP addresses.
+>>     - Use a static_key to minimize the hook overhead when not used. (Alexei)
+>>     - Adapt for running an array of attached programs. (Alexei)
+>>     - Adapt for optionally skipping reuseport selection. (Martin)
 >>
->>     v2:
->>     - Make bpf_sk_assign reject sockets that don't use RCU freeing.
->>       Update bpf_sk_assign docs accordingly. (Martin)
->>     - Change bpf_sk_assign proto to take PTR_TO_SOCKET as argument. (Martin)
->>     - Fix broken build when CONFIG_INET is not selected. (Martin)
->>     - Rename bpf_sk_lookup{} src_/dst_* fields remote_/local_*. (Martin)
->>     - Enforce BPF_SK_LOOKUP attach point on load & attach. (Martin)
+>>  include/linux/filter.h     | 102 +++++++++++++++++++++++++++++++++++++
+>>  kernel/bpf/net_namespace.c |  32 +++++++++++-
+>>  net/core/filter.c          |   3 ++
+>>  net/ipv4/inet_hashtables.c |  31 +++++++++++
+>>  4 files changed, 167 insertions(+), 1 deletion(-)
 >>
->>  include/linux/bpf-netns.h  |   3 +
->>  include/linux/bpf.h        |   1 +
->>  include/linux/bpf_types.h  |   2 +
->>  include/linux/filter.h     |  17 ++++
->>  include/uapi/linux/bpf.h   |  77 ++++++++++++++++
->>  kernel/bpf/net_namespace.c |   5 ++
->>  kernel/bpf/syscall.c       |   9 ++
->>  kernel/bpf/verifier.c      |  10 ++-
->>  net/core/filter.c          | 179 +++++++++++++++++++++++++++++++++++++
->>  scripts/bpf_helpers_doc.py |   9 +-
->>  10 files changed, 308 insertions(+), 4 deletions(-)
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index 380746f47fa1..b9ad0fdabca5 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -1295,4 +1295,106 @@ struct bpf_sk_lookup_kern {
+>>         bool            no_reuseport;
+>>  };
 >>
->
-> Looks good, two suggestions below.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> [...]
->
+>> +extern struct static_key_false bpf_sk_lookup_enabled;
 >> +
->> +static const struct bpf_func_proto *
->> +sk_lookup_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->> +{
->> +       switch (func_id) {
->> +       case BPF_FUNC_sk_assign:
->> +               return &bpf_sk_lookup_assign_proto;
->> +       case BPF_FUNC_sk_release:
->> +               return &bpf_sk_release_proto;
->> +       default:
+>> +/* Runners for BPF_SK_LOOKUP programs to invoke on socket lookup.
+>> + *
+>> + * Allowed return values for a BPF SK_LOOKUP program are SK_PASS and
+>> + * SK_DROP. Any other return value is treated as SK_DROP. Their
+>> + * meaning is as follows:
+>> + *
+>> + *  SK_PASS && ctx.selected_sk != NULL: use selected_sk as lookup result
+>> + *  SK_PASS && ctx.selected_sk == NULL: continue to htable-based socket lookup
+>> + *  SK_DROP                           : terminate lookup with -ECONNREFUSED
+>> + *
+>> + * This macro aggregates return values and selected sockets from
+>> + * multiple BPF programs according to following rules:
+>> + *
+>> + *  1. If any program returned SK_PASS and a non-NULL ctx.selected_sk,
+>> + *     macro result is SK_PASS and last ctx.selected_sk is used.
+>> + *  2. If any program returned non-SK_PASS return value,
+>> + *     macro result is the last non-SK_PASS return value.
+>> + *  3. Otherwise result is SK_PASS and ctx.selected_sk is NULL.
+>> + *
+>> + * Caller must ensure that the prog array is non-NULL, and that the
+>> + * array as well as the programs it contains remain valid.
+>> + */
+>> +#define BPF_PROG_SK_LOOKUP_RUN_ARRAY(array, ctx, func)                 \
+>> +       ({                                                              \
+>> +               struct bpf_sk_lookup_kern *_ctx = &(ctx);               \
+>> +               struct bpf_prog_array_item *_item;                      \
+>> +               struct sock *_selected_sk;                              \
+>> +               struct bpf_prog *_prog;                                 \
+>> +               u32 _ret, _last_ret;                                    \
+>> +               bool _no_reuseport;                                     \
+>> +                                                                       \
+>> +               migrate_disable();                                      \
+>> +               _last_ret = SK_PASS;                                    \
+>> +               _selected_sk = NULL;                                    \
+>> +               _no_reuseport = false;                                  \
 >
-> Wouldn't it be useful to have functions like
-> get_current_comm/get_current_pid_tgid/perf_event_output as well?
-> Similarly how they were added to a bunch of other socket-related BPF
-> program types recently?
+> these three could be moved before migrate_disable(), or even better
+> just initialize corresponding variables above?
 
-I can certainly see value in perf_event_output as a way to log/trace
-prog decisions. Less so for helpers that provide access to current task,
-as the prog usually will be called in softirq context.
-
-bpf_get_socket_cookie and bpf_get_netns_cookie have been on my mind, but
-first they need to be taught to accept ARG_PTR_TO_SOCKET.
-
-That is to say, I expected the list of allowed helpers to grow.
-
->
->
->> +               return bpf_base_func_proto(func_id);
->> +       }
->> +}
->> +
->
-> [...]
->
->> +       case offsetof(struct bpf_sk_lookup, local_ip4):
->> +               *insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
->> +                                     bpf_target_off(struct bpf_sk_lookup_kern,
->> +                                                    v4.daddr, 4, target_size));
->> +               break;
->> +
->> +       case bpf_ctx_range_till(struct bpf_sk_lookup,
->> +                               remote_ip6[0], remote_ip6[3]):
->> +#if IS_ENABLED(CONFIG_IPV6)
->
-> nit: if you added {} to this case block, you could have combined the
-> above `int off` section with this one.
-
-Nifty. Thanks.
+I was torn between keeping all info needed to read through the loop
+close to it and keeping the critical section tight. I can move it up.
 
 >
->> +               off = si->off;
->> +               off -= offsetof(struct bpf_sk_lookup, remote_ip6[0]);
->> +               off += bpf_target_off(struct in6_addr, s6_addr32[0], 4, target_size);
->> +               *insn++ = BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg, si->src_reg,
->> +                                     offsetof(struct bpf_sk_lookup_kern, v6.saddr));
->> +               *insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 1);
->> +               *insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg, off);
->> +#else
->> +               *insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
->> +#endif
->> +               break;
+>
+>> +               _item = &(array)->items[0];                             \
+>> +               while ((_prog = READ_ONCE(_item->prog))) {              \
+>> +                       /* restore most recent selection */             \
+>> +                       _ctx->selected_sk = _selected_sk;               \
+>> +                       _ctx->no_reuseport = _no_reuseport;             \
+>> +                                                                       \
+>> +                       _ret = func(_prog, _ctx);                       \
+>> +                       if (_ret == SK_PASS) {                          \
+>> +                               /* remember last non-NULL socket */     \
+>> +                               if (_ctx->selected_sk) {                \
+>> +                                       _selected_sk = _ctx->selected_sk;       \
+>> +                                       _no_reuseport = _ctx->no_reuseport;     \
+>> +                               }                                       \
+>> +                       } else {                                        \
+>> +                               /* remember last non-PASS ret code */   \
+>> +                               _last_ret = _ret;                       \
+>> +                       }                                               \
+>> +                       _item++;                                        \
+>> +               }                                                       \
+>> +               _ctx->selected_sk = _selected_sk;                       \
+>> +               _ctx->no_reuseport = _no_reuseport;                     \
+>> +               migrate_enable();                                       \
+>> +               _ctx->selected_sk ? SK_PASS : _last_ret;                \
+>> +        })
 >> +
 >
 > [...]
