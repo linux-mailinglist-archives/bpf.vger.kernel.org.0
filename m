@@ -2,179 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987B22219D7
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 04:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0108221A79
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 05:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGPC0J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 22:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S1727075AbgGPDDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 23:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgGPC0J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 22:26:09 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B364C061755;
-        Wed, 15 Jul 2020 19:26:09 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id u12so3699674qth.12;
-        Wed, 15 Jul 2020 19:26:09 -0700 (PDT)
+        with ESMTP id S1727034AbgGPDDH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:03:07 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECADC061755;
+        Wed, 15 Jul 2020 20:03:07 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id o3so3806088ilo.12;
+        Wed, 15 Jul 2020 20:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kjvl6rFGkk9g9nxLnI4XOxymN+I5ew8fyR92hePQTR8=;
-        b=RXhiyNA+0OxuYMJrEw6B4uGMnNcX7+7QCTKEolilVr/e7wNWbkdscev14WHOSBHMkt
-         6MNk7uijNpKfxlkO6sxTwJwsqQOUcKyNXo7jxPjTTPj30mPid5CnkP/sA3vm5okmcOUq
-         KXhLNu6q/AC6Ei4wbhtkoAK+LCR1I6dQg89PErMgAuuI+q6XbZ3tBQS9/eCt46N3bGgZ
-         PrS/YR9CIQB3fP0mcxcrJ2xiUs3WQyGJOO4YG6lSte4ZZvk9tOohxGuNxK69mYQGNkJC
-         ioMd1gdc3jXsg+wRyltMEqfBnqduVS5YmK7w+/dk5pbtPQnlKkCjvMa3WNvDpf9D5dbF
-         2BbA==
+         :cc:content-transfer-encoding;
+        bh=t+Wlsj1C9vRBcKrQbvPaRIrUEHfK7a1ao3aLrAXTh/w=;
+        b=s20nivLlSY95WcxuyJxRdfKwLKTl3k6wFTw6Uyx+GAPhASxCKSxkFi79eP207h30kt
+         f984HzvnURD8itmAG0AoCFGR/NQciB6sXve2O4eUnj27GpzMvXQH1qcCCDkxtQ9+6XHb
+         lIHwC8iAhf8owfKJ5o/DgGrx43dqYEDB21CjOcN+M/GOpNL9A0HQqXfqqhcyyYwSBONU
+         On22jPOcfmOx6h4yhrOKr8KHOzrik1/5OysRquTGlqgz7RJXBfPny15eERpjkKUxIzAM
+         NSwTZPHW7UmQHFbnfkzsJVaGE60RblAGujZPGbTnJtQrxSMNeZDnyhuuWKvOiROp6Uju
+         9L3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kjvl6rFGkk9g9nxLnI4XOxymN+I5ew8fyR92hePQTR8=;
-        b=U5823ZZH9PmHvPlkvXdklNK3IJANsNdUFB2eJcgq3PWrbuu35jAGUJioBTt5DKHhx/
-         9+8dJRpbItOzN4166wtiYDMBs+MPiraAcj80HNx8cWE/5awI213trXrO1xi0UkMS63EK
-         JIwAUOuVps53+aZ709m5R5yPv3kFyL2AB/W9QcWiqFD3w5Jj9eXJzb4Jfd6ZqNvsJm3E
-         zFDOlXI4vGLx8rp0NG4s1fVefIJidrGnwg2LYFtcYSjuaXaBMCZlRrsOsz8ENUMP+Ahm
-         3zkv3M8q1u7OzJWioigh5+x7LePbCxiRAirp8pLUGcgjlJvCvxmhzEumoXu6tCVvHLe5
-         L0/Q==
-X-Gm-Message-State: AOAM531zfVkWggDfrp7gUQkpZRQcarbqbQWYgqNIjQzeOyJfKfAfgGfl
-        gjT+uQ+dTe90o+AI8TDxZL61nblxCUbA1Vq9LmY=
-X-Google-Smtp-Source: ABdhPJznZEqer5Ex/ztjd1B3AG7F9PlzYwNkP8ocA82vubjoB2jHvw544ilqCfscT4rqGe3aDS2ypdRUjkyEPlT3KJ0=
-X-Received: by 2002:ac8:1991:: with SMTP id u17mr2828869qtj.93.1594866368439;
- Wed, 15 Jul 2020 19:26:08 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t+Wlsj1C9vRBcKrQbvPaRIrUEHfK7a1ao3aLrAXTh/w=;
+        b=MxoDI9zXRLd21aU+mbvP0WsmIqOMAbpoj2NrMpshpeLcSM9icasR3dOnjIVhKYVsb7
+         nDUsey+O48TfhMsYvnczkZgf7LAU6xmb7giBkgBUK3GVMHKwNpTf6eTRByJR8rP1jN7V
+         u9xOukrNrlrsRX9OR2LW3+KP8G5Jm1VrggD1JC2QOnRZ4xpxnpnnYFijH8ivCgUJboPz
+         Su4pvQThDAU3wxukLCjsQbYThp5xaxiJ37NqUys3bdBrl/I3DKPTLyItljIh/xewMOwq
+         wi+p9/vJzYQ1zcHubMeyIYD1U2qrj5PB2Y2tDXGaDuKqWNzblW3RHaWLIujQ+82DlIx8
+         CJYA==
+X-Gm-Message-State: AOAM530USrxWlEN0BsugfO+I765hDb4NEIHQ2E8J64UHq8mEG9plNAFt
+        n2ctBu/UKeimHy4T7M1U5PEXnXJArlXp56LWQ7s=
+X-Google-Smtp-Source: ABdhPJyf7yVwHxVF9WfRgDUm24zkGcJOdZ7B98X8cDav/AVzEfZPS4Dd2dULBymJw2SpBCoUyzCg2BxUFbhh9PSfNKA=
+X-Received: by 2002:a92:2802:: with SMTP id l2mr2545080ilf.169.1594868586798;
+ Wed, 15 Jul 2020 20:03:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200713174654.642628-1-jakub@cloudflare.com>
-In-Reply-To: <20200713174654.642628-1-jakub@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jul 2020 19:25:57 -0700
-Message-ID: <CAEf4Bza0o1km866baqy5DErZGR_BbHrjGX+AP7+p4V-nSrN7bQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 00/16] Run a BPF program on socket lookup
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+References: <20200715051214.28099-1-Tony.Ambardar@gmail.com> <58fadc96-2083-a043-9ef3-da72ad792324@isovalent.com>
+In-Reply-To: <58fadc96-2083-a043-9ef3-da72ad792324@isovalent.com>
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Wed, 15 Jul 2020 20:02:55 -0700
+Message-ID: <CAPGftE86utvC+J+yoXCNU56ibJ03HwV60p0opTkxY7qN5Gtk+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: use only nftw for file tree parsing
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Wed, 15 Jul 2020 at 10:35, Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Dependencies
-> ============
+> 2020-07-14 22:12 UTC-0700 ~ Tony Ambardar <tony.ambardar@gmail.com>
+> > The bpftool sources include code to walk file trees, but use multiple
+> > frameworks to do so: nftw and fts. While nftw conforms to POSIX/SUSv3 a=
+nd
+> > is widely available, fts is not conformant and less common, especially =
+on
+> > non-glibc systems. The inconsistent framework usage hampers maintenance
+> > and portability of bpftool, in particular for embedded systems.
+> >
+> > Standardize usage by rewriting one fts-based function to use nftw. This
+> > change allows building bpftool against musl for OpenWrt.
+> >
+> > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 >
-> This patch series depends on:
->
-> 1. 'bpf-multi-prog-prep' series in 'bpf' [0]
->    (commit 951f38cf0835 ("Merge branch 'bpf-multi-prog-prep'"))
-> 2. "bpf: Shift and mask loads narrower than context field size" patch
->    https://lore.kernel.org/bpf/20200710173123.427983-1-jakub@cloudflare.com/
->
-
-[...]
-
->
-> Overview
-> ========
->
-> This series proposes a new BPF program type named BPF_PROG_TYPE_SK_LOOKUP,
-> or BPF sk_lookup for short.
->
-> BPF sk_lookup program runs when transport layer is looking up a listening
-> socket for a new connection request (TCP), or when looking up an
-> unconnected socket for a packet (UDP).
->
-> This serves as a mechanism to overcome the limits of what bind() API allows
-> to express. Two use-cases driving this work are:
->
->  (1) steer packets destined to an IP range, fixed port to a single socket
->
->      192.0.2.0/24, port 80 -> NGINX socket
->
->  (2) steer packets destined to an IP address, any port to a single socket
->
->      198.51.100.1, any port -> L7 proxy socket
->
-> In its context, program receives information about the packet that
-> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
-> address 4-tuple.
->
-> To select a socket BPF program fetches it from a map holding socket
-> references, like SOCKMAP or SOCKHASH, calls bpf_sk_assign(ctx, sk, ...)
-> helper to record the selection, and returns SK_PASS code. Transport layer
-> then uses the selected socket as a result of socket lookup.
->
-> Alternatively, program can also fail the lookup (SK_DROP), or let the
-> lookup continue as usual (SK_PASS without selecting a socket).
->
-> This lets the user match packets with listening (TCP) or receiving (UDP)
-> sockets freely at the last possible point on the receive path, where we
-> know that packets are destined for local delivery after undergoing
-> policing, filtering, and routing.
->
-> Program is attached to a network namespace, similar to BPF flow_dissector.
-> We add a new attach type, BPF_SK_LOOKUP, for this. Multiple programs can be
-> attached at the same time, in which case their return values are aggregated
-> according the rules outlined in patch #4 description.
->
-> Series structure
-> ================
->
-> Patches are organized as so:
->
->  1: enables multiple link-based prog attachments for bpf-netns
->  2: introduces sk_lookup program type
->  3-4: hook up the program to run on ipv4/tcp socket lookup
->  5-6: hook up the program to run on ipv6/tcp socket lookup
->  7-8: hook up the program to run on ipv4/udp socket lookup
->  9-10: hook up the program to run on ipv6/udp socket lookup
->  11-13: libbpf & bpftool support for sk_lookup
->  14-16: verifier and selftests for sk_lookup
->
-> Patches are also available on GH:
->
->   https://github.com/jsitnicki/linux/commits/bpf-inet-lookup-v4
->
-> Follow-up work
-> ==============
->
-> I'll follow up with below items, which IMHO don't block the review:
->
-> - benchmark results for udp6 small packet flood scenario,
-> - user docs for new BPF prog type, Documentation/bpf/prog_sk_lookup.rst,
-> - timeout for accept() in tests after extending network_helper.[ch].
+> Thanks!
 >
 
-Looks good to me overall. I've looked through networking-specific code
-and didn't spot anything, but I might be missing some subtleties,
-hopefully not, though.
+Thanks for your feedback and testing, Quentin, I really appreciate it.
 
-I left a few suggestions, please take a look, and if they make sense,
-apply them in the follow up(s). Thanks!
-
-For the series:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
-> Thanks to the reviewers for their feedback to this patch series:
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Cc: Marek Majkowski <marek@cloudflare.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
->
-> -jkbs
+> I tested your set, and bpftool does not compile on my setup. The
+> definitions from <ftw.h> are not picked up by gcc, common.c should have
+> a "#define _GNU_SOURCE" above its list of includes for this to work
+> (like perf.c has).
 >
 
-[...]
+OK, I see what happened. I omitted a required "#define _XOPEN_SOURCE
+..." (like in cgroup.c).  Strictly speaking, "_GNU_SOURCE" is only
+needed for a nftw() GNU extension not used in common.c or cgroup.c
+(but used perf.c). It turns out there are still problems with missing
+definitions for getpagesize() and getline(), which are most easily
+pulled in with "_GNU_SOURCE". Will update as you suggest.
+
+> I also get a warning on this line:
+>
+>
+> > +static int do_build_table_cb(const char *fpath, const struct stat *sb,
+> > +                         int typeflag, struct FTW *ftwbuf)
+> >  {
+>
+> Because passing fptath to open_obj_pinned() below discards the "const"
+> qualifier:
+>
+> > +     fd =3D open_obj_pinned(fpath, true);
+>
+> Fixed by having simply "char *fpath" as the first argument for
+> do_build_table_cb().
+
+Hmm, that only shifts the warning, since the cb function signature for
+nftw still specifies "const char":
+
+> common.c: In function =E2=80=98build_pinned_obj_table=E2=80=99:
+> common.c:438:18: warning: passing argument 2 of =E2=80=98nftw=E2=80=99 fr=
+om incompatible pointer type [-Wincompatible-pointer-types]
+>    if (nftw(path, do_build_table_cb, nopenfd, flags) =3D=3D -1)
+>                   ^~~~~~~~~~~~~~~~~
+> In file included from common.c:9:0:
+> /usr/include/ftw.h:158:12: note: expected =E2=80=98__nftw_func_t {aka int=
+ (*)(const char *, const struct stat *, int,  struct FTW *)}=E2=80=99 but a=
+rgument is of type =E2=80=98int (*)(char *, const struct stat *, int,  stru=
+ct FTW *)=E2=80=99
+>  extern int nftw (const char *__dir, __nftw_func_t __func, int __descript=
+ors,
+>             ^~~~
+
+Wouldn't it be better/safer in general to constify the passed char to
+'open_obj_pinned' and 'open_obj_pinned_any'?  However, doing so
+revealed a problem in open_obj_pinned(), where dirname() is called
+directly on the passed string. This could be dangerous since some
+dirname() implementations may modify the string. Let's copy the string
+instead (same approach in tools/lib/bpf/libbpf.c).
+
+> With those two modifications, bpftool compiles fine and listing objects
+> with the "-f" option works as expected.
+>
+> Regards,
+> Quentin
+
+Let me make these changes and see what you think.
+
+Best regards,
+Tony
