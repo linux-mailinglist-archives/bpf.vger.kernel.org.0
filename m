@@ -2,252 +2,262 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CD4221C50
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 08:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94F9221F83
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 11:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgGPGFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 02:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        id S1726256AbgGPJOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 05:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgGPGFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:05:10 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B428C061755;
-        Wed, 15 Jul 2020 23:05:10 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id e13so4512677qkg.5;
-        Wed, 15 Jul 2020 23:05:10 -0700 (PDT)
+        with ESMTP id S1726250AbgGPJOu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:14:50 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EA4C08C5C0
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 02:14:50 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a6so6281937wrm.4
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 02:14:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C/Sx3DD1xiFaSouN+hVZkXpnDAPJUJUqVEbjzUVKBjY=;
-        b=hjKUUYbaz0sPmdc6UkL8TZ4OoDP5uCGuba45k0YMT6bu+EKvgOa1BPJ6yRhs9m7cq6
-         CTjX45iH8nxWh9STseaR2UkX8wBd/vgoJ188UbrshIEKILPkp1IL+XCnhQ9G4gKYWGb1
-         gZHn6ivhyTnaOSMhs7Ow6/q/kXFmIjybLHzwW6PuVBNsroG/OgP8aPZFryIV14rKwTpO
-         ITK1GBBw06ZPq+uPik67Q6qUvxzmYe1akszXBinO20+G1+8H3ZzSmrgGfQ4QzMzAkQ4d
-         ATxa7jrwbD6Wp5bo7p1Sdg6M1aw36MfNtGMW/HufqTeqg/8JgpMvzt+CP2khPp9rLwhf
-         NSfA==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xPuvMltWVkKScrej512C6U/UnNPO5PMqz0Vapfuf7aE=;
+        b=s0Zfz/o9mZgeg04QVdmSk7MwoKTV0InQeSD7UVveRmUBMtCNjAheiKTZztZXTcbFHJ
+         +ZvbCfdPs3z5vQvYPHF9IXeN1vwIRrBUYNSJ+PeZiuDpiGxCHza6nV48Hu45/yJXpu16
+         93M1c9zfd9dwCBJat/jUv/MMPzgKM5s4durd36bBq+YNEtNGsCBPsmsE5k/BmqFLp2Cz
+         phjT1hbQi68zrGEUZpx68TRqY3gaIdKTUwxl77uwUwWh1oNfStU2SWg6xnU7SvuELs16
+         XX9/URxK9XTX8Qaw8LRM8u3ccq1SJVbTs2gAYHBwngrpP3KannTXQ1GKq73rdwa4DIRZ
+         QoxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C/Sx3DD1xiFaSouN+hVZkXpnDAPJUJUqVEbjzUVKBjY=;
-        b=cU3m+nMXEWRBtZr7NirE9oYUnIcZjOQaXVGMLB2oImhynyS9MfOIJoU7e3Bg/gGXFX
-         pB68t5Hp4E0pkqGdvaOQrEFaYRE4JHiqdkJsKaVvMSp2xNNziXWIdUulMZ7SjaHJ3sTw
-         P4d4xtgvooSughihjwBGU4LtdSTkZ/xmh6AHq1RyuKhOdKqq1TK5ndiGPeS7BwGU6eJb
-         Qabl+0OGiaRIyagnkMZ2PBAIzc1jojNHiriy4D+Xte0rq396JZelV81/XtZSrHKcpF44
-         VTzu3NO0j+iPt74VkBgOD5AsnC6NwcexEzv98SX+dTmec7kwEeR+FfhQZ/UD00zzUV/G
-         jlRQ==
-X-Gm-Message-State: AOAM530oW8+mCnjkUCVcEAZzs8bs4SlcHTD4RAfamkHqlIyITKyiVAMp
-        8D4VvQzbVX0hmnWL9IIMUZr+SESuw0fAFFOgw8M=
-X-Google-Smtp-Source: ABdhPJxsUjKeetvu0GriGmGx8SewSAdbVUPi3lkk8oiAMpiNXMbWGBd3Uk1PlySj3VC0hVbyi/jEMpgm4s/WCadMCXI=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr2532019qkg.437.1594879509565;
- Wed, 15 Jul 2020 23:05:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200715052601.2404533-1-songliubraving@fb.com> <20200715052601.2404533-3-songliubraving@fb.com>
-In-Reply-To: <20200715052601.2404533-3-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jul 2020 23:04:58 -0700
-Message-ID: <CAEf4BzZdvBKp6WO+zUTF0F9iL2WaukvTWNGZggUPx-nwESpQ7w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add callchain_stackid
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xPuvMltWVkKScrej512C6U/UnNPO5PMqz0Vapfuf7aE=;
+        b=MvmiWpgnU5YaW8JWrZ5zHKxWAZbUj0O+B7DOZW5jT5DDnRGQPd39IQ5UP2T9P96nFX
+         isJo61dM9vILHL2pAnkLvPo2VliHeUKf0okbhO9IyQ0q/ZdAL+rKdlbEtnN+ZJ+Kpgs+
+         ndSg7Ph3z004yvi3PSB0jl2E/ezik6bNj2tW4nDjJXBZyIa/p/DozV6lK3hKV7nxYPrT
+         RU0XU9crYbaE1V7bTaGmMxYDZIBR5SaOgGO104G7ikdB7f/s0QPxEzBqDFi0vJ48Ozee
+         9kA/whXHiE4iKsfmN6P1v5LoP4YSynJVDJ7ELO4C1uLPvz7x4l1eSJ9WAr36eyZhdQFp
+         veNw==
+X-Gm-Message-State: AOAM530aXcHAI+NCZjAAD3SFdhqlxkm1IEXOyWRD1ao6sH++1R/fvVXW
+        fLEo1JsQckuBDrRvqohEcX9CEAuMJgDZde0M
+X-Google-Smtp-Source: ABdhPJxdeG2/ePw+qMsPaJOPKou/pSqlux0G4Y45RjOJtW6ZUKTd13saJQ0pzTXHX6bxLDNMpWK4EQ==
+X-Received: by 2002:a5d:6ac7:: with SMTP id u7mr4406853wrw.25.1594890888815;
+        Thu, 16 Jul 2020 02:14:48 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.117.14])
+        by smtp.gmail.com with ESMTPSA id f9sm7999766wru.47.2020.07.16.02.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 02:14:48 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2] bpftool: use only nftw for file tree parsing
+To:     Tony Ambardar <tony.ambardar@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200715051214.28099-1-Tony.Ambardar () gmail ! com>
+ <20200716052926.10933-1-Tony.Ambardar@gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <9560214f-6505-3810-710c-2216648d5bab@isovalent.com>
+Date:   Thu, 16 Jul 2020 10:14:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200716052926.10933-1-Tony.Ambardar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:09 PM Song Liu <songliubraving@fb.com> wrote:
->
-> This tests new helper function bpf_get_stackid_pe and bpf_get_stack_pe.
-> These two helpers have different implementation for perf_event with PEB
-> entries.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+2020-07-15 22:29 UTC-0700 ~ Tony Ambardar <tony.ambardar@gmail.com>
+> The bpftool sources include code to walk file trees, but use multiple
+> frameworks to do so: nftw and fts. While nftw conforms to POSIX/SUSv3 and
+> is widely available, fts is not conformant and less common, especially on
+> non-glibc systems. The inconsistent framework usage hampers maintenance
+> and portability of bpftool, in particular for embedded systems.
+> 
+> Standardize code usage by rewriting one fts-based function to use nftw.
+> Clean up related function warnings by using "const char *" arguments and
+> fixing an unsafe call to dirname().
+> 
+> These changes help in building bpftool against musl for OpenWrt.
+
+Could you please add a line to the log about the reason for the path
+copy in open_obj_pinned()?
+
+> 
+> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 > ---
->  .../bpf/prog_tests/perf_event_stackmap.c      | 120 ++++++++++++++++++
->  .../selftests/bpf/progs/perf_event_stackmap.c |  64 ++++++++++
->  2 files changed, 184 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
->  create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap.c
->
+> 
+> V2:
+> * use _GNU_SOURCE to pull in getpagesize(), getline(), nftw() definitions
+> * use "const char *" in open_obj_pinned() and open_obj_pinned_any()
+> * make dirname() safely act on a string copy
+> 
+> ---
+>  tools/bpf/bpftool/common.c | 129 +++++++++++++++++++++----------------
+>  tools/bpf/bpftool/main.h   |   4 +-
+>  2 files changed, 76 insertions(+), 57 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index 29f4e7611ae8..7c2e52fc5784 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -1,10 +1,11 @@
+>  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
+>  
+> +#define _GNU_SOURCE
+>  #include <ctype.h>
+>  #include <errno.h>
+>  #include <fcntl.h>
+> -#include <fts.h>
+> +#include <ftw.h>
+>  #include <libgen.h>
+>  #include <mntent.h>
+>  #include <stdbool.h>
+> @@ -160,24 +161,36 @@ int mount_tracefs(const char *target)
+>  	return err;
+>  }
+>  
+> -int open_obj_pinned(char *path, bool quiet)
+> +int open_obj_pinned(const char *path, bool quiet)
+>  {
+> -	int fd;
+> +	char *pname;
+> +	int fd = -1;
+> +
+> +	pname = strdup(path);
+> +	if (pname == NULL) {
 
-Just few simplification suggestions, but overall looks good, so please add:
+Simply "if (!pname) {"
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> +		if (!quiet)
+> +			p_err("bpf obj get (%s): %s", path, strerror(errno));
 
-[...]
+Please update the error message, this one was for a failure on
+bpf_obj_get().
 
-> +
-> +void test_perf_event_stackmap(void)
-> +{
-> +       struct perf_event_attr attr = {
-> +               /* .type = PERF_TYPE_SOFTWARE, */
-> +               .type = PERF_TYPE_HARDWARE,
-> +               .config = PERF_COUNT_HW_CPU_CYCLES,
-> +               .precise_ip = 2,
-> +               .sample_type = PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
-> +                       PERF_SAMPLE_CALLCHAIN,
-> +               .branch_sample_type = PERF_SAMPLE_BRANCH_USER |
-> +                       PERF_SAMPLE_BRANCH_NO_FLAGS |
-> +                       PERF_SAMPLE_BRANCH_NO_CYCLES |
-> +                       PERF_SAMPLE_BRANCH_CALL_STACK,
-> +               .sample_period = 5000,
-> +               .size = sizeof(struct perf_event_attr),
-> +       };
-> +       struct perf_event_stackmap *skel;
-> +       __u32 duration = 0;
-> +       cpu_set_t cpu_set;
-> +       int pmu_fd, err;
-> +
-> +       skel = perf_event_stackmap__open();
-> +
-> +       if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-> +               return;
-> +
-> +       /* override program type */
-> +       bpf_program__set_perf_event(skel->progs.oncpu);
-
-this should be unnecessary, didn't libbpf detect the type correctly
-from SEC? If not, let's fix that.
-
-> +
-> +       err = perf_event_stackmap__load(skel);
-> +       if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-> +               goto cleanup;
-> +
-> +       CPU_ZERO(&cpu_set);
-> +       CPU_SET(0, &cpu_set);
-> +       err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-> +       if (CHECK(err, "set_affinity", "err %d, errno %d\n", err, errno))
-> +               goto cleanup;
-> +
-> +       pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-> +                        0 /* cpu 0 */, -1 /* group id */,
-> +                        0 /* flags */);
-> +       if (pmu_fd < 0) {
-> +               printf("%s:SKIP:cpu doesn't support the event\n", __func__);
-> +               test__skip();
-> +               goto cleanup;
-> +       }
-> +
-> +       skel->links.oncpu = bpf_program__attach_perf_event(skel->progs.oncpu,
-> +                                                          pmu_fd);
-> +       if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
-> +                 "err %ld\n", PTR_ERR(skel->links.oncpu))) {
-> +               close(pmu_fd);
-> +               goto cleanup;
-> +       }
-> +
-> +       /* create kernel and user stack traces for testing */
-> +       func_6();
-> +
-> +       CHECK(skel->data->stackid_kernel != 2, "get_stackid_kernel", "failed\n");
-> +       CHECK(skel->data->stackid_user != 2, "get_stackid_user", "failed\n");
-> +       CHECK(skel->data->stack_kernel != 2, "get_stack_kernel", "failed\n");
-> +       CHECK(skel->data->stack_user != 2, "get_stack_user", "failed\n");
-> +       close(pmu_fd);
-
-I think pmu_fd will be closed by perf_event_stackmap__destory (through
-closing the link)
-
-> +
-> +cleanup:
-> +       perf_event_stackmap__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-> new file mode 100644
-> index 0000000000000..1b0457efeedec
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2020 Facebook
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#ifndef PERF_MAX_STACK_DEPTH
-> +#define PERF_MAX_STACK_DEPTH         127
-> +#endif
-> +
-> +#ifndef BPF_F_USER_STACK
-> +#define BPF_F_USER_STACK               (1ULL << 8)
-> +#endif
-
-BPF_F_USER_STACK should be in vmlinux.h already, similarly to BPF_F_CURRENT_CPU
-
-> +
-> +typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
-> +       __uint(max_entries, 16384);
-> +       __uint(key_size, sizeof(__u32));
-> +       __uint(value_size, sizeof(stack_trace_t));
-> +} stackmap SEC(".maps");
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __type(key, __u32);
-> +       __type(value, stack_trace_t);
-> +} stackdata_map SEC(".maps");
-> +
-> +long stackid_kernel = 1;
-> +long stackid_user = 1;
-> +long stack_kernel = 1;
-> +long stack_user = 1;
+> +		goto out_ret;
+> +	}
 > +
 
-nit: kind of unusual to go from 1 -> 2, why no zero to one as a flag?
-those variables will be available through skel->bss, btw
+You're adding a second blank line here, please fix.
 
-> +SEC("perf_event")
-> +int oncpu(void *ctx)
-> +{
-> +       int max_len = PERF_MAX_STACK_DEPTH * sizeof(__u64);
-> +       stack_trace_t *trace;
-> +       __u32 key = 0;
-> +       long val;
-> +
-> +       val = bpf_get_stackid(ctx, &stackmap, 0);
-> +       if (val > 0)
-> +               stackid_kernel = 2;
-> +       val = bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
-> +       if (val > 0)
-> +               stackid_user = 2;
-> +
-> +       trace = bpf_map_lookup_elem(&stackdata_map, &key);
-> +       if (!trace)
-> +               return 0;
-> +
-> +       val = bpf_get_stack(ctx, trace, max_len, 0);
+>  
+> -	fd = bpf_obj_get(path);
+> +	fd = bpf_obj_get(pname);
+>  	if (fd < 0) {
+>  		if (!quiet)
+> -			p_err("bpf obj get (%s): %s", path,
+> -			      errno == EACCES && !is_bpffs(dirname(path)) ?
+> +			p_err("bpf obj get (%s): %s", pname,
+> +			      errno == EACCES && !is_bpffs(dirname(pname)) ?
+>  			    "directory not in bpf file system (bpffs)" :
+>  			    strerror(errno));
+> -		return -1;
+> +		goto out_free;
+>  	}
+>  
+> +out_free:
+> +	free(pname);
+> +out_ret:
+>  	return fd;
+>  }
+>  
+> -int open_obj_pinned_any(char *path, enum bpf_obj_type exp_type)
+> +int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
+>  {
+>  	enum bpf_obj_type type;
+>  	int fd;
+> @@ -367,68 +380,74 @@ void print_hex_data_json(uint8_t *data, size_t len)
+>  	jsonw_end_array(json_wtr);
+>  }
+>  
+> -int build_pinned_obj_table(struct pinned_obj_table *tab,
+> -			   enum bpf_obj_type type)
+> +static struct pinned_obj_table *build_fn_table; /* params for nftw cb*/
+> +static enum bpf_obj_type build_fn_type;
 
-given you don't care about contents of trace, you could have used
-`stack_trace_t trace = {}` global variable instead of PERCPU_ARRAY.
+I would move the comments above the lines, since it applies to both of them.
 
-> +       if (val > 0)
-> +               stack_kernel = 2;
 > +
-> +       val = bpf_get_stack(ctx, trace, max_len, BPF_F_USER_STACK);
+> +static int do_build_table_cb(const char *fpath, const struct stat *sb,
+> +			    int typeflag, struct FTW *ftwbuf)
 
-nit: max_len == sizeof(stack_trace_t) ?
+Please align the second line on the open parenthesis.
 
-> +       if (val > 0)
-> +               stack_user = 2;
+>  {
+>  	struct bpf_prog_info pinned_info = {};
+
+A few suggestions on this code, even though I realise you simply moved
+some parts. We can skip zero-initialising here (" = {}") because we
+memset() it below before using it anyway.
+
+>  	struct pinned_obj *obj_node = NULL;
+>  	__u32 len = sizeof(pinned_info);
+> -	struct mntent *mntent = NULL;
+>  	enum bpf_obj_type objtype;
+> +	int fd, err = 0;
 > +
-> +       return 0;
+> +	if (typeflag != FTW_F)
+> +		goto out_ret;
+> +	fd = open_obj_pinned(fpath, true);
+> +	if (fd < 0)
+> +		goto out_ret;
+> +
+> +	objtype = get_fd_type(fd);
+> +	if (objtype != build_fn_type)
+> +		goto out_close;
+> +
+> +	memset(&pinned_info, 0, sizeof(pinned_info));
+> +	if (bpf_obj_get_info_by_fd(fd, &pinned_info, &len)) {
+> +		p_err("can't get obj info: %s", strerror(errno));
+
+We are simply building a table here to show the paths where objects are
+pinned when listing progs/maps/etc., and I don't believe we want to
+print an error in that case. And with such a message I would expect the
+function to return and bpftool to stop, but again I don't believe this
+is necessary here and we can just go on listing objects, even if we fail
+to show their pinned paths.
+
+> +		goto out_close;
+> +	}
+> +
+> +	obj_node = malloc(sizeof(*obj_node));
+> +	if (!obj_node) {
+> +		p_err("mem alloc failed");
+
+Same here, let's not add an error message.
+
+> +		err = -1;
+> +		goto out_close;
+> +	}
+> +
+> +	memset(obj_node, 0, sizeof(*obj_node));
+
+Instead of malloc() + memset(), we could simply use calloc().
+
+> +	obj_node->id = pinned_info.id;
+> +	obj_node->path = strdup(fpath);
+> +	hash_add(build_fn_table->table, &obj_node->hash, obj_node->id);
+> +
+> +out_close:
+> +	close(fd);
+> +out_ret:
+> +	return err;
 > +}
 > +
-> +char LICENSE[] SEC("license") = "GPL";
-> --
-> 2.24.1
->
+> +int build_pinned_obj_table(struct pinned_obj_table *tab,
+> +			   enum bpf_obj_type type)
+> +{
+
+The end looks good.
+
+Apart from the minor points mentioned above, the patch is good, copying
+the string in open_obj_pinned() looks like the right approach. It does
+compile (with no warnings) and works as intended on my machine :).
+
+Thanks,
+Quentin
