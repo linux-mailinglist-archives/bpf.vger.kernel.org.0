@@ -2,163 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78E22286F
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 18:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C59C2228A2
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 19:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbgGPQjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 12:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        id S1727844AbgGPRAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 13:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729428AbgGPQju (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 12:39:50 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6540C08C5C0
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 09:39:49 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w3so12217525wmi.4
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 09:39:49 -0700 (PDT)
+        with ESMTP id S1725867AbgGPRAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 13:00:16 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE87C061755;
+        Thu, 16 Jul 2020 10:00:15 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c139so6152699qkg.12;
+        Thu, 16 Jul 2020 10:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=20fCXzpt5xrhYy1Y13gD3+QE2NdQzEx5fXxgZJMqHMA=;
-        b=JIrzFmjxrGCpRUvAIGa3w6dCDS62bwx4fatzmPS/Pt7KZFaI0QOOJDzfWVVK08ekI2
-         +ojXZwqD0TRI4ODoR/ccLXEfhhmB8xT5HtiO1jQlMNwtHlZKQEDOIRTn1ycZClLTS7i9
-         uDeY55drkgGr1wmDQx/hp2VI+UYjAm1rPaGMvnm5VaLcXFePDbEQsTg0z2zgYtFC1Ezu
-         RAXvdmdUb45S9fBi6M7PWUAkw3GbB3E4eU+38/4SlCJqdPXJywxOBdCukz09j/oqXmL7
-         vx6WCS/Kgmq7SCga6sV2c4Wu6sCUCCJHlrAIW6Vg/XscxG0Mf0qGE3jr/1EkEmh1bKBc
-         9Njw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xFnhvo+oT7GkUt0UP+3Y7RXHPYTZ7W0L8kttJ5pOMG0=;
+        b=uc8tm4PfXmj/nu0p0WWHr51Owa30uzDsIaHZCBWMKUFn403QuwcVj+FilVdCYDqYEO
+         lyu7O0/4ytK7ZYoQmb3SkChV67Fq8RFsJMjsD5MRi0032LGRz19re/y4aXDWR3SqLriQ
+         FzGQ7dRkaG+oy6QHkzzuK5TPSuiKId0XzpAo6wFxVKetEpwzYXz6DEAh5yV82Rq01X8v
+         MLEHtHm0QQ5uWKPsFTAIQBf0AV8qolmtvSIokRopzZznaT62MH2MISURh52Gr0+CMqeZ
+         i9LPqY5gMGt+Xslo2lmhLrXqvcd/Kqn/oTtMs7adM3Z/TptovmCjL5sp56Q+UXEIY1Oq
+         4QIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=20fCXzpt5xrhYy1Y13gD3+QE2NdQzEx5fXxgZJMqHMA=;
-        b=L+ZaGOjVPyN+XMET97dAOYWNlVs2xI6F/CLvVTOxFoYkznQKeatdc+BdgiKXSsWp+u
-         JXpaFkrn0uZnAhISCAIiG90Z4gn6Y+hPM6c7jSsb9s5IOv4y6S/YDnAMwvzhEvELfjVm
-         qWVCM8CqwVBwblA29vZmGaGnztpYAbkT3VysfNhu9nb8QNjlt1nZslEPwBHzztxCDfGg
-         wqrqzshbJCholqRx/qD/cmByduMgRRN8Gp9r48reG5SlrkBsFED+2uy+DcYF1F88a1b5
-         5M00FmKBEPfBs3abro2/nw8Ehssqk2k9gZoPP7GNL3eIoJBC2Xk4fgn7py/d2xhrR/8y
-         cfVg==
-X-Gm-Message-State: AOAM533XMdbt4Zjbi5KvfW/3ULcGvDCNrQVHBYaf96dnB1KMXvKK7gYd
-        gtBip8o5f7oXFCVJqwwuwcXyD6Rxukua5eGq
-X-Google-Smtp-Source: ABdhPJz4xSCI0ZITQq2yaFpHxbVW+beJsF/461Fz0KP7tEPiYoIYNhwY+BBGt/691TccxBy8mQDP+Q==
-X-Received: by 2002:a1c:a7c4:: with SMTP id q187mr5025307wme.0.1594917588433;
-        Thu, 16 Jul 2020 09:39:48 -0700 (PDT)
-Received: from [192.168.1.12] ([194.35.117.51])
-        by smtp.gmail.com with ESMTPSA id y20sm9228648wmi.8.2020.07.16.09.39.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 09:39:47 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 09/13] tools/bpftool: add bpftool support for bpf
- map element iterator
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200713161739.3076283-1-yhs@fb.com>
- <20200713161749.3077526-1-yhs@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <9f865c02-291c-8622-b601-f4613356a469@isovalent.com>
-Date:   Thu, 16 Jul 2020 17:39:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xFnhvo+oT7GkUt0UP+3Y7RXHPYTZ7W0L8kttJ5pOMG0=;
+        b=QA1LiV6Jeq8drrFveQjtp57teCZ8e0zqcKT0qYGWN2n3FjmEcz/jrmrflSlU1vZCnc
+         DSX2QsjXWarziM8vlyi19KSpkZk9gBXzmCuppf6FFft1h7b01KL1Madel0jgFAVwL5BD
+         8Q4WUyv0Ay0F8gwUnNQlYwc39QjeDLDquSCIKOCxrPK/BmPxb//dBKNwzAZTFhf0j5xG
+         ovdbQS0eR6X0WzmPhZc+E/qew3jjXI1MS4Ij1Hi4GN5qRT0Wk+6LmmND+u1mRPPIMMvp
+         HRzV1UMaH2WUvWvbG9LGoh3IAJTZiY8/k91pZIy8L0259GRWdpULxiGyuVyS3Racfb/v
+         YoRw==
+X-Gm-Message-State: AOAM5324cvqEn5orRD2WYp5cCH7AS2FMK5HGwNlorxxQGjtYqjsM8Chn
+        OyrKj8AXKQwNthpKgbU0LBKC6o3VSNw74QHCyGA=
+X-Google-Smtp-Source: ABdhPJz0HV6BSIemzLDmEKsM1PULchEXNXJBIS75Wg4fCq+tO+eyPBKyWbeRI4EsBpNwLS+Kl4UtttMZynpqfeSNl74=
+X-Received: by 2002:a37:270e:: with SMTP id n14mr4889742qkn.92.1594918814827;
+ Thu, 16 Jul 2020 10:00:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200713161749.3077526-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200716045602.3896926-1-andriin@fb.com> <20200716045602.3896926-10-andriin@fb.com>
+ <20200716082259.40600e03@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200716082259.40600e03@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jul 2020 10:00:03 -0700
+Message-ID: <CAEf4Bza_Sr6XcFQpP5jgYLt03CDVXR7zUv2cjNBMSWFqaWZDGQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 9/9] bpf, xdp: remove XDP_QUERY_PROG and
+ XDP_QUERY_PROG_HW XDP commands
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-07-13 09:17 UTC-0700 ~ Yonghong Song <yhs@fb.com>
-> The optional parameter "map MAP" can be added to "bpftool iter"
-> command to create a bpf iterator for map elements. For example,
->   bpftool iter pin ./prog.o /sys/fs/bpf/p1 map id 333
-> 
-> For map element bpf iterator "map MAP" parameter is required.
-> Otherwise, bpf link creation will return an error.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  .../bpftool/Documentation/bpftool-iter.rst    | 16 ++++++++--
->  tools/bpf/bpftool/iter.c                      | 32 ++++++++++++++++---
->  2 files changed, 42 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-iter.rst b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-> index 8dce698eab79..53ee4fb188b4 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-> @@ -17,14 +17,15 @@ SYNOPSIS
->  ITER COMMANDS
->  ===================
->  
-> -|	**bpftool** **iter pin** *OBJ* *PATH*
-> +|	**bpftool** **iter pin** *OBJ* *PATH* [**map** *MAP*]
->  |	**bpftool** **iter help**
->  |
->  |	*OBJ* := /a/file/of/bpf_iter_target.o
-> +|       *MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
+On Thu, Jul 16, 2020 at 8:23 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 15 Jul 2020 21:56:01 -0700 Andrii Nakryiko wrote:
+> > Now that BPF program/link management is centralized in generic net_devi=
+ce
+> > code, kernel code never queries program id from drivers, so
+> > XDP_QUERY_PROG/XDP_QUERY_PROG_HW commands are unnecessary.
+> >
+> > This patch removes all the implementations of those commands in kernel,=
+ along
+> > the xdp_attachment_query().
+> >
+> > This patch was compile-tested on allyesconfig.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c: In function =E2=80=98dp=
+aa2_eth_xdp=E2=80=99:
+> drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:2079:25: warning: unused=
+ variable =E2=80=98priv=E2=80=99 [-Wunused-variable]
+>  2079 |  struct dpaa2_eth_priv *priv =3D netdev_priv(dev);
+>       |                         ^~~~
+>
 
-Please don't change the indentation style (other lines have a tab).
-
->  
->  DESCRIPTION
->  ===========
-> -	**bpftool iter pin** *OBJ* *PATH*
-> +	**bpftool iter pin** *OBJ* *PATH* [**map** *MAP*]
->  		  A bpf iterator combines a kernel iterating of
->  		  particular kernel data (e.g., tasks, bpf_maps, etc.)
->  		  and a bpf program called for each kernel data object
-> @@ -37,6 +38,10 @@ DESCRIPTION
->  		  character ('.'), which is reserved for future extensions
->  		  of *bpffs*.
->  
-> +                  Map element bpf iterator requires an additional parameter
-> +                  *MAP* so bpf program can iterate over map elements for
-> +                  that map.
-> +
-
-Same note on indentation.
-
-Could you please also explain in a few words what the "Map element bpf
-iterator" is? Reusing part of your cover letter (see below) could do,
-it's just so that users not familiar with the concept can get an idea of
-what it does.
-
----
-User can have a bpf program in kernel to run with each map element,
-do checking, filtering, aggregation, etc. without copying data
-to user space.
----
-
->  		  User can then *cat PATH* to see the bpf iterator output.
->  
->  	**bpftool iter help**
-
-[...]
-
-> @@ -62,13 +83,16 @@ static int do_pin(int argc, char **argv)
->  	bpf_link__destroy(link);
->  close_obj:
->  	bpf_object__close(obj);
-> +close_map_fd:
-> +	if (map_fd >= 0)
-> +		close(map_fd);
->  	return err;
->  }
->  
->  static int do_help(int argc, char **argv)
->  {
->  	fprintf(stderr,
-> -		"Usage: %1$s %2$s pin OBJ PATH\n"
-> +		"Usage: %1$s %2$s pin OBJ PATH [map MAP]\n"
-
-You probably want to add HELP_SPEC_MAP (as in map.c) to tell the user
-what MAP should be.
-
-Could you please also update the bash completion?
-
-Thanks,
-Quentin
+Oh, I've fixed a few such warnings already, but apparently missed the
+last one. It's hard to notice those in allyesconfig build. I've
+double-checked the build log with grep now, it seems like there are no
+more warnings anymore, thanks!
