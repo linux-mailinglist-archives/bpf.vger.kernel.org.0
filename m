@@ -2,79 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BED221997
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 03:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254212219B9
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 04:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgGPBoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 21:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
+        id S1727075AbgGPCIj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jul 2020 22:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgGPBoV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:44:21 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C87C061755;
-        Wed, 15 Jul 2020 18:44:20 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 80so4042682qko.7;
-        Wed, 15 Jul 2020 18:44:20 -0700 (PDT)
+        with ESMTP id S1726984AbgGPCIi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jul 2020 22:08:38 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD327C061755;
+        Wed, 15 Jul 2020 19:08:38 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id s26so2951177pfm.4;
+        Wed, 15 Jul 2020 19:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=naPN2pgn1CoFHy/WdyHRlNwNE91H2f4tM8G4xjO1cYM=;
-        b=MtQw+LV6ZE3aEDfRev6QNVAddubjs9cHJMCluny2VebrGrLsJ1VODqiVNlRC/Kjk5K
-         6k3zng+M9Cvn2T2kXIpSlMRkzXm2aVpisq8uw6S2J4oFmLTgxoAh6bD83H0xZOEJn+d+
-         1uz5JHGHO1CoKHF2TsJgXAtDUfg9Haslgzj014Z1AqD2iBdJNgR6otkDtY+qXE8VwgDH
-         3WYaFjE2wNX3cd2C6fdqpGX2AYDGWsm8AfbpVMm+oVgO3Gs62sjjUYR7m6yRmXr3ZOPg
-         u45QzpMtcktoI6U5WBqSDn1eIybCfCi/yz90RlUgzag2ObSeMwzqgZJ2pSQt3R8usUST
-         5ePQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4uKGYf+tOJWMlOipTgbQQLVfzGcYMjPjk/udv7LQbjY=;
+        b=kpe1uwRbmgBUqYfLIPPgkrH/caXm7zLSMbHZbWiWUnCqT3wZRrnvLQ7BcFgXg5k+HM
+         JfAvpgxt0/Y39X9qKyV17x0o6sb1/FCK2NadEtaMoUuG9DLY5DeuuL1y1DJfcKoroio+
+         oLIfmXs/OgEb5nNYhBFzhf8FbcW+wV35FHrimSaJnoupKxIgHL/18S4ssc7xADM1+BlR
+         8mRx6XsctETuT9LlQa9WyqBj87Ib3dxC/h4JfkkjiUTH2eCsndtuEpN+4seGzBOQVB2p
+         WzHtUZMtB54X9XKsQRmz99oDztwV8Pyqm5nN+T1LgVPVEMOGRh9O50gSTYJo26lL7VLv
+         vMoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=naPN2pgn1CoFHy/WdyHRlNwNE91H2f4tM8G4xjO1cYM=;
-        b=CJeNkBM2JhyrOw2NLw/XACkyeG3Y2i+qznd1z5OqJlCcOUEyitE2pfstX07uU1GS0+
-         sdnnwvp2Q8k8s1lfb7bqpJppXx9eoCdcCb88P4q8xwhsIBC0O/dqy4ywH8i3r1DS9o3h
-         mXM8WfpThFw4Iz6gWpfJSXEnfSAZ+ZiMhTtjRLjq0ZB0iCHsF3QtLpGYTQlvdtr3DZD6
-         iUycQsRfBoSdCF+wWg1iVU3o5b+uNLO8L7+45n/MRbgCct64chlBa5+uXJvkdo3CWQez
-         OFqC4mDBrObiEl+znq5yYRAsWfnJh4GhA7Pqj/kE9WIoofSV5gjnvgfnJm3/1spqvRMF
-         sGtA==
-X-Gm-Message-State: AOAM533u7NnhEwq63zDETY8TT5XZUWbUYVaiqtgSI7qypZDSW0Mbdwyx
-        PrzFmc1wLyNERdRIrQgP9O9P/724I7DHJPSkETg=
-X-Google-Smtp-Source: ABdhPJxIUHOM9w9p8pN06EvoRA2Rt7MQhI6pm3DnNVOkNOjH4MIPP1+FN1gT3cylnO8cgq9yN6w3s8iipi5CKdFrbbE=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr1867467qkg.437.1594863860064;
- Wed, 15 Jul 2020 18:44:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4uKGYf+tOJWMlOipTgbQQLVfzGcYMjPjk/udv7LQbjY=;
+        b=ReNfW2J0KZ/iuP+yFT9YU/75wz5Ts4LpzFoIJ7T7fs2ANXbrzy7EggyLxo6gUXgnEw
+         JGVMxBFo6RxrxBAyPOY2c7IIAN+iRB1jD8uaTwFistCdJsb3UUjNh4DDr+tGCYo44e3J
+         4cb2WxhxkOh1dnW9Y9TPFYVhZRPyN+tkfGhUTSPjiIJaFWJRyCPAWBKK9lQe51L+KJ+m
+         FfCrkd7xn53xs2Qc4lg7isZ5IuZNMmket3f96pIjH/K5mqRhYJlWmnUq9ttM3jgTC2Xs
+         O8U0W1Gll1fSgA+uTfn7zgdgd28TYYYP/aEsWPKHYr40zqKkWtpO+0LFOkh9q7PMAYi5
+         Jb4A==
+X-Gm-Message-State: AOAM530Ni6cKr8ZPkLiGKqdG3mvpQzvnNyhu13Zmgx/bYUVSIjctWFGv
+        ceKwJuULDVZWyGet35ETntg=
+X-Google-Smtp-Source: ABdhPJynFbc5e7ZETVQWwua/9t0ysF4xUQBjGcIlXJUtu3xw9MEB5LMYVwyiXmSsgtX/JPxc22zyhg==
+X-Received: by 2002:a65:64c1:: with SMTP id t1mr2241960pgv.267.1594865318093;
+        Wed, 15 Jul 2020 19:08:38 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id d5sm3078071pju.15.2020.07.15.19.08.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 19:08:37 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 10:08:27 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>, ast@kernel.org
+Subject: Re: [PATCH bpf-next] bpf: add a new bpf argument type
+ ARG_CONST_MAP_PTR_OR_NULL
+Message-ID: <20200716020827.GI2531@dhcp-12-153.nay.redhat.com>
+References: <20200715070001.2048207-1-liuhangbin@gmail.com>
+ <67a68a77-f287-1bb1-3221-24e8b3351958@iogearbox.net>
 MIME-Version: 1.0
-References: <20200713174654.642628-1-jakub@cloudflare.com> <20200713174654.642628-4-jakub@cloudflare.com>
-In-Reply-To: <20200713174654.642628-4-jakub@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jul 2020 18:44:09 -0700
-Message-ID: <CAEf4BzbyqcqJyqLxvzVEms0oGmXdact_78JH=rhC5450_OFkHw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 03/16] inet: Extract helper for selecting
- socket from reuseport group
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67a68a77-f287-1bb1-3221-24e8b3351958@iogearbox.net>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:47 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Prepare for calling into reuseport from __inet_lookup_listener as well.
->
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
+On Thu, Jul 16, 2020 at 12:28:16AM +0200, Daniel Borkmann wrote:
+> On 7/15/20 9:00 AM, Hangbin Liu wrote:
+> > Add a new bpf argument type ARG_CONST_MAP_PTR_OR_NULL which could be
+> > used when we want to allow NULL pointer for map parameter. The bpf helper
+> > need to take care and check if the map is NULL when use this type.
+> > 
+> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> 
+> Is this patch to be merged into the set in [0] for passing NULL ex_map as discussed?
+> Seems you sent out two incomplete sets?
+> 
+>   [0] https://lore.kernel.org/bpf/20200709013008.3900892-1-liuhangbin@gmail.com/T/#m99a8fa8ffe79d5f00d305c0800ad3abe619294f2
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Yes, I did it by intend. I thought these two should be consider as
+different feature. So I'd prefer post them separately. Once both
+patches are merged, I will post a followup patch to add the NULL pointer
+support to xdp multicast helper.
 
->  net/ipv4/inet_hashtables.c | 29 ++++++++++++++++++++---------
->  1 file changed, 20 insertions(+), 9 deletions(-)
->
+> 
+> > ---
+> >   include/linux/bpf.h   |  1 +
+> >   kernel/bpf/verifier.c | 11 ++++++++---
+> >   2 files changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index c67c88ad35f8..9d4dbef3c943 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -253,6 +253,7 @@ enum bpf_arg_type {
+> >   	ARG_PTR_TO_ALLOC_MEM,	/* pointer to dynamically allocated memory */
+> >   	ARG_PTR_TO_ALLOC_MEM_OR_NULL,	/* pointer to dynamically allocated memory or NULL */
+> >   	ARG_CONST_ALLOC_SIZE_OR_ZERO,	/* number of allocated bytes requested */
+> > +	ARG_CONST_MAP_PTR_OR_NULL,	/* const argument used as pointer to bpf_map or NULL */
+> >   };
+> >   /* type of values returned from helper functions */
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 3c1efc9d08fd..d3551a19853a 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3849,9 +3849,13 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >   		expected_type = SCALAR_VALUE;
+> >   		if (type != expected_type)
+> >   			goto err_type;
+> > -	} else if (arg_type == ARG_CONST_MAP_PTR) {
+> > +	} else if (arg_type == ARG_CONST_MAP_PTR ||
+> > +		   arg_type == ARG_CONST_MAP_PTR_OR_NULL) {
+> >   		expected_type = CONST_PTR_TO_MAP;
+> > -		if (type != expected_type)
+> > +		if (register_is_null(reg) &&
+> > +		    arg_type == ARG_CONST_MAP_PTR_OR_NULL)
+> > +			/* final test in check_stack_boundary() */;
+> > +		else if (type != expected_type)
+> >   			goto err_type;
+> >   	} else if (arg_type == ARG_PTR_TO_CTX ||
+> >   		   arg_type == ARG_PTR_TO_CTX_OR_NULL) {
+> > @@ -3957,7 +3961,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >   		return -EFAULT;
+> >   	}
+> > -	if (arg_type == ARG_CONST_MAP_PTR) {
+> > +	if (arg_type == ARG_CONST_MAP_PTR ||
+> > +	    (arg_type == ARG_CONST_MAP_PTR_OR_NULL && !register_is_null(reg))) {
+> >   		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
+> >   		meta->map_ptr = reg->map_ptr;
+> 
+> I would probably have the semantics a bit different in the sense that I would
+> update meta->map_ptr to the last ARG_CONST_MAP_PTR, meaning:
+> 
+>     meta->map_ptr = register_is_null(reg) ? NULL : reg->map_ptr;
 
-[...]
+Thanks for the suggestion. I will update it.
+
+> 
+> >   	} else if (arg_type == ARG_PTR_TO_MAP_KEY) {
+> > 
+> 
+> In combination with the set, this also needs test_verifier selftests in order to
+> exercise BPF insn snippets for the good & [expected] bad case.
+
+OK, I will add a test for this.
+
+Thanks
+Hangbin
