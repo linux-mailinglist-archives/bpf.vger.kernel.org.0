@@ -2,145 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0108221A79
-	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 05:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2AF221B6D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jul 2020 06:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgGPDDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jul 2020 23:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        id S1725913AbgGPEgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 00:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgGPDDH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:03:07 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECADC061755;
-        Wed, 15 Jul 2020 20:03:07 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id o3so3806088ilo.12;
-        Wed, 15 Jul 2020 20:03:07 -0700 (PDT)
+        with ESMTP id S1725844AbgGPEf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 00:35:59 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4531C061755;
+        Wed, 15 Jul 2020 21:35:59 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id h190so1003279vkh.6;
+        Wed, 15 Jul 2020 21:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=t+Wlsj1C9vRBcKrQbvPaRIrUEHfK7a1ao3aLrAXTh/w=;
-        b=s20nivLlSY95WcxuyJxRdfKwLKTl3k6wFTw6Uyx+GAPhASxCKSxkFi79eP207h30kt
-         f984HzvnURD8itmAG0AoCFGR/NQciB6sXve2O4eUnj27GpzMvXQH1qcCCDkxtQ9+6XHb
-         lIHwC8iAhf8owfKJ5o/DgGrx43dqYEDB21CjOcN+M/GOpNL9A0HQqXfqqhcyyYwSBONU
-         On22jPOcfmOx6h4yhrOKr8KHOzrik1/5OysRquTGlqgz7RJXBfPny15eERpjkKUxIzAM
-         NSwTZPHW7UmQHFbnfkzsJVaGE60RblAGujZPGbTnJtQrxSMNeZDnyhuuWKvOiROp6Uju
-         9L3w==
+         :cc;
+        bh=Md0I7qZUYOfItQaUHXL1L1O2AfGxevzdjkYatV5C7vg=;
+        b=DdAtg4lH9GsswCGXo+CgsHouaJ+G2eQj2PNUfdZtyKsoLsveH+Bbuo9XsFV3cJbc7U
+         DYSTA19WVwP3ufiG0oQwyUmSJ+zBcxaRAnThPGRPLo8SE+R1fAIGLdoDUTa+UPEVo0l7
+         F86F+wyBfldj6LcJ68x+7pisJ61vn5aqsl9QJQGCMlctYlw69JuKXrBI1GJHp8hUnHXe
+         ur/2FkT+CWEpMKbrBI9fQvZy2H7zJzLbbq04tkEI3A/eTnfGWW+sUN9+F7a6CCvwgrXS
+         el2RlkK2dWd5R2dyj4cTPicvkX88Sm5L8qaqVzbn0KOdhBrRogi9UFuOPErgJmYr/u8a
+         gosw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=t+Wlsj1C9vRBcKrQbvPaRIrUEHfK7a1ao3aLrAXTh/w=;
-        b=MxoDI9zXRLd21aU+mbvP0WsmIqOMAbpoj2NrMpshpeLcSM9icasR3dOnjIVhKYVsb7
-         nDUsey+O48TfhMsYvnczkZgf7LAU6xmb7giBkgBUK3GVMHKwNpTf6eTRByJR8rP1jN7V
-         u9xOukrNrlrsRX9OR2LW3+KP8G5Jm1VrggD1JC2QOnRZ4xpxnpnnYFijH8ivCgUJboPz
-         Su4pvQThDAU3wxukLCjsQbYThp5xaxiJ37NqUys3bdBrl/I3DKPTLyItljIh/xewMOwq
-         wi+p9/vJzYQ1zcHubMeyIYD1U2qrj5PB2Y2tDXGaDuKqWNzblW3RHaWLIujQ+82DlIx8
-         CJYA==
-X-Gm-Message-State: AOAM530USrxWlEN0BsugfO+I765hDb4NEIHQ2E8J64UHq8mEG9plNAFt
-        n2ctBu/UKeimHy4T7M1U5PEXnXJArlXp56LWQ7s=
-X-Google-Smtp-Source: ABdhPJyf7yVwHxVF9WfRgDUm24zkGcJOdZ7B98X8cDav/AVzEfZPS4Dd2dULBymJw2SpBCoUyzCg2BxUFbhh9PSfNKA=
-X-Received: by 2002:a92:2802:: with SMTP id l2mr2545080ilf.169.1594868586798;
- Wed, 15 Jul 2020 20:03:06 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Md0I7qZUYOfItQaUHXL1L1O2AfGxevzdjkYatV5C7vg=;
+        b=OO94qFxho1sM8npYIRapPYvy3EM1nXFQxUDfPCJfycdDZg6GuLsQcgOPm/MfsPIqyt
+         xb9dbxhf1snmB9uWwMTG510u5b9jXUL6a1eWTRT9Q6uLA67kdhPNHgwelMfiAwcIaZLG
+         vJx7jR0iPjhoM7b+wWYIzDh5lIbFOSE/Yq6QWPK+1OmpJgwHAHyafjeXhQEZjpZLFglD
+         AVVv7CuR8qf1vAEwEG4EQWWq/KL/WZYBdJ+GaaVIYhAcWxn49vKtIBsHMhGzqnHu1R0d
+         vszZ9Tx+zYxK4MzdT5YOp0bng7noLB9/cyhQsWSOuTnyuQ8ogYs3cHGHwb4y4gDhbXBr
+         YbzA==
+X-Gm-Message-State: AOAM531hrJ60KxNl9a0UKJzT1eNOQrklAfzBadV0/TCSMwwZ8nELgidc
+        Qm6972cNpvVWfH0xBA+nJxdTtojBl6Teqozc+xw=
+X-Google-Smtp-Source: ABdhPJyFs2cS92i9MiT7gqX1V1cUi1wRjFNO4OQ4Npy0TolsLKqhQAKSEn7ByGbBynG2Gk0l80P+PLhknyYnz93yAys=
+X-Received: by 2002:a1f:418f:: with SMTP id o137mr1743334vka.25.1594874158827;
+ Wed, 15 Jul 2020 21:35:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200715051214.28099-1-Tony.Ambardar@gmail.com> <58fadc96-2083-a043-9ef3-da72ad792324@isovalent.com>
-In-Reply-To: <58fadc96-2083-a043-9ef3-da72ad792324@isovalent.com>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Wed, 15 Jul 2020 20:02:55 -0700
-Message-ID: <CAPGftE86utvC+J+yoXCNU56ibJ03HwV60p0opTkxY7qN5Gtk+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpftool: use only nftw for file tree parsing
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+References: <1594390602-7635-1-git-send-email-magnus.karlsson@intel.com>
+ <1594390602-7635-12-git-send-email-magnus.karlsson@intel.com> <fc6e254c-5153-aa72-77d1-693e24b49848@mellanox.com>
+In-Reply-To: <fc6e254c-5153-aa72-77d1-693e24b49848@mellanox.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 16 Jul 2020 06:35:48 +0200
+Message-ID: <CAJ8uoz30f_jbtH4bM-YAxyPq2+zqC1CC3c+eQFg-ECwgkOfzSw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/14] xsk: add shared umem support between devices
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        cristian.dumitrescu@intel.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 15 Jul 2020 at 10:35, Quentin Monnet <quentin@isovalent.com> wrote:
+On Tue, Jul 14, 2020 at 12:18 PM Maxim Mikityanskiy
+<maximmi@mellanox.com> wrote:
 >
-> 2020-07-14 22:12 UTC-0700 ~ Tony Ambardar <tony.ambardar@gmail.com>
-> > The bpftool sources include code to walk file trees, but use multiple
-> > frameworks to do so: nftw and fts. While nftw conforms to POSIX/SUSv3 a=
-nd
-> > is widely available, fts is not conformant and less common, especially =
-on
-> > non-glibc systems. The inconsistent framework usage hampers maintenance
-> > and portability of bpftool, in particular for embedded systems.
+> On 2020-07-10 17:16, Magnus Karlsson wrote:
+> > Add support to share a umem between different devices. This mode
+> > can be invoked with the XDP_SHARED_UMEM bind flag. Previously,
+> > sharing was only supported within the same device. Note that when
+> > sharing a umem between devices, just as in the case of sharing a
+> > umem between queue ids, you need to create a fill ring and a
+> > completion ring and tie them to the socket (with two setsockopts,
+> > one for each ring) before you do the bind with the
+> > XDP_SHARED_UMEM flag. This so that the single-producer
+> > single-consumer semantics of the rings can be upheld.
+>
+> I'm not sure if you saw my comment under v1 asking about performance.
+> Could you share what performance numbers (packet rate) you see when
+> doing forwarding with xsk_fwd? I'm interested in:
+>
+> 1. Forwarding between two queues of the same netdev.
+>
+> 2. Forwarding between two netdevs.
+>
+> 3. xdpsock -l as the baseline.
+
+Sorry for the delay Max, but it is all due to vacation. I will provide
+you with the numbers once the weather turns sour and/or the family
+gets tired of me ;-). From what I can remember, it did not scale
+perfectly linearly, instead it hit some other bottleneck, though I did
+not examine what at that time.
+
+/Magnus
+
+> Thanks,
+> Max
+>
 > >
-> > Standardize usage by rewriting one fts-based function to use nftw. This
-> > change allows building bpftool against musl for OpenWrt.
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >   net/xdp/xsk.c | 11 ++++-------
+> >   1 file changed, 4 insertions(+), 7 deletions(-)
 > >
-> > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index 05fadd9..4bf47d3 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -695,14 +695,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+> >                       sockfd_put(sock);
+> >                       goto out_unlock;
+> >               }
+> > -             if (umem_xs->dev != dev) {
+> > -                     err = -EINVAL;
+> > -                     sockfd_put(sock);
+> > -                     goto out_unlock;
+> > -             }
+> >
+> > -             if (umem_xs->queue_id != qid) {
+> > -                     /* Share the umem with another socket on another qid */
+> > +             if (umem_xs->queue_id != qid || umem_xs->dev != dev) {
+> > +                     /* Share the umem with another socket on another qid
+> > +                      * and/or device.
+> > +                      */
+> >                       xs->pool = xp_create_and_assign_umem(xs,
+> >                                                            umem_xs->umem);
+> >                       if (!xs->pool) {
+> >
 >
-> Thanks!
->
-
-Thanks for your feedback and testing, Quentin, I really appreciate it.
-
-> I tested your set, and bpftool does not compile on my setup. The
-> definitions from <ftw.h> are not picked up by gcc, common.c should have
-> a "#define _GNU_SOURCE" above its list of includes for this to work
-> (like perf.c has).
->
-
-OK, I see what happened. I omitted a required "#define _XOPEN_SOURCE
-..." (like in cgroup.c).  Strictly speaking, "_GNU_SOURCE" is only
-needed for a nftw() GNU extension not used in common.c or cgroup.c
-(but used perf.c). It turns out there are still problems with missing
-definitions for getpagesize() and getline(), which are most easily
-pulled in with "_GNU_SOURCE". Will update as you suggest.
-
-> I also get a warning on this line:
->
->
-> > +static int do_build_table_cb(const char *fpath, const struct stat *sb,
-> > +                         int typeflag, struct FTW *ftwbuf)
-> >  {
->
-> Because passing fptath to open_obj_pinned() below discards the "const"
-> qualifier:
->
-> > +     fd =3D open_obj_pinned(fpath, true);
->
-> Fixed by having simply "char *fpath" as the first argument for
-> do_build_table_cb().
-
-Hmm, that only shifts the warning, since the cb function signature for
-nftw still specifies "const char":
-
-> common.c: In function =E2=80=98build_pinned_obj_table=E2=80=99:
-> common.c:438:18: warning: passing argument 2 of =E2=80=98nftw=E2=80=99 fr=
-om incompatible pointer type [-Wincompatible-pointer-types]
->    if (nftw(path, do_build_table_cb, nopenfd, flags) =3D=3D -1)
->                   ^~~~~~~~~~~~~~~~~
-> In file included from common.c:9:0:
-> /usr/include/ftw.h:158:12: note: expected =E2=80=98__nftw_func_t {aka int=
- (*)(const char *, const struct stat *, int,  struct FTW *)}=E2=80=99 but a=
-rgument is of type =E2=80=98int (*)(char *, const struct stat *, int,  stru=
-ct FTW *)=E2=80=99
->  extern int nftw (const char *__dir, __nftw_func_t __func, int __descript=
-ors,
->             ^~~~
-
-Wouldn't it be better/safer in general to constify the passed char to
-'open_obj_pinned' and 'open_obj_pinned_any'?  However, doing so
-revealed a problem in open_obj_pinned(), where dirname() is called
-directly on the passed string. This could be dangerous since some
-dirname() implementations may modify the string. Let's copy the string
-instead (same approach in tools/lib/bpf/libbpf.c).
-
-> With those two modifications, bpftool compiles fine and listing objects
-> with the "-f" option works as expected.
->
-> Regards,
-> Quentin
-
-Let me make these changes and see what you think.
-
-Best regards,
-Tony
