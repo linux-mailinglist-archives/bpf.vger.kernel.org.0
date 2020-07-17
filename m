@@ -2,113 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18062223104
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 04:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0556223116
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 04:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgGQCIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 22:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
+        id S1726316AbgGQCQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 22:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgGQCIt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jul 2020 22:08:49 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6D5C061755;
-        Thu, 16 Jul 2020 19:08:49 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ls15so5783325pjb.1;
-        Thu, 16 Jul 2020 19:08:49 -0700 (PDT)
+        with ESMTP id S1726229AbgGQCQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 22:16:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD55C061755;
+        Thu, 16 Jul 2020 19:16:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k27so5926315pgm.2;
+        Thu, 16 Jul 2020 19:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=tq4m4h2a9TL5pXC8bkU2F7Xjx88fuMptJM1ziSfBc+I=;
-        b=BLQpULXQn6FhYgZQFzAkJicFWxLoYxfuqtJ60XvjaNDS6vqkF5ze/GDUMqVkBKseQC
-         sU38qYidKqz1KNn3eEAMZwok5rgEq1ihUyhx1I9w2hd6xxId57+dDrg9RwtRSZco+uDQ
-         UVbb+WTpPjdURlpaIqX50tjui5RVEo5Pb8MvAGybrjKardQxfoNcZOLDFhqDRcBGBZSN
-         DzGa9+DFFdj1dJrJ5pSijMnmlxl2L6VuV7Dc9FLp54AkXV+jAfElNpGSgJlgCgh0r4rP
-         KS0d+SKSvDU/Mp2ppBB4leWNpVn2lo8V/gmb8Q655HQgOgNbh0wmalDpp8yeB1cHB1yz
-         +beg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fYbHCA6JKXOLMV26BdBnZoN0CKEQZpewpdHTporIVVw=;
+        b=JDdFi0O2kQ8AlqcGuC6UzWqeBLFls6ROgdqX9PkWWvjoSHDFWyC3y+5yOj/Xr26QsJ
+         fPx0Ur5PpyhqngM0YerGLJHHH9b1aiJYM2heVZr6LxoQ1HxwIS7P4CmxIkt2x5hOAJy8
+         Vb7BoDE0odnMM4P//2Zshbbfjzxqszp/ve23k476sTGCI7UCCTY8cIIxiqtujyersMkQ
+         FZm4FWkTJcHroD7FQLxeaZ82JkBIhWVFIWsmtFPWKUWkF6q7Ne/U88Zxv7uRyuwhJS4D
+         4CFpSFjEY7B9Sq12AMkq8rngukyUxmmUiWl7V61/l9eMbFQ7a1E2OU1/NbgfJEciKe23
+         BBdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=tq4m4h2a9TL5pXC8bkU2F7Xjx88fuMptJM1ziSfBc+I=;
-        b=EuOPU23Iexc+T1WOqmho47KOj4RfSipD/zEanW0KUIJNIly35AcQ4oPubK65wx4NRG
-         jtpu+gsk1BIBBAm5YPHIGCW5L6rJzxIa3M9b9ku5VO8i7mPvdj7vC3/Nh5tsIgr1/0Kz
-         JnObqbwmPbOzdfXYaTo4+RpHEd4Pv00X2NdExUNJ4+IUoTz56cXKsYiFS/LzbxDb5u38
-         fpzbyKvXcQJUxh73KjiyMvAmLTfzR2N89w/Y146CxN3CD5A+FVzMFO974qjX/Kp+t1Sb
-         J7V29iH77+7vWUStx6pte0e+pxzH542niHCDX1bkYlYOFgz7XqpZNwVZdWnYFzBhDBWB
-         xuVg==
-X-Gm-Message-State: AOAM5322XuYypL7S0cvu2OOQF8H+QmS9gj33EhttTOHv50Y5ZDUsTLhg
-        QGaq4mxkdRihF+hHZljPyVY=
-X-Google-Smtp-Source: ABdhPJx1xFOvDqifGjgy8vUu0iFeypqKlimb/iCgqrKDVMKGCO8pX4GP2UEyFxYkxqrIJSz9nKQE5A==
-X-Received: by 2002:a17:902:788b:: with SMTP id q11mr6116353pll.216.1594951728753;
-        Thu, 16 Jul 2020 19:08:48 -0700 (PDT)
-Received: from vm_111_229_centos ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id r25sm1793183pgv.88.2020.07.16.19.08.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Jul 2020 19:08:47 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 10:08:42 +0800
-From:   YangYuxi <yx.atom1@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ebpf: fix parameter naming confusing
-Message-ID: <20200717020842.GA29747@vm_111_229_centos>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fYbHCA6JKXOLMV26BdBnZoN0CKEQZpewpdHTporIVVw=;
+        b=ba2X6+xDXxr+TyncyOtGNEF6AzNEFVKrD+LBmwyDQc11pWHu8CERNO1KtQXVROrBnU
+         WsY98IX0QS391GjKoevA5+SLmmFupBnAsuNBtVPzxP06jG+kIEEYfmJS6sU0o+RvSwB4
+         z8ZRs+NqWzTKngU/hoE/NAbhs3e0w+BmC3JlmzqCgIWuV+mNGbspDhIZgldb+k+XMA1O
+         sgyISOnVKsvOqwe6IYsQJR2kMRySpMyLTOaULFHKtd5oNx1z4UCk81D3qMJXDrQvA/i4
+         6hwTMgQkjf9lmFjIRw34BoWwYcrLjzZdynQ0YvidzsWAmmEWaDvI1hv/lLLqSUxgmcPf
+         v+pg==
+X-Gm-Message-State: AOAM530zh0S0Bw8GhnNaNDHsaglx2qo+UQJ2WNzaSCtQ1CJwmQl3JrwC
+        3isSWiuXhIg7rcB12PBlLJKse+8H
+X-Google-Smtp-Source: ABdhPJyuaToOy9SqxSzsIW8iJuBch2LlJ1HOXRUCLMqk/4ULdN6Eo3vTGOjIwlm2YhUvPos9HSqBiw==
+X-Received: by 2002:a63:5fcc:: with SMTP id t195mr6609877pgb.56.1594952187556;
+        Thu, 16 Jul 2020 19:16:27 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
+        by smtp.gmail.com with ESMTPSA id b4sm6009475pfo.137.2020.07.16.19.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 19:16:26 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 19:16:24 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH bpf-next 4/5] bpf, x64: rework pro/epilogue and tailcall
+ handling in JIT
+Message-ID: <20200717021624.do6mrxxr37vc7ajd@ast-mbp.dhcp.thefacebook.com>
+References: <20200715233634.3868-1-maciej.fijalkowski@intel.com>
+ <20200715233634.3868-5-maciej.fijalkowski@intel.com>
+ <932141f5-7abb-1c01-111d-a64baf187a40@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <932141f5-7abb-1c01-111d-a64baf187a40@iogearbox.net>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: YangYuxi <yx.atom1@gmail.com>
----
- kernel/bpf/syscall.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Fri, Jul 17, 2020 at 01:06:07AM +0200, Daniel Borkmann wrote:
+> > +				ret = bpf_arch_text_poke(poke->tailcall_bypass,
+> > +							 BPF_MOD_JUMP,
+> > +							 NULL, bypass_addr);
+> > +				BUG_ON(ret < 0 && ret != -EINVAL);
+> > +				/* let other CPUs finish the execution of program
+> > +				 * so that it will not possible to expose them
+> > +				 * to invalid nop, stack unwind, nop state
+> > +				 */
+> > +				synchronize_rcu();
+> 
+> Very heavyweight that we need to potentially call this /multiple/ times for just a
+> /single/ map update under poke mutex even ... but agree it's needed here to avoid
+> racing. :(
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0fd80ac81f70..300ae16baffc 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1881,13 +1881,13 @@ struct bpf_prog *bpf_prog_inc_not_zero(struct bpf_prog *prog)
- EXPORT_SYMBOL_GPL(bpf_prog_inc_not_zero);
- 
- bool bpf_prog_get_ok(struct bpf_prog *prog,
--			    enum bpf_prog_type *attach_type, bool attach_drv)
-+			    enum bpf_prog_type *prog_type, bool attach_drv)
- {
- 	/* not an attachment, just a refcount inc, always allow */
--	if (!attach_type)
-+	if (!prog_type)
- 		return true;
- 
--	if (prog->type != *attach_type)
-+	if (prog->type != *prog_type)
- 		return false;
- 	if (bpf_prog_is_dev_bound(prog->aux) && !attach_drv)
- 		return false;
-@@ -1895,7 +1895,7 @@ bool bpf_prog_get_ok(struct bpf_prog *prog,
- 	return true;
- }
- 
--static struct bpf_prog *__bpf_prog_get(u32 ufd, enum bpf_prog_type *attach_type,
-+static struct bpf_prog *__bpf_prog_get(u32 ufd, enum bpf_prog_type *prog_type,
- 				       bool attach_drv)
- {
- 	struct fd f = fdget(ufd);
-@@ -1904,7 +1904,7 @@ static struct bpf_prog *__bpf_prog_get(u32 ufd, enum bpf_prog_type *attach_type,
- 	prog = ____bpf_prog_get(f);
- 	if (IS_ERR(prog))
- 		return prog;
--	if (!bpf_prog_get_ok(prog, attach_type, attach_drv)) {
-+	if (!bpf_prog_get_ok(prog, prog_type, attach_drv)) {
- 		prog = ERR_PTR(-EINVAL);
- 		goto out;
- 	}
--- 
-1.8.3.1
+Yeah. I wasn't clear with my suggestion earlier.
+I meant to say that synchronize_rcu() can be done between two loops.
+list_for_each_entry(elem, &aux->poke_progs, list)
+   for (i = 0; i < elem->aux->size_poke_tab; i++)
+        bpf_arch_text_poke(poke->tailcall_bypass, ...
+synchronize_rcu();
+list_for_each_entry(elem, &aux->poke_progs, list)
+   for (i = 0; i < elem->aux->size_poke_tab; i++)
+        bpf_arch_text_poke(poke->poke->tailcall_target, ...
 
+Not sure how much better it will be though.
+text_poke is heavy.
+I think it's heavier than synchronize_rcu().
+Long term we can do batch of text_poke-s.
+
+I'm actually fine with above approach of synchronize_rcu() without splitting the loop.
+This kind of optimizations can be done later as a follow up.
+I'd really like to land this stuff in this bpf-next cycle.
+It's a big improvement to tail_calls and bpf2bpf calls.
