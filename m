@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26A82240FC
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 18:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393EB22411A
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 18:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgGQQ4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 12:56:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6284 "EHLO
+        id S1728209AbgGQQ5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 12:57:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28842 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728031AbgGQQ4f (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jul 2020 12:56:35 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HGXd1a056699;
-        Fri, 17 Jul 2020 12:56:23 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32autbh9wy-1
+        by vger.kernel.org with ESMTP id S1727101AbgGQQ5m (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jul 2020 12:57:42 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HGXVGp111927;
+        Fri, 17 Jul 2020 12:57:30 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32axd2mynq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 12:56:23 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HGoLqm010926;
-        Fri, 17 Jul 2020 16:56:21 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 327527kh0r-1
+        Fri, 17 Jul 2020 12:57:29 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HGoclJ016655;
+        Fri, 17 Jul 2020 16:57:27 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 32b6jsr8tn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jul 2020 16:56:21 +0000
+        Fri, 17 Jul 2020 16:57:27 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HGuIHc61407314
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HGu1Dt52756758
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jul 2020 16:56:18 GMT
+        Fri, 17 Jul 2020 16:56:01 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69675A405F;
-        Fri, 17 Jul 2020 16:56:18 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id C99FBA405F;
+        Fri, 17 Jul 2020 16:57:24 +0000 (GMT)
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDF72A405B;
-        Fri, 17 Jul 2020 16:56:17 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 51817A405B;
+        Fri, 17 Jul 2020 16:57:24 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.145.6.1])
         by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Jul 2020 16:56:17 +0000 (GMT)
+        Fri, 17 Jul 2020 16:57:24 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH 4/5] s390/bpf: tolerate not converging code shrinking
-Date:   Fri, 17 Jul 2020 18:53:25 +0200
-Message-Id: <20200717165326.6786-5-iii@linux.ibm.com>
+Subject: [PATCH 5/5] s390/bpf: use bpf_skip() in bpf_jit_prologue()
+Date:   Fri, 17 Jul 2020 18:53:26 +0200
+Message-Id: <20200717165326.6786-6-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200717165326.6786-1-iii@linux.ibm.com>
 References: <20200717165326.6786-1-iii@linux.ibm.com>
@@ -55,77 +55,44 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-17_08:2020-07-17,2020-07-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=999 clxscore=1015 lowpriorityscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007170117
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007170115
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"BPF_MAXINSNS: Maximum possible literals" unnecessarily falls back to
-the interpreter because of failing sanity check in bpf_set_addr. The
-problem is that there are a lot of branches that can be shrunk, and
-doing so opens up the possibility to shrink even more. This process
-does not converge after 3 passes, causing code offsets to change during
-the codegen pass, which must never happen.
+Now that we have bpf_skip() for emitting nops, use it in
+bpf_jit_prologue() in order to reduce code duplication.
 
-Fix by inserting nops during codegen pass in order to preserve code
-offets.
-
-Fixes: 4e9b4a6883dd ("s390/bpf: Use relative long branches")
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ arch/s390/net/bpf_jit_comp.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 625ebe32b2d1..e68854ab27ae 100644
+index e68854ab27ae..be4b8532dd3c 100644
 --- a/arch/s390/net/bpf_jit_comp.c
 +++ b/arch/s390/net/bpf_jit_comp.c
-@@ -490,6 +490,24 @@ static void save_restore_regs(struct bpf_jit *jit, int op, u32 stack_depth)
- 	} while (re <= last);
- }
- 
-+static void bpf_skip(struct bpf_jit *jit, int size)
-+{
-+	if (size >= 6 && !is_valid_rel(size)) {
-+		/* brcl 0xf,size */
-+		EMIT6_PCREL_RIL(0xc0f4000000, size);
-+		size -= 6;
-+	} else if (size >= 4 && is_valid_rel(size)) {
-+		/* brc 0xf,size */
-+		EMIT4_PCREL(0xa7f40000, size);
-+		size -= 4;
-+	}
-+	while (size >= 2) {
-+		/* bcr 0,%0 */
-+		_EMIT2(0x0700);
-+		size -= 2;
-+	}
-+}
-+
- /*
-  * Emit function prologue
-  *
-@@ -1610,7 +1628,14 @@ static bool bpf_is_new_addr_sane(struct bpf_jit *jit, int i)
-  */
- static int bpf_set_addr(struct bpf_jit *jit, int i)
- {
--	if (!bpf_is_new_addr_sane(jit, i))
-+	int delta;
-+
-+	if (is_codegen_pass(jit)) {
-+		delta = jit->prg - jit->addrs[i];
-+		if (delta < 0)
-+			bpf_skip(jit, -delta);
-+	}
-+	if (WARN_ON_ONCE(!bpf_is_new_addr_sane(jit, i)))
- 		return -1;
- 	jit->addrs[i] = jit->prg;
- 	return 0;
+@@ -520,10 +520,11 @@ static void bpf_jit_prologue(struct bpf_jit *jit, u32 stack_depth)
+ 		/* xc STK_OFF_TCCNT(4,%r15),STK_OFF_TCCNT(%r15) */
+ 		_EMIT6(0xd703f000 | STK_OFF_TCCNT, 0xf000 | STK_OFF_TCCNT);
+ 	} else {
+-		/* j tail_call_start: NOP if no tail calls are used */
+-		EMIT4_PCREL(0xa7f40000, 6);
+-		/* bcr 0,%0 */
+-		EMIT2(0x0700, 0, REG_0);
++		/*
++		 * There are no tail calls. Insert nops in order to have
++		 * tail_call_start at a predictable offset.
++		 */
++		bpf_skip(jit, 6);
+ 	}
+ 	/* Tail calls have to skip above initialization */
+ 	jit->tail_call_start = jit->prg;
 -- 
 2.25.4
 
