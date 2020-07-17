@@ -2,116 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0016C22388B
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 11:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AEB2238DA
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 12:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgGQJhC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 05:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
+        id S1726059AbgGQKAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 06:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgGQJhC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:37:02 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C092C061755;
-        Fri, 17 Jul 2020 02:37:02 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id o4so5671834lfi.7;
-        Fri, 17 Jul 2020 02:37:02 -0700 (PDT)
+        with ESMTP id S1725864AbgGQKAj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 06:00:39 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910EEC061755
+        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 03:00:39 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id j21so5707566lfe.6
+        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 03:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=87YqFHnfopSWJ/Fq+3OaDUmi+aYBFzMDPp9qxP7ggWU=;
-        b=WyRLW8eV1DdBmZ6yQ0vbTot+3SHkPdr/hLf0wCds4cJz5tbxP1phSxYic9Wlu+jmYJ
-         uFlBkUwEO5rAh/EIK3DYqpxWzn77unoKDhscrg4pGgqX3dOP/75El637nFli1gqi4d1J
-         HfuVwqdI4VDXXcSUDq99ScuVQilaDwYDh9EhKrgoQQJTCXB+nED9kPd07A6kwaBIb/DW
-         AyH7HqqQf6ieIgcufcY3fOSUDNNb8E/vz7K2XwOL8Yjj10kiT8AqgQ3l55YnRzKHP3uQ
-         yip9mcswAog2aPDlPZsmJd1/7rIItpH5sQqekZ/5+3jKzPLkDYhMMguAbnRKG+iZXD6g
-         a/bg==
+        d=cloudflare.com; s=google;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bADpGl86q6EJLZnxn8kLzjQmK/lNofsyPZihu7kJjnE=;
+        b=J+d4WdPFwlQ5nyy2LpQmIGqa6R44yx9kT4TDAnrEbBqRMBV21zuTxTPkQvAZPqVtxi
+         zHd7koRS4YSNRudHC3kbvTL9Md3VHJLF/uKbTS8V69D5V+WdSnJh9niBFD5YqcU+RcVv
+         PoDfCXKmAqTeh3B6NyrcbuHo2vb0NN45SUwDg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=87YqFHnfopSWJ/Fq+3OaDUmi+aYBFzMDPp9qxP7ggWU=;
-        b=MYcRqqvY4Rh37bKmCuk6hsaexMfZFvpqux3YH/D/rC9xKa5w3faQ2NMyWYQ027DGJH
-         b5WsszymQkTmScQZlWY6A+lkMvRQyrJ27oGjkvRoLiJBvGhEgft/GY2DbV3M6vAI4kEm
-         PzQ3+BUJ3Hl+mUfrdP1m1RZ18Ni0sH8BR5cPK495RSlJZgcTVaosQwybuaahlpF5Fpns
-         exM1hCUaGW7z/qBK/foSSEbVitvf6UrtGrkdm/SS7QQF6Rb0JL10eWsOKuLar9wkdxgL
-         E92T1KZAZTNeHSMm4Zj50EDzPc2zLut7QVF9QEqvp6tffV7XTNpEHWmL0sAcKg4IeIbS
-         o7AQ==
-X-Gm-Message-State: AOAM531py5eg5YMehjqn5MlSQWxnyQ3qf9q+fSvDDCIDJLkk7Bwk4WYO
-        Sg9U+nBHpTYFMe3JqI0N3GLB7rI4UIz2WRUvhCs=
-X-Google-Smtp-Source: ABdhPJzU9zBcBPpzdbz3uUQulv0Y2aLZZnQCPOXDOckxM+f2wsD/6YKNl5s5bUqazTKgw8OkhsFHu9CzrD8JZ5JhMCk=
-X-Received: by 2002:a19:815:: with SMTP id 21mr4179854lfi.119.1594978620748;
- Fri, 17 Jul 2020 02:37:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bADpGl86q6EJLZnxn8kLzjQmK/lNofsyPZihu7kJjnE=;
+        b=iliFf02FesfwItD6uVAqwOrTTPbT/mN30czDmFF0PttmCzKn7BHCyHz9zzQ29eGHBP
+         dmPCsVn4PmaHN4FCLZrprG3vdJ1vbHYMid7WBDV90lnEuAK05KK+G1r9pGsQplVEZsRF
+         daWPnTfqfhRn86i07HakhBULFJDpRSYBwGNGTGVMP8i0yPjlb94n7xwC2rTtF75KEpZ2
+         4KYdQfQki7G9xmiMkuwedcnCuQVBKJLttxewE372YIPVVagMeaopC1iblAGHL7Uu977j
+         f/7douUpcV2yfcjeUAvw7m56/KmR8tYVZbCBdYvlRreZgUuTr2ilDLKQ3CFlB1jTNHl8
+         rO8w==
+X-Gm-Message-State: AOAM530V3p2pHU1Y3UUT2yRK1zhZ3F4GcYqJKnPWoxfipiSIPVqHgZIe
+        CQCZfFsw4oyRnQqUBFBYlyavRA==
+X-Google-Smtp-Source: ABdhPJwf4U/87U6kKA/b2yinQog7obuAL+02d/opObmNNbsQFgD6Fj9HbuDt9hXVCQApTvZugmqQtA==
+X-Received: by 2002:a19:ae19:: with SMTP id f25mr4464327lfc.63.1594980037894;
+        Fri, 17 Jul 2020 03:00:37 -0700 (PDT)
+Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id i19sm1708411lfi.14.2020.07.17.03.00.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 03:00:37 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 12:00:13 +0200
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        brouer@redhat.com, daniel@iogearbox.net, toke@redhat.com,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
+        andrii.nakryiko@gmail.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v7 bpf-next 0/9] introduce support for XDP programs in
+ CPUMAP
+Message-ID: <20200717120013.0926a74e@toad>
+In-Reply-To: <cover.1594734381.git.lorenzo@kernel.org>
+References: <cover.1594734381.git.lorenzo@kernel.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200715233634.3868-1-maciej.fijalkowski@intel.com>
- <20200715233634.3868-4-maciej.fijalkowski@intel.com> <93a9ff59-79d1-34ac-213e-1586fd0d04ef@iogearbox.net>
-In-Reply-To: <93a9ff59-79d1-34ac-213e-1586fd0d04ef@iogearbox.net>
-From:   Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Date:   Fri, 17 Jul 2020 11:36:49 +0200
-Message-ID: <CAOuyyO4UWe7+=0bunQgv=yMOsLvC6PmnW6cgzorj19fWY0kgrg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] bpf: propagate poke descriptors to subprograms
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:18 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 7/16/20 1:36 AM, Maciej Fijalkowski wrote:
-> > Previously, there was no need for poke descriptors being present in
-> > subprogram's bpf_prog_aux struct since tailcalls were simply not allowed
-> > in them. Each subprog is JITed independently so in order to enable
-> > JITing such subprograms, simply copy poke descriptors from main program
-> > to subprogram's poke tab.
-> >
-> > Add also subprog's aux struct to the BPF map poke_progs list by calling
-> > on it map_poke_track().
-> >
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >   kernel/bpf/verifier.c | 9 +++++++++
-> >   1 file changed, 9 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 6481342b31ba..3b406b2860ef 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -9932,6 +9932,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> >               goto out_undo_insn;
-> >
-> >       for (i = 0; i < env->subprog_cnt; i++) {
-> > +             struct bpf_map *map_ptr;
-> > +             int j;
-> > +
-> >               subprog_start = subprog_end;
-> >               subprog_end = env->subprog_info[i + 1].start;
-> >
-> > @@ -9956,6 +9959,12 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> >               func[i]->aux->btf = prog->aux->btf;
-> >               func[i]->aux->func_info = prog->aux->func_info;
-> >
-> > +             for (j = 0; j < prog->aux->size_poke_tab; j++) {
-> > +                     bpf_jit_add_poke_descriptor(func[i], &prog->aux->poke_tab[j]);
-> > +                     map_ptr = func[i]->aux->poke_tab[j].tail_call.map;
-> > +                     map_ptr->ops->map_poke_track(map_ptr, func[i]->aux);
->
-> Error checking missing for bpf_jit_add_poke_descriptor() and map_poke_track() ..? It
-> must be guaranteed that adding this to the tracker must not fail, otherwise this will
-> be a real pain to debug given the prog will never be patched.
+On Tue, 14 Jul 2020 15:56:33 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-My bad, will fix it in v2.
+> Similar to what David Ahern proposed in [1] for DEVMAPs, introduce the
+> capability to attach and run a XDP program to CPUMAP entries.
+> The idea behind this feature is to add the possibility to define on which CPU
+> run the eBPF program if the underlying hw does not support RSS.
+> I respin patch 1/6 from a previous series sent by David [2].
+> The functionality has been tested on Marvell Espressobin, i40e and mlx5.
+> Detailed tests results can be found here:
+> https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap04-map-xdp-prog.org
+> 
+> Changes since v6:
+> - rebase on top of bpf-next
+> - move bpf_cpumap_val and bpf_prog in the first bpf_cpu_map_entry cache-line
+> 
+> Changes since v5:
+> - move bpf_prog_put() in put_cpu_map_entry()
+> - remove READ_ONCE(rcpu->prog) in cpu_map_bpf_prog_run_xdp
+> - rely on bpf_prog_get_type() instead of bpf_prog_get_type_dev() in
+>   __cpu_map_load_bpf_program()
+> 
+> Changes since v4:
+> - move xdp_clear_return_frame_no_direct inside rcu section
+> - update David Ahern's email address
+> 
+> Changes since v3:
+> - fix typo in commit message
+> - fix access to ctx->ingress_ifindex in cpumap bpf selftest
+> 
+> Changes since v2:
+> - improved comments
+> - fix return value in xdp_convert_buff_to_frame
+> - added patch 1/9: "cpumap: use non-locked version __ptr_ring_consume_batched"
+> - do not run kmem_cache_alloc_bulk if all frames have been consumed by the XDP
+>   program attached to the CPUMAP entry
+> - removed bpf_trace_printk in kselftest
+> 
+> Changes since v1:
+> - added performance test results
+> - added kselftest support
+> - fixed memory accounting with page_pool
+> - extended xdp_redirect_cpu_user.c to load an external program to perform
+>   redirect
+> - reported ifindex to attached eBPF program
+> - moved bpf_cpumap_val definition to include/uapi/linux/bpf.h
+> 
+> [1] https://patchwork.ozlabs.org/project/netdev/cover/20200529220716.75383-1-dsahern@kernel.org/
+> [2] https://patchwork.ozlabs.org/project/netdev/patch/20200513014607.40418-2-dsahern@kernel.org/
+> 
+> David Ahern (1):
+>   net: refactor xdp_convert_buff_to_frame
+> 
+> Jesper Dangaard Brouer (1):
+>   cpumap: use non-locked version __ptr_ring_consume_batched
+> 
+> Lorenzo Bianconi (7):
+>   samples/bpf: xdp_redirect_cpu_user: do not update bpf maps in option
+>     loop
+>   cpumap: formalize map value as a named struct
+>   bpf: cpumap: add the possibility to attach an eBPF program to cpumap
+>   bpf: cpumap: implement XDP_REDIRECT for eBPF programs attached to map
+>     entries
+>   libbpf: add SEC name for xdp programs attached to CPUMAP
+>   samples/bpf: xdp_redirect_cpu: load a eBPF program on cpumap
+>   selftest: add tests for XDP programs in CPUMAP entries
+> 
+>  include/linux/bpf.h                           |   6 +
+>  include/net/xdp.h                             |  41 ++--
+>  include/trace/events/xdp.h                    |  16 +-
+>  include/uapi/linux/bpf.h                      |  14 ++
+>  kernel/bpf/cpumap.c                           | 162 +++++++++++---
+>  net/core/dev.c                                |   9 +
+>  samples/bpf/xdp_redirect_cpu_kern.c           |  25 ++-
+>  samples/bpf/xdp_redirect_cpu_user.c           | 209 ++++++++++++++++--
+>  tools/include/uapi/linux/bpf.h                |  14 ++
+>  tools/lib/bpf/libbpf.c                        |   2 +
+>  .../bpf/prog_tests/xdp_cpumap_attach.c        |  70 ++++++
+>  .../bpf/progs/test_xdp_with_cpumap_helpers.c  |  36 +++
+>  12 files changed, 531 insertions(+), 73 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+> 
 
->
-> > +             }
-> > +
-> >               /* Use bpf_prog_F_tag to indicate functions in stack traces.
-> >                * Long term would need debug info to populate names
-> >                */
-> >
->
+This started showing up with when running ./test_progs from recent
+bpf-next (bfdfa51702de). Any chance it is related?
+
+[ 2950.440613] =============================================
+
+[ 3073.281578] INFO: task cpumap/0/map:26:536 blocked for more than 860 seconds.
+[ 3073.285492]       Tainted: G        W         5.8.0-rc4-01471-g15d51f3a516b #814
+[ 3073.289177] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 3073.293021] cpumap/0/map:26 D    0   536      2 0x00004000
+[ 3073.295755] Call Trace:
+[ 3073.297143]  __schedule+0x5ad/0xf10
+[ 3073.299032]  ? pci_mmcfg_check_reserved+0xd0/0xd0
+[ 3073.301416]  ? static_obj+0x31/0x80
+[ 3073.303277]  ? mark_held_locks+0x24/0x90
+[ 3073.305313]  ? cpu_map_update_elem+0x6d0/0x6d0
+[ 3073.307544]  schedule+0x6f/0x160
+[ 3073.309282]  schedule_preempt_disabled+0x14/0x20
+[ 3073.311593]  kthread+0x175/0x240
+[ 3073.313299]  ? kthread_create_on_node+0xd0/0xd0
+[ 3073.315106]  ret_from_fork+0x1f/0x30
+[ 3073.316365]
+               Showing all locks held in the system:
+[ 3073.318423] 1 lock held by khungtaskd/33:
+[ 3073.319642]  #0: ffffffff82d246a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x28/0x1c3
+
+[ 3073.322249] =============================================
