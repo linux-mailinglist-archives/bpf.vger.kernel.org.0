@@ -2,109 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740DD224426
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 21:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5959122463A
+	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 00:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgGQTVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 15:21:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57948 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728183AbgGQTVu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:21:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595013709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A2I9O+xuUTOEcKzc5eYOtMc3MxBcbVZkckTnyrsuEPg=;
-        b=TqHzkrvf0d2NSbtMIsKvkF4DJZz1U8rTboi7SHvZAanHPlQ7qT6l56y4HKsdHMTI4a9/p4
-        rVgR53h4EtPpYfWb8svwc2/l9hzwUk5BCiFAIbqvT2SY2ebdd3IpvVf6t2GZo++Tu+iffa
-        AGNyeXT0gdO1poBWyr4+uoDAvaqv1RM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-Em5kLwL2OCyR27pSDxkrIA-1; Fri, 17 Jul 2020 15:21:45 -0400
-X-MC-Unique: Em5kLwL2OCyR27pSDxkrIA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EF88107B7EF;
-        Fri, 17 Jul 2020 19:21:44 +0000 (UTC)
-Received: from krava (unknown [10.40.192.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4B7005C57D;
-        Fri, 17 Jul 2020 19:21:42 +0000 (UTC)
-Date:   Fri, 17 Jul 2020 21:21:41 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 1/2] bpf: change var type of BTF_ID_LIST to
- static
-Message-ID: <20200717192141.GF528602@krava>
-References: <20200717184706.3476992-1-yhs@fb.com>
- <20200717184706.3477154-1-yhs@fb.com>
+        id S1726564AbgGQWXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 18:23:40 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48098 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbgGQWXj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 18:23:39 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1jwYlV-0002g7-8m
+        for bpf@vger.kernel.org; Fri, 17 Jul 2020 22:23:37 +0000
+Received: by mail-io1-f70.google.com with SMTP id k12so7426239iom.19
+        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 15:23:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VTRHb0I4lJ0TXv3fEEeiTuxPtQBoGCZFEk4QSYILvTw=;
+        b=hmr0IUzwjoN4CedZ8UowCp4zr3jvU1BI6ECzI9hRWKc7BhCstporjkvJ+rvJyLIQwL
+         HTVfLaBSV8YZcFmMd0qqFmFqmfrGG+nYz7NSFOdFqofzz1fu9tU0/+hYXP6nbVmPc+Nx
+         OfRpu0F6JknEIpEncKxeT4ljqPvNdtYgirePk6xkKay3DQAV8LGnqIszKN+ZKaFsEye/
+         D9SYLDY9CgFGLieVqxJ+58Ad5gM2g3WJytb8NBFsDm8bC/FssbXSf9zTA08UK3UGMXT/
+         kkGoAKsZsjoHfC151YaVOMQy7qLShqHcIQgLr/abw40RPkA4nrnFwaSs76eSkkTN9Co3
+         Fotg==
+X-Gm-Message-State: AOAM530Mip6MREnYxFwVAKF/W9yBgyBnvAIzYl73/d0d/qPSC+wQ5Beo
+        djMDMiypU/cVxezGC/f56mJ1yezhe5lEDM2QiB1EjPEg90XMPs8zRgiXG9bP4pU/NEGf0jodskG
+        mWJbaUKRD+qL47m4T8EIWYB/xG+cvfw==
+X-Received: by 2002:a6b:6d07:: with SMTP id a7mr11594196iod.166.1595024616173;
+        Fri, 17 Jul 2020 15:23:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwoR/QDdzMUXwI93+BnrKlP7K1ZLswHry1d5yDI6K6imiBAtUDwMMtToaUkOa3OeVEW1RKLUg==
+X-Received: by 2002:a6b:6d07:: with SMTP id a7mr11594177iod.166.1595024615901;
+        Fri, 17 Jul 2020 15:23:35 -0700 (PDT)
+Received: from localhost ([2605:a601:ac0f:820:90fa:132a:bf3e:99a1])
+        by smtp.gmail.com with ESMTPSA id s12sm5015422ilk.58.2020.07.17.15.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2020 15:23:35 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 17:23:34 -0500
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH 2/5] s390/bpf: fix sign extension in branch_ku
+Message-ID: <20200717222334.GQ3644@ubuntu-x1>
+References: <20200717165326.6786-1-iii@linux.ibm.com>
+ <20200717165326.6786-3-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200717184706.3477154-1-yhs@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200717165326.6786-3-iii@linux.ibm.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 11:47:06AM -0700, Yonghong Song wrote:
-> The BTF_ID_LIST macro definition in btf_ids.h:
->    #define BTF_ID_LIST(name)                \
->    __BTF_ID_LIST(name)                      \
->    extern u32 name[];
+On Fri, Jul 17, 2020 at 06:53:23PM +0200, Ilya Leoshkevich wrote:
+> Both signed and unsigned variants of BPF_JMP | BPF_K require
+> sign-extending the immediate. JIT emits cgfi for the signed case,
+> which is correct, and clgfi for the unsigned case, which is not
+> correct: clgfi zero-extends the immediate.
 > 
-> The variable defined in __BTF_ID_LIST has
-> ".local" directive, which means the variable
-> is only available in the current file.
-> So change the scope of "name" in the declaration
-> from "extern" to "static".
+> s390 does not provide an instruction that does sign-extension and
+> unsigned comparison at the same time. Therefore, fix by first loading
+> the sign-extended immediate into work register REG_1 and proceeding
+> as if it's BPF_X.
 > 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Fixes: 4e9b4a6883dd ("s390/bpf: Use relative long branches")
+> Reported-by: Seth Forshee <seth.forshee@canonical.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+This fixes the failing tests I was seeing. Thanks!
 
-thanks,
-jirka
-
-> ---
->  include/linux/btf_ids.h       | 2 +-
->  tools/include/linux/btf_ids.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> index 1cdb56950ffe..cebc9a655959 100644
-> --- a/include/linux/btf_ids.h
-> +++ b/include/linux/btf_ids.h
-> @@ -66,7 +66,7 @@ asm(							\
->  
->  #define BTF_ID_LIST(name)				\
->  __BTF_ID_LIST(name)					\
-> -extern u32 name[];
-> +static u32 name[];
->  
->  /*
->   * The BTF_ID_UNUSED macro defines 4 zero bytes.
-> diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-> index fe019774f8a7..b870776201e5 100644
-> --- a/tools/include/linux/btf_ids.h
-> +++ b/tools/include/linux/btf_ids.h
-> @@ -64,7 +64,7 @@ asm(							\
->  
->  #define BTF_ID_LIST(name)				\
->  __BTF_ID_LIST(name)					\
-> -extern u32 name[];
-> +static u32 name[];
->  
->  /*
->   * The BTF_ID_UNUSED macro defines 4 zero bytes.
-> -- 
-> 2.24.1
-> 
-
+Tested-by: Seth Forshee <seth.forshee@canonical.com>
