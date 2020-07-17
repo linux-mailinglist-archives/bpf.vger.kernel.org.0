@@ -2,276 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AB4222F23
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 01:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AE6222FD7
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 02:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgGPXhn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jul 2020 19:37:43 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45876 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725933AbgGPXhn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jul 2020 19:37:43 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GMrY0D005577
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 16:05:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=HC19BocnzqfbZdasNet2djSQezi7uoWDz8ER7wUvdIo=;
- b=SSVa2bWne1k8JfwGfXA9LexuAIe9u83aTYiQnOi9a0wywp9Wx+K3lPFDvlwUBp/TGhpb
- rrtLhz6aS30ZFd4S84lLyPOYOA6UOg9SR7Y7lP7Jy1jgkK9gSZSI5uNLQYH1DebdSDy5
- aDjdcD3F2L3lS2sFY9qf4fqLhEmBWoOPNnE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32aajewsd2-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 16:05:40 -0700
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 16 Jul 2020 16:05:38 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id D11E762E52F4; Thu, 16 Jul 2020 15:59:43 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 2/2] selftests/bpf: add callchain_stackid
-Date:   Thu, 16 Jul 2020 15:59:33 -0700
-Message-ID: <20200716225933.196342-3-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200716225933.196342-1-songliubraving@fb.com>
-References: <20200716225933.196342-1-songliubraving@fb.com>
+        id S1726125AbgGQAQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jul 2020 20:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgGQAQy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jul 2020 20:16:54 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3309C061755
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 17:16:53 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id i4so8311332iov.11
+        for <bpf@vger.kernel.org>; Thu, 16 Jul 2020 17:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P0uB4LEhwB5afRd2rzG3DwmeDlw7LScfqHdvXwiETx0=;
+        b=WZ5+YqTj5FmDvKv75AVsoE4Mky8ukBkvKMF4BwR9arBfBC6+DVBStlOM/qM0+cU9lw
+         +rftK0zYdbNFeeKbajfNf2DhA/2bCdupWsr7/2d9ajUHy70WjF6Mf3VjMqs4Obj64IIa
+         MZ0pLJwINxg6UcnFLrqJB00PB4bwmC9KO8nXs3TUS8j8dHm5f5VpTeP/Oi7gPpebKsJX
+         8Yw/u7KMZ8f+VxLM8dXWVS6+3O/MFwV7DzkFGP4xl8KfWuZYVvkqqCJQG7JRv8KFsXm0
+         ji+pHYeSgYB/o2pUV8W86tKeP2rMaakkyM7nZchkBgk50+XUEXw2yMzxoPmUCpjc3U3u
+         s/NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P0uB4LEhwB5afRd2rzG3DwmeDlw7LScfqHdvXwiETx0=;
+        b=igOD9E7HTv45lS92GnZPcQCIGsZRD2f7NpQ8dj0ZzATqxfyUBKLDN4yQdlZUOL5FXh
+         hiPAcqderVEzIcIjxuORWKFtuiQsk8y0B4ljgk8boOA1xhfwceUPXQoiVJDNN/4XOy4p
+         660DIKoOOfqRK8BzK33A8q6XBPV4Y3Ecpjh04oHeTDWY9Bl4i8Y2eQOZ5OxceazWg2g8
+         yb3c0Ga+aNn8xLZFndnMG0VbrjCVn5dqCarfVPEVPMIz3552ItwTvJv7dianz2QaD1Rz
+         oAehP2b3JAqZjMKe3X9KYC0/JXXDuRNC/YNEFpv/XtPAITHufIiuZ/h4PZYbHc77Sbjy
+         1Nrg==
+X-Gm-Message-State: AOAM530ct+V4sPBXi4ESezgpdGTyqcAh+N1OliC9wug5duZeeaQiVIwp
+        BCY2fDCOLKh9mmC/mELbYpnnXc6xOkBTKQ==
+X-Google-Smtp-Source: ABdhPJwaZCRF6tvL+bd8x4ramOJM8tDfBGcyF6Cfu6SVRlAWfX9sQb4KbeMLCoI1uAXZob0hsVu6HQ==
+X-Received: by 2002:a92:25c9:: with SMTP id l192mr7005393ill.135.1594945012922;
+        Thu, 16 Jul 2020 17:16:52 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
+        by smtp.gmail.com with ESMTPSA id m5sm3427493ilg.18.2020.07.16.17.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 17:16:52 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Subject: [PATCH v3 bpf-next 0/5] Make BPF CGROUP_STORAGE map usable by different programs at once
+Date:   Thu, 16 Jul 2020 19:16:24 -0500
+Message-Id: <cover.1594944827.git.zhuyifei@google.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 phishscore=0 clxscore=1015 impostorscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007160148
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This tests new helper function bpf_get_stackid_pe and bpf_get_stack_pe.
-These two helpers have different implementation for perf_event with PEB
-entries.
+From: YiFei Zhu <zhuyifei@google.com>
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/perf_event_stackmap.c      | 116 ++++++++++++++++++
- .../selftests/bpf/progs/perf_event_stackmap.c |  59 +++++++++
- 2 files changed, 175 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
-ckmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
-.c
+To access the storage in a CGROUP_STORAGE map, one uses
+bpf_get_local_storage helper, which is extremely fast due to its
+use of per-CPU variables. However, its whole code is built on
+the assumption that one map can only be used by one program at any
+time, and this prohibits any sharing of data between multiple
+programs using these maps, eliminating a lot of use cases, such
+as some per-cgroup configuration storage, written to by a
+setsockopt program and read by a cg_sock_addr program.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c=
- b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
-new file mode 100644
-index 0000000000000..72c3690844fba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <test_progs.h>
-+#include "perf_event_stackmap.skel.h"
-+
-+#ifndef noinline
-+#define noinline __attribute__((noinline))
-+#endif
-+
-+noinline int func_1(void)
-+{
-+	static int val =3D 1;
-+
-+	val +=3D 1;
-+
-+	usleep(100);
-+	return val;
-+}
-+
-+noinline int func_2(void)
-+{
-+	return func_1();
-+}
-+
-+noinline int func_3(void)
-+{
-+	return func_2();
-+}
-+
-+noinline int func_4(void)
-+{
-+	return func_3();
-+}
-+
-+noinline int func_5(void)
-+{
-+	return func_4();
-+}
-+
-+noinline int func_6(void)
-+{
-+	int i, val =3D 1;
-+
-+	for (i =3D 0; i < 100; i++)
-+		val +=3D func_5();
-+
-+	return val;
-+}
-+
-+void test_perf_event_stackmap(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 2,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
-+			PERF_SAMPLE_CALLCHAIN,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct perf_event_stackmap *skel;
-+	__u32 duration =3D 0;
-+	cpu_set_t cpu_set;
-+	int pmu_fd, err;
-+
-+	skel =3D perf_event_stackmap__open();
-+
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
-+
-+	err =3D perf_event_stackmap__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
-+
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err =3D pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_se=
-t);
-+	if (CHECK(err, "set_affinity", "err %d, errno %d\n", err, errno))
-+		goto cleanup;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0) {
-+		printf("%s:SKIP:cpu doesn't support the event\n", __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
-+		  "err %ld\n", PTR_ERR(skel->links.oncpu))) {
-+		close(pmu_fd);
-+		goto cleanup;
-+	}
-+
-+	/* create kernel and user stack traces for testing */
-+	func_6();
-+
-+	CHECK(skel->data->stackid_kernel !=3D 2, "get_stackid_kernel", "failed\=
-n");
-+	CHECK(skel->data->stackid_user !=3D 2, "get_stackid_user", "failed\n");
-+	CHECK(skel->data->stack_kernel !=3D 2, "get_stack_kernel", "failed\n");
-+	CHECK(skel->data->stack_user !=3D 2, "get_stack_user", "failed\n");
-+
-+cleanup:
-+	perf_event_stackmap__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/to=
-ols/testing/selftests/bpf/progs/perf_event_stackmap.c
-new file mode 100644
-index 0000000000000..25467d13c356a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#ifndef PERF_MAX_STACK_DEPTH
-+#define PERF_MAX_STACK_DEPTH         127
-+#endif
-+
-+typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 16384);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(stack_trace_t));
-+} stackmap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, stack_trace_t);
-+} stackdata_map SEC(".maps");
-+
-+long stackid_kernel =3D 1;
-+long stackid_user =3D 1;
-+long stack_kernel =3D 1;
-+long stack_user =3D 1;
-+
-+SEC("perf_event")
-+int oncpu(void *ctx)
-+{
-+	stack_trace_t *trace;
-+	__u32 key =3D 0;
-+	long val;
-+
-+	val =3D bpf_get_stackid(ctx, &stackmap, 0);
-+	if (val > 0)
-+		stackid_kernel =3D 2;
-+	val =3D bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
-+	if (val > 0)
-+		stackid_user =3D 2;
-+
-+	trace =3D bpf_map_lookup_elem(&stackdata_map, &key);
-+	if (!trace)
-+		return 0;
-+
-+	val =3D bpf_get_stack(ctx, trace, sizeof(stack_trace_t), 0);
-+	if (val > 0)
-+		stack_kernel =3D 2;
-+
-+	val =3D bpf_get_stack(ctx, trace, sizeof(stack_trace_t), BPF_F_USER_STA=
-CK);
-+	if (val > 0)
-+		stack_user =3D 2;
-+
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
---=20
-2.24.1
+Why not use other map types? The great part of CGROUP_STORAGE map
+is that it is isolated by different cgroups its attached to. When
+one program uses bpf_get_local_storage, even on the same map, it
+gets different storages if it were run as a result of attaching
+to different cgroups. The kernel manages the storages, simplifying
+BPF program or userspace. In theory, one could probably use other
+maps like array or hash to do the same thing, but it would be a
+major overhead / complexity. Userspace needs to know when a cgroup
+is being freed in order to free up a space in the replacement map.
+
+This patch set introduces a significant change to the semantics of
+CGROUP_STORAGE map type. Instead of each storage being tied to one
+single attachment, it is shared across different attachments to
+the same cgroup, and persists until either the map or the cgroup
+attached to is being freed.
+
+The attach_type field of the map key struct bpf_cgroup_storage_key
+is now unused. If userspace reads it it will always be zero. If
+userspace sends us a non-zero value it will be ignored.
+
+How could this break existing users?
+* Users that uses detach & reattach / program replacement as a
+  shortcut to zeroing the storage. Since we need sharing between
+  programs, we cannot zero the storage. Users that expect this
+  behavior should either attach a program with a new map, or
+  explicitly zero the map with a syscall.
+* Programs that expect isolation from different attach types. In
+  reality, attaching the same program to different attach types,
+  relying on that expected_attach_type not being enforced, should
+  rarely happen, if at all.
+* Userspace that does memcmp on the storage key when fetching
+  map keys. In reality, if user wants to use a fixed key they
+  would use {delete,lookup,update}_elem, rather than get_next_key.
+These cases are dependent on undocumented implementation details, 
+so the impact should be very minimal.
+
+Patch 1 introduces a test on the old expected behavior of the map
+type.
+
+Patch 2 introduces a test showing how two programs cannot share
+one such map.
+
+Patch 3 implements the change of semantics to the map.
+
+Patch 4 amends the new test such that it yields the behavior we
+expect from the change.
+
+Patch 5 documents the map type.
+
+Changes since RFC:
+* Clarify commit message in patch 3 such that it says the lifetime
+  of the storage is ended at the freeing of the cgroup_bpf, rather
+  than the cgroup itself.
+* Restored an -ENOMEM check in __cgroup_bpf_attach.
+* Update selftests for recent change in network_helpers API.
+
+Changes since v1:
+* s/CHECK_FAIL/CHECK/
+* s/bpf_prog_attach/bpf_program__attach_cgroup/
+* Moved test__start_subtest to test_cg_storage_multi.
+* Removed some redundant CHECK_FAIL where they are already CHECK-ed.
+
+Changes since v2:
+* Lock cgroup_mutex during map_free.
+* Publish new storages only if attach is successful, by tracking
+  exactly which storages are reused in an array of bools.
+* Mention bpftool map dump showing a value of zero for attach_type
+  in patch 3 commit message.
+
+YiFei Zhu (5):
+  selftests/bpf: Add test for CGROUP_STORAGE map on multiple attaches
+  selftests/bpf: Test CGROUP_STORAGE map can't be used by multiple progs
+  bpf: Make cgroup storages shared across attaches on the same cgroup
+  selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress
+  Documentation/bpf: Document CGROUP_STORAGE map type
+
+ Documentation/bpf/index.rst                   |   9 +
+ Documentation/bpf/map_cgroup_storage.rst      |  95 +++++++
+ include/linux/bpf-cgroup.h                    |  15 +-
+ include/uapi/linux/bpf.h                      |   2 +-
+ kernel/bpf/cgroup.c                           |  69 +++--
+ kernel/bpf/core.c                             |  12 -
+ kernel/bpf/local_storage.c                    |  85 +++---
+ tools/include/uapi/linux/bpf.h                |   2 +-
+ .../bpf/prog_tests/cg_storage_multi.c         | 265 ++++++++++++++++++
+ .../selftests/bpf/progs/cg_storage_multi.h    |  13 +
+ .../progs/cg_storage_multi_egress_ingress.c   |  45 +++
+ .../bpf/progs/cg_storage_multi_egress_only.c  |  33 +++
+ 12 files changed, 551 insertions(+), 94 deletions(-)
+ create mode 100644 Documentation/bpf/map_cgroup_storage.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi.h
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_egress_ingress.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_egress_only.c
+
+-- 
+2.27.0
 
