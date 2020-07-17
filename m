@@ -2,122 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3592D224406
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 21:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740DD224426
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 21:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728400AbgGQTNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 15:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728183AbgGQTNE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:13:04 -0400
-Received: from localhost (unknown [151.48.133.17])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728103AbgGQTVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 15:21:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57948 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728183AbgGQTVu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 15:21:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595013709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A2I9O+xuUTOEcKzc5eYOtMc3MxBcbVZkckTnyrsuEPg=;
+        b=TqHzkrvf0d2NSbtMIsKvkF4DJZz1U8rTboi7SHvZAanHPlQ7qT6l56y4HKsdHMTI4a9/p4
+        rVgR53h4EtPpYfWb8svwc2/l9hzwUk5BCiFAIbqvT2SY2ebdd3IpvVf6t2GZo++Tu+iffa
+        AGNyeXT0gdO1poBWyr4+uoDAvaqv1RM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-Em5kLwL2OCyR27pSDxkrIA-1; Fri, 17 Jul 2020 15:21:45 -0400
+X-MC-Unique: Em5kLwL2OCyR27pSDxkrIA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC4CD2064C;
-        Fri, 17 Jul 2020 19:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595013184;
-        bh=wAykMgVs1HLRv17sBu9pt0MpmQPM85Wg6tWWls25qTE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WzvBvnLjB4PJfPfCmT5UGbJFmxzTD6mNzeK5xXsvzz7dSHAlgb3Zp2gtLvmFlvBx+
-         po0Z7bAeWI/5P9pkUfOQF3U8uEjlfGeQEk4xk9xbP0yKDoeGLhMdX/ooyufyMoORY0
-         lBKkM4Gd1Mfy4bWELEh9DZ+fu/LpLvdkgq3q3lS8=
-Date:   Fri, 17 Jul 2020 21:12:59 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        brouer@redhat.com, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v7 bpf-next 0/9] introduce support for XDP programs in
- CPUMAP
-Message-ID: <20200717191259.GB633625@localhost.localdomain>
-References: <cover.1594734381.git.lorenzo@kernel.org>
- <20200717120013.0926a74e@toad>
- <20200717110136.GA1683270@localhost.localdomain>
- <20200717171333.3fe979e6@toad>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EF88107B7EF;
+        Fri, 17 Jul 2020 19:21:44 +0000 (UTC)
+Received: from krava (unknown [10.40.192.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B7005C57D;
+        Fri, 17 Jul 2020 19:21:42 +0000 (UTC)
+Date:   Fri, 17 Jul 2020 21:21:41 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/2] bpf: change var type of BTF_ID_LIST to
+ static
+Message-ID: <20200717192141.GF528602@krava>
+References: <20200717184706.3476992-1-yhs@fb.com>
+ <20200717184706.3477154-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FkmkrVfFsRoUs1wW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200717171333.3fe979e6@toad>
+In-Reply-To: <20200717184706.3477154-1-yhs@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Jul 17, 2020 at 11:47:06AM -0700, Yonghong Song wrote:
+> The BTF_ID_LIST macro definition in btf_ids.h:
+>    #define BTF_ID_LIST(name)                \
+>    __BTF_ID_LIST(name)                      \
+>    extern u32 name[];
+> 
+> The variable defined in __BTF_ID_LIST has
+> ".local" directive, which means the variable
+> is only available in the current file.
+> So change the scope of "name" in the declaration
+> from "extern" to "static".
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 
---FkmkrVfFsRoUs1wW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> On Fri, 17 Jul 2020 13:01:36 +0200
-> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->=20
+thanks,
+jirka
 
-[...]
+> ---
+>  include/linux/btf_ids.h       | 2 +-
+>  tools/include/linux/btf_ids.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 1cdb56950ffe..cebc9a655959 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -66,7 +66,7 @@ asm(							\
+>  
+>  #define BTF_ID_LIST(name)				\
+>  __BTF_ID_LIST(name)					\
+> -extern u32 name[];
+> +static u32 name[];
+>  
+>  /*
+>   * The BTF_ID_UNUSED macro defines 4 zero bytes.
+> diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
+> index fe019774f8a7..b870776201e5 100644
+> --- a/tools/include/linux/btf_ids.h
+> +++ b/tools/include/linux/btf_ids.h
+> @@ -64,7 +64,7 @@ asm(							\
+>  
+>  #define BTF_ID_LIST(name)				\
+>  __BTF_ID_LIST(name)					\
+> -extern u32 name[];
+> +static u32 name[];
+>  
+>  /*
+>   * The BTF_ID_UNUSED macro defines 4 zero bytes.
+> -- 
+> 2.24.1
+> 
 
->=20
-> HTH,
-> -jkbs
-
-Hi Jakub,
-
-can you please test the patch below when you have some free cycles? It fixes
-the issue in my setup.
-
-Regards,
-Lorenzo
-
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 4c95d0615ca2..f1c46529929b 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -453,24 +453,27 @@ __cpu_map_entry_alloc(struct bpf_cpumap_val *value, u=
-32 cpu, int map_id)
- 	rcpu->map_id =3D map_id;
- 	rcpu->value.qsize  =3D value->qsize;
-=20
-+	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, fd))
-+		goto free_ptr_ring;
-+
- 	/* Setup kthread */
- 	rcpu->kthread =3D kthread_create_on_node(cpu_map_kthread_run, rcpu, numa,
- 					       "cpumap/%d/map:%d", cpu, map_id);
- 	if (IS_ERR(rcpu->kthread))
--		goto free_ptr_ring;
-+		goto free_prog;
-=20
- 	get_cpu_map_entry(rcpu); /* 1-refcnt for being in cmap->cpu_map[] */
- 	get_cpu_map_entry(rcpu); /* 1-refcnt for kthread */
-=20
--	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, fd))
--		goto free_ptr_ring;
--
- 	/* Make sure kthread runs on a single CPU */
- 	kthread_bind(rcpu->kthread, cpu);
- 	wake_up_process(rcpu->kthread);
-=20
- 	return rcpu;
-=20
-+free_prog:
-+	if (rcpu->prog)
-+		bpf_prog_put(rcpu->prog);
- free_ptr_ring:
- 	ptr_ring_cleanup(rcpu->queue, NULL);
- free_queue:
-
---FkmkrVfFsRoUs1wW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXxH4OAAKCRA6cBh0uS2t
-rIv4AP44ZzwGIpA8U8pNJhsgDZ3Av/tSe3uXND4ijzBducFaugD+M+R2XODovdyv
-7Qq68XVFVf7OwZy8+PIsBbvnL3ideQw=
-=kmKz
------END PGP SIGNATURE-----
-
---FkmkrVfFsRoUs1wW--
