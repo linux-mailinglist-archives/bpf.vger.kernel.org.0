@@ -2,145 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5277223F2F
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 17:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED81224062
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 18:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgGQPNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 11:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S1727867AbgGQQNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 12:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgGQPNk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:13:40 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B1C0619D3
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 08:13:39 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id t9so6259876lfl.5
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 08:13:39 -0700 (PDT)
+        with ESMTP id S1726665AbgGQQNV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 12:13:21 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC14C0619D2;
+        Fri, 17 Jul 2020 09:13:20 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e8so13367504ljb.0;
+        Fri, 17 Jul 2020 09:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ihApHeNosiHx6nUASfY6SAPFllo59+sVvjnXR/uag7o=;
-        b=xGyBb/++2nQv7VJbnPslJJzxnjcqAJRCiZwQwZIx6aPx5Yrh5NDfEaFqC9klZjlQpf
-         nd8tEGCASoP77EdInqcBXT5ZFruw5f4/sHxNTN3wNCfodu8XcQiLwQqhnHm4kL4WfxRP
-         hLn4CgAUwD58BDfZbTLMAGIdP+BBDVxytLU/I=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P29yGmEXzaza8awirO4RTJQUDlpuZwYlFSk6xd9V5Ic=;
+        b=tAT+4YQi9I0TLTZlIuCxvMu5KbCTozINT3HUNF5ewWSBl7M8f8AIxxTdZBl5o/z6LH
+         g/t7XaCvsBJhQoWkaWESKcYF0XYHbRSSaWsJDr44k9jjDf9vm46pAmY/umbm+7Wqd3t8
+         +TOqlUCCIk993Bm+GpmQUHOefV3mdiQE7YO/Ew0Ohjb2zfRy5J69ZpORJy1O10A+hZED
+         hpAIe58FTxTqd8VooLgKJxseqBYrRnkCouVYuWoBz601T9H8C01mvJjDdz79VXrZ1sNj
+         Qivvoazd0CiqHMqTPI3EFf/idT7CdQlwlfFBvwFTPgcLHsYdjNzLFw4ji7K512GwbTie
+         Y04Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ihApHeNosiHx6nUASfY6SAPFllo59+sVvjnXR/uag7o=;
-        b=hGuRQrQndTW2+fZEXAvND2NHEl3oEzy1jnR1HOA0h87ki+oRYe4Ew6ukklAQwba1Zq
-         at5gabOCG3fQmftALK431fJFBWPHmVQo0geBCr1qhtjZII9aoPO4Apu40oEAxV7an6v0
-         QjzEq5jNztkZPGRJrLv2oDmD9Z85zgCJubJDaImBdxZucH04Vh5iY00ts9jKBdX+G6f3
-         WAsKuc16KSxecYDOOR1uPgqaNGFpN8VWDVhlRAqy4Qw9ZO8s2VRE98WqpR8RgrlbabgX
-         MioN6sDR1rVGWmR679nmoAYK1fEQTNqjRg7r5GQ8xUt0z2n7gA7UpVk2aYzocAUN++8U
-         Iumw==
-X-Gm-Message-State: AOAM531ns/dTUACj6h3KEIvuChwpeZIGQSZOSNVoayuTbMb04Cz7xZ58
-        hXn3uq26oOV6k6wokuAXAIs5Fw==
-X-Google-Smtp-Source: ABdhPJzUMmuYOE77b9Y/YDzKehINQwx85hnSGzpdfF/rKWroRAPv5pf5wEEGsoJO3tAqLCYjBxn7Mw==
-X-Received: by 2002:a19:7111:: with SMTP id m17mr5038973lfc.156.1594998818059;
-        Fri, 17 Jul 2020 08:13:38 -0700 (PDT)
-Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id m9sm1935755lfb.5.2020.07.17.08.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 08:13:37 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 17:13:33 +0200
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        brouer@redhat.com, daniel@iogearbox.net, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org,
-        andrii.nakryiko@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v7 bpf-next 0/9] introduce support for XDP programs in
- CPUMAP
-Message-ID: <20200717171333.3fe979e6@toad>
-In-Reply-To: <20200717110136.GA1683270@localhost.localdomain>
-References: <cover.1594734381.git.lorenzo@kernel.org>
-        <20200717120013.0926a74e@toad>
-        <20200717110136.GA1683270@localhost.localdomain>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P29yGmEXzaza8awirO4RTJQUDlpuZwYlFSk6xd9V5Ic=;
+        b=NVndQBfx8b3IGdy0ZGBbg6+WNgTIcaFq4unXni5KUPb7Y8r1VR0/RVgwIlwhMi3qHp
+         r64PVimZMDgtARr2TgHwB8ZAfgZFDHVWbEcgX1FonEk2zLRK9USmzb/FhvtGb2edKQVw
+         apyO3+Ii6naA/sgFqOuhFBqgRUASh9eExA+rKBGhcGsPBmlXvEoQjLE+M8jYb+aO2J5m
+         RDoWOUhHE7WN8WOL/wBrTDO037kgYL+jxrxxCbk97m4srJRUIXRQ3wTrHvNAcNDGAxqV
+         65ybqdzmAXVgalP+eLCQPvIJO/sI7sHOMrUs8pDVkrJVHi3cM8xICvVbim4exbyLMSqm
+         QYkA==
+X-Gm-Message-State: AOAM533P8w9Dttcb0XrS9mGAXHOSuBCZ+ZBxv7cDyuFnrssqRfx2VimM
+        19qh2LCWubMwreww9lAMXnId6hLN/aGoBq52DGSeOpiU
+X-Google-Smtp-Source: ABdhPJwy04lcMeKmDyk+Z+qqIoCPL/dJmkDAql4/gMh0aLSyK3i0tDuoYnMq4xcTsoSukM/BmOVcZ7yWS9y+gL/6C0M=
+X-Received: by 2002:a2e:9bc3:: with SMTP id w3mr4980191ljj.121.1595002399275;
+ Fri, 17 Jul 2020 09:13:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200717055245.GA9577@lst.de>
+In-Reply-To: <20200717055245.GA9577@lst.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 17 Jul 2020 09:13:07 -0700
+Message-ID: <CAADnVQ+rD+7fAsLZT4pG7AN4iO7-dQ+3adw0tBhrf8TGbtLjtA@mail.gmail.com>
+Subject: Re: how is the bpfilter sockopt processing supposed to work
+To:     Christoph Hellwig <hch@lst.de>, Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Jul 2020 13:01:36 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Thu, Jul 16, 2020 at 10:52 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Hi Alexei,
+>
+> I've just been auditing the sockopt code, and bpfilter looks really
+> odd.  Both getsockopts and setsockopt eventually end up
+> in__bpfilter_process_sockopt, which then passes record to the
+> userspace helper containing the address of the optval buffer.
+> Which depending on bpf-cgroup might be in user or kernel space.
+> But even if it is in userspace it would be in a different process
+> than the bpfiler helper.  What makes all this work?
 
-> [...]
-> 
-> > This started showing up with when running ./test_progs from recent
-> > bpf-next (bfdfa51702de). Any chance it is related?
-> > 
-> > [ 2950.440613] =============================================
-> > 
-> > [ 3073.281578] INFO: task cpumap/0/map:26:536 blocked for more than 860 seconds.
-> > [ 3073.285492]       Tainted: G        W         5.8.0-rc4-01471-g15d51f3a516b #814
-> > [ 3073.289177] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [ 3073.293021] cpumap/0/map:26 D    0   536      2 0x00004000
-> > [ 3073.295755] Call Trace:
-> > [ 3073.297143]  __schedule+0x5ad/0xf10
-> > [ 3073.299032]  ? pci_mmcfg_check_reserved+0xd0/0xd0
-> > [ 3073.301416]  ? static_obj+0x31/0x80
-> > [ 3073.303277]  ? mark_held_locks+0x24/0x90
-> > [ 3073.305313]  ? cpu_map_update_elem+0x6d0/0x6d0
-> > [ 3073.307544]  schedule+0x6f/0x160
-> > [ 3073.309282]  schedule_preempt_disabled+0x14/0x20
-> > [ 3073.311593]  kthread+0x175/0x240
-> > [ 3073.313299]  ? kthread_create_on_node+0xd0/0xd0
-> > [ 3073.315106]  ret_from_fork+0x1f/0x30
-> > [ 3073.316365]
-> >                Showing all locks held in the system:
-> > [ 3073.318423] 1 lock held by khungtaskd/33:
-> > [ 3073.319642]  #0: ffffffff82d246a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x28/0x1c3
-> > 
-> > [ 3073.322249] =============================================  
-> 
-> Hi Jakub,
-> 
-> can you please provide more info? can you please identify the test that trigger
-> the issue? I run test_progs with bpf-next master branch and it works fine for me.
-> I run the tests in a vm with 4 vcpus and 4G of memory.
-> 
-> Regards,
-> Lorenzo
-> 
-
-Was able to trigger it running the newly added selftest:
-
-virtme-init: console is ttyS0
-bash-5.0# ./test_progs -n 100
-#100/1 cpumap_with_progs:OK
-#100 xdp_cpumap_attach:OK
-Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-bash-5.0# [  247.177168] INFO: task cpumap/0/map:3:198 blocked for more than 122 seconds.
-[  247.181306]       Not tainted 5.8.0-rc4-01456-gbfdfa51702de #815
-[  247.184487] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  247.188876] cpumap/0/map:3  D    0   198      2 0x00004000
-[  247.192624] Call Trace:
-[  247.194327]  __schedule+0x5ad/0xf10
-[  247.196860]  ? pci_mmcfg_check_reserved+0xd0/0xd0
-[  247.199853]  ? static_obj+0x31/0x80
-[  247.201917]  ? mark_held_locks+0x24/0x90
-[  247.204398]  ? cpu_map_update_elem+0x6d0/0x6d0
-[  247.207098]  schedule+0x6f/0x160
-[  247.209079]  schedule_preempt_disabled+0x14/0x20
-[  247.211863]  kthread+0x175/0x240
-[  247.213698]  ? kthread_create_on_node+0xd0/0xd0
-[  247.216054]  ret_from_fork+0x1f/0x30
-[  247.218363]
-[  247.218363] Showing all locks held in the system:
-[  247.222150] 1 lock held by khungtaskd/33:
-[  247.224894]  #0: ffffffff82d246a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x28/0x1c3
-[  247.231113]
-[  247.232335] =============================================
-[  247.232335]
-
-qemu running with 4 vCPUs, 4 GB of memory. .config uploaded at
-https://paste.centos.org/view/0c14663d
-
-HTH,
--jkbs
+Hmm. Good point. bpfilter assumes user addresses. It will break
+if bpf cgroup sockopt messes with it.
+We had a different issue with bpf-cgroup-sockopt and iptables in the past.
+Probably the easiest way forward is to special case this particular one.
+With your new series is there a way to tell in bpfilter_ip_get_sockopt()
+whether addr is kernel or user? And if it's the kernel just return with error.
