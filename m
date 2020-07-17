@@ -2,288 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80182240B6
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 18:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DA82240D1
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 18:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgGQQkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 12:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726221AbgGQQkp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 12:40:45 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861FFC0619D2
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 09:40:45 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w17so8500925oie.6
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 09:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XyLnyg1PcEtr0b26BjQvtEbRpMQtLSFLG4TqM/P0nok=;
-        b=YItJGESL/JxBEjr1lXcZSeopPzPrS0gePs+2ubjOp58adcU8NoHR2FI4aAT9EnAK3m
-         /tX5StfrDG23ITdKK0MlBI3D+ScZunDC5VMA86gHUF9gyOzcSmBRf3RiagD1Phax2FBO
-         fSZiUNS+dUqhIm39s5EWUrniElEdqI7wEwBmU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XyLnyg1PcEtr0b26BjQvtEbRpMQtLSFLG4TqM/P0nok=;
-        b=cqnwFSrCLlfSB6mjXRm3YFRmNEQpcnOJNDdi6+sJZn8UVQ8IjR1is7IJee6a9iKQiZ
-         TqmkMJDH/qlHrxKb6652v9aKGou55qF+cJ30YwHoZ/HVVdiFsHzmLjuIAcouGkw3bzxi
-         I1IMZl8qUzAn2Ws6a/rq772QedBzqzuklIcbqYPWX9wqf+AkCTTDu7/235dHn5h6OkvU
-         R+m9TRpE5avJAaP2SsDLOh0PYsGt/FmyO5/FODdAFsIBo/2QTTMXYhM1Ej+IZaNZZ251
-         kICef8U/q8WV7IgOwFrqR0orNWAVW3Ds3lNIYtPJWsDt+Z2GpOioUUx+B1lST4W9OWcH
-         ahTw==
-X-Gm-Message-State: AOAM5338zCQDxmgnFXVjKF6geOK0Xeu6W21yXyZN9wm72yBurukUPqA2
-        LIdtOR2uYqlMgQpCuODVAuDZxdcBL8vNxf/+C8xNqg==
-X-Google-Smtp-Source: ABdhPJxX1eJJ4ArSE4X3pCInxM8Z6JZ9XLZIfg5+vSuRreXx8U5GWCQ1+yx+TpK5ZnT8smmxuN5pFFA+KjTBN6HEGRM=
-X-Received: by 2002:a05:6808:34e:: with SMTP id j14mr2864388oie.110.1595004044743;
- Fri, 17 Jul 2020 09:40:44 -0700 (PDT)
+        id S1726293AbgGQQxx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 12:53:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33466 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726221AbgGQQxw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jul 2020 12:53:52 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06HGXgKs062524;
+        Fri, 17 Jul 2020 12:53:40 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32bdf2vgnr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 12:53:40 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06HGpeHR024866;
+        Fri, 17 Jul 2020 16:53:38 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 327527xx08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jul 2020 16:53:38 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06HGrZtu59572284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jul 2020 16:53:35 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87EACA4054;
+        Fri, 17 Jul 2020 16:53:35 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AA10A405C;
+        Fri, 17 Jul 2020 16:53:35 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.6.1])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 17 Jul 2020 16:53:34 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 0/5] s390/bpf: fix lib/test_bpf.c failures
+Date:   Fri, 17 Jul 2020 18:53:21 +0200
+Message-Id: <20200717165326.6786-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200717103536.397595-1-jakub@cloudflare.com>
-In-Reply-To: <20200717103536.397595-1-jakub@cloudflare.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 17 Jul 2020 17:40:33 +0100
-Message-ID: <CACAyw9_6FGzFxN9OfhGpYLNFQafPb-t_mv5E6tc5Qpzm0nwmWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 00/15] Run a BPF program on socket lookup
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-17_08:2020-07-17,2020-07-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 clxscore=1015 mlxlogscore=639 mlxscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007170117
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Jul 2020 at 11:35, Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Changelog
-> =========
-> v4 -> v5:
-> - Enforce BPF prog return value to be SK_DROP or SK_PASS. (Andrii)
-> - Simplify prog runners now that only SK_DROP/PASS can be returned.
-> - Enable bpf_perf_event_output from the start. (Andrii)
-> - Drop patch
->   "selftests/bpf: Rename test_sk_lookup_kern.c to test_ref_track_kern.c"
-> - Remove tests for narrow loads from context at an offset wider in size
->   than target field, while we are discussing how to fix it:
->   https://lore.kernel.org/bpf/20200710173123.427983-1-jakub@cloudflare.com/
-> - Rebase onto recent bpf-next (bfdfa51702de)
-> - Other minor changes called out in per-patch changelogs,
->   see patches: 2, 4, 6, 13-15
-> - Carried over Andrii's Acks where nothing changed.
->
-> v3 -> v4:
-> - Reduce BPF prog return codes to SK_DROP/SK_PASS (Lorenz)
-> - Default to drop on illegal return value from BPF prog (Lorenz)
-> - Extend bpf_sk_assign to accept NULL socket pointer.
-> - Switch to saner return values and add docs for new prog_array API (Andrii)
-> - Add support for narrow loads from BPF context fields (Yonghong)
-> - Fix broken build when IPv6 is compiled as a module (kernel test robot)
-> - Fix null/wild-ptr-deref on BPF context access
-> - Rebase to recent bpf-next (eef8a42d6ce0)
-> - Other minor changes called out in per-patch changelogs,
->   see patches 1-2, 4, 6, 8, 10-12, 14, 16
->
-> v2 -> v3:
-> - Switch to link-based program attachment
-> - Support for multi-prog attachment
-> - Ability to skip reuseport socket selection
-> - Code on RX path is guarded by a static key
-> - struct in6_addr's are no longer copied into BPF prog context
-> - BPF prog context is initialized as late as possible
-> - Changes called out in patches 1-2, 4, 6, 8, 10-14, 16
-> - Patches dropped:
->   01/17 flow_dissector: Extract attach/detach/query helpers
->   03/17 inet: Store layer 4 protocol in inet_hashinfo
->   08/17 udp: Store layer 4 protocol in udp_table
->
-> v1 -> v2:
-> - Changes called out in patches 2, 13-15, 17
-> - Rebase to recent bpf-next (b4563facdcae)
->
-> RFCv2 -> v1:
->
-> - Switch to fetching a socket from a map and selecting a socket with
->   bpf_sk_assign, instead of having a dedicated helper that does both.
-> - Run reuseport logic on sockets selected by BPF sk_lookup.
-> - Allow BPF sk_lookup to fail the lookup with no match.
-> - Go back to having just 2 hash table lookups in UDP.
->
-> RFCv1 -> RFCv2:
->
-> - Make socket lookup redirection map-based. BPF program now uses a
->   dedicated helper and a SOCKARRAY map to select the socket to redirect to.
->   A consequence of this change is that bpf_inet_lookup context is now
->   read-only.
-> - Look for connected UDP sockets before allowing redirection from BPF.
->   This makes connected UDP socket work as expected in the presence of
->   inet_lookup prog.
-> - Share the code for BPF_PROG_{ATTACH,DETACH,QUERY} with flow_dissector,
->   the only other per-netns BPF prog type.
->
-> Overview
-> ========
->
-> This series proposes a new BPF program type named BPF_PROG_TYPE_SK_LOOKUP,
-> or BPF sk_lookup for short.
->
-> BPF sk_lookup program runs when transport layer is looking up a listening
-> socket for a new connection request (TCP), or when looking up an
-> unconnected socket for a packet (UDP).
->
-> This serves as a mechanism to overcome the limits of what bind() API allows
-> to express. Two use-cases driving this work are:
->
->  (1) steer packets destined to an IP range, fixed port to a single socket
->
->      192.0.2.0/24, port 80 -> NGINX socket
->
->  (2) steer packets destined to an IP address, any port to a single socket
->
->      198.51.100.1, any port -> L7 proxy socket
->
-> In its context, program receives information about the packet that
-> triggered the socket lookup. Namely IP version, L4 protocol identifier, and
-> address 4-tuple.
->
-> To select a socket BPF program fetches it from a map holding socket
-> references, like SOCKMAP or SOCKHASH, calls bpf_sk_assign(ctx, sk, ...)
-> helper to record the selection, and returns SK_PASS code. Transport layer
-> then uses the selected socket as a result of socket lookup.
->
-> Alternatively, program can also fail the lookup (SK_DROP), or let the
-> lookup continue as usual (SK_PASS without selecting a socket).
->
-> This lets the user match packets with listening (TCP) or receiving (UDP)
-> sockets freely at the last possible point on the receive path, where we
-> know that packets are destined for local delivery after undergoing
-> policing, filtering, and routing.
->
-> Program is attached to a network namespace, similar to BPF flow_dissector.
-> We add a new attach type, BPF_SK_LOOKUP, for this. Multiple programs can be
-> attached at the same time, in which case their return values are aggregated
-> according the rules outlined in patch #4 description.
->
-> Series structure
-> ================
->
-> Patches are organized as so:
->
->  1: enables multiple link-based prog attachments for bpf-netns
->  2: introduces sk_lookup program type
->  3-4: hook up the program to run on ipv4/tcp socket lookup
->  5-6: hook up the program to run on ipv6/tcp socket lookup
->  7-8: hook up the program to run on ipv4/udp socket lookup
->  9-10: hook up the program to run on ipv6/udp socket lookup
->  11-13: libbpf & bpftool support for sk_lookup
->  14-15: verifier and selftests for sk_lookup
->
-> Patches are also available on GH:
->
->   https://github.com/jsitnicki/linux/commits/bpf-inet-lookup-v5
->
-> Follow-up work
-> ==============
->
-> I'll follow up with below items, which IMHO don't block the review:
->
-> - benchmark results for udp6 small packet flood scenario,
-> - user docs for new BPF prog type, Documentation/bpf/prog_sk_lookup.rst,
-> - timeout for accept() in tests after extending network_helper.[ch].
->
-> Thanks to the reviewers for their feedback to this patch series:
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Cc: Marek Majkowski <marek@cloudflare.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
->
-> -jkbs
+This patch series fixes three regressions caused by 4e9b4a6883dd
+("s390/bpf: Use relative long branches") reported by Seth Forshee
+(patches 2-4) and adds two minor related improvements (patches 1
+and 5).
 
-Phew, I have to admit that at the patch that adds 2k lines of tests my
-eyes glazed over a bit, but other than that: thank you for your hard
-work!
+Ilya Leoshkevich (5):
+  selftests: bpf: test_kmod.sh: fix running out of srctree
+  s390/bpf: fix sign extension in branch_ku
+  s390/bpf: use brcl for jumping to exit_ip if necessary
+  s390/bpf: tolerate not converging code shrinking
+  s390/bpf: use bpf_skip() in bpf_jit_prologue()
 
-For the series:
-Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
-
->
-> [RFCv1] https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
-> [RFCv2] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
-> [v1] https://lore.kernel.org/bpf/20200511185218.1422406-18-jakub@cloudflare.com/
-> [v2] https://lore.kernel.org/bpf/20200506125514.1020829-1-jakub@cloudflare.com/
-> [v3] https://lore.kernel.org/bpf/20200702092416.11961-1-jakub@cloudflare.com/
-> [v4] https://lore.kernel.org/bpf/20200713174654.642628-1-jakub@cloudflare.com/
->
-> Jakub Sitnicki (15):
->   bpf, netns: Handle multiple link attachments
->   bpf: Introduce SK_LOOKUP program type with a dedicated attach point
->   inet: Extract helper for selecting socket from reuseport group
->   inet: Run SK_LOOKUP BPF program on socket lookup
->   inet6: Extract helper for selecting socket from reuseport group
->   inet6: Run SK_LOOKUP BPF program on socket lookup
->   udp: Extract helper for selecting socket from reuseport group
->   udp: Run SK_LOOKUP BPF program on socket lookup
->   udp6: Extract helper for selecting socket from reuseport group
->   udp6: Run SK_LOOKUP BPF program on socket lookup
->   bpf: Sync linux/bpf.h to tools/
->   libbpf: Add support for SK_LOOKUP program type
->   tools/bpftool: Add name mappings for SK_LOOKUP prog and attach type
->   selftests/bpf: Add verifier tests for bpf_sk_lookup context access
->   selftests/bpf: Tests for BPF_SK_LOOKUP attach point
->
->  include/linux/bpf-netns.h                     |    3 +
->  include/linux/bpf.h                           |    4 +
->  include/linux/bpf_types.h                     |    2 +
->  include/linux/filter.h                        |  147 ++
->  include/uapi/linux/bpf.h                      |   77 +
->  kernel/bpf/core.c                             |   55 +
->  kernel/bpf/net_namespace.c                    |  127 +-
->  kernel/bpf/syscall.c                          |    9 +
->  kernel/bpf/verifier.c                         |   13 +-
->  net/core/filter.c                             |  183 +++
->  net/ipv4/inet_hashtables.c                    |   60 +-
->  net/ipv4/udp.c                                |   93 +-
->  net/ipv6/inet6_hashtables.c                   |   66 +-
->  net/ipv6/udp.c                                |   97 +-
->  scripts/bpf_helpers_doc.py                    |    9 +-
->  .../bpftool/Documentation/bpftool-prog.rst    |    2 +-
->  tools/bpf/bpftool/bash-completion/bpftool     |    2 +-
->  tools/bpf/bpftool/common.c                    |    1 +
->  tools/bpf/bpftool/prog.c                      |    3 +-
->  tools/include/uapi/linux/bpf.h                |   77 +
->  tools/lib/bpf/libbpf.c                        |    3 +
->  tools/lib/bpf/libbpf.h                        |    2 +
->  tools/lib/bpf/libbpf.map                      |    2 +
->  tools/lib/bpf/libbpf_probes.c                 |    3 +
->  tools/testing/selftests/bpf/network_helpers.c |   58 +-
->  tools/testing/selftests/bpf/network_helpers.h |    2 +
->  .../selftests/bpf/prog_tests/sk_lookup.c      | 1282 +++++++++++++++++
->  .../selftests/bpf/progs/test_sk_lookup.c      |  641 +++++++++
->  .../selftests/bpf/verifier/ctx_sk_lookup.c    |  492 +++++++
->  29 files changed, 3418 insertions(+), 97 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_lookup.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_sk_lookup.c
->  create mode 100644 tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
->
-> --
-> 2.25.4
->
-
+ arch/s390/net/bpf_jit_comp.c             | 63 +++++++++++++++---------
+ tools/testing/selftests/bpf/test_kmod.sh | 12 +++--
+ 2 files changed, 50 insertions(+), 25 deletions(-)
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.25.4
 
-www.cloudflare.com
