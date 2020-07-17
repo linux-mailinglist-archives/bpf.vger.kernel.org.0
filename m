@@ -2,108 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9B9223806
-	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 11:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E84223862
+	for <lists+bpf@lfdr.de>; Fri, 17 Jul 2020 11:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgGQJSS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 05:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
+        id S1726201AbgGQJaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 05:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgGQJSM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 05:18:12 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14084C08C5DD
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 02:18:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id w6so10006902ejq.6
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 02:18:12 -0700 (PDT)
+        with ESMTP id S1725912AbgGQJaE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 05:30:04 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F28CC061755;
+        Fri, 17 Jul 2020 02:30:03 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f5so11817174ljj.10;
+        Fri, 17 Jul 2020 02:30:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ABtoKcunWta1zPd9OAU4HivGakSrvH6t7PoGrVg1IHw=;
-        b=xR7/TE9+zWjcsvx6d03jd1AgLl1RxCF+57iDGUw8QqO8NNJiU5y/1PDhMHyK6SBPD0
-         Tu9kE2ltrVcgIGDsEFYeGOdvGGs9gXhWrY0fvfmRtJuRWzhuLiSsJxij8VwijPfHjTPS
-         3aRzO2LOdNynO+M1Cxqg8LEaNT7+cWaMS9ZleuZy42uIKF7zbE+VVsfyNZHqDLg2WCO5
-         2IhHaXOEiidwv/4zssU9rGm6ibTKTyOzBFUfh4ZlLc65xFj4ZNu5VWofuJadgyUIYj5C
-         Y93p7sEtG5rh/7aWXf9IEREZyDETtvRRffJXB7kNBwNCJiHJc9kale3U3Oqjmxgbkhyq
-         rtqQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wHM2c/vZDxflG1f3XzwOEemirRBb3T704CxpASnP1GE=;
+        b=ua67o6ky01fQISCxWjueZpubRrCnC94h3qUwuhF+JQaykGfgXFMdB8bvHTEoRWyT7T
+         PJKSe0iIlYKIvAy1H56ZeIYOtTzD6ptNAFgBrKfqZzpHzYrIaKDjJmcuD7M4s0ULIrrv
+         GpYZ09QZrHgcYRNfhDo65SGR7wH0XgoHKK7FzgpY8UuTMrGV+Z2nLo33Iq+3NQoPcEWg
+         rZGAHjpbV6dcQFJkedtRusUSh9APzruE1NhxfGn0tt1WNQ8195BmeLXojUsAsD5R0VD7
+         M7JgntYykdGsIpArDBiL5AoStpRxeW7c59vqFKxRWHdq6ikA3+TvsK5v60JB8N5lAsAS
+         C7OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ABtoKcunWta1zPd9OAU4HivGakSrvH6t7PoGrVg1IHw=;
-        b=Arz1P5dQU7RzJrFaxHTTEae68rL1haYSx8jr8IGIRoyiWeNusMspCB1q/Sqk0ZIErr
-         nXKperg7yyAppdnzClhYC4LvE75PkEHERrFY5azNn4rKGRP+6TGI9xkA6/jl0NSDwhbe
-         P2seCrMIb2ATMuVNBHPnWMjm2Cuv70YPNaFw9UUT/J9mJQFUQfTm5odFFlkwJfKcF8KD
-         E73nHCrNyCmaMPCRue56+AmcgAhZG4MKIXztyljTF1CASV/rUE+qfCZRq+y4ijFx0OLO
-         7WqjT/TosG53/gyFU6g4u26vTovtp/lLEtZRIWSnax+VLFqz1gbc9obDb9WFOUvwh+Oi
-         WU9g==
-X-Gm-Message-State: AOAM533FiOpqUzKYhpjaluDkqlJVFGIuqDgr4cBzgHqp4H55f9qZZSxW
-        hhTFqlLun110VxEyxwCtGmLeQw==
-X-Google-Smtp-Source: ABdhPJwKJni/XUuyRKR8S/sAchcIII3C/3Gdc/GCPUNVX6T8sPkuUFzqwgJFnhzYtCojkw18DlkE7Q==
-X-Received: by 2002:a17:907:426c:: with SMTP id nx20mr7604495ejb.548.1594977490002;
-        Fri, 17 Jul 2020 02:18:10 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([81.246.10.41])
-        by smtp.gmail.com with ESMTPSA id p4sm7541372eji.123.2020.07.17.02.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 02:18:08 -0700 (PDT)
-Subject: Re: [MPTCP] [PATCH 05/22] net: remove
- compat_sock_common_{get,set}sockopt
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Chas Williams <3chas3@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mptcp@lists.01.org
-References: <20200717062331.691152-1-hch@lst.de>
- <20200717062331.691152-6-hch@lst.de>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <203f5f41-1de0-575e-864b-53a9412d97f6@tessares.net>
-Date:   Fri, 17 Jul 2020 11:18:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wHM2c/vZDxflG1f3XzwOEemirRBb3T704CxpASnP1GE=;
+        b=mFdamXSh2U0CjDZ5nWjnB4xyZ+cOZMfMQblnWU2vSIwkpB1wkQqvxmhDv2oorAprKF
+         UZRthp56epax3+j4vtgD+8GWVxrFq3M4HoFiDWvrgiKekSP6hQG0cC/91rxjSfIz+SxU
+         Op6gOM0jpU3f7znF2scl4yy1hHEbmzmO8Qhzcl4e7TINOqzyH5a5gEMcA0CmMnHKMfST
+         2qJe8Zxy4rc8FPwBHmGWSu4YnX7MOrS/KJcBg+oGYew3E0tof81pjpimvUJCR/iNWjR1
+         IW9fOxTFUQQ88/KTePSsGxoVGVTH/U497JjYbqK9gvZCCqzTq/Yjuiov5ti+h0c5tjwT
+         paGg==
+X-Gm-Message-State: AOAM532AaGh570gKv45hm5djH1a+6m+oKvZSBooFAbLFdrYYmcvhfxg0
+        LebecP5LqTZ6K9+Lup8eeuIXbkiMKutgfdcTbwI=
+X-Google-Smtp-Source: ABdhPJxAYfl7LTmiaZ9O4UMiQ+Vvp5xtJS6XiD+zkjNMK2z4urIcJ+6j7uhZai3FANLXo3m33Qr9bNL9N/N0tKlF6do=
+X-Received: by 2002:a2e:a0cd:: with SMTP id f13mr3810730ljm.343.1594978202137;
+ Fri, 17 Jul 2020 02:30:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200717062331.691152-6-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200715233634.3868-1-maciej.fijalkowski@intel.com>
+ <20200715233634.3868-2-maciej.fijalkowski@intel.com> <d631a16d-2cf0-cf12-2ddc-82ac64e51f6e@iogearbox.net>
+In-Reply-To: <d631a16d-2cf0-cf12-2ddc-82ac64e51f6e@iogearbox.net>
+From:   Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+Date:   Fri, 17 Jul 2020 11:29:51 +0200
+Message-ID: <CAOuyyO4B3V-TzzJLneEqXcPZWhhpPSe7kiY1G5g6NDMDVGazTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf, x64: use %rcx instead of %rax for tail
+ call retpolines
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christoph,
+On Thu, Jul 16, 2020 at 10:37 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/16/20 1:36 AM, Maciej Fijalkowski wrote:
+> > Currently, %rax is used to store the jump target when BPF program is
+> > emitting the retpoline instructions that are handling the indirect
+> > tailcall.
+> >
+> > There is a plan to use %rax for different purpose, which is storing the
+> > tail call counter. In order to preserve this value across the tailcalls,
+> > use %rcx instead for jump target storage in retpoline instructions.
+> >
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+> >   arch/x86/include/asm/nospec-branch.h | 16 ++++++++--------
+> >   1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> > index e7752b4038ff..e491c3d9f227 100644
+> > --- a/arch/x86/include/asm/nospec-branch.h
+> > +++ b/arch/x86/include/asm/nospec-branch.h
+> > @@ -314,19 +314,19 @@ static inline void mds_idle_clear_cpu_buffers(void)
+> >    *    lfence
+> >    *    jmp spec_trap
+> >    *  do_rop:
+> > - *    mov %rax,(%rsp) for x86_64
+> > + *    mov %rcx,(%rsp) for x86_64
+> >    *    mov %edx,(%esp) for x86_32
+> >    *    retq
+> >    *
+> >    * Without retpolines configured:
+> >    *
+> > - *    jmp *%rax for x86_64
+> > + *    jmp *%rcx for x86_64
+> >    *    jmp *%edx for x86_32
+> >    */
+> >   #ifdef CONFIG_RETPOLINE
+> >   # ifdef CONFIG_X86_64
+> > -#  define RETPOLINE_RAX_BPF_JIT_SIZE 17
+> > -#  define RETPOLINE_RAX_BPF_JIT()                            \
+> > +#  define RETPOLINE_RCX_BPF_JIT_SIZE 17
+> > +#  define RETPOLINE_RCX_BPF_JIT()                            \
+> >   do {                                                                \
+> >       EMIT1_off32(0xE8, 7);    /* callq do_rop */             \
+> >       /* spec_trap: */                                        \
+> > @@ -334,7 +334,7 @@ do {                                                              \
+> >       EMIT3(0x0F, 0xAE, 0xE8); /* lfence */                   \
+> >       EMIT2(0xEB, 0xF9);       /* jmp spec_trap */            \
+> >       /* do_rop: */                                           \
+> > -     EMIT4(0x48, 0x89, 0x04, 0x24); /* mov %rax,(%rsp) */    \
+> > +     EMIT4(0x48, 0x89, 0x0C, 0x24); /* mov %rcx,(%rsp) */    \
+> >       EMIT1(0xC3);             /* retq */                     \
+> >   } while (0)
+> >   # else /* !CONFIG_X86_64 */
+> > @@ -352,9 +352,9 @@ do {                                                              \
+> >   # endif
+> >   #else /* !CONFIG_RETPOLINE */
+> >   # ifdef CONFIG_X86_64
+> > -#  define RETPOLINE_RAX_BPF_JIT_SIZE 2
+> > -#  define RETPOLINE_RAX_BPF_JIT()                            \
+> > -     EMIT2(0xFF, 0xE0);       /* jmp *%rax */
+> > +#  define RETPOLINE_RCX_BPF_JIT_SIZE 2
+> > +#  define RETPOLINE_RCX_BPF_JIT()                            \
+> > +     EMIT2(0xFF, 0xE1);       /* jmp *%rcx */
+>
+> Hmm, so the target prog gets loaded into rax in emit_bpf_tail_call_indirect()
+> but then you jump into rcx? What am I missing? This still needs to be bisectable.
 
-On 17/07/2020 08:23, Christoph Hellwig wrote:
-> Add the compat handling to sock_common_{get,set}sockopt instead,
-> keyed of in_compat_syscall().  This allow to remove the now unused
-> ->compat_{get,set}sockopt methods from struct proto_ops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/linux/net.h      |  6 ------
->   include/net/sock.h       |  4 ----
->   net/core/sock.c          | 30 ++++++------------------------
->   net/mptcp/protocol.c     |  6 ------
+Somehow your comments on patches 1, 2 and 3 didn't arrive to my work mail.
+I'm responding from web-gmail as my client seems to be broken and I am
+in a bit of hurry, so apologize for any inconveniences...
 
-Thank you for looking at that!
+You are right of course, I will include the JIT change in this patch on v2.
 
-For MPTCP-related code:
-
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+>
+> >   # else /* !CONFIG_X86_64 */
+> >   #  define RETPOLINE_EDX_BPF_JIT()                           \
+> >       EMIT2(0xFF, 0xE2)        /* jmp *%edx */
+> >
+>
