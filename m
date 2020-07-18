@@ -2,132 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865C2224B0C
-	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 13:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B37224D1D
+	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 18:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgGRLxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jul 2020 07:53:03 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:39076 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726481AbgGRLxD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jul 2020 07:53:03 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E8ABE508C0CCB2E37E53;
-        Sat, 18 Jul 2020 19:53:00 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Sat, 18 Jul 2020
- 19:52:59 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] bpf: Make some functions static
-Date:   Sat, 18 Jul 2020 19:51:35 +0800
-Message-ID: <20200718115135.34856-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726648AbgGRQqW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jul 2020 12:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbgGRQqW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jul 2020 12:46:22 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E675C0619D2
+        for <bpf@vger.kernel.org>; Sat, 18 Jul 2020 09:46:22 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id b9so6762768plx.6
+        for <bpf@vger.kernel.org>; Sat, 18 Jul 2020 09:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=eYKC7xD1BXJTtPGIfQSAHoHuwUxup8dsR9UzHTh14Bw=;
+        b=k3zhHAVqOofU1sAmN5KjAWDv9xPHrapPeYvftccLJgSf13dx+CB3q+MNAQ/tw+U9i6
+         aFrwqpY3t/Pe4QQAB2xWfhDchNeysoO6y5/A+do3o47OiMmLgnahXQvFM4WGEBlnaX7J
+         hltYMuiQwCicXXo61xuRnH6NEf/yWm6UAspWLmG0B+ZEW1c7Jaz2rAsStfCZExs9syE9
+         cpPtLTmQYGtMZYZvLZL4vDl91sdLlrcMGUKC6ApLjVuI5CkUu681yK74gEmdAt5SfHkA
+         gjVdq1LD8CAiVgDBMtEs22vxUl3NfHHK7Uud1FuHbe1Y1/ksqQyqIntpXtoYi2sV/UL8
+         s88A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=eYKC7xD1BXJTtPGIfQSAHoHuwUxup8dsR9UzHTh14Bw=;
+        b=ACRNTiT1be41MeetFyEUh0kbpNUxIZGVNibkw91smcIqrxf1dbDwP6ccECOZgyLcht
+         8iICEIgXLRPyHwe29lF1TISMtnNcG2+IDWpj/Laouq8UcBIbU+Qi3PVzibTTiMgjf8Dy
+         d095xPIYBN4UzdoNwIrDcZjgMYY8Eo76Owg3cZejdxxunuAmW7HnCW5uvFrji8Yp6wHH
+         dzIbWR0SApVVXU5lTYAUhZcx+3hImRr6znGzLoQajrRkWe3ApDmm/bsTP/Nx98gAe5KB
+         UczO1Rx1ZNVqjNHaTfoblPTxnqmBCBmyyVvMfgfXVtlaftQJyk9txAHGn4zkplKz9rLh
+         1Grg==
+X-Gm-Message-State: AOAM530doIaBShglZ18PigF6YHbgHbIq+/Uc9QUXHtj6Xqjp5sMhP1LK
+        SNTcVZAMN8r4z9AvhV9UjXesiGMQg4uSCvMPtUnnVx4fvJQ=
+X-Google-Smtp-Source: ABdhPJyrtSAd/dbVpBkfuDQ+T0aAx0tGqdhuZbhHx70ABGEb9LPxSELh4QdlvdG4999bKHabuETY10SenZ63hWgWlrg=
+X-Received: by 2002:a17:902:7683:: with SMTP id m3mr12008849pll.182.1595090780646;
+ Sat, 18 Jul 2020 09:46:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+From:   Venkata Sai Reddy Avuluri <avulurivenkatasaireddy@gmail.com>
+Date:   Sat, 18 Jul 2020 22:16:08 +0530
+Message-ID: <CAJW+K3E-O3-kT_Q3kba_pTmFj7h-LvP01FpTj=4Rv=DX+M3BGA@mail.gmail.com>
+Subject: Doubt eBPF
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix sparse build warning:
+Hello,
 
-net/bpf/test_run.c:120:14: warning:
- symbol 'bpf_fentry_test1' was not declared. Should it be static?
-net/bpf/test_run.c:125:14: warning:
- symbol 'bpf_fentry_test2' was not declared. Should it be static?
-net/bpf/test_run.c:130:14: warning:
- symbol 'bpf_fentry_test3' was not declared. Should it be static?
-net/bpf/test_run.c:135:14: warning:
- symbol 'bpf_fentry_test4' was not declared. Should it be static?
-net/bpf/test_run.c:140:14: warning:
- symbol 'bpf_fentry_test5' was not declared. Should it be static?
-net/bpf/test_run.c:145:14: warning:
- symbol 'bpf_fentry_test6' was not declared. Should it be static?
-net/bpf/test_run.c:154:14: warning:
- symbol 'bpf_fentry_test7' was not declared. Should it be static?
-net/bpf/test_run.c:159:14: warning:
- symbol 'bpf_fentry_test8' was not declared. Should it be static?
-net/bpf/test_run.c:164:14: warning:
- symbol 'bpf_modify_return_test' was not declared. Should it be static?
+I am Sai Reddy  an undergrad student in Rajiv Gandhi University of
+Knowledge Technologies  in Basar, Telangana, India.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/bpf/test_run.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+As of now for Summer internship, i am doing in IIT Madras, We are
+working on some message filters.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index b03c469cd01f..0d78bd9b6c9d 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -117,32 +117,32 @@ static int bpf_test_finish(const union bpf_attr *kattr,
- __diag_push();
- __diag_ignore(GCC, 8, "-Wmissing-prototypes",
- 	      "Global functions as their definitions will be in vmlinux BTF");
--int noinline bpf_fentry_test1(int a)
-+static noinline int bpf_fentry_test1(int a)
- {
- 	return a + 1;
- }
- 
--int noinline bpf_fentry_test2(int a, u64 b)
-+static noinline int bpf_fentry_test2(int a, u64 b)
- {
- 	return a + b;
- }
- 
--int noinline bpf_fentry_test3(char a, int b, u64 c)
-+static noinline int bpf_fentry_test3(char a, int b, u64 c)
- {
- 	return a + b + c;
- }
- 
--int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
-+static noinline int bpf_fentry_test4(void *a, char b, int c, u64 d)
- {
- 	return (long)a + b + c + d;
- }
- 
--int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
-+static noinline int bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
- {
- 	return a + (long)b + c + d + e;
- }
- 
--int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
-+static noinline int bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- {
- 	return a + (long)b + c + d + (long)e + f;
- }
-@@ -151,17 +151,17 @@ struct bpf_fentry_test_t {
- 	struct bpf_fentry_test_t *a;
- };
- 
--int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
-+static noinline int bpf_fentry_test7(struct bpf_fentry_test_t *arg)
- {
- 	return (long)arg;
- }
- 
--int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
-+static noinline int bpf_fentry_test8(struct bpf_fentry_test_t *arg)
- {
- 	return (long)arg->a;
- }
- 
--int noinline bpf_modify_return_test(int a, int *b)
-+static noinline int bpf_modify_return_test(int a, int *b)
- {
- 	*b += 1;
- 	return a + *b;
--- 
-2.17.1
+My professor questioned my team "How is BPF happening inside the Kernel?"
 
+More precisely he pointed out that something.. When we said ," When a
+kprobe is used, some BPF instruction's are going to happen before
+actual syscall instructions happen"..He questioned us back, "Means
+it's actually modifying the underlying syscall instrutions...with jump
+instructions..is that feasible? and we are actually making an extra
+overhead too?"..
+
+We tried to explain as much as possible, using XDP at NIC level..and
+many more..But the Professor is asking "This internal modification of
+instructions is really useful?"
+
+And one more question I have, "How does a BPF program know a
+particular syscall has happened. Is it going to check always, Where
+for checking some set of  instructions executed again?".
+
+I hope you will reach me back with answers to the above questions.
+Thanks for your time and clarifying my doubts.
+
+Regards,
+
+    Avuluri Venkata Sai Reddy
+
+    B.Tech 3rd Year(CSE),
+
+    RGUKT IIIT BASAR.
