@@ -2,507 +2,409 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A067224859
-	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 05:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFBC22485F
+	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 05:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgGRDsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jul 2020 23:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        id S1727042AbgGRDy7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jul 2020 23:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbgGRDsa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jul 2020 23:48:30 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A973C0619D2
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 20:48:30 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id e18so8992223ilr.7
-        for <bpf@vger.kernel.org>; Fri, 17 Jul 2020 20:48:30 -0700 (PDT)
+        with ESMTP id S1726923AbgGRDy6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jul 2020 23:54:58 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AF5C0619D2;
+        Fri, 17 Jul 2020 20:54:58 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id w34so9247932qte.1;
+        Fri, 17 Jul 2020 20:54:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Fe6lmwItvtyaE2gaz592veoDeuzA/THJqvOKICC8ysk=;
-        b=Vm7dQyn1PkCfLHiM85ltRnVXDS7J1f7n5QuXCTgf9oSkEDng8PRsObYl8ORl0181N0
-         v9mAZYfV0B03fbDDH7XmnTC2v468KcE2KZS+WKlPm86yuHopu1f9SgDZfW/yAIGREreQ
-         h/w+D32FEnRSh2iEdeBQdKR+qq+TG5xdRFSOkEobzcyu3zDgTi2seJFFKoUWhcYRiaf2
-         Xh6KYXD4H5hFDQAh72IYM3rz59uQzK8qsA09MqED/3gtf9FNNNIU8yvTG+vfhIUG10Bv
-         4Ttj6IIoLzGIJebi14/rHTpTAjqLNW3W9LysEDVQR+Eh5PWifr4dSZkbRbKB1O+/k935
-         Y6HQ==
+        bh=nUYZqgN60e61lWs8+/CbKMuYFAKYxWsBo2re3pyVmgM=;
+        b=E/eK0xXjRh5CUEg74It/wKYFSRi85iw6FOyXm7Bpoi09Y/ptqeXBE1b18nPc9AhrlN
+         gw+QmSL+i0gNdiPJmZcTEL5BInF4MeAOXdfnFXe3/T6fmiBUkfDFd96nIl1rWJ+c/RA/
+         WCqm5eTQaVQghaTadLaG+2MsZh+xWBoMHHuKCwkIH3PzuoiEL6nrNqb6+hyRLRN9+941
+         C5jXJclvdDmb9VNKxjXvaTAjophmIPd0cVGRDNrCOnTqWYYrMvafC8W/uyvJYfD17sxF
+         hhm6sxWn5W5V/Uc0RBchh7lc0QQl0odNbY652oe7AVo0s0FLkCJZG8EOnhEo3q/r+57k
+         WxMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Fe6lmwItvtyaE2gaz592veoDeuzA/THJqvOKICC8ysk=;
-        b=B47n5clxtFFO0zDFMYAhjaFVHedENgDsmSPJfAqWYX89tFF3i72/YOJFLZyMxFwtU0
-         OenDgkqXLNLqDh/AdG3jIb+JkXXuqfiDgF138L1/v3YXe/tOZgi4C/rPCPrR9FK8tLkI
-         q7MSnTrZ2CEO5YAMuGBdqhq92ZZ3Nu/8C5oxhKnLIlnzgPZb8QRBQB+jdFpNFMUqIhur
-         BSwmoiLr62b181X+Mnh1VExR5Ofz6bTy7n5fIy54D7zFScD4WMsrpC/DOYPHLKL9aTf3
-         iQo7PZZQDoOqAZSkYF7DTBw+9DvtpcVqRvmdwg/IVCVNcKcxAx83p2eQjkQ7oBbrcxVK
-         sOKw==
-X-Gm-Message-State: AOAM532wlAiyOQnxWgU9nKjGfjHaVikJc6czZ5zUqeUVpbqmj7+1dZ2p
-        EAgnjxYc7BPw8Wp+ADsQiRYG69gZ+B9zc9jzrGVMcg==
-X-Google-Smtp-Source: ABdhPJwWFrUUN1rE6uZbq63UJlC/dMYRBIEjwQCkkA4FhmJZbLwAEyiHvA/zvv1y97tOa71cuo8QDbKB7itqop8c6wI=
-X-Received: by 2002:a92:150d:: with SMTP id v13mr12375153ilk.297.1595044109375;
- Fri, 17 Jul 2020 20:48:29 -0700 (PDT)
+        bh=nUYZqgN60e61lWs8+/CbKMuYFAKYxWsBo2re3pyVmgM=;
+        b=h0WPJjcT17OtCDdoq5mp749rMXWJrvrdABnKCrgd92wM8xRVC8YbC7+1lf/FFQ/uTP
+         5ZmWBcsWv3EsZOmy4daOyC5YaC6oI/3F/+h/2OzfjLad8lwjUOhQK9LVYYuZQUOLku+v
+         UBiEujd0PbF3POrLVA3DaxGRN1MG6bNjLPmB2aBkcOI8PtggR9hyYZPa6MIslbbWA0Es
+         o25JBpmDz/c84/KT7qqLwwAu0woYGQEDN4VC0ebiZw9RPQp+mgTl1dmWGSdKRj/YFZDv
+         lAqA98chSU1OV7yyZ1CC9xZKDehNBY+TJ1+PJvaGDPt9aZofpzLZ09L4tD7O70qzQYtg
+         T3uA==
+X-Gm-Message-State: AOAM531fRwmO0vpAD6upKUYUwQaIeg1x70BJNFp4K8geIAoY17o+pUdC
+        aNFUikVkOvWpoYRqMj91VttbWrpRuu50ticien0=
+X-Google-Smtp-Source: ABdhPJxIMXvAJTdKPq3YIIz5qUskYmVaU6Sn3XJ9V+y974tgXZWsI7YIsXsEuGnAKloLdh3PoIsg1LEBzx6ALWkhC48=
+X-Received: by 2002:aed:2cc5:: with SMTP id g63mr13518636qtd.59.1595044497102;
+ Fri, 17 Jul 2020 20:54:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1594944827.git.zhuyifei@google.com> <4321b6199e2719b49ec6e55dae4ebbfb4f7ed0be.1594944827.git.zhuyifei@google.com>
- <20200718033044.ms2ievjoseaoenwj@kafai-mbp>
-In-Reply-To: <20200718033044.ms2ievjoseaoenwj@kafai-mbp>
-From:   YiFei Zhu <zhuyifei@google.com>
-Date:   Fri, 17 Jul 2020 22:48:18 -0500
-Message-ID: <CAA-VZPn9Yki+LBQAGM05vC3r9z5R5Y3fm7PLEKWXEyvu_7iVcw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/5] bpf: Make cgroup storages shared across
- attaches on the same cgroup
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <CAEf4Bzbu1wnwWFOWYA3e6KFeSmfg8oANPWD9LsUMRy2E_zrQ0w@mail.gmail.com>
+ <87pn8xg6x7.fsf@toke.dk> <CAEf4BzYAoetyfyofTX45RQjtz3M-c9=YNeH1uRDbYgK4Ae0TwA@mail.gmail.com>
+ <87d04xg2p4.fsf@toke.dk> <20200714231133.ap5qnalf6moptvfk@ast-mbp.dhcp.thefacebook.com>
+ <874kq9ey2j.fsf@toke.dk> <20200715234123.rr7oj74t5hflzmsn@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbodR-+=Q3wRE2UaiouBexvqfwpE-zJGm4Rr1cV2dgZHQ@mail.gmail.com>
+ <20200716054408.so34cuc2g2iqcppr@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbiD9Cuqip2=FGHGHLZs-7b8AziS-hJOpX1HuONTM4udQ@mail.gmail.com> <20200717030920.6kxs6kyvisuvoqnt@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200717030920.6kxs6kyvisuvoqnt@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Jul 2020 20:54:45 -0700
+Message-ID: <CAEf4BzZyGJGork=fDEAp+SmkzHs1+ydqVwZmYt8QeCZzf-yyvA@mail.gmail.com>
+Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add
+ new members to bpf_attr.raw_tracepoint in bpf.h
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Blake Matheny <bmatheny@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> I still failed to understand why there is a need to do this dance
-> that always link/publish first and then unlink/unpublish during failure.
-> It causes all these changes to add and track "storage_reused" params
-> in a few functions for handling this one failure. That also requires
-> to introduce the cgroup_storage_lookup_insert().
+On Thu, Jul 16, 2020 at 8:09 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Going back to my earlier comment in v2 which I didn't here any feedback:
+> On Thu, Jul 16, 2020 at 12:59:30PM -0700, Andrii Nakryiko wrote:
+> > On Wed, Jul 15, 2020 at 10:44 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Jul 15, 2020 at 06:11:39PM -0700, Andrii Nakryiko wrote:
+> > > > >
+> > > > > On Wed, Jul 15, 2020, Andrii Nakryiko wrote:
+> > > > > >
+> > > > > > Inability to figure out what's wrong when using BPF is at the top of
+> > > > > > complaints from many users, together with hard to understand logs from
+> > > > > > verifier.
+> > > > >
+> > > > > Only the second part is true. All users are complaining about the verifier.
+> > > > > No one is complaing that failed prog attach is somehow lacking string message.
+> > > >
+> > > > Ok, next time I'll be helping someone to figure out another -EINVAL,
+> > > > I'll remember to reassure them that it's not really frustrating, not a
+> > > > guess game, and not a time sink at all.
+> > >
+> > > When the next time the users hit EINVAL due to _their_ usage and not
+> > > due to kernel or libbpf bug and libbpf couldn't do anything to make
+> > > the error user friendly then yes please raise it up.
+> >
+> > I know this is futile to convince you anyways, so I won't go dig all
+> > the details, but here are few general examples. With the benefit of
+> > hindsight in a lot of those cases libbpf can do extra checks and
+> > guessing (though bad guess is worse than no guess), but that doesn't
+> > scale because of the sheer amount of possible situations.
+> >
+> > What I personally went through when I was building runqslower:
+> >
+> > 1. You write a simple BPF program, open + load. You run it, you get EPERM.
+> > 2. You go check if you ran the program with sudo, retry with sudo.
+> > 3. You still get EPERM. You bang your head against the wall for 30
+> > minutes, you recall about RLIMIT_MEMLOCK, you bump it up.
+> > 4. If you are happy, now everything works. I don't remember now if I
+> > had to bang my head some more until I got the initial minimal version
+> > of runqslower successfully load BPF program.
 >
-> **** snippet ****
-> >> lookup old, found=>reuse, not-found=>alloc.
-> >>
-> >> Only publish the new storage after the attach has succeeded.
-> *** snippet ****
->
-> I try to put them in code here (uncompiled code).  wdyt?
+> But we have libbpf hinting on that already?
+> Are you saying that hint wasn't working somehow?
 
-Ah, I see what you mean now. I was under the false impression that
-multiple CPUs may attempt to link at the same time, so one would need
-a weird dance to avoid races and allocating-during-spinlock, but this
-is not the case, given that they are under the cgroup_mutex. Thanks
-for pointing that out. Will fix in v4.
+At that time the message was just "failed to load primitive BPF
+program", we added mentions of CONFIG_BPF_SYSCALL and RLIMIT_MEMLOCK
+much later. And even current message might be misleading, because it
+might be that you are not a root (or, in more modern kernels, don't
+have CAP_BPF). Maybe not, if we are relying on unprivileged BPF for
+primitive prog, I don't know.
 
-> >       spin_lock_bh(&map->lock);
+>
 > >
-> > -     if (map->aux && map->aux != aux)
-> > -             goto unlock;
-> >       if (aux->cgroup_storage[stype] &&
-> >           aux->cgroup_storage[stype] != _map)
-> >               goto unlock;
+> > Some popular other issues I can recall.
 > >
-> > -     map->aux = aux;
-> Is spin_lock_bh(&map->lock) still required in this function?
+> > 1. People get excited and try to use fentry/fexit, get -EINVAL. Most
+> > probably it's because they don't have a recent enough kernel.
+> > Otherwise (if they know libbpf behavior), they'd probably have gotten
+> > something about not being able to find the desired BTF func in the
+> > kernel. Even in that case, is that that they don't have BTF at all
+> > (CONFIG_DEBUG_BTF_INFO=y)? Or it's just an old one with no FUNCs
+> > because pahole isn't recent enough? Kernel build won't mention that
+> > you need 1.16 for fentry/fexit, of course. And so on. This is actually
+> > not the worst case, because I can walk them through this process.
+>
+> Exactly. Either old kernel or missing config in the kernel.
+> libbpf is above that. It could have provided a hint.
+> When libbpf is processing SEC("fentry/") and it fails to load with
+> empty verifier log it could start probing.
 
-No. Will fix in v4.
+As I said, listing these examples I didn't expect to convince you,
+because I knew you'd propose one or another way how libbpf can provide
+more "diagnostics". In a lot of cases it can. But usually after the
+fact (debugging it in a painful way). I don't believe we can
+anticipate all cases, though, and even those that we can, I'm not sure
+how scalable it is to do all that. Requiring anyone adding any new API
+to provide a comprehensive set of probing/checks/diagnostics to
+prevent possible error conditions seems to be way too harsh on
+contributors.
 
-YiFei Zhu
+Unfortunately, details escape me now for the case I had in mind, where
+I had absolutely no clue which of many checks are failing, even after
+reading kernel source code very carefully. Too bad, but I don't keep
+such detailed notes.
 
-On Fri, Jul 17, 2020 at 10:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> Only libbpf can do it. Kernel is helpless here.
+> Say we change the kernel errno for all unsuported prog types and maps
+> it would return ENOTSUPP or something.
+> Would it really help the situation?
+
+IMO, if the kernel just prints out "Unknown BPF command 123" or
+"Unknown map type 345" that would be already a nice improvement.
+
+
+> Probably not. There will be old kernels and the same usability
+> issue as you described.
+
+Of course old kernels will still have those problems, but it never
+stopped us from fixing and improving the kernel moving forward so that
+eventually a better version is available (almost) everywhere.
+
 >
-> On Thu, Jul 16, 2020 at 07:16:27PM -0500, YiFei Zhu wrote:
+> > 2. When dealing with cgroups. You get EINVAL for every tiny misstep.
+> > You want to replace the BPF program, you get EINVAL. Maybe you forgot
+> > one of the necessary flags? Or maybe you specified incompatible flags
+> > (BPF_F_REPLACE | BPF_F_ALLOW_MULTI)? Or the parent cgroup has a
+> > non-overridable BPF program attached already? Or maybe prog FD is
+> > wrong, or cgroup FD is wrong, or?...
 >
-> > Fourth, on attach, we reuse the old storage if the key already
-> > exists in the map. Because the rbtree traversal holds the spinlock
-> > of the map, during which we can't allocate a new storage if we
-> > don't find an old storage, instead we preallocate the storage
-> > unconditionally, and free the preallocated storage if we find an
-> > old storage in the map. This results in a change of semantics in
-> > bpf_cgroup_storage{,s}_link, and rename cgroup_storage_insert to
-> > cgroup_storage_lookup_insert that does both lookup and conditionally
-> > insert or free. bpf_cgroup_storage{,s}_link also tracks exactly
-> > which storages are reused in an array of bools, so it can unlink
-> > and free the new storages in the event that attachment failed
-> > later than link. bpf_cgroup_storages_{free,unlink} accepts the
-> > bool array in order to facilitate that.
+> A wrong FD for prog or cgroup would be a libbpf bug.
+
+cgroup fd is the direct input parameter for
+bpf_program__attach_cgroup() and bpf_prog_attach() APIs. But, of
+course, we can also add a variant that takes a string path to cgroup
+and fetches it. Or we can double-check that provided cgroup FD is
+actually cgroup FD.
+
+> imo that's the case where kernel must not return a string even
+> if there is a log_buf facility.
 >
-> [ ... ]
+> non-overridable already attached is EPERM. It's not EINVAL.
+> multi-prog vs overridable is also EPERM.
+
+Attaching the same BPF prog is EINVAL, though. But it doesn't matter
+which error code specifically, either EPERM, or EINVAL, or even E2BIG
+have many possible meanings in bpf() syscall.
+
+> Say, the kernel has log_buf for hierarchy_allows_attach().
+> what kind of message do you think it can print that will be user friendly?
+> "attach is not allowed because there is a parent cgroup
+> that has no override flag set"
+> How is it much better than EPERM?
+
+"parent cgroup prevents attaching BPF program" would already lead into
+the right direction. It's not perfect and full, but better than more
+generic EPERM. But sure, EPERM has less variants than EINVAL, so I'm
+personally always happier with EPERM, than with EINVAL.
+
+> Two differentiate between these two EPERM?
+> Both to me look like the same category if permission checks.
+> I don't know how to the kernel can print full cgroup path here.
+> It has 'struct cgroup *'. Then go to kernfs? then what?
+> cgroupfs is mounted somwhere.
+> To have meaningul message the user would want to see something like:
+> "
+>   /sys/fs/cgroup/my_container <- has no-override bpf prog, hence
+>   the kernel doesn't allow attach at:
+>   /sys/fs/cgroup/my_container/here
+> "
+> Only libbpf can print such message.
+> The user gave libbpf a string path. Attaching is relative to that.
+> Whereas the kernel has hard time with mounts/paths/namespaces.
+
+Sure, I didn't even hope for cgroup path or anything like that. Maybe
+cgroup ID would be nice, don't know, but even without that just saying
+that it's parent cgroup that's the culprit is a big step forward, IMO.
+
 >
-> > ---
-> >  include/linux/bpf-cgroup.h     | 15 +++---
-> >  include/uapi/linux/bpf.h       |  2 +-
-> >  kernel/bpf/cgroup.c            | 69 +++++++++++++++------------
-> >  kernel/bpf/core.c              | 12 -----
-> >  kernel/bpf/local_storage.c     | 85 ++++++++++++++++------------------
-> >  tools/include/uapi/linux/bpf.h |  2 +-
-> >  6 files changed, 91 insertions(+), 94 deletions(-)
-> >
-> > diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> > index 2c6f26670acc..c83cd8862298 100644
-> > --- a/include/linux/bpf-cgroup.h
-> > +++ b/include/linux/bpf-cgroup.h
-> > @@ -46,7 +46,8 @@ struct bpf_cgroup_storage {
-> >       };
-> >       struct bpf_cgroup_storage_map *map;
-> >       struct bpf_cgroup_storage_key key;
-> > -     struct list_head list;
-> > +     struct list_head list_map;
-> > +     struct list_head list_cg;
-> >       struct rb_node node;
-> >       struct rcu_head rcu;
-> >  };
-> > @@ -78,6 +79,9 @@ struct cgroup_bpf {
-> >       struct list_head progs[MAX_BPF_ATTACH_TYPE];
-> >       u32 flags[MAX_BPF_ATTACH_TYPE];
-> >
-> > +     /* list of cgroup shared storages */
-> > +     struct list_head storages;
-> > +
-> >       /* temp storage for effective prog array used by prog_attach/detach */
-> >       struct bpf_prog_array *inactive;
-> >
-> > @@ -164,12 +168,11 @@ static inline void bpf_cgroup_storage_set(struct bpf_cgroup_storage
-> >  struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(struct bpf_prog *prog,
-> >                                       enum bpf_cgroup_storage_type stype);
-> >  void bpf_cgroup_storage_free(struct bpf_cgroup_storage *storage);
-> > -void bpf_cgroup_storage_link(struct bpf_cgroup_storage *storage,
-> > -                          struct cgroup *cgroup,
-> > -                          enum bpf_attach_type type);
-> > +struct bpf_cgroup_storage *
-> > +bpf_cgroup_storage_link(struct bpf_cgroup_storage *new_storage,
-> > +                     struct cgroup *cgroup, bool *storage_reused);
-> >  void bpf_cgroup_storage_unlink(struct bpf_cgroup_storage *storage);
-> >  int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *map);
-> > -void bpf_cgroup_storage_release(struct bpf_prog_aux *aux, struct bpf_map *map);
-> >
-> >  int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
-> >  int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
-> > @@ -383,8 +386,6 @@ static inline void bpf_cgroup_storage_set(
-> >       struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) {}
-> >  static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
-> >                                           struct bpf_map *map) { return 0; }
-> > -static inline void bpf_cgroup_storage_release(struct bpf_prog_aux *aux,
-> > -                                           struct bpf_map *map) {}
-> >  static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
-> >       struct bpf_prog *prog, enum bpf_cgroup_storage_type stype) { return NULL; }
-> >  static inline void bpf_cgroup_storage_free(
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 7ac3992dacfe..b14f008ad028 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -78,7 +78,7 @@ struct bpf_lpm_trie_key {
-> >
-> >  struct bpf_cgroup_storage_key {
-> >       __u64   cgroup_inode_id;        /* cgroup inode id */
-> > -     __u32   attach_type;            /* program attach type */
-> > +     __u32   attach_type;            /* program attach type, unused */
-> >  };
-> >
-> >  /* BPF syscall commands, see bpf(2) man-page for details. */
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index ac53102e244a..6b1ef4a809bb 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -28,12 +28,14 @@ void cgroup_bpf_offline(struct cgroup *cgrp)
-> >       percpu_ref_kill(&cgrp->bpf.refcnt);
-> >  }
-> >
-> > -static void bpf_cgroup_storages_free(struct bpf_cgroup_storage *storages[])
-> > +static void bpf_cgroup_storages_free(struct bpf_cgroup_storage *storages[],
-> > +                                  bool *storage_reused)
-> >  {
-> >       enum bpf_cgroup_storage_type stype;
-> >
-> >       for_each_cgroup_storage_type(stype)
-> > -             bpf_cgroup_storage_free(storages[stype]);
-> > +             if (!storage_reused || !storage_reused[stype])
-> > +                     bpf_cgroup_storage_free(storages[stype]);
-> >  }
-> >
-> >  static int bpf_cgroup_storages_alloc(struct bpf_cgroup_storage *storages[],
-> > @@ -45,7 +47,7 @@ static int bpf_cgroup_storages_alloc(struct bpf_cgroup_storage *storages[],
-> >               storages[stype] = bpf_cgroup_storage_alloc(prog, stype);
-> >               if (IS_ERR(storages[stype])) {
-> >                       storages[stype] = NULL;
-> > -                     bpf_cgroup_storages_free(storages);
-> > +                     bpf_cgroup_storages_free(storages, NULL);
-> >                       return -ENOMEM;
-> >               }
-> >       }
-> > @@ -63,21 +65,24 @@ static void bpf_cgroup_storages_assign(struct bpf_cgroup_storage *dst[],
-> >  }
-> >
-> >  static void bpf_cgroup_storages_link(struct bpf_cgroup_storage *storages[],
-> > -                                  struct cgroup* cgrp,
-> > -                                  enum bpf_attach_type attach_type)
-> > +                                  struct cgroup *cgrp, bool *storage_reused)
-> >  {
-> >       enum bpf_cgroup_storage_type stype;
-> >
-> >       for_each_cgroup_storage_type(stype)
-> > -             bpf_cgroup_storage_link(storages[stype], cgrp, attach_type);
-> > +             storages[stype] =
-> > +                     bpf_cgroup_storage_link(storages[stype], cgrp,
-> > +                                             &storage_reused[stype]);
-> >  }
-> >
-> > -static void bpf_cgroup_storages_unlink(struct bpf_cgroup_storage *storages[])
-> > +static void bpf_cgroup_storages_unlink(struct bpf_cgroup_storage *storages[],
-> > +                                    bool *storage_reused)
-> >  {
-> >       enum bpf_cgroup_storage_type stype;
-> >
-> >       for_each_cgroup_storage_type(stype)
-> > -             bpf_cgroup_storage_unlink(storages[stype]);
-> > +             if (!storage_reused || !storage_reused[stype])
-> > +                     bpf_cgroup_storage_unlink(storages[stype]);
-> >  }
-> >
-> >  /* Called when bpf_cgroup_link is auto-detached from dying cgroup.
-> > @@ -101,22 +106,23 @@ static void cgroup_bpf_release(struct work_struct *work)
-> >       struct cgroup *p, *cgrp = container_of(work, struct cgroup,
-> >                                              bpf.release_work);
-> >       struct bpf_prog_array *old_array;
-> > +     struct list_head *storages = &cgrp->bpf.storages;
-> > +     struct bpf_cgroup_storage *storage, *stmp;
-> > +
-> >       unsigned int type;
-> >
-> >       mutex_lock(&cgroup_mutex);
-> >
-> >       for (type = 0; type < ARRAY_SIZE(cgrp->bpf.progs); type++) {
-> >               struct list_head *progs = &cgrp->bpf.progs[type];
-> > -             struct bpf_prog_list *pl, *tmp;
-> > +             struct bpf_prog_list *pl, *pltmp;
-> >
-> > -             list_for_each_entry_safe(pl, tmp, progs, node) {
-> > +             list_for_each_entry_safe(pl, pltmp, progs, node) {
-> >                       list_del(&pl->node);
-> >                       if (pl->prog)
-> >                               bpf_prog_put(pl->prog);
-> >                       if (pl->link)
-> >                               bpf_cgroup_link_auto_detach(pl->link);
-> > -                     bpf_cgroup_storages_unlink(pl->storage);
-> > -                     bpf_cgroup_storages_free(pl->storage);
-> >                       kfree(pl);
-> >                       static_branch_dec(&cgroup_bpf_enabled_key);
-> >               }
-> > @@ -126,6 +132,11 @@ static void cgroup_bpf_release(struct work_struct *work)
-> >               bpf_prog_array_free(old_array);
-> >       }
-> >
-> > +     list_for_each_entry_safe(storage, stmp, storages, list_cg) {
-> > +             bpf_cgroup_storage_unlink(storage);
-> > +             bpf_cgroup_storage_free(storage);
-> > +     }
-> > +
-> >       mutex_unlock(&cgroup_mutex);
-> >
-> >       for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
-> > @@ -290,6 +301,8 @@ int cgroup_bpf_inherit(struct cgroup *cgrp)
-> >       for (i = 0; i < NR; i++)
-> >               INIT_LIST_HEAD(&cgrp->bpf.progs[i]);
-> >
-> > +     INIT_LIST_HEAD(&cgrp->bpf.storages);
-> > +
-> >       for (i = 0; i < NR; i++)
-> >               if (compute_effective_progs(cgrp, i, &arrays[i]))
-> >                       goto cleanup;
-> > @@ -422,7 +435,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >       struct list_head *progs = &cgrp->bpf.progs[type];
-> >       struct bpf_prog *old_prog = NULL;
-> >       struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > -     struct bpf_cgroup_storage *old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > +     bool storage_reused[MAX_BPF_CGROUP_STORAGE_TYPE];
-> >       struct bpf_prog_list *pl;
-> >       int err;
-> >
-> > @@ -455,22 +468,22 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >       if (IS_ERR(pl))
-> >               return PTR_ERR(pl);
-> >
-> > -     if (bpf_cgroup_storages_alloc(storage, prog ? : link->link.prog))
-> > -             return -ENOMEM;
-> > -
-> >       if (pl) {
-> >               old_prog = pl->prog;
-> > -             bpf_cgroup_storages_unlink(pl->storage);
-> > -             bpf_cgroup_storages_assign(old_storage, pl->storage);
-> >       } else {
-> >               pl = kmalloc(sizeof(*pl), GFP_KERNEL);
-> > -             if (!pl) {
-> > -                     bpf_cgroup_storages_free(storage);
-> > +             if (!pl)
-> >                       return -ENOMEM;
-> > -             }
-> > +
-> >               list_add_tail(&pl->node, progs);
-> >       }
-> >
-> > +     err = bpf_cgroup_storages_alloc(storage, prog ? : link->link.prog);
-> > +     if (err)
-> > +             goto cleanup;
-> > +
-> > +     bpf_cgroup_storages_link(storage, cgrp, storage_reused);
-> > +
-> >       pl->prog = prog;
-> >       pl->link = link;
-> >       bpf_cgroup_storages_assign(pl->storage, storage);
-> > @@ -478,24 +491,24 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >
-> >       err = update_effective_progs(cgrp, type);
-> >       if (err)
-> > -             goto cleanup;
-> > +             goto cleanup_unlink;
-> >
-> > -     bpf_cgroup_storages_free(old_storage);
-> >       if (old_prog)
-> >               bpf_prog_put(old_prog);
-> >       else
-> >               static_branch_inc(&cgroup_bpf_enabled_key);
-> > -     bpf_cgroup_storages_link(pl->storage, cgrp, type);
-> >       return 0;
-> >
-> > +cleanup_unlink:
-> > +     bpf_cgroup_storages_unlink(storage, storage_reused);
-> > +
-> I still failed to understand why there is a need to do this dance
-> that always link/publish first and then unlink/unpublish during failure.
-> It causes all these changes to add and track "storage_reused" params
-> in a few functions for handling this one failure. That also requires
-> to introduce the cgroup_storage_lookup_insert().
+> May be to solve this cgroup attaching ambiguity we can add a libbpf
+> helper that can walk hierarchy and print state?
+> Either libbpf calls it automatically or user can trigger it?
 >
-> Going back to my earlier comment in v2 which I didn't here any feedback:
+> > 3. Someone gets excited about libbpf-tools in BCC, decides to convert
+> > a tool. Needs to dump the hashmap fast. There is BATCH_LOOKUP, nice!
+> > They try, they get EINVAL. Most probably outdated kernel, but I'll
+> > need to dig into kernel sources to see what else could go wrong.
 >
-> **** snippet ****
-> >> lookup old, found=>reuse, not-found=>alloc.
-> >>
-> >> Only publish the new storage after the attach has succeeded.
-> *** snippet ****
+> right. that is similar to 1. I don't see how kernel could have helped.
+> Say sys_bpf got top level log_buf for _all_ commands.
+> The user is passing a command that is unsupported.
+> The kernel has no clue whether log_buf is even there in bpf_attr.
+> It cannot return a string. Only errno.
+> If we change that errno from current EINVAL to ENOTSUPP...
+> it would go back to the point I made above.
+> Not really helping much.
+> imo that's another case where libbpf probing can go long way to
+> improve user experience.
+
+log_buf can't help existing kernels. Period. No one is arguing or
+expecting that. But moving forward, just having that "unknown command
+123" would be great.
+
+But yeah, of course libbpf can create a probing map and try to do
+BATCH_LOOKUP, to detect BATCH_LOOKUP support.
+
 >
-> I try to put them in code here (uncompiled code).  wdyt?
->
-> static int bpf_cgroup_storages_alloc(struct bpf_cgroup_storage *storages[],
->                                      struct bpf_cgroup_storage *new_storages[],
->                                      struct bpf_prog *prog,
->                                      struct cgroup *cgrp)
-> {
->         enum bpf_cgroup_storage_type stype;
->         struct bpf_cgroup_storage_key key;
->         struct bpf_map *map;
->
->         key.cgroup_inode_id = cgroup_id(cgrp);
->         key.attach_type = 0;
->
->         for_each_cgroup_storage_type(stype) {
->                 map = prog->aux->cgroup_storage[stype];
->                 if (!map)
->                         continue;
->
->                 storages[stype] = cgroup_storage_lookup((void *)map, &key, false);
->                 if (!storages[stype]) {
->                         struct bpf_cgroup_storage *new_storage;
->
->                         new_storage = bpf_cgroup_storage_alloc(prog, stype);
->                         if (IS_ERR(new_storage)) {
->                                 bpf_cgroup_storages_free(new_storages);
->                                 return PTR_ERR(new_storage);
->                         }
->                         storages[stype] = new_storage;
->                         new_storages[stype] = new_storage;
->                 }
->         }
->
->         return 0;
-> }
->
-> @@ -422,7 +439,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
->         struct list_head *progs = &cgrp->bpf.progs[type];
->         struct bpf_prog *old_prog = NULL;
->         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> -       struct bpf_cgroup_storage *old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> +       struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
->         struct bpf_prog_list *pl;
->         int err;
->
-> @@ -455,17 +472,16 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
->         if (IS_ERR(pl))
->                 return PTR_ERR(pl);
->
-> -       if (bpf_cgroup_storages_alloc(storage, prog ? : link->link.prog))
-> +       if (bpf_cgroup_storages_alloc(storage, new_storage,
-> +                                     prog ? : link->link.prog, cgrp))
->                 return -ENOMEM;
->
->         if (pl) {
->                 old_prog = pl->prog;
-> -               bpf_cgroup_storages_unlink(pl->storage);
-> -               bpf_cgroup_storages_assign(old_storage, pl->storage);
->         } else {
->                 pl = kmalloc(sizeof(*pl), GFP_KERNEL);
->                 if (!pl) {
-> -                       bpf_cgroup_storages_free(storage);
-> +                       bpf_cgroup_storages_free(new_storage);
->                         return -ENOMEM;
->                 }
->                 list_add_tail(&pl->node, progs);
-> @@ -480,12 +496,11 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
->         if (err)
->                 goto cleanup;
->
-> -       bpf_cgroup_storages_free(old_storage);
->         if (old_prog)
->                 bpf_prog_put(old_prog);
->         else
->                 static_branch_inc(&cgroup_bpf_enabled_key);
-> -       bpf_cgroup_storages_link(pl->storage, cgrp, type);
-> +       bpf_cgroup_storages_link(new_storage, cgrp, type);
->         return 0;
->
->  cleanup:
-> @@ -493,9 +508,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
->                 pl->prog = old_prog;
->                 pl->link = NULL;
->         }
-> -       bpf_cgroup_storages_free(pl->storage);
-> -       bpf_cgroup_storages_assign(pl->storage, old_storage);
-> -       bpf_cgroup_storages_link(pl->storage, cgrp, type);
-> +       bpf_cgroup_storages_free(new_storage);
->         if (!old_prog) {
->                 list_del(&pl->node);
->                 kfree(pl);
->
-> [ ... ]
->
-> > diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> > index 51bd5a8cb01b..78ffe69ff1d8 100644
-> > --- a/kernel/bpf/local_storage.c
-> > +++ b/kernel/bpf/local_storage.c
-> [ ... ]
-> > @@ -318,6 +313,17 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
-> >  static void cgroup_storage_map_free(struct bpf_map *_map)
-> >  {
-> >       struct bpf_cgroup_storage_map *map = map_to_storage(_map);
-> > +     struct list_head *storages = &map->list;
-> > +     struct bpf_cgroup_storage *storage, *stmp;
-> > +
-> > +     mutex_lock(&cgroup_mutex);
-> > +
-> > +     list_for_each_entry_safe(storage, stmp, storages, list_map) {
-> > +             bpf_cgroup_storage_unlink(storage);
-> > +             bpf_cgroup_storage_free(storage);
-> > +     }
-> > +
-> > +     mutex_unlock(&cgroup_mutex);
 > >
-> >       WARN_ON(!RB_EMPTY_ROOT(&map->root));
-> >       WARN_ON(!list_empty(&map->list));
-> > @@ -431,13 +437,10 @@ int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *_map)
-> >
-> >       spin_lock_bh(&map->lock);
-> >
-> > -     if (map->aux && map->aux != aux)
-> > -             goto unlock;
-> >       if (aux->cgroup_storage[stype] &&
-> >           aux->cgroup_storage[stype] != _map)
-> >               goto unlock;
-> >
-> > -     map->aux = aux;
-> Is spin_lock_bh(&map->lock) still required in this function?
+> > 4. Try using some of the low-level APIs from libbpf/bpf.h, like the
+> > same cgroup program replacement. You'll get E2BIG and will scratch
+> > your head for a while, checking how the list of attached BPF programs
+> > can be too big, if it's the only one. Just to realize that again, your
+> > kernel is just a touch too old and just complains about non-zero
+> > unknown field in bpf_attr.
 >
+> The low-level APIs of libbpf is indeed a pain.
+> There are also old and partially broken libbpf APIs.
+> I think we need to start aggressively deprecating some of them.
+> Especially those that cause debugging issues to users.
+>
+> > 5. Just few days ago, one user was doing bpf_program__attach_tracepoint():
+> >
+> > libbpf: program 'tp/sched/sched_process_exit': failed to attach to pfd
+> > 10: File exists
+> >
+> > After a bit of back and forth turns out he had a second instance of
+> > that program running in parallel. Good, I quickly realize that it's an
+> > old kernel and it doesn't allow me to attach more than 1 BPF program
+> > to the tracepoint. Case solved. But what about many other BPF users
+> > that do not have access to someone developing BPF in the kernel?
+>
+> I similarly don't see how kernel string would have helped.
+> It would have said the same thing: "cannot attach".
+
+This one is for perf subsystem, actually, it's its
+PERF_EVENT_IOC_SET_BPF ioctl (until we add bpf_link for perf_event
+attachment).
+
+"limit of allowed BPF programs reached" would be good enough. "cannot
+attach" is too generic.
+
+>
+> > And the list goes on. Even if it was my full-time job just to
+> > anticipate all the misuses and try to check/guess them in libbpf, that
+> > wouldn't work and won't scale.
+> >
+> > And all I was asking (and not finger pointing or blaming anything or
+> > anyone) to have a mechanism in the kernel to get a single-line
+> > human-readable hint as to which one out of many
+> > EINVAL/E2BIG/ENOENT/EPERM conditions was hit. No need to immediately
+> > convert all of them, we could have gradually added that, prioritizing
+> > common and most probable ones to hit.
+>
+> I'm not against adding log_buf to more bpf commands.
+> In many cases they are needed.
+> I'm against the blank statement that _all_ bpf commands need log_buf
+> and that is somehow will solve user debug nightmares.
+
+There was no such statement. There was no statement that it will
+"solve" debug nightmares. But it will certainly ease the pain.
+
+My proposal was about adding the ability to emit something to log_buf
+from any of the BPF commands, if that BPF command chooses to provide
+extra error information. The whole point of this was to avoid adding
+log_buf in command-specific ways (as Toke was doing in the patch that
+I used to initiate the discussion) and do it once for entire syscall,
+so that we can gradually utilize it where it makes most sense.
+
+>
+> > project. Of course let's make libbpf more user-friendly where possible
+> > and feasible,
+>
+> Let's do so.
+> This thread jumped to early conclusion that log_buf for all bpf commands
+> will magically improve user experience. Both you and Toke were happy to
+> conclude that "horrible kernel UI/UX" is responsible for everything and
+> it has to be the one to fix.
+
+You somehow concluded that it has to be either kernel or libbpf that
+has to be improved, not both. I don't know how you came to this
+conclusion. I didn't say or mean that, neither I read that from Toke's
+replies. Let me walk through relevant parts verbatim.
+
+Me:
+> > > > I think BPF syscall would benefit from common/generalized log support
+> > > > across all commands, given how powerful/complex it already is.
+> > > > Sometimes it's literally impossible to understand why one gets -EINVAL
+> > > > without adding printk()s in the kernel.
+
+Toke:
+> > > Yes, I agree! This is horrible UI!
+
+Me:
+> > UI?.. It's a perfectly fine and extensible API for all functionality
+> > it provides, it just needs a better human-readable feedback mechanism,
+> > which is what I'm proposing. Error codes are not working when you have
+>> so many different situations that can result in error.
+
+... Some technical details back and forth follows ...
+
+You:
+> I really don't like 'common attr across all commands'.
+> Both of you are talking as libbpf developers who occasionally need to
+> add printk-s to the kernel. That is not an excuse to bloat api that will be
+> useful to two people.
+
+You not liking this I get, this is fine, we all have our preferences,
+we don't have to agree on everything. But then you just jumped into
+conclusion about our motivation and claimed that it will be useful to
+only two people (presumably me and Toke). I'm also not sure about
+bloating the API, given that such API is already part of BPF_PROG_LOAD
+command, but there is no point in discussing such technical details
+anymore.
+
+Toke said that it's a horrible story to debug such generic errors (and
+I concur, it is), not that the kernel is horrible itself or was
+written by horrible people. I don't feel offended if libbpf provides
+horrible user experience in parts I've implemented or changed. I might
+disagree about the qualification in some cases, but I won't get
+offended about someone not liking my code, API or design.
+
+
+> I don't think that's the case and I hope
+> working through the examples of bad user experience above made it clear.
+
+Not at all. All you showed is that once someone runs into some
+specific API misuse and debugs it to success, then it's usually pretty
+obvious how libbpf could have helped doing additional diagnostics.
+With the benefit of hindsight.
+
+I agree that if such diagnostics are reliable and the situation itself
+is common and experienced by multiple users, then it might make sense
+to add such checks to libbpf. But I also don't think it's always
+possible to diagnose something automatically with 100% confidence. We
+can give hints, but misdiagnosing the problem can just further confuse
+things instead. Also quite often such problems are one-offs, which
+doesn't make them any less confusing and frustrating, but custom
+diagnostics for every such case has a potential of bloating libbpf
+beyond recognition and I'm not convinced that we should diagnose all
+of them. That's what I meant that this is not a scalable approach to
+just say "fix libbpf to be more user friendly, kernel does its best
+already".
+
+
+This thread was about generalizing log_buf to entire bpf(), even
+though it got diverted into something entirely different. I would
+still be interested to know the technical implications of syscall
+using extra args (like in my original proposal #1, about adding 2
+extra args if some flag in the existing argument is set). Is that even
+safe to do with syscalls? Even if we don't do it, it's still useful to
+know for the future. I think the syscall() wrapper is inherently
+vararg and accepts an arbitrary number of args, so I assumed it's
+actually ok, but don't know how to prove it.
