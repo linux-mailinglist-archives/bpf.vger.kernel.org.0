@@ -2,109 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA48224EDE
-	for <lists+bpf@lfdr.de>; Sun, 19 Jul 2020 05:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656002251BC
+	for <lists+bpf@lfdr.de>; Sun, 19 Jul 2020 13:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgGSDwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jul 2020 23:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        id S1726012AbgGSL67 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Jul 2020 07:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgGSDwj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jul 2020 23:52:39 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6C4C0619D2;
-        Sat, 18 Jul 2020 20:52:38 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id di5so5980171qvb.11;
-        Sat, 18 Jul 2020 20:52:38 -0700 (PDT)
+        with ESMTP id S1725836AbgGSL67 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Jul 2020 07:58:59 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C99C0619D2
+        for <bpf@vger.kernel.org>; Sun, 19 Jul 2020 04:58:59 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id e15so7090879vsc.7
+        for <bpf@vger.kernel.org>; Sun, 19 Jul 2020 04:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HH+LFV8ckb7MRgw6RiflBdfDfAcUZi2F+LZQ/h34g2E=;
-        b=G6zbQL2BdKZN9zkB9eB/o8yJ1EIuO+inpr88GMjZB2FDXt5swCzdtRzjJsONVnjI1Z
-         /uaXMPqLb+Sa1/IT3S70pz2QEcc3khjTDHzwZeDNzvR2czU6SuTlLDP1A+gkj4q/Y4dn
-         KQ7JRn9Z2iLYrMLl5mfkpR/KKja9gZDK3PgmttJ6RK5tNxMlB3bwIyO4TUGxHxHctlzO
-         AqVMdbDeeCPJ6NJWNnD7gybR+cj45qigTVKspkuA/scFO/NorDHf7zPI3uUtoDFmUOx5
-         1arRJxN3lo+IKOlENRwknFt4eip52AQSPK/7IHJfYkdZB/hNUjHRZdZiy0k1P8kd5w05
-         r5GA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=KWS4SM5Npr5IAIZzJSPVdCMdcccCo0V/JaIzbAuJ3aM=;
+        b=Ans4RD2HFywsIRW+oznrlpqw1LD7WDsiwDbNEt1LxGPVZEQF3xiZJ595ZWmTFb53Lo
+         QfjEzZU3p6qUuykGV6MpiVu2M1yebqyAsFKDJ/DWO7+SZhzdkOap2p3GdfARMy5EzY/G
+         dkXnAKA6lbaIQhDxvOnxN7QHj966FE1uCmQ7GrLmJff0tnlPe+nBWe0e6h9NHKezJ+rv
+         7454FsvscoFET5wAXine9adMcXBbZTPNrcozU92SU5ktN32rsfFwHXDBKdQP576NV6re
+         qV1AoZ9qNUtA00RzLyABKVDjmJrilAc7AYsPB0LvjTedEpBt4zBrrMTUv14H2ZPCGKDg
+         ggGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HH+LFV8ckb7MRgw6RiflBdfDfAcUZi2F+LZQ/h34g2E=;
-        b=OGJ4xzw7InvqDaZxJzKU0o44ZsnAqYH1tx1kbdMJgUh4JIQKJG+Ur5haOP4Y1qmz8w
-         ZJCVF41CdXSGEmt+E6XXZxaed04SgrIMcsD03IDeMUP7fmNRi4TZGm8tEvFTvSM/VNg5
-         Cf8qVzDCMPFTQMCHfjq1J0GTUk69k46zIk5Zdsf2U4vbSs4fpWazNcr0WeiWQrHah0I7
-         KOzVpwpEXKgRxnjco+V0GjTVxeUblaMq90TEt7lZ2VDStr6zgrrr09PkyJEoG0GBfc0+
-         2ReaD8yVElRhGIQVTZ2TYF1r44b2mL7gl4cbZcBzmNinPW56je1i72Tq5vSvy2kkr1dX
-         +aXg==
-X-Gm-Message-State: AOAM531KyMkLDdOgNyAOdXNqhr6b82Pm20N76aNVyjNM1i0yLnQ8tXXo
-        2mCJsK6OA89aED2DNJGwXiQHHOFiDjzMG46OieY=
-X-Google-Smtp-Source: ABdhPJxVfFTd4fl3vlr8dWi+hOaHpZfcw5bPem+4YNYL19k5vZ//gCbkSWsPxcwnw/YxRXCDwsl7jUSt0whKIikfnjw=
-X-Received: by 2002:a05:6214:946:: with SMTP id dn6mr15722853qvb.224.1595130758033;
- Sat, 18 Jul 2020 20:52:38 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=KWS4SM5Npr5IAIZzJSPVdCMdcccCo0V/JaIzbAuJ3aM=;
+        b=eO8opjLcob+zFSrWIC0SebhKBiaU+rBeNIP0h2oU8ninpPe4AdjKiy7Q7KYXc9apME
+         GZBMxvRsoyBe29w6Toldgh2qDCRe7gNBiAdaiTc10V/x5/HLnUNKESohAolNJK3IlakO
+         70l9XmZZSw37W+e1CBT0bGzSyXV/WVfn3X4XI1Pq8mlOxZi6iUvIk9z2T8LsTFVJFhx3
+         vZzPMPDPSOmk8zRrzddaUYkUEawZKHEwos0DffA2Tg8juFDprg8bEY4j8oXQbDiARQw1
+         CJiIDbnCL3IkUCjQBB+KRBfpHYLDBfnGck62oqop/9jiCHz0CShgjSt7t8wNW27CfCB+
+         iphA==
+X-Gm-Message-State: AOAM5335nqkHnwnkG9Pqv49kWARVjz3bIuxr8B2ysXF7CGO8pWEUiLta
+        G7JQJ3fqDTt5Gn7u7s2ozzQV6TKDUgit8AHJf3JQA18MORE=
+X-Google-Smtp-Source: ABdhPJwOmKa7X9Hag7+3+Nf9jGjnydW+OUklTpC4cMG8i3Gm4KjCLbE2ru7DU/nyaXX6Xp9I4DjeRcH4y5lUqNWGf/E=
+X-Received: by 2002:a67:fb8e:: with SMTP id n14mr13882317vsr.44.1595159937829;
+ Sun, 19 Jul 2020 04:58:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200717072319.101302-1-irogers@google.com>
-In-Reply-To: <20200717072319.101302-1-irogers@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 18 Jul 2020 20:52:27 -0700
-Message-ID: <CAEf4BzbAAzOL-7dqLnvmuhm3HZ_sNH5UWMTwzk2xbWkNggzY+g@mail.gmail.com>
-Subject: Re: [PATCH] libbpf bpf_helpers: Use __builtin_offsetof for offsetof
- if available
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
+From:   Douglas Gray <mrdivorce287569@gmail.com>
+Date:   Sun, 19 Jul 2020 12:58:46 +0100
+Message-ID: <CANMtcHKyrz1YV_U_kBeysRA9SLpEVAt1ANB9ORxcd5ignT-9dQ@mail.gmail.com>
+Subject: Question regarding the use of XDP_USE_NEED_WAKEUP
+To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:24 AM Ian Rogers <irogers@google.com> wrote:
->
-> The non-builtin route for offsetof has a dependency on size_t from
-> stdlib.h/stdint.h that is undeclared and may break targets.
-> The offsetof macro in bpf_helpers may disable the same macro in other
-> headers that have a #ifdef offsetof guard. Rather than add additional
-> dependencies improve the offsetof macro declared here to use the
-> builtin if available.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/lib/bpf/bpf_helpers.h | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index a510d8ed716f..ed2ac74fc515 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -40,8 +40,12 @@
->   * Helper macro to manipulate data structures
->   */
->  #ifndef offsetof
-> +#if __has_builtin(__builtin_offsetof)
-> +#define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
-> +#else
->  #define offsetof(TYPE, MEMBER)  ((size_t)&((TYPE *)0)->MEMBER)
+Hello, I'm currently trying to write a Rust wrapper for using AF_XDP
+sockets (using libbpf bindings) and have a couple questions about how
+the XDP_USE_NEED_WAKEUP flag and the UMEM's fill queue interact. I'm
+pretty new to this so apologies in advance if this is a dumb question.
 
-Let's either always use __builtin_offsetof (as Yonghong mentioned, it
-should always be available on relevant LLVM versions). Or instead of
-size_t, just cast to (unsigned long), I think it will have absolutely
-the same effect as size_t casting?
+While mucking around I created an AF_XDP socket with the
+XDP_USE_NEED_WAKEUP flag set, and as I expected a call to
+xsk_ring_prod__needs_wakeup returned 'true' when passed the xsk->tx
+producer, however returned 'false' when passed the umem->fq producer.
 
->  #endif
-> +#endif
->  #ifndef container_of
->  #define container_of(ptr, type, member)                                \
->         ({                                                      \
-> --
-> 2.28.0.rc0.105.gf9edc3c819-goog
->
+I was a bit confused by this, as I thought it was a sort of 'fixed'
+setting, so I think I'm misunderstanding one of two things:
+
+1. Binding the socket with XDP_USE_NEED_WAKEUP isn't sufficient, I
+also need to inform the UMEM through a particular flag / function
+call, either on creation or after binding the socket? (To me this
+seems unlikely and I've looked through the example [1] and I couldn't
+find anything doing this, though I may have overlooked it).
+
+2. Ater binding the socket with the XDP_USE_NEED_WAKEUP flag, both the
+fill ring and tx ring may now require waking up, and the required flag
+(XDP_RING_NEED_WAKEUP I believe) is set dynamically based on some
+criteria at the time. Indeed going back over the docs [2] it appears
+this way, so that at any time XDP_RING_NEED_WAKEUP can be set on the
+fill ring (or tx ring) depending on a variety of conditions, and if it
+is set then I should definitely send a wakeup, however there are
+conditions where I may add to the fill ring / tx ring and I do not
+need to send a wakeup.
+
+I feel like #2 is the correct misinterpretation, does that sound
+right? If that is correct, then out of interest (and if possible)
+please could someone point me in the direction of the code which sets
+the XDP_RING_NEED_WAKEUP flag on the UMEM's fill ring? I see there is
+a comment in if_xdp.h [3] which says 'If this option is set, the
+driver might go sleep and in that case, the XDP_RING_NEED_WAKEUP flag
+in the fill and/or Tx rings will be set'. I couldn't find any further
+code that mentions this flag however, so does its setting happen
+deeper in the kernel / by the driver itself?
+
+Thanks all!
+
+Doug
+
+[1] https://github.com/torvalds/linux/blob/master/samples/bpf/xdpsock_user.c
+
+[2] https://www.kernel.org/doc/html/latest/networking/af_xdp.html#xdp-use-need-wakeup-bind-flag
+
+[3] https://github.com/libbpf/libbpf/blob/d2f307c7f657bc7a4d3545bfcb7d42d66f9cedc1/include/uapi/linux/if_xdp.h
