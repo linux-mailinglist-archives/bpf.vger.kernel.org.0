@@ -2,102 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656002251BC
-	for <lists+bpf@lfdr.de>; Sun, 19 Jul 2020 13:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DD42252A1
+	for <lists+bpf@lfdr.de>; Sun, 19 Jul 2020 17:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgGSL67 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Jul 2020 07:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgGSL67 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Jul 2020 07:58:59 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C99C0619D2
-        for <bpf@vger.kernel.org>; Sun, 19 Jul 2020 04:58:59 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id e15so7090879vsc.7
-        for <bpf@vger.kernel.org>; Sun, 19 Jul 2020 04:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=KWS4SM5Npr5IAIZzJSPVdCMdcccCo0V/JaIzbAuJ3aM=;
-        b=Ans4RD2HFywsIRW+oznrlpqw1LD7WDsiwDbNEt1LxGPVZEQF3xiZJ595ZWmTFb53Lo
-         QfjEzZU3p6qUuykGV6MpiVu2M1yebqyAsFKDJ/DWO7+SZhzdkOap2p3GdfARMy5EzY/G
-         dkXnAKA6lbaIQhDxvOnxN7QHj966FE1uCmQ7GrLmJff0tnlPe+nBWe0e6h9NHKezJ+rv
-         7454FsvscoFET5wAXine9adMcXBbZTPNrcozU92SU5ktN32rsfFwHXDBKdQP576NV6re
-         qV1AoZ9qNUtA00RzLyABKVDjmJrilAc7AYsPB0LvjTedEpBt4zBrrMTUv14H2ZPCGKDg
-         ggGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=KWS4SM5Npr5IAIZzJSPVdCMdcccCo0V/JaIzbAuJ3aM=;
-        b=eO8opjLcob+zFSrWIC0SebhKBiaU+rBeNIP0h2oU8ninpPe4AdjKiy7Q7KYXc9apME
-         GZBMxvRsoyBe29w6Toldgh2qDCRe7gNBiAdaiTc10V/x5/HLnUNKESohAolNJK3IlakO
-         70l9XmZZSw37W+e1CBT0bGzSyXV/WVfn3X4XI1Pq8mlOxZi6iUvIk9z2T8LsTFVJFhx3
-         vZzPMPDPSOmk8zRrzddaUYkUEawZKHEwos0DffA2Tg8juFDprg8bEY4j8oXQbDiARQw1
-         CJiIDbnCL3IkUCjQBB+KRBfpHYLDBfnGck62oqop/9jiCHz0CShgjSt7t8wNW27CfCB+
-         iphA==
-X-Gm-Message-State: AOAM5335nqkHnwnkG9Pqv49kWARVjz3bIuxr8B2ysXF7CGO8pWEUiLta
-        G7JQJ3fqDTt5Gn7u7s2ozzQV6TKDUgit8AHJf3JQA18MORE=
-X-Google-Smtp-Source: ABdhPJwOmKa7X9Hag7+3+Nf9jGjnydW+OUklTpC4cMG8i3Gm4KjCLbE2ru7DU/nyaXX6Xp9I4DjeRcH4y5lUqNWGf/E=
-X-Received: by 2002:a67:fb8e:: with SMTP id n14mr13882317vsr.44.1595159937829;
- Sun, 19 Jul 2020 04:58:57 -0700 (PDT)
+        id S1726131AbgGSPwz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Jul 2020 11:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgGSPwy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Jul 2020 11:52:54 -0400
+Received: from localhost.localdomain (unknown [151.48.143.159])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 832A8207EA;
+        Sun, 19 Jul 2020 15:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595173974;
+        bh=LrxoiroEENFNCeizEzCr/tyUfuQ+rpnoYmHgj4YUMKI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fGYVqLsZEB2JT9aUTmQQmTUe2ige7vWfkAIfL9TcrzDPBHzTjS+lYLoY1D4RFl4uV
+         2X0Qz0zXmB5EDySxAz1aHIEcR/XhyiWU9VYE0XNCt2KLWMnQzzItqy+k7cnEt11tyq
+         VSAMXvbjgcB62l7GGY9C6UUleT0rj/A9I8sBK8H8=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, brouer@redhat.com,
+        daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        jakub@cloudflare.com, kuba@kernel.org
+Subject: [PATCH bpf-next] bpf: cpumap: fix possible rcpu kthread hung
+Date:   Sun, 19 Jul 2020 17:52:41 +0200
+Message-Id: <e54f2aabf959f298939e5507b09c48f8c2e380be.1595170625.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-From:   Douglas Gray <mrdivorce287569@gmail.com>
-Date:   Sun, 19 Jul 2020 12:58:46 +0100
-Message-ID: <CANMtcHKyrz1YV_U_kBeysRA9SLpEVAt1ANB9ORxcd5ignT-9dQ@mail.gmail.com>
-Subject: Question regarding the use of XDP_USE_NEED_WAKEUP
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, I'm currently trying to write a Rust wrapper for using AF_XDP
-sockets (using libbpf bindings) and have a couple questions about how
-the XDP_USE_NEED_WAKEUP flag and the UMEM's fill queue interact. I'm
-pretty new to this so apologies in advance if this is a dumb question.
+Fix the following cpumap kthread hung. The issue is currently occurring
+when __cpu_map_load_bpf_program fails (e.g if the bpf prog has not
+BPF_XDP_CPUMAP as expected_attach_type)
 
-While mucking around I created an AF_XDP socket with the
-XDP_USE_NEED_WAKEUP flag set, and as I expected a call to
-xsk_ring_prod__needs_wakeup returned 'true' when passed the xsk->tx
-producer, however returned 'false' when passed the umem->fq producer.
+$./test_progs -n 101
+101/1 cpumap_with_progs:OK
+101 xdp_cpumap_attach:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+[  369.996478] INFO: task cpumap/0/map:7:205 blocked for more than 122 seconds.
+[  369.998463]       Not tainted 5.8.0-rc4-01472-ge57892f50a07 #212
+[  370.000102] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  370.001918] cpumap/0/map:7  D    0   205      2 0x00004000
+[  370.003228] Call Trace:
+[  370.003930]  __schedule+0x5c7/0xf50
+[  370.004901]  ? io_schedule_timeout+0xb0/0xb0
+[  370.005934]  ? static_obj+0x31/0x80
+[  370.006788]  ? mark_held_locks+0x24/0x90
+[  370.007752]  ? cpu_map_bpf_prog_run_xdp+0x6c0/0x6c0
+[  370.008930]  schedule+0x6f/0x160
+[  370.009728]  schedule_preempt_disabled+0x14/0x20
+[  370.010829]  kthread+0x17b/0x240
+[  370.011433]  ? kthread_create_worker_on_cpu+0xd0/0xd0
+[  370.011944]  ret_from_fork+0x1f/0x30
+[  370.012348]
+               Showing all locks held in the system:
+[  370.013025] 1 lock held by khungtaskd/33:
+[  370.013432]  #0: ffffffff82b24720 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x28/0x1c3
 
-I was a bit confused by this, as I thought it was a sort of 'fixed'
-setting, so I think I'm misunderstanding one of two things:
+[  370.014461] =============================================
 
-1. Binding the socket with XDP_USE_NEED_WAKEUP isn't sufficient, I
-also need to inform the UMEM through a particular flag / function
-call, either on creation or after binding the socket? (To me this
-seems unlikely and I've looked through the example [1] and I couldn't
-find anything doing this, though I may have overlooked it).
+Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
+Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ kernel/bpf/cpumap.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-2. Ater binding the socket with the XDP_USE_NEED_WAKEUP flag, both the
-fill ring and tx ring may now require waking up, and the required flag
-(XDP_RING_NEED_WAKEUP I believe) is set dynamically based on some
-criteria at the time. Indeed going back over the docs [2] it appears
-this way, so that at any time XDP_RING_NEED_WAKEUP can be set on the
-fill ring (or tx ring) depending on a variety of conditions, and if it
-is set then I should definitely send a wakeup, however there are
-conditions where I may add to the fill ring / tx ring and I do not
-need to send a wakeup.
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 4c95d0615ca2..f1c46529929b 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -453,24 +453,27 @@ __cpu_map_entry_alloc(struct bpf_cpumap_val *value, u32 cpu, int map_id)
+ 	rcpu->map_id = map_id;
+ 	rcpu->value.qsize  = value->qsize;
+ 
++	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, fd))
++		goto free_ptr_ring;
++
+ 	/* Setup kthread */
+ 	rcpu->kthread = kthread_create_on_node(cpu_map_kthread_run, rcpu, numa,
+ 					       "cpumap/%d/map:%d", cpu, map_id);
+ 	if (IS_ERR(rcpu->kthread))
+-		goto free_ptr_ring;
++		goto free_prog;
+ 
+ 	get_cpu_map_entry(rcpu); /* 1-refcnt for being in cmap->cpu_map[] */
+ 	get_cpu_map_entry(rcpu); /* 1-refcnt for kthread */
+ 
+-	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, fd))
+-		goto free_ptr_ring;
+-
+ 	/* Make sure kthread runs on a single CPU */
+ 	kthread_bind(rcpu->kthread, cpu);
+ 	wake_up_process(rcpu->kthread);
+ 
+ 	return rcpu;
+ 
++free_prog:
++	if (rcpu->prog)
++		bpf_prog_put(rcpu->prog);
+ free_ptr_ring:
+ 	ptr_ring_cleanup(rcpu->queue, NULL);
+ free_queue:
+-- 
+2.26.2
 
-I feel like #2 is the correct misinterpretation, does that sound
-right? If that is correct, then out of interest (and if possible)
-please could someone point me in the direction of the code which sets
-the XDP_RING_NEED_WAKEUP flag on the UMEM's fill ring? I see there is
-a comment in if_xdp.h [3] which says 'If this option is set, the
-driver might go sleep and in that case, the XDP_RING_NEED_WAKEUP flag
-in the fill and/or Tx rings will be set'. I couldn't find any further
-code that mentions this flag however, so does its setting happen
-deeper in the kernel / by the driver itself?
-
-Thanks all!
-
-Doug
-
-[1] https://github.com/torvalds/linux/blob/master/samples/bpf/xdpsock_user.c
-
-[2] https://www.kernel.org/doc/html/latest/networking/af_xdp.html#xdp-use-need-wakeup-bind-flag
-
-[3] https://github.com/libbpf/libbpf/blob/d2f307c7f657bc7a4d3545bfcb7d42d66f9cedc1/include/uapi/linux/if_xdp.h
