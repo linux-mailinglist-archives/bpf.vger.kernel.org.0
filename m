@@ -2,86 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C64224D74
-	for <lists+bpf@lfdr.de>; Sat, 18 Jul 2020 20:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE71E224EB1
+	for <lists+bpf@lfdr.de>; Sun, 19 Jul 2020 04:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgGRSLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jul 2020 14:11:15 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:36909 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726155AbgGRSLP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 18 Jul 2020 14:11:15 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5B2705C0106;
-        Sat, 18 Jul 2020 14:11:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 18 Jul 2020 14:11:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=leTxMSxZYI6GaPQrWTsPAI1LVoG
-        vJAzLwE9vA1kDEQI=; b=I+9YnZtRC3VjqT7Mrdw6Zu0kF6zS/tMBEOnwidhNj1G
-        YmO0Y3Vhfp78VMV99vfHVkzQeeVdqx32TiGOHU8OwEztDBibllF0gJMJ6kvHSvUr
-        Dc5Xm/Nni1c6joS1GoRH0YPfHSPg2gA2u+axxgzHa3p6hYeO/2wSe6USAypiZn+N
-        PTTlpMTR2OybGACmfgEexvd3NpClLqmg+yJykGS0puu5edAQbtNNZYrY6AXOahSm
-        w6379qoAivlRl8DQqn29+tppMYK6euiqO0/iWFwJWrfFI9PxdLi3McbcAJTAev7w
-        f/X/Qq8JK++I6NsRc6UtjoAkoLNhdkfBmaRTKouoJUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=leTxMS
-        xZYI6GaPQrWTsPAI1LVoGvJAzLwE9vA1kDEQI=; b=nvRMrqu7DgGksClfeheOGs
-        cBkJ9t3PYvlP5TUPwXZyMe0b9Km6or7wQmUQ4wGxME/PhCeit0i4CUsDVDBPTi4c
-        Et0i1il257vHIG2bW3vogF4nfqyNWVZrMp3VBYtSvXpGH3iAayTUNiy3kez1yfQ8
-        BuTKEUHCMq1gtdWnMBGYM6bYkcqxSRUokfLKWyEjgrLjhabtR/KJ3HhdvA289wb0
-        etrdWgnp9xySw/KwMKcD6iX5uQEdvb8ir99K+QxqHswxhMqXSLqgCCzY+6C3Rax8
-        IXmmw6HSfV7pdUQYRLpv9LfszGKqx9150GaiR9E36V7iDDrem0d+BRvYOUeoXLHg
-        ==
-X-ME-Sender: <xms:QjsTX5qVEdt-Zx7lT8ZymKJwFZ1f0hDOAQH3IDv0EnkHhkY5_p_O4w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrfeelgdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:QjsTX7oq09BXh3cmyP50EX2yMsjhFz42NPmCpEm9_y-H6VtCRzmTjA>
-    <xmx:QjsTX2OlJElcdfqda_Bjl2Dkf93-6yedH50TGW4xzccIrw0ZhuxD1A>
-    <xmx:QjsTX07JWKd8JhoS7BKMDJ8VEPRSh2ZrPMM2MgJVhiBowFG_5NjKPw>
-    <xmx:QjsTX6FZwfohx38GTn8_YzeVb3VLkqHWmtCU3lObn3UY3ATkaaQBXg>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D3CF93280060;
-        Sat, 18 Jul 2020 14:11:13 -0400 (EDT)
-Date:   Sat, 18 Jul 2020 20:11:10 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Venkata Sai Reddy Avuluri <avulurivenkatasaireddy@gmail.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: Doubt eBPF
-Message-ID: <20200718181110.GA273491@kroah.com>
-References: <CAJW+K3E-O3-kT_Q3kba_pTmFj7h-LvP01FpTj=4Rv=DX+M3BGA@mail.gmail.com>
+        id S1726381AbgGSCRC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jul 2020 22:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgGSCRB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jul 2020 22:17:01 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B18C0619D2;
+        Sat, 18 Jul 2020 19:17:01 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 207so7310481pfu.3;
+        Sat, 18 Jul 2020 19:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QM6lwvVyYd4T8B0+uW+YnPRkMUj3R5Nyhyg6SYyEzuk=;
+        b=hIpg0Ll9yZxRGxf6GH8H2E/zPabJqjA8GQJcWAXolZaWgCWxG73f4X1hCu6XLjkdVN
+         W3EOLpvWvbPvEdTwe5uTSz/u/bGGt9g7OTPpCw9tMGvMsapnOgDqT4aoWs+a/P4O1+6D
+         DQQ0xIBwNnhWdFTylqNZFGZrNRcDeo9hpYvfKaMXvSmHbukEdqF0xkBWzUMJwAqbl7wT
+         8ESYZutpwtwMaTi8f2fPHr0E5AMVemklvnRLmWozkNXOCVpiDS/rr4snQcvRC+J/rg8b
+         whFmrLQNS7ylBReNWjBYB+EQjbgHu+QSiQbXah5FOU5X+HU4IL9Q5zvBvzPtOwOIgOHz
+         rCIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QM6lwvVyYd4T8B0+uW+YnPRkMUj3R5Nyhyg6SYyEzuk=;
+        b=cT2ytzC5OOt1PW5fopUjbhn2IlUnj2Uw86Z8nyailw6J3Bnv2iU4TrU4WpMGtllWG8
+         +dRV/hnmH0VSQVMvgAtS7+ng2RUKbu1Xy0au0gqTbkMhxkSgJlBvvOMPRMgnXegIgxM8
+         btaGbPQO0WmWe1BgskpmXMvlFC6VHFU0FUOL3E1l2qRaw1lKJxhjaVqL91/i1xMQfCUs
+         GaefG2JYm2WSDrA+P6DvR/RQ0vIkcLlwUZpuNpmH51/zDrs/7/jFNMY+EzB0fv7PqY9Z
+         Ryl1chspSo8U+N3Cc8FYilLOQDduHGKIn29WeugIDASjzSfWXLdHljAzEAnUj8Rj6zM0
+         rWgA==
+X-Gm-Message-State: AOAM531XUOrxiWhoAAkRqQuuClHqw11DDig0wZRQ7SdSSwz2As50HYHG
+        Opy9tUgEVsikQPP6nn3+hlNJzmrY
+X-Google-Smtp-Source: ABdhPJzEVypf4YCwvhByvDVA676j0GBMtNyQSzchcKBsvcNQ+Ikfqzm8fiYPDq4RZFbZc/Rl6vNgpQ==
+X-Received: by 2002:a63:3cc:: with SMTP id 195mr13628525pgd.296.1595125020975;
+        Sat, 18 Jul 2020 19:17:00 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:e00:19b7:f650:7bbe:a7fb])
+        by smtp.gmail.com with ESMTPSA id a68sm6891159pje.35.2020.07.18.19.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 19:17:00 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH 0/3] xtensa: add seccomp support
+Date:   Sat, 18 Jul 2020 19:16:51 -0700
+Message-Id: <20200719021654.25922-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJW+K3E-O3-kT_Q3kba_pTmFj7h-LvP01FpTj=4Rv=DX+M3BGA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 10:16:08PM +0530, Venkata Sai Reddy Avuluri wrote:
-> Hello,
-> 
-> I am Sai Reddy  an undergrad student in Rajiv Gandhi University of
-> Knowledge Technologies  in Basar, Telangana, India.
-> 
-> As of now for Summer internship, i am doing in IIT Madras, We are
-> working on some message filters.
-> 
-> My professor questioned my team "How is BPF happening inside the Kernel?"
+Hello,
 
-That really sounds like a homework question, you have the full source,
-what is keeping you all from determining this on your own?
+this series adds support for seccomp filter on xtensa and updates
+selftests/seccomp.
 
-thanks,
+Max Filippov (3):
+  xtensa: expose syscall through user_pt_regs
+  xtensa: add seccomp support
+  selftests/seccomp: add xtensa support
 
-greg k-h
+ .../seccomp/seccomp-filter/arch-support.txt      |  2 +-
+ arch/xtensa/Kconfig                              | 15 +++++++++++++++
+ arch/xtensa/include/asm/Kbuild                   |  1 +
+ arch/xtensa/include/asm/thread_info.h            |  5 ++++-
+ arch/xtensa/include/uapi/asm/ptrace.h            |  3 ++-
+ arch/xtensa/kernel/ptrace.c                      |  8 +++++++-
+ tools/testing/selftests/seccomp/seccomp_bpf.c    | 16 +++++++++++++++-
+ 7 files changed, 45 insertions(+), 5 deletions(-)
+
+-- 
+2.20.1
+
