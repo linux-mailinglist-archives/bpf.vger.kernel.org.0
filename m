@@ -2,100 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45543226E86
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 20:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC99226F21
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 21:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbgGTStG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 14:49:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:48509 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726506AbgGTStG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 14:49:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B9W3M0pHVz9sRN;
-        Tue, 21 Jul 2020 04:49:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595270943;
-        bh=zq27nOBYvcnduPT0qa/MnnpZ+wkF+HYh9Y4xkg2KTGg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Q+RRQpkumPavfz8CkH17wXbg65W4nTRiiXA52DSTRMXdsmgBtSWocDsVimYIuwjbc
-         DOPcCKFKcCc1WTaMfNKUGRtZJJ1E1fH9p9tukxg3i05H8NH3pqBVjgBluoLEQ2eldI
-         hteo6gi1egVxa3wgGoDgr+88TvTruWEqBReT6BpArXdXSMLKM1JqXXbdpLl1bjcEIw
-         HByplhMDx+f0/KiP/5Gm0siPXHFa447bVvFxf/Znc33PZlnKZl4fgFXmxA1YVKRsP/
-         jLpeKuLkvbyhDTowByjoxuveFPbUEI/oBT7Y2W5Fk5e0de8pWVa8qGUY4QZ0h3ilN+
-         W0zO1OshhPQBA==
-Date:   Tue, 21 Jul 2020 04:49:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        id S1730605AbgGTTh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 15:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgGTTh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 15:37:58 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD306C061794;
+        Mon, 20 Jul 2020 12:37:57 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id i80so10353198lfi.13;
+        Mon, 20 Jul 2020 12:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sgXLRBaaylaS2C4gN9oP1CacUi+Zgix4Q9h2XdlkjFM=;
+        b=hwmyKa+wbbaz8q4bfXfO3z7rvx/ZhG7p5eG3b3XDUqtluypwYw/9hoRDYN179aPigz
+         zbXMm2BjYvvkeOcxBmxTg2wyVPd9LJSNO98x53xAU4Z0lG48Ajp6+lh4WQKmmJMBNbZG
+         y9l3qh9B5Eva4UN5r7vkDHx/bm7dvAMVRu/BsHrzbsgvCKftYhwI4+XeW78YuhG+fRNn
+         cWuF0d/ouBREyynZj68gZhQpDB5Ya5f/76uLcDEvQ4tcUiVNZ9JrBqqV1lGSixCOXSne
+         OkOLZMiGybwrlS8J0nzWyVofXaJBbMk/W/rz84oGfK+sNOZkFdMQDzB2vclCoaXFQhJk
+         RWqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sgXLRBaaylaS2C4gN9oP1CacUi+Zgix4Q9h2XdlkjFM=;
+        b=DgARxFC+5EDmZUnE5XtqnJYY3shlSe0yjwlYSDSHFDYk7FiJIeAwgO3hps9yJd5zID
+         nQOPWJAT1NB4iYvZoIFgyt8IACMNAjDSLZ+9hRtkZWhZqvHmbkS6mer/pM6PhAt8f21+
+         FZ17RDW6ihofiqmt13YPUH1WX7u03IM4ow6lCnoTG/wGqJslgenlviXCO6HZD7vCXJUh
+         4lSOfEQKsnXBN1n466cG6/ZJWr/FHqeZpLcTF0CIqJ9Uiv23o8ktIYj8GVSOwJhaJY/s
+         54zX/Ofpqi8pLjaarOfYxBvPVo3Szz6u5gjTR0AbsxTqZkC/oxfZkYyf7zvQQBTL3ZN9
+         tTyw==
+X-Gm-Message-State: AOAM532BxZz/5+XX/8kGFB9mVLpca3TkYcA2D5Q4iaafXoCy/0BMpuXu
+        h2a60H1s4YXAEaXfXhHDqn/Z/6slx5JHr91rWWc=
+X-Google-Smtp-Source: ABdhPJy1Jig5sDfVDdOSRyjt4VvlHQ9WhRxupA+W8Un21a1t7FbzrPXKASt/E5BtvMdxrDNU8FO+v8/2XARywqL/t1M=
+X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr4307309lfs.8.1595273876184;
+ Mon, 20 Jul 2020 12:37:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200720194225.17de9962@canb.auug.org.au> <a97220b2-9864-eb49-6e27-0ec5b7e5b977@infradead.org>
+ <20200721044902.24ebe681@canb.auug.org.au>
+In-Reply-To: <20200721044902.24ebe681@canb.auug.org.au>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 20 Jul 2020 12:37:44 -0700
+Message-ID: <CAADnVQJNU+tm3WT+JuPoY8TTHWXxQ8OJ0sGCLQGq2Avf+Ri7Yw@mail.gmail.com>
+Subject: Re: linux-next: Tree for Jul 20 (kernel/bpf/net_namespace)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: linux-next: Tree for Jul 20 (kernel/bpf/net_namespace)
-Message-ID: <20200721044902.24ebe681@canb.auug.org.au>
-In-Reply-To: <a97220b2-9864-eb49-6e27-0ec5b7e5b977@infradead.org>
-References: <20200720194225.17de9962@canb.auug.org.au>
-        <a97220b2-9864-eb49-6e27-0ec5b7e5b977@infradead.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xmO6y7t9HQPsaBUCZn1yWr5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/xmO6y7t9HQPsaBUCZn1yWr5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 20 Jul 2020 08:51:54 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
-te:
+On Mon, Jul 20, 2020 at 11:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> on i386 or x86_64:
->=20
-> # CONFIG_INET is not set
-> # CONFIG_NET_NS is not set
->=20
-> ld: kernel/bpf/net_namespace.o: in function `bpf_netns_link_release':
-> net_namespace.c:(.text+0x32c): undefined reference to `bpf_sk_lookup_enab=
-led'
-> ld: kernel/bpf/net_namespace.o: in function `netns_bpf_link_create':
-> net_namespace.c:(.text+0x8b7): undefined reference to `bpf_sk_lookup_enab=
-led'
-> ld: kernel/bpf/net_namespace.o: in function `netns_bpf_pernet_pre_exit':
-> net_namespace.c:(.ref.text+0xa3): undefined reference to `bpf_sk_lookup_e=
-nabled'
+> Hi all,
+>
+> On Mon, 20 Jul 2020 08:51:54 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+> >
+> > on i386 or x86_64:
+> >
+> > # CONFIG_INET is not set
+> > # CONFIG_NET_NS is not set
+> >
+> > ld: kernel/bpf/net_namespace.o: in function `bpf_netns_link_release':
+> > net_namespace.c:(.text+0x32c): undefined reference to `bpf_sk_lookup_enabled'
+> > ld: kernel/bpf/net_namespace.o: in function `netns_bpf_link_create':
+> > net_namespace.c:(.text+0x8b7): undefined reference to `bpf_sk_lookup_enabled'
+> > ld: kernel/bpf/net_namespace.o: in function `netns_bpf_pernet_pre_exit':
+> > net_namespace.c:(.ref.text+0xa3): undefined reference to `bpf_sk_lookup_enabled'
+>
+> Caused by commit
+>
+>   1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
+>
+> from the bpf-next tree.
 
-Caused by commit
-
-  1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
-
-from the bpf-next tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xmO6y7t9HQPsaBUCZn1yWr5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8V5x4ACgkQAVBC80lX
-0Gw+bggAiG4QOWZgOHvyQPMwPYQT4XXnuO9bHIMt3T4rB7ldivNqz0Q0xIa1cbqE
-T29KxH1MZJMoNIvqwysHBV4yDD92GcZrgwrtsXUdGFvchzECx1MUXmSOynmA2wOr
-IS2HcUwh908AQ1oKhyxbAUKqUjgWlfmBKz8OMSV2NvTaCf0dl91QonqNzN6oYk8n
-YMG3sOH9xmFKFJvuUzoa0OmD/jnCShiL6COIA+BzoHjOE5voZPHSufNaOkzALiA4
-Fe4kLkOSQchdk4pddWIoyzoLQSDtfenYVruI4DRGNhKTZ3epUAsndiP2H5bvL2NR
-G1OK60saE5fCoMYoNBjw8ePh6RlBag==
-=Dcix
------END PGP SIGNATURE-----
-
---Sig_/xmO6y7t9HQPsaBUCZn1yWr5--
+Jakub, please take a look.
