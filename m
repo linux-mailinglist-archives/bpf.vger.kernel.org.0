@@ -2,76 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ECC226F64
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 21:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269FE226FB7
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 22:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731020AbgGTT6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 15:58:49 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24576 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726619AbgGTT6t (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jul 2020 15:58:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595275128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=riRyOF5JX7Ab1X0Yq7qQOguVpy6RN/d461f2fKfzeq8=;
-        b=E0DGOxJ2TddGbWQSpC06alBGjCU4kmc7HtGJhxWcCrLkyp6XMoSlnNAofU93qMYIwR13dz
-        DjQyNziRUyXkK7L4Wfuw3JdpQB5BjoJx1LiPtIUaUEax9MheEFGAlDK24j4KY7pvLburbL
-        zNdB0Rb+JWztSbpDvSrfMlN/xNGTLV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-HtXHyZW8NBmXWxj5ivHjzQ-1; Mon, 20 Jul 2020 15:58:44 -0400
-X-MC-Unique: HtXHyZW8NBmXWxj5ivHjzQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C4C0100AA21;
-        Mon, 20 Jul 2020 19:58:43 +0000 (UTC)
-Received: from krava (unknown [10.40.194.11])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 758CC60F96;
-        Mon, 20 Jul 2020 19:58:41 +0000 (UTC)
-Date:   Mon, 20 Jul 2020 21:58:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2 3/5] bpf: add BTF_ID_LIST_GLOBAL in btf_ids.h
-Message-ID: <20200720195840.GO760733@krava>
-References: <20200720163358.1392964-1-yhs@fb.com>
- <20200720163401.1393159-1-yhs@fb.com>
+        id S1728861AbgGTU2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 16:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728122AbgGTU2O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 16:28:14 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514CBC0619D2
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:28:14 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id a11so14507565ilk.0
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jnROxpLTebfdg0VQxLM+qOeJIWXx+3VtqAPYTCwBg5A=;
+        b=e+YdMIZbfHuIN71zlAV9pte6XTKkIrMTuKqwzmQZxOkC954LaZlH12s9VMPeezYI/f
+         Jzv9Vzo+NY9vuVMW7D959S2Cdvs9ichUR+pxGCUw8tgcn9EqQtUg+gaQcJ0/MHWorqZG
+         /UDNGpn0SIDSdKMAMJQOHR7Re670rfu9J3bP/upy5wVU8JbcSWFw7jSVkEhpbdUvmmwy
+         2XkrGG80hp9CMfvxOaOhxtD9ErS7CIYgMtAd9PUGPwpxpdRbgachvMNiitkCzU4SDh6e
+         WfI7egJn+xCqdGw1WJUiGfrYepxPaHbyfX45EeOp+TCrHvYYLqEQ82fwEjcD0Fx5Lj35
+         diTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jnROxpLTebfdg0VQxLM+qOeJIWXx+3VtqAPYTCwBg5A=;
+        b=MmLrrGEfY0Y1xpBZtonvbFez8UHEJBOKNHxePzLzIlh340p+iuZZAbnbt00zrXcle8
+         ZB5bPanhwqLsfNZppxVAW22qaUq6rZijsKqqXoDmzZBpcolP0Ccuauv5JwmEhh+5ftKH
+         vPS1Sa9vDegDVLhPk98VyKIcnD+qjm31O2e5PuLdng8YN2BehdJazS5NdzaGvrz997ph
+         j+QBNGeV2gTuI3L9OOWNAzTwRXXcolN0jWB1cBGVLP6NuFpIbjnvGy//g05B0y3r3EiB
+         v7iO9brd3+YLrxfgWAqxwMBcoiaSf0uO5QAetesh0pcrHBmPVfJqAXocEnOtL2kcrrNY
+         ZSpQ==
+X-Gm-Message-State: AOAM530MH7GBdEkgeUU2Zqgnk9k3N6i9Tsn8bGP4So1hEcHTb8sX3gAM
+        IhNU6LBJimgm2XBRqDf9tOdwqStKuvW7+4jINCykVlB/nb0=
+X-Google-Smtp-Source: ABdhPJziZBrq7Pg+3/2EhDfmIw4gaLRIAxqYeGhCSSFHEMO8VPg5I18oqjIhNgbraAGINUvLf5g9njXh6av9exRpt4U=
+X-Received: by 2002:a92:bb57:: with SMTP id w84mr25017823ili.104.1595276893343;
+ Mon, 20 Jul 2020 13:28:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720163401.1393159-1-yhs@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20200715214312.2266839-1-haoluo@google.com> <20200715214312.2266839-3-haoluo@google.com>
+ <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 20 Jul 2020 13:28:02 -0700
+Message-ID: <CA+khW7i9wq0+2P_M46pEv-onGXL_=sW7xE=10CYeP_yjPh-Rpw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: Test __ksym externs with BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 09:34:01AM -0700, Yonghong Song wrote:
-> Existing BTF_ID_LIST used a local static variable
-> to store btf_ids. This patch provided a new macro
-> BTF_ID_LIST_GLOBAL to store btf_ids in a global
-> variable which can be shared among multiple files.
-> 
-> The existing BTF_ID_LIST is still retained.
-> Two reasons. First, BTF_ID_LIST is also used to build
-> btf_ids for helper arguments which typically
-> is an array of 5. Since typically different
-> helpers have different signature, it makes
-> little sense to share them. Second, some
-> current computed btf_ids are indeed local.
-> If later those btf_ids are shared between
-> different files, they can use BTF_ID_LIST_GLOBAL then.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+>
+> This should ideally look like a real global variable extern:
+>
+> extern const struct rq runqueues __ksym;
+>
+>
+> But that's the case for non-per-cpu variables. You didn't seem to
+> address per-CPU variables in this patch set. How did you intend to
+> handle that? We should look at a possible BPF helper to access such
+> variables as well and how the verifier will prevent direct memory
+> accesses for such variables.
+>
+> We should have some BPF helper that accepts per-CPU PTR_TO_BTF_ID, and
+> returns PTR_TO_BTF_ID, but adjusted to desired CPU. And verifier
+> ideally would allow direct memory access on that resulting
+> PTR_TO_BTF_ID, but not on per-CPU one. Not sure yet how this should
+> look like, but the verifier probably needs to know that variable
+> itself is per-cpu, no?
+>
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Yes, that's what I was unclear about, so I don't have that part in
+this patchset. But your explanation helped me organize my thoughts. :)
 
-jirka
+Actually, the verifier can tell whether a var is percpu from the
+DATASEC, since we have encoded "percpu" DATASEC in btf. I think the
+following should work:
 
+We may introduce a new PTR_TO_BTF_VAR_ID. In ld_imm, libbpf replaces
+ksyms with btf_id. The btf id points to a KIND_VAR. If the pointed VAR
+is found in the "percpu" DATASEC, dst_reg is set to PTR_TO_BTF_VAR_ID;
+otherwise, it will be a PTR_TO_BTF_ID. For PTR_TO_BTF_VAR_ID,
+reg->btf_id is the id of the VAR. For PTR_TO_BTF_ID, reg->btf_id is
+the id of the actual kernel type. The verifier would reject direct
+memory access on PTR_TO_BTF_VAR_ID, but the new BPF helper can convert
+a PTR_TO_BTF_VAR_ID to PTR_TO_BTF_ID.
+
+Hao
