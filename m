@@ -2,191 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC721226864
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 18:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13864226A79
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 18:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388075AbgGTQSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 12:18:47 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15924 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388376AbgGTQSp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jul 2020 12:18:45 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KG0nN8027907;
-        Mon, 20 Jul 2020 09:18:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=MBYy8R1pd5BK88S4AUfWs+fQSV0UHxrvq2A9klR1z90=;
- b=ahEZOkK0iCEvlO/YDyOe3FUPKXjppHhJ0sahJBG0Ip4OhaqQE8/BRtICyDRJSJBdDH8j
- MypHWRnVRimWcL/fjmMhsKLXg0GgH6ZRU+adAhBbc5BjDBFj3nyNaLKY61hi/O/hz8XH
- F9M/lJDGVGj8Ickz7xm8PE0F6Fj6awZ9NQ4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32chbnmve3-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 20 Jul 2020 09:18:16 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+        id S1731926AbgGTQeb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 12:34:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4498 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732409AbgGTQeK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jul 2020 12:34:10 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KGY1K5019021
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 09:34:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=EKZSq/FWXhIpBvARM8Zuf2rlL8PzauCxwyQbY4Xpk8E=;
+ b=f7EVMTaJXXXDD0wP9Bwr0moZ6TySzP5/glYklwEdEaVVCocq26zW0E4gwHJnVC+ftkhT
+ oGOjbQmX91ONzMWLBhpR5AV9HtO3MZcBI3hV8XCP9z1hQHyXNisnnemeufaTPrh0NaBK
+ YJF9pQBNp6NQMcF+3YJJtsrZDQxBuk+VkII= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32bxwfqfy3-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 09:34:09 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 20 Jul 2020 09:18:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yhx57Qh+C1WFiYm96CbGP30L0H1xXSDSiq6BjHxZJgOBKWkWuN5GykAA07DldDkdV1E+cBPdfvQc3Wah5x43DOU1gEvdG1lr7/RPar7kEW6iUnlQH1KJiV9YuIJiYD3LdqdwZb90aQix3Pb0RIChov8LveitPcSbnA9N273GB/cLfvrHUBdKGtY6a2McXA6BlSPctH9+xxet3STOnZ0QOZZShxrAAL0g2R+M8F/ywZuleO1NHaw5tUve1EZLJkS6H1hpSjCHqOwWu8tEvfsVRsawCWHWe2t0Dr05HqF2/t9jkIqeAld/ZF9WsSnTbRTuTlBWBISQ8N6fcsaOy7FC3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MBYy8R1pd5BK88S4AUfWs+fQSV0UHxrvq2A9klR1z90=;
- b=naAXrigxqmyZahpbt2vs568mN5Z+x5plr9+wtbdltW+PGNoWhNPTfngd5ZCk2/TwLgHgv5sW1iFiH6BE00Vm4ovsnerEeoBesRkjcDBE06AxrCk5exXs8eDjbMjVA7awe63UjobX2hKOKdo/OP4Dr8cjmG7Q8xt8DeuEkarDxa45ryqKsfNTsKt4P9qqMacqOXPPzPuyg0/I1AdIwjVscW+J8x6koGtk1TFzvgTFatlmfapqB1vtnNVoAJzrrp78E225MCfnCylGu/JzVnLHr1B1i+Zh/6nrP5+LLh4znH/X+OV9DDLIoirs442lbV9cD7Ziz4Sfkc79FA8oFBMRig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MBYy8R1pd5BK88S4AUfWs+fQSV0UHxrvq2A9klR1z90=;
- b=OorI3Cc7bwOBf5xdjtGaSfJ6BLQgfRaXfu7nmHbMIfBJfNsgFy5xVpfmhFwurtVMBeUplK8O64YdzKgT42vbNUuTTgUXvNyfeapad5afvacYE0Uj92joMwGefutk2eidCKtYXs0+LsvX+6l7aVRbrwbi+o/aKkucUB5ht1vQ24U=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB4120.namprd15.prod.outlook.com (2603:10b6:a02:c4::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Mon, 20 Jul
- 2020 16:18:15 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3195.025; Mon, 20 Jul 2020
- 16:18:15 +0000
-Subject: Re: [PATCH -next] bpf: Make some functions static
-To:     Wang Hai <wanghai38@huawei.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <andriin@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200718115135.34856-1-wanghai38@huawei.com>
+ 15.1.1979.3; Mon, 20 Jul 2020 09:34:01 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 3D980370209A; Mon, 20 Jul 2020 09:33:58 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <cf3411eb-8129-ecc4-4975-a995d114cf7e@fb.com>
-Date:   Mon, 20 Jul 2020 09:18:13 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-In-Reply-To: <20200718115135.34856-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR17CA0034.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::47) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v2 0/5] bpf: compute btf_ids at build time for btf_iter
+Date:   Mon, 20 Jul 2020 09:33:58 -0700
+Message-ID: <20200720163358.1392964-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1083] (2620:10d:c090:400::5:bab9) by BY5PR17CA0034.namprd17.prod.outlook.com (2603:10b6:a03:1b8::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Mon, 20 Jul 2020 16:18:14 +0000
-X-Originating-IP: [2620:10d:c090:400::5:bab9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b2684594-4e5e-41b7-df6f-08d82cc88154
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4120:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4120C43AC7FF684FC611F3A1D37B0@BYAPR15MB4120.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:12;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4bBABV1ppbuAHU3pxCTR2UXfsA7VNol8Qi47wCXlt2QCN52fDnFjsOoemlbBG/aFSLDSXYTYoXF4L6rCbF3yW8EzJuZ8xouYbCyyOUUnB2ovZz8DG6mYb/FFgiOtYQMxCi56nCj9MRWGgaQVBQVFG2/GQ25zEUHQPAzT2xiwxTa2sAw5jOBeVbWHzN5jGwteMUi3KGPEeUpSMzqfjskF8w8uRVvWwHIuLqj24SQwHSY+T3/DtaHwiiiRT7HMldQlR7k0IW/0BmXftaP5s6L5nJ2CIQuGrKA7dzH8hbVFnpHbcEfZmryCFQ7jGBUBGJhojWWhv6et5pfKu/R5Zd0FvRyzG1ouZRynuPvWNw8zWkbsKmdxetc/bCGaOeYgxoHUJuFwa6/LXiUGx7iBvJLg8Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(396003)(376002)(366004)(346002)(316002)(5660300002)(2616005)(186003)(16526019)(52116002)(31696002)(31686004)(53546011)(8936002)(8676002)(66556008)(86362001)(66476007)(66946007)(7416002)(36756003)(6486002)(478600001)(4326008)(83380400001)(2906002)(921003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vwwyk8qMsLk1LjMQTGnn+1MgG4P+zCIXlNuHAoHfzoMfYaaJFfvtNv/4ixabzlcPCTGztLgxtsbt7J8Mg7GdjqNAP0gmP+JqNNNiumbIni5+sNnPIuBZ1qe6/h6Kw2SbiBGAi6He1sdU2SWr/uTBtQGSIttO6rOQ0aqVY0dHwNHfSlpmTrJJm2vO/3tliSOjlt0lU5Ix9MU3C/e315iyF8YzGHz/IhGxVY4CrfJuLgTbU7Xt8UXRNJ5SdyecAnqULXeSKFQxiStJGAharbLMlhzozVTKKW5RD/FaxMQzNF14MuG4wE8mFisV9l7hJ/8uo1uFWk76PYcET34w4c3I2XCc1idkvJXltxDrEoU6IM9w+TBIikJ6pxi1fdfpcyTkDVcxkqaWB7KoFPwVOl6axfCUM6qjFuhzoFCR2bk//4WmUx2RnbjWWZ/aIWxA08CRab5HDsYyhX4wFPt89l+lzIw6GgoiNenzCWdH7DNwLENGgQfuAaYvKVFztakKnmVAoRNbDLGSiqMhhh79HClWug==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2684594-4e5e-41b7-df6f-08d82cc88154
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2020 16:18:15.0498
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sjBRWnDGorGQ0OmodiI806J4fj7JbCJUVQ1ke8HsHNtNpiknzg/+j3qpvM0g5y6x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4120
-X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-20_09:2020-07-20,2020-07-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 malwarescore=0 suspectscore=0 clxscore=1011 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007200108
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=914 phishscore=0 adultscore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007200111
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Commit 5a2798ab32ba
+("bpf: Add BTF_ID_LIST/BTF_ID/BTF_ID_UNUSED macros")
+implemented a mechanism to compute btf_ids at kernel build
+time which can simplify kernel implementation and reduce
+runtime overhead by removing in-kernel btf_id calculation.
 
+This patch set tried to use this mechanism to compute
+btf_ids for bpf_skc_to_*() helpers and for btf_id_or_null ctx
+arguments specified during bpf iterator registration.
+Please see individual patch for details.
 
-On 7/18/20 4:51 AM, Wang Hai wrote:
-> Fix sparse build warning:
-> 
-> net/bpf/test_run.c:120:14: warning:
->   symbol 'bpf_fentry_test1' was not declared. Should it be static?
-> net/bpf/test_run.c:125:14: warning:
->   symbol 'bpf_fentry_test2' was not declared. Should it be static?
-> net/bpf/test_run.c:130:14: warning:
->   symbol 'bpf_fentry_test3' was not declared. Should it be static?
-> net/bpf/test_run.c:135:14: warning:
->   symbol 'bpf_fentry_test4' was not declared. Should it be static?
-> net/bpf/test_run.c:140:14: warning:
->   symbol 'bpf_fentry_test5' was not declared. Should it be static?
-> net/bpf/test_run.c:145:14: warning:
->   symbol 'bpf_fentry_test6' was not declared. Should it be static?
-> net/bpf/test_run.c:154:14: warning:
->   symbol 'bpf_fentry_test7' was not declared. Should it be static?
-> net/bpf/test_run.c:159:14: warning:
->   symbol 'bpf_fentry_test8' was not declared. Should it be static?
-> net/bpf/test_run.c:164:14: warning:
->   symbol 'bpf_modify_return_test' was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Changelogs:
+  v1 -> v2:
+    - v1 ([1]) is only for bpf_skc_to_*() helpers. This version
+      expanded it to cover ctx btf_id_or_null arguments
+    - abandoned the change of "extern u32 name[]" to
+      "static u32 name[]" for BPF_ID_LIST local "name" definition.
+      gcc 9 incurred a compilation error.
 
-Please see commit:
+ [1]: https://lore.kernel.org/bpf/20200717184706.3476992-1-yhs@fb.com/T
 
-commit e9ff9d52540a53ce8c9eff5bf8b66467fe81eb2b
-Author: Jean-Philippe Menil <jpmenil@gmail.com>
-Date:   Fri Mar 27 21:47:13 2020 +0100
+Yonghong Song (5):
+  bpf: compute bpf_skc_to_*() helper socket btf ids at build time
+  tools/bpf: sync btf_ids.h to tools
+  bpf: add BTF_ID_LIST_GLOBAL in btf_ids.h
+  bpf: make btf_sock_ids global
+  bpf: net: use precomputed btf_id for bpf iterators
 
-     bpf: Fix build warning regarding missing prototypes
+ include/linux/bpf.h                           |  5 +-
+ include/linux/btf_ids.h                       | 40 +++++++++++++--
+ kernel/bpf/btf.c                              |  6 +--
+ kernel/bpf/map_iter.c                         |  7 ++-
+ kernel/bpf/task_iter.c                        | 12 ++++-
+ net/core/filter.c                             | 49 ++----------------
+ net/ipv4/tcp_ipv4.c                           |  4 +-
+ net/ipv4/udp.c                                |  4 +-
+ net/ipv6/route.c                              |  7 ++-
+ net/netlink/af_netlink.c                      |  7 ++-
+ tools/include/linux/btf_ids.h                 | 51 +++++++++++++++++--
+ .../selftests/bpf/prog_tests/resolve_btfids.c | 34 ++++++++++---
+ 12 files changed, 153 insertions(+), 73 deletions(-)
 
-     Fix build warnings when building net/bpf/test_run.o with W=1 due
-     to missing prototype for bpf_fentry_test{1..6}.
+--=20
+2.24.1
 
-     Instead of declaring prototypes, turn off warnings with
-     __diag_{push,ignore,pop} as pointed out by Alexei.
-
-You probably use an old compiler (gcc < 8) which is why
-the warning is emitted.
-
-> ---
->   net/bpf/test_run.c | 18 +++++++++---------
->   1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index b03c469cd01f..0d78bd9b6c9d 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -117,32 +117,32 @@ static int bpf_test_finish(const union bpf_attr *kattr,
->   __diag_push();
->   __diag_ignore(GCC, 8, "-Wmissing-prototypes",
->   	      "Global functions as their definitions will be in vmlinux BTF");
-> -int noinline bpf_fentry_test1(int a)
-> +static noinline int bpf_fentry_test1(int a)
->   {
->   	return a + 1;
->   }
->   
-> -int noinline bpf_fentry_test2(int a, u64 b)
-> +static noinline int bpf_fentry_test2(int a, u64 b)
->   {
->   	return a + b;
->   }
->   
-> -int noinline bpf_fentry_test3(char a, int b, u64 c)
-> +static noinline int bpf_fentry_test3(char a, int b, u64 c)
->   {
->   	return a + b + c;
->   }
->   
-[...]
