@@ -2,109 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269FE226FB7
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 22:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341E5226FBF
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 22:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgGTU2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 16:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        id S1727123AbgGTUda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 16:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgGTU2O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:28:14 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514CBC0619D2
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:28:14 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id a11so14507565ilk.0
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:28:14 -0700 (PDT)
+        with ESMTP id S1726520AbgGTUd3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 16:33:29 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD59DC061794;
+        Mon, 20 Jul 2020 13:33:29 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id q17so9221240pls.9;
+        Mon, 20 Jul 2020 13:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jnROxpLTebfdg0VQxLM+qOeJIWXx+3VtqAPYTCwBg5A=;
-        b=e+YdMIZbfHuIN71zlAV9pte6XTKkIrMTuKqwzmQZxOkC954LaZlH12s9VMPeezYI/f
-         Jzv9Vzo+NY9vuVMW7D959S2Cdvs9ichUR+pxGCUw8tgcn9EqQtUg+gaQcJ0/MHWorqZG
-         /UDNGpn0SIDSdKMAMJQOHR7Re670rfu9J3bP/upy5wVU8JbcSWFw7jSVkEhpbdUvmmwy
-         2XkrGG80hp9CMfvxOaOhxtD9ErS7CIYgMtAd9PUGPwpxpdRbgachvMNiitkCzU4SDh6e
-         WfI7egJn+xCqdGw1WJUiGfrYepxPaHbyfX45EeOp+TCrHvYYLqEQ82fwEjcD0Fx5Lj35
-         diTA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=woYDQw/fOKCUiUPc84nf3NVJM7d7msUrWkm2YtnbzC0=;
+        b=cOgRHO7VfHOlUabiz2nkKRKcD00vwhyfOmhSLKgPdGPNqVaJn+lFjdktYe0iaqvVVz
+         i21XXZ3T8VhTyBPY5qEAJDvrMoJgepfvNRgpUNdY1pIlGTxaUAf8zcuh4zEl2Jx8rOHP
+         1sQMfY5MHUwgndNf4ggMXT+eqx6TfeH0fR9zwq3ahW0uKgw6UZDxXCkhFPhyhQUF35lQ
+         j60P1rkF3rOtgdXr9sRpL1pkQayobCqUn0kGBftPlOv0dHpDu9mR1o/WYxv3sA7yAWRP
+         yn+KOiQX8o5zeHZGsjffZBJg3s9wm95hwQmJDSL+6yDYC5fz2XgD40+cF6+//6uKVQuw
+         r8Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jnROxpLTebfdg0VQxLM+qOeJIWXx+3VtqAPYTCwBg5A=;
-        b=MmLrrGEfY0Y1xpBZtonvbFez8UHEJBOKNHxePzLzIlh340p+iuZZAbnbt00zrXcle8
-         ZB5bPanhwqLsfNZppxVAW22qaUq6rZijsKqqXoDmzZBpcolP0Ccuauv5JwmEhh+5ftKH
-         vPS1Sa9vDegDVLhPk98VyKIcnD+qjm31O2e5PuLdng8YN2BehdJazS5NdzaGvrz997ph
-         j+QBNGeV2gTuI3L9OOWNAzTwRXXcolN0jWB1cBGVLP6NuFpIbjnvGy//g05B0y3r3EiB
-         v7iO9brd3+YLrxfgWAqxwMBcoiaSf0uO5QAetesh0pcrHBmPVfJqAXocEnOtL2kcrrNY
-         ZSpQ==
-X-Gm-Message-State: AOAM530MH7GBdEkgeUU2Zqgnk9k3N6i9Tsn8bGP4So1hEcHTb8sX3gAM
-        IhNU6LBJimgm2XBRqDf9tOdwqStKuvW7+4jINCykVlB/nb0=
-X-Google-Smtp-Source: ABdhPJziZBrq7Pg+3/2EhDfmIw4gaLRIAxqYeGhCSSFHEMO8VPg5I18oqjIhNgbraAGINUvLf5g9njXh6av9exRpt4U=
-X-Received: by 2002:a92:bb57:: with SMTP id w84mr25017823ili.104.1595276893343;
- Mon, 20 Jul 2020 13:28:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200715214312.2266839-1-haoluo@google.com> <20200715214312.2266839-3-haoluo@google.com>
- <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYxWk9OmN0QhDrvE943YsYd2Opdkbt7NQTO9-YM6c4aGw@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 20 Jul 2020 13:28:02 -0700
-Message-ID: <CA+khW7i9wq0+2P_M46pEv-onGXL_=sW7xE=10CYeP_yjPh-Rpw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: Test __ksym externs with BTF
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=woYDQw/fOKCUiUPc84nf3NVJM7d7msUrWkm2YtnbzC0=;
+        b=ifkcBxIeOtKQL0ZPc3ZH7PjLMZhmdxcsjHHuzpX9weHkjfQ4qC6XDK1WbdPeyg2lJq
+         tneXIXv2R60WGV6lramHAPwuiXEWGC8Qgv8weieIinVqNBqKIOokj28qLLjcdlaqu6mX
+         K24tb7FftBOQIEwaTg6yACTu9HQXWwjv9THt+eVmOaumcKu/0Dtx/c8WgF+jC4lQnuBN
+         Qpp9JzJrva4Q7nc0ecaT+hBOLj4FNMwzclvE/g3qHcUnEndGd3y3Qlxk04NtcDOnXwce
+         kXiADbOloTC4QpXSNrSS204uzB1FaxiNAOyi4j7mAU5s8cSlBSlTi1RLbDZcbkXvXusp
+         VTlg==
+X-Gm-Message-State: AOAM532058yFIeiyBp6c0vQxbiEt+yWSJyv0kehDVfkOLkbnfvMs671v
+        YJ9ZI04SaESCp60STAHYM+ot672Y
+X-Google-Smtp-Source: ABdhPJy59lpBL7dnFK4McGN3Y1P0g2OXU3cuaSD/R0MmWCdN/bLw84UwXRZW0NpQFnz5++a77n9hiQ==
+X-Received: by 2002:a17:90a:764c:: with SMTP id s12mr1105981pjl.201.1595277209209;
+        Mon, 20 Jul 2020 13:33:29 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
+        by smtp.gmail.com with ESMTPSA id w12sm451664pjb.18.2020.07.20.13.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 13:33:28 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 13:33:26 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH bpf-next] bpf: allow loading instructions from a fd
+Message-ID: <20200720203326.z4jtrjv7gmtlzz57@ast-mbp.dhcp.thefacebook.com>
+References: <20200713130511.6942-1-mcroce@linux.microsoft.com>
+ <20200714173154.i2wxhm4n4ob7sfpd@ast-mbp.dhcp.thefacebook.com>
+ <CAFnufp2_vwyCR95Z=Dkd9XXRO8CTQ5NZtNPdJL+1oPRurv-feQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp2_vwyCR95Z=Dkd9XXRO8CTQ5NZtNPdJL+1oPRurv-feQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> This should ideally look like a real global variable extern:
->
-> extern const struct rq runqueues __ksym;
->
->
-> But that's the case for non-per-cpu variables. You didn't seem to
-> address per-CPU variables in this patch set. How did you intend to
-> handle that? We should look at a possible BPF helper to access such
-> variables as well and how the verifier will prevent direct memory
-> accesses for such variables.
->
-> We should have some BPF helper that accepts per-CPU PTR_TO_BTF_ID, and
-> returns PTR_TO_BTF_ID, but adjusted to desired CPU. And verifier
-> ideally would allow direct memory access on that resulting
-> PTR_TO_BTF_ID, but not on per-CPU one. Not sure yet how this should
-> look like, but the verifier probably needs to know that variable
-> itself is per-cpu, no?
->
+On Thu, Jul 16, 2020 at 08:47:36PM +0200, Matteo Croce wrote:
+> On Tue, Jul 14, 2020 at 7:31 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Jul 13, 2020 at 03:05:11PM +0200, Matteo Croce wrote:
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > >
+> > > Allow to load the BPF instructons from a file descriptor,
+> > > other than a pointer.
+> > >
+> > > This is required by the Integrity Subsystem to validate the source of
+> > > the instructions.
+> > >
+> > > In bpf_attr replace 'insns', which is an u64, to a union containing also
+> > > the file descriptor as int.
+> > > A new BPF_F_LOAD_BY_FD flag tells bpf_prog_load() to load
+> > > the instructions from file descriptor and ignore the pointer.
+> > >
+> > > As BPF files usually are regular ELF files, start reading from the
+> > > current file position, so the userspace can skip the ELF header and jump
+> > > to the right section.
+> >
+> > That is not the case at all.
+> > Have you looked at amount of work libbpf is doing with elf file before
+> > raw instructions become suitable to be loaded by the kernel?
+> 
+> I see now what bpf_object__relocate() and all the *reloc* functions
+> do, so it can't be done this way, I see.
+> 
+> A malicious BPF file can be as bad as a malicious binary. Let's say I
+> want to assert code integrity for BPF files, what could be a viable
+> option?
+> Perhaps a signature in the object file as we do with modules?
 
-Yes, that's what I was unclear about, so I don't have that part in
-this patchset. But your explanation helped me organize my thoughts. :)
-
-Actually, the verifier can tell whether a var is percpu from the
-DATASEC, since we have encoded "percpu" DATASEC in btf. I think the
-following should work:
-
-We may introduce a new PTR_TO_BTF_VAR_ID. In ld_imm, libbpf replaces
-ksyms with btf_id. The btf id points to a KIND_VAR. If the pointed VAR
-is found in the "percpu" DATASEC, dst_reg is set to PTR_TO_BTF_VAR_ID;
-otherwise, it will be a PTR_TO_BTF_ID. For PTR_TO_BTF_VAR_ID,
-reg->btf_id is the id of the VAR. For PTR_TO_BTF_ID, reg->btf_id is
-the id of the actual kernel type. The verifier would reject direct
-memory access on PTR_TO_BTF_VAR_ID, but the new BPF helper can convert
-a PTR_TO_BTF_VAR_ID to PTR_TO_BTF_ID.
-
-Hao
+It's a hard problem to solve.
+Signing bpf programs was proposed in the past. It may work, but challenging
+to implement, since even simplest programs are being modified by the user
+space loader before kernel sees them. The signature would have to skip
+all such instructions which makes the signature verification 'best effort'.
+Some instructions won't be covered by signature (like ld_imm64 that points
+to a map).
