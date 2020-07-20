@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB06226F56
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 21:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62774226F58
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 21:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgGTTzK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 15:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        id S1730304AbgGTTzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 15:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgGTTzJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:55:09 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9247AC061794
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 12:55:09 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id s21so14383873ilk.5
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 12:55:09 -0700 (PDT)
+        with ESMTP id S1726619AbgGTTzM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 15:55:12 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F111BC0619D2
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 12:55:11 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q3so14381617ilt.8
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 12:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PMjpMjNih1+jm3foEyZS3IDJgvYOqAdwPfkk24YvvLw=;
-        b=RGWSJyPCQUcGlhpL063FDpEgAiJtvgnCMEU2rDNW0ST43OThbRKACt+3ZvIlz95ox6
-         6lpcTIoFLRHG9rhMfPdWqDx9e7cXSX17wDPShH82zSyBT2X5OTaAWmo6Ak1QHZcl/Pdt
-         zMRViOGCTh52aS/KTXievJPBGgOsdD4HV10WsrcUXfEv7tWg0JquWJNFllnhGiUiTViD
-         Qom/gh2g0LDBgJQH86Sn4BmtDJWRjzx367tZdlXPdg2zNnYvqUv8wNfTqJkGnlRVzE5N
-         f3eD+BoiEb4gfOgsUEUORpDLlI+HJmJwJmY9XQQaaUMDQbs1ibpNufSudMUXeGgYKufK
-         h0IA==
+        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
+        b=UWccam6Or09YD9Ho7B6+Dxc+ogz5IqHcvBCgQRp1jRZwmw6HbCrgjy7+js36Gx/TPl
+         /byGm3menqG6QKl8MRW6j6NnTQC8UnLKrlNCvyYJ8FRxo0Oyo/ohX3AcXq014umYKml6
+         r6/9ChJ2NfcpMefHozSCePLarS4/rTXAPYQaoY2KCtj7D4RloqoQAiYhccC+7YIliTJY
+         6LY7CqlkumEUxI3iHflJgB9a3fK33cJWXdzlNYKqFp4dZeXHv6C0UNk6XVdsHWroPP2s
+         J3cJ9jvZ0b01db2ZB4tViqNdvPzUNjlboUfuVBcDa/AwSbbSa9W7scfQcxQK8+NPDwF2
+         AIew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PMjpMjNih1+jm3foEyZS3IDJgvYOqAdwPfkk24YvvLw=;
-        b=GjSc4mCAWj1FIH0Rp1oNHMaAgbDyXzvCOEGGeEAyCqhpwma4P0VaGx5mNdJdMDUCQk
-         yVaosDmYy41oWBbPL5eX21IIssKobIJRDFnt7+qEWKR+yJrw42g8lrCGxyIBlfq2jziX
-         XNadu87uJ+0Z4DZUW1TDAEUxagWZJd+YfJqtCZJu5wmbh7hCpHcquFtibNDb0cRfDkVT
-         PcD5szbjBLkOCL/HX5ehtwBFhUC9wEgwrXh41R8Af23pon+ggwzqjBVEFkvPEfGmK5Qz
-         DIFuvYWE4vzMZwm0iETX9mrn/+aHZgH6wpmdqNxJzvcPWxbCT/Fyl8jky7Gj+2VeGUjy
-         Tefw==
-X-Gm-Message-State: AOAM531wKBKzYGyJD/BBtUFu2y0vHftkZ92NoVW+qdkEAsePhrgFNSCg
-        AucXK8DHF3fHCav5wJZo1TkBPu6GHb7tSw==
-X-Google-Smtp-Source: ABdhPJxBT4q5gz6t1eC0iQVU5BtiP40QqcwBevyEOa5IRNwa+cDYzyuER1DS1/UVKxjU4Lhb8qJeNg==
-X-Received: by 2002:a92:9fcb:: with SMTP id z72mr24837388ilk.195.1595274908728;
-        Mon, 20 Jul 2020 12:55:08 -0700 (PDT)
+        bh=of9+3qI/MyRMYwvrISkr1vjZMf+9lj7qYnhFd6xNdRY=;
+        b=OEy1ukjzh88btkjFXx5jb1+ArjGSjr8M6OY9CmbqqOWVZfdTU7o7XlvBzQaq06XzX8
+         d0wgH3ImcD1erBCc9oU4rwZxj0N+NXrMrKaUix/q/3kuZ8lfNCyjIsgvUvr1vVgRlIee
+         gOhaWfiNOY2FnDwilR+j/BLbr55+oRQ4YqWc4pNp23000nLae5dUbVZE3CERyFGdr7QE
+         rONxFBx96bvV4ks8xwMPCirdrW+hqEhJIIT7/SSpNhaqGFjKF7sqgx4EYb3NGen0TRgb
+         xQKblRdWf88eAytz7syGPNHAXDyZq9rEpdSZf6JZUp9CZbyYqWUPuBpyusDDbHIgE4YY
+         7OdQ==
+X-Gm-Message-State: AOAM532EevJPpJ0KAxQYnjUEMkNXp/c/b7Ql+QOItSPaCXo4obDYjM0d
+        5RWg6Bp2ruy0nZ8+lk3LuIzQ1xBJSnyJuQ==
+X-Google-Smtp-Source: ABdhPJxPgfjRiCuebefE9D7zLLz+7OfNFRyDPsIH+FhyCFG0iyExXbNqrCVnAsLkPPd+R+gwnh3nUQ==
+X-Received: by 2002:a92:488f:: with SMTP id j15mr25169373ilg.269.1595274909640;
+        Mon, 20 Jul 2020 12:55:09 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
-        by smtp.gmail.com with ESMTPSA id v10sm9347174ilj.40.2020.07.20.12.55.07
+        by smtp.gmail.com with ESMTPSA id v10sm9347174ilj.40.2020.07.20.12.55.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 12:55:08 -0700 (PDT)
+        Mon, 20 Jul 2020 12:55:09 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH v4 bpf-next 4/5] selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress
-Date:   Mon, 20 Jul 2020 14:54:54 -0500
-Message-Id: <3a1fea5958605766b326fff3b6e78488f155510d.1595274799.git.zhuyifei@google.com>
+Subject: [PATCH v4 bpf-next 5/5] Documentation/bpf: Document CGROUP_STORAGE map type
+Date:   Mon, 20 Jul 2020 14:54:55 -0500
+Message-Id: <0f1ed5471cfa1fa148ac42d8fa5f44e2e1556417.1595274799.git.zhuyifei@google.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1595274799.git.zhuyifei@google.com>
 References: <cover.1595274799.git.zhuyifei@google.com>
@@ -72,143 +72,139 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-This mirrors the original egress-only test. The cgroup_storage is
-now extended to have two packet counters, one for egress and one
-for ingress. The behavior of the counters are exactly the same as
-the original egress-only test, only that the total number of
-invocations doubles from having both egress and ingress being
-counted.
-
-The field attach_type in the map key is ignored in the kernel;
-however, keeping it is pointless here and we are demonstrating the
-expected usage of the map, so it is removed. That said, keeping the
-field will not fail the test, for backwards compatibility reasons.
-In other words, the original egress-only test is not affected by
-the change in CGROUP_STORAGE behavior and will pass in both cases.
+The machanics and usage are not very straightforward. Given the
+changes it's better to document how it works and how to use it,
+rather than having to rely on the examples and implementation to
+infer what is going on.
 
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 ---
- .../bpf/prog_tests/cg_storage_multi.c         | 90 +++++++++++++++++--
- 1 file changed, 83 insertions(+), 7 deletions(-)
+ Documentation/bpf/index.rst              |  9 +++
+ Documentation/bpf/map_cgroup_storage.rst | 95 ++++++++++++++++++++++++
+ 2 files changed, 104 insertions(+)
+ create mode 100644 Documentation/bpf/map_cgroup_storage.rst
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-index 1f4ab437ddb9..aa2b448c4214 100644
---- a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
-@@ -28,7 +28,6 @@ static bool assert_storage(struct bpf_map *map, const char *cgroup_path,
- 	map_fd = bpf_map__fd(map);
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 38b4db8be7a2..26f4bb3107fc 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -48,6 +48,15 @@ Program types
+    bpf_lsm
  
- 	key.cgroup_inode_id = get_cgroup_id(cgroup_path);
--	key.attach_type = BPF_CGROUP_INET_EGRESS;
- 	if (CHECK(bpf_map_lookup_elem(map_fd, &key, &value) < 0,
- 		  "map-lookup", "errno %d", errno))
- 		return true;
-@@ -48,7 +47,6 @@ static bool assert_storage_noexist(struct bpf_map *map, const char *cgroup_path)
- 	map_fd = bpf_map__fd(map);
  
- 	key.cgroup_inode_id = get_cgroup_id(cgroup_path);
--	key.attach_type = BPF_CGROUP_INET_EGRESS;
- 	if (CHECK(bpf_map_lookup_elem(map_fd, &key, &value) == 0,
- 		  "map-lookup", "succeeded, expected ENOENT"))
- 		return true;
-@@ -156,14 +154,92 @@ static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
- static void test_egress_ingress(int parent_cgroup_fd, int child_cgroup_fd)
- {
- 	struct cg_storage_multi_egress_ingress *obj;
-+	struct cgroup_value expected_cgroup_value;
-+	struct bpf_link *parent_egress_link = NULL, *parent_ingress_link = NULL;
-+	struct bpf_link *child_egress_link = NULL, *child_ingress_link = NULL;
-+	bool err;
++Map types
++=========
++
++.. toctree::
++   :maxdepth: 1
++
++   map_cgroup_storage
++
++
+ Testing and debugging BPF
+ =========================
  
--	/* Cannot load both programs due to verifier failure:
--	 * "only one cgroup storage of each type is allowed"
--	 */
- 	obj = cg_storage_multi_egress_ingress__open_and_load();
--	if (CHECK(obj || errno != EBUSY,
--		  "skel-load", "errno %d, expected EBUSY", errno))
-+	if (CHECK(!obj, "skel-load", "errno %d", errno))
- 		return;
+diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
+new file mode 100644
+index 000000000000..b7210cb3f294
+--- /dev/null
++++ b/Documentation/bpf/map_cgroup_storage.rst
+@@ -0,0 +1,95 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++.. Copyright (C) 2020 Google LLC.
 +
-+	/* Attach to parent cgroup, trigger packet from child.
-+	 * Assert that there is two runs, one with parent cgroup egress and
-+	 * one with parent cgroup ingress.
-+	 * Also assert that child cgroup's storage does not exist
-+	 */
-+	parent_egress_link = bpf_program__attach_cgroup(obj->progs.egress,
-+							parent_cgroup_fd);
-+	if (CHECK(IS_ERR(parent_egress_link), "parent-egress-cg-attach",
-+		  "err %ld", PTR_ERR(parent_egress_link)))
-+		goto close_bpf_object;
-+	parent_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
-+							 parent_cgroup_fd);
-+	if (CHECK(IS_ERR(parent_ingress_link), "parent-ingress-cg-attach",
-+		  "err %ld", PTR_ERR(parent_ingress_link)))
-+		goto close_bpf_object;
-+	err = connect_send(CHILD_CGROUP);
-+	if (CHECK(err, "first-connect-send", "errno %d", errno))
-+		goto close_bpf_object;
-+	if (CHECK(obj->bss->invocations != 2,
-+		  "first-invoke", "invocations=%d", obj->bss->invocations))
-+		goto close_bpf_object;
-+	expected_cgroup_value = (struct cgroup_value) {
-+		.egress_pkts = 1,
-+		.ingress_pkts = 1,
-+	};
-+	if (assert_storage(obj->maps.cgroup_storage,
-+			   PARENT_CGROUP, &expected_cgroup_value))
-+		goto close_bpf_object;
-+	if (assert_storage_noexist(obj->maps.cgroup_storage, CHILD_CGROUP))
-+		goto close_bpf_object;
++===========================
++BPF_MAP_TYPE_CGROUP_STORAGE
++===========================
 +
-+	/* Attach to parent and child cgroup, trigger packet from child.
-+	 * Assert that there is four additional runs, parent cgroup egress and
-+	 * ingress, child cgroup egress and ingress.
-+	 */
-+	child_egress_link = bpf_program__attach_cgroup(obj->progs.egress,
-+						       child_cgroup_fd);
-+	if (CHECK(IS_ERR(child_egress_link), "child-egress-cg-attach",
-+		  "err %ld", PTR_ERR(child_egress_link)))
-+		goto close_bpf_object;
-+	child_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
-+							child_cgroup_fd);
-+	if (CHECK(IS_ERR(child_ingress_link), "child-ingress-cg-attach",
-+		  "err %ld", PTR_ERR(child_ingress_link)))
-+		goto close_bpf_object;
-+	err = connect_send(CHILD_CGROUP);
-+	if (CHECK(err, "second-connect-send", "errno %d", errno))
-+		goto close_bpf_object;
-+	if (CHECK(obj->bss->invocations != 6,
-+		  "second-invoke", "invocations=%d", obj->bss->invocations))
-+		goto close_bpf_object;
-+	expected_cgroup_value = (struct cgroup_value) {
-+		.egress_pkts = 2,
-+		.ingress_pkts = 2,
-+	};
-+	if (assert_storage(obj->maps.cgroup_storage,
-+			   PARENT_CGROUP, &expected_cgroup_value))
-+		goto close_bpf_object;
-+	expected_cgroup_value = (struct cgroup_value) {
-+		.egress_pkts = 1,
-+		.ingress_pkts = 1,
-+	};
-+	if (assert_storage(obj->maps.cgroup_storage,
-+			   CHILD_CGROUP, &expected_cgroup_value))
-+		goto close_bpf_object;
++The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
++storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
++attach to cgroups; the programs are made available by the same config. The
++storage is identified by the cgroup the program is attached to.
 +
-+close_bpf_object:
-+	if (parent_egress_link)
-+		bpf_link__destroy(parent_egress_link);
-+	if (parent_ingress_link)
-+		bpf_link__destroy(parent_ingress_link);
-+	if (child_egress_link)
-+		bpf_link__destroy(child_egress_link);
-+	if (child_ingress_link)
-+		bpf_link__destroy(child_ingress_link);
++This document describes the usage and semantics of the
++``BPF_MAP_TYPE_CGROUP_STORAGE`` map type. Some of its behaviors was changed in
++Linux 5.9 and this document will describe the differences.
 +
-+	cg_storage_multi_egress_ingress__destroy(obj);
- }
- 
- void test_cg_storage_multi(void)
++Usage
++=====
++
++The map uses key of type ``struct bpf_cgroup_storage_key``, declared in
++``linux/bpf.h``::
++
++    struct bpf_cgroup_storage_key {
++            __u64 cgroup_inode_id;
++            __u32 attach_type;
++    };
++
++``cgroup_inode_id`` is the inode id of the cgroup directory.
++``attach_type`` was the the program's attach type prior to Linux 5.9, since 5.9
++it is ignored and kept for backwards compatibility.
++
++To access the storage in a program, use ``bpf_get_local_storage``::
++
++    void *bpf_get_local_storage(void *map, u64 flags)
++
++``flags`` is reserved for future use and must be 0.
++
++There is no implicit synchronization. Storages of ``BPF_MAP_TYPE_CGROUP_STORAGE``
++can be accessed by multiple programs across different CPUs, and user should
++take care of synchronization by themselves.
++
++Example usage::
++
++    #include <linux/bpf.h>
++
++    struct {
++            __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
++            __type(key, struct bpf_cgroup_storage_key);
++            __type(value, __u32);
++    } cgroup_storage SEC(".maps");
++
++    int program(struct __sk_buff *skb)
++    {
++            __u32 *ptr = bpf_get_local_storage(&cgroup_storage, 0);
++            __sync_fetch_and_add(ptr_cg_storage-, 1);
++
++            return 0;
++    }
++
++Semantics
++=========
++
++``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`` is a variant of this map type. This
++per-CPU variant will have different memory regions for each CPU for each
++storage. The non-per-CPU will have the same memory region for each storage.
++
++Prior to Linux 5.9, the lifetime of a storage is precisely per-attachment, and
++for a single ``CGROUP_STORAGE`` map, there can be at most one program loaded
++that uses the map. A program may be attached to multiple cgroups or have
++multiple attach types, and each attach creates a fresh zeroed storage. The
++storage is freed upon detach.
++
++Userspace may use the the attach parameters of cgroup and attach type pair
++in ``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
++update the storage for a given attachment.
++
++Since Linux 5.9, storage can be shared by multiple programs, and attach type
++is ignored. When a program is attached to a cgroup, the kernel would create a
++new storage only if the map does not already contain an entry for the cgroup,
++or else the old storage is reused for the new attachment. Storage is freed
++only when either the map or the cgroup attached to is being freed. Detaching
++will not directly free the storage, but it may cause the reference to the map
++to reach zero and indirectly freeing all storage in the map.
++
++Userspace may use the the attach parameters of cgroup only in
++``struct bpf_cgroup_storage_key`` as the key to the BPF map APIs to read or
++update the storage for a given attachment. The struct also contains an
++``attach_type`` field; this field is ignored.
++
++In all versions, the storage is bound at attach time. Even if the program is
++attached to parent and triggers in child, the storage still belongs to the
++parent.
++
++Userspace cannot create a new entry in the map or delete an existing entry.
++Program test runs always use a temporary storage.
 -- 
 2.27.0
 
