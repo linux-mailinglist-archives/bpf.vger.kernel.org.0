@@ -2,170 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEF3225BBA
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 11:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A050225C86
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 12:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgGTJeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 05:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727940AbgGTJeA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 05:34:00 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7DFC061794;
-        Mon, 20 Jul 2020 02:33:59 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id k7so4807813uan.13;
-        Mon, 20 Jul 2020 02:33:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ODYab/70orF5HqomA3ceZEFfsWi7uZDmUBXTTbkr6AY=;
-        b=l40X17yKiB1B6NYIsgs8+6PbWRqwRHh0wc6Hfx8Slwd3ZJ6+5iTVgA3I60YDU4DwF5
-         20GdiwOrtN6zfFiydL/QF2/d7meMt726UI4u52KyViTXzrADy+dbhCEoymVhlRBV1XOE
-         RmqLB/X1uMRrm1mprBiRyDlTEDZyhS63s+3EiZyvEdpjk2YFdpBzBl7tneF6HxFwKx95
-         w7GY2QbanX8jgttCl41gHRPxtrb6EpogPQBTug49vb6YL2gDC+j8czySgKSBh2EYQ2ey
-         GMIFb6g6/ZbxGJ5CI/E2Jn/bArxkT7VnRxLU2VpTsfyIZzvK2LVExwtYhEBMYhxwMz8U
-         XEXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ODYab/70orF5HqomA3ceZEFfsWi7uZDmUBXTTbkr6AY=;
-        b=S2zEmeT8Z2i9Y4vq+KNRHGHWRj30gV0gkFOvFZWDe1nEwAoUoIHsczwtw6nzQ8oBUb
-         zSZZ341X7UuSgpx0yKUdJIek2s5JWXfZgC32gp8UUnLakprf1IlM4e/K4CykKp/TpuqR
-         NzW5kDTOEoLm4yzLzeP6krwMTgO6wpe6XOU3kqYhVrXpjsnmge65YusSQ/38dpdqfd9q
-         +1mzTZhEtqA6ocgeObHxsWMbvnTlPkjATtmN3KU8OG9y40gV2Fava1xgEBzBIX9w76y9
-         Be+8eDVaFQXWvbaap86IJNW7nJDyYwfX94NINnXOAKb/soU43c8L+/wyM52gjdvXmNGv
-         px/Q==
-X-Gm-Message-State: AOAM532cnuC915/Vg+cYGaC7Oj7rYPAMLYhoWbvju59GvyB9WsbdQ/Jb
-        cnMHTFRsQ8dxz6TNwoRxzCS+sczLCXSQXgRKcYg=
-X-Google-Smtp-Source: ABdhPJw3AjC9UAHOORF9IdAJ4k/LkLIhTTlIPmcOfb30oZN+UHEvH09axHiuEB2mcfe2J7BmTeMWT1Qym7RTw++4zaY=
-X-Received: by 2002:ab0:64cd:: with SMTP id j13mr13928068uaq.33.1595237638814;
- Mon, 20 Jul 2020 02:33:58 -0700 (PDT)
+        id S1728286AbgGTKTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 06:19:03 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24872 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728169AbgGTKTD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jul 2020 06:19:03 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06KA4mND086903;
+        Mon, 20 Jul 2020 06:18:50 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32cea0x3nq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 06:18:49 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06KAA6TY006142;
+        Mon, 20 Jul 2020 10:18:20 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32brq7tjwu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Jul 2020 10:18:19 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06KAIHRN23396826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jul 2020 10:18:17 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 103E511C054;
+        Mon, 20 Jul 2020 10:18:17 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7224811C04A;
+        Mon, 20 Jul 2020 10:18:16 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.6.1])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Jul 2020 10:18:16 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix test_lwt_seg6local.sh hangs
+Date:   Mon, 20 Jul 2020 12:18:10 +0200
+Message-Id: <20200720101810.84299-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <1594390602-7635-1-git-send-email-magnus.karlsson@intel.com>
- <1594390602-7635-12-git-send-email-magnus.karlsson@intel.com>
- <fc6e254c-5153-aa72-77d1-693e24b49848@mellanox.com> <CAJ8uoz30f_jbtH4bM-YAxyPq2+zqC1CC3c+eQFg-ECwgkOfzSw@mail.gmail.com>
-In-Reply-To: <CAJ8uoz30f_jbtH4bM-YAxyPq2+zqC1CC3c+eQFg-ECwgkOfzSw@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 20 Jul 2020 11:33:47 +0200
-Message-ID: <CAJ8uoz1HJuAz5Pu5Adyobt8QTLq=pT161w3R=G-dhTt49WUegQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 11/14] xsk: add shared umem support between devices
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        cristian.dumitrescu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-20_05:2020-07-20,2020-07-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007200074
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 6:35 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Tue, Jul 14, 2020 at 12:18 PM Maxim Mikityanskiy
-> <maximmi@mellanox.com> wrote:
-> >
-> > On 2020-07-10 17:16, Magnus Karlsson wrote:
-> > > Add support to share a umem between different devices. This mode
-> > > can be invoked with the XDP_SHARED_UMEM bind flag. Previously,
-> > > sharing was only supported within the same device. Note that when
-> > > sharing a umem between devices, just as in the case of sharing a
-> > > umem between queue ids, you need to create a fill ring and a
-> > > completion ring and tie them to the socket (with two setsockopts,
-> > > one for each ring) before you do the bind with the
-> > > XDP_SHARED_UMEM flag. This so that the single-producer
-> > > single-consumer semantics of the rings can be upheld.
-> >
-> > I'm not sure if you saw my comment under v1 asking about performance.
-> > Could you share what performance numbers (packet rate) you see when
-> > doing forwarding with xsk_fwd? I'm interested in:
-> >
-> > 1. Forwarding between two queues of the same netdev.
-> >
-> > 2. Forwarding between two netdevs.
-> >
-> > 3. xdpsock -l as the baseline.
->
-> Sorry for the delay Max, but it is all due to vacation. I will provide
-> you with the numbers once the weather turns sour and/or the family
-> gets tired of me ;-). From what I can remember, it did not scale
-> perfectly linearly, instead it hit some other bottleneck, though I did
-> not examine what at that time.
+OpenBSD netcat (Debian patchlevel 1.195-2) does not seem to react to
+SIGINT for whatever reason, causing prefix.pl to hang after
+test_lwt_seg6local.sh exits due to netcat inheriting
+test_lwt_seg6local.sh's file descriptors.
 
-Some quick and dirty numbers from my testing of the v3. All from my
-machine with an i40e and with 64 byte packets being.
+Fix by using SIGTERM instead.
 
-xdpsock -l: 11 Mpps
-xsk_fwd with one thread: 12 Mpps
-xsk_fwd with two threads and two netdevs (two ports on the same NIC):
-9 - 11 Mpps per thread
-xsk_fwd with two thread and one netdev, each using one separate queue:
-5 Mpps per thread
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/test_lwt_seg6local.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In summary:
+diff --git a/tools/testing/selftests/bpf/test_lwt_seg6local.sh b/tools/testing/selftests/bpf/test_lwt_seg6local.sh
+index 785eabf2a593..5620919fde9e 100755
+--- a/tools/testing/selftests/bpf/test_lwt_seg6local.sh
++++ b/tools/testing/selftests/bpf/test_lwt_seg6local.sh
+@@ -140,7 +140,7 @@ ip netns exec ns6 sysctl net.ipv6.conf.veth10.seg6_enabled=1 > /dev/null
+ ip netns exec ns6 nc -l -6 -u -d 7330 > $TMP_FILE &
+ ip netns exec ns1 bash -c "echo 'foobar' | nc -w0 -6 -u -p 2121 -s fb00::1 fb00::6 7330"
+ sleep 5 # wait enough time to ensure the UDP datagram arrived to the last segment
+-kill -INT $!
++kill -TERM $!
+ 
+ if [[ $(< $TMP_FILE) != "foobar" ]]; then
+ 	exit 1
+-- 
+2.25.4
 
-* xsk_fwd delivers better performance compared to xdpsock performing
-the same function.
-* Using two netdevs does not scale linearly. One is 9 Mpps the other
-11 Mpps. Have not examined why. There is a lock in the xsk_fwd code,
-so do not expect perfect linearity, but thought the two netdevs would
-show the same number at least.
-* Something weird is happening when using two queues on the same
-netdev. This is also present without the shared umem patch set (if you
-register the umem multiple times). Can see that the application is
-generating a lot of syscalls with a quick use of perf.
-
-All in all, after this patch set and my vacation I will examine the
-scalability of AF_XDP in this scenario and this will most likely lead
-to a number of performance optimization patches to improve the
-scalability. Would like to have the two last numbers to be closer to
-12 Mpps on my machine.
-
-/Magnus
-
-> /Magnus
->
-> > Thanks,
-> > Max
-> >
-> > >
-> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > ---
-> > >   net/xdp/xsk.c | 11 ++++-------
-> > >   1 file changed, 4 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 05fadd9..4bf47d3 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -695,14 +695,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
-> > >                       sockfd_put(sock);
-> > >                       goto out_unlock;
-> > >               }
-> > > -             if (umem_xs->dev != dev) {
-> > > -                     err = -EINVAL;
-> > > -                     sockfd_put(sock);
-> > > -                     goto out_unlock;
-> > > -             }
-> > >
-> > > -             if (umem_xs->queue_id != qid) {
-> > > -                     /* Share the umem with another socket on another qid */
-> > > +             if (umem_xs->queue_id != qid || umem_xs->dev != dev) {
-> > > +                     /* Share the umem with another socket on another qid
-> > > +                      * and/or device.
-> > > +                      */
-> > >                       xs->pool = xp_create_and_assign_umem(xs,
-> > >                                                            umem_xs->umem);
-> > >                       if (!xs->pool) {
-> > >
-> >
