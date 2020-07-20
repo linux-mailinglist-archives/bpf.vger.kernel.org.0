@@ -2,76 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDEF226FCE
-	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 22:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E95F226FE3
+	for <lists+bpf@lfdr.de>; Mon, 20 Jul 2020 22:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgGTUlz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 16:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S1726567AbgGTUsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 16:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGTUlz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 16:41:55 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709E0C061794
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:41:55 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k71so465823pje.0
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 13:41:55 -0700 (PDT)
+        with ESMTP id S1726012AbgGTUsB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 16:48:01 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3549C061794;
+        Mon, 20 Jul 2020 13:48:01 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id md7so536206pjb.1;
+        Mon, 20 Jul 2020 13:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wbGgRncSj6HHhJYW2c/QEhsKIi1BLv9QdKZvSMHudu0=;
-        b=HgwjzrmA+mOwwU5EJh3eQMkYHWXGkinUFNfVbWiML7a8B69pPZGaNtLVIZLQQo+9WM
-         ZFmahe0/5uxjEWxTr0A3qd8/su07tD9nRjBug4u2MZORO18oAcyhqXfLgIul3NiK+HB7
-         8tVvxR3mhimFYoPNzQrFU1Ssg3lGEnqCRLSI3Z+/Gw0ds3uONDPQ2PbdeH6wVLtCPgFd
-         qOp1qiGpEMbsICYH86Tko4x6IAb5QJTqkbZVkxuqzBy+Z5eZ+pFn1LOUO0KPqsRSEMKn
-         Ss71dDEWrwe6b6biZo/H1dXOljiFm4PnO175Zi6Af9LIs/cHjdZTksPD3lNw7jtjTtso
-         ra0Q==
+        bh=W3gFxb9MTLvTnCe3A+iabUWXBAu7mA9HyhZHWgTOkUw=;
+        b=OGmrrLECo+9bEWcObjspsB7mZd1Knz6TplGXozOrISTfqD7/NX21SXnbWcSkV3fL4v
+         rTtVk5lWAA2Zu7uZ6u1mrfxhancqzyg3QAj3aPjlEycGVWZJlozkhUGEvXA8Lh3Zhd9y
+         MI2pFWCUVAw0qhoczi2fzDR5o+9jsXf0u50JS+cFIfuTYX6fdThXqy7BkTGCK/dg3wkY
+         mbds6x2z1GfwvAA0D5GwOBd9MLDFeCqWgb4tYptazoXAosQDHX7Ytsgw6xoiVQCij+q6
+         LhYcFToAHR8FWmsf1prWh4sudrDF50FXVoAgPYMNb7eWHKWg9zXFnQitJW8+uw6BZBn8
+         8EhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wbGgRncSj6HHhJYW2c/QEhsKIi1BLv9QdKZvSMHudu0=;
-        b=ia6OLZI6UAppIcS4F1Ui6qdElWoGk1fWcz4beUvpE9epsY9k39eKchCMM212xfjn46
-         GsFUnYXcdk/Eo5DsOVQDv00R45XCc97G1NmwZpJZ7Pllcar5BQiYz6o3DIDQMUrd7Ygf
-         Bg4STnhj6570waZv30t0g2PaOAz1gkxYV6Jk5e/pLv+YiRhwtoOJ8qBs09zKBh5I141j
-         DN/MJnBtYnpDEkEUt+O4z3Mj6pOqEkTLtDMnSYkSRnNbB7wtb5MsbYJd0l7uBtzQdIZI
-         QupJ9sMblp8vnGvguXSQeDScpeP40dknwlOU/Gigac5HEM66dDX8wfBQd3W9pjUrDpHH
-         XvmA==
-X-Gm-Message-State: AOAM532HY4aJPQfmQD2+osfsisBW2l/MYKZ8HtZKAZ8y8+qeqNkwV3DU
-        3S23RstyidTnj8HjqdRb91Y=
-X-Google-Smtp-Source: ABdhPJyELo2RwNCaSN5m8WxH30lOK1FPcTKFveTzTgPil+nzzBMQqoGNiMguZ5OhaGFaQvMqgAJSaw==
-X-Received: by 2002:a17:90a:987:: with SMTP id 7mr1084469pjo.186.1595277714977;
-        Mon, 20 Jul 2020 13:41:54 -0700 (PDT)
+        bh=W3gFxb9MTLvTnCe3A+iabUWXBAu7mA9HyhZHWgTOkUw=;
+        b=NmiT+9oS9uGFkHRMP8aKc0bdouhlF+z3N5dmTZmMvJTuQlavya2QOjW9QZluOBDMSN
+         Bf8iOVH8ZwsENeYxwjEQZujdZFojbyI5o/gyN8uqRyJGsRUd4CmnulXJhw4+Gy1N/tQM
+         4ju/0yxyaquisGWKaNo8IDmPDegmXL1hE7sGBPd37CAuuHg4bE7IRXJLKd5HezY+6rbI
+         57Abyx0O6OS1c4sJpbqMwZFxec+2L4ngp4CDZv566S1w3ZjoKKvtWYtElQPsITi+GpaX
+         QeoAbDjDDjufLbC3qeDlBil3FMgGdXH7tdt3RJ0ZPfbGcZ8VCfWS6QkfnGtmwRWsDlu/
+         2GXQ==
+X-Gm-Message-State: AOAM532xzswQCE9EmiTk87sBNFqaRV6lXN9+OTa+JTpTX2JXZ3mv7RA8
+        Lqgsib0ge2mJ4jEvgoQdL6o=
+X-Google-Smtp-Source: ABdhPJznKJm/ctwfQ0zEUlKph93VMIYlrMPvmwUzvON4KJd0PPoASWmZCQzIIZBDlRvR10ywRtQVEg==
+X-Received: by 2002:a17:902:a50d:: with SMTP id s13mr19573067plq.149.1595278081037;
+        Mon, 20 Jul 2020 13:48:01 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
-        by smtp.gmail.com with ESMTPSA id u188sm18074945pfu.26.2020.07.20.13.41.53
+        by smtp.gmail.com with ESMTPSA id m31sm455776pjb.52.2020.07.20.13.47.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 13:41:54 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 13:41:52 -0700
+        Mon, 20 Jul 2020 13:47:59 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 13:47:56 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: BPF selftests build failures
-Message-ID: <20200720204152.w7h3zmwtbjsuwgie@ast-mbp.dhcp.thefacebook.com>
-References: <20200720080943.GA12596@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: Re: get rid of the address_space override in setsockopt
+Message-ID: <20200720204756.iengwcguikj2yrxt@ast-mbp.dhcp.thefacebook.com>
+References: <20200720124737.118617-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720080943.GA12596@lst.de>
+In-Reply-To: <20200720124737.118617-1-hch@lst.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 10:09:43AM +0200, Christoph Hellwig wrote:
-> Hi BPF and selftest maintainers.  I get a very strange failure
-> when trying to build the bpf selftests on current net-next master:
+On Mon, Jul 20, 2020 at 02:47:13PM +0200, Christoph Hellwig wrote:
+> Hi Dave,
 > 
-> hch@brick:~/work/linux/tools/testing/selftests/bpf$ make
->   GEN      vmlinux.h
-> Error: failed to load BTF from /home/hch/work/linux/vmlinux: No such file or directory
+> setsockopt is the last place in architecture-independ code that still
+> uses set_fs to force the uaccess routines to operate on kernel pointers.
+> 
+> This series adds a new sockptr_t type that can contained either a kernel
+> or user pointer, and which has accessors that do the right thing, and
+> then uses it for setsockopt, starting by refactoring some low-level
+> helpers and moving them over to it before finally doing the main
+> setsockopt method.
+> 
+> Note that I could not get the eBPF selftests to work, so this has been
+> tested with a testing patch that always copies the data first and passes
+> a kernel pointer.  This is something that works for most common sockopts
+> (and is something that the ePBF support relies on), but unfortunately
+> in various corner cases we either don't use the passed in length, or in
+> one case actually copy data back from setsockopt, so we unfortunately
+> can't just always do the copy in the highlevel code, which would have
+> been much nicer.
 
-That's bpftool complaining that BTF is not present in vmlinux.
-You need CONFIG_DEBUG_INFO_BTF=y and pahole >= v1.16
-You also need llvm 10 to build bpf progs.
+could you rebase on bpf-next tree and we can route it this way then?
+we'll also test the whole thing before applying.
+
+sounds like v2 is needed anyway to address Eric's addr space concern?
