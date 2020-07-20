@@ -2,199 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F124A227274
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 00:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77942227288
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 00:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgGTWoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 18:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
+        id S1726383AbgGTW5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 18:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgGTWoP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:44:15 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94295C0619D4
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id h28so13958197edz.0
-        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
+        with ESMTP id S1726109AbgGTW5b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:57:31 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD06C061794;
+        Mon, 20 Jul 2020 15:57:31 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g67so11029288pgc.8;
+        Mon, 20 Jul 2020 15:57:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
-        b=LhvbkMttHCYSIkbtKIEJKfKLYcHeua/U3mDmokc6dBBiJsdTOS9eQQVY9fXHQEpNSg
-         bsBZjEcH/UvUgiyXF/bGXcjZfuUC/BGaS5rd6vGmLmfV0UaHgRLXjT0EXKUmsIqGPCBy
-         Sb8dlD85mrzgrlGYZs+ZHYMQF4zJNXtsCPBXw=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LNJnhW9ZrTp6uqZIei/d2TycMtbwqPFcj8c4aIh219s=;
+        b=h1AYU+tLXYVtRPLpacb60Yaw77cMglfc3+wdlNNq5dZrUSiQmhicDeA2Xr8ButgWH+
+         3qFVucDT4BRwmqPpuVv8WfOMJsulvhltYa+jgGptgopujVKAaAYPH8+xAWjr8zVQ8L9t
+         r1oyhxRbWjnk2d41ym3hmOAaleCqHWEYT7RZVzWUuPc+upTTaPgPoZpKg1oGnvlI25dS
+         ya10UnnN3LxfQ5yUeoUbZwibbLLefm8akyEEwniBTAmTfSgH+MBuZmhTsy22Wm+VHvxn
+         WW75GwRjUyYc8BsLKsDuNf+vbPEbXlAoXYYyCsZw8mStDUdTubs7JfCkzXsWIFUz1MVy
+         UgAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
-        b=sDUL7x2evJO9ZtDMyI07+gXA64Bkx30Fdgev3irUENZmzwNpfWWUxUgofrbnbs4afH
-         CzvlsBpjLDwp/tqEJ43qte5uTowULuOoceKOjEWkUr2lY76dbhy8IyFlERTa8Eyllm9B
-         6Q7kkpVx4yZBvVedhfGjlEskqOKLTXcpBeP5fO3H2lztAdXxzmILgn5NQTsru+YEQC5o
-         nN3WPPIhxNnkMpvPJBHWMTpprHVwyWnImgjKSb6DRxGUnzMnokzE8/v+0IMXu8qGcxQh
-         R/aD0PnpcvG/BIe2nhnJ5CLbH7i1cdy0yjIOd8Tcijyoi0uyq7GLryx3jMbPvGnQs2YN
-         9QuQ==
-X-Gm-Message-State: AOAM530dvA6uRSekkvCRf5Y245m3D9PBQMwjkbVtbrnPoOLSnH38dYFg
-        TjCjkvmibBzLlffYtRCa+6Nkpg==
-X-Google-Smtp-Source: ABdhPJwOkJhYIctISfI3yYileJE3UyfLzhW9ibOBRJkJLPhkuKeNd9eypzHHnF3uimZ4IxjR5U9Q/Q==
-X-Received: by 2002:a05:6402:3d0:: with SMTP id t16mr22865489edw.287.1595285053947;
-        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
-Received: from google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id cc9sm16719027edb.14.2020.07.20.15.44.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LNJnhW9ZrTp6uqZIei/d2TycMtbwqPFcj8c4aIh219s=;
+        b=sZpog3qUz2G8fCZcTsrJ9txkzye2cS19MREaDdfHO5bmvqMXtDPjdPKi8iMSIICL1a
+         wk8RzRbNurKOPLI9J09T/0UwISwu0dWBfrb9TXg1gm12aPdjtRGX91hUHL70RMydGx4a
+         KCeaO5yt3OQTtqxd3lup9OBzwAZMkrUKxW6p4MYdMg775VWsCBp9G/IJ7pENNWKRkFoG
+         Ki3hp78qUlRFbQ5QxiQ5hiNaoQSjcb8SfD/m4Wepku1ZXoMJUJnJNvKAPoHnuabax853
+         Yo+HOsKuJOdaK/8GyH8C8LYOBRTFOOdBKF8NdJpCSntkk2a7f7X+Mp423pPfhEiYCWsZ
+         io1A==
+X-Gm-Message-State: AOAM530oUY8X1AMCqLTI48mrHZGKd9GmzMU/b26XAEEZkAU3gP5m7spS
+        cwuFC6PnXzSLMtMIzs+nOzY=
+X-Google-Smtp-Source: ABdhPJwIO7LQDwT0cv97smz/Dy9/oF/3KFGYq4Rviujb1Bf45cSPFqLqinL4mDq4f/yEXNdOtpXNNQ==
+X-Received: by 2002:a05:6a00:1586:: with SMTP id u6mr21094121pfk.147.1595285850894;
+        Mon, 20 Jul 2020 15:57:30 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
+        by smtp.gmail.com with ESMTPSA id m26sm17839333pff.84.2020.07.20.15.57.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 21 Jul 2020 00:44:11 +0200
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        Mon, 20 Jul 2020 15:57:30 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 15:57:27 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH bpf-next v4 2/4] bpf: Implement bpf_local_storage for
- inodes
-Message-ID: <20200720224411.GA1873800@google.com>
-References: <20200709101239.3829793-1-kpsingh@chromium.org>
- <20200709101239.3829793-3-kpsingh@chromium.org>
- <20200715215751.6llgungzff66iwxh@kafai-mbp>
- <20200715225911.GA1194150@google.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: support attaching freplace programs
+ to multiple attach points
+Message-ID: <20200720225727.zs7x63u3f3kw3apt@ast-mbp.dhcp.thefacebook.com>
+References: <159481853923.454654.12184603524310603480.stgit@toke.dk>
+ <159481854255.454654.15065796817034016611.stgit@toke.dk>
+ <20200715204406.vt64vgvzsbr6kolm@ast-mbp.dhcp.thefacebook.com>
+ <87mu3zentu.fsf@toke.dk>
+ <20200717020507.jpxxe4dbc2watsfh@ast-mbp.dhcp.thefacebook.com>
+ <87imemct2d.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200715225911.GA1194150@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87imemct2d.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 16-Jul 00:59, KP Singh wrote:
-> On 15-Jul 14:57, Martin KaFai Lau wrote:
-> > On Thu, Jul 09, 2020 at 12:12:37PM +0200, KP Singh wrote:
-> > > From: KP Singh <kpsingh@google.com>
-> > > 
-> > > Similar to bpf_local_storage for sockets, add local storage for inodes.
-> > > The life-cycle of storage is managed with the life-cycle of the inode.
-> > > i.e. the storage is destroyed along with the owning inode.
-> > > 
-> > > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
-> > > security blob which are now stackable and can co-exist with other LSMs.
-> > > 
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > 
-> > [ ... ]
-> > 
-> > 
-> > > +static void *bpf_inode_storage_lookup_elem(struct bpf_map *map, void *key)
-> > > +{
-> > > +	struct bpf_local_storage_data *sdata;
-> > > +	struct inode *inode;
-> > > +	int err = -EINVAL;
-> > > +
-> > > +	if (key) {
-> > > +		inode = *(struct inode **)(key);
-> > The bpf_inode_storage_lookup_elem() here and the (update|delete)_elem() below
-> > are called from the userspace syscall.  How the userspace may provide this key?
+On Fri, Jul 17, 2020 at 12:52:10PM +0200, Toke Høiland-Jørgensen wrote:
 > 
-> I realized this when I replied about the _fd_ name in the sk helpers.
-> I am going to mark them as unsupported for now for inodes.
+> > It's a circular reference, obviously.
+> > Need to think through the complications and locking.
 > 
-> We could, probably and separately, use a combination of the device
-> and inode number as a key from userspace.
-
-I actually implemented these as:
-
-static int bpf_fd_inode_storage_delete_elem(struct bpf_map *map, void *key)
-{
-	struct file *f;
-	int fd;
-
-	fd = *(int *)key;
-	f = fcheck(fd);
-	if (!f)
-		return -EINVAL;
-
-	return inode_storage_delete(f->f_inode, map);
-}
-
-This keeps it similar to sk_storage and the userspace can just pass an
-fd.
-
-- KP
-
+> Yup, will do so when I get back to this. One other implication of this
+> change: If we make the linked_prog completely dynamic you can no longer
+> do:
 > 
-> - KP
+> link_fd = bpf_raw_tracepoint_open(prog);
+> close(link_fd);
+> link_fd = bpf_raw_tracepoint_open(prog):
 > 
-> > 
-> > > +		sdata = inode_storage_lookup(inode, map, true);
-> > > +		return sdata ? sdata->data : NULL;
-> > > +	}
-> > > +
-> > > +	return ERR_PTR(err);
-> > > +}
-> > > +
-> > > +static int bpf_inode_storage_update_elem(struct bpf_map *map, void *key,
-> > > +					 void *value, u64 map_flags)
-> > > +{
-> > > +	struct bpf_local_storage_data *sdata;
-> > > +	struct inode *inode;
-> > > +	int err = -EINVAL;
-> > > +
-> > > +	if (key) {
-> > > +		inode = *(struct inode **)(key);
-> > > +		sdata = map->ops->map_local_storage_update(inode, map, value,
-> > > +							   map_flags);
-> > > +		return PTR_ERR_OR_ZERO(sdata);
-> > > +	}
-> > > +	return err;
-> > > +}
-> > > +
-> > > +static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
-> > > +{
-> > > +	struct bpf_local_storage_data *sdata;
-> > > +
-> > > +	sdata = inode_storage_lookup(inode, map, false);
-> > > +	if (!sdata)
-> > > +		return -ENOENT;
-> > > +
-> > > +	bpf_selem_unlink_map_elem(SELEM(sdata));
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int bpf_inode_storage_delete_elem(struct bpf_map *map, void *key)
-> > > +{
-> > > +	struct inode *inode;
-> > > +	int err = -EINVAL;
-> > > +
-> > > +	if (key) {
-> > > +		inode = *(struct inode **)(key);
-> > > +		err = inode_storage_delete(inode, map);
-> > > +	}
-> > > +
-> > > +	return err;
-> > > +}
-> > > +
-> > 
-> > [ ... ]
-> > 
-> > > +static int inode_storage_map_btf_id;
-> > > +const struct bpf_map_ops inode_storage_map_ops = {
-> > > +	.map_alloc_check = bpf_local_storage_map_alloc_check,
-> > > +	.map_alloc = inode_storage_map_alloc,
-> > > +	.map_free = inode_storage_map_free,
-> > > +	.map_get_next_key = notsupp_get_next_key,
-> > > +	.map_lookup_elem = bpf_inode_storage_lookup_elem,
-> > > +	.map_update_elem = bpf_inode_storage_update_elem,
-> > > +	.map_delete_elem = bpf_inode_storage_delete_elem,
-> > > +	.map_check_btf = bpf_local_storage_map_check_btf,
-> > > +	.map_btf_name = "bpf_local_storage_map",
-> > > +	.map_btf_id = &inode_storage_map_btf_id,
-> > > +	.map_local_storage_alloc = inode_storage_alloc,
-> > > +	.map_selem_alloc = inode_selem_alloc,
-> > > +	.map_local_storage_update = inode_storage_update,
-> > > +	.map_local_storage_unlink = unlink_inode_storage,
-> > > +};
-> > > +
+> since after that close(), the original linked_prog will be gone. Unless
+> we always leave at least one linked_prog alive? But then we can't
+> guarantee that it's the target that was supplied on program load if it
+> was reattached. Is that acceptable?
+
+I think both options are fine.
+We can start with simple case where close would destroy the last link
+and if somebody complains we can keep 'at least one alive'.
+This is such low level implementation detail that I don't think any user
+can reliably count on it staying this way.
