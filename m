@@ -2,228 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F5D227267
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 00:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F124A227274
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 00:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgGTWbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 18:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        id S1726691AbgGTWoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 18:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgGTWa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 18:30:59 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4ABFC061794;
-        Mon, 20 Jul 2020 15:30:59 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 72so9362863ple.0;
-        Mon, 20 Jul 2020 15:30:59 -0700 (PDT)
+        with ESMTP id S1726254AbgGTWoP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 18:44:15 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94295C0619D4
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id h28so13958197edz.0
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 15:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=L1zpBGcsOgE5mLQjm2oHm3qmaUw51/j3bZeaEGstA+0=;
-        b=mtTJ4q9FN3gAzWKXPSfev+myHVhSieNuM1LS1EynDGZkMIpMkmooY+/bCIyzntOg0L
-         UIRqxql2ORAhRqpzXQiAGMyVDRiRS0SSwV31yk+qo4oiJWzqzRE/FZsNYeYy3/wI7qit
-         yh8I7aXtFOe9hAnObJrq6E0sqJoGpGT4V4GWv1VCy1wh/7OpeL4glQhm+uJym9DGf3ec
-         sh5LMJpE7sRiYWKY5CyvGosflNL2XLrbcu6+J/d1fCg3TrOK4/ueL+ywpdgMhkFmaxqS
-         7srK0BgHO01xm0GWg/0s6WjdF22e8xxagWusL+56RBXHojXCcbWwbGfyTItYXAjAqA1C
-         VKSA==
+        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
+        b=LhvbkMttHCYSIkbtKIEJKfKLYcHeua/U3mDmokc6dBBiJsdTOS9eQQVY9fXHQEpNSg
+         bsBZjEcH/UvUgiyXF/bGXcjZfuUC/BGaS5rd6vGmLmfV0UaHgRLXjT0EXKUmsIqGPCBy
+         Sb8dlD85mrzgrlGYZs+ZHYMQF4zJNXtsCPBXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=L1zpBGcsOgE5mLQjm2oHm3qmaUw51/j3bZeaEGstA+0=;
-        b=sH2cnx0xnAE1sDyseOYkfbxc2azmlN4JSXIyka0wM8FI+VEe/ekmChIsA8BEkJAzGP
-         Y5AcxImnrOT6guiyJiK6lBg//txRb4vnTPmTYv7UT9XWZmMNKgFv48DTYdUG70qlNKK4
-         f3UlJAS/VhkqxIMLyvwB9jrXPqjZVfFxg/LOsBAJTjws2KKfP2ey3wzVTDx8FoWWLMSd
-         1KvdWVjQgo623k2K67SkLEYBQI+rqc6KaPo2RKNL1esc+30OjIkW8VJ5+adXDvysPjmW
-         LhiMQvGmlqX52RLjER0h7XwUIPZ61rMNfM+a5oLiySEJQVj03IwbCBHidAd+whxavPV3
-         ZNSA==
-X-Gm-Message-State: AOAM531vtsNNCpM3784YHWy2zudXpSvJcwsAoIEz25hD2oc8b80nLNcf
-        uhViUgGTcDnKgqZ/VuKXxLw=
-X-Google-Smtp-Source: ABdhPJwu0PNRi6FDkyYjXmnCl88H0p9+/qSp/g9vxqrt12b2rhK304sRhGwd5vf+eWQ/1ryllQLASA==
-X-Received: by 2002:a17:902:aa91:: with SMTP id d17mr19580570plr.93.1595284259118;
-        Mon, 20 Jul 2020 15:30:59 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e3b])
-        by smtp.gmail.com with ESMTPSA id g18sm17471238pfi.141.2020.07.20.15.30.56
+        bh=vYYj1xkqdAsQ1FACIja4W5B8GUjTG6OnchmcXRlXDAM=;
+        b=sDUL7x2evJO9ZtDMyI07+gXA64Bkx30Fdgev3irUENZmzwNpfWWUxUgofrbnbs4afH
+         CzvlsBpjLDwp/tqEJ43qte5uTowULuOoceKOjEWkUr2lY76dbhy8IyFlERTa8Eyllm9B
+         6Q7kkpVx4yZBvVedhfGjlEskqOKLTXcpBeP5fO3H2lztAdXxzmILgn5NQTsru+YEQC5o
+         nN3WPPIhxNnkMpvPJBHWMTpprHVwyWnImgjKSb6DRxGUnzMnokzE8/v+0IMXu8qGcxQh
+         R/aD0PnpcvG/BIe2nhnJ5CLbH7i1cdy0yjIOd8Tcijyoi0uyq7GLryx3jMbPvGnQs2YN
+         9QuQ==
+X-Gm-Message-State: AOAM530dvA6uRSekkvCRf5Y245m3D9PBQMwjkbVtbrnPoOLSnH38dYFg
+        TjCjkvmibBzLlffYtRCa+6Nkpg==
+X-Google-Smtp-Source: ABdhPJwOkJhYIctISfI3yYileJE3UyfLzhW9ibOBRJkJLPhkuKeNd9eypzHHnF3uimZ4IxjR5U9Q/Q==
+X-Received: by 2002:a05:6402:3d0:: with SMTP id t16mr22865489edw.287.1595285053947;
+        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
+Received: from google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id cc9sm16719027edb.14.2020.07.20.15.44.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 15:30:58 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 15:30:55 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Mon, 20 Jul 2020 15:44:13 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 21 Jul 2020 00:44:11 +0200
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Blake Matheny <bmatheny@fb.com>
-Subject: Re: BPF logging infrastructure. Was: [PATCH bpf-next 4/6] tools: add
- new members to bpf_attr.raw_tracepoint in bpf.h
-Message-ID: <20200720223055.zoad5vw6tx4sqqpj@ast-mbp.dhcp.thefacebook.com>
-References: <CAEf4BzYAoetyfyofTX45RQjtz3M-c9=YNeH1uRDbYgK4Ae0TwA@mail.gmail.com>
- <87d04xg2p4.fsf@toke.dk>
- <20200714231133.ap5qnalf6moptvfk@ast-mbp.dhcp.thefacebook.com>
- <874kq9ey2j.fsf@toke.dk>
- <20200715234123.rr7oj74t5hflzmsn@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzbodR-+=Q3wRE2UaiouBexvqfwpE-zJGm4Rr1cV2dgZHQ@mail.gmail.com>
- <20200716054408.so34cuc2g2iqcppr@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzbiD9Cuqip2=FGHGHLZs-7b8AziS-hJOpX1HuONTM4udQ@mail.gmail.com>
- <20200717030920.6kxs6kyvisuvoqnt@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZyGJGork=fDEAp+SmkzHs1+ydqVwZmYt8QeCZzf-yyvA@mail.gmail.com>
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Implement bpf_local_storage for
+ inodes
+Message-ID: <20200720224411.GA1873800@google.com>
+References: <20200709101239.3829793-1-kpsingh@chromium.org>
+ <20200709101239.3829793-3-kpsingh@chromium.org>
+ <20200715215751.6llgungzff66iwxh@kafai-mbp>
+ <20200715225911.GA1194150@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZyGJGork=fDEAp+SmkzHs1+ydqVwZmYt8QeCZzf-yyvA@mail.gmail.com>
+In-Reply-To: <20200715225911.GA1194150@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 08:54:45PM -0700, Andrii Nakryiko wrote:
+On 16-Jul 00:59, KP Singh wrote:
+> On 15-Jul 14:57, Martin KaFai Lau wrote:
+> > On Thu, Jul 09, 2020 at 12:12:37PM +0200, KP Singh wrote:
+> > > From: KP Singh <kpsingh@google.com>
+> > > 
+> > > Similar to bpf_local_storage for sockets, add local storage for inodes.
+> > > The life-cycle of storage is managed with the life-cycle of the inode.
+> > > i.e. the storage is destroyed along with the owning inode.
+> > > 
+> > > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
+> > > security blob which are now stackable and can co-exist with other LSMs.
+> > > 
+> > > Signed-off-by: KP Singh <kpsingh@google.com>
+> > 
+> > [ ... ]
+> > 
+> > 
+> > > +static void *bpf_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > The bpf_inode_storage_lookup_elem() here and the (update|delete)_elem() below
+> > are called from the userspace syscall.  How the userspace may provide this key?
 > 
-> > Only libbpf can do it. Kernel is helpless here.
-> > Say we change the kernel errno for all unsuported prog types and maps
-> > it would return ENOTSUPP or something.
-> > Would it really help the situation?
+> I realized this when I replied about the _fd_ name in the sk helpers.
+> I am going to mark them as unsupported for now for inodes.
 > 
-> IMO, if the kernel just prints out "Unknown BPF command 123" or
-> "Unknown map type 345" that would be already a nice improvement.
-...
-> log_buf can't help existing kernels. Period. No one is arguing or
-> expecting that. But moving forward, just having that "unknown command
-> 123" would be great.
+> We could, probably and separately, use a combination of the device
+> and inode number as a key from userspace.
+
+I actually implemented these as:
+
+static int bpf_fd_inode_storage_delete_elem(struct bpf_map *map, void *key)
+{
+	struct file *f;
+	int fd;
+
+	fd = *(int *)key;
+	f = fcheck(fd);
+	if (!f)
+		return -EINVAL;
+
+	return inode_storage_delete(f->f_inode, map);
+}
+
+This keeps it similar to sk_storage and the userspace can just pass an
+fd.
+
+- KP
+
 > 
-> But yeah, of course libbpf can create a probing map and try to do
-> BATCH_LOOKUP, to detect BATCH_LOOKUP support.
-
-Also with BTF the kernel is self documented.
-The following will print all commands that kernel supports:
-bpftool btf dump file ./bld_x64/vmlinux |grep -A40 bpf_cmd
-and with 'grep BPF_MAP_TYPE_' all supported maps.
-For older kernels there is 'bpftool feature probe'.
-Since libbpf reads vmlinux BTF anyway it could have got a knowledge
-of all the features it supports based on BTF.
-
-But let's continue this thought experiment for augmenting error
-reporting with a string.
-For 'Unknown BPF command 123' to work log_buf needs to passed
-outside of 'union bpf_attr'. Probably as 4th argument to sys_bpf ?
-and then a bit in 'int cmd' would need to be burned to indicate
-that 4th arg is there. Probably size of the arg needs to be passed
-either as 5th arg or as part of the 'struct bpf_log_buf' so it can
-be extensible.
-Using that log_buf directly in
-SYSCALL_DEFINE[45](bpf, int cmd, ... struct bpf_log_buf *log_buf)
-will be trivial.
-But to pass it into any of first level functions (bpf_iter_create,
-bpf_prog_attach, etc) they would need to gain an extra argument.
-To pass it all the way into hierarchy_allows_attach() it needs to be added to:
-__cgroup_bpf_attach 
-cgroup_bpf_attach
-cgroup_bpf_link_attach
-link_create
-
-Another case of ambiguous 'return -EINVAL' would cause another change
-to a bunch of function prototypes.
-So it's better to integrate it into current task_struct to avoid huge code churn.
-
-But if we do so what stops us from generalizing log_buf reporting to
-other syscalls? perf_event_open is in the same category.
-
-> This one is for perf subsystem, actually, it's its
-> PERF_EVENT_IOC_SET_BPF ioctl (until we add bpf_link for perf_event
-> attachment).
-
-clearly not only sys_bpf and sys_perf_event_open, but sys_ioctl would need
-string support to be a full answer to ambiguous einval-s.
-
-> My proposal was about adding the ability to emit something to log_buf
-> from any of the BPF commands, if that BPF command chooses to provide
-> extra error information. The whole point of this was to avoid adding
-> log_buf in command-specific ways (as Toke was doing in the patch that
-> I used to initiate the discussion) and do it once for entire syscall,
-> so that we can gradually utilize it where it makes most sense.
-
-I don't think that works due to code churn. Whether we pay that price
-once or 'gradually' it doesn't make it any better.
-When log_buf is added to an existing command the 'union bpf_attr' is there
-in the function proto and nothing new needs to passed to a lot of functions.
-So I certainly prefer Toke's approach of adding log_buf to one specific
-command if it's really needed there.
-
-The alternative is to solve it for all syscalls.
-
-> I agree that if such diagnostics are reliable and the situation itself
-> is common and experienced by multiple users, then it might make sense
-> to add such checks to libbpf. 
-
-'experienced by multiple users' is going to be a judgement call
-either for libbpf or for kernel.
-I'm saying let's improve libbpf user-friendlyness everywhere we can.
-We can always drop these hints later. Unlike kernel messages that
-might become stable api.
-One thing is log_buf that the verifier is dumping. It's huge and not parsable.
-Whereas a string next to return EINVAL may become an uapi.
-I wouldn't be surprised if some of netlink extack strings got to this
-level of stability and changing the string may cause somebody to notice
-and the commit would get reverted.
-
-> But I also don't think it's always
-> possible to diagnose something automatically with 100% confidence. We
-> can give hints, but misdiagnosing the problem can just further confuse
-> things instead.
-
-I think the possible confusion is fine.
-The libbpf has an opportunity to try them and remove if things don't work out.
-The kernel strings would be much more scrutinized and harder to change.
-
-> Also quite often such problems are one-offs, which
-> doesn't make them any less confusing and frustrating, but custom
-> diagnostics for every such case has a potential of bloating libbpf
-> beyond recognition
-
-bloating libbpf with strings is imo better way to figure out how to
-improve user experience than bloating kernel.
-
-> of them. That's what I meant that this is not a scalable approach to
-> just say "fix libbpf to be more user friendly, kernel does its best
-> already".
-
-Ok. I will take it back. The kernel can be improved with extra strings
-here and there, but only if it's done without huge code churn.
-If current task_struct approach can work and the changes would be
-limited to something like:
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index ac53102e244a..244df18728c2 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -196,8 +196,12 @@ static bool hierarchy_allows_attach(struct cgroup *cgrp,
-                        return true;
-                cnt = prog_list_length(&p->bpf.progs[type]);
-                WARN_ON_ONCE(cnt > 1);
--               if (cnt == 1)
--                       return !!(flags & BPF_F_ALLOW_OVERRIDE);
-+               if (cnt == 1) {
-+                       ret = !!(flags & BPF_F_ALLOW_OVERRIDE);
-+                       if (!ret)
-+                               syscall_string("cgroup has non-overridable program in the parent");
-+                       return ret;
-+               }
-
-Then such syscall_string reporting mechanism would be solid addition to the
-kernel. Otherwise the cost of passing explicit log_buf everywhere is not worth
-it.
-
-I think such syscall_string can probably piggy back on "socket local storage
-into generic local storage" work. Sooner or later we will have
-per task_struct storage. If that's a single pointer in task_struct that will
-be used by both task local storage from inside tracing bpf program and
-by this syscall_string() reporting mechanism then we can land it.
-May be all syscalls will become stateful. sys_bpf, sys_perf_event_open, sys_ioctl
-followed by new syscall "give me back the error string".
-Or may be we can do some asm magic and pass both errno and a string from
-a syscall at the same time.
+> - KP
+> 
+> > 
+> > > +		sdata = inode_storage_lookup(inode, map, true);
+> > > +		return sdata ? sdata->data : NULL;
+> > > +	}
+> > > +
+> > > +	return ERR_PTR(err);
+> > > +}
+> > > +
+> > > +static int bpf_inode_storage_update_elem(struct bpf_map *map, void *key,
+> > > +					 void *value, u64 map_flags)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > > +		sdata = map->ops->map_local_storage_update(inode, map, value,
+> > > +							   map_flags);
+> > > +		return PTR_ERR_OR_ZERO(sdata);
+> > > +	}
+> > > +	return err;
+> > > +}
+> > > +
+> > > +static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
+> > > +{
+> > > +	struct bpf_local_storage_data *sdata;
+> > > +
+> > > +	sdata = inode_storage_lookup(inode, map, false);
+> > > +	if (!sdata)
+> > > +		return -ENOENT;
+> > > +
+> > > +	bpf_selem_unlink_map_elem(SELEM(sdata));
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int bpf_inode_storage_delete_elem(struct bpf_map *map, void *key)
+> > > +{
+> > > +	struct inode *inode;
+> > > +	int err = -EINVAL;
+> > > +
+> > > +	if (key) {
+> > > +		inode = *(struct inode **)(key);
+> > > +		err = inode_storage_delete(inode, map);
+> > > +	}
+> > > +
+> > > +	return err;
+> > > +}
+> > > +
+> > 
+> > [ ... ]
+> > 
+> > > +static int inode_storage_map_btf_id;
+> > > +const struct bpf_map_ops inode_storage_map_ops = {
+> > > +	.map_alloc_check = bpf_local_storage_map_alloc_check,
+> > > +	.map_alloc = inode_storage_map_alloc,
+> > > +	.map_free = inode_storage_map_free,
+> > > +	.map_get_next_key = notsupp_get_next_key,
+> > > +	.map_lookup_elem = bpf_inode_storage_lookup_elem,
+> > > +	.map_update_elem = bpf_inode_storage_update_elem,
+> > > +	.map_delete_elem = bpf_inode_storage_delete_elem,
+> > > +	.map_check_btf = bpf_local_storage_map_check_btf,
+> > > +	.map_btf_name = "bpf_local_storage_map",
+> > > +	.map_btf_id = &inode_storage_map_btf_id,
+> > > +	.map_local_storage_alloc = inode_storage_alloc,
+> > > +	.map_selem_alloc = inode_selem_alloc,
+> > > +	.map_local_storage_update = inode_storage_update,
+> > > +	.map_local_storage_unlink = unlink_inode_storage,
+> > > +};
+> > > +
