@@ -2,86 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597F3228520
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 18:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1142228530
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 18:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbgGUQOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 12:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S1728180AbgGUQUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 12:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729708AbgGUQOj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:14:39 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE81C061794;
-        Tue, 21 Jul 2020 09:14:38 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f5so24691985ljj.10;
-        Tue, 21 Jul 2020 09:14:38 -0700 (PDT)
+        with ESMTP id S1728127AbgGUQUP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:20:15 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8A8C061794;
+        Tue, 21 Jul 2020 09:20:14 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id o4so12012040lfi.7;
+        Tue, 21 Jul 2020 09:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qnrzo3m/moPC7spmlG7c2sD0aqedvWh7YbC4vhEm7sA=;
-        b=npnlZ761xb5dO2PofCWrkeVpoyos4evXBBlncACEK3Wo5mVKKy1x1V0ZThwPThvtgF
-         9j7hQ0qrg1DoxN6zNZCDvfZYrJyLhuSJz4kSZ5zIqY7iycBHtNKWqHsTB6jTtkIEF1bS
-         5qrLn/C+x5h9JAGQVYs8Rq3bj1npXCRUwqQDIWHXyjMLaMgQru4isJ5HCp0bxgnWRf3L
-         MrsityQZhvQjiphulixgSJ5051yQjVH6GkCa2521oPIcWpYybgL1zU4Wl8X3zGJUZQPT
-         WrzsK4UE9BtlimWHK7LtyNzx9ujtw35qR+MOHZQnQXNG6ghOz/d9zLv3sqqKgH2MQ4Mg
-         bM2A==
+        bh=Groro3SyYJWphwceTkpNDYDrIfmBoLsMEqqiSFl6lVU=;
+        b=paVwZZrESP/VwnUw67pGD0aF7K2NqOxjCGIe6FZvasfd6FTb2J2XEc1NEgGIBdSL0p
+         FnckrJY3O/5lscjH+s3g8IrlzM9MiMo/kL8CuZgdBFpCTSLPmF9LYgkDEA1+evUHw6U5
+         YjdqDQ1xpDAapf6UfWYP8pmjvniRgerQj7DKxl8nFGtYCu+CzX55iMwGi0dWmnySMKZ6
+         czWiT78D8F1Xh2Bac4wjwqwEFqxyZZULs9x7GycAqoSAbCarNdbZHlIILiMdeCF471+G
+         X5EO2m3CKLKL5K6hKLu9zuvhwbdwlcJ5stgwoFWBJVJiGcqW8k03FFxoMuQ1vRkNpma5
+         DXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qnrzo3m/moPC7spmlG7c2sD0aqedvWh7YbC4vhEm7sA=;
-        b=nZRFUOljCY9ona2I5y+6U0XLxpwNmvXe7V3yELcPfXWm9TCa8opU8KBps1EQZle4KM
-         iik/++mUqlcM8jpWKiAcVPPqyCZeLwTZiZPjkmvJPEM5mMZTQMa6ow37FkCiLxEL0Z2Q
-         Oz7dR5L/IBX8yZXJ7k/zWAiDzHrTjoxuNYsapik4DzP+g2CXMHldkDAJxFl/M6aqprf6
-         TmN7usNYsIon4DPjKbeCi+h4IGaS3JAwVUrTEBtVQf7S66hftBTD4wP2651DRhbY3sZG
-         koQmt5G1URK3S2c3X731iC7s4fN92Gtt3N9zdkiOQR1+8GSEADg8rnp112S+8Rvifabp
-         Hvig==
-X-Gm-Message-State: AOAM530wFS+ITjFBAb43Pfl7PJzTBGEEh5ybZkJKxtBfd34Wqyu5e1uh
-        nVYyS3nKMwohj4eHlxtmJ8GF7IBlKbYNicneMPs=
-X-Google-Smtp-Source: ABdhPJxyt6MEO8MDzWAApsfZLBM3yeet5/hMDgA3rvElUOHwuyt92SwGTQZlsPDjfjg3KTUusSrUQR4s/hI68wRqCI0=
-X-Received: by 2002:a2e:9a0f:: with SMTP id o15mr13518627lji.450.1595348077362;
- Tue, 21 Jul 2020 09:14:37 -0700 (PDT)
+        bh=Groro3SyYJWphwceTkpNDYDrIfmBoLsMEqqiSFl6lVU=;
+        b=eGHW4xzD9ckdhSgHkX+9N34VB3SvEF8SBmfrSsRiQtdZ4v1HF6+NnN1j1c1O8Fei8j
+         U7FOveODKl/006mUTlRONjo1yciPDW/qI6/KJ1erFoPDw1nhnke3t028duTR+k8D9Pm4
+         vwA0DK0hQg3RyTP3o5sTk4cxLfh3lXMPLWPotn2WPN15cNlhqp/jXUnfgKQ/E54gCYaE
+         cVGhgUWkgXaEZLrEgN9IcUhEC8b0OWzBR/o63fe7e6Pvy7Qf1wQYEb0mi1wO2QmcrCgN
+         adrds9g4RN5axnRZzNhtP8+iZqgElpaGO1MS1EMjgSL5jVkRkzffKX5r52PAmph+h2sP
+         gTdg==
+X-Gm-Message-State: AOAM533ZFjZuOGlbzvv6VVLFLinLVQ+VEk3T/DH+0Zzk5JtOo35Awulr
+        AiEQ7qx7KWiLyaRuXwBwASuKZa9ZsXs1ytZOcBs=
+X-Google-Smtp-Source: ABdhPJyHb2JLW+ucwR3k91mAjb0EzCI+hZk+2d8O0FCv8vZTJgInB7YdK5zllSk2E9C0igvRMz5oQ/poDvXl5QrHIyg=
+X-Received: by 2002:a19:815:: with SMTP id 21mr13598099lfi.119.1595348413371;
+ Tue, 21 Jul 2020 09:20:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200721100716.720477-1-jakub@cloudflare.com> <1140c2d9-f0a4-97da-5f3f-23190e6bc6b9@infradead.org>
-In-Reply-To: <1140c2d9-f0a4-97da-5f3f-23190e6bc6b9@infradead.org>
+References: <e54f2aabf959f298939e5507b09c48f8c2e380be.1595170625.git.lorenzo@kernel.org>
+ <87zh7tw4dh.fsf@cloudflare.com>
+In-Reply-To: <87zh7tw4dh.fsf@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Jul 2020 09:14:25 -0700
-Message-ID: <CAADnVQ+F3devpvOg7i6td99Hq3bXOVe0t6_tUKnFzw-=v6Ky9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, netns: Fix build without CONFIG_INET
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+Date:   Tue, 21 Jul 2020 09:20:02 -0700
+Message-ID: <CAADnVQJzu1KbeCTCwn0dYe_yKHK=Fx+DV58eqJKL8_xOb7popw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: cpumap: fix possible rcpu kthread hung
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+        lorenzo.bianconi@redhat.com, Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 7:01 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Tue, Jul 21, 2020 at 3:26 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> On 7/21/20 3:07 AM, Jakub Sitnicki wrote:
-> > When CONFIG_NET is set but CONFIG_INET isn't, build fails with:
+> On Sun, Jul 19, 2020 at 05:52 PM CEST, Lorenzo Bianconi wrote:
+> > Fix the following cpumap kthread hung. The issue is currently occurring
+> > when __cpu_map_load_bpf_program fails (e.g if the bpf prog has not
+> > BPF_XDP_CPUMAP as expected_attach_type)
 > >
-> >   ld: kernel/bpf/net_namespace.o: in function `netns_bpf_attach_type_unneed':
-> >   kernel/bpf/net_namespace.c:32: undefined reference to `bpf_sk_lookup_enabled'
-> >   ld: kernel/bpf/net_namespace.o: in function `netns_bpf_attach_type_need':
-> >   kernel/bpf/net_namespace.c:43: undefined reference to `bpf_sk_lookup_enabled'
+> > $./test_progs -n 101
+> > 101/1 cpumap_with_progs:OK
+> > 101 xdp_cpumap_attach:OK
+> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > [  369.996478] INFO: task cpumap/0/map:7:205 blocked for more than 122 seconds.
+> > [  369.998463]       Not tainted 5.8.0-rc4-01472-ge57892f50a07 #212
+> > [  370.000102] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > [  370.001918] cpumap/0/map:7  D    0   205      2 0x00004000
+> > [  370.003228] Call Trace:
+> > [  370.003930]  __schedule+0x5c7/0xf50
+> > [  370.004901]  ? io_schedule_timeout+0xb0/0xb0
+> > [  370.005934]  ? static_obj+0x31/0x80
+> > [  370.006788]  ? mark_held_locks+0x24/0x90
+> > [  370.007752]  ? cpu_map_bpf_prog_run_xdp+0x6c0/0x6c0
+> > [  370.008930]  schedule+0x6f/0x160
+> > [  370.009728]  schedule_preempt_disabled+0x14/0x20
+> > [  370.010829]  kthread+0x17b/0x240
+> > [  370.011433]  ? kthread_create_worker_on_cpu+0xd0/0xd0
+> > [  370.011944]  ret_from_fork+0x1f/0x30
+> > [  370.012348]
+> >                Showing all locks held in the system:
+> > [  370.013025] 1 lock held by khungtaskd/33:
+> > [  370.013432]  #0: ffffffff82b24720 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x28/0x1c3
 > >
-> > This is because without CONFIG_INET bpf_sk_lookup_enabled symbol is not
-> > available. Wrap references to bpf_sk_lookup_enabled with preprocessor
-> > conditionals.
+> > [  370.014461] =============================================
 > >
-> > Fixes: 1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
+> > Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
 >
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
 Applied. Thanks
