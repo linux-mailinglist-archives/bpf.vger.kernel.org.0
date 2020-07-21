@@ -2,87 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C7722891A
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 21:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87BF22893D
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 21:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbgGUT0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 15:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S1730830AbgGUTgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 15:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729497AbgGUT0z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:26:55 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47A6C061794;
-        Tue, 21 Jul 2020 12:26:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h22so25305430lji.9;
-        Tue, 21 Jul 2020 12:26:52 -0700 (PDT)
+        with ESMTP id S1730877AbgGUTgW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:36:22 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAE8C061794;
+        Tue, 21 Jul 2020 12:36:22 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q7so25388536ljm.1;
+        Tue, 21 Jul 2020 12:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Gdc7ompz7Y9cqUyclWX2LVzylrZVjLX5sJyGR822OiE=;
-        b=ixobYwr9Hu55L7/IMZYbgTVz7Y4ber/W27KFrOwhFgubdTDMcWGsHcwACw/CssFszx
-         Omdb5QzaSlFPrywNGeJJXTQj1b68rYfWzOcVLks90GO/C6Ck8s/UehdRnUdfgNU3oPSd
-         OYk1GeMy43BFaf97qsqO2KS0f/4HUAdMfVQxrL+sqQNGOIIROBaVPy8GKLaTO7Z00spa
-         QJ8aIvCzgLrCtIRrULp9NuMlDsfqGsCZW5OAOPM+CYo1zVA820fVVerhyCKJszf28bjR
-         SjTIHc19Gwt/pn4x4J9rfPzJyCBautvtiJ9BjYbVEA40k+v/ZAMYw6w12dd8uQzN5TD2
-         jBgA==
+        bh=Fxu1ZU20Y/S/zgHj//3BPz0PVPjxCVp0vsB9qgjUbGI=;
+        b=iv3E74EOrsjDcGJCRYWmYjvJE4JFVdHo+q1h8lzkAM5lpp+BLV658uHJuUCpkY5ZZa
+         YgDSskaCqdxo4qh9LpkGF2xrBTegOtDhAiGS8xPkEOp7a2YbpnQembVOf+awjHQ9jD2v
+         qEB+GUylavs6YAaamlVplaE11oGpmTPtnjAlKHApYpzCYhBfi0fQRLsBG8XAdc4lQq8l
+         Nte4CzV6vVT2FFKtr+u+cNqqJI4fY4coAKfp8WwvlptZwtYe9flsd0O83JEaCrJYxV4h
+         lvyrOTl4GnSgukCGGjhs2NCuYtpfyEquCrEtiU+UiMQH+w8Vs0AmZ2FOz/Bp1sdrHZty
+         TCOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Gdc7ompz7Y9cqUyclWX2LVzylrZVjLX5sJyGR822OiE=;
-        b=mTCb6KK0mWDDxdlnHhO8HwBC084vxAmu9dfqrD/Wet7ZHJz8y+WTyY7/FzVyh31Zav
-         uk+5Xqln1cgoR9X4L6RJ8KfxA7AQID5UNQLkOT3aBDEwtCg7UjOH3UsihyafZxz4isAL
-         0Vz9an5Kw1THidUeqeVlWio+ejkiFu1MzIVvDrKyDkL87EgZxjYghVxaNzPDNDlXdAf2
-         SJTKXA2acOen23Om/pTwuczI/e50s/ZRFMHoJ01LHXrpg+smqdtYYqRQiuhJx63k77Wz
-         5xWTDbXeKkKkg56vLaCz9tdGiyGU7kVdcNGQL4hEcRlsJw+qCaIXVn70+8jtKbCtrslo
-         twJg==
-X-Gm-Message-State: AOAM530XdZTLtNTBjte91fHFcP6npQtTaDAozSPwLZopKds8ahSAKVGG
-        2SffGBpF7IDeykenBtfO7LYGM7IaDwyWtpQqZXM=
-X-Google-Smtp-Source: ABdhPJxX4mPO5KiNJdpl9MzzWfLiVn9Dc2OODYLKlFKJWY/1q0/5jwoS/DQ/k+bj59gOhkHb8BL5accaZml2CJGRikY=
-X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr14223952ljj.283.1595359611149;
- Tue, 21 Jul 2020 12:26:51 -0700 (PDT)
+        bh=Fxu1ZU20Y/S/zgHj//3BPz0PVPjxCVp0vsB9qgjUbGI=;
+        b=L6upCamnpM48+r06fHDBIZjUDctox7eXm3fUtuzevPwUxtlfSuWRoy1Act79Suzgee
+         Io+1DotVLvDQPjd7TRwbcZnxhXf8lSiG2G47BfqVQsqZnaIuTn9zwX+JLrXnBiGb6S+d
+         id48jenFcAvfLEd/gKI4OV3Wu7V13k2orWLB9cedknLx+PVxKxJw9WluPzs7eAtBaK/U
+         V5sDtwi6Ypn9q7O+1OeM7y6IRObSIWoNShe2v+CVTJBykRs499HwQyaPS8Lk9MRMXSdi
+         Elka8m2AEmY8C3V7LPiIjjgAmzYoZnKdnnGZQqoZd4fHcF1gHVEJt1y5clzZlJj7K+Rp
+         s00Q==
+X-Gm-Message-State: AOAM530XPDsRl9CzVW9MQl+BySnJdI2ZtrwIuPoy/7qIwf8yIrEdyFsT
+        +B2noPu1kM2e/cdP5wC8Z1aNJSRemS1HeBqJKTQ=
+X-Google-Smtp-Source: ABdhPJysSYnh1jlHRdRZNZwwDWfeUB9z3qTS2v8zJitEDLWaA6VLUOUchmDxvMNxWd4LGJ4HdkALu78UWu0kebDLepA=
+X-Received: by 2002:a2e:9bc3:: with SMTP id w3mr13974528ljj.121.1595360180907;
+ Tue, 21 Jul 2020 12:36:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200720061741.1514673-1-irogers@google.com> <CAEf4BzaEJOV_eUtUEr6Q=E_fzU1d=jiN_ZwFQ-6=bdF9CYOgXg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaEJOV_eUtUEr6Q=E_fzU1d=jiN_ZwFQ-6=bdF9CYOgXg@mail.gmail.com>
+References: <20200715031353.14692-1-yuehaibing@huawei.com> <20200717123059.29624-1-yuehaibing@huawei.com>
+In-Reply-To: <20200717123059.29624-1-yuehaibing@huawei.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Jul 2020 12:26:39 -0700
-Message-ID: <CAADnVQLcr4ds1yydxph+MgGWJLKkoxk=EaTfbszxsXTxWTCYYQ@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf bpf_helpers: Use __builtin_offsetof for offsetof
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 21 Jul 2020 12:36:09 -0700
+Message-ID: <CAADnVQKE=0Y5y6X2sEG1o7f6h+AektUU13=D40YOd+7OLqozFw@mail.gmail.com>
+Subject: Re: [PATCH v2] tools/bpftool: Fix error handing in do_skeleton()
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
+        Quentin Monnet <quentin@isovalent.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 11:21 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Jul 17, 2020 at 5:31 AM YueHaibing <yuehaibing@huawei.com> wrote:
 >
-> On Sun, Jul 19, 2020 at 11:18 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > The non-builtin route for offsetof has a dependency on size_t from
-> > stdlib.h/stdint.h that is undeclared and may break targets.
-> > The offsetof macro in bpf_helpers may disable the same macro in other
-> > headers that have a #ifdef offsetof guard. Rather than add additional
-> > dependencies improve the offsetof macro declared here to use the
-> > builtin that is available since llvm 3.7 (the first with a BPF backend).
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
+> Fix pass 0 to PTR_ERR, also dump more err info using
+> libbpf_strerror.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside skeleton")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
 Applied. Thanks
