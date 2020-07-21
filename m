@@ -2,73 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5794B22781F
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 07:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D8622792B
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 09:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgGUF3K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 01:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgGUF3K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jul 2020 01:29:10 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F002FC061794;
-        Mon, 20 Jul 2020 22:29:09 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxkpB-00H0WY-9x; Tue, 21 Jul 2020 05:28:21 +0000
-Date:   Tue, 21 Jul 2020 06:28:21 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1726510AbgGUHEl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 03:04:41 -0400
+Received: from verein.lst.de ([213.95.11.211]:50836 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgGUHEk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 03:04:40 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id D9F6468AFE; Tue, 21 Jul 2020 09:04:37 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 09:04:37 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 02/24] bpfilter: fix up a sparse annotation
-Message-ID: <20200721052821.GS2786714@ZenIV.linux.org.uk>
-References: <20200720124737.118617-1-hch@lst.de>
- <20200720124737.118617-3-hch@lst.de>
- <20200721024016.2talwdt5hjqvirr6@ltop.local>
- <20200721052326.GA10071@lst.de>
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: BPF selftests build failures
+Message-ID: <20200721070437.GA11432@lst.de>
+References: <20200720080943.GA12596@lst.de> <20200720204152.w7h3zmwtbjsuwgie@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721052326.GA10071@lst.de>
+In-Reply-To: <20200720204152.w7h3zmwtbjsuwgie@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 07:23:26AM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 21, 2020 at 04:40:16AM +0200, Luc Van Oostenryck wrote:
-> > >  	req.pid = current->pid;
-> > >  	req.cmd = optname;
-> > > -	req.addr = (long __force __user)optval;
-> > > +	req.addr = (__force long)optval;
+On Mon, Jul 20, 2020 at 01:41:52PM -0700, Alexei Starovoitov wrote:
+> On Mon, Jul 20, 2020 at 10:09:43AM +0200, Christoph Hellwig wrote:
+> > Hi BPF and selftest maintainers.  I get a very strange failure
+> > when trying to build the bpf selftests on current net-next master:
 > > 
-> > For casts to integers, even '__force' is not needed (since integers
-> > can't be dereferenced, the concept of address-space is meaningless
-> > for them, so it's never useful to warn when it's dropped and
-> > '__force' is thus not needed).
+> > hch@brick:~/work/linux/tools/testing/selftests/bpf$ make
+> >   GEN      vmlinux.h
+> > Error: failed to load BTF from /home/hch/work/linux/vmlinux: No such file or directory
 > 
-> That's what I thought. but if I remove it here I actually do get a
-> warning:
-> 
-> CHECK   net/bpfilter/bpfilter_kern.c
-> net/bpfilter/bpfilter_kern.c:52:21: warning: cast removes address space '__user' of expression
+> That's bpftool complaining that BTF is not present in vmlinux.
+> You need CONFIG_DEBUG_INFO_BTF=y and pahole >= v1.16
+> You also need llvm 10 to build bpf progs.
 
-Cast to unsigned long.  Or to uintptr_t if you want to be fancy.
+Oh well, after the non-obvious enabling of CONFIG_DEBUG_INFO_BTF
+I did run into the too old clang (clang 9) as well, which just
+creates random errors instead of warning about a too old compiler,
+sight.
+
+Then I installed clang-10, but there still seem to be various
+failures in the net-next baseline, and the setsockopt code I'm
+trying to test doesn't even get exercised from sticking a printk
+in there.
+
+That is not a great testcase experience..
