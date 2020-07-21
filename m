@@ -2,310 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73828227601
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 04:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAEC227641
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 04:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgGUCvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 22:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
+        id S1728552AbgGUCwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jul 2020 22:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGUCvC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 22:51:02 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA89C061794;
-        Mon, 20 Jul 2020 19:51:01 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id cv18so766078pjb.1;
-        Mon, 20 Jul 2020 19:51:01 -0700 (PDT)
+        with ESMTP id S1728545AbgGUCwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jul 2020 22:52:45 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3394FC0619D6
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 19:52:45 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id l6so9593839plt.7
+        for <bpf@vger.kernel.org>; Mon, 20 Jul 2020 19:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=h0KyzCgGC0DsOWKKOB1644BVeW2u/SrNB0BkqS79cAA=;
-        b=u2kwRfVdPMa0SNIT+mIzIUJbcgbGNwu/SWzgcGrR+dMd+gug7yjDa3+wo3Ko1gu/rQ
-         rNhz00jzvJ9o3BBgs+WgQf812kHQSOHMufoBMJTqCvOf4neVuZzxVyoeQHrL3aHuFFXS
-         p6s47fkr59GogKOS3gBVbLixLizwgPFWBIxzTWXGbg7oVWATm6zwpldKprDXVR92CHww
-         aGAEnQbkW9H/heWY5eQPNlhaBRLxdaG1CKy2IfSgfTvv2R+As4NfZIjV2+Tdk6CO5I6K
-         qYwg312u/CyGU1E4DjfF0nCD4JXCLA8xCapEkrgs5DLhR9q5lBUMEhc1/m1pjzPbKFi2
-         THzg==
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/WbGkn+wvw226WWVfxHp0ZWh+j6mSIy6XFA68Tzw7oc=;
+        b=bmKwkYBH8n0mhHSrgarzUE4ElRiyDr+K4d2EBgchfYCzvYKggUsehrSJ49zrx5+KGZ
+         jZBmOR8m0Cm+ET55fu5CAFMRKzhezCGaNXCJi3fHuXkXYuXHmc3E0MwBXWgl0NRVozmh
+         wxKAMJeaCiUL0yMgzU7ZvH2N32+faZ7xZj7sA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=h0KyzCgGC0DsOWKKOB1644BVeW2u/SrNB0BkqS79cAA=;
-        b=rLuZDgmML9y4DpF/1EVsKbClv2/Rbjta5YscN06FZ6hRMTyML+2mIlv5PACemX1OVR
-         PyEOD9buCCPo9mt6bCmfiuE7zlMuZhbu4FLjkm5pQgvRlxUTSZeFTWlPuI8SvIz3HH5g
-         sJ64fO1xuzdcAqiPTDZCyTCRDQkn+HaLUFn5W3Jgf28oIHnZmmaHb/j1wXpqoM/CYbVp
-         R4DuGqOZmdc83Vl38s9OmXS/5k68c7iBDRCIaV5Ona52sbSxJeLBBAiajsZ6kQDYFJns
-         Nl/oOVgl+Fc+c+Fvu5xAONCPJoHDYyd/GXr0yt7jwfwyTN2HdSaR57N4KOco1oNdaGbp
-         B/Xw==
-X-Gm-Message-State: AOAM530nQge91sYBKm/BCHgknwj0nkMiku/llKVNMNiAR95HS3rddTBI
-        gCB5fbWxYqoN0VwUr/tgrns=
-X-Google-Smtp-Source: ABdhPJySl+9PlKULWYH5anNJXN94On3rW97Q8KAeGg4fKMoXBiYGnSguLxgqoYFmW4jXjXor28QzWA==
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr2510198pja.31.1595299861314;
-        Mon, 20 Jul 2020 19:51:01 -0700 (PDT)
-Received: from ubuntu.lan ([2001:470:e92d:10:edfb:cf83:5588:45c6])
-        by smtp.gmail.com with ESMTPSA id b128sm18323378pfg.114.2020.07.20.19.51.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/WbGkn+wvw226WWVfxHp0ZWh+j6mSIy6XFA68Tzw7oc=;
+        b=R5/Syn1xJY7GojqOcINfgaeRoBI4TuM/R+7JRZVoaUG/+JLzKJoCh/UcTFsGxrDZNj
+         by5UEjSXvk43/u42ZBOhgi9AN9OUzHAAQmmvbI0vs/7ZOR6U3OF3q9HEjoY/wX+0gGZg
+         tLg+n1bgAxg3LpWxsrjqP6Xxkr5C1E5Sy5AmlAfro2M6SnrdMzihv0z4aBZo6m7IKLpS
+         AeBZkIEnlgTPtKp10NmIg+lngd/z6E+tSbRlM1X34DdwQLjE0MuRUaAagvJJRoWfMZY8
+         tnEmVFXW6ilNPkgLolXWGkndrkHrLYMSeYuuP5LPKbZqN0/1zksl7YiaZfr4O/M19fvk
+         x3Eg==
+X-Gm-Message-State: AOAM531qM7I9eCGpekAq2pulLz+M3vAigBTk6hw/itx2ga5dIq8jKbys
+        6OhkjAaeAksqhjCr1SpBuC57MbeHJoU=
+X-Google-Smtp-Source: ABdhPJyh88Ogb8H3OVRgDrNhABdUb5B/+sOrg08AXUvSzNymIUmCNOySpZ8QfNpdyttJETrJaOkJkA==
+X-Received: by 2002:a17:902:6194:: with SMTP id u20mr20732136plj.68.1595299964253;
+        Mon, 20 Jul 2020 19:52:44 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id m16sm18769753pfd.101.2020.07.20.19.52.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 19:51:00 -0700 (PDT)
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v4] bpftool: use only nftw for file tree parsing
-Date:   Mon, 20 Jul 2020 19:48:16 -0700
-Message-Id: <20200721024817.13701-1-Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200717225543.32126-1-Tony.Ambardar@gmail.com>
-References: <20200717225543.32126-1-Tony.Ambardar@gmail.com>
+        Mon, 20 Jul 2020 19:52:43 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v1 0/3] bpf, riscv: Add compressed instructions to rv64 JIT
+Date:   Mon, 20 Jul 2020 19:52:37 -0700
+Message-Id: <20200721025241.8077-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpftool sources include code to walk file trees, but use multiple
-frameworks to do so: nftw and fts. While nftw conforms to POSIX/SUSv3 and
-is widely available, fts is not conformant and less common, especially on
-non-glibc systems. The inconsistent framework usage hampers maintenance
-and portability of bpftool, in particular for embedded systems.
+This patch series enables using compressed riscv (RVC) instructions
+in the rv64 BPF JIT.
 
-Standardize code usage by rewriting one fts-based function to use nftw and
-clean up some related function warnings by extending use of "const char *"
-arguments. This change helps in building bpftool against musl for OpenWrt.
+RVC is a standard riscv extension that adds a set of compressed,
+2-byte instructions that can replace some regular 4-byte instructions
+for improved code density.
 
-Also fix an unsafe call to dirname() by duplicating the string to pass,
-since some implementations may directly alter it. The same approach is
-used in libbpf.c.
+This series first modifies the JIT to support using 2-byte instructions
+(e.g., in jump offset computations), then adds RVC encoding and
+helper functions, and finally uses the helper functions to optimize
+the rv64 JIT.
 
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
+I used our formal verification framework, Serval, to verify the
+correctness of the RVC encodings and their uses in the rv64 JIT.
 
-V4:
-* fix return value from build_pinned_obj_table()
+The JIT continues to pass all tests in lib/test_bpf.c, and introduces
+no new failures to test_verifier; both with and without RVC being enabled.
 
-V3:
-* clarify dirname() path copy in commit message
-* fix whitespace and rearrange comment for clarity
-* drop unnecessary initializers, rebalance Christmas tree
-* fixup error message and drop others not previously present
-* simplify malloc() + memset() -> calloc() and check for mem errors
+The following are examples of the JITed code for the verifier selftest
+"direct packet read test#3 for CGROUP_SKB OK", without and with RVC
+enabled, respectively. The former uses 178 bytes, and the latter uses 112,
+for a ~37% reduction in code size for this example.
 
-V2:
-* use _GNU_SOURCE to pull in getpagesize(), getline(), nftw() definitions
-* use "const char *" in open_obj_pinned() and open_obj_pinned_any()
-* make dirname() safely act on a string copy
+Without RVC:
 
----
- tools/bpf/bpftool/common.c | 136 +++++++++++++++++++++----------------
- tools/bpf/bpftool/main.h   |   4 +-
- 2 files changed, 81 insertions(+), 59 deletions(-)
+   0: 02000813    addi  a6,zero,32
+   4: fd010113    addi  sp,sp,-48
+   8: 02813423    sd    s0,40(sp)
+   c: 02913023    sd    s1,32(sp)
+  10: 01213c23    sd    s2,24(sp)
+  14: 01313823    sd    s3,16(sp)
+  18: 01413423    sd    s4,8(sp)
+  1c: 03010413    addi  s0,sp,48
+  20: 03056683    lwu   a3,48(a0)
+  24: 02069693    slli  a3,a3,0x20
+  28: 0206d693    srli  a3,a3,0x20
+  2c: 03456703    lwu   a4,52(a0)
+  30: 02071713    slli  a4,a4,0x20
+  34: 02075713    srli  a4,a4,0x20
+  38: 03856483    lwu   s1,56(a0)
+  3c: 02049493    slli  s1,s1,0x20
+  40: 0204d493    srli  s1,s1,0x20
+  44: 03c56903    lwu   s2,60(a0)
+  48: 02091913    slli  s2,s2,0x20
+  4c: 02095913    srli  s2,s2,0x20
+  50: 04056983    lwu   s3,64(a0)
+  54: 02099993    slli  s3,s3,0x20
+  58: 0209d993    srli  s3,s3,0x20
+  5c: 09056a03    lwu   s4,144(a0)
+  60: 020a1a13    slli  s4,s4,0x20
+  64: 020a5a13    srli  s4,s4,0x20
+  68: 00900313    addi  t1,zero,9
+  6c: 006a7463    bgeu  s4,t1,0x74
+  70: 00000a13    addi  s4,zero,0
+  74: 02d52823    sw    a3,48(a0)
+  78: 02e52a23    sw    a4,52(a0)
+  7c: 02952c23    sw    s1,56(a0)
+  80: 03252e23    sw    s2,60(a0)
+  84: 05352023    sw    s3,64(a0)
+  88: 00000793    addi  a5,zero,0
+  8c: 02813403    ld    s0,40(sp)
+  90: 02013483    ld    s1,32(sp)
+  94: 01813903    ld    s2,24(sp)
+  98: 01013983    ld    s3,16(sp)
+  9c: 00813a03    ld    s4,8(sp)
+  a0: 03010113    addi  sp,sp,48
+  a4: 00078513    addi  a0,a5,0
+  a8: 00008067    jalr  zero,0(ra)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 29f4e7611ae8..115904f840e0 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -1,10 +1,11 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- /* Copyright (C) 2017-2018 Netronome Systems, Inc. */
- 
-+#define _GNU_SOURCE
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
--#include <fts.h>
-+#include <ftw.h>
- #include <libgen.h>
- #include <mntent.h>
- #include <stdbool.h>
-@@ -160,24 +161,35 @@ int mount_tracefs(const char *target)
- 	return err;
- }
- 
--int open_obj_pinned(char *path, bool quiet)
-+int open_obj_pinned(const char *path, bool quiet)
- {
--	int fd;
-+	char *pname;
-+	int fd = -1;
-+
-+	pname = strdup(path);
-+	if (!pname) {
-+		if (!quiet)
-+			p_err("mem alloc failed");
-+		goto out_ret;
-+	}
- 
--	fd = bpf_obj_get(path);
-+	fd = bpf_obj_get(pname);
- 	if (fd < 0) {
- 		if (!quiet)
--			p_err("bpf obj get (%s): %s", path,
--			      errno == EACCES && !is_bpffs(dirname(path)) ?
-+			p_err("bpf obj get (%s): %s", pname,
-+			      errno == EACCES && !is_bpffs(dirname(pname)) ?
- 			    "directory not in bpf file system (bpffs)" :
- 			    strerror(errno));
--		return -1;
-+		goto out_free;
- 	}
- 
-+out_free:
-+	free(pname);
-+out_ret:
- 	return fd;
- }
- 
--int open_obj_pinned_any(char *path, enum bpf_obj_type exp_type)
-+int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
- {
- 	enum bpf_obj_type type;
- 	int fd;
-@@ -367,71 +379,81 @@ void print_hex_data_json(uint8_t *data, size_t len)
- 	jsonw_end_array(json_wtr);
- }
- 
-+/* extra params for nftw cb*/
-+static struct pinned_obj_table *build_fn_table;
-+static enum bpf_obj_type build_fn_type;
-+
-+static int do_build_table_cb(const char *fpath, const struct stat *sb,
-+			     int typeflag, struct FTW *ftwbuf)
-+{
-+	struct bpf_prog_info pinned_info;
-+	__u32 len = sizeof(pinned_info);
-+	struct pinned_obj *obj_node;
-+	enum bpf_obj_type objtype;
-+	int fd, err = 0;
-+
-+	if (typeflag != FTW_F)
-+		goto out_ret;
-+	fd = open_obj_pinned(fpath, true);
-+	if (fd < 0)
-+		goto out_ret;
-+
-+	objtype = get_fd_type(fd);
-+	if (objtype != build_fn_type)
-+		goto out_close;
-+
-+	memset(&pinned_info, 0, sizeof(pinned_info));
-+	if (bpf_obj_get_info_by_fd(fd, &pinned_info, &len))
-+		goto out_close;
-+
-+	obj_node = calloc(1, sizeof(*obj_node));
-+	if (!obj_node) {
-+		err = -1;
-+		goto out_close;
-+	}
-+
-+	obj_node->id = pinned_info.id;
-+	obj_node->path = strdup(fpath);
-+	if (!obj_node->path) {
-+		err = -1;
-+		free(obj_node);
-+		goto out_close;
-+	}
-+	hash_add(build_fn_table->table, &obj_node->hash, obj_node->id);
-+
-+out_close:
-+	close(fd);
-+out_ret:
-+	return err;
-+}
-+
- int build_pinned_obj_table(struct pinned_obj_table *tab,
- 			   enum bpf_obj_type type)
- {
--	struct bpf_prog_info pinned_info = {};
--	struct pinned_obj *obj_node = NULL;
--	__u32 len = sizeof(pinned_info);
- 	struct mntent *mntent = NULL;
--	enum bpf_obj_type objtype;
- 	FILE *mntfile = NULL;
--	FTSENT *ftse = NULL;
--	FTS *fts = NULL;
--	int fd, err;
-+	int flags = FTW_PHYS;
-+	int nopenfd = 16;
-+	int err = 0;
- 
- 	mntfile = setmntent("/proc/mounts", "r");
- 	if (!mntfile)
- 		return -1;
- 
-+	build_fn_table = tab;
-+	build_fn_type = type;
-+
- 	while ((mntent = getmntent(mntfile))) {
--		char *path[] = { mntent->mnt_dir, NULL };
-+		char *path = mntent->mnt_dir;
- 
- 		if (strncmp(mntent->mnt_type, "bpf", 3) != 0)
- 			continue;
--
--		fts = fts_open(path, 0, NULL);
--		if (!fts)
--			continue;
--
--		while ((ftse = fts_read(fts))) {
--			if (!(ftse->fts_info & FTS_F))
--				continue;
--			fd = open_obj_pinned(ftse->fts_path, true);
--			if (fd < 0)
--				continue;
--
--			objtype = get_fd_type(fd);
--			if (objtype != type) {
--				close(fd);
--				continue;
--			}
--			memset(&pinned_info, 0, sizeof(pinned_info));
--			err = bpf_obj_get_info_by_fd(fd, &pinned_info, &len);
--			if (err) {
--				close(fd);
--				continue;
--			}
--
--			obj_node = malloc(sizeof(*obj_node));
--			if (!obj_node) {
--				close(fd);
--				fts_close(fts);
--				fclose(mntfile);
--				return -1;
--			}
--
--			memset(obj_node, 0, sizeof(*obj_node));
--			obj_node->id = pinned_info.id;
--			obj_node->path = strdup(ftse->fts_path);
--			hash_add(tab->table, &obj_node->hash, obj_node->id);
--
--			close(fd);
--		}
--		fts_close(fts);
-+		err = nftw(path, do_build_table_cb, nopenfd, flags);
-+		if (err)
-+			break;
- 	}
- 	fclose(mntfile);
--	return 0;
-+	return err;
- }
- 
- void delete_pinned_obj_table(struct pinned_obj_table *tab)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 78d34e860713..e3a79b5a9960 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -152,8 +152,8 @@ int cmd_select(const struct cmd *cmds, int argc, char **argv,
- int get_fd_type(int fd);
- const char *get_fd_type_name(enum bpf_obj_type type);
- char *get_fdinfo(int fd, const char *key);
--int open_obj_pinned(char *path, bool quiet);
--int open_obj_pinned_any(char *path, enum bpf_obj_type exp_type);
-+int open_obj_pinned(const char *path, bool quiet);
-+int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
- int mount_bpffs_for_pin(const char *name);
- int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
- int do_pin_fd(int fd, const char *name);
+With RVC:
+
+   0:   02000813    addi    a6,zero,32
+   4:   7179        c.addi16sp  sp,-48
+   6:   f422        c.sdsp  s0,40(sp)
+   8:   f026        c.sdsp  s1,32(sp)
+   a:   ec4a        c.sdsp  s2,24(sp)
+   c:   e84e        c.sdsp  s3,16(sp)
+   e:   e452        c.sdsp  s4,8(sp)
+  10:   1800        c.addi4spn  s0,sp,48
+  12:   03056683    lwu     a3,48(a0)
+  16:   1682        c.slli  a3,0x20
+  18:   9281        c.srli  a3,0x20
+  1a:   03456703    lwu     a4,52(a0)
+  1e:   1702        c.slli  a4,0x20
+  20:   9301        c.srli  a4,0x20
+  22:   03856483    lwu     s1,56(a0)
+  26:   1482        c.slli  s1,0x20
+  28:   9081        c.srli  s1,0x20
+  2a:   03c56903    lwu     s2,60(a0)
+  2e:   1902        c.slli  s2,0x20
+  30:   02095913    srli    s2,s2,0x20
+  34:   04056983    lwu     s3,64(a0)
+  38:   1982        c.slli  s3,0x20
+  3a:   0209d993    srli    s3,s3,0x20
+  3e:   09056a03    lwu     s4,144(a0)
+  42:   1a02        c.slli  s4,0x20
+  44:   020a5a13    srli    s4,s4,0x20
+  48:   4325        c.li    t1,9
+  4a:   006a7363    bgeu    s4,t1,0x50
+  4e:   4a01        c.li    s4,0
+  50:   d914        c.sw    a3,48(a0)
+  52:   d958        c.sw    a4,52(a0)
+  54:   dd04        c.sw    s1,56(a0)
+  56:   03252e23    sw      s2,60(a0)
+  5a:   05352023    sw      s3,64(a0)
+  5e:   4781        c.li    a5,0
+  60:   7422        c.ldsp  s0,40(sp)
+  62:   7482        c.ldsp  s1,32(sp)
+  64:   6962        c.ldsp  s2,24(sp)
+  66:   69c2        c.ldsp  s3,16(sp)
+  68:   6a22        c.ldsp  s4,8(sp)
+  6a:   6145        c.addi16sp  sp,48
+  6c:   853e        c.mv    a0,a5
+  6e:   8082        c.jr    ra
+
+RFC -> v1:
+  - From Björn Töpel:
+    * Changed RVOFF macro to static inline "ninsns_rvoff".
+    * Changed return type of rvc_ functions from u32 to u16.
+    * Changed sizeof(u16) to sizeof(*ctx->insns).
+  * Factored unsigned immediate checks into helper functions
+    (is_8b_uint, etc.)
+  * Changed to use IS_ENABLED instead of #ifdef to check if RVC is
+    enabled.
+  * Changed type of immediate arguments to rvc_* encoding to u32
+    to avoid issues from promotion of u16 to signed int.
+  * Cleaned up RVC checks in emit_{addi,slli,srli,srai}.
+    + Wrapped lines at 100 instead of 80 columns for increased clarity.
+	+ Move !imm checks into each branch instead of checking
+	  separately.
+	+ Strengthed checks for c.{slli,srli,srai} to check that
+	  imm < XLEN. Otherwise, imm could be non-zero but the lower
+	  XLEN bits could all be zero, leading to invalid RVC encoding.
+  * Changed emit_imm to sign-extend the 12-bit value in "lower"
+    + The immediate checks for emit_{addiw,li,addi} use signed
+	  comparisons, so this enables the RVC variants to be used
+	  more often (e.g., if val == -1, then lower should be -1
+	  as opposed to 4095).
+
+Luke Nelson (3):
+  bpf, riscv: Modify JIT ctx to support compressed instructions
+  bpf, riscv: Add encodings for compressed instructions
+  bpf, riscv: Use compressed instructions in the rv64 JIT
+
+ arch/riscv/net/bpf_jit.h        | 483 +++++++++++++++++++++++++++++++-
+ arch/riscv/net/bpf_jit_comp32.c |  14 +-
+ arch/riscv/net/bpf_jit_comp64.c | 293 ++++++++++---------
+ arch/riscv/net/bpf_jit_core.c   |   6 +-
+ 4 files changed, 643 insertions(+), 153 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
