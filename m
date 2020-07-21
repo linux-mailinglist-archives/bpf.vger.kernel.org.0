@@ -2,98 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D022288FC
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 21:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C7722891A
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 21:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730089AbgGUTRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 15:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
+        id S1730322AbgGUT0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 15:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbgGUTRu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jul 2020 15:17:50 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF084C061794;
-        Tue, 21 Jul 2020 12:17:49 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 140so1900536lfi.5;
-        Tue, 21 Jul 2020 12:17:49 -0700 (PDT)
+        with ESMTP id S1729497AbgGUT0z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 15:26:55 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47A6C061794;
+        Tue, 21 Jul 2020 12:26:52 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h22so25305430lji.9;
+        Tue, 21 Jul 2020 12:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZWBDSpvSID9isJQH7VhMl+fYpyhlV/5rIWPv6OTFX7k=;
-        b=bjJmOnjSvHymIbPjtRqJcq5iUmACuMPlpNYY6EiWRnwQ+sFauRHkIDHR5ii1tNFodT
-         ZnGD/2GgQCh8NnD4rf8Ac3y7LP2ZzOXhMhd4+1PTsXLxT1J6FVdqFTZl9/8paiZu46F+
-         11ZygeKCLBq/O9uFsto9he37C6pu1uCRIFRFhS+mH2Fx+r/+W8yMbhqzmFUsWNxY2dVJ
-         oFKNi1baFIPVyTgn3OmUXQr+TVKR8DWDca0+usbBxY573rfj5PrAwdT/AviH+Bnnqzh7
-         rBH51dIX87TxnklidM+nyuPcde5wMeX/OKWTGFOpS9tuuruGLaHLaQjhwVMbJGhs9QN9
-         g+rg==
+        bh=Gdc7ompz7Y9cqUyclWX2LVzylrZVjLX5sJyGR822OiE=;
+        b=ixobYwr9Hu55L7/IMZYbgTVz7Y4ber/W27KFrOwhFgubdTDMcWGsHcwACw/CssFszx
+         Omdb5QzaSlFPrywNGeJJXTQj1b68rYfWzOcVLks90GO/C6Ck8s/UehdRnUdfgNU3oPSd
+         OYk1GeMy43BFaf97qsqO2KS0f/4HUAdMfVQxrL+sqQNGOIIROBaVPy8GKLaTO7Z00spa
+         QJ8aIvCzgLrCtIRrULp9NuMlDsfqGsCZW5OAOPM+CYo1zVA820fVVerhyCKJszf28bjR
+         SjTIHc19Gwt/pn4x4J9rfPzJyCBautvtiJ9BjYbVEA40k+v/ZAMYw6w12dd8uQzN5TD2
+         jBgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZWBDSpvSID9isJQH7VhMl+fYpyhlV/5rIWPv6OTFX7k=;
-        b=AqaVCx4dmf0CXrkFgizjSdrMNXq1tiW3GbiKWWSS6i1b5l25oLIKJEbAu5Z23SAKhv
-         we2eO1gpnmZ1itRuk+79LC7oipIy/366k26PsifiC73+6khysTu9APkjhgk5jy4VPDl6
-         agy1ateTmz1U8pr6Q/HAeMyqEMqecEk3jU1j9d6R8eEGC9KPrHSWaeaJlLEhdGG5XSsn
-         /lh9UbfRNqFl9S+aS6/O/7kSi8C+NKlV4+F6RRyOw67HDxofh6DQikahdz2+/SH4y809
-         xeltIrGOszq7R60Enus0i81EQ/HtMRTXLqQvwwFeQJNF07x0wxXFQQcBJj7UmaU7lHi+
-         B1tA==
-X-Gm-Message-State: AOAM533Cy1GKErFDLZle7T6sZC/JUdZZyn00xY+5lEkpXyKGsAZ8LPUf
-        BHUcm2W2tpuF81Sz4a0PTwaW9tk+7dStOuGj90Q=
-X-Google-Smtp-Source: ABdhPJzrrRmzoMl0l7Jzq9SQZQf3um1JlMaVowRRAM+BxYECxE+izAQMM7qYNVXZ6dnQZDkCxLqs2b1d7HmQF0qklRk=
-X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr6898040lfs.8.1595359068359;
- Tue, 21 Jul 2020 12:17:48 -0700 (PDT)
+        bh=Gdc7ompz7Y9cqUyclWX2LVzylrZVjLX5sJyGR822OiE=;
+        b=mTCb6KK0mWDDxdlnHhO8HwBC084vxAmu9dfqrD/Wet7ZHJz8y+WTyY7/FzVyh31Zav
+         uk+5Xqln1cgoR9X4L6RJ8KfxA7AQID5UNQLkOT3aBDEwtCg7UjOH3UsihyafZxz4isAL
+         0Vz9an5Kw1THidUeqeVlWio+ejkiFu1MzIVvDrKyDkL87EgZxjYghVxaNzPDNDlXdAf2
+         SJTKXA2acOen23Om/pTwuczI/e50s/ZRFMHoJ01LHXrpg+smqdtYYqRQiuhJx63k77Wz
+         5xWTDbXeKkKkg56vLaCz9tdGiyGU7kVdcNGQL4hEcRlsJw+qCaIXVn70+8jtKbCtrslo
+         twJg==
+X-Gm-Message-State: AOAM530XdZTLtNTBjte91fHFcP6npQtTaDAozSPwLZopKds8ahSAKVGG
+        2SffGBpF7IDeykenBtfO7LYGM7IaDwyWtpQqZXM=
+X-Google-Smtp-Source: ABdhPJxX4mPO5KiNJdpl9MzzWfLiVn9Dc2OODYLKlFKJWY/1q0/5jwoS/DQ/k+bj59gOhkHb8BL5accaZml2CJGRikY=
+X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr14223952ljj.283.1595359611149;
+ Tue, 21 Jul 2020 12:26:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200717020842.GA29747@vm_111_229_centos>
-In-Reply-To: <20200717020842.GA29747@vm_111_229_centos>
+References: <20200720061741.1514673-1-irogers@google.com> <CAEf4BzaEJOV_eUtUEr6Q=E_fzU1d=jiN_ZwFQ-6=bdF9CYOgXg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaEJOV_eUtUEr6Q=E_fzU1d=jiN_ZwFQ-6=bdF9CYOgXg@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Jul 2020 12:17:36 -0700
-Message-ID: <CAADnVQJvW7hto4E740Hi9b22wszYLxVwUCDS5jMdQ_2E3==GRQ@mail.gmail.com>
-Subject: Re: [PATCH] ebpf: fix parameter naming confusing
-To:     YangYuxi <yx.atom1@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 21 Jul 2020 12:26:39 -0700
+Message-ID: <CAADnVQLcr4ds1yydxph+MgGWJLKkoxk=EaTfbszxsXTxWTCYYQ@mail.gmail.com>
+Subject: Re: [PATCH v2] libbpf bpf_helpers: Use __builtin_offsetof for offsetof
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 7:08 PM YangYuxi <yx.atom1@gmail.com> wrote:
+On Sun, Jul 19, 2020 at 11:21 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Signed-off-by: YangYuxi <yx.atom1@gmail.com>
-> ---
->  kernel/bpf/syscall.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> On Sun, Jul 19, 2020 at 11:18 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > The non-builtin route for offsetof has a dependency on size_t from
+> > stdlib.h/stdint.h that is undeclared and may break targets.
+> > The offsetof macro in bpf_helpers may disable the same macro in other
+> > headers that have a #ifdef offsetof guard. Rather than add additional
+> > dependencies improve the offsetof macro declared here to use the
+> > builtin that is available since llvm 3.7 (the first with a BPF backend).
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
 >
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 0fd80ac81f70..300ae16baffc 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1881,13 +1881,13 @@ struct bpf_prog *bpf_prog_inc_not_zero(struct bpf_prog *prog)
->  EXPORT_SYMBOL_GPL(bpf_prog_inc_not_zero);
->
->  bool bpf_prog_get_ok(struct bpf_prog *prog,
-> -                           enum bpf_prog_type *attach_type, bool attach_drv)
-> +                           enum bpf_prog_type *prog_type, bool attach_drv)
->  {
->         /* not an attachment, just a refcount inc, always allow */
-> -       if (!attach_type)
-> +       if (!prog_type)
->                 return true;
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-I think it makes it worse.
-Now the comment doesn't match the code.
-And attach_drv name also looks out of place.
-Technically program type is also an attach type to some degree.
-The name could be a bit confusing, but in combination with type:
-'enum bpf_prog_type *attach_type'
-I think it's pretty clear what these functions are doing.
-So I prefer to keep the code as-is.
+Applied. Thanks
