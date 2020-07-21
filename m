@@ -2,311 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2198227732
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 05:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EA92277DF
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 07:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgGUDsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jul 2020 23:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgGUDsR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jul 2020 23:48:17 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA2EC061794;
-        Mon, 20 Jul 2020 20:48:17 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id t7so8726789qvl.8;
-        Mon, 20 Jul 2020 20:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hgpEJLmGdB1vk/4Ot80nHSgBm4YLANo8JRsnEVLIrG8=;
-        b=IPgWs7QgQ8VK0/sgSKI4jJ7M7DFvndiTNB/g08dGsgF/OeuM1X61xAhVVZJUh0nszj
-         KoVu9JeDKLOUe96Y/Y4OKq947KCxr6AGDVruweLFOPRrbQnXxmZIfPREFPLbflqHtLag
-         3oN/ZN4bYvlLWZeZ/TwPslgtr2EgoMst3iGUgk7X68SGF2G6asi7v9DepHLrSgf2GhqH
-         61UmUvgoQQeGBaHgeQIgIMWkSDyKPi2eO10V0ZxkuoVszH8rHT/ee4jNeeTLO8aoxwcn
-         HyLXdXCvSWcDYtZhSlALSodqY75pwuRKx2k7Q6zYaTtv+4yLkERSyCAMghJmq6glH3s3
-         e+vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hgpEJLmGdB1vk/4Ot80nHSgBm4YLANo8JRsnEVLIrG8=;
-        b=rSZx0jjf73CVld7xZEmSQj9smPyw8Tv/7HnNRGj/Vxf35QFtOJvHox+SAgelgwNRpj
-         YdRxV5gUERhkMERQwdsQ/h6yhTObXuocwf33sJAfiILj6j/oxpJFgpwMPG2bZj9n+hvY
-         uPQTE2iJgyH/mOerok6cNddCio0x+9mSfc0MHmf0f1H3ZsyO6VaQfUS6vSFKfQoHeChD
-         EmMp1x5zq1bFKFZ0qsp7QzcwovJRqrtp3lLcosN4VENUfQWjJ0RIu9vBffqyAQ4MoGdj
-         ij0+AEE3oN5MTkBomVF5c4uWmFU6EXFno+eVzeb71hUdH+5viWE1/iiJP4hAH0nlGF7N
-         8zig==
-X-Gm-Message-State: AOAM532gSj5bAfnhVQ4ZbyGwv7+K5il92Kejla5CEzzI2fOSBIOpTulT
-        7GoG30KWNE/sBlv4eVJ1/dqEK46qzjIuxFXi9XQ=
-X-Google-Smtp-Source: ABdhPJwrZwHYDabFsL4dMJkIsYJ444Qw/o03GMXc34eJCGVrEwzrpxXzYYnePdZzq/3nBkux0SJuRVDhrUuXPITjuY8=
-X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr23663216qvb.228.1595303295693;
- Mon, 20 Jul 2020 20:48:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <159481853923.454654.12184603524310603480.stgit@toke.dk>
- <159481854255.454654.15065796817034016611.stgit@toke.dk> <20200715204406.vt64vgvzsbr6kolm@ast-mbp.dhcp.thefacebook.com>
- <87mu3zentu.fsf@toke.dk> <20200717020507.jpxxe4dbc2watsfh@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzYd4Xrn4EqzqHCTuJ8TnZiTC1vWWvd=9Np+LNrgbtxOcQ@mail.gmail.com> <20200720233455.6ito7n2eqojlfnvk@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200720233455.6ito7n2eqojlfnvk@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 20 Jul 2020 20:48:04 -0700
-Message-ID: <CAEf4BzYtD9dGUy3hZRRAA56CaVvW7xTR9tp0dXKyVQXym046eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: support attaching freplace programs
- to multiple attach points
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726003AbgGUFEQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 01:04:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:3494 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgGUFEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 01:04:16 -0400
+IronPort-SDR: LhrIvXaChY9T7kvHzCeAGqVP6jJVsJ0kaWIxV7vC65tln//jgBIk13OC2RqmlhRGSMhaOhNC+w
+ AuyR9EY3G7jQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9688"; a="138161107"
+X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
+   d="scan'208";a="138161107"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2020 22:04:15 -0700
+IronPort-SDR: j+KNTUnNK5M+uiwfqS5dYAoyPUGJ0ylNMuUvp8MjZQpBxSvXTevajtPF7FvFYuTnwYvWCU9c6U
+ ICT+CVJLz2+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,377,1589266800"; 
+   d="scan'208";a="431855538"
+Received: from taktemur-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.252.33.122])
+  by orsmga004.jf.intel.com with ESMTP; 20 Jul 2020 22:04:11 -0700
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, maximmi@mellanox.com
+Cc:     bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
+        anthony.l.nguyen@intel.com, maciej.fijalkowski@intel.com,
+        maciejromanfijalkowski@gmail.com, cristian.dumitrescu@intel.com
+Subject: [PATCH bpf-next v4 00/14] xsk: support shared umems between devices and queues
+Date:   Tue, 21 Jul 2020 07:03:54 +0200
+Message-Id: <1595307848-20719-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 4:35 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Jul 19, 2020 at 10:02:48PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jul 16, 2020 at 7:06 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jul 16, 2020 at 12:50:05PM +0200, Toke H=C3=B8iland-J=C3=B8rg=
-ensen wrote:
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > > >
-> > > > > On Wed, Jul 15, 2020 at 03:09:02PM +0200, Toke H=C3=83=C6=92=C3=
-=82=C2=B8iland-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
-> > > > >>
-> > > > >> +  if (tgt_prog_fd) {
-> > > > >> +          /* For now we only allow new targets for BPF_PROG_TYP=
-E_EXT */
-> > > > >> +          if (prog->type !=3D BPF_PROG_TYPE_EXT ||
-> > > > >> +              !btf_id) {
-> > > > >> +                  err =3D -EINVAL;
-> > > > >> +                  goto out_put_prog;
-> > > > >> +          }
-> > > > >> +          tgt_prog =3D bpf_prog_get(tgt_prog_fd);
-> > > > >> +          if (IS_ERR(tgt_prog)) {
-> > > > >> +                  err =3D PTR_ERR(tgt_prog);
-> > > > >> +                  tgt_prog =3D NULL;
-> > > > >> +                  goto out_put_prog;
-> > > > >> +          }
-> > > > >> +
-> > > > >> +  } else if (btf_id) {
-> > > > >> +          err =3D -EINVAL;
-> > > > >> +          goto out_put_prog;
-> > > > >> +  } else {
-> > > > >> +          btf_id =3D prog->aux->attach_btf_id;
-> > > > >> +          tgt_prog =3D prog->aux->linked_prog;
-> > > > >> +          if (tgt_prog)
-> > > > >> +                  bpf_prog_inc(tgt_prog); /* we call bpf_prog_p=
-ut() on link release */
-> > > > >
-> > > > > so the first prog_load cmd will beholding the first target prog?
-> > > > > This is complete non starter.
-> > > > > You didn't mention such decision anywhere.
-> > > > > The first ext prog will attach to the first dispatcher xdp prog,
-> > > > > then that ext prog will multi attach to second dispatcher xdp pro=
-g and
-> > > > > the first dispatcher prog will live in the kernel forever.
-> > > >
-> > > > Huh, yeah, you're right that's no good. Missing that was a think-o =
-on my
-> > > > part, sorry about that :/
-> > > >
-> > > > > That's not what we discussed back in April.
-> > > >
-> > > > No, you mentioned turning aux->linked_prog into a list. However onc=
-e I
-> > > > started looking at it I figured it was better to actually have all =
-this
-> > > > (the trampoline and ref) as part of the bpf_link structure, since
-> > > > logically they're related.
-> > > >
-> > > > But as you pointed out, the original reference sticks. So either th=
-at
-> > > > needs to be removed, or I need to go back to the 'aux->linked_progs=
- as a
-> > > > list' idea. Any preference?
-> > >
-> > > Good question. Back then I was thinking about converting linked_prog =
-into link
-> > > list, since standalone single linked_prog is quite odd, because attac=
-hing ext
-> > > prog to multiple tgt progs should have equivalent properties across a=
-ll
-> > > attachments.
-> > > Back then bpf_link wasn't quite developed.
-> > > Now I feel moving into bpf_tracing_link is better.
-> > > I guess a link list of bpf_tracing_link-s from 'struct bpf_prog' migh=
-t work.
-> > > At prog load time we can do bpf_link_init() only (without doing bpf_l=
-ink_prime)
-> > > and keep this pre-populated bpf_link with target bpf prog and trampol=
-ine
-> > > in a link list accessed from 'struct bpf_prog'.
-> > > Then bpf_tracing_prog_attach() without extra tgt_prog_fd/btf_id would=
- complete
-> > > that bpf_tracing_link by calling bpf_link_prime() and bpf_link_settle=
-()
-> > > without allocating new one.
-> > > Something like:
-> > > struct bpf_tracing_link {
-> > >         struct bpf_link link;  /* ext prog pointer is hidding in ther=
-e */
-> > >         enum bpf_attach_type attach_type;
-> > >         struct bpf_trampoline *tr;
-> > >         struct bpf_prog *tgt_prog; /* old aux->linked_prog */
-> > > };
-> > >
-> > > ext prog -> aux -> link list of above bpf_tracing_link-s
-> > >
-> > > It's a circular reference, obviously.
-> > > Need to think through the complications and locking.
-> > >
-> > > bpf_tracing_prog_attach() with tgt_prog_fd/btf_id will alloc new bpf_=
-tracing_link
-> > > and will add it to a link list.
-> > >
-> > > Just a rough idea. I wonder what Andrii thinks.
-> > >
-> >
-> > I need to spend more time reading existing and new code to see all the
-> > details, but I'll throw a slightly different proposal and let you guys
-> > shoot it down.
-> >
-> > So, what if instead of having linked_prog (as bpf_prog *, refcnt'ed),
-> > at BPF_PROG_LOAD time we just record the target prog's ID. BPF
-> > verifier, when doing its target prog checks would attempt to get
-> > bpf_prog * reference; if by that time the target program is gone,
-> > fail, of course. If not, everything proceeds as is, at the end of
-> > verification target_prog is put until attach time.
-> >
-> > Then at attach time, we either go with pre-recorded (in
-> > prog->aux->linked_prog_id) target prog's ID or we get a new one from
-> > RAW_TP_OPEN tgt_prog_fd. Either way, we bump refcnt on that target
-> > prog and keep it with bpf_tracing_link (so link on detach would put
-> > target_prog, that way it doesn't go away while EXT prog is attached).
-> > Then do all the compatibility checks, and if everything works out,
-> > bpf_tracing_link gets created, we record trampoline there, etc, etc.
-> > Basically, instead of having an EXT prog holding a reference to the
-> > target prog, only attachment (bpf_link) does that, which conceptually
-> > also seems to make more sense to me. For verification we store prog ID
-> > and don't hold target prog at all.
-> >
-> >
-> > Now, there will be a problem once you attach EXT prog to a new XDP
-> > root program and release a link against the original XDP root program.
-> > First, I hope I understand the desired sequence right, here's an
-> > example:
-> >
-> > 1. load XDP root prog X
-> > 2. load EXT prog with target prog X
-> > 3. attach EXT prog to prog X
-> > 4. load XDP root prog Y
-> > 5. attach EXT prog to prog Y (Y and X should be "compatible")
-> > 6. detach prog X (close bpf_link)
-> >
-> > Is that the right sequence?
-> >
-> > If yes, then the problem with storing ID of prog X in EXT
-> > prog->aux->linked_prog_id is that you won't be able to re-attach to
-> > new prog Z, because there won't be anything to check compatibility
-> > against (prog X will be long time gone).
-> >
-> > So we can do two things here:
-> >
-> > 1. on attach, replace ext_prog->aux->linked_prog_id with the latest
-> > attached prog (prog Y ID from above example)
-> > 2. instead of recording target program FD/ID, capture BTF FD and/or
-> > enough BTF information for checking compatibility.
-> >
-> > Approach 2) seems like conceptually the right thing to do (record type
-> > info we care about, not an **instance** of BPF program, compatible
-> > with that type info), but technically might be harder.
->
-> I've read your proposal couple times and still don't get what you're
-> trying to solve with either ID or BTF info recording.
-> So that target prog doesn't get refcnt-ed? What's a problem with it?
-> Currently it's being refcnt-d in aux->linked_prog.
-> What I'm proposing about is to convert aux->linked_prog into a link list
-> of bpf_tracing_links which will contain linked_prog inside.
-> Conceptually that's what bpf_link is doing. It links two progs.
-> EXT prog is recorded in 'struct bpf_link' and
-> the target prog is recorded in 'struct bpf_tracing_link'.
-> So from bpf_link perspective everything seems clean to me.
-> The link list of bpf_tracing_link-s in EXT_prog->aux is only to preserve
-> existing api of prog_load cmd.
+This patch set adds support to share a umem between AF_XDP sockets
+bound to different queue ids on the same device or even between
+devices. It has already been possible to do this by registering the
+umem multiple times, but this wastes a lot of memory. Just imagine
+having 10 threads each having 10 sockets open sharing a single
+umem. This means that you would have to register the umem 100 times
+consuming large quantities of memory.
 
-Right, I wanted to avoid taking a refcnt on aux->linked_prog during
-PROG_LOAD. The reason for that was (and still is) that I don't get who
-and when has to bpf_prog_put() original aux->linked_prog to allow the
-prog X to be freed. I.e., after you re-attach to prog Y, how prog X is
-released (assuming no active bpf_link is keeping it from being freed)?
-That's my biggest confusion right now.
+Instead, we extend the existing XDP_SHARED_UMEM flag to also work when
+sharing a umem between different queue ids as well as devices. If you
+would like to share umem between two sockets, just create the first
+one as would do normally. For the second socket you would not register
+the same umem using the XDP_UMEM_REG setsockopt. Instead attach one
+new fill ring and one new completion ring to this second socket and
+then use the XDP_SHARED_UMEM bind flag supplying the file descriptor of
+the first socket in the sxdp_shared_umem_fd field to signify that it
+is the umem of the first socket you would like to share.
 
-I also didn't like the idea of half-creating bpf_tracing_link on
-PROG_LOAD and then turning it into a real link with bpf_link_settle on
-attach. That sounded like a hack to me.
+One important thing to note in this example, is that there needs to be
+one fill ring and one completion ring per unique device and queue id
+bound to. This so that the single-producer and single-consumer semantics
+of the rings can be upheld. To recap, if you bind multiple sockets to
+the same device and queue id (already supported without this patch
+set), you only need one pair of fill and completion rings. If you bind
+multiple sockets to multiple different queues or devices, you need one
+fill and completion ring pair per unique device,queue_id tuple.
 
-But now I'm also confused why we need to turn aux->linked_prog into a
-list. Seems like we need it only for old-style attach that doesn't
-specify tgt_prog_fd, no? Only in that case we'll use aux->linked_prog.
-Otherwise we know the target prog from tgt_prog_fd. So I'll be honest
-that I don't get the whole idea of maintaining a list of
-bpf_tracing_links. It seems like it should be possible to make
-bpf_tracing_link decoupled from any prog's aux and have their own
-independent lifetime.
+The implementation is based around extending the buffer pool in the
+core xsk code. This is a structure that exists on a per unique device
+and queue id basis. So, a number of entities that can now be shared
+are moved from the umem to the buffer pool. Information about DMA
+mappings are also moved from the buffer pool, but as these are per
+device independent of the queue id, they are now hanging off the umem
+in list. However, the pool is set up to point directly to the
+dma_addr_t array that it needs. In summary after this patch set, there
+is one xdp_sock struct per socket created. This points to an
+xsk_buff_pool for which there is one per unique device and queue
+id. The buffer pool points to a DMA mapping structure for which there
+is one per device that a umem has been bound to. And finally, the
+buffer pool also points to a xdp_umem struct, for which there is only
+one per umem registration.
 
->
-> As far as step 5: attach EXT prog to prog Y (Y and X should be "compatibl=
-e")
-> The chance of failure there should be minimal. libxdp/libdispatcher will
-> prepare rootlet XDP prog. It should really make sure that Y and X are com=
-patible.
-> This should be invisible to users.
+Before:
 
-Right, of course, but the kernel needs to validate that anyways, which
-is why I pointed that out. Or are you saying we should just assume
-that they are valid?
+XSK -> UMEM -> POOL
 
->
-> In addition we still need bpf_link_update_hook() I was talking about in A=
-pril.
-> The full sequence is:
-> first user process:
->  1. load XDP root prog X
->  1' root_link =3D attach X to eth0
->  2. load EXT prog with target prog X
->  3. app1_link_fd =3D attach EXT prog to prog X
-> second user process:
->  4. load XDP root prog Y
->  4'. find EXT prog of the first user process
->  5. app2_link_fd =3D attach EXT prog to prog Y (Y and X should be "compat=
-ible")
->  6. bpf_link_update(root_link, X, Y); // now packet flows into Y and into=
- EXT
->    // while EXT is attached in two places
->  7. app1_link_fd' =3D FD in second process that points to the same tracin=
-g link
->     as app1_link_fd in the first process.
->    bpf_link_update_hook(app1_link_fd', app2_link_fd)
-> the last operation need to update bpf_tracing_link that is held by app1
-> (which is the first user process) from the second user process. It needs =
-to
-> retarget (update_hook) inside bpf_tracing_link from X to Y.
-> Since the processes are more or less not aware of each other.
-> One firewall holds link_fd that connects EXT to X,
-> but the second firewall (via libxdp) is updaing that tracing link
-> to re-hook EXT into Y.
+Now:
 
-Yeah, should be doable given that bpf_trampoline is independently refcounte=
-d.
+XSK -> POOL -> DMA
+            \
+	     > UMEM
+
+Patches 1-8 only rearrange internal structures to support the buffer
+pool carrying this new information, while patch 9 improves performance
+as we now have rearranged the internal structures quite a bit. Finally,
+patches 10-14 introduce the new functionality together with libbpf
+support, samples, and documentation.
+
+Libbpf has also been extended to support sharing of umems between
+sockets bound to different devices and queue ids by introducing a new
+function called xsk_socket__create_shared(). The difference between
+this and the existing xsk_socket__create() is that the former takes a
+reference to a fill ring and a completion ring as these need to be
+created. This new function needs to be used for the second and
+following sockets that binds to the same umem. The first socket can be
+created by either function as it will also have called
+xsk_umem__create().
+
+There is also a new sample xsk_fwd that demonstrates this new
+interface and capability.
+
+Performance for the non-shared umem case is unchanged for the xdpsock
+sample application with this patch set. For workloads that share a
+umem, this patch set can give rise to added performance benefits due
+to the decrease in memory usage.
+
+v3 -> v4:
+
+* Fixed compilation error when CONFIG_XDP_SOCKETS_DIAG is set [lkp robot]
+
+v2 -> v3:
+
+* Clean up of fq_tmp and cq_tmp in xsk_release [Maxim]
+* Fixed bug when bind failed that caused pool to be freed twice [Ciara]
+
+v1 -> v2:
+
+* Tx need_wakeup init bug fixed. Missed to set the cached_need_wakeup
+  flag for Tx.
+* Need wakeup turned on for xsk_fwd sample [Cristian]
+* Commit messages cleaned up
+* Moved dma mapping list from netdev to umem [Maxim]
+* Now the buffer pool is only created once. Fill ring and completion
+  ring pointers are stored in the socket during initialization (before
+  bind) and at bind these pointers are moved over to the buffer pool
+  which is used all the time after that. [Maxim]
+
+This patch has been applied against commit e57892f50a07 ("Merge branch 'bpf-socket-lookup'")
+
+Structure of the patch set:
+
+Patch 1: Pass the buffer pool to the driver instead of the umem. This
+         because the driver needs one buffer pool per napi context
+         when we later introduce sharing of the umem between queue ids
+         and devices.
+Patch 2: Rename the xsk driver interface so they have better names
+         after the move to the buffer pool
+Patch 3: There is one buffer pool per device and queue, while there is
+         only one umem per registration. The buffer pool needs to be
+         created and destroyed independently of the umem.
+Patch 4: Move fill and completion rings to the buffer pool as there will
+         be one set of these per device and queue
+Patch 5: Move queue_id, dev and need_wakeup to buffer pool again as these
+         will now be per buffer pool as the umem can be shared between
+         devices and queues
+Patch 6: Move xsk_tx_list and its lock to buffer pool
+Patch 7: Move the creation/deletion of addrs from buffer pool to umem
+Patch 8: Enable sharing of DMA mappings when multiple queues of the
+         same device are bound
+Patch 9: Rearrange internal structs for better performance as these
+         have been substantially scrambled by the previous patches
+Patch 10: Add shared umem support between queue ids
+Patch 11: Add shared umem support between devices
+Patch 12: Add support for this in libbpf
+Patch 13: Add a new sample that demonstrates this new feature by
+          forwarding packets between different netdevs and queues
+Patch 14: Add documentation
+
+Thanks: Magnus
+
+Cristian Dumitrescu (1):
+  samples/bpf: add new sample xsk_fwd.c
+
+Magnus Karlsson (13):
+  xsk: i40e: ice: ixgbe: mlx5: pass buffer pool to driver instead of
+    umem
+  xsk: i40e: ice: ixgbe: mlx5: rename xsk zero-copy driver interfaces
+  xsk: create and free buffer pool independently from umem
+  xsk: move fill and completion rings to buffer pool
+  xsk: move queue_id, dev and need_wakeup to buffer pool
+  xsk: move xsk_tx_list and its lock to buffer pool
+  xsk: move addrs from buffer pool to umem
+  xsk: enable sharing of dma mappings
+  xsk: rearrange internal structs for better performance
+  xsk: add shared umem support between queue ids
+  xsk: add shared umem support between devices
+  libbpf: support shared umems between queues and devices
+  xsk: documentation for XDP_SHARED_UMEM between queues and netdevs
+
+ Documentation/networking/af_xdp.rst                |   68 +-
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |    2 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |   29 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |   10 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h        |    2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   79 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h         |    4 +-
+ drivers/net/ethernet/intel/ice/ice.h               |   18 +-
+ drivers/net/ethernet/intel/ice/ice_base.c          |   16 +-
+ drivers/net/ethernet/intel/ice/ice_lib.c           |    2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c          |   10 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c          |    8 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h          |    2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c           |  142 +--
+ drivers/net/ethernet/intel/ice/ice_xsk.h           |    7 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h           |    2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   34 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |    7 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   61 +-
+ drivers/net/ethernet/mellanox/mlx5/core/Makefile   |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en.h       |   19 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |    5 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/pool.c  |  217 ++++
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/pool.h  |   27 +
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.h    |   10 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.c |   12 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.h |    2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    |   14 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.h    |    6 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.c  |  217 ----
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.h  |   29 -
+ .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |    2 +-
+ .../ethernet/mellanox/mlx5/core/en_fs_ethtool.c    |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   49 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |   16 +-
+ include/linux/netdevice.h                          |   10 +-
+ include/net/xdp_sock.h                             |   30 +-
+ include/net/xdp_sock_drv.h                         |  115 ++-
+ include/net/xsk_buff_pool.h                        |   44 +-
+ net/ethtool/channels.c                             |    2 +-
+ net/ethtool/ioctl.c                                |    2 +-
+ net/xdp/xdp_umem.c                                 |  222 +---
+ net/xdp/xdp_umem.h                                 |    6 -
+ net/xdp/xsk.c                                      |  213 ++--
+ net/xdp/xsk.h                                      |    3 +
+ net/xdp/xsk_buff_pool.c                            |  309 +++++-
+ net/xdp/xsk_diag.c                                 |   16 +-
+ net/xdp/xsk_queue.h                                |   12 +-
+ samples/bpf/Makefile                               |    3 +
+ samples/bpf/xsk_fwd.c                              | 1075 ++++++++++++++++++++
+ tools/lib/bpf/libbpf.map                           |    1 +
+ tools/lib/bpf/xsk.c                                |  376 ++++---
+ tools/lib/bpf/xsk.h                                |    9 +
+ 53 files changed, 2506 insertions(+), 1074 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/pool.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/pool.h
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.c
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.h
+ create mode 100644 samples/bpf/xsk_fwd.c
+
+--
+2.7.4
