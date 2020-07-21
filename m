@@ -2,84 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F3F228224
-	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 16:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597F3228520
+	for <lists+bpf@lfdr.de>; Tue, 21 Jul 2020 18:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgGUO2A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 10:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        id S1730008AbgGUQOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 12:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbgGUO17 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jul 2020 10:27:59 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F93C0619DA;
-        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k4so10327564pld.12;
-        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
+        with ESMTP id S1729708AbgGUQOj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:14:39 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE81C061794;
+        Tue, 21 Jul 2020 09:14:38 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f5so24691985ljj.10;
+        Tue, 21 Jul 2020 09:14:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rztZLDwVmXshy2I0VYii6VvZ6b/CEa6jKXB3iTVWQ4o=;
-        b=lpqtCpBNGrEpb9rB920qsdHHd+u3Ln+pKgNfy/rj9J7Dr2HWhw6k5XNE5uSHnfU2Dw
-         0PXA4XuoKG4rRHrRCWF5QquD6H7rIXu96KOZTw0ko0E5G/18zbtU8V1K0ZGAkoJeWWe3
-         ZKAqHP1z5e2vkEHEBunH5Kxk+zc0jRw0CCcgQRrjQ3LzfgLD0T6kbbeTMhvKHDO1+PLV
-         LMHh8aTrXB8Q8LEN9fqVX9ypuc6JmgzMHLLMieoucnASGCGZLe81nTBVx35OcFuU/iOT
-         EDiUYnGh1FPZ1T2vHhphqi8WGZAilUK1Cmf3XMx3qMaiBnWVoadmGQqjXXqQMKRPP9jR
-         BipQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qnrzo3m/moPC7spmlG7c2sD0aqedvWh7YbC4vhEm7sA=;
+        b=npnlZ761xb5dO2PofCWrkeVpoyos4evXBBlncACEK3Wo5mVKKy1x1V0ZThwPThvtgF
+         9j7hQ0qrg1DoxN6zNZCDvfZYrJyLhuSJz4kSZ5zIqY7iycBHtNKWqHsTB6jTtkIEF1bS
+         5qrLn/C+x5h9JAGQVYs8Rq3bj1npXCRUwqQDIWHXyjMLaMgQru4isJ5HCp0bxgnWRf3L
+         MrsityQZhvQjiphulixgSJ5051yQjVH6GkCa2521oPIcWpYybgL1zU4Wl8X3zGJUZQPT
+         WrzsK4UE9BtlimWHK7LtyNzx9ujtw35qR+MOHZQnQXNG6ghOz/d9zLv3sqqKgH2MQ4Mg
+         bM2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rztZLDwVmXshy2I0VYii6VvZ6b/CEa6jKXB3iTVWQ4o=;
-        b=sz/3xVfrRLZ+WS3au57u/JyDyNhynT/9H5yYCkR+sKhKfv7KAc84b1ubkoq7Ab1uGf
-         5LwmwCPc1X/lo2MZ6IJ7jUOjcjHMqufaRd4aDjM+8g67PGc/z/W2ZhvlV1wYpV+DShDA
-         uNAqZHPyML7pOaW7d9zCFkr0C/tIqyFY40IMK69tMOJA+QgVtGc/KLj0cf7lOQmm2YPf
-         rGOlJSe9QbO8SHh06l/YRcB9CkVkT12FKH/ok1SS5JHtsVXWw1PotA0GSEy4GLRaKCKn
-         Ll6fBgihrFOkqzmeuWWOp9F1rs/TRPuh3bATNWWGVtPLYCQy4ESNMbkahHrBvHXwYfWD
-         88Xg==
-X-Gm-Message-State: AOAM530jEeLbVTbDBS45dDLBkqllgLZuATEPnRtyPvR3WAs69h+8ePLO
-        taABjehP+9zg0Q9F4gyWzuU=
-X-Google-Smtp-Source: ABdhPJwOZkGf2+hjpzR0ukUubhMTS+fw15qB9NT03kp3OB6E49eATRpV/OJ5KldIqcX9/AUJ4fVx5Q==
-X-Received: by 2002:a17:90a:b009:: with SMTP id x9mr5047312pjq.136.1595341679439;
-        Tue, 21 Jul 2020 07:27:59 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id r9sm3592981pje.12.2020.07.21.07.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 07:27:58 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 23:27:56 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        pmladek@suse.com, rostedt@goodmis.org,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Subject: Re: [PATCH] docs: core-api/printk-formats.rst: use literal block
- syntax
-Message-ID: <20200721142756.GD44523@jagdpanzerIV.localdomain>
-References: <20200718165107.625847-1-dwlsalmeida@gmail.com>
- <20200718165107.625847-8-dwlsalmeida@gmail.com>
- <20200721140246.GB44523@jagdpanzerIV.localdomain>
- <20200721082434.504d5788@lwn.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qnrzo3m/moPC7spmlG7c2sD0aqedvWh7YbC4vhEm7sA=;
+        b=nZRFUOljCY9ona2I5y+6U0XLxpwNmvXe7V3yELcPfXWm9TCa8opU8KBps1EQZle4KM
+         iik/++mUqlcM8jpWKiAcVPPqyCZeLwTZiZPjkmvJPEM5mMZTQMa6ow37FkCiLxEL0Z2Q
+         Oz7dR5L/IBX8yZXJ7k/zWAiDzHrTjoxuNYsapik4DzP+g2CXMHldkDAJxFl/M6aqprf6
+         TmN7usNYsIon4DPjKbeCi+h4IGaS3JAwVUrTEBtVQf7S66hftBTD4wP2651DRhbY3sZG
+         koQmt5G1URK3S2c3X731iC7s4fN92Gtt3N9zdkiOQR1+8GSEADg8rnp112S+8Rvifabp
+         Hvig==
+X-Gm-Message-State: AOAM530wFS+ITjFBAb43Pfl7PJzTBGEEh5ybZkJKxtBfd34Wqyu5e1uh
+        nVYyS3nKMwohj4eHlxtmJ8GF7IBlKbYNicneMPs=
+X-Google-Smtp-Source: ABdhPJxyt6MEO8MDzWAApsfZLBM3yeet5/hMDgA3rvElUOHwuyt92SwGTQZlsPDjfjg3KTUusSrUQR4s/hI68wRqCI0=
+X-Received: by 2002:a2e:9a0f:: with SMTP id o15mr13518627lji.450.1595348077362;
+ Tue, 21 Jul 2020 09:14:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721082434.504d5788@lwn.net>
+References: <20200721100716.720477-1-jakub@cloudflare.com> <1140c2d9-f0a4-97da-5f3f-23190e6bc6b9@infradead.org>
+In-Reply-To: <1140c2d9-f0a4-97da-5f3f-23190e6bc6b9@infradead.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 21 Jul 2020 09:14:25 -0700
+Message-ID: <CAADnVQ+F3devpvOg7i6td99Hq3bXOVe0t6_tUKnFzw-=v6Ky9A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, netns: Fix build without CONFIG_INET
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On (20/07/21 08:24), Jonathan Corbet wrote:
-> On Tue, 21 Jul 2020 23:02:46 +0900
-> 
-> I'm happy either way.  I'll grab it
+On Tue, Jul 21, 2020 at 7:01 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 7/21/20 3:07 AM, Jakub Sitnicki wrote:
+> > When CONFIG_NET is set but CONFIG_INET isn't, build fails with:
+> >
+> >   ld: kernel/bpf/net_namespace.o: in function `netns_bpf_attach_type_unneed':
+> >   kernel/bpf/net_namespace.c:32: undefined reference to `bpf_sk_lookup_enabled'
+> >   ld: kernel/bpf/net_namespace.o: in function `netns_bpf_attach_type_need':
+> >   kernel/bpf/net_namespace.c:43: undefined reference to `bpf_sk_lookup_enabled'
+> >
+> > This is because without CONFIG_INET bpf_sk_lookup_enabled symbol is not
+> > available. Wrap references to bpf_sk_lookup_enabled with preprocessor
+> > conditionals.
+> >
+> > Fixes: 1559b4aa1db4 ("inet: Run SK_LOOKUP BPF program on socket lookup")
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Please go ahead.
-
-	-ss
+Applied. Thanks
