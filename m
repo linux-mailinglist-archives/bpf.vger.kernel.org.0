@@ -2,118 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071022A09E
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 22:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B2122A10B
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 23:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726888AbgGVUQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 16:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726649AbgGVUQE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:16:04 -0400
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE400C0619DC;
-        Wed, 22 Jul 2020 13:14:25 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyL87-00028N-Fk; Wed, 22 Jul 2020 22:14:19 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyL87-000Tov-9u; Wed, 22 Jul 2020 22:14:19 +0200
-Subject: Re: [PATCH v2 bpf-next 2/6] bpf: propagate poke descriptors to
- subprograms
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com
-References: <20200721115321.3099-1-maciej.fijalkowski@intel.com>
- <20200721115321.3099-3-maciej.fijalkowski@intel.com>
- <29a3dcfc-9d85-c113-19d2-e33f80ce5430@iogearbox.net>
- <20200722183749.GB8874@ranger.igk.intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <89d0d100-2221-b8c8-ad37-d1b615a27817@iogearbox.net>
-Date:   Wed, 22 Jul 2020 22:14:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1731019AbgGVVG0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 17:06:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53924 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726447AbgGVVGZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 17:06:25 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ML49ow107103;
+        Wed, 22 Jul 2020 17:06:23 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32ecpaxggc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 17:06:23 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ML0rto032441;
+        Wed, 22 Jul 2020 21:01:20 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 32brq85eh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 21:01:20 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ML1HuS59703400
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 21:01:17 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFABEA4054;
+        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7360DA4060;
+        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
+From:   Schnelle <svens@linux.ibm.com>
+To:     seth.forshee@canonical.com
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: test_bpf regressions on s390 since 5.4
+References: <20200716152306.GH3644@ubuntu-x1>
+Date:   Wed, 22 Jul 2020 23:01:17 +0200
+In-Reply-To: <20200716152306.GH3644@ubuntu-x1> (seth forshee's message of
+        "Thu, 16 Jul 2020 10:23:06 -0500")
+Message-ID: <yt9dtuxzs1r6.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200722183749.GB8874@ranger.igk.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25881/Wed Jul 22 16:35:43 2020)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_13:2020-07-22,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=9 bulkscore=0 spamscore=9
+ impostorscore=0 clxscore=1011 suspectscore=3 phishscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=101 mlxscore=9
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007220128
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/22/20 8:37 PM, Maciej Fijalkowski wrote:
-> On Wed, Jul 22, 2020 at 04:40:42PM +0200, Daniel Borkmann wrote:
->> On 7/21/20 1:53 PM, Maciej Fijalkowski wrote:
->>> Previously, there was no need for poke descriptors being present in
->>> subprogram's bpf_prog_aux struct since tailcalls were simply not allowed
->>> in them. Each subprog is JITed independently so in order to enable
->>> JITing such subprograms, simply copy poke descriptors from main program
->>> to subprogram's poke tab.
->>>
->>> Add also subprog's aux struct to the BPF map poke_progs list by calling
->>> on it map_poke_track().
->>>
->>> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->>> ---
->>>    kernel/bpf/verifier.c | 20 ++++++++++++++++++++
->>>    1 file changed, 20 insertions(+)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 3c1efc9d08fd..3428edf85220 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -9936,6 +9936,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>>    		goto out_undo_insn;
->>>    	for (i = 0; i < env->subprog_cnt; i++) {
->>> +		struct bpf_map *map_ptr;
->>> +		int j;
->>> +
->>>    		subprog_start = subprog_end;
->>>    		subprog_end = env->subprog_info[i + 1].start;
->>> @@ -9960,6 +9963,23 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->>>    		func[i]->aux->btf = prog->aux->btf;
->>>    		func[i]->aux->func_info = prog->aux->func_info;
->>> +		for (j = 0; j < prog->aux->size_poke_tab; j++) {
->>> +			int ret;
->>> +
->>> +			ret = bpf_jit_add_poke_descriptor(func[i],
->>> +							  &prog->aux->poke_tab[j]);
->>> +			if (ret < 0) {
->>> +				verbose(env, "adding tail call poke descriptor failed\n");
->>> +				goto out_free;
->>> +			}
->>> +			map_ptr = func[i]->aux->poke_tab[j].tail_call.map;
->>> +			ret = map_ptr->ops->map_poke_track(map_ptr, func[i]->aux);
->>> +			if (ret < 0) {
->>> +				verbose(env, "tracking tail call prog failed\n");
->>> +				goto out_free;
->>> +			}
->>
->> Hmm, I don't think this is correct/complete. If some of these have been registered or
->> if later on the JIT'ing fails but the subprog is already exposed to the prog array then
->> it's /public/ at this point, so a later bpf_jit_free() in out_free will rip them mem
->> while doing live patching on prog updates leading to UAF.
-> 
-> Ugh. So if we would precede the out_free label with map_poke_untrack() on error
-> path - would that be sufficient?
+Hi Seth,
 
-Yes that would be needed and should be sufficient since tracking/untracking/patching is
-synchronized under the map's poke mutex lock.
+seth.forshee@canonical.com writes:
 
->>> +		}
->>> +
->>>    		/* Use bpf_prog_F_tag to indicate functions in stack traces.
->>>    		 * Long term would need debug info to populate names
->>>    		 */
->>>
->>
+> The tests in lib/test_bpf.c were all passing in 5.4 when using the JIT,
+> but some are failing in 5.7/5.8. Some of the failures are due to the
+> removal of BPF_SIZE_MAX causing some expected failures to pass, which I
+> have already send a patch for [1]. The remaining failures appear to be
+> regressions. I haven't tried 5.5 or 5.6, so I'm not sure exactly when
+> they first appeared.
+>
+> These are the tests which currently fail:
+>
+>  test_bpf: #37 INT: MUL_X jited:1 ret -1 != 1 FAIL (1 times)
+>  test_bpf: #42 INT: SUB jited:1 ret -55 != 11 FAIL (1 times)
+>  test_bpf: #44 INT: MUL jited:1 ret 439084800 != 903446258 FAIL (1 times)
+>  test_bpf: #49 INT: shifts by register jited:1 ret -617 != -1 FAIL (1 times)
+>  test_bpf: #371 JNE signed compare, test 1 jited:1 ret 2 != 1 FAIL (1 times)
+>  test_bpf: #372 JNE signed compare, test 2 jited:1 ret 2 != 1 FAIL (1 times)
+>  test_bpf: #374 JNE signed compare, test 4 jited:1 ret 1 != 2 FAIL (1 times)
+>  test_bpf: #375 JNE signed compare, test 5 jited:1 ret 2 != 1 FAIL (1 times)
 
+The problem seems to be that the s390 JIT code generates a clgfi (compare
+logical 64 - 32 Bit) for JNE:
+
+kernel: test_bpf: #37 INT: MUL_X 
+bpf_jit: flen=8 proglen=66 pass=4 image=0000000035b17790 from=insmod pid=574
+kernel: JIT code: 00000000: a7 f4 00 03 07 e0 eb bf f0 70 00 24 c0 e1 ff ff
+kernel: JIT code: 00000010: ff ff c0 21 ff ff ff ff c0 31 00 00 00 03 b9 0c
+kernel: JIT code: 00000020: 00 23 c2 2e ff ff ff fd a7 84 00 04 a7 f4 00 05
+kernel: JIT code: 00000030: c0 e1 00 00 00 01 b9 04 00 2e eb bf f0 70 00 04
+kernel: JIT code: 00000040: 07 fe
+kernel: 000003ff800a0a48: a7f40003            brc        15,000003ff800a0a4e
+kernel: 000003ff800a0a4c: 07e0                bcr        14,%r0
+kernel: 000003ff800a0a4e: ebbff0700024        stmg       %r11,%r15,112(%r15)
+kernel: 000003ff800a0a54: c0e1ffffffff        lgfi       %r14,-1
+kernel: 000003ff800a0a5a: c021ffffffff        lgfi       %r2,-1
+kernel: 000003ff800a0a60: c03100000003        lgfi       %r3,3
+kernel: 000003ff800a0a66: b90c0023            msgr       %r2,%r3
+kernel: 000003ff800a0a6a: c22efffffffd        clgfi      %r2,4294967293
+kernel: 000003ff800a0a70: a7840004            brc        8,000003ff800a0a78
+kernel: 000003ff800a0a74: a7f40005            brc        15,000003ff800a0a7e
+kernel: 000003ff800a0a78: c0e100000001        lgfi       %r14,1
+kernel: 000003ff800a0a7e: b904002e            lgr        %r2,%r14
+kernel: 000003ff800a0a82: ebbff0700004        lmg        %r11,%r15,112(%r15)
+kernel: 000003ff800a0a88: 07fe                bcr        15,%r14
+kernel: jited:1 ret -1 != 1 FAIL (1 times)
+
+which in the MUL_X case compares than 0xfffffffffffffffd with
+0xfffffffd, which is wrong. Changing this to a proper compare fixes all
+the test cases for me. Thanks for reporting!
+
+Regards
+Sven
