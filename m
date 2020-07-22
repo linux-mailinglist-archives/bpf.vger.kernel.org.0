@@ -2,84 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92193229315
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 10:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B36229347
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 10:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729207AbgGVIHa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 04:07:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:55401 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726945AbgGVIHa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:07:30 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2537A6736F; Wed, 22 Jul 2020 10:07:25 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 10:07:24 +0200
-From:   'Christoph Hellwig' <hch@lst.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Christoph Hellwig' <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        "coreteam@netfilter.org" <coreteam@netfilter.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
-        "linux-decnet-user@lists.sourceforge.net" 
-        <linux-decnet-user@lists.sourceforge.net>,
-        "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "mptcp@lists.01.org" <mptcp@lists.01.org>,
-        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "tipc-discussion@lists.sourceforge.net" 
-        <tipc-discussion@lists.sourceforge.net>,
-        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>
-Subject: Re: get rid of the address_space override in setsockopt
-Message-ID: <20200722080724.GB26864@lst.de>
-References: <20200720124737.118617-1-hch@lst.de> <ae6a743aaea3406596dbc89e332b6b3e@AcuMS.aculab.com>
+        id S1726526AbgGVIUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 04:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgGVIUb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 04:20:31 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8020C0619DE
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 01:20:30 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id x5so522339wmi.2
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 01:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AGO5oXC2NaEBZms9Zzvd2Ka4lOiXeYYL68h7WdCW7xI=;
+        b=LJpl2hBN0SFsjG67XqGtJQn+tNX8kctXVNJojoT3N44DachISj7x/UMugDRxiISuzp
+         vANMfx2UD27Wiq1sgbz4bja+0TMOWCz9yJgNW4SCHs0iljWvcRzlBSPaeqQDAI8acMsH
+         xPD6ZWu/WyCOD/ozN5tdXgw1R7Bw/EFhULNaqyQAnOtfSbeOUL3ks4RAYVRV2wRaU9WV
+         SLJRnT+Xmwsb2+OThTn9FUhZzLMIyg0njVzTw84s9xlPTNUxEPT2DGIe93mTAxFlmGwS
+         MXP/MkYDZYrEZYyJdzVYuZbefn6KtYPGYCs56z0vGnzN0SrobbmPdTN9mAFaV2GsRM9n
+         U7FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AGO5oXC2NaEBZms9Zzvd2Ka4lOiXeYYL68h7WdCW7xI=;
+        b=U9JKJdKRV8rdqUdaR0T9T/UGLk++EoUnepxqppv1BuX7o5TTFuwWSdrHjvXQRvEplz
+         XONhpzJRKQOqRwpZvURy0sIWVz6W+I/msXXJyaZPpIWZbxYMGGgWbpDUl9fdJTPrW8Ke
+         0LSuMdB+9yZgtCpMIU/FnroizzJBbTgMLYLeN56WaYzuonvTI10SUFYmIsC7I2hswKmB
+         paBvvR5utI6dLgfvA88McvKagdTqkRufQHU0/AuN/FUM0xzHPR+fQ3EXVUxW8amxtWki
+         wHfh0D1vUBkB3haxvjZbBrn3l3761hv/OoTT3mrNGGLlPxW20v/bwKf6vaVmBgYphNa5
+         RtqA==
+X-Gm-Message-State: AOAM530Dco4VYGUQbfl8t/XcMoLmvvuGW7lQkNavsC4PX1erbWigHnnM
+        3K1HF4uIKojJrCITdV1u+vvrNy38mSVV7m4r
+X-Google-Smtp-Source: ABdhPJwN9ffmcHmPB/OEIHDKByAPhM6CmSNwyL87+MyHHwPRmMtflIzDC4T04pj3pv4tWym0BbTCZg==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr912005wmk.153.1595406029191;
+        Wed, 22 Jul 2020 01:20:29 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.117.140])
+        by smtp.gmail.com with ESMTPSA id n5sm6509733wmi.34.2020.07.22.01.20.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 01:20:28 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] tools/bpftool: strip BPF .o files before
+ skeleton generation
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200722043804.2373298-1-andriin@fb.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <bae8109d-3f01-eafb-eff8-4df425771b2b@isovalent.com>
+Date:   Wed, 22 Jul 2020 09:20:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae6a743aaea3406596dbc89e332b6b3e@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200722043804.2373298-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:26:58AM +0000, David Laight wrote:
-> From: Christoph Hellwig
-> > Sent: 20 July 2020 13:47
-> > 
-> > setsockopt is the last place in architecture-independ code that still
-> > uses set_fs to force the uaccess routines to operate on kernel pointers.
-> > 
-> > This series adds a new sockptr_t type that can contained either a kernel
-> > or user pointer, and which has accessors that do the right thing, and
-> > then uses it for setsockopt, starting by refactoring some low-level
-> > helpers and moving them over to it before finally doing the main
-> > setsockopt method.
+On 22/07/2020 05:38, Andrii Nakryiko wrote:
+> Strip away DWARF info from .bpf.o files, before generating BPF skeletons.
+> This reduces bpftool binary size from 3.43MB to 2.58MB.
 > 
-> Another 'gotcha' ...
-> 
-> On an least some architectures (possibly only m68k) IIRC all structures
-> are actually passed by reference.
-> (This used to be true for sparc - but it may have changed in the
-> last 30 years.)
-
-Tough luck for ABIs wit suboptimal calling conventions.  At least we can
-do the right thing for those that do not have the problem.
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Quentin Monnet <quentin@isovalent.com>
