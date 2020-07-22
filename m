@@ -2,121 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B2122A10B
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 23:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA7322A117
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 23:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731019AbgGVVG0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 17:06:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53924 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726447AbgGVVGZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 17:06:25 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ML49ow107103;
-        Wed, 22 Jul 2020 17:06:23 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32ecpaxggc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 17:06:23 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ML0rto032441;
-        Wed, 22 Jul 2020 21:01:20 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 32brq85eh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 21:01:20 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ML1HuS59703400
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 21:01:17 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFABEA4054;
-        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7360DA4060;
-        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 22 Jul 2020 21:01:17 +0000 (GMT)
-From:   Schnelle <svens@linux.ibm.com>
-To:     seth.forshee@canonical.com
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: test_bpf regressions on s390 since 5.4
-References: <20200716152306.GH3644@ubuntu-x1>
-Date:   Wed, 22 Jul 2020 23:01:17 +0200
-In-Reply-To: <20200716152306.GH3644@ubuntu-x1> (seth forshee's message of
-        "Thu, 16 Jul 2020 10:23:06 -0500")
-Message-ID: <yt9dtuxzs1r6.fsf@linux.ibm.com>
+        id S1732552AbgGVVMi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 22 Jul 2020 17:12:38 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21580 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726447AbgGVVMh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 17:12:37 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-jVeIKQ-UOMqygGwfwFGdiw-1; Wed, 22 Jul 2020 17:12:30 -0400
+X-MC-Unique: jVeIKQ-UOMqygGwfwFGdiw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08EA8185BDED;
+        Wed, 22 Jul 2020 21:12:28 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5995819C4F;
+        Wed, 22 Jul 2020 21:12:24 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH v8 bpf-next 00/13] bpf: Add d_path helper
+Date:   Wed, 22 Jul 2020 23:12:10 +0200
+Message-Id: <20200722211223.1055107-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_13:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=9 bulkscore=0 spamscore=9
- impostorscore=0 clxscore=1011 suspectscore=3 phishscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 mlxlogscore=101 mlxscore=9
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220128
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Seth,
+hi,
+adding d_path helper function that returns full path for
+given 'struct path' object, which needs to be the kernel
+BTF 'path' object. The path is returned in buffer provided
+'buf' of size 'sz' and is zero terminated.
 
-seth.forshee@canonical.com writes:
+  int bpf_d_path(struct path *path, char *buf, u32 sz);
 
-> The tests in lib/test_bpf.c were all passing in 5.4 when using the JIT,
-> but some are failing in 5.7/5.8. Some of the failures are due to the
-> removal of BPF_SIZE_MAX causing some expected failures to pass, which I
-> have already send a patch for [1]. The remaining failures appear to be
-> regressions. I haven't tried 5.5 or 5.6, so I'm not sure exactly when
-> they first appeared.
->
-> These are the tests which currently fail:
->
->  test_bpf: #37 INT: MUL_X jited:1 ret -1 != 1 FAIL (1 times)
->  test_bpf: #42 INT: SUB jited:1 ret -55 != 11 FAIL (1 times)
->  test_bpf: #44 INT: MUL jited:1 ret 439084800 != 903446258 FAIL (1 times)
->  test_bpf: #49 INT: shifts by register jited:1 ret -617 != -1 FAIL (1 times)
->  test_bpf: #371 JNE signed compare, test 1 jited:1 ret 2 != 1 FAIL (1 times)
->  test_bpf: #372 JNE signed compare, test 2 jited:1 ret 2 != 1 FAIL (1 times)
->  test_bpf: #374 JNE signed compare, test 4 jited:1 ret 1 != 2 FAIL (1 times)
->  test_bpf: #375 JNE signed compare, test 5 jited:1 ret 2 != 1 FAIL (1 times)
+The helper calls directly d_path function, so there's only
+limited set of function it can be called from.
 
-The problem seems to be that the s390 JIT code generates a clgfi (compare
-logical 64 - 32 Bit) for JNE:
+The patchset also adds support to add set of BTF IDs for
+a helper to define functions that the helper is allowed
+to be called from.
 
-kernel: test_bpf: #37 INT: MUL_X 
-bpf_jit: flen=8 proglen=66 pass=4 image=0000000035b17790 from=insmod pid=574
-kernel: JIT code: 00000000: a7 f4 00 03 07 e0 eb bf f0 70 00 24 c0 e1 ff ff
-kernel: JIT code: 00000010: ff ff c0 21 ff ff ff ff c0 31 00 00 00 03 b9 0c
-kernel: JIT code: 00000020: 00 23 c2 2e ff ff ff fd a7 84 00 04 a7 f4 00 05
-kernel: JIT code: 00000030: c0 e1 00 00 00 01 b9 04 00 2e eb bf f0 70 00 04
-kernel: JIT code: 00000040: 07 fe
-kernel: 000003ff800a0a48: a7f40003            brc        15,000003ff800a0a4e
-kernel: 000003ff800a0a4c: 07e0                bcr        14,%r0
-kernel: 000003ff800a0a4e: ebbff0700024        stmg       %r11,%r15,112(%r15)
-kernel: 000003ff800a0a54: c0e1ffffffff        lgfi       %r14,-1
-kernel: 000003ff800a0a5a: c021ffffffff        lgfi       %r2,-1
-kernel: 000003ff800a0a60: c03100000003        lgfi       %r3,3
-kernel: 000003ff800a0a66: b90c0023            msgr       %r2,%r3
-kernel: 000003ff800a0a6a: c22efffffffd        clgfi      %r2,4294967293
-kernel: 000003ff800a0a70: a7840004            brc        8,000003ff800a0a78
-kernel: 000003ff800a0a74: a7f40005            brc        15,000003ff800a0a7e
-kernel: 000003ff800a0a78: c0e100000001        lgfi       %r14,1
-kernel: 000003ff800a0a7e: b904002e            lgr        %r2,%r14
-kernel: 000003ff800a0a82: ebbff0700004        lmg        %r11,%r15,112(%r15)
-kernel: 000003ff800a0a88: 07fe                bcr        15,%r14
-kernel: jited:1 ret -1 != 1 FAIL (1 times)
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/d_path
 
-which in the MUL_X case compares than 0xfffffffffffffffd with
-0xfffffffd, which is wrong. Changing this to a proper compare fixes all
-the test cases for me. Thanks for reporting!
+v8 changes:
+  - rebased on Yonghong's latest changes
+  - factored btf_struct_access function [Andrii]
+  - fixed leftovers fro mthe preparation changes
 
-Regards
-Sven
+thanks,
+jirka
+
+
+---
+Jiri Olsa (13):
+      selftests/bpf: Fix resolve_btfids test
+      tools resolve_btfids: Add support for set symbols
+      bpf: Move btf_resolve_size into __btf_resolve_size
+      bpf: Add elem_id pointer as argument to __btf_resolve_size
+      bpf: Add type_id pointer as argument to __btf_resolve_size
+      bpf: Factor btf_struct_access function
+      bpf: Add btf_struct_ids_match function
+      bpf: Add BTF_SET_START/END macros
+      bpf: Add d_path helper
+      bpf: Update .BTF_ids section in btf.rst with sets info
+      selftests/bpf: Add verifier test for d_path helper
+      selftests/bpf: Add test for d_path helper
+      selftests/bpf: Add set test to resolve_btfids
+
+ Documentation/bpf/btf.rst                               |  25 +++++++++++++++
+ include/linux/bpf.h                                     |   6 ++++
+ include/linux/btf.h                                     |   3 +-
+ include/linux/btf_ids.h                                 |  43 ++++++++++++++++++++++++-
+ include/uapi/linux/bpf.h                                |  13 ++++++++
+ kernel/bpf/bpf_struct_ops.c                             |   6 ++--
+ kernel/bpf/btf.c                                        | 148 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
+ kernel/bpf/verifier.c                                   |  23 ++++++++++----
+ kernel/trace/bpf_trace.c                                |  48 ++++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py                              |   2 ++
+ tools/bpf/resolve_btfids/main.c                         |  15 ++++++++-
+ tools/include/linux/btf_ids.h                           |  43 ++++++++++++++++++++++++-
+ tools/include/uapi/linux/bpf.h                          |  13 ++++++++
+ tools/testing/selftests/bpf/prog_tests/d_path.c         | 162 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/resolve_btfids.c |  34 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_d_path.c         |  64 ++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/test_verifier.c             |  19 +++++++++++-
+ tools/testing/selftests/bpf/verifier/d_path.c           |  37 ++++++++++++++++++++++
+ 18 files changed, 667 insertions(+), 37 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_d_path.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/d_path.c
+
