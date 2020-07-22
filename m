@@ -2,115 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FD822A131
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 23:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228DB22A199
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 23:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732511AbgGVVNf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 22 Jul 2020 17:13:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24744 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732324AbgGVVNf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 17:13:35 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-xxnTTcBcPmKaw3P-S9ln1g-1; Wed, 22 Jul 2020 17:13:18 -0400
-X-MC-Unique: xxnTTcBcPmKaw3P-S9ln1g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED8E4100CCC1;
-        Wed, 22 Jul 2020 21:13:15 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E57B019C4F;
-        Wed, 22 Jul 2020 21:13:12 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1728914AbgGVVxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 17:53:32 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31984 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726841AbgGVVxb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 17:53:31 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MLehx2011129;
+        Wed, 22 Jul 2020 14:53:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=nXGQFz13UrR6JaFA6YbqUKvaj2VtE34elxufvD8zFyE=;
+ b=AJVOmtly8oVT/BsCaUzoNex/ICnt+lz5mLuf4hLhPpFKkkatlgRc4G9CqKiiQ0KY0FcQ
+ VhuEr59v79Ql12zCHvIPSYr5UDyeYxNAjkpnRlKGYLCCNtrierwcLZ/YV70prkWp3CFZ
+ FhrcI+yj49Ewnxqh4wTyihHoY3LkrVfKrcsQYbxSjWF7YexaKUWLZkzq5ixDzurlWPqh
+ evPQQg4tOs0+Cy0VeYsXIt2OQrLz9OzpP4neNWLRihde0nRj1nlsi4zXVz9nfwTHi7Ld
+ Gpy448sqDmoXH/OyzoiltTpSxhu+QwOAghvhzD3m/i03dl+wTgYw+h+cVmyVZU6dgxBv sw== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 32c0kksxd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 14:53:13 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
+ 2020 14:53:12 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 14:53:11 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id 69E673F703F;
+        Wed, 22 Jul 2020 14:53:05 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Lobakin <alobakin@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        "Ariel Elior" <aelior@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH v8 bpf-next 13/13] selftests/bpf: Add set test to resolve_btfids
-Date:   Wed, 22 Jul 2020 23:12:23 +0200
-Message-Id: <20200722211223.1055107-14-jolsa@kernel.org>
-In-Reply-To: <20200722211223.1055107-1-jolsa@kernel.org>
-References: <20200722211223.1055107-1-jolsa@kernel.org>
+        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 03/15] qed: move chain methods to a separate file
+Date:   Thu, 23 Jul 2020 00:52:49 +0300
+Message-ID: <20200722215249.2695-1-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200722155349.747-4-alobakin@marvell.com>
+References: <20200722155349.747-4-alobakin@marvell.com>,
+ <20200722155349.747-1-alobakin@marvell.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_16:2020-07-22,2020-07-22 signatures=0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test to for sets resolve_btfids. We're checking that
-testing set gets properly resolved and sorted.
+Kbuild test robot triggered a build error on Alpha, sorry. Will send
+v2 soon.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/resolve_btfids.c | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index 101785b49f7e..cc90aa244285 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -48,6 +48,15 @@ BTF_ID(struct,  S)
- BTF_ID(union,   U)
- BTF_ID(func,    func)
- 
-+BTF_SET_START(test_set)
-+BTF_ID(typedef, S)
-+BTF_ID(typedef, T)
-+BTF_ID(typedef, U)
-+BTF_ID(struct,  S)
-+BTF_ID(union,   U)
-+BTF_ID(func,    func)
-+BTF_SET_END(test_set)
-+
- static int
- __resolve_symbol(struct btf *btf, int type_id)
- {
-@@ -126,5 +135,29 @@ int test_resolve_btfids(void)
- 		}
- 	}
- 
-+	/* Check BTF_SET_START(test_set) IDs */
-+	for (i = 0; i < test_set.cnt && !ret; i++) {
-+		bool found = false;
-+
-+		for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
-+			if (test_symbols[j].id != test_set.ids[i])
-+				continue;
-+			found = true;
-+			break;
-+		}
-+
-+		ret = CHECK(!found, "id_check",
-+			    "ID %d for %s not found in test_symbols\n",
-+			    test_symbols[j].id, test_symbols[j].name);
-+		if (ret)
-+			break;
-+
-+		if (i > 0) {
-+			ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
-+				    "sort_check",
-+				    "test_set is not sorted\n");
-+		}
-+	}
-+
- 	return ret;
- }
--- 
-2.25.4
-
+Al
