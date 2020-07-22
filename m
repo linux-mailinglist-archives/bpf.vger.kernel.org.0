@@ -2,61 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44FD229F74
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 20:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B03C229F88
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 20:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgGVSpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 14:45:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36240 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732483AbgGVSo7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 14:44:59 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06MIZKKN026699
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:44:58 -0700
+        id S1732475AbgGVStu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 14:49:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11358 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731267AbgGVStu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 14:49:50 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MIcJs9012214
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:49:47 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=d0xYJy4huNGUNES1TTj69vv7d4p2DHeoXRNFx3PPv5Y=;
- b=Dm/PtylhpZr08bwf/6FCst3gAj7N2C69vXQ7/G/jZjfK8pWJevKIj95HiH0lZLVbL75J
- Sofz+0U5i+qUPB2MwCViD7pDOpKC7VG5wb0mnx3gKLc+kHgHl+KathYYWuJDkIVEPZjA
- H8vzVZMEt30lkVIuygVJB5MdQ0Zrek1LPWY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32esdjgkbq-4
+ bh=pl1PTWP11kIUsglaW5IdDhm+e14+SzxsRJ+xr5GArec=;
+ b=K0nEPrnncVjy4Sq2VLBoNSqUrlMwj7VzVFsPwFI1ete2dbmmmVa9GdjaHvuaNunbJUnb
+ 4aNQeFjKtgQgXyg+1m+2vYzfPdsBcp3SPon06iw9/1ejA7fetPr90+AY8NRVSjWv8yvA
+ 7N97ngvWcge+EoaMfcO6Xjl9pwC2wLqxZ38= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32embc28fv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:44:57 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:49:47 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 11:44:54 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 6627D62E5043; Wed, 22 Jul 2020 11:42:29 -0700 (PDT)
+ 15.1.1979.3; Wed, 22 Jul 2020 11:49:47 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 046FD3704B5A; Wed, 22 Jul 2020 11:49:45 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 4/4] selftests/bpf: add get_stackid_cannot_attach
-Date:   Wed, 22 Jul 2020 11:42:10 -0700
-Message-ID: <20200722184210.4078256-5-songliubraving@fb.com>
+Subject: [PATCH bpf-next v2 01/13] bpf: refactor bpf_iter_reg to have separate seq_info member
+Date:   Wed, 22 Jul 2020 11:49:45 -0700
+Message-ID: <20200722184945.3777163-1-yhs@fb.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200722184210.4078256-1-songliubraving@fb.com>
-References: <20200722184210.4078256-1-songliubraving@fb.com>
+In-Reply-To: <20200722184945.3777103-1-yhs@fb.com>
+References: <20200722184945.3777103-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 spamscore=0 adultscore=0 impostorscore=0 phishscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=855 impostorscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 phishscore=0 mlxscore=0 suspectscore=8
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2007220119
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
@@ -64,118 +62,305 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test confirms that BPF program that calls bpf_get_stackid() cannot
-attach to perf_event with precise_ip > 0 but not PERF_SAMPLE_CALLCHAIN;
-and cannot attach if the perf_event has exclude_callchain_kernel.
+There is no functionality change for this patch.
+Struct bpf_iter_reg is used to register a bpf_iter target,
+which includes information for both prog_load, link_create
+and seq_file creation.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
+This patch puts fields related seq_file creation into
+a different structure. This will be useful for map
+elements iterator where one iterator covers different
+map types and different map types may have different
+seq_ops, init/fini private_data function and
+private_data size.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- .../prog_tests/get_stackid_cannot_attach.c    | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_stackid_ca=
-nnot_attach.c
+ include/linux/bpf.h      | 17 ++++++++++-------
+ kernel/bpf/bpf_iter.c    | 12 ++++++------
+ kernel/bpf/map_iter.c    |  8 ++++++--
+ kernel/bpf/task_iter.c   | 16 ++++++++++++----
+ net/ipv4/tcp_ipv4.c      |  8 ++++++--
+ net/ipv4/udp.c           |  8 ++++++--
+ net/ipv6/route.c         |  8 ++++++--
+ net/netlink/af_netlink.c |  8 ++++++--
+ 8 files changed, 58 insertions(+), 27 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_at=
-tach.c b/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_attach=
-.c
-new file mode 100644
-index 0000000000000..f13149d279bc9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/get_stackid_cannot_attach.c
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <test_progs.h>
-+#include "test_stacktrace_build_id.skel.h"
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index bae557ff2da8..cb14fbe68a75 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -37,6 +37,15 @@ struct seq_operations;
+ extern struct idr btf_idr;
+ extern spinlock_t btf_idr_lock;
+=20
++typedef int (*bpf_iter_init_seq_priv_t)(void *private_data);
++typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
++struct bpf_iter_seq_info {
++	const struct seq_operations *seq_ops;
++	bpf_iter_init_seq_priv_t init_seq_private;
++	bpf_iter_fini_seq_priv_t fini_seq_private;
++	u32 seq_priv_size;
++};
 +
-+void test_get_stackid_cannot_attach(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 1,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct test_stacktrace_build_id *skel;
-+	__u32 duration =3D 0;
-+	int pmu_fd, err;
+ /* map is generic key/value storage optionally accesible by eBPF program=
+s */
+ struct bpf_map_ops {
+ 	/* funcs callable from userspace (via syscall) */
+@@ -1188,18 +1197,12 @@ int bpf_obj_get_user(const char __user *pathname,=
+ int flags);
+ 	extern int bpf_iter_ ## target(args);			\
+ 	int __init bpf_iter_ ## target(args) { return 0; }
+=20
+-typedef int (*bpf_iter_init_seq_priv_t)(void *private_data);
+-typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
+-
+ #define BPF_ITER_CTX_ARG_MAX 2
+ struct bpf_iter_reg {
+ 	const char *target;
+-	const struct seq_operations *seq_ops;
+-	bpf_iter_init_seq_priv_t init_seq_private;
+-	bpf_iter_fini_seq_priv_t fini_seq_private;
+-	u32 seq_priv_size;
+ 	u32 ctx_arg_info_size;
+ 	struct bpf_ctx_arg_aux ctx_arg_info[BPF_ITER_CTX_ARG_MAX];
++	const struct bpf_iter_seq_info *seq_info;
+ };
+=20
+ struct bpf_iter_meta {
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index dd612b80b9fe..5b2387d6aa1f 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -218,8 +218,8 @@ static int iter_release(struct inode *inode, struct f=
+ile *file)
+ 	iter_priv =3D container_of(seq->private, struct bpf_iter_priv_data,
+ 				 target_private);
+=20
+-	if (iter_priv->tinfo->reg_info->fini_seq_private)
+-		iter_priv->tinfo->reg_info->fini_seq_private(seq->private);
++	if (iter_priv->tinfo->reg_info->seq_info->fini_seq_private)
++		iter_priv->tinfo->reg_info->seq_info->fini_seq_private(seq->private);
+=20
+ 	bpf_prog_put(iter_priv->prog);
+ 	seq->private =3D iter_priv;
+@@ -433,16 +433,16 @@ static int prepare_seq_file(struct file *file, stru=
+ct bpf_iter_link *link)
+=20
+ 	tinfo =3D link->tinfo;
+ 	total_priv_dsize =3D offsetof(struct bpf_iter_priv_data, target_private=
+) +
+-			   tinfo->reg_info->seq_priv_size;
+-	priv_data =3D __seq_open_private(file, tinfo->reg_info->seq_ops,
++			   tinfo->reg_info->seq_info->seq_priv_size;
++	priv_data =3D __seq_open_private(file, tinfo->reg_info->seq_info->seq_o=
+ps,
+ 				       total_priv_dsize);
+ 	if (!priv_data) {
+ 		err =3D -ENOMEM;
+ 		goto release_prog;
+ 	}
+=20
+-	if (tinfo->reg_info->init_seq_private) {
+-		err =3D tinfo->reg_info->init_seq_private(priv_data->target_private);
++	if (tinfo->reg_info->seq_info->init_seq_private) {
++		err =3D tinfo->reg_info->seq_info->init_seq_private(priv_data->target_=
+private);
+ 		if (err)
+ 			goto release_seq_file;
+ 	}
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index 8a7af11b411f..5812dd465c49 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -85,17 +85,21 @@ static const struct seq_operations bpf_map_seq_ops =3D=
+ {
+ BTF_ID_LIST(btf_bpf_map_id)
+ BTF_ID(struct, bpf_map)
+=20
+-static struct bpf_iter_reg bpf_map_reg_info =3D {
+-	.target			=3D "bpf_map",
++static const struct bpf_iter_seq_info bpf_map_seq_info =3D {
+ 	.seq_ops		=3D &bpf_map_seq_ops,
+ 	.init_seq_private	=3D NULL,
+ 	.fini_seq_private	=3D NULL,
+ 	.seq_priv_size		=3D sizeof(struct bpf_iter_seq_map_info),
++};
 +
-+	skel =3D test_stacktrace_build_id__open();
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
++static struct bpf_iter_reg bpf_map_reg_info =3D {
++	.target			=3D "bpf_map",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__bpf_map, map),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &bpf_map_seq_info,
+ };
+=20
+ static int __init bpf_map_iter_init(void)
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 2feecf095609..5e387e2cd309 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -317,25 +317,32 @@ BTF_ID_LIST(btf_task_file_ids)
+ BTF_ID(struct, task_struct)
+ BTF_ID(struct, file)
+=20
+-static struct bpf_iter_reg task_reg_info =3D {
+-	.target			=3D "task",
++static const struct bpf_iter_seq_info task_seq_info =3D {
+ 	.seq_ops		=3D &task_seq_ops,
+ 	.init_seq_private	=3D init_seq_pidns,
+ 	.fini_seq_private	=3D fini_seq_pidns,
+ 	.seq_priv_size		=3D sizeof(struct bpf_iter_seq_task_info),
++};
 +
-+	/* override program type */
-+	bpf_program__set_perf_event(skel->progs.oncpu);
++static struct bpf_iter_reg task_reg_info =3D {
++	.target			=3D "task",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__task, task),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &task_seq_info,
+ };
+=20
+-static struct bpf_iter_reg task_file_reg_info =3D {
+-	.target			=3D "task_file",
++static const struct bpf_iter_seq_info task_file_seq_info =3D {
+ 	.seq_ops		=3D &task_file_seq_ops,
+ 	.init_seq_private	=3D init_seq_pidns,
+ 	.fini_seq_private	=3D fini_seq_pidns,
+ 	.seq_priv_size		=3D sizeof(struct bpf_iter_seq_task_file_info),
++};
 +
-+	err =3D test_stacktrace_build_id__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
++static struct bpf_iter_reg task_file_reg_info =3D {
++	.target			=3D "task_file",
+ 	.ctx_arg_info_size	=3D 2,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__task_file, task),
+@@ -343,6 +350,7 @@ static struct bpf_iter_reg task_file_reg_info =3D {
+ 		{ offsetof(struct bpf_iter__task_file, file),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &task_file_seq_info,
+ };
+=20
+ static int __init task_iter_init(void)
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index a7f1b41482f8..4ef85c97c183 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2955,17 +2955,21 @@ static void bpf_iter_fini_tcp(void *priv_data)
+ 	bpf_iter_fini_seq_net(priv_data);
+ }
+=20
+-static struct bpf_iter_reg tcp_reg_info =3D {
+-	.target			=3D "tcp",
++static const struct bpf_iter_seq_info tcp_seq_info =3D {
+ 	.seq_ops		=3D &bpf_iter_tcp_seq_ops,
+ 	.init_seq_private	=3D bpf_iter_init_tcp,
+ 	.fini_seq_private	=3D bpf_iter_fini_tcp,
+ 	.seq_priv_size		=3D sizeof(struct tcp_iter_state),
++};
 +
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0 && errno =3D=3D ENOENT) {
-+		printf("%s:SKIP:cannot open PERF_COUNT_HW_CPU_CYCLES with precise_ip >=
- 0\n",
-+		       __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
++static struct bpf_iter_reg tcp_reg_info =3D {
++	.target			=3D "tcp",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__tcp, sk_common),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &tcp_seq_info,
+ };
+=20
+ static void __init bpf_iter_register(void)
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index b5231ab350e0..1c017427330f 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -3233,17 +3233,21 @@ static void bpf_iter_fini_udp(void *priv_data)
+ 	bpf_iter_fini_seq_net(priv_data);
+ }
+=20
+-static struct bpf_iter_reg udp_reg_info =3D {
+-	.target			=3D "udp",
++static const struct bpf_iter_seq_info udp_seq_info =3D {
+ 	.seq_ops		=3D &bpf_iter_udp_seq_ops,
+ 	.init_seq_private	=3D bpf_iter_init_udp,
+ 	.fini_seq_private	=3D bpf_iter_fini_udp,
+ 	.seq_priv_size		=3D sizeof(struct udp_iter_state),
++};
 +
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(!IS_ERR(skel->links.oncpu), "attach_perf_event_no_callchain",
-+	      "should have failed\n");
-+	close(pmu_fd);
++static struct bpf_iter_reg udp_reg_info =3D {
++	.target			=3D "udp",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__udp, udp_sk),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &udp_seq_info,
+ };
+=20
+ static void __init bpf_iter_register(void)
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 33f5efbad0a9..8bfc57b0802a 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -6427,17 +6427,21 @@ DEFINE_BPF_ITER_FUNC(ipv6_route, struct bpf_iter_=
+meta *meta, struct fib6_info *r
+ BTF_ID_LIST(btf_fib6_info_id)
+ BTF_ID(struct, fib6_info)
+=20
+-static struct bpf_iter_reg ipv6_route_reg_info =3D {
+-	.target			=3D "ipv6_route",
++static const struct bpf_iter_seq_info ipv6_route_seq_info =3D {
+ 	.seq_ops		=3D &ipv6_route_seq_ops,
+ 	.init_seq_private	=3D bpf_iter_init_seq_net,
+ 	.fini_seq_private	=3D bpf_iter_fini_seq_net,
+ 	.seq_priv_size		=3D sizeof(struct ipv6_route_iter),
++};
 +
-+	/* add PERF_SAMPLE_CALLCHAIN, attach should succeed */
-+	attr.sample_type |=3D PERF_SAMPLE_CALLCHAIN;
++static struct bpf_iter_reg ipv6_route_reg_info =3D {
++	.target			=3D "ipv6_route",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__ipv6_route, rt),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &ipv6_route_seq_info,
+ };
+=20
+ static int __init bpf_iter_register(void)
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 3cd58f0c2de4..19ec8cdd7a2f 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2807,17 +2807,21 @@ static const struct rhashtable_params netlink_rha=
+shtable_params =3D {
+ BTF_ID_LIST(btf_netlink_sock_id)
+ BTF_ID(struct, netlink_sock)
+=20
+-static struct bpf_iter_reg netlink_reg_info =3D {
+-	.target			=3D "netlink",
++static const struct bpf_iter_seq_info netlink_seq_info =3D {
+ 	.seq_ops		=3D &netlink_seq_ops,
+ 	.init_seq_private	=3D bpf_iter_init_seq_net,
+ 	.fini_seq_private	=3D bpf_iter_fini_seq_net,
+ 	.seq_priv_size		=3D sizeof(struct nl_seq_iter),
++};
 +
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event_callchain",
-+	      "err: %ld\n", PTR_ERR(skel->links.oncpu));
-+	close(pmu_fd);
-+
-+	/* add exclude_callchain_kernel, attach should fail */
-+	attr.exclude_callchain_kernel =3D 1;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
-+		  pmu_fd, errno))
-+		goto cleanup;
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	CHECK(!IS_ERR(skel->links.oncpu), "attach_perf_event_exclude_callchain_=
-kernel",
-+	      "should have failed\n");
-+	close(pmu_fd);
-+
-+cleanup:
-+	test_stacktrace_build_id__destroy(skel);
-+}
++static struct bpf_iter_reg netlink_reg_info =3D {
++	.target			=3D "netlink",
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__netlink, sk),
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
++	.seq_info		=3D &netlink_seq_info,
+ };
+=20
+ static int __init bpf_iter_register(void)
 --=20
 2.24.1
 
