@@ -2,177 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F38228D34
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 02:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D05F228E9F
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 05:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731258AbgGVAty (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jul 2020 20:49:54 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42564 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727049AbgGVAtx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jul 2020 20:49:53 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06M0mVJa024251;
-        Tue, 21 Jul 2020 17:49:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Y8E8lny0Eq+SZNSq3sOmAw7PDQ3DOp/lkWgLznjnirw=;
- b=i4/yjWeP415jBi7b6nW2r1CzBHRCzbF0Cv1V33HPQrUKJWEMgt2hFtiFk/GuImhmSxcZ
- e75AU2eQ+3tW/5OET7wMdQZF0vEhBd0BrWYa1t7zPR2X1wxb2/MyZx4w+TGpeRtYnTda
- c8SyYrdrBZQluOWI4iZzniZSad07ajfQLbM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 32bvrnq3um-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 21 Jul 2020 17:49:38 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 21 Jul 2020 17:49:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yf6FQ5GvDeuvTVTN9HJjnn7O7+POe5lJguZI9XGER+DMK+XpTcuZT1BWOHHQimJforA7F18pT0iTI5qqAhxZbrNXRYWXMYeu2Lu8VhjxKqFOF3KIa1hSZAnOo9A+rbWYw7bi8c7hah/mcTNKJLDO6vkCdxsVEs+586Ib9hs1BdaLmIDNJZSbShpfv9tFyjc9drVjTMBl0FV2p0VyBLX5qei6dncIsk79r5tBoUl8L93q9uM5sof1MbYwIQT0qyD9EGLlj/Btu9QSthRLMa0VkcNeMDHF3kr+xXzr3VOZiJXTNFfLK4E5z+Gk7Lj92J/PUDPUkJw7ldrL6paD6NlPfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y8E8lny0Eq+SZNSq3sOmAw7PDQ3DOp/lkWgLznjnirw=;
- b=mR6ZD5DBwXWes10PvdM3Xede2f5f0mMUZLj1gbNSIDgPvpka8zxlx3YrxfnqK1p4X0hsEZW+tmmhKtkZJh5AJxQt1xQ53UpYjM+q03NENoE1pKk8IgnY0+XMDa4Nqwz17U0Efr0qd/kJT2YP2ZNuA2I+v+EbrnpUHWC6VvVov0ygu+DIoqmgy4EQB9E7HcN84eWUdMlpfxc4MrJF+WLtXYza9dneoOLYcbDK/IDftXXtMWAycRldiXCH+pMxz1CHw7iwL1BapPWR23/MPOmj/tG9WHJTy1yL+uVujaOdgo7AQrCPFJB5/QBz1WiVCn10BogUzsJSU7eBrAvb3QbloA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y8E8lny0Eq+SZNSq3sOmAw7PDQ3DOp/lkWgLznjnirw=;
- b=ihdCHa5nvq2aYo+Tybw2vdanByB0xnib2TDug2ip82dY3cD4KJQ1HZgrYCXP2Wsk60fbvhrQut7bvx1wZBkV85SCL8vmWEcDJ4H6VD91sTBBddG/bTOSLvnZQJ/QB07bPOpBXi+YHKZPPkn50/IAnQT7aW1d8A6jvYTWYTbIjrQ=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BY5PR15MB3619.namprd15.prod.outlook.com (2603:10b6:a03:1f9::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Wed, 22 Jul
- 2020 00:49:36 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3174.030; Wed, 22 Jul 2020
- 00:49:36 +0000
-Date:   Tue, 21 Jul 2020 17:49:34 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     YiFei Zhu <zhuyifei@google.com>
-CC:     Stanislav Fomichev <sdf@google.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/5] bpf: Make cgroup storages shared across
- attaches on the same cgroup
-Message-ID: <20200722004934.xfy4xh4kgw7cdxe2@kafai-mbp>
-References: <cover.1595274799.git.zhuyifei@google.com>
- <f56279652110face35e35f2d4182da371cfe937c.1595274799.git.zhuyifei@google.com>
- <20200721180536.57kbngehupi4hqra@kafai-mbp>
- <CAA-VZPm9fgNKMHX1rbOEcUJ17=S5qS=rkYcBiqzcsOxCSSKuGg@mail.gmail.com>
- <20200721224158.ylrgjjljlighny4f@kafai-mbp>
- <20200721225636.GB184844@google.com>
- <20200722000913.roxrdgomdgvy7ho4@kafai-mbp>
- <CAA-VZPk0E6nfbm6NpM7_523tvRWGPFEMEkEp-UZW+Oht3pszLQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA-VZPk0E6nfbm6NpM7_523tvRWGPFEMEkEp-UZW+Oht3pszLQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BYAPR05CA0088.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::29) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:b838) by BYAPR05CA0088.namprd05.prod.outlook.com (2603:10b6:a03:e0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.15 via Frontend Transport; Wed, 22 Jul 2020 00:49:35 +0000
-X-Originating-IP: [2620:10d:c090:400::5:b838]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 337e47e7-e5ae-42ad-d455-08d82dd91b49
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3619:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB36194B6D190400DC70E62729D5790@BY5PR15MB3619.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TtfIiGwj50P4QlszhqPAaKN85gDzpYP3EZ5H01XY6kmQWGM4oPetDyquYwZj3Th53QfFSOArtNfqOA70mAeEjGMToQd14lKJzzjwyT0niXCk5DIiAEVQ8cpKUTx1hRTP0i0oFb1bQqrOMGEctFSyE/RX67srDDzgbBoX2msl1s26B0LYPziduAEmdrP1G9VmzkHGeKSGYwLy9trMSdD51TwXReOBRQlXgDr///simMx60R98FOagYK9DPHQ7WnmtpWFVNqvOSAkWYXGyPrgc8pdFPoJ731lNkcrzDjyKj5dyQeDGbGUHUyGR6WWNSHeCC1p2Lk+pWFFUdc5m3bl4rQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(376002)(346002)(366004)(136003)(54906003)(478600001)(5660300002)(4326008)(6916009)(16526019)(33716001)(186003)(8676002)(83380400001)(8936002)(52116002)(9686003)(6496006)(66476007)(66556008)(66946007)(316002)(2906002)(1076003)(86362001)(55016002)(53546011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: M4brHiFw43Th+RprQ+FawPiqLfbkn7Uw1JS+6OjM5YA9uS0h99kvKnC6+5vsWJruNC419zM/RrCy9JWPVMRjtCnfcM7oZvb5IaRKRbCIp30lFKQAih7LmoBaAEs4nwBHxkBJaFex6z6A4mZM3Yjuati9nstW3Yhx3PCtgRidbP7G6yenCidFreB40slkvYleam/xEm7CStoDNcvk3D06x3bpSOdAz1tJK5Qwv1t+BoBTXuPvzsJJVZDAfdTS7+qqfADQ7eW3o8zPgkiEBweUqHzhrJm4dXIa200MmqLI1Wu3JchZGpSiBckzIyqlkb4v6Uv5n6a2dGQ3s+/928YhEIehgJ1+yIUfV2+XUwgHB8FNg4jRNsEHPvC8qS7XwcXiCMRqFpZOlQWvPWG2SqwZA6MPBxl+Tlgt4xMTczSJuKkKpG1cPDe3cxS1E3R4AigIpl3ox+lnRzPCG+rRLHiMplyphGgyQETHK1ZCBtrTb3hLkyZtTT0fPB2cr+66e9E33MaGUZJjDYwlf8/6DvqGdg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 337e47e7-e5ae-42ad-d455-08d82dd91b49
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 00:49:36.3640
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uik/7LvcnIp3I9yzH9pl2rrvzGZLqfKWdwTKiwhsqqk3oc27OGvc21vrUiC4Gmbm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3619
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_01:2020-07-21,2020-07-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- mlxlogscore=584 impostorscore=0 clxscore=1015 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220002
-X-FB-Internal: deliver
+        id S1731856AbgGVD3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jul 2020 23:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731793AbgGVD3g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jul 2020 23:29:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01237C061794;
+        Tue, 21 Jul 2020 20:29:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x9so288399plr.2;
+        Tue, 21 Jul 2020 20:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=gWIqjRx1ydkKXt2vRC3hk7iQ52o0Y4NnSXWYajSS8to=;
+        b=ByJADRlfWVQggS3lOeBVoTyQX74KfGvQmXfmDxm/h0Ubg18nQ7drdOmUWSySUTRuPa
+         f6OcsPlc9Uqg17Uda6cYs2FQoUxp4b8evipyZzw0iIIX5uZBm+w6GFsiSx/GkaCaryU1
+         M81VLb2HHCPdp1WHq2NyMloJZztst7Fz4PCxBupmh9gBQhrpTUkRMUE/K9IAqqqfWpMN
+         6F6/XDoLZP8/R5OmnSfvXhfB0FigsnEgQsD1HCRQpABlXsO7VmaXTP/WncN+nDU7LQUA
+         7HuiYHUIhWVJDde0Ox0fHoiaxICXYKvsyJMjhiJ4D5tKSbCwvfP2tRXjMJ+e5Ve7EdBN
+         403A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gWIqjRx1ydkKXt2vRC3hk7iQ52o0Y4NnSXWYajSS8to=;
+        b=LmmfHR91cSkvzvQzWgZebw8INT41FuDgJNez7G1hZ28+Nck9J+tnj355xIiDiO7xKr
+         1FM5MEIbRAp/DzC36cN3gWUk7IDwtkQErC4S9d+jINwo2JMoo7cgB+afqtUtHKpPvgaN
+         rc4+StUF+WiF3evbbL7xeMZlV0Ur/fAHRuyxz2XUxGThd9ZPYXbLzBvckvr87ygK8EPx
+         uGnWZyjFywxiH5ObGuyg+3z3aFwLssdey4f2ttNP2mgUbsl7oQK2fg24+1O+tuQfnzL9
+         93HemxVUo9vhavsGSxflS0nUU4oSEiLIngAli6UUnAJXMEKt3GV2zH6vvXLMq0XcBKiM
+         EQ9g==
+X-Gm-Message-State: AOAM530lypLYRJ5IJCbzP+0XGhA8wH9WuNokP2sEflnXwKKHtZBPbpJz
+        BhquoQsb50Loh6MGgCkb/Eg=
+X-Google-Smtp-Source: ABdhPJxLfD6w3I/cmImYbXJVfXTDGSLeW7pWnrSuYelMGhE4+P882psWJg0+EGMZBuOBZfqY/77How==
+X-Received: by 2002:a17:90a:e50c:: with SMTP id t12mr7836408pjy.209.1595388575335;
+        Tue, 21 Jul 2020 20:29:35 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id ga7sm4526386pjb.50.2020.07.21.20.29.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 21 Jul 2020 20:29:34 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: pull-request: bpf-next 2020-07-21
+Date:   Tue, 21 Jul 2020 20:29:32 -0700
+Message-Id: <20200722032932.62060-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 07:19:31PM -0500, YiFei Zhu wrote:
-> On Tue, Jul 21, 2020 at 7:09 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > I think we are talking about the existing map->aux check in
-> > bpf_cgroup_storage_assign()?  Right, the map is dedicated for
-> > only one bpf prog which usually has only one expected_attach_type.
-> > Thus, the attach_type of the key is not really useful since it will
-> > always be the same.  However,  it does not mean the exposed
-> > attach_type (of the key) is meaningless or the value is invalid.
-> > The exposed value is valid.
-> >
-> > I am trying to say attach_type is still part of the key
-> > and exposed to userspace (e.g. in map dump) but it is sort of
-> > invalid after this change because I am not sure what that "0"
-> > means now.
-> >
-> > Also, as part of the key, it is intuitive for user to think the storage is
-> > unique per (cgroup, attach_type).  This uniqueness is always true now because
-> > of the map->aux logic and guaranteed by the verifier.  With this patch, this
-> > "key" intuition is gone where the kernel quietly ignore the attach_type.
-> 
-> Right. It is indeed non-intuitive for part of the "key" to be
-> completely ignored in cmp. However, what would a sane solution be
-> instead? I could at attach time, use the attach type to also perform
-> the lookup, and store the attach type as the key, if and only if the
-> size of the key == sizeof(struct cgroup_storage_key).
-Yes, that makes sense.  cgroup_storage_lookup() has the map which
-has the key_size, so it can decide which part of the key to use
-for lookup.  bpf_cgroup_storages_alloc() does not need to know
-the details and it just populates everything in bpf_cgroup_storage_key
-and let cgroup_storage_lookup() to decide.
+Hi David,
 
-Thus, it should not be a big change on this patch.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-> This storage
-> will not be shared across different attach types, only across
-> different programs of the same attach type. The lifetime will still
-> bound to the (map, cgroup_bpf) pair, rather than the program, as the
-> implementation prior to this patch did.
-Right, the lifetime of the storage should be the same regardless of the key.
+We've added 46 non-merge commits during the last 6 day(s) which contain
+a total of 68 files changed, 4929 insertions(+), 526 deletions(-).
 
-The major idea of this patch is to make storage sharable across
-different bpf-progs and this part does not change.
-How sharable is defined by the map's key.
+The main changes are:
 
-The key of the map should behave like a normal map's key.
-sharable among (cgroup_id, attach_type) or
-sharable among (cgroup_id)
+1) Run BPF program on socket lookup, from Jakub.
 
-Then all lookup/update/map-dump will behave like a normal
-map without an invalid value "0" (BPF_CGROUP_INET_INGRESS) in the attach_type.
+2) Introduce cpumap, from Lorenzo.
 
-Thus, I don't expect a big change in this patch.
-May be restoring the original bpf_cgroup_storage_key_cmp() behavior
-and a few key_size check in the map_ops's lookup/update/check_btf...etc.
+3) s390 JIT fixes, from Ilya.
+
+4) teach riscv JIT to emit compressed insns, from Luke.
+
+5) use build time computed BTF ids in bpf iter, from Yonghong.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Ilya Leoshkevich, Jakub Sitnicki, Jesper Dangaard 
+Brouer, Jiri Olsa, Quentin Monnet, Randy Dunlap, Seth Forshee, Stephen 
+Rothwell
+
+----------------------------------------------------------------
+
+The following changes since commit 9b74ebb2b0f259474da65fa0178c657e5fa5c640:
+
+  cpumap: Use non-locked version __ptr_ring_consume_batched (2020-07-16 17:00:31 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 9165e1d70fb34ce438e78aad90408cfa86e4c2d0:
+
+  bpftool: Use only nftw for file tree parsing (2020-07-21 23:42:56 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (3):
+      Merge branch 'bpf-socket-lookup'
+      Merge branch 'compressed-JITed-insn'
+      Merge branch 'bpf_iter-BTF_ID-at-build-time'
+
+David Ahern (1):
+      net: Refactor xdp_convert_buff_to_frame
+
+Ian Rogers (1):
+      libbpf bpf_helpers: Use __builtin_offsetof for offsetof
+
+Ilya Leoshkevich (7):
+      selftests: bpf: test_kmod.sh: Fix running out of srctree
+      s390/bpf: Fix sign extension in branch_ku
+      s390/bpf: Use brcl for jumping to exit_ip if necessary
+      s390/bpf: Tolerate not converging code shrinking
+      s390/bpf: Use bpf_skip() in bpf_jit_prologue()
+      selftests/bpf: Fix test_lwt_seg6local.sh hangs
+      samples/bpf, selftests/bpf: Use bpf_probe_read_kernel
+
+Jakub Sitnicki (16):
+      bpf, netns: Handle multiple link attachments
+      bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+      inet: Extract helper for selecting socket from reuseport group
+      inet: Run SK_LOOKUP BPF program on socket lookup
+      inet6: Extract helper for selecting socket from reuseport group
+      inet6: Run SK_LOOKUP BPF program on socket lookup
+      udp: Extract helper for selecting socket from reuseport group
+      udp: Run SK_LOOKUP BPF program on socket lookup
+      udp6: Extract helper for selecting socket from reuseport group
+      udp6: Run SK_LOOKUP BPF program on socket lookup
+      bpf: Sync linux/bpf.h to tools/
+      libbpf: Add support for SK_LOOKUP program type
+      tools/bpftool: Add name mappings for SK_LOOKUP prog and attach type
+      selftests/bpf: Add verifier tests for bpf_sk_lookup context access
+      selftests/bpf: Tests for BPF_SK_LOOKUP attach point
+      bpf, netns: Fix build without CONFIG_INET
+
+Lorenzo Bianconi (8):
+      samples/bpf: xdp_redirect_cpu_user: Do not update bpf maps in option loop
+      cpumap: Formalize map value as a named struct
+      bpf: cpumap: Add the possibility to attach an eBPF program to cpumap
+      bpf: cpumap: Implement XDP_REDIRECT for eBPF programs attached to map entries
+      libbpf: Add SEC name for xdp programs attached to CPUMAP
+      samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap
+      selftest: Add tests for XDP programs in CPUMAP entries
+      bpf: cpumap: Fix possible rcpu kthread hung
+
+Luke Nelson (3):
+      bpf, riscv: Modify JIT ctx to support compressed instructions
+      bpf, riscv: Add encodings for compressed instructions
+      bpf, riscv: Use compressed instructions in the rv64 JIT
+
+Randy Dunlap (1):
+      bpf: Drop duplicated words in uapi helper comments
+
+Seth Forshee (1):
+      bpf: revert "test_bpf: Flag tests that cannot be jited on s390"
+
+Stanislav Fomichev (1):
+      selftests/bpf: Fix possible hang in sockopt_inherit
+
+Tony Ambardar (1):
+      bpftool: Use only nftw for file tree parsing
+
+Yonghong Song (5):
+      bpf: Compute bpf_skc_to_*() helper socket btf ids at build time
+      tools/bpf: Sync btf_ids.h to tools
+      bpf: Add BTF_ID_LIST_GLOBAL in btf_ids.h
+      bpf: Make btf_sock_ids global
+      bpf: net: Use precomputed btf_id for bpf iterators
+
+YueHaibing (1):
+      tools/bpftool: Fix error handing in do_skeleton()
+
+ arch/riscv/net/bpf_jit.h                           |  483 +++++++-
+ arch/riscv/net/bpf_jit_comp32.c                    |   14 +-
+ arch/riscv/net/bpf_jit_comp64.c                    |  293 ++---
+ arch/riscv/net/bpf_jit_core.c                      |    6 +-
+ arch/s390/net/bpf_jit_comp.c                       |   63 +-
+ include/linux/bpf-netns.h                          |    3 +
+ include/linux/bpf.h                                |   15 +-
+ include/linux/bpf_types.h                          |    2 +
+ include/linux/btf_ids.h                            |   40 +-
+ include/linux/filter.h                             |  147 +++
+ include/net/xdp.h                                  |   41 +-
+ include/trace/events/xdp.h                         |   16 +-
+ include/uapi/linux/bpf.h                           |   97 +-
+ kernel/bpf/btf.c                                   |    6 +-
+ kernel/bpf/core.c                                  |   55 +
+ kernel/bpf/cpumap.c                                |  167 ++-
+ kernel/bpf/map_iter.c                              |    7 +-
+ kernel/bpf/net_namespace.c                         |  131 +-
+ kernel/bpf/syscall.c                               |    9 +
+ kernel/bpf/task_iter.c                             |   12 +-
+ kernel/bpf/verifier.c                              |   13 +-
+ lib/test_bpf.c                                     |   20 -
+ net/core/dev.c                                     |    9 +
+ net/core/filter.c                                  |  228 +++-
+ net/ipv4/inet_hashtables.c                         |   60 +-
+ net/ipv4/tcp_ipv4.c                                |    4 +-
+ net/ipv4/udp.c                                     |   97 +-
+ net/ipv6/inet6_hashtables.c                        |   66 +-
+ net/ipv6/route.c                                   |    7 +-
+ net/ipv6/udp.c                                     |   97 +-
+ net/netlink/af_netlink.c                           |    7 +-
+ samples/bpf/offwaketime_kern.c                     |    7 +-
+ samples/bpf/test_overhead_kprobe_kern.c            |   12 +-
+ samples/bpf/tracex1_kern.c                         |    9 +-
+ samples/bpf/tracex5_kern.c                         |    4 +-
+ samples/bpf/xdp_redirect_cpu_kern.c                |   25 +-
+ samples/bpf/xdp_redirect_cpu_user.c                |  209 +++-
+ scripts/bpf_helpers_doc.py                         |    9 +-
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   |    2 +-
+ tools/bpf/bpftool/bash-completion/bpftool          |    2 +-
+ tools/bpf/bpftool/common.c                         |  138 ++-
+ tools/bpf/bpftool/gen.c                            |    5 +-
+ tools/bpf/bpftool/main.h                           |    4 +-
+ tools/bpf/bpftool/prog.c                           |    3 +-
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c          |    3 +-
+ tools/include/linux/btf_ids.h                      |   51 +-
+ tools/include/uapi/linux/bpf.h                     |   97 +-
+ tools/lib/bpf/bpf_helpers.h                        |    2 +-
+ tools/lib/bpf/libbpf.c                             |    5 +
+ tools/lib/bpf/libbpf.h                             |    2 +
+ tools/lib/bpf/libbpf.map                           |    2 +
+ tools/lib/bpf/libbpf_probes.c                      |    3 +
+ tools/testing/selftests/bpf/network_helpers.c      |   58 +-
+ tools/testing/selftests/bpf/network_helpers.h      |    2 +
+ .../selftests/bpf/prog_tests/resolve_btfids.c      |   34 +-
+ tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 1282 ++++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockopt_inherit.c     |    3 +-
+ .../selftests/bpf/prog_tests/xdp_cpumap_attach.c   |   70 ++
+ .../testing/selftests/bpf/progs/bpf_iter_netlink.c |    6 +-
+ tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c  |    2 +-
+ tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c  |    2 +-
+ tools/testing/selftests/bpf/progs/bpf_iter_udp4.c  |    2 +-
+ tools/testing/selftests/bpf/progs/bpf_iter_udp6.c  |    2 +-
+ tools/testing/selftests/bpf/progs/test_sk_lookup.c |  641 ++++++++++
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c       |   36 +
+ tools/testing/selftests/bpf/test_kmod.sh           |   12 +-
+ tools/testing/selftests/bpf/test_lwt_seg6local.sh  |    2 +-
+ .../testing/selftests/bpf/verifier/ctx_sk_lookup.c |  492 ++++++++
+ 68 files changed, 4929 insertions(+), 526 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
