@@ -2,226 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59313229D20
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 18:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32935229D80
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 18:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgGVQbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 12:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728640AbgGVQbX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:31:23 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1853C0619E0
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 09:31:22 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z15so2503408wrl.8
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 09:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5cFIfC+OivX43Sjf9f32csmhS5DY7aIU9Z07O3VWtcw=;
-        b=AZPMChI05cqAi6MJH6FVsLhvicI1WK5HMQXitvcHrozb28mVXKt4mHBw6hzbJPUYLA
-         v7sMwj9K/z22GFtHh1UrRmWzFq/JXOnUOT8zDfi0uGYCLcqfv8+dZK6H6q/W6PxdxnCv
-         +icjOafsjpwgElCSVU3kO0+CjlonJHB85haRUlOsJGyu8Odgw2ojecbyVBKcghVWQddz
-         EBxpq7dQDvAXRIlAWpGXWezcIDVrQ+yUMh48LqJ/RKoKy8ckwdlgWPcf/ajcnRaNaeWv
-         tzeMEyLA+l64z3PI4LBns2eunEX2DWYSGHqSoctyEPwdwtYTuyiJzzU2/jDS2608Mpxf
-         dy2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5cFIfC+OivX43Sjf9f32csmhS5DY7aIU9Z07O3VWtcw=;
-        b=rDGzUuCuzwhRwKpeRVzxP3zgCoKqci6wHrYzPRwQG5rGp0J1LfCrD2Bvj/hd+pnEaj
-         q506Q+s8dnl6I6uy4kJbNDVDSnnmpe/MP+UEIG/mtNqkG7vfatIJ+xrkzdl2ShJjjOjO
-         Jq8uE1481rs2D4ULPSIbw25jTLsWjySvOHTE57Rjo8VMX4cyX4HQZ0ptbsIwYVW63Ndq
-         tfHLI9REcMDPyb3JY7ib6AzAdHvb6rg49McWRU8Cedp8S0McJAZKnFlzrAr828GePeZY
-         WcEMWlX5yyUFXakffsY0McV4mQUOmyJzy/NtrwAdN0tJoR0exkXja04KWFKbhdqbd3c/
-         Rotw==
-X-Gm-Message-State: AOAM5339rKkl9nUzf4EEBidpRu7amL4rfIvGCwE2P7bwiJwnirR/JjTR
-        weYpW+UNSQpe+qKIjwUDqLfRaWFQaHgYSm0ACnt/Vw==
-X-Google-Smtp-Source: ABdhPJxnhPXbDtp9CA6zjIv2f43C+u9uDm6Tg7C1qadvZWr0iaGfPx3K9UBHkwQyt8cpTtsIC08MagZzuwT8voXNtUo=
-X-Received: by 2002:adf:e68f:: with SMTP id r15mr358501wrm.196.1595435481117;
- Wed, 22 Jul 2020 09:31:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <0000000000009a764805ab04b5e1@google.com>
-In-Reply-To: <0000000000009a764805ab04b5e1@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 22 Jul 2020 18:31:09 +0200
-Message-ID: <CAG_fn=XwF9gHLsWYEvrS65gcvSR1T=cabByizGh6B=tFhLsp8w@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in __skb_flow_dissect (3)
-To:     syzbot <syzbot+051a531e8f1f59cf6dc9@syzkaller.appspotmail.com>
-Cc:     andriin@fb.com, Alexei Starovoitov <ast@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, jakub@cloudflare.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        mcroce@redhat.com, Networking <netdev@vger.kernel.org>,
-        ppenkov@google.com, sdf@google.com, songliubraving@fb.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1727840AbgGVQuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 12:50:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62474 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726642AbgGVQuN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 12:50:13 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MGmHJS007200;
+        Wed, 22 Jul 2020 09:49:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=J3+xwDxPN77G/rViLHn7ZtFXMQahU6psfQPIvQFn5yc=;
+ b=hxQyyKjIqBx4B3UXIl9DcPtuXI3RIMPMvdxqcEAwJpyu2J50k9by2/eIKZH0VAN0JP0i
+ 9g9MebwcWJtAmPm3V0xAY5IKHgOiuK05PfFG61F1A+ZeR+IUlHw9Yzs7/rMuF4Vu/d0n
+ iKHZZI4vQgxuBs0c/BVAbMGk5ySS24UU5aU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32ch29fru2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 Jul 2020 09:49:53 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 22 Jul 2020 09:49:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RGF4wVBfW8pieR9J+bvQGVEZrBqjlWvFsx+smayDBaJNS06P1DiYtwl6rR6MMnS/8HnbDhAIsXJk1nJeNk78VqLJn44uvjogqsxUvAhEly3L4dbS9wgzOpLRfX1FyLh36xLs+cb+MABlJfpyKMt0h2dMd6RLGVV5Bam4sEGKB9ScDbiS4BTMrB8P/cGQcJkb9PLRqGEYPYUWcW9OeY6ksfi0/j5VUoMOH2seBy9VoRhu5K5YLCAVMtY9RkJsgDgFfZbUs7wa4FDKMkjMk3duvwU3Myu8Vt1H4AoroAoIQWuL4OpABnJPs98EBQr8mWymrVrp7CbkuP8MLGjWjAt55Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J3+xwDxPN77G/rViLHn7ZtFXMQahU6psfQPIvQFn5yc=;
+ b=P3Nu0JR0jKYzllOLPGmwVv5xyLj6AxO+hpMhk6KiM8wkawUItaM4kLH7FFjQCr41yBkRFvlyeVoJeoHMX3igGy3rcUbttlBIuBQpHUH8KiluFSGPN+TRoCUGDUGQNDGxy8Fh3XzCzHO+HTNRO5ae9FELQO7sIbi5f+YL50GiFWEyd5uU9+zkPkOLusb+VejE0CcI9EVeVmy5W2/on1eWqmjm17dM6FLZ7K3gPTkPWdZXheN5HZB10zLFFrj/g4KLF0obq7rZUwq5rfa39dBkh208ZXUagC80LByLLg+ta+GUwqo+vASC0Kcj/6do3dgnIVkAYdvErCAvLd7BUFie3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J3+xwDxPN77G/rViLHn7ZtFXMQahU6psfQPIvQFn5yc=;
+ b=CpXPexA5qwnn+50vKQUPguiZn6CMTB8mUbwcYi98Z/mKSUM4uAFKTloIne+6bNmJ2fW8qSmAeifofTqiW2+nzrCyzItXeXtZq4ogo9JdTaVWh4XbPOx2AKDPICpa4mDcuhIqpJzZiZRfPRlmmO/6zfMR8lqo4QhDGVl6sci8TcY=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BY5PR15MB3618.namprd15.prod.outlook.com (2603:10b6:a03:1b0::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 22 Jul
+ 2020 16:49:47 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3195.026; Wed, 22 Jul 2020
+ 16:49:47 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        "brouer@redhat.com" <brouer@redhat.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: separate bpf_get_[stack|stackid] for
+ perf events BPF
+Thread-Topic: [PATCH v3 bpf-next 1/2] bpf: separate bpf_get_[stack|stackid]
+ for perf events BPF
+Thread-Index: AQHWW8VAnRb4OqAgyEOVqqMnP7xn/akSbY+AgAA6uICAARzyAIAAE3IA
+Date:   Wed, 22 Jul 2020 16:49:47 +0000
+Message-ID: <1BF0973C-E2E5-49E3-B3F9-80FF7D6727B2@fb.com>
+References: <20200716225933.196342-1-songliubraving@fb.com>
+ <20200716225933.196342-2-songliubraving@fb.com>
+ <20200721191009.5khr7blivtuv3qfj@ast-mbp.dhcp.thefacebook.com>
+ <42DEE452-F411-4098-917B-11B23AC99F5F@fb.com>
+ <20200722154010.GO10769@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200722154010.GO10769@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:974f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 86c77395-e5d6-440a-2b3d-08d82e5f3e84
+x-ms-traffictypediagnostic: BY5PR15MB3618:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR15MB3618B4E70F8757A308796D26B3790@BY5PR15MB3618.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wAUdgx69PZbSwX7Rheqb7DOByQsO4t2qdQdiZ+QuzCWkUiA32kvutXh9xL5hIaZPRmHbrhowzzt31gLm4iMGBAECypJzur+wfH906N8WAHSpho/RITmztSL2JddZTxbTP3qkp7nda8sCUx5ECudHiqmH91R25tW6MrDowpK7T15rWV+BAVnM5mpR+GRuRTIIgmV2uZ4CpNra4x63BMUynUczrpWzU4yBwX/qX9lLaoPHDHgCXBNGRc4MUvc3/3ynWm/5AC8bq453IgMR5YqgIFWVc91IWj5UcB0XUn3WT0R1iYHVgkF897YpI6avzq3V
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(366004)(396003)(136003)(346002)(6512007)(4326008)(316002)(54906003)(53546011)(6916009)(6506007)(7416002)(71200400001)(2616005)(478600001)(5660300002)(33656002)(36756003)(83380400001)(8676002)(2906002)(8936002)(6486002)(186003)(76116006)(66476007)(4744005)(66446008)(64756008)(86362001)(66556008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: AeQUrM11ZuFEWzYzceRspRkAxw/JWEc+Xs/80EGtAL4yc+VhYw02sVfox6oh1/FLaN8IWHZu54BoJnWvC9oa8o0OuICbe46OimNaM1Q32aOvBCT0NbJy3YObY0EcaQj/h4IZdqB7ETPhdamQeMBs920gxBPJVQOlcjz4OpECR02sxriF4sIxt1K5cLRF+aSe7MkWH/h1cCQ1TvQmol6JxhBXxJx6ZkRKft5Jd3LaX9mvQJ5rOSbch6/dUXMAgUOXoU6zEoGc4KK+CwxKqbptGxiRRU07jscH7m1ZAGq9DChWg5sxEHX9+r8/gM8H7rJuS+NemcbD+mMft8mk7rr28LCwM+VCvKiGUDXaW8zmrEgXAEECdvcEPKglJDs38ksPPtRzV+cDsSwJSNC8t44SLJLaAPw5LHc0BDq8JIDSmfRxlq081QsGpkqylAlotgHikArMwZFsjaWIwOEN/yjXyWNI/YMK3ualcEMkrMLeRrr5fa9AlOjB1v+seexhde+WwwDSqkzcxwEeR3Ge2tb+VA==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BB5DB8B693F4B5438482C3F1564EB19E@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86c77395-e5d6-440a-2b3d-08d82e5f3e84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 16:49:47.7435
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dSpKJGvFsavqFRwbEPWv4oy2CcYRA99eQE1MX7JvP7YTOKEOyMrcLrz6B3vGMC151dJxUtu9ImT81rrWzC91og==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3618
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
+ suspectscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220111
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 11:53 AM syzbot
-<syzbot+051a531e8f1f59cf6dc9@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
-
-Sorry for the noise. This is a false report caused by incorrect
-copy_to_user() instrumentation after KMSAN rebase.
-Should be fixed now.
-
-#syz invalid
 
 
-> HEAD commit:    14525656 compiler.h: reinstate missing KMSAN_INIT
-> git tree:       https://github.com/google/kmsan.git master
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D154bb20f10000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc534a9fad6323=
-722
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D051a531e8f1f59c=
-f6dc9
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-projec=
-t/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> userspace arch: i386
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13946658900=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17adcb6f10000=
-0
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+051a531e8f1f59cf6dc9@syzkaller.appspotmail.com
->
-> batman_adv: batadv0: Interface activated: batadv_slave_1
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in __skb_flow_dissect+0x30f0/0x8440 net/core/flo=
-w_dissector.c:1163
-> CPU: 0 PID: 8524 Comm: syz-executor152 Not tainted 5.8.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x1df/0x240 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
->  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
->  __skb_flow_dissect+0x30f0/0x8440 net/core/flow_dissector.c:1163
->  skb_flow_dissect_flow_keys include/linux/skbuff.h:1310 [inline]
->  ___skb_get_hash net/core/flow_dissector.c:1520 [inline]
->  __skb_get_hash+0x131/0x480 net/core/flow_dissector.c:1586
->  skb_get_hash include/linux/skbuff.h:1348 [inline]
->  udp_flow_src_port+0xa5/0x690 include/net/udp.h:220
->  geneve_xmit_skb drivers/net/geneve.c:895 [inline]
->  geneve_xmit+0xdf1/0x2bf0 drivers/net/geneve.c:1005
->  __netdev_start_xmit include/linux/netdevice.h:4611 [inline]
->  netdev_start_xmit include/linux/netdevice.h:4625 [inline]
->  xmit_one net/core/dev.c:3556 [inline]
->  dev_hard_start_xmit+0x50e/0xa70 net/core/dev.c:3572
->  __dev_queue_xmit+0x2f8d/0x3b20 net/core/dev.c:4131
->  dev_queue_xmit+0x4b/0x60 net/core/dev.c:4164
->  pppoe_sendmsg+0xb43/0xb90 drivers/net/ppp/pppoe.c:900
->  sock_sendmsg_nosec net/socket.c:652 [inline]
->  sock_sendmsg net/socket.c:672 [inline]
->  kernel_sendmsg+0x433/0x440 net/socket.c:692
->  sock_no_sendpage+0x235/0x300 net/core/sock.c:2853
->  kernel_sendpage net/socket.c:3644 [inline]
->  sock_sendpage+0x25b/0x2c0 net/socket.c:945
->  pipe_to_sendpage+0x38c/0x4c0 fs/splice.c:448
->  splice_from_pipe_feed fs/splice.c:502 [inline]
->  __splice_from_pipe+0x565/0xf00 fs/splice.c:626
->  splice_from_pipe fs/splice.c:661 [inline]
->  generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
->  do_splice_from fs/splice.c:846 [inline]
->  direct_splice_actor+0x1fd/0x580 fs/splice.c:1016
->  splice_direct_to_actor+0x6b2/0xf50 fs/splice.c:971
->  do_splice_direct+0x342/0x580 fs/splice.c:1059
->  do_sendfile+0x101b/0x1d40 fs/read_write.c:1540
->  __do_compat_sys_sendfile fs/read_write.c:1622 [inline]
->  __se_compat_sys_sendfile+0x301/0x3c0 fs/read_write.c:1605
->  __ia32_compat_sys_sendfile+0x56/0x70 fs/read_write.c:1605
->  do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
->  __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
->  do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
->  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> RIP: 0023:0xf7f13549
-> Code: Bad RIP value.
-> RSP: 002b:00000000ffd520cc EFLAGS: 00000217 ORIG_RAX: 00000000000000bb
-> RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 0000000000000005
-> RDX: 0000000000000000 RSI: 000000007fffffff RDI: 0000000000000006
-> RBP: 0000000020000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->
-> Uninit was stored to memory at:
->  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
->  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
->  kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
->  kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
->  __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
->  pppoe_sendmsg+0xaed/0xb90 drivers/net/ppp/pppoe.c:896
->  sock_sendmsg_nosec net/socket.c:652 [inline]
->  sock_sendmsg net/socket.c:672 [inline]
->  kernel_sendmsg+0x433/0x440 net/socket.c:692
->  sock_no_sendpage+0x235/0x300 net/core/sock.c:2853
->  kernel_sendpage net/socket.c:3644 [inline]
->  sock_sendpage+0x25b/0x2c0 net/socket.c:945
->  pipe_to_sendpage+0x38c/0x4c0 fs/splice.c:448
->  splice_from_pipe_feed fs/splice.c:502 [inline]
->  __splice_from_pipe+0x565/0xf00 fs/splice.c:626
->  splice_from_pipe fs/splice.c:661 [inline]
->  generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
->  do_splice_from fs/splice.c:846 [inline]
->  direct_splice_actor+0x1fd/0x580 fs/splice.c:1016
->  splice_direct_to_actor+0x6b2/0xf50 fs/splice.c:971
->  do_splice_direct+0x342/0x580 fs/splice.c:1059
->  do_sendfile+0x101b/0x1d40 fs/read_write.c:1540
->  __do_compat_sys_sendfile fs/read_write.c:1622 [inline]
->  __se_compat_sys_sendfile+0x301/0x3c0 fs/read_write.c:1605
->  __ia32_compat_sys_sendfile+0x56/0x70 fs/read_write.c:1605
->  do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
->  __do_fast_syscall_32+0x2aa/0x400 arch/x86/entry/common.c:477
->  do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
->  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
->
-> Local variable ----hdr@pppoe_sendmsg created at:
->  pppoe_sendmsg+0xa6/0xb90 drivers/net/ppp/pppoe.c:843
->  pppoe_sendmsg+0xa6/0xb90 drivers/net/ppp/pppoe.c:843
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> On Jul 22, 2020, at 8:40 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> On Tue, Jul 21, 2020 at 10:40:19PM +0000, Song Liu wrote:
+>=20
+>> We only need to block precise_ip >=3D 2. precise_ip =3D=3D 1 is OK.=20
+>=20
+> Uuuh, how? Anything PEBS would have the same problem. Sure, precise_ip
+> =3D=3D 1 will not correct the IP, but the stack will not match regardless=
+.
+>=20
+> You need IP,SP(,BP) to be a consistent set _AND_ have it match the
+> current stack, PEBS simply cannot do that, because the regs get recorded
+> (much) earlier than the PMI and the stack can have changed in the
+> meantime.
+>=20
 
+By "OK", I meant unwinder will not report error (in my tests). For=20
+accurate stack, we should do the same for precise_ip =3D=3D 1.=20
 
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Thanks,
+Song
