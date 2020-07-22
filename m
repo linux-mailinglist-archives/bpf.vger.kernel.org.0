@@ -2,114 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498E822913F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 08:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7683E229172
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 08:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgGVGsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 02:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        id S1729247AbgGVG6A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 02:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgGVGsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 02:48:53 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993B7C061794;
-        Tue, 21 Jul 2020 23:48:53 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id x69so1039454qkb.1;
-        Tue, 21 Jul 2020 23:48:53 -0700 (PDT)
+        with ESMTP id S1727882AbgGVG6A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 02:58:00 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2653FC061794;
+        Tue, 21 Jul 2020 23:58:00 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id u64so990183qka.12;
+        Tue, 21 Jul 2020 23:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7xn6DCNrCACsPaHy/JnedLuq5l1Q08x4DIxQzqp4E2o=;
-        b=V/WZPLdmABqyjF7mBozMxnLkMO/wRfC8i5sqYbn3ykQVklaIQeaIyFXrQCBCUmIPg4
-         V5Y0uZJSiLw1UQ/QHavYlTi+TEv2uOe6X5etD+xRl4onRYVmgLjSEpcZG8WAp2tP7GHW
-         TxewFLwfPlUW7KKRwMESoQQUl8KGxfNzf/NYCJPNOVQp4gLYF7vjfXF70GBl5qlfZCUt
-         C9d7K+eNMGcGFg7BGrPPejBxIuD4bwYHOxDzQgsxz9uFgEAgvX2klo8eZZhR7KO7/Ghp
-         uQ1koM5mIT9g2dJ2GiQfOpDYcnuAqaZ7NmtO5zkQE3apiWyn25/V19z7iq+Pj0K1WnaH
-         0X2g==
+        bh=zjl8jyI4JNnQLeTVzyCzHh3c+nXxWye5Cj6ubPO13J0=;
+        b=GEF78V2k9OiWRf81LyakVnVCsY+WdOadZDPh8XZnSjoWpqyVyHSBqYesBwcUVU6qn+
+         A2GOiIMI7D4+BCo2X43tWNGsBUTQEV15+iF25xICpC6R75QeFwAJf9f7IL+FtnY2Ynco
+         guWA3aOcbK99jE7qNpAW14da2xrh4F+sNJ+p9hT2QIbZMXkJ4Z6vapPJLeseMS20z5ki
+         hH/T6IJ5Prf/pBvgnXtu03h5EckJP4dmb0vjt5PknVgmm/fm7KZtKVn5sTFZ/Ya5Ntf8
+         37VXErV/NMpuNfETve3WI/+hiyztBgVpQioouREp/80KkRHIHv8x2KumKGBgXnqeSxCo
+         Nzyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7xn6DCNrCACsPaHy/JnedLuq5l1Q08x4DIxQzqp4E2o=;
-        b=V0K5XwTpIoheiVGzxn/iWSyTd5MIT2yqJeO9txYd/zKKFxwe/d1a4q/pwbY7LiDVsg
-         gEyK/gc1kVZg6PnIIRGMg5dASvZ+HyCwUKID5px8MYcpZIhSK+o3q+UVH6/Thy72fZ1b
-         8Lpv6tf3I7ION+YmiG6as/U7Ro9bx6SqtcLi4bpd63dyd7dsWnDon8vD9QapQELEZJal
-         jFrI7dt+gvPdvMl6x0DOPBhc7XVp6IaMee3pTffjyh2sieEyOzZY14dh6MRY3aRWPgHP
-         vcZNcMD0YzMy3PUJZ2gLk8eYX/qSYnQMBrmxB4wJ7RYE8nNbBaTQ7VkcDRrjxZhbTbNJ
-         nslA==
-X-Gm-Message-State: AOAM53118wGuQ3EarBL6wME5EJPsIuU8ulEwvNilGPZLDLpd38rDDbB6
-        kuh5AjE4wICgJiDFI2ASnGuuXVAvumdQmJ+WHjU=
-X-Google-Smtp-Source: ABdhPJw+xpPMnnoGTxGZh8x2OZBtTOaZXy+jmVlD4k3uJAum0TIK/Zr8Se+wXO3z/YPxr4trxugJPdwLN3igq0mTvcA=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr31677770qkg.437.1595400532768;
- Tue, 21 Jul 2020 23:48:52 -0700 (PDT)
+        bh=zjl8jyI4JNnQLeTVzyCzHh3c+nXxWye5Cj6ubPO13J0=;
+        b=tWEXuWAdpbLMBpQzOm77gH8+wH6UhYMoYG5ti2dPAaFQeSJ92FUpSJKODboaFVxleZ
+         uBMZeihMIEjvz81ovYPaQuZwusMsxvNTmMfV/6o3hP0tyLPrZqUhIAWP1SXo923xY69d
+         29Wa3WCb4IC6HZmrTE8rQ+iXnQ+UDhWyqwUfAoDiS5Rosl1SOkAqQ2BnCaHNc2HVUFp+
+         QBmoi9JepLVpIF1djjXiMWVUtyRR695g7yubl3/sqAMKkPqrTc9OlVNS48U3F6VKevks
+         DARVF3f4YnS/xdp4Tj6EAA/0ccTJmvIM7ezNU5gg0R1+lnkBTWtaC8kfLpJmzoqpiB0T
+         ti7A==
+X-Gm-Message-State: AOAM5302ZnjhlvJAlgGB0G1ChHkUrox5OyUbMfp3aOyjGcGD8d0mMC5t
+        umNiVZ9idx/Ml8rlFglA4ELyFhWGFFMu2UZjd10=
+X-Google-Smtp-Source: ABdhPJyURO1mFslPp3J0AAImaBN2tPe38/iVgkWkY18Z1Rf8Lb/feerQVzkkSUH/emANzphylSQxhxBjLXImoOgFhNc=
+X-Received: by 2002:a37:a655:: with SMTP id p82mr14245845qke.92.1595401079241;
+ Tue, 21 Jul 2020 23:57:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716045602.3896926-1-andriin@fb.com> <20200716045602.3896926-3-andriin@fb.com>
- <4cffee3d-6af9-57e6-a2d5-202925ee8e77@gmail.com> <CAEf4BzZVxTGM9mDoHMv478vQjV6Hmf_ts50=ABXkP4GxAG85eg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZVxTGM9mDoHMv478vQjV6Hmf_ts50=ABXkP4GxAG85eg@mail.gmail.com>
+References: <20200722054314.2103880-1-irogers@google.com>
+In-Reply-To: <20200722054314.2103880-1-irogers@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Jul 2020 23:48:41 -0700
-Message-ID: <CAEf4BzZiZPj0+HucA0mZT6VOFKb+xO3v2XCPj=kig7tEx8FCRA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/9] bpf, xdp: maintain info on attached XDP
- BPF programs in net_device
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Tue, 21 Jul 2020 23:57:48 -0700
+Message-ID: <CAEf4BzaBYaFJ3eUinS9nHeykJ0xEbZpwLts33ZDp1PT=bkyjww@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpftool btf: Add prefix option to dump C
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 1:31 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Jul 21, 2020 at 10:44 PM Ian Rogers <irogers@google.com> wrote:
 >
-> On Thu, Jul 16, 2020 at 12:01 PM David Ahern <dsahern@gmail.com> wrote:
-> >
-> > On 7/15/20 10:55 PM, Andrii Nakryiko wrote:
-> > > Instead of delegating to drivers, maintain information about which BPF
-> > > programs are attached in which XDP modes (generic/skb, driver, or hardware)
-> > > locally in net_device. This effectively obsoletes XDP_QUERY_PROG command.
-> > >
-> > > Such re-organization simplifies existing code already. But it also allows to
-> > > further add bpf_link-based XDP attachments without drivers having to know
-> > > about any of this at all, which seems like a good setup.
-> > > XDP_SETUP_PROG/XDP_SETUP_PROG_HW are just low-level commands to driver to
-> > > install/uninstall active BPF program. All the higher-level concerns about
-> > > prog/link interaction will be contained within generic driver-agnostic logic.
-> > >
-> > > All the XDP_QUERY_PROG calls to driver in dev_xdp_uninstall() were removed.
-> > > It's not clear for me why dev_xdp_uninstall() were passing previous prog_flags
-> > > when resetting installed programs. That seems unnecessary, plus most drivers
-> > > don't populate prog_flags anyways. Having XDP_SETUP_PROG vs XDP_SETUP_PROG_HW
-> > > should be enough of an indicator of what is required of driver to correctly
-> > > reset active BPF program. dev_xdp_uninstall() is also generalized as an
-> > > iteration over all three supported mode.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> > >  include/linux/netdevice.h |  17 +++-
-> > >  net/core/dev.c            | 158 +++++++++++++++++++++-----------------
-> >
-> > Similar to my comment on a v1 patch, this change is doing multiple
-> > things that really should be split into 2 patches - one moving code
-> > around and the second making the change you want. As is the patch is
-> > difficult to properly review.
-> >
->
-> You mean xdp_uninstall? In patch 1 leave it as three separate
-> sections, but switch to different querying. And then in a separate
-> patch do a loop?
->
-> Alright, I'll split that up as well. But otherwise I don't really see
-> much more opportunities to split it.
+> When bpftool dumps types and enum members into a header file for
+> inclusion the names match those in the original source. If the same
+> header file needs to be included in the original source and the bpf
+> program, the names of structs, unions, typedefs and enum members will
+> have naming collisions.
 
-So I ended up not doing that. Given dev_xdp_uninstall() is just 15
-lines of code, half of which are trivial, it just doesn't make sense
-to split dev_xdp_uninstall() refactor into two phases.
+vmlinux.h is not really intended to be used from user-space, because
+it's incompatible with pretty much any other header that declares any
+type. Ideally we should make this better, but that might require some
+compiler support. We've been discussing with Yonghong extending Clang
+with a compile-time check for whether some type is defined or not,
+which would allow to guard every type and only declare it
+conditionally, if it's missing. But that's just an idea at this point.
+
+Regardless, vmlinux.h is also very much Clang-specific, and shouldn't
+work well with GCC. Could you elaborate on the specifics of the use
+case you have in mind? That could help me see what might be the right
+solution. Thanks!
 
 >
-> > Given that you need a v4 anyways, can you split this patch into 2?
+> To avoid these collisions an approach is to redeclare the header file
+> types and enum members, which leads to duplication and possible
+> inconsistencies. Another approach is to use preprocessor macros
+> to rename conflicting names, but this can be cumbersome if there are
+> many conflicts.
+>
+> This patch adds a prefix option for the dumped names. Use of this option
+> can avoid name conflicts and compile time errors.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 ++++++-
+>  tools/bpf/bpftool/btf.c                       | 18 ++++++++++++++---
+>  tools/lib/bpf/btf.h                           |  1 +
+>  tools/lib/bpf/btf_dump.c                      | 20 +++++++++++++------
+>  4 files changed, 36 insertions(+), 10 deletions(-)
+>
+
+[...]
+
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 491c7b41ffdc..fea4baab00bd 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -117,6 +117,7 @@ struct btf_dump;
+>
+>  struct btf_dump_opts {
+>         void *ctx;
+> +       const char *name_prefix;
+>  };
+
+BTW, we can't do that, this breaks ABI. btf_dump_opts were added
+before we understood the problem of backward/forward  compatibility of
+libbpf APIs, unfortunately.
+
+>
+>  typedef void (*btf_dump_printf_fn_t)(void *ctx, const char *fmt, va_list args);
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index e1c344504cae..baf2b4d82e1e 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+
+[...]
