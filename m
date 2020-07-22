@@ -2,359 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A9322A219
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 00:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F9822A244
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 00:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387524AbgGVWNI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 18:13:08 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:24102 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733156AbgGVWNF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 18:13:05 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MM6g1e019807;
-        Wed, 22 Jul 2020 15:12:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=3Po8RfnWucc3DJIq3LC7D4FFGro0yJZkEt/sSt+5JX0=;
- b=v+GXP0Atde+Wjibsls1dw+2qF1jqIG3gaKaFI5hZh3Hyw38KP9n6aJNTOyUGMXgGCXJF
- mdtw53Tmanx9fm4r7Hblv5WV4tM0L19IZWvSQkxGDhbrhjz6I8LvEKpcUZerytthV8qz
- izOzqx5nwWY8qGJjTwV6QqSgR1Xd2LD8m2KmjIf+AMhA1TZJDeNYt1HajTxTpKnEl3Mr
- LDVyhGy288aRzYK2cum9WFjHrmB/vvhai2/4C6wGqUclQP8FEr2c2ptIB0UlhJ4hHhPx
- BDfGsquD403XWQTTKU+LICPvDx1/3IMMSRvqo//lIDEzi8z9v8/ZcdWM48VR/GFBQqX+ kQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 32c0kkt0q5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jul 2020 15:12:49 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 22 Jul
- 2020 15:12:47 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 15:12:47 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id 6F3A13F703F;
-        Wed, 22 Jul 2020 15:12:41 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        "Ariel Elior" <aelior@marvell.com>,
-        Denis Bolotin <denis.bolotin@marvell.com>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 net-next 15/15] qede: add .ndo_xdp_xmit() and XDP_REDIRECT support
-Date:   Thu, 23 Jul 2020 01:10:45 +0300
-Message-ID: <20200722221045.5436-16-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200722221045.5436-1-alobakin@marvell.com>
-References: <20200722221045.5436-1-alobakin@marvell.com>
+        id S1729401AbgGVWQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 18:16:23 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43870 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728607AbgGVWQX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 18:16:23 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jyN25-0007uB-Qk; Thu, 23 Jul 2020 00:16:13 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jyN25-000O10-Kn; Thu, 23 Jul 2020 00:16:13 +0200
+Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Add kernel module with user mode
+ driver that populates bpffs.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     torvalds@linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+References: <20200717044031.56412-1-alexei.starovoitov@gmail.com>
+ <20200717044031.56412-5-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <35b9bedb-a278-beac-0648-04416761acfb@iogearbox.net>
+Date:   Thu, 23 Jul 2020 00:16:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_16:2020-07-22,2020-07-22 signatures=0
+In-Reply-To: <20200717044031.56412-5-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25881/Wed Jul 22 16:35:43 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add XDP_REDIRECT case handling and the corresponding NDO to support
-redirecting XDP frames. This also includes registering driver memory
-model (currently order-0 page mode) in BPF subsystem.
-The total number of XDP queues is usually 1:1 with Rx ones.
+On 7/17/20 6:40 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Add kernel module with user mode driver that populates bpffs with
+> BPF iterators.
+> 
+> $ mount bpffs /my/bpffs/ -t bpf
+> $ ls -la /my/bpffs/
+> total 4
+> drwxrwxrwt  2 root root    0 Jul  2 00:27 .
+> drwxr-xr-x 19 root root 4096 Jul  2 00:09 ..
+> -rw-------  1 root root    0 Jul  2 00:27 maps.debug
+> -rw-------  1 root root    0 Jul  2 00:27 progs.debug
+> 
+> The user mode driver will load BPF Type Formats, create BPF maps, populate BPF
+> maps, load two BPF programs, attach them to BPF iterators, and finally send two
+> bpf_link IDs back to the kernel.
+> The kernel will pin two bpf_links into newly mounted bpffs instance under
+> names "progs.debug" and "maps.debug". These two files become human readable.
+> 
+> $ cat /my/bpffs/progs.debug
+>    id name            pages attached
+>    11 dump_bpf_map        1 bpf_iter_bpf_map
+>    12 dump_bpf_prog       1 bpf_iter_bpf_prog
+>    27 test_pkt_access     1
+>    32 test_main           1 test_pkt_access test_pkt_access
+>    33 test_subprog1       1 test_pkt_access_subprog1 test_pkt_access
+>    34 test_subprog2       1 test_pkt_access_subprog2 test_pkt_access
+>    35 test_subprog3       1 test_pkt_access_subprog3 test_pkt_access
+>    36 new_get_skb_len     1 get_skb_len test_pkt_access
+>    37 new_get_skb_ifi     1 get_skb_ifindex test_pkt_access
+>    38 new_get_constan     1 get_constant test_pkt_access
+> 
+> The BPF program dump_bpf_prog() in iterators.bpf.c is printing this data about
+> all BPF programs currently loaded in the system. This information is unstable
+> and will change from kernel to kernel as ".debug" suffix conveys.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+[...]
+>   static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+>   			  enum bpf_type type)
+>   {
+> @@ -638,6 +661,61 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>   	return 0;
+>   }
+>   
+> +struct bpf_preload_ops bpf_preload_ops = { .info.driver_name = "bpf_preload" };
+> +EXPORT_SYMBOL_GPL(bpf_preload_ops);
+> +
+> +static int populate_bpffs(struct dentry *parent)
+> +{
+> +	struct bpf_preload_info objs[BPF_PRELOAD_LINKS] = {};
+> +	struct bpf_link *links[BPF_PRELOAD_LINKS] = {};
+> +	int err = 0, i;
+> +
+> +	mutex_lock(&bpf_preload_ops.lock);
+> +	if (!bpf_preload_ops.do_preload) {
+> +		mutex_unlock(&bpf_preload_ops.lock);
+> +		request_module("bpf_preload");
+> +		mutex_lock(&bpf_preload_ops.lock);
+> +
+> +		if (!bpf_preload_ops.do_preload) {
+> +			pr_err("bpf_preload module is missing.\n"
+> +			       "bpffs will not have iterators.\n");
+> +			goto out;
+> +		}
+> +	}
 
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/net/ethernet/qlogic/qede/qede.h      |  8 ++
- drivers/net/ethernet/qlogic/qede/qede_fp.c   | 97 +++++++++++++++++++-
- drivers/net/ethernet/qlogic/qede/qede_main.c | 18 ++++
- 3 files changed, 118 insertions(+), 5 deletions(-)
+Overall set looks good. One thing that appears to be possible from staring at
+the code is that while we load the bpf_preload module here and below invoke the
+modules' preload ops callbacks, there seems to be nothing that prevents the module
+from being forcefully unloaded in parallel (e.g. no ref on the module held).
 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede.h b/drivers/net/ethernet/qlogic/qede/qede.h
-index 308c66a5f98f..803c1fcca8ad 100644
---- a/drivers/net/ethernet/qlogic/qede/qede.h
-+++ b/drivers/net/ethernet/qlogic/qede/qede.h
-@@ -199,6 +199,7 @@ struct qede_dev {
- 	u8				fp_num_rx;
- 	u16				req_queues;
- 	u16				num_queues;
-+	u16				total_xdp_queues;
- 
- #define QEDE_QUEUE_CNT(edev)		((edev)->num_queues)
- #define QEDE_RSS_COUNT(edev)		((edev)->num_queues - (edev)->fp_num_tx)
-@@ -381,6 +382,7 @@ struct sw_tx_bd {
- 
- struct sw_tx_xdp {
- 	struct page			*page;
-+	struct xdp_frame		*xdpf;
- 	dma_addr_t			mapping;
- };
- 
-@@ -403,6 +405,9 @@ struct qede_tx_queue {
- 	void __iomem			*doorbell_addr;
- 	union db_prod			tx_db;
- 
-+	/* Spinlock for XDP queues in case of XDP_REDIRECT */
-+	spinlock_t			xdp_tx_lock;
-+
- 	int				index; /* Slowpath only */
- #define QEDE_TXQ_XDP_TO_IDX(edev, txq)	((txq)->index - \
- 					 QEDE_MAX_TSS_CNT(edev))
-@@ -456,6 +461,7 @@ struct qede_fastpath {
- 
- 	u8				xdp_xmit;
- #define QEDE_XDP_TX			BIT(0)
-+#define QEDE_XDP_REDIRECT		BIT(1)
- 
- 	struct napi_struct		napi;
- 	struct qed_sb_info		*sb_info;
-@@ -516,6 +522,8 @@ struct qede_reload_args {
- 
- /* Datapath functions definition */
- netdev_tx_t qede_start_xmit(struct sk_buff *skb, struct net_device *ndev);
-+int qede_xdp_transmit(struct net_device *dev, int n_frames,
-+		      struct xdp_frame **frames, u32 flags);
- u16 qede_select_queue(struct net_device *dev, struct sk_buff *skb,
- 		      struct net_device *sb_dev);
- netdev_features_t qede_features_check(struct sk_buff *skb,
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-index c80bf6d37b89..a2494bf85007 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-@@ -303,7 +303,7 @@ static inline void qede_update_tx_producer(struct qede_tx_queue *txq)
- }
- 
- static int qede_xdp_xmit(struct qede_tx_queue *txq, dma_addr_t dma, u16 pad,
--			 u16 len, struct page *page)
-+			 u16 len, struct page *page, struct xdp_frame *xdpf)
- {
- 	struct eth_tx_1st_bd *bd;
- 	struct sw_tx_xdp *xdp;
-@@ -330,12 +330,66 @@ static int qede_xdp_xmit(struct qede_tx_queue *txq, dma_addr_t dma, u16 pad,
- 	xdp = txq->sw_tx_ring.xdp + txq->sw_tx_prod;
- 	xdp->mapping = dma;
- 	xdp->page = page;
-+	xdp->xdpf = xdpf;
- 
- 	txq->sw_tx_prod = (txq->sw_tx_prod + 1) % txq->num_tx_buffers;
- 
- 	return 0;
- }
- 
-+int qede_xdp_transmit(struct net_device *dev, int n_frames,
-+		      struct xdp_frame **frames, u32 flags)
-+{
-+	struct qede_dev *edev = netdev_priv(dev);
-+	struct device *dmadev = &edev->pdev->dev;
-+	struct qede_tx_queue *xdp_tx;
-+	struct xdp_frame *xdpf;
-+	dma_addr_t mapping;
-+	int i, drops = 0;
-+	u16 xdp_prod;
-+
-+	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-+		return -EINVAL;
-+
-+	if (unlikely(!netif_running(dev)))
-+		return -ENETDOWN;
-+
-+	i = smp_processor_id() % edev->total_xdp_queues;
-+	xdp_tx = edev->fp_array[i].xdp_tx;
-+
-+	spin_lock(&xdp_tx->xdp_tx_lock);
-+
-+	for (i = 0; i < n_frames; i++) {
-+		xdpf = frames[i];
-+
-+		mapping = dma_map_single(dmadev, xdpf->data, xdpf->len,
-+					 DMA_TO_DEVICE);
-+		if (unlikely(dma_mapping_error(dmadev, mapping))) {
-+			xdp_return_frame_rx_napi(xdpf);
-+			drops++;
-+
-+			continue;
-+		}
-+
-+		if (unlikely(qede_xdp_xmit(xdp_tx, mapping, 0, xdpf->len,
-+					   NULL, xdpf))) {
-+			xdp_return_frame_rx_napi(xdpf);
-+			drops++;
-+		}
-+	}
-+
-+	if (flags & XDP_XMIT_FLUSH) {
-+		xdp_prod = qed_chain_get_prod_idx(&xdp_tx->tx_pbl);
-+
-+		xdp_tx->tx_db.data.bd_prod = cpu_to_le16(xdp_prod);
-+		qede_update_tx_producer(xdp_tx);
-+	}
-+
-+	spin_unlock(&xdp_tx->xdp_tx_lock);
-+
-+	return n_frames - drops;
-+}
-+
- int qede_txq_has_work(struct qede_tx_queue *txq)
- {
- 	u16 hw_bd_cons;
-@@ -353,6 +407,7 @@ static void qede_xdp_tx_int(struct qede_dev *edev, struct qede_tx_queue *txq)
- {
- 	struct sw_tx_xdp *xdp_info, *xdp_arr = txq->sw_tx_ring.xdp;
- 	struct device *dev = &edev->pdev->dev;
-+	struct xdp_frame *xdpf;
- 	u16 hw_bd_cons;
- 
- 	hw_bd_cons = le16_to_cpu(*txq->hw_cons_ptr);
-@@ -360,10 +415,19 @@ static void qede_xdp_tx_int(struct qede_dev *edev, struct qede_tx_queue *txq)
- 
- 	while (hw_bd_cons != qed_chain_get_cons_idx(&txq->tx_pbl)) {
- 		xdp_info = xdp_arr + txq->sw_tx_cons;
-+		xdpf = xdp_info->xdpf;
-+
-+		if (xdpf) {
-+			dma_unmap_single(dev, xdp_info->mapping, xdpf->len,
-+					 DMA_TO_DEVICE);
-+			xdp_return_frame(xdpf);
- 
--		dma_unmap_page(dev, xdp_info->mapping, PAGE_SIZE,
--			       DMA_BIDIRECTIONAL);
--		__free_page(xdp_info->page);
-+			xdp_info->xdpf = NULL;
-+		} else {
-+			dma_unmap_page(dev, xdp_info->mapping, PAGE_SIZE,
-+				       DMA_BIDIRECTIONAL);
-+			__free_page(xdp_info->page);
-+		}
- 
- 		qed_chain_consume(&txq->tx_pbl);
- 		txq->sw_tx_cons = (txq->sw_tx_cons + 1) % txq->num_tx_buffers;
-@@ -1065,7 +1129,8 @@ static bool qede_rx_xdp(struct qede_dev *edev,
- 		 * throw current buffer, as replacement was already allocated.
- 		 */
- 		if (unlikely(qede_xdp_xmit(fp->xdp_tx, bd->mapping,
--					   *data_offset, *len, bd->data))) {
-+					   *data_offset, *len, bd->data,
-+					   NULL))) {
- 			dma_unmap_page(rxq->dev, bd->mapping, PAGE_SIZE,
- 				       rxq->data_direction);
- 			__free_page(bd->data);
-@@ -1079,6 +1144,25 @@ static bool qede_rx_xdp(struct qede_dev *edev,
- 		}
- 
- 		/* Regardless, we've consumed an Rx BD */
-+		qede_rx_bd_ring_consume(rxq);
-+		break;
-+	case XDP_REDIRECT:
-+		/* We need the replacement buffer before transmit. */
-+		if (unlikely(qede_alloc_rx_buffer(rxq, true))) {
-+			qede_recycle_rx_bd_ring(rxq, 1);
-+
-+			trace_xdp_exception(edev->ndev, prog, act);
-+			break;
-+		}
-+
-+		dma_unmap_page(rxq->dev, bd->mapping, PAGE_SIZE,
-+			       rxq->data_direction);
-+
-+		if (unlikely(xdp_do_redirect(edev->ndev, &xdp, prog)))
-+			DP_NOTICE(edev, "Failed to redirect the packet\n");
-+		else
-+			fp->xdp_xmit |= QEDE_XDP_REDIRECT;
-+
- 		qede_rx_bd_ring_consume(rxq);
- 		break;
- 	default:
-@@ -1387,6 +1471,9 @@ int qede_poll(struct napi_struct *napi, int budget)
- 		qede_update_tx_producer(fp->xdp_tx);
- 	}
- 
-+	if (fp->xdp_xmit & QEDE_XDP_REDIRECT)
-+		xdp_do_flush_map();
-+
- 	return rx_work_done;
- }
- 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 92bcdfa27961..1aaae3203f5a 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -672,6 +672,7 @@ static const struct net_device_ops qede_netdev_ops = {
- #ifdef CONFIG_RFS_ACCEL
- 	.ndo_rx_flow_steer	= qede_rx_flow_steer,
- #endif
-+	.ndo_xdp_xmit		= qede_xdp_transmit,
- 	.ndo_setup_tc		= qede_setup_tc_offload,
- };
- 
-@@ -712,6 +713,7 @@ static const struct net_device_ops qede_netdev_vf_xdp_ops = {
- 	.ndo_udp_tunnel_del	= udp_tunnel_nic_del_port,
- 	.ndo_features_check	= qede_features_check,
- 	.ndo_bpf		= qede_xdp,
-+	.ndo_xdp_xmit		= qede_xdp_transmit,
- };
- 
- /* -------------------------------------------------------------------------
-@@ -1712,6 +1714,7 @@ static void qede_init_fp(struct qede_dev *edev)
- {
- 	int queue_id, rxq_index = 0, txq_index = 0;
- 	struct qede_fastpath *fp;
-+	bool init_xdp = false;
- 
- 	for_each_queue(queue_id) {
- 		fp = &edev->fp_array[queue_id];
-@@ -1723,6 +1726,9 @@ static void qede_init_fp(struct qede_dev *edev)
- 			fp->xdp_tx->index = QEDE_TXQ_IDX_TO_XDP(edev,
- 								rxq_index);
- 			fp->xdp_tx->is_xdp = 1;
-+
-+			spin_lock_init(&fp->xdp_tx->xdp_tx_lock);
-+			init_xdp = true;
- 		}
- 
- 		if (fp->type & QEDE_FASTPATH_RX) {
-@@ -1738,6 +1744,13 @@ static void qede_init_fp(struct qede_dev *edev)
- 			/* Driver have no error path from here */
- 			WARN_ON(xdp_rxq_info_reg(&fp->rxq->xdp_rxq, edev->ndev,
- 						 fp->rxq->rxq_id) < 0);
-+
-+			if (xdp_rxq_info_reg_mem_model(&fp->rxq->xdp_rxq,
-+						       MEM_TYPE_PAGE_ORDER0,
-+						       NULL)) {
-+				DP_NOTICE(edev,
-+					  "Failed to register XDP memory model\n");
-+			}
- 		}
- 
- 		if (fp->type & QEDE_FASTPATH_TX) {
-@@ -1763,6 +1776,11 @@ static void qede_init_fp(struct qede_dev *edev)
- 		snprintf(fp->name, sizeof(fp->name), "%s-fp-%d",
- 			 edev->ndev->name, queue_id);
- 	}
-+
-+	if (init_xdp) {
-+		edev->total_xdp_queues = QEDE_RSS_COUNT(edev);
-+		DP_INFO(edev, "Total XDP queues: %u\n", edev->total_xdp_queues);
-+	}
- }
- 
- static int qede_set_real_num_queues(struct qede_dev *edev)
--- 
-2.25.1
+So it looks like the old bpfilter code was preventing exactly this through holding
+bpfilter_ops.lock mutex during its {load,fini}_umh() modules init/exit functions.
 
+Other than that, maybe it would be nice to have a test_progs selftests extension
+which mounts multiple BPF fs instances, and asserts that if one of them has the
+{progs,maps}.debug files that the other ones must have it as well, plus plain
+reading of both (w/o parsing anything from there) just to make sure the dump
+terminates .. at least to have some basic exercising of the code in there.
+
+Thanks,
+Daniel
+
+> +	if (!bpf_preload_ops.info.tgid) {
+> +		err = bpf_preload_ops.do_preload(objs);
+> +		if (err)
+> +			goto out;
+> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
+> +			links[i] = bpf_link_by_id(objs[i].link_id);
+> +			if (IS_ERR(links[i])) {
+> +				err = PTR_ERR(links[i]);
+> +				goto out;
+> +			}
+> +		}
+> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
+> +			err = bpf_iter_link_pin_kernel(parent,
+> +						       objs[i].link_name, links[i]);
+> +			if (err)
+> +				goto out;
+> +			/* do not unlink successfully pinned links even
+> +			 * if later link fails to pin
+> +			 */
+> +			links[i] = NULL;
+> +		}
+> +		err = bpf_preload_ops.do_finish();
+> +		if (err)
+> +			goto out;
+> +	}
+> +out:
+> +	mutex_unlock(&bpf_preload_ops.lock);
+> +	for (i = 0; i < BPF_PRELOAD_LINKS && err; i++)
+> +		if (!IS_ERR_OR_NULL(links[i]))
+> +			bpf_link_put(links[i]);
+> +	return err;
+> +}
+> +
+>   static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
+>   {
+>   	static const struct tree_descr bpf_rfiles[] = { { "" } };
+> @@ -654,8 +732,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
+>   	inode = sb->s_root->d_inode;
+>   	inode->i_op = &bpf_dir_iops;
+>   	inode->i_mode &= ~S_IALLUGO;
+> +	populate_bpffs(sb->s_root);
+>   	inode->i_mode |= S_ISVTX | opts->mode;
+> -
+>   	return 0;
+>   }
+>   
+> @@ -705,6 +783,8 @@ static int __init bpf_init(void)
+[...]
+> diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
+> new file mode 100644
+> index 000000000000..cd10f291d6cd
+> --- /dev/null
+> +++ b/kernel/bpf/preload/bpf_preload_kern.c
+> @@ -0,0 +1,85 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/pid.h>
+> +#include <linux/fs.h>
+> +#include <linux/sched/signal.h>
+> +#include "bpf_preload.h"
+> +
+> +extern char bpf_preload_umd_start;
+> +extern char bpf_preload_umd_end;
+> +
+> +static int do_preload(struct bpf_preload_info *obj)
+> +{
+> +	int magic = BPF_PRELOAD_START;
+> +	struct pid *tgid;
+> +	loff_t pos = 0;
+> +	int i, err;
+> +	ssize_t n;
+> +
+> +	err = fork_usermode_driver(&bpf_preload_ops.info);
+> +	if (err)
+> +		return err;
+> +	tgid = bpf_preload_ops.info.tgid;
+> +
+> +	/* send the start magic to let UMD proceed with loading BPF progs */
+> +	n = kernel_write(bpf_preload_ops.info.pipe_to_umh,
+> +			 &magic, sizeof(magic), &pos);
+> +	if (n != sizeof(magic))
+> +		return -EPIPE;
+> +
+> +	/* receive bpf_link IDs and names from UMD */
+> +	pos = 0;
+> +	for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
+> +		n = kernel_read(bpf_preload_ops.info.pipe_from_umh,
+> +				&obj[i], sizeof(*obj), &pos);
+> +		if (n != sizeof(*obj))
+> +			return -EPIPE;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int do_finish(void)
+> +{
+> +	int magic = BPF_PRELOAD_END;
+> +	struct pid *tgid;
+> +	loff_t pos = 0;
+> +	ssize_t n;
+> +
+> +	/* send the last magic to UMD. It will do a normal exit. */
+> +	n = kernel_write(bpf_preload_ops.info.pipe_to_umh,
+> +			 &magic, sizeof(magic), &pos);
+> +	if (n != sizeof(magic))
+> +		return -EPIPE;
+> +	tgid = bpf_preload_ops.info.tgid;
+> +	wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
+> +	bpf_preload_ops.info.tgid = NULL;
+> +	return 0;
+> +}
+> +
+> +static int __init load_umd(void)
+> +{
+> +	int err;
+> +
+> +	err = umd_load_blob(&bpf_preload_ops.info, &bpf_preload_umd_start,
+> +			    &bpf_preload_umd_end - &bpf_preload_umd_start);
+> +	if (err)
+> +		return err;
+> +	bpf_preload_ops.do_preload = do_preload;
+> +	bpf_preload_ops.do_finish = do_finish;
+> +	return err;
+> +}
+> +
+> +static void __exit fini_umd(void)
+> +{
+> +	bpf_preload_ops.do_preload = NULL;
+> +	bpf_preload_ops.do_finish = NULL;
+> +	/* kill UMD in case it's still there due to earlier error */
+> +	kill_pid(bpf_preload_ops.info.tgid, SIGKILL, 1);
+> +	bpf_preload_ops.info.tgid = NULL;
+> +	umd_unload_blob(&bpf_preload_ops.info);
+> +}
+[...]
