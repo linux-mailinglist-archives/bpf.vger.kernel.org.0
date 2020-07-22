@@ -2,265 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98C222A067
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 22:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1071022A09E
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 22:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgGVUBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 16:01:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63143 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbgGVUBH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:01:07 -0400
-IronPort-SDR: qhbFdFVDvUTcSfOHn12ZfcA/Ah9lBTLFGI3kggBg/oxXmQbAIfVFTz3/byr8zKbhSIuR9Qm/4V
- 6gb5dRIZidrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="150389518"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="150389518"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 13:01:05 -0700
-IronPort-SDR: /BvLGJMSc5Yh8+TaMEU0l3tT0YmcPSZTqcxdkH35vlgcWlc1STe0WrUYdW0DG0JXLeL5gnIEon
- PFsG1q8Y+5Vg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="270846628"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2020 13:01:01 -0700
-Date:   Wed, 22 Jul 2020 21:56:04 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 2/9] bpf, xdp: maintain info on attached XDP
- BPF programs in net_device
-Message-ID: <20200722195604.GD8874@ranger.igk.intel.com>
-References: <20200722064603.3350758-1-andriin@fb.com>
- <20200722064603.3350758-3-andriin@fb.com>
- <20200722152604.GA8874@ranger.igk.intel.com>
- <CAEf4BzYTpxioRtuDM93JXxtn_K0F2y7hTnjs7EODp8_W7Phkwg@mail.gmail.com>
+        id S1726888AbgGVUQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 16:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726649AbgGVUQE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 16:16:04 -0400
+Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE400C0619DC;
+        Wed, 22 Jul 2020 13:14:25 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jyL87-00028N-Fk; Wed, 22 Jul 2020 22:14:19 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jyL87-000Tov-9u; Wed, 22 Jul 2020 22:14:19 +0200
+Subject: Re: [PATCH v2 bpf-next 2/6] bpf: propagate poke descriptors to
+ subprograms
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com
+References: <20200721115321.3099-1-maciej.fijalkowski@intel.com>
+ <20200721115321.3099-3-maciej.fijalkowski@intel.com>
+ <29a3dcfc-9d85-c113-19d2-e33f80ce5430@iogearbox.net>
+ <20200722183749.GB8874@ranger.igk.intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <89d0d100-2221-b8c8-ad37-d1b615a27817@iogearbox.net>
+Date:   Wed, 22 Jul 2020 22:14:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYTpxioRtuDM93JXxtn_K0F2y7hTnjs7EODp8_W7Phkwg@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200722183749.GB8874@ranger.igk.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25881/Wed Jul 22 16:35:43 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 12:35:36PM -0700, Andrii Nakryiko wrote:
-> On Wed, Jul 22, 2020 at 8:31 AM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > On Tue, Jul 21, 2020 at 11:45:55PM -0700, Andrii Nakryiko wrote:
-> > > Instead of delegating to drivers, maintain information about which BPF
-> > > programs are attached in which XDP modes (generic/skb, driver, or hardware)
-> > > locally in net_device. This effectively obsoletes XDP_QUERY_PROG command.
-> > >
-> > > Such re-organization simplifies existing code already. But it also allows to
-> > > further add bpf_link-based XDP attachments without drivers having to know
-> > > about any of this at all, which seems like a good setup.
-> > > XDP_SETUP_PROG/XDP_SETUP_PROG_HW are just low-level commands to driver to
-> > > install/uninstall active BPF program. All the higher-level concerns about
-> > > prog/link interaction will be contained within generic driver-agnostic logic.
-> > >
-> > > All the XDP_QUERY_PROG calls to driver in dev_xdp_uninstall() were removed.
-> > > It's not clear for me why dev_xdp_uninstall() were passing previous prog_flags
-> > > when resetting installed programs. That seems unnecessary, plus most drivers
-> > > don't populate prog_flags anyways. Having XDP_SETUP_PROG vs XDP_SETUP_PROG_HW
-> > > should be enough of an indicator of what is required of driver to correctly
-> > > reset active BPF program. dev_xdp_uninstall() is also generalized as an
-> > > iteration over all three supported mode.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> > >  include/linux/netdevice.h |  17 +++-
-> > >  net/core/dev.c            | 158 +++++++++++++++++++++-----------------
-> > >  net/core/rtnetlink.c      |   5 +-
-> > >  3 files changed, 105 insertions(+), 75 deletions(-)
-> > >
-> > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > > index ac2cd3f49aba..cad44b40c776 100644
-> > > --- a/include/linux/netdevice.h
-> > > +++ b/include/linux/netdevice.h
-> > > @@ -889,6 +889,17 @@ struct netlink_ext_ack;
-> > >  struct xdp_umem;
-> > >  struct xdp_dev_bulk_queue;
-> > >
-> > > +enum bpf_xdp_mode {
-> > > +     XDP_MODE_SKB = 0,
-> > > +     XDP_MODE_DRV = 1,
-> > > +     XDP_MODE_HW = 2,
-> > > +     __MAX_XDP_MODE
-> > > +};
-> > > +
-> > > +struct bpf_xdp_entity {
-> > > +     struct bpf_prog *prog;
-> > > +};
-> > > +
+On 7/22/20 8:37 PM, Maciej Fijalkowski wrote:
+> On Wed, Jul 22, 2020 at 04:40:42PM +0200, Daniel Borkmann wrote:
+>> On 7/21/20 1:53 PM, Maciej Fijalkowski wrote:
+>>> Previously, there was no need for poke descriptors being present in
+>>> subprogram's bpf_prog_aux struct since tailcalls were simply not allowed
+>>> in them. Each subprog is JITed independently so in order to enable
+>>> JITing such subprograms, simply copy poke descriptors from main program
+>>> to subprogram's poke tab.
+>>>
+>>> Add also subprog's aux struct to the BPF map poke_progs list by calling
+>>> on it map_poke_track().
+>>>
+>>> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>>> ---
+>>>    kernel/bpf/verifier.c | 20 ++++++++++++++++++++
+>>>    1 file changed, 20 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 3c1efc9d08fd..3428edf85220 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -9936,6 +9936,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>>>    		goto out_undo_insn;
+>>>    	for (i = 0; i < env->subprog_cnt; i++) {
+>>> +		struct bpf_map *map_ptr;
+>>> +		int j;
+>>> +
+>>>    		subprog_start = subprog_end;
+>>>    		subprog_end = env->subprog_info[i + 1].start;
+>>> @@ -9960,6 +9963,23 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>>>    		func[i]->aux->btf = prog->aux->btf;
+>>>    		func[i]->aux->func_info = prog->aux->func_info;
+>>> +		for (j = 0; j < prog->aux->size_poke_tab; j++) {
+>>> +			int ret;
+>>> +
+>>> +			ret = bpf_jit_add_poke_descriptor(func[i],
+>>> +							  &prog->aux->poke_tab[j]);
+>>> +			if (ret < 0) {
+>>> +				verbose(env, "adding tail call poke descriptor failed\n");
+>>> +				goto out_free;
+>>> +			}
+>>> +			map_ptr = func[i]->aux->poke_tab[j].tail_call.map;
+>>> +			ret = map_ptr->ops->map_poke_track(map_ptr, func[i]->aux);
+>>> +			if (ret < 0) {
+>>> +				verbose(env, "tracking tail call prog failed\n");
+>>> +				goto out_free;
+>>> +			}
+>>
+>> Hmm, I don't think this is correct/complete. If some of these have been registered or
+>> if later on the JIT'ing fails but the subprog is already exposed to the prog array then
+>> it's /public/ at this point, so a later bpf_jit_free() in out_free will rip them mem
+>> while doing live patching on prog updates leading to UAF.
 > 
-> [...]
-> 
-> > >
-> > > -u32 __dev_xdp_query(struct net_device *dev, bpf_op_t bpf_op,
-> > > -                 enum bpf_netdev_command cmd)
-> > > +static enum bpf_xdp_mode dev_xdp_mode(u32 flags)
-> > >  {
-> > > -     struct netdev_bpf xdp;
-> > > +     if (flags & XDP_FLAGS_HW_MODE)
-> > > +             return XDP_MODE_HW;
-> > > +     if (flags & XDP_FLAGS_DRV_MODE)
-> > > +             return XDP_MODE_DRV;
-> > > +     return XDP_MODE_SKB;
-> > > +}
-> > >
-> > > -     if (!bpf_op)
-> > > -             return 0;
-> > > +static bpf_op_t dev_xdp_bpf_op(struct net_device *dev, enum bpf_xdp_mode mode)
-> > > +{
-> > > +     switch (mode) {
-> > > +     case XDP_MODE_SKB:
-> > > +             return generic_xdp_install;
-> > > +     case XDP_MODE_DRV:
-> > > +     case XDP_MODE_HW:
-> > > +             return dev->netdev_ops->ndo_bpf;
-> > > +     default:
-> > > +             return NULL;
-> > > +     };
-> > > +}
-> > >
-> 
-> [...]
-> 
-> > >
-> > >  static void dev_xdp_uninstall(struct net_device *dev)
-> > >  {
-> > > -     struct netdev_bpf xdp;
-> > > -     bpf_op_t ndo_bpf;
-> > > +     struct bpf_prog *prog;
-> > > +     enum bpf_xdp_mode mode;
-> > > +     bpf_op_t bpf_op;
-> > >
-> > > -     /* Remove generic XDP */
-> > > -     WARN_ON(dev_xdp_install(dev, generic_xdp_install, NULL, 0, NULL));
-> > > +     ASSERT_RTNL();
-> > >
-> > > -     /* Remove from the driver */
-> > > -     ndo_bpf = dev->netdev_ops->ndo_bpf;
-> > > -     if (!ndo_bpf)
-> > > -             return;
-> > > +     for (mode = XDP_MODE_SKB; mode < __MAX_XDP_MODE; mode++) {
-> > > +             prog = dev_xdp_prog(dev, mode);
-> > > +             if (!prog)
-> > > +                     continue;
-> > >
-> > > -     memset(&xdp, 0, sizeof(xdp));
-> > > -     xdp.command = XDP_QUERY_PROG;
-> > > -     WARN_ON(ndo_bpf(dev, &xdp));
-> > > -     if (xdp.prog_id)
-> > > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL, xdp.prog_flags,
-> > > -                                     NULL));
-> > > +             bpf_op = dev_xdp_bpf_op(dev, mode);
-> > > +             if (!bpf_op)
-> > > +                     continue;
-> >
-> > could we assume that we are iterating over the defined XDP modes so bpf_op
-> > will always be a valid function pointer so that we could use directly
-> > dev_xdp_bpf_op() in dev_xdp_install() ?
-> >
-> > Just a nit, however current state is probably less error-prone when in
-> > future we might be introducing new XDP mode.
-> 
-> No we can't because for DRV and HW modes, dev->netdev_ops->ndo_bpf can
-> be NULL. So even though there are 3 possible XDP modes, only one (SKB,
-> using generic_xdp_install handler) might be supported for a given
-> net_device.
+> Ugh. So if we would precede the out_free label with map_poke_untrack() on error
+> path - would that be sufficient?
 
-Thanks, I missed the fact about ndo_bpf being NULL. Comments below can be
-ignored.
+Yes that would be needed and should be sufficient since tracking/untracking/patching is
+synchronized under the map's poke mutex lock.
 
-> 
-> >
-> > >
-> > > -     /* Remove HW offload */
-> > > -     memset(&xdp, 0, sizeof(xdp));
-> > > -     xdp.command = XDP_QUERY_PROG_HW;
-> > > -     if (!ndo_bpf(dev, &xdp) && xdp.prog_id)
-> > > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL, xdp.prog_flags,
-> > > -                                     NULL));
-> > > +             WARN_ON(dev_xdp_install(dev, mode, bpf_op, NULL, 0, NULL));
-> > > +
-> > > +             bpf_prog_put(prog);
-> > > +             dev_xdp_set_prog(dev, mode, NULL);
-> > > +     }
-> > >  }
-> > >
-> > >  /**
-> > > @@ -8810,29 +8829,22 @@ int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack *extack,
-> > >                     int fd, int expected_fd, u32 flags)
-> > >  {
-> > >       const struct net_device_ops *ops = dev->netdev_ops;
-> > > -     enum bpf_netdev_command query;
-> > > +     enum bpf_xdp_mode mode = dev_xdp_mode(flags);
-> > > +     bool offload = mode == XDP_MODE_HW;
-> > >       u32 prog_id, expected_id = 0;
-> > > -     bpf_op_t bpf_op, bpf_chk;
-> > >       struct bpf_prog *prog;
-> > > -     bool offload;
-> > > +     bpf_op_t bpf_op;
-> > >       int err;
-> > >
-> > >       ASSERT_RTNL();
-> > >
-> > > -     offload = flags & XDP_FLAGS_HW_MODE;
-> > > -     query = offload ? XDP_QUERY_PROG_HW : XDP_QUERY_PROG;
-> > > -
-> > > -     bpf_op = bpf_chk = ops->ndo_bpf;
-> > > -     if (!bpf_op && (flags & (XDP_FLAGS_DRV_MODE | XDP_FLAGS_HW_MODE))) {
-> > > +     bpf_op = dev_xdp_bpf_op(dev, mode);
-> > > +     if (!bpf_op) {
-> > >               NL_SET_ERR_MSG(extack, "underlying driver does not support XDP in native mode");
-> > >               return -EOPNOTSUPP;
-> > >       }
-> >
-> > Seems that we won't ever hit this case with this patch?
-> > If flags are not drv/hw, then dev_xdp_mode() will always spit out the
-> > XDP_MODE_SKB which then passed to dev_xdp_bpf_op() will in turn give the
-> > generic_xdp_install().
-> >
-> 
-> But flags can be drv/hw, in which case dev_xdp_bpf_op() will return
-> dev->netdev_ops->ndo_bpf, which is NULL, so at that time we should
-> emit error that driver doesn't support native mode.
-> 
-> > I think this check was against the situation where user wanted to go with
-> > native mode but underlying HW was not supporting it, right?
-> 
-> right, and it's still the case.
-> 
-> >
-> > So right now we will always be silently going with generic XDP?
-> 
-> No, please check dev_xdp_bpf_op() implementation again, it returns
-> generic_xdp_install for SKB mode only.
-> 
-> >
-> > I haven't followed previous revisions so I might be missing something.
-> >
-> > > -     if (!bpf_op || (flags & XDP_FLAGS_SKB_MODE))
-> > > -             bpf_op = generic_xdp_install;
-> > > -     if (bpf_op == bpf_chk)
-> > > -             bpf_chk = generic_xdp_install;
-> > >
-> > > -     prog_id = __dev_xdp_query(dev, bpf_op, query);
-> > > +     prog_id = dev_xdp_prog_id(dev, mode);
-> > >       if (flags & XDP_FLAGS_REPLACE) {
-> > >               if (expected_fd >= 0) {
-> > >                       prog = bpf_prog_get_type_dev(expected_fd,
-> 
-> [...]
+>>> +		}
+>>> +
+>>>    		/* Use bpf_prog_F_tag to indicate functions in stack traces.
+>>>    		 * Long term would need debug info to populate names
+>>>    		 */
+>>>
+>>
+
