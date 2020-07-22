@@ -2,81 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3655229D9F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 18:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D4F229DFE
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 19:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgGVQ7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 12:59:16 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:10243 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgGVQ7P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:59:15 -0400
+        id S1729015AbgGVRJz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 13:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgGVRJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 13:09:55 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCACC0619DC;
+        Wed, 22 Jul 2020 10:09:54 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so3257561ljg.13;
+        Wed, 22 Jul 2020 10:09:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1595437155; x=1626973155;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Ii8cjk4IQHFJom5jUg5CvG8Dn7N/tuaozH9/Wd8E8Ms=;
-  b=WunqPlLw04jpQc1pggInB6PWBxgBlynUDIdUK1z91SFMAZA33t879LrR
-   3/K+BZLO/7zJQKC6bwjnOirOc3S3dZSQtvxkSyQqliXLxg0RhBDH5foY3
-   2gX28xETsOSBDJneC3nDKPLr6hWClRjV/CGFmn/214+RDctcappF6DvjJ
-   k=;
-IronPort-SDR: 2UuOvxPhSwqD4fmJIs9O7v8NMnr1Vmn/JUdkghZZ5O8vgJiqAk27gribZwPEps5Owllie1cIOY
- ltYCHY+JH5qw==
-X-IronPort-AV: E=Sophos;i="5.75,383,1589241600"; 
-   d="scan'208";a="43524652"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-f273de60.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 22 Jul 2020 16:59:14 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-f273de60.us-east-1.amazon.com (Postfix) with ESMTPS id 6D803A2336;
-        Wed, 22 Jul 2020 16:59:11 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 22 Jul 2020 16:59:10 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.214) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 22 Jul 2020 16:59:06 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <jakub@cloudflare.com>
-CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <kernel-team@cloudflare.com>,
-        <kuba@kernel.org>, <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
-        <willemdebruijn.kernel@gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] Fix BPF socket lookup with reuseport groups with connections
-Date:   Thu, 23 Jul 2020 01:59:02 +0900
-Message-ID: <20200722165902.51857-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20200722161720.940831-1-jakub@cloudflare.com>
-References: <20200722161720.940831-1-jakub@cloudflare.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nqelWpCqH7nOe0oSyngzrBNpGRC3PyDyz91JHpls3Xk=;
+        b=QbFOpYWq197fvdaI4E7hogiJ5z6DhlnMwFbSAyObyOYxQk/ojAWvAxU5xeCwIzRoyp
+         bGpv6okHRbaDCk3F5IJgGXS3Wesi1t0HKLxD0rWbntKFa+o4FEuZ/aNqddB2gT9rJhFi
+         ekTLt46VwAAqYYSOS+Ti6gpiM2sULyDbPlDxrV2EC1wYfvYmkCiCMfUA2sia4+eUOZSm
+         DpKqJKTrsnJtuquGnG9/42hXesw1S5DhQmqbpijEy6OLbaHF8RyBbV+paN+wC914K+DB
+         Om2JyFGEZL8bVoXG7xFZFOn3b/hxnJAALpQKOVax/+9YzLSzmIzDLinAT6/sMjMDDXxC
+         pBiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nqelWpCqH7nOe0oSyngzrBNpGRC3PyDyz91JHpls3Xk=;
+        b=k3wIByikShOaLkMc1Od1tLGwmab7hG9iKbyDULD2uOU+twM7jxZwJn7IWxMKu4MHdb
+         2Um8GRz1pnUx6Or1zrBKsXK1VsWCVoqGK+g00uoLdXwN0ZIjQs2SY1NcE1kAF8LDVTbU
+         yec/VCQcloskNDtE/ZzYq3LleNJ4xRU3nJ3wI0s/geljdUP2TUb94FrsAN6b/v2V85qz
+         Jc8CdA/0064dg3bpth9PgXEMbwg5daPhBpS5N9zJpR/T9aF3Yn/Utf8++olez5sBFyLk
+         PhS8JcXdC8vjOKTUaUQOoc6YRUqpWtVVYj0gjyhYOFPmkN984ejeamHM/Bn02+cBPon8
+         gMPw==
+X-Gm-Message-State: AOAM531Eo1Acr/3nE2b3iA/QDxbQGbfSLq/pJjtA4rrQ+YuHqM+38kBs
+        PxMKDcJqZcbVcOCj/Ts6eT4QBe1XJMs+YgpX9dqBNA==
+X-Google-Smtp-Source: ABdhPJzXtI3YBeORsJYQmEu28fVJCUtGV7rd5sI5b8tsC3G9617tl0t2hP5zU+hEdegWolMtC+F/64n4emjrett5jt8=
+X-Received: by 2002:a2e:90da:: with SMTP id o26mr95292ljg.91.1595437793253;
+ Wed, 22 Jul 2020 10:09:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.214]
-X-ClientProxiedBy: EX13D13UWB002.ant.amazon.com (10.43.161.21) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20200720124737.118617-1-hch@lst.de> <20200720204756.iengwcguikj2yrxt@ast-mbp.dhcp.thefacebook.com>
+ <20200722075657.GB26554@lst.de>
+In-Reply-To: <20200722075657.GB26554@lst.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Jul 2020 10:09:41 -0700
+Message-ID: <CAADnVQKy0+rsRftEzp4PvxQtj7uOwybz0Nd4_h0FR37p2Q=X4w@mail.gmail.com>
+Subject: Re: get rid of the address_space override in setsockopt
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org,
+        linux-s390 <linux-s390@vger.kernel.org>, mptcp@lists.01.org,
+        lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-Date:   Wed, 22 Jul 2020 18:17:18 +0200
-> This mini series contains a fix for a bug noticed when analyzing a reported
-> merge conflict between bpf-next and net tree [0].
-> 
-> Apart from fixing a corner-case that affects use of BPF sk_lookup in tandem
-> with UDP reuseport groups with connected sockets, it should make the
-> conflict resolution with net tree easier.
-> 
-> These changes don't replicate the improved UDP socket lookup behavior from
-> net tree, where commit efc6b6f6c311 ("udp: Improve load balancing for
-> SO_REUSEPORT.") is present.
-> 
-> Happy to do it as a follow up. For the moment I didn't want to make things
-> more confusing when it comes to what got fixed where and why.
-> 
-> Thanks,
-> -jkbs
+On Wed, Jul 22, 2020 at 12:56 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, Jul 20, 2020 at 01:47:56PM -0700, Alexei Starovoitov wrote:
+> > > a kernel pointer.  This is something that works for most common sockopts
+> > > (and is something that the ePBF support relies on), but unfortunately
+> > > in various corner cases we either don't use the passed in length, or in
+> > > one case actually copy data back from setsockopt, so we unfortunately
+> > > can't just always do the copy in the highlevel code, which would have
+> > > been much nicer.
+> >
+> > could you rebase on bpf-next tree and we can route it this way then?
+> > we'll also test the whole thing before applying.
+>
+> The bpf-next tree is missing all my previous setsockopt cleanups, so
+> there series won't apply.
 
-Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-
-Thank you.
+Right. I've realized that after sending that email two days ago.
+Now bpf-next->net-next PR is pending and as soon as it's merged
+bpf-next will have all the recent bits.
