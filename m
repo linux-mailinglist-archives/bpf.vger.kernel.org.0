@@ -2,174 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51DA229F9B
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 20:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A69229FFC
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 21:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732614AbgGVSuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 14:50:11 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49472 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732135AbgGVSuF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 14:50:05 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06MIZKAm026687
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:50:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=QY55+UbF/xtf+2MmgvqigbzrblDS0mIsEVAT15F/aio=;
- b=aDQppVVuTUsazjnKqJAauJyG6JxaUPuSaGoa/a0Z/WGhOkqQhv1pm/AfXmvOP5t3UpAA
- E5leOMlvLvaC7Ongk7Q5ooLsvOpSB9NtbRVBbnCBRsWiy5OZMfK3mOR9FZVin+3Dxzus
- bnZXKGOiXhLEgkRuPXfpajTkOli9llWohi0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32esdjgm9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:50:03 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 11:50:02 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id E65993704B5A; Wed, 22 Jul 2020 11:50:00 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v2 13/13] selftests/bpf: add a test for out of bound rdonly buf access
-Date:   Wed, 22 Jul 2020 11:50:00 -0700
-Message-ID: <20200722185000.3778318-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200722184945.3777103-1-yhs@fb.com>
-References: <20200722184945.3777103-1-yhs@fb.com>
+        id S1726462AbgGVTSU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 15:18:20 -0400
+Received: from mga01.intel.com ([192.55.52.88]:24713 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726157AbgGVTSU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 15:18:20 -0400
+IronPort-SDR: 28df/czH63vY01Idh2AnAdQYQKcqhw0nxdOHYTGBHKSRBlK2yNFRK0ma+kI8rhx9ecmCLacy87
+ x++7R8OYOQaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="168549343"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="168549343"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 12:18:20 -0700
+IronPort-SDR: iHlPcRjVTLW3toZUI+mwfsaQl9EhxVDinVg6F6LIc27rHlddMLyK044IdAOCdeVnzXh9o8zc/e
+ +7HoQjDLPJmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="432484813"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga004.jf.intel.com with ESMTP; 22 Jul 2020 12:18:17 -0700
+Date:   Wed, 22 Jul 2020 21:13:20 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, dsahern@gmail.com, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH v4 bpf-next 3/9] bpf, xdp: extract common XDP program
+ attachment logic
+Message-ID: <20200722191320.GC8874@ranger.igk.intel.com>
+References: <20200722064603.3350758-1-andriin@fb.com>
+ <20200722064603.3350758-4-andriin@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 spamscore=0 adultscore=0 impostorscore=0 phishscore=0
- suspectscore=8 bulkscore=0 priorityscore=1501 mlxlogscore=928
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220119
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722064603.3350758-4-andriin@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the bpf program contains out of bound access w.r.t. a
-particular map key/value size, the verification will be
-still okay, e.g., it will be accepted by verifier. But
-it will be rejected during link_create time. A test
-is added here to ensure link_create failure did happen
-if out of bound access happened.
-  $ ./test_progs -n 4
-  ...
-  #4/23 rdonly-buf-out-of-bound:OK
-  ...
+On Tue, Jul 21, 2020 at 11:45:56PM -0700, Andrii Nakryiko wrote:
+> Further refactor XDP attachment code. dev_change_xdp_fd() is split into two
+> parts: getting bpf_progs from FDs and attachment logic, working with
+> bpf_progs. This makes attachment  logic a bit more straightforward and
+> prepares code for bpf_xdp_link inclusion, which will share the common logic.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  net/core/dev.c | 165 +++++++++++++++++++++++++++----------------------
+>  1 file changed, 91 insertions(+), 74 deletions(-)
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 7e753e248cef..abf573b2dcf4 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -8815,111 +8815,128 @@ static void dev_xdp_uninstall(struct net_device *dev)
+>  	}
+>  }
+>  
+> -/**
+> - *	dev_change_xdp_fd - set or clear a bpf program for a device rx path
+> - *	@dev: device
+> - *	@extack: netlink extended ack
+> - *	@fd: new program fd or negative value to clear
+> - *	@expected_fd: old program fd that userspace expects to replace or clear
+> - *	@flags: xdp-related flags
+> - *
+> - *	Set or clear a bpf program for a device
+> - */
+> -int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack *extack,
+> -		      int fd, int expected_fd, u32 flags)
+> +static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack,
+> +			  struct bpf_prog *new_prog, struct bpf_prog *old_prog,
+> +			  u32 flags)
+>  {
+> -	const struct net_device_ops *ops = dev->netdev_ops;
+> -	enum bpf_xdp_mode mode = dev_xdp_mode(flags);
+> -	bool offload = mode == XDP_MODE_HW;
+> -	u32 prog_id, expected_id = 0;
+> -	struct bpf_prog *prog;
+> +	struct bpf_prog *cur_prog;
+> +	enum bpf_xdp_mode mode;
+>  	bpf_op_t bpf_op;
+>  	int err;
+>  
+>  	ASSERT_RTNL();
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 22 ++++++++++++
- .../selftests/bpf/progs/bpf_iter_test_kern5.c | 35 +++++++++++++++++++
- 2 files changed, 57 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern5=
-.c
+couldn't we rely on caller's rtnl assertion? dev_change_xdp_fd() already
+has one.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index ffbbeb9fa268..d95de80b1851 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -20,6 +20,7 @@
- #include "bpf_iter_bpf_array_map.skel.h"
- #include "bpf_iter_bpf_percpu_array_map.skel.h"
- #include "bpf_iter_bpf_sk_storage_map.skel.h"
-+#include "bpf_iter_test_kern5.skel.h"
-=20
- static int duration;
-=20
-@@ -865,6 +866,25 @@ static void test_bpf_sk_storage_map(void)
- 	bpf_iter_bpf_sk_storage_map__destroy(skel);
- }
-=20
-+static void test_rdonly_buf_out_of_bound(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	struct bpf_iter_test_kern5 *skel;
-+	struct bpf_link *link;
-+
-+	skel =3D bpf_iter_test_kern5__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_test_kern5__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	opts.map_fd =3D bpf_map__fd(skel->maps.hashmap1);
-+	link =3D bpf_program__attach_iter(skel->progs.dump_bpf_hash_map, &opts)=
-;
-+	if (CHECK(!IS_ERR(link), "attach_iter", "unexpected success\n"))
-+		bpf_link__destroy(link);
-+
-+	bpf_iter_test_kern5__destroy(skel);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -911,4 +931,6 @@ void test_bpf_iter(void)
- 		test_bpf_percpu_array_map();
- 	if (test__start_subtest("bpf_sk_storage_map"))
- 		test_bpf_sk_storage_map();
-+	if (test__start_subtest("rdonly-buf-out-of-bound"))
-+		test_rdonly_buf_out_of_bound();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c b/to=
-ols/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-new file mode 100644
-index 000000000000..e3a7575e81d2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct key_t {
-+	int a;
-+	int b;
-+	int c;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 3);
-+	__type(key, struct key_t);
-+	__type(value, __u64);
-+} hashmap1 SEC(".maps");
-+
-+__u32 key_sum =3D 0;
-+
-+SEC("iter/bpf_map_elem")
-+int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
-+{
-+	void *key =3D ctx->key;
-+
-+	if (key =3D=3D (void *)0)
-+		return 0;
-+
-+	/* out of bound access w.r.t. hashmap1 */
-+	key_sum +=3D *(__u32 *)(key + sizeof(struct key_t));
-+	return 0;
-+}
---=20
-2.24.1
+>  
+> -	bpf_op = dev_xdp_bpf_op(dev, mode);
+> -	if (!bpf_op) {
+> -		NL_SET_ERR_MSG(extack, "underlying driver does not support XDP in native mode");
+> -		return -EOPNOTSUPP;
+> +	/* just one XDP mode bit should be set, zero defaults to SKB mode */
+> +	if (hweight32(flags & XDP_FLAGS_MODES) > 1) {
+> +		NL_SET_ERR_MSG(extack, "Only one XDP mode flag can be set");
+> +		return -EINVAL;
+> +	}
+> +	/* old_prog != NULL implies XDP_FLAGS_REPLACE is set */
+> +	if (old_prog && !(flags & XDP_FLAGS_REPLACE)) {
+> +		NL_SET_ERR_MSG(extack, "XDP_FLAGS_REPLACE is not specified");
+> +		return -EINVAL;
+>  	}
+>  
+> -	prog_id = dev_xdp_prog_id(dev, mode);
+> -	if (flags & XDP_FLAGS_REPLACE) {
+> -		if (expected_fd >= 0) {
+> -			prog = bpf_prog_get_type_dev(expected_fd,
+> -						     BPF_PROG_TYPE_XDP,
+> -						     bpf_op == ops->ndo_bpf);
+> -			if (IS_ERR(prog))
+> -				return PTR_ERR(prog);
+> -			expected_id = prog->aux->id;
+> -			bpf_prog_put(prog);
+> -		}
+> -
+> -		if (prog_id != expected_id) {
+> -			NL_SET_ERR_MSG(extack, "Active program does not match expected");
+> -			return -EEXIST;
+> -		}
+> +	mode = dev_xdp_mode(flags);
+> +	cur_prog = dev_xdp_prog(dev, mode);
+> +	if ((flags & XDP_FLAGS_REPLACE) && cur_prog != old_prog) {
+> +		NL_SET_ERR_MSG(extack, "Active program does not match expected");
+> +		return -EEXIST;
+>  	}
+> -	if (fd >= 0) {
+> +	if ((flags & XDP_FLAGS_UPDATE_IF_NOEXIST) && cur_prog) {
+> +		NL_SET_ERR_MSG(extack, "XDP program already attached");
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (new_prog) {
+> +		bool offload = mode == XDP_MODE_HW;
+>  		enum bpf_xdp_mode other_mode = mode == XDP_MODE_SKB
+>  					       ? XDP_MODE_DRV : XDP_MODE_SKB;
+>  
+> -		if (!offload && dev_xdp_prog_id(dev, other_mode)) {
+> +		if (!offload && dev_xdp_prog(dev, other_mode)) {
+>  			NL_SET_ERR_MSG(extack, "Native and generic XDP can't be active at the same time");
+>  			return -EEXIST;
+>  		}
+> -
+> -		if ((flags & XDP_FLAGS_UPDATE_IF_NOEXIST) && prog_id) {
+> -			NL_SET_ERR_MSG(extack, "XDP program already attached");
+> -			return -EBUSY;
+> -		}
+> -
+> -		prog = bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP,
+> -					     bpf_op == ops->ndo_bpf);
+> -		if (IS_ERR(prog))
+> -			return PTR_ERR(prog);
+> -
+> -		if (!offload && bpf_prog_is_dev_bound(prog->aux)) {
+> +		if (!offload && bpf_prog_is_dev_bound(new_prog->aux)) {
+>  			NL_SET_ERR_MSG(extack, "Using device-bound program without HW_MODE flag is not supported");
+> -			bpf_prog_put(prog);
+>  			return -EINVAL;
+>  		}
+> -
+> -		if (prog->expected_attach_type == BPF_XDP_DEVMAP) {
+> +		if (new_prog->expected_attach_type == BPF_XDP_DEVMAP) {
+>  			NL_SET_ERR_MSG(extack, "BPF_XDP_DEVMAP programs can not be attached to a device");
+> -			bpf_prog_put(prog);
+>  			return -EINVAL;
+>  		}
+> -
+> -		if (prog->expected_attach_type == BPF_XDP_CPUMAP) {
+> -			NL_SET_ERR_MSG(extack,
+> -				       "BPF_XDP_CPUMAP programs can not be attached to a device");
+> -			bpf_prog_put(prog);
+> +		if (new_prog->expected_attach_type == BPF_XDP_CPUMAP) {
+> +			NL_SET_ERR_MSG(extack, "BPF_XDP_CPUMAP programs can not be attached to a device");
 
+bpf_prog_put() missing?
+
+>  			return -EINVAL;
+>  		}
+> +	}
+>  
+> -		/* prog->aux->id may be 0 for orphaned device-bound progs */
+> -		if (prog->aux->id && prog->aux->id == prog_id) {
+> -			bpf_prog_put(prog);
+> -			return 0;
+> +	/* don't call drivers if the effective program didn't change */
+> +	if (new_prog != cur_prog) {
+> +		bpf_op = dev_xdp_bpf_op(dev, mode);
+> +		if (!bpf_op) {
+> +			NL_SET_ERR_MSG(extack, "Underlying driver does not support XDP in native mode");
+> +			return -EOPNOTSUPP;
+>  		}
+> -	} else {
+> -		if (!prog_id)
+> -			return 0;
+> -		prog = NULL;
+> -	}
+>  
+> -	err = dev_xdp_install(dev, mode, bpf_op, extack, flags, prog);
+> -	if (err < 0 && prog) {
+> -		bpf_prog_put(prog);
+> -		return err;
+> +		err = dev_xdp_install(dev, mode, bpf_op, extack, flags, new_prog);
+> +		if (err)
+> +			return err;
+>  	}
+> -	dev_xdp_set_prog(dev, mode, prog);
+> +
+> +	dev_xdp_set_prog(dev, mode, new_prog);
+> +	if (cur_prog)
+> +		bpf_prog_put(cur_prog);
+>  
+>  	return 0;
+>  }
+>  
+> +/**
+> + *	dev_change_xdp_fd - set or clear a bpf program for a device rx path
+> + *	@dev: device
+> + *	@extack: netlink extended ack
+> + *	@fd: new program fd or negative value to clear
+> + *	@expected_fd: old program fd that userspace expects to replace or clear
+> + *	@flags: xdp-related flags
+> + *
+> + *	Set or clear a bpf program for a device
+> + */
+> +int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack *extack,
+> +		      int fd, int expected_fd, u32 flags)
+> +{
+> +	enum bpf_xdp_mode mode = dev_xdp_mode(flags);
+> +	struct bpf_prog *new_prog = NULL, *old_prog = NULL;
+> +	int err;
+> +
+> +	ASSERT_RTNL();
+> +
+> +	if (fd >= 0) {
+> +		new_prog = bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP,
+> +						 mode != XDP_MODE_SKB);
+> +		if (IS_ERR(new_prog))
+> +			return PTR_ERR(new_prog);
+> +	}
+> +
+> +	if (expected_fd >= 0) {
+> +		old_prog = bpf_prog_get_type_dev(expected_fd, BPF_PROG_TYPE_XDP,
+> +						 mode != XDP_MODE_SKB);
+> +		if (IS_ERR(old_prog)) {
+> +			err = PTR_ERR(old_prog);
+> +			old_prog = NULL;
+> +			goto err_out;
+> +		}
+> +	}
+> +
+> +	err = dev_xdp_attach(dev, extack, new_prog, old_prog, flags);
+> +
+> +err_out:
+> +	if (err && new_prog)
+> +		bpf_prog_put(new_prog);
+> +	if (old_prog)
+> +		bpf_prog_put(old_prog);
+> +	return err;
+> +}
+> +
+>  /**
+>   *	dev_new_index	-	allocate an ifindex
+>   *	@net: the applicable net namespace
+> -- 
+> 2.24.1
+> 
