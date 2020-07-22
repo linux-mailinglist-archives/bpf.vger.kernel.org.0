@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082A0229F6F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 20:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02D2229F81
+	for <lists+bpf@lfdr.de>; Wed, 22 Jul 2020 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732502AbgGVSo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 14:44:59 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39890 "EHLO
+        id S1730843AbgGVSr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 14:47:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63144 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732480AbgGVSo6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 14:44:58 -0400
+        by vger.kernel.org with ESMTP id S1728124AbgGVSr4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jul 2020 14:47:56 -0400
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MIcINZ002807
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:44:57 -0700
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MIcHXZ002711
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:47:56 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=BmNGEeDKMrJyzy0Y9qdmCpxqmPVaFWC2rxabJSNl9YY=;
- b=q/FrPM+/6vHgvpBQprEdXOFM/CazKJGAN9bfLWLEelrc1uY/lAPLOJN16thtJpc4VVp2
- r7uFGCgdxzS7/QReh0KpfSX3Eqy5coMiXhb1DuisALQlXQ//EhXrM/f6HHI6J5o84G8r
- 6SknA/JB/kfnPMMLuRS3ML1nYoAU+tHKFYE= 
+ bh=HC19BocnzqfbZdasNet2djSQezi7uoWDz8ER7wUvdIo=;
+ b=fPphctbfnldciNBDH2k+9Bwe7AyMkEdjuVnfa4LdwaO8PZetnq6RCzeFiqy713Q7914B
+ YI/dAUhA9eY0WNZUG8r0Ef0SWmFrohwOWNPOS9ujsHOamaXaKHhjRag/291WpVYNEMuy
+ jhd+Q0JB7sYGLPNlRsMbcwk0sy0CO5ml/K8= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32esyn8cvm-3
+        by mx0a-00082601.pphosted.com with ESMTP id 32esyn8de5-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:44:57 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 11:47:56 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 11:44:56 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 11:47:55 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 55F4262E4FB1; Wed, 22 Jul 2020 11:42:20 -0700 (PDT)
+        id 76F7562E5024; Wed, 22 Jul 2020 11:42:24 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Song Liu <songliubraving@fb.com>
 Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
@@ -39,11 +39,12 @@ To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
 CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
         <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
         <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when bpf_get_[stack|stackid] cannot work
-Date:   Wed, 22 Jul 2020 11:42:08 -0700
-Message-ID: <20200722184210.4078256-3-songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 3/4] selftests/bpf: add callchain_stackid
+Date:   Wed, 22 Jul 2020 11:42:09 -0700
+Message-ID: <20200722184210.4078256-4-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200722184210.4078256-1-songliubraving@fb.com>
 References: <20200722184210.4078256-1-songliubraving@fb.com>
@@ -64,81 +65,213 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_get_[stack|stackid] on perf_events with precise_ip uses callchain
-attached to perf_sample_data. If this callchain is not presented, do not
-allow attaching BPF program that calls bpf_get_[stack|stackid] to this
-event.
+This tests new helper function bpf_get_stackid_pe and bpf_get_stack_pe.
+These two helpers have different implementation for perf_event with PEB
+entries.
 
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- include/linux/filter.h |  3 ++-
- kernel/bpf/verifier.c  |  3 +++
- kernel/events/core.c   | 18 ++++++++++++++++++
- 3 files changed, 23 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/perf_event_stackmap.c      | 116 ++++++++++++++++++
+ .../selftests/bpf/progs/perf_event_stackmap.c |  59 +++++++++
+ 2 files changed, 175 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
+ckmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
+.c
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 8252572db918f..582262017a7dd 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -534,7 +534,8 @@ struct bpf_prog {
- 				is_func:1,	/* program is a bpf function */
- 				kprobe_override:1, /* Do we override a kprobe? */
- 				has_callchain_buf:1, /* callchain buffer allocated? */
--				enforce_expected_attach_type:1; /* Enforce expected_attach_type chec=
-king at attach time */
-+				enforce_expected_attach_type:1, /* Enforce expected_attach_type chec=
-king at attach time */
-+				call_get_stack:1; /* Do we call bpf_get_stack() or bpf_get_stackid()=
- */
- 	enum bpf_prog_type	type;		/* Type of BPF program */
- 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
- 	u32			len;		/* Number of filter blocks */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9a6703bc3f36f..41c9517a505ff 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4887,6 +4887,9 @@ static int check_helper_call(struct bpf_verifier_en=
-v *env, int func_id, int insn
- 		env->prog->has_callchain_buf =3D true;
- 	}
-=20
-+	if (func_id =3D=3D BPF_FUNC_get_stackid || func_id =3D=3D BPF_FUNC_get_=
-stack)
-+		env->prog->call_get_stack =3D true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c=
+ b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
+new file mode 100644
+index 0000000000000..72c3690844fba
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
+@@ -0,0 +1,116 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020 Facebook
++#define _GNU_SOURCE
++#include <pthread.h>
++#include <sched.h>
++#include <test_progs.h>
++#include "perf_event_stackmap.skel.h"
 +
- 	if (changes_data)
- 		clear_all_pkt_pointers(env);
- 	return 0;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 856d98c36f562..f77d009fcce95 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9544,6 +9544,24 @@ static int perf_event_set_bpf_handler(struct perf_=
-event *event, u32 prog_fd)
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
-=20
-+	if (event->attr.precise_ip &&
-+	    prog->call_get_stack &&
-+	    (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) ||
-+	     event->attr.exclude_callchain_kernel ||
-+	     event->attr.exclude_callchain_user)) {
-+		/*
-+		 * On perf_event with precise_ip, calling bpf_get_stack()
-+		 * may trigger unwinder warnings and occasional crashes.
-+		 * bpf_get_[stack|stackid] works around this issue by using
-+		 * callchain attached to perf_sample_data. If the
-+		 * perf_event does not full (kernel and user) callchain
-+		 * attached to perf_sample_data, do not allow attaching BPF
-+		 * program that calls bpf_get_[stack|stackid].
-+		 */
-+		bpf_prog_put(prog);
-+		return -EINVAL;
++#ifndef noinline
++#define noinline __attribute__((noinline))
++#endif
++
++noinline int func_1(void)
++{
++	static int val =3D 1;
++
++	val +=3D 1;
++
++	usleep(100);
++	return val;
++}
++
++noinline int func_2(void)
++{
++	return func_1();
++}
++
++noinline int func_3(void)
++{
++	return func_2();
++}
++
++noinline int func_4(void)
++{
++	return func_3();
++}
++
++noinline int func_5(void)
++{
++	return func_4();
++}
++
++noinline int func_6(void)
++{
++	int i, val =3D 1;
++
++	for (i =3D 0; i < 100; i++)
++		val +=3D func_5();
++
++	return val;
++}
++
++void test_perf_event_stackmap(void)
++{
++	struct perf_event_attr attr =3D {
++		/* .type =3D PERF_TYPE_SOFTWARE, */
++		.type =3D PERF_TYPE_HARDWARE,
++		.config =3D PERF_COUNT_HW_CPU_CYCLES,
++		.precise_ip =3D 2,
++		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
++			PERF_SAMPLE_CALLCHAIN,
++		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
++			PERF_SAMPLE_BRANCH_NO_FLAGS |
++			PERF_SAMPLE_BRANCH_NO_CYCLES |
++			PERF_SAMPLE_BRANCH_CALL_STACK,
++		.sample_period =3D 5000,
++		.size =3D sizeof(struct perf_event_attr),
++	};
++	struct perf_event_stackmap *skel;
++	__u32 duration =3D 0;
++	cpu_set_t cpu_set;
++	int pmu_fd, err;
++
++	skel =3D perf_event_stackmap__open();
++
++	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
++		return;
++
++	err =3D perf_event_stackmap__load(skel);
++	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
++		goto cleanup;
++
++	CPU_ZERO(&cpu_set);
++	CPU_SET(0, &cpu_set);
++	err =3D pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_se=
+t);
++	if (CHECK(err, "set_affinity", "err %d, errno %d\n", err, errno))
++		goto cleanup;
++
++	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
++			 0 /* cpu 0 */, -1 /* group id */,
++			 0 /* flags */);
++	if (pmu_fd < 0) {
++		printf("%s:SKIP:cpu doesn't support the event\n", __func__);
++		test__skip();
++		goto cleanup;
 +	}
 +
- 	event->prog =3D prog;
- 	event->orig_overflow_handler =3D READ_ONCE(event->overflow_handler);
- 	WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
++	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
++							   pmu_fd);
++	if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
++		  "err %ld\n", PTR_ERR(skel->links.oncpu))) {
++		close(pmu_fd);
++		goto cleanup;
++	}
++
++	/* create kernel and user stack traces for testing */
++	func_6();
++
++	CHECK(skel->data->stackid_kernel !=3D 2, "get_stackid_kernel", "failed\=
+n");
++	CHECK(skel->data->stackid_user !=3D 2, "get_stackid_user", "failed\n");
++	CHECK(skel->data->stack_kernel !=3D 2, "get_stack_kernel", "failed\n");
++	CHECK(skel->data->stack_user !=3D 2, "get_stack_user", "failed\n");
++
++cleanup:
++	perf_event_stackmap__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/to=
+ols/testing/selftests/bpf/progs/perf_event_stackmap.c
+new file mode 100644
+index 0000000000000..25467d13c356a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+@@ -0,0 +1,59 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020 Facebook
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++#ifndef PERF_MAX_STACK_DEPTH
++#define PERF_MAX_STACK_DEPTH         127
++#endif
++
++typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
++struct {
++	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
++	__uint(max_entries, 16384);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(stack_trace_t));
++} stackmap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, stack_trace_t);
++} stackdata_map SEC(".maps");
++
++long stackid_kernel =3D 1;
++long stackid_user =3D 1;
++long stack_kernel =3D 1;
++long stack_user =3D 1;
++
++SEC("perf_event")
++int oncpu(void *ctx)
++{
++	stack_trace_t *trace;
++	__u32 key =3D 0;
++	long val;
++
++	val =3D bpf_get_stackid(ctx, &stackmap, 0);
++	if (val > 0)
++		stackid_kernel =3D 2;
++	val =3D bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
++	if (val > 0)
++		stackid_user =3D 2;
++
++	trace =3D bpf_map_lookup_elem(&stackdata_map, &key);
++	if (!trace)
++		return 0;
++
++	val =3D bpf_get_stack(ctx, trace, sizeof(stack_trace_t), 0);
++	if (val > 0)
++		stack_kernel =3D 2;
++
++	val =3D bpf_get_stack(ctx, trace, sizeof(stack_trace_t), BPF_F_USER_STA=
+CK);
++	if (val > 0)
++		stack_user =3D 2;
++
++	return 0;
++}
++
++char LICENSE[] SEC("license") =3D "GPL";
 --=20
 2.24.1
 
