@@ -2,269 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F9822A244
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 00:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD24622A25F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 00:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgGVWQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jul 2020 18:16:23 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43870 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgGVWQX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:16:23 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyN25-0007uB-Qk; Thu, 23 Jul 2020 00:16:13 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyN25-000O10-Kn; Thu, 23 Jul 2020 00:16:13 +0200
-Subject: Re: [PATCH v2 bpf-next 4/4] bpf: Add kernel module with user mode
- driver that populates bpffs.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     torvalds@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-References: <20200717044031.56412-1-alexei.starovoitov@gmail.com>
- <20200717044031.56412-5-alexei.starovoitov@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <35b9bedb-a278-beac-0648-04416761acfb@iogearbox.net>
-Date:   Thu, 23 Jul 2020 00:16:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1733040AbgGVWdQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jul 2020 18:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732647AbgGVWdP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jul 2020 18:33:15 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E0DC0619E3
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 15:33:15 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id b25so3107831qto.2
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 15:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FNTzG6qcBQuW0UnSYe8/jDfHi5XObGtNTg45FW0KfjY=;
+        b=M+VGBvQ+eQKQBCSLRfLaL/v6FZSuwRdtyTJX6r07YtUqLEva+Fz5S4iJyShRBpQ119
+         bcDKHcMIoRzgHSuqq0/fMI96YHvIv+USJdZ5Z6+uZY9nQhSww6xl0ywoebu+4WX87wgk
+         FF74hwwPU7XWFybe3w/4/PoWIoFlevi/87tc6OYP+b/KplY9Ui4oHj/etquSuVuLtS7S
+         PQgWA9ASEwCJbPzsByGq2exdZIQcyh7VpC6bICadwajduRf+C4LaAYeu3xjIt2Vtr2D5
+         8m3ZKcpYylNX3Iuhze4CR60MHFC0Sz8yAyDmL+CS9XASuzDeI+sEqvhr2rXkaOMQdaJ3
+         omyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FNTzG6qcBQuW0UnSYe8/jDfHi5XObGtNTg45FW0KfjY=;
+        b=XKj06e6Z7aMhUhAMlKQxC0YUB5sx7H1M3hGBgRzYZVQkILN0y7LKSD0Mjs49efLlV2
+         djTleuxEbOzEDRZna2Y+zr6bBIK1Ki7LGxj9KeZNZMBO53MAObJbrGECWv9goPqBuejO
+         i2ZVjRQ7cBiRBUbLNur/ZzmJg3Yt1b9x++wD3S2NEnmlMQfeqA2Ht/Z4L9ZjNJ1M1qs6
+         QVnPskH9HEg4e6mS3aXnalKyMPxjVdqWhROtutX06fcUNLihypD4m/OLfOclplrAu5bE
+         zh4Ey7irpg7utXnk8OCR3fiq7pN0ODum+yk5R/Ox8szqlx4Xj0NGentDxfm/Sl2wOXVN
+         P39Q==
+X-Gm-Message-State: AOAM530y9UbsrAugOrSUnVsbJ4gjhVRZe3ABKol7hwgCRFsFmuBDJQGm
+        ZgVAm3nSjTKm0jglInRx9XJfdw==
+X-Google-Smtp-Source: ABdhPJxiKbn56anOP6nT+bAbNNtR/OqTNAMF/G7Mw2zuA7Od619cKlMkiA82MbBqicSsEqw9RJOhMA==
+X-Received: by 2002:ac8:7454:: with SMTP id h20mr1587073qtr.84.1595457194224;
+        Wed, 22 Jul 2020 15:33:14 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x36sm990975qtk.36.2020.07.22.15.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 15:33:13 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jyNIV-00E6RQ-L9; Wed, 22 Jul 2020 19:33:11 -0300
+Date:   Wed, 22 Jul 2020 19:33:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alexander Lobakin <alobakin@marvell.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 01/15] qed: reformat "qed_chain.h" a bit
+Message-ID: <20200722223311.GK25301@ziepe.ca>
+References: <20200722221045.5436-1-alobakin@marvell.com>
+ <20200722221045.5436-2-alobakin@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <20200717044031.56412-5-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25881/Wed Jul 22 16:35:43 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722221045.5436-2-alobakin@marvell.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/17/20 6:40 AM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Thu, Jul 23, 2020 at 01:10:31AM +0300, Alexander Lobakin wrote:
+> Reformat structs and macros definitions a bit prior to making functional
+> changes.
 > 
-> Add kernel module with user mode driver that populates bpffs with
-> BPF iterators.
+> Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+> Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+>  include/linux/qed/qed_chain.h | 126 ++++++++++++++++++----------------
+>  1 file changed, 66 insertions(+), 60 deletions(-)
 > 
-> $ mount bpffs /my/bpffs/ -t bpf
-> $ ls -la /my/bpffs/
-> total 4
-> drwxrwxrwt  2 root root    0 Jul  2 00:27 .
-> drwxr-xr-x 19 root root 4096 Jul  2 00:09 ..
-> -rw-------  1 root root    0 Jul  2 00:27 maps.debug
-> -rw-------  1 root root    0 Jul  2 00:27 progs.debug
-> 
-> The user mode driver will load BPF Type Formats, create BPF maps, populate BPF
-> maps, load two BPF programs, attach them to BPF iterators, and finally send two
-> bpf_link IDs back to the kernel.
-> The kernel will pin two bpf_links into newly mounted bpffs instance under
-> names "progs.debug" and "maps.debug". These two files become human readable.
-> 
-> $ cat /my/bpffs/progs.debug
->    id name            pages attached
->    11 dump_bpf_map        1 bpf_iter_bpf_map
->    12 dump_bpf_prog       1 bpf_iter_bpf_prog
->    27 test_pkt_access     1
->    32 test_main           1 test_pkt_access test_pkt_access
->    33 test_subprog1       1 test_pkt_access_subprog1 test_pkt_access
->    34 test_subprog2       1 test_pkt_access_subprog2 test_pkt_access
->    35 test_subprog3       1 test_pkt_access_subprog3 test_pkt_access
->    36 new_get_skb_len     1 get_skb_len test_pkt_access
->    37 new_get_skb_ifi     1 get_skb_ifindex test_pkt_access
->    38 new_get_constan     1 get_constant test_pkt_access
-> 
-> The BPF program dump_bpf_prog() in iterators.bpf.c is printing this data about
-> all BPF programs currently loaded in the system. This information is unstable
-> and will change from kernel to kernel as ".debug" suffix conveys.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-[...]
->   static int bpf_obj_do_pin(const char __user *pathname, void *raw,
->   			  enum bpf_type type)
->   {
-> @@ -638,6 +661,61 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->   	return 0;
->   }
->   
-> +struct bpf_preload_ops bpf_preload_ops = { .info.driver_name = "bpf_preload" };
-> +EXPORT_SYMBOL_GPL(bpf_preload_ops);
-> +
-> +static int populate_bpffs(struct dentry *parent)
-> +{
-> +	struct bpf_preload_info objs[BPF_PRELOAD_LINKS] = {};
-> +	struct bpf_link *links[BPF_PRELOAD_LINKS] = {};
-> +	int err = 0, i;
-> +
-> +	mutex_lock(&bpf_preload_ops.lock);
-> +	if (!bpf_preload_ops.do_preload) {
-> +		mutex_unlock(&bpf_preload_ops.lock);
-> +		request_module("bpf_preload");
-> +		mutex_lock(&bpf_preload_ops.lock);
-> +
-> +		if (!bpf_preload_ops.do_preload) {
-> +			pr_err("bpf_preload module is missing.\n"
-> +			       "bpffs will not have iterators.\n");
-> +			goto out;
-> +		}
-> +	}
+> diff --git a/include/linux/qed/qed_chain.h b/include/linux/qed/qed_chain.h
+> index 7071dc92b4e2..087073517c09 100644
+> +++ b/include/linux/qed/qed_chain.h
+> @@ -26,9 +26,9 @@ enum qed_chain_mode {
+>  };
+>  
+>  enum qed_chain_use_mode {
+> -	QED_CHAIN_USE_TO_PRODUCE,		/* Chain starts empty */
+> -	QED_CHAIN_USE_TO_CONSUME,		/* Chain starts full */
+> -	QED_CHAIN_USE_TO_CONSUME_PRODUCE,	/* Chain starts empty */
+> +	QED_CHAIN_USE_TO_PRODUCE,			/* Chain starts empty */
+> +	QED_CHAIN_USE_TO_CONSUME,			/* Chain starts full */
+> +	QED_CHAIN_USE_TO_CONSUME_PRODUCE,		/* Chain starts empty */
+>  };
+>  
+>  enum qed_chain_cnt_type {
+> @@ -40,84 +40,86 @@ enum qed_chain_cnt_type {
+>  };
+>  
+>  struct qed_chain_next {
+> -	struct regpair	next_phys;
+> -	void		*next_virt;
+> +	struct regpair					next_phys;
+> +	void						*next_virt;
+>  };
 
-Overall set looks good. One thing that appears to be possible from staring at
-the code is that while we load the bpf_preload module here and below invoke the
-modules' preload ops callbacks, there seems to be nothing that prevents the module
-from being forcefully unloaded in parallel (e.g. no ref on the module held).
+I'm surprised this is considered an improvement??
 
-So it looks like the old bpfilter code was preventing exactly this through holding
-bpfilter_ops.lock mutex during its {load,fini}_umh() modules init/exit functions.
+I've been encouring people to go the other way, maintaining vertical alignment is
+harmful to backporting..
 
-Other than that, maybe it would be nice to have a test_progs selftests extension
-which mounts multiple BPF fs instances, and asserts that if one of them has the
-{progs,maps}.debug files that the other ones must have it as well, plus plain
-reading of both (w/o parsing anything from there) just to make sure the dump
-terminates .. at least to have some basic exercising of the code in there.
-
-Thanks,
-Daniel
-
-> +	if (!bpf_preload_ops.info.tgid) {
-> +		err = bpf_preload_ops.do_preload(objs);
-> +		if (err)
-> +			goto out;
-> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-> +			links[i] = bpf_link_by_id(objs[i].link_id);
-> +			if (IS_ERR(links[i])) {
-> +				err = PTR_ERR(links[i]);
-> +				goto out;
-> +			}
-> +		}
-> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-> +			err = bpf_iter_link_pin_kernel(parent,
-> +						       objs[i].link_name, links[i]);
-> +			if (err)
-> +				goto out;
-> +			/* do not unlink successfully pinned links even
-> +			 * if later link fails to pin
-> +			 */
-> +			links[i] = NULL;
-> +		}
-> +		err = bpf_preload_ops.do_finish();
-> +		if (err)
-> +			goto out;
-> +	}
-> +out:
-> +	mutex_unlock(&bpf_preload_ops.lock);
-> +	for (i = 0; i < BPF_PRELOAD_LINKS && err; i++)
-> +		if (!IS_ERR_OR_NULL(links[i]))
-> +			bpf_link_put(links[i]);
-> +	return err;
-> +}
-> +
->   static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
->   {
->   	static const struct tree_descr bpf_rfiles[] = { { "" } };
-> @@ -654,8 +732,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
->   	inode = sb->s_root->d_inode;
->   	inode->i_op = &bpf_dir_iops;
->   	inode->i_mode &= ~S_IALLUGO;
-> +	populate_bpffs(sb->s_root);
->   	inode->i_mode |= S_ISVTX | opts->mode;
-> -
->   	return 0;
->   }
->   
-> @@ -705,6 +783,8 @@ static int __init bpf_init(void)
-[...]
-> diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-> new file mode 100644
-> index 000000000000..cd10f291d6cd
-> --- /dev/null
-> +++ b/kernel/bpf/preload/bpf_preload_kern.c
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/pid.h>
-> +#include <linux/fs.h>
-> +#include <linux/sched/signal.h>
-> +#include "bpf_preload.h"
-> +
-> +extern char bpf_preload_umd_start;
-> +extern char bpf_preload_umd_end;
-> +
-> +static int do_preload(struct bpf_preload_info *obj)
-> +{
-> +	int magic = BPF_PRELOAD_START;
-> +	struct pid *tgid;
-> +	loff_t pos = 0;
-> +	int i, err;
-> +	ssize_t n;
-> +
-> +	err = fork_usermode_driver(&bpf_preload_ops.info);
-> +	if (err)
-> +		return err;
-> +	tgid = bpf_preload_ops.info.tgid;
-> +
-> +	/* send the start magic to let UMD proceed with loading BPF progs */
-> +	n = kernel_write(bpf_preload_ops.info.pipe_to_umh,
-> +			 &magic, sizeof(magic), &pos);
-> +	if (n != sizeof(magic))
-> +		return -EPIPE;
-> +
-> +	/* receive bpf_link IDs and names from UMD */
-> +	pos = 0;
-> +	for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-> +		n = kernel_read(bpf_preload_ops.info.pipe_from_umh,
-> +				&obj[i], sizeof(*obj), &pos);
-> +		if (n != sizeof(*obj))
-> +			return -EPIPE;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int do_finish(void)
-> +{
-> +	int magic = BPF_PRELOAD_END;
-> +	struct pid *tgid;
-> +	loff_t pos = 0;
-> +	ssize_t n;
-> +
-> +	/* send the last magic to UMD. It will do a normal exit. */
-> +	n = kernel_write(bpf_preload_ops.info.pipe_to_umh,
-> +			 &magic, sizeof(magic), &pos);
-> +	if (n != sizeof(magic))
-> +		return -EPIPE;
-> +	tgid = bpf_preload_ops.info.tgid;
-> +	wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
-> +	bpf_preload_ops.info.tgid = NULL;
-> +	return 0;
-> +}
-> +
-> +static int __init load_umd(void)
-> +{
-> +	int err;
-> +
-> +	err = umd_load_blob(&bpf_preload_ops.info, &bpf_preload_umd_start,
-> +			    &bpf_preload_umd_end - &bpf_preload_umd_start);
-> +	if (err)
-> +		return err;
-> +	bpf_preload_ops.do_preload = do_preload;
-> +	bpf_preload_ops.do_finish = do_finish;
-> +	return err;
-> +}
-> +
-> +static void __exit fini_umd(void)
-> +{
-> +	bpf_preload_ops.do_preload = NULL;
-> +	bpf_preload_ops.do_finish = NULL;
-> +	/* kill UMD in case it's still there due to earlier error */
-> +	kill_pid(bpf_preload_ops.info.tgid, SIGKILL, 1);
-> +	bpf_preload_ops.info.tgid = NULL;
-> +	umd_unload_blob(&bpf_preload_ops.info);
-> +}
-[...]
+Jason
