@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D8022ABFF
+	by mail.lfdr.de (Postfix) with ESMTP id AF52622AC00
 	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 12:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgGWJ76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 05:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S1728235AbgGWJ77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 05:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727111AbgGWJ74 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:59:56 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AAAC0619E2
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 02:59:56 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id s9so2947462lfs.4
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 02:59:56 -0700 (PDT)
+        with ESMTP id S1728229AbgGWJ76 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 05:59:58 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6082CC0619E2
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 02:59:58 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b25so5688201ljp.6
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 02:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=peNb8+RImxTNVZkyG9ELZ4fhv916Nu+DkwVdstZXkiA=;
-        b=LEEMGiaW0nGTr5CFiq3SrGNGE6dboorHG1aLnfiDOl6MgWGLACzz+29+izd56QHWX/
-         TFRL7Rl0K3TDZiAD8lfmZ5vGG++cbTMvrnTx09rs142zLnZ0LAj5Mau2JsTfiXaVFDte
-         b0cz3XGMizWT0ToH6w7sapzAuv9fTK0JKr4F0=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+YCu61UdRIfgGgtfqTiNyVZA7tw12eV3zO14rYdK+r8=;
+        b=UcKlTWJ3Fvc1OLdRwEpKYaXJpEy6em4FggJ5+39Jl2AsioWf5Ng0CyjDHrRi64xtaX
+         oq5WzFxzeu2W7DQhjBiFUP31xKCjp94nb0Xo4j7g2BNYKtLKJgoOkEaXYIpOAB0dKagq
+         ZOXMwT8cWuVcBNJCFeYqnAyb1zOF0m9CSTmts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=peNb8+RImxTNVZkyG9ELZ4fhv916Nu+DkwVdstZXkiA=;
-        b=D7srZBNTj6ndmbWjh3dk2+saXTGR7f2tGggd1otWwd206n535sloowzwB5gml+EKWn
-         lPP1CkPwLRRd4BINHNxZJl+894uuqnE2FE7HDetvcZZFWtx3PQEQp/R6f1mekPJmazgO
-         RmIQ9WRFyUN0B041IDJ4lP0tLMDMOstjlQOn6q3VObWs40A0JJ/LRkKiko6wZ7LN6kRL
-         ssLoK6em/N9gc/LaT4lYLH4qBJstGLxyaG2WPr8ea7mOwHacpLL7tQrnD3n8hPB1SRCl
-         Hxko1UY4zUzBhp1VRpbO9M7hDePojNq+oEyigSuV/jzuZNixG4/4uW4KjdIcK9N3qfcm
-         zQkw==
-X-Gm-Message-State: AOAM530/6/moqUQ1n8B6dWzbQXfqdNwNdYDyNOCAm+aOmrXo1+5t32P0
-        NcLFhYxi918/xF3K5wwttUkPLD0W4oc=
-X-Google-Smtp-Source: ABdhPJxnsRyX1mdKT6YyBQWc6mtmdE+xNqWANhT+eqFjJoSxfc8QSpwXrCh9Oibo8KKdc9Av+fbLIQ==
-X-Received: by 2002:ac2:4294:: with SMTP id m20mr1848076lfh.147.1595498394639;
-        Thu, 23 Jul 2020 02:59:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+YCu61UdRIfgGgtfqTiNyVZA7tw12eV3zO14rYdK+r8=;
+        b=irA/e936cSUcft1Tuyo9CzO+NX7oTbznzg9zqzqe2gJTmhsb618IM/hX9Ya3sqf1As
+         9KLmNRLAKqVECaD0QHA2c55etUQbQAIK/qJukBV1ZzrrPQELc0fYNf78k2zJlQRIy23D
+         26VrqCnCP4VhCJBbeLg0GSPPVLjWsGF7YeIIsXiZe7o7DDJohmfk9r1b5/XZriFkqh2L
+         t98jQcJN8tYe9wNlZO5e7bfx7ai1DHAQvQ/NQXhHPVeF6gE1HZH1FtbFQgrxLdYZ1Fff
+         gILZY1aq/4oSq9ahIGlZdUodqQ+e2WFYR0R0DyZs4h7ghjimuVfuooTufe7XD+BjiCut
+         l2MA==
+X-Gm-Message-State: AOAM530ZzY3kSStqehHxaPkBSGw3ZhbWuqAOk+431ABj5ggkTjnLnXe+
+        HacOR9pHpRbJsbvQbRlOSWgSOVD5drU=
+X-Google-Smtp-Source: ABdhPJxtU6iQ/CnhU72RZEDTQKHwUn6XCBSY5Z+KwJsWaRVbl7pAhlAA6tLwKCXFx7Hz+ncZzY29EQ==
+X-Received: by 2002:a05:651c:222:: with SMTP id z2mr1701058ljn.395.1595498396415;
+        Thu, 23 Jul 2020 02:59:56 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id h22sm2330598ljg.1.2020.07.23.02.59.53
+        by smtp.gmail.com with ESMTPSA id e12sm2334666ljl.94.2020.07.23.02.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 02:59:54 -0700 (PDT)
+        Thu, 23 Jul 2020 02:59:55 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf v2 0/2] Fix narrow loads from an offset outside of target field
-Date:   Thu, 23 Jul 2020 11:59:51 +0200
-Message-Id: <20200723095953.1003302-1-jakub@cloudflare.com>
+Subject: [PATCH bpf v2 1/2] bpf: Load zeros for narrow loads beyond target field
+Date:   Thu, 23 Jul 2020 11:59:52 +0200
+Message-Id: <20200723095953.1003302-2-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200723095953.1003302-1-jakub@cloudflare.com>
+References: <20200723095953.1003302-1-jakub@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -61,28 +63,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a second attempt at fixing narrow loads from context fields backed
-by smaller-in-size target fields, when load offset is beyond the target
-field.
+For narrow loads from context that are:
 
-Following Yonghong suggestion, verifier now emits an 'wX = 0' or 'rX = 0'
-instruction for loads from offsets outside of target field.
+  1) as big in size as the target field, and
+  2) at an offset beyond the target field,
 
-Cc: Yonghong Song <yhs@fb.com>
+the verifier does not emit the shift-and-mask instruction sequence
+following the target field load instruction, as it happens for narrow loads
+smaller in size than the target field width.
 
-[v1] https://lore.kernel.org/bpf/20200710173123.427983-1-jakub@cloudflare.com/
+This has an unexpected effect of loading the same data, no matter what the
+offset. While, arguably, the expected behavior is to load zeros for offsets
+that beyond the target field.
 
-Jakub Sitnicki (2):
-  bpf: Load zeros for narrow loads beyond target field
-  selftests/bpf: Add test for narrow loads from context at an offset
+For instance, 2-byte load from a 4-byte context field, backed by a 2-byte
+target field at an offset of 2 bytes results in:
 
- kernel/bpf/verifier.c                         | 23 ++++-
- .../selftests/bpf/prog_tests/narrow_load.c    | 84 +++++++++++++++++++
- .../selftests/bpf/progs/test_narrow_load.c    | 43 ++++++++++
- 3 files changed, 148 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/narrow_load.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_narrow_load.c
+  $ cat progs/test_narrow_load.c
+  [...]
+  SEC("sk_reuseport/narrow_load_half_word")
+  int narrow_load_half_word(struct sk_reuseport_md *ctx)
+  {
+  	__u16 *half;
 
+  	half = (__u16 *)&ctx->ip_protocol;
+  	if (half[0] != IPPROTO_UDP)
+  		return SK_DROP;
+  	if (half[1] != 0)
+  		return SK_DROP;
+  	return SK_PASS;
+  }
+
+  $ llvm-objdump -S --no-show-raw-insn ...
+  [...]
+  0000000000000000 narrow_load_half_word:
+  ; {
+         0:       w0 = 0
+  ;       if (half[0] != IPPROTO_UDP)
+         1:       r2 = *(u16 *)(r1 + 24)
+         2:       if w2 != 17 goto +4 <LBB1_3>
+  ;       if (half[1] != 0)
+         3:       r1 = *(u16 *)(r1 + 26)
+         4:       w0 = 1
+         5:       if w1 == 0 goto +1 <LBB1_3>
+         6:       w0 = 0
+
+  0000000000000038 LBB1_3:
+  ; }
+         7:       exit
+
+  $ bpftool prog dump xlated ...
+  int narrow_load_half_word(struct sk_reuseport_md * ctx):
+  ; int narrow_load_half_word(struct sk_reuseport_md *ctx)
+     0: (b4) w0 = 0
+  ; if (half[0] != IPPROTO_UDP)
+     1: (79) r2 = *(u64 *)(r1 +8)
+     2: (69) r2 = *(u16 *)(r2 +924)
+  ; if (half[0] != IPPROTO_UDP)
+     3: (56) if w2 != 0x11 goto pc+5
+  ; if (half[1] != 0)
+     4: (79) r1 = *(u64 *)(r1 +8)
+     5: (69) r1 = *(u16 *)(r1 +924)
+     6: (b4) w0 = 1
+  ; if (half[1] != 0)
+     7: (16) if w1 == 0x0 goto pc+1
+     8: (b4) w0 = 0
+  ; }
+     9: (95) exit
+
+In this case half[0] == half[1] == sk->sk_protocol, which is the target
+field for the ctx->ip_protocol.
+
+Fix it by emitting 'wX = 0' or 'rX = 0' instruction for all narrow loads
+from an offset that is beyond the target field.
+
+Going back to the example, with the fix in place, the upper half load from
+ctx->ip_protocol yields zero:
+
+  int narrow_load_half_word(struct sk_reuseport_md * ctx):
+  ; int narrow_load_half_word(struct sk_reuseport_md *ctx)
+     0: (b4) w0 = 0
+  ; if (half[0] != IPPROTO_UDP)
+     1: (79) r2 = *(u64 *)(r1 +8)
+     2: (69) r2 = *(u16 *)(r2 +924)
+  ; if (half[0] != IPPROTO_UDP)
+     3: (56) if w2 != 0x11 goto pc+4
+  ; if (half[1] != 0)
+     4: (b4) w1 = 0
+     5: (b4) w0 = 1
+  ; if (half[1] != 0)
+     6: (16) if w1 == 0x0 goto pc+1
+     7: (b4) w0 = 0
+  ; }
+     8: (95) exit
+
+Fixes: f96da09473b5 ("bpf: simplify narrower ctx access")
+Suggested-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ kernel/bpf/verifier.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 94cead5a43e5..0a9dbcdd6341 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9614,11 +9614,11 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+  */
+ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ {
++	u32 target_size, size_default, off, access_off;
+ 	const struct bpf_verifier_ops *ops = env->ops;
+ 	int i, cnt, size, ctx_field_size, delta = 0;
+ 	const int insn_cnt = env->prog->len;
+ 	struct bpf_insn insn_buf[16], *insn;
+-	u32 target_size, size_default, off;
+ 	struct bpf_prog *new_prog;
+ 	enum bpf_access_type type;
+ 	bool is_narrower_load;
+@@ -9760,7 +9760,26 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 			return -EINVAL;
+ 		}
+ 
+-		if (is_narrower_load && size < target_size) {
++		/* When context field is wider than the target field,
++		 * narrow load from an offset beyond the target field
++		 * can be reduced to loading zero because there is
++		 * nothing to load from memory.
++		 */
++		access_off = off & (size_default - 1);
++		if (is_narrower_load && access_off >= target_size) {
++			cnt = 0;
++			if (ctx_field_size <= 4)
++				insn_buf[cnt++] = BPF_MOV32_IMM(insn->dst_reg, 0);
++			else
++				insn_buf[cnt++] = BPF_MOV64_IMM(insn->dst_reg, 0);
++		}
++		/* Narrow load from an offset within the target field,
++		 * smaller in size than the target field, needs
++		 * shifting and masking because convert_ctx_access
++		 * always emits full-size target field load.
++		 */
++		if (is_narrower_load && access_off < target_size &&
++		    size < target_size) {
+ 			u8 shift = bpf_ctx_narrow_access_offset(
+ 				off, size, size_default) * 8;
+ 			if (ctx_field_size <= 4) {
 -- 
 2.25.4
 
