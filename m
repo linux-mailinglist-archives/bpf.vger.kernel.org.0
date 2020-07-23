@@ -2,175 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF2422A8D1
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 08:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE8622A922
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 08:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgGWGUy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 02:20:54 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35200 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725984AbgGWGUx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 02:20:53 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06N6AlNh006540;
-        Wed, 22 Jul 2020 23:20:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=la6rYz1rpkVcSmo6EnPBlDyuQM2ak/LTaSZPW3Zu3Bp0hR6PIBVX8g8gyyxQLdWrmCUq
- 9hUxSdJnO/asIAgMlbZ3nDFgAyv1MGMsQRcFXHyiYza/L/KjqEE7j/ygVQcRtH17c/24
- PnbxkZFzC1pcVx11zo2t7MnuGqS6lZzQp1A= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32etmwajhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 22 Jul 2020 23:20:33 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 23:20:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TOaIimL2vUNvgfz7C/6id2c8GU7yyc+v17W4IFuW11UE17MP1S3AQa9o7/d5pza3QauV1AFvzjOwTgJqmmu7DizPj6Lb6ZsePj28dWVb7sRsqnQxmre2ELkQFiqFVU/enXMVOxhk2xYZycBF+mX6jAbuTyyM2KYMooz0OTyOup2ZWsGIZnfSkbxie8MOqPQLkPTZaXP4Gh2kvEnIG6gmCcrC/A5ekZldPbddOTJKVTslzszxTbJSrBDkG+SO8pbh//MpN0V0DprRKFyrQfd2cfo5dMpgfBkilea7k37MbppM3K4aNtVPbELYv2Kh8dQdgnxkL37iwjqousrScvttQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=a1fg9LyZ4fcIDKpAgwy6uDOLRK4CttEF0pG1eGq62WbZ83M7VE4BFvdBD6hITmFezSpnvEQSjDWWjyeSmJlkkUTPEjsjPzCeEQv6TfY+Nnd6gHdgztX/g61hjpQ07qJmH4+3FsmZ2mxBuqqFY065vQQD4vt/bIEZr3bErhA0gSfJr+x78fGQIGSCFzOK6MlN/sIV0WzkzU+J+SrH9JjE3uBlE0rSA21ZHSAREIpqfVrJFBCzhhhAoGsnmzXpPqMUhNKDcCpeirxSh3UCxilutyKUfO8jWOaewqjRZ5BGVAI7vV/5ReUctloL79LFdJCr0BboKsUp6CC0dWBkPRTXaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=FdfHArwFStdsgsHFvCURQ5jfki2o5DZWZqOuySos+AALmRuzGmjhObxAxegvLZS4N5C3fqI/JlRA1dhscMuDjeo8lNG+Em6dUTvTMAtUjbtnOb/cfir4cMrIDfawy+qXL2oAvJjfzZ1v7gADeDpKUhVex1AKuFjuEpLzS79uiTQ=
-Received: from BN8PR15MB2995.namprd15.prod.outlook.com (2603:10b6:408:8a::16)
- by BN7PR15MB2483.namprd15.prod.outlook.com (2603:10b6:406:87::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Thu, 23 Jul
- 2020 06:20:29 +0000
-Received: from BN8PR15MB2995.namprd15.prod.outlook.com
- ([fe80::a89e:b0f9:d0b9:51a2]) by BN8PR15MB2995.namprd15.prod.outlook.com
- ([fe80::a89e:b0f9:d0b9:51a2%5]) with mapi id 15.20.3195.028; Thu, 23 Jul 2020
- 06:20:29 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id S1725846AbgGWGxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 02:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgGWGxd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 02:53:33 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA42BC0619DC;
+        Wed, 22 Jul 2020 23:53:32 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id w2so2586012pgg.10;
+        Wed, 22 Jul 2020 23:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MKeI10oAeukD6znqZG6253pIZloE+begkglToKzlJ/0=;
+        b=lr4pORw07DhPNC2bfi9AgknxtOAjLQBJ0De1ohELNHH0fC4lO7PQ4eiZDyn0aDzjgm
+         I8zDRcqznWvO4SX6mz7MnzOkM5p8+G0eDJ100kiHhYXejuME+P+YBzz2XoOSRw5Cnavk
+         900AGrTuxQFBStbaZFIjb2Msvjj5L16LypESwqnkuPdpj6Q0EaTfmKKk/ugiZnVDPOaJ
+         lkmgQRNnQEJocE+QmPBrVNWfIwHfcavjZUG94a4Krm+H9zeb0+csnCzpEKtYAegn34+N
+         N1E2EZzHw5HYxU33h33xOxH/3w/sZdg/OYYr+Az+UJviJrFqYCz0W8mIlsBpBA++Nn4b
+         elRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MKeI10oAeukD6znqZG6253pIZloE+begkglToKzlJ/0=;
+        b=IuhGCOahocvb7QHHoeoKOtkTEmew1JdgzuwBToJyWVSQMO+iiFqV6gKmjffsBSq2F7
+         uNZSAfLj1cPSXqFSko+Lz2Fukt3BIdo2y6IIR8FLAYWSCSKPy8anMYmSK3+0kBrMY9vb
+         Se+ZsyCRzewfZVR8aLCsthlt17saDmIvnAlkI7GzVyZ/VwBdtIsyXK/RmJSlaVhGq7ii
+         4a1IB4yX2AI91F/xWcInXBQdyzMmrvLHZNszxhItugvp7QfracCvFTbbj4SL1oreqfIa
+         pWSWA/nO+UAznN12kAZfMZMp6KzbI0FzJ1679gRCRuTOwuKiHrifdvn8dqMB5VTe8u1x
+         YqBA==
+X-Gm-Message-State: AOAM532pGylOquo8Lqg5leiVkK5j4EUyddFVZRVZe0xrrCYa3mrSvWeR
+        oP3WbYsf7sbxo+WL2g9iUUo=
+X-Google-Smtp-Source: ABdhPJySlLuLMTnPxayB9GJb5cstQeH9GWTnAUcauyVaVphzrZoGASUAUij/icP73xvQbl8RvYeTzA==
+X-Received: by 2002:a62:be02:: with SMTP id l2mr2823365pff.163.1595487212451;
+        Wed, 22 Jul 2020 23:53:32 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6cd6])
+        by smtp.gmail.com with ESMTPSA id y7sm1729879pfq.69.2020.07.22.23.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 23:53:31 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 23:53:29 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
- bpf_get_[stack|stackid] cannot work
-Thread-Topic: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
- bpf_get_[stack|stackid] cannot work
-Thread-Index: AQHWYFg8vuUCJ74xFUm7fXSqHe+MGakUqv8AgAAHCAA=
-Date:   Thu, 23 Jul 2020 06:20:29 +0000
-Message-ID: <684DA506-6780-4CB5-B99C-24D939CDE6DF@fb.com>
-References: <20200722184210.4078256-1-songliubraving@fb.com>
- <20200722184210.4078256-3-songliubraving@fb.com>
- <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:b2a1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 473dd7a5-9ff3-497c-e88e-08d82ed07f1f
-x-ms-traffictypediagnostic: BN7PR15MB2483:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN7PR15MB248366052172F7D06FBC90E8B3760@BN7PR15MB2483.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p+tvIytnJycn7Bg/I4y9nevEPQtgss/9fDneOk+zQ72OEzwImLDvzy28k/0Mb5O9bTnxzSO8S7k5ApDq3+7PmMt6+qSvSe1Z3XLu8lxacyD7yr6X9YCSxsAKk5M0UzO3eJ0AL63vZ+yh0yXBeN+xwoCXHEBX9awvaTgoaCbpWzVy3vueomObZAhTCzRL3N0Bb6rGGyPhNxWJ+bK3F2xZ/ZjfK1RUc21w5gcYkGGdz79kIa+6fsiTHE0GDqEwneO4MIaY08jvWaXBNeC8W/b+X3pYmiaE5FCaTDesU3DpRsOn/0fgtTDQFVEABixnquFSC3GSYQIkEnPGGm9Qcs9Esw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB2995.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(8936002)(33656002)(316002)(2906002)(86362001)(6486002)(8676002)(71200400001)(186003)(83380400001)(66446008)(66946007)(66556008)(66476007)(7416002)(478600001)(4326008)(5660300002)(6506007)(6916009)(54906003)(53546011)(91956017)(6512007)(76116006)(64756008)(2616005)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: AwP9K7xihoJAdFhvQ5FCbiudCXXCDISZzzCfrMeTlGNB8e55fvqx3ybdwhRGWK0SlTVlc4zv60BI5mksYxhSSowd6/7L7Cj/RD7LV0EU9lG4HXFkHXcIAyhI6S+N9BiRJyBLOCapKJltQA8SMx5t4c5QdVrKQtOnopa+rVbbB8mkPmLJw7NHJWpsBELTKSD4dkCM6QV+HLtl2R7c2+5686DMsVQCFf/v+GFV6I9AmzYEaKfU0mdtX7Wy5f7ba7fiVEsUdT8gyAICqf+/CdCRf1Smrz2KUqdOPmIO8S6ZCYnldTJWL6MYgC1/yx+ur9Ewb9gQGTbjdi+AHlV31JqP1Me3xfrWGFRaGGKJgo0Cqejum3oVavdgstTnQaCQPS2R0RuxmT2zR3GteTDuRvkA4jhecKL+y2Cf2HFeWMZ1m0yNExYY2YPQw38+knFlen93MM8nK2pnnUJJJEjlB+4uxxHOyyIWfle5wG27d3FsP5ThwNgWCYUQ3Cxr3Lrv1pyb4DELFoovg+saI1ph22agXg==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4C7094C581011D4E9F3722B2F188D225@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: implement bpf iterator for map
+ elements
+Message-ID: <20200723065329.yuw4dey27n2w5a4i@ast-mbp.dhcp.thefacebook.com>
+References: <20200723061533.2099842-1-yhs@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB2995.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 473dd7a5-9ff3-497c-e88e-08d82ed07f1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2020 06:20:29.2638
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vAU2WF8NegWfn6WGcbfOaf7helyzLdqdctl7Nieuml9VmelVWgbj9K51oAuUC9I8RcJQf32yLwalpuY/13HbYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2483
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_02:2020-07-22,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007230050
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723061533.2099842-1-yhs@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Jul 22, 2020 at 11:15:33PM -0700, Yonghong Song wrote:
+> Bpf iterator has been implemented for task, task_file,
+> bpf_map, ipv6_route, netlink, tcp and udp so far.
+> 
+> For map elements, there are two ways to traverse all elements from
+> user space:
+>   1. using BPF_MAP_GET_NEXT_KEY bpf subcommand to get elements
+>      one by one.
+>   2. using BPF_MAP_LOOKUP_BATCH bpf subcommand to get a batch of
+>      elements.
+> Both these approaches need to copy data from kernel to user space
+> in order to do inspection.
+> 
+> This patch implements bpf iterator for map elements.
+> User can have a bpf program in kernel to run with each map element,
+> do checking, filtering, aggregation, modifying values etc.
+> without copying data to user space.
+> 
+> Patch #1 and #2 are refactoring. Patch #3 implements readonly/readwrite
+> buffer support in verifier. Patches #4 - #7 implements map element
+> support for hash, percpu hash, lru hash lru percpu hash, array,
+> percpu array and sock local storage maps. Patches #8 - #9 are libbpf
+> and bpftool support. Patches #10 - #13 are selftests for implemented
+> map element iterators.
 
+kasan is not happy:
 
-> On Jul 22, 2020, at 10:55 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
-l.com> wrote:
->=20
-> On Wed, Jul 22, 2020 at 11:42:08AM -0700, Song Liu wrote:
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 856d98c36f562..f77d009fcce95 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -9544,6 +9544,24 @@ static int perf_event_set_bpf_handler(struct perf=
-_event *event, u32 prog_fd)
->> 	if (IS_ERR(prog))
->> 		return PTR_ERR(prog);
->>=20
->> +	if (event->attr.precise_ip &&
->> +	    prog->call_get_stack &&
->> +	    (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) ||
->> +	     event->attr.exclude_callchain_kernel ||
->> +	     event->attr.exclude_callchain_user)) {
->> +		/*
->> +		 * On perf_event with precise_ip, calling bpf_get_stack()
->> +		 * may trigger unwinder warnings and occasional crashes.
->> +		 * bpf_get_[stack|stackid] works around this issue by using
->> +		 * callchain attached to perf_sample_data. If the
->> +		 * perf_event does not full (kernel and user) callchain
->> +		 * attached to perf_sample_data, do not allow attaching BPF
->> +		 * program that calls bpf_get_[stack|stackid].
->> +		 */
->> +		bpf_prog_put(prog);
->> +		return -EINVAL;
->=20
-> I suspect this will be a common error. bpftrace and others will be hittin=
-g
-> this issue and would need to fix how they do perf_event_open.
-> But EINVAL is too ambiguous and sys_perf_event_open has no ability to
-> return a string.
-> So how about we pick some different errno here to make future debugging
-> a bit less painful?
-> May be EBADFD or EPROTO or EPROTOTYPE ?
-> I think anything would be better than EINVAL.
+[   16.896170] ==================================================================
+[   16.896994] BUG: KASAN: use-after-free in __do_sys_bpf+0x34f3/0x3860
+[   16.897657] Read of size 4 at addr ffff8881f105b208 by task test_progs/1958
+[   16.898416]
+[   16.898577] CPU: 0 PID: 1958 Comm: test_progs Not tainted 5.8.0-rc4-01920-g6276000cd38e #2828
+[   16.899505] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2.el7 04/01/2014
+[   16.900405] Call Trace:
+[   16.900679]  dump_stack+0x7d/0xb0
+[   16.901068]  print_address_description.constprop.0+0x3a/0x60
+[   16.901689]  ? __do_sys_bpf+0x34f3/0x3860
+[   16.902125]  kasan_report.cold+0x1f/0x37
+[   16.902595]  ? __do_sys_bpf+0x34f3/0x3860
+[   16.903029]  __do_sys_bpf+0x34f3/0x3860
+[   16.903494]  ? bpf_trace_run2+0xd1/0x210
+[   16.903971]  ? bpf_link_get_from_fd+0xe0/0xe0
+[   16.907802]  do_syscall_64+0x38/0x60
+[   16.908187]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   16.908730] RIP: 0033:0x7f014cdfe7f9
+[   16.909148] Code: Bad RIP value.
+[   16.909524] RSP: 002b:00007ffe1d1e8b28 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
+[   16.910345] RAX: ffffffffffffffda RBX: 00007f014dd27690 RCX: 00007f014cdfe7f9
+[   16.911058] RDX: 0000000000000078 RSI: 00007ffe1d1e8b60 RDI: 000000000000001e
+[   16.911820] RBP: 00007ffe1d1e8b40 R08: 00007ffe1d1e8b40 R09: 00007ffe1d1e8b60
+[   16.912575] R10: 0000000000000044 R11: 0000000000000206 R12: 0000000000000002
+[   16.913304] R13: 0000000000000000 R14: 0000000000000002 R15: 0000000000000002
+[   16.914026]
+[   16.914189] Allocated by task 1958:
+[   16.914562]  save_stack+0x1b/0x40
+[   16.914944]  __kasan_kmalloc.constprop.0+0xc2/0xd0
+[   16.915476]  bpf_iter_link_attach+0x235/0x4e0
+[   16.915975]  __do_sys_bpf+0x1832/0x3860
+[   16.916371]  do_syscall_64+0x38/0x60
+[   16.916750]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   16.917338]
+[   16.917524] Freed by task 1958:
+[   16.917874]  save_stack+0x1b/0x40
+[   16.918241]  __kasan_slab_free+0x12f/0x180
+[   16.918681]  kfree+0xc6/0x280
+[   16.919024]  bpf_iter_link_attach+0x3e3/0x4e0
+[   16.919488]  __do_sys_bpf+0x1832/0x3860
+[   16.919915]  do_syscall_64+0x38/0x60
+[   16.920301]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-I like EPROTO most. I will change it to EPROTO if we don't have better idea=
-s.
+To reproduce:
+./test_progs -n 5
+#5 bpf_obj_id:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
-Btw, this is not the error code on sys_perf_event_open(). It is the ioctl()
-on the perf_event fd. So debugging this error will be less painful than=20
-debugging sys_perf_event_open() errors.=20
+./test_progs -n 4/18
+#4/18 bpf_hash_map:OK
+#4 bpf_iter:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
-Thanks,
-Song=
+./test_progs -n 5
+[   37.569154] ==================================================================
+[   37.570020] BUG: KASAN: use-after-free in __do_sys_bpf+0x34f3/0x3860
+
