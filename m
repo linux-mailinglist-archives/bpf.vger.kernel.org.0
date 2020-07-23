@@ -2,150 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76C422B661
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 21:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9588E22B74C
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 22:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgGWTFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 15:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S1726258AbgGWUOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 16:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726349AbgGWTFT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:05:19 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F797C0619DC
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 12:05:19 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id h7so6417037qkk.7
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 12:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=znZdkyYvvbhRdiGon4U6rDby35vjOeXyBe67/EvHRso=;
-        b=Q5oz7d7xRdBKd7cZrsriwZHpdBNc0LFaJdzbbqMRq0ZCkw0OtaxROm/i5FRj79NPtY
-         jxIvIbxafOaaDWHsCkcjwZKJy8TBqI8bhSgK8DAzg82Zy+9to9g98ULhGulQkowenXRy
-         mkM/Uoao/UFk/qocHn3Bk5j2VHoq1cJGPfp33bNfQ0PxPQuxNyrbRkG6YY9tqH1VfqSC
-         hLVB9k7zRk7WPUxfmJPHR2/ud3cfRsHSiPWPkv7zGB4xSUTAh/ldkE5XhMZQLBNGO429
-         lFkJrI+cjoOnbF7kKkU4aGDnIZXFt7Sr0TuWz9j1sBREGSPwbvpxBj14QD5rvr2qWyBT
-         YHvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=znZdkyYvvbhRdiGon4U6rDby35vjOeXyBe67/EvHRso=;
-        b=Zb2BmBo6GbsFlNZx5gZ/Q88N0r5JgALqrA3KymTfAx5rTm2CchJxzrP+9Tx62ZSK9G
-         p8B9wkm9+rS59jCHybEEI3+99t5uUfwW+j0H1+jiygTKeAsJwLb8RV7RWROi0QtC2KIa
-         v2KLtRGJ7Jh4EznbcUfOKfhEzvrQU6pMvnxEInCjYe760oGpvJVcPUD5Vxv3mP/ktRUZ
-         5KqYeQ8/6A0jhrC3olIqh6R9OXZS/LYf79HsiTGDTvKJ4cYCmz14a9SsS/tJZquaz63J
-         d4xT3jQYx4OURAgnX6gikhAA0sI6eb5t3mFhR067daE7QUSRdoopmUPDXcaR41MSA+nC
-         CpDg==
-X-Gm-Message-State: AOAM531CpGCp0Pl86bmgFo5VFzmFzk6JzzxmbsoeY9bRyDu2wKshHxHP
-        zBF5sLsesqEysLmHeftg6qd/nHD+1gkFROIPOz6ZMkd3
-X-Google-Smtp-Source: ABdhPJywlFSty0EgF4TPRdeWdCHXfROps2ZQkWOyG+90CS1Wo/FCZXOL078xlRcmqc1dlvSQPssb+hlkqF8Q773Lygs=
-X-Received: by 2002:a37:7683:: with SMTP id r125mr6813791qkc.39.1595531118651;
- Thu, 23 Jul 2020 12:05:18 -0700 (PDT)
+        with ESMTP id S1725979AbgGWUOW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:14:22 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08F6C0619DC;
+        Thu, 23 Jul 2020 13:14:21 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id E42482BA;
+        Thu, 23 Jul 2020 20:14:20 +0000 (UTC)
+Date:   Thu, 23 Jul 2020 14:14:19 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] docs: index.rst: Add watch_queue
+Message-ID: <20200723141419.01373889@lwn.net>
+In-Reply-To: <20200718165107.625847-13-dwlsalmeida@gmail.com>
+References: <20200718165107.625847-1-dwlsalmeida@gmail.com>
+        <20200718165107.625847-13-dwlsalmeida@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-References: <AM5PR83MB02104FB714E7E29DD90D8E06FB7C0@AM5PR83MB0210.EURPRD83.prod.outlook.com>
- <CAEf4BzbE5+V8GJJwASgJJyCdX3P41GeoK14szprZq4i_OrQFOg@mail.gmail.com> <HE1PR83MB0220F45891B3B413F6634662FB7B0@HE1PR83MB0220.EURPRD83.prod.outlook.com>
-In-Reply-To: <HE1PR83MB0220F45891B3B413F6634662FB7B0@HE1PR83MB0220.EURPRD83.prod.outlook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 23 Jul 2020 12:05:07 -0700
-Message-ID: <CAEf4BzZj8z5YWHQkYBjBuQ2LUwvodt7tz_9=GZzZ6hcW3zkj5g@mail.gmail.com>
-Subject: Re: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
-To:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 4:39 AM Kevin Sheldrake
-<Kevin.Sheldrake@microsoft.com> wrote:
->
-> Hello
->
-> Thank you for your response; I hope you don't mind me top-posting.  I've =
-put together a POC that demonstrates my results.  Edit the size of the data=
- char array in event_defs.h to change the behaviour.
->
-> https://github.com/microsoft/OMS-Auditd-Plugin/tree/MSTIC-Research/ebpf_p=
-erf_output_poc
+On Sat, 18 Jul 2020 13:51:07 -0300
+"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> wrote:
 
-I haven't run your program, but I can certainly reproduce this using
-bench_perfbuf in selftests. It does seem like something is silently
-corrupted, because the size reported by perf is correct (plus/minus
-few bytes, probably rounding up to 8 bytes), but the contents is not
-correct. I have no idea why that's happening, maybe someone more
-familiar with the perf subsystem can take a look.
+> From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+> 
+> Fix the following sphinx warning:
+> 
+> Documentation/watch_queue.rst:
+> WARNING: document isn't included in any toctree
+> 
+> By adding watch_queue.rst to the index.
+> 
+> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+> ---
+>  Documentation/index.rst | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/index.rst b/Documentation/index.rst
+> index 3b491af0122de..57719744774c2 100644
+> --- a/Documentation/index.rst
+> +++ b/Documentation/index.rst
+> @@ -193,6 +193,7 @@ to ReStructured Text format, or are simply too old.
+>     :maxdepth: 2
+>  
+>     staging/index
+> +   watch_queue
 
->
-> Unfortunately, our project aims to run on older kernels than 5.8 so the b=
-pf ring buffer won't work for us.
->
-> Thanks again
->
-> Kevin Sheldrake
->
->
-> -----Original Message-----
-> From: bpf-owner@vger.kernel.org <bpf-owner@vger.kernel.org> On Behalf Of =
-Andrii Nakryiko
-> Sent: 20 July 2020 05:35
-> To: Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-> Cc: bpf@vger.kernel.org
-> Subject: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
->
-> On Fri, Jul 17, 2020 at 7:24 AM Kevin Sheldrake <Kevin.Sheldrake@microsof=
-t.com> wrote:
-> >
-> > Hello
-> >
-> > I'm building a tool using EBPF/libbpf/C and I've run into an issue that=
- I'd like to ask about.  I haven't managed to find documentation for the ma=
-ximum size of a record that can be sent over the perf ring buffer, but expe=
-rimentation (on kernel 5.3 (x64) with latest libbpf from github) suggests i=
-t is just short of 64KB.  Please could someone confirm if that's the case o=
-r not?  My experiments suggest that sending a record that is greater than 6=
-4KB results in the size reported in the callback being correct but the reco=
-rds overlapping, causing corruption if they are not serviced as quickly as =
-they arrive.  Setting the record to exactly 64KB results in no records bein=
-g received at all.
-> >
-> > For reference, I'm using perf_buffer__new() and perf_buffer__poll() on =
-the userland side; and bpf_perf_event_output(ctx, &event_map, BPF_F_CURRENT=
-_CPU, event, sizeof(event_s)) on the EBPF side.
-> >
-> > Additionally, is there a better architecture for sending large volumes =
-of data (>64KB) back from the EBPF program to userland, such as a different=
- ring buffer, a map, some kind of shared mmaped segment, etc, other than si=
-mply fragmenting the data?  Please excuse my naivety as I'm relatively new =
-to the world of EBPF.
-> >
->
-> I'm not aware of any such limitations for perf ring buffer and I haven't =
-had a chance to validate this. It would be great if you can provide a small=
- repro so that someone can take a deeper look, it does sound like a bug, if=
- you really get clobbered data. It might be actually how you set up perfbuf=
-, AFAIK, it has a mode where it will override the data, if it's not consume=
-d quickly enough, but you need to consciously enable that mode.
->
-> But apart from that, shameless plug here, you can try the new BPF ring bu=
-ffer ([0]), available in 5.8+ kernels. It will allow you to avoid extra cop=
-y of data you get with bpf_perf_event_output(), if you use BPF ringbuf's bp=
-f_ringbuf_reserve() + bpf_ringbuf_commit() API. It also has bpf_ringbuf_out=
-put() API, which is logically  equivalent to bpf_perf_event_output(). And i=
-t has a very high limit on sample size, up to 512MB per sample.
->
-> Keep in mind, BPF ringbuf is MPSC design and if you use just one BPF ring=
-buf across all CPUs, you might run into some contention across multiple CPU=
-. It is acceptable in a lot of applications I was targeting, but if you hav=
-e a high frequency of events (keep in mind, throughput doesn't matter, only=
- contention on sample reservation matters), you might want to use an array =
-of BPF ringbufs to scale throughput. You can do 1 ringbuf per each CPU for =
-ultimate performance at the expense of memory usage (that's perf ring buffe=
-r setup), but BPF ringbuf is flexible enough to allow any topology that mak=
-es sense for you use case, from 1 shared ringbuf across all CPUs, to anythi=
-ng in between.
->
->
+Thanks, I've applied this, but it isn't really the right fix - this
+document should not be at the top level of Documentation/.  I'd be
+inclined to move it under userspace-api/, even though there's a strange
+mixture of user-space and kernel material here...
+
+jon
