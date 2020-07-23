@@ -2,98 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0733D22B11F
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 16:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D83622B193
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 16:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgGWOT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 10:19:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60545 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726089AbgGWOT1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:19:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595513966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
-        b=VWAuYbDKvbf6ismsN/4I9KJXw8OFLzhVTaP+YI59Y3yI9T565CHszyxmnyIj5WOjwsWtZn
-        eEakjIUtfHIy6MVMv/Xy9dmPkcSQUkkhX6jguCnqujLfE1iRM/e0bGSMR1dZFEeYyVztMu
-        YDQRYsf684E3rNoU8rj39V3drjMYYLk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-v6sskVWWPHqeNSsYrXrBIw-1; Thu, 23 Jul 2020 10:19:24 -0400
-X-MC-Unique: v6sskVWWPHqeNSsYrXrBIw-1
-Received: by mail-qv1-f72.google.com with SMTP id x37so3684940qvf.4
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
-        b=m3l5TY9zafFFr6YoNeHutkK8zB7taCvalxpOy+9NKM/7mqDNH805BxJVDtbLetAB5k
-         NDnABXfrpPg5+VNg0vGDAwA+LGBVITCZuAvKtw4imhNBCBFbcXvofazcGixkbKD5ijkQ
-         p4mmVS0fyINM0efg/7nCLZN0EnZ9T85gJIg+3/9MApWHoIaiHgfmDBMiFZzl8aRbsj55
-         cnDH2s17AffwIZnDmLfyo2vqbktg4xAIEGJ7qBX7xvtzCGC+RJw+KlWYH+xUCvXFW9QJ
-         aUWTwNLWftjVLUR03IfwF+ZfMyEVXu43xo/l0Uz87AozJ3EmVD8/X2IGcx42GGjjzei7
-         RrSQ==
-X-Gm-Message-State: AOAM533TRVzM8PnUg7rJkNmdt3HL/lZgxdDguLneqeyFFGGSq1OoQr8/
-        fv9LGdu9ZoRpVFxOoPxapnEVNlF4N9x+A/qw3eFEy/GtLTOml2l3sWyl4z/hB96St9qwbAzQsff
-        9EcB9zlBDBBRv
-X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5425022qkf.327.1595513964220;
-        Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyor/sEuJ1ILiUvnXH2q/LutcM92n90ckKA+iXLKs3Ks/I7zdfJPzXs5YbSaHWhsPNDMTwjrA==
-X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5424974qkf.327.1595513963870;
-        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j9sm2626609qtr.60.2020.07.23.07.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        masahiroy@kernel.org, mhiramat@kernel.org, rostedt@goodmis.org,
-        akpm@linux-foundation.org, will@kernel.org, krzk@kernel.org,
-        patrick.bellasi@arm.com, dhowells@redhat.com,
-        ebiederm@xmission.com, hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] bpf: BPF_SYSCALL depends INET
-Date:   Thu, 23 Jul 2020 07:19:14 -0700
-Message-Id: <20200723141914.20722-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1728265AbgGWOmY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 23 Jul 2020 10:42:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60719 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728306AbgGWOmR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 10:42:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-258-XYagsueXN0qZRmxt_6g0lA-1; Thu, 23 Jul 2020 15:42:13 +0100
+X-MC-Unique: XYagsueXN0qZRmxt_6g0lA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 15:42:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 23 Jul 2020 15:42:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>
+CC:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
+        "linux-decnet-user@lists.sourceforge.net" 
+        <linux-decnet-user@lists.sourceforge.net>,
+        "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "mptcp@lists.01.org" <mptcp@lists.01.org>,
+        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>
+Subject: RE: [PATCH 03/26] bpfilter: reject kernel addresses
+Thread-Topic: [PATCH 03/26] bpfilter: reject kernel addresses
+Thread-Index: AQHWYLhxJPyZOJNDGEen8+LVytPg86kVPIvA
+Date:   Thu, 23 Jul 2020 14:42:11 +0000
+Message-ID: <c3dc5b4d84e64230bb6ca8df7bb70705@AcuMS.aculab.com>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-4-hch@lst.de>
+In-Reply-To: <20200723060908.50081-4-hch@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Christoph Hellwig
+> Sent: 23 July 2020 07:09
+> 
+> The bpfilter user mode helper processes the optval address using
+> process_vm_readv.  Don't send it kernel addresses fed under
+> set_fs(KERNEL_DS) as that won't work.
 
-A link error
+What sort of operations is the bpf filter doing on the sockopt buffers?
 
-kernel/bpf/net_namespace.o: In function `bpf_netns_link_release':
-net_namespace.c: undefined reference to `bpf_sk_lookup_enabled'
+Any attempts to reject some requests can be thwarted by a second
+application thread modifying the buffer after the bpf filter has
+checked that it allowed.
 
-bpf_sk_lookup_enabled is defined with INET
-net_namespace is controlled by BPF_SYSCALL
+You can't do security by reading a user buffer twice.
 
-So add a depends on INET to BPF_SYSCALL
+	David
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- init/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 7b8ef43e7fb4..817f70e6023c 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1663,6 +1663,7 @@ config BPF_SYSCALL
- 	bool "Enable bpf() system call"
- 	select BPF
- 	select IRQ_WORK
-+	depends on INET
- 	default n
- 	help
- 	  Enable the bpf() system call that allows to manipulate eBPF
--- 
-2.18.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
