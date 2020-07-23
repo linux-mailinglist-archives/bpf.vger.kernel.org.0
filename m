@@ -2,124 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5C022B1E9
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 16:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABB722B268
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 17:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgGWO4j convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 23 Jul 2020 10:56:39 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:30148 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728581AbgGWO4i (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 10:56:38 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-82-SdYRZOb-OAyxxDdIZA3c_Q-1; Thu, 23 Jul 2020 15:56:34 +0100
-X-MC-Unique: SdYRZOb-OAyxxDdIZA3c_Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 15:56:33 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 23 Jul 2020 15:56:33 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1728696AbgGWPWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 11:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgGWPWd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 11:22:33 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B82C0619DC;
+        Thu, 23 Jul 2020 08:22:33 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id k17so3482958lfg.3;
+        Thu, 23 Jul 2020 08:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L81wTFA53gfp7hYtms3C94J0jBeZGUSiKMHUeZoLf74=;
+        b=EJ/MMS9NJ0fa7vp2B2cpL8GsEZFuIK04OhTRyhJVsY5qLLm+Jldv7Rx2TXbULPN2Cs
+         62Ct2jJU+poxwYVG1TUtpgXqlGVsODkX4GlAkQPnxR7RPRPGgZN5xnIQLvA7DD8fCA1E
+         ETgwAwT/t1vrZwjgmkv2WzX0igbmKVqkS8OBnvMiQ9ix8UkR1sq93/djIqJTg0iwAIK2
+         vZZ5z1yBdGJoJxcL+fwkFmoTESEbAg5oOahR3NrMqCyTYphW2oUjaENHITHjuGcecNIj
+         cFOMDsr/5kXwCuiY71153T9y2zbuN4IGZIwlFnBbGWf3K1f3vSJgg8UVtgMa2bwOXjb+
+         +tFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L81wTFA53gfp7hYtms3C94J0jBeZGUSiKMHUeZoLf74=;
+        b=hEiR1RdSL8uKi1wQSMKIHlHacnaerOvU8wOQqyWWf7GBNZLIsFf9MOieoeOCy2vWpv
+         iGVqjqgPF/P9V3A//lAuTTXQ7UBOTKJ93Pk1CifIh8p37CLQyC9oimS/4kN7NfztO5QB
+         zpOUlH8Ht4KSLcfbpURFbxdYoN30rp/xT/zbYmoWZPCbI+us8B5s2YyScZjtmz0cCNQg
+         RFTcCLGuzUD1mZ5OaFN4n7Dh5iYZ088do7rlz5TQ5d2XI2HOnbsSGSiS/qpwB9PLIUAG
+         b6MhDvhMh3K96Rp6sz4etzCXeHf7Qnd4XuE4sUt343kLePn9PhQn8yXXLsA3sbl3WsEz
+         V+zQ==
+X-Gm-Message-State: AOAM530MMzvZ9oCwPT8KstW1e7Re0+pgVxkadu3SBUaSf5ZkFAMHjiY/
+        LRbs/5QsYRflAJ/XbV1OIfc7y9oY1XD9aEjJMeE=
+X-Google-Smtp-Source: ABdhPJxuvwgfuAanQGNYX7PvikPhn/NQCxwDohI9W4Y893EwG29iNI4LFtdnK9U3931oOB6GvwOtBKz8kki1RW+GZso=
+X-Received: by 2002:ac2:5f48:: with SMTP id 8mr2469875lfz.157.1595517751613;
+ Thu, 23 Jul 2020 08:22:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200722184210.4078256-1-songliubraving@fb.com>
+ <20200722184210.4078256-3-songliubraving@fb.com> <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
+ <684DA506-6780-4CB5-B99C-24D939CDE6DF@fb.com>
+In-Reply-To: <684DA506-6780-4CB5-B99C-24D939CDE6DF@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 23 Jul 2020 08:22:19 -0700
+Message-ID: <CAADnVQK+xX8oKF5f=FzmE+xxbSovJ+rbZD6TRxTAtdH+-ockEw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
+ bpf_get_[stack|stackid] cannot work
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        "coreteam@netfilter.org" <coreteam@netfilter.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
-        "linux-decnet-user@lists.sourceforge.net" 
-        <linux-decnet-user@lists.sourceforge.net>,
-        "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "mptcp@lists.01.org" <mptcp@lists.01.org>,
-        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "tipc-discussion@lists.sourceforge.net" 
-        <tipc-discussion@lists.sourceforge.net>,
-        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>
-Subject: RE: [PATCH 03/26] bpfilter: reject kernel addresses
-Thread-Topic: [PATCH 03/26] bpfilter: reject kernel addresses
-Thread-Index: AQHWYLhxJPyZOJNDGEen8+LVytPg86kVPIvA///w6YCAABGh0A==
-Date:   Thu, 23 Jul 2020 14:56:33 +0000
-Message-ID: <5fc6b1716f1b4534bda95bab49512754@AcuMS.aculab.com>
-References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-4-hch@lst.de>
- <c3dc5b4d84e64230bb6ca8df7bb70705@AcuMS.aculab.com>
- <20200723144455.GA12280@lst.de>
-In-Reply-To: <20200723144455.GA12280@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: 'Christoph Hellwig'
-> Sent: 23 July 2020 15:45
-> 
-> On Thu, Jul 23, 2020 at 02:42:11PM +0000, David Laight wrote:
-> > From: Christoph Hellwig
-> > > Sent: 23 July 2020 07:09
-> > >
-> > > The bpfilter user mode helper processes the optval address using
-> > > process_vm_readv.  Don't send it kernel addresses fed under
-> > > set_fs(KERNEL_DS) as that won't work.
+On Wed, Jul 22, 2020 at 11:20 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Jul 22, 2020, at 10:55 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 > >
-> > What sort of operations is the bpf filter doing on the sockopt buffers?
+> > On Wed, Jul 22, 2020 at 11:42:08AM -0700, Song Liu wrote:
+> >> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> >> index 856d98c36f562..f77d009fcce95 100644
+> >> --- a/kernel/events/core.c
+> >> +++ b/kernel/events/core.c
+> >> @@ -9544,6 +9544,24 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
+> >>      if (IS_ERR(prog))
+> >>              return PTR_ERR(prog);
+> >>
+> >> +    if (event->attr.precise_ip &&
+> >> +        prog->call_get_stack &&
+> >> +        (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) ||
+> >> +         event->attr.exclude_callchain_kernel ||
+> >> +         event->attr.exclude_callchain_user)) {
+> >> +            /*
+> >> +             * On perf_event with precise_ip, calling bpf_get_stack()
+> >> +             * may trigger unwinder warnings and occasional crashes.
+> >> +             * bpf_get_[stack|stackid] works around this issue by using
+> >> +             * callchain attached to perf_sample_data. If the
+> >> +             * perf_event does not full (kernel and user) callchain
+> >> +             * attached to perf_sample_data, do not allow attaching BPF
+> >> +             * program that calls bpf_get_[stack|stackid].
+> >> +             */
+> >> +            bpf_prog_put(prog);
+> >> +            return -EINVAL;
 > >
-> > Any attempts to reject some requests can be thwarted by a second
-> > application thread modifying the buffer after the bpf filter has
-> > checked that it allowed.
-> >
-> > You can't do security by reading a user buffer twice.
-> 
-> I'm not saying that I approve of the design, but the current bpfilter
-> design uses process_vm_readv to access the buffer, which obviously does
-> not work with kernel buffers.
+> > I suspect this will be a common error. bpftrace and others will be hitting
+> > this issue and would need to fix how they do perf_event_open.
+> > But EINVAL is too ambiguous and sys_perf_event_open has no ability to
+> > return a string.
+> > So how about we pick some different errno here to make future debugging
+> > a bit less painful?
+> > May be EBADFD or EPROTO or EPROTOTYPE ?
+> > I think anything would be better than EINVAL.
+>
+> I like EPROTO most. I will change it to EPROTO if we don't have better ideas.
+>
+> Btw, this is not the error code on sys_perf_event_open(). It is the ioctl()
+> on the perf_event fd. So debugging this error will be less painful than
+> debugging sys_perf_event_open() errors.
 
-Is this a different bit of bpf that that which used to directly
-intercept setsockopt() requests and pass them down from a kernel buffer?
-
-I can't held feeling that bpf is getting 'too big for its boots' and
-will have a local-user privilege escalation hiding in it somewhere.
-
-I've had to fix my 'out of tree' driver to remove the [sg]etsockopt()
-calls. Some of the replacements will go badly wrong if I've accidentally
-lost track of the socket type.
-I do have a daemon process sleeping in the driver - so I can wake it up
-and make the requests from it with a user buffer.
-I may have to implement that to get the negotiated number of 'ostreams'
-to an SCTP connection.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+ahh. right. Could you also add a string hint to libbpf when it sees this errno?
