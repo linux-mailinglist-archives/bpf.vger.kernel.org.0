@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C16122A6E1
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 07:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165E522A6F0
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 07:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgGWFWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 01:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S1725858AbgGWFfT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 01:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgGWFWy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:22:54 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71A9C0619DC
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:22:53 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u25so2609774lfm.1
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:22:53 -0700 (PDT)
+        with ESMTP id S1725822AbgGWFfT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 01:35:19 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E391AC0619DC
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:35:18 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id r19so4964582ljn.12
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hdtbpditTvz+VIJN2DrP7jRWgh4z8YFmdz4e5NKoq+g=;
-        b=iX+JVSWL1KGU5gWvCn7kRhKPvJxG63qg3MYBb75Gttu9wndw1kKwglGY4vj2hr47Vc
-         JHE1qOhT47cLfeCYIvEI9qBOk9gPmrOfrUuFgPEgpZ1Ry7To48oVcB4n4H9dvz5YkuN3
-         +XxDu6vEK6iE6ItHczc/qu+qt94X34DDqH+s2uTk00yRSTM2cXXi3/nqqXUvfdTUaeeV
-         +yQB++ssWVUwLzfjwTvRoELfGaHBMcBdQO+vS7VgHpTmodyzXGzbmD7GQqKouGIwzFjo
-         1aTEpHvfSqD9lzDwFKmkd6bAA4iRQX373w1e1WogJk4LTnNNjJIkSCfGg0Pojonu4JZx
-         MNSw==
+        bh=1EP/AQNT6xXd5KDDpqbWlEcCngVz5lTKZeNI5M8bpAM=;
+        b=jg1+w0OVXsJjdVKYDoLJqSugqz8VbG6+9OkZmmPcKqG5vFHhU+pVMYVWBjlN2HGlaG
+         ysZWf2U6R+h9f77jAi4Dequ+UCP7I0pgtyv2lvgwZXODhAiZuVd3GFo++ZkAtOg1ZOnK
+         j3d0GJNQxfKR75wxipLljJkL4BTNRdCvy1tqjLYvezgo0Nn4Cw/lBFPgvHskSUCe7XIq
+         6snFu1zpY3IdvetMIbLcuU7XUKRJOqakBhEHtBKuhAXMXFPXKXdANJQmW1BjyjrHzkEp
+         PSM19crhw2zkixfCXIjkHs/kmSurXLf3RhmZnJ3bnY/iia5XNviiZ2wpEU2BQep502bj
+         rjpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hdtbpditTvz+VIJN2DrP7jRWgh4z8YFmdz4e5NKoq+g=;
-        b=NOdfLKna0RWW5j5+AmUKursVIM+Pgn1m3IdSLuLQo6othO5e/K/jvSMFJsRJ/s1qCo
-         qOc9COc6G7/SmSlKqbjtpJTvLTn6IhtkbL+lZI8qenESvi6mbFItSy9BngCefCeihYCE
-         GVoy5iZPChI2FRA5Q7H3FZxtMrKwYDIfZ1bbdu7IknwKf2yCmOfiOxwQYONPS7M+hvzw
-         a8zjgF0adTIKIsmcSMVtJk6B5hNboDe0BHcSsSqYpNU9EPe4CYyP5CwS78sGwNzDZ9U5
-         H7KAXIdwuoh3vsT3CtbPOIG3tmP2AWTFSSQHKQ8+D6Oj0zv0GVKIGGxH8lKxVSyevRc5
-         Konw==
-X-Gm-Message-State: AOAM531wnF+Fr3KKiE30x3pLHFzBC2CnNShzb4faScQJ1NNM7SARQW9v
-        dxjRKbTevoi8fodScruGoENdRc/lTbyhH0bA2Co=
-X-Google-Smtp-Source: ABdhPJzF9Hpl8dY/1n+fZnlxQsS/CEX9esmSjDD0oYA0pDwl5kEWN+CgCezFi/4RdkBGpzFDYRKX9Yhs1NKJhDaVsUs=
-X-Received: by 2002:a19:a95:: with SMTP id 143mr1348459lfk.174.1595481772293;
- Wed, 22 Jul 2020 22:22:52 -0700 (PDT)
+        bh=1EP/AQNT6xXd5KDDpqbWlEcCngVz5lTKZeNI5M8bpAM=;
+        b=JSIZvGEFURAbIwRYG2FhkTq1VDQXAD0a4aSP5DK/R0qoV28DYC6rQSa9L5J61h81xK
+         vU/dXl94a105JKEzhSwjvU3HC8EIBmjgFh1YFvUDgA5jB3mv5vt4pPO6mXm0hFD7IOvX
+         JCBz71Rf9znuNO+bCDUomtAPb/mgxOw2CkzImWC+A21sv7mAIkKBBufDZPOS5M5n9UjU
+         z2k5u2l3EzdIhhWK6wH+NDsQLI/h5U/NYlkX0yN7rlP/OyPyIyCBYf1ESNps0180jUjs
+         MVNghRl7tkF6c9FvycaLmDb1eajL/a6vbn41J622/pswWfTAMihAgf/tROtCh0VJsKXL
+         hRUw==
+X-Gm-Message-State: AOAM531YsygrrzxEqyeydjdRToDDCPlXt1ecUMP1CLRAZVOYXGcN9GEl
+        50PMjEpzW9LvFTd0Efkuwm2pui8UcppekKHbmg8=
+X-Google-Smtp-Source: ABdhPJy3x8zYwgpd0gOT7q4/S64iApxCj2tfWL9Izlx1z5kNSj/BB9zkxLZeiYuB4W7mgBH9O1YDXMmxekqwWuY8sOo=
+X-Received: by 2002:a2e:9bc3:: with SMTP id w3mr1229091ljj.121.1595482517400;
+ Wed, 22 Jul 2020 22:35:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200722195156.4029817-1-yhs@fb.com>
 In-Reply-To: <20200722195156.4029817-1-yhs@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Jul 2020 22:22:41 -0700
-Message-ID: <CAADnVQ+qGuj1reaFfxG+gm6PgKECFk5+F=qny4oLqpb27=e8mA@mail.gmail.com>
+Date:   Wed, 22 Jul 2020 22:35:05 -0700
+Message-ID: <CAADnVQJiEES3xaE_PRWSYmfLG1L1p3ie8nx=o66E-2SGxLrK7w@mail.gmail.com>
 Subject: Re: [PATCH bpf-next] bpf: fix pos computation for bpf_iter seq_ops->start()
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -62,25 +62,13 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jul 22, 2020 at 12:52 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Currently, the pos pointer in bpf iterator map/task/task_file
-> seq_ops->start() is always incremented.
-> This is incorrect. It should be increased only if
-> *pos is 0 (for SEQ_START_TOKEN) since these start()
-> function actually returns the first real object.
-> If *pos is not 0, it merely found the object
-> based on the state in seq->private, and not really
-> advancing the *pos. This patch fixed this issue
-> by only incrementing *pos if it is 0.
->
-> Note that the old *pos calculation, although not
-> correct, does not affect correctness of bpf_iter
-> as bpf_iter seq_file->read() does not support llseek.
->
-> This patch also renamed "mid" in bpf_map iterator
-> seq_file private data to "map_id" for better clarity.
->
-> Fixes: 6086d29def80 ("bpf: Add bpf_map iterator")
-> Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Alexei, I also made the change of "mid"->"map_id"
+> and simplified the logic in map_iter seq_file->next()
 
-Applied. Thanks
+Thanks!
+
+> the same as your patch in
+>   https://lore.kernel.org/bpf/20200717044031.56412-2-alexei.starovoitov@gmail.com/T
+
+I've rebased that one on top of your patch and applied to bpf-next.
+Thanks
