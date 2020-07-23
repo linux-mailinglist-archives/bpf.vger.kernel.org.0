@@ -2,211 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BBB22A9C2
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 09:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A2822AAE0
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 10:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgGWHlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 03:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S1727034AbgGWIkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 04:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgGWHlK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:41:10 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9846C0619DC
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:09 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t18so3568440ilh.2
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:09 -0700 (PDT)
+        with ESMTP id S1726719AbgGWIjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:39:55 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F894C05BD0F
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 01:39:55 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b13so1516753edz.7
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 01:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rg3lLepsix9FpODFM0aDlgzIKbl3+YakQy4HFJAnoP4=;
-        b=A0vixeT4031ma8PwN0WUe9n3UyLS1RmRN1KFZgBqzhYnIRr/BRo0jkVUpVQmaL6M7V
-         N9XZsrAWadKLDflixLZWNl3cuFKRLPKyDHUycm930CqYlMDgtaUJDpQMhuC05YaYtE96
-         IDhN3sIJj1RSm+zMisnOEQxy3oarPNEPM59nI9oChMo99971T2pRwb5QA3sC7aXvc02d
-         QElJ5t1vrsGmxt6NCZD6/C9hJFtV8X9h1gb/DOuqtJQr60eiWLVol2tTLzju+Gk2CFZF
-         VkfpwiUqfb2rFOsrDYuC3Pw4JEf7NQCOOX31cOjKXB5oPiAEJISLUueC8/BB0PcJDwLL
-         0TZw==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t34u4KAm1gK/f1oDA6+0ZgZ3T1IDP3Ad7b21M8jn9IE=;
+        b=CNsYMCaC5YFx1sCHrUnGTyxK55+RElxWw1Y4CgVq4WviDSpLe5tvZRQNhbw/o8NHkS
+         5lNPKTvPIJgzELza08HXzETuGDGqESAjMwaETk5Mmah7A76FYju7HEJcSxVz2Z68Ez32
+         Fe8bkyg3EIliyQfIE0WUqAFYcrQUJWfpZsNbAdl/ll0KB40GMQt1yoxZTtepzlC4KdnZ
+         GnSg5TjVpPWt7FlYOZYnnYqZEV4wmhNftYUlMk2HjS0eEZRDa0Aihb7OonspbY3XBKmu
+         gfkANWXjINxT44g2wwmEPqLtqbE4VWM7CM7H0NR7+q8PAGIse1jhucMrcCJVf3oeSFy2
+         TE7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rg3lLepsix9FpODFM0aDlgzIKbl3+YakQy4HFJAnoP4=;
-        b=ISn+RTItA+Fp017VkS52dGV5biuh+JQsgcdKvfm/KRj7Kaudk/bwsHHEuAKdHwPsfy
-         KJ2m/BValmtsgRm3acqWcjUPRvGShzVLbiD9yOhEc8HTmBkbAfdpq5VR7pOlrrH3SlmK
-         Ar3JEN1z5MeAymH5qz/OU5rfE3d+6sgjDssuYI6hM7N3OTmKib4jbrpVpFys9KX2qvFv
-         YDvoWtu73bjkj412AZqw+TpV7tgKOOa+E7cKuuI+mOqbdhtB8/v8FkUQ9mPvwFiGa4kD
-         s6fXJSdqkdCUnRkfpIhUyHzWwBnmnFeNfmASQrCrt3+RllPl3pFvNuaffMw4e7k5gDQE
-         2Gcw==
-X-Gm-Message-State: AOAM531QlS4PXLazRKjGuSknK2oqGU8hRq5NHBU/eYwYLDeNXP89N3Yj
-        b8+MN0VT/detZI1LcxjlKEmWXazi3UltfQ==
-X-Google-Smtp-Source: ABdhPJwlljGiwBelGPotvNe+wSk+R6OW5EkdUprHq3AgO/hb4sX6Md68pWPfo/8YwvbfvAjL3ZP+mA==
-X-Received: by 2002:a92:d186:: with SMTP id z6mr3958865ilz.227.1595490069008;
-        Thu, 23 Jul 2020 00:41:09 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
-        by smtp.gmail.com with ESMTPSA id c9sm1035552ilm.57.2020.07.23.00.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 00:41:08 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t34u4KAm1gK/f1oDA6+0ZgZ3T1IDP3Ad7b21M8jn9IE=;
+        b=OYiStjajmghRMpa+UtYRt9W59DpxLtrGCY+1FTSr+81CWaB5aqRuU+2x+9CJvEjNVN
+         WeMrTSBy3T0eWav1hrYssZ53y/lg3w+zYWR3Ur+boeJJki+CMZ8DknQlFpk5lMLe9hIy
+         z0pMD+qY5irAq/bpI5QWYzTKfWEJGaCclMa45xnHtGaBXVWXtQadtxx4pCxtjtuL0Nrs
+         92qVPHuLjcRilTu6BZRcpAvVVTTLkqkdn5bQ6ymDcVW2IbdHyThGZFxNJhXneW/+5eMu
+         RRyMZpflI223iUEshrJPKnAmR3k5mP87FsVr8xR2YHOZuPbOTqr6hzu2MHdEjaOMMaXU
+         amUA==
+X-Gm-Message-State: AOAM5313Z6gyVQM0ssGibq5zd1sAijqUlgKosCS2p6Y77ieD3uOOj4OC
+        5s1wHRf5KgSvJLlaDmYsYEh8cA==
+X-Google-Smtp-Source: ABdhPJwbyZj4th/Ks5mvB+ElB/xiz0sHXiy/UKIrJCc8QLLBnJl9HfUHFNhTU1trrZNOtrIehMUs+A==
+X-Received: by 2002:aa7:da4c:: with SMTP id w12mr3098522eds.122.1595493593384;
+        Thu, 23 Jul 2020 01:39:53 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([79.132.248.22])
+        by smtp.gmail.com with ESMTPSA id q7sm1560608eja.69.2020.07.23.01.39.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jul 2020 01:39:52 -0700 (PDT)
+Subject: Re: [MPTCP] [PATCH 08/26] net: switch sock_set_timeout to sockptr_t
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH v5 bpf-next 5/5] Documentation/bpf: Document CGROUP_STORAGE map type
-Date:   Thu, 23 Jul 2020 02:40:58 -0500
-Message-Id: <2ac90af2504384ff33ab8184c288f236378173fb.1595489786.git.zhuyifei@google.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1595489786.git.zhuyifei@google.com>
-References: <cover.1595489786.git.zhuyifei@google.com>
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200723060908.50081-9-hch@lst.de>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <092368db-122f-60bc-6a32-3cd5c70727da@tessares.net>
+Date:   Thu, 23 Jul 2020 10:39:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200723060908.50081-9-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei@google.com>
+Hi Christoph,
 
-The machanics and usage are not very straightforward. Given the
-changes it's better to document how it works and how to use it,
-rather than having to rely on the examples and implementation to
-infer what is going on.
+On 23/07/2020 08:08, Christoph Hellwig wrote:
+> Pass a sockptr_t to prepare for set_fs-less handling of the kernel
+> pointer from bpf-cgroup.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   net/mptcp/protocol.c |  6 ++++--
 
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- Documentation/bpf/index.rst              |  9 +++
- Documentation/bpf/map_cgroup_storage.rst | 97 ++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 Documentation/bpf/map_cgroup_storage.rst
+Thank you for looking at that!
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 38b4db8be7a2..26f4bb3107fc 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -48,6 +48,15 @@ Program types
-    bpf_lsm
- 
- 
-+Map types
-+=========
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   map_cgroup_storage
-+
-+
- Testing and debugging BPF
- =========================
- 
-diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
-new file mode 100644
-index 000000000000..ed6256974508
---- /dev/null
-+++ b/Documentation/bpf/map_cgroup_storage.rst
-@@ -0,0 +1,97 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2020 Google LLC.
-+
-+===========================
-+BPF_MAP_TYPE_CGROUP_STORAGE
-+===========================
-+
-+The ``BPF_MAP_TYPE_CGROUP_STORAGE`` map type represents a local fix-sized
-+storage. It is only available with ``CONFIG_CGROUP_BPF``, and to programs that
-+attach to cgroups; the programs are made available by the same config. The
-+storage is identified by the cgroup the program is attached to.
-+
-+This document describes the usage and semantics of the
-+``BPF_MAP_TYPE_CGROUP_STORAGE`` map type. Some of its behaviors was changed in
-+Linux 5.9 and this document will describe the differences.
-+
-+Usage
-+=====
-+
-+The map uses key of type of either ``__u64`` or
-+``struct bpf_cgroup_storage_key``, declared in ``linux/bpf.h``::
-+
-+    struct bpf_cgroup_storage_key {
-+            __u64 cgroup_inode_id;
-+            __u32 attach_type;
-+    };
-+
-+``cgroup_inode_id`` is the inode id of the cgroup directory.
-+``attach_type`` is the the program's attach type.
-+
-+Since Linux 5.9, if the type is ``__u64``, then all attach types of the
-+particular cgroup and map will share the same storage. If the type is
-+``struct bpf_cgroup_storage_key``, then programs of different attach types
-+be isolated and see different storages.
-+
-+To access the storage in a program, use ``bpf_get_local_storage``::
-+
-+    void *bpf_get_local_storage(void *map, u64 flags)
-+
-+``flags`` is reserved for future use and must be 0.
-+
-+There is no implicit synchronization. Storages of ``BPF_MAP_TYPE_CGROUP_STORAGE``
-+can be accessed by multiple programs across different CPUs, and user should
-+take care of synchronization by themselves.
-+
-+Example usage::
-+
-+    #include <linux/bpf.h>
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+            __type(key, struct bpf_cgroup_storage_key);
-+            __type(value, __u32);
-+    } cgroup_storage SEC(".maps");
-+
-+    int program(struct __sk_buff *skb)
-+    {
-+            __u32 *ptr = bpf_get_local_storage(&cgroup_storage, 0);
-+            __sync_fetch_and_add(ptr, 1);
-+
-+            return 0;
-+    }
-+
-+Semantics
-+=========
-+
-+``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE`` is a variant of this map type. This
-+per-CPU variant will have different memory regions for each CPU for each
-+storage. The non-per-CPU will have the same memory region for each storage.
-+
-+Prior to Linux 5.9, the lifetime of a storage is precisely per-attachment, and
-+for a single ``CGROUP_STORAGE`` map, there can be at most one program loaded
-+that uses the map. A program may be attached to multiple cgroups or have
-+multiple attach types, and each attach creates a fresh zeroed storage. The
-+storage is freed upon detach.
-+
-+Since Linux 5.9, storage can be shared by multiple programs. When a program is
-+attached to a cgroup, the kernel would create a new storage only if the map
-+does not already contain an entry for the cgroup and attach type pair, or else
-+the old storage is reused for the new attachment. If the map is attach type
-+shared, then attach type is simply ignored during comparison. Storage is freed
-+only when either the map or the cgroup attached to is being freed. Detaching
-+will not directly free the storage, but it may cause the reference to the map
-+to reach zero and indirectly freeing all storage in the map.
-+
-+In all versions, userspace may use the the attach parameters of cgroup and
-+attach type pair in ``struct bpf_cgroup_storage_key`` as the key to the BPF map
-+APIs to read or update the storage for a given attachment. For Linux 5.9
-+attach type shared storages, only the first value in the struct, cgroup inode
-+id, is used during comparison, so userspace may just specify a ``__u64``
-+directly.
-+
-+The storage is bound at attach time. Even if the program is attached to parent
-+and triggers in child, the storage still belongs to the parent.
-+
-+Userspace cannot create a new entry in the map or delete an existing entry.
-+Program test runs always use a temporary storage.
+For MPTCP-related code:
+
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+Cheers,
+Matt
 -- 
-2.27.0
-
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
