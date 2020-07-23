@@ -2,97 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ECD22AE6A
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 13:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BE022B0C6
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 15:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgGWLwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 07:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728666AbgGWLwF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 07:52:05 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443EBC0619DC
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 04:52:05 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 9so4679516wmj.5
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 04:52:05 -0700 (PDT)
+        id S1726715AbgGWNvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 09:51:41 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:45763 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbgGWNvl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 09:51:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NZpJnIVSkJItlVzX7BU0eJ1NGmH1x+ATcfuITedLtig=;
-        b=ktInN0BkhURtuR83134zOeql/UFN3ASBDoe3ryIQAD7q1ahSWK29E4Vua6VXmbds07
-         5dl9Wur6XxmkBYAY8GRyqUeedQPdRgf3M1Dz9bT/Y064Dflg1U9tR2/eV47cXNYWg1v8
-         Zzch04KO2wxu0zcLZbnhZsuCnyj4rDYgHdaG4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NZpJnIVSkJItlVzX7BU0eJ1NGmH1x+ATcfuITedLtig=;
-        b=GKr0SyzRKR5HWHGOtKv7G8/ZRCb9we1rEOoTYYAAn1hD/3ihsO7seoejXtHRPamQqw
-         q2IqrJIr9fpPscyd4SHtIj0oM7VnIJWjgUSE3x6OW38jjur8L9AvNDvsDj0zsG1cU6VY
-         HBwFJ7AE/t6CtjdQZj6YwD8Nej010vYlCnI/HI8c2gam1EGRVIAXC/EhdP5qLvVw4eOC
-         XgCl79btHaSRuSScglhZXEOnIX3n7Or+XFSvYYYNqGQOF8enwZheYJyebRUWWmQ6B/EW
-         EDNct7xfdQLVNTlI7QxeivuqfzvfAEu1/AnYKwTAAn8QWce9HEyUCr6gHTCSoEOob0F0
-         9q8A==
-X-Gm-Message-State: AOAM533J1ATGZmvNCLUiM8k8UP5JVi825SXv3Zpok5Dz4319gbQa+kKf
-        ZLBQO4pNBb+aUxN5wk1BEiFt4w==
-X-Google-Smtp-Source: ABdhPJx5kpjbbRmNFCzRww6zSgYNNCQm73V4u/MTpsk8pd8BfUKI6aPsdfQk8ek0oBVK2gQdotXUiw==
-X-Received: by 2002:a1c:e382:: with SMTP id a124mr3869340wmh.11.1595505123981;
-        Thu, 23 Jul 2020 04:52:03 -0700 (PDT)
-Received: from kpsingh-macbookpro2.roam.corp.google.com ([2a00:79e0:42:206:31d4:524e:af91:4e1c])
-        by smtp.gmail.com with ESMTPSA id v15sm3054324wmh.24.2020.07.23.04.52.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jul 2020 04:52:03 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v5 5/7] bpf: Implement bpf_local_storage for
- inodes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200722171409.102949-6-kpsingh@chromium.org>
- <202007230807.y1gfvekv%lkp@intel.com>
- <CAADnVQK=m18hgfuRZvykQiJPk_c+z=FR6Dpg0aRVvtJn6-Ckrw@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <6a907298-3355-d918-340c-10ef13d4d0d3@chromium.org>
-Date:   Thu, 23 Jul 2020 13:52:02 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQK=m18hgfuRZvykQiJPk_c+z=FR6Dpg0aRVvtJn6-Ckrw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595512300; x=1627048300;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=OZxAbUgwhFmbexC3IUgXHl1BNIxOTNlQLnSYWiurDlE=;
+  b=YvDNJTJjdscqGFlAPDMXyDWwl2vrheCh5w09g/8S0w8NDcuVeQijNVj+
+   hspGMYZ1gdQAfj8gdgCiLBXtFHf4BiANWJOqefSHFIJd5c/5DIbXZgKaA
+   C0v6T2QOMNcPp529rSqIs6pI/FNSmjFSlV0lPdloQpjAQZTnMJCX8fmV1
+   4=;
+IronPort-SDR: gn/Od77Z+pPd2LfKwnGrREl5yLZislWPRo+ihg7xEP5t91AZYVgfVu4qVcbvksifp8v+XWSsXk
+ GiMqUpCzckWw==
+X-IronPort-AV: E=Sophos;i="5.75,386,1589241600"; 
+   d="scan'208";a="43685292"
+Subject: RE: [RFC net-next 01/22] xdp: introduce mb in xdp_buff/xdp_frame
+Thread-Topic: [RFC net-next 01/22] xdp: introduce mb in xdp_buff/xdp_frame
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 23 Jul 2020 13:51:39 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 8213EA03E5;
+        Thu, 23 Jul 2020 13:51:36 +0000 (UTC)
+Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 23 Jul 2020 13:51:35 +0000
+Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
+ EX13D11EUB003.ant.amazon.com (10.43.166.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 23 Jul 2020 13:51:34 +0000
+Received: from EX13D11EUB003.ant.amazon.com ([10.43.166.58]) by
+ EX13D11EUB003.ant.amazon.com ([10.43.166.58]) with mapi id 15.00.1497.006;
+ Thu, 23 Jul 2020 13:51:34 +0000
+From:   "Jubran, Samih" <sameehj@amazon.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "lorenzo.bianconi@redhat.com" <lorenzo.bianconi@redhat.com>,
+        "echaudro@redhat.com" <echaudro@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Thread-Index: AQHWYOZ1EY8s1ze5oEqOnEcaayrjwqkVLh2w
+Date:   Thu, 23 Jul 2020 13:51:06 +0000
+Deferred-Delivery: Thu, 23 Jul 2020 13:50:28 +0000
+Message-ID: <31fe5dced5d6423b92914c8c6dae7bc3@EX13D11EUB003.ant.amazon.com>
+References: <cover.1595503780.git.lorenzo@kernel.org>
+ <1d3c0f39d41fd8268523c190c36fa7934d3b2e01.1595503780.git.lorenzo@kernel.org>
+In-Reply-To: <1d3c0f39d41fd8268523c190c36fa7934d3b2e01.1595503780.git.lorenzo@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.165.155]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+> -----Original Message-----
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> Sent: Thursday, July 23, 2020 2:42 PM
+> To: netdev@vger.kernel.org
+> Cc: bpf@vger.kernel.org; davem@davemloft.net; ast@kernel.org;
+> brouer@redhat.com; daniel@iogearbox.net; lorenzo.bianconi@redhat.com;
+> echaudro@redhat.com; Jubran, Samih <sameehj@amazon.com>;
+> kuba@kernel.org
+> Subject: [EXTERNAL] [RFC net-next 01/22] xdp: introduce mb in
+> xdp_buff/xdp_frame
+>=20
+> CAUTION: This email originated from outside of the organization. Do not c=
+lick
+> links or open attachments unless you can confirm the sender and know the
+> content is safe.
+>=20
+>=20
+>=20
+> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify if
+> shared_info area has been properly initialized for non-linear xdp buffers
+>=20
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/net/xdp.h b/include/net/xdp.h index
+> dbe9c60797e1..2ef6935c5646 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -72,7 +72,8 @@ struct xdp_buff {
+>         void *data_hard_start;
+>         struct xdp_rxq_info *rxq;
+>         struct xdp_txq_info *txq;
+> -       u32 frame_sz; /* frame size to deduce data_hard_end/reserved
+> tailroom*/
+> +       u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved
+> tailroom*/
+It seems strange that you assign a 32 sized field to a 24 sized field.
+Wouldn't it be better if we used the same size in all places?
+> +       u32 mb:1; /* xdp non-linear buffer */
+>  };
+>=20
+>  /* Reserve memory area at end-of data area.
+> @@ -96,7 +97,8 @@ struct xdp_frame {
+>         u16 len;
+>         u16 headroom;
+>         u32 metasize:8;
+> -       u32 frame_sz:24;
+> +       u32 frame_sz:23;
+> +       u32 mb:1; /* xdp non-linear frame */
+>         /* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+>          * while mem info is valid on remote CPU.
+>          */
+> @@ -141,6 +143,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame
+> *frame, struct xdp_buff *xdp)
+>         xdp->data_end =3D frame->data + frame->len;
+>         xdp->data_meta =3D frame->data - frame->metasize;
+>         xdp->frame_sz =3D frame->frame_sz;
+> +       xdp->mb =3D frame->mb;
+>  }
+>=20
+>  static inline
+> @@ -167,6 +170,7 @@ int xdp_update_frame_from_buff(struct xdp_buff
+> *xdp,
+>         xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
+>         xdp_frame->metasize =3D metasize;
+>         xdp_frame->frame_sz =3D xdp->frame_sz;
+> +       xdp_frame->mb =3D xdp->mb;
+>=20
+>         return 0;
+>  }
+> --
+> 2.26.2
 
-
-On 23.07.20 07:18, Alexei Starovoitov wrote:
-> On Wed, Jul 22, 2020 at 5:22 PM kernel test robot <lkp@intel.com> wrote:
->>
-> 
->> All warnings (new ones prefixed by >>):
->>
->>    kernel/bpf/bpf_inode_storage.c: In function 'unlink_inode_storage':
->>>> kernel/bpf/bpf_inode_storage.c:34:32: warning: variable 'smap' set but not used [-Wunused-but-set-variable]
-> 
-> KP,
-> 
-> feel free to resubmit as soon as you fix the build.
-> People typically ignore the patches when buildbot complains,
-> since they know that maintainers are not going to apply a set with
-> known build issue.
-> 
-
-Got it. I need to get into the habit of building with W=1 
-(at least for the files I change).
-
-Sent a v6 with the fix.
