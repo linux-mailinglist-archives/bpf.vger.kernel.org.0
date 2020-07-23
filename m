@@ -2,73 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165E522A6F0
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 07:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED1122A6F9
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 07:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725858AbgGWFfT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 01:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S1725773AbgGWFio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 01:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgGWFfT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:35:19 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E391AC0619DC
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:35:18 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r19so4964582ljn.12
-        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 22:35:18 -0700 (PDT)
+        with ESMTP id S1725536AbgGWFio (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 01:38:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3540C0619DC;
+        Wed, 22 Jul 2020 22:38:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d7so2037078plq.13;
+        Wed, 22 Jul 2020 22:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1EP/AQNT6xXd5KDDpqbWlEcCngVz5lTKZeNI5M8bpAM=;
-        b=jg1+w0OVXsJjdVKYDoLJqSugqz8VbG6+9OkZmmPcKqG5vFHhU+pVMYVWBjlN2HGlaG
-         ysZWf2U6R+h9f77jAi4Dequ+UCP7I0pgtyv2lvgwZXODhAiZuVd3GFo++ZkAtOg1ZOnK
-         j3d0GJNQxfKR75wxipLljJkL4BTNRdCvy1tqjLYvezgo0Nn4Cw/lBFPgvHskSUCe7XIq
-         6snFu1zpY3IdvetMIbLcuU7XUKRJOqakBhEHtBKuhAXMXFPXKXdANJQmW1BjyjrHzkEp
-         PSM19crhw2zkixfCXIjkHs/kmSurXLf3RhmZnJ3bnY/iia5XNviiZ2wpEU2BQep502bj
-         rjpQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Onkxxt1KvjHNTiaY1A1kT/O/mITa9ddnS/eXBAaG1Z4=;
+        b=dP/aXDOAmB2s0o55uGvwL3qUYygREi9gvUsxYQVfazZlAJQrq2e6fcluIcWbCzc+CQ
+         PvOZgC5n/8F8FxWf2IOzchy/l+bjdocaqkVmnR187nrWHbu0kS6/PL3DpCrsxBvVt7KX
+         cQbSFFDj2qTglf8OtpfYquX2o1Ms1loWs5IkjlzvNP/El2sy8f8oPmWu2GNcJBstAq9C
+         +GHkuMKsIAoxzgrFnUgYoNOCieGfCC/fk8U83pPK8NcocSuxxua9ZvJ7erkgS1KBQtXg
+         IHNus1xY0FP1qX0GA6pg7QBw5mEn2E48BcpnbjRxIfgJpCl4gYzbd//MU/HBQoyZOnqX
+         D/Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1EP/AQNT6xXd5KDDpqbWlEcCngVz5lTKZeNI5M8bpAM=;
-        b=JSIZvGEFURAbIwRYG2FhkTq1VDQXAD0a4aSP5DK/R0qoV28DYC6rQSa9L5J61h81xK
-         vU/dXl94a105JKEzhSwjvU3HC8EIBmjgFh1YFvUDgA5jB3mv5vt4pPO6mXm0hFD7IOvX
-         JCBz71Rf9znuNO+bCDUomtAPb/mgxOw2CkzImWC+A21sv7mAIkKBBufDZPOS5M5n9UjU
-         z2k5u2l3EzdIhhWK6wH+NDsQLI/h5U/NYlkX0yN7rlP/OyPyIyCBYf1ESNps0180jUjs
-         MVNghRl7tkF6c9FvycaLmDb1eajL/a6vbn41J622/pswWfTAMihAgf/tROtCh0VJsKXL
-         hRUw==
-X-Gm-Message-State: AOAM531YsygrrzxEqyeydjdRToDDCPlXt1ecUMP1CLRAZVOYXGcN9GEl
-        50PMjEpzW9LvFTd0Efkuwm2pui8UcppekKHbmg8=
-X-Google-Smtp-Source: ABdhPJy3x8zYwgpd0gOT7q4/S64iApxCj2tfWL9Izlx1z5kNSj/BB9zkxLZeiYuB4W7mgBH9O1YDXMmxekqwWuY8sOo=
-X-Received: by 2002:a2e:9bc3:: with SMTP id w3mr1229091ljj.121.1595482517400;
- Wed, 22 Jul 2020 22:35:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200722195156.4029817-1-yhs@fb.com>
-In-Reply-To: <20200722195156.4029817-1-yhs@fb.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Onkxxt1KvjHNTiaY1A1kT/O/mITa9ddnS/eXBAaG1Z4=;
+        b=GhhP7ceVo9C25aqQKkAOB4vE4d+GOofP/3u65LhZ8gGYbWe3MmYgfCFgc2FzdgpDQD
+         hrrsIZJ87lWRwbaf+/Q5d77F0XRvzPr5UeGJ0GeNxMu1szQYqYdq8PreJJV0wBNscS5y
+         yIUqmujaBUIEWAI7xqS1/PxE1Igeo0mmA69Xbk68vRbJE+Xk6M+G4KUsprT44Nd1fzTA
+         CdQgPva/Vu4viUIUzOab3IGjDc/Zmn0DIBzqvm4STMCVabJhi2m0HEkwXPPBsxytlP5a
+         eBXt09X717iBWbMwfnur6o2J1KtOB5NgM8sR7nCnLhbyQQQV2Wuv05DkNh6l9U1Twlm5
+         L67g==
+X-Gm-Message-State: AOAM530yXocR+o2ftbU+RnyX0Bfpkz3O6E1EBnwU84RY5IK4SdTwrh7w
+        hlnSVONie54PHQuGnr4ZuzB4bkMq
+X-Google-Smtp-Source: ABdhPJyROstPbS4hBgLk3I6F/PiyY0WzIDNN5S6OkRoPuA15UAquJz9iccdRqNQfGClbQFJwLk9qbQ==
+X-Received: by 2002:a17:90a:1a83:: with SMTP id p3mr2489156pjp.113.1595482723166;
+        Wed, 22 Jul 2020 22:38:43 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6cd6])
+        by smtp.gmail.com with ESMTPSA id v197sm1477385pfc.35.2020.07.22.22.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 22:38:42 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 22:38:40 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Jul 2020 22:35:05 -0700
-Message-ID: <CAADnVQJiEES3xaE_PRWSYmfLG1L1p3ie8nx=o66E-2SGxLrK7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix pos computation for bpf_iter seq_ops->start()
 To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v2 01/13] bpf: refactor bpf_iter_reg to have
+ separate seq_info member
+Message-ID: <20200723053840.tnqzumivvtjwy3tv@ast-mbp.dhcp.thefacebook.com>
+References: <20200722184945.3777103-1-yhs@fb.com>
+ <20200722184945.3777163-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722184945.3777163-1-yhs@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 12:52 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Alexei, I also made the change of "mid"->"map_id"
-> and simplified the logic in map_iter seq_file->next()
+On Wed, Jul 22, 2020 at 11:49:45AM -0700, Yonghong Song wrote:
+> diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+> index 8a7af11b411f..5812dd465c49 100644
+> --- a/kernel/bpf/map_iter.c
+> +++ b/kernel/bpf/map_iter.c
+> @@ -85,17 +85,21 @@ static const struct seq_operations bpf_map_seq_ops = {
+>  BTF_ID_LIST(btf_bpf_map_id)
+>  BTF_ID(struct, bpf_map)
+>  
+> -static struct bpf_iter_reg bpf_map_reg_info = {
+> -	.target			= "bpf_map",
+> +static const struct bpf_iter_seq_info bpf_map_seq_info = {
+>  	.seq_ops		= &bpf_map_seq_ops,
+>  	.init_seq_private	= NULL,
+>  	.fini_seq_private	= NULL,
+>  	.seq_priv_size		= sizeof(struct bpf_iter_seq_map_info),
+> +};
+> +
+> +static struct bpf_iter_reg bpf_map_reg_info = {
+> +	.target			= "bpf_map",
+>  	.ctx_arg_info_size	= 1,
+>  	.ctx_arg_info		= {
+>  		{ offsetof(struct bpf_iter__bpf_map, map),
+>  		  PTR_TO_BTF_ID_OR_NULL },
+>  	},
+> +	.seq_info		= &bpf_map_seq_info,
+>  };
 
-Thanks!
-
-> the same as your patch in
->   https://lore.kernel.org/bpf/20200717044031.56412-2-alexei.starovoitov@gmail.com/T
-
-I've rebased that one on top of your patch and applied to bpf-next.
-Thanks
+ahh. this patch needs one more rebase, since I've just added prog_iter.
+Could you please respin ? Thanks!
