@@ -2,174 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F2D22B5EB
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 20:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76C422B661
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 21:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgGWSli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 14:41:38 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43654 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728044AbgGWSl3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 14:41:29 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NIYTVR030948
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 11:41:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=QY55+UbF/xtf+2MmgvqigbzrblDS0mIsEVAT15F/aio=;
- b=DtcgbPIhdkXqx2t2xRsT2xMdaWs58gDU0dD0jmu8dtHr8x0FgOWocjFLhK2UBoerJvIJ
- Prkv8Q7S270FHT5QccR3YM5iCw4uBdKBtMya0YOiuHxfveRgh98OKLWL+zmlUWh1uAcv
- /MezsL9BHUWp9FtHDorsO6t+GtuFvuRimM0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32embc7rex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 11:41:27 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 11:41:26 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 197E33702DDA; Thu, 23 Jul 2020 11:41:24 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v4 13/13] selftests/bpf: add a test for out of bound rdonly buf access
-Date:   Thu, 23 Jul 2020 11:41:24 -0700
-Message-ID: <20200723184124.591700-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200723184108.589857-1-yhs@fb.com>
-References: <20200723184108.589857-1-yhs@fb.com>
+        id S1726455AbgGWTFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 15:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbgGWTFT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 15:05:19 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F797C0619DC
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 12:05:19 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id h7so6417037qkk.7
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 12:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=znZdkyYvvbhRdiGon4U6rDby35vjOeXyBe67/EvHRso=;
+        b=Q5oz7d7xRdBKd7cZrsriwZHpdBNc0LFaJdzbbqMRq0ZCkw0OtaxROm/i5FRj79NPtY
+         jxIvIbxafOaaDWHsCkcjwZKJy8TBqI8bhSgK8DAzg82Zy+9to9g98ULhGulQkowenXRy
+         mkM/Uoao/UFk/qocHn3Bk5j2VHoq1cJGPfp33bNfQ0PxPQuxNyrbRkG6YY9tqH1VfqSC
+         hLVB9k7zRk7WPUxfmJPHR2/ud3cfRsHSiPWPkv7zGB4xSUTAh/ldkE5XhMZQLBNGO429
+         lFkJrI+cjoOnbF7kKkU4aGDnIZXFt7Sr0TuWz9j1sBREGSPwbvpxBj14QD5rvr2qWyBT
+         YHvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=znZdkyYvvbhRdiGon4U6rDby35vjOeXyBe67/EvHRso=;
+        b=Zb2BmBo6GbsFlNZx5gZ/Q88N0r5JgALqrA3KymTfAx5rTm2CchJxzrP+9Tx62ZSK9G
+         p8B9wkm9+rS59jCHybEEI3+99t5uUfwW+j0H1+jiygTKeAsJwLb8RV7RWROi0QtC2KIa
+         v2KLtRGJ7Jh4EznbcUfOKfhEzvrQU6pMvnxEInCjYe760oGpvJVcPUD5Vxv3mP/ktRUZ
+         5KqYeQ8/6A0jhrC3olIqh6R9OXZS/LYf79HsiTGDTvKJ4cYCmz14a9SsS/tJZquaz63J
+         d4xT3jQYx4OURAgnX6gikhAA0sI6eb5t3mFhR067daE7QUSRdoopmUPDXcaR41MSA+nC
+         CpDg==
+X-Gm-Message-State: AOAM531CpGCp0Pl86bmgFo5VFzmFzk6JzzxmbsoeY9bRyDu2wKshHxHP
+        zBF5sLsesqEysLmHeftg6qd/nHD+1gkFROIPOz6ZMkd3
+X-Google-Smtp-Source: ABdhPJywlFSty0EgF4TPRdeWdCHXfROps2ZQkWOyG+90CS1Wo/FCZXOL078xlRcmqc1dlvSQPssb+hlkqF8Q773Lygs=
+X-Received: by 2002:a37:7683:: with SMTP id r125mr6813791qkc.39.1595531118651;
+ Thu, 23 Jul 2020 12:05:18 -0700 (PDT)
 MIME-Version: 1.0
+References: <AM5PR83MB02104FB714E7E29DD90D8E06FB7C0@AM5PR83MB0210.EURPRD83.prod.outlook.com>
+ <CAEf4BzbE5+V8GJJwASgJJyCdX3P41GeoK14szprZq4i_OrQFOg@mail.gmail.com> <HE1PR83MB0220F45891B3B413F6634662FB7B0@HE1PR83MB0220.EURPRD83.prod.outlook.com>
+In-Reply-To: <HE1PR83MB0220F45891B3B413F6634662FB7B0@HE1PR83MB0220.EURPRD83.prod.outlook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 23 Jul 2020 12:05:07 -0700
+Message-ID: <CAEf4BzZj8z5YWHQkYBjBuQ2LUwvodt7tz_9=GZzZ6hcW3zkj5g@mail.gmail.com>
+Subject: Re: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
+To:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_09:2020-07-23,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=926 impostorscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 adultscore=0 phishscore=0 mlxscore=0 suspectscore=8
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007230134
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the bpf program contains out of bound access w.r.t. a
-particular map key/value size, the verification will be
-still okay, e.g., it will be accepted by verifier. But
-it will be rejected during link_create time. A test
-is added here to ensure link_create failure did happen
-if out of bound access happened.
-  $ ./test_progs -n 4
-  ...
-  #4/23 rdonly-buf-out-of-bound:OK
-  ...
+On Mon, Jul 20, 2020 at 4:39 AM Kevin Sheldrake
+<Kevin.Sheldrake@microsoft.com> wrote:
+>
+> Hello
+>
+> Thank you for your response; I hope you don't mind me top-posting.  I've =
+put together a POC that demonstrates my results.  Edit the size of the data=
+ char array in event_defs.h to change the behaviour.
+>
+> https://github.com/microsoft/OMS-Auditd-Plugin/tree/MSTIC-Research/ebpf_p=
+erf_output_poc
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 22 ++++++++++++
- .../selftests/bpf/progs/bpf_iter_test_kern5.c | 35 +++++++++++++++++++
- 2 files changed, 57 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern5=
-.c
+I haven't run your program, but I can certainly reproduce this using
+bench_perfbuf in selftests. It does seem like something is silently
+corrupted, because the size reported by perf is correct (plus/minus
+few bytes, probably rounding up to 8 bytes), but the contents is not
+correct. I have no idea why that's happening, maybe someone more
+familiar with the perf subsystem can take a look.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index ffbbeb9fa268..d95de80b1851 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -20,6 +20,7 @@
- #include "bpf_iter_bpf_array_map.skel.h"
- #include "bpf_iter_bpf_percpu_array_map.skel.h"
- #include "bpf_iter_bpf_sk_storage_map.skel.h"
-+#include "bpf_iter_test_kern5.skel.h"
-=20
- static int duration;
-=20
-@@ -865,6 +866,25 @@ static void test_bpf_sk_storage_map(void)
- 	bpf_iter_bpf_sk_storage_map__destroy(skel);
- }
-=20
-+static void test_rdonly_buf_out_of_bound(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	struct bpf_iter_test_kern5 *skel;
-+	struct bpf_link *link;
-+
-+	skel =3D bpf_iter_test_kern5__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_test_kern5__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	opts.map_fd =3D bpf_map__fd(skel->maps.hashmap1);
-+	link =3D bpf_program__attach_iter(skel->progs.dump_bpf_hash_map, &opts)=
-;
-+	if (CHECK(!IS_ERR(link), "attach_iter", "unexpected success\n"))
-+		bpf_link__destroy(link);
-+
-+	bpf_iter_test_kern5__destroy(skel);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -911,4 +931,6 @@ void test_bpf_iter(void)
- 		test_bpf_percpu_array_map();
- 	if (test__start_subtest("bpf_sk_storage_map"))
- 		test_bpf_sk_storage_map();
-+	if (test__start_subtest("rdonly-buf-out-of-bound"))
-+		test_rdonly_buf_out_of_bound();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c b/to=
-ols/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-new file mode 100644
-index 000000000000..e3a7575e81d2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_test_kern5.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct key_t {
-+	int a;
-+	int b;
-+	int c;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 3);
-+	__type(key, struct key_t);
-+	__type(value, __u64);
-+} hashmap1 SEC(".maps");
-+
-+__u32 key_sum =3D 0;
-+
-+SEC("iter/bpf_map_elem")
-+int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
-+{
-+	void *key =3D ctx->key;
-+
-+	if (key =3D=3D (void *)0)
-+		return 0;
-+
-+	/* out of bound access w.r.t. hashmap1 */
-+	key_sum +=3D *(__u32 *)(key + sizeof(struct key_t));
-+	return 0;
-+}
---=20
-2.24.1
-
+>
+> Unfortunately, our project aims to run on older kernels than 5.8 so the b=
+pf ring buffer won't work for us.
+>
+> Thanks again
+>
+> Kevin Sheldrake
+>
+>
+> -----Original Message-----
+> From: bpf-owner@vger.kernel.org <bpf-owner@vger.kernel.org> On Behalf Of =
+Andrii Nakryiko
+> Sent: 20 July 2020 05:35
+> To: Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+> Cc: bpf@vger.kernel.org
+> Subject: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
+>
+> On Fri, Jul 17, 2020 at 7:24 AM Kevin Sheldrake <Kevin.Sheldrake@microsof=
+t.com> wrote:
+> >
+> > Hello
+> >
+> > I'm building a tool using EBPF/libbpf/C and I've run into an issue that=
+ I'd like to ask about.  I haven't managed to find documentation for the ma=
+ximum size of a record that can be sent over the perf ring buffer, but expe=
+rimentation (on kernel 5.3 (x64) with latest libbpf from github) suggests i=
+t is just short of 64KB.  Please could someone confirm if that's the case o=
+r not?  My experiments suggest that sending a record that is greater than 6=
+4KB results in the size reported in the callback being correct but the reco=
+rds overlapping, causing corruption if they are not serviced as quickly as =
+they arrive.  Setting the record to exactly 64KB results in no records bein=
+g received at all.
+> >
+> > For reference, I'm using perf_buffer__new() and perf_buffer__poll() on =
+the userland side; and bpf_perf_event_output(ctx, &event_map, BPF_F_CURRENT=
+_CPU, event, sizeof(event_s)) on the EBPF side.
+> >
+> > Additionally, is there a better architecture for sending large volumes =
+of data (>64KB) back from the EBPF program to userland, such as a different=
+ ring buffer, a map, some kind of shared mmaped segment, etc, other than si=
+mply fragmenting the data?  Please excuse my naivety as I'm relatively new =
+to the world of EBPF.
+> >
+>
+> I'm not aware of any such limitations for perf ring buffer and I haven't =
+had a chance to validate this. It would be great if you can provide a small=
+ repro so that someone can take a deeper look, it does sound like a bug, if=
+ you really get clobbered data. It might be actually how you set up perfbuf=
+, AFAIK, it has a mode where it will override the data, if it's not consume=
+d quickly enough, but you need to consciously enable that mode.
+>
+> But apart from that, shameless plug here, you can try the new BPF ring bu=
+ffer ([0]), available in 5.8+ kernels. It will allow you to avoid extra cop=
+y of data you get with bpf_perf_event_output(), if you use BPF ringbuf's bp=
+f_ringbuf_reserve() + bpf_ringbuf_commit() API. It also has bpf_ringbuf_out=
+put() API, which is logically  equivalent to bpf_perf_event_output(). And i=
+t has a very high limit on sample size, up to 512MB per sample.
+>
+> Keep in mind, BPF ringbuf is MPSC design and if you use just one BPF ring=
+buf across all CPUs, you might run into some contention across multiple CPU=
+. It is acceptable in a lot of applications I was targeting, but if you hav=
+e a high frequency of events (keep in mind, throughput doesn't matter, only=
+ contention on sample reservation matters), you might want to use an array =
+of BPF ringbufs to scale throughput. You can do 1 ringbuf per each CPU for =
+ultimate performance at the expense of memory usage (that's perf ring buffe=
+r setup), but BPF ringbuf is flexible enough to allow any topology that mak=
+es sense for you use case, from 1 shared ringbuf across all CPUs, to anythi=
+ng in between.
+>
+>
