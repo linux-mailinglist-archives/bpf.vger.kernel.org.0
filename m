@@ -2,189 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DCC22A75A
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 08:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE5A22A8A7
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 08:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgGWGKC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 02:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbgGWGKA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:10:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA58CC0619DC;
-        Wed, 22 Jul 2020 23:09:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=WZEyzaS1ykzyi+yQ2LS2wMvQkwL8k8wAtqvtWngMf9k=; b=GkQOrco1ZkuQcjMqhyS87SJRGD
-        de3B5cw7G5yO9PMtzI5w0X5s2yopJqUiVbmSr+As98wWMXn6Xl8y79CmwAlaI3j3ebpY9UAteT4Cn
-        4frKKigvk1Di9ljBzfXFKftGwds+aPPL5GLXVJjbCp6Lfwgns5RMwKcigxjHrK7cICgV+R/NKR37U
-        SMOd4Y2ouS0ew7sS3pWavsl7KIbbei8X3CRKa1fmzw0vOVSoAqB/W9Ie3NBqoKgOKk97nUpIMcDP1
-        iQ+w1wBnm6LrsYc5mEgaq6c5MgkmC+YhQvxGnziaBnG3fCFxlBnwCMxWkRXbiG0+qq3YlYZUO7b8q
-        DOf9lBbQ==;
-Received: from [2001:4bb8:18c:2acc:91df:aae8:fa3b:de9c] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyUQN-0003qJ-36; Thu, 23 Jul 2020 06:09:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: [PATCH 26/26] net: optimize the sockptr_t for unified kernel/user address spaces
-Date:   Thu, 23 Jul 2020 08:09:08 +0200
-Message-Id: <20200723060908.50081-27-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200723060908.50081-1-hch@lst.de>
-References: <20200723060908.50081-1-hch@lst.de>
+        id S1726643AbgGWGPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 02:15:38 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52824 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726425AbgGWGPi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 02:15:38 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06N69mjG019984
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 23:15:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=0Af0PP6qwJJafejWuHsWzXsHUgLadCoHKXv+beHdRp0=;
+ b=PDLPLAFfPj5JLV3PWfjY0/7BpMm6phwCc4jvx6JvIXgxzaYD9AIMecv47cqbkPDgzK9q
+ jNCjOcAB4I1Fcf0NwDQZWvhcHuBGmGzpuXznj8nJp3zhrStqzxicv7VWxU5vgfrwJu64
+ Awn7bOuvffiU23Gud/Y0AmpKE7p0RxrMcTY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32et5ktrtg-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 22 Jul 2020 23:15:37 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 22 Jul 2020 23:15:37 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 9FBDA3705266; Wed, 22 Jul 2020 23:15:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v3 00/13] bpf: implement bpf iterator for map elements
+Date:   Wed, 22 Jul 2020 23:15:33 -0700
+Message-ID: <20200723061533.2099842-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-23_02:2020-07-22,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ suspectscore=8 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 mlxlogscore=458 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007230050
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For architectures like x86 and arm64 we don't need the separate bit to
-indicate that a pointer is a kernel pointer as the address spaces are
-unified.  That way the sockptr_t can be reduced to a union of two
-pointers, which leads to nicer calling conventions.
+Bpf iterator has been implemented for task, task_file,
+bpf_map, ipv6_route, netlink, tcp and udp so far.
 
-The only caveat is that we need to check that users don't pass in kernel
-address and thus gain access to kernel memory.  Thus the USER_SOCKPTR
-helper is replaced with a init_user_sockptr function that does this check
-and returns an error if it fails.
+For map elements, there are two ways to traverse all elements from
+user space:
+  1. using BPF_MAP_GET_NEXT_KEY bpf subcommand to get elements
+     one by one.
+  2. using BPF_MAP_LOOKUP_BATCH bpf subcommand to get a batch of
+     elements.
+Both these approaches need to copy data from kernel to user space
+in order to do inspection.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/sockptr.h     | 32 ++++++++++++++++++++++++++++++--
- net/ipv4/bpfilter/sockopt.c | 14 ++++++++------
- net/socket.c                |  6 +++++-
- 3 files changed, 43 insertions(+), 9 deletions(-)
+This patch implements bpf iterator for map elements.
+User can have a bpf program in kernel to run with each map element,
+do checking, filtering, aggregation, modifying values etc.
+without copying data to user space.
 
-diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
-index 700856e13ea0c4..7d5cdb2b30b5f0 100644
---- a/include/linux/sockptr.h
-+++ b/include/linux/sockptr.h
-@@ -8,9 +8,34 @@
- #ifndef _LINUX_SOCKPTR_H
- #define _LINUX_SOCKPTR_H
- 
-+#include <linux/compiler.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- 
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+typedef union {
-+	void		*kernel;
-+	void __user	*user;
-+} sockptr_t;
-+
-+static inline bool sockptr_is_kernel(sockptr_t sockptr)
-+{
-+	return (unsigned long)sockptr.kernel >= TASK_SIZE;
-+}
-+
-+static inline sockptr_t KERNEL_SOCKPTR(void *p)
-+{
-+	return (sockptr_t) { .kernel = p };
-+}
-+
-+static inline int __must_check init_user_sockptr(sockptr_t *sp, void __user *p)
-+{
-+	if ((unsigned long)p >= TASK_SIZE)
-+		return -EFAULT;
-+	sp->user = p;
-+	return 0;
-+}
-+#else /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
- typedef struct {
- 	union {
- 		void		*kernel;
-@@ -29,10 +54,13 @@ static inline sockptr_t KERNEL_SOCKPTR(void *p)
- 	return (sockptr_t) { .kernel = p, .is_kernel = true };
- }
- 
--static inline sockptr_t USER_SOCKPTR(void __user *p)
-+static inline int __must_check init_user_sockptr(sockptr_t *sp, void __user *p)
- {
--	return (sockptr_t) { .user = p };
-+	sp->user = p;
-+	sp->is_kernel = false;
-+	return 0;
- }
-+#endif /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
- 
- static inline bool sockptr_is_null(sockptr_t sockptr)
- {
-diff --git a/net/ipv4/bpfilter/sockopt.c b/net/ipv4/bpfilter/sockopt.c
-index 1b34cb9a7708ec..94f18d2352d007 100644
---- a/net/ipv4/bpfilter/sockopt.c
-+++ b/net/ipv4/bpfilter/sockopt.c
-@@ -57,16 +57,18 @@ int bpfilter_ip_set_sockopt(struct sock *sk, int optname, sockptr_t optval,
- 	return bpfilter_mbox_request(sk, optname, optval, optlen, true);
- }
- 
--int bpfilter_ip_get_sockopt(struct sock *sk, int optname, char __user *optval,
--			    int __user *optlen)
-+int bpfilter_ip_get_sockopt(struct sock *sk, int optname,
-+			    char __user *user_optval, int __user *optlen)
- {
--	int len;
-+	sockptr_t optval;
-+	int err, len;
- 
- 	if (get_user(len, optlen))
- 		return -EFAULT;
--
--	return bpfilter_mbox_request(sk, optname, USER_SOCKPTR(optval), len,
--				     false);
-+	err = init_user_sockptr(&optval, user_optval);
-+	if (err)
-+		return err;
-+	return bpfilter_mbox_request(sk, optname, optval, len, false);
- }
- 
- static int __init bpfilter_sockopt_init(void)
-diff --git a/net/socket.c b/net/socket.c
-index e44b8ac47f6f46..94ca4547cd7c53 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2097,7 +2097,7 @@ static bool sock_use_custom_sol_socket(const struct socket *sock)
- int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 		int optlen)
- {
--	sockptr_t optval = USER_SOCKPTR(user_optval);
-+	sockptr_t optval;
- 	char *kernel_optval = NULL;
- 	int err, fput_needed;
- 	struct socket *sock;
-@@ -2105,6 +2105,10 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 	if (optlen < 0)
- 		return -EINVAL;
- 
-+	err = init_user_sockptr(&optval, user_optval);
-+	if (err)
-+		return err;
-+
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
- 		return err;
--- 
-2.27.0
+Patch #1 and #2 are refactoring. Patch #3 implements readonly/readwrite
+buffer support in verifier. Patches #4 - #7 implements map element
+support for hash, percpu hash, lru hash lru percpu hash, array,
+percpu array and sock local storage maps. Patches #8 - #9 are libbpf
+and bpftool support. Patches #10 - #13 are selftests for implemented
+map element iterators.
+
+Changelogs:
+  v2 -> v3:
+    . rebase on top of latest bpf-next
+  v1 -> v2:
+    . support to modify map element values. (Alexei)
+    . map key/values can be used with helper arguments
+      for those arguments with ARG_PTR_TO_MEM or
+      ARG_PTR_TO_INIT_MEM register type. (Alexei)
+    . remove usused variable. (kernel test robot)
+
+Yonghong Song (13):
+  bpf: refactor bpf_iter_reg to have separate seq_info member
+  bpf: refactor to provide aux info to bpf_iter_init_seq_priv_t
+  bpf: support readonly/readwrite buffers in verifier
+  bpf: implement bpf iterator for map elements
+  bpf: implement bpf iterator for hash maps
+  bpf: implement bpf iterator for array maps
+  bpf: implement bpf iterator for sock local storage map
+  tools/libbpf: add support for bpf map element iterator
+  tools/bpftool: add bpftool support for bpf map element iterator
+  selftests/bpf: add test for bpf hash map iterators
+  selftests/bpf: add test for bpf array map iterators
+  selftests/bpf: add a test for bpf sk_storage_map iterator
+  selftests/bpf: add a test for out of bound rdonly buf access
+
+ fs/proc/proc_net.c                            |   2 +-
+ include/linux/bpf.h                           |  42 +-
+ include/linux/proc_fs.h                       |   3 +-
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/arraymap.c                         | 138 ++++++
+ kernel/bpf/bpf_iter.c                         |  89 +++-
+ kernel/bpf/btf.c                              |  13 +
+ kernel/bpf/hashtab.c                          | 194 ++++++++
+ kernel/bpf/map_iter.c                         |  62 ++-
+ kernel/bpf/prog_iter.c                        |   8 +-
+ kernel/bpf/task_iter.c                        |  18 +-
+ kernel/bpf/verifier.c                         |  91 +++-
+ net/core/bpf_sk_storage.c                     | 206 ++++++++
+ net/ipv4/tcp_ipv4.c                           |  12 +-
+ net/ipv4/udp.c                                |  12 +-
+ net/ipv6/route.c                              |   8 +-
+ net/netlink/af_netlink.c                      |   8 +-
+ .../bpftool/Documentation/bpftool-iter.rst    |  18 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  18 +-
+ tools/bpf/bpftool/iter.c                      |  33 +-
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/bpf.h                           |   3 +-
+ tools/lib/bpf/libbpf.c                        |  10 +-
+ tools/lib/bpf/libbpf.h                        |   3 +-
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 442 ++++++++++++++++++
+ .../bpf/progs/bpf_iter_bpf_array_map.c        |  40 ++
+ .../bpf/progs/bpf_iter_bpf_hash_map.c         | 100 ++++
+ .../bpf/progs/bpf_iter_bpf_percpu_array_map.c |  46 ++
+ .../bpf/progs/bpf_iter_bpf_percpu_hash_map.c  |  50 ++
+ .../bpf/progs/bpf_iter_bpf_sk_storage_map.c   |  34 ++
+ .../selftests/bpf/progs/bpf_iter_test_kern5.c |  35 ++
+ 32 files changed, 1688 insertions(+), 65 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_array_=
+map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_m=
+ap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu=
+_array_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_percpu=
+_hash_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_sto=
+rage_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern5=
+.c
+
+--=20
+2.24.1
 
