@@ -2,149 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BE022B0C6
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 15:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0733D22B11F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 16:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgGWNvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 09:51:41 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:45763 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWNvl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:51:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595512300; x=1627048300;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=OZxAbUgwhFmbexC3IUgXHl1BNIxOTNlQLnSYWiurDlE=;
-  b=YvDNJTJjdscqGFlAPDMXyDWwl2vrheCh5w09g/8S0w8NDcuVeQijNVj+
-   hspGMYZ1gdQAfj8gdgCiLBXtFHf4BiANWJOqefSHFIJd5c/5DIbXZgKaA
-   C0v6T2QOMNcPp529rSqIs6pI/FNSmjFSlV0lPdloQpjAQZTnMJCX8fmV1
-   4=;
-IronPort-SDR: gn/Od77Z+pPd2LfKwnGrREl5yLZislWPRo+ihg7xEP5t91AZYVgfVu4qVcbvksifp8v+XWSsXk
- GiMqUpCzckWw==
-X-IronPort-AV: E=Sophos;i="5.75,386,1589241600"; 
-   d="scan'208";a="43685292"
-Subject: RE: [RFC net-next 01/22] xdp: introduce mb in xdp_buff/xdp_frame
-Thread-Topic: [RFC net-next 01/22] xdp: introduce mb in xdp_buff/xdp_frame
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 23 Jul 2020 13:51:39 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 8213EA03E5;
-        Thu, 23 Jul 2020 13:51:36 +0000 (UTC)
-Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 23 Jul 2020 13:51:35 +0000
-Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
- EX13D11EUB003.ant.amazon.com (10.43.166.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 23 Jul 2020 13:51:34 +0000
-Received: from EX13D11EUB003.ant.amazon.com ([10.43.166.58]) by
- EX13D11EUB003.ant.amazon.com ([10.43.166.58]) with mapi id 15.00.1497.006;
- Thu, 23 Jul 2020 13:51:34 +0000
-From:   "Jubran, Samih" <sameehj@amazon.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "lorenzo.bianconi@redhat.com" <lorenzo.bianconi@redhat.com>,
-        "echaudro@redhat.com" <echaudro@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Thread-Index: AQHWYOZ1EY8s1ze5oEqOnEcaayrjwqkVLh2w
-Date:   Thu, 23 Jul 2020 13:51:06 +0000
-Deferred-Delivery: Thu, 23 Jul 2020 13:50:28 +0000
-Message-ID: <31fe5dced5d6423b92914c8c6dae7bc3@EX13D11EUB003.ant.amazon.com>
-References: <cover.1595503780.git.lorenzo@kernel.org>
- <1d3c0f39d41fd8268523c190c36fa7934d3b2e01.1595503780.git.lorenzo@kernel.org>
-In-Reply-To: <1d3c0f39d41fd8268523c190c36fa7934d3b2e01.1595503780.git.lorenzo@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.165.155]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+        id S1728632AbgGWOT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jul 2020 10:19:28 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60545 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726089AbgGWOT1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:19:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595513966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
+        b=VWAuYbDKvbf6ismsN/4I9KJXw8OFLzhVTaP+YI59Y3yI9T565CHszyxmnyIj5WOjwsWtZn
+        eEakjIUtfHIy6MVMv/Xy9dmPkcSQUkkhX6jguCnqujLfE1iRM/e0bGSMR1dZFEeYyVztMu
+        YDQRYsf684E3rNoU8rj39V3drjMYYLk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-v6sskVWWPHqeNSsYrXrBIw-1; Thu, 23 Jul 2020 10:19:24 -0400
+X-MC-Unique: v6sskVWWPHqeNSsYrXrBIw-1
+Received: by mail-qv1-f72.google.com with SMTP id x37so3684940qvf.4
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
+        b=m3l5TY9zafFFr6YoNeHutkK8zB7taCvalxpOy+9NKM/7mqDNH805BxJVDtbLetAB5k
+         NDnABXfrpPg5+VNg0vGDAwA+LGBVITCZuAvKtw4imhNBCBFbcXvofazcGixkbKD5ijkQ
+         p4mmVS0fyINM0efg/7nCLZN0EnZ9T85gJIg+3/9MApWHoIaiHgfmDBMiFZzl8aRbsj55
+         cnDH2s17AffwIZnDmLfyo2vqbktg4xAIEGJ7qBX7xvtzCGC+RJw+KlWYH+xUCvXFW9QJ
+         aUWTwNLWftjVLUR03IfwF+ZfMyEVXu43xo/l0Uz87AozJ3EmVD8/X2IGcx42GGjjzei7
+         RrSQ==
+X-Gm-Message-State: AOAM533TRVzM8PnUg7rJkNmdt3HL/lZgxdDguLneqeyFFGGSq1OoQr8/
+        fv9LGdu9ZoRpVFxOoPxapnEVNlF4N9x+A/qw3eFEy/GtLTOml2l3sWyl4z/hB96St9qwbAzQsff
+        9EcB9zlBDBBRv
+X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5425022qkf.327.1595513964220;
+        Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyor/sEuJ1ILiUvnXH2q/LutcM92n90ckKA+iXLKs3Ks/I7zdfJPzXs5YbSaHWhsPNDMTwjrA==
+X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5424974qkf.327.1595513963870;
+        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j9sm2626609qtr.60.2020.07.23.07.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
+From:   trix@redhat.com
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        masahiroy@kernel.org, mhiramat@kernel.org, rostedt@goodmis.org,
+        akpm@linux-foundation.org, will@kernel.org, krzk@kernel.org,
+        patrick.bellasi@arm.com, dhowells@redhat.com,
+        ebiederm@xmission.com, hannes@cmpxchg.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] bpf: BPF_SYSCALL depends INET
+Date:   Thu, 23 Jul 2020 07:19:14 -0700
+Message-Id: <20200723141914.20722-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Message-----
-> From: Lorenzo Bianconi <lorenzo@kernel.org>
-> Sent: Thursday, July 23, 2020 2:42 PM
-> To: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org; davem@davemloft.net; ast@kernel.org;
-> brouer@redhat.com; daniel@iogearbox.net; lorenzo.bianconi@redhat.com;
-> echaudro@redhat.com; Jubran, Samih <sameehj@amazon.com>;
-> kuba@kernel.org
-> Subject: [EXTERNAL] [RFC net-next 01/22] xdp: introduce mb in
-> xdp_buff/xdp_frame
->=20
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick
-> links or open attachments unless you can confirm the sender and know the
-> content is safe.
->=20
->=20
->=20
-> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify if
-> shared_info area has been properly initialized for non-linear xdp buffers
->=20
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  include/net/xdp.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->=20
-> diff --git a/include/net/xdp.h b/include/net/xdp.h index
-> dbe9c60797e1..2ef6935c5646 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -72,7 +72,8 @@ struct xdp_buff {
->         void *data_hard_start;
->         struct xdp_rxq_info *rxq;
->         struct xdp_txq_info *txq;
-> -       u32 frame_sz; /* frame size to deduce data_hard_end/reserved
-> tailroom*/
-> +       u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved
-> tailroom*/
-It seems strange that you assign a 32 sized field to a 24 sized field.
-Wouldn't it be better if we used the same size in all places?
-> +       u32 mb:1; /* xdp non-linear buffer */
->  };
->=20
->  /* Reserve memory area at end-of data area.
-> @@ -96,7 +97,8 @@ struct xdp_frame {
->         u16 len;
->         u16 headroom;
->         u32 metasize:8;
-> -       u32 frame_sz:24;
-> +       u32 frame_sz:23;
-> +       u32 mb:1; /* xdp non-linear frame */
->         /* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
->          * while mem info is valid on remote CPU.
->          */
-> @@ -141,6 +143,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame
-> *frame, struct xdp_buff *xdp)
->         xdp->data_end =3D frame->data + frame->len;
->         xdp->data_meta =3D frame->data - frame->metasize;
->         xdp->frame_sz =3D frame->frame_sz;
-> +       xdp->mb =3D frame->mb;
->  }
->=20
->  static inline
-> @@ -167,6 +170,7 @@ int xdp_update_frame_from_buff(struct xdp_buff
-> *xdp,
->         xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
->         xdp_frame->metasize =3D metasize;
->         xdp_frame->frame_sz =3D xdp->frame_sz;
-> +       xdp_frame->mb =3D xdp->mb;
->=20
->         return 0;
->  }
-> --
-> 2.26.2
+From: Tom Rix <trix@redhat.com>
+
+A link error
+
+kernel/bpf/net_namespace.o: In function `bpf_netns_link_release':
+net_namespace.c: undefined reference to `bpf_sk_lookup_enabled'
+
+bpf_sk_lookup_enabled is defined with INET
+net_namespace is controlled by BPF_SYSCALL
+
+So add a depends on INET to BPF_SYSCALL
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ init/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 7b8ef43e7fb4..817f70e6023c 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1663,6 +1663,7 @@ config BPF_SYSCALL
+ 	bool "Enable bpf() system call"
+ 	select BPF
+ 	select IRQ_WORK
++	depends on INET
+ 	default n
+ 	help
+ 	  Enable the bpf() system call that allows to manipulate eBPF
+-- 
+2.18.1
 
