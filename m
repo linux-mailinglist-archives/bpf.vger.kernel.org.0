@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B935C22A9C0
-	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 09:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0AE22A9C1
+	for <lists+bpf@lfdr.de>; Thu, 23 Jul 2020 09:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgGWHlJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726108AbgGWHlJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 23 Jul 2020 03:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgGWHlI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:41:08 -0400
+        with ESMTP id S1725846AbgGWHlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:41:09 -0400
 Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4ABC0619DC
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:08 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t4so3547420iln.1
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABD1C0619DC
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:09 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p15so3504592ilh.13
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 00:41:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5N5ey7RYuvquxWENz/5JKKiKxS7wgKIW6KBCB3BMFKs=;
-        b=bRiSQf8sXBjZ4Ojv47TCZAgMCu8kuxHM41H4q3Jy76NpoZ5Ld4JwnIcs8wV0OSp2EB
-         EFXHsp9li8tV+1UTE3AfMe+FuGMa+71eKNLx3w13/+OKKY/WsYrkYu48YDLtAtiLRihl
-         enTiVfHQheGNzKj8zAuRwjpbzb379XdsjxL+M3O+s68DH/eQYi+MGEa3XNYOGYB+Ns8B
-         EwWgG/Ogg/El9T3IkZb03GEJk/Uq7aXOoLOmQY0Pw8lsScmFvXgGa8fYZHktnYgmRIcN
-         xVEKuTy52gtzv12kYmJxBW0jbf22lJq9jw7VxC8+13dBmvRtU3bEoWjClW4mrpwGPkTn
-         23hw==
+        bh=9EbCCDUvKKRV7Ab3k5fjWECTw3Rn9Agw7mrQck7sPXg=;
+        b=s+nMQ5QZ0oxOFSX1PJ9kK1PwwB6rf69b5Dmiv/oTfGkjEbWt+h8iaesSoTrZ1LpB55
+         UgmzVr+zygpvhrxEGINsm8o4IJBhPhRE9xRSgiRoUGACFhE9VLTQZdSOw9wUmueWafsl
+         FLj2zWCsJxmj9NjRTk15+W6Laq9jyui3W3YNE9VV6Weq8SxTaxXSUPACFFtOM239fD3W
+         PhFHWkq0+1VA4v6nXOfzqmV6XR0MtqXFg41GApCHN9APTIZWDXc4zwOGPuri74N8sQix
+         GqEcisahFEeqdQQOdEQLe2tKVR1Pm6uq8b/7kzbCgt3n9jJvUszZAOCZJ9vsCaVXwgLS
+         trCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5N5ey7RYuvquxWENz/5JKKiKxS7wgKIW6KBCB3BMFKs=;
-        b=jSKdEob2tffIn/xvlsWw1EzNFFvj2BZ8WC8Xd8ls37ly3DGS/0mshGM0ChUwwVgHz9
-         s+gEOThB3kBBU85e4Y4CtRkQUc/fPipko0fQw73X1AmQbZQE3J1M+mBOLYdP81K05Y78
-         AKz/NiTlqB5MVH6hQsosj9mSLJMZEeE44znyJOKSav2ik62SC6HXGplKq74Wu0SBvUta
-         liJsHfNZb9QYf6APdgFSO7HYoqdCHzwPoGb0BKSeu+wfF631/KaBxRDceSvvp+ztU6h2
-         1vSk1GhwIFliK97Jm4uCYDvWq/ZfIJFZujBsTZl5y2JeTQPIvyCrW6ew1GTTOz+agBR5
-         4vQQ==
-X-Gm-Message-State: AOAM533lfKhs2aadPCYTG8wxJpBmIFFeAxfycyvYTuuqWzxdC3VDQdHq
-        AAoMW3ZBtoEvokQqxK1lhEcV5/5+ywSBLQ==
-X-Google-Smtp-Source: ABdhPJyKrX1IsSexUDjAS9siEhqIH4KFefrocajQQiqGcFK55QmrCnu9N+FI4xapbtAH4cZ+F9Lz9A==
-X-Received: by 2002:a92:d308:: with SMTP id x8mr3652785ila.3.1595490067487;
-        Thu, 23 Jul 2020 00:41:07 -0700 (PDT)
+        bh=9EbCCDUvKKRV7Ab3k5fjWECTw3Rn9Agw7mrQck7sPXg=;
+        b=IAOr/wseBXx+t1SBYJ0HQGq6fR/Lj4W9URd9nkpcxwUGxPEjBbRzT4BII6jF2xdHmq
+         VVNfZFcrnWAjWp3EB6jo2QU2o1RTIzwOefkcdaWKr/hr4J/W+5hRe8M4jLxormj5n8cq
+         ki2GwaaGafwI4rrKhDf1FQkGYI+etwqVyM5axWow3VyqesYBiTWCvjRY6IIbq2Of5YCl
+         86ZJoMBRZ85bkLVTcZi98BDtEJ4wlUGzL11H2xYgjnTYLnAKa+JtZ0TZq16YEBy/1aq0
+         /Ok5ElWRzrNQUhCdCvFYPTj3cXvcDU/BzXKMHZRxksQ3s1fw3AYqETVXqsnwu7R9Llvi
+         h24A==
+X-Gm-Message-State: AOAM5324slxDDxQNhxPbofMWb0NUBhe2JxXgr0IEca0rXEkryn6wogyW
+        tHdLnbf3uh4J5kcXPbKSFmm5r7uLgTIcKQ==
+X-Google-Smtp-Source: ABdhPJyMbHr4m0GpJdLIv8hHpTWu96oV1DJucnJ8w4MsvLfTJ4m6jz7FcYtpbzrbus7/93ZLt+Lkug==
+X-Received: by 2002:a05:6e02:6cf:: with SMTP id p15mr3773038ils.206.1595490068343;
+        Thu, 23 Jul 2020 00:41:08 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
-        by smtp.gmail.com with ESMTPSA id c9sm1035552ilm.57.2020.07.23.00.41.06
+        by smtp.gmail.com with ESMTPSA id c9sm1035552ilm.57.2020.07.23.00.41.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 00:41:06 -0700 (PDT)
+        Thu, 23 Jul 2020 00:41:07 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         YiFei Zhu <zhuyifei@google.com>
-Subject: [PATCH v5 bpf-next 3/5] bpf: Make cgroup storages shared between programs on the same cgroup
-Date:   Thu, 23 Jul 2020 02:40:56 -0500
-Message-Id: <38ec2f4f111d65a4a8b70ea0bc50a788c5a813ee.1595489786.git.zhuyifei@google.com>
+Subject: [PATCH v5 bpf-next 4/5] selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress
+Date:   Thu, 23 Jul 2020 02:40:57 -0500
+Message-Id: <82348c8b7d1ba169f22b412fc11058ef904864a2.1595489786.git.zhuyifei@google.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1595489786.git.zhuyifei@google.com>
 References: <cover.1595489786.git.zhuyifei@google.com>
@@ -72,697 +72,485 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-This change comes in several parts:
+This mirrors the original egress-only test. The cgroup_storage is
+now extended to have two packet counters, one for egress and one
+for ingress. We also extend to have two egress programs to test
+that egress will always share with other egress origrams in the
+same cgroup. The behavior of the counters are exactly the same as
+the original egress-only test.
 
-One, the restriction that the CGROUP_STORAGE map can only be used
-by one program is removed. This results in the removal of the field
-'aux' in struct bpf_cgroup_storage_map, and removal of relevant
-code associated with the field, and removal of now-noop functions
-bpf_free_cgroup_storage and bpf_cgroup_storage_release.
-
-Second, we permit a key of type u64 as the key to the map.
-Providing such a key type indicates that the map should ignore
-attach type when comparing map keys. However, for simplicity newly
-linked storage will still have the attach type at link time in
-its key struct. cgroup_storage_check_btf is adapted to accept
-u64 as the type of the key.
-
-Third, because the storages are now shared, the storages cannot
-be unconditionally freed on program detach. There could be two
-ways to solve this issue:
-* A. Reference count the usage of the storages, and free when the
-     last program is detached.
-* B. Free only when the storage is impossible to be referred to
-     again, i.e. when either the cgroup_bpf it is attached to, or
-     the map itself, is freed.
-Option A has the side effect that, when the user detach and
-reattach a program, whether the program gets a fresh storage
-depends on whether there is another program attached using that
-storage. This could trigger races if the user is multi-threaded,
-and since nondeterminism in data races is evil, go with option B.
-
-The both the map and the cgroup_bpf now tracks their associated
-storages, and the storage unlink and free are removed from
-cgroup_bpf_detach and added to cgroup_bpf_release and
-cgroup_storage_map_free. The latter also new holds the cgroup_mutex
-to prevent any races with the former.
-
-Fourth, on attach, we reuse the old storage if the key already
-exists in the map, via cgroup_storage_lookup. If the storage
-does not exist yet, we create a new one, and publish it at the
-last step in the attach process. This does not create a race
-condition because for the whole attach the cgroup_mutex is held.
-We keep track of an array of new storages that was allocated
-and if the process fails only the new storages would get freed.
+The test is split into two, one "isolated" test that when the key
+type is struct bpf_cgroup_storage_key, which contains the attach
+type, programs of different attach types will see different
+storages. The other, "shared" test that when the key type is u64,
+programs of different attach types will see the same storage if
+they are attached to the same cgroup.
 
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 ---
- include/linux/bpf-cgroup.h |  12 ++-
- kernel/bpf/cgroup.c        |  67 +++++++-----
- kernel/bpf/core.c          |  12 ---
- kernel/bpf/local_storage.c | 216 ++++++++++++++++++++-----------------
- 4 files changed, 164 insertions(+), 143 deletions(-)
+ .../bpf/prog_tests/cg_storage_multi.c         | 276 ++++++++++++++++--
+ ..._ingress.c => cg_storage_multi_isolated.c} |  16 +-
+ .../bpf/progs/cg_storage_multi_shared.c       |  57 ++++
+ 3 files changed, 323 insertions(+), 26 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{cg_storage_multi_egress_ingress.c => cg_storage_multi_isolated.c} (73%)
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 2c6f26670acc..64f367044e25 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -46,7 +46,8 @@ struct bpf_cgroup_storage {
- 	};
- 	struct bpf_cgroup_storage_map *map;
- 	struct bpf_cgroup_storage_key key;
--	struct list_head list;
-+	struct list_head list_map;
-+	struct list_head list_cg;
- 	struct rb_node node;
- 	struct rcu_head rcu;
- };
-@@ -78,6 +79,9 @@ struct cgroup_bpf {
- 	struct list_head progs[MAX_BPF_ATTACH_TYPE];
- 	u32 flags[MAX_BPF_ATTACH_TYPE];
+diff --git a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+index 1f4ab437ddb9..7195e1da788e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+@@ -11,25 +11,23 @@
+ #include "progs/cg_storage_multi.h"
  
-+	/* list of cgroup shared storages */
-+	struct list_head storages;
-+
- 	/* temp storage for effective prog array used by prog_attach/detach */
- 	struct bpf_prog_array *inactive;
+ #include "cg_storage_multi_egress_only.skel.h"
+-#include "cg_storage_multi_egress_ingress.skel.h"
++#include "cg_storage_multi_isolated.skel.h"
++#include "cg_storage_multi_shared.skel.h"
  
-@@ -161,6 +165,9 @@ static inline void bpf_cgroup_storage_set(struct bpf_cgroup_storage
- 		this_cpu_write(bpf_cgroup_storage[stype], storage[stype]);
- }
+ #define PARENT_CGROUP "/cgroup_storage"
+ #define CHILD_CGROUP "/cgroup_storage/child"
  
-+struct bpf_cgroup_storage *
-+cgroup_storage_lookup(struct bpf_cgroup_storage_map *map,
-+		      void *key, bool locked);
- struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(struct bpf_prog *prog,
- 					enum bpf_cgroup_storage_type stype);
- void bpf_cgroup_storage_free(struct bpf_cgroup_storage *storage);
-@@ -169,7 +176,6 @@ void bpf_cgroup_storage_link(struct bpf_cgroup_storage *storage,
- 			     enum bpf_attach_type type);
- void bpf_cgroup_storage_unlink(struct bpf_cgroup_storage *storage);
- int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *map);
--void bpf_cgroup_storage_release(struct bpf_prog_aux *aux, struct bpf_map *map);
+ static int duration;
  
- int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
- int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
-@@ -383,8 +389,6 @@ static inline void bpf_cgroup_storage_set(
- 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) {}
- static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
- 					    struct bpf_map *map) { return 0; }
--static inline void bpf_cgroup_storage_release(struct bpf_prog_aux *aux,
--					      struct bpf_map *map) {}
- static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
- 	struct bpf_prog *prog, enum bpf_cgroup_storage_type stype) { return NULL; }
- static inline void bpf_cgroup_storage_free(
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index ac53102e244a..957cce1d5168 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -37,17 +37,34 @@ static void bpf_cgroup_storages_free(struct bpf_cgroup_storage *storages[])
- }
- 
- static int bpf_cgroup_storages_alloc(struct bpf_cgroup_storage *storages[],
--				     struct bpf_prog *prog)
-+				     struct bpf_cgroup_storage *new_storages[],
-+				     enum bpf_attach_type type,
-+				     struct bpf_prog *prog,
-+				     struct cgroup *cgrp)
+-static bool assert_storage(struct bpf_map *map, const char *cgroup_path,
++static bool assert_storage(struct bpf_map *map, const void *key,
+ 			   struct cgroup_value *expected)
  {
- 	enum bpf_cgroup_storage_type stype;
+-	struct bpf_cgroup_storage_key key = {0};
+ 	struct cgroup_value value;
+ 	int map_fd;
+ 
+ 	map_fd = bpf_map__fd(map);
+ 
+-	key.cgroup_inode_id = get_cgroup_id(cgroup_path);
+-	key.attach_type = BPF_CGROUP_INET_EGRESS;
+-	if (CHECK(bpf_map_lookup_elem(map_fd, &key, &value) < 0,
++	if (CHECK(bpf_map_lookup_elem(map_fd, key, &value) < 0,
+ 		  "map-lookup", "errno %d", errno))
+ 		return true;
+ 	if (CHECK(memcmp(&value, expected, sizeof(struct cgroup_value)),
+@@ -39,17 +37,14 @@ static bool assert_storage(struct bpf_map *map, const char *cgroup_path,
+ 	return false;
+ }
+ 
+-static bool assert_storage_noexist(struct bpf_map *map, const char *cgroup_path)
++static bool assert_storage_noexist(struct bpf_map *map, const void *key)
+ {
+-	struct bpf_cgroup_storage_key key = {0};
+ 	struct cgroup_value value;
+ 	int map_fd;
+ 
+ 	map_fd = bpf_map__fd(map);
+ 
+-	key.cgroup_inode_id = get_cgroup_id(cgroup_path);
+-	key.attach_type = BPF_CGROUP_INET_EGRESS;
+-	if (CHECK(bpf_map_lookup_elem(map_fd, &key, &value) == 0,
++	if (CHECK(bpf_map_lookup_elem(map_fd, key, &value) == 0,
+ 		  "map-lookup", "succeeded, expected ENOENT"))
+ 		return true;
+ 	if (CHECK(errno != ENOENT,
+@@ -90,9 +85,12 @@ static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
+ {
+ 	struct cg_storage_multi_egress_only *obj;
+ 	struct cgroup_value expected_cgroup_value;
 +	struct bpf_cgroup_storage_key key;
-+	struct bpf_map *map;
-+
-+	key.cgroup_inode_id = cgroup_id(cgrp);
-+	key.attach_type = type;
+ 	struct bpf_link *parent_link = NULL, *child_link = NULL;
+ 	bool err;
  
- 	for_each_cgroup_storage_type(stype) {
-+		map = prog->aux->cgroup_storage[stype];
-+		if (!map)
-+			continue;
++	key.attach_type = BPF_CGROUP_INET_EGRESS;
 +
-+		storages[stype] = cgroup_storage_lookup((void *)map, &key, false);
-+		if (storages[stype])
-+			continue;
-+
- 		storages[stype] = bpf_cgroup_storage_alloc(prog, stype);
- 		if (IS_ERR(storages[stype])) {
--			storages[stype] = NULL;
--			bpf_cgroup_storages_free(storages);
-+			bpf_cgroup_storages_free(new_storages);
- 			return -ENOMEM;
- 		}
-+
-+		new_storages[stype] = storages[stype];
- 	}
+ 	obj = cg_storage_multi_egress_only__open_and_load();
+ 	if (CHECK(!obj, "skel-load", "errno %d", errno))
+ 		return;
+@@ -113,11 +111,13 @@ static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
+ 	if (CHECK(obj->bss->invocations != 1,
+ 		  "first-invoke", "invocations=%d", obj->bss->invocations))
+ 		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(PARENT_CGROUP);
+ 	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 1 };
+ 	if (assert_storage(obj->maps.cgroup_storage,
+-			   PARENT_CGROUP, &expected_cgroup_value))
++			   &key, &expected_cgroup_value))
+ 		goto close_bpf_object;
+-	if (assert_storage_noexist(obj->maps.cgroup_storage, CHILD_CGROUP))
++	key.cgroup_inode_id = get_cgroup_id(CHILD_CGROUP);
++	if (assert_storage_noexist(obj->maps.cgroup_storage, &key))
+ 		goto close_bpf_object;
  
- 	return 0;
-@@ -63,7 +80,7 @@ static void bpf_cgroup_storages_assign(struct bpf_cgroup_storage *dst[],
+ 	/* Attach to parent and child cgroup, trigger packet from child.
+@@ -135,13 +135,15 @@ static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
+ 	if (CHECK(obj->bss->invocations != 3,
+ 		  "second-invoke", "invocations=%d", obj->bss->invocations))
+ 		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(PARENT_CGROUP);
+ 	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 2 };
+ 	if (assert_storage(obj->maps.cgroup_storage,
+-			   PARENT_CGROUP, &expected_cgroup_value))
++			   &key, &expected_cgroup_value))
+ 		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(CHILD_CGROUP);
+ 	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 1 };
+ 	if (assert_storage(obj->maps.cgroup_storage,
+-			   CHILD_CGROUP, &expected_cgroup_value))
++			   &key, &expected_cgroup_value))
+ 		goto close_bpf_object;
+ 
+ close_bpf_object:
+@@ -153,17 +155,240 @@ static void test_egress_only(int parent_cgroup_fd, int child_cgroup_fd)
+ 	cg_storage_multi_egress_only__destroy(obj);
  }
  
- static void bpf_cgroup_storages_link(struct bpf_cgroup_storage *storages[],
--				     struct cgroup* cgrp,
-+				     struct cgroup *cgrp,
- 				     enum bpf_attach_type attach_type)
+-static void test_egress_ingress(int parent_cgroup_fd, int child_cgroup_fd)
++static void test_isolated(int parent_cgroup_fd, int child_cgroup_fd)
  {
- 	enum bpf_cgroup_storage_type stype;
-@@ -72,14 +89,6 @@ static void bpf_cgroup_storages_link(struct bpf_cgroup_storage *storages[],
- 		bpf_cgroup_storage_link(storages[stype], cgrp, attach_type);
- }
+-	struct cg_storage_multi_egress_ingress *obj;
++	struct cg_storage_multi_isolated *obj;
++	struct cgroup_value expected_cgroup_value;
++	struct bpf_cgroup_storage_key key;
++	struct bpf_link *parent_egress1_link = NULL, *parent_egress2_link = NULL;
++	struct bpf_link *child_egress1_link = NULL, *child_egress2_link = NULL;
++	struct bpf_link *parent_ingress_link = NULL, *child_ingress_link = NULL;
++	bool err;
  
--static void bpf_cgroup_storages_unlink(struct bpf_cgroup_storage *storages[])
--{
--	enum bpf_cgroup_storage_type stype;
--
--	for_each_cgroup_storage_type(stype)
--		bpf_cgroup_storage_unlink(storages[stype]);
--}
--
- /* Called when bpf_cgroup_link is auto-detached from dying cgroup.
-  * It drops cgroup and bpf_prog refcounts, and marks bpf_link as defunct. It
-  * doesn't free link memory, which will eventually be done by bpf_link's
-@@ -101,22 +110,23 @@ static void cgroup_bpf_release(struct work_struct *work)
- 	struct cgroup *p, *cgrp = container_of(work, struct cgroup,
- 					       bpf.release_work);
- 	struct bpf_prog_array *old_array;
-+	struct list_head *storages = &cgrp->bpf.storages;
-+	struct bpf_cgroup_storage *storage, *stmp;
+-	/* Cannot load both programs due to verifier failure:
+-	 * "only one cgroup storage of each type is allowed"
++	obj = cg_storage_multi_isolated__open_and_load();
++	if (CHECK(!obj, "skel-load", "errno %d", errno))
++		return;
 +
- 	unsigned int type;
- 
- 	mutex_lock(&cgroup_mutex);
- 
- 	for (type = 0; type < ARRAY_SIZE(cgrp->bpf.progs); type++) {
- 		struct list_head *progs = &cgrp->bpf.progs[type];
--		struct bpf_prog_list *pl, *tmp;
-+		struct bpf_prog_list *pl, *pltmp;
- 
--		list_for_each_entry_safe(pl, tmp, progs, node) {
-+		list_for_each_entry_safe(pl, pltmp, progs, node) {
- 			list_del(&pl->node);
- 			if (pl->prog)
- 				bpf_prog_put(pl->prog);
- 			if (pl->link)
- 				bpf_cgroup_link_auto_detach(pl->link);
--			bpf_cgroup_storages_unlink(pl->storage);
--			bpf_cgroup_storages_free(pl->storage);
- 			kfree(pl);
- 			static_branch_dec(&cgroup_bpf_enabled_key);
- 		}
-@@ -126,6 +136,11 @@ static void cgroup_bpf_release(struct work_struct *work)
- 		bpf_prog_array_free(old_array);
- 	}
- 
-+	list_for_each_entry_safe(storage, stmp, storages, list_cg) {
-+		bpf_cgroup_storage_unlink(storage);
-+		bpf_cgroup_storage_free(storage);
-+	}
++	/* Attach to parent cgroup, trigger packet from child.
++	 * Assert that there is three runs, two with parent cgroup egress and
++	 * one with parent cgroup ingress, stored in separate parent storages.
++	 * Also assert that child cgroup's storages does not exist
+ 	 */
+-	obj = cg_storage_multi_egress_ingress__open_and_load();
+-	if (CHECK(obj || errno != EBUSY,
+-		  "skel-load", "errno %d, expected EBUSY", errno))
++	parent_egress1_link = bpf_program__attach_cgroup(obj->progs.egress1,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_egress1_link), "parent-egress1-cg-attach",
++		  "err %ld", PTR_ERR(parent_egress1_link)))
++		goto close_bpf_object;
++	parent_egress2_link = bpf_program__attach_cgroup(obj->progs.egress2,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_egress2_link), "parent-egress2-cg-attach",
++		  "err %ld", PTR_ERR(parent_egress2_link)))
++		goto close_bpf_object;
++	parent_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_ingress_link), "parent-ingress-cg-attach",
++		  "err %ld", PTR_ERR(parent_ingress_link)))
++		goto close_bpf_object;
++	err = connect_send(CHILD_CGROUP);
++	if (CHECK(err, "first-connect-send", "errno %d", errno))
++		goto close_bpf_object;
++	if (CHECK(obj->bss->invocations != 3,
++		  "first-invoke", "invocations=%d", obj->bss->invocations))
++		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(PARENT_CGROUP);
++	key.attach_type = BPF_CGROUP_INET_EGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 2 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key.attach_type = BPF_CGROUP_INET_INGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .ingress_pkts = 1 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(CHILD_CGROUP);
++	key.attach_type = BPF_CGROUP_INET_EGRESS;
++	if (assert_storage_noexist(obj->maps.cgroup_storage, &key))
++		goto close_bpf_object;
++	key.attach_type = BPF_CGROUP_INET_INGRESS;
++	if (assert_storage_noexist(obj->maps.cgroup_storage, &key))
++		goto close_bpf_object;
 +
- 	mutex_unlock(&cgroup_mutex);
- 
- 	for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
-@@ -290,6 +305,8 @@ int cgroup_bpf_inherit(struct cgroup *cgrp)
- 	for (i = 0; i < NR; i++)
- 		INIT_LIST_HEAD(&cgrp->bpf.progs[i]);
- 
-+	INIT_LIST_HEAD(&cgrp->bpf.storages);
++	/* Attach to parent and child cgroup, trigger packet from child.
++	 * Assert that there is six additional runs, parent cgroup egresses and
++	 * ingress, child cgroup egresses and ingress.
++	 * Assert that egree and ingress storages are separate.
++	 */
++	child_egress1_link = bpf_program__attach_cgroup(obj->progs.egress1,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_egress1_link), "child-egress1-cg-attach",
++		  "err %ld", PTR_ERR(child_egress1_link)))
++		goto close_bpf_object;
++	child_egress2_link = bpf_program__attach_cgroup(obj->progs.egress2,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_egress2_link), "child-egress2-cg-attach",
++		  "err %ld", PTR_ERR(child_egress2_link)))
++		goto close_bpf_object;
++	child_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_ingress_link), "child-ingress-cg-attach",
++		  "err %ld", PTR_ERR(child_ingress_link)))
++		goto close_bpf_object;
++	err = connect_send(CHILD_CGROUP);
++	if (CHECK(err, "second-connect-send", "errno %d", errno))
++		goto close_bpf_object;
++	if (CHECK(obj->bss->invocations != 9,
++		  "second-invoke", "invocations=%d", obj->bss->invocations))
++		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(PARENT_CGROUP);
++	key.attach_type = BPF_CGROUP_INET_EGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 4 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key.attach_type = BPF_CGROUP_INET_INGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .ingress_pkts = 2 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key.cgroup_inode_id = get_cgroup_id(CHILD_CGROUP);
++	key.attach_type = BPF_CGROUP_INET_EGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .egress_pkts = 2 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key.attach_type = BPF_CGROUP_INET_INGRESS;
++	expected_cgroup_value = (struct cgroup_value) { .ingress_pkts = 1 };
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
 +
- 	for (i = 0; i < NR; i++)
- 		if (compute_effective_progs(cgrp, i, &arrays[i]))
- 			goto cleanup;
-@@ -422,7 +439,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
- 	struct list_head *progs = &cgrp->bpf.progs[type];
- 	struct bpf_prog *old_prog = NULL;
- 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
--	struct bpf_cgroup_storage *old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-+	struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
- 	struct bpf_prog_list *pl;
- 	int err;
- 
-@@ -455,17 +472,16 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
- 	if (IS_ERR(pl))
- 		return PTR_ERR(pl);
- 
--	if (bpf_cgroup_storages_alloc(storage, prog ? : link->link.prog))
-+	if (bpf_cgroup_storages_alloc(storage, new_storage, type,
-+				      prog ? : link->link.prog, cgrp))
- 		return -ENOMEM;
- 
- 	if (pl) {
- 		old_prog = pl->prog;
--		bpf_cgroup_storages_unlink(pl->storage);
--		bpf_cgroup_storages_assign(old_storage, pl->storage);
- 	} else {
- 		pl = kmalloc(sizeof(*pl), GFP_KERNEL);
- 		if (!pl) {
--			bpf_cgroup_storages_free(storage);
-+			bpf_cgroup_storages_free(new_storage);
- 			return -ENOMEM;
- 		}
- 		list_add_tail(&pl->node, progs);
-@@ -480,12 +496,11 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
- 	if (err)
- 		goto cleanup;
- 
--	bpf_cgroup_storages_free(old_storage);
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 	else
- 		static_branch_inc(&cgroup_bpf_enabled_key);
--	bpf_cgroup_storages_link(pl->storage, cgrp, type);
-+	bpf_cgroup_storages_link(new_storage, cgrp, type);
- 	return 0;
- 
- cleanup:
-@@ -493,9 +508,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
- 		pl->prog = old_prog;
- 		pl->link = NULL;
- 	}
--	bpf_cgroup_storages_free(pl->storage);
--	bpf_cgroup_storages_assign(pl->storage, old_storage);
--	bpf_cgroup_storages_link(pl->storage, cgrp, type);
-+	bpf_cgroup_storages_free(new_storage);
- 	if (!old_prog) {
- 		list_del(&pl->node);
- 		kfree(pl);
-@@ -679,8 +692,6 @@ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 
- 	/* now can actually delete it from this cgroup list */
- 	list_del(&pl->node);
--	bpf_cgroup_storages_unlink(pl->storage);
--	bpf_cgroup_storages_free(pl->storage);
- 	kfree(pl);
- 	if (list_empty(progs))
- 		/* last program was detached, reset flags to zero */
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7be02e555ab9..bde93344164d 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2097,24 +2097,12 @@ int bpf_prog_array_copy_info(struct bpf_prog_array *array,
- 								     : 0;
- }
- 
--static void bpf_free_cgroup_storage(struct bpf_prog_aux *aux)
--{
--	enum bpf_cgroup_storage_type stype;
--
--	for_each_cgroup_storage_type(stype) {
--		if (!aux->cgroup_storage[stype])
--			continue;
--		bpf_cgroup_storage_release(aux, aux->cgroup_storage[stype]);
--	}
--}
--
- void __bpf_free_used_maps(struct bpf_prog_aux *aux,
- 			  struct bpf_map **used_maps, u32 len)
- {
- 	struct bpf_map *map;
- 	u32 i;
- 
--	bpf_free_cgroup_storage(aux);
- 	for (i = 0; i < len; i++) {
- 		map = used_maps[i];
- 		if (map->ops->map_poke_untrack)
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 51bd5a8cb01b..b246ae07f87d 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -9,6 +9,8 @@
- #include <linux/slab.h>
- #include <uapi/linux/btf.h>
- 
-+#include "../cgroup/cgroup-internal.h"
++close_bpf_object:
++	if (parent_egress1_link)
++		bpf_link__destroy(parent_egress1_link);
++	if (parent_egress2_link)
++		bpf_link__destroy(parent_egress2_link);
++	if (parent_ingress_link)
++		bpf_link__destroy(parent_ingress_link);
++	if (child_egress1_link)
++		bpf_link__destroy(child_egress1_link);
++	if (child_egress2_link)
++		bpf_link__destroy(child_egress2_link);
++	if (child_ingress_link)
++		bpf_link__destroy(child_ingress_link);
 +
- DEFINE_PER_CPU(struct bpf_cgroup_storage*, bpf_cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE]);
- 
- #ifdef CONFIG_CGROUP_BPF
-@@ -20,7 +22,6 @@ struct bpf_cgroup_storage_map {
- 	struct bpf_map map;
- 
- 	spinlock_t lock;
--	struct bpf_prog_aux *aux;
- 	struct rb_root root;
- 	struct list_head list;
- };
-@@ -30,24 +31,41 @@ static struct bpf_cgroup_storage_map *map_to_storage(struct bpf_map *map)
- 	return container_of(map, struct bpf_cgroup_storage_map, map);
- }
- 
--static int bpf_cgroup_storage_key_cmp(
--	const struct bpf_cgroup_storage_key *key1,
--	const struct bpf_cgroup_storage_key *key2)
-+static bool attach_type_isolated(const struct bpf_map *map)
- {
--	if (key1->cgroup_inode_id < key2->cgroup_inode_id)
--		return -1;
--	else if (key1->cgroup_inode_id > key2->cgroup_inode_id)
--		return 1;
--	else if (key1->attach_type < key2->attach_type)
--		return -1;
--	else if (key1->attach_type > key2->attach_type)
--		return 1;
-+	return map->key_size == sizeof(struct bpf_cgroup_storage_key);
++	cg_storage_multi_isolated__destroy(obj);
 +}
 +
-+static int bpf_cgroup_storage_key_cmp(const struct bpf_cgroup_storage_map *map,
-+				      const void *_key1, const void *_key2)
++static void test_shared(int parent_cgroup_fd, int child_cgroup_fd)
 +{
-+	if (attach_type_isolated(&map->map)) {
-+		const struct bpf_cgroup_storage_key *key1 = _key1;
-+		const struct bpf_cgroup_storage_key *key2 = _key2;
++	struct cg_storage_multi_shared *obj;
++	struct cgroup_value expected_cgroup_value;
++	__u64 key;
++	struct bpf_link *parent_egress1_link = NULL, *parent_egress2_link = NULL;
++	struct bpf_link *child_egress1_link = NULL, *child_egress2_link = NULL;
++	struct bpf_link *parent_ingress_link = NULL, *child_ingress_link = NULL;
++	bool err;
 +
-+		if (key1->cgroup_inode_id < key2->cgroup_inode_id)
-+			return -1;
-+		else if (key1->cgroup_inode_id > key2->cgroup_inode_id)
-+			return 1;
-+		else if (key1->attach_type < key2->attach_type)
-+			return -1;
-+		else if (key1->attach_type > key2->attach_type)
-+			return 1;
-+	} else {
-+		const __u64 *key1 = _key1;
-+		const __u64 *key2 = _key2;
++	obj = cg_storage_multi_shared__open_and_load();
++	if (CHECK(!obj, "skel-load", "errno %d", errno))
+ 		return;
 +
-+		if (*key1 < *key2)
-+			return -1;
-+		else if (*key1 > *key2)
-+			return 1;
-+	}
- 	return 0;
++	/* Attach to parent cgroup, trigger packet from child.
++	 * Assert that there is three runs, two with parent cgroup egress and
++	 * one with parent cgroup ingress.
++	 * Also assert that child cgroup's storage does not exist
++	 */
++	parent_egress1_link = bpf_program__attach_cgroup(obj->progs.egress1,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_egress1_link), "parent-egress1-cg-attach",
++		  "err %ld", PTR_ERR(parent_egress1_link)))
++		goto close_bpf_object;
++	parent_egress2_link = bpf_program__attach_cgroup(obj->progs.egress2,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_egress2_link), "parent-egress2-cg-attach",
++		  "err %ld", PTR_ERR(parent_egress2_link)))
++		goto close_bpf_object;
++	parent_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
++							 parent_cgroup_fd);
++	if (CHECK(IS_ERR(parent_ingress_link), "parent-ingress-cg-attach",
++		  "err %ld", PTR_ERR(parent_ingress_link)))
++		goto close_bpf_object;
++	err = connect_send(CHILD_CGROUP);
++	if (CHECK(err, "first-connect-send", "errno %d", errno))
++		goto close_bpf_object;
++	if (CHECK(obj->bss->invocations != 3,
++		  "first-invoke", "invocations=%d", obj->bss->invocations))
++		goto close_bpf_object;
++	key = get_cgroup_id(PARENT_CGROUP);
++	expected_cgroup_value = (struct cgroup_value) {
++		.egress_pkts = 2,
++		.ingress_pkts = 1,
++	};
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key = get_cgroup_id(CHILD_CGROUP);
++	if (assert_storage_noexist(obj->maps.cgroup_storage, &key))
++		goto close_bpf_object;
++
++	/* Attach to parent and child cgroup, trigger packet from child.
++	 * Assert that there is six additional runs, parent cgroup egresses and
++	 * ingress, child cgroup egresses and ingress.
++	 */
++	child_egress1_link = bpf_program__attach_cgroup(obj->progs.egress1,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_egress1_link), "child-egress1-cg-attach",
++		  "err %ld", PTR_ERR(child_egress1_link)))
++		goto close_bpf_object;
++	child_egress2_link = bpf_program__attach_cgroup(obj->progs.egress2,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_egress2_link), "child-egress2-cg-attach",
++		  "err %ld", PTR_ERR(child_egress2_link)))
++		goto close_bpf_object;
++	child_ingress_link = bpf_program__attach_cgroup(obj->progs.ingress,
++							child_cgroup_fd);
++	if (CHECK(IS_ERR(child_ingress_link), "child-ingress-cg-attach",
++		  "err %ld", PTR_ERR(child_ingress_link)))
++		goto close_bpf_object;
++	err = connect_send(CHILD_CGROUP);
++	if (CHECK(err, "second-connect-send", "errno %d", errno))
++		goto close_bpf_object;
++	if (CHECK(obj->bss->invocations != 9,
++		  "second-invoke", "invocations=%d", obj->bss->invocations))
++		goto close_bpf_object;
++	key = get_cgroup_id(PARENT_CGROUP);
++	expected_cgroup_value = (struct cgroup_value) {
++		.egress_pkts = 4,
++		.ingress_pkts = 2,
++	};
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++	key = get_cgroup_id(CHILD_CGROUP);
++	expected_cgroup_value = (struct cgroup_value) {
++		.egress_pkts = 2,
++		.ingress_pkts = 1,
++	};
++	if (assert_storage(obj->maps.cgroup_storage,
++			   &key, &expected_cgroup_value))
++		goto close_bpf_object;
++
++close_bpf_object:
++	if (parent_egress1_link)
++		bpf_link__destroy(parent_egress1_link);
++	if (parent_egress2_link)
++		bpf_link__destroy(parent_egress2_link);
++	if (parent_ingress_link)
++		bpf_link__destroy(parent_ingress_link);
++	if (child_egress1_link)
++		bpf_link__destroy(child_egress1_link);
++	if (child_egress2_link)
++		bpf_link__destroy(child_egress2_link);
++	if (child_ingress_link)
++		bpf_link__destroy(child_ingress_link);
++
++	cg_storage_multi_shared__destroy(obj);
  }
  
--static struct bpf_cgroup_storage *cgroup_storage_lookup(
--	struct bpf_cgroup_storage_map *map, struct bpf_cgroup_storage_key *key,
--	bool locked)
-+struct bpf_cgroup_storage *
-+cgroup_storage_lookup(struct bpf_cgroup_storage_map *map,
-+		      void *key, bool locked)
- {
- 	struct rb_root *root = &map->root;
- 	struct rb_node *node;
-@@ -61,7 +79,7 @@ static struct bpf_cgroup_storage *cgroup_storage_lookup(
+ void test_cg_storage_multi(void)
+@@ -180,8 +405,11 @@ void test_cg_storage_multi(void)
+ 	if (test__start_subtest("egress_only"))
+ 		test_egress_only(parent_cgroup_fd, child_cgroup_fd);
  
- 		storage = container_of(node, struct bpf_cgroup_storage, node);
- 
--		switch (bpf_cgroup_storage_key_cmp(key, &storage->key)) {
-+		switch (bpf_cgroup_storage_key_cmp(map, key, &storage->key)) {
- 		case -1:
- 			node = node->rb_left;
- 			break;
-@@ -93,7 +111,7 @@ static int cgroup_storage_insert(struct bpf_cgroup_storage_map *map,
- 		this = container_of(*new, struct bpf_cgroup_storage, node);
- 
- 		parent = *new;
--		switch (bpf_cgroup_storage_key_cmp(&storage->key, &this->key)) {
-+		switch (bpf_cgroup_storage_key_cmp(map, &storage->key, &this->key)) {
- 		case -1:
- 			new = &((*new)->rb_left);
- 			break;
-@@ -111,10 +129,9 @@ static int cgroup_storage_insert(struct bpf_cgroup_storage_map *map,
- 	return 0;
- }
- 
--static void *cgroup_storage_lookup_elem(struct bpf_map *_map, void *_key)
-+static void *cgroup_storage_lookup_elem(struct bpf_map *_map, void *key)
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--	struct bpf_cgroup_storage_key *key = _key;
- 	struct bpf_cgroup_storage *storage;
- 
- 	storage = cgroup_storage_lookup(map, key, false);
-@@ -124,17 +141,13 @@ static void *cgroup_storage_lookup_elem(struct bpf_map *_map, void *_key)
- 	return &READ_ONCE(storage->buf)->data[0];
- }
- 
--static int cgroup_storage_update_elem(struct bpf_map *map, void *_key,
-+static int cgroup_storage_update_elem(struct bpf_map *map, void *key,
- 				      void *value, u64 flags)
- {
--	struct bpf_cgroup_storage_key *key = _key;
- 	struct bpf_cgroup_storage *storage;
- 	struct bpf_storage_buffer *new;
- 
--	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST | BPF_NOEXIST)))
--		return -EINVAL;
--
--	if (unlikely(flags & BPF_NOEXIST))
-+	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
- 		return -EINVAL;
- 
- 	if (unlikely((flags & BPF_F_LOCK) &&
-@@ -167,11 +180,10 @@ static int cgroup_storage_update_elem(struct bpf_map *map, void *_key,
- 	return 0;
- }
- 
--int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *_key,
-+int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
- 				   void *value)
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--	struct bpf_cgroup_storage_key *key = _key;
- 	struct bpf_cgroup_storage *storage;
- 	int cpu, off = 0;
- 	u32 size;
-@@ -197,11 +209,10 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *_key,
- 	return 0;
- }
- 
--int bpf_percpu_cgroup_storage_update(struct bpf_map *_map, void *_key,
-+int bpf_percpu_cgroup_storage_update(struct bpf_map *_map, void *key,
- 				     void *value, u64 map_flags)
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--	struct bpf_cgroup_storage_key *key = _key;
- 	struct bpf_cgroup_storage *storage;
- 	int cpu, off = 0;
- 	u32 size;
-@@ -232,12 +243,10 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *_map, void *_key,
- 	return 0;
- }
- 
--static int cgroup_storage_get_next_key(struct bpf_map *_map, void *_key,
-+static int cgroup_storage_get_next_key(struct bpf_map *_map, void *key,
- 				       void *_next_key)
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--	struct bpf_cgroup_storage_key *key = _key;
--	struct bpf_cgroup_storage_key *next = _next_key;
- 	struct bpf_cgroup_storage *storage;
- 
- 	spin_lock_bh(&map->lock);
-@@ -250,17 +259,23 @@ static int cgroup_storage_get_next_key(struct bpf_map *_map, void *_key,
- 		if (!storage)
- 			goto enoent;
- 
--		storage = list_next_entry(storage, list);
-+		storage = list_next_entry(storage, list_map);
- 		if (!storage)
- 			goto enoent;
- 	} else {
- 		storage = list_first_entry(&map->list,
--					 struct bpf_cgroup_storage, list);
-+					 struct bpf_cgroup_storage, list_map);
- 	}
- 
- 	spin_unlock_bh(&map->lock);
--	next->attach_type = storage->key.attach_type;
--	next->cgroup_inode_id = storage->key.cgroup_inode_id;
+-	if (test__start_subtest("egress_ingress"))
+-		test_egress_ingress(parent_cgroup_fd, child_cgroup_fd);
++	if (test__start_subtest("isolated"))
++		test_isolated(parent_cgroup_fd, child_cgroup_fd);
 +
-+	if (attach_type_isolated(&map->map)) {
-+		struct bpf_cgroup_storage_key *next = _next_key;
-+		*next = storage->key;
-+	} else {
-+		__u64 *next = _next_key;
-+		*next = storage->key.cgroup_inode_id;
-+	}
- 	return 0;
++	if (test__start_subtest("shared"))
++		test_shared(parent_cgroup_fd, child_cgroup_fd);
  
- enoent:
-@@ -275,7 +290,8 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
- 	struct bpf_map_memory mem;
- 	int ret;
+ close_cgroup_fd:
+ 	close(child_cgroup_fd);
+diff --git a/tools/testing/selftests/bpf/progs/cg_storage_multi_egress_ingress.c b/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
+similarity index 73%
+rename from tools/testing/selftests/bpf/progs/cg_storage_multi_egress_ingress.c
+rename to tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
+index 9ce386899365..a25373002055 100644
+--- a/tools/testing/selftests/bpf/progs/cg_storage_multi_egress_ingress.c
++++ b/tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
+@@ -20,8 +20,20 @@ struct {
  
--	if (attr->key_size != sizeof(struct bpf_cgroup_storage_key))
-+	if (attr->key_size != sizeof(struct bpf_cgroup_storage_key) &&
-+	    attr->key_size != sizeof(__u64))
- 		return ERR_PTR(-EINVAL);
+ __u32 invocations = 0;
  
- 	if (attr->value_size == 0)
-@@ -318,6 +334,17 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
- static void cgroup_storage_map_free(struct bpf_map *_map)
+-SEC("cgroup_skb/egress")
+-int egress(struct __sk_buff *skb)
++SEC("cgroup_skb/egress/1")
++int egress1(struct __sk_buff *skb)
++{
++	struct cgroup_value *ptr_cg_storage =
++		bpf_get_local_storage(&cgroup_storage, 0);
++
++	__sync_fetch_and_add(&ptr_cg_storage->egress_pkts, 1);
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
++
++SEC("cgroup_skb/egress/2")
++int egress2(struct __sk_buff *skb)
  {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
-+	struct list_head *storages = &map->list;
-+	struct bpf_cgroup_storage *storage, *stmp;
+ 	struct cgroup_value *ptr_cg_storage =
+ 		bpf_get_local_storage(&cgroup_storage, 0);
+diff --git a/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c b/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
+new file mode 100644
+index 000000000000..a149f33bc533
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +
-+	mutex_lock(&cgroup_mutex);
++/*
++ * Copyright 2020 Google LLC.
++ */
 +
-+	list_for_each_entry_safe(storage, stmp, storages, list_map) {
-+		bpf_cgroup_storage_unlink(storage);
-+		bpf_cgroup_storage_free(storage);
-+	}
++#include <errno.h>
++#include <linux/bpf.h>
++#include <linux/ip.h>
++#include <linux/udp.h>
++#include <bpf/bpf_helpers.h>
 +
-+	mutex_unlock(&cgroup_mutex);
- 
- 	WARN_ON(!RB_EMPTY_ROOT(&map->root));
- 	WARN_ON(!list_empty(&map->list));
-@@ -335,49 +362,63 @@ static int cgroup_storage_check_btf(const struct bpf_map *map,
- 				    const struct btf_type *key_type,
- 				    const struct btf_type *value_type)
- {
--	struct btf_member *m;
--	u32 offset, size;
--
--	/* Key is expected to be of struct bpf_cgroup_storage_key type,
--	 * which is:
--	 * struct bpf_cgroup_storage_key {
--	 *	__u64	cgroup_inode_id;
--	 *	__u32	attach_type;
--	 * };
--	 */
-+	if (attach_type_isolated(map)) {
-+		struct btf_member *m;
-+		u32 offset, size;
++#include "progs/cg_storage_multi.h"
 +
-+		/* Key is expected to be of struct bpf_cgroup_storage_key type,
-+		 * which is:
-+		 * struct bpf_cgroup_storage_key {
-+		 *	__u64	cgroup_inode_id;
-+		 *	__u32	attach_type;
-+		 * };
-+		 */
++struct {
++	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
++	__type(key, __u64);
++	__type(value, struct cgroup_value);
++} cgroup_storage SEC(".maps");
 +
-+		/*
-+		 * Key_type must be a structure with two fields.
-+		 */
-+		if (BTF_INFO_KIND(key_type->info) != BTF_KIND_STRUCT ||
-+		    BTF_INFO_VLEN(key_type->info) != 2)
-+			return -EINVAL;
++__u32 invocations = 0;
 +
-+		/*
-+		 * The first field must be a 64 bit integer at 0 offset.
-+		 */
-+		m = (struct btf_member *)(key_type + 1);
-+		size = sizeof_field(struct bpf_cgroup_storage_key, cgroup_inode_id);
-+		if (!btf_member_is_reg_int(btf, key_type, m, 0, size))
-+			return -EINVAL;
++SEC("cgroup_skb/egress/1")
++int egress1(struct __sk_buff *skb)
++{
++	struct cgroup_value *ptr_cg_storage =
++		bpf_get_local_storage(&cgroup_storage, 0);
 +
-+		/*
-+		 * The second field must be a 32 bit integer at 64 bit offset.
-+		 */
-+		m++;
-+		offset = offsetof(struct bpf_cgroup_storage_key, attach_type);
-+		size = sizeof_field(struct bpf_cgroup_storage_key, attach_type);
-+		if (!btf_member_is_reg_int(btf, key_type, m, offset, size))
-+			return -EINVAL;
-+	} else {
-+		u32 int_data;
- 
--	/*
--	 * Key_type must be a structure with two fields.
--	 */
--	if (BTF_INFO_KIND(key_type->info) != BTF_KIND_STRUCT ||
--	    BTF_INFO_VLEN(key_type->info) != 2)
--		return -EINVAL;
-+		/*
-+		 * Key is expected to be u64, which stores the cgroup_inode_id
-+		 */
- 
--	/*
--	 * The first field must be a 64 bit integer at 0 offset.
--	 */
--	m = (struct btf_member *)(key_type + 1);
--	size = sizeof_field(struct bpf_cgroup_storage_key, cgroup_inode_id);
--	if (!btf_member_is_reg_int(btf, key_type, m, 0, size))
--		return -EINVAL;
-+		if (BTF_INFO_KIND(key_type->info) != BTF_KIND_INT)
-+			return -EINVAL;
- 
--	/*
--	 * The second field must be a 32 bit integer at 64 bit offset.
--	 */
--	m++;
--	offset = offsetof(struct bpf_cgroup_storage_key, attach_type);
--	size = sizeof_field(struct bpf_cgroup_storage_key, attach_type);
--	if (!btf_member_is_reg_int(btf, key_type, m, offset, size))
--		return -EINVAL;
-+		int_data = *(u32 *)(key_type + 1);
-+		if (BTF_INT_BITS(int_data) != 64 || BTF_INT_OFFSET(int_data))
-+			return -EINVAL;
-+	}
- 
- 	return 0;
- }
- 
--static void cgroup_storage_seq_show_elem(struct bpf_map *map, void *_key,
-+static void cgroup_storage_seq_show_elem(struct bpf_map *map, void *key,
- 					 struct seq_file *m)
- {
- 	enum bpf_cgroup_storage_type stype = cgroup_storage_type(map);
--	struct bpf_cgroup_storage_key *key = _key;
- 	struct bpf_cgroup_storage *storage;
- 	int cpu;
- 
-@@ -426,38 +467,13 @@ const struct bpf_map_ops cgroup_storage_map_ops = {
- int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *_map)
- {
- 	enum bpf_cgroup_storage_type stype = cgroup_storage_type(_map);
--	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--	int ret = -EBUSY;
--
--	spin_lock_bh(&map->lock);
- 
--	if (map->aux && map->aux != aux)
--		goto unlock;
- 	if (aux->cgroup_storage[stype] &&
- 	    aux->cgroup_storage[stype] != _map)
--		goto unlock;
-+		return -EBUSY;
- 
--	map->aux = aux;
- 	aux->cgroup_storage[stype] = _map;
--	ret = 0;
--unlock:
--	spin_unlock_bh(&map->lock);
--
--	return ret;
--}
--
--void bpf_cgroup_storage_release(struct bpf_prog_aux *aux, struct bpf_map *_map)
--{
--	enum bpf_cgroup_storage_type stype = cgroup_storage_type(_map);
--	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
--
--	spin_lock_bh(&map->lock);
--	if (map->aux == aux) {
--		WARN_ON(aux->cgroup_storage[stype] != _map);
--		map->aux = NULL;
--		aux->cgroup_storage[stype] = NULL;
--	}
--	spin_unlock_bh(&map->lock);
-+	return 0;
- }
- 
- static size_t bpf_cgroup_storage_calculate_size(struct bpf_map *map, u32 *pages)
-@@ -578,7 +594,8 @@ void bpf_cgroup_storage_link(struct bpf_cgroup_storage *storage,
- 
- 	spin_lock_bh(&map->lock);
- 	WARN_ON(cgroup_storage_insert(map, storage));
--	list_add(&storage->list, &map->list);
-+	list_add(&storage->list_map, &map->list);
-+	list_add(&storage->list_cg, &cgroup->bpf.storages);
- 	spin_unlock_bh(&map->lock);
- }
- 
-@@ -596,7 +613,8 @@ void bpf_cgroup_storage_unlink(struct bpf_cgroup_storage *storage)
- 	root = &map->root;
- 	rb_erase(&storage->node, root);
- 
--	list_del(&storage->list);
-+	list_del(&storage->list_map);
-+	list_del(&storage->list_cg);
- 	spin_unlock_bh(&map->lock);
- }
- 
++	__sync_fetch_and_add(&ptr_cg_storage->egress_pkts, 1);
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
++
++SEC("cgroup_skb/egress/2")
++int egress2(struct __sk_buff *skb)
++{
++	struct cgroup_value *ptr_cg_storage =
++		bpf_get_local_storage(&cgroup_storage, 0);
++
++	__sync_fetch_and_add(&ptr_cg_storage->egress_pkts, 1);
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
++
++SEC("cgroup_skb/ingress")
++int ingress(struct __sk_buff *skb)
++{
++	struct cgroup_value *ptr_cg_storage =
++		bpf_get_local_storage(&cgroup_storage, 0);
++
++	__sync_fetch_and_add(&ptr_cg_storage->ingress_pkts, 1);
++	__sync_fetch_and_add(&invocations, 1);
++
++	return 1;
++}
 -- 
 2.27.0
 
