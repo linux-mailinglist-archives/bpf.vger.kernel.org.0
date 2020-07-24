@@ -2,242 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA9C22C87F
-	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 16:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D20C22C967
+	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 17:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgGXOyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jul 2020 10:54:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:44572 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726170AbgGXOyA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:54:00 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyz51-0003nF-So; Fri, 24 Jul 2020 16:53:47 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jyz51-000Hv8-Mj; Fri, 24 Jul 2020 16:53:47 +0200
-Subject: Re: [PATCH v3 bpf-next 3/4] bpf: Add kernel module with user mode
- driver that populates bpffs.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     torvalds@linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-References: <20200724055854.59013-1-alexei.starovoitov@gmail.com>
- <20200724055854.59013-4-alexei.starovoitov@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <418b538a-1799-af47-be1e-22e88d0119af@iogearbox.net>
-Date:   Fri, 24 Jul 2020 16:53:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726539AbgGXPoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jul 2020 11:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726493AbgGXPoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jul 2020 11:44:54 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E153DC0619E5
+        for <bpf@vger.kernel.org>; Fri, 24 Jul 2020 08:44:53 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so8719255wrs.11
+        for <bpf@vger.kernel.org>; Fri, 24 Jul 2020 08:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RUZyK2oU0Kd8idZ8Q9ejhsbuyqiNW01xj/ZfwiLfu3Y=;
+        b=EMQ5KBE6Jkx1Hq9yV6Usrjv1X6tWqxTG5U4bGAqMz5nnH1eJV7PnEDH1UUbsjhyWtQ
+         Ebi+meVf5qoPU4QZk7oL6cGBtNEaoRQ1hiwseEtqXClbDNh0xXkZ8/WBuBYBrEuUuNYa
+         tjAAAyqwBFcxnkr/RXqFfirta526U71ZFXceU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RUZyK2oU0Kd8idZ8Q9ejhsbuyqiNW01xj/ZfwiLfu3Y=;
+        b=AmSbfKJNAsZ5/QvIUyz+8T8uvBYsjjmrPhr+4rkURBZWuqKPlUN9D+v5CvrfA66//z
+         dXxD9wXxloous1DG9THfkecf8HvyEOT0u5QSG+jr6nYzMX/FD8ngV+AC9a78uVIT6C6e
+         bD5kQwSh6Zm1ZQbdhT/XXbrAkq+rSHSgcTXe0Nc+ozdSC3Ob3uakcPWIVsLFDi/3YZU+
+         WNMcF3Ggov7WZI34fFMLmwgrI3/j+4jlwbmu5DEvN1EfdBT7QAExtoEHeBdjsp73I6Ve
+         UX9DU0NifZ2XgFYNGye37GZg/qt0bfUgfwFCQhmiA7d/i8KEUrsGa3+XWCP2KFj9iBZB
+         qBNQ==
+X-Gm-Message-State: AOAM530aauXGQm83rndeE7nE79q98HWsxYKh9kEWuhHB6FpS1KEgRxaA
+        hYneAuxAvtEuaAzQXmznW6LaJg==
+X-Google-Smtp-Source: ABdhPJyubYtzFJZJ4vI6f7H318py/PzhqfA5Udew1hMnX9MephVhzKdADMZaKj+rNVL+WACQP/X9hA==
+X-Received: by 2002:a5d:4109:: with SMTP id l9mr9312784wrp.398.1595605492515;
+        Fri, 24 Jul 2020 08:44:52 -0700 (PDT)
+Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id c25sm7782316wml.18.2020.07.24.08.44.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 08:44:52 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v6 1/7] bpf: Renames to prepare for generalizing
+ sk_storage.
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200723115032.460770-1-kpsingh@chromium.org>
+ <20200723115032.460770-2-kpsingh@chromium.org>
+ <20200724053135.itp5qrqaplbyzxxw@kafai-mbp>
+From:   KP Singh <kpsingh@chromium.org>
+Message-ID: <9e421c6e-14a2-f0a7-1260-0debfbbf9308@chromium.org>
+Date:   Fri, 24 Jul 2020 17:44:51 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200724055854.59013-4-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200724053135.itp5qrqaplbyzxxw@kafai-mbp>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25882/Thu Jul 23 16:39:16 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/24/20 7:58 AM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+
+
+On 24.07.20 07:31, Martin KaFai Lau wrote:
+> On Thu, Jul 23, 2020 at 01:50:26PM +0200, KP Singh wrote:
+>> From: KP Singh <kpsingh@google.com>
+>>
+>> A purely mechanical change to split the renaming from the actual
+>> generalization.
+>>
+>> Flags/consts:
+>>
+>>   SK_STORAGE_CREATE_FLAG_MASK	BPF_LOCAL_STORAGE_CREATE_FLAG_MASK
+>>   BPF_SK_STORAGE_CACHE_SIZE	BPF_LOCAL_STORAGE_CACHE_SIZE
+>>   MAX_VALUE_SIZE		BPF_LOCAL_STORAGE_MAX_VALUE_SIZE
+>>
+>> Structs:
+>>
+>>   bucket			bpf_local_storage_map_bucket
+>>   bpf_sk_storage_map		bpf_local_storage_map
+>>   bpf_sk_storage_data		bpf_local_storage_data
+>>   bpf_sk_storage_elem		bpf_local_storage_elem
+>>   bpf_sk_storage		bpf_local_storage
+>>   selem_linked_to_sk		selem_linked_to_storage
+>>   selem_alloc			bpf_selem_alloc
+>>
+>> The "sk" member in bpf_local_storage is also updated to "owner"
+>> in preparation for changing the type to void * in a subsequent patch.
+>>
+>> Functions:
+>>
+>>   __selem_unlink_sk			bpf_selem_unlink_storage
+>>   __selem_link_sk			bpf_selem_link_storage
+>>   selem_unlink_sk			__bpf_selem_unlink_storage
+>>   sk_storage_update			bpf_local_storage_update
+>>   __sk_storage_lookup			bpf_local_storage_lookup
+>>   bpf_sk_storage_map_free		bpf_local_storage_map_free
+>>   bpf_sk_storage_map_alloc		bpf_local_storage_map_alloc
+>>   bpf_sk_storage_map_alloc_check	bpf_local_storage_map_alloc_check
+>>   bpf_sk_storage_map_check_btf		bpf_local_storage_map_check_btf
+> Thanks for separating this mechanical name change in a separate patch.
+> It is much easier to follow.  This patch looks good.
 > 
-> Add kernel module with user mode driver that populates bpffs with
-> BPF iterators.
+> A minor thought is, when I look at unlink_map() and unlink_storage(),
+> it keeps me looking back for the lock situation.  I think
+> the main reason is the bpf_selem_unlink_map() is locked but
+> bpf_selem_unlink_storage() is unlocked now.  May be:
 > 
-> $ mount bpffs /my/bpffs/ -t bpf
-> $ ls -la /my/bpffs/
-> total 4
-> drwxrwxrwt  2 root root    0 Jul  2 00:27 .
-> drwxr-xr-x 19 root root 4096 Jul  2 00:09 ..
-> -rw-------  1 root root    0 Jul  2 00:27 maps.debug
-> -rw-------  1 root root    0 Jul  2 00:27 progs.debug
+> bpf_selem_unlink_map()		=> bpf_selem_unlink_map_locked()
+> bpf_selem_link_map()		=> bpf_selem_link_map_locked()
+> __bpf_selem_unlink_storage() 	=> bpf_selem_unlink_storage_locked()
+> bpf_link_storage() means unlocked
+> bpf_unlink_storage() means unlocked.
 > 
-> The user mode driver will load BPF Type Formats, create BPF maps, populate BPF
-> maps, load two BPF programs, attach them to BPF iterators, and finally send two
-> bpf_link IDs back to the kernel.
-> The kernel will pin two bpf_links into newly mounted bpffs instance under
-> names "progs.debug" and "maps.debug". These two files become human readable.
+> I think it could be one follow-up patch later instead of interrupting
+> multiple patches in this set for this minor thing.  For now, lets
+> continue with this and remember default is nolock for storage.
 > 
-> $ cat /my/bpffs/progs.debug
->    id name            pages attached
->    11 dump_bpf_map        1 bpf_iter_bpf_map
->    12 dump_bpf_prog       1 bpf_iter_bpf_prog
->    27 test_pkt_access     1
->    32 test_main           1 test_pkt_access test_pkt_access
->    33 test_subprog1       1 test_pkt_access_subprog1 test_pkt_access
->    34 test_subprog2       1 test_pkt_access_subprog2 test_pkt_access
->    35 test_subprog3       1 test_pkt_access_subprog3 test_pkt_access
->    36 new_get_skb_len     1 get_skb_len test_pkt_access
->    37 new_get_skb_ifi     1 get_skb_ifindex test_pkt_access
->    38 new_get_constan     1 get_constant test_pkt_access
+
+Makes sense. I can update these in a separate patch if there are no
+major changes needed in this one.
+
+> I will continue tomorrow.
+
+Awesome! Thanks :)
+
+- KP
+
 > 
-> The BPF program dump_bpf_prog() in iterators.bpf.c is printing this data about
-> all BPF programs currently loaded in the system. This information is unstable
-> and will change from kernel to kernel as ".debug" suffix conveys.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->   init/Kconfig                                  |   2 +
->   kernel/bpf/Makefile                           |   1 +
->   kernel/bpf/inode.c                            | 132 +++++++++++++++++-
->   kernel/bpf/preload/Kconfig                    |  18 +++
->   kernel/bpf/preload/Makefile                   |  21 +++
->   kernel/bpf/preload/bpf_preload.h              |  16 +++
->   kernel/bpf/preload/bpf_preload_kern.c         |  83 +++++++++++
->   kernel/bpf/preload/bpf_preload_umd_blob.S     |   7 +
->   .../preload/iterators/bpf_preload_common.h    |  13 ++
->   kernel/bpf/preload/iterators/iterators.c      |  94 +++++++++++++
->   10 files changed, 384 insertions(+), 3 deletions(-)
->   create mode 100644 kernel/bpf/preload/Kconfig
->   create mode 100644 kernel/bpf/preload/Makefile
->   create mode 100644 kernel/bpf/preload/bpf_preload.h
->   create mode 100644 kernel/bpf/preload/bpf_preload_kern.c
->   create mode 100644 kernel/bpf/preload/bpf_preload_umd_blob.S
->   create mode 100644 kernel/bpf/preload/iterators/bpf_preload_common.h
->   create mode 100644 kernel/bpf/preload/iterators/iterators.c
-[...]
->   
-> +struct bpf_preload_ops bpf_preload_ops = { .info.driver_name = "bpf_preload" };
-> +EXPORT_SYMBOL_GPL(bpf_preload_ops);
-> +
-> +#if !IS_BUILTIN(CONFIG_BPF_PRELOAD_UMD)
-> +static struct module *bpf_preload_mod;
-> +#endif
-> +
-> +static bool bpf_preload_mod_get(void)
-> +{
-> +	bool ret = true;
-> +
-> +#if IS_BUILTIN(CONFIG_BPF_PRELOAD_UMD)
-> +	return ret;
-> +#else
-> +	/* if bpf_preload.ko wasn't loaded earlier then load it now */
-> +	if (!bpf_preload_ops.do_preload) {
-> +		request_module("bpf_preload");
-> +		if (!bpf_preload_ops.do_preload) {
-> +			pr_err("bpf_preload module is missing.\n"
-> +			       "bpffs will not have iterators.\n");
-> +			return false;
-> +		}
-> +	}
-> +	/* and grab the reference, so it doesn't disappear while the kernel
-> +	 * is interacting with kernel module and its UMD
-> +	 */
-> +	preempt_disable();
-> +	bpf_preload_mod = __module_address((long)bpf_preload_ops.do_preload);
-> +	if (!bpf_preload_mod || !try_module_get(bpf_preload_mod)) {
-
-Set looks good overall, but this combination looks a bit odd. Meaning, we request the
-module via request_module(), in its init fn, it will set bpf_preload_ops.do_preload
-callback, and here we need to search kallsyms on __module_address(bpf_preload_ops.do_preload)
-just to get the module struct in order to place a ref on it via try_module_get().
-
-Why can't the bpf_preload module simply do:
-
-static const struct bpf_preload_umd_ops umd_ops = {
-         .preload        = do_preload,
-         .finish         = do_finish,
-         .owner          = THIS_MODULE,
-};
-
-And then in load_umd():
-
-static int __init load_umd(void)
-{
-	int err;
-
-	err = umd_load_blob(&bpf_preload_ops.info, &bpf_preload_umd_start,
-			    &bpf_preload_umd_end - &bpf_preload_umd_start);
-	if (!err)
-		bpf_preload_umd_ops = &umd_ops;
-	return err;
-}
-
-Then later in bpf_preload_mod_get() you just do ...
-
-   try_module_get(bpf_preload_umd_ops->owner)
-
-... and can avoid this whole detour with symbol address search which looks odd and
-unneeded for this case.
-
-Thanks,
-Daniel
-
-> +		bpf_preload_mod = NULL;
-> +		pr_err("bpf_preload module get failed.\n");
-> +		ret = false;
-> +	}
-> +	preempt_enable();
-> +	return ret;
-> +#endif
-> +}
-> +
-> +static void bpf_preload_mod_put(void)
-> +{
-> +#if !IS_BUILTIN(CONFIG_BPF_PRELOAD_UMD)
-> +	if (bpf_preload_mod) {
-> +		/* now user can "rmmod bpf_preload" if necessary */
-> +		module_put(bpf_preload_mod);
-> +		bpf_preload_mod = NULL;
-> +	}
-> +#endif
-> +}
-> +
-> +static int populate_bpffs(struct dentry *parent)
-> +{
-> +	struct bpf_preload_info objs[BPF_PRELOAD_LINKS] = {};
-> +	struct bpf_link *links[BPF_PRELOAD_LINKS] = {};
-> +	int err = 0, i;
-> +
-> +	/* grab the mutex to make sure the kernel interactions with bpf_preload
-> +	 * UMD are serialized
-> +	 */
-> +	mutex_lock(&bpf_preload_ops.lock);
-> +
-> +	/* if bpf_preload.ko wasn't built into vmlinux then load it */
-> +	if (!bpf_preload_mod_get())
-> +		goto out;
-> +
-> +	if (!bpf_preload_ops.info.tgid) {
-> +		/* do_preload will start UMD that will load BPF iterator programs */
-> +		err = bpf_preload_ops.do_preload(objs);
-> +		if (err)
-> +			goto out_put;
-> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-> +			links[i] = bpf_link_by_id(objs[i].link_id);
-> +			if (IS_ERR(links[i])) {
-> +				err = PTR_ERR(links[i]);
-> +				goto out_put;
-> +			}
-> +		}
-> +		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-> +			err = bpf_iter_link_pin_kernel(parent,
-> +						       objs[i].link_name, links[i]);
-> +			if (err)
-> +				goto out_put;
-> +			/* do not unlink successfully pinned links even
-> +			 * if later link fails to pin
-> +			 */
-> +			links[i] = NULL;
-> +		}
-> +		/* do_finish() will tell UMD process to exit */
-> +		err = bpf_preload_ops.do_finish();
-> +		if (err)
-> +			goto out_put;
-> +	}
-> +out_put:
-> +	bpf_preload_mod_put();
-> +out:
-> +	mutex_unlock(&bpf_preload_ops.lock);
-> +	for (i = 0; i < BPF_PRELOAD_LINKS && err; i++)
-> +		if (!IS_ERR_OR_NULL(links[i]))
-> +			bpf_link_put(links[i]);
-[...]
