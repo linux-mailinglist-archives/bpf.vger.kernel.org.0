@@ -2,219 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2039622BB48
-	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 03:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94CE22BD22
+	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 06:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgGXBRR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jul 2020 21:17:17 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29062 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726052AbgGXBRR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jul 2020 21:17:17 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06O1FaYW008484
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 18:17:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=6jX0ld+HIC6XOf/fLqm4hZdXbmBeqGQBQd7rToTFWt0=;
- b=JH21kUptlgMZGSOLGDqODnCgoCQPnK/SrKbeHBuHuj2eC/h798Pab/vA527fYnfpLUfL
- OJZswsQKe14iLO4lnmKpWTFekh6r1lCtnLdirfOJ6xy8OVZCnXzmNsQfAPZT1KS1rU0s
- /pUYMh8qt6ncoBP2HnRx3jSiTmNw6V0IaQ4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32esdjqgnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 18:17:15 -0700
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 18:17:14 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id EE8C12EC494D; Thu, 23 Jul 2020 18:17:03 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf 2/2] selftests/bpf: extend map-in-map selftest to detect memory leaks
-Date:   Thu, 23 Jul 2020 18:17:00 -0700
-Message-ID: <20200724011700.2854734-2-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200724011700.2854734-1-andriin@fb.com>
-References: <20200724011700.2854734-1-andriin@fb.com>
+        id S1726317AbgGXEsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jul 2020 00:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgGXEsH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jul 2020 00:48:07 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAD4C0619D3
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 21:48:07 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id s21so6227760ilk.5
+        for <bpf@vger.kernel.org>; Thu, 23 Jul 2020 21:48:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sr+mR1vs8jqDLQwDZZRnkb6Ha3Hb1q3t2O8A32/5UxU=;
+        b=Km6Koh1LMoTzXx4nc5IBb2nnboJjDqocxUJld32elh7YeCfuVVYARkHlAaQDF56Td+
+         LWuwVI3LIm76dP6WZ9JgNs5ffma8FabhIiIXA7gP/juC6vwKJaeWYxgZ5VvybjU/v0yY
+         VQUZBvGSOsOGuzKzOhvMMIS6eL0eclv6hwfTzchdJEpLxlRljEHvCGSjv60iggRFK54J
+         AbAJlhxSp9V/XeuslUhIiFCDIHiWWjSVFmNOBhM8jNobfiSjgRbCbXOTPmRgF8SQgAfU
+         StzWulNpS7j0PJfCyhv+p2H+7E3+Z2vzfaTeYX9qKIaQ9JVFQBcmYAmcRL4qVq4hjO0n
+         UD4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sr+mR1vs8jqDLQwDZZRnkb6Ha3Hb1q3t2O8A32/5UxU=;
+        b=B/3byqBIUHLZUpIkhHiC0yfoker7/NBtyCzbTtrqtzYhQrOCY6soDTL9fYPHdb5HLa
+         tKlGfhjiYwvSHyhAeTCC7qmJ6qVo3q1V449d4Srn/SQvaOcAELK22UI+otpCo/eOlW0M
+         SQW0IO4JvClPHBbV3rbmBPZRg8O6GT0hPk0RXAEXVNj397byQM5DqCE4uEg6vEdBkGh1
+         r2pzYFV6FuvWaqluRS5YG22pdduHtgfyrgW2muvZMDyA6P+l6vFL6FTDazIJqMDbd7+F
+         ENBzkCdTqg3Ll5N8tI6fpM7yKV4yc3qtubdv36TgR0u8kKpk0sHNZjl7s22PMcNQ7/7l
+         hq6g==
+X-Gm-Message-State: AOAM532wu+ERNYSjRfEKepqjcYkdDPqCW9vp4lOdbBB0vddCPUQUHLsk
+        oUxr287BJj8/i2H6gzOBv8uXF/zjbn6CcQ==
+X-Google-Smtp-Source: ABdhPJy4i/1Mo/3xcTxqsL5Y7UJ025coGHB6vcV/u6Nd/Zbi7BLR5d8XkeTTt4HI/OX1PdmiKSfH2Q==
+X-Received: by 2002:a92:4856:: with SMTP id v83mr8116303ila.125.1595566086346;
+        Thu, 23 Jul 2020 21:48:06 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
+        by smtp.gmail.com with ESMTPSA id o64sm2686579ilb.12.2020.07.23.21.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 21:48:05 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Subject: [PATCH v6 bpf-next 0/5] Make BPF CGROUP_STORAGE map usable by different programs at once
+Date:   Thu, 23 Jul 2020 23:47:40 -0500
+Message-Id: <cover.1595565795.git.zhuyifei@google.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_20:2020-07-23,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 spamscore=0 adultscore=0 impostorscore=0 phishscore=0
- suspectscore=9 bulkscore=0 priorityscore=1501 mlxlogscore=809
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007240007
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test validating that all inner maps are released properly after skele=
-ton
-is destroyed. To ensure determinism, trigger kernel-size synchronize_rcu(=
-)
-before checking map existence by their IDs.
+From: YiFei Zhu <zhuyifei@google.com>
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/btf_map_in_map.c | 104 +++++++++++++++---
- 1 file changed, 91 insertions(+), 13 deletions(-)
+To access the storage in a CGROUP_STORAGE map, one uses
+bpf_get_local_storage helper, which is extremely fast due to its
+use of per-CPU variables. However, its whole code is built on
+the assumption that one map can only be used by one program at any
+time, and this prohibits any sharing of data between multiple
+programs using these maps, eliminating a lot of use cases, such
+as some per-cgroup configuration storage, written to by a
+setsockopt program and read by a cg_sock_addr program.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/to=
-ols/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-index f7ee8fa377ad..043e8ffe03d1 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-@@ -5,10 +5,50 @@
-=20
- #include "test_btf_map_in_map.skel.h"
-=20
-+static int duration;
-+
-+int bpf_map_id(struct bpf_map *map)
-+{
-+	struct bpf_map_info info;
-+	__u32 info_len =3D sizeof(info);
-+	int err;
-+
-+	memset(&info, 0, info_len);
-+	err =3D bpf_obj_get_info_by_fd(bpf_map__fd(map), &info, &info_len);
-+	if (err)
-+		return 0;
-+	return info.id;
-+}
-+
-+int kern_sync_rcu() {
-+	int inner_map_fd, outer_map_fd, err, zero =3D 0;
-+
-+	inner_map_fd =3D bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
-+	if (CHECK(inner_map_fd < 0, "inner_map_create", "failed %d\n", -errno))
-+		return -1;
-+
-+	outer_map_fd =3D bpf_create_map_in_map(BPF_MAP_TYPE_ARRAY_OF_MAPS, NULL=
-,
-+					     sizeof(int), inner_map_fd, 1, 0);
-+	if (CHECK(outer_map_fd < 0, "outer_map_create", "failed %d\n", -errno))=
- {
-+		close(inner_map_fd);
-+		return -1;
-+	}
-+
-+	err =3D bpf_map_update_elem(outer_map_fd, &zero, &inner_map_fd, 0);
-+	if (err)
-+		err =3D -errno;
-+	CHECK(err, "outer_map_update", "failed %d\n", err);
-+	close(inner_map_fd);
-+	close(outer_map_fd);
-+	return err;
-+}
-+
- void test_btf_map_in_map(void)
- {
--	int duration =3D 0, err, key =3D 0, val;
-+	int err, key =3D 0, val, i;
- 	struct test_btf_map_in_map* skel;
-+	int outer_arr_fd, outer_hash_fd;
-+	int fd, map1_fd, map2_fd, map1_id, map2_id;
-=20
- 	skel =3D test_btf_map_in_map__open_and_load();
- 	if (CHECK(!skel, "skel_open", "failed to open&load skeleton\n"))
-@@ -18,32 +58,70 @@ void test_btf_map_in_map(void)
- 	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
- 		goto cleanup;
-=20
-+	map1_fd =3D bpf_map__fd(skel->maps.inner_map1);
-+	map2_fd =3D bpf_map__fd(skel->maps.inner_map2);
-+	outer_arr_fd =3D bpf_map__fd(skel->maps.outer_arr);
-+	outer_hash_fd =3D bpf_map__fd(skel->maps.outer_hash);
-+
- 	/* inner1 =3D input, inner2 =3D input + 1 */
--	val =3D bpf_map__fd(skel->maps.inner_map1);
--	bpf_map_update_elem(bpf_map__fd(skel->maps.outer_arr), &key, &val, 0);
--	val =3D bpf_map__fd(skel->maps.inner_map2);
--	bpf_map_update_elem(bpf_map__fd(skel->maps.outer_hash), &key, &val, 0);
-+	map1_fd =3D bpf_map__fd(skel->maps.inner_map1);
-+	bpf_map_update_elem(outer_arr_fd, &key, &map1_fd, 0);
-+	map2_fd =3D bpf_map__fd(skel->maps.inner_map2);
-+	bpf_map_update_elem(outer_hash_fd, &key, &map2_fd, 0);
- 	skel->bss->input =3D 1;
- 	usleep(1);
-=20
--	bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map1), &key, &val);
-+	bpf_map_lookup_elem(map1_fd, &key, &val);
- 	CHECK(val !=3D 1, "inner1", "got %d !=3D exp %d\n", val, 1);
--	bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map2), &key, &val);
-+	bpf_map_lookup_elem(map2_fd, &key, &val);
- 	CHECK(val !=3D 2, "inner2", "got %d !=3D exp %d\n", val, 2);
-=20
- 	/* inner1 =3D input + 1, inner2 =3D input */
--	val =3D bpf_map__fd(skel->maps.inner_map2);
--	bpf_map_update_elem(bpf_map__fd(skel->maps.outer_arr), &key, &val, 0);
--	val =3D bpf_map__fd(skel->maps.inner_map1);
--	bpf_map_update_elem(bpf_map__fd(skel->maps.outer_hash), &key, &val, 0);
-+	bpf_map_update_elem(outer_arr_fd, &key, &map2_fd, 0);
-+	bpf_map_update_elem(outer_hash_fd, &key, &map1_fd, 0);
- 	skel->bss->input =3D 3;
- 	usleep(1);
-=20
--	bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map1), &key, &val);
-+	bpf_map_lookup_elem(map1_fd, &key, &val);
- 	CHECK(val !=3D 4, "inner1", "got %d !=3D exp %d\n", val, 4);
--	bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map2), &key, &val);
-+	bpf_map_lookup_elem(map2_fd, &key, &val);
- 	CHECK(val !=3D 3, "inner2", "got %d !=3D exp %d\n", val, 3);
-=20
-+	for (i =3D 0; i < 5; i++) {
-+		val =3D i % 2 ? map1_fd : map2_fd;
-+		err =3D bpf_map_update_elem(outer_hash_fd, &key, &val, 0);
-+		if (CHECK_FAIL(err)) {
-+			printf("failed to update hash_of_maps on iter #%d\n", i);
-+			goto cleanup;
-+		}
-+		err =3D bpf_map_update_elem(outer_arr_fd, &key, &val, 0);
-+		if (CHECK_FAIL(err)) {
-+			printf("failed to update hash_of_maps on iter #%d\n", i);
-+			goto cleanup;
-+		}
-+	}
-+
-+	map1_id =3D bpf_map_id(skel->maps.inner_map1);
-+	map2_id =3D bpf_map_id(skel->maps.inner_map2);
-+	CHECK(map1_id =3D=3D 0, "map1_id", "failed to get ID 1\n");
-+	CHECK(map2_id =3D=3D 0, "map2_id", "failed to get ID 2\n");
-+
-+	test_btf_map_in_map__destroy(skel);
-+	skel =3D NULL;
-+
-+	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
-+
-+	fd =3D bpf_map_get_fd_by_id(map1_id);
-+	if (CHECK(fd >=3D 0, "map1_leak", "inner_map1 leaked!\n")) {
-+		close(fd);
-+		goto cleanup;
-+	}
-+	fd =3D bpf_map_get_fd_by_id(map2_id);
-+	if (CHECK(fd >=3D 0, "map2_leak", "inner_map2 leaked!\n")) {
-+		close(fd);
-+		goto cleanup;
-+	}
-+
- cleanup:
- 	test_btf_map_in_map__destroy(skel);
- }
---=20
-2.24.1
+Why not use other map types? The great part of CGROUP_STORAGE map
+is that it is isolated by different cgroups its attached to. When
+one program uses bpf_get_local_storage, even on the same map, it
+gets different storages if it were run as a result of attaching
+to different cgroups. The kernel manages the storages, simplifying
+BPF program or userspace. In theory, one could probably use other
+maps like array or hash to do the same thing, but it would be a
+major overhead / complexity. Userspace needs to know when a cgroup
+is being freed in order to free up a space in the replacement map.
+
+This patch set introduces a significant change to the semantics of
+CGROUP_STORAGE map type. Instead of each storage being tied to one
+single attachment, it is shared across different attachments to
+the same cgroup, and persists until either the map or the cgroup
+attached to is being freed.
+
+User may use u64 as the key to the map, and the result would be
+that the attach type become ignored during key comparison, and
+programs of different attach types will share the same storage if
+the cgroups they are attached to are the same.
+
+How could this break existing users?
+* Users that uses detach & reattach / program replacement as a
+  shortcut to zeroing the storage. Since we need sharing between
+  programs, we cannot zero the storage. Users that expect this
+  behavior should either attach a program with a new map, or
+  explicitly zero the map with a syscall.
+This case is dependent on undocumented implementation details, 
+so the impact should be very minimal.
+
+Patch 1 introduces a test on the old expected behavior of the map
+type.
+
+Patch 2 introduces a test showing how two programs cannot share
+one such map.
+
+Patch 3 implements the change of semantics to the map.
+
+Patch 4 amends the new test such that it yields the behavior we
+expect from the change.
+
+Patch 5 documents the map type.
+
+Changes since RFC:
+* Clarify commit message in patch 3 such that it says the lifetime
+  of the storage is ended at the freeing of the cgroup_bpf, rather
+  than the cgroup itself.
+* Restored an -ENOMEM check in __cgroup_bpf_attach.
+* Update selftests for recent change in network_helpers API.
+
+Changes since v1:
+* s/CHECK_FAIL/CHECK/
+* s/bpf_prog_attach/bpf_program__attach_cgroup/
+* Moved test__start_subtest to test_cg_storage_multi.
+* Removed some redundant CHECK_FAIL where they are already CHECK-ed.
+
+Changes since v2:
+* Lock cgroup_mutex during map_free.
+* Publish new storages only if attach is successful, by tracking
+  exactly which storages are reused in an array of bools.
+* Mention bpftool map dump showing a value of zero for attach_type
+  in patch 3 commit message.
+
+Changes since v3:
+* Use a much simpler lookup and allocate-if-not-exist from the fact
+  that cgroup_mutex is locked during attach.
+* Removed an unnecessary spinlock hold.
+
+Changes since v4:
+* Changed semantics so that if the key type is struct
+  bpf_cgroup_storage_key the map retains isolation between different
+  attach types. Sharing between different attach types only occur
+  when key type is u64.
+* Adapted tests and docs for the above change.
+
+Changes since v5:
+* Removed redundant NULL check before bpf_link__destroy.
+* Free BPF object explicitly, after asserting that object failed to
+  load, in the event that the object did not fail to load.
+* Rename variable in bpf_cgroup_storage_key_cmp for clarity.
+* Added a lot of information to Documentation, more or less copied
+  from what Martin KaFai Lau wrote.
+
+YiFei Zhu (5):
+  selftests/bpf: Add test for CGROUP_STORAGE map on multiple attaches
+  selftests/bpf: Test CGROUP_STORAGE map can't be used by multiple progs
+  bpf: Make cgroup storages shared between programs on the same cgroup
+  selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress
+  Documentation/bpf: Document CGROUP_STORAGE map type
+
+ Documentation/bpf/index.rst                   |   9 +
+ Documentation/bpf/map_cgroup_storage.rst      | 169 ++++++++
+ include/linux/bpf-cgroup.h                    |  12 +-
+ kernel/bpf/cgroup.c                           |  67 +--
+ kernel/bpf/core.c                             |  12 -
+ kernel/bpf/local_storage.c                    | 216 +++++-----
+ .../bpf/prog_tests/cg_storage_multi.c         | 403 ++++++++++++++++++
+ .../selftests/bpf/progs/cg_storage_multi.h    |  13 +
+ .../bpf/progs/cg_storage_multi_egress_only.c  |  33 ++
+ .../bpf/progs/cg_storage_multi_isolated.c     |  57 +++
+ .../bpf/progs/cg_storage_multi_shared.c       |  57 +++
+ 11 files changed, 905 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/bpf/map_cgroup_storage.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cg_storage_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi.h
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_egress_only.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_isolated.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cg_storage_multi_shared.c
+
+-- 
+2.27.0
 
