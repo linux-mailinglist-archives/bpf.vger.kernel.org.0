@@ -2,189 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B82622C28C
-	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D20F22C491
+	for <lists+bpf@lfdr.de>; Fri, 24 Jul 2020 13:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgGXJqp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jul 2020 05:46:45 -0400
-Received: from mail-eopbgr30103.outbound.protection.outlook.com ([40.107.3.103]:36065
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726114AbgGXJqp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:46:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nKNg1IwqWeOQhxVgEjFMU4WgcI162kORquDMGN+4oITrjQUzuiTqCcaGzmExncmYFZOlpo/E8nn/uYpp2rNTxtDpm6F0jKMNzj85EGEVHz771Uh/luvkAxwReT4kugWyMLZfqWIe/AYXavBw11zMcRaB+H/7WGqQiXo9tPD3+pTBSjj30hUjJ39sWa0FnimPeIVwo8DAkwnmsYMy90bJaOrtYM1a+Jmbr/L/3iFJjyd2AdeeGrW8FyKdBdfYqikoy04UlsiHjtzHydetihSzxJzfy9u0B+nBu4zSS9ddLrMybJqOAv/cFjxMCbCDzYFPEpNSBfbz2fxpM70MPRCSYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kyfx9JHBBSN3Md8viO8pyHD9DC95JrdKfkS8ciSr5Ag=;
- b=NiW/ARNNQ4d50Z/8gjcRnCPJxp7+/f56P43A6x0gBCGTWWKf7pCRucwxXs45q3wTwONU5SfMY1LX7hZpB/+BEywwCdUe7/xjH6ljJdn0cypwegWTuUHnoqAQkH8xlkx5TsiTWEw/8/LvWODhQoCq/wfVBNnJsNpf073GRylumufun7oSf008E1CN9JQ4mv1nb9zEdFwfGe6P3zPZdvNwym/Z7SEdRt+6dbMO0d+OsqcPbxfAU77yBm7M/z1WE5N5MP1uJ0YwBYS8tsA/B6QTW1QzsA0/KHje5ThQ/fhFNR1je/3D4OoVXpcuCyTkgkVjFAOk161uMYfTreoU5NemdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kyfx9JHBBSN3Md8viO8pyHD9DC95JrdKfkS8ciSr5Ag=;
- b=DFCaNC7SoE0pImE/+Y0b+0tD26BYKwbE2CIlBmcCDq0wd1RPtc61OiycrEAh1VhQustHO1d7tiWr+prKJs3a7AEr7VhCNB97pF+tXwiHjFJRxteTiv6/dIsoWc/3Pd1BPB+cexSsX/1zJDblIbR3rHGuAMpabuhlbaVWDnSG7sc=
-Received: from HE1PR83MB0220.EURPRD83.prod.outlook.com (2603:10a6:23:31::27)
- by HE1PR83MB0347.EURPRD83.prod.outlook.com (2603:10a6:7:63::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.5; Fri, 24 Jul
- 2020 09:46:40 +0000
-Received: from HE1PR83MB0220.EURPRD83.prod.outlook.com
- ([fe80::68:5319:d4f1:a11e]) by HE1PR83MB0220.EURPRD83.prod.outlook.com
- ([fe80::68:5319:d4f1:a11e%12]) with mapi id 15.20.3239.010; Fri, 24 Jul 2020
- 09:46:40 +0000
-From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
-Thread-Topic: [EXTERNAL] Re: Maximum size of record over perf ring buffer?
-Thread-Index: AdZcRdT23AT0UyAxRuO+fVAupufT3wCCVcuAAA6Q+FAApq92gAAeYDZg
-Date:   Fri, 24 Jul 2020 09:40:16 +0000
-Message-ID: <HE1PR83MB0220B3D0413E997D1A33FA52FB770@HE1PR83MB0220.EURPRD83.prod.outlook.com>
-References: <AM5PR83MB02104FB714E7E29DD90D8E06FB7C0@AM5PR83MB0210.EURPRD83.prod.outlook.com>
- <CAEf4BzbE5+V8GJJwASgJJyCdX3P41GeoK14szprZq4i_OrQFOg@mail.gmail.com>
- <HE1PR83MB0220F45891B3B413F6634662FB7B0@HE1PR83MB0220.EURPRD83.prod.outlook.com>
- <CAEf4BzZj8z5YWHQkYBjBuQ2LUwvodt7tz_9=GZzZ6hcW3zkj5g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZj8z5YWHQkYBjBuQ2LUwvodt7tz_9=GZzZ6hcW3zkj5g@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=kesheldr@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-07-24T09:40:15.1769589Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4e445a25-a739-460e-811b-b3fe45001229;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [81.2.159.69]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f84e880f-16b0-4684-3ec4-08d82fb6771a
-x-ms-traffictypediagnostic: HE1PR83MB0347:
-x-microsoft-antispam-prvs: <HE1PR83MB0347CD7A1CD1361061120829FB770@HE1PR83MB0347.EURPRD83.prod.outlook.com>
-x-o365-sonar-daas-pilot: True
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mL6oeOScwFdYRy8Ulooi4Km8kAcpQvdUDzUXlCIIMLO5C/z/7corWUZFpoc6tc7tNiGVvTDNMbOop3n67P7+UsWLthC+AprrHlr8/U8C2YmJ2Stak+bDTgAs3ff9ewiifuq2ulDc2g0mtIPLQOdkw6JxvvHvu2ycC7dox6nSRDc38XICFkwc1GOwXPhwCIOsFrQXQ4fsNT0d6xOF9aMZwdL7k7T5ybzTa35CIxS2vEJ/Pbk7g0+QWVPJg0wtR5VFPp7vXCb1Rn6cjCmiecXSt2nM40h8udmwgJNa3MwohsTJ925ZUXVPXuhPvTuv5y4alalVWhs08we3XCVo+3Wz9aK1uuT9EFef2dDbsrHWaAAEQhdrtDw+AVpiCUJS+ugKd9G6DgI7ZQdcUvd3GzyKyQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR83MB0220.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(316002)(53546011)(83380400001)(82960400001)(82950400001)(52536014)(6916009)(186003)(26005)(8936002)(2906002)(4326008)(5660300002)(6666004)(33656002)(83080400001)(7696005)(6506007)(478600001)(8990500004)(64756008)(66446008)(966005)(66556008)(66946007)(76116006)(86362001)(10290500003)(66476007)(8676002)(9686003)(55016002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: zv8riaotBASlJwLJ6X4UDaRxDrmKBP90Yo6xGisoawDiYhohJTqveRsp7fTcPDIDLmDzR80UM4k99nrsd2hx85ee11c1u7flcgMr+i96SZ6wezUlhsWJ1Po9OBTwIwMedyYWs400JBp/hgcNgDZQgj+Iw0hbMaaWt5Id7m3M1vBTXUIDct2CdpvmnXRR1WVBrkNiGXago6bEqqIIOsc0XNjq1Iuon/RXrocq0eMJZvVSYdhbCl4Wpm5F7jmXmjWRlaBqqUwzwdnvBJ6aoEbN2fDpnECVG/L6qxv1RLOp25nMKnxBmKQbuUDawZZryqnL6LoCKiDlX/a6LKx3pIKArJFquncoj6qdsHeJDFmPWD26gEyRb+L2qIgbCBb5zZN28pcL4k4f/IpQ7J6bMAfXV64nLEg9jEA3igBgEBtMTT00sXLJThNg/22KGtq7ysddu3z41yF7dqoqaCn9sjlK1TyLVSBcBGZIWLv0RSNqoTwTUoqx3fLx9gkwxrKd7pT1AGtCB08D5q75xxq6GsoSNxM7J2H5WmjB7NiZhzhMIBb3mLaRSsWvs1YxzieMfH3SaCds/Fo2AlsiOrd0Lt9h26XgNKbc+wvqU9i1beQtrjomfgqobqEEE6P3YMdvFR6ZIP3xQ+/YpPKwo0LlIyjtXg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726317AbgGXLwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jul 2020 07:52:25 -0400
+Received: from [125.140.134.231] ([125.140.134.231]:64965 "EHLO
+        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726280AbgGXLwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jul 2020 07:52:25 -0400
+Received: from User ([66.154.113.229]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
+         Fri, 24 Jul 2020 20:46:09 +0900
+Reply-To: <christopherwang36@gmail.com>
+From:   "CHRISTOPHER WANG" <christopherwang36@gmail.com>
+Subject: INVESTMENT
+Date:   Fri, 24 Jul 2020 04:46:25 -0700
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR83MB0220.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f84e880f-16b0-4684-3ec4-08d82fb6771a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2020 09:40:16.3883
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hmSpb8vEgL59RRVFdOshcyHGQcI2IM7mDh+669jFUiMk7hesr1YtXpB0XiwQ6JM+0awSFmGFoFoUMA7zgcJf1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR83MB0347
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <WIN-DAONO245HJFtwBP008e95d1@WIN-DAONO245HJF>
+X-OriginalArrivalTime: 24 Jul 2020 11:46:09.0522 (UTC) FILETIME=[05E7BD20:01D661B0]
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGVsbG8gQW5kcmlpDQoNClRoYW5rIHlvdSBmb3IgdGFraW5nIGEgbG9vayBhdCB0aGlzLiAgV2hp
-bGUgdGhlIHNpemUgaXMgcmVwb3J0ZWQgY29ycmVjdGx5IHRvIHRoZSBjb25zdW1lciAoYmFyIHBh
-ZGRpbmcsIGV0YyksIHRoZSBhY3R1YWwgb2Zmc2V0cyBiZXR3ZWVuIGFkamFjZW50IHBvaW50ZXJz
-IGFwcGVhcnMgdG8gZWl0aGVyIGhhdmUgYmVlbiBjYXN0IHRvIGEgdTE2IG9yIG90aGVyd2lzZSBt
-YXNrZWQgd2l0aCAweEZGRkYsIGNhdXNpbmcgd2hhdCBJIGJlbGlldmUgdG8gYmUgb3ZlcmxhcHBp
-bmcgc2FtcGxlcyBhbmQgdGhlIG9wcG9ydHVuaXR5IGZvciBzYW1wbGUgY29ycnVwdGlvbiBpbiB0
-aGUgb3ZlcmxhcHBlZCByZWdpb25zLg0KDQpUaGFua3MgYWdhaW4NCg0KS2V2DQoNCg0KLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpLm5ha3J5
-aWtvQGdtYWlsLmNvbT4gDQpTZW50OiAyMyBKdWx5IDIwMjAgMjA6MDUNClRvOiBLZXZpbiBTaGVs
-ZHJha2UgPEtldmluLlNoZWxkcmFrZUBtaWNyb3NvZnQuY29tPg0KQ2M6IGJwZkB2Z2VyLmtlcm5l
-bC5vcmcNClN1YmplY3Q6IFJlOiBbRVhURVJOQUxdIFJlOiBNYXhpbXVtIHNpemUgb2YgcmVjb3Jk
-IG92ZXIgcGVyZiByaW5nIGJ1ZmZlcj8NCg0KT24gTW9uLCBKdWwgMjAsIDIwMjAgYXQgNDozOSBB
-TSBLZXZpbiBTaGVsZHJha2UgPEtldmluLlNoZWxkcmFrZUBtaWNyb3NvZnQuY29tPiB3cm90ZToN
-Cj4NCj4gSGVsbG8NCj4NCj4gVGhhbmsgeW91IGZvciB5b3VyIHJlc3BvbnNlOyBJIGhvcGUgeW91
-IGRvbid0IG1pbmQgbWUgdG9wLXBvc3RpbmcuICBJJ3ZlIHB1dCB0b2dldGhlciBhIFBPQyB0aGF0
-IGRlbW9uc3RyYXRlcyBteSByZXN1bHRzLiAgRWRpdCB0aGUgc2l6ZSBvZiB0aGUgZGF0YSBjaGFy
-IGFycmF5IGluIGV2ZW50X2RlZnMuaCB0byBjaGFuZ2UgdGhlIGJlaGF2aW91ci4NCj4NCj4gaHR0
-cHM6Ly9uYW0wNi5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNB
-JTJGJTJGZ2l0aA0KPiB1Yi5jb20lMkZtaWNyb3NvZnQlMkZPTVMtQXVkaXRkLVBsdWdpbiUyRnRy
-ZWUlMkZNU1RJQy1SZXNlYXJjaCUyRmVicGZfDQo+IHBlcmZfb3V0cHV0X3BvYyZhbXA7ZGF0YT0w
-MiU3QzAxJTdDS2V2aW4uU2hlbGRyYWtlJTQwbWljcm9zb2Z0LmNvbSU3QzgNCj4gYmQ5ZmI1NTFj
-ZDQ0NTRiODdhNjA4ZDgyZjNiNTdjMCU3QzcyZjk4OGJmODZmMTQxYWY5MWFiMmQ3Y2QwMTFkYjQ3
-JTdDMQ0KPiAlN0MwJTdDNjM3MzExMjc5MjExNjA2MzUxJmFtcDtzZGF0YT1qTU1wZmklMkJkJTJC
-N2paek1UOTA1eEo2MTM0Y0RKZDV1DQo+IE1OU3U5UkNkeDRNNnMlM0QmYW1wO3Jlc2VydmVkPTAN
-Cg0KSSBoYXZlbid0IHJ1biB5b3VyIHByb2dyYW0sIGJ1dCBJIGNhbiBjZXJ0YWlubHkgcmVwcm9k
-dWNlIHRoaXMgdXNpbmcgYmVuY2hfcGVyZmJ1ZiBpbiBzZWxmdGVzdHMuIEl0IGRvZXMgc2VlbSBs
-aWtlIHNvbWV0aGluZyBpcyBzaWxlbnRseSBjb3JydXB0ZWQsIGJlY2F1c2UgdGhlIHNpemUgcmVw
-b3J0ZWQgYnkgcGVyZiBpcyBjb3JyZWN0IChwbHVzL21pbnVzIGZldyBieXRlcywgcHJvYmFibHkg
-cm91bmRpbmcgdXAgdG8gOCBieXRlcyksIGJ1dCB0aGUgY29udGVudHMgaXMgbm90IGNvcnJlY3Qu
-IEkgaGF2ZSBubyBpZGVhIHdoeSB0aGF0J3MgaGFwcGVuaW5nLCBtYXliZSBzb21lb25lIG1vcmUg
-ZmFtaWxpYXIgd2l0aCB0aGUgcGVyZiBzdWJzeXN0ZW0gY2FuIHRha2UgYSBsb29rLg0KDQo+DQo+
-IFVuZm9ydHVuYXRlbHksIG91ciBwcm9qZWN0IGFpbXMgdG8gcnVuIG9uIG9sZGVyIGtlcm5lbHMg
-dGhhbiA1Ljggc28gdGhlIGJwZiByaW5nIGJ1ZmZlciB3b24ndCB3b3JrIGZvciB1cy4NCj4NCj4g
-VGhhbmtzIGFnYWluDQo+DQo+IEtldmluIFNoZWxkcmFrZQ0KPg0KPg0KPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBicGYtb3duZXJAdmdlci5rZXJuZWwub3JnIDxicGYtb3du
-ZXJAdmdlci5rZXJuZWwub3JnPiBPbiBCZWhhbGYgDQo+IE9mIEFuZHJpaSBOYWtyeWlrbw0KPiBT
-ZW50OiAyMCBKdWx5IDIwMjAgMDU6MzUNCj4gVG86IEtldmluIFNoZWxkcmFrZSA8S2V2aW4uU2hl
-bGRyYWtlQG1pY3Jvc29mdC5jb20+DQo+IENjOiBicGZAdmdlci5rZXJuZWwub3JnDQo+IFN1Ympl
-Y3Q6IFtFWFRFUk5BTF0gUmU6IE1heGltdW0gc2l6ZSBvZiByZWNvcmQgb3ZlciBwZXJmIHJpbmcg
-YnVmZmVyPw0KPg0KPiBPbiBGcmksIEp1bCAxNywgMjAyMCBhdCA3OjI0IEFNIEtldmluIFNoZWxk
-cmFrZSA8S2V2aW4uU2hlbGRyYWtlQG1pY3Jvc29mdC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSGVs
-bG8NCj4gPg0KPiA+IEknbSBidWlsZGluZyBhIHRvb2wgdXNpbmcgRUJQRi9saWJicGYvQyBhbmQg
-SSd2ZSBydW4gaW50byBhbiBpc3N1ZSB0aGF0IEknZCBsaWtlIHRvIGFzayBhYm91dC4gIEkgaGF2
-ZW4ndCBtYW5hZ2VkIHRvIGZpbmQgZG9jdW1lbnRhdGlvbiBmb3IgdGhlIG1heGltdW0gc2l6ZSBv
-ZiBhIHJlY29yZCB0aGF0IGNhbiBiZSBzZW50IG92ZXIgdGhlIHBlcmYgcmluZyBidWZmZXIsIGJ1
-dCBleHBlcmltZW50YXRpb24gKG9uIGtlcm5lbCA1LjMgKHg2NCkgd2l0aCBsYXRlc3QgbGliYnBm
-IGZyb20gZ2l0aHViKSBzdWdnZXN0cyBpdCBpcyBqdXN0IHNob3J0IG9mIDY0S0IuICBQbGVhc2Ug
-Y291bGQgc29tZW9uZSBjb25maXJtIGlmIHRoYXQncyB0aGUgY2FzZSBvciBub3Q/ICBNeSBleHBl
-cmltZW50cyBzdWdnZXN0IHRoYXQgc2VuZGluZyBhIHJlY29yZCB0aGF0IGlzIGdyZWF0ZXIgdGhh
-biA2NEtCIHJlc3VsdHMgaW4gdGhlIHNpemUgcmVwb3J0ZWQgaW4gdGhlIGNhbGxiYWNrIGJlaW5n
-IGNvcnJlY3QgYnV0IHRoZSByZWNvcmRzIG92ZXJsYXBwaW5nLCBjYXVzaW5nIGNvcnJ1cHRpb24g
-aWYgdGhleSBhcmUgbm90IHNlcnZpY2VkIGFzIHF1aWNrbHkgYXMgdGhleSBhcnJpdmUuICBTZXR0
-aW5nIHRoZSByZWNvcmQgdG8gZXhhY3RseSA2NEtCIHJlc3VsdHMgaW4gbm8gcmVjb3JkcyBiZWlu
-ZyByZWNlaXZlZCBhdCBhbGwuDQo+ID4NCj4gPiBGb3IgcmVmZXJlbmNlLCBJJ20gdXNpbmcgcGVy
-Zl9idWZmZXJfX25ldygpIGFuZCBwZXJmX2J1ZmZlcl9fcG9sbCgpIG9uIHRoZSB1c2VybGFuZCBz
-aWRlOyBhbmQgYnBmX3BlcmZfZXZlbnRfb3V0cHV0KGN0eCwgJmV2ZW50X21hcCwgQlBGX0ZfQ1VS
-UkVOVF9DUFUsIGV2ZW50LCBzaXplb2YoZXZlbnRfcykpIG9uIHRoZSBFQlBGIHNpZGUuDQo+ID4N
-Cj4gPiBBZGRpdGlvbmFsbHksIGlzIHRoZXJlIGEgYmV0dGVyIGFyY2hpdGVjdHVyZSBmb3Igc2Vu
-ZGluZyBsYXJnZSB2b2x1bWVzIG9mIGRhdGEgKD42NEtCKSBiYWNrIGZyb20gdGhlIEVCUEYgcHJv
-Z3JhbSB0byB1c2VybGFuZCwgc3VjaCBhcyBhIGRpZmZlcmVudCByaW5nIGJ1ZmZlciwgYSBtYXAs
-IHNvbWUga2luZCBvZiBzaGFyZWQgbW1hcGVkIHNlZ21lbnQsIGV0Yywgb3RoZXIgdGhhbiBzaW1w
-bHkgZnJhZ21lbnRpbmcgdGhlIGRhdGE/ICBQbGVhc2UgZXhjdXNlIG15IG5haXZldHkgYXMgSSdt
-IHJlbGF0aXZlbHkgbmV3IHRvIHRoZSB3b3JsZCBvZiBFQlBGLg0KPiA+DQo+DQo+IEknbSBub3Qg
-YXdhcmUgb2YgYW55IHN1Y2ggbGltaXRhdGlvbnMgZm9yIHBlcmYgcmluZyBidWZmZXIgYW5kIEkg
-aGF2ZW4ndCBoYWQgYSBjaGFuY2UgdG8gdmFsaWRhdGUgdGhpcy4gSXQgd291bGQgYmUgZ3JlYXQg
-aWYgeW91IGNhbiBwcm92aWRlIGEgc21hbGwgcmVwcm8gc28gdGhhdCBzb21lb25lIGNhbiB0YWtl
-IGEgZGVlcGVyIGxvb2ssIGl0IGRvZXMgc291bmQgbGlrZSBhIGJ1ZywgaWYgeW91IHJlYWxseSBn
-ZXQgY2xvYmJlcmVkIGRhdGEuIEl0IG1pZ2h0IGJlIGFjdHVhbGx5IGhvdyB5b3Ugc2V0IHVwIHBl
-cmZidWYsIEFGQUlLLCBpdCBoYXMgYSBtb2RlIHdoZXJlIGl0IHdpbGwgb3ZlcnJpZGUgdGhlIGRh
-dGEsIGlmIGl0J3Mgbm90IGNvbnN1bWVkIHF1aWNrbHkgZW5vdWdoLCBidXQgeW91IG5lZWQgdG8g
-Y29uc2Npb3VzbHkgZW5hYmxlIHRoYXQgbW9kZS4NCj4NCj4gQnV0IGFwYXJ0IGZyb20gdGhhdCwg
-c2hhbWVsZXNzIHBsdWcgaGVyZSwgeW91IGNhbiB0cnkgdGhlIG5ldyBCUEYgcmluZyBidWZmZXIg
-KFswXSksIGF2YWlsYWJsZSBpbiA1LjgrIGtlcm5lbHMuIEl0IHdpbGwgYWxsb3cgeW91IHRvIGF2
-b2lkIGV4dHJhIGNvcHkgb2YgZGF0YSB5b3UgZ2V0IHdpdGggYnBmX3BlcmZfZXZlbnRfb3V0cHV0
-KCksIGlmIHlvdSB1c2UgQlBGIHJpbmdidWYncyBicGZfcmluZ2J1Zl9yZXNlcnZlKCkgKyBicGZf
-cmluZ2J1Zl9jb21taXQoKSBBUEkuIEl0IGFsc28gaGFzIGJwZl9yaW5nYnVmX291dHB1dCgpIEFQ
-SSwgd2hpY2ggaXMgbG9naWNhbGx5ICBlcXVpdmFsZW50IHRvIGJwZl9wZXJmX2V2ZW50X291dHB1
-dCgpLiBBbmQgaXQgaGFzIGEgdmVyeSBoaWdoIGxpbWl0IG9uIHNhbXBsZSBzaXplLCB1cCB0byA1
-MTJNQiBwZXIgc2FtcGxlLg0KPg0KPiBLZWVwIGluIG1pbmQsIEJQRiByaW5nYnVmIGlzIE1QU0Mg
-ZGVzaWduIGFuZCBpZiB5b3UgdXNlIGp1c3Qgb25lIEJQRiByaW5nYnVmIGFjcm9zcyBhbGwgQ1BV
-cywgeW91IG1pZ2h0IHJ1biBpbnRvIHNvbWUgY29udGVudGlvbiBhY3Jvc3MgbXVsdGlwbGUgQ1BV
-LiBJdCBpcyBhY2NlcHRhYmxlIGluIGEgbG90IG9mIGFwcGxpY2F0aW9ucyBJIHdhcyB0YXJnZXRp
-bmcsIGJ1dCBpZiB5b3UgaGF2ZSBhIGhpZ2ggZnJlcXVlbmN5IG9mIGV2ZW50cyAoa2VlcCBpbiBt
-aW5kLCB0aHJvdWdocHV0IGRvZXNuJ3QgbWF0dGVyLCBvbmx5IGNvbnRlbnRpb24gb24gc2FtcGxl
-IHJlc2VydmF0aW9uIG1hdHRlcnMpLCB5b3UgbWlnaHQgd2FudCB0byB1c2UgYW4gYXJyYXkgb2Yg
-QlBGIHJpbmdidWZzIHRvIHNjYWxlIHRocm91Z2hwdXQuIFlvdSBjYW4gZG8gMSByaW5nYnVmIHBl
-ciBlYWNoIENQVSBmb3IgdWx0aW1hdGUgcGVyZm9ybWFuY2UgYXQgdGhlIGV4cGVuc2Ugb2YgbWVt
-b3J5IHVzYWdlICh0aGF0J3MgcGVyZiByaW5nIGJ1ZmZlciBzZXR1cCksIGJ1dCBCUEYgcmluZ2J1
-ZiBpcyBmbGV4aWJsZSBlbm91Z2ggdG8gYWxsb3cgYW55IHRvcG9sb2d5IHRoYXQgbWFrZXMgc2Vu
-c2UgZm9yIHlvdSB1c2UgY2FzZSwgZnJvbSAxIHNoYXJlZCByaW5nYnVmIGFjcm9zcyBhbGwgQ1BV
-cywgdG8gYW55dGhpbmcgaW4gYmV0d2Vlbi4NCj4NCj4NCg==
+
+
+Good day,
+
+You were recommended by a mutual associate. I write you regarding an investment of bearer bonds I made on behalf of a client. 
+
+       The investment was made in 2009 and has been under my management. The said investor is deceased. The window is now available to assign these bonds to any name or company of my choice. I have all the necessary information to achieve this within 10 banking days.
+      
+       The total value of the bond is 100million pounds sterling, in a million pound denominations.
+      
+        If you can handle this, do contact me at your earliest convenience via my email christopherwang36@gmail.com
+So we can discuss the final details Thank you.
+ 
+Mr CHRISTOPHER WANG
