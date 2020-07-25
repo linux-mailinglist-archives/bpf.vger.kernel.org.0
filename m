@@ -2,78 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB9B22D621
-	for <lists+bpf@lfdr.de>; Sat, 25 Jul 2020 10:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D0F22D6EE
+	for <lists+bpf@lfdr.de>; Sat, 25 Jul 2020 12:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgGYIlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jul 2020 04:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgGYIlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jul 2020 04:41:05 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D28C0619D3;
-        Sat, 25 Jul 2020 01:41:04 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id s9so6439149lfs.4;
-        Sat, 25 Jul 2020 01:41:04 -0700 (PDT)
+        id S1726618AbgGYK6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jul 2020 06:58:54 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:5637 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726572AbgGYK6x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jul 2020 06:58:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gLa0yIa3R6CxeFbpWBGfvSi9WOpvvBRp1bfTmHbwGgA=;
-        b=kGmsAr4ZBv5Vi8BRAQbjW9+ycHKsMrrz796Jl/fafG9EID941bQh6Y1DdoPI1ITRLD
-         aZR0flmjyNvQaIwnkxfYa+sFFnifO2rzVXB/1ybFQ1SVmffzTM5pytXZZAMyQtAWFLNy
-         Imju1YwixY/+ICD/d8vI9mV/qlxxIseDZ/xNCwEuwXs5H0BsZFuE/tjEVjlGlR6Ml7Dd
-         x9NE6RH1RxhMsTi6RttlugQqcI+5/TWOHHMom8TigdlACrBFNuj8pLfdq1IETbmkI1ke
-         hYAItowlGyZUNTetLkJY6nUOm863cI2M6poZgzR2ZUvvPm8NBSFNk9IKOPASSYDX3SLU
-         YGVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gLa0yIa3R6CxeFbpWBGfvSi9WOpvvBRp1bfTmHbwGgA=;
-        b=VG8UUhhGQnSpCaDmISfbuvGQ6vIck0g3VLMYHom4jbUVpdifdrT43LxWtgIx+des8N
-         uYvGcjL4MjQifOJ0KstK9JjRSMapKKFxiCa5RPyMxk9lPhZ7fKGoDFwl2vZFECSC/8lR
-         zYjYo2b5usjKHYfI6MDx1GaJCurPTmOwWUMuRURuYWmOUWdMUKpYxKMZcW0JyEEbMG9E
-         um9Y6wtV/jMxx9zzxTBmninsOaZa3Zm96r2d+RfsHOvyu5wdx7tNn2sabHQLJi7ssqQG
-         q0/Rt15Rvq/abuY4KCf/KkVNw0WilhPtUx5WPVW4ps5t3Fb0/UCfyzcHoB5gSVJ1EpMD
-         c4zg==
-X-Gm-Message-State: AOAM5310hiNp6vEfCizfzUWo5IkRxI05dndvqUa3KtwvN47JC1gZFlKN
-        D5rsVE1d0GL5dR0q8qZr6w4JBIsqInb9IXpM2fQ=
-X-Google-Smtp-Source: ABdhPJzPUinusgTSMJuckILlfLGJqmZxIxWiac5hfQtiBRbrYhXjTRayaHMOLQTds20E7/LSZ/rvKXoVb4zjnPk1QWA=
-X-Received: by 2002:a19:84ce:: with SMTP id g197mr6793620lfd.73.1595666463180;
- Sat, 25 Jul 2020 01:41:03 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1595674733; x=1627210733;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=8yCuQp1jTum4mRZYjvOuHgeSPvfethR7PN2wJdJXAZk=;
+  b=OW0ef4y+6sprVMnbpkwaw4CpVz2qhrTv0mi19rK6bW9nB5uNUSf8jDws
+   sFpuaUvELflN8c0BGVvcQI1BskhQxO574K12zQEmi4IBbC4DJW9PKlVVL
+   gistspJ9QaPpzi8GFzrntsI1o9bLjo4Sfy8DSD78hxDjCs1J6LJ+mdgCi
+   A=;
+IronPort-SDR: uAxbuuyURjQ6k6z1cAtU4ogVYIh2Jf46Y2MFwTGvFlwmo+7hEz6HCilG/A9TfWU3OCLyaipd7l
+ ryAcnwGlbcZQ==
+X-IronPort-AV: E=Sophos;i="5.75,394,1589241600"; 
+   d="scan'208";a="61470209"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 25 Jul 2020 10:58:52 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 49F06A1D5E;
+        Sat, 25 Jul 2020 10:58:51 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 25 Jul 2020 10:58:49 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.203) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 25 Jul 2020 10:58:45 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <willemdebruijn.kernel@gmail.com>
+CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <jakub@cloudflare.com>, <kuba@kernel.org>,
+        <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
+        <willemb@google.com>
+Subject: Re: [PATCH bpf-next] udp: reduce merge conflict on udp[46]_lib_lookup2
+Date:   Sat, 25 Jul 2020 19:58:41 +0900
+Message-ID: <20200725105841.19507-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <20200725025457.1004164-1-willemdebruijn.kernel@gmail.com>
+References: <20200725025457.1004164-1-willemdebruijn.kernel@gmail.com>
 MIME-Version: 1.0
-References: <20200724200503.3629591-1-songliubraving@fb.com>
-In-Reply-To: <20200724200503.3629591-1-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 25 Jul 2020 01:40:51 -0700
-Message-ID: <CAADnVQLsNcXUAYbWButG8PpxDh5uc=rC8KuyxovddfykMsUqYw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix build on architectures with special bpf_user_pt_regs_t
-To:     Song Liu <songliubraving@fb.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.203]
+X-ClientProxiedBy: EX13D17UWC004.ant.amazon.com (10.43.162.195) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 1:08 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Architectures like s390, powerpc, arm64, riscv have speical definition of
-> bpf_user_pt_regs_t. So we need to cast the pointer before passing it to
-> bpf_get_stack(). This is similar to bpf_get_stack_tp().
->
-> Fixes: 03d42fd2d83f ("bpf: Separate bpf_get_[stack|stackid] for perf events BPF")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 24 Jul 2020 22:54:57 -0400
+> From: Willem de Bruijn <willemb@google.com>
+> 
+> Commit efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
+> 
+> in net conflicts with
+> 
+> Commit 72f7e9440e9b ("udp: Run SK_LOOKUP BPF program on socket lookup")
+> 
+> in bpf-next.
+> 
+> Commit 4a0e87bb1836 ("udp: Don't discard reuseport selection when group
+> has connections")
+> 
+> also in bpf-next reduces the conflict.
+> 
+> Further simplify by applying the main change of the first commit to
+> bpf-next. After this a conflict remains, but the bpf-next side can be
+> taken as is.
+> 
+> Now unused variable reuseport_result added in net must also be
+> removed. That applies without a conflict, so is harder to spot.
+> 
+> Link: http://patchwork.ozlabs.org/project/netdev/patch/20200722165227.51046-1-kuniyu@amazon.co.jp/
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
 
-Applied. Thanks
+Thank you for the follow up patch!
+
+Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+
+Best Regards,
+Kuniyuki
