@@ -2,100 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1A522DB09
-	for <lists+bpf@lfdr.de>; Sun, 26 Jul 2020 03:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E18E22DB90
+	for <lists+bpf@lfdr.de>; Sun, 26 Jul 2020 05:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgGZBBQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jul 2020 21:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S1727803AbgGZDqw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jul 2020 23:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbgGZBBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jul 2020 21:01:16 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF59CC08C5C0;
-        Sat, 25 Jul 2020 18:01:15 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b25so13623557ljp.6;
-        Sat, 25 Jul 2020 18:01:15 -0700 (PDT)
+        with ESMTP id S1727101AbgGZDqw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jul 2020 23:46:52 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA4BC0619D2;
+        Sat, 25 Jul 2020 20:46:52 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b30so7209501lfj.12;
+        Sat, 25 Jul 2020 20:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iRZ6k+2EudeHcZ1b0jIuHOrby+BxTb2SO0kPldgSHGM=;
-        b=VjrhvCM8b3FWo+/TIjekn4QFnPxqkpMJCmtYhSeNOjB5ric/d+Z8hkrquF9ISxcupt
-         qMzNsVZXAenccTbWWgh7rr7Dt9B5SlQLj/sv/AwB+ELvX6nMcAguBcy9iTfOfXP9xq7P
-         cOKAI3nz/hzJGBzEMeW5o6iDzEkMbDAjzP20z0Sa23EMKDPlxC8MSac4uljKj5cx2v4c
-         NTqklFJqxC341WhihVYbDSJEUPQdT1JeAvpWoF2Rpa70crpKLftobre8zlx7M//kGiT+
-         Bdjs3eMgBpZDJc6NCTrAE2h3N+iD0Kuuf37SV3l6Ab/yQ8E3nUj17KYorAzr4rFnWHA1
-         EQNA==
+        bh=ikuabT8VWStN+W6tQzPZZEVviS7mON42dmoBRas1K+8=;
+        b=OEQJlVe+VsPN7v2t2zCG3VM5THnlYZe2FDKHJhKZViJE1DyrCRcNp18wSvwAXyVNkm
+         mUAs7m/NpJnAxPGUB5gFG03iSOwgvuJK0dljmPyjJJymqnFeytdMF3BUJL1dlQGg5vyE
+         /Hje70XiRVjORjoE9kWXwmy8bvrdMtnT7CTG7tG1E3sC6vIPrD7VV3nQv5g4RwCi2MQY
+         e2FdHqtpe6cn3eljYEJ0hj0QiCTK5FRMert1DrsH2L2vGG3cEz1udhsrFUZhLN2x1YZE
+         aZsMLAF25Qv1vWyzxsnKxLLWu6ZcGCqrwsnr/lsdl3ugdmRpkUOv7ahd2W6wfKd5FJNQ
+         +fYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iRZ6k+2EudeHcZ1b0jIuHOrby+BxTb2SO0kPldgSHGM=;
-        b=aYEOm4XM3rQzzvbph+xIHxrvb10KQSpKyvt5NKQMyZ4aIboOExVQqEoh//a/WLe6B4
-         GGaI24K1znX13o4jHEtV+/vykRW8xuvhftxPdgjvz8qwBO2hGICzGWguQpFlOFZwjelH
-         jU8ZeGwiab47waFMixMHL/AaqjNfBJg2IO3vTR9js/oUHj9nOAbObRfkZhwKVgX9LwT8
-         O6yih6OSp9v4ccdZIuXY8wvg+zPNtwZCVrgUYJs7dQVRIH8Ytk0SL2rReSwp80fuSG22
-         LtkIZeMtd4figfidQkSpsRpJDOygNEutGg8sLtL/z7uqSVIkYkvhtfoai08PEEs53OYw
-         eIDA==
-X-Gm-Message-State: AOAM533xHNg7eUwAEvNYfdHhxxibs6bJZ+79w2frln330U4If3C7Ho0e
-        KWqCjj8Qf3NKiU21Jg6Y3eTxS1Y1f4UB+kNkTmI=
-X-Google-Smtp-Source: ABdhPJxztEx9LxUx2VCXP8Lb3AxeJujIxpEjuQTtRRKuD9r2U+RvhSUBRP/iHQR9IaqoqIm8Tblx05kje6uVTpnZRVs=
-X-Received: by 2002:a2e:8357:: with SMTP id l23mr6688105ljh.290.1595725274305;
- Sat, 25 Jul 2020 18:01:14 -0700 (PDT)
+        bh=ikuabT8VWStN+W6tQzPZZEVviS7mON42dmoBRas1K+8=;
+        b=K17RlndESEuujFXahv65W1HAjqF0CQkO5TByIgva37JdVegkleHlz2aTTUM5psS7/i
+         XEzIOisrR4OjtN6qTHFSZkA3Nn2W3ibP1UasfU/vHSJ8xfiameSBcp+fk+MbdagAQJWk
+         dTW3/PepxrbzNJxSK0uKkQwf6ceW6XCWQN8tyU4mBR7wKIepKv5rgBsP+5TpEKoY4axZ
+         eipZo8n9bEvCk1iJ0mPzSvq6Hpc5y6ZF2oHiOQdEDLzFiwYwv5REX39clSokEpKfneSt
+         Fe8h6xTdvvDmgc096CEjN0+3nEbDK7E+VUf9V2eFRqPG6mN21OyHJn1NrvADU2oiIECX
+         kEvw==
+X-Gm-Message-State: AOAM531qXzWvLLIQAa3DRIlLkfvkOTNTkdu4PaKYcJByBey97z7ePY9S
+        Wf/D+tT6eAF32rbLtqOxgZFvmqu/RAJHoZU62tc=
+X-Google-Smtp-Source: ABdhPJwu9WoP64XW2HQ0WL4P0mOdcel+R9MUVMXY+PNnY2jdIRrjRcF64qqLhW0u0yoqwl6izognUfSCqkg9EN4H4j4=
+X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr8587995lfs.8.1595735210604;
+ Sat, 25 Jul 2020 20:46:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200725025457.1004164-1-willemdebruijn.kernel@gmail.com> <20200725105841.19507-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20200725105841.19507-1-kuniyu@amazon.co.jp>
+References: <20200722064603.3350758-1-andriin@fb.com>
+In-Reply-To: <20200722064603.3350758-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 25 Jul 2020 18:01:03 -0700
-Message-ID: <CAADnVQLbQuWGOUO-hN56WzRrVHoNaOhKOeuxZih9K-4b2C97Zw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] udp: reduce merge conflict on udp[46]_lib_lookup2
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+Date:   Sat, 25 Jul 2020 20:46:39 -0700
+Message-ID: <CAADnVQLMMxCh36EgPqqL9hkXkbEX2C-nhzT5N7eVdr4Rf7nSug@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 0/9] BPF XDP link
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 3:58 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+On Tue, Jul 21, 2020 at 11:46 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Date:   Fri, 24 Jul 2020 22:54:57 -0400
-> > From: Willem de Bruijn <willemb@google.com>
-> >
-> > Commit efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
-> >
-> > in net conflicts with
-> >
-> > Commit 72f7e9440e9b ("udp: Run SK_LOOKUP BPF program on socket lookup")
-> >
-> > in bpf-next.
-> >
-> > Commit 4a0e87bb1836 ("udp: Don't discard reuseport selection when group
-> > has connections")
-> >
-> > also in bpf-next reduces the conflict.
-> >
-> > Further simplify by applying the main change of the first commit to
-> > bpf-next. After this a conflict remains, but the bpf-next side can be
-> > taken as is.
-> >
-> > Now unused variable reuseport_result added in net must also be
-> > removed. That applies without a conflict, so is harder to spot.
-> >
-> > Link: http://patchwork.ozlabs.org/project/netdev/patch/20200722165227.51046-1-kuniyu@amazon.co.jp/
-> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> Following cgroup and netns examples, implement bpf_link support for XDP.
 >
-> Thank you for the follow up patch!
+> The semantics is described in patch #2. Program and link attachments are
+> mutually exclusive, in the sense that neither link can replace attached
+> program nor program can replace attached link. Link can't replace attached
+> link as well, as is the case for any other bpf_link implementation.
 >
-> Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> Patch #1 refactors existing BPF program-based attachment API and centralizes
+> high-level query/attach decisions in generic kernel code, while drivers are
+> kept simple and are instructed with low-level decisions about attaching and
+> detaching specific bpf_prog. This also makes QUERY command unnecessary, and
+> patch #8 removes support for it from all kernel drivers. If that's a bad idea,
+> we can drop that patch altogether.
+>
+> With refactoring in patch #1, adding bpf_xdp_link is completely transparent to
+> drivers, they are still functioning at the level of "effective" bpf_prog, that
+> should be called in XDP data path.
+>
+> Corresponding libbpf support for BPF XDP link is added in patch #5.
+>
+> v3->v4:
+> - fix a compilation warning in one of drivers (Jakub);
 
-net is being merged into net-next. I think this one is no longer necessary.
+As far as I could review everything looks fine,
+so I've applied the set.
+The code is delicate. I wish people were more active doing code reviews.
+So I encourage folks to still look at it. If there is anything missing I'm sure
+Andrii will fix it up in the follow up.
