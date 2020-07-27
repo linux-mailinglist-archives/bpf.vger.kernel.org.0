@@ -2,255 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A53622FA06
-	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 22:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA4A22FA0B
+	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 22:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgG0U2X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1728810AbgG0U2Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 16:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgG0U2X (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 27 Jul 2020 16:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728254AbgG0U2X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:28:23 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C4DC0619D2
-        for <bpf@vger.kernel.org>; Mon, 27 Jul 2020 13:28:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 184so16011553wmb.0
-        for <bpf@vger.kernel.org>; Mon, 27 Jul 2020 13:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fRlx83gIL4bWYNB6kR5rrjfnxf0E6xTaNozKcd8Z7ZA=;
-        b=FpcVj+m2e/aBHNueAo02mBo8+S8nwrjfh6Fi7Gr4rMV6kkOUspBv5JmBEZJU4IFyJr
-         KmingvsPMA2uaiOzD3LNKaP8SMFaoiIoP97vkjXv44Uu0LxDSLlOIZ7XY663d6Dtzv/q
-         vsanvdym2nvmfXeNc8BQXsNlfU9Qn++dAbHaA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fRlx83gIL4bWYNB6kR5rrjfnxf0E6xTaNozKcd8Z7ZA=;
-        b=X6O3Ay0OLQLriX4dMdym+W8jrqQFkB/wKoufwzuFWu6b0hCzXZzdns0ZmpuCmZo2da
-         4tm+VYC0ZB2ZEV1BvcSz5UyZhw9V0g3eOruTJ08UxJvSowvLPwUlnqGH8mlHKgRDH5Ww
-         fWQn/rkq9LaE4A8uIoCTMOIEB9KijaS94/Fgjxx5XQpf13XdwIqG0qcylASQObOvAAhS
-         Wh1YVXQhf4k/0xEfO95rL5lnuLzDzzdgKfHk2WOMhcViRa8VLGWIL0ThFe+iqSwc4Ogq
-         wtabK6cXKturEF/QaWXtHwdp2kgOO+9e2qo+lrrJ7gB9LPhfFDP2vFrdf1PjdmmbfOrq
-         40vQ==
-X-Gm-Message-State: AOAM531DZ8XN+G83u6mUozRPU8Ntuoppp7pieHB3aMmYuC8iU92ADyee
-        nxNLJhOv5ka38ZGcq41zWt+h3g==
-X-Google-Smtp-Source: ABdhPJwnxw9+qS+jvyymvqBVIeENV90Qd/NvV4LrayhF0s91ojVbDucVdejgCYqE5jDVbAaJYvtoqA==
-X-Received: by 2002:a1c:678b:: with SMTP id b133mr886310wmc.117.1595881701814;
-        Mon, 27 Jul 2020 13:28:21 -0700 (PDT)
-Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id u66sm900737wmu.37.2020.07.27.13.28.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 13:28:21 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v6 3/7] bpf: Generalize bpf_sk_storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4696E206E7;
+        Mon, 27 Jul 2020 20:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595881702;
+        bh=aYSeVSHouvNAoh4D27QzelNJE605X6Pqy1mo5TW2Y4A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=wgH46tyrQPCV701y9bxUNPMT8OdNFXzLfyld1hCA4blHuT/HLRdEptgxWAipDur7F
+         svTK/RHIq7+4i481ud8/+UxPIjPbKzrS9oxzbTb3Wc44rvBpz4Z2thZQzcqBlF1Xnp
+         jWJHJWacMYwHzUVAZSemKQ/34bZu2ZZttiiyGdxo=
+Date:   Mon, 27 Jul 2020 15:34:13 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Li Yang <leoyang.li@nxp.com>, Zhang Wei <zw@zh-kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200723115032.460770-1-kpsingh@chromium.org>
- <20200723115032.460770-4-kpsingh@chromium.org>
- <20200725011329.ymvhmbb2y5yqzy3k@kafai-mbp>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <a75f9231-b347-cec1-e7af-7bbed4ad2f00@chromium.org>
-Date:   Mon, 27 Jul 2020 22:28:20 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] dmaengine: Use fallthrough pseudo-keyword
+Message-ID: <20200727203413.GA6245@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200725011329.ymvhmbb2y5yqzy3k@kafai-mbp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-On 25.07.20 03:13, Martin KaFai Lau wrote:
-> On Thu, Jul 23, 2020 at 01:50:28PM +0200, KP Singh wrote:
->> From: KP Singh <kpsingh@google.com>
->>
->> Refactor the functionality in bpf_sk_storage.c so that concept of
->> storage linked to kernel objects can be extended to other objects like
->> inode, task_struct etc.
->>
->> Each new local storage will still be a separate map and provide its own
->> set of helpers. This allows for future object specific extensions and
->> still share a lot of the underlying implementation.
->>
-> 
-> [ ... ]
-> 
->> @@ -386,54 +407,28 @@ static int sk_storage_alloc(struct sock *sk,
->>   * Otherwise, it will become a leak (and other memory issues
->>   * during map destruction).
->>   */
->> -static struct bpf_local_storage_data *
->> -bpf_local_storage_update(struct sock *sk, struct bpf_map *map, void *value,
->> +struct bpf_local_storage_data *
->> +bpf_local_storage_update(void *owner, struct bpf_map *map,
->> +			 struct bpf_local_storage *local_storage, void *value,
->>  			 u64 map_flags)
->>  {
->>  	struct bpf_local_storage_data *old_sdata = NULL;
->>  	struct bpf_local_storage_elem *selem;
->> -	struct bpf_local_storage *local_storage;
->>  	struct bpf_local_storage_map *smap;
->>  	int err;
->>  
->> -	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
->> -	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
->> -	    /* BPF_F_LOCK can only be used in a value with spin_lock */
->> -	    unlikely((map_flags & BPF_F_LOCK) && !map_value_has_spin_lock(map)))
->> -		return ERR_PTR(-EINVAL);
->> -
->>  	smap = (struct bpf_local_storage_map *)map;
->> -	local_storage = rcu_dereference(sk->sk_bpf_storage);
->> -	if (!local_storage || hlist_empty(&local_storage->list)) {
->> -		/* Very first elem for this object */
->> -		err = check_flags(NULL, map_flags);
-> This check_flags here is missing in the later sk_storage_update().
-> 
->> -		if (err)
->> -			return ERR_PTR(err);
->> -
->> -		selem = bpf_selem_alloc(smap, sk, value, true);
->> -		if (!selem)
->> -			return ERR_PTR(-ENOMEM);
->> -
->> -		err = sk_storage_alloc(sk, smap, selem);
->> -		if (err) {
->> -			kfree(selem);
->> -			atomic_sub(smap->elem_size, &sk->sk_omem_alloc);
->> -			return ERR_PTR(err);
->> -		}
->> -
->> -		return SDATA(selem);
->> -	}
->>  
->>  	if ((map_flags & BPF_F_LOCK) && !(map_flags & BPF_NOEXIST)) {
->>  		/* Hoping to find an old_sdata to do inline update
->>  		 * such that it can avoid taking the local_storage->lock
->>  		 * and changing the lists.
->>  		 */
->> -		old_sdata =
->> -			bpf_local_storage_lookup(local_storage, smap, false);
->> +		old_sdata = bpf_local_storage_lookup(local_storage, smap, false);
->>  		err = check_flags(old_sdata, map_flags);
->>  		if (err)
->>  			return ERR_PTR(err);
->> +
->>  		if (old_sdata && selem_linked_to_storage(SELEM(old_sdata))) {
->>  			copy_map_value_locked(map, old_sdata->data,
->>  					      value, false);
-> 
-> [ ... ]
-> 
->> +static struct bpf_local_storage_data *
->> +sk_storage_update(void *owner, struct bpf_map *map, void *value, u64 map_flags)
->> +{
->> +	struct bpf_local_storage_data *old_sdata = NULL;
->> +	struct bpf_local_storage_elem *selem;
->> +	struct bpf_local_storage *local_storage;
->> +	struct bpf_local_storage_map *smap;
->> +	struct sock *sk;
->> +	int err;
->> +
->> +	err = bpf_local_storage_check_update_flags(map, map_flags);
->> +	if (err)
->> +		return ERR_PTR(err);
->> +
->> +	sk = owner;
->> +	local_storage = rcu_dereference(sk->sk_bpf_storage);
->> +	smap = (struct bpf_local_storage_map *)map;
->> +
->> +	if (!local_storage || hlist_empty(&local_storage->list)) {
-> 
-> "check_flags(NULL, map_flags);" is gone in this refactoring.
-> 
-> This part of code is copied into the inode_storage_update()
-> in the latter patch which then has the same issue.
-> 
->> +		/* Very first elem */
->> +		selem = map->ops->map_selem_alloc(smap, owner, value, !old_sdata);
->> +		if (!selem)
->> +			return ERR_PTR(-ENOMEM);
-> 
->>  static int sk_storage_map_btf_id;
->>  const struct bpf_map_ops sk_storage_map_ops = {
->> -	.map_alloc_check = bpf_sk_storage_map_alloc_check,
->> -	.map_alloc = bpf_local_storage_map_alloc,
->> -	.map_free = bpf_local_storage_map_free,
->> +	.map_alloc_check = bpf_local_storage_map_alloc_check,
->> +	.map_alloc = sk_storage_map_alloc,
->> +	.map_free = sk_storage_map_free,
->>  	.map_get_next_key = notsupp_get_next_key,
->>  	.map_lookup_elem = bpf_fd_sk_storage_lookup_elem,
->>  	.map_update_elem = bpf_fd_sk_storage_update_elem,
->>  	.map_delete_elem = bpf_fd_sk_storage_delete_elem,
->> -	.map_check_btf = bpf_sk_storage_map_check_btf,
->> +	.map_check_btf = bpf_local_storage_map_check_btf,
->>  	.map_btf_name = "bpf_local_storage_map",
->>  	.map_btf_id = &sk_storage_map_btf_id,
->> +	.map_selem_alloc = sk_selem_alloc,
->> +	.map_local_storage_update = sk_storage_update,
->> +	.map_local_storage_unlink = unlink_sk_storage,
-> I think refactoring codes as map_selem_alloc, map_local_storage_update,
-> and map_local_storage_unlink is not the best option.  The sk and inode
-> version of the above map_ops are mostly the same.  Fixing the
-> issue like the one mentioned above need to fix both sk, inode, and
-> the future kernel-object code.
-> 
-> The only difference is sk charge omem and inode does not.
-> I have played around a little.  I think adding the following three ops (pasted at
-> the end) is better and should be enough for both sk and inode.  The inode
-> does not even have to implement the (un)charge ops at all.
-> 
-> That should remove the duplication for the followings:
-> - (sk|inode)_selem_alloc
-> - (sk|inode)_storage_update
-> - unlink_(sk|inode)_storage
-> - (sk|inode)_storage_alloc
-> 
-> Another bonus is the new bpf_local_storage_check_update_flags() and
-> bpf_local_storage_publish() will be no longer needed too.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/dma/amba-pl08x.c    | 10 +++++-----
+ drivers/dma/fsldma.c        |  2 +-
+ drivers/dma/imx-dma.c       |  2 +-
+ drivers/dma/iop-adma.h      | 12 ++++++------
+ drivers/dma/nbpfaxi.c       |  2 +-
+ drivers/dma/pl330.c         | 10 +++-------
+ drivers/dma/sh/shdma-base.c |  2 +-
+ 7 files changed, 18 insertions(+), 22 deletions(-)
 
-I really like this approach. Thank you so much!
+diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
+index 9adc7a2fa3d3..a24882ba3764 100644
+--- a/drivers/dma/amba-pl08x.c
++++ b/drivers/dma/amba-pl08x.c
+@@ -1767,7 +1767,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
+ 	default:
+ 		dev_err(&pl08x->adev->dev,
+ 			"illegal burst size for memcpy, set to 1\n");
+-		/* Fall through */
++		fallthrough;
+ 	case PL08X_BURST_SZ_1:
+ 		cctl |= PL080_BSIZE_1 << PL080_CONTROL_SB_SIZE_SHIFT |
+ 			PL080_BSIZE_1 << PL080_CONTROL_DB_SIZE_SHIFT;
+@@ -1806,7 +1806,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
+ 	default:
+ 		dev_err(&pl08x->adev->dev,
+ 			"illegal bus width for memcpy, set to 8 bits\n");
+-		/* Fall through */
++		fallthrough;
+ 	case PL08X_BUS_WIDTH_8_BITS:
+ 		cctl |= PL080_WIDTH_8BIT << PL080_CONTROL_SWIDTH_SHIFT |
+ 			PL080_WIDTH_8BIT << PL080_CONTROL_DWIDTH_SHIFT;
+@@ -1850,7 +1850,7 @@ static u32 pl08x_ftdmac020_memcpy_cctl(struct pl08x_driver_data *pl08x)
+ 	default:
+ 		dev_err(&pl08x->adev->dev,
+ 			"illegal bus width for memcpy, set to 8 bits\n");
+-		/* Fall through */
++		fallthrough;
+ 	case PL08X_BUS_WIDTH_8_BITS:
+ 		cctl |= PL080_WIDTH_8BIT << FTDMAC020_LLI_SRC_WIDTH_SHIFT |
+ 			PL080_WIDTH_8BIT << FTDMAC020_LLI_DST_WIDTH_SHIFT;
+@@ -2612,7 +2612,7 @@ static int pl08x_of_probe(struct amba_device *adev,
+ 	switch (val) {
+ 	default:
+ 		dev_err(&adev->dev, "illegal burst size for memcpy, set to 1\n");
+-		/* Fall through */
++		fallthrough;
+ 	case 1:
+ 		pd->memcpy_burst_size = PL08X_BURST_SZ_1;
+ 		break;
+@@ -2647,7 +2647,7 @@ static int pl08x_of_probe(struct amba_device *adev,
+ 	switch (val) {
+ 	default:
+ 		dev_err(&adev->dev, "illegal bus width for memcpy, set to 8 bits\n");
+-		/* Fall through */
++		fallthrough;
+ 	case 8:
+ 		pd->memcpy_bus_width = PL08X_BUS_WIDTH_8_BITS;
+ 		break;
+diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
+index ad72b3f42ffa..e342cf52d296 100644
+--- a/drivers/dma/fsldma.c
++++ b/drivers/dma/fsldma.c
+@@ -1163,7 +1163,7 @@ static int fsl_dma_chan_probe(struct fsldma_device *fdev,
+ 	switch (chan->feature & FSL_DMA_IP_MASK) {
+ 	case FSL_DMA_IP_85XX:
+ 		chan->toggle_ext_pause = fsl_chan_toggle_ext_pause;
+-		/* Fall through */
++		fallthrough;
+ 	case FSL_DMA_IP_83XX:
+ 		chan->toggle_ext_start = fsl_chan_toggle_ext_start;
+ 		chan->set_src_loop_size = fsl_chan_set_src_loop_size;
+diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
+index 5c0fb3134825..88717506c1f6 100644
+--- a/drivers/dma/imx-dma.c
++++ b/drivers/dma/imx-dma.c
+@@ -556,7 +556,7 @@ static int imxdma_xfer_desc(struct imxdma_desc *d)
+ 		 * We fall-through here intentionally, since a 2D transfer is
+ 		 * similar to MEMCPY just adding the 2D slot configuration.
+ 		 */
+-		/* Fall through */
++		fallthrough;
+ 	case IMXDMA_DESC_MEMCPY:
+ 		imx_dmav1_writel(imxdma, d->src, DMA_SAR(imxdmac->channel));
+ 		imx_dmav1_writel(imxdma, d->dest, DMA_DAR(imxdmac->channel));
+diff --git a/drivers/dma/iop-adma.h b/drivers/dma/iop-adma.h
+index c499c9578f00..d44eabb6f5eb 100644
+--- a/drivers/dma/iop-adma.h
++++ b/drivers/dma/iop-adma.h
+@@ -496,7 +496,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
+ 		}
+ 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = edcr;
+ 		src_cnt = 24;
+-		/* fall through */
++		fallthrough;
+ 	case 17 ... 24:
+ 		if (!u_desc_ctrl.field.blk_ctrl) {
+ 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
+@@ -510,7 +510,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
+ 		}
+ 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = edcr;
+ 		src_cnt = 16;
+-		/* fall through */
++		fallthrough;
+ 	case 9 ... 16:
+ 		if (!u_desc_ctrl.field.blk_ctrl)
+ 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
+@@ -522,7 +522,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
+ 		}
+ 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = edcr;
+ 		src_cnt = 8;
+-		/* fall through */
++		fallthrough;
+ 	case 2 ... 8:
+ 		shift = 1;
+ 		for (i = 0; i < src_cnt; i++) {
+@@ -602,19 +602,19 @@ iop_desc_init_null_xor(struct iop_adma_desc_slot *desc, int src_cnt,
+ 	case 25 ... 32:
+ 		u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
+ 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
+-		/* fall through */
++		fallthrough;
+ 	case 17 ... 24:
+ 		if (!u_desc_ctrl.field.blk_ctrl) {
+ 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
+ 			u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
+ 		}
+ 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = 0;
+-		/* fall through */
++		fallthrough;
+ 	case 9 ... 16:
+ 		if (!u_desc_ctrl.field.blk_ctrl)
+ 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
+ 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = 0;
+-		/* fall through */
++		fallthrough;
+ 	case 1 ... 8:
+ 		if (!u_desc_ctrl.field.blk_ctrl && src_cnt > 4)
+ 			u_desc_ctrl.field.blk_ctrl = 0x1; /* use mini-desc */
+diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
+index 74df621402e1..ca4e0930207a 100644
+--- a/drivers/dma/nbpfaxi.c
++++ b/drivers/dma/nbpfaxi.c
+@@ -483,7 +483,7 @@ static size_t nbpf_xfer_size(struct nbpf_device *nbpf,
+ 
+ 	default:
+ 		pr_warn("%s(): invalid bus width %u\n", __func__, width);
+-		/* fall through */
++		fallthrough;
+ 	case DMA_SLAVE_BUSWIDTH_1_BYTE:
+ 		size = burst;
+ 	}
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 2c508ee672b9..9b69716172a4 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -1061,16 +1061,16 @@ static bool _start(struct pl330_thread *thrd)
+ 
+ 		if (_state(thrd) == PL330_STATE_KILLING)
+ 			UNTIL(thrd, PL330_STATE_STOPPED)
+-		/* fall through */
++		fallthrough;
+ 
+ 	case PL330_STATE_FAULTING:
+ 		_stop(thrd);
+-		/* fall through */
++		fallthrough;
+ 
+ 	case PL330_STATE_KILLING:
+ 	case PL330_STATE_COMPLETING:
+ 		UNTIL(thrd, PL330_STATE_STOPPED)
+-		/* fall through */
++		fallthrough;
+ 
+ 	case PL330_STATE_STOPPED:
+ 		return _trigger(thrd);
+@@ -1121,7 +1121,6 @@ static u32 _emit_load(unsigned int dry_run, u8 buf[],
+ 
+ 	switch (direction) {
+ 	case DMA_MEM_TO_MEM:
+-		/* fall through */
+ 	case DMA_MEM_TO_DEV:
+ 		off += _emit_LD(dry_run, &buf[off], cond);
+ 		break;
+@@ -1155,7 +1154,6 @@ static inline u32 _emit_store(unsigned int dry_run, u8 buf[],
+ 
+ 	switch (direction) {
+ 	case DMA_MEM_TO_MEM:
+-		/* fall through */
+ 	case DMA_DEV_TO_MEM:
+ 		off += _emit_ST(dry_run, &buf[off], cond);
+ 		break;
+@@ -1216,7 +1214,6 @@ static int _bursts(struct pl330_dmac *pl330, unsigned dry_run, u8 buf[],
+ 
+ 	switch (pxs->desc->rqtype) {
+ 	case DMA_MEM_TO_DEV:
+-		/* fall through */
+ 	case DMA_DEV_TO_MEM:
+ 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, cyc,
+ 			cond);
+@@ -1266,7 +1263,6 @@ static int _dregs(struct pl330_dmac *pl330, unsigned int dry_run, u8 buf[],
+ 
+ 	switch (pxs->desc->rqtype) {
+ 	case DMA_MEM_TO_DEV:
+-		/* fall through */
+ 	case DMA_DEV_TO_MEM:
+ 		off += _emit_MOV(dry_run, &buf[off], CCR, dregs_ccr);
+ 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, 1,
+diff --git a/drivers/dma/sh/shdma-base.c b/drivers/dma/sh/shdma-base.c
+index 2deeaab078a4..788d696323bb 100644
+--- a/drivers/dma/sh/shdma-base.c
++++ b/drivers/dma/sh/shdma-base.c
+@@ -383,7 +383,7 @@ static dma_async_tx_callback __ld_cleanup(struct shdma_chan *schan, bool all)
+ 			switch (desc->mark) {
+ 			case DESC_COMPLETED:
+ 				desc->mark = DESC_WAITING;
+-				/* Fall through */
++				fallthrough;
+ 			case DESC_WAITING:
+ 				if (head_acked)
+ 					async_tx_ack(&desc->async_tx);
+-- 
+2.27.0
 
-> 
-> I have hacked up this patch 3 change to compiler-test out this idea.
-> I will post in another email.  Let me know wdy> 
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -33,6 +33,9 @@ struct btf;
->  struct btf_type;
->  struct exception_table_entry;
->  struct seq_operations;
-> +struct bpf_local_storage;
-> +struct bpf_local_storage_map;
-> +struct bpf_local_storage_elem;
->  
->  extern struct idr btf_idr;
->  extern spinlock_t btf_idr_lock;
-> @@ -93,6 +96,13 @@ struct bpf_map_ops {
->  	__poll_t (*map_poll)(struct bpf_map *map, struct file *filp,
->  			     struct poll_table_struct *pts);
->  
-> +	/* Functions called by bpf_local_storage maps */
-> +	int (*map_local_storage_charge)(struct bpf_local_storage_map *smap,
-> +					void *owner, u32 size);
-> +	void (*map_local_storage_uncharge)(struct bpf_local_storage_map *smap,
-> +					   void *owner, u32 size);
-> +	struct bpf_local_storage __rcu ** (*map_owner_storage_ptr)(struct bpf_local_storage_map *smap,
-> +								   void *owner);
->  	/* BTF name and id of struct allocated by map_alloc */
->  	const char * const map_btf_name;
->  	int *map_btf_id;
-> 
