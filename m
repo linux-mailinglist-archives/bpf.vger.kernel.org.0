@@ -2,165 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDB922F877
-	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 20:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0FF22F883
+	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 20:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgG0Svs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jul 2020 14:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        id S1726247AbgG0SyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 14:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgG0Svr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:51:47 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758E5C061794;
-        Mon, 27 Jul 2020 11:51:47 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l64so9458493qkb.8;
-        Mon, 27 Jul 2020 11:51:47 -0700 (PDT)
+        with ESMTP id S1726196AbgG0SyB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:54:01 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8C8C061794
+        for <bpf@vger.kernel.org>; Mon, 27 Jul 2020 11:54:01 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id lw1so1592350pjb.1
+        for <bpf@vger.kernel.org>; Mon, 27 Jul 2020 11:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D3EJnxWQkYohSZ2rAj4ItXzUJ9TVbm4aLrUteT72d3A=;
-        b=eqMFMVdK1n86ImsYfmZKF+aGeu8cwtbedni27lfMUocYxa859h4Yeqsn5BRYaHo1e1
-         DwP5thbf5F2OT15ZK1cDWU76YcVUsnZqS/vDD1/I/GbY1NfOR0tc6pKXSqtVy5B7/Kaj
-         G7XtfW5XDFYo3gg0ZRdJGHlGeymGO2Hb8pqp/9Raiz4/4V+7HnvKH4WK8MhGPHUsyHsZ
-         iFWVrqpmsV44FCSO7UFAh+1y71RgcUw/s2LQroDOCij8mG+ik26gmn2EHf6blcV6D8Ms
-         99upSvAMiEkg2TKlCYb6uwfzarV3ibEbVcmpDatvpzI5jchuVyW6y2b+H8rng6Ew+nUR
-         rbAg==
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h3cjF4iSEZv+fTA9U/ic+PIAxJZHp4XClFaXhZXBuH4=;
+        b=SQvWXwIwiCPrgZljBHHA3MwrD4TQ/KEfxCwqS0tYnJxO3xCeQo1OALU6TcQbpznAcK
+         9CJblvuPzOZfp46mSg0jaQ8SVyM4VRLJNx8PyXqBGxQulAbaigF4mCS32+DmfaHsbaK+
+         niiPFjDvrS5GuSDuU1vCEq0U34Q6JMjJzarjagv5JTZj+kLg9kJ7i8miENrIFocfd1Mg
+         +0Y9DdpayVA7HFfXFF6jdEJSQ0lmsMRZIWO+CNReWR7GadnRmiznMMjJq5l7lGRjOvAX
+         AbET7VwlW5J629JdXUqX6n7akb68ybnMd77VZVVcuL+r/KXUH659hCPued5wNHUS0eM0
+         pocg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D3EJnxWQkYohSZ2rAj4ItXzUJ9TVbm4aLrUteT72d3A=;
-        b=EgvQteZlMELJimVdOFDoZo21SttOlbSrFn/AkT63uHD4GIGL1CqoXhmnTxcV/d57pI
-         1zBGnpPlxncX0PMYcmpsYhgyspasGQhCXcHEK3Co8g3IuVYMDbWMzLNOQyp5zRZ2DWxn
-         xs1CP+zJ2PagAmLtGM7QhgT+7bIlDZ1UPYRpAUSrsjuLi5mzfL/X0wUFsBu/9isGHvGe
-         NQEoTRa0o3GChXSIuVToiPSIiDmAizJEApcWLtPWGN9TQzTx6adoknqksURAmQ3uicUq
-         L0zvLZef1ZJAJ+UQTjW/GKxbSd8mEqYA72QD2bhpzgNoWtPMDLr17sCjR604d6LvJUhQ
-         xJpQ==
-X-Gm-Message-State: AOAM530n0TEdhlSefcpac2xriSQ49ELAs2hdxGBaDMZ6FN/y38+ryI7h
-        guu1IJcV3t3a0aKzRKljbb/46xjF8a8DW3lHciw=
-X-Google-Smtp-Source: ABdhPJx9rE+ks+Ak9GzAAif7Jx9Y/4tgo8mmlirrX7LgYuzfpe8T95R1tDEktzABOWa4HQ1vg2GEtKXPOIVyUv6JqKc=
-X-Received: by 2002:a37:a655:: with SMTP id p82mr23863195qke.92.1595875906536;
- Mon, 27 Jul 2020 11:51:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h3cjF4iSEZv+fTA9U/ic+PIAxJZHp4XClFaXhZXBuH4=;
+        b=jmo4JDjT1nNZXgpO0z+Hb53nrKHf0vnEKW6gQHwcd/NMW/2ytCaLLbfN2Wf2MVkvXN
+         nJNUKSYPJCPsPyvpRyLWSdZg8vs/mGkKzDvYwW72NrxeeJb7fE+A5yZr7seKXk1GjXGX
+         hatmwPCJHhK4kuejdHUveLb+kpb04IWq1qOEsnE3j6a+xegh4pOfwj0UvzEYOxAMG1hI
+         T0IImrR/4iWZsvkqDFglnptcBgeFZFDKPYkAFUC9csmfdQRthvN3p67LEcDw6fQTubMu
+         PmBihyUYbRk8trVarAVBaNJQvggqbBrI3FA/65De0tfM6iIS5aNltBiG+QKJ7Zzb5GsY
+         tApg==
+X-Gm-Message-State: AOAM531mEy4U+Pm2hfiFHs399EUWCSeYpz5F1Q8qma3oY/pQVHaUBGYR
+        8ZsEzAOx+Ei64T+XB5kqAJAN9ZT9lvNIwQ==
+X-Google-Smtp-Source: ABdhPJwE6QninAF6hxAg7h6PTDKWwHAO76b0rc1Z75UksLatFiJbKMtRl5McddIWOUcOANjlgEFjvw==
+X-Received: by 2002:a17:902:64:: with SMTP id 91mr20659761pla.62.1595876040641;
+        Mon, 27 Jul 2020 11:54:00 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id c3sm15858265pfo.203.2020.07.27.11.54.00
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 11:54:00 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 11:53:57 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     bpf@vger.kernel.org
+Subject: Fw: [Bug 208709] New: bpfilter: write fail -22
+Message-ID: <20200727115357.1c204951@hermes.lan>
 MIME-Version: 1.0
-References: <20200722064603.3350758-1-andriin@fb.com> <20200722064603.3350758-4-andriin@fb.com>
- <pj41zla6zl88le.fsf@ua97a68a4e7db56.ant.amazon.com>
-In-Reply-To: <pj41zla6zl88le.fsf@ua97a68a4e7db56.ant.amazon.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Jul 2020 11:51:35 -0700
-Message-ID: <CAEf4Bzb1_mQVxjmLEK0OFBdfnFi8To4fH-=kJTs8nz6xq7zUMw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/9] bpf, xdp: extract common XDP program
- attachment logic
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 5:08 AM Shay Agroskin <shayagr@amazon.com> wrote:
->
->
-> Andrii Nakryiko <andriin@fb.com> writes:
->
-> > Further refactor XDP attachment code. dev_change_xdp_fd() is
-> > split into two
-> > parts: getting bpf_progs from FDs and attachment logic, working
-> > with
-> > bpf_progs. This makes attachment  logic a bit more
-> > straightforward and
-> > prepares code for bpf_xdp_link inclusion, which will share the
-> > common logic.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  net/core/dev.c | 165
-> >  +++++++++++++++++++++++++++----------------------
-> >  1 file changed, 91 insertions(+), 74 deletions(-)
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 7e753e248cef..abf573b2dcf4 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -8815,111 +8815,128 @@ static void dev_xdp_uninstall(struct
-> > net_device *dev)
-> >       }
-> >  }
-> >
-> > -/**
-> > - *   dev_change_xdp_fd - set or clear a bpf program for a
-> > device rx path
-> > - *   @dev: device
-> > - *   @extack: netlink extended ack
-> > - *   @fd: new program fd or negative value to clear
-> > - *   @expected_fd: old program fd that userspace expects to
-> > replace or clear
-> > - *   @flags: xdp-related flags
-> > - *
-> > - *   Set or clear a bpf program for a device
-> > - */
-> > -int dev_change_xdp_fd(struct net_device *dev, struct
-> > netlink_ext_ack *extack,
-> > -                   int fd, int expected_fd, u32 flags)
-> > +static int dev_xdp_attach(struct net_device *dev, struct
-> > netlink_ext_ack *extack,
-> > +                       struct bpf_prog *new_prog, struct
-> > bpf_prog *old_prog,
-> > +                       u32 flags)
-> >  {
-> > -     const struct net_device_ops *ops = dev->netdev_ops;
-> > -     enum bpf_xdp_mode mode = dev_xdp_mode(flags);
-> > -     bool offload = mode == XDP_MODE_HW;
-> > -     u32 prog_id, expected_id = 0;
-> > -     struct bpf_prog *prog;
-> > +     struct bpf_prog *cur_prog;
-> > +     enum bpf_xdp_mode mode;
-> >       bpf_op_t bpf_op;
-> >       int err;
-> >
-> >       ASSERT_RTNL();
-> >
-> > -     bpf_op = dev_xdp_bpf_op(dev, mode);
-> > -     if (!bpf_op) {
-> > -             NL_SET_ERR_MSG(extack, "underlying driver does not
-> > support XDP in native mode");
-> > -             return -EOPNOTSUPP;
-> > +     /* just one XDP mode bit should be set, zero defaults to
-> > SKB mode */
-> > +     if (hweight32(flags & XDP_FLAGS_MODES) > 1) {
->
-> Not sure if it's more efficient but running
->     if ((flags & XDP) & ((flags & XDP) - 1) != 0)
->
-> returns whether a number is a multiple of 2.
-> Should be equivalent to what you checked with hweight32. It is
-> less readable though. Just thought I'd throw that in.
-
-so I just preserved what is there in netlink-handling code. It also is
-not a performance-critical part. What you propose might work, but
-using hweight32 is more explicit about allowing zero or one bits set.
 
 
-> Taken from
-> https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
->
-> > +             NL_SET_ERR_MSG(extack, "Only one XDP mode flag can
-> > be set");
-> > +             return -EINVAL;
-> > +     }
-> > +     /* old_prog != NULL implies XDP_FLAGS_REPLACE is set */
-> > +     if (old_prog && !(flags & XDP_FLAGS_REPLACE)) {
-> > +             NL_SET_ERR_MSG(extack, "XDP_FLAGS_REPLACE is not
-> > specified");
-> > +             return -EINVAL;
-> >       }
-> >
+Begin forwarded message:
 
-[...]
+Date: Mon, 27 Jul 2020 18:39:15 +0000
+From: bugzilla-daemon@bugzilla.kernel.org
+To: stephen@networkplumber.org
+Subject: [Bug 208709] New: bpfilter: write fail -22
+
+
+https://bugzilla.kernel.org/show_bug.cgi?id=208709
+
+            Bug ID: 208709
+           Summary: bpfilter: write fail -22
+           Product: Networking
+           Version: 2.5
+    Kernel Version: 5.8.0-rc7-1.g786d3ff-default
+          Hardware: x86-64
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: Other
+          Assignee: stephen@networkplumber.org
+          Reporter: kemal.kemal@unicam.it
+        Regression: No
+
+Created attachment 290623
+  --> https://bugzilla.kernel.org/attachment.cgi?id=290623&action=edit  
+output of dmesg
+
+Hello Folks,
+
+I have openSUSE Tumbleweed with kernel 5.8.0-rc7-1.g786d3ff-default.
+During boot, my screen is flooded with these lines and booting process stalls
+a minute or so:
+
+...
+bpfilter: Loaded bpfilter_umh pid 4425
+bpfilter: write fail -22
+...
+
+It is specific to kernel 5.8.0-rc* series I believe as my 5.7 kernel on the
+same
+system does not do anything like that.
+As hardware, I got Asus Prime TRX40-Pro + AMD Threadripper 3960x + Intel Wi-Fi
+6 AX200 (rev 1a)
+
+Let me know if you need further info.
+
+Thanks...
+
+-- 
+You are receiving this mail because:
+You are the assignee for the bug.
