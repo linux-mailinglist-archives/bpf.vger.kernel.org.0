@@ -2,259 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694A622DEF2
-	for <lists+bpf@lfdr.de>; Sun, 26 Jul 2020 14:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D5C22E630
+	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 09:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgGZMZF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Jul 2020 08:25:05 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27061 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726102AbgGZMZE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 26 Jul 2020 08:25:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595766302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LE5NbR2GAK1D1bhpMjEyL6dMr4KtOQ/jHc/PViRIYjk=;
-        b=NVm4zqYIc4Kvv0aKFkswjCY07+B3eitdpaiJbImKm1PS6AG7JZnvlnnqrDTKF9VwI//1gL
-        tqql0FwxyOUPKA8rnSuWt3rTH9y7P/eEuEfHBKyl+wF0jvezq/KOzzvxqSLjw70MooAEtP
-        EhGsv5ek8kU0qWJCB27GRvutYiFWjzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-gR8ZqAdePo27sbfY7tUrug-1; Sun, 26 Jul 2020 08:24:58 -0400
-X-MC-Unique: gR8ZqAdePo27sbfY7tUrug-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A92259;
-        Sun, 26 Jul 2020 12:24:57 +0000 (UTC)
-Received: from krava (unknown [10.40.192.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 54ECC5D9DC;
-        Sun, 26 Jul 2020 12:24:51 +0000 (UTC)
-Date:   Sun, 26 Jul 2020 14:24:50 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, andriin@fb.com,
-        toke@redhat.com
-Subject: Re: fentry/fexit attach to EXT type XDP program does not work
-Message-ID: <20200726122450.GC1175442@krava>
-References: <159162546868.10791.12432342618156330247.stgit@ebuild>
- <42b0c8d3-e855-7531-b01c-a05414360aff@fb.com>
- <88B08061-F85B-454C-9E9D-234154B9F000@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <88B08061-F85B-454C-9E9D-234154B9F000@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1726862AbgG0G7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 02:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgG0G7w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jul 2020 02:59:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C1BC0619D5
+        for <bpf@vger.kernel.org>; Sun, 26 Jul 2020 23:59:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 8so19569539ybc.23
+        for <bpf@vger.kernel.org>; Sun, 26 Jul 2020 23:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9/YSwprGE0WZwSWfXLYVy6V0Ah3OoUpnPGrBV/LRITA=;
+        b=m+fTHaAj0JPw3ABBmUnN46A5mmPLHkTVVyZ8suMxXp+vWgocvuwn2YhFNGm88lQUDF
+         0Ipw8hhTQmjl6srPRoA77U8pFkle0oyTVg9q7efUVULis+4aPAbpcNJYLgXjR9pGks2K
+         0yFv71jR8JqgC1y6376PhYUd0wsXPulqQ2fYvCwRvvx2kEDQ4bGhIi38ppg63XRYKsli
+         OJhjdpysVbe0efevbEozHhMUjOoKKqsfe9ptDyWa9vwKUoCod/akcOxXjLKP3GmfnlNp
+         F82cjKtzMvkUKQvUWJk48FIhA3xTcb0HP6tKvdZlrtDtw2WZeBIBXmTLt5yDgVbYCM8A
+         abNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9/YSwprGE0WZwSWfXLYVy6V0Ah3OoUpnPGrBV/LRITA=;
+        b=cZ+oCKYj9txz/PRgquedch6qNAJCjlY0ZA+q/V1Nyo6rqdA03uusnb3LDB9gfPTPKG
+         FX4XnjRgdXEuNyexgIycdSMsjQvf9VR9/EHB3+KZzpdnj4yYaVRBC6/00pPg+94d/tEu
+         sbUQYvSvIcf3nZfEQuO0JSuphrXJLB5Bv0nCzGM/tmhiSOAO/DqBPur03J801pBfEMZn
+         gMMk7vbQWgBll4CesGQvuMMI4qbso27a/eQyBf9EruoF+d+6vaHWwuJtw4JVhIMur+O9
+         7xpObiE7VAHzzeeavJl/cNaTYJmOkaWQaTkGZkRyg4MIXBkJwdGnpyZcN1a/+UBp4I+u
+         cOCg==
+X-Gm-Message-State: AOAM533iEPLcWbzyylMLe8iqCDREwEfjhna2hlTqMdEigYPTnGVxU2hu
+        iTMmuLscE7zTnmBCZPjR9wZ23J/SCrsO
+X-Google-Smtp-Source: ABdhPJz7ZE9JX1xcuL6ggGjeX4GY2EfS6ZQVKaFpFeKXbWp8rV2g56PwdJo+OYTDl/0xDoD2QJjN04vRVhCC
+X-Received: by 2002:a5b:14a:: with SMTP id c10mr32329689ybp.493.1595833191601;
+ Sun, 26 Jul 2020 23:59:51 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 23:59:48 -0700
+Message-Id: <20200727065948.12201-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+Subject: [PATCH] perf record: Set PERF_RECORD_SAMPLE if attr->freq is set.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        David Sharp <dhsharp@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 10:52:34AM +0200, Eelco Chaudron wrote:
+From: David Sharp <dhsharp@google.com>
 
-SNIP
+evsel__config() would only set PERF_RECORD_SAMPLE if it set attr->freq
+from perf record options. When it is set by libpfm events, it would not
+get set. This changes evsel__config to see if attr->freq is set outside of
+whether or not it changes attr->freq itself.
 
-> > >    libbpf: failed to load object 'test_xdp_bpf2bpf'
-> > >    libbpf: failed to load BPF skeleton 'test_xdp_bpf2bpf': -4007
-> > >    test_xdp_fentry_ext:FAIL:__load ftrace skeleton failed
-> > >    #91 xdp_fentry_ext:FAIL
-> > >    Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-> > > 
-> > > Any idea what could be the case here? The same fentry/fexit attach
-> > > code works fine in the xdp_bpf2bpf.c tests case.
-> 
-> <SNIP>
-> > 
-> > I think this is not supported now. That is, you cannot attach a fentry
-> > trace
-> > to the EXT program. The current implementation for fentry program simply
-> > trying to find and match the signature of freplace program which by
-> > default
-> > is a pointer to void.
-> > 
-> > It is doable in that in kernel we could recognize to-be-attached program
-> > is
-> > a freplace and further trace down to find the real signature. The
-> > related
-> > kernel function is btf_get_prog_ctx_type(). You can try to implement by
-> > yourself
-> > or I can have a patch for this once bpf-next opens.
-> 
-> I’m not familiar with this area of the code, so if you could prepare a patch
-> that would nice.
-> You can also send it to me before bpf-next opens and I can verify it, and
-> clean up the self-test so it can be included as well.
-> 
-
-hi,
-it seems that you cannot exten fentry/fexit programs,
-but it's possible to attach fentry/fexit to ext program.
-
-   /* Program extensions can extend all program types
-    * except fentry/fexit. The reason is the following.
-    * The fentry/fexit programs are used for performance
-    * analysis, stats and can be attached to any program
-    * type except themselves. When extension program is
-    * replacing XDP function it is necessary to allow
-    * performance analysis of all functions. Both original
-    * XDP program and its program extension. Hence
-    * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
-    * allowed. If extending of fentry/fexit was allowed it
-    * would be possible to create long call chain
-    * fentry->extension->fentry->extension beyond
-    * reasonable stack size. Hence extending fentry is not
-    * allowed.
-    */
-
-I changed fexit_bpf2bpf.c test just to do a quick check
-and it seems to work:
-
-  # echo > /sys/kernel/debug/tracing/trace
-  #  ./test_progs -t fexit_bpf2bpf 
-  #25 fexit_bpf2bpf:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-  # cat /sys/kernel/debug/tracing/trace | tail -2
-           <...>-75365 [012] d... 313932.416780: bpf_trace_printk: ENTRY val 123
-           <...>-75365 [012] d... 313932.416784: bpf_trace_printk: EXIT  val 123, ret 1
-
-jirka
-
-
+Signed-off-by: David Sharp <dhsharp@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index a895bfed55db..4b6c26ac2362 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -17,6 +17,7 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 	struct bpf_map *data_map;
- 	const int zero = 0;
- 	u64 *result = NULL;
-+	int ext_fd;
- 
- 	err = bpf_prog_load(target_obj_file, BPF_PROG_TYPE_UNSPEC,
- 			    &pkt_obj, &pkt_fd);
-@@ -51,11 +52,50 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 		link[i] = bpf_program__attach_trace(prog[i]);
- 		if (CHECK(IS_ERR(link[i]), "attach_trace", "failed to link\n"))
- 			goto close_prog;
-+
-+		if (!strcmp(prog_name[i], "freplace/get_constant"))
-+			ext_fd = bpf_program__fd(prog[i]);
+ tools/perf/util/evsel.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ef802f6d40c1..811f538f7d77 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -979,13 +979,18 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+ 				     opts->user_interval != ULLONG_MAX)) {
+ 		if (opts->freq) {
+-			evsel__set_sample_bit(evsel, PERIOD);
+ 			attr->freq		= 1;
+ 			attr->sample_freq	= opts->freq;
+ 		} else {
+ 			attr->sample_period = opts->default_interval;
+ 		}
  	}
++	/*
++	 * If attr->freq was set (here or earlier), ask for period
++	 * to be sampled.
++	 */
++	if (attr->freq)
++		evsel__set_sample_bit(evsel, PERIOD);
  
- 	if (!run_prog)
- 		goto close_prog;
- 
-+{
-+	struct bpf_object *obj_trace = NULL;
-+	struct bpf_program *prog_trace = NULL;
-+	struct bpf_link *link_trace = NULL;
-+
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts_trace,
-+			    .attach_prog_fd = ext_fd,
-+			   );
-+
-+	obj_trace = bpf_object__open_file("trace_ext.o", &opts_trace);
-+	if (CHECK(IS_ERR_OR_NULL(obj_trace), "obj_open",
-+		  "failed to open %s: %ld\n", obj_file,
-+		  PTR_ERR(obj_trace)))
-+		goto close_prog;
-+
-+	err = bpf_object__load(obj_trace);
-+	if (CHECK(err, "obj_load", "err %d\n", err))
-+		goto close_prog;
-+
-+	prog_trace = bpf_object__find_program_by_title(obj_trace, "fexit/new_get_constant");
-+	if (CHECK(!prog_trace, "find_prog", "prog %s not found\n", "fexit/new_get_constant"))
-+		goto close_prog;
-+
-+	link_trace = bpf_program__attach_trace(prog_trace);
-+	if (CHECK(IS_ERR(link_trace), "attach_trace", "failed to link\n"))
-+		goto close_prog;
-+
-+	prog_trace = bpf_object__find_program_by_title(obj_trace, "fentry/new_get_constant");
-+	if (CHECK(!prog_trace, "find_prog", "prog %s not found\n", "fentry/new_get_constant"))
-+		goto close_prog;
-+
-+	link_trace = bpf_program__attach_trace(prog_trace);
-+	if (CHECK(IS_ERR(link_trace), "attach_trace", "failed to link\n"))
-+		goto close_prog;
-+}
-+
- 	data_map = bpf_object__find_map_by_name(obj, "fexit_bp.bss");
- 	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
- 		goto close_prog;
-@@ -88,6 +128,7 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
- 	free(result);
- }
- 
-+#if 0
- static void test_target_no_callees(void)
- {
- 	const char *prog_name[] = {
-@@ -112,6 +153,7 @@ static void test_target_yes_callees(void)
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, true);
- }
-+#endif
- 
- static void test_func_replace(void)
- {
-@@ -130,6 +172,7 @@ static void test_func_replace(void)
- 				  prog_name, true);
- }
- 
-+#if 0
- static void test_func_replace_verify(void)
- {
- 	const char *prog_name[] = {
-@@ -140,11 +183,9 @@ static void test_func_replace_verify(void)
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, false);
- }
-+#endif
- 
- void test_fexit_bpf2bpf(void)
- {
--	test_target_no_callees();
--	test_target_yes_callees();
- 	test_func_replace();
--	test_func_replace_verify();
- }
-diff --git a/tools/testing/selftests/bpf/progs/trace_ext.c b/tools/testing/selftests/bpf/progs/trace_ext.c
-new file mode 100644
-index 000000000000..c7eaf30bf5ba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trace_ext.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <stddef.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+
-+SEC("fentry/new_get_constant")
-+int BPF_PROG(test_fentry_new_get_constant, long val)
-+{
-+        bpf_printk("ENTRY val %ld", val);
-+	return 0;
-+}
-+
-+SEC("fexit/new_get_constant")
-+int BPF_PROG(test_fexit_new_get_constant, long val, int ret)
-+{
-+        bpf_printk("EXIT  val %ld, ret %d", val, ret);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ 	if (opts->no_samples)
+ 		attr->sample_freq = 0;
+-- 
+2.28.0.rc0.142.g3c755180ce-goog
 
