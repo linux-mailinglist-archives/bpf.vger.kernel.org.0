@@ -2,59 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA2B22F4F1
-	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 18:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88F22F69B
+	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 19:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgG0QYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jul 2020 12:24:05 -0400
-Received: from verein.lst.de ([213.95.11.211]:44350 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728716AbgG0QYF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:24:05 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 213DF68B05; Mon, 27 Jul 2020 18:23:58 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 18:23:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1730682AbgG0R27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 13:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730663AbgG0R27 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:28:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0328FC0619D2;
+        Mon, 27 Jul 2020 10:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=CmygioY1skJ3ZoZf02/bumjZmxuivqPuGfV1LmHfRLM=; b=JGlQ42aWhcaZ5SsiR7SUqB/XBc
+        vI7bc74sMOmlxQNI5Nqdl1L6oRbZL/IY60XxkFSpUic2M9GxcY1j5GM3KM66MhO92R6lEbrZIGsQQ
+        yb7PCg4SlEGh6f0nCeB5LtY/E5mz46Na6lneiuHN3g9uXOrDtzEFj2HgdnDK/CEvkeWkbhb1xh04v
+        nVaElu3hkt0eY0RUOUh7aoF2HQSjrCLT0nPpVy5iSw3roqPgazOejDotpK9p1Iu3myGQ3MrD8fpON
+        Sow1035sR/3mLKSuXj0q6jMwlTGSw9EvVtHu8hy9eo7WJOW2NeeKcUjiRcxCTV3+2S+dLGywXjPPn
+        gGKWctDA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k06vk-00071Y-VA; Mon, 27 Jul 2020 17:28:55 +0000
+Subject: Re: linux-next: Tree for Jul 27 (kernel/bpf/syscall.o)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: [PATCH 12/26] netfilter: switch nf_setsockopt to sockptr_t
-Message-ID: <20200727162357.GA8022@lst.de>
-References: <20200723060908.50081-1-hch@lst.de> <20200723060908.50081-13-hch@lst.de> <20200727150310.GA1632472@zx2c4.com> <20200727150601.GA3447@lst.de> <CAHmME9ric=chLJayn7Erve7WBa+qCKn-+Gjri=zqydoY6623aA@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <20200727232346.0106c375@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e342e8ce-db29-1603-3fd9-40792a783296@infradead.org>
+Date:   Mon, 27 Jul 2020 10:28:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHmME9ric=chLJayn7Erve7WBa+qCKn-+Gjri=zqydoY6623aA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200727232346.0106c375@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 06:16:32PM +0200, Jason A. Donenfeld wrote:
-> Maybe sockptr_advance should have some safety checks and sometimes
-> return -EFAULT? Or you should always use the implementation where
-> being a kernel address is an explicit bit of sockptr_t, rather than
-> being implicit?
+On 7/27/20 6:23 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200724:
+> 
 
-I already have a patch to use access_ok to check the whole range in
-init_user_sockptr.
+on i386:
+when CONFIG_XPS is not set/enabled:
+
+ld: kernel/bpf/syscall.o: in function `__do_sys_bpf':
+syscall.c:(.text+0x4482): undefined reference to `bpf_xdp_link_attach'
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
