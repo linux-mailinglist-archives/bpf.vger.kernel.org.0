@@ -2,287 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA4A22FA0B
-	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 22:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650B822FAB6
+	for <lists+bpf@lfdr.de>; Mon, 27 Jul 2020 22:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgG0U2Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jul 2020 16:28:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55384 "EHLO mail.kernel.org"
+        id S1726315AbgG0Uxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 16:53:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG0U2X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:28:23 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726769AbgG0Uxb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jul 2020 16:53:31 -0400
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4696E206E7;
-        Mon, 27 Jul 2020 20:28:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDC9020838;
+        Mon, 27 Jul 2020 20:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595881702;
-        bh=aYSeVSHouvNAoh4D27QzelNJE605X6Pqy1mo5TW2Y4A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=wgH46tyrQPCV701y9bxUNPMT8OdNFXzLfyld1hCA4blHuT/HLRdEptgxWAipDur7F
-         svTK/RHIq7+4i481ud8/+UxPIjPbKzrS9oxzbTb3Wc44rvBpz4Z2thZQzcqBlF1Xnp
-         jWJHJWacMYwHzUVAZSemKQ/34bZu2ZZttiiyGdxo=
-Date:   Mon, 27 Jul 2020 15:34:13 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Li Yang <leoyang.li@nxp.com>, Zhang Wei <zw@zh-kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] dmaengine: Use fallthrough pseudo-keyword
-Message-ID: <20200727203413.GA6245@embeddedor>
+        s=default; t=1595883211;
+        bh=a6AU9sf1ZUMXutwnI1/Vf3w0L3i8tw6Su4jyOOk4+Q0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=x6rEsiY8NDPMoUxF1fHtYrbr1ZPeSBT/Mw0OP0+Rh+Cg5lMh40lQqnlr0W8Iz4eKY
+         idEyOwbyHtYsxTDD+SFMA3oysFj3xELxCSoYH5XcJ8q4yKZPUqZ5rrFp8QCQBrK8/X
+         X1/jk0Bn8aeavnLiBzm2NN95ZWm3yXAKrHmUkBs0=
+Received: by mail-lf1-f51.google.com with SMTP id h8so9751826lfp.9;
+        Mon, 27 Jul 2020 13:53:30 -0700 (PDT)
+X-Gm-Message-State: AOAM533MzsB1p7HZ1PgxhimG9wVxCUFXZLhh2oKzfT4RMb/ZR67LwC7S
+        lxEOkwjQgIKfSl83NCxqvZ6M4XXBg+uuKp0XSXQ=
+X-Google-Smtp-Source: ABdhPJyNnQou0xCOihO3lXbU/vFYvhDWPuoM6oxOOcpjRATL+9dcHAhqWM6fz3p5Jg2cX9QiMWwZp48oKJfgeXRq/jI=
+X-Received: by 2002:a19:c501:: with SMTP id w1mr11874138lfe.172.1595883209223;
+ Mon, 27 Jul 2020 13:53:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200724011700.2854734-1-andriin@fb.com> <20200724011700.2854734-2-andriin@fb.com>
+In-Reply-To: <20200724011700.2854734-2-andriin@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Jul 2020 13:53:17 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW68tUDQf7kgB-r5aJFH3Bk_5_b_0eokqjYe9-8YpHX3zg@mail.gmail.com>
+Message-ID: <CAPhsuW68tUDQf7kgB-r5aJFH3Bk_5_b_0eokqjYe9-8YpHX3zg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: extend map-in-map selftest to
+ detect memory leaks
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+On Thu, Jul 23, 2020 at 6:17 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> Add test validating that all inner maps are released properly after skeleton
+> is destroyed. To ensure determinism, trigger kernel-size synchronize_rcu()
+> before checking map existence by their IDs.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/btf_map_in_map.c | 104 +++++++++++++++---
+>  1 file changed, 91 insertions(+), 13 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> index f7ee8fa377ad..043e8ffe03d1 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> @@ -5,10 +5,50 @@
+>
+>  #include "test_btf_map_in_map.skel.h"
+>
+> +static int duration;
+> +
+> +int bpf_map_id(struct bpf_map *map)
+Should this return __u32?
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> +{
+> +       struct bpf_map_info info;
+> +       __u32 info_len = sizeof(info);
+> +       int err;
+> +
+> +       memset(&info, 0, info_len);
+> +       err = bpf_obj_get_info_by_fd(bpf_map__fd(map), &info, &info_len);
+> +       if (err)
+> +               return 0;
+> +       return info.id;
+> +}
+> +
+> +int kern_sync_rcu() {
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/dma/amba-pl08x.c    | 10 +++++-----
- drivers/dma/fsldma.c        |  2 +-
- drivers/dma/imx-dma.c       |  2 +-
- drivers/dma/iop-adma.h      | 12 ++++++------
- drivers/dma/nbpfaxi.c       |  2 +-
- drivers/dma/pl330.c         | 10 +++-------
- drivers/dma/sh/shdma-base.c |  2 +-
- 7 files changed, 18 insertions(+), 22 deletions(-)
+int kern_sync_rcu(void)
+{
+...
 
-diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
-index 9adc7a2fa3d3..a24882ba3764 100644
---- a/drivers/dma/amba-pl08x.c
-+++ b/drivers/dma/amba-pl08x.c
-@@ -1767,7 +1767,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal burst size for memcpy, set to 1\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BURST_SZ_1:
- 		cctl |= PL080_BSIZE_1 << PL080_CONTROL_SB_SIZE_SHIFT |
- 			PL080_BSIZE_1 << PL080_CONTROL_DB_SIZE_SHIFT;
-@@ -1806,7 +1806,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BUS_WIDTH_8_BITS:
- 		cctl |= PL080_WIDTH_8BIT << PL080_CONTROL_SWIDTH_SHIFT |
- 			PL080_WIDTH_8BIT << PL080_CONTROL_DWIDTH_SHIFT;
-@@ -1850,7 +1850,7 @@ static u32 pl08x_ftdmac020_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BUS_WIDTH_8_BITS:
- 		cctl |= PL080_WIDTH_8BIT << FTDMAC020_LLI_SRC_WIDTH_SHIFT |
- 			PL080_WIDTH_8BIT << FTDMAC020_LLI_DST_WIDTH_SHIFT;
-@@ -2612,7 +2612,7 @@ static int pl08x_of_probe(struct amba_device *adev,
- 	switch (val) {
- 	default:
- 		dev_err(&adev->dev, "illegal burst size for memcpy, set to 1\n");
--		/* Fall through */
-+		fallthrough;
- 	case 1:
- 		pd->memcpy_burst_size = PL08X_BURST_SZ_1;
- 		break;
-@@ -2647,7 +2647,7 @@ static int pl08x_of_probe(struct amba_device *adev,
- 	switch (val) {
- 	default:
- 		dev_err(&adev->dev, "illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case 8:
- 		pd->memcpy_bus_width = PL08X_BUS_WIDTH_8_BITS;
- 		break;
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index ad72b3f42ffa..e342cf52d296 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1163,7 +1163,7 @@ static int fsl_dma_chan_probe(struct fsldma_device *fdev,
- 	switch (chan->feature & FSL_DMA_IP_MASK) {
- 	case FSL_DMA_IP_85XX:
- 		chan->toggle_ext_pause = fsl_chan_toggle_ext_pause;
--		/* Fall through */
-+		fallthrough;
- 	case FSL_DMA_IP_83XX:
- 		chan->toggle_ext_start = fsl_chan_toggle_ext_start;
- 		chan->set_src_loop_size = fsl_chan_set_src_loop_size;
-diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
-index 5c0fb3134825..88717506c1f6 100644
---- a/drivers/dma/imx-dma.c
-+++ b/drivers/dma/imx-dma.c
-@@ -556,7 +556,7 @@ static int imxdma_xfer_desc(struct imxdma_desc *d)
- 		 * We fall-through here intentionally, since a 2D transfer is
- 		 * similar to MEMCPY just adding the 2D slot configuration.
- 		 */
--		/* Fall through */
-+		fallthrough;
- 	case IMXDMA_DESC_MEMCPY:
- 		imx_dmav1_writel(imxdma, d->src, DMA_SAR(imxdmac->channel));
- 		imx_dmav1_writel(imxdma, d->dest, DMA_DAR(imxdmac->channel));
-diff --git a/drivers/dma/iop-adma.h b/drivers/dma/iop-adma.h
-index c499c9578f00..d44eabb6f5eb 100644
---- a/drivers/dma/iop-adma.h
-+++ b/drivers/dma/iop-adma.h
-@@ -496,7 +496,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 24;
--		/* fall through */
-+		fallthrough;
- 	case 17 ... 24:
- 		if (!u_desc_ctrl.field.blk_ctrl) {
- 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
-@@ -510,7 +510,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 16;
--		/* fall through */
-+		fallthrough;
- 	case 9 ... 16:
- 		if (!u_desc_ctrl.field.blk_ctrl)
- 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
-@@ -522,7 +522,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 8;
--		/* fall through */
-+		fallthrough;
- 	case 2 ... 8:
- 		shift = 1;
- 		for (i = 0; i < src_cnt; i++) {
-@@ -602,19 +602,19 @@ iop_desc_init_null_xor(struct iop_adma_desc_slot *desc, int src_cnt,
- 	case 25 ... 32:
- 		u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
- 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 17 ... 24:
- 		if (!u_desc_ctrl.field.blk_ctrl) {
- 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
- 			u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
- 		}
- 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 9 ... 16:
- 		if (!u_desc_ctrl.field.blk_ctrl)
- 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
- 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 1 ... 8:
- 		if (!u_desc_ctrl.field.blk_ctrl && src_cnt > 4)
- 			u_desc_ctrl.field.blk_ctrl = 0x1; /* use mini-desc */
-diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
-index 74df621402e1..ca4e0930207a 100644
---- a/drivers/dma/nbpfaxi.c
-+++ b/drivers/dma/nbpfaxi.c
-@@ -483,7 +483,7 @@ static size_t nbpf_xfer_size(struct nbpf_device *nbpf,
- 
- 	default:
- 		pr_warn("%s(): invalid bus width %u\n", __func__, width);
--		/* fall through */
-+		fallthrough;
- 	case DMA_SLAVE_BUSWIDTH_1_BYTE:
- 		size = burst;
- 	}
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 2c508ee672b9..9b69716172a4 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -1061,16 +1061,16 @@ static bool _start(struct pl330_thread *thrd)
- 
- 		if (_state(thrd) == PL330_STATE_KILLING)
- 			UNTIL(thrd, PL330_STATE_STOPPED)
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_FAULTING:
- 		_stop(thrd);
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_KILLING:
- 	case PL330_STATE_COMPLETING:
- 		UNTIL(thrd, PL330_STATE_STOPPED)
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_STOPPED:
- 		return _trigger(thrd);
-@@ -1121,7 +1121,6 @@ static u32 _emit_load(unsigned int dry_run, u8 buf[],
- 
- 	switch (direction) {
- 	case DMA_MEM_TO_MEM:
--		/* fall through */
- 	case DMA_MEM_TO_DEV:
- 		off += _emit_LD(dry_run, &buf[off], cond);
- 		break;
-@@ -1155,7 +1154,6 @@ static inline u32 _emit_store(unsigned int dry_run, u8 buf[],
- 
- 	switch (direction) {
- 	case DMA_MEM_TO_MEM:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _emit_ST(dry_run, &buf[off], cond);
- 		break;
-@@ -1216,7 +1214,6 @@ static int _bursts(struct pl330_dmac *pl330, unsigned dry_run, u8 buf[],
- 
- 	switch (pxs->desc->rqtype) {
- 	case DMA_MEM_TO_DEV:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, cyc,
- 			cond);
-@@ -1266,7 +1263,6 @@ static int _dregs(struct pl330_dmac *pl330, unsigned int dry_run, u8 buf[],
- 
- 	switch (pxs->desc->rqtype) {
- 	case DMA_MEM_TO_DEV:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _emit_MOV(dry_run, &buf[off], CCR, dregs_ccr);
- 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, 1,
-diff --git a/drivers/dma/sh/shdma-base.c b/drivers/dma/sh/shdma-base.c
-index 2deeaab078a4..788d696323bb 100644
---- a/drivers/dma/sh/shdma-base.c
-+++ b/drivers/dma/sh/shdma-base.c
-@@ -383,7 +383,7 @@ static dma_async_tx_callback __ld_cleanup(struct shdma_chan *schan, bool all)
- 			switch (desc->mark) {
- 			case DESC_COMPLETED:
- 				desc->mark = DESC_WAITING;
--				/* Fall through */
-+				fallthrough;
- 			case DESC_WAITING:
- 				if (head_acked)
- 					async_tx_ack(&desc->async_tx);
--- 
-2.27.0
+A comment for this function would be nice too.
 
+> +       int inner_map_fd, outer_map_fd, err, zero = 0;
+> +
+> +       inner_map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
+> +       if (CHECK(inner_map_fd < 0, "inner_map_create", "failed %d\n", -errno))
+> +               return -1;
+> +
+> +       outer_map_fd = bpf_create_map_in_map(BPF_MAP_TYPE_ARRAY_OF_MAPS, NULL,
+> +                                            sizeof(int), inner_map_fd, 1, 0);
+> +       if (CHECK(outer_map_fd < 0, "outer_map_create", "failed %d\n", -errno)) {
+> +               close(inner_map_fd);
+> +               return -1;
+> +       }
+> +
+> +       err = bpf_map_update_elem(outer_map_fd, &zero, &inner_map_fd, 0);
+> +       if (err)
+> +               err = -errno;
+> +       CHECK(err, "outer_map_update", "failed %d\n", err);
+> +       close(inner_map_fd);
+> +       close(outer_map_fd);
+> +       return err;
+> +}
+> +
+>  void test_btf_map_in_map(void)
+>  {
+> -       int duration = 0, err, key = 0, val;
+> +       int err, key = 0, val, i;
+>         struct test_btf_map_in_map* skel;
+> +       int outer_arr_fd, outer_hash_fd;
+> +       int fd, map1_fd, map2_fd, map1_id, map2_id;
+nit: reverse Christmas tree.
+
+>
+>         skel = test_btf_map_in_map__open_and_load();
+>         if (CHECK(!skel, "skel_open", "failed to open&load skeleton\n"))
+> @@ -18,32 +58,70 @@ void test_btf_map_in_map(void)
+>         if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+>                 goto cleanup;
+>
+> +       map1_fd = bpf_map__fd(skel->maps.inner_map1);
+> +       map2_fd = bpf_map__fd(skel->maps.inner_map2);
+> +       outer_arr_fd = bpf_map__fd(skel->maps.outer_arr);
+> +       outer_hash_fd = bpf_map__fd(skel->maps.outer_hash);
+> +
+>         /* inner1 = input, inner2 = input + 1 */
+> -       val = bpf_map__fd(skel->maps.inner_map1);
+> -       bpf_map_update_elem(bpf_map__fd(skel->maps.outer_arr), &key, &val, 0);
+> -       val = bpf_map__fd(skel->maps.inner_map2);
+> -       bpf_map_update_elem(bpf_map__fd(skel->maps.outer_hash), &key, &val, 0);
+> +       map1_fd = bpf_map__fd(skel->maps.inner_map1);
+> +       bpf_map_update_elem(outer_arr_fd, &key, &map1_fd, 0);
+> +       map2_fd = bpf_map__fd(skel->maps.inner_map2);
+> +       bpf_map_update_elem(outer_hash_fd, &key, &map2_fd, 0);
+>         skel->bss->input = 1;
+>         usleep(1);
+>
+> -       bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map1), &key, &val);
+> +       bpf_map_lookup_elem(map1_fd, &key, &val);
+>         CHECK(val != 1, "inner1", "got %d != exp %d\n", val, 1);
+> -       bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map2), &key, &val);
+> +       bpf_map_lookup_elem(map2_fd, &key, &val);
+>         CHECK(val != 2, "inner2", "got %d != exp %d\n", val, 2);
+>
+>         /* inner1 = input + 1, inner2 = input */
+> -       val = bpf_map__fd(skel->maps.inner_map2);
+> -       bpf_map_update_elem(bpf_map__fd(skel->maps.outer_arr), &key, &val, 0);
+> -       val = bpf_map__fd(skel->maps.inner_map1);
+> -       bpf_map_update_elem(bpf_map__fd(skel->maps.outer_hash), &key, &val, 0);
+> +       bpf_map_update_elem(outer_arr_fd, &key, &map2_fd, 0);
+> +       bpf_map_update_elem(outer_hash_fd, &key, &map1_fd, 0);
+>         skel->bss->input = 3;
+>         usleep(1);
+>
+> -       bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map1), &key, &val);
+> +       bpf_map_lookup_elem(map1_fd, &key, &val);
+>         CHECK(val != 4, "inner1", "got %d != exp %d\n", val, 4);
+> -       bpf_map_lookup_elem(bpf_map__fd(skel->maps.inner_map2), &key, &val);
+> +       bpf_map_lookup_elem(map2_fd, &key, &val);
+>         CHECK(val != 3, "inner2", "got %d != exp %d\n", val, 3);
+>
+> +       for (i = 0; i < 5; i++) {
+> +               val = i % 2 ? map1_fd : map2_fd;
+> +               err = bpf_map_update_elem(outer_hash_fd, &key, &val, 0);
+> +               if (CHECK_FAIL(err)) {
+> +                       printf("failed to update hash_of_maps on iter #%d\n", i);
+> +                       goto cleanup;
+> +               }
+> +               err = bpf_map_update_elem(outer_arr_fd, &key, &val, 0);
+> +               if (CHECK_FAIL(err)) {
+> +                       printf("failed to update hash_of_maps on iter #%d\n", i);
+> +                       goto cleanup;
+> +               }
+> +       }
+> +
+> +       map1_id = bpf_map_id(skel->maps.inner_map1);
+> +       map2_id = bpf_map_id(skel->maps.inner_map2);
+> +       CHECK(map1_id == 0, "map1_id", "failed to get ID 1\n");
+> +       CHECK(map2_id == 0, "map2_id", "failed to get ID 2\n");
+> +
+> +       test_btf_map_in_map__destroy(skel);
+> +       skel = NULL;
+> +
+> +       CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
+> +
+> +       fd = bpf_map_get_fd_by_id(map1_id);
+> +       if (CHECK(fd >= 0, "map1_leak", "inner_map1 leaked!\n")) {
+> +               close(fd);
+> +               goto cleanup;
+> +       }
+> +       fd = bpf_map_get_fd_by_id(map2_id);
+> +       if (CHECK(fd >= 0, "map2_leak", "inner_map2 leaked!\n")) {
+> +               close(fd);
+> +               goto cleanup;
+> +       }
+> +
+>  cleanup:
+>         test_btf_map_in_map__destroy(skel);
+>  }
+> --
+> 2.24.1
+>
