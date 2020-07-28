@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA40230234
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 08:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD20C230243
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 08:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgG1GAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 02:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
+        id S1726799AbgG1GDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 02:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbgG1GAt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:00:49 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1CDC061794;
-        Mon, 27 Jul 2020 23:00:49 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id s15so4197461qvv.7;
-        Mon, 27 Jul 2020 23:00:49 -0700 (PDT)
+        with ESMTP id S1726299AbgG1GDl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 02:03:41 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032A0C061794;
+        Mon, 27 Jul 2020 23:03:40 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id j10so1965070qvo.13;
+        Mon, 27 Jul 2020 23:03:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BE6SS10lfsQtZlsbH6eTAUSCgCje4KornwWwzZylYrA=;
-        b=f2yGdb0MIYCqjngaPYjPgclMP3jXg1zdeo8u9Xo80GhMCISW4/fasrYBqXbTfR/3Ui
-         2fn1EAWRQUJ6Qy6JBMfUM5NfOGF40XCV6NFkk5pO4l4w7+VMLIRE5TwtRIfsQSAt86N5
-         7vbty2J3uyqxNy/aE6c7HZBCUlIpU6ozOOTa3K5/6ObeRZBvZeHkIgU1/VfdNP3sxXXs
-         TbjDIhCT6vhy+IHPKVxnxFo0AoPokMqWvzmAkeMdvf8yaYmR895w34knaIoMMdgTOWAC
-         LwKZ+IaKkgs/t7Fgl0Z2/g80ByiQvb5k6AfP9QueGn8Vpwp4hzGxZjQqsrvhTRDdOCZt
-         Mi+Q==
+        bh=VyTixMuApQUrPqM0mv6yOj0mSjNApbkD53XtwGXYy6Y=;
+        b=AKGzFc0uYTO8QbYO3W5w7hwDzHrVNlkDlzyTRfVH0VLZ2QLZCPIiG51u5qaVmw5qhD
+         j8I8MIIz33Jeg0YAVhE38RGbu6qGpdUX66O1h5/ZOzx0sjQxIm3jKN49gUcC8pX3JKmA
+         inZhpTtQk+86ejo+PzouvOaMGcRLaqWzK9dX9JUohtjt51zItfpyVkE+KIIVtevhmEjm
+         ZJ+GYEixaUdUoSX1MGHKUKG3TOxqMXhejAbmF9ZkIh2LRpVeyM0ZAafCC1ujAo3NOcWP
+         m134Tx2J+zmO8mQyAVuOqcjU9p/O7YXqOMX03/Dn/+rsJn3S8QbGvl0dNvDA1Ef9r/li
+         bQkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BE6SS10lfsQtZlsbH6eTAUSCgCje4KornwWwzZylYrA=;
-        b=sjEnXaBz+JbG7g3GHFyDX8d02bmibr1gVQjl5IVhZ+k7NgBlNM4s7Vr5zMLlOAPJq+
-         aVcJ48Gc5jvmNj0hHvgQ64ZQwq62CQSIhSi1HZ/tvPALwUart6SPAakho7a5XvQMJpTa
-         TWwUJ+yG9vIHwB1uXpbwf6M7TbL4dxAvI+xalWRlhy2shejF6XGwyUIAHVQDeB9KCNLn
-         o6cGLOdSnyzuffnsbRxr0SyzoRX3DDYCfo/gLaoUJuV6wUQcTJW6hd+9BF9XIwWJD31g
-         lSD7iUDFUMf9DapaS9vqxDGEGHYOm6NNo67Kr81eqRQwXJJHwxTOPYnPpszly4z7yKP5
-         yxOg==
-X-Gm-Message-State: AOAM530FvHF3Lu5zckB9zuiR/3J9Eom+/TRqdXvkYl32H5LuKUMqccwa
-        APBh+mmAmy4QS9oCiz1Q7RJAxt29kIfYNcanokg=
-X-Google-Smtp-Source: ABdhPJxHFRuThMoEQPwU895IhChAvgDRBpA4P+uWXtgKabpFJ7dzY3KbtrBTnFQdyLr9MaL7kPSb+oTbHwp7/sZmhCQ=
-X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr24691534qvb.228.1595916048616;
- Mon, 27 Jul 2020 23:00:48 -0700 (PDT)
+        bh=VyTixMuApQUrPqM0mv6yOj0mSjNApbkD53XtwGXYy6Y=;
+        b=KfkcyUwy5LoeNvqon4WUzn0pfCXf+JhxMO8/6amnAZRKDBFi8fCFhZVLcJluiMxt3e
+         3UI87qcgUgCOMRnzPkqe7IdblHOAw/IieEv77FwD11Jd8YaMaP2nu9++wd2JvfcOgOyO
+         MUhsmYShzVx1NQwXe5ra0VqmiKSoJBF6cNExaAEbOtr1wkJxib5sT95W8dcFbyIa+uBD
+         L5cTw9WoSd+pj+H7kvGVFG+u7J26xi8CQuV8J++A+cpriGnEtd5j62OTeVIrLrY15AC9
+         dEp54fHYxQFTQZ+XTSwr7d/NVQWIDP40bwCSdE+gwjatJLPXVDH1GCLjydBKj4ymioVI
+         tkhA==
+X-Gm-Message-State: AOAM5324ZGwqMBe8OkvPz0T6mHX4/hBXK9nqn4ws9OBe+iGyfNpMxOOa
+        tDKO4/MKq6/KcBQ65xZzpJzvJIoTtIb1ovabcNukJA==
+X-Google-Smtp-Source: ABdhPJzpuvI/PnQt0muw26eujYdfWz25QglG9zSeJl+ePzDEoquT/Euuyx3vu62IDInhlpVP8a5odclUBsHzYJtLVU8=
+X-Received: by 2002:a0c:bf4f:: with SMTP id b15mr24284471qvj.224.1595916220194;
+ Mon, 27 Jul 2020 23:03:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-31-guro@fb.com>
-In-Reply-To: <20200727184506.2279656-31-guro@fb.com>
+References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-32-guro@fb.com>
+In-Reply-To: <20200727184506.2279656-32-guro@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Jul 2020 23:00:37 -0700
-Message-ID: <CAEf4BzYrN=SJDZ4DC-H7yCBn41p+RgMeWC8KMpkoMpeaRscbUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 30/35] bpf: bpftool: do not touch RLIMIT_MEMLOCK
+Date:   Mon, 27 Jul 2020 23:03:29 -0700
+Message-ID: <CAEf4BzYhTeehgbFKwOkrjEzXH5NkKF6BTvZyiS-PRTdXetKEUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 31/35] bpf: runqslower: don't touch RLIMIT_MEMLOCK
 To:     Roman Gushchin <guro@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -62,26 +62,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
+On Mon, Jul 27, 2020 at 12:24 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> Since bpf stopped using memlock rlimit to limit the memory usage,
-> there is no more reason for bpftool to alter its own limits.
+> Since bpf is not using memlock rlimit for memory accounting,
+> there are no more reasons to bump the limit.
 >
 > Signed-off-by: Roman Gushchin <guro@fb.com>
 > ---
-
-This can't be removed either, due to old kernel support. We probably
-should have a helper function to probe RLIMIT_MEMLOCK use by BPF
-subsystem, though, and not call set_max_rlimit() is not necessary.
-
->  tools/bpf/bpftool/common.c     | 7 -------
->  tools/bpf/bpftool/feature.c    | 2 --
->  tools/bpf/bpftool/main.h       | 2 --
->  tools/bpf/bpftool/map.c        | 2 --
->  tools/bpf/bpftool/pids.c       | 1 -
->  tools/bpf/bpftool/prog.c       | 3 ---
->  tools/bpf/bpftool/struct_ops.c | 2 --
->  7 files changed, 19 deletions(-)
+>  tools/bpf/runqslower/runqslower.c | 16 ----------------
+>  1 file changed, 16 deletions(-)
 >
 
-[...]
+This can go, I suppose, we still have a runqslower variant in BCC with
+this logic, to show an example on what/how to do this for kernels
+without this patch set applied.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+> diff --git a/tools/bpf/runqslower/runqslower.c b/tools/bpf/runqslower/runqslower.c
+> index d89715844952..a3380b53ce0c 100644
+> --- a/tools/bpf/runqslower/runqslower.c
+> +++ b/tools/bpf/runqslower/runqslower.c
+> @@ -88,16 +88,6 @@ int libbpf_print_fn(enum libbpf_print_level level,
+>         return vfprintf(stderr, format, args);
+>  }
+>
+> -static int bump_memlock_rlimit(void)
+> -{
+> -       struct rlimit rlim_new = {
+> -               .rlim_cur       = RLIM_INFINITY,
+> -               .rlim_max       = RLIM_INFINITY,
+> -       };
+> -
+> -       return setrlimit(RLIMIT_MEMLOCK, &rlim_new);
+> -}
+> -
+>  void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
+>  {
+>         const struct event *e = data;
+> @@ -134,12 +124,6 @@ int main(int argc, char **argv)
+>
+>         libbpf_set_print(libbpf_print_fn);
+>
+> -       err = bump_memlock_rlimit();
+> -       if (err) {
+> -               fprintf(stderr, "failed to increase rlimit: %d", err);
+> -               return 1;
+> -       }
+> -
+>         obj = runqslower_bpf__open();
+>         if (!obj) {
+>                 fprintf(stderr, "failed to open and/or load BPF object\n");
+> --
+> 2.26.2
+>
