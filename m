@@ -2,145 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A8F23133B
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E8C231384
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 22:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbgG1T4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 15:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S1728932AbgG1UHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 16:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728567AbgG1T4O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:56:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2D9C061794;
-        Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id x69so19976040qkb.1;
-        Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sJP1AxLMAkAXNjIXT2QYjjZKu+zrqi6ZQ8MjHCkzEQY=;
-        b=bMiViWhcNc8eurQHFF7gEo0b0AE1ZzuplLLnV5578pbu3xdCErqsqSXkkh/v4DGb1L
-         HdYJRQwpE/I1Da6fAQF7gUWTCC/o1BCSopOuClrdVRIs8+yuIPtpNaXES6JWAqCph13F
-         LAgxPty2yO/fFBsmaLVbDssY5XYobj1FP77Q9FZ7YZn6C+kiAZpCaJrznmawf3R3ZMYd
-         g3MjmkpBhT7A+TghSTVG1l1tLRzGa72xNe3IBgWjgPMWhvThtWwj+jAEu9iWL4vw8KDp
-         a1Q1PrbYnG5ttlB456mHM+VIZOb1QeLZsDQ8XifHlFt70DDqxh3e9d8BBHI/st6lM6ce
-         g/4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sJP1AxLMAkAXNjIXT2QYjjZKu+zrqi6ZQ8MjHCkzEQY=;
-        b=siqUJ6GEDoE6kO1Ecb85smQaXuzQghUp78scB3id2zdU737Ig4JqtdTK5K4UBj56OR
-         OdPGC9PiHCycnY182aE3DhVTFDhJjGquCD1oenauXemiwUINaOY2ncrmYIJJe5QYeBLD
-         oL+yDABXlcCfG//968U0+xyJJR2qj+8ZJsiEVJI3uN8em1ubNW0dh72xrKNUvvFNPx26
-         BQ6qH6DaT5+yXdMUP4TEz69B2kUCwOAU8xCoUCLRnKZt9V739taPvjflmqcO2FZpLrkS
-         GGAhdfOQG8iJwCfB2tf9miLgiWE32nmek+fxpnW95RXsOjHOUsgJLNCrSInwyOsse1gn
-         13Eg==
-X-Gm-Message-State: AOAM530wspudSNDlQDwWv4QcfxbtlzyKpzUh9GT0tJpWFCnVsrj/C+Ez
-        zbBkDrVjD2+RidjNcuUFtNi0FI90Z5h/gQ5cOZY=
-X-Google-Smtp-Source: ABdhPJy9/2VM5/20ii6Eb2JoyCxvCGwmKSRUDwheKTEL7UC02O04unk0tJDZaR0psmqnovsmUSKQ1VwVq1WvjDipuF8=
-X-Received: by 2002:a37:a655:: with SMTP id p82mr29238102qke.92.1595966173091;
- Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
+        with ESMTP id S1728706AbgG1UHR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:07:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327EFC061794;
+        Tue, 28 Jul 2020 13:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=cF4fi/YTQLkJLvcc0xwvYdQPbbV5NEC0vNHkk0t1bX4=; b=V+N1ixMSS5zT6glLkEhjrDbYVQ
+        S3sGf1NB8Ppdoj3aDQqtBpvhFfLXNE5TS0PfiwiFpKkDLjB/QliG8QqUcsU1paGy7E+qOiIqMEOXH
+        /uut7ioNXZNgTmheIVdj+7hr0GgGPnQP+JvyMXQfqQKvkhXo3OF0hkHyjIulwAcQEPxOzCJFGEUET
+        3F598TjUkkjzuSLjcuVlYH9btb/DmsnJQIft3XqHaZIsxb2NngSMRDLBBYI6rpDoQen6GAzmAkH9y
+        Ek8JcA1KzSf13Y55uoubJdy9Sln0vb0NKRy1SrT1nsmLKM7TLcpDFtCrk0dO+wXCMdWYQ2ojNjZWS
+        PB5W3zhg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k0VsV-0000kw-Ci; Tue, 28 Jul 2020 20:07:11 +0000
+Subject: Re: [PATCH bpf-next] bpf: fix build without CONFIG_NET when using BPF
+ XDP link
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200728190527.110830-1-andriin@fb.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <416c8ef6-3459-8710-2eb5-870e2c695ceb@infradead.org>
+Date:   Tue, 28 Jul 2020 13:07:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-14-jolsa@kernel.org>
-In-Reply-To: <20200722211223.1055107-14-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 12:56:02 -0700
-Message-ID: <CAEf4BzbMNZdiD_hqReei2HKziTTNoWFymE5g7SzvSR7=QdWxrw@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 13/13] selftests/bpf: Add set test to resolve_btfids
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200728190527.110830-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 2:15 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding test to for sets resolve_btfids. We're checking that
-> testing set gets properly resolved and sorted.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On 7/28/20 12:05 PM, Andrii Nakryiko wrote:
+> Entire net/core subsystem is not built without CONFIG_NET. linux/netdevice.h
+> just assumes that it's always there, so the easiest way to fix this is to
+> conditionally compile out bpf_xdp_link_attach() use in bpf/syscall.c.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
 > ---
->  .../selftests/bpf/prog_tests/resolve_btfids.c | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> index 101785b49f7e..cc90aa244285 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> @@ -48,6 +48,15 @@ BTF_ID(struct,  S)
->  BTF_ID(union,   U)
->  BTF_ID(func,    func)
->
-> +BTF_SET_START(test_set)
-> +BTF_ID(typedef, S)
-> +BTF_ID(typedef, T)
-> +BTF_ID(typedef, U)
-> +BTF_ID(struct,  S)
-> +BTF_ID(union,   U)
-> +BTF_ID(func,    func)
-> +BTF_SET_END(test_set)
-> +
->  static int
->  __resolve_symbol(struct btf *btf, int type_id)
->  {
-> @@ -126,5 +135,29 @@ int test_resolve_btfids(void)
->                 }
->         }
->
-> +       /* Check BTF_SET_START(test_set) IDs */
-> +       for (i = 0; i < test_set.cnt && !ret; i++) {
+>  kernel/bpf/syscall.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 0e8c88db7e7a..cd3d599e9e90 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3923,9 +3923,11 @@ static int link_create(union bpf_attr *attr)
+>  	case BPF_PROG_TYPE_SK_LOOKUP:
+>  		ret = netns_bpf_link_create(attr, prog);
+>  		break;
+> +#ifdef CONFIG_NET
+>  	case BPF_PROG_TYPE_XDP:
+>  		ret = bpf_xdp_link_attach(attr, prog);
+>  		break;
+> +#endif
+>  	default:
+>  		ret = -EINVAL;
+>  	}
+> 
 
-nit: usual we just do `goto err_out;` instead of complicating exit
-condition in a for loop
 
-> +               bool found = false;
-> +
-> +               for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
-> +                       if (test_symbols[j].id != test_set.ids[i])
-> +                               continue;
-> +                       found = true;
-> +                       break;
-> +               }
-> +
-> +               ret = CHECK(!found, "id_check",
-> +                           "ID %d for %s not found in test_symbols\n",
-> +                           test_symbols[j].id, test_symbols[j].name);
-
-j == ARRAY_SIZE(test_symbols), you probably meant to get
-test_set.ids[i] instead of test_symbol name/id?
-
-> +               if (ret)
-> +                       break;
-> +
-> +               if (i > 0) {
-> +                       ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
-
-nit: >= would be the invalid condition
-
-> +                                   "sort_check",
-> +                                   "test_set is not sorted\n");
-> +               }
-> +       }
-> +
->         return ret;
->  }
-> --
-> 2.25.4
->
+-- 
+~Randy
