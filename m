@@ -2,122 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EE0230C95
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 16:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D0E230CAA
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 16:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbgG1OjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 10:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730443AbgG1OjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:39:16 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DD7C061794;
-        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id v6so5738780iow.11;
-        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=wJ8v23x7Y2FC0aWK8XYKTzplRSBW0CXrOa5CKTnOUmI=;
-        b=EOeeoRSo+IhFvKV8BzKlXCxJo4XJ/o0IIegGIfU7zQXBNCkKLUcCp/whNH4nS6KtEr
-         COdTyN7/4/nq8fLvzw2fkzM/b5pPi4TMGrTwLUIRrywjZcQS9T4q7cidBYZyQKpUY22+
-         UudGuwkQcZwqrgMIvENsOLejh3/FhQixPA2JR+YvVs+ORMrA3ANi1+QWN2jXHSB02sEy
-         9yqDHujzU6rWAbkkyBDI4hOS8qdWvx5jMRkvm+9U1tfoUeMG0/FkA2WWYL6HC8A5Qm/6
-         XDk3/WKH0rURjG8gsBd8V2ZmU9VBMv1XJLDgu+7ZO1juYpSwe9ZOEeHVnsIEZZYuunKe
-         i4sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=wJ8v23x7Y2FC0aWK8XYKTzplRSBW0CXrOa5CKTnOUmI=;
-        b=DFAFRJ+oAL4R9RecquSSS+G3sD3Lixt2g75aRPn5lSbnqrgRwObVTzzruMRKuo+nsW
-         MayTOjTCXkb5LJDTgEGKFw3SMUFBobuLdSo3PM8/T3zJ04+bJO7KioN9HAb+Ub3YjD2B
-         UNOkp90+gF5c0bdYTcZJQTusyRtKuy/bLOA/U6Th0lw9HgTeteUPRxuSTO//DENzmzyC
-         O7XOARd2jsxO0gZT3AtbS3xL5tkuv/L7usE/Ks4TfTgkakMJq6KTqKcXq8/kTWj/ebwl
-         YetDcWQSbGgPgNjWRZv5N8M8Ypoc58Fm3LmkjpwZW5YdGaQnskUcw41+3CJ2e/cjwc3y
-         gzSQ==
-X-Gm-Message-State: AOAM5319so+vmROlqg2xnsJ8RhWvhxifxp2N7DTru3JkjBp9IxzIE0NC
-        oLF6o/zFznbPYcmdM5TZA48=
-X-Google-Smtp-Source: ABdhPJx00jogK9RmLYmrWmKR5skEV1C0MDFSimYum2tWoFsDg4YGxS9ONivu4m6jhwGxm084T8RB5g==
-X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr33968122jat.53.1595947156224;
-        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id x88sm3357294ilk.81.2020.07.28.07.39.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Jul 2020 07:39:15 -0700 (PDT)
-Subject: [bpf-next PATCH] bpf,
- selftests: use ::1 for localhost in tcp_server.py
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     john.fastabend@gmail.com, guro@fb.com, daniel@iogearbox.net,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Tue, 28 Jul 2020 07:39:02 -0700
-Message-ID: <159594714197.21431.10113693935099326445.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        id S1730494AbgG1OtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 10:49:10 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36499 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730492AbgG1OtJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Jul 2020 10:49:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595947748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G61YfqunjV0jTuV2DAMclXYHXLXrDV49YMkHRTR6IRU=;
+        b=EkLD785hob6XeMl4zawSPGroG5ncFpOvWMsVRWGWdUGHZHsJouJnLcUhHmT6FVXFebe7vt
+        6XsCkLc0XWNtI0FoPg8SCOYCBjPLTpqNKR0+FiB/z02ET1wvdwyb5OTX9dHxkwfykCi1xg
+        YbkFp/AnUF+cIQ95nmu+tT0zEwgqp20=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-CFcs_dBQM-Wtwa4WkzLriA-1; Tue, 28 Jul 2020 10:49:04 -0400
+X-MC-Unique: CFcs_dBQM-Wtwa4WkzLriA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAF1758;
+        Tue, 28 Jul 2020 14:49:02 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EDF48712E8;
+        Tue, 28 Jul 2020 14:48:53 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 16:48:52 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
+        brouer@redhat.com
+Subject: Re: [RFC net-next 00/22] Introduce mb bit in xdp_buff/xdp_frame
+Message-ID: <20200728164852.76305a12@carbon>
+In-Reply-To: <cover.1595503780.git.lorenzo@kernel.org>
+References: <cover.1595503780.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using localhost requires the host to have a /etc/hosts file with that
-specific line in it. By default my dev box did not, they used
-ip6-localhost, so the test was failing. To fix remove the need for any
-/etc/hosts and use ::1.
+On Thu, 23 Jul 2020 13:42:12 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-I could just add the line, but this seems easier.
+> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify
+> if shared_info area has been properly initialized for non-linear
+> xdp buffers.
+> Initialize mb to 0 for all xdp drivers
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/testing/selftests/bpf/tcp_client.py |    2 +-
- tools/testing/selftests/bpf/tcp_server.py |    2 +-
- tools/testing/selftests/bpf/test_netcnt.c |    4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+It is nice to see that we have some many XDP drivers, but 20 separate
+patches for drivers is a bit much.  Perhaps we can do all the drivers
+in one patch? What do others think?
 
-diff --git a/tools/testing/selftests/bpf/tcp_client.py b/tools/testing/selftests/bpf/tcp_client.py
-index a53ed58..bfff82b 100755
---- a/tools/testing/selftests/bpf/tcp_client.py
-+++ b/tools/testing/selftests/bpf/tcp_client.py
-@@ -34,7 +34,7 @@ serverPort = int(sys.argv[1])
- # create active socket
- sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
- try:
--    sock.connect(('localhost', serverPort))
-+    sock.connect(('::1', serverPort))
- except socket.error as e:
-     sys.exit(1)
- 
-diff --git a/tools/testing/selftests/bpf/tcp_server.py b/tools/testing/selftests/bpf/tcp_server.py
-index 0ca60d1..42ab888 100755
---- a/tools/testing/selftests/bpf/tcp_server.py
-+++ b/tools/testing/selftests/bpf/tcp_server.py
-@@ -38,7 +38,7 @@ serverSocket = None
- # create passive socket
- serverSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
- 
--try: serverSocket.bind(('localhost', 0))
-+try: serverSocket.bind(('::1', 0))
- except socket.error as msg:
-     print('bind fails: ' + str(msg))
- 
-diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
-index c1da540..7a68c90 100644
---- a/tools/testing/selftests/bpf/test_netcnt.c
-+++ b/tools/testing/selftests/bpf/test_netcnt.c
-@@ -82,9 +82,9 @@ int main(int argc, char **argv)
- 	}
- 
- 	if (system("which ping6 &>/dev/null") == 0)
--		assert(!system("ping6 localhost -c 10000 -f -q > /dev/null"));
-+		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
- 	else
--		assert(!system("ping -6 localhost -c 10000 -f -q > /dev/null"));
-+		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
- 
- 	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
- 			   &prog_cnt)) {
+> Lorenzo Bianconi (22):
+>   xdp: introduce mb in xdp_buff/xdp_frame
+>   xdp: initialize xdp_buff mb bit to 0 in netif_receive_generic_xdp
+>   net: virtio_net: initialize mb bit of xdp_buff to 0
+>   net: xen-netfront: initialize mb bit of xdp_buff to 0
+>   net: veth: initialize mb bit of xdp_buff to 0
+>   net: hv_netvsc: initialize mb bit of xdp_buff to 0
+>   net: bnxt: initialize mb bit in xdp_buff to 0
+>   net: dpaa2: initialize mb bit in xdp_buff to 0
+>   net: ti: initialize mb bit in xdp_buff to 0
+>   net: nfp: initialize mb bit in xdp_buff to 0
+>   net: mvpp2: initialize mb bit in xdp_buff to 0
+>   net: sfc: initialize mb bit in xdp_buff to 0
+>   net: qede: initialize mb bit in xdp_buff to 0
+>   net: amazon: ena: initialize mb bit in xdp_buff to 0
+>   net: cavium: thunder: initialize mb bit in xdp_buff to 0
+>   net: socionext: initialize mb bit in xdp_buff to 0
+>   net: tun: initialize mb bit in xdp_buff to 0
+>   net: ixgbe: initialize mb bit in xdp_buff to 0
+>   net: ice: initialize mb bit in xdp_buff to 0
+>   net: i40e: initialize mb bit in xdp_buff to 0
+>   net: mlx5: initialize mb bit in xdp_buff to 0
+>   net: mlx4: initialize mb bit in xdp_buff to 0
+>
+>  drivers/net/ethernet/amazon/ena/ena_netdev.c        | 1 +
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c       | 1 +
+>  drivers/net/ethernet/cavium/thunder/nicvf_main.c    | 1 +
+>  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c    | 1 +
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c         | 1 +
+>  drivers/net/ethernet/intel/ice/ice_txrx.c           | 1 +
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 1 +
+>  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c   | 1 +
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c     | 1 +
+
+I see that mvneta is missing, but maybe it is doing another kind of
+init of struct xdp_buff?
+
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c          | 1 +
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c     | 1 +
+>  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 1 +
+>  drivers/net/ethernet/qlogic/qede/qede_fp.c          | 1 +
+>  drivers/net/ethernet/sfc/rx.c                       | 1 +
+>  drivers/net/ethernet/socionext/netsec.c             | 1 +
+>  drivers/net/ethernet/ti/cpsw.c                      | 1 +
+>  drivers/net/ethernet/ti/cpsw_new.c                  | 1 +
+>  drivers/net/hyperv/netvsc_bpf.c                     | 1 +
+>  drivers/net/tun.c                                   | 2 ++
+>  drivers/net/veth.c                                  | 1 +
+>  drivers/net/virtio_net.c                            | 2 ++
+>  drivers/net/xen-netfront.c                          | 1 +
+>  include/net/xdp.h                                   | 8 ++++++--
+>  net/core/dev.c                                      | 1 +
+>  24 files changed, 31 insertions(+), 2 deletions(-)
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
