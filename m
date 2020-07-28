@@ -2,93 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE136230204
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 07:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C5D230223
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 07:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgG1FsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 01:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgG1FsR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:48:17 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CA3C061794;
-        Mon, 27 Jul 2020 22:48:17 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l23so17671714qkk.0;
-        Mon, 27 Jul 2020 22:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jvlM9NHcsACKHHGiZRDV7tCWZy0Y4sC2TI8QRB0PPGQ=;
-        b=aK6zkF40KDA0bO12q53pkVpFYe+e73fEmE6vPRW+8PozxmR+lF8y8CsJDalWhutE9P
-         GaNKLckJ683mZ66OiAoz6Hvfq9keqggBbof51sgJQ3X9y2umghAIcI+ZS3bbfdGX3ZOm
-         RSfys2J7nUIra0LaZ/mbRJAGGpSxE4Y/L2r3ti1HGsRJtDCFgtuxbeBOWDrCaYWSe6VQ
-         56afX33NU9PjG9KstKRHrX/X8GUXPHI4FMwiPjzAz/HtkplWT1NYoPbXI5Dtd9fh/ih4
-         6dpa5xP/iyTuI0TgW536j3Cf62R984vFeQhmZ2Uw2DylCostvUzuWG7Fx1bqOA1CNKOD
-         sKWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jvlM9NHcsACKHHGiZRDV7tCWZy0Y4sC2TI8QRB0PPGQ=;
-        b=oa9m5yVy7sy3PhhRg0Xzyxzk66Z9USkqUyPoxPebT8MTtWQS2qtGS/4ut77MmDaZFt
-         0HBmX/Bk9ffBIHTHTZcABKDImCuu6laD/krJLJeHaK3jVVPOcBH1nNfLMAhnXK0XvOKn
-         h77lkW87jac/G8oAJhu0oauK0KTzG/ES5IKM1ttngkVndvJ6q+UImQulNIclDEAE97W8
-         4wOCx2jEn+uZppGv+Ta9vVVCqODKNO/hxKQBmhIXlyGIMIQ2myKA1xqNR1R8h/N7QHDx
-         o7XzaN2WrHFQH0of3dpOl2ox05m/jRbmSmygUTZc2HHKo50CKNREWJ5p3zpjBqeLGJin
-         9MCw==
-X-Gm-Message-State: AOAM531kak9nE3+7lNMMW10nafEQHNNjd+NABx4xaTpuL8qMHBdmjN9/
-        wwJdDHZtbttN3JKuCE94jsm1QPQpvjtKM9ZJLXY=
-X-Google-Smtp-Source: ABdhPJzYaowpf8c8ew54cvnOj81WmjS1ctFGJrkLtq16cmtc9r7UbP0dSQjGKtifjM/IdKtliCg1nJr8KoHA19UIXBA=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr27590585qkg.437.1595915296590;
- Mon, 27 Jul 2020 22:48:16 -0700 (PDT)
+        id S1727042AbgG1F4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 01:56:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726615AbgG1F4E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 01:56:04 -0400
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B3BD2065E;
+        Tue, 28 Jul 2020 05:56:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595915764;
+        bh=2ynC5UqPXs3vgS5aQmcHk+CHSXl41vdPrJl0yFslsaI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=s2Zgn4rC6PvoM5dpRMCuQp89ukBxRnsw2U5TmCwWXCfwCxXv/OD9CuehQxrNKfk/r
+         0FSOK3iwdFjwOYzv+sf4cxaoAoNuH12OQrs7mjkCk+Pm4Cp3Ztjfp5VI6Ya8tq+DUp
+         Kh2+FNwtiMQd4h4C2UrPrkVQ75m6wvS9LcKlV2U0=
+Received: by mail-lj1-f180.google.com with SMTP id r19so19750236ljn.12;
+        Mon, 27 Jul 2020 22:56:04 -0700 (PDT)
+X-Gm-Message-State: AOAM5326HzhO+XLDHmzOxgM9boahSZfflBC6q/FYPP6/w9cqkJnsXwhj
+        SJHcfiwSV2nE2btSsrgKvgDqWKywQYLA3hFpHXE=
+X-Google-Smtp-Source: ABdhPJzyy5pWys05ij97FFdNj49iiLBbdCXvoOe0+9lXEc/tyjOmJQofnVRs7ZrT8eHV/WOvANkdul4GuWGaM2+bH6Y=
+X-Received: by 2002:a2e:9996:: with SMTP id w22mr12748866lji.446.1595915762423;
+ Mon, 27 Jul 2020 22:56:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200727232346.0106c375@canb.auug.org.au> <e342e8ce-db29-1603-3fd9-40792a783296@infradead.org>
-In-Reply-To: <e342e8ce-db29-1603-3fd9-40792a783296@infradead.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Jul 2020 22:48:05 -0700
-Message-ID: <CAEf4BzYD-PiA2cDvD5qRv7hHZ_GTDdKqAm1jfg2ZWBWM_3YO5w@mail.gmail.com>
-Subject: Re: linux-next: Tree for Jul 27 (kernel/bpf/syscall.o)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-29-guro@fb.com>
+In-Reply-To: <20200727184506.2279656-29-guro@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Jul 2020 22:55:51 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW51oNcT297CYWAE53TrSMPrAqY+pof8oj2ED-trXVxgZg@mail.gmail.com>
+Message-ID: <CAPhsuW51oNcT297CYWAE53TrSMPrAqY+pof8oj2ED-trXVxgZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 28/35] bpf: eliminate rlimit-based memory
+ accounting for bpf progs
+To:     Roman Gushchin <guro@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 11:58 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> On 7/27/20 6:23 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Changes since 20200724:
-> >
+> Do not use rlimit-based memory accounting for bpf progs. It has been
+> replaced with memcg-based memory accounting.
 >
-> on i386:
-> when CONFIG_XPS is not set/enabled:
->
-> ld: kernel/bpf/syscall.o: in function `__do_sys_bpf':
-> syscall.c:(.text+0x4482): undefined reference to `bpf_xdp_link_attach'
->
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-I can't repro this on x86-64 with CONFIG_XPS unset. Do you mind
-sharing the exact config you've used?
-
-I see that kernel/bpf/syscall.c doesn't include linux/netdevice.h
-directly, so something must be preventing netdevice.h to eventually
-get to bpf/syscall.c, but instead of guessing on the fix, I'd like to
-repro it first. Thanks!
-
-
->
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Song Liu <songliubraving@fb.com>
