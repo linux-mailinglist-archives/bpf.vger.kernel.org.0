@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B4C231325
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A8F23133B
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgG1TxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 15:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S1728671AbgG1T4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 15:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgG1TxM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:53:12 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75594C061794;
-        Tue, 28 Jul 2020 12:53:12 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id t6so4804923qvw.1;
-        Tue, 28 Jul 2020 12:53:12 -0700 (PDT)
+        with ESMTP id S1728567AbgG1T4O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:56:14 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2D9C061794;
+        Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id x69so19976040qkb.1;
+        Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iFnebe0rsf16Ital1PxCLlm4jXaeU/dlrpfp7jc2lKI=;
-        b=Esld6XUPtN2Lbg5Z/4TOV6+LZ5mFlNKL48bJ0nTchCWPbWO5MtoPHoP4yISyYoN5ry
-         SkqUiGALRhZhKzMgop1e3mWmuOY/fMGRV2ugED5MCmpL4Hts8xxqFkpw59J/w5jDQY/X
-         OzgPPNAWpcIedxUSUgGVjQTkBqDHJVfG8mdvIQ75Hg7ejIhC4NxMEmaVCvnNxzFrNYS+
-         qmdLs19xRiuVqg36OG0dMHaSSoAfzcao5fKA8EYzjrhqqQcHliw0D1V7Zhdg7EGNHwal
-         6Z/FZFvNP5EEQnTb/ZNE2jc4vB2kjt9NJqxMH1FP0ePP3Jq3tP/42cHtZD8rWJk4M4yv
-         wwTw==
+        bh=sJP1AxLMAkAXNjIXT2QYjjZKu+zrqi6ZQ8MjHCkzEQY=;
+        b=bMiViWhcNc8eurQHFF7gEo0b0AE1ZzuplLLnV5578pbu3xdCErqsqSXkkh/v4DGb1L
+         HdYJRQwpE/I1Da6fAQF7gUWTCC/o1BCSopOuClrdVRIs8+yuIPtpNaXES6JWAqCph13F
+         LAgxPty2yO/fFBsmaLVbDssY5XYobj1FP77Q9FZ7YZn6C+kiAZpCaJrznmawf3R3ZMYd
+         g3MjmkpBhT7A+TghSTVG1l1tLRzGa72xNe3IBgWjgPMWhvThtWwj+jAEu9iWL4vw8KDp
+         a1Q1PrbYnG5ttlB456mHM+VIZOb1QeLZsDQ8XifHlFt70DDqxh3e9d8BBHI/st6lM6ce
+         g/4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iFnebe0rsf16Ital1PxCLlm4jXaeU/dlrpfp7jc2lKI=;
-        b=XCNH63kR1AgTvjKWAzAmfuTit4yOQ+yc4nDTmUGXJmvpgL8vSr86s98arbLDJC/yQ9
-         568OtnN+RA4wbnDAPJ1oMQlGDGR8rPiYnCeFq3cFqXY4MEd/YamQxCWkVFR/+Y2B6rMx
-         L/gGolFTQokSuFe23ZJeQEhJS6yFToNjdomXcgg7If+6BiiCFFL0SMQEQ18K8HAy1+A0
-         uHcSgL9CZmOXYOvTkWOg/FID7WXWSI0fH3xS+QhjgBluh3yGl8SXd1I6sj6Ef5e1cnxu
-         HUnrfgdKWSJWq8Pv1vR85QDmUf6Zx/S/cZ42BZz2va2/Lv3c5IcrDY5EaJU8vz1KX+sy
-         FFEw==
-X-Gm-Message-State: AOAM530onYpPspXA+oOTr8B7VF5e96UEsHPyuRkHGrnf1Lzx+HgAPflJ
-        8UexggD23dbrOfF4y6mQVBXOqrjKXyxg1KM3PJMEAM1o
-X-Google-Smtp-Source: ABdhPJyDq5uaj6D6ZCVS3p+XxGn9ynGsBLI8WMlr6BftVWZyxlS7orAbrYAbwS4EJU6Bg1L2HM5MwJMaQNrvfpxScqI=
-X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr28168888qvf.247.1595965991704;
- Tue, 28 Jul 2020 12:53:11 -0700 (PDT)
+        bh=sJP1AxLMAkAXNjIXT2QYjjZKu+zrqi6ZQ8MjHCkzEQY=;
+        b=siqUJ6GEDoE6kO1Ecb85smQaXuzQghUp78scB3id2zdU737Ig4JqtdTK5K4UBj56OR
+         OdPGC9PiHCycnY182aE3DhVTFDhJjGquCD1oenauXemiwUINaOY2ncrmYIJJe5QYeBLD
+         oL+yDABXlcCfG//968U0+xyJJR2qj+8ZJsiEVJI3uN8em1ubNW0dh72xrKNUvvFNPx26
+         BQ6qH6DaT5+yXdMUP4TEz69B2kUCwOAU8xCoUCLRnKZt9V739taPvjflmqcO2FZpLrkS
+         GGAhdfOQG8iJwCfB2tf9miLgiWE32nmek+fxpnW95RXsOjHOUsgJLNCrSInwyOsse1gn
+         13Eg==
+X-Gm-Message-State: AOAM530wspudSNDlQDwWv4QcfxbtlzyKpzUh9GT0tJpWFCnVsrj/C+Ez
+        zbBkDrVjD2+RidjNcuUFtNi0FI90Z5h/gQ5cOZY=
+X-Google-Smtp-Source: ABdhPJy9/2VM5/20ii6Eb2JoyCxvCGwmKSRUDwheKTEL7UC02O04unk0tJDZaR0psmqnovsmUSKQ1VwVq1WvjDipuF8=
+X-Received: by 2002:a37:a655:: with SMTP id p82mr29238102qke.92.1595966173091;
+ Tue, 28 Jul 2020 12:56:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-13-jolsa@kernel.org>
-In-Reply-To: <20200722211223.1055107-13-jolsa@kernel.org>
+References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-14-jolsa@kernel.org>
+In-Reply-To: <20200722211223.1055107-14-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 12:53:00 -0700
-Message-ID: <CAEf4BzYTT23knreKpxPDLeWcLzTVQhtBrRPjrZ+MBpL4ajeavw@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 12/13] selftests/bpf: Add test for d_path helper
+Date:   Tue, 28 Jul 2020 12:56:02 -0700
+Message-ID: <CAEf4BzbMNZdiD_hqReei2HKziTTNoWFymE5g7SzvSR7=QdWxrw@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 13/13] selftests/bpf: Add set test to resolve_btfids
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
         David Miller <davem@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>,
@@ -70,161 +70,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 2:14 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Jul 22, 2020 at 2:15 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding test for d_path helper which is pretty much
-> copied from Wenbo Zhang's test for bpf_get_fd_path,
-> which never made it in.
+> Adding test to for sets resolve_btfids. We're checking that
+> testing set gets properly resolved and sorted.
 >
-> The test is doing fstat/close on several fd types,
-> and verifies we got the d_path helper working on
-> kernel probes for vfs_getattr/filp_close functions.
->
-> Original-patch-by: Wenbo Zhang <ethercflow@gmail.com>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  .../testing/selftests/bpf/prog_tests/d_path.c | 162 ++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_d_path.c |  64 +++++++
->  2 files changed, 226 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_d_path.c
+>  .../selftests/bpf/prog_tests/resolve_btfids.c | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> new file mode 100644
-> index 000000000000..3b8f87fb17d7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> @@ -0,0 +1,162 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +#include <test_progs.h>
-> +#include <sys/stat.h>
-> +#include <linux/sched.h>
-> +#include <sys/syscall.h>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> index 101785b49f7e..cc90aa244285 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> @@ -48,6 +48,15 @@ BTF_ID(struct,  S)
+>  BTF_ID(union,   U)
+>  BTF_ID(func,    func)
+>
+> +BTF_SET_START(test_set)
+> +BTF_ID(typedef, S)
+> +BTF_ID(typedef, T)
+> +BTF_ID(typedef, U)
+> +BTF_ID(struct,  S)
+> +BTF_ID(union,   U)
+> +BTF_ID(func,    func)
+> +BTF_SET_END(test_set)
 > +
-> +#define MAX_PATH_LEN           128
-> +#define MAX_FILES              7
-> +#define MAX_EVENT_NUM          16
-> +
-> +#include "test_d_path.skel.h"
-> +
-> +static struct {
-> +       __u32 cnt;
-> +       char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
-> +} src;
-> +
-> +static int set_pathname(int fd, pid_t pid)
-> +{
-> +       char buf[MAX_PATH_LEN];
-> +
-> +       snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", pid, fd);
-> +       return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
-> +}
-> +
-> +static int trigger_fstat_events(pid_t pid)
-> +{
-> +       int sockfd = -1, procfd = -1, devfd = -1;
-> +       int localfd = -1, indicatorfd = -1;
-> +       int pipefd[2] = { -1, -1 };
-> +       struct stat fileStat;
-> +       int ret = -1;
-> +
-> +       /* unmountable pseudo-filesystems */
-> +       if (CHECK_FAIL(pipe(pipefd) < 0))
-> +               return ret;
-> +       /* unmountable pseudo-filesystems */
-> +       sockfd = socket(AF_INET, SOCK_STREAM, 0);
-> +       if (CHECK_FAIL(sockfd < 0))
-> +               goto out_close;
-> +       /* mountable pseudo-filesystems */
-> +       procfd = open("/proc/self/comm", O_RDONLY);
-> +       if (CHECK_FAIL(procfd < 0))
-> +               goto out_close;
-> +       devfd = open("/dev/urandom", O_RDONLY);
-> +       if (CHECK_FAIL(devfd < 0))
-> +               goto out_close;
-> +       localfd = open("/tmp/d_path_loadgen.txt", O_CREAT | O_RDONLY);
-> +       if (CHECK_FAIL(localfd < 0))
-> +               goto out_close;
-> +       /* bpf_d_path will return path with (deleted) */
-> +       remove("/tmp/d_path_loadgen.txt");
-> +       indicatorfd = open("/tmp/", O_PATH);
-> +       if (CHECK_FAIL(indicatorfd < 0))
-> +               goto out_close;
-> +
-> +       ret = set_pathname(pipefd[0], pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(pipefd[1], pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(sockfd, pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(procfd, pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(devfd, pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(localfd, pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
-> +       ret = set_pathname(indicatorfd, pid);
-> +       if (CHECK_FAIL(ret < 0))
-> +               goto out_close;
+>  static int
+>  __resolve_symbol(struct btf *btf, int type_id)
+>  {
+> @@ -126,5 +135,29 @@ int test_resolve_btfids(void)
+>                 }
+>         }
+>
+> +       /* Check BTF_SET_START(test_set) IDs */
+> +       for (i = 0; i < test_set.cnt && !ret; i++) {
 
-Please use CHECK instead of CHECK_FAIL. Thanks.
+nit: usual we just do `goto err_out;` instead of complicating exit
+condition in a for loop
 
+> +               bool found = false;
 > +
-> +       /* triggers vfs_getattr */
-> +       fstat(pipefd[0], &fileStat);
-> +       fstat(pipefd[1], &fileStat);
-> +       fstat(sockfd, &fileStat);
-> +       fstat(procfd, &fileStat);
-> +       fstat(devfd, &fileStat);
-> +       fstat(localfd, &fileStat);
-> +       fstat(indicatorfd, &fileStat);
+> +               for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
+> +                       if (test_symbols[j].id != test_set.ids[i])
+> +                               continue;
+> +                       found = true;
+> +                       break;
+> +               }
 > +
-> +out_close:
-> +       /* triggers filp_close */
-> +       close(pipefd[0]);
-> +       close(pipefd[1]);
-> +       close(sockfd);
-> +       close(procfd);
-> +       close(devfd);
-> +       close(localfd);
-> +       close(indicatorfd);
-> +       return ret;
-> +}
-> +
+> +               ret = CHECK(!found, "id_check",
+> +                           "ID %d for %s not found in test_symbols\n",
+> +                           test_symbols[j].id, test_symbols[j].name);
 
-[...]
+j == ARRAY_SIZE(test_symbols), you probably meant to get
+test_set.ids[i] instead of test_symbol name/id?
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> new file mode 100644
-> index 000000000000..e02dce614256
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> +               if (ret)
+> +                       break;
 > +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define MAX_PATH_LEN           128
-> +#define MAX_EVENT_NUM          16
-> +
-> +pid_t my_pid;
-> +__u32 cnt_stat;
-> +__u32 cnt_close;
-> +char paths_stat[MAX_EVENT_NUM][MAX_PATH_LEN];
-> +char paths_close[MAX_EVENT_NUM][MAX_PATH_LEN];
-> +int rets_stat[MAX_EVENT_NUM];
-> +int rets_close[MAX_EVENT_NUM];
-> +
+> +               if (i > 0) {
+> +                       ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
 
-please zero-initialize all of these, it causes issues on some Clang versions
+nit: >= would be the invalid condition
 
-[...]
+> +                                   "sort_check",
+> +                                   "test_set is not sorted\n");
+> +               }
+> +       }
+> +
+>         return ret;
+>  }
+> --
+> 2.25.4
+>
