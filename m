@@ -2,93 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35728231559
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 00:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A73231575
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 00:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729512AbgG1WH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 18:07:58 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41074 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729484AbgG1WH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:07:58 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0XlI-0000V3-T1; Wed, 29 Jul 2020 00:07:52 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0XlI-000MTB-Ll; Wed, 29 Jul 2020 00:07:52 +0200
-Subject: Re: [PATCH v5 bpf-next 4/6] bpf, x64: rework pro/epilogue and
- tailcall handling in JIT
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com
-References: <20200724173557.5764-1-maciej.fijalkowski@intel.com>
- <20200724173557.5764-5-maciej.fijalkowski@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e0c1f8c5-cd73-48eb-7c92-fcf755319173@iogearbox.net>
-Date:   Wed, 29 Jul 2020 00:07:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729491AbgG1WSF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 18:18:05 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42186 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729567AbgG1WSF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Jul 2020 18:18:05 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SMACnc005085
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 15:18:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=khEKn/HofYFeWRLfeujerfad+E4YU6oJE9H+cDFsv5I=;
+ b=b0mTCvb4UG1QN9fkenwAvOgs55ra0boerm3XWNvRfxMj5uwQfnR6W2ot6ixCAE/hTC5f
+ G6pTyDFzzuO+rHZNnduAEpW6Q3xIVsOomN4DE6RTPfdXvB9XHz7b9ilmXC1ghRkFRLDH
+ yuLuwa9gvZ+q9fQvTJV1CQAbleiLe1hVOU8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32j13yq5w9-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 15:18:03 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 15:18:02 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 74F2C3704BE1; Tue, 28 Jul 2020 15:18:01 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 1/2] bpf: add missing newline characters in verifier error messages
+Date:   Tue, 28 Jul 2020 15:18:01 -0700
+Message-ID: <20200728221801.1090349-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200724173557.5764-5-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25887/Tue Jul 28 17:44:20 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_17:2020-07-28,2020-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0 clxscore=1015
+ impostorscore=0 suspectscore=13 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007280157
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/24/20 7:35 PM, Maciej Fijalkowski wrote:
-> This commit serves two things:
-> 1) it optimizes BPF prologue/epilogue generation
-> 2) it makes possible to have tailcalls within BPF subprogram
-> 
-> Both points are related to each other since without 1), 2) could not be
-> achieved.
-> 
-[...]
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 6fe6491fa17a..e9d62a60134b 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -750,6 +750,7 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
->   				    struct bpf_prog *old,
->   				    struct bpf_prog *new)
->   {
-> +	u8 *old_addr, *new_addr, *old_bypass_addr;
->   	struct prog_poke_elem *elem;
->   	struct bpf_array_aux *aux;
->   
-> @@ -800,13 +801,47 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
->   			if (poke->tail_call.map != map ||
->   			    poke->tail_call.key != key)
->   				continue;
-> +			/* protect against un-updated poke descriptors since
-> +			 * we could fill them from subprog and the same desc
-> +			 * is present on main's program poke tab
-> +			 */
-> +			if (!poke->tailcall_bypass || !poke->tailcall_target ||
-> +			    !poke->bypass_addr)
-> +				continue;
+Newline characters are added in two verifier error messages,
+refactored in Commit afbf21dce668 ("bpf: Support readonly/readwrite
+buffers in verifier"). This way, they do not mix with
+messages afterwards.
 
-Thinking more about this, this check here is not sufficient. You basically need this here
-given you copy all poke descs over to each of the subprogs in jit_subprogs(). So for those
-that weren't handled by the subprog have the above addresses as NULL. But in jit_subprogs()
-once we filled out the target addresses for the bpf-in-bpf calls we loop over each subprog
-and do the extra/final pass in the JIT to complete the images. However, nothing protects
-bpf_tail_call_direct_fixup() as far as I can see from patching at the NULL addr if there is
-a target program loaded in the map at the given key. That will most likely blow up and hit
-the BUG_ON().
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/verifier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Instead of these above workarounds, did you try to go the path to only copy over the poke
-descs that are relevant for the individual subprog (but not all the others)?
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 88bb25d08bf8..b6ccfce3bf4c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3069,7 +3069,7 @@ static int __check_buffer_access(struct bpf_verifie=
+r_env *env,
+ {
+ 	if (off < 0) {
+ 		verbose(env,
+-			"R%d invalid %s buffer access: off=3D%d, size=3D%d",
++			"R%d invalid %s buffer access: off=3D%d, size=3D%d\n",
+ 			regno, buf_info, off, size);
+ 		return -EACCES;
+ 	}
+@@ -3078,7 +3078,7 @@ static int __check_buffer_access(struct bpf_verifie=
+r_env *env,
+=20
+ 		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+ 		verbose(env,
+-			"R%d invalid variable buffer offset: off=3D%d, var_off=3D%s",
++			"R%d invalid variable buffer offset: off=3D%d, var_off=3D%s\n",
+ 			regno, off, tn_buf);
+ 		return -EACCES;
+ 	}
+--=20
+2.24.1
 
-Thanks,
-Daniel
