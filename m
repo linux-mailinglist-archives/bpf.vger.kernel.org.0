@@ -2,70 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF50230A88
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 14:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EE0230C95
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 16:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729687AbgG1Mpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 08:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729618AbgG1Mpo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:45:44 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C731D206D7;
-        Tue, 28 Jul 2020 12:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595940344;
-        bh=SjwVcjwzVcHmdTN1Be+lgU7GPgYwsx0Ln8MZ5TrX84U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nimerbmlC9+vIEP0knA5mT6s2fVQUBe/yaUBtK4uDYtxD36l+mOm7D50faPD2b60o
-         mrjH8eGPeney/6BYhThX9fA5+X/3hnik4WzC8SoZPGHZN91n6nQvsEUri71WoG1jFx
-         srRNufOVmXMp0DIsK3nihFBZL8wudynKWIwVldnE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id F3F86404B1; Tue, 28 Jul 2020 09:45:39 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:45:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 3/5] perf test: Ensure sample_period is set libpfm4
- events
-Message-ID: <20200728124539.GB40195@kernel.org>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-4-irogers@google.com>
+        id S1730457AbgG1OjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 10:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730443AbgG1OjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 10:39:16 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DD7C061794;
+        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so5738780iow.11;
+        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=wJ8v23x7Y2FC0aWK8XYKTzplRSBW0CXrOa5CKTnOUmI=;
+        b=EOeeoRSo+IhFvKV8BzKlXCxJo4XJ/o0IIegGIfU7zQXBNCkKLUcCp/whNH4nS6KtEr
+         COdTyN7/4/nq8fLvzw2fkzM/b5pPi4TMGrTwLUIRrywjZcQS9T4q7cidBYZyQKpUY22+
+         UudGuwkQcZwqrgMIvENsOLejh3/FhQixPA2JR+YvVs+ORMrA3ANi1+QWN2jXHSB02sEy
+         9yqDHujzU6rWAbkkyBDI4hOS8qdWvx5jMRkvm+9U1tfoUeMG0/FkA2WWYL6HC8A5Qm/6
+         XDk3/WKH0rURjG8gsBd8V2ZmU9VBMv1XJLDgu+7ZO1juYpSwe9ZOEeHVnsIEZZYuunKe
+         i4sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=wJ8v23x7Y2FC0aWK8XYKTzplRSBW0CXrOa5CKTnOUmI=;
+        b=DFAFRJ+oAL4R9RecquSSS+G3sD3Lixt2g75aRPn5lSbnqrgRwObVTzzruMRKuo+nsW
+         MayTOjTCXkb5LJDTgEGKFw3SMUFBobuLdSo3PM8/T3zJ04+bJO7KioN9HAb+Ub3YjD2B
+         UNOkp90+gF5c0bdYTcZJQTusyRtKuy/bLOA/U6Th0lw9HgTeteUPRxuSTO//DENzmzyC
+         O7XOARd2jsxO0gZT3AtbS3xL5tkuv/L7usE/Ks4TfTgkakMJq6KTqKcXq8/kTWj/ebwl
+         YetDcWQSbGgPgNjWRZv5N8M8Ypoc58Fm3LmkjpwZW5YdGaQnskUcw41+3CJ2e/cjwc3y
+         gzSQ==
+X-Gm-Message-State: AOAM5319so+vmROlqg2xnsJ8RhWvhxifxp2N7DTru3JkjBp9IxzIE0NC
+        oLF6o/zFznbPYcmdM5TZA48=
+X-Google-Smtp-Source: ABdhPJx00jogK9RmLYmrWmKR5skEV1C0MDFSimYum2tWoFsDg4YGxS9ONivu4m6jhwGxm084T8RB5g==
+X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr33968122jat.53.1595947156224;
+        Tue, 28 Jul 2020 07:39:16 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id x88sm3357294ilk.81.2020.07.28.07.39.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Jul 2020 07:39:15 -0700 (PDT)
+Subject: [bpf-next PATCH] bpf,
+ selftests: use ::1 for localhost in tcp_server.py
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     john.fastabend@gmail.com, guro@fb.com, daniel@iogearbox.net,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Date:   Tue, 28 Jul 2020 07:39:02 -0700
+Message-ID: <159594714197.21431.10113693935099326445.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728085734.609930-4-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Jul 28, 2020 at 01:57:32AM -0700, Ian Rogers escreveu:
-> Test that a command line option doesn't override the period set on a
-> libpfm4 event.
-> Without libpfm4 test passes as unsupported.
+Using localhost requires the host to have a /etc/hosts file with that
+specific line in it. By default my dev box did not, they used
+ip6-localhost, so the test was failing. To fix remove the need for any
+/etc/hosts and use ::1.
 
-Thanks, applied.
+I could just add the line, but this seems easier.
 
-- Arnaldo
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ tools/testing/selftests/bpf/tcp_client.py |    2 +-
+ tools/testing/selftests/bpf/tcp_server.py |    2 +-
+ tools/testing/selftests/bpf/test_netcnt.c |    4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/tcp_client.py b/tools/testing/selftests/bpf/tcp_client.py
+index a53ed58..bfff82b 100755
+--- a/tools/testing/selftests/bpf/tcp_client.py
++++ b/tools/testing/selftests/bpf/tcp_client.py
+@@ -34,7 +34,7 @@ serverPort = int(sys.argv[1])
+ # create active socket
+ sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+ try:
+-    sock.connect(('localhost', serverPort))
++    sock.connect(('::1', serverPort))
+ except socket.error as e:
+     sys.exit(1)
+ 
+diff --git a/tools/testing/selftests/bpf/tcp_server.py b/tools/testing/selftests/bpf/tcp_server.py
+index 0ca60d1..42ab888 100755
+--- a/tools/testing/selftests/bpf/tcp_server.py
++++ b/tools/testing/selftests/bpf/tcp_server.py
+@@ -38,7 +38,7 @@ serverSocket = None
+ # create passive socket
+ serverSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+ 
+-try: serverSocket.bind(('localhost', 0))
++try: serverSocket.bind(('::1', 0))
+ except socket.error as msg:
+     print('bind fails: ' + str(msg))
+ 
+diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
+index c1da540..7a68c90 100644
+--- a/tools/testing/selftests/bpf/test_netcnt.c
++++ b/tools/testing/selftests/bpf/test_netcnt.c
+@@ -82,9 +82,9 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (system("which ping6 &>/dev/null") == 0)
+-		assert(!system("ping6 localhost -c 10000 -f -q > /dev/null"));
++		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
+ 	else
+-		assert(!system("ping -6 localhost -c 10000 -f -q > /dev/null"));
++		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
+ 
+ 	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
+ 			   &prog_cnt)) {
+
