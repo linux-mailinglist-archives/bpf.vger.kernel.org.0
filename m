@@ -2,86 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD9C2311D8
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 20:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2D0231225
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgG1Sjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 14:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729475AbgG1Sju (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:39:50 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0201C061794;
-        Tue, 28 Jul 2020 11:39:50 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id x69so19708126qkb.1;
-        Tue, 28 Jul 2020 11:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o/6uYiVxRBLvjte5hmpYmxTDf5OttB8/QGuV4Pd34jo=;
-        b=fr1oZSmqgpJ66N54EakcrzBJsqjtB/2fD7rV9bpszyORd74/XLLk6ivv2oYXStoLgd
-         gInLJ0KuJ9EAYf9ztO4qj2+xiPFU/sMSqL9vwFdDsTy1iDIYAsxUGt9sou0vIxgYeLT3
-         JFvJ7VOSW5k1iRvc3yMbhYUm6nbL+G8Ai22u7In0qIp5QUVsDHLychjT8VGHwM0U0I0D
-         PVTcJczdrSHK+hcCzZBOlUGQRWHe4wPVHcJCqWJu/1FIjkXhRExAtGbAdQeg/uqpM2tw
-         3i/Z6y95WwwZv24kPyQupdkbN9WXQ/qfNuRm+4P9Kc+Fo5+etn7tUTdel8xlyZsEHDXw
-         yxxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o/6uYiVxRBLvjte5hmpYmxTDf5OttB8/QGuV4Pd34jo=;
-        b=eqtowweEYwtQglbTNjJZKbd53R01+afPHQBVVo24K5J86x+isbPyHFb77aOv+ypwcj
-         +/0YHmv/Ch6mkRg9f9C61UYQsilbGACzPlL5yhxZhoyYD/gpHIqUsRXtgIVUZ5yg3bge
-         8U6IgRh6dcGQHIZcUjndyGfU2leDs7zyy2MvU/0JFd3xTyne6LstDrDlVkcrvWJ3fLdc
-         3g2kVRmaZx6ymTYDdOnz3VTCjFv88EOLztCaWYNCpd4gzMLqvMT5FoF1OFXryiG8SnIS
-         8IZgjD0Fai90t0TfQbvpf8wu7FqOcOncYaB0MyYSSY/+c/gcFjX/oqwQF6QAbeczg6fx
-         7sRg==
-X-Gm-Message-State: AOAM5337gg8JjG0nLMeI9MwFH7/AkhxMpDDjPOPp/SrL80iqxEhPwsPQ
-        JqddppIMKYrPhVW00JR3vjOY74NiRQDEbV3vCS0=
-X-Google-Smtp-Source: ABdhPJyQHKEUOb6+EWdritYo3lOBBI95gbgh2RWPyhg12odwGf2RbbQI/ffowW7yx/gmdzcd182heR+Yn2/IDEHsG+E=
-X-Received: by 2002:a37:afc3:: with SMTP id y186mr10251973qke.36.1595961590033;
- Tue, 28 Jul 2020 11:39:50 -0700 (PDT)
+        id S1728879AbgG1TFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 15:05:38 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7610 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729217AbgG1TFh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Jul 2020 15:05:37 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06SJ3Rap017406
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 12:05:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=dokCYr0Heq2KU3GFLypgUYG1uu3V7zp2F9pmu0AG1R0=;
+ b=M6B/2vwnJVjXZBygU8IfH7XZz3atwX4lECAROYzWk0V2keG7F1XdKkUyaXP5XMyAMkMs
+ dR0DuqabhstGTY144mhTS46g4mSQSzJjcQxM0EK1fbR2g7/3tvvaKuQFi37fhgvLI0ZH
+ ZaZ43n6I8i6FKNFt2xM7qR9nXH6FUqzP9oQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 32ggdmp1mu-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 12:05:36 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 12:05:34 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 0C2E42EC4C42; Tue, 28 Jul 2020 12:05:31 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <rdunlap@infradead.org>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: fix build without CONFIG_NET when using BPF XDP link
+Date:   Tue, 28 Jul 2020 12:05:27 -0700
+Message-ID: <20200728190527.110830-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <159594714197.21431.10113693935099326445.stgit@john-Precision-5820-Tower>
-In-Reply-To: <159594714197.21431.10113693935099326445.stgit@john-Precision-5820-Tower>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 11:39:39 -0700
-Message-ID: <CAEf4BzYVb1NY=GxBCqTWS1e7_+pbOXg3GsM+JXsGNZS30MGyQQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH] bpf, selftests: use ::1 for localhost in tcp_server.py
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_15:2020-07-28,2020-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=864
+ malwarescore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 suspectscore=8
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007280135
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 7:40 AM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Using localhost requires the host to have a /etc/hosts file with that
-> specific line in it. By default my dev box did not, they used
-> ip6-localhost, so the test was failing. To fix remove the need for any
-> /etc/hosts and use ::1.
->
-> I could just add the line, but this seems easier.
->
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
+Entire net/core subsystem is not built without CONFIG_NET. linux/netdevic=
+e.h
+just assumes that it's always there, so the easiest way to fix this is to
+conditionally compile out bpf_xdp_link_attach() use in bpf/syscall.c.
 
-Makes sense.
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/syscall.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0e8c88db7e7a..cd3d599e9e90 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3923,9 +3923,11 @@ static int link_create(union bpf_attr *attr)
+ 	case BPF_PROG_TYPE_SK_LOOKUP:
+ 		ret =3D netns_bpf_link_create(attr, prog);
+ 		break;
++#ifdef CONFIG_NET
+ 	case BPF_PROG_TYPE_XDP:
+ 		ret =3D bpf_xdp_link_attach(attr, prog);
+ 		break;
++#endif
+ 	default:
+ 		ret =3D -EINVAL;
+ 	}
+--=20
+2.24.1
 
-
->  tools/testing/selftests/bpf/tcp_client.py |    2 +-
->  tools/testing/selftests/bpf/tcp_server.py |    2 +-
->  tools/testing/selftests/bpf/test_netcnt.c |    4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
->
-
-[...]
