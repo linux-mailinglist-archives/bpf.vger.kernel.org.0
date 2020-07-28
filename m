@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC842313DA
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 22:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222D92313E6
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 22:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgG1U2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 16:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
+        id S1728270AbgG1U3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 16:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgG1U2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:28:01 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E171C061794;
-        Tue, 28 Jul 2020 13:28:01 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so20044017qkc.6;
-        Tue, 28 Jul 2020 13:28:01 -0700 (PDT)
+        with ESMTP id S1728932AbgG1U3P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:29:15 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222FCC061794;
+        Tue, 28 Jul 2020 13:29:15 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c12so6908236qtn.9;
+        Tue, 28 Jul 2020 13:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0kiHcllcYBrWocTjnOskFUd212TEwgooiUYMMHKg7NA=;
-        b=sAyBBxH4DALIwXLqpF4Pa85hrr+qKXP8NgGaomAI6teKskv8JikS27ZmjztVBCo48w
-         4aQoEzVMk8moXJlbO+Vpr3rrgrK+Ysm/jA5JO8eBH3+L3hgn+yKycjnGR5+4OYdz8oJc
-         4NGiLnsZAZ4NFKrJeAvkUGBjxaGQ2/YuTmWMxGB/dmXos0+FaB35jERo1XfjNxA7Pn0U
-         TGStPNdu4WoRP9a4o/Nc52ZtaUhuPpDBOT+7A0fGyn/2plzvlOQUlaCuE0c+A/aqmqvA
-         oZwGd+gAO72ZG6gxhGKYLg6ZrcfpEKdSvZLBrZtW/ZNLqyD6nTtIO/rz7LhvjESJuQ03
-         7NTg==
+        bh=Fh9i97yvbhZY5dXaEOPSNowNwBJypz2dNo5M4ydiiIQ=;
+        b=XpXBwciJOKxKwb7WUqTEnM2XrWdlwNOa6j8aoGUwXL68eYYH7OqPKm1ip4ViatwHWY
+         Ytz5sdeXPslfptWqYQgCjZ7HOp4zP63likJq+7RmBIB6Y0+12IA7x+NOPJG2uRWiEyrb
+         87vdiYqsvQIOhDC1C2s0Quk7TRBT1V/fsOGAcvSBw/f95copqXwiVsJJy6nDRu7HW6A8
+         rDep8h8rJBT5251BMWWXYTHvbZJNLOnh4pv79M7KCGU82thaik5uQug3x+3Izy8tO8mQ
+         1M5UbdNvlk6jRLOQUeLKgNkhwmhm9GB3APzCjTDX+kyFZMV0yfYE5S5aphJ5kHoJGBRy
+         td3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0kiHcllcYBrWocTjnOskFUd212TEwgooiUYMMHKg7NA=;
-        b=FVw29Dyi1jszYXvezgufv3cZMsT1q6SXrfItfBe1nwC5lA9h/Czb1ridtMlHkPvK/l
-         TRBuaRWfkec0naeb7g5zOGXLS7e24UnnpYo/IlIPiTvueXw9+TVy1DCYSkiaQzGfZRhR
-         khgHiR5YzC1vdwWc0UhuAuZSodZBfoD1KRrrnzulGAotZLUe4TFzSuKsQp20KvDwWqSI
-         VqQ5MBa+GKl6VJFHy/Gu1XCh/BidO/aoso8u/0yuPhkWrmjMvK/bccK9Vi9wYQRQTEdE
-         2QTKIXV0MLpaQibWRPSdxtIblSI3ZXTQWGJd61oQLkZBrkhftSM1c3SgzYNYCRqiSgey
-         V/tA==
-X-Gm-Message-State: AOAM530b1CY0I+Vz+vYyBrIxwvfoSszEWuSEYXorjivfwY0cRWaJfz4i
-        Kcql2PViR6A8Aeabu8dXG0fqqZz8MMmU5HMPbwc=
-X-Google-Smtp-Source: ABdhPJx3BPzOhKJR/u5zpVwbgG/d4Hw1aHrSC7L9yvPorSXLPHK9haR4micIoQVWc0dEfq5D5UJKLg3+Hb3SeOpgTnk=
-X-Received: by 2002:a05:620a:4c:: with SMTP id t12mr4258493qkt.449.1595968080578;
- Tue, 28 Jul 2020 13:28:00 -0700 (PDT)
+        bh=Fh9i97yvbhZY5dXaEOPSNowNwBJypz2dNo5M4ydiiIQ=;
+        b=TTl7kNxe5hS+ErrjWRBD0Qwd8PEbKf9ae6ZGg2B8xgNpYFUlvdvFD5/LFKwjzcZ/NW
+         XBx+z+ewwRkVlROt+Y6x7/MSoQgiE/8T8QOIX8PqwZnkZi/Xez0Un5LMG3i1oefWqlV0
+         zMbf71rQI/h+6YryzTftTe/DyDB6RzRoqrCqVH04IRig9DiEUv1z3WcelGO7eHEtYaYr
+         jT4Fmb3+K3NcIKIh+qMQCQEldKn55mThz8R9oTOOd7jGxIEJVlObBMLsvE37U+N7oGJf
+         6rjDuntpgTFqRxmbtwvyjNiD0n4aqwHAOYBbSCarCAA+/Gd8Br0Qqkqw5bK/4tKX3qw1
+         FQkg==
+X-Gm-Message-State: AOAM5311/vQQhwP+tDlwfWM4x1a411xWePPK0NhvPsE6vQ8QaryjlGiL
+        hCHFw8/DGDdIw+9JR6elgKyWM9LsfTYtDEe2CuRuYNFJ
+X-Google-Smtp-Source: ABdhPJytpgD57n59a2Ogtl/38CdJov2I8hVv3BbfEEpvz98GbWNmcoyW1umm0IlLmkqnjBd8GEBizUGMDSIlwBaLOZI=
+X-Received: by 2002:ac8:777a:: with SMTP id h26mr28239437qtu.141.1595968154362;
+ Tue, 28 Jul 2020 13:29:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-2-jolsa@kernel.org>
-In-Reply-To: <20200722211223.1055107-2-jolsa@kernel.org>
+References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-4-jolsa@kernel.org>
+In-Reply-To: <20200722211223.1055107-4-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 13:27:49 -0700
-Message-ID: <CAEf4Bzba08D8-zPBq3RpsG3fcRt8Q31VKd-_fV2LuJVwHGaY=w@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 01/13] selftests/bpf: Fix resolve_btfids test
+Date:   Tue, 28 Jul 2020 13:29:03 -0700
+Message-ID: <CAEf4BzZi8OgDKmLSZs6qujZNcCXXngc4uo=vDxap=HHCkC2oxg@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 03/13] bpf: Move btf_resolve_size into __btf_resolve_size
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,30 +72,24 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jul 22, 2020 at 2:13 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> The linux/btf_ids.h header is now using CONFIG_DEBUG_INFO_BTF
-> config, so we need to have it defined when it's available.
+> Moving btf_resolve_size into __btf_resolve_size and
+> keeping btf_resolve_size public with just first 3
+> arguments, because the rest of the arguments are not
+> used by outside callers.
+>
+> Following changes are adding more arguments, which
+> are not useful to outside callers. They will be added
+> to the __btf_resolve_size function.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
 
-sure, why not
-
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  tools/testing/selftests/bpf/prog_tests/resolve_btfids.c | 1 +
->  1 file changed, 1 insertion(+)
+>  include/linux/btf.h         |  3 +--
+>  kernel/bpf/bpf_struct_ops.c |  6 ++----
+>  kernel/bpf/btf.c            | 21 ++++++++++++++-------
+>  3 files changed, 17 insertions(+), 13 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> index 3b127cab4864..101785b49f7e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->
-> +#include "autoconf.h"
->  #include <linux/err.h>
->  #include <string.h>
->  #include <bpf/btf.h>
-> --
-> 2.25.4
->
+
+[...]
