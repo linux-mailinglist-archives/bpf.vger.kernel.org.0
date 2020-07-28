@@ -2,86 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74EF231238
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0301231239
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 21:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729540AbgG1TMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 15:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728561AbgG1TMG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:12:06 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA8C061794
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 12:12:06 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id t6so4742479qvw.1
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 12:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8mjqLCPYN4/lsWkCTlTmUkF2RHJu424LAFvzHwy0I/Q=;
-        b=kQspul9Us6I5DHoA06AQETBssY9kx+E649WEDrqUQ2h0SWKAdQZxXy6ORkrwnLTmrG
-         UVYD6NOIwx3ljcHAfxRf2WitctNlakFlH6Rofrtk2RuUoq8BIX+2P3OsNXhPs2aTCKxM
-         /jHqO5iA6zbgMk8pgdcHZqUCnQBQEbvKxAnTSTr6hmLN0dEjsLSrnC3cAqzToOp3uoss
-         EHDSlxm0qplp2w0Trt6ZiJQnrG93wgkG8Wx6sF0xjfP300mYCgjbUiaU8/QjxK8kP90o
-         QEcK+jioKaBAonHSQndSrUrurIDcA+KxWIY9hUjiBUL4W5sPSv3M82oxAtJq/yvPQhIZ
-         x79A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8mjqLCPYN4/lsWkCTlTmUkF2RHJu424LAFvzHwy0I/Q=;
-        b=WcQzAf0cHcaELCb+DnTXr88aY80tjw7kEbqswLiVjLFtFzaYmLpa9RLBhVJWQQtnGl
-         8Np3QEjDK1LUM6+Pc4GB1LsQnTL4FloIaoTXfd2YNCh8Vin/QXZKP6joKx/mIZA6wijk
-         nKXM0wxrpqTzUUAjpQweS+gCvl5Ed/StH2YDBn6E/jpar55BT4NyxWM6EHeLRt0/xZ+5
-         n5ij5piZWshAt5Q1OWRo+eRejlliFPjbUg0gj47CqT6CKik0RPJd6ehAu5RDkeqMtTlG
-         NeEbpQVhby99bwFV+g/U8umGdtnN/q8mDzJ5WtKuaxQ9KFIbySNN5gR9Ntc24sVHEfC3
-         +7nw==
-X-Gm-Message-State: AOAM530baBpA7NBSERisx6lUybUkSlNZHjQzUHnvssGHASvoEf3dVTdU
-        MkmQcbUdi2L6dnVJr/Xvua3XxN45Lt2/OSoZ20Q=
-X-Google-Smtp-Source: ABdhPJwXnCRxZ3maJtAfeNFeiwsgb4pzc03mhHhrpX8ke3D8oL+FiXn7Fz5GHbTOvfeaf+ztA4hM3z/oduzUTNqWAbg=
-X-Received: by 2002:a05:6214:8f4:: with SMTP id dr20mr27517819qvb.228.1595963525443;
- Tue, 28 Jul 2020 12:12:05 -0700 (PDT)
+        id S1729567AbgG1TNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 15:13:05 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54272 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728561AbgG1TNF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Jul 2020 15:13:05 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SJCNnm014113;
+        Tue, 28 Jul 2020 12:12:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
+ b=kTOeJaysCWHdBVAs7YBQS3rK5/pa4jnlnry5WxPvKRufT0iPx7bA3oGO6XY+fppwxCFN
+ FIi4HOHGSPjglpf6tq4KnK1UN8HkWhbEF2kvYXqqveTfASFrxllK2F4jVTpso3C1pj+W
+ XWfoLo1VEtjfL/xbvG/AVNfIlouRzLvPfNk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32h4edb6u1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 28 Jul 2020 12:12:50 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 12:12:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hfUF9cOi3/AmYROlgJODGf3AFZaDtp4DM9knzMpuw8Tb4OX20GzI5XYL0kdT51q3q6/L4vnNJUm19ymJVnFX1cp4KTrgJOJa66JS0DQ4hes0iRwUD/+1nvAYfE5RRuXehvRhKBF6n9TlN38SvHcFAZ7fAusYabHrPWcSW7tNW2RGQyEj9lzvXZlMrLw2pL5ZdPhGlobau8khqSCYwUzB1wJplnOBT6C5TRJEdsxJWCWpDoHYQ2Fgpr7nOSkY2ZzamUaSHSKpHYM5lxayuowDTqeCZRsaJ3BCvP0IHRmqVnnFwSAb+x9WVuXn1JAbJi0cXx+RlLhoDpJQQkfmtJ3QAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
+ b=S0ln9tLk/jdA7YhIDHKqZ0stp9D0RNEjbX3aBW/XR4bFcO8aQG75pDMKOQkIn/RjsqbnHbsJGWSy/sSDKhXHnqj1P5e1HGwRhByxCAyZFwYDAUKbdIeL2FTXuntGJ2Ee5ipmJz8VEo+rgy0JW4v6wGmrnPwU+0kPbvNLt8ZUakandq4B/Pfc4GEzci1hl4xQx4kDXbh5+aHmvlDpZ4IfvEpB5H58+UswqYoCOWs1fJlHFx3hZwmRqwtOrlBjazGkv5Ik7bhhFLiNUDHACMJUZgGAzHNlgFslGortnAOXZiGa0OSew4hrN6Ym82WwNPnOJIU20YUBB+VLot2NVsIb/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
+ b=agac0icJhTbOUzTwgzmX21q+6hli+5A+ExXqFppeN/QCBMsJ7HOZlZ2gQ1cySrtzyX631y+UCma0Ee3DtifwIT/DpQE3RciPa3TlQQfb3xVMYc9LmGg/PNvkBUZkwKGyZJV/NE1UXrOzPpT/TmS1E3/RCV9m1owmVEnILt9687o=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3207.namprd15.prod.outlook.com (2603:10b6:a03:101::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Tue, 28 Jul
+ 2020 19:12:48 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 19:12:48 +0000
+Subject: Re: [PATCH][next] bpf: fix swapped arguments in calls to
+ check_buffer_access
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Colin King <colin.king@canonical.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200727175411.155179-1-colin.king@canonical.com>
+ <c9ea156a-20fa-5415-0d35-0521e8740ddc@fb.com>
+ <882cd37d-0af2-3412-6bd7-73aa466df23c@iogearbox.net>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <7a0b563a-9853-9d6f-9d3a-0595e701c1b0@fb.com>
+Date:   Tue, 28 Jul 2020 12:12:47 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
+In-Reply-To: <882cd37d-0af2-3412-6bd7-73aa466df23c@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0036.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::49) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-References: <20200728120059.132256-1-iii@linux.ibm.com> <20200728120059.132256-4-iii@linux.ibm.com>
-In-Reply-To: <20200728120059.132256-4-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 12:11:54 -0700
-Message-ID: <CAEf4BzaSJp-fOn2MG_8Fc2mo9ji5gZBLn2xCGyCiAmPbHkqSQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] libbpf: Use bpf_probe_read_kernel
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1215] (2620:10d:c090:400::5:112f) by BYAPR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:c0::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Tue, 28 Jul 2020 19:12:48 +0000
+X-Originating-IP: [2620:10d:c090:400::5:112f]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e479f3d-678e-4aae-0169-08d8332a374b
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3207:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB32078FCFB78008AA05C3D9BFD3730@BYAPR15MB3207.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:175;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2KFETicV3fDPILiKbdr3b8QSIdilHCCpa7qib1DTW69R0OWJkyiJSWDOtUcEY2Ph9HQJfk1Dg4U+HlQookP3Oii7FJwbdKshFlmjwFE1GC7/OLbn13UyIfr1kj5No2os9X/IaU/Zg1Gau7epPFgFFYXwNDB2R2lwruDyHnarSecD7IAwxJw4P+LgL6sR6s+Z5z5z5qaDXTnIjGw1GnFxyhaHsHns25T4PkxHBJ2+RragoGEAkHyT8Kp/zzXZZJd4f8q89H4vuHZsYNOyrOKSyytsGwH0dF0L6zQIwMVZGKy7laIxWazNvuybCf/LK/73HIUU/jErseZlWP5Y1fIIPEXQJl6h0t2vpl7mLbgu8G8kqbVVDMf6JOTLxrQR0amv/TZmvemA3tmJxaTyF61tlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(136003)(396003)(366004)(39860400002)(8936002)(53546011)(316002)(478600001)(2906002)(8676002)(52116002)(6486002)(36756003)(31696002)(4326008)(83380400001)(110136005)(31686004)(86362001)(5660300002)(2616005)(66556008)(66476007)(66946007)(16526019)(186003)(921003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: jPfVfqg41pxnfqwCyZNSdkaTtz8VBcQvE6Sdzy7siW3chZI0y3dCX2ELwfsZJ5xRbWCipuVIVJLUfRnfikF74W9Rn8V2VFBqu6ok00h2Yk0UgOaaE94NzsInoUr2JsPY0o0xgRiqVXr1rOa6+QNAJsX/hn/GioNhquZigxxhGTro7KotvdhGifGvdy6NvpUH/4N/Y4di9Aans9PV8oKEKwb/sTqjuh+vlcR4jxLXEgC1qg1RFOWN4j8YtmA4gHOCaDFPN+9IzKFRVsynGnXji++HUcLZgAHSnKztrqnTR+lf+GewlGUqvNw9ymMaoiZaX0LkuQSvlgVZqW6jTkD7XoBjqWFgM5kXegpU1cMEJ5Tbeepl96WF7U0SielBkt/CxwBRvc09DpBn4ET0cnK/Mf9YGJlzlwwD4KS00oMlNXude/FNi+QyrUjmFivenDCim70An5UrluUFQD1U41GKh/nja0B8LHQbqnvUgTyP7wm3b89Ey83lH3mDQ2c6syS8zmy1RbBTiB5dUR2dq7FHpA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e479f3d-678e-4aae-0169-08d8332a374b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 19:12:48.4479
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Aob97dLsPqDlzGZQbL3Ngpr2XtOUdMg1zWkoTQSvOuWI3EM3kz0XpTmRD+ykHJAg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3207
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_16:2020-07-28,2020-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 phishscore=0 clxscore=1015
+ suspectscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007280136
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 5:15 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> Yet another adaptation to commit 0ebeea8ca8a4 ("bpf: Restrict
-> bpf_probe_read{, str}() only to archs where they work") that makes more
-> samples compile on s390.
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
 
-Sorry, we can't do this yet. This will break on older kernels that
-don't yet have bpf_probe_read_kernel() implemented. Met and Yonghong
-are working on extending a set of CO-RE relocations, that would allow
-to do bpf_probe_read_kernel() detection on BPF side, transparently for
-an application, and will pick either bpf_probe_read() or
-bpf_probe_read_kernel(). It should be ready soon (this or next week,
-most probably), though it will have dependency on the latest Clang.
-But for now, please don't change this.
 
->  tools/lib/bpf/bpf_core_read.h | 51 ++++++++++++++++++-----------------
->  tools/lib/bpf/bpf_tracing.h   | 15 +++++++----
->  2 files changed, 37 insertions(+), 29 deletions(-)
->
+On 7/28/20 3:43 AM, Daniel Borkmann wrote:
+> On 7/27/20 11:39 PM, Yonghong Song wrote:
+>> On 7/27/20 10:54 AM, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> There are a couple of arguments of the boolean flag zero_size_allowed
+>>> and the char pointer buf_info when calling to function 
+>>> check_buffer_access
+>>> that are swapped by mistake. Fix these by swapping them to correct
+>>> the argument ordering.
+>>>
+>>> Addresses-Coverity: ("Array compared to 0")
+>>> Fixes: afbf21dce668 ("bpf: Support readonly/readwrite buffers in 
+>>> verifier")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>
+>> Thanks for the fix!
+>> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+> Sigh, thanks for the fix Colin, applied! Yonghong, could you follow-up with
+> BPF selftest test cases that exercise these paths? Thx
 
-[...]
+This will be triggered with a verifier rejection path, e.g., negative 
+offset from the base. I will send a follow-up patch soon.
+
+BTW, using llvm to build the kernel (without this change), the compiler
+actually issues a warning:
+
+-bash-4.4$ make -j100 LLVM=1 && make LLVM=1 vmlinux
+   GEN     Makefile
+...
+   CC      kernel/bpf/verifier.o
+/data/users/yhs/work/net-next/kernel/bpf/verifier.c:3481:18: warning: 
+expression which evaluates to zero treate$
+  as a null pointer constant of type 'const char *' 
+[-Wnon-literal-null-conversion]
+                                           "rdonly", false,
+                                                     ^~~~~
+/data/users/yhs/work/net-next/kernel/bpf/verifier.c:3487:16: warning: 
+expression which evaluates to zero treate$
+  as a null pointer constant of type 'const char *' 
+[-Wnon-literal-null-conversion]
+                                           "rdwr", false,
+                                                   ^~~~~
+2 warnings generated.
+   AR      kernel/bpf/built-in.a
+
+Looks like I need to use LLVM compiler more often...
+
