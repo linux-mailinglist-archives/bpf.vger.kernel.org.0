@@ -2,128 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FEE22FEA1
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 02:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCD422FED3
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 03:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgG1AxO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jul 2020 20:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG1AxN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jul 2020 20:53:13 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9092DC061794;
-        Mon, 27 Jul 2020 17:53:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 2so13086656qkf.10;
-        Mon, 27 Jul 2020 17:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ez0P4zZ64+vX0mQ7JcE+5zgCRUbO7zubu23iMJ7twFo=;
-        b=Bt26wYnotxk6XIrKE2LY3qQOnLWm1MVV2FijOBNUaGUw3dnIQMsWu+6Qb1Td43byIw
-         hJp6MvSlyhXx0vR58cc11+x+wRgUBh+i9xVhTJh0o4cc2wOo1ZBPYQ0/g1fjZTCFEVE1
-         epSQtbDTOVMMxugq59x3E4vpKkRUdJcFqGVRGjA0iLMfgQsQcuTIvCfSEY3UbAIUyOUJ
-         CviWBFQTKHX61mxwP/VCpBEHr5F6LuBV/WGa0HrcOPFx241URZ0NEzGjvTGh87C/BcQc
-         /hsqNdLdDaBTyxI3KItvt1WkWFxpY6kkdug3mUKMy9x6+6iv2C1rCHuPIueaJ1/7CcYS
-         +QYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ez0P4zZ64+vX0mQ7JcE+5zgCRUbO7zubu23iMJ7twFo=;
-        b=NC1XurDKJyiITtnRgJzUhebCz8sXM6ZvJdNaYoCX4d9AhNQbkxCDjGBrGWa3fva72u
-         V0vxJOLD5+vKjLVTDyDgscvEL4L5EDE+Ocq82e+5GaCyyUu9WbtdDq7IqYbaEbSop8ek
-         uuKMxsh/XpSMqvCejetgIIx28jTlmlhmHBdEDXNE19Ea37SXzhUXxoTr3Y2NHyddXHnc
-         6tVSySfVrSpY5UGrM4rF8+NzfiUTX69Zu1rzAAIUx3/8Gf8gtwL8zvEK2aD5qzG4DBBT
-         bXcLp3Ux2KdIJXboGyo6gO50Rz+JQvnnFIbGUqi5NyAb5NmMcITc76LUEH6G5jRb4gUu
-         t5ig==
-X-Gm-Message-State: AOAM531dJdJCBla9ZjdOC/0/pLKPOpfEQDTZXJaYG7iAIrU02Wy2KtcK
-        fZspyxJw8oLu144NM9iq+GGIREWGSu06HB+xvA4=
-X-Google-Smtp-Source: ABdhPJxMo5Oa3gKBUEjxgrx4YcdQ+8FnjlMzfP/UWHnFs4DzdF0hw831QrxvqFVsSVyA1jxcD0DhF9UW6/2WfuoiDYo=
-X-Received: by 2002:ae9:f002:: with SMTP id l2mr26750671qkg.437.1595897592748;
- Mon, 27 Jul 2020 17:53:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-3-jolsa@kernel.org>
-In-Reply-To: <20200722211223.1055107-3-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Jul 2020 17:53:01 -0700
-Message-ID: <CAEf4BzYgnEybzj2_O5FCwO1CgcfBrKoZVR9jFr43KPRqyD_=OQ@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 02/13] tools resolve_btfids: Add support for
- set symbols
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726222AbgG1BVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jul 2020 21:21:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45368 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726139AbgG1BVQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 27 Jul 2020 21:21:16 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06S1Fiaw010327;
+        Mon, 27 Jul 2020 18:21:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ZqpBbPbDUdN7yV1JRrLWblu9oSa79zwX6RGhzut9M18=;
+ b=riaWiyUJn0IeXuZhPL2zNdP4fQ0c2vEd+5hY8ggMb0oCe6ynTm+iWh6EyI02Q74ttW5P
+ Du33sEF66azK/5cGiX59Z//qF4aZSLvhICUXn6NxML5+pM11WSXVx4bvQ145pgzTVCY3
+ 5gsVwr0ANKcthzf6Xzd2RAaxnIh437LhBXE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32h50vq7g3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 27 Jul 2020 18:21:00 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 27 Jul 2020 18:20:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MjckqBXdsPn6fS/8vKJwUyGXnIllRp0F+Za9fuMTctaJ8TLxYrGtpJJry3vipvsgntBpmm9oMIIXl+RBYQ5PnBMxwOU6DLjlS9mcpRhXgMnlg5Cy8BcuoEjKVKQXjy8Im/DHaDTH9GeMZks/ABKZvCTAarFEAXseFF3ReJi4Fmr6948YBN3RV/ZOlMlviRH0D5JGghIQ3cMqPIDWmPzGpFqd86Fm7ZqCqYRed/89Xk/lTxOmXUIaH2BQ+wYuKcBrOaWigzqMEiWpFM0fO3W4qWYiBcNWrLkZV66F/YKIHlEUE+GfTzmcqjAkuYEYRMkIcUY4rNgYWFBPC9PJ3WPGSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZqpBbPbDUdN7yV1JRrLWblu9oSa79zwX6RGhzut9M18=;
+ b=TI8YKnTr0Oe71Qo1GeliPfRY52tQ3O3aPmlHkk96xwJy1uimZvy7bqkbHGNdZpOFg7wzms1uCJrvIROJO2+8iCqXRdPZ4ei2n/2+u6wkWrz3whbl9ctEdnPcTsdTabXOmfJCbT1BQok8vM8VD95s8FzZOYKHjjPlUy75wgvcn/ZKbbv4rlQh97fv3T2+zsPJfrfbv5xVkeQLo4Plmvc9gfoqKwwZpXrvm19wUT+C4+7n5u4qTFng6ZQBgGw4A0agMzleA2aQylnDDfluPqVBZHVKPak6RD/m8TTxdS5Ml6NRRneLrjCF31d/jBasQIpSl51wgrQeqDR3iZZIgtITqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZqpBbPbDUdN7yV1JRrLWblu9oSa79zwX6RGhzut9M18=;
+ b=J6HhQb9lc/ZEtwTDFZOWWPj/Ij+8iuXwsKPu3Jyfw+FTL1NfH+ZutTykEshIYJcnfzBxU2EW3l6oWlPpyKaqH6e246UIi1XTd3NHBRUxxqM8YbKO6fGcoXqPME43mp/N6uHhGuCSzb1Klr9xDSs1C8/OTVo08FD1EM4e83P1kY0=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2885.namprd15.prod.outlook.com (2603:10b6:a03:f5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Tue, 28 Jul
+ 2020 01:20:44 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 01:20:44 +0000
+Date:   Mon, 27 Jul 2020 18:20:42 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kernel-team@cloudflare.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH bpf-next] udp, bpf: Ignore connections in reuseport group
+ after BPF sk lookup
+Message-ID: <20200728012042.r3gkkeg6ib3r2diy@kafai-mbp>
+References: <20200726120228.1414348-1-jakub@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726120228.1414348-1-jakub@cloudflare.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: BY3PR04CA0024.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::29) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:f626) by BY3PR04CA0024.namprd04.prod.outlook.com (2603:10b6:a03:217::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20 via Frontend Transport; Tue, 28 Jul 2020 01:20:43 +0000
+X-Originating-IP: [2620:10d:c090:400::5:f626]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40437e22-9be3-47a8-344b-08d832947314
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2885:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB28856E288EFBE9A52244E5BAD5730@BYAPR15MB2885.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 39KwEv08EmqMI1O0/M9N7W36AC0wCnFZmG7c9i0iVQH/iv7LPTe9SsJxr3MctGMgB/1gpGprA/Gasfzr0BBdNDe4+74HD9h7dflYPHQrvWByS8DtgMfty2mEsZhT7OGNp8/Ong7G6Dc2lG9jAW+AhwN3McInE260Mz2l2KdZLWzEXqb/XinqTCco3WK7gbR1bqvyPQERHJTnvJKMLNrUkeDJTrBdPaJcbf1+7bxHrRH5vWlMcjipMwEIH1xbsUbHrdUOXymt09RAEJccsRktQuOzA1XnKimTuRxQPUm2vR+g4UD24B08jmQQjaMwSVjc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(346002)(376002)(39860400002)(366004)(316002)(6916009)(52116002)(4326008)(1076003)(55016002)(8676002)(83380400001)(16526019)(186003)(2906002)(6496006)(9686003)(5660300002)(33716001)(8936002)(66556008)(66946007)(66476007)(478600001)(86362001)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: hz1ENFkwdLxNsf2npegRUqFXNN4QsEJ4337CqpbKdCSBjQGPfpOqXmXiVxwRLpgMTQmObEq8wro0IHKB+g+p2NO55LE4D4jVuJcLo3cqXODGZS4I09SID0x2kygiSP6vXSaVOvcf1vCfDrWL1QYUSeA8/DL3wbMpy3yxw7CbA36r/9BpKxL3sxfHBbtOsVfc2A8NstWvrxD7yj0Yug1ZhYyAPmLeSZvMoxwOC8hrm495oyBBcp8OdK0qAcxKAMTVReyTz0YpjKtCDO0EjbKwomVTPb00IaWL812otabI8e5s29UNbxI7nw5KKdfnX6WZEk415JAyyvwDOEJJQ7hNlN3zU8XKIbN2kh1fmT/oRo+K75Sj8EFOUpcQ44OZjj0KUALoc3OM5geZoJlI3i6xmm9m5eNBSZZgEPR4C59gHTiUgWckWLlIMe6Nu+wpJdgDkjtSwvrnwxRsGT1IF/h42S70FRIPeR9t1hh2PGmTB+erJltGxz7k9mKBAq/MX9pRoEmfVq/mQlGHfbJzVtG8Bg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40437e22-9be3-47a8-344b-08d832947314
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 01:20:44.2606
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dxZyPc3gse2GaCtWOa/FL6sNxX6PruhNza0z5AQRQCJBAPbNCJLTqeinT679XmOc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2885
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-27_16:2020-07-27,2020-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ phishscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=911 priorityscore=1501 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007280007
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 2:13 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> The set symbol does not have the unique number suffix,
-> so we need to give it a special parsing function.
->
-> This was omitted in the first batch, because there was
-> no set support yet, so it slipped in the testing.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Sun, Jul 26, 2020 at 02:02:28PM +0200, Jakub Sitnicki wrote:
+> When BPF sk lookup invokes reuseport handling for the selected socket, it
+> should ignore the fact that reuseport group can contain connected UDP
+> sockets. With BPF sk lookup this is not relevant as we are not scoring
+> sockets to find the best match, which might be a connected UDP socket.
+> 
+> Fix it by unconditionally accepting the socket selected by reuseport.
+> 
+> This fixes the following two failures reported by test_progs.
+> 
+>   # ./test_progs -t sk_lookup
+>   ...
+>   #73/14 UDP IPv4 redir and reuseport with conns:FAIL
+>   ...
+>   #73/20 UDP IPv6 redir and reuseport with conns:FAIL
+>   ...
+> 
+> Fixes: a57066b1a019 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net")
+> Cc: David S. Miller <davem@davemloft.net>
+> Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  tools/bpf/resolve_btfids/main.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 6956b6350cad..c28ab0401818 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -220,6 +220,19 @@ static char *get_id(const char *prefix_end)
->         return id;
+>  net/ipv4/udp.c | 2 +-
+>  net/ipv6/udp.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 7ce31beccfc2..e88efba07551 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -473,7 +473,7 @@ static struct sock *udp4_lookup_run_bpf(struct net *net,
+>  		return sk;
+>  
+>  	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
+> -	if (reuse_sk && !reuseport_has_conns(sk, false))
+> +	if (reuse_sk)
+>  		sk = reuse_sk;
+>  	return sk;
 >  }
->
-> +static struct btf_id *add_set(struct object *obj, char *name)
-> +{
-> +       char *id;
-> +
-> +       id = strdup(name + sizeof(BTF_SET) + sizeof("__") - 2);
+> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+> index c394e674f486..29d9691359b9 100644
+> --- a/net/ipv6/udp.c
+> +++ b/net/ipv6/udp.c
+> @@ -208,7 +208,7 @@ static inline struct sock *udp6_lookup_run_bpf(struct net *net,
+>  		return sk;
+>  
+>  	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
+> -	if (reuse_sk && !reuseport_has_conns(sk, false))
+> +	if (reuse_sk)
+From __udp[46]_lib_lookup, 
+1. The connected udp is picked by the kernel first.
+   If a 4-tuple-matched connected udp is found.  It should have already
+   been returned there.
 
-why strdup? you are not really managing memory carefully anyway,
-letting OS clean everything up, so why bother strduping here?
+2. If kernel cannot find a connected udp, the sk-lookup bpf prog can
+   get a chance to pick another socket (likely bound to a different
+   IP/PORT that the packet is destinated to) by bpf_sk_lookup_assign().
+   However, bpf_sk_lookup_assign() does not allow TCP_ESTABLISHED.
 
-Also if get invalid identifier, you can easily go past the string and
-its ending zero byte. So check strlen first?
-
-> +       if (!id) {
-> +               pr_err("FAILED to parse cnt name: %s\n", name);
-> +               return NULL;
-> +       }
-> +
-> +       return btf_id__add(&obj->sets, id, true);
-> +}
-> +
->  static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
->  {
->         char *id;
-> @@ -376,7 +389,7 @@ static int symbols_collect(struct object *obj)
->                         id = add_symbol(&obj->funcs, prefix, sizeof(BTF_FUNC) - 1);
->                 /* set */
->                 } else if (!strncmp(prefix, BTF_SET, sizeof(BTF_SET) - 1)) {
-> -                       id = add_symbol(&obj->sets, prefix, sizeof(BTF_SET) - 1);
-> +                       id = add_set(obj, prefix);
->                         /*
->                          * SET objects store list's count, which is encoded
->                          * in symbol's size, together with 'cnt' field hence
-> --
-> 2.25.4
->
+   With the change in this patch, it then allows the reuseport-bpf-prog
+   to pick a connected udp which cannot be found in step (1).  Can you
+   explain a use case for this?
