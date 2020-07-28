@@ -2,84 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE3A2309B7
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 14:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF50230A88
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 14:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgG1MNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 08:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35582 "EHLO mail.kernel.org"
+        id S1729687AbgG1Mpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 08:45:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728500AbgG1MNp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:13:45 -0400
+        id S1729618AbgG1Mpo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:45:44 -0400
 Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0880206D8;
-        Tue, 28 Jul 2020 12:13:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C731D206D7;
+        Tue, 28 Jul 2020 12:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595938424;
-        bh=elgb9VJwDQUV7e8qJKF8s3/erPhoLE4ugpQnXtwPLEk=;
+        s=default; t=1595940344;
+        bh=SjwVcjwzVcHmdTN1Be+lgU7GPgYwsx0Ln8MZ5TrX84U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=He3sp8UikoQ+i7onRo9OVHoDVJacJ//GewEeSnQj/cBZcalKDpHJtL9O2v4CRqSpZ
-         +SPCLFcF8EdaFF81A78dct95GXnDW7AStzDIBIxDDYNhjWGSYA6Ea+RMh5yxTuCOHT
-         lEHHteNEf+CWM83dmq0SQdtDPzAEHobXV5lRROYY=
+        b=nimerbmlC9+vIEP0knA5mT6s2fVQUBe/yaUBtK4uDYtxD36l+mOm7D50faPD2b60o
+         mrjH8eGPeney/6BYhThX9fA5+X/3hnik4WzC8SoZPGHZN91n6nQvsEUri71WoG1jFx
+         srRNufOVmXMp0DIsK3nihFBZL8wudynKWIwVldnE=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 85F9E404B1; Tue, 28 Jul 2020 09:13:42 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:13:42 -0300
+        id F3F86404B1; Tue, 28 Jul 2020 09:45:39 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:45:39 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 35/35] perf: don't touch RLIMIT_MEMLOCK
-Message-ID: <20200728121342.GD40195@kernel.org>
-References: <20200727184506.2279656-1-guro@fb.com>
- <20200727184506.2279656-36-guro@fb.com>
- <CAEf4BzYUhybiSz2S-jtuv5+KcaHSxCLoY=nq1g597bvwpUemZw@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 3/5] perf test: Ensure sample_period is set libpfm4
+ events
+Message-ID: <20200728124539.GB40195@kernel.org>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-4-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYUhybiSz2S-jtuv5+KcaHSxCLoY=nq1g597bvwpUemZw@mail.gmail.com>
+In-Reply-To: <20200728085734.609930-4-irogers@google.com>
 X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jul 27, 2020 at 11:09:43PM -0700, Andrii Nakryiko escreveu:
-> On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > Since bpf stopped using memlock rlimit to limit the memory usage,
-> > there is no more reason for perf to alter its own limit.
-> >
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > ---
-> 
-> Cc'd Armaldo, but I'm guessing it's a similar situation that latest
-> perf might be running on older kernel and should keep working.
+Em Tue, Jul 28, 2020 at 01:57:32AM -0700, Ian Rogers escreveu:
+> Test that a command line option doesn't override the period set on a
+> libpfm4 event.
+> Without libpfm4 test passes as unsupported.
 
-Yes, please leave it as is, the latest perf should continue working with
-older kernels, so if there is a way to figure out if the kernel running
-is one where BPF doesn't use memlock rlimit for that purpose, then in
-those cases we shouldn't use it.
-
-- Arnaldo
- 
-> >  tools/perf/builtin-trace.c      | 10 ----------
-> >  tools/perf/tests/builtin-test.c |  6 ------
-> >  tools/perf/util/Build           |  1 -
-> >  tools/perf/util/rlimit.c        | 29 -----------------------------
-> >  tools/perf/util/rlimit.h        |  6 ------
-> >  5 files changed, 52 deletions(-)
-> >  delete mode 100644 tools/perf/util/rlimit.c
-> >  delete mode 100644 tools/perf/util/rlimit.h
-> >
-> 
-> [...]
-
--- 
+Thanks, applied.
 
 - Arnaldo
