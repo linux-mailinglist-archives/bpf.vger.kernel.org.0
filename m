@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1C92305EF
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 10:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05DF2305DF
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 10:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgG1I6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 04:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S1728321AbgG1I5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 04:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728307AbgG1I5g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:57:36 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE120C0619D2
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 01:57:36 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id s28so14357229pfd.19
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 01:57:36 -0700 (PDT)
+        with ESMTP id S1728329AbgG1I5i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:57:38 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11C4C0619D2
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 01:57:38 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id t7so11009740pjl.1
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 01:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=gVIM4kdH9NokKpwghbO519hac6rQk+0+42h/FkNtOmc=;
-        b=nVjd2v2r9Q1oUMii1yR5ZajFAwiIRcWUQZazQMb/M7UontU6LQuWm5iwdtO3/n33O3
-         Lb/zwJgQ/trsVmsWM8ohNipHPaIrC/bcGltE6QrazEYolwkY9LueMxvJCL7eDHlUuYco
-         ZucijjlK3XDHN5p4OFutR+qjpMiOuLpYOafkxRVNDwV1htvZ9XHd+T1m148q4q2dN5rt
-         hAISvDZdZavoiVStR4KiWdFYODjwthY7LtG1+Qv/6wchJSBTZ0Mjb7czpWg2y9EcA87g
-         qPVL8qlTgMK3qmH1S94tx62jzon1UhmDo3yuxY7QDeINXqv43TYLPZivOivq2SQIflsY
-         JBsQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=zApPOTJ5w6WkPmUvx5vPVowaf73ni3+MSfyTlKnuOkc=;
+        b=qVPctGuH/HG4+XTA7hvFME+borLjNB7Wi/258LIlYdJxDTcrRABI2np+69GhB8L0nO
+         6vpVGcpyvsaEXO0pk7Fz4v+exN7394Kc0Z2069OsX3fa6PS79AKb6XD+Detd9Ee0geGM
+         a4d6fEFc0dNgSKuqnBCDaM4VKS0f5jhUhv2/zzhq5/ANb2fgfsSjfe+kQ6rMFfrBcyDu
+         xuAHW7+j1UPNSZ+B9zGEDfrqi9COIwp9srOyW25eelrqDW3ZwQzN7n8OLgoOPqdiCRdW
+         EmCbkMIj3d8F92W9duND0KeSxxX4WjS5aVSb/vCt7u+3vO+4EvqeZXMPKnd0zvTh+fDj
+         ozXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=gVIM4kdH9NokKpwghbO519hac6rQk+0+42h/FkNtOmc=;
-        b=OkNqzr61tg/vl/Dws595Y+dZlDSNvpbsQr0n41ITVax+MDpBKj+YyWkaOfuU3zrLJZ
-         3VjVQbIhj5GuxEPWmuhZ9KLuJ5APNkIfzgLCdXSgzpC1X1P187FtCU7Lq+6PUXqEoC0P
-         wBOuIoxXLPY6E9CC9Km3zdnSoTHX+kAVQFpwaeJ9RJ7bRE/XY5IO1wI5l4aZ7U5NQJxk
-         0pTXj+NkzBL3ymk4t4HpuOkLCbiQKKKRqbJFJNyrbGMjPUuh7Vm9W0OLb9scDGff2Hf+
-         cW6x42+5HyzEoJRtIZ4+cJt+ACfPyKLl2DURjTYCqAbDps2rFKL8wuh5ZUo0Zv79rpN4
-         6ybg==
-X-Gm-Message-State: AOAM532GMSOe9xNWYY7gRfIA9x9+k0FcM28AqV7Vo5xSB5jeDRhuhveV
-        l79cY+wTpY+SJwWfEuGZj894sgu14mdJ
-X-Google-Smtp-Source: ABdhPJwp2u/D21xwmzwq6NAD7G2DvtD23wewLcS0WtXYTfXCdBdhEV3/tkm4JQwe+UMNfMzo/RXIQNFXG/57
-X-Received: by 2002:a17:90b:94c:: with SMTP id dw12mr3465095pjb.214.1595926656213;
- Tue, 28 Jul 2020 01:57:36 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 01:57:29 -0700
-Message-Id: <20200728085734.609930-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=zApPOTJ5w6WkPmUvx5vPVowaf73ni3+MSfyTlKnuOkc=;
+        b=J5FJbwfy6/yL6RUSZ9O5zD7S0nztwFhX4O/ITmaJs8ZweaRKCAqzapp8xoDcGaOR7G
+         eN2ypzw3/ieOL4VUFyt6wmpWI5hwfqtraKqdfKfyxg0N6w7TlERocR4mkWsqBY7JkSrn
+         prI14056VAVNketUlK9BL+EvP3W+3F22aHpv3pcZybAxJgDRzAaiiOooLvbpH/Bo4rUk
+         /DF8BYsMk0YiCwBDRyop6CH/YRi8MEbdBs9V/uMJLRMg9hAodqx4IAI3JK2V3Zl2d5G2
+         mBZBUWHBEPQXVm4f8H6qtruyp7QHZskMnRIp+M+YvLS1dR7PA9l/6HYSHYrwXZUCx79S
+         ZTxg==
+X-Gm-Message-State: AOAM532Ig4v5gXW0WH9P1R6J7SQcugUn57Yt6pMfbpu8xJZg0ur42TBw
+        1Grww1uvLdnBmK7GrdZM1Nxl8EJmMVPP
+X-Google-Smtp-Source: ABdhPJzp83NiP8b/o4uH19SGyysIaVwxKeYF+HyDxcxZ8xc1fksLiuPjHA+FG6eQYmGTOsc3580CmkQI7IKw
+X-Received: by 2002:a17:90b:4acd:: with SMTP id mh13mr3542331pjb.147.1595926658191;
+ Tue, 28 Jul 2020 01:57:38 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 01:57:30 -0700
+In-Reply-To: <20200728085734.609930-1-irogers@google.com>
+Message-Id: <20200728085734.609930-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200728085734.609930-1-irogers@google.com>
 X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH v2 0/5] Fixes for setting event freq/periods
+Subject: [PATCH v2 1/5] perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -67,6 +71,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     Stephane Eranian <eranian@google.com>,
+        David Sharp <dhsharp@google.com>,
         Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -74,33 +79,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some fixes that address issues for regular and pfm4 events with 2
-additional perf_event_attr tests. Various authors, David Sharp isn't
-currently at Google.
+From: David Sharp <dhsharp@google.com>
 
-v2. corrects the commit message following Athira Rajeev's suggestion.
+evsel__config() would only set PERF_RECORD_PERIOD if it set attr->freq
+from perf record options. When it is set by libpfm events, it would not
+get set. This changes evsel__config to see if attr->freq is set outside of
+whether or not it changes attr->freq itself.
 
-David Sharp (1):
-  perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
+Signed-off-by: David Sharp <dhsharp@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/evsel.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Ian Rogers (3):
-  perf test: Ensure sample_period is set libpfm4 events
-  perf record: Don't clear event's period if set by a term
-  perf test: Leader sampling shouldn't clear sample period
-
-Stephane Eranian (1):
-  perf record: Prevent override of attr->sample_period for libpfm4
-    events
-
- tools/perf/tests/attr/README                 |  2 ++
- tools/perf/tests/attr/test-record-group2     | 29 ++++++++++++++++++++
- tools/perf/tests/attr/test-record-pfm-period |  9 ++++++
- tools/perf/util/evsel.c                      | 10 +++++--
- tools/perf/util/record.c                     | 28 +++++++++++++------
- 5 files changed, 67 insertions(+), 11 deletions(-)
- create mode 100644 tools/perf/tests/attr/test-record-group2
- create mode 100644 tools/perf/tests/attr/test-record-pfm-period
-
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ef802f6d40c1..811f538f7d77 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -979,13 +979,18 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+ 				     opts->user_interval != ULLONG_MAX)) {
+ 		if (opts->freq) {
+-			evsel__set_sample_bit(evsel, PERIOD);
+ 			attr->freq		= 1;
+ 			attr->sample_freq	= opts->freq;
+ 		} else {
+ 			attr->sample_period = opts->default_interval;
+ 		}
+ 	}
++	/*
++	 * If attr->freq was set (here or earlier), ask for period
++	 * to be sampled.
++	 */
++	if (attr->freq)
++		evsel__set_sample_bit(evsel, PERIOD);
+ 
+ 	if (opts->no_samples)
+ 		attr->sample_freq = 0;
 -- 
 2.28.0.163.g6104cc2f0b6-goog
 
