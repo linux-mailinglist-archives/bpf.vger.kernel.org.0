@@ -2,97 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24AE23144E
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 22:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA19231461
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 23:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgG1U5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 16:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbgG1U5K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:57:10 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8691AC061794;
-        Tue, 28 Jul 2020 13:57:10 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so7481560qtp.1;
-        Tue, 28 Jul 2020 13:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1yMXU7EUKMHdsvH7lxAwoxCrPaR32XiwKJGHLWTSuNU=;
-        b=sdPm3Ndt2+q1V6uWLmFekiouxlxUukz1wDUIfraNAYzs30GhV65xEyvMzHJRBihduI
-         HmxZMZz+s7H6zj3aeCeC2/tE4mQ4TjpREqpEfyzSuA1brjWmHqCxCq2Qm16RQeJAAQJX
-         JhwJP+TgQZ5G1yChTvtIOwGCx+x3rgOwq3v8NtofCCtg80EIA4V/OnncHdy2wCaeOGiY
-         BvQ0wO2xNspwnrmZCcPqHZGVKH/DBKZharqcfop9rNwQ2MuuEAMqpXZWjC3iX6sS9QHI
-         K436UPZhOIbD4lwwIs1F8/LSDc5g3r4B0tnewAEcmoTksanOGy4qGHTlkn0wvlS4W8lI
-         H+EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1yMXU7EUKMHdsvH7lxAwoxCrPaR32XiwKJGHLWTSuNU=;
-        b=Nhid3/JsxrtYM8MLHLJR1BfILl4TRXzyUR0J7s+n8y3yu/rpiedrU7nimtvLZXQlzU
-         egCZUXGME8CSlKlMeU08olztQlDkzgEJ1OsjMgCR5KnL+ZXGw3TnwJpcAyISbSvNvyo5
-         xOZdvbof9+ABESO7bxcYL748Ypl75BEHqmMoYDIUCHjBY4AHpf8tvd4ZEjtKDD1axWdd
-         j7Ffwnxd78nVm2KhdO+gEGpQVu+UGtkm3dqhOOXvzjT278nYwmzs8LaIPgumFzPXQiEu
-         KkOLbYeA16nWZf10hsYerq/tHqO/krek0y3Gz20tjCtEE7DEUxBth0HDGdemFdzFD8dd
-         dE5g==
-X-Gm-Message-State: AOAM5335CIzR79u1OaXJ1ArKulPntW6q9ucnz/TlmB90CHNoablwVxnY
-        iqQ2P9l+epDpUuR/AWjA4Ys=
-X-Google-Smtp-Source: ABdhPJxzdv8TPmKbqDuUUlm0LGyjTWA5VeiTvrejO3QJvbuHOL6J/tB0JkWL7zWiuc/Akugi/+cReA==
-X-Received: by 2002:ac8:a41:: with SMTP id f1mr26896254qti.89.1595969829786;
-        Tue, 28 Jul 2020 13:57:09 -0700 (PDT)
-Received: from ?IPv6:2601:284:8202:10b0:c842:646d:48fc:f7aa? ([2601:284:8202:10b0:c842:646d:48fc:f7aa])
-        by smtp.googlemail.com with ESMTPSA id n68sm24641164qkd.89.2020.07.28.13.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 13:57:08 -0700 (PDT)
-Subject: Re: [PATCH] bpf: Add bpf_ktime_get_real_ns
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>
-Cc:     bimmy.pujari@intel.com, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, mchehab@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, ashkan.nikravesh@intel.com
-References: <20200727233431.4103-1-bimmy.pujari@intel.com>
- <CAEf4BzYMaU14=5bzzasAANJW7w2pNxHZOMDwsDF_btVWvf9ADA@mail.gmail.com>
- <CANP3RGd2fKh7qXyWVeqPM8nVKZRtJrJ65apmGF=w9cwXy6TReQ@mail.gmail.com>
- <CAEf4BzaiCZ3rOBc0EXuLUuWh9m5QXv=51Aoyi5OHwb6T11nnjw@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9e9ca486-f6f5-2301-8850-8f53429b160e@gmail.com>
-Date:   Tue, 28 Jul 2020 14:57:07 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1729022AbgG1U74 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 16:59:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728728AbgG1U7z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:59:55 -0400
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08B98206D8
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 20:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595969995;
+        bh=Gn2c68OR+oIC9TzJwDz7iGXRMZT7RHTYswe361t+q0Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=azXvKksccdLjMIXt1p9oVxtR+yyUpvlUW3ioGozRLcQNFc4TECtaaIR8IDYrF2zkG
+         BdL+sJ4oeLI+bJ2SkLBvrhQIfFHM1OpCrcffbo7qjNPHHsHnWx8tF/rW3mSn3HijXC
+         mZoYB1/PQj9GBE9kEGi3tjhh/aKTfoQH1UTOsMsE=
+Received: by mail-lj1-f179.google.com with SMTP id f5so22688461ljj.10
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 13:59:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531uG0iIs+JSBDuUL7ZtlPkUhirs+Y+8g6ytp5ZCS1SMlxBAASKi
+        flZbHLIfs/05GLLjHNKB5+KQ3V5qAnfcC8RkmZM=
+X-Google-Smtp-Source: ABdhPJzeWUJfHFQV8YC1sfdgOZUmtufWPiE6ygQ2/dF6ju44UKfRzLtCaf5sgZys85DdRFY6suCO9bzxCvle1euB8Vw=
+X-Received: by 2002:a2e:7c14:: with SMTP id x20mr13466055ljc.41.1595969993342;
+ Tue, 28 Jul 2020 13:59:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaiCZ3rOBc0EXuLUuWh9m5QXv=51Aoyi5OHwb6T11nnjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200728120059.132256-1-iii@linux.ibm.com> <20200728120059.132256-3-iii@linux.ibm.com>
+In-Reply-To: <20200728120059.132256-3-iii@linux.ibm.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 28 Jul 2020 13:59:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6PaAe4Kb+q7fOnhcm13bh9Mr0i34ar5gAJOm5+BiGkEg@mail.gmail.com>
+Message-ID: <CAPhsuW6PaAe4Kb+q7fOnhcm13bh9Mr0i34ar5gAJOm5+BiGkEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] samples/bpf: Fix test_map_in_map on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/28/20 12:28 PM, Andrii Nakryiko wrote:
-> In some, yes, which also means that in some other they can't. So I'm
-> still worried about misuses of REALCLOCK, within (internal daemons
-> within the company) our outside (BCC tools and alike) of data centers.
-> Especially if people will start using it to measure elapsed time
-> between events. I'd rather not have to explain over and over again
-> that REALCLOCK is not for measuring passage of time.
+On Tue, Jul 28, 2020 at 5:14 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> s390 uses socketcall multiplexer instead of individual socket syscalls.
+> Therefore, "kprobe/" SYSCALL(sys_connect) does not trigger and
+> test_map_in_map fails. Fix by using "kprobe/__sys_connect" instead.
 
-Why is documenting the type of clock and its limitations not sufficient?
-Users are going to make mistakes and use of gettimeofday to measure time
-differences is a common one for userspace code. That should not define
-or limit the ability to correctly and most directly do something in bpf.
+samples/bpf is in semi-deprecated state. I tried for quite some time, but still
+cannot build it all successfully. So I apologize for bounding the
+question to you...
 
-I have a patch to export local_clock as bpf_ktime_get_fast_ns. It too
-can be abused given that it has limitations (can not be used across CPUs
-and does not correlate to any exported clock), but it too has important
-use cases (twice as fast as bpf_ktime_get_ns and useful for per-cpu
-delta-time needs).
+From the code, we do the SYSCALL() trick to change the exact name for
+different architecture. Would this change break the same file for x86?
 
-Users have to know what they are doing; making mistakes is part of
-learning. Proper documentation is all you can do.
+Thanks,
+Song
+
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  samples/bpf/test_map_in_map_kern.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
+> index 8def45c5b697..b0200c8eac09 100644
+> --- a/samples/bpf/test_map_in_map_kern.c
+> +++ b/samples/bpf/test_map_in_map_kern.c
+> @@ -103,10 +103,9 @@ static __always_inline int do_inline_hash_lookup(void *inner_map, u32 port)
+>         return result ? *result : -ENOENT;
+>  }
+>
+> -SEC("kprobe/" SYSCALL(sys_connect))
+> +SEC("kprobe/__sys_connect")
+>  int trace_sys_connect(struct pt_regs *ctx)
+>  {
+> -       struct pt_regs *real_regs = (struct pt_regs *)PT_REGS_PARM1_CORE(ctx);
+>         struct sockaddr_in6 *in6;
+>         u16 test_case, port, dst6[8];
+>         int addrlen, ret, inline_ret, ret_key = 0;
+> @@ -114,8 +113,8 @@ int trace_sys_connect(struct pt_regs *ctx)
+>         void *outer_map, *inner_map;
+>         bool inline_hash = false;
+>
+> -       in6 = (struct sockaddr_in6 *)PT_REGS_PARM2_CORE(real_regs);
+> -       addrlen = (int)PT_REGS_PARM3_CORE(real_regs);
+> +       in6 = (struct sockaddr_in6 *)PT_REGS_PARM2_CORE(ctx);
+> +       addrlen = (int)PT_REGS_PARM3_CORE(ctx);
+>
+>         if (addrlen != sizeof(*in6))
+>                 return 0;
+> --
+> 2.25.4
+>
