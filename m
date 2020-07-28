@@ -2,172 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400D2230D1C
-	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 17:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661AF230DF8
+	for <lists+bpf@lfdr.de>; Tue, 28 Jul 2020 17:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgG1PK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jul 2020 11:10:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29662 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730651AbgG1PK2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:10:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595949026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o6I4OEEg092T3ZgLJmyfjLwmqdsftnVLcbFWvSvBCB4=;
-        b=BNtYj9UbJ+AE8h4zUyOvUU5durHAR95hW4AOpVCbdOgZRfxu6GJWySoQRFL9qEcNryJuUO
-        9GUzZoqE0+g5L5NapT06x/x6ZjR02yBVGKzG1AlVT06fxJpB1H5L46U6UWoMoMJiOOFMHV
-        AvyLjssOmIhJKNXgjMJt1XHse7ANNro=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-VwSnSg4SP221V7QsLCmxqg-1; Tue, 28 Jul 2020 11:10:23 -0400
-X-MC-Unique: VwSnSg4SP221V7QsLCmxqg-1
-Received: by mail-wm1-f70.google.com with SMTP id y204so8970281wmd.2
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 08:10:23 -0700 (PDT)
+        id S1730930AbgG1Pfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jul 2020 11:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730824AbgG1Pfj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:35:39 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99C6C061794
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 08:35:38 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id o10so5466429edh.6
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 08:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db/TRpT5kV/W8mcFEsxSUdSWdjO0G1cFFZkEW6SG77U=;
+        b=YWZIxtj1nPUiZ1MC1oJx0lMh/mIsKru+t0v/IzNkA6DutuUZpgrzNTEVphX+lyVyIp
+         U8cs+bYxU4mRBTlPUji7TUQToVheFDsIijvV6SwTjvl7LLEpsw5BjBJEuOkOYVGM/2nL
+         KENJThcY76ozCAet7kx7yLOyjYL7RrD6An/GmrI7vvlNxhBKgYA11gBbOjvldXqr893s
+         SIk3XUZMf+l/PfSNwAH5MFn/7FcmLE1fkWDbyi8XYu/WAEvoJ6bdkWAPQDlrdjpkA0It
+         X3qBRVfaNsH6TFdh+gERF2hRHfH6XpvZNvSEY9BPoqseQyp8Hb5WUIQOh9Hqy8VMoBEh
+         NswA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o6I4OEEg092T3ZgLJmyfjLwmqdsftnVLcbFWvSvBCB4=;
-        b=uL+zFoRvN5GWZV6mq4PLyk5CN9OEB2A6DCzl0SvbrkpK+d7ipbb576VTftlYhHgBTo
-         N/QV+iVh6WkOf6JB039+FwA5xbGxHSYbBZR7/XkKGjYMVbCpTJxiyeo7darQwZba8NjD
-         iSdxUd+gzitqJHYvYpOKU5jkp1wfFQ0CHpPvF4MCRII/5hsd6FSzCraRWcRSvtEiMmrp
-         sB3sEogSnWMco81WuWtHI3cujj7aQNfQ9uVWqfkcfQM4b+KMyze6Zmq6rXJY4VGcdbt2
-         l0qn8vWLoIjznaNKW8n2X+CZG0/F3m55CPL4I0crw/A/8vTVgSTcdICNoQosLUbgBZZp
-         AzNw==
-X-Gm-Message-State: AOAM53063/8fSeAmImGmAQ1YuWvGMzD/sTRKUXmQAb2WQAVnii2pCv8k
-        MWQNmSIhXPPv5WgBMXe/VkceVMsJkBQUG0O8sQi+NNB0PPKUho80DQiqazSeFxFctXk0u2nUpsL
-        Qqki74dbSKZHS
-X-Received: by 2002:a7b:c921:: with SMTP id h1mr4169513wml.29.1595949022343;
-        Tue, 28 Jul 2020 08:10:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJgQAKSEkMEl63w1AvnDC1Q7ykV+T+t/yLYk1ciAU84obyiRZ+I99YmvndPvMVQLGnxBMXkg==
-X-Received: by 2002:a7b:c921:: with SMTP id h1mr4169490wml.29.1595949022071;
-        Tue, 28 Jul 2020 08:10:22 -0700 (PDT)
-Received: from localhost ([151.48.137.169])
-        by smtp.gmail.com with ESMTPSA id y17sm18741813wrh.63.2020.07.28.08.10.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=db/TRpT5kV/W8mcFEsxSUdSWdjO0G1cFFZkEW6SG77U=;
+        b=B3G/145olXNtvEG7+1RyiHMfX/sPdZHvqHeG+vlNvpKy4xq1gOuxERCV22QSCLxjIo
+         ZWQ1K33jUGRFePKtV/GT+v3ha/VIKpN2Y9zE3vDOSP+AxIXRw5n4tr3cDCmyYdHBrT1K
+         yGpbkjQSbsAYi1MTogS9xkWZf+93BWcNnWLYOeqYP5bxABsqk4KmH0XeGwATSI5DsAiT
+         qa+gIWpMQeyK0em8tLq+9TSmlCkJKKo+Lfuv7wqeEw8SaNGBauAw8AQJEVlAneZWoyRh
+         Da0iQrciVGTF4wMv/vMzrX4PuFkOW8JQSCt4PulpCIGTaIVa0ElizBlcvoVSg7OQJ/x0
+         JTLQ==
+X-Gm-Message-State: AOAM532gsoHX4BX5LxwTLtchAdIc3oxngwHceOymHlWz0so69WkRFteO
+        OKsXVBgnO0uJ13mjWsg2wt98tQ==
+X-Google-Smtp-Source: ABdhPJw2DUvpmrLaI1mp6J4Wh3Uj9MM6l2x/Qwj6OjuK47yvJlkWRX+9ONB5atmFIyKYc3K+RX2gcQ==
+X-Received: by 2002:a50:e1c5:: with SMTP id m5mr26085799edl.138.1595950537354;
+        Tue, 28 Jul 2020 08:35:37 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id ce12sm10217235edb.4.2020.07.28.08.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 08:10:21 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 17:10:17 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, echaudro@redhat.com, sameehj@amazon.com,
-        kuba@kernel.org
-Subject: Re: [RFC net-next 00/22] Introduce mb bit in xdp_buff/xdp_frame
-Message-ID: <20200728151017.GE286429@lore-desk>
-References: <cover.1595503780.git.lorenzo@kernel.org>
- <20200728164852.76305a12@carbon>
+        Tue, 28 Jul 2020 08:35:36 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, zlim.lnx@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH bpf-next 0/1] arm64: Add BPF exception tables
+Date:   Tue, 28 Jul 2020 17:21:24 +0200
+Message-Id: <20200728152122.1292756-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XuV1QlJbYrcVoo+x"
-Content-Disposition: inline
-In-Reply-To: <20200728164852.76305a12@carbon>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The following patch adds support for BPF_PROBE_MEM on arm64. The
+implementation is simple but I wanted to give a bit of background first.
+If you're familiar with recent BPF development you can skip to the patch
+(or fact-check the following blurb).
 
---XuV1QlJbYrcVoo+x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BPF programs used for tracing can inspect any of the traced function's
+arguments and follow pointers in struct members. Traditionally the BPF
+program would get a struct pt_regs as argument and cast the register
+values to the appropriate struct pointer. The BPF verifier would mandate
+that any memory access uses the bpf_probe_read() helper, to suppress
+page faults (see samples/bpf/tracex1_kern.c).
 
-> On Thu, 23 Jul 2020 13:42:12 +0200
-> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->=20
-> > Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify
-> > if shared_info area has been properly initialized for non-linear
-> > xdp buffers.
-> > Initialize mb to 0 for all xdp drivers
->=20
-> It is nice to see that we have some many XDP drivers, but 20 separate
-> patches for drivers is a bit much.  Perhaps we can do all the drivers
-> in one patch? What do others think?
+With BPF Type Format embedded into the kernel (CONFIG_DEBUG_INFO_BTF),
+the verifier can now check the type of any access performed by a BPF
+program. It rejects for example programs that cast to a different
+structure and perform out-of-bounds accesses, or programs that attempt
+to dereference something that isn't a pointer, or that hasn't gone
+through a NULL check.
 
-I am fine with it, not sure what is the best approach.
+As this makes tracing programs safer, the verifier now allows loading
+programs that access struct members without bpf_probe_read(). It is
+however still possible to trigger page faults. For example in the
+following example with which I've tested this patch, the verifier does
+not mandate a NULL check for the second-level pointer:
 
->=20
-> > Lorenzo Bianconi (22):
-> >   xdp: introduce mb in xdp_buff/xdp_frame
-> >   xdp: initialize xdp_buff mb bit to 0 in netif_receive_generic_xdp
-> >   net: virtio_net: initialize mb bit of xdp_buff to 0
-> >   net: xen-netfront: initialize mb bit of xdp_buff to 0
-> >   net: veth: initialize mb bit of xdp_buff to 0
-> >   net: hv_netvsc: initialize mb bit of xdp_buff to 0
-> >   net: bnxt: initialize mb bit in xdp_buff to 0
-> >   net: dpaa2: initialize mb bit in xdp_buff to 0
-> >   net: ti: initialize mb bit in xdp_buff to 0
-> >   net: nfp: initialize mb bit in xdp_buff to 0
-> >   net: mvpp2: initialize mb bit in xdp_buff to 0
-> >   net: sfc: initialize mb bit in xdp_buff to 0
-> >   net: qede: initialize mb bit in xdp_buff to 0
-> >   net: amazon: ena: initialize mb bit in xdp_buff to 0
-> >   net: cavium: thunder: initialize mb bit in xdp_buff to 0
-> >   net: socionext: initialize mb bit in xdp_buff to 0
-> >   net: tun: initialize mb bit in xdp_buff to 0
-> >   net: ixgbe: initialize mb bit in xdp_buff to 0
-> >   net: ice: initialize mb bit in xdp_buff to 0
-> >   net: i40e: initialize mb bit in xdp_buff to 0
-> >   net: mlx5: initialize mb bit in xdp_buff to 0
-> >   net: mlx4: initialize mb bit in xdp_buff to 0
-> >
-> >  drivers/net/ethernet/amazon/ena/ena_netdev.c        | 1 +
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c       | 1 +
-> >  drivers/net/ethernet/cavium/thunder/nicvf_main.c    | 1 +
-> >  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c    | 1 +
-> >  drivers/net/ethernet/intel/i40e/i40e_txrx.c         | 1 +
-> >  drivers/net/ethernet/intel/ice/ice_txrx.c           | 1 +
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 1 +
-> >  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c   | 1 +
-> >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c     | 1 +
->=20
-> I see that mvneta is missing, but maybe it is doing another kind of
-> init of struct xdp_buff?
+/*
+ * From tools/testing/selftests/bpf/progs/bpf_iter_task.c
+ * dump_task() is called for each task.
+ */
+SEC("iter/task")
+int dump_task(struct bpf_iter__task *ctx)
+{
+	struct seq_file *seq = ctx->meta->seq;
+	struct task_struct *task = ctx->task;
 
-yes, mvneta has been done in a previous patch.
+	/* Program would be rejected without this check */
+	if (task == NULL)
+		return 0;
 
-Regards,
-Lorenzo
+	/*
+	 * However the verifier does not currently mandate
+	 * checking task->mm, and the following faults for kernel
+	 * threads.
+	 */
+	BPF_SEQ_PRINTF(seq, "pid=%d vm=%d", task->pid, task->mm->total_vm);
+	return 0;
+}
 
->=20
-> >  drivers/net/ethernet/mellanox/mlx4/en_rx.c          | 1 +
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c     | 1 +
-> >  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 1 +
-> >  drivers/net/ethernet/qlogic/qede/qede_fp.c          | 1 +
-> >  drivers/net/ethernet/sfc/rx.c                       | 1 +
-> >  drivers/net/ethernet/socionext/netsec.c             | 1 +
-> >  drivers/net/ethernet/ti/cpsw.c                      | 1 +
-> >  drivers/net/ethernet/ti/cpsw_new.c                  | 1 +
-> >  drivers/net/hyperv/netvsc_bpf.c                     | 1 +
-> >  drivers/net/tun.c                                   | 2 ++
-> >  drivers/net/veth.c                                  | 1 +
-> >  drivers/net/virtio_net.c                            | 2 ++
-> >  drivers/net/xen-netfront.c                          | 1 +
-> >  include/net/xdp.h                                   | 8 ++++++--
-> >  net/core/dev.c                                      | 1 +
-> >  24 files changed, 31 insertions(+), 2 deletions(-)
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
+Even if it checked this case, the verifier couldn't guarantee that all
+accesses are safe since kernel structures could in theory contain
+garbage or error pointers. So to allow fast access without
+bpf_probe_read(), a JIT implementation must support BPF exception
+tables. For each access to a BTF pointer, the JIT generates an entry
+into an exception table appended to the BPF program. If the access
+faults at runtime, the handler skips the faulting instruction. The
+example above will display vm=0 for kernel threads.
 
---XuV1QlJbYrcVoo+x
-Content-Type: application/pgp-signature; name="signature.asc"
+See also
+* The original implementation on x86
+  https://lore.kernel.org/bpf/20191016032505.2089704-1-ast@kernel.org/
+* The s390 implementation
+  https://lore.kernel.org/bpf/20200715233301.933201-1-iii@linux.ibm.com/
 
------BEGIN PGP SIGNATURE-----
+Jean-Philippe Brucker (1):
+  arm64: bpf: Add BPF exception tables
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXyA/1wAKCRA6cBh0uS2t
-rNUiAQCJs/hj8x7FP7117v2dpFC8zA26hh8Dazj+YKtbHguQNAEAvh+komwMh5yB
-2SFpHz3XB8NTv6Xw738e4IzlzUBTKQk=
-=CcBw
------END PGP SIGNATURE-----
+ arch/arm64/include/asm/extable.h |  3 ++
+ arch/arm64/mm/extable.c          | 11 ++--
+ arch/arm64/net/bpf_jit_comp.c    | 93 +++++++++++++++++++++++++++++---
+ 3 files changed, 98 insertions(+), 9 deletions(-)
 
---XuV1QlJbYrcVoo+x--
+-- 
+2.27.0
 
