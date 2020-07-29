@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E1223220D
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 17:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A972D232218
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 18:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgG2P7u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 11:59:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43175 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726365AbgG2P7u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:59:50 -0400
+        id S1726502AbgG2QEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 12:04:30 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33931 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgG2QEa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 12:04:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596038388;
+        s=mimecast20190719; t=1596038668;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yyGEnj8PhQ1aPPSJJnQHsf34uSqQpvqLWxRR//cvG98=;
-        b=UYhm8ENF9PvtV/x7opqa+/hDkqzPxA+yB5xrbuwSBLHBa0TdvoX49qjuZodg3p7Oe4zesh
-        Nl2l/Ka+T3mG0OQyK9kWqkFk+R9Ko/FOaL63SanbJgnrH0q9lxGiu3oQTnAkPR22D/MbR0
-        MDy0VIoxOHKG1HQnU4qBgSOWeHkk69M=
+        bh=zz13flG+/aJ40UGJfd/JWdTkBYnJ+8dyXlk6Ta+Hbvo=;
+        b=V1TlGY+UsjQqqyf8EIgiBbW35aQ6d4cpNILcXAR8lMo5insuSIYN4m+emaCcRBmDGAfsbD
+        oosoOakThs6RGu+VYaPy4qS22Fw0i/TR+Lz7LcOoGX/DGanzmWiYJREFStRQW9gDpnEcik
+        eq9Cx1SQy9E1X83I3PXCJOfieE7ewE8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-9-kQIygvkZMOuMvp5i4U73Pg-1; Wed, 29 Jul 2020 11:59:43 -0400
-X-MC-Unique: kQIygvkZMOuMvp5i4U73Pg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-21-XkHr9teUOkWJF4tWR8KKBA-1; Wed, 29 Jul 2020 12:04:26 -0400
+X-MC-Unique: XkHr9teUOkWJF4tWR8KKBA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FDB2800480;
-        Wed, 29 Jul 2020 15:59:41 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50F421893DC2;
+        Wed, 29 Jul 2020 16:04:24 +0000 (UTC)
 Received: from krava (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0934010027AB;
-        Wed, 29 Jul 2020 15:59:37 +0000 (UTC)
-Date:   Wed, 29 Jul 2020 17:59:37 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id F017219D82;
+        Wed, 29 Jul 2020 16:04:19 +0000 (UTC)
+Date:   Wed, 29 Jul 2020 18:04:19 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -48,151 +48,112 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>,
         Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 bpf-next 06/13] bpf: Factor btf_struct_access function
-Message-ID: <20200729155937.GL1319041@krava>
+Subject: Re: [PATCH v8 bpf-next 07/13] bpf: Add btf_struct_ids_match function
+Message-ID: <20200729160419.GM1319041@krava>
 References: <20200722211223.1055107-1-jolsa@kernel.org>
- <20200722211223.1055107-7-jolsa@kernel.org>
- <CAEf4BzbS_JFW70Z_68hDtN4VTkLfohkR0PV0d9jCJRjZEhc01Q@mail.gmail.com>
+ <20200722211223.1055107-8-jolsa@kernel.org>
+ <CAEf4BzacqauEc8=o29EBUsmvTMs3FZ+-Kcc4cSJ9Te4yh5-7qg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbS_JFW70Z_68hDtN4VTkLfohkR0PV0d9jCJRjZEhc01Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAEf4BzacqauEc8=o29EBUsmvTMs3FZ+-Kcc4cSJ9Te4yh5-7qg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 04:27:21PM -0700, Andrii Nakryiko wrote:
+On Tue, Jul 28, 2020 at 04:35:16PM -0700, Andrii Nakryiko wrote:
 
 SNIP
 
-> 
-> >  kernel/bpf/btf.c | 73 +++++++++++++++++++++++++++++++++++++++---------
-> >  1 file changed, 60 insertions(+), 13 deletions(-)
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index bae557ff2da8..c981e258fed3 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1306,6 +1306,8 @@ int btf_struct_access(struct bpf_verifier_log *log,
+> >                       const struct btf_type *t, int off, int size,
+> >                       enum bpf_access_type atype,
+> >                       u32 *next_btf_id);
+> > +bool btf_struct_ids_match(struct bpf_verifier_log *log,
+> > +                         int off, u32 id, u32 mid);
+> >  int btf_resolve_helper_id(struct bpf_verifier_log *log,
+> >                           const struct bpf_func_proto *fn, int);
 > >
 > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 841be6c49f11..1ab5fd5bf992 100644
+> > index 1ab5fd5bf992..562d4453fad3 100644
 > > --- a/kernel/bpf/btf.c
 > > +++ b/kernel/bpf/btf.c
-> > @@ -3873,16 +3873,22 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> >         return true;
+> > @@ -4140,6 +4140,35 @@ int btf_struct_access(struct bpf_verifier_log *log,
+> >         return -EINVAL;
 > >  }
 > >
-> > -int btf_struct_access(struct bpf_verifier_log *log,
-> > -                     const struct btf_type *t, int off, int size,
-> > -                     enum bpf_access_type atype,
-> > -                     u32 *next_btf_id)
-> > +enum walk_return {
-> > +       /* < 0 error */
-> > +       walk_scalar = 0,
-> > +       walk_ptr,
-> > +       walk_struct,
-> > +};
-> 
-> let's keep enum values in ALL_CAPS? walk_return is also a bit generic,
-> maybe something like bpf_struct_walk_result?
-
-ok
-
-> 
-> > +
-> > +static int btf_struct_walk(struct bpf_verifier_log *log,
-> > +                          const struct btf_type *t, int off, int size,
-> > +                          u32 *rid)
-> >  {
-> >         u32 i, moff, mtrue_end, msize = 0, total_nelems = 0;
-> >         const struct btf_type *mtype, *elem_type = NULL;
-> >         const struct btf_member *member;
-> >         const char *tname, *mname;
-> > -       u32 vlen;
-> > +       u32 vlen, elem_id, mid;
-> >
-> >  again:
-> >         tname = __btf_name_by_offset(btf_vmlinux, t->name_off);
-> > @@ -3924,8 +3930,7 @@ int btf_struct_access(struct bpf_verifier_log *log,
-> >                         goto error;
-> >
-> >                 off = (off - moff) % elem_type->size;
-> > -               return btf_struct_access(log, elem_type, off, size, atype,
-> > -                                        next_btf_id);
-> > +               return btf_struct_walk(log, elem_type, off, size, rid);
-> 
-> oh, btw, this is a recursion in the kernel, let's fix that? I think it
-> could easily be just `goto again` here?
-
-probably, I'll put it into separate change then
-
-SNIP
-
-> 
-> > @@ -4066,11 +4080,10 @@ int btf_struct_access(struct bpf_verifier_log *log,
-> >                                         mname, moff, tname, off, size);
-> >                                 return -EACCES;
-> >                         }
-> > -
-> >                         stype = btf_type_skip_modifiers(btf_vmlinux, mtype->type, &id);
-> >                         if (btf_type_is_struct(stype)) {
-> > -                               *next_btf_id = id;
-> > -                               return PTR_TO_BTF_ID;
-> > +                               *rid = id;
-> 
-> nit: rid is a very opaque name, I find next_btf_id more appropriate
-> (even if it's meaning changes depending on walk_ptr vs walk_struct.
-
-ok, will change
-
-SNIP
-
-> > +int btf_struct_access(struct bpf_verifier_log *log,
-> > +                     const struct btf_type *t, int off, int size,
-> > +                     enum bpf_access_type atype __maybe_unused,
-> > +                     u32 *next_btf_id)
+> > +bool btf_struct_ids_match(struct bpf_verifier_log *log,
+> > +                         int off, u32 id, u32 mid)
 > > +{
+> > +       const struct btf_type *type;
+> > +       u32 nid;
 > > +       int err;
-> > +       u32 id;
 > > +
-> > +       do {
-> > +               err = btf_struct_walk(log, t, off, size, &id);
-> > +               if (err < 0)
-> > +                       return err;
-> > +
-> > +               /* We found the pointer or scalar on t+off,
-> > +                * we're done.
-> > +                */
-> > +               if (err == walk_ptr) {
-> > +                       *next_btf_id = id;
-> > +                       return PTR_TO_BTF_ID;
-> > +               }
-> > +               if (err == walk_scalar)
-> > +                       return SCALAR_VALUE;
-> > +
-> > +               /* We found nested struct, so continue the search
-> > +                * by diving in it. At this point the offset is
-> > +                * aligned with the new type, so set it to 0.
-> > +                */
-> > +               t = btf_type_by_id(btf_vmlinux, id);
-> > +               off = 0;
 > 
-> It's very easy to miss that this case corresponds to walk_struct here.
-> If someone in the future adds a 4th special value, it will be too easy
-> to forget to update this piece of logic. So when dealing with enums, I
-> generally prefer this approach:
-> 
-> switch (err) {
-> case walk_ptr:
->     ...
-> case walk_scalar:
->     ...
-> case walk_struct:
->     ...
-> default: /* complain loudly here */
-> }
-> 
-> WDYT?
+> mid and nid are terrible names, especially as an input argument name.
+> mid == need_type_id? nid == cur_type_id or something along those
+> lines?
 
-right, I like it, make sense for future.. will change
+'mid' was for matching id, 'nid' for nested id ;-)
+need_type_id/cur_type_id sound good
+
+> 
+> > +       do {
+> > +               type = btf_type_by_id(btf_vmlinux, id);
+> > +               if (!type)
+> > +                       return false;
+> > +               err = btf_struct_walk(log, type, off, 1, &nid);
+> > +               if (err < 0)
+> > +                       return false;
+> > +
+> > +               /* We found nested struct object. If it matches
+> > +                * the requested ID, we're done. Otherwise let's
+> > +                * continue the search with offset 0 in the new
+> > +                * type.
+> > +                */
+> > +               if (err == walk_struct && mid == nid)
+> > +                       return true;
+> > +               off = 0;
+> > +               id = nid;
+> > +       } while (err == walk_struct);
+> 
+> This seems like a slightly more obvious control flow:
+> 
+> again:
+> 
+>    ...
+> 
+>    if (err != walk_struct)
+>       return false;
+
+ok, and perhaps use in here the switch(err) as in the previous patch?
 
 thanks,
 jirka
+
+> 
+>    if (mid != nid) {
+>       off = 0;
+>       id = nid;
+>       goto again;
+>    }
+> 
+>    return true;
+> 
+> > +
+> > +       return false;
+> > +}
+> > +
+> >  int btf_resolve_helper_id(struct bpf_verifier_log *log,
+> >                           const struct bpf_func_proto *fn, int arg)
+> >  {
+> 
+> [...]
+> 
 
