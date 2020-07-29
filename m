@@ -2,89 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07E423195D
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 08:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CC323198F
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 08:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgG2GQk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 02:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgG2GQj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:16:39 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99437C061794;
-        Tue, 28 Jul 2020 23:16:39 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b79so21168899qkg.9;
-        Tue, 28 Jul 2020 23:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iLtAssgWfIZzqgLiFD3qsZIMSHk6XKt/j5mm7LzbJ6Y=;
-        b=MmXlKQmCgUHDk6M79TCRMNheCcB7vZjsht1k767ehX1N1KE7LUawliBgc1UJU+0rKM
-         EWNXeahcrAY7yEDZolaA7Xqua2cSgJRP+ZoCPS7Qg6EX48m/dqkNu12qB6n6ImIjKckl
-         cZDxA8ytiR+g96o88tgKXFqbHTt+znHzGrq6LqZWDorWhY+9OmYYQhHeLfK90zV5EWM8
-         2Dng5L7HXo6VqsbKw1f1Nkq/ZxwXw3tdB0AovbDYyd3jK0/wgInKg3TvO4YMS2ye4xYT
-         jN8Q1hEVa8z8Q9TcTTdMI7zRNAZqfZm3Qc1bAsRurqUE4UCLModuflEsu20xczAdHBvC
-         XCbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iLtAssgWfIZzqgLiFD3qsZIMSHk6XKt/j5mm7LzbJ6Y=;
-        b=jCkxq5QQk64aW8cD5piwjZPhG3FAZ4FqE8jSfeiNYshEdoEuk2YLNh8vPljkyBVsjt
-         OzHNIf7kShn+o2f+1eH5yO+E1JlUx1tbOia835eyGzcX7K9XSYwBGOQY8KPrlVXSNHlE
-         wQ36q5PaASA1tYbHMdV3B/G51ms3VvKtgyKl+w4+TzYK2ApefawWC/rdcI2w15PoXgKw
-         wzBkwBMYwSsjeqHzl+RDY3Z9pCznuCe4eNh7JKaSdcMwwQg/ypaR+xIX6FjnUASIW4s6
-         ZwoDOqMRsU9wTP0GCaYMeo3l5D4+XznaGRjvlJixWn2yU32W1qXaWNc2lCTAvwdtDUez
-         pDbg==
-X-Gm-Message-State: AOAM531lFRxUQjJQsxKkrGDHzIb+I7KNIo4jDbyFmnoM5ZCSnRmNyNq9
-        baOZ+zHvn1Zn/5dYJbEvZcv3EFmTxHhpUelbsL8=
-X-Google-Smtp-Source: ABdhPJysBKm7v9N4z+wTwwNU6y6+7AEeiul8ro2XUFe5Nu36RtO7Fq/BkE8n7bwc7FT5YWnRQoVS67z6XFapJS4JT2U=
-X-Received: by 2002:a05:620a:4c:: with SMTP id t12mr6180376qkt.449.1596003398816;
- Tue, 28 Jul 2020 23:16:38 -0700 (PDT)
+        id S1726840AbgG2GaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 02:30:18 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:42558 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbgG2GaS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 02:30:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596004216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PPGYaK4xJdrEP87tE468dp8hHYYTvlGkgfQpKFXfJPc=;
+        b=E1CiCBnvFv/oCP5R+Gi/FFnBVwcnitgoOn0LZbM8PStskPZe4Em79MYYXlOeDXl0iUTlNr
+        XdCqugCtTNCpjbJctD76fNvybyHbbn6wcISjT+/R+At5W/xl+6UbUBnAUVQa6QBBhjmhT0
+        BfbBF3iATQK6MJClcnURteNSbEwJsBc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-pi9APXFhPhKLFOGCIgXsNQ-1; Wed, 29 Jul 2020 02:24:04 -0400
+X-MC-Unique: pi9APXFhPhKLFOGCIgXsNQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30BC3106B242;
+        Wed, 29 Jul 2020 06:24:03 +0000 (UTC)
+Received: from [10.36.112.234] (ovpn-112-234.ams2.redhat.com [10.36.112.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3DC027854D;
+        Wed, 29 Jul 2020 06:23:58 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Jiri Olsa" <jolsa@redhat.com>
+Cc:     "Yonghong Song" <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, andriin@fb.com,
+        toke@redhat.com
+Subject: Re: fentry/fexit attach to EXT type XDP program does not work
+Date:   Wed, 29 Jul 2020 08:23:56 +0200
+Message-ID: <95AF8533-2C7D-4038-AD39-4C81DBF25551@redhat.com>
+In-Reply-To: <20200727145313.GA1201271@krava>
+References: <159162546868.10791.12432342618156330247.stgit@ebuild>
+ <42b0c8d3-e855-7531-b01c-a05414360aff@fb.com>
+ <88B08061-F85B-454C-9E9D-234154B9F000@redhat.com>
+ <20200726122450.GC1175442@krava>
+ <5CF6086F-412C-4934-9AC6-4B1821ADDF74@redhat.com>
+ <20200727145313.GA1201271@krava>
 MIME-Version: 1.0
-References: <20200729045056.3363921-1-andriin@fb.com> <CAPhsuW5e5B8AShod0frVaDdDA_5f3xeyd6gr9sTqUSy4YM1pBA@mail.gmail.com>
-In-Reply-To: <CAPhsuW5e5B8AShod0frVaDdDA_5f3xeyd6gr9sTqUSy4YM1pBA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 23:16:27 -0700
-Message-ID: <CAEf4BzY=P0pL5wwBD=w=02ooueJcg4h8SoeZuC2pz86R3s1wnw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: don't destroy failed link
-To:     Song Liu <song@kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:47 PM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Jul 28, 2020 at 9:54 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Check that link is NULL or proper pointer before invoking bpf_link__destroy().
-> > Not doing this causes crash in test_progs, when cg_storage_multi selftest
-> > fails.
-> >
-> > Cc: YiFei Zhu <zhuyifei@google.com>
-> > Fixes: 3573f384014f ("selftests/bpf: Test CGROUP_STORAGE behavior on shared egress + ingress")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> btw: maybe we can move the IS_ERR() check to bpf_link__destroy()?
 
-Yeah, given how common this mistake seems to be, that wouldn't be a bad idea.
 
+On 27 Jul 2020, at 16:53, Jiri Olsa wrote:
+
+> On Mon, Jul 27, 2020 at 09:59:14AM +0200, Eelco Chaudron wrote:
+>>
+>>
+>> On 26 Jul 2020, at 14:24, Jiri Olsa wrote:
+>>
+>>> On Tue, Jun 09, 2020 at 10:52:34AM +0200, Eelco Chaudron wrote:
+>>>
+>>> SNIP
+>>>
+>>>>>>    libbpf: failed to load object 'test_xdp_bpf2bpf'
+>>>>>>    libbpf: failed to load BPF skeleton 'test_xdp_bpf2bpf': -4007
+>>>>>>    test_xdp_fentry_ext:FAIL:__load ftrace skeleton failed
+>>>>>>    #91 xdp_fentry_ext:FAIL
+>>>>>>    Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>>>>>>
+>>>>>> Any idea what could be the case here? The same fentry/fexit =
+
+>>>>>> attach
+>>>>>> code works fine in the xdp_bpf2bpf.c tests case.
+>>>>
+>>>> <SNIP>
+>>>>>
+>>>>> I think this is not supported now. That is, you cannot attach a
+>>>>> fentry
+>>>>> trace
+>>>>> to the EXT program. The current implementation for fentry
+>>>>> program simply
+>>>>> trying to find and match the signature of freplace program which =
+
+>>>>> by
+>>>>> default
+>>>>> is a pointer to void.
+>>>>>
+>>>>> It is doable in that in kernel we could recognize to-be-attached
+>>>>> program
+>>>>> is
+>>>>> a freplace and further trace down to find the real signature. The
+>>>>> related
+>>>>> kernel function is btf_get_prog_ctx_type(). You can try to
+>>>>> implement by
+>>>>> yourself
+>>>>> or I can have a patch for this once bpf-next opens.
+>>>>
+>>>> I=E2=80=99m not familiar with this area of the code, so if you could=
+ =
+
+>>>> prepare
+>>>> a patch
+>>>> that would nice.
+>>>> You can also send it to me before bpf-next opens and I can verify
+>>>> it, and
+>>>> clean up the self-test so it can be included as well.
+>>>>
+>>>
+>>> hi,
+>>> it seems that you cannot exten fentry/fexit programs,
+>>> but it's possible to attach fentry/fexit to ext program.
+>>>
+>>>    /* Program extensions can extend all program types
+>>>     * except fentry/fexit. The reason is the following.
+>>>     * The fentry/fexit programs are used for performance
+>>>     * analysis, stats and can be attached to any program
+>>>     * type except themselves. When extension program is
+>>>     * replacing XDP function it is necessary to allow
+>>>     * performance analysis of all functions. Both original
+>>>     * XDP program and its program extension. Hence
+>>>     * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
+>>>     * allowed. If extending of fentry/fexit was allowed it
+>>>     * would be possible to create long call chain
+>>>     * fentry->extension->fentry->extension beyond
+>>>     * reasonable stack size. Hence extending fentry is not
+>>>     * allowed.
+>>>     */
+>>>
+>>> I changed fexit_bpf2bpf.c test just to do a quick check
+>>> and it seems to work:
+>>
+>> Hi Jiri this is exactly what I=E2=80=99m trying, however when you do t=
+his =
+
+>> where the
+>> first argument is a pointer to some context data which you are =
+
+>> accessing
+>> it=E2=80=99s failing in the verifier.
+>> This is a link to the original email, which has a test patch attached =
+
+>> that
+>> will show the failure when trying to load/attach the fentry function =
+
+>> and
+>> access the context:
+>>
+>> https://lore.kernel.org/bpf/159162546868.10791.12432342618156330247.st=
+git@ebuild/
 >
-> > ---
-> >  .../bpf/prog_tests/cg_storage_multi.c         | 42 ++++++++++++-------
-> >  1 file changed, 28 insertions(+), 14 deletions(-)
-> >
+> ok, I tried to trace ext program with __sk_buff argument and I can see
+> the issue as well.. can't acess the skb argument
+>
+> patch below fixes it for me, I can access the skb pointer and its data
+> via probe read, like:
+>
+> 	SEC("fexit/new_get_skb_ifindex")
+> 	int BPF_PROG(fexit_new_get_skb_ifindex, int val, struct __sk_buff =
 
-[...]
+> *skb, int var, int ret)
+> 	{
+> 		__u32 data;
+> 		int err;
+>
+> 		bpf_printk("EXIT skb %p", skb);
+> 		bpf_probe_read_kernel(&data, sizeof(data), &skb->data);
+> 		bpf_printk("EXIT ret %d, data %p", err, data);
+> 		return 0;
+> 	}
+>
+> I think it should fix the xdp_md acess as well
+
+Excellent patch ;) It works with xdp_md as well, and even better it does =
+
+not require the bpf_probe_read_kernel(), so the test_xdp_bpf2bpf.c code =
+
+just works.
+
+Are you planning to send the patch upstream?
+
+> jirka
+>
+>
+> ---
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index ee36b7f60936..2145329f7b1b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3828,6 +3828,10 @@ bool btf_ctx_access(int off, int size, enum =
+
+> bpf_access_type type,
+>  	}
+>
+>  	info->reg_type =3D PTR_TO_BTF_ID;
+> +
+> +	if (tgt_prog && tgt_prog->type =3D=3D BPF_PROG_TYPE_EXT)
+> +		tgt_prog =3D tgt_prog->aux->linked_prog;
+> +
+>  	if (tgt_prog) {
+>  		ret =3D btf_translate_to_vmlinux(log, btf, t, tgt_prog->type, arg);
+>  		if (ret > 0) {
+
