@@ -2,144 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F801231AF6
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 10:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7393F231BAD
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 10:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgG2IP1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 04:15:27 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:48520 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726737AbgG2IP1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 04:15:27 -0400
-X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 04:15:26 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596010525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PUK1vUvNMFJqPqCN7rixVJ6pFpFUJ96T8n6RHgQXYPs=;
-        b=X1FITsKVEgS2LlihBMF2Occd0RyQExKtygDyp2pKKGbhIK6tiAlWebSCMyauNJTJwWC8ui
-        p+wlT+KwbGLu7d5LReqnzaRxSatznV21DjVaYGJsFasP4tY0ccE3yjHWdm3NAX2DbsnwVI
-        FMkbZdy+wk1b9c3HPPLT3mXJsGvBNJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-2fJNoF7XOCOZknvZQcLkdQ-1; Wed, 29 Jul 2020 04:09:13 -0400
-X-MC-Unique: 2fJNoF7XOCOZknvZQcLkdQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47DF7106B242;
-        Wed, 29 Jul 2020 08:09:12 +0000 (UTC)
-Received: from krava (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AEDED10001B3;
-        Wed, 29 Jul 2020 08:09:06 +0000 (UTC)
-Date:   Wed, 29 Jul 2020 10:09:05 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, andriin@fb.com,
-        toke@redhat.com
-Subject: Re: fentry/fexit attach to EXT type XDP program does not work
-Message-ID: <20200729080905.GG1319041@krava>
-References: <159162546868.10791.12432342618156330247.stgit@ebuild>
- <42b0c8d3-e855-7531-b01c-a05414360aff@fb.com>
- <88B08061-F85B-454C-9E9D-234154B9F000@redhat.com>
- <20200726122450.GC1175442@krava>
- <5CF6086F-412C-4934-9AC6-4B1821ADDF74@redhat.com>
- <20200727145313.GA1201271@krava>
- <95AF8533-2C7D-4038-AD39-4C81DBF25551@redhat.com>
+        id S1726710AbgG2IzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 04:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgG2IzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:55:16 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F154BC061794
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:55:14 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id v15so8038578lfg.6
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=8L8D/nK8y1XzW/trlaVpU5smarSVbjSHeNmxrK5S3II=;
+        b=X7CxcoXQhOgWXBbIRkX5wh1u3OPdHWbG5owooIWCbOQpvOrCNr1BOR7MPzREkhsnPI
+         inpcWgj3ya3chKXWYf8v1XMCsyVQhxTagBtOtwmdcwmKIYarP28Uo4kDi1WlSZXFiSIX
+         z4Q/4XQDvNQZPio9Gi45GxE2RYyVYI4x3a0Ns=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=8L8D/nK8y1XzW/trlaVpU5smarSVbjSHeNmxrK5S3II=;
+        b=Y9cD5RaitnHqRaFVw8OE0K3wbjBh8GGGqaFC/Wf71x+pmsiiV+vtO/wZelPzPwu2Yn
+         qy+XJuuImI+Vr8W+mVw4HJpB4iPqsdW3pqgFWCzgwxd2SzO+EE9la63EtdlRzj/eOMet
+         PRvtdsdjbAMhPUWddDho8fX3Eh5JhzLQXIv38xejYjObE2kAr9cXXw2hqd2TqQkAYfEO
+         daXRd3HbtrUvWLcX7yAlTYDpu1r9VfDQoSJVjuLCJdqUFoBQUlhtEnuUWlCih+n1gm6B
+         J7e3JY0l1pMROCiGsjg3nB3AqUFKLuHLbPJ/VZs7lkn4uMt+LnlX8TGctM0NbsCr67XR
+         q96A==
+X-Gm-Message-State: AOAM530rfR5+fUh4HaWpp1qJ5GT120zo/HwaCDKi2SVuuCIZd9TNvXCT
+        CoUjME3+rPfG9/hTkNipd/k7hg==
+X-Google-Smtp-Source: ABdhPJz/Swh+MDJVrvQcHnPCKTylj0XOUN1i6n2MGa66tpDG38V0CT57NYRVsJH9JVCkbOvoMP5Ohg==
+X-Received: by 2002:ac2:58c6:: with SMTP id u6mr16636479lfo.105.1596012913343;
+        Wed, 29 Jul 2020 01:55:13 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id q22sm309834lfc.33.2020.07.29.01.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 01:55:12 -0700 (PDT)
+References: <20200717103536.397595-1-jakub@cloudflare.com> <20200717103536.397595-16-jakub@cloudflare.com> <CAEf4BzZHf7838t88Ed3Gzp32UFMq2o2zryL3=hjAL4mELzUC+w@mail.gmail.com> <891f94a4-1663-0830-516c-348c965844fe@iogearbox.net>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf-next v5 15/15] selftests/bpf: Tests for BPF_SK_LOOKUP attach point
+In-reply-to: <891f94a4-1663-0830-516c-348c965844fe@iogearbox.net>
+Date:   Wed, 29 Jul 2020 10:55:11 +0200
+Message-ID: <87mu3iwvio.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95AF8533-2C7D-4038-AD39-4C81DBF25551@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 08:23:56AM +0200, Eelco Chaudron wrote:
+Hi Daniel,
 
-SNIP
+On Tue, Jul 28, 2020 at 10:47 PM CEST, Daniel Borkmann wrote:
 
-> > > > > a patch
-> > > > > that would nice.
-> > > > > You can also send it to me before bpf-next opens and I can verify
-> > > > > it, and
-> > > > > clean up the self-test so it can be included as well.
-> > > > > 
-> > > > 
-> > > > hi,
-> > > > it seems that you cannot exten fentry/fexit programs,
-> > > > but it's possible to attach fentry/fexit to ext program.
-> > > > 
-> > > >    /* Program extensions can extend all program types
-> > > >     * except fentry/fexit. The reason is the following.
-> > > >     * The fentry/fexit programs are used for performance
-> > > >     * analysis, stats and can be attached to any program
-> > > >     * type except themselves. When extension program is
-> > > >     * replacing XDP function it is necessary to allow
-> > > >     * performance analysis of all functions. Both original
-> > > >     * XDP program and its program extension. Hence
-> > > >     * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
-> > > >     * allowed. If extending of fentry/fexit was allowed it
-> > > >     * would be possible to create long call chain
-> > > >     * fentry->extension->fentry->extension beyond
-> > > >     * reasonable stack size. Hence extending fentry is not
-> > > >     * allowed.
-> > > >     */
-> > > > 
-> > > > I changed fexit_bpf2bpf.c test just to do a quick check
-> > > > and it seems to work:
-> > > 
-> > > Hi Jiri this is exactly what I’m trying, however when you do this
-> > > where the
-> > > first argument is a pointer to some context data which you are
-> > > accessing
-> > > it’s failing in the verifier.
-> > > This is a link to the original email, which has a test patch
-> > > attached that
-> > > will show the failure when trying to load/attach the fentry function
-> > > and
-> > > access the context:
-> > > 
-> > > https://lore.kernel.org/bpf/159162546868.10791.12432342618156330247.stgit@ebuild/
-> > 
-> > ok, I tried to trace ext program with __sk_buff argument and I can see
-> > the issue as well.. can't acess the skb argument
-> > 
-> > patch below fixes it for me, I can access the skb pointer and its data
-> > via probe read, like:
-> > 
-> > 	SEC("fexit/new_get_skb_ifindex")
-> > 	int BPF_PROG(fexit_new_get_skb_ifindex, int val, struct __sk_buff *skb,
-> > int var, int ret)
-> > 	{
-> > 		__u32 data;
-> > 		int err;
-> > 
-> > 		bpf_printk("EXIT skb %p", skb);
-> > 		bpf_probe_read_kernel(&data, sizeof(data), &skb->data);
-> > 		bpf_printk("EXIT ret %d, data %p", err, data);
-> > 		return 0;
-> > 	}
-> > 
-> > I think it should fix the xdp_md acess as well
-> 
-> Excellent patch ;) It works with xdp_md as well, and even better it does not
-> require the bpf_probe_read_kernel(), so the test_xdp_bpf2bpf.c code just
-> works.
+[...]
 
-great ;-) will check on xdp_md
+> Jakub, I'm actually seeing a slightly different one on my test machine with sk_lookup:
+>
+> # ./test_progs -t sk_lookup
+> #14 cgroup_skb_sk_lookup:OK
+> #73/1 query lookup prog:OK
+> #73/2 TCP IPv4 redir port:OK
+> #73/3 TCP IPv4 redir addr:OK
+> #73/4 TCP IPv4 redir with reuseport:OK
+> #73/5 TCP IPv4 redir skip reuseport:OK
+> #73/6 TCP IPv6 redir port:OK
+> #73/7 TCP IPv6 redir addr:OK
+> #73/8 TCP IPv4->IPv6 redir port:OK
+> #73/9 TCP IPv6 redir with reuseport:OK
+> #73/10 TCP IPv6 redir skip reuseport:OK
+> #73/11 UDP IPv4 redir port:OK
+> #73/12 UDP IPv4 redir addr:OK
+> #73/13 UDP IPv4 redir with reuseport:OK
+> attach_lookup_prog:PASS:open 0 nsec
+> attach_lookup_prog:PASS:bpf_program__attach_netns 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> update_lookup_map:PASS:bpf_map__fd 0 nsec
+> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> update_lookup_map:PASS:bpf_map__fd 0 nsec
+> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> run_lookup_prog:PASS:getsockname 0 nsec
+> run_lookup_prog:PASS:connect 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_client:PASS:make_client 0 nsec
+> send_byte:PASS:send_byte 0 nsec
+> udp_recv_send:FAIL:recvmsg failed
+> (/root/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339: errno: Resource temporarily unavailable) failed to receive
+> #73/14 UDP IPv4 redir and reuseport with conns:FAIL
+> #73/15 UDP IPv4 redir skip reuseport:OK
+> #73/16 UDP IPv6 redir port:OK
+> #73/17 UDP IPv6 redir addr:OK
+> #73/18 UDP IPv4->IPv6 redir port:OK
+> #73/19 UDP IPv6 redir and reuseport:OK
+> attach_lookup_prog:PASS:open 0 nsec
+> attach_lookup_prog:PASS:bpf_program__attach_netns 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> update_lookup_map:PASS:bpf_map__fd 0 nsec
+> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> update_lookup_map:PASS:bpf_map__fd 0 nsec
+> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
+> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
+> make_server:PASS:bind 0 nsec
+> make_server:PASS:attach_reuseport 0 nsec
+> run_lookup_prog:PASS:getsockname 0 nsec
+> run_lookup_prog:PASS:connect 0 nsec
+> make_socket:PASS:make_address 0 nsec
+> make_socket:PASS:socket 0 nsec
+> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
+> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
+> make_client:PASS:make_client 0 nsec
+> send_byte:PASS:send_byte 0 nsec
+> udp_recv_send:FAIL:recvmsg failed
+> (/root/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339: errno: Resource temporarily unavailable) failed to receive
+> #73/20 UDP IPv6 redir and reuseport with conns:FAIL
+> #73/21 UDP IPv6 redir skip reuseport:OK
+> #73/22 TCP IPv4 drop on lookup:OK
+> #73/23 TCP IPv6 drop on lookup:OK
+> #73/24 UDP IPv4 drop on lookup:OK
+> #73/25 UDP IPv6 drop on lookup:OK
+> #73/26 TCP IPv4 drop on reuseport:OK
+> #73/27 TCP IPv6 drop on reuseport:OK
+> #73/28 UDP IPv4 drop on reuseport:OK
+> #73/29 TCP IPv6 drop on reuseport:OK
+> #73/30 sk_assign returns EEXIST:OK
+> #73/31 sk_assign honors F_REPLACE:OK
+> #73/32 sk_assign accepts NULL socket:OK
+> #73/33 access ctx->sk:OK
+> #73/34 narrow access to ctx v4:OK
+> #73/35 narrow access to ctx v6:OK
+> #73/36 sk_assign rejects TCP established:OK
+> #73/37 sk_assign rejects UDP connected:OK
+> #73/38 multi prog - pass, pass:OK
+> #73/39 multi prog - drop, drop:OK
+> #73/40 multi prog - pass, drop:OK
+> #73/41 multi prog - drop, pass:OK
+> #73/42 multi prog - pass, redir:OK
+> #73/43 multi prog - redir, pass:OK
+> #73/44 multi prog - drop, redir:OK
+> #73/45 multi prog - redir, drop:OK
+> #73/46 multi prog - redir, redir:OK
+> #73 sk_lookup:FAIL
+> Summary: 1/44 PASSED, 0 SKIPPED, 3 FAILED
 
-> 
-> Are you planning to send the patch upstream?
+This patch addresses the failures:
 
-yep, I'll add some test for that and send it
+  https://lore.kernel.org/bpf/20200726120228.1414348-1-jakub@cloudflare.com/
 
-thanks,
-jirka
+It spawned a discussion on what to do about reuseport bpf returning
+connected udp sockets, and the conclusion was that it would be best to
+change reuseport logic itself if no one is relying on said behavior.
 
+IOW, I belive the fix does the right thing and can be applied as is. We
+get the same reuseport behavior everywhere, that is with regular socket
+lookup and BPF sk lookup, even if that behavior needs to be changed.
+
+[...]
