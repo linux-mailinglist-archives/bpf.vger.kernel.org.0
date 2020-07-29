@@ -2,93 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A57231F1B
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 15:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19396231F24
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 15:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgG2NQP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 09:16:15 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43564 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgG2NQO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:16:14 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn92LdiFfMBgCAA--.1012S2;
-        Wed, 29 Jul 2020 21:15:57 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
+        id S1726862AbgG2NUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 09:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgG2NUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 09:20:19 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D1BC061794;
+        Wed, 29 Jul 2020 06:20:17 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s15so2695900pgc.8;
+        Wed, 29 Jul 2020 06:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZYFRkxOA0q5WBRDWrqim7U35iiaqRFY/x66SmA6ONb0=;
+        b=kxVl3/dcF2JdHtLMOfUN0Na9f8OJ4RVMTlHO9Wrb8J7P+cua5/RySvsCaK8oB+oj24
+         9r9OqEMWNj6Yyuc/oBeToixlqtt01B65tK+ddizeB/WhcFjCqGjrxm4KbNF5VE6MMyg0
+         lI44gHs/nxooZ71sT6OkqwcCyvLbEp2z4Ube9BaLmkjJNy9sBt220dcZwnlsPdcnA+RP
+         p+3xSbPVEf8Wu2jgPG/dOzL0BlVrvv4lgMFE2+gyU4P8xV7AomiAdETmobvVH5ZylEcz
+         MysdpIPhf6D1tQtqkqRnKL9x8AAZQbwPh7W9Pd09JodaUQri5fJbkI7WfvRXHwi0XJHP
+         v4gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZYFRkxOA0q5WBRDWrqim7U35iiaqRFY/x66SmA6ONb0=;
+        b=SSQxyYhToVpUjT8QYKGsNgL09IVSnIj+BNSIWELddLGyKu1h3rPp1+7iu0/vRC8+C4
+         5EsF8ymoT9tzH1G5WB4TQUh4atdM2MXZ/XO4CiQ9WFdsqpRDuUwiXXwRMIOFdxBzCbug
+         c771B/1XobI0WHVBbAvxdvVXDnXXrcY015Rkonc49dEatNS7MbOQoJNZh+K1v6hdSRjA
+         tF34mVsM3sur0blH/nNuOU2+M9dbMoFgcbLoUyNkUUL9yZ+WZjIYvlIM8DX6hUcZHu6n
+         3W+N2sqIHGE+0S+w1pX340tgxouOPrf+qV+usnAWYKrNXrxdKGsJ3etS0h5esr0GmJuU
+         VYFw==
+X-Gm-Message-State: AOAM533XmSQwSvyQy8xWUAnk/h6vAKLCHSbo7AhKXbdqY9keIp/2osob
+        /2wrZ9adqeMMVN45TCDJ1onWGEmY8m1p1Ceby2pCxg==
+X-Google-Smtp-Source: ABdhPJxbZP1L21iULQLwjYJBt0d5u5s11SXlOBKqaybCIsu44qqVe5nOXQVSm82oM0LgJ8HHnVCgLd9VZPIQ/RAS8uQ=
+X-Received: by 2002:a63:bd49:: with SMTP id d9mr8486276pgp.126.1596028817548;
+ Wed, 29 Jul 2020 06:20:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <1595307848-20719-1-git-send-email-magnus.karlsson@intel.com>
+ <1595307848-20719-6-git-send-email-magnus.karlsson@intel.com> <00afe3da-0d5e-18fe-b6cb-490faa3dd132@intel.com>
+In-Reply-To: <00afe3da-0d5e-18fe-b6cb-490faa3dd132@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 29 Jul 2020 15:20:08 +0200
+Message-ID: <CAJ8uoz1mg-NJ-gNDVrikVp93DC5bU6QN8gzEPpyw36URRtBYxg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 05/14] xsk: move queue_id, dev and need_wakeup
+ to buffer pool
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     "Tobin C. Harding" <me@tobin.cc>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] Documentation/bpf: Use valid and new links in index.rst
-Date:   Wed, 29 Jul 2020 21:15:55 +0800
-Message-Id: <1596028555-32028-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxn92LdiFfMBgCAA--.1012S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZryxZryDur1UAw4kCFWruFg_yoW8Gw4DpF
-        45WF1fKrn8tF43Xw4kGF47Cr15KayfJF4Uua4UJw1Fvrn8Xa409F1S9rs0q3W2krWFvFW5
-        ZFyfKF90qrn7u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvmb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IU5XvttUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
+        anthony.l.nguyen@intel.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        cristian.dumitrescu@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There exists an error "404 Not Found" when I click the html link of
-"Documentation/networking/filter.rst" in the BPF documentation [1],
-fix it.
-
-Additionally, use the new links about "BPF and XDP Reference Guide"
-and "bpf(2)" to avoid redirects.
-
-[1] https://www.kernel.org/doc/html/latest/bpf/
-
-Fixes: d9b9170a2653 ("docs: bpf: Rename README.rst to index.rst")
-Fixes: cb3f0d56e153 ("docs: networking: convert filter.txt to ReST")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On Tue, Jul 28, 2020 at 9:10 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.co=
+m> wrote:
+>
+>
+>
+> On 2020-07-21 07:03, Magnus Karlsson wrote:
+> > Move queue_id, dev, and need_wakeup from the umem to the
+> > buffer pool. This so that we in a later commit can share the umem
+> > between multiple HW queues. There is one buffer pool per dev and
+> > queue id, so these variables should belong to the buffer pool, not
+> > the umem. Need_wakeup is also something that is set on a per napi
+> > level, so there is usually one per device and queue id. So move
+> > this to the buffer pool too.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >   include/net/xdp_sock.h      |  3 ---
+> >   include/net/xsk_buff_pool.h |  4 ++++
+> >   net/xdp/xdp_umem.c          | 19 +------------------
+> >   net/xdp/xdp_umem.h          |  4 ----
+> >   net/xdp/xsk.c               | 40 +++++++++++++++---------------------=
+----
+> >   net/xdp/xsk_buff_pool.c     | 39 ++++++++++++++++++++++--------------=
 ---
+> >   net/xdp/xsk_diag.c          |  4 ++--
+> >   7 files changed, 44 insertions(+), 69 deletions(-)
+> >
+> [...]
+> >               }
+> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> > index 36287d2..436648a 100644
+> > --- a/net/xdp/xsk_buff_pool.c
+> > +++ b/net/xdp/xsk_buff_pool.c
+> > @@ -95,10 +95,9 @@ void xp_set_rxq_info(struct xsk_buff_pool *pool, str=
+uct xdp_rxq_info *rxq)
+> >   }
+> >   EXPORT_SYMBOL(xp_set_rxq_info);
+> >
+> > -int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
+> > +int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *netde=
+v,
+> >                 u16 queue_id, u16 flags)
+> >   {
+> > -     struct xdp_umem *umem =3D pool->umem;
+> >       bool force_zc, force_copy;
+> >       struct netdev_bpf bpf;
+> >       int err =3D 0;
+> > @@ -111,27 +110,30 @@ int xp_assign_dev(struct xsk_buff_pool *pool, str=
+uct net_device *dev,
+> >       if (force_zc && force_copy)
+> >               return -EINVAL;
+> >
+> > -     if (xsk_get_pool_from_qid(dev, queue_id))
+> > +     if (xsk_get_pool_from_qid(netdev, queue_id))
+> >               return -EBUSY;
+> >
+> > -     err =3D xsk_reg_pool_at_qid(dev, pool, queue_id);
+> > +     err =3D xsk_reg_pool_at_qid(netdev, pool, queue_id);
+> >       if (err)
+> >               return err;
+> >
+> >       if (flags & XDP_USE_NEED_WAKEUP) {
+> > -             umem->flags |=3D XDP_UMEM_USES_NEED_WAKEUP;
+> > +             pool->uses_need_wakeup =3D true;
+> >               /* Tx needs to be explicitly woken up the first time.
+> >                * Also for supporting drivers that do not implement this
+> >                * feature. They will always have to call sendto().
+> >                */
+> > -             umem->need_wakeup =3D XDP_WAKEUP_TX;
+> > +             pool->cached_need_wakeup =3D XDP_WAKEUP_TX;
+> >       }
+> >
+> > +     dev_hold(netdev);
+> > +
+>
+> You have a reference leak here for the error case.
 
-v2:
-  - Fix a typo "clik" to "click" in the commit message, sorry for that
+Thanks. Will fix.
 
- Documentation/bpf/index.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+/Magnus
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index 26f4bb3..1b901b4 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -68,7 +68,7 @@ Testing and debugging BPF
- 
- 
- .. Links:
--.. _Documentation/networking/filter.rst: ../networking/filter.txt
-+.. _Documentation/networking/filter.rst: ../networking/filter.html
- .. _man-pages: https://www.kernel.org/doc/man-pages/
--.. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
--.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
-+.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
-+.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
--- 
-2.1.0
-
+>
+> Bj=C3=B6rn
