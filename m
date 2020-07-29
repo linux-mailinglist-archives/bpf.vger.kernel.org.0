@@ -2,150 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88453231DB3
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 13:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49333231EAA
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 14:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgG2Lyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 07:54:43 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:24426 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgG2Lym (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 07:54:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596023681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpsTSYXjeeeVqBmEzFVl5yuK75B5cM9L+lalZA+cwK8=;
-        b=YGbQgG9DZD7+4bgecifIrXn/+SJ6GUkkDSNvTOatUdN9MWXpqAJXzclHIZj4es3aHSDMbj
-        U0IJR8+8kzCjEafcDrduT0y+Us+4ImEyW00d88/T8qdUAzLcF7NTIRPKWaskccHH+QyeIf
-        xFse2sY6pcPUzdb5nvyJLi1VXFESWVE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-Fd7Tv3aDPPiqvyzxZT_YWQ-1; Wed, 29 Jul 2020 07:54:37 -0400
-X-MC-Unique: Fd7Tv3aDPPiqvyzxZT_YWQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D29E5800460;
-        Wed, 29 Jul 2020 11:54:34 +0000 (UTC)
-Received: from krava (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E4E7775559;
-        Wed, 29 Jul 2020 11:54:30 +0000 (UTC)
-Date:   Wed, 29 Jul 2020 13:54:29 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726606AbgG2MkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 08:40:06 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:60639 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726353AbgG2MkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 08:40:05 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:40:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=ckL
+        fjXtDlNzfBaiEh1n2WcNgMFoH6IBrBoFHbV5jBXk=; b=fnf7yXZz1XG1VNx8A0G
+        P4HxGvbRGReDWbincy2f3kynybLSC3IMgsbUHPjD/qfWHFxTL31NniB634/rzCCi
+        oEJjjyakdrtR8A+77LWS4LFdp2MkciXGICA9ZFGcnRgzXTrEQ4fTEc52rD+0BW3L
+        HPTtyfYhnRNJbCvS7krRiVQc=
+Received: from xin-virtual-machine (unknown [111.192.143.50])
+        by app2 (Coremail) with SMTP id XQUFCgDHzbmebCFfDJqTAg--.8049S3;
+        Wed, 29 Jul 2020 20:33:35 +0800 (CST)
+Date:   Wed, 29 Jul 2020 20:33:34 +0800
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 bpf-next 08/13] bpf: Add BTF_SET_START/END macros
-Message-ID: <20200729115429.GI1319041@krava>
-References: <20200722211223.1055107-1-jolsa@kernel.org>
- <20200722211223.1055107-9-jolsa@kernel.org>
- <CAEf4BzbwJ+FXYWOK2k6UZ8X1f-2XQP1rRLFAFO6_OyK2iKv8Eg@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
+Subject: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
+Message-ID: <20200729123334.GA6766@xin-virtual-machine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbwJ+FXYWOK2k6UZ8X1f-2XQP1rRLFAFO6_OyK2iKv8Eg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-CM-TRANSID: XQUFCgDHzbmebCFfDJqTAg--.8049S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rGr45KFg_yoW8WF4Upr
+        47X3sFyrZ5ta4UJw4DAaykXa4rKan0vF1kWr1avayfZr4DAan5Ar9Ygry7uF1UGFy8Gw12
+        qws2kws8AFn5C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUewIDDUUUU
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:39:06PM -0700, Andrii Nakryiko wrote:
+The function invokes bpf_prog_inc(), which increases the refcount of a
+bpf_prog object "rq->xdp_prog" if the object isn't NULL.
 
-SNIP
+The refcount leak issues take place in two error handling paths. When
+mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function simply
+returns the error code and forgets to drop the refcount increased
+earlier, causing a refcount leak of "rq->xdp_prog".
 
-> 
-> [...]
-> 
-> > +#define BTF_SET_START(name)                            \
-> > +__BTF_ID_LIST(name, local)                             \
-> > +asm(                                                   \
-> > +".pushsection " BTF_IDS_SECTION ",\"a\";       \n"     \
-> > +".local __BTF_ID__set__" #name ";              \n"     \
-> > +"__BTF_ID__set__" #name ":;                    \n"     \
-> > +".zero 4                                       \n"     \
-> > +".popsection;                                  \n");
-> > +
-> > +#define BTF_SET_END(name)                              \
-> > +asm(                                                   \
-> > +".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
-> > +".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
-> > +".popsection;                                 \n");    \
-> > +extern struct btf_id_set name;
-> > +
-> >  #else
-> 
-> This local symbol assumption will probably at some point bite us.
-> Yonghong already did global vs static variants for BTF ID list, we'll
-> end up doing something like that for sets of BTF IDs as well. Let's do
-> this similarly from the get go.
+Fix this issue by jumping to the error handling path err_rq_wq_destroy
+when either function fails.
 
-sure, will add that
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> >
-> >  #define BTF_ID_LIST(name) static u32 name[5];
-> >  #define BTF_ID(prefix, name)
-> >  #define BTF_ID_UNUSED
-> >  #define BTF_ID_LIST_GLOBAL(name) u32 name[1];
-> > +#define BTF_SET_START(name) static struct btf_id_set name = { 0 };
-> 
-> nit: this zero is unnecessary and misleading (it's initialized for
-> only the first member of a struct). Just {} is enough.
-
-ok
-
-> 
-> > +#define BTF_SET_END(name)
-> >
-> >  #endif /* CONFIG_DEBUG_INFO_BTF */
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 562d4453fad3..06714cdda0a9 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -21,6 +21,8 @@
-> >  #include <linux/btf_ids.h>
-> >  #include <linux/skmsg.h>
-> >  #include <linux/perf_event.h>
-> > +#include <linux/bsearch.h>
-> > +#include <linux/btf_ids.h>
-> >  #include <net/sock.h>
-> >
-> >  /* BTF (BPF Type Format) is the meta data format which describes
-> > @@ -4740,3 +4742,15 @@ u32 btf_id(const struct btf *btf)
-> >  {
-> >         return btf->id;
-> >  }
-> > +
-> > +static int btf_id_cmp_func(const void *a, const void *b)
-> > +{
-> > +       const int *pa = a, *pb = b;
-> > +
-> > +       return *pa - *pb;
-> > +}
-> > +
-> > +bool btf_id_set_contains(struct btf_id_set *set, u32 id)
-> > +{
-> > +       return bsearch(&id, set->ids, set->cnt, sizeof(int), btf_id_cmp_func) != NULL;
-> 
-> very nit ;) sizeof(__u32)
-
-sure ;-)
-
-thanks,
-jirka
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a836a02a2116..8e1b1ab416d8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
+ 					&rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
+ 
+@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
+ 					 &rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+ 
+-- 
+2.25.1
 
