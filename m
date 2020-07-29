@@ -2,99 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F482327BA
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 00:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D5A2327D0
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 01:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgG2Wwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 18:52:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51128 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgG2Wwh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 18:52:37 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0uvu-0005PO-AA; Thu, 30 Jul 2020 00:52:22 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0uvu-000BDt-4V; Thu, 30 Jul 2020 00:52:22 +0200
-Subject: Re: [PATCH bpf-next 1/2] bpf: expose socket storage to
- BPF_PROG_TYPE_CGROUP_SOCK
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200729003104.1280813-1-sdf@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <92a04281-8bfb-78ec-25b0-fa7adf8dd9c5@iogearbox.net>
-Date:   Thu, 30 Jul 2020 00:52:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727982AbgG2XF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 19:05:27 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57564 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727115AbgG2XF1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 19:05:27 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06TN2FLk027451
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 16:05:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=/hhCF6MZJuvinSbI9wmwXOWE2F//8gxgoNrpXt19vKk=;
+ b=lA3URE0WUwTCDDScxSMzfq/oQXlHRMqoSwJmFXq8XRYDC5tRdvfTgrMPeJuKeJT+362i
+ TVjlrWBk5rJxWNpHPPyPGtGJBsW6ad77m3XpYq2dYKIhIdH9K+BL4fR8HgUX7t+aanSc
+ wK0n0Ft2DYpogaiXWQ22uXy+KSePeUOt1sY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32jk9d8css-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 16:05:26 -0700
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 29 Jul 2020 16:05:26 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 731822EC4E37; Wed, 29 Jul 2020 16:05:23 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/5] BPF link force-detach support
+Date:   Wed, 29 Jul 2020 16:05:15 -0700
+Message-ID: <20200729230520.693207-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200729003104.1280813-1-sdf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25888/Wed Jul 29 16:57:45 2020)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_17:2020-07-29,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 malwarescore=0 mlxscore=0 mlxlogscore=693
+ suspectscore=8 adultscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007290156
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/29/20 2:31 AM, Stanislav Fomichev wrote:
-> This lets us use socket storage from the following hooks:
-> * BPF_CGROUP_INET_SOCK_CREATE
-> * BPF_CGROUP_INET_SOCK_RELEASE
-> * BPF_CGROUP_INET4_POST_BIND
-> * BPF_CGROUP_INET6_POST_BIND
-> 
-> Using existing 'bpf_sk_storage_get_proto' doesn't work because
-> second argument is ARG_PTR_TO_SOCKET. Even though
-> BPF_PROG_TYPE_CGROUP_SOCK hooks operate on 'struct bpf_sock',
-> the verifier still considers it as a PTR_TO_CTX.
-> That's why I'm adding another 'bpf_sk_storage_get_cg_sock_proto'
-> definition strictly for BPF_PROG_TYPE_CGROUP_SOCK which accepts
-> ARG_PTR_TO_CTX which is really 'struct sock' for this program type.
-> 
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+This patch set adds new BPF link operation, LINK_DETACH, allowing process=
+es
+with BPF link FD to force-detach it from respective BPF hook, similarly h=
+ow
+BPF link is auto-detached when such BPF hook (e.g., cgroup, net_device, n=
+etns,
+etc) is removed. This facility allows admin to forcefully undo BPF link
+attachment, while process that created BPF link in the first place is lef=
+t
+intact.
 
-Makes sense, both applied, thanks!
+Once force-detached, BPF link stays valid in the kernel as long as there =
+is at
+least one FD open against it. It goes into defunct state, just like
+auto-detached BPF link.
 
-[...]
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 29e3455122f7..7124f0fe6974 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6187,6 +6187,7 @@ bool bpf_helper_changes_pkt_data(void *func)
->   }
->   
->   const struct bpf_func_proto bpf_event_output_data_proto __weak;
-> +const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto __weak;
->   
->   static const struct bpf_func_proto *
->   sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> @@ -6219,6 +6220,8 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   	case BPF_FUNC_get_cgroup_classid:
->   		return &bpf_get_cgroup_classid_curr_proto;
->   #endif
-> +	case BPF_FUNC_sk_storage_get:
-> +		return &bpf_sk_storage_get_cg_sock_proto;
+bpftool also got `link detach` command to allow triggering this in
+non-programmatic fashion.
 
-Been wondering whether we need these for connect/sendmsg/etc hooks that operate
-on sock_addr, but for those we have them already covered in sock_addr_func_proto()
-therefore all good.
+Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-sock_addr_func_proto() also lists the BPF_FUNC_sk_storage_delete. Should we add
-that one as well for sock_filter_func_proto()? Presumably create/release doesn't
-make sense, but any use case for bind hook?
+Andrii Nakryiko (5):
+  bpf: add support for forced LINK_DETACH command
+  libbpf: add bpf_link detach APIs
+  selftests/bpf: add link detach tests for cgroup, netns, and xdp
+    bpf_links
+  tools/bpftool: add `link detach` subcommand
+  tools/bpftool: add documentation and bash-completion for `link detach`
 
->   	default:
->   		return bpf_base_func_proto(func_id);
->   	}
-> 
+ include/linux/bpf.h                           |  1 +
+ include/uapi/linux/bpf.h                      |  5 ++
+ kernel/bpf/cgroup.c                           | 15 +++++-
+ kernel/bpf/net_namespace.c                    |  8 +++
+ kernel/bpf/syscall.c                          | 26 ++++++++++
+ net/core/dev.c                                | 11 +++-
+ .../bpftool/Documentation/bpftool-link.rst    |  8 +++
+ tools/bpf/bpftool/bash-completion/bpftool     |  4 +-
+ tools/bpf/bpftool/link.c                      | 35 ++++++++++++-
+ tools/include/uapi/linux/bpf.h                |  5 ++
+ tools/lib/bpf/bpf.c                           | 10 ++++
+ tools/lib/bpf/bpf.h                           |  2 +
+ tools/lib/bpf/libbpf.c                        |  5 ++
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/lib/bpf/libbpf.map                      |  2 +
+ .../selftests/bpf/prog_tests/cgroup_link.c    | 20 +++++++-
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 51 +++++++++----------
+ .../selftests/bpf/prog_tests/xdp_link.c       | 14 +++++
+ tools/testing/selftests/bpf/testing_helpers.c | 14 +++++
+ tools/testing/selftests/bpf/testing_helpers.h |  3 ++
+ 20 files changed, 206 insertions(+), 34 deletions(-)
+
+--=20
+2.24.1
 
