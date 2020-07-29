@@ -2,118 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E981231D52
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 13:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88453231DB3
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 13:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgG2LZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 07:25:33 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:43428 "EHLO
+        id S1726628AbgG2Lyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 07:54:43 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:24426 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726341AbgG2LZc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 07:25:32 -0400
+        by vger.kernel.org with ESMTP id S1726353AbgG2Lym (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 07:54:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596021931;
+        s=mimecast20190719; t=1596023681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=agULd+iNaamozlyp0IIId3EUPs3ltJ7uHXJPbleqiKE=;
-        b=HGaBNHkZQ457ACjLgYlgzMAK2wwlzCmRlwWSQRsgmCkMsyzZxOWu2mHu8aHdvrl3CBH88a
-        h9txLV02fiOipX72T9cZp6t8vRVUBJMxtHMxQX8gtjCRgPgiludzxE6k64go/MmhXnKbeJ
-        aU4+FKyYTlsJkvjqTS7NKmlYc6JEGko=
+        bh=lpsTSYXjeeeVqBmEzFVl5yuK75B5cM9L+lalZA+cwK8=;
+        b=YGbQgG9DZD7+4bgecifIrXn/+SJ6GUkkDSNvTOatUdN9MWXpqAJXzclHIZj4es3aHSDMbj
+        U0IJR8+8kzCjEafcDrduT0y+Us+4ImEyW00d88/T8qdUAzLcF7NTIRPKWaskccHH+QyeIf
+        xFse2sY6pcPUzdb5nvyJLi1VXFESWVE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-79PhX5N1P3CTHqiUpDcTxw-1; Wed, 29 Jul 2020 07:25:27 -0400
-X-MC-Unique: 79PhX5N1P3CTHqiUpDcTxw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-34-Fd7Tv3aDPPiqvyzxZT_YWQ-1; Wed, 29 Jul 2020 07:54:37 -0400
+X-MC-Unique: Fd7Tv3aDPPiqvyzxZT_YWQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 034D280046A;
-        Wed, 29 Jul 2020 11:25:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D29E5800460;
+        Wed, 29 Jul 2020 11:54:34 +0000 (UTC)
 Received: from krava (unknown [10.40.193.247])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C2FFA61100;
-        Wed, 29 Jul 2020 11:25:19 +0000 (UTC)
-Date:   Wed, 29 Jul 2020 13:25:18 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id E4E7775559;
+        Wed, 29 Jul 2020 11:54:30 +0000 (UTC)
+Date:   Wed, 29 Jul 2020 13:54:29 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
         David Miller <davem@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>,
         Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 bpf-next 12/13] selftests/bpf: Add test for d_path
- helper
-Message-ID: <20200729112518.GH1319041@krava>
+Subject: Re: [PATCH v8 bpf-next 08/13] bpf: Add BTF_SET_START/END macros
+Message-ID: <20200729115429.GI1319041@krava>
 References: <20200722211223.1055107-1-jolsa@kernel.org>
- <20200722211223.1055107-13-jolsa@kernel.org>
- <CAEf4BzYTT23knreKpxPDLeWcLzTVQhtBrRPjrZ+MBpL4ajeavw@mail.gmail.com>
+ <20200722211223.1055107-9-jolsa@kernel.org>
+ <CAEf4BzbwJ+FXYWOK2k6UZ8X1f-2XQP1rRLFAFO6_OyK2iKv8Eg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYTT23knreKpxPDLeWcLzTVQhtBrRPjrZ+MBpL4ajeavw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAEf4BzbwJ+FXYWOK2k6UZ8X1f-2XQP1rRLFAFO6_OyK2iKv8Eg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:53:00PM -0700, Andrii Nakryiko wrote:
+On Tue, Jul 28, 2020 at 12:39:06PM -0700, Andrii Nakryiko wrote:
 
 SNIP
 
-> > +       if (CHECK_FAIL(ret < 0))
-> > +               goto out_close;
-> > +       ret = set_pathname(procfd, pid);
-> > +       if (CHECK_FAIL(ret < 0))
-> > +               goto out_close;
-> > +       ret = set_pathname(devfd, pid);
-> > +       if (CHECK_FAIL(ret < 0))
-> > +               goto out_close;
-> > +       ret = set_pathname(localfd, pid);
-> > +       if (CHECK_FAIL(ret < 0))
-> > +               goto out_close;
-> > +       ret = set_pathname(indicatorfd, pid);
-> > +       if (CHECK_FAIL(ret < 0))
-> > +               goto out_close;
 > 
-> Please use CHECK instead of CHECK_FAIL. Thanks.
+> [...]
+> 
+> > +#define BTF_SET_START(name)                            \
+> > +__BTF_ID_LIST(name, local)                             \
+> > +asm(                                                   \
+> > +".pushsection " BTF_IDS_SECTION ",\"a\";       \n"     \
+> > +".local __BTF_ID__set__" #name ";              \n"     \
+> > +"__BTF_ID__set__" #name ":;                    \n"     \
+> > +".zero 4                                       \n"     \
+> > +".popsection;                                  \n");
+> > +
+> > +#define BTF_SET_END(name)                              \
+> > +asm(                                                   \
+> > +".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
+> > +".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
+> > +".popsection;                                 \n");    \
+> > +extern struct btf_id_set name;
+> > +
+> >  #else
+> 
+> This local symbol assumption will probably at some point bite us.
+> Yonghong already did global vs static variants for BTF ID list, we'll
+> end up doing something like that for sets of BTF IDs as well. Let's do
+> this similarly from the get go.
+
+sure, will add that
+
+> 
+> >
+> >  #define BTF_ID_LIST(name) static u32 name[5];
+> >  #define BTF_ID(prefix, name)
+> >  #define BTF_ID_UNUSED
+> >  #define BTF_ID_LIST_GLOBAL(name) u32 name[1];
+> > +#define BTF_SET_START(name) static struct btf_id_set name = { 0 };
+> 
+> nit: this zero is unnecessary and misleading (it's initialized for
+> only the first member of a struct). Just {} is enough.
 
 ok
 
-> > diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> > new file mode 100644
-> > index 000000000000..e02dce614256
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> > @@ -0,0 +1,64 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +#define MAX_PATH_LEN           128
-> > +#define MAX_EVENT_NUM          16
-> > +
-> > +pid_t my_pid;
-> > +__u32 cnt_stat;
-> > +__u32 cnt_close;
-> > +char paths_stat[MAX_EVENT_NUM][MAX_PATH_LEN];
-> > +char paths_close[MAX_EVENT_NUM][MAX_PATH_LEN];
-> > +int rets_stat[MAX_EVENT_NUM];
-> > +int rets_close[MAX_EVENT_NUM];
-> > +
 > 
-> please zero-initialize all of these, it causes issues on some Clang versions
+> > +#define BTF_SET_END(name)
+> >
+> >  #endif /* CONFIG_DEBUG_INFO_BTF */
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 562d4453fad3..06714cdda0a9 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -21,6 +21,8 @@
+> >  #include <linux/btf_ids.h>
+> >  #include <linux/skmsg.h>
+> >  #include <linux/perf_event.h>
+> > +#include <linux/bsearch.h>
+> > +#include <linux/btf_ids.h>
+> >  #include <net/sock.h>
+> >
+> >  /* BTF (BPF Type Format) is the meta data format which describes
+> > @@ -4740,3 +4742,15 @@ u32 btf_id(const struct btf *btf)
+> >  {
+> >         return btf->id;
+> >  }
+> > +
+> > +static int btf_id_cmp_func(const void *a, const void *b)
+> > +{
+> > +       const int *pa = a, *pb = b;
+> > +
+> > +       return *pa - *pb;
+> > +}
+> > +
+> > +bool btf_id_set_contains(struct btf_id_set *set, u32 id)
+> > +{
+> > +       return bsearch(&id, set->ids, set->cnt, sizeof(int), btf_id_cmp_func) != NULL;
+> 
+> very nit ;) sizeof(__u32)
 
-ook
+sure ;-)
 
+thanks,
 jirka
 
