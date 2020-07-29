@@ -2,136 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CD223262C
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 22:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDDC23267A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 22:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgG2U3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 16:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgG2U3O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:29:14 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C07FC0619D4
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 13:29:14 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id t23so2954512ljc.3
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 13:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=eXXlgM+MUPpPPfTh3rHsvZA+GfPreMuU57DQ0ya/UJE=;
-        b=W9RbE66qoU1T8TntFNi8gXgAothfJbZNOtTO9R0N0QKAw7+PmzwiIkG8gGKQGsULXP
-         v/Ms+3cRPoqtcgnRRPYTzaO1ZjEPRSfLOC+gN05Y6A21GgsUocmOoEDOWaDMQYwzPmtN
-         SbshNFq1bkv/XGqNC4nbLHuEo2l+GjUwjQ2t8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=eXXlgM+MUPpPPfTh3rHsvZA+GfPreMuU57DQ0ya/UJE=;
-        b=iriIA4sWOd9EzG1iqQKzfOeJKTMGKR/ARtovjpltA1/NgPkzHLP/M30P4UmkXrlt9i
-         oUmoNUeJ+WR+HOgYNkT7fHvbtghVqhzyR9Tew6cqaEGW7Euy+LThKVLAFnXtiu6J4AqT
-         UQSNhKnP43q3LRkb7Y21UjgpXqNTQQt7fJOdxuFrhAf0AREy/GqLla6SnuclUJ17uXEJ
-         q6mToZlcEig5v/P5lmIHuezmN3W03OwsfXlOa/ACSJve4gh0JAn/NHOUQ0buNUO9UjeH
-         s4uxueICWHY2ehsjnOqgyK616Aq3hCa7uENzbf0MT/AtLBsF2XzsUvrk9RKeoXkQzmF6
-         KQDA==
-X-Gm-Message-State: AOAM531ntzh+exwNWs7UKLZyd6abASu/dFIUoyTbzbjHRKVELJl4320B
-        c0h4CnnEe8PutQGC35MKIgYSNg==
-X-Google-Smtp-Source: ABdhPJwZxwsuEcU0z0+1V4tYm22WH4f9ZWQlTyR3HSmtnordW8+QKQYgmMw1o6qpr0Ffru6oah60pA==
-X-Received: by 2002:a2e:905a:: with SMTP id n26mr87224ljg.254.1596054552552;
-        Wed, 29 Jul 2020 13:29:12 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id i26sm426493ljj.102.2020.07.29.13.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 13:29:11 -0700 (PDT)
-References: <20200729040913.2815687-1-andriin@fb.com> <20200729040913.2815687-2-andriin@fb.com> <87k0ymwg2b.fsf@cloudflare.com> <CAEf4BzYagTebczsojJJfn0viy07dhRUq3oysezEO_LSYSuwfRQ@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        linux- stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf 2/2] selftests/bpf: extend map-in-map selftest to detect memory leaks
-In-reply-to: <CAEf4BzYagTebczsojJJfn0viy07dhRUq3oysezEO_LSYSuwfRQ@mail.gmail.com>
-Date:   Wed, 29 Jul 2020 22:29:10 +0200
-Message-ID: <87ime6vze1.fsf@cloudflare.com>
+        id S1726496AbgG2Uva (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 16:51:30 -0400
+Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:31553
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726476AbgG2Uva (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 16:51:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hToJcbzHzPSSITevL1qAy1f19zh5GuaboAuDdUGbe3evddQFtUDmm/4U3Zaf3nmMT2qbUr/n/iDeApVc0PMJp0ygRhvtY1GwLhx1hN4WCw6LvLeau9EsqRPpMJmOtjG75YYbNo1Hk/ZLljdh+TZFQocx0IynCqlBlO4s32N59I/paYW4JBuBChCmAX0TvveNLJw7mVohFQPbk4eTNnpMquhlWV8noZ2uKpkjFq6XV15wgYzcc8/IFT6p+ASzEfDW44/LKiOKw7+UvKRdrTcpvYXJO/NcjNu/qZDq4jxufMXk+6MQayH8A0SgOflGAcKk7RheUPZTEd8qRYpky+a6Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
+ b=B8HPwWfr+/wxMR8MIQlBVQj3krAuz72QL+0mlWosPU0DI6rZ7MLVPEATwJuiZ7e9gS0FFEBtLe2Jk9zbSSXfb8/5EH633plzEZlGoYVAzj8N6lUbdwfak9n+R8TsAZwv2bvyWBq7w/qrIOVoyqSScpaQIJmv8Q4SLgGrl2GRKn0zVHIZFtRh8lBj4wbL+QZxcAF1637jKIC+dvN8vgBNALom5uMOCyv66wYVN9oiXAmQq+alLO1Zj5/tZ7vtf+NH2RokH38Q+2lWRkd+2KnHH1s/9RRkBbOAdztlkpYAkGqxDv5OLRUT7pZWOJ22ADt2Zrz9Jym5meA6hp2vPNvW0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
+ b=aW8ZYKnk8+tmDV6IfvJMwrJ7GawC6hHE8+BFNVC/fI0irqNvQAQfmS6Y3elSAo8d9xfpzSVCa02Bc/F2eBX5NXU89WPe62lO5aMnJ+UsY6i6e1ppXZYvSUr3QahxkDmKT9cDaitk9msNU3KHGRsDfH4O9Ujl276XrpcOisIH4Jw=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
+ by VI1PR05MB5694.eurprd05.prod.outlook.com (2603:10a6:803:cd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Wed, 29 Jul
+ 2020 20:51:25 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::508a:d074:ad3a:3529]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::508a:d074:ad3a:3529%5]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
+ 20:51:23 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>
+CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
+        "hawk@kernel.org" <hawk@kernel.org>, "kafai@fb.com" <kafai@fb.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "xiongx18@fudan.edu.cn" <xiongx18@fudan.edu.cn>,
+        "yhs@fb.com" <yhs@fb.com>, "ast@kernel.org" <ast@kernel.org>,
+        "andriin@fb.com" <andriin@fb.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
+        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>
+Subject: Re: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
+Thread-Topic: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
+Thread-Index: AQHWZaSD4+bJSZVEQUqH8FFGnSv/eKke6kCAgAAYKQCAAAZTAA==
+Date:   Wed, 29 Jul 2020 20:51:23 +0000
+Message-ID: <2199f90fb6394d60d8dc62b15c6a6e62a22e4f41.camel@mellanox.com>
+References: <20200729123334.GA6766@xin-virtual-machine>
+         <613fe5f56cb60982937c826ed915ada2de5e93a2.camel@mellanox.com>
+         <20200729.132842.190888844026802233.davem@davemloft.net>
+In-Reply-To: <20200729.132842.190888844026802233.davem@davemloft.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.4 (3.36.4-1.fc32) 
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=mellanox.com;
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 90d107f8-8831-41c5-51f9-08d8340127c1
+x-ms-traffictypediagnostic: VI1PR05MB5694:
+x-microsoft-antispam-prvs: <VI1PR05MB5694F1077594284AE01C5A16BE700@VI1PR05MB5694.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iIlP7rbhfD5Y4Xk/JXqor+J3p0DNARUVrxV+eEkjEljypVGzpWlfesg0QUt5HFOncEmexVtr3YgmeD8xlLUDI6bGlBpyb4R06vJPZx98+JSdQBs7KShvzB5s3zC6AAC0zGHrR0dhNUqFHHKhcG1E8eIfmyMIcU/zFbAYwKJo+H1WBY1TQJW952YuW1IiZbws8BoB/gqNl1VuVUU9jasNPm6MMgkha9Ie6BSQZdJbGd864dFqjUr93zGgcO1zyX/17H4cgpAegdd2XRz7SmT7YuQRlsSml5vOcrrt/DabToYCadC2wk/KSsUdytH2GGFrCQ4KRhbDk3Ma57wmRt/f7g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(2906002)(36756003)(66946007)(71200400001)(4744005)(76116006)(64756008)(478600001)(6512007)(66446008)(91956017)(66556008)(7416002)(316002)(66476007)(54906003)(8936002)(6486002)(5660300002)(86362001)(6916009)(8676002)(26005)(186003)(6506007)(4326008)(2616005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZkPioEl42y7OftyPWrvJknbAsV0qCntyHZ84huThK5eb8B0oXLWU89sUhzMo2oJacuxNyX6nAUwbODpGP5s9IpCo2yXtZNVOjQi49djay2JGk7BaYSa5bUwhuMLc9bd9i8l75RtemFsR6n9rUgIR1j3UafdVqSsrmt93+l7LN2dzexTtgm+O++gPI5m0Hm1RTpgkXrI1GCR7W+m5JEIcxhY+DjooF3O/V7+s/piN7oTH4wBulaNoH+syuaWyOhsjoLPqcMe1Z6mtFX5Um8Z3HBGRembCiHDvZ+Y1i1o5oPh1spmgp87lnc6Qt1puaxt/bB6dWboIyt2GtyTV16e2d2DTHhgqPewbeCJtpACvGycFGxI0TtDT696/+7oHhJ8GlFN5kpa3zcaNoZ+1AQ4VNuzANitJhvJVOeKR4Blw8dbbo8IQvbtBs2ydDKdORzXc4diADZGiqYgGHl5s+6kCS+WsSgmXJitQJC3lpOrirLs=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A05DF2DD34D2F145881D6421727DC25A@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB5102.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90d107f8-8831-41c5-51f9-08d8340127c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2020 20:51:23.7775
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b/pxPP7UffeILrjkEIqxQIo+qTP6CMDSbnJPcil6bt5uTlLFHjnWgCejcanmht727znZYyJF+IyBILN2TeyLeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5694
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 07:48 PM CEST, Andrii Nakryiko wrote:
-> On Wed, Jul 29, 2020 at 7:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Wed, Jul 29, 2020 at 06:09 AM CEST, Andrii Nakryiko wrote:
-
-[...]
-
->> > +/*
->> > + * Trigger synchronize_cpu() in kernel.
->>
->> Nit: synchronize_*r*cu().
->
-> welp, yeah
->
->>
->> > + *
->> > + * ARRAY_OF_MAPS/HASH_OF_MAPS lookup/update operations trigger
->> > + * synchronize_rcu(), if looking up/updating non-NULL element. Use this fact
->> > + * to trigger synchronize_cpu(): create map-in-map, create a trivial ARRAY
->> > + * map, update map-in-map with ARRAY inner map. Then cleanup. At the end, at
->> > + * least one synchronize_rcu() would be called.
->> > + */
->>
->> That's a cool trick. I'm a bit confused by "looking up/updating non-NULL
->> element". It looks like you're updating an element that is NULL/unset in
->> the code below. What am I missing?
->
-> I was basically trying to say that it has to be a successful lookup or
-> update. For lookup that means looking up non-NULL (existing) entry.
-> For update -- setting valid inner map FD.
->
-> Not sure fixing this and typo above is worth it to post v5.
-
-I just wanted to understand that the helper is working as intended. It
-seems handy. I agree that it's not worth respinning the patches just for
-this.
-
->
->>
->> > +static int kern_sync_rcu(void)
->> > +{
->> > +     int inner_map_fd, outer_map_fd, err, zero = 0;
->> > +
->> > +     inner_map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
->> > +     if (CHECK(inner_map_fd < 0, "inner_map_create", "failed %d\n", -errno))
->> > +             return -1;
->> > +
->> > +     outer_map_fd = bpf_create_map_in_map(BPF_MAP_TYPE_ARRAY_OF_MAPS, NULL,
->> > +                                          sizeof(int), inner_map_fd, 1, 0);
->> > +     if (CHECK(outer_map_fd < 0, "outer_map_create", "failed %d\n", -errno)) {
->> > +             close(inner_map_fd);
->> > +             return -1;
->> > +     }
->> > +
->> > +     err = bpf_map_update_elem(outer_map_fd, &zero, &inner_map_fd, 0);
->> > +     if (err)
->> > +             err = -errno;
->> > +     CHECK(err, "outer_map_update", "failed %d\n", err);
->> > +     close(inner_map_fd);
->> > +     close(outer_map_fd);
->> > +     return err;
->> > +}
->> > +
->
-> [...]
->
-> trimming's good ;)
-
-You caught me. Just being lazy. No excuses :-)
+T24gV2VkLCAyMDIwLTA3LTI5IGF0IDEzOjI4IC0wNzAwLCBEYXZpZCBNaWxsZXIgd3JvdGU6DQo+
+IEZyb206IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KPiBEYXRlOiBXZWQs
+IDI5IEp1bCAyMDIwIDE5OjAyOjE1ICswMDAwDQo+IA0KPiA+PiBGaXggdGhpcyBpc3N1ZSBieSBq
+dW1waW5nIHRvIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoDQo+ID4+IGVycl9ycV93cV9kZXN0cm95
+DQo+ID4+IHdoZW4gZWl0aGVyIGZ1bmN0aW9uIGZhaWxzLg0KPiA+PiANCj4gPiANCj4gPiBGaXhl
+czogNDIyZDRjNDAxZWRkICgibmV0L21seDVlOiBSWCwgU3BsaXQgV1Egb2JqZWN0cyBmb3IgZGlm
+ZmVyZW50DQo+IFJRDQo+ID4gdHlwZXMiKQ0KPiANCj4gU2FlZWQsIGFyZSB5b3UgZ29pbmcgdG8g
+dGFrZSB0aGlzIGludG8geW91ciB0cmVlIG9yIHdvdWxkIHlvdSBsaWtlIG1lDQo+IHRvDQo+IGFw
+cGx5IGl0IGRpcmVjdGx5Pw0KPiANCj4gVGhhbmtzLg0KDQpJIHdpbGwgdGFrZSB0aGlzIHRvIG15
+IHRyZWUgb25jZSBYaW4gYWRkcyB0aGUgbWlzc2luZyBGaXhlcyB0YWcuDQpUaGFua3MuDQoNCg==
