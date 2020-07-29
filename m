@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7393F231BAD
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 10:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A209C231BB1
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 10:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgG2IzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 04:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        id S1727042AbgG2I5Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 04:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2IzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:55:16 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F154BC061794
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:55:14 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id v15so8038578lfg.6
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:55:14 -0700 (PDT)
+        with ESMTP id S1726299AbgG2I5Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:57:24 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37457C0619D2
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:57:23 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id q4so24218832lji.2
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 01:57:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=8L8D/nK8y1XzW/trlaVpU5smarSVbjSHeNmxrK5S3II=;
-        b=X7CxcoXQhOgWXBbIRkX5wh1u3OPdHWbG5owooIWCbOQpvOrCNr1BOR7MPzREkhsnPI
-         inpcWgj3ya3chKXWYf8v1XMCsyVQhxTagBtOtwmdcwmKIYarP28Uo4kDi1WlSZXFiSIX
-         z4Q/4XQDvNQZPio9Gi45GxE2RYyVYI4x3a0Ns=
+        bh=HJ8+zYD3bs4pqtCvGKcax5bNzzsJHKop3reao1BJkN4=;
+        b=Z6fDlWE51ldGySvarHMCC6+uPer7n1UtqYxQlJE+C95Hqhex43fAaqwYPVmICPiknJ
+         /m4bRedvXo5nbVi1vwk0xbn/HicGFNDSfEww3WBvScxgQrJ2l5v5e+OuV+tgIL7zoAJm
+         74JLsoQbtpIJg9wYGLO3Adi8dGFZKNDKu3Y88=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=8L8D/nK8y1XzW/trlaVpU5smarSVbjSHeNmxrK5S3II=;
-        b=Y9cD5RaitnHqRaFVw8OE0K3wbjBh8GGGqaFC/Wf71x+pmsiiV+vtO/wZelPzPwu2Yn
-         qy+XJuuImI+Vr8W+mVw4HJpB4iPqsdW3pqgFWCzgwxd2SzO+EE9la63EtdlRzj/eOMet
-         PRvtdsdjbAMhPUWddDho8fX3Eh5JhzLQXIv38xejYjObE2kAr9cXXw2hqd2TqQkAYfEO
-         daXRd3HbtrUvWLcX7yAlTYDpu1r9VfDQoSJVjuLCJdqUFoBQUlhtEnuUWlCih+n1gm6B
-         J7e3JY0l1pMROCiGsjg3nB3AqUFKLuHLbPJ/VZs7lkn4uMt+LnlX8TGctM0NbsCr67XR
-         q96A==
-X-Gm-Message-State: AOAM530rfR5+fUh4HaWpp1qJ5GT120zo/HwaCDKi2SVuuCIZd9TNvXCT
-        CoUjME3+rPfG9/hTkNipd/k7hg==
-X-Google-Smtp-Source: ABdhPJz/Swh+MDJVrvQcHnPCKTylj0XOUN1i6n2MGa66tpDG38V0CT57NYRVsJH9JVCkbOvoMP5Ohg==
-X-Received: by 2002:ac2:58c6:: with SMTP id u6mr16636479lfo.105.1596012913343;
-        Wed, 29 Jul 2020 01:55:13 -0700 (PDT)
+        bh=HJ8+zYD3bs4pqtCvGKcax5bNzzsJHKop3reao1BJkN4=;
+        b=X1InW9pVChyfyxvESBwuuGqRseUI6QB8ohJ78ooaQrRkFzUEsfolZeyXJeri2OmQbi
+         gIFVkmOTPGlFyPvYYG11r/K1q3NvHgJvI/8zHbEjpVZ/9NQg+PdC/wpxx8Qlr5d/O6BS
+         W0oNKn7N1PiZ9Dbg8IBvoJRWFF3fUr05NYDLsE0LZZkWjAbfRPCYnuEe7Zap4SirDm08
+         YcnMT5iTaCCpjjJNFKq+AUuGdwuAHESUyPW9kxIz8K66cAA7n+Jw64egrqy5OYuJmZcq
+         gzcH30W/EVNPtOR0aAOxB8rCXFxkUsIpDW0pvtNFL573nd2+D5fvXFVeynJeePGEcso+
+         HXIw==
+X-Gm-Message-State: AOAM533vzYxi83yVLBujzEVVIOlaUH+CLGm79NlqS3wqOeqowaWShJu5
+        tNyVrCNWoUE24xX36U4V99MPpA==
+X-Google-Smtp-Source: ABdhPJzbWvg2bw0pnhEF8NeG+bvvG7WogBjX2YSk6HCKFVj7J3VWmPfFIEhMQzpOY8z12QQvYW94sg==
+X-Received: by 2002:a2e:8191:: with SMTP id e17mr13445217ljg.339.1596013041555;
+        Wed, 29 Jul 2020 01:57:21 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id q22sm309834lfc.33.2020.07.29.01.55.12
+        by smtp.gmail.com with ESMTPSA id j1sm269388ljb.35.2020.07.29.01.57.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 01:55:12 -0700 (PDT)
-References: <20200717103536.397595-1-jakub@cloudflare.com> <20200717103536.397595-16-jakub@cloudflare.com> <CAEf4BzZHf7838t88Ed3Gzp32UFMq2o2zryL3=hjAL4mELzUC+w@mail.gmail.com> <891f94a4-1663-0830-516c-348c965844fe@iogearbox.net>
+        Wed, 29 Jul 2020 01:57:20 -0700 (PDT)
+References: <20200717103536.397595-1-jakub@cloudflare.com> <20200717103536.397595-16-jakub@cloudflare.com> <CAEf4BzZHf7838t88Ed3Gzp32UFMq2o2zryL3=hjAL4mELzUC+w@mail.gmail.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         kernel-team <kernel-team@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 Subject: Re: [PATCH bpf-next v5 15/15] selftests/bpf: Tests for BPF_SK_LOOKUP attach point
-In-reply-to: <891f94a4-1663-0830-516c-348c965844fe@iogearbox.net>
-Date:   Wed, 29 Jul 2020 10:55:11 +0200
-Message-ID: <87mu3iwvio.fsf@cloudflare.com>
+In-reply-to: <CAEf4BzZHf7838t88Ed3Gzp32UFMq2o2zryL3=hjAL4mELzUC+w@mail.gmail.com>
+Date:   Wed, 29 Jul 2020 10:57:19 +0200
+Message-ID: <87lfj2wvf4.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -65,158 +65,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+Hi Andrii,
 
-On Tue, Jul 28, 2020 at 10:47 PM CEST, Daniel Borkmann wrote:
+On Tue, Jul 28, 2020 at 10:13 PM CEST, Andrii Nakryiko wrote:
 
 [...]
 
-> Jakub, I'm actually seeing a slightly different one on my test machine with sk_lookup:
+> We are getting this failure in Travis CI when syncing libbpf [0]:
 >
-> # ./test_progs -t sk_lookup
-> #14 cgroup_skb_sk_lookup:OK
-> #73/1 query lookup prog:OK
-> #73/2 TCP IPv4 redir port:OK
-> #73/3 TCP IPv4 redir addr:OK
-> #73/4 TCP IPv4 redir with reuseport:OK
-> #73/5 TCP IPv4 redir skip reuseport:OK
-> #73/6 TCP IPv6 redir port:OK
-> #73/7 TCP IPv6 redir addr:OK
-> #73/8 TCP IPv4->IPv6 redir port:OK
-> #73/9 TCP IPv6 redir with reuseport:OK
-> #73/10 TCP IPv6 redir skip reuseport:OK
-> #73/11 UDP IPv4 redir port:OK
-> #73/12 UDP IPv4 redir addr:OK
-> #73/13 UDP IPv4 redir with reuseport:OK
-> attach_lookup_prog:PASS:open 0 nsec
-> attach_lookup_prog:PASS:bpf_program__attach_netns 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> update_lookup_map:PASS:bpf_map__fd 0 nsec
-> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> update_lookup_map:PASS:bpf_map__fd 0 nsec
-> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> run_lookup_prog:PASS:getsockname 0 nsec
-> run_lookup_prog:PASS:connect 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_client:PASS:make_client 0 nsec
-> send_byte:PASS:send_byte 0 nsec
-> udp_recv_send:FAIL:recvmsg failed
-> (/root/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339: errno: Resource temporarily unavailable) failed to receive
-> #73/14 UDP IPv4 redir and reuseport with conns:FAIL
-> #73/15 UDP IPv4 redir skip reuseport:OK
-> #73/16 UDP IPv6 redir port:OK
-> #73/17 UDP IPv6 redir addr:OK
-> #73/18 UDP IPv4->IPv6 redir port:OK
-> #73/19 UDP IPv6 redir and reuseport:OK
-> attach_lookup_prog:PASS:open 0 nsec
-> attach_lookup_prog:PASS:bpf_program__attach_netns 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> update_lookup_map:PASS:bpf_map__fd 0 nsec
-> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> update_lookup_map:PASS:bpf_map__fd 0 nsec
-> update_lookup_map:PASS:bpf_map_update_elem 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_server:PASS:setsockopt(IP_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(IPV6_RECVORIGDSTADDR) 0 nsec
-> make_server:PASS:setsockopt(SO_REUSEPORT) 0 nsec
-> make_server:PASS:bind 0 nsec
-> make_server:PASS:attach_reuseport 0 nsec
-> run_lookup_prog:PASS:getsockname 0 nsec
-> run_lookup_prog:PASS:connect 0 nsec
-> make_socket:PASS:make_address 0 nsec
-> make_socket:PASS:socket 0 nsec
-> make_socket:PASS:setsockopt(SO_SNDTIMEO) 0 nsec
-> make_socket:PASS:setsockopt(SO_RCVTIMEO) 0 nsec
-> make_client:PASS:make_client 0 nsec
-> send_byte:PASS:send_byte 0 nsec
-> udp_recv_send:FAIL:recvmsg failed
-> (/root/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339: errno: Resource temporarily unavailable) failed to receive
-> #73/20 UDP IPv6 redir and reuseport with conns:FAIL
-> #73/21 UDP IPv6 redir skip reuseport:OK
-> #73/22 TCP IPv4 drop on lookup:OK
-> #73/23 TCP IPv6 drop on lookup:OK
-> #73/24 UDP IPv4 drop on lookup:OK
-> #73/25 UDP IPv6 drop on lookup:OK
-> #73/26 TCP IPv4 drop on reuseport:OK
-> #73/27 TCP IPv6 drop on reuseport:OK
-> #73/28 UDP IPv4 drop on reuseport:OK
-> #73/29 TCP IPv6 drop on reuseport:OK
-> #73/30 sk_assign returns EEXIST:OK
-> #73/31 sk_assign honors F_REPLACE:OK
-> #73/32 sk_assign accepts NULL socket:OK
-> #73/33 access ctx->sk:OK
-> #73/34 narrow access to ctx v4:OK
-> #73/35 narrow access to ctx v6:OK
-> #73/36 sk_assign rejects TCP established:OK
-> #73/37 sk_assign rejects UDP connected:OK
-> #73/38 multi prog - pass, pass:OK
-> #73/39 multi prog - drop, drop:OK
-> #73/40 multi prog - pass, drop:OK
-> #73/41 multi prog - drop, pass:OK
-> #73/42 multi prog - pass, redir:OK
-> #73/43 multi prog - redir, pass:OK
-> #73/44 multi prog - drop, redir:OK
-> #73/45 multi prog - redir, drop:OK
-> #73/46 multi prog - redir, redir:OK
+> ```
+> ip: either "local" is duplicate, or "nodad" is garbage
+>
+> switch_netns:PASS:unshare 0 nsec
+>
+> switch_netns:FAIL:system failed
+>
+> (/home/travis/build/libbpf/libbpf/travis-ci/vmtest/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:1310:
+> errno: No such file or directory) system(ip -6 addr add dev lo
+> fd00::1/128 nodad)
+>
 > #73 sk_lookup:FAIL
-> Summary: 1/44 PASSED, 0 SKIPPED, 3 FAILED
+> ```
+>
+>
+> Can you please help fix it so that it works in a Travis CI environment
+> as well? For now I disabled sk_lookup selftests altogether. You can
+> try to repro it locally by forking https://github.com/libbpf/libbpf
+> and enabling Travis CI for your account. See [1] for the PR that
+> disabled sk_lookup.
+>
+>
+>   [0] https://travis-ci.com/github/libbpf/libbpf/jobs/365878309#L5408
+>   [1] https://github.com/libbpf/libbpf/pull/182/commits/78368c2eaed8b0681381fc34d6016c9b5a443be8
+>
+>
+> Thanks for your help!
 
-This patch addresses the failures:
+"nodad is garbage" message smells like old iproute2. I will take a look.
 
-  https://lore.kernel.org/bpf/20200726120228.1414348-1-jakub@cloudflare.com/
-
-It spawned a discussion on what to do about reuseport bpf returning
-connected udp sockets, and the conclusion was that it would be best to
-change reuseport logic itself if no one is relying on said behavior.
-
-IOW, I belive the fix does the right thing and can be applied as is. We
-get the same reuseport behavior everywhere, that is with regular socket
-lookup and BPF sk lookup, even if that behavior needs to be changed.
-
-[...]
+Thanks for letting me know.
