@@ -2,139 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BED4231858
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 06:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AACB23185A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 06:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgG2EGp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 00:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgG2EGp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 00:06:45 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9577C061794
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 21:06:44 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id k18so16657923qtm.10
-        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 21:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mjrbHIDB0P43Mp+lVQv4PTBHvpGc15RBv1/D+/lG1LA=;
-        b=TQb1SkBVpQBJHYYCSrB+T9wvBmBhWC7kgxTwGkVlgw9UBQkhO0Tj7thQdnl/lZrCIh
-         3S8aA/N5Q+7vSeESNw3I3Eb71RzQkUpU0McUth7+KCDZPJ5ZvUeocbGv20D3hQ6Np6jD
-         53WENDSD3ESvruymPIvzQ7Azb5rH+bLa+ximCm0xllO19oDozpjtPv1witwLETjDRKLn
-         xgXzruepHgf1RbFdDnWBsip9byCJIJ2wQ+REAHg31Z6/0+Wr+My2pt6KvvyvNliizLic
-         LYZkCrvENXR13/e6OIu/CXXrE6K7ZX3VuY2FSaw3xc+98N9xBSpua6SFoAp89YMWwe5f
-         RKBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mjrbHIDB0P43Mp+lVQv4PTBHvpGc15RBv1/D+/lG1LA=;
-        b=KJCi7o4/XKHQS2SOxBb7A50k/plgidbUfc8K2J5glDQAnLNGiytXmcZnr7DZa4oTw6
-         l0RAGI4WIkkDEy6aTXdLGD7WLvLb1otfJkrvIi0laPyo3BOErmnsx6IExY2WHYnAlmKz
-         yNzOGa0V55FPhPEUYNSyufdlmhNgLcnDacgK+HNODKgbjFthqAxqy2Iu52oQK7C+VMkH
-         BetBtE4QFk03IbAYMSMTCR/dc/UYyAHhIx4/0PVdCSh6qmB/IPzbMAaIAmDKO80tCQYd
-         h+Agv1JyK2ZzRyPs+hOi4+F12qnZNXhYuN7WS8TuR9FKX6NiKiIg6cctBvJm/04rZTrk
-         I76Q==
-X-Gm-Message-State: AOAM531MXA8dFSF8qyXv+vtD1Wucc6heGmI40yO3Wi+0sOVjO7o/eJ4c
-        krhmzNYIgUICRLij87bXpL8YHeGUYqXa0qQsw04=
-X-Google-Smtp-Source: ABdhPJwZq/72DNwDsMrif/tgbWw3UNYuBLbY9Nwm40NPi+kECX1pUpJ0M5f+d6TL04GRnQBl3REeREub8lJADJWP4wQ=
-X-Received: by 2002:aed:2ae2:: with SMTP id t89mr13847899qtd.171.1595995603760;
- Tue, 28 Jul 2020 21:06:43 -0700 (PDT)
+        id S1725986AbgG2EJV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 00:09:21 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53880 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgG2EJU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 00:09:20 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06T49AQk032480
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 21:09:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=yJ4J/cxiW9BD8NOPqr/b2KGplF1ohYTOh7P63Vds3kc=;
+ b=dpERZJNOU7NcxO/UIwZ4e9i6Y/jUVhVp8M8mhZDORL5Y916wnSertCJSP2FJ1Hq23XZD
+ cMD4D3MOQwsMrtc3a0XjtgjMaF1yBM2co/2vDr2ow+UlouEMZdvUJGXNvDFwwiAHE+7a
+ QA6WhdiBtuuNHrLGt8Om6viD+rd9Ta7kplI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32h4q9n5gq-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 28 Jul 2020 21:09:20 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 21:09:18 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 81FF52EC4C8E; Tue, 28 Jul 2020 21:09:14 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>, <stable@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v4 bpf 1/2] bpf: fix map leak in HASH_OF_MAPS map
+Date:   Tue, 28 Jul 2020 21:09:12 -0700
+Message-ID: <20200729040913.2815687-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200728120059.132256-1-iii@linux.ibm.com> <20200728120059.132256-4-iii@linux.ibm.com>
- <CAEf4BzaSJp-fOn2MG_8Fc2mo9ji5gZBLn2xCGyCiAmPbHkqSQQ@mail.gmail.com> <bea74a32-746c-c310-67c8-477dcd442fb3@iogearbox.net>
-In-Reply-To: <bea74a32-746c-c310-67c8-477dcd442fb3@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Jul 2020 21:06:32 -0700
-Message-ID: <CAEf4BzZtsOF0iuWrtBn7Up2zZFv79PvF5TC1RukBxQBxpN4pFQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] libbpf: Use bpf_probe_read_kernel
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-29_02:2020-07-28,2020-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=910
+ malwarescore=0 adultscore=0 phishscore=0 mlxscore=0 priorityscore=1501
+ bulkscore=0 suspectscore=25 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007290028
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 2:16 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 7/28/20 9:11 PM, Andrii Nakryiko wrote:
-> > On Tue, Jul 28, 2020 at 5:15 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
-> >>
-> >> Yet another adaptation to commit 0ebeea8ca8a4 ("bpf: Restrict
-> >> bpf_probe_read{, str}() only to archs where they work") that makes more
-> >> samples compile on s390.
-> >>
-> >> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> >
-> > Sorry, we can't do this yet. This will break on older kernels that
-> > don't yet have bpf_probe_read_kernel() implemented. Met and Yonghong
-> > are working on extending a set of CO-RE relocations, that would allow
-> > to do bpf_probe_read_kernel() detection on BPF side, transparently for
-> > an application, and will pick either bpf_probe_read() or
-> > bpf_probe_read_kernel(). It should be ready soon (this or next week,
-> > most probably), though it will have dependency on the latest Clang.
-> > But for now, please don't change this.
->
-> Could you elaborate what this means wrt dependency on latest clang? Given clang
-> releases have a rather long cadence, what about existing users with current clang
-> releases?
+Fix HASH_OF_MAPS bug of not putting inner map pointer on bpf_map_elem_upd=
+ate()
+operation. This is due to per-cpu extra_elems optimization, which bypasse=
+d
+free_htab_elem() logic doing proper clean ups. Make sure that inner map i=
+s put
+properly in optimized case as well.
 
-So the overall idea is to use something like this to do kernel reads:
+Fixes: 8c290e60fa2a ("bpf: fix hashmap extra_elems logic")
+Acked-by: Song Liu <songliubraving@fb.com>
+Cc: <stable@vger.kernel.org> # v4.14+
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/hashtab.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-static __always_inline int bpf_probe_read_universal(void *dst, u32 sz,
-const void *src)
-{
-    if (bpf_core_type_exists(btf_bpf_probe_read_kernel))
-        return bpf_probe_read_kernel(dst, sz, src);
-    else
-        return bpf_probe_read(dst, sz, src);
-}
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index b4b288a3c3c9..b32cc8ce8ff6 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -779,15 +779,20 @@ static void htab_elem_free_rcu(struct rcu_head *hea=
+d)
+ 	htab_elem_free(htab, l);
+ }
+=20
+-static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
++static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l=
+)
+ {
+ 	struct bpf_map *map =3D &htab->map;
++	void *ptr;
+=20
+ 	if (map->ops->map_fd_put_ptr) {
+-		void *ptr =3D fd_htab_map_get_ptr(map, l);
+-
++		ptr =3D fd_htab_map_get_ptr(map, l);
+ 		map->ops->map_fd_put_ptr(ptr);
+ 	}
++}
++
++static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
++{
++	htab_put_fd_value(htab, l);
+=20
+ 	if (htab_is_prealloc(htab)) {
+ 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+@@ -839,6 +844,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_h=
+tab *htab, void *key,
+ 			 */
+ 			pl_new =3D this_cpu_ptr(htab->extra_elems);
+ 			l_new =3D *pl_new;
++			htab_put_fd_value(htab, old_elem);
+ 			*pl_new =3D old_elem;
+ 		} else {
+ 			struct pcpu_freelist_node *l;
+--=20
+2.24.1
 
-And then use bpf_probe_read_universal() in BPF_CORE_READ and family.
-
-This approach relies on few things:
-
-1. each BPF helper has a corresponding btf_<helper-name> type defined for it
-2. bpf_core_type_exists(some_type) returns 0 or 1, depending if
-specified type is found in kernel BTF (so needs kernel BTF, of
-course). This is the part me and Yonghong are working on at the
-moment.
-3. verifier's dead code elimination, which will leave only
-bpf_probe_read() or bpf_probe_read_kernel() calls and will remove the
-other one. So on older kernels, there will never be unsupoorted call
-to bpf_probe_read_kernel().
-
-
-The new type existence relocation requires the latest Clang. So the
-way to deal with older Clangs would be to just fallback to
-bpf_probe_read, if we detect that Clang is too old and can't emit
-necessary relocation.
-
-If that's not an acceptable plan, then one can "parameterize"
-BPF_CORE_READ macro family by re-defining bpf_core_read() macro. Right
-now it's defined as:
-
-#define bpf_core_read(dst, sz, src) \
-    bpf_probe_read(dst, sz, (const void *)__builtin_preserve_access_index(src))
-
-Re-defining it in terms of bpf_probe_read_kernel is trivial, but I
-can't do it for BPF_CORE_READ, because it will break all the users of
-bpf_core_read.h that run on older kernels.
-
-
->
-> >>   tools/lib/bpf/bpf_core_read.h | 51 ++++++++++++++++++-----------------
-> >>   tools/lib/bpf/bpf_tracing.h   | 15 +++++++----
-> >>   2 files changed, 37 insertions(+), 29 deletions(-)
-> >>
-> >
-> > [...]
-> >
->
