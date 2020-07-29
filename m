@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041A02325E5
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 22:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D28D232611
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 22:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgG2ULb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 16:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        id S1726644AbgG2URs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 16:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2ULb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:11:31 -0400
+        with ESMTP id S1726535AbgG2URs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 16:17:48 -0400
 Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B5BC061794;
-        Wed, 29 Jul 2020 13:11:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A043C061794;
+        Wed, 29 Jul 2020 13:17:48 -0700 (PDT)
 Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0sQ1-005BLO-LM; Wed, 29 Jul 2020 20:11:17 +0000
-Date:   Wed, 29 Jul 2020 21:11:17 +0100
+        id 1k0sWC-005Bbe-4V; Wed, 29 Jul 2020 20:17:40 +0000
+Date:   Wed, 29 Jul 2020 21:17:40 +0100
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -31,7 +31,7 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>
 Subject: Re: [PATCH v8 bpf-next 09/13] bpf: Add d_path helper
-Message-ID: <20200729201117.GA1233513@ZenIV.linux.org.uk>
+Message-ID: <20200729201740.GB1233513@ZenIV.linux.org.uk>
 References: <20200722211223.1055107-1-jolsa@kernel.org>
  <20200722211223.1055107-10-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -45,47 +45,15 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jul 22, 2020 at 11:12:19PM +0200, Jiri Olsa wrote:
 
-> +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-> +{
-> +	char *p = d_path(path, buf, sz - 1);
-> +	int len;
-> +
-> +	if (IS_ERR(p)) {
-> +		len = PTR_ERR(p);
-> +	} else {
-> +		len = strlen(p);
-> +		if (len && p != buf)
-> +			memmove(buf, p, len);
+> +BTF_SET_START(btf_whitelist_d_path)
+> +BTF_ID(func, vfs_truncate)
+> +BTF_ID(func, vfs_fallocate)
+> +BTF_ID(func, dentry_open)
+> +BTF_ID(func, vfs_getattr)
+> +BTF_ID(func, filp_close)
+> +BTF_SET_END(btf_whitelist_d_path)
 
-*blink*
-What the hell do you need that strlen() for?  d_path() copies into
-the end of buffer (well, starts there and prepends to it); all you
-really need is memmove(buf, p, buf + sz - p)
-
-
-> +		buf[len] = 0;
-
-Wait a minute...  Why are you NUL-terminating it separately?
-You do rely upon having NUL in the damn thing (and d_path() does
-guarantee it there).  Without that strlen() would've gone into
-the nasal demon country; you can't call it on non-NUL-terminated
-array.  So you are guaranteed that p[len] will be '\0'; why bother
-copying the first len bytes and then separately deal with that
-NUL?  Just memmove() the fucker and be done with that...
-
-If you are worried about stray NUL in the middle of the returned
-data... can't happen.  Note the rename_lock use in fs/d_path.c;
-the names of everything involved are guaranteed to have been
-stable throughout the copying them into the buffer - if anything
-were to be renamed while we are doing that, we'd repeat the whole
-thing (with rename_lock taken exclusive the second time around).
-
-So make it simply
-	if (IS_ERR(p))
-		return PTR_ERR(p);
-	len = buf + sz - p;
-	memmove(buf, p, len);
-	return len;
-and be done with that.  BTW, the odds of p == buf are pretty much
-nil - it would happen only if sz - 1 happened to be the exact length
-of pathname.
+While we are at it, I hope you realize that the names of kernel function
+are subject to change at zero notice.  If some script breaks since
+we give e.g. filp_close a something less revolting name, it's Not My
+Problem(tm)...
