@@ -2,115 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDDC23267A
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 22:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A06223268E
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 23:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgG2Uva (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 16:51:30 -0400
-Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:31553
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726476AbgG2Uva (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:51:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hToJcbzHzPSSITevL1qAy1f19zh5GuaboAuDdUGbe3evddQFtUDmm/4U3Zaf3nmMT2qbUr/n/iDeApVc0PMJp0ygRhvtY1GwLhx1hN4WCw6LvLeau9EsqRPpMJmOtjG75YYbNo1Hk/ZLljdh+TZFQocx0IynCqlBlO4s32N59I/paYW4JBuBChCmAX0TvveNLJw7mVohFQPbk4eTNnpMquhlWV8noZ2uKpkjFq6XV15wgYzcc8/IFT6p+ASzEfDW44/LKiOKw7+UvKRdrTcpvYXJO/NcjNu/qZDq4jxufMXk+6MQayH8A0SgOflGAcKk7RheUPZTEd8qRYpky+a6Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
- b=B8HPwWfr+/wxMR8MIQlBVQj3krAuz72QL+0mlWosPU0DI6rZ7MLVPEATwJuiZ7e9gS0FFEBtLe2Jk9zbSSXfb8/5EH633plzEZlGoYVAzj8N6lUbdwfak9n+R8TsAZwv2bvyWBq7w/qrIOVoyqSScpaQIJmv8Q4SLgGrl2GRKn0zVHIZFtRh8lBj4wbL+QZxcAF1637jKIC+dvN8vgBNALom5uMOCyv66wYVN9oiXAmQq+alLO1Zj5/tZ7vtf+NH2RokH38Q+2lWRkd+2KnHH1s/9RRkBbOAdztlkpYAkGqxDv5OLRUT7pZWOJ22ADt2Zrz9Jym5meA6hp2vPNvW0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATG7qSS3S9bcECWvrs2lvkTK1zLz6m/24bzDxeJq0Dg=;
- b=aW8ZYKnk8+tmDV6IfvJMwrJ7GawC6hHE8+BFNVC/fI0irqNvQAQfmS6Y3elSAo8d9xfpzSVCa02Bc/F2eBX5NXU89WPe62lO5aMnJ+UsY6i6e1ppXZYvSUr3QahxkDmKT9cDaitk9msNU3KHGRsDfH4O9Ujl276XrpcOisIH4Jw=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB5694.eurprd05.prod.outlook.com (2603:10a6:803:cd::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Wed, 29 Jul
- 2020 20:51:25 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::508a:d074:ad3a:3529]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::508a:d074:ad3a:3529%5]) with mapi id 15.20.3216.034; Wed, 29 Jul 2020
- 20:51:23 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>
-CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
-        "hawk@kernel.org" <hawk@kernel.org>, "kafai@fb.com" <kafai@fb.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "xiongx18@fudan.edu.cn" <xiongx18@fudan.edu.cn>,
-        "yhs@fb.com" <yhs@fb.com>, "ast@kernel.org" <ast@kernel.org>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
-        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>
-Subject: Re: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Thread-Topic: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Thread-Index: AQHWZaSD4+bJSZVEQUqH8FFGnSv/eKke6kCAgAAYKQCAAAZTAA==
-Date:   Wed, 29 Jul 2020 20:51:23 +0000
-Message-ID: <2199f90fb6394d60d8dc62b15c6a6e62a22e4f41.camel@mellanox.com>
-References: <20200729123334.GA6766@xin-virtual-machine>
-         <613fe5f56cb60982937c826ed915ada2de5e93a2.camel@mellanox.com>
-         <20200729.132842.190888844026802233.davem@davemloft.net>
-In-Reply-To: <20200729.132842.190888844026802233.davem@davemloft.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.4 (3.36.4-1.fc32) 
-authentication-results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=mellanox.com;
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 90d107f8-8831-41c5-51f9-08d8340127c1
-x-ms-traffictypediagnostic: VI1PR05MB5694:
-x-microsoft-antispam-prvs: <VI1PR05MB5694F1077594284AE01C5A16BE700@VI1PR05MB5694.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iIlP7rbhfD5Y4Xk/JXqor+J3p0DNARUVrxV+eEkjEljypVGzpWlfesg0QUt5HFOncEmexVtr3YgmeD8xlLUDI6bGlBpyb4R06vJPZx98+JSdQBs7KShvzB5s3zC6AAC0zGHrR0dhNUqFHHKhcG1E8eIfmyMIcU/zFbAYwKJo+H1WBY1TQJW952YuW1IiZbws8BoB/gqNl1VuVUU9jasNPm6MMgkha9Ie6BSQZdJbGd864dFqjUr93zGgcO1zyX/17H4cgpAegdd2XRz7SmT7YuQRlsSml5vOcrrt/DabToYCadC2wk/KSsUdytH2GGFrCQ4KRhbDk3Ma57wmRt/f7g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(2906002)(36756003)(66946007)(71200400001)(4744005)(76116006)(64756008)(478600001)(6512007)(66446008)(91956017)(66556008)(7416002)(316002)(66476007)(54906003)(8936002)(6486002)(5660300002)(86362001)(6916009)(8676002)(26005)(186003)(6506007)(4326008)(2616005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZkPioEl42y7OftyPWrvJknbAsV0qCntyHZ84huThK5eb8B0oXLWU89sUhzMo2oJacuxNyX6nAUwbODpGP5s9IpCo2yXtZNVOjQi49djay2JGk7BaYSa5bUwhuMLc9bd9i8l75RtemFsR6n9rUgIR1j3UafdVqSsrmt93+l7LN2dzexTtgm+O++gPI5m0Hm1RTpgkXrI1GCR7W+m5JEIcxhY+DjooF3O/V7+s/piN7oTH4wBulaNoH+syuaWyOhsjoLPqcMe1Z6mtFX5Um8Z3HBGRembCiHDvZ+Y1i1o5oPh1spmgp87lnc6Qt1puaxt/bB6dWboIyt2GtyTV16e2d2DTHhgqPewbeCJtpACvGycFGxI0TtDT696/+7oHhJ8GlFN5kpa3zcaNoZ+1AQ4VNuzANitJhvJVOeKR4Blw8dbbo8IQvbtBs2ydDKdORzXc4diADZGiqYgGHl5s+6kCS+WsSgmXJitQJC3lpOrirLs=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A05DF2DD34D2F145881D6421727DC25A@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726631AbgG2VBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 17:01:43 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35100 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgG2VBn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 17:01:43 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k0tCk-0003Tx-0g; Wed, 29 Jul 2020 23:01:38 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k0tCj-00039R-Px; Wed, 29 Jul 2020 23:01:37 +0200
+Subject: Re: [PATCH bpf-next 3/3] libbpf: Use bpf_probe_read_kernel
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20200728120059.132256-1-iii@linux.ibm.com>
+ <20200728120059.132256-4-iii@linux.ibm.com>
+ <CAEf4BzaSJp-fOn2MG_8Fc2mo9ji5gZBLn2xCGyCiAmPbHkqSQQ@mail.gmail.com>
+ <bea74a32-746c-c310-67c8-477dcd442fb3@iogearbox.net>
+ <CAEf4BzZtsOF0iuWrtBn7Up2zZFv79PvF5TC1RukBxQBxpN4pFQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b6cbb797-02c4-d904-5231-54608706f99d@iogearbox.net>
+Date:   Wed, 29 Jul 2020 23:01:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR05MB5102.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90d107f8-8831-41c5-51f9-08d8340127c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2020 20:51:23.7775
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b/pxPP7UffeILrjkEIqxQIo+qTP6CMDSbnJPcil6bt5uTlLFHjnWgCejcanmht727znZYyJF+IyBILN2TeyLeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5694
+In-Reply-To: <CAEf4BzZtsOF0iuWrtBn7Up2zZFv79PvF5TC1RukBxQBxpN4pFQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25888/Wed Jul 29 16:57:45 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTI5IGF0IDEzOjI4IC0wNzAwLCBEYXZpZCBNaWxsZXIgd3JvdGU6DQo+
-IEZyb206IFNhZWVkIE1haGFtZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPg0KPiBEYXRlOiBXZWQs
-IDI5IEp1bCAyMDIwIDE5OjAyOjE1ICswMDAwDQo+IA0KPiA+PiBGaXggdGhpcyBpc3N1ZSBieSBq
-dW1waW5nIHRvIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoDQo+ID4+IGVycl9ycV93cV9kZXN0cm95
-DQo+ID4+IHdoZW4gZWl0aGVyIGZ1bmN0aW9uIGZhaWxzLg0KPiA+PiANCj4gPiANCj4gPiBGaXhl
-czogNDIyZDRjNDAxZWRkICgibmV0L21seDVlOiBSWCwgU3BsaXQgV1Egb2JqZWN0cyBmb3IgZGlm
-ZmVyZW50DQo+IFJRDQo+ID4gdHlwZXMiKQ0KPiANCj4gU2FlZWQsIGFyZSB5b3UgZ29pbmcgdG8g
-dGFrZSB0aGlzIGludG8geW91ciB0cmVlIG9yIHdvdWxkIHlvdSBsaWtlIG1lDQo+IHRvDQo+IGFw
-cGx5IGl0IGRpcmVjdGx5Pw0KPiANCj4gVGhhbmtzLg0KDQpJIHdpbGwgdGFrZSB0aGlzIHRvIG15
-IHRyZWUgb25jZSBYaW4gYWRkcyB0aGUgbWlzc2luZyBGaXhlcyB0YWcuDQpUaGFua3MuDQoNCg==
+On 7/29/20 6:06 AM, Andrii Nakryiko wrote:
+> On Tue, Jul 28, 2020 at 2:16 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 7/28/20 9:11 PM, Andrii Nakryiko wrote:
+>>> On Tue, Jul 28, 2020 at 5:15 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>>>>
+>>>> Yet another adaptation to commit 0ebeea8ca8a4 ("bpf: Restrict
+>>>> bpf_probe_read{, str}() only to archs where they work") that makes more
+>>>> samples compile on s390.
+>>>>
+>>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>>>
+>>> Sorry, we can't do this yet. This will break on older kernels that
+>>> don't yet have bpf_probe_read_kernel() implemented. Met and Yonghong
+>>> are working on extending a set of CO-RE relocations, that would allow
+>>> to do bpf_probe_read_kernel() detection on BPF side, transparently for
+>>> an application, and will pick either bpf_probe_read() or
+>>> bpf_probe_read_kernel(). It should be ready soon (this or next week,
+>>> most probably), though it will have dependency on the latest Clang.
+>>> But for now, please don't change this.
+>>
+>> Could you elaborate what this means wrt dependency on latest clang? Given clang
+>> releases have a rather long cadence, what about existing users with current clang
+>> releases?
+> 
+> So the overall idea is to use something like this to do kernel reads:
+> 
+> static __always_inline int bpf_probe_read_universal(void *dst, u32 sz,
+> const void *src)
+> {
+>      if (bpf_core_type_exists(btf_bpf_probe_read_kernel))
+>          return bpf_probe_read_kernel(dst, sz, src);
+>      else
+>          return bpf_probe_read(dst, sz, src);
+> }
+> 
+> And then use bpf_probe_read_universal() in BPF_CORE_READ and family.
+> 
+> This approach relies on few things:
+> 
+> 1. each BPF helper has a corresponding btf_<helper-name> type defined for it
+> 2. bpf_core_type_exists(some_type) returns 0 or 1, depending if
+> specified type is found in kernel BTF (so needs kernel BTF, of
+> course). This is the part me and Yonghong are working on at the
+> moment.
+> 3. verifier's dead code elimination, which will leave only
+> bpf_probe_read() or bpf_probe_read_kernel() calls and will remove the
+> other one. So on older kernels, there will never be unsupoorted call
+> to bpf_probe_read_kernel().
+> 
+> The new type existence relocation requires the latest Clang. So the
+> way to deal with older Clangs would be to just fallback to
+> bpf_probe_read, if we detect that Clang is too old and can't emit
+> necessary relocation.
+
+Okay, seems reasonable overall. One question though: couldn't libbpf transparently
+fix up the selection of bpf_probe_read() vs bpf_probe_read_kernel()? E.g. it would
+probe the kernel whether bpf_probe_read_kernel() is available and if it is then it
+would rewrite the raw call number from the instruction from bpf_probe_read() into
+the one for bpf_probe_read_kernel()? I guess the question then becomes whether the
+original use for bpf_probe_read() was related to CO-RE. But I think this could also
+be overcome by adding a fake helper signature in libbpf with a unreasonable high
+number that is dedicated to probing mem via CO-RE and then libbpf picks the right
+underlying helper call number for the insn. That avoids fiddling with macros and
+need for new clang version, no (unless I'm missing something)?
+
+> If that's not an acceptable plan, then one can "parameterize"
+> BPF_CORE_READ macro family by re-defining bpf_core_read() macro. Right
+> now it's defined as:
+> 
+> #define bpf_core_read(dst, sz, src) \
+>      bpf_probe_read(dst, sz, (const void *)__builtin_preserve_access_index(src))
+> 
+> Re-defining it in terms of bpf_probe_read_kernel is trivial, but I
+> can't do it for BPF_CORE_READ, because it will break all the users of
+> bpf_core_read.h that run on older kernels.
+> 
+> 
+>>
+>>>>    tools/lib/bpf/bpf_core_read.h | 51 ++++++++++++++++++-----------------
+>>>>    tools/lib/bpf/bpf_tracing.h   | 15 +++++++----
+>>>>    2 files changed, 37 insertions(+), 29 deletions(-)
+>>>>
+>>>
+>>> [...]
+>>>
+>>
+
