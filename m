@@ -2,163 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781CC232147
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 17:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0D22321B2
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 17:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgG2PMT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 29 Jul 2020 11:12:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48700 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726054AbgG2PMS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 11:12:18 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06TEjuAP092815;
-        Wed, 29 Jul 2020 11:11:41 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32k9quma4s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 11:11:41 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06TEkdNv095864;
-        Wed, 29 Jul 2020 11:11:40 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32k9quma3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 11:11:40 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06TF57dH000488;
-        Wed, 29 Jul 2020 15:11:38 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 32gcr0k5um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 15:11:38 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06TFBZN832309758
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 15:11:35 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFCE34C040;
-        Wed, 29 Jul 2020 15:11:35 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AD7AE4C058;
-        Wed, 29 Jul 2020 15:11:29 +0000 (GMT)
-Received: from [9.85.87.197] (unknown [9.85.87.197])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 29 Jul 2020 15:11:29 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v2 1/5] perf record: Set PERF_RECORD_PERIOD if attr->freq
- is set.
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <20200728160309.GC374564@kernel.org>
-Date:   Wed, 29 Jul 2020 20:41:27 +0530
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726449AbgG2Peo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 11:34:44 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53258 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726341AbgG2Peo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 11:34:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596036882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PTGQnYg0KcXp4LmK/hXI4Cd5e+3IE3LiYGTq9nImvGc=;
+        b=P1nf6hTpN7KvGn2yc5a6naQRyxYie7BSA2hePozQFE8jPHkRMHcixJLV7vRwhl9wlrbKUR
+        Xp9PiJJk5psyclX+4cXHoPJ+c5AiU/JLuO471wP9jypKg2jERSewXkeoCmrslZwfFoeb5J
+        51yqAcaap20GgvIfImF+Qfu1NpdE/MU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-g8oXH2zeNoOUf3OmdWP5RA-1; Wed, 29 Jul 2020 11:34:38 -0400
+X-MC-Unique: g8oXH2zeNoOUf3OmdWP5RA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80FA2100AA21;
+        Wed, 29 Jul 2020 15:34:33 +0000 (UTC)
+Received: from krava (unknown [10.40.193.247])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ED1F971906;
+        Wed, 29 Jul 2020 15:34:28 +0000 (UTC)
+Date:   Wed, 29 Jul 2020 17:34:28 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        David Sharp <dhsharp@google.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C534B006-3EF4-4DAB-B3D8-2944257000AC@linux.vnet.ibm.com>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-2-irogers@google.com> <20200728154347.GB1319041@krava>
- <20200728160309.GC374564@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-29_10:2020-07-29,2020-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- phishscore=0 clxscore=1015 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007290099
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 bpf-next 13/13] selftests/bpf: Add set test to
+ resolve_btfids
+Message-ID: <20200729153428.GJ1319041@krava>
+References: <20200722211223.1055107-1-jolsa@kernel.org>
+ <20200722211223.1055107-14-jolsa@kernel.org>
+ <CAEf4BzbMNZdiD_hqReei2HKziTTNoWFymE5g7SzvSR7=QdWxrw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbMNZdiD_hqReei2HKziTTNoWFymE5g7SzvSR7=QdWxrw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jul 28, 2020 at 12:56:02PM -0700, Andrii Nakryiko wrote:
+> On Wed, Jul 22, 2020 at 2:15 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding test to for sets resolve_btfids. We're checking that
+> > testing set gets properly resolved and sorted.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../selftests/bpf/prog_tests/resolve_btfids.c | 33 +++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> > index 101785b49f7e..cc90aa244285 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
+> > @@ -48,6 +48,15 @@ BTF_ID(struct,  S)
+> >  BTF_ID(union,   U)
+> >  BTF_ID(func,    func)
+> >
+> > +BTF_SET_START(test_set)
+> > +BTF_ID(typedef, S)
+> > +BTF_ID(typedef, T)
+> > +BTF_ID(typedef, U)
+> > +BTF_ID(struct,  S)
+> > +BTF_ID(union,   U)
+> > +BTF_ID(func,    func)
+> > +BTF_SET_END(test_set)
+> > +
+> >  static int
+> >  __resolve_symbol(struct btf *btf, int type_id)
+> >  {
+> > @@ -126,5 +135,29 @@ int test_resolve_btfids(void)
+> >                 }
+> >         }
+> >
+> > +       /* Check BTF_SET_START(test_set) IDs */
+> > +       for (i = 0; i < test_set.cnt && !ret; i++) {
+> 
+> nit: usual we just do `goto err_out;` instead of complicating exit
+> condition in a for loop
 
+ok
 
-> On 28-Jul-2020, at 9:33 PM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > 
-> Em Tue, Jul 28, 2020 at 05:43:47PM +0200, Jiri Olsa escreveu:
->> On Tue, Jul 28, 2020 at 01:57:30AM -0700, Ian Rogers wrote:
->>> From: David Sharp <dhsharp@google.com>
->>> 
->>> evsel__config() would only set PERF_RECORD_PERIOD if it set attr->freq
->>> from perf record options. When it is set by libpfm events, it would not
->>> get set. This changes evsel__config to see if attr->freq is set outside of
->>> whether or not it changes attr->freq itself.
->>> 
->>> Signed-off-by: David Sharp <dhsharp@google.com>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->> 
->> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > +               bool found = false;
+> > +
+> > +               for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
+> > +                       if (test_symbols[j].id != test_set.ids[i])
+> > +                               continue;
+> > +                       found = true;
+> > +                       break;
+> > +               }
+> > +
+> > +               ret = CHECK(!found, "id_check",
+> > +                           "ID %d for %s not found in test_symbols\n",
+> > +                           test_symbols[j].id, test_symbols[j].name);
 > 
-> So, somebody else complained that its not PERF_RECORD_PERIOD (there is
-> no such thing) that is being set, its PERF_SAMPLE_PERIOD.
+> j == ARRAY_SIZE(test_symbols), you probably meant to get
+> test_set.ids[i] instead of test_symbol name/id?
 
-Hi Arnaldo
+oh yea.. test_set.ids[i] is not found in here
 
-Thanks for adding in that correction.
+> 
+> > +               if (ret)
+> > +                       break;
+> > +
+> > +               if (i > 0) {
+> > +                       ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
+> 
+> nit: >= would be the invalid condition
 
-Athira
+yes, we actualy allow for same IDs to appear in the set
+
+thanks,
+jirka
+
 > 
-> Since you acked it I merged it now, with that correction,
+> > +                                   "sort_check",
+> > +                                   "test_set is not sorted\n");
+> > +               }
+> > +       }
+> > +
+> >         return ret;
+> >  }
+> > --
+> > 2.25.4
+> >
 > 
-> - Arnaldo
-> 
->> thanks,
->> jirka
->> 
->>> ---
->>> tools/perf/util/evsel.c | 7 ++++++-
->>> 1 file changed, 6 insertions(+), 1 deletion(-)
->>> 
->>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>> index ef802f6d40c1..811f538f7d77 100644
->>> --- a/tools/perf/util/evsel.c
->>> +++ b/tools/perf/util/evsel.c
->>> @@ -979,13 +979,18 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->>> 	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
->>> 				     opts->user_interval != ULLONG_MAX)) {
->>> 		if (opts->freq) {
->>> -			evsel__set_sample_bit(evsel, PERIOD);
->>> 			attr->freq		= 1;
->>> 			attr->sample_freq	= opts->freq;
->>> 		} else {
->>> 			attr->sample_period = opts->default_interval;
->>> 		}
->>> 	}
->>> +	/*
->>> +	 * If attr->freq was set (here or earlier), ask for period
->>> +	 * to be sampled.
->>> +	 */
->>> +	if (attr->freq)
->>> +		evsel__set_sample_bit(evsel, PERIOD);
->>> 
->>> 	if (opts->no_samples)
->>> 		attr->sample_freq = 0;
->>> -- 
->>> 2.28.0.163.g6104cc2f0b6-goog
->>> 
->> 
-> 
-> -- 
-> 
-> - Arnaldo
 
