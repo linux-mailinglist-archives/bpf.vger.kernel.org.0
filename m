@@ -2,113 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49333231EAA
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 14:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E21F231F09
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 15:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgG2MkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 08:40:06 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.73]:60639 "EHLO fudan.edu.cn"
+        id S1726981AbgG2NJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 09:09:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42620 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgG2MkF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:40:05 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 08:40:04 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=ckL
-        fjXtDlNzfBaiEh1n2WcNgMFoH6IBrBoFHbV5jBXk=; b=fnf7yXZz1XG1VNx8A0G
-        P4HxGvbRGReDWbincy2f3kynybLSC3IMgsbUHPjD/qfWHFxTL31NniB634/rzCCi
-        oEJjjyakdrtR8A+77LWS4LFdp2MkciXGICA9ZFGcnRgzXTrEQ4fTEc52rD+0BW3L
-        HPTtyfYhnRNJbCvS7krRiVQc=
-Received: from xin-virtual-machine (unknown [111.192.143.50])
-        by app2 (Coremail) with SMTP id XQUFCgDHzbmebCFfDJqTAg--.8049S3;
-        Wed, 29 Jul 2020 20:33:35 +0800 (CST)
-Date:   Wed, 29 Jul 2020 20:33:34 +0800
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1726476AbgG2NJg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 09:09:36 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP97xdCFf0hcCAA--.2S2;
+        Wed, 29 Jul 2020 21:09:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
-Subject: [PATCH] net/mlx5e: fix bpf_prog refcnt leaks in mlx5e_alloc_rq
-Message-ID: <20200729123334.GA6766@xin-virtual-machine>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: XQUFCgDHzbmebCFfDJqTAg--.8049S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rGr45KFg_yoW8WF4Upr
-        47X3sFyrZ5ta4UJw4DAaykXa4rKan0vF1kWr1avayfZr4DAan5Ar9Ygry7uF1UGFy8Gw12
-        qws2kws8AFn5C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
-        0xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUewIDDUUUU
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     "Tobin C. Harding" <me@tobin.cc>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] Documentation/bpf: Use valid and new links in index.rst
+Date:   Wed, 29 Jul 2020 21:09:04 +0800
+Message-Id: <1596028144-31374-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxP97xdCFf0hcCAA--.2S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7trW3ZF13Wr4UXr4Dtr1UZFb_yoW8GrWkpF
+        15WF1Sgrn8tF43Xws7GF47Cr1YgayfGF4Uua1UJw1Fqrn8Xa4v9F1S9rs0q3WUtrWFvFWr
+        ZFyfKr90qrn7u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjxUyOVyDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The function invokes bpf_prog_inc(), which increases the refcount of a
-bpf_prog object "rq->xdp_prog" if the object isn't NULL.
+There exists an error "404 Not Found" when I clik the html link of
+"Documentation/networking/filter.rst" in the BPF documentation [1],
+fix it.
 
-The refcount leak issues take place in two error handling paths. When
-mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function simply
-returns the error code and forgets to drop the refcount increased
-earlier, causing a refcount leak of "rq->xdp_prog".
+Additionally, use the new links about "BPF and XDP Reference Guide"
+and "bpf(2)" to avoid redirects.
 
-Fix this issue by jumping to the error handling path err_rq_wq_destroy
-when either function fails.
+[1] https://www.kernel.org/doc/html/latest/bpf/
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: d9b9170a2653 ("docs: bpf: Rename README.rst to index.rst")
+Fixes: cb3f0d56e153 ("docs: networking: convert filter.txt to ReST")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/bpf/index.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a836a02a2116..8e1b1ab416d8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
- 					&rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 26f4bb3..1b901b4 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -68,7 +68,7 @@ Testing and debugging BPF
  
- 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
  
-@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
- 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
- 					 &rq->wq_ctrl);
- 		if (err)
--			return err;
-+			goto err_rq_wq_destroy;
- 
- 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
- 
+ .. Links:
+-.. _Documentation/networking/filter.rst: ../networking/filter.txt
++.. _Documentation/networking/filter.rst: ../networking/filter.html
+ .. _man-pages: https://www.kernel.org/doc/man-pages/
+-.. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
+-.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
++.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
++.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
 -- 
-2.25.1
+2.1.0
 
