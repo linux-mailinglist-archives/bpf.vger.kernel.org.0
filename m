@@ -2,86 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561C6232358
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 19:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643832323A9
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 19:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgG2R3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 13:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgG2R3D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 13:29:03 -0400
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7B2620809
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 17:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596043743;
-        bh=HmukCrIYPvc9eXdlTyus9h4Qn/xgV4LD5QrrQcS2+8o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zsUwXxhFxbC3TGVHZ39q2J4CqydNgM50w4EAfHwdyho37TqlsNEiFGaRF+U5udgYr
-         Yh1aUQfjY5W3JrhiwJEonTPCejFa1qjwfkv1yRVKAfyhbgQfw9j5d5GXprzKddE8rk
-         CMXKC3AOdrLTX9YMG+P/4cHn2qXCWRBOJhAxVIpc=
-Received: by mail-lj1-f177.google.com with SMTP id b25so25929550ljp.6
-        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 10:29:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530SEfYL3N5RlgSa59Udne5+ELxqJsapUjFs1ccfo+fGiizRN17/
-        YE1b2mUULq0FUq+vklL/n1vzx+yQb9q8xLP5kkw=
-X-Google-Smtp-Source: ABdhPJzSFcir31Ofb7O6Rgb5pjQQdXaXJZKcBTsr9jI/5zHUoNVxsvSQ/KFEUCT+DXGke/w8iA6ENHIfOoyf0GpUesU=
-X-Received: by 2002:a2e:7c14:: with SMTP id x20mr15597447ljc.41.1596043741122;
- Wed, 29 Jul 2020 10:29:01 -0700 (PDT)
+        id S1726535AbgG2RsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 13:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgG2RsN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 13:48:13 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2A0C061794;
+        Wed, 29 Jul 2020 10:48:13 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ed14so11267025qvb.2;
+        Wed, 29 Jul 2020 10:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLov+zHRwCIC5dmTzJG4jUY2DEz0vF5YAWPCuEXipCY=;
+        b=Vw4wTblo7xPLb8AX+1v0epllbl48lPuFT40OiUuie6YFtL/leiZoCcDQHoh4CU0yAz
+         y38+K1sdewtCyhgla+hqRJVVQtLdDiNexi69yCXIyevEaxkSyopHQITX1rb7KC+0LsbH
+         3htCk3sq4+JqwSl/xuJYSutVMy1jxgLRj27R748PFC/8Nhdako2CXXWadOQIEPUtYRoS
+         tq+DSGjTiiF3fnlKcbh9cnE9f/g05B3DfRcGWX4Ry2Y3JVZkXd3FbJkdz0NgXUrxWsFe
+         QdFlKPGCj/yZWK4jMsYyF4L++oaZneceEtXyp8g+3THWqOdlsDx9P5SX8wsv9di+4mc6
+         DHQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLov+zHRwCIC5dmTzJG4jUY2DEz0vF5YAWPCuEXipCY=;
+        b=furOzCggikVMiHf/i9OV02zQTKEd4WpCNPjgXdQxbwfqpOJC4DuwN3aT+dnNcNlCUE
+         UmgU/4Zk8clJ5mB7RsarBNFMZ9NK2yDkLQyoX4XUjI/omgH1z2bZd8h/bx/c35DEVzuK
+         dK+l0khr3exsqe2bhfeXN4lwS65Ue25q8uqYJAaA4iE62bHTFuHtYkabkYlJu+QMdbQF
+         2IHSeh6F8p6O5/oqcxDkB7BYjKIHYZ0c2usPdTpWf/LglZw31vLE13VxkoRO/7UsitaC
+         s0tsTypARuXhZnzKRZU/Y0HUbnBx7NvicuP5p5V7JaN5stp94mumfIU0uCHA1soH2kgC
+         vkBA==
+X-Gm-Message-State: AOAM530SV9CpVuwdTuHclX1Et8Rw4MpbHhzLcJPlqdyl0kBoiR2BhnEf
+        pasURzg/fTVICBGsh4kpSv+egENlSjrGmKND5gU=
+X-Google-Smtp-Source: ABdhPJzdYOC78Mao1Zvw7purKveWY01VJjJxxKFefer0drau5rKfTQFnz1rDzot0Em+BMTnuo85l3SOeaNdYkBP54W4=
+X-Received: by 2002:a0c:bf4f:: with SMTP id b15mr31968009qvj.224.1596044892184;
+ Wed, 29 Jul 2020 10:48:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200728152122.1292756-1-jean-philippe@linaro.org> <20200728152122.1292756-2-jean-philippe@linaro.org>
-In-Reply-To: <20200728152122.1292756-2-jean-philippe@linaro.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 29 Jul 2020 10:28:49 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5CmQzELjc8+tQVWZStjPxENhGB7066YJLp=ANs8BYiHA@mail.gmail.com>
-Message-ID: <CAPhsuW5CmQzELjc8+tQVWZStjPxENhGB7066YJLp=ANs8BYiHA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, bpf <bpf@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+References: <20200729040913.2815687-1-andriin@fb.com> <20200729040913.2815687-2-andriin@fb.com>
+ <87k0ymwg2b.fsf@cloudflare.com>
+In-Reply-To: <87k0ymwg2b.fsf@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 29 Jul 2020 10:48:01 -0700
+Message-ID: <CAEf4BzYagTebczsojJJfn0viy07dhRUq3oysezEO_LSYSuwfRQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 2/2] selftests/bpf: extend map-in-map selftest to
+ detect memory leaks
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, zlim.lnx@gmail.com,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        Kernel Team <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        linux- stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 8:37 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+On Wed, Jul 29, 2020 at 7:29 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> When a tracing BPF program attempts to read memory without using the
-> bpf_probe_read() helper, the verifier marks the load instruction with
-> the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
-> this flag it falls back to the interpreter.
+> On Wed, Jul 29, 2020 at 06:09 AM CEST, Andrii Nakryiko wrote:
+> > Add test validating that all inner maps are released properly after skeleton
+> > is destroyed. To ensure determinism, trigger kernel-side synchronize_rcu()
+> > before checking map existence by their IDs.
+> >
+> > Acked-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/btf_map_in_map.c | 124 ++++++++++++++++--
+> >  1 file changed, 110 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> > index f7ee8fa377ad..f6eee3fb933c 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
+> > @@ -5,10 +5,60 @@
+> >
+> >  #include "test_btf_map_in_map.skel.h"
+> >
+> > +static int duration;
+> > +
+> > +static __u32 bpf_map_id(struct bpf_map *map)
+> > +{
+> > +     struct bpf_map_info info;
+> > +     __u32 info_len = sizeof(info);
+> > +     int err;
+> > +
+> > +     memset(&info, 0, info_len);
+> > +     err = bpf_obj_get_info_by_fd(bpf_map__fd(map), &info, &info_len);
+> > +     if (err)
+> > +             return 0;
+> > +     return info.id;
+> > +}
+> > +
+> > +/*
+> > + * Trigger synchronize_cpu() in kernel.
 >
-> Add support for BPF_PROBE_MEM, by appending an exception table to the
-> BPF program. If the load instruction causes a data abort, the fixup
-> infrastructure finds the exception table and fixes up the fault, by
-> clearing the destination register and jumping over the faulting
-> instruction.
+> Nit: synchronize_*r*cu().
+
+welp, yeah
+
 >
-> To keep the compact exception table entry format, inspect the pc in
-> fixup_exception(). A more generic solution would add a "handler" field
-> to the table entry, like on x86 and s390.
+> > + *
+> > + * ARRAY_OF_MAPS/HASH_OF_MAPS lookup/update operations trigger
+> > + * synchronize_rcu(), if looking up/updating non-NULL element. Use this fact
+> > + * to trigger synchronize_cpu(): create map-in-map, create a trivial ARRAY
+> > + * map, update map-in-map with ARRAY inner map. Then cleanup. At the end, at
+> > + * least one synchronize_rcu() would be called.
+> > + */
 >
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> That's a cool trick. I'm a bit confused by "looking up/updating non-NULL
+> element". It looks like you're updating an element that is NULL/unset in
+> the code below. What am I missing?
 
-This patch looks good to me.
+I was basically trying to say that it has to be a successful lookup or
+update. For lookup that means looking up non-NULL (existing) entry.
+For update -- setting valid inner map FD.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Not sure fixing this and typo above is worth it to post v5.
 
-It is possible to add a selftest for this? I thought about this a
-little bit, but
-didn't get a good idea.
+>
+> > +static int kern_sync_rcu(void)
+> > +{
+> > +     int inner_map_fd, outer_map_fd, err, zero = 0;
+> > +
+> > +     inner_map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, 4, 4, 1, 0);
+> > +     if (CHECK(inner_map_fd < 0, "inner_map_create", "failed %d\n", -errno))
+> > +             return -1;
+> > +
+> > +     outer_map_fd = bpf_create_map_in_map(BPF_MAP_TYPE_ARRAY_OF_MAPS, NULL,
+> > +                                          sizeof(int), inner_map_fd, 1, 0);
+> > +     if (CHECK(outer_map_fd < 0, "outer_map_create", "failed %d\n", -errno)) {
+> > +             close(inner_map_fd);
+> > +             return -1;
+> > +     }
+> > +
+> > +     err = bpf_map_update_elem(outer_map_fd, &zero, &inner_map_fd, 0);
+> > +     if (err)
+> > +             err = -errno;
+> > +     CHECK(err, "outer_map_update", "failed %d\n", err);
+> > +     close(inner_map_fd);
+> > +     close(outer_map_fd);
+> > +     return err;
+> > +}
+> > +
 
-Thanks,
-Song
+[...]
+
+trimming's good ;)
