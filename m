@@ -2,181 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ACC2323BE
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 19:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1202E232488
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 20:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgG2Rvj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 13:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S1726664AbgG2SVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 14:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2Rvi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 13:51:38 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D79C061794;
-        Wed, 29 Jul 2020 10:51:38 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id d27so18291840qtg.4;
-        Wed, 29 Jul 2020 10:51:38 -0700 (PDT)
+        with ESMTP id S1726336AbgG2SVr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 14:21:47 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E17C061794;
+        Wed, 29 Jul 2020 11:21:47 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id b2so731996qvp.9;
+        Wed, 29 Jul 2020 11:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V+0bF9fj95SwJaHo825THI13Rp+EtVA+fcdSeohX/No=;
-        b=S9zqCfZVM+vXUdJl/czF2JdIY8jLLlzKOzfnINr3c4F00TdZHVXldPIqqsuh4ZKIPV
-         O4gTW7kLfb9SzcvGF/3oj9DWVy9qvWO0YTYUdxfqZXLKuE+rUOmOsXlbsjrPdqMde7Iy
-         vnqnzzbXpkXLNGZbNCN1Vsn4j6fVJAAeXmNhjohhpRI3MvrLlFGyBAWeTz0+PHBxqsRQ
-         jAsX6cZFeq9lRgPZJgdBQ7ncTK0yP39a/369ePIng+Fx4dmLpQ33VSo4jCJC3tqSLgCD
-         TyTVux2rWoeF5j1onjwQdcBAZn8w/1HtMFEQVjj6pA1YeyNeSl0fkLaCh+g9GxWRK5hZ
-         kCcQ==
+        bh=uC2Yfa9EauSFl+OWvUk9gA/kGn27Q0HFfGT3/E012rQ=;
+        b=NTlMh/A8gTUZMxyYwL/gEdbpPjTNeA/qMBoowZGjv0SH8z5vQwUceiOXR30/dE3Hwm
+         Al5Mv/jjP0XuDqJR8uFiSC2rU8SfGda/K+vfAfwwmQFDYGwM5gh/vNco89k1AG38TAvQ
+         KefjcgPYfj1219rzNxXzIcvwbzbDpbhcuE2adFp5lE92jrmf+xr7+48y1wkZl07XxY5S
+         45hRDnE6uGeK4uV74xwFVrEoEQB0IH33WuuM7XdqYpS6fYLiOGG64qVYOnYBuY94onrO
+         bVSHFbJ4rtgCw6ysZsENRd5LLGRyC4ZfBTT/kv9cv1gTqD/Q+7PYpQHxsCluITswsWDz
+         5nJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V+0bF9fj95SwJaHo825THI13Rp+EtVA+fcdSeohX/No=;
-        b=Jb3B7aXCHL04rxBzQ/eQQSvdNk+J0nGXDJRi3WT/X4Alxyk606GN5tOQQZCj7tYGVH
-         UCBDDfwfgCUz8pJP465Xm1vakL98xNw3iWFWyrNL3NbtLLz1P5aLouo56FPX/iwMhrak
-         hKqANoA0g1cDEtm9luv3Gp+vvrEJN2G25UZMdEdZf2SXqgM77+u6TOQL+HC5cR0jQFzj
-         ISHVvHC4GLGWefQbdPxmOdRUhlVOWKmV0lqH4SRHIX57SukzFYDrHnt6j/zQyG/Xo4tb
-         r/CqXKxkqzW+sxreoyMeglpMCvb9WHeIAEE/19+fqm3I0U1rBPKtON1OHnPR396nWVI0
-         pA7g==
-X-Gm-Message-State: AOAM531iy9E7LhSnDdyhXAAazXqbktC6jo6nH6SdF986R3I0KXc1pUG6
-        jxqnVjT9d/nvWoloB95be+YX0Yz3HwWi6dhuOSc=
-X-Google-Smtp-Source: ABdhPJwPSDMQEbPO5Y90+QtOyMMNC0Wb2JR6fq+Lja5yP3TUpMJJdYZKMOgUZ8bQFvknJFdHaFxjFxFbKwV/4nkma1E=
-X-Received: by 2002:aed:2ae2:: with SMTP id t89mr16843575qtd.171.1596045097606;
- Wed, 29 Jul 2020 10:51:37 -0700 (PDT)
+        bh=uC2Yfa9EauSFl+OWvUk9gA/kGn27Q0HFfGT3/E012rQ=;
+        b=SAuAwagh0K60V7udmol3LZ/UTnz8pvk7JAExh6BGs3baWDsL7vP+xlqrGMGAJXNg9q
+         jkfgtURyJCGEUlPS9fiSlrLmGX3i72sn/1XDbMbZ83OHaiU/NAuLc2LxIzZn7cLf0Kg5
+         ZbpSpysk2vqmmYJ8FWMV2NCY0Xhmd7lWsBPe8TS8rt7uwF1+R3lrrLwuZz8aEnrHkc/H
+         RrBi2bGm2srxcZZov8JU6giRBMqYom4TOyw37FUMLavF1kdCkFqhk2EACO/NVbjtBiul
+         IU61casVA3Zl2ZJ7gXOnXp1zNs89UYTzV3g38ygqroOkr4gXcG2Utm3DNk3E9c7mzdnM
+         FTUg==
+X-Gm-Message-State: AOAM533SFxSLwSVwYnfbPtOScRv6v6vt5D5T/dGZEuJ9hUz5RpIwT8Ll
+        yzTNgYqV5ROwZk/Z1ZR6KbsEWQju2A20I0zM+CI=
+X-Google-Smtp-Source: ABdhPJw+UxmZlckbtiL6nSgupchii/HyIuAX8Lgd/3uEEbCtVOPzQYxRnRJ6mQNyMcyxkAcbDj2SPErkrmxbWbsFmxo=
+X-Received: by 2002:a0c:9ae2:: with SMTP id k34mr32913779qvf.247.1596046906946;
+ Wed, 29 Jul 2020 11:21:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722211223.1055107-1-jolsa@kernel.org> <20200722211223.1055107-8-jolsa@kernel.org>
- <CAEf4BzacqauEc8=o29EBUsmvTMs3FZ+-Kcc4cSJ9Te4yh5-7qg@mail.gmail.com> <20200729160419.GM1319041@krava>
-In-Reply-To: <20200729160419.GM1319041@krava>
+References: <20200724203830.81531-1-alexei.starovoitov@gmail.com> <20200724203830.81531-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20200724203830.81531-3-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 29 Jul 2020 10:51:26 -0700
-Message-ID: <CAEf4BzZ26StciUpDas1Mdi1gY_LJChjkUEBvqzuZuhFuAAibLQ@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 07/13] bpf: Add btf_struct_ids_match function
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 29 Jul 2020 11:21:35 -0700
+Message-ID: <CAEf4BzaJcAerczLS+nHPX5KpvNjfAB6Ushmy3HFyu5OJbKH9+Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: Add BPF program and map iterators as
+ built-in BPF programs.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 9:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Jul 24, 2020 at 1:39 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Jul 28, 2020 at 04:35:16PM -0700, Andrii Nakryiko wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 >
-> SNIP
+> The program and map iterators work similar to seq_file-s.
+> Once the program is pinned in bpffs it can be read with "cat" tool
+> to print human readable output. In this case about BPF programs and maps.
+> For example:
+> $ cat /sys/fs/bpf/progs.debug
+>   id name            attached
+>    5 dump_bpf_map    bpf_iter_bpf_map
+>    6 dump_bpf_prog   bpf_iter_bpf_prog
+> $ cat /sys/fs/bpf/maps.debug
+>   id name            pages
+>    3 iterator.rodata     2
 >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index bae557ff2da8..c981e258fed3 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -1306,6 +1306,8 @@ int btf_struct_access(struct bpf_verifier_log *log,
-> > >                       const struct btf_type *t, int off, int size,
-> > >                       enum bpf_access_type atype,
-> > >                       u32 *next_btf_id);
-> > > +bool btf_struct_ids_match(struct bpf_verifier_log *log,
-> > > +                         int off, u32 id, u32 mid);
-> > >  int btf_resolve_helper_id(struct bpf_verifier_log *log,
-> > >                           const struct bpf_func_proto *fn, int);
-> > >
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 1ab5fd5bf992..562d4453fad3 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -4140,6 +4140,35 @@ int btf_struct_access(struct bpf_verifier_log *log,
-> > >         return -EINVAL;
-> > >  }
-> > >
-> > > +bool btf_struct_ids_match(struct bpf_verifier_log *log,
-> > > +                         int off, u32 id, u32 mid)
+> To avoid kernel build dependency on clang 10 separate bpf skeleton generation
+> into manual "make" step and instead check-in generated .skel.h into git.
+>
+> Unlike 'bpftool prog show' in-kernel BTF name is used (when available)
+> to print full name of BPF program instead of 16-byte truncated name.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
 
-just realized that if id == mid and off == 0, btf_struct_ids_match()
-will return false. Right now verifier is careful to not call
-btf_struct_ids_match in such case, but I wonder if it's better to make
-that (common) case also work?
+Tiny bug below, otherwise looks good.
 
-> > > +{
-> > > +       const struct btf_type *type;
-> > > +       u32 nid;
-> > > +       int err;
-> > > +
-> >
-> > mid and nid are terrible names, especially as an input argument name.
-> > mid == need_type_id? nid == cur_type_id or something along those
-> > lines?
->
-> 'mid' was for matching id, 'nid' for nested id ;-)
-> need_type_id/cur_type_id sound good
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-nested I guessed, mid was a mystery to me :))
 
+>  kernel/bpf/preload/iterators/.gitignore       |   2 +
+>  kernel/bpf/preload/iterators/Makefile         |  57 +++
+>  kernel/bpf/preload/iterators/README           |   4 +
+>  kernel/bpf/preload/iterators/iterators.bpf.c  | 118 +++++
+>  kernel/bpf/preload/iterators/iterators.skel.h | 411 ++++++++++++++++++
+>  5 files changed, 592 insertions(+)
+>  create mode 100644 kernel/bpf/preload/iterators/.gitignore
+>  create mode 100644 kernel/bpf/preload/iterators/Makefile
+>  create mode 100644 kernel/bpf/preload/iterators/README
+>  create mode 100644 kernel/bpf/preload/iterators/iterators.bpf.c
+>  create mode 100644 kernel/bpf/preload/iterators/iterators.skel.h
 >
-> >
-> > > +       do {
-> > > +               type = btf_type_by_id(btf_vmlinux, id);
-> > > +               if (!type)
-> > > +                       return false;
-> > > +               err = btf_struct_walk(log, type, off, 1, &nid);
-> > > +               if (err < 0)
-> > > +                       return false;
-> > > +
-> > > +               /* We found nested struct object. If it matches
-> > > +                * the requested ID, we're done. Otherwise let's
-> > > +                * continue the search with offset 0 in the new
-> > > +                * type.
-> > > +                */
-> > > +               if (err == walk_struct && mid == nid)
-> > > +                       return true;
-> > > +               off = 0;
-> > > +               id = nid;
-> > > +       } while (err == walk_struct);
-> >
-> > This seems like a slightly more obvious control flow:
-> >
-> > again:
-> >
-> >    ...
-> >
-> >    if (err != walk_struct)
-> >       return false;
->
-> ok, and perhaps use in here the switch(err) as in the previous patch?
 
-I think straightforward if is better than switch here, because
-anything but walk_struct is not what we expect.
+[...]
 
->
-> thanks,
-> jirka
->
-> >
-> >    if (mid != nid) {
-> >       off = 0;
-> >       id = nid;
-> >       goto again;
-> >    }
-> >
-> >    return true;
-> >
-> > > +
-> > > +       return false;
-> > > +}
-> > > +
-> > >  int btf_resolve_helper_id(struct bpf_verifier_log *log,
-> > >                           const struct bpf_func_proto *fn, int arg)
-> > >  {
-> >
-> > [...]
-> >
->
+> +
+> +static const char *get_name(struct btf *btf, long btf_id, const char *fallback)
+> +{
+> +       struct btf_type **types, *t;
+> +       unsigned int name_off;
+> +       const char *str;
+> +
+> +       if (!btf)
+> +               return fallback;
+> +       str = btf->strings;
+> +       types = btf->types;
+> +       bpf_probe_read_kernel(&t, sizeof(t), types + btf_id);
+> +       name_off = BPF_CORE_READ(t, name_off);
+> +       if (name_off > btf->hdr.str_len)
+
+>= here?
+
+> +               return fallback;
+> +       return str + name_off;
+> +}
+> +
+> +SEC("iter/bpf_map")
+> +int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
+> +{
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       __u64 seq_num = ctx->meta->seq_num;
+> +       struct bpf_map *map = ctx->map;
+> +
+> +       if (!map)
+> +               return 0;
+> +
+> +       if (seq_num == 0)
+> +               BPF_SEQ_PRINTF(seq, "  id name             pages\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%4u %-16s%6d\n", map->id, map->name, map->memory.pages);
+
+map->memory.pages won't be meaningful, once Roman's patches removing
+RLIMIT_MEMLOCK usage land, so might just drop them now
+
+> +       return 0;
+> +}
+> +
+> +SEC("iter/bpf_prog")
+> +int dump_bpf_prog(struct bpf_iter__bpf_prog *ctx)
+> +{
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       __u64 seq_num = ctx->meta->seq_num;
+> +       struct bpf_prog *prog = ctx->prog;
+> +       struct bpf_prog_aux *aux;
+> +
+> +       if (!prog)
+> +               return 0;
+> +
+> +       aux = prog->aux;
+> +       if (seq_num == 0)
+> +               BPF_SEQ_PRINTF(seq, "  id name             attached\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%4u %-16s %s %s\n", aux->id,
+> +                      get_name(aux->btf, aux->func_info[0].type_id, aux->name),
+> +                      aux->attach_func_name, aux->linked_prog->aux->name);
+> +       return 0;
+> +}
+> +char LICENSE[] SEC("license") = "GPL";
+
+
+[...]
