@@ -2,144 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FA0232296
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 18:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5766C2322A9
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgG2QYV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 12:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S1726900AbgG2Q1y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 12:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgG2QYV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:24:21 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284AEC061794;
-        Wed, 29 Jul 2020 09:24:21 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id t4so19913895iln.1;
-        Wed, 29 Jul 2020 09:24:21 -0700 (PDT)
+        with ESMTP id S1726391AbgG2Q1y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 12:27:54 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390FFC0619D2
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 09:27:54 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id f1so5376828qvx.13
+        for <bpf@vger.kernel.org>; Wed, 29 Jul 2020 09:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=AH3iVlmefZurpYiADR1cpY1Cx4jU1ARkIkj0P/RSa6k=;
-        b=ea27eZfnZx1t88la2qgJLwz9M8LwnZ8V8fyohWuGO5qxoLzr7oAdStnkuL/qVAl8vY
-         wwlmK+MrtFIlaCyuAsToi75m2X4kjlw3vUainV0XL/1acLYoz60qrcwuXZWkkbWLnvJa
-         jjo52SZDfrZi5jNTwgoLqOcPglI1MIjS6NgmZx+xoWphv2ZmyfhCZ6HvGe7cOFTre36l
-         zX/1N7SnqI/Dv8eELrjDtiFiWbuPwkmiQflVJI9SpbCALExbnw1k67hsHOIDDV3mO79d
-         q+z8ZbMLp9rUGyb+pgSIuCabTTkdq37UxB0cgrFxrY07IncA5xHlSM/bX8/AaqNbqSuM
-         CyGA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=MGpr77ldP86j3ZNZw4dToP4I3Kuuvh6wpixf0WTOZ7A=;
+        b=E5s1JzzxuTppaPhCGoUOcD/A2Te/6/+hf8galBXKlXdygJo6jWW528Da7QGtjB4Lok
+         +PmpIcj0xgO6gLvxk4RVwNjC3KPGwtlg1bDESFJ/AlJ786VwQhSkb0QAsl0fBd1eP8a5
+         Im65W+SvjvzmSIlT3GWGB4BuECXxt9QTxuvDkA8lXgVqIygGncTiUda96AxF2IPwBOca
+         i8imwVjqoXOjZRSzeGEozmhDauvSHlnZQQ9DYl7SzyLEnVVZTOloW2M00mhaklg9IQa+
+         PvnfuArqeQPiIX+IoCk5hIBHmby5C+c1TA0oEQXGlujkUWb1/0tAlg+7FOSKCmHmbzFU
+         Fw7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=AH3iVlmefZurpYiADR1cpY1Cx4jU1ARkIkj0P/RSa6k=;
-        b=HMJlj2lpaSEiMATzA028lOGIygAiqUjO9BVlFSWNrRPMLvof0oXY6M9MTOxMrYf12D
-         mpt7DgoMb937x30Se7QWcmuzZHewMXqzKW2jd15V9UfkLjXIs0KWDG2lVYb7tP3X6/fv
-         PSryvRoWRL9u7i9tmX+LOgArMzVyGXH/Nvfhawc4Qi6xooBMRJsqeFjgV0pupIjrvOCs
-         yI5QhFdEC8RV99dGN7d8tl3BsfaFCatd7qSv0j8CO7kf9HOilf88pDNNj9iZhct4g51C
-         sRGdCm6s4WyFB18lR4LwhD3ncbv6YZ4it1FpwQ7rdhkWj8FSTdLSQDUhiLLGrsFPoKJT
-         ICxw==
-X-Gm-Message-State: AOAM5313c5QcXCMHoC5RqS8lH3YhSjhcPyNEgmx+xWhpRYNPFhp/yvfS
-        GKdPQwSYWWYDYmbt8MemCho=
-X-Google-Smtp-Source: ABdhPJweoMTl+OEFKIl3Z5CbnjakEdO4G0E9KwZqY0B2r7BUOf4+EthnjEp+NWercFu3nJRU0rUopg==
-X-Received: by 2002:a92:c530:: with SMTP id m16mr36096522ili.300.1596039860026;
-        Wed, 29 Jul 2020 09:24:20 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id a5sm1182255iol.39.2020.07.29.09.24.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Jul 2020 09:24:19 -0700 (PDT)
-Subject: [bpf PATCH v2 5/5] bpf,
- selftests: Add tests to sock_ops for loading sk
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     john.fastabend@gmail.com, kafai@fb.com, daniel@iogearbox.net,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Wed, 29 Jul 2020 09:24:07 -0700
-Message-ID: <159603984765.4454.3932218162163081929.stgit@john-Precision-5820-Tower>
-In-Reply-To: <159603940602.4454.2991262810036844039.stgit@john-Precision-5820-Tower>
-References: <159603940602.4454.2991262810036844039.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=MGpr77ldP86j3ZNZw4dToP4I3Kuuvh6wpixf0WTOZ7A=;
+        b=r0eU7qu504c+f1buae00dOAoESsK9cRuXkxn7cmGHpI2Bh9R+4i/May49aaiSHxz9Q
+         4OKQ89UdxalA+30dweJ4oK2O3BDV0MXs9NGoDoK88z1+Z4szMGLCn/5ZVZfFvUtL/O3b
+         IARmnD2GjnNMSPtApuXh2PBGCG8ivCEGaLQXk0bfwI9G9NqMb4FG/+JrG4eME4QdZ6td
+         SdGh+4JTMzr1k0sCirOg7jmjLm0b6dcEnvClAvyPOAQpwOOABudYylFvXuF8LMcv6q6K
+         adMzPYwEcSlxX71RsP9eccN5FJxBj+bWFIFFkOS1XOS0Rmyd9P5BuZlhT6G5zRGc7yRI
+         XWIQ==
+X-Gm-Message-State: AOAM532Pu7zOaB5Fbflfq2MO5YETouvkAVrAu3++3gliBTq5ZKsL5hvD
+        ija59BHh26UnbsIzs4Pb6dX/ZZKynXSsvHzmwLa3rEDXN6QQjx8hrvddD6WUZOqeeZ47lhhk1xP
+        1C4nU7GHmXdt13tUJcNQIyu0TAOAop+qlzdw0PRiektFmW+emEw==
+X-Google-Smtp-Source: ABdhPJzDo8uewqT+OsGuX8gLdD0M+nm4VGbeFMjZ0bsv9tKp17jw4CUB1TB8AgnI6Y59g4wmjd4aAmg=
+X-Received: by 2002:ad4:5042:: with SMTP id m2mr32830843qvq.225.1596040073246;
+ Wed, 29 Jul 2020 09:27:53 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 09:27:51 -0700
+Message-Id: <20200729162751.GC184844@google.com>
+Mime-Version: 1.0
+Subject: BPF program metadata
+From:   sdf@google.com
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        zhuyifei@google.com, maheshb@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests to directly accesse sock_ops sk field. Then use it to
-ensure a bad pointer access will fault if something goes wrong.
-We do three tests:
+As discussed in
+https://docs.google.com/presentation/d/1A9Anx8JPHl_pK1aXy8hlxs3V5pkrKwHHtkPf_-HeYTc
+during BPF office hours, we'd like to attach arbitrary auxiliary
+metadata to the program, for example, the build timestamp or the commit
+hash.
 
-The first test ensures when we read sock_ops sk pointer into the
-same register that we don't fault as described earlier. Here r9
-is chosen as the temp register.  The xlated code is,
+IIRC, the suggestion was to explore BTF and .BTF.ext section in
+particular.
+We've spent some time looking at the BTF encoding and BTF.ext section
+and we don't see how we can put this data into .BTF.ext or even .BTF
+without any kernel changes.
 
-  36: (7b) *(u64 *)(r1 +32) = r9
-  37: (61) r9 = *(u32 *)(r1 +28)
-  38: (15) if r9 == 0x0 goto pc+3
-  39: (79) r9 = *(u64 *)(r1 +32)
-  40: (79) r1 = *(u64 *)(r1 +0)
-  41: (05) goto pc+1
-  42: (79) r9 = *(u64 *)(r1 +32)
+The reasoning (at least how we see it):
+* .BTF.ext is just a container with func_info/line_info/relocation_info
+   and libbpf extracts the data form this section and passes it to
+   sys_bpf(BPF_PROG_LOAD); the important note is that it doesn't pass the
+   whole container to the kernel, but passes the data that's been
+   extracted from the appropriate sections
+* .BTF can be used for metadata, but it looks like we'd have to add
+   another BTF_INFO_KIND() to make it a less messy (YiFei, feel free to
+   correct me)
 
-The second test ensures the temp register selection does not collide
-with in-use register r9. Shown here r8 is chosen because r9 is the
-sock_ops pointer. The xlated code is as follows,
+So the question is: are we missing something? Is there some way to add
+key=value metadata to BTF that doesn't involve a lot of kernel changes?
 
-  46: (7b) *(u64 *)(r9 +32) = r8
-  47: (61) r8 = *(u32 *)(r9 +28)
-  48: (15) if r8 == 0x0 goto pc+3
-  49: (79) r8 = *(u64 *)(r9 +32)
-  50: (79) r9 = *(u64 *)(r9 +0)
-  51: (05) goto pc+1
-  52: (79) r8 = *(u64 *)(r9 +32)
-
-And finally, ensure we didn't break the base case where dst_reg does
-not equal the source register,
-
-  56: (61) r2 = *(u32 *)(r1 +28)
-  57: (15) if r2 == 0x0 goto pc+1
-  58: (79) r2 = *(u64 *)(r1 +0)
-
-Notice it takes us an extra four instructions when src reg is the
-same as dst reg. One to save the reg, two to restore depending on
-the branch taken and a goto to jump over the second restore.
-
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../testing/selftests/bpf/progs/test_tcpbpf_kern.c |   21 ++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-index 6420b61..3e6912e 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-@@ -82,6 +82,27 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 		:: [skops] "r"(skops)
- 		: "r9", "r8");
- 
-+	asm volatile (
-+		"r1 = %[skops];\n"
-+		"r1 = *(u64 *)(r1 +184);\n"
-+		"if r1 == 0 goto +1;\n"
-+		"r1 = *(u32 *)(r1 +4);\n"
-+		:: [skops] "r"(skops):"r1");
-+
-+	asm volatile (
-+		"r9 = %[skops];\n"
-+		"r9 = *(u64 *)(r9 +184);\n"
-+		"if r9 == 0 goto +1;\n"
-+		"r9 = *(u32 *)(r9 +4);\n"
-+		:: [skops] "r"(skops):"r9");
-+
-+	asm volatile (
-+		"r1 = %[skops];\n"
-+		"r2 = *(u64 *)(r1 +184);\n"
-+		"if r2 == 0 goto +1;\n"
-+		"r2 = *(u32 *)(r2 +4);\n"
-+		:: [skops] "r"(skops):"r1", "r2");
-+
- 	op = (int) skops->op;
- 
- 	update_event_map(op);
-
+If the restrictions above are correct, should we go back to trying to
+put this metadata into .data section (or maybe even the new .metadata
+section)? The only missing piece of the puzzle in that case is the
+ability to extend BPF_PROG_LOAD with a way to say 'hold this map
+unconditionally'.
