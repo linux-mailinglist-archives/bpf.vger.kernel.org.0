@@ -2,92 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DBB2326BE
-	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 23:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B85A2326BF
+	for <lists+bpf@lfdr.de>; Wed, 29 Jul 2020 23:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgG2V3s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 17:29:48 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39626 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2V3s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jul 2020 17:29:48 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0tdw-0006LB-BM; Wed, 29 Jul 2020 23:29:44 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k0tdw-000LCe-1p; Wed, 29 Jul 2020 23:29:44 +0200
-Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
-To:     Song Liu <song@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, bpf <bpf@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, zlim.lnx@gmail.com,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-References: <20200728152122.1292756-1-jean-philippe@linaro.org>
- <20200728152122.1292756-2-jean-philippe@linaro.org>
- <CAPhsuW5CmQzELjc8+tQVWZStjPxENhGB7066YJLp=ANs8BYiHA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4791872a-9f7e-1c1c-392c-8b68a13091e3@iogearbox.net>
-Date:   Wed, 29 Jul 2020 23:29:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726718AbgG2V37 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jul 2020 17:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgG2V37 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jul 2020 17:29:59 -0400
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B9DF2070B;
+        Wed, 29 Jul 2020 21:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596058199;
+        bh=uaBHlb+/DK7ID4xmv9w7ZAnkLGuB3Gvu9gOKa+1I2NM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pm+DA+czSBR6PccrWY7kW4/MBdCb2hJcjtGRigiE0DhiLh5NGleOoVgUvG3MB8g59
+         4pbr/ixN8WQ58pRpcRny/3wBE2/ggvFKAYY9s+FeThupfrIopshO+hrqrCWSbLrcu9
+         8nHfBiOgUqiDG8tcb6M991MpiV7yZyjAZ0cZ9hwo=
+Received: by mail-lj1-f182.google.com with SMTP id q7so26647009ljm.1;
+        Wed, 29 Jul 2020 14:29:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531/c+j5LsYFW1O+V0ozVz9nTxkGEykU9htPS8MXnXMNp2N1njbu
+        5rgchVDx8WX8xWBYLisqdzU+0VGvs+jsJl9LKnI=
+X-Google-Smtp-Source: ABdhPJxXd2CIxbtKxtJVA07SnTe9GaS5F3gJXTXl01Qpq/8jl/nlx06w13Ypf6oFf5arvieiXJgrzj2x7+p2xRqkFzE=
+X-Received: by 2002:a2e:3003:: with SMTP id w3mr134829ljw.273.1596058197453;
+ Wed, 29 Jul 2020 14:29:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW5CmQzELjc8+tQVWZStjPxENhGB7066YJLp=ANs8BYiHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25888/Wed Jul 29 16:57:45 2020)
+References: <159603940602.4454.2991262810036844039.stgit@john-Precision-5820-Tower>
+ <159603977489.4454.16012925913901625071.stgit@john-Precision-5820-Tower>
+In-Reply-To: <159603977489.4454.16012925913901625071.stgit@john-Precision-5820-Tower>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 29 Jul 2020 14:29:46 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW77ifBOovgEHi=5LpyOkksFnDHSjYzbgjAjgpPP2-VMhQ@mail.gmail.com>
+Message-ID: <CAPhsuW77ifBOovgEHi=5LpyOkksFnDHSjYzbgjAjgpPP2-VMhQ@mail.gmail.com>
+Subject: Re: [bpf PATCH v2 1/5] bpf: sock_ops ctx access may stomp registers
+ in corner case
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/29/20 7:28 PM, Song Liu wrote:
-> On Tue, Jul 28, 2020 at 8:37 AM Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
->>
->> When a tracing BPF program attempts to read memory without using the
->> bpf_probe_read() helper, the verifier marks the load instruction with
->> the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
->> this flag it falls back to the interpreter.
->>
->> Add support for BPF_PROBE_MEM, by appending an exception table to the
->> BPF program. If the load instruction causes a data abort, the fixup
->> infrastructure finds the exception table and fixes up the fault, by
->> clearing the destination register and jumping over the faulting
->> instruction.
->>
->> To keep the compact exception table entry format, inspect the pc in
->> fixup_exception(). A more generic solution would add a "handler" field
->> to the table entry, like on x86 and s390.
->>
->> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> 
-> This patch looks good to me.
-> 
-> Acked-by: Song Liu <songliubraving@fb.com>
+On Wed, Jul 29, 2020 at 9:24 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> I had a sockmap program that after doing some refactoring started spewing
+> this splat at me:
+[...]
+> least reported it so it must a fairly rare pattern.
+>
+> Fixes: 9b1f3d6e5af29 ("bpf: Refactor sock_ops_convert_ctx_access")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 
-+1, applied, thanks a lot!
-
-> It is possible to add a selftest for this? I thought about this a
-> little bit, but
-> didn't get a good idea.
-
-Why not adding a test_verifier.c test case which calls into bpf_get_current_task()
-to fetch pointer to current and then read out some field via BPF_PROBE_MEM which
-should then succeed on x86/s390x/arm64 but be skipped on the other archs? Jean-Philippe,
-could you look into following up with such test case(s)?
-
-Thanks,
-Daniel
+Acked-by: Song Liu <songliubraving@fb.com>
