@@ -2,304 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06FB2333D5
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 16:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A894233438
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 16:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgG3OHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 10:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S1728337AbgG3OWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 10:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729398AbgG3OHb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 10:07:31 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DC1C0617AB
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 07:07:30 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d190so5822901wmd.4
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 07:07:30 -0700 (PDT)
+        with ESMTP id S1726873AbgG3OWc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 10:22:32 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3577FC061574
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 07:22:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a26so2351317ejc.2
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 07:22:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3o2drjGs8KWa5U1nYnfJRdICZ+APkdBEsWAGMN3vBaI=;
-        b=oCIMcOaCXgljXkIq3UZd+qMwBlC2a5je+tRAg7l3/mMd4qXbQGbuEuyZCei+qnzZ6h
-         8OUxj5VC7xk2ER3HjsPM3+DUZNgXTZCVtC9sg8HUHftexoBjUztSLmWj6MmV2ivSlReA
-         auAVTjERMC7tDtl6Ac7PSDg2h2pdLNf83YKxs=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YwZxozNZBXDiR/2kRqLL1MaXDjLPic26w5gQoYGrfkM=;
+        b=R7tGuqjD/vvCJ2904Vuec4iUJ6rFzusWXWJpA5X/dmo3kgYXJDkMmYeNILpJLVELhQ
+         IAVW2EQA1kYDJ0mQVbVZ/ri+6eTjMHp7C0fwDl/HDXtSIamI0BGeYc+Na69ibjZfTR+k
+         A43hfZYIvSuhBuw6gTrAUuz2MGPi0kClRbeqMBypGnTi7UtIDyfJfWxE69l/X0YJM87N
+         MTV3qlKOPuB7n3Y0yYpW9nt3ndY4Wc/s/iYW81vulZijqz8/pLpbUe9h8ZxE73hNQsXz
+         v9H9yTa9MF94xzDWteLRVawS/ekYrp4ZjUF2eDn4jSz+CCPVPTPzkBYtQRE46iqj4tpE
+         lifw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3o2drjGs8KWa5U1nYnfJRdICZ+APkdBEsWAGMN3vBaI=;
-        b=lMpwYY/FIEzRTwvRJaf6DFPzrMfLbGMPeuF80mwEchXE0DwyZqN3UfWmHppJbqoJCh
-         gTOQZ5GQ5Jp9t7QTxl4TDq5U4ZLWpqnk0eZN6sFXPREu4EuMz6qHcnp5h7Qv/J42TXL4
-         xx8PtX+uvwd2DLlIP/1E5RSPtDYJGgx7KFpTUfR3WUqFv9AADelValtKTfQrajJACGDh
-         ZdFbUPOFS5bxOaK2kMNrU/AyVCzd7Urxbj841EqDmX3+xOUii0BLk8JRtgiS+scNStTq
-         angwmTO3uuDftk9TtOyH1MKLsM9+JctE5p4C7/QvoZMR32nLtl+H0zOJTWGqKiz/biqo
-         AQpA==
-X-Gm-Message-State: AOAM533GiTiD9rAKN44K2wePqA/YZFRKrmYppPwDmVM6A4AQ6saChXd/
-        STob4QQTpQ2DN9yVU2Or9UIeaA==
-X-Google-Smtp-Source: ABdhPJwem7leiv9tYoRcXMVJU1GZ/JkI5US0P9YwhXBG6WeV9HZ5muVlQV3+Na3fN0osf8zObnunow==
-X-Received: by 2002:a1c:14e:: with SMTP id 75mr14373274wmb.151.1596118049243;
-        Thu, 30 Jul 2020 07:07:29 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id a10sm19088599wmd.3.2020.07.30.07.07.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YwZxozNZBXDiR/2kRqLL1MaXDjLPic26w5gQoYGrfkM=;
+        b=Er7YAegJIRDEXJgkt1G/lckdJjoeL99KSHhSJwMCx81kFNSNMjJcIGHeC+bR26EPr0
+         QqJpHnNxu9/C4ot5b288tV2Gx3nVP20pg59NzyuNqKrqL1wyTSjxUVwsUp0uKWrKxlbY
+         kR1nQ1+j4PJXFLK8indwOks2V+1f+kXOtfRJjTYSTrlHolcIh7uHHnS3GeiX1IaUPthv
+         HAAouRtNJI4eNpjphs0pBZq6KDla6X/U1zeq4mkYMNc8BjyMjEdSdrH8OvZArQVnENwB
+         Z6VBJ+QfxqrR1D4/GihAV9jiMZu0MM1GeZYlbrFohoBN+ao/pdfNNW9xVGLMXPG2Na2U
+         G7PQ==
+X-Gm-Message-State: AOAM5311xveTjPq1BDT9D8yDgFkGoKcmXw60HZ8uGIPy5RmcdN7KDTX4
+        WUrZz/BIolnbhwAlxJO+JFUiJVTpzLfPyA==
+X-Google-Smtp-Source: ABdhPJy7aqlSQaQrLHhofONaPZjwKauHbZHDGRXdQ92TUeggQySP4YNI9qe5tEKnlr5K8H51rOJFuQ==
+X-Received: by 2002:a17:906:3e54:: with SMTP id t20mr2770755eji.471.1596118950795;
+        Thu, 30 Jul 2020 07:22:30 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id x16sm6372795edr.52.2020.07.30.07.22.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jul 2020 07:07:28 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v7 7/7] bpf: Add selftests for local_storage
-Date:   Thu, 30 Jul 2020 16:07:16 +0200
-Message-Id: <20200730140716.404558-8-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-In-Reply-To: <20200730140716.404558-1-kpsingh@chromium.org>
-References: <20200730140716.404558-1-kpsingh@chromium.org>
+        Thu, 30 Jul 2020 07:22:29 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 16:22:13 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, andriin@fb.com, daniel@iogearbox.net,
+        catalin.marinas@arm.com, john.fastabend@gmail.com, ast@kernel.org,
+        zlim.lnx@gmail.com, kpsingh@chromium.org, yhs@fb.com,
+        will@kernel.org, kafai@fb.com, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
+Message-ID: <20200730142213.GB1529030@myrica>
+References: <20200728152122.1292756-1-jean-philippe@linaro.org>
+ <20200728152122.1292756-2-jean-philippe@linaro.org>
+ <20200730122855.GA3773@lca.pw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="r5Pyd7+fXNt84Ff3"
+Content-Disposition: inline
+In-Reply-To: <20200730122855.GA3773@lca.pw>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
 
-inode_local_storage:
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-* Hook to the file_open and inode_unlink LSM hooks.
-* Create and unlink a temporary file.
-* Store some information in the inode's bpf_local_storage during
-  file_open.
-* Verify that this information exists when the file is unlinked.
+On Thu, Jul 30, 2020 at 08:28:56AM -0400, Qian Cai wrote:
+> On Tue, Jul 28, 2020 at 05:21:26PM +0200, Jean-Philippe Brucker wrote:
+> > When a tracing BPF program attempts to read memory without using the
+> > bpf_probe_read() helper, the verifier marks the load instruction with
+> > the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
+> > this flag it falls back to the interpreter.
+> > 
+> > Add support for BPF_PROBE_MEM, by appending an exception table to the
+> > BPF program. If the load instruction causes a data abort, the fixup
+> > infrastructure finds the exception table and fixes up the fault, by
+> > clearing the destination register and jumping over the faulting
+> > instruction.
+> > 
+> > To keep the compact exception table entry format, inspect the pc in
+> > fixup_exception(). A more generic solution would add a "handler" field
+> > to the table entry, like on x86 and s390.
+> > 
+> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> 
+> This will fail to compile on arm64,
+> 
+> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
+> 
+> arch/arm64/mm/extable.o: In function `fixup_exception':
+> arch/arm64/mm/extable.c:19: undefined reference to `arm64_bpf_fixup_exception'
 
-sk_local_storage:
+Thanks for the report, I attached a fix. Daniel, can I squash it and
+resend as v2 or is it too late?
 
-* Hook to the socket_post_create and socket_bind LSM hooks.
-* Open and bind a socket and set the sk_storage in the
-  socket_post_create hook using the start_server helper.
-* Verify if the information is set in the socket_bind hook.
+I'd be more confident if my patches sat a little longer on the list so
+arm64 folks have a chance to review them. This isn't my first silly
+mistake...
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
+Thanks,
+Jean
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-arm64-bpf-Fix-build-for-CONFIG_BPF_JIT.patch"
+
+From 17d0f041b57903cb2657dde15559cd1923498337 Mon Sep 17 00:00:00 2001
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Date: Thu, 30 Jul 2020 14:45:44 +0200
+Subject: [PATCH] arm64: bpf: Fix build for !CONFIG_BPF_JIT
+
+Add a stub for arm64_bpf_fixup_exception() when CONFIG_BPF_JIT isn't
+enabled, and avoid the fixup in this case.
+
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 ---
- .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
- .../selftests/bpf/progs/local_storage.c       | 136 ++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+ arch/arm64/include/asm/extable.h | 9 +++++++++
+ arch/arm64/mm/extable.c          | 3 ++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-new file mode 100644
-index 000000000000..d4ba89195c43
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "local_storage.skel.h"
-+#include "network_helpers.h"
-+
-+int create_and_unlink_file(void)
+diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
+index bcee40df1586..840a35ed92ec 100644
+--- a/arch/arm64/include/asm/extable.h
++++ b/arch/arm64/include/asm/extable.h
+@@ -22,8 +22,17 @@ struct exception_table_entry
+ 
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
++#ifdef CONFIG_BPF_JIT
+ int arm64_bpf_fixup_exception(const struct exception_table_entry *ex,
+ 			      struct pt_regs *regs);
++#else /* !CONFIG_BPF_JIT */
++static inline
++int arm64_bpf_fixup_exception(const struct exception_table_entry *ex,
++			      struct pt_regs *regs)
 +{
-+	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
-+	int fd;
-+
-+	fd = mkstemp(fname);
-+	if (fd < 0)
-+		return fd;
-+
-+	close(fd);
-+	unlink(fname);
 +	return 0;
 +}
-+
-+void test_test_local_storage(void)
-+{
-+	struct local_storage *skel = NULL;
-+	int err, duration = 0, serv_sk = -1;
-+
-+	skel = local_storage__open_and_load();
-+	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = local_storage__attach(skel);
-+	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	err = create_and_unlink_file();
-+	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->inode_storage_result, "inode_storage_result",
-+	      "inode_local_storage not set");
-+
-+	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->sk_storage_result, "sk_storage_result",
-+	      "sk_local_storage not set");
-+
-+	close(serv_sk);
-+
-+close_prog:
-+	local_storage__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-new file mode 100644
-index 000000000000..cb608b7b90f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <errno.h>
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+int monitored_pid = 0;
-+bool inode_storage_result = false;
-+bool sk_storage_result = false;
-+
-+struct dummy_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} inode_storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} sk_storage_map SEC(".maps");
-+
-+/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-+ */
-+struct sock {} __attribute__((preserve_access_index));
-+struct sockaddr {} __attribute__((preserve_access_index));
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inode {} __attribute__((preserve_access_index));
-+struct dentry {
-+	struct inode *d_inode;
-+} __attribute__((preserve_access_index));
-+struct file {
-+	struct inode *f_inode;
-+} __attribute__((preserve_access_index));
-+
-+
-+SEC("lsm/inode_unlink")
-+int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		inode_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		sk_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
-+	     int protocol, int kern)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/file_open")
-+int BPF_PROG(test_int_hook, struct file *file)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	if (!file->f_inode)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
-+				     BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+	return 0;
-+}
++#endif /* !CONFIG_BPF_JIT */
+ 
+ extern int fixup_exception(struct pt_regs *regs);
+ #endif
+diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+index 1f42991cacdd..eee1732ab6cd 100644
+--- a/arch/arm64/mm/extable.c
++++ b/arch/arm64/mm/extable.c
+@@ -14,7 +14,8 @@ int fixup_exception(struct pt_regs *regs)
+ 	if (!fixup)
+ 		return 0;
+ 
+-	if (regs->pc >= BPF_JIT_REGION_START &&
++	if (IS_ENABLED(CONFIG_BPF_JIT) &&
++	    regs->pc >= BPF_JIT_REGION_START &&
+ 	    regs->pc < BPF_JIT_REGION_END)
+ 		return arm64_bpf_fixup_exception(fixup, regs);
+ 
 -- 
-2.28.0.rc0.142.g3c755180ce-goog
+2.27.0
 
+
+--r5Pyd7+fXNt84Ff3--
