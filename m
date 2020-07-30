@@ -2,95 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9AC233962
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C05233999
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 22:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgG3TzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 15:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726838AbgG3TzR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:55:17 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9DAC061574
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 12:55:17 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id m200so10912969ybf.10
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 12:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KX7TeDjPQ7EVZGMXY4RQRx8bYziXlBMDvDcMgfig7vo=;
-        b=tChmC1csY+mS7x5Nv7xbVkbjeIDEXIKZ3YjDLEky36CBdGVzLcBN6dfXujiJkfzgQB
-         +kMHvvuP0ny7tHd2TzZ9Fs/VoZEFg5wl9Em1QQ6DeAQeuQFTAsulhqkx+iQSvaFrQkyc
-         rF8qiRnCl00kYK9lFCY5XHNhsdPMm3ajt8/5aq4vYm81rbbdf/EFu1PxK99X3J6/GxjZ
-         9YVz38fMWfCpY7xpWO2vOF13SuMnwHwxH1Y/plubQ0/nTNImROwCffIodBYs5gKWFS/P
-         0FwXRiZnoSCqdlXRJkLNtK4ughvkHud2aP4OMxPvTF0nbJLyMGGG2lp4N2KsE60Ko58O
-         y1Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KX7TeDjPQ7EVZGMXY4RQRx8bYziXlBMDvDcMgfig7vo=;
-        b=CJ1spK4X+ehmraohUizuGKMgYZbQqV62ryhf2P8Aq518TX+MrwsEHrlAW3ls9EDwFy
-         5KsRyaOIYwyy5/jlHSJ9XaDFYYRj9eXhgW/w57bm8wqoXA1MGXeSzCfkZZ2C9nxGpuN7
-         J56tWowIBAgNPvtBJ9YUIir9Mw4LwuSUxfbjm3NrSDedO+sMcz8bKXHfk8pjogkJGKVb
-         X8ctD0By/b2mJoDIeiyhCzJ5lgG2uH+v+nDT8w7VHcwgyKt1PEdGOeKd/EUOeh5oSrHP
-         3/Dv70TAhCEKNnjvx7Mj0M9IErHdybrH0y+61DozQDmkfbb1v1X3LXkCEEyAciv7zSA/
-         pTLA==
-X-Gm-Message-State: AOAM533783fhbvgx4PP41/8t5qCKgKob6fUgZYAhpeW/QooTTLWVRsk2
-        SNlXw3+6tlsMQDDBnITrVBxNEMw3cetHx6jQS7/u5w==
-X-Google-Smtp-Source: ABdhPJxF9wa4aypFj6Cv/cec1CkkRRYgt4PAHsJZD1DSIIwG367Ocpw/IbCHRF2OITibw3Ez15SRVi6DEaBm8kNM3ck=
-X-Received: by 2002:a25:824a:: with SMTP id d10mr875050ybn.260.1596138916622;
- Thu, 30 Jul 2020 12:55:16 -0700 (PDT)
+        id S1728535AbgG3UQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 16:16:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:40840 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgG3UQF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 16:16:05 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1Ey9-0001Mu-1e; Thu, 30 Jul 2020 22:16:01 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1Ey8-000SV1-R2; Thu, 30 Jul 2020 22:16:00 +0200
+Subject: Re: [PATCH v5 bpf-next 4/6] bpf, x64: rework pro/epilogue and
+ tailcall handling in JIT
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com
+References: <20200724173557.5764-1-maciej.fijalkowski@intel.com>
+ <20200724173557.5764-5-maciej.fijalkowski@intel.com>
+ <e0c1f8c5-cd73-48eb-7c92-fcf755319173@iogearbox.net>
+ <20200729161044.GA2961@ranger.igk.intel.com>
+ <20200729211005.GA2806@ranger.igk.intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f427a00f-eaf0-d5e0-8542-2f6bc90ba3ce@iogearbox.net>
+Date:   Thu, 30 Jul 2020 22:16:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <05fb9d72-d1a7-5346-b55b-4495cdf54124@web.de>
-In-Reply-To: <05fb9d72-d1a7-5346-b55b-4495cdf54124@web.de>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Jul 2020 12:55:05 -0700
-Message-ID: <CAEf4BzZfa0m2O4rBEMdN2N2dLeXCfMbwAohCZLevZ3F+mKenvA@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: Fix register in PT_REGS MIPS macros
-To:     Jerry Cruntime <jerry.c.t@web.de>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200729211005.GA2806@ranger.igk.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 4:45 AM Jerry Cruntime <jerry.c.t@web.de> wrote:
->
-> The o32, n32 and n64 calling conventions require the return
-> value to be stored in $v0 which maps to $2 register, i.e.,
-> the second register.
->
-> Fixes: c1932cd ("bpf: Add MIPS support to samples/bpf.")
-> ---
->   tools/lib/bpf/bpf_tracing.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 58eceb884..ae205dcf8 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -215,7 +215,7 @@ struct pt_regs;
->   #define PT_REGS_PARM5(x) ((x)->regs[8])
+On 7/29/20 11:10 PM, Maciej Fijalkowski wrote:
+> On Wed, Jul 29, 2020 at 06:10:44PM +0200, Maciej Fijalkowski wrote:
+>> On Wed, Jul 29, 2020 at 12:07:52AM +0200, Daniel Borkmann wrote:
+>>> On 7/24/20 7:35 PM, Maciej Fijalkowski wrote:
+>>>> This commit serves two things:
+>>>> 1) it optimizes BPF prologue/epilogue generation
+>>>> 2) it makes possible to have tailcalls within BPF subprogram
+>>>>
+>>>> Both points are related to each other since without 1), 2) could not be
+>>>> achieved.
+>>>>
+>>> [...]
+>>>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>>>> index 6fe6491fa17a..e9d62a60134b 100644
+>>>> --- a/kernel/bpf/arraymap.c
+>>>> +++ b/kernel/bpf/arraymap.c
+>>>> @@ -750,6 +750,7 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+>>>>    				    struct bpf_prog *old,
+>>>>    				    struct bpf_prog *new)
+>>>>    {
+>>>> +	u8 *old_addr, *new_addr, *old_bypass_addr;
+>>>>    	struct prog_poke_elem *elem;
+>>>>    	struct bpf_array_aux *aux;
+>>>> @@ -800,13 +801,47 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+>>>>    			if (poke->tail_call.map != map ||
+>>>>    			    poke->tail_call.key != key)
+>>>>    				continue;
+>>>> +			/* protect against un-updated poke descriptors since
+>>>> +			 * we could fill them from subprog and the same desc
+>>>> +			 * is present on main's program poke tab
+>>>> +			 */
+>>>> +			if (!poke->tailcall_bypass || !poke->tailcall_target ||
+>>>> +			    !poke->bypass_addr)
+>>>> +				continue;
+>>>
+>>> Thinking more about this, this check here is not sufficient. You basically need this here
+>>> given you copy all poke descs over to each of the subprogs in jit_subprogs(). So for those
+>>> that weren't handled by the subprog have the above addresses as NULL. But in jit_subprogs()
+>>> once we filled out the target addresses for the bpf-in-bpf calls we loop over each subprog
+>>> and do the extra/final pass in the JIT to complete the images. However, nothing protects
+>>> bpf_tail_call_direct_fixup() as far as I can see from patching at the NULL addr if there is
+>>> a target program loaded in the map at the given key. That will most likely blow up and hit
+>>> the BUG_ON().
+>>
+>> Okay, I agree with this reasoning but must admit that I don't understand
+>> when exactly during fixup the target prog for a given key might be already
+>> present? Could you shed some light on it? I recall that I was hitting
+>> this case in test_verifier kselftest, so maybe I'll dig onto that, but
+>> otherwise I didn't stumble upon this.
 
-I've quickly looked up some doc on MIPS calling convention, doesn't
-seem like regs[8] is actually used for 5th input argument (the doc I
-found documented only the use of $4 through $7 for first 4 args).
-Should we drop PT_REGS_PARM5() for MIPS, while at it?
+If the tail call map as first created and some programs attached to it, then you
+would hit this in bpf_tail_call_direct_fixup() for the subprogs where not all poke
+descs in the subprog's table belong to the actual prog.
 
->   #define PT_REGS_RET(x) ((x)->regs[31])
->   #define PT_REGS_FP(x) ((x)->regs[30]) /* Works only with
-> CONFIG_FRAME_POINTER */
-> -#define PT_REGS_RC(x) ((x)->regs[1])
-> +#define PT_REGS_RC(x) ((x)->regs[2])
+>>> Instead of these above workarounds, did you try to go the path to only copy over the poke
+>>> descs that are relevant for the individual subprog (but not all the others)?
+>>
+>> I was able to come up with something today, but I'd like to share it here
+>> and discuss whether you think it's correct approach before rushing with
+>> another revision.
+>>
+>> Generally in fixup_bpf_calls I store the index of tail call insn onto the
+>> generated poke descriptor, then in jit_subprogs() I check whether the
+>> given poke descriptor belongs to the current subprog by checking if that
+>> previously stored absolute index of tail call insn is in the scope of the
+>> insns of given subprog. Then the insn->imm needs to be updated with new
+>> poke descriptor slot so that while JITing we will be able to grab the
+>> proper poke desc - previously it worked because we emulated the main
+>> prog's poke tab state onto each subprog.
+>>
+>> This way the subprogs actually get only relevant poke descs, but I have a
 
-This looks good, though.
+That sounds reasonable to me, yes, and the below code also looks good.
 
->   #define PT_REGS_SP(x) ((x)->regs[29])
->   #define PT_REGS_IP(x) ((x)->cp0_epc)
->
-> --
-> 2.17.1
+>> concern about the main prog's poke tab. Shouldn't we pull out the descs
+>> that have been copied to the subprog out of the main poke tab?
+>>
+>> If yes, then shouldn't the poke tab be converted to a linked list?
+> 
+> Thinking a bit more about this, I think we can just untrack the main
+> prog's aux struct from prog array map. If there are subprograms then the
+> main prog is treated as subprog 0 and with the logic below every poke desc
+> will be propagated properly.
+> 
+> I checked that doing:
+> 
+> 	for (i = 0; i < prog->aux->size_poke_tab; i++) {
+> 		map_ptr = prog->aux->poke_tab[i].tail_call.map;
+> 
+> 		map_ptr->ops->map_poke_untrack(map_ptr, prog->aux);
+> 	}
+> 
+> after the initial JIT subprogs loop works just fine and we can drop the
+> cumbersome check from map_poke_run().
+> 
+> wdyt?
+
+Yes, that is needed as well. Given we test on prog->aux for tracking, the subprogs
+enries will get added in prog_array_map_poke_track() individually given their aux
+pointer is different and untracking main progs aux then also works since it has no
+effect on subprogs.
+
+>> The patch that I will merge onto the 2/6 if you would say that we can live
+>> with this approach, it's on top of this series:
+>>
+>>  From 57baac74647a4627fe85bb3393365de906070eb1 Mon Sep 17 00:00:00 2001
+>> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> Date: Wed, 29 Jul 2020 17:51:59 +0200
+>> Subject: [PATCH] bpf: propagate only those poke descs that are used in subprog
+>>
+>> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> ---
+>>   include/linux/bpf.h   |  1 +
+>>   kernel/bpf/verifier.c | 11 ++++++++++-
+>>   2 files changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 14b796bf35de..74ab8ec2f2d3 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -664,6 +664,7 @@ struct bpf_jit_poke_descriptor {
+>>   	bool tailcall_target_stable;
+>>   	u8 adj_off;
+>>   	u16 reason;
+>> +	u32 abs_insn_idx;
+
+tiny nit: I think just calling insn_idx is sufficient.
+
+>>   };
+>>   
+>>   /* reg_type info for ctx arguments */
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 3ea769555246..d6402dc05087 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -9971,15 +9971,23 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>>   		func[i]->aux->func_info = prog->aux->func_info;
+>>   
+>>   		for (j = 0; j < prog->aux->size_poke_tab; j++) {
+>> +			u32 abs_insn_idx = prog->aux->poke_tab[j].abs_insn_idx;
+>>   			int ret;
+>>   
+>> +			if (!(abs_insn_idx >= subprog_start &&
+>> +			      abs_insn_idx <= subprog_end))
+>> +				continue;
+>> +
+>>   			ret = bpf_jit_add_poke_descriptor(func[i],
+>>   							  &prog->aux->poke_tab[j]);
+>>   			if (ret < 0) {
+>>   				verbose(env, "adding tail call poke descriptor failed\n");
+>>   				goto out_free;
+>>   			}
+>> -			map_ptr = func[i]->aux->poke_tab[j].tail_call.map;
+>> +
+>> +			func[i]->insnsi[abs_insn_idx - subprog_start].imm = ret + 1;
+>> +
+>> +			map_ptr = func[i]->aux->poke_tab[ret].tail_call.map;
+>>   			ret = map_ptr->ops->map_poke_track(map_ptr, func[i]->aux);
+>>   			if (ret < 0) {
+>>   				verbose(env, "tracking tail call prog failed\n");
+>> @@ -10309,6 +10317,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+>>   					.reason = BPF_POKE_REASON_TAIL_CALL,
+>>   					.tail_call.map = BPF_MAP_PTR(aux->map_ptr_state),
+>>   					.tail_call.key = bpf_map_key_immediate(aux),
+>> +					.abs_insn_idx = i,
+>>   				};
+>>   
+>>   				ret = bpf_jit_add_poke_descriptor(prog, &desc);
+>> -- 
+>> 2.20.1
+
+Lets ship it, thanks!
+Daniel
