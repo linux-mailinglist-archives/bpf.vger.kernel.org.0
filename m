@@ -2,153 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160D6232999
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 03:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF2B232AC4
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 06:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgG3BjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jul 2020 21:39:00 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55994 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726194AbgG3Bi7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Jul 2020 21:38:59 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06U1aFo8004370;
-        Wed, 29 Jul 2020 18:38:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=fP6wWtu47bksrf2R7SULsTWRdAFlgFIlY55eLmUswxY=;
- b=lgcuNzZvLI1fQ9+jMpLLPy86xMTznKw1vaMGZqNOHqfTpVZqH9HFW2UTdnCRvZwFSF/u
- KpykMKztXRiuMVdOU2pvL5Fhudv22In9pPfMY6YRN9R8s+l3tOBlteuPCRfnKMVhTIP7
- qardDncQJOtvSdfE1sVgdNQT6SbccYr9oc0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32juqwpbuy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 29 Jul 2020 18:38:44 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 29 Jul 2020 18:38:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FTv58QJiKpeb4I+VQcDJ3htG/MsD+EmTkIL7my+EBRphm9uUXcxwP/In7vx+M2HwJjPHXBLr6zOoDKtdhPOd/4a25yb1wmZntX+ynfHMUulq8gQ/qy8aRzQQBRWYJ2ucISap99Uww/Aw/todR5TIOMPyYVGzjhEvCvy6D/wcCzKyij53SYXPKJPkaF+gF+6qhZfmLWRJz1nIPnocxnvOlzFxxr8uS9f/GlBB6soqrPM5O8juPdP4eBegZcHgZP9XURKzVWg5tjRxUJ1KwEmhsDLNwPc+FgJG6ebJeXn/1YM8OgM6/N2/K1/hE/lXegg1HPsZTqDohnbP75dR+D0cgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fP6wWtu47bksrf2R7SULsTWRdAFlgFIlY55eLmUswxY=;
- b=aUMltO30kD6OWHBwEK3LLW/nXmfH2oHxD8YsPmFEcBZyoOK1Qzy8ZHlFmyg3rNc/D1fmAkBlVO054D7GYsYrJpIVsoXNo591p8dfMgEpCnStj0gJSOAzGU91M0i1aFkL9FN16B3joRedvM0yNjTIvawZRsoZayx3kEzjB5YJvBXqRyQ30Bt3zey0V3Xqqn7YMcLT520c252O+QgBvyJ8+pB1T+kjoZ60GFDgroEACSWam/kHI3HsUSmjJ8dFbLPXd+F6bW8SXW9tZtU1xP4dFNStN+GZ/M1tmDTWKsrNrPtdt6iiGFgWdQYVomkEIob31XN/PIQ5X5cfCMw5Sfiw8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fP6wWtu47bksrf2R7SULsTWRdAFlgFIlY55eLmUswxY=;
- b=PLubrujrfLvSyPhZuq6pGg9mGiiFP6i140NwwA6hh9P2SfVwOXQLBgBP29Rat5024dWOQ4iaqpbwH2NZ+B3j5jI6bNrvsKoPRjKphgsxN5eZpTBMfDckDik4QibR6V/CYm+fkGx4wN4eP1gqli3fuxT8QPrCXtB/Oqd2sQVJ+Pc=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3398.namprd15.prod.outlook.com (2603:10b6:a03:10e::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Thu, 30 Jul
- 2020 01:38:40 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3239.017; Thu, 30 Jul 2020
- 01:38:40 +0000
-Date:   Wed, 29 Jul 2020 18:38:36 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 29/35] bpf: libbpf: cleanup RLIMIT_MEMLOCK
- usage
-Message-ID: <20200730013836.GA637520@carbon.dhcp.thefacebook.com>
-References: <20200727184506.2279656-1-guro@fb.com>
- <20200727184506.2279656-30-guro@fb.com>
- <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
- <20200727231538.GA352883@carbon.DHCP.thefacebook.com>
- <CAEf4BzamC4RQrQuAgH1DK-qcW3cKFuBEbYRhVz-8UMU+mbTcvA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzamC4RQrQuAgH1DK-qcW3cKFuBEbYRhVz-8UMU+mbTcvA@mail.gmail.com>
-X-ClientProxiedBy: BYAPR05CA0037.namprd05.prod.outlook.com
- (2603:10b6:a03:74::14) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1725974AbgG3EVE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 00:21:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbgG3EVE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 00:21:04 -0400
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE8F122B43;
+        Thu, 30 Jul 2020 04:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596082864;
+        bh=YKnjMCcJfV16uIP9PoRTAu3+LNc2cb5A4H1CSbCCmBY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TnVZt9cc/hroMxwAMq2ORgJuPnjSAg13WiK5gz3S+611wyaFUlzGKczmEdJEERXxV
+         MiVri0yuyZ2vrzXufatLW+JdXSN55m+/k3lWjA10pScD/zoXF1zezCE5EVD5nhwIsR
+         BHnJowxuL0b6oIZ3SJ0XqOuJed1h6GDKf4IXbWhs=
+Received: by mail-lj1-f170.google.com with SMTP id q6so27398549ljp.4;
+        Wed, 29 Jul 2020 21:21:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533QT/eMrOCMXGWmLiyzioixTu8/7de6uUxBVSyqxYfBytMgrGC+
+        67dvTd3aMuJ1/ECRlW0g7iRFYGM5ttmVc9Le/kw=
+X-Google-Smtp-Source: ABdhPJxvCiEiGgFOg2IhZc3eN+ErOdyU9hMyD5XdGmghMVilyQ7Y5qNT20wnRfoDzTV+/r5fb4GUj9h4Em106ogIneI=
+X-Received: by 2002:a05:651c:1349:: with SMTP id j9mr499381ljb.392.1596082862079;
+ Wed, 29 Jul 2020 21:21:02 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:9282) by BYAPR05CA0037.namprd05.prod.outlook.com (2603:10b6:a03:74::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend Transport; Thu, 30 Jul 2020 01:38:39 +0000
-X-Originating-IP: [2620:10d:c090:400::5:9282]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f0248e60-2ab7-4eb1-dfc3-08d8342948fd
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3398:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB339819828465A9657AEF71FBBE710@BYAPR15MB3398.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D4eJA4UZhnNuEFqD20+B84hdY40u2My+w0YLZssl7ca2IqgXxV4p9Nhsq7MvAVDI0x3XSjmesT8MmkrN8JZjYYgpH0x0s8WvwMHBKRvtBPEmoCsVdSbKLjqn613U7rEfIh0IZra68EMK3NxgB0z3AE/kxXCHQun94ARRLF3EeHOAqJp/8ogttejGKMt2816RP5z8zMZulJv7/HCEcpcnx4omUa0h9h63fd6hWzNM35SHqOdtb/sI0W6RBgg+VnQzlHYrOZnseoHgby78GsMoZlcyNuRqLw4mwFI2Goi/CvfuXzGLosvLcVyKjNYtR/IyvhR5Ldb/dZstyzU8gspRrw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(346002)(39860400002)(136003)(366004)(376002)(53546011)(6506007)(33656002)(1076003)(86362001)(8676002)(83380400001)(7696005)(4326008)(52116002)(5660300002)(54906003)(66476007)(66556008)(6916009)(2906002)(55016002)(66946007)(316002)(6666004)(186003)(16526019)(478600001)(8936002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 59+VrRaN6YiE8FOnX1BRwFOMAhQ1H5LPuc+V3neLUoal4kxvp1Vb9Eeo5aCxG2M2reNDKI3TxDCMPqiR3I4p0PBl+KyVPn8Eqv6adgJ76y3CkUSVdn5xJCtknMUsrlPh7AyTbCUZcOlfXT7q3HwsZcu8m5TnonypICJ1jo5BjqBo9U21gd+5M0NDmyR8if0rq0u4uLBFf6QtHUGh297gQ9sbpIXqcZSlVHLSa06O3vQykCrFoxUa2WchExuVtJ+BUcAkemMh6CcXkIPTWxwK1I/+XtvfT+luuD5wBujYREaZigFf55KgmirPtBUo69jsv3qHr/959oM4lwiCsnpZzNsWq2hsFuwOoh51YHwxVyOh3JNh+EwKOquTyKA4BPUzY5A1vpzfEZoZSkPdeZ9rYyERfIMO1TuHSkhgB6nPRSNRWGAn978xQM0Pey3+IACvcwZvHURJK24BvpXOnGuiTsqtElsQ78YuTOfGje5PP6iYBucj3hLaM0olDUm4ZaRZXoMToqBhvguRZPstk4MAMQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0248e60-2ab7-4eb1-dfc3-08d8342948fd
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2020 01:38:40.0833
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qISZIKmAjFvHaE997ktQDMS26nMVhzBJLLJVs+ALLRnhQtMmm1OdITFwJhkLLl3Q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3398
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-30_01:2020-07-29,2020-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxlogscore=999 suspectscore=1 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007300009
-X-FB-Internal: deliver
+References: <20200729232148.896125-1-andriin@fb.com>
+In-Reply-To: <20200729232148.896125-1-andriin@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 29 Jul 2020 21:20:51 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6apm_oL+9JZ3o7b1hq+7O7-9X-FAHt_oy1BOk_o6VWRQ@mail.gmail.com>
+Message-ID: <CAPhsuW6apm_oL+9JZ3o7b1hq+7O7-9X-FAHt_oy1BOk_o6VWRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: make destructors more robust by handling
+ ERR_PTR(err) cases
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 10:59:33PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jul 27, 2020 at 4:15 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Mon, Jul 27, 2020 at 03:05:11PM -0700, Andrii Nakryiko wrote:
-> > > On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
-> > > >
-> > > > As bpf is not using memlock rlimit for memory accounting anymore,
-> > > > let's remove the related code from libbpf.
-> > > >
-> > > > Bpf operations can't fail because of exceeding the limit anymore.
-> > > >
-> > >
-> > > They can't in the newest kernel, but libbpf will keep working and
-> > > supporting old kernels for a very long time now. So please don't
-> > > remove any of this.
-> >
-> > Yeah, good point, agree.
-> > So we just can drop this patch from the series, no other changes
-> > are needed.
-> >
-> > >
-> > > But it would be nice to add a detection of whether kernel needs a
-> > > RLIMIT_MEMLOCK bump or not. Is there some simple and reliable way to
-> > > detect this from user-space?
+On Wed, Jul 29, 2020 at 4:22 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> Most of libbpf "constructors" on failure return ERR_PTR(err) result encoded as
+> a pointer. It's a common mistake to eventually pass such malformed pointers
+> into xxx__destroy()/xxx__free() "destructors". So instead of fixing up
+> clean up code in selftests and user programs, handle such error pointers in
+> destructors themselves. This works beautifully for NULL pointers passed to
+> destructors, so might as well just work for error pointers.
+>
+> Suggested-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Btw, do you mean we should add a new function to the libbpf API?
-Or just extend pr_perm_msg() to skip guessing on new kernels?
-
-The problem with the latter one is that it's called on a failed attempt
-to create a map, so unlikely we'll be able to create a new one just to test
-for the "memlock" value. But it also raises a question what should we do
-if the creation of this temporarily map fails? Assume the old kernel and
-bump the limit?
-Idk, maybe it's better to just leave the userspace code as it is for some time.
-
-Thanks!
+Acked-by: Song Liu <songliubraving@fb.com>
