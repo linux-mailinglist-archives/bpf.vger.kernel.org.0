@@ -2,66 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF2B232AC4
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 06:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8133232EB5
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 10:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgG3EVE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 00:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725892AbgG3EVE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 00:21:04 -0400
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE8F122B43;
-        Thu, 30 Jul 2020 04:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596082864;
-        bh=YKnjMCcJfV16uIP9PoRTAu3+LNc2cb5A4H1CSbCCmBY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TnVZt9cc/hroMxwAMq2ORgJuPnjSAg13WiK5gz3S+611wyaFUlzGKczmEdJEERXxV
-         MiVri0yuyZ2vrzXufatLW+JdXSN55m+/k3lWjA10pScD/zoXF1zezCE5EVD5nhwIsR
-         BHnJowxuL0b6oIZ3SJ0XqOuJed1h6GDKf4IXbWhs=
-Received: by mail-lj1-f170.google.com with SMTP id q6so27398549ljp.4;
-        Wed, 29 Jul 2020 21:21:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533QT/eMrOCMXGWmLiyzioixTu8/7de6uUxBVSyqxYfBytMgrGC+
-        67dvTd3aMuJ1/ECRlW0g7iRFYGM5ttmVc9Le/kw=
-X-Google-Smtp-Source: ABdhPJxvCiEiGgFOg2IhZc3eN+ErOdyU9hMyD5XdGmghMVilyQ7Y5qNT20wnRfoDzTV+/r5fb4GUj9h4Em106ogIneI=
-X-Received: by 2002:a05:651c:1349:: with SMTP id j9mr499381ljb.392.1596082862079;
- Wed, 29 Jul 2020 21:21:02 -0700 (PDT)
+        id S1729063AbgG3I3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 04:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbgG3I3L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 04:29:11 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C340FC061794
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 01:29:10 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id g19so13291904ejc.9
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 01:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YBY55dkNJa6MNA1jcnxEfs+ZojHip66cdlon0CLkLZo=;
+        b=fBwCfM3rpVy2pygAPHKVmWM18+gil7jTPat96H4u/Gm1341wxS3sJ+mdOPhd0Ut2gt
+         RGcV9uVmJNYF/aox3YJfC339GEOZyKzkvnig7ENn+Ejdhc3AjAgNrZhFKAgMljasBEz1
+         HJDwzRVIamhLhFbHFIM5sP6ok6r4YcePymvRopVYR31uyoVTYDKPtjD/kaUQNEMsbrWe
+         fPrrd+MBFMzEcT8plABi1N+MFxOSMXtsug3boBgJitNyx6gMbxnULwyy8moTml4yYj7h
+         bTR4nD9JeIEUG8hkrNRaXL9u4HeGM1UIvKJCsKhfWnw1LUsAHJTCdFyno5UVFlf+gTKU
+         JtRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YBY55dkNJa6MNA1jcnxEfs+ZojHip66cdlon0CLkLZo=;
+        b=rHQ1S6H4a+MQwAhPB37rP8slHiLgcSvpD4tiBD+vsfYRPbWHwo54dKUFebD/jxYCgx
+         13Wn0xxUbOZ8YzZj7ak/7kE3aNf7Ka1Dzm8fKEmZZr6CLhAXc74IBhwO/AcC57kffmk0
+         Q4oyPlXwH8GFcMmXlSj/taBi7zsUdbkMwDQL3r0DK2JGgOFniQBbEtokRrgybTT7pz8O
+         8jBZ9ai6P3nWVYt8BfqIGBLq6SW7GQCB8mV6JjIsrk7oJNKrXkX9DEWhpfKQXA3MaFIN
+         kgOX3QFO1nS7F+xd1Erww507Aso37ghM5fZmflVPPVEwcqOKXruwS3OLU4ouNblLgcSV
+         zCPg==
+X-Gm-Message-State: AOAM5301ONXrTw/YXdEHtofexLq75eP+IJWRJaO8HagOcPq7f44eJku0
+        HvzgIM+mMtV8BQFUpxdCWEcvjA==
+X-Google-Smtp-Source: ABdhPJxdK8dE2vli7YDSeq7BM4kuHoJGKCZ1PXuThc9tOBZnCVx4E2ji9ZYap5m6mQi1LmC8Wm6O8g==
+X-Received: by 2002:a17:907:204e:: with SMTP id pg14mr1606214ejb.324.1596097749512;
+        Thu, 30 Jul 2020 01:29:09 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id ay5sm5190070edb.2.2020.07.30.01.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jul 2020 01:29:08 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 10:28:53 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Song Liu <song@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        bpf <bpf@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, zlim.lnx@gmail.com,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
+Message-ID: <20200730082853.GA1529030@myrica>
+References: <20200728152122.1292756-1-jean-philippe@linaro.org>
+ <20200728152122.1292756-2-jean-philippe@linaro.org>
+ <CAPhsuW5CmQzELjc8+tQVWZStjPxENhGB7066YJLp=ANs8BYiHA@mail.gmail.com>
+ <4791872a-9f7e-1c1c-392c-8b68a13091e3@iogearbox.net>
 MIME-Version: 1.0
-References: <20200729232148.896125-1-andriin@fb.com>
-In-Reply-To: <20200729232148.896125-1-andriin@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 29 Jul 2020 21:20:51 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6apm_oL+9JZ3o7b1hq+7O7-9X-FAHt_oy1BOk_o6VWRQ@mail.gmail.com>
-Message-ID: <CAPhsuW6apm_oL+9JZ3o7b1hq+7O7-9X-FAHt_oy1BOk_o6VWRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: make destructors more robust by handling
- ERR_PTR(err) cases
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4791872a-9f7e-1c1c-392c-8b68a13091e3@iogearbox.net>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 4:22 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Most of libbpf "constructors" on failure return ERR_PTR(err) result encoded as
-> a pointer. It's a common mistake to eventually pass such malformed pointers
-> into xxx__destroy()/xxx__free() "destructors". So instead of fixing up
-> clean up code in selftests and user programs, handle such error pointers in
-> destructors themselves. This works beautifully for NULL pointers passed to
-> destructors, so might as well just work for error pointers.
->
-> Suggested-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+On Wed, Jul 29, 2020 at 11:29:43PM +0200, Daniel Borkmann wrote:
+> On 7/29/20 7:28 PM, Song Liu wrote:
+> > On Tue, Jul 28, 2020 at 8:37 AM Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> > > 
+> > > When a tracing BPF program attempts to read memory without using the
+> > > bpf_probe_read() helper, the verifier marks the load instruction with
+> > > the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
+> > > this flag it falls back to the interpreter.
+> > > 
+> > > Add support for BPF_PROBE_MEM, by appending an exception table to the
+> > > BPF program. If the load instruction causes a data abort, the fixup
+> > > infrastructure finds the exception table and fixes up the fault, by
+> > > clearing the destination register and jumping over the faulting
+> > > instruction.
+> > > 
+> > > To keep the compact exception table entry format, inspect the pc in
+> > > fixup_exception(). A more generic solution would add a "handler" field
+> > > to the table entry, like on x86 and s390.
+> > > 
+> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > 
+> > This patch looks good to me.
+> > 
+> > Acked-by: Song Liu <songliubraving@fb.com>
+> 
+> +1, applied, thanks a lot!
+> 
+> > It is possible to add a selftest for this? I thought about this a
+> > little bit, but
+> > didn't get a good idea.
+> 
+> Why not adding a test_verifier.c test case which calls into bpf_get_current_task()
+> to fetch pointer to current and then read out some field via BPF_PROBE_MEM which
+> should then succeed on x86/s390x/arm64 but be skipped on the other archs? Jean-Philippe,
+> could you look into following up with such test case(s)?
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Sure I'll take a look. Ilya also added a selftests to trigger exceptions
+in https://lore.kernel.org/bpf/20200715233301.933201-5-iii@linux.ibm.com/
+It's useful but I think it relies on the verifier not mandating NULL
+checks for next-level pointers (they are ptr_ instead of ptr_or_null_),
+which might change in the future. So I'm wondering if we can deliberately
+access an invalid pointer with the help of bpf_test_run, and check that
+the result is zero. 
+
+Thanks,
+Jean
