@@ -2,48 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0376C233B83
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 00:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B337A233BA4
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 01:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgG3Wpf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 18:45:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35206 "EHLO
+        id S1730332AbgG3XAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 19:00:13 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36980 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730416AbgG3Wpe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 18:45:34 -0400
+        with ESMTP id S1728607AbgG3XAN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 19:00:13 -0400
 Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1k1HIo-0008Dp-IE; Fri, 31 Jul 2020 00:45:30 +0200
+        id 1k1HX1-0000zG-OW; Fri, 31 Jul 2020 01:00:11 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1k1HIo-0003Zs-7C; Fri, 31 Jul 2020 00:45:30 +0200
-Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Qian Cai <cai@lca.pw>, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org, songliubraving@fb.com, andriin@fb.com,
-        catalin.marinas@arm.com, john.fastabend@gmail.com, ast@kernel.org,
-        zlim.lnx@gmail.com, kpsingh@chromium.org, yhs@fb.com,
-        will@kernel.org, kafai@fb.com, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200728152122.1292756-1-jean-philippe@linaro.org>
- <20200728152122.1292756-2-jean-philippe@linaro.org>
- <20200730122855.GA3773@lca.pw> <20200730142213.GB1529030@myrica>
- <f2f05f41-ccf9-e693-85bf-59ebbf8dadfe@iogearbox.net>
- <20200730211453.GA79372@lophozonia>
+        id 1k1HX1-000JBG-KD; Fri, 31 Jul 2020 01:00:11 +0200
+Subject: Re: [PATCH bpf] libbpf: Fix register in PT_REGS MIPS macros
+To:     Jerry Cruntime <jerry.c.t@web.de>, bpf@vger.kernel.org
+References: <05fb9d72-d1a7-5346-b55b-4495cdf54124@web.de>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <74433d9e-012d-a20f-129f-ce934e8090aa@iogearbox.net>
-Date:   Fri, 31 Jul 2020 00:45:29 +0200
+Message-ID: <76288d74-3110-952a-f068-e040d63dbd7d@iogearbox.net>
+Date:   Fri, 31 Jul 2020 01:00:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200730211453.GA79372@lophozonia>
+In-Reply-To: <05fb9d72-d1a7-5346-b55b-4495cdf54124@web.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
@@ -51,41 +41,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/30/20 11:14 PM, Jean-Philippe Brucker wrote:
-> On Thu, Jul 30, 2020 at 09:47:39PM +0200, Daniel Borkmann wrote:
->> On 7/30/20 4:22 PM, Jean-Philippe Brucker wrote:
->>> On Thu, Jul 30, 2020 at 08:28:56AM -0400, Qian Cai wrote:
->>>> On Tue, Jul 28, 2020 at 05:21:26PM +0200, Jean-Philippe Brucker wrote:
->>>>> When a tracing BPF program attempts to read memory without using the
->>>>> bpf_probe_read() helper, the verifier marks the load instruction with
->>>>> the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
->>>>> this flag it falls back to the interpreter.
->>>>>
->>>>> Add support for BPF_PROBE_MEM, by appending an exception table to the
->>>>> BPF program. If the load instruction causes a data abort, the fixup
->>>>> infrastructure finds the exception table and fixes up the fault, by
->>>>> clearing the destination register and jumping over the faulting
->>>>> instruction.
->>>>>
->>>>> To keep the compact exception table entry format, inspect the pc in
->>>>> fixup_exception(). A more generic solution would add a "handler" field
->>>>> to the table entry, like on x86 and s390.
->>>>>
->>>>> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>>>
->>>> This will fail to compile on arm64,
->>>>
->>>> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
->>>>
->>>> arch/arm64/mm/extable.o: In function `fixup_exception':
->>>> arch/arm64/mm/extable.c:19: undefined reference to `arm64_bpf_fixup_exception'
->>>
->>> Thanks for the report, I attached a fix. Daniel, can I squash it and
->>> resend as v2 or is it too late?
->>
->> If you want I can squash your attached snippet into the original patch of
->> yours. If you want to send a v2 that is fine as well of course. Let me know.
+On 7/30/20 1:44 PM, Jerry Cruntime wrote:
+> The o32, n32 and n64 calling conventions require the return
+> value to be stored in $v0 which maps to $2 register, i.e.,
+> the second register.
 > 
-> Yes please squash it into the original patch, sorry for the mess
+> Fixes: c1932cd ("bpf: Add MIPS support to samples/bpf.")
 
-Done, thanks!
+Jerry, your patch is missing a Signed-off-by from you. It should be enough if
+you just reply with one in here that I'll add to the commit message and I'll
+take it via bpf tree then, thanks.
+
+> ---
+>   tools/lib/bpf/bpf_tracing.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 58eceb884..ae205dcf8 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -215,7 +215,7 @@ struct pt_regs;
+>   #define PT_REGS_PARM5(x) ((x)->regs[8])
+>   #define PT_REGS_RET(x) ((x)->regs[31])
+>   #define PT_REGS_FP(x) ((x)->regs[30]) /* Works only with
+> CONFIG_FRAME_POINTER */
+> -#define PT_REGS_RC(x) ((x)->regs[1])
+> +#define PT_REGS_RC(x) ((x)->regs[2])
+>   #define PT_REGS_SP(x) ((x)->regs[29])
+>   #define PT_REGS_IP(x) ((x)->cp0_epc)
+> 
+> -- 
+> 2.17.1
+
