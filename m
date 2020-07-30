@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB291233AD4
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 23:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14141233A8E
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 23:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgG3V0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 17:26:16 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8546 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730551AbgG3VXS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jul 2020 17:23:18 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ULFC6A012413
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 14:23:17 -0700
+        id S1730750AbgG3VYC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 17:24:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63026 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730751AbgG3VXZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jul 2020 17:23:25 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ULFbLN011474
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 14:23:25 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=jE0vXs+gQW10rH0feF6C0U96CAqBPpOSd/wymRApFnE=;
- b=G+WZ1X7Hw0vyfHZMbFGQNUvANmLbcPAHlA3hmDGfdo18c76D1IXJVOEhpIY51CkA93/4
- K8foR75IQ0U8eGjQ+XUJW4UABN2HT48o+okBx3eAgsSgl3bW9h2QgpwK9JqDGkLHhPmF
- Irv/C1o2vg8VXuVjaA7b+zWKSJzSyXN+o2E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32k7hw89k1-1
+ bh=gDCJCYdDlefx74bxB9EFW1EOsWnurY2saciXKkTWUC8=;
+ b=o1nNTLE6HYiGwT7x/rFXjOK2o/IRnJjTpReybYA76LQtXYOcf+45mca0AOz/PAhOJmLh
+ F6PuzSNbONNRoBtQ4U2gyg/ETAhMaR6DKIemAPOuDLjh5arJK1Oqus+jaYQF7WaWWELf
+ iDSaq4Wje6Fl/RVxXkHnQRM8OLopccE7GEs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32kcbuy100-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 14:23:17 -0700
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 14:23:25 -0700
+Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 30 Jul 2020 14:23:15 -0700
+ 15.1.1979.3; Thu, 30 Jul 2020 14:23:21 -0700
 Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
-        id C906420B00B4; Thu, 30 Jul 2020 14:23:12 -0700 (PDT)
+        id CDF7020B00B6; Thu, 30 Jul 2020 14:23:12 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
@@ -40,9 +40,9 @@ CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>,
         Song Liu <songliubraving@fb.com>
 Smtp-Origin-Cluster: prn0c01
-Subject: [PATCH bpf-next v3 12/29] bpf: refine memcg-based memory accounting for xskmap maps
-Date:   Thu, 30 Jul 2020 14:22:53 -0700
-Message-ID: <20200730212310.2609108-13-guro@fb.com>
+Subject: [PATCH bpf-next v3 13/29] bpf: eliminate rlimit-based memory accounting for arraymap maps
+Date:   Thu, 30 Jul 2020 14:22:54 -0700
+Message-ID: <20200730212310.2609108-14-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200730212310.2609108-1-guro@fb.com>
 References: <20200730212310.2609108-1-guro@fb.com>
@@ -52,10 +52,10 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-30_15:2020-07-30,2020-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
- priorityscore=1501 mlxlogscore=811 spamscore=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 phishscore=0 impostorscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=900
+ bulkscore=0 clxscore=1015 suspectscore=38 phishscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2007300150
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
@@ -63,30 +63,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend xskmap memory accounting to include the memory taken by
-the xsk_map_node structure.
+Do not use rlimit-based memory accounting for arraymap maps.
+It has been replaced with the memcg-based memory accounting.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 Acked-by: Song Liu <songliubraving@fb.com>
 ---
- net/xdp/xskmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/arraymap.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index 8367adbbe9df..e574b22defe5 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -28,7 +28,8 @@ static struct xsk_map_node *xsk_map_node_alloc(struct x=
-sk_map *map,
- 	struct xsk_map_node *node;
- 	int err;
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 9597fecff8da..41581c38b31d 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -75,11 +75,10 @@ int array_map_alloc_check(union bpf_attr *attr)
+ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+ {
+ 	bool percpu =3D attr->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY;
+-	int ret, numa_node =3D bpf_map_attr_numa_node(attr);
++	int numa_node =3D bpf_map_attr_numa_node(attr);
+ 	u32 elem_size, index_mask, max_entries;
+ 	bool bypass_spec_v1 =3D bpf_bypass_spec_v1();
+-	u64 cost, array_size, mask64;
+-	struct bpf_map_memory mem;
++	u64 array_size, mask64;
+ 	struct bpf_array *array;
 =20
--	node =3D kzalloc(sizeof(*node), GFP_ATOMIC | __GFP_NOWARN);
-+	node =3D kzalloc(sizeof(*node),
-+		       GFP_ATOMIC | __GFP_NOWARN | __GFP_ACCOUNT);
- 	if (!node)
+ 	elem_size =3D round_up(attr->value_size, 8);
+@@ -120,44 +119,29 @@ static struct bpf_map *array_map_alloc(union bpf_at=
+tr *attr)
+ 		}
+ 	}
+=20
+-	/* make sure there is no u32 overflow later in round_up() */
+-	cost =3D array_size;
+-	if (percpu)
+-		cost +=3D (u64)attr->max_entries * elem_size * num_possible_cpus();
+-
+-	ret =3D bpf_map_charge_init(&mem, cost);
+-	if (ret < 0)
+-		return ERR_PTR(ret);
+-
+ 	/* allocate all map elements and zero-initialize them */
+ 	if (attr->map_flags & BPF_F_MMAPABLE) {
+ 		void *data;
+=20
+ 		/* kmalloc'ed memory can't be mmap'ed, use explicit vmalloc */
+ 		data =3D bpf_map_area_mmapable_alloc(array_size, numa_node);
+-		if (!data) {
+-			bpf_map_charge_finish(&mem);
++		if (!data)
+ 			return ERR_PTR(-ENOMEM);
+-		}
+ 		array =3D data + PAGE_ALIGN(sizeof(struct bpf_array))
+ 			- offsetof(struct bpf_array, value);
+ 	} else {
+ 		array =3D bpf_map_area_alloc(array_size, numa_node);
+ 	}
+-	if (!array) {
+-		bpf_map_charge_finish(&mem);
++	if (!array)
  		return ERR_PTR(-ENOMEM);
+-	}
+ 	array->index_mask =3D index_mask;
+ 	array->map.bypass_spec_v1 =3D bypass_spec_v1;
 =20
+ 	/* copy mandatory map attributes */
+ 	bpf_map_init_from_attr(&array->map, attr);
+-	bpf_map_charge_move(&array->map.memory, &mem);
+ 	array->elem_size =3D elem_size;
+=20
+ 	if (percpu && bpf_array_alloc_percpu(array)) {
+-		bpf_map_charge_finish(&array->map.memory);
+ 		bpf_map_area_free(array);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
 --=20
 2.26.2
 
