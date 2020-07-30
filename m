@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C87233014
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 12:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0BF233045
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 12:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729055AbgG3KJ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 06:09:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21751 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729041AbgG3KJ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 06:09:57 -0400
+        id S1729009AbgG3KXF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 06:23:05 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53381 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729139AbgG3KXE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jul 2020 06:23:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596103796;
+        s=mimecast20190719; t=1596104583;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=OkLwVoR4eojoQKNFkbEPIflQsN604MO7LrgpXTR0n6s=;
-        b=WBRavaYO1ecV2Jtn82E29oCJlzaR86Wq52LJWXOvVyoJ0Hn8Z8mniMAk2kNj0bHvymkD63
-        4gosFJer5ErZvoDfHYMDY76oxix7bPhAGeBP2d64mWi9wcszNcWXO+5gJ+N6MGvV24613M
-        fdkuEc5qV8JMx9DCLG8cW0CUdEGhdkQ=
+        bh=M55NVo/p4Ki/zb/dZ0gL9E7SRpn8neFKlVQ6d5TPxlA=;
+        b=Tpdn5N+LS7WsFaA6zRXZzkEvQqcWCRS1d4O0xDNwWPv+VH6+F6XYrnNKoerjUj3psaJgOi
+        JjeD2QzcK+hBwtH8fLodCGMYM/ig+2M5K4RmXATHGJcjPXfsxX4ZsjE2t3duXmbhuc28BH
+        C+tzn5VR4chSwR+aQtDX9p41ffUGWP8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-rL9NMs9UM1SqJqYxIqimZg-1; Thu, 30 Jul 2020 06:09:51 -0400
-X-MC-Unique: rL9NMs9UM1SqJqYxIqimZg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-495-6wiMTaGKO6yT5rox6Fjatg-1; Thu, 30 Jul 2020 06:22:59 -0400
+X-MC-Unique: 6wiMTaGKO6yT5rox6Fjatg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90041102C7ED;
-        Thu, 30 Jul 2020 10:09:49 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36662101C8A9;
+        Thu, 30 Jul 2020 10:22:57 +0000 (UTC)
 Received: from krava (unknown [10.40.194.223])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C606E87B0A;
-        Thu, 30 Jul 2020 10:09:45 +0000 (UTC)
-Date:   Thu, 30 Jul 2020 12:09:45 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2453A6179D;
+        Thu, 30 Jul 2020 10:22:53 +0000 (UTC)
+Date:   Thu, 30 Jul 2020 12:22:52 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -47,38 +47,80 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Brendan Gregg <bgregg@netflix.com>,
         Florent Revest <revest@chromium.org>
 Subject: Re: [PATCH v8 bpf-next 09/13] bpf: Add d_path helper
-Message-ID: <20200730100945.GQ1319041@krava>
+Message-ID: <20200730102252.GR1319041@krava>
 References: <20200722211223.1055107-1-jolsa@kernel.org>
  <20200722211223.1055107-10-jolsa@kernel.org>
- <20200729201740.GB1233513@ZenIV.linux.org.uk>
+ <20200729201117.GA1233513@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200729201740.GB1233513@ZenIV.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200729201117.GA1233513@ZenIV.linux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 09:17:40PM +0100, Al Viro wrote:
+On Wed, Jul 29, 2020 at 09:11:17PM +0100, Al Viro wrote:
 > On Wed, Jul 22, 2020 at 11:12:19PM +0200, Jiri Olsa wrote:
 > 
-> > +BTF_SET_START(btf_whitelist_d_path)
-> > +BTF_ID(func, vfs_truncate)
-> > +BTF_ID(func, vfs_fallocate)
-> > +BTF_ID(func, dentry_open)
-> > +BTF_ID(func, vfs_getattr)
-> > +BTF_ID(func, filp_close)
-> > +BTF_SET_END(btf_whitelist_d_path)
+> > +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+> > +{
+> > +	char *p = d_path(path, buf, sz - 1);
+> > +	int len;
+> > +
+> > +	if (IS_ERR(p)) {
+> > +		len = PTR_ERR(p);
+> > +	} else {
+> > +		len = strlen(p);
+> > +		if (len && p != buf)
+> > +			memmove(buf, p, len);
 > 
-> While we are at it, I hope you realize that the names of kernel function
-> are subject to change at zero notice.  If some script breaks since
-> we give e.g. filp_close a something less revolting name, it's Not My
-> Problem(tm)...
+> *blink*
+> What the hell do you need that strlen() for?  d_path() copies into
+> the end of buffer (well, starts there and prepends to it); all you
+> really need is memmove(buf, p, buf + sz - p)
 
-even now when we change function name some scripts will stop working,
-so I don't think we are creating new problem in here
+I used the code from some of the other users like
+  backing_dev_show
+  fsg_show_file
+
+nice, looks like we could omit strlen call in perf mmap event call as well
+
+> 
+> 
+> > +		buf[len] = 0;
+> 
+> Wait a minute...  Why are you NUL-terminating it separately?
+> You do rely upon having NUL in the damn thing (and d_path() does
+> guarantee it there).  Without that strlen() would've gone into
+> the nasal demon country; you can't call it on non-NUL-terminated
+> array.  So you are guaranteed that p[len] will be '\0'; why bother
+> copying the first len bytes and then separately deal with that
+> NUL?  Just memmove() the fucker and be done with that...
+> 
+> If you are worried about stray NUL in the middle of the returned
+> data... can't happen.  Note the rename_lock use in fs/d_path.c;
+> the names of everything involved are guaranteed to have been
+> stable throughout the copying them into the buffer - if anything
+> were to be renamed while we are doing that, we'd repeat the whole
+> thing (with rename_lock taken exclusive the second time around).
+> 
+> So make it simply
+> 	if (IS_ERR(p))
+> 		return PTR_ERR(p);
+> 	len = buf + sz - p;
+> 	memmove(buf, p, len);
+> 	return len;
+
+ok, will use this
+
+> and be done with that.  BTW, the odds of p == buf are pretty much
+> nil - it would happen only if sz - 1 happened to be the exact length
+> of pathname.
+> 
+
+ok, great
 
 thanks,
 jirka
