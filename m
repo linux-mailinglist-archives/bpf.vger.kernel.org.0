@@ -2,99 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98F52338A2
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BD6233914
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgG3TEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 15:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S1730531AbgG3TbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 15:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbgG3TEM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:04:12 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B2AC061574;
-        Thu, 30 Jul 2020 12:04:12 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id m200so10837148ybf.10;
-        Thu, 30 Jul 2020 12:04:12 -0700 (PDT)
+        with ESMTP id S1730497AbgG3TbG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 15:31:06 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4554DC061574;
+        Thu, 30 Jul 2020 12:31:05 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id v89so791288ybi.8;
+        Thu, 30 Jul 2020 12:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=X5HUKfRMrtzs7dcM+5i3OnbYxJs7/ceslheaYcPXAhE=;
-        b=h8BVyPqMQwEw3kG67/klDfqXOtepNjPZC2j3hnwJAz8K2LPFK6eqaYvAeFHD9Gop3G
-         VdqVrAHyPOdRdaoLQ29mn4S1qyRrz5+EQOHi5Na2HeH/PiGQBzlv5B4qZqoOh30GW/G2
-         Kai0Q9hq429/TLmcU5SUdjR8F5aXNWTkW2g/vbuo+I3Id8KmRzcw1URULAxuEPQMaORl
-         /iX2I8LOK/t0oZru7b4tC5bXVxHlZAqeMr+j+P25N8DXqDVZX7Er65r4tIDb915L0/3F
-         cTubq7eLGwJM5LlrOhtkzu8dCvvglpoB8CEL/kbr7BXk5dX0iZAeM+vWF8NZE/MqxIi8
-         1CQQ==
+        bh=5FEEnrZXlSxUHvW2wIVYPb6qoZnfA0638bKW+bX8O9s=;
+        b=Ovi4tUleUwfC3CdzW3DPEwqFMnah+Pxsur0bNb54Q7xoG3zyIOnhZlkCML+aihC6sI
+         XuionKk+FXR0X/17569vkEsvVy2e03xXa/I84IzW83inuhw54d5QtV5HgARK8NvEvrUD
+         sa0gZjcG31iXamLq8l06eSQ5/cNfS8eijRsi0IOeXQScSHq9gtUovlJ6PZ6pYNUVCycp
+         vl35re4171pAxJw0RpoChy6avgyB26a2JMi3aLKguWzbaRmos/FeetW9IzVqLdIWLJyI
+         ogEmdXD+qVwr3QMWPdVBRGUUeZTerfiie3v/a9YtqeC2HL40SFiH7zFaDzHhkFcSSuVs
+         tHyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=X5HUKfRMrtzs7dcM+5i3OnbYxJs7/ceslheaYcPXAhE=;
-        b=Cmbj/RPphD9HB5Gpf8aH5CgUZku62r6T3UiC8ILauVVUB7vrMqtJGpDYCmZhLtStUp
-         m9rZ6r63SYtbS+XLETh8zag5diH/LMpJ+/kCUug5FyrZHSdAIapW3AJWU9J5u8tzuv3Z
-         bW00RekElYvT8+6L77r62td7f5xFRUbvxl9W7J/nPET+5Ys9MuNOVv50/xCmUMYx75u1
-         NCeEFpPYTpnzh3nTf/GIYKZdIu6J448+F8ClMbwjTjxbd6y5ruXym3V2WBob+MPV+WlO
-         ZBxT+5CLu/hxNQ92veQEkR/yAAIZRyNgYavGOXonktPWbf4aFlLi5ZftrNxxXGlsOUTl
-         TBkw==
-X-Gm-Message-State: AOAM532+SfKaK3smpRMxodJTVIsdz6pZ9GJWbPWCloxOqfvWR35WUVTG
-        68MUV2Q3tquNez7x1HxtjiYlo1s4ykZGcPHGruHmmw==
-X-Google-Smtp-Source: ABdhPJzQMB6Rk7p5PYpdeoUXstHOLW6+Y8s/wuAuqWamheDI9P755t7CPMUZ5/4FiuncC6jfpZbPz4hYpk+1iixkDqY=
-X-Received: by 2002:a25:824a:: with SMTP id d10mr552970ybn.260.1596135851397;
- Thu, 30 Jul 2020 12:04:11 -0700 (PDT)
+        bh=5FEEnrZXlSxUHvW2wIVYPb6qoZnfA0638bKW+bX8O9s=;
+        b=ob8jypp7eKfOIo/LtUtNF9TolCLjQ24EjWbdy0erYDSLdsSHtjk33EdUMSInCk8Ri4
+         YvKCco62vEN3r3OUuuNq6cjxMJTGd7+IZDSRBG6EVDc6152mmCwulZhWCoyWDZAond6L
+         ddRQeDm7iX6yct9x629dC2FSkco1JZ1Hjemu7jp7nJSHBi2QAVrh9kUtY/gZc8rFaiK9
+         c7nJNim+gO6H+HiD24yzU1HWcxOoyL2cJZ2BHD+BCRoFRvuGYcTrb4zb17okk7K3poWM
+         Fm2Lf1qFrZxajgVmVBesT4ehXy05xykhySb+VYpgt6XCQtOoH9/X+AOWdXEitt/P2TRH
+         WN7A==
+X-Gm-Message-State: AOAM532MAyqDSAaY2Bdb8+/+g7g3bu8QqFdunoNzlzZvudBXlbP0GgB3
+        ithYSXAwJ6zPqDRp7CSn7HYE9iloGx9PN2/xXz0=
+X-Google-Smtp-Source: ABdhPJy5y5SymkBeA9AHUM0LHSlU1xiJSJfYrV04fm873XRmlmkWVjllrwFPD/iVWyU7VI5mpLSDvqpD3JSEsA7hQmI=
+X-Received: by 2002:a25:ba0f:: with SMTP id t15mr617569ybg.459.1596137464532;
+ Thu, 30 Jul 2020 12:31:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200729230520.693207-1-andriin@fb.com> <20200729230520.693207-2-andriin@fb.com>
- <E5C327CB-962D-46B9-9816-29169F62C4EF@fb.com>
-In-Reply-To: <E5C327CB-962D-46B9-9816-29169F62C4EF@fb.com>
+References: <20200730125325.1869363-1-jakub@cloudflare.com>
+In-Reply-To: <20200730125325.1869363-1-jakub@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Jul 2020 12:03:59 -0700
-Message-ID: <CAEf4BzZsYoBZjsSKgQ-+OYRCa=Xn1EVwmdjGM5FG5oZv7_9vkw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: add support for forced LINK_DETACH command
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Thu, 30 Jul 2020 12:30:53 -0700
+Message-ID: <CAEf4Bzan-B5ZTc6jSf3Dut7frEKq1XhYxg3sTtdKbds+mmmrrQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Omit nodad flag when adding
+ addresses to loopback
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 10:43 AM Song Liu <songliubraving@fb.com> wrote:
+On Thu, Jul 30, 2020 at 5:53 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
+> Setting IFA_F_NODAD flag for IPv6 addresses to add to loopback is
+> unnecessary. Duplicate Address Detection does not happen on loopback
+> device.
 >
+> Also, passing 'nodad' flag to 'ip address' breaks libbpf CI, which runs in
+> an environment with BusyBox implementation of 'ip' command, that doesn't
+> understand this flag.
 >
-> > On Jul 29, 2020, at 4:05 PM, Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Add LINK_DETACH command to force-detach bpf_link without destroying it. It has
-> > the same behavior as auto-detaching of bpf_link due to cgroup dying for
-> > bpf_cgroup_link or net_device being destroyed for bpf_xdp_link. In such case,
-> > bpf_link is still a valid kernel object, but is defuncts and doesn't hold BPF
-> > program attached to corresponding BPF hook. This functionality allows users
-> > with enough access rights to manually force-detach attached bpf_link without
-> > killing respective owner process.
-> >
-> > This patch implements LINK_DETACH for cgroup, xdp, and netns links, mostly
-> > re-using existing link release handling code.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> The code looks good to me. My only question is, do we need both
-> bpf_link_ops->detach and bpf_link_ops->release?
+> Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
+> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
 
-I think so. release() is mandatory for final clean up, after the last
-FD was closed, so every type of bpf_link has to implement this.
-detach() is optional, though, and potentially can do different things
-than release(). It just so happens right now that three bpf_linkl
-types can re-use release as-is (with minimal change to netns release
-specifically for detach use case). So I think having two is better and
-more flexible.
 
+This fixes the nodad issue, thanks for quick fix!
+
+Tested-by: Andrii Nakryiko <andrii@fb.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+
+But now I see these, which seems like you have a separate fix for, right?
+
+(network_helpers.c:112: errno: Cannot assign requested address) Failed
+to connect to server
+run_lookup_test:FAIL:connect_fd_to_fd unexpected result err -1 errno 99
+#14 cgroup_skb_sk_lookup:FAIL
+
+udp_recv_send:FAIL:recvmsg failed
+(/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339:
+errno: Resource temporarily unavailable) failed to receive
+#73/14 UDP IPv4 redir and reuseport with conns:FAIL
+
+
+>  tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Thanks,
-> Song
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> index 9bbd2b2b7630..379da6f10ee9 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> @@ -1290,8 +1290,8 @@ static void run_tests(struct test_sk_lookup *skel)
+>  static int switch_netns(void)
+>  {
+>         static const char * const setup_script[] = {
+> -               "ip -6 addr add dev lo " EXT_IP6 "/128 nodad",
+> -               "ip -6 addr add dev lo " INT_IP6 "/128 nodad",
+> +               "ip -6 addr add dev lo " EXT_IP6 "/128",
+> +               "ip -6 addr add dev lo " INT_IP6 "/128",
+>                 "ip link set dev lo up",
+>                 NULL,
+>         };
+> --
+> 2.25.4
 >
-> [...]
