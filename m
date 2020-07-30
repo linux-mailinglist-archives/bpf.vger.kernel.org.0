@@ -2,119 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BD6233914
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF8B23392C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgG3TbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 15:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        id S1726853AbgG3Tjx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 15:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730497AbgG3TbG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:31:06 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4554DC061574;
-        Thu, 30 Jul 2020 12:31:05 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id v89so791288ybi.8;
-        Thu, 30 Jul 2020 12:31:05 -0700 (PDT)
+        with ESMTP id S1726650AbgG3Tjw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 15:39:52 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9D6C061574;
+        Thu, 30 Jul 2020 12:39:52 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n141so12854885ybf.3;
+        Thu, 30 Jul 2020 12:39:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5FEEnrZXlSxUHvW2wIVYPb6qoZnfA0638bKW+bX8O9s=;
-        b=Ovi4tUleUwfC3CdzW3DPEwqFMnah+Pxsur0bNb54Q7xoG3zyIOnhZlkCML+aihC6sI
-         XuionKk+FXR0X/17569vkEsvVy2e03xXa/I84IzW83inuhw54d5QtV5HgARK8NvEvrUD
-         sa0gZjcG31iXamLq8l06eSQ5/cNfS8eijRsi0IOeXQScSHq9gtUovlJ6PZ6pYNUVCycp
-         vl35re4171pAxJw0RpoChy6avgyB26a2JMi3aLKguWzbaRmos/FeetW9IzVqLdIWLJyI
-         ogEmdXD+qVwr3QMWPdVBRGUUeZTerfiie3v/a9YtqeC2HL40SFiH7zFaDzHhkFcSSuVs
-         tHyA==
+        bh=8TL91OFsbW6CpAgMDF7roOTLMqqvCnVNJ85XQj3M3+w=;
+        b=G5sWAqT6a78ycsALH20XGq/U/j0W3S+Cgam28Q7O+ETiV7XU5HBSQnLQIjzqv/F0iL
+         FOhgTsMGcFR4i1NzRT/b6lsLcW7ScPIVH7rNxsrBxEpYqNYucNpebyvu+R3gJl5s14UZ
+         6xdjSyHjyqgmRPiwdKWp79eWrCi6Kcik00VHrLijmylDUcap656DsPjhXoZEA6DD+JNG
+         NZk0HEM1DI1xq3XCjFUF6U1q+DVSFVwN/cj/sPN3A1x5rbp3FowDFeLtsdfMupleVlr2
+         JjidEpSJ8pd6WD+wapoBKCGBZ+fwW1/7JB16hoSbEBRIn0gWoyb3DezQL/UX0urRXiqx
+         yV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5FEEnrZXlSxUHvW2wIVYPb6qoZnfA0638bKW+bX8O9s=;
-        b=ob8jypp7eKfOIo/LtUtNF9TolCLjQ24EjWbdy0erYDSLdsSHtjk33EdUMSInCk8Ri4
-         YvKCco62vEN3r3OUuuNq6cjxMJTGd7+IZDSRBG6EVDc6152mmCwulZhWCoyWDZAond6L
-         ddRQeDm7iX6yct9x629dC2FSkco1JZ1Hjemu7jp7nJSHBi2QAVrh9kUtY/gZc8rFaiK9
-         c7nJNim+gO6H+HiD24yzU1HWcxOoyL2cJZ2BHD+BCRoFRvuGYcTrb4zb17okk7K3poWM
-         Fm2Lf1qFrZxajgVmVBesT4ehXy05xykhySb+VYpgt6XCQtOoH9/X+AOWdXEitt/P2TRH
-         WN7A==
-X-Gm-Message-State: AOAM532MAyqDSAaY2Bdb8+/+g7g3bu8QqFdunoNzlzZvudBXlbP0GgB3
-        ithYSXAwJ6zPqDRp7CSn7HYE9iloGx9PN2/xXz0=
-X-Google-Smtp-Source: ABdhPJy5y5SymkBeA9AHUM0LHSlU1xiJSJfYrV04fm873XRmlmkWVjllrwFPD/iVWyU7VI5mpLSDvqpD3JSEsA7hQmI=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr617569ybg.459.1596137464532;
- Thu, 30 Jul 2020 12:31:04 -0700 (PDT)
+        bh=8TL91OFsbW6CpAgMDF7roOTLMqqvCnVNJ85XQj3M3+w=;
+        b=LLDzvAzymZ9DOqREN2PuXD6w2iq9VpBHoNP4tHjTy8P7BtXd3ttwefIat6oOCfxLhg
+         Jziz7921psRtkr1/XFC0BXaibZkw65l7HWCOhH21VCLaSqX1inW8/GPfNiBnDEE8oJqB
+         tFOLOGPPPLmAQqtWccoHeWRCB8rHQWByLfutOvCUuy6KXS6BrYsCgkcw+cg0/b+rrBKm
+         9BydsPOaIhaEZIOYiunGFbzUbFchNoJKh/14aVck/FB9iGqdrs/wRZGSJ4k5koyP+36f
+         UY/Rlrux7RTxdH1lofbpiopMkVs51i+9URT8C8f+FFnY5kBQwkie6WSTJ2vvBARMRXxD
+         FGpw==
+X-Gm-Message-State: AOAM5304szvrIAGV4YtymDQHE+J+vjTzWXZJn6MXlJAB0IgAwuafBok6
+        Vt5qUrvKWyAMkuZD6cH6rWgPcTWSSY5houEM9YE=
+X-Google-Smtp-Source: ABdhPJylJzV1bWJOD2Mn4vqOEK+5YuzuxGuPPndvpK0NsyEq//FbylkViIVDABRew3ThSJmNxEAJFgIjibfl2igIIXk=
+X-Received: by 2002:a25:ba0f:: with SMTP id t15mr669331ybg.459.1596137992019;
+ Thu, 30 Jul 2020 12:39:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200730125325.1869363-1-jakub@cloudflare.com>
-In-Reply-To: <20200730125325.1869363-1-jakub@cloudflare.com>
+References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-30-guro@fb.com>
+ <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
+ <20200727231538.GA352883@carbon.DHCP.thefacebook.com> <CAEf4BzamC4RQrQuAgH1DK-qcW3cKFuBEbYRhVz-8UMU+mbTcvA@mail.gmail.com>
+ <20200730013836.GA637520@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20200730013836.GA637520@carbon.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Jul 2020 12:30:53 -0700
-Message-ID: <CAEf4Bzan-B5ZTc6jSf3Dut7frEKq1XhYxg3sTtdKbds+mmmrrQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Omit nodad flag when adding
- addresses to loopback
-To:     Jakub Sitnicki <jakub@cloudflare.com>
+Date:   Thu, 30 Jul 2020 12:39:40 -0700
+Message-ID: <CAEf4BzaZhyus7Kd-08vrVW9sr6gHGj1mCBgUY-NCWUOfdEJgHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 29/35] bpf: libbpf: cleanup RLIMIT_MEMLOCK usage
+To:     Roman Gushchin <guro@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 5:53 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Wed, Jul 29, 2020 at 6:38 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> Setting IFA_F_NODAD flag for IPv6 addresses to add to loopback is
-> unnecessary. Duplicate Address Detection does not happen on loopback
-> device.
+> On Mon, Jul 27, 2020 at 10:59:33PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Jul 27, 2020 at 4:15 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Mon, Jul 27, 2020 at 03:05:11PM -0700, Andrii Nakryiko wrote:
+> > > > On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > >
+> > > > > As bpf is not using memlock rlimit for memory accounting anymore,
+> > > > > let's remove the related code from libbpf.
+> > > > >
+> > > > > Bpf operations can't fail because of exceeding the limit anymore.
+> > > > >
+> > > >
+> > > > They can't in the newest kernel, but libbpf will keep working and
+> > > > supporting old kernels for a very long time now. So please don't
+> > > > remove any of this.
+> > >
+> > > Yeah, good point, agree.
+> > > So we just can drop this patch from the series, no other changes
+> > > are needed.
+> > >
+> > > >
+> > > > But it would be nice to add a detection of whether kernel needs a
+> > > > RLIMIT_MEMLOCK bump or not. Is there some simple and reliable way to
+> > > > detect this from user-space?
 >
-> Also, passing 'nodad' flag to 'ip address' breaks libbpf CI, which runs in
-> an environment with BusyBox implementation of 'ip' command, that doesn't
-> understand this flag.
+> Btw, do you mean we should add a new function to the libbpf API?
+> Or just extend pr_perm_msg() to skip guessing on new kernels?
 >
-> Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
-> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
+
+I think we have to do both. There is libbpf_util.h in libbpf, we could
+add two functions there:
+
+- libbpf_needs_memlock() that would return true/false if kernel is old
+and needs RLIMIT_MEMLOCK
+- as a convenience, we can also add libbpf_inc_memlock_by() and
+libbpf_set_memlock_to(), which will optionally (if kernel needs it)
+adjust RLIMIT_MEMLOCK?
+
+I think for your patch set, given it's pretty big already, let's not
+touch runqslower, libbpf, and perf code (I think samples/bpf are fine
+to just remove memlock adjustment), and we'll deal with detection and
+optional bumping of RLIMIT_MEMLOCK as a separate patch once your
+change land.
 
 
-This fixes the nodad issue, thanks for quick fix!
+> The problem with the latter one is that it's called on a failed attempt
+> to create a map, so unlikely we'll be able to create a new one just to test
+> for the "memlock" value. But it also raises a question what should we do
+> if the creation of this temporarily map fails? Assume the old kernel and
+> bump the limit?
 
-Tested-by: Andrii Nakryiko <andrii@fb.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Yeah, I think we'll have to make assumptions like that. Ideally, of
+course, detection of this would be just a simple sysfs value or
+something, don't know. Maybe there is already a way for kernel to
+communicate something like that?
 
-
-But now I see these, which seems like you have a separate fix for, right?
-
-(network_helpers.c:112: errno: Cannot assign requested address) Failed
-to connect to server
-run_lookup_test:FAIL:connect_fd_to_fd unexpected result err -1 errno 99
-#14 cgroup_skb_sk_lookup:FAIL
-
-udp_recv_send:FAIL:recvmsg failed
-(/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:339:
-errno: Resource temporarily unavailable) failed to receive
-#73/14 UDP IPv4 redir and reuseport with conns:FAIL
-
-
->  tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Idk, maybe it's better to just leave the userspace code as it is for some time.
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index 9bbd2b2b7630..379da6f10ee9 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -1290,8 +1290,8 @@ static void run_tests(struct test_sk_lookup *skel)
->  static int switch_netns(void)
->  {
->         static const char * const setup_script[] = {
-> -               "ip -6 addr add dev lo " EXT_IP6 "/128 nodad",
-> -               "ip -6 addr add dev lo " INT_IP6 "/128 nodad",
-> +               "ip -6 addr add dev lo " EXT_IP6 "/128",
-> +               "ip -6 addr add dev lo " INT_IP6 "/128",
->                 "ip link set dev lo up",
->                 NULL,
->         };
-> --
-> 2.25.4
->
+> Thanks!
