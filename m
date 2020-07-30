@@ -2,126 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0BF233045
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 12:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1644D233067
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 12:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgG3KXF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 06:23:05 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53381 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729139AbgG3KXE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jul 2020 06:23:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596104583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M55NVo/p4Ki/zb/dZ0gL9E7SRpn8neFKlVQ6d5TPxlA=;
-        b=Tpdn5N+LS7WsFaA6zRXZzkEvQqcWCRS1d4O0xDNwWPv+VH6+F6XYrnNKoerjUj3psaJgOi
-        JjeD2QzcK+hBwtH8fLodCGMYM/ig+2M5K4RmXATHGJcjPXfsxX4ZsjE2t3duXmbhuc28BH
-        C+tzn5VR4chSwR+aQtDX9p41ffUGWP8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-6wiMTaGKO6yT5rox6Fjatg-1; Thu, 30 Jul 2020 06:22:59 -0400
-X-MC-Unique: 6wiMTaGKO6yT5rox6Fjatg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36662101C8A9;
-        Thu, 30 Jul 2020 10:22:57 +0000 (UTC)
-Received: from krava (unknown [10.40.194.223])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2453A6179D;
-        Thu, 30 Jul 2020 10:22:53 +0000 (UTC)
-Date:   Thu, 30 Jul 2020 12:22:52 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726287AbgG3Ka3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 06:30:29 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:36992 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725892AbgG3Ka2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 06:30:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=YGeAc6Wc56
+        nAYNAcYe8hVIlpE0CdSjlL19b3AqomqcY=; b=JslT8cGb/VHBVQv9qxu+d4+OXK
+        qyWG8oe/foQnMOklextsOh57TG1OuRq+FeCS4JLlTNMkY8WxFdFA76QKUKzcM0aR
+        MvI3wJhgtjgiuDi9ypxvrfaHxF21pXKQ+1V2+lRqwBoteL1JHHXxYvfkqvGVfkoR
+        5/fHbSo0YvJhQwweQ=
+Received: from xin-virtual-machine (unknown [111.192.143.50])
+        by app2 (Coremail) with SMTP id XQUFCgD3_zMnoSJfM9KfAg--.21996S3;
+        Thu, 30 Jul 2020 18:30:00 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH v8 bpf-next 09/13] bpf: Add d_path helper
-Message-ID: <20200730102252.GR1319041@krava>
-References: <20200722211223.1055107-1-jolsa@kernel.org>
- <20200722211223.1055107-10-jolsa@kernel.org>
- <20200729201117.GA1233513@ZenIV.linux.org.uk>
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH v2] net/mlx5e: fix bpf_prog reference count leaks in mlx5e_alloc_rq
+Date:   Thu, 30 Jul 2020 18:29:41 +0800
+Message-Id: <20200730102941.5536-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729201117.GA1233513@ZenIV.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: XQUFCgD3_zMnoSJfM9KfAg--.21996S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1DCFy8JF1rJw1rXF1rCrg_yoW8Cr1kpr
+        47Wr9FkFZ5JFyUJw4DAaykXa4Fka90y3WDWF1Fvw4fXrs8AFs5AFyFgry7uF1UGFW8Gw1j
+        qw429ws8AFn5AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUO5r4UUUUU
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 09:11:17PM +0100, Al Viro wrote:
-> On Wed, Jul 22, 2020 at 11:12:19PM +0200, Jiri Olsa wrote:
-> 
-> > +BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-> > +{
-> > +	char *p = d_path(path, buf, sz - 1);
-> > +	int len;
-> > +
-> > +	if (IS_ERR(p)) {
-> > +		len = PTR_ERR(p);
-> > +	} else {
-> > +		len = strlen(p);
-> > +		if (len && p != buf)
-> > +			memmove(buf, p, len);
-> 
-> *blink*
-> What the hell do you need that strlen() for?  d_path() copies into
-> the end of buffer (well, starts there and prepends to it); all you
-> really need is memmove(buf, p, buf + sz - p)
+The function invokes bpf_prog_inc(), which increases the reference
+count of a bpf_prog object "rq->xdp_prog" if the object isn't NULL.
 
-I used the code from some of the other users like
-  backing_dev_show
-  fsg_show_file
+The refcount leak issues take place in two error handling paths. When
+either mlx5_wq_ll_create() or mlx5_wq_cyc_create() fails, the function
+simply returns the error code and forgets to drop the reference count
+increased earlier, causing a reference count leak of "rq->xdp_prog".
 
-nice, looks like we could omit strlen call in perf mmap event call as well
+Fix this issue by jumping to the error handling path err_rq_wq_destroy
+while either function fails.
 
-> 
-> 
-> > +		buf[len] = 0;
-> 
-> Wait a minute...  Why are you NUL-terminating it separately?
-> You do rely upon having NUL in the damn thing (and d_path() does
-> guarantee it there).  Without that strlen() would've gone into
-> the nasal demon country; you can't call it on non-NUL-terminated
-> array.  So you are guaranteed that p[len] will be '\0'; why bother
-> copying the first len bytes and then separately deal with that
-> NUL?  Just memmove() the fucker and be done with that...
-> 
-> If you are worried about stray NUL in the middle of the returned
-> data... can't happen.  Note the rename_lock use in fs/d_path.c;
-> the names of everything involved are guaranteed to have been
-> stable throughout the copying them into the buffer - if anything
-> were to be renamed while we are doing that, we'd repeat the whole
-> thing (with rename_lock taken exclusive the second time around).
-> 
-> So make it simply
-> 	if (IS_ERR(p))
-> 		return PTR_ERR(p);
-> 	len = buf + sz - p;
-> 	memmove(buf, p, len);
-> 	return len;
+Fixes: 422d4c401edd ("net/mlx5e: RX, Split WQ objects for different RQ
+types")
 
-ok, will use this
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+v1 -> v2:
+- Amended parts of wording to be better understood
+- Added Fixes tag
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> and be done with that.  BTW, the odds of p == buf are pretty much
-> nil - it would happen only if sz - 1 happened to be the exact length
-> of pathname.
-> 
-
-ok, great
-
-thanks,
-jirka
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a836a02a2116..8e1b1ab416d8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -419,7 +419,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_ll_create(mdev, &rqp->wq, rqc_wq, &rq->mpwqe.wq,
+ 					&rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->mpwqe.wq.db = &rq->mpwqe.wq.db[MLX5_RCV_DBR];
+ 
+@@ -470,7 +470,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+ 		err = mlx5_wq_cyc_create(mdev, &rqp->wq, rqc_wq, &rq->wqe.wq,
+ 					 &rq->wq_ctrl);
+ 		if (err)
+-			return err;
++			goto err_rq_wq_destroy;
+ 
+ 		rq->wqe.wq.db = &rq->wqe.wq.db[MLX5_RCV_DBR];
+ 
+-- 
+2.25.1
 
