@@ -2,112 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D086233931
-	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12A7233940
+	for <lists+bpf@lfdr.de>; Thu, 30 Jul 2020 21:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgG3TnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 15:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgG3TnX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jul 2020 15:43:23 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0089AC061574;
-        Thu, 30 Jul 2020 12:43:22 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id 2so15034685ybr.13;
-        Thu, 30 Jul 2020 12:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UjeWPXwiWV8GnGLuFHc4HfFTrfL6j+JmPS3U9PJwGY0=;
-        b=pKaKPTqxbXmTPvl91+eIqhnKIjIViOm6NxVU65WSSu+ZLYSo/dOrRv9oxS0N2dXHgO
-         TGuYYt74gJ9S9JlLqLzt744ORZFN/KYOind9ey05srYHys2uvYL7ZVMeCr406sv/B1y3
-         k10poCgKt/kUnryeEWdvzGcXZavPMDDhymqU3aJV/BTU0yZMM43axJKV3kOi5hmzncgE
-         k31hm4RDuRgb7WMtacwDOxhbf+WcMvi41fi1ncHcdxqG9V8A1Yan+W8XAgFRbMo789cv
-         AHIF01rdgbWG8RfunuZL0cERCcoBZ2IbDMoixOrIBFb1QVfkPcbGaXUuwaSjEo4+ou58
-         cfyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UjeWPXwiWV8GnGLuFHc4HfFTrfL6j+JmPS3U9PJwGY0=;
-        b=heu+7kn8PhuXIZ34J03+LuFrJafl5Lq5f3HOWFH3GMhnb5qiyW/b933XBMcOXjf9Hp
-         wikklvWa/vxgwqxDtPmY2+mEnD1JiAVTqMUKuYNv0VUf4L9aG4T+ZFVOWbcVT8gQoBsy
-         b0w9JcmQYMlTCev14N5eoRYMmYEw1zR6T4gnjF9sLpydgPv6cAiF9NxkF+XEGNGq49nm
-         rn1y7Cq6qgwYO4lfwCOrYMdzincSxLOfR4kpKoZIWZc++S8m2P2anu+R0E70OwHZSoak
-         WT1TyGpM909R+YSpAGdx1MTWbVH5YAam5cHaDipoBFmox5dPz69UtXPfs1VHgwgtcNwc
-         iZOA==
-X-Gm-Message-State: AOAM533+M60NCH7Z3NLUCZImtq/gaQr9cK5e7gOJFU11989rTBt2spsr
-        vuitvqZVhCfjJGDM2z76A4kyboJPQKjQ0UbN/ss=
-X-Google-Smtp-Source: ABdhPJxcmHuR6KUJESSkQAQoK31s7b3Ae03w6dwVHZrdexcgMQ/sDM8YU4D4P5BAi7OB2PlSitiKa81d3W2hX7IkpSA=
-X-Received: by 2002:a25:9c44:: with SMTP id x4mr727506ybo.510.1596138202288;
- Thu, 30 Jul 2020 12:43:22 -0700 (PDT)
+        id S1728636AbgG3Tro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jul 2020 15:47:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36664 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726857AbgG3Tro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jul 2020 15:47:44 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1EWi-0007ew-B5; Thu, 30 Jul 2020 21:47:40 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1EWi-000C0T-0x; Thu, 30 Jul 2020 21:47:40 +0200
+Subject: Re: [PATCH bpf-next 1/1] arm64: bpf: Add BPF exception tables
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Qian Cai <cai@lca.pw>
+Cc:     linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, andriin@fb.com, catalin.marinas@arm.com,
+        john.fastabend@gmail.com, ast@kernel.org, zlim.lnx@gmail.com,
+        kpsingh@chromium.org, yhs@fb.com, will@kernel.org, kafai@fb.com,
+        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200728152122.1292756-1-jean-philippe@linaro.org>
+ <20200728152122.1292756-2-jean-philippe@linaro.org>
+ <20200730122855.GA3773@lca.pw> <20200730142213.GB1529030@myrica>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f2f05f41-ccf9-e693-85bf-59ebbf8dadfe@iogearbox.net>
+Date:   Thu, 30 Jul 2020 21:47:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200717103536.397595-1-jakub@cloudflare.com> <20200717103536.397595-16-jakub@cloudflare.com>
- <CAEf4BzZHf7838t88Ed3Gzp32UFMq2o2zryL3=hjAL4mELzUC+w@mail.gmail.com>
- <87lfj2wvf4.fsf@cloudflare.com> <87ft99w3lk.fsf@cloudflare.com>
-In-Reply-To: <87ft99w3lk.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Jul 2020 12:43:11 -0700
-Message-ID: <CAEf4BzbUEWp+TBjRXaL2XN8GwKYMJPO+PpRJ0uqgh2kOXKvBzg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 15/15] selftests/bpf: Tests for BPF_SK_LOOKUP
- attach point
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200730142213.GB1529030@myrica>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 6:10 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Wed, Jul 29, 2020 at 10:57 AM CEST, Jakub Sitnicki wrote:
-> > On Tue, Jul 28, 2020 at 10:13 PM CEST, Andrii Nakryiko wrote:
-> >
-> > [...]
-> >
-> >> We are getting this failure in Travis CI when syncing libbpf [0]:
-> >>
-> >> ```
-> >> ip: either "local" is duplicate, or "nodad" is garbage
-> >>
-> >> switch_netns:PASS:unshare 0 nsec
-> >>
-> >> switch_netns:FAIL:system failed
-> >>
-> >> (/home/travis/build/libbpf/libbpf/travis-ci/vmtest/bpf-next/tools/testing/selftests/bpf/prog_tests/sk_lookup.c:1310:
-> >> errno: No such file or directory) system(ip -6 addr add dev lo
-> >> fd00::1/128 nodad)
-> >>
-> >> #73 sk_lookup:FAIL
-> >> ```
-> >>
-> >>
-> >> Can you please help fix it so that it works in a Travis CI environment
-> >> as well? For now I disabled sk_lookup selftests altogether. You can
-> >> try to repro it locally by forking https://github.com/libbpf/libbpf
-> >> and enabling Travis CI for your account. See [1] for the PR that
-> >> disabled sk_lookup.
->
-> [...]
->
-> Once this fix-up finds its way to bpf-next, we will be able to re-enable
-> sk_loookup tests:
->
->   https://lore.kernel.org/bpf/20200730125325.1869363-1-jakub@cloudflare.com/
->
-> And I now know that I need to test shell commands against BusyBox 'ip'
-> command implementation, that libbpf project uses in CI env.
+On 7/30/20 4:22 PM, Jean-Philippe Brucker wrote:
+> On Thu, Jul 30, 2020 at 08:28:56AM -0400, Qian Cai wrote:
+>> On Tue, Jul 28, 2020 at 05:21:26PM +0200, Jean-Philippe Brucker wrote:
+>>> When a tracing BPF program attempts to read memory without using the
+>>> bpf_probe_read() helper, the verifier marks the load instruction with
+>>> the BPF_PROBE_MEM flag. Since the arm64 JIT does not currently recognize
+>>> this flag it falls back to the interpreter.
+>>>
+>>> Add support for BPF_PROBE_MEM, by appending an exception table to the
+>>> BPF program. If the load instruction causes a data abort, the fixup
+>>> infrastructure finds the exception table and fixes up the fault, by
+>>> clearing the destination register and jumping over the faulting
+>>> instruction.
+>>>
+>>> To keep the compact exception table entry format, inspect the pc in
+>>> fixup_exception(). A more generic solution would add a "handler" field
+>>> to the table entry, like on x86 and s390.
+>>>
+>>> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>>
+>> This will fail to compile on arm64,
+>>
+>> https://gitlab.com/cailca/linux-mm/-/blob/master/arm64.config
+>>
+>> arch/arm64/mm/extable.o: In function `fixup_exception':
+>> arch/arm64/mm/extable.c:19: undefined reference to `arm64_bpf_fixup_exception'
+> 
+> Thanks for the report, I attached a fix. Daniel, can I squash it and
+> resend as v2 or is it too late?
 
+If you want I can squash your attached snippet into the original patch of
+yours. If you want to send a v2 that is fine as well of course. Let me know.
 
-Thanks! I still see some (other) failures, it might be that our
-environment is not full enough or something (you also mentioned some
-other fix to Daniel, that might help as well, dunno). But your fix is
-good nevertheless.
+Thanks,
+Daniel
