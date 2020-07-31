@@ -2,80 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB37234D5B
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 23:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1CD234D6B
+	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 00:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725859AbgGaVzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 17:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S1725859AbgGaWJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 18:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgGaVzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 17:55:13 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A708AC061574;
-        Fri, 31 Jul 2020 14:55:13 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id k23so33045385iom.10;
-        Fri, 31 Jul 2020 14:55:13 -0700 (PDT)
+        with ESMTP id S1725767AbgGaWJI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 18:09:08 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF59C06174A
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 15:09:08 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id z17so11467910ill.6
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 15:09:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=OySZ5jd2AWLJGW3T8Zhfl3bGRPBRC3R+XzOwEtfX2Rk=;
-        b=cMtogEO1rv91QrA4u26UALUV2VBSS6kGyfgryNLVLLpI7LxpEUOL1lQIyz6EZDrcTd
-         OnKBsApnK48bzenecse5Sb4GPNLHx086PWZD7dBFaU4T5z4cJq2aDCnxQ8fkyLaq1bD2
-         NMd8gEzWEL6CqeHd6Fch0lkRaeclTGAYq2IRG8LA39MJi1hQjpkf+jMVnOl3X3/0Glhm
-         bcimx51gH/Tqpr8hkB6MX7aH259xwfIzvPCdmCL6Fljd0EYMr63s0rcWfCvaQbobPfKY
-         WFjRmZuQaGca4LY7gm7Fcre2go7x25qN0rL58IBwkceZEW1hWOMiT3FXQu5rpbIGKARB
-         Cb5w==
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=px/AVnfDI+JIBGNQ4BT/FQ3aIHFWlFxrS+QtYnmqoA8=;
+        b=ryJMsZWbejumb9NA6fFkSfhTueZrAcXRFnKMiVd4jkdalTZHJTPmdEQD7V6C28aUOn
+         T3asWFdwshUeJPnJ1bK1cAlVac4Fe3kWVv6gGdFex4lB/f3T6qvzmqyN2GZQBysU2U5b
+         85bWnlCQwTzzR0DzUOYtgzruZTd3l+8lfZr282jdNtkMJg7ISlEqe2SRwJ6tEhxsYWvD
+         XdX5w7QrEjzHimncScPKvsokw6y0J1Hgq6jQC485uBrsQSWikhFa+TMfighNTfncKmm+
+         OZ3slk9allv4/Gmsyg2O+yd+L4buGNaqAQerpmCieFESZOKwE2OU7fK+q3cn6PcNVCZI
+         vjLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=OySZ5jd2AWLJGW3T8Zhfl3bGRPBRC3R+XzOwEtfX2Rk=;
-        b=YOgypE0UL5VPtoiEcCRUVI6p6Uu1LpRaXkuewTmhFn0uZGUU0mBQ+3hI/O3FtTSy83
-         9eQUNRb62CZMMZzhpp28PLKZB38xyQhBgVgYBnyTfaiMCGHJ89CRAwdOte5vn1rwB+yL
-         C6G+VSyxc5UtAOGeMWtXh0DmnuF8mAG461knCosXmLFqUGEP2UFmRIrFnixxG2a/jtI/
-         ITDGWjcacX9DxvvvDt3wPTt0oYviY9cWnv3JQKoxJ6zVRMA+PH0gaOOuvB591fbESPZT
-         HQuAA8JE8fK66tj4ob4Qh5KdqUzB9+4uY/UY0w6+OioMRkEzsXYUwQ+OPxwQOq5QelAk
-         yWhg==
-X-Gm-Message-State: AOAM531kS+nq0Tuh2U8l1bXkIG4QmrqC0RcgI3zMWYDHn7MxEX8fdJa4
-        HLp9V1Egwdj/1aQ/PiqWg8s=
-X-Google-Smtp-Source: ABdhPJz849kS65fAEjJ6I90NWE7pYQBL+xFDaFadqnRbzI3vVJ5ZKopqQ0yxDIHyTaXY/Z2gEMMAtQ==
-X-Received: by 2002:a6b:7416:: with SMTP id s22mr5499573iog.160.1596232512627;
-        Fri, 31 Jul 2020 14:55:12 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id m184sm5176199ioa.12.2020.07.31.14.55.10
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=px/AVnfDI+JIBGNQ4BT/FQ3aIHFWlFxrS+QtYnmqoA8=;
+        b=Sa9OAVgNAsidnW9yP6a9WJ6hWFooikfqP3DnrUHfedYh2Z0UFxlkcZhpmYTcRLyIbZ
+         xm+Ng5kAYnVeaV/pWSOtJCUG1F80M19stCUxBjBPE+AC4eq1100apRJA7nosbMtM82v6
+         eQI0HSCWpyNaeRl/QvwpSbov6ZCAvxjoTXpOn+z8Uc40IHmbpWzWZGxY6W+7wBQ3MNkd
+         05/K82BCDB1Q0VwolAJkFEfT37f45LHS3k7c6u+FsOIKU2ENOLTjfueKG/w1kfC5mgt0
+         lTcs73os8rhZOIRy6nnhMU+IwPoCcRE2zB42H0wHI4kJImT8n+h/hv8cegxqFj+zElkA
+         69gQ==
+X-Gm-Message-State: AOAM530RW5S2Vvi+9m3J+QKU2R8/D4opC1LaLDSY23bz0KtthmsjXG1h
+        izRqAoiODAIQf56GnYUyrAo=
+X-Google-Smtp-Source: ABdhPJyDq0+RUP33bixvfem2nVppX23qopikfvb3I2WGp+93OxRBf/2zncaIUAwnTiUpSI0Hwb/USQ==
+X-Received: by 2002:a92:d60b:: with SMTP id w11mr5365266ilm.156.1596233348181;
+        Fri, 31 Jul 2020 15:09:08 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id b11sm5602778ile.32.2020.07.31.15.08.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2020 14:55:12 -0700 (PDT)
-Date:   Fri, 31 Jul 2020 14:55:03 -0700
+        Fri, 31 Jul 2020 15:09:07 -0700 (PDT)
+Subject: [bpf-next PATCH] Consolidate cgroup setup in selftests
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>
-Message-ID: <5f2493377c396_54fa2b1d9fe285b478@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200731204957.2047119-1-andriin@fb.com>
-References: <20200731204957.2047119-1-andriin@fb.com>
-Subject: RE: [PATCH bpf-next] selftests/bpf: fix spurious test failures in
- core_retro selftest
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+To:     andriin@fb.com, john.fastabend@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org
+Date:   Fri, 31 Jul 2020 15:08:54 -0700
+Message-ID: <159623300854.30208.15981610185239932416.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.17.1-dirty
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> core_retro selftest uses BPF program that's triggered on sys_enter
-> system-wide, but has no protection from some unrelated process doing syscall
-> while selftest is running. This leads to occasional test failures with
-> unexpected PIDs being returned. Fix that by filtering out all processes that
-> are not test_progs process.
-> 
-> Fixes: fcda189a5133 ("selftests/bpf: Add test relying only on CO-RE and no recent kernel features")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+I had this on my stack after trying to get selftests to work with
+netprio cgroup running. I failed at that for the time being. The
+primary problem is if we run tests in root cgroup then we need
+a better way to clean them up vs deleting the directory.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+But, I have this on my stack and it seems like a nice cleanup
+if we want to pull it in. Andrii wdyt?
+
+---
+
+John Fastabend (1):
+      bpf, selftests: Use single cgroup helpers for both test_sockmap/progs
+
+
+ tools/testing/selftests/bpf/cgroup_helpers.c       |   23 ++++++++++++++++++++
+ tools/testing/selftests/bpf/cgroup_helpers.h       |    1 +
+ tools/testing/selftests/bpf/get_cgroup_id_user.c   |   14 ++----------
+ tools/testing/selftests/bpf/test_cgroup_storage.c  |   17 +--------------
+ tools/testing/selftests/bpf/test_dev_cgroup.c      |   15 ++-----------
+ tools/testing/selftests/bpf/test_netcnt.c          |   17 ++-------------
+ .../selftests/bpf/test_skb_cgroup_id_user.c        |    8 +------
+ tools/testing/selftests/bpf/test_sock.c            |    8 +------
+ tools/testing/selftests/bpf/test_sock_addr.c       |    8 +------
+ tools/testing/selftests/bpf/test_sock_fields.c     |   14 +++---------
+ tools/testing/selftests/bpf/test_socket_cookie.c   |    8 +------
+ tools/testing/selftests/bpf/test_sockmap.c         |   18 ++--------------
+ tools/testing/selftests/bpf/test_sysctl.c          |    8 +------
+ tools/testing/selftests/bpf/test_tcpbpf_user.c     |    8 +------
+ tools/testing/selftests/bpf/test_tcpnotify_user.c  |    8 +------
+ 15 files changed, 43 insertions(+), 132 deletions(-)
+
+--
+Signature
