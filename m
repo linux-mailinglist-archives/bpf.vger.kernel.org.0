@@ -2,91 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E710234AA2
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 20:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0454234B00
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 20:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgGaSIN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 14:08:13 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59772 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387469AbgGaSIN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 31 Jul 2020 14:08:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596218892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KkBcthLhdgcdVY5kQ1Abco4F2of49EuasnuDiDQxBXc=;
-        b=eT9Jtu8sz3SMXTiJ0xTc5SBiNSwwDoLbN0sovEblMe46SkfyXU00QGwRULn+jVzQdLgABe
-        4rAy8AmBAR8V39d974IrEspHMbLJYPRyUsYVu6uAPLaTdtB9YAEHKI/3SgVolCzIOWkFtK
-        AUn8ZNODo86eEt9v3dJj91d0pxjrX1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-678_S1YvMWqUBPfkLBRz_A-1; Fri, 31 Jul 2020 14:08:10 -0400
-X-MC-Unique: 678_S1YvMWqUBPfkLBRz_A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68AA2800597;
-        Fri, 31 Jul 2020 18:08:08 +0000 (UTC)
-Received: from krava (unknown [10.40.192.26])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A936860BE2;
-        Fri, 31 Jul 2020 18:08:06 +0000 (UTC)
-Date:   Fri, 31 Jul 2020 20:08:05 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        jolsa@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2020-07-31
-Message-ID: <20200731180805.GA27597@krava>
-References: <20200731135145.15003-1-daniel@iogearbox.net>
- <20200731152432.GA4296@krava>
- <03545f38-c01a-faeb-adab-a0a471ff9fc3@iogearbox.net>
+        id S2387884AbgGaS2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 14:28:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52862 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387695AbgGaS2g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 31 Jul 2020 14:28:36 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06VIErNx011510
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 11:28:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=KqJIq725uq/HnQgvV55bIPsHwEMCXKUIsjnJYCPw/KY=;
+ b=VUKziRaCkW0C976VR373ufk0F457N/CZ1hgiR8/PvuX6nAfrB6iflE9taDrVzuQSvCzo
+ vMr0SpR7EYe4J1lUgoxyqsfcDECO+MNPbwsgeSvHxW5ctdzhPoyN0jsb+CPzH4uelDig
+ tezzZsI0jDXj36JBiAOx/D5XGutD4rRND5k= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32m8dybyhe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 11:28:35 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 31 Jul 2020 11:28:34 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id D16682EC4E02; Fri, 31 Jul 2020 11:28:31 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/5] BPF link force-detach support
+Date:   Fri, 31 Jul 2020 11:28:25 -0700
+Message-ID: <20200731182830.286260-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03545f38-c01a-faeb-adab-a0a471ff9fc3@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-31_07:2020-07-31,2020-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=689 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 suspectscore=8 spamscore=0 phishscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007310137
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 06:12:48PM +0200, Daniel Borkmann wrote:
+This patch set adds new BPF link operation, LINK_DETACH, allowing process=
+es
+with BPF link FD to force-detach it from respective BPF hook, similarly h=
+ow
+BPF link is auto-detached when such BPF hook (e.g., cgroup, net_device, n=
+etns,
+etc) is removed. This facility allows admin to forcefully undo BPF link
+attachment, while process that created BPF link in the first place is lef=
+t
+intact.
 
-SNIP
+Once force-detached, BPF link stays valid in the kernel as long as there =
+is at
+least one FD open against it. It goes into defunct state, just like
+auto-detached BPF link.
 
-> > >                  return -EINVAL;
-> > >          return id;
-> > > }
-> > > 
-> > > Let me know if you run into any others issues (CC'ing Jiri Olsa so he's in
-> > > the loop with regards to merge conflict resolution).
-> > 
-> > we'll loose the bpf_log message, but I'm fine with that ;-) looks good
-> 
-> Checking again on the fix, even though it was only triggered by syzkaller
-> so far, I think it's also possible if users don't have BTF debug data set
-> in the Kconfig but use a helper that expects it, so agree, lets re-add the
-> log in this case:
-> 
-> int btf_resolve_helper_id(struct bpf_verifier_log *log,
->                           const struct bpf_func_proto *fn, int arg)
-> {
->         int id;
-> 
->         if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID)
->                 return -EINVAL;
->         if (!btf_vmlinux) {
->                 bpf_log(log, "btf_vmlinux doesn't exist\n");
->                 return -EINVAL;
->         }
->         id = fn->btf_id[arg];
->         if (!id || id > btf_vmlinux->nr_types)
->                 return -EINVAL;
->         return id;
-> }
+bpftool also got `link detach` command to allow triggering this in
+non-programmatic fashion.
 
-ok, looks good
-jirka
+v1->v2:
+- improve error reporting in `bpftool link detach` (Song).
+
+Andrii Nakryiko (5):
+  bpf: add support for forced LINK_DETACH command
+  libbpf: add bpf_link detach APIs
+  selftests/bpf: add link detach tests for cgroup, netns, and xdp
+    bpf_links
+  tools/bpftool: add `link detach` subcommand
+  tools/bpftool: add documentation and bash-completion for `link detach`
+
+ include/linux/bpf.h                           |  1 +
+ include/uapi/linux/bpf.h                      |  5 ++
+ kernel/bpf/cgroup.c                           | 15 +++++-
+ kernel/bpf/net_namespace.c                    |  8 +++
+ kernel/bpf/syscall.c                          | 26 ++++++++++
+ net/core/dev.c                                | 11 +++-
+ .../bpftool/Documentation/bpftool-link.rst    |  8 +++
+ tools/bpf/bpftool/bash-completion/bpftool     |  4 +-
+ tools/bpf/bpftool/link.c                      | 37 +++++++++++++-
+ tools/include/uapi/linux/bpf.h                |  5 ++
+ tools/lib/bpf/bpf.c                           | 10 ++++
+ tools/lib/bpf/bpf.h                           |  2 +
+ tools/lib/bpf/libbpf.c                        |  5 ++
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/lib/bpf/libbpf.map                      |  2 +
+ .../selftests/bpf/prog_tests/cgroup_link.c    | 20 +++++++-
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 51 +++++++++----------
+ .../selftests/bpf/prog_tests/xdp_link.c       | 14 +++++
+ tools/testing/selftests/bpf/testing_helpers.c | 14 +++++
+ tools/testing/selftests/bpf/testing_helpers.h |  3 ++
+ 20 files changed, 208 insertions(+), 34 deletions(-)
+
+--=20
+2.24.1
 
