@@ -2,108 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F65D234860
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 17:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3DE23486D
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 17:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgGaPYk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 11:24:40 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47817 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726533AbgGaPYk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 31 Jul 2020 11:24:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596209079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AU1g5/YO071lOiefjmjUSK8NEKkezt1M1VCckB1QwQw=;
-        b=fIlD92Fne2bmleQke9R/vZU6csaDAWBdvL7dqttsgzU7aZNKrdwncC0yVL0eXVxnlVQgdK
-        8RtJl336Oi3BThd38Z/ipisl3UEdxVuhDhGsncVISY5DJ4S8P4lqCiknuCH5MmHiD6gxxs
-        R0pb3HEz8z3hfdAWOQnWbpI50QyFm7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-aElfc4omM6uzx_PJEc0UOg-1; Fri, 31 Jul 2020 11:24:37 -0400
-X-MC-Unique: aElfc4omM6uzx_PJEc0UOg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71651101C8A0;
-        Fri, 31 Jul 2020 15:24:35 +0000 (UTC)
-Received: from krava (unknown [10.40.192.26])
-        by smtp.corp.redhat.com (Postfix) with SMTP id BDAE019D9E;
-        Fri, 31 Jul 2020 15:24:33 +0000 (UTC)
-Date:   Fri, 31 Jul 2020 17:24:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        jolsa@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2020-07-31
-Message-ID: <20200731152432.GA4296@krava>
-References: <20200731135145.15003-1-daniel@iogearbox.net>
+        id S2387485AbgGaP1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 11:27:39 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55894 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732564AbgGaP1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 11:27:37 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1Wwa-0006rA-2A; Fri, 31 Jul 2020 17:27:36 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1WwZ-0008Gx-TF; Fri, 31 Jul 2020 17:27:35 +0200
+Subject: Re: [PATCH bpf v2] libbpf: Fix register in PT_REGS MIPS macros
+To:     Jerry Crunchtime <jerry.c.t@web.de>, bpf@vger.kernel.org
+References: <43707d31-0210-e8f0-9226-1af140907641@web.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bd6052a0-73af-d774-55aa-4a85e2c41751@iogearbox.net>
+Date:   Fri, 31 Jul 2020 17:27:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731135145.15003-1-daniel@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <43707d31-0210-e8f0-9226-1af140907641@web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 03:51:45PM +0200, Daniel Borkmann wrote:
-> Hi David,
+On 7/31/20 1:13 PM, Jerry Crunchtime wrote:
+> v1 -> v2: Also fixed missed PT_REGS_RC_CORE macro
 > 
-> The following pull-request contains BPF updates for your *net* tree.
+> Hi.
 > 
-> We've added 5 non-merge commits during the last 21 day(s) which contain
-> a total of 5 files changed, 126 insertions(+), 18 deletions(-).
+> The o32, n32 and n64 calling conventions require the return
+> value to be stored in $v0 which maps to $2 register, i.e.,
+> the register 2.
 > 
-> The main changes are:
-> 
-> 1) Fix a map element leak in HASH_OF_MAPS map type, from Andrii Nakryiko.
-> 
-> 2) Fix a NULL pointer dereference in __btf_resolve_helper_id() when no
->    btf_vmlinux is available, from Peilin Ye.
-> 
-> 3) Init pos variable in __bpfilter_process_sockopt(), from Christoph Hellwig.
-> 
-> 4) Fix a cgroup sockopt verifier test by specifying expected attach type,
->    from Jean-Philippe Brucker.
-> 
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-> 
-> Thanks a lot!
-> 
-> Note that when net gets merged into net-next later on, there is a small
-> merge conflict in kernel/bpf/btf.c between commit 5b801dfb7feb ("bpf: Fix
-> NULL pointer dereference in __btf_resolve_helper_id()") from the bpf tree
-> and commit 138b9a0511c7 ("bpf: Remove btf_id helpers resolving") from the
-> net-next tree.
-> 
-> Resolve as follows: remove the old hunk with the __btf_resolve_helper_id()
-> function. Change the btf_resolve_helper_id() so it actually tests for a
-> NULL btf_vmlinux and bails out:
-> 
-> int btf_resolve_helper_id(struct bpf_verifier_log *log,
->                           const struct bpf_func_proto *fn, int arg)
-> {
->         int id;
-> 
->         if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID || !btf_vmlinux)
->                 return -EINVAL;
->         id = fn->btf_id[arg];
->         if (!id || id > btf_vmlinux->nr_types)
->                 return -EINVAL;
->         return id;
-> }
-> 
-> Let me know if you run into any others issues (CC'ing Jiri Olsa so he's in
-> the loop with regards to merge conflict resolution).
+> Fixes: c1932cd ("bpf: Add MIPS support to samples/bpf.")
+> Signed-off-by: Jerry Crunchtime <jerry.c.t@web.de>
 
-we'll loose the bpf_log message, but I'm fine with that ;-) looks good
-
-thanks,
-jirka
-
+Patch was whitespace damaged, but fixed it up manually this
+time & applied, thanks!
