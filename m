@@ -2,42 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A932345C5
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 14:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C3A234733
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 15:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732860AbgGaMZg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 08:25:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56738 "EHLO
+        id S1730751AbgGaNv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 09:51:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42674 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732902AbgGaMZg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 08:25:36 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S1730733AbgGaNv5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 09:51:57 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1k1U6N-0006Ox-S2; Fri, 31 Jul 2020 14:25:31 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k1U6N-000XQ5-Ho; Fri, 31 Jul 2020 14:25:31 +0200
-Subject: Re: [bpf PATCH v2 1/5] bpf: sock_ops ctx access may stomp registers
- in corner case
-To:     John Fastabend <john.fastabend@gmail.com>, kafai@fb.com,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <159603940602.4454.2991262810036844039.stgit@john-Precision-5820-Tower>
- <159603977489.4454.16012925913901625071.stgit@john-Precision-5820-Tower>
+        id 1k1VRp-0005M1-Hp; Fri, 31 Jul 2020 15:51:45 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <546828c9-a6bb-57d3-9a9d-83f4e0131163@iogearbox.net>
-Date:   Fri, 31 Jul 2020 14:25:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        jolsa@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-07-31
+Date:   Fri, 31 Jul 2020 15:51:45 +0200
+Message-Id: <20200731135145.15003-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <159603977489.4454.16012925913901625071.stgit@john-Precision-5820-Tower>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
@@ -45,224 +33,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/29/20 6:22 PM, John Fastabend wrote:
-> I had a sockmap program that after doing some refactoring started spewing
-> this splat at me:
-> 
-> [18610.807284] BUG: unable to handle kernel NULL pointer dereference at 0000000000000001
-> [...]
-> [18610.807359] Call Trace:
-> [18610.807370]  ? 0xffffffffc114d0d5
-> [18610.807382]  __cgroup_bpf_run_filter_sock_ops+0x7d/0xb0
-> [18610.807391]  tcp_connect+0x895/0xd50
-> [18610.807400]  tcp_v4_connect+0x465/0x4e0
-> [18610.807407]  __inet_stream_connect+0xd6/0x3a0
-> [18610.807412]  ? __inet_stream_connect+0x5/0x3a0
-> [18610.807417]  inet_stream_connect+0x3b/0x60
-> [18610.807425]  __sys_connect+0xed/0x120
-> 
-> After some debugging I was able to build this simple reproducer,
-> 
->   __section("sockops/reproducer_bad")
->   int bpf_reproducer_bad(struct bpf_sock_ops *skops)
->   {
->          volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->          return 0;
->   }
-> 
-> And along the way noticed that below program ran without splat,
-> 
-> __section("sockops/reproducer_good")
-> int bpf_reproducer_good(struct bpf_sock_ops *skops)
-> {
->          volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->          volatile __maybe_unused __u32 family;
-> 
->          compiler_barrier();
-> 
->          family = skops->family;
->          return 0;
-> }
-> 
-> So I decided to check out the code we generate for the above two
-> programs and noticed each generates the BPF code you would expect,
-> 
-> 0000000000000000 <bpf_reproducer_bad>:
-> ;       volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->         0:       r1 = *(u32 *)(r1 + 96)
->         1:       *(u32 *)(r10 - 4) = r1
-> ;       return 0;
->         2:       r0 = 0
->         3:       exit
-> 
-> 0000000000000000 <bpf_reproducer_good>:
-> ;       volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->         0:       r2 = *(u32 *)(r1 + 96)
->         1:       *(u32 *)(r10 - 4) = r2
-> ;       family = skops->family;
->         2:       r1 = *(u32 *)(r1 + 20)
->         3:       *(u32 *)(r10 - 8) = r1
-> ;       return 0;
->         4:       r0 = 0
->         5:       exit
-> 
-> So we get reasonable assembly, but still something was causing the null
-> pointer dereference. So, we load the programs and dump the xlated version
-> observing that line 0 above 'r* = *(u32 *)(r1 +96)' is going to be
-> translated by the skops access helpers.
-> 
-> int bpf_reproducer_bad(struct bpf_sock_ops * skops):
-> ; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->     0: (61) r1 = *(u32 *)(r1 +28)
->     1: (15) if r1 == 0x0 goto pc+2
->     2: (79) r1 = *(u64 *)(r1 +0)
->     3: (61) r1 = *(u32 *)(r1 +2340)
-> ; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->     4: (63) *(u32 *)(r10 -4) = r1
-> ; return 0;
->     5: (b7) r0 = 0
->     6: (95) exit
-> 
-> int bpf_reproducer_good(struct bpf_sock_ops * skops):
-> ; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->     0: (61) r2 = *(u32 *)(r1 +28)
->     1: (15) if r2 == 0x0 goto pc+2
->     2: (79) r2 = *(u64 *)(r1 +0)
->     3: (61) r2 = *(u32 *)(r2 +2340)
-> ; volatile __maybe_unused __u32 i = skops->snd_ssthresh;
->     4: (63) *(u32 *)(r10 -4) = r2
-> ; family = skops->family;
->     5: (79) r1 = *(u64 *)(r1 +0)
->     6: (69) r1 = *(u16 *)(r1 +16)
-> ; family = skops->family;
->     7: (63) *(u32 *)(r10 -8) = r1
-> ; return 0;
->     8: (b7) r0 = 0
->     9: (95) exit
-> 
-> Then we look at lines 0 and 2 above. In the good case we do the zero
-> check in r2 and then load 'r1 + 0' at line 2. Do a quick cross-check
-> into the bpf_sock_ops check and we can confirm that is the 'struct
-> sock *sk' pointer field. But, in the bad case,
-> 
->     0: (61) r1 = *(u32 *)(r1 +28)
->     1: (15) if r1 == 0x0 goto pc+2
->     2: (79) r1 = *(u64 *)(r1 +0)
-> 
-> Oh no, we read 'r1 +28' into r1, this is skops->fullsock and then in
-> line 2 we read the 'r1 +0' as a pointer. Now jumping back to our spat,
-> 
-> [18610.807284] BUG: unable to handle kernel NULL pointer dereference at 0000000000000001
-> 
-> The 0x01 makes sense because that is exactly the fullsock value. And
-> its not a valid dereference so we splat.
-> 
-> To fix we need to guard the case when a program is doing a sock_ops field
-> access with src_reg == dst_reg. This is already handled in the load case
-> where the ctx_access handler uses a tmp register being careful to
-> store the old value and restore it. To fix the get case test if
-> src_reg == dst_reg and in this case do the is_fullsock test in the
-> temporary register. Remembering to restore the temporary register before
-> writing to either dst_reg or src_reg to avoid smashing the pointer into
-> the struct holding the tmp variable.
-> 
-> Adding this inline code to test_tcpbpf_kern will now be generated
-> correctly from,
-> 
->    9: r2 = *(u32 *)(r2 + 96)
-> 
-> to xlated code,
-> 
->    13: (61) r9 = *(u32 *)(r2 +28)
->    14: (15) if r9 == 0x0 goto pc+4
->    15: (79) r9 = *(u64 *)(r2 +32)
->    16: (79) r2 = *(u64 *)(r2 +0)
->    17: (61) r2 = *(u32 *)(r2 +2348)
->    18: (05) goto pc+1
->    19: (79) r9 = *(u64 *)(r2 +32)
+Hi David,
 
-The diff below looks good to me, but I'm confused on this one above. I'm probably
-missing something, but given this is the dst == src case with the r2 register, where
-in the dump do we first saves the content of r9 into the scratch tmp store?
-Line 19 seems to restore it, but the save is missing, no?
+The following pull-request contains BPF updates for your *net* tree.
 
-Please double check whether this was just omitted, but I would really like to have
-the commit message 100% correct as it otherwise causes confusion when we stare at it
-again a month later wrt what was the original intention.
+We've added 5 non-merge commits during the last 21 day(s) which contain
+a total of 5 files changed, 126 insertions(+), 18 deletions(-).
 
-> And in the normal case we keep the original code, because really this
-> is an edge case. From this,
-> 
->    9: r2 = *(u32 *)(r6 + 96)
-> 
-> to xlated code,
-> 
->    22: (61) r2 = *(u32 *)(r6 +28)
->    23: (15) if r2 == 0x0 goto pc+2
->    24: (79) r2 = *(u64 *)(r6 +0)
->    25: (61) r2 = *(u32 *)(r2 +2348)
-> 
-> So three additional instructions if dst == src register, but I scanned
-> my current code base and did not see this pattern anywhere so should
-> not be a big deal. Further, it seems no one else has hit this or at
-> least reported it so it must a fairly rare pattern.
-> 
-> Fixes: 9b1f3d6e5af29 ("bpf: Refactor sock_ops_convert_ctx_access")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->   net/core/filter.c |   26 ++++++++++++++++++++++++--
->   1 file changed, 24 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 29e34551..15a0842 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -8314,15 +8314,31 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->   /* Helper macro for adding read access to tcp_sock or sock fields. */
->   #define SOCK_OPS_GET_FIELD(BPF_FIELD, OBJ_FIELD, OBJ)			      \
->   	do {								      \
-> +		int fullsock_reg = si->dst_reg, reg = BPF_REG_9, jmp = 2;     \
->   		BUILD_BUG_ON(sizeof_field(OBJ, OBJ_FIELD) >		      \
->   			     sizeof_field(struct bpf_sock_ops, BPF_FIELD));   \
-> +		if (si->dst_reg == reg || si->src_reg == reg)		      \
-> +			reg--;						      \
-> +		if (si->dst_reg == reg || si->src_reg == reg)		      \
-> +			reg--;						      \
-> +		if (si->dst_reg == si->src_reg) {			      \
-> +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, reg,	      \
-> +					  offsetof(struct bpf_sock_ops_kern,  \
-> +					  temp));			      \
-> +			fullsock_reg = reg;				      \
-> +			jmp += 2;					      \
-> +		}							      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern,     \
->   						is_fullsock),		      \
-> -				      si->dst_reg, si->src_reg,		      \
-> +				      fullsock_reg, si->src_reg,	      \
->   				      offsetof(struct bpf_sock_ops_kern,      \
->   					       is_fullsock));		      \
-> -		*insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 2);	      \
-> +		*insn++ = BPF_JMP_IMM(BPF_JEQ, fullsock_reg, 0, jmp);	      \
-> +		if (si->dst_reg == si->src_reg)				      \
-> +			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-> +				      offsetof(struct bpf_sock_ops_kern,      \
-> +				      temp));				      \
->   		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			      \
->   						struct bpf_sock_ops_kern, sk),\
->   				      si->dst_reg, si->src_reg,		      \
-> @@ -8331,6 +8347,12 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->   						       OBJ_FIELD),	      \
->   				      si->dst_reg, si->dst_reg,		      \
->   				      offsetof(OBJ, OBJ_FIELD));	      \
-> +		if (si->dst_reg == si->src_reg)	{			      \
-> +			*insn++ = BPF_JMP_A(1);				      \
-> +			*insn++ = BPF_LDX_MEM(BPF_DW, reg, si->src_reg,	      \
-> +				      offsetof(struct bpf_sock_ops_kern,      \
-> +				      temp));				      \
-> +		}							      \
->   	} while (0)
->   
->   #define SOCK_OPS_GET_TCP_SOCK_FIELD(FIELD) \
-> 
+The main changes are:
 
+1) Fix a map element leak in HASH_OF_MAPS map type, from Andrii Nakryiko.
+
+2) Fix a NULL pointer dereference in __btf_resolve_helper_id() when no
+   btf_vmlinux is available, from Peilin Ye.
+
+3) Init pos variable in __bpfilter_process_sockopt(), from Christoph Hellwig.
+
+4) Fix a cgroup sockopt verifier test by specifying expected attach type,
+   from Jean-Philippe Brucker.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Note that when net gets merged into net-next later on, there is a small
+merge conflict in kernel/bpf/btf.c between commit 5b801dfb7feb ("bpf: Fix
+NULL pointer dereference in __btf_resolve_helper_id()") from the bpf tree
+and commit 138b9a0511c7 ("bpf: Remove btf_id helpers resolving") from the
+net-next tree.
+
+Resolve as follows: remove the old hunk with the __btf_resolve_helper_id()
+function. Change the btf_resolve_helper_id() so it actually tests for a
+NULL btf_vmlinux and bails out:
+
+int btf_resolve_helper_id(struct bpf_verifier_log *log,
+                          const struct bpf_func_proto *fn, int arg)
+{
+        int id;
+
+        if (fn->arg_type[arg] != ARG_PTR_TO_BTF_ID || !btf_vmlinux)
+                return -EINVAL;
+        id = fn->btf_id[arg];
+        if (!id || id > btf_vmlinux->nr_types)
+                return -EINVAL;
+        return id;
+}
+
+Let me know if you run into any others issues (CC'ing Jiri Olsa so he's in
+the loop with regards to merge conflict resolution).
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Christian Brauner, Jakub Sitnicki, Rodrigo Madera, Song Liu
+
+----------------------------------------------------------------
+
+The following changes since commit c8b1d7436045d3599bae56aef1682813ecccaad7:
+
+  bnxt_en: fix NULL dereference in case SR-IOV configuration fails (2020-07-10 14:20:03 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 4f010246b4087ab931b060481014ec110e6a8a46:
+
+  net/bpfilter: Initialize pos in __bpfilter_process_sockopt (2020-07-31 01:07:32 +0200)
+
+----------------------------------------------------------------
+Andrii Nakryiko (2):
+      bpf: Fix map leak in HASH_OF_MAPS map
+      selftests/bpf: Extend map-in-map selftest to detect memory leaks
+
+Christoph Hellwig (1):
+      net/bpfilter: Initialize pos in __bpfilter_process_sockopt
+
+Jean-Philippe Brucker (1):
+      selftests/bpf: Fix cgroup sockopt verifier test
+
+Peilin Ye (1):
+      bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
+
+ kernel/bpf/btf.c                                   |   5 +
+ kernel/bpf/hashtab.c                               |  12 +-
+ net/bpfilter/bpfilter_kern.c                       |   2 +-
+ .../selftests/bpf/prog_tests/btf_map_in_map.c      | 124 ++++++++++++++++++---
+ .../testing/selftests/bpf/verifier/event_output.c  |   1 +
+ 5 files changed, 126 insertions(+), 18 deletions(-)
