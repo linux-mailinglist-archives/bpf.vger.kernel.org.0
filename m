@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05992348C6
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 17:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B032B2348E6
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 18:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387585AbgGaP5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 11:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S1728771AbgGaQHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 12:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727997AbgGaP5l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 11:57:41 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495B5C06174A
-        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 08:57:41 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id f68so3850571ilh.12
-        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 08:57:41 -0700 (PDT)
+        with ESMTP id S1727819AbgGaQHN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 12:07:13 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968BCC061574
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 09:07:13 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id w12so18543278iom.4
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 09:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LkwiBvNLTx8n7MhzzdDaiavRIGjiDc67DNZgPaIqd0Q=;
-        b=oAKWZAmJ0ytmNAkYu1LbOIynlNPXhIeKqdCp/NBgyqaf5/IYgKjQ96/c9SEkAVteQf
-         y0BD9cE1eHWUAs3gC8hrL9hzG5ZNEqLQ8Rg9OIqwnAAwZ/c1sm53gN6+D2rxbQdw/NTD
-         k0ATS6Fs78CxIniBmidwztc9cKwKhS+KsvNIDpSFF0NAx4YGgfp8+ZrjX2j49mb+Cw9x
-         lNVS1qMg9uH8btD5al8ttU0mnfrYrM3f/sXNggiQ1Izh0wb9LPv6yCROcHF0RFw/9kEQ
-         u1fQbdxrLqN0S8pd/Vkp2sE7E3W3lbqDLutliuW/guNfzR50QSYC5VBJr6YV1DSala7Z
-         U3bw==
+         :cc:content-transfer-encoding;
+        bh=l9VxvupihRplFurEv7SSgUkaEV82Y8Z3ZplQgxB6qdw=;
+        b=NtpHwonAWWgKcZMaKnV96MQMLHeXjBqT+Jeuy3ZUniQkyF4d9CSbs/4a8h2eXmA6fr
+         tPFLBp2sXoP5Zh+kusYIiFMQFqW9MGv6ZWx7/7ZSR5oXC8b7/fHw/2cl+0cNyP4A1p+E
+         vloYq2zYhMPlT4kkUQQnf1ZKxN1iFW7tbUpFM/lmME76QEopcRMWOzwPkflnNdWm7l/w
+         lgHYPQKjedYKv41GswuX4HGhgH2GiNThBDZziWzv63q/Z2PJkGqZ2kEdNBuwD8Q/BTUi
+         mNf6atXu8gmvL3yThBliKQIvuY/Uml9TJUKRNMkRNKGfNvY5EosbIycWHJZEPbJNGCP/
+         p3rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LkwiBvNLTx8n7MhzzdDaiavRIGjiDc67DNZgPaIqd0Q=;
-        b=b9I67J9BdwIVplPq8zGbMScClFusKiQKdVN6yehAIsUs1tDKX3UyQ0RA95LBRj++Gz
-         NiOdmXh0kGBC6k+XlU4lQII8lk4duIfCWhUne8tx+QHF5yEHhvr+oYZcDuhGuOai8N2f
-         cxpq7ObqqQS3AJrXUy0Fa/by2ofa7ifwNcoNpciQRH/5bjALRMVDCd4M9sfVAVws8+mR
-         CatuAWg8aPYO01GbqCuGj51Ni1159cbdcrhSZem++uqT5L3l7QowJwfVS0HcVukKSkfZ
-         kPE8TldYUU/WqLnbWcTOdQIOlON12AWPt56m11V1w7r8vDdBc2DL/uFaRBJmWrxy8yel
-         F+1g==
-X-Gm-Message-State: AOAM531WxUb0NMgbNRjPFTMg2o8cSgp4VdLQ5iJfHjYh/DqvysDRx00F
-        g7Z27Nbteul7ExvHHFAUs9qrMjSsHApaDERz9pN9qA==
-X-Google-Smtp-Source: ABdhPJwqaXuRJGXbdmmvKYn28W36zqHecly+krGJre4YT4gom4v6oAVRLZJILO8UlpgqBlXIMBJEiiwfjgJaDoluEpg=
-X-Received: by 2002:a05:6e02:88:: with SMTP id l8mr4455173ilm.69.1596211060447;
- Fri, 31 Jul 2020 08:57:40 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l9VxvupihRplFurEv7SSgUkaEV82Y8Z3ZplQgxB6qdw=;
+        b=s5NZI+2q3hYmyV+6wWsl61ZiZkjFXEiGtg0MVjFR354nIPmGgzf0AJXCgJup7oJZl/
+         xWF9Q1IUpyr4fPu+fBbjYjujUOZygCLX/H5UUsb8wUcc3MtQwKHV2EKyxYTnx5dxeh3y
+         3oQnFu2V8c8jmc96VVn6b/KnJIdXRK3yhSB9+jTUnJ65UYYK7Xayac6sFUS2+H2PyACR
+         my79YeuwcA8ZoXNQEhA/0J1VjU7F85VjJoBgjVdRBNOm3S3gZScXnQHgp5+E55vr1XQA
+         ZINBxUmz4upBET69dxrd/GLU0VCX40NVoPuqkqEPx209JCF1Ey3prXnARw8Y5sPmbymF
+         Qc1Q==
+X-Gm-Message-State: AOAM532us1wqLeqOoBNhqDMZAJXUxmAaQbb4Yl6GiwcXXfOL589fD07y
+        u6llZxBB5+4YZjzXyZ8rK3McbhWMdC+g433dDjWiCw==
+X-Google-Smtp-Source: ABdhPJwOc2ry9xNMrjeCi9BehehSb0W6YDhdEDIevE8KC3cDzkk+AZuAX1CLQykEdpstVTATp3iBfGb5YJ0iqRyR7QQ=
+X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr5941212jat.53.1596211632765;
+ Fri, 31 Jul 2020 09:07:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200730205657.3351905-1-kafai@fb.com> <20200730205704.3352619-1-kafai@fb.com>
-In-Reply-To: <20200730205704.3352619-1-kafai@fb.com>
+References: <20200730205657.3351905-1-kafai@fb.com> <20200730205736.3354304-1-kafai@fb.com>
+In-Reply-To: <20200730205736.3354304-1-kafai@fb.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 31 Jul 2020 08:57:29 -0700
-Message-ID: <CANn89iK8h8x6oVZ0O0P+3gs1NyxfX0F--+Gw4CjOBhHE0NxqqA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/9] tcp: Use a struct to represent a saved_syn
+Date:   Fri, 31 Jul 2020 09:06:57 -0700
+Message-ID: <CANn89i+5RKTcBFqueEs48HUadC+dO54eR7Yp5pBJ6zgbosTDCQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 6/9] bpf: tcp: Allow bpf prog to write and
+ parse TCP header option
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,6 +60,7 @@ Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         netdev <netdev@vger.kernel.org>,
         Yuchung Cheng <ycheng@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -66,61 +68,85 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Jul 30, 2020 at 1:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> The TCP_SAVE_SYN has both the network header and tcp header.
-> The total length of the saved syn packet is currently stored in
-> the first 4 bytes (u32) of an array and the actual packet data is
-> stored after that.
+> The earlier effort in BPF-TCP-CC allows the TCP Congestion Control
+> algorithm to be written in BPF.  It opens up opportunities to allow
+> a faster turnaround time in testing/releasing new congestion control
+> ideas to production environment.
 >
-> A latter patch will add a bpf helper that allows to get the tcp header
+> The same flexibility can be extended to writing TCP header option.
+> It is not uncommon that people want to test new TCP header option
+> to improve the TCP performance.  Another use case is for data-center
+> that has a more controlled environment and has more flexibility in
+> putting header options for internal only use.
+>
+> For example, we want to test the idea in putting maximum delay
+> ACK in TCP header option which is similar to a draft RFC proposal [1].
+>
+> This patch introduces the necessary BPF API and use them in the
+> TCP stack to allow BPF_PROG_TYPE_SOCK_OPS program to parse
+> and write TCP header options.  It currently supports most of
+> the TCP packet except RST.
+>
+> Supported TCP header option:
+> =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80
+> This patch allows the bpf-prog to write any option kind.
+> Different bpf-progs can write its own option by calling the new helper
+> bpf_store_hdr_opt().  The helper will ensure there is no duplicated
+> option in the header.
+>
+> By allowing bpf-prog to write any option kind, this gives a lot of
+> flexibility to the bpf-prog.  Different bpf-prog can write its
+> own option kind.  It could also allow the bpf-prog to support a
+> recently standardized option on an older kernel.
+>
+> Sockops Callback Flags:
+> =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80
+> The header parsing and writing callback can be turned on
+> by enabling a few newly added callback flags:
+>
+> BPF_SOCK_OPS_PARSE_UNKNOWN_HDR_OPT_CB_FLAG:
+>         Call bpf when kernel has received a header option that
+>         the kernel cannot handle.  It is useful when the peer doesn't
+>         send bpf-options very often.
+>
+>         The bpf-prog can inspect the received header by sock_ops->skb_dat=
+a
+>         which covers the whole header (including the fixed fields like
+>         ports, flags...etc) or
+>         use the new bpf_load_hdr_opt() to search for a particular TCP
+>         header option.
+>
+>
+>
+>
 
-s/latter/later/
-
-> alone from the saved syn without the network header.  It will be more
-> convenient to have a direct offset to a specific header instead of
-> re-parsing it.  This requires to separately store the network hdrlen.
-> The total header length (i.e. network + tcp) is still needed for the
-> current usage in getsockopt.  Although this total length can be obtained
-> by looking into the tcphdr and then get the (th->doff << 2), this patch
-> chooses to directly store the tcp hdrlen in the second four bytes of
-> this newly created "struct saved_syn".  By using a new struct, it can
-> give a readable name to each individual header length.
+> [1]: draft-wang-tcpm-low-latency-opt-00
+>      https://tools.ietf.org/html/draft-wang-tcpm-low-latency-opt-00
 >
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  include/linux/bpf-cgroup.h     |  25 +++
+>  include/linux/filter.h         |   4 +
+>  include/net/tcp.h              |  53 ++++-
+>  include/uapi/linux/bpf.h       | 231 ++++++++++++++++++++-
+>  net/core/filter.c              | 365 +++++++++++++++++++++++++++++++++
+>  net/ipv4/tcp_fastopen.c        |   2 +-
+>  net/ipv4/tcp_input.c           |  86 +++++++-
+>  net/ipv4/tcp_ipv4.c            |   3 +-
+>  net/ipv4/tcp_minisocks.c       |   1 +
+>  net/ipv4/tcp_output.c          | 194 ++++++++++++++++--
+>  net/ipv6/tcp_ipv6.c            |   3 +-
+>  tools/include/uapi/linux/bpf.h | 231 ++++++++++++++++++++-
+>  12 files changed, 1171 insertions(+), 27 deletions(-)
 
+This is a truly gigantic patch.
 
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index a018bafd7bdf..6c38ca9de17e 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -6598,13 +6598,14 @@ static void tcp_reqsk_record_syn(const struct sock *sk,
->  {
->         if (tcp_sk(sk)->save_syn) {
->                 u32 len = skb_network_header_len(skb) + tcp_hdrlen(skb);
-> -               u32 *copy;
-> -
-> -               copy = kmalloc(len + sizeof(u32), GFP_ATOMIC);
-> -               if (copy) {
-> -                       copy[0] = len;
-> -                       memcpy(&copy[1], skb_network_header(skb), len);
-> -                       req->saved_syn = copy;
-> +               struct saved_syn *saved_syn;
-> +
-> +               saved_syn = kmalloc(len + sizeof(*saved_syn), GFP_ATOMIC);
+Could you split it in maybe two parts ?
 
-Please use
-                  saved_syn = kmalloc(struct_size(saved_syn, data,
-len), GFP_ATOMIC)
-
-This will avoid yet another trivial patch in the future.
-
-> +               if (saved_syn) {
-> +                       saved_syn->network_hdrlen = skb_network_header_len(skb);
-> +                       saved_syn->tcp_hdrlen = tcp_hdrlen(skb);
-> +                       memcpy(saved_syn->data, skb_network_header(skb), len);
-> +                       req->saved_syn = saved_syn;
->                 }
->         }
->  }
-> --
-> 2.24.1
->
+This way I could focus on the TCP changes, and let eBPF experts focus
+on BPF changes.
