@@ -2,207 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78444233EF5
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 08:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E646323413A
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 10:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbgGaGQu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 02:16:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:50114 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731152AbgGaGQt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 02:16:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CCE41FB;
-        Thu, 30 Jul 2020 23:16:48 -0700 (PDT)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F0923F66E;
-        Thu, 30 Jul 2020 23:16:45 -0700 (PDT)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, Song.Zhu@arm.com,
-        Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: fix compilation warning of selftests
-Date:   Fri, 31 Jul 2020 14:16:00 +0800
-Message-Id: <20200731061600.18344-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1731810AbgGaI3l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 04:29:41 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41852 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731648AbgGaI3l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 04:29:41 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH99O1iNfpO8CAA--.8S2;
+        Fri, 31 Jul 2020 16:29:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Tobin C. Harding" <me@tobin.cc>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3] Documentation/bpf: Use valid and new links in index.rst
+Date:   Fri, 31 Jul 2020 16:29:02 +0800
+Message-Id: <1596184142-18476-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxH99O1iNfpO8CAA--.8S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFW8WFW7Kr4UXF15CFWfKrg_yoW5Gw1DpF
+        n8Wryftrn8KFWUJw4xGF47Cr13WFWfAF4UWFykGw1Fqrn8JF1FgF4Sgrn0q3WUKryFyFW5
+        ZF1fKFn8Xr18Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07b5q2iUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Clang compiler version: 12.0.0
-The following warning appears during the selftests/bpf compilation:
+There exists an error "404 Not Found" when I click the html link of
+"Documentation/networking/filter.rst" in the BPF documentation [1],
+fix it.
 
-prog_tests/send_signal.c:51:3: warning: ignoring return value of ‘write’,
-declared with attribute warn_unused_result [-Wunused-result]
-   51 |   write(pipe_c2p[1], buf, 1);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-prog_tests/send_signal.c:54:3: warning: ignoring return value of ‘read’,
-declared with attribute warn_unused_result [-Wunused-result]
-   54 |   read(pipe_p2c[0], buf, 1);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~
-......
+Additionally, use the new links about "BPF and XDP Reference Guide"
+and "bpf(2)" to avoid redirects.
 
-prog_tests/stacktrace_build_id_nmi.c:13:2: warning: ignoring return value
-of ‘fscanf’,declared with attribute warn_unused_result [-Wunused-resul]
-   13 |  fscanf(f, "%llu", &sample_freq);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1] https://www.kernel.org/doc/html/latest/bpf/
 
-test_tcpnotify_user.c:133:2: warning:ignoring return value of ‘system’,
-declared with attribute warn_unused_result [-Wunused-result]
-  133 |  system(test_script);
-      |  ^~~~~~~~~~~~~~~~~~~
-test_tcpnotify_user.c:138:2: warning:ignoring return value of ‘system’,
-declared with attribute warn_unused_result [-Wunused-result]
-  138 |  system(test_script);
-      |  ^~~~~~~~~~~~~~~~~~~
-test_tcpnotify_user.c:143:2: warning:ignoring return value of ‘system’,
-declared with attribute warn_unused_result [-Wunused-result]
-  143 |  system(test_script);
-      |  ^~~~~~~~~~~~~~~~~~~
-
-Add code that fix compilation warning about ignoring return value and
-handles any errors; Check return value of library`s API make the code
-more secure.
-
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+Fixes: d9b9170a2653 ("docs: bpf: Rename README.rst to index.rst")
+Fixes: cb3f0d56e153 ("docs: networking: convert filter.txt to ReST")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- .../selftests/bpf/prog_tests/send_signal.c    | 37 ++++++++++++++-----
- .../bpf/prog_tests/stacktrace_build_id_nmi.c  |  3 +-
- .../selftests/bpf/test_tcpnotify_user.c       | 15 ++++++--
- 3 files changed, 41 insertions(+), 14 deletions(-)
+ Documentation/bpf/index.rst         | 12 ++++++------
+ Documentation/networking/filter.rst |  2 ++
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index 504abb7bfb95..7a5272e4e810 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -48,22 +48,31 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 		close(pipe_p2c[1]); /* close write */
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 26f4bb3..44ca8ea 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -5,10 +5,10 @@ BPF Documentation
+ This directory contains documentation for the BPF (Berkeley Packet
+ Filter) facility, with a focus on the extended BPF version (eBPF).
  
- 		/* notify parent signal handler is installed */
--		write(pipe_c2p[1], buf, 1);
-+		if (CHECK_FAIL(write(pipe_c2p[1], buf, 1) != 1)) {
-+			perror("Child: write pipe error");
-+			goto close_out;
-+		}
+-This kernel side documentation is still work in progress.  The main
++This kernel side documentation is still work in progress. The main
+ textual documentation is (for historical reasons) described in
+-`Documentation/networking/filter.rst`_, which describe both classical
+-and extended BPF instruction-set.
++:ref:`networking-filter`, which describe both classical and extended
++BPF instruction-set.
+ The Cilium project also maintains a `BPF and XDP Reference Guide`_
+ that goes into great technical depth about the BPF Architecture.
  
- 		/* make sure parent enabled bpf program to send_signal */
--		read(pipe_p2c[0], buf, 1);
-+		if (CHECK_FAIL(read(pipe_p2c[0], buf, 1) != 1)) {
-+			perror("Child: read pipe error");
-+			goto close_out;
-+		}
+@@ -68,7 +68,7 @@ Testing and debugging BPF
  
- 		/* wait a little for signal handler */
- 		sleep(1);
  
--		if (sigusr1_received)
--			write(pipe_c2p[1], "2", 1);
--		else
--			write(pipe_c2p[1], "0", 1);
-+		buf[0] = sigusr1_received ? '2' : '0';
-+		if (CHECK_FAIL(write(pipe_c2p[1], buf, 1) != 1)) {
-+			perror("Child: write pipe error");
-+			goto close_out;
-+		}
+ .. Links:
+-.. _Documentation/networking/filter.rst: ../networking/filter.txt
++.. _networking-filter: ../networking/filter.rst
+ .. _man-pages: https://www.kernel.org/doc/man-pages/
+-.. _bpf(2): http://man7.org/linux/man-pages/man2/bpf.2.html
+-.. _BPF and XDP Reference Guide: http://cilium.readthedocs.io/en/latest/bpf/
++.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
++.. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index a1d3e19..debb59e 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -1,5 +1,7 @@
+ .. SPDX-License-Identifier: GPL-2.0
  
- 		/* wait for parent notification and exit */
--		read(pipe_p2c[0], buf, 1);
-+		if (CHECK_FAIL(read(pipe_p2c[0], buf, 1) != 1))
-+			perror("Child: read pipe error");
- 
-+close_out:
- 		close(pipe_c2p[1]);
- 		close(pipe_p2c[0]);
- 		exit(0);
-@@ -99,7 +108,11 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	}
- 
- 	/* wait until child signal handler installed */
--	read(pipe_c2p[0], buf, 1);
-+	if (CHECK_FAIL(read(pipe_c2p[0], buf, 1) != 1)) {
-+		perror("Parent: read pipe error");
-+		goto disable_pmu;
-+	}
++.. _networking-filter:
 +
- 
- 	/* trigger the bpf send_signal */
- 	skel->bss->pid = pid;
-@@ -107,7 +120,10 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	skel->bss->signal_thread = signal_thread;
- 
- 	/* notify child that bpf program can send_signal now */
--	write(pipe_p2c[1], buf, 1);
-+	if (CHECK_FAIL(write(pipe_p2c[1], buf, 1) != 1)) {
-+		perror("Parent: write pipe error");
-+		goto disable_pmu;
-+	}
- 
- 	/* wait for result */
- 	err = read(pipe_c2p[0], buf, 1);
-@@ -121,7 +137,8 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	CHECK(buf[0] != '2', test_name, "incorrect result\n");
- 
- 	/* notify child safe to exit */
--	write(pipe_p2c[1], buf, 1);
-+	if (CHECK_FAIL(write(pipe_p2c[1], buf, 1) != 1))
-+		perror("Parent: write pipe error");
- 
- disable_pmu:
- 	close(pmu_fd);
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-index f002e3090d92..a27de3d46e58 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-@@ -10,7 +10,8 @@ static __u64 read_perf_max_sample_freq(void)
- 	f = fopen("/proc/sys/kernel/perf_event_max_sample_rate", "r");
- 	if (f == NULL)
- 		return sample_freq;
--	fscanf(f, "%llu", &sample_freq);
-+	if (CHECK_FAIL(fscanf(f, "%llu", &sample_freq) != 1))
-+		perror("Get max sample rate fail, return default value: 5000\n");
- 	fclose(f);
- 	return sample_freq;
- }
-diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-index f9765ddf0761..869e28c92d73 100644
---- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
-+++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-@@ -130,17 +130,26 @@ int main(int argc, char **argv)
- 	sprintf(test_script,
- 		"iptables -A INPUT -p tcp --dport %d -j DROP",
- 		TESTPORT);
--	system(test_script);
-+	if (system(test_script)) {
-+		printf("FAILED: execute command: %s\n", test_script);
-+		goto err;
-+	}
- 
- 	sprintf(test_script,
- 		"nc 127.0.0.1 %d < /etc/passwd > /dev/null 2>&1 ",
- 		TESTPORT);
--	system(test_script);
-+	if (system(test_script)) {
-+		printf("FAILED: execute command: %s\n", test_script);
-+		goto err;
-+	}
- 
- 	sprintf(test_script,
- 		"iptables -D INPUT -p tcp --dport %d -j DROP",
- 		TESTPORT);
--	system(test_script);
-+	if (system(test_script)) {
-+		printf("FAILED: execute command: %s\n", test_script);
-+		goto err;
-+	}
- 
- 	rv = bpf_map_lookup_elem(bpf_map__fd(global_map), &key, &g);
- 	if (rv != 0) {
+ =======================================================
+ Linux Socket Filtering aka Berkeley Packet Filter (BPF)
+ =======================================================
 -- 
-2.17.1
+2.1.0
 
