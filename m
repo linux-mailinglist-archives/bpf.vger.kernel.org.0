@@ -2,213 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B6123478E
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 16:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D0C23481C
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 17:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgGaOPl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 10:15:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55598 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728597AbgGaOPk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 10:15:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596204938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DankDH11Q6vNwTW57OQtB5IPGpcTvQpg8ZnqamXZDWQ=;
-        b=JE9/KZKijrvriONrzr6scP5fZ0digOgsCO+r0MjdTiw3tVLlCEzV8FahtptMFJ4IGwNAZo
-        uSvxkPpwi9Gv2J0AOBFr0Ay83B6ytp2IIuB9b8hpN3wHTKD1Rvg/p674B1yUmM42xj2dxD
-        QnJ/5ivClhgb8UDU1v+H0D5EgzZThMk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-fKjEzFvyNYy-vtdY0432fA-1; Fri, 31 Jul 2020 10:15:33 -0400
-X-MC-Unique: fKjEzFvyNYy-vtdY0432fA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 646B280BCC3;
-        Fri, 31 Jul 2020 14:15:30 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1E2987B1D;
-        Fri, 31 Jul 2020 14:15:21 +0000 (UTC)
-Date:   Fri, 31 Jul 2020 16:15:19 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 3/3] samples/bpf: Add a simple bridge
- example accelerated with XDP
-Message-ID: <20200731161519.5f413f82@carbon>
-In-Reply-To: <1596170660-5582-4-git-send-email-komachi.yoshiki@gmail.com>
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
-        <1596170660-5582-4-git-send-email-komachi.yoshiki@gmail.com>
+        id S1728771AbgGaPAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 11:00:18 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52184 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728713AbgGaPAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 11:00:17 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1WVy-0003JH-BO; Fri, 31 Jul 2020 17:00:06 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k1WVy-000JZ6-47; Fri, 31 Jul 2020 17:00:06 +0200
+Subject: Re: [PATCH bpf-next] bpf: fix compilation warning of selftests
+To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org, yhs@fb.com,
+        Song.Zhu@arm.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6f852dcb-abfc-78f8-69b8-3a5b83606793@iogearbox.net>
+Date:   Fri, 31 Jul 2020 17:00:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25889/Thu Jul 30 17:03:53 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 7/31/20 8:16 AM, Jianlin Lv wrote:
+> Clang compiler version: 12.0.0
+> The following warning appears during the selftests/bpf compilation:
+> 
+> prog_tests/send_signal.c:51:3: warning: ignoring return value of ‘write’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>     51 |   write(pipe_c2p[1], buf, 1);
+>        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> prog_tests/send_signal.c:54:3: warning: ignoring return value of ‘read’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>     54 |   read(pipe_p2c[0], buf, 1);
+>        |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> ......
+> 
+> prog_tests/stacktrace_build_id_nmi.c:13:2: warning: ignoring return value
+> of ‘fscanf’,declared with attribute warn_unused_result [-Wunused-resul]
+>     13 |  fscanf(f, "%llu", &sample_freq);
+>        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> test_tcpnotify_user.c:133:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    133 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> test_tcpnotify_user.c:138:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    138 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> test_tcpnotify_user.c:143:2: warning:ignoring return value of ‘system’,
+> declared with attribute warn_unused_result [-Wunused-result]
+>    143 |  system(test_script);
+>        |  ^~~~~~~~~~~~~~~~~~~
+> 
+> Add code that fix compilation warning about ignoring return value and
+> handles any errors; Check return value of library`s API make the code
+> more secure.
+> 
+> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
 
-I really appreciate that you are working on adding this helper.
-Some comments below.
+Looks good overall, there is one small bug that slipped in, see below:
 
-On Fri, 31 Jul 2020 13:44:20 +0900
-Yoshiki Komachi <komachi.yoshiki@gmail.com> wrote:
-
-> diff --git a/samples/bpf/xdp_bridge_kern.c b/samples/bpf/xdp_bridge_kern.c
-> new file mode 100644
-> index 000000000000..00f802503199
-> --- /dev/null
-> +++ b/samples/bpf/xdp_bridge_kern.c
-> @@ -0,0 +1,129 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 NTT Corp. All Rights Reserved.
-> + *
 [...]
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
-> +	__uint(key_size, sizeof(int));
-> +	__uint(value_size, sizeof(int));
-> +	__uint(max_entries, 64);
-> +} xdp_tx_ports SEC(".maps");
-> +
-> +static __always_inline int xdp_bridge_proto(struct xdp_md *ctx, u16 br_vlan_proto)
-> +{
-> +	void *data_end = (void *)(long)ctx->data_end;
-> +	void *data = (void *)(long)ctx->data;
-> +	struct bpf_fdb_lookup fdb_lookup_params;
-> +	struct vlan_hdr *vlan_hdr = NULL;
-> +	struct ethhdr *eth = data;
-> +	u16 h_proto;
-> +	u64 nh_off;
-> +	int rc;
-> +
-> +	nh_off = sizeof(*eth);
-> +	if (data + nh_off > data_end)
-> +		return XDP_DROP;
-> +
-> +	__builtin_memset(&fdb_lookup_params, 0, sizeof(fdb_lookup_params));
-> +
-> +	h_proto = eth->h_proto;
-> +
-> +	if (unlikely(ntohs(h_proto) < ETH_P_802_3_MIN))
-> +		return XDP_PASS;
-> +
-> +	/* Handle VLAN tagged packet */
-> +	if (h_proto == br_vlan_proto) {
-> +		vlan_hdr = (void *)eth + nh_off;
-> +		nh_off += sizeof(*vlan_hdr);
-> +		if ((void *)eth + nh_off > data_end)
-> +			return XDP_PASS;
-> +
-> +		fdb_lookup_params.vlan_id = ntohs(vlan_hdr->h_vlan_TCI) &
-> +					VLAN_VID_MASK;
+> diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> index f9765ddf0761..869e28c92d73 100644
+> --- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> +++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+> @@ -130,17 +130,26 @@ int main(int argc, char **argv)
+>   	sprintf(test_script,
+>   		"iptables -A INPUT -p tcp --dport %d -j DROP",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
 > +	}
-> +
-> +	/* FIXME: Although Linux bridge provides us with vlan filtering (contains
-> +	 * PVID) at ingress, the feature is currently unsupported in this XDP program.
-> +	 *
-> +	 * Two ideas to realize the vlan filtering are below:
-> +	 *   1. usespace daemon monitors bridge vlan events and notifies XDP programs
-                   ^^
-Typo: usespace -> userspace
-
-> +	 *      of them through BPF maps
-> +	 *   2. introduce another bpf helper to retrieve bridge vlan information
-
-The comment appears two times time this file.
-
-> +	 *
-> +	 *
-> +	 * FIXME: After the vlan filtering, learning feature is required here, but
-> +	 * it is currently unsupported as well. If another bpf helper for learning
-> +	 * is accepted, the processing could be implemented in the future.
-> +	 */
-> +
-> +	memcpy(&fdb_lookup_params.addr, eth->h_dest, ETH_ALEN);
-> +
-> +	/* Note: This program definitely takes ifindex of ingress interface as
-> +	 * a bridge port. Linux networking devices can be stacked and physical
-> +	 * interfaces are not necessarily slaves of bridges (e.g., bonding or
-> +	 * vlan devices can be slaves of bridges), but stacked bridge ports are
-> +	 * currently unsupported in this program. In such cases, XDP programs
-> +	 * should be attached to a lower device in order to process packets with
-> +	 * higher speed. Then, a new bpf helper to find upper devices will be
-> +	 * required here in the future because they will be registered on FDB
-> +	 * in the kernel.
-> +	 */
-> +	fdb_lookup_params.ifindex = ctx->ingress_ifindex;
-> +
-> +	rc = bpf_fdb_lookup(ctx, &fdb_lookup_params, sizeof(fdb_lookup_params), 0);
-> +	if (rc != BPF_FDB_LKUP_RET_SUCCESS) {
-> +		/* In cases of flooding, XDP_PASS will be returned here */
-> +		return XDP_PASS;
+>   
+>   	sprintf(test_script,
+>   		"nc 127.0.0.1 %d < /etc/passwd > /dev/null 2>&1 ",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
 > +	}
-> +
-> +	/* FIXME: Although Linux bridge provides us with vlan filtering (contains
-> +	 * untagged policy) at egress as well, the feature is currently unsupported
-> +	 * in this XDP program.
-> +	 *
-> +	 * Two ideas to realize the vlan filtering are below:
-> +	 *   1. usespace daemon monitors bridge vlan events and notifies XDP programs
-> +	 *      of them through BPF maps
-> +	 *   2. introduce another bpf helper to retrieve bridge vlan information
-> +	 */
 
-(2nd time the comment appears)
+Did you try to run this test case? With the patch here it will fail:
 
-> +
+   # ./test_tcpnotify_user
+   FAILED: execute command: nc 127.0.0.1 12877 < /etc/passwd > /dev/null 2>&1
 
-A comment about below bpf_redirect_map() would be good.  Explaining
-that we depend on fallback behavior, to let normal bridge code handle
-other cases (e.g. flood/broadcast). And also that if lookup fails,
-XDP_PASS/fallback also happens.
+This is because nc returns 1 as exit code and for the test it is actually expected
+to fail given the iptables rule we installed for TESTPORT right above and remove
+again below.
 
-> +	return bpf_redirect_map(&xdp_tx_ports, fdb_lookup_params.ifindex, XDP_PASS);
-> +}
-> +
-> +SEC("xdp_bridge")
-> +int xdp_bridge_prog(struct xdp_md *ctx)
-> +{
-> +	return xdp_bridge_proto(ctx, 0);
-> +}
-> +
-> +SEC("xdp_8021q_bridge")
-> +int xdp_8021q_bridge_prog(struct xdp_md *ctx)
-> +{
-> +	return xdp_bridge_proto(ctx, htons(ETH_P_8021Q));
-> +}
-> +
-> +SEC("xdp_8021ad_bridge")
-> +int xdp_8021ad_bridge_prog(struct xdp_md *ctx)
-> +{
-> +	return xdp_bridge_proto(ctx, htons(ETH_P_8021AD));
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+Please adapt this and send a v2, thanks!
 
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+>   	sprintf(test_script,
+>   		"iptables -D INPUT -p tcp --dport %d -j DROP",
+>   		TESTPORT);
+> -	system(test_script);
+> +	if (system(test_script)) {
+> +		printf("FAILED: execute command: %s\n", test_script);
+> +		goto err;
+> +	}
+>   
+>   	rv = bpf_map_lookup_elem(bpf_map__fd(global_map), &key, &g);
+>   	if (rv != 0) {
+> 
 
