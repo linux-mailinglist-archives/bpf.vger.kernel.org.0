@@ -2,113 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A837A233D58
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 04:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B0D233E71
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 06:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731285AbgGaCmw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jul 2020 22:42:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40258 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731227AbgGaCmv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jul 2020 22:42:51 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06V2cpVg029037
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 19:42:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=F2tolseWpM+siodrLcDQmpDthwMCbsWv2KzoR8Z14eY=;
- b=IdiWGRXRUFdFcVyj1O/KWmTvWkvoNTDodTF+ASFrCLtd5O17c4aNSR+bJHfdAiuZvgLu
- c0WMk8MGSNaaE+KKQgD+Sem6FF6K62WdG58DveGJVc6zi2Q0U7wrbkFS1lMGxxgWebbw
- ydt3yDqMC6INCZhlylr27yyPGIEJFbPiUAA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32m01ckdtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 30 Jul 2020 19:42:51 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 30 Jul 2020 19:42:50 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id AA4482EC4E67; Thu, 30 Jul 2020 19:42:46 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] tools build: propagate build failures from tools/build/Makefile.build
-Date:   Thu, 30 Jul 2020 19:42:44 -0700
-Message-ID: <20200731024244.872574-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726435AbgGaEos (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 00:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbgGaEos (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 00:44:48 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2278AC061574;
+        Thu, 30 Jul 2020 21:44:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id w17so16250123ply.11;
+        Thu, 30 Jul 2020 21:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0m2yM6Cpg0UMGl3JBQ2zB0c8Tu//2IzjG9Zoo6ooaqY=;
+        b=hhzBOePGn+ma9oANopuKPFKyVnWTCROJvTFIWKIg+Xqaq5kTw1qad0OqKUKO0yEBSA
+         XZtE3/VK2wQHKXopvsveJfyJMOmkUhUJHZ8rooShHKA3F9ArTAWFBJGQ1DZdI6j5V1Di
+         Vjt9QY7XhAXpFW67bTCgoR+SUQJ/ikmjbsN3pweNd3qEO+Xjm9IFyo9Lwl+63bMKbw3L
+         cSfs4kU+IifQyXiPn0C2XgvPqF2VTmco5iyGcfR8EOWetXpUYze9fuTzsVq1tM9iJNJv
+         Lv+pC9TKLh4/uJkCHXTDyWGmF72NLPsK2Er4s8Kc4+V7wi0WxOPulBF1EYC3O5U/UbxU
+         gjEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0m2yM6Cpg0UMGl3JBQ2zB0c8Tu//2IzjG9Zoo6ooaqY=;
+        b=Jfdq01m98jxf6vQglxNGAZzakYdyi4lZ56EwNMK8ux/AWKZ8/Zpb4RobwwuzvHcxkh
+         z1rRTXnvva371IpL1jL6U8mUVCrcU25KP4Yg4FaHzatcT16VvgU9iC5PQ/LYf8KEt0Cj
+         TZq70bIRH5yvx8Kf+mpff2s4eP2MfIpgHrzvE1kCLhUbe73i5QNsI2y9Rc8txY9Ky6KM
+         ri3wpREatBpH00zPz6r64kO6ZhFbKETHZKTNsCd9apMCyup0GfZPw6xG13x9BKj9pQVl
+         Nz6GMATFTdSGPlAXdQ7IdvZdHpMMqKtemg5kUycd/2vAGZ/vtoFeaem9i169+RKvBHNE
+         YE/w==
+X-Gm-Message-State: AOAM531BvH4A0wh3yd7kO0t2xCHtL3wrTp4kd22QK0xSKKq18+a/QCZI
+        RqjGFfrbBK7fnLfofAfZHqkwA2oQ
+X-Google-Smtp-Source: ABdhPJzn0klKnpGXg9duE13S4iK7KOxGO4DDrmWAptlpFD3w+ps0taZ72vn3pQDp97OPm1/XtgYSQg==
+X-Received: by 2002:a62:2ad6:: with SMTP id q205mr2063865pfq.316.1596170687650;
+        Thu, 30 Jul 2020 21:44:47 -0700 (PDT)
+Received: from dali.ht.sfc.keio.ac.jp (dali.ht.sfc.keio.ac.jp. [133.27.170.2])
+        by smtp.gmail.com with ESMTPSA id x6sm2329573pfd.53.2020.07.30.21.44.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jul 2020 21:44:47 -0700 (PDT)
+From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        netdev@vger.kernel.org, bridge@lists.linux-foundation.org,
+        bpf@vger.kernel.org
+Subject: [RFC PATCH bpf-next 0/3] Add a new bpf helper for FDB lookup
+Date:   Fri, 31 Jul 2020 13:44:17 +0900
+Message-Id: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-30_19:2020-07-30,2020-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 suspectscore=9 mlxlogscore=513
- phishscore=0 clxscore=1015 impostorscore=0 bulkscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007310017
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The '&&' command seems to have a bad effect when $(cmd_$(1)) exits with
-non-zero effect: the command failure is masked (despite `set -e`) and all=
- but
-the first command of $(dep-cmd) is executed (successfully, as they are mo=
-stly
-printfs), thus overall returning 0 in the end.
+This series adds a new bpf helper for doing FDB lookup in the kernel
+tables from XDP programs. This helps users to accelerate Linux bridge
+with XDP.
 
-This means in practice that despite compilation errors, tools's build Mak=
-efile
-will return success. We see this very reliably with libbpf's Makefile, wh=
-ich
-doesn't get compilation error propagated properly. This in turns causes i=
-ssues
-with selftests build, as well as bpftool and other projects that rely on
-building libbpf.
+In the past, XDP generally required users to reimplement their own
+networking functionalities with specific manners of BPF programming
+by themselves, hindering its potential uses. IMO, bpf helpers to
+access networking stacks in kernel help to mitigate the programming
+costs because users reuse mature Linux networking feature more easily.
 
-The fix is simple: don't use &&. Given `set -e`, we don't need to chain
-commands with &&. The shell will exit on first failure, giving desired
-behavior and propagating error properly.
+The previous commit 87f5fc7e48dd ("bpf: Provide helper to do forwarding
+lookups in kernel FIB table") have already added a bpf helper for access
+FIB in the kernel tables from XDP programs. As a next step, this series
+introduces the API for FDB lookup. In the future, other bpf helpers for
+learning and VLAN filtering will also be required in order to realize
+fast XDP-based bridge although these are not included in this series.
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Fixes: 275e2d95591e ("tools build: Move dependency copy into function")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
+Patch 1 adds new function for access FDB in the kernel tables via the
+new bpf helper.
 
-I'm sending this against bpf-next tree, given libbpf is affected enough f=
-or me
-to debug this fun problem that no one seemed to notice (or care, at least=
-) in
-almost 5 years. If there is a better kernel tree, please let me know.
+Patch 2 adds the bpf helper and 3 adds a sample program.
 
- tools/build/Build.include | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Yoshiki Komachi (3):
+  net/bridge: Add new function to access FDB from XDP programs
+  bpf: Add helper to do forwarding lookups in kernel FDB table
+  samples/bpf: Add a simple bridge example accelerated with XDP
 
-diff --git a/tools/build/Build.include b/tools/build/Build.include
-index 9ec01f4454f9..585486e40995 100644
---- a/tools/build/Build.include
-+++ b/tools/build/Build.include
-@@ -74,7 +74,8 @@ dep-cmd =3D $(if $(wildcard $(fixdep)),
- #                   dependencies in the cmd file
- if_changed_dep =3D $(if $(strip $(any-prereq) $(arg-check)),         \
-                   @set -e;                                         \
--                  $(echo-cmd) $(cmd_$(1)) && $(dep-cmd))
-+                  $(echo-cmd) $(cmd_$(1));                         \
-+                  $(dep-cmd))
-=20
- # if_changed      - execute command if any prerequisite is newer than
- #                   target, or command line has changed
---=20
-2.24.1
+ include/linux/if_bridge.h      |  11 ++
+ include/uapi/linux/bpf.h       |  28 ++++
+ net/bridge/br_fdb.c            |  25 ++++
+ net/core/filter.c              |  45 +++++++
+ samples/bpf/Makefile           |   3 +
+ samples/bpf/xdp_bridge_kern.c  | 129 ++++++++++++++++++
+ samples/bpf/xdp_bridge_user.c  | 239 +++++++++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py     |   1 +
+ tools/include/uapi/linux/bpf.h |  28 ++++
+ 9 files changed, 509 insertions(+)
+ create mode 100644 samples/bpf/xdp_bridge_kern.c
+ create mode 100644 samples/bpf/xdp_bridge_user.c
+
+-- 
+2.20.1 (Apple Git-117)
 
