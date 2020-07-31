@@ -2,79 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A982349FA
-	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 19:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF71234A43
+	for <lists+bpf@lfdr.de>; Fri, 31 Jul 2020 19:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733243AbgGaRPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 13:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S1733265AbgGaRbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 13:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732710AbgGaRPY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 13:15:24 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78280C061574;
-        Fri, 31 Jul 2020 10:15:24 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id l13so8081220qvt.10;
-        Fri, 31 Jul 2020 10:15:24 -0700 (PDT)
+        with ESMTP id S1732970AbgGaRbo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 13:31:44 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF82DC061574;
+        Fri, 31 Jul 2020 10:31:44 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so17765166pls.4;
+        Fri, 31 Jul 2020 10:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f/WAbEOG/tptLifB9LgbWD1+/CHIVuvFFHIVIWW5SbY=;
-        b=kpw9UYVl+IwL1va1X+QsxMLUZdovpBIuRhu0so4e6ZXtvUMYHDmISR0yC6PQmchjr4
-         2Qe+el83U3tB8LkaWW+NhNDv+h9nRVCVVHH9eqG7eDcg8fErviCcMTYmKiFJ9ap42OXx
-         GSmfDUyD0vyvV2POZnyJtUEa1kbwlQtYrFpRBll0K7vHj9k4e6pX0wsi0iQ3VgDp/kLp
-         /9WhId3hAugDy9T5YQqOxMA5Fw0hEuPvCmGN0hO7G1wYpUUpsnCEYcdqWK69u0rqURhK
-         DiuGofmhD/Mbpy8Ikm36/kdZ8GMIkzXbbbmQvLNu8oB4A+BcWeR3BtS5BzdP8w9ZmkVA
-         /peA==
+        bh=fQJ4K4WTAcUQrIZ+9ByJXhYGj+Opn9+r2wnqSlYmSBM=;
+        b=QI7R7ijI9AZSDPbEh3LMc3YQofbpFJMhFT6cxjz1oqbQKVmG4CM2BSdq2qVMctkd55
+         kjkOfrSanPeMHc3SeMGVdn0Rc8mGARN0Ilg52nMYM1N/qwLlTKhlecu/6rbQ8A8sfgzL
+         x6dCJRdSumPzC2QnN8CIy7w3BhSjbp285ULapanyGZXg6ttP5LAgKbd+dRdidEdQ3XTK
+         Qwlj/2AVs7nMFxu6Sz5VHVOuRk2eGTIjOVQw9WGell4N7gEJGD/ElR3bRAkmGnV1FTXT
+         e1fORWiLm8V9jVYbEFKi/R6hWnJwfi23eK4YFDQ/oxlr9w2rXaO9Wkbkzd3uuhYjtYER
+         SY3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=f/WAbEOG/tptLifB9LgbWD1+/CHIVuvFFHIVIWW5SbY=;
-        b=MO9Lnmg9h3jV55GezZ8XFU5ehSAWTRytRoSzuZVxDMEdsPNSMO3+6FQumeF2XILOHt
-         UAEfZcAGZxbAZ3FEpi3MrNPvJBtgE2Mp4Vz6mgzmkRQmLnhD+N24AMa++50XDb7a0k9b
-         z9ZlT6OaJXp/zLVyahi3HdJMAm1SvSG1eNddSEb167ZrYFq2ef22sjQl6QDdZNVBog2f
-         9Zs2aSCicMS0prUOWDSmrCfNKjNr7s1jsi3nKseZrh9BDXL+kZuPOsb1K/EKSE5EPOfs
-         dRWqamCDhNaGIluvbaUxnXUMohB4lLeThWU/05hZaMX5Dz4t9vFO0jahJQPALYCZBax4
-         YmEg==
-X-Gm-Message-State: AOAM533nOkzA5rnFkhVtgykNXA9utDBcmEdeMRPmXQvV/jR4pq5FXU3w
-        fSxFJ8XKvnLMlJfJ9kSnm8cOyT+J
-X-Google-Smtp-Source: ABdhPJy3eLsIh2Na3H7aBZv2hHsVXSY7jYLRnC/yeaZDxYJoBQaUtvOMZap2R4HbBVt2V1QxHUMuIA==
-X-Received: by 2002:a05:6214:1742:: with SMTP id dc2mr5257973qvb.90.1596215723492;
-        Fri, 31 Jul 2020 10:15:23 -0700 (PDT)
-Received: from ?IPv6:2601:284:8202:10b0:c147:b41e:be5e:8b7a? ([2601:284:8202:10b0:c147:b41e:be5e:8b7a])
-        by smtp.googlemail.com with ESMTPSA id x24sm10465749qtj.8.2020.07.31.10.15.20
+        bh=fQJ4K4WTAcUQrIZ+9ByJXhYGj+Opn9+r2wnqSlYmSBM=;
+        b=HYzEoR8NHggmfpv8QBF5CHUMDzfU1l3IvQJyUEP16uPycarrEOpgaKxC3BSYWbUdwY
+         ybmWgN02P37+fAyb1KOemoAaZOZLZPrcs6M/EwDWx8dE8dCdi6peRPttIYy6s/ISt7u7
+         z8GQPBxtyrrLltKL/hwIZS0knk+9rhKFP4Q1mdCqGCnDfWzP+jLF12L1Jm9d146MHt6A
+         9trGPH8kb/bk9EmCOqPBT3X9z0IuD8AwpRTZ+FnSjF2QQMDYchcWk76cTtgtRUJE0ahn
+         Zh9b0dlfBAYm38DL9vyJvJJkD8bovHOMv1r30P9+yusQfYCmxSnbS1M5ihirIIS11Nzs
+         q3Og==
+X-Gm-Message-State: AOAM533zJ57LPjGWB+lxNoFUBxqUBnWFp6dl1MIgEUjV+Nz1lbQJWTXd
+        xcqDZV/OMUM6aWZqG+5EDZU=
+X-Google-Smtp-Source: ABdhPJwN1D1QXUWHzVcer4sHJ0Gl2Si8s98l/xxCxm314xCSJZkDLMkSokeuZkp8aWjGmIf3ozRyQw==
+X-Received: by 2002:a17:90a:2210:: with SMTP id c16mr2992127pje.65.1596216704297;
+        Fri, 31 Jul 2020 10:31:44 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id y17sm10590971pfe.30.2020.07.31.10.31.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jul 2020 10:15:22 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
- in kernel FDB table
-To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Fri, 31 Jul 2020 10:31:43 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 1/9] tcp: Use a struct to represent a
+ saved_syn
+To:     Eric Dumazet <edumazet@google.com>, Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     netdev@vger.kernel.org, bridge@lists.linux-foundation.org,
-        bpf@vger.kernel.org
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5970d82b-3bb9-c78f-c53a-8a1c95a1fad7@gmail.com>
-Date:   Fri, 31 Jul 2020 11:15:19 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        kernel-team <kernel-team@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        Yuchung Cheng <ycheng@google.com>
+References: <20200730205657.3351905-1-kafai@fb.com>
+ <20200730205704.3352619-1-kafai@fb.com>
+ <CANn89iK8h8x6oVZ0O0P+3gs1NyxfX0F--+Gw4CjOBhHE0NxqqA@mail.gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <a2b65147-092b-6bbc-bd62-19f2c1e9345c@gmail.com>
+Date:   Fri, 31 Jul 2020 10:31:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
+In-Reply-To: <CANn89iK8h8x6oVZ0O0P+3gs1NyxfX0F--+Gw4CjOBhHE0NxqqA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,44 +76,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/30/20 10:44 PM, Yoshiki Komachi wrote:
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 654c346b7d91..68800d1b8cd5 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5084,6 +5085,46 @@ static const struct bpf_func_proto bpf_skb_fib_lookup_proto = {
->  	.arg4_type	= ARG_ANYTHING,
->  };
->  
-> +#if IS_ENABLED(CONFIG_BRIDGE)
-> +BPF_CALL_4(bpf_xdp_fdb_lookup, struct xdp_buff *, ctx,
-> +	   struct bpf_fdb_lookup *, params, int, plen, u32, flags)
-> +{
-> +	struct net_device *src, *dst;
-> +	struct net *net;
-> +
-> +	if (plen < sizeof(*params))
-> +		return -EINVAL;
 
-I need to look at the details more closely, but on first reading 2
-things caught me eye:
-1. you need to make sure flags is 0 since there are no supported flags
-at the moment, and
 
-> +
-> +	net = dev_net(ctx->rxq->dev);
-> +
-> +	if (is_multicast_ether_addr(params->addr) ||
-> +	    is_broadcast_ether_addr(params->addr))
-> +		return BPF_FDB_LKUP_RET_NOENT;
-> +
-> +	src = dev_get_by_index_rcu(net, params->ifindex);
-> +	if (unlikely(!src))
-> +		return -ENODEV;
-> +
-> +	dst = br_fdb_find_port_xdp(src, params->addr, params->vlan_id);
+On 7/31/20 8:57 AM, Eric Dumazet wrote:
+> On Thu, Jul 30, 2020 at 1:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>> The TCP_SAVE_SYN has both the network header and tcp header.
+>> The total length of the saved syn packet is currently stored in
+>> the first 4 bytes (u32) of an array and the actual packet data is
+>> stored after that.
+>>
+>> A latter patch will add a bpf helper that allows to get the tcp header
+> 
+> s/latter/later/
 
-2. this needs to be done via netdev ops to avoid referencing bridge code
-which can be compiled as a module. I suspect the build robots will id
-this part soon.
+Sorry, brain fart. I am using a different wording, that is all ;)
 
