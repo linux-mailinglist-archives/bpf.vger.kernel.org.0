@@ -2,127 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA4B2353B1
-	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 19:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964892353EF
+	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 20:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgHAREZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 1 Aug 2020 13:04:25 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40655 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728052AbgHAREZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 1 Aug 2020 13:04:25 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-4YrwYg1tOwevycFaH6ynMQ-1; Sat, 01 Aug 2020 13:04:18 -0400
-X-MC-Unique: 4YrwYg1tOwevycFaH6ynMQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 411E010059A2;
-        Sat,  1 Aug 2020 17:04:16 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 08A6D5F7D8;
-        Sat,  1 Aug 2020 17:04:12 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726907AbgHASJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Aug 2020 14:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726795AbgHASJm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Aug 2020 14:09:42 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4443C061756
+        for <bpf@vger.kernel.org>; Sat,  1 Aug 2020 11:09:42 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id b11so24688764plx.21
+        for <bpf@vger.kernel.org>; Sat, 01 Aug 2020 11:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KBK3iODiHqCfZW9cfD4X0Y+4sS0bjVew+4Qx1E5a8fw=;
+        b=Npllj9n2Q669VxD0v/McKELqdTmGuLlT0ULCUEsQcW69X2g34NXPXQF05paRHixr6V
+         bX70YTowWkT+yAUkFo4BfbmdtLljszspRuDpyhnjhQeyA08dgLlsUnMdRRGRgMG25ffx
+         JZVTGsrYyVVBdh3x43ReVvKzjkpQyLruiRhnb/BEXLDVa5Larg9NLBza85P3A55nZTOK
+         82MLnM4O9eg4Bx8M5eD0BcOpwfFDYUwBwLMhD+8CxcSvvOQhGOlmuQB0O74DxtZDvfDR
+         klNw64Qm1qxWMS36ufDr9m24xrqnPOgzm66J80vuB/DcGNtj6bWEiyNwNBSPNrOupkGa
+         F5jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KBK3iODiHqCfZW9cfD4X0Y+4sS0bjVew+4Qx1E5a8fw=;
+        b=bxDApfEWpIjKeSRfEHuDL+MOldnhEsYQ10SI3pVnbMAUWc8bAcOJaggC7Fb2axBdut
+         2fxxtZIilgHSFpz6qIMcy8Bk2q+2EzNLgGE3+o69rVEQJhquYcO+97Ciq2+jHuFKMsUW
+         bzPQ1XCfblYCeCF/eYNJzpLmPo6sO4/5VgBTyPsDq4w86TVE3IK92+Z/9hgg8PNUpMsX
+         5LHzUxOfM5Cnl+O/jWGYhvrjh+KGVBzf1fltivHZ6nznNdRiuJV7y1uLn3ZwH5V9vRka
+         hcOyoV0aSiJ/PjuCOzyRYh7bFgP0ejEsiCgPnNC8JJT7u3T5cLpfr25tGHY6ECtQ878N
+         UFyg==
+X-Gm-Message-State: AOAM532Ff28Cen/TYO0BUqLQp3sZ0RR5CoDJtwrXAvicqBIgUwu2zmkI
+        46gb11ENjJ9QnqctZLMEjV37yxjj5vuM
+X-Google-Smtp-Source: ABdhPJy5jsU0pIobtxHllnUwJ+xvJEUWnzrK1fYorGZy0IGRzLNd0pSuOijyJ1eJIcTrqpd/Qfzj1BiHFSGa
+X-Received: by 2002:a63:5821:: with SMTP id m33mr8888598pgb.43.1596305381999;
+ Sat, 01 Aug 2020 11:09:41 -0700 (PDT)
+Date:   Sat,  1 Aug 2020 11:09:27 -0700
+Message-Id: <20200801180927.1003340-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH V2 bpf-next] bpf: make __htab_lookup_and_delete_batch faster
+ when map is almost empty
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH v9 bpf-next 14/14] selftests/bpf: Add set test to resolve_btfids
-Date:   Sat,  1 Aug 2020 19:03:22 +0200
-Message-Id: <20200801170322.75218-15-jolsa@kernel.org>
-In-Reply-To: <20200801170322.75218-1-jolsa@kernel.org>
-References: <20200801170322.75218-1-jolsa@kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Luigi Rizzo <lrizzo@google.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test to for sets resolve_btfids. We're checking that
-testing set gets properly resolved and sorted.
+While running some experiments it was observed that map_lookup_batch was 2x
+slower than get_next_key + lookup when the syscall overhead is minimal.
+This was because the map_lookup_batch implementation was more expensive
+traversing empty buckets, this can be really costly when the pre-allocated
+map is too big.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+This patch optimizes the case when the bucket is empty so we can move
+quickly to next bucket.
+
+The Benchmark was generated using the google/benchmark library[1]. When
+the benckmark is executed the number of iterations is governed by the
+amount of time the benckmarks takes, the number of iterations is at
+least 1 and not more than 1e9, until CPU time(of the entire binary, not
+just the part to measure), is greater than 0.5s. Time and CPU reported
+are the average of a single iteration over the iteration runs.
+
+The experiments to exercise the empty buckets are as follows:
+
+-The map was populated with a single entry to make sure that the syscall
+overhead is not helping the map_batch_lookup.
+-The size of the preallocated map was increased to show the effect of
+traversing empty buckets.
+
+To interpret the results, Benchmark is the name of the experiment where
+the first number correspond to the number of elements in the map, and
+the next one correspond to the size of the pre-allocated map. Time and
+CPU are average and correspond to the time elapsed per iteration and the
+system time consumtion per iteration.
+
+Results:
+
+  Using get_next_key + lookup:
+
+  Benchmark                Time(ns)        CPU(ns)     Iteration
+  ---------------------------------------------------------------
+  BM_DumpHashMap/1/1k          3593           3586         192680
+  BM_DumpHashMap/1/4k          6004           5972         100000
+  BM_DumpHashMap/1/16k        15755          15710          44341
+  BM_DumpHashMap/1/64k        59525          59376          10000
+
+  Using htab_lookup_batch before this patch:
+  Benchmark                Time(ns)        CPU(ns)     Iterations
+  ---------------------------------------------------------------
+  BM_DumpHashMap/1/1k          3933           3927         177978
+  BM_DumpHashMap/1/4k          9192           9177          73951
+  BM_DumpHashMap/1/16k        42011          41970          16789
+  BM_DumpHashMap/1/64k       117895         117661           6135
+
+  Using htab_lookup_batch with this patch:
+  Benchmark                Time(ns)        CPU(ns)     Iterations
+  ---------------------------------------------------------------
+  BM_DumpHashMap/1/1k          2809           2803         249212
+  BM_DumpHashMap/1/4k          5318           5316         100000
+  BM_DumpHashMap/1/16k        14925          14895          47448
+  BM_DumpHashMap/1/64k        58870          58674          10000
+
+[1] https://github.com/google/benchmark.git
+
+Changelog:
+
+v1 -> v2:
+ - Add more information about how to interpret the results
+
+Suggested-by: Luigi Rizzo <lrizzo@google.com>
+Cc: Yonghong Song <yhs@fb.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- .../selftests/bpf/prog_tests/resolve_btfids.c | 39 ++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+ kernel/bpf/hashtab.c | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index 3b127cab4864..8826c652adad 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -47,6 +47,15 @@ BTF_ID(struct,  S)
- BTF_ID(union,   U)
- BTF_ID(func,    func)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 024276787055..b6d28bd6345b 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1349,7 +1349,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	struct hlist_nulls_head *head;
+ 	struct hlist_nulls_node *n;
+ 	unsigned long flags = 0;
+-	bool locked = false;
+ 	struct htab_elem *l;
+ 	struct bucket *b;
+ 	int ret = 0;
+@@ -1408,19 +1407,19 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	dst_val = values;
+ 	b = &htab->buckets[batch];
+ 	head = &b->head;
+-	/* do not grab the lock unless need it (bucket_cnt > 0). */
+-	if (locked)
+-		flags = htab_lock_bucket(htab, b);
  
-+BTF_SET_START(test_set)
-+BTF_ID(typedef, S)
-+BTF_ID(typedef, T)
-+BTF_ID(typedef, U)
-+BTF_ID(struct,  S)
-+BTF_ID(union,   U)
-+BTF_ID(func,    func)
-+BTF_SET_END(test_set)
-+
- static int
- __resolve_symbol(struct btf *btf, int type_id)
- {
-@@ -116,12 +125,40 @@ int test_resolve_btfids(void)
- 	 */
- 	for (j = 0; j < ARRAY_SIZE(test_lists); j++) {
- 		test_list = test_lists[j];
--		for (i = 0; i < ARRAY_SIZE(test_symbols) && !ret; i++) {
-+		for (i = 0; i < ARRAY_SIZE(test_symbols); i++) {
- 			ret = CHECK(test_list[i] != test_symbols[i].id,
- 				    "id_check",
- 				    "wrong ID for %s (%d != %d)\n",
- 				    test_symbols[i].name,
- 				    test_list[i], test_symbols[i].id);
-+			if (ret)
-+				return ret;
-+		}
++	l = hlist_nulls_entry_safe(rcu_dereference_raw(hlist_nulls_first_rcu(head)),
++					struct htab_elem, hash_node);
++	if (!l && (batch + 1 < htab->n_buckets)) {
++		batch++;
++		goto again_nocopy;
 +	}
 +
-+	/* Check BTF_SET_START(test_set) IDs */
-+	for (i = 0; i < test_set.cnt; i++) {
-+		bool found = false;
-+
-+		for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
-+			if (test_symbols[j].id != test_set.ids[i])
-+				continue;
-+			found = true;
-+			break;
-+		}
-+
-+		ret = CHECK(!found, "id_check",
-+			    "ID %d not found in test_symbols\n",
-+			    test_set.ids[i]);
-+		if (ret)
-+			break;
-+
-+		if (i > 0) {
-+			ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
-+				    "sort_check",
-+				    "test_set is not sorted\n");
-+			if (ret)
-+				break;
- 		}
++	flags = htab_lock_bucket(htab, b);
+ 	bucket_cnt = 0;
+ 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+ 		bucket_cnt++;
+ 
+-	if (bucket_cnt && !locked) {
+-		locked = true;
+-		goto again_nocopy;
+-	}
+-
+ 	if (bucket_cnt > (max_count - total)) {
+ 		if (total == 0)
+ 			ret = -ENOSPC;
+@@ -1446,10 +1445,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 		goto alloc;
  	}
  
+-	/* Next block is only safe to run if you have grabbed the lock */
+-	if (!locked)
+-		goto next_batch;
+-
+ 	hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
+ 		memcpy(dst_key, l->key, key_size);
+ 
+@@ -1492,7 +1487,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	}
+ 
+ 	htab_unlock_bucket(htab, b, flags);
+-	locked = false;
+ 
+ 	while (node_to_free) {
+ 		l = node_to_free;
+@@ -1500,7 +1494,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 		bpf_lru_push_free(&htab->lru, &l->lru_node);
+ 	}
+ 
+-next_batch:
+ 	/* If we are not copying data, we can go to next bucket and avoid
+ 	 * unlocking the rcu.
+ 	 */
 -- 
-2.25.4
+2.28.0.163.g6104cc2f0b6-goog
 
