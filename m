@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8832234F97
-	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 05:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDA0234FBA
+	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 05:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgHADbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 23:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S1728362AbgHADeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 23:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgHADbH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 23:31:07 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA30C06174A
-        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 20:31:07 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id v89so3007853ybi.8
-        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 20:31:07 -0700 (PDT)
+        with ESMTP id S1728335AbgHADeD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 23:34:03 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7213BC06174A
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 20:34:03 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id 133so17248026ybu.7
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 20:34:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=c8KFLwv4kg2qOsU30eoExxSviGJ3nzSMGSix3q3SeOo=;
-        b=g1FMgQBizdWVIZUpCETtP00zIalSZCpAShJTyx/OBed8CNfDSFHx9mF+a3mc9cDu2C
-         l78GCER7tfI77I46MKqyqyXkyjFhn3HvyXpFjTe2Irt5DCOms+UhTPuHP6w04WLhCzdY
-         zzHT32FMsksjfCm7YaQWF7G8CxqtOEHUmrgtL84KIFGudjQ6XqReryUzHyfjYSknjXqZ
-         0MfE+4nVKw777FfaZdIzc9Rmkm5fdkqDljX58wPWjNKnPQ0h1F3hQFTX70s/6lJKdKQv
-         A0N4KCLaFnMvqLu097CxquBf00zeHPS7c4fY8qKvKzn803s5JfOK5XjbY5Xj8Oq0QMTz
-         ap8A==
+        bh=LP9aWd8ANIRJ334AMfd3BQ+PoGF1KaY0D50ioS68Yk0=;
+        b=dJR2drAtIqLOjoDIAyBqRff5VKxje+SKgES+jYB1kHXa3wio6WBrXx07IWN4XfXm0w
+         P4G0EvMcT2yMKCgnMiZg7wv5TD1TKSmfFJg7wZaqp7HkOkk3MrZMPL2DcoIFjn/OD+zy
+         JUUieicBe/uidHaHLCN5kCmvZP4p9ucyFBMifB9Fj5kacM6NfZFG0jpHmGJQ7u4azY5k
+         zCss3eSkMaP1fWROt1ma3MApeWJLdLM21DeOdgefxopRlVzzZ2auyHH+gc1vFyqqO8Pn
+         AbUhchbh7EWfabfa3emgulrANnrpd6uC+p7VYAL5dfqGqhI+sQep9ukKTx3+3U1qxZhJ
+         jQCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=c8KFLwv4kg2qOsU30eoExxSviGJ3nzSMGSix3q3SeOo=;
-        b=OK6tr1xI6oZMwnU20ORVPfkiEWPPnOXVujX8JBRtwhZ9nwXWD4N8SWZ7UsQVAxlUSl
-         eygbdbtg0UQJG6xebpkI3GUcedxFytPFaqhu2u+bUT+vYop8jdWE/4sNyOzdakSckS/j
-         mWHsLI4Vi8O7b/+tRoZzeSS5wiJ3xx6atljNDJ6JDaNmDCP7Ge1FzwoWkza+8lfwYv7m
-         sjtyXqHS9r1gecHZnS9mj95LTs8Rj8cGyAScdm8gHxFDFCbKBrIb3NDrw311YjZKJajZ
-         x36x0GL4IWFHUq51KF4y1FIL12OtMCugsZlebem09m+8HrzrqiFV+yIhQUXIyf7mUpfW
-         W1Aw==
-X-Gm-Message-State: AOAM531JI6sfp5H3rVE5G44K1Mw4zEKjzAu21H8liDR5VI5VZFQ7rRSm
-        R+hCzMGG65FHBJAT6Zb7BCV5e//g4r0pR+WyxiRoDg==
-X-Google-Smtp-Source: ABdhPJx/EKdnKodozs/oFIOZiiuTPmKu6g+CEVzP890zb6UZrF9ayciLhimJGZkVqVDP9Dtlrx8xv0qRomXzE4RW+qQ=
-X-Received: by 2002:a25:84cd:: with SMTP id x13mr10932312ybm.425.1596252666555;
- Fri, 31 Jul 2020 20:31:06 -0700 (PDT)
+        bh=LP9aWd8ANIRJ334AMfd3BQ+PoGF1KaY0D50ioS68Yk0=;
+        b=VbI/8Dlwb8pgv1/Lxn2P4/ZO04mgjxm0t7M97wF4DfJqTtq424FMhxd6tYy6hr7LJW
+         yp8pCrPYnb8eM+lXNqrAVQF6oNrDvCMmGtOP4ekE36Jmpmm3KGTnTpGzSvP7rG6okAvS
+         8iLcA9Agml3eqLKCHiv/DOngDotW7MM7ycw6iIF3mK5NYzTx843zgRF61H7kLeTTnh2D
+         jjwvbd+aavwrZkQCkyOX0b76llcB1ZDutAWsPzpU5lFaRcEqcn68XDvbADVt/Y7DT0SL
+         T7Dr1oqk2zxtcMsV0Yp5qntKN+lxyFf/R+H4lBXPQMEDkuEG6iuTIwihhWgkTuWjmPN0
+         h1KA==
+X-Gm-Message-State: AOAM533NN4uXczxzvf/AidduWqtjM4mRt3jcQj6+IzFwZEM2f3L0XSQT
+        2VJaNdY+y2vPxAqUyZ7knNEVCzbzxxJ0HR4suQq99Q==
+X-Google-Smtp-Source: ABdhPJwqM1ZoTII0lD5HhTEEfXJcwcQqMfAD7zFXY8JGVMzYBqe1PQ8/dt+d+O6WQiEJKja28SMui5oYeSk6hRqKZuo=
+X-Received: by 2002:a25:37c8:: with SMTP id e191mr10089416yba.230.1596252842612;
+ Fri, 31 Jul 2020 20:34:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <159623491781.20514.14371382768486033310.stgit@john-XPS-13-9370>
-In-Reply-To: <159623491781.20514.14371382768486033310.stgit@john-XPS-13-9370>
+References: <159623300854.30208.15981610185239932416.stgit@john-XPS-13-9370> <159623335418.30208.15807461815525100199.stgit@john-XPS-13-9370>
+In-Reply-To: <159623335418.30208.15807461815525100199.stgit@john-XPS-13-9370>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 31 Jul 2020 20:30:55 -0700
-Message-ID: <CAEf4BzZ9=av=EvbyzhoyCg0ZvTOA2GBPgq5vyb1SaoNmqwL6XQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH] bpf: Add comment in bpf verifier to note
- PTR_TO_BTF_ID can be null
+Date:   Fri, 31 Jul 2020 20:33:51 -0700
+Message-ID: <CAEf4BzaXsve_=CfEzipd=wRLfDYSUdF6u5Myrd5E=F4qt=hGeg@mail.gmail.com>
+Subject: Re: [bpf-next PATCH] bpf, selftests: Use single cgroup helpers for
+ both test_sockmap/progs
 To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -61,64 +62,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 31, 2020 at 3:36 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Fri, Jul 31, 2020 at 3:09 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> The verifier contains both types PTR_TO_BTF_ID and PTR_TO_BTF_ID_OR_NULL.
-> For all other type pairs PTR_TO_foo and PTR_TO_foo_OR_NULL we follow the
-> convention to use PTR_TO_foo_OR_NULL for pointers that may be null and
-> PTR_TO_foo when the ptr value has been checked to ensure it is _not_ NULL.
->
-> For PTR_TO_BTF_ID this is not the case though. It may be still be NULL
-> even though we have the PTR_TO_BTF_ID type.
-
-_OR_NULL means that the verifier enforces an explicit NULL check,
-before allowing the BPF program to dereference corresponding
-registers. That's not the case for PTR_TO_BTF_ID, though. The BPF
-program is allowed to assume valid pointer and proceed without checks.
-
-You are right that NULLs are still possible (as well as just invalid
-pointers), but BPF JITs handle that by installing exception handlers
-and zeroing out destination registers if it happens to be a NULL or
-invalid pointer. This mimics bpf_probe_read() behavior, btw.
-
-So I think the way it's described and named in the verifier makes
-sense, at least from the verifier's implementation point of view.
-
->
-> Improve the comment here to reflect the current state and change the reg
-> type string to indicate it may be null.  We should try to avoid this in
-> future types, but its too much code churn to unwind at this point.
+> Nearly every user of cgroup helpers does the same sequence of API calls. So
+> push these into a single helper cgroup_setup_and_join. The cases that do
+> a bit of extra logic are test_progs which currently uses an env variable
+> to decide if it needs to setup the cgroup environment or can use an
+> existingi environment. And then tests that are doing cgroup tests
+> themselves. We skip these cases for now.
 >
 > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 > ---
->  include/linux/bpf.h   |    2 +-
->  kernel/bpf/verifier.c |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+
+makes total sense, thanks for the clean up!
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/testing/selftests/bpf/cgroup_helpers.c       |   23 ++++++++++++++++++++
+>  tools/testing/selftests/bpf/cgroup_helpers.h       |    1 +
+>  tools/testing/selftests/bpf/get_cgroup_id_user.c   |   14 ++----------
+>  tools/testing/selftests/bpf/test_cgroup_storage.c  |   17 +--------------
+>  tools/testing/selftests/bpf/test_dev_cgroup.c      |   15 ++-----------
+>  tools/testing/selftests/bpf/test_netcnt.c          |   17 ++-------------
+>  .../selftests/bpf/test_skb_cgroup_id_user.c        |    8 +------
+>  tools/testing/selftests/bpf/test_sock.c            |    8 +------
+>  tools/testing/selftests/bpf/test_sock_addr.c       |    8 +------
+>  tools/testing/selftests/bpf/test_sock_fields.c     |   14 +++---------
+>  tools/testing/selftests/bpf/test_socket_cookie.c   |    8 +------
+>  tools/testing/selftests/bpf/test_sockmap.c         |   18 ++--------------
+>  tools/testing/selftests/bpf/test_sysctl.c          |    8 +------
+>  tools/testing/selftests/bpf/test_tcpbpf_user.c     |    8 +------
+>  tools/testing/selftests/bpf/test_tcpnotify_user.c  |    8 +------
+>  15 files changed, 43 insertions(+), 132 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 40c5e206ecf2..b9c192fe0d0f 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -352,7 +352,7 @@ enum bpf_reg_type {
->         PTR_TO_TCP_SOCK_OR_NULL, /* reg points to struct tcp_sock or NULL */
->         PTR_TO_TP_BUFFER,        /* reg points to a writable raw tp's buffer */
->         PTR_TO_XDP_SOCK,         /* reg points to struct xdp_sock */
-> -       PTR_TO_BTF_ID,           /* reg points to kernel struct */
-> +       PTR_TO_BTF_ID,           /* reg points to kernel struct or NULL */
->         PTR_TO_BTF_ID_OR_NULL,   /* reg points to kernel struct or NULL */
->         PTR_TO_MEM,              /* reg points to valid memory region */
->         PTR_TO_MEM_OR_NULL,      /* reg points to valid memory region or NULL */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b6ccfce3bf4c..d657efcad47b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -501,7 +501,7 @@ static const char * const reg_type_str[] = {
->         [PTR_TO_TCP_SOCK_OR_NULL] = "tcp_sock_or_null",
->         [PTR_TO_TP_BUFFER]      = "tp_buffer",
->         [PTR_TO_XDP_SOCK]       = "xdp_sock",
-> -       [PTR_TO_BTF_ID]         = "ptr_",
-> +       [PTR_TO_BTF_ID]         = "ptr_or_null_",
->         [PTR_TO_BTF_ID_OR_NULL] = "ptr_or_null_",
->         [PTR_TO_MEM]            = "mem",
->         [PTR_TO_MEM_OR_NULL]    = "mem_or_null",
->
+
+[...]
