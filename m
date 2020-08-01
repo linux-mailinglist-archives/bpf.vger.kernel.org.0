@@ -2,76 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F23C234F03
-	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 03:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0227F234F4F
+	for <lists+bpf@lfdr.de>; Sat,  1 Aug 2020 03:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgHABDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jul 2020 21:03:25 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42910 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgHABDY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jul 2020 21:03:24 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k1fvk-0001vq-5c; Sat, 01 Aug 2020 03:03:20 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k1fvj-000Hg4-Vi; Sat, 01 Aug 2020 03:03:20 +0200
-Subject: Re: [PATCH v6 bpf-next 0/6] bpf: tailcalls in BPF subprograms
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com
-References: <20200731000324.2253-1-maciej.fijalkowski@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fbe6e5ca-65ba-7698-3b8d-1214b5881e88@iogearbox.net>
-Date:   Sat, 1 Aug 2020 03:03:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727047AbgHABrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jul 2020 21:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgHABrv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jul 2020 21:47:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5956C061756
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 18:47:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d190so9857885wmd.4
+        for <bpf@vger.kernel.org>; Fri, 31 Jul 2020 18:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vJnx156cIb/ocnmEd5ytGaOA79Apq7RDxlvXJ4tSsU4=;
+        b=uHPJ8JTDI5M2xkK0OfVUZ91EQVxWN9DazwFxWTFkpAifi13mVt9bCnKisGvl27mBUC
+         OvFoO0m9UX7sogSIhzYAPwMYSPIjRGt5zHfRme+S+/umFocYOjjZ6tvedl0AcH+sOl3z
+         aKk7Lf0PwIXr/0Ko9KpWw/xp/82CeFEHrKHDiBfuQFzXZa4aYximl0LKOPKR0rJ+N9mR
+         sDdNIsAXRz4PBBWeb4t+bU7xX1+0g8pDHK7nwycuN+CjwIsvIKZV71mQYKII4BhjYrZ1
+         Gm5IJPuhc7Hxx1eAmJvcYpBf9FSF3RLj/kkhrFfgu3pkBAKReMXgrG72QAixGcCBGWSz
+         xIeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vJnx156cIb/ocnmEd5ytGaOA79Apq7RDxlvXJ4tSsU4=;
+        b=lqZmXnB6J8tQa1bSUM0BBy64otZ3eY3tRlO9bIiZskHqVCgMAXATlWYJ4ip5pHhzJn
+         dPVkYOWUk0wvwdm8RZaqyprvGQfmqJJCfNSNff7qDTObkVWeTKrcwqa3EUZltg6LOMKf
+         1knkEhFwyLDhMeIcwvO/TicQhuNxSpPQ/kM9YivuqfJLKdBGBGHct6XOX1LfW1ZJL5nf
+         UV5gfJ/SRpr4yJN1j8lOUxK+okicJV1Cc/lftfMcwnlP+egzKk6A0g7mdQ7YiwovqQzM
+         pMguaaEhY5e8vUV64+/jNg1FXVO/2bq8az5aVYiwF8ohHzmQodEYra29OCeJAiHbnRg2
+         ksLA==
+X-Gm-Message-State: AOAM531FJSKjCa8GAx2+jRAOjaSw3T3gNUItOaW9CstrbJJb7feBAmbR
+        Tqdu5m/dAqceEIwmLC62FjpVu6+76m3J1yeG0Qbpbg==
+X-Google-Smtp-Source: ABdhPJxNN8XPrym2dtCX5BafY9kl52WklwSBrh4rLPbkpscRMCdHbrC3skywII6y3C2tPoKBJWnof6EfF9rGIng1dxQ=
+X-Received: by 2002:a1c:a9ce:: with SMTP id s197mr5914617wme.58.1596246468111;
+ Fri, 31 Jul 2020 18:47:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200731000324.2253-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25890/Fri Jul 31 17:04:57 2020)
+References: <20200722054314.2103880-1-irogers@google.com> <CAEf4BzaBYaFJ3eUinS9nHeykJ0xEbZpwLts33ZDp1PT=bkyjww@mail.gmail.com>
+In-Reply-To: <CAEf4BzaBYaFJ3eUinS9nHeykJ0xEbZpwLts33ZDp1PT=bkyjww@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 31 Jul 2020 18:47:36 -0700
+Message-ID: <CAP-5=fXMUWFs6YtQVuxjenCrOmKtKYCqZE3YofwdR=ArDYSwbQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpftool btf: Add prefix option to dump C
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/31/20 2:03 AM, Maciej Fijalkowski wrote:
-> v5->v6:
-> - propagate only those poke descriptors that individual subprogram is
->    actually using (Daniel)
-> - drop the cumbersome check if poke desc got filled in map_poke_run()
-> - move poke->ip renaming in bpf_jit_add_poke_descriptor() from patch 4
->    to patch 3 to provide bisectability (Daniel)
+On Tue, Jul 21, 2020 at 11:58 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jul 21, 2020 at 10:44 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > When bpftool dumps types and enum members into a header file for
+> > inclusion the names match those in the original source. If the same
+> > header file needs to be included in the original source and the bpf
+> > program, the names of structs, unions, typedefs and enum members will
+> > have naming collisions.
+>
+> vmlinux.h is not really intended to be used from user-space, because
+> it's incompatible with pretty much any other header that declares any
+> type. Ideally we should make this better, but that might require some
+> compiler support. We've been discussing with Yonghong extending Clang
+> with a compile-time check for whether some type is defined or not,
+> which would allow to guard every type and only declare it
+> conditionally, if it's missing. But that's just an idea at this point.
 
-I did a basic test with Cilium on K8s with this set, spawning a few Pods
-and checking connectivity & whether we're not crashing since it has bit more
-elaborate tail call use. So far so good. I was inclined to push the series
-out, but there is one more issue I noticed and didn't notice earlier when
-reviewing, and that is overall stack size:
+Thanks Andrii! We're not looking at user-space code but the BPF code.
+The prefix idea comes from a way to solve this problem in C++ with
+namespaces:
 
-What happens when you create a single program that has nested BPF to BPF
-calls e.g. either up to the maximum nesting or one call that is using up
-the max stack size which is then doing another BPF to BPF call that contains
-the tail call. In the tail call map, you have the same program in there.
-This means we create a worst case stack from BPF size of max_stack_size *
-max_tail_call_size, that is, 512*32. So that adds 16k worst case. For x86
-we have a stack of arch/x86/include/asm/page_64_types.h:
+namespace vmlinux {
+#include "vmlinux.h"
+}
 
-   #define THREAD_SIZE_ORDER       (2 + KASAN_STACK_ORDER)
-  #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+As the BPF programs are C code then the prefix acts like the
+namespace. It seems strange to need to extend the language.
 
-So we end up with 16k in a typical case. And this will cause kernel stack
-overflow; I'm at least not seeing where we handle this situation in the
-set. Hm, need to think more, but maybe this needs tracking of max stack
-across tail calls to force an upper limit..
+> Regardless, vmlinux.h is also very much Clang-specific, and shouldn't
+> work well with GCC. Could you elaborate on the specifics of the use
+> case you have in mind? That could help me see what might be the right
+> solution. Thanks!
+
+So the use-case is similar to btf_iter.h:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter.h
+To avoid collisions with somewhat cleaner macro or not games.
+
+Prompted by your concern I was looking into changing bpf_iter.h to use
+a prefix to show what the difference would be like. I also think that
+there may be issues with our kernel and tool set up that may mean that
+the prefix is unnecessary, if I fix something else. Anyway, to give an
+example I needed to build the selftests but this is failing for me.
+What I see is:
+
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+$ cd bpf-next
+$ make defconfig
+$ cat >>.config <<EOF
+CONFIG_DEBUG_INFO=y
+CONFIG_DEBUG_INFO_BTF=y
+EOF
+$ make -j all
+$ mkdir /tmp/selftests
+$ make O=/tmp/selftests/ TARGETS=bpf kselftest
+...
+  CLANG    /tmp/selftests//kselftest/bpf/tools/build/bpftool/profiler.bpf.o
+skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof'
+to an incomplete type 'struct bpf_perf_event_value'
+        __uint(value_size, sizeof(struct bpf_perf_event_value));
+                           ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Checking with bpftool the vmlinux lacks struct bpf_perf_event_value
+but as this is unconditionally defined in bpf.h this seems wrong. Do
+you have any suggestions and getting a working build?
+
+> > To avoid these collisions an approach is to redeclare the header file
+> > types and enum members, which leads to duplication and possible
+> > inconsistencies. Another approach is to use preprocessor macros
+> > to rename conflicting names, but this can be cumbersome if there are
+> > many conflicts.
+> >
+> > This patch adds a prefix option for the dumped names. Use of this option
+> > can avoid name conflicts and compile time errors.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  .../bpf/bpftool/Documentation/bpftool-btf.rst |  7 ++++++-
+> >  tools/bpf/bpftool/btf.c                       | 18 ++++++++++++++---
+> >  tools/lib/bpf/btf.h                           |  1 +
+> >  tools/lib/bpf/btf_dump.c                      | 20 +++++++++++++------
+> >  4 files changed, 36 insertions(+), 10 deletions(-)
+> >
+>
+> [...]
+>
+> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > index 491c7b41ffdc..fea4baab00bd 100644
+> > --- a/tools/lib/bpf/btf.h
+> > +++ b/tools/lib/bpf/btf.h
+> > @@ -117,6 +117,7 @@ struct btf_dump;
+> >
+> >  struct btf_dump_opts {
+> >         void *ctx;
+> > +       const char *name_prefix;
+> >  };
+>
+> BTW, we can't do that, this breaks ABI. btf_dump_opts were added
+> before we understood the problem of backward/forward  compatibility of
+> libbpf APIs, unfortunately.
+
+This could be fixed by adding a "new" API for the parameter, which
+would be unfortunate compared to just amending the existing API. There
+may be solutions that are less duplicative.
 
 Thanks,
-Daniel
+Ian
+
+> >
+> >  typedef void (*btf_dump_printf_fn_t)(void *ctx, const char *fmt, va_list args);
+> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> > index e1c344504cae..baf2b4d82e1e 100644
+> > --- a/tools/lib/bpf/btf_dump.c
+> > +++ b/tools/lib/bpf/btf_dump.c
+>
+> [...]
