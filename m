@@ -2,164 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627592354CB
-	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 03:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7454B2354E8
+	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 04:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgHBBcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Aug 2020 21:32:33 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32512 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727945AbgHBBcd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 1 Aug 2020 21:32:33 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0721TUtH019516
-        for <bpf@vger.kernel.org>; Sat, 1 Aug 2020 18:32:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=J3sP0pRRU0wS1BmPVHElWGIZ0FCXyj9T1i4TlorBDrA=;
- b=n2SOMluji5GUbIjWSSezrYnKW/OOv3oqzF7RjTFkDivDZ5ESHohT8oTW9ILLQfKzK6dS
- DxNZE+fuP6L5kY1jRVuK+OTBFkqeQ2lAl469UW27Slhx75X2Ve3zTlQwUel4WPZOBbRm
- qlLgQUJmizaVkpQsfpMmfvMrGvfo5eWEtfg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32n7sb1smh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 01 Aug 2020 18:32:32 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 1 Aug 2020 18:32:32 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2610D2EC50C3; Sat,  1 Aug 2020 18:32:27 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] tools/resolve_btfids: use libbpf's btf__parse() API
-Date:   Sat, 1 Aug 2020 18:32:19 -0700
-Message-ID: <20200802013219.864880-4-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200802013219.864880-1-andriin@fb.com>
-References: <20200802013219.864880-1-andriin@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-02_01:2020-07-31,2020-08-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- impostorscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 spamscore=0
- mlxscore=0 bulkscore=0 priorityscore=1501 phishscore=0 mlxlogscore=797
- suspectscore=25 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008020009
-X-FB-Internal: deliver
+        id S1726709AbgHBCjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Aug 2020 22:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgHBCjX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Aug 2020 22:39:23 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17804C06174A
+        for <bpf@vger.kernel.org>; Sat,  1 Aug 2020 19:39:23 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id s189so28120179iod.2
+        for <bpf@vger.kernel.org>; Sat, 01 Aug 2020 19:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=u4cdpBmoAp4NXZHFYWOfUxm88CAHwYgmJcASvlZaKg4=;
+        b=DHmw2Nmw6T0JO7NlF+Sj5S1747Pf5z/eASvzeRYthF8tRj89t2EgXhhuzf0yaNruKE
+         tT1cfFRBOI+i113uAc7wXGfHFDpR6VCLCN8h0Dv+UKBBpVn7ZaMyEUUq4lHoXH9nx8nN
+         NJnFT9P8QRwMycj4NxOouxCHQWjL+JU5VPYpvW4qN0WYoKcsBGUyLV+WQV8+c2KV/rxc
+         E1ts0+PfiXwrqjjxNZ08zc2PpzXDVZdAHfLOAKhqC+2Uy/2oaErthNyq/1joZtTBe0vS
+         +xT61j2rkASHt41+qHZGeKyQ7tL3A1XJ8rK7CoNoO3N5ML2lu2ZH3KpAfE5s32Cw799G
+         VFZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=u4cdpBmoAp4NXZHFYWOfUxm88CAHwYgmJcASvlZaKg4=;
+        b=Mb+SvmVxNyFwpQqg6E9fNp7HKrtHkEfkURq3HZY6DTpCsp7jDBMGFzYFIJycXrcWoi
+         q0oxlh6iwnS2BlLCd8FphVvYORewggdGX4DJccczmT2dhxtEsdVBDaNmdNQC2osG0TET
+         brTTIomqSwX2DS/o7VaRjsgE8dF7CQa2jBHuNYhgx4rWuXu9LQTdNpb7ijtfdbs0+i81
+         1Pf7Fbv4A3npMx4o/EZIQ5TGGShD9ppgwk7d4zoR3WmLFiBAF5celQXNXga9DStXAI9S
+         9Z62IGhlENT3rYyqrm6fgPeTjezkOnWQlGvDDlVvnZGRiDp11TGrhH4xyBRVw3PmC9RJ
+         tu+w==
+X-Gm-Message-State: AOAM532fIkHIkMtQN0hXxst2YgdQXgj6tcEsPzq+j9rRqoi0IKB49hTH
+        LC2sFHUr84XAp5walEVPSm4=
+X-Google-Smtp-Source: ABdhPJzbms40CAB6XmrAmwPQk4AlbyQPHhJf25XahdVSkMA+2u8MYfPR1yb05ee4tOmb1OjFgy0Ipw==
+X-Received: by 2002:a5d:9d11:: with SMTP id j17mr11001917ioj.140.1596335962317;
+        Sat, 01 Aug 2020 19:39:22 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id i10sm8204397ild.29.2020.08.01.19.39.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Aug 2020 19:39:21 -0700 (PDT)
+Date:   Sat, 01 Aug 2020 19:39:13 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <5f262751ab97c_11b82ae318aac5b44d@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZ9=av=EvbyzhoyCg0ZvTOA2GBPgq5vyb1SaoNmqwL6XQ@mail.gmail.com>
+References: <159623491781.20514.14371382768486033310.stgit@john-XPS-13-9370>
+ <CAEf4BzZ9=av=EvbyzhoyCg0ZvTOA2GBPgq5vyb1SaoNmqwL6XQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH] bpf: Add comment in bpf verifier to note
+ PTR_TO_BTF_ID can be null
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of re-implementing generic BTF parsing logic, use libbpf's API.
-Also add .gitignore for resolve_btfids's build artifacts.
+Andrii Nakryiko wrote:
+> On Fri, Jul 31, 2020 at 3:36 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > The verifier contains both types PTR_TO_BTF_ID and PTR_TO_BTF_ID_OR_NULL.
+> > For all other type pairs PTR_TO_foo and PTR_TO_foo_OR_NULL we follow the
+> > convention to use PTR_TO_foo_OR_NULL for pointers that may be null and
+> > PTR_TO_foo when the ptr value has been checked to ensure it is _not_ NULL.
+> >
+> > For PTR_TO_BTF_ID this is not the case though. It may be still be NULL
+> > even though we have the PTR_TO_BTF_ID type.
+> 
+> _OR_NULL means that the verifier enforces an explicit NULL check,
+> before allowing the BPF program to dereference corresponding
+> registers. That's not the case for PTR_TO_BTF_ID, though. The BPF
+> program is allowed to assume valid pointer and proceed without checks.
+> 
+> You are right that NULLs are still possible (as well as just invalid
+> pointers), but BPF JITs handle that by installing exception handlers
+> and zeroing out destination registers if it happens to be a NULL or
+> invalid pointer. This mimics bpf_probe_read() behavior, btw.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/resolve_btfids/.gitignore |  4 ++
- tools/bpf/resolve_btfids/main.c     | 58 +----------------------------
- 2 files changed, 5 insertions(+), 57 deletions(-)
- create mode 100644 tools/bpf/resolve_btfids/.gitignore
+Yes aware of all this.
 
-diff --git a/tools/bpf/resolve_btfids/.gitignore b/tools/bpf/resolve_btfi=
-ds/.gitignore
-new file mode 100644
-index 000000000000..a026df7dc280
---- /dev/null
-+++ b/tools/bpf/resolve_btfids/.gitignore
-@@ -0,0 +1,4 @@
-+/FEATURE-DUMP.libbpf
-+/bpf_helper_defs.h
-+/fixdep
-+/resolve_btfids
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/m=
-ain.c
-index 6956b6350cad..52d883325a23 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -403,62 +403,6 @@ static int symbols_collect(struct object *obj)
- 	return 0;
- }
-=20
--static struct btf *btf__parse_raw(const char *file)
--{
--	struct btf *btf;
--	struct stat st;
--	__u8 *buf;
--	FILE *f;
--
--	if (stat(file, &st))
--		return NULL;
--
--	f =3D fopen(file, "rb");
--	if (!f)
--		return NULL;
--
--	buf =3D malloc(st.st_size);
--	if (!buf) {
--		btf =3D ERR_PTR(-ENOMEM);
--		goto exit_close;
--	}
--
--	if ((size_t) st.st_size !=3D fread(buf, 1, st.st_size, f)) {
--		btf =3D ERR_PTR(-EINVAL);
--		goto exit_free;
--	}
--
--	btf =3D btf__new(buf, st.st_size);
--
--exit_free:
--	free(buf);
--exit_close:
--	fclose(f);
--	return btf;
--}
--
--static bool is_btf_raw(const char *file)
--{
--	__u16 magic =3D 0;
--	int fd, nb_read;
--
--	fd =3D open(file, O_RDONLY);
--	if (fd < 0)
--		return false;
--
--	nb_read =3D read(fd, &magic, sizeof(magic));
--	close(fd);
--	return nb_read =3D=3D sizeof(magic) && magic =3D=3D BTF_MAGIC;
--}
--
--static struct btf *btf_open(const char *path)
--{
--	if (is_btf_raw(path))
--		return btf__parse_raw(path);
--	else
--		return btf__parse_elf(path, NULL);
--}
--
- static int symbols_resolve(struct object *obj)
- {
- 	int nr_typedefs =3D obj->nr_typedefs;
-@@ -469,7 +413,7 @@ static int symbols_resolve(struct object *obj)
- 	struct btf *btf;
- 	__u32 nr;
-=20
--	btf =3D btf_open(obj->btf ?: obj->path);
-+	btf =3D btf__parse(obj->btf ?: obj->path, NULL);
- 	err =3D libbpf_get_error(btf);
- 	if (err) {
- 		pr_err("FAILED: load BTF from %s: %s",
---=20
-2.24.1
+> 
+> So I think the way it's described and named in the verifier makes
+> sense, at least from the verifier's implementation point of view.
+
+The other other problem with the proposed patch is it makes BTF_ID
+and BTF_ID_OR_NULL the same from the reg_type_str side which might
+make things a bit confusing.
+
+I'm fine to drop this, but from the branch analysis side it still
+feels odd to me. I would need to look at it more to see what the
+side effects might be, but perhaps we should consider adding it
+to the list in reg_type_may_be_null(). OTOH this is not causing
+me any real problems at the moment just idle speculation so we
+can leave it alone for now.
+
+> 
+> >
+> > Improve the comment here to reflect the current state and change the reg
+> > type string to indicate it may be null.  We should try to avoid this in
+> > future types, but its too much code churn to unwind at this point.
+> >
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  include/linux/bpf.h   |    2 +-
+> >  kernel/bpf/verifier.c |    2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 40c5e206ecf2..b9c192fe0d0f 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -352,7 +352,7 @@ enum bpf_reg_type {
+> >         PTR_TO_TCP_SOCK_OR_NULL, /* reg points to struct tcp_sock or NULL */
+> >         PTR_TO_TP_BUFFER,        /* reg points to a writable raw tp's buffer */
+> >         PTR_TO_XDP_SOCK,         /* reg points to struct xdp_sock */
+> > -       PTR_TO_BTF_ID,           /* reg points to kernel struct */
+> > +       PTR_TO_BTF_ID,           /* reg points to kernel struct or NULL */
+> >         PTR_TO_BTF_ID_OR_NULL,   /* reg points to kernel struct or NULL */
+> >         PTR_TO_MEM,              /* reg points to valid memory region */
+> >         PTR_TO_MEM_OR_NULL,      /* reg points to valid memory region or NULL */
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index b6ccfce3bf4c..d657efcad47b 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -501,7 +501,7 @@ static const char * const reg_type_str[] = {
+> >         [PTR_TO_TCP_SOCK_OR_NULL] = "tcp_sock_or_null",
+> >         [PTR_TO_TP_BUFFER]      = "tp_buffer",
+> >         [PTR_TO_XDP_SOCK]       = "xdp_sock",
+> > -       [PTR_TO_BTF_ID]         = "ptr_",
+> > +       [PTR_TO_BTF_ID]         = "ptr_or_null_",
+> >         [PTR_TO_BTF_ID_OR_NULL] = "ptr_or_null_",
+> >         [PTR_TO_MEM]            = "mem",
+> >         [PTR_TO_MEM_OR_NULL]    = "mem_or_null",
+> >
+
 
