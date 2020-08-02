@@ -2,149 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7454B2354E8
-	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 04:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFF72354F0
+	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 05:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgHBCjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Aug 2020 22:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S1728017AbgHBDH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Aug 2020 23:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgHBCjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Aug 2020 22:39:23 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17804C06174A
-        for <bpf@vger.kernel.org>; Sat,  1 Aug 2020 19:39:23 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id s189so28120179iod.2
-        for <bpf@vger.kernel.org>; Sat, 01 Aug 2020 19:39:23 -0700 (PDT)
+        with ESMTP id S1725883AbgHBDH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Aug 2020 23:07:57 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AD5C06174A;
+        Sat,  1 Aug 2020 20:07:57 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a79so643000pfa.8;
+        Sat, 01 Aug 2020 20:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=u4cdpBmoAp4NXZHFYWOfUxm88CAHwYgmJcASvlZaKg4=;
-        b=DHmw2Nmw6T0JO7NlF+Sj5S1747Pf5z/eASvzeRYthF8tRj89t2EgXhhuzf0yaNruKE
-         tT1cfFRBOI+i113uAc7wXGfHFDpR6VCLCN8h0Dv+UKBBpVn7ZaMyEUUq4lHoXH9nx8nN
-         NJnFT9P8QRwMycj4NxOouxCHQWjL+JU5VPYpvW4qN0WYoKcsBGUyLV+WQV8+c2KV/rxc
-         E1ts0+PfiXwrqjjxNZ08zc2PpzXDVZdAHfLOAKhqC+2Uy/2oaErthNyq/1joZtTBe0vS
-         +xT61j2rkASHt41+qHZGeKyQ7tL3A1XJ8rK7CoNoO3N5ML2lu2ZH3KpAfE5s32Cw799G
-         VFZg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1j8EZXvJ6xp75+ihAeh4iIkHpaXz+pr5TsFcys/H1Yk=;
+        b=UXYgk6JT1tLyuw3n039g+FdSYwm92nm+sojh0SwSOaYu8YDFKoihftnHKhvNz1Rd0o
+         5WBYYI8T2Oz6ZGJcg6WhrJsccGOzL/fKEOVIptdUExKX/YTPkAydlo9oWnA2osmco9pZ
+         KF1AEekAtuJ4D7kG5kbkV//jlkbNghuJLrymHBKkfvCC5xAvzTzqG5ZPBDipSWieGwBZ
+         w/txhrmUx9pTwuA6moDmF9VTWsf+bVMM8zMYxXHSgmad19tPb1NjUqXoXIeTxVXG7QL2
+         Mx/yQwxux1SCukRxiSbEC3Gz7ItqFLYzNzTVbCOd9fnZhMpFd4UJdtdxbmCTen6NM8ow
+         rr8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=u4cdpBmoAp4NXZHFYWOfUxm88CAHwYgmJcASvlZaKg4=;
-        b=Mb+SvmVxNyFwpQqg6E9fNp7HKrtHkEfkURq3HZY6DTpCsp7jDBMGFzYFIJycXrcWoi
-         q0oxlh6iwnS2BlLCd8FphVvYORewggdGX4DJccczmT2dhxtEsdVBDaNmdNQC2osG0TET
-         brTTIomqSwX2DS/o7VaRjsgE8dF7CQa2jBHuNYhgx4rWuXu9LQTdNpb7ijtfdbs0+i81
-         1Pf7Fbv4A3npMx4o/EZIQ5TGGShD9ppgwk7d4zoR3WmLFiBAF5celQXNXga9DStXAI9S
-         9Z62IGhlENT3rYyqrm6fgPeTjezkOnWQlGvDDlVvnZGRiDp11TGrhH4xyBRVw3PmC9RJ
-         tu+w==
-X-Gm-Message-State: AOAM532fIkHIkMtQN0hXxst2YgdQXgj6tcEsPzq+j9rRqoi0IKB49hTH
-        LC2sFHUr84XAp5walEVPSm4=
-X-Google-Smtp-Source: ABdhPJzbms40CAB6XmrAmwPQk4AlbyQPHhJf25XahdVSkMA+2u8MYfPR1yb05ee4tOmb1OjFgy0Ipw==
-X-Received: by 2002:a5d:9d11:: with SMTP id j17mr11001917ioj.140.1596335962317;
-        Sat, 01 Aug 2020 19:39:22 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id i10sm8204397ild.29.2020.08.01.19.39.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1j8EZXvJ6xp75+ihAeh4iIkHpaXz+pr5TsFcys/H1Yk=;
+        b=TH3NiGRfkgM2irZHR2nsquKQUDSDkfeA87zWOYupVEJuw3aHxQ8iXPpbgSu4W0GgkJ
+         8R7ertd2juKToD8/BLPOZ9ArCt0jU9hF0XS0TT17Z/42cMGy8ZimJ5FocTWk0dpswzSf
+         6rTdck4AkgVj+2abMATW8WSoR7nDYliRcdFEB4YCzpH7jgR+TFvIV//8yY3+4jGFwvzL
+         Sve+7wOIuGrmgryFRmvwO0WVxl1pxi3uPEQQL8w09IAHIcuomhS5OdTfr2P3QyJZ7JUN
+         YRDTeDV4Zhe8I9IteGP7Eb2cBraxguoD/LHNY3t0yoOL/ppHlv/FjNcrj7PyME1h8eXB
+         9kYA==
+X-Gm-Message-State: AOAM5311H/SwI9yndG3YMA2jccbu+hiFPovmgEl2LKl4sRz5nfp96IbN
+        yWEXbVkpiKcGKL17O4eHsF0FBS2r
+X-Google-Smtp-Source: ABdhPJyi5RZdJWEB81cYcVQaDNZtdTx2ihrUqe7MvqbeXEZfa37yBakOCSFYTxpuQZzwnaor05bF4Q==
+X-Received: by 2002:a63:d10a:: with SMTP id k10mr9896815pgg.382.1596337675940;
+        Sat, 01 Aug 2020 20:07:55 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:65b5])
+        by smtp.gmail.com with ESMTPSA id d93sm13997738pjk.44.2020.08.01.20.07.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Aug 2020 19:39:21 -0700 (PDT)
-Date:   Sat, 01 Aug 2020 19:39:13 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Message-ID: <5f262751ab97c_11b82ae318aac5b44d@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZ9=av=EvbyzhoyCg0ZvTOA2GBPgq5vyb1SaoNmqwL6XQ@mail.gmail.com>
-References: <159623491781.20514.14371382768486033310.stgit@john-XPS-13-9370>
- <CAEf4BzZ9=av=EvbyzhoyCg0ZvTOA2GBPgq5vyb1SaoNmqwL6XQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH] bpf: Add comment in bpf verifier to note
- PTR_TO_BTF_ID can be null
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Sat, 01 Aug 2020 20:07:54 -0700 (PDT)
+Date:   Sat, 1 Aug 2020 20:07:52 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH v6 bpf-next 0/6] bpf: tailcalls in BPF subprograms
+Message-ID: <20200802030752.bnebgrr6jkl3dgnk@ast-mbp.dhcp.thefacebook.com>
+References: <20200731000324.2253-1-maciej.fijalkowski@intel.com>
+ <fbe6e5ca-65ba-7698-3b8d-1214b5881e88@iogearbox.net>
+ <20200801071357.GA19421@ranger.igk.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200801071357.GA19421@ranger.igk.intel.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Fri, Jul 31, 2020 at 3:36 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > The verifier contains both types PTR_TO_BTF_ID and PTR_TO_BTF_ID_OR_NULL.
-> > For all other type pairs PTR_TO_foo and PTR_TO_foo_OR_NULL we follow the
-> > convention to use PTR_TO_foo_OR_NULL for pointers that may be null and
-> > PTR_TO_foo when the ptr value has been checked to ensure it is _not_ NULL.
-> >
-> > For PTR_TO_BTF_ID this is not the case though. It may be still be NULL
-> > even though we have the PTR_TO_BTF_ID type.
+On Sat, Aug 01, 2020 at 09:13:57AM +0200, Maciej Fijalkowski wrote:
+> On Sat, Aug 01, 2020 at 03:03:19AM +0200, Daniel Borkmann wrote:
+> > On 7/31/20 2:03 AM, Maciej Fijalkowski wrote:
+> > > v5->v6:
+> > > - propagate only those poke descriptors that individual subprogram is
+> > >    actually using (Daniel)
+> > > - drop the cumbersome check if poke desc got filled in map_poke_run()
+> > > - move poke->ip renaming in bpf_jit_add_poke_descriptor() from patch 4
+> > >    to patch 3 to provide bisectability (Daniel)
+> > 
+> > I did a basic test with Cilium on K8s with this set, spawning a few Pods
+> > and checking connectivity & whether we're not crashing since it has bit more
+> > elaborate tail call use. So far so good. I was inclined to push the series
+> > out, but there is one more issue I noticed and didn't notice earlier when
+> > reviewing, and that is overall stack size:
+> > 
+> > What happens when you create a single program that has nested BPF to BPF
+> > calls e.g. either up to the maximum nesting or one call that is using up
+> > the max stack size which is then doing another BPF to BPF call that contains
+> > the tail call. In the tail call map, you have the same program in there.
+> > This means we create a worst case stack from BPF size of max_stack_size *
+> > max_tail_call_size, that is, 512*32. So that adds 16k worst case. For x86
+> > we have a stack of arch/x86/include/asm/page_64_types.h:
+> > 
+> >   #define THREAD_SIZE_ORDER       (2 + KASAN_STACK_ORDER)
+> >  #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+> > 
+> > So we end up with 16k in a typical case. And this will cause kernel stack
+> > overflow; I'm at least not seeing where we handle this situation in the
+
+Not quite. The subprog is always 32 byte stack (from safety pov).
+The real stack (when JITed) can be lower or zero.
+So the max stack is (512 - 32) * 32 = 15360.
+So there is no overflow, but may be a bit too close to comfort.
+Imo the room is ok to land the set and the better enforcement can
+be done as a follow up later, like below idea...
+
+> > set. Hm, need to think more, but maybe this needs tracking of max stack
+> > across tail calls to force an upper limit..
 > 
-> _OR_NULL means that the verifier enforces an explicit NULL check,
-> before allowing the BPF program to dereference corresponding
-> registers. That's not the case for PTR_TO_BTF_ID, though. The BPF
-> program is allowed to assume valid pointer and proceed without checks.
-> 
-> You are right that NULLs are still possible (as well as just invalid
-> pointers), but BPF JITs handle that by installing exception handlers
-> and zeroing out destination registers if it happens to be a NULL or
-> invalid pointer. This mimics bpf_probe_read() behavior, btw.
+> My knee jerk reaction would be to decrement the allowed max tail calls,
+> but not sure if it's an option and if it would help.
 
-Yes aware of all this.
-
-> 
-> So I think the way it's described and named in the verifier makes
-> sense, at least from the verifier's implementation point of view.
-
-The other other problem with the proposed patch is it makes BTF_ID
-and BTF_ID_OR_NULL the same from the reg_type_str side which might
-make things a bit confusing.
-
-I'm fine to drop this, but from the branch analysis side it still
-feels odd to me. I would need to look at it more to see what the
-side effects might be, but perhaps we should consider adding it
-to the list in reg_type_may_be_null(). OTOH this is not causing
-me any real problems at the moment just idle speculation so we
-can leave it alone for now.
-
-> 
-> >
-> > Improve the comment here to reflect the current state and change the reg
-> > type string to indicate it may be null.  We should try to avoid this in
-> > future types, but its too much code churn to unwind at this point.
-> >
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  include/linux/bpf.h   |    2 +-
-> >  kernel/bpf/verifier.c |    2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 40c5e206ecf2..b9c192fe0d0f 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -352,7 +352,7 @@ enum bpf_reg_type {
-> >         PTR_TO_TCP_SOCK_OR_NULL, /* reg points to struct tcp_sock or NULL */
-> >         PTR_TO_TP_BUFFER,        /* reg points to a writable raw tp's buffer */
-> >         PTR_TO_XDP_SOCK,         /* reg points to struct xdp_sock */
-> > -       PTR_TO_BTF_ID,           /* reg points to kernel struct */
-> > +       PTR_TO_BTF_ID,           /* reg points to kernel struct or NULL */
-> >         PTR_TO_BTF_ID_OR_NULL,   /* reg points to kernel struct or NULL */
-> >         PTR_TO_MEM,              /* reg points to valid memory region */
-> >         PTR_TO_MEM_OR_NULL,      /* reg points to valid memory region or NULL */
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index b6ccfce3bf4c..d657efcad47b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -501,7 +501,7 @@ static const char * const reg_type_str[] = {
-> >         [PTR_TO_TCP_SOCK_OR_NULL] = "tcp_sock_or_null",
-> >         [PTR_TO_TP_BUFFER]      = "tp_buffer",
-> >         [PTR_TO_XDP_SOCK]       = "xdp_sock",
-> > -       [PTR_TO_BTF_ID]         = "ptr_",
-> > +       [PTR_TO_BTF_ID]         = "ptr_or_null_",
-> >         [PTR_TO_BTF_ID_OR_NULL] = "ptr_or_null_",
-> >         [PTR_TO_MEM]            = "mem",
-> >         [PTR_TO_MEM_OR_NULL]    = "mem_or_null",
-> >
-
-
+How about make the verifier use a lower bound for a function with a tail call ?
+Something like 64 would work.
+subprog_info[idx].stack_depth with tail_call will be >= 64.
+Then the main function will be automatically limited to 512-64 and the worst
+case stack = 14kbyte.
+When the sub prog with tail call is not an empty body (malicious stack
+abuser) then the lower bound won't affect anything.
+A bit annoying that stack_depth will be used by JIT to actually allocate
+that much. Some of it will not be used potentially, but I think it's fine.
+It's much simpler solution than to keep two variables to track stack size.
+Or may be check_max_stack_depth() can be a bit smarter and it can detect
+that subprog is using tail_call without actually hacking stack_depth variable.
+Essentially I'm proposing to tweak this formula:
+depth += round_up(max_t(u32, subprog[idx].stack_depth, 1), 32);
+and replace 1 with 64 for subprogs with tail_call.
