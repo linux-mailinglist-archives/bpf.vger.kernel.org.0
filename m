@@ -2,109 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F2823584A
-	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 18:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146612359C0
+	for <lists+bpf@lfdr.de>; Sun,  2 Aug 2020 20:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgHBQLS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Aug 2020 12:11:18 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39390 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726775AbgHBQLQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 Aug 2020 12:11:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596384675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dJIGpigkfv/CoGy/dCJ0fruXGjZpHuxfk/VAoIvbyqk=;
-        b=M+GdKbKesZDMwZ9biVyAspfq/AVvektRD438URBGRc4cdoGVjWoJ8VOjuu+zJTBX30EbLV
-        c7Mq9VpKbew34S2Ej8N1bkWTQ016w+e2ZzMEm0828TPV5VN98I3Bllq+889dmVul8WJQV0
-        GxntDcbL6Ry5zkvcyN188FPly53IJc4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-zFAWStEIM8Glzp-nLyLxuA-1; Sun, 02 Aug 2020 12:11:11 -0400
-X-MC-Unique: zFAWStEIM8Glzp-nLyLxuA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3950106B243;
-        Sun,  2 Aug 2020 16:11:09 +0000 (UTC)
-Received: from krava (unknown [10.40.192.18])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C6FFE5D9DC;
-        Sun,  2 Aug 2020 16:11:07 +0000 (UTC)
-Date:   Sun, 2 Aug 2020 18:11:06 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH bpf-next] tools build: propagate build failures from
- tools/build/Makefile.build
-Message-ID: <20200802161106.GA127459@krava>
-References: <20200731024244.872574-1-andriin@fb.com>
+        id S1726533AbgHBSWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Aug 2020 14:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgHBSWT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Aug 2020 14:22:19 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA67C06174A;
+        Sun,  2 Aug 2020 11:22:19 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id 2so19005784ybr.13;
+        Sun, 02 Aug 2020 11:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sMcZ/FJCRgWMeQ3B6JmHPmpaPT+Ci09KvDW8PEAoGbY=;
+        b=Y7RP5xhbFhNb98xTK7vodbuLKeW59HE3DAeaQPP44TWSmigPYsJWi3/Rii0XlyR7JB
+         a8aCSV6OljRugpbqb2tSMTqWWrM2RUS5b2WOJgFRQr9j3FsTH26AEcXqUAdzluKvWuW+
+         4LLdOIPeVkQneBjvOaQTo62Hp56ghzCIvr7df3jZ3vE19z/iL+9VcaDnOkZSyiQyk/WM
+         0HG6ZDbsvqTazosbyK4hKOzrXQzdCkhXe1BKk+s4lxhAUnqaZCcvoUOzSJAH8jpODNcI
+         WAA81dF7B+SIkkrcZwvoIUilFq4gy7V2U5+7EDdX1cTEzlCGg+QZSW7tn8eJ79nRypXZ
+         XUPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sMcZ/FJCRgWMeQ3B6JmHPmpaPT+Ci09KvDW8PEAoGbY=;
+        b=qurxFovjsK+rdcvAmyz5sf0Xcqb5LRHWUUh4XadzuCx4gr2lHSgRtvIYJPMqd180qP
+         pB2+z5IHxHfxJbg2miscQ2zVQYtAx/1GVEpcgH1lZoOo4aI+qPmp+aFa+BJ6Td+w4QbT
+         GHKP28L0cTPws6tjIjrVnaB6//BJAzPbkHOlbU8OyFWHxywCH/3PAQjrqzolx9NWfxUL
+         WuBIym/pE/TA7bE9uxGKmA2wusJT6dKmJI87P/sl3BYf+m0JfFPqopqYuFhevw2UrXBf
+         gqjbaVP2dfoSUqSxwcww50o9/IuuDFMyUg5RmDUPclAxVymWUkvndOyhhFLGBZOIoSQ9
+         iUww==
+X-Gm-Message-State: AOAM531/pe3Y2XYJdPp3n2h8dCLKTL2M3WHnmkr+1kAK9+DylfGTqaxg
+        da+KG7oHsraWvGX6o2lw6aJsxP/6QfI6zNOZ836HFA==
+X-Google-Smtp-Source: ABdhPJyd4wvsRblGO1x7tY8Kn23saHg2oagzpOI50jrotPlsch0bQfzpf8cQv5kkehMqbMSIWhlh6wyyj3/4xPMTvx8=
+X-Received: by 2002:a25:2ad3:: with SMTP id q202mr19978126ybq.27.1596392538164;
+ Sun, 02 Aug 2020 11:22:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200731024244.872574-1-andriin@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200731024244.872574-1-andriin@fb.com> <20200802161106.GA127459@krava>
+In-Reply-To: <20200802161106.GA127459@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 2 Aug 2020 11:22:07 -0700
+Message-ID: <CAEf4Bzb=LBGsORPCh90=PF=WL+rdOKiBf8yDfJNwd8p2AKUK1A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools build: propagate build failures from tools/build/Makefile.build
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 07:42:44PM -0700, Andrii Nakryiko wrote:
-> The '&&' command seems to have a bad effect when $(cmd_$(1)) exits with
-> non-zero effect: the command failure is masked (despite `set -e`) and all but
-> the first command of $(dep-cmd) is executed (successfully, as they are mostly
-> printfs), thus overall returning 0 in the end.
+On Sun, Aug 2, 2020 at 9:11 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Jul 30, 2020 at 07:42:44PM -0700, Andrii Nakryiko wrote:
+> > The '&&' command seems to have a bad effect when $(cmd_$(1)) exits with
+> > non-zero effect: the command failure is masked (despite `set -e`) and all but
+> > the first command of $(dep-cmd) is executed (successfully, as they are mostly
+> > printfs), thus overall returning 0 in the end.
+>
+> nice, thanks for digging into this,
+> any idea why is the failure masked?
 
-nice, thanks for digging into this,
-any idea why is the failure masked?
+Two things.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+1. In make, assume you have command f = a in one function and g = b; c
+in another. If you write f && g, you end up with (a && b); c, right?
 
-jirka
+2. Try this shell script:
 
-> 
-> This means in practice that despite compilation errors, tools's build Makefile
-> will return success. We see this very reliably with libbpf's Makefile, which
-> doesn't get compilation error propagated properly. This in turns causes issues
-> with selftests build, as well as bpftool and other projects that rely on
-> building libbpf.
-> 
-> The fix is simple: don't use &&. Given `set -e`, we don't need to chain
-> commands with &&. The shell will exit on first failure, giving desired
-> behavior and propagating error properly.
-> 
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Fixes: 275e2d95591e ("tools build: Move dependency copy into function")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
-> 
-> I'm sending this against bpf-next tree, given libbpf is affected enough for me
-> to debug this fun problem that no one seemed to notice (or care, at least) in
-> almost 5 years. If there is a better kernel tree, please let me know.
-> 
->  tools/build/Build.include | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/build/Build.include b/tools/build/Build.include
-> index 9ec01f4454f9..585486e40995 100644
-> --- a/tools/build/Build.include
-> +++ b/tools/build/Build.include
-> @@ -74,7 +74,8 @@ dep-cmd = $(if $(wildcard $(fixdep)),
->  #                   dependencies in the cmd file
->  if_changed_dep = $(if $(strip $(any-prereq) $(arg-check)),         \
->                    @set -e;                                         \
-> -                  $(echo-cmd) $(cmd_$(1)) && $(dep-cmd))
-> +                  $(echo-cmd) $(cmd_$(1));                         \
-> +                  $(dep-cmd))
->  
->  # if_changed      - execute command if any prerequisite is newer than
->  #                   target, or command line has changed
-> -- 
-> 2.24.1
-> 
+set -ex
+false && true
+true
 
+It will return success. It won't execute the first true command, as
+expected, but won't terminate the shell as you'd expect from set -e.
+
+So basically, having a "logical operator" in a sequence of commands
+negates the effect of `set -e`. Intuitively I'd expect that from ||,
+but seems like && does that as well. if [] has similar effect -- any
+failing command in an if check doesn't trigger an early termination of
+a script.
+
+>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
+> jirka
+>
+> >
+> > This means in practice that despite compilation errors, tools's build Makefile
+> > will return success. We see this very reliably with libbpf's Makefile, which
+> > doesn't get compilation error propagated properly. This in turns causes issues
+> > with selftests build, as well as bpftool and other projects that rely on
+> > building libbpf.
+> >
+> > The fix is simple: don't use &&. Given `set -e`, we don't need to chain
+> > commands with &&. The shell will exit on first failure, giving desired
+> > behavior and propagating error properly.
+> >
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Fixes: 275e2d95591e ("tools build: Move dependency copy into function")
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >
+> > I'm sending this against bpf-next tree, given libbpf is affected enough for me
+> > to debug this fun problem that no one seemed to notice (or care, at least) in
+> > almost 5 years. If there is a better kernel tree, please let me know.
+> >
+> >  tools/build/Build.include | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/build/Build.include b/tools/build/Build.include
+> > index 9ec01f4454f9..585486e40995 100644
+> > --- a/tools/build/Build.include
+> > +++ b/tools/build/Build.include
+> > @@ -74,7 +74,8 @@ dep-cmd = $(if $(wildcard $(fixdep)),
+> >  #                   dependencies in the cmd file
+> >  if_changed_dep = $(if $(strip $(any-prereq) $(arg-check)),         \
+> >                    @set -e;                                         \
+> > -                  $(echo-cmd) $(cmd_$(1)) && $(dep-cmd))
+> > +                  $(echo-cmd) $(cmd_$(1));                         \
+> > +                  $(dep-cmd))
+> >
+> >  # if_changed      - execute command if any prerequisite is newer than
+> >  #                   target, or command line has changed
+> > --
+> > 2.24.1
+> >
+>
