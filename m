@@ -2,41 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AD423A88B
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 16:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3974423A8C2
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 16:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgHCOdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 10:33:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42952 "EHLO
+        id S1726767AbgHCOpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 10:45:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45332 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgHCOdX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 10:33:23 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
+        with ESMTP id S1726358AbgHCOpO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 10:45:14 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1k2bWb-00089n-50; Mon, 03 Aug 2020 16:33:13 +0200
+        id 1k2biC-0000TA-7B; Mon, 03 Aug 2020 16:45:12 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1k2bWa-0008QJ-56; Mon, 03 Aug 2020 16:33:12 +0200
-Subject: Re: [PATCH] tools/bpf/bpftool: Fix wrong return value in do_dump()
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>, ast@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        quentin@isovalent.com, kuba@kernel.org, toke@redhat.com,
-        tklauser@distanz.ch, jolsa@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
-References: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
+        id 1k2biC-0007MS-1O; Mon, 03 Aug 2020 16:45:12 +0200
+Subject: Re: [PATCH bpf-next 0/3] Add generic and raw BTF parsing APIs to
+ libbpf
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200802013219.864880-1-andriin@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <31eeb5d8-160a-64b8-9a39-a28add59ec74@iogearbox.net>
-Date:   Mon, 3 Aug 2020 16:33:02 +0200
+Message-ID: <bc4f155d-afe0-9cda-b41b-282e948c15e9@iogearbox.net>
+Date:   Mon, 3 Aug 2020 16:45:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20200802013219.864880-1-andriin@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,12 +44,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/2/20 1:15 PM, Tianjia Zhang wrote:
-> In case of btf_id does not exist, a negative error code -ENOENT
-> should be returned.
+On 8/2/20 3:32 AM, Andrii Nakryiko wrote:
+> It's pretty common for applications to want to parse raw (binary) BTF data
+> from file, as opposed to parsing it from ELF sections. It's also pretty common
+> for tools to not care whether given file is ELF or raw BTF format. This patch
+> series exposes internal raw BTF parsing API and adds generic variant of BTF
+> parsing, which will efficiently determine the format of a given fail and will
+> parse BTF appropriately.
 > 
-> Fixes: c93cc69004df3 ("bpftool: add ability to dump BTF types")
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Patches #2 and #3 removes re-implementations of such APIs from bpftool and
+> resolve_btfids tools.
+> 
+> Andrii Nakryiko (3):
+>    libbpf: add btf__parse_raw() and generic btf__parse() APIs
+>    tools/bpftool: use libbpf's btf__parse() API for parsing BTF from file
+>    tools/resolve_btfids: use libbpf's btf__parse() API
+> 
+>   tools/bpf/bpftool/btf.c             |  54 +------------
+>   tools/bpf/resolve_btfids/.gitignore |   4 +
+>   tools/bpf/resolve_btfids/main.c     |  58 +-------------
+>   tools/lib/bpf/btf.c                 | 114 +++++++++++++++++++---------
+>   tools/lib/bpf/btf.h                 |   5 +-
+>   tools/lib/bpf/libbpf.map            |   2 +
+>   6 files changed, 89 insertions(+), 148 deletions(-)
+>   create mode 100644 tools/bpf/resolve_btfids/.gitignore
+> 
 
 Applied, thanks!
