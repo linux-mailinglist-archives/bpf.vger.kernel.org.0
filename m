@@ -2,146 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F3B23AAA2
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 18:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D722F23AAC2
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 18:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgHCQjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 12:39:05 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38276 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgHCQjE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 12:39:04 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2dUL-0001qr-Rq; Mon, 03 Aug 2020 18:39:01 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2dUL-000L6j-LU; Mon, 03 Aug 2020 18:39:01 +0200
-Subject: Re: [PATCH bpf-next v3 00/29] bpf: switch to memcg-based memory
- accounting
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-References: <20200730212310.2609108-1-guro@fb.com>
- <6b1777ac-cae1-fa1f-db53-f6061d9ae675@iogearbox.net>
- <20200803153449.GA1020566@carbon.DHCP.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a620f231-1e68-6ac5-d7d2-57afa68e91c9@iogearbox.net>
-Date:   Mon, 3 Aug 2020 18:39:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726767AbgHCQrB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 12:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbgHCQrA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 12:47:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C2EC06174A
+        for <bpf@vger.kernel.org>; Mon,  3 Aug 2020 09:47:00 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id df16so11373826edb.9
+        for <bpf@vger.kernel.org>; Mon, 03 Aug 2020 09:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+GB5MKOgUI8A7DovU8H5BzRSBkTVczydPMIAKJRE0pA=;
+        b=TXuJnfJsusmUF8ldIZxcJRu28lnCE9/0aLAturws4wKkDpEL+LHLVcZUEeKeGf0Y3e
+         LwM42Rys19UAoi/hpotmiJk9kxZfkol1eo23dfSN90N3tGk41jZV07ANqsg39sNmR200
+         fsX9Sq7VOXOHO+zZLXTH2m+04uUyzY8im9dtM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+GB5MKOgUI8A7DovU8H5BzRSBkTVczydPMIAKJRE0pA=;
+        b=IyIJqUseJL3TSC8Li7nbJYqiWZfI2WWKLzCD510K0yPZhExdbq7G45HxwtHc4QCL3h
+         O8hhJGUFus2DbWXOAKCIT97AUVi94UKZztdLCcTArcdVoKvaWdvNvhYlpJ0xUTPIl120
+         0NzjsYK71Duf0uccQfY4NqbYHYHW/Pbb3Qv9VxiwGuqcVz9yfdnpBqE+Vpq+4GxDeefj
+         mGLHn28TCTP7vKvpaKkhgnSUIto9VARrFs1bwssQcSLcdUVWL+LzhEy3gxB55y8s4di+
+         iAum/wcYqmc9VzEHu9hfr1JbOmfFyxmYGwTw8RsPEvEy01sTAOYuIdYfs26D9Cq+xCdi
+         V6vw==
+X-Gm-Message-State: AOAM531h8VGtuuv2bPWc8VF2tzA3LhKfzlGwFM4nnXSxRu18cKnq1WBF
+        BCxxPwMbkol7vnTF33/Icd5BtQ==
+X-Google-Smtp-Source: ABdhPJwykO3ByvIbUHueIQJt/TWEiYWdK0Gbm94tKO6TwXmg6eX2TRwUiBDrwBvK/FWiFYlny50Igw==
+X-Received: by 2002:a05:6402:456:: with SMTP id p22mr16137651edw.177.1596473219106;
+        Mon, 03 Aug 2020 09:46:59 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id j7sm16385654ejb.64.2020.08.03.09.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2020 09:46:57 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v8 0/7] Generalizing bpf_local_storage
+Date:   Mon,  3 Aug 2020 18:46:48 +0200
+Message-Id: <20200803164655.1924498-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
 MIME-Version: 1.0
-In-Reply-To: <20200803153449.GA1020566@carbon.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25893/Mon Aug  3 17:01:47 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/3/20 5:34 PM, Roman Gushchin wrote:
-> On Mon, Aug 03, 2020 at 02:05:29PM +0200, Daniel Borkmann wrote:
->> On 7/30/20 11:22 PM, Roman Gushchin wrote:
->>> Currently bpf is using the memlock rlimit for the memory accounting.
->>> This approach has its downsides and over time has created a significant
->>> amount of problems:
->>>
->>> 1) The limit is per-user, but because most bpf operations are performed
->>>      as root, the limit has a little value.
->>>
->>> 2) It's hard to come up with a specific maximum value. Especially because
->>>      the counter is shared with non-bpf users (e.g. memlock() users).
->>>      Any specific value is either too low and creates false failures
->>>      or too high and useless.
->>>
->>> 3) Charging is not connected to the actual memory allocation. Bpf code
->>>      should manually calculate the estimated cost and precharge the counter,
->>>      and then take care of uncharging, including all fail paths.
->>>      It adds to the code complexity and makes it easy to leak a charge.
->>>
->>> 4) There is no simple way of getting the current value of the counter.
->>>      We've used drgn for it, but it's far from being convenient.
->>>
->>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
->>>      a function to "explain" this case for users.
->>>
->>> In order to overcome these problems let's switch to the memcg-based
->>> memory accounting of bpf objects. With the recent addition of the percpu
->>> memory accounting, now it's possible to provide a comprehensive accounting
->>> of memory used by bpf programs and maps.
->>>
->>> This approach has the following advantages:
->>> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
->>>      a better control over memory usage by different workloads.
->>>
->>> 2) The actual memory consumption is taken into account. It happens automatically
->>>      on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
->>>      performed automatically on releasing the memory. So the code on the bpf side
->>>      becomes simpler and safer.
->>>
->>> 3) There is a simple way to get the current value and statistics.
->>>
->>> The patchset consists of the following parts:
->>> 1) memcg-based accounting for various bpf objects: progs and maps
->>> 2) removal of the rlimit-based accounting
->>> 3) removal of rlimit adjustments in userspace samples
-> 
->> The diff stat looks nice & agree that rlimit sucks, but I'm missing how this is set
->> is supposed to work reliably, at least I currently fail to see it. Elaborating on this
->> in more depth especially for the case of unprivileged users should be a /fundamental/
->> part of the commit message.
->>
->> Lets take an example: unprivileged user adds a max sized hashtable to one of its
->> programs, and configures the map that it will perform runtime allocation. The load
->> succeeds as it doesn't surpass the limits set for the current memcg. Kernel then
->> processes packets from softirq. Given the runtime allocations, we end up mischarging
->> to whoever ended up triggering __do_softirq(). If, for example, ksoftirq thread, then
->> it's probably reasonable to assume that this might not be accounted e.g. limits are
->> not imposed on the root cgroup. If so we would probably need to drag the context of
->> /where/ this must be charged to __memcg_kmem_charge_page() to do it reliably. Otherwise
->> how do you protect unprivileged users to OOM the machine?
-> 
-> this is a valid concern, thank you for bringing it in. It can be resolved by
-> associating a map with a memory cgroup on creation, so that we can charge
-> this memory cgroup later, even from a soft-irq context. The question here is
-> whether we want to do it for all maps, or just for dynamic hashtables
-> (or any similar cases, if there are any)? I think the second option
-> is better. With the first option we have to annotate all memory allocations
-> in bpf maps code with memalloc_use_memcg()/memalloc_unuse_memcg(),
-> so it's easy to mess it up in the future.
-> What do you think?
+From: KP Singh <kpsingh@google.com>
 
-We would need to do it for all maps that are configured with non-prealloc, e.g. not
-only hash/LRU table but also others like LPM maps etc. I wonder whether program entry/
-exit could do the memalloc_use_memcg() / memalloc_unuse_memcg() and then everything
-would be accounted against the prog's memcg from runtime side, but then there's the
-usual issue with 'unuse'-restore on tail calls, and it doesn't solve the syscall side.
-But seems like the memalloc_{use,unuse}_memcg()'s remote charging is lightweight
-anyway compared to some of the other map update work such as taking bucket lock etc.
+# v7 -> v8
 
->> Similarly, what happens to unprivileged users if kmemcg was not configured into the
->> kernel or has been disabled?
-> 
-> Well, I don't think we can address it. Memcg-based memory accounting requires
-> enabled memory cgroups, a properly configured cgroup tree and also the kernel
-> memory accounting turned on to function properly.
-> Because we at Facebook are using cgroup for the memory accounting and control
-> everywhere, I might be biased. If there are real !memcg systems which are
-> actively using non-privileged bpf, we should keep the old system in place
-> and make it optional, so everyone can choose between having both accounting
-> systems or just the new one. Or we can disable the rlimit-based accounting
-> for root. But eliminating it completely looks so much nicer to me.
+- Fixed an issue with BTF IDs for helpers and added
+  bpf_<>_storage_delete to selftests to catch this issue.
+- Update comments about refcounts and grabbed a refcount to the open
+  file for userspace inode helpers.
+- Rebase.
 
-Eliminating it entirely feels better indeed. Another option could be that BPF kconfig
-would select memcg, so it's always built with it. Perhaps that is an acceptable tradeoff.
+# v6 -> v7
 
-Thanks,
-Daniel
+- Updated the series to use Martin's POC patch:
+
+  https://lore.kernel.org/bpf/20200725013047.4006241-1-kafai@fb.com/
+
+  I added a Co-developed-by: tag, but would need Martin's Signoff
+  (was not sure of the procedure here).
+
+- Rebase.
+
+# v5 -> v6
+
+- Fixed a build warning.
+- Rebase.
+
+# v4 -> v5
+
+- Split non-functional changes into separate commits.
+- Updated the cache macros to be simpler.
+- Fixed some bugs noticed by Martin.
+- Updated the userspace map functions to use an fd for lookups, updates
+  and deletes.
+- Rebase.
+
+# v3 -> v4
+
+- Fixed a missing include to bpf_sk_storage.h in bpf_sk_storage.c
+- Fixed some functions that were not marked as static which led to
+  W=1 compilation warnings.
+
+# v2 -> v3
+
+* Restructured the code as per Martin's suggestions:
+  - Common functionality in bpf_local_storage.c
+  - bpf_sk_storage functionality remains in net/bpf_sk_storage.
+  - bpf_inode_storage is kept separate as it is enabled only with
+    CONFIG_BPF_LSM.
+* A separate cache for inode and sk storage with macros to define it.
+* Use the ops style approach as suggested by Martin instead of the
+  enum + switch style.
+* Added the inode map to bpftool bash completion and docs.
+* Rebase and indentation fixes.
+
+# v1 -> v2
+
+* Use the security blob pointer instead of dedicated member in
+  struct inode.
+* Better code re-use as suggested by Alexei.
+* Dropped the inode count arithmetic as pointed out by Alexei.
+* Minor bug fixes and rebase.
+
+bpf_sk_storage can already be used by some BPF program types to annotate
+socket objects. These annotations are managed with the life-cycle of the
+object (i.e. freed when the object is freed) which makes BPF programs
+much simpler and less prone to errors and leaks.
+
+This patch series:
+
+* Generalizes the bpf_sk_storage infrastructure to allow easy
+  implementation of local storage for other objects
+* Implements local storage for inodes
+* Makes both bpf_{sk, inode}_storage available to LSM programs.
+
+Local storage is safe to use in LSM programs as the attachment sites are
+limited and the owning object won't be freed, however, this is not the
+case for tracing. Usage in tracing is expected to follow a white-list
+based approach similar to the d_path helper
+(https://lore.kernel.org/bpf/20200506132946.2164578-1-jolsa@kernel.org).
+
+Access to local storage would allow LSM programs to implement stateful
+detections like detecting the unlink of a running executable from the
+examples shared as a part of the KRSI series
+https://lore.kernel.org/bpf/20200329004356.27286-1-kpsingh@chromium.org/
+and
+https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+
+
+KP Singh (7):
+  A purely mechanical change to split the renaming from the actual
+    generalization.
+  bpf: Generalize caching for sk_storage.
+  bpf: Generalize bpf_sk_storage
+  bpf: Split bpf_local_storage to bpf_sk_storage
+  bpf: Implement bpf_local_storage for inodes
+  bpf: Allow local storage to be used from LSM programs
+  bpf: Add selftests for local_storage
+
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_local_storage.h             | 173 ++++
+ include/linux/bpf_lsm.h                       |  21 +
+ include/linux/bpf_types.h                     |   3 +
+ include/net/bpf_sk_storage.h                  |  13 +
+ include/net/sock.h                            |   4 +-
+ include/uapi/linux/bpf.h                      |  54 +-
+ kernel/bpf/Makefile                           |   2 +
+ kernel/bpf/bpf_inode_storage.c                | 265 ++++++
+ kernel/bpf/bpf_local_storage.c                | 600 +++++++++++++
+ kernel/bpf/bpf_lsm.c                          |  21 +-
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  10 +
+ net/core/bpf_sk_storage.c                     | 825 +++---------------
+ security/bpf/hooks.c                          |   7 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  54 +-
+ tools/lib/bpf/libbpf_probes.c                 |   5 +-
+ .../bpf/prog_tests/test_local_storage.c       |  60 ++
+ .../selftests/bpf/progs/local_storage.c       | 140 +++
+ 22 files changed, 1566 insertions(+), 711 deletions(-)
+ create mode 100644 include/linux/bpf_local_storage.h
+ create mode 100644 kernel/bpf/bpf_inode_storage.c
+ create mode 100644 kernel/bpf/bpf_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+
+-- 
+2.28.0.163.g6104cc2f0b6-goog
+
