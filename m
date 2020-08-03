@@ -2,66 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D0323A12C
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 10:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3448A23A185
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbgHCIlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 04:41:31 -0400
-Received: from sym2.noone.org ([178.63.92.236]:48458 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgHCIlb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 04:41:31 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4BKrvr6mp8zvjcX; Mon,  3 Aug 2020 10:41:28 +0200 (CEST)
-Date:   Mon, 3 Aug 2020 10:41:28 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        quentin@isovalent.com, kuba@kernel.org, toke@redhat.com,
-        jolsa@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tianjia.zhang@alibaba.com
-Subject: Re: [PATCH] tools/bpf/bpftool: Fix wrong return value in do_dump()
-Message-ID: <20200803084128.4ogaewayotcubff5@distanz.ch>
-References: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
+        id S1726062AbgHCJGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 05:06:03 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:38260 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725926AbgHCJGD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 05:06:03 -0400
+Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 0E51E2E1505;
+        Mon,  3 Aug 2020 12:06:01 +0300 (MSK)
+Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
+        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id Zqlc6rgheF-5vt8g8MR;
+        Mon, 03 Aug 2020 12:06:00 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1596445560; bh=pjlr5W8lS7atF8l+KwH9T4nrH6vaQVIehueEc9AvO8c=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=m5SPzPf8BNrBYaDxLP1EDPUns21prv5x9Tq1ZwruZmC6au9QsqSoUsRimy2WelFiN
+         DzzR50DEYDh/pOnJhrGDEYxaXUIJsf2ulis2x0UJekdEZpHmOPjnGvGp5g4OVo3c+i
+         eOuYJeg2bLDytSuCDxDRrjouJMeoepFs/dOrCwjE=
+Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 178.154.163.76-vpn.dhcp.yndx.net (178.154.163.76-vpn.dhcp.yndx.net [178.154.163.76])
+        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 1ZDFznne1R-5viCXtLm;
+        Mon, 03 Aug 2020 12:05:57 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Yakunin <zeil@yandex-team.ru>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     eric.dumazet@gmail.com, sdf@google.com
+Subject: [PATCH bpf-next v6 0/2] bpf: cgroup skb improvements for bpf_prog_test_run
+Date:   Mon,  3 Aug 2020 12:05:43 +0300
+Message-Id: <20200803090545.82046-1-zeil@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200802111540.5384-1-tianjia.zhang@linux.alibaba.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-08-02 at 13:15:40 +0200, Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
-> In case of btf_id does not exist, a negative error code -ENOENT
-> should be returned.
-> 
-> Fixes: c93cc69004df3 ("bpftool: add ability to dump BTF types")
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+This patchset contains some improvements for testing cgroup/skb programs
+through BPF_PROG_TEST_RUN command.
 
-Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
+v2:
+  - fix build without CONFIG_CGROUP_BPF (kernel test robot <lkp@intel.com>)
 
-> ---
->  tools/bpf/bpftool/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index faac8189b285..c2f1fd414820 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -596,7 +596,7 @@ static int do_dump(int argc, char **argv)
->  			goto done;
->  		}
->  		if (!btf) {
-> -			err = ENOENT;
-> +			err = -ENOENT;
->  			p_err("can't find btf with ID (%u)", btf_id);
->  			goto done;
->  		}
-> -- 
-> 2.26.2
-> 
+v3:
+  - fix build without CONFIG_IPV6 (kernel test robot <lkp@intel.com>)
+
+v4:
+  - remove cgroup storage related commits for future rework (Daniel Borkmann)
+
+v5:
+  - check skb length before access to inet headers (Eric Dumazet)
+
+v6:
+  - do not use pskb_may_pull() in skb length checking (Alexei Starovoitov)
+
+Dmitry Yakunin (2):
+  bpf: setup socket family and addresses in bpf_prog_test_run_skb
+  bpf: allow to specify ifindex for skb in bpf_prog_test_run_skb
+
+ net/bpf/test_run.c                               | 39 ++++++++++++++++++++++--
+ tools/testing/selftests/bpf/prog_tests/skb_ctx.c |  5 +++
+ 2 files changed, 42 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
+
