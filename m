@@ -2,152 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E9D23A188
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 11:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D744323A3CF
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 14:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgHCJGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 05:06:11 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:38326 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725926AbgHCJGG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 05:06:06 -0400
-Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id DEA692E14FC;
-        Mon,  3 Aug 2020 12:06:03 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id V7kn8eU4FZ-62t8r06x;
-        Mon, 03 Aug 2020 12:06:03 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1596445563; bh=Oo66nsRaElryOZye3EqBLW8xrT36MuCfruXoPKVcSIE=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=C5PTJHjAH7WEn2JiVq7Dgqxlnt0aab036S0zJCKh/6wPHppVHlq9ve3GuEH2zoC8t
-         IrSmPVpqqXir935Gqax0B2xYwGONTSX+PpofnNl4VAOJsJhNxWigJVSrZGdsCuMMKG
-         kGAKFxnriMgUHjKzEALEtktI8TRYev21DIoL63tE=
-Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 178.154.163.76-vpn.dhcp.yndx.net (178.154.163.76-vpn.dhcp.yndx.net [178.154.163.76])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 1ZDFznne1R-62iCIIr9;
-        Mon, 03 Aug 2020 12:06:02 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     eric.dumazet@gmail.com, sdf@google.com
-Subject: [PATCH bpf-next v6 2/2] bpf: allow to specify ifindex for skb in bpf_prog_test_run_skb
-Date:   Mon,  3 Aug 2020 12:05:45 +0300
-Message-Id: <20200803090545.82046-3-zeil@yandex-team.ru>
-In-Reply-To: <20200803090545.82046-1-zeil@yandex-team.ru>
-References: <20200803090545.82046-1-zeil@yandex-team.ru>
+        id S1726571AbgHCMGZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 08:06:25 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43598 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgHCMGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 08:06:18 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2ZDd-0003L5-Tm; Mon, 03 Aug 2020 14:05:29 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2ZDd-000WOD-Mr; Mon, 03 Aug 2020 14:05:29 +0200
+Subject: Re: [PATCH bpf-next v3 00/29] bpf: switch to memcg-based memory
+ accounting
+To:     Roman Gushchin <guro@fb.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20200730212310.2609108-1-guro@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6b1777ac-cae1-fa1f-db53-f6061d9ae675@iogearbox.net>
+Date:   Mon, 3 Aug 2020 14:05:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200730212310.2609108-1-guro@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25892/Sun Aug  2 17:01:36 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now skb->dev is unconditionally set to the loopback device in current net
-namespace. But if we want to test bpf program which contains code branch
-based on ifindex condition (eg filters out localhost packets) it is useful
-to allow specifying of ifindex from userspace. This patch adds such option
-through ctx_in (__sk_buff) parameter.
+On 7/30/20 11:22 PM, Roman Gushchin wrote:
+> Currently bpf is using the memlock rlimit for the memory accounting.
+> This approach has its downsides and over time has created a significant
+> amount of problems:
+> 
+> 1) The limit is per-user, but because most bpf operations are performed
+>     as root, the limit has a little value.
+> 
+> 2) It's hard to come up with a specific maximum value. Especially because
+>     the counter is shared with non-bpf users (e.g. memlock() users).
+>     Any specific value is either too low and creates false failures
+>     or too high and useless.
+> 
+> 3) Charging is not connected to the actual memory allocation. Bpf code
+>     should manually calculate the estimated cost and precharge the counter,
+>     and then take care of uncharging, including all fail paths.
+>     It adds to the code complexity and makes it easy to leak a charge.
+> 
+> 4) There is no simple way of getting the current value of the counter.
+>     We've used drgn for it, but it's far from being convenient.
+> 
+> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>     a function to "explain" this case for users.
+> 
+> In order to overcome these problems let's switch to the memcg-based
+> memory accounting of bpf objects. With the recent addition of the percpu
+> memory accounting, now it's possible to provide a comprehensive accounting
+> of memory used by bpf programs and maps.
+> 
+> This approach has the following advantages:
+> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
+>     a better control over memory usage by different workloads.
+> 
+> 2) The actual memory consumption is taken into account. It happens automatically
+>     on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
+>     performed automatically on releasing the memory. So the code on the bpf side
+>     becomes simpler and safer.
+> 
+> 3) There is a simple way to get the current value and statistics.
+> 
+> The patchset consists of the following parts:
+> 1) memcg-based accounting for various bpf objects: progs and maps
+> 2) removal of the rlimit-based accounting
+> 3) removal of rlimit adjustments in userspace samples
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
----
- net/bpf/test_run.c                               | 22 ++++++++++++++++++++--
- tools/testing/selftests/bpf/prog_tests/skb_ctx.c |  5 +++++
- 2 files changed, 25 insertions(+), 2 deletions(-)
+The diff stat looks nice & agree that rlimit sucks, but I'm missing how this is set
+is supposed to work reliably, at least I currently fail to see it. Elaborating on this
+in more depth especially for the case of unprivileged users should be a /fundamental/
+part of the commit message.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 736a596..99eb8c6 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -327,6 +327,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
- 	/* priority is allowed */
- 
- 	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, priority),
-+			   offsetof(struct __sk_buff, ifindex)))
-+		return -EINVAL;
-+
-+	/* ifindex is allowed */
-+
-+	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, ifindex),
- 			   offsetof(struct __sk_buff, cb)))
- 		return -EINVAL;
- 
-@@ -381,6 +387,7 @@ static void convert_skb_to___skb(struct sk_buff *skb, struct __sk_buff *__skb)
- 
- 	__skb->mark = skb->mark;
- 	__skb->priority = skb->priority;
-+	__skb->ifindex = skb->dev->ifindex;
- 	__skb->tstamp = skb->tstamp;
- 	memcpy(__skb->cb, &cb->data, QDISC_CB_PRIV_LEN);
- 	__skb->wire_len = cb->pkt_len;
-@@ -391,6 +398,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr)
- {
- 	bool is_l2 = false, is_direct_pkt_access = false;
-+	struct net *net = current->nsproxy->net_ns;
-+	struct net_device *dev = net->loopback_dev;
- 	u32 size = kattr->test.data_size_in;
- 	u32 repeat = kattr->test.repeat;
- 	struct __sk_buff *ctx = NULL;
-@@ -432,7 +441,7 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		kfree(ctx);
- 		return -ENOMEM;
- 	}
--	sock_net_set(sk, current->nsproxy->net_ns);
-+	sock_net_set(sk, net);
- 	sock_init_data(NULL, sk);
- 
- 	skb = build_skb(data, 0);
-@@ -446,7 +455,14 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 
- 	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
- 	__skb_put(skb, size);
--	skb->protocol = eth_type_trans(skb, current->nsproxy->net_ns->loopback_dev);
-+	if (ctx && ctx->ifindex > 1) {
-+		dev = dev_get_by_index(net, ctx->ifindex);
-+		if (!dev) {
-+			ret = -ENODEV;
-+			goto out;
-+		}
-+	}
-+	skb->protocol = eth_type_trans(skb, dev);
- 	skb_reset_network_header(skb);
- 
- 	switch (skb->protocol) {
-@@ -502,6 +518,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		ret = bpf_ctx_finish(kattr, uattr, ctx,
- 				     sizeof(struct __sk_buff));
- out:
-+	if (dev && dev != net->loopback_dev)
-+		dev_put(dev);
- 	kfree_skb(skb);
- 	bpf_sk_storage_free(sk);
- 	kfree(sk);
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-index 7021b92..25de86a 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-@@ -11,6 +11,7 @@ void test_skb_ctx(void)
- 		.cb[3] = 4,
- 		.cb[4] = 5,
- 		.priority = 6,
-+		.ifindex = 1,
- 		.tstamp = 7,
- 		.wire_len = 100,
- 		.gso_segs = 8,
-@@ -92,6 +93,10 @@ void test_skb_ctx(void)
- 		   "ctx_out_priority",
- 		   "skb->priority == %d, expected %d\n",
- 		   skb.priority, 7);
-+	CHECK_ATTR(skb.ifindex != 1,
-+		   "ctx_out_ifindex",
-+		   "skb->ifindex == %d, expected %d\n",
-+		   skb.ifindex, 1);
- 	CHECK_ATTR(skb.tstamp != 8,
- 		   "ctx_out_tstamp",
- 		   "skb->tstamp == %lld, expected %d\n",
--- 
-2.7.4
+Lets take an example: unprivileged user adds a max sized hashtable to one of its
+programs, and configures the map that it will perform runtime allocation. The load
+succeeds as it doesn't surpass the limits set for the current memcg. Kernel then
+processes packets from softirq. Given the runtime allocations, we end up mischarging
+to whoever ended up triggering __do_softirq(). If, for example, ksoftirq thread, then
+it's probably reasonable to assume that this might not be accounted e.g. limits are
+not imposed on the root cgroup. If so we would probably need to drag the context of
+/where/ this must be charged to __memcg_kmem_charge_page() to do it reliably. Otherwise
+how do you protect unprivileged users to OOM the machine?
 
+Similarly, what happens to unprivileged users if kmemcg was not configured into the
+kernel or has been disabled?
+
+Thanks,
+Daniel
