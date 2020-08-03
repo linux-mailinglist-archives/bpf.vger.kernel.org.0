@@ -2,74 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EEF23AFD8
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 23:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC0423B05D
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 00:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgHCVzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 17:55:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60012 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgHCVzg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 17:55:36 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2iQg-0001sR-Pa; Mon, 03 Aug 2020 23:55:34 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k2iQg-000PXH-Jb; Mon, 03 Aug 2020 23:55:34 +0200
-Subject: Re: [PATCH bpf-next v6 0/2] bpf: cgroup skb improvements for
- bpf_prog_test_run
-To:     Dmitry Yakunin <zeil@yandex-team.ru>, alexei.starovoitov@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     eric.dumazet@gmail.com, sdf@google.com
-References: <20200803090545.82046-1-zeil@yandex-team.ru>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a980acba-03cf-b3c3-7f49-20740bcdeb08@iogearbox.net>
-Date:   Mon, 3 Aug 2020 23:55:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728413AbgHCWnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 18:43:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59116 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728213AbgHCWnt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 18:43:49 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 073MdDcn019642
+        for <bpf@vger.kernel.org>; Mon, 3 Aug 2020 15:43:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ZC0Mvph0JXSn3OFZgapXOlTETaYRNOLRGSkqCir9V00=;
+ b=LIL2aVSyAZdzG6niy1db9KTVBzdBbg1CTdTNy3lUavsZhU1v0pt38W1dbmbrn1zAtD64
+ lVBdIlQlJEnCzbgn5/1Ku9ND2ubAWe5HTGUyZRbE+rUZ22DuNR6Y/o8NXicP7Lsu4DRf
+ WQjGVNBwJBMi88bb1ZjzEv/8AfMx7QNWaG8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32n81jhd4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 03 Aug 2020 15:43:47 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 3 Aug 2020 15:43:46 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id A4B9F3704C82; Mon,  3 Aug 2020 15:43:40 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v3 0/2] bpf: change uapi for bpf iterator map elements
+Date:   Mon, 3 Aug 2020 15:43:40 -0700
+Message-ID: <20200803224340.2925417-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200803090545.82046-1-zeil@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25893/Mon Aug  3 17:01:47 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-03_15:2020-08-03,2020-08-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ impostorscore=0 spamscore=0 suspectscore=8 lowpriorityscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008030156
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/3/20 11:05 AM, Dmitry Yakunin wrote:
-> This patchset contains some improvements for testing cgroup/skb programs
-> through BPF_PROG_TEST_RUN command.
-> 
-> v2:
->    - fix build without CONFIG_CGROUP_BPF (kernel test robot <lkp@intel.com>)
-> 
-> v3:
->    - fix build without CONFIG_IPV6 (kernel test robot <lkp@intel.com>)
-> 
-> v4:
->    - remove cgroup storage related commits for future rework (Daniel Borkmann)
-> 
-> v5:
->    - check skb length before access to inet headers (Eric Dumazet)
-> 
-> v6:
->    - do not use pskb_may_pull() in skb length checking (Alexei Starovoitov)
-> 
-> Dmitry Yakunin (2):
->    bpf: setup socket family and addresses in bpf_prog_test_run_skb
->    bpf: allow to specify ifindex for skb in bpf_prog_test_run_skb
-> 
->   net/bpf/test_run.c                               | 39 ++++++++++++++++++++++--
->   tools/testing/selftests/bpf/prog_tests/skb_ctx.c |  5 +++
->   2 files changed, 42 insertions(+), 2 deletions(-)
-> 
+Andrii raised a concern that current uapi for bpf iterator map
+element is a little restrictive and not suitable for future potential
+complex customization. This is a valid suggestion, considering people
+may indeed add more complex custimization to the iterator, e.g.,
+cgroup_id + user_id, etc. for task or task_file. Another example might
+be map_id plus additional control so that the bpf iterator may bail
+out a bucket earlier if a bucket has too many elements which may hold
+lock too long and impact other parts of systems.
 
-Looks good, applied, thanks!
+Patch #1 modified uapi with kernel changes. Patch #2
+adjusted libbpf api accordingly.
+
+Changelogs:
+  v2 -> v3:
+    . undo "not reject iter_info.map.map_fd =3D=3D 0" from v1.
+      In the future map_fd may become optional, so let us use map_fd =3D=3D=
+ 0
+      indicating the map_fd is not set by user space.
+    . add link_info_len to bpf_iter_attach_opts to ensure always correct
+      link_info_len from user. Otherwise, libbpf may deduce incorrect
+      link_info_len if it uses different uapi header than the user app.
+  v1 -> v2:
+    . ensure link_create target_fd/flags =3D=3D 0 since they are not used=
+. (Andrii)
+    . if either of iter_info ptr =3D=3D 0 or iter_info_len =3D=3D 0, but =
+not both,
+      return error to user space. (Andrii)
+    . do not reject iter_info.map.map_fd =3D=3D 0, go ahead to use it try=
+ing to
+      get a map reference since the map_fd is required for map_elem itera=
+tor.
+    . use bpf_iter_link_info in bpf_iter_attach_opts instead of map_fd.
+      this way, user space is responsible to set up bpf_iter_link_info an=
+d
+      libbpf just passes the data to the kernel, simplifying libbpf desig=
+n.
+      (Andrii)
+
+Yonghong Song (2):
+  bpf: change uapi for bpf iterator map elements
+  tools/bpf: support new uapi for map element bpf iterator
+
+ include/linux/bpf.h                           | 10 ++--
+ include/uapi/linux/bpf.h                      | 15 ++---
+ kernel/bpf/bpf_iter.c                         | 58 +++++++++----------
+ kernel/bpf/map_iter.c                         | 37 +++++++++---
+ kernel/bpf/syscall.c                          |  2 +-
+ net/core/bpf_sk_storage.c                     | 37 +++++++++---
+ tools/bpf/bpftool/iter.c                      |  9 ++-
+ tools/include/uapi/linux/bpf.h                | 15 ++---
+ tools/lib/bpf/bpf.c                           |  3 +
+ tools/lib/bpf/bpf.h                           |  4 +-
+ tools/lib/bpf/libbpf.c                        |  6 +-
+ tools/lib/bpf/libbpf.h                        |  5 +-
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 40 ++++++++++---
+ 13 files changed, 159 insertions(+), 82 deletions(-)
+
+--=20
+2.24.1
+
