@@ -2,351 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BE023AC68
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 20:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B76923AC79
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 20:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgHCSd1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 14:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgHCSd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 14:33:27 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FCAC06174A;
-        Mon,  3 Aug 2020 11:33:26 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v9so6270704ljk.6;
-        Mon, 03 Aug 2020 11:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YKCFMiXgUprAfOtTAJFluerMVX+Gtd8K9VHkEllzvoQ=;
-        b=tU6CmDxaaFS+gchg1ZgV0zbZrms45MW+M407MKCUjllnktxPZG3c8KUmX/Zqszr5DS
-         ckyXZDNopQsBrVElISuidPHwZLHOiR/oDqNsearT6XNPgLzvbwRPsxrU8NJrQre3CgdV
-         TeNIB4StkgApX4Y5dH4nh/fGuhODUO9tCmpBckOtt2yc8poPKkeqTrw3DkCEnakiswVF
-         zWi/J/aeGRcAJra4Xgu07NtAZFkFtsNWSuoji04TmsTN0D+sS/OKnN1do8GLiu0jX9zR
-         KJND/Axp3nXkv5LHS9KqidpRoVH3QEVKlFmL+gHJ+7b4K/PPpsiPVIgZaFX89OXP6Qj/
-         eRNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YKCFMiXgUprAfOtTAJFluerMVX+Gtd8K9VHkEllzvoQ=;
-        b=etvgTsX98iCaGtcaP/9/rNrARrRRt4tPuY+SuPSYttni6HnJEK6PWyJhXeqVLnlO/y
-         n81WZH0BBjBLFu9SrQyVcTVDgzh6NzWV9Gi3ep6mokLAW9aLkdZrV/cuLLqn+CeLJHVN
-         /v61pvtEyX9FdFCym9Fm6Tg3Br193EputqL8ORaofHhoSRNavIj5ecbRdhAZIM3ZnCRp
-         2bzrkuhwkEIJLS38tSsG1LCc1BEhOOaCRC2LL44sFBM4qU2XcgnS6PIawHoNDcglPZWo
-         Z3KuRNO8XN2FHMl79IbZa8Cb8E8yLKFi+k3+MpbAwA3uL6aYdt4t6kn5dx0CGfQYxMVm
-         e8+g==
-X-Gm-Message-State: AOAM531isjKB8NwIDCzPrCh7Pxh5RUpDtx0WahQjMMFUWFOBAJkyQz32
-        To36tW9TcpE8oU3R1AazQvgXu6OizGQK1jKyBKOd+6C7
-X-Google-Smtp-Source: ABdhPJwCJmzHyGOSMxu1l7JJ2m3B/tHW+tKlkp7tdBMoW+ZufJ3L6rCtFYvb62PkniAcVnfMI42PYaBpzCXSdEuC8GA=
-X-Received: by 2002:a2e:a489:: with SMTP id h9mr8631929lji.121.1596479605091;
- Mon, 03 Aug 2020 11:33:25 -0700 (PDT)
+        id S1728672AbgHCShU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 14:37:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55908 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgHCShU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 14:37:20 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2fKm-0003NY-6v; Mon, 03 Aug 2020 20:37:16 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2fKm-000L9j-0W; Mon, 03 Aug 2020 20:37:16 +0200
+Subject: Re: [PATCH bpf-next v3 00/29] bpf: switch to memcg-based memory
+ accounting
+To:     Roman Gushchin <guro@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org
+References: <20200730212310.2609108-1-guro@fb.com>
+ <6b1777ac-cae1-fa1f-db53-f6061d9ae675@iogearbox.net>
+ <20200803153449.GA1020566@carbon.DHCP.thefacebook.com>
+ <a620f231-1e68-6ac5-d7d2-57afa68e91c9@iogearbox.net>
+ <20200803170549.GC1020566@carbon.DHCP.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e17c28a7-d4ff-0689-b2d9-93495e60c4cf@iogearbox.net>
+Date:   Mon, 3 Aug 2020 20:37:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200802222950.34696-1-alexei.starovoitov@gmail.com>
- <20200802222950.34696-4-alexei.starovoitov@gmail.com> <33d2db5b-3f81-e384-bed8-96f1d7f1d4c7@iogearbox.net>
- <430839eb-2761-0c1a-4b99-dffb07b9f502@iogearbox.net> <736dc34e-254d-de46-ac91-512029f675e7@iogearbox.net>
-In-Reply-To: <736dc34e-254d-de46-ac91-512029f675e7@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 3 Aug 2020 11:33:13 -0700
-Message-ID: <CAADnVQ+TRC11LnqMfstZwa-DDBBjL5uJoVgkxP0NkEDxAT2zEQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 3/4] bpf: Add kernel module with user mode
- driver that populates bpffs.
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200803170549.GC1020566@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25893/Mon Aug  3 17:01:47 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 3, 2020 at 10:40 AM Daniel Borkmann <daniel@iogearbox.net> wrot=
-e:
->
-> On 8/3/20 7:34 PM, Daniel Borkmann wrote:
-> > On 8/3/20 7:15 PM, Daniel Borkmann wrote:
-> >> On 8/3/20 12:29 AM, Alexei Starovoitov wrote:
-> >>> From: Alexei Starovoitov <ast@kernel.org>
-> >>>
-> >>> Add kernel module with user mode driver that populates bpffs with
-> >>> BPF iterators.
-> >>>
-> >>> $ mount bpffs /my/bpffs/ -t bpf
-> >>> $ ls -la /my/bpffs/
-> >>> total 4
-> >>> drwxrwxrwt  2 root root    0 Jul  2 00:27 .
-> >>> drwxr-xr-x 19 root root 4096 Jul  2 00:09 ..
-> >>> -rw-------  1 root root    0 Jul  2 00:27 maps.debug
-> >>> -rw-------  1 root root    0 Jul  2 00:27 progs.debug
-> >>>
-> >>> The user mode driver will load BPF Type Formats, create BPF maps, pop=
-ulate BPF
-> >>> maps, load two BPF programs, attach them to BPF iterators, and finall=
-y send two
-> >>> bpf_link IDs back to the kernel.
-> >>> The kernel will pin two bpf_links into newly mounted bpffs instance u=
-nder
-> >>> names "progs.debug" and "maps.debug". These two files become human re=
-adable.
-> >>>
-> >>> $ cat /my/bpffs/progs.debug
-> >>>    id name            attached
-> >>>    11 dump_bpf_map    bpf_iter_bpf_map
-> >>>    12 dump_bpf_prog   bpf_iter_bpf_prog
-> >>>    27 test_pkt_access
-> >>>    32 test_main       test_pkt_access test_pkt_access
-> >>>    33 test_subprog1   test_pkt_access_subprog1 test_pkt_access
-> >>>    34 test_subprog2   test_pkt_access_subprog2 test_pkt_access
-> >>>    35 test_subprog3   test_pkt_access_subprog3 test_pkt_access
-> >>>    36 new_get_skb_len get_skb_len test_pkt_access
-> >>>    37 new_get_skb_ifindex get_skb_ifindex test_pkt_access
-> >>>    38 new_get_constant get_constant test_pkt_access
-> >>>
-> >>> The BPF program dump_bpf_prog() in iterators.bpf.c is printing this d=
-ata about
-> >>> all BPF programs currently loaded in the system. This information is =
-unstable
-> >>> and will change from kernel to kernel as ".debug" suffix conveys.
-> >>>
-> >>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >> [...]
-> >>> diff --git a/kernel/bpf/preload/Kconfig b/kernel/bpf/preload/Kconfig
-> >>> new file mode 100644
-> >>> index 000000000000..b8ba5a9398ed
-> >>> --- /dev/null
-> >>> +++ b/kernel/bpf/preload/Kconfig
-> >>> @@ -0,0 +1,18 @@
-> >>> +# SPDX-License-Identifier: GPL-2.0-only
-> >>> +menuconfig BPF_PRELOAD
-> >>> +    bool "Preload BPF file system with kernel specific program and m=
-ap iterators"
-> >>> +    depends on BPF
-> >>> +    help
-> >>> +      This builds kernel module with several embedded BPF programs t=
-hat are
-> >>> +      pinned into BPF FS mount point as human readable files that ar=
-e
-> >>> +      useful in debugging and introspection of BPF programs and maps=
-.
-> >>> +
-> >>> +if BPF_PRELOAD
-> >>> +config BPF_PRELOAD_UMD
-> >>> +    tristate "bpf_preload kernel module with user mode driver"
-> >>> +    depends on CC_CAN_LINK
-> >>> +    depends on m || CC_CAN_LINK_STATIC
-> >>> +    default m
-> >>> +    help
-> >>> +      This builds bpf_preload kernel module with embedded user mode =
-driver.
-> >>> +endif
-> >> [...]
-> >> When I applied this set locally to run build & selftests I noticed tha=
-t the above
-> >> kconfig will appear in the top-level menuconfig. This is how it looks =
-in menuconfig:
-> >>
-> >>    =E2=94=82 =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=90 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Gener=
-al setup  --->                                                             =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       [*] 64-bi=
-t kernel                                                                   =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Proce=
-ssor type and features  --->                                               =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Power=
- management and ACPI options  --->                                         =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Bus o=
-ptions (PCI etc.)  --->                                                    =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Binar=
-y Emulations  --->                                                         =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Firmw=
-are Drivers  --->                                                          =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       [*] Virtu=
-alization  --->                                                            =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Gener=
-al architecture-dependent options  --->                                    =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       [*] Enabl=
-e loadable module support  --->                                            =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       -*- Enabl=
-e the block layer  --->                                                    =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           IO Sc=
-hedulers  --->                                                             =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       [ ] Prelo=
-ad BPF file system with kernel specific program and map iterators  ----    =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Execu=
-table file formats  --->                                                   =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Memor=
-y Management options  --->                                                 =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                       [*] Netwo=
-rking support  --->                                                        =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Devic=
-e Drivers  --->                                                            =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           File =
-systems  --->                                                              =
-                         =E2=94=82 =E2=94=82
-> >>    =E2=94=82 =E2=94=82                                           Secur=
-ity options  --->                                                          =
-                         =E2=94=82 =E2=94=82
-> >> [...]
-> >>
-> >> I assume the original intention was to have it under 'general setup' o=
-n a similar level for
-> >> the JIT settings, or is this intentional to have it at this high level=
- next to 'networking
-> >> support' and others?
+On 8/3/20 7:05 PM, Roman Gushchin wrote:
+> On Mon, Aug 03, 2020 at 06:39:01PM +0200, Daniel Borkmann wrote:
+>> On 8/3/20 5:34 PM, Roman Gushchin wrote:
+>>> On Mon, Aug 03, 2020 at 02:05:29PM +0200, Daniel Borkmann wrote:
+>>>> On 7/30/20 11:22 PM, Roman Gushchin wrote:
+>>>>> Currently bpf is using the memlock rlimit for the memory accounting.
+>>>>> This approach has its downsides and over time has created a significant
+>>>>> amount of problems:
+>>>>>
+>>>>> 1) The limit is per-user, but because most bpf operations are performed
+>>>>>       as root, the limit has a little value.
+>>>>>
+>>>>> 2) It's hard to come up with a specific maximum value. Especially because
+>>>>>       the counter is shared with non-bpf users (e.g. memlock() users).
+>>>>>       Any specific value is either too low and creates false failures
+>>>>>       or too high and useless.
+>>>>>
+>>>>> 3) Charging is not connected to the actual memory allocation. Bpf code
+>>>>>       should manually calculate the estimated cost and precharge the counter,
+>>>>>       and then take care of uncharging, including all fail paths.
+>>>>>       It adds to the code complexity and makes it easy to leak a charge.
+>>>>>
+>>>>> 4) There is no simple way of getting the current value of the counter.
+>>>>>       We've used drgn for it, but it's far from being convenient.
+>>>>>
+>>>>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>>>>>       a function to "explain" this case for users.
+>>>>>
+>>>>> In order to overcome these problems let's switch to the memcg-based
+>>>>> memory accounting of bpf objects. With the recent addition of the percpu
+>>>>> memory accounting, now it's possible to provide a comprehensive accounting
+>>>>> of memory used by bpf programs and maps.
+>>>>>
+>>>>> This approach has the following advantages:
+>>>>> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
+>>>>>       a better control over memory usage by different workloads.
+>>>>>
+>>>>> 2) The actual memory consumption is taken into account. It happens automatically
+>>>>>       on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
+>>>>>       performed automatically on releasing the memory. So the code on the bpf side
+>>>>>       becomes simpler and safer.
+>>>>>
+>>>>> 3) There is a simple way to get the current value and statistics.
+>>>>>
+>>>>> The patchset consists of the following parts:
+>>>>> 1) memcg-based accounting for various bpf objects: progs and maps
+>>>>> 2) removal of the rlimit-based accounting
+>>>>> 3) removal of rlimit adjustments in userspace samples
+>>>
+>>>> The diff stat looks nice & agree that rlimit sucks, but I'm missing how this is set
+>>>> is supposed to work reliably, at least I currently fail to see it. Elaborating on this
+>>>> in more depth especially for the case of unprivileged users should be a /fundamental/
+>>>> part of the commit message.
+>>>>
+>>>> Lets take an example: unprivileged user adds a max sized hashtable to one of its
+>>>> programs, and configures the map that it will perform runtime allocation. The load
+>>>> succeeds as it doesn't surpass the limits set for the current memcg. Kernel then
+>>>> processes packets from softirq. Given the runtime allocations, we end up mischarging
+>>>> to whoever ended up triggering __do_softirq(). If, for example, ksoftirq thread, then
+>>>> it's probably reasonable to assume that this might not be accounted e.g. limits are
+>>>> not imposed on the root cgroup. If so we would probably need to drag the context of
+>>>> /where/ this must be charged to __memcg_kmem_charge_page() to do it reliably. Otherwise
+>>>> how do you protect unprivileged users to OOM the machine?
+>>>
+>>> this is a valid concern, thank you for bringing it in. It can be resolved by
+>>> associating a map with a memory cgroup on creation, so that we can charge
+>>> this memory cgroup later, even from a soft-irq context. The question here is
+>>> whether we want to do it for all maps, or just for dynamic hashtables
+>>> (or any similar cases, if there are any)? I think the second option
+>>> is better. With the first option we have to annotate all memory allocations
+>>> in bpf maps code with memalloc_use_memcg()/memalloc_unuse_memcg(),
+>>> so it's easy to mess it up in the future.
+>>> What do you think?
+>>
+>> We would need to do it for all maps that are configured with non-prealloc, e.g. not
+>> only hash/LRU table but also others like LPM maps etc. I wonder whether program entry/
+>> exit could do the memalloc_use_memcg() / memalloc_unuse_memcg() and then everything
+>> would be accounted against the prog's memcg from runtime side, but then there's the
+>> usual issue with 'unuse'-restore on tail calls, and it doesn't solve the syscall side.
+>> But seems like the memalloc_{use,unuse}_memcg()'s remote charging is lightweight
+>> anyway compared to some of the other map update work such as taking bucket lock etc.
+> 
+> I'll explore it and address in the next version. Thank you for suggestions!
 
-I don't remember when last time I did menuconfig.
-How do you propose to move it?
-Any particular suggestion how kconfig suppose to look like?
+Ok.
 
-> >
-> > Hm, my config has:
-> >
-> > CONFIG_BPF_PRELOAD=3Dy
-> > CONFIG_BPF_PRELOAD_UMD=3Dy
-> >
-> > I'm getting the following 3 warnings and build error below:
-> >
-> > root@tank:~/bpf-next# make -j8 > /dev/null
-> > arch/x86/hyperv/hv_apic.c: In function =E2=80=98hv_send_ipi_mask_allbut=
-self=E2=80=99:
-> > arch/x86/hyperv/hv_apic.c:236:1: warning: the frame size of 1032 bytes =
-is larger than 1024 bytes [-Wframe-larger-than=3D]
-> >   }
-> >   ^
-> > make[3]: *** No rule to make target 'kernel/bpf/preload/./../../tools/l=
-ib/bpf/bpf.c', needed by 'kernel/bpf/preload/./../../tools/lib/bpf/bpf.o'. =
- Stop.
-> > make[3]: *** Waiting for unfinished jobs....
-> > kernel/bpf/preload/iterators/iterators.c: In function =E2=80=98main=E2=
-=80=99:
-> > kernel/bpf/preload/iterators/iterators.c:50:2: warning: ignoring return=
- value of =E2=80=98dup=E2=80=99, declared with attribute warn_unused_result=
- [-Wunused-result]
-> >    dup(debug_fd);
-> >    ^~~~~~~~~~~~~
-> > kernel/bpf/preload/iterators/iterators.c:53:2: warning: ignoring return=
- value of =E2=80=98read=E2=80=99, declared with attribute warn_unused_resul=
-t [-Wunused-result]
-> >    read(from_kernel, &magic, sizeof(magic));
-> >    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > kernel/bpf/preload/iterators/iterators.c:85:2: warning: ignoring return=
- value of =E2=80=98read=E2=80=99, declared with attribute warn_unused_resul=
-t [-Wunused-result]
-> >    read(from_kernel, &magic, sizeof(magic));
-> >    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > make[2]: *** [kernel/bpf/preload] Error 2
-> > make[1]: *** [kernel/bpf] Error 2
-> > make: *** [kernel] Error 2
-> > make: *** Waiting for unfinished jobs....
-> > [...]
-> >
-> > Have you seen the target error before, what am I missing?
->
-> Looks like the path in this patch is wrong:
->
-> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-> index 191d82209842..136c6ca0c196 100644
-> --- a/kernel/bpf/preload/Makefile
-> +++ b/kernel/bpf/preload/Makefile
-> @@ -1,6 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0
->
-> -LIBBPF :=3D $(srctree)/../../tools/lib/bpf
-> +LIBBPF :=3D $(srctree)/../../../tools/lib/bpf
+I'm probably still missing one more thing, but could you elaborate what limits would
+be enforced if an unprivileged user creates a prog/map on the host (w/o further action
+such as moving to a specific cgroup)?
 
-hmm. that's very odd.
-Are you building in-src-tree ?
-I'm building out-of-src-tree with KBUILD_OUTPUT.
-And two pairs of dots would be correct.
-make V=3D1 kernel/bpf/preload/
-gcc  -m64 -lelf -lz  -o kernel/bpf/preload/bpf_preload_umd
-kernel/bpf/preload/iterators/iterators.o
-kernel/bpf/preload/../../../tools/lib/bpf/bpf.o
+ From what I can tell via looking at systemd:
 
-see three pairs above. the first pair comes from $(srctree) somehow.
+   $ cat /proc/self/cgroup
+   11:cpuset:/
+   10:hugetlb:/
+   9:devices:/user.slice
+   8:cpu,cpuacct:/
+   7:freezer:/
+   6:pids:/user.slice/user-1000.slice/user@1000.service
+   5:memory:/user.slice/user-1000.slice/user@1000.service
+   4:net_cls,net_prio:/
+   3:perf_event:/
+   2:blkio:/
+   1:name=systemd:/user.slice/user-1000.slice/user@1000.service/gnome-terminal-server.service
+   0::/user.slice/user-1000.slice/user@1000.service/gnome-terminal-server.service
 
->   userccflags +=3D -I $(srctree)/tools/include/ -I $(srctree)/tools/inclu=
-de/uapi -I $(LIBBPF) \
->          -I $(srctree)/tools/lib/ \
->          -I $(srctree)/kernel/bpf/preload/iterators/ -Wno-int-conversion =
-\
->
-> With that, I'm now getting the following error:
->
-> root@tank:~/bpf-next# make -j8
->    DESCEND  objtool
->    DESCEND  bpf/resolve_btfids
->    CALL    scripts/atomic/check-atomics.sh
->    CALL    scripts/checksyscalls.sh
->    CHK     include/generated/compile.h
->    CC      kernel/events/core.o
->    CC [U]  kernel/bpf/preload/iterators/iterators.o
-> kernel/bpf/preload/iterators/iterators.c: In function =E2=80=98main=E2=80=
-=99:
-> kernel/bpf/preload/iterators/iterators.c:50:2: warning: ignoring return v=
-alue of =E2=80=98dup=E2=80=99, declared with attribute warn_unused_result [=
--Wunused-result]
->    dup(debug_fd);
->    ^~~~~~~~~~~~~
-> kernel/bpf/preload/iterators/iterators.c:53:2: warning: ignoring return v=
-alue of =E2=80=98read=E2=80=99, declared with attribute warn_unused_result =
-[-Wunused-result]
->    read(from_kernel, &magic, sizeof(magic));
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> kernel/bpf/preload/iterators/iterators.c:85:2: warning: ignoring return v=
-alue of =E2=80=98read=E2=80=99, declared with attribute warn_unused_result =
-[-Wunused-result]
->    read(from_kernel, &magic, sizeof(magic));
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    CC      kernel/events/ring_buffer.o
->    CC [U]  kernel/bpf/preload/./../../../tools/lib/bpf/bpf.o
->    CC [U]  kernel/bpf/preload/./../../../tools/lib/bpf/libbpf.o
-> In file included from kernel/bpf/preload/./../../../tools/lib/bpf/libbpf.=
-c:47:0:
-> ./tools/include/tools/libc_compat.h:11:21: error: static declaration of =
-=E2=80=98reallocarray=E2=80=99 follows non-static declaration
->   static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
->                       ^~~~~~~~~~~~
+And then:
 
-I saw this in the past when makefile was wrong. I suspect it's related
-to the above issue.
-Could you send me your build script / command line and make version?
+   $ systemctl cat user-1000.slice
+   # /usr/lib/systemd/system/user-.slice.d/10-defaults.conf
+   #  SPDX-License-Identifier: LGPL-2.1+
+   #
+   #  This file is part of systemd.
+   #
+   #  systemd is free software; you can redistribute it and/or modify it
+   #  under the terms of the GNU Lesser General Public License as published by
+   #  the Free Software Foundation; either version 2.1 of the License, or
+   #  (at your option) any later version.
+
+   [Unit]
+   Description=User Slice of UID %j
+   Documentation=man:user@.service(5)
+   After=systemd-user-sessions.service
+   StopWhenUnneeded=yes
+
+   [Slice]
+   TasksMax=33%
+
+So that has a Pid limit in place by default, but it does not say anything on memory. I
+presume the accounting relevant to us is tracked in memory.kmem.limit_in_bytes and
+memory.kmem.usage_in_bytes, is that correct? If true, it looks like the default would
+not prevent from OOM, no?
+
+   $ cat /sys/fs/cgroup/memory/user.slice/user-1000.slice/user@1000.service/memory.kmem.usage_in_bytes
+   257966080
+   $ cat /sys/fs/cgroup/memory/user.slice/user-1000.slice/user@1000.service/memory.kmem.limit_in_bytes
+   9223372036854771712
+
+>>>> Similarly, what happens to unprivileged users if kmemcg was not configured into the
+>>>> kernel or has been disabled?
+>>>
+>>> Well, I don't think we can address it. Memcg-based memory accounting requires
+>>> enabled memory cgroups, a properly configured cgroup tree and also the kernel
+>>> memory accounting turned on to function properly.
+>>> Because we at Facebook are using cgroup for the memory accounting and control
+>>> everywhere, I might be biased. If there are real !memcg systems which are
+>>> actively using non-privileged bpf, we should keep the old system in place
+>>> and make it optional, so everyone can choose between having both accounting
+>>> systems or just the new one. Or we can disable the rlimit-based accounting
+>>> for root. But eliminating it completely looks so much nicer to me.
+>>
+>> Eliminating it entirely feels better indeed. Another option could be that BPF kconfig
+>> would select memcg, so it's always built with it. Perhaps that is an acceptable tradeoff.
+> 
+> But wouldn't it limit the usage of bpf on embedded devices?
+> Where memory cgroups are probably not used, but bpf still can be useful for tracing,
+> for example.
+> 
+> Adding this build dependency doesn't really guarantee anything (e.g. cgroupfs
+> can be simple not mounted on the system), so I'm not sure if we really need it.
+
+Argh, true as well. :/ Is there some fallback accounting/limitation that could be done
+either explicit or ideally hidden via __GFP_ACCOUNT for unprivileged? We still need to
+prevent unprivileged users to easily cause OOM damage in those situations, too.
+
+Thanks,
+Daniel
