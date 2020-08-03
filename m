@@ -2,58 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591DE23ADD5
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 21:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EEF23AFD8
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 23:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgHCT67 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 15:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728296AbgHCT67 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 15:58:59 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70633207DF;
-        Mon,  3 Aug 2020 19:58:55 +0000 (UTC)
-Date:   Mon, 3 Aug 2020 15:58:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] kprobes: fix NULL pointer dereference at
- kprobe_ftrace_handler
-Message-ID: <20200803155852.022ef199@oasis.local.home>
-In-Reply-To: <20200803235042.6bacaf3eb53b7ab831f4edd3@kernel.org>
-References: <20200728064536.24405-1-songmuchun@bytedance.com>
-        <CAMZfGtUDmQgDySu7OSBNYv5y2_QJfzDcVeYG2eY6-1xYq+t1Uw@mail.gmail.com>
-        <20200803235042.6bacaf3eb53b7ab831f4edd3@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726725AbgHCVzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 17:55:37 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60012 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgHCVzg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 17:55:36 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2iQg-0001sR-Pa; Mon, 03 Aug 2020 23:55:34 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k2iQg-000PXH-Jb; Mon, 03 Aug 2020 23:55:34 +0200
+Subject: Re: [PATCH bpf-next v6 0/2] bpf: cgroup skb improvements for
+ bpf_prog_test_run
+To:     Dmitry Yakunin <zeil@yandex-team.ru>, alexei.starovoitov@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     eric.dumazet@gmail.com, sdf@google.com
+References: <20200803090545.82046-1-zeil@yandex-team.ru>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a980acba-03cf-b3c3-7f49-20740bcdeb08@iogearbox.net>
+Date:   Mon, 3 Aug 2020 23:55:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200803090545.82046-1-zeil@yandex-team.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25893/Mon Aug  3 17:01:47 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 3 Aug 2020 23:50:42 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Nice catch!
+On 8/3/20 11:05 AM, Dmitry Yakunin wrote:
+> This patchset contains some improvements for testing cgroup/skb programs
+> through BPF_PROG_TEST_RUN command.
 > 
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> v2:
+>    - fix build without CONFIG_CGROUP_BPF (kernel test robot <lkp@intel.com>)
 > 
-> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
-> Cc: stable@vger.kernel.org
+> v3:
+>    - fix build without CONFIG_IPV6 (kernel test robot <lkp@intel.com>)
+> 
+> v4:
+>    - remove cgroup storage related commits for future rework (Daniel Borkmann)
+> 
+> v5:
+>    - check skb length before access to inet headers (Eric Dumazet)
+> 
+> v6:
+>    - do not use pskb_may_pull() in skb length checking (Alexei Starovoitov)
+> 
+> Dmitry Yakunin (2):
+>    bpf: setup socket family and addresses in bpf_prog_test_run_skb
+>    bpf: allow to specify ifindex for skb in bpf_prog_test_run_skb
+> 
+>   net/bpf/test_run.c                               | 39 ++++++++++++++++++++++--
+>   tools/testing/selftests/bpf/prog_tests/skb_ctx.c |  5 +++
+>   2 files changed, 42 insertions(+), 2 deletions(-)
+> 
 
-Thanks Masami,
-
-I'll add this to my queue for the merge window.
-
--- Steve
+Looks good, applied, thanks!
