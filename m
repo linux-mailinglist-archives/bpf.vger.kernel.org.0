@@ -2,89 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E3023A97E
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 17:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395CE23A99A
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 17:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgHCPgg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 11:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S1727856AbgHCPl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 11:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgHCPgg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 11:36:36 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6BDC06174A;
-        Mon,  3 Aug 2020 08:36:35 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l6so35485425qkc.6;
-        Mon, 03 Aug 2020 08:36:35 -0700 (PDT)
+        with ESMTP id S1727849AbgHCPl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 11:41:57 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FA3C061757
+        for <bpf@vger.kernel.org>; Mon,  3 Aug 2020 08:41:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id 88so34625742wrh.3
+        for <bpf@vger.kernel.org>; Mon, 03 Aug 2020 08:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nvWJip6U44QszLIikVERj3UX67+D3C36RfLEv+lWO9I=;
-        b=TSPOSRkfgYG1NThwdebAyP9AAu29x7aWvlPBL1vv9dEELf5VPUpIDA3wYwnpYsnnoW
-         PWLox5ac3eWL6GZHWqVw7b8EVPBJKbo4S6+QxVUErZq3iprdOR2a2BfrvS44BfYnSzv0
-         wBgDvnEhJwj0d9I0HmETM240/JYl3zLRi9p1QiL2C8qXxw+ubwii+SncWSmp5bOxsTWm
-         js+yQIX0CzWWuAfOEQAMNLr2ODVvXNB+HiU5H8FfB1Mfv7emjK9l98WaANtbYhYTdV3w
-         uaNq9QydhvN7WJEIT+0jgzFdabqHPDSJgh/idg3rwsn4XXCa+Q/MLlsL6tgBro1O2o2d
-         lt6g==
+        d=chromium.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zDbpSdI+Kg7J21FMtDaptpRpDHvK4QQHCXQIzqF2Kt8=;
+        b=h3lU+1oxPPOe5Swh2bMYvJ8QZyr2RAeEDsNKI3Wl0DqmhQRbEmjGM9H9UUkrmZjOdw
+         l/rSdNWDp4v0+B7g2+pXgW2Wx8kp2vICMRLuNoWtWfNrzS7HUjIjvcdffOBXILgAYOgO
+         ELENyyZDMqP+Xc8OTSYTHH03K5WrobUBwa/AA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nvWJip6U44QszLIikVERj3UX67+D3C36RfLEv+lWO9I=;
-        b=akmNCItrPiGIM/8AIaqbsEukGmJ+GEQjU1JvzIi6gz48vUlZVhLru7ZJHOICr6PFSa
-         2yQulcV/Rq4CSOkm0xAfo4YWXjIVwG5t8bDipdUNCYZQzuMa/mjiNGRNZwWfBjjB2LX6
-         7gk5/pEQGU5oW8W12YJfrrgdTP2TMzvzGQLe48o0BnTZBZdjMWHNzpiO1nzepgQF74pN
-         N8d9L3YVb3HzTga7kuZXUM51Petk5q+JMxuOZoLZKBqZPAMb/Ifqx/ZMpYxDioimiILd
-         ykodTVFD1/wXZjGSLQxjidU30XFBJUIRtYGxUiL6Ppa3Sdslowm2muEi0uqn8jNAJZOx
-         wBbg==
-X-Gm-Message-State: AOAM530aYBWzrVJFG1Zf1A2EzcadUTDCU6gBRNlt4I5GOa+KXGryEVo2
-        JTUtzC0wf+t4IzXeWy4Rcq4=
-X-Google-Smtp-Source: ABdhPJzZJ/lKYEBklmX6unXV/fucqAjFtSQL7QAbbM2UZ2PNFH8VHEvaab+EHUJa0I72CsLmrgdhmQ==
-X-Received: by 2002:a37:553:: with SMTP id 80mr15924893qkf.291.1596468995065;
-        Mon, 03 Aug 2020 08:36:35 -0700 (PDT)
-Received: from supreme ([2804:14c:1a1:217b:9469:41a3:f900:755c])
-        by smtp.gmail.com with ESMTPSA id u37sm23271753qtj.47.2020.08.03.08.36.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 08:36:34 -0700 (PDT)
-Date:   Mon, 3 Aug 2020 12:36:30 -0300
-From:   Rodrigo Madera <rodrigo.madera@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net] net/bpfilter: initialize pos in
- __bpfilter_process_sockopt
-Message-ID: <20200803153630.GA2809@supreme>
-References: <20200730160900.187157-1-hch@lst.de>
- <20200730161303.erzgrhqsgc77d4ny@wittgenstein>
- <03954b8f-0db7-427b-cfd6-7146da9b5466@iogearbox.net>
- <20200801194846.dxmvg5fmg67nuhwy@ast-mbp.dhcp.thefacebook.com>
- <c166831a-d506-3a4e-80ed-f0474079770d@iogearbox.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zDbpSdI+Kg7J21FMtDaptpRpDHvK4QQHCXQIzqF2Kt8=;
+        b=annIBYEV5VGFNbX1mPm31KhTOfdd4EWJjfdIxf2vAOb2szyK5DaDheFwXR0XEN5Ln5
+         ZsWEfW8NQR+8rrvXPKz+u6KWXuPfansI75yE/PJoX+10+eoxWC/XdNrIQNdIBrRM7pq/
+         5J3Ngn9s3YfnisamL2AXS14mG8Ca/xoyqlGY0rKa7VsAeBp78fndP3Vg/R5KJ4nbkcgf
+         K4P3mX6P0MzyRsn+KXv/eqhHkvX1bTZXzNl+rdTyJ2nQrl8ZkQzW1LIQTg9hTCYSf9LN
+         Gxjw38K4B0UEBSab4WdM0B2cBNMhLPdWUbz0NSiSFDUTl6pbaQKv6KUSh0JmT11IFjsN
+         ly2A==
+X-Gm-Message-State: AOAM532fg1RenR6UOkRkuLlMZcCYhs3ktDyrKJWj+CRPNYSp0kW/uCm+
+        iwSrxuHiPlNd/5yjNdT4WE4Yew==
+X-Google-Smtp-Source: ABdhPJxpsj//aPwb+f5tDc2RkKT8w2hW8MyYJ8torm6jn/JP7wErdFoQ472ZVtlUEzpAdIldlnSmig==
+X-Received: by 2002:adf:edd0:: with SMTP id v16mr17070883wro.271.1596469315419;
+        Mon, 03 Aug 2020 08:41:55 -0700 (PDT)
+Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id q4sm25807370wme.31.2020.08.03.08.41.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2020 08:41:54 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v7 5/7] bpf: Implement bpf_local_storage for
+ inodes
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200730140716.404558-1-kpsingh@chromium.org>
+ <20200730140716.404558-6-kpsingh@chromium.org>
+ <20200731010822.fctk5lawnr3p7blf@kafai-mbp.dhcp.thefacebook.com>
+ <adbfc73e-bd32-d9ba-4dab-4ccc39b40fdd@chromium.org>
+ <20200731190226.6ugmk6cnl2yortgt@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Message-ID: <c376c46c-f8e9-8a4c-3f81-300faddac831@chromium.org>
+Date:   Mon, 3 Aug 2020 17:41:54 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c166831a-d506-3a4e-80ed-f0474079770d@iogearbox.net>
+In-Reply-To: <20200731190226.6ugmk6cnl2yortgt@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 03, 2020 at 04:56:35PM +0200, Daniel Borkmann wrote:
-> On 8/1/20 9:48 PM, Alexei Starovoitov wrote:
+
+
+On 31.07.20 21:02, Martin KaFai Lau wrote:
+> On Fri, Jul 31, 2020 at 02:08:55PM +0200, KP Singh wrote:
+> [ ... ]
+>>>> +const struct bpf_map_ops inode_storage_map_ops = {
+
+[...]
+
+>>
+>> btf  dump file /sys/kernel/btf/vmlinux | grep "STRUCT 'inode'"
+>> "[915] STRUCT 'inode' size=984 vlen=48
+>>
+>> So it seems like btf_id[0] and btf_id[1] are set to the BTF ID
+>> for inode. Now I think this might just be a coincidence as
+>> the next helper (bpf_inode_storage_delete) 
+>> also has a BTF argument of type inode.
+> It seems the next BTF_ID_LIST(bpf_inode_storage_delete_btf_ids)
+> is not needed because they are the same.  I think one
+> BTF_ID_LIST(bpf_inode_btf_ids) can be used for both helpers.
 > 
-> Several folks reported that with v5.8-rc kernels their console is spammed with
-> 'bpfilter: write fail' messages [0]. Given this affected the 5.8 release and
-> the fix was a one-line change, it felt appropriate to route it there. Why was
-> a4fa458950b4 not pushed into bpf tree given it was affected there too? Either
-> way, we can undo the double pos assignment upon tree sync..
 
-Just as a side note, please note it was more than spamming on the console.
+Cool, yeah. I have fixed it and also for sock helpers. Will
+send a new series out.
 
-It prevented the subsystem from working at all.
+- KP
 
-Best regards,
-Madera
+>>
+>> and sure enough if I call:
+>>
+>> bpf_inode_storage_delete from my selftests program, 
+>> it does not load:
 
+[...]
+
+>> ./test_progs -t test_local_storage
+>> [   20.577223] btf_ids[0]=0
+>> [   20.577702] btf_ids[1]=915
+>>
+>> Thanks for noticing this! 
+>>
+>> - KP
+>>
+>>>
+>>>> +
+>>>> +const struct bpf_func_proto bpf_inode_storage_get_proto = {
+>>>> +	.func		= bpf_inode_storage_get,
+>>>> +	.gpl_only	= false,
+>>>> +	.ret_type	= RET_PTR_TO_MAP_VALUE_OR_NULL,
+>>>> +	.arg1_type	= ARG_CONST_MAP_PTR,
+>>>> +	.arg2_type	= ARG_PTR_TO_BTF_ID,
+>>>> +	.arg3_type	= ARG_PTR_TO_MAP_VALUE_OR_NULL,
+>>>> +	.arg4_type	= ARG_ANYTHING,
+>>>> +	.btf_id		= bpf_inode_storage_get_btf_ids,
+>>>> +};
+>>>> +
+>>>> +BTF_ID_LIST(bpf_inode_storage_delete_btf_ids)
+>>>> +BTF_ID(struct, inode)
+>>>> +
+>>>> +const struct bpf_func_proto bpf_inode_storage_delete_proto = {
+>>>> +	.func		= bpf_inode_storage_delete,
+>>>> +	.gpl_only	= false,
+>>>> +	.ret_type	= RET_INTEGER,
+>>>> +	.arg1_type	= ARG_CONST_MAP_PTR,
+>>>> +	.arg2_type	= ARG_PTR_TO_BTF_ID,
+>>>> +	.btf_id		= bpf_inode_storage_delete_btf_ids,
+>>>> +};
