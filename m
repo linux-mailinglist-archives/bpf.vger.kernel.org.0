@@ -2,124 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48E0239F5F
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 08:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6AA239F9A
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 08:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgHCGBZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 02:01:25 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30568 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726057AbgHCGBZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 02:01:25 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0735ko3M011254;
-        Sun, 2 Aug 2020 23:01:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=BrRazzPa1u3j1t63sY6euVbj1Cksf2gbCIPI0iZuapeO2HXgIAuBezbQ4arYsbuIIK66
- vgB21PI+ynK8lsD1RR/0noOnCTNMZ9VY3Rwv497YezyhHufbENzjThKPo8krm71YLn8V
- zWLwAfUS4d3I0gwgU43zP2CQyYcRXK88Po4= 
+        id S1727787AbgHCGVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 02:21:33 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49170 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725965AbgHCGVc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 02:21:32 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0736F7Vb010086;
+        Sun, 2 Aug 2020 23:21:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=LF61cqba1Zy49YQAZFaPiE3fm8U/mHzjXSiQ8K12Gvs=;
+ b=IqJeDK1w8cNtwWuxkgJIOiq4N4lM4muUJSvEmmKRdQW6t9NrnoWLMEW5x9IQILVP5xkT
+ 5miuCKsN760BwzOC2Ehzao1UpBzfo6h9CruW6ta0N4Q6VK4F1s+b/PGBBt6xSi02vUm6
+ iYVrRegI7VFukSEcNkukO1dBleT0xFEneBg= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32nr3btyfj-1
+        by mx0a-00082601.pphosted.com with ESMTP id 32n81jddk7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Aug 2020 23:01:06 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Sun, 02 Aug 2020 23:21:18 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 2 Aug 2020 23:01:05 -0700
+ 15.1.1979.3; Sun, 2 Aug 2020 23:21:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XwA5pVYH6MWThBVE7k3gpmbKNGctimlOQEpXpkgobNnWEcE/ja2AseZ0VP9AFhfqDmOKyk0ISAjaadJkyWBaAgqg6HHK7EMOHBA9vowMwUC2JhOJfEkDd870b2a3v8qzAnwXqntU05v2ZYq6Mcve5t7hvoY/N4l9KAkwwjlpzvOYkyVihSI7Mo/3WbN3k2Hewe1Zvtm+kfL2Mxv6YmqG4PmUmxypZMNPd6+X0XQW2HftVXgxF+xkm2J1y0YgXpeiV3mfih5DOndpoAeppzbWm+7CO3jKayP8diJ2AXsMyFKN5lwk6JvPWQkYIgpKSKWSu8HdJ5boNLX7lB2nSdUrmA==
+ b=lvEmeznRjC53nVvEbK2Px7uNydo2FUhL3KyBj8jzwG705lqFhLrB3a8/lc1aM9y3AvWBXvLXzfbnNDVEnltebblJFZffuiBcKeMDT/2XZHxgVQjt7IpOLVkOUi/EEWqoku1e9nWEtrdm+Cf/YW9WHS8CFUajMU9ZYyKqYg31dE79VUNQKSQQSi4SNppfIhD3n2aRTry1P5XLe2oW88uDRn+nAAgaof1zS8ALxG2LyP5dwZYTP3Ieu0cTUFEUz9GJggqOwG1thNVKT7tSPMd/whmlL9FYw8LV9/Q/W/TJ6Fh8ulpd/oh5sHQy8TQTIawyaDmM5VyjHUngaz/8jKB4fg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=Xy1eknf0IkOMP3M5p/2XbwbL+H+6S6ls5rnqPcVsZUow+FXHC+1i1fJYgwS1+2zQ+y0gyv0Efsi7gwiany+C80UexA99IY9Ne3SMwsSTYS2vvkuL/SN1fGHbqkAg2155cjmQxkRZQ39SyIkJYrYSbeE8A7SwrHMEnPwT1bagdyKlje2T23q9w1rPwko/4bFeunGF+MZItar9rv6jUNT5E/fVa2XiY76AybbwKe9oRtVG8djFZXstx39zfwoYo5YMijE01OrnVVmF2loGKwlPYwskJ+7uiT+5hdvY1Iu1sidP/TXcVYPe5WLUNhR30r5vqILY8sbZ/eHcdEhTI0y30g==
+ bh=LF61cqba1Zy49YQAZFaPiE3fm8U/mHzjXSiQ8K12Gvs=;
+ b=FkZ0euoLMU2bxIqFUBwCYFOpMt9SAzeKaHjNs29l/bhntmUR7BP341R+s8aeB1uc87h/cI8CWd17X1Lt6Qfh34PKFut4o6kJBCxvSMTjfzswIVLv/CDjLRhRXhy3bUU2AqtOqiJpEX0du05Hp7SiMDjbB5dcRdnFTyYcpFGSxIRB7txC/pwGxhqwPaUbV34kBdjENHF1JFJOe/1E+ChUjz8fjwOtbDb4loX/0UdeT+uByHZPxUhOrs6FFRTH+cD32PEu2RDhEgjfi1nWH8wt9p8VYbUeQf6XqqNSLo6VFpWqZuyHVIEjycIvNjz5oPvJ8aYoZPADcWB1FObxNJcS9Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=soj8mlJoHQsabgytAZptfXczgkx/1DcYjmf8q5qys3w=;
- b=JW8UrbqWUzkQXv07i9gc82q+CjbZPLli8F7bKRwe1+508hT7a/W44DSkJTZ9IiRWkxE8O9F2cAhoQqvZQbti24KUBLHkxvydytoR+bK/Z8lslAlyyIJav6ZOR58wMndC99LorWTEslgEeL7PkypIdQHVbrZ9/qaPiE1SqED/HuA=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3464.namprd15.prod.outlook.com (2603:10b6:a03:10a::33) with
+ bh=LF61cqba1Zy49YQAZFaPiE3fm8U/mHzjXSiQ8K12Gvs=;
+ b=j8cFkl7mhtij81CuoRpyd0t2jKk7bl3KocBuSAfx/eWDApmmhbZGDcIpmDALLmwgXGACHBllAE3YMYgDWu1xnOGk75biO9l0JsNXwWgE17fU1aX9J8frr4i0MhTgy+Hs9RZpgN4F7wJVWJGJSmbPx9Ui3HQz+DeaJW2iRilJZa4=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3510.namprd15.prod.outlook.com (2603:10b6:a03:112::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Mon, 3 Aug
- 2020 06:01:04 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
- 06:01:03 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] kprobes: fix NULL pointer dereference at
- kprobe_ftrace_handler
-Thread-Topic: [PATCH] kprobes: fix NULL pointer dereference at
- kprobe_ftrace_handler
-Thread-Index: AQHWZKq+cwuqZwgf4EmOpIx4quozWqkl7ZqA
-Date:   Mon, 3 Aug 2020 06:01:03 +0000
-Message-ID: <5555B378-4326-451C-9771-714D5A345421@fb.com>
-References: <20200728064536.24405-1-songmuchun@bytedance.com>
-In-Reply-To: <20200728064536.24405-1-songmuchun@bytedance.com>
-Accept-Language: en-US
+ 2020 06:21:16 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
+ 06:21:16 +0000
+Subject: Re: [PATCH bpf-next 1/2] bpf: change uapi for bpf iterator map
+ elements
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200802042126.2119783-1-yhs@fb.com>
+ <20200802042126.2119843-1-yhs@fb.com>
+ <CAEf4BzbaRXHpZ5b_6rojnk2dQxLFCOEwtGjNExdg5FEWadF+9g@mail.gmail.com>
+ <bb01225b-d4a4-c76b-5e1f-3dc37135f637@fb.com>
+ <CAEf4Bzbr--=tbmLqrgbtA4ERy8KmCYvBDfP5PciXx9x3yWpmsQ@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <b9cbedf6-e407-51d7-53f5-fae7b91905e8@fb.com>
+Date:   Sun, 2 Aug 2020 23:21:13 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
+In-Reply-To: <CAEf4Bzbr--=tbmLqrgbtA4ERy8KmCYvBDfP5PciXx9x3yWpmsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:8f7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 634c5544-f906-4799-85cd-08d837729b09
-x-ms-traffictypediagnostic: BYAPR15MB3464:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3464019A18F546DBA65E1ECDB34D0@BYAPR15MB3464.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5g+C5+vbpLN9UoHHHT07lWqld4BSFJsjiIlWPc8oRAc+d/Ls80meWmr5aeEoHP5l3wZaY3kMC3WIykBy4q1Vk3vLd37PHykTsCjqtcVRU+rOfLcjLVEHyey/aOvN3B81CcWwg7HmItpXmh0f9maLzui8pZIrOgdW092NwaJC5dzwS8d51FC3UFR6EpozhuItxsfbB/WZGwbdr2yBLXVko+hgrRjWceuOkV8GuzvpImcugnfIVpLP2cK7VYJWmyOaBBe2nd5l+tOkom5hZwV5dWp9fMnWdg3VtI4u8hSfRSnAYd6cZYhGT/UdH2js7t6p0uOMj+GgfujL0YKOokA3Qg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(396003)(346002)(136003)(376002)(33656002)(66476007)(66556008)(64756008)(66946007)(66446008)(6512007)(5660300002)(6486002)(2616005)(83380400001)(4326008)(36756003)(7416002)(6916009)(316002)(76116006)(8936002)(6506007)(53546011)(8676002)(54906003)(2906002)(478600001)(86362001)(71200400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: o2zM+pH7HYv4wV5oLV7sHa/xCya8vOgFSNSRqgSE4DMGMLMAtfazzcU4RH19pah9OqgS/pyF+gmmxeM0fxubX4nIJ9ZgddXh4FcrbjwQkzUTaASwJAYDuATscXRJyD/o7x9FPbXxknGYPnfgIGqqRNjUSXqWiXIGiyyw3NIlgMVIVV84PfmH0Nv75f9EagZfRxoQCUAhnsXW8oKFzFHsyniooihft3RRGe6SsfWXTACQXExXdLOKf+vSM2AdtKoN7IdmScalwYwf4J0fxHhcEUHaWpOUL39Qz6P/WBNFui382ooGQco0mil5SZWBdJQ49Hb7sdlaukBOaJeKq9y6z/9/BVjTbCfJji0vL8I7IQbXpuNMGmAZbm0XxkkZYsHyOLrjAeqcG0zs6bFSpXokFBU1hzDP24nsEJeh/Zy9mU90wtT9yFm5eLGuAjhIxO1DvWgfexFZnUJEa/IN1l4nKlxM+4lnzrv8gZfchOz3sPLu0q/d0hCd58bTubWLOD/10T+Qj/ryntmVJHiLSFAfONs5+hJdInGH8aHpjMBo8KJPrPpmiQxAido1QQLb6ZUMwcdUzYJEkBlZWGY6h7FgrG1/bYyWIG0uYnQ5mpfqJNPCpF4XiK/FvIe1Az6n+MJvdF/uHzWhM17z9sFScf1SrRZjyHzFYtIHcdp1x4l5bPE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BC74A5F2522D1247BCC8386205B4FA32@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0033.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::46) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1092] (2620:10d:c090:400::5:c987) by BY5PR17CA0033.namprd17.prod.outlook.com (2603:10b6:a03:1b8::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17 via Frontend Transport; Mon, 3 Aug 2020 06:21:14 +0000
+X-Originating-IP: [2620:10d:c090:400::5:c987]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a9600211-a5af-4a2f-aa66-08d837756ce0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3510:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3510D750820512B1E3C31291D34D0@BYAPR15MB3510.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oU5rF8XlCRYvoIVRIsUGt8OgaJgQo9yu2qafHHt0ELlBIwVayQP864emYiZ/z2PVSfYzxIpT5UvBBcNUdb2Xeyn5/5wd9csI/Gw3sVDRzsAE90VgE88sFnuVuWG9b/tuNBJINsGcKKrE549ieypIlXsVBJWGRiiesF3q/PZvtqF1B32FcmwMRbApXgr3KEOazhUat2eRYhhgNTXbks+HXG0UHDCjaOi5MwOir1GBlDexVQLaUF2daTN98+SyysEKFz2B9UFdZD7b9ALcz+IYrRUv2cKLSe4MPsYPvj3Ueej4wDb6pncqcrBjLWASIt6PW/QR7xfK8kjGvBtZit2n8iZQbWnI8oZwjJI8ugp+U0FIPOAouyJw5iTP5ohxhbfH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(376002)(346002)(39860400002)(366004)(6916009)(66946007)(8936002)(66556008)(8676002)(2616005)(66476007)(478600001)(36756003)(4326008)(86362001)(16526019)(6486002)(2906002)(5660300002)(54906003)(316002)(31686004)(53546011)(186003)(52116002)(31696002)(83380400001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: LZcf0+FypoDvF8r+V82FiKikZ+Er6H9eCQ87Bz/SP1w9zTicLDBRuuK8pzfb/owEvqkGyxKT/IqwYdIdOYCfOwLncPBjluiXJeEp4VfIL2j10TghiCs1dnf8PN5kKXWkar84hZtrrw1qQKr0ezNAInWzNIb8YsoVUfQ6M6mkK4w3tbD0e6oe6C3MQ1WUw0xGtPLW48GLH1AWF23UkCOKlwEe3Q0SbMW1K0dKN59ZqmXA6ucqwVK/Xh7/Fqw/R2mSCZ/Q1wszS7jbYn8mYo10ILOZuglkMIDglQs+yi5bUOSouXlVHLqPSw57b+IjkRDKzwSBruHaxitV1XIf6Kh/vEq6OXTu9nx89sPdTIY1DW/MBfXnJE01cD7amz06MEncyS3yD0CzYo6wqb2/AB/RwME3J8xHNysQvYb0/ZPyAUeQgGxFQexudK86cWFzS1EBUqbHHgXPxUVSqoSYGXdM8/P5U4CFYHPQMtj5N+c5Xwqduaq7glESbivD9R9NqevyDclAMnYIUqSMNuMV/FB7CRtX7vDuw+LKQ00+XAlOukO2Nqpa91aJ6osIugyddSx01L+cBN7uatF/UY9ZS0OO2XgDxfutmGe4QX2eUe9ny8ZoOwVdzUexoNmhAafnwjRVU0YUUduWYHOKjPASh9GZa8vLD5Oe+WMUGd++YRTYgAE=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9600211-a5af-4a2f-aa66-08d837756ce0
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 634c5544-f906-4799-85cd-08d837729b09
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2020 06:01:03.7558
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2020 06:21:15.9034
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 79Z+KXGR312KXqBtFlitlwrZTxS/HEvNONXO34Am7pVkN4+BKC4KfVA73wWP35gCgF2gHmkg2KoxHYzVOLXicA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3464
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WmeQPBoQhIhgEAVUKLPwvpubR7W5+doyRvWeGZZ2VzkbTThSQ50mLRM3CfShYwfi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3510
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-03_04:2020-07-31,2020-08-03 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 impostorscore=0
- mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
- clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008030043
+ impostorscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008030045
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -128,96 +119,155 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Jul 27, 2020, at 11:45 PM, Muchun Song <songmuchun@bytedance.com> wrot=
-e:
->=20
-> We found a case of kernel panic on our server. The stack trace is as
-> follows(omit some irrelevant information):
->=20
->  BUG: kernel NULL pointer dereference, address: 0000000000000080
->  RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
->  RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
->  RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
->  RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
->  RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
->  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->  R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  Call Trace:
->   <IRQ>
->   ftrace_ops_assist_func+0x56/0xe0
->   ftrace_call+0x5/0x34
->   tcpa_statistic_send+0x5/0x130 [ttcp_engine]
->=20
-> The tcpa_statistic_send is the function being kprobed. After analysis,
-> the root cause is that the fourth parameter regs of kprobe_ftrace_handler
-> is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
->=20
->  crash> dis tcpa_statistic_send -r
->         <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
->=20
-> The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller=
-.
-> So it is reasonable that the fourth parameter regs of kprobe_ftrace_handl=
-er
-> is NULL. In theory, we should call the ftrace_regs_caller instead of the
-> ftrace_caller. After in-depth analysis, we found a reproducible path.
->=20
->  Writing a simple kernel module which starts a periodic timer. The
->  timer's handler is named 'kprobe_test_timer_handler'. The module
->  name is kprobe_test.ko.
->=20
->  1) insmod kprobe_test.ko
->  2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->  3) echo 0 > /proc/sys/kernel/ftrace_enabled
->  4) rmmod kprobe_test
->  5) stop step 2) kprobe
->  6) insmod kprobe_test.ko
->  7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
->=20
-> We mark the kprobe as GONE but not disarm the kprobe in the step 4).
-> The step 5) also do not disarm the kprobe when unregister kprobe. So
-> we do not remove the ip from the filter. In this case, when the module
-> loads again in the step 6), we will replace the code to ftrace_caller
-> via the ftrace_module_enable(). When we register kprobe again, we will
-> not replace ftrace_caller to ftrace_regs_caller because the ftrace is
-> disabled in the step 3). So the step 7) will trigger kernel panic. Fix
-> this problem by disarming the kprobe when the module is going away.
->=20
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+On 8/2/20 10:11 PM, Andrii Nakryiko wrote:
+> On Sun, Aug 2, 2020 at 7:23 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 8/2/20 6:25 PM, Andrii Nakryiko wrote:
+>>> On Sat, Aug 1, 2020 at 9:22 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>> Commit a5cbe05a6673 ("bpf: Implement bpf iterator for
+>>>> map elements") added bpf iterator support for
+>>>> map elements. The map element bpf iterator requires
+>>>> info to identify a particular map. In the above
+>>>> commit, the attr->link_create.target_fd is used
+>>>> to carry map_fd and an enum bpf_iter_link_info
+>>>> is added to uapi to specify the target_fd actually
+>>>> representing a map_fd:
+>>>>       enum bpf_iter_link_info {
+>>>>           BPF_ITER_LINK_UNSPEC = 0,
+>>>>           BPF_ITER_LINK_MAP_FD = 1,
+>>>>
+>>>>           MAX_BPF_ITER_LINK_INFO,
+>>>>       };
+>>>>
+>>>> This is an extensible approach as we can grow
+>>>> enumerator for pid, cgroup_id, etc. and we can
+>>>> unionize target_fd for pid, cgroup_id, etc.
+>>>> But in the future, there are chances that
+>>>> more complex customization may happen, e.g.,
+>>>> for tasks, it could be filtered based on
+>>>> both cgroup_id and user_id.
+>>>>
+>>>> This patch changed the uapi to have fields
+>>>>           __aligned_u64   iter_info;
+>>>>           __u32           iter_info_len;
+>>>> for additional iter_info for link_create.
+>>>> The iter_info is defined as
+>>>>           union bpf_iter_link_info {
+>>>>                   struct {
+>>>>                           __u32   map_fd;
+>>>>                   } map;
+>>>>           };
+>>>>
+>>>> So future extension for additional customization
+>>>> will be easier. The bpf_iter_link_info will be
+>>>> passed to target callback to validate and generic
+>>>> bpf_iter framework does not need to deal it any
+>>>> more.
+>>>>
+>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>>> ---
+>>>>    include/linux/bpf.h            | 10 ++++---
+>>>>    include/uapi/linux/bpf.h       | 15 +++++-----
+>>>>    kernel/bpf/bpf_iter.c          | 52 +++++++++++++++-------------------
+>>>>    kernel/bpf/map_iter.c          | 37 ++++++++++++++++++------
+>>>>    kernel/bpf/syscall.c           |  2 +-
+>>>>    net/core/bpf_sk_storage.c      | 37 ++++++++++++++++++------
+>>>>    tools/include/uapi/linux/bpf.h | 15 +++++-----
+>>>>    7 files changed, 104 insertions(+), 64 deletions(-)
+>>>>
+>>>
+>>> [...]
+>>>
+>>>>    int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>>>    {
+>>>> +       union bpf_iter_link_info __user *ulinfo;
+>>>>           struct bpf_link_primer link_primer;
+>>>>           struct bpf_iter_target_info *tinfo;
+>>>> -       struct bpf_iter_aux_info aux = {};
+>>>> +       union bpf_iter_link_info linfo;
+>>>>           struct bpf_iter_link *link;
+>>>> -       u32 prog_btf_id, target_fd;
+>>>> +       u32 prog_btf_id, linfo_len;
+>>>>           bool existed = false;
+>>>> -       struct bpf_map *map;
+>>>>           int err;
+>>>>
+>>>> +       memset(&linfo, 0, sizeof(union bpf_iter_link_info));
+>>>> +
+>>>> +       ulinfo = u64_to_user_ptr(attr->link_create.iter_info);
+>>>> +       linfo_len = attr->link_create.iter_info_len;
+>>>> +       if (ulinfo && linfo_len) {
+>>>
+>>> We probably want to be more strict here: if either pointer or len is
+>>> non-zero, both should be present and valid. Otherwise we can have
+>>> garbage in iter_info, as long as iter_info_len is zero.
+>>
+>> yes, it is possible iter_info_len = 0 and iter_info is not null and
+>> if this happens, iter_info will not be examined.
+>>
+>> in kernel, we have places this is handled similarly. For example,
+>> for cgroup bpf_prog query.
+>>
+>> kernel/bpf/cgroup.c, function __cgroup_bpf_query
+>>
+>>     __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+>>     ...
+>>     if (attr->query.prog_cnt == 0 || !prog_ids || !cnt)
+>>       return 0;
+>>
+>> In the above case, it is possible prog_cnt = 0 and prog_ids != NULL,
+>> or prog_ids == NULL and prog_cnt != 0, and we won't return error
+>> to user space.
+>>
+>> Not 100% sure whether we have convention here or not.
+> 
+> I don't know either, but I'd assume that we didn't think about 100%
+> strictness when originally implementing this. So I'd go with a very
+> strict check for this new functionality.
 
-Looks good.=20
+Agreed. This should be fine as the functionality is new.
 
-Acked-by: Song Liu <songliubraving@fb.com>
-
-> ---
-> kernel/kprobes.c | 7 +++++++
-> 1 file changed, 7 insertions(+)
->=20
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 146c648eb943..503add629599 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2148,6 +2148,13 @@ static void kill_kprobe(struct kprobe *p)
-> 	 * the original probed function (which will be freed soon) any more.
-> 	 */
-> 	arch_remove_kprobe(p);
-> +
-> +	/*
-> +	 * The module is going away. We should disarm the kprobe which
-> +	 * is using ftrace.
-> +	 */
-> +	if (kprobe_ftrace(p))
-> +		disarm_kprobe_ftrace(p);
-> }
->=20
-> /* Disable one kprobe */
-> --=20
-> 2.11.0
->=20
-
+> 
+>>
+>>>
+>>>> +               err = bpf_check_uarg_tail_zero(ulinfo, sizeof(linfo),
+>>>> +                                              linfo_len);
+>>>> +               if (err)
+>>>> +                       return err;
+>>>> +               linfo_len = min_t(u32, linfo_len, sizeof(linfo));
+>>>> +               if (copy_from_user(&linfo, ulinfo, linfo_len))
+>>>> +                       return -EFAULT;
+>>>> +       }
+>>>> +
+>>>>           prog_btf_id = prog->aux->attach_btf_id;
+>>>>           mutex_lock(&targets_mutex);
+>>>>           list_for_each_entry(tinfo, &targets, list) {
+>>>> @@ -411,13 +425,6 @@ int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>>>           if (!existed)
+>>>>                   return -ENOENT;
+>>>>
+>>>> -       /* Make sure user supplied flags are target expected. */
+>>>> -       target_fd = attr->link_create.target_fd;
+>>>> -       if (attr->link_create.flags != tinfo->reg_info->req_linfo)
+>>>> -               return -EINVAL;
+>>>> -       if (!attr->link_create.flags && target_fd)
+>>>> -               return -EINVAL;
+>>>> -
+>>>
+>>> Please still ensure that no flags are specified.
+>>
+>> Make sense. I also need to ensure target_fd is 0 since it is not used
+>> any more.
+>>
+> 
+> yep, good catch
+> 
+>>>
+>>>
+>>>>           link = kzalloc(sizeof(*link), GFP_USER | __GFP_NOWARN);
+>>>>           if (!link)
+>>>>                   return -ENOMEM;
+[...]
