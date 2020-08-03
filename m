@@ -2,113 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE70F239D7E
-	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 04:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B2D239E0E
+	for <lists+bpf@lfdr.de>; Mon,  3 Aug 2020 06:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgHCCaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Aug 2020 22:30:21 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19448 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725820AbgHCCaV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 Aug 2020 22:30:21 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0732TVVf002816;
-        Sun, 2 Aug 2020 19:30:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Xm3TrpEP/jS2tWW6RXSqPi+H85/3E6x++xj4AxZedcw=;
- b=p491Tomn3emOzK4WcouUBcP1wf6C7R3+UbjfP9mOgzk2JPHyVCGvH26fodr4FK6lGtNO
- K9n6OXsoP1uqKe9Q5zA0nryu7ddux3HRVBWSVW6ief3jqAuEr6sWqOkcZLmY6cZgO1oe
- TOSBAQZQcNg1pyAHHAErZ2F/rq6h5ZIOBzc= 
+        id S1725992AbgHCEVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 00:21:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22502 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725924AbgHCEVo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 3 Aug 2020 00:21:44 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0734JusQ021436;
+        Sun, 2 Aug 2020 21:21:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=7QUfUHrRnEX2fFMQ6xPNgPgl31rTM/0GAHLap6TuO0g=;
+ b=RvgZE495z9k+knAtMLrJ1IQfWFbNXSSvtijkhCOS2pIMhtxQt/NPuGNIylBbiURJHJIV
+ WyJ7XJyeSHDhTAO7eUdrBr13S4dezFru6LWi90vTiwrq8FWbHaURurH1rHmgkfMQHYlr
+ J+y43p7Dtrt8SgvZzQzs7UgpIRvY/dzXg8c= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32n81fmxvn-1
+        by mx0a-00082601.pphosted.com with ESMTP id 32nrc92qrw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Aug 2020 19:30:07 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+        Sun, 02 Aug 2020 21:21:23 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 2 Aug 2020 19:30:05 -0700
+ 15.1.1979.3; Sun, 2 Aug 2020 21:21:22 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W+SmUtXFW9Zku/b1AxBB5N9xeu4ujyr6kQWSzLjt7v35m2gBDxHrC4wCkSbDVtVzJpsA8bNwISL8N2o79FZrTqUE6zzR6DTKaPCSqMp67MQx+9A2/XzXmOOc8VIouOohdvt8OVnwo5h66zqNrINbDG8HTxYFbceGLVGJ1HSEbnPSjTT1UFnis2EF8TrsRwQNc3oz1worazbHgcfKxH0j2AMcXrFxJjS4gJ3iVbFsyfIPlaZG+Avj2e7QkMi0Enw/SKTHB4NCrG5/RXOF4Kkam/kkihDP9+YvlrD1ubudH8ofDyAi8Pnd9DdHonnrmky3+nmDyAUaswceQbIY7FhHig==
+ b=kqFlWORK97W/3V6qlrMKhyzNpPHGc67LmstsuxvVK5M7T4pzdCmD7VmznhAXXVS8R2MB1zZc1plN4Rk3tHyycLB+qrD8VwGdXGhuwqXdhZigSYbm5/e+ClIrwrG+hThmqNqlAGQX+1Q/vUL/up6hNlUNa8P1uQEC3kmFc+V7Qr1i/+fJ3fDBHDZ1h3QirhfNefVgMoTXz4AVMSgz738ZxZd93BvBNGzja+48r69YTv0EDcchm8QPnkJMqtc1GU2Ng9FTKKX1bgqqYm4drcXEP943/LjfXCcGUf2kioa23Vrn/lPGk7gg/N5HnLggG1rV8Zs8pqeeWFQCk2scFVW6qA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xm3TrpEP/jS2tWW6RXSqPi+H85/3E6x++xj4AxZedcw=;
- b=TGAY+R+EnxxT3LxXIy9WVUB/BMgca+jW/FkwCtEg16H6o8gBl97p/WFiWwjGUeKV4DCFbhoiOjCR2j+HNOxpxZUFWimWgS+KD3e7nPKHF4PNrIfEm3P9qQC0pgbBBCYXBU27LenJrUnKpMw/tRjj/vYet0WWB9S9UuiINQUscDJyGl7ow/yAsKH8ZLW0zU4MOjBaLxPjjZnQzSSiFZcx7A3KczYiiE50i1EuHvY+r+ztBqzjeR7jlC2exFpOm6o8bK2pGTk+ljhi4h5h+T3S1wr3M6I73Jl5hkIW1ZDcpaeyW/dJ6yl26cCGIDGs6pJLl//15LCiTge+hNG3V4pX6w==
+ bh=7QUfUHrRnEX2fFMQ6xPNgPgl31rTM/0GAHLap6TuO0g=;
+ b=nMS6a+liycjWVk2huU1xMLMUnMgBvVB5EpT2dQooo0m+uVziAncChV3tuiskqkC/PXjAQOs5OAU9nttqlMhfYQlpn+82+YX8apb4c5AyQnxK/qN1T40poGqH771i8yvNzL9HzSSWTZj4tkEHXFPJEYietwill2A4RoVpZ6FIaPPO+jG9t/L5sDUHqfoHUmY++3fMG2BJKKIWLRavDxSgQfuVPrQdqRLgtu6dftz5EUI8QOVP6BnbVKQ0ZtKYxx5PqpzX7pLieEJur1qyKhTkhiKK4/WQxLBcPMTl99hsSU0Ku62dqG92RHkM7kmtqD7pQaD1Y960WQXAB28n+Sajuw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xm3TrpEP/jS2tWW6RXSqPi+H85/3E6x++xj4AxZedcw=;
- b=cVP1Sx4WKotnNwSboIelzmCkxnq66ytnTqPeH644Th5yA1d8ypzBm9XTTrLWH3lkJSxEiNjn7jEwR5t6zsha3VCixCafigZSKwlf+fTCQmb2x4r49ZTLMST2g+qlzVfMJC7rm9d0LsNRm3LByIIqbr0rHNBZTZT5sL5dv94saeQ=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3620.namprd15.prod.outlook.com (2603:10b6:a03:1f8::29) with
+ bh=7QUfUHrRnEX2fFMQ6xPNgPgl31rTM/0GAHLap6TuO0g=;
+ b=TqdnU0nF7EkJIn8E8etEKw8oy9zMGRr1sIFhV65I8HUffbk1VKQAjM1SvHJh9EbuqylhC6ynatw6rzGttEaWqNSPJu6KMIBQZ7WkOYZKsrIoXpzAH8prc3eKIXvqSIYB4LXCm+AwtSSyh9g1yuEL6H4LITLZCf0CvGAMOy7cnCc=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2886.namprd15.prod.outlook.com (2603:10b6:a03:f7::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Mon, 3 Aug
- 2020 02:30:04 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
- 02:30:04 +0000
-Subject: Re: [PATCH bpf-next 2/2] libbpf: support new uapi for map element bpf
- iterator
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Mon, 3 Aug
+ 2020 04:21:20 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
+ 04:21:20 +0000
+From:   Song Liu <songliubraving@fb.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+CC:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200802042126.2119783-1-yhs@fb.com>
- <20200802042127.2119901-1-yhs@fb.com>
- <CAEf4BzaeT1HULBE0dQULSF62Wm6=t49Dc8jjHVJ9Nt1noxeCtQ@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <bfed5f77-f64d-15f2-bbad-a1e6d9ddec0e@fb.com>
-Date:   Sun, 2 Aug 2020 19:30:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <CAEf4BzaeT1HULBE0dQULSF62Wm6=t49Dc8jjHVJ9Nt1noxeCtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
+Thread-Topic: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
+Thread-Index: AQHWZ+C4tQwFkmvi20aNhPcONSrEz6klnl6AgAAs84A=
+Date:   Mon, 3 Aug 2020 04:21:20 +0000
+Message-ID: <3B31DE6E-B128-48D7-91A9-84D51BDF205B@fb.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-3-songliubraving@fb.com>
+ <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0060.namprd02.prod.outlook.com
- (2603:10b6:a03:54::37) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:8f7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 35aac618-03c4-49b0-2192-08d83764ac9c
+x-ms-traffictypediagnostic: BYAPR15MB2886:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2886344173B7AF4EB888FE7DB34D0@BYAPR15MB2886.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Tj6I15YFlKMYuKWBXmaCUkkk6chR7JXCOw7V0TDhWraFy/bFUe8LsEHPZuGoxzT+qVORglkgqaRR2S4ekTtA+zZNa/wt76Mli3y9ftKWtyasL723CAsf7yVEZEj2BMsacb+jJWKDCAff9Hu7cCBgwjhYSH9tGIwRrtvoL35JeD8BYJtwxZYjCT2IOxvklo+KlBhm1t66Uz1XTtJMcafZ1hzCef+h0sMoS24/TQ4Wj84RXNXZv9RgAvvjkDOSj4ZgXkIkrx/Urc91iij7P7HGkpmE794Zwc+88oCYyDzh+Q5AKMthUbkGelRizVU3AkBDneD5y6gd8GZng3Kg9w1l7A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(376002)(366004)(346002)(136003)(6916009)(86362001)(316002)(6506007)(83380400001)(5660300002)(36756003)(8936002)(53546011)(186003)(2616005)(8676002)(478600001)(6486002)(71200400001)(2906002)(66446008)(4326008)(64756008)(66556008)(54906003)(76116006)(66946007)(33656002)(66476007)(6512007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Da9ER17DUEWUzAP9du4A1vkTZQbUw0CsOSw0ZEIoO8SE7pHIUvwK64393DITIj+FyQwj+dAwhM5AfGf1U+uEIkYCadg7nwqItqtEUMpeqMobsUBUYtCkUXPJsAEBE0ZFObuXKpB+P0q9VUaQl0wkkw+5jJRGSUCRLsrYbhZrToiqxwar30Q7qn1EndyLs03BQf0LxPfkzeiLcQwfVra5J8RBVfN59oOuXOk1MU7mKr4mZScn1kLDJFjG12a+ppk8FDt9YtKLuW/XFfJwXeHFbXAmibIC51hqHS91kbWzwoUGcDRyd5Yxbcj9VexYqPGx5pliR6aZ3qJnqEQuh5GGkvkDvBNtRJIFdxmuApYE866xDt5p9Ir3gZIzqdD1wnTdXIGilRYRvUkW+sseBV5VtjBGMJL5m5IQUZWsLGUHce2YKAkOVeIsJitgJhl+/z3xFpB8Y+ylZrS//tt57ZpyyuoWybluSdXXJaPMvF6K1F40TkGUKgnWighKw4e6XFuaULrDFAsW1AJi7Bxc3QdVjPNRm63PybScYGf5FM1wZk70pd73bkl9JJRcHMePtUfUlTgCrup6EibLBBYJhOinP9HTV6UFbb1U9Zf+kGpR/LnBKv2HZZFvk3OZNsGGYkyty6rNlTSVWkJkro5pU3Yow0mRIJHP2b2Q+bfSAcEJOR4=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5D99805D5A305641B7219277B214B5A3@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1092] (2620:10d:c090:400::5:342b) by BYAPR02CA0060.namprd02.prod.outlook.com (2603:10b6:a03:54::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17 via Frontend Transport; Mon, 3 Aug 2020 02:30:03 +0000
-X-Originating-IP: [2620:10d:c090:400::5:342b]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0f38d64f-d278-4f95-ac23-08d8375520ed
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3620:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3620D3483A8A53E97A1C2E8ED34D0@BY5PR15MB3620.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0ZBDnLwnoLDBv9XdWOqA5S+NFq3LUjbIY3O5ijcleqCKT3mZL71bpwHOrGadgZCVV4lWwa6yg7RKPdczjcClpQIG2nOoeP7TO6cq8OlVKHgOOvRqECvm1R1NkvB/m8oBT53QINfRSErLen+5zyLMQHz9OY1yPlIi1yCwnIxvRcHb2XteVHIPp7w+tNXIq+m32ErXI28Jtv6TCY0uNm4V+qeIl9JcJY8EltDcQ5DTfxKdBqS+viDaV7nU7A8pNF3iUvAim0bwLP8llLvKY091B4ZP4/R2c+C0R2S2y7oo3iISty9D50w0DnQJe433KzsZddWJuMpdvyIw9n0XnqI4/3JlraSex3iMg2oQDUehuWnbBxjXnhgrklcF/PGDpDAK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(136003)(39860400002)(346002)(396003)(31696002)(66556008)(16526019)(53546011)(86362001)(66946007)(186003)(2616005)(66476007)(478600001)(52116002)(36756003)(316002)(54906003)(6486002)(2906002)(8936002)(6916009)(8676002)(4326008)(5660300002)(31686004)(83380400001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: +c+b2v3SCuZUEU4Z3U5HIsXS6BJUDKTmmw7to3qPv4jG197XFyRKfuVZbihCLxRAL35LJDnlkEYvaNP1uX4mxjqjPjE6l3VYjpQ1chz2mmUB7EfcakZqD/tTFeE6ozB5a/RkRjapm9ZfojG0/mrgTYTvpMvrtdN5ts1LETXduN6VwZBkX9xHLMPwKYfYW3LHLxDIm9xT/WKQUsmKy2U1Z5CeNbaVn5Wg4zm/OFMgvMnBa85CWITPK1gqtxq4kCOyyumjxT/TkrNvfavEYdPTIlO6ggnEAQXzCKizQJTavBUOO7ba3IUQiPRwiMSm1Jjq2/hZMk6Bbwmb3MTjqjkvoYl7GlCacTzZg0j01DniIVDTkzapiXrltuzNun9q1V413S9nnZKLVYIOdNL0j/FwDSsgRfoos++PCOj8XA4CFn675Gilc8RwSJ7GRxb4/QyOiSBjoy0NaUySIKM0Jg6RsV7Yx/VCZgNZigV6p93v5iiQ6yUZ/C9Twe78qp1WadYo44J7GOBDi22sRf9XZaRm+5+jiC0qXv2WxMBWjaO4/onnGo65B+/RRyZa4i1IjyykTEVEldKc/YM3Ecno/R2M5VlAENv4MYOco46ijZNHH3MSi4RWyQDpcvP9byi30/pIM33X8tJM3M6YJJQQ1lAkBc3codUJihdZMOYJw6g50L7KpZakbOGRB5aFoggr+DpT
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f38d64f-d278-4f95-ac23-08d8375520ed
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2020 02:30:03.8769
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35aac618-03c4-49b0-2192-08d83764ac9c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2020 04:21:20.4096
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8voF0KOnNmLyGmTJjEvzJY5MFEo3Ftd0S5ITvWcgeFyZX/o+DWZfULZJkGf3Q97o
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3620
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X1xU+Fo+YWT/uf7AzQ6eRNEbRiSTglh366JcSQ1lqPX/tgpEPuO+Hjbr7mE1Yt4yJ/gPtg40REuZhjWoRb887g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2886
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-03_01:2020-07-31,2020-08-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- priorityscore=1501 spamscore=0 impostorscore=0 mlxscore=0 phishscore=0
- suspectscore=2 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 suspectscore=0
+ clxscore=1015 impostorscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008030016
+ engine=8.12.0-2006250000 definitions=main-2008030030
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -117,99 +123,76 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/2/20 6:35 PM, Andrii Nakryiko wrote:
-> On Sat, Aug 1, 2020 at 9:22 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Previous commit adjusted kernel uapi for map
->> element bpf iterator. This patch adjusted libbpf API
->> due to uapi change.
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
+> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
+>=20
+> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>> Add cpu_plus to bpf_prog_test_run_attr. Add BPF_PROG_SEC "user" for
+>> BPF_PROG_TYPE_USER programs.
+>>=20
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
 >> ---
->>   tools/lib/bpf/bpf.c    | 4 +++-
->>   tools/lib/bpf/bpf.h    | 5 +++--
->>   tools/lib/bpf/libbpf.c | 7 +++++--
->>   3 files changed, 11 insertions(+), 5 deletions(-)
->>
+>> tools/lib/bpf/bpf.c           | 1 +
+>> tools/lib/bpf/bpf.h           | 3 +++
+>> tools/lib/bpf/libbpf.c        | 1 +
+>> tools/lib/bpf/libbpf_probes.c | 1 +
+>> 4 files changed, 6 insertions(+)
+>>=20
 >> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
->> index eab14c97c15d..c75a84398d51 100644
+>> index e1bdf214f75fe..b28c3daa9c270 100644
 >> --- a/tools/lib/bpf/bpf.c
 >> +++ b/tools/lib/bpf/bpf.c
->> @@ -598,7 +598,9 @@ int bpf_link_create(int prog_fd, int target_fd,
->>          attr.link_create.prog_fd = prog_fd;
->>          attr.link_create.target_fd = target_fd;
->>          attr.link_create.attach_type = attach_type;
->> -       attr.link_create.flags = OPTS_GET(opts, flags, 0);
->> +       attr.link_create.iter_info =
->> +               ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
->> +       attr.link_create.iter_info_len = OPTS_GET(opts, iter_info_len, 0);
->>
->>          return sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
->>   }
+>> @@ -693,6 +693,7 @@ int bpf_prog_test_run_xattr(struct bpf_prog_test_run=
+_attr *test_attr)
+>>        attr.test.ctx_size_in =3D test_attr->ctx_size_in;
+>>        attr.test.ctx_size_out =3D test_attr->ctx_size_out;
+>>        attr.test.repeat =3D test_attr->repeat;
+>> +       attr.test.cpu_plus =3D test_attr->cpu_plus;
+>>=20
+>>        ret =3D sys_bpf(BPF_PROG_TEST_RUN, &attr, sizeof(attr));
+>>        test_attr->data_size_out =3D attr.test.data_size_out;
 >> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
->> index 28855fd5b5f4..c9895f191305 100644
+>> index 6d367e01d05e9..0c799740df566 100644
 >> --- a/tools/lib/bpf/bpf.h
 >> +++ b/tools/lib/bpf/bpf.h
->> @@ -170,9 +170,10 @@ LIBBPF_API int bpf_prog_detach2(int prog_fd, int attachable_fd,
->>
->>   struct bpf_link_create_opts {
->>          size_t sz; /* size of this struct for forward/backward compatibility */
->> -       __u32 flags;
-> 
-> I'd actually keep flags in link_create_ops, as it's part of the kernel
-> UAPI anyways, we won't have to add it later. Just pass it through into
-> bpf_attr.
+>> @@ -205,6 +205,9 @@ struct bpf_prog_test_run_attr {
+>>        void *ctx_out;      /* optional */
+>>        __u32 ctx_size_out; /* in: max length of ctx_out
+>>                             * out: length of cxt_out */
+>> +       __u32 cpu_plus;     /* specify which cpu to run the test with
+>> +                            * cpu_plus =3D cpu_id + 1.
+>> +                            * If cpu_plus =3D 0, run on current cpu */
+>=20
+> We can't do this due to ABI guarantees. We'll have to add a new API
+> using OPTS arguments.
 
-Okay. Will keep it.
+To make sure I understand this correctly, the concern is when we compile
+the binary with one version of libbpf and run it with libbpf.so of a=20
+different version, right?=20
 
-> 
->> +       union bpf_iter_link_info *iter_info;
->> +       __u32 iter_info_len;
->>   };
->> -#define bpf_link_create_opts__last_field flags
->> +#define bpf_link_create_opts__last_field iter_info_len
->>
->>   LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
->>                                 enum bpf_attach_type attach_type,
+Thanks,
+Song
+
+>=20
+>> };
+>>=20
+>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *te=
+st_attr);
 >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 7be04e45d29c..dc8fabf9d30d 100644
+>> index b9f11f854985b..9ce175a486214 100644
 >> --- a/tools/lib/bpf/libbpf.c
 >> +++ b/tools/lib/bpf/libbpf.c
->> @@ -8298,6 +8298,7 @@ bpf_program__attach_iter(struct bpf_program *prog,
->>                           const struct bpf_iter_attach_opts *opts)
->>   {
->>          DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
->> +       union bpf_iter_link_info linfo;
->>          char errmsg[STRERR_BUFSIZE];
->>          struct bpf_link *link;
->>          int prog_fd, link_fd;
->> @@ -8307,8 +8308,10 @@ bpf_program__attach_iter(struct bpf_program *prog,
->>                  return ERR_PTR(-EINVAL);
->>
->>          if (OPTS_HAS(opts, map_fd)) {
->> -               target_fd = opts->map_fd;
->> -               link_create_opts.flags = BPF_ITER_LINK_MAP_FD;
->> +               memset(&linfo, 0, sizeof(linfo));
->> +               linfo.map.map_fd = opts->map_fd;
->> +               link_create_opts.iter_info = &linfo;
->> +               link_create_opts.iter_info_len = sizeof(linfo);
-> 
-> Maybe instead of having map_fd directly in bpf_iter_attach_opts, let's
-> just accept bpf_iter_link_info and its len directly from the user?
-> Right now kernel UAPI and libbpf API for customizing iterator
-> attachment differ. It would be simpler to keep them in sync and we
-> won't have to discuss how to evolve bpf_iter_attach_opts as we add
-> more customization for different types of iterators. Thoughts?
+>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] =3D=
+ {
+>>        BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
+>>        BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
+>>        BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOC=
+AL),
+>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
+>=20
+> let's do "user/" for consistency with most other prog types (and nice
+> separation between prog type and custom user name)
 
-Good suggestion. Previously we don't have a structure to encapsulate
-map_fd so map_fd is added to the bpf_iter_attach_opts. Indeed, we can
-directly add bpf_iter_link_info to link_iter_attach_opts, and this
-will free libbpf from handling any future additions in bpf_iter_link_info.
+Will update.=20
 
-> 
->>          }
->>
->>          prog_fd = bpf_program__fd(prog);
->> --
->> 2.24.1
->>
