@@ -2,252 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B862F23B706
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 10:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524DA23B87A
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgHDItX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 04:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgHDItX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 04:49:23 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA892C06174A
-        for <bpf@vger.kernel.org>; Tue,  4 Aug 2020 01:49:22 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a14so36627054wra.5
-        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 01:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AS1L/irQ1SAiuy2bJA12BGGvcMN41EqAyMONdeOJ9tc=;
-        b=SNNHBJzw7nzpAcW+yLrJzjJSN14QhzRZ7Tbxoxc4gIys7PqYT41g4aksXqRZzPMqG1
-         ArW/prZNev6cryb5bVmP/FVtZONsZr4oOgPdtbrh6+cH1J/Jx4TW3EFnB0WDxITrW7eY
-         RCddcTfxynziFhiRVEJPmrRQiV/W3cKOyXcYA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AS1L/irQ1SAiuy2bJA12BGGvcMN41EqAyMONdeOJ9tc=;
-        b=F9ioW/SriiUWYvg/otnHWla1lLEDt6UbxZ3bvlJkb8AqtsDoK8FtLIL6cSDzw+bj9b
-         0KFB6NoCuiWX743NXWYY/fgrjS7LdiL+PMUCxB9Ou5l9CNxM+4KbHZmm+jIMWAFM/5Sl
-         AugDovCF84VqkqQ3pEiNF14PoD5UAaNFoJEOUd4R74kn0F6K8XMoMofsbT2kC+6MPE6l
-         BsoTtZHZyJgj6PTMslM9K/c69PfPkaYguZRdXXE9PkR6FHk/Q9yapqt5RTO1cOXZu9qV
-         z5mlFxM1T0sHkF8h+bB7CCMTr4buOeMybkKTkS+A6vTnIFaSYiM3WfWdVXJlh9/dTVH6
-         NfUQ==
-X-Gm-Message-State: AOAM532C0q7qCUtOSLdICFQaLgoglJ9nLfCWmPpjj7czQnhxSQf0x9V8
-        PAi0nG6Ne8oeWQ47JWy/eVux2g==
-X-Google-Smtp-Source: ABdhPJwknV03hX6+Le1i0l1o6rQu35IlAxjFFu2vOxUuvhRe2xIIpSQE0rV1onVpnXlud7zp88Cxnw==
-X-Received: by 2002:adf:a192:: with SMTP id u18mr20495707wru.158.1596530961625;
-        Tue, 04 Aug 2020 01:49:21 -0700 (PDT)
-Received: from antares.lan (e.8.0.d.1.c.0.9.4.b.c.4.0.6.d.7.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:7d60:4cb4:90c1:d08e])
-        by smtp.gmail.com with ESMTPSA id l21sm3246418wmj.25.2020.08.04.01.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Aug 2020 01:49:20 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        id S1730001AbgHDKIh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 06:08:37 -0400
+Received: from mga05.intel.com ([192.55.52.43]:27813 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728311AbgHDKIg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Aug 2020 06:08:36 -0400
+IronPort-SDR: YvfCLoP76/WchcUK3mqhku/G18fwOtBbKndIzu9cGfE2Tv9YEVQlIyKxwliQciIsMQyaxGX3S7
+ GUoSADAQWhsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9702"; a="237144713"
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="237144713"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2020 03:08:36 -0700
+IronPort-SDR: be8eyJZeFVeLLnafcVjQTCVfiLuUnKwBuaLmEDk1u04eTWawCpv5/52FWWS2iMAhRKLRXbDhhy
+ lKz17Fe5ktQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,433,1589266800"; 
+   d="scan'208";a="330557050"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Aug 2020 03:08:31 -0700
+Subject: Re: [PATCH v2 4/5] perf record: Don't clear event's period if set by
+ a term
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH stable-5.4.y] bpf: sockmap: Require attach_bpf_fd when detaching a program
-Date:   Tue,  4 Aug 2020 09:47:47 +0100
-Message-Id: <20200804084747.42530-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
+Cc:     Stephane Eranian <eranian@google.com>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-5-irogers@google.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <969ef797-59ea-69d0-24b9-33bcdff106a1@intel.com>
+Date:   Tue, 4 Aug 2020 13:08:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200728085734.609930-5-irogers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit bb0de3131f4c60a9bf976681e0fe4d1e55c7a821 upstream.
+On 28/07/20 11:57 am, Ian Rogers wrote:
+> If events in a group explicitly set a frequency or period with leader
+> sampling, don't disable the samples on those events.
+> 
+> Prior to 5.8:
+> perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
 
-The sockmap code currently ignores the value of attach_bpf_fd when
-detaching a program. This is contrary to the usual behaviour of
-checking that attach_bpf_fd represents the currently attached
-program.
+Might be worth explaining this use-case some more.
+Perhaps add it to the leader sampling documentation for perf-list.
 
-Ensure that attach_bpf_fd is indeed the currently attached
-program. It turns out that all sockmap selftests already do this,
-which indicates that this is unlikely to cause breakage.
+> would clear the attributes then apply the config terms. In commit
+> 5f34278867b7 leader sampling configuration was moved to after applying the
+> config terms, in the example, making the instructions' event have its period
+> cleared.
+> This change makes it so that sampling is only disabled if configuration
+> terms aren't present.
+> 
+> Fixes: 5f34278867b7 ("perf evlist: Move leader-sampling configuration")
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/record.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> index a4cc11592f6b..01d1c6c613f7 100644
+> --- a/tools/perf/util/record.c
+> +++ b/tools/perf/util/record.c
+> @@ -2,6 +2,7 @@
+>  #include "debug.h"
+>  #include "evlist.h"
+>  #include "evsel.h"
+> +#include "evsel_config.h"
+>  #include "parse-events.h"
+>  #include <errno.h>
+>  #include <limits.h>
+> @@ -38,6 +39,9 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
+>  	struct perf_event_attr *attr = &evsel->core.attr;
+>  	struct evsel *leader = evsel->leader;
+>  	struct evsel *read_sampler;
+> +	struct evsel_config_term *term;
+> +	struct list_head *config_terms = &evsel->config_terms;
+> +	int term_types, freq_mask;
+>  
+>  	if (!leader->sample_read)
+>  		return;
+> @@ -47,16 +51,24 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
+>  	if (evsel == read_sampler)
+>  		return;
+>  
+> +	/* Determine the evsel's config term types. */
+> +	term_types = 0;
+> +	list_for_each_entry(term, config_terms, list) {
+> +		term_types |= 1 << term->type;
+> +	}
+>  	/*
+> -	 * Disable sampling for all group members other than the leader in
+> -	 * case the leader 'leads' the sampling, except when the leader is an
+> -	 * AUX area event, in which case the 2nd event in the group is the one
+> -	 * that 'leads' the sampling.
+> +	 * Disable sampling for all group members except those with explicit
+> +	 * config terms or the leader. In the case of an AUX area event, the 2nd
+> +	 * event in the group is the one that 'leads' the sampling.
+>  	 */
+> -	attr->freq           = 0;
+> -	attr->sample_freq    = 0;
+> -	attr->sample_period  = 0;
+> -	attr->write_backward = 0;
+> +	freq_mask = (1 << EVSEL__CONFIG_TERM_FREQ) | (1 << EVSEL__CONFIG_TERM_PERIOD);
+> +	if ((term_types & freq_mask) == 0) {
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200629095630.7933-5-lmb@cloudflare.com
----
-The 5.4 tree needs a dedicated backport, since some headers have
-changed sufficiently to cause the patch to fail. bpf_prog_detach
-needs further massaging to pass the correct program type to
-sock_map_prog_detach. Please queue this patch together with
-commit f43cb0d672aa ("selftests: bpf: Fix detach from sockmap tests").
----
- include/linux/bpf.h   | 13 +++++++++--
- include/linux/skmsg.h | 13 +++++++++++
- kernel/bpf/syscall.c  |  4 ++--
- net/core/sock_map.c   | 50 ++++++++++++++++++++++++++++++++++++++-----
- 4 files changed, 71 insertions(+), 9 deletions(-)
+It would be nicer to have a helper e.g.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3bf3835d0e86..7aa0d8b5aaf0 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -956,11 +956,14 @@ static inline void bpf_map_offload_map_free(struct bpf_map *map)
- #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
- 
- #if defined(CONFIG_BPF_STREAM_PARSER)
--int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog, u32 which);
-+int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
-+			 struct bpf_prog *old, u32 which);
- int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
-+int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
- #else
- static inline int sock_map_prog_update(struct bpf_map *map,
--				       struct bpf_prog *prog, u32 which)
-+				       struct bpf_prog *prog,
-+				       struct bpf_prog *old, u32 which)
- {
- 	return -EOPNOTSUPP;
- }
-@@ -970,6 +973,12 @@ static inline int sock_map_get_from_fd(const union bpf_attr *attr,
- {
- 	return -EINVAL;
- }
-+
-+static inline int sock_map_prog_detach(const union bpf_attr *attr,
-+				       enum bpf_prog_type ptype)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif
- 
- #if defined(CONFIG_XDP_SOCKETS)
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 4bdb5e4bbd6a..20f3550b0b11 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -450,6 +450,19 @@ static inline void psock_set_prog(struct bpf_prog **pprog,
- 		bpf_prog_put(prog);
- }
- 
-+static inline int psock_replace_prog(struct bpf_prog **pprog,
-+				     struct bpf_prog *prog,
-+				     struct bpf_prog *old)
-+{
-+	if (cmpxchg(pprog, old, prog) != old)
-+		return -ENOENT;
-+
-+	if (old)
-+		bpf_prog_put(old);
-+
-+	return 0;
-+}
-+
- static inline void psock_progs_drop(struct sk_psock_progs *progs)
- {
- 	psock_set_prog(&progs->msg_parser, NULL);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8bc904f9badb..bf03d04a9e2f 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2029,10 +2029,10 @@ static int bpf_prog_detach(const union bpf_attr *attr)
- 		ptype = BPF_PROG_TYPE_CGROUP_DEVICE;
- 		break;
- 	case BPF_SK_MSG_VERDICT:
--		return sock_map_get_from_fd(attr, NULL);
-+		return sock_map_prog_detach(attr, BPF_PROG_TYPE_SK_MSG);
- 	case BPF_SK_SKB_STREAM_PARSER:
- 	case BPF_SK_SKB_STREAM_VERDICT:
--		return sock_map_get_from_fd(attr, NULL);
-+		return sock_map_prog_detach(attr, BPF_PROG_TYPE_SK_SKB);
- 	case BPF_LIRC_MODE2:
- 		return lirc_prog_detach(attr);
- 	case BPF_FLOW_DISSECTOR:
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 6bbc118bf00e..df52061f99f7 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -71,7 +71,42 @@ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog)
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map))
- 		return PTR_ERR(map);
--	ret = sock_map_prog_update(map, prog, attr->attach_type);
-+	ret = sock_map_prog_update(map, prog, NULL, attr->attach_type);
-+	fdput(f);
-+	return ret;
-+}
-+
-+int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype)
-+{
-+	u32 ufd = attr->target_fd;
-+	struct bpf_prog *prog;
-+	struct bpf_map *map;
-+	struct fd f;
-+	int ret;
-+
-+	if (attr->attach_flags)
-+		return -EINVAL;
-+
-+	f = fdget(ufd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	prog = bpf_prog_get(attr->attach_bpf_fd);
-+	if (IS_ERR(prog)) {
-+		ret = PTR_ERR(prog);
-+		goto put_map;
-+	}
-+
-+	if (prog->type != ptype) {
-+		ret = -EINVAL;
-+		goto put_prog;
-+	}
-+
-+	ret = sock_map_prog_update(map, NULL, prog, attr->attach_type);
-+put_prog:
-+	bpf_prog_put(prog);
-+put_map:
- 	fdput(f);
- 	return ret;
- }
-@@ -1015,27 +1050,32 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
- }
- 
- int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
--			 u32 which)
-+			 struct bpf_prog *old, u32 which)
- {
- 	struct sk_psock_progs *progs = sock_map_progs(map);
-+	struct bpf_prog **pprog;
- 
- 	if (!progs)
- 		return -EOPNOTSUPP;
- 
- 	switch (which) {
- 	case BPF_SK_MSG_VERDICT:
--		psock_set_prog(&progs->msg_parser, prog);
-+		pprog = &progs->msg_parser;
- 		break;
- 	case BPF_SK_SKB_STREAM_PARSER:
--		psock_set_prog(&progs->skb_parser, prog);
-+		pprog = &progs->skb_parser;
- 		break;
- 	case BPF_SK_SKB_STREAM_VERDICT:
--		psock_set_prog(&progs->skb_verdict, prog);
-+		pprog = &progs->skb_verdict;
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (old)
-+		return psock_replace_prog(pprog, prog, old);
-+
-+	psock_set_prog(pprog, prog);
- 	return 0;
- }
- 
--- 
-2.25.1
+	if (!evsel__have_config_term(evsel, FREQ) &&
+	    !evsel__have_config_term(evsel, PERIOD)) {
+
+> +		attr->freq           = 0;
+> +		attr->sample_freq    = 0;
+> +		attr->sample_period  = 0;
+
+If we are not sampling, then maybe we should also put here:
+
+		attr->write_backward = 0;
+
+> +	}
+
+Then, if we are sampling this evsel shouldn't the backward setting
+match the leader? e.g.
+
+	if (attr->sample_freq)
+		attr->write_backward = leader->core.attr.write_backward;
+
+
+> +	if ((term_types & (1 << EVSEL__CONFIG_TERM_OVERWRITE)) == 0)
+> +		attr->write_backward = 0;
+>  
+>  	/*
+>  	 * We don't get a sample for slave events, we make them when delivering
+> 
 
