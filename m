@@ -2,94 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A6C23C03E
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 21:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A49B23C042
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 21:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgHDTmz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 15:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgHDTmy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 15:42:54 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95884C06174A
-        for <bpf@vger.kernel.org>; Tue,  4 Aug 2020 12:42:54 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e196so49215314ybh.6
-        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 12:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=cdYPSZUd3OatsI0N2mJT6Y0zlsGcSNspGceuQDdHfGA=;
-        b=micRWL4x2QTclJkUgCnKW76kVXv88G1qdEnngEBl6vEXQqRV+U46syJIYBHy1CmHRP
-         ivNVSH7D2Gg/KEN6slemZYhRkPBWCtQ7F0aidzibF8vvsjDULzYpPhkdIQSkL8LQvlSQ
-         Md621SO9okyyyoJ+hppSijAy7aDJtDDcV9Ah8ApeCc+dqfoXbMrMffuKoA02cuOlChl2
-         TmiDSWzDS+3QZJXHQ8dt8HPWw02uYkJK3/Q2nivTNyLjcUlnQe6iMAnArbgMSXqtf2lG
-         mh2FDJBQA7K8ul9NIhFVRQ0nwK3gsMyv7VxlX+rNLOnHAdJ86bnOIwlu1jVwlnhrd1l3
-         IwLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cdYPSZUd3OatsI0N2mJT6Y0zlsGcSNspGceuQDdHfGA=;
-        b=X12lARoOhMCSg1jbR53DfpdlLHupic/hHAqw05GalBm8iegzgxdoDHpmYi7SEyKXZS
-         NyJmn4tkKpnCN5QhC+2nnxmYb5gnfm33Lv0MFSo4YROM38bKOcVsKyYlVYQ30s5c51PW
-         7+LM/8rJb6yhnM5FcFZEl7YHEaYiwJnMXgl4FuPEyrYQOpx3kht5C9WabMW93Nha3Gbu
-         7u+xzLIVOyi+pHIVbVPT9KP2m97J1Pheyo12IlWR6DgzBmULgMOQpToX1UAPnIGmQgSK
-         a1/vdgFHdSdYF4tjgjBeH/xIJuvq3+4utRlutPNskiD3tBjtyGB4sttmgl2GUlCny0ac
-         AZ7Q==
-X-Gm-Message-State: AOAM5317+VFBX3urzqC4jF/CZTAaH3RuiVYVXzquhqC6v9o0cmxu3uVd
-        oF7Foyd02hkULwZNaBAmg2erI+aLvK6oRn9/U+ab89gLXcwnzSIfkHJlAiHxfR+FUGVEjTp9MHd
-        0d0PgYfiEURbyzPNg/Iia2j08vJhE3W6inl0bfJGlvjED+pDmHQ==
-X-Google-Smtp-Source: ABdhPJyo7Tr1kh/5D7He+45q4SXvXGwYVjW6A/JrOWGtm25TUylxVvGtxNdUSXeLkBy0JUfQ61yD4ak=
-X-Received: by 2002:a25:d295:: with SMTP id j143mr20497963ybg.319.1596570173739;
- Tue, 04 Aug 2020 12:42:53 -0700 (PDT)
-Date:   Tue, 4 Aug 2020 12:42:51 -0700
-In-Reply-To: <20200729162751.GC184844@google.com>
-Message-Id: <20200804194251.GE184844@google.com>
-Mime-Version: 1.0
-References: <20200729162751.GC184844@google.com>
-Subject: Re: BPF program metadata
-From:   sdf@google.com
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        zhuyifei@google.com, maheshb@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        id S1727794AbgHDToL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 15:44:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23656 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727014AbgHDToL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Aug 2020 15:44:11 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074JY0b2138302
+        for <bpf@vger.kernel.org>; Tue, 4 Aug 2020 15:44:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qbvqbtkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 15:44:10 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 074Jdxej154919
+        for <bpf@vger.kernel.org>; Tue, 4 Aug 2020 15:44:10 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32qbvqbtkd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 15:44:10 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 074Jhsdv015875;
+        Tue, 4 Aug 2020 19:44:08 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 32n018a7ce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Aug 2020 19:44:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 074Ji5GV17236472
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 Aug 2020 19:44:06 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE51AAE045;
+        Tue,  4 Aug 2020 19:44:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B2A5AE051;
+        Tue,  4 Aug 2020 19:44:05 +0000 (GMT)
+Received: from sig-9-145-26-160.uk.ibm.com (unknown [9.145.26.160])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  4 Aug 2020 19:44:05 +0000 (GMT)
+Message-ID: <7fb300731582d6c9a61e5de952c94720c5a62c3b.camel@linux.ibm.com>
+Subject: Re: s390 test_bpf: #284 BPF_MAXINSNS: Maximum possible literals
+ failure
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Yauheni Kaliuta <ykaliuta@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Date:   Tue, 04 Aug 2020 21:44:05 +0200
+In-Reply-To: <CANoWsw=4H1bHNmDP1GDo+wROCyZiZwFr-LPwoeZcWss2tJ-MNQ@mail.gmail.com>
+References: <CANoWsw=4H1bHNmDP1GDo+wROCyZiZwFr-LPwoeZcWss2tJ-MNQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=4 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040137
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/29, sdf@google.com wrote:
-> As discussed in
-> https://docs.google.com/presentation/d/1A9Anx8JPHl_pK1aXy8hlxs3V5pkrKwHHtkPf_-HeYTc
-> during BPF office hours, we'd like to attach arbitrary auxiliary
-> metadata to the program, for example, the build timestamp or the commit
-> hash.
+On Tue, 2020-08-04 at 20:40 +0300, Yauheni Kaliuta wrote:
+> Hi!
+> 
+> I have a failure (crash) of selftests/bpf/test_kmod.sh on s390.
+> 
+> The problem comes with loading with
+> 
+> sysctl -w net.core.bpf_jit_harden=2
+> 
+> In that case the program (lib/test_bpf.c):
+> 
+> static int bpf_fill_maxinsns1(struct bpf_test *self)
+> {
+>     unsigned int len = BPF_MAXINSNS;
+>     struct sock_filter *insn;
+>     __u32 k = ~0;
+>     int i;
+> 
+>     insn = kmalloc_array(len, sizeof(*insn), GFP_KERNEL);
+>     if (!insn)
+>         return -ENOMEM;
+> 
+>     for (i = 0; i < len; i++, k--)
+>         insn[i] = __BPF_STMT(BPF_RET | BPF_K, k);
+> 
+>     self->u.ptr.insns = insn;
+>     self->u.ptr.len = len;
+> 
+>     return 0;
+> }
+> 
+> after blinding and jiting is 98362 bytes for me and it does not fit
+> 16bit offset for BRC 15,.. command where BPF_EXIT | BPF_JMP is
+> translated.
+> 
+> What is the easiest way to use BRCL for large offset here?
+> 
+> Thanks!
 
-> IIRC, the suggestion was to explore BTF and .BTF.ext section in
-> particular.
-> We've spent some time looking at the BTF encoding and BTF.ext section
-> and we don't see how we can put this data into .BTF.ext or even .BTF
-> without any kernel changes.
+Hi Yauheni!
 
-> The reasoning (at least how we see it):
-> * .BTF.ext is just a container with func_info/line_info/relocation_info
->    and libbpf extracts the data form this section and passes it to
->    sys_bpf(BPF_PROG_LOAD); the important note is that it doesn't pass the
->    whole container to the kernel, but passes the data that's been
->    extracted from the appropriate sections
-> * .BTF can be used for metadata, but it looks like we'd have to add
->    another BTF_INFO_KIND() to make it a less messy (YiFei, feel free to
->    correct me)
+Did you try bpf-next, specifically with commit 5fa6974471c5 ("s390/bpf:
+Use brcl for jumping to exit_ip if necessary")? This was supposed to
+fix this problem.
 
-> So the question is: are we missing something? Is there some way to add
-> key=value metadata to BTF that doesn't involve a lot of kernel changes?
+Best regards,
+Ilya
 
-> If the restrictions above are correct, should we go back to trying to
-> put this metadata into .data section (or maybe even the new .metadata
-> section)? The only missing piece of the puzzle in that case is the
-> ability to extend BPF_PROG_LOAD with a way to say 'hold this map
-> unconditionally'.
-Should we have a short discussion about that this Thu during the office
-hours? I don't see this week's sheet page in there yet :-(
