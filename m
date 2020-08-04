@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A1123B210
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 03:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC9C23B223
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 03:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728528AbgHDBBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 21:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
+        id S1728409AbgHDBON (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 21:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgHDBBx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 21:01:53 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E39BC06174A;
-        Mon,  3 Aug 2020 18:01:53 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id f68so10891489ilh.12;
-        Mon, 03 Aug 2020 18:01:53 -0700 (PDT)
+        with ESMTP id S1726615AbgHDBON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 21:14:13 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73926C06174A;
+        Mon,  3 Aug 2020 18:14:13 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id c16so20982095ils.8;
+        Mon, 03 Aug 2020 18:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=1/GTRGlv3vA8y7chSWtD+31u5r99BV3UFVtnhE5MkUk=;
-        b=hjBDCquzhtTvEgqmVITzwTgSQVeVX9QfEcNZUTyWtbuN3/DC/42rzpkRqGDOlFG5zp
-         e1cDoxZOofqGEp8Uu9kF4M8enqU2GNtPHxk5BdaLdtKdCQ1KI6CQiM62ZOUAFI5apgxQ
-         llAZ6lM6ASVhqdJRFLxut6ZNpt+3C9Wepzn0/pu59rXcZGrzJLQw/1trD7Hvpc5zeJkp
-         o0RiHTLl54aXCPXsEtPtMevZrNm04HW9ny8wa1MeYzSpt/Uj+QqPV1M7p/VxBB/m+xeD
-         wUXvtm/Jj3oif7giCsiGGhTobntI4u7Vv9O1rHpGBJw9Bx0UUKLxSzgQ87jaZgV/Eyqk
-         uYkw==
+        bh=ybAe4fA1vax96lVLa3/RcMUltUaH6klWCGzwlFp5R7o=;
+        b=HB/K/C+Vkg0jZ9EwhhrQ/Uyp242lFMqR89VCSYNq496MBBJM0jugg1VkgsRKGFh5zL
+         kKcKFqCJRnU19RxdFWGY1oRCWH1fRckWf/pIyzvtlFUMp1k3B3aTkIEk7XaEFLtuoKlV
+         ZFFHYraupIwdU/JiqrmW1edgASYoX7NcO0NRfzkIzpBVq956V8Z2FuT8i/tKQGn/mZfC
+         vj4KNm9tXwAw5HVSxxXutsxcadII1safgy1XqreodToRv78Nk8p4wJHYEzYWKF2Phl/A
+         gLyw0dEB4dAHHNw0nf2ehKJrguGQ0AlA1M0c7szWtJ+fxHPgZykjDp3KGVswI1FcowGR
+         HVFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=1/GTRGlv3vA8y7chSWtD+31u5r99BV3UFVtnhE5MkUk=;
-        b=XrCL0JcG/k9J+TVfS9AvmZ0ytdRAuQlFQ/tu35x2d5319G/lDfp9TbTXP32iG+OSIc
-         zo2+BJTV4B4VNPU0R3icKNM2+Zw0r1aGWKiCZEphTdM7IYxSo0h3gm8WXCqJswcXX7wl
-         DNDGICKXmqSBGLtXCkX4EUyTtGGpSWUzucqXswi0K+251hvJl4TmgmsjMvU+WDDaly4M
-         WauCzFCj8xj1M36gFz2EjnakLq61UVMj1BQYsrQjnq4eoOrR0N5/VEyXhKBS1a+PPcD3
-         CosdWWQwZExDilrmc+828MfHA7sXoJIcTaNrcMfU60zbm9m+EU55GRCAk0bsdkVZ2pd0
-         Yzhw==
-X-Gm-Message-State: AOAM533BLYcS2sQv8MNTJ6RRg1unFYfxQskFPc7yjFTptRnHcw59SApI
-        kRQffE2ISl1HSljZR13eDQo=
-X-Google-Smtp-Source: ABdhPJyPSlzfXEbeVvF99fPft1MP8PvgVICogCUfRvj2CDhRx4PHP5gUIWnosZggh5XKDoCA9ofWig==
-X-Received: by 2002:a05:6e02:e82:: with SMTP id t2mr2245752ilj.161.1596502913016;
-        Mon, 03 Aug 2020 18:01:53 -0700 (PDT)
+        bh=ybAe4fA1vax96lVLa3/RcMUltUaH6klWCGzwlFp5R7o=;
+        b=i4AsIfyfBSoPeoDEqPHqXHVBDwwIk8CDyw3b7/+Ceavep61EHNrvRXgiMYP25eOI2f
+         y27RX9YYQCF7EE7HblljhFtvf7qlNhIrUWxJaRAr7PLme+TOWpp5M+Spu8pDrOO6FcfN
+         vS9x09XQytwTN2ug6y5vKEz/cCRJORCPhyxxshoHLhqPaFoELYUtUllsvn0zQHWVfXOT
+         yzZwRZFRUlp0iFUYUuag8mMzACKO/pTgqrSBaWwx8YYAal2vSareZK0eaVDgfM3XDvGQ
+         P87lMXEYuH4DWqdh5HjLxUnpkjNK/fJjznKF8g3m0wduiJocWwn76TANfAHlGZVK/mDo
+         9w6w==
+X-Gm-Message-State: AOAM530xKYc8gXD2bP1tAwm72RYm9CC+oxcpf0gBVwdfSsJGIu3an0fB
+        0JKDS0rOrBqv7sq3tf2FttA=
+X-Google-Smtp-Source: ABdhPJwNG8pOgFjtHRS2QcjN/akK30r0R8GnZQTW1Tbh2nkLNBnoT8mFofB7bFxglrJNwRpHoXMu1w==
+X-Received: by 2002:a05:6e02:508:: with SMTP id d8mr2206691ils.98.1596503652469;
+        Mon, 03 Aug 2020 18:14:12 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w7sm11808577iov.1.2020.08.03.18.01.51
+        by smtp.gmail.com with ESMTPSA id s85sm12068767ilk.77.2020.08.03.18.14.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 18:01:52 -0700 (PDT)
-Date:   Mon, 03 Aug 2020 18:01:46 -0700
+        Mon, 03 Aug 2020 18:14:11 -0700 (PDT)
+Date:   Mon, 03 Aug 2020 18:14:05 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,12 +56,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Lawrence Brakmo <brakmo@fb.com>,
         Neal Cardwell <ncardwell@google.com>, netdev@vger.kernel.org,
         Yuchung Cheng <ycheng@google.com>
-Message-ID: <5f28b37a23387_62272b02d7c945b4c7@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200803231033.2682401-1-kafai@fb.com>
+Message-ID: <5f28b65d3148a_62272b02d7c945b439@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200803231039.2682896-1-kafai@fb.com>
 References: <20200803231013.2681560-1-kafai@fb.com>
- <20200803231033.2682401-1-kafai@fb.com>
-Subject: RE: [RFC PATCH v4 bpf-next 03/12] tcp: bpf: Add TCP_BPF_RTO_MIN for
- bpf_setsockopt
+ <20200803231039.2682896-1-kafai@fb.com>
+Subject: RE: [RFC PATCH v4 bpf-next 04/12] tcp: Add saw_unknown to struct
+ tcp_options_received
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -72,15 +72,18 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Martin KaFai Lau wrote:
-> This patch adds bpf_setsockopt(TCP_BPF_RTO_MIN) to allow bpf prog
-> to set the min rto of a connection.  It could be used together
-> with the earlier patch which has added bpf_setsockopt(TCP_BPF_DELACK_MAX).
+> In a later patch, the bpf prog only wants to be called to handle
+> a header option if that particular header option cannot be handled by
+> the kernel.  This unknown option could be written by the peer's bpf-prog.
+> It could also be a new standard option that the running kernel does not
+> support it while a bpf-prog can handle it.
 > 
-> A later selftest patch will communicate the max delay ack in a
-> bpf tcp header option and then the receiving side can use
-> bpf_setsockopt(TCP_BPF_RTO_MIN) to set a shorter rto.
+> This patch adds a "saw_unknown" bit to "struct tcp_options_received"
+> and it uses an existing one byte hole to do that.  "saw_unknown" will
+> be set in tcp_parse_options() if it sees an option that the kernel
+> cannot handle.
 > 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
