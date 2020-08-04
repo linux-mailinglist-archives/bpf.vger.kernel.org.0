@@ -2,149 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FD023B8DA
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 12:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006F423B968
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 13:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729405AbgHDKfV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 06:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        id S1726718AbgHDLTY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 07:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729385AbgHDKfV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 06:35:21 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3417DC06174A;
-        Tue,  4 Aug 2020 03:35:21 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id o1so22612452plk.1;
-        Tue, 04 Aug 2020 03:35:21 -0700 (PDT)
+        with ESMTP id S1730035AbgHDLOs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Aug 2020 07:14:48 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C620BC06179F
+        for <bpf@vger.kernel.org>; Tue,  4 Aug 2020 04:13:56 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id b22so10045948oic.8
+        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 04:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=2ca/QrowQ6tGL3YlTY/zRzYbbmOdjci7HQ5UaZxrd7U=;
-        b=uhLd9SNImtAJuG345pumkWc7FFAQzZbxGRfbrVJwZOpFi4CFPdRWTGdoq2H3T0vOIf
-         MaMUXqtaXYbapCXrNGKUHCPvOvPbH48p3S+Lh/MiWYGV70NumnYN01whEEXCcC74VfSJ
-         O+pReSH2YR+ZeXiNNx+NYXjlSQwbhY19LtlSyzYFXKPo4O7Om7yX5vj574VhSms6uEu6
-         ijHHACvc1QRuoqvMh/oNutsSd8CJAsXocXVTOQRMMuGbtKpzTcsUbMKndywIf6YmdZV8
-         cDsbV5FXHNaBwFpLZF9sHJ8u/+LIDFjL7JU4YIg25KyMSCRnpW5U24qhJfGEVDtRBOpV
-         0oBg==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5GrI9w8HWkjADHcg7T1QBEwERlzTc0/K0EbIgQ9ux3w=;
+        b=opmKQxSyjsauuGeHLNU2NfBXXqIZwQY+hNIGtFzx1ug/iflsmbmTtD6aeFMsytb75u
+         rJ8LvzRINH07uYvccs1F2uUBBCJt/7l4Pbn1r/UZwi/JDCZSH7/byx9kezP2IvrG0q5c
+         cG51UZX+mk/CAMFIGffF3lWBch7WtKEDlSfGc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=2ca/QrowQ6tGL3YlTY/zRzYbbmOdjci7HQ5UaZxrd7U=;
-        b=m9VJIWVfrnzKdlxLxDoDEdJURni2iwTrxhbNdrFmCnjUNBb/fLc3CrRhaIhzvATFuA
-         /FDai88bBV0sUTqTdAWgVVtl2Ok4Y8bbO7sYVbkoNyZoNHEf1pWt1ZTTo6B8YRDXG0F3
-         aayyYQSN9GGa09dlX5eyuE5qYXdJ7bYsPhfINAzH2vGi6Qc7GEwKP4XZ/6zFwD7i8zwi
-         qYlCSZ6qV41a8vO54PDK/b/G+bc6jpZaKoQF3Tc0/SdVeqBwHI2AnQkGAz2FH7dezQ58
-         mNG/MpJ1IcZBV1SI4KshLPrEJUddizRSXyCbEscI+hS0IH/R0uREmkj1qj8DM3wAYCJm
-         NbWw==
-X-Gm-Message-State: AOAM533VeDEJtzCQ3tD4eFvTsRHc6I5ZxtOpvSE6p46JDN/xmuF/ZzG4
-        Da6owVrPwU91PxDqn4sJnzg=
-X-Google-Smtp-Source: ABdhPJwjcEZYdFXpZlVncxXwOGmBxS40h8pb5EBVuCCmMlX4rkSI/BzBmx2fZnLM03kW9tha0ACSQw==
-X-Received: by 2002:a17:90a:6787:: with SMTP id o7mr3674376pjj.76.1596537320665;
-        Tue, 04 Aug 2020 03:35:20 -0700 (PDT)
-Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
-        by smtp.gmail.com with ESMTPSA id z62sm22004085pfb.47.2020.08.04.03.35.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 03:35:20 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [RFC PATCH bpf-next 3/3] samples/bpf: Add a simple bridge example
- accelerated with XDP
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-In-Reply-To: <CAEf4BzaRKhJqFmXJEQy5LOjKx9nkPgAKHa3cesvywy2qqg93YA@mail.gmail.com>
-Date:   Tue, 4 Aug 2020 19:35:08 +0900
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5GrI9w8HWkjADHcg7T1QBEwERlzTc0/K0EbIgQ9ux3w=;
+        b=IHW6KXW/w3GNFB050B3tue49LQMs6ByeQWKElFC+Hc4Sf6yNmGaPzpc+wj4JBExEY+
+         yCb9wkzo4n/Z1BeFCaeODWM6amCpjfMFryppFd0LC+sUKM43a525fB7RI9ztBflvL3Wf
+         JQvmdlwuwPSFfAdPj0sBvKR+ldsoZ62p2UxGUTlqQoLH8I1FedL0tKtzr3OCxPdWL7iQ
+         btzXXBCiukBjDDZcjCmUF4iI907z+2GGzaTdFM1MKh698o4yhKMFEkgCXxO88UNLrwdP
+         nghrEryL24HdyKqOhckN+K7Hzcydkk65wi1d8pRGjQZsij6n75nKZtzR/aWveJbQ8HTZ
+         hlgw==
+X-Gm-Message-State: AOAM530Dd0kObtgxNGg1oWCdVH0zKoJpzfm7lYDUM7YFoWlq4xVUlmBG
+        5m8P7GmJVS7JjmSTtmecaDzORWo2P6FYGsRzOBthMw==
+X-Google-Smtp-Source: ABdhPJyw1cCR4DRMkC9jkxGwSToaHHMtZf0zS0GQEQNn0tj1PEnVi1zEEM5Jzr/4TpC04QuoQGaHT0+5IHYGiGdRMiA=
+X-Received: by 2002:a54:4795:: with SMTP id o21mr2983254oic.13.1596539636094;
+ Tue, 04 Aug 2020 04:13:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAyw9_g6mgg_DoYpbMaWpE8BQAC+S5XG8U4aw1JAMoOxiDtPQ@mail.gmail.com>
+ <20200720203755.icfvzannjwqusbes@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200720203755.icfvzannjwqusbes@ast-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 4 Aug 2020 12:13:44 +0100
+Message-ID: <CACAyw98Ddv=bCtcvbceRA+2dKJxDnbGrS9+Lb9d6d0zZt9cmEg@mail.gmail.com>
+Subject: Re: Verification speed w/ KASAN builds
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        bridge@lists.linux-foundation.org, bpf <bpf@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1BA4E035-5045-4D62-BA39-F3990CA4EF1E@gmail.com>
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-4-git-send-email-komachi.yoshiki@gmail.com>
- <CAEf4BzaRKhJqFmXJEQy5LOjKx9nkPgAKHa3cesvywy2qqg93YA@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.15)
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, 20 Jul 2020 at 21:37, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jul 17, 2020 at 11:46:37AM +0100, Lorenz Bauer wrote:
+> > Hi list,
+> >
+> > I'm not sure whether this is a bug report or just the way of life.
+> > The problem: we have a couple of machines that run KASAN
+> > kernels to weed out bugs. On those machines, loading our
+> > cls-redirect TC classifier takes so long that our user space
+> > program aborts.
+> >
+> > I've reproduced this in a VM: loading cls-redirect on a VM
+> > with a 5.4 kernel without KASAN takes around 4 seconds.
+> > Doing the same on recent bpf-next with KASAN and other
+> > shenanigans enabled it takes more like a minute.
+>
+> a minute to load single program? that sounds high.
+> While processing patches I build the kernel with kasan and lockdep.
+> None of test_progs and test_verifier programs have such drastic
+> slowdowns. I'm not sure what is the reason.
 
-> 2020/08/01 2:48=E3=80=81Andrii Nakryiko =
-<andrii.nakryiko@gmail.com>=E3=81=AE=E3=83=A1=E3=83=BC=E3=83=AB:
->=20
-> On Thu, Jul 30, 2020 at 9:45 PM Yoshiki Komachi
-> <komachi.yoshiki@gmail.com> wrote:
->>=20
->> This patch adds a simple example of XDP-based bridge with the new
->> bpf_fdb_lookup helper. This program simply forwards packets based
->> on the destination port given by FDB in the kernel. Note that both
->> vlan filtering and learning features are currently unsupported in
->> this example.
->>=20
->> There is another plan to recreate a userspace application
->> (xdp_bridge_user.c) as a daemon process, which helps to automate
->> not only detection of status changes in bridge port but also
->> handling vlan protocol updates.
->>=20
->> Note: David Ahern suggested a new bpf helper [1] to get master
->> vlan/bonding devices in XDP programs attached to their slaves
->> when the master vlan/bonding devices are bridge ports. If this
->> idea is accepted and the helper is introduced in the future, we
->> can handle interfaces slaved to vlan/bonding devices in this
->> sample by calling the suggested bpf helper (I guess it can get
->> vlan/bonding ifindex from their slave ifindex). Notice that we
->> don't need to change bpf_fdb_lookup() API to use such a feature,
->> but we just need to modify bpf programs like this sample.
->>=20
->> [1]: http://vger.kernel.org/lpc-networking2018.html#session-1
->>=20
->> Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
->> ---
->=20
-> Have you tried using a BPF skeleton for this? It could have saved a
-> bunch of mechanical code for your example. Also libbpf supports map
-> pinning out of the box now, I wonder if it would just work in your
-> case. Also it would be nice if you tried using BPF link-based approach
-> for this example, to show how it can be used. Thanks!
->=20
+Sorry for the long delay, I was on holiday.
 
-It is still under consideration, but these features seems to be useful =
-for
-this example.
+> do you use kasan inline or outline ?
 
-I would try to apply them in the next version.
+CONFIG_KASAN_SHADOW_OFFSET=0xdffffc0000000000
+CONFIG_HAVE_ARCH_KASAN=y
+CONFIG_HAVE_ARCH_KASAN_VMALLOC=y
+CONFIG_CC_HAS_KASAN_GENERIC=y
+CONFIG_KASAN=y
+CONFIG_KASAN_GENERIC=y
+# CONFIG_KASAN_OUTLINE is not set
+CONFIG_KASAN_INLINE=y
+CONFIG_KASAN_STACK=1
+# CONFIG_KASAN_VMALLOC is not set
+# CONFIG_TEST_KASAN is not set
 
-Thank you for giving me good advice.
+Looks like the inline version.
 
-Best regards,
+>
+> > Is it expected that the overhead of KASAN is this large?
+>
+> sounds like 20x overhead ? I think 10x is normal.
+>
+> > I went and collected a perf profile of loading the program
+> > in the VM:
+> >
+> > -   96.31%     1.00%  redirect.test  [kernel.kallsyms]  [k] do_check_common
+> >    - 95.32% do_check_common
+> >       - 69.24% states_equal.isra.0
+> >          + 49.81% kmem_cache_alloc_trace
+> >          + 16.77% kfree
+> >          + 1.22% regsafe.part.0
+> >       - 12.75% push_stack
+> >          - 10.65% copy_verifier_state
+> >             - 4.50% realloc_stack_state
+> >                + 4.48% __kmalloc
+> >             + 4.16% kmem_cache_alloc_trace
+> >             + 1.82% __kmalloc
+> >          + 2.07% kmem_cache_alloc_trace
+> >       + 5.25% pop_stack
+> >       + 2.84% push_jmp_history.isra.0
+> >       + 2.46% copy_verifier_state
+> >       + 1.00% free_verifier_state
+> >         0.53% kmem_cache_alloc_trace
+> >    + 1.00% runtime.goexit
+>
+> the perf profile makes sense.
+> how many insn it processed?
 
->=20
->> samples/bpf/Makefile          |   3 +
->> samples/bpf/xdp_bridge_kern.c | 129 ++++++++++++++++++
->> samples/bpf/xdp_bridge_user.c | 239 =
-++++++++++++++++++++++++++++++++++
->> 3 files changed, 371 insertions(+)
->> create mode 100644 samples/bpf/xdp_bridge_kern.c
->> create mode 100644 samples/bpf/xdp_bridge_user.c
->>=20
->=20
-> [...]
+On a fresh bpf-next build in the VM:
 
-=E2=80=94
-Yoshiki Komachi
-komachi.yoshiki@gmail.com
+    TestLoadProgram: redirect.go:76: cls_redirect load time 1m11.886066762s
+    TestLoadProgram: redirect.go:77: 25735 insns (limit 1000000)
+max_states_per_insn 28 total_states 26728 peak_states 1362 mark_read
+26
 
+On my ubuntu 5.4.0-40-generic #44-Ubuntu (not VM!):
+
+    TestLoadProgram: redirect.go:76: cls_redirect load time 3.025380047s
+    TestLoadProgram: redirect.go:77: 25735 insns (limit 1000000)
+max_states_per_insn 28 total_states 26728 peak_states 1362 mark_read
+26
+
+> what are test_progs -s stats ?
+
+#7/1 loop3.o:OK
+verification time 2215681 usec
+stack depth 8+0
+processed 554754 insns (limit 1000000) max_states_per_insn 18
+total_states 8636 peak_states 2141 mark_read 3
+#7/2 test_verif_scale1.o:OK
+verification time 4037383 usec
+stack depth 8
+processed 773445 insns (limit 1000000) max_states_per_insn 13
+total_states 3048 peak_states 788 mark_read 1
+#7/3 test_verif_scale2.o:OK
+verification time 2132131 usec
+stack depth 8+0
+processed 845499 insns (limit 1000000) max_states_per_insn 18
+total_states 8636 peak_states 2141 mark_read 3
+#7/4 test_verif_scale3.o:OK
+verification time 95848 usec
+stack depth 0+352
+processed 6102 insns (limit 1000000) max_states_per_insn 1
+total_states 422 peak_states 422 mark_read 111
+#7/5 pyperf_global.o:OK
+verification time 1308885 usec
+stack depth 352
+processed 46378 insns (limit 1000000) max_states_per_insn 5
+total_states 3263 peak_states 3241 mark_read 113
+#7/6 pyperf50.o:OK
+verification time 5858365 usec
+stack depth 352
+processed 99548 insns (limit 1000000) max_states_per_insn 5
+total_states 6909 peak_states 6883 mark_read 214
+#7/7 pyperf100.o:OK
+verification time 20829297 usec
+stack depth 344
+processed 163461 insns (limit 1000000) max_states_per_insn 5
+total_states 11566 peak_states 11539 mark_read 375
+#7/8 pyperf180.o:OK
+verification time 20471329 usec
+stack depth 368
+processed 628090 insns (limit 1000000) max_states_per_insn 7
+total_states 30369 peak_states 30283 mark_read 751
+#7/9 pyperf600.o:OK
+verification time 7413522 usec
+stack depth 320
+processed 580752 insns (limit 1000000) max_states_per_insn 13
+total_states 37099 peak_states 2118 mark_read 1292
+#7/10 pyperf600_nounroll.o:OK
+verification time 1046239 usec
+stack depth 0
+processed 361349 insns (limit 1000000) max_states_per_insn 4
+total_states 5504 peak_states 5504 mark_read 31
+#7/11 loop1.o:OK
+verification time 32021 usec
+stack depth 0
+processed 1783 insns (limit 1000000) max_states_per_insn 8
+total_states 57 peak_states 30 mark_read 2
+#7/12 loop2.o:OK
+verification time 8095 usec
+stack depth 0
+processed 524 insns (limit 1000000) max_states_per_insn 12
+total_states 18 peak_states 17 mark_read 2
+#7/13 loop4.o:OK
+verification time 1116 usec
+stack depth 0
+processed 84 insns (limit 1000000) max_states_per_insn 2 total_states
+9 peak_states 9 mark_read 2
+#7/14 loop5.o:OK
+verification time 8415325 usec
+stack depth 496
+processed 728100 insns (limit 1000000) max_states_per_insn 19
+total_states 15783 peak_states 12404 mark_read 2674
+#7/15 strobemeta.o:OK
+verification time 1105531 usec
+stack depth 488
+processed 73803 insns (limit 1000000) max_states_per_insn 22
+total_states 1997 peak_states 395 mark_read 137
+#7/16 strobemeta_nounroll1.o:OK
+verification time 13689512 usec
+stack depth 488
+processed 591026 insns (limit 1000000) max_states_per_insn 67
+total_states 18823 peak_states 1901 mark_read 262
+#7/17 strobemeta_nounroll2.o:OK
+verification time 13242 usec
+stack depth 488
+processed 1464 insns (limit 1000000) max_states_per_insn 4
+total_states 27 peak_states 27 mark_read 22
+#7/18 test_sysctl_loop1.o:OK
+verification time 13769 usec
+stack depth 300+144
+processed 1564 insns (limit 1000000) max_states_per_insn 4
+total_states 28 peak_states 28 mark_read 22
+#7/19 test_sysctl_loop2.o:OK
+verification time 6436 usec
+stack depth 36
+processed 416 insns (limit 1000000) max_states_per_insn 1 total_states
+19 peak_states 19 mark_read 6
+#7/20 test_xdp_loop.o:OK
+verification time 601603 usec
+stack depth 88
+processed 33670 insns (limit 1000000) max_states_per_insn 14
+total_states 2214 peak_states 89 mark_read 7
+#7/21 test_seg6_loop.o:OK
+#7 bpf_verif_scale:OK
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
