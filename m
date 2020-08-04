@@ -2,172 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FF223B6F8
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 10:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B862F23B706
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 10:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgHDIoY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 04:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        id S1729987AbgHDItX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 04:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgHDIoX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 04:44:23 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D52BC06174A;
-        Tue,  4 Aug 2020 01:44:23 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k18so12577237pfp.7;
-        Tue, 04 Aug 2020 01:44:23 -0700 (PDT)
+        with ESMTP id S1726233AbgHDItX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Aug 2020 04:49:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA892C06174A
+        for <bpf@vger.kernel.org>; Tue,  4 Aug 2020 01:49:22 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a14so36627054wra.5
+        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 01:49:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=eWwJ/a7QBBjnbe2aSh2ByYIlhZsdMY2b5ItjjnovC1g=;
-        b=Gh3K00BkOE05Vp5ngQOep4oUwnITWf/KjBm+G+MAMhFh/t7tgmJcGFh2nKdgr3Kb3b
-         JiQmAP2Pv+3g7dJLAVqDWFNRqmfVWBiOYUJpn4QaEUpCjUgJjChZUiciSRrAf0UkthJW
-         yGQhHFxGoDUj6uOh9GxoAEOf/rWcPCnXXMORu6rzcLwd1ktFtDU29TInIxEY6nhv6Bog
-         nGNAep7zNfiIFrpn/DHyAEVgBWwCscrI6/pYaMnTjveONJbNbKS3IfP6HhpKsbTP8cj3
-         +A5p4i+d789EUowB0hCOxbxeJuzgdx3hFFqt2cJGaTHG7R9QG2YJMXU9+euiEvDPfRoT
-         wA0w==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AS1L/irQ1SAiuy2bJA12BGGvcMN41EqAyMONdeOJ9tc=;
+        b=SNNHBJzw7nzpAcW+yLrJzjJSN14QhzRZ7Tbxoxc4gIys7PqYT41g4aksXqRZzPMqG1
+         ArW/prZNev6cryb5bVmP/FVtZONsZr4oOgPdtbrh6+cH1J/Jx4TW3EFnB0WDxITrW7eY
+         RCddcTfxynziFhiRVEJPmrRQiV/W3cKOyXcYA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=eWwJ/a7QBBjnbe2aSh2ByYIlhZsdMY2b5ItjjnovC1g=;
-        b=Ye8ogchCl2m+AoTbiieUXyflmWrd21CSs+nB+6kHz1u89E6bGcTF5KFawDTQwc0V9n
-         654jyP3L4p23y281Yap4WRpC/tm7d+SVrf+lJ2yq4JFXC52uypBjQ46rWdD2r6NLskS7
-         m327dR8EJRhT9v6YFb5hYs/HcXbghm4iUTLsLq+hQ2Sd19p/HK4OUcMH2k7eVOdlSVe5
-         SyshkaVrCUcJNJbH/dhXODlXxs56jaJs+FjgX38RmMP0i03BoBKO3KUOCBOxWJxaLR6w
-         /MUeKazSeMsV08mrzE+6hRvSPSIUkfzMMmMtNlxf00RZAjd4xEL9FRk4qbbH7uNheOq1
-         RAqg==
-X-Gm-Message-State: AOAM531p9sCoMbdCHjZq6rTQ85bLLSqsfQmxPdKp0zOvBeXMq18uRBqk
-        Tj0Ob8KRR4hi+iMVUQUjmvE=
-X-Google-Smtp-Source: ABdhPJz6e7LLP9kn6VPMwJtSQp6jKb37yjMi//OkzpQmg+6SOWGeogYXfFtE402pnu9PLx/P9Px9bA==
-X-Received: by 2002:a62:19d4:: with SMTP id 203mr1498495pfz.127.1596530662993;
-        Tue, 04 Aug 2020 01:44:22 -0700 (PDT)
-Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
-        by smtp.gmail.com with ESMTPSA id h4sm12423418pgq.9.2020.08.04.01.44.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 01:44:22 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
- in kernel FDB table
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-In-Reply-To: <20200731115225.GA5097@ranger.igk.intel.com>
-Date:   Tue, 4 Aug 2020 17:44:17 +0900
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EA1B78C7-3E3C-4A7E-8367-76189AEBE509@gmail.com>
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
- <20200731115225.GA5097@ranger.igk.intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-X-Mailer: Apple Mail (2.3445.104.15)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AS1L/irQ1SAiuy2bJA12BGGvcMN41EqAyMONdeOJ9tc=;
+        b=F9ioW/SriiUWYvg/otnHWla1lLEDt6UbxZ3bvlJkb8AqtsDoK8FtLIL6cSDzw+bj9b
+         0KFB6NoCuiWX743NXWYY/fgrjS7LdiL+PMUCxB9Ou5l9CNxM+4KbHZmm+jIMWAFM/5Sl
+         AugDovCF84VqkqQ3pEiNF14PoD5UAaNFoJEOUd4R74kn0F6K8XMoMofsbT2kC+6MPE6l
+         BsoTtZHZyJgj6PTMslM9K/c69PfPkaYguZRdXXE9PkR6FHk/Q9yapqt5RTO1cOXZu9qV
+         z5mlFxM1T0sHkF8h+bB7CCMTr4buOeMybkKTkS+A6vTnIFaSYiM3WfWdVXJlh9/dTVH6
+         NfUQ==
+X-Gm-Message-State: AOAM532C0q7qCUtOSLdICFQaLgoglJ9nLfCWmPpjj7czQnhxSQf0x9V8
+        PAi0nG6Ne8oeWQ47JWy/eVux2g==
+X-Google-Smtp-Source: ABdhPJwknV03hX6+Le1i0l1o6rQu35IlAxjFFu2vOxUuvhRe2xIIpSQE0rV1onVpnXlud7zp88Cxnw==
+X-Received: by 2002:adf:a192:: with SMTP id u18mr20495707wru.158.1596530961625;
+        Tue, 04 Aug 2020 01:49:21 -0700 (PDT)
+Received: from antares.lan (e.8.0.d.1.c.0.9.4.b.c.4.0.6.d.7.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:7d60:4cb4:90c1:d08e])
+        by smtp.gmail.com with ESMTPSA id l21sm3246418wmj.25.2020.08.04.01.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Aug 2020 01:49:20 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        bpf@vger.kernel.org
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH stable-5.4.y] bpf: sockmap: Require attach_bpf_fd when detaching a program
+Date:   Tue,  4 Aug 2020 09:47:47 +0100
+Message-Id: <20200804084747.42530-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+commit bb0de3131f4c60a9bf976681e0fe4d1e55c7a821 upstream.
 
-> 2020/07/31 20:52=E3=80=81Maciej Fijalkowski =
-<maciej.fijalkowski@intel.com>=E3=81=AE=E3=83=A1=E3=83=BC=E3=83=AB:
->=20
-> On Fri, Jul 31, 2020 at 01:44:19PM +0900, Yoshiki Komachi wrote:
->> This patch adds a new bpf helper to access FDB in the kernel tables
->> from XDP programs. The helper enables us to find the destination port
->> of master bridge in XDP layer with high speed. If an entry in the
->> tables is successfully found, egress device index will be returned.
->>=20
->> In cases of failure, packets will be dropped or forwarded to upper
->> networking stack in the kernel by XDP programs. Multicast and =
-broadcast
->> packets are currently not supported. Thus, these will need to be
->> passed to upper layer on the basis of XDP_PASS action.
->>=20
->> The API uses destination MAC and VLAN ID as keys, so XDP programs
->> need to extract these from forwarded packets.
->>=20
->> Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
->> ---
->> include/uapi/linux/bpf.h       | 28 +++++++++++++++++++++
->> net/core/filter.c              | 45 =
-++++++++++++++++++++++++++++++++++
->> scripts/bpf_helpers_doc.py     |  1 +
->> tools/include/uapi/linux/bpf.h | 28 +++++++++++++++++++++
->> 4 files changed, 102 insertions(+)
->>=20
->=20
-> [...]
->=20
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 654c346b7d91..68800d1b8cd5 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -45,6 +45,7 @@
->> #include <linux/filter.h>
->> #include <linux/ratelimit.h>
->> #include <linux/seccomp.h>
->> +#include <linux/if_bridge.h>
->> #include <linux/if_vlan.h>
->> #include <linux/bpf.h>
->> #include <linux/btf.h>
->> @@ -5084,6 +5085,46 @@ static const struct bpf_func_proto =
-bpf_skb_fib_lookup_proto =3D {
->> 	.arg4_type	=3D ARG_ANYTHING,
->> };
->>=20
->> +#if IS_ENABLED(CONFIG_BRIDGE)
->> +BPF_CALL_4(bpf_xdp_fdb_lookup, struct xdp_buff *, ctx,
->> +	   struct bpf_fdb_lookup *, params, int, plen, u32, flags)
->> +{
->> +	struct net_device *src, *dst;
->> +	struct net *net;
->> +
->> +	if (plen < sizeof(*params))
->> +		return -EINVAL;
->> +
->> +	net =3D dev_net(ctx->rxq->dev);
->> +
->> +	if (is_multicast_ether_addr(params->addr) ||
->> +	    is_broadcast_ether_addr(params->addr))
->> +		return BPF_FDB_LKUP_RET_NOENT;
->=20
-> small nit: you could move that validation before dev_net() call.
+The sockmap code currently ignores the value of attach_bpf_fd when
+detaching a program. This is contrary to the usual behaviour of
+checking that attach_bpf_fd represents the currently attached
+program.
 
-Thanks for your quick response.
-I will try to fix it in the next version.
+Ensure that attach_bpf_fd is indeed the currently attached
+program. It turns out that all sockmap selftests already do this,
+which indicates that this is unlikely to cause breakage.
 
-Best regards,
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200629095630.7933-5-lmb@cloudflare.com
+---
+The 5.4 tree needs a dedicated backport, since some headers have
+changed sufficiently to cause the patch to fail. bpf_prog_detach
+needs further massaging to pass the correct program type to
+sock_map_prog_detach. Please queue this patch together with
+commit f43cb0d672aa ("selftests: bpf: Fix detach from sockmap tests").
+---
+ include/linux/bpf.h   | 13 +++++++++--
+ include/linux/skmsg.h | 13 +++++++++++
+ kernel/bpf/syscall.c  |  4 ++--
+ net/core/sock_map.c   | 50 ++++++++++++++++++++++++++++++++++++++-----
+ 4 files changed, 71 insertions(+), 9 deletions(-)
 
->> +
->> +	src =3D dev_get_by_index_rcu(net, params->ifindex);
->> +	if (unlikely(!src))
->> +		return -ENODEV;
->> +
->> +	dst =3D br_fdb_find_port_xdp(src, params->addr, =
-params->vlan_id);
->> +	if (dst) {
->> +		params->ifindex =3D dst->ifindex;
->> +		return BPF_FDB_LKUP_RET_SUCCESS;
->> +	}
->> +
->> +	return BPF_FDB_LKUP_RET_NOENT;
->> +}
-
-=E2=80=94
-Yoshiki Komachi
-komachi.yoshiki@gmail.com
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 3bf3835d0e86..7aa0d8b5aaf0 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -956,11 +956,14 @@ static inline void bpf_map_offload_map_free(struct bpf_map *map)
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+ #if defined(CONFIG_BPF_STREAM_PARSER)
+-int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog, u32 which);
++int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
++			 struct bpf_prog *old, u32 which);
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
++int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ #else
+ static inline int sock_map_prog_update(struct bpf_map *map,
+-				       struct bpf_prog *prog, u32 which)
++				       struct bpf_prog *prog,
++				       struct bpf_prog *old, u32 which)
+ {
+ 	return -EOPNOTSUPP;
+ }
+@@ -970,6 +973,12 @@ static inline int sock_map_get_from_fd(const union bpf_attr *attr,
+ {
+ 	return -EINVAL;
+ }
++
++static inline int sock_map_prog_detach(const union bpf_attr *attr,
++				       enum bpf_prog_type ptype)
++{
++	return -EOPNOTSUPP;
++}
+ #endif
+ 
+ #if defined(CONFIG_XDP_SOCKETS)
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 4bdb5e4bbd6a..20f3550b0b11 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -450,6 +450,19 @@ static inline void psock_set_prog(struct bpf_prog **pprog,
+ 		bpf_prog_put(prog);
+ }
+ 
++static inline int psock_replace_prog(struct bpf_prog **pprog,
++				     struct bpf_prog *prog,
++				     struct bpf_prog *old)
++{
++	if (cmpxchg(pprog, old, prog) != old)
++		return -ENOENT;
++
++	if (old)
++		bpf_prog_put(old);
++
++	return 0;
++}
++
+ static inline void psock_progs_drop(struct sk_psock_progs *progs)
+ {
+ 	psock_set_prog(&progs->msg_parser, NULL);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8bc904f9badb..bf03d04a9e2f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2029,10 +2029,10 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+ 		ptype = BPF_PROG_TYPE_CGROUP_DEVICE;
+ 		break;
+ 	case BPF_SK_MSG_VERDICT:
+-		return sock_map_get_from_fd(attr, NULL);
++		return sock_map_prog_detach(attr, BPF_PROG_TYPE_SK_MSG);
+ 	case BPF_SK_SKB_STREAM_PARSER:
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+-		return sock_map_get_from_fd(attr, NULL);
++		return sock_map_prog_detach(attr, BPF_PROG_TYPE_SK_SKB);
+ 	case BPF_LIRC_MODE2:
+ 		return lirc_prog_detach(attr);
+ 	case BPF_FLOW_DISSECTOR:
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 6bbc118bf00e..df52061f99f7 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -71,7 +71,42 @@ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog)
+ 	map = __bpf_map_get(f);
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
+-	ret = sock_map_prog_update(map, prog, attr->attach_type);
++	ret = sock_map_prog_update(map, prog, NULL, attr->attach_type);
++	fdput(f);
++	return ret;
++}
++
++int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype)
++{
++	u32 ufd = attr->target_fd;
++	struct bpf_prog *prog;
++	struct bpf_map *map;
++	struct fd f;
++	int ret;
++
++	if (attr->attach_flags)
++		return -EINVAL;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	prog = bpf_prog_get(attr->attach_bpf_fd);
++	if (IS_ERR(prog)) {
++		ret = PTR_ERR(prog);
++		goto put_map;
++	}
++
++	if (prog->type != ptype) {
++		ret = -EINVAL;
++		goto put_prog;
++	}
++
++	ret = sock_map_prog_update(map, NULL, prog, attr->attach_type);
++put_prog:
++	bpf_prog_put(prog);
++put_map:
+ 	fdput(f);
+ 	return ret;
+ }
+@@ -1015,27 +1050,32 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
+ }
+ 
+ int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+-			 u32 which)
++			 struct bpf_prog *old, u32 which)
+ {
+ 	struct sk_psock_progs *progs = sock_map_progs(map);
++	struct bpf_prog **pprog;
+ 
+ 	if (!progs)
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (which) {
+ 	case BPF_SK_MSG_VERDICT:
+-		psock_set_prog(&progs->msg_parser, prog);
++		pprog = &progs->msg_parser;
+ 		break;
+ 	case BPF_SK_SKB_STREAM_PARSER:
+-		psock_set_prog(&progs->skb_parser, prog);
++		pprog = &progs->skb_parser;
+ 		break;
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+-		psock_set_prog(&progs->skb_verdict, prog);
++		pprog = &progs->skb_verdict;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if (old)
++		return psock_replace_prog(pprog, prog, old);
++
++	psock_set_prog(pprog, prog);
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
