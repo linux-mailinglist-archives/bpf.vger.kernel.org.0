@@ -2,99 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DB323BEF9
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 19:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3697923BF45
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 20:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgHDRlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 13:41:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56646 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729060AbgHDRlL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 13:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596562870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=RNF5BNepGIjOfg6AYwliyoS3ksA4DkzRVr4mTbb0ORg=;
-        b=AiekIkwlHAfrRdNAD8YWUxCQgG35ogMPnZTV14AmYkRYWU4a9KPb6tj9LECxKUqrly9L0u
-        E1Uj7eiDxAkMgvQdCU/1c6SEwSx6IDuhu6+9VUdkJw4OsdVcGOZ9L5ngCvL9hGCsQPGQZh
-        aTnGtw+m90lX5bu8esCLIzeJ2KBLeEQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-ZRn6sFEnM42clGVvmVqfPg-1; Tue, 04 Aug 2020 13:41:08 -0400
-X-MC-Unique: ZRn6sFEnM42clGVvmVqfPg-1
-Received: by mail-wm1-f72.google.com with SMTP id u14so1103599wml.0
-        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 10:41:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=RNF5BNepGIjOfg6AYwliyoS3ksA4DkzRVr4mTbb0ORg=;
-        b=cVvV56tQk2cUEWaB9oOkA3xUfnL59xC/CHCXYz//Z9zr2ZYTGMydEzp8H1HzGDBPx7
-         bnAyIgXnPKEf42Pu3VVXcS3HJAtSnue4vo5TbNedjyizOpPAyHi3FTtO+uhbdoBe1Q1A
-         Bj95bsNaTzdjJQRmx651bVNU0Nf31SuGOtYz3xHx2zWINIuOzZE4xBGqSR0EC6K6vAn8
-         FpCONBm8B/UhkoYCyLZFGrmfFmlgG0eh8x4ybdR5c2T9tRNec/Nick84hhYJPBlniDV1
-         7WP/CaktDTHNt6bsZee3QBATQlVe+L6k2IVoQocS0YHPi5AK5I09RqjmaWEFNt/6hDqe
-         /j4g==
-X-Gm-Message-State: AOAM532v4BBeDsqnPLtuhaJ5Xm0tHVkdEaz6MUUiOUOK6NCjaHmcLbGJ
-        6mtpdMGE4oAwKhcdr6cdcK8Wf2cVwxTFfah5NI37IQAvoxsUwmgGb/j3nMpF7mTrnTWhfB+gqbS
-        x/y1efu3P1xmsT7Lr3XLCsGYwPOxh
-X-Received: by 2002:a5d:6348:: with SMTP id b8mr20179071wrw.362.1596562867091;
-        Tue, 04 Aug 2020 10:41:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPy5kvChuBM7T5IcA4vQBB4vTGCGgAeSGsWGnhZCbS5OTqswzkQMEiKa/VfzYfIqBh6tpM08mtkt533qAnvr4=
-X-Received: by 2002:a5d:6348:: with SMTP id b8mr20179058wrw.362.1596562866861;
- Tue, 04 Aug 2020 10:41:06 -0700 (PDT)
+        id S1726707AbgHDSYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 14:24:23 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43400 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726079AbgHDSYV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Aug 2020 14:24:21 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 074IAGEb006286
+        for <bpf@vger.kernel.org>; Tue, 4 Aug 2020 11:24:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=6fndHO52AYDmg/fBFhWy49SBXHBSgUb1R1ovH26t910=;
+ b=kltBEm7xabLkCKWj+2WbvhZr4C32Ymy+rkhGzBqwx3E7SgF2P5IvaLTlcLxjt6nEfsA1
+ zop9fC9KF/bakxr4kRzBzCFVAXR7YwPbXX6EIlExWChHabTXFngUwBGBtIcS8ephCDp7
+ LnF2FqVCHsrHIIpGlZesVpldQnwPIngID5U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32nr82knvb-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 11:24:21 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 4 Aug 2020 11:24:18 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id BFAB92EC52E0; Tue,  4 Aug 2020 11:24:15 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [RFC PATCH bpf-next 0/9] Add support for type-based and enum value-based CO-RE relocations
+Date:   Tue, 4 Aug 2020 11:24:00 -0700
+Message-ID: <20200804182409.1512434-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-Date:   Tue, 4 Aug 2020 20:40:51 +0300
-Message-ID: <CANoWsw=4H1bHNmDP1GDo+wROCyZiZwFr-LPwoeZcWss2tJ-MNQ@mail.gmail.com>
-Subject: s390 test_bpf: #284 BPF_MAXINSNS: Maximum possible literals failure
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-04_04:2020-08-03,2020-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ impostorscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008040132
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
+N.B. Posting this patch set as an RFC to raise awareness and let people t=
+hink
+about other ways to apply these in practical applications.
 
-I have a failure (crash) of selftests/bpf/test_kmod.sh on s390.
+This patch set adds libbpf support to two new classes of CO-RE relocation=
+s:
+type-based (TYPE_EXISTS/TYPE_SIZE/TYPE_ID_LOCAL/TYPE_ID_TARGET) and enum
+value-vased (ENUMVAL_EXISTS/ENUMVAL_VALUE):
+  - TYPE_EXISTS allows to detect presence in kernel BTF of a locally-reco=
+rded
+    BTF type. Useful for feature detection (new functionality often comes=
+ with
+    new internal kernel types), as well as handling type renames and bigg=
+er
+    refactorings.
+  - TYPE_SIZE allows to get the real size (in bytes) of a specified kerne=
+l
+    type. Useful for dumping internal structure as-is through perfbuf or
+    ringbuf.
+  - TYPE_ID_LOCAL/TYPE_ID_TARGET allow to capture BTF type ID of a BTF ty=
+pe in
+    program's BTF or kernel BTF, respectively. These could be used for
+    high-performance and space-efficient generic data dumping/logging by
+    relying on small and cheap BTF type ID as a data layout descriptor, f=
+or
+    post-processing on user-space side.
+  - ENUMVAL_EXISTS can be used for detecting the presence of enumerator v=
+alue
+    in kernel's enum type. Most direct application is to detect BPF helpe=
+r
+    support in kernel.
+  - ENUMVAL_VALUE allows to relocate real integer value of kernel enumera=
+tor
+    value, which is subject to change (e.g., always a potential issue for
+    internal, non-UAPI, kernel enums).
 
-The problem comes with loading with
+I've indicated potential applications for these relocations, but relocati=
+ons
+themselves are generic and unassuming and are designed to work correctly =
+even
+in unintended applications. Furthermore, relocated values become constant=
+s,
+known to the verifier and could and would be used for dead branch code
+detection and elimination. This makes them ideal to do all sorts of featu=
+re
+detection and guarding functionality that's not available on some older (=
+but
+still supported by BPF program) kernels, while having to compile and main=
+tain
+one unified source code.
 
-sysctl -w net.core.bpf_jit_harden=2
+As part of this patch set, one potential issue with ambiguous CO-RE
+relocations was solved (see patch #3). There are also some improvements t=
+o the
+way debug relocation logs are emitted, helping to get a high-level idea o=
+f
+what's going on for users that are willing to dive deeper into the intern=
+als
+of libbpf (or libbpf contributors, of course).
 
-In that case the program (lib/test_bpf.c):
+Selftests are added for all the new features and relocation ambiguity iss=
+ue is
+excercised as well.
 
-static int bpf_fill_maxinsns1(struct bpf_test *self)
-{
-    unsigned int len = BPF_MAXINSNS;
-    struct sock_filter *insn;
-    __u32 k = ~0;
-    int i;
+LLVM patches adding these relocation in Clang:
+  - __builtin_btf_type_id() ([0], [1], [2]);
+  - __builtin_preserve_type_info(), __builtin_preserve_enum_value() ([3],=
+ [4]).
 
-    insn = kmalloc_array(len, sizeof(*insn), GFP_KERNEL);
-    if (!insn)
-        return -ENOMEM;
+  [0] https://reviews.llvm.org/D74572
+  [1] https://reviews.llvm.org/D74668
+  [2] https://reviews.llvm.org/D85174
+  [3] https://reviews.llvm.org/D83878
+  [4] https://reviews.llvm.org/D83242
 
-    for (i = 0; i < len; i++, k--)
-        insn[i] = __BPF_STMT(BPF_RET | BPF_K, k);
+Andrii Nakryiko (9):
+  libbpf: improve error logging for mismatched BTF kind cases
+  libbpf: clean up and improve CO-RE reloc logging
+  libbpf: improve relocation ambiguity detection
+  selftests/bpf: add test validating failure on ambiguous relocation
+    value
+  libbpf: implement type-based CO-RE relocations support
+  selftests/bpf: test TYPE_EXISTS and TYPE_SIZE CO-RE relocations
+  selftests/bpf: add CO-RE relo test for TYPE_ID_LOCAL/TYPE_ID_TARGET
+  libbpf: implement enum value-based CO-RE relocations
+  selftests/bpf: add tests for ENUMVAL_EXISTS/ENUMVAL_VALUE relocations
 
-    self->u.ptr.insns = insn;
-    self->u.ptr.len = len;
+ tools/lib/bpf/Makefile                        |   2 +-
+ tools/lib/bpf/bpf_core_read.h                 |  80 +-
+ tools/lib/bpf/btf.c                           |  17 +-
+ tools/lib/bpf/btf.h                           |  38 -
+ tools/lib/bpf/libbpf.c                        | 754 ++++++++++++++----
+ tools/lib/bpf/libbpf_internal.h               |  84 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     | 328 +++++++-
+ .../bpf/progs/btf__core_reloc_enumval.c       |   3 +
+ .../progs/btf__core_reloc_enumval___diff.c    |   3 +
+ .../btf__core_reloc_enumval___err_missing.c   |   3 +
+ .../btf__core_reloc_enumval___val3_missing.c  |   3 +
+ .../btf__core_reloc_size___err_ambiguous.c    |   4 +
+ .../bpf/progs/btf__core_reloc_type_based.c    |   3 +
+ ...btf__core_reloc_type_based___all_missing.c |   3 +
+ .../btf__core_reloc_type_based___diff_sz.c    |   3 +
+ ...f__core_reloc_type_based___fn_wrong_args.c |   3 +
+ .../btf__core_reloc_type_based___incompat.c   |   3 +
+ .../bpf/progs/btf__core_reloc_type_id.c       |   3 +
+ ...tf__core_reloc_type_id___missing_targets.c |   3 +
+ .../selftests/bpf/progs/core_reloc_types.h    | 352 +++++++-
+ .../bpf/progs/test_core_reloc_enumval.c       |  69 ++
+ .../bpf/progs/test_core_reloc_type_based.c    | 107 +++
+ .../bpf/progs/test_core_reloc_type_id.c       |  94 +++
+ 23 files changed, 1728 insertions(+), 234 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enu=
+mval.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enu=
+mval___diff.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enu=
+mval___err_missing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enu=
+mval___val3_missing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_siz=
+e___err_ambiguous.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_based.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_based___all_missing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_based___diff_sz.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_based___fn_wrong_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_based___incompat.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_typ=
+e_id___missing_targets.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_enu=
+mval.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_typ=
+e_based.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_typ=
+e_id.c
 
-    return 0;
-}
-
-after blinding and jiting is 98362 bytes for me and it does not fit
-16bit offset for BRC 15,.. command where BPF_EXIT | BPF_JMP is
-translated.
-
-What is the easiest way to use BRCL for large offset here?
-
-Thanks!
-
--- 
-WBR, Yauheni
+--=20
+2.24.1
 
