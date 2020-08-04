@@ -2,148 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225D123B982
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 13:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB323BB30
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 15:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgHDL15 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 07:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
+        id S1726396AbgHDNeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 09:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgHDL14 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 07:27:56 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2673C06174A;
-        Tue,  4 Aug 2020 04:27:56 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id l60so1794055pjb.3;
-        Tue, 04 Aug 2020 04:27:56 -0700 (PDT)
+        with ESMTP id S1725946AbgHDNeB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Aug 2020 09:34:01 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A05C061757
+        for <bpf@vger.kernel.org>; Tue,  4 Aug 2020 06:34:00 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k8so2953281wma.2
+        for <bpf@vger.kernel.org>; Tue, 04 Aug 2020 06:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=XtwssimjTTniuQl7LijmcNMg2apAbM55NqsMay8jLHo=;
-        b=A9fr5HFU3lf8zSg+CMCJqO5u+Rhus37sWFZBf/pso+4kMD9Fv+1sdUpvwYClICy0zM
-         /rfOHlQ7Y+7inApqU6w6O+j3zte0QSP7uQIdg6ZHeooAVfgStadr/Ntiza7mYYTmKCWo
-         S4MwxfjfeD9U5bmSvg51VEw+aIKInU9YwTNnK8VrKbKCBF2xrqiJFvaviOoSPorKtxr3
-         IcKc/BRbvVxzdS8u7KPEEBDS23ecJKXSG9/nlpw0uTU5iK0spuTOn2Y0HL+tx4j2hmqB
-         4a1XHahqhwx9a2DXP4/u6RS1d9rkOrdIixjgYntLANqgwWWHFSq0T+ZpYhTW/ppGp5GW
-         6IUw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J1/mYzIP2hMyjkq4qwIx7vKFLfGV8E9+xnljo9oNBug=;
+        b=g2//3kmYqQevKfe9SCxyV6EZhOfaU+P+Cy9nDkqvNsV+5/24wqAVcu/5670F9bItAF
+         kZ+KpSx8MmOK7MWb1gK9gTffVBJKT3jM2ZYsXwG+DAgcDPTTCOWQuj/I5vNUXZthINh0
+         xHNQzGNUPZHfw/KK7oFFwG2obkokd6owf3M6AJiffKH4bsQYpX+DpisRtrdhYpxeR84P
+         QDR1ZTwEsRgQ+EGJmjqhRRBjqaSsk7rK9/1z0oYSCbxox9ByTlQKYcyRhu4/RhiRuV4T
+         btE6hTKn6Qd1gaziphYJ3e1eH3H7jANcKyBQJXIDcnYdDcwxDRPdrxcXVA8bcUYL69l/
+         VVSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=XtwssimjTTniuQl7LijmcNMg2apAbM55NqsMay8jLHo=;
-        b=qYc/jRz+XdKdPH8sK7lw0lsOoQZ4fJ9aOaqMJjvHP3ghjZcNfOLPRV9GgEz4QlnRMg
-         mbUtZuR/dciXfDOUAqcCGZHzvDf0yaXsRzgifw4boIhySAwpDla/6k31WShbl3jqhOvL
-         tRsTbj87NM+EmQkMjiZSBRNX949IJj2dPx0cJ4V8V2UdCfawrc5mKrVKYAUrE0Xt932x
-         LwSSDRRJIpZrF41u6GiUh/STsP7oMaPmRsu1M2tBHFdpBlzXqM88wXq9s1NBfMtUn6vs
-         FMAWu2d/qBeOGkKowzMSV9HYnBNZwQYVzR+71cU4jyKjxN3fHhJuMBxkJHiCCnTS2Rks
-         ipyA==
-X-Gm-Message-State: AOAM5323hWE8hgVRfyrzO2SIt3ayu3wXryepdNdouPLaLO6GDKnwN6Du
-        xw/+GAMwIa6c73k8or5Sscc=
-X-Google-Smtp-Source: ABdhPJwsfFZK8aQeNW4ZbNv7QRfGEMuHZOB7C8ZEo5CdZNGJGZVbDMyxLfPFSk4iwVWkMzsEvSRkGw==
-X-Received: by 2002:a17:90a:e2cb:: with SMTP id fr11mr3903893pjb.236.1596540476311;
-        Tue, 04 Aug 2020 04:27:56 -0700 (PDT)
-Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
-        by smtp.gmail.com with ESMTPSA id bt10sm2162713pjb.39.2020.08.04.04.27.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Aug 2020 04:27:55 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
- in kernel FDB table
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-In-Reply-To: <5970d82b-3bb9-c78f-c53a-8a1c95a1fad7@gmail.com>
-Date:   Tue, 4 Aug 2020 20:27:47 +0900
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J1/mYzIP2hMyjkq4qwIx7vKFLfGV8E9+xnljo9oNBug=;
+        b=ZK/FqzY6C/XQyOMdYhqwKpqKCV7v+P8e9k7YMIQiiVoiMAiR+LcVg94s2KyBaZEWLz
+         9vtjEh4OHlnspvabk42BioyZ3llaHGYucgGIteUtvVJ5+Sz779uTay9d6+HdN2WhmUWq
+         O344ORpF88qSad79Dv90k7/J14eww3+qiGfyr4x6B7mDIJc+yjp6RtDchfhzduGShsBY
+         U+gFP/rYoVXm9u67zH1L5lSQSMnP9SYj0tgjhhgVdvENZbcl1YDwkkFedsGOFp/384Bi
+         ZxBGM87MrhhivuQ9TCZ13JcosM/1vfRZVXPDF6KPGg2TurVUhQ3z7sJkUW/893C37cP/
+         IT3w==
+X-Gm-Message-State: AOAM532ObemjhPn1jFngm0nFqoMrpOmAgwtaZ8B53y1cN6t6pNMfxfTa
+        zzGvf9mgRC97gDM1OW8jWgXZtfo2CVW8G4EkZZCfqQ==
+X-Google-Smtp-Source: ABdhPJxAjw5E9Gzy3aeP53ZI+pqeCPa5gfx7N9vxRRtQkTi2sm8CbIjAo67QAvYWwoPiNQ7r1jW389h/z4hP4PYpkxw=
+X-Received: by 2002:a1c:e0c2:: with SMTP id x185mr4073668wmg.124.1596548039304;
+ Tue, 04 Aug 2020 06:33:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200728085734.609930-1-irogers@google.com> <20200728085734.609930-5-irogers@google.com>
+ <969ef797-59ea-69d0-24b9-33bcdff106a1@intel.com>
+In-Reply-To: <969ef797-59ea-69d0-24b9-33bcdff106a1@intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 4 Aug 2020 06:33:47 -0700
+Message-ID: <CAP-5=fUCnBGX0L0Tt3_gmVnt+hvaouJMx6XFErFKk72+xuw9fw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] perf record: Don't clear event's period if set by
+ a term
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F99B20F3-4F88-4AFC-9DF8-B32EFD417785@gmail.com>
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
- <5970d82b-3bb9-c78f-c53a-8a1c95a1fad7@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.15)
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Aug 4, 2020 at 3:08 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> On 28/07/20 11:57 am, Ian Rogers wrote:
+> > If events in a group explicitly set a frequency or period with leader
+> > sampling, don't disable the samples on those events.
+> >
+> > Prior to 5.8:
+> > perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
+>
+> Might be worth explaining this use-case some more.
+> Perhaps add it to the leader sampling documentation for perf-list.
+>
+> > would clear the attributes then apply the config terms. In commit
+> > 5f34278867b7 leader sampling configuration was moved to after applying the
+> > config terms, in the example, making the instructions' event have its period
+> > cleared.
+> > This change makes it so that sampling is only disabled if configuration
+> > terms aren't present.
+> >
+> > Fixes: 5f34278867b7 ("perf evlist: Move leader-sampling configuration")
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/record.c | 28 ++++++++++++++++++++--------
+> >  1 file changed, 20 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> > index a4cc11592f6b..01d1c6c613f7 100644
+> > --- a/tools/perf/util/record.c
+> > +++ b/tools/perf/util/record.c
+> > @@ -2,6 +2,7 @@
+> >  #include "debug.h"
+> >  #include "evlist.h"
+> >  #include "evsel.h"
+> > +#include "evsel_config.h"
+> >  #include "parse-events.h"
+> >  #include <errno.h>
+> >  #include <limits.h>
+> > @@ -38,6 +39,9 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
+> >       struct perf_event_attr *attr = &evsel->core.attr;
+> >       struct evsel *leader = evsel->leader;
+> >       struct evsel *read_sampler;
+> > +     struct evsel_config_term *term;
+> > +     struct list_head *config_terms = &evsel->config_terms;
+> > +     int term_types, freq_mask;
+> >
+> >       if (!leader->sample_read)
+> >               return;
+> > @@ -47,16 +51,24 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
+> >       if (evsel == read_sampler)
+> >               return;
+> >
+> > +     /* Determine the evsel's config term types. */
+> > +     term_types = 0;
+> > +     list_for_each_entry(term, config_terms, list) {
+> > +             term_types |= 1 << term->type;
+> > +     }
+> >       /*
+> > -      * Disable sampling for all group members other than the leader in
+> > -      * case the leader 'leads' the sampling, except when the leader is an
+> > -      * AUX area event, in which case the 2nd event in the group is the one
+> > -      * that 'leads' the sampling.
+> > +      * Disable sampling for all group members except those with explicit
+> > +      * config terms or the leader. In the case of an AUX area event, the 2nd
+> > +      * event in the group is the one that 'leads' the sampling.
+> >        */
+> > -     attr->freq           = 0;
+> > -     attr->sample_freq    = 0;
+> > -     attr->sample_period  = 0;
+> > -     attr->write_backward = 0;
+> > +     freq_mask = (1 << EVSEL__CONFIG_TERM_FREQ) | (1 << EVSEL__CONFIG_TERM_PERIOD);
+> > +     if ((term_types & freq_mask) == 0) {
+>
+> It would be nicer to have a helper e.g.
+>
+>         if (!evsel__have_config_term(evsel, FREQ) &&
+>             !evsel__have_config_term(evsel, PERIOD)) {
 
-> 2020/08/01 2:15=E3=80=81David Ahern <dsahern@gmail.com>=E3=81=AE=E3=83=A1=
-=E3=83=BC=E3=83=AB:
->=20
-> On 7/30/20 10:44 PM, Yoshiki Komachi wrote:
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 654c346b7d91..68800d1b8cd5 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -5084,6 +5085,46 @@ static const struct bpf_func_proto =
-bpf_skb_fib_lookup_proto =3D {
->> 	.arg4_type	=3D ARG_ANYTHING,
->> };
->>=20
->> +#if IS_ENABLED(CONFIG_BRIDGE)
->> +BPF_CALL_4(bpf_xdp_fdb_lookup, struct xdp_buff *, ctx,
->> +	   struct bpf_fdb_lookup *, params, int, plen, u32, flags)
->> +{
->> +	struct net_device *src, *dst;
->> +	struct net *net;
->> +
->> +	if (plen < sizeof(*params))
->> +		return -EINVAL;
->=20
-> I need to look at the details more closely, but on first reading 2
-> things caught me eye:
-> 1. you need to make sure flags is 0 since there are no supported flags
-> at the moment, and
+Sure. The point of doing it this way was to avoid repeatedly iterating
+over the config term list.
 
-Thanks for your initial comments!
+> > +             attr->freq           = 0;
+> > +             attr->sample_freq    = 0;
+> > +             attr->sample_period  = 0;
+>
+> If we are not sampling, then maybe we should also put here:
+>
+>                 attr->write_backward = 0;
+>
+> > +     }
+>
+> Then, if we are sampling this evsel shouldn't the backward setting
+> match the leader? e.g.
+>
+>         if (attr->sample_freq)
+>                 attr->write_backward = leader->core.attr.write_backward;
 
-I will make sure whether this flag is required or not.
+Perhaps that should be a follow up change? This change is trying to
+make the behavior match the previous behavior.
 
->> +
->> +	net =3D dev_net(ctx->rxq->dev);
->> +
->> +	if (is_multicast_ether_addr(params->addr) ||
->> +	    is_broadcast_ether_addr(params->addr))
->> +		return BPF_FDB_LKUP_RET_NOENT;
->> +
->> +	src =3D dev_get_by_index_rcu(net, params->ifindex);
->> +	if (unlikely(!src))
->> +		return -ENODEV;
->> +
->> +	dst =3D br_fdb_find_port_xdp(src, params->addr, =
-params->vlan_id);
->=20
-> 2. this needs to be done via netdev ops to avoid referencing bridge =
-code
-> which can be compiled as a module. I suspect the build robots will id
-> this part soon.
+Thanks,
+Ian
 
-I guess that no build errors will occur because the API is allowed when
-CONFIG_BRIDGE is enabled.
-
-I successfully build my kernel applying this patch, and I don=E2=80=99t =
-receive any
-messages from build robots for now.
-
-Thanks & Best regards,
-
-
-=E2=80=94
-Yoshiki Komachi
-komachi.yoshiki@gmail.com
-
+> > +     if ((term_types & (1 << EVSEL__CONFIG_TERM_OVERWRITE)) == 0)
+> > +             attr->write_backward = 0;
+> >
+> >       /*
+> >        * We don't get a sample for slave events, we make them when delivering
+> >
+>
