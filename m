@@ -2,125 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB1D23B243
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 03:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAF723B271
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 03:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgHDB2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 21:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S1729409AbgHDBpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 21:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgHDB2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 21:28:16 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EEBC06174A;
-        Mon,  3 Aug 2020 18:28:16 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id 77so4354228ilc.5;
-        Mon, 03 Aug 2020 18:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Z70cZn0HEIIxS9vSsgjhWlsUbqowJbwegulZ+jZ6cE0=;
-        b=MVN3jAc4ySgT3qTSvY/lDZyMZay4Mn/kwDx3rxtx04HFJHTs535wzWnlYXTjtTX7Nx
-         4Kj7rypl+7+WkN93fWbnEq7NslbjH7IUtb15H8e7XtyYhXlHZ7PUtwJqN2KSz6Zak2Rp
-         9N4xoC5pnCLREM5DlNvxXmFzxySDl1lj2FiRAa2ZCwed9O3sHwWL4V9MpfeKybrpzu0A
-         3faqaVg5/W9ruiGWGl3I8IpHrxTNTRQ5mHenj548Xf1H/SV0NkkXOPRHwQbAPzGCGiPn
-         aXECbbd/gE5A6dWObaNwNG8ZcbXPzyQip8wYhGFZjQzzkRN9QdrUV42ToUKDx41dieEP
-         w+Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Z70cZn0HEIIxS9vSsgjhWlsUbqowJbwegulZ+jZ6cE0=;
-        b=AkrNqMclvisSxH4qGVgUIOc+iycKpsfdfOf1FR+yhPQzSr080atq4MzgMpGctJ5eAc
-         SszNyF3aY2eg9XHXg6xSLweYuoK5tC6Tqs92pNQp9JMZnad422WBEZZqoTSZrjIk/nRg
-         WiQ++/qAjInVElwXbaSiRey1fmNRAR4pYpaAI7/1pweQuXd6ClyqaL/1T+Wn0Gmr0Phq
-         ZVSgp6iihlD1HL+yys7VZUzzVMjkbhosnUx4V0xQjw1R696chSwI/Y3Twuy3Va97cKGj
-         iCzqC/94jUjkcK6LfwF5okK09RN6lir/qJt00yfF/4KjRykzpXEzUJqHOyw7knBL5EYn
-         YxHQ==
-X-Gm-Message-State: AOAM530/LPjK0AKlhWfsznT2rSZwy4HMn6/CfAH5ZF+9ZA1zyJ9PupJi
-        hgyFjzNlDfZPo6S8BJGXCNU=
-X-Google-Smtp-Source: ABdhPJzk3UutonUT4zaKpQF/wxVPl98T16Npd5iN30dn55PilfmBjUIkKYWgtEnzhn+xza+s1pF+dA==
-X-Received: by 2002:a92:d292:: with SMTP id p18mr2188733ilp.281.1596504495981;
-        Mon, 03 Aug 2020 18:28:15 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g13sm11491593ilq.18.2020.08.03.18.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 18:28:15 -0700 (PDT)
-Date:   Mon, 03 Aug 2020 18:28:04 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, kernel-team@fb.com,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Neal Cardwell <ncardwell@google.com>, netdev@vger.kernel.org,
-        Yuchung Cheng <ycheng@google.com>
-Message-ID: <5f28b9a4704a1_62272b02d7c945b4be@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200803231045.2683198-1-kafai@fb.com>
-References: <20200803231013.2681560-1-kafai@fb.com>
- <20200803231045.2683198-1-kafai@fb.com>
-Subject: RE: [RFC PATCH v4 bpf-next 05/12] bpf: tcp: Add
- bpf_skops_established()
+        with ESMTP id S1726615AbgHDBpR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 21:45:17 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4A4C06174A;
+        Mon,  3 Aug 2020 18:45:17 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 41C4A12790FA9;
+        Mon,  3 Aug 2020 18:28:31 -0700 (PDT)
+Date:   Mon, 03 Aug 2020 18:45:15 -0700 (PDT)
+Message-Id: <20200803.184515.1642003997353340419.davem@davemloft.net>
+To:     daniel@iogearbox.net
+Cc:     kuba@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: pull-request: bpf-next 2020-08-04
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200803235640.31210-1-daniel@iogearbox.net>
+References: <20200803235640.31210-1-daniel@iogearbox.net>
+X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 03 Aug 2020 18:28:31 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau wrote:
-> In tcp_init_transfer(), it currently calls the bpf prog to give it a
-> chance to handle the just "ESTABLISHED" event (e.g. do setsockopt
-> on the newly established sk).  Right now, it is done by calling the
-> general purpose tcp_call_bpf().
-> 
-> In the later patch, it also needs to pass the just-received skb which
-> concludes the 3 way handshake. E.g. the SYNACK received at the active side.
-> The bpf prog can then learn some specific header options written by the
-> peer's bpf-prog and potentially do setsockopt on the newly established sk.
-> Thus, instead of reusing the general purpose tcp_call_bpf(), a new function
-> bpf_skops_established() is added to allow passing the "skb" to the bpf prog.
-> The actual skb passing from bpf_skops_established() to the bpf prog
-> will happen together in a later patch which has the necessary bpf pieces.
-> 
-> A "skb" arg is also added to tcp_init_transfer() such that
-> it can then be passed to bpf_skops_established().
-> 
-> Calling the new bpf_skops_established() instead of tcp_call_bpf()
-> should be a noop in this patch.
+From: Daniel Borkmann <daniel@iogearbox.net>
+Date: Tue,  4 Aug 2020 01:56:40 +0200
 
-Yep, looks like a noop.
+> The following pull-request contains BPF updates for your *net-next* tree.
 
-> 
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Pulled, there was a minor conflict in net/core/dev.c please double check
+my work.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-
-[...]
-
->  
-> +#ifdef CONFIG_CGROUP_BPF
-> +static void bpf_skops_established(struct sock *sk, int bpf_op,
-> +				  struct sk_buff *skb)
-
-
-Small nit because its an RFC anyways.
-
-Should we call this bpf_skops_fullsock(...) instead? Just a suggestion.
-
-> +{
-> +	struct bpf_sock_ops_kern sock_ops;
-> +
-> +	sock_owned_by_me(sk);
-> +
-> +	memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-> +	sock_ops.op = bpf_op;
-> +	sock_ops.is_fullsock = 1;
-> +	sock_ops.sk = sk;
-> +	/* skb will be passed to the bpf prog in a later patch. */
-> +
-> +	BPF_CGROUP_RUN_PROG_SOCK_OPS(&sock_ops);
-> +}
+Thank you!
