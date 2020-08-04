@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397923B19C
-	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 02:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95E523B1A0
+	for <lists+bpf@lfdr.de>; Tue,  4 Aug 2020 02:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728434AbgHDATy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Aug 2020 20:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
+        id S1729146AbgHDAVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Aug 2020 20:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728329AbgHDATx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Aug 2020 20:19:53 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679E7C06174A
-        for <bpf@vger.kernel.org>; Mon,  3 Aug 2020 17:19:53 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id l17so40436135iok.7
-        for <bpf@vger.kernel.org>; Mon, 03 Aug 2020 17:19:53 -0700 (PDT)
+        with ESMTP id S1729062AbgHDAVg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Aug 2020 20:21:36 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCADC061756
+        for <bpf@vger.kernel.org>; Mon,  3 Aug 2020 17:21:36 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id 77so4253663ilc.5
+        for <bpf@vger.kernel.org>; Mon, 03 Aug 2020 17:21:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1MAfLwcjEl3HCVfdRl5a9bQOUBDcD2FKaaueE7yh9yQ=;
-        b=kbjHVxJxuWu9n8yQZtc1W94k/wJXVr8+U33LC97VNMsgq+PxPqKnzOZ09TJrABAX8k
-         k83Qr7hcZYcolyJthdRbXaa6irVQTyZgxpgd5AmbvrPWjBTfVBB3Ug/aPRW5UPICE+uy
-         vsU9kNGd0kwS0Fn34Mjj4SvuXGKM7vQjPjZiv/OqdJj2uySplXbAMBhgwYL6EuK2yVJz
-         6MelYNDbU4BSuuSYOeqmsoO4gmoyRJrP18Fe1A1n+cQotkBpdZFWeC06SEHSTC+UdTJi
-         R+uNIiCjwAXF6WfVcYHnqoIcAXGtCwPdm+SJhiAi4QXTj7ByDwf+boWEJ6XfXZeA9ulx
-         9s0A==
+        bh=ZwrZ/5dFq1sBv+X9Uiqa92EcKiVqb9UU7ci8j7I1Fnk=;
+        b=k3pnMMSbMjd+CYB4adAxUGJFyq+9pq/55Jruk7vdRMsVsjGMT8J3NZeo824LpBZsds
+         RA+9onymwoVvuXL74LhbaHxjOZ35APqqMek8lwMRnr/OmmaPu6rCDbTrJvVepL6Bl8vA
+         +u0U8OBGVfOQY7ziPlH68ze61n720WIoCAa/mA/pBBg9csft5AiiprpKK8LbrQ8oxvbn
+         26UATPmqZBUmOIBho/vKKp/hew/PUY0kMD1eqvpwpU9II6+EmdwoEn9eQ7JGCUonrpJC
+         jQECFQ4eRHACpOi6r+/VtdFg8dSmQNOC/++9599eHcLe8zfQvg1awtTWpKV9tVTlTSkk
+         aFBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1MAfLwcjEl3HCVfdRl5a9bQOUBDcD2FKaaueE7yh9yQ=;
-        b=GWT+t5LZUOEVOgzFQT+n0lCL4hEnHSSBR7LdNktTzKFV73Ib7C3/BAIugMVZgqBppk
-         b/rXtpbvErZpUfkE9XzzaZm/zz7wkooY7/sZ6K7bxfchRve0fxdg9anOMV2N0SkmcSz0
-         9Iq0rr5IUkTe2uNIbm8jWRb21lNYIXHBuCjVYyAyKbZhaezMtC6J4pKjZbP10hJuLa6V
-         hmXZ7OuL9ykN3SY7ScwW51uwTr55g0wrC17/y7/umsaUif4/X/qVyIMb6E7RJIc1ECDt
-         qjznaAPnJPx5gTbGwwJGK4FpTCWCEebVTizlYheUA5I+YrY2wGoDZv20sVVh8wyB5t4J
-         Hedw==
-X-Gm-Message-State: AOAM531JiItO/SweeI9izE44J05lI7WTxjxbA3/GHlf3Vvn0YR5/iQHs
-        f/hR3tYCEIVKsryfkafZEEAMxVJKT8SZffGGtvpOdU8I
-X-Google-Smtp-Source: ABdhPJz6KqTEOfBJlbHG/WuWvSFCA7j2sgJ68+1Nyxmougr/dNn9kGHmdnnIx5pIsCPhR60+nDzWWH8r8ZMiBoTsTaw=
-X-Received: by 2002:a5d:8143:: with SMTP id f3mr2446365ioo.157.1596500392304;
- Mon, 03 Aug 2020 17:19:52 -0700 (PDT)
+        bh=ZwrZ/5dFq1sBv+X9Uiqa92EcKiVqb9UU7ci8j7I1Fnk=;
+        b=sZAq7C6zuthxlgxxda/WXVoPHmgWcnDdF2YRK6c6SqlOrZ8fFv8cwvJ2MJx5lPmsJP
+         UiJImKgsZCeKN580OF8z6fkCL0tIJPfm8aNdEEYGvf/r4I+VzkxPkBFjet6/Sb7JNmTW
+         wAEsI+/aNqF0I8rCRbSgB8tTgk2TKller7pOwDlAIhS3LWTGGZwPrLUvQCr8tI1ZO7O7
+         gnNJADM+EwoVjZP0ghYG5wDErQdDchSrRKK/YmZqySi+ZAMq5daioHKZIxCDpKnE/TFT
+         a6oh4Z90GuM2BqMp3vEA5BmhBb04dol8VoMjsXMP/6YMRsBjVA4uHeyHoOzNK3lSSVUc
+         0XIg==
+X-Gm-Message-State: AOAM530uwY+A5SEVXmffOef93TXrM+3T08zf99/mJtuC6SSBSs5Tbeei
+        AgSVRoZszJw276aDw8TjOoUJBTdhWB6k8ScM0VDsDg==
+X-Google-Smtp-Source: ABdhPJwM4VyTE222fb4qkOuBgUMqkotVtrKqwecGTk1OvbKm3zuAS7KI0LqxAU1wLDEHkuml0+qLYNgcqxW6DMIUrfU=
+X-Received: by 2002:a92:d5ca:: with SMTP id d10mr2059591ilq.216.1596500495985;
+ Mon, 03 Aug 2020 17:21:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200803231013.2681560-1-kafai@fb.com> <20200803231019.2681772-1-kafai@fb.com>
-In-Reply-To: <20200803231019.2681772-1-kafai@fb.com>
+References: <20200803231013.2681560-1-kafai@fb.com> <20200803231039.2682896-1-kafai@fb.com>
+In-Reply-To: <20200803231039.2682896-1-kafai@fb.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 3 Aug 2020 17:19:40 -0700
-Message-ID: <CANn89iKuF78oM9aCo4rQBu5p6oD7y=vArmpFMHjQGudb=t0g7w@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 bpf-next 01/12] tcp: Use a struct to represent a saved_syn
+Date:   Mon, 3 Aug 2020 17:21:24 -0700
+Message-ID: <CANn89iLWG=r1mpZB4W2LtyBSo0Ee1pkkt2-GBC5Ru_F3ugzw-w@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 bpf-next 04/12] tcp: Add saw_unknown to struct tcp_options_received
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,21 +66,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Aug 3, 2020 at 4:10 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> The TCP_SAVE_SYN has both the network header and tcp header.
-> The total length of the saved syn packet is currently stored in
-> the first 4 bytes (u32) of an array and the actual packet data is
-> stored after that.
+> In a later patch, the bpf prog only wants to be called to handle
+> a header option if that particular header option cannot be handled by
+> the kernel.  This unknown option could be written by the peer's bpf-prog.
+> It could also be a new standard option that the running kernel does not
+> support it while a bpf-prog can handle it.
 >
-> A later patch will add a bpf helper that allows to get the tcp header
-> alone from the saved syn without the network header.  It will be more
-> convenient to have a direct offset to a specific header instead of
-> re-parsing it.  This requires to separately store the network hdrlen.
-> The total header length (i.e. network + tcp) is still needed for the
-> current usage in getsockopt.  Although this total length can be obtained
-> by looking into the tcphdr and then get the (th->doff << 2), this patch
-> chooses to directly store the tcp hdrlen in the second four bytes of
-> this newly created "struct saved_syn".  By using a new struct, it can
-> give a readable name to each individual header length.
+> This patch adds a "saw_unknown" bit to "struct tcp_options_received"
+> and it uses an existing one byte hole to do that.  "saw_unknown" will
+> be set in tcp_parse_options() if it sees an option that the kernel
+> cannot handle.
 >
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
