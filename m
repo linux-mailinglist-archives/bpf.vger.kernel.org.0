@@ -2,119 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D12723CD2A
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 19:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD7523CD71
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 19:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgHERWS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 13:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        id S1728338AbgHERaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 13:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728772AbgHERVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:21:20 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D27C06174A
-        for <bpf@vger.kernel.org>; Wed,  5 Aug 2020 10:21:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d19so1262349pgl.10
-        for <bpf@vger.kernel.org>; Wed, 05 Aug 2020 10:21:12 -0700 (PDT)
+        with ESMTP id S1728788AbgHER1k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:27:40 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC804C061575;
+        Wed,  5 Aug 2020 10:27:39 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id x2so4035803ybf.12;
+        Wed, 05 Aug 2020 10:27:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FbzyMEQueQDY3YDpmwzlLQ7A2LdIlI00oS2N1BmMemo=;
-        b=1p9kECCs2Xu30P/0sAU+cJKXlwibxSqcehh6AyJa4aBU4moLlvMpXPt/tyOryRrF2q
-         33XZM2JlPVoeldKBki9UbuapxrXDnWnTYJWGdd51STCGwlS3vT7D13q4mQdwVyiIE8pP
-         K5/wGPaF37h2DxnFPLpVXsP0q6X7wdW1HsFrJaX+k1AocBq7BF1R4zQyHMxPH+I+2Xeh
-         VnxtaGlErCNqRJkqMJik4ILc/Xw1ksRRpn5m8COXa9VN3Uqbcyckyfw1VxHq5rPnAKca
-         05sUegVB6m5V6ARTNN9vuWcCC2gTsYDe4SisszMj13Evi+Su4zGJTgbttY/H9t92qyfu
-         XfDw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BUORAD323AYH3zxx1yaS/aYxJilBT0bejXUe4CU1IsU=;
+        b=nb7391sFHHARlePNt23uWFUiCgJDNofextE1aito4sTSYWdJoc/yW7awE7AwDekIQy
+         nQMdw7M56WSttzqnt4r/rinYc+iholmrAs7j82PJhz9OyuE2x/UDuIptCwy+aAUe/sc3
+         sdtBKtVW+qtwEkNoyEUWTlvt01nHEyrNTAccsXcBausvwY9lV3kNzseWdWRWUtpBf4vn
+         vzKszBu0NEbXGrPfS4t/lH+3P7PxcrEKLJR29/MG5j281+Hfmh49/8/4XbVjVcnKcE72
+         Bx+120NdmYBdfsL53Mxn9gS4y1TRSKlUMPMNKievyfxEQ22EH7gDVg375zEA+oMC3NRR
+         AOog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FbzyMEQueQDY3YDpmwzlLQ7A2LdIlI00oS2N1BmMemo=;
-        b=i5cyNNdUb3aMJ+pnBYVSGhAZqao1AnHh8GLVoRQvNXKVi7SAAxmEXmkfPxGUT0fp2y
-         vTn6w5yg1t3sNj9R/9pM9YeAv2vu9mpfV8xJHqBTRnTwXyLsfm2fCBL9Og8YCYMrjFjS
-         l/6RcYmb3DsZ01Vv9XNSO4ca6id4avSaAoTfLNXXXE9j7YZMsHJv7qpOyGWIydrxsixi
-         /WywWHDTPFC7TvkbS/t5sfCvRClmm6FKgwK4gvNvDUijsTftzbe9UghES2AQqOFQp14m
-         u0phs2TZeYyMMDUOR2ybCnBM0xYSlhmVizuDZsTtBMTWx5IjSbGR/xcOt4EuE65Uj9Bj
-         VS+Q==
-X-Gm-Message-State: AOAM533e7WJ8c5/r4ofVeqSYt+Gb2ETpaX9/epC/f5xS/GAHUO2AxsBC
-        1yeqsY0dr3Nxt/j581+pNiSL1g==
-X-Google-Smtp-Source: ABdhPJzIkVaHvoR9tH5K50gUhGmPh+91WufLNUGc3rhmCrQDI0HIHRst5vySfI+LEfznVwHsaMaGmg==
-X-Received: by 2002:aa7:92cb:: with SMTP id k11mr4287827pfa.233.1596648071561;
-        Wed, 05 Aug 2020 10:21:11 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.73])
-        by smtp.gmail.com with ESMTPSA id z1sm3709583pjn.34.2020.08.05.10.21.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Aug 2020 10:21:10 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sfr@canb.auug.org.au, mingo@kernel.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] kprobes: fix compiler warning for !CONFIG_KPROBES_ON_FTRACE
-Date:   Thu,  6 Aug 2020 01:20:46 +0800
-Message-Id: <20200805172046.19066-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BUORAD323AYH3zxx1yaS/aYxJilBT0bejXUe4CU1IsU=;
+        b=mU25JNlQ0WbPKa7k0gKFBqalEON1tO+EE3nK4Qj+H+g9EbqZtghfIkZm4HH3s9ABLt
+         nKY0XOvgIwmiY2FhUTr9g5jmWty/zyOzfRqBn94qcQSrVIlPQGZ3y/U6uNm7UJqBXTT1
+         tRtsfSwTCWyBcrk6f8yNX8Oz23fJ0JdEmTimRxBHgFad7OyMGwPbr2IJx1+SEi7yQiKI
+         Ms5g2YafQApTE1OFHNA9w7gOxEbwJFL427igAoBvR5FpjlzI7SQfUTh1omZI6kQ2focH
+         iUXxwuep1Rz6RlMCzqWKRlvEjXLig06uFjNM0XxMHG6F5b6K59ZMW5zknaN6RIaOWWx6
+         yNSA==
+X-Gm-Message-State: AOAM533NVlK8SyNGepOAlQ6A2SMjP1sn/MTFN5RpiM/w1njadRIbdaS0
+        6rScp2wsuSMbTQS1Bn2WA5unEvOq9kEgxbq0HFk=
+X-Google-Smtp-Source: ABdhPJzV/vqVTpcSUL8lQmokCDonYTJ8sM2iojmyXsyq64VdK2J/hLo3FUzGE0OyGsfWug1unqWO9IDmfJ0pgr3dC+s=
+X-Received: by 2002:a25:2ad3:: with SMTP id q202mr6206874ybq.27.1596648459142;
+ Wed, 05 Aug 2020 10:27:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com> <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com> <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com> <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com> <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Aug 2020 10:27:28 -0700
+Message-ID: <CAEf4BzYFfAubxo1QY6Axth=gwS9DfzwRkvnYLspfk9tLia0LPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs. user_prog
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix compiler warning(as show below) for !CONFIG_KPROBES_ON_FTRACE.
+On Wed, Aug 5, 2020 at 10:16 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> >
+> > Being able to trigger BPF program on a different CPU could enable many
+> > use cases and optimizations. The use case I am looking at is to access
+> > perf_event and percpu maps on the target CPU. For example:
+> >       0. trigger the program
+> >       1. read perf_event on cpu x;
+> >       2. (optional) check which process is running on cpu x;
+> >       3. add perf_event value to percpu map(s) on cpu x.
+>
+> If the whole thing is about doing the above then I don't understand why new
+> prog type is needed. Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+> "enable many use cases" sounds vague. I don't think folks reading
+> the patches can guess those "use cases".
+> "Testing existing kprobe bpf progs" would sound more convincing to me.
 
-kernel/kprobes.c: In function 'kill_kprobe':
-kernel/kprobes.c:1116:33: warning: statement with no effect
-[-Wunused-value]
- 1116 | #define disarm_kprobe_ftrace(p) (-ENODEV)
-      |                                 ^
-kernel/kprobes.c:2154:3: note: in expansion of macro
-'disarm_kprobe_ftrace'
- 2154 |   disarm_kprobe_ftrace(p);
+Was just about to propose the same :) I wonder if generic test_run()
+capability to trigger test programs of whatever supported type on a
+specified CPU through IPI can be added. That way you can even use the
+XDP program to do what Song seems to need.
 
-Link: https://lore.kernel.org/r/20200805142136.0331f7ea@canb.auug.org.au
+TRACEPOINTs might also be a good fit here, given it seems simpler to
+let users specify custom tracepoint data for test_run(). Having the
+ability to unit-test KPROBE and TRACEPOINT, however rudimentary, is
+already a big win.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- kernel/kprobes.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+> If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+> As part of it test_run would trigger on a given cpu with $ip pointing
+> to some test fuction in test_run.c. For local test_run the stack trace
+> would include bpf syscall chain. For IPI the stack trace would include
+> the corresponding kernel pieces where top is our special test function.
+> Sort of like pseudo kprobe where there is no actual kprobe logic,
+> since kprobe prog doesn't care about mechanism. It needs correct
+> pt_regs only as input context.
+> The kprobe prog output (return value) has special meaning though,
+> so may be kprobe prog type is not a good fit.
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 503add629599..d36e2b017588 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1114,9 +1114,20 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
- 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
- }
- #else	/* !CONFIG_KPROBES_ON_FTRACE */
--#define prepare_kprobe(p)	arch_prepare_kprobe(p)
--#define arm_kprobe_ftrace(p)	(-ENODEV)
--#define disarm_kprobe_ftrace(p)	(-ENODEV)
-+static inline int prepare_kprobe(struct kprobe *p)
-+{
-+	return arch_prepare_kprobe(p);
-+}
-+
-+static inline int arm_kprobe_ftrace(struct kprobe *p)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int disarm_kprobe_ftrace(struct kprobe *p)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- /* Arm a kprobe with text_mutex */
--- 
-2.11.0
+It does? I don't remember returning 1 from KPROBE changing anything. I
+thought it's only the special bpf_override_return() that can influence
+the kernel function return result.
 
+> Something like fentry/fexit may be better, since verifier check_return_code()
+> enforces 'return 0'. So their return value is effectively "void".
+> Then prog_test_run would need to gain an ability to trigger
+> fentry/fexit prog on a given cpu.
