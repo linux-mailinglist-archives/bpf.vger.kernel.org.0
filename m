@@ -2,95 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B995223D195
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 22:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBD223D2B9
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 22:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgHEUCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 16:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S1726490AbgHEUPm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 16:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726914AbgHEQii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:38:38 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515ABC008686;
-        Wed,  5 Aug 2020 09:38:14 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id h7so42227406qkk.7;
-        Wed, 05 Aug 2020 09:38:14 -0700 (PDT)
+        with ESMTP id S1726890AbgHEUPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 16:15:17 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D60C061575;
+        Wed,  5 Aug 2020 13:15:17 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id q3so4990527ybp.7;
+        Wed, 05 Aug 2020 13:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OWOcCu/RdgXsCBIctAyPQWwmqwK81xNeRORnBnjCneQ=;
-        b=tW1knKDE62tuWn5yeakMwnGIfDvIy8Nk4xLrt9d+xlZ0YyDTp0hfdO9t95joJp7vvZ
-         Rr+5fj2ioRVHlNbtjNL9uFziyTfkS9m6bSrOaXsRADXi8VDgAZphegvBa9lTyhmpC/BW
-         3brEgbOSY0tWjPyGmMovwukn4TBmQXaupVQCUTorMzToFKmuldYaJEJRmJ6fIqatSImu
-         nrmyVVaeqG9e2xCRnc7TEKtNfrYGHD5YPJTs5cC4OyePzM+7V5j2mI+sMDtN7CvRgPe7
-         0G+RF71204I3OsNCTMT6/vujlrH+z8AiuY8nIiy3121EPJta/NA+nf0LmKffr5fAn3+f
-         oCOg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=STs0JLv/8EFWVZLzJX1i5UMZbwlbxsrfliZK8y5cx/8=;
+        b=rFs+NgozImTs/QS3rwuyXbDIG3be53GBkBeCiGkanSSvi/pA+faRzSy1psurvDkeGy
+         NbPbutW0oelAXcxhQievWeYL3wg1szjJ54fs/qiwfEFPmEVdAlaGoThFu6CvZ6e0gxGg
+         CgOwi5cqHdsSHMd+QbhUbWz6nBlHbd0yd7UIEEC4k6sUsS6FyvhEBRY7kraWRzQqs40S
+         9W7jxT0wsZWSCdYPlTBQWGc6wDBcEy1BArN55wktyZBH2t6MNu7v4ecK3vAmBUISgpPj
+         3238oA6Wr+oJGLtafnErd15SWHpSVOxQCSG2kvEBvDgFQH3AIHiMqv+0CwXjcRA4vKmv
+         QIDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OWOcCu/RdgXsCBIctAyPQWwmqwK81xNeRORnBnjCneQ=;
-        b=MuQJ+FNog2cqg8YGFPNfWOUHVxu3XZQTSxC5c+2TLBAXf9tNoBCAdbjcVTz1UaACRa
-         JLuKpjJhKjgHdhNvyGP0rwcoZPv1a6kPOBM3CP36GJmaWkDosorg93koOyMghwsrZYM/
-         OAU0A3HAQi4Z8NGM5IlOk74VjseXj1vw2C5S3WuUuHQId7XrvRtZK+pRl9BnluozkheU
-         OGakoXAWwFqQozUKIobzHJrFy0Abm6iuhk1ageCmTZ70K3qNXXRFIKUYDTMoXF5ZdxEw
-         5AGY0fXBTmva5xGv1VGfzGgjUiqrik5edV0daAah77btC43zF9izyVBVNFLjfzOuZ/B/
-         7CIg==
-X-Gm-Message-State: AOAM533zXkxnDg1IOm3lfay89ed31IK/uGas9ERJlL+Dbhf48nWI7MQv
-        qS1AcopUu/LE2gm7aYU71qz5SD+s
-X-Google-Smtp-Source: ABdhPJzHbvC24LEDffg8OVD0lvzzuhVVCTLwMO+4l6PPbH7YR9RHVzxjr31PzE59EaiGa3a5E15XEw==
-X-Received: by 2002:a37:68c1:: with SMTP id d184mr4174354qkc.62.1596645493547;
-        Wed, 05 Aug 2020 09:38:13 -0700 (PDT)
-Received: from [10.254.6.29] ([162.243.188.133])
-        by smtp.googlemail.com with ESMTPSA id k5sm2516784qtu.2.2020.08.05.09.38.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Aug 2020 09:38:12 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
- in kernel FDB table
-To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
- <5970d82b-3bb9-c78f-c53a-8a1c95a1fad7@gmail.com>
- <F99B20F3-4F88-4AFC-9DF8-B32EFD417785@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <e92455ce-3a3f-7c52-1388-da40e8ceefd0@gmail.com>
-Date:   Wed, 5 Aug 2020 10:38:10 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=STs0JLv/8EFWVZLzJX1i5UMZbwlbxsrfliZK8y5cx/8=;
+        b=ZDPvpIElcXmNx2ss+GrSeF0jpuWsPND5BW8L0w/cgULDM63Slg4d7k7s3M6ervBVVt
+         R2zri3TAbeuGz5e0qBcC0Nan1cUHSywJ9SmBZr528fTtUvv/Lgym3PlMymLKprcGG3B0
+         CZNwWN/QeBkleTsVeokkfbVXTQrCy5lyRU1ns5AxGPqq2RqnyQ3Zdq6lZz7RJOfk9Jya
+         XttGyvmwgNCnmJUXOAU1tHIMpcuHb/+EWJnbw+hbHXcHXQqpaMo6KTpl6f5Y76WqV5FN
+         c5D/oSfETN58ctODzrrPeJnn+EUUIP1iEB2EzNz8enr9IH+cB0X+YuoKXhABQ93t5+RJ
+         jW/g==
+X-Gm-Message-State: AOAM5304OGFVjqpACmTq10o9z3x9JsNWGEx/YUoAjZrzslFfiCJF1IK7
+        dEBtyFDhztdRzcW6iUyBlmiWZ2VvIXrl3JI32IRuYQ==
+X-Google-Smtp-Source: ABdhPJyJEb7l/LvXmvpttlLN+6/7Yvc1MYwgR3na5ibRPN7WIAOizDAw9EnUWZgTfasHAz3cKAZoHyqfGYfnxWIWvcU=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr7019155ybe.510.1596658516313;
+ Wed, 05 Aug 2020 13:15:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <F99B20F3-4F88-4AFC-9DF8-B32EFD417785@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200805163503.40381-1-cneirabustos@gmail.com>
+In-Reply-To: <20200805163503.40381-1-cneirabustos@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Aug 2020 13:15:05 -0700
+Message-ID: <CAEf4BzYrek8shqzUj+zNC=TjGkDPCKUFP=YnbiNf6360f1MyTw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next] bpf/selftests: fold test_current_pid_tgid_new_ns
+ into test_progs.
+To:     Carlos Neira <cneirabustos@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/4/20 5:27 AM, Yoshiki Komachi wrote:
-> 
-> I guess that no build errors will occur because the API is allowed when
-> CONFIG_BRIDGE is enabled.
-> 
-> I successfully build my kernel applying this patch, and I don’t receive any
-> messages from build robots for now.
+On Wed, Aug 5, 2020 at 1:06 PM Carlos Neira <cneirabustos@gmail.com> wrote:
+>
+> Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
+> This change folds a test case into test_progs.
+>
+> Changes from V3:
+>  - STAT(2) check changed from CHECK_FAIL to CHECK.
+>  - Changed uses of _open_ to _open_and_load.
+>  - Fixed error codes were not being returned on exit.
+>  - Removed unnecessary dependency on Makefile
+>
+> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> ---
 
-If CONFIG_BRIDGE is a module, build should fail: filter.c is built-in
-trying to access a symbol from module.
+bpf-next is closed, you'll have to re-submit once it opens in roughly
+two weeks. Looks good overall, few minor things below, please
+incorporate into next revision with my ack:
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/testing/selftests/bpf/.gitignore        |   2 +-
+>  tools/testing/selftests/bpf/Makefile          |   4 +-
+>  .../bpf/prog_tests/ns_current_pid_tgid.c      |  85 ----------
+>  .../bpf/prog_tests/ns_current_pidtgid.c       |  54 ++++++
+>  .../bpf/progs/test_ns_current_pid_tgid.c      |  37 ----
+>  .../bpf/progs/test_ns_current_pidtgid.c       |  25 +++
+>  .../bpf/test_current_pid_tgid_new_ns.c        | 159 ------------------
+>  .../bpf/test_ns_current_pidtgid_newns.c       |  91 ++++++++++
+>  8 files changed, 173 insertions(+), 284 deletions(-)
+>  delete mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c
+>  delete mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+>  delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+>  create mode 100644 tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c
+>
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+> index 1bb204cee853..022055f23592 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -30,8 +30,8 @@ test_tcpnotify_user
+>  test_libbpf
+>  test_tcp_check_syncookie_user
+>  test_sysctl
+> -test_current_pid_tgid_new_ns
+>  xdping
+> +test_ns_current_pidtgid_newns
+>  test_cpp
+>  *.skel.h
+>  /no_alu32
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index e7a8cf83ba48..92fb616cdd27 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -36,8 +36,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+>         test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+>         test_cgroup_storage \
+>         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+> -       test_progs-no_alu32 \
+> -       test_current_pid_tgid_new_ns
+> +       test_progs-no_alu32\
+
+accidentally removed space?
+
+> +       test_ns_current_pidtgid_newns
+>
+>  # Also test bpf-gcc, if present
+>  ifneq ($(BPF_GCC),)
+
+[...]
+
+> +
+> +void test_ns_current_pidtgid(void)
+> +{
+> +       struct test_ns_current_pidtgid__bss  *bss;
+> +       struct test_ns_current_pidtgid *skel;
+> +       int err, duration = 0;
+> +       struct stat st;
+> +       __u64 id;
+> +
+> +       skel = test_ns_current_pidtgid__open_and_load();
+> +       CHECK(!skel, "skel_open_load", "failed to load skeleton\n");
+> +               goto cleanup;
+> +
+> +       pid_t tid = syscall(SYS_gettid);
+> +       pid_t pid = getpid();
+
+hm... I probably missed this last time. This is not a valid C89
+standard-compliant code, all variables have to be declared up top,
+please split variable declaration and initialization.
+
+> +
+> +       id = (__u64) tid << 32 | pid;
+> +
+> +       err = stat("/proc/self/ns/pid", &st);
+> +       if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
+> +               goto cleanup;
+> +
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+> new file mode 100644
+> index 000000000000..9818a56510d9
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2019 Carlos Neira cneirabustos@gmail.com */
+> +
+> +#include <linux/bpf.h>
+> +#include <stdint.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +__u64 user_pid_tgid = 0;
+> +__u64 dev = 0;
+> +__u64 ino = 0;
+> +
+> +SEC("raw_tracepoint/sys_enter")
+> +int handler(const void *ctx)
+> +{
+> +       struct bpf_pidns_info nsdata;
+> +
+> +       if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata,
+> +                  sizeof(struct bpf_pidns_info)))
+> +               return 0;
+> +       user_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
+
+nit: good idea to put () around << expression when combined with other
+bitwise operators.
+
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+
+[...]
+
+> +static int newns_pidtgid(void *arg)
+> +{
+> +       struct test_ns_current_pidtgid__bss  *bss;
+> +       struct test_ns_current_pidtgid *skel;
+> +       int pidns_fd = 0, err = 0;
+> +       pid_t pid, tid;
+> +       struct stat st;
+> +       __u64 id;
+> +
+> +       skel = test_ns_current_pidtgid__open_and_load();
+> +       if (!skel) {
+> +               perror("Failed to load skeleton");
+> +               goto cleanup;
+> +       }
+> +
+> +       tid = syscall(SYS_gettid);
+> +       pid = getpid();
+> +       id = (__u64) tid << 32 | pid;
+
+see, you don't do it here :)
+
+
+> +
+> +       if (stat("/proc/self/ns/pid", &st)) {
+> +               printf("Failed to stat /proc/self/ns/pid: %s\n",
+> +                       strerror(errno));
+> +               goto cleanup;
+> +       }
+> +
+> +       bss = skel->bss;
+> +       bss->dev = st.st_dev;
+> +       bss->ino = st.st_ino;
+> +       bss->user_pid_tgid = 0;
+> +
+
+[...]
