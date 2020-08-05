@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE75A23CDA7
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 19:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A07B23CDD4
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 19:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728825AbgHERjn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 13:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
+        id S1728430AbgHERzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 13:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728652AbgHERjc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 13:39:32 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99978C061575;
-        Wed,  5 Aug 2020 10:39:25 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id c18so16804395ybr.1;
-        Wed, 05 Aug 2020 10:39:25 -0700 (PDT)
+        with ESMTP id S1729061AbgHERzO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:55:14 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FF7C061757;
+        Wed,  5 Aug 2020 10:45:11 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id e14so10370555ybf.4;
+        Wed, 05 Aug 2020 10:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6bCWT90m+exQNL7T3YkjqTWHZL3/pjla0SdPnQEcSjE=;
-        b=h6d9ayU8rD7uRA7O7Asg5SlRILgwRCihDPAyG0mmvRm3cYQiDc2KYz8OxWUGkB29kc
-         ngD4QUzYihunW8SFC1H4geK8flbV492NRZD9Iv30hNQSLu8besFJ8Ja6ukFFrQ3QITl5
-         nMkqVepugob5HO4/s2W05rBC0j/MJguMshXc9QKNHGVZsQrWzh7eI+dz5nZeE0Zhgrtz
-         T//Mrcd5z8bI3sOxrz03QZ+uALXiBhIMLI7Wjamtnnn4SRUQYHL2pnTEi3nc/d1a8x2A
-         S/i5P0gOPMSucyjcVE0d9HprXKBgBwwfY2dVfsKBy8ec+DGjOcLKyr2SQycq5jkxTOdq
-         q/Wg==
+         :cc;
+        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
+        b=lz9h/9TsV9rSWTnJYNn6ppFAXqyT82G4yQRK/yeyn1L0pu83Wg8DDjN/XvMNaLK1Ff
+         s699Q+oNFtp3j4FwZ0RyDxOgWudW49RYRaNLl3gwGRrYZTz7luLxYTrKSCv9+ErsWdWq
+         INvY3CMrAteZA/Q8DvGu8eDRqIN6y0nqQE20DOto68YEL9+7daUtm5pAl5xYxqCznVtH
+         SdouWsdMlk/N93eAOE8otLqXmfGeiYJ1G1hhO892NjUNSmVLtMHDxUnAY6GtwDUf/W4g
+         cNtYxBHev1jXwn+MEFNWsX1c5bYWlz8luCYnGAZDcul7McvLs7mmx3kPdahO3HOvP7ai
+         S9MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6bCWT90m+exQNL7T3YkjqTWHZL3/pjla0SdPnQEcSjE=;
-        b=Jhu3pWzFPyT7KrOfwiMGSuCuylXW7YmsOF8O97sVzxUlk3g8oU+uFI5zIlYKZ+XAp4
-         Z0cB0evrs5ID+0hmLUqXm3kHodHCVErIFxQiScva/Z5RV33lhlxTYrZsc7nIEdkkHaJ/
-         4UHdfCbTe29fEUjY8x7yZPBa4zmzk6gcjUy6grGzxajlDItt2MrqoJopS7F9jnow8Um3
-         EcHsKEtHC9PAwh3eFOjUQbUszZrlbSxjcG07SxndLghfSE4KwAxwlOiQT7L3EIMVTOo3
-         rMSeeNPGWhV+S8z1Th5w23KnFi+iByAL5ipluZRh0Qcv0cXDQgpxo55M+cCdjPFW6x3J
-         zBfg==
-X-Gm-Message-State: AOAM532KwgnMpJSlCr9ZSekSXnMPxMY22+Q9rjRxEcGlYp7OrwoDZJhP
-        qHxzD78rLPdpvDw1+O7Vzs5Gkjy/FSN+mxXTjKKXjw==
-X-Google-Smtp-Source: ABdhPJxEiAKm6++XAj2hiUGpV4D578WKfSqcDGi9gLHZTanMHFDVL+qsmbNeKqvBcGqQXt7T7t5kBmsLEMaAsrhXQa4=
-X-Received: by 2002:a25:d84a:: with SMTP id p71mr6853153ybg.347.1596649164750;
- Wed, 05 Aug 2020 10:39:24 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=WASnyqpRdX3pKbpXG9wBHZsTQpXpNL3ba2dFW/cytJg=;
+        b=An4+1/UB89ahgwCgjD5CcrotIyXgc8901MVYbvGMy455wXqUwiyoU2POiIygbFS62B
+         bXZlLH4qGtjCpJvCdz8UyYY/s6gg2cBSnh6LcMI7WInC7sRUs52qo2gIXWuWUBEEhL0X
+         +JNK/gOukoWd6v7ZC8c0OBf9BJCp4Ozy18a+3cu40TtakGNSqeItY11z3RPdr6USt9Of
+         040vU/R5n5s2q9vxbZYImHrElUKS/9aK4Xvi3kqz29Ql2rsDFwPO1BuPsp7LbGdmH0Ae
+         l1Pcmbo4kr1jB0wnLX9znPkk3k1jmQ0oW8p84YPLdCr+Ar/uY26EpC8tjRdm7Ew7L+KC
+         khug==
+X-Gm-Message-State: AOAM532Rcl3lHYzXV/MTiiugYrhfHKje7z2SdbszSfnSgnAMEB9sd1iA
+        N70dwrU2z73P7On9t5PCXg2kts1Fv2bJPl99E9uYQg==
+X-Google-Smtp-Source: ABdhPJyz1QXVgqVK8+dIwmFgxFVPfScHXk6KuaCo4C84uXyJXxmWd99+aubDp31eFiZDo7C1LBefr+6JPeTPdFDCEWw=
+X-Received: by 2002:a5b:44d:: with SMTP id s13mr6588545ybp.403.1596649509768;
+ Wed, 05 Aug 2020 10:45:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200801084721.1812607-1-songliubraving@fb.com>
- <20200801084721.1812607-6-songliubraving@fb.com> <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
- <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com> <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
- <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com> <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
- <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com> <CAEf4BzZ29G2KexhKY=CffOPK_DiqAXxRHWuVRREHv0dnXgobRQ@mail.gmail.com>
- <BA750BC0-0A3B-488B-806C-90C1B6CDF586@fb.com>
-In-Reply-To: <BA750BC0-0A3B-488B-806C-90C1B6CDF586@fb.com>
+ <20200801084721.1812607-3-songliubraving@fb.com> <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
+ <9C1285C1-ECD6-46BD-BA95-3E9E81C00EF0@fb.com> <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
+ <5BC1D7AD-32C1-4CDC-BA99-F4DABE61EEA3@fb.com> <CAEf4BzbbCZmijrU4vfkmq2PFsMMFG+xz9qR1e4wfrdm6tF4_hA@mail.gmail.com>
+ <4DB698F2-BC51-4E96-BC3B-F478BE9AE106@fb.com> <CAEf4Bza4KXkVov=UwouryG5JcqYQ=9mDG8nBoWmb97rv+_yqTw@mail.gmail.com>
+ <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
+In-Reply-To: <88081DFA-39FF-42BB-98F4-CCDE634A1775@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Aug 2020 10:39:13 -0700
-Message-ID: <CAEf4Bza_P-b2-OXer8NjxQ3vHcY-=jbNaUBPMFUezy=LVOO16A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs. user_prog
+Date:   Wed, 5 Aug 2020 10:44:59 -0700
+Message-ID: <CAEf4Bza+GYLb=jVLsf_Q7O8Tpa-EXP4tiHGuuyDmTXs80njXRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
 To:     Song Liu <songliubraving@fb.com>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
@@ -66,270 +66,199 @@ Cc:     open list <linux-kernel@vger.kernel.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Xu <dlxu@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 5, 2020 at 12:01 AM Song Liu <songliubraving@fb.com> wrote:
+On Wed, Aug 5, 2020 at 12:23 AM Song Liu <songliubraving@fb.com> wrote:
 >
 >
 >
-> > On Aug 4, 2020, at 10:47 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com=
-> wrote:
+> > On Aug 4, 2020, at 11:54 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On Tue, Aug 4, 2020 at 9:47 PM Song Liu <songliubraving@fb.com> wrote:
+> > On Tue, Aug 4, 2020 at 11:26 PM Song Liu <songliubraving@fb.com> wrote:
 > >>
 > >>
 > >>
-> >>> On Aug 4, 2020, at 6:52 PM, Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
+> >>> On Aug 4, 2020, at 10:32 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >>>
-> >>> On Tue, Aug 4, 2020 at 2:01 PM Song Liu <songliubraving@fb.com> wrote=
-:
+> >>> On Tue, Aug 4, 2020 at 8:59 PM Song Liu <songliubraving@fb.com> wrote:
 > >>>>
 > >>>>
 > >>>>
-> >>>>> On Aug 2, 2020, at 10:10 PM, Andrii Nakryiko <andrii.nakryiko@gmail=
-.com> wrote:
+> >>>>> On Aug 4, 2020, at 6:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >>>>>
-> >>>>> On Sun, Aug 2, 2020 at 9:47 PM Song Liu <songliubraving@fb.com> wro=
-te:
+> >>>>> On Mon, Aug 3, 2020 at 6:18 PM Song Liu <songliubraving@fb.com> wrote:
 > >>>>>>
 > >>>>>>
-> >>>>>>> On Aug 2, 2020, at 6:51 PM, Andrii Nakryiko <andrii.nakryiko@gmai=
-l.com> wrote:
+> >>>>>>
+> >>>>>>> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >>>>>>>
-> >>>>>>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> w=
-rote:
+> >>>>>>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
 > >>>>>>>>
-> >>>>>>>> Add a benchmark to compare performance of
-> >>>>>>>> 1) uprobe;
-> >>>>>>>> 2) user program w/o args;
-> >>>>>>>> 3) user program w/ args;
-> >>>>>>>> 4) user program w/ args on random cpu.
+> >>>>>>
+> >>>>>> [...]
+> >>>>>>
+> >>>>>>>
+> >>>>>>>> };
 > >>>>>>>>
+> >>>>>>>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
+> >>>>>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >>>>>>>> index b9f11f854985b..9ce175a486214 100644
+> >>>>>>>> --- a/tools/lib/bpf/libbpf.c
+> >>>>>>>> +++ b/tools/lib/bpf/libbpf.c
+> >>>>>>>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] = {
+> >>>>>>>>     BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
+> >>>>>>>>     BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
+> >>>>>>>>     BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOCAL),
+> >>>>>>>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
 > >>>>>>>
-> >>>>>>> Can you please add it to the existing benchmark runner instead, e=
-.g.,
-> >>>>>>> along the other bench_trigger benchmarks? No need to re-implement
-> >>>>>>> benchmark setup. And also that would also allow to compare existi=
-ng
-> >>>>>>> ways of cheaply triggering a program vs this new _USER program?
+> >>>>>>> let's do "user/" for consistency with most other prog types (and nice
+> >>>>>>> separation between prog type and custom user name)
 > >>>>>>
-> >>>>>> Will try.
+> >>>>>> About "user" vs. "user/", I still think "user" is better.
 > >>>>>>
-> >>>>>>>
-> >>>>>>> If the performance is not significantly better than other ways, d=
-o you
-> >>>>>>> think it still makes sense to add a new BPF program type? I think
-> >>>>>>> triggering KPROBE/TRACEPOINT from bpf_prog_test_run() would be ve=
-ry
-> >>>>>>> nice, maybe it's possible to add that instead of a new program ty=
-pe?
-> >>>>>>> Either way, let's see comparison with other program triggering
-> >>>>>>> mechanisms first.
+> >>>>>> Unlike kprobe and tracepoint, user prog doesn't use the part after "/".
+> >>>>>> This is similar to "perf_event" for BPF_PROG_TYPE_PERF_EVENT, "xdl" for
+> >>>>>> BPF_PROG_TYPE_XDP, etc. If we specify "user" here, "user/" and "user/xxx"
+> >>>>>> would also work. However, if we specify "user/" here, programs that used
+> >>>>>> "user" by accident will fail to load, with a message like:
 > >>>>>>
-> >>>>>> Triggering KPROBE and TRACEPOINT from bpf_prog_test_run() will be =
-useful.
-> >>>>>> But I don't think they can be used instead of user program, for a =
-couple
-> >>>>>> reasons. First, KPROBE/TRACEPOINT may be triggered by other progra=
-ms
-> >>>>>> running in the system, so user will have to filter those noise out=
- in
-> >>>>>> each program. Second, it is not easy to specify CPU for KPROBE/TRA=
-CEPOINT,
-> >>>>>> while this feature could be useful in many cases, e.g. get stack t=
-race
-> >>>>>> on a given CPU.
+> >>>>>>      libbpf: failed to load program 'user'
 > >>>>>>
+> >>>>>> which is confusing.
 > >>>>>
-> >>>>> Right, it's not as convenient with KPROBE/TRACEPOINT as with the US=
-ER
-> >>>>> program you've added specifically with that feature in mind. But if
-> >>>>> you pin user-space thread on the needed CPU and trigger kprobe/tp,
-> >>>>> then you'll get what you want. As for the "noise", see how
-> >>>>> bench_trigger() deals with that: it records thread ID and filters
-> >>>>> everything not matching. You can do the same with CPU ID. It's not =
-as
-> >>>>> automatic as with a special BPF program type, but still pretty simp=
-le,
-> >>>>> which is why I'm still deciding (for myself) whether USER program t=
-ype
-> >>>>> is necessary :)
+> >>>>> xdp, perf_event and a bunch of others don't enforce it, that's true,
+> >>>>> they are a bit of a legacy,
 > >>>>
-> >>>> Here are some bench_trigger numbers:
+> >>>> I don't see w/o "/" is a legacy thing. BPF_PROG_TYPE_STRUCT_OPS just uses
+> >>>> "struct_ops".
 > >>>>
-> >>>> base      :    1.698 =C2=B1 0.001M/s
-> >>>> tp        :    1.477 =C2=B1 0.001M/s
-> >>>> rawtp     :    1.567 =C2=B1 0.001M/s
-> >>>> kprobe    :    1.431 =C2=B1 0.000M/s
-> >>>> fentry    :    1.691 =C2=B1 0.000M/s
-> >>>> fmodret   :    1.654 =C2=B1 0.000M/s
-> >>>> user      :    1.253 =C2=B1 0.000M/s
-> >>>> fentry-on-cpu:    0.022 =C2=B1 0.011M/s
-> >>>> user-on-cpu:    0.315 =C2=B1 0.001M/s
+> >>>>> unfortunately. But all the recent ones do,
+> >>>>> and we explicitly did that for xdp_dev/xdp_cpu, for instance.
+> >>>>> Specifying just "user" in the spec would allow something nonsensical
+> >>>>> like "userargh", for instance, due to this being treated as a prefix.
+> >>>>> There is no harm to require users to do "user/my_prog", though.
 > >>>>
-> >>>
-> >>> Ok, so basically all of raw_tp,tp,kprobe,fentry/fexit are
-> >>> significantly faster than USER programs. Sure, when compared to
-> >>> uprobe, they are faster, but not when doing on-specific-CPU run, it
-> >>> seems (judging from this patch's description, if I'm reading it
-> >>> right). Anyways, speed argument shouldn't be a reason for doing this,
-> >>> IMO.
-> >>>
-> >>>> The two "on-cpu" tests run the program on a different CPU (see the p=
-atch
-> >>>> at the end).
+> >>>> I don't see why allowing "userargh" is a problem. Failing "user" is
+> >>>> more confusing. We can probably improve that by a hint like:
 > >>>>
-> >>>> "user" is about 25% slower than "fentry". I think this is mostly bec=
-ause
-> >>>> getpgid() is a faster syscall than bpf(BPF_TEST_RUN).
-> >>>
-> >>> Yes, probably.
-> >>>
+> >>>>   libbpf: failed to load program 'user', do you mean "user/"?
 > >>>>
-> >>>> "user-on-cpu" is more than 10x faster than "fentry-on-cpu", because =
-IPI
-> >>>> is way faster than moving the process (via sched_setaffinity).
+> >>>> But it is pretty silly. "user/something_never_used" also looks weird.
 > >>>
-> >>> I don't think that's a good comparison, because you are actually
-> >>> testing sched_setaffinity performance on each iteration vs IPI in the
-> >>> kernel, not a BPF overhead.
-> >>>
-> >>> I think the fair comparison for this would be to create a thread and
-> >>> pin it on necessary CPU, and only then BPF program calls in a loop.
-> >>> But I bet any of existing program types would beat USER program.
-> >>>
-> >>>>
-> >>>> For use cases that we would like to call BPF program on specific CPU=
-,
-> >>>> triggering it via IPI is a lot faster.
-> >>>
-> >>> So these use cases would be nice to expand on in the motivational par=
-t
-> >>> of the patch set. It's not really emphasized and it's not at all clea=
-r
-> >>> what you are trying to achieve. It also seems, depending on latency
-> >>> requirements, it's totally possible to achieve comparable results by
-> >>> pre-creating a thread for each CPU, pinning each one to its designate=
-d
-> >>> CPU and then using any suitable user-space signaling mechanism (a
-> >>> queue, condvar, etc) to ask a thread to trigger BPF program (fentry o=
-n
-> >>> getpgid(), for instance).
+> >>> "userargh" is terrible, IMO. It's a different identifier that just
+> >>> happens to have the first 4 letters matching "user" program type.
+> >>> There must be either a standardized separator (which happens to be
+> >>> '/') or none. See the suggestion below.
 > >>
-> >> I don't see why user space signal plus fentry would be faster than IPI=
-.
-> >> If the target cpu is running something, this gonna add two context
-> >> switches.
+> >> We have no problem deal with "a different identifier that just happens
+> >> to have the first letters matching", like xdp vs. xdp_devmap and
+> >> xdp_cpumap, right?
 > >>
 > >
-> > I didn't say faster, did I? I said it would be comparable and wouldn't
-> > require a new program type.
+> > xdp vs xdp_devmap is an entirely different thing. We deal with it by
+> > checking xdp_devmap first. What I'm saying is that user can do
+> > "xdpomg" and libbpf would be happy (today). And I don't think that's
+> > good. But further, if someone does something like "xdp_devmap_omg",
+> > guess which program type will be inferred? Hint: not xdp_devmap and
+> > libbpf won't report an error either. All because "xdp" is so lax
+> > today.
+> >
+> >>>>
+> >>>>> Alternatively, we could introduce a new convention in the spec,
+> >>>>> something like "user?", which would accept either "user" or
+> >>>>> "user/something", but not "user/" nor "userblah". We can try that as
+> >>>>> well.
+> >>>>
+> >>>> Again, I don't really understand why allowing "userblah" is a problem.
+> >>>> We already have "xdp", "xdp_devmap/", and "xdp_cpumap/", they all work
+> >>>> fine so far.
+> >>>
+> >>> Right, we have "xdp_devmap/" and "xdp_cpumap/", as you say. I haven't
+> >>> seen so much pushback against trailing forward slash with those ;)
+> >>
+> >> I haven't seen any issue with old "perf_event", "xdp" and new "struct_ops"
+> >> either.
+> >>
+> >>>
+> >>> But anyways, as part of deprecating APIs and preparing libbpf for 1.0
+> >>> release over this half, I think I'm going to emit warnings for names
+> >>> like "prog_type_whatever" or "prog_typeevenworse", etc. And asking
+> >>> users to normalize section names to either "prog_type" or
+> >>> "prog_type/something/here", whichever makes sense for a specific
+> >>> program type.
+> >>
+> >> Exactly, "user" makes sense here; while "kprobe/__set_task_comm" makes
+> >> sense for kprobe.
+> >
+> > Right, but "userblah" doesn't. It would be great if you could help
+> > make what I described above become true. But at least don't make it
+> > worse by allowing unrestricted "user" prefix. I'm OK with strict
+> > "user" or "user/blah", I'm not OK with "userblah", I'm sorry.
 >
-> Well, I don't think adding program type is that big a deal. If that is
-> really a problem, we can use a new attach type instead. The goal is to
-> trigger it with sys_bpf() on a different cpu. So we can call it kprobe
-> attach to nothing and hack that way. I add the new type because it makes
-> sense. The user just want to trigger a BPF program from user space.
-
-I thought we already concluded that it's not really "trigger a BPF
-program from user space", because for that you have many existing and
-even faster options. After a few rounds of emails, it seems it's more
-about triggering the BPF program on another CPU without preempting
-whatever is running on that CPU. It would be helpful to be clear and
-upfront about the requirements.
-
->
-> > But then again, without knowing all the
-> > details, it's a bit hard to discuss this. E.g., if you need to trigger
-> > that BPF program periodically, you can sleep in those per-CPU threads,
-> > or epoll, or whatever. Or maybe you can set up a per-CPU perf event
-> > that would trigger your program on the desired CPU, etc.My point is
-> > that I and others shouldn't be guessing this, I'd expect someone who's
-> > proposing an entire new BPF program type to motivate why this new
-> > program type is necessary and what problem it's solving that can't be
-> > solved with existing means.
->
-> Yes, there are other options. But they all come with non-trivial cost.
-> Per-CPU-per-process threads and/or per-CPU perf event are cost we have
-> to pay in production. IMO, these cost are much higher than a new program
-> type (or attach type).
+> If the concern with "userblah" is real and unbearable, so is "xdpblah"
+> and "perf_eventblah", and so on, and so on.
 >
 
-So for threads I know the costs (a bit of memory for thread stack,
-plus some internal book keeping stuff in kernel), which is arguable
-how big of a deal is that if those threads do pretty much nothing most
-of the time. But what's the exact cost of perf events and why it's
-unacceptably high?
+Oh yeah, "xdpblah" makes me cringe. "Some other kid is doing wrong
+thing, let me do it as well" style of argument never worked for me
+with my parents, I don't see why it should work here :)
 
-The reason I'm asking is that it seems to me that one alternative,
-which is more generic (and thus potentially more useful) would be to
-have a manually-triggerable perf event. Some sort of software event,
-that's triggered from ioctl or some other syscall, that's appropriate
-for perf subsystem. You'd pre-create a perf_event for each CPU,
-remember their FDs, then would trigger the one you need (corresponding
-to desired CPU). From the BPF side, you'd just use a normal perf_event
-program to handle perf_event activation. But it could be used even
-outside of the BPF ecosystem, which is a good sign for me, because it
-allows more flexible composition of building blocks.
+But anyways, let's table this discussion, it's not worth spending so
+much time on it. As I said, I'm going to start enforcing standardized
+separator or a single program type word soon enough. Might as well do
+that for "userblah".
 
 > >
-> > BTW, how frequently do you need to trigger the BPF program? Seems very
-> > frequently, if 2 vs 1 context switches might be a problem?
+> >>
+> >>> Right now libbpf doesn't allow two separate BPF programs
+> >>> with the same section name, so enforcing strict "user" is limiting to
+> >>> users. We are going to lift that restriction pretty soon, though. But
+> >>> for now, please stick with what we've been doing lately and mark it as
+> >>> "user/", later we'll allow just "user" as well.
+> >>
+> >> Since we would allow "user" later, why we have to reject it for now?
+> >
+> > Because libbpf is dumb in that regard today? And instead of migrating
+> > users later, I want to prevent users making bad choices right now.
 >
-> The whole solution requires two BPF programs. One on each context switch,
-> the other is the user program. The user program will not trigger very
-> often.
+> The good choice here is to use "user", IMO. And you are preventing people
+> to use it. If user has to use "user/" for now. They will have to update
+> the programs later, right? If the conclusion is "user/xxx" is the ultimate
+> goal, I would agree with "user/" for now.
 
-Ok, so performance was never an objective, I wonder why it is put as
-the main reason for this new type of BPF program?
+They won't have to update, "user/something" would still work.
+
+>
+> > Then relax it, if necessary. Alternatively, we can fix up libbpf logic
+> > before the USER program type lands.
+>
+> I don't see why the USER program type need to wait for libbpf fix, as
+> "xdp", "perf_event", etc. all work well today.
+
+It's about being a good citizen and helping move libbpf forward.
 
 >
 > >
-> >>> I bet in this case the  performance would be
-> >>> really nice for a lot of practical use cases. But then again, I don't
-> >>> know details of the intended use case, so please provide some more
-> >>> details.
+> >> Imagine the user just compiled and booted into a new kernel with user
+> >> program support; and then got the following message:
 > >>
-> >> Being able to trigger BPF program on a different CPU could enable many
-> >> use cases and optimizations. The use case I am looking at is to access
-> >> perf_event and percpu maps on the target CPU. For example:
-> >>        0. trigger the program
-> >>        1. read perf_event on cpu x;
-> >>        2. (optional) check which process is running on cpu x;
-> >>        3. add perf_event value to percpu map(s) on cpu x.
+> >>        libbpf: failed to load program 'user'
 > >>
-> >> If we do these steps in a BPF program on cpu x, the cost is:
-> >>        A.0) trigger BPF via IPI;
-> >>        A.1) read perf_event locally;
-> >>        A.2) local access current;
-> >>        A.3) local access of percpu map(s).
-> >>
-> >> If we can only do these on a different CPU, the cost will be:
-> >>        B.0) trigger BPF locally;
-> >>        B.1) read perf_event via IPI;
-> >>        B.2) remote access current on cpu x;
-> >>        B.3) remote access percpu map(s), or use non-percpu map(2).
-> >>
-> >> Cost of (A.0 + A.1) is about same as (B.0 + B.1), maybe a little highe=
-r
-> >> (sys_bpf(), vs. sys_getpgid()). But A.2 and A.3 will be significantly
-> >> cheaper than B.2 and B.3.
-> >>
-> >> Does this make sense?
+> >> If I were the user, I would definitely question whether the kernel was
+> >> correct...
 > >
-> > It does, thanks. But what I was describing is still A, no? BPF program
-> > will be triggered on your desired cpu X, wouldn't it?
+> > That's also bad, and again, we can make libbpf better. I think moving
+> > forward any non-recognized BPF program type should be reported by
+> > libbpf as an error. But we can't do it right now, we have to have a
+> > period in which users will get a chance to update their BPF programs.
+> > This will have to happen over few libbpf releases at least. So please
+> > join in on the fun of fixing stuff like this.
 >
-> Well, that would be option C, but C could not do step 2, because we conte=
-xt
-> switch to the dedicated thread.
+> I'd love to join the fun. Maybe after user program lands ;)
+>
 >
 
-So I think *this* is a real requirement. No preemption of the running
-process on a different CPU. That does sound like what perf event does,
-doesn't it? See above.
+Of course :) see above.
