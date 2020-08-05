@@ -2,102 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5ED23D402
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 00:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3EB23D406
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 00:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgHEWof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 18:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S1726180AbgHEWuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 18:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgHEWod (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 18:44:33 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCEBC061574
-        for <bpf@vger.kernel.org>; Wed,  5 Aug 2020 15:44:32 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id v9so15073135ljk.6
-        for <bpf@vger.kernel.org>; Wed, 05 Aug 2020 15:44:32 -0700 (PDT)
+        with ESMTP id S1726130AbgHEWuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 18:50:19 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0304C061574;
+        Wed,  5 Aug 2020 15:50:19 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x6so10420718pgx.12;
+        Wed, 05 Aug 2020 15:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RK4Dh9MzXllVAsIzPhhNVGuL+AKnrfAiQk8g/AWSVEA=;
-        b=IufJS9lZIWH7OVNoy8hDmBx+z6QQCQx/HOP5Nav7Du8b8g8TlElB1rdKsGJ3gjp25g
-         YlYQaXDZGs0ecpOedPHQnE0AAJXdw9zQngipDE7b25H4gJP/UtwN5lrls1t0PqqVenN9
-         +nRhBdsDWuA6Cc6Is5Sk/7XOIV5zZsfYRiu3qHFNK97e+Cu+RxRv0XgW0dMzte+Fj6je
-         9L7UbQT/xF5XGV1v7g3CAzWcUVkI/ATDmq+7kY1yjHoCL2rbFmJfnu7wrsSeD2IxQC50
-         1h5TKKpYUxNMFww/hW2E0Ix3ykDcQw5LZX8AJVFuCBbl8S87a68qiEW75XwUviGWPBeC
-         6OJQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vj9AUo1zpNQ5RuH9pFdCoBk8bA+DrgMBZZmQXR9xOD8=;
+        b=MnrfV5sDmox75nbL/EDwsBfnjbjk4wXfaW38MnNMWcBe/rvK0oLdauM3j4zaPvRezZ
+         V2z86kueOxOfTJh5eQIZ/xtfs4AidyIAwpzIJv5DxVn9IZMMnNeRZa6PucxRepTLw5XG
+         fRz0eaYQ60VEfilOViLIaNcKlxkqwrWsaoL2Fpii1kIB9ltrVGagU51uh386AQu0nHOL
+         1bwo1DZc2Dhch3cVLdEmdXSjJ2a5YhnR4Ch6JAgtWwmboNqv8HGxlKwAgu2lCoStwCnD
+         b8P0gb7mgVkVNdEzhbR1MMTwdGJYjLIFWaWmSWS15K3m1+WaTnIX2kFJBHgrefcH8BU/
+         I82Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RK4Dh9MzXllVAsIzPhhNVGuL+AKnrfAiQk8g/AWSVEA=;
-        b=olt087FIc8GI+9WBzw1aAsOebNJyrGP6Csya4kO5+WXzKtBUM8QYz+BoXgRU9tlI2v
-         l5M4cb8XHCVjHJkWEsvrjw68H/ghoxNGhjSuJCqUvrheNRNv6NUi06Wy/C3+3AhrHEdx
-         mnfOrqwj0jhwoX3S04UVoJ77pciDUDXAJ/K39jdzBRV1Sr33L3rC+3z6tXz70KHz+5l1
-         J5d3XWB5TRHPfgG73cL9q+dBlQgiMKMbXWiPxhiftwzEC44WZ8CioHsGes/ItLrhPHGx
-         CMz26k/Zq5623KmvTqwr4/0/j5KiUB8zUFu9CwtEHYdbzP4dwebh01FSHcxc/z3NF/rq
-         wc9g==
-X-Gm-Message-State: AOAM5313CLzhnwBqcJOIODMDDLCjtu+JjGxKuaIvY2cCURwSGBzPMvuZ
-        eu7VJrbYVmgv3dnOHhyCBZn+wmhFXWFNXrmuHOc=
-X-Google-Smtp-Source: ABdhPJwPi6n+Hj3kBQuf7sDnU6nQlNb9At9vcnYxqcpPPRzso05gTaSRGHJ46r8qKSOXZoVwNVNS8DH8ajRmAdC6Mqk=
-X-Received: by 2002:a2e:a489:: with SMTP id h9mr2489566lji.121.1596667470866;
- Wed, 05 Aug 2020 15:44:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200729162751.GC184844@google.com> <20200804194251.GE184844@google.com>
-In-Reply-To: <20200804194251.GE184844@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vj9AUo1zpNQ5RuH9pFdCoBk8bA+DrgMBZZmQXR9xOD8=;
+        b=jfGEkPKNy3IAeMYAx320QmgHq4Y0FI1015lW9Jt60LenwAozt96zHSKsSqpsbCcBll
+         VWqBWArqDXH750qhER/D7PFSxN3Wk+XNdITQ37feE+S7szpnfTeA8VaSLhE7zjTAKfJa
+         AoOFkMmKJE29aNaSJCHRn6bx6ANHZHfAH6pbcgVjGwkD641FP83uhxwTPyxJBJWLKy6U
+         Nt3KrL/KuS4NCGI3aoQ0uGgGyX+04MQWXY1TCEp2fS2QlpjTr5Y6UgVae6MfxDlr5tZy
+         7mEcE/U3XsjZm4z5cEkiuk103eTk1C7zz6d1h7yvLJm8C3hYaKGasrQzH02QVpndSM3p
+         H3gg==
+X-Gm-Message-State: AOAM533a4LZf/bvLDm/doLkLUGK/n80n6VPUqSPzVJa7EAnRLM6Drfev
+        4REyepdFA6RxpIe2/uxng88=
+X-Google-Smtp-Source: ABdhPJxBt3cAwNTqbiQptRNm2RKUT8txQ2j3cJfjVsGIP+XbaA3iJlUnkY1SCFLE8odILc2Q4V82Zw==
+X-Received: by 2002:a63:ec06:: with SMTP id j6mr4752828pgh.328.1596667818628;
+        Wed, 05 Aug 2020 15:50:18 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:634])
+        by smtp.gmail.com with ESMTPSA id a17sm4489949pgi.26.2020.08.05.15.50.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 15:50:17 -0700 (PDT)
+Date:   Wed, 5 Aug 2020 15:50:15 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 5 Aug 2020 15:44:19 -0700
-Message-ID: <CAADnVQJ-usRjX20KBuCot3NNmrsVZ5oN3c+cZ86Hbr5a9F7n3g@mail.gmail.com>
-Subject: Re: BPF program metadata
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        YiFei Zhu <zhuyifei@google.com>,
-        Mahesh Bandewar <maheshb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <Kernel-team@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Xu <dlxu@fb.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs.
+ user_prog
+Message-ID: <20200805225015.kd4tx6w3wh67oara@ast-mbp.dhcp.thefacebook.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-6-songliubraving@fb.com>
+ <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
+ <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com>
+ <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
+ <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
+ <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
+ <AF9D0E8C-0AA5-4BE4-90F4-946FABAB63FD@fb.com>
+ <20200805171639.tsqjmifd7eb3htou@ast-mbp.dhcp.thefacebook.com>
+ <31754A5F-AD12-44D2-B80A-36638684C2CE@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31754A5F-AD12-44D2-B80A-36638684C2CE@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 12:42 PM <sdf@google.com> wrote:
->
-> On 07/29, sdf@google.com wrote:
-> > As discussed in
-> > https://docs.google.com/presentation/d/1A9Anx8JPHl_pK1aXy8hlxs3V5pkrKwHHtkPf_-HeYTc
-> > during BPF office hours, we'd like to attach arbitrary auxiliary
-> > metadata to the program, for example, the build timestamp or the commit
-> > hash.
->
-> > IIRC, the suggestion was to explore BTF and .BTF.ext section in
-> > particular.
-> > We've spent some time looking at the BTF encoding and BTF.ext section
-> > and we don't see how we can put this data into .BTF.ext or even .BTF
-> > without any kernel changes.
->
-> > The reasoning (at least how we see it):
-> > * .BTF.ext is just a container with func_info/line_info/relocation_info
-> >    and libbpf extracts the data form this section and passes it to
-> >    sys_bpf(BPF_PROG_LOAD); the important note is that it doesn't pass the
-> >    whole container to the kernel, but passes the data that's been
-> >    extracted from the appropriate sections
-> > * .BTF can be used for metadata, but it looks like we'd have to add
-> >    another BTF_INFO_KIND() to make it a less messy (YiFei, feel free to
-> >    correct me)
->
-> > So the question is: are we missing something? Is there some way to add
-> > key=value metadata to BTF that doesn't involve a lot of kernel changes?
->
-> > If the restrictions above are correct, should we go back to trying to
-> > put this metadata into .data section (or maybe even the new .metadata
-> > section)? The only missing piece of the puzzle in that case is the
-> > ability to extend BPF_PROG_LOAD with a way to say 'hold this map
-> > unconditionally'.
-> Should we have a short discussion about that this Thu during the office
-> hours?
+On Wed, Aug 05, 2020 at 06:56:26PM +0000, Song Liu wrote:
+> 
+> 
+> > On Aug 5, 2020, at 10:16 AM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > 
+> > On Wed, Aug 05, 2020 at 04:47:30AM +0000, Song Liu wrote:
+> >> 
+> >> Being able to trigger BPF program on a different CPU could enable many
+> >> use cases and optimizations. The use case I am looking at is to access
+> >> perf_event and percpu maps on the target CPU. For example:
+> >> 	0. trigger the program
+> >> 	1. read perf_event on cpu x;
+> >> 	2. (optional) check which process is running on cpu x;
+> >> 	3. add perf_event value to percpu map(s) on cpu x. 
+> > 
+> > If the whole thing is about doing the above then I don't understand why new
+> > prog type is needed.
+> 
+> I was under the (probably wrong) impression that adding prog type is not
+> that big a deal. 
 
-Of course. That's what office hours are for.
-Since google folks have trouble with zoom I've added google meets link
-to the spreadsheet. Let's try it tomorrow.
+Not a big deal when it's necessary.
+
+> > Can prog_test_run support existing BPF_PROG_TYPE_KPROBE?
+> 
+> I haven't looked into all the details, but I bet this is possible.
+> 
+> > "enable many use cases" sounds vague. I don't think folks reading
+> > the patches can guess those "use cases".
+> > "Testing existing kprobe bpf progs" would sound more convincing to me.
+> > If the test_run framework can be extended to trigger kprobe with correct pt_regs.
+> > As part of it test_run would trigger on a given cpu with $ip pointing
+> > to some test fuction in test_run.c. For local test_run the stack trace
+> > would include bpf syscall chain. For IPI the stack trace would include
+> > the corresponding kernel pieces where top is our special test function.
+> > Sort of like pseudo kprobe where there is no actual kprobe logic,
+> > since kprobe prog doesn't care about mechanism. It needs correct
+> > pt_regs only as input context.
+> > The kprobe prog output (return value) has special meaning though,
+> > so may be kprobe prog type is not a good fit.
+> > Something like fentry/fexit may be better, since verifier check_return_code()
+> > enforces 'return 0'. So their return value is effectively "void".
+> > Then prog_test_run would need to gain an ability to trigger
+> > fentry/fexit prog on a given cpu.
+> 
+> Maybe we add a new attach type for BPF_PROG_TYPE_TRACING, which is in 
+> parallel with BPF_TRACE_FENTRY and BPF_TRACE_EXIT? Say BPF_TRACE_USER? 
+> (Just realized I like this name :-D, it matches USDT...). Then we can 
+> enable test_run for most (if not all) tracing programs, including
+> fentry/fexit. 
+
+Why new hook? Why prog_test_run cmd cannot be made to work
+BPF_PROG_TYPE_TRACING when it's loaded as BPF_TRACE_FENTRY and attach_btf_id
+points to special test function?
+The test_run cmd will trigger execution of that special function.
+Devil is in details of course. How attach, trampoline, etc going to work
+that all needs to be figured out. Parallel test_run cmd ideally shouldn't
+affect each other, etc.
