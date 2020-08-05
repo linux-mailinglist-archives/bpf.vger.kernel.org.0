@@ -2,102 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC2523D3F3
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 00:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5ED23D402
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 00:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgHEWeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 18:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        id S1726180AbgHEWof (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 18:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgHEWeI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 18:34:08 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A379C061574;
-        Wed,  5 Aug 2020 15:34:07 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id r4so15801174pls.2;
-        Wed, 05 Aug 2020 15:34:07 -0700 (PDT)
+        with ESMTP id S1725830AbgHEWod (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 18:44:33 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCEBC061574
+        for <bpf@vger.kernel.org>; Wed,  5 Aug 2020 15:44:32 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v9so15073135ljk.6
+        for <bpf@vger.kernel.org>; Wed, 05 Aug 2020 15:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZdTcq/NZYZsDLr8NZ6kN0pMeI/mG2A6FgNrtIK20u8=;
-        b=efnzvfyee0ptWnJgyCoCPGpeQUBdn+vev8EAk1B18oatjKQBA/ohqf5juKB29kTvR2
-         0bh44pyZcarIDHkXBqoF4DrczVn/7Z4/FGcIrAOmO5oU7w3zHfU29NUN8R0d8CV5c7jD
-         3T8p8sZflXOn+a/tDqeypSeXuk49CkbgG+vAx0QYemafnyJvFvONq299HB5o93p6figh
-         zJKIyHBRvumJa7S5Liv6R8e3zzznix6jjfEcn2sud7e3U5q4fCxD3tC1LAt2x0QAY+oI
-         V/d4F3DpUHIrzsmR0sVWkkS/xo3jXbxnRCMHx5iK6frb6i+dl+pp+nMag7ebDuSQAdTX
-         LP1Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RK4Dh9MzXllVAsIzPhhNVGuL+AKnrfAiQk8g/AWSVEA=;
+        b=IufJS9lZIWH7OVNoy8hDmBx+z6QQCQx/HOP5Nav7Du8b8g8TlElB1rdKsGJ3gjp25g
+         YlYQaXDZGs0ecpOedPHQnE0AAJXdw9zQngipDE7b25H4gJP/UtwN5lrls1t0PqqVenN9
+         +nRhBdsDWuA6Cc6Is5Sk/7XOIV5zZsfYRiu3qHFNK97e+Cu+RxRv0XgW0dMzte+Fj6je
+         9L7UbQT/xF5XGV1v7g3CAzWcUVkI/ATDmq+7kY1yjHoCL2rbFmJfnu7wrsSeD2IxQC50
+         1h5TKKpYUxNMFww/hW2E0Ix3ykDcQw5LZX8AJVFuCBbl8S87a68qiEW75XwUviGWPBeC
+         6OJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZdTcq/NZYZsDLr8NZ6kN0pMeI/mG2A6FgNrtIK20u8=;
-        b=JXOIhe+BQ74siP8nLtJ9k6q8Z5w2Y6IPPotgRHvcAXf8s6mWPudGRl92ms/QvNTXIQ
-         Mq3YtNJcGeYW3XrjOT8oDkC1ZsFds9UEsYmD8WjMgVsSWhEO0odyurbQwHJ+XoVEKvTD
-         PG5H6fKY0LLp2sVww6l2UveDi/et2KnZKLG3fr+Sf94+0fSezpDXyLPR+yzEHnvHYy3D
-         vzcjMZHE3EVXVewTnF/u+qWFoYMNuggbtUDpPVb7IYPO1nAEmSWsk4vMZEkw7ozyOOrD
-         ol6WkfXyRzR5p/E87de3uUZcjmoUFEdIR26QyTz2IbB6EMAgifZ7fn2oK8Wdqy2RHMhA
-         4TVg==
-X-Gm-Message-State: AOAM5326kGUyby8IIN4BE/N00Nfd0dGsDQq6UzhlxV+McDUj41kglrPJ
-        beTtPeoAzImdwpFIf6Vc4g==
-X-Google-Smtp-Source: ABdhPJxkELz7GGUnZ6aDMvAA3OKSilxwOKw0JF7T5PvpGi6BcnozTYXdhHLTe6bb3CB4FZelPysBUA==
-X-Received: by 2002:a17:902:aa91:: with SMTP id d17mr5226698plr.27.1596666846471;
-        Wed, 05 Aug 2020 15:34:06 -0700 (PDT)
-Received: from localhost.localdomain ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id 35sm3721596pgt.56.2020.08.05.15.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 15:34:05 -0700 (PDT)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] libbf: fix uninitialized pointer at btf__parse_raw()
-Date:   Thu,  6 Aug 2020 07:33:59 +0900
-Message-Id: <20200805223359.32109-1-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RK4Dh9MzXllVAsIzPhhNVGuL+AKnrfAiQk8g/AWSVEA=;
+        b=olt087FIc8GI+9WBzw1aAsOebNJyrGP6Csya4kO5+WXzKtBUM8QYz+BoXgRU9tlI2v
+         l5M4cb8XHCVjHJkWEsvrjw68H/ghoxNGhjSuJCqUvrheNRNv6NUi06Wy/C3+3AhrHEdx
+         mnfOrqwj0jhwoX3S04UVoJ77pciDUDXAJ/K39jdzBRV1Sr33L3rC+3z6tXz70KHz+5l1
+         J5d3XWB5TRHPfgG73cL9q+dBlQgiMKMbXWiPxhiftwzEC44WZ8CioHsGes/ItLrhPHGx
+         CMz26k/Zq5623KmvTqwr4/0/j5KiUB8zUFu9CwtEHYdbzP4dwebh01FSHcxc/z3NF/rq
+         wc9g==
+X-Gm-Message-State: AOAM5313CLzhnwBqcJOIODMDDLCjtu+JjGxKuaIvY2cCURwSGBzPMvuZ
+        eu7VJrbYVmgv3dnOHhyCBZn+wmhFXWFNXrmuHOc=
+X-Google-Smtp-Source: ABdhPJwPi6n+Hj3kBQuf7sDnU6nQlNb9At9vcnYxqcpPPRzso05gTaSRGHJ46r8qKSOXZoVwNVNS8DH8ajRmAdC6Mqk=
+X-Received: by 2002:a2e:a489:: with SMTP id h9mr2489566lji.121.1596667470866;
+ Wed, 05 Aug 2020 15:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200729162751.GC184844@google.com> <20200804194251.GE184844@google.com>
+In-Reply-To: <20200804194251.GE184844@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 5 Aug 2020 15:44:19 -0700
+Message-ID: <CAADnVQJ-usRjX20KBuCot3NNmrsVZ5oN3c+cZ86Hbr5a9F7n3g@mail.gmail.com>
+Subject: Re: BPF program metadata
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        YiFei Zhu <zhuyifei@google.com>,
+        Mahesh Bandewar <maheshb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recently, from commit 94a1fedd63ed ("libbpf: Add btf__parse_raw() and
-generic btf__parse() APIs"), new API has been added to libbpf that
-allows to parse BTF from raw data file (btf__parse_raw()).
+On Tue, Aug 4, 2020 at 12:42 PM <sdf@google.com> wrote:
+>
+> On 07/29, sdf@google.com wrote:
+> > As discussed in
+> > https://docs.google.com/presentation/d/1A9Anx8JPHl_pK1aXy8hlxs3V5pkrKwHHtkPf_-HeYTc
+> > during BPF office hours, we'd like to attach arbitrary auxiliary
+> > metadata to the program, for example, the build timestamp or the commit
+> > hash.
+>
+> > IIRC, the suggestion was to explore BTF and .BTF.ext section in
+> > particular.
+> > We've spent some time looking at the BTF encoding and BTF.ext section
+> > and we don't see how we can put this data into .BTF.ext or even .BTF
+> > without any kernel changes.
+>
+> > The reasoning (at least how we see it):
+> > * .BTF.ext is just a container with func_info/line_info/relocation_info
+> >    and libbpf extracts the data form this section and passes it to
+> >    sys_bpf(BPF_PROG_LOAD); the important note is that it doesn't pass the
+> >    whole container to the kernel, but passes the data that's been
+> >    extracted from the appropriate sections
+> > * .BTF can be used for metadata, but it looks like we'd have to add
+> >    another BTF_INFO_KIND() to make it a less messy (YiFei, feel free to
+> >    correct me)
+>
+> > So the question is: are we missing something? Is there some way to add
+> > key=value metadata to BTF that doesn't involve a lot of kernel changes?
+>
+> > If the restrictions above are correct, should we go back to trying to
+> > put this metadata into .data section (or maybe even the new .metadata
+> > section)? The only missing piece of the puzzle in that case is the
+> > ability to extend BPF_PROG_LOAD with a way to say 'hold this map
+> > unconditionally'.
+> Should we have a short discussion about that this Thu during the office
+> hours?
 
-The commit derives build failure of samples/bpf due to improper access
-of uninitialized pointer at btf_parse_raw().
-
-    btf.c: In function btf__parse_raw:
-    btf.c:625:28: error: btf may be used uninitialized in this function
-      625 |  return err ? ERR_PTR(err) : btf;
-          |         ~~~~~~~~~~~~~~~~~~~^~~~~
-
-This commit fixes the build failure of samples/bpf by adding code of
-initializing btf pointer as NULL.
-
-Fixes: 94a1fedd63ed ("libbpf: Add btf__parse_raw() and generic btf__parse() APIs")
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
----
- tools/lib/bpf/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 856b09a04563..4843e44916f7 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -564,8 +564,8 @@ struct btf *btf__parse_elf(const char *path, struct btf_ext **btf_ext)
- 
- struct btf *btf__parse_raw(const char *path)
- {
-+	struct btf *btf = NULL;
- 	void *data = NULL;
--	struct btf *btf;
- 	FILE *f = NULL;
- 	__u16 magic;
- 	int err = 0;
--- 
-2.25.1
-
+Of course. That's what office hours are for.
+Since google folks have trouble with zoom I've added google meets link
+to the spreadsheet. Let's try it tomorrow.
