@@ -2,65 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7328923D23B
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 22:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C493823D1B7
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 22:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgHEUK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 16:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S1726212AbgHEUFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 16:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgHEQ2m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 12:28:42 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23575C00869A
-        for <bpf@vger.kernel.org>; Wed,  5 Aug 2020 09:28:38 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id z20so4786597plo.6
-        for <bpf@vger.kernel.org>; Wed, 05 Aug 2020 09:28:38 -0700 (PDT)
+        with ESMTP id S1726773AbgHEQfP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 12:35:15 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2853DC008699;
+        Wed,  5 Aug 2020 09:35:15 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id h21so27734563qtp.11;
+        Wed, 05 Aug 2020 09:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=A43ByyyVzbSptwNygct83mi3n2DzKWgXvNfPebKl6yg=;
-        b=Vhtt0A1Lb+45MJ+Wh1Mnd/6dAyl5W8x4OJgHYPrxVIsTEvhXGbgFbuLoVs9PSI6FVb
-         4+koDTinZDAnktM3XmWYW7oHe5byoeDqkyO3ubwkG+KfRrbD2WMJH0qKf4zNdJGVO8xx
-         /e+WkeJsW8Oiw8Oedhof48VQhF5C8NcxQC8V7xQa+zd9BKfaXQOlnpPjApEQoPPIPADl
-         thisXlmYHDhe2M9jishy6oQJKDq11jKExdFuyCVrsIf0fGx3Nrk9iwaKa1IrCGV07MB8
-         jCflwrMAOiNIa8bWrrpkDC6KlBXWRewwszJNRIvUcfK9Dvz2VLM9OGf6oxYKWsMATv8U
-         OmBA==
+        bh=KYochtEjpm101ssvrc1qnkomKdB0mr7v39P4tgD9/lg=;
+        b=OZ6QVvovj5cA4pMJdKRIj+l8e0SSlM8dUI3EBYPnH6RuJeLN5rNDUMPTr/ao5Q0y4w
+         JH+/+lngK/e4aVwEYBel3YhibHaVq9Fcb+1mviQo+H/8b3+MoDArAQ6Z4LGlM6IfN8wK
+         rbxZCjoZk8zBlDpmGTmbMIILEQktiHxE6hH0p9rVzUYkeRC/O1ZwGS6/hz0W9GIKg2/r
+         abw3iiS5ogbar4OBIg+BmDuuvwMmmJ0VJS1tGnPBatGsp3fs/Rt3deYBR5k9E/9MBErb
+         yc8t4aFvxWHBZIt7Dwr16qPuxW/6umjAiRCimoxudGZ7QkNwsDgUyAT7kOi2UecGumGW
+         Y55A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=A43ByyyVzbSptwNygct83mi3n2DzKWgXvNfPebKl6yg=;
-        b=hgcUu2Htysob6/Gc2oVDr0TKyIzGgvTpppKjmlCjEGt7DIockoZ3RVIRK6sbCcyRKH
-         GCL2YzE281RVwaE8o/yWeNISQ0Mfsl+gDjzk7iEj+5+j+5FB5Xqe0ZsOvgU70BgrW8HM
-         s3er0XxT6EdYa3X1+TRcje1NlpmVwHzBTMEXC8qNtvDKUf4Vo8bBXjUuzgTT1wOvPfAk
-         D60CzbatpnabVqAWaYb5HkhH7JsZ90pDPyodge6pyxXw5j5JWUUtU+oY88PtsNXImaAt
-         l6ekUwulhNomjtgh60/Hn+oFjfSdda8cNXYd4ByEsm0aFlK46ja32huZ8yiXWKEO+gju
-         AF4w==
-X-Gm-Message-State: AOAM532ZR7AvQLDJrcln49KEr9A1Knvh+g0AhGRKL2Ly3mqxcF4OMxLg
-        5C39QoPC3sBdTJGs9ZJstOCrgA==
-X-Google-Smtp-Source: ABdhPJz8Xblx/0gqLzz6ZElpaAiPlDeIUeBjMLlCp2hzlHJxhui/0ePgefixV57yu+dDZ6yxbRkDVQ==
-X-Received: by 2002:a17:90a:4502:: with SMTP id u2mr3822075pjg.187.1596644918065;
-        Wed, 05 Aug 2020 09:28:38 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.70])
-        by smtp.gmail.com with ESMTPSA id 12sm3953119pfn.173.2020.08.05.09.28.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Aug 2020 09:28:37 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sfr@canb.auug.org.au, mingo@kernel.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v2] kprobes: fix NULL pointer dereference at kprobe_ftrace_handler
-Date:   Thu,  6 Aug 2020 00:27:13 +0800
-Message-Id: <20200805162713.16386-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        bh=KYochtEjpm101ssvrc1qnkomKdB0mr7v39P4tgD9/lg=;
+        b=ENY02C+0C1p77BwakhR3hcMSAuprovOumSxpDuLhWBxrOlIZpOg8AWo8NHvYxEg/QZ
+         mk9po3nZZMg3C4ASX3VkAB1/9t5qwFogEWhI8TDLlEk/tO2TmNFpFd8Cm+Z0gkP8Mh7M
+         ve+n5wkoTHqSYVf4yE5FDUNGJ8en7TidM2pOn0heHdnU9SODeHabKpWxLJDo9ZfKcCTK
+         oc5v4shZw8cov2Ny7dEfbqWExo3qLcCAvE/W2SjLto3fTce0dVByWcY2Fv/Q3FT0g/H0
+         1+jz0Lw63eDAI1GU6Y+d/Z2R7BMd8vlRA+NFF3fOc9qi725U6MXecrhsc2MCBdrUlB9g
+         44Og==
+X-Gm-Message-State: AOAM5307g8D0Bo80n7YExSrWFrBjXnXIBQqgvShp5f+W+Wvcl+zUdCRg
+        7pn12j7tsJ/sxNVO7JhFNrwJ/jZFH/QeAw==
+X-Google-Smtp-Source: ABdhPJwxQlEZSJotNwscji8aJo0a6h0jXgpsCDn6oitIw+uvSDyfifcu5WT6LSG1AfuCFLmr5jWPEA==
+X-Received: by 2002:ac8:ec7:: with SMTP id w7mr4308864qti.118.1596645313530;
+        Wed, 05 Aug 2020 09:35:13 -0700 (PDT)
+Received: from localhost.localdomain (pc-199-79-45-190.cm.vtr.net. [190.45.79.199])
+        by smtp.googlemail.com with ESMTPSA id f7sm1748417qkj.32.2020.08.05.09.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 09:35:12 -0700 (PDT)
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
+        bpf@vger.kernel.org, cneirabustos@gmail.com
+Subject: [PATCH v4 bpf-next] bpf/selftests: fold test_current_pid_tgid_new_ns into  test_progs.
+Date:   Wed,  5 Aug 2020 12:35:03 -0400
+Message-Id: <20200805163503.40381-1-cneirabustos@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -68,115 +62,549 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We found a case of kernel panic on our server. The stack trace is as
-follows(omit some irrelevant information):
+Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
+This change folds a test case into test_progs.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000080
-  RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
-  RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
-  RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
-  RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
-  RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
-  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-  R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   <IRQ>
-   ftrace_ops_assist_func+0x56/0xe0
-   ftrace_call+0x5/0x34
-   tcpa_statistic_send+0x5/0x130 [ttcp_engine]
+Changes from V3:
+ - STAT(2) check changed from CHECK_FAIL to CHECK.
+ - Changed uses of _open_ to _open_and_load.
+ - Fixed error codes were not being returned on exit. 
+ - Removed unnecessary dependency on Makefile
 
-The tcpa_statistic_send is the function being kprobed. After analysis,
-the root cause is that the fourth parameter regs of kprobe_ftrace_handler
-is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
-
-  crash> dis tcpa_statistic_send -r
-         <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
-
-The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
-So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
-is NULL. In theory, we should call the ftrace_regs_caller instead of the
-ftrace_caller. After in-depth analysis, we found a reproducible path.
-
-  Writing a simple kernel module which starts a periodic timer. The
-  timer's handler is named 'kprobe_test_timer_handler'. The module
-  name is kprobe_test.ko.
-
-  1) insmod kprobe_test.ko
-  2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
-  3) echo 0 > /proc/sys/kernel/ftrace_enabled
-  4) rmmod kprobe_test
-  5) stop step 2) kprobe
-  6) insmod kprobe_test.ko
-  7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
-
-We mark the kprobe as GONE but not disarm the kprobe in the step 4).
-The step 5) also do not disarm the kprobe when unregister kprobe. So
-we do not remove the ip from the filter. In this case, when the module
-loads again in the step 6), we will replace the code to ftrace_caller
-via the ftrace_module_enable(). When we register kprobe again, we will
-not replace ftrace_caller to ftrace_regs_caller because the ftrace is
-disabled in the step 3). So the step 7) will trigger kernel panic. Fix
-this problem by disarming the kprobe when the module is going away.
-
-Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
 ---
-changelogs in v2:
- 1) fix compiler warning for !CONFIG_KPROBES_ON_FTRACE.
+ tools/testing/selftests/bpf/.gitignore        |   2 +-
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../bpf/prog_tests/ns_current_pid_tgid.c      |  85 ----------
+ .../bpf/prog_tests/ns_current_pidtgid.c       |  54 ++++++
+ .../bpf/progs/test_ns_current_pid_tgid.c      |  37 ----
+ .../bpf/progs/test_ns_current_pidtgid.c       |  25 +++
+ .../bpf/test_current_pid_tgid_new_ns.c        | 159 ------------------
+ .../bpf/test_ns_current_pidtgid_newns.c       |  91 ++++++++++
+ 8 files changed, 173 insertions(+), 284 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+ delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+ create mode 100644 tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c
 
- kernel/kprobes.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 146c648eb943..d36e2b017588 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1114,9 +1114,20 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
- 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
- }
- #else	/* !CONFIG_KPROBES_ON_FTRACE */
--#define prepare_kprobe(p)	arch_prepare_kprobe(p)
--#define arm_kprobe_ftrace(p)	(-ENODEV)
--#define disarm_kprobe_ftrace(p)	(-ENODEV)
-+static inline int prepare_kprobe(struct kprobe *p)
-+{
-+	return arch_prepare_kprobe(p);
-+}
-+
-+static inline int arm_kprobe_ftrace(struct kprobe *p)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int disarm_kprobe_ftrace(struct kprobe *p)
-+{
-+	return -ENODEV;
-+}
- #endif
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 1bb204cee853..022055f23592 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -30,8 +30,8 @@ test_tcpnotify_user
+ test_libbpf
+ test_tcp_check_syncookie_user
+ test_sysctl
+-test_current_pid_tgid_new_ns
+ xdping
++test_ns_current_pidtgid_newns
+ test_cpp
+ *.skel.h
+ /no_alu32
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e7a8cf83ba48..92fb616cdd27 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -36,8 +36,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+ 	test_cgroup_storage \
+ 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+-	test_progs-no_alu32 \
+-	test_current_pid_tgid_new_ns
++	test_progs-no_alu32\
++	test_ns_current_pidtgid_newns
  
- /* Arm a kprobe with text_mutex */
-@@ -2148,6 +2159,13 @@ static void kill_kprobe(struct kprobe *p)
- 	 * the original probed function (which will be freed soon) any more.
- 	 */
- 	arch_remove_kprobe(p);
+ # Also test bpf-gcc, if present
+ ifneq ($(BPF_GCC),)
+diff --git a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+deleted file mode 100644
+index e74dc501b27f..000000000000
+--- a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
++++ /dev/null
+@@ -1,85 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
+-#include <test_progs.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <sys/syscall.h>
+-
+-struct bss {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-};
+-
+-void test_ns_current_pid_tgid(void)
+-{
+-	const char *probe_name = "raw_tracepoint/sys_enter";
+-	const char *file = "test_ns_current_pid_tgid.o";
+-	int err, key = 0, duration = 0;
+-	struct bpf_link *link = NULL;
+-	struct bpf_program *prog;
+-	struct bpf_map *bss_map;
+-	struct bpf_object *obj;
+-	struct bss bss;
+-	struct stat st;
+-	__u64 id;
+-
+-	obj = bpf_object__open_file(file, NULL);
+-	if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
+-		return;
+-
+-	err = bpf_object__load(obj);
+-	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
+-		goto cleanup;
+-
+-	bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
+-	if (CHECK(!bss_map, "find_bss_map", "failed\n"))
+-		goto cleanup;
+-
+-	prog = bpf_object__find_program_by_title(obj, probe_name);
+-	if (CHECK(!prog, "find_prog", "prog '%s' not found\n",
+-		  probe_name))
+-		goto cleanup;
+-
+-	memset(&bss, 0, sizeof(bss));
+-	pid_t tid = syscall(SYS_gettid);
+-	pid_t pid = getpid();
+-
+-	id = (__u64) tid << 32 | pid;
+-	bss.user_pid_tgid = id;
+-
+-	if (CHECK_FAIL(stat("/proc/self/ns/pid", &st))) {
+-		perror("Failed to stat /proc/self/ns/pid");
+-		goto cleanup;
+-	}
+-
+-	bss.dev = st.st_dev;
+-	bss.ino = st.st_ino;
+-
+-	err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
+-	if (CHECK(err, "setting_bss", "failed to set bss : %d\n", err))
+-		goto cleanup;
+-
+-	link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
+-	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n",
+-		  PTR_ERR(link))) {
+-		link = NULL;
+-		goto cleanup;
+-	}
+-
+-	/* trigger some syscalls */
+-	usleep(1);
+-
+-	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
+-	if (CHECK(err, "set_bss", "failed to get bss : %d\n", err))
+-		goto cleanup;
+-
+-	if (CHECK(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
+-		  "User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
+-		goto cleanup;
+-cleanup:
+-	bpf_link__destroy(link);
+-	bpf_object__close(obj);
+-}
+diff --git a/tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c b/tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c
+new file mode 100644
+index 000000000000..156781fecf9d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
 +
-+	/*
-+	 * The module is going away. We should disarm the kprobe which
-+	 * is using ftrace.
-+	 */
-+	if (kprobe_ftrace(p))
-+		disarm_kprobe_ftrace(p);
- }
- 
- /* Disable one kprobe */
++#define _GNU_SOURCE
++#include <test_progs.h>
++#include "test_ns_current_pidtgid.skel.h"
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sched.h>
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <sys/fcntl.h>
++
++void test_ns_current_pidtgid(void)
++{
++	struct test_ns_current_pidtgid__bss  *bss;
++	struct test_ns_current_pidtgid *skel;
++	int err, duration = 0;
++	struct stat st;
++	__u64 id;
++
++	skel = test_ns_current_pidtgid__open_and_load();
++	CHECK(!skel, "skel_open_load", "failed to load skeleton\n");
++		goto cleanup;
++
++	pid_t tid = syscall(SYS_gettid);
++	pid_t pid = getpid();
++
++	id = (__u64) tid << 32 | pid;
++
++	err = stat("/proc/self/ns/pid", &st);
++	if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
++		goto cleanup;
++
++	bss = skel->bss;
++	bss->dev = st.st_dev;
++	bss->ino = st.st_ino;
++	bss->user_pid_tgid = 0;
++
++	err = test_ns_current_pidtgid__attach(skel);
++	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
++		goto cleanup;
++
++	/* trigger tracepoint */
++	usleep(1);
++
++	CHECK(bss->user_pid_tgid != id, "pid/tgid", "got %llu != exp %llu\n",
++		bss->user_pid_tgid, id);
++cleanup:
++	test_ns_current_pidtgid__destroy(skel);
++
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+deleted file mode 100644
+index 1dca70a6de2f..000000000000
+--- a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
++++ /dev/null
+@@ -1,37 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2019 Carlos Neira cneirabustos@gmail.com */
+-
+-#include <linux/bpf.h>
+-#include <stdint.h>
+-#include <bpf/bpf_helpers.h>
+-
+-static volatile struct {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-} res;
+-
+-SEC("raw_tracepoint/sys_enter")
+-int trace(void *ctx)
+-{
+-	__u64  ns_pid_tgid, expected_pid;
+-	struct bpf_pidns_info nsdata;
+-	__u32 key = 0;
+-
+-	if (bpf_get_ns_current_pid_tgid(res.dev, res.ino, &nsdata,
+-		   sizeof(struct bpf_pidns_info)))
+-		return 0;
+-
+-	ns_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
+-	expected_pid = res.user_pid_tgid;
+-
+-	if (expected_pid != ns_pid_tgid)
+-		return 0;
+-
+-	res.pid_tgid = ns_pid_tgid;
+-
+-	return 0;
+-}
+-
+-char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+new file mode 100644
+index 000000000000..9818a56510d9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2019 Carlos Neira cneirabustos@gmail.com */
++
++#include <linux/bpf.h>
++#include <stdint.h>
++#include <bpf/bpf_helpers.h>
++
++__u64 user_pid_tgid = 0;
++__u64 dev = 0;
++__u64 ino = 0;
++
++SEC("raw_tracepoint/sys_enter")
++int handler(const void *ctx)
++{
++	struct bpf_pidns_info nsdata;
++
++	if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata,
++		   sizeof(struct bpf_pidns_info)))
++		return 0;
++	user_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c b/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+deleted file mode 100644
+index ed253f252cd0..000000000000
+--- a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
++++ /dev/null
+@@ -1,159 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
+-#define _GNU_SOURCE
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <sys/syscall.h>
+-#include <sched.h>
+-#include <sys/wait.h>
+-#include <sys/mount.h>
+-#include "test_progs.h"
+-
+-#define CHECK_NEWNS(condition, tag, format...) ({		\
+-	int __ret = !!(condition);			\
+-	if (__ret) {					\
+-		printf("%s:FAIL:%s ", __func__, tag);	\
+-		printf(format);				\
+-	} else {					\
+-		printf("%s:PASS:%s\n", __func__, tag);	\
+-	}						\
+-	__ret;						\
+-})
+-
+-struct bss {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-};
+-
+-int main(int argc, char **argv)
+-{
+-	pid_t pid;
+-	int exit_code = 1;
+-	struct stat st;
+-
+-	printf("Testing bpf_get_ns_current_pid_tgid helper in new ns\n");
+-
+-	if (stat("/proc/self/ns/pid", &st)) {
+-		perror("stat failed on /proc/self/ns/pid ns\n");
+-		printf("%s:FAILED\n", argv[0]);
+-		return exit_code;
+-	}
+-
+-	if (CHECK_NEWNS(unshare(CLONE_NEWPID | CLONE_NEWNS),
+-			"unshare CLONE_NEWPID | CLONE_NEWNS", "error errno=%d\n", errno))
+-		return exit_code;
+-
+-	pid = fork();
+-	if (pid == -1) {
+-		perror("Fork() failed\n");
+-		printf("%s:FAILED\n", argv[0]);
+-		return exit_code;
+-	}
+-
+-	if (pid > 0) {
+-		int status;
+-
+-		usleep(5);
+-		waitpid(pid, &status, 0);
+-		return 0;
+-	} else {
+-
+-		pid = fork();
+-		if (pid == -1) {
+-			perror("Fork() failed\n");
+-			printf("%s:FAILED\n", argv[0]);
+-			return exit_code;
+-		}
+-
+-		if (pid > 0) {
+-			int status;
+-			waitpid(pid, &status, 0);
+-			return 0;
+-		} else {
+-			if (CHECK_NEWNS(mount("none", "/proc", NULL, MS_PRIVATE|MS_REC, NULL),
+-				"Unmounting proc", "Cannot umount proc! errno=%d\n", errno))
+-				return exit_code;
+-
+-			if (CHECK_NEWNS(mount("proc", "/proc", "proc", MS_NOSUID|MS_NOEXEC|MS_NODEV, NULL),
+-				"Mounting proc", "Cannot mount proc! errno=%d\n", errno))
+-				return exit_code;
+-
+-			const char *probe_name = "raw_tracepoint/sys_enter";
+-			const char *file = "test_ns_current_pid_tgid.o";
+-			struct bpf_link *link = NULL;
+-			struct bpf_program *prog;
+-			struct bpf_map *bss_map;
+-			struct bpf_object *obj;
+-			int exit_code = 1;
+-			int err, key = 0;
+-			struct bss bss;
+-			struct stat st;
+-			__u64 id;
+-
+-			obj = bpf_object__open_file(file, NULL);
+-			if (CHECK_NEWNS(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
+-				return exit_code;
+-
+-			err = bpf_object__load(obj);
+-			if (CHECK_NEWNS(err, "obj_load", "err %d errno %d\n", err, errno))
+-				goto cleanup;
+-
+-			bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
+-			if (CHECK_NEWNS(!bss_map, "find_bss_map", "failed\n"))
+-				goto cleanup;
+-
+-			prog = bpf_object__find_program_by_title(obj, probe_name);
+-			if (CHECK_NEWNS(!prog, "find_prog", "prog '%s' not found\n",
+-						probe_name))
+-				goto cleanup;
+-
+-			memset(&bss, 0, sizeof(bss));
+-			pid_t tid = syscall(SYS_gettid);
+-			pid_t pid = getpid();
+-
+-			id = (__u64) tid << 32 | pid;
+-			bss.user_pid_tgid = id;
+-
+-			if (CHECK_NEWNS(stat("/proc/self/ns/pid", &st),
+-				"stat new ns", "Failed to stat /proc/self/ns/pid errno=%d\n", errno))
+-				goto cleanup;
+-
+-			bss.dev = st.st_dev;
+-			bss.ino = st.st_ino;
+-
+-			err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
+-			if (CHECK_NEWNS(err, "setting_bss", "failed to set bss : %d\n", err))
+-				goto cleanup;
+-
+-			link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
+-			if (CHECK_NEWNS(IS_ERR(link), "attach_raw_tp", "err %ld\n",
+-						PTR_ERR(link))) {
+-				link = NULL;
+-				goto cleanup;
+-			}
+-
+-			/* trigger some syscalls */
+-			usleep(1);
+-
+-			err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
+-			if (CHECK_NEWNS(err, "set_bss", "failed to get bss : %d\n", err))
+-				goto cleanup;
+-
+-			if (CHECK_NEWNS(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
+-						"User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
+-				goto cleanup;
+-
+-			exit_code = 0;
+-			printf("%s:PASS\n", argv[0]);
+-cleanup:
+-			if (!link) {
+-				bpf_link__destroy(link);
+-				link = NULL;
+-			}
+-			bpf_object__close(obj);
+-		}
+-	}
+-}
+diff --git a/tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c b/tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c
+new file mode 100644
+index 000000000000..4ca94e1f13f1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
++
++#define _GNU_SOURCE
++#include <test_progs.h>
++#include "test_ns_current_pidtgid.skel.h"
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sched.h>
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <sys/fcntl.h>
++
++#define STACK_SIZE (1024 * 1024)
++static char child_stack[STACK_SIZE];
++
++static int newns_pidtgid(void *arg)
++{
++	struct test_ns_current_pidtgid__bss  *bss;
++	struct test_ns_current_pidtgid *skel;
++	int pidns_fd = 0, err = 0;
++	pid_t pid, tid;
++	struct stat st;
++	__u64 id;
++
++	skel = test_ns_current_pidtgid__open_and_load();
++	if (!skel) {
++		perror("Failed to load skeleton");
++		goto cleanup;
++	}
++
++	tid = syscall(SYS_gettid);
++	pid = getpid();
++	id = (__u64) tid << 32 | pid;
++
++	if (stat("/proc/self/ns/pid", &st)) {
++		printf("Failed to stat /proc/self/ns/pid: %s\n",
++			strerror(errno));
++		goto cleanup;
++	}
++
++	bss = skel->bss;
++	bss->dev = st.st_dev;
++	bss->ino = st.st_ino;
++	bss->user_pid_tgid = 0;
++
++	err = test_ns_current_pidtgid__attach(skel);
++	if (err) {
++		printf("Failed to attach: %s err: %d\n", strerror(errno), err);
++		goto cleanup;
++	}
++	/* trigger tracepoint */
++	usleep(1);
++
++	if (bss->user_pid_tgid != id) {
++		printf("test_ns_current_pidtgid_newns:FAIL\n");
++		err = EXIT_FAILURE;
++	} else {
++		printf("test_ns_current_pidtgid_newns:PASS\n");
++		err = EXIT_SUCCESS;
++	}
++
++cleanup:
++	setns(pidns_fd, CLONE_NEWPID);
++	test_ns_current_pidtgid__destroy(skel);
++
++	return err;
++}
++
++int main(int argc, char **argv)
++{
++	pid_t cpid;
++	int wstatus;
++
++	cpid = clone(newns_pidtgid,
++			child_stack + STACK_SIZE,
++			CLONE_NEWPID | SIGCHLD, NULL);
++	if (cpid == -1) {
++		printf("test_ns_current_pidtgid_newns:Failed on CLONE: %s\n",
++			 strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++	if (waitpid(cpid, &wstatus, 0) == -1) {
++		printf("test_ns_current_pidtgid_newns:Failed on waitpid: %s\n",
++			strerror(errno));
++		exit(EXIT_FAILURE);
++	}
++	return WEXITSTATUS(wstatus);
++}
 -- 
-2.11.0
+2.20.1
 
