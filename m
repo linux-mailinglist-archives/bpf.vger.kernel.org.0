@@ -2,204 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530AE23C43A
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 05:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D323C4B7
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 06:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgHED7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 23:59:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4418 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725904AbgHED7m (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Aug 2020 23:59:42 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0753xPkp012006;
-        Tue, 4 Aug 2020 20:59:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
- b=b2SyfvtX4W3k0uQGGLQBYa+OObTFoV2rIKxEi4FUHseHRvtPuifZmIsn8TU6Sq9gIaf3
- n5VQG9S2dK37D35hIk7R53GiNwyQDMx4crd9XzqX9KtBM/7xjn4Fd71LBvFr/d6JtR7i
- +3Hc9OYsw8qaQ76syULsTSAdpQDA6wPoyfY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 32n81yg6xk-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 04 Aug 2020 20:59:26 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 4 Aug 2020 20:59:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Varg3wynbhuqe9jVe5Q24jNv2X86hPD19GQmCko06HFKFANP1Cft5JjQqAg3JiVExRcR+ijPEHnYaQCE+LZFLMek/uchLWjT3f0/ynBbDCrSIfBYl2qYenCg/eGI5vYoM83ri0g+6qp8j0zwbO96wjgiWPKFFwf9Kr3uyTZVyqO2IpSxK4k1Rskyb6erIKVKqn1nIAzF23UIuA66dBHZERvGY8XPF/szyNfQMV0sPyRVTvpkeJHDXU92cWZUXHZ4SE5JWgXmeZPfk8Q0CuaRHTHNDJ5oNmQzX3g8+ks9bVI6OBzfj2/QT/EVg4mb1JHdYGihDV8gwascLln/+ZvzgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
- b=QHrj3ZVu1ado4hhrULR0M6Z7hhxDU+7Impm/K7BEMZ18JGywWsvTzMQggD3QCyBt+aO0wWRzeyZkVrwDk+2TVd9ZGWmfzMHEPxNt5n0+GeYg3Yj7Ep8PwkpnOZH1ywD/vmc3+BMbxn4xUFPlbX4lTdqw0cgQzyD+5sLFYzVG9dblDQYoZFg55y4886ofRVrXjmMOk0ogEIPdGcJcCQGe4rdUiFuMtIqYwxY+Xah/BdgIg2eDk3trnLqiPKBDDh1e6AM7YIH6ImcxvKwfepDjGeJSFZgkd5jV3h8gGR/egf/gO22XNVh6fjuugffk7K0Py6d07YkEMYzUIMziw8UfSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
- b=cd4jdlyOMpV3nLr/RVsK4mv3PkDWzoX+sNyWI5Ydcl9A7JpzHYyuN8a0zUZUDYTF5CXVqnMVeRjkLytQ/P0z6kUZ9E333GLwRUbr6ddaZeDcXob8YBizIeE8nFWZaJfK24LqUjHBzRvUXwtso3juVx9aVcpJoQwLl87W9gCvnNg=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3304.namprd15.prod.outlook.com (2603:10b6:a03:10a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Wed, 5 Aug
- 2020 03:59:13 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
- 03:59:13 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id S1726008AbgHEEpx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 00:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgHEEpw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 00:45:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECDDC06174A;
+        Tue,  4 Aug 2020 21:45:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u20so20555pfn.0;
+        Tue, 04 Aug 2020 21:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=MKiOyh7sU1UdF9wEbpnkg9O1/J44+9D3nI3ZBZJJL0A=;
+        b=s94d7Zx5nz53iXJ/1H77qdOVZ45rkoL5cLNNWjCGXKgBcPWypBB+uTIOUG9mIywYQA
+         pUgolTIFfeHZk44vXBDAMKDT4glFMv2eYdhZbT+BM4IOhm7NHT18TS+v5Nu8Zibi7qYy
+         oysef81PccOcHeywR2N5Bvb+qCUhPe6lddPQYPtEQ4zoQg2h3FcpIOqcZOITJ88sjWre
+         EdnNLBr2T7MUzxipnozbCSZDaXNshLbwNI65oCW1CRMnT6gMDp/vx/Bdqj0mZ2SC4jcj
+         qzwmJGWWNoE/BaWpMeQZqB07M9ynSblCHU8aY0qHVQVWYJUEgRhI7bM5Brp3vqhbP8lO
+         Zhow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=MKiOyh7sU1UdF9wEbpnkg9O1/J44+9D3nI3ZBZJJL0A=;
+        b=au0oddbKKaTusUGCWKn5kuenCEBbozNH+kRuCKjVtz0unyNWdWZQPClmTtYuRC0Azo
+         XIq4lnSuAu0yCix8oRGb0F8IwrKV/Iqmb27seqQQKFwpprWT/ch8BohRaRXWKkDTk9nL
+         9O5as7XgtNWVMucaM5yTbDQ6mShWKHE2uk8B+Jmgm5MgBdB88tW4dynCZER9ZV7rD4Pb
+         nNpUGrDUGSzC/at0VYSDG/hX0OeHacKw1dcV++oalhLBu58I1rE7hyS0V+5mTDKjPHiN
+         PYqlu4ruUCB1DmSzDuFkXOxQOYUgZ32itianvXbAsYwsxeCRjdBkt3QdvD/I2ECVa1Mb
+         j3fg==
+X-Gm-Message-State: AOAM5317AoM40ZctT3PwY1keUbdOdf9vcdnmXYJjQpCnQ9lzCem582ap
+        OJLEpEHJ9wzxibvLxzK3sq0=
+X-Google-Smtp-Source: ABdhPJwf/y7erWhZKCi+ktObDF2e3NG8q0KhWHMP8vacvhMryXpk08jMAuYqxXhTTGfPRy07vJAQxQ==
+X-Received: by 2002:a62:7ac2:: with SMTP id v185mr1588560pfc.277.1596602752302;
+        Tue, 04 Aug 2020 21:45:52 -0700 (PDT)
+Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
+        by smtp.gmail.com with ESMTPSA id 21sm1231734pfa.4.2020.08.04.21.45.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 04 Aug 2020 21:45:51 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
+Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
+ in kernel FDB table
+From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
+In-Reply-To: <9420fbc2-3139-f23e-fb6b-e3d28b9bee5f@iogearbox.net>
+Date:   Wed, 5 Aug 2020 13:45:44 +0900
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Xu <dlxu@fb.com>
-Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
-Thread-Topic: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
-Thread-Index: AQHWZ+C4tQwFkmvi20aNhPcONSrEz6klnl6AgAGMFwCAAZgFAIAAJ1IA
-Date:   Wed, 5 Aug 2020 03:59:13 +0000
-Message-ID: <5BC1D7AD-32C1-4CDC-BA99-F4DABE61EEA3@fb.com>
-References: <20200801084721.1812607-1-songliubraving@fb.com>
- <20200801084721.1812607-3-songliubraving@fb.com>
- <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
- <9C1285C1-ECD6-46BD-BA95-3E9E81C00EF0@fb.com>
- <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:8f7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 364af8d9-ee68-4070-9d2e-08d838f3ea71
-x-ms-traffictypediagnostic: BYAPR15MB3304:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3304882C9EC34BE545E765E1B34B0@BYAPR15MB3304.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WhMNdsMz7xpz+LH6/lmG79zTy4uW2Oixbef/C0ppWCBVroNCLFyLFDwONaJbnE0dbeLclXuNHodt56qHsg2tszGW/4m44uYF4MNeIBP0Fk7JC/ZcMeLtGun8KwFPCWZ98/mWlwTZREpkqEARb9iyC0o17MQtGodqVhAZOV9w4TNqI4dkCUCyi8tPYzWncL/C4kyMz2YZcT4hMZl5M/KV5I2ppTKbJjNvKLRlqEaOdGwffwx+4p75HcqScvjPDKroZLBakMcRQLCKShnAIlAtTI2GQvxldb9ezstQAyh+5Q4M0ukpYn2Kr8/lhjrtk92n+nVJMzZhEI5i3MS+zd5VotjUuJbZXiVvD0oR/pDblYonMfieCvVnTB0oDIg+oZSO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(366004)(396003)(136003)(39860400002)(316002)(4326008)(186003)(2616005)(54906003)(8676002)(36756003)(86362001)(8936002)(6486002)(83380400001)(6512007)(478600001)(71200400001)(66556008)(33656002)(6916009)(64756008)(2906002)(66476007)(66446008)(76116006)(5660300002)(53546011)(6506007)(66946007)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 32kRozHzKHvYaltuBJoS7O4TbL6InB3Maz8QHzLx1IyYs4mKxuGu6py0mW5dRtj2jUMZCmuhb4xLtnlTnPg6BWkmYgI6hyNppvbuuvvyWbZS8kNaTJIaKuSthRDb81sKH5iPN+p1WkfdHVKcIzU8cC0FZBo31cZPSlShs4HhCtESIbhLrvTCwIAvLY9fAZXUjiVnv8dUndsUiohDyT6ojU1dRDolJoEkmcsbAEcWjG6rYkGgutElMj8eGk6SrN2HYNDBTHQfG1dZ/NTczA7lTbiUbml5M5Bf8MxY9NHMBA6anLoFQhN5y+pr9fijc0zDekRZDHJSoZatApLg/Svrq2+duKwP427Q2C9WEHjyum0IkxGAHKBjLZEu8zAZ5Bdx4Zt5dv4Q8GRr4pvQjfQPZmEr+aGg+oUMW4lwIH4TPM0w5L3wRTvoxOTjyo4EY+Faf7mFXGYk5pxe9OaYTYCBXzAlP/lAd9V6yEMYX+qjEk8BG004Bun3RFvzRzfgtt6UCrLYEEbHp0IKcKwDPxOfRjwZFH9nMykSLR2oaMwoJev/PrYCPOki0yO1GdFXYnrS3aJqBiEoJUgVYGvID0oLhqMNULtnoXgPVGyvSm3zIrC4XNK3fflWgVXL5lIDG54PXcjJ9BeSMeYAF+TXcwaCd9DVrpo6K6Jgj1j120owYOM=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <807257139EBEDF4199E1EB2BD2128796@namprd15.prod.outlook.com>
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 364af8d9-ee68-4070-9d2e-08d838f3ea71
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 03:59:13.4108
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iSUCFO2Mwd1tGr30BctY4CGlhacpNIu8izloVbatHErLI71NcivvSkOmDYs00R/V2uHGWMthUpl1lhLedf+S8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3304
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-05_03:2020-08-03,2020-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 suspectscore=0
- impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008050035
-X-FB-Internal: deliver
+Message-Id: <3D4E5E32-7A96-4803-8B6E-ECAB0D6EDE0E@gmail.com>
+References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
+ <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
+ <9420fbc2-3139-f23e-fb6b-e3d28b9bee5f@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+X-Mailer: Apple Mail (2.3445.104.15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-
-> On Aug 4, 2020, at 6:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
+> 2020/08/01 6:12=E3=80=81Daniel Borkmann =
+<daniel@iogearbox.net>=E3=81=AE=E3=83=A1=E3=83=BC=E3=83=AB:
 >=20
-> On Mon, Aug 3, 2020 at 6:18 PM Song Liu <songliubraving@fb.com> wrote:
->>=20
->>=20
->>=20
->>> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
->>>=20
->>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
->>>>=20
->>=20
->> [...]
->>=20
->>>=20
->>>> };
->>>>=20
->>>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *=
-test_attr);
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index b9f11f854985b..9ce175a486214 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] =
-=3D {
->>>>       BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
->>>>       BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
->>>>       BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LO=
-CAL),
->>>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
->>>=20
->>> let's do "user/" for consistency with most other prog types (and nice
->>> separation between prog type and custom user name)
->>=20
->> About "user" vs. "user/", I still think "user" is better.
->>=20
->> Unlike kprobe and tracepoint, user prog doesn't use the part after "/".
->> This is similar to "perf_event" for BPF_PROG_TYPE_PERF_EVENT, "xdl" for
->> BPF_PROG_TYPE_XDP, etc. If we specify "user" here, "user/" and "user/xxx=
-"
->> would also work. However, if we specify "user/" here, programs that used
->> "user" by accident will fail to load, with a message like:
->>=20
->>        libbpf: failed to load program 'user'
->>=20
->> which is confusing.
+> On 7/31/20 6:44 AM, Yoshiki Komachi wrote:
+>> This patch adds a new bpf helper to access FDB in the kernel tables
+>> from XDP programs. The helper enables us to find the destination port
+>> of master bridge in XDP layer with high speed. If an entry in the
+>> tables is successfully found, egress device index will be returned.
+>> In cases of failure, packets will be dropped or forwarded to upper
+>> networking stack in the kernel by XDP programs. Multicast and =
+broadcast
+>> packets are currently not supported. Thus, these will need to be
+>> passed to upper layer on the basis of XDP_PASS action.
+>> The API uses destination MAC and VLAN ID as keys, so XDP programs
+>> need to extract these from forwarded packets.
+>> Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
 >=20
-> xdp, perf_event and a bunch of others don't enforce it, that's true,
-> they are a bit of a legacy,
+> Few initial comments below:
+>=20
+>> ---
+>>  include/uapi/linux/bpf.h       | 28 +++++++++++++++++++++
+>>  net/core/filter.c              | 45 =
+++++++++++++++++++++++++++++++++++
+>>  scripts/bpf_helpers_doc.py     |  1 +
+>>  tools/include/uapi/linux/bpf.h | 28 +++++++++++++++++++++
+>>  4 files changed, 102 insertions(+)
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 54d0c886e3ba..f2e729dd1721 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -2149,6 +2149,22 @@ union bpf_attr {
+>>   *		* > 0 one of **BPF_FIB_LKUP_RET_** codes explaining why =
+the
+>>   *		  packet is not forwarded or needs assist from full =
+stack
+>>   *
+>> + * long bpf_fdb_lookup(void *ctx, struct bpf_fdb_lookup *params, int =
+plen, u32 flags)
+>> + *	Description
+>> + *		Do FDB lookup in kernel tables using parameters in =
+*params*.
+>> + *		If lookup is successful (ie., FDB lookup finds a =
+destination entry),
+>> + *		ifindex is set to the egress device index from the FDB =
+lookup.
+>> + *		Both multicast and broadcast packets are currently =
+unsupported
+>> + *		in XDP layer.
+>> + *
+>> + *		*plen* argument is the size of the passed **struct =
+bpf_fdb_lookup**.
+>> + *		*ctx* is only **struct xdp_md** for XDP programs.
+>> + *
+>> + *     Return
+>> + *		* < 0 if any input argument is invalid
+>> + *		*   0 on success (destination port is found)
+>> + *		* > 0 on failure (there is no entry)
+>> + *
+>>   * long bpf_sock_hash_update(struct bpf_sock_ops *skops, struct =
+bpf_map *map, void *key, u64 flags)
+>>   *	Description
+>>   *		Add an entry to, or update a sockhash *map* referencing =
+sockets.
+>> @@ -3449,6 +3465,7 @@ union bpf_attr {
+>>  	FN(get_stack),			\
+>>  	FN(skb_load_bytes_relative),	\
+>>  	FN(fib_lookup),			\
+>> +	FN(fdb_lookup),			\
+>=20
+> This breaks UAPI. Needs to be added to the very end of the list.
 
-I don't see w/o "/" is a legacy thing. BPF_PROG_TYPE_STRUCT_OPS just uses
-"struct_ops".=20
+I figured it out and will move it to the very end of the list. Thanks!
 
-> unfortunately. But all the recent ones do,
-> and we explicitly did that for xdp_dev/xdp_cpu, for instance.
-> Specifying just "user" in the spec would allow something nonsensical
-> like "userargh", for instance, due to this being treated as a prefix.
-> There is no harm to require users to do "user/my_prog", though.
+>>  	FN(sock_hash_update),		\
+>>  	FN(msg_redirect_hash),		\
+>>  	FN(sk_redirect_hash),		\
+>> @@ -4328,6 +4345,17 @@ struct bpf_fib_lookup {
+>>  	__u8	dmac[6];     /* ETH_ALEN */
+>>  };
+>>  +enum {
+>> +	BPF_FDB_LKUP_RET_SUCCESS,      /* lookup successful */
+>> +	BPF_FDB_LKUP_RET_NOENT,        /* entry is not found */
+>> +};
+>> +
+>> +struct bpf_fdb_lookup {
+>> +	unsigned char addr[6];     /* ETH_ALEN */
+>> +	__u16 vlan_id;
+>> +	__u32 ifindex;
+>> +};
+>> +
+>>  enum bpf_task_fd_type {
+>>  	BPF_FD_TYPE_RAW_TRACEPOINT,	/* tp name */
+>>  	BPF_FD_TYPE_TRACEPOINT,		/* tp name */
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 654c346b7d91..68800d1b8cd5 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -45,6 +45,7 @@
+>>  #include <linux/filter.h>
+>>  #include <linux/ratelimit.h>
+>>  #include <linux/seccomp.h>
+>> +#include <linux/if_bridge.h>
+>>  #include <linux/if_vlan.h>
+>>  #include <linux/bpf.h>
+>>  #include <linux/btf.h>
+>> @@ -5084,6 +5085,46 @@ static const struct bpf_func_proto =
+bpf_skb_fib_lookup_proto =3D {
+>>  	.arg4_type	=3D ARG_ANYTHING,
+>>  };
+>>  +#if IS_ENABLED(CONFIG_BRIDGE)
+>> +BPF_CALL_4(bpf_xdp_fdb_lookup, struct xdp_buff *, ctx,
+>> +	   struct bpf_fdb_lookup *, params, int, plen, u32, flags)
+>> +{
+>> +	struct net_device *src, *dst;
+>> +	struct net *net;
+>> +
+>> +	if (plen < sizeof(*params))
+>> +		return -EINVAL;
+>=20
+> Given flags are not used, this needs to reject anything invalid =
+otherwise
+> you're not able to extend it in future.
 
-I don't see why allowing "userargh" is a problem. Failing "user" is=20
-more confusing. We can probably improve that by a hint like:
+I added this flags based on the bpf_fib_lookup() helper, but these are =
+not
+used at this point.
 
-    libbpf: failed to load program 'user', do you mean "user/"?
+I will make sure whether this flags are required or not.
 
-But it is pretty silly. "user/something_never_used" also looks weird.
+>> +	net =3D dev_net(ctx->rxq->dev);
+>> +
+>> +	if (is_multicast_ether_addr(params->addr) ||
+>> +	    is_broadcast_ether_addr(params->addr))
+>> +		return BPF_FDB_LKUP_RET_NOENT;
+>> +
+>> +	src =3D dev_get_by_index_rcu(net, params->ifindex);
+>> +	if (unlikely(!src))
+>> +		return -ENODEV;
+>> +
+>> +	dst =3D br_fdb_find_port_xdp(src, params->addr, =
+params->vlan_id);
+>> +	if (dst) {
+>> +		params->ifindex =3D dst->ifindex;
+>> +		return BPF_FDB_LKUP_RET_SUCCESS;
+>> +	}
+>=20
+> Currently the helper description says nothing that this is /only/ =
+limited to
+> bridges. I think it would be better to also name the helper =
+bpf_br_fdb_lookup()
+> as well if so to avoid any confusion.
 
-> Alternatively, we could introduce a new convention in the spec,
-> something like "user?", which would accept either "user" or
-> "user/something", but not "user/" nor "userblah". We can try that as
-> well.
+For now, the helper enables only bridges to access FDB table in the =
+kernel
+as you understand, so I will try to rename the helper in the next =
+version.
 
-Again, I don't really understand why allowing "userblah" is a problem.=20
-We already have "xdp", "xdp_devmap/", and "xdp_cpumap/", they all work=20
-fine so far.=20
+>> +	return BPF_FDB_LKUP_RET_NOENT;
+>> +}
+>> +
+>> +static const struct bpf_func_proto bpf_xdp_fdb_lookup_proto =3D {
+>> +	.func		=3D bpf_xdp_fdb_lookup,
+>> +	.gpl_only	=3D true,
+>> +	.ret_type	=3D RET_INTEGER,
+>> +	.arg1_type      =3D ARG_PTR_TO_CTX,
+>> +	.arg2_type      =3D ARG_PTR_TO_MEM,
+>> +	.arg3_type      =3D ARG_CONST_SIZE,
+>> +	.arg4_type	=3D ARG_ANYTHING,
+>> +};
+>> +#endif
+>=20
+> This should also have a tc pendant (similar as done in routing lookup =
+helper)
+> in case native XDP is not available. This will be useful for those =
+that have
+> the same code compilable for both tc/XDP.
 
-Thanks,
-Song=
+Thanks, I agree with your idea. On the basis of the bpf_fib_lookup() =
+helper,
+I will try to add the feature so that the helper can also be used in the =
+TC hook.
+
+Best regards,
+
+>>  #if IS_ENABLED(CONFIG_IPV6_SEG6_BPF)
+>>  static int bpf_push_seg6_encap(struct sk_buff *skb, u32 type, void =
+*hdr, u32 len)
+>>  {
+>> @@ -6477,6 +6518,10 @@ xdp_func_proto(enum bpf_func_id func_id, const =
+struct bpf_prog *prog)
+>>  		return &bpf_xdp_adjust_tail_proto;
+>>  	case BPF_FUNC_fib_lookup:
+>>  		return &bpf_xdp_fib_lookup_proto;
+>> +#if IS_ENABLED(CONFIG_BRIDGE)
+>> +	case BPF_FUNC_fdb_lookup:
+>> +		return &bpf_xdp_fdb_lookup_proto;
+>> +#endif
+>>  #ifdef CONFIG_INET
+>>  	case BPF_FUNC_sk_lookup_udp:
+>>  		return &bpf_xdp_sk_lookup_udp_proto;
+
+=E2=80=94
+Yoshiki Komachi
+komachi.yoshiki@gmail.com
+
