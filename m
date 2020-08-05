@@ -2,183 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000023CA15
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 12:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A400323CCC0
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 19:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgHEKym (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 06:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        id S1728255AbgHERBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 13:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728206AbgHEKuE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 06:50:04 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DD8C061757;
-        Wed,  5 Aug 2020 03:26:52 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f10so66658plj.8;
-        Wed, 05 Aug 2020 03:26:52 -0700 (PDT)
+        with ESMTP id S1728287AbgHERAV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 13:00:21 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69516C061756
+        for <bpf@vger.kernel.org>; Wed,  5 Aug 2020 10:00:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id j21so6038116pgi.9
+        for <bpf@vger.kernel.org>; Wed, 05 Aug 2020 10:00:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PcNxBp780rBLK15Q4o9jnC5g02E0z+AA30xIc41WoMg=;
-        b=UTGOcJNvle6iiiZKaXZ10pKqPljw3PxLnUWqxXE7C0FvPzxXUaYaBtu1O88729wCJ4
-         4Oj5MYJJPf2mn4RM/vsF5PKBqk17LnLTUbXH2ZlGYhMUnfk65c3iNB0HSZBcY7izfWhh
-         gOq7NShmkNhYaYkdzzo318C/QN96De/K7a1Ngc9G+512ZUol8tzx/04lMV/qnnXOuVXc
-         HnEnMwze47Qaw8NmRAQPbqcXvqNQ5sP2LZtoAh7vz4YYC7QSRzkY3lpI6xkLYIMw9ZRG
-         Vd94Trz5dN7/xx/kr8oR376BIIMH28eFgMc9p09icN7q4dr5R/0tIanTI0KslvJCBLGN
-         tWJg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G4DbSMP4s0KjqjCan6W9KS0glhbgg9IjBH8ScNTbzmc=;
+        b=TcYCkFinQMAmeGEbggt+P/zVipBJP9sUzymkh/0UP7qWpBP0wJxrUmmpwnZkwKfCQs
+         1ZTu1iB15ld0Bhyrq87BeyrwUclEJzRw8XYHcOhGxIrzfMkYboWY+oFCCzhSMexuEvHR
+         kUqbqgJULFZlvUvwMfQ4YQ5A662brkmIo/NGcoxMmQ1RMan9EySwSx+qwQ3A6EhusfTC
+         2PpK8fj5TgtrqBvA1adGDdtwm62MLhVb9PASfqcPX/cAc8jBIAOPQwbtV71D6kEFWUSX
+         pEHLs/MsocS7WJ9o6KomQqb+wODk/8MeK36XlG0sqT/PApoyC+U7nN8vGWw0RsfgNV0p
+         Vqnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PcNxBp780rBLK15Q4o9jnC5g02E0z+AA30xIc41WoMg=;
-        b=r1nhuqtNSVc66KSgeM0RKKQ+InEquiBkDsVy0h2fO+ow+JJwPe1E8bVGCJtU/RW33p
-         MxK6puItbSS9d+bUGShmgxVXilNZZwLv8K3VTcMv41MD62f3YFX3V/rBQRlkechhhoo6
-         49QF1K9SmyJdrUUMUUjyTDuUcuwyorC/khQrhu4fmn2McCU4+NNw72idSciLlPvS4B8m
-         +CutL2vSoNeR7lDNikYAycRI69jffNjNzFYqnErnu75reS3/vdOVMZ18MhVylcpR3N0n
-         wU2LGi14X2gMcRtNwkadUS0f9siSlba9ZsIN9p2KPATG0yA4GaraLr4lecDbiayusz4Z
-         kLcQ==
-X-Gm-Message-State: AOAM531RFKMAmcsyzeuo0hXiwLs/qSqGFpzrhlUuxyuSMgpZ3D+meR0Y
-        p1thYc7qcscj3WJ1Y5qMEa4=
-X-Google-Smtp-Source: ABdhPJwW1Ru/I9BiBuKNfXKu41agua8GbaNFmQ7aCVFEfpATwnvFVPHv6sFBeLSrJl6IbM45LagDzg==
-X-Received: by 2002:a17:902:7c03:: with SMTP id x3mr2388475pll.178.1596623212033;
-        Wed, 05 Aug 2020 03:26:52 -0700 (PDT)
-Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
-        by smtp.gmail.com with ESMTPSA id w64sm3180379pfw.18.2020.08.05.03.26.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Aug 2020 03:26:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [RFC PATCH bpf-next 0/3] Add a new bpf helper for FDB lookup
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-In-Reply-To: <5f2492aedba05_54fa2b1d9fe285b42d@john-XPS-13-9370.notmuch>
-Date:   Wed, 5 Aug 2020 19:26:45 +0900
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E2A7CC68-9235-4E97-9532-66D61A6B8965@gmail.com>
-References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <5f2492aedba05_54fa2b1d9fe285b42d@john-XPS-13-9370.notmuch>
-To:     John Fastabend <john.fastabend@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.15)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G4DbSMP4s0KjqjCan6W9KS0glhbgg9IjBH8ScNTbzmc=;
+        b=q1c86oBkL/BSh89g9UtDwJNy7rln/NSJ4CdwydfZBM9z2D7vtjTrK5kq2tw/zkGT6X
+         gbXrYFYHarQ5Ymv6mjZbMYAgeco+8ImxkJj4x3rDoF33EimgLeCH+E/2ETaRID9lur7A
+         fK1GSin7caIY7dLtp1HorPikYcnVCMNGzjNKdK0DCob/Vq/iQqr7lxCUL5EJto3zbuG8
+         DMaLUKRp8IUrkp6vJd1ohkiemQqzH98EtK2qa0a3RtYQCPZZNzjotuPEuqfM3KaO5u2y
+         Jr310wI0chZ2sGUJz5xR7867d1WgxmLsH179i5yVw8PIU3CaBH6r7MLYd5I00sPqjbQA
+         FWtA==
+X-Gm-Message-State: AOAM5329gmM31T7G2ehXaoVyvE/kRCYMXjVD/WsGNSkguv76rgD/SsyJ
+        nnvU6FwVmbYaxtjEb43VXahRpFUGLbV0t4D0xDvaqg==
+X-Google-Smtp-Source: ABdhPJxyrDwOYA4hiJxh0WZeOnWjCsjtUjmSKRmwF8SWkAGXvKq4kBpieblfCx/y1SmwwZt8QYpg8abb4dQVxRCVJyk=
+X-Received: by 2002:aa7:8a4d:: with SMTP id n13mr4581156pfa.143.1596646817583;
+ Wed, 05 Aug 2020 10:00:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200805162713.16386-1-songmuchun@bytedance.com> <20200805125056.1dfe74b5@oasis.local.home>
+In-Reply-To: <20200805125056.1dfe74b5@oasis.local.home>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 6 Aug 2020 00:59:41 +0800
+Message-ID: <CAMZfGtW2LJTUB6OaixF-V0tVPXt5kEzVvUvOSbO551r0vvZGbg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] kprobes: fix NULL pointer dereference
+ at kprobe_ftrace_handler
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sfr@canb.auug.org.au, mingo@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for giving me a lot of comments! Find my response below, please.
+On Thu, Aug 6, 2020 at 12:51 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu,  6 Aug 2020 00:27:13 +0800
+> Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> > We found a case of kernel panic on our server. The stack trace is as
+> > follows(omit some irrelevant information):
+> >
+> >   BUG: kernel NULL pointer dereference, address: 0000000000000080
+> >   RIP: 0010:kprobe_ftrace_handler+0x5e/0xe0
+> >   RSP: 0018:ffffb512c6550998 EFLAGS: 00010282
+> >   RAX: 0000000000000000 RBX: ffff8e9d16eea018 RCX: 0000000000000000
+> >   RDX: ffffffffbe1179c0 RSI: ffffffffc0535564 RDI: ffffffffc0534ec0
+> >   RBP: ffffffffc0534ec1 R08: ffff8e9d1bbb0f00 R09: 0000000000000004
+> >   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> >   R13: ffff8e9d1f797060 R14: 000000000000bacc R15: ffff8e9ce13eca00
+> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >   CR2: 0000000000000080 CR3: 00000008453d0005 CR4: 00000000003606e0
+> >   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >   Call Trace:
+> >    <IRQ>
+> >    ftrace_ops_assist_func+0x56/0xe0
+> >    ftrace_call+0x5/0x34
+> >    tcpa_statistic_send+0x5/0x130 [ttcp_engine]
+> >
+> > The tcpa_statistic_send is the function being kprobed. After analysis,
+> > the root cause is that the fourth parameter regs of kprobe_ftrace_handler
+> > is NULL. Why regs is NULL? We use the crash tool to analyze the kdump.
+> >
+> >   crash> dis tcpa_statistic_send -r
+> >          <tcpa_statistic_send>: callq 0xffffffffbd8018c0 <ftrace_caller>
+> >
+> > The tcpa_statistic_send calls ftrace_caller instead of ftrace_regs_caller.
+> > So it is reasonable that the fourth parameter regs of kprobe_ftrace_handler
+> > is NULL. In theory, we should call the ftrace_regs_caller instead of the
+> > ftrace_caller. After in-depth analysis, we found a reproducible path.
+> >
+> >   Writing a simple kernel module which starts a periodic timer. The
+> >   timer's handler is named 'kprobe_test_timer_handler'. The module
+> >   name is kprobe_test.ko.
+> >
+> >   1) insmod kprobe_test.ko
+> >   2) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+> >   3) echo 0 > /proc/sys/kernel/ftrace_enabled
+> >   4) rmmod kprobe_test
+> >   5) stop step 2) kprobe
+> >   6) insmod kprobe_test.ko
+> >   7) bpftrace -e 'kretprobe:kprobe_test_timer_handler {}'
+> >
+> > We mark the kprobe as GONE but not disarm the kprobe in the step 4).
+> > The step 5) also do not disarm the kprobe when unregister kprobe. So
+> > we do not remove the ip from the filter. In this case, when the module
+> > loads again in the step 6), we will replace the code to ftrace_caller
+> > via the ftrace_module_enable(). When we register kprobe again, we will
+> > not replace ftrace_caller to ftrace_regs_caller because the ftrace is
+> > disabled in the step 3). So the step 7) will trigger kernel panic. Fix
+> > this problem by disarming the kprobe when the module is going away.
+> >
+> > Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+> > Acked-by: Song Liu <songliubraving@fb.com>
+> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > ---
+> > changelogs in v2:
+> >  1) fix compiler warning for !CONFIG_KPROBES_ON_FTRACE.
+>
+> The original patch has already been pulled into the queue and tested.
+> Please make a new patch that adds this update, as if your original
+> patch has already been accepted.
 
-> 2020/08/01 6:52=E3=80=81John Fastabend =
-<john.fastabend@gmail.com>=E3=81=AE=E3=83=A1=E3=83=BC=E3=83=AB:
->=20
-> Yoshiki Komachi wrote:
->> This series adds a new bpf helper for doing FDB lookup in the kernel
->> tables from XDP programs. This helps users to accelerate Linux bridge
->> with XDP.
->>=20
->> In the past, XDP generally required users to reimplement their own
->> networking functionalities with specific manners of BPF programming
->> by themselves, hindering its potential uses. IMO, bpf helpers to
->> access networking stacks in kernel help to mitigate the programming
->> costs because users reuse mature Linux networking feature more =
-easily.
->>=20
->> The previous commit 87f5fc7e48dd ("bpf: Provide helper to do =
-forwarding
->> lookups in kernel FIB table") have already added a bpf helper for =
-access
->> FIB in the kernel tables from XDP programs. As a next step, this =
-series
->> introduces the API for FDB lookup. In the future, other bpf helpers =
-for
->> learning and VLAN filtering will also be required in order to realize
->> fast XDP-based bridge although these are not included in this series.
->=20
-> Just to clarify for myself. I expect that with just the helpers here
-> we should only expect static configurations to work, e.g. any learning
-> and/or aging is not likely to work if we do redirects in the XDP path.
+Will do, thanks!
 
-As you described above, learning and aging don=E2=80=99t work at this =
-point.=20
-
-IMO, another helper for learning will be required to fill the =
-requirements.
-I guess that the helper will enable us to use the aging feature as well
-because the aging is the functionality of bridge fdb.
-
-> Then next to get a learning/filtering/aging we would need to have a
-> set of bridge helpers to get that functionality as well? I believe
-> I'm just repeating what you are saying above, but wanted to check.
-
-As for the vlan filtering, I think it doesn't necessarily have to be =
-like that.
-I have the following ideas to achieve it for now:
-
-1. Monitoring vlan events in bridges by a userspace daemon and it
-   notifies XDP programs of the events through BPF maps
-2. Another bpf helper to retrieve bridge vlan information
-
-The additional helper will be required only if the 2nd one is accepted. =
-I
-would like to discuss which is better because there are pros and cons.
-
-
-On the other hand, the helper for the learning feature should be added,
-IMO. But, I guess that the learning feature is just sufficient to get =
-the aging
-feature because bridges with learning have capability for aging as well.
-
-> Then my next question is can we see some performance numbers? These
-> things are always trade-off between performance and ease of
-> use, but would be good to know roughly what we are looking at vs
-> a native XDP bridge functionality.
-
-Sorry, I have not measured the performance numbers yet, so I will try it =
-later.
-
-> Do you have a use case for a static bridge setup? Nothing wrong to
-> stage things IMO if the 'real' use case needs learning and filtering.
-
-For example, it is useful in libvirt with macTableManager. This feature
-makes it possible for static bridges to process packets faster than =
-other
-ones with learning. However, it doesn't work properly if the vlan =
-filtering is
-not enabled.
-
-> I guess to get STP working you would minimally need learning and
-> aging?
-
-I guess that STP seems not to be related to learning and aging, but =
-there
-may be the following requirements if it is added in the future:
-
-1. BPDU frames are transferred to normal bridges by the XDP_PASS action
-2. closing targeted ports based on the STP configurations
-
-To meet the 2nd one, another bpf helper may be required. There is a =
-possibility
-that bpf maps help to achieve this as another approach.
+>
+> Feel free to base it off of:
+>
+>  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git  for-next
+>
+> -- Steve
 
 
-Thanks & Best regards,
 
-> Thanks,
-> John
-
-=E2=80=94
-Yoshiki Komachi
-komachi.yoshiki@gmail.com
-
+-- 
+Yours,
+Muchun
