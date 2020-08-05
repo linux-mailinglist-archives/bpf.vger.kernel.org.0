@@ -2,59 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D9823C329
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 03:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530AE23C43A
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 05:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725950AbgHEBwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Aug 2020 21:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHEBwp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Aug 2020 21:52:45 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6616FC06174A;
-        Tue,  4 Aug 2020 18:52:45 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id 2so22955570ybr.13;
-        Tue, 04 Aug 2020 18:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=f5vWovwwL6FVRfpowsNb43860ihjb6YS2LAtVZgCvT8=;
-        b=n3dyElIxcSrBm7/2UaBZBRAMktVFD7ZjGdTKk8r8b4jx6UIZCDZfNDX+9Sr5kyp93H
-         ADb+qKMJkRwrWPFTqx+6iKg4HR/AxmWgWiLY1+ryKLNSDHiXBigsCwMED/X+KbDWbpS8
-         4l95ZaTkxuA1cy3cF4L7DbbX/1k8p2OUtZJYtCcLdl8mJMfPLyV1sVOuSFCZ9a+Dfy+T
-         6riLnu3W0Ou+pCAIDXJkXjBNb9V9eqA94lGGeyMXFftxnvq10HA38EPk3kTgMOumEyel
-         FiQrb8RR9aRM+jP92uIJvye4aDvJbCmLaT+IglMzXjYV1Bs7scgv7qZcHfq9iSXcLOLm
-         xiog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f5vWovwwL6FVRfpowsNb43860ihjb6YS2LAtVZgCvT8=;
-        b=INiaf+Xi3Vh8BEpqm22XrsXUeuTRNfe8IPOTxvyv6FyoX57ZMPWvQbyCxqb9+7zSnd
-         jPaJhaLvHxix3P4oqnNOP3svoLIF+siKBYGX5pYHvuxNrwnm4PAjpN7XMfq6b6zckz59
-         nTrPPft/HOy09pG7C9TFevJZ2kyMDJwaa4N+a2QjFHmt38H4TMtgCcvmKURQxE2or2/t
-         wt+9ixxL4F/507yJe0C1Z41IT/3kg0WX41Jn2ydsMCjXG3acUMn32FLyiul3+1qcib0t
-         6nSTRZozIEqO+PLFuxdK/7QtxkYEHF5IfZM+9VBLjdHM0fhxeifU1CED9KFDUHDr9aZ3
-         cbSw==
-X-Gm-Message-State: AOAM531ODvQH2q/uTiwNSeQVjDjw1ccPMLwTmGxK3rbPJB8h7XQskvVj
-        T/r19I+EeDQs/p1rDgnCU+C4sazSWFdfO4Fc75o=
-X-Google-Smtp-Source: ABdhPJxKVJJYL0V0ORifsBd/k8iQrFdHSIT/Fp3Dn1ywH2UIvtoqoSECcmEo4+HRovneUPeo0y9mtVcN41LH91lLQ2A=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr1363384ybg.459.1596592364540;
- Tue, 04 Aug 2020 18:52:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200801084721.1812607-1-songliubraving@fb.com>
- <20200801084721.1812607-6-songliubraving@fb.com> <CAEf4BzaP4TGF7kcmZRAKsy=oWPpFA6sUGFkctpGz-fPp+YuSOQ@mail.gmail.com>
- <DDCD362E-21D3-46BF-90A6-8F3221CBB54E@fb.com> <CAEf4BzY5RYMM6w8wn3qEB3AsuKWv-TMaD5NVFj=YqbCW4DLjqA@mail.gmail.com>
- <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
-In-Reply-To: <7384B583-EE19-4045-AC72-B6FE87C187DD@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Aug 2020 18:52:32 -0700
-Message-ID: <CAEf4BzaiJnCu14AWougmxH80msGdOp4S8ZNmAiexMmtwUM_2Xg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add benchmark for uprobe vs. user_prog
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
+        id S1725981AbgHED7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Aug 2020 23:59:44 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4418 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725904AbgHED7m (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Aug 2020 23:59:42 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0753xPkp012006;
+        Tue, 4 Aug 2020 20:59:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
+ b=b2SyfvtX4W3k0uQGGLQBYa+OObTFoV2rIKxEi4FUHseHRvtPuifZmIsn8TU6Sq9gIaf3
+ n5VQG9S2dK37D35hIk7R53GiNwyQDMx4crd9XzqX9KtBM/7xjn4Fd71LBvFr/d6JtR7i
+ +3Hc9OYsw8qaQ76syULsTSAdpQDA6wPoyfY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 32n81yg6xk-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 04 Aug 2020 20:59:26 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 4 Aug 2020 20:59:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Varg3wynbhuqe9jVe5Q24jNv2X86hPD19GQmCko06HFKFANP1Cft5JjQqAg3JiVExRcR+ijPEHnYaQCE+LZFLMek/uchLWjT3f0/ynBbDCrSIfBYl2qYenCg/eGI5vYoM83ri0g+6qp8j0zwbO96wjgiWPKFFwf9Kr3uyTZVyqO2IpSxK4k1Rskyb6erIKVKqn1nIAzF23UIuA66dBHZERvGY8XPF/szyNfQMV0sPyRVTvpkeJHDXU92cWZUXHZ4SE5JWgXmeZPfk8Q0CuaRHTHNDJ5oNmQzX3g8+ks9bVI6OBzfj2/QT/EVg4mb1JHdYGihDV8gwascLln/+ZvzgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
+ b=QHrj3ZVu1ado4hhrULR0M6Z7hhxDU+7Impm/K7BEMZ18JGywWsvTzMQggD3QCyBt+aO0wWRzeyZkVrwDk+2TVd9ZGWmfzMHEPxNt5n0+GeYg3Yj7Ep8PwkpnOZH1ywD/vmc3+BMbxn4xUFPlbX4lTdqw0cgQzyD+5sLFYzVG9dblDQYoZFg55y4886ofRVrXjmMOk0ogEIPdGcJcCQGe4rdUiFuMtIqYwxY+Xah/BdgIg2eDk3trnLqiPKBDDh1e6AM7YIH6ImcxvKwfepDjGeJSFZgkd5jV3h8gGR/egf/gO22XNVh6fjuugffk7K0Py6d07YkEMYzUIMziw8UfSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p/Duiods2BS/Vc6ISTdJQimTmp2nKYEznLIsIHGXDGs=;
+ b=cd4jdlyOMpV3nLr/RVsK4mv3PkDWzoX+sNyWI5Ydcl9A7JpzHYyuN8a0zUZUDYTF5CXVqnMVeRjkLytQ/P0z6kUZ9E333GLwRUbr6ddaZeDcXob8YBizIeE8nFWZaJfK24LqUjHBzRvUXwtso3juVx9aVcpJoQwLl87W9gCvnNg=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3304.namprd15.prod.outlook.com (2603:10b6:a03:10a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.20; Wed, 5 Aug
+ 2020 03:59:13 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::543:b185:ef4a:7e8%5]) with mapi id 15.20.3239.022; Wed, 5 Aug 2020
+ 03:59:13 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,327 +64,142 @@ Cc:     open list <linux-kernel@vger.kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Xu <dlxu@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
+Thread-Topic: [PATCH bpf-next 2/5] libbpf: support BPF_PROG_TYPE_USER programs
+Thread-Index: AQHWZ+C4tQwFkmvi20aNhPcONSrEz6klnl6AgAGMFwCAAZgFAIAAJ1IA
+Date:   Wed, 5 Aug 2020 03:59:13 +0000
+Message-ID: <5BC1D7AD-32C1-4CDC-BA99-F4DABE61EEA3@fb.com>
+References: <20200801084721.1812607-1-songliubraving@fb.com>
+ <20200801084721.1812607-3-songliubraving@fb.com>
+ <CAEf4BzYp4gO1P+OrY7hGyQjdia3BuSu4DX2_z=UF6RfGNa+gkQ@mail.gmail.com>
+ <9C1285C1-ECD6-46BD-BA95-3E9E81C00EF0@fb.com>
+ <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYojfFiMn6VeUkxUsdSTdFK0A4MzKQxhCCp_OowkseznQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:8f7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 364af8d9-ee68-4070-9d2e-08d838f3ea71
+x-ms-traffictypediagnostic: BYAPR15MB3304:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3304882C9EC34BE545E765E1B34B0@BYAPR15MB3304.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WhMNdsMz7xpz+LH6/lmG79zTy4uW2Oixbef/C0ppWCBVroNCLFyLFDwONaJbnE0dbeLclXuNHodt56qHsg2tszGW/4m44uYF4MNeIBP0Fk7JC/ZcMeLtGun8KwFPCWZ98/mWlwTZREpkqEARb9iyC0o17MQtGodqVhAZOV9w4TNqI4dkCUCyi8tPYzWncL/C4kyMz2YZcT4hMZl5M/KV5I2ppTKbJjNvKLRlqEaOdGwffwx+4p75HcqScvjPDKroZLBakMcRQLCKShnAIlAtTI2GQvxldb9ezstQAyh+5Q4M0ukpYn2Kr8/lhjrtk92n+nVJMzZhEI5i3MS+zd5VotjUuJbZXiVvD0oR/pDblYonMfieCvVnTB0oDIg+oZSO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(366004)(396003)(136003)(39860400002)(316002)(4326008)(186003)(2616005)(54906003)(8676002)(36756003)(86362001)(8936002)(6486002)(83380400001)(6512007)(478600001)(71200400001)(66556008)(33656002)(6916009)(64756008)(2906002)(66476007)(66446008)(76116006)(5660300002)(53546011)(6506007)(66946007)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 32kRozHzKHvYaltuBJoS7O4TbL6InB3Maz8QHzLx1IyYs4mKxuGu6py0mW5dRtj2jUMZCmuhb4xLtnlTnPg6BWkmYgI6hyNppvbuuvvyWbZS8kNaTJIaKuSthRDb81sKH5iPN+p1WkfdHVKcIzU8cC0FZBo31cZPSlShs4HhCtESIbhLrvTCwIAvLY9fAZXUjiVnv8dUndsUiohDyT6ojU1dRDolJoEkmcsbAEcWjG6rYkGgutElMj8eGk6SrN2HYNDBTHQfG1dZ/NTczA7lTbiUbml5M5Bf8MxY9NHMBA6anLoFQhN5y+pr9fijc0zDekRZDHJSoZatApLg/Svrq2+duKwP427Q2C9WEHjyum0IkxGAHKBjLZEu8zAZ5Bdx4Zt5dv4Q8GRr4pvQjfQPZmEr+aGg+oUMW4lwIH4TPM0w5L3wRTvoxOTjyo4EY+Faf7mFXGYk5pxe9OaYTYCBXzAlP/lAd9V6yEMYX+qjEk8BG004Bun3RFvzRzfgtt6UCrLYEEbHp0IKcKwDPxOfRjwZFH9nMykSLR2oaMwoJev/PrYCPOki0yO1GdFXYnrS3aJqBiEoJUgVYGvID0oLhqMNULtnoXgPVGyvSm3zIrC4XNK3fflWgVXL5lIDG54PXcjJ9BeSMeYAF+TXcwaCd9DVrpo6K6Jgj1j120owYOM=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <807257139EBEDF4199E1EB2BD2128796@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 364af8d9-ee68-4070-9d2e-08d838f3ea71
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2020 03:59:13.4108
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iSUCFO2Mwd1tGr30BctY4CGlhacpNIu8izloVbatHErLI71NcivvSkOmDYs00R/V2uHGWMthUpl1lhLedf+S8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3304
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-05_03:2020-08-03,2020-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008050035
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 2:01 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Aug 2, 2020, at 10:10 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com=
-> wrote:
-> >
-> > On Sun, Aug 2, 2020 at 9:47 PM Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >>
-> >>> On Aug 2, 2020, at 6:51 PM, Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
-> >>>
-> >>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote=
-:
-> >>>>
-> >>>> Add a benchmark to compare performance of
-> >>>> 1) uprobe;
-> >>>> 2) user program w/o args;
-> >>>> 3) user program w/ args;
-> >>>> 4) user program w/ args on random cpu.
-> >>>>
-> >>>
-> >>> Can you please add it to the existing benchmark runner instead, e.g.,
-> >>> along the other bench_trigger benchmarks? No need to re-implement
-> >>> benchmark setup. And also that would also allow to compare existing
-> >>> ways of cheaply triggering a program vs this new _USER program?
-> >>
-> >> Will try.
-> >>
-> >>>
-> >>> If the performance is not significantly better than other ways, do yo=
-u
-> >>> think it still makes sense to add a new BPF program type? I think
-> >>> triggering KPROBE/TRACEPOINT from bpf_prog_test_run() would be very
-> >>> nice, maybe it's possible to add that instead of a new program type?
-> >>> Either way, let's see comparison with other program triggering
-> >>> mechanisms first.
-> >>
-> >> Triggering KPROBE and TRACEPOINT from bpf_prog_test_run() will be usef=
-ul.
-> >> But I don't think they can be used instead of user program, for a coup=
-le
-> >> reasons. First, KPROBE/TRACEPOINT may be triggered by other programs
-> >> running in the system, so user will have to filter those noise out in
-> >> each program. Second, it is not easy to specify CPU for KPROBE/TRACEPO=
-INT,
-> >> while this feature could be useful in many cases, e.g. get stack trace
-> >> on a given CPU.
-> >>
-> >
-> > Right, it's not as convenient with KPROBE/TRACEPOINT as with the USER
-> > program you've added specifically with that feature in mind. But if
-> > you pin user-space thread on the needed CPU and trigger kprobe/tp,
-> > then you'll get what you want. As for the "noise", see how
-> > bench_trigger() deals with that: it records thread ID and filters
-> > everything not matching. You can do the same with CPU ID. It's not as
-> > automatic as with a special BPF program type, but still pretty simple,
-> > which is why I'm still deciding (for myself) whether USER program type
-> > is necessary :)
->
-> Here are some bench_trigger numbers:
->
-> base      :    1.698 =C2=B1 0.001M/s
-> tp        :    1.477 =C2=B1 0.001M/s
-> rawtp     :    1.567 =C2=B1 0.001M/s
-> kprobe    :    1.431 =C2=B1 0.000M/s
-> fentry    :    1.691 =C2=B1 0.000M/s
-> fmodret   :    1.654 =C2=B1 0.000M/s
-> user      :    1.253 =C2=B1 0.000M/s
-> fentry-on-cpu:    0.022 =C2=B1 0.011M/s
-> user-on-cpu:    0.315 =C2=B1 0.001M/s
->
 
-Ok, so basically all of raw_tp,tp,kprobe,fentry/fexit are
-significantly faster than USER programs. Sure, when compared to
-uprobe, they are faster, but not when doing on-specific-CPU run, it
-seems (judging from this patch's description, if I'm reading it
-right). Anyways, speed argument shouldn't be a reason for doing this,
-IMO.
 
-> The two "on-cpu" tests run the program on a different CPU (see the patch
-> at the end).
->
-> "user" is about 25% slower than "fentry". I think this is mostly because
-> getpgid() is a faster syscall than bpf(BPF_TEST_RUN).
+> On Aug 4, 2020, at 6:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
+>=20
+> On Mon, Aug 3, 2020 at 6:18 PM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Aug 2, 2020, at 6:40 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
+>>>=20
+>>> On Sat, Aug 1, 2020 at 1:50 AM Song Liu <songliubraving@fb.com> wrote:
+>>>>=20
+>>=20
+>> [...]
+>>=20
+>>>=20
+>>>> };
+>>>>=20
+>>>> LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *=
+test_attr);
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index b9f11f854985b..9ce175a486214 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -6922,6 +6922,7 @@ static const struct bpf_sec_def section_defs[] =
+=3D {
+>>>>       BPF_PROG_SEC("lwt_out",                 BPF_PROG_TYPE_LWT_OUT),
+>>>>       BPF_PROG_SEC("lwt_xmit",                BPF_PROG_TYPE_LWT_XMIT),
+>>>>       BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LO=
+CAL),
+>>>> +       BPF_PROG_SEC("user",                    BPF_PROG_TYPE_USER),
+>>>=20
+>>> let's do "user/" for consistency with most other prog types (and nice
+>>> separation between prog type and custom user name)
+>>=20
+>> About "user" vs. "user/", I still think "user" is better.
+>>=20
+>> Unlike kprobe and tracepoint, user prog doesn't use the part after "/".
+>> This is similar to "perf_event" for BPF_PROG_TYPE_PERF_EVENT, "xdl" for
+>> BPF_PROG_TYPE_XDP, etc. If we specify "user" here, "user/" and "user/xxx=
+"
+>> would also work. However, if we specify "user/" here, programs that used
+>> "user" by accident will fail to load, with a message like:
+>>=20
+>>        libbpf: failed to load program 'user'
+>>=20
+>> which is confusing.
+>=20
+> xdp, perf_event and a bunch of others don't enforce it, that's true,
+> they are a bit of a legacy,
 
-Yes, probably.
+I don't see w/o "/" is a legacy thing. BPF_PROG_TYPE_STRUCT_OPS just uses
+"struct_ops".=20
 
->
-> "user-on-cpu" is more than 10x faster than "fentry-on-cpu", because IPI
-> is way faster than moving the process (via sched_setaffinity).
+> unfortunately. But all the recent ones do,
+> and we explicitly did that for xdp_dev/xdp_cpu, for instance.
+> Specifying just "user" in the spec would allow something nonsensical
+> like "userargh", for instance, due to this being treated as a prefix.
+> There is no harm to require users to do "user/my_prog", though.
 
-I don't think that's a good comparison, because you are actually
-testing sched_setaffinity performance on each iteration vs IPI in the
-kernel, not a BPF overhead.
+I don't see why allowing "userargh" is a problem. Failing "user" is=20
+more confusing. We can probably improve that by a hint like:
 
-I think the fair comparison for this would be to create a thread and
-pin it on necessary CPU, and only then BPF program calls in a loop.
-But I bet any of existing program types would beat USER program.
+    libbpf: failed to load program 'user', do you mean "user/"?
 
->
-> For use cases that we would like to call BPF program on specific CPU,
-> triggering it via IPI is a lot faster.
+But it is pretty silly. "user/something_never_used" also looks weird.
 
-So these use cases would be nice to expand on in the motivational part
-of the patch set. It's not really emphasized and it's not at all clear
-what you are trying to achieve. It also seems, depending on latency
-requirements, it's totally possible to achieve comparable results by
-pre-creating a thread for each CPU, pinning each one to its designated
-CPU and then using any suitable user-space signaling mechanism (a
-queue, condvar, etc) to ask a thread to trigger BPF program (fentry on
-getpgid(), for instance). I bet in this case the  performance would be
-really nice for a lot of practical use cases. But then again, I don't
-know details of the intended use case, so please provide some more
-details.
+> Alternatively, we could introduce a new convention in the spec,
+> something like "user?", which would accept either "user" or
+> "user/something", but not "user/" nor "userblah". We can try that as
+> well.
 
->
-> Thanks,
-> Song
->
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D 8< =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->
-> diff --git c/tools/testing/selftests/bpf/bench.c w/tools/testing/selftest=
-s/bpf/bench.c
-> index 944ad4721c83c..5394a1d2dfd21 100644
-> --- c/tools/testing/selftests/bpf/bench.c
-> +++ w/tools/testing/selftests/bpf/bench.c
-> @@ -317,7 +317,10 @@ extern const struct bench bench_trig_tp;
->  extern const struct bench bench_trig_rawtp;
->  extern const struct bench bench_trig_kprobe;
->  extern const struct bench bench_trig_fentry;
-> +extern const struct bench bench_trig_fentry_on_cpu;
->  extern const struct bench bench_trig_fmodret;
-> +extern const struct bench bench_trig_user;
-> +extern const struct bench bench_trig_user_on_cpu;
->  extern const struct bench bench_rb_libbpf;
->  extern const struct bench bench_rb_custom;
->  extern const struct bench bench_pb_libbpf;
-> @@ -338,7 +341,10 @@ static const struct bench *benchs[] =3D {
->         &bench_trig_rawtp,
->         &bench_trig_kprobe,
->         &bench_trig_fentry,
-> +       &bench_trig_fentry_on_cpu,
->         &bench_trig_fmodret,
-> +       &bench_trig_user,
-> +       &bench_trig_user_on_cpu,
->         &bench_rb_libbpf,
->         &bench_rb_custom,
->         &bench_pb_libbpf,
-> @@ -462,4 +468,3 @@ int main(int argc, char **argv)
->
->         return 0;
->  }
-> -
-> diff --git c/tools/testing/selftests/bpf/benchs/bench_trigger.c w/tools/t=
-esting/selftests/bpf/benchs/bench_trigger.c
-> index 49c22832f2169..a1ebaebf6070c 100644
-> --- c/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> +++ w/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> @@ -1,5 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright (c) 2020 Facebook */
-> +#define _GNU_SOURCE
-> +#include <sched.h>
->  #include "bench.h"
->  #include "trigger_bench.skel.h"
->
-> @@ -39,6 +41,22 @@ static void *trigger_producer(void *input)
->         return NULL;
->  }
->
-> +static void *trigger_on_cpu_producer(void *input)
-> +{
-> +       cpu_set_t set;
-> +       int i =3D 0, nr_cpu;
-> +
-> +       nr_cpu =3D libbpf_num_possible_cpus();
-> +       while (true) {
-> +               CPU_ZERO(&set);
-> +               CPU_SET(i, &set);
-> +               sched_setaffinity(0, sizeof(set), &set);
-> +               (void)syscall(__NR_getpgid);
-> +               i =3D (i + 1) % nr_cpu;
-> +       }
-> +       return NULL;
-> +}
-> +
->  static void trigger_measure(struct bench_res *res)
->  {
->         res->hits =3D atomic_swap(&ctx.skel->bss->hits, 0);
-> @@ -96,6 +114,39 @@ static void trigger_fmodret_setup()
->         attach_bpf(ctx.skel->progs.bench_trigger_fmodret);
->  }
->
-> +static void trigger_user_setup()
-> +{
-> +       setup_ctx();
-> +}
-> +
-> +static void *trigger_producer_user(void *input)
-> +{
-> +       struct bpf_prog_test_run_attr attr =3D {};
-> +
-> +       attr.prog_fd =3D bpf_program__fd(ctx.skel->progs.bench_trigger_us=
-er);
-> +
-> +       while (true)
-> +               (void)bpf_prog_test_run_xattr(&attr);
-> +       return NULL;
-> +}
-> +
-> +static void *trigger_producer_user_on_cpu(void *input)
-> +{
-> +       struct bpf_prog_test_run_attr attr =3D {};
-> +       int i =3D 0, nr_cpu;
-> +
-> +       nr_cpu =3D libbpf_num_possible_cpus();
-> +
-> +       attr.prog_fd =3D bpf_program__fd(ctx.skel->progs.bench_trigger_us=
-er);
-> +
-> +       while (true) {
-> +               attr.cpu_plus =3D i + 1;
-> +               (void)bpf_prog_test_run_xattr(&attr);
-> +               i =3D (i + 1) % nr_cpu;
-> +       }
-> +       return NULL;
-> +}
-> +
->  static void *trigger_consumer(void *input)
->  {
->         return NULL;
-> @@ -155,6 +206,17 @@ const struct bench bench_trig_fentry =3D {
->         .report_final =3D hits_drops_report_final,
->  };
->
-> +const struct bench bench_trig_fentry_on_cpu =3D {
-> +       .name =3D "trig-fentry-on-cpu",
-> +       .validate =3D trigger_validate,
-> +       .setup =3D trigger_fentry_setup,
-> +       .producer_thread =3D trigger_on_cpu_producer,
-> +       .consumer_thread =3D trigger_consumer,
-> +       .measure =3D trigger_measure,
-> +       .report_progress =3D hits_drops_report_progress,
-> +       .report_final =3D hits_drops_report_final,
-> +};
-> +
->  const struct bench bench_trig_fmodret =3D {
->         .name =3D "trig-fmodret",
->         .validate =3D trigger_validate,
-> @@ -165,3 +227,25 @@ const struct bench bench_trig_fmodret =3D {
->         .report_progress =3D hits_drops_report_progress,
->         .report_final =3D hits_drops_report_final,
->  };
-> +
-> +const struct bench bench_trig_user =3D {
-> +       .name =3D "trig-user",
-> +       .validate =3D trigger_validate,
-> +       .setup =3D trigger_user_setup,
-> +       .producer_thread =3D trigger_producer_user,
-> +       .consumer_thread =3D trigger_consumer,
-> +       .measure =3D trigger_measure,
-> +       .report_progress =3D hits_drops_report_progress,
-> +       .report_final =3D hits_drops_report_final,
-> +};
-> +
-> +const struct bench bench_trig_user_on_cpu =3D {
-> +       .name =3D "trig-user-on-cpu",
-> +       .validate =3D trigger_validate,
-> +       .setup =3D trigger_user_setup,
-> +       .producer_thread =3D trigger_producer_user_on_cpu,
-> +       .consumer_thread =3D trigger_consumer,
-> +       .measure =3D trigger_measure,
-> +       .report_progress =3D hits_drops_report_progress,
-> +       .report_final =3D hits_drops_report_final,
-> +};
-> diff --git c/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh w/to=
-ols/testing/selftests/bpf/benchs/run_bench_trigger.sh
-> index 78e83f2432946..f10b7aea76aa3 100755
-> --- c/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-> +++ w/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-> @@ -2,7 +2,7 @@
->
->  set -eufo pipefail
->
-> -for i in base tp rawtp kprobe fentry fmodret
-> +for i in base tp rawtp kprobe fentry fmodret user fentry-on-cpu user-on-=
-cpu
->  do
->         summary=3D$(sudo ./bench -w2 -d5 -a trig-$i | tail -n1 | cut -d'(=
-' -f1 | cut -d' ' -f3-)
->         printf "%-10s: %s\n" $i "$summary"
-> diff --git c/tools/testing/selftests/bpf/progs/trigger_bench.c w/tools/te=
-sting/selftests/bpf/progs/trigger_bench.c
-> index 8b36b6640e7e9..a6ac11e68d287 100644
-> --- c/tools/testing/selftests/bpf/progs/trigger_bench.c
-> +++ w/tools/testing/selftests/bpf/progs/trigger_bench.c
-> @@ -45,3 +45,10 @@ int bench_trigger_fmodret(void *ctx)
->         __sync_add_and_fetch(&hits, 1);
->         return -22;
->  }
-> +
-> +SEC("user")
-> +int BPF_PROG(bench_trigger_user)
-> +{
-> +       __sync_add_and_fetch(&hits, 1);
-> +       return 0;
-> +}
-> ~
->
->
->
->
+Again, I don't really understand why allowing "userblah" is a problem.=20
+We already have "xdp", "xdp_devmap/", and "xdp_cpumap/", they all work=20
+fine so far.=20
+
+Thanks,
+Song=
