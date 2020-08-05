@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83EE23C596
-	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 08:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AC323C5A8
+	for <lists+bpf@lfdr.de>; Wed,  5 Aug 2020 08:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgHEGNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 02:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S1727983AbgHEGSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Aug 2020 02:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgHEGNB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 02:13:01 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619F4C06174A;
-        Tue,  4 Aug 2020 23:13:01 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id e187so10892185ybc.5;
-        Tue, 04 Aug 2020 23:13:01 -0700 (PDT)
+        with ESMTP id S1726459AbgHEGSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Aug 2020 02:18:32 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12A7C06174A;
+        Tue,  4 Aug 2020 23:18:31 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id n141so21052183ybf.3;
+        Tue, 04 Aug 2020 23:18:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9iXihjRFVPg2A7GpZV7d5YBUlfuYnief6L8DzAwhNQU=;
-        b=n6Y2H2WWmCMbfqbcljcDHEqK1L+Ew6tQnJwT1yINtKYqsk2lozkArB54gZVRfb4Lqp
-         BX+JkfGswldenIkYA4ZtPlHkBCoH/4Pcd8mqKuw1nTvhtvV/cQdj8k7s9C4WYr8sj6zS
-         JHbi/dIzy+GxYIh0+vrA/VoJtqY7KZx9jYXck+pwuEFVZidIB5vaVHoBL0kEA1aOUTym
-         goZZ92Axo07KJrviU+TVyCEv4nC+RSqJqxisK55gfii+FZrBAY9kvW32DTdPedzYAvRk
-         x/Ldn89C1dvXZGK8AXOwfsLhNQ0jKnXEiuTCAfwvfKnOvU3ZIcz+ZT8c0u6YUj4fA1kA
-         Gz/Q==
+        bh=ER5J6A+rPahxsQWE2+3u6uyPH4BqrnQd6TMiHPIneqQ=;
+        b=V/hNyPFZRclfkK0QUTjTIhee755MhI8+FCQum0a+qBIbBlZvOTdCNpq32nvvv5KNzC
+         pBMLubl9QX4ykaMTsiHpeIWL7ab21CJ1P0PbhwtGIop2Uil9q5qvUvudeHi8YUXWzYFD
+         P/CtvGTU1KPuD7YjJHFbbhz23A6shwwjyZhPAJy0rkSzraVCOR9xGEbC17svI4yhVDkq
+         Hvnost/8zcpBBkrsLOkDPtf82igDQUISYhDDT18E+1g8BwyojgDtPJKx77sO9qQp4rn/
+         O+wQztzRJ++F378yaT7j8leuEdFBXKx+lCZ9wbWNHo8aR66vbTrYAC9U93V1SD7Ep06K
+         bLLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9iXihjRFVPg2A7GpZV7d5YBUlfuYnief6L8DzAwhNQU=;
-        b=WVYPQmeEy1oNUTiC9jtW0yqO5AyigiMA+HGSv56D+oMYPmyrE2fHBTz40fZTc1Cjhw
-         c4QZTfGjLRHk+ANZQrlwgpSu9QgY2hpJqV6CJ1S89iDbNoP4R/hize0AebInytk7UmYD
-         pFkNPFn6ks/56bW7uKHivlJMQbTCVgbXOpiNqlv/aUA12nylXpBYdC8OeQAwPwrbxCxe
-         JlNSZs0rI6ORt4M0M/O5C8iLJx5tgllRbQ5Y+ibKuBaRAbi2v24zSa/jh+8uksFHJsfB
-         g6Bb/KSR5zO3f3RP05mk06K7osSBpBK9G7PXVOGetVsTLqZPBPKZiDsUbhuv7oHq1xRe
-         YGQQ==
-X-Gm-Message-State: AOAM530onvrawmvh9uJd0Oxv4+Ruf0Ax8DDO5XkZzUOx61QVXcwYqmNe
-        s5368ompeQwjz4LLWPV6UmWo/gPHvat3X3svyTM=
-X-Google-Smtp-Source: ABdhPJxTcYVEbJrxK9CDw9YdYiRjgtL8ctcMiDxLOHWTnUuVYoW6JtMFG5/PxsWXYdlpbC0npmNhUuqOKLj1uEZjskA=
-X-Received: by 2002:a25:d84a:: with SMTP id p71mr2582970ybg.347.1596607980723;
- Tue, 04 Aug 2020 23:13:00 -0700 (PDT)
+        bh=ER5J6A+rPahxsQWE2+3u6uyPH4BqrnQd6TMiHPIneqQ=;
+        b=UzEEeBncuM7bUB79L2zgdDDaM16ZJEGFjY96mucntVECfX5uTsR7gTFSRw6UbZYxU8
+         tlkao+BD7WVfdPnEO88RXfsFzAZ6835MtbWMVZUvqL96QYS1QFx1n/XEOMyDc1Jd9Lvd
+         fKBERLzZ6VdrUH3BmAudmoeZobZTe0TNjHv/AlkcKi1Ciy0SoG1dgVsa6oqM+XvYbN/v
+         PTTld4IoRGMZsyfx4G+wjMtECE9sOP8u8H7CE5pPqzZFbm1bjzcJV56Pw07++O5Ogxw/
+         xNOkN3V0ggbUcgw+wpIB/5Zy+E4CZ2MZIJHyhDe+/bNeLRFveMMq6X1Cwabj3+sqmLyS
+         o4LA==
+X-Gm-Message-State: AOAM532TdXLLoO+dU75JGk27Z1lWm5H3qO6HhPTH0Ee+zTcPhw6EHSwf
+        2NOJ/wa3GYLvAUMt6exBxFZXYx3r/jCz+l+/b2I=
+X-Google-Smtp-Source: ABdhPJx0GG3c/xhQoEPpW2bGNjyS2w6F+XjJCHNjEjFwcuX8thuGeaXRea1eh8R6BalpG3vSq9vqVIyaN62+SFhpxdI=
+X-Received: by 2002:a25:d84a:: with SMTP id p71mr2610112ybg.347.1596608311276;
+ Tue, 04 Aug 2020 23:18:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200801170322.75218-1-jolsa@kernel.org> <20200801170322.75218-7-jolsa@kernel.org>
-In-Reply-To: <20200801170322.75218-7-jolsa@kernel.org>
+References: <20200801170322.75218-1-jolsa@kernel.org> <20200801170322.75218-8-jolsa@kernel.org>
+In-Reply-To: <20200801170322.75218-8-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Aug 2020 23:12:49 -0700
-Message-ID: <CAEf4BzYtO+ELTpBVwWmWRkmgOCmCnCWU6iZzYjfNRHvb7rgEJg@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 06/14] bpf: Remove recursion call in btf_struct_access
+Date:   Tue, 4 Aug 2020 23:18:20 -0700
+Message-ID: <CAEf4Bzbk1ivXa=Q_Fvb+jjrWAJaXJccBWhFTAsH4pVsz0V-eLQ@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 07/14] bpf: Factor btf_struct_access function
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,56 +72,39 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, Aug 1, 2020 at 10:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Andrii suggested we can simply jump to again label
-> instead of making recursion call.
+> Adding btf_struct_walk function that walks through the
+> struct type + given offset and returns following values:
 >
-> Suggested-by: Andrii Nakryiko <andriin@fb.com>
+>   enum bpf_struct_walk_result {
+>        /* < 0 error */
+>        WALK_SCALAR = 0,
+>        WALK_PTR,
+>        WALK_STRUCT,
+>   };
+>
+> WALK_SCALAR - when SCALAR_VALUE is found
+> WALK_PTR    - when pointer value is found, its ID is stored
+>               in 'next_btf_id' output param
+> WALK_STRUCT - when nested struct object is found, its ID is stored
+>               in 'next_btf_id' output param
+>
+> It will be used in following patches to get all nested
+> struct objects for given type and offset.
+>
+> The btf_struct_access now calls btf_struct_walk function,
+> as long as it gets nested structs as return value.
+>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  kernel/bpf/btf.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index bc05a24f7361..0f995038b589 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3931,14 +3931,13 @@ int btf_struct_access(struct bpf_verifier_log *log,
->                 /* Only allow structure for now, can be relaxed for
->                  * other types later.
->                  */
-> -               elem_type = btf_type_skip_modifiers(btf_vmlinux,
-> -                                                   array_elem->type, NULL);
-> -               if (!btf_type_is_struct(elem_type))
-> +               t = btf_type_skip_modifiers(btf_vmlinux, array_elem->type,
-> +                                           NULL);
-> +               if (!btf_type_is_struct(t))
->                         goto error;
->
-> -               off = (off - moff) % elem_type->size;
-> -               return btf_struct_access(log, elem_type, off, size, atype,
-> -                                        next_btf_id);
-> +               off = (off - moff) % t->size;
-> +               goto again;
 
-Transformation looks good, thanks. So:
+This turned out to be rather much more succinct and clean than I
+imagined when I was originally proposing the struct iteration idea.
+Great job at abstracting this!
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-But this '% t->size' makes me wonder what will happen when we have an
-array of zero-sized structs or multi-dimensional arrays with
-dimensions of size 0... I.e.:
-
-struct {} arr[123];
-
-or
-
-int arr[0][0]0];
-
-We should probably be more careful with division here.
-
+>  kernel/bpf/btf.c | 75 +++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 65 insertions(+), 10 deletions(-)
 >
->  error:
->                 bpf_log(log, "access beyond struct %s at off %u size %u\n",
-> --
-> 2.25.4
->
+
+[...]
