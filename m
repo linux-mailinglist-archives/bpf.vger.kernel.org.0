@@ -2,81 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0494423D6C8
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 08:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9A23D95C
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 12:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgHFG1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Aug 2020 02:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbgHFG1M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Aug 2020 02:27:12 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F6C061574;
-        Wed,  5 Aug 2020 23:27:11 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id z17so24408362ill.6;
-        Wed, 05 Aug 2020 23:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=bJQv7/hIU631XncJKcKGFj2iQLvO+RwL3NF9aZWt2us=;
-        b=dmNnnnPrnC8WifqflL4Tr88gqkFoL1sGIOzAbxlgPLroOpajfJf8PFb7dAKNhIa7F6
-         ty1xj67oX5GEj38FxIR0OgJN+OT56Q+O0gwY4bUkZKUOSn1PB36kUncmLe3mWvL7qzDC
-         6iBKi+6w/RH/sFHJsZH3FaddVUrVAEzGIHXcKVXvpkshlyjGgo1R5Ov2DwftVn+L0p9Y
-         UqmC2kyoi4LEgiZIolD8Qc4of1gGF3B9gewGeIMwYPsHztLDxjY/08A1M8okmvfk0+KA
-         n80CgGTTnrWvSS26Bv3CHfKF+CP4vCYcDwD6z4AaT9RQ/xIgBymBSUOgvO00V7+1gjYd
-         nlYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=bJQv7/hIU631XncJKcKGFj2iQLvO+RwL3NF9aZWt2us=;
-        b=kxUxgTJZLGdDNmuD5DZ9HIXXRsdg+1gDmK5yqEwtqTZFnUkA+iRjcU+mhCp+PilIt6
-         tJ+z+eJGuboXMMIfdWaVhsDLuZNohhwoxPJa9OS7X6gaQIr6WV8l+Ugkw5E1jwnfxgyw
-         piC9u+QgZw8XwrnQ+Jq6KWU960T5X9KQ2NKSDaR3EICV81c9T5K1J/IooUHNVE+q73x7
-         00jhRrzqcV36y2DbT7H6pEJz+orSnWE2FAjsBzGTvBck4uDg9uWJDiFfNt63KT/LfSaH
-         izXSokZblfDz9TJt2OCM1DRy6iZ9g9N/OX3p9uRGfEANQNsHolujLqFxTOBldq6gHarb
-         iBkw==
-X-Gm-Message-State: AOAM531CPZ8UXSP1AqzQ2R9v+pyNkZwv7hpCRqsfb/Vvpx8ila5uZb1O
-        2ud8bRRJEYWvcPCdKy/5vxeVQ5rXk+o=
-X-Google-Smtp-Source: ABdhPJxPQetjt8CxiY1NU1tB143K4bkYACq2WLMaiYxg0L4Zu58cQ1kXoGF+Q0kf3K3azVQ8Eh/aaQ==
-X-Received: by 2002:a92:c8cd:: with SMTP id c13mr8840082ilq.162.1596695230821;
-        Wed, 05 Aug 2020 23:27:10 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id j13sm2917151ili.57.2020.08.05.23.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Aug 2020 23:27:09 -0700 (PDT)
-Date:   Wed, 05 Aug 2020 23:27:02 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>
-Message-ID: <5f2ba2b6a22ac_291f2b27e574e5b885@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200805004757.2960750-1-andriin@fb.com>
-References: <20200805004757.2960750-1-andriin@fb.com>
-Subject: RE: [PATCH bpf] selftests/bpf: prevent runqslower from racing on
- building bpftool
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1729427AbgHFKnk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Aug 2020 06:43:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:42238 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729392AbgHFKnQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Aug 2020 06:43:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B01D3113E;
+        Thu,  6 Aug 2020 03:43:15 -0700 (PDT)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 94F403F9AB;
+        Thu,  6 Aug 2020 03:43:12 -0700 (PDT)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, Song.Zhu@arm.com,
+        Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2] bpf: fix compilation warning of selftests
+Date:   Thu,  6 Aug 2020 18:42:24 +0800
+Message-Id: <20200806104224.95306-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+References: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> runqslower's Makefile is building/installing bpftool into
-> $(OUTPUT)/sbin/bpftool, which coincides with $(DEFAULT_BPFTOOL). In practice
-> this means that often when building selftests from scratch (after `make
-> clean`), selftests are racing with runqslower to simultaneously build bpftool
-> and one of the two processes fail due to file being busy. Prevent this race by
-> explicitly order-depending on $(BPFTOOL_DEFAULT).
-> 
-> Fixes: a2c9652f751e ("selftests: Refactor build to remove tools/lib/bpf from include path")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+Clang compiler version: 12.0.0
+The following warning appears during the selftests/bpf compilation:
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+prog_tests/send_signal.c:51:3: warning: ignoring return value of ‘write’,
+declared with attribute warn_unused_result [-Wunused-result]
+   51 |   write(pipe_c2p[1], buf, 1);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+prog_tests/send_signal.c:54:3: warning: ignoring return value of ‘read’,
+declared with attribute warn_unused_result [-Wunused-result]
+   54 |   read(pipe_p2c[0], buf, 1);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+......
+
+prog_tests/stacktrace_build_id_nmi.c:13:2: warning: ignoring return value
+of ‘fscanf’,declared with attribute warn_unused_result [-Wunused-resul]
+   13 |  fscanf(f, "%llu", &sample_freq);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+test_tcpnotify_user.c:133:2: warning:ignoring return value of ‘system’,
+declared with attribute warn_unused_result [-Wunused-result]
+  133 |  system(test_script);
+      |  ^~~~~~~~~~~~~~~~~~~
+test_tcpnotify_user.c:138:2: warning:ignoring return value of ‘system’,
+declared with attribute warn_unused_result [-Wunused-result]
+  138 |  system(test_script);
+      |  ^~~~~~~~~~~~~~~~~~~
+test_tcpnotify_user.c:143:2: warning:ignoring return value of ‘system’,
+declared with attribute warn_unused_result [-Wunused-result]
+  143 |  system(test_script);
+      |  ^~~~~~~~~~~~~~~~~~~
+
+Add code that fix compilation warning about ignoring return value and
+handles any errors; Check return value of library`s API make the code
+more secure.
+
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+---
+v2:
+- replease CHECK_FAIL by CHECK
+- fix test_tcpnotify_user failed issue
+---
+ .../selftests/bpf/prog_tests/send_signal.c     | 18 ++++++++----------
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c   |  4 +++-
+ .../selftests/bpf/test_tcpnotify_user.c        | 13 ++++++++++---
+ 3 files changed, 21 insertions(+), 14 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+index 504abb7bfb95..7043e6ded0e6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
++++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+@@ -48,21 +48,19 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 		close(pipe_p2c[1]); /* close write */
+ 
+ 		/* notify parent signal handler is installed */
+-		write(pipe_c2p[1], buf, 1);
++		CHECK(write(pipe_c2p[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
+ 
+ 		/* make sure parent enabled bpf program to send_signal */
+-		read(pipe_p2c[0], buf, 1);
++		CHECK(read(pipe_p2c[0], buf, 1) != 1, "pipe_read", "err %d\n", -errno);
+ 
+ 		/* wait a little for signal handler */
+ 		sleep(1);
+ 
+-		if (sigusr1_received)
+-			write(pipe_c2p[1], "2", 1);
+-		else
+-			write(pipe_c2p[1], "0", 1);
++		buf[0] = sigusr1_received ? '2' : '0';
++		CHECK(write(pipe_c2p[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
+ 
+ 		/* wait for parent notification and exit */
+-		read(pipe_p2c[0], buf, 1);
++		CHECK(read(pipe_p2c[0], buf, 1) != 1, "pipe_read", "err %d\n", -errno);
+ 
+ 		close(pipe_c2p[1]);
+ 		close(pipe_p2c[0]);
+@@ -99,7 +97,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	}
+ 
+ 	/* wait until child signal handler installed */
+-	read(pipe_c2p[0], buf, 1);
++	CHECK(read(pipe_c2p[0], buf, 1) != 1, "pipe_read", "err %d\n", -errno);
+ 
+ 	/* trigger the bpf send_signal */
+ 	skel->bss->pid = pid;
+@@ -107,7 +105,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	skel->bss->signal_thread = signal_thread;
+ 
+ 	/* notify child that bpf program can send_signal now */
+-	write(pipe_p2c[1], buf, 1);
++	CHECK(write(pipe_p2c[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
+ 
+ 	/* wait for result */
+ 	err = read(pipe_c2p[0], buf, 1);
+@@ -121,7 +119,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+ 	CHECK(buf[0] != '2', test_name, "incorrect result\n");
+ 
+ 	/* notify child safe to exit */
+-	write(pipe_p2c[1], buf, 1);
++	CHECK(write(pipe_p2c[1], buf, 1) != 1, "pipe_write", "err %d\n", -errno);
+ 
+ disable_pmu:
+ 	close(pmu_fd);
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+index f002e3090d92..11a769e18f5d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+@@ -6,11 +6,13 @@ static __u64 read_perf_max_sample_freq(void)
+ {
+ 	__u64 sample_freq = 5000; /* fallback to 5000 on error */
+ 	FILE *f;
++	__u32 duration = 0;
+ 
+ 	f = fopen("/proc/sys/kernel/perf_event_max_sample_rate", "r");
+ 	if (f == NULL)
+ 		return sample_freq;
+-	fscanf(f, "%llu", &sample_freq);
++	CHECK(fscanf(f, "%llu", &sample_freq) != 1, "Get max sample rate",
++		  "return default value: 5000,err %d\n", -errno);
+ 	fclose(f);
+ 	return sample_freq;
+ }
+diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+index 8549b31716ab..73da7fe8c152 100644
+--- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
++++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
+@@ -124,17 +124,24 @@ int main(int argc, char **argv)
+ 	sprintf(test_script,
+ 		"iptables -A INPUT -p tcp --dport %d -j DROP",
+ 		TESTPORT);
+-	system(test_script);
++	if (system(test_script)) {
++		printf("FAILED: execute command: %s, err %d\n", test_script, -errno);
++		goto err;
++	}
+ 
+ 	sprintf(test_script,
+ 		"nc 127.0.0.1 %d < /etc/passwd > /dev/null 2>&1 ",
+ 		TESTPORT);
+-	system(test_script);
++	if (system(test_script))
++		printf("execute command: %s, err %d\n", test_script, -errno);
+ 
+ 	sprintf(test_script,
+ 		"iptables -D INPUT -p tcp --dport %d -j DROP",
+ 		TESTPORT);
+-	system(test_script);
++	if (system(test_script)) {
++		printf("FAILED: execute command: %s, err %d\n", test_script, -errno);
++		goto err;
++	}
+ 
+ 	rv = bpf_map_lookup_elem(bpf_map__fd(global_map), &key, &g);
+ 	if (rv != 0) {
+-- 
+2.17.1
+
