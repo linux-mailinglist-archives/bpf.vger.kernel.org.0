@@ -2,132 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6272A23DC2A
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 18:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575F523DE83
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 19:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgHFQrE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Aug 2020 12:47:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43670 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgHFQpO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Aug 2020 12:45:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076EXSii075967;
-        Thu, 6 Aug 2020 14:43:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=theamiPcOekYRX6Mv+pKryKVA4+IUThIhqCbFzscYqY=;
- b=VmoCVrPZHrL4uHzHSvj14hJdREyXwOFtbXUrsaMLAjjWGwMww/GLYv/sxUgO/6Rf42CJ
- OJlG6zZ8A5l52eMYKNdzy9S2bKZN+XZIP8K5lw/15OWzCABQdEY0Gih0UbDzNLy/vEDs
- yq6cJQizIstrW3kNpYZo497C8qUAlWVtzsJDTQpFltRWEfwa8LHcRolIT3KQGZI8LT9f
- tufp8yPamsnMOLDSLQN9XxtbAerBX4frvFiwPKYys8MtzIEZFX28gNn3sRw0V9+kSeFx
- RcucPHUZbLd4RwSNh0i7LnjimFbh/eF0ikoWiq6VPbuwytvBoLZjc1fr5eX34J10TnS2 7Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32r6gwucgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 06 Aug 2020 14:43:02 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 076Egxms192395;
-        Thu, 6 Aug 2020 14:43:01 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 32pdnwj85k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Aug 2020 14:43:01 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 076EgjIB005861;
-        Thu, 6 Aug 2020 14:42:45 GMT
-Received: from localhost.uk.oracle.com (/10.175.182.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Aug 2020 07:42:45 -0700
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com
-Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC PATCH bpf-next 1/4] bpf: provide function to get vmlinux BTF information
-Date:   Thu,  6 Aug 2020 15:42:22 +0100
-Message-Id: <1596724945-22859-2-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
-References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008060104
+        id S1729989AbgHFR0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Aug 2020 13:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729680AbgHFRCZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:02:25 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF23C0A54D9;
+        Thu,  6 Aug 2020 07:03:30 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id p4so1195485qkf.0;
+        Thu, 06 Aug 2020 07:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JOvK3mlRWVtrCzRPPugSEdDzfzMZZqm2wdlRVxRdHEA=;
+        b=qJOOeObm+/nub/UBnhSekFVsw6Jzss/ug0YWz664tPulD2NoRqV4A3NyxE/uwMScRD
+         KN74mIpBB8uMFgBw9CV21yAoYdFJjRbDL61csI+1JjI3mOJpaxrsSJMOM7zoHWvOzyj5
+         1zI0PUtNpHv1GLsrcMFCLY8q0RQQocOK04skuubgTmJINgFsxFrboFe9upgPCt9DN/2n
+         Ml68KF5235AkRVXYfpX/XfLh91lbKl2rOb5X2PxaZvPhGLAq+fyLOeHgqjLr4v95VzO5
+         I7+cWJCIuQAn+dYzdOJK7DysgeY0JYcRAAB9x1bY4WwjuyCuQOYII4AgeRhBHRF3kEIb
+         vDeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JOvK3mlRWVtrCzRPPugSEdDzfzMZZqm2wdlRVxRdHEA=;
+        b=Bpbz9vrYVGTZUlKLWZXunqje50eaWEM1AIKqrTooO+v5qWA9F2p2bSuOa/CuLzACKl
+         6NHQ6Q/x4vQj0c0JQ9ct1PRyjoEq/SWSs4bE6eUXu/3BayxcgIc2dxFzAqqVuJC8GcTF
+         O5c099nApjkh2OUCce/JdJZ1XV/PjUEZ1LPuQjpp8xwgELg7BUoe2DELs7pNeYmhHNaA
+         WLuZ0wmvVKTwG0RAAOJj9OhdSwC2IkC2aUTKykAa2BULHEyaHvift3WRlyBs4VvQVq0g
+         Rmi4g+LNmThzF6ABQOZlfgSHLjrsZNeLSd2Or3QAUZP5Y3H6pWwlJz2myNT1ij+4fgk5
+         1GAA==
+X-Gm-Message-State: AOAM5307v/VIP2yzby9lw3tr3kBCtsTby+q84FUDmNaKypS/SAO9SM7U
+        Ek0XmdfQTrqmngnRXYFx4kA=
+X-Google-Smtp-Source: ABdhPJw4yglAOFwmGHEN2MssKpWIn/Cu9cU1Q7NsC61jUQWR3rDI6JTZ+wnSJRKug+xBLToRvHeTFQ==
+X-Received: by 2002:a37:64d7:: with SMTP id y206mr8361357qkb.133.1596722605635;
+        Thu, 06 Aug 2020 07:03:25 -0700 (PDT)
+Received: from bpf-dev (pc-199-79-45-190.cm.vtr.net. [190.45.79.199])
+        by smtp.gmail.com with ESMTPSA id y26sm4727644qto.75.2020.08.06.07.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Aug 2020 07:03:24 -0700 (PDT)
+Date:   Thu, 6 Aug 2020 10:03:20 -0400
+From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next] bpf/selftests: fold
+ test_current_pid_tgid_new_ns into test_progs.
+Message-ID: <20200806140319.GA40984@bpf-dev>
+References: <20200805163503.40381-1-cneirabustos@gmail.com>
+ <CAEf4BzYrek8shqzUj+zNC=TjGkDPCKUFP=YnbiNf6360f1MyTw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYrek8shqzUj+zNC=TjGkDPCKUFP=YnbiNf6360f1MyTw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It will be used later for BPF structure display support
+On Wed, Aug 05, 2020 at 01:15:05PM -0700, Andrii Nakryiko wrote:
+> On Wed, Aug 5, 2020 at 1:06 PM Carlos Neira <cneirabustos@gmail.com> wrote:
+> >
+> > Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
+> > This change folds a test case into test_progs.
+> >
+> > Changes from V3:
+> >  - STAT(2) check changed from CHECK_FAIL to CHECK.
+> >  - Changed uses of _open_ to _open_and_load.
+> >  - Fixed error codes were not being returned on exit.
+> >  - Removed unnecessary dependency on Makefile
+> >
+> > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> > ---
+> 
+> bpf-next is closed, you'll have to re-submit once it opens in roughly
+> two weeks. Looks good overall, few minor things below, please
+> incorporate into next revision with my ack:
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> >  tools/testing/selftests/bpf/.gitignore        |   2 +-
+> >  tools/testing/selftests/bpf/Makefile          |   4 +-
+> >  .../bpf/prog_tests/ns_current_pid_tgid.c      |  85 ----------
+> >  .../bpf/prog_tests/ns_current_pidtgid.c       |  54 ++++++
+> >  .../bpf/progs/test_ns_current_pid_tgid.c      |  37 ----
+> >  .../bpf/progs/test_ns_current_pidtgid.c       |  25 +++
+> >  .../bpf/test_current_pid_tgid_new_ns.c        | 159 ------------------
+> >  .../bpf/test_ns_current_pidtgid_newns.c       |  91 ++++++++++
+> >  8 files changed, 173 insertions(+), 284 deletions(-)
+> >  delete mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/ns_current_pidtgid.c
+> >  delete mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+> >  delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+> >  create mode 100644 tools/testing/selftests/bpf/test_ns_current_pidtgid_newns.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+> > index 1bb204cee853..022055f23592 100644
+> > --- a/tools/testing/selftests/bpf/.gitignore
+> > +++ b/tools/testing/selftests/bpf/.gitignore
+> > @@ -30,8 +30,8 @@ test_tcpnotify_user
+> >  test_libbpf
+> >  test_tcp_check_syncookie_user
+> >  test_sysctl
+> > -test_current_pid_tgid_new_ns
+> >  xdping
+> > +test_ns_current_pidtgid_newns
+> >  test_cpp
+> >  *.skel.h
+> >  /no_alu32
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index e7a8cf83ba48..92fb616cdd27 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -36,8 +36,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+> >         test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+> >         test_cgroup_storage \
+> >         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+> > -       test_progs-no_alu32 \
+> > -       test_current_pid_tgid_new_ns
+> > +       test_progs-no_alu32\
+> 
+> accidentally removed space?
+> 
+> > +       test_ns_current_pidtgid_newns
+> >
+> >  # Also test bpf-gcc, if present
+> >  ifneq ($(BPF_GCC),)
+> 
+> [...]
+> 
+> > +
+> > +void test_ns_current_pidtgid(void)
+> > +{
+> > +       struct test_ns_current_pidtgid__bss  *bss;
+> > +       struct test_ns_current_pidtgid *skel;
+> > +       int err, duration = 0;
+> > +       struct stat st;
+> > +       __u64 id;
+> > +
+> > +       skel = test_ns_current_pidtgid__open_and_load();
+> > +       CHECK(!skel, "skel_open_load", "failed to load skeleton\n");
+> > +               goto cleanup;
+> > +
+> > +       pid_t tid = syscall(SYS_gettid);
+> > +       pid_t pid = getpid();
+> 
+> hm... I probably missed this last time. This is not a valid C89
+> standard-compliant code, all variables have to be declared up top,
+> please split variable declaration and initialization.
+> 
+> > +
+> > +       id = (__u64) tid << 32 | pid;
+> > +
+> > +       err = stat("/proc/self/ns/pid", &st);
+> > +       if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
+> > +               goto cleanup;
+> > +
+> 
+> [...]
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+> > new file mode 100644
+> > index 000000000000..9818a56510d9
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_ns_current_pidtgid.c
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2019 Carlos Neira cneirabustos@gmail.com */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <stdint.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +__u64 user_pid_tgid = 0;
+> > +__u64 dev = 0;
+> > +__u64 ino = 0;
+> > +
+> > +SEC("raw_tracepoint/sys_enter")
+> > +int handler(const void *ctx)
+> > +{
+> > +       struct bpf_pidns_info nsdata;
+> > +
+> > +       if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata,
+> > +                  sizeof(struct bpf_pidns_info)))
+> > +               return 0;
+> > +       user_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
+> 
+> nit: good idea to put () around << expression when combined with other
+> bitwise operators.
+> 
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> 
+> [...]
+> 
+> > +static int newns_pidtgid(void *arg)
+> > +{
+> > +       struct test_ns_current_pidtgid__bss  *bss;
+> > +       struct test_ns_current_pidtgid *skel;
+> > +       int pidns_fd = 0, err = 0;
+> > +       pid_t pid, tid;
+> > +       struct stat st;
+> > +       __u64 id;
+> > +
+> > +       skel = test_ns_current_pidtgid__open_and_load();
+> > +       if (!skel) {
+> > +               perror("Failed to load skeleton");
+> > +               goto cleanup;
+> > +       }
+> > +
+> > +       tid = syscall(SYS_gettid);
+> > +       pid = getpid();
+> > +       id = (__u64) tid << 32 | pid;
+> 
+> see, you don't do it here :)
+> 
+> 
+> > +
+> > +       if (stat("/proc/self/ns/pid", &st)) {
+> > +               printf("Failed to stat /proc/self/ns/pid: %s\n",
+> > +                       strerror(errno));
+> > +               goto cleanup;
+> > +       }
+> > +
+> > +       bss = skel->bss;
+> > +       bss->dev = st.st_dev;
+> > +       bss->ino = st.st_ino;
+> > +       bss->user_pid_tgid = 0;
+> > +
+> 
+> [...]
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- include/linux/bpf.h   |  2 ++
- kernel/bpf/verifier.c | 18 ++++++++++++------
- 2 files changed, 14 insertions(+), 6 deletions(-)
+Andrii,
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cef4ef0..55eb67d 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1290,6 +1290,8 @@ int bpf_check(struct bpf_prog **fp, union bpf_attr *attr,
- 	      union bpf_attr __user *uattr);
- void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth);
- 
-+struct btf *bpf_get_btf_vmlinux(void);
-+
- /* Map specifics */
- struct xdp_buff;
- struct sk_buff;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b6ccfce..05dfc41 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11064,6 +11064,17 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	}
- }
- 
-+struct btf *bpf_get_btf_vmlinux(void)
-+{
-+	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-+		mutex_lock(&bpf_verifier_lock);
-+		if (!btf_vmlinux)
-+			btf_vmlinux = btf_parse_vmlinux();
-+		mutex_unlock(&bpf_verifier_lock);
-+	}
-+	return btf_vmlinux;
-+}
-+
- int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
- 	      union bpf_attr __user *uattr)
- {
-@@ -11097,12 +11108,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
- 	env->ops = bpf_verifier_ops[env->prog->type];
- 	is_priv = bpf_capable();
- 
--	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
--		mutex_lock(&bpf_verifier_lock);
--		if (!btf_vmlinux)
--			btf_vmlinux = btf_parse_vmlinux();
--		mutex_unlock(&bpf_verifier_lock);
--	}
-+	bpf_get_btf_vmlinux();
- 
- 	/* grab the mutex to protect few globals used by verifier */
- 	if (!is_priv)
--- 
-1.8.3.1
+Thank you very much, I'll incorporate these changes on the next revision.
 
+Bests.
