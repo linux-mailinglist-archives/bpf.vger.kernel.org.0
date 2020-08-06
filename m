@@ -2,121 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3F823E108
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 20:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D7C23E121
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 20:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729938AbgHFSkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Aug 2020 14:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgHFS3z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Aug 2020 14:29:55 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2316EC0617A5
-        for <bpf@vger.kernel.org>; Thu,  6 Aug 2020 11:29:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g127so18527439ybf.11
-        for <bpf@vger.kernel.org>; Thu, 06 Aug 2020 11:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+IG/dxdpIhFOg5NsrzFXy6SAE8mZFW/9Sk3pQFlLR/4=;
-        b=aqhdeEeYxs4pIJ7U2ovDFyNnuGPXWzRfKQ10Xub61whpV9tbm2cil6TFTO/f1I0asV
-         Jkm5iEj3REOVhxGYnDQDW9Vyad2O2p91LMVYkD1fdaXSuu2OvPO9WG1VrOWStwcbxXzZ
-         AaMCgi88DzldY8DzC5b/E6Xr0eTQvkemByeALsUT2qQW/ovsBZbfkzt0qb0t6wGDSK8q
-         zeV8thFiYRKXT51DfC+CnEFhs9Z1fgeEX3Ea+a0ZEJIREVYuNOhIIE4s+d4oHfAL0TLI
-         7ppVzqf6bPuxq8Et9E+O1VG9H8UtDwzlOIysJD97bqAaoJhaTLuPtKTLJaTeFyY4k/2J
-         2+qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+IG/dxdpIhFOg5NsrzFXy6SAE8mZFW/9Sk3pQFlLR/4=;
-        b=BFwXPNtFDQwGrz5iOVtAHWPv27bhnWSOQ+yjAQlXfCB5j4usECTxhJGk8N78urkDdd
-         88e2I+3W138Y8ha6w5ihpkhvlMHc+vWMRJPYe6owgzTQzJwwsx/P/b7654QPtIDVVBLm
-         IuiQCCxOUwrDq2AXKORAnNQKeGPAkLtAZ2SWdkAcj1ZMy6IhasGSK/gy7EdMRXk8lXuc
-         kFY14beU4oop3Vdhuq8bR0rx6A6NN4eyAaljROuVllvJzmauqRhFAztLLB7brU1fW3Af
-         eTqya234lDwTO8N/VRidbtHVDzHaxM/o3m/xhGclytD8t7cWdXuNFSwwXWEtczQR5swe
-         SLpg==
-X-Gm-Message-State: AOAM533Ijx7kDjbbaOWnLdHbaINoyx2RP9M2K+DNfTJYuHRURV96p6ro
-        +WpDhl6SKjBvkovlzwWFwhre01Bl2C1CgrLrAm8=
-X-Google-Smtp-Source: ABdhPJwZABlBX0pahoVpPDOus1FAsJYKYjfJy30hapIE6fqPyT+k2q2xJ16rKioJ7N6yL6pFeQR2DssnVu/ZwHHkgC0=
-X-Received: by 2002:a25:f30c:: with SMTP id c12mr15528680ybs.471.1596738591183;
- Thu, 06 Aug 2020 11:29:51 -0700 (PDT)
-Date:   Thu,  6 Aug 2020 11:29:39 -0700
-Message-Id: <20200806182940.720057-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
-Subject: [PATCH net resend] bitfield.h: don't compile-time validate _val in FIELD_FIT
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Elder <elder@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729307AbgHFSlD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Aug 2020 14:41:03 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51551 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729028AbgHFSky (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Aug 2020 14:40:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596739253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=/VHZefJEyFsI3PH6lymhdIaEYCu1BSLgdAY4PvnxLgw=;
+        b=M8K5R9TU9k9qKHkK/Goxldqz2jreaSTlKZj51bqa2JaVlRx0jM/wJd5uwzDW16GnUzFiY4
+        V9fFN+c1legg9OQt6VNuXBpyKl6lcdqIl5oqTYeybnvdtv0TMYCDRTyI/G6bBurr1ngKMe
+        xoDuMb7hSpXFKlCXwlIZFtum/ZmcDpk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-4aU_zOQRM5CCXDpdaEh2Sg-1; Thu, 06 Aug 2020 14:40:50 -0400
+X-MC-Unique: 4aU_zOQRM5CCXDpdaEh2Sg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E6BC1800D42;
+        Thu,  6 Aug 2020 18:40:50 +0000 (UTC)
+Received: from griffin.upir.cz (unknown [10.40.192.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 576345D9DC;
+        Thu,  6 Aug 2020 18:40:49 +0000 (UTC)
+From:   Jiri Benc <jbenc@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf] selftests: bpf: switch off timeout
+Date:   Thu,  6 Aug 2020 20:39:59 +0200
+Message-Id: <7a9198ed10917f4ecab4a3dd74bcda1200791efd.1596739059.git.jbenc@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+Several bpf tests are interrupted by the default timeout of 45 seconds added
+by commit 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second
+timeout per test"). In my case it was test_progs, test_tunnel.sh,
+test_lwt_ip_encap.sh and test_xdping.sh.
 
-When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
-compiler to deduce a case where _val can only have the value of -1 at
-compile time. Specifically,
+There's not much value in having a timeout for bpf tests, switch it off.
 
-/* struct bpf_insn: _s32 imm */
-u64 imm = insn->imm; /* sign extend */
-if (imm >> 32) { /* non-zero only if insn->imm is negative */
-  /* inlined from ur_load_imm_any */
-  u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
-  if (__builtin_constant_p(__imm) && __imm > 255)
-    compiletime_assert_XXX()
-
-This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
-checks that a given value is representable in one byte (interpreted as
-unsigned).
-
-FIELD_FIT() should return true or false at runtime for whether a value
-can fit for not. Don't break the build over a value that's too large for
-the mask. We'd prefer to keep the inlining and compiler optimizations
-though we know this case will always return false.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
-Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
 ---
-Note: resent patch 1/2 as per Jakub on
-https://lore.kernel.org/netdev/20200708230402.1644819-1-ndesaulniers@google.com/
+ tools/testing/selftests/bpf/settings | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 tools/testing/selftests/bpf/settings
 
- include/linux/bitfield.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-index 48ea093ff04c..4e035aca6f7e 100644
---- a/include/linux/bitfield.h
-+++ b/include/linux/bitfield.h
-@@ -77,7 +77,7 @@
-  */
- #define FIELD_FIT(_mask, _val)						\
- 	({								\
--		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
-+		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
- 		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
- 	})
- 
+diff --git a/tools/testing/selftests/bpf/settings b/tools/testing/selftests/bpf/settings
+new file mode 100644
+index 000000000000..e7b9417537fb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/settings
+@@ -0,0 +1 @@
++timeout=0
 -- 
-2.27.0.383.g050319c2ae-goog
+2.18.1
 
