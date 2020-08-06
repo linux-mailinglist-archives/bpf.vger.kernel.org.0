@@ -2,55 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A2623D51A
-	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 03:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787D023D675
+	for <lists+bpf@lfdr.de>; Thu,  6 Aug 2020 07:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgHFBam (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Aug 2020 21:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgHFBal (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Aug 2020 21:30:41 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D50A206B6;
-        Thu,  6 Aug 2020 01:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596677441;
-        bh=j8cz0jkeIZa3/Qm+IkMRnxzTHWlX6p/ubrCWK/DfFbk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bGlBvdhV0IINzDDxY+ebHRZWc6E5LXVWNeJetqkKvZ+FGUsEtC4H4fUiPEX+vLnG7
-         GStprFmbi0s1dSFEpmAAHhDNqmhclPmlpMjYfq7qA2xzZlNM9SUZNvewR2WkmZEVx1
-         CrqaNCZC6yFbCKERNMfFt7gQCy6/r4k2aNLWZq/M=
-Date:   Thu, 6 Aug 2020 10:30:35 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        sfr@canb.auug.org.au, mingo@kernel.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] kprobes: fix compiler warning for
- !CONFIG_KPROBES_ON_FTRACE
-Message-Id: <20200806103035.3359153c2753e9f52d17d353@kernel.org>
+        id S1725783AbgHFFln (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Aug 2020 01:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgHFFll (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Aug 2020 01:41:41 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D89AC061574;
+        Wed,  5 Aug 2020 22:41:41 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id y18so30989545ilp.10;
+        Wed, 05 Aug 2020 22:41:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=HIGPgBL7n98bpEVZBM/4G2APCFecCIPvFc7WiIgCYY0=;
+        b=FiJgIehPKvn2HJA91Zt1bLnAxrIVtSKzm8V2TXidY17vnP9eFbF33heWll62gghlgO
+         XfMOrBzima/hMa6eeD21FBfFGWkNznqaMlpoGEIhvI6RGOWsbYCiu404LXAJnsqhZsI1
+         WFN2Mo/MV6O5TG9DqXjZBcM7xJEsHjZVgvnbmaCOMagFpIm9W6cex5AQj1s5JAqndb03
+         Bi5x+kYXZSSUYKBZajnFd3deR5qcTVmv7GdpyIT1cGJFTclKzRgbq3lgXTfpwe0BTCvN
+         v6N5t+yTKM30fvYyAjJxtOuxbiJG9eHmsM19GAQk9Ur+6dPGjj3c7iKUUrGHR5XdRbTV
+         MgeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=HIGPgBL7n98bpEVZBM/4G2APCFecCIPvFc7WiIgCYY0=;
+        b=Ch5xNxILbM0D9L3WBQForNm0mf9jZRG9ZcHmh4Z3K04Vn1KHYqERY1sGbUxM/zCgI4
+         vpyYmz9065MJe5Igl+GzMy+X2iywAw3SQV1iXaE9TFcs4zNFDthPDLDSbWApT1AHJzlk
+         BeaLmU3vBaXzMcbOXibwltSSdyTMkZ35BOGmuKxxxuIM7BLQDcoSydVdatfVnvcVEunc
+         dTRxJz+K0BfuNagU/RRenrPYMv7oCGjHgE0/WlMy99j1Dp0nGwZDS2GqAF0JaL4Uuo/Y
+         Q97bFpERfduSynkmLFX2A0NDBk6Rq4WI1vVe+WVelbn7uCruWPXI8SpvO4iT6Pn57TX0
+         atpA==
+X-Gm-Message-State: AOAM530wU8jJjQbQ/iHKkxZFsX7zSZl7wpLqH2Y9h8U+YZUn4SvBoluR
+        wH58CgImD2I1m06q/KAgYY8=
+X-Google-Smtp-Source: ABdhPJzfFQrkhxfiSuEnos5KxcjG3hgktUyK5qO7wvdWxUZYYXobmNCqd9eumJE1qTchwrRO1oLRCA==
+X-Received: by 2002:a92:d34c:: with SMTP id a12mr8492912ilh.20.1596692500154;
+        Wed, 05 Aug 2020 22:41:40 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id n10sm2879634ila.2.2020.08.05.22.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Aug 2020 22:41:39 -0700 (PDT)
+Date:   Wed, 05 Aug 2020 22:41:30 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Muchun Song <songmuchun@bytedance.com>, rostedt@goodmis.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, sfr@canb.auug.org.au, mingo@kernel.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>
+Message-ID: <5f2b980abeaad_291f2b27e574e5b82@john-XPS-13-9370.notmuch>
 In-Reply-To: <20200805172046.19066-1-songmuchun@bytedance.com>
 References: <20200805172046.19066-1-songmuchun@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: RE: [PATCH] kprobes: fix compiler warning for
+ !CONFIG_KPROBES_ON_FTRACE
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  6 Aug 2020 01:20:46 +0800
-Muchun Song <songmuchun@bytedance.com> wrote:
-
+Muchun Song wrote:
 > Fix compiler warning(as show below) for !CONFIG_KPROBES_ON_FTRACE.
 > 
 > kernel/kprobes.c: In function 'kill_kprobe':
@@ -67,49 +89,6 @@ Muchun Song <songmuchun@bytedance.com> wrote:
 > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 > Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
 > ---
->  kernel/kprobes.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 503add629599..d36e2b017588 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1114,9 +1114,20 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
->  		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
->  }
->  #else	/* !CONFIG_KPROBES_ON_FTRACE */
-> -#define prepare_kprobe(p)	arch_prepare_kprobe(p)
-> -#define arm_kprobe_ftrace(p)	(-ENODEV)
-> -#define disarm_kprobe_ftrace(p)	(-ENODEV)
-> +static inline int prepare_kprobe(struct kprobe *p)
-> +{
-> +	return arch_prepare_kprobe(p);
-> +}
-> +
-> +static inline int arm_kprobe_ftrace(struct kprobe *p)
-> +{
-> +	return -ENODEV;
-> +}
-> +
-> +static inline int disarm_kprobe_ftrace(struct kprobe *p)
-> +{
-> +	return -ENODEV;
-> +}
->  #endif
->  
->  /* Arm a kprobe with text_mutex */
-> -- 
-> 2.11.0
-> 
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
