@@ -2,101 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B0423E404
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 00:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D2C23E4A6
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 01:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgHFWai (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Aug 2020 18:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S1726071AbgHFXin (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Aug 2020 19:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgHFWah (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Aug 2020 18:30:37 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EA6C061574;
-        Thu,  6 Aug 2020 15:30:37 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u128so594910pfb.6;
-        Thu, 06 Aug 2020 15:30:37 -0700 (PDT)
+        with ESMTP id S1726232AbgHFXil (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Aug 2020 19:38:41 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0BCC061574;
+        Thu,  6 Aug 2020 16:38:40 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id i19so52335lfj.8;
+        Thu, 06 Aug 2020 16:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KnnJya1ORtSHjl6qbhImfMS9/fnJjTPTj+DIW8mJNx0=;
-        b=qGHiQxdxuQPcaNxo10vg79iKeWKFKHYkJyAnKe36hOhqyM2DevGwpeBm6rbz+5iliq
-         um9Iaeo/0Wacd5A2ZIO7+3HZvutXACFL0B/xzUywGIDvuZyFg9s8lZaAUdhLDwYiXzj1
-         MDyPO4j3xSfKpTjb7wExJDIiFSQgt+fo0R5nCqEUGqWwz/yGY41LY6w+q8tUQICJrwxF
-         QC1ubBV9YFAkzgiL0YAhsADnkqQ6x9Vc6hHw93L/flWoUPtG3I2rD8G4TJlf4xjvXNA8
-         kY8I1+TBijz6nCLYJaV9aGA62dh6Wswz9wnzykIAD8HkaJJ9+iXcD7awy9JnupJE23uW
-         mOMg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OnX+S8e9CtdqQb27O1/ShAEDqRpxp8eT6nDYtjPBYJ0=;
+        b=UwlCZ12Aa2r9XN5ht1C70xfMzC9+zIKKNjT6UEp3BDjvGflNg8QFqMq/5MKRFWetCb
+         X8N+07RaSQpl1UE/C4xmU9c7lIQQ48gSQUpwhqCCJRGruEOvS5K4DP8HNFxl07PxzGW4
+         CWW/zKnb+kj9a/iTC8wqdcVk3IYWwW2aKdRdyj0YqQIf5NwF8BueMOKqqATkD67EPcBW
+         /rWxq9ti84BHmmZDKdPl+IKri+ropK0tX1T2f6e7H8CrRDHauaz73g4rWC0Lxei5tXKI
+         m1jdTho6UdmjS2GM+k3z9YnQwLjWzv2kx+9HNxUxNTOXT0Kx9vj8SqUmrJ4Kp1+m7Wk/
+         OdKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KnnJya1ORtSHjl6qbhImfMS9/fnJjTPTj+DIW8mJNx0=;
-        b=VBdoqYBk7abpfLRpjqbKJgcxUIRwJMiBY2GdCD8vrZkoNXHm8G6HXUC4L+Dr3X2pOc
-         Tnse+JX11m41ZPHPqda86CQ/jz9SStRs2hFckpzVCYjGWInBJA0CmxVjwIYRr7Kc6++Y
-         6/IdJyR3cSy1DlezkkdacBLpE6/T4XpO0KWdhMtewm7Li9OM5MYhlqscA0HT+8w3nCAB
-         g8G8fyUhQloTGOAUim76EKDgCGo+/C3EbegCM5jzfm3MGpFutmrGAnxB23SImi7ODPuk
-         zEZ3rh93yxbHw8ZbV8lm3Nc21wfSOMoQmEtxw2YyoIxy4SptgF8qwkGWfEToDxEsFY3d
-         XU7A==
-X-Gm-Message-State: AOAM5334+Aa+ItQO8F6zJyQpAFpGBF8aVos+DT4LQhvKaJP/117rL76S
-        aKDDDYD8X55z6jQLAZvf7sY=
-X-Google-Smtp-Source: ABdhPJyQQbM+5WhBnZs4tZngJ2DkitApFkhScuJU5+9mATofajDRZXbJCONRF0YABzrkeOXefveHtQ==
-X-Received: by 2002:a65:5c47:: with SMTP id v7mr8883750pgr.56.1596753037005;
-        Thu, 06 Aug 2020 15:30:37 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2a06])
-        by smtp.gmail.com with ESMTPSA id lk16sm8129439pjb.13.2020.08.06.15.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Aug 2020 15:30:36 -0700 (PDT)
-Date:   Thu, 6 Aug 2020 15:30:33 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [RFC PATCH bpf-next 7/9] selftests/bpf: add CO-RE relo test for
- TYPE_ID_LOCAL/TYPE_ID_TARGET
-Message-ID: <20200806223033.m5fe4cppxz5t3n54@ast-mbp.dhcp.thefacebook.com>
-References: <20200804182409.1512434-1-andriin@fb.com>
- <20200804182409.1512434-8-andriin@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OnX+S8e9CtdqQb27O1/ShAEDqRpxp8eT6nDYtjPBYJ0=;
+        b=gf+qk2lfxFFtT42E9EwDnWQfwW41QIkvm+kVi4D9U8ovydEJ/zgoi4BqyUelHcGd4Z
+         msJBQGlllRJqQ0HlHLEU1bvFl2sTypBSIa8mFBkZH2WSKr5J13r6DwbLPuCMC6nzlETH
+         S8IgwBIvr+jlxTsj75xaeGAS4xA+nXdeNbZpgN6RGEPV7mV4KPFTj7QbT4ELmU9jxeUL
+         CF2H0WzK4cEpubFpcuTM+Z9kxd7OuwGU7u5Y6pnPHgQvij3XSxqPE/OUpymliK970XDe
+         P06739xEhPcEhpHuWfOthUzE5AFvHPP2bU0irz9RB1ggFrwfjTxZ0A3XxrdMkEeIoG0N
+         tH7g==
+X-Gm-Message-State: AOAM533cJhfPdEWB0W8ixFvxNep5XE1O/KpVCl1NjdRyc/CbNAtxezEG
+        hHgYM59Atck9QaZH/XgFMIcRODNHvrgFAnOdAK0lqw==
+X-Google-Smtp-Source: ABdhPJztYgRuihWNNi695LwHa2l3I/+05hzEwy2xOAE6XX0MnBzm7wpOPmT4Kmy9soq6OYH0RDJxiArnFE4nnsWBrZY=
+X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr4977239lfs.8.1596757119303;
+ Thu, 06 Aug 2020 16:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804182409.1512434-8-andriin@fb.com>
+References: <20200805004757.2960750-1-andriin@fb.com> <5f2ba2b6a22ac_291f2b27e574e5b885@john-XPS-13-9370.notmuch>
+In-Reply-To: <5f2ba2b6a22ac_291f2b27e574e5b885@john-XPS-13-9370.notmuch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Aug 2020 16:38:27 -0700
+Message-ID: <CAADnVQJPqWKS7-4f2G=-h2D1OwLZg1C1SRggXuYXg0rEg9JCBg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: prevent runqslower from racing on
+ building bpftool
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 11:24:07AM -0700, Andrii Nakryiko wrote:
-> +
-> +SEC("raw_tracepoint/sys_enter")
-> +int test_core_type_id(void *ctx)
-> +{
-> +	struct core_reloc_type_id_output *out = (void *)&data.out;
-> +
-> +	out->local_anon_struct = bpf_core_type_id_local(struct { int marker_field; });
-> +	out->local_anon_union = bpf_core_type_id_local(union { int marker_field; });
-> +	out->local_anon_enum = bpf_core_type_id_local(enum { MARKER_ENUM_VAL = 123 });
-> +	out->local_anon_func_proto_ptr = bpf_core_type_id_local(_Bool(*)(int));
-> +	out->local_anon_void_ptr = bpf_core_type_id_local(void *);
-> +	out->local_anon_arr = bpf_core_type_id_local(_Bool[47]);
-> +
-> +	out->local_struct = bpf_core_type_id_local(struct a_struct);
-> +	out->local_union = bpf_core_type_id_local(union a_union);
-> +	out->local_enum = bpf_core_type_id_local(enum an_enum);
-> +	out->local_int = bpf_core_type_id_local(int);
-> +	out->local_struct_typedef = bpf_core_type_id_local(named_struct_typedef);
-> +	out->local_func_proto_typedef = bpf_core_type_id_local(func_proto_typedef);
-> +	out->local_arr_typedef = bpf_core_type_id_local(arr_typedef);
-> +
-> +	out->targ_struct = bpf_core_type_id_kernel(struct a_struct);
-> +	out->targ_union = bpf_core_type_id_kernel(union a_union);
-> +	out->targ_enum = bpf_core_type_id_kernel(enum an_enum);
-> +	out->targ_int = bpf_core_type_id_kernel(int);
-> +	out->targ_struct_typedef = bpf_core_type_id_kernel(named_struct_typedef);
-> +	out->targ_func_proto_typedef = bpf_core_type_id_kernel(func_proto_typedef);
-> +	out->targ_arr_typedef = bpf_core_type_id_kernel(arr_typedef);
+On Wed, Aug 5, 2020 at 11:27 PM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > runqslower's Makefile is building/installing bpftool into
+> > $(OUTPUT)/sbin/bpftool, which coincides with $(DEFAULT_BPFTOOL). In practice
+> > this means that often when building selftests from scratch (after `make
+> > clean`), selftests are racing with runqslower to simultaneously build bpftool
+> > and one of the two processes fail due to file being busy. Prevent this race by
+> > explicitly order-depending on $(BPFTOOL_DEFAULT).
+> >
+> > Fixes: a2c9652f751e ("selftests: Refactor build to remove tools/lib/bpf from include path")
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-bpf_core_type_id_kernel() returns btf_id of the type in vmlinux BTF or zero,
-so what is the point of above tests? All targ_* will be zero.
-Should the test find a type that actually exists in the kernel?
-What am I missing?
+Applied. Thanks
