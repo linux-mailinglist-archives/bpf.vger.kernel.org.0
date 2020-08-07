@@ -2,64 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0459123E88A
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 10:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD8D23E8E8
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 10:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726577AbgHGIGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Aug 2020 04:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
+        id S1726983AbgHGIaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Aug 2020 04:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgHGIGt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 04:06:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094A7C061574;
-        Fri,  7 Aug 2020 01:06:48 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id r4so708840pls.2;
-        Fri, 07 Aug 2020 01:06:48 -0700 (PDT)
+        with ESMTP id S1726940AbgHGIaY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Aug 2020 04:30:24 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F8C061574;
+        Fri,  7 Aug 2020 01:30:24 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id i92so5918135pje.0;
+        Fri, 07 Aug 2020 01:30:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:subject:from:in-reply-to:date:cc
          :content-transfer-encoding:message-id:references:to;
-        bh=4XLPHo6ufXjqCRDRX6dlamDg8saN7x8jg/SbIqu516I=;
-        b=fNAJf5Jqo/OU8MSnbks8APaPlFcPTPed8hIm+RF5uEP0MVlFRE51bceB9XUr97PQOy
-         t6JhhXMLqUxUYPRhiV5Yk1xKUw8Ize2YilArRhUK6PbX1zZxbzxL7mGxtkTUFatf3xll
-         KoUvM2lP7agOvM+akXjePCzMdgYg/X+PlOlZdn5eDXtURGPCItCgGqfuIlBTNuDfJj3D
-         7TnsxcrRYWps8jln59GtRWMo2qM6VyQ3yARXqFDFYvVUg6OCWZiUVYueGX8WkkjGLkoE
-         YDa3/nZKhZx3hCu8N6Xb+GIvHiJU4EuLktAM83d5WbjLPv6M4CELkaqtZp66hsIXbo3S
-         szYg==
+        bh=EVtHDL3zK/M7ogfJLTnbqUj/+R1pnCu3LmpkYrXn7WI=;
+        b=Us1H8RGxl87Uo//uGLeMoVDoUUO7W76DnC/ipQAIIFV8i6WnVTplLysjyIoSaotcVm
+         BinZfOIVf1SRbwpyuGfHnCC2LizudABFRJX3N/GbgqBZtjeXnKFzd9bp1NUfEkfmSDD3
+         484fJybh/iCN6DzYi3W3P6RgJTGDrpTair67iLqu6WU6aZOG3llDGadYM2ik0OS9xXTg
+         o2ro+Txb4QQutHAp564nZWJId0a8eq35hIKo6/bilITKuDiWYMpcA8xN7ccHTPJgzbYV
+         omIq5Wbf2uOdQsV5oqHHgzPYhYsYKJnUZNZuYBxIOGMpNGMbHXTP+Z5H3B64Sj3Eofdk
+         benw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
          :content-transfer-encoding:message-id:references:to;
-        bh=4XLPHo6ufXjqCRDRX6dlamDg8saN7x8jg/SbIqu516I=;
-        b=NCAYE6lSxKBRLO6zOv5J6mkTdGQdXNlbC6HeZNbfRbquge0jT4BGShEqZ7SdK21zc7
-         lwsQ6MKft24vPucFHTsvErlXKCWyjOkNgNeVuyfnkevXzcwieVb0odAbDytnHUx0RMEt
-         xZiYKi34lmI7Fs9kL4W8AST8Njj/JWzpZjnDwUs9DSNicAB2ATUU32D8rvuVPme1okHL
-         vYep5nhdAw859gfosG4mcpwyK4TDFsoHRM0kCV2a7vqQdcu4BLbvHb3thhp0QLfBy0ID
-         4c9V3cNz0SS34mmC32fZqLcCISwdXEy73JRW4A/BjtTieGh5fOVpu1crp5yX2K3yoKDp
-         jMfQ==
-X-Gm-Message-State: AOAM533sCNv332pGFJ7Pejd1eeneV50V8NOzpLxUKgl/UE9whwyNZaUt
-        Kg7CDneQWxz/Z4h2FX4Htgc=
-X-Google-Smtp-Source: ABdhPJxui7Oprix2e/G48+E3w+lKpjo8L5GpoGRIpjJb1/SpBdQvuTty/P4PmydhlX0r3jPrBRzFkg==
-X-Received: by 2002:a17:902:9f85:: with SMTP id g5mr11035469plq.13.1596787608321;
-        Fri, 07 Aug 2020 01:06:48 -0700 (PDT)
+        bh=EVtHDL3zK/M7ogfJLTnbqUj/+R1pnCu3LmpkYrXn7WI=;
+        b=qUzdQDngPUU7epxDd07zFoyof+rPhPaYLclKpuCwh2W9il+0plNWpOTIG3M36xGDJX
+         UQfcvFrZXXp0CWGUJFCDr3E3S9vclBmLqVmrN8GKve7LjfuzibhBAiIMbkl/kTxLMziV
+         hlCZrFhmOpq8qQzBHYWRoPeQXRyBX/s8qLsUm9PoruegJyZElCdSmOdMjyarWGAIq3kY
+         9p2q2+hnUJCXchV+HvyobleIiO/8z0Nnsmk0sIotbVzYHUn44z6Jfv4TEjoofCOBUjDO
+         leo/PHi0M64tlC4X5E6YBfw3X+UWjLH23gTBVqwf/Qt3aIOT9xQ5h8n9DmqI/egpOfeo
+         HfHw==
+X-Gm-Message-State: AOAM5303kYHKOWcRHGxNh5ScxJT+GhsFcBUBvYgT1Nj0Zms/xToxJ3nl
+        Yw+TKTy7HLfQxfOupIMd4Jg=
+X-Google-Smtp-Source: ABdhPJz5ThbGz5vV2hquuWQrvlmTQ+agJ5HdSfWVCMQTldu98q9WqTSO342EMngzNRtjvHt46p9kXQ==
+X-Received: by 2002:a17:902:8b85:: with SMTP id ay5mr10806177plb.162.1596789024095;
+        Fri, 07 Aug 2020 01:30:24 -0700 (PDT)
 Received: from [192.168.97.34] (p7925058-ipngn38401marunouchi.tokyo.ocn.ne.jp. [122.16.223.58])
-        by smtp.gmail.com with ESMTPSA id b13sm11307575pgd.36.2020.08.07.01.06.43
+        by smtp.gmail.com with ESMTPSA id x66sm10585855pgb.12.2020.08.07.01.30.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 Aug 2020 01:06:47 -0700 (PDT)
+        Fri, 07 Aug 2020 01:30:23 -0700 (PDT)
 Content-Type: text/plain;
         charset=utf-8
 Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.15\))
-Subject: Re: [RFC PATCH bpf-next 2/3] bpf: Add helper to do forwarding lookups
- in kernel FDB table
+Subject: Re: [RFC PATCH bpf-next 0/3] Add a new bpf helper for FDB lookup
 From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-In-Reply-To: <e92455ce-3a3f-7c52-1388-da40e8ceefd0@gmail.com>
-Date:   Fri, 7 Aug 2020 17:06:41 +0900
+In-Reply-To: <8eda2f23-f526-bd56-b6ac-0d7ae82444b5@gmail.com>
+Date:   Fri, 7 Aug 2020 17:30:16 +0900
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -67,16 +65,17 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         KP Singh <kpsingh@chromium.org>,
         Roopa Prabhu <roopa@cumulusnetworks.com>,
         Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, bpf@vger.kernel.org
+        David Ahern <dsahern@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        bridge@lists.linux-foundation.org, bpf <bpf@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <3B486A33-7A46-436A-A563-80F842A16F23@gmail.com>
+Message-Id: <901DF60C-F4DD-4125-80D6-128C1764424F@gmail.com>
 References: <1596170660-5582-1-git-send-email-komachi.yoshiki@gmail.com>
- <1596170660-5582-3-git-send-email-komachi.yoshiki@gmail.com>
- <5970d82b-3bb9-c78f-c53a-8a1c95a1fad7@gmail.com>
- <F99B20F3-4F88-4AFC-9DF8-B32EFD417785@gmail.com>
- <e92455ce-3a3f-7c52-1388-da40e8ceefd0@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
+ <5f2492aedba05_54fa2b1d9fe285b42d@john-XPS-13-9370.notmuch>
+ <E2A7CC68-9235-4E97-9532-66D61A6B8965@gmail.com>
+ <8eda2f23-f526-bd56-b6ac-0d7ae82444b5@gmail.com>
+To:     David Ahern <dsahern@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
 X-Mailer: Apple Mail (2.3445.104.15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -84,38 +83,35 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-> 2020/08/06 1:38=E3=80=81David Ahern <dsahern@gmail.com>=E3=81=AE=E3=83=A1=
+> 2020/08/06 1:36=E3=80=81David Ahern <dsahern@gmail.com>=E3=81=AE=E3=83=A1=
 =E3=83=BC=E3=83=AB:
 >=20
-> On 8/4/20 5:27 AM, Yoshiki Komachi wrote:
+> On 8/5/20 4:26 AM, Yoshiki Komachi wrote:
+>>>=20
+>>> Just to clarify for myself. I expect that with just the helpers here
+>>> we should only expect static configurations to work, e.g. any =
+learning
+>>> and/or aging is not likely to work if we do redirects in the XDP =
+path.
 >>=20
->> I guess that no build errors will occur because the API is allowed =
-when
->> CONFIG_BRIDGE is enabled.
+>> As you described above, learning and aging don=E2=80=99t work at this =
+point.=20
 >>=20
->> I successfully build my kernel applying this patch, and I don=E2=80=99t=
- receive any
->> messages from build robots for now.
+>> IMO, another helper for learning will be required to fill the =
+requirements.
+>> I guess that the helper will enable us to use the aging feature as =
+well
+>> because the aging is the functionality of bridge fdb.
 >=20
-> If CONFIG_BRIDGE is a module, build should fail: filter.c is built-in
-> trying to access a symbol from module.
+> One option is to have a flag that bumps the ageing on successful =
+lookup
+> and do that in 1 call. You will already have access to the fdb entry.
 
-When I tried building my kernel with CONFIG_BRIDGE set as a module, I =
-got
-the following error as you pointed out:
-
-    ld: net/core/filter.o: in function `____bpf_xdp_fdb_lookup':
-    /root/bpf-next/net/core/filter.c:5108: undefined reference to =
-`br_fdb_find_port_xdp'
-
-It may be necessary to fix it to support kernels built with =
-CONFIG_BRIDGE set
-as a mfodule, so let me make sure if it should be called via netdev ops =
-to get
-destination port in a bridge again.
+It seems like a good idea to me! I guess that the flags in my suggested =
+bpf
+helper for the FDB lookup will be useful for such a case.
 
 Thanks & Best regards,
-
 
 =E2=80=94
 Yoshiki Komachi
