@@ -2,80 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8160723E64F
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 05:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ED723E778
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 08:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgHGDbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Aug 2020 23:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgHGDbv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Aug 2020 23:31:51 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B913C061574;
-        Thu,  6 Aug 2020 20:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=5oaHILrKKiQXWxtufhV2TM/f3fdYYD5OF4lGKqrdVeE=; b=dlCyQsfIx2BwAw6u3rSP80ISP0
-        E2cjisSVeJ2BogFCPmAbrfNG598MTACmDwmS3EWfwwX4U0L4NRBCETK0WM3fAyps+roo2hGIhlZM1
-        Tgh/+MvM8gXkig6mpMQ2R7gjUnyYK6E1u7lOFqXQF/wXXNciDHof+o6Cu05I453d3hidEJt70h/Zu
-        6JZz59yKqpzlAzzg24+YK3k3CzuQbYlSrLYgUZND+m6Y7EZ3jPtmatEh6Il/A8HaknmyMZnfv6heB
-        9qFfurxf0DxJJRRYzx3TRhYjjnXsKc2qR/meTOO+fJHXJ6aV8EizE0t4NBbObnIa2oZkFRMoZUwnj
-        5Oe0vPww==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k3t6h-0006lQ-LG; Fri, 07 Aug 2020 03:31:48 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] kernel: bpf: delete repeated words in comments
-Date:   Thu,  6 Aug 2020 20:31:41 -0700
-Message-Id: <20200807033141.10437-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1725872AbgHGGyg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 7 Aug 2020 02:54:36 -0400
+Received: from [125.140.134.231] ([125.140.134.231]:63935 "EHLO
+        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725805AbgHGGyg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Aug 2020 02:54:36 -0400
+Received: from [185.191.231.247] ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
+         Fri, 7 Aug 2020 15:54:26 +0900
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: INVESTMENT
+To:     bpf@vger.kernel.org
+From:   campbellclark016@gmail.com
+Date:   Thu, 06 Aug 2020 23:54:29 -0700
+Reply-To: campbell.clark24@yahoo.com
+Message-ID: <WIN-DAONO245HJFmNjT00acc38d@WIN-DAONO245HJF>
+X-OriginalArrivalTime: 07 Aug 2020 06:54:26.0875 (UTC) FILETIME=[974C40B0:01D66C87]
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Drop repeated words in kernel/bpf/.
-{has, the}
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
----
- kernel/bpf/core.c     |    2 +-
- kernel/bpf/verifier.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Good day,
 
---- linux-next-20200806.orig/kernel/bpf/core.c
-+++ linux-next-20200806/kernel/bpf/core.c
-@@ -1966,7 +1966,7 @@ void bpf_prog_array_delete_safe(struct b
-  * @index: the index of the program to replace
-  *
-  * Skips over dummy programs, by not counting them, when calculating
-- * the the position of the program to replace.
-+ * the position of the program to replace.
-  *
-  * Return:
-  * * 0		- Success
---- linux-next-20200806.orig/kernel/bpf/verifier.c
-+++ linux-next-20200806/kernel/bpf/verifier.c
-@@ -8294,7 +8294,7 @@ static bool stacksafe(struct bpf_func_st
- 		if (old->stack[spi].slot_type[i % BPF_REG_SIZE] !=
- 		    cur->stack[spi].slot_type[i % BPF_REG_SIZE])
- 			/* Ex: old explored (safe) state has STACK_SPILL in
--			 * this stack slot, but current has has STACK_MISC ->
-+			 * this stack slot, but current has STACK_MISC ->
- 			 * this verifier states are not equivalent,
- 			 * return false to continue verification of this path
- 			 */
+ You were recommended by a mutual associate. I write you regarding an investment of bearer bonds I made on behalf of a client. The investment was made in 2009 and has been under my management. The said investor is deceased. The window is now available to assign these bonds to any name or company of my choice. I have all the necessary information to achieve this within 10 banking days. The total value of the bond is 100 million pounds sterling, in a million pound denominations. If you can handle this, do contact me at your earliest convenience via my email campbell.clark24@yahoo.com So we can discuss the finer details
+
+
+Thank you
+
+
+Mr Campbell Clark
