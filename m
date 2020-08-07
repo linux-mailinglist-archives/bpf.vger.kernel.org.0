@@ -2,94 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AED23F1D6
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 19:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9216B23F1E4
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 19:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgHGRUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Aug 2020 13:20:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:60146 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgHGRUc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:20:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C8641FB;
-        Fri,  7 Aug 2020 10:20:31 -0700 (PDT)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A05A13F7D7;
-        Fri,  7 Aug 2020 10:20:28 -0700 (PDT)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, Jianlin.Lv@arm.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: fix segmentation fault of test_progs
-Date:   Sat,  8 Aug 2020 01:20:16 +0800
-Message-Id: <20200807172016.150952-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200731061600.18344-1-Jianlin.Lv@arm.com>
-References: <20200731061600.18344-1-Jianlin.Lv@arm.com>
+        id S1725934AbgHGRYP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Aug 2020 13:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgHGRYO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Aug 2020 13:24:14 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08641C061756
+        for <bpf@vger.kernel.org>; Fri,  7 Aug 2020 10:24:13 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id l4so2824915ejd.13
+        for <bpf@vger.kernel.org>; Fri, 07 Aug 2020 10:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eyQgcKKa6sa8KC5xVdsdC/+RP8gsTOEmgKv3cyYA1MY=;
+        b=RburP0850JrB1ImGEcqvCCrS0FPCzgg8OzjYrP/lLOpPt1c790kxesPUc0C7v69Ey2
+         sFMmbGQMqDnvOSBxAOOOVxWaS5++MIiU1Jxf6OFavQ6CeA5LqnXlsAGMGfuY1dvlKE/X
+         534vpIRsy9LmEDu8kLzHSCXZtuBUtOyLxEd7/L+/emEA6vu4lLPEg4W6Zq1cnNtWqN+z
+         qnsD8iaqmn2lwh7OXOeeqRFKk/BRLoj+oOwcQ0Nh6ziqePbnbszAJEIfYzoZ1QS1GB1P
+         gTDvuxe42jwAE2DaRfe8WHAkaD+JsUxewtxx6asZsFf7Qcd1s5BKe7tntPNm6aVK5SVR
+         KnZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eyQgcKKa6sa8KC5xVdsdC/+RP8gsTOEmgKv3cyYA1MY=;
+        b=Z82JWUdjYaCQqb405WMUlHhP2FDlTv3uNDTTtQCj+AQ7TYX3kU1Dj+JdYKu9/gDcfS
+         PMIFeR/chfjEk+vgXq8jicmHTo86Jr+t7o/3ovP/m6D7MZpA06CqSs10lRf9/RuN09ri
+         JmvjjaFmhsddZhz/A5YmZ/2iL5ka9CgGGhusm1gcRHeE0NlsfKu5GMhJIFo0zDqwisMj
+         /Yw8/qR2g5M+js4EPY/DEyUxbVrDfzU0CUUj+uNKNnUIrutcJSojgcBu6lD7GiH4UsSN
+         McX45x5h+9hY74RrVofyJHmEzRKyDQ4u7zRWFM3nhPVhpkPO897XHtadmedQDyB0oJGo
+         K3WA==
+X-Gm-Message-State: AOAM530l62frPIv8K5iSLkwQSYNfCn3/cDZTVOB2PlILEy9tH4NLKnkq
+        rNPfulCsTMm8i1MtNbr6xrm0zg==
+X-Google-Smtp-Source: ABdhPJwd0kaCd8LoGMztjNARsWWNmMLRIR5iHEiPUMWU+JMxTyu36tKm/5HGQGV58Ickq2qC8g5W5w==
+X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr9967342eja.222.1596821049838;
+        Fri, 07 Aug 2020 10:24:09 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id e8sm5704686edy.68.2020.08.07.10.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Aug 2020 10:24:09 -0700 (PDT)
+Date:   Fri, 7 Aug 2020 19:23:53 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jakov Petrina <jakov.petrina@sartura.hr>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Jakov Smolic <jakov.smolic@sartura.hr>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
+Message-ID: <20200807172353.GA624812@myrica>
+References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_progs reports the segmentation fault as below
+Hi,
 
-$ sudo ./test_progs -t mmap --verbose
-test_mmap:PASS:skel_open_and_load 0 nsec
-......
-test_mmap:PASS:adv_mmap1 0 nsec
-test_mmap:PASS:adv_mmap2 0 nsec
-test_mmap:PASS:adv_mmap3 0 nsec
-test_mmap:PASS:adv_mmap4 0 nsec
-Segmentation fault
+[Adding the linux-arm-kernel list on Cc]
 
-This issue was triggered because mmap() and munmap() used inconsistent
-length parameters; mmap() creates a new mapping of 3*page_size, but the
-length parameter set in the subsequent re-map and munmap() functions is
-4*page_size; this leads to the destruction of the process space.
+On Fri, Aug 07, 2020 at 04:20:58PM +0200, Jakov Petrina wrote:
+> Hi everyone,
+> 
+> recently we have begun extensive research into eBPF and related
+> technologies. Seeking an easier development process, we have switched over
+> to using the eBPF CO-RE [0] approach internally which has enabled us to
+> simplify most aspects of eBPF development, especially those related to
+> cross-compilation.
+> 
+> However, as part of these efforts we have stumbled upon several problems
+> that we feel would benefit from a community discussion where we may share
+> our solutions and discuss alternatives moving forward.
+> 
+> As a reference point, we have started researching and modifying several eBPF
+> CO-RE samples that have been developed or migrated from existing `bcc`
+> tooling. Most notable examples are those present in `bcc`'s `libbpf-tools`
+> directory [1]. Some of these samples have just recently been converted to
+> respective eBPF CO-RE variants, of which the `tcpconnect` tracing sample has
+> proven to be very interesting.
+> 
+> First showstopper for cross-compiling aforementioned example on the ARM
+> 32-bit platform has been with regards to generation of the required
+> `vmlinux.h` kernel header from the BTF information. More specifically, our
+> initial approach to have e.g. a compilation target dependency which would
+> invoke `bpftool` at configure time was not appropriate due to several
+> issues: a) CO-RE requires host kernel to have been compiled in such a way to
+> expose BTF information which may not available, and b) the generated
+> `vmlinux.h` was actually architecture-specific.
+> 
+> The second point proved interesting because `tcpconnect` makes use of the
+> `BPF_KPROBE` and `BPF_KRETPROBE` macros, which pass `struct pt_regs *ctx` as
+> the first function parameter. The `pt_regs` structure is defined by the
+> kernel and is architecture-specific. Since `libbpf` does have
+> architecture-specific conditionals, pairing it with an "invalid" `vmlinux.h`
+> resulted in cross-compilation failure as `libbpf` provided macros that work
+> with ARM `pt_regs`, and `vmlinux.h` had an x86 `pt_regs` definition. To
+> resolve this issue, we have resorted to including pre-generated
+> `<arch>_vmlinux.h` files in our CO-RE build system.
+> 
+> However, there are certainly drawbacks to this approach: a) (relatively)
+> large file size of the generated headers, b) regular maintenance to
+> re-generate the header files for various architectures and kernel versions,
+> and c) incompatible definitions being generated, to name a few. This last
+> point relates to the the fact that our `aarch64`/`arm64` kernel generates
+> the following definition using `bpftool`, which has resulted in compilation
+> failure:
+> 
+> ```
+> typedef __Poly8_t poly8x16_t[16];
+> ```
+> 
+> AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
+> have opted to comment out this line as there was no additional `poly8x16_t`
+> usage in the header file.
 
-Another issue is that when unmap the second page fails, the length
-parameter to delete tmp1 mappings should be 3*page_size.
+It looks like this "__Poly8_t" type is internal to GCC (provided in
+arm_neon.h) and clang has its own internals. I managed to reproduce this
+with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
+the moment. Maybe libbpf should generate defines to translate these
+intrinsics between clang and gcc? Not very elegant. I'll take another
+look next week.
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
- tools/testing/selftests/bpf/prog_tests/mmap.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Given various issues we have encountered so far (among which is a kernel
+> panic/crash on a specific device), additional input and feedback regarding
+> cross-compilation of the eBPF utilities would be greatly appreciated.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-index 43d0b5578f46..2070cfe19cac 100644
---- a/tools/testing/selftests/bpf/prog_tests/mmap.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -192,7 +192,7 @@ void test_mmap(void)
- 	/* unmap second page: pages 1, 3 mapped */
- 	err = munmap(tmp1 + page_size, page_size);
- 	if (CHECK(err, "adv_mmap2", "errno %d\n", errno)) {
--		munmap(tmp1, map_sz);
-+		munmap(tmp1, 3 * page_size);
- 		goto cleanup;
- 	}
- 
-@@ -207,8 +207,8 @@ void test_mmap(void)
- 	CHECK(tmp1 + page_size != tmp2, "adv_mmap4",
- 	      "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
- 
--	/* re-map all 4 pages */
--	tmp2 = mmap(tmp1, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
-+	/* re-map all 3 pages */
-+	tmp2 = mmap(tmp1, 3 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
- 		    data_map_fd, 0);
- 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap5", "errno %d\n", errno)) {
- 		munmap(tmp1, 3 * page_size); /* unmap page 1 */
-@@ -226,7 +226,7 @@ void test_mmap(void)
- 	CHECK_FAIL(map_data->val[2] != 321);
- 	CHECK_FAIL(map_data->val[far] != 3 * 321);
- 
--	munmap(tmp2, 4 * page_size);
-+	munmap(tmp2, 3 * page_size);
- 
- 	/* map all 4 pages, but with pg_off=1 page, should fail */
- 	tmp1 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
--- 
-2.17.1
+I don't know if there is a room for improvement regarding your a) and b)
+points, as I think the added complexity is inherent to cross-building. But
+kernel crashes definitely need to be fixed, as well as the above problem.
 
+Thanks,
+Jean
