@@ -2,145 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9216B23F1E4
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 19:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CB223F1E8
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 19:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgHGRYP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Aug 2020 13:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgHGRYO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:24:14 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08641C061756
-        for <bpf@vger.kernel.org>; Fri,  7 Aug 2020 10:24:13 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id l4so2824915ejd.13
-        for <bpf@vger.kernel.org>; Fri, 07 Aug 2020 10:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eyQgcKKa6sa8KC5xVdsdC/+RP8gsTOEmgKv3cyYA1MY=;
-        b=RburP0850JrB1ImGEcqvCCrS0FPCzgg8OzjYrP/lLOpPt1c790kxesPUc0C7v69Ey2
-         sFMmbGQMqDnvOSBxAOOOVxWaS5++MIiU1Jxf6OFavQ6CeA5LqnXlsAGMGfuY1dvlKE/X
-         534vpIRsy9LmEDu8kLzHSCXZtuBUtOyLxEd7/L+/emEA6vu4lLPEg4W6Zq1cnNtWqN+z
-         qnsD8iaqmn2lwh7OXOeeqRFKk/BRLoj+oOwcQ0Nh6ziqePbnbszAJEIfYzoZ1QS1GB1P
-         gTDvuxe42jwAE2DaRfe8WHAkaD+JsUxewtxx6asZsFf7Qcd1s5BKe7tntPNm6aVK5SVR
-         KnZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eyQgcKKa6sa8KC5xVdsdC/+RP8gsTOEmgKv3cyYA1MY=;
-        b=Z82JWUdjYaCQqb405WMUlHhP2FDlTv3uNDTTtQCj+AQ7TYX3kU1Dj+JdYKu9/gDcfS
-         PMIFeR/chfjEk+vgXq8jicmHTo86Jr+t7o/3ovP/m6D7MZpA06CqSs10lRf9/RuN09ri
-         JmvjjaFmhsddZhz/A5YmZ/2iL5ka9CgGGhusm1gcRHeE0NlsfKu5GMhJIFo0zDqwisMj
-         /Yw8/qR2g5M+js4EPY/DEyUxbVrDfzU0CUUj+uNKNnUIrutcJSojgcBu6lD7GiH4UsSN
-         McX45x5h+9hY74RrVofyJHmEzRKyDQ4u7zRWFM3nhPVhpkPO897XHtadmedQDyB0oJGo
-         K3WA==
-X-Gm-Message-State: AOAM530l62frPIv8K5iSLkwQSYNfCn3/cDZTVOB2PlILEy9tH4NLKnkq
-        rNPfulCsTMm8i1MtNbr6xrm0zg==
-X-Google-Smtp-Source: ABdhPJwd0kaCd8LoGMztjNARsWWNmMLRIR5iHEiPUMWU+JMxTyu36tKm/5HGQGV58Ickq2qC8g5W5w==
-X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr9967342eja.222.1596821049838;
-        Fri, 07 Aug 2020 10:24:09 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id e8sm5704686edy.68.2020.08.07.10.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 10:24:09 -0700 (PDT)
-Date:   Fri, 7 Aug 2020 19:23:53 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jakov Petrina <jakov.petrina@sartura.hr>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
-Message-ID: <20200807172353.GA624812@myrica>
-References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
+        id S1726058AbgHGR0B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Aug 2020 13:26:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38729 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725900AbgHGR0A (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 Aug 2020 13:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596821155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1OKvA0TNCXh+ztrd8AvHmGOv+UMmuzg53pWAJG5mrDk=;
+        b=Cm3GBEGBiE007tJbP3IsHWTo9YIkLR6kw8fV1tr5+IcHmTpjEh6DuaBEACDOSGByrqgcQz
+        4ZgX24F/PgvyRkxHKpPEYheIYJ4quoixtoE8nLW0VeUdy5NnCk4wRv0gUNaLBGHOPJyj3k
+        cO7DvoSah2WFcAyNLP9+7iLWqUPPIRI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-8eQRjAnaMeqj5qKSf_ezAQ-1; Fri, 07 Aug 2020 13:25:51 -0400
+X-MC-Unique: 8eQRjAnaMeqj5qKSf_ezAQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66803107BA68;
+        Fri,  7 Aug 2020 17:25:49 +0000 (UTC)
+Received: from krava (unknown [10.40.193.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A1B2D8AC13;
+        Fri,  7 Aug 2020 17:25:44 +0000 (UTC)
+Date:   Fri, 7 Aug 2020 19:25:43 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v10 bpf-next 00/14] bpf: Add d_path helper
+Message-ID: <20200807172543.GB561444@krava>
+References: <20200807094559.571260-1-jolsa@kernel.org>
+ <20200807163503.ytoej6qxsjuedty7@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
+In-Reply-To: <20200807163503.ytoej6qxsjuedty7@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Fri, Aug 07, 2020 at 09:35:03AM -0700, Alexei Starovoitov wrote:
+> On Fri, Aug 07, 2020 at 11:45:45AM +0200, Jiri Olsa wrote:
+> > hi,
+> > adding d_path helper function that returns full path for
+> > given 'struct path' object, which needs to be the kernel
+> > BTF 'path' object. The path is returned in buffer provided
+> > 'buf' of size 'sz' and is zero terminated.
+> > 
+> >   long bpf_d_path(struct path *path, char *buf, u32 sz);
+> > 
+> > The helper calls directly d_path function, so there's only
+> > limited set of function it can be called from.
+> > 
+> > The patchset also adds support to add set of BTF IDs for
+> > a helper to define functions that the helper is allowed
+> > to be called from.
+> > 
+> > Also available at:
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> >   bpf/d_path
+> > 
+> > v10 changes:
+> >   - added few acks
+> >   - returned long instead of int in bpf_d_path helper [Alexei]
+> >   - used local cnt variable in d_path test [Andrii]
+> >   - fixed tyo in d_path comment [Andrii]
+> >   - get rid of reg->off condition in check_func_arg [Andrii]
+> 
+> bpf-next is closed.
+> I still encourage developers to submit new features for review, but please tag
+> them as RFC, so the purpose is clear to both maintainers and authors.
 
-[Adding the linux-arm-kernel list on Cc]
+sry, did not know this was the rule
 
-On Fri, Aug 07, 2020 at 04:20:58PM +0200, Jakov Petrina wrote:
-> Hi everyone,
-> 
-> recently we have begun extensive research into eBPF and related
-> technologies. Seeking an easier development process, we have switched over
-> to using the eBPF CO-RE [0] approach internally which has enabled us to
-> simplify most aspects of eBPF development, especially those related to
-> cross-compilation.
-> 
-> However, as part of these efforts we have stumbled upon several problems
-> that we feel would benefit from a community discussion where we may share
-> our solutions and discuss alternatives moving forward.
-> 
-> As a reference point, we have started researching and modifying several eBPF
-> CO-RE samples that have been developed or migrated from existing `bcc`
-> tooling. Most notable examples are those present in `bcc`'s `libbpf-tools`
-> directory [1]. Some of these samples have just recently been converted to
-> respective eBPF CO-RE variants, of which the `tcpconnect` tracing sample has
-> proven to be very interesting.
-> 
-> First showstopper for cross-compiling aforementioned example on the ARM
-> 32-bit platform has been with regards to generation of the required
-> `vmlinux.h` kernel header from the BTF information. More specifically, our
-> initial approach to have e.g. a compilation target dependency which would
-> invoke `bpftool` at configure time was not appropriate due to several
-> issues: a) CO-RE requires host kernel to have been compiled in such a way to
-> expose BTF information which may not available, and b) the generated
-> `vmlinux.h` was actually architecture-specific.
-> 
-> The second point proved interesting because `tcpconnect` makes use of the
-> `BPF_KPROBE` and `BPF_KRETPROBE` macros, which pass `struct pt_regs *ctx` as
-> the first function parameter. The `pt_regs` structure is defined by the
-> kernel and is architecture-specific. Since `libbpf` does have
-> architecture-specific conditionals, pairing it with an "invalid" `vmlinux.h`
-> resulted in cross-compilation failure as `libbpf` provided macros that work
-> with ARM `pt_regs`, and `vmlinux.h` had an x86 `pt_regs` definition. To
-> resolve this issue, we have resorted to including pre-generated
-> `<arch>_vmlinux.h` files in our CO-RE build system.
-> 
-> However, there are certainly drawbacks to this approach: a) (relatively)
-> large file size of the generated headers, b) regular maintenance to
-> re-generate the header files for various architectures and kernel versions,
-> and c) incompatible definitions being generated, to name a few. This last
-> point relates to the the fact that our `aarch64`/`arm64` kernel generates
-> the following definition using `bpftool`, which has resulted in compilation
-> failure:
-> 
-> ```
-> typedef __Poly8_t poly8x16_t[16];
-> ```
-> 
-> AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
-> have opted to comment out this line as there was no additional `poly8x16_t`
-> usage in the header file.
+jirka
 
-It looks like this "__Poly8_t" type is internal to GCC (provided in
-arm_neon.h) and clang has its own internals. I managed to reproduce this
-with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
-the moment. Maybe libbpf should generate defines to translate these
-intrinsics between clang and gcc? Not very elegant. I'll take another
-look next week.
-
-> Given various issues we have encountered so far (among which is a kernel
-> panic/crash on a specific device), additional input and feedback regarding
-> cross-compilation of the eBPF utilities would be greatly appreciated.
-
-I don't know if there is a room for improvement regarding your a) and b)
-points, as I think the added complexity is inherent to cross-building. But
-kernel crashes definitely need to be fixed, as well as the above problem.
-
-Thanks,
-Jean
