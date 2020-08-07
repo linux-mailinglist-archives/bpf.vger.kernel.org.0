@@ -2,40 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ED723E778
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 08:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DE123E7CB
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 09:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgHGGyg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 7 Aug 2020 02:54:36 -0400
-Received: from [125.140.134.231] ([125.140.134.231]:63935 "EHLO
-        WIN-DAONO245HJF" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725805AbgHGGyg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 02:54:36 -0400
-Received: from [185.191.231.247] ([185.191.231.247]) by WIN-DAONO245HJF with Microsoft SMTPSVC(8.5.9600.16384);
-         Fri, 7 Aug 2020 15:54:26 +0900
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726377AbgHGHV0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Aug 2020 03:21:26 -0400
+Received: from verein.lst.de ([213.95.11.211]:52859 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgHGHV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Aug 2020 03:21:26 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A67A168D0F; Fri,  7 Aug 2020 09:21:20 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 09:21:20 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org,
+        Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: Re: [PATCH 25/26] net: pass a sockptr_t into ->setsockopt
+Message-ID: <20200807072120.GB2086@lst.de>
+References: <20200723060908.50081-1-hch@lst.de> <20200723060908.50081-26-hch@lst.de> <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: INVESTMENT
-To:     bpf@vger.kernel.org
-From:   campbellclark016@gmail.com
-Date:   Thu, 06 Aug 2020 23:54:29 -0700
-Reply-To: campbell.clark24@yahoo.com
-Message-ID: <WIN-DAONO245HJFmNjT00acc38d@WIN-DAONO245HJF>
-X-OriginalArrivalTime: 07 Aug 2020 06:54:26.0875 (UTC) FILETIME=[974C40B0:01D66C87]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6357942b-0b6e-1901-7dce-e308c9fac347@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Aug 06, 2020 at 03:21:25PM -0700, Eric Dumazet wrote:
+> converting get_user(...)   to  copy_from_sockptr(...) really assumed the optlen
+> has been validated to be >= sizeof(int) earlier.
+> 
+> Which is not always the case, for example here.
 
-Good day,
+Yes.  And besides the bpfilter mess the main reason I even had to add
+the sockptr vs just copying optlen in the high-level socket code.
 
- You were recommended by a mutual associate. I write you regarding an investment of bearer bonds I made on behalf of a client. The investment was made in 2009 and has been under my management. The said investor is deceased. The window is now available to assign these bonds to any name or company of my choice. I have all the necessary information to achieve this within 10 banking days. The total value of the bond is 100 million pounds sterling, in a million pound denominations. If you can handle this, do contact me at your earliest convenience via my email campbell.clark24@yahoo.com So we can discuss the finer details
-
-
-Thank you
-
-
-Mr Campbell Clark
+Please take a look at the patch in the other thread to just revert to
+the "dumb" version everywhere.
