@@ -2,182 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4BF23F32E
-	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 21:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDA723F380
+	for <lists+bpf@lfdr.de>; Fri,  7 Aug 2020 22:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgHGTqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Aug 2020 15:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
+        id S1726066AbgHGUEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Aug 2020 16:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgHGTqW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 15:46:22 -0400
+        with ESMTP id S1725893AbgHGUEi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Aug 2020 16:04:38 -0400
 Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950FBC061756
-        for <bpf@vger.kernel.org>; Fri,  7 Aug 2020 12:46:22 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id a34so1580853ybj.9
-        for <bpf@vger.kernel.org>; Fri, 07 Aug 2020 12:46:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C720C061756;
+        Fri,  7 Aug 2020 13:04:38 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id q16so1618442ybk.6;
+        Fri, 07 Aug 2020 13:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BoIsNrXAGCPCBofi/MfTU7pE6FOeWnAiD5RrtUD7OK4=;
-        b=P+O4w7UCI0vrvjPI2gbs/DrWlMjMuQsxBdAJkz8uP4REGaTeI8kDhp+bymsVqbEtNg
-         Q72RlSSsOLaXx09XLhFgPEecB/MRXhm/17ofAeyMo3LPIZGlFMImAPmt5A9EAiq0EyHX
-         Rw9mxCOAChoI3XaFD5iAgIsaBh3dcWiWsEarb0KmgD6gzSixiDYoftF14m2Zibfy7y8H
-         bCtxDJm3lQzKDptQLWtCadP/PYyg0CVifWmfSMr5nekp/sv/7WsHUlvY4Mox6s4D6Nt+
-         +DN2UdkCwI1HZr1qkm8Wm4dLL0BdK69vwXP4pyyukGa31P5HuTZ/nDTCNu/MThic1lX9
-         t18A==
+        bh=LrvLhMssASMs+wooD3CADrbL9kN/4ex8UC2yN+vfgeY=;
+        b=aZ6TU4r5XR5eG5CySDeyM8k8lhkRguODa+u2IMK8aKSEucPJnBZm4D4kVM89n7Qj6X
+         WeDKIXLompGy55Ca7FmtrOCc5KnDzhGQppMnhI7AKgxZxNk0LqwYaxSAEoSaao9y7cyk
+         2m2v3SvfW7zKTts+JjfrcIwVtSHCEQEWHK2EiENQAonY18KIP0oLanODk8VvX2cbTBMu
+         btAQIs8X/9hDSo2kZnBIwi70RQnP6ixMXk3U87/c0N9pkeQ2/YyN+rAlyr2g263TPZV1
+         Tst3aNxsEIK4osIF9xgUd9YYfUp5LO31qOTT7p6K1bUkVBRpUkkV/KmMjZMPIwi9jFND
+         lXZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BoIsNrXAGCPCBofi/MfTU7pE6FOeWnAiD5RrtUD7OK4=;
-        b=CSLBRnhcQ7DlTjlLUSS5LmRxJ+E5Xtt5FxT2khOMe57plGs2ZhiguhoXKGbLC9+86W
-         gXMSiXIoY12N/hicjENnVgCDcn/7dRdCnkd7gn0B9vb9rB4jmh04kaglIv20A2uuf36T
-         hrgY9j1C1sQQJjdpuW35AGmpRW+YPMJP2tCx4tYqK9hCciCU5qxnUYLoyr8AHikIbMN6
-         +Xl1wsgSk8glNFnWKzGEALwzmPeZB30OaZq3AsiNQ1cQBt8deB0vrZaDj05CMd97r0up
-         f7LM51LqqpJGlgclqlIJG0XJR6r+zXRMFGAcn16JmGKuGE2MB19jeLAsrf32syKKa71N
-         54GA==
-X-Gm-Message-State: AOAM53217eVK+SSk9wrrHFqJJXMF+4B0erZdlVVyoq8/ARTFSU993pfH
-        xjbiYx8Naj2OvkXLjoHOYftGsvBxrCKYxggs5tQ=
-X-Google-Smtp-Source: ABdhPJwjL+8cxeM25ZuAm7/8bX2Xg6zbNEm5jMWAfrT5TDIqysQ429COqnSU52xhQrQO57f0G1yw5mCBALC3W+UO1wQ=
-X-Received: by 2002:a25:84cd:: with SMTP id x13mr22984660ybm.425.1596829581756;
- Fri, 07 Aug 2020 12:46:21 -0700 (PDT)
+        bh=LrvLhMssASMs+wooD3CADrbL9kN/4ex8UC2yN+vfgeY=;
+        b=FZOEna5xSlL5K3KPv3CZznlD5DVNCgkzI2Df5gLh+iUeJkb9Xo7uGEpCQKo5890eWJ
+         Kv3W1+sYqyFHDRMT28HCJyPGXAhZz4yfVg66E3mwYKRdJftaxPAlsNEU50kPUUNliZA9
+         p+9NBklNpYKLV36ULnpwdP9kxs75jrSSBaeTbT/A8x/XASDmtO4ITIy4EXSE/7QUoABE
+         sI5YQi6fQ3IBAcGd7r3O8CetctrVdP8EUWXat1x1yhiPs2p8oRTgYTejp0chvZqpBNff
+         pKwOnSjBen9daLGHMDUubg/A44h7mmVAwYY7qrOuMNBezf8SPKVFNJHgJ2t3QjyQjhS1
+         a8eQ==
+X-Gm-Message-State: AOAM533ZWlz4+DA7n/ruHOjX671HoiVKRjGUdcXd+9DWRApu9R9irb8a
+        irzJkdGCcxofNFZGDkHeVRz5pPILydbJ2d18lpw=
+X-Google-Smtp-Source: ABdhPJxnnAhSu1vfEANXpPHAoPErhwfZg49kF6OHxU2h15gLHPY4Fc9GTj5oI+cQsQqgrW1K+/qzGKSuNs9QAuPV4dI=
+X-Received: by 2002:a25:d84a:: with SMTP id p71mr24086935ybg.347.1596830677695;
+ Fri, 07 Aug 2020 13:04:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
-In-Reply-To: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
+References: <20200807094559.571260-1-jolsa@kernel.org> <20200807094559.571260-9-jolsa@kernel.org>
+In-Reply-To: <20200807094559.571260-9-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 7 Aug 2020 12:46:10 -0700
-Message-ID: <CAEf4BzYp2WFq7xZxOs9DwBzXE743nuMLjxTLh5xL36CJqnQmvw@mail.gmail.com>
-Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
-To:     Jakov Petrina <jakov.petrina@sartura.hr>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
+Date:   Fri, 7 Aug 2020 13:04:26 -0700
+Message-ID: <CAEf4BzY8vE8k9c5fBB+3mcEpxOWc38dWBK8ji2aRpHM79nra_Q@mail.gmail.com>
+Subject: Re: [PATCH v10 bpf-next 08/14] bpf: Add btf_struct_ids_match function
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 7, 2020 at 7:21 AM Jakov Petrina <jakov.petrina@sartura.hr> wrote:
+On Fri, Aug 7, 2020 at 2:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Hi everyone,
+> Adding btf_struct_ids_match function to check if given address provided
+> by BTF object + offset is also address of another nested BTF object.
 >
-> recently we have begun extensive research into eBPF and related
-> technologies. Seeking an easier development process, we have switched
-> over to using the eBPF CO-RE [0] approach internally which has enabled
-> us to simplify most aspects of eBPF development, especially those
-> related to cross-compilation.
-
-Great!
-
+> This allows to pass an argument to helper, which is defined via parent
+> BTF object + offset, like for bpf_d_path (added in following changes):
 >
-> However, as part of these efforts we have stumbled upon several problems
-> that we feel would benefit from a community discussion where we may
-> share our solutions and discuss alternatives moving forward.
+>   SEC("fentry/filp_close")
+>   int BPF_PROG(prog_close, struct file *file, void *id)
+>   {
+>     ...
+>     ret = bpf_d_path(&file->f_path, ...
 >
-> As a reference point, we have started researching and modifying several
-> eBPF CO-RE samples that have been developed or migrated from existing
-> `bcc` tooling. Most notable examples are those present in `bcc`'s
-> `libbpf-tools` directory [1]. Some of these samples have just recently
-> been converted to respective eBPF CO-RE variants, of which the
-> `tcpconnect` tracing sample has proven to be very interesting.
+> The first bpf_d_path argument is hold by verifier as BTF file object
+> plus offset of f_path member.
 >
-> First showstopper for cross-compiling aforementioned example on the ARM
-> 32-bit platform has been with regards to generation of the required
-> `vmlinux.h` kernel header from the BTF information. More specifically,
-> our initial approach to have e.g. a compilation target dependency which
-> would invoke `bpftool` at configure time was not appropriate due to
-> several issues: a) CO-RE requires host kernel to have been compiled in
-> such a way to expose BTF information which may not available, and b) the
-> generated `vmlinux.h` was actually architecture-specific.
-
-That's not exactly true, about "CO-RE requires host kernel to have
-been compiled...". You can pass any kernel image as a parameter to
-bpftool as an input to generate vmlinux.h for that target
-architecture. The only limitation right now, I think, is that their
-endianness have to match. We'll probably get over this limitation some
-time by end of this year, though.
-
-So in your case, I'd recommend to generate per-architecture vmlinux.h
-and use the appropriate one when you cross-compile. I don't think we
-ever intended to support single CO-RE BPF binary across architectures,
-given it's not too bad to compile same code one time for each target
-architecture. Compiling once for each kernel version/variant was much
-bigger problem, which is what we tackled.
-
+> The btf_struct_ids_match function will walk the struct file object and
+> check if there's nested struct path object on the given offset.
 >
-> The second point proved interesting because `tcpconnect` makes use of
-> the `BPF_KPROBE` and `BPF_KRETPROBE` macros, which pass `struct pt_regs
-> *ctx` as the first function parameter. The `pt_regs` structure is
-> defined by the kernel and is architecture-specific. Since `libbpf` does
-> have architecture-specific conditionals, pairing it with an "invalid"
-> `vmlinux.h` resulted in cross-compilation failure as `libbpf` provided
-> macros that work with ARM `pt_regs`, and `vmlinux.h` had an x86
-> `pt_regs` definition. To resolve this issue, we have resorted to
-> including pre-generated `<arch>_vmlinux.h` files in our CO-RE build system.
-
-yep, see above, that's what I'd do as well.
-
->
-> However, there are certainly drawbacks to this approach: a) (relatively)
-> large file size of the generated headers, b) regular maintenance to
-> re-generate the header files for various architectures and kernel
-> versions, and c) incompatible definitions being generated, to name a
-> few. This last point relates to the the fact that our `aarch64`/`arm64`
-> kernel generates the following definition using `bpftool`, which has
-> resulted in compilation failure:
->
-> ```
-> typedef __Poly8_t poly8x16_t[16];
-> ```
->
-> AFAICT these are ARM NEON intrinsic definitions which are GCC-specific.
-> We have opted to comment out this line as there was no additional
-> `poly8x16_t` usage in the header file.
-
-Ok, so for a) why the size of vmlinux.h is a big factor? You use it on
-host machine during compilation only, after that you don't have to
-distribute it anywhere. I just checked the size of vmlinux.h we use to
-write BPF programs for production, it's at 2.5MB. Having even few of
-those (if you need x86 + ARM32 + ARM64 + s390x + whatever) isn't a big
-deal, IMO, you can just check them in into your source control system?
-If the size is a concern, I'd be curious to hear why.
-
-b) Hm.. how often do you intend to re-geneate them? Unless you are
-using some bleeding-edge and volatile features of kernel and/or
-compiled-in drivers, you shouldn't need to re-generate it all that
-often. Maybe once every kernel release, maybe even less frequently. We
-update those vmlinux.h only when there is some new set of features
-(e.g., bpf_iter) added and we need those types, or when we get a new
-major kernel version bump. So far so good. But your constraints might
-differ, so I'd like to learn more.
-
-c) I addressed in another reply. BTF dumper in libbpf maintains a list
-of types that are compiler-provided and avoid generating types for
-them, assuming compiler will have them. So far we've handled it simply
-for __builtin_va_list, we can probably do something like that here as
-well?
-
->
-> Given various issues we have encountered so far (among which is a kernel
-> panic/crash on a specific device), additional input and feedback
-> regarding cross-compilation of the eBPF utilities would be greatly
-> appreciated.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/bpf.h   |  2 ++
+>  kernel/bpf/btf.c      | 31 +++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c | 18 ++++++++++++------
+>  3 files changed, 45 insertions(+), 6 deletions(-)
 >
 
-Please report the panic with more details separately. If you are
-referring to cross-compiling libbpf-tools in BCC repo, we can play
-with that, generate a separate vmlinux.<arch>.h. It's a bit hard for
-me to test as I don't have easy access to anything beyond x86-64, so
-some help from other folks would be very appreciated.
+[...]
 
-> [0]
-> https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portability-and-co-re.html
-> [1] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b6ccfce3bf4c..041d151be15b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3960,16 +3960,21 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                                 goto err_type;
+>                 }
+>         } else if (arg_type == ARG_PTR_TO_BTF_ID) {
+> +               bool ids_match = false;
+> +
+>                 expected_type = PTR_TO_BTF_ID;
+>                 if (type != expected_type)
+>                         goto err_type;
+>                 if (!fn->check_btf_id) {
+>                         if (reg->btf_id != meta->btf_id) {
+> -                               verbose(env, "Helper has type %s got %s in R%d\n",
+> -                                       kernel_type_name(meta->btf_id),
+> -                                       kernel_type_name(reg->btf_id), regno);
+> -
+> -                               return -EACCES;
+> +                               ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+> +                                                                meta->btf_id);
+> +                               if (!ids_match) {
+> +                                       verbose(env, "Helper has type %s got %s in R%d\n",
+> +                                               kernel_type_name(meta->btf_id),
+> +                                               kernel_type_name(reg->btf_id), regno);
+> +                                       return -EACCES;
+> +                               }
+>                         }
+>                 } else if (!fn->check_btf_id(reg->btf_id, arg)) {
+
+Put this on a wishlist for now. I don't think we should expect
+fb->check_btf_id() to do btf_struct_ids_match() internally, so to
+support this, we'd have to call fb->check_btf_id() inside the loop
+while doing WALK_STRUCT struct. But let's not change all this in this
+patch set, it's involved enough already.
+
+>                         verbose(env, "Helper does not support %s in R%d\n",
+> @@ -3977,7 +3982,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
 >
-> Best regards,
+>                         return -EACCES;
+>                 }
+> -               if (!tnum_is_const(reg->var_off) || reg->var_off.value || reg->off) {
+> +               if (!ids_match &&
+> +                   (!tnum_is_const(reg->var_off) || reg->var_off.value || reg->off)) {
+
+Isn't this still wrong? if ids_match, but reg->var_off is non-zero,
+that's still bad, right?
+ids_match just "mitigates" reg->off check, so should be something like this:
+
+if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) ||
+reg->var_off.value)
+ ... then bad ...
+
+>                         verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+>                                 regno);
+>                         return -EACCES;
+> --
+> 2.25.4
 >
-> Sartura eBPF Team
