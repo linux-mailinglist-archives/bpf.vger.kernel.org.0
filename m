@@ -2,73 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6015023F5AE
-	for <lists+bpf@lfdr.de>; Sat,  8 Aug 2020 02:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC1B23F6CB
+	for <lists+bpf@lfdr.de>; Sat,  8 Aug 2020 09:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgHHA40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Aug 2020 20:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgHHA40 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Aug 2020 20:56:26 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA80C061756;
-        Fri,  7 Aug 2020 17:56:26 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1E1A612771EC0;
-        Fri,  7 Aug 2020 17:39:40 -0700 (PDT)
-Date:   Fri, 07 Aug 2020 17:56:24 -0700 (PDT)
-Message-Id: <20200807.175624.1312811924435198437.davem@davemloft.net>
-To:     daniel@iogearbox.net
-Cc:     kuba@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2020-08-08
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200807225444.6302-1-daniel@iogearbox.net>
-References: <20200807225444.6302-1-daniel@iogearbox.net>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 07 Aug 2020 17:39:40 -0700 (PDT)
+        id S1726190AbgHHHTA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Aug 2020 03:19:00 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34997 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbgHHHTA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Aug 2020 03:19:00 -0400
+X-Originating-IP: 71.82.72.227
+Received: from localhost.localdomain (071-082-072-227.res.spectrum.com [71.82.72.227])
+        (Authenticated sender: phollinsky@holtechnik.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 2F251FF804;
+        Sat,  8 Aug 2020 07:18:53 +0000 (UTC)
+From:   Paul Hollinsky <phollinsky@holtechnik.com>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, andriin@fb.com,
+        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, songliubraving@fb.com, yhs@fb.com,
+        Paul Hollinsky <phollinsky@holtechnik.com>
+Subject: [PATCH] xdp: ensure initialization of txq in xdp_buff
+Date:   Sat,  8 Aug 2020 03:16:01 -0400
+Message-Id: <20200808071600.1999613-1-phollinsky@holtechnik.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Sat,  8 Aug 2020 00:54:44 +0200
+xdp->txq was uninitialized and could be used from within a bpf program.
 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 11 non-merge commits during the last 2 day(s) which contain
-> a total of 24 files changed, 216 insertions(+), 135 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) Fix UAPI for BPF map iterator before it gets frozen to allow for more
->    extensions/customization in future, from Yonghong Song.
-> 
-> 2) Fix selftests build to undo verbose build output, from Andrii Nakryiko.
-> 
-> 3) Fix inlining compilation error on bpf_do_trace_printk() due to variable
->    argument lists, from Stanislav Fomichev.
-> 
-> 4) Fix an uninitialized pointer warning at btf__parse_raw() in libbpf,
->    from Daniel T. Lee.
-> 
-> 5) Fix several compilation warnings in selftests with regards to ignoring
->    return value, from Jianlin Lv.
-> 
-> 6) Fix interruptions by switching off timeout for BPF tests, from Jiri Benc.
-> 
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+https://syzkaller.appspot.com/bug?id=a6e53f8e9044ea456ea1636be970518ae6ba7f62
 
-Pulled and build testing, I'll push out when that's done.
+Signed-off-by: Paul Hollinsky <phollinsky@holtechnik.com>
+---
+ net/core/dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks!
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 7df6c9617321..12be8fef8b7e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4649,6 +4649,8 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	rxqueue = netif_get_rxqueue(skb);
+ 	xdp->rxq = &rxqueue->xdp_rxq;
+ 
++	xdp->txq = NULL;
++
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+ 	/* check if bpf_xdp_adjust_head was used */
+-- 
+2.25.1
+
