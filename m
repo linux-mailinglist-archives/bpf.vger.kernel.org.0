@@ -2,102 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639AE23F819
-	for <lists+bpf@lfdr.de>; Sat,  8 Aug 2020 17:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD0A23F87F
+	for <lists+bpf@lfdr.de>; Sat,  8 Aug 2020 20:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgHHP4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Aug 2020 11:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        id S1726232AbgHHSq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Aug 2020 14:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgHHP4I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Aug 2020 11:56:08 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0E0C061756;
-        Sat,  8 Aug 2020 08:56:07 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id z18so3981151otk.6;
-        Sat, 08 Aug 2020 08:56:07 -0700 (PDT)
+        with ESMTP id S1726346AbgHHSqZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Aug 2020 14:46:25 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B771AC061A27
+        for <bpf@vger.kernel.org>; Sat,  8 Aug 2020 11:46:24 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id jp10so5443681ejb.0
+        for <bpf@vger.kernel.org>; Sat, 08 Aug 2020 11:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=taQVmt3q+KyxOZvgQSQZhABom8lU0tR+qr1/r1Bt7kY=;
-        b=gsjMH45s+DOPfq+U2WbHrRS7XqStzA4bsr2SKII26MM+no7XC7FQOcQfad8Wz+BRBm
-         g3vpMRceYwbJFWeCc+FAHqD3CF6jDGs5vph+AVKzkE6EjMEcL/iv1nDENvBZiYDYX3ps
-         2FIGWNVb2p9WCWBlkbh1baGlgDSLvSBNCNlQcDwxahXUjN76cJ4Psjm6Z5lje8xwgDNS
-         /gdHstXAtYMARvn8WFxnBrK93gtAjysb17WE+tXAmb5u0DPyGPQyrNTZvqq4mTH0sywU
-         A9ZxraJCfRQANXh1GriTdbTnWsjphfaEqJRy1uAH/IloEKbW0eUpwrbJAffH6QKlrcA0
-         2BpQ==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=jOXDu9SlBmCidK+pytWuqMzjKUtQ47NPeS1CryxgtcA=;
+        b=uTa4Z0q3FtuS8TMevIcT6y2L4zwl7CbwT7H+AMLFM8w2TviNKYw0lULyfUXIU0VtTy
+         7FyzC0MJM4rP+lHltx4M3P+nvmsfS8G6gnxR2fF6IAGHH19q/a1sH5NSoadhB4eJ+IaS
+         cUQwEmP3plJaCsy2lBdVYCEP28Pi74DgyQSVA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=taQVmt3q+KyxOZvgQSQZhABom8lU0tR+qr1/r1Bt7kY=;
-        b=rXX23OcSsMgNoV0AMF2x+IOWC1a/a1uuhudM4U74pOf+QkqLd6B9u5kPuZNXAVQjK8
-         6zu5Hk6cQWp4AJB2vVCu4xK/0p0U+iN3SVJfGRQ0eWTjgUDyOSDuqV32DMqNY6pgGZqD
-         xzRVzZFGYrVt1slCc/9BSNs4InpgPuS+cM7khluZcUGTwYMFIs0EaNg7cLByNPzn5owW
-         TCRKjO9qYppgOIaHDys4ga9EVDtpKLu6qwUaE7uH9PoEt+YK+oeGsi1Fb0M7HIDxqfJK
-         V4nijwWmOrXJiDOX+cgDXpUZXUY4zuWlmAKlnk38jngQ8s+zh6SnAOYoOKdA+cA+5xil
-         apTg==
-X-Gm-Message-State: AOAM5322c0ZvEz/khtuOrFlFNkiTa4AelIrnjT2MrarqKY8OEkMjhIny
-        5DedB+D9Gqdm+j+U1IomWiY=
-X-Google-Smtp-Source: ABdhPJxC3sjpn1v8lb8QU9aaBh/IbDrpWNl+VFgf0LxpicT+nn8QfOTcgKpGYuT9OGE4/JC51BAj6Q==
-X-Received: by 2002:a05:6830:1d3:: with SMTP id r19mr15371323ota.27.1596902167303;
-        Sat, 08 Aug 2020 08:56:07 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:2d6d:708e:ac93:f86b])
-        by smtp.googlemail.com with ESMTPSA id v21sm1532760oou.29.2020.08.08.08.56.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Aug 2020 08:56:06 -0700 (PDT)
-Subject: Re: [PATCH] xdp: ensure initialization of txq in xdp_buff
-To:     Paul Hollinsky <phollinsky@holtechnik.com>, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, andriin@fb.com,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, songliubraving@fb.com, yhs@fb.com
-References: <20200808071600.1999613-1-phollinsky@holtechnik.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <7cb5fff6-3fa4-3caa-ca57-040cd77d5c24@gmail.com>
-Date:   Sat, 8 Aug 2020 09:56:02 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=jOXDu9SlBmCidK+pytWuqMzjKUtQ47NPeS1CryxgtcA=;
+        b=IyQ/7Jwu/waW2ZWyPOBzijQQw/2AaqZoZPgaAM29Ga/nphjXc7DaYaCC8GlX4O/6wa
+         04Fz8HySjKL8gfvXivcO1wp5z86SzvnwXAoNhXastBXhIO45H811TUsTGW4ayG1GBVG4
+         vJrsfjTJYHiDp+VrmV801JJ1z5fnzYCp/Em84Aio8kgJwGNdLLm286giILn1va8ti8R/
+         s705Zu5Xkf2ASzmGhGgCAqGx7dLwFX/Gi554p7P9/nZoNqBKvy0G75Sq2brkful7Eb+H
+         fY1/dsX7JJ5YB5fYB4hGsRw/r1y7+ePCGPKJcr3mULaec7seHimJxEgcWPO2kgLQ+w4u
+         HR0g==
+X-Gm-Message-State: AOAM530H6vr0CYN4HNHJEb0xu25Sy9ceBOdcrhazBJn4j9pFbKfVNls3
+        S4jLU6fvLmi5TVbOjwao3R6F/Q==
+X-Google-Smtp-Source: ABdhPJyIhrirp+mhF72d/SQWNFeglyQ4M+5ZA/ZZlyr1jaKCcD0TykiC97iM6OYJCfOAQL9lc9tTMQ==
+X-Received: by 2002:a17:906:3850:: with SMTP id w16mr15637492ejc.205.1596912383282;
+        Sat, 08 Aug 2020 11:46:23 -0700 (PDT)
+Received: from cloudflare.com (user-5-173-160-125.play-internet.pl. [5.173.160.125])
+        by smtp.gmail.com with ESMTPSA id y7sm9080305ejd.73.2020.08.08.11.46.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Aug 2020 11:46:22 -0700 (PDT)
+References: <20200807223846.4190917-1-sdf@google.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH bpf] selftests/bpf: fix v4_to_v6 in sk_lookup
+In-reply-to: <20200807223846.4190917-1-sdf@google.com>
+Date:   Sat, 08 Aug 2020 20:46:20 +0200
+Message-ID: <87zh756kn7.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20200808071600.1999613-1-phollinsky@holtechnik.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/8/20 1:16 AM, Paul Hollinsky wrote:
-> xdp->txq was uninitialized and could be used from within a bpf program.
-
-The verifier prevents access to txq except by programs of type
-BPF_XDP_DEVMAP and those can not be run via xdp generic. ie., generic
-can not access txq.
-
-
-> 
-> https://syzkaller.appspot.com/bug?id=a6e53f8e9044ea456ea1636be970518ae6ba7f62
-> 
-> Signed-off-by: Paul Hollinsky <phollinsky@holtechnik.com>
+On Sat, Aug 08, 2020 at 12:38 AM CEST, Stanislav Fomichev wrote:
+> I'm getting some garbage in bytes 8 and 9 when doing conversion
+> from sockaddr_in to sockaddr_in6 (leftover from AF_INET?).
+> Let's explicitly clear the higher bytes.
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  net/core/dev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 7df6c9617321..12be8fef8b7e 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -4649,6 +4649,8 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
->  	rxqueue = netif_get_rxqueue(skb);
->  	xdp->rxq = &rxqueue->xdp_rxq;
->  
-> +	xdp->txq = NULL;
-> +
->  	act = bpf_prog_run_xdp(xdp_prog, xdp);
->  
->  	/* check if bpf_xdp_adjust_head was used */
-> 
+>  tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> index c571584c00f5..9ff0412e1fd3 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
+> @@ -309,6 +309,7 @@ static void v4_to_v6(struct sockaddr_storage *ss)
+>  	v6->sin6_addr.s6_addr[10] = 0xff;
+>  	v6->sin6_addr.s6_addr[11] = 0xff;
+>  	memcpy(&v6->sin6_addr.s6_addr[12], &v4.sin_addr.s_addr, 4);
+> +	memset(&v6->sin6_addr.s6_addr[0], 0, 10);
+>  }
+>
+>  static int udp_recv_send(int server_fd)
 
+That was badly written. Sorry about that. And thanks for the fix.
+
+I'd even zero out the whole thing:
+
+        memset(v6, 0, sizeof(*v6));
+
+... because right now IPv4 address is left as sin6_flowinfo.  I can
+follow up with that change, unless you'd like to roll a v2.
+
+Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
