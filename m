@@ -2,196 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E373240684
-	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 15:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1139C240702
+	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 15:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgHJNUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Aug 2020 09:20:52 -0400
-Received: from mail-m1271.qiye.163.com ([115.236.127.1]:58783 "EHLO
-        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgHJNUw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Aug 2020 09:20:52 -0400
-X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 Aug 2020 09:20:51 EDT
-Received: from ubuntu.localdomain (unknown [58.251.74.227])
-        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 35E3258224D;
-        Mon, 10 Aug 2020 21:11:01 +0800 (CST)
-From:   Jiang Yu <jyu.jiang@vivo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726929AbgHJNzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Aug 2020 09:55:04 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39281 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726748AbgHJNzD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Aug 2020 09:55:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597067702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+HGVMIgGobN+GYYWAdJh2FOAbmEWexuoFUEbn2rh+Gg=;
+        b=acZvONCYPX4k1VqrDBRm55ZyrVXjaxKl1oDoT7vg6+1tlwMSDIJVhg1aHawkxIARfZIkug
+        vfFC0VQfuxVdRTNgUuahU7LFvvLX4xulb0vLUxS0DiBgrDs5naa3SYJpbmqX8w00HlEgQl
+        ycBvGguW5hLIeGYB3XT2gCPHyWxkOos=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-k3uQ8c1gO1KY3bCeMycarA-1; Mon, 10 Aug 2020 09:54:57 -0400
+X-MC-Unique: k3uQ8c1gO1KY3bCeMycarA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FD8780183C;
+        Mon, 10 Aug 2020 13:54:56 +0000 (UTC)
+Received: from krava (unknown [10.40.195.90])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CC8A410013C2;
+        Mon, 10 Aug 2020 13:54:52 +0000 (UTC)
+Date:   Mon, 10 Aug 2020 15:54:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        zhanglin <zhang.lin16@zte.com.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Ignatov <rdna@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Jiang Yu <jyu.jiang@vivo.com>
-Subject: [PATCH] bpf: Add bpf_skb_get_sock_comm() helper
-Date:   Mon, 10 Aug 2020 06:09:48 -0700
-Message-Id: <20200810131014.12057-1-jyu.jiang@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC] bpf: verifier check for dead branch
+Message-ID: <20200810135451.GA699846@krava>
+References: <20200807173045.GC561444@krava>
+ <f13fde40-0c07-ff73-eeb3-3c59c5694f74@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTE8ZGR5OT0hIH0xOVkpOQkxLTU5LTUpCTEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZVUtZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6K0k6Szo*IT8vNU4dDywuDCIB
-        FAkwCT5VSlVKTkJMS01OS01JSEJNVTMWGhIXVRECDlUREhoVHDsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOSlVMT1VJSUxZV1kIAVlBTUlOTDcG
-X-HM-Tid: 0a73d87ee60098b6kuuu35e3258224d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f13fde40-0c07-ff73-eeb3-3c59c5694f74@fb.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-skb distinguished by uid can only recorded to user who consume them.
-in many case, skb should been recorded more specific to process who
-consume them. E.g, the unexpected large data traffic of illegal process
-in metered network.
+On Sun, Aug 09, 2020 at 06:21:01PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/7/20 10:30 AM, Jiri Olsa wrote:
+> > hi,
+> > we have a customer facing some odd verifier fails on following
+> > sk_skb program:
+> > 
+> >     0. r2 = *(u32 *)(r1 + data_end)
+> >     1. r4 = *(u32 *)(r1 + data)
+> >     2. r3 = r4
+> >     3. r3 += 42
+> >     4. r1 = 0
+> >     5. if r3 > r2 goto 8
+> >     6. r4 += 14
+> >     7. r1 = r4
+> >     8. if r3 > r2 goto 10
+> >     9. r2 = *(u8 *)(r1 + 9)
+> >    10. r0 = 0
+> >    11. exit
+> > 
+> > The code checks if the skb data is big enough (5) and if it is,
+> > it prepares pointer in r1 (7), then there's again size check (8)
+> > and finally data load from r1 (9).
+> > 
+> > It's and odd code, but apparently this is something that can
+> > get produced by clang.
+> 
+> Could you provide a test case where clang generates the above code?
+> I would like to see whether clang can do a better job to avoid
+> such codes.
 
-this helper is used in tracing task comm of the sock to which a skb
-belongs.
+I get that code genrated by using recent enough upstream clang
+on the attached source.
 
-Signed-off-by: Jiang Yu <jyu.jiang@vivo.com>
+	/opt/clang/bin/clang --version
+	clang version 11.0.0 (https://github.com/llvm/llvm-project.git 4cbfb98eb362b0629d5d1cd113af4427e2904763)
+	Target: x86_64-unknown-linux-gnu
+	Thread model: posix
+	InstalledDir: /opt/clang/bin
+
+	$ llvm-objdump -d verifier-cond-repro.o 
+
+	verifier-cond-repro.o:  file format ELF64-BPF
+
+	Disassembly of section .text:
+
+	0000000000000000 my_prog:
+	       0:       61 12 50 00 00 00 00 00 r2 = *(u32 *)(r1 + 80)
+	       1:       61 14 4c 00 00 00 00 00 r4 = *(u32 *)(r1 + 76)
+	       2:       bf 43 00 00 00 00 00 00 r3 = r4
+	       3:       07 03 00 00 2a 00 00 00 r3 += 42
+	       4:       b7 01 00 00 00 00 00 00 r1 = 0
+	       5:       2d 23 02 00 00 00 00 00 if r3 > r2 goto +2 <LBB0_2>
+	       6:       07 04 00 00 0e 00 00 00 r4 += 14
+	       7:       bf 41 00 00 00 00 00 00 r1 = r4
+
+	0000000000000040 LBB0_2:
+	       8:       2d 23 05 00 00 00 00 00 if r3 > r2 goto +5 <LBB0_5>
+	       9:       71 12 09 00 00 00 00 00 r2 = *(u8 *)(r1 + 9)
+	      10:       56 02 03 00 11 00 00 00 if w2 != 17 goto +3 <LBB0_5>
+	      11:       b4 00 00 00 d2 04 00 00 w0 = 1234
+	      12:       69 11 16 00 00 00 00 00 r1 = *(u16 *)(r1 + 22)
+	      13:       16 01 01 00 d2 04 00 00 if w1 == 1234 goto +1 <LBB0_6>
+
+	0000000000000070 LBB0_5:
+	      14:       b4 00 00 00 ff ff ff ff w0 = -1
+
+	0000000000000078 LBB0_6:
+	      15:       95 00 00 00 00 00 00 00 exit
+
+
+thanks,
+jirka
+
+
 ---
- include/net/sock.h             |  1 +
- include/uapi/linux/bpf.h       |  1 +
- net/core/filter.c              | 32 ++++++++++++++++++++++++++++++++
- net/core/sock.c                | 20 ++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  1 +
- 5 files changed, 55 insertions(+)
+// Copyright (c) 2019 Tigera, Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 064637d1ddf6..9c6e8e61940f 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -519,6 +519,7 @@ struct sock {
- #ifdef CONFIG_BPF_SYSCALL
- 	struct bpf_sk_storage __rcu	*sk_bpf_storage;
- #endif
-+	char sk_task_com[TASK_COMM_LEN];
- 	struct rcu_head		sk_rcu;
- };
- 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b134e679e9db..c7f62215a483 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3538,6 +3538,7 @@ union bpf_attr {
- 	FN(skc_to_tcp_request_sock),	\
- 	FN(skc_to_udp6_sock),		\
- 	FN(get_task_stack),		\
-+	FN(skb_get_sock_comm),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7124f0fe6974..972c0bf8e7ca 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4313,6 +4313,36 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
- 	.arg1_type      = ARG_PTR_TO_CTX,
- };
- 
-+BPF_CALL_3(bpf_skb_get_sock_comm,     struct sk_buff *, skb, char *, buf, u32, size)
-+{
-+	struct sock *sk;
-+
-+	if (!buf || 0 == size)
-+		return -EINVAL;
-+
-+	sk = sk_to_full_sk(skb->sk);
-+	if (!sk || !sk_fullsock(sk))
-+		goto err_clear;
-+
-+	memcpy(buf, sk->sk_task_com, size);
-+	buf[size - 1] = 0;
-+	return 0;
-+
-+err_clear:
-+	memset(buf, 0, size);
-+	buf[size - 1] = 0;
-+	return -ENOENT;
-+}
-+
-+const struct bpf_func_proto bpf_skb_get_sock_comm_proto = {
-+	.func           = bpf_skb_get_sock_comm,
-+	.gpl_only       = false,
-+	.ret_type       = RET_INTEGER,
-+	.arg1_type      = ARG_PTR_TO_CTX,
-+	.arg2_type      = ARG_PTR_TO_MEM,
-+	.arg3_type      = ARG_CONST_SIZE,
-+};
-+
- #define SOCKOPT_CC_REINIT (1 << 0)
- 
- static int _bpf_setsockopt(struct sock *sk, int level, int optname,
-@@ -6313,6 +6343,8 @@ sk_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_socket_cookie_proto;
- 	case BPF_FUNC_get_socket_uid:
- 		return &bpf_get_socket_uid_proto;
-+	case BPF_FUNC_skb_get_sock_comm:
-+		return &bpf_skb_get_sock_comm_proto;
- 	case BPF_FUNC_perf_event_output:
- 		return &bpf_skb_event_output_proto;
- 	default:
-diff --git a/net/core/sock.c b/net/core/sock.c
-index d29709e0790d..79d81afa048f 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2961,6 +2961,24 @@ void sk_stop_timer(struct sock *sk, struct timer_list* timer)
- }
- EXPORT_SYMBOL(sk_stop_timer);
- 
-+void sock_init_task_comm(struct sock *sk)
-+{
-+	struct pid *pid = NULL;
-+	struct task_struct *tgid_task = NULL;
-+
-+	pid = find_get_pid(current->tgid);
-+	if (pid) {
-+		tgid_task = get_pid_task(pid, PIDTYPE_PID);
-+
-+		if (tgid_task) {
-+			snprintf(sk->sk_task_com, TASK_COMM_LEN, tgid_task->comm);
-+			put_task_struct(tgid_task);
-+		}
-+
-+		put_pid(pid);
-+	}
-+}
-+
- void sock_init_data(struct socket *sock, struct sock *sk)
- {
- 	sk_init_common(sk);
-@@ -3031,6 +3049,8 @@ void sock_init_data(struct socket *sock, struct sock *sk)
- 	WRITE_ONCE(sk->sk_pacing_shift, 10);
- 	sk->sk_incoming_cpu = -1;
- 
-+	sock_init_task_comm(sk);
-+
- 	sk_rx_queue_clear(sk);
- 	/*
- 	 * Before updating sk_refcnt, we must commit prior changes to memory
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b134e679e9db..c7f62215a483 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3538,6 +3538,7 @@ union bpf_attr {
- 	FN(skc_to_tcp_request_sock),	\
- 	FN(skc_to_udp6_sock),		\
- 	FN(get_task_stack),		\
-+	FN(skb_get_sock_comm),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
--- 
-2.25.1
+#include <stddef.h>
+#include <string.h>
+#include <linux/bpf.h>
+#include <linux/if_ether.h>
+#include <linux/if_packet.h>
+#include <linux/ip.h>
+#include <linux/ipv6.h>
+#include <linux/in.h>
+#include <linux/udp.h>
+#include <linux/tcp.h>
+#include <linux/pkt_cls.h>
+#include <sys/socket.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_endian.h>
+
+#include <stddef.h>
+
+#define INLINE inline __attribute__((always_inline))
+
+#define skb_shorter(skb, len) ((void *)(long)(skb)->data + (len) > (void *)(long)skb->data_end)
+
+#define ETH_IPV4_UDP_SIZE (14+20+8)
+
+static INLINE struct iphdr *get_iphdr (struct __sk_buff *skb)
+{
+	struct iphdr *ip = NULL;
+	struct ethhdr *eth;
+
+	if (skb_shorter(skb, ETH_IPV4_UDP_SIZE))
+		goto out;
+
+	eth = (void *)(long)skb->data;
+	ip = (void *)(eth + 1);
+
+out:
+	return ip;
+}
+
+int my_prog(struct __sk_buff *skb)
+{
+	struct iphdr *ip = NULL;
+	struct udphdr *udp;
+	__u8 proto = 0;
+
+	if (!(ip = get_iphdr(skb)))
+		goto out;
+
+	proto = ip->protocol;
+
+	if (proto != IPPROTO_UDP)
+		goto out;
+
+	udp = (void*)(ip + 1);
+
+	if (udp->dest != 1234)
+		goto out;
+
+	if (!udp)
+		goto out;
+
+	return udp->dest;
+
+out:
+	return -1;
+}
 
