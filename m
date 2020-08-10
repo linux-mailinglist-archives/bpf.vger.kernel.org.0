@@ -2,188 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4882403AD
-	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 10:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF31240607
+	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 14:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgHJI46 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Aug 2020 04:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S1726330AbgHJMkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Aug 2020 08:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgHJI46 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:56:58 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA573C061756
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 01:56:57 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id g19so8543359ejc.9
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 01:56:57 -0700 (PDT)
+        with ESMTP id S1726536AbgHJMkn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Aug 2020 08:40:43 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3ECC061756
+        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 05:40:43 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id bo3so9172589ejb.11
+        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 05:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sQcB3+K8vvfoMx71ktiMUYQlkM6bq+AX0BVDQZ2+P5o=;
-        b=Cl+rvJGzFDHhbxCnyQk/vHv5Vmc90EiDLDiWN2FVhbnuId9sArqAnjbRlwGtYp6Cq/
-         F28elYjt7aWIqXVUc7jY6iehkANN3m+0AbIUWQQqE3T8SGIMHuAdFD4WOlcB3ptL0x25
-         lK3J777ZB9THb5Hkuo7PgHB8fsoxxY6Z2A47cYxZORscu93sCNxT4m0S5rCuCST2T4Ch
-         yMr32w2tD14iupubXyiGeH1AtEupuYWSu+php2fGc/kFKOQ8L1LXDYsfXyb8/MPNrajT
-         zKkAXo93CN7cLf0B+VM1qTBUcWkijoIUcMWZdqQZlslXJj6cEOG7xBe52zyP7nC7K5ji
-         vG/A==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9jozky3iNUilNi92WXOcNWoi6GSxB0Ejr0u+yMbhGh4=;
+        b=XsYETe4Wj4k8cTZdzC12eoTAI3QhsCa+r1R3+l67mAQGW3RT5kcVwmnegXs5K5EMTp
+         IMpgOB1+IZDhIouVtRKtuvlnh2lD2J/pza+MQTPqiXyC8uPsBnGiWz4DL3PA8dvIkz5c
+         cQAQXhE5qJexHLV/YCPy2wbMhQkDoxfn9VvPzNhhGJ9bTWT4HPU8kMZong+6RfwqOnCR
+         hbEmC7wDohtQLyIrASLbZtyPnDeklcteL6jOq4a8/6BJHNKR2zn2uID2IK2zOvZMIlxC
+         YYCc+L7ybH3i9NzqRLdeok/5C6Rc7tIJOc0pqNn8qCrZCc7gMTacqrMlSPnrYY/293Jz
+         2Sxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sQcB3+K8vvfoMx71ktiMUYQlkM6bq+AX0BVDQZ2+P5o=;
-        b=PvEs9SEChRac4agSEKBxub8XjNJKV9SR+lSql7oXfYzOcKtv83USiOOkekjTP9/Iyy
-         Gg+FbGmNwlVS/qq0OE7WskOuXTIusJb646DV9seHDvX51fiCmSaDpvuWtaiA9jDszr3A
-         X3MbbpudBDf6+1CbV7p3/VwB2ReujCGPZI0HBf3fbK6PbwSUWeyODh6LfTSxx+WbtamL
-         1nXf5n0Q3WPie9VGxaEFHqMSj5ystmyL4ODRnoJpdYJKDD9bOmXuTkJjdaCp2rLfZ36Y
-         sfuydtCET6nWUXZfkmeU6/k+HpZXjjzAajXofGAG9QligiikrcGykXQLc+3vyDb9uAYX
-         gesA==
-X-Gm-Message-State: AOAM532pOo4SJieglbbRNUIDjwQFb2lxdN4Wj2nuG1CeVDgwVv02czun
-        VMSD4ITNMuWNFVZBcvE+ITF5Qw==
-X-Google-Smtp-Source: ABdhPJwe/7oxD8seb94IGhdhxw8+9ucrBRMf76NWX/DErr1puHLn9g72XOQ5mbNMHwZcStBGGJQ65Q==
-X-Received: by 2002:a17:906:46c6:: with SMTP id k6mr19443920ejs.230.1597049816163;
-        Mon, 10 Aug 2020 01:56:56 -0700 (PDT)
-Received: from [192.168.0.28] ([188.252.226.35])
-        by smtp.gmail.com with ESMTPSA id p8sm12711825ejx.53.2020.08.10.01.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 01:56:55 -0700 (PDT)
-Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
- <CAEf4BzYp2WFq7xZxOs9DwBzXE743nuMLjxTLh5xL36CJqnQmvw@mail.gmail.com>
-From:   Jakov Petrina <jakov.petrina@sartura.hr>
-Message-ID: <64cd4e85-cec8-b254-67b7-76f78ac0aea1@sartura.hr>
-Date:   Mon, 10 Aug 2020 10:56:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=9jozky3iNUilNi92WXOcNWoi6GSxB0Ejr0u+yMbhGh4=;
+        b=DNTlx665kyzfTLid8SH+lfqQMroJEOXBn1sskzHIQ6k8BGN4ttisXKAopjN5sGRX4w
+         jfFFhf9lBstLp8fblKW/GfOxzOmfpktoH/TX5bDHemAW5i3lsjNg5wcg9OOHKg6S+a5o
+         hmHTw0FtwycFvei3m+nXKkV1Pf5wa27OD6wN7k5lbsC07Jj9L6EcF827eeuFm3t4NkRW
+         EDUoXjEc3TNGndNL+2OIYXifjk+8/J8s8JE2Z0hZ56La1ssoiaBzFy4OMiufJC92PSF1
+         RBULC91l6M2lKEvGS0W+3sujb2o9X9kCZ6PW82BYiBtnJeCfsW21ZzHjELVJTU22Fth1
+         xK3A==
+X-Gm-Message-State: AOAM531wnDcL8USCq5VA6HNJH0JPEp2/aa042MZoBVQ9DFslNV4DxrD7
+        9K9KyA3MfhKpgH0DhaIvspIzcg==
+X-Google-Smtp-Source: ABdhPJxz2LAgBDmCKJWiBsGk130LsHhKh7fSGHlvuZTr9dl1h7uD8JkceN96LNyOkKCXbvAGdXFZDA==
+X-Received: by 2002:a17:906:37c3:: with SMTP id o3mr22588144ejc.54.1597063242060;
+        Mon, 10 Aug 2020 05:40:42 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id b62sm12395285edf.61.2020.08.10.05.40.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 05:40:41 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
+Subject: [PATCH bpf] libbpf: Handle GCC built-in types for Arm NEON
+Date:   Mon, 10 Aug 2020 14:28:36 +0200
+Message-Id: <20200810122835.2309026-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYp2WFq7xZxOs9DwBzXE743nuMLjxTLh5xL36CJqnQmvw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+When building Arm NEON (SIMD) code, GCC emits built-in types __PolyXX_t,
+which are not recognized by Clang. This causes build failures when
+including vmlinux.h generated from a kernel built with CONFIG_RAID6_PQ=y
+and CONFIG_KERNEL_MODE_NEON. Emit typedefs for these built-in types,
+based on the Clang definitions. poly64_t is unsigned long because it's
+only defined for 64-bit Arm.
 
-On 07/08/2020 21:46, Andrii Nakryiko wrote:
->> First showstopper for cross-compiling aforementioned example on the ARM
->> 32-bit platform has been with regards to generation of the required
->> `vmlinux.h` kernel header from the BTF information. More specifically,
->> our initial approach to have e.g. a compilation target dependency which
->> would invoke `bpftool` at configure time was not appropriate due to
->> several issues: a) CO-RE requires host kernel to have been compiled in
->> such a way to expose BTF information which may not available, and b) the
->> generated `vmlinux.h` was actually architecture-specific.
-> 
-> That's not exactly true, about "CO-RE requires host kernel to have
-> been compiled...". You can pass any kernel image as a parameter to
-> bpftool as an input to generate vmlinux.h for that target
-> architecture. The only limitation right now, I think, is that their
-> endianness have to match. We'll probably get over this limitation some
-> time by end of this year, though.
-> 
+Including linux/kernel.h to use ARRAY_SIZE() incidentally redefined
+max(), causing a build bug due to different types, hence the seemingly
+unrelated change.
 
-Ah, I was not aware this was possible, thanks; it will certainly cut 
-down on the time it takes to generate headers for other arches.
+Reported-by: Jakov Petrina <jakov.petrina@sartura.hr>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+ tools/lib/bpf/btf_dump.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-> So in your case, I'd recommend to generate per-architecture vmlinux.h
-> and use the appropriate one when you cross-compile. I don't think we
-> ever intended to support single CO-RE BPF binary across architectures,
-> given it's not too bad to compile same code one time for each target
-> architecture. Compiling once for each kernel version/variant was much
-> bigger problem, which is what we tackled.
-> 
-
-Agreed, kernel compatibility is a bit more crucial here; we are 
-comfortable with handling cross-compilation for other arches.
-
->>
->> However, there are certainly drawbacks to this approach: a) (relatively)
->> large file size of the generated headers, b) regular maintenance to
->> re-generate the header files for various architectures and kernel
->> versions, and c) incompatible definitions being generated, to name a
->> few. This last point relates to the the fact that our `aarch64`/`arm64`
->> kernel generates the following definition using `bpftool`, which has
->> resulted in compilation failure:
->>
->> ```
->> typedef __Poly8_t poly8x16_t[16];
->> ```
->>
->> AFAICT these are ARM NEON intrinsic definitions which are GCC-specific.
->> We have opted to comment out this line as there was no additional
->> `poly8x16_t` usage in the header file.
-> 
-> Ok, so for a) why the size of vmlinux.h is a big factor? You use it on
-> host machine during compilation only, after that you don't have to
-> distribute it anywhere. I just checked the size of vmlinux.h we use to
-> write BPF programs for production, it's at 2.5MB. Having even few of
-> those (if you need x86 + ARM32 + ARM64 + s390x + whatever) isn't a big
-> deal, IMO, you can just check them in into your source control system?
-> If the size is a concern, I'd be curious to hear why.
-> 
-
-Yup, we currently have these files included with our source and it 
-hasn't been that bad. However, it struck us as a not the most elegant 
-solution given the fact that these are large pre-generated files which 
-require manual intervention to update.
-
-However, given that a running kernel is not necessary to create these 
-files perhaps we might develop internal tooling to make this process as 
-easy as possible.
-
-> b) Hm.. how often do you intend to re-geneate them? Unless you are
-> using some bleeding-edge and volatile features of kernel and/or
-> compiled-in drivers, you shouldn't need to re-generate it all that
-> often. Maybe once every kernel release, maybe even less frequently. We
-> update those vmlinux.h only when there is some new set of features
-> (e.g., bpf_iter) added and we need those types, or when we get a new
-> major kernel version bump. So far so good. But your constraints might
-> differ, so I'd like to learn more.
-> 
-
-We are currently looking into bleeding-edge features of the kernel, but 
-they mostly concern eBPF itself; I suppose that for us, updating these 
-headers should be done when new features are introduced to the kernel. 
-When we identify applications of eBPF we will most likely have more 
-constraints to keep track of.
-
-> c) I addressed in another reply. BTF dumper in libbpf maintains a list
-> of types that are compiler-provided and avoid generating types for
-> them, assuming compiler will have them. So far we've handled it simply
-> for __builtin_va_list, we can probably do something like that here as
-> well?
-> 
-
-Great, I think that is an acceptable solution.
-
->>
->> Given various issues we have encountered so far (among which is a kernel
->> panic/crash on a specific device), additional input and feedback
->> regarding cross-compilation of the eBPF utilities would be greatly
->> appreciated.
->>
-> 
-> Please report the panic with more details separately. If you are
-> referring to cross-compiling libbpf-tools in BCC repo, we can play
-> with that, generate a separate vmlinux.<arch>.h. It's a bit hard for
-> me to test as I don't have easy access to anything beyond x86-64, so
-> some help from other folks would be very appreciated.
-> 
-
-Thanks, as mentioned in another reply we have been attempting to 
-reproduce this issue in a QEMU ARM environment but so far we haven't 
-been successful. We will most likely move over to debugging it directly 
-on our target hardware and report it when we have more information.
-
-Regards,
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index cf711168d34a..3162d7b1880c 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -13,6 +13,7 @@
+ #include <errno.h>
+ #include <linux/err.h>
+ #include <linux/btf.h>
++#include <linux/kernel.h>
+ #include "btf.h"
+ #include "hashmap.h"
+ #include "libbpf.h"
+@@ -549,6 +550,9 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
+ 	}
+ }
+ 
++static void btf_dump_emit_int_def(struct btf_dump *d, __u32 id,
++				  const struct btf_type *t);
++
+ static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
+ 				     const struct btf_type *t);
+ static void btf_dump_emit_struct_def(struct btf_dump *d, __u32 id,
+@@ -671,6 +675,9 @@ static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 cont_id)
+ 
+ 	switch (kind) {
+ 	case BTF_KIND_INT:
++		/* Emit type alias definitions if necessary */
++		btf_dump_emit_int_def(d, id, t);
++
+ 		tstate->emit_state = EMITTED;
+ 		break;
+ 	case BTF_KIND_ENUM:
+@@ -870,7 +877,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
+ 			btf_dump_printf(d, ": %d", m_sz);
+ 			off = m_off + m_sz;
+ 		} else {
+-			m_sz = max(0, btf__resolve_size(d->btf, m->type));
++			m_sz = max(0LL, btf__resolve_size(d->btf, m->type));
+ 			off = m_off + m_sz * 8;
+ 		}
+ 		btf_dump_printf(d, ";");
+@@ -890,6 +897,32 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
+ 		btf_dump_printf(d, " __attribute__((packed))");
+ }
+ 
++static const char *builtin_types[][2] = {
++	/*
++	 * GCC emits typedefs to its internal __PolyXX_t types when compiling
++	 * Arm SIMD intrinsics. Alias them to the same standard types as Clang.
++	 */
++	{ "__Poly8_t",		"unsigned char" },
++	{ "__Poly16_t",		"unsigned short" },
++	{ "__Poly64_t",		"unsigned long" },
++	{ "__Poly128_t",	"unsigned __int128" },
++};
++
++static void btf_dump_emit_int_def(struct btf_dump *d, __u32 id,
++				  const struct btf_type *t)
++{
++	const char *name = btf_dump_type_name(d, id);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(builtin_types); i++) {
++		if (strcmp(name, builtin_types[i][0]) == 0) {
++			btf_dump_printf(d, "typedef %s %s;\n\n",
++					builtin_types[i][1], name);
++			break;
++		}
++	}
++}
++
+ static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
+ 				   const struct btf_type *t)
+ {
 -- 
-Jakov Petrina
+2.27.0
+
