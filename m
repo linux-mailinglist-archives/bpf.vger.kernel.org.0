@@ -2,118 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B8C240644
-	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 14:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E373240684
+	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 15:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgHJM6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Aug 2020 08:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgHJM6L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Aug 2020 08:58:11 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0030DC061756
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 05:58:10 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id d6so9260025ejr.5
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 05:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ktYDUhHF31x1lc93JUbH3XBmZYcyUsbaMWCvBNCVtoE=;
-        b=K6WSJN4GZJba5rv0vSTbH3ebXDdy2pHIC+xpROeTa8+eFMTDe5GCOHDAjLvtpIb8FG
-         RmKC3vbZ3P3jwxdMRViC45Y3IQgiFq/ZFBA7y13cQLOn0azZLc5AE3iL7ZxmUGmsNWJK
-         yhjcxub4ALC0pkkiUNsnZBem90q9RkZOjdGiXu3UzpvQotWYGzHSQEjG5On4THY/F6cQ
-         uMyJ2c7bZNdPPa3mygJSFkr/fqlGnef1LFtH2q0JFxRRh6WF4P4G4v92tgoTbAwT3QEt
-         6o4EKzxopm/0ulnvRGuHBXP8cMWukpOy5nFy6WDR8jOYXZ1oQWrGeGkoqY9pH5uIRc0D
-         BW2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ktYDUhHF31x1lc93JUbH3XBmZYcyUsbaMWCvBNCVtoE=;
-        b=XsFGq1N3YJukM4k1YzX6G2vuO2KeYdFIUGCq1O2w/AyAG7+4dzWWmTCxfJvzvXQzx7
-         SHcel7j4DWP4ULQBWp7AIMQS1x8V1um2dnnnJG9T1qnce9qiXNwMxbivMrBDeD0PwhDU
-         d7PHXI3oWXKvH4QndpGfPIfUJ7Y31E8aLvMuiEHY2ET2Lr0JbVwqzKAWvvjFjDCyexMn
-         Es4iaiRbjyO22Uu+3Cv6Hm3UKqHNn/1zaSEA1SKwKlTuB6TBzXuo4A0QvJEV2QDFGXm8
-         JoGsPU8RS5HaLobDWyU9X8KvYV3GzBWi0RKIzqp8JZTW9Y9XHLJ8VTyfSkfryOoyrOpu
-         ijjg==
-X-Gm-Message-State: AOAM533lBstjF+LwJP6QBcxZpJcb4nsmyK5DshrFyDGsP0WLfN6gtNHU
-        T8mJMnpz0pPQR8YMjMjfrwWa/w==
-X-Google-Smtp-Source: ABdhPJyucekWrU9iMusbTuqJaAo9iP/moBF4vkF4gUspwUfvVMHD6cDTj8PT/Ozigga7hG01g04FOA==
-X-Received: by 2002:a17:906:15c7:: with SMTP id l7mr21244447ejd.208.1597064289674;
-        Mon, 10 Aug 2020 05:58:09 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id t3sm12356370edq.26.2020.08.10.05.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 05:58:08 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 14:57:53 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakov Petrina <jakov.petrina@sartura.hr>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
-Message-ID: <20200810125753.GA1643799@myrica>
-References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
- <20200807172353.GA624812@myrica>
- <CAEf4BzbC-abnqD4802=uT+u3+gwMK3q+yXjWAriuDTj2hMJ9Yw@mail.gmail.com>
- <CAADnVQ+fQG38XKR+V33qTR-G-7wm398CMCafbuQrTQ9CHfE2mA@mail.gmail.com>
+        id S1726465AbgHJNUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Aug 2020 09:20:52 -0400
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:58783 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgHJNUw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Aug 2020 09:20:52 -0400
+X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 Aug 2020 09:20:51 EDT
+Received: from ubuntu.localdomain (unknown [58.251.74.227])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 35E3258224D;
+        Mon, 10 Aug 2020 21:11:01 +0800 (CST)
+From:   Jiang Yu <jyu.jiang@vivo.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        zhanglin <zhang.lin16@zte.com.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Ignatov <rdna@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Jiang Yu <jyu.jiang@vivo.com>
+Subject: [PATCH] bpf: Add bpf_skb_get_sock_comm() helper
+Date:   Mon, 10 Aug 2020 06:09:48 -0700
+Message-Id: <20200810131014.12057-1-jyu.jiang@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+fQG38XKR+V33qTR-G-7wm398CMCafbuQrTQ9CHfE2mA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTE8ZGR5OT0hIH0xOVkpOQkxLTU5LTUpCTEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZVUtZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6K0k6Szo*IT8vNU4dDywuDCIB
+        FAkwCT5VSlVKTkJMS01OS01JSEJNVTMWGhIXVRECDlUREhoVHDsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOSlVMT1VJSUxZV1kIAVlBTUlOTDcG
+X-HM-Tid: 0a73d87ee60098b6kuuu35e3258224d
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 01:54:02PM -0700, Alexei Starovoitov wrote:
-[...]
-> > > > ```
-> > > > typedef __Poly8_t poly8x16_t[16];
-> > > > ```
-> > > >
-> > > > AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
-> > > > have opted to comment out this line as there was no additional `poly8x16_t`
-> > > > usage in the header file.
-> > >
-> > > It looks like this "__Poly8_t" type is internal to GCC (provided in
-> > > arm_neon.h) and clang has its own internals. I managed to reproduce this
-> > > with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
-> > > the moment. Maybe libbpf should generate defines to translate these
-> > > intrinsics between clang and gcc? Not very elegant. I'll take another
-> > > look next week.
-> >
-> > libbpf is already blacklisting __builtin_va_list for GCC, so we can
-> > just add __Poly8_t to the list. See [0].
-> > Are there any other types like that? If you guys can provide me this,
-> > I'll gladly update libbpf to take those compiler-provided
-> > types/built-ins into account.
-> 
-> Shouldn't __Int8x16_t and friends cause the same trouble?
+skb distinguished by uid can only recorded to user who consume them.
+in many case, skb should been recorded more specific to process who
+consume them. E.g, the unexpected large data traffic of illegal process
+in metered network.
 
-I think these do get properly defined, for example in my vmlinux.h:
+this helper is used in tracing task comm of the sock to which a skb
+belongs.
 
-	typedef signed char int8x16_t[16];
+Signed-off-by: Jiang Yu <jyu.jiang@vivo.com>
+---
+ include/net/sock.h             |  1 +
+ include/uapi/linux/bpf.h       |  1 +
+ net/core/filter.c              | 32 ++++++++++++++++++++++++++++++++
+ net/core/sock.c                | 20 ++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  1 +
+ 5 files changed, 55 insertions(+)
 
-From a cursory reading of the "ARM C Language Extension" doc (IHI0053D) it
-looks like only the poly8/16/64/128_t types are unspecified. It's safe to
-drop them as long as they're not used in structs or function parameters,
-but I sent a more generic fix [1] that copies the clang defintions. When
-building the kernel with clang, the polyX_t types do get typedefs.
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 064637d1ddf6..9c6e8e61940f 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -519,6 +519,7 @@ struct sock {
+ #ifdef CONFIG_BPF_SYSCALL
+ 	struct bpf_sk_storage __rcu	*sk_bpf_storage;
+ #endif
++	char sk_task_com[TASK_COMM_LEN];
+ 	struct rcu_head		sk_rcu;
+ };
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index b134e679e9db..c7f62215a483 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3538,6 +3538,7 @@ union bpf_attr {
+ 	FN(skc_to_tcp_request_sock),	\
+ 	FN(skc_to_udp6_sock),		\
+ 	FN(get_task_stack),		\
++	FN(skb_get_sock_comm),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7124f0fe6974..972c0bf8e7ca 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4313,6 +4313,36 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ };
+ 
++BPF_CALL_3(bpf_skb_get_sock_comm,     struct sk_buff *, skb, char *, buf, u32, size)
++{
++	struct sock *sk;
++
++	if (!buf || 0 == size)
++		return -EINVAL;
++
++	sk = sk_to_full_sk(skb->sk);
++	if (!sk || !sk_fullsock(sk))
++		goto err_clear;
++
++	memcpy(buf, sk->sk_task_com, size);
++	buf[size - 1] = 0;
++	return 0;
++
++err_clear:
++	memset(buf, 0, size);
++	buf[size - 1] = 0;
++	return -ENOENT;
++}
++
++const struct bpf_func_proto bpf_skb_get_sock_comm_proto = {
++	.func           = bpf_skb_get_sock_comm,
++	.gpl_only       = false,
++	.ret_type       = RET_INTEGER,
++	.arg1_type      = ARG_PTR_TO_CTX,
++	.arg2_type      = ARG_PTR_TO_MEM,
++	.arg3_type      = ARG_CONST_SIZE,
++};
++
+ #define SOCKOPT_CC_REINIT (1 << 0)
+ 
+ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+@@ -6313,6 +6343,8 @@ sk_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_socket_cookie_proto;
+ 	case BPF_FUNC_get_socket_uid:
+ 		return &bpf_get_socket_uid_proto;
++	case BPF_FUNC_skb_get_sock_comm:
++		return &bpf_skb_get_sock_comm_proto;
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_skb_event_output_proto;
+ 	default:
+diff --git a/net/core/sock.c b/net/core/sock.c
+index d29709e0790d..79d81afa048f 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2961,6 +2961,24 @@ void sk_stop_timer(struct sock *sk, struct timer_list* timer)
+ }
+ EXPORT_SYMBOL(sk_stop_timer);
+ 
++void sock_init_task_comm(struct sock *sk)
++{
++	struct pid *pid = NULL;
++	struct task_struct *tgid_task = NULL;
++
++	pid = find_get_pid(current->tgid);
++	if (pid) {
++		tgid_task = get_pid_task(pid, PIDTYPE_PID);
++
++		if (tgid_task) {
++			snprintf(sk->sk_task_com, TASK_COMM_LEN, tgid_task->comm);
++			put_task_struct(tgid_task);
++		}
++
++		put_pid(pid);
++	}
++}
++
+ void sock_init_data(struct socket *sock, struct sock *sk)
+ {
+ 	sk_init_common(sk);
+@@ -3031,6 +3049,8 @@ void sock_init_data(struct socket *sock, struct sock *sk)
+ 	WRITE_ONCE(sk->sk_pacing_shift, 10);
+ 	sk->sk_incoming_cpu = -1;
+ 
++	sock_init_task_comm(sk);
++
+ 	sk_rx_queue_clear(sk);
+ 	/*
+ 	 * Before updating sk_refcnt, we must commit prior changes to memory
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index b134e679e9db..c7f62215a483 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3538,6 +3538,7 @@ union bpf_attr {
+ 	FN(skc_to_tcp_request_sock),	\
+ 	FN(skc_to_udp6_sock),		\
+ 	FN(get_task_stack),		\
++	FN(skb_get_sock_comm),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+-- 
+2.25.1
 
-Thanks,
-Jean
-
-[1] https://lore.kernel.org/bpf/20200810122835.2309026-1-jean-philippe@linaro.org/
-
-> There is a bunch more in gcc/config/arm/arm-simd-builtin-types.def.
-> May be there is a way to detect compiler builtin types by pattern matching
-> their dwarf/btf shape and skip them automatically?
-> The simplest, of course, is to only add a few that caused this known
-> trouble to blocklist.
