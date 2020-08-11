@@ -2,88 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6371D241423
-	for <lists+bpf@lfdr.de>; Tue, 11 Aug 2020 02:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9C9241424
+	for <lists+bpf@lfdr.de>; Tue, 11 Aug 2020 02:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgHKA0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Aug 2020 20:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S1727014AbgHKA12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Aug 2020 20:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgHKA0j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Aug 2020 20:26:39 -0400
+        with ESMTP id S1725969AbgHKA11 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Aug 2020 20:27:27 -0400
 Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4DAC06174A
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 17:26:39 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id y134so6124563yby.2
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 17:26:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F5C06174A
+        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 17:27:27 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id e187so6116664ybc.5
+        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 17:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T/wMn1yeQCNzJ2/0+PssboxsNheEyWcBHI63Lt5wHnw=;
-        b=okm3TVCIi5oli7FRHqxsGa7WldjsOht74kdzzeDhGsvtC0zxYmnv6TeCi+uz9TwHB1
-         C/F0z3WOvtz49+IKZjg4c5gohDk0H56+Y3vVm1lC9q0MPOGysbcDtkP+AUG6jUDuqscG
-         nKYt+nrjgk612uZ4752d9vDIkIXvQPNaOTpyMDnvJF6VjXa4HT+CT+eh/H2XL7aNj+bA
-         LGHJfb8+B68nh6G94IHQqBEsVLlxTwm23nYkuXvcEWoQmZwuDM4vye5G7pntGJcs2M3I
-         eJ0ao+zSSn3noo54OR49+gIP7NbqD36tD9YgbE6rfg4GOaa7h+Q6mdRTcP2QytDRdRId
-         HFWg==
+        bh=WCELKvewJ25oPpL9m2h6vwGEUGM/6cJQi6GwCIuOS9Q=;
+        b=j7AdXxYHgcuE5nTT0FBITY99XIxMUZvzmWiZxdN0XptapZ9Ej3JTU9ZD1WFHTaaIhX
+         Bn1jzblQzXGkjpqi048tYrAoaBa2S9A7ULbO33CmiBWCS2mgJmv8txI7joBHoiWbQ+DK
+         ny0pa4rc9ffahF75O24yg/axobIJveqbS/kUI8oqDXbyNkSCzncurHsW6Gq9BXcKTxOw
+         wtdrp1PhQUDx8bBjd3KfgiAL20f7lATB8hEJM5woIzo27whrkoRonv62njhafJzyhSD7
+         SI8R49K140DpqifqaFcy+XigjP88CZD6n6H4O+AZn1/IrQYV4apjTa6q8/doE3ZmjB31
+         ITlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T/wMn1yeQCNzJ2/0+PssboxsNheEyWcBHI63Lt5wHnw=;
-        b=BqgQDd+E7QQ1shKWKz8ej55qOKuPpR2mxa0q+ohrrJUlAWIj9cIcPxyVSU6EyUawiL
-         dzIhLtGKtMxgopbqoJ0zKA1OeUynWci1+95GSc3KS8xzmJteV/ZE1Hen1X9pvNVAqNH9
-         6Q0iWDnEcicwV/0whY5NbefT6BKyIqt8QAw8gs4DLlcuORwfQbyTQTSmCeh8gHYwPRXo
-         lrNSJ9/Ud+F4UvjV8r/UNL7eB1HnpgbGubkB5izX1xpjx/atixY8F9Q2aA0jV5RcnLF6
-         Hlvg3Ev1566mMZ+msoa3fwwRERCU2jVZwa/0fu+FVcH5Inm6MG4GWHc8SR8VHcONEzwh
-         20/w==
-X-Gm-Message-State: AOAM532SKRlOxB0QDJQv7OGy6qBwLUPdgI0o7UE1PzesMhSnfoEcS2oz
-        caCXinv1MVEZjhXDAkdZNQyKW6yvitRMcLOrZEQ=
-X-Google-Smtp-Source: ABdhPJyfu+g0U77q53JU/bTgSKs4SB5qqMQ+knAMkcRUOqnbGxA8NnRUbAkWe1qVfBgSNX3MVPs7YQTLsCQcq7ENqe8=
-X-Received: by 2002:a25:d84a:: with SMTP id p71mr46478068ybg.347.1597105597917;
- Mon, 10 Aug 2020 17:26:37 -0700 (PDT)
+        bh=WCELKvewJ25oPpL9m2h6vwGEUGM/6cJQi6GwCIuOS9Q=;
+        b=A97tO6ZiauOabtsGWfBGNWzMes1HnSHuMI344HmHG0U3fQg8QehX44xBxmx8lvVcZF
+         lHdpmZ7YsnBfd7QbzABghVwHghQrDvj4za5SnR01R4FQqUK0XbRSSEocCsXM2VyAdVYC
+         FHjlsDGTb4el558jMWse92ZkIfIgw556kYoCBgVOXjo15kIlGCdQXjiAZoDT8Ck+iTbe
+         kZafs3bI8nT+NZRWgpf0SqoUAPJSGcKjwnQABzTEO486Cp+MDeK7iBF92lBR8MaWZK7Y
+         C0yAjrvx+BUeASIeeq456RLSijk/0XeqwlEyqx7njH/mwsEVRgxkQj8xYRNXs2kHbVTr
+         bC/g==
+X-Gm-Message-State: AOAM530/O8gV0B1kv4BI1vqeH8GzRiwlAeW7kxRQZBmignI7WWYPuVH9
+        ctRQTip2/Z0RwYmnNpHlwMIlgNdFA03e7P41bqM=
+X-Google-Smtp-Source: ABdhPJzp43PzC3UzS+gkqdSeW3HK6QgtEgpPcaqewacS1vV1/OCoAm87yZtl1NLKCUN//H0sYKvJu0GPJ3eGJ3QbJ/k=
+X-Received: by 2002:a25:c048:: with SMTP id c69mr16945466ybf.459.1597105646778;
+ Mon, 10 Aug 2020 17:27:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200810153139.41134-1-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200810153139.41134-1-yauheni.kaliuta@redhat.com>
+References: <xunyft9i1olx.fsf@redhat.com> <CAEf4BzZGUB5oqmFnV8Xmw+hXGr3fxRno0nkOuG+f5b9vNhbEHQ@mail.gmail.com>
+ <CANoWswm-8oV5vQmcq68ncwCU5QhqRv12v8BMpsMO2rOeox-F8A@mail.gmail.com>
+In-Reply-To: <CANoWswm-8oV5vQmcq68ncwCU5QhqRv12v8BMpsMO2rOeox-F8A@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 10 Aug 2020 17:26:27 -0700
-Message-ID: <CAEf4BzZkf5czhBHSD6z83mOwL+WtWXDutQghpMM=5mp=FzyRMw@mail.gmail.com>
-Subject: Re: [PATCH] selftests: bpf: mmap: reorder mmap manipulations of
- adv_mmap tests
+Date:   Mon, 10 Aug 2020 17:27:16 -0700
+Message-ID: <CAEf4BzaLYefQJUxrOqtPRPcqFdN6EEN7_Xq5wa912mi6wDojNA@mail.gmail.com>
+Subject: Re: selftests: bpf: mmap question
 To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Jiri Olsa <jolsa@redhat.com>, Jiri Benc <jbenc@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 8:32 AM Yauheni Kaliuta
+On Mon, Aug 10, 2020 at 8:31 AM Yauheni Kaliuta
 <yauheni.kaliuta@redhat.com> wrote:
 >
-> The idea of adv_mmap tests is to map/unmap pages in arbitrary
-> order. It works fine as soon as the kernel allocates first 3 pages
-> for from a region with unallocated page after that. If it's not the
-> case, the last remapping of 4 pages with MAP_FIXED will remap the
-> page to bpf map which will break the code which worked with the data
-> located there before.
+> Hi!
 >
-> Change the test to map first the whole bpf map, 4 pages, and then
-> manipulate the mappings.
+> On Tue, Jul 28, 2020 at 8:15 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Jul 23, 2020 at 4:02 AM Yauheni Kaliuta
+> > <yauheni.kaliuta@redhat.com> wrote:
+> > >
+> > > Hi!
+> > >
+> > > I have a question about the part of the test:
+> > >
+> >
+> > [...]
+> >
+> > >
+> > > In my configuration the first mapping
+> > >
+> > >         /* map all but last page: pages 1-3 mapped */
+> > >         tmp1 = mmap(NULL, 3 * page_size, PROT_READ, MAP_SHARED,
+> > >                           data_map_fd, 0);
+> > >
+> > >
+> > > maps the area to the 3 pages right before the TLS page.
+> > > I find it's pretty ok.
+> >
+> > Hm... I never ran into this problem. The point here is to be able to
+> > re-mmap partial ranges. One way would be to re-write all those
+> > manipulations to start with a full range map, and then do partial
+> > un-mmaps/re-mmaps, eventually just re-mmaping everything back. I think
+> > that would work, right, as long as we never unmmap the last page? Do
+> > you mind trying to fix the test in such a fashion?
 >
-> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> ---
+> Sorry for the delay. I don't sure, sending the patch.
+>
 
-[0] is fixing the same issue with a slightly different approach by
-"preallocating" 4 anonymous mmap pages. I think I like that one a bit
-better. Please take a look as well.
+No worries! Meanwhile there has been an alternative fix for the same bug: [0]!
 
   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200810153940.125508-1-Jianlin.Lv@arm.com/
-
->  tools/testing/selftests/bpf/prog_tests/mmap.c | 23 ++++++++++++-------
->  1 file changed, 15 insertions(+), 8 deletions(-)
->
-
-[...]
