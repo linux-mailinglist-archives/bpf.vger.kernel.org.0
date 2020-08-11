@@ -2,157 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FD9241925
-	for <lists+bpf@lfdr.de>; Tue, 11 Aug 2020 11:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37449241961
+	for <lists+bpf@lfdr.de>; Tue, 11 Aug 2020 12:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgHKJy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Aug 2020 05:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S1728280AbgHKKFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Aug 2020 06:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728239AbgHKJy2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Aug 2020 05:54:28 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFEDC06174A
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 02:54:28 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id kq25so12427941ejb.3
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 02:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VqCnW+F9+9tJsYe5g6wAFuo+N9f5pgyFC+LnHJbK6JA=;
-        b=KpVb+TiTRQRZ9NqSvgemtajbZBh0Lg3bA+PXANtMrhsr033FP224M6KLxJvnx2zFvu
-         0YdDmAjDUr3AjDH4lEDgvieSkJczLu5mVJPNBJbvgBk8UHE0r3VzbD72W0bLpPi1ZawB
-         AR8DkrFcBlnubrEBdm0HKr3ceLNHrHASQilgY5uMm9I16V2N/Fl6TasIccC6LcovQRzM
-         q5iDf4Q1FB3ZD2u9UgGwg6z4bELpIkuUeOiulc5lCS/RDIfHbrHE6lBekxcapBSCx7vS
-         PQd4mK4FZdEUILpON2YhywA1wYN24HmSru3TcDcotNKCjRVKdYD9x++HFRMVWxtOUIgZ
-         UwDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VqCnW+F9+9tJsYe5g6wAFuo+N9f5pgyFC+LnHJbK6JA=;
-        b=HKrMECz9mKnlc9gBs5huY4FwQ2YZ2eEakVv0LruHKtxUS3QOjcQhrD4JpbdIcao2i8
-         CSqvHoVUs0pMj3dgJ3cMFDNvmdz0JO4OHlLHvoUN0oq4YxZjMIBzEqj+rjVJC7j5lz5/
-         OSt3Ayyg3g6Dd7opyzSuqJtYJ7DHM+pGXHDz1Zi8M4S17bGbVsljGqEJ6WNz4k9cK+Z9
-         Z4qkP4ka5WJmhFYGhYAsTG94hmjOe2ggG/EtXpym3Z33A0puM+qGSAob3SInLu/XrW7t
-         sA0iHaGMWK1KzELQ0e4ywIfn+83WBX+yMuZkFKevU0w/XVPRYyL2ZhJIEhXXhSn4bmWt
-         KmZQ==
-X-Gm-Message-State: AOAM530tXOScxiMx0bSVE4usm/lMKWqV1oULM1w20q1fNyoNuGoAOYtY
-        mGngzHD1PnPhFaHvJztDvjmjQw==
-X-Google-Smtp-Source: ABdhPJwu98KH0FtMQ1TqlP3Pk0dHM+v5fY4JyprMrtrqpSELdVfSXmYInsSOTDecwNtmcLiJcxg4cA==
-X-Received: by 2002:a17:906:4696:: with SMTP id a22mr25356279ejr.154.1597139666817;
-        Tue, 11 Aug 2020 02:54:26 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id m6sm14564948ejq.85.2020.08.11.02.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 02:54:25 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 11:54:10 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakov Petrina <jakov.petrina@sartura.hr>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
+        with ESMTP id S1728274AbgHKKFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:05:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C904C06174A
+        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 03:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=3uVEn1qPyMGagyV0OlZXG7WW4nfFkV6Mw3U0YpXjGLk=; b=Zgb/o/nua+AqXsXA4ruyLSysm
+        ih5B/GWRHA3U8Vu5AcbhjNS+MEQfOGhlqG9qUmDmvmPFU3fY2QJQgDQoO/QKGcuM6/d2/vzfZk271
+        sLZwONEwpp8osENjA4JvUxiAHiUAny6uh2oiLf/qaCzqsgKUuMhTy2Omt86jNw0KdqoQd9T34KdMF
+        mWworB3zbAIp4C8aIUhk9KxebH9UTR1MnAOrpN6qI0rBsA6yqlY5yR9HVEQCx8dGmlOJ89PeKhKiF
+        PYFnDqqEwXBRPnn4Yu9c6EXr8s0C5f2DOXwlshJtWpqHlOW+Rs/B0BgL8jTDjsuJnrkFByQBfqmML
+        h8HIkXRWQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51100)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1k5R9S-0001Fa-L6; Tue, 11 Aug 2020 11:05:02 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1k5R9R-0002iL-2q; Tue, 11 Aug 2020 11:05:01 +0100
+Date:   Tue, 11 Aug 2020 11:05:01 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jakov Petrina <jakov.petrina@sartura.hr>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Luka Perkov <luka.perkov@sartura.hr>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Jakov Smolic <jakov.smolic@sartura.hr>, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        linux-arm-kernel@lists.infradead.org
 Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
-Message-ID: <20200811095410.GA2786584@myrica>
+Message-ID: <20200811100500.GK1551@shell.armlinux.org.uk>
 References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
  <20200807172353.GA624812@myrica>
- <CAEf4BzbC-abnqD4802=uT+u3+gwMK3q+yXjWAriuDTj2hMJ9Yw@mail.gmail.com>
- <CAADnVQ+fQG38XKR+V33qTR-G-7wm398CMCafbuQrTQ9CHfE2mA@mail.gmail.com>
- <20200810125753.GA1643799@myrica>
- <CAEf4BzaQcxAArJyLqxxw8sV507DyWzU44HJ3oaUAjX4UEu_KaA@mail.gmail.com>
+ <20200807190029.GI1551@shell.armlinux.org.uk>
+ <6872df6c-c541-5b35-a07d-77b2862c5333@sartura.hr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaQcxAArJyLqxxw8sV507DyWzU44HJ3oaUAjX4UEu_KaA@mail.gmail.com>
+In-Reply-To: <6872df6c-c541-5b35-a07d-77b2862c5333@sartura.hr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 11:54:54PM -0700, Andrii Nakryiko wrote:
-> On Mon, Aug 10, 2020 at 5:58 AM Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
-> >
-> > On Fri, Aug 07, 2020 at 01:54:02PM -0700, Alexei Starovoitov wrote:
-> > [...]
-> > > > > > ```
-> > > > > > typedef __Poly8_t poly8x16_t[16];
-> > > > > > ```
-> > > > > >
-> > > > > > AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
-> > > > > > have opted to comment out this line as there was no additional `poly8x16_t`
-> > > > > > usage in the header file.
-> > > > >
-> > > > > It looks like this "__Poly8_t" type is internal to GCC (provided in
-> > > > > arm_neon.h) and clang has its own internals. I managed to reproduce this
-> > > > > with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
-> > > > > the moment. Maybe libbpf should generate defines to translate these
-> > > > > intrinsics between clang and gcc? Not very elegant. I'll take another
-> > > > > look next week.
-> > > >
-> > > > libbpf is already blacklisting __builtin_va_list for GCC, so we can
-> > > > just add __Poly8_t to the list. See [0].
-> > > > Are there any other types like that? If you guys can provide me this,
-> > > > I'll gladly update libbpf to take those compiler-provided
-> > > > types/built-ins into account.
+On Mon, Aug 10, 2020 at 09:52:17AM +0200, Jakov Petrina wrote:
+> Hi,
+> 
+> On 07/08/2020 21:00, Russell King - ARM Linux admin wrote:
+> > 
+> > For those of us not familiar with what CO-RE is, this doesn't help.
+> > I assume the [0] was a reference to something that explained it,
+> > but that isn't included.
+> > 
+> 
+> the reference [0] is link to a blog post which explains the eBPF CO-RE
+> concept; I have added this link as a reference below.
+> 
+> > 
+> > What is "BTF information"?  Google suggests it's something to do with
+> > the British Thyroid Foundation.
+> > 
+> > Please don't use three letter abbreviations unless they are widely
+> > understood, or if you wish to, please ensure that you explain them.
+> > TLAs otherwise are an exclusion mechanism.
 > > >
-> > > Shouldn't __Int8x16_t and friends cause the same trouble?
-> >
-> > I think these do get properly defined, for example in my vmlinux.h:
-> >
-> >         typedef signed char int8x16_t[16];
-> >
-> > From a cursory reading of the "ARM C Language Extension" doc (IHI0053D) it
-> > looks like only the poly8/16/64/128_t types are unspecified. It's safe to
-> > drop them as long as they're not used in structs or function parameters,
-> > but I sent a more generic fix [1] that copies the clang defintions. When
-> > building the kernel with clang, the polyX_t types do get typedefs.
-> >
-> > Thanks,
-> > Jean
-> >
+> > What is this "vmlinux.h" ?  It isn't something that the kernel provides
+> > afaics.  It doesn't seem to be present on my existing x86 Debian system.
+> > I've seen it on Fedora systems in the dim and distant past.
+> > 
+> > Where do you think it comes from?  Where are you finding it?
+> > 
 > 
-> Hi Jean,
+> The blog post [0] provides description and context for the references and
+> abbreviations used, but in the future I will be sure to avoid using
+> abbreviations unless they are commonly understood.
 > 
-> Would you be so kind to build some simple C repro code that uses those
-> polyX_t types? Ideally built by both GCC and Clang. And then run
-> `pahole -J` on them to get .BTF into them as well. If you can share
-> those two with me, I'd love to look at how DWARF and BTF look like.
-> 
-> I'm, unfortunately, having trouble making something like that to
-> cross-compile on my x86-64 machine, I've spent a bunch of time already
-> on this unsuccessfully and it's really frustrating at this point. If
-> you have an ARM system (or cross-compilation set up properly), it
-> shouldn't take much time for you, hopefully. Just make sure that those
-> polyX_t types do make it into DWARF, so, e.g., use them with static
-> variable or something, e.g.,:
-> 
-> int main() {
->     static poly8_t a = 12;
->     return a + 10;
-> }
-> 
-> Or something along those lines. Thanks!
+> [0] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portability-and-co-re.html
 
-No problem, I put the source and clang+gcc binaries in a tarball here:
-https://jpbrucker.net/tmp/test-poly-neon.tar.bz2
+Okay, you've addressed one point I raised, but you have not addressed
+any of the questions I raised.  I'll take this thread as just noise on
+the mailing list since it seems to contain nothing of any relevance to
+the Linux kernel, and no one seems willing to explain why they think it
+is relevant.
 
-These contain all the base types defined by arm_neon.h (minus the new
-bfloat16, which I don't think matters at the moment)
+Thanks.
 
-Thanks,
-Jean
-
-> 
-> > [1] https://lore.kernel.org/bpf/20200810122835.2309026-1-jean-philippe@linaro.org/
-> >
-> > > There is a bunch more in gcc/config/arm/arm-simd-builtin-types.def.
-> > > May be there is a way to detect compiler builtin types by pattern matching
-> > > their dwarf/btf shape and skip them automatically?
-> > > The simplest, of course, is to only add a few that caused this known
-> > > trouble to blocklist.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
