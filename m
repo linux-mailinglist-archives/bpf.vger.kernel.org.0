@@ -2,119 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C262B2411BA
-	for <lists+bpf@lfdr.de>; Mon, 10 Aug 2020 22:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6590824141F
+	for <lists+bpf@lfdr.de>; Tue, 11 Aug 2020 02:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgHJUao (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Aug 2020 16:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        id S1727900AbgHKAYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Aug 2020 20:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgHJUao (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Aug 2020 16:30:44 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF41C061787
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 13:30:43 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id i10so11088917ljn.2
-        for <bpf@vger.kernel.org>; Mon, 10 Aug 2020 13:30:43 -0700 (PDT)
+        with ESMTP id S1725969AbgHKAYL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Aug 2020 20:24:11 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143BFC06174A;
+        Mon, 10 Aug 2020 17:24:11 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id x10so6095047ybj.13;
+        Mon, 10 Aug 2020 17:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=Wx2TL88AwCBQcmpYr8LVVD9gSnGGQQkuczGbUFBwHNU=;
-        b=lRZ/I2ITyYH8yKnqJMpTCHAl0RZOLS0aghIyVE8vmklILdMvvsQV5BJrLRyDPaKImn
-         ILibmO6QjBqY8rqrAE/5JtkeNyoddnQVe0SnU7a9eAhCFcLGk3xN66MesvmUVkFB+c+i
-         N1eE6yVnbukHcAlpzSqo38y9qKVU93ePP8xxU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ca9q074Qlxhxt0Jwpd7kmjuPwS3utHOAz98pmV2gWBw=;
+        b=kbWoWtvqq93GLzHIaqR7TuBaSEebZpq0IjeF+lXhxObaNPwapq4KaJK1fDzSakOPMR
+         O9CD3R6bHSJxkj22koO8hCQy0IVNBMCyAP8WEt5QFmVEf1K48IOKOzdsiSAj9ZD3I6kj
+         YI62xvIovfi3sSbT/VU2vjKC53Xzw7iQbc5rHwM8J/4SvFYMLGCVXZoaeINO4RoMp+Bx
+         4ItrZ1c7VFWhpC9d2YVdDn10KsfqRTtaJ/Tz3H1sXd8l6tGpQAWOvtAf6ls3wSnAflut
+         5zgmkCtUhdC/9lGuanSjgQWXvVTHdzjpbOCOMWR+t+CIlZe1WLuMjahy0pGK9Qchh6L1
+         y7vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=Wx2TL88AwCBQcmpYr8LVVD9gSnGGQQkuczGbUFBwHNU=;
-        b=YEe6HB5pDGqFC8T3Hb6CXfzi9fBFph4BEEunrNADIlTcb9rKbeD/Cug8GkP6/81ggN
-         oYsPX/MPvyelSRaypAfWg+J2RLGUadQuCjfANQB9KUTYOu99Q1qYVt3L69vy8+Dh1pRX
-         gEiQ6Vty52MfbAbAOf02lLAY6dt4glj1xuagqfpBY3egTrIhhSOaSeTzRgGo4fQdYtrG
-         TLRSD1MpH66U2Ql4u1YBAzG7yxik0/+vNjaq0JeqRvAgBKig4d7dTnaHtsLCGsrtvTyv
-         wAh936cw71fwYXtzrPoj+ACh2Q6rJa22r/O3JNKuVg+ewmZwmfq2T34ESQQqeOdyUC+N
-         zB4w==
-X-Gm-Message-State: AOAM533MBeXdfpmtNqz7aGCrCPKtaws2i6xUVIgDT+OvrjspoSQ0qBgS
-        cLTw1lK6oHb1I3+gryFXwV9tZjpIaeuFCw==
-X-Google-Smtp-Source: ABdhPJwzPpUtd6cyUfe/+Up71tMI4D2v1fkMcIG8zDGa8TM9+ZHXZ2+pquRCSVUKRvUU0nQoW3ygyw==
-X-Received: by 2002:a05:651c:310:: with SMTP id a16mr1308524ljp.250.1597091441235;
-        Mon, 10 Aug 2020 13:30:41 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id p28sm9472447ljn.69.2020.08.10.13.30.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 13:30:40 -0700 (PDT)
-References: <20200807223846.4190917-1-sdf@google.com> <87zh756kn7.fsf@cloudflare.com> <CAKH8qBswCOU6oK2rLkUADRF-NUgwcHB-MyWNV+ug_cLRxnQBeQ@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf] selftests/bpf: fix v4_to_v6 in sk_lookup
-In-reply-to: <CAKH8qBswCOU6oK2rLkUADRF-NUgwcHB-MyWNV+ug_cLRxnQBeQ@mail.gmail.com>
-Date:   Mon, 10 Aug 2020 22:30:39 +0200
-Message-ID: <87sgcus0pc.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ca9q074Qlxhxt0Jwpd7kmjuPwS3utHOAz98pmV2gWBw=;
+        b=cBZy4k4Dwr5YqEb0NzAImZ/2Fp7VXMUJhA3gH+T+cs8t0CDJnkXbGDqp63D8yH7nuE
+         4BQ+PuZvAZQkb1sw9gcH+cZQ8SZzPX9Z98jCj56Xw6DlHWZPtX/KBe4yMsEhWdaFtzDf
+         Pi3Z+hRIh+RS9oBVOocb+eEEim1/hq8hfsIiQSb+KPTCXMClwM0ylbPrkzdFgCn7G7/N
+         SxLFYRmY81r2Zo//NsnIvuyxLlbcZ+lFtZuZab5x9PdSqApz61/VSlmeSdu2FdWOH5e9
+         99YCz6a4Rt0YEobKKLT8D/htOmtAw0oGsUiJuopcoR2SeLcsh1zn1phbkFjzFPVFKXsk
+         j+nw==
+X-Gm-Message-State: AOAM530VnXjd3Z6I9B9u7oaxqjRuTXlMts9fO4ztWND6PMaMKfFqEyGv
+        TNk8r7n2nUBSJRuNxkDYm30ySw8tD9En2XlD7s0=
+X-Google-Smtp-Source: ABdhPJwTfsnLFwZLuC3suF9ncPk3LSJXppF8IcN/EC0+7l4ACCVMuQCqX2CPRNWRF48JbUQWtbWJ5zlK9ptjIHSwub0=
+X-Received: by 2002:a25:2ad3:: with SMTP id q202mr42541149ybq.27.1597105450335;
+ Mon, 10 Aug 2020 17:24:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200807172016.150952-1-Jianlin.Lv@arm.com> <20200810153940.125508-1-Jianlin.Lv@arm.com>
+In-Reply-To: <20200810153940.125508-1-Jianlin.Lv@arm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 10 Aug 2020 17:23:59 -0700
+Message-ID: <CAEf4BzbYFDBXNwE-3B4vc6oZvbDbSTbwf4xgUeUpkwJ2FCQY+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: fix segmentation fault of test_progs
+To:     Jianlin Lv <Jianlin.Lv@arm.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 06:14 PM CEST, Stanislav Fomichev wrote:
-> On Sat, Aug 8, 2020 at 11:46 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Sat, Aug 08, 2020 at 12:38 AM CEST, Stanislav Fomichev wrote:
->> > I'm getting some garbage in bytes 8 and 9 when doing conversion
->> > from sockaddr_in to sockaddr_in6 (leftover from AF_INET?).
->> > Let's explicitly clear the higher bytes.
->> >
->> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
->> > ---
->> >  tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 1 +
->> >  1 file changed, 1 insertion(+)
->> >
->> > diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
->> > index c571584c00f5..9ff0412e1fd3 100644
->> > --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
->> > +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
->> > @@ -309,6 +309,7 @@ static void v4_to_v6(struct sockaddr_storage *ss)
->> >       v6->sin6_addr.s6_addr[10] = 0xff;
->> >       v6->sin6_addr.s6_addr[11] = 0xff;
->> >       memcpy(&v6->sin6_addr.s6_addr[12], &v4.sin_addr.s_addr, 4);
->> > +     memset(&v6->sin6_addr.s6_addr[0], 0, 10);
->> >  }
->> >
->> >  static int udp_recv_send(int server_fd)
->>
->> That was badly written. Sorry about that. And thanks for the fix.
->>
->> I'd even zero out the whole thing:
->>
->>         memset(v6, 0, sizeof(*v6));
->>
->> ... because right now IPv4 address is left as sin6_flowinfo.  I can
->> follow up with that change, unless you'd like to roll a v2.
-> Up to you, but I'm not sure zeroing out the whole v6 portion is the
-> best way forward.
-> IMO, it's a bit confusing when reading the code.
-> It will work, but only because v4 and v6 address portions don't really
-> overlap :-/
+On Mon, Aug 10, 2020 at 8:40 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
+>
+> test_progs reports the segmentation fault as below
+>
+> $ sudo ./test_progs -t mmap --verbose
+> test_mmap:PASS:skel_open_and_load 0 nsec
+> ......
+> test_mmap:PASS:adv_mmap1 0 nsec
+> test_mmap:PASS:adv_mmap2 0 nsec
+> test_mmap:PASS:adv_mmap3 0 nsec
+> test_mmap:PASS:adv_mmap4 0 nsec
+> Segmentation fault
+>
+> This issue was triggered because mmap() and munmap() used inconsistent
+> length parameters; mmap() creates a new mapping of 3*page_size, but the
+> length parameter set in the subsequent re-map and munmap() functions is
+> 4*page_size; this leads to the destruction of the process space.
+>
+> To fix this issue, first create 4 pages of anonymous mapping,then do all
+> the mmap() with MAP_FIXED.
+>
+> Another issue is that when unmap the second page fails, the length
+> parameter to delete tmp1 mappings should be 4*page_size.
+>
+> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+> ---
 
-It's not that hacky :-) We copy sockaddr_in bits before overwriting ss:
+LGTM, thanks for the fix!
 
-	struct sockaddr_in v4 = *(struct sockaddr_in *)ss;
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-It could be easier to read, perhaps by copying just the fields we need:
+> v2:
+> - Update commit messages
+> - Create 4 pages of anonymous mapping that serve the subsequent mmap()
+> ---
+>  tools/testing/selftests/bpf/prog_tests/mmap.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+>
 
-	struct sockaddr_in *v4 = (struct sockaddr_in *)ss;
-	uint32_t addr = v4->sin_addr.saddr;
-	in_port_t port = v4->sin_port;
-
-> I was thinking about adding new, on the stack sin6, fully initializing
-> it and then doing memcpy into ss.
-> But I decided that adding memset is probably good enough :-)
-
-Makes sense. Either way sounds good to me.
+[...]
