@@ -2,158 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FD724243C
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 05:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31D424244D
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 05:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgHLDTC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Aug 2020 23:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        id S1726430AbgHLDaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Aug 2020 23:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgHLDTB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Aug 2020 23:19:01 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69E7C06174A
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:19:01 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id q3so594473ybp.7
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:19:01 -0700 (PDT)
+        with ESMTP id S1726333AbgHLDaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Aug 2020 23:30:18 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5497EC06174A
+        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:30:18 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id x10so585278ybj.13
+        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Xzgon0BTaPF3w6wHhfMI0rl39gN2oP3lEShQWBFBINA=;
-        b=ePc+TTDRg0p9f0Kca0A3rCx0crH/UpAZvSZ/HtN4zKbnK1ejxWor39tIzn6RQ9oT6H
-         naGc4mD8WvD1XOIarZuGB99BjayTTXkbt6XEAWtt9tUUyVIWkDQxUUwha336+FeorDEl
-         BVMhByzvxP1P1XWvaxz+el8CAEV0HWaSkTMco9Cwm3Sjpcxr1q170EeuAjXj8Npcd46y
-         nCJN+NiYYHDDcFIItHtGx4Ey0l61cbMxWZBFWyuRSEJHhxkwIkQ4EYcG33Si4Htl0wUb
-         6UPCM7IQAD0DH8rBlv7mg97eGxoyX+Ss+dXqJ0TXU17jNhwhwtRae2AWDVXZhm4L63hW
-         zHqA==
+        bh=jq6KwZn9dBsNqjuVThBLi66fPTb+WyI9MZGaNYTOdqI=;
+        b=m0pIU87+6fJXCrgzPexe6V6gNLgHq7HOyMioj0TZqaOCnIl3EJ/UGredW3jqiwgZfX
+         LKWxN7XOF9Z95ugAyGf23he3/yl/5PSbygiT3Sco/mzsMkPkbZjzFqozhx4EvaPUyUcy
+         o2egzx72IFhpbakgR29vHAVwxjMsEp/WQ5H8LOvU5/aZI13GHBErAgVoI7thMTWU5PPH
+         fhlo6+ltkhuzukEd9dvTFLfV4CGoC+XtDslS2jekrssbykd7r+F0w3800rDxQD8/MYBl
+         NYFe8yQkVZ41i9w5C8COZsLOiNhV0+oElcuya2hgRx4SGQWQkvtySjALOBKGPGBWa3IA
+         rjTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Xzgon0BTaPF3w6wHhfMI0rl39gN2oP3lEShQWBFBINA=;
-        b=a+K5/8XqgR9+5I3p1IePSIB6c/Ghbp1GgsWINaUz+1dOLSbljnQPlTwYf/p32ODZef
-         DSBnOXOU9jfSxKDH8hhxzJYAa6EI9/s/XoVElmrqw/QqU1tvZjJGVHbEcPyFWhN3nvxR
-         6n0JjnCGz2xfGRDGmghuH63AEMPTRamjiQpX+HJCx4LpJgAcFMw885XFjFUltBk8l+WJ
-         uq+rSJ8iyI2XZexNxjMlB0Z+L3j5dhFVPS8hn5ZyumjixQ/XBbrxc5R2GYVAU9aNny2A
-         sCiiF/7BO9/1eo6duw0QA12crcji2TqAXUFpHiWIUsiXskYOgV8oUHSpM30P0+leRjqm
-         o/HA==
-X-Gm-Message-State: AOAM530h/5gkKgWY2DI/S7JKWafu8wr3OEpr8llbdczBDHH7lveXuVe1
-        0aHivqYPxCfUTwNCgNX7zlQrqlWsdzW8Pfkk6XFwZw==
-X-Google-Smtp-Source: ABdhPJwNc8GNP4WZOcFY3FUuA1VPBLxihc19QGnZWhBRb5aWSSI78TEpT5Un+b+AhiXyJWCHgZ9M5Vl8slgoEHgwSuc=
-X-Received: by 2002:a25:ad5a:: with SMTP id l26mr49241170ybe.510.1597202340912;
- Tue, 11 Aug 2020 20:19:00 -0700 (PDT)
+        bh=jq6KwZn9dBsNqjuVThBLi66fPTb+WyI9MZGaNYTOdqI=;
+        b=COT+/is88laAGf6PCcQtOnujmD6K+4JudDMsYzpRFuKP1lTJPMdcLbAQCsvkNzY83c
+         F08FIq2x15G94riTnUqDkRLo1Lv6X10z6nRRQt+bGbhBTRzaOejX02WIfGNRSLyVNIgV
+         JUtuOszHLM/oDbVZc6sDs4qwrlRPf97lR5cfKKlGDe1jTRVVk4ZqARGVxEViiqMj3GaO
+         hP3FRvg9oskwzHDB80Dj+dmtLMt38ZsODSTmVV4AA9ye1FduTpjkIh3ptAGoA78QzgXk
+         EUakZ41jUuadZ3Q3n/Kznw5ErbWaZhoP3xpac2H6xL0w9vy6i5sRUYp7CvndGFE7lz+B
+         uZeA==
+X-Gm-Message-State: AOAM530YtUno6/HzG1S91QLX1AXsdCTg2XDEBRX0B+2CO2axTbhyGaFJ
+        BLPzVZfYLu2px7bQai6AahHX96CDwi5FOrnY940=
+X-Google-Smtp-Source: ABdhPJwD+mzEVwASRKgWMVRzQyP0zV4AshhMz4dSrww2reRFNfVfdoMzZJVLzuhSzhg3BBwcnzeioeGJaCN0s6icbmc=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr49283893ybe.510.1597203017584;
+ Tue, 11 Aug 2020 20:30:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
- <20200807172353.GA624812@myrica> <CAEf4BzbC-abnqD4802=uT+u3+gwMK3q+yXjWAriuDTj2hMJ9Yw@mail.gmail.com>
- <CAADnVQ+fQG38XKR+V33qTR-G-7wm398CMCafbuQrTQ9CHfE2mA@mail.gmail.com>
- <20200810125753.GA1643799@myrica> <CAEf4BzaQcxAArJyLqxxw8sV507DyWzU44HJ3oaUAjX4UEu_KaA@mail.gmail.com>
- <20200811095410.GA2786584@myrica>
-In-Reply-To: <20200811095410.GA2786584@myrica>
+References: <20200810122835.2309026-1-jean-philippe@linaro.org>
+In-Reply-To: <20200810122835.2309026-1-jean-philippe@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 Aug 2020 20:18:49 -0700
-Message-ID: <CAEf4BzbabGWckm2NSb-eL+-j5BZWTM_h==qqJn9PwDk2gd0gsA@mail.gmail.com>
-Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
+Date:   Tue, 11 Aug 2020 20:30:06 -0700
+Message-ID: <CAEf4Bza_Fchmy7sKT4=3Vs6wopk+yZU7g9o86CJNzeH4DY1c2A@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: Handle GCC built-in types for Arm NEON
 To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakov Petrina <jakov.petrina@sartura.hr>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Jakov Smolic <jakov.smolic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 2:54 AM Jean-Philippe Brucker
+On Mon, Aug 10, 2020 at 5:41 AM Jean-Philippe Brucker
 <jean-philippe@linaro.org> wrote:
 >
-> On Mon, Aug 10, 2020 at 11:54:54PM -0700, Andrii Nakryiko wrote:
-> > On Mon, Aug 10, 2020 at 5:58 AM Jean-Philippe Brucker
-> > <jean-philippe@linaro.org> wrote:
-> > >
-> > > On Fri, Aug 07, 2020 at 01:54:02PM -0700, Alexei Starovoitov wrote:
-> > > [...]
-> > > > > > > ```
-> > > > > > > typedef __Poly8_t poly8x16_t[16];
-> > > > > > > ```
-> > > > > > >
-> > > > > > > AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
-> > > > > > > have opted to comment out this line as there was no additional `poly8x16_t`
-> > > > > > > usage in the header file.
-> > > > > >
-> > > > > > It looks like this "__Poly8_t" type is internal to GCC (provided in
-> > > > > > arm_neon.h) and clang has its own internals. I managed to reproduce this
-> > > > > > with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
-> > > > > > the moment. Maybe libbpf should generate defines to translate these
-> > > > > > intrinsics between clang and gcc? Not very elegant. I'll take another
-> > > > > > look next week.
-> > > > >
-> > > > > libbpf is already blacklisting __builtin_va_list for GCC, so we can
-> > > > > just add __Poly8_t to the list. See [0].
-> > > > > Are there any other types like that? If you guys can provide me this,
-> > > > > I'll gladly update libbpf to take those compiler-provided
-> > > > > types/built-ins into account.
-> > > >
-> > > > Shouldn't __Int8x16_t and friends cause the same trouble?
-> > >
-> > > I think these do get properly defined, for example in my vmlinux.h:
-> > >
-> > >         typedef signed char int8x16_t[16];
-> > >
-> > > From a cursory reading of the "ARM C Language Extension" doc (IHI0053D) it
-> > > looks like only the poly8/16/64/128_t types are unspecified. It's safe to
-> > > drop them as long as they're not used in structs or function parameters,
-> > > but I sent a more generic fix [1] that copies the clang defintions. When
-> > > building the kernel with clang, the polyX_t types do get typedefs.
-> > >
-> > > Thanks,
-> > > Jean
-> > >
-> >
-> > Hi Jean,
-> >
-> > Would you be so kind to build some simple C repro code that uses those
-> > polyX_t types? Ideally built by both GCC and Clang. And then run
-> > `pahole -J` on them to get .BTF into them as well. If you can share
-> > those two with me, I'd love to look at how DWARF and BTF look like.
-> >
-> > I'm, unfortunately, having trouble making something like that to
-> > cross-compile on my x86-64 machine, I've spent a bunch of time already
-> > on this unsuccessfully and it's really frustrating at this point. If
-> > you have an ARM system (or cross-compilation set up properly), it
-> > shouldn't take much time for you, hopefully. Just make sure that those
-> > polyX_t types do make it into DWARF, so, e.g., use them with static
-> > variable or something, e.g.,:
-> >
-> > int main() {
-> >     static poly8_t a = 12;
-> >     return a + 10;
-> > }
-> >
-> > Or something along those lines. Thanks!
+> When building Arm NEON (SIMD) code, GCC emits built-in types __PolyXX_t,
+> which are not recognized by Clang. This causes build failures when
+> including vmlinux.h generated from a kernel built with CONFIG_RAID6_PQ=y
+> and CONFIG_KERNEL_MODE_NEON. Emit typedefs for these built-in types,
+> based on the Clang definitions. poly64_t is unsigned long because it's
+> only defined for 64-bit Arm.
 >
-> No problem, I put the source and clang+gcc binaries in a tarball here:
-> https://jpbrucker.net/tmp/test-poly-neon.tar.bz2
+> Including linux/kernel.h to use ARRAY_SIZE() incidentally redefined
+> max(), causing a build bug due to different types, hence the seemingly
+> unrelated change.
 >
-> These contain all the base types defined by arm_neon.h (minus the new
-> bfloat16, which I don't think matters at the moment)
->
+> Reported-by: Jakov Petrina <jakov.petrina@sartura.hr>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
 
-Thanks a lot! It was very helpful. I wonder why there was never
-poly32_t defined?
+Thanks for sending small binaries (in little-endian, double thanks!)
+for me to look at generated DWARF and BTF.
 
-> Thanks,
-> Jean
+I have a bunch of naming nits below and a grudge against "long", but
+the approach looks reasonable to me overall. It's unfortunate we have
+to deal with GCC quirks like this.
+
+>  tools/lib/bpf/btf_dump.c | 35 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 34 insertions(+), 1 deletion(-)
 >
-> >
-> > > [1] https://lore.kernel.org/bpf/20200810122835.2309026-1-jean-philippe@linaro.org/
-> > >
-> > > > There is a bunch more in gcc/config/arm/arm-simd-builtin-types.def.
-> > > > May be there is a way to detect compiler builtin types by pattern matching
-> > > > their dwarf/btf shape and skip them automatically?
-> > > > The simplest, of course, is to only add a few that caused this known
-> > > > trouble to blocklist.
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index cf711168d34a..3162d7b1880c 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -13,6 +13,7 @@
+>  #include <errno.h>
+>  #include <linux/err.h>
+>  #include <linux/btf.h>
+> +#include <linux/kernel.h>
+>  #include "btf.h"
+>  #include "hashmap.h"
+>  #include "libbpf.h"
+> @@ -549,6 +550,9 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
+>         }
+>  }
+>
+> +static void btf_dump_emit_int_def(struct btf_dump *d, __u32 id,
+> +                                 const struct btf_type *t);
+> +
+>  static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
+>                                      const struct btf_type *t);
+>  static void btf_dump_emit_struct_def(struct btf_dump *d, __u32 id,
+> @@ -671,6 +675,9 @@ static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 cont_id)
+>
+>         switch (kind) {
+>         case BTF_KIND_INT:
+> +               /* Emit type alias definitions if necessary */
+> +               btf_dump_emit_int_def(d, id, t);
+
+let's call it btf_dump_emit_missing_aliases() or something like that,
+so it's clear that it's some sort of compatibility/legacy compiler
+handling. "emit_int_def" is way too generic and normal-looking.
+
+> +
+>                 tstate->emit_state = EMITTED;
+>                 break;
+>         case BTF_KIND_ENUM:
+> @@ -870,7 +877,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
+>                         btf_dump_printf(d, ": %d", m_sz);
+>                         off = m_off + m_sz;
+>                 } else {
+> -                       m_sz = max(0, btf__resolve_size(d->btf, m->type));
+> +                       m_sz = max(0LL, btf__resolve_size(d->btf, m->type));
+>                         off = m_off + m_sz * 8;
+>                 }
+>                 btf_dump_printf(d, ";");
+> @@ -890,6 +897,32 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
+>                 btf_dump_printf(d, " __attribute__((packed))");
+>  }
+>
+> +static const char *builtin_types[][2] = {
+
+again, something like "missing_base_types" would be a bit more prominent
+
+> +       /*
+> +        * GCC emits typedefs to its internal __PolyXX_t types when compiling
+> +        * Arm SIMD intrinsics. Alias them to the same standard types as Clang.
+> +        */
+> +       { "__Poly8_t",          "unsigned char" },
+> +       { "__Poly16_t",         "unsigned short" },
+> +       { "__Poly64_t",         "unsigned long" },
+
+In the diff ([0]) that Daniel referenced, seems like they are adding
+poly64_t to ARM32. What prevents GCC from doing that (or maybe they've
+already done that). So instead of making unreliable assumptions, let's
+define it as "unsigned long long" instead?
+
+  [0] https://reviews.llvm.org/D79711
+
+> +       { "__Poly128_t",        "unsigned __int128" },
+> +};
+> +
+> +static void btf_dump_emit_int_def(struct btf_dump *d, __u32 id,
+> +                                 const struct btf_type *t)
+> +{
+> +       const char *name = btf_dump_type_name(d, id);
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(builtin_types); i++) {
+> +               if (strcmp(name, builtin_types[i][0]) == 0) {
+> +                       btf_dump_printf(d, "typedef %s %s;\n\n",
+> +                                       builtin_types[i][1], name);
+> +                       break;
+> +               }
+> +       }
+> +}
+> +
+>  static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
+>                                    const struct btf_type *t)
+>  {
+> --
+> 2.27.0
+>
