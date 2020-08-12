@@ -2,126 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFC3242951
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 14:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA7F242ADF
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 16:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgHLMbP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 12 Aug 2020 08:31:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39876 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726698AbgHLMbO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 08:31:14 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-71-kGLdQcsNOBislaL2_Ax9eA-1; Wed, 12 Aug 2020 08:31:09 -0400
-X-MC-Unique: kGLdQcsNOBislaL2_Ax9eA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A11C1005504;
-        Wed, 12 Aug 2020 12:31:07 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD0FF5D9D3;
-        Wed, 12 Aug 2020 12:31:03 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [RFC PATCH bpf-next] bpf: Iterate through all PT_NOTE sections when looking for build id
-Date:   Wed, 12 Aug 2020 14:31:02 +0200
-Message-Id: <20200812123102.20032-1-jolsa@kernel.org>
+        id S1727043AbgHLODd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 10:03:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:45598 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727016AbgHLODc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 10:03:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89B3FD6E;
+        Wed, 12 Aug 2020 07:03:31 -0700 (PDT)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.210.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6F9DF3F70D;
+        Wed, 12 Aug 2020 07:03:28 -0700 (PDT)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, Song.Zhu@arm.com,
+        Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: fix load XDP program error in test_xdp_vlan
+Date:   Wed, 12 Aug 2020 22:03:22 +0800
+Message-Id: <20200812140322.132844-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently when we look for build id within bpf_get_stackid helper
-call, we check the first NOTE section and we fail if build id is
-not there.
+test_xdp_vlan.sh reports the error as below:
 
-However on some system (Fedora) there can be multiple NOTE sections
-in binaries and build id data is not always the first one, like:
+$ sudo ./test_xdp_vlan_mode_native.sh
++ '[' -z xdp_vlan_mode_native ']'
++ XDP_MODE=xdpgeneric
+……
++ export XDP_PROG=xdp_vlan_remove_outer2
++ XDP_PROG=xdp_vlan_remove_outer2
++ ip netns exec ns1 ip link set veth1 xdpdrv off
+Error: XDP program already attached.
 
-  $ readelf -a /usr/bin/ls
-  ...
-  [ 2] .note.gnu.propert NOTE             0000000000000338  00000338
-       0000000000000020  0000000000000000   A       0     0     8358
-  [ 3] .note.gnu.build-i NOTE             0000000000000358  00000358
-       0000000000000024  0000000000000000   A       0     0     437c
-  [ 4] .note.ABI-tag     NOTE             000000000000037c  0000037c
-  ...
+ip will throw an error in case a XDP program is already attached to the
+networking interface, to prevent it from being overridden by accident.
+In order to replace the currently running XDP program with a new one,
+the -force option must be used.
 
-So the stack_map_get_build_id function will fail on build id retrieval
-and fallback to BPF_STACK_BUILD_ID_IP.
-
-This patch is changing the stack_map_get_build_id code to iterate
-through all the NOTE sections and try to get build id data from
-each of them.
-
-When tracing on sched_switch tracepoint that does bpf_get_stackid
-helper call kernel build, I can see about 60% increase of successful
-build id retrieval. The rest seems fails on -EFAULT.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
 ---
- kernel/bpf/stackmap.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ tools/testing/selftests/bpf/test_xdp_vlan.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 4fd830a62be2..cfed0ac44d38 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -213,11 +213,13 @@ static int stack_map_get_build_id_32(void *page_addr,
+diff --git a/tools/testing/selftests/bpf/test_xdp_vlan.sh b/tools/testing/selftests/bpf/test_xdp_vlan.sh
+index bb8b0da91686..034e603aeb50 100755
+--- a/tools/testing/selftests/bpf/test_xdp_vlan.sh
++++ b/tools/testing/selftests/bpf/test_xdp_vlan.sh
+@@ -220,7 +220,7 @@ ip netns exec ns1 ping -i 0.2 -W 2 -c 2 $IPADDR2
+ # ETH_P_8021Q indication, and this cause overwriting of our changes.
+ #
+ export XDP_PROG=xdp_vlan_remove_outer2
+-ip netns exec ns1 ip link set $DEVNS1 $XDP_MODE off
++ip netns exec ns1 ip -force link set $DEVNS1 $XDP_MODE off
+ ip netns exec ns1 ip link set $DEVNS1 $XDP_MODE object $FILE section $XDP_PROG
  
- 	phdr = (Elf32_Phdr *)(page_addr + sizeof(Elf32_Ehdr));
- 
--	for (i = 0; i < ehdr->e_phnum; ++i)
--		if (phdr[i].p_type == PT_NOTE)
--			return stack_map_parse_build_id(page_addr, build_id,
--					page_addr + phdr[i].p_offset,
--					phdr[i].p_filesz);
-+	for (i = 0; i < ehdr->e_phnum; ++i) {
-+		if (phdr[i].p_type == PT_NOTE &&
-+		    !stack_map_parse_build_id(page_addr, build_id,
-+					      page_addr + phdr[i].p_offset,
-+					      phdr[i].p_filesz))
-+			return 0;
-+	}
- 	return -EINVAL;
- }
- 
-@@ -236,11 +238,13 @@ static int stack_map_get_build_id_64(void *page_addr,
- 
- 	phdr = (Elf64_Phdr *)(page_addr + sizeof(Elf64_Ehdr));
- 
--	for (i = 0; i < ehdr->e_phnum; ++i)
--		if (phdr[i].p_type == PT_NOTE)
--			return stack_map_parse_build_id(page_addr, build_id,
--					page_addr + phdr[i].p_offset,
--					phdr[i].p_filesz);
-+	for (i = 0; i < ehdr->e_phnum; ++i) {
-+		if (phdr[i].p_type == PT_NOTE &&
-+		    !stack_map_parse_build_id(page_addr, build_id,
-+					      page_addr + phdr[i].p_offset,
-+					      phdr[i].p_filesz))
-+			return 0;
-+	}
- 	return -EINVAL;
- }
- 
+ # Now the namespaces should still be able reach each-other, test with ping:
 -- 
-2.25.4
+2.17.1
 
