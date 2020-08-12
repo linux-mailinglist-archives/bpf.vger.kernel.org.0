@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4605E242D5B
+	by mail.lfdr.de (Postfix) with ESMTP id B75DF242D5D
 	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 18:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgHLQdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 12:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
+        id S1726567AbgHLQdT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 12:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgHLQdR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 12:33:17 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D99AC061386;
-        Wed, 12 Aug 2020 09:33:17 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id j23so1409890vsq.7;
-        Wed, 12 Aug 2020 09:33:17 -0700 (PDT)
+        with ESMTP id S1726510AbgHLQdT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 12:33:19 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEC9C061383;
+        Wed, 12 Aug 2020 09:33:18 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id j7so631999vkk.12;
+        Wed, 12 Aug 2020 09:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5zVIJDDFQTLQ+d3i+TnZGWfN6fBF17Z8BnHl3szZTvM=;
-        b=Fw1fncLs9N0kOhyZ+y18hlRkHqKcJsry/P/47v6+jAjql6/8ZUL4A4Se0c3lf2xwOx
-         eimAsYjEyPSpGcPJ5kxovhXZbLs2rcCSUsf3LeyYgQyAKHfiIqJcTKMOSaqz/cl+Ox03
-         Qgar/Wi6fPaUpyQoFHmg/GMMDbgdmSG5NWMX7v6dXFiMKWtiqKeB2E7gS+PDqHe3Y5pn
-         Nsm137JZeHulxYD8gDcHeaLiyQ7Iuf4wu9MCq5tyVQ7RxaJUoCWGUuKdcNY658yZlVJe
-         J2AwGaxihGAF0XAdsgIkPDIlnPPgv2Lxo3SxaYZdNi8z4xmkf79y8R0uYIvV7TkwW3Iu
-         jRVw==
+        bh=yVWs6zbYAWogM7xh2rvQBTsIFOdnoXyUVimbGjZjhcc=;
+        b=qxNmTwZs+xBcyZACYZc/yYvgSFNZdLmDOA/fEh3uH5bfUt8LTmIVy7krF9JDa8zlGK
+         fyceeq3upQeAXsd2MZi1sQIT8YHhT49+4mfmYIAh0+u9wvsX/02vDzAVvxov51741Apd
+         UOj+15g3DwULmI9Rq1247/Zk60NW448209ijDhej2lElfU7FMBBJ39QIV0oGY6j6Sn8r
+         U5iwX05R4laFjVr2rS7WpzOO2Mv5R4MFwZCHh8xWqspZoeX2emAWm62aeKsZqsWR/Xhc
+         XoXDRj19rmLYPtkC3W+3sfDKlInDo8tJLF0HD6Fd+mOe1qTOlhIJLQtF7sxdYihYUW1z
+         QN8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5zVIJDDFQTLQ+d3i+TnZGWfN6fBF17Z8BnHl3szZTvM=;
-        b=NXdnMLn1JjGqixJHby0oJ0aK20q+vKN6FHXIQaNqc30wZksGucgLH/r81gaQ1vHmDx
-         yX60sAI7+p81XfuXhsdm5pSuhYfMI0PGs0G3aBqU2dcpjq5xLMImLAXUzDO7nxn2lRnq
-         zR59u4OvP0OaHH8fYJ6df0t+j1n4JKPvmcUufTIZrmdJ88lAKoCtpk773/VheWPR2IvS
-         3Lf+TPelFmlrhCl4PK8wBHF0Wd8HkNuJmQZ4EENaN9eIB5/nYkgaQjenbitRsYysXNLB
-         54n+zowOxnZA09YHqYp68k+dlpaalllYWzF6ohVRp8fA49yN9Vdjxif2l6D9ABOvaIyq
-         ySrg==
-X-Gm-Message-State: AOAM530ZMJkBggVQt2RskrB/zwhwJdp4fA52EGcPCtr5++SvarIo2VZT
-        lwz0+IR7mtg/ZhigODvY0dcCceGHt5M=
-X-Google-Smtp-Source: ABdhPJymvgvpqfjRrlFIKo2KP4YxXOKSnw/sjxNdmdQJWAB+l5ralqX/jDuM9CNmYwdU+sQ0ZKTn3g==
-X-Received: by 2002:a67:ce12:: with SMTP id s18mr981167vsl.116.1597249996383;
+        bh=yVWs6zbYAWogM7xh2rvQBTsIFOdnoXyUVimbGjZjhcc=;
+        b=BGsrwKaa1yh9XQ7nw4fLSLzfnvZUM6NVuLNnOQT0mgSsCShkRN88tXIjVYNuypQPnc
+         gvTEVAwKlV1dGj/cl2b9bkeTRu9dJ03nwBqQhEph0sRBwd7b1xtPthZd4Q4xw+HO/KUM
+         K20EdeeT9Qce8px3Xl3ByOtA5Bec0u2ijFg34w3k/RIDW1iSGUChF7LHfxk+tX1TuwHd
+         6VuEcFchTOTRxkb6asXyAtcWAtchKPQy92ZRQwH10MPwmyYGllQn/D/LG66IJDb8urYi
+         lUFNvJV89LI5gDZnbi/NIGGiz4wXI9Sge158vGLPgZDnrYY+NsGiaUuUxdmJH0UlLa+M
+         t6eQ==
+X-Gm-Message-State: AOAM533nPLbHVPTqj6iGrdgnPNLrSoqrOGMNIWoHk+u6ne3tCdzmboBR
+        GEApsO01uuyKCNBa6DElDYmGtKn39eI=
+X-Google-Smtp-Source: ABdhPJwdAcFz2xvNbU1VKmOz/HNyXm7InfYeTXgJI5oFXAC4cFVRsjvdql/P1DsR+IZQgtrzoQkgaw==
+X-Received: by 2002:a1f:230f:: with SMTP id j15mr180827vkj.83.1597249996956;
         Wed, 12 Aug 2020 09:33:16 -0700 (PDT)
 Received: from ebpf-cloudtop.c.googlers.com.com (39.119.74.34.bc.googleusercontent.com. [34.74.119.39])
-        by smtp.googlemail.com with ESMTPSA id e8sm245374uar.11.2020.08.12.09.33.15
+        by smtp.googlemail.com with ESMTPSA id e8sm245374uar.11.2020.08.12.09.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 12 Aug 2020 09:33:16 -0700 (PDT)
 From:   Leah Rumancik <leah.rumancik@gmail.com>
@@ -52,9 +52,9 @@ To:     bpf@vger.kernel.org, linux-block@vger.kernel.org
 Cc:     leah.rumancik@gmail.com, orbekk@google.com, harshads@google.com,
         jasiu@google.com, saranyamohan@google.com, tytso@google.com,
         bvanassche@google.com
-Subject: [RFC PATCH 3/4] bpf: add eBPF IO filter documentation
-Date:   Wed, 12 Aug 2020 16:33:04 +0000
-Message-Id: <20200812163305.545447-4-leah.rumancik@gmail.com>
+Subject: [RFC PATCH 4/4] bpf: add BPF_PROG_TYPE_LSM to bpftool name array
+Date:   Wed, 12 Aug 2020 16:33:05 +0000
+Message-Id: <20200812163305.545447-5-leah.rumancik@gmail.com>
 X-Mailer: git-send-email 2.28.0.236.gb10cc79966-goog
 In-Reply-To: <20200812163305.545447-1-leah.rumancik@gmail.com>
 References: <20200812163305.545447-1-leah.rumancik@gmail.com>
@@ -66,60 +66,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add page in Documentation/block describing overview of IO filter
+Update prog_type_name[] to include missing entry for BPF_PROG_TYPE_LSM
 
 Signed-off-by: Kjetil Ørbekk <orbekk@google.com>
 Signed-off-by: Harshad Shirwadkar <harshads@google.com>
 Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
 ---
- Documentation/block/bpf_io_filter.rst | 28 +++++++++++++++++++++++++++
- Documentation/block/index.rst         |  1 +
- 2 files changed, 29 insertions(+)
- create mode 100644 Documentation/block/bpf_io_filter.rst
+ tools/bpf/bpftool/main.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/block/bpf_io_filter.rst b/Documentation/block/bpf_io_filter.rst
-new file mode 100644
-index 000000000000..956997576ae5
---- /dev/null
-+++ b/Documentation/block/bpf_io_filter.rst
-@@ -0,0 +1,28 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+IO Filtering with eBPF
-+======================
-+
-+Bio requests can be filtered with the eBPF IO filter program type (BPF_PROG_TYPE_IO_FILTER). To use this program type, the kernel must be compiled with CONFIG_BPF_IO_FILTER.
-+
-+Attachment
-+==========
-+
-+IO filter programs can be attached to disks using the  BPF_BIO_SUBMIT attach type. Up to 64 filter programs can be attached to a single disk. References to the attached programs are stored in the gendisk struct as a bpf_prog_array.
-+
-+API
-+===
-+
-+Data is passed between the userspace and kernel eBPF code via a new struct bpf_io_request. This struct contains three fields: sector_start (starting sector of the bio request), sector_cnt (size of the request in sectors), and opf (operation information, opf field from the bio).
-+
-+Hook
-+====
-+
-+The eBPF programs for a given disk are run whenever a bio request is submitted to that disk. The eBPF programs return IO_BLOCK or IO_ALLOW. If any of the programs return IO_BLOCK, the bio request is blocked. Because of the placement of the hook in submit_bio, as of this version, mechanisms which bypass submit_bio, such as SG_IO and NVMe passthrough, are not able to be filtered.
-+
-+Example
-+=======
-+
-+An example, protect_gpt, is provided in the /samples/bpf/ folder. This sample uses an IO filter program to protect the GUID partition table by preventing writes to the first 34 sectors.
-+
-diff --git a/Documentation/block/index.rst b/Documentation/block/index.rst
-index 026addfc69bc..145930622a92 100644
---- a/Documentation/block/index.rst
-+++ b/Documentation/block/index.rst
-@@ -24,3 +24,4 @@ Block
-    stat
-    switching-sched
-    writeback_cache_control
-+   bpf-io-filter
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0607ae6f6d90..ccc6ac9f82c2 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -86,6 +86,7 @@ static const char * const prog_type_name[] = {
+ 	[BPF_PROG_TYPE_TRACING]			= "tracing",
+ 	[BPF_PROG_TYPE_STRUCT_OPS]		= "struct_ops",
+ 	[BPF_PROG_TYPE_EXT]			= "ext",
++	[BPF_PROG_TYPE_LSM]			= "lsm",
+ 	[BPF_PROG_TYPE_IO_FILTER]		= "io_filter",
+ };
+ 
 -- 
 2.28.0.236.gb10cc79966-goog
 
