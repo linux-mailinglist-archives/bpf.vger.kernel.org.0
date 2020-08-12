@@ -2,62 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4426A242E47
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 19:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFAD242E73
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 20:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgHLRuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 13:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
+        id S1726512AbgHLSRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 14:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgHLRuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:50:17 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574CCC061383;
-        Wed, 12 Aug 2020 10:50:17 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 988AD221;
-        Wed, 12 Aug 2020 17:50:12 +0000 (UTC)
-Date:   Wed, 12 Aug 2020 11:50:11 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
+        with ESMTP id S1726510AbgHLSRM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 14:17:12 -0400
+Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A3DC061383;
+        Wed, 12 Aug 2020 11:17:11 -0700 (PDT)
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4BRdFt05J0zvjdp; Wed, 12 Aug 2020 20:17:05 +0200 (CEST)
+Date:   Wed, 12 Aug 2020 20:17:05 +0200
+From:   Tobias Klauser <tklauser@distanz.ch>
 To:     Leah Rumancik <leah.rumancik@gmail.com>
 Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
         orbekk@google.com, harshads@google.com, jasiu@google.com,
         saranyamohan@google.com, tytso@google.com, bvanassche@google.com
-Subject: Re: [RFC PATCH 3/4] bpf: add eBPF IO filter documentation
-Message-ID: <20200812115011.337c0099@lwn.net>
-In-Reply-To: <20200812163305.545447-4-leah.rumancik@gmail.com>
+Subject: Re: [RFC PATCH 4/4] bpf: add BPF_PROG_TYPE_LSM to bpftool name array
+Message-ID: <20200812181705.hadjvarvjxwj36ai@distanz.ch>
 References: <20200812163305.545447-1-leah.rumancik@gmail.com>
-        <20200812163305.545447-4-leah.rumancik@gmail.com>
-Organization: LWN.net
+ <20200812163305.545447-5-leah.rumancik@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812163305.545447-5-leah.rumancik@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 Aug 2020 16:33:04 +0000
-Leah Rumancik <leah.rumancik@gmail.com> wrote:
+On 2020-08-12 at 18:33:05 +0200, Leah Rumancik <leah.rumancik@gmail.com> wrote:
+> Update prog_type_name[] to include missing entry for BPF_PROG_TYPE_LSM
 
-Thanks for documenting this stuff, but...
-
-> +======================
-> +IO Filtering with eBPF
-> +======================
-> +
-> +Bio requests can be filtered with the eBPF IO filter program type (BPF_PROG_TYPE_IO_FILTER). To use this program type, the kernel must be compiled with CONFIG_BPF_IO_FILTER.
-> +
-> +Attachment
-> +==========
-> +
-> +IO filter programs can be attached to disks using the  BPF_BIO_SUBMIT attach type. Up to 64 filter programs can be attached to a single disk. References to the attached programs are stored in the gendisk struct as a bpf_prog_array.
-
-Please wrap your text to a reasonable column width just like with any
-other kernel file.
-
-Thanks,
-
-jon
+FWIW, this was already fixed in bpf-next by commit 9a97c9d2af5c ("tools,
+bpftool: Add LSM type to array of prog names"), the definition of
+prog_type_name also moved to tools/bpf/bpftool/prog.c from
+tools/bpf/bpftool/main.h
