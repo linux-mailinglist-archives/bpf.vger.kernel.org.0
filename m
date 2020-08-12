@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80BC242DC2
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 19:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED90242DCF
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 19:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgHLRAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 13:00:37 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45296 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgHLRAh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 13:00:37 -0400
-Received: by mail-pl1-f195.google.com with SMTP id bh1so1369475plb.12;
-        Wed, 12 Aug 2020 10:00:36 -0700 (PDT)
+        id S1726394AbgHLREM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 13:04:12 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45729 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgHLREM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 13:04:12 -0400
+Received: by mail-pg1-f196.google.com with SMTP id x6so1348070pgx.12;
+        Wed, 12 Aug 2020 10:04:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=lkrVTld7lAt1xz+QrbSi/yFZ8fFXw8HLzCpe21br17Q=;
-        b=lSgKEWvkbUw0VNmclapJOEVPssru1EOL0Fx3aGDMTDxieI/6t3lF5ucGvbNP6kOKyu
-         xv2pUXmV0M4GiNAPDm7gjTHQIHzm2zxO990NQrMGz50uPv6VwicRrjo9KqAY2sI7u7D3
-         UiJiutIm8N4cv8iYtoT98lJQrmXWp3Ym7gkiCYiDvMbpN2ZT66sl6IRH0kvxNi9OGxgM
-         HvIfLs7VUYCOJW8WPgYEyRX+DcSvXeJkpgMVQGdbKEti1tnh9fTbpQcfplnG8jjZpNCx
-         jHgRGa8NTUXcwKlIMmWX4hRRzk9maIv0xO26UcTIjHVwH3HvN/9sID43jB1hlc7vKox/
-         nTyA==
-X-Gm-Message-State: AOAM5309DSsSKZt4e1mYZfVV7Z4h76vVkSHAPOTE8XpUVHXXG7FYmup8
-        nL78cusJOqumSvLTPh++QYg=
-X-Google-Smtp-Source: ABdhPJzGwQJNRsAMdn0ci0SdEREfKON9YbF+yBmie/37gN6UG4336tBAGcXLZ0fj0Ghy3pK7ezU7bA==
-X-Received: by 2002:a17:902:a70e:: with SMTP id w14mr320233plq.259.1597251636429;
-        Wed, 12 Aug 2020 10:00:36 -0700 (PDT)
+        bh=bxoMyZwkVbe7qooPeDulAjD2EBf7cdbYhhYN/t8OC5Q=;
+        b=dh84uXweMyQUHYhg9VSyw0VtQLgScqCVWbv1UExVKsAFQKLSQqRM2tlN3Y9kFqVnIs
+         TbrrEbtLznVf8PKaKGFYEtAq8aaAO3J7aft4mXJFlAmi/Codq/SFJG6exRPcJ7EljzMm
+         mIHVA9PjL7lIou/3khu5Q+1jyXPYh5X4W8jKCzT94kzpsJI1MVa1MzC+kzLfnfiisH7m
+         BQMAETctFONn1n2E0w9YQY7CCnWVLgS5rQsuFH+C2YgKcMGwcVxGAYC2eaE+lKXs8bUu
+         JNxopIcTP2FUde2LOCinCuCe/zVdQmzyZ1CEMtTeymmd/ebJZY5jhPcTG0pxDd7tbZhh
+         rzYQ==
+X-Gm-Message-State: AOAM532IK0kd6yt5BYOZTz4O1HBQEj4zRohXPMk0DWlaJEw39ahMAIvd
+        XfnsvPyFlt098/CeiQZb262QqZYl
+X-Google-Smtp-Source: ABdhPJzTuFn5m++HNUK/3rdYaSamyNHjdP3nBCWjDGDwl/uMdVW67varEr3rqyw5JbviA09vnkWO8w==
+X-Received: by 2002:aa7:9585:: with SMTP id z5mr446469pfj.11.1597251851095;
+        Wed, 12 Aug 2020 10:04:11 -0700 (PDT)
 Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id q33sm2500823pgb.2.2020.08.12.10.00.34
+        by smtp.gmail.com with ESMTPSA id t13sm2769871pgm.32.2020.08.12.10.04.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Aug 2020 10:00:35 -0700 (PDT)
-Subject: Re: [RFC PATCH 4/4] bpf: add BPF_PROG_TYPE_LSM to bpftool name array
+        Wed, 12 Aug 2020 10:04:10 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/4] bpf: add eBPF IO filter documentation
 To:     Leah Rumancik <leah.rumancik@gmail.com>, bpf@vger.kernel.org,
         linux-block@vger.kernel.org
 Cc:     orbekk@google.com, harshads@google.com, jasiu@google.com,
         saranyamohan@google.com, tytso@google.com, bvanassche@google.com
 References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-5-leah.rumancik@gmail.com>
+ <20200812163305.545447-4-leah.rumancik@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -65,46 +65,32 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <2a5827e8-3051-f95f-36ac-08399638b43c@acm.org>
-Date:   Wed, 12 Aug 2020 10:00:33 -0700
+Message-ID: <b6da2093-a555-d977-1711-c787e3e36ca1@acm.org>
+Date:   Wed, 12 Aug 2020 10:04:08 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200812163305.545447-5-leah.rumancik@gmail.com>
+In-Reply-To: <20200812163305.545447-4-leah.rumancik@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 2020-08-12 09:33, Leah Rumancik wrote:
-> Update prog_type_name[] to include missing entry for BPF_PROG_TYPE_LSM
-> 
-> Signed-off-by: Kjetil Ørbekk <orbekk@google.com>
-> Signed-off-by: Harshad Shirwadkar <harshads@google.com>
-> Signed-off-by: Leah Rumancik <leah.rumancik@gmail.com>
-> ---
->  tools/bpf/bpftool/main.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 0607ae6f6d90..ccc6ac9f82c2 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -86,6 +86,7 @@ static const char * const prog_type_name[] = {
->  	[BPF_PROG_TYPE_TRACING]			= "tracing",
->  	[BPF_PROG_TYPE_STRUCT_OPS]		= "struct_ops",
->  	[BPF_PROG_TYPE_EXT]			= "ext",
-> +	[BPF_PROG_TYPE_LSM]			= "lsm",
->  	[BPF_PROG_TYPE_IO_FILTER]		= "io_filter",
->  };
+> +======================
+> +IO Filtering with eBPF
+> +======================
+> +
+> +Bio requests can be filtered with the eBPF IO filter program type (BPF_PROG_TYPE_IO_FILTER). To use this program type, the kernel must be compiled with CONFIG_BPF_IO_FILTER.
 
-Is this perhaps intended as a bug fix for commit fc611f47f218
-("bpf: Introduce BPF_PROG_TYPE_LSM")? If so, please include a Fixes:
-tag, Cc the authors of that patch and move this patch to the start
-of this patch series.
+Please add information in this paragraph about why one should or should
+not install a BPF I/O filter. What are the use cases for BPF I/O filters?
+I think the following information from the Kconfig file is useful:
+"Enables instrumentation of the hooks in block subsystem with eBPF programs
+for observing and filtering io."
 
 Thanks,
 
