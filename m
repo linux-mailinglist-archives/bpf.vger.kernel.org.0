@@ -2,161 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD44242648
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 09:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C403924276B
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 11:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHLHsk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 03:48:40 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44460 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726255AbgHLHsk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Aug 2020 03:48:40 -0400
+        id S1727089AbgHLJYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 05:24:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28296 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726595AbgHLJYw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:24:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597218518;
+        s=mimecast20190719; t=1597224291;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eQf3+HvHKnlSe+Z7RG69UMsLhFqyCRv2tFgK/HQL7TE=;
-        b=YLbnpISq68TtkPWO7Bv9q5Sflntpu6j9JD82+EwwAqnLXh2FVH/+vjP6s52VBpuOcX5nin
-        mk4IwCceXMuXPNkZwEjX8Yx+IMcyYZYE0kbQeXfRwtQE1SF+x0DkvC0XXUh4uaLdzvzW8o
-        yJZiUgZHjJWq66kwAOmTWGQV/bupznw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-OPUD8D2_MLOMpShTcVxnuQ-1; Wed, 12 Aug 2020 03:48:32 -0400
-X-MC-Unique: OPUD8D2_MLOMpShTcVxnuQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 121B6102C805;
-        Wed, 12 Aug 2020 07:48:31 +0000 (UTC)
-Received: from krava (unknown [10.40.194.46])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0EE5188F29;
-        Wed, 12 Aug 2020 07:48:27 +0000 (UTC)
-Date:   Wed, 12 Aug 2020 09:48:26 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC] bpf: verifier check for dead branch
-Message-ID: <20200812074826.GB754656@krava>
-References: <20200807173045.GC561444@krava>
- <f13fde40-0c07-ff73-eeb3-3c59c5694f74@fb.com>
- <20200810135451.GA699846@krava>
- <e4abe45b-2c80-9448-677c-e352f0ecb24e@fb.com>
- <20200811071438.GC699846@krava>
- <f03e2ce3-8cf8-0590-1777-f9e8171cd3fa@fb.com>
+        bh=D0RAsBMV1VRV9PTxV0Jb0bq8SzJBZPYK2PYTUHp8OeY=;
+        b=YW7j3JlyVtgxy+Ehjg70JLa3vJ4hAzvP7ZkI150x1Yy/RpXWmcCb2txHqfQZe7fhCtYjgP
+        q3oPp9LHf5bEZqxezJcdHx0zgZUP8YMMCMY/rEsPmw8S/BU+DBbMk2FU6EtAhkopgZJ9CH
+        yG5wj53lCdlGNW5FWyUI6EFX64DV5b8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-nj7TZJAaOoKlVVI1ywKckA-1; Wed, 12 Aug 2020 05:24:49 -0400
+X-MC-Unique: nj7TZJAaOoKlVVI1ywKckA-1
+Received: by mail-wm1-f69.google.com with SMTP id t26so671499wmn.4
+        for <bpf@vger.kernel.org>; Wed, 12 Aug 2020 02:24:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=D0RAsBMV1VRV9PTxV0Jb0bq8SzJBZPYK2PYTUHp8OeY=;
+        b=B5PuvKjEBaKWMaHj1aAINA7n6/7vPDHjWxTZpYtvQKgIkOBv57cfP/QsckXUIB3MF0
+         dSqIK5O6bkFLyKQtbeOT4fbWwN3wHRZFgywFkHFT+m8YhuF/AA3279XSYql4IY1Li6mN
+         aWnsu4RDeHsKvL8XcEU3CUl0+mp2Eus4Lpce6BWERUDstTeOTztYQ3S36Oc3oGtw7QKP
+         KtRrF0VGSO1wUirI6+9qV0v+DqrFQra0B/7utAl6myUB7vT8OQGqqf7/fW/2xtNB70NH
+         bLwoxQrwAEy0gv8BCwrpYqgjkpd+dV7Y6zWg10qbceeHtSUgk9sGDioBKcvQCuZCM/2d
+         A0WQ==
+X-Gm-Message-State: AOAM532vXHSpgln19fZ0ytfT8DIYIX95dpnrqKsi3n9uMGcX2p9SrBv1
+        Rv/DXMblwpzX8aE3XflHuDjPTa3aE1wkm42t+xuJhY9hmmFmZpbUt+K7pr37uPuFlQVQQpI2sq7
+        f3dmxdGhcJva2
+X-Received: by 2002:a1c:7e44:: with SMTP id z65mr8195716wmc.13.1597224288390;
+        Wed, 12 Aug 2020 02:24:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqjk1UDn6Bdzt14vEBN5NYKE1v9wqJxw7iHNj67SWRlTXQtUQfNcFDAvuYP2Qw2MtuhfUqww==
+X-Received: by 2002:a1c:7e44:: with SMTP id z65mr8195702wmc.13.1597224288234;
+        Wed, 12 Aug 2020 02:24:48 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id x6sm2976425wmx.28.2020.08.12.02.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 02:24:47 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D1AB518282F; Wed, 12 Aug 2020 11:24:46 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf] bpf: fix XDP FD-based attach/detach logic around XDP_FLAGS_UPDATE_IF_NOEXIST
+In-Reply-To: <20200812022923.1217922-1-andriin@fb.com>
+References: <20200812022923.1217922-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 12 Aug 2020 11:24:46 +0200
+Message-ID: <87imdo1ajl.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f03e2ce3-8cf8-0590-1777-f9e8171cd3fa@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 09:08:13AM -0700, Yonghong Song wrote:
-> 
-> 
-> On 8/11/20 12:14 AM, Jiri Olsa wrote:
-> > On Mon, Aug 10, 2020 at 10:16:12AM -0700, Yonghong Song wrote:
-> > 
-> > SNIP
-> > 
-> > > 
-> > > Thanks for the test case. I can reproduce the issue. The following
-> > > is why this happens in llvm.
-> > > the pseudo IR code looks like
-> > >     data = skb->data
-> > >     data_end = skb->data_end
-> > >     comp = data + 42 > data_end
-> > >     ip = select "comp" nullptr "data + some offset"
-> > >           <=== select return one of nullptr or "data + some offset" based on
-> > > "comp"
-> > >     if comp   // original skb_shorter condition
-> > >        ....
-> > >     ...
-> > >        = ip
-> > > 
-> > > In llvm, bpf backend "select" actually inlined "comp" to generate proper
-> > > control flow. Therefore, comp is computed twice like below
-> > >     data = skb->data
-> > >     data_end = skb->data_end
-> > >     if (data + 42 > data_end) {
-> > >        ip = nullptr; goto block1;
-> > >     } else {
-> > >        ip = data + some_offset;
-> > >        goto block2;
-> > >     }
-> > >     ...
-> > >     if (data + 42 > data_end) // original skb_shorter condition
-> > > 
-> > > The issue can be workarounded the source. Just check data + 42 > data_end
-> > > and if failure return. Then you will be able to assign
-> > > a value to "ip" conditionally.
-> 
-> sorry for typo. The above should be "conditionally" -> "unconditionally".
+Andrii Nakryiko <andriin@fb.com> writes:
 
-aaah, ok ;-)
+> Enforce XDP_FLAGS_UPDATE_IF_NOEXIST only if new BPF program to be attache=
+d is
+> non-NULL (i.e., we are not detaching a BPF program).
+>
+> Reported-by: Stanislav Fomichev <sdf@google.com>
+> Fixes: d4baa9368a5e ("bpf, xdp: Extract common XDP program attachment log=
+ic")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-> 
-> The following is what I mean:
-> 
-> diff --git a/t.c b/t.c
-> index c6baf28..7bf90dc 100644
-> --- a/t.c
-> +++ b/t.c
-> @@ -37,17 +37,10 @@
-> 
->  static INLINE struct iphdr *get_iphdr (struct __sk_buff *skb)
->  {
-> -       struct iphdr *ip = NULL;
->         struct ethhdr *eth;
-> 
-> -       if (skb_shorter(skb, ETH_IPV4_UDP_SIZE))
-> -               goto out;
-> -
->         eth = (void *)(long)skb->data;
-> -       ip = (void *)(eth + 1);
-> -
-> -out:
-> -       return ip;
-> +       return (void *)(eth + 1);
->  }
-> 
->  int my_prog(struct __sk_buff *skb)
-> @@ -56,9 +49,10 @@ int my_prog(struct __sk_buff *skb)
->         struct udphdr *udp;
->         __u8 proto = 0;
-> 
-> -       if (!(ip = get_iphdr(skb)))
-> +       if (skb_shorter(skb, ETH_IPV4_UDP_SIZE))
->                 goto out;
-> 
-> +       ip = get_iphdr(skb);
->         proto = ip->protocol;
-> 
->         if (proto != IPPROTO_UDP)
-> 
-> > 
-> > > 
-> > > Will try to fix this issue in llvm12 as well.
-> > > Thanks!
-> > 
-> > great, could you please CC me on the changes?
-> 
-> This will be a llvm change. Do you have llvm phabricator login name
-> https://reviews.llvm.org/
-> so I can add you as a subscriber?
-
-Jiri (Olsa)
-olsajiri@gmail.com
-
-thank,
-jirka
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
