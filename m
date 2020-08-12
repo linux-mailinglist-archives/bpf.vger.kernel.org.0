@@ -2,122 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FC1242429
-	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 04:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FD724243C
+	for <lists+bpf@lfdr.de>; Wed, 12 Aug 2020 05:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgHLC7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Aug 2020 22:59:14 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21812 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726428AbgHLC7O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 11 Aug 2020 22:59:14 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07C2tb71009161
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 19:59:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=nveDaz9ZPnstwHr5avUANBycGpXuyGFPpnu3efd6xbc=;
- b=S5ZH2osG/ZO2UxRjLeMyTaMM/vYBpyP5p7WNrwQ9ns/t6n7Vq0d6SlAV+0vXAog2x+r+
- Q57uUnr5Z89SbYVd2x0+Nr2NoqD/gFagOD4D6eGLR7IqWb+9TjshLPdlyZnyHEF2ftKY
- rHr0uHhWMs9eXWzRKss24vcTPwleM0wwrRk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32v0kht0na-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 19:59:13 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 11 Aug 2020 19:59:12 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id C87402EC5953; Tue, 11 Aug 2020 19:59:09 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] tools/bpftool: make skeleton code C++17-friendly by dropping typeof()
-Date:   Tue, 11 Aug 2020 19:59:07 -0700
-Message-ID: <20200812025907.1371956-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726488AbgHLDTC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Aug 2020 23:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgHLDTB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Aug 2020 23:19:01 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69E7C06174A
+        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:19:01 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id q3so594473ybp.7
+        for <bpf@vger.kernel.org>; Tue, 11 Aug 2020 20:19:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xzgon0BTaPF3w6wHhfMI0rl39gN2oP3lEShQWBFBINA=;
+        b=ePc+TTDRg0p9f0Kca0A3rCx0crH/UpAZvSZ/HtN4zKbnK1ejxWor39tIzn6RQ9oT6H
+         naGc4mD8WvD1XOIarZuGB99BjayTTXkbt6XEAWtt9tUUyVIWkDQxUUwha336+FeorDEl
+         BVMhByzvxP1P1XWvaxz+el8CAEV0HWaSkTMco9Cwm3Sjpcxr1q170EeuAjXj8Npcd46y
+         nCJN+NiYYHDDcFIItHtGx4Ey0l61cbMxWZBFWyuRSEJHhxkwIkQ4EYcG33Si4Htl0wUb
+         6UPCM7IQAD0DH8rBlv7mg97eGxoyX+Ss+dXqJ0TXU17jNhwhwtRae2AWDVXZhm4L63hW
+         zHqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xzgon0BTaPF3w6wHhfMI0rl39gN2oP3lEShQWBFBINA=;
+        b=a+K5/8XqgR9+5I3p1IePSIB6c/Ghbp1GgsWINaUz+1dOLSbljnQPlTwYf/p32ODZef
+         DSBnOXOU9jfSxKDH8hhxzJYAa6EI9/s/XoVElmrqw/QqU1tvZjJGVHbEcPyFWhN3nvxR
+         6n0JjnCGz2xfGRDGmghuH63AEMPTRamjiQpX+HJCx4LpJgAcFMw885XFjFUltBk8l+WJ
+         uq+rSJ8iyI2XZexNxjMlB0Z+L3j5dhFVPS8hn5ZyumjixQ/XBbrxc5R2GYVAU9aNny2A
+         sCiiF/7BO9/1eo6duw0QA12crcji2TqAXUFpHiWIUsiXskYOgV8oUHSpM30P0+leRjqm
+         o/HA==
+X-Gm-Message-State: AOAM530h/5gkKgWY2DI/S7JKWafu8wr3OEpr8llbdczBDHH7lveXuVe1
+        0aHivqYPxCfUTwNCgNX7zlQrqlWsdzW8Pfkk6XFwZw==
+X-Google-Smtp-Source: ABdhPJwNc8GNP4WZOcFY3FUuA1VPBLxihc19QGnZWhBRb5aWSSI78TEpT5Un+b+AhiXyJWCHgZ9M5Vl8slgoEHgwSuc=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr49241170ybe.510.1597202340912;
+ Tue, 11 Aug 2020 20:19:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-11_19:2020-08-11,2020-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 mlxlogscore=868
- phishscore=0 clxscore=1015 spamscore=0 malwarescore=0 suspectscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008120019
-X-FB-Internal: deliver
+References: <f1b8e140-bc41-4e56-e73f-db11062dddbd@sartura.hr>
+ <20200807172353.GA624812@myrica> <CAEf4BzbC-abnqD4802=uT+u3+gwMK3q+yXjWAriuDTj2hMJ9Yw@mail.gmail.com>
+ <CAADnVQ+fQG38XKR+V33qTR-G-7wm398CMCafbuQrTQ9CHfE2mA@mail.gmail.com>
+ <20200810125753.GA1643799@myrica> <CAEf4BzaQcxAArJyLqxxw8sV507DyWzU44HJ3oaUAjX4UEu_KaA@mail.gmail.com>
+ <20200811095410.GA2786584@myrica>
+In-Reply-To: <20200811095410.GA2786584@myrica>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 11 Aug 2020 20:18:49 -0700
+Message-ID: <CAEf4BzbabGWckm2NSb-eL+-j5BZWTM_h==qqJn9PwDk2gd0gsA@mail.gmail.com>
+Subject: Re: eBPF CO-RE cross-compilation for 32-bit ARM platforms
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakov Petrina <jakov.petrina@sartura.hr>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Jakov Smolic <jakov.smolic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Seems like C++17 standard mode doesn't recognize typeof() anymore. This c=
-an
-be tested by compiling test_cpp test with -std=3Dc++17 or -std=3Dc++1z op=
-tions.
-The use of typeof in skeleton generated code is unnecessary, all types ar=
-e
-well-known at the time of code generation, so remove all typeof()'s to ma=
-ke
-skeleton code more future-proof when interacting with C++ compilers.
+On Tue, Aug 11, 2020 at 2:54 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Mon, Aug 10, 2020 at 11:54:54PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Aug 10, 2020 at 5:58 AM Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> > >
+> > > On Fri, Aug 07, 2020 at 01:54:02PM -0700, Alexei Starovoitov wrote:
+> > > [...]
+> > > > > > > ```
+> > > > > > > typedef __Poly8_t poly8x16_t[16];
+> > > > > > > ```
+> > > > > > >
+> > > > > > > AFAICT these are ARM NEON intrinsic definitions which are GCC-specific. We
+> > > > > > > have opted to comment out this line as there was no additional `poly8x16_t`
+> > > > > > > usage in the header file.
+> > > > > >
+> > > > > > It looks like this "__Poly8_t" type is internal to GCC (provided in
+> > > > > > arm_neon.h) and clang has its own internals. I managed to reproduce this
+> > > > > > with an arm64 allyesconfig kernel (+BTF), but don't know how to fix it at
+> > > > > > the moment. Maybe libbpf should generate defines to translate these
+> > > > > > intrinsics between clang and gcc? Not very elegant. I'll take another
+> > > > > > look next week.
+> > > > >
+> > > > > libbpf is already blacklisting __builtin_va_list for GCC, so we can
+> > > > > just add __Poly8_t to the list. See [0].
+> > > > > Are there any other types like that? If you guys can provide me this,
+> > > > > I'll gladly update libbpf to take those compiler-provided
+> > > > > types/built-ins into account.
+> > > >
+> > > > Shouldn't __Int8x16_t and friends cause the same trouble?
+> > >
+> > > I think these do get properly defined, for example in my vmlinux.h:
+> > >
+> > >         typedef signed char int8x16_t[16];
+> > >
+> > > From a cursory reading of the "ARM C Language Extension" doc (IHI0053D) it
+> > > looks like only the poly8/16/64/128_t types are unspecified. It's safe to
+> > > drop them as long as they're not used in structs or function parameters,
+> > > but I sent a more generic fix [1] that copies the clang defintions. When
+> > > building the kernel with clang, the polyX_t types do get typedefs.
+> > >
+> > > Thanks,
+> > > Jean
+> > >
+> >
+> > Hi Jean,
+> >
+> > Would you be so kind to build some simple C repro code that uses those
+> > polyX_t types? Ideally built by both GCC and Clang. And then run
+> > `pahole -J` on them to get .BTF into them as well. If you can share
+> > those two with me, I'd love to look at how DWARF and BTF look like.
+> >
+> > I'm, unfortunately, having trouble making something like that to
+> > cross-compile on my x86-64 machine, I've spent a bunch of time already
+> > on this unsuccessfully and it's really frustrating at this point. If
+> > you have an ARM system (or cross-compilation set up properly), it
+> > shouldn't take much time for you, hopefully. Just make sure that those
+> > polyX_t types do make it into DWARF, so, e.g., use them with static
+> > variable or something, e.g.,:
+> >
+> > int main() {
+> >     static poly8_t a = 12;
+> >     return a + 10;
+> > }
+> >
+> > Or something along those lines. Thanks!
+>
+> No problem, I put the source and clang+gcc binaries in a tarball here:
+> https://jpbrucker.net/tmp/test-poly-neon.tar.bz2
+>
+> These contain all the base types defined by arm_neon.h (minus the new
+> bfloat16, which I don't think matters at the moment)
+>
 
-Fixes: 985ead416df3 ("bpftool: Add skeleton codegen command")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/gen.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks a lot! It was very helpful. I wonder why there was never
+poly32_t defined?
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 8a4c2b3b0cd6..db80e836816e 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -397,7 +397,7 @@ static int do_skeleton(int argc, char **argv)
- 		{							    \n\
- 			struct %1$s *obj;				    \n\
- 									    \n\
--			obj =3D (typeof(obj))calloc(1, sizeof(*obj));	    \n\
-+			obj =3D (struct %1$s *)calloc(1, sizeof(*obj));	    \n\
- 			if (!obj)					    \n\
- 				return NULL;				    \n\
- 			if (%1$s__create_skeleton(obj))			    \n\
-@@ -461,7 +461,7 @@ static int do_skeleton(int argc, char **argv)
- 		{							    \n\
- 			struct bpf_object_skeleton *s;			    \n\
- 									    \n\
--			s =3D (typeof(s))calloc(1, sizeof(*s));		    \n\
-+			s =3D (struct bpf_object_skeleton *)calloc(1, sizeof(*s));\n\
- 			if (!s)						    \n\
- 				return -1;				    \n\
- 			obj->skeleton =3D s;				    \n\
-@@ -479,7 +479,7 @@ static int do_skeleton(int argc, char **argv)
- 				/* maps */				    \n\
- 				s->map_cnt =3D %zu;			    \n\
- 				s->map_skel_sz =3D sizeof(*s->maps);	    \n\
--				s->maps =3D (typeof(s->maps))calloc(s->map_cnt, s->map_skel_sz);\n\
-+				s->maps =3D (struct bpf_map_skeleton *)calloc(s->map_cnt, s->map_ske=
-l_sz);\n\
- 				if (!s->maps)				    \n\
- 					goto err;			    \n\
- 			",
-@@ -515,7 +515,7 @@ static int do_skeleton(int argc, char **argv)
- 				/* programs */				    \n\
- 				s->prog_cnt =3D %zu;			    \n\
- 				s->prog_skel_sz =3D sizeof(*s->progs);	    \n\
--				s->progs =3D (typeof(s->progs))calloc(s->prog_cnt, s->prog_skel_sz);=
-\n\
-+				s->progs =3D (struct bpf_prog_skeleton *)calloc(s->prog_cnt, s->prog=
-_skel_sz);\n\
- 				if (!s->progs)				    \n\
- 					goto err;			    \n\
- 			",
---=20
-2.24.1
-
+> Thanks,
+> Jean
+>
+> >
+> > > [1] https://lore.kernel.org/bpf/20200810122835.2309026-1-jean-philippe@linaro.org/
+> > >
+> > > > There is a bunch more in gcc/config/arm/arm-simd-builtin-types.def.
+> > > > May be there is a way to detect compiler builtin types by pattern matching
+> > > > their dwarf/btf shape and skip them automatically?
+> > > > The simplest, of course, is to only add a few that caused this known
+> > > > trouble to blocklist.
