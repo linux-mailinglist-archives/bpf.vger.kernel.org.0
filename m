@@ -2,83 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF677243FD9
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 22:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A122243FEA
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 22:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgHMUfN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 16:35:13 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38620 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgHMUfN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Aug 2020 16:35:13 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k6JwK-0002vf-7Z; Thu, 13 Aug 2020 22:35:08 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1k6JwK-000RbZ-1X; Thu, 13 Aug 2020 22:35:08 +0200
-Subject: Re: [PATCH bpf] libbpf: Prevent overriding errno when logging errors
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20200813142905.160381-1-toke@redhat.com>
- <CAEf4BzZ6yM_QWu0x4b51NAVzN6-EAoQN4ff4BNiof5CJ5ukhpg@mail.gmail.com>
- <87d03u1fyj.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <868b8e78-f0ae-8e59-1816-92051acba1f5@iogearbox.net>
-Date:   Thu, 13 Aug 2020 22:35:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726499AbgHMUjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 16:39:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3372 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726312AbgHMUjs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 16:39:48 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DKZPU1016280
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 13:39:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=nxAKZ8Az69/8rLy2V1EBnunQAgjn24A9Diwa1zub0Bc=;
+ b=gP6oMMhDwwefr8qRRE2UfVwihyKRa3UxGZKDYImQxCmtg3zsDLdBihWkJTgrOSc6ULTg
+ gRD6TbK1o8PrAMNgTAu2s5y+w0kVwGl1Ut1EvEEJmWLeHdoiJVRcxWb5qQ9bUupo2Dlg
+ qVS+RHv6Pu/yuJ0/8JPU0+YTgjHmW426xTA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32w2yejy5u-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 13:39:47 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 13 Aug 2020 13:39:45 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 46A292EC596D; Thu, 13 Aug 2020 13:39:42 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf 1/9] tools/bpftool: fix compilation warnings in 32-bit mode
+Date:   Thu, 13 Aug 2020 13:39:21 -0700
+Message-ID: <20200813203930.978141-2-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200813203930.978141-1-andriin@fb.com>
+References: <20200813203930.978141-1-andriin@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <87d03u1fyj.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25901/Thu Aug 13 09:01:24 2020)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-13_17:2020-08-13,2020-08-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 suspectscore=8 bulkscore=0 clxscore=1015 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008130146
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/13/20 9:52 PM, Toke Høiland-Jørgensen wrote:
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> On Thu, Aug 13, 2020 at 7:29 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>>
->>> Turns out there were a few more instances where libbpf didn't save the
->>> errno before writing an error message, causing errno to be overridden by
->>> the printf() return and the error disappearing if logging is enabled.
->>>
->>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->>> ---
->>
->> Acked-by: Andrii Nakryiko <andriin@fb.com>
->>
->>>   tools/lib/bpf/libbpf.c | 12 +++++++-----
->>>   1 file changed, 7 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>> index 0a06124f7999..fd256440e233 100644
->>> --- a/tools/lib/bpf/libbpf.c
->>> +++ b/tools/lib/bpf/libbpf.c
->>> @@ -3478,10 +3478,11 @@ bpf_object__probe_global_data(struct bpf_object *obj)
->>>
->>>          map = bpf_create_map_xattr(&map_attr);
->>>          if (map < 0) {
->>> -               cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
->>> +               ret = -errno;
->>> +               cp = libbpf_strerror_r(-ret, errmsg, sizeof(errmsg));
->>
->> fyi, libbpf_strerror_r() is smart enough to work with both negative
->> and positive error numbers (it basically takes abs(err)), so no need
->> to ensure it's positive here and below.
-> 
-> Noted. Although that also means it doesn't hurt either, I suppose; so
-> not going to bother respinning this unless someone insists :)
+Fix few compilation warnings in bpftool when compiling in 32-bit mode.
+Abstract away u64 to pointer conversion into a helper function.
 
-Fixed up while applying, thanks!
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/bpftool/btf_dumper.c |  2 +-
+ tools/bpf/bpftool/link.c       |  4 ++--
+ tools/bpf/bpftool/main.h       | 10 +++++++++-
+ tools/bpf/bpftool/prog.c       | 16 ++++++++--------
+ 4 files changed, 20 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumpe=
+r.c
+index ede162f83eea..0e9310727281 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -67,7 +67,7 @@ static int dump_prog_id_as_func_ptr(const struct btf_du=
+mper *d,
+ 	if (!info->btf_id || !info->nr_func_info ||
+ 	    btf__get_from_id(info->btf_id, &prog_btf))
+ 		goto print;
+-	finfo =3D (struct bpf_func_info *)info->func_info;
++	finfo =3D u64_to_ptr(info->func_info);
+ 	func_type =3D btf__type_by_id(prog_btf, finfo->type_id);
+ 	if (!func_type || !btf_is_func(func_type))
+ 		goto print;
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 1b793759170e..a89f09e3c848 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -106,7 +106,7 @@ static int show_link_close_json(int fd, struct bpf_li=
+nk_info *info)
+ 	switch (info->type) {
+ 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
+ 		jsonw_string_field(json_wtr, "tp_name",
+-				   (const char *)info->raw_tracepoint.tp_name);
++				   u64_to_ptr(info->raw_tracepoint.tp_name));
+ 		break;
+ 	case BPF_LINK_TYPE_TRACING:
+ 		err =3D get_prog_info(info->prog_id, &prog_info);
+@@ -185,7 +185,7 @@ static int show_link_close_plain(int fd, struct bpf_l=
+ink_info *info)
+ 	switch (info->type) {
+ 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
+ 		printf("\n\ttp '%s'  ",
+-		       (const char *)info->raw_tracepoint.tp_name);
++		       (const char *)u64_to_ptr(info->raw_tracepoint.tp_name));
+ 		break;
+ 	case BPF_LINK_TYPE_TRACING:
+ 		err =3D get_prog_info(info->prog_id, &prog_info);
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index e3a79b5a9960..c46e52137b87 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -21,7 +21,15 @@
+ /* Make sure we do not use kernel-only integer typedefs */
+ #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+=20
+-#define ptr_to_u64(ptr)	((__u64)(unsigned long)(ptr))
++static inline __u64 ptr_to_u64(const void *ptr)
++{
++	return (__u64)(unsigned long)ptr;
++}
++
++static inline void *u64_to_ptr(__u64 ptr)
++{
++	return (void *)(unsigned long)ptr;
++}
+=20
+ #define NEXT_ARG()	({ argc--; argv++; if (argc < 0) usage(); })
+ #define NEXT_ARGP()	({ (*argc)--; (*argv)++; if (*argc < 0) usage(); })
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 158995d853b0..d393eb8263a6 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -428,14 +428,14 @@ prog_dump(struct bpf_prog_info *info, enum dump_mod=
+e mode,
+ 			p_info("no instructions returned");
+ 			return -1;
+ 		}
+-		buf =3D (unsigned char *)(info->jited_prog_insns);
++		buf =3D u64_to_ptr(info->jited_prog_insns);
+ 		member_len =3D info->jited_prog_len;
+ 	} else {	/* DUMP_XLATED */
+ 		if (info->xlated_prog_len =3D=3D 0 || !info->xlated_prog_insns) {
+ 			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
+ 			return -1;
+ 		}
+-		buf =3D (unsigned char *)info->xlated_prog_insns;
++		buf =3D u64_to_ptr(info->xlated_prog_insns);
+ 		member_len =3D info->xlated_prog_len;
+ 	}
+=20
+@@ -444,7 +444,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
+mode,
+ 		return -1;
+ 	}
+=20
+-	func_info =3D (void *)info->func_info;
++	func_info =3D u64_to_ptr(info->func_info);
+=20
+ 	if (info->nr_line_info) {
+ 		prog_linfo =3D bpf_prog_linfo__new(info);
+@@ -462,7 +462,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
+mode,
+=20
+ 		n =3D write(fd, buf, member_len);
+ 		close(fd);
+-		if (n !=3D member_len) {
++		if (n !=3D (ssize_t)member_len) {
+ 			p_err("error writing output file: %s",
+ 			      n < 0 ? strerror(errno) : "short write");
+ 			return -1;
+@@ -492,13 +492,13 @@ prog_dump(struct bpf_prog_info *info, enum dump_mod=
+e mode,
+ 			__u32 i;
+ 			if (info->nr_jited_ksyms) {
+ 				kernel_syms_load(&dd);
+-				ksyms =3D (__u64 *) info->jited_ksyms;
++				ksyms =3D u64_to_ptr(info->jited_ksyms);
+ 			}
+=20
+ 			if (json_output)
+ 				jsonw_start_array(json_wtr);
+=20
+-			lens =3D (__u32 *) info->jited_func_lens;
++			lens =3D u64_to_ptr(info->jited_func_lens);
+ 			for (i =3D 0; i < info->nr_jited_func_lens; i++) {
+ 				if (ksyms) {
+ 					sym =3D kernel_syms_search(&dd, ksyms[i]);
+@@ -559,7 +559,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
+mode,
+ 	} else {
+ 		kernel_syms_load(&dd);
+ 		dd.nr_jited_ksyms =3D info->nr_jited_ksyms;
+-		dd.jited_ksyms =3D (__u64 *) info->jited_ksyms;
++		dd.jited_ksyms =3D u64_to_ptr(info->jited_ksyms);
+ 		dd.btf =3D btf;
+ 		dd.func_info =3D func_info;
+ 		dd.finfo_rec_size =3D info->func_info_rec_size;
+@@ -1681,7 +1681,7 @@ static char *profile_target_name(int tgt_fd)
+ 		goto out;
+ 	}
+=20
+-	func_info =3D (struct bpf_func_info *)(info_linear->info.func_info);
++	func_info =3D u64_to_ptr(info_linear->info.func_info);
+ 	t =3D btf__type_by_id(btf, func_info[0].type_id);
+ 	if (!t) {
+ 		p_err("btf %d doesn't have type %d",
+--=20
+2.24.1
+
