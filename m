@@ -2,132 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28BD243FF1
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 22:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0921D244006
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 22:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgHMUkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 16:40:04 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18946 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726642AbgHMUkE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 16:40:04 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DKVXER028795
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 13:40:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=xlKJFWlB+04ldRTWzzBPgR810/7GPQGv3npTM4pfkcs=;
- b=mEboo9UeobmUvk3zX4XBSJfCjj0hCXtdkiSSEdC408D+9emvmebg8N4YXwZnIwlpa247
- LqpOVN6BUZIjtw72j8yyDRMORebGFqsBSE4bcUBwxn/QmaD/NlvML5wuvfrNlihIcQxx
- 7OhaKtcoTb4qJJlnUOn3PTPqXbR00UfA0vc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32v0kguvdn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 13:40:03 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 13 Aug 2020 13:40:02 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 98BEC2EC596D; Thu, 13 Aug 2020 13:39:59 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf 9/9] selftests/bpf: make test_varlen work with 32-bit user-space arch
-Date:   Thu, 13 Aug 2020 13:39:29 -0700
-Message-ID: <20200813203930.978141-10-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200813203930.978141-1-andriin@fb.com>
-References: <20200813203930.978141-1-andriin@fb.com>
+        id S1726593AbgHMUqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 16:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgHMUqf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Aug 2020 16:46:35 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE1DC061757;
+        Thu, 13 Aug 2020 13:46:34 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id x10so3995491ybj.13;
+        Thu, 13 Aug 2020 13:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4YqrEj5VRWDiRt2Idp5zIwlFmoyUZaY/uAgM+dXmFH4=;
+        b=tqikhG8E5NukICJvqeaDLtEal+Gvsucc9DJUqflCvDbAUQZ9aTOa7jItS5MvTH8wrf
+         n+VE/NGS2m8Rv/OZ1wJOmKHD0b9gBZyUqybKYliB2dwor+RgkUOnFTxxB7GXzgn+bXsT
+         2prqk1aOgtas4azQAjKbIxBGGQDghgXoLnvTkY3Dj/blpBN3ndlC2S6J9AIhyE+iEJ40
+         SF4Mo1w9QOaTuOelK1f/ibUw+xoo/U+RSIVflbkQ8LMH7zsRm96/nA6wOooyGQ+B0HFZ
+         9JoS/0Dx3pF3S8eONkiZQi3qq8NxI3F2PMuMTme1615CKkvBMbtrfSXvccl4jQjfDxq3
+         F1Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4YqrEj5VRWDiRt2Idp5zIwlFmoyUZaY/uAgM+dXmFH4=;
+        b=H3Ri1NzvZjJTauw3DK/+IIDa6/9AiHIlnHrKG3079gSkziCvmgJeZNuu5iYhCeWnrG
+         j8x2UjjjbuYB6z3KldpFKbIaaWwBNJ1rVrzpbUt2dJ+7/pWCZpZK9xPdilktltpj9Srv
+         MDWm5/sYwaBSwELGqSquzzccKWVTv6njqSbGvDcAKdS2xZLSn8nk4NgpZInva76XaTMD
+         I2PT+oWMmB2yAqtnx6nw6H+0Ls7akzAyGWy6WmQ4Sl0fpbknsml0mi2cHfAwA5WgklMA
+         h6QV/hE1YQX1VpqEg4HAG8L0ErL5EaSlxS5zWyRx9934L4JPvTAYTxOum3vs/oF2L03i
+         rgaA==
+X-Gm-Message-State: AOAM5330Pgm1SSLH4rh1h4o2iYj4l/T1RzS+iRZEm4qfV8O/6aneaR4s
+        cETk5KWqwjLxE7h0U8DvJP4hTOXFvqjA8MQerPgPdQ==
+X-Google-Smtp-Source: ABdhPJydVgPplLHFHTfNVor8TInwj6C9QLDzkQ0ei87thQcdZTMMUOLqUxGlwl88rzbm1Ys5ysIAI5nydZVKLK/rm7k=
+X-Received: by 2002:a25:bc50:: with SMTP id d16mr8656916ybk.230.1597351594148;
+ Thu, 13 Aug 2020 13:46:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-13_17:2020-08-13,2020-08-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=636 priorityscore=1501 mlxscore=0 suspectscore=8 clxscore=1015
- phishscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008130146
-X-FB-Internal: deliver
+References: <20200813203930.978141-1-andriin@fb.com> <20200813203930.978141-5-andriin@fb.com>
+In-Reply-To: <20200813203930.978141-5-andriin@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 Aug 2020 13:46:23 -0700
+Message-ID: <CAEf4BzZMDf2gcjMESy-umCr80N5BDMtrtCSz2EisEPz8qf79kw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf 4/9] libbpf: handle BTF pointer sizes more carefully
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Despite bpftool generating data section memory layout that will work for
-32-bit architectures on user-space side, BPF programs should be careful t=
-o not
-use ambiguous types like `long`, which have different size in 32-bit and
-64-bit environments. Fix that in test by using __u64 explicitly, which is
-a recommended approach anyway.
+On Thu, Aug 13, 2020 at 1:39 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> With libbpf and BTF it is pretty common to have libbpf built for one
+> architecture, while BTF information was generated for a different architecture
+> (typically, but not always, BPF). In such case, the size of a pointer might
+> differ betweem architectures. libbpf previously was always making an
+> assumption that pointer size for BTF is the same as native architecture
+> pointer size, but that breaks for cases where libbpf is built as 32-bit
+> library, while BTF is for 64-bit architecture.
+>
+> To solve this, add heuristic to determine pointer size by searching for `long`
+> or `unsigned long` integer type and using its size as a pointer size. Also,
+> allow to override the pointer size with a new API btf__set_pointer_size(), for
+> cases where application knows which pointer size should be used. User
+> application can check what libbpf "guessed" by looking at the result of
+> btf__pointer_size(). If it's not 0, then libbpf successfully determined a
+> pointer size, otherwise native arch pointer size will be used.
+>
+> For cases where BTF is parsed from ELF file, use ELF's class (32-bit or
+> 64-bit) to determine pointer size.
+>
+> Fixes: 8a138aed4a80 ("bpf: btf: Add BTF support to libbpf")
+> Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/lib/bpf/btf.c      | 83 ++++++++++++++++++++++++++++++++++++++--
+>  tools/lib/bpf/btf.h      |  2 +
+>  tools/lib/bpf/btf_dump.c |  4 +-
+>  tools/lib/bpf/libbpf.map |  2 +
+>  4 files changed, 87 insertions(+), 4 deletions(-)
+>
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/varlen.c | 8 ++++----
- tools/testing/selftests/bpf/progs/test_varlen.c | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/varlen.c b/tools/test=
-ing/selftests/bpf/prog_tests/varlen.c
-index c75525eab02c..dd324b4933db 100644
---- a/tools/testing/selftests/bpf/prog_tests/varlen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/varlen.c
-@@ -44,25 +44,25 @@ void test_varlen(void)
- 	CHECK_VAL(bss->payload1_len2, size2);
- 	CHECK_VAL(bss->total1, size1 + size2);
- 	CHECK(memcmp(bss->payload1, exp_str, size1 + size2), "content_check",
--	      "doesn't match!");
-+	      "doesn't match!\n");
-=20
- 	CHECK_VAL(data->payload2_len1, size1);
- 	CHECK_VAL(data->payload2_len2, size2);
- 	CHECK_VAL(data->total2, size1 + size2);
- 	CHECK(memcmp(data->payload2, exp_str, size1 + size2), "content_check",
--	      "doesn't match!");
-+	      "doesn't match!\n");
-=20
- 	CHECK_VAL(data->payload3_len1, size1);
- 	CHECK_VAL(data->payload3_len2, size2);
- 	CHECK_VAL(data->total3, size1 + size2);
- 	CHECK(memcmp(data->payload3, exp_str, size1 + size2), "content_check",
--	      "doesn't match!");
-+	      "doesn't match!\n");
-=20
- 	CHECK_VAL(data->payload4_len1, size1);
- 	CHECK_VAL(data->payload4_len2, size2);
- 	CHECK_VAL(data->total4, size1 + size2);
- 	CHECK(memcmp(data->payload4, exp_str, size1 + size2), "content_check",
--	      "doesn't match!");
-+	      "doesn't match!\n");
- cleanup:
- 	test_varlen__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_varlen.c b/tools/test=
-ing/selftests/bpf/progs/test_varlen.c
-index cd4b72c55dfe..913acdffd90f 100644
---- a/tools/testing/selftests/bpf/progs/test_varlen.c
-+++ b/tools/testing/selftests/bpf/progs/test_varlen.c
-@@ -15,9 +15,9 @@ int test_pid =3D 0;
- bool capture =3D false;
-=20
- /* .bss */
--long payload1_len1 =3D 0;
--long payload1_len2 =3D 0;
--long total1 =3D 0;
-+__u64 payload1_len1 =3D 0;
-+__u64 payload1_len2 =3D 0;
-+__u64 total1 =3D 0;
- char payload1[MAX_LEN + MAX_LEN] =3D {};
-=20
- /* .data */
---=20
-2.24.1
+>
+> +       switch (gelf_getclass(elf)) {
+> +       case ELFCLASS32:
+> +               btf__set_pointer_size(btf, 4);
+> +               break;
+> +       case ELFCLASS64:
+> +               btf__set_pointer_size(btf, 8);
+> +               break;
+> +       default:
+> +               pr_warn("failed to get ELF class (bitness) for %s\n", path);
+> +               goto done;
 
+This is not right, it should have been a break, not sure what
+happened. I'll send v3, maybe the cover letter also won't go missing
+this time.
+
+> +       }
+> +
+>         if (btf_ext && btf_ext_data) {
+>                 *btf_ext = btf_ext__new(btf_ext_data->d_buf,
+>                                         btf_ext_data->d_size);
+
+[...]
