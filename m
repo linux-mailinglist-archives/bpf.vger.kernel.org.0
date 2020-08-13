@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DC42440D8
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 23:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BBE2440E2
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 23:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgHMVqC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 17:46:02 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15386 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726192AbgHMVqC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 17:46:02 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DLikPl011335
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:46:01 -0700
+        id S1726546AbgHMVuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 17:50:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21636 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726192AbgHMVuu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 17:50:50 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DLixRf003884
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:50:49 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=nxAKZ8Az69/8rLy2V1EBnunQAgjn24A9Diwa1zub0Bc=;
- b=EO+GwRZ14s9gieFR+LDgKjT+SsfPhnuCgkTGf1YFZ6VPRLJtUScKIrvPlYFVXV14QsXS
- Eo1VFzO8fauQF7H8lkLGkbWFckCF8HrCbBm6d/QzonRGnB/DgDau/zcxJjLh4+cL6qeS
- RRCTBBDVvWTNirAvtq3+EO391mxXpjaXGxM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32v0kg49wt-1
+ bh=dZ/6d6r5sz9GcD0wgNaMearIT/YA7cjblJFShTofgT0=;
+ b=eXDEdOscJE7jRKCxrhS8Q+MGL9dkq/E8ECBtem9pH6M91CsXlfvTZffKwGI+BZLJQV6W
+ 3PwDjNqfLmyzD5YrBa8p1tdV26P8RANbjAhdmLMybzpjuXr8kQIhtCPO6VyTDh5l/a2W
+ kkXiXix8W6Xg8vtBdbR3hYpF92yh3nwTaas= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32v0kdc6v6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:46:01 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:50:49 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 13 Aug 2020 14:45:30 -0700
+ 15.1.1979.3; Thu, 13 Aug 2020 14:50:47 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 468B32EC597F; Thu, 13 Aug 2020 13:49:53 -0700 (PDT)
+        id ED0492EC597F; Thu, 13 Aug 2020 13:50:01 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
@@ -39,9 +39,9 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf 1/9] tools/bpftool: fix compilation warnings in 32-bit mode
-Date:   Thu, 13 Aug 2020 13:49:37 -0700
-Message-ID: <20200813204945.1020225-2-andriin@fb.com>
+Subject: [PATCH v3 bpf 5/9] selftests/bpf: fix btf_dump test cases on 32-bit arches
+Date:   Thu, 13 Aug 2020 13:49:41 -0700
+Message-ID: <20200813204945.1020225-6-andriin@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200813204945.1020225-1-andriin@fb.com>
 References: <20200813204945.1020225-1-andriin@fb.com>
@@ -51,166 +51,78 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-13_17:2020-08-13,2020-08-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- priorityscore=1501 phishscore=0 suspectscore=8 adultscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008130154
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=8 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1015 mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008130154
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix few compilation warnings in bpftool when compiling in 32-bit mode.
-Abstract away u64 to pointer conversion into a helper function.
+Fix btf_dump test cases by hard-coding BPF's pointer size of 8 bytes for =
+cases
+where it's impossible to deterimne the pointer size (no long type in BTF)=
+. In
+cases where it's known, validate libbpf correctly determines it as 8.
 
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- tools/bpf/bpftool/btf_dumper.c |  2 +-
- tools/bpf/bpftool/link.c       |  4 ++--
- tools/bpf/bpftool/main.h       | 10 +++++++++-
- tools/bpf/bpftool/prog.c       | 16 ++++++++--------
- 4 files changed, 20 insertions(+), 12 deletions(-)
+ .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumpe=
-r.c
-index ede162f83eea..0e9310727281 100644
---- a/tools/bpf/bpftool/btf_dumper.c
-+++ b/tools/bpf/bpftool/btf_dumper.c
-@@ -67,7 +67,7 @@ static int dump_prog_id_as_func_ptr(const struct btf_du=
-mper *d,
- 	if (!info->btf_id || !info->nr_func_info ||
- 	    btf__get_from_id(info->btf_id, &prog_btf))
- 		goto print;
--	finfo =3D (struct bpf_func_info *)info->func_info;
-+	finfo =3D u64_to_ptr(info->func_info);
- 	func_type =3D btf__type_by_id(prog_btf, finfo->type_id);
- 	if (!func_type || !btf_is_func(func_type))
- 		goto print;
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 1b793759170e..a89f09e3c848 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -106,7 +106,7 @@ static int show_link_close_json(int fd, struct bpf_li=
-nk_info *info)
- 	switch (info->type) {
- 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
- 		jsonw_string_field(json_wtr, "tp_name",
--				   (const char *)info->raw_tracepoint.tp_name);
-+				   u64_to_ptr(info->raw_tracepoint.tp_name));
- 		break;
- 	case BPF_LINK_TYPE_TRACING:
- 		err =3D get_prog_info(info->prog_id, &prog_info);
-@@ -185,7 +185,7 @@ static int show_link_close_plain(int fd, struct bpf_l=
-ink_info *info)
- 	switch (info->type) {
- 	case BPF_LINK_TYPE_RAW_TRACEPOINT:
- 		printf("\n\ttp '%s'  ",
--		       (const char *)info->raw_tracepoint.tp_name);
-+		       (const char *)u64_to_ptr(info->raw_tracepoint.tp_name));
- 		break;
- 	case BPF_LINK_TYPE_TRACING:
- 		err =3D get_prog_info(info->prog_id, &prog_info);
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index e3a79b5a9960..c46e52137b87 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -21,7 +21,15 @@
- /* Make sure we do not use kernel-only integer typedefs */
- #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/te=
+sting/selftests/bpf/prog_tests/btf_dump.c
+index cb33a7ee4e04..39fb81d9daeb 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -12,15 +12,16 @@ void btf_dump_printf(void *ctx, const char *fmt, va_l=
+ist args)
+ static struct btf_dump_test_case {
+ 	const char *name;
+ 	const char *file;
++	bool known_ptr_sz;
+ 	struct btf_dump_opts opts;
+ } btf_dump_test_cases[] =3D {
+-	{"btf_dump: syntax", "btf_dump_test_case_syntax", {}},
+-	{"btf_dump: ordering", "btf_dump_test_case_ordering", {}},
+-	{"btf_dump: padding", "btf_dump_test_case_padding", {}},
+-	{"btf_dump: packing", "btf_dump_test_case_packing", {}},
+-	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", {}},
+-	{"btf_dump: multidim", "btf_dump_test_case_multidim", {}},
+-	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", {}},
++	{"btf_dump: syntax", "btf_dump_test_case_syntax", true, {}},
++	{"btf_dump: ordering", "btf_dump_test_case_ordering", false, {}},
++	{"btf_dump: padding", "btf_dump_test_case_padding", true, {}},
++	{"btf_dump: packing", "btf_dump_test_case_packing", true, {}},
++	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", true, {}},
++	{"btf_dump: multidim", "btf_dump_test_case_multidim", false, {}},
++	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", false, {}},
+ };
 =20
--#define ptr_to_u64(ptr)	((__u64)(unsigned long)(ptr))
-+static inline __u64 ptr_to_u64(const void *ptr)
-+{
-+	return (__u64)(unsigned long)ptr;
-+}
+ static int btf_dump_all_types(const struct btf *btf,
+@@ -62,6 +63,18 @@ static int test_btf_dump_case(int n, struct btf_dump_t=
+est_case *t)
+ 		goto done;
+ 	}
+=20
++	/* tests with t->known_ptr_sz have no "long" or "unsigned long" type,
++	 * so it's impossible to determine correct pointer size; but if they
++	 * do, it should be 8 regardless of host architecture, becaues BPF
++	 * target is always 64-bit
++	 */
++	if (!t->known_ptr_sz) {
++		btf__set_pointer_size(btf, 8);
++	} else {
++		CHECK(btf__pointer_size(btf) !=3D 8, "ptr_sz", "exp %d, got %zu\n",
++		      8, btf__pointer_size(btf));
++	}
 +
-+static inline void *u64_to_ptr(__u64 ptr)
-+{
-+	return (void *)(unsigned long)ptr;
-+}
-=20
- #define NEXT_ARG()	({ argc--; argv++; if (argc < 0) usage(); })
- #define NEXT_ARGP()	({ (*argc)--; (*argv)++; if (*argc < 0) usage(); })
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 158995d853b0..d393eb8263a6 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -428,14 +428,14 @@ prog_dump(struct bpf_prog_info *info, enum dump_mod=
-e mode,
- 			p_info("no instructions returned");
- 			return -1;
- 		}
--		buf =3D (unsigned char *)(info->jited_prog_insns);
-+		buf =3D u64_to_ptr(info->jited_prog_insns);
- 		member_len =3D info->jited_prog_len;
- 	} else {	/* DUMP_XLATED */
- 		if (info->xlated_prog_len =3D=3D 0 || !info->xlated_prog_insns) {
- 			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
- 			return -1;
- 		}
--		buf =3D (unsigned char *)info->xlated_prog_insns;
-+		buf =3D u64_to_ptr(info->xlated_prog_insns);
- 		member_len =3D info->xlated_prog_len;
- 	}
-=20
-@@ -444,7 +444,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
-mode,
- 		return -1;
- 	}
-=20
--	func_info =3D (void *)info->func_info;
-+	func_info =3D u64_to_ptr(info->func_info);
-=20
- 	if (info->nr_line_info) {
- 		prog_linfo =3D bpf_prog_linfo__new(info);
-@@ -462,7 +462,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
-mode,
-=20
- 		n =3D write(fd, buf, member_len);
- 		close(fd);
--		if (n !=3D member_len) {
-+		if (n !=3D (ssize_t)member_len) {
- 			p_err("error writing output file: %s",
- 			      n < 0 ? strerror(errno) : "short write");
- 			return -1;
-@@ -492,13 +492,13 @@ prog_dump(struct bpf_prog_info *info, enum dump_mod=
-e mode,
- 			__u32 i;
- 			if (info->nr_jited_ksyms) {
- 				kernel_syms_load(&dd);
--				ksyms =3D (__u64 *) info->jited_ksyms;
-+				ksyms =3D u64_to_ptr(info->jited_ksyms);
- 			}
-=20
- 			if (json_output)
- 				jsonw_start_array(json_wtr);
-=20
--			lens =3D (__u32 *) info->jited_func_lens;
-+			lens =3D u64_to_ptr(info->jited_func_lens);
- 			for (i =3D 0; i < info->nr_jited_func_lens; i++) {
- 				if (ksyms) {
- 					sym =3D kernel_syms_search(&dd, ksyms[i]);
-@@ -559,7 +559,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode =
-mode,
- 	} else {
- 		kernel_syms_load(&dd);
- 		dd.nr_jited_ksyms =3D info->nr_jited_ksyms;
--		dd.jited_ksyms =3D (__u64 *) info->jited_ksyms;
-+		dd.jited_ksyms =3D u64_to_ptr(info->jited_ksyms);
- 		dd.btf =3D btf;
- 		dd.func_info =3D func_info;
- 		dd.finfo_rec_size =3D info->func_info_rec_size;
-@@ -1681,7 +1681,7 @@ static char *profile_target_name(int tgt_fd)
- 		goto out;
- 	}
-=20
--	func_info =3D (struct bpf_func_info *)(info_linear->info.func_info);
-+	func_info =3D u64_to_ptr(info_linear->info.func_info);
- 	t =3D btf__type_by_id(btf, func_info[0].type_id);
- 	if (!t) {
- 		p_err("btf %d doesn't have type %d",
+ 	snprintf(out_file, sizeof(out_file), "/tmp/%s.output.XXXXXX", t->file);
+ 	fd =3D mkstemp(out_file);
+ 	if (CHECK(fd < 0, "create_tmp", "failed to create file: %d\n", fd)) {
 --=20
 2.24.1
 
