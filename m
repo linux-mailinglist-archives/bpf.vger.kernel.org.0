@@ -2,94 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD02243EAE
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 20:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EB6243F46
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 21:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgHMSIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 14:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        id S1726249AbgHMTUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 15:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHMSIR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Aug 2020 14:08:17 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0E1C061757
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 11:08:16 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id m34so3196726pgl.11
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 11:08:16 -0700 (PDT)
+        with ESMTP id S1726244AbgHMTUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:20:49 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD7BC061757;
+        Thu, 13 Aug 2020 12:20:49 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j21so3296453pgi.9;
+        Thu, 13 Aug 2020 12:20:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j9OTxTnhv+MmIJnpSlGbqd2lqUESFkP194TAlXuIp4c=;
-        b=smlkFr+R04KSC7hCaky/lScRar9l/gVRkDchVhwxUEItgndtDbl2xdoDQQ/EzvVI1U
-         LJJ4Sf6PtUi8cU6gfJc1rMnXi1UltX74UsW4FQOdrQ9avhAHn0Oa8wtmbFkhKvB43ulV
-         wHdO9r58OTtiW9616QCvHDtYNfIs1gvTDJAEcXMrjw9+3TWs7mf3aFju7V4tKc4jCJlH
-         8zsgjwvo1kca+dZeKAiH3U4U2QPRPWq5S/++eNPeby0Xz3bGeoHzZu1jjm+61mopNaAi
-         2bac3D2ylChU4iOSoieeNZSo9Z5rve9/VQphXdVgNXi+wwcTu/7GQ0at2uvmlko3Vdie
-         GHPw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Eu04kgJeLeMPTSIDNmL4XAEMIaEJ5W8Pj+0XbxuHnWw=;
+        b=TCBgamhEmpY5CsXYmnz2KguGRGqFo1NU1+B663f1SFpjp/nBviCcXJYTHrS+mHgCra
+         NGv9yf7ZtYIi2ZgVXU4O4VYHHYknHWhHbca2dRN9cRf0/yoLkbuxOodkYhsHpo/ZcLvt
+         HDIiCT1ugIxghvulBMLmWEIfTdExOjUp1d0fJKX5AMFhmFmlpYw54Sjc5vcNz3fc0ccs
+         SfwyZtcBeGCps9gDX3vttKSX6D+YirE8k5rCJkIASodey6XUliLA4gWpGzFST3ybHX+0
+         6CRhdxkb8363JX4Nbozru6uMXb411IR2OLSEq2olQ5GlWiOD33j2lPvTXKwTD90vofFR
+         VRmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=j9OTxTnhv+MmIJnpSlGbqd2lqUESFkP194TAlXuIp4c=;
-        b=b4uOUYyPq0lYU1n1g5wd9UICOCs074COgBCoCziC/DCjIUl18p9j/OepDefxsXhFYq
-         isYCpC5q4aEtUyCR4N3V1dt6dhYS95yQg2tpJ9Smn9qryr81anKah5a/HetGsgnP755e
-         b34pSC6Mx5iTtspmLwcw0ICZ2qtRPE11FFmnH4oPYFbwVePXZFSy08C3Sq4boOILbPQ+
-         QjNtqr/d1bLLOoRzhYTAojRVzmkS2OUMFhAKxp19nST+axe+l983k6Uvhra70n/gK7th
-         +qYuitcv3SpUV+Xk5wnDZkfnDinMlbGKmy6BHHqnXkQfVg4iMrcFIuiyKR9r955Kt0QC
-         fp9A==
-X-Gm-Message-State: AOAM530G1c+6xr1pDvjtFLdtiDP6UJzzSewBxUS1x8cBGXR/O4pzUaz2
-        2hEvYFyUCqbB8T0BbuG5rzrLUot8
-X-Google-Smtp-Source: ABdhPJwXRebcOTvNMkZgzmtEyz2Ib772w5mcG1TVawhTRTv3M/C6eP5CxyyFjavOqs2P/FLvGWtKrA==
-X-Received: by 2002:a62:8881:: with SMTP id l123mr5332063pfd.186.1597342095419;
-        Thu, 13 Aug 2020 11:08:15 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id mh14sm6133348pjb.23.2020.08.13.11.08.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eu04kgJeLeMPTSIDNmL4XAEMIaEJ5W8Pj+0XbxuHnWw=;
+        b=VnLyd/d8flfGRpBzzizdoguAg/dP3/pqvQSg4H1Xz9IGWVLP+POoZeCLYyCDkrLpZZ
+         +/5/fhMoSLNkOXRetFexI68tydL6AJpZkDfOKoJrT1zs7srj2pPPAqxIrAQQASZERZEg
+         snSYBAePegNx+QxYC4flURsnw0542a9bEfir4TlyhIqpq3ir11lMK2C1YtcJJG0f2Jsd
+         hnVnx1HtYI4d8td8HNSq5M3iGiubtLuDqfC0qAUHYFMZttpeYz29H0KagOcTW6wfPj0P
+         7bhhl9bmZCyP/h/TUpu5qJ16dC09+lmqrCMu9KexSBuOMTzdScmA4Z+ZBcZ7WW9GhRhd
+         aA1w==
+X-Gm-Message-State: AOAM531vI16hUfogvng67lnZZkZ+5KO0IPkFXYLdz8kAG9ROnlnVnmmL
+        grUZ8DZM7iauUy9DuDXQPV826zKa
+X-Google-Smtp-Source: ABdhPJwRjT1WUfNb2iqH23cnQZTuCXtqKskLMw7oFNxOkGOj+T8I9HSTC+JcSkZp+iYv+jsBH1ZJ/w==
+X-Received: by 2002:a05:6a00:81:: with SMTP id c1mr5981705pfj.189.1597346445300;
+        Thu, 13 Aug 2020 12:20:45 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:affd])
+        by smtp.gmail.com with ESMTPSA id x127sm6680655pfd.86.2020.08.13.12.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 11:08:14 -0700 (PDT)
-From:   Joe Stringer <joe@wand.net.nz>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, ast@kernel.org
-Subject: [PATCH bpf] doc: Add link to bpf helpers man page
-Date:   Thu, 13 Aug 2020 11:08:07 -0700
-Message-Id: <20200813180807.2821735-1-joe@wand.net.nz>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Aug 2020 12:20:44 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 12:20:42 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf 0/9] Fix various issues with 32-bit libbpf
+Message-ID: <20200813192042.ntv6ybry6ck2s6jg@ast-mbp.dhcp.thefacebook.com>
+References: <20200813071722.2213397-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813071722.2213397-1-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf-helpers(7) man pages provide an invaluable description of the
-functions that an eBPF program can call at runtime. Link them here.
+On Thu, Aug 13, 2020 at 12:17:13AM -0700, Andrii Nakryiko wrote:
+> This patch set contains fixes to libbpf, bpftool, and selftests that were
+> found while testing libbpf and selftests built in 32-bit mode. 64-bit nature
+> of BPF target and 32-bit host environment don't always mix together well
+> without extra care, so there were a bunch of problems discovered and fixed.
+> 
+> Each individual patch contains additional explanations, where necessary.
+> 
+> This series is really a mix of bpf tree fixes and patches that are better
+> landed into bpf-next, once it opens. This is due to a bit riskier changes and
+> new APIs added to allow solving this 32/64-bit mix problem. It would be great
+> to apply patches #1 through #3 to bpf tree right now, and the rest into
+> bpf-next, but I would appreciate reviewing all of them, of course.
 
-Signed-off-by: Joe Stringer <joe@wand.net.nz>
----
- Documentation/bpf/index.rst | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index d46429be334e..7e76f0705971 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -35,6 +35,10 @@ Two sets of Questions and Answers (Q&A) are maintained.
-    bpf_design_QA
-    bpf_devel_QA
- 
-+Helper functions
-+================
-+
-+* `bpf-helpers(7)`_ maintains a list of helpers available to eBPF programs.
- 
- Program types
- =============
-@@ -79,4 +83,5 @@ Other
- .. _networking-filter: ../networking/filter.rst
- .. _man-pages: https://www.kernel.org/doc/man-pages/
- .. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
-+.. _bpf-helpers(7): https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
- .. _BPF and XDP Reference Guide: https://docs.cilium.io/en/latest/bpf/
--- 
-2.25.1
-
+why first three only?
+I think btf__set_pointer_size() and friends are necessary in bpf tree.
+The only thing I would suggest is to rename guess_ptr_size() into
+determine_ptr_size() or something.
+It's not guessing it. Looking for 'long' in BTF is precise.
+We can teach pahole and llvm to always emit 'long' type and libbpf can
+fail parsing BTF if 'long' is not found.
