@@ -2,127 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BBE2440E2
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 23:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E5E2440C4
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 23:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgHMVuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 17:50:50 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21636 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726192AbgHMVuu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 17:50:50 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07DLixRf003884
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:50:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=dZ/6d6r5sz9GcD0wgNaMearIT/YA7cjblJFShTofgT0=;
- b=eXDEdOscJE7jRKCxrhS8Q+MGL9dkq/E8ECBtem9pH6M91CsXlfvTZffKwGI+BZLJQV6W
- 3PwDjNqfLmyzD5YrBa8p1tdV26P8RANbjAhdmLMybzpjuXr8kQIhtCPO6VyTDh5l/a2W
- kkXiXix8W6Xg8vtBdbR3hYpF92yh3nwTaas= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32v0kdc6v6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 14:50:49 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 13 Aug 2020 14:50:47 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id ED0492EC597F; Thu, 13 Aug 2020 13:50:01 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf 5/9] selftests/bpf: fix btf_dump test cases on 32-bit arches
-Date:   Thu, 13 Aug 2020 13:49:41 -0700
-Message-ID: <20200813204945.1020225-6-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200813204945.1020225-1-andriin@fb.com>
-References: <20200813204945.1020225-1-andriin@fb.com>
+        id S1726959AbgHMVgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 17:36:22 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47086 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgHMVgV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Aug 2020 17:36:21 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k6KtU-0007dv-3b; Thu, 13 Aug 2020 23:36:16 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k6KtT-0002h9-UF; Thu, 13 Aug 2020 23:36:15 +0200
+Subject: Re: [bpf PATCH v3 0/5] Fix sock_ops field read splat
+To:     John Fastabend <john.fastabend@gmail.com>, songliubraving@fb.com,
+        kafai@fb.com, ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <159718333343.4728.9389284976477402193.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c55c79df-5c80-1cb4-3f8f-a1ab8d5135a5@iogearbox.net>
+Date:   Thu, 13 Aug 2020 23:36:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-13_17:2020-08-13,2020-08-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- suspectscore=8 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008130154
-X-FB-Internal: deliver
+In-Reply-To: <159718333343.4728.9389284976477402193.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25901/Thu Aug 13 09:01:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix btf_dump test cases by hard-coding BPF's pointer size of 8 bytes for =
-cases
-where it's impossible to deterimne the pointer size (no long type in BTF)=
-. In
-cases where it's known, validate libbpf correctly determines it as 8.
+On 8/12/20 12:04 AM, John Fastabend wrote:
+[...]
+> v2->v3: Updated commit msg in patch1 to include ommited line of asm
+>          output, per Daniels comment.
+> v1->v2: Added fix sk access case
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/btf_dump.c       | 27 ++++++++++++++-----
- 1 file changed, 20 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/te=
-sting/selftests/bpf/prog_tests/btf_dump.c
-index cb33a7ee4e04..39fb81d9daeb 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -12,15 +12,16 @@ void btf_dump_printf(void *ctx, const char *fmt, va_l=
-ist args)
- static struct btf_dump_test_case {
- 	const char *name;
- 	const char *file;
-+	bool known_ptr_sz;
- 	struct btf_dump_opts opts;
- } btf_dump_test_cases[] =3D {
--	{"btf_dump: syntax", "btf_dump_test_case_syntax", {}},
--	{"btf_dump: ordering", "btf_dump_test_case_ordering", {}},
--	{"btf_dump: padding", "btf_dump_test_case_padding", {}},
--	{"btf_dump: packing", "btf_dump_test_case_packing", {}},
--	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", {}},
--	{"btf_dump: multidim", "btf_dump_test_case_multidim", {}},
--	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", {}},
-+	{"btf_dump: syntax", "btf_dump_test_case_syntax", true, {}},
-+	{"btf_dump: ordering", "btf_dump_test_case_ordering", false, {}},
-+	{"btf_dump: padding", "btf_dump_test_case_padding", true, {}},
-+	{"btf_dump: packing", "btf_dump_test_case_packing", true, {}},
-+	{"btf_dump: bitfields", "btf_dump_test_case_bitfields", true, {}},
-+	{"btf_dump: multidim", "btf_dump_test_case_multidim", false, {}},
-+	{"btf_dump: namespacing", "btf_dump_test_case_namespacing", false, {}},
- };
-=20
- static int btf_dump_all_types(const struct btf *btf,
-@@ -62,6 +63,18 @@ static int test_btf_dump_case(int n, struct btf_dump_t=
-est_case *t)
- 		goto done;
- 	}
-=20
-+	/* tests with t->known_ptr_sz have no "long" or "unsigned long" type,
-+	 * so it's impossible to determine correct pointer size; but if they
-+	 * do, it should be 8 regardless of host architecture, becaues BPF
-+	 * target is always 64-bit
-+	 */
-+	if (!t->known_ptr_sz) {
-+		btf__set_pointer_size(btf, 8);
-+	} else {
-+		CHECK(btf__pointer_size(btf) !=3D 8, "ptr_sz", "exp %d, got %zu\n",
-+		      8, btf__pointer_size(btf));
-+	}
-+
- 	snprintf(out_file, sizeof(out_file), "/tmp/%s.output.XXXXXX", t->file);
- 	fd =3D mkstemp(out_file);
- 	if (CHECK(fd < 0, "create_tmp", "failed to create file: %d\n", fd)) {
---=20
-2.24.1
-
+Applied, thanks!
