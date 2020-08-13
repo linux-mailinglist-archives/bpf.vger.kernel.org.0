@@ -2,167 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199AB243282
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 04:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DB72434AD
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 09:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgHMCbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 22:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgHMCbp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 22:31:45 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F71C061383;
-        Wed, 12 Aug 2020 19:31:44 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id k4so4257811ilr.12;
-        Wed, 12 Aug 2020 19:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qNWYLoXZVMonMKBHLVmtYLhOlAGwJ6EBuGHChAsIpUo=;
-        b=qhdCfedfr/Ep9bZBLmhAKJeAwZhN0pMo6GUSitTaAQbtSuVYKoxD/0YKcoO24/2JP0
-         Nndmv39jDWxQWcGPmIkOGCsblGpa51/QHIbiFGsA2Ox/f9A23qiGqy+MmslFALRf0/do
-         4UddMMK+QndME3ZYl5nNVv4kbRnlJgfjDgHalzUtOfP7ooM7aeK8MLdx+NZX5TEPc5bR
-         1FCDbrWi//y3YbA2epAJeOgxnsnCDdhTxyjpc97A8XWRwV5xe2waWZmURHlXxrdWeoSI
-         z57vPWGcQRVzy8YiP/NMjBuSKftyKu4kSEKChHxmMeA4LIFRZC28QHFOMRseMPT1ujra
-         mRGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qNWYLoXZVMonMKBHLVmtYLhOlAGwJ6EBuGHChAsIpUo=;
-        b=aXyqpg5TDUcwy2/hRo9GjUI9YUvi7qikxHmwJvIyzLpGwpWMOhVMLj8lgdwACRdoIL
-         UL8weJhObf7oncVpDUDSyGm30x8EaXAW8gOMqxkkKCWoUOC4tG6aQWhHF/T+mGitHkkI
-         HYelzhni/09kjTOfwIKtj8hTKgUX16318mI4BqyqDrroW1gMzQL/MHVDOPJHWjZfYrAV
-         vXdk9yNF0uSYNtDHFcvt8gHcUPNY+uU243hIQzpiSCR9bffwOP9pz/h2vYItQtEFXBMZ
-         tvuWEc4eqUHv8PqNIwbNrxVzzAgJC7Pt2+YF/i1swOwiRSjb+Bucd9J9v1x+G8Wm6Cpz
-         p+xg==
-X-Gm-Message-State: AOAM530fWc7a3JIvFphwY3yaw9jyQ9QJrhwk9QVYwY2dRmksaHvQUxdk
-        DswK3GU9+HVKV+qT/l4TazpGoyiWPv4VgcI98n6tYv2s9rJ1Vw==
-X-Google-Smtp-Source: ABdhPJylH3v+THRzQhBifdrCGGocqIQ2qtemdjHQ2VqrVR69VQbCYWZ4Su1ADSxdglVhaS2CyyO1m0ylSx1GTkqkISg=
-X-Received: by 2002:a92:9e48:: with SMTP id q69mr2671414ili.170.1597285903798;
- Wed, 12 Aug 2020 19:31:43 -0700 (PDT)
+        id S1726570AbgHMHRd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 03:17:33 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46678 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbgHMHRc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 03:17:32 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07D7Es5L002125
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 00:17:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=paUf0/V/leLdAL4wM36Ts0KSKkUM8cGSC8otLvQHEmI=;
+ b=kdoNlDwzSkIu5uuDKC/6ER5+95NkGqAprSjhPOKFipeuSgX1a9Rq8r1wUus1yrKo231V
+ DvxY6TUtJtjPM+YWSjnB4JAFALkVkOSbLPGF3nYeSle/sx6KvOx9A+0J/z7u8EvuwCXi
+ QqASfgSj88VRdHVhtKeybe3bR9aZ7N7Y2TY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32v0kd8e8g-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 13 Aug 2020 00:17:30 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 13 Aug 2020 00:17:29 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id E2A502EC5928; Thu, 13 Aug 2020 00:17:24 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf 0/9] Fix various issues with 32-bit libbpf
+Date:   Thu, 13 Aug 2020 00:17:13 -0700
+Message-ID: <20200813071722.2213397-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200812221518.2869003-1-daniel.diaz@linaro.org>
-In-Reply-To: <20200812221518.2869003-1-daniel.diaz@linaro.org>
-From:   Tom Hebb <tommyhebb@gmail.com>
-Date:   Wed, 12 Aug 2020 19:31:32 -0700
-Message-ID: <CAMcCCgRGpi+3D4479MLU2xQZJYBA1c6mzZ=bb1VLEwPg3VAgLg@mail.gmail.com>
-Subject: Re: [PATCH] tools build feature: Quote CC and CXX for their arguments
-To:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-13_04:2020-08-13,2020-08-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=8 lowpriorityscore=0 bulkscore=0 mlxlogscore=990
+ clxscore=1015 mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008130055
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 3:15 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org> w=
-rote:
->
-> When using a cross-compilation environment, such as OpenEmbedded,
-> the CC an CXX variables are set to something more than just a
-> command: there are arguments (such as --sysroot) that need to be
-> passed on to the compiler so that the right set of headers and
-> libraries are used.
->
-> For the particular case that our systems detected, CC is set to
-> the following:
->
->   export CC=3D"aarch64-linaro-linux-gcc  --sysroot=3D/oe/build/tmp/work/m=
-achine/perf/1.0-r9/recipe-sysroot"
->
-> Without quotes, detection is as follows:
->
->   Auto-detecting system features:
->   ...                         dwarf: [ OFF ]
->   ...            dwarf_getlocations: [ OFF ]
->   ...                         glibc: [ OFF ]
->   ...                          gtk2: [ OFF ]
->   ...                        libbfd: [ OFF ]
->   ...                        libcap: [ OFF ]
->   ...                        libelf: [ OFF ]
->   ...                       libnuma: [ OFF ]
->   ...        numa_num_possible_cpus: [ OFF ]
->   ...                       libperl: [ OFF ]
->   ...                     libpython: [ OFF ]
->   ...                     libcrypto: [ OFF ]
->   ...                     libunwind: [ OFF ]
->   ...            libdw-dwarf-unwind: [ OFF ]
->   ...                          zlib: [ OFF ]
->   ...                          lzma: [ OFF ]
->   ...                     get_cpuid: [ OFF ]
->   ...                           bpf: [ OFF ]
->   ...                        libaio: [ OFF ]
->   ...                       libzstd: [ OFF ]
->   ...        disassembler-four-args: [ OFF ]
->
->   Makefile.config:414: *** No gnu/libc-version.h found, please install gl=
-ibc-dev[el].  Stop.
->   Makefile.perf:230: recipe for target 'sub-make' failed
->   make[1]: *** [sub-make] Error 2
->   Makefile:69: recipe for target 'all' failed
->   make: *** [all] Error 2
->
-> With CC and CXX quoted, some of those features are now detected.
->
-> Fixes: e3232c2f39ac ("tools build feature: Use CC and CXX from parent")
->
-> Signed-off-by: Daniel D=C3=ADaz <daniel.diaz@linaro.org>
+This patch set contains fixes to libbpf, bpftool, and selftests that were
+found while testing libbpf and selftests built in 32-bit mode. 64-bit nat=
+ure
+of BPF target and 32-bit host environment don't always mix together well
+without extra care, so there were a bunch of problems discovered and fixe=
+d.
 
-Whoops, I'm the one who introduced this issue. Fix looks good, thanks!
+Each individual patch contains additional explanations, where necessary.
 
-Reviewed-by: Thomas Hebb <tommyhebb@gmail.com>
-Fixes: e3232c2f39ac ("tools build feature: Use CC and CXX from parent")
+This series is really a mix of bpf tree fixes and patches that are better
+landed into bpf-next, once it opens. This is due to a bit riskier changes=
+ and
+new APIs added to allow solving this 32/64-bit mix problem. It would be g=
+reat
+to apply patches #1 through #3 to bpf tree right now, and the rest into
+bpf-next, but I would appreciate reviewing all of them, of course.
 
-> ---
->  tools/build/Makefile.feature | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 774f0b0ca28a..e7818b44b48e 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -8,7 +8,7 @@ endif
->
->  feature_check =3D $(eval $(feature_check_code))
->  define feature_check_code
-> -  feature-$(1) :=3D $(shell $(MAKE) OUTPUT=3D$(OUTPUT_FEATURES) CC=3D$(C=
-C) CXX=3D$(CXX) CFLAGS=3D"$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXX=
-FLAGS=3D"$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS=3D"$(LDF=
-LAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)te=
-st-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
-> +  feature-$(1) :=3D $(shell $(MAKE) OUTPUT=3D$(OUTPUT_FEATURES) CC=3D"$(=
-CC)" CXX=3D"$(CXX)" CFLAGS=3D"$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))"=
- CXXFLAGS=3D"$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS=3D"$=
-(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURE=
-S)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+Andrii Nakryiko (9):
+  tools/bpftool: fix compilation warnings in 32-bit mode
+  selftest/bpf: fix compilation warnings in 32-bit mode
+  libbpf: fix BTF-defined map-in-map initialization on 32-bit host
+    arches
+  libbpf: handle BTF pointer sizes more carefully
+  selftests/bpf: fix btf_dump test cases on 32-bit arches
+  libbpf: enforce 64-bitness of BTF for BPF object files
+  selftests/bpf: correct various core_reloc 64-bit assumptions
+  tools/bpftool: generate data section struct with conservative
+    alignment
+  selftests/bpf: make test_varlen work with 32-bit user-space arch
 
-We should probably also be quoting the arguments that expand $(OUTPUT_FEATU=
-RES)
-too, although trying to handle path names with spaces is probably a
-lost cause anyway.
+ tools/bpf/bpftool/btf_dumper.c                |  2 +-
+ tools/bpf/bpftool/gen.c                       | 14 ++++
+ tools/bpf/bpftool/link.c                      |  4 +-
+ tools/bpf/bpftool/main.h                      | 10 ++-
+ tools/bpf/bpftool/prog.c                      | 16 ++---
+ tools/lib/bpf/btf.c                           | 71 ++++++++++++++++++-
+ tools/lib/bpf/btf.h                           |  2 +
+ tools/lib/bpf/btf_dump.c                      |  4 +-
+ tools/lib/bpf/libbpf.c                        | 20 ++++--
+ tools/lib/bpf/libbpf.map                      |  2 +
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |  8 +--
+ .../selftests/bpf/prog_tests/btf_dump.c       | 27 +++++--
+ .../selftests/bpf/prog_tests/core_extern.c    |  4 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     | 20 +++---
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  6 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c |  2 +-
+ .../selftests/bpf/prog_tests/global_data.c    |  6 +-
+ .../selftests/bpf/prog_tests/prog_run_xattr.c |  2 +-
+ .../selftests/bpf/prog_tests/skb_ctx.c        |  2 +-
+ .../testing/selftests/bpf/prog_tests/varlen.c |  8 +--
+ .../selftests/bpf/progs/core_reloc_types.h    | 69 +++++++++---------
+ .../testing/selftests/bpf/progs/test_varlen.c |  6 +-
+ tools/testing/selftests/bpf/test_btf.c        |  8 +--
+ tools/testing/selftests/bpf/test_progs.h      |  5 ++
+ 24 files changed, 221 insertions(+), 97 deletions(-)
 
->  endef
->
->  feature_set =3D $(eval $(feature_set_code))
-> --
-> 2.25.1
->
+--=20
+2.24.1
+
