@@ -2,108 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3073D2431FA
-	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 03:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C31243237
+	for <lists+bpf@lfdr.de>; Thu, 13 Aug 2020 03:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgHMBUg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Aug 2020 21:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
+        id S1726752AbgHMBqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Aug 2020 21:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgHMBUg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Aug 2020 21:20:36 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8354FC061383;
-        Wed, 12 Aug 2020 18:20:35 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 140so2163484lfi.5;
-        Wed, 12 Aug 2020 18:20:35 -0700 (PDT)
+        with ESMTP id S1726600AbgHMBqV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Aug 2020 21:46:21 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8214BC061383;
+        Wed, 12 Aug 2020 18:46:21 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id c10so3583225pjn.1;
+        Wed, 12 Aug 2020 18:46:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ND7V86I1T+9Op2pIjnWTmRoM0I9JCJHGVNtwjc1briA=;
-        b=YzHrwpgUZZ9wVoEsl7Bwx/ikJPGHd0l2TNLh/+837gQfKtgfAkVe2lBCftsqPybhFE
-         uFWbIPBkkPaRMcjoVwNLAGi6rvIWzrJt7ue6etbB3Jc/kke+iODTl2/S9xnwp5R1ycM4
-         Ideceih3FGi5F6XIJlFYSSeBp6Se8Om9TsSX8ual33Kf1/qTBy16VvU49IMTkn03cAqN
-         OmsO58cWauXFlC/akzEr5EPg/Bkuu7C0jwHGSnwupLVmFfX0AOxfCbNIYRrTQwEsPFjs
-         uzVVb8wS/SibWjkKVZX3b2mPyFjDT+cOcE3T6kqzVI2/WHH9mcT3xASh9itZOy3ZwEwf
-         kjew==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oOgrmsxW9OeDM56HqH8X/C8UEkj3Rx1fpN2RSFfS628=;
+        b=rNGOzBHfgmdmmsznkTbqnEwW/ylnjrIJdnLlFfELVOw1ZgJbFNHhnkC+DKJGM6EOOA
+         cmyoUdWBz0MW4IBA8qZF5GlLMUt/FVtJ1vLQZfza9kX2fNwZJhIAYQiGFGQTfECZi98N
+         HnTRuhvQnj9fK+y33B87T8d5k5bcz6asIZPrN+6apram5942e0l6wTP+EoiwpLNHzgRO
+         nfwRG+7zysYXVxvyC0PXEhydNxBISxxabB9TIIwMZwgWptZQEHpYJl/zgEmiiK7cJSQK
+         OxWZwB0IdW7DnJOPIE9D3Vn1URdYr5TTcDBIvKR32Mm0G8GAuSM88ggAWb4rvRMu43eH
+         LJWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ND7V86I1T+9Op2pIjnWTmRoM0I9JCJHGVNtwjc1briA=;
-        b=ZObZG+auJiwC934hRVNp2NkLNWxv3F5KjTOD4cDO4XHsfmdFsmwJOkZsCDxeSRFJE/
-         55U0lE33lYcVbGlk1xJ3Rr4vQWhOHjtOP8FZRPdGTNDxAXfZ6T42WCTLBRMEeiY7f1Xu
-         rwbLFFOoRqHJ1cgCpUGAIFrDNRRe4n1CA3qgz3DFUleDiunhH6LnC7RQxyw1dIOBCkha
-         GdKWscEw6rnXvF6O8DOUgjE8xykppD8lELQwPR4yLSPu3lVasi48wHtMIXX4YJ7QKj8u
-         DZvn5wlasnL5w9g+/T63zSyTgdB4GfZCgOpyQukZ76v0snCI+s0bCU4JEUEvdIOVqCve
-         Frkw==
-X-Gm-Message-State: AOAM533brB+B2Im35SuS716UePG0LdgK4Yf+tsuCU4AMVWGlma5jyFYF
-        eiEBN4ao+YScfiHfJOE5zKdwoSUNqvvHrspLtQg=
-X-Google-Smtp-Source: ABdhPJy8NP5T4oX4PJTvbnhHkvhZjwCM0XI9dAT+xTWKofiQCkOTVV7+M3TLEm82siZ65koNa1RfSLFt++kRlxWNwKc=
-X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr978605lfs.8.1597281633677;
- Wed, 12 Aug 2020 18:20:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200812123102.20032-1-jolsa@kernel.org> <5238E896-6A88-4857-B8D4-3C2E8C4E9F2C@fb.com>
-In-Reply-To: <5238E896-6A88-4857-B8D4-3C2E8C4E9F2C@fb.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oOgrmsxW9OeDM56HqH8X/C8UEkj3Rx1fpN2RSFfS628=;
+        b=CugEBIDLXdH8htPVERuFid1/TkJTq9nW+o03vvx7ng18VV8kIKE9GBLcESkk9LVay2
+         KSiYZAC/QzBPXOA7ulm0DXBNqwy1JezGjhD4enq+UCD6gPw+0S9k1N/cUzE8LxRMvvml
+         zvF7OC0VpRv4b7nE31GQDhDVAShyTBw+rAbPfcNXvFAeWqDYLiSq9deqraLIuOfQFikr
+         yJu1Z3/CYepQOE8W5KBl4ykjagzPORga41F0fsYV4hvy9GS4f5OCuduaSP6LhDlYgfxF
+         UNaxVblUhBaHWBMK3GqDACjM6RzgejQWzwC741ERaheFwwCehXZ1x+kPgrAOj8hFXD6J
+         AGUQ==
+X-Gm-Message-State: AOAM53329ESBw1bSqgc71R7qZHg4opOU6kxcR+bdf/qU5clEhCkQ1H3I
+        70YXK6QWH14wLqpbusdC0ZA=
+X-Google-Smtp-Source: ABdhPJwX43LygDVhwXtukQn4ElHAikWkVEjbhQPH3bRKa+l4+ob+cn2bUejL7cUgXt+h/RZgnQQLOA==
+X-Received: by 2002:a17:90b:e83:: with SMTP id fv3mr2650720pjb.193.1597283180952;
+        Wed, 12 Aug 2020 18:46:20 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:affd])
+        by smtp.gmail.com with ESMTPSA id w6sm3162107pgr.82.2020.08.12.18.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Aug 2020 18:46:19 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 18:46:16 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 12 Aug 2020 18:20:22 -0700
-Message-ID: <CAADnVQL08gA=N1qM4Zv-fbfzjn7Y=qRGCe+g0RjkhDfJmCEPRg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Iterate through all PT_NOTE sections
- when looking for build id
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
+        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: make BTF show support generic,
+ apply to seq files/bpf_trace_printk
+Message-ID: <20200813014616.6enltdpq6hzlri6r@ast-mbp.dhcp.thefacebook.com>
+References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com>
+ <1596724945-22859-3-git-send-email-alan.maguire@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1596724945-22859-3-git-send-email-alan.maguire@oracle.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 8:27 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Aug 12, 2020, at 5:31 AM, Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Currently when we look for build id within bpf_get_stackid helper
-> > call, we check the first NOTE section and we fail if build id is
-> > not there.
-> >
-> > However on some system (Fedora) there can be multiple NOTE sections
-> > in binaries and build id data is not always the first one, like:
-> >
-> >  $ readelf -a /usr/bin/ls
-> >  ...
-> >  [ 2] .note.gnu.propert NOTE             0000000000000338  00000338
-> >       0000000000000020  0000000000000000   A       0     0     8358
-> >  [ 3] .note.gnu.build-i NOTE             0000000000000358  00000358
-> >       0000000000000024  0000000000000000   A       0     0     437c
-> >  [ 4] .note.ABI-tag     NOTE             000000000000037c  0000037c
-> >  ...
-> >
-> > So the stack_map_get_build_id function will fail on build id retrieval
-> > and fallback to BPF_STACK_BUILD_ID_IP.
-> >
-> > This patch is changing the stack_map_get_build_id code to iterate
-> > through all the NOTE sections and try to get build id data from
-> > each of them.
-> >
-> > When tracing on sched_switch tracepoint that does bpf_get_stackid
-> > helper call kernel build, I can see about 60% increase of successful
-> > build id retrieval. The rest seems fails on -EFAULT.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->
-> LGTM. Thanks for the fix!
->
-> Acked-by: Song Liu <songliubraving@fb.com>
+On Thu, Aug 06, 2020 at 03:42:23PM +0100, Alan Maguire wrote:
+> 
+> The bpf_trace_printk tracepoint is augmented with a "trace_id"
+> field; it is used to allow tracepoint filtering as typed display
+> information can easily be interspersed with other tracing data,
+> making it hard to read.  Specifying a trace_id will allow users
+> to selectively trace data, eliminating noise.
 
-It's a good fix.
-Applied to bpf tree. Thanks
+Since trace_id is not seen in trace_pipe, how do you expect users
+to filter by it?
+It also feels like workaround. May be let bpf prog print the whole
+struct in one go with multiple new lines and call
+trace_bpf_trace_printk(buf) once?
+
+Also please add interface into bpf_seq_printf.
+BTF enabled struct prints is useful for iterators too
+and generalization you've done in this patch pretty much takes it there.
+
+> +/*
+> + * Options to control show behaviour.
+> + *	- BTF_SHOW_COMPACT: no formatting around type information
+> + *	- BTF_SHOW_NONAME: no struct/union member names/types
+> + *	- BTF_SHOW_PTR_RAW: show raw (unobfuscated) pointer values;
+> + *	  equivalent to %px.
+> + *	- BTF_SHOW_ZERO: show zero-valued struct/union members; they
+> + *	  are not displayed by default
+> + *	- BTF_SHOW_NONEWLINE: include indent, but suppress newline;
+> + *	  to be used when a show function implicitly includes a newline.
+> + *	- BTF_SHOW_UNSAFE: skip use of bpf_probe_read() to safely read
+> + *	  data before displaying it.
+> + */
+> +#define BTF_SHOW_COMPACT	(1ULL << 0)
+> +#define BTF_SHOW_NONAME		(1ULL << 1)
+> +#define BTF_SHOW_PTR_RAW	(1ULL << 2)
+> +#define BTF_SHOW_ZERO		(1ULL << 3)
+> +#define BTF_SHOW_NONEWLINE	(1ULL << 32)
+> +#define BTF_SHOW_UNSAFE		(1ULL << 33)
+
+I could have missed it earlier, but what is the motivation to leave the gap
+in bits? Just do bit 4 and 5 ?
