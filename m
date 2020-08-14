@@ -2,122 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586852446E0
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 11:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4582324490C
+	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 13:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgHNJR3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Aug 2020 05:17:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55184 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726012AbgHNJR3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Aug 2020 05:17:29 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 439A98782C52AFCEDB9D;
-        Fri, 14 Aug 2020 17:17:26 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 14 Aug 2020
- 17:17:18 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] bpf: Convert to use the preferred fallthrough macro
-Date:   Fri, 14 Aug 2020 05:16:15 -0400
-Message-ID: <20200814091615.21821-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1727925AbgHNLli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 07:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728207AbgHNLkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Aug 2020 07:40:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AA3C061386
+        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 04:40:13 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r4so8041901wrx.9
+        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 04:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=B0W9kY9gOABObNMzFU7qR/h3u0fr5wbeuus7asIVtUU=;
+        b=E1U4hFDlHsWCrCkg8hTw44iOHiljc6bi7sr1Wngty/U98hc+h9XGcyQ8CEPIhui25F
+         417ZFpDXtzly+m5CyiKiImTP9a7jsJEnrbK2mDUY4RV2aUb8RAaOTOeYXrnu7x2pZkJP
+         MXMXxJm2OxEMEeCtooLzYPX5nKAMBlZ8mOkgLiyuBoIxkxGXJcrQPFqxhI7DueNgEDNW
+         1Tko1MSqREU27ERvsb1rPQmtYkym9UhJw73R4INHVU0lLcDfaladGaiFIpKRdzSlBrGl
+         uhWKAE6rof7skSjSOHuNbtr8UJgLSnlj/vtEhmYu5cLxOVa6hirwnLYWuAtE2zYZv3rN
+         WPdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=B0W9kY9gOABObNMzFU7qR/h3u0fr5wbeuus7asIVtUU=;
+        b=J1OZYaY/2LPxHTeJ3C2DUkbmiCHFfdqcXwUkz6P87ZUa6KjIIcC8L+cT8BCCPGFY/+
+         JaV6b96OSMB6c0FNziz0aaf7ZbxlCRA6xK9LiIuGxBnvNQis/vUwk7ouV4BWskI/T6sZ
+         bnBmF71SehCT7DY+OoMdf11AEaQds+pVSCIS0oY38vtinDuFe8Lim9/Iinyx2yo1d75P
+         ciqJIPqhv1J9wJ2VN5UgmENDq3Tbflk4cb2BGaTDxZEDSSPf1gUjvKZYpp5FhIYM2NpY
+         SCHTGVcAcK3EUWF4Gfnyx1iM3pMwurK+jkZZrkCtO5YKT31aNxyQhbi7CpJU2IHElQDM
+         3nUQ==
+X-Gm-Message-State: AOAM5300nod1biTPOYzu0Coh8ttCAVQ74LiPF89r59kDcsWMM3+SIMux
+        2Zsifgts9CAmltO3tqpk8HtuXQ==
+X-Google-Smtp-Source: ABdhPJwZp2MJiKoowkR6rTySosLQ4LI6NDWDp3ihnDEADkd3a0DOkIa7HHs6uIgFFvyT1RnLJb/lDA==
+X-Received: by 2002:a5d:6748:: with SMTP id l8mr2534059wrw.358.1597405211761;
+        Fri, 14 Aug 2020 04:40:11 -0700 (PDT)
+Received: from dell.default ([95.149.164.62])
+        by smtp.gmail.com with ESMTPSA id 32sm16409129wrh.18.2020.08.14.04.40.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Aug 2020 04:40:11 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Luis R. Rodriguez" <mcgrof@winlab.rutgers.edu>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 20/30] net: wireless: ath: ath5k: base: Fix kerneldoc formatting issue
+Date:   Fri, 14 Aug 2020 12:39:23 +0100
+Message-Id: <20200814113933.1903438-21-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200814113933.1903438-1-lee.jones@linaro.org>
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert the uses of fallthrough comments to fallthrough macro.
+Kerneldoc expects attributes/parameters to be in '@*.: ' format and
+gets confused if the variable does not follow the type/attribute
+definitions.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/net/wireless/ath/ath5k/base.c:1111: warning: Function parameter or member 'ah' not described in 'ath5k_drain_tx_buffs'
+
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Nick Kossifidis <mickflemm@gmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: "Luis R. Rodriguez" <mcgrof@winlab.rutgers.edu>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- kernel/bpf/cgroup.c   | 2 +-
- kernel/bpf/cpumap.c   | 2 +-
- kernel/bpf/syscall.c  | 2 +-
- kernel/bpf/verifier.c | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath5k/base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 83ff127ef7ae..e21de4f1754c 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1794,7 +1794,7 @@ static bool cg_sockopt_is_valid_access(int off, int size,
- 			return prog->expected_attach_type ==
- 				BPF_CGROUP_GETSOCKOPT;
- 		case offsetof(struct bpf_sockopt, optname):
--			/* fallthrough */
-+			fallthrough;
- 		case offsetof(struct bpf_sockopt, level):
- 			if (size != size_default)
- 				return false;
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index f1c46529929b..6386b7bb98f2 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -279,7 +279,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 			break;
- 		default:
- 			bpf_warn_invalid_xdp_action(act);
--			/* fallthrough */
-+			fallthrough;
- 		case XDP_DROP:
- 			xdp_return_frame(xdpf);
- 			stats->drop++;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 86299a292214..1bf960aa615c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2029,7 +2029,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 	case BPF_PROG_TYPE_EXT:
- 		if (expected_attach_type)
- 			return -EINVAL;
--		/* fallthrough */
-+		fallthrough;
- 	default:
- 		return 0;
- 	}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ef938f17b944..1e7f34663f86 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2639,7 +2639,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
- 	case BPF_PROG_TYPE_CGROUP_SKB:
- 		if (t == BPF_WRITE)
- 			return false;
--		/* fallthrough */
-+		fallthrough;
- 
- 	/* Program types with direct read + write access go here! */
- 	case BPF_PROG_TYPE_SCHED_CLS:
-@@ -5236,7 +5236,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				off_reg == dst_reg ? dst : src);
- 			return -EACCES;
- 		}
--		/* fall-through */
-+		fallthrough;
- 	default:
- 		break;
- 	}
-@@ -10988,7 +10988,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	default:
- 		if (!prog_extension)
- 			return -EINVAL;
--		/* fallthrough */
-+		fallthrough;
- 	case BPF_MODIFY_RETURN:
- 	case BPF_LSM_MAC:
- 	case BPF_TRACE_FENTRY:
+diff --git a/drivers/net/wireless/ath/ath5k/base.c b/drivers/net/wireless/ath/ath5k/base.c
+index 65a4c142640d0..b70acefdc3fb7 100644
+--- a/drivers/net/wireless/ath/ath5k/base.c
++++ b/drivers/net/wireless/ath/ath5k/base.c
+@@ -1098,7 +1098,7 @@ ath5k_beaconq_config(struct ath5k_hw *ah)
+ /**
+  * ath5k_drain_tx_buffs - Empty tx buffers
+  *
+- * @ah The &struct ath5k_hw
++ * @ah: The &struct ath5k_hw
+  *
+  * Empty tx buffers from all queues in preparation
+  * of a reset or during shutdown.
 -- 
-2.19.1
+2.25.1
 
