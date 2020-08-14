@@ -2,113 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDD5244C73
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 18:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F127C244D2F
+	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 18:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgHNQHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Aug 2020 12:07:34 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58480 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726265AbgHNQHc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Aug 2020 12:07:32 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07EFsqOc025458;
-        Fri, 14 Aug 2020 09:02:06 -0700
+        id S1728140AbgHNQ4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 12:56:39 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58362 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726270AbgHNQ4h (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Aug 2020 12:56:37 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07EGtG9g006585;
+        Fri, 14 Aug 2020 09:55:23 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=Ufd4duYTAhvAnjBhNzZB0MUIgt3uUt5m70gZfAlc0LM=;
- b=BF659orGKE08Q66jRveh1dKafd+lDBUhOK1lRUVjgElPlbMPKl02Hj56FWwG06EXS8k8
- k4MV0bMPUZaAV4trc5nZjmne0TiEbv5S7HwIwefOylBMvzUmEwyecBRNNoiyZ0GYGY2I
- teo5/f9EB9pxZ+EXiAQvBI+RgZHEYBABB8Y= 
+ bh=fHtmaTXQQVrfo5vyEJPdqxubwM/wAFUF+jRklacXKiE=;
+ b=f7O2TJdtaweo2l9doHHOoj+/GTqVZGkCYeFfwvSsxiyE8wflxLXalqq+vcpyn8z0JO47
+ 50cSV8NPLiovkKkGaglkuCf0ciH2eMKqyOzgpUzkqbmrS66bPKnvW9OMge35uHzDyzWv
+ Z42NhYQyYVolIahOcKSmuIqtx8IJ2DHvYfw= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32v0kg85r1-15
+        by mx0a-00082601.pphosted.com with ESMTP id 32v0kdgbv6-10
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 Aug 2020 09:02:06 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.98.9) by
+        Fri, 14 Aug 2020 09:55:22 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
  o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 14 Aug 2020 09:01:57 -0700
+ 15.1.1979.3; Fri, 14 Aug 2020 09:55:16 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cteqkY/cNioHX1hjhqgfJIsBTG981yVLaQVr3pZjJvGnMrmnKrWUY0tNA87YA+B0s9gDCh6bvvxJIm3WzZmoHf4n/glGngVqGrZDv/tYdD/b96pNvSdkW38wEhX2do3z/tRfOvLGZudTXEmiTEneMEyzfKI55DdsQ6YEDsc+0Kn6NKwKFPN2ZG3hJp8gKmle9RTw9Fwj/WvRKqiJDTFLHJ7IRXDU82ZqFVRd9anyOF9mcGOubPVOp4Pj2kI4AxVVPUnkdocvAU50Ni4Sfn4QmxtIUmUHlWVs1+YDIURwN8gc/d236ZqhmIUbprzQK+UbEz/ZAJ1rfnI1l/Qjg4a5YA==
+ b=PUZPqJO5miu/bJFPtI7LXzdXKcmqxSoUdvMmj661UPUaFntHnm113gJBMQ7oFkkoACFcwfsiOIkJZ6x/cTkXcy+jksBpMbvPUy7Z5Y5Coo7EHFqNnObTV0LS1pRVpmYBnF2SRyIKlJzRrgV88WjU/55FmTxv0FT+x825lnbz+WTBWNdgNxwUuDLV6H6sY3c/tftaVBDbKsH7VJ8g0GUsYKI7sVcKtKhpi1O8Fgt4Om4H0ECyKxDCa38ViDVXXdKuuy7jAHSOPSSXTbJBnRBB16gEpBUXnOHq/aVLW1UtoErbUHgF+f67GFrfGKgyPQl/i63t8IaC6STuttR3K9FmUA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ufd4duYTAhvAnjBhNzZB0MUIgt3uUt5m70gZfAlc0LM=;
- b=is34gsjxpGuq6SuCxXwrKzh4zvmB02x/XZrTzgtmfdamD59SVq1/aXMl6dVVGmG6vI9zCCSZmU3J8CYHn2nKZEQiFYt1xZ11ezC8yu5ANeCsjA96ibS934/kc2Q25RaVnvEUE5JRIYmUkSgHbcoxTOtPfm2rAG75pp4sgqUcWrMoBOphOn9SMpII0xsDpWyTYUWr/d08YOkmVkA+jjxX/DkqCcbnMPS0URl5UDkZojuKzHD07e6Jh/j3XMrKzAr+sqd7PkZWNDbGz+F+xh9vaPhpvGMDO3R+KlZuvfRBQ+YFtsxgC6wAJnLS9Sv+JARA7jH5kkptKN/r1OPOJPZGlQ==
+ bh=fHtmaTXQQVrfo5vyEJPdqxubwM/wAFUF+jRklacXKiE=;
+ b=jEpCdTpaoVJX7iAJAXxu+j84PuE8Z+9ErVoMI4azyI26KV0WxWLTPESl2Ws7c4ilKlAPv9XZgGqHEOFrtmOkk1QhtXIC2MKnC5vLyJjsG3CnsCGnDOHF/61H5HE4QuO+sEInomnxL2hrzeipJQ/Oq3Fyh8PPYzENm2zur98T1wbOwtcFyy7Chg+YVL+MnZqxAR/DpCk3BCBUm+omGRcB6bMZgIb3XBYTG6f6608Vsi+GG29EX7n9bwSVym0Z6i1D7yP3MFnmPZNsbPb1X5oxtIBTnfjKOkiImXsRj+7L3KeeRl1P7ehD9GfcDl+l7UOqR6ESKIDTTURfoF3RdmJjTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ufd4duYTAhvAnjBhNzZB0MUIgt3uUt5m70gZfAlc0LM=;
- b=bu/JXEFcVF+2B54VCT0I2adt9n8dTnYP+OyvoGMpuWEll7a3bf1ZnM/k3dXmOYJTwECFUlXdYmmQkLfSgnYN9csQ7uX48IkFzQrX8OntZ04gsusoguqWHzHUuiLwx1lFcKe6ILggBv3KaLJdZLnBuvmCmiH4N1GVm+d/uKu6fn0=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+ bh=fHtmaTXQQVrfo5vyEJPdqxubwM/wAFUF+jRklacXKiE=;
+ b=b0HQShgylaPhESUdJHPNLoPcDi0VsrL7sqEu6ZAEQtfBr+X2vPG6r/D2S9BG2RqY2vrKLyYFjaEUJzSg7AsoSlNeMfLVEEwXsQKBVl42TYEdFFgQQ/tNwvWFcG9ygdiG4BULi45drfn2juabJeUnny1QNzUDT2n4qJOWOOsZTAk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2453.namprd15.prod.outlook.com (2603:10b6:a02:8d::30) with
+ by BY5PR15MB3713.namprd15.prod.outlook.com (2603:10b6:a03:1f8::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Fri, 14 Aug
- 2020 16:01:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.22; Fri, 14 Aug
+ 2020 16:55:13 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3283.020; Fri, 14 Aug 2020
- 16:01:42 +0000
-Subject: Re: [PATCH bpf] selftest/bpf: make bpftool if it is not already built
-To:     Balamuruhan S <bala24@linux.ibm.com>, <bpf@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <naveen.n.rao@linux.vnet.ibm.com>, <ravi.bangoria@linux.ibm.com>,
-        <sandipan@linux.ibm.com>, <kafai@fb.com>, <songliubraving@fb.com>,
+ 16:55:13 +0000
+Subject: Re: [PATCH] bpf: Convert to use the preferred fallthrough macro
+To:     Miaohe Lin <linmiaohe@huawei.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
         <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>
-References: <20200814085756.205609-1-bala24@linux.ibm.com>
+        <kpsingh@chromium.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <hawk@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200814091615.21821-1-linmiaohe@huawei.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <2190c03e-fb9b-7dc3-bfa1-7d289d6b68b1@fb.com>
-Date:   Fri, 14 Aug 2020 09:01:40 -0700
+Message-ID: <fd710301-2197-1e8f-740b-049dfa494be2@fb.com>
+Date:   Fri, 14 Aug 2020 09:55:11 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <20200814085756.205609-1-bala24@linux.ibm.com>
+In-Reply-To: <20200814091615.21821-1-linmiaohe@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0092.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::33) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: BY5PR03CA0003.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::13) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::117a] (2620:10d:c090:400::5:238a) by BYAPR07CA0092.namprd07.prod.outlook.com (2603:10b6:a03:12b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.16 via Frontend Transport; Fri, 14 Aug 2020 16:01:41 +0000
+Received: from [IPv6:2620:10d:c085:21e1::117a] (2620:10d:c090:400::5:238a) by BY5PR03CA0003.namprd03.prod.outlook.com (2603:10b6:a03:1e0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Fri, 14 Aug 2020 16:55:13 +0000
 X-Originating-IP: [2620:10d:c090:400::5:238a]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe77b0c0-1743-445d-279b-08d8406b5649
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2453:
+X-MS-Office365-Filtering-Correlation-Id: 461443d5-a7d2-40eb-6db6-08d84072d02e
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3713:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB245321BC46A71FA9EED72494D3400@BYAPR15MB2453.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3713E8D004DF052D2A4CDBF8D3400@BY5PR15MB3713.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:229;
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8AtSlnmz7phRjvnnHE+mzZVfl8tjz/0i1ZCcGK1hJweAPPLkVRAAUl6lJQVteSpEQVqUDlleeSSg/SVndwnAQp7GVEQc9eCZ7Opnc5J7yNYCeUuiyuba5j8xwmapCG2syPMlFEfg0glas2hpO/PLYP6M2ZGi2dD9bfOVH02EuYUl8mZh+BgKgbR+g2fi/bYcroxVvg2HYt1pZLIVZ5RBgMs/EHvBhBSwx3YuyoxGvf8vkVN5ykBGDoEvC+Ih27HOYXA9m16UlSR41S9M4V5rRjMMdBgHl8nfsscNFvym9KbYb0MkiMt9G/I19QuNdxuNW/2BnFND7dwQGFNmbFCD/2wy22mHrZeI1j0fHOS7LCgG3ict5aRBRniLHtudrUQw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(396003)(39860400002)(52116002)(316002)(5660300002)(8676002)(31686004)(16526019)(186003)(2906002)(8936002)(478600001)(6486002)(4326008)(36756003)(53546011)(2616005)(31696002)(83380400001)(86362001)(66946007)(7416002)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Y2dheRwAsgPNMeOP6vUVbfSC/RIWpg3VUdJVZfQBS89RY8rtmFiOc1W7T7IBQKOo+tkrOClxc1C/v208Gev8qtztl6HkVmrffsBmiyu/OOU1uzVB53UOQm+cdilvFjtp+bEfEAKFtLUa8hGYKRkFKojR4dDZaet4TCx8Aqow5Y8aT4BiTAsPMop3zMeXLIVpdCUsy13pTIrIJbXzbEJbzMGRruQEXVjJRzdhfQWRu43VvbNp1PjGqZOgSw3v5/4wWg/EJ8Oru7NiLc7gSkPX94hiHJmhMLdQiP/ZPhQEI17+qnupRGAddtR+rl/EDfq1g1qfkGPi001v746neXmgLxb1Hs4bWk2GjBrNE8oIfFFL4Fvck7Ngh0zxpA50Rb95an4ORWe9Kr3+rdx0HGUPw7arjplKTd9aR8kYxUkM2tjcv4z6+GPbcCYVXW6Km+lJFoHR/qfdUtugGIuMYLugUOBGbMDMrQZL0RdiuUyWM4632iNDFfZvDFA0ZzA7dSlZvDMyXtnahzn9gGqLUsbSXuhA03iHlx+4C5X4WKfSyEaZGOR5wrCpLi5PX8OfpD2X5svLp1MKXDDmylBo9mJnhGEuzLUmFfIYTMP5qRCjdfobLV9pINF71rsWslBWv16fZNEQqY4IiS9ruajUUJADaJxr7lx5tb5wkJ89Rxlh7lI=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe77b0c0-1743-445d-279b-08d8406b5649
+X-Microsoft-Antispam-Message-Info: SiqlM6ORDhPdpiV4IC5hhxD4nnJAOy83/fLinsXPZpfV7oFzR2F3DIcrwtV6MmsIPYUjfjwnpkOC7gakDADSuPOVdvIRZPXdQ51R/kkDhnuf8lAELiGwZ9/x4FB7oyra9rAEldENsa9kpQiOqCemv+LNxsJX25516gPCRcRIKG4kxsIq/W5mFRc9lt3qOinan9ba7txlgQRA4+AkY4Adv6FkDiGqOyxSkeeG1CYFP7CjZEXQyuG4X9/aPlamNDhUTl4yYkBYlidxZr94lTIyFTTi+jAcOPkMQolvjlEMsyMO+eFYRhoVSNr3N9fm/PKLshC1LJGHm68EXPA/bomMK4sHcqPS9s7F5iM7eOnkYAIsbu4ZGmbv+ec2t8SmkaqupuM48sZem+mOg4oJUd6W2A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(396003)(346002)(136003)(2906002)(66556008)(66476007)(7416002)(5660300002)(66946007)(36756003)(8936002)(6486002)(31696002)(8676002)(4326008)(31686004)(53546011)(83380400001)(2616005)(52116002)(316002)(478600001)(86362001)(16526019)(186003)(921003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: G7asbfqnTvwPfZ9pjSPvQrOKLg8yFj6n0atkxBH0wFJFxJWwMmLLLzgzwNQnRLT8RjBaUuB82u1Og0QGyNkr9hnj4ShvTkMqBp4YCWNbgy53vZUmDOtcLhfgSUx7rs3ttDNa1VBcZK2M8p3gjs2W9U2fca28VOGnOAyOTC2C1WbUOFzoYjN6HI4Or/sehnlNoXo9bVxtdLoBddFSF8sFnskZdYBYE/wBbHUTZv9DgGbzdZHDIlEXRzNB1CviwzUHUXCDcC644TWH0WRPXNCUA9nFVKeyAK/sRSIkruqTP8Y5rOpEvNjTeGXzCXwfb07xrCYmNtEXPt7UAhattNxuzVkvrthRJWB/P15BvS/ZHYNAA7+e7fozPYsuO55Bp8fC8F7udLpMgrVbw+5I43uv5KMcVNmmkWLdoDhlhD34agVAUTTCXH4oFhcry/c77P5W+wMsvnyqwLGrWDKjECA3ZSl/cIRW1E4eDqK9Bw55C6V/d/heKRFge9zDY+utVxCci8seAuoFjTiKS92jYUvKT4hX8Sn0s9Htsx/DehlcxVMJNwjWo32uc/+nFKA5k38j3nvBrvX94gYVMgtQ45tpB2z+ZFRuoqtketb1ygjipc9QVtKxb5Biz1mJwikeBFE5PjL/5w/PziwdjCU+nPddQsjAFDLjysiZETKbUqpOpgQW1HJqE9DuTs+42++vkDXs
+X-MS-Exchange-CrossTenant-Network-Message-Id: 461443d5-a7d2-40eb-6db6-08d84072d02e
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2020 16:01:42.7597
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2020 16:55:13.7127
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NjNqlgkj2fjiQEVvisYbAlPJDPEa+K7YdSW/tJzMaRGH4+JrsUxsbO70e5eRFasH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2453
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1TYEu/GuOkN0mU0jqxv15SQ8AAGhAYM7PtEf6ldH1pGJT6IstIM7OrQQDfdpfDXV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3713
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-14_10:2020-08-14,2020-08-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1011 impostorscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008140119
+ definitions=2020-08-14_12:2020-08-14,2020-08-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1011 mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008140126
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -117,80 +118,97 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/14/20 1:57 AM, Balamuruhan S wrote:
-> test_bpftool error out if bpftool is not available in bpftool dir
-> linux/tools/bpf/bpftool, build and clean it as part of test
-> bootstrap and teardown.
+On 8/14/20 2:16 AM, Miaohe Lin wrote:
+> Convert the uses of fallthrough comments to fallthrough macro.
 > 
-> Error log:
-> ---------
-> test_feature_dev_json (test_bpftool.TestBpftool) ... ERROR
-> test_feature_kernel (test_bpftool.TestBpftool) ... ERROR
-> test_feature_kernel_full (test_bpftool.TestBpftool) ... ERROR
-> test_feature_kernel_full_vs_not_full (test_bpftool.TestBpftool) ... ERROR
-> test_feature_macros (test_bpftool.TestBpftool) ... ERROR
-> 
-> ======================================================================
-> ERROR: test_feature_dev_json (test_bpftool.TestBpftool)
-> ----------------------------------------------------------------------
-> Traceback (most recent call last):
->    File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
->      return f(*args, iface, **kwargs)
->    File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
->      res = bpftool_json(["feature", "probe", "dev", iface])
->    File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
->      res = _bpftool(args)
->    File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
->      return subprocess.check_output(_args)
->    File "/usr/lib/python3.8/subprocess.py", line 411, in check_output
->      return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
->    File "/usr/lib/python3.8/subprocess.py", line 489, in run
->      with Popen(*popenargs, **kwargs) as process:
->    File "/usr/lib/python3.8/subprocess.py", line 854, in __init__
->      self._execute_child(args, executable, preexec_fn, close_fds,
->    File "/usr/lib/python3.8/subprocess.py", line 1702, in _execute_child
->      raise child_exception_type(errno_num, err_msg, err_filename)
-> FileNotFoundError: [Errno 2] No such file or directory: 'bpftool'
-> 
-> Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+
+This is not a bug fix but rather an enhancement so not sure whether
+this should push to bpf tree or wait until bpf-next.
+
+It may be worthwhile to mention Commit 294f69e662d1 
+("compiler_attributes.h: Add 'fallthrough' pseudo keyword for 
+switch/case use") so people can understand why this patch is
+needed.
+
+With above suggestions,
+Acked-by: Yonghong Song <yhs@fb.com>
+
 > ---
->   tools/testing/selftests/bpf/test_bpftool.py | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
+>   kernel/bpf/cgroup.c   | 2 +-
+>   kernel/bpf/cpumap.c   | 2 +-
+>   kernel/bpf/syscall.c  | 2 +-
+>   kernel/bpf/verifier.c | 6 +++---
+>   4 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/test_bpftool.py b/tools/testing/selftests/bpf/test_bpftool.py
-> index 4fed2dc25c0a..60357c6891a6 100644
-> --- a/tools/testing/selftests/bpf/test_bpftool.py
-> +++ b/tools/testing/selftests/bpf/test_bpftool.py
-> @@ -58,12 +58,25 @@ def default_iface(f):
->       return wrapper
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 83ff127ef7ae..e21de4f1754c 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1794,7 +1794,7 @@ static bool cg_sockopt_is_valid_access(int off, int size,
+>   			return prog->expected_attach_type ==
+>   				BPF_CGROUP_GETSOCKOPT;
+>   		case offsetof(struct bpf_sockopt, optname):
+> -			/* fallthrough */
+> +			fallthrough;
+>   		case offsetof(struct bpf_sockopt, level):
+>   			if (size != size_default)
+>   				return false;
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index f1c46529929b..6386b7bb98f2 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -279,7 +279,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+>   			break;
+>   		default:
+>   			bpf_warn_invalid_xdp_action(act);
+> -			/* fallthrough */
+> +			fallthrough;
+>   		case XDP_DROP:
+>   			xdp_return_frame(xdpf);
+>   			stats->drop++;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 86299a292214..1bf960aa615c 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2029,7 +2029,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+>   	case BPF_PROG_TYPE_EXT:
+>   		if (expected_attach_type)
+>   			return -EINVAL;
+> -		/* fallthrough */
+> +		fallthrough;
+>   	default:
+>   		return 0;
+>   	}
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ef938f17b944..1e7f34663f86 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2639,7 +2639,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+>   	case BPF_PROG_TYPE_CGROUP_SKB:
+>   		if (t == BPF_WRITE)
+>   			return false;
+> -		/* fallthrough */
+> +		fallthrough;
 >   
->   
-> +def make_bpftool(clean=False):
-> +    cmd = "make"
-> +    if clean:
-> +        cmd = "make clean"
-> +    return subprocess.run(cmd, shell=True, cwd=bpftool_dir, check=True,
-> +                          stdout=subprocess.DEVNULL)
-> +
->   class TestBpftool(unittest.TestCase):
->       @classmethod
->       def setUpClass(cls):
->           if os.getuid() != 0:
->               raise UnprivilegedUserError(
->                   "This test suite needs root privileges")
-> +        if subprocess.getstatusoutput("bpftool -h")[0]:
-> +            make_bpftool()
-> +
-> +    @classmethod
-> +    def tearDownClass(cls):
-> +        make_bpftool(clean=True)
-
-I think make_bpftool clean should only be called if the make actually
-triggered during setUpClass, right?
-
->   
->       @default_iface
->       def test_feature_dev_json(self, iface):
-> 
-> base-commit: 6e868cf355725fbe9fa512d01b09b8ee7f3358f0
+>   	/* Program types with direct read + write access go here! */
+>   	case BPF_PROG_TYPE_SCHED_CLS:
+> @@ -5236,7 +5236,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+>   				off_reg == dst_reg ? dst : src);
+>   			return -EACCES;
+>   		}
+> -		/* fall-through */
+> +		fallthrough;
+>   	default:
+>   		break;
+>   	}
+> @@ -10988,7 +10988,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+>   	default:
+>   		if (!prog_extension)
+>   			return -EINVAL;
+> -		/* fallthrough */
+> +		fallthrough;
+>   	case BPF_MODIFY_RETURN:
+>   	case BPF_LSM_MAC:
+>   	case BPF_TRACE_FENTRY:
 > 
