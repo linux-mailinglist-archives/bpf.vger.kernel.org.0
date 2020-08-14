@@ -2,159 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1237E2445D7
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 09:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD002446AC
+	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 10:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgHNHbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Aug 2020 03:31:01 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:47619 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbgHNHbB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Aug 2020 03:31:01 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 806e3fcd;
-        Fri, 14 Aug 2020 07:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=mail; bh=rfLwmOjk2tYm
-        2/AsGhKDhEikx2w=; b=uMAvjW4+5NUxxqtndmjbqPAvW+JQFpNrAfZinlkphign
-        kGNdxVhXh+805SfywPBJqR+OqWLLXx5LmysJUhQjrF8l+NovYV9n/h9Sw5S+lWnm
-        YxMbbCdGaw6ysfSySKCwPydwe3n8x6sANNKiQ3m9j+g9MR1dRulMeVu6c2deN44B
-        uVmWBN9PCxq9QfAzr+EEaocHV3PIB9QjCixuRPYpDz+m4eFNDo4XwxHfUMViq+D4
-        F6492YPPxfMGwXRj5aTufpp2+rg2IX17vRl6xGu0lrzvnz2AKM7J00zxUVO7NXbi
-        UzZLLEThcJgGBbdgJISacJBVtsCwwdMS3bqy3b7sig==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 26a68a7e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 14 Aug 2020 07:05:21 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Thomas Ptacek <thomas@sockpuppet.org>,
-        Adhipati Blambangan <adhipati@tuta.io>,
-        David Ahern <dsahern@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH net v5] net: xdp: account for layer 3 packets in generic skb handler
-Date:   Fri, 14 Aug 2020 09:30:48 +0200
-Message-Id: <20200814073048.30291-1-Jason@zx2c4.com>
-In-Reply-To: <CAHmME9rbRrdV0ePxT0DgurGdEKOWiEi5mH5Wtg=aJwSA6fxwMg@mail.gmail.com>
-References: <CAHmME9rbRrdV0ePxT0DgurGdEKOWiEi5mH5Wtg=aJwSA6fxwMg@mail.gmail.com>
+        id S1726641AbgHNI65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 04:58:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54596 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726050AbgHNI64 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Aug 2020 04:58:56 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07E8VQxl187939;
+        Fri, 14 Aug 2020 04:58:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=3bD+VkoYgERAXYyqXKaVYhVGu32lTtmgYGXCqKyQo7Q=;
+ b=ZddHAH0F7UFwlugExDuDfhw0yeloN8dLRra8nS24qS3PBSzOXPm7Ts+/gEgqyKkAKfhn
+ h9roZ29DfzqyebBDZ+mlvMfNoZwKuUvY/vgVO+UN5xUaYRxyFQQVUBKkS3p2f2UbignO
+ 5qD3k6pQ3eHkE+N969x4BRYPGS5Z5tlHYsTlChV5XhcKrJETbH4owC5Mfth6pRywviD6
+ /hwkPmELQFWY5L8AArjfQdgfHKKTnEM+qOP3eg23gL/vd9vUajWT+kF/wIOGksObU/jK
+ tL4Ny+02NTYyCCgDIY7aMF65xR2FVsBGJ69cT+79WWqRovw+miunECvwubm89GVgpMoE kA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32w4ba863t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Aug 2020 04:58:41 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07E8WUdQ192053;
+        Fri, 14 Aug 2020 04:58:40 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32w4ba8637-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Aug 2020 04:58:40 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07E8pk9c004338;
+        Fri, 14 Aug 2020 08:58:38 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 32skaheefr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Aug 2020 08:58:38 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07E8wZLf27591046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Aug 2020 08:58:35 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A347FA405C;
+        Fri, 14 Aug 2020 08:58:35 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9485AA4064;
+        Fri, 14 Aug 2020 08:58:31 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.94.53])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Aug 2020 08:58:31 +0000 (GMT)
+From:   Balamuruhan S <bala24@linux.ibm.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        naveen.n.rao@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
+        sandipan@linux.ibm.com, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, Balamuruhan S <bala24@linux.ibm.com>
+Subject: [PATCH bpf] selftest/bpf: make bpftool if it is not already built
+Date:   Fri, 14 Aug 2020 14:27:56 +0530
+Message-Id: <20200814085756.205609-1-bala24@linux.ibm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-14_04:2020-08-14,2020-08-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=15 mlxscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 clxscore=1011 phishscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008140060
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A user reported that packets from wireguard were possibly ignored by XDP
-[1]. Another user reported that modifying packets from layer 3
-interfaces results in impossible to diagnose drops.
+test_bpftool error out if bpftool is not available in bpftool dir
+linux/tools/bpf/bpftool, build and clean it as part of test
+bootstrap and teardown.
 
-Apparently, the generic skb xdp handler path seems to assume that
-packets will always have an ethernet header, which really isn't always
-the case for layer 3 packets, which are produced by multiple drivers.
-This patch fixes the oversight. If the mac_len is 0 and so is
-hard_header_len, then we know that the skb is a layer 3 packet, and in
-that case prepend a pseudo ethhdr to the packet whose h_proto is copied
-from skb->protocol, which will have the appropriate v4 or v6 ethertype.
-This allows us to keep XDP programs' assumption correct about packets
-always having that ethernet header, so that existing code doesn't break,
-while still allowing layer 3 devices to use the generic XDP handler.
+Error log:
+---------
+test_feature_dev_json (test_bpftool.TestBpftool) ... ERROR
+test_feature_kernel (test_bpftool.TestBpftool) ... ERROR
+test_feature_kernel_full (test_bpftool.TestBpftool) ... ERROR
+test_feature_kernel_full_vs_not_full (test_bpftool.TestBpftool) ... ERROR
+test_feature_macros (test_bpftool.TestBpftool) ... ERROR
 
-We push on the ethernet header and then pull it right off and set
-mac_len to the ethernet header size, so that the rest of the XDP code
-does not need any changes. That is, it makes it so that the skb has its
-ethernet header just before the data pointer, of size ETH_HLEN. While
-we're at it, this also fixes a small inconsistency from the prior code,
-in which an XDP program that changes skb->protocol would wind up pushing
-the ethernet header back on but would forget to take it back off
-following the h_proto parsing.
+======================================================================
+ERROR: test_feature_dev_json (test_bpftool.TestBpftool)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+    return f(*args, iface, **kwargs)
+  File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+    res = bpftool_json(["feature", "probe", "dev", iface])
+  File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+    res = _bpftool(args)
+  File "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+    return subprocess.check_output(_args)
+  File "/usr/lib/python3.8/subprocess.py", line 411, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/usr/lib/python3.8/subprocess.py", line 489, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/usr/lib/python3.8/subprocess.py", line 854, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.8/subprocess.py", line 1702, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'bpftool'
 
-Previous discussions have included the point that maybe XDP should just
-be intentionally broken on layer 3 interfaces, by design, and that layer
-3 people should be using cls_bpf. However, I think there are good
-grounds to reconsider this perspective:
-
-- Complicated deployments wind up applying XDP modifications to a
-  variety of different devices on a given host, some of which are using
-  specialized ethernet cards and other ones using virtual layer 3
-  interfaces, such as WireGuard. Being able to apply one codebase to
-  each of these winds up being essential.
-
-- cls_bpf does not support the same feature set as XDP, and operates at
-  a slightly different stage in the networking stack. You may reply,
-  "then add all the features you want to cls_bpf", but that seems to be
-  missing the point, and would still result in there being two ways to
-  do everything, which is not desirable for anyone actually _using_ this
-  code.
-
-- While XDP was originally made for hardware offloading, and while many
-  look disdainfully upon the generic mode, it nevertheless remains a
-  highly useful and popular way of adding bespoke packet
-  transformations, and from that perspective, a difference between layer
-  2 and layer 3 packets is immaterial if the user is primarily concerned
-  with transformations to layer 3 and beyond.
-
-[1] https://lore.kernel.org/wireguard/M5WzVK5--3-2@tuta.io/
-
-Reported-by: Thomas Ptacek <thomas@sockpuppet.org>
-Reported-by: Adhipati Blambangan <adhipati@tuta.io>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
 ---
-
-I had originally dropped this patch, but the issue kept coming up in
-user reports, so here's a v4 of it. Testing of it is still rather slim,
-but hopefully that will change in the coming days.
-
-Changes v4->v5:
-- Rather than tracking in a messy manner whether the skb is l3, we just
-  do the check once, and then adjust the skb geometry to be identical to
-  the l2 case. This simplifies the code quite a bit.
-- Fix a preexisting bug where the l2 header remained attached if
-  skb->protocol was updated.
-
-Changes v3->v4:
-- We now preserve the same logic for XDP_TX/XDP_REDIRECT as before.
-- hard_header_len is checked in addition to mac_len.
-
- net/core/dev.c | 13 +++++++++++++
+ tools/testing/selftests/bpf/test_bpftool.py | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 7df6c9617321..79c15f4244e6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4630,6 +4630,18 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	 * header.
- 	 */
- 	mac_len = skb->data - skb_mac_header(skb);
-+	if (!mac_len && !skb->dev->hard_header_len) {
-+		/* For l3 packets, we push on a fake mac header, and then
-+		 * pull it off again, so that it has the same skb geometry
-+		 * as for the l2 case.
-+		 */
-+		eth = skb_push(skb, ETH_HLEN);
-+		eth_zero_addr(eth->h_source);
-+		eth_zero_addr(eth->h_dest);
-+		eth->h_proto = skb->protocol;
-+		__skb_pull(skb, ETH_HLEN);
-+		mac_len = ETH_HLEN;
-+	}
- 	hlen = skb_headlen(skb) + mac_len;
- 	xdp->data = skb->data - mac_len;
- 	xdp->data_meta = xdp->data;
-@@ -4676,6 +4688,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
- 		__skb_push(skb, ETH_HLEN);
- 		skb->protocol = eth_type_trans(skb, skb->dev);
-+		__skb_pull(skb, ETH_HLEN);
- 	}
+diff --git a/tools/testing/selftests/bpf/test_bpftool.py b/tools/testing/selftests/bpf/test_bpftool.py
+index 4fed2dc25c0a..60357c6891a6 100644
+--- a/tools/testing/selftests/bpf/test_bpftool.py
++++ b/tools/testing/selftests/bpf/test_bpftool.py
+@@ -58,12 +58,25 @@ def default_iface(f):
+     return wrapper
  
- 	switch (act) {
+ 
++def make_bpftool(clean=False):
++    cmd = "make"
++    if clean:
++        cmd = "make clean"
++    return subprocess.run(cmd, shell=True, cwd=bpftool_dir, check=True,
++                          stdout=subprocess.DEVNULL)
++
+ class TestBpftool(unittest.TestCase):
+     @classmethod
+     def setUpClass(cls):
+         if os.getuid() != 0:
+             raise UnprivilegedUserError(
+                 "This test suite needs root privileges")
++        if subprocess.getstatusoutput("bpftool -h")[0]:
++            make_bpftool()
++
++    @classmethod
++    def tearDownClass(cls):
++        make_bpftool(clean=True)
+ 
+     @default_iface
+     def test_feature_dev_json(self, iface):
+
+base-commit: 6e868cf355725fbe9fa512d01b09b8ee7f3358f0
 -- 
-2.28.0
+2.24.1
 
