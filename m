@@ -2,81 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D19C24421F
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 02:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1237E2445D7
+	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 09:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgHNAI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 20:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgHNAIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Aug 2020 20:08:24 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E016AC061383;
-        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so3651122pgm.7;
-        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e/ooevbtj8TGnhL2m7TzmrsDSXyNuyK8wxQNGqrvrgs=;
-        b=tUBRZucQJCyEpBRfRfIbcwQyKIGVJnkE7gyos5M2zbRyMRv3459gKhl6ahoz6eN/oT
-         Xz1+cznwfpn4/h66OwoEtn6mT+2ssDBji47TzzsgAna7sUWw1v0ksNhh4spVsAVFu5j1
-         /CidTlYfFS/+pryVEB29LjaIz/8aIxDi8meXK3XRQRZqK3UpYWJGVACSeRrummbJT/Ja
-         Tsw6X0o7DnT705dVJ5OOQb14V1Zgt8/ZB6Q0rxkXAvbDuDsGFX9A0CX4g8ytXirvklP9
-         S619xuUcJfgF0emtiNILPOw5inq8VxDGDXRqL49TtXU/3bTgV/xdgOrVWaksWu5fsVgO
-         ZSHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e/ooevbtj8TGnhL2m7TzmrsDSXyNuyK8wxQNGqrvrgs=;
-        b=jZJeVPv3gllIfhsPhKd3q0UqgT221vtKEJEvnXdkcqgZHnc07ioZJ89RsuDPGnggD7
-         ufHVm2b/GMjE7LlNqhxtcJLYzI/Rq3cOoOfrflnxZc9g0P/xs/zc1izK6rPzjot2HdtZ
-         phQhAM4RzsnkXaDD3T6uX4dHMtKk8GpmZ4C3c5l0A8TEFCe5g/4qDQorsZDjvIkpAs71
-         WstbfmhgqhzXfSr1tYp+vCQajb1U554kgcRzgKIKGX388UPpNSfPakJJTtsw9E9GQtgV
-         rBxRHjh3AMh3hkBUy5Lkpi5YcziILSBkcee3QBeMvVvsfSmesc7qBCORJ8YGahxdgafj
-         amlw==
-X-Gm-Message-State: AOAM530j9AbFlSvmppPaypVKjnDJR28Nd2NjTec7RsUgLZnd9FVYPnxR
-        vjPcM532WECANn6yTy7as2psSFbK
-X-Google-Smtp-Source: ABdhPJw/DM35R+EmRvWLPE0bOEJY1JRLmCq/anM8Pai7wa2fivsy8MpGWqbjTdOnnijd7ef85/DrdA==
-X-Received: by 2002:a63:4c48:: with SMTP id m8mr53447pgl.290.1597363704450;
-        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:affd])
-        by smtp.gmail.com with ESMTPSA id mp3sm23794685pjb.0.2020.08.13.17.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2020 17:08:23 -0700 (PDT)
-Date:   Thu, 13 Aug 2020 17:08:21 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf 0/9] Fix various issues with 32-bit libbpf
-Message-ID: <20200814000821.q6gbl5umov76mry2@ast-mbp.dhcp.thefacebook.com>
-References: <20200813204945.1020225-1-andriin@fb.com>
+        id S1726140AbgHNHbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 03:31:01 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:47619 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726091AbgHNHbB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Aug 2020 03:31:01 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 806e3fcd;
+        Fri, 14 Aug 2020 07:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
+        :subject:date:message-id:in-reply-to:references:mime-version
+        :content-type:content-transfer-encoding; s=mail; bh=rfLwmOjk2tYm
+        2/AsGhKDhEikx2w=; b=uMAvjW4+5NUxxqtndmjbqPAvW+JQFpNrAfZinlkphign
+        kGNdxVhXh+805SfywPBJqR+OqWLLXx5LmysJUhQjrF8l+NovYV9n/h9Sw5S+lWnm
+        YxMbbCdGaw6ysfSySKCwPydwe3n8x6sANNKiQ3m9j+g9MR1dRulMeVu6c2deN44B
+        uVmWBN9PCxq9QfAzr+EEaocHV3PIB9QjCixuRPYpDz+m4eFNDo4XwxHfUMViq+D4
+        F6492YPPxfMGwXRj5aTufpp2+rg2IX17vRl6xGu0lrzvnz2AKM7J00zxUVO7NXbi
+        UzZLLEThcJgGBbdgJISacJBVtsCwwdMS3bqy3b7sig==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 26a68a7e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 14 Aug 2020 07:05:21 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Thomas Ptacek <thomas@sockpuppet.org>,
+        Adhipati Blambangan <adhipati@tuta.io>,
+        David Ahern <dsahern@gmail.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH net v5] net: xdp: account for layer 3 packets in generic skb handler
+Date:   Fri, 14 Aug 2020 09:30:48 +0200
+Message-Id: <20200814073048.30291-1-Jason@zx2c4.com>
+In-Reply-To: <CAHmME9rbRrdV0ePxT0DgurGdEKOWiEi5mH5Wtg=aJwSA6fxwMg@mail.gmail.com>
+References: <CAHmME9rbRrdV0ePxT0DgurGdEKOWiEi5mH5Wtg=aJwSA6fxwMg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813204945.1020225-1-andriin@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 01:49:36PM -0700, Andrii Nakryiko wrote:
-> This patch set contains fixes to libbpf, bpftool, and selftests that were
-> found while testing libbpf and selftests built in 32-bit mode. 64-bit nature
-> of BPF target and 32-bit host environment don't always mix together well
-> without extra care, so there were a bunch of problems discovered and fixed.
-> 
-> Each individual patch contains additional explanations, where necessary.
-> 
-> v2->v3:
->   - don't give up if failed to determine ELF class;
-> v1->v2:
->   - guess_ptr_sz -> determine_ptr_sz as per Alexei;
->   - added pointer size determination by ELF class.
+A user reported that packets from wireguard were possibly ignored by XDP
+[1]. Another user reported that modifying packets from layer 3
+interfaces results in impossible to diagnose drops.
 
-lgtm
-Applied, Thanks
+Apparently, the generic skb xdp handler path seems to assume that
+packets will always have an ethernet header, which really isn't always
+the case for layer 3 packets, which are produced by multiple drivers.
+This patch fixes the oversight. If the mac_len is 0 and so is
+hard_header_len, then we know that the skb is a layer 3 packet, and in
+that case prepend a pseudo ethhdr to the packet whose h_proto is copied
+from skb->protocol, which will have the appropriate v4 or v6 ethertype.
+This allows us to keep XDP programs' assumption correct about packets
+always having that ethernet header, so that existing code doesn't break,
+while still allowing layer 3 devices to use the generic XDP handler.
+
+We push on the ethernet header and then pull it right off and set
+mac_len to the ethernet header size, so that the rest of the XDP code
+does not need any changes. That is, it makes it so that the skb has its
+ethernet header just before the data pointer, of size ETH_HLEN. While
+we're at it, this also fixes a small inconsistency from the prior code,
+in which an XDP program that changes skb->protocol would wind up pushing
+the ethernet header back on but would forget to take it back off
+following the h_proto parsing.
+
+Previous discussions have included the point that maybe XDP should just
+be intentionally broken on layer 3 interfaces, by design, and that layer
+3 people should be using cls_bpf. However, I think there are good
+grounds to reconsider this perspective:
+
+- Complicated deployments wind up applying XDP modifications to a
+  variety of different devices on a given host, some of which are using
+  specialized ethernet cards and other ones using virtual layer 3
+  interfaces, such as WireGuard. Being able to apply one codebase to
+  each of these winds up being essential.
+
+- cls_bpf does not support the same feature set as XDP, and operates at
+  a slightly different stage in the networking stack. You may reply,
+  "then add all the features you want to cls_bpf", but that seems to be
+  missing the point, and would still result in there being two ways to
+  do everything, which is not desirable for anyone actually _using_ this
+  code.
+
+- While XDP was originally made for hardware offloading, and while many
+  look disdainfully upon the generic mode, it nevertheless remains a
+  highly useful and popular way of adding bespoke packet
+  transformations, and from that perspective, a difference between layer
+  2 and layer 3 packets is immaterial if the user is primarily concerned
+  with transformations to layer 3 and beyond.
+
+[1] https://lore.kernel.org/wireguard/M5WzVK5--3-2@tuta.io/
+
+Reported-by: Thomas Ptacek <thomas@sockpuppet.org>
+Reported-by: Adhipati Blambangan <adhipati@tuta.io>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+
+I had originally dropped this patch, but the issue kept coming up in
+user reports, so here's a v4 of it. Testing of it is still rather slim,
+but hopefully that will change in the coming days.
+
+Changes v4->v5:
+- Rather than tracking in a messy manner whether the skb is l3, we just
+  do the check once, and then adjust the skb geometry to be identical to
+  the l2 case. This simplifies the code quite a bit.
+- Fix a preexisting bug where the l2 header remained attached if
+  skb->protocol was updated.
+
+Changes v3->v4:
+- We now preserve the same logic for XDP_TX/XDP_REDIRECT as before.
+- hard_header_len is checked in addition to mac_len.
+
+ net/core/dev.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 7df6c9617321..79c15f4244e6 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4630,6 +4630,18 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	 * header.
+ 	 */
+ 	mac_len = skb->data - skb_mac_header(skb);
++	if (!mac_len && !skb->dev->hard_header_len) {
++		/* For l3 packets, we push on a fake mac header, and then
++		 * pull it off again, so that it has the same skb geometry
++		 * as for the l2 case.
++		 */
++		eth = skb_push(skb, ETH_HLEN);
++		eth_zero_addr(eth->h_source);
++		eth_zero_addr(eth->h_dest);
++		eth->h_proto = skb->protocol;
++		__skb_pull(skb, ETH_HLEN);
++		mac_len = ETH_HLEN;
++	}
+ 	hlen = skb_headlen(skb) + mac_len;
+ 	xdp->data = skb->data - mac_len;
+ 	xdp->data_meta = xdp->data;
+@@ -4676,6 +4688,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
+ 		__skb_push(skb, ETH_HLEN);
+ 		skb->protocol = eth_type_trans(skb, skb->dev);
++		__skb_pull(skb, ETH_HLEN);
+ 	}
+ 
+ 	switch (act) {
+-- 
+2.28.0
+
