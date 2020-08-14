@@ -2,75 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3BE244F61
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 22:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8B4244FCB
+	for <lists+bpf@lfdr.de>; Sat, 15 Aug 2020 00:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgHNU5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Aug 2020 16:57:40 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:60707 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726623AbgHNU5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Aug 2020 16:57:39 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id bf5f1a45;
-        Fri, 14 Aug 2020 20:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :in-reply-to:references:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=+TN2wa+LOq4QM87ME7P9NUTEp60=; b=HOMFuv
-        uzpvALkSBeVcE1qzFX99qQxChE2wW2WX1nv2lF8qEa0s5/GdWMeBkP87MrjZuTwD
-        BxOXbl7SNwjw/ZMb899u6KaUt0SkS2B7lS8OZXYKBbT6+8qjoC1FfLh8LqKJ9w+R
-        Rg79ld2pDDXHz68IY5wZtw3G1UcrGc7btyxh9om/LkHj+j1uLwBtrOOTdcKWaM0+
-        i15hNDOck5n7e8SH4p7g3CE2WFqqgubzX03LkNjSyvYSukaX85PDAR24XJJzlfRP
-        HziGKlyzC1dAAMIOMFWKH6ChAvbAwLgIm5jJUWDTJh0qStqpY5R17JBiikil5AQV
-        yI5A0T7DGSomQ/Yg==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id da41d064 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 14 Aug 2020 20:31:55 +0000 (UTC)
-Received: by mail-io1-f52.google.com with SMTP id b16so12107234ioj.4;
-        Fri, 14 Aug 2020 13:57:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531cN3ksEC7yPLfUKuSDRgXN+kvaWBBwEB4udDUNRgyz6LNrySdf
-        6kjJcRoJZNV4FoVzzn6yLac9I+X8hoxk+w1t8vc=
-X-Google-Smtp-Source: ABdhPJydifujAdRmCW4r1wpKJqKOGmdl0myw4po/WElOQTXq97MXyEdg0w5t6X9nXhChvUSv7gHDne+iOopcTfRfp3c=
-X-Received: by 2002:a05:6602:15c3:: with SMTP id f3mr3693477iow.25.1597438656291;
- Fri, 14 Aug 2020 13:57:36 -0700 (PDT)
+        id S1726297AbgHNWRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 18:17:50 -0400
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:40848 "EHLO
+        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgHNWRt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Aug 2020 18:17:49 -0400
+Received: from [192.168.4.242] (helo=deadeye)
+        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <benh@debian.org>)
+        id 1k6i1A-0007Ml-V8; Fri, 14 Aug 2020 23:17:45 +0100
+Received: from ben by deadeye with local (Exim 4.94)
+        (envelope-from <benh@debian.org>)
+        id 1k6i1A-002J3r-I7; Fri, 14 Aug 2020 23:17:44 +0100
+Message-ID: <ebf711740484b0a489f11b749d0f00d30be5a5b1.camel@debian.org>
+Subject: Re: [PATCH] bpftool: Fix version string in recursive builds
+From:   Ben Hutchings <benh@debian.org>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, debian-kernel@lists.debian.org
+Date:   Fri, 14 Aug 2020 23:17:39 +0100
+In-Reply-To: <1c00ee1f-5103-e8ec-7953-e09a1c0de707@fb.com>
+References: <20200813235837.GA497088@decadent.org.uk>
+         <1c00ee1f-5103-e8ec-7953-e09a1c0de707@fb.com>
+Organization: Debian project
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-EZbJgUeGIM8jJ4u2zgBn"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-Received: by 2002:a92:995a:0:0:0:0:0 with HTTP; Fri, 14 Aug 2020 13:57:35
- -0700 (PDT)
-In-Reply-To: <20200814.135546.2266851283177227377.davem@davemloft.net>
-References: <CAHmME9rbRrdV0ePxT0DgurGdEKOWiEi5mH5Wtg=aJwSA6fxwMg@mail.gmail.com>
- <20200814073048.30291-1-Jason@zx2c4.com> <20200814.135546.2266851283177227377.davem@davemloft.net>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 14 Aug 2020 22:57:35 +0200
-X-Gmail-Original-Message-ID: <CAHmME9pQwHeVAseqzA9WYMeh1VHZKRRUc1J=VzWv_0Zoyf8uPg@mail.gmail.com>
-Message-ID: <CAHmME9pQwHeVAseqzA9WYMeh1VHZKRRUc1J=VzWv_0Zoyf8uPg@mail.gmail.com>
-Subject: Re: [PATCH net v5] net: xdp: account for layer 3 packets in generic
- skb handler
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, thomas@sockpuppet.org,
-        adhipati@tuta.io, dsahern@gmail.com, toke@redhat.com,
-        kuba@kernel.org, alexei.starovoitov@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+X-SA-Exim-Connect-IP: 192.168.4.242
+X-SA-Exim-Mail-From: benh@debian.org
+X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/14/20, David Miller <davem@davemloft.net> wrote:
-> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> Date: Fri, 14 Aug 2020 09:30:48 +0200
->
->> @@ -4676,6 +4688,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff
->> *skb,
->>  	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
->>  		__skb_push(skb, ETH_HLEN);
->>  		skb->protocol = eth_type_trans(skb, skb->dev);
->> +		__skb_pull(skb, ETH_HLEN);
->>  	}
->>
->>  	switch (act) {
->
-> This bug fix is separate from your other changes.  Please do not combine
-> them.
->
 
-No problem. I'll split this out and resend tomorrow morning.
+--=-EZbJgUeGIM8jJ4u2zgBn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jason
+On Fri, 2020-08-14 at 08:43 -0700, Yonghong Song wrote:
+[...]
+> I tried the following
+>=20
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -25,7 +25,7 @@ endif
+>=20
+>   LIBBPF =3D $(LIBBPF_PATH)libbpf.a
+>=20
+> -BPFTOOL_VERSION :=3D $(shell make -rR --no-print-directory -sC ../../..=
+=20
+> kernelversion)
+> +BPFTOOL_VERSION :=3D $(shell MAKEFLAGS=3Dw make -rR --no-print-directory=
+=20
+> -sC ../../.. kernelversion)
+>=20
+> -bash-4.4$ ./bpftool version
+> ./bpftool v5.8.0
+>=20
+> I set env variable MAKEFLAGS=3Dw, and build bpftool it works fine too.
+> Maybe I miss something or debian changed top level Makefile?
+
+Yes, but we don't change MAKEFLAGS or any of the logic around quietness
+or verbosity.
+
+I assume there are other factors involved, as I've also been unable to
+construct a simple reproducer.
+
+Ben.
+
+> I am testing against latest bpf tree.
+>=20
+> >  =20
+> >   $(LIBBPF): FORCE
+> >   	$(if $(LIBBPF_OUTPUT),@mkdir -p $(LIBBPF_OUTPUT))
+> >=20
+--=20
+Ben Hutchings - Debian developer, member of kernel, installer and LTS teams
+
+--=-EZbJgUeGIM8jJ4u2zgBn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl83DYMACgkQ57/I7JWG
+EQn4MRAArfzuHq272rYNAWm/zmGrzI+X0JUQt41K7BeVvmxvsPpfdNguJb6fWM+6
+R6dq0MXRC+W8wNB5xIWwzJOu5MPRlRsp+K4uuzzdeuvYBcrtabnGXUXBZoJQrSM8
+ET65PpZ5IcDwf+0bK5ho4TG7L4TdxIDXK7RDR3dO4xOvLuGYFyXdP43Pv0hbUTpg
+k+13L6KmRERP6KdH8hW1U+XDkzYdisQpDLML9vQpb7rIpRvC6Xtklsq3jm9tIcK4
+iMwTUEGXpW5/L0AS1do44w62nH0aBwK2JXm6mGjo0R+/gMFJyDf2dF8x/U4nML56
+J2UGhQQZgVTpBd3pkq413jdQn4zD27zDOeG3X9TUjq+DTQ7dYxamjsPdjAAJWE1O
+xmps3rtrzpUtvg/N3qflSLB34YBiwUQ/7+N3/h5m6qsTgchNKFlOyCPDK5rx02kZ
+TiLNGgKXsrUO3iHLjF4Lh3yuUTJdj0OHudW6jFwIvim8iZcp8Z/GqOZWJoMlE6fZ
+td4KKTgIlsWqIWyrgdCyhju2On7Jvp7XvQc+OqOmi9oIrjDJszMG8K46DriHPbO1
+6uUBrx4bTkOUw9EZWZs7eUTXWu258ZzIPOdyzEQmSndU5CRnd4yZnXBu21WfX0PL
+gE/aY6MUdN4nrddUCFeqVP1MNQFE697ISoPO/1jlxAcUgXAqISA=
+=aLe4
+-----END PGP SIGNATURE-----
+
+--=-EZbJgUeGIM8jJ4u2zgBn--
