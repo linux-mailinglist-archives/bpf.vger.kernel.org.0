@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D873244EC0
+	by mail.lfdr.de (Postfix) with ESMTP id 79B57244EC1
 	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 21:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgHNTQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726652AbgHNTQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 14 Aug 2020 15:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgHNTQG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Aug 2020 15:16:06 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7BFC061385
-        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 12:16:06 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id t13so9321902ile.9
-        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 12:16:06 -0700 (PDT)
+        with ESMTP id S1728084AbgHNTQH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Aug 2020 15:16:07 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3ADC061385
+        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 12:16:07 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id r13so4928342iln.0
+        for <bpf@vger.kernel.org>; Fri, 14 Aug 2020 12:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C280CQNutEXiQ8ZUy45h62xWzwMS2jnf+f8g7QQRwLQ=;
-        b=CW8ufsRUvHFSMPZt8bp70CpMkJ+gSWz6p/Zsy5DTXhWCR46To2kebYbGQF67O2u96R
-         7G5Mn0aYTX2JmSiF6XQ1JGozGE5kmoIE9NWlkY2zVji7J0KkDLzCAadrOMxu4uHjg02z
-         YV68+4sB0b+V+CzPjK7rvfxKlB2sTY58G7gbnY4luDttRBQMkeDQrORqFxUwoAFtbFxe
-         qtAClwwB9A0bIYRJCiikDUP7khHJEPKJiRxtA1PBGWzUz9+rW+cYTEpyY4hbECTgFhEj
-         HQFWQKbongO/MiTxcZg4RgB8ITEeDHetjaHpGmUrLVOTgDMX9zTpOe8LiswcohkpvxqX
-         zCkA==
+        bh=6Wp6t4uQBQ5dF3zDMIDTsLP9qXJPmzukRhj8KqkAa5g=;
+        b=AwPk4Pq+mDQDsQPzV638UrKi1S6PPEzapqxfoyOSyVzstuXQpR28qaowIB8XUtrVtu
+         H7IsDSrMjySc16VbaVttF+6fu4qo8exS5qDV3EzLL4QmJX+N98isBKFc4F1OvxTlBLRa
+         PIvpqWZ3BiMewwtfcmBmaZboMXXTZw10YaMLZP593KQHEyKKdp24wsieb1PA3aLK9gXe
+         /Uxt0aYp3eu23Hc0uA+4eSgtj+mELnn6yRUnmrp4J0mV+/d034NnL/ipJYyGtwgx5B5a
+         x6E6ILkKCN6iaklrHwujkfVcnFZ44iQugYn6jghr4IbIQtqVHkuojc9UoX/nmAh4/sAy
+         l/aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C280CQNutEXiQ8ZUy45h62xWzwMS2jnf+f8g7QQRwLQ=;
-        b=LODmwBK64YV59WV/+gV3qDMsC5Q7gwI5nuhz6sl3vl+FP2WI9czlltHd8G3WHOSG4k
-         Sx1BsIQh9Hu3qyeZI8qG6MK9vvHoThz1ydKG8+RkJDivr4WXU7SFhhEaj/wVbuXmK+ET
-         JVf9/uHSiHG2hBr9KhAyhaxc+pLE4vkJMSwOC7nGiQl09yOAD9cNn7j+hhohBb6G2pit
-         p2OQkK0vO1xDetG1N7I6EA6KELaaRE/etQrp6+8mJ8qDTp4Lk3SOO8LInVy+/j2bQnm/
-         QjBnOYkS/0QvMZ+QTrZ72Px+7GNW4ynu1Rc9WzVirs38ar226Q1TtFjzUXemYybqh6Fb
-         TmpA==
-X-Gm-Message-State: AOAM530iJHMc85BcSH2iyz1/k0LdGXBVMH44tyiapVneLMzxndeNXd8F
-        yy90Hg3Fi0Kv0A/oPk0Y4BX1I601CK5w7w==
-X-Google-Smtp-Source: ABdhPJzRL7o5Yka7zYhLEv0P8reP8zoV+Ojxjba/loT7KvUCJCvkIAHsd3RhgoilxKx/ZrnPakYavw==
-X-Received: by 2002:a92:b74a:: with SMTP id c10mr3777117ilm.231.1597432565504;
-        Fri, 14 Aug 2020 12:16:05 -0700 (PDT)
+        bh=6Wp6t4uQBQ5dF3zDMIDTsLP9qXJPmzukRhj8KqkAa5g=;
+        b=ugfE6r7gnMguRRBLbdyiv+Yw3XDI7eV35uQmTl5KGC7dmozQCF9X7fBqYGGCqEbAWu
+         yeaXZ38KVYMgLH1JkuJpU6O3kB09CwIpsvGoyy1Y2TxFBJQlOfwBTQGpEzM5Q+UNmClU
+         MWvVHRxpY/FtY5unmEEI+OGqjefJn4bXb5lWU2JqWo9Id6FYUCgjGeWtBITnZ6szlqfZ
+         R/xsM24s6Digbqi6hxfAQqaJu5jULotDsBCfrosiHADLuBn++Uxxt8citnVxxmbQu82f
+         lMqfC84sodgYtt3GIZXrfI0BMrjWqjdk2PLccVCOnV+hnHaXdiwLrpHR/mfatIk2C2o0
+         o7PQ==
+X-Gm-Message-State: AOAM533jZqs2O1hFGLkUnUe26gVWarsFg43aLIOf6tlTVdab9BpqWZ9V
+        +o3pfvkB9x2o+NgFn+XMgdl5afXeRcK3dw==
+X-Google-Smtp-Source: ABdhPJzhvgnia7DjBgHzkNhml8UKq3CP4fchQgCEgGzOIGwHgEzcWJkhDVPiXolpdDQQqQh817uvTw==
+X-Received: by 2002:a92:cf09:: with SMTP id c9mr3890308ilo.38.1597432566374;
+        Fri, 14 Aug 2020 12:16:06 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
-        by smtp.gmail.com with ESMTPSA id f15sm4521028ilc.51.2020.08.14.12.16.04
+        by smtp.gmail.com with ESMTPSA id f15sm4521028ilc.51.2020.08.14.12.16.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2020 12:16:04 -0700 (PDT)
+        Fri, 14 Aug 2020 12:16:05 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -54,9 +54,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Mahesh Bandewar <maheshb@google.com>,
         YiFei Zhu <zhuyifei@google.com>
-Subject: [RFC PATCH bpf-next 4/5] bpftool: support dumping metadata
-Date:   Fri, 14 Aug 2020 14:15:57 -0500
-Message-Id: <618cfa1775ff2b0e45167d215c534d3cf39dbc15.1597427271.git.zhuyifei@google.com>
+Subject: [RFC PATCH bpf-next 5/5] selftests/bpf: Test bpftool loading and dumping metadata
+Date:   Fri, 14 Aug 2020 14:15:58 -0500
+Message-Id: <58804d7707fdd2918654b86f5235b201951aa8a9.1597427271.git.zhuyifei@google.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1597427271.git.zhuyifei@google.com>
 References: <cover.1597427271.git.zhuyifei@google.com>
@@ -69,294 +69,164 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-Added a flag "--metadata" to `bpftool prog list` to dump the metadata
-contents. For some formatting some BTF code is put directly in the
-metadata dumping. Sanity checks on the map and the kind of the btf_type
-to make sure we are actually dumping what we are expecting.
-
-A helper jsonw_reset is added to json writer so we can reuse the same
-json writer without having extraneous commas.
-
-Sample output:
-
-  $ bpftool prog --metadata
-  6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
-  [...]
-  	btf_id 4
-  	metadata:
-  		metadata_a = "foo"
-  		metadata_b = 1
-
-  $ bpftool prog --metadata --json --pretty
-  [{
-          "id": 6,
-  [...]
-          "btf_id": 4,
-          "metadata": {
-              "metadata_a": "foo",
-              "metadata_b": 1
-          }
-      }
-  ]
+This is a simple test to check that loading and dumping metadata
+works, whether or not metadata contents are used by the program.
 
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 ---
- tools/bpf/bpftool/json_writer.c |   6 ++
- tools/bpf/bpftool/json_writer.h |   3 +
- tools/bpf/bpftool/main.c        |  10 +++
- tools/bpf/bpftool/main.h        |   1 +
- tools/bpf/bpftool/prog.c        | 132 ++++++++++++++++++++++++++++++++
- 5 files changed, 152 insertions(+)
+ tools/testing/selftests/bpf/Makefile          |  3 +-
+ .../selftests/bpf/progs/metadata_unused.c     | 15 ++++
+ .../selftests/bpf/progs/metadata_used.c       | 15 ++++
+ .../selftests/bpf/test_bpftool_metadata.sh    | 82 +++++++++++++++++++
+ 4 files changed, 114 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
 
-diff --git a/tools/bpf/bpftool/json_writer.c b/tools/bpf/bpftool/json_writer.c
-index 86501cd3c763..7fea83bedf48 100644
---- a/tools/bpf/bpftool/json_writer.c
-+++ b/tools/bpf/bpftool/json_writer.c
-@@ -119,6 +119,12 @@ void jsonw_pretty(json_writer_t *self, bool on)
- 	self->pretty = on;
- }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e7a8cf83ba48..5f559c79a977 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -68,7 +68,8 @@ TEST_PROGS := test_kmod.sh \
+ 	test_tc_edt.sh \
+ 	test_xdping.sh \
+ 	test_bpftool_build.sh \
+-	test_bpftool.sh
++	test_bpftool.sh \
++	test_bpftool_metadata.sh \
  
-+void jsonw_reset(json_writer_t *self)
+ TEST_PROGS_EXTENDED := with_addr.sh \
+ 	with_tunnels.sh \
+diff --git a/tools/testing/selftests/bpf/progs/metadata_unused.c b/tools/testing/selftests/bpf/progs/metadata_unused.c
+new file mode 100644
+index 000000000000..523b3c332426
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/metadata_unused.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++char metadata_a[] SEC(".metadata") = "foo";
++int metadata_b SEC(".metadata") = 1;
++
++SEC("cgroup_skb/egress")
++int prog(struct xdp_md *ctx)
 +{
-+	assert(self->depth == 0);
-+	self->sep = '\0';
++	return 0;
 +}
 +
- /* Basic blocks */
- static void jsonw_begin(json_writer_t *self, int c)
- {
-diff --git a/tools/bpf/bpftool/json_writer.h b/tools/bpf/bpftool/json_writer.h
-index 35cf1f00f96c..8ace65cdb92f 100644
---- a/tools/bpf/bpftool/json_writer.h
-+++ b/tools/bpf/bpftool/json_writer.h
-@@ -27,6 +27,9 @@ void jsonw_destroy(json_writer_t **self_p);
- /* Cause output to have pretty whitespace */
- void jsonw_pretty(json_writer_t *self, bool on);
- 
-+/* Reset separator to create new JSON */
-+void jsonw_reset(json_writer_t *self);
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/metadata_used.c b/tools/testing/selftests/bpf/progs/metadata_used.c
+new file mode 100644
+index 000000000000..59785404f7bb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/metadata_used.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +
- /* Add property name */
- void jsonw_name(json_writer_t *self, const char *name);
- 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 4a191fcbeb82..a681d568cfa7 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -28,6 +28,7 @@ bool show_pinned;
- bool block_mount;
- bool verifier_logs;
- bool relaxed_maps;
-+bool dump_metadata;
- struct pinned_obj_table prog_table;
- struct pinned_obj_table map_table;
- struct pinned_obj_table link_table;
-@@ -351,6 +352,10 @@ static int do_batch(int argc, char **argv)
- 	return err;
- }
- 
-+enum bpftool_longonly_opts {
-+	OPT_METADATA = 256,
-+};
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
 +
- int main(int argc, char **argv)
- {
- 	static const struct option options[] = {
-@@ -362,6 +367,7 @@ int main(int argc, char **argv)
- 		{ "mapcompat",	no_argument,	NULL,	'm' },
- 		{ "nomount",	no_argument,	NULL,	'n' },
- 		{ "debug",	no_argument,	NULL,	'd' },
-+		{ "metadata",	no_argument,	NULL,	OPT_METADATA },
- 		{ 0 }
- 	};
- 	int opt, ret;
-@@ -371,6 +377,7 @@ int main(int argc, char **argv)
- 	json_output = false;
- 	show_pinned = false;
- 	block_mount = false;
-+	dump_metadata = false;
- 	bin_name = argv[0];
- 
- 	hash_init(prog_table.table);
-@@ -412,6 +419,9 @@ int main(int argc, char **argv)
- 			libbpf_set_print(print_all_levels);
- 			verifier_logs = true;
- 			break;
-+		case OPT_METADATA:
-+			dump_metadata = true;
-+			break;
- 		default:
- 			p_err("unrecognized option '%s'", argv[optind - 1]);
- 			if (json_output)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index e3a79b5a9960..54adfda5a9c9 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -82,6 +82,7 @@ extern bool show_pids;
- extern bool block_mount;
- extern bool verifier_logs;
- extern bool relaxed_maps;
-+extern bool dump_metadata;
- extern struct pinned_obj_table prog_table;
- extern struct pinned_obj_table map_table;
- extern struct pinned_obj_table link_table;
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 158995d853b0..9f803a84d132 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -151,6 +151,132 @@ static void show_prog_maps(int fd, __u32 num_maps)
- 	}
- }
- 
-+static void show_prog_metadata(int fd, __u32 num_maps)
++char metadata_a[] SEC(".metadata") = "bar";
++int metadata_b SEC(".metadata") = 2;
++
++SEC("cgroup_skb/egress")
++int prog(struct xdp_md *ctx)
 +{
-+	struct bpf_prog_info prog_info = {};
-+	struct bpf_map_info map_info = {};
-+	__u32 prog_info_len = sizeof(prog_info);
-+	__u32 map_info_len = sizeof(map_info);
-+	__u32 map_ids[num_maps];
-+	void *value = NULL;
-+	struct btf *btf = NULL;
-+	const struct btf_type *t_datasec, *t_var;
-+	struct btf_var_secinfo *vsi;
-+	int key = 0;
-+	unsigned int i, vlen;
-+	int map_fd;
-+	int err;
-+
-+	prog_info.nr_map_ids = num_maps;
-+	prog_info.map_ids = ptr_to_u64(map_ids);
-+
-+	err = bpf_obj_get_info_by_fd(fd, &prog_info, &prog_info_len);
-+	if (err || !prog_info.nr_map_ids)
-+		return;
-+
-+	for (i = 0; i < prog_info.nr_map_ids; i++) {
-+		map_fd = bpf_map_get_fd_by_id(map_ids[i]);
-+		if (map_fd < 0)
-+			return;
-+
-+		err = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
-+		if (err)
-+			goto out_close;
-+
-+		if (map_info.type != BPF_MAP_TYPE_ARRAY)
-+			continue;
-+		if (map_info.key_size != sizeof(int))
-+			continue;
-+		if (map_info.max_entries != 1)
-+			continue;
-+		if (!map_info.btf_value_type_id)
-+			continue;
-+		if (!strstr(map_info.name, ".metadata"))
-+			continue;
-+
-+		goto found;
-+	}
-+
-+	goto out_close;
-+
-+found:
-+	value = malloc(map_info.value_size);
-+	if (!value)
-+		goto out_close;
-+
-+	if (bpf_map_lookup_elem(map_fd, &key, value))
-+		goto out_free;
-+
-+	err = btf__get_from_id(map_info.btf_id, &btf);
-+	if (err || !btf)
-+		goto out_free;
-+
-+	t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
-+	if (BTF_INFO_KIND(t_datasec->info) != BTF_KIND_DATASEC)
-+		goto out_free;
-+
-+	vlen = BTF_INFO_VLEN(t_datasec->info);
-+	vsi = (struct btf_var_secinfo *)(t_datasec + 1);
-+
-+	if (json_output) {
-+		struct btf_dumper d = {
-+			.btf = btf,
-+			.jw = json_wtr,
-+			.is_plain_text = false,
-+		};
-+
-+		jsonw_name(json_wtr, "metadata");
-+
-+		jsonw_start_object(json_wtr);
-+		for (i = 0; i < vlen; i++) {
-+			t_var = btf__type_by_id(btf, vsi[i].type);
-+
-+			if (BTF_INFO_KIND(t_var->info) != BTF_KIND_VAR)
-+				continue;
-+
-+			jsonw_name(json_wtr, btf__name_by_offset(btf, t_var->name_off));
-+			err = btf_dumper_type(&d, t_var->type, value + vsi[i].offset);
-+			if (err)
-+				break;
-+		}
-+		jsonw_end_object(json_wtr);
-+	} else {
-+		json_writer_t *btf_wtr = jsonw_new(stdout);
-+		struct btf_dumper d = {
-+			.btf = btf,
-+			.jw = btf_wtr,
-+			.is_plain_text = true,
-+		};
-+		if (!btf_wtr)
-+			goto out_free;
-+
-+		printf("\tmetadata:");
-+
-+		for (i = 0; i < vlen; i++) {
-+			t_var = btf__type_by_id(btf, vsi[i].type);
-+
-+			if (BTF_INFO_KIND(t_var->info) != BTF_KIND_VAR)
-+				continue;
-+
-+			printf("\n\t\t%s = ", btf__name_by_offset(btf, t_var->name_off));
-+
-+			jsonw_reset(btf_wtr);
-+			err = btf_dumper_type(&d, t_var->type, value + vsi[i].offset);
-+			if (err)
-+				break;
-+		}
-+
-+		jsonw_destroy(&btf_wtr);
-+	}
-+
-+out_free:
-+	btf__free(btf);
-+	free(value);
-+
-+out_close:
-+	close(map_fd);
++	return metadata_b ? 1 : 0;
 +}
 +
- static void print_prog_header_json(struct bpf_prog_info *info)
- {
- 	jsonw_uint_field(json_wtr, "id", info->id);
-@@ -228,6 +354,9 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
- 
- 	emit_obj_refs_json(&refs_table, info->id, json_wtr);
- 
-+	if (dump_metadata)
-+		show_prog_metadata(fd, info->nr_map_ids);
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_bpftool_metadata.sh b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
+new file mode 100755
+index 000000000000..a7515c09dc2d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
+@@ -0,0 +1,82 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
 +
- 	jsonw_end_object(json_wtr);
- }
- 
-@@ -297,6 +426,9 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
- 	emit_obj_refs_plain(&refs_table, info->id, "\n\tpids ");
- 
- 	printf("\n");
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
 +
-+	if (dump_metadata)
-+		show_prog_metadata(fd, info->nr_map_ids);
- }
- 
- static int show_prog(int fd)
++TESTNAME=bpftool_metadata
++BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
++BPF_DIR=$BPF_FS/test_$TESTNAME
++
++_cleanup()
++{
++	set +e
++	rm -rf $BPF_DIR 2> /dev/null
++}
++
++cleanup_skip()
++{
++	echo "selftests: $TESTNAME [SKIP]"
++	_cleanup
++
++	exit $ksft_skip
++}
++
++cleanup()
++{
++	if [ "$?" = 0 ]; then
++		echo "selftests: $TESTNAME [PASS]"
++	else
++		echo "selftests: $TESTNAME [FAILED]"
++	fi
++	_cleanup
++}
++
++if [ $(id -u) -ne 0 ]; then
++	echo "selftests: $TESTNAME [SKIP] Need root privileges"
++	exit $ksft_skip
++fi
++
++if [ -z "$BPF_FS" ]; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
++	exit $ksft_skip
++fi
++
++if ! bpftool version > /dev/null 2>&1; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
++	exit $ksft_skip
++fi
++
++set -e
++
++trap cleanup_skip EXIT
++
++mkdir $BPF_DIR
++
++trap cleanup EXIT
++
++bpftool prog load metadata_unused.o $BPF_DIR/unused
++
++METADATA_PLAIN="$(bpftool prog --metadata)"
++echo "$METADATA_PLAIN" | grep 'metadata_a = "foo"' > /dev/null
++echo "$METADATA_PLAIN" | grep 'metadata_b = 1' > /dev/null
++
++bpftool prog --metadata --json | grep '"metadata":{"metadata_a":"foo","metadata_b":1}' > /dev/null
++
++bpftool map | grep 'metada.metadata' > /dev/null
++
++rm $BPF_DIR/unused
++
++bpftool prog load metadata_used.o $BPF_DIR/used
++
++METADATA_PLAIN="$(bpftool prog --metadata)"
++echo "$METADATA_PLAIN" | grep 'metadata_a = "bar"' > /dev/null
++echo "$METADATA_PLAIN" | grep 'metadata_b = 2' > /dev/null
++
++bpftool prog --metadata --json | grep '"metadata":{"metadata_a":"bar","metadata_b":2}' > /dev/null
++
++bpftool map | grep 'metada.metadata' > /dev/null
++
++rm $BPF_DIR/used
++
++exit 0
 -- 
 2.28.0
 
