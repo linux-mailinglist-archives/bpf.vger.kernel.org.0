@@ -2,100 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA0D2441CF
-	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 01:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D19C24421F
+	for <lists+bpf@lfdr.de>; Fri, 14 Aug 2020 02:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgHMX6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Aug 2020 19:58:41 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:36198 "EHLO
-        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726526AbgHMX6l (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Aug 2020 19:58:41 -0400
-Received: from [192.168.4.242] (helo=deadeye)
-        by shadbolt.decadent.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1k6N7F-0002CB-RW; Fri, 14 Aug 2020 00:58:37 +0100
-Received: from ben by deadeye with local (Exim 4.94)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1k6N7F-0025KS-8B; Fri, 14 Aug 2020 00:58:37 +0100
-Date:   Fri, 14 Aug 2020 00:58:37 +0100
-From:   Ben Hutchings <benh@debian.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, debian-kernel@lists.debian.org
-Subject: [PATCH] bpftool: Fix version string in recursive builds
-Message-ID: <20200813235837.GA497088@decadent.org.uk>
+        id S1727123AbgHNAI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Aug 2020 20:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727037AbgHNAIY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Aug 2020 20:08:24 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E016AC061383;
+        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id h12so3651122pgm.7;
+        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e/ooevbtj8TGnhL2m7TzmrsDSXyNuyK8wxQNGqrvrgs=;
+        b=tUBRZucQJCyEpBRfRfIbcwQyKIGVJnkE7gyos5M2zbRyMRv3459gKhl6ahoz6eN/oT
+         Xz1+cznwfpn4/h66OwoEtn6mT+2ssDBji47TzzsgAna7sUWw1v0ksNhh4spVsAVFu5j1
+         /CidTlYfFS/+pryVEB29LjaIz/8aIxDi8meXK3XRQRZqK3UpYWJGVACSeRrummbJT/Ja
+         Tsw6X0o7DnT705dVJ5OOQb14V1Zgt8/ZB6Q0rxkXAvbDuDsGFX9A0CX4g8ytXirvklP9
+         S619xuUcJfgF0emtiNILPOw5inq8VxDGDXRqL49TtXU/3bTgV/xdgOrVWaksWu5fsVgO
+         ZSHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e/ooevbtj8TGnhL2m7TzmrsDSXyNuyK8wxQNGqrvrgs=;
+        b=jZJeVPv3gllIfhsPhKd3q0UqgT221vtKEJEvnXdkcqgZHnc07ioZJ89RsuDPGnggD7
+         ufHVm2b/GMjE7LlNqhxtcJLYzI/Rq3cOoOfrflnxZc9g0P/xs/zc1izK6rPzjot2HdtZ
+         phQhAM4RzsnkXaDD3T6uX4dHMtKk8GpmZ4C3c5l0A8TEFCe5g/4qDQorsZDjvIkpAs71
+         WstbfmhgqhzXfSr1tYp+vCQajb1U554kgcRzgKIKGX388UPpNSfPakJJTtsw9E9GQtgV
+         rBxRHjh3AMh3hkBUy5Lkpi5YcziILSBkcee3QBeMvVvsfSmesc7qBCORJ8YGahxdgafj
+         amlw==
+X-Gm-Message-State: AOAM530j9AbFlSvmppPaypVKjnDJR28Nd2NjTec7RsUgLZnd9FVYPnxR
+        vjPcM532WECANn6yTy7as2psSFbK
+X-Google-Smtp-Source: ABdhPJw/DM35R+EmRvWLPE0bOEJY1JRLmCq/anM8Pai7wa2fivsy8MpGWqbjTdOnnijd7ef85/DrdA==
+X-Received: by 2002:a63:4c48:: with SMTP id m8mr53447pgl.290.1597363704450;
+        Thu, 13 Aug 2020 17:08:24 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:affd])
+        by smtp.gmail.com with ESMTPSA id mp3sm23794685pjb.0.2020.08.13.17.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Aug 2020 17:08:23 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 17:08:21 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf 0/9] Fix various issues with 32-bit libbpf
+Message-ID: <20200814000821.q6gbl5umov76mry2@ast-mbp.dhcp.thefacebook.com>
+References: <20200813204945.1020225-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-SA-Exim-Connect-IP: 192.168.4.242
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on shadbolt.decadent.org.uk); SAEximRunCond expanded to false
+In-Reply-To: <20200813204945.1020225-1-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Aug 13, 2020 at 01:49:36PM -0700, Andrii Nakryiko wrote:
+> This patch set contains fixes to libbpf, bpftool, and selftests that were
+> found while testing libbpf and selftests built in 32-bit mode. 64-bit nature
+> of BPF target and 32-bit host environment don't always mix together well
+> without extra care, so there were a bunch of problems discovered and fixed.
+> 
+> Each individual patch contains additional explanations, where necessary.
+> 
+> v2->v3:
+>   - don't give up if failed to determine ELF class;
+> v1->v2:
+>   - guess_ptr_sz -> determine_ptr_sz as per Alexei;
+>   - added pointer size determination by ELF class.
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-When bpftool is built as part of a Debian package build, which itself
-uses make, "bpftool version" shows:
-
-    bpftool vmake[4]: Entering directory /build/linux-5.8/tools/bpf/bpftool=
- 5.8.8.0 make[4]: Leaving directory /build/linux-5.8
-
-Although we pass the "--no-print-directory" option, this is overridden
-by the environment variable "MAKEFLAGS=3Dw".  Clear MAKEFLAGS for the
-"make kernelversion" command.
-
-I have no explanation for the doubled ".8" in the version string, but
-this seems to fix that as well.
-
-Signed-off-by: Ben Hutchings <benh@debian.org>
----
- tools/bpf/bpftool/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 9e85f101be85..7fbad8cbd171 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -25,7 +25,7 @@ endif
-=20
- LIBBPF =3D $(LIBBPF_PATH)libbpf.a
-=20
--BPFTOOL_VERSION :=3D $(shell make -rR --no-print-directory -sC ../../.. ke=
-rnelversion)
-+BPFTOOL_VERSION :=3D $(shell MAKEFLAGS=3D make -rR --no-print-directory -s=
-C ../../.. kernelversion)
-=20
- $(LIBBPF): FORCE
- 	$(if $(LIBBPF_OUTPUT),@mkdir -p $(LIBBPF_OUTPUT))
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl8106cACgkQ57/I7JWG
-EQnv4Q/+JBl42JWMaObuRplPAljselPNNFU/MtWYn7PogqISR90YiTdRcJFYTdV/
-KYNUKmJivosP1TJEyHASV7r1uLByvqZxnSRC4kKgJQ4x5ipsb9x0JQR0SP5K30nC
-i09JC4Ih7+/DxG7xIZ7accihSb+ZN9rZIQxCkUjeNBOkEJf7ZT+ifhj6LDfNRIen
-iCpksTQvRd7Z7TLJGju180943i+l3HwkfdkmJg/sqYD39zfBRERWaHNxRpa1IuoP
-6X/aiKGe3LZAz1LOA+Jq2OJUlRnj1LlAGVSVW88ocBolVf0asJ+c+I9cgrjYdlqz
-8j2K6NkpywaigZuXtxOKzazT0N1kDFiLOu5Apo+mgXsSHFzgTxv/O1zzqbEtzsW3
-yztMeyvk46Kqp8hfannaQ51YThFchnQEFAfvNGn/jaGpU4Id5GLf7ARSjoehPSD3
-frGNjJc4iorjuhM1yGEYF0Zk2kY3BJHIC5BBFsg5gT63bSp+9dD5Zd1UKuVbVic+
-yk74+KW5iaLQPWVuXYFRwiNEtU52teLUiQIczmopG2u1OeAIQhyYNCe1B56Ex945
-QgzkSlJsMIp56XeGlA4JCD+y8f0VWB44H9HzQ5rADPmnmRr5mJ+5Yl3az8Fzv/2K
-yP1Cb3vcjPrRj/mQXKTfJCMJDXR0N0zzWtYMP0xFuer6nEFiOoQ=
-=Zqg/
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
+lgtm
+Applied, Thanks
