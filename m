@@ -2,165 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4C52454F3
-	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 01:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34097245510
+	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 02:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgHOXlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Aug 2020 19:41:24 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:55225 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726429AbgHOXlY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Aug 2020 19:41:24 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 57e5ed94;
-        Sat, 15 Aug 2020 07:15:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=mail; bh=8Qjf+nS4+2iB
-        grrnVwyy+Y9pqsY=; b=smtwuOwR5FYc6sJHnacSwvljOMeqrKKkoguT2FImIV8b
-        ZcpZA7/BlZWu97gncg9nSWmizUbp9LbTdTYSObGbPZ7xoJ532y9WnFDfiuEKKXAW
-        03N//42dcDS8noDzIuC22qG9BS5lcagkkfLrFrSwoH+sNm7V1ueDLAkl0mftfPFk
-        6iC+y8t2+aS7pAVhiGSeG5Ly84DRgt+C18njvLiK6Y0OkgYl0ApNSjyZlZds8x3S
-        rW7wKIXTDVqOG4K10jfY5abbGCvyf7BrlLKJcT8IKplrdqTiFjrdhXLVMCfJgPvn
-        2y14U7uryj9B7MDNOUJVcIGTVj3fKWPeDXICw4S0eQ==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f925c602 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Sat, 15 Aug 2020 07:15:30 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Thomas Ptacek <thomas@sockpuppet.org>,
-        Adhipati Blambangan <adhipati@tuta.io>,
-        David Ahern <dsahern@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH net v6] net: xdp: account for layer 3 packets in generic skb handler
-Date:   Sat, 15 Aug 2020 09:41:02 +0200
-Message-Id: <20200815074102.5357-1-Jason@zx2c4.com>
-In-Reply-To: <20200814.135546.2266851283177227377.davem@davemloft.net>
-References: <20200814.135546.2266851283177227377.davem@davemloft.net>
+        id S1729003AbgHPAfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Aug 2020 20:35:15 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37930 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726111AbgHPAfP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Aug 2020 20:35:15 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3E421A0E0DAA453A4ADE;
+        Sat, 15 Aug 2020 16:49:00 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sat, 15 Aug 2020
+ 16:48:49 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH v2] bpf: Convert to use the preferred fallthrough macro
+Date:   Sat, 15 Aug 2020 04:47:45 -0400
+Message-ID: <20200815084745.19291-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A user reported that packets from wireguard were possibly ignored by XDP
-[1]. Another user reported that modifying packets from layer 3
-interfaces results in impossible to diagnose drops.
+Since commit 294f69e662d1 ("compiler_attributes.h: Add 'fallthrough' pseudo
+keyword for switch/case use") introduce fallthrough pseudo keyword, then we
+should convert the uses of fallthrough comments to it.
 
-Apparently, the generic skb xdp handler path seems to assume that
-packets will always have an ethernet header, which really isn't always
-the case for layer 3 packets, which are produced by multiple drivers.
-This patch fixes the oversight. If the mac_len is 0 and so is
-hard_header_len, then we know that the skb is a layer 3 packet, and in
-that case prepend a pseudo ethhdr to the packet whose h_proto is copied
-from skb->protocol, which will have the appropriate v4 or v6 ethertype.
-This allows us to keep XDP programs' assumption correct about packets
-always having that ethernet header, so that existing code doesn't break,
-while still allowing layer 3 devices to use the generic XDP handler.
-
-We push on the ethernet header and then pull it right off and set
-mac_len to the ethernet header size, so that the rest of the XDP code
-does not need any changes. That is, it makes it so that the skb has its
-ethernet header just before the data pointer, of size ETH_HLEN.
-
-Previous discussions have included the point that maybe XDP should just
-be intentionally broken on layer 3 interfaces, by design, and that layer
-3 people should be using cls_bpf. However, I think there are good
-grounds to reconsider this perspective:
-
-- Complicated deployments wind up applying XDP modifications to a
-  variety of different devices on a given host, some of which are using
-  specialized ethernet cards and other ones using virtual layer 3
-  interfaces, such as WireGuard. Being able to apply one codebase to
-  each of these winds up being essential.
-
-- cls_bpf does not support the same feature set as XDP, and operates at
-  a slightly different stage in the networking stack. You may reply,
-  "then add all the features you want to cls_bpf", but that seems to be
-  missing the point, and would still result in there being two ways to
-  do everything, which is not desirable for anyone actually _using_ this
-  code.
-
-- While XDP was originally made for hardware offloading, and while many
-  look disdainfully upon the generic mode, it nevertheless remains a
-  highly useful and popular way of adding bespoke packet
-  transformations, and from that perspective, a difference between layer
-  2 and layer 3 packets is immaterial if the user is primarily concerned
-  with transformations to layer 3 and beyond.
-
-- It's not impossible to imagine layer 3 hardware (e.g. a WireGuard PCIe
-  card) including eBPF/XDP functionality built-in. In that case, why
-  limit XDP as a technology to only layer 2? Then, having generic XDP
-  work for layer 3 would naturally fit as well.
-
-[1] https://lore.kernel.org/wireguard/M5WzVK5--3-2@tuta.io/
-
-Reported-by: Thomas Ptacek <thomas@sockpuppet.org>
-Reported-by: Adhipati Blambangan <adhipati@tuta.io>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
+ kernel/bpf/cgroup.c   | 1 -
+ kernel/bpf/cpumap.c   | 2 +-
+ kernel/bpf/syscall.c  | 2 +-
+ kernel/bpf/verifier.c | 6 +++---
+ 4 files changed, 5 insertions(+), 6 deletions(-)
 
-I had originally dropped this patch, but the issue kept coming up in
-user reports, so here's a v4 of it. Testing of it is still rather slim,
-but hopefully that will change in the coming days.
-
-Changes v5->v6:
-- The fix to the skb->protocol changing case is now in a separate
-  stand-alone patch, and removed from this one, so that it can be
-  evaluated separately.
-
-Changes v4->v5:
-- Rather than tracking in a messy manner whether the skb is l3, we just
-  do the check once, and then adjust the skb geometry to be identical to
-  the l2 case. This simplifies the code quite a bit.
-- Fix a preexisting bug where the l2 header remained attached if
-  skb->protocol was updated.
-
-Changes v3->v4:
-- We now preserve the same logic for XDP_TX/XDP_REDIRECT as before.
-- hard_header_len is checked in addition to mac_len.
-
- net/core/dev.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 151f1651439f..79c15f4244e6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4630,6 +4630,18 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	 * header.
- 	 */
- 	mac_len = skb->data - skb_mac_header(skb);
-+	if (!mac_len && !skb->dev->hard_header_len) {
-+		/* For l3 packets, we push on a fake mac header, and then
-+		 * pull it off again, so that it has the same skb geometry
-+		 * as for the l2 case.
-+		 */
-+		eth = skb_push(skb, ETH_HLEN);
-+		eth_zero_addr(eth->h_source);
-+		eth_zero_addr(eth->h_dest);
-+		eth->h_proto = skb->protocol;
-+		__skb_pull(skb, ETH_HLEN);
-+		mac_len = ETH_HLEN;
-+	}
- 	hlen = skb_headlen(skb) + mac_len;
- 	xdp->data = skb->data - mac_len;
- 	xdp->data_meta = xdp->data;
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 83ff127ef7ae..daeafd5b6ced 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1794,7 +1794,6 @@ static bool cg_sockopt_is_valid_access(int off, int size,
+ 			return prog->expected_attach_type ==
+ 				BPF_CGROUP_GETSOCKOPT;
+ 		case offsetof(struct bpf_sockopt, optname):
+-			/* fallthrough */
+ 		case offsetof(struct bpf_sockopt, level):
+ 			if (size != size_default)
+ 				return false;
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index f1c46529929b..6386b7bb98f2 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -279,7 +279,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 			break;
+ 		default:
+ 			bpf_warn_invalid_xdp_action(act);
+-			/* fallthrough */
++			fallthrough;
+ 		case XDP_DROP:
+ 			xdp_return_frame(xdpf);
+ 			stats->drop++;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 86299a292214..1bf960aa615c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2029,7 +2029,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 	case BPF_PROG_TYPE_EXT:
+ 		if (expected_attach_type)
+ 			return -EINVAL;
+-		/* fallthrough */
++		fallthrough;
+ 	default:
+ 		return 0;
+ 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ef938f17b944..1e7f34663f86 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2639,7 +2639,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (t == BPF_WRITE)
+ 			return false;
+-		/* fallthrough */
++		fallthrough;
+ 
+ 	/* Program types with direct read + write access go here! */
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+@@ -5236,7 +5236,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 				off_reg == dst_reg ? dst : src);
+ 			return -EACCES;
+ 		}
+-		/* fall-through */
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+@@ -10988,7 +10988,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	default:
+ 		if (!prog_extension)
+ 			return -EINVAL;
+-		/* fallthrough */
++		fallthrough;
+ 	case BPF_MODIFY_RETURN:
+ 	case BPF_LSM_MAC:
+ 	case BPF_TRACE_FENTRY:
 -- 
-2.28.0
+2.19.1
 
