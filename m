@@ -2,157 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED4F244FFB
-	for <lists+bpf@lfdr.de>; Sat, 15 Aug 2020 00:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4985B245036
+	for <lists+bpf@lfdr.de>; Sat, 15 Aug 2020 02:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgHNW4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Aug 2020 18:56:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64344 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726213AbgHNW4j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Aug 2020 18:56:39 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07EMtpkG012120;
-        Fri, 14 Aug 2020 15:55:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=FOkvAmEYIj5AkcE5mLVoc4HMAQzmC3gfqMTuf+gjtrs=;
- b=Yg6y+FHmwE5nTTefA91YmC9gljPqVOK8sLbcVlQ/cYdxNBeJt+w15u2+B05f9ZBKr/3Q
- 4Gs/YVTI8RYDQuWI8+AGuE9UMdgmhFFlTEVmiDxAyorYokw2wlizxFjjdOQTscOVIYS1
- 4YP4iKjzVwd1CO2UAFJZ6C2oAaI8uKpCsxw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32wag3eq0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 Aug 2020 15:55:51 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 14 Aug 2020 15:55:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dH8LeRuT9+vBj05uFAqjse3DPybQRwu+XUj9vGKL/QkeuLv3/ppfUGjO8Sc5In9Ni/6C3t8lQcMKRx0zCeaIM8SDNt8Q/fovm5Xho87mky+eBkslH1eMIyjkcd1VxRK9CKyqepZo/QDuSTyt2quTv/xr9xJN4HyDXvjXBl4nl/lkjo7K4C8rlD6zTzL21XYIDH4zXJ24VuiGzeVDYE94eTR0IGB0PEjw6xm3lozPrUH1XBKSVOcGWv6DBkb99K5kJfJgmFcQY8Puz9sR5yaCP9CfNuj8Fg36CwJ/UBegI8hJWrEV5A35dAXWGi5UaQ3hyHpNdZCZfDqVY8us8uVMNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FOkvAmEYIj5AkcE5mLVoc4HMAQzmC3gfqMTuf+gjtrs=;
- b=iYf2aWJGZbHGSSeY3XA4isSviy/vlU6k1/gVqTNDKFHPwpw7+FNtA2lxdgzcH5C/keLlkxAhCtjyIIvaun41iQAcRibmiPoXFsjHRxxIKufylck7KdepQs7PSN4VEpVKnQRwosR1dayqU6qYylyObspJC0qExBbebjhGeplUlOSZ+7Bxc+RrtFjYOpWcVfjz/pzlv7upRnVNcB/E5oNTsWpVfc08HickLlie7uD/Kg8EBZbJ+FoRqsjUzpcVy+alWqkQ0QMItORNtaiU+rVBY2QsE+FP1x/ap6+HywEDtHzxhJp5G7afVaGp6NrO5VUwPvvbiOwZIb4n+30A+isShA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FOkvAmEYIj5AkcE5mLVoc4HMAQzmC3gfqMTuf+gjtrs=;
- b=JXEU5e7qNWMkpM+OD0yZNGgPz1z/JO/jHONF19qf8R8pshEfVuC7yJlweX6HF9A+x35ajsCguBUs0jMJKa2ixBAwCzEwSNwGDqWT9ZfaCGNNaskYQ68VFoU9s9MXC7VBSa29ta3JsJWwC48nUGAdPnhJwx5Xxr52AZmUucqQWBY=
-Authentication-Results: lists.debian.org; dkim=none (message not signed)
- header.d=none;lists.debian.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2565.namprd15.prod.outlook.com (2603:10b6:a03:14f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.22; Fri, 14 Aug
- 2020 22:55:08 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3283.020; Fri, 14 Aug 2020
- 22:55:08 +0000
-Subject: Re: [PATCH] bpftool: Fix version string in recursive builds
-To:     Ben Hutchings <benh@debian.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     <bpf@vger.kernel.org>, <debian-kernel@lists.debian.org>
-References: <20200813235837.GA497088@decadent.org.uk>
- <1c00ee1f-5103-e8ec-7953-e09a1c0de707@fb.com>
- <ebf711740484b0a489f11b749d0f00d30be5a5b1.camel@debian.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <cda9dba0-230d-3cc6-7f53-6ee83ec6f81d@fb.com>
-Date:   Fri, 14 Aug 2020 15:55:06 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <ebf711740484b0a489f11b749d0f00d30be5a5b1.camel@debian.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR08CA0032.namprd08.prod.outlook.com
- (2603:10b6:a03:100::45) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1726241AbgHOAF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Aug 2020 20:05:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58496 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgHOAF6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Aug 2020 20:05:58 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k6jhg-0000vO-Hd; Sat, 15 Aug 2020 02:05:44 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-08-15
+Date:   Sat, 15 Aug 2020 02:05:44 +0200
+Message-Id: <20200815000544.25793-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1963] (2620:10d:c090:400::5:fe0b) by BYAPR08CA0032.namprd08.prod.outlook.com (2603:10b6:a03:100::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Fri, 14 Aug 2020 22:55:07 +0000
-X-Originating-IP: [2620:10d:c090:400::5:fe0b]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bb453295-e725-41e9-67dc-08d840a5177b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2565:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB25655B35D6EC88A899EDE8D2D3400@BYAPR15MB2565.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oPyaKWs2Ok6WqKV/R43M91Y8dhMXc88ngiHTd4j4uLXBclYONEWnmxjQcjMflGFyLPQ2iy+LjWNd4vp3RWT2kAqBqI++62bEThFRh6FmZC+hjrH267Ddz+GPT5XtGn1fX3hMaUSLLHN/0PQ0u7w1OX7aKjZQx6FD9L0/jj4fvFJSAKAkrgIBB6EQE/Yv3U7IDf01v78X2XYrvqQkFW8QYtsj5Hnh1gRQ/afkD+6wiCvszA8xcWP9eFSXq92TvC6d+/qKO6zDPYUN9MqydY1fWeysX8G/prD/vBEDmFAy5A9bhdGJh0AMSqwNSEpplxXZDTBqW8nSzKCpo50QG9QlP2tu1iuVJ+8qLEihNYCcGM5veBG7b10zA/2kQCjQ+kve
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(366004)(39860400002)(136003)(8936002)(478600001)(31686004)(5660300002)(186003)(16526019)(2906002)(316002)(2616005)(8676002)(66946007)(36756003)(4326008)(52116002)(6486002)(66556008)(53546011)(31696002)(86362001)(66476007)(110136005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: zxksSG6mCc5c3Ccy00DBfK25aYdB17lEXqdwzcqloH+XSjC5Yje2OB2FHqhNvO5AolfborD8I5oa+cGEG5MDDz48jJqlE/muwi7d4xbEY0BKf0w7EfLc7NCPR9QiD+3tGgC3w7ubZXORWuA4wyA0ay3t8c8jwQEntsAxGg6JS4bnPGAMX+AlHtiIlmMB71WmeYltK+Dphq0BRCzPdCEBpn0gJtLYE+dn3ZkCLBZTW2EB8yDbvrTRoa7MR5xok+jyDhpTOFIYsF6QMGxRtWJnq3RFjLSPSB6nS0P/w3qn3rD4AviomNZfYbfLxYUVPG28pgFpiO0X71vow9dcpqP1SIuWxWNpUOIx/YHK3kCmhMCSRMLyGq85pBzfhagbiYJ//PP3kJnCoT9ruNlf/KKQ72ulC+vk/UplIEMc7ZvfzSZ8UltPoshxE4HDkZ1gt1LwWke4tix7i6kGBcmJ3rz0zJAnL5AGUqQOPVURk/KPCQbQ5/PidBU0E5gHGFFBR0NlicaQIAktpQXFgOBxS60m1Bqj2AFqZogCMaYCv1EkGsCylqZviIlaFudeyVcbfwsiTK4djsZSJ8KpUPIypwiFjawg3G2Mbi1GIW+jOb6I53MbtOHb+sp930RVhZkFBvVBmwsri/B6S55xBDrIAV/zJbt6/GflSjdwcymxUzz4W3c=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb453295-e725-41e9-67dc-08d840a5177b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2020 22:55:08.4917
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pIYO3OJlbBfAo8GMn5h3dafHr7HQ1M7o1sNzXPqC+06Go1GkZ0OwfplaBCF0PWc8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2565
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-14_16:2020-08-14,2020-08-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- phishscore=0 spamscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 suspectscore=0 impostorscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008140168
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25901/Thu Aug 13 09:01:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi David,
 
+The following pull-request contains BPF updates for your *net* tree.
 
-On 8/14/20 3:17 PM, Ben Hutchings wrote:
-> On Fri, 2020-08-14 at 08:43 -0700, Yonghong Song wrote:
-> [...]
->> I tried the following
->>
->> --- a/tools/bpf/bpftool/Makefile
->> +++ b/tools/bpf/bpftool/Makefile
->> @@ -25,7 +25,7 @@ endif
->>
->>    LIBBPF = $(LIBBPF_PATH)libbpf.a
->>
->> -BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../..
->> kernelversion)
->> +BPFTOOL_VERSION := $(shell MAKEFLAGS=w make -rR --no-print-directory
->> -sC ../../.. kernelversion)
->>
->> -bash-4.4$ ./bpftool version
->> ./bpftool v5.8.0
->>
->> I set env variable MAKEFLAGS=w, and build bpftool it works fine too.
->> Maybe I miss something or debian changed top level Makefile?
-> 
-> Yes, but we don't change MAKEFLAGS or any of the logic around quietness
-> or verbosity.
-> 
-> I assume there are other factors involved, as I've also been unable to
-> construct a simple reproducer.
+We've added 23 non-merge commits during the last 4 day(s) which contain
+a total of 32 files changed, 421 insertions(+), 141 deletions(-).
 
-It would be good to know what is the exact problem, and then we can
-decide whether this patch is the most appropriate fix or not.
+The main changes are:
 
-> 
-> Ben.
-> 
->> I am testing against latest bpf tree.
->>
->>>    
->>>    $(LIBBPF): FORCE
->>>    	$(if $(LIBBPF_OUTPUT),@mkdir -p $(LIBBPF_OUTPUT))
->>>
+1) Fix sock_ops ctx access splat due to register override, from John Fastabend.
+
+2) Batch of various fixes to libbpf, bpftool, and selftests when testing build
+   in 32-bit mode, from Andrii Nakryiko.
+
+3) Fix vmlinux.h generation on ARM by mapping GCC built-in types (__Poly*_t)
+   to equivalent ones clang can work with, from Jean-Philippe Brucker.
+
+4) Fix build_id lookup in bpf_get_stackid() helper by walking all NOTE ELF
+   sections instead of just first, from Jiri Olsa.
+
+5) Avoid use of __builtin_offsetof() in libbpf for CO-RE, from Yonghong Song.
+
+6) Fix segfault in test_mmap due to inconsistent length params, from Jianlin Lv.
+
+7) Don't override errno in libbpf when logging errors, from Toke Høiland-Jørgensen.
+
+8) Fix v4_to_v6 sockaddr conversion in sk_lookup test, from Stanislav Fomichev.
+
+9) Add link to bpf-helpers(7) man page to BPF doc, from Joe Stringer.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Ian Rogers, Jakov Petrina, Jakub Sitnicki, Martin KaFai 
+Lau, Song Liu, Stanislav Fomichev, Toke Høiland-Jørgensen
+
+----------------------------------------------------------------
+
+The following changes since commit 444da3f52407d74c9aa12187ac6b01f76ee47d62:
+
+  bitfield.h: don't compile-time validate _val in FIELD_FIT (2020-08-10 12:16:51 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 4fccd2ff74fbad222c69c7604307e0773a37ab8d:
+
+  selftests/bpf: Make test_varlen work with 32-bit user-space arch (2020-08-13 16:45:41 -0700)
+
+----------------------------------------------------------------
+Andrii Nakryiko (11):
+      bpf: Fix XDP FD-based attach/detach logic around XDP_FLAGS_UPDATE_IF_NOEXIST
+      tools/bpftool: Make skeleton code C++17-friendly by dropping typeof()
+      tools/bpftool: Fix compilation warnings in 32-bit mode
+      selftest/bpf: Fix compilation warnings in 32-bit mode
+      libbpf: Fix BTF-defined map-in-map initialization on 32-bit host arches
+      libbpf: Handle BTF pointer sizes more carefully
+      selftests/bpf: Fix btf_dump test cases on 32-bit arches
+      libbpf: Enforce 64-bitness of BTF for BPF object files
+      selftests/bpf: Correct various core_reloc 64-bit assumptions
+      tools/bpftool: Generate data section struct with conservative alignment
+      selftests/bpf: Make test_varlen work with 32-bit user-space arch
+
+Jean-Philippe Brucker (1):
+      libbpf: Handle GCC built-in types for Arm NEON
+
+Jianlin Lv (1):
+      selftests/bpf: Fix segmentation fault in test_progs
+
+Jiri Olsa (1):
+      bpf: Iterate through all PT_NOTE sections when looking for build id
+
+Joe Stringer (1):
+      doc: Add link to bpf helpers man page
+
+John Fastabend (5):
+      bpf: sock_ops ctx access may stomp registers in corner case
+      bpf: sock_ops sk access may stomp registers when dst_reg = src_reg
+      bpf, selftests: Add tests for ctx access in sock_ops with single register
+      bpf, selftests: Add tests for sock_ops load with r9, r8.r7 registers
+      bpf, selftests: Add tests to sock_ops for loading sk
+
+Stanislav Fomichev (1):
+      selftests/bpf: Fix v4_to_v6 in sk_lookup
+
+Toke Høiland-Jørgensen (1):
+      libbpf: Prevent overriding errno when logging errors
+
+Yonghong Song (1):
+      libbpf: Do not use __builtin_offsetof for offsetof
+
+ Documentation/bpf/index.rst                        |  7 ++
+ kernel/bpf/stackmap.c                              | 24 ++++---
+ net/core/dev.c                                     |  8 +--
+ net/core/filter.c                                  | 75 +++++++++++++++----
+ tools/bpf/bpftool/btf_dumper.c                     |  2 +-
+ tools/bpf/bpftool/gen.c                            | 22 ++++--
+ tools/bpf/bpftool/link.c                           |  4 +-
+ tools/bpf/bpftool/main.h                           | 10 ++-
+ tools/bpf/bpftool/prog.c                           | 16 ++---
+ tools/lib/bpf/bpf_helpers.h                        |  2 +-
+ tools/lib/bpf/btf.c                                | 83 +++++++++++++++++++++-
+ tools/lib/bpf/btf.h                                |  2 +
+ tools/lib/bpf/btf_dump.c                           | 39 +++++++++-
+ tools/lib/bpf/libbpf.c                             | 32 ++++++---
+ tools/lib/bpf/libbpf.map                           |  2 +
+ .../testing/selftests/bpf/prog_tests/bpf_obj_id.c  |  8 +--
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c  | 27 +++++--
+ .../testing/selftests/bpf/prog_tests/core_extern.c |  4 +-
+ .../testing/selftests/bpf/prog_tests/core_reloc.c  | 20 +++---
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  6 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c      |  2 +-
+ .../testing/selftests/bpf/prog_tests/global_data.c |  6 +-
+ tools/testing/selftests/bpf/prog_tests/mmap.c      | 19 +++--
+ .../selftests/bpf/prog_tests/prog_run_xattr.c      |  2 +-
+ tools/testing/selftests/bpf/prog_tests/sk_lookup.c |  1 +
+ tools/testing/selftests/bpf/prog_tests/skb_ctx.c   |  2 +-
+ tools/testing/selftests/bpf/prog_tests/varlen.c    |  8 +--
+ .../testing/selftests/bpf/progs/core_reloc_types.h | 69 +++++++++---------
+ .../testing/selftests/bpf/progs/test_tcpbpf_kern.c | 41 +++++++++++
+ tools/testing/selftests/bpf/progs/test_varlen.c    |  6 +-
+ tools/testing/selftests/bpf/test_btf.c             |  8 +--
+ tools/testing/selftests/bpf/test_progs.h           |  5 ++
+ 32 files changed, 421 insertions(+), 141 deletions(-)
