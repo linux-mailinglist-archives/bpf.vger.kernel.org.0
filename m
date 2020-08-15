@@ -2,57 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05052454A9
-	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 00:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3742454AB
+	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 00:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgHOWfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Aug 2020 18:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
+        id S1728436AbgHOWfp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Aug 2020 18:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728436AbgHOWfm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:35:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E458EC0045AF
-        for <bpf@vger.kernel.org>; Sat, 15 Aug 2020 12:56:36 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id t14so10670884wmi.3
-        for <bpf@vger.kernel.org>; Sat, 15 Aug 2020 12:56:36 -0700 (PDT)
+        with ESMTP id S1728842AbgHOWfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:35:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504DDC0045B2
+        for <bpf@vger.kernel.org>; Sat, 15 Aug 2020 12:57:59 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k8so10676435wma.2
+        for <bpf@vger.kernel.org>; Sat, 15 Aug 2020 12:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=f0mMsAj1lSg7GPakykMGfErTBU0jbBblfsVFAwkyqoI=;
-        b=JWgLDpRJOQdreIa6erqF9on6PoOKWMe4C4kAIslshQY2P6XBu+zMxwj5+5Pq7ibxRR
-         SCxogfrkQchs31XL0LcGTcAtN5KKQ8eaZ3bzOW+PdATxjPY4JfTRq2kBqXwl+obf5Kbj
-         5kIS8mKnY73yGnISKihXErf9iGt0zDf7hS09LODpQQqrz4QZXnvGoPUOF8LC9hjrqgBT
-         kUOTNsx75eQa3xk2an9zE4Hx+dZ6b8JdBcpWKvM8QiNjV6sgWNX0J7XLzUXs9lrpkn8V
-         LrY3kZ8fEDJSCyp8LQgNrkuJ/V2DQLFjJLtcPncaTK3qYHZMVbz4hYd3n41X83pUKL3p
-         u4CA==
+        b=W4T3vQlyl2w2nkNf0HBa44C+rX+2QYZ20A/oYFCUhpPWgjzv1LflBS7bALC2uJfRWr
+         FgqtZcLXii8cNMlBj+b9wFqNVZSRZwL5cVyP3prF55Eovky4SIq9O8VRxERgR/eBkgGX
+         VmPTjDls2DbAYLTFoyopPB9FoO2Q3EPOsm7z2jtDMdM86LNYu9GtSceYMShMLXVneh1/
+         KHlRa2BSICWgNw9cUdSRwfHdYb4SHLpFmkZs+JxsJknf4cOJfq63c0ZoA6y2edZe3uMH
+         ESkeP7OdMpnFue1M06w3vdzTjrDjniAJTemQDNj196j2OsiuMEpzAYUlaDb8cc7k0P3y
+         0GEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=f0mMsAj1lSg7GPakykMGfErTBU0jbBblfsVFAwkyqoI=;
-        b=I51OREIeXphEFfivWmkbVzeXunfBjktKNkhryc5l2YqKSXZOIAA3jQXymn61cBeJ/y
-         QiUvh14PWw3+ktnQMqL7ybj5NnctEp0c4pLnpfWpJi2qlE/3zPbnu4yPPDjSyMW/0wVY
-         TxQu0TDQnLCnUJgoX7TvrVvIqT7abkFvp6KoSRYmrO8hBDpjRRPE0n2qy2noFnerWXZU
-         1bv/q27Igk5a8g+AtpD2kthXtX7Z0u7p7hDbOTEvFbKxqjW4UAfb+xSYbZrnNUK/yS69
-         CfNO8nODDkzb6gyOeW1fcHuaKvvi7JK3lBOjTcoDbkW4fsGOtOB7DArTAyKO69MwIN0B
-         g3Zw==
-X-Gm-Message-State: AOAM5329zeLTwUPB5RzS5agQ328QL8xTUismvlvs42mqH+SmNItypDMt
-        gt+Ar/C/ExzEa2x5Z9RyOtI=
-X-Google-Smtp-Source: ABdhPJx9eYcWqBbHzgl3Sw6w1sCNQj10inTTVZNohRHnSePiZjLNQp3RPjVZtQlAcuMRRMJ9jJ775Q==
-X-Received: by 2002:a7b:cd85:: with SMTP id y5mr8366526wmj.66.1597521395675;
-        Sat, 15 Aug 2020 12:56:35 -0700 (PDT)
+        b=KdrCPElA6RVntNGOhItaM5lqrO47IV1VnQDRAfkKsOXZsak4KiDePpKhPKWe5RzfM8
+         2sFV28yIF4EMWJsaohdspj2nINKFdTVIUSELpqcp/X4owYeNe1jiYRjrwcPhlak9eXQg
+         PXASUaUfzWL+6ivR670lRtBDnrBUMFJBYorzVduWmN0tqBuenCF6eqtY6jajrQupScXc
+         cZDmy3/WbTte+tx582UDi7ICgzyP6HDXMCe1lkiSYfaE7nmqlFmYYE5E7V1UmNfN8Nu1
+         4zn6392YFfvNExEIEfyNgPiGUwl3cZi/1aVq6bjDXywm0jx5FKZX693PxDjJrkDWPGo9
+         +Y/Q==
+X-Gm-Message-State: AOAM5303Ys7bW6SSjArgEfFexMaMp+1OQY6fCWp6dVXLwRXKRLHN3OWB
+        HPFn2he8dKq5uDgUlzXof98=
+X-Google-Smtp-Source: ABdhPJxXcTps2zVdaVr3W0+E+msUx/x2J38p7/p2P7J3HQYhnEaNvAUmdV+15lWq6/dVNGYgGIo/mg==
+X-Received: by 2002:a1c:740e:: with SMTP id p14mr7691472wmc.179.1597521478077;
+        Sat, 15 Aug 2020 12:57:58 -0700 (PDT)
 Received: from localhost.localdomain (bzq-109-67-21-91.red.bezeqint.net. [109.67.21.91])
-        by smtp.googlemail.com with ESMTPSA id y142sm24168521wmd.3.2020.08.15.12.56.34
+        by smtp.googlemail.com with ESMTPSA id c10sm25065982wrn.24.2020.08.15.12.57.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Aug 2020 12:56:35 -0700 (PDT)
+        Sat, 15 Aug 2020 12:57:57 -0700 (PDT)
 From:   Lior Ribak <liorribak@gmail.com>
-To:     Lior Ribak <liorribak@gmail.com>
-Cc:     bpf@vger.kernel.org
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     bpf@vger.kernel.org, Lior Ribak <liorribak@gmail.com>
 Subject: [PATCH] samples/bpf: Support both enter and exit kprobes in helper
-Date:   Sat, 15 Aug 2020 12:56:27 -0700
-Message-Id: <20200815195627.305064-1-liorribak@gmail.com>
+Date:   Sat, 15 Aug 2020 12:57:26 -0700
+Message-Id: <20200815195726.305131-1-liorribak@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
