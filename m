@@ -2,123 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34097245510
-	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 02:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF017245552
+	for <lists+bpf@lfdr.de>; Sun, 16 Aug 2020 03:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgHPAfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Aug 2020 20:35:15 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37930 "EHLO huawei.com"
+        id S1728290AbgHPBtg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Aug 2020 21:49:36 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3477 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726111AbgHPAfP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Aug 2020 20:35:15 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3E421A0E0DAA453A4ADE;
-        Sat, 15 Aug 2020 16:49:00 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sat, 15 Aug 2020
- 16:48:49 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2] bpf: Convert to use the preferred fallthrough macro
-Date:   Sat, 15 Aug 2020 04:47:45 -0400
-Message-ID: <20200815084745.19291-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726029AbgHPBtg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Aug 2020 21:49:36 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 697626213E0D19D47355;
+        Sat, 15 Aug 2020 09:48:19 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sat, 15 Aug 2020 09:48:18 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Sat, 15 Aug 2020 09:48:19 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: Convert to use the preferred fallthrough macro
+Thread-Topic: [PATCH] bpf: Convert to use the preferred fallthrough macro
+Thread-Index: AdZypgu/8/yBxLCEJEWOhWkYz2pnlA==
+Date:   Sat, 15 Aug 2020 01:48:18 +0000
+Message-ID: <f6ec0c0d37f54298956a63ebe1ebf234@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.252]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
 X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since commit 294f69e662d1 ("compiler_attributes.h: Add 'fallthrough' pseudo
-keyword for switch/case use") introduce fallthrough pseudo keyword, then we
-should convert the uses of fallthrough comments to it.
-
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- kernel/bpf/cgroup.c   | 1 -
- kernel/bpf/cpumap.c   | 2 +-
- kernel/bpf/syscall.c  | 2 +-
- kernel/bpf/verifier.c | 6 +++---
- 4 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 83ff127ef7ae..daeafd5b6ced 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1794,7 +1794,6 @@ static bool cg_sockopt_is_valid_access(int off, int size,
- 			return prog->expected_attach_type ==
- 				BPF_CGROUP_GETSOCKOPT;
- 		case offsetof(struct bpf_sockopt, optname):
--			/* fallthrough */
- 		case offsetof(struct bpf_sockopt, level):
- 			if (size != size_default)
- 				return false;
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index f1c46529929b..6386b7bb98f2 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -279,7 +279,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 			break;
- 		default:
- 			bpf_warn_invalid_xdp_action(act);
--			/* fallthrough */
-+			fallthrough;
- 		case XDP_DROP:
- 			xdp_return_frame(xdpf);
- 			stats->drop++;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 86299a292214..1bf960aa615c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2029,7 +2029,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 	case BPF_PROG_TYPE_EXT:
- 		if (expected_attach_type)
- 			return -EINVAL;
--		/* fallthrough */
-+		fallthrough;
- 	default:
- 		return 0;
- 	}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ef938f17b944..1e7f34663f86 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2639,7 +2639,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
- 	case BPF_PROG_TYPE_CGROUP_SKB:
- 		if (t == BPF_WRITE)
- 			return false;
--		/* fallthrough */
-+		fallthrough;
- 
- 	/* Program types with direct read + write access go here! */
- 	case BPF_PROG_TYPE_SCHED_CLS:
-@@ -5236,7 +5236,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				off_reg == dst_reg ? dst : src);
- 			return -EACCES;
- 		}
--		/* fall-through */
-+		fallthrough;
- 	default:
- 		break;
- 	}
-@@ -10988,7 +10988,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	default:
- 		if (!prog_extension)
- 			return -EINVAL;
--		/* fallthrough */
-+		fallthrough;
- 	case BPF_MODIFY_RETURN:
- 	case BPF_LSM_MAC:
- 	case BPF_TRACE_FENTRY:
--- 
-2.19.1
-
+QW5kcmlpIE5ha3J5aWtvIDxhbmRyaWkubmFrcnlpa29AZ21haWwuY29tPiB3cm90ZToNCk9uIEZy
+aSwgQXVnIDE0LCAyMDIwIGF0IDI6NTggQU0gTWlhb2hlIExpbiA8bGlubWlhb2hlQGh1YXdlaS5j
+b20+IHdyb3RlOg0KPj4NCj4+IENvbnZlcnQgdGhlIHVzZXMgb2YgZmFsbHRocm91Z2ggY29tbWVu
+dHMgdG8gZmFsbHRocm91Z2ggbWFjcm8uDQo+PiBAQCAtMTc5NCw3ICsxNzk0LDcgQEAgc3RhdGlj
+IGJvb2wgY2dfc29ja29wdF9pc192YWxpZF9hY2Nlc3MoaW50IG9mZiwgaW50IHNpemUsDQo+PiAg
+ICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcHJvZy0+ZXhwZWN0ZWRfYXR0YWNoX3R5cGUg
+PT0NCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQlBGX0NHUk9VUF9HRVRTT0NL
+T1BUOw0KPj4gICAgICAgICAgICAgICAgIGNhc2Ugb2Zmc2V0b2Yoc3RydWN0IGJwZl9zb2Nrb3B0
+LCBvcHRuYW1lKToNCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIC8qIGZhbGx0aHJvdWdoICov
+DQo+PiArICAgICAgICAgICAgICAgICAgICAgICBmYWxsdGhyb3VnaDsNCj4NCj50aGlzIGZhbGx0
+aHJvdWdoIGlzIG5vdCBldmVudCBuZWNlc3NhcnksIGxldCdzIGRyb3AgaXQgaW5zdGVhZD8NCg0K
+V2lsbCBkby4gTWFueSB0aGFua3MuDQoNCj4NCj4+ICAgICAgICAgICAgICAgICBjYXNlIG9mZnNl
+dG9mKHN0cnVjdCBicGZfc29ja29wdCwgbGV2ZWwpOg0KPj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKHNpemUgIT0gc2l6ZV9kZWZhdWx0KQ0KPj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICByZXR1cm4gZmFsc2U7DQo+DQo+IFsuLi5dDQo=
