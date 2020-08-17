@@ -2,125 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E7F246EB3
-	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 19:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA544246F12
+	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 19:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgHQRfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 13:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731270AbgHQQcL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Aug 2020 12:32:11 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A173CC061389;
-        Mon, 17 Aug 2020 09:32:11 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y6so7795985plt.3;
-        Mon, 17 Aug 2020 09:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4fnadU0endxTJrjCWkn0d+ZnsZxebwsBLZgmqhdCClE=;
-        b=HaRh2oAr/28YRXyp84yPvdQicVYQLopK5fqSZzrMK8167NQCYsnWS0IAeeIR601FmP
-         AKxm8nQcKeQ+iEHW1mi1gxR98i9w0hf7EZDqd6RfBrzHhGrehFdH4Qg54g5ORPAdYNB4
-         O00OM9jbl6vZ5PNOZXuijgv3aUd2+4pJ3yGhWI79AmvS7F8EGjE9aEMIDmFh2ZNfbZoG
-         p4yFc4qkXFpmpwUVu/HCbZ2QSM13iWYyS/5YkWs5MwtIwo3BCz4TejvfqZIvPH+yUt2z
-         MiDNjH6bbTWpuap218pmPaZGgiqlhjlWewOQg+xRrEqnSR+pA3rKxvZAi4vZ/f7fKi5P
-         Y0NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4fnadU0endxTJrjCWkn0d+ZnsZxebwsBLZgmqhdCClE=;
-        b=b8DUAHlxkDkenfVOLaZvBXO5g+/0Px+DIWWPVcWg855/2MiO6a/mkq1k8lAfmPmkYz
-         XSyP3bKe0Kv3lPmex1H5ef0WV1FSmi34gh7eVSKrKnSfdBJ2nWDUG3h/PUnS7QTbSoRh
-         1kJIaL+sHXVHnq6zxZpgvl07jZqd5YGp8WiQK7txD/Qz8K+OXa7ghQpg74l+OR7X+Dfl
-         GpHTnYrt433yXje0a0mtz1key2izoOU3Gs3Q7vzDBIcWcU8tnhZAbzz7sezoBgP7tvkN
-         XziMfN69IYC7BX1YLPtY361ITQ3MKWSXjDYqYH1xTwlSsRdb5JDVNlqiTDWmeLioOhhr
-         wjEA==
-X-Gm-Message-State: AOAM533B6/lQZx1Qa4qhvY/ZDDQ5dIRXrOnuILCbc2jAOAAe6Kg1kSbs
-        2iJCJmGb6XNSgZ1biWLYzCw=
-X-Google-Smtp-Source: ABdhPJx255oCAELzmNoOA+p2uz0NUKmytYbiEfpuMZPjaXBxkgLgBp5HvrTzY6V7FkZkq74fXIf+Kg==
-X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr12679271pjs.168.1597681931139;
-        Mon, 17 Aug 2020 09:32:11 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:20fd])
-        by smtp.gmail.com with ESMTPSA id t25sm20140404pfe.51.2020.08.17.09.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 09:32:10 -0700 (PDT)
-Date:   Mon, 17 Aug 2020 09:32:07 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Bob Liu <bob.liu@oracle.com>
-Cc:     Leah Rumancik <leah.rumancik@gmail.com>, bpf@vger.kernel.org,
-        linux-block@vger.kernel.org, orbekk@google.com,
-        harshads@google.com, jasiu@google.com, saranyamohan@google.com,
-        tytso@google.com, bvanassche@google.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [RFC PATCH 1/4] bpf: add new prog_type BPF_PROG_TYPE_IO_FILTER
-Message-ID: <20200817163207.p53guehd7kpxfvat@ast-mbp.dhcp.thefacebook.com>
-References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-2-leah.rumancik@gmail.com>
- <a0a97488-58c7-1f00-c987-d75e1329159c@oracle.com>
+        id S1731552AbgHQRmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 13:42:35 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11748 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731547AbgHQRm3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 Aug 2020 13:42:29 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07HHTGOh017614
+        for <bpf@vger.kernel.org>; Mon, 17 Aug 2020 10:42:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Wl1nAbsoAEGytOCmCAQ3djPCVpfOiulFd7onoiO/9fM=;
+ b=oFcoCiIPc95yosBGp+LMhETVgmaVDUZDY3kIOViM/9ylLnM8EbnU+e/9J3hqXrE0c0Ro
+ /NOWM0xF1LOqpsRuANixjF52uVPugssKEB6AE35udjW/u5LblcO2CWYdRDIAgB0b7XX2
+ X5+oipHSjRoVTNioAluKKHgqSft6DrIY4Os= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32xyyp6f1r-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 17 Aug 2020 10:42:29 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 17 Aug 2020 10:42:26 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id D724D3704B8B; Mon, 17 Aug 2020 10:42:14 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: use get_file_rcu() instead of get_file() for task_file iterator
+Date:   Mon, 17 Aug 2020 10:42:14 -0700
+Message-ID: <20200817174214.252601-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0a97488-58c7-1f00-c987-d75e1329159c@oracle.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-17_13:2020-08-17,2020-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 suspectscore=9 clxscore=1015
+ mlxlogscore=815 phishscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008170127
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:18:47PM +0800, Bob Liu wrote:
-> > +
-> > +/* allows IO by default if no programs attached */
-> > +int io_filter_bpf_run(struct bio *bio)
-> > +{
-> > +	struct bpf_io_request io_req = {
-> > +		.sector_start = bio->bi_iter.bi_sector,
-> > +		.sector_cnt = bio_sectors(bio),
-> > +		.opf = bio->bi_opf,
-> > +	};
-> > +
-> > +	return BPF_PROG_RUN_ARRAY_CHECK(bio->bi_disk->progs, &io_req, BPF_PROG_RUN);
-> 
-> 
-> I think pass "struct bpf_io_request" is not enough, since we may want to do the filter based on
-> some special patterns against the io data.
-> 
-> I used to pass "page_to_virt(bio->bi_io_vec->bv_page)" into ebpf program..
+With latest `bpftool prog` command, we observed the following kernel
+panic.
+    BUG: kernel NULL pointer dereference, address: 0000000000000000
+    #PF: supervisor instruction fetch in kernel mode
+    #PF: error_code(0x0010) - not-present page
+    PGD dfe894067 P4D dfe894067 PUD deb663067 PMD 0
+    Oops: 0010 [#1] SMP
+    CPU: 9 PID: 6023 ...
+    RIP: 0010:0x0
+    Code: Bad RIP value.
+    RSP: 0000:ffffc900002b8f18 EFLAGS: 00010286
+    RAX: ffff8883a405f400 RBX: ffff888e46a6bf00 RCX: 000000008020000c
+    RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8883a405f400
+    RBP: ffff888e46a6bf50 R08: 0000000000000000 R09: ffffffff81129600
+    R10: ffff8883a405f300 R11: 0000160000000000 R12: 0000000000002710
+    R13: 000000e9494b690c R14: 0000000000000202 R15: 0000000000000009
+    FS:  00007fd9187fe700(0000) GS:ffff888e46a40000(0000) knlGS:000000000=
+0000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffffffffffffffd6 CR3: 0000000de5d33002 CR4: 0000000000360ee0
+    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    Call Trace:
+     <IRQ>
+     rcu_core+0x1a4/0x440
+     __do_softirq+0xd3/0x2c8
+     irq_exit+0x9d/0xa0
+     smp_apic_timer_interrupt+0x68/0x120
+     apic_timer_interrupt+0xf/0x20
+     </IRQ>
+    RIP: 0033:0x47ce80
+    Code: Bad RIP value.
+    RSP: 002b:00007fd9187fba40 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff1=
+3
+    RAX: 0000000000000002 RBX: 00007fd931789160 RCX: 000000000000010c
+    RDX: 00007fd9308cdfb4 RSI: 00007fd9308cdfb4 RDI: 00007ffedd1ea0a8
+    RBP: 00007fd9187fbab0 R08: 000000000000000e R09: 000000000000002a
+    R10: 0000000000480210 R11: 00007fd9187fc570 R12: 00007fd9316cc400
+    R13: 0000000000000118 R14: 00007fd9308cdfb4 R15: 00007fd9317a9380
 
-Bob,
+After further analysis, the bug is triggered by
+Commit eaaacd23910f ("bpf: Add task and task/file iterator targets")
+which introduced task_file bpf iterator, which traverses all open file
+descriptors for all tasks in the current namespace.
+The latest `bpftool prog` calls a task_file bpf program to traverse
+all files in the system in order to associate processes with progs/maps, =
+etc.
+When traversing files for a given task, rcu read_lock is taken to
+access all files in a file_struct. But it used get_file() to grab
+a file, which is not right. It is possible file->f_count is 0 and
+get_file() will unconditionally increase it.
+Later put_file() may cause all kind of issues with the above
+as one of sympotoms.
 
-Just like other bpf uapi structs the bpf_io_request is extensible and
-such pointer can be added later, but I have a different question.
+The failure can be reproduced with the following steps in a few seconds:
+    $ cat t.c
+    #include <stdio.h>
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
+    #include <unistd.h>
 
-Leah,
+    #define N 10000
+    int fd[N];
+    int main() {
+      int i;
 
-Do you really need the arguments to be stable?
-If so 'opf' above is not enough.
-sector_start, sector_cnt are clean from uapi pov,
-but 'opf' exposes kernel internals.
-The patch 2 is doing:
-+int protect_gpt(struct bpf_io_request *io_req)
-+{
-+       /* within GPT and not a read operation */
-+       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
-+               return IO_BLOCK;
+      for (i =3D 0; i < N; i++) {
+        fd[i] =3D open("./note.txt", 'r');
+        if (fd[i] < 0) {
+           fprintf(stderr, "failed\n");
+           return -1;
+        }
+      }
+      for (i =3D 0; i < N; i++)
+        close(fd[i]);
 
-The way ops are encoded changed quite a bit over the kernel releases.
-First it was REQ_WRITE, then REQ_OP_SHIFT, now REQ_OP_MASK.
-From kernel pov it would be simpler if bpf side didn't impose stability
-requriment on the program arguments. Then the kernel will be free to change
-REG_OP_READ into something else. The progs would break, of course, and would
-have to be adjusted. That's what we've been doing with tools like biosnoop.
-If you're ok with unstable arguments then you wouldn't need to introduce
-new prog type and this patch set.
-You can do this filtering already with should_fail_bio().
-bpf prog can attach to should_fail_bio() and walk all bio arguments
-in unstable way.
-Instead of:
-+       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
-you'll write:
-  if (bio->bi_iter.bi_sector < GPT_SECTORS && (bio->bi_opf & REQ_OP_MASK) != REQ_OP_READ)
-It will also work on different kernels because libbpf can adjust field offsets and
-check for type matching via CO-RE facility.
-Will that work for you?
+      return 0;
+    }
+    $ gcc -O2 t.c
+    $ cat run.sh
+    #/bin/bash
+    for i in {1..100}
+    do
+      while true; do ./a.out; done &
+    done
+    $ ./run.sh
+    $ while true; do bpftool prog >& /dev/null; done
+
+This patch used get_file_rcu() which only grabs a file if the
+file->f_count is not zero. This is to ensure the file pointer
+is always valid. The above reproducer did not fail for more
+than 30 minutes.
+
+Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
+Suggested-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/task_iter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 232df29793e9..f21b5e1e4540 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -178,10 +178,11 @@ task_file_seq_get_next(struct bpf_iter_seq_task_fil=
+e_info *info,
+ 		f =3D fcheck_files(curr_files, curr_fd);
+ 		if (!f)
+ 			continue;
++		if (!get_file_rcu(f))
++			continue;
+=20
+ 		/* set info->fd */
+ 		info->fd =3D curr_fd;
+-		get_file(f);
+ 		rcu_read_unlock();
+ 		return f;
+ 	}
+--=20
+2.24.1
+
