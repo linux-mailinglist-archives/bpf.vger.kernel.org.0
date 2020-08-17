@@ -2,211 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D33F247A4C
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 00:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72246247B4B
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 01:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgHQWNP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 18:13:15 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:60688 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730255AbgHQWLu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Aug 2020 18:11:50 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k7nM5-001r1r-Cb; Mon, 17 Aug 2020 16:11:49 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.int.ebiederm.org)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k7nKy-0004PB-SS; Mon, 17 Aug 2020 16:10:41 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, criu@openvz.org,
-        bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Daniel=20P=2E=20Berrang=C3=A9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
+        id S1726303AbgHQX4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 19:56:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53368 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726245AbgHQX4t (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 Aug 2020 19:56:49 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07HNrJSI012956;
+        Mon, 17 Aug 2020 16:56:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=dXcec1pyJcNiAmil8C3zODSdy5PDonNEiWwfHLAovCI=;
+ b=LGF6UJjEFUhiRCOWNtExQRYeF94+AGsFbh8VV59w/ggQfG3vGbPuLv1VPVRicrHFg7pr
+ K7TL5WSjZdnkQVvSqIsfMtDcoDvZqZOY5pug9Q3p0wF6RJZkj8aIVXfjZdnggYr19twh
+ bMQFIau8F3wk1+u8vPvIpSaa4dmhtK0dPMg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32xyyp86av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 17 Aug 2020 16:56:29 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 17 Aug 2020 16:56:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cD7mLm+tLrfS55YaZWsw8SU7b4tvu1/1wEn0OP3Lq45rEqAs5Ef2dKW0JYiliBJscRvnz9xO5D0OIYyF/eEU37sHH4pLU5JttPR+4hvYmdiugM4OEuTTdOgZQLbtJD0JEHBI+uagNNBz5pKNLwAU1ik7fF8Qrb0Rf1jh2olvwO4ka4A8gbbg1x9AwZG1IjahE0iPpQK/FwTLLEX7VGnsVv+KgUVX5f+Yi5Niw6k4A8j7yym7nUTtt7JSUOVScCsYoZtD9aEUa6OVZSsdd2YXE8hNfswiLlu9BqZNtsAajxiqQAqvWCAdYbV0UncJFMPFYDVpMRIGVYYuzli1j8P9AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXcec1pyJcNiAmil8C3zODSdy5PDonNEiWwfHLAovCI=;
+ b=KaMt5HpLU7QVBRvOcTrkrfq96mt/tmMjQeZhUMc+pu5G9gq/5aD3X+ySdlZjX5+uaIBuVwvuoLp9PNgHX7mlMCHWXT+Pmnt+o/CGQi2EZaF1DwU9pBzl4ieagEbeQQ+gFv4hHlHyvTFOz1jRCMWV5J7+25jh3TKqALe+4em4Z9cxz0RdNlrfYPJP1Q4QhGg8V3hnv1xzFSFF97wbkhPFkbV/BTdGCUBxshl+7qb5LEX4uL8HOkfKNtfqCCp6znWKp/LUnOpR8yyfR/l0Bz3P5JUO9fpo6aIcM+KQ59UaxZgDQOshmlMQf3QdP04+Qq8CLben30UjrYHGH6KVFaOF+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXcec1pyJcNiAmil8C3zODSdy5PDonNEiWwfHLAovCI=;
+ b=HfLRGzltukdoyCndQc4JZ37nhLDXRv7dSeWxIZhDn0ymKEVzwHoPJM5w6omw9ntQrNgG6Sq4K+Bpc4TuxMPKAJ0Fh2WUYG3jnm6gYaAuNboEfofmWCGQudTyjXc3smg1zxD438Ml2HRBIkOG5387CtZ/7zx28/Yta+zBjiMrD5w=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2262.namprd15.prod.outlook.com (2603:10b6:a02:8c::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.23; Mon, 17 Aug
+ 2020 23:56:27 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d489:8f7f:614e:1b99%7]) with mapi id 15.20.3283.018; Mon, 17 Aug 2020
+ 23:56:27 +0000
+Date:   Mon, 17 Aug 2020 16:56:21 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Mon, 17 Aug 2020 17:04:25 -0500
-Message-Id: <20200817220425.9389-17-ebiederm@xmission.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH bpf-next v8 1/7] A purely mechanical change to split the
+ renaming from the actual generalization.
+Message-ID: <20200817235621.ulkqw6mqd2uu647t@kafai-mbp.dhcp.thefacebook.com>
+References: <20200803164655.1924498-1-kpsingh@chromium.org>
+ <20200803164655.1924498-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200803164655.1924498-2-kpsingh@chromium.org>
+X-ClientProxiedBy: BY3PR10CA0022.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::27) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-XM-SPF: eid=1k7nKy-0004PB-SS;;;mid=<20200817220425.9389-17-ebiederm@xmission.com>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX189SIbJBN8xtDSgqAOp2uiQOVALu5yFTAQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,T_XMDrugObfuBody_08,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: ; sa03 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;linux-kernel@vger.kernel.org
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 490 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.7 (0.8%), b_tie_ro: 2.6 (0.5%), parse: 0.87
-        (0.2%), extract_message_metadata: 9 (1.9%), get_uri_detail_list: 1.72
-        (0.4%), tests_pri_-1000: 11 (2.3%), tests_pri_-950: 0.97 (0.2%),
-        tests_pri_-900: 0.85 (0.2%), tests_pri_-90: 115 (23.6%), check_bayes:
-        114 (23.3%), b_tokenize: 9 (1.9%), b_tok_get_all: 9 (1.7%),
-        b_comp_prob: 1.93 (0.4%), b_tok_touch_all: 92 (18.8%), b_finish: 0.60
-        (0.1%), tests_pri_0: 338 (69.0%), check_dkim_signature: 0.44 (0.1%),
-        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 1.02 (0.2%), tests_pri_10:
-        1.78 (0.4%), tests_pri_500: 5 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 17/17] file: Rename __close_fd to close_fd and remove the files parameter
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:4b70) by BY3PR10CA0022.namprd10.prod.outlook.com (2603:10b6:a03:255::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Mon, 17 Aug 2020 23:56:26 +0000
+X-Originating-IP: [2620:10d:c090:400::5:4b70]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7dbcc4b3-cd4f-48f5-6a0e-08d843092777
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2262:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB22625CF6814050EDE0DC55F0D55F0@BYAPR15MB2262.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gzn1Sq50Q0UWzcfilZvFBz+utMUBhHjK3NKqzV6xDVRKkXV0VE2ZKkuC9VzfuD6EgXDH4SUp12E1sccES1GTpvs1nplcT8p89y3wfFLbns7j7PvT6hELvEC1iTc5uLtIxs0A53VN73MOYApECPeyckEvaOOO9LlIDVrpW3FxD4zw6JtWg/yQqh+e3PffJXdFqSnajcfIsi7AtPI+vkhBam3XFLm4Rh8cro+IjHNuNMw5O3croKIDRE4kxobksCvGE4u1M6F2F85aAJGvJpkq3J6YnzCwXPRVtdAYi9lmlXPWxv+HqyZXcoJM9SwZu6F3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(396003)(346002)(136003)(366004)(55016002)(8936002)(86362001)(5660300002)(4326008)(186003)(16526019)(8676002)(9686003)(6666004)(6916009)(54906003)(1076003)(83380400001)(66946007)(2906002)(6506007)(316002)(66476007)(66556008)(52116002)(478600001)(7696005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: TZA4/hedizCTsaQzNK4nkI+K7fVMrQFFqE6yW9EWayKCBT2oGyqOFp9qzVx8PxB84gvYWMPt2El//l8EZ0bblgSfDo3owZqETf44ZAH05l2VOmmyM9J2rv7lqWY3+U7hZqKI4m/55GYjTcZpEJ3/zXlVDlXMrHO9QRBvuRD0iPSVaT3WOiGqo4LFMRtQRFqAaZ6/oOYLtU9MPAWQlx3oBHTna7x2UoTBijM4p1KJCzayf2pOzqPDc7xGTg7FheuMYiW0QXLqY5MVenGSHOI6vXXb5pDjhqZAyuCHphOkTsZmIoFvT6fg4XknrvgRXcTejHdyFb534jd1CcAhK9hLncIm8MgxaBqVxPFaTMoIjoBuzZP+YBvd40Ggs9Lo07IO00AW1M6HYvIo0WriFj0e8aX51Kn5W59S120SvNmwPtp86dNvzJs8CkThTEV5kPyGon29yHr4xiHskTUkmbFMqm+t3mXBXiVZ0+hsu92fGoGydWWyK21KH32E5GHvPJ2klYqkxD++tK45ef5uqEz3KdqIuU0AzJEHGsK/UfBwy6hp1J9IcnkuEhElUSrxhyg+EM5N9w8aOQXtAIG2vmL6SEomZ1vb4wrTJUzeoeQijJsV91Utap0TWuPjwawPP1XXCjDvkRUOJLIVuBUgg4MoJdX/kdH+pig6NsXr41cafOQ=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dbcc4b3-cd4f-48f5-6a0e-08d843092777
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2020 23:56:27.1877
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A77SA7GRiPCad9liF8VkxRiO6matFtYKfyBbNyHz9iTiKEHvbxj/HZNxB67lyEC3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2262
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-17_15:2020-08-17,2020-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 suspectscore=5 clxscore=1015
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008170161
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The function __close_fd was added to support binder[1].  Now that
-binder has been fixed to no longer need __close_fd[2] and
-get_files_struct has been removed it is no longer possible to
-correctly call __close_fd with anything current->files pass as it's
-files parameter.
+On Mon, Aug 03, 2020 at 06:46:49PM +0200, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> Flags/consts:
+> 
+>   SK_STORAGE_CREATE_FLAG_MASK	BPF_LOCAL_STORAGE_CREATE_FLAG_MASK
+>   BPF_SK_STORAGE_CACHE_SIZE	BPF_LOCAL_STORAGE_CACHE_SIZE
+>   MAX_VALUE_SIZE		BPF_LOCAL_STORAGE_MAX_VALUE_SIZE
+> 
+> Structs:
+> 
+>   bucket			bpf_local_storage_map_bucket
+>   bpf_sk_storage_map		bpf_local_storage_map
+>   bpf_sk_storage_data		bpf_local_storage_data
+>   bpf_sk_storage_elem		bpf_local_storage_elem
+>   bpf_sk_storage		bpf_local_storage
+> 
+> The "sk" member in bpf_local_storage is also updated to "owner"
+> in preparation for changing the type to void * in a subsequent patch.
+> 
+> Functions:
+> 
+>   selem_linked_to_sk			selem_linked_to_storage
+>   selem_alloc				bpf_selem_alloc
+>   __selem_unlink_sk			bpf_selem_unlink_storage
+>   __selem_link_sk			bpf_selem_link_storage
+>   selem_unlink_sk			__bpf_selem_unlink_storage
+>   sk_storage_update			bpf_local_storage_update
+>   __sk_storage_lookup			bpf_local_storage_lookup
+>   bpf_sk_storage_map_free		bpf_local_storage_map_free
+>   bpf_sk_storage_map_alloc		bpf_local_storage_map_alloc
+>   bpf_sk_storage_map_alloc_check	bpf_local_storage_map_alloc_check
+>   bpf_sk_storage_map_check_btf		bpf_local_storage_map_check_btf
+> 
 
-Therefore transform the files parameter into a local variable
-initialized to current->files, and rename __close_fd to close_fd to
-reflect this change, and keep it in sync with the similar changes to
-__alloc_fd, and __fd_install.
+[ ... ]
 
-This removes the need for callers to care about the extra care that
-needs to be take if anything except current->files is passed, by
-limiting the callers to only operation on current->files.
+> @@ -147,85 +148,86 @@ static struct bpf_sk_storage_elem *selem_alloc(struct bpf_sk_storage_map *smap,
+>   * The caller must ensure selem->smap is still valid to be
+>   * dereferenced for its smap->elem_size and smap->cache_idx.
+>   */
+> -static bool __selem_unlink_sk(struct bpf_sk_storage *sk_storage,
+> -			      struct bpf_sk_storage_elem *selem,
+> -			      bool uncharge_omem)
+> +static bool bpf_selem_unlink_storage(struct bpf_local_storage *local_storage,
+> +				     struct bpf_local_storage_elem *selem,
+> +				     bool uncharge_omem)
+Please add a "_nolock()" suffix, just to be clear that the unlink_map()
+counter part is locked.  It could be a follow up later.
 
-[1] 483ce1d4b8c3 ("take descriptor-related part of close() to file.c")
-[2] 44d8047f1d87 ("binder: use standard functions to allocate fds")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/file.c                | 10 ++++------
- fs/open.c                |  2 +-
- include/linux/fdtable.h  |  3 +--
- include/linux/syscalls.h |  6 +++---
- 4 files changed, 9 insertions(+), 12 deletions(-)
+>  {
+> -	struct bpf_sk_storage_map *smap;
+> -	bool free_sk_storage;
+> +	struct bpf_local_storage_map *smap;
+> +	bool free_local_storage;
+>  	struct sock *sk;
+>  
+>  	smap = rcu_dereference(SDATA(selem)->smap);
+> -	sk = sk_storage->sk;
+> +	sk = local_storage->owner;
+>  
+>  	/* All uncharging on sk->sk_omem_alloc must be done first.
+> -	 * sk may be freed once the last selem is unlinked from sk_storage.
+> +	 * sk may be freed once the last selem is unlinked from local_storage.
+>  	 */
+>  	if (uncharge_omem)
+>  		atomic_sub(smap->elem_size, &sk->sk_omem_alloc);
+>  
+> -	free_sk_storage = hlist_is_singular_node(&selem->snode,
+> -						 &sk_storage->list);
+> -	if (free_sk_storage) {
+> -		atomic_sub(sizeof(struct bpf_sk_storage), &sk->sk_omem_alloc);
+> -		sk_storage->sk = NULL;
+> +	free_local_storage = hlist_is_singular_node(&selem->snode,
+> +						    &local_storage->list);
+> +	if (free_local_storage) {
+> +		atomic_sub(sizeof(struct bpf_local_storage), &sk->sk_omem_alloc);
+> +		local_storage->owner = NULL;
+>  		/* After this RCU_INIT, sk may be freed and cannot be used */
+>  		RCU_INIT_POINTER(sk->sk_bpf_storage, NULL);
+>  
+> -		/* sk_storage is not freed now.  sk_storage->lock is
+> -		 * still held and raw_spin_unlock_bh(&sk_storage->lock)
+> +		/* local_storage is not freed now.  local_storage->lock is
+> +		 * still held and raw_spin_unlock_bh(&local_storage->lock)
+>  		 * will be done by the caller.
+>  		 *
+>  		 * Although the unlock will be done under
+>  		 * rcu_read_lock(),  it is more intutivie to
+> -		 * read if kfree_rcu(sk_storage, rcu) is done
+> -		 * after the raw_spin_unlock_bh(&sk_storage->lock).
+> +		 * read if kfree_rcu(local_storage, rcu) is done
+> +		 * after the raw_spin_unlock_bh(&local_storage->lock).
+>  		 *
+> -		 * Hence, a "bool free_sk_storage" is returned
+> +		 * Hence, a "bool free_local_storage" is returned
+>  		 * to the caller which then calls the kfree_rcu()
+>  		 * after unlock.
+>  		 */
+>  	}
+>  	hlist_del_init_rcu(&selem->snode);
+> -	if (rcu_access_pointer(sk_storage->cache[smap->cache_idx]) ==
+> +	if (rcu_access_pointer(local_storage->cache[smap->cache_idx]) ==
+>  	    SDATA(selem))
+> -		RCU_INIT_POINTER(sk_storage->cache[smap->cache_idx], NULL);
+> +		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
+>  
+>  	kfree_rcu(selem, rcu);
+>  
+> -	return free_sk_storage;
+> +	return free_local_storage;
+>  }
+>  
+> -static void selem_unlink_sk(struct bpf_sk_storage_elem *selem)
+> +static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem)
+>  {
+> -	struct bpf_sk_storage *sk_storage;
+> -	bool free_sk_storage = false;
+> +	struct bpf_local_storage *local_storage;
+> +	bool free_local_storage = false;
+>  
+> -	if (unlikely(!selem_linked_to_sk(selem)))
+> +	if (unlikely(!selem_linked_to_storage(selem)))
+>  		/* selem has already been unlinked from sk */
+>  		return;
+>  
+> -	sk_storage = rcu_dereference(selem->sk_storage);
+> -	raw_spin_lock_bh(&sk_storage->lock);
+> -	if (likely(selem_linked_to_sk(selem)))
+> -		free_sk_storage = __selem_unlink_sk(sk_storage, selem, true);
+> -	raw_spin_unlock_bh(&sk_storage->lock);
+> +	local_storage = rcu_dereference(selem->local_storage);
+> +	raw_spin_lock_bh(&local_storage->lock);
+> +	if (likely(selem_linked_to_storage(selem)))
+> +		free_local_storage =
+> +			bpf_selem_unlink_storage(local_storage, selem, true);
+> +	raw_spin_unlock_bh(&local_storage->lock);
+>  
+> -	if (free_sk_storage)
+> -		kfree_rcu(sk_storage, rcu);
+> +	if (free_local_storage)
+> +		kfree_rcu(local_storage, rcu);
+>  }
+>  
+> -static void __selem_link_sk(struct bpf_sk_storage *sk_storage,
+> -			    struct bpf_sk_storage_elem *selem)
+> +static void bpf_selem_link_storage(struct bpf_local_storage *local_storage,
+> +				   struct bpf_local_storage_elem *selem)
+Same here. bpf_selem_link_storage"_nolock"().
 
-diff --git a/fs/file.c b/fs/file.c
-index 221fc4f97f61..b06b04d65070 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -614,11 +614,9 @@ static struct file *pick_file(struct files_struct *files, unsigned fd)
- 	return file;
- }
- 
--/*
-- * The same warnings as for __alloc_fd()/__fd_install() apply here...
-- */
--int __close_fd(struct files_struct *files, unsigned fd)
-+int close_fd(unsigned fd)
- {
-+	struct files_struct *files = current->files;
- 	struct file *file;
- 
- 	file = pick_file(files, fd);
-@@ -627,7 +625,7 @@ int __close_fd(struct files_struct *files, unsigned fd)
- 
- 	return filp_close(file, files);
- }
--EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
-+EXPORT_SYMBOL(close_fd); /* for ksys_close() */
- 
- /**
-  * __close_range() - Close all file descriptors in a given range.
-@@ -1010,7 +1008,7 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
- 	struct files_struct *files = current->files;
- 
- 	if (!file)
--		return __close_fd(files, fd);
-+		return close_fd(fd);
- 
- 	if (fd >= rlimit(RLIMIT_NOFILE))
- 		return -EBADF;
-diff --git a/fs/open.c b/fs/open.c
-index 9af548fb841b..581a674d7eee 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1292,7 +1292,7 @@ EXPORT_SYMBOL(filp_close);
-  */
- SYSCALL_DEFINE1(close, unsigned int, fd)
- {
--	int retval = __close_fd(current->files, fd);
-+	int retval = close_fd(fd);
- 
- 	/* can't restart close syscall because file table entry was cleared */
- 	if (unlikely(retval == -ERESTARTSYS ||
-diff --git a/include/linux/fdtable.h b/include/linux/fdtable.h
-index d8f6c4921d85..d1b8f3d85493 100644
---- a/include/linux/fdtable.h
-+++ b/include/linux/fdtable.h
-@@ -116,8 +116,7 @@ int iterate_fd(struct files_struct *, unsigned,
- 		int (*)(const void *, struct file *, unsigned),
- 		const void *);
- 
--extern int __close_fd(struct files_struct *files,
--		      unsigned int fd);
-+extern int close_fd(unsigned int fd);
- extern int __close_range(unsigned int fd, unsigned int max_fd, unsigned int flags);
- extern int __close_fd_get_file(unsigned int fd, struct file **res);
- extern int unshare_fd(unsigned long unshare_flags, unsigned int max_fds,
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 75ac7f8ae93c..a3f48cf49206 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -1293,16 +1293,16 @@ static inline long ksys_ftruncate(unsigned int fd, loff_t length)
- 	return do_sys_ftruncate(fd, length, 1);
- }
- 
--extern int __close_fd(struct files_struct *files, unsigned int fd);
-+extern int close_fd(unsigned int fd);
- 
- /*
-  * In contrast to sys_close(), this stub does not check whether the syscall
-  * should or should not be restarted, but returns the raw error codes from
-- * __close_fd().
-+ * close_fd().
-  */
- static inline int ksys_close(unsigned int fd)
- {
--	return __close_fd(current->files, fd);
-+	return close_fd(fd);
- }
- 
- extern long do_sys_truncate(const char __user *pathname, loff_t length);
--- 
-2.25.0
+Please tag the Subject line with "bpf:".
 
+Acked-by: Martin KaFai Lau <kafai@fb.com>
