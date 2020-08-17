@@ -2,173 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6E4247182
-	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 20:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E724F2472F3
+	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 20:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390778AbgHQS3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 14:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S2391537AbgHQStB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 14:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390884AbgHQS1M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:27:12 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85942C061389
-        for <bpf@vger.kernel.org>; Mon, 17 Aug 2020 11:27:11 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id h21so13150531qtp.11
-        for <bpf@vger.kernel.org>; Mon, 17 Aug 2020 11:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SPj1nltbf6/Ps0xiynwocXQ5gYrarpHlmjj1YMa+P0o=;
-        b=IgNn/Rbf30NJPMwEmqpuuCwSC9Iob6QtDWEcexi5imI77jT05S6RMIY8IMsAeYfCw9
-         uNkVT/0elwN2UabnHcNlvpEfmo9IUFrCVyUsZF8vtSp5vwhpoqSYEd650bNecqNbHCmg
-         CGxvQALpR6VoO51ioY48lKLp+luZ3rESg0O1S7k//PSbvzkqTnWOp2xPWZCG3JW2vkm9
-         5MX4ol7J8fTexS3jT3uHA4wvL6uNGBHek3/+xPm8hx4sESGtEQ5Mwxh/puDyDUhc2ZZU
-         RDgnHj/2wpP38w7bt7bduUuBdihRBmAQVtpDrkgLAHZ3CPhvXRdgRYB1A5OcwfAcCv7T
-         953w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SPj1nltbf6/Ps0xiynwocXQ5gYrarpHlmjj1YMa+P0o=;
-        b=ndE8JWktrhLTMqJgvF8S2//4LY3MsDU4oBrstgUFN1MqjQ79L1+LJj+kX6wsT/y7ej
-         6bXYI6voNbLQ8jsaHitZBFv928GXQZSswJWWiVzGy1dMq0BlUi0NhKyCEvbY/YBediZw
-         a89Nrh8EErypQoN+O7o5k5fyzdZZ9OFpXxZXUOooVYtR8eQLu02Wmjd9YF3Hf/MFV75i
-         kS587qWU5w9PEI3WBsCPSneGNiaa1QfeexR9umjG81OV28PE9FLximpu2ibuWIRX08Tx
-         qSJRwhW/8Nzx9VPc6T0aE4Lw+kLRUCian4JxJrM23np4R1jaYdjJU2DfC0CFO+hjnvTl
-         hFeg==
-X-Gm-Message-State: AOAM532Irs4bSmQ0mHgC37Zomz8VAH8QWv0y4EpaFuTFIpSdTe2cQprD
-        bFVn+w+BLoMOR0IGoA07ETw5WA==
-X-Google-Smtp-Source: ABdhPJz1XCO87Xd17vzKVssV2ViWlDKoCCrxFTO+2fvGORjOMGdO8729lDAIeCSkX4+8no/PWVWTvQ==
-X-Received: by 2002:aed:2f87:: with SMTP id m7mr14492866qtd.56.1597688830593;
-        Mon, 17 Aug 2020 11:27:10 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c9::1102? ([2620:10d:c091:480::1:a613])
-        by smtp.gmail.com with ESMTPSA id 20sm21114346qtp.53.2020.08.17.11.27.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2020 11:27:09 -0700 (PDT)
-Subject: Re: [PATCH bpf] bpf: use get_file_rcu() instead of get_file() for
- task_file iterator
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-References: <20200817174214.252601-1-yhs@fb.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b1254561-4530-f2d8-bd10-98cb426a727d@toxicpanda.com>
-Date:   Mon, 17 Aug 2020 14:27:08 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200817174214.252601-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        with ESMTP id S2403858AbgHQStA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Aug 2020 14:49:00 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346F9C061389;
+        Mon, 17 Aug 2020 11:49:00 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8468B14CF4D59;
+        Mon, 17 Aug 2020 11:32:13 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 11:48:58 -0700 (PDT)
+Message-Id: <20200817.114858.1800576333370707414.davem@davemloft.net>
+To:     Jason@zx2c4.com
+Cc:     brouer@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net] net: xdp: pull ethernet header off packet after
+ computing skb->protocol
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
+References: <20200816.152937.1107786737475087036.davem@davemloft.net>
+        <20200817080102.61e109cf@carbon>
+        <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 17 Aug 2020 11:32:13 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/17/20 1:42 PM, Yonghong Song wrote:
-> With latest `bpftool prog` command, we observed the following kernel
-> panic.
->      BUG: kernel NULL pointer dereference, address: 0000000000000000
->      #PF: supervisor instruction fetch in kernel mode
->      #PF: error_code(0x0010) - not-present page
->      PGD dfe894067 P4D dfe894067 PUD deb663067 PMD 0
->      Oops: 0010 [#1] SMP
->      CPU: 9 PID: 6023 ...
->      RIP: 0010:0x0
->      Code: Bad RIP value.
->      RSP: 0000:ffffc900002b8f18 EFLAGS: 00010286
->      RAX: ffff8883a405f400 RBX: ffff888e46a6bf00 RCX: 000000008020000c
->      RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8883a405f400
->      RBP: ffff888e46a6bf50 R08: 0000000000000000 R09: ffffffff81129600
->      R10: ffff8883a405f300 R11: 0000160000000000 R12: 0000000000002710
->      R13: 000000e9494b690c R14: 0000000000000202 R15: 0000000000000009
->      FS:  00007fd9187fe700(0000) GS:ffff888e46a40000(0000) knlGS:0000000000000000
->      CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->      CR2: ffffffffffffffd6 CR3: 0000000de5d33002 CR4: 0000000000360ee0
->      DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->      DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->      Call Trace:
->       <IRQ>
->       rcu_core+0x1a4/0x440
->       __do_softirq+0xd3/0x2c8
->       irq_exit+0x9d/0xa0
->       smp_apic_timer_interrupt+0x68/0x120
->       apic_timer_interrupt+0xf/0x20
->       </IRQ>
->      RIP: 0033:0x47ce80
->      Code: Bad RIP value.
->      RSP: 002b:00007fd9187fba40 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
->      RAX: 0000000000000002 RBX: 00007fd931789160 RCX: 000000000000010c
->      RDX: 00007fd9308cdfb4 RSI: 00007fd9308cdfb4 RDI: 00007ffedd1ea0a8
->      RBP: 00007fd9187fbab0 R08: 000000000000000e R09: 000000000000002a
->      R10: 0000000000480210 R11: 00007fd9187fc570 R12: 00007fd9316cc400
->      R13: 0000000000000118 R14: 00007fd9308cdfb4 R15: 00007fd9317a9380
-> 
-> After further analysis, the bug is triggered by
-> Commit eaaacd23910f ("bpf: Add task and task/file iterator targets")
-> which introduced task_file bpf iterator, which traverses all open file
-> descriptors for all tasks in the current namespace.
-> The latest `bpftool prog` calls a task_file bpf program to traverse
-> all files in the system in order to associate processes with progs/maps, etc.
-> When traversing files for a given task, rcu read_lock is taken to
-> access all files in a file_struct. But it used get_file() to grab
-> a file, which is not right. It is possible file->f_count is 0 and
-> get_file() will unconditionally increase it.
-> Later put_file() may cause all kind of issues with the above
-> as one of sympotoms.
-> 
-> The failure can be reproduced with the following steps in a few seconds:
->      $ cat t.c
->      #include <stdio.h>
->      #include <sys/types.h>
->      #include <sys/stat.h>
->      #include <fcntl.h>
->      #include <unistd.h>
-> 
->      #define N 10000
->      int fd[N];
->      int main() {
->        int i;
-> 
->        for (i = 0; i < N; i++) {
->          fd[i] = open("./note.txt", 'r');
->          if (fd[i] < 0) {
->             fprintf(stderr, "failed\n");
->             return -1;
->          }
->        }
->        for (i = 0; i < N; i++)
->          close(fd[i]);
-> 
->        return 0;
->      }
->      $ gcc -O2 t.c
->      $ cat run.sh
->      #/bin/bash
->      for i in {1..100}
->      do
->        while true; do ./a.out; done &
->      done
->      $ ./run.sh
->      $ while true; do bpftool prog >& /dev/null; done
-> 
-> This patch used get_file_rcu() which only grabs a file if the
-> file->f_count is not zero. This is to ensure the file pointer
-> is always valid. The above reproducer did not fail for more
-> than 30 minutes.
-> 
-> Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
-> Suggested-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Mon, 17 Aug 2020 09:48:10 +0200
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> On 8/17/20, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>> On Sun, 16 Aug 2020 15:29:37 -0700 (PDT)
+>> David Miller <davem@davemloft.net> wrote:
+>>
+>>> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+>>> Date: Sat, 15 Aug 2020 09:29:30 +0200
+>>>
+>>> > When an XDP program changes the ethernet header protocol field,
+>>> > eth_type_trans is used to recalculate skb->protocol. In order for
+>>> > eth_type_trans to work correctly, the ethernet header must actually be
+>>> > part of the skb data segment, so the code first pushes that onto the
+>>> > head of the skb. However, it subsequently forgets to pull it back off,
+>>> > making the behavior of the passed-on packet inconsistent between the
+>>> > protocol modifying case and the static protocol case. This patch fixes
+>>> > the issue by simply pulling the ethernet header back off of the skb
+>>> > head.
+>>> >
+>>> > Fixes: 297249569932 ("net: fix generic XDP to handle if eth header was
+>>> > mangled")
+>>> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>>> > Cc: David S. Miller <davem@davemloft.net>
+>>> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+>>>
+>>> Applied and queued up for -stable, thanks.
+>>>
+>>> Jesper, I wonder how your original patch was tested because it pushes a
+>>> packet
+>>> with skb->data pointing at the ethernet header into the stack.  That
+>>> should be
+>>> popped at this point as per this fix here.
+>>
+>> I think this patch is wrong, because eth_type_trans() also does a
+>> skb_pull_inline(skb, ETH_HLEN).
+> 
+> Huh, wow. That's one unusual and confusing function. But indeed it
+> seems like I'm the one who needs to reevaluate testing methodology
+> here. I'm very sorry for the noise and hassle.
 
-Also verified that the problem no longer happens in production.  Thanks,
-
-Josef
+I've reverted this change from my tree.
