@@ -2,141 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4F2245C59
-	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 08:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4FF245C95
+	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 08:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgHQGSH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 02:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726235AbgHQGSG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Aug 2020 02:18:06 -0400
-Received: from coco.lan (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 777BC2072D;
-        Mon, 17 Aug 2020 06:18:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597645085;
-        bh=bCo9S69xJPTgREOBEaxrTqK2XsGl+pA07/LQTF8hF9c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XBQbDlHh0KLndVf/A5G/HMzqZxMFRyA8lmLWJCSIAhrrGR3CwiIaMvtopKeG62OJW
-         +8hZahNYhNaX695y02ylJe2fxG1Q8/OpXfqmq8PwtzQ4CTL+oU7yV/Wyu5S97a6lHG
-         BEenRTTvzler/slfGt1SQ8Ug6Hbg0p9EBTCMZTpE=
-Date:   Mon, 17 Aug 2020 08:17:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] clk: clk-hi3670: Add CLK_IGNORE_UNUSED flag
-Message-ID: <20200817081751.221ef469@coco.lan>
-In-Reply-To: <159754521196.2423498.12327214866049224014@swboyd.mtv.corp.google.com>
-References: <3d575cb4b8016d70efc219bc37e56017cf045c1d.1597414570.git.mchehab+huawei@kernel.org>
-        <159754521196.2423498.12327214866049224014@swboyd.mtv.corp.google.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726772AbgHQGiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 02:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgHQGiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Aug 2020 02:38:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA27FC061388;
+        Sun, 16 Aug 2020 23:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vFCbJ3ug2U1sY/t9JxVGfwsBp7E2ZDBnSzqrL0yKU6g=; b=GB71ygqQK5AcFDF6QOiadRELSn
+        IwohiW6Xy3vy1LevaEoifMeosAWzkp36zJlfX8w6/kLEePZCDfLHmuTmg3o0yY08Zgt6T2DNAHd8I
+        BaomfyuiRnjM9PEAaaA/qaNMz3Ru/f04dmi3k5Dq9K/LLp+HhlgJxM97II2qWCGhfoE8j50nk+Gjt
+        GXpk4QOiklF+N8C+vFEKkkG7CrecHzMkap9LOAz49xYUtUHyvBFG905ksG0+1Nh0gpD7Bb1dw6DVp
+        wd7QRAt96+bO9LvbC0Rc8el2Kvvcfa/HRjAg0WkforfS+IhQ7x0QTrXJ8/FO+rpW9eJSAb37JxkYx
+        HFU0IrUw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k7YmL-0005lI-TD; Mon, 17 Aug 2020 06:37:57 +0000
+Date:   Mon, 17 Aug 2020 07:37:57 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Leah Rumancik <leah.rumancik@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
+        orbekk@google.com, harshads@google.com, jasiu@google.com,
+        saranyamohan@google.com, tytso@google.com, bvanassche@google.com
+Subject: Re: [RFC PATCH 0/4] block/bpf: add eBPF based block layer IO
+ filtering
+Message-ID: <20200817063757.GA21966@infradead.org>
+References: <20200812163305.545447-1-leah.rumancik@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200812163305.545447-1-leah.rumancik@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, 15 Aug 2020 19:33:31 -0700
-Stephen Boyd <sboyd@kernel.org> escreveu:
+On Wed, Aug 12, 2020 at 04:33:01PM +0000, Leah Rumancik wrote:
+> This patch series adds support for a new security mechanism to filter IO
+> in the block layer. With this patch series, the policy for IO filtering
+> can be programmed into an eBPF program which gets attached to the struct
+> gendisk. The filter can either drop or allow IO requests. It cannot modify
+> requests. We do not support splitting of IOs, and we do not support
+> filtering of IOs that bypass submit_bio (such as SG_IO, NVMe passthrough).
 
-> Please send patches To: somebody. Sending them to nobody causes my MUA
-> pain.
+Which means it is not in any way useful for security, but just snake oil.
 
-Ok. Should I send it to you or to someone else?
-> 
-> Quoting Mauro Carvalho Chehab (2020-08-14 07:16:20)
-> > There are several clocks that are required for Kirin 970 to
-> > work. Without them, the system hangs. However, most of
-> > the clocks defined at clk-hi3670 aren't specified on its
-> > device tree, nor at Hikey 970 one.
-> > 
-> > A few of them are defined at the Linaro's official tree
-> > for Hikey 970, but, even there, distros use
-> > 
-> >         clk_ignore_unused=true
-> > 
-> > as a boot option.
-> > 
-> > So, instead, let's modify the driver to use CLK_IGNORE_UNUSED
-> > flags, removing the need for this boot parameter.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/clk/hisilicon/clk-hi3670.c | 731 +++++++++++++++++------------
-> >  1 file changed, 425 insertions(+), 306 deletions(-)  
-> 
-> This is very many. Are all of these clks actually enabled out of boot
-> and are getting turned off at late init?
-
-That's a very good question. Unfortunately, I don't know.
-
-There are some documentation at:
-	https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/
-
-Including schematics for HiKey 970, but it doesn't seem to show all
-the clock lines, plus the clock names at the driver don't seem to match
-what's there at the datasheet.
-
-> Is there some set of clks that can be marked as CLK_IS_CRITICAL instead?
-
-Maybe, but identifying those would require a huge amount of work. See,
-this patch marks 306 clock lines with CLK_IGNORE_UNUSED:
-
-	$ git grep CLK_IGNORE_UNUSED drivers/clk/hisilicon/clk-hi3670.c|wc -l
-	306
-
-At vanilla Kernel 5.8, there are 49 known clock lines:
-
-	$ git grep -E 'HI\S+CLK' arch/arm64/boot/dts/hisilicon/*70*|wc -l
-	49
-
-As I'm porting several drivers in order to support DRM and hopefully USB,
-this count should increase as drivers get merged.
-
-At downstream 4.9 Kernel, there are 99 known clock lines:
-
-	$ git grep -E 'KI\S+CLK' arch/arm64/boot/dts/hisilicon/*70*|wc -l
-	99
-
-In other words, there are still 207 lines that we have no clue about
-them. What among those are critical or not is a very good question.
-
-
-> The CLK_IGNORE_UNUSED flag shouldn't be used very much at all. Instead,
-> drivers should be using the CLK_IS_CRITICAL flag. We have a lot of
-> CLK_IGNORE_UNUSED in the kernel right now, but the hope is that we can
-> get rid of this flag one day.
-
-I see the point. Yet, I can't see any solution for that, except not letting 
-PM to disable unused clocks on this chipset. See, the only way to use the
-HiKey 970 board (which is the only one with DT bindings upstream for this
-chipset) is to boot the Kernel with clk_ignore_unused=true.
-
-Ok, if someone has enough time and some robot infrastructure that would
-automatically be patching the driver, detect broken boots, and powering
-down/up the device after each attempt, he could be disabling each one of 
-the clock lines that are not specified at the DT, identifying the
-critical ones.
-
-Then, he may need to port more drivers, together with their DT bindings,
-from the downstream tree.
-
-That is a lot of work for, IMHO, not much gain.
-
-Thanks,
-Mauro
+But even if it wasn't this is a way to big hammer with impact for to
+the I/O fast path to be acceptable.
