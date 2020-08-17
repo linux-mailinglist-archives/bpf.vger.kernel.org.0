@@ -2,92 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74DC245E50
-	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 09:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C400245F0C
+	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 10:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgHQHsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 03:48:17 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:45265 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgHQHsP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Aug 2020 03:48:15 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 6bfdcc46;
-        Mon, 17 Aug 2020 07:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :in-reply-to:references:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=UfEdk9aa6S5dxYeKZTnmjv6glRQ=; b=ovjN9W
-        s9dOHqOsNMvdwOqJhUtFIA1ve7deb9PC3rx6H9x+MSop5g2vx7vGUNM8gb4tqFb/
-        22ZgcyE+oekzVgHdA0ll7iR4/6FC20BFCwxcadSnev3Hx8Zmc4Oligkoc3OnSN4O
-        ktebcGHvSufALKqNEXbp70KVN0VWAczTEZkCHCSGfWfmfZFC0IDi2BxAyzlANJ8j
-        5+0OODJMKTI711bX693VjX/ZDS5bYmEKKiAlzWRVs7UpuS0P6GCtNYhUxduLFJJn
-        y4pLzVbOL7AuxKD/mvpNNnGQorFyqgc4Y/dJsVBwXQTYcV6COoui1bAT+2HGxbLX
-        +KY77IMYDE7N1CCA==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1af569d9 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 17 Aug 2020 07:22:10 +0000 (UTC)
-Received: by mail-io1-f53.google.com with SMTP id q75so16786261iod.1;
-        Mon, 17 Aug 2020 00:48:11 -0700 (PDT)
-X-Gm-Message-State: AOAM531ZPSc2lfZsdnb8jGx9u9b9gNzW86FP9UtTX41MLero+llC6ltf
-        nezxkvRq1JK9zIiaAesQXrC3sMYr6qDOOZgDnpo=
-X-Google-Smtp-Source: ABdhPJwyjsFwcAS6uI9wLn0QxQTJj4DFx0YIBBWCUxuUJXdF6gK3t3IxHRihGDwEO4luy1wbjVzQiyVdtxTxJwJ3zSc=
-X-Received: by 2002:a6b:5c17:: with SMTP id z23mr11443692ioh.67.1597650490600;
- Mon, 17 Aug 2020 00:48:10 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6e02:ed0:0:0:0:0 with HTTP; Mon, 17 Aug 2020 00:48:10
- -0700 (PDT)
-In-Reply-To: <20200817080102.61e109cf@carbon>
-References: <20200815072930.4564-1-Jason@zx2c4.com> <20200816.152937.1107786737475087036.davem@davemloft.net>
- <20200817080102.61e109cf@carbon>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Mon, 17 Aug 2020 09:48:10 +0200
-X-Gmail-Original-Message-ID: <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
-Message-ID: <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
-Subject: Re: [PATCH net] net: xdp: pull ethernet header off packet after
- computing skb->protocol
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726286AbgHQIRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 04:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgHQIRs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:17:48 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043C9C061388;
+        Mon, 17 Aug 2020 01:17:48 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f5so7119656plr.9;
+        Mon, 17 Aug 2020 01:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dcFVRpNADqEtdLi4FpRtkurfxDiB5cQRK9Dfdg9x+Fk=;
+        b=onQhzXUQgU/a+5iv1eiedq708N2qUvbb9hLqPwbNcMZbrafaVgtTLqod6W5S5EvgwW
+         ia2Ga+2FDUNHJJUlvHy5eBfliIeLogU4Wi1w83nBad7XrSZfGbQDw8JL6oyYw8RaTYtb
+         GOxydtPyCELUViaGBMuJFHCNSjMyLoNfpvRMuQgrxT2UY8A3e6JIUTqyPNMAL7rw2Z/z
+         jRmxaeFeF106x1RJs9MwNGIRcjt7SYVS8LunMdKQB2V5M7ITp8JAW4VZ0O73s28t9dSG
+         M8mTaGTmh1K0jOh4sD2d3fwjxfMBFzh2nP52Yc87N5AUdfK33PUFRxYhs2yKIAgHNHgo
+         Nr0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dcFVRpNADqEtdLi4FpRtkurfxDiB5cQRK9Dfdg9x+Fk=;
+        b=he1y93ymJzIHac9nBGCvAf+MmDd3zg3JrjQdD+UUAP9hkdL62S68lFgRVX7fn+luQQ
+         /lXzUUZWxpbL/U2Hh1lUd/SFZX/EC0c3ps3GRghX5wxVNFOq0H3eELvxMwXorPpkooGu
+         zvN5zljIQl2DGmCG7qkmrsTVeZKDe94jd0IfzVfHxUbttfD786nfD69+xQAtlitPlUCe
+         /bI4L81x49hmEgb18Qieq6iV41J5N+K0sT/Czt+L63LbvE8dyPDmLq7vHsZR+X36ZPWC
+         3k+hZPOZliRmRoqmaiH4GXrgOJzpwlwCvnnMEJsjpj2WWkwMrcHsauMRn5NWM0Pz30YK
+         K0Ng==
+X-Gm-Message-State: AOAM533H88ZZiWXke4AHt5nvQIPSKbiYJ5OHCNdk6N3mXvINLfC+TIkL
+        HiLt5o3Ibw0EAmRsMKF1BB8=
+X-Google-Smtp-Source: ABdhPJzb4y/jT+CQHEdRjViuIc33Qdx/u/JnZxpHs/hd00NvayTZxHDE23pPiqS7tepaKyIUna7B1Q==
+X-Received: by 2002:a17:90b:3603:: with SMTP id ml3mr11555104pjb.207.1597652267552;
+        Mon, 17 Aug 2020 01:17:47 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.202.98])
+        by smtp.gmail.com with ESMTPSA id d93sm16735334pjk.44.2020.08.17.01.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 01:17:47 -0700 (PDT)
+From:   Allen Pais <allen.lkml@gmail.com>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, baohua@kernel.org, mripard@kernel.org,
+        wens@csie.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        michal.simek@xilinx.com, matthias.bgg@gmail.com
+Cc:     keescook@chromium.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Allen Pais <allen.lkml@gmail.com>
+Subject: [PATCH 00/35] dma: convert tasklets to use new tasklet_setup()
+Date:   Mon, 17 Aug 2020 13:46:51 +0530
+Message-Id: <20200817081726.20213-1-allen.lkml@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/17/20, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
-> On Sun, 16 Aug 2020 15:29:37 -0700 (PDT)
-> David Miller <davem@davemloft.net> wrote:
->
->> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
->> Date: Sat, 15 Aug 2020 09:29:30 +0200
->>
->> > When an XDP program changes the ethernet header protocol field,
->> > eth_type_trans is used to recalculate skb->protocol. In order for
->> > eth_type_trans to work correctly, the ethernet header must actually be
->> > part of the skb data segment, so the code first pushes that onto the
->> > head of the skb. However, it subsequently forgets to pull it back off,
->> > making the behavior of the passed-on packet inconsistent between the
->> > protocol modifying case and the static protocol case. This patch fixes
->> > the issue by simply pulling the ethernet header back off of the skb
->> > head.
->> >
->> > Fixes: 297249569932 ("net: fix generic XDP to handle if eth header was
->> > mangled")
->> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
->> > Cc: David S. Miller <davem@davemloft.net>
->> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
->>
->> Applied and queued up for -stable, thanks.
->>
->> Jesper, I wonder how your original patch was tested because it pushes a
->> packet
->> with skb->data pointing at the ethernet header into the stack.  That
->> should be
->> popped at this point as per this fix here.
->
-> I think this patch is wrong, because eth_type_trans() also does a
-> skb_pull_inline(skb, ETH_HLEN).
+Commit 12cc923f1ccc ("tasklet: Introduce new initialization API")'
+introduced a new tasklet initialization API. This series converts 
+all the dma drivers to use the new tasklet_setup() API
 
-Huh, wow. That's one unusual and confusing function. But indeed it
-seems like I'm the one who needs to reevaluate testing methodology
-here. I'm very sorry for the noise and hassle.
 
-Jason
+Allen Pais (35):
+  dma: altera-msgdma: convert tasklets to use new tasklet_setup() API
+  dma: at_hdmac: convert tasklets to use new tasklet_setup() API
+  dma: at_xdmac: convert tasklets to use new tasklet_setup() API
+  dma: coh901318: convert tasklets to use new tasklet_setup() API
+  dma: dw: convert tasklets to use new tasklet_setup() API
+  dma: ep93xx: convert tasklets to use new tasklet_setup() API
+  dma: fsl: convert tasklets to use new tasklet_setup() API
+  dma: imx-dma: convert tasklets to use new tasklet_setup() API
+  dma: ioat: convert tasklets to use new tasklet_setup() API
+  dma: iop_adma: convert tasklets to use new tasklet_setup() API
+  dma: ipu: convert tasklets to use new tasklet_setup() API
+  dma: k3dma: convert tasklets to use new tasklet_setup() API
+  dma: mediatek: convert tasklets to use new tasklet_setup() API
+  dma: mmp: convert tasklets to use new tasklet_setup() API
+  dma: mpc512x: convert tasklets to use new tasklet_setup() API
+  dma: mv_xor: convert tasklets to use new tasklet_setup() API
+  dma: mxs-dma: convert tasklets to use new tasklet_setup() API
+  dma: nbpfaxi: convert tasklets to use new tasklet_setup() API
+  dma: pch_dma: convert tasklets to use new tasklet_setup() API
+  dma: pl330: convert tasklets to use new tasklet_setup() API
+  dma: ppc4xx: convert tasklets to use new tasklet_setup() API
+  dma: qcom: convert tasklets to use new tasklet_setup() API
+  dma: sa11x0: convert tasklets to use new tasklet_setup() API
+  dma: sirf-dma: convert tasklets to use new tasklet_setup() API
+  dma: ste_dma40: convert tasklets to use new tasklet_setup() API
+  dma: sun6i: convert tasklets to use new tasklet_setup() API
+  dma: tegra20: convert tasklets to use new tasklet_setup() API
+  dma: timb_dma: convert tasklets to use new tasklet_setup() API
+  dma: txx9dmac: convert tasklets to use new tasklet_setup() API
+  dma: virt-dma: convert tasklets to use new tasklet_setup() API
+  dma: xgene: convert tasklets to use new tasklet_setup() API
+  dma: xilinx: convert tasklets to use new tasklet_setup() API
+  dma: plx_dma: convert tasklets to use new tasklet_setup() API
+  dma: sf-pdma: convert tasklets to use new tasklet_setup() API
+  dma: k3-udma: convert tasklets to use new tasklet_setup() API
+
+ drivers/dma/altera-msgdma.c      |  6 +++---
+ drivers/dma/at_hdmac.c           |  7 +++----
+ drivers/dma/at_xdmac.c           |  5 ++---
+ drivers/dma/coh901318.c          |  7 +++----
+ drivers/dma/dw/core.c            |  6 +++---
+ drivers/dma/ep93xx_dma.c         |  7 +++----
+ drivers/dma/fsl_raid.c           |  6 +++---
+ drivers/dma/fsldma.c             |  6 +++---
+ drivers/dma/imx-dma.c            |  7 +++----
+ drivers/dma/ioat/dma.c           |  6 +++---
+ drivers/dma/ioat/dma.h           |  2 +-
+ drivers/dma/ioat/init.c          |  4 +---
+ drivers/dma/iop-adma.c           |  8 ++++----
+ drivers/dma/ipu/ipu_idmac.c      |  6 +++---
+ drivers/dma/k3dma.c              |  6 +++---
+ drivers/dma/mediatek/mtk-cqdma.c |  7 +++----
+ drivers/dma/mmp_pdma.c           |  6 +++---
+ drivers/dma/mmp_tdma.c           |  6 +++---
+ drivers/dma/mpc512x_dma.c        |  6 +++---
+ drivers/dma/mv_xor.c             |  7 +++----
+ drivers/dma/mv_xor_v2.c          |  8 ++++----
+ drivers/dma/mxs-dma.c            |  7 +++----
+ drivers/dma/nbpfaxi.c            |  6 +++---
+ drivers/dma/pch_dma.c            |  7 +++----
+ drivers/dma/pl330.c              | 12 ++++++------
+ drivers/dma/plx_dma.c            |  7 +++----
+ drivers/dma/ppc4xx/adma.c        |  7 +++----
+ drivers/dma/qcom/bam_dma.c       |  6 +++---
+ drivers/dma/qcom/hidma.c         |  6 +++---
+ drivers/dma/qcom/hidma_ll.c      |  6 +++---
+ drivers/dma/sa11x0-dma.c         |  6 +++---
+ drivers/dma/sf-pdma/sf-pdma.c    | 14 ++++++--------
+ drivers/dma/sirf-dma.c           |  6 +++---
+ drivers/dma/ste_dma40.c          |  7 +++----
+ drivers/dma/sun6i-dma.c          |  6 +++---
+ drivers/dma/tegra20-apb-dma.c    |  7 +++----
+ drivers/dma/ti/k3-udma.c         |  7 +++----
+ drivers/dma/timb_dma.c           |  6 +++---
+ drivers/dma/txx9dmac.c           | 14 ++++++--------
+ drivers/dma/virt-dma.c           |  6 +++---
+ drivers/dma/xgene-dma.c          |  7 +++----
+ drivers/dma/xilinx/xilinx_dma.c  |  7 +++----
+ drivers/dma/xilinx/zynqmp_dma.c  |  6 +++---
+ 43 files changed, 135 insertions(+), 157 deletions(-)
+
+-- 
+2.17.1
+
