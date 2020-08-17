@@ -2,117 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816C5245DE0
-	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 09:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74DC245E50
+	for <lists+bpf@lfdr.de>; Mon, 17 Aug 2020 09:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgHQH22 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Aug 2020 03:28:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37836 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725765AbgHQH21 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 17 Aug 2020 03:28:27 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07H73WBP179913;
-        Mon, 17 Aug 2020 03:28:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id; s=pp1;
- bh=/IJfE28c6hvV9LgZAD8oKUcRYXw02GBwMWgCfX728lA=;
- b=oAf5f48St07DBqNSUIl7bBjbKNoeZ7/+77I3m4Uy3x0MNZuPovFhRmIH7OOXXqeuIvDd
- psTDogsQnSXmjFMug+huWuUmLrJ2AWUEGwg2M776evQfPqWI6r6aUef3Ciw3FmBkqbI/
- cKVxN1rQ3pG+yrs+WJshtjyl4pAUwl7AJZ7TjTj0DAu3zCKqpq0EyXxVxHTHNZ8Lksnh
- pbrVjyx6/eRLc8IM2QmdmykWgh/XsNfdlPczdhxGTbEB24HwpafxuxNssKhP6gkLq249
- 5m0MzQveevhhv7MnElCmefQXeAg+cs5nrNavGvHIlPQYIG3XsW5J8f+n3WdrA2/N486x 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32y80h7qyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Aug 2020 03:28:26 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07H73XeC179948;
-        Mon, 17 Aug 2020 03:28:25 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32y80h7qy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Aug 2020 03:28:25 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07H7KtIt021296;
-        Mon, 17 Aug 2020 07:28:23 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 32x7b816e5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Aug 2020 07:28:23 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07H7SKpM21234158
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Aug 2020 07:28:20 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4DA02A4051;
-        Mon, 17 Aug 2020 07:28:20 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03B0CA404D;
-        Mon, 17 Aug 2020 07:28:20 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 17 Aug 2020 07:28:19 +0000 (GMT)
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     tmricht@linux.ibm.com, hca@linux.ibm.com, svens@linux.ibm.com,
-        jolsa@redhat.com, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Sumanth Korikkar <sumanthk@linux.ibm.com>
-Subject: [PATCH] perf test: Fix basic bpf filtering test
-Date:   Mon, 17 Aug 2020 09:27:54 +0200
-Message-Id: <20200817072754.58344-1-sumanthk@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-17_02:2020-08-17,2020-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- adultscore=0 clxscore=1011 spamscore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=1 mlxscore=0 priorityscore=1501 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008170055
+        id S1726194AbgHQHsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Aug 2020 03:48:17 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:45265 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgHQHsP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Aug 2020 03:48:15 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 6bfdcc46;
+        Mon, 17 Aug 2020 07:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :in-reply-to:references:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=UfEdk9aa6S5dxYeKZTnmjv6glRQ=; b=ovjN9W
+        s9dOHqOsNMvdwOqJhUtFIA1ve7deb9PC3rx6H9x+MSop5g2vx7vGUNM8gb4tqFb/
+        22ZgcyE+oekzVgHdA0ll7iR4/6FC20BFCwxcadSnev3Hx8Zmc4Oligkoc3OnSN4O
+        ktebcGHvSufALKqNEXbp70KVN0VWAczTEZkCHCSGfWfmfZFC0IDi2BxAyzlANJ8j
+        5+0OODJMKTI711bX693VjX/ZDS5bYmEKKiAlzWRVs7UpuS0P6GCtNYhUxduLFJJn
+        y4pLzVbOL7AuxKD/mvpNNnGQorFyqgc4Y/dJsVBwXQTYcV6COoui1bAT+2HGxbLX
+        +KY77IMYDE7N1CCA==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1af569d9 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 17 Aug 2020 07:22:10 +0000 (UTC)
+Received: by mail-io1-f53.google.com with SMTP id q75so16786261iod.1;
+        Mon, 17 Aug 2020 00:48:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531ZPSc2lfZsdnb8jGx9u9b9gNzW86FP9UtTX41MLero+llC6ltf
+        nezxkvRq1JK9zIiaAesQXrC3sMYr6qDOOZgDnpo=
+X-Google-Smtp-Source: ABdhPJwyjsFwcAS6uI9wLn0QxQTJj4DFx0YIBBWCUxuUJXdF6gK3t3IxHRihGDwEO4luy1wbjVzQiyVdtxTxJwJ3zSc=
+X-Received: by 2002:a6b:5c17:: with SMTP id z23mr11443692ioh.67.1597650490600;
+ Mon, 17 Aug 2020 00:48:10 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6e02:ed0:0:0:0:0 with HTTP; Mon, 17 Aug 2020 00:48:10
+ -0700 (PDT)
+In-Reply-To: <20200817080102.61e109cf@carbon>
+References: <20200815072930.4564-1-Jason@zx2c4.com> <20200816.152937.1107786737475087036.davem@davemloft.net>
+ <20200817080102.61e109cf@carbon>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 17 Aug 2020 09:48:10 +0200
+X-Gmail-Original-Message-ID: <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
+Message-ID: <CAHmME9ojV+6xgvmEPYV+_oGjzykDG+ZpOe5kct+DG87A+YyLvQ@mail.gmail.com>
+Subject: Re: [PATCH net] net: xdp: pull ethernet header off packet after
+ computing skb->protocol
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF basic filtering test fails on s390x (when vmlinux debuginfo is
-utilized instead of /proc/kallsyms)
+On 8/17/20, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+> On Sun, 16 Aug 2020 15:29:37 -0700 (PDT)
+> David Miller <davem@davemloft.net> wrote:
+>
+>> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+>> Date: Sat, 15 Aug 2020 09:29:30 +0200
+>>
+>> > When an XDP program changes the ethernet header protocol field,
+>> > eth_type_trans is used to recalculate skb->protocol. In order for
+>> > eth_type_trans to work correctly, the ethernet header must actually be
+>> > part of the skb data segment, so the code first pushes that onto the
+>> > head of the skb. However, it subsequently forgets to pull it back off,
+>> > making the behavior of the passed-on packet inconsistent between the
+>> > protocol modifying case and the static protocol case. This patch fixes
+>> > the issue by simply pulling the ethernet header back off of the skb
+>> > head.
+>> >
+>> > Fixes: 297249569932 ("net: fix generic XDP to handle if eth header was
+>> > mangled")
+>> > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>> > Cc: David S. Miller <davem@davemloft.net>
+>> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+>>
+>> Applied and queued up for -stable, thanks.
+>>
+>> Jesper, I wonder how your original patch was tested because it pushes a
+>> packet
+>> with skb->data pointing at the ethernet header into the stack.  That
+>> should be
+>> popped at this point as per this fix here.
+>
+> I think this patch is wrong, because eth_type_trans() also does a
+> skb_pull_inline(skb, ETH_HLEN).
 
-Info:
-- bpf_probe_load installs the bpf code at do_epoll_wait.
-- For s390x, do_epoll_wait resolves to 3 functions including inlines.
-  found inline addr: 0x43769e
-  Probe point found: __s390_sys_epoll_wait+6
-  found inline addr: 0x437290
-  Probe point found: do_epoll_wait+0
-  found inline addr: 0x4375d6
-  Probe point found: __se_sys_epoll_wait+6
-- add_bpf_event  creates evsel for every probe in a BPF object. This
-  results in 3 evsels.
+Huh, wow. That's one unusual and confusing function. But indeed it
+seems like I'm the one who needs to reevaluate testing methodology
+here. I'm very sorry for the noise and hassle.
 
-Solution:
-- Expected result = 50% of the samples to be collected from epoll_wait *
-  number of entries present in the evlist.
-
-Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
----
- tools/perf/tests/bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index 5d20bf8397f0..cd77e334e577 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -197,7 +197,7 @@ static int do_test(struct bpf_object *obj, int (*func)(void),
- 		perf_mmap__read_done(&md->core);
- 	}
- 
--	if (count != expect) {
-+	if (count != expect * evlist->core.nr_entries) {
- 		pr_debug("BPF filter result incorrect, expected %d, got %d samples\n", expect, count);
- 		goto out_delete_evlist;
- 	}
--- 
-2.17.1
-
+Jason
