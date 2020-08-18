@@ -2,183 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000072481A9
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 11:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95661248279
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 12:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgHRJPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 05:15:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60682 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgHRJPT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 05:15:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I9DP2v034473;
-        Tue, 18 Aug 2020 09:14:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=bODkJj/SYYVTqZjf0h99hHqVYgZyhbZHfVzYRtKndNU=;
- b=cDzWxBOzDAfGmrlVpBY8U6MQrsSXYJfpVti+6XDdX+NuNmdKl9krxmYmOOy2BK6BSjuf
- Mik21QRTyeKmrMvFf+2JIzIta1HnByz5R3UEnDk5PkomJlUrARRB1r+VUcKpn9XsqMvg
- IROz1n6dPLMP8JSFUuRzqGPVCq8NDBkygRzH/7ais2DCMhZ+WrR+JnLIuOFXlOgfVG9z
- 26IwEw9JE56qQcp50xZ5Iyh1D4A0y7MBOICPkXj9IEd3Ag3Tc4foTuvyYEwQbrA4Uy8S
- 2Sl2ENDNYQ31o4I6+3QD37w+n1Vt8fNkPU4G2byj0td/YfZUn+xC2QlKjinp2inv5utO fA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 32x7nmbjkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Aug 2020 09:14:26 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07I98Cv1084323;
-        Tue, 18 Aug 2020 09:12:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 32xsfrmy3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Aug 2020 09:12:24 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07I9CK7A026936;
-        Tue, 18 Aug 2020 09:12:20 GMT
-Received: from dhcp-10-175-204-131.vpn.oracle.com (/10.175.204.131)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 18 Aug 2020 02:12:19 -0700
-Date:   Tue, 18 Aug 2020 10:12:05 +0100 (IST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
-        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: make BTF show support generic,
- apply to seq files/bpf_trace_printk
-In-Reply-To: <20200814170120.q5gcmlapm7aldmzg@ast-mbp.dhcp.thefacebook.com>
-Message-ID: <alpine.LRH.2.21.2008180945380.3461@localhost>
-References: <1596724945-22859-1-git-send-email-alan.maguire@oracle.com> <1596724945-22859-3-git-send-email-alan.maguire@oracle.com> <20200813014616.6enltdpq6hzlri6r@ast-mbp.dhcp.thefacebook.com> <alpine.LRH.2.21.2008141344560.6816@localhost>
- <20200814170120.q5gcmlapm7aldmzg@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726420AbgHRKEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 06:04:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37736 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgHRKEa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:04:30 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k7yTd-00008v-Jn; Tue, 18 Aug 2020 10:04:21 +0000
+Date:   Tue, 18 Aug 2020 12:04:20 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH 01/17] exec: Move unshare_files to fix posix file locking
+ during exec
+Message-ID: <20200818100420.akdocgojdjhmq5z6@wittgenstein>
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
+ <20200817220425.9389-1-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- spamscore=0 suspectscore=3 mlxscore=0 phishscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008180064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9716 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 spamscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008180065
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200817220425.9389-1-ebiederm@xmission.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On Fri, 14 Aug 2020, Alexei Starovoitov wrote:
-
-> On Fri, Aug 14, 2020 at 02:06:37PM +0100, Alan Maguire wrote:
-> > On Wed, 12 Aug 2020, Alexei Starovoitov wrote:
-> > 
-> > > On Thu, Aug 06, 2020 at 03:42:23PM +0100, Alan Maguire wrote:
-> > > > 
-> > > > The bpf_trace_printk tracepoint is augmented with a "trace_id"
-> > > > field; it is used to allow tracepoint filtering as typed display
-> > > > information can easily be interspersed with other tracing data,
-> > > > making it hard to read.  Specifying a trace_id will allow users
-> > > > to selectively trace data, eliminating noise.
-> > > 
-> > > Since trace_id is not seen in trace_pipe, how do you expect users
-> > > to filter by it?
-> > 
-> > Sorry should have specified this.  The approach is to use trace
-> > instances and filtering such that we only see events associated
-> > with a specific trace_id.  There's no need for the trace event to
-> > actually display the trace_id - it's still usable as a filter.
-> > The steps involved are:
-> > 
-> > 1. create a trace instance within which we can specify a fresh
-> >    set of trace event enablings, filters etc.
-> > 
-> > mkdir /sys/kernel/debug/tracing/instances/traceid100
-> > 
-> > 2. enable the filter for the specific trace id
-> > 
-> > echo "trace_id == 100" > 
-> > /sys/kernel/debug/tracing/instances/traceid100/events/bpf_trace/bpf_trace_printk/filter
-> > 
-> > 3. enable the trace event
-> > 
-> > echo 1 > 
-> > /sys/kernel/debug/tracing/instances/events/bpf_trace/bpf_trace_printk/enable
-> > 
-> > 4. ensure the BPF program uses a trace_id 100 when calling bpf_trace_btf()
+On Mon, Aug 17, 2020 at 05:04:09PM -0500, Eric W. Biederman wrote:
+> Many moons ago the binfmts were doing some very questionable things
+> with file descriptors and an unsharing of the file descriptor table
+> was added to make things better[1][2].  The helper steal_files was
+> added to avoid breaking the userspace programs[3][4][6].
 > 
-> ouch.
-> I think you interpreted the acceptance of the
-> commit 7fb20f9e901e ("bpf, doc: Remove references to warning message when using bpf_trace_printk()")
-> in the wrong way.
+> Unfortunately it turned out that steal_locks did not work for network
+> file systems[5], so it was removed to see if anyone would
+> complain[7][8].  It was thought at the time that NPTL would not be
+> affected as the unshare_files happened after the other threads were
+> killed[8].  Unfortunately because there was an unshare_files in
+> binfmt_elf.c before the threads were killed this analysis was
+> incorrect.
 > 
-> Everything that doc had said is still valid. In particular:
-> -A: This is done to nudge program authors into better interfaces when
-> -programs need to pass data to user space. Like bpf_perf_event_output()
-> -can be used to efficiently stream data via perf ring buffer.
-> -BPF maps can be used for asynchronous data sharing between kernel
-> -and user space. bpf_trace_printk() should only be used for debugging.
+> This unshare_files in binfmt_elf.c resulted in the unshares_files
+> happening whenever threads were present.  Which led to unshare_files
+> being moved to the start of do_execve[9].
 > 
-> bpf_trace_printk is for debugging only. _debugging of bpf programs themselves_.
-> What you're describing above is logging and tracing. It's not debugging of programs.
-> perf buffer, ring buffer, and seq_file interfaces are the right
-> interfaces for tracing, logging, and kernel debugging.
+> Later the problems were rediscovered and suggested approach was to
+> readd steal_locks under a different name[10].  I happened to be
+> reviewing patches and I noticed that this approach was a step
+> backwards[11].
 > 
-> > > It also feels like workaround. May be let bpf prog print the whole
-> > > struct in one go with multiple new lines and call
-> > > trace_bpf_trace_printk(buf) once?
-> > 
-> > We can do that absolutely, but I'd be interested to get your take
-> > on the filtering mechanism before taking that approach.  I'll add
-> > a description of the above mechanism to the cover letter and
-> > patch to be clearer next time too.
+> I proposed simply moving unshare_files[12] and it was pointed
+> out that moving unshare_files without auditing the code was
+> also unsafe[13].
 > 
-> I think patch 3 is no go, because it takes bpf_trace_printk in
-> the wrong direction.
-> Instead please refactor it to use string buffer or seq_file as an output.
-
-Fair enough. I'm thinking a helper like
-
-long bpf_btf_snprintf(char *str, u32 str_size, struct btf_ptr *ptr,
-		      u32 ptr_size, u64 flags);
-
-Then the user can choose perf event or ringbuf interfaces
-to share the results with userspace.
-
-> If the user happen to use bpf_trace_printk("%s", buf);
-> after that to print that string buffer to trace_pipe that's user's choice.
-> I can see such use case when program author wants to debug
-> their bpf program. That's fine. But for kernel debugging, on demand and
-> "always on" logging and tracing the documentation should point
-> to sustainable interfaces that don't interfere with each other,
-> can be run in parallel by multiple users, etc.
+> There were then several attempts to solve this[14][15][16] and I even
+> posted this set of changes[17].  Unfortunately because auditing all of
+> execve is time consuming this change did not make it in at the time.
 > 
+> Well now that I am cleaning up exec I have made the time to read
+> through all of the binfmts and the only playing with file descriptors
+> is either the security modules closing them in
+> security_bprm_committing_creds or is in the generic code in fs/exec.c.
+> None of it happens before begin_new_exec is called.
+> 
+> So move unshare_files into begin_new_exec, after the point of no
+> return.  If memory is very very very low and the application calling
+> exec is sharing file descriptor tables between processes we might fail
+> past the point of no return.  Which is unfortunate but no different
+> than any of the other places where we allocate memory after the point
+> of no return.
+> 
+> This movement allows another process that shares the file table, or
+> another thread of the same process and that closes files or changes
+> their close on exec behavior and races with execve to cause some
+> unexpected things to happen.  There is only one time of check to time
 
-The problem with bpf_trace_printk() under this approach is
-that the string size for %s arguments is very limited;
-bpf_trace_printk() restricts these to 64 bytes in size.
-Looks like bpf_seq_printf() restricts a %s string to 128
-bytes also.  We could add an additional helper for the 
-bpf_seq case which calls bpf_seq_printf() for each component
-in the object, i.e.
+It seems to only make the already existing race window wider by moving
+it from bprm_execve() to begin_new_exec() which isn't great but probably
+ok since done for a good reason.
 
-long bpf_seq_btf_printf(struct seq_file *m, struct btf_ptr *ptr,
-			u32 ptr_size, u64 flags);
+> of use race and it is just there so that execve fails instead of
+> an interpreter failing when it tries to open the file it is supposed
+> to be interpreting.   Failing later if userspace is being silly is
+> not a problem.
+> 
+> With this change it the following discription from the removal
+> of steal_locks[8] finally becomes true.
+> 
+>     Apps using NPTL are not affected, since all other threads are killed before
+>     execve.
+> 
+>     Apps using LinuxThreads are only affected if they
+> 
+>       - have multiple threads during exec (LinuxThreads doesn't kill other
+>         threads, the app may do it with pthread_kill_other_threads_np())
+>       - rely on POSIX locks being inherited across exec
+> 
+>     Both conditions are documented, but not their interaction.
+> 
+>     Apps using clone() natively are affected if they
+> 
+>       - use clone(CLONE_FILES)
+>       - rely on POSIX locks being inherited across exec
+> 
+> I have investigated some paths to make it possible to solve this
+> without moving unshare_files but they all look more complicated[18].
+> 
+> Reported-by: Daniel P. Berrangé <berrange@redhat.com>
+> Reported-by: Jeff Layton <jlayton@redhat.com>
+> History-tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+> [1] 02cda956de0b ("[PATCH] unshare_files"
+> [2] 04e9bcb4d106 ("[PATCH] use new unshare_files helper")
+> [3] 088f5d7244de ("[PATCH] add steal_locks helper")
+> [4] 02c541ec8ffa ("[PATCH] use new steal_locks helper")
+> [5] https://lkml.kernel.org/r/E1FLIlF-0007zR-00@dorka.pomaz.szeredi.hu
+> [6] https://lkml.kernel.org/r/0060321191605.GB15997@sorel.sous-sol.org
+> [7] https://lkml.kernel.org/r/E1FLwjC-0000kJ-00@dorka.pomaz.szeredi.hu
+> [8] c89681ed7d0e ("[PATCH] remove steal_locks()")
+> [9] fd8328be874f ("[PATCH] sanitize handling of shared descriptor tables in failing execve()")
+> [10] https://lkml.kernel.org/r/20180317142520.30520-1-jlayton@kernel.org
+> [11] https://lkml.kernel.org/r/87r2nwqk73.fsf@xmission.com
+> [12] https://lkml.kernel.org/r/87bmfgvg8w.fsf@xmission.com
+> [13] https://lkml.kernel.org/r/20180322111424.GE30522@ZenIV.linux.org.uk
+> [14] https://lkml.kernel.org/r/20180827174722.3723-1-jlayton@kernel.org
+> [15] https://lkml.kernel.org/r/20180830172423.21964-1-jlayton@kernel.org
+> [16] https://lkml.kernel.org/r/20180914105310.6454-1-jlayton@kernel.org
+> [17] https://lkml.kernel.org/r/87a7ohs5ow.fsf@xmission.com
+> [18] https://lkml.kernel.org/r/87pn8c1uj6.fsf_-_@x220.int.ebiederm.org
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
 
-This would steer users away from bpf_trace_printk()
-for this use case - since it can print only a small
-amount of the string - while supporting all 
-the other user-space communication mechanisms.
-
-Alan
+Slightly scary change but it solves a problem.
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
