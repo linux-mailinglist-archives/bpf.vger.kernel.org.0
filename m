@@ -2,73 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE1C247F84
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 09:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74460247FA4
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 09:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgHRHaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 03:30:03 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:58750 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726648AbgHRHaD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 03:30:03 -0400
-X-Greylist: delayed 565 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Aug 2020 03:26:00 EDT
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowAD3O0hBgDtfCC8iAw--.22137S2;
-        Tue, 18 Aug 2020 15:16:17 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] libbpf: convert comma to semicolon
-Date:   Tue, 18 Aug 2020 07:16:11 +0000
-Message-Id: <20200818071611.21923-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAD3O0hBgDtfCC8iAw--.22137S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4UZF15Zr47JFWDtw48Crg_yoW3GrX_Gw
-        1xJr48XrZ5KFWYyw43GrZa9a4Ut3Z5Wr4kGFW7Gr9xta4UCa1rXry3CF9rGFyaq3Z29Fy7
-        J3ykJrnrJF43CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-        C2KfnxnUUI43ZEXa7VUbJDG5UUUUU==
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAwUMA13qZTpJ6QAAsB
+        id S1726420AbgHRHoz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 03:44:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12512 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726043AbgHRHoy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 03:44:54 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07I7WH3u078620;
+        Tue, 18 Aug 2020 03:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=vb/0Lv/Oag+j2at5HWX3FDglJmMlf/hgAHnOXhZd5Is=;
+ b=H+AEfx5RF0HMlLW6p9yqpqnPvYkU20JfVq+BTgaMWYyBcxMamxplMvWXKPFu8yZHewdD
+ z10TAYhP2DBLR1ds5Iz5HCxPOS8/pdSrIWb21jwNc8ksdDFWWM8DecmmBvgRbdVVCG9N
+ 4+SZ5PxP/bxoPIPQdE3FvZ5L5RhxLv/+l9hr1scy+ZfeasbeqOGWqv5jMngNiMRPIVWJ
+ QdnZowwGsAs2MUIPtFsm/lrhTA4J9lLrTOT0eQ4P3LcHFjqIuQuQd/mUXLRgEM+a3YQ4
+ deLtqvzQ8KU728X/bc1m0WBfsgmIyUD1hsDBRykT0GfT8303MN2mtfPecEQ9FqCtm2li aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304tdrg9t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 03:44:39 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07I7ZaJS088312;
+        Tue, 18 Aug 2020 03:44:39 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3304tdrg99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 03:44:39 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07I7awnD032364;
+        Tue, 18 Aug 2020 07:44:37 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3304c9078k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Aug 2020 07:44:36 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07I7iYvl55771474
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Aug 2020 07:44:34 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1EE1E52051;
+        Tue, 18 Aug 2020 07:44:34 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.54.96])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C5BD45204F;
+        Tue, 18 Aug 2020 07:44:30 +0000 (GMT)
+Message-ID: <5a60f3a139b80a3aa641e6d80f4ed923872926ff.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf] selftest/bpf: make bpftool if it is not already
+ built
+From:   Balamuruhan S <bala24@linux.ibm.com>
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        naveen.n.rao@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
+        sandipan@linux.ibm.com, kafai@fb.com, songliubraving@fb.com,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org
+Date:   Tue, 18 Aug 2020 13:14:29 +0530
+In-Reply-To: <2190c03e-fb9b-7dc3-bfa1-7d289d6b68b1@fb.com>
+References: <20200814085756.205609-1-bala24@linux.ibm.com>
+         <2190c03e-fb9b-7dc3-bfa1-7d289d6b68b1@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_04:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008180049
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Fri, 2020-08-14 at 09:01 -0700, Yonghong Song wrote:
+> 
+> On 8/14/20 1:57 AM, Balamuruhan S wrote:
+> > test_bpftool error out if bpftool is not available in bpftool dir
+> > linux/tools/bpf/bpftool, build and clean it as part of test
+> > bootstrap and teardown.
+> > 
+> > Error log:
+> > ---------
+> > test_feature_dev_json (test_bpftool.TestBpftool) ... ERROR
+> > test_feature_kernel (test_bpftool.TestBpftool) ... ERROR
+> > test_feature_kernel_full (test_bpftool.TestBpftool) ... ERROR
+> > test_feature_kernel_full_vs_not_full (test_bpftool.TestBpftool) ... ERROR
+> > test_feature_macros (test_bpftool.TestBpftool) ... ERROR
+> > 
+> > ======================================================================
+> > ERROR: test_feature_dev_json (test_bpftool.TestBpftool)
+> > ----------------------------------------------------------------------
+> > Traceback (most recent call last):
+> >    File
+> > "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+> >      return f(*args, iface, **kwargs)
+> >    File
+> > "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+> >      res = bpftool_json(["feature", "probe", "dev", iface])
+> >    File
+> > "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+> >      res = _bpftool(args)
+> >    File
+> > "/home/ubuntu/disk/linux/tools/testing/selftests/bpf/test_bpftool.py",
+> >      return subprocess.check_output(_args)
+> >    File "/usr/lib/python3.8/subprocess.py", line 411, in check_output
+> >      return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+> >    File "/usr/lib/python3.8/subprocess.py", line 489, in run
+> >      with Popen(*popenargs, **kwargs) as process:
+> >    File "/usr/lib/python3.8/subprocess.py", line 854, in __init__
+> >      self._execute_child(args, executable, preexec_fn, close_fds,
+> >    File "/usr/lib/python3.8/subprocess.py", line 1702, in _execute_child
+> >      raise child_exception_type(errno_num, err_msg, err_filename)
+> > FileNotFoundError: [Errno 2] No such file or directory: 'bpftool'
+> > 
+> > Signed-off-by: Balamuruhan S <bala24@linux.ibm.com>
+> > ---
+> >   tools/testing/selftests/bpf/test_bpftool.py | 13 +++++++++++++
+> >   1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/test_bpftool.py
+> > b/tools/testing/selftests/bpf/test_bpftool.py
+> > index 4fed2dc25c0a..60357c6891a6 100644
+> > --- a/tools/testing/selftests/bpf/test_bpftool.py
+> > +++ b/tools/testing/selftests/bpf/test_bpftool.py
+> > @@ -58,12 +58,25 @@ def default_iface(f):
+> >       return wrapper
+> >   
+> >   
+> > +def make_bpftool(clean=False):
+> > +    cmd = "make"
+> > +    if clean:
+> > +        cmd = "make clean"
+> > +    return subprocess.run(cmd, shell=True, cwd=bpftool_dir, check=True,
+> > +                          stdout=subprocess.DEVNULL)
+> > +
+> >   class TestBpftool(unittest.TestCase):
+> >       @classmethod
+> >       def setUpClass(cls):
+> >           if os.getuid() != 0:
+> >               raise UnprivilegedUserError(
+> >                   "This test suite needs root privileges")
+> > +        if subprocess.getstatusoutput("bpftool -h")[0]:
+> > +            make_bpftool()
+> > +
+> > +    @classmethod
+> > +    def tearDownClass(cls):
+> > +        make_bpftool(clean=True)
+> 
+> I think make_bpftool clean should only be called if the make actually
+> triggered during setUpClass, right?
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yes, I will fix it in the next version.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5d20b2da4427..5055e1531e43 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8594,7 +8594,7 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
- 	struct perf_buffer_params p = {};
- 	struct perf_event_attr attr = { 0, };
- 
--	attr.config = PERF_COUNT_SW_BPF_OUTPUT,
-+	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
- 	attr.type = PERF_TYPE_SOFTWARE;
- 	attr.sample_type = PERF_SAMPLE_RAW;
- 	attr.sample_period = 1;
--- 
-2.17.1
+> 
+> >   
+> >       @default_iface
+> >       def test_feature_dev_json(self, iface):
+> > 
+> > base-commit: 6e868cf355725fbe9fa512d01b09b8ee7f3358f0
+> > 
 
