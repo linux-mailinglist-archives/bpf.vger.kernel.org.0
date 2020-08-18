@@ -2,148 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B057B2486A7
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 16:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332D524878D
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 16:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHROE6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 10:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
+        id S1726950AbgHROa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 10:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgHROE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:04:57 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6B2C061389;
-        Tue, 18 Aug 2020 07:04:56 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 9so16336567wmj.5;
-        Tue, 18 Aug 2020 07:04:56 -0700 (PDT)
+        with ESMTP id S1726569AbgHROaY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:30:24 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A554C061389
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 07:30:24 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id i6so15416645edy.5
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 07:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6x1Ak2P3rV0lY04CxHSGtOsvo0mLh15m+1LZrs0+dgI=;
-        b=aiKEvHMqkueSWM03yfT17ZRgLqjY2GdNq8EoKA3Sd6Bk5TE9LVFEPPqSgwg5H9IeZ8
-         pP02JXt0qzGw//wJAa/ZJd0oE89Bye8xofEc7UrTauDtg4t3oFTRVekkcJRuYaWEAIZ6
-         NZvug9L+YfJCvhnzqxT99Kf3Tky9mRIxhKNHJlU+bbmbVc5F7hoqKna3h7513ORDuTBD
-         sVerRDRfMxezHwwVq1PoV+v6LjYnSCHl4fu12HP99KdWQVKAZw3geEtE95+OOIr5ZnaJ
-         HF0EvwijMDu+ZaHHYncZGHgO+ZaKZp1wBH8gAm7aanVmHF+k8OF0c/vCoKcuVo2Q+4zN
-         5Gmw==
+        d=chromium.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uNMrh+oJtAzOJ4E1aOl6mhIopG05pjfwxNFOrBzLENY=;
+        b=iI8x+BptaRYQcW/koMeu8EHod+gqmM3hwGdLJ4DuI8Ip83avJh3xK8SjvXJ9dxEBx2
+         x8qZQbZQxX9PQK3Iys50h20c8YpsLbJDP6Zupf+eX031yEQ7W2igaavvUK/u+W4RYgeY
+         CG/Ne7SKF68NwmMnxGv10VshBAEJdMKES0mTc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6x1Ak2P3rV0lY04CxHSGtOsvo0mLh15m+1LZrs0+dgI=;
-        b=iK/I5oFrcMdbZwabBiUe8O0qe6Jitlj5BZ+tqgiCQaQofVsQam9JUbaQpNkP4gFxDy
-         pHPcUJMmetRKS1OCtedIcJKx1vrlIvvSt9owVNMgd3m8aKWUsbQEEh2meRaISHXKUPcK
-         hjsMA/SBnCvf4oWBPFhDiGZfjdUcWR2ukQvlfuuyLf7V718PQxY2dJ2l5JsiTCVwOosT
-         8Kh0YFy3bDnawHVR4K/elcL9B5XsVeLawgoK0at5eHaEKZV2ASUVKcuFFgrlTScwRFlt
-         gjamW5TKOX+LJ9ec6Hshu6zwrBYzMRljKrO9riGlHeExTegOLb51dyzkD3iEIBB1FMG/
-         9cyQ==
-X-Gm-Message-State: AOAM532a2H21AuE7AW++WxAr76c9PHoyg8nPCwde86qh7ncRuZplg2kl
-        drQvOF8baOVpArBpwMfW1OS1P0fopOE3yxo0m94=
-X-Google-Smtp-Source: ABdhPJyVEkaR2gT8OnMJWFLL+UQECo20ochAdHklbD8V2jvT8bdtXvpJ4NDdcX90QarezriwZAu5a/eI4F9N3sfxge0=
-X-Received: by 2002:a1c:3b89:: with SMTP id i131mr133157wma.30.1597759495288;
- Tue, 18 Aug 2020 07:04:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uNMrh+oJtAzOJ4E1aOl6mhIopG05pjfwxNFOrBzLENY=;
+        b=iBkcsw9phsOzNOxdqIa0/2HACj1glaFSuakH8NlcgyCTkmwXfq6ruCBjU4IqpbF52K
+         BDZXKpatzQvKuCoxftFCjCSS0alqT5iRX0yRW5v1ovCgAuRSmrxvX5zs7lCfpwklkbIw
+         hW+xvM3gsu9wyVscRR+EOybubZg8eHhNRDc3X6wGUlJW/KCLjs7zfoucciVkAwe0vkY2
+         UNEZbLzdxbzkrI5yOy23eTiylFfSwiiTU5d43DVJmVmXKdluuZKdt7dRyqGLQ0s8Xsn+
+         DAt+hK4mTyhJf/bqsRQmRmjkue5xjmYuyr980mfhR7/xjwy0PfJNtBC1HOVRVzmbXDFw
+         nH5A==
+X-Gm-Message-State: AOAM530H+xciTrYOkVRoMnV9Y+MxQRPkqpdLFLcQnoIbgitL1UV40Wj9
+        uMz81hX9OYSRCVmuxrOC5idl9g==
+X-Google-Smtp-Source: ABdhPJzNl2xbyrcto/z2JWk8p8a3T6cWnVMNIsGNZsnotgtthOq7WYEBNZXFKLaRQU4YjK+f4fRQmQ==
+X-Received: by 2002:a05:6402:b67:: with SMTP id cb7mr20158831edb.216.1597761022560;
+        Tue, 18 Aug 2020 07:30:22 -0700 (PDT)
+Received: from [192.168.2.66] ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id re10sm16759810ejb.68.2020.08.18.07.30.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Aug 2020 07:30:21 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v8 1/7] A purely mechanical change to split the
+ renaming from the actual generalization.
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200803164655.1924498-1-kpsingh@chromium.org>
+ <20200803164655.1924498-2-kpsingh@chromium.org>
+ <20200817235621.ulkqw6mqd2uu647t@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Message-ID: <51554981-21be-5b42-2827-f6c90b587b95@chromium.org>
+Date:   Tue, 18 Aug 2020 16:30:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
-In-Reply-To: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 18 Aug 2020 16:04:43 +0200
-Message-ID: <CAJ+HfNi2B+2KYP9A7yCfFUhfUBd=sFPeuGbNZMjhNSdq3GEpMg@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 0/2] intel/xdp fixes for fliping rx buffer
-To:     Li RongQing <lirongqing@baidu.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Piotr <piotr.raczynski@intel.com>,
-        Maciej <maciej.machnikowski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200817235621.ulkqw6mqd2uu647t@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Jul 2020 at 08:24, Li RongQing <lirongqing@baidu.com> wrote:
->
-> This fixes ice/i40e/ixgbe/ixgbevf_rx_buffer_flip in
-> copy mode xdp that can lead to data corruption.
->
-> I split two patches, since i40e/xgbe/ixgbevf supports xsk
-> receiving from 4.18, put their fixes in a patch
->
-
-Li, sorry for the looong latency. I took a looong vacation. :-P
-
-Thanks for taking a look at this, but I believe this is not a bug.
-
-The Intel Ethernet drivers (obviously non-zerocopy AF_XDP -- "good ol'
-XDP") use a page reuse algorithm.
-
-Basic idea is that a page is allocated from the page allocator
-(i40e_alloc_mapped_page()). The refcount is increased to
-USHRT_MAX. The page is split into two chunks (simplified). If there's
-one user of the page, the page can be reused (flipped). If not, a new
-page needs to be allocated (with the large refcount).
-
-So, the idea is that usually the page can be reused (flipped), and the
-page only needs to be "put" not "get" since the refcount was initally
-bumped to a large value.
-
-All frames (except XDP_DROP which can be reused directly) "die" via
-page_frag_free() which decreases the page refcount, and frees the page
-if the refcount is zero.
-
-Let's take some scenarios as examples:
-
-1. A frame is received in "vanilla" XDP (MEM_TYPE_PAGE_SHARED), and
-   the XDP program verdict is XDP_TX. The frame will be placed on the
-   HW Tx ring, and freed* (async) in i40e_clean_tx_irq:
-        /* free the skb/XDP data */
-        if (ring_is_xdp(tx_ring))
-            xdp_return_frame(tx_buf->xdpf); // calls page_frag_free()
-
-2. A frame is passed to the stack, eventually it's freed* via
-   skb_free_frag().
-
-3. A frame is passed to an AF_XDP socket. The data is copied to the
-   socket data area, and the frame is directly freed*.
-
-Not the * by the freed. Actually freeing here means calling
-page_frag_free(), which means decreasing the refcount. The page reuse
-algorithm makes sure that the buffers are not stale.
-
-The only difference from XDP_TX and XDP_DIRECT to dev/cpumaps,
-compared to AF_XDP sockets is that the latter calls page_frag_free()
-directly, whereas the other does it asynchronous from the Tx clean up
-phase.
-
-Let me know if it's still not clear, but the bottom line is that none
-of these patches are needed.
 
 
-Thanks!
-Bj=C3=B6rn
+On 8/18/20 1:56 AM, Martin KaFai Lau wrote:
+> On Mon, Aug 03, 2020 at 06:46:49PM +0200, KP Singh wrote:
+>> From: KP Singh <kpsingh@google.com>
+>>
+>> Flags/consts:
+>>
+>>   SK_STORAGE_CREATE_FLAG_MASK	BPF_LOCAL_STORAGE_CREATE_FLAG_MASK
+>>   BPF_SK_STORAGE_CACHE_SIZE	BPF_LOCAL_STORAGE_CACHE_SIZE
+>>   MAX_VALUE_SIZE		BPF_LOCAL_STORAGE_MAX_VALUE_SIZE
+>>
+>> Structs:
+>>
+>>   bucket			bpf_local_storage_map_bucket
+>>   bpf_sk_storage_map		bpf_local_storage_map
+>>   bpf_sk_storage_data		bpf_local_storage_data
+>>   bpf_sk_storage_elem		bpf_local_storage_elem
+>>   bpf_sk_storage		bpf_local_storage
+>>
+>> The "sk" member in bpf_local_storage is also updated to "owner"
+>> in preparation for changing the type to void * in a subsequent patch.
+>>
+>> Functions:
+>>
+>>   selem_linked_to_sk			selem_linked_to_storage
+>>   selem_alloc				bpf_selem_alloc
+>>   __selem_unlink_sk			bpf_selem_unlink_storage
+>>   __selem_link_sk			bpf_selem_link_storage
+>>   selem_unlink_sk			__bpf_selem_unlink_storage
+>>   sk_storage_update			bpf_local_storage_update
+>>   __sk_storage_lookup			bpf_local_storage_lookup
+>>   bpf_sk_storage_map_free		bpf_local_storage_map_free
+>>   bpf_sk_storage_map_alloc		bpf_local_storage_map_alloc
+>>   bpf_sk_storage_map_alloc_check	bpf_local_storage_map_alloc_check
+>>   bpf_sk_storage_map_check_btf		bpf_local_storage_map_check_btf
+>>
+> 
+> [ ... ]
+> 
+>> @@ -147,85 +148,86 @@ static struct bpf_sk_storage_elem *selem_alloc(struct bpf_sk_storage_map *smap,
+>>   * The caller must ensure selem->smap is still valid to be
+>>   * dereferenced for its smap->elem_size and smap->cache_idx.
+>>   */
+>> -static bool __selem_unlink_sk(struct bpf_sk_storage *sk_storage,
+>> -			      struct bpf_sk_storage_elem *selem,
+>> -			      bool uncharge_omem)
+>> +static bool bpf_selem_unlink_storage(struct bpf_local_storage *local_storage,
+>> +				     struct bpf_local_storage_elem *selem,
+>> +				     bool uncharge_omem)
+> Please add a "_nolock()" suffix, just to be clear that the unlink_map()
+> counter part is locked.  It could be a follow up later.
 
+Done.
 
-> Li RongQing (2):
->   xdp: i40e: ixgbe: ixgbevf: not flip rx buffer for copy mode xdp
->   ice/xdp: not adjust rx buffer for copy mode xdp
->
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c       | 5 ++++-
->  drivers/net/ethernet/intel/ice/ice_txrx.c         | 5 ++++-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     | 5 ++++-
->  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 5 ++++-
->  include/net/xdp.h                                 | 3 +++
->  net/xdp/xsk.c                                     | 4 +++-
->  6 files changed, 22 insertions(+), 5 deletions(-)
->
-> --
-> 2.16.2
->
-> _______________________________________________
-> Intel-wired-lan mailing list
-> Intel-wired-lan@osuosl.org
-> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+> 
+>>  {
+>> -	struct bpf_sk_storage_map *smap;
+>> -	bool free_sk_storage;
+>> +	struct bpf_local_storage_map *smap;
+>> +	bool free_local_storage;
+
+[...]
+
+>> +	if (unlikely(!selem_linked_to_storage(selem)))
+>>  		/* selem has already been unlinked from sk */
+>>  		return;
+>>  
+>> -	sk_storage = rcu_dereference(selem->sk_storage);
+>> -	raw_spin_lock_bh(&sk_storage->lock);
+>> -	if (likely(selem_linked_to_sk(selem)))
+>> -		free_sk_storage = __selem_unlink_sk(sk_storage, selem, true);
+>> -	raw_spin_unlock_bh(&sk_storage->lock);
+>> +	local_storage = rcu_dereference(selem->local_storage);
+>> +	raw_spin_lock_bh(&local_storage->lock);
+>> +	if (likely(selem_linked_to_storage(selem)))
+>> +		free_local_storage =
+>> +			bpf_selem_unlink_storage(local_storage, selem, true);
+>> +	raw_spin_unlock_bh(&local_storage->lock);
+>>  
+>> -	if (free_sk_storage)
+>> -		kfree_rcu(sk_storage, rcu);
+>> +	if (free_local_storage)
+>> +		kfree_rcu(local_storage, rcu);
+>>  }
+>>  
+>> -static void __selem_link_sk(struct bpf_sk_storage *sk_storage,
+>> -			    struct bpf_sk_storage_elem *selem)
+>> +static void bpf_selem_link_storage(struct bpf_local_storage *local_storage,
+>> +				   struct bpf_local_storage_elem *selem)
+> Same here. bpf_selem_link_storage"_nolock"().
+
+Done.
+
+> 
+> Please tag the Subject line with "bpf:".
+
+Done. Changed it to:
+
+bpf: Renames in preparation for bpf_local_storage
+    
+A purely mechanical change to split the renaming from the actual
+generalization.
+
+[...]
+
+> 
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> 
