@@ -2,93 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B6D247DAF
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 06:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20129247DCD
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 07:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgHRE7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 00:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
+        id S1726370AbgHRFQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 01:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbgHRE7W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 00:59:22 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B71FC061389;
-        Mon, 17 Aug 2020 21:59:22 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m22so19946850ljj.5;
-        Mon, 17 Aug 2020 21:59:22 -0700 (PDT)
+        with ESMTP id S1726099AbgHRFQw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 01:16:52 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDA0C061389;
+        Mon, 17 Aug 2020 22:16:52 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o13so9226102pgf.0;
+        Mon, 17 Aug 2020 22:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lWvfs3pZoRAHfbzdJL3Y3cJmcPJl3EQ83JBMj85BKVg=;
-        b=STnpeylJPM7ZmXBbPfBFjW8BZ0FVKJ3/tV26KAQTj3lxS3V0Hc7AkmOPh0s7m9x3l7
-         /mdS1wRWMnraeG3+fl+YbiraD+bo8c0BlB1LtTkefe7JlwSg2mTFGu5FHMgAIy+a1cDO
-         aeueMlF616I515mTLa5rvH8SNwKrcn8sNuL62vNoMAEAeHCX7V68f32TuUX6VAiyB6cl
-         7ldwbAYHbqPahTc6VpKGYcPsi4+iVuZN9UxvyQdU6vfYslKyw0pVAoPi7Ie78VCIOvFe
-         w2XJrIZOp+PcJjCK68BBYIre0rr83AGszJpmBufXQ1QWrWNAe2aGTbQQJqDgu8qp7HM3
-         uYGw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5Zc/ZnBx7HDn0Hn84bmSbv/zgUibMJgEQM0Os56gyQ=;
+        b=Y7GzetaXOy95OSWh7uHYzqjFmNWMrZ+s4EUlNHtt1X4jvAdTYHGwYMhQDXi9gDf0T9
+         o9je4CfEIeQxQMN2ezGb50a2BqWnnZ7xkAHRl6HWhB6oQb3hoq4p6I3BRLK+VfiptLfj
+         r6T/xmH+PBqVrLT+osIh2jzR1QQqwAAA8wufSAMSjsBmP7NLLgKCpC5E/1PN7CwS1Nie
+         kqCRQ8BCa4dFuwc4a6/2WwBCEhfc4WqYFHNjlfBze2bo8NVXhVsA94wCmJFjUuSO+TUC
+         A9iovk+8zn2Oe34S84pDUJXwaK7uBfkB8oMKmIrlePhA3YFXpr4gWfJxI1TKPsoPTBaf
+         xLkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lWvfs3pZoRAHfbzdJL3Y3cJmcPJl3EQ83JBMj85BKVg=;
-        b=Mds3Pm+fveg+1M2BhYQ07pEBqIE+xJMN/yKrRSy2nJLUPN8bdjiVnrNBg/DBEm15rz
-         DDpvIc4AL2Z6FsVgBerd7kDyXQky67b5O17bvpFEyKslWQ0xKIKifCpS6c1KK9Y+26Ty
-         QBGclK1iheFiplicIX2XxDAAsCvgggnGOwcfYXeaqne/B9VzD8aMMMrVDsYGYbt9mTLY
-         U3yzuo9yf9Gjadrh4UKZHJTt4SKAMerWCCnalAtF+mOIAXzlFxkIbXcmkdl6JwmRGxHm
-         gje3CmXhaSQ4JJ9JRRR1fkBGNoCY7UTIqbmq5Mz+/xFQoxVxmvTwv12fJLDTXl7fVyvJ
-         q1gQ==
-X-Gm-Message-State: AOAM533WKcd3CF3uCFghB+M153RkZMW4lt8uJjNoX9sOzMQ/NzjxLleE
-        oRxoMRtOGl+iquV/KFL4wKhm39yXMUxuKdSb0mMrIxwVhzo=
-X-Google-Smtp-Source: ABdhPJx6y4H2VkYxCEf6S9qGE9psSNlAE0G3Q+Xb1HfECYAey8frDyQgopQgbM4HY9k/yXX0JvjU26XFXu+BLw+Nnz8=
-X-Received: by 2002:a2e:b6cd:: with SMTP id m13mr9089799ljo.91.1597726760879;
- Mon, 17 Aug 2020 21:59:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5Zc/ZnBx7HDn0Hn84bmSbv/zgUibMJgEQM0Os56gyQ=;
+        b=sLAIRDrqKXj8shffOJdr02sjpGib5IZofAQ8EWDjMxquNU+eOx6fkrq4J6HdKVY1zY
+         w2e+R7MRoKiW6RdUsi5saq9XXw9/q0nzk0B1cT0o7Rwl2m39Pr/b7Bd+4JI84Cysr71M
+         yflHlgJ+ePcn0C5DK4Xf1jN2xU/aXPdItBXLkXBa5KWXUvpIYF/doPAdPfSEe1TXzznH
+         20jgh9FaWTSIja3D5SuruRdWsebQi6SXCzBAyz5rPVwGGDQ0BJVw5Qldl7W9xGAs240X
+         zMIN2ATXLXU7GttF+YhlfGKvlzOz0IIUGI59C0NlevcHn7br1RP4C/hVRT/b90p9TroI
+         f5Zw==
+X-Gm-Message-State: AOAM532/zn40IRRp3xliMTkUIJ6UfmJJNpQyI6iY9Y/Bhv+vN0X5vW4e
+        8Bdaa+y8o4B6NiLMN+DWpXA8rAvGiQ==
+X-Google-Smtp-Source: ABdhPJx2R0kkNuYOnh4AdOHNw8z7dggvOGGyldrRicPG1WWjulDVZP0/uvLKxDON9P8UniERXmJ17A==
+X-Received: by 2002:aa7:97a3:: with SMTP id d3mr13728169pfq.178.1597727812063;
+        Mon, 17 Aug 2020 22:16:52 -0700 (PDT)
+Received: from localhost.localdomain ([182.209.58.45])
+        by smtp.gmail.com with ESMTPSA id q7sm20159657pfu.133.2020.08.17.22.16.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 22:16:51 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] samples: bpf: Fix broken bpf programs due to removed symbol
+Date:   Tue, 18 Aug 2020 14:16:41 +0900
+Message-Id: <20200818051641.21724-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org> <20200817220425.9389-10-ebiederm@xmission.com>
- <20200818022249.GC1236603@ZenIV.linux.org.uk> <87sgck4o23.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87sgck4o23.fsf@x220.int.ebiederm.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 17 Aug 2020 21:59:09 -0700
-Message-ID: <CAADnVQKAvzT5nYZhceL3P0z1Fosm2dqB+=U4R-fET2g8YO9HmA@mail.gmail.com>
-Subject: Re: [PATCH 10/17] proc/fd: In proc_readfd_common use fnext_task
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, criu@openvz.org,
-        bpf <bpf@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 8:46 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> I am definitely willing to look at it. Do we think there would be enough
-> traffic on task_lock from /proc/<pid>/fd access to make it work doing?
+From commit f1394b798814 ("block: mark blk_account_io_completion
+static") symbol blk_account_io_completion() has been marked as static,
+which makes it no longer possible to attach kprobe to this event.
+Currently, there are broken samples due to this reason.
 
-not from /proc, but bpf iterator in kernel/bpf/task_iter.c that is
-being modified
-in the other patch is used to process 100+k tasks. The faster it can go
-through them the better. We don't see task spin_lock being a bottleneck though.
-To test it just do 'bpftool prog show'. It will use task iterator undercover.
+As a solution to this, attach kprobe events to blk_account_io_done()
+to modify them to perform the same behavior as before.
+
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+---
+ samples/bpf/task_fd_query_kern.c | 2 +-
+ samples/bpf/task_fd_query_user.c | 2 +-
+ samples/bpf/tracex3_kern.c       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/samples/bpf/task_fd_query_kern.c b/samples/bpf/task_fd_query_kern.c
+index 278ade5427c8..c821294e1774 100644
+--- a/samples/bpf/task_fd_query_kern.c
++++ b/samples/bpf/task_fd_query_kern.c
+@@ -10,7 +10,7 @@ int bpf_prog1(struct pt_regs *ctx)
+ 	return 0;
+ }
+ 
+-SEC("kretprobe/blk_account_io_completion")
++SEC("kretprobe/blk_account_io_done")
+ int bpf_prog2(struct pt_regs *ctx)
+ {
+ 	return 0;
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index ff2e9c1c7266..4a74531dc403 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -314,7 +314,7 @@ int main(int argc, char **argv)
+ 	/* test two functions in the corresponding *_kern.c file */
+ 	CHECK_AND_RET(test_debug_fs_kprobe(0, "blk_mq_start_request",
+ 					   BPF_FD_TYPE_KPROBE));
+-	CHECK_AND_RET(test_debug_fs_kprobe(1, "blk_account_io_completion",
++	CHECK_AND_RET(test_debug_fs_kprobe(1, "blk_account_io_done",
+ 					   BPF_FD_TYPE_KRETPROBE));
+ 
+ 	/* test nondebug fs kprobe */
+diff --git a/samples/bpf/tracex3_kern.c b/samples/bpf/tracex3_kern.c
+index 659613c19a82..710a4410b2fb 100644
+--- a/samples/bpf/tracex3_kern.c
++++ b/samples/bpf/tracex3_kern.c
+@@ -49,7 +49,7 @@ struct {
+ 	__uint(max_entries, SLOTS);
+ } lat_map SEC(".maps");
+ 
+-SEC("kprobe/blk_account_io_completion")
++SEC("kprobe/blk_account_io_done")
+ int bpf_prog2(struct pt_regs *ctx)
+ {
+ 	long rq = PT_REGS_PARM1(ctx);
+-- 
+2.25.1
+
