@@ -2,35 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD8624902A
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 23:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DDC24907A
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 23:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgHRVe2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 17:34:28 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2974 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726868AbgHRVe1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 17:34:27 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07ILXLPh016723
-        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 14:34:26 -0700
+        id S1726949AbgHRV7f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 17:59:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51768 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726845AbgHRV7e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 17:59:34 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07ILxUNa010609
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 14:59:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=Qba6TtLd7ff/329K8MaTklR0w5dpisYe4n+bCVWlBrk=;
- b=p6EhBSVSAcNiN7gP/z3hKCtXi0PWhN3jwKl7I07qM+3WSTH1HQv8H4c82Glg1h4EzUDl
- twzs1XAgvBh2hWN8iiv9hkBGbRATEFdRvRJTNHWkdQCcjKavswe7mfpY3zc/a3PT3Odx
- tNJRv3Qjv+3JIzulvfGi+31Q3suncgs3cgk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3304p7w9ff-1
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=n852f/Yfy+quxATSlb8RxisMTW7066JeJs7qacMFM+I=;
+ b=n/NlzE9CNznvEAKlBXBB5P4rbVq8ncKcT9PofCeN22cmD2i7VGo6pB5LeqwZbMmRcsNa
+ ZaQouLmn6Jkj2zjiUt65C8dnuh9wDAosn80tncw5A+9U5tjh+IYT7LvScZRRFFy8ubZ6
+ 9/YJ3Iflwqiajj5AGJx+UaA7TphokYaS/Wg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3304kpn8sa-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 14:34:26 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 14:59:33 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 18 Aug 2020 14:34:25 -0700
+ 15.1.1979.3; Tue, 18 Aug 2020 14:59:14 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id F23A62EC5EAC; Tue, 18 Aug 2020 14:34:16 -0700 (PDT)
+        id 89A2A2EC5EB3; Tue, 18 Aug 2020 14:59:11 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
@@ -39,108 +38,75 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 7/7] libbpf: detect minimal BTF support and skip BTF loading, if missing
-Date:   Tue, 18 Aug 2020 14:33:56 -0700
-Message-ID: <20200818213356.2629020-8-andriin@fb.com>
+Subject: [PATCH bpf-next 0/4] libbpf: minimize feature detection (reallocarray, libelf-mmap)
+Date:   Tue, 18 Aug 2020 14:59:04 -0700
+Message-ID: <20200818215908.2746786-1-andriin@fb.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200818213356.2629020-1-andriin@fb.com>
-References: <20200818213356.2629020-1-andriin@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-18_15:2020-08-18,2020-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=25
- adultscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
- clxscore=1015 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008180154
+ definitions=2020-08-18_16:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 spamscore=0
+ impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=853
+ lowpriorityscore=0 suspectscore=8 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008180158
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Detect whether a kernel supports any BTF at all, and if not, don't even
-attempt loading BTF to avoid unnecessary log messages like:
+Get rid of two feature detectors: reallocarray and libelf-mmap. Optional
+feature detections complicate libbpf Makefile and cause more troubles for
+various applications that want to integrate libbpf as part of their build=
+.
 
-  libbpf: Error loading BTF: Invalid argument(22)
-  libbpf: Error loading .BTF into kernel: -22. BTF is optional, ignoring.
+Patch #1 replaces all reallocarray() uses into libbpf-internal reallocarr=
+ay()
+implementation. Patches #2 and #3 makes sure we won't re-introduce
+reallocarray() accidentally. Patch #2 also removes last use of
+libbpf_internal.h header inside bpftool. There is still nlattr.h that's u=
+sed
+by both libbpf and bpftool, but that's left for a follow up patch to spli=
+t.
+Patch #4 removed libelf-mmap feature detector and all its uses, as it's
+trivial to handle missing mmap support in libbpf, the way objtool has bee=
+n
+doing it for a while.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Andrii Nakryiko (4):
+  libbpf: remove any use of reallocarray() in libbpf
+  tools/bpftool: remove libbpf_internal.h usage in bpftool
+  libbpf: centralize poisoning and poison reallocarray()
+  tools: remove feature-libelf-mmap feature detection
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index bdc08f89a5c0..5f971796d196 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -170,6 +170,8 @@ enum kern_feature_id {
- 	FEAT_PROG_NAME,
- 	/* v5.2: kernel support for global data sections. */
- 	FEAT_GLOBAL_DATA,
-+	/* BTF support */
-+	FEAT_BTF,
- 	/* BTF_KIND_FUNC and BTF_KIND_FUNC_PROTO support */
- 	FEAT_BTF_FUNC,
- 	/* BTF_KIND_VAR and BTF_KIND_DATASEC support */
-@@ -2533,6 +2535,15 @@ static int bpf_object__sanitize_and_load_btf(struc=
-t bpf_object *obj)
- 	if (!obj->btf)
- 		return 0;
-=20
-+	if (!kernel_supports(FEAT_BTF)) {
-+		if (kernel_needs_btf(obj)) {
-+			err =3D -EOPNOTSUPP;
-+			goto report;
-+		}
-+		pr_debug("Kernel doesn't support BTF, skipping uploading it.\n");
-+		return 0;
-+	}
-+
- 	sanitize =3D btf_needs_sanitization(obj);
- 	if (sanitize) {
- 		const void *raw_data;
-@@ -2558,6 +2569,7 @@ static int bpf_object__sanitize_and_load_btf(struct=
- bpf_object *obj)
- 		}
- 		btf__free(kern_btf);
- 	}
-+report:
- 	if (err) {
- 		btf_mandatory =3D kernel_needs_btf(obj);
- 		pr_warn("Error loading .BTF into kernel: %d. %s\n", err,
-@@ -3502,6 +3514,18 @@ static int probe_kern_global_data(void)
- 	return probe_fd(ret);
- }
-=20
-+static int probe_kern_btf(void)
-+{
-+	static const char strs[] =3D "\0int";
-+	__u32 types[] =3D {
-+		/* int */
-+		BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),
-+	};
-+
-+	return probe_fd(libbpf__load_raw_btf((char *)types, sizeof(types),
-+					     strs, sizeof(strs)));
-+}
-+
- static int probe_kern_btf_func(void)
- {
- 	static const char strs[] =3D "\0int\0x\0a";
-@@ -3633,6 +3657,9 @@ static struct kern_feature_desc {
- 	[FEAT_GLOBAL_DATA] =3D {
- 		"global variables", probe_kern_global_data,
- 	},
-+	[FEAT_BTF] =3D {
-+		"minimal BTF", probe_kern_btf,
-+	},
- 	[FEAT_BTF_FUNC] =3D {
- 		"BTF functions", probe_kern_btf_func,
- 	},
+ tools/bpf/bpftool/gen.c                |   2 -
+ tools/bpf/bpftool/net.c                | 299 +++++++++++++++++++++++--
+ tools/build/Makefile.feature           |   1 -
+ tools/build/feature/Makefile           |   4 -
+ tools/build/feature/test-all.c         |   4 -
+ tools/build/feature/test-libelf-mmap.c |   9 -
+ tools/lib/bpf/Makefile                 |  10 +-
+ tools/lib/bpf/bpf.c                    |   3 -
+ tools/lib/bpf/bpf_prog_linfo.c         |   3 -
+ tools/lib/bpf/btf.c                    |  14 +-
+ tools/lib/bpf/btf_dump.c               |   9 +-
+ tools/lib/bpf/hashmap.c                |   3 +
+ tools/lib/bpf/libbpf.c                 |  38 ++--
+ tools/lib/bpf/libbpf_internal.h        |  44 +++-
+ tools/lib/bpf/libbpf_probes.c          |   3 -
+ tools/lib/bpf/netlink.c                | 128 +----------
+ tools/lib/bpf/nlattr.c                 |   9 +-
+ tools/lib/bpf/ringbuf.c                |   8 +-
+ tools/lib/bpf/xsk.c                    |   3 -
+ tools/perf/Makefile.config             |   4 -
+ tools/perf/util/symbol.h               |   2 +-
+ 21 files changed, 353 insertions(+), 247 deletions(-)
+ delete mode 100644 tools/build/feature/test-libelf-mmap.c
+
 --=20
 2.24.1
 
