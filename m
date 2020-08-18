@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2E92482C5
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 12:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5C42482D0
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 12:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgHRKRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 06:17:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38417 "EHLO
+        id S1726480AbgHRKTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 06:19:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38462 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgHRKRL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 06:17:11 -0400
+        with ESMTP id S1726424AbgHRKTd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 06:19:33 -0400
 Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k7yg0-0001QO-TR; Tue, 18 Aug 2020 10:17:09 +0000
-Date:   Tue, 18 Aug 2020 12:17:07 +0200
+        id 1k7yiH-0001XG-U9; Tue, 18 Aug 2020 10:19:30 +0000
+Date:   Tue, 18 Aug 2020 12:19:28 +0200
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -41,30 +41,37 @@ Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH 16/17] file: Merge __alloc_fd into alloc_fd
-Message-ID: <20200818101707.a3ikaqkpxrkcqcdr@wittgenstein>
+Subject: Re: [PATCH 17/17] file: Rename __close_fd to close_fd and remove the
+ files parameter
+Message-ID: <20200818101928.6tbaakfpqxtlrf53@wittgenstein>
 References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
- <20200817220425.9389-16-ebiederm@xmission.com>
+ <20200817220425.9389-17-ebiederm@xmission.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200817220425.9389-16-ebiederm@xmission.com>
+In-Reply-To: <20200817220425.9389-17-ebiederm@xmission.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 05:04:24PM -0500, Eric W. Biederman wrote:
-> The function __alloc_fd was added to support binder[1].  With binder
-> fixed[2] there are no more users.  Further with get_files_struct
-> removed there can be no more users of __alloc_fd that pass anything
-> except current->files.
+On Mon, Aug 17, 2020 at 05:04:25PM -0500, Eric W. Biederman wrote:
+> The function __close_fd was added to support binder[1].  Now that
+> binder has been fixed to no longer need __close_fd[2] and
+> get_files_struct has been removed it is no longer possible to
+> correctly call __close_fd with anything current->files pass as it's
+> files parameter.
 > 
-> As alloc_fd just calls __alloc_fd with "files=current->files",
-> merge them together by transforming the files parameter into a
-> ocal variable initialized to current->files.
+> Therefore transform the files parameter into a local variable
+> initialized to current->files, and rename __close_fd to close_fd to
+> reflect this change, and keep it in sync with the similar changes to
+> __alloc_fd, and __fd_install.
 > 
-> [1] dcfadfa4ec5a ("new helper: __alloc_fd()")
+> This removes the need for callers to care about the extra care that
+> needs to be take if anything except current->files is passed, by
+> limiting the callers to only operation on current->files.
+> 
+> [1] 483ce1d4b8c3 ("take descriptor-related part of close() to file.c")
 > [2] 44d8047f1d87 ("binder: use standard functions to allocate fds")
 > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 > ---
