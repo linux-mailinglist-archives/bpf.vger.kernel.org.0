@@ -2,180 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105B3248582
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 14:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B057B2486A7
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 16:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgHRM61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 08:58:27 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:33854 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726391AbgHRM60 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 08:58:26 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k81C3-002tmZ-LA; Tue, 18 Aug 2020 06:58:23 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k81C2-000283-Se; Tue, 18 Aug 2020 06:58:23 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        linux-fsdevel@vger.kernel.org, criu@openvz.org,
-        bpf@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>
-References: <20200817220425.9389-11-ebiederm@xmission.com>
-        <202008181316.x96Qp7qo%lkp@intel.com>
-Date:   Tue, 18 Aug 2020 07:54:50 -0500
-In-Reply-To: <202008181316.x96Qp7qo%lkp@intel.com> (kernel test robot's
-        message of "Tue, 18 Aug 2020 13:39:44 +0800")
-Message-ID: <87364k3yhx.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726630AbgHROE6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 10:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgHROE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 10:04:57 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6B2C061389;
+        Tue, 18 Aug 2020 07:04:56 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so16336567wmj.5;
+        Tue, 18 Aug 2020 07:04:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6x1Ak2P3rV0lY04CxHSGtOsvo0mLh15m+1LZrs0+dgI=;
+        b=aiKEvHMqkueSWM03yfT17ZRgLqjY2GdNq8EoKA3Sd6Bk5TE9LVFEPPqSgwg5H9IeZ8
+         pP02JXt0qzGw//wJAa/ZJd0oE89Bye8xofEc7UrTauDtg4t3oFTRVekkcJRuYaWEAIZ6
+         NZvug9L+YfJCvhnzqxT99Kf3Tky9mRIxhKNHJlU+bbmbVc5F7hoqKna3h7513ORDuTBD
+         sVerRDRfMxezHwwVq1PoV+v6LjYnSCHl4fu12HP99KdWQVKAZw3geEtE95+OOIr5ZnaJ
+         HF0EvwijMDu+ZaHHYncZGHgO+ZaKZp1wBH8gAm7aanVmHF+k8OF0c/vCoKcuVo2Q+4zN
+         5Gmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6x1Ak2P3rV0lY04CxHSGtOsvo0mLh15m+1LZrs0+dgI=;
+        b=iK/I5oFrcMdbZwabBiUe8O0qe6Jitlj5BZ+tqgiCQaQofVsQam9JUbaQpNkP4gFxDy
+         pHPcUJMmetRKS1OCtedIcJKx1vrlIvvSt9owVNMgd3m8aKWUsbQEEh2meRaISHXKUPcK
+         hjsMA/SBnCvf4oWBPFhDiGZfjdUcWR2ukQvlfuuyLf7V718PQxY2dJ2l5JsiTCVwOosT
+         8Kh0YFy3bDnawHVR4K/elcL9B5XsVeLawgoK0at5eHaEKZV2ASUVKcuFFgrlTScwRFlt
+         gjamW5TKOX+LJ9ec6Hshu6zwrBYzMRljKrO9riGlHeExTegOLb51dyzkD3iEIBB1FMG/
+         9cyQ==
+X-Gm-Message-State: AOAM532a2H21AuE7AW++WxAr76c9PHoyg8nPCwde86qh7ncRuZplg2kl
+        drQvOF8baOVpArBpwMfW1OS1P0fopOE3yxo0m94=
+X-Google-Smtp-Source: ABdhPJyVEkaR2gT8OnMJWFLL+UQECo20ochAdHklbD8V2jvT8bdtXvpJ4NDdcX90QarezriwZAu5a/eI4F9N3sfxge0=
+X-Received: by 2002:a1c:3b89:: with SMTP id i131mr133157wma.30.1597759495288;
+ Tue, 18 Aug 2020 07:04:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k81C2-000283-Se;;;mid=<87364k3yhx.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX199+9M7+Xk2NQhTl3vv/R8uMu696mUUptA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMGappySubj_02,XMNoVowels,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4996]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  1.0 XMGappySubj_02 Gappier still
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;kernel test robot <lkp@intel.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 417 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.5%), b_tie_ro: 9 (2.2%), parse: 0.94 (0.2%),
-         extract_message_metadata: 18 (4.4%), get_uri_detail_list: 2.5 (0.6%),
-        tests_pri_-1000: 9 (2.1%), tests_pri_-950: 1.28 (0.3%),
-        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 70 (16.7%), check_bayes:
-        68 (16.4%), b_tokenize: 10 (2.3%), b_tok_get_all: 10 (2.4%),
-        b_comp_prob: 3.2 (0.8%), b_tok_touch_all: 42 (10.0%), b_finish: 0.75
-        (0.2%), tests_pri_0: 291 (69.8%), check_dkim_signature: 0.54 (0.1%),
-        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 1.03 (0.2%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 10 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 11/17] bpf/task_iter: In task_file_seq_get_next use fnext_task
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
+In-Reply-To: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 18 Aug 2020 16:04:43 +0200
+Message-ID: <CAJ+HfNi2B+2KYP9A7yCfFUhfUBd=sFPeuGbNZMjhNSdq3GEpMg@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH 0/2] intel/xdp fixes for fliping rx buffer
+To:     Li RongQing <lirongqing@baidu.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Piotr <piotr.raczynski@intel.com>,
+        Maciej <maciej.machnikowski@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
-
-> Hi "Eric,
+On Fri, 17 Jul 2020 at 08:24, Li RongQing <lirongqing@baidu.com> wrote:
 >
-> Thank you for the patch! Perhaps something to improve:
+> This fixes ice/i40e/ixgbe/ixgbevf_rx_buffer_flip in
+> copy mode xdp that can lead to data corruption.
 >
-> [auto build test WARNING on bpf/master]
-> [also build test WARNING on linus/master v5.9-rc1 next-20200817]
-> [cannot apply to bpf-next/master linux/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> I split two patches, since i40e/xgbe/ixgbevf supports xsk
+> receiving from 4.18, put their fixes in a patch
 >
-> url:    https://github.com/0day-ci/linux/commits/Eric-W-Biederman/exec-Move-unshare_files-to-fix-posix-file-locking-during-exec/20200818-061552
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-> config: i386-randconfig-m021-20200818 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+
+Li, sorry for the looong latency. I took a looong vacation. :-P
+
+Thanks for taking a look at this, but I believe this is not a bug.
+
+The Intel Ethernet drivers (obviously non-zerocopy AF_XDP -- "good ol'
+XDP") use a page reuse algorithm.
+
+Basic idea is that a page is allocated from the page allocator
+(i40e_alloc_mapped_page()). The refcount is increased to
+USHRT_MAX. The page is split into two chunks (simplified). If there's
+one user of the page, the page can be reused (flipped). If not, a new
+page needs to be allocated (with the large refcount).
+
+So, the idea is that usually the page can be reused (flipped), and the
+page only needs to be "put" not "get" since the refcount was initally
+bumped to a large value.
+
+All frames (except XDP_DROP which can be reused directly) "die" via
+page_frag_free() which decreases the page refcount, and frees the page
+if the refcount is zero.
+
+Let's take some scenarios as examples:
+
+1. A frame is received in "vanilla" XDP (MEM_TYPE_PAGE_SHARED), and
+   the XDP program verdict is XDP_TX. The frame will be placed on the
+   HW Tx ring, and freed* (async) in i40e_clean_tx_irq:
+        /* free the skb/XDP data */
+        if (ring_is_xdp(tx_ring))
+            xdp_return_frame(tx_buf->xdpf); // calls page_frag_free()
+
+2. A frame is passed to the stack, eventually it's freed* via
+   skb_free_frag().
+
+3. A frame is passed to an AF_XDP socket. The data is copied to the
+   socket data area, and the frame is directly freed*.
+
+Not the * by the freed. Actually freeing here means calling
+page_frag_free(), which means decreasing the refcount. The page reuse
+algorithm makes sure that the buffers are not stale.
+
+The only difference from XDP_TX and XDP_DIRECT to dev/cpumaps,
+compared to AF_XDP sockets is that the latter calls page_frag_free()
+directly, whereas the other does it asynchronous from the Tx clean up
+phase.
+
+Let me know if it's still not clear, but the bottom line is that none
+of these patches are needed.
+
+
+Thanks!
+Bj=C3=B6rn
+
+
+> Li RongQing (2):
+>   xdp: i40e: ixgbe: ixgbevf: not flip rx buffer for copy mode xdp
+>   ice/xdp: not adjust rx buffer for copy mode xdp
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c       | 5 ++++-
+>  drivers/net/ethernet/intel/ice/ice_txrx.c         | 5 ++++-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     | 5 ++++-
+>  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 5 ++++-
+>  include/net/xdp.h                                 | 3 +++
+>  net/xdp/xsk.c                                     | 4 +++-
+>  6 files changed, 22 insertions(+), 5 deletions(-)
 >
-> smatch warnings:
-> kernel/bpf/task_iter.c:162 task_file_seq_get_next() warn: ignoring unreachable code.
-
-What is smatch warning about?
-
-Perhaps I am blind but I don't see any unreachable code there.
-
-Doh!  I see it.  That loop will never loop so curr_fd++ is unreachable.
-Yes that should get fixed just so the code is readable.
-
-I will change that.
-
-Eric
-
-
->    128	
->    129	static struct file *
->    130	task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info,
->    131			       struct task_struct **task)
->    132	{
->    133		struct pid_namespace *ns = info->common.ns;
->    134		u32 curr_tid = info->tid;
->    135		struct task_struct *curr_task;
->    136		unsigned int curr_fd = info->fd;
->    137	
->    138		/* If this function returns a non-NULL file object,
->    139		 * it held a reference to the task/file.
->    140		 * Otherwise, it does not hold any reference.
->    141		 */
->    142	again:
->    143		if (*task) {
->    144			curr_task = *task;
->    145			curr_fd = info->fd;
->    146		} else {
->    147			curr_task = task_seq_get_next(ns, &curr_tid);
->    148			if (!curr_task)
->    149				return NULL;
->    150	
->    151			/* set *task and info->tid */
->    152			*task = curr_task;
->    153			if (curr_tid == info->tid) {
->    154				curr_fd = info->fd;
->    155			} else {
->    156				info->tid = curr_tid;
->    157				curr_fd = 0;
->    158			}
->    159		}
->    160	
->    161		rcu_read_lock();
->  > 162		for (;; curr_fd++) {
->    163			struct file *f;
->    164	
->    165			f = fnext_task(curr_task, &curr_fd);
->    166			if (!f)
->    167				break;
->    168	
->    169			/* set info->fd */
->    170			info->fd = curr_fd;
->    171			get_file(f);
->    172			rcu_read_unlock();
->    173			return f;
->    174		}
->    175	
->    176		/* the current task is done, go to the next task */
->    177		rcu_read_unlock();
->    178		put_task_struct(curr_task);
->    179		*task = NULL;
->    180		info->fd = 0;
->    181		curr_tid = ++(info->tid);
->    182		goto again;
->    183	}
->    184	
+> --
+> 2.16.2
 >
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> _______________________________________________
+> Intel-wired-lan mailing list
+> Intel-wired-lan@osuosl.org
+> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
