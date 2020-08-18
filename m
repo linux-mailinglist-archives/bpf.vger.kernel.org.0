@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332D524878D
-	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 16:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3D72488C5
+	for <lists+bpf@lfdr.de>; Tue, 18 Aug 2020 17:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgHROa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 10:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
+        id S1726639AbgHRPKm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 11:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgHROaY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:30:24 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A554C061389
-        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 07:30:24 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id i6so15416645edy.5
-        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 07:30:23 -0700 (PDT)
+        with ESMTP id S1726671AbgHRPKh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:10:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE60C061343
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 08:10:36 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a14so18624416wra.5
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 08:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uNMrh+oJtAzOJ4E1aOl6mhIopG05pjfwxNFOrBzLENY=;
-        b=iI8x+BptaRYQcW/koMeu8EHod+gqmM3hwGdLJ4DuI8Ip83avJh3xK8SjvXJ9dxEBx2
-         x8qZQbZQxX9PQK3Iys50h20c8YpsLbJDP6Zupf+eX031yEQ7W2igaavvUK/u+W4RYgeY
-         CG/Ne7SKF68NwmMnxGv10VshBAEJdMKES0mTc=
+        bh=zxe+HJmIWMfQ1RElqmaY0GiV1Gl7b0KgtI/GKiLoLwc=;
+        b=UXlGAiGLTmMimNPojD1cHSTRsErRHNBbtrZT5pI3TeFxNQmf20CwFIdDFAcb0a7n4+
+         vmKVl8ds6JZwjQwoEtNGzQL7v/yP6SqgzMeGFesFIPLs4fKR2BNPUoR/6xUfk19656yl
+         JRTAGLhb+3nGmbMEI88v/pCOE7murI68EWPJQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uNMrh+oJtAzOJ4E1aOl6mhIopG05pjfwxNFOrBzLENY=;
-        b=iBkcsw9phsOzNOxdqIa0/2HACj1glaFSuakH8NlcgyCTkmwXfq6ruCBjU4IqpbF52K
-         BDZXKpatzQvKuCoxftFCjCSS0alqT5iRX0yRW5v1ovCgAuRSmrxvX5zs7lCfpwklkbIw
-         hW+xvM3gsu9wyVscRR+EOybubZg8eHhNRDc3X6wGUlJW/KCLjs7zfoucciVkAwe0vkY2
-         UNEZbLzdxbzkrI5yOy23eTiylFfSwiiTU5d43DVJmVmXKdluuZKdt7dRyqGLQ0s8Xsn+
-         DAt+hK4mTyhJf/bqsRQmRmjkue5xjmYuyr980mfhR7/xjwy0PfJNtBC1HOVRVzmbXDFw
-         nH5A==
-X-Gm-Message-State: AOAM530H+xciTrYOkVRoMnV9Y+MxQRPkqpdLFLcQnoIbgitL1UV40Wj9
-        uMz81hX9OYSRCVmuxrOC5idl9g==
-X-Google-Smtp-Source: ABdhPJzNl2xbyrcto/z2JWk8p8a3T6cWnVMNIsGNZsnotgtthOq7WYEBNZXFKLaRQU4YjK+f4fRQmQ==
-X-Received: by 2002:a05:6402:b67:: with SMTP id cb7mr20158831edb.216.1597761022560;
-        Tue, 18 Aug 2020 07:30:22 -0700 (PDT)
+        bh=zxe+HJmIWMfQ1RElqmaY0GiV1Gl7b0KgtI/GKiLoLwc=;
+        b=E/zQ+SooWu+CnBhZ97Y8uxyzfjEv9pS1EMIrYx+fvfWKYPkSGQt3qyYrz/K1h6BIi9
+         io8b8nkAMcmlFWDuPij63xYOs90q00YcapL6sKgQiYhgR5eHfyPURz819cAfIrWd8QFx
+         91QKSJGbjOHH7gt+lnDwcETgcHW9A5r4Lx5IqW0bCU3b3pESAP/co5Kru0V/RvJEoJzR
+         s2EGeB1K33G1snILqKyNQBlp4qK5meimCKPczEZAjXYHmCgt4rEdGGJv7esq4xQMM1Z5
+         f5UVUhF509AsT0P6AQU+u0GJgg4hsrSfgzgZRofIdQ2Wzx9DsgZLcJYqtjgbZT465t0I
+         2b+Q==
+X-Gm-Message-State: AOAM533I3GFvbdGRQQ2JJtski6J/RgpIEDbQ5cdXOTx/kQXOHEUYOGvQ
+        ZqMk6t1d8dQdCQBLE+QsELQqqQ==
+X-Google-Smtp-Source: ABdhPJwMZXOzExdHgzzwPRNZtVauhbOakNrr5oH3e0Yl8Lg/4VVrGTLwLZqELVDHQ2B0C62wz/T+gw==
+X-Received: by 2002:adf:e504:: with SMTP id j4mr21174389wrm.205.1597763435276;
+        Tue, 18 Aug 2020 08:10:35 -0700 (PDT)
 Received: from [192.168.2.66] ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id re10sm16759810ejb.68.2020.08.18.07.30.21
+        by smtp.gmail.com with ESMTPSA id z6sm279421wml.41.2020.08.18.08.10.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Aug 2020 07:30:21 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v8 1/7] A purely mechanical change to split the
- renaming from the actual generalization.
+        Tue, 18 Aug 2020 08:10:34 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v8 5/7] bpf: Implement bpf_local_storage for
+ inodes
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-security-module@vger.kernel.org,
@@ -55,18 +55,18 @@ Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>
 References: <20200803164655.1924498-1-kpsingh@chromium.org>
- <20200803164655.1924498-2-kpsingh@chromium.org>
- <20200817235621.ulkqw6mqd2uu647t@kafai-mbp.dhcp.thefacebook.com>
+ <20200803164655.1924498-6-kpsingh@chromium.org>
+ <20200818012758.4666zlknkr4x6cbl@kafai-mbp.dhcp.thefacebook.com>
 From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <51554981-21be-5b42-2827-f6c90b587b95@chromium.org>
-Date:   Tue, 18 Aug 2020 16:30:21 +0200
+Message-ID: <60344fad-f761-0fee-a6ef-4880c45c3e52@chromium.org>
+Date:   Tue, 18 Aug 2020 17:10:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200817235621.ulkqw6mqd2uu647t@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200818012758.4666zlknkr4x6cbl@kafai-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -74,110 +74,108 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/18/20 1:56 AM, Martin KaFai Lau wrote:
-> On Mon, Aug 03, 2020 at 06:46:49PM +0200, KP Singh wrote:
+On 8/18/20 3:27 AM, Martin KaFai Lau wrote:
+> On Mon, Aug 03, 2020 at 06:46:53PM +0200, KP Singh wrote:
 >> From: KP Singh <kpsingh@google.com>
 >>
->> Flags/consts:
+>> Similar to bpf_local_storage for sockets, add local storage for inodes.
+>> The life-cycle of storage is managed with the life-cycle of the inode.
+>> i.e. the storage is destroyed along with the owning inode.
 >>
->>   SK_STORAGE_CREATE_FLAG_MASK	BPF_LOCAL_STORAGE_CREATE_FLAG_MASK
->>   BPF_SK_STORAGE_CACHE_SIZE	BPF_LOCAL_STORAGE_CACHE_SIZE
->>   MAX_VALUE_SIZE		BPF_LOCAL_STORAGE_MAX_VALUE_SIZE
+>> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in the
+>> security blob which are now stackable and can co-exist with other LSMs.
 >>
->> Structs:
->>
->>   bucket			bpf_local_storage_map_bucket
->>   bpf_sk_storage_map		bpf_local_storage_map
->>   bpf_sk_storage_data		bpf_local_storage_data
->>   bpf_sk_storage_elem		bpf_local_storage_elem
->>   bpf_sk_storage		bpf_local_storage
->>
->> The "sk" member in bpf_local_storage is also updated to "owner"
->> in preparation for changing the type to void * in a subsequent patch.
->>
->> Functions:
->>
->>   selem_linked_to_sk			selem_linked_to_storage
->>   selem_alloc				bpf_selem_alloc
->>   __selem_unlink_sk			bpf_selem_unlink_storage
->>   __selem_link_sk			bpf_selem_link_storage
->>   selem_unlink_sk			__bpf_selem_unlink_storage
->>   sk_storage_update			bpf_local_storage_update
->>   __sk_storage_lookup			bpf_local_storage_lookup
->>   bpf_sk_storage_map_free		bpf_local_storage_map_free
->>   bpf_sk_storage_map_alloc		bpf_local_storage_map_alloc
->>   bpf_sk_storage_map_alloc_check	bpf_local_storage_map_alloc_check
->>   bpf_sk_storage_map_check_btf		bpf_local_storage_map_check_btf
->>
-> 
-> [ ... ]
-> 
->> @@ -147,85 +148,86 @@ static struct bpf_sk_storage_elem *selem_alloc(struct bpf_sk_storage_map *smap,
->>   * The caller must ensure selem->smap is still valid to be
->>   * dereferenced for its smap->elem_size and smap->cache_idx.
->>   */
->> -static bool __selem_unlink_sk(struct bpf_sk_storage *sk_storage,
->> -			      struct bpf_sk_storage_elem *selem,
->> -			      bool uncharge_omem)
->> +static bool bpf_selem_unlink_storage(struct bpf_local_storage *local_storage,
->> +				     struct bpf_local_storage_elem *selem,
->> +				     bool uncharge_omem)
-> Please add a "_nolock()" suffix, just to be clear that the unlink_map()
-> counter part is locked.  It could be a follow up later.
+>> Signed-off-by: KP Singh <kpsingh@google.com>
+>> ---
+>>  include/linux/bpf_local_storage.h             |  10 +
+>>  include/linux/bpf_lsm.h                       |  21 ++
+>>  include/linux/bpf_types.h                     |   3 +
+>>  include/uapi/linux/bpf.h                      |  38 +++
+>>  kernel/bpf/Makefile                           |   1 +
 
-Done.
+[...]
 
-> 
->>  {
->> -	struct bpf_sk_storage_map *smap;
->> -	bool free_sk_storage;
+ata *inode_storage_lookup(struct inode *inode,
+>> +							   struct bpf_map *map,
+>> +							   bool cacheit_lockit)
+>> +{
+>> +	struct bpf_local_storage *inode_storage;
 >> +	struct bpf_local_storage_map *smap;
->> +	bool free_local_storage;
+>> +	struct bpf_storage_blob *bsb;
+>> +
+>> +	bsb = bpf_inode(inode);
+>> +	if (!bsb)
+>> +		return ERR_PTR(-ENOENT);
+> ERR_PTR is returned here...
+> 
+>> +
+>> +	inode_storage = rcu_dereference(bsb->storage);
+>> +	if (!inode_storage)
+>> +		return NULL;
+>> +
 
 [...]
 
->> +	if (unlikely(!selem_linked_to_storage(selem)))
->>  		/* selem has already been unlinked from sk */
->>  		return;
->>  
->> -	sk_storage = rcu_dereference(selem->sk_storage);
->> -	raw_spin_lock_bh(&sk_storage->lock);
->> -	if (likely(selem_linked_to_sk(selem)))
->> -		free_sk_storage = __selem_unlink_sk(sk_storage, selem, true);
->> -	raw_spin_unlock_bh(&sk_storage->lock);
->> +	local_storage = rcu_dereference(selem->local_storage);
->> +	raw_spin_lock_bh(&local_storage->lock);
->> +	if (likely(selem_linked_to_storage(selem)))
->> +		free_local_storage =
->> +			bpf_selem_unlink_storage(local_storage, selem, true);
->> +	raw_spin_unlock_bh(&local_storage->lock);
->>  
->> -	if (free_sk_storage)
->> -		kfree_rcu(sk_storage, rcu);
->> +	if (free_local_storage)
 >> +		kfree_rcu(local_storage, rcu);
->>  }
->>  
->> -static void __selem_link_sk(struct bpf_sk_storage *sk_storage,
->> -			    struct bpf_sk_storage_elem *selem)
->> +static void bpf_selem_link_storage(struct bpf_local_storage *local_storage,
->> +				   struct bpf_local_storage_elem *selem)
-> Same here. bpf_selem_link_storage"_nolock"().
+>> +}
+>> +
+>> +
+>> +static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+>> +{
+>> +	struct bpf_local_storage_data *sdata;
+>> +	struct file *f;
+>> +	int fd;
+>> +
+>> +	fd = *(int *)key;
+>> +	f = fcheck(fd);
+>> +	if (!f)
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	get_file(f);
+>> +	sdata = inode_storage_lookup(f->f_inode, map, true);
+>> +	fput(f);
+>> +	return sdata ? sdata->data : NULL;
+> sdata can be ERR_PTR here and a few other cases below.
+> 
+> May be inode_storage_lookup() should just return NULL.
 
-Done.
+I think returning NULL is a better option. Thanks!
 
 > 
-> Please tag the Subject line with "bpf:".
+>> +}
+>> +
+>> +static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
+>> +					 void *value, u64 map_flags)
+>> +{
+>> +	struct bpf_local_storage_data *sdata;
+>> +	struct file *f;
+>> +	int fd;
+>> +
+>> +	fd = *(int *)key;
+>> +	f = fcheck(fd);
+>> +	if (!f)
+>> +		return -EINVAL;
+>> +
+>> +	get_file(f);> get_file() does atomic_long_inc() instead of atomic_long_inc_not_zero().
+> I don't see how that helps here.  Am I missing something?
 
-Done. Changed it to:
+You are right, this should not not be an fcheck followed by a get_file
+rather fcheck followed by get_file_rcu:
 
-bpf: Renames in preparation for bpf_local_storage
-    
-A purely mechanical change to split the renaming from the actual
-generalization.
+#define get_file_rcu_many(x, cnt)	\
+	atomic_long_add_unless(&(x)->f_count, (cnt), 0)
+#define get_file_rcu(x) get_file_rcu_many((x), 1)
+#define file_count(x)	atomic_long_read(&(x)->f_count)
 
-[...]
+But there is an easier way than all of this and this is to use 
+fget_raw which also calls get_file_rcu_many 
+and ensures a non-zero count before getting a reference.
+
+- KP
 
 > 
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> 
+>> +	sdata = bpf_local_storage_update(f->f_inode, map, value, map_flags);
+>> +	fput(f);
+>> +	return PTR_ERR_OR_ZERO(sdata);
+>> +}
+>> +
