@@ -2,121 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE05824A896
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 23:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AD324A8C4
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 23:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgHSVhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 17:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
+        id S1726729AbgHSV6R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 17:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgHSVhF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 17:37:05 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B53C061383
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 14:37:05 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id k12so20331568otr.1
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 14:37:05 -0700 (PDT)
+        with ESMTP id S1726209AbgHSV6O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 17:58:14 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D21C061757;
+        Wed, 19 Aug 2020 14:58:14 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d19so127294pgl.10;
+        Wed, 19 Aug 2020 14:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CS+1467DMyFTqT+L2iSQMSr95xvUjx22mgQhPk7Fd0U=;
-        b=Ta+g1ZgTNyWRyOadjtYmnLrqkRKTp1Yqu3v85C1PlgWit/t/GfBuyJrf7KkLtWIp5c
-         obzIbdbmc69nlF0yFwItQxDewv3hhDIcu4hovzlskeqJwIK5mpzk6z3aUtqJgZ+DSflY
-         89K5nsJMI1E2px6cL3lCPAuXNqy6alXpd5Y8B86lVTMT5axCkRcmg1r9PnfhQ5ysxkGw
-         xuEboslpGgpoBK6kcsX6zimi7fbM/InmxLfMxBl2sylTbbrjYVKKzRv0miXc9y+CbO46
-         JPua5bOPXgPoLuzKVJq2PfJRU09D5n/WRI+3dX0QohzqYTWhWbS5DQscx/5yGjUDXe5V
-         X2jA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=wxmd8DKJTSw2pEZ/YKVFag9RNqVOH5CwCvU1Kdqi78I=;
+        b=Ii7B+EsveWXgPOhBsd4UXRt94SgwIGWjQwo1oklRKAIM/oqi85aekg1444gkjotmb1
+         UJLpP36v0XsxHu8vAjOVV8FW2XSHj/tcIYmbRz+HMtFycNKNuiisa/aZht8yFCxar4Zy
+         tQLb966w+CL12USS5DH1flAE2hQ8yGrj2aGSyjpLSRRpChv0MJqdASGfkb/L7zVXf42u
+         cZg57aHBrt+4f863N6zNLZmxfMrNcrZTNP2az03PyDMYNPklC7gfA7MEmCxT9yVAbREJ
+         D4SalHBDAenO8B8MkEo/jbDfLh6a23cb+Q4WbGITmQNjGprlDPpBCDhVJaYIWzsClyjB
+         ZpPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CS+1467DMyFTqT+L2iSQMSr95xvUjx22mgQhPk7Fd0U=;
-        b=DoZIbunn4QqeMbmKmHkv2EsqlW4Q4r24PMxT/t+ccTm/9rMMWJ2Jkibf0Bwcb+jyQ9
-         TYW+PzI1/3QfHNOYlP38/86zxEWjcobGZ1n9dOGOCWfz+FkQ8p56vnkgAF1yg5OGh7F8
-         8r8doWa7Ym9PJja+x4deXNKZuU2TeB6typwNPwl1xdq7xcEaPUHCTtqTNbMxRm7sMdfF
-         qdaI6KnKWhJAxdDmTbKSwV7pJAhCSP/1bfLgEO3ySAhjuwlAXMF/Tj4l0TUZSmjE3Gfz
-         sUNX+u+7Xv1J58YjvEYDElWVnX4WH3ocE6pbqGJlfIrscF5Rqi9FicnuBIDvL/T5PvhL
-         k6Rw==
-X-Gm-Message-State: AOAM530VcIAw4t6adbZdhqa9XhVcXm5/KG9550Slon3vwsIqDWv9OeaE
-        uFwO7HrOtTOFzrSBW3UMm8Ded4VoZkQMJDEeUQKAwg==
-X-Google-Smtp-Source: ABdhPJxpl82rAqK2FHLd0zX7VnPn8+94l8zujbb1JUnY5F6i+DaLJ+lsZzhjUgUndjPKQh1QUFVxfaVx/wGs30VKOyU=
-X-Received: by 2002:a05:6830:3196:: with SMTP id p22mr21167646ots.102.1597873024596;
- Wed, 19 Aug 2020 14:37:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
-In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 19 Aug 2020 14:36:52 -0700
-Message-ID: <CALAqxLU3bt6fT4nGHZFSnzyQq4xJo2On=c_Oa9ONED9-jhaFgw@mail.gmail.com>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Liwei Cai <cailiwei@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Clark <robdclark@chromium.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Liuyao An <anliuyao@huawei.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Wei Xu <xuwei5@hisilicon.com>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Chen Feng <puck.chen@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=wxmd8DKJTSw2pEZ/YKVFag9RNqVOH5CwCvU1Kdqi78I=;
+        b=kh0HUoN4PCZRhDHHNB2XIb1fWclKKw7GrWeYuyVRmG973QPPO0UjqXj7Fls/l3Pdrv
+         bdFajZLYv7FYY/XeRtIJaRkFwDlX48XmvOS06U9fDlqTkqVEDD2Azn9aIdtWoKZQ8hkW
+         i0JcT7CAZObGnzPk+tMAv3rsMW4SXBNMWwgGBZks8P3xtg5kXsn4LYPMhBV4Y9QP1pvQ
+         vR/8sLzwnlVFa1ebbsCCkB70WFJrDG6fTtYLnoDbyWLn+MNbYWP2XpsAJ7o9TkeLBlcE
+         vieLd6FLvDbzjPxvofyf7Emgxni1rEPXursovbsuVtfLFV9f8ZPt+RxIwwHLNIIuyOrh
+         kUDg==
+X-Gm-Message-State: AOAM533KZ0CKGdRALp1BaN0rwkymYZL0Nsrr3lsWPw4sF/rvVXoOTN5S
+        yEEGjdohxVY7DzG0crY1S5HDKS+V9PYBrw==
+X-Google-Smtp-Source: ABdhPJyLv4fF3T/pHneVF8HsUhxQ7BG8vmzXlvK1X0sunLV/W3IbFspIUp73l9vIwkCBfwCPh3XGIQ==
+X-Received: by 2002:a63:ef46:: with SMTP id c6mr326444pgk.96.1597874293631;
+        Wed, 19 Aug 2020 14:58:13 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id p9sm145724pge.39.2020.08.19.14.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 14:58:13 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 14:58:05 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, brouer@redhat.com,
+        echaudro@redhat.com, sameehj@amazon.com
+Message-ID: <5f3da06d5de6c_1b0e2ab87245e5c01b@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200819141428.24e5183a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <cover.1597842004.git.lorenzo@kernel.org>
+ <3e0d98fafaf955868205272354e36f0eccc80430.1597842004.git.lorenzo@kernel.org>
+ <20200819122328.0dab6a53@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200819202223.GA179529@lore-desk>
+ <20200819141428.24e5183a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: Re: [PATCH net-next 6/6] net: mvneta: enable jumbo frames for XDP
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 4:46 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
-> So, IMO, the best is to keep it on staging for a while, until those
-> remaining bugs gets solved.
->
-> I added this series, together with the regulator driver and
-> a few other patches (including a hack to fix a Kernel 5.8
-> regression at WiFi ) at:
->
->         https://gitlab.freedesktop.org/mchehab_kernel/hikey-970/-/commits/master
+Jakub Kicinski wrote:
+> On Wed, 19 Aug 2020 22:22:23 +0200 Lorenzo Bianconi wrote:
+> > > On Wed, 19 Aug 2020 15:13:51 +0200 Lorenzo Bianconi wrote:  
+> > > > Enable the capability to receive jumbo frames even if the interface is
+> > > > running in XDP mode
+> > > > 
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>  
+> > > 
+> > > Hm, already? Is all the infra in place? Or does it not imply
+> > > multi-buffer.
+> > 
+> > with this series mvneta supports xdp multi-buff on both rx and tx sides (XDP_TX
+> > and ndo_xpd_xmit()) so we can remove MTU limitation.
+> 
+> Is there an API for programs to access the multi-buf frames?
 
-Sorry, one more small request: Could you create a branch that only has
-the DRM driver changes in it?
+Hi Lorenzo,
 
-The reason I ask, is that since the HiKey960 isn't affected by the
-majority of the problems you listed as motivation for going through
-staging. So if we can validate that your tree works fine on HiKey960,
-the series can be cleaned up and submitted properly upstream to enable
-that SoC, and the outstanding 970 issues can be worked out afterwards
-against mainline.
+This is not enough to support multi-buffer in my opinion. I have the
+same comment as Jakub. We need an API to pull in the multiple
+buffers otherwise we break the ability to parse the packets and that
+is a hard requirement to me. I don't want to lose visibility to get
+jumbo frames.
 
-thanks
--john
+At minimum we need a bpf_xdp_pull_data() to adjust pointer. In the
+skmsg case we use this,
+
+  bpf_msg_pull_data(u32 start, u32 end, u64 flags)
+
+Where start is the offset into the packet and end is the last byte we
+want to adjust start/end pointers to. This way we can walk pages if
+we want and avoid having to linearize the data unless the user actual
+asks us for a block that crosses a page range. Smart users then never
+do a start/end that crosses a page boundary if possible. I think the
+same would apply here.
+
+XDP by default gives you the first page start/end to use freely. If
+you need to parse deeper into the payload then you call bpf_msg_pull_data
+with the byte offsets needed.
+
+Also we would want performance numbers to see how good/bad this is
+compared to the base case.
+
+Thanks,
+John
