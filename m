@@ -2,94 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CF424A396
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 17:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F03F24A3A3
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 17:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgHSPzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 11:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727000AbgHSPzD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:55:03 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF042C061757;
-        Wed, 19 Aug 2020 08:55:03 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id i19so12317603lfj.8;
-        Wed, 19 Aug 2020 08:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=31Qym4k8331f6H4k76WgLs9RnH9R3abh8NK+iPJ0pQ8=;
-        b=ParQHmrOzrGsP3e8fhsiAiGjWynHT+odEmSfEkdgFcYE/+EQafA+ybVP3YAc1Dxz9E
-         27+5cq+fFaPMGVyaOMMxJpwnxvv8nYc2vRQFpcgSgK6p62joE/f6qdx7KldywxEogdY7
-         CFVBvmCIGQrkg97ni13iqPUqTQeG7RoUkfk+CPPqVTDCbGxcJAoWBxduM4pDSErKNneb
-         VjhShTP2TTUj1v5u5GrI4yTEn9l3iPL53IdQG9oRB+Fzz3RY27xmJfJVU6A5ljf+dS+Y
-         d0z0JbhPisKdgb7xtwyN5o7BmFZhKWWQpsdGP3UFkxzTngWz0SN9SvIZlh8iKXuBi6pP
-         9JcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=31Qym4k8331f6H4k76WgLs9RnH9R3abh8NK+iPJ0pQ8=;
-        b=UhEoy9DFXxWff05nIWEanrzEoNt6J3RzsjxJiFraScrKocl9QKEwQbQ2j3diGLsT3p
-         scIQw6xd8RfUmUJWrcKnkFQqitRRREVWo0FXyZb7oS+gVhE5Ma6RFg3D9JclwVhAGEQz
-         zurMdTrKfUbFVh4RAxFgNbxDNc0nYk3YxI4THu3KX7IVMYq+6blWOo7wS6s78TR7SV6m
-         hmfbMTip3CeSgp3Ft1yI5Us74zuo9WpEW85zvFaVnHw1OtRhSYD+YfM176HWSQIA/AiX
-         A3mKotdyCoEXrxFDFrD0B7MHw17VzOC/TRAeEY5mPGf81nWl3wXfAd9yNl1xTO6nld0+
-         QS7A==
-X-Gm-Message-State: AOAM5304vc+2h6hejd/FewrP0mbsRxpBp2fIdy5UJRwQ+Po/PefdPFOI
-        yTBfR60/Pq64jfVCMu/GcaAeeu8xPxQdGjsmTTk=
-X-Google-Smtp-Source: ABdhPJzo8ojYd7PedEirG4KP1WXU+RDi395iO/dPgxj2okrypI9Ncnu33CdFRKWevZJNZ0mb8YOPvY5MOjj7/ncEWrM=
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr12109645lfb.196.1597852502174;
- Wed, 19 Aug 2020 08:55:02 -0700 (PDT)
+        id S1726951AbgHSP5i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 11:57:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49416 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726632AbgHSP5h (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Aug 2020 11:57:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597852656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3CF/ezO2LMu2FPJiLYr77h3LAOworvbz4RhCVNAQFKY=;
+        b=haWgPiQq7yGW8prDyXv/djagfoJb6yv5z+WHICgTH3c8wqTk7MDdYvxpvx1TRaytFn/28o
+        ltfqvZ04JwMM1vjnYhFUVuPTkHljUK5Mnmp+8WLLotjYppYOc6AtDtSoNNuSGtxQcfHzGT
+        ivwbYk10CNdD3C9a2P0uA7OIpn324cw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-f-C4C0SjMCqwLZaEmDyuAQ-1; Wed, 19 Aug 2020 11:57:32 -0400
+X-MC-Unique: f-C4C0SjMCqwLZaEmDyuAQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA59F1084C8E;
+        Wed, 19 Aug 2020 15:57:30 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D1FAB26DD4;
+        Wed, 19 Aug 2020 15:57:30 +0000 (UTC)
+Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id BEDC41832FC1;
+        Wed, 19 Aug 2020 15:57:30 +0000 (UTC)
+Date:   Wed, 19 Aug 2020 11:57:30 -0400 (EDT)
+From:   Veronika Kabatova <vkabatov@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, sdf@google.com, andriin@fb.com,
+        skozina@redhat.com, brouer@redhat.com
+Message-ID: <871756322.7804389.1597852650610.JavaMail.zimbra@redhat.com>
+In-Reply-To: <8c876d8d-c13b-279d-6b94-15c3ad4f0a9c@fb.com>
+References: <20200819102354.1297830-1-vkabatov@redhat.com> <8c876d8d-c13b-279d-6b94-15c3ad4f0a9c@fb.com>
+Subject: Re: [PATCH] selftests/bpf: Remove test_align from TEST_GEN_PROGS
 MIME-Version: 1.0
-References: <87ft8l6ic3.fsf@x220.int.ebiederm.org> <20200817220425.9389-9-ebiederm@xmission.com>
- <CAHk-=whCU_psWXHod0-WqXXKB4gKzgW9q=d_ZEFPNATr3kG=QQ@mail.gmail.com>
- <875z9g7oln.fsf@x220.int.ebiederm.org> <CAHk-=wjk_CnGHt4LBi2WsOeYOxE5j79R8xHzZytCy8t-_9orQw@mail.gmail.com>
- <20200818110556.q5i5quflrcljv4wa@wittgenstein> <87pn7m22kn.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87pn7m22kn.fsf@x220.int.ebiederm.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 19 Aug 2020 08:54:50 -0700
-Message-ID: <CAADnVQKpDaaogmbZPD0bv3SrTXo9i5eSBMz1dd=3wOn9pxDOWA@mail.gmail.com>
-Subject: Re: [PATCH 09/17] file: Implement fnext_task
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        criu@openvz.org, bpf <bpf@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@debian.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Matthew Wilcox <matthew@wil.cx>,
-        Trond Myklebust <trond.myklebust@fys.uio.no>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.194.249, 10.4.195.15]
+Thread-Topic: selftests/bpf: Remove test_align from TEST_GEN_PROGS
+Thread-Index: D0clzo8PdIvo/7kIgar6RNEduai8TQ==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 6:25 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The bug in the existing code is that bpf_iter does get_file instead
-> of get_file_rcu.  Does anyone have any sense of how to add debugging
-> to get_file to notice when it is being called in the wrong context?
 
-That bug is already fixed in bpf tree.
-See commit cf28f3bbfca0 ("bpf: Use get_file_rcu() instead of
-get_file() for task_file iterator")
+
+----- Original Message -----
+> From: "Yonghong Song" <yhs@fb.com>
+> To: "Veronika Kabatova" <vkabatov@redhat.com>, bpf@vger.kernel.org
+> Cc: sdf@google.com, andriin@fb.com, skozina@redhat.com, brouer@redhat.com
+> Sent: Wednesday, August 19, 2020 5:36:01 PM
+> Subject: Re: [PATCH] selftests/bpf: Remove test_align from TEST_GEN_PROGS
+> 
+> 
+> 
+> On 8/19/20 3:23 AM, Veronika Kabatova wrote:
+> > Calling generic selftests "make install" fails as rsync expects all
+> > files from TEST_GEN_PROGS to be present. The binary is not generated
+> > anymore (commit 3b09d27cc93d) so we can safely remove it from there.
+> > 
+> > Fixes: 3b09d27cc93d ("selftests/bpf: Move test_align under test_progs")
+> > Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+> 
+> Could you remove 'test_align' for .gitignore as well? With this,
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+
+Good idea. Will send a v2 soon.
+
+Veronika
+
+> > ---
+> >   tools/testing/selftests/bpf/Makefile | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/Makefile
+> > b/tools/testing/selftests/bpf/Makefile
+> > index a83b5827532f..fc946b7ac288 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -32,7 +32,7 @@ LDLIBS += -lcap -lelf -lz -lrt -lpthread
+> >   
+> >   # Order correspond to 'make run_tests' order
+> >   TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map
+> >   test_lpm_map test_progs \
+> > -	test_align test_verifier_log test_dev_cgroup test_tcpbpf_user \
+> > +	test_verifier_log test_dev_cgroup test_tcpbpf_user \
+> >   	test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+> >   	test_cgroup_storage \
+> >   	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+> > 
+> 
+> 
+
