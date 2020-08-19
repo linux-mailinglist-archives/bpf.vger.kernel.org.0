@@ -2,137 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCC624A73D
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 21:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2A824A76E
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 22:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgHSTw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 15:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S1725997AbgHSUFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 16:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgHSTwT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 15:52:19 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B696C061344
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 12:52:19 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h16so20049268oti.7
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 12:52:19 -0700 (PDT)
+        with ESMTP id S1725275AbgHSUFq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 16:05:46 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F1EC061757;
+        Wed, 19 Aug 2020 13:05:46 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id mw10so1618165pjb.2;
+        Wed, 19 Aug 2020 13:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=20eRCPt9U7XROuUscJl4o9bl5XBe7/+hwEOIYHyciSM=;
-        b=TDvGe73fi0mYFcu8gy0zyv7nAwTvj7LZXmceDEUKPP8XfBtwIw8eDnhZKXXW/8lOST
-         i3mwXYbXDDRyFBEBUEFYWxYynj8XahsSAx/k6lpaNmRyovcJDE7Y/1Us5/lAXLoB+fny
-         MXwugodqdfXUpnDdV+YqwtDPcrU39IcwaELeeOIEfQVGHH8qMEJzhHrmfsPm50dMtK8D
-         E2hgWNg9hTGAkp/gDSRS2/SFCteSIRgMdFhm92/90JvBoxi1tgk0nM350xbrUY9djJu/
-         Vayz78+1GIbV3JXLHBbEvqxWVmcLvT6HCup7VhLEysHQgvZVLA6bXvrYb7L+4t8Mxya5
-         O2PA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=0I6TG8OQ4MyMAK10jo0S7S3IILMCgjoAeTh1HO1wd0k=;
+        b=Wm3fvNiRAKqxyH/lkvyeYmyjkx8eH1wdX7slQRNcwhkjV72tGjQI8TKWU45YCRbWsN
+         trMRTA1G8ep+n21TzY9pC8NXLOHkZ8e1GGr1jCXjgMfsHAsHJaDdzvvIk7NtW2bervC7
+         PKKu0poqliI4jdKv8BacQm33kbvuqZ5AGYUW8YEb/EYdXTbigtpEZZfT4a0uMRFKaRm0
+         DpxbKyNBc/Pi+LHBsG0oh88qFpUDEzBls35SdNgXXQj+gOpkWeUR5r6/+QjSjvZIpEtW
+         ED9otUqtKsQgispUd1/ZMpjkOn5C1WRM4rNj/X7QAiiwxJcAg+65wp536SFoYqlJx426
+         GMgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=20eRCPt9U7XROuUscJl4o9bl5XBe7/+hwEOIYHyciSM=;
-        b=JsYPL0RgVCBNgREbSnZ8OSUguU9l2bYKXSmzO5EWDAXYtPKF9aQAaY2fw6El6xY964
-         TLnnxg5yYY2cXGCZq6brw+ltmt8VeRS8lEtsHk7Rq9yit/cGc4MBix35yFDagzH4+ckh
-         Al1GjWs2pTZqcRyE0tVIY9G5FM+/XttceBT/6vESvdwjMbrZDyFQh4F28liS6q/a4Z+B
-         2W8LwktW4Ysa/yr0CRgXHeonAWCwRjqd2/zkXntQYk0uro4LJe9VVwYbTL/1qlJTS88H
-         A4jToy/jwdwam6XRxKcYBp/XL9LHfuiuizhqeqX7cxz1T771fSU0OZ/WPtEiSeP+4TOi
-         rxjQ==
-X-Gm-Message-State: AOAM533TbIL2TswT8pB/NYoo3KXWJutbx+FFiyoTzv6xqMXB55pwAj/O
-        H1IVJ7tX9/+0QZQZp3ZTX7gajnELkLdRVJyHJ5+xzg==
-X-Google-Smtp-Source: ABdhPJziBBPPuDZCBcZoysAn7wtSqkMtfGL35ZZB/FJ/a7yXT1Ut5k0YtYAU8hIkSuF0vuVhhtyHAco3tq76syVzuqI=
-X-Received: by 2002:a9d:6f8f:: with SMTP id h15mr18795170otq.221.1597866737290;
- Wed, 19 Aug 2020 12:52:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
- <20200819152120.GA106437@ravnborg.org> <20200819153045.GA18469@pendragon.ideasonboard.com>
-In-Reply-To: <20200819153045.GA18469@pendragon.ideasonboard.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 19 Aug 2020 12:52:06 -0700
-Message-ID: <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=0I6TG8OQ4MyMAK10jo0S7S3IILMCgjoAeTh1HO1wd0k=;
+        b=jXBdZvWdb5rIH/5zojlQPjBTUKPqVJm3bRaxB/QXFunsOkBSndgYknRHv8K29Ujv3g
+         tPk81/vGmv0vd9tsjPEUwZDqWnQIUU7NTaqmo7TQEwBD/ki1OIJ38ZLAuCCHtPs52czj
+         Tsx9+rbFYgHGV8LZKI5SE805sUh6ND+O+Gsg7YrOIe/hHnOi+G9hUJe3kSSalW7UXc7r
+         ir8UijBhwzlQlCbQRZUkSOCWSD/STnS4/nuhOW6eUCrQ/rZGyWVyRUKdlBC57O8k9lvg
+         +lKP2eVckJJunFvJLvrCwwkfSn9warFQn1+e6y94q43jiYt0jyRmGPHngTHxct6VHio6
+         uwCA==
+X-Gm-Message-State: AOAM531Cypax7y2IVqwTCKRuN64upLTCtDs/d3getBagB1b4qNOvbUYL
+        2ogoaqlCrBDTMRC9ovvJuLc=
+X-Google-Smtp-Source: ABdhPJwcrV5pwOyfgoe0lNQO5XV3rZza8MUk63iRiaKDKIH8CLCaYLK9IAFivn4tkTWuRq+767obXA==
+X-Received: by 2002:a17:90b:10f:: with SMTP id p15mr5535936pjz.171.1597867546130;
+        Wed, 19 Aug 2020 13:05:46 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id g5sm23419pfh.168.2020.08.19.13.05.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 13:05:45 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 13:05:36 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>, jakub@cloudflare.com,
+        john.fastabend@gmail.com, Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liuyao An <anliuyao@huawei.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <5f3d8610d335f_2c9b2adeefb585bcac@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200819092436.58232-2-lmb@cloudflare.com>
+References: <20200819092436.58232-1-lmb@cloudflare.com>
+ <20200819092436.58232-2-lmb@cloudflare.com>
+Subject: RE: [PATCH bpf-next 1/6] net: sk_msg: simplify sk_psock
+ initialization
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:
-> > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:
-> > > This patch series port the out-of-tree driver for Hikey 970 (which
-> > > should also support Hikey 960) from the official 96boards tree:
-> > >
-> > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
-> > >
-> > > Based on his history, this driver seems to be originally written
-> > > for Kernel 4.4, and was later ported to Kernel 4.9. The original
-> > > driver used to depend on ION (from Kernel 4.4) and had its own
-> > > implementation for FB dev API.
-> > >
-> > > As I need to preserve the original history (with has patches from
-> > > both HiSilicon and from Linaro),  I'm starting from the original
-> > > patch applied there. The remaining patches are incremental,
-> > > and port this driver to work with upstream Kernel.
-> > >
-...
-> > > - Due to legal reasons, I need to preserve the authorship of
-> > >   each one responsbile for each patch. So, I need to start from
-> > >   the original patch from Kernel 4.4;
-...
-> > I do acknowledge you need to preserve history and all -
-> > but this patchset is not easy to review.
->
-> Why do we need to preserve history ? Adding relevant Signed-off-by and
-> Co-developed-by should be enough, shouldn't it ? Having a public branch
-> that contains the history is useful if anyone is interested, but I don't
-> think it's required in mainline.
+Lorenz Bauer wrote:
+> Initializing psock->sk_proto and other saved callbacks is only
+> done in sk_psock_update_proto, after sk_psock_init has returned.
+> The logic for this is difficult to follow, and needlessly complex.
+> 
+> Instead, initialize psock->sk_proto whenever we allocate a new
+> psock. Additionally, assert the following invariants:
+> 
+> * The SK has no ULP: ULP does it's own finagling of sk->sk_prot
+> * sk_user_data is unused: we need it to store sk_psock
+> 
+> Protect our access to sk_user_data with sk_callback_lock, which
+> is what other users like reuseport arrays, etc. do.
+> 
+> The result is that an sk_psock is always fully initialized, and
+> that psock->sk_proto is always the "original" struct proto.
+> The latter allows us to use psock->sk_proto when initializing
+> IPv6 TCP / UDP callbacks for sockmap.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
 
-Yea. I concur with Laurent here. I'm not sure what legal reasoning you
-have on this but preserving the "absolute" history here is actively
-detrimental for review and understanding of the patch set.
+Looks like a nice bit of cleanup thanks. I think we might be able to fold
+up more of this code as well, but I'll take a look in a bit.
 
-Preserving Authorship, Signed-off-by lines and adding Co-developed-by
-lines should be sufficient to provide both atribution credit and DCO
-history.
-
-thanks
--john
+Acked-by: John Fastabend <john.fastabend@gmail.com>
