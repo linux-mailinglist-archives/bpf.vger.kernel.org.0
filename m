@@ -2,71 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7212498C1
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 10:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3C524993B
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 11:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgHSIyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 04:54:52 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2563 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726759AbgHSIwq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 04:52:46 -0400
-IronPort-SDR: 1EY4Bcwnnx0fp8uuovSyiloJdrdCZDdwpdFCtNlL/RNU3LhohZrr8/BM+S/ne1/MqaueWfgyjH
- dpP9FZQPQyQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="156141415"
-X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
-   d="scan'208";a="156141415"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2020 01:52:45 -0700
-IronPort-SDR: O3igYNVHERIrPEv+6BPrS2p5Ge2MIOT25tEwj5DhNH39mzqpsLzydvBO39XZCodjqWu7rRLW+r
- yplyU9mxvvIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,330,1592895600"; 
-   d="scan'208";a="497168072"
-Received: from skirillo-mobl2.ccr.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.32.199])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Aug 2020 01:52:42 -0700
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbSW50ZWwtd2lyZWQtbGFuXSBbUEFU?=
- =?UTF-8?Q?CH_0/2=5d_intel/xdp_fixes_for_fliping_rx_buffer?=
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-To:     "Li,Rongqing" <lirongqing@baidu.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Piotr <piotr.raczynski@intel.com>,
-        Maciej <maciej.machnikowski@intel.com>
-References: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
- <CAJ+HfNi2B+2KYP9A7yCfFUhfUBd=sFPeuGbNZMjhNSdq3GEpMg@mail.gmail.com>
- <4268316b200049d58b9973ec4dc4725c@baidu.com>
- <83e45ec2-1c66-59f6-e817-d4c523879007@intel.com>
- <c3695fc71ca140d08a795bbd32d8522f@baidu.com>
- <c691e3d2-8b16-744c-8918-5be042bd37dc@intel.com>
-Message-ID: <7d5ec101-b14c-ffda-053b-8a1ab46bf265@intel.com>
-Date:   Wed, 19 Aug 2020 10:52:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726640AbgHSJYE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 19 Aug 2020 05:24:04 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34158 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726634AbgHSJYC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Aug 2020 05:24:02 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-ej-EtbYGMuqQDUEaYLjZBw-1; Wed, 19 Aug 2020 05:23:57 -0400
+X-MC-Unique: ej-EtbYGMuqQDUEaYLjZBw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DB961005E63;
+        Wed, 19 Aug 2020 09:23:55 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EB52100238C;
+        Wed, 19 Aug 2020 09:23:43 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Mark Wielaard <mjw@redhat.com>, Nick Clifton <nickc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH bpf-next] tools/resolve_btfids: Fix sections with wrong alignment
+Date:   Wed, 19 Aug 2020 11:23:42 +0200
+Message-Id: <20200819092342.259004-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c691e3d2-8b16-744c-8918-5be042bd37dc@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-08-19 10:31, Björn Töpel wrote:
-[...]
-> 
-> But please, try to reproduce with a newer kernel.
->
+The data of compressed section should be aligned to 4
+(for 32bit) or 8 (for 64 bit) bytes.
 
-Also, you are *sure* that you're touching stale data? Have you tried 
-running with CONFIG_DEBUG_PAGEALLOC and CONFIG_PAGE_POISONING?
+The binutils ld sets sh_addralign to 1, which makes libelf
+fail with misaligned section error during the update as
+reported by Jesper:
 
+   FAILED elf_update(WRITE): invalid section alignment
 
-Björn
+While waiting for ld fix, we can fix compressed sections
+sh_addralign value manually.
+
+Adding warning in -vv mode when the fix is triggered:
+
+  $ ./tools/bpf/resolve_btfids/resolve_btfids -vv vmlinux
+  ...
+  section(36) .comment, size 44, link 0, flags 30, type=1
+  section(37) .debug_aranges, size 45684, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 16, expected 8
+  section(38) .debug_info, size 129104957, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 1, expected 8
+  section(39) .debug_abbrev, size 1152583, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 1, expected 8
+  section(40) .debug_line, size 7374522, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 1, expected 8
+  section(41) .debug_frame, size 702463, link 0, flags 800, type=1
+  section(42) .debug_str, size 1017571, link 0, flags 830, type=1
+   - fixing wrong alignment sh_addralign 1, expected 8
+  section(43) .debug_loc, size 3019453, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 1, expected 8
+  section(44) .debug_ranges, size 1744583, link 0, flags 800, type=1
+   - fixing wrong alignment sh_addralign 16, expected 8
+  section(45) .symtab, size 2955888, link 46, flags 0, type=2
+  section(46) .strtab, size 2613072, link 0, flags 0, type=3
+  ...
+  update ok for vmlinux
+
+Another workaround is to disable compressed debug info data
+CONFIG_DEBUG_INFO_COMPRESSED kernel option.
+
+Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object")
+Cc: Mark Wielaard <mjw@redhat.com>
+Cc: Nick Clifton <nickc@redhat.com>
+Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/bpf/resolve_btfids/main.c | 36 +++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 4d9ecb975862..0def0bb1f783 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -233,6 +233,39 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+ 	return btf_id__add(root, id, false);
+ }
+ 
++/*
++ * The data of compressed section should be aligned to 4
++ * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
++ * sets sh_addralign to 1, which makes libelf fail with
++ * misaligned section error during the update:
++ *    FAILED elf_update(WRITE): invalid section alignment
++ *
++ * While waiting for ld fix, we fix the compressed sections
++ * sh_addralign value manualy.
++ */
++static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
++{
++	int expected = gelf_getclass(elf) == ELFCLASS32 ? 4 : 8;
++
++	if (!(sh->sh_flags & SHF_COMPRESSED))
++		return 0;
++
++	if (sh->sh_addralign == expected)
++		return 0;
++
++	pr_debug2(" - fixing wrong alignment sh_addralign %u, expected %u\n",
++		  sh->sh_addralign, expected);
++
++	sh->sh_addralign = expected;
++
++	if (gelf_update_shdr(scn, sh) == 0) {
++		printf("FAILED cannot update section header: %s\n",
++			elf_errmsg(-1));
++		return -1;
++	}
++	return 0;
++}
++
+ static int elf_collect(struct object *obj)
+ {
+ 	Elf_Scn *scn = NULL;
+@@ -309,6 +342,9 @@ static int elf_collect(struct object *obj)
+ 			obj->efile.idlist_shndx = idx;
+ 			obj->efile.idlist_addr  = sh.sh_addr;
+ 		}
++
++		if (compressed_section_fix(elf, scn, &sh))
++			return -1;
+ 	}
+ 
+ 	return 0;
+-- 
+2.25.4
+
