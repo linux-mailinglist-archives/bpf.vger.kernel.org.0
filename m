@@ -2,92 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1385D24A1E9
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 16:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F395524A204
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 16:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgHSOj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 10:39:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54994 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727087AbgHSOjz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:39:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597847993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FbsnLY9rKkobFTZIKxecpfsJvpNNawkeoUCvEimCuCc=;
-        b=gvjGtq55BsYgTmR8X24PDB+Ve1GPb7PjpqkYH1RON0fJZGuOaT0J11O89BX+c7vKPEYBxQ
-        GqxscEmNSdPionuP6QzJx5TKAPfk84FbkzRA1/TjXS3K/5GHX0ETxvt/t7sYuHbb49L3Uo
-        Yf6v7lzZnKvHsys1nnMGTlGt6yc9aCY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-WES00mciPbK8L64I85JlRg-1; Wed, 19 Aug 2020 10:39:49 -0400
-X-MC-Unique: WES00mciPbK8L64I85JlRg-1
-Received: by mail-wm1-f72.google.com with SMTP id g72so1109700wme.4
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 07:39:49 -0700 (PDT)
+        id S1726578AbgHSOvL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 10:51:11 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53773 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbgHSOvG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:51:06 -0400
+Received: by mail-il1-f197.google.com with SMTP id o18so16916482ill.20
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 07:51:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=FbsnLY9rKkobFTZIKxecpfsJvpNNawkeoUCvEimCuCc=;
-        b=Pium1qHLVpF3stAheJdtGX/Evv8sxmxD8yzpyryMJw6CUbSuMRPKGLq/RFZyT+LYFF
-         3ccwYPSbpXMEye3CR+NP7EFslxTLH4v4VK0KC71nfKh4lzeLw3fR/0R7hj52Am76YqFN
-         uRe7eVTVoMrh/q7+4NA/nNZZgCljCMekqE8G4RyiY/i/Z+3LiPzRwCcnGNcoKXwxqn2+
-         HUNGOqOFqf/FpAiciIJxFb+Qrhrt5lzSENpUi/khyWcSueK5lONntHxxKERNzr1m9ah+
-         aoz75g5SnBSzPTFrghfFXjLC0KJkuntupjsEykj3lTjEqn70OgyCVYXSXtE2QUbKwkS/
-         Cn3w==
-X-Gm-Message-State: AOAM533kS1cWW+VK2cu3E3ZeZqqaGmImj+zJKhNPKoHdTN5OJdCwarxP
-        P03J/2FGVT2wN4PqzCmbW2Ly82xuVGcfOqACN7plOio/gAaqsarxtRWu6rt1EccWesvQA+ru/U6
-        fQJPkr2OSTFRE
-X-Received: by 2002:a1c:b443:: with SMTP id d64mr5702112wmf.68.1597847988800;
-        Wed, 19 Aug 2020 07:39:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyESO9tY3SC/TsbFL+82UpS0RG6FkakxcRfLLk+J/ZHSgrHlQcsjl4YHHeQCicvNi05JwEY1A==
-X-Received: by 2002:a1c:b443:: with SMTP id d64mr5702098wmf.68.1597847988612;
-        Wed, 19 Aug 2020 07:39:48 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w1sm5599495wmc.18.2020.08.19.07.39.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 07:39:47 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2D3A6182B54; Wed, 19 Aug 2020 16:39:47 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, andriin@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, ast@kernel.org
-Subject: Re: xdp generic default option
-In-Reply-To: <20200819092811.GA2420@lore-desk>
-References: <20200819092811.GA2420@lore-desk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 19 Aug 2020 16:39:47 +0200
-Message-ID: <87eeo2pumk.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=L7T0UptgHYmri7SaCGXWygzaLJh2phRnY0wB5fixdgI=;
+        b=LoyinAgBcExlxXcNAJp5/regKw80lj1MpFZ1T9GOc41aOAbp7HqTIoNA9snxSsqV66
+         PvX2w7EfosQawVtKCaGwF5/VPyER20dZivD/f/nKmNNxHGZk+ttl54zN7tEUSGJKWFG+
+         LP5gLk1PcRsuan99CItNvGOlLohF+Ipnda7c+1fbo9y6/QWzWkP0GuclkPR06caxPLuY
+         aZkJB9f720bM/l1VBshpIQ6g+B3FM5KWgcbvbVG0MYqzis/nq1qMHgPzKX4GFZ0EKihd
+         SfPoNYoUdeTn3inMlfuHnb6liDvhRIhIsvigO4DcP5fqTF/sLED0ttIVwC6TOL4JQm6v
+         055Q==
+X-Gm-Message-State: AOAM530bbM08Ufli6y80zOaqk3dMarFnFrNAGUPb1Za9prmp+JcF5OSd
+        BE4ylAwSljEnxqpCb/GuiBtdKSABMBwz1BTWVmdo8vnJlzcB
+X-Google-Smtp-Source: ABdhPJw8Eul5BA7PMHLOe+q9UZT4RyJM5c/bIGJstDY4zpBDZ19RM9Uzxo9blXQp3uPwrJTIFVk3E4JNQ3rznpSbNdvNHR3LHUnk
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6602:2417:: with SMTP id s23mr19902065ioa.94.1597848665416;
+ Wed, 19 Aug 2020 07:51:05 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 07:51:05 -0700
+In-Reply-To: <000000000000568fc005ad3b57c3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001b6bb205ad3c222b@google.com>
+Subject: Re: unregister_netdevice: waiting for DEV to become free (4)
+From:   syzbot <syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        dvyukov@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+syzbot has bisected this issue to:
 
-> Hi Andrii,
->
-> working on xdp multi-buff I figured out now xdp generic is the default choice
-> if not specified by userspace. In particular after commit 7f0a838254bd
-> ("bpf, xdp: Maintain info on attached XDP BPF programs in net_device"), running
-> the command below, XDP will run in generic mode even if the underlay driver
-> support XDP in native mode:
->
-> $ip link set dev eth0 xdp obj prog.o
-> $ip link show dev eth0
-> 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc mq state UP mode DEFAULT
->    group default qlen 1024
->    link/ether f0:ad:4e:09:6b:57 brd ff:ff:ff:ff:ff:ff
->    prog/xdp id 1 tag 3b185187f1855c4c jited
+commit 449325b52b7a6208f65ed67d3484fd7b7184477b
+Author: Alexei Starovoitov <ast@kernel.org>
+Date:   Tue May 22 02:22:29 2018 +0000
 
-Yeah, defaulting to xdpgeneric is not a good idea (and a change in
-behaviour; I get native mode on the same command on a 5.8 kernel)...
+    umh: introduce fork_usermode_blob() helper
 
--Toke
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11f86186900000
+start commit:   18445bf4 Merge tag 'spi-fix-v5.9-rc1' of git://git.kernel...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13f86186900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f86186900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
+dashboard link: https://syzkaller.appspot.com/bug?extid=df400f2f24a1677cd7e0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15859986900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1228fea1900000
 
+Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
+Fixes: 449325b52b7a ("umh: introduce fork_usermode_blob() helper")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
