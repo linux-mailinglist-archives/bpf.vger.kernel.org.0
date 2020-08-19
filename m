@@ -2,103 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAC024929C
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 04:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856482492EA
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 04:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHSCAk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 22:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgHSCAj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 22:00:39 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F84C061389;
-        Tue, 18 Aug 2020 19:00:37 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id c10so465906pjn.1;
-        Tue, 18 Aug 2020 19:00:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PN3fIhrJJyl3pPILHSdeC20nIVFKLI7QiZuW9O5IrG8=;
-        b=nyuFA3kTs2vyDGWig2dHP/Ats5sZqUVGiHjlEiAlC7fXpMSOaL1Me1NmdnnY9yJXfg
-         n2+leRzk4IrRkKQr9MaJHE4t7uMUp1+UOUOgiWHobt5sWglD0qSV+E1mKVc2pDyLJpe8
-         zF2w87+6FhxbDkIumxHyCcujBTmQsBvFjJpNsViuaSs63zzjOnqk99ns8B7/MOBAeU1T
-         /Coah0bsoyQoXM9Md+in2c8+vA/2CSpRx/B6BmBUHOfk13WpQ+0XYURdi67708dvrQLQ
-         LNzjm1u8WBH6/tqSt3ChxzKhj1B5hpSVcUJbOkDhheVHGCIhAqFoHuPdE4eH3lcBiasj
-         FCRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PN3fIhrJJyl3pPILHSdeC20nIVFKLI7QiZuW9O5IrG8=;
-        b=X7YszeNH432Q5c/0RtA3xeriMNuEkghk5eJ3B0gnHZfSy9PS3ACZcCZroOfcbpHxgY
-         czsQUzivGictq532G9GGYQMSKrZAYm3xitoodVmwai/K9uH+eM8aI6z0UfHlvCN5Yell
-         lv2n5/Y0ygPaHD42Hh0QEYQ0lqirAjwmuYFz65Hk0mPjrNUU29tf/NZtwfUzl7f8bYK5
-         wRShB9t37aWc8K6uBo+HDzBIu1UVijNd0k/r5bl5K/u/Pgkbuzw38ret1hrt91rSyq8c
-         NQgB9a8ZK14HS9HDd3FSFf5KtZ6U+9cIQz7D3+5io8VJb8+/KeILv6sCg8RVvUF2k/Bs
-         9G+w==
-X-Gm-Message-State: AOAM531Rk16VEjALnooEpNM/cqgGYVMiJcfbl+PLyoU7txZL+Cjo9xyg
-        mmNfmUeegLbI+RvyjuGQOXg=
-X-Google-Smtp-Source: ABdhPJyHoPlHv2D4U6jfifzRErwvbcJHRRK4idYx+IiPISLEG7z6KKd8UIDsQ02S29N9d7Z7a3s/UA==
-X-Received: by 2002:a17:90a:77ca:: with SMTP id e10mr2157509pjs.150.1597802436327;
-        Tue, 18 Aug 2020 19:00:36 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:0:a28c:fdff:fee1:f370])
-        by smtp.gmail.com with ESMTPSA id q6sm1120812pjr.20.2020.08.18.19.00.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 19:00:35 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        id S1726985AbgHSCeg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 22:34:36 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60935 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726718AbgHSCeg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 22:34:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597804474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xG+Smo/hbvCwpLsWztqMEz2PRikMhrGpQAYmDOYK+mQ=;
+        b=eHcBo7ZklmLxmY7mtdNqafiBFO6LZKRSXQCIs6YJpzHKSOcOpbPewwK5ZGc6luXv0Cd/hE
+        EEkLKXMd5CEOaNCU53vtI6xNIGSoSgh2SdDyn7EBDJJWx4PF/o0rjNxrypX+Wz1kIe9XzJ
+        nEFvqyYehq2dgE2t9Ez2a4JONwzTX00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-br62jBZONMa9-nHLs4qulQ-1; Tue, 18 Aug 2020 22:34:32 -0400
+X-MC-Unique: br62jBZONMa9-nHLs4qulQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93CCA10066FB;
+        Wed, 19 Aug 2020 02:34:31 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-30.ams2.redhat.com [10.36.112.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2520760BE5;
+        Wed, 19 Aug 2020 02:34:29 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH bpf-next] net-veth: add type safety to veth_xdp_to_ptr() and veth_ptr_to_xdp()
-Date:   Tue, 18 Aug 2020 19:00:27 -0700
-Message-Id: <20200819020027.4072288-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH] bpf: selftests: global_funcs: check err_str before strstr
+Date:   Wed, 19 Aug 2020 05:34:27 +0300
+Message-Id: <20200819023427.267182-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+The error path in libbpf.c:load_program() has calls to pr_warn()
+which ends up for global_funcs tests to
+test_global_funcs.c:libbpf_debug_print().
 
-This reduces likelihood of incorrect use.
+For the tests with no struct test_def::err_str initialized with a
+string, it causes call of strstr() with NULL as the second argument
+and it segfaults.
 
-Test: builds
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Fix it by calling strstr() only for non-NULL err_str.
+
+The patch does not fix the test itself.
+
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 ---
- drivers/net/veth.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index e56cd562a664..b80cbffeb88e 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -234,14 +234,14 @@ static bool veth_is_xdp_frame(void *ptr)
- 	return (unsigned long)ptr & VETH_XDP_FLAG;
- }
- 
--static void *veth_ptr_to_xdp(void *ptr)
-+static struct xdp_frame *veth_ptr_to_xdp(void *ptr)
- {
- 	return (void *)((unsigned long)ptr & ~VETH_XDP_FLAG);
- }
- 
--static void *veth_xdp_to_ptr(void *ptr)
-+static void *veth_xdp_to_ptr(struct xdp_frame *xdp)
- {
--	return (void *)((unsigned long)ptr | VETH_XDP_FLAG);
-+	return (void *)((unsigned long)xdp | VETH_XDP_FLAG);
- }
- 
- static void veth_ptr_free(void *ptr)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+index 25b068591e9a..6ad14c5465eb 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+@@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+ 	log_buf = va_arg(args, char *);
+ 	if (!log_buf)
+ 		goto out;
+-	if (strstr(log_buf, err_str) == 0)
++	if ((err_str != NULL) && (strstr(log_buf, err_str) == 0))
+ 		found = true;
+ out:
+ 	printf(format, log_buf);
 -- 
-2.28.0.220.ged08abb693-goog
+2.26.2
 
