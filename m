@@ -2,127 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C032491A3
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 02:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399122491AA
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 02:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHSAFy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 20:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S1726698AbgHSAKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 20:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgHSAFv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 20:05:51 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8DDC061389;
-        Tue, 18 Aug 2020 17:05:51 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k13so9952044plk.13;
-        Tue, 18 Aug 2020 17:05:51 -0700 (PDT)
+        with ESMTP id S1726444AbgHSAKr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 20:10:47 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BC6C061389;
+        Tue, 18 Aug 2020 17:10:47 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id s9so11156818lfs.4;
+        Tue, 18 Aug 2020 17:10:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/YnuQIuqofLqE8AgteDk6cmQRX57TrKaILSNeZxQNxo=;
-        b=WaD56x/Go7jRXHV25TSKwGe45kBLP//MycRwVJyN5ur6uQ/7orANwmHnIoqxwtq5tD
-         PTG6KPyMw+YujUHhkb6uFzbY8ySZZs+SS8BJNic1jsCkdV2eaMea50bX2KAle16eY3hm
-         YjYgICPTt+4j323/fMJ7ypFFwUECH+vOyXYX91T1fhmQc6NReO+3OSd/qn8TCwEoLqcX
-         5EXt2ex4hMEKPPKCBRxQToOhIjvjq3SAPCd4pDv6trKDPRD2F5rPJPF0ZIOr24qM/M9s
-         /fhRt78hlvhO8GZ9DWhtxzZ901ZLltJcDwQMwvJp3HxXRxoDubVZAnXyVQ1tXB88hSKc
-         ucPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O/oQ2SSvXXrYO+8KNfMT4XNQ8N/22aRZOb9JtB+BGTM=;
+        b=b3slP6vE4+qaGv4+H9QuGZrlfztO01G52ybkAxWCPH3RGQ76WgHky9sni+pDeUL3dy
+         1p74rsxuDRSAnQVvKB13TE9wjQ5mt76uO9yQ1OeFBqa2ygbc6UxIeHtgABdWZQD9htPm
+         mIHGnib7N2rPRgaLivI1UkrQAcuzRjM+40GUFgR0X5ec0glVzPcgJTVWLQHwT0HXmBp0
+         FfYWYuxlxCtsAbHV8tOFi0gwkyXVdMdPdY+CrSygjB1XCwhAv8l9GRvzaCh97rbeCyiZ
+         cO18f0i91oHpZiZpqsdzBiB+n2bjQLYAjFDItMemXQaZy1WmHdfJsPiU5yB9O1V1Cwy2
+         xiww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/YnuQIuqofLqE8AgteDk6cmQRX57TrKaILSNeZxQNxo=;
-        b=p0l/J1OjfG0KoOgnl4oA+VDw5luT73P+bf8KBy1ohCGL4EvIiMMSTawDXwT5t9qWaL
-         JpxiO+l3GMh1ifqmZPRFi6jqkJylG6ZbwjTA5NlVJQlqb5hpwMtUu0wWKLQeX0nBOB+X
-         QbWTIoVcMpV3bVHu1cADwhncjFbKsw8WpUL2Eqw9OTq4YJtcNoOUmxQns5XDRyt68UJ8
-         oTVTD7DeVWre+9GcTx1aEdqj1R4HM3EQZxOq7nLwe/mzBVVDEfnfKsK1UGyJx1FbWu/g
-         N0FIVnExI5X1JIPgHU/M9M1ALHrzJX185SGCa7ZK0K2gK3yZ9pssjDr8rYQSnzXELz+P
-         8zpg==
-X-Gm-Message-State: AOAM530LZWNmZ9LYRchnm51PYEBt6miKZuFtCVFYx3wpxbTNsOsBWv2k
-        vAElOdARq6rg6r4NvL9tcHe9fG9GsPA=
-X-Google-Smtp-Source: ABdhPJwo3oD3ATLn0lorqqzdbCiRNaax1XysN2w/MZ0JTl/iN/2XH9qr9rrE90aFH9myvfSef55pWQ==
-X-Received: by 2002:a17:90a:fc90:: with SMTP id ci16mr1826415pjb.229.1597795550674;
-        Tue, 18 Aug 2020 17:05:50 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:20fd])
-        by smtp.gmail.com with ESMTPSA id l12sm958100pjq.31.2020.08.18.17.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 17:05:49 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 17:05:47 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH bpf v2 1/3] bpf: fix a rcu_sched stall issue with bpf
- task/task_file iterator
-Message-ID: <20200819000547.7qv32me2fxviwdkx@ast-mbp.dhcp.thefacebook.com>
-References: <20200818222309.2181236-1-yhs@fb.com>
- <20200818222309.2181348-1-yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O/oQ2SSvXXrYO+8KNfMT4XNQ8N/22aRZOb9JtB+BGTM=;
+        b=CJ3aTZP+vvUrpRJS4i4Gnw4R555kZ5V+umozVu9r2g7H9RQ795KJOmtq8Sq9Z3oLnd
+         nabRmoTeWUZ2LuqrtS3j3w1v8yuDN9N+SbpvbxHXF8vznBkAEFgwtgn8D/qsVZmCrgWn
+         3tKal7E9eppPZTqdYa2TPSmfleANMD3IfUDHyJ4VE0NoS79RyOl6pEnmDhQFom7LYw39
+         g+GN2U6jlL3oRMyZjuPdMx5GgecyXdsaHeZKJJ11VTXXlrkM5pTnK1VahC2c+SWY4LW6
+         Em6lCgvh6v+akIMPtFU0UvNKc48rFcMuOkIET/yTHqMh5r3Q8SGc0yfIEGAJuXn7b5IP
+         7+qQ==
+X-Gm-Message-State: AOAM530o0XCT3C8Gy2SYDQXyvtbXhDmBNdHyW3NBZ1FGF6oSnuHvYLO8
+        53VwnRD4IzmW6nTFbbNJsd2K40YOkyoIvTsx5Mg=
+X-Google-Smtp-Source: ABdhPJxPAgpQCnv7ijcI+9o4fSLPIiRVlcM82qNTeDI1h3D3jH72hgqJsvzjp8d7Gv2YwA+xXfaHR2nu1A2uVE/+j0c=
+X-Received: by 2002:a05:6512:74b:: with SMTP id c11mr10679774lfs.119.1597795845438;
+ Tue, 18 Aug 2020 17:10:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818222309.2181348-1-yhs@fb.com>
+References: <20200818051641.21724-1-danieltimlee@gmail.com> <d68b548d-ed68-5ff1-5db7-1cebe0d19180@fb.com>
+In-Reply-To: <d68b548d-ed68-5ff1-5db7-1cebe0d19180@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Aug 2020 17:10:33 -0700
+Message-ID: <CAADnVQ+v41221W0ix5Z8Jb49c0S3hr3=2onzCkjcqS-XBwDk=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples: bpf: Fix broken bpf programs due to
+ removed symbol
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 03:23:09PM -0700, Yonghong Song wrote:
-> 
-> We did not use cond_resched() since for some iterators, e.g.,
-> netlink iterator, where rcu read_lock critical section spans between
-> consecutive seq_ops->next(), which makes impossible to do cond_resched()
-> in the key while loop of function bpf_seq_read().
+On Tue, Aug 18, 2020 at 9:01 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/17/20 10:16 PM, Daniel T. Lee wrote:
+> >  From commit f1394b798814 ("block: mark blk_account_io_completion
+> > static") symbol blk_account_io_completion() has been marked as static,
+> > which makes it no longer possible to attach kprobe to this event.
+> > Currently, there are broken samples due to this reason.
+> >
+> > As a solution to this, attach kprobe events to blk_account_io_done()
+> > to modify them to perform the same behavior as before.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-but after this patch we can, right?
-
->  
-> +/* maximum visited objects before bailing out */
-> +#define MAX_ITER_OBJECTS	1000000
-> +
->  /* bpf_seq_read, a customized and simpler version for bpf iterator.
->   * no_llseek is assumed for this file.
->   * The following are differences from seq_read():
-> @@ -79,7 +82,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
->  {
->  	struct seq_file *seq = file->private_data;
->  	size_t n, offs, copied = 0;
-> -	int err = 0;
-> +	int err = 0, num_objs = 0;
->  	void *p;
->  
->  	mutex_lock(&seq->lock);
-> @@ -135,6 +138,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
->  	while (1) {
->  		loff_t pos = seq->index;
->  
-> +		num_objs++;
->  		offs = seq->count;
->  		p = seq->op->next(seq, p, &seq->index);
->  		if (pos == seq->index) {
-> @@ -153,6 +157,15 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
->  		if (seq->count >= size)
->  			break;
->  
-> +		if (num_objs >= MAX_ITER_OBJECTS) {
-> +			if (offs == 0) {
-> +				err = -EAGAIN;
-> +				seq->op->stop(seq, p);
-> +				goto done;
-> +			}
-> +			break;
-> +		}
-> +
-
-should this block be after op->show() and error processing?
-Otherwise bpf_iter_inc_seq_num() will be incorrectly incremented?
-
->  		err = seq->op->show(seq, p);
->  		if (err > 0) {
->  			bpf_iter_dec_seq_num(seq);
-
-After op->stop() we can do cond_resched() in all cases,
-since rhashtable walk does rcu_unlock in stop() callback, right?
-I think copy_to_user() and mutex_unlock() don't do cond_resched()
-equivalent work.
+Applied. Thanks
