@@ -2,202 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5707F249697
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 09:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89E9249816
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 10:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgHSHIw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 03:08:52 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44868 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728067AbgHSHIT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Aug 2020 03:08:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597820897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vu8HMBRz/cvUQPdI+DHONr8PVdBMzXN6JvGtbrgRhTU=;
-        b=c7V8C5p4xRiDFcR63vLAkJ25L/36HU6qL8BWO1ClktW0/eLMRk3jcTNimMUASvV99e7U+u
-        U5lLepC+b62mbKeDc/GeF3G/jJJsVzufFT1yT8avjo6eBs2NEEIG3bQM27Vl1gSY7ewf5W
-        FyM+Z+CTcMpicCWthZju/TLXoLcYHkI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-T_TcvgBOOlSHlgYJqSf25A-1; Wed, 19 Aug 2020 03:08:13 -0400
-X-MC-Unique: T_TcvgBOOlSHlgYJqSf25A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F00A1084C84;
-        Wed, 19 Aug 2020 07:08:10 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 972FF100AE55;
-        Wed, 19 Aug 2020 07:07:57 +0000 (UTC)
-Date:   Wed, 19 Aug 2020 09:07:56 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Thomas Ptacek <thomas@sockpuppet.org>,
-        Adhipati Blambangan <adhipati@tuta.io>,
-        David Ahern <dsahern@gmail.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>, brouer@redhat.com
-Subject: Re: [PATCH net v6] net: xdp: account for layer 3 packets in generic
- skb handler
-Message-ID: <20200819090756.07f76eb9@carbon>
-In-Reply-To: <20200815074102.5357-1-Jason@zx2c4.com>
-References: <20200814.135546.2266851283177227377.davem@davemloft.net>
-        <20200815074102.5357-1-Jason@zx2c4.com>
+        id S1725939AbgHSIRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 04:17:12 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:41664 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725275AbgHSIRL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 04:17:11 -0400
+Received: from BJHW-Mail-Ex16.internal.baidu.com (unknown [10.127.64.39])
+        by Forcepoint Email with ESMTPS id A7CE815747130467E385;
+        Wed, 19 Aug 2020 16:17:02 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BJHW-Mail-Ex16.internal.baidu.com (10.127.64.39) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1979.3; Wed, 19 Aug 2020 16:17:02 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1979.003; Wed, 19 Aug 2020 16:17:02 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+CC:     Netdev <netdev@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Piotr <piotr.raczynski@intel.com>,
+        Maciej <maciej.machnikowski@intel.com>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtJbnRlbC13aXJlZC1sYW5dIFtQQVRDSCAwLzJd?=
+ =?utf-8?Q?_intel/xdp_fixes_for_fliping_rx_buffer?=
+Thread-Topic: =?utf-8?B?562U5aSNOiBbSW50ZWwtd2lyZWQtbGFuXSBbUEFUQ0ggMC8yXSBpbnRlbC94?=
+ =?utf-8?Q?dp_fixes_for_fliping_rx_buffer?=
+Thread-Index: AQHWdWiRooPzdFWc8kC0ZfZ0v0ywr6k+oKRA///W0QCAAJeXUA==
+Date:   Wed, 19 Aug 2020 08:17:02 +0000
+Message-ID: <c3695fc71ca140d08a795bbd32d8522f@baidu.com>
+References: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
+ <CAJ+HfNi2B+2KYP9A7yCfFUhfUBd=sFPeuGbNZMjhNSdq3GEpMg@mail.gmail.com>
+ <4268316b200049d58b9973ec4dc4725c@baidu.com>
+ <83e45ec2-1c66-59f6-e817-d4c523879007@intel.com>
+In-Reply-To: <83e45ec2-1c66-59f6-e817-d4c523879007@intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.8]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex16_2020-08-19 16:17:02:415
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 15 Aug 2020 09:41:02 +0200
-"Jason A. Donenfeld" <Jason@zx2c4.com> wrote:
-
-> A user reported that packets from wireguard were possibly ignored by XDP
-> [1]. Another user reported that modifying packets from layer 3
-> interfaces results in impossible to diagnose drops.
->=20
-> Apparently, the generic skb xdp handler path seems to assume that
-> packets will always have an ethernet header, which really isn't always
-> the case for layer 3 packets, which are produced by multiple drivers.
-> This patch fixes the oversight. If the mac_len is 0 and so is
-> hard_header_len, then we know that the skb is a layer 3 packet, and in
-> that case prepend a pseudo ethhdr to the packet whose h_proto is copied
-> from skb->protocol, which will have the appropriate v4 or v6 ethertype.
-> This allows us to keep XDP programs' assumption correct about packets
-> always having that ethernet header, so that existing code doesn't break,
-> while still allowing layer 3 devices to use the generic XDP handler.
->=20
-> We push on the ethernet header and then pull it right off and set
-> mac_len to the ethernet header size, so that the rest of the XDP code
-> does not need any changes. That is, it makes it so that the skb has its
-> ethernet header just before the data pointer, of size ETH_HLEN.
->=20
-> Previous discussions have included the point that maybe XDP should just
-> be intentionally broken on layer 3 interfaces, by design, and that layer
-> 3 people should be using cls_bpf. However, I think there are good
-> grounds to reconsider this perspective:
->=20
-> - Complicated deployments wind up applying XDP modifications to a
->   variety of different devices on a given host, some of which are using
->   specialized ethernet cards and other ones using virtual layer 3
->   interfaces, such as WireGuard. Being able to apply one codebase to
->   each of these winds up being essential.
->=20
-> - cls_bpf does not support the same feature set as XDP, and operates at
->   a slightly different stage in the networking stack. You may reply,
->   "then add all the features you want to cls_bpf", but that seems to be
->   missing the point, and would still result in there being two ways to
->   do everything, which is not desirable for anyone actually _using_ this
->   code.
->=20
-> - While XDP was originally made for hardware offloading, and while many
->   look disdainfully upon the generic mode, it nevertheless remains a
->   highly useful and popular way of adding bespoke packet
->   transformations, and from that perspective, a difference between layer
->   2 and layer 3 packets is immaterial if the user is primarily concerned
->   with transformations to layer 3 and beyond.
->=20
-> - It's not impossible to imagine layer 3 hardware (e.g. a WireGuard PCIe
->   card) including eBPF/XDP functionality built-in. In that case, why
->   limit XDP as a technology to only layer 2? Then, having generic XDP
->   work for layer 3 would naturally fit as well.
->=20
-> [1] https://lore.kernel.org/wireguard/M5WzVK5--3-2@tuta.io/
->=20
-> Reported-by: Thomas Ptacek <thomas@sockpuppet.org>
-> Reported-by: Adhipati Blambangan <adhipati@tuta.io>
-> Cc: David Ahern <dsahern@gmail.com>
-> Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
->=20
-> I had originally dropped this patch, but the issue kept coming up in
-> user reports, so here's a v4 of it. Testing of it is still rather slim,
-> but hopefully that will change in the coming days.
->=20
-> Changes v5->v6:
-> - The fix to the skb->protocol changing case is now in a separate
->   stand-alone patch, and removed from this one, so that it can be
->   evaluated separately.
->=20
-> Changes v4->v5:
-> - Rather than tracking in a messy manner whether the skb is l3, we just
->   do the check once, and then adjust the skb geometry to be identical to
->   the l2 case. This simplifies the code quite a bit.
-> - Fix a preexisting bug where the l2 header remained attached if
->   skb->protocol was updated.
->=20
-> Changes v3->v4:
-> - We now preserve the same logic for XDP_TX/XDP_REDIRECT as before.
-> - hard_header_len is checked in addition to mac_len.
->=20
->  net/core/dev.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 151f1651439f..79c15f4244e6 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -4630,6 +4630,18 @@ static u32 netif_receive_generic_xdp(struct sk_buf=
-f *skb,
->  	 * header.
->  	 */
->  	mac_len =3D skb->data - skb_mac_header(skb);
-> +	if (!mac_len && !skb->dev->hard_header_len) {
-> +		/* For l3 packets, we push on a fake mac header, and then
-> +		 * pull it off again, so that it has the same skb geometry
-> +		 * as for the l2 case.
-> +		 */
-> +		eth =3D skb_push(skb, ETH_HLEN);
-> +		eth_zero_addr(eth->h_source);
-> +		eth_zero_addr(eth->h_dest);
-> +		eth->h_proto =3D skb->protocol;
-> +		__skb_pull(skb, ETH_HLEN);
-> +		mac_len =3D ETH_HLEN;
-> +	}
-
-You are consuming a little bit of the headroom here.
-
->  	hlen =3D skb_headlen(skb) + mac_len;
->  	xdp->data =3D skb->data - mac_len;
->  	xdp->data_meta =3D xdp->data;
-
-The XDP-prog is allowed to change eth->h_proto.  Later (in code) we
-detect this and update skb->protocol with the new protocol.
-
-What will happen if my XDP-prog adds a VLAN header?
-
-The selftest tools/testing/selftests/bpf/test_xdp_vlan.sh test these
-situations.  You can use it as an example, and write/construct a test
-that does the same for your Wireguard devices.  As minimum you need to
-provide such a selftest together with this patch.
-
-Generally speaking, IMHO generic-XDP was a mistake, because it is hard
-to maintain and slows down the development of XDP.  (I have a number of
-fixes in my TODO backlog for generic-XDP).  Adding this will just give
-us more corner-cases that need to be maintained.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IEJqw7ZybiBUw7ZwZWwg
+W21haWx0bzpiam9ybi50b3BlbEBpbnRlbC5jb21dDQo+IOWPkemAgeaXtumXtDogMjAyMOW5tDjm
+nIgxOeaXpSAxNDo0NQ0KPiDmlLbku7bkuro6IExpLFJvbmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1
+LmNvbT47IEJqw7ZybiBUw7ZwZWwNCj4gPGJqb3JuLnRvcGVsQGdtYWlsLmNvbT4NCj4g5oqE6YCB
+OiBOZXRkZXYgPG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc+OyBpbnRlbC13aXJlZC1sYW4NCj4gPGlu
+dGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnPjsgS2FybHNzb24sIE1hZ251cw0KPiA8bWFn
+bnVzLmthcmxzc29uQGludGVsLmNvbT47IGJwZiA8YnBmQHZnZXIua2VybmVsLm9yZz47IE1hY2ll
+aiBGaWphbGtvd3NraQ0KPiA8bWFjaWVqLmZpamFsa293c2tpQGludGVsLmNvbT47IFBpb3RyIDxw
+aW90ci5yYWN6eW5za2lAaW50ZWwuY29tPjsgTWFjaWVqDQo+IDxtYWNpZWoubWFjaG5pa293c2tp
+QGludGVsLmNvbT4NCj4g5Li76aKYOiBSZTog562U5aSNOiBbSW50ZWwtd2lyZWQtbGFuXSBbUEFU
+Q0ggMC8yXSBpbnRlbC94ZHAgZml4ZXMgZm9yIGZsaXBpbmcgcnggYnVmZmVyDQo+IA0KPiBPbiAy
+MDIwLTA4LTE5IDAzOjM3LCBMaSxSb25ncWluZyB3cm90ZToNCj4gWy4uLl0NCj4gID4gSGk6DQo+
+ICA+DQo+ICA+IFRoYW5rcyBmb3IgeW91ciBleHBsYW5hdGlvbi4NCj4gID4NCj4gID4gQnV0IHdl
+IGNhbiByZXByb2R1Y2UgdGhpcyBidWcNCj4gID4NCj4gID4gV2UgdXNlIGVicGYgdG8gcmVkaXJl
+Y3Qgb25seS1WeGxhbiBwYWNrZXRzIHRvIG5vbi16ZXJvY29weSBBRl9YRFAsIEZpcnN0IHdlDQo+
+IHNlZSBwYW5pYyBvbiB0Y3Agc3RhY2ssIGluIHRjcF9jb2xsYXBzZTogQlVHX09OKG9mZnNldCA8
+IDApOyBpdCBpcyB2ZXJ5IGhhcmQgdG8NCj4gcmVwcm9kdWNlLg0KPiAgPg0KPiAgPiBUaGVuIHdl
+IHVzZSB0aGUgc2NwIHRvIGRvIHRlc3QsIGFuZCBoYXMgbG90cyBvZiB2eGxhbiBwYWNrZXQgYXQg
+dGhlIHNhbWUNCj4gdGltZSwgc2NwIHdpbGwgYmUgYnJva2VuIGZyZXF1ZW50bHkuDQo+ICA+DQo+
+IA0KPiBPayEgSnVzdCBzbyB0aGF0IEknbSBjZXJ0YWluIG9mIHlvdXIgc2V0dXAuIFlvdSByZWNl
+aXZlIHBhY2tldHMgdG8gYW4gaTQwZSBuZXRkZXYNCj4gd2hlcmUgdGhlcmUncyBhbiBYRFAgcHJv
+Z3JhbS4gVGhlIHByb2dyYW0gZG9lcyBYRFBfUEFTUyBvciBYRFBfUkVESVJFQ1QNCj4gdG8gZS5n
+LiBkZXZtYXAgZm9yIG5vbi12eGxhbiBwYWNrZXRzLiBIb3dldmVyLCB2eGxhbiBwYWNrZXRzIGFy
+ZSByZWRpcmVjdGVkIHRvDQo+IEFGX1hEUCBzb2NrZXQocykgaW4gKmNvcHktbW9kZSouIEFtIEkg
+dW5kZXJzdGFuZGluZyB0aGF0IGNvcnJlY3Q/DQo+IA0KU2ltaWxhciBhcyB5b3VyIGRlc2NyaXB0
+aW9uLCANCg0KYnV0IHRoZSB4ZHAgcHJvZ3JhbSBvbmx5IHJlZGlyZWN0cyB2eGxhbiBwYWNrZXRz
+IHRvIGFmX3hkcCBzb2NrZXQsIG90aGVyIHBhY2tldHMgd2lsbCBnbyB0byBMaW51eCBrZXJuZWwg
+bmV0d29ya2luZyBzdGFjaywgbGlrZSBzY3Avc3NoIHBhY2tldHMNCg0KDQo+IEknbSBhc3N1bWlu
+ZyB0aGlzIGlzIGFuIHg4Ni02NCB3aXRoIDRrIHBhZ2Ugc2l6ZSwgcmlnaHQ/IDotKSBUaGUgcGFn
+ZSBmbGlwcGluZyBpcyBhDQo+IGJpdCBkaWZmZXJlbnQgaWYgdGhlIFBBR0VfU0laRSBpcyBub3Qg
+NGsuDQo+IA0KDQpXZSB1c2UgNGsgcGFnZSBzaXplLCBwYWdlIGZsaXBwaW5nIGlzIDRrLCB3ZSBk
+aWQgbm90IGNoYW5nZSB0aGUgaTQwZSBkcml2ZXJzLCA0LjE5IHN0YWJsZSBrZXJuZWwNCg0KPiAg
+PiBXaXRoIHRoaXMgZml4ZXMsIHNjcCBoYXMgbm90IGJlZW4gYnJva2VuIGFnYWluLCBhbmQga2Vy
+bmVsIGlzIG5vdCBwYW5pYw0KPiBhZ2FpbiAgPg0KPiANCj4gTGV0J3MgZGlnIGludG8geW91ciBz
+Y2VuYXJpby4NCj4gDQo+IEFyZSB5b3Ugc2F5aW5nIHRoZSBmb2xsb3dpbmc6DQo+IA0KPiBQYWdl
+IEE6DQo+ICstLS0tLS0tLS0tLS0NCj4gfCAiZmlyc3Qgc2tiIiAtLS0tPiBSeCBIVyByaW5nIGVu
+dHJ5IFggDQo+ICstLS0tLS0tLS0tLS0NCj4gfCAic2Vjb25kIHNrYiItLS0tPiBSeCBIVyByaW5n
+IGVudHJ5IFgrMSAob3IgWCtuKQ0KPiArLS0tLS0tLS0tLS0tDQo+IA0KDQpMaWtlOg0KDQpGaXJz
+dCBza2Igd2lsbCBiZSBpbnRvIHRjcCBzb2NrZXQgcnggcXVldWUNCg0KU2Vjb25kcyBza2IgaXMg
+dnhsYW4gcGFja2V0LCB3aWxsIGJlIGNvcHkgdG8gYWZfeGRwIHNvY2tldCwgYW5kIHJlbGVhc2Vk
+Lg0KDQo+IFRoaXMgaXMgYSBzY2VuYXJpbyB0aGF0IHNob3VsZG4ndCBiZSBhbGxvd2VkLCBiZWNh
+dXNlIHRoZXJlIGFyZSBub3cgdHdvIHVzZXJzDQo+IG9mIHRoZSBwYWdlLiBJZiB0aGF0J3MgdGhl
+IGNhc2UsIHRoZSByZWZjb3VudGluZyBpcyBicm9rZW4uIElzIHRoYXQgdGhlIGNhc2U/DQo+IA0K
+DQpUcnVlLCBpdCBpcyBicm9rZW4gZm9yIGNvcHkgbW9kZSB4c2sNCg0KLUxpDQoNCj4gQ2hlY2sg
+b3V0IGk0MGVfY2FuX3JldXNlX3J4X3BhZ2UoKS4gVGhlIGlkZWEgd2l0aCBwYWdlIGZsaXBwaW5n
+L3JldXNlIGlzIHRoYXQNCj4gdGhlIHBhZ2UgaXMgb25seSByZXVzZWQgaWYgdGhlcmUgaXMgb25s
+eSBvbmUgdXNlci4NCj4gDQo+ICA+IFNlZW0geW91ciBleHBsYW5hdGlvbiBpcyB1bmFibGUgdG8g
+c29sdmUgbXkgYW5hbHlzaXM6DQo+ICA+DQo+ICA+ICAgICAgICAgMS4gZmlyc3Qgc2tiIGlzIG5v
+dCBmb3IgeHNrLCBhbmQgZm9yd2FyZGVkIHRvIGFub3RoZXIgZGV2aWNlDQo+ICA+ICAgICAgICAg
+ICAgb3Igc29ja2V0IHF1ZXVlDQo+IA0KPiBUaGUgZGF0YSBmb3IgdGhlICJmaXJzdCBza2IiIHJl
+c2lkZXMgb24gYSBwYWdlOg0KPiBBOg0KPiArLS0tLS0tLS0tLS0tDQo+IHwgImZpcnN0IHNrYiIN
+Cj4gKy0tLS0tLS0tLS0tLQ0KPiB8IHRvIGJlIHJldXNlZA0KPiArLS0tLS0tLS0tLS0tDQo+IHJl
+ZmNvdW50ID4+MQ0KPiANCj4gID4gICAgICAgICAyLiBzZWNvbmRzIHNrYiBpcyBmb3IgeHNrLCBj
+b3B5IGRhdGEgdG8geHNrIG1lbW9yeSwgYW5kIHBhZ2UNCj4gID4gICAgICAgICAgICBvZiBza2It
+PmRhdGEgaXMgcmVsZWFzZWQNCj4gDQo+IE5vdGUgdGhhdCBwYWdlIEIgIT0gcGFnZSBBLg0KPiAN
+Cj4gQjoNCj4gKy0tLS0tLS0tLS0tLQ0KPiB8IHRvIGJlIHJldXNlZC9vciB1c2VkIGJ5IHRoZSBz
+dGFjaw0KPiArLS0tLS0tLS0tLS0tDQo+IHwgInNlY29uZCBza2IgZm9yIHhzayINCj4gKy0tLS0t
+LS0tLS0tLQ0KPiByZWZjb3VudCA+PjENCj4gDQo+IGRhdGEgaXMgY29waWVkIHRvIHNvY2tldCwg
+cGFnZV9mcmFnX2ZyZWUoKSBpcyBjYWxsZWQsIGFuZCB0aGUgcGFnZSBjb3VudCBpcw0KPiBkZWNy
+ZWFzZWQuIFRoZSBkcml2ZXIgd2lsbCB0aGVuIGNoZWNrIGlmIHRoZSBwYWdlIGNhbiBiZSByZXVz
+ZWQuIElmIG5vdCwgaXQncyBmcmVlZA0KPiB0byB0aGUgcGFnZSBhbGxvY2F0b3IuDQo+IA0KPiAg
+PiAgICAgICAgIDMuIHJ4X2J1ZmYgaXMgcmV1c2FibGUgc2luY2Ugb25seSBmaXJzdCBza2IgaXMg
+aW4gaXQsIGJ1dA0KPiAgPiAgICAgICAgICAgICpfcnhfYnVmZmVyX2ZsaXAgd2lsbCBtYWtlIHRo
+YXQgcGFnZV9vZmZzZXQgaXMgc2V0IHRvDQo+ICA+ICAgICAgICAgICAgZmlyc3Qgc2tiIGRhdGEN
+Cj4gDQo+IEknbSBoYXZpbmcgdHJvdWJsZSBncmFzcGluZyBob3cgdGhpcyBpcyBwb3NzaWJsZS4g
+TW9yZSB0aGFuIG9uZSB1c2VyIGltcGxpZXMNCj4gdGhhdCBpdCB3b250IGJlIHJldXNlZC4gSWYg
+dGhpcyBpcyBwb3NzaWJsZSwgdGhlIHJlY291bnRpbmcvcmV1c2UgbWVjaGFuaXNtIGlzDQo+IGJy
+b2tlbiwgYW5kIHRoYXQgaXMgd2hhdCBzaG91bGQgYmUgZml4ZWQuDQo+IA0KPiBUaGUgQUZfWERQ
+IHJlZGlyZWN0IHNob3VsZCBub3QgaGF2ZSBzZW1hbnRpY3MgZGlmZmVyZW50IGZyb20sIHNheSwg
+ZGV2bWFwDQo+IHJlZGlyZWN0LiBJdCdzIGp1c3QgdGhhdCB0aGUgcGFnZV9mcmFnX2ZyZWUoKSBp
+cyBjYWxsZWQgZWFybGllciBmb3IgQUZfWERQLCBpbnN0ZWFkDQo+IG9mIGZyb20gaTQwZV9jbGVh
+bl90eF9pcnEoKSBhcyB0aGUgY2FzZSBmb3IgZGV2bWFwL1hEUF9UWC4NCj4gDQo+ICA+ICAgICAg
+ICAgNC4gdGhlbiByZXVzZSByeCBidWZmZXIsIGZpcnN0IHNrYiB3aGljaCBzdGlsbCBpcyBsaXZp
+bmcNCj4gID4gICAgICAgICAgICB3aWxsIGJlIGNvcnJ1cHRlZC4NCj4gID4NCj4gID4NCj4gID4g
+VGhlIHJvb3QgY2F1c2UgaXMgZGlmZmVyZW5jZSB5b3Ugc2FpZCB1cHBlciwgc28gSSBvbmx5IGZp
+eGVzIGZvciBub24temVyb2NvcHkNCj4gQUZfWERQICA+DQo+IA0KPiBJIGhhdmUgb25seSBhZGRy
+ZXNzZWQgbm9uLXplcm9jb3B5LCBzbyB3ZSdyZSBvbiB0aGUgc2FtZSBwYWdlIChwdW4NCj4gaW50
+ZW5kZWQpIGhlcmUhDQo+IA0KPiANCj4gQmrDtnJuDQo+IA0KPiAgPiAtTGkNCg==
