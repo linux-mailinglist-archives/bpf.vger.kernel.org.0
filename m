@@ -2,92 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA1D24A8C6
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 23:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ACF24A900
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 00:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgHSV6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 17:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S1727111AbgHSWTv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 18:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgHSV6v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 17:58:51 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026AEC061757;
-        Wed, 19 Aug 2020 14:58:51 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y10so9923218plr.11;
-        Wed, 19 Aug 2020 14:58:50 -0700 (PDT)
+        with ESMTP id S1726700AbgHSWTr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 18:19:47 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D72C061384
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o23so318584ejr.1
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Slmlxej47s8TYSV/lTa7cjH1TUjlzp7BpAXRL++feQY=;
-        b=fV1JUBO+o/DIZy0W7m1xwRfC1efNfPHi9BYLaJ4R+l13kB2GCK6rzdG4/oMHYNcyMO
-         wiebUJkxRTjQUNF9tIJ/IshHTmIlInOJpfDy7VMnUzv0h4bJfeIG7dTbnHSqnoIH/9lj
-         C2nngzmX6g6iPdnZHSapKnDzYltOiBIsc5bK/WFP/LhiIICHOmo6RMj1zc7kRPF6/F9c
-         2bRfYjYB6hRWrUHn3GSksZ8vwWeBI9LkGWp2ZUoPjRlit5ofK1F3hvN00lJjhA3Z8Juf
-         Q8doDsa/hijyVraVTxJ+GtMzMaELlXYoxvMOzkfoeGpsJVNQRWJiohFtA5mQNLbxku8F
-         ir0w==
+        d=chromium.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
+        b=Ef522J+HKC9VQ3bXTdQCKpaISrqMAApkaMt0vil8OTOF7bGl/toU8qGdBGUstpcOqL
+         7TvPKLv3ULgx8c5b25OU0ONXCq5g193Cxas0ff1KGyXSKNqk3GB+VuXaMUfUh3k1AT+s
+         t0tZroI67koT3PQ7a/dFTvQC3LLqKlUymmTV0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Slmlxej47s8TYSV/lTa7cjH1TUjlzp7BpAXRL++feQY=;
-        b=KArmDYJcS6tkhrHWtrpFlQnSvuZ0mQnsZaxRhIwEVA6ugD+agfaf2FxzzGLvWru8bX
-         r67OY0LLw65DFTGCIPOMyiuoeS3vkOTP4ANbAemECctNWpnuvCXM/jCFvWVoZh97zzAq
-         YzI71UlBpe2QoLuxlG/D+cxjH8MJNg9v9aXaDGQsYMw0V6uOFriILTAiWAJT9vEOSltm
-         gsSoqosyj80qUIsnOGHuVSNw59yrgqHM94Xl0mbOBKYcLzSi1ipOYaNJvAoHdDszDhtf
-         TGIPB60u4VJJJ5XSeosiKy2qmOfuBdmgcIrxQ1d+Keexq5mvn/XO9YS5sDcQh5HCqI4L
-         509g==
-X-Gm-Message-State: AOAM530QA55bIJ+gaoVbo3eSr8dX0kaBMuk/IOg8MGmqFykqto9gy7+W
-        ZPz4XCNgEzwnGRLFnZ/VTmyP/7cVaDQ=
-X-Google-Smtp-Source: ABdhPJzYcffqlqVTrh1N+PG6CfMZJCSZPVl+1fxN6fUu5ZI3BkBSyznBNcpDB729GFJhn4Ta/7rkCQ==
-X-Received: by 2002:a17:902:6bc6:: with SMTP id m6mr153197plt.302.1597874329953;
-        Wed, 19 Aug 2020 14:58:49 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:20fd])
-        by smtp.gmail.com with ESMTPSA id h1sm202803pfr.39.2020.08.19.14.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 14:58:48 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 14:58:46 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 0/5] Add libbpf support for type- and enum
- value-based CO-RE relocations
-Message-ID: <20200819215846.frvsnoxu6vv4wamt@ast-mbp.dhcp.thefacebook.com>
-References: <20200819194519.3375898-1-andriin@fb.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
+        b=cpZybCQbpInSZ2gtXZx30qZ3M36pMOnXDBb4mF9Z8pD7k8xJB5I92hIdT0i8Ud4PcX
+         W/DCtQ269vXSspcvFW4lUhfn0kztr3nSSZFHFItGb5gDSahRZzNE95KCXcK+mqR+7OLF
+         vOuVleDlcYQ/jlLNMeF/C+W/VivlXFUde3O7a4qSjpRSGJRu1I29Ckr7TWRPw9JitONU
+         Y28fy2dZ8EeZVGs+E2ySg1eVvIeMKO0NTdxOsNgkLowwGjt0wMlbuW9n4HixSt2Ts5JK
+         B5FFU0qTbsG3xLeLpn2dwyNeIdwCUTLZjH5hhVqYGkhhnvwAZzHMRsrCVKj16eZdnunt
+         jwnQ==
+X-Gm-Message-State: AOAM532VB+5R5x7iJ3lsof0H65Y8d/cMuJacdQMc8LahWpeFVL7ZLQkf
+        tlsQ7MHsljWvZxxwFaTCnyicwA==
+X-Google-Smtp-Source: ABdhPJx1M6OHslbrJYzGQRpPTSSNnbD5cIdvwVw/gDhCC4OwGBD5G3lDSoEC9VQuL0+As3CMMoNHHw==
+X-Received: by 2002:a17:906:6d59:: with SMTP id a25mr453935ejt.193.1597875585467;
+        Wed, 19 Aug 2020 15:19:45 -0700 (PDT)
+Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id x16sm47545edr.25.2020.08.19.15.19.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 15:19:44 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v8 3/7] bpf: Generalize bpf_sk_storage
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+References: <20200803164655.1924498-1-kpsingh@chromium.org>
+ <20200803164655.1924498-4-kpsingh@chromium.org>
+ <20200818010545.iix72le4tkhuyqe5@kafai-mbp.dhcp.thefacebook.com>
+ <6cb51fa0-61a5-2cf6-b44d-84d58d08c775@chromium.org>
+ <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Message-ID: <a69e6bdf-7a1b-3152-f26b-20175451d9c2@chromium.org>
+Date:   Thu, 20 Aug 2020 00:19:44 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819194519.3375898-1-andriin@fb.com>
+In-Reply-To: <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:45:14PM -0700, Andrii Nakryiko wrote:
-> 
-> Selftests are added for all the new features. Selftests utilizing new Clang
-> built-ins are designed such that they will compile with older Clangs and will
-> be skipped during test runs. So this shouldn't cause any build and test
-> failures on systems with slightly outdated Clang compiler.
-> 
-> LLVM patches adding these relocation in Clang:
->   - __builtin_btf_type_id() ([0], [1], [2]);
->   - __builtin_preserve_type_info(), __builtin_preserve_enum_value() ([3], [4]).
-> 
->   [0] https://reviews.llvm.org/D74572
->   [1] https://reviews.llvm.org/D74668
->   [2] https://reviews.llvm.org/D85174
->   [3] https://reviews.llvm.org/D83878
->   [4] https://reviews.llvm.org/D83242
 
-Applied.
-Thank you for listing the above in the commit log, but please follow up with
-corresponding update to README.rst and mention the same details there: the
-symptoms of missing clang features, which tests are going to be skipped for
-older clang, etc.
 
-Also progs/test_core_reloc_type_id.c talks about some bug with
-__builtin_preserve_type_info() please add llvm diff number that fixes
-it to that .c file.
+On 19.08.20 19:12, Martin KaFai Lau wrote:
+> On Wed, Aug 19, 2020 at 02:41:50PM +0200, KP Singh wrote:
+>> On 8/18/20 3:05 AM, Martin KaFai Lau wrote:
+>>> On Mon, Aug 03, 2020 at 06:46:51PM +0200, KP Singh wrote:
+>>>> From: KP Singh <kpsingh@google.com>
+>>>>
+>>>> Refactor the functionality in bpf_sk_storage.c so that concept of
+
+[...]
+
+>>>> +			struct bpf_local_storage_map *smap,
+>>>> +			struct bpf_local_storage_elem *first_selem);
+>>>> +
+>>>> +struct bpf_local_storage_data *
+>>>> +bpf_local_storage_update(void *owner, struct bpf_map *map, void *value,
+>>> Nit.  It may be more consistent to take "struct bpf_local_storage_map *smap"
+>>> instead of "struct bpf_map *map" here.
+>>>
+>>> bpf_local_storage_map_check_btf() will be the only one taking
+>>> "struct bpf_map *map".
+>>
+>> That's because it is used in map operations as map_check_btf which expects
+>> a bpf_map *map pointer. We can wrap it in another function but is that
+>> worth doing?
+> Agree.  bpf_local_storage_map_check_btf() should stay as is.
+> 
+> I meant to only change the "bpf_local_storage_update()" to take
+> "struct bpf_local_storage_map *smap".
+> 
+
+Apologies, I misread that. Updated.
+
+- KP
+
+ up here
+>> 	 * or when the storage is freed e.g.
+>> 	 * by bpf_sk_storage_free() during __sk_destruct().
+>>
+> +1
+> 
