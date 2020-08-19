@@ -2,78 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F50A249223
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 03:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A49A24922F
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 03:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgHSBIj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 21:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbgHSBIj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 21:08:39 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED946C061389;
-        Tue, 18 Aug 2020 18:08:38 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id c10so415327pjn.1;
-        Tue, 18 Aug 2020 18:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MRTjQoKzFBglneMcqPVOSh6rfmDu+GFH72NRY+c7DHU=;
-        b=SsfOk+l5GxCvWOg2Cc5l+TTl8UNn9E35f2N2KmxQXoIAPMP+0HYErihHPF1nQd8T09
-         QfvEb6Oqcexl0hGYr4Hkailivw5yGr081DJAJaA2zdPImpHgwtYqW6lP39fR7f4REk0q
-         S4+UJOSFv3WT3XlDX3TXFRxXTAt+r5q3jJGRoPbcSdFQxiDJZpMaMRqXqCj8lrB/jkIP
-         SesoiepjUZq1x0JU6cphlb8ze1gbtoO+XshjXoW0GVco4j4LPaeixBJCzIo3JBIrM5EX
-         5xF74il0bcrVhZvqUu/YMpwbYUzBK45q/6yV2rEeqlPz1ozOWlhh6+Q7rWbzAGawCcLP
-         91qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MRTjQoKzFBglneMcqPVOSh6rfmDu+GFH72NRY+c7DHU=;
-        b=iDeHXwJHyX3ONoUG32xzyeCBnwq0eOvhezuaFFERgkL1stA14HPeoW3+57CHMdRLGx
-         tJGYwUeYeEkwAnKM9JLgtuCj2AxeUn0jtyP8HeptPEGudxXaDXo8cqLvf/w55kTV1Izn
-         mQ/SmAwo14ZIpRQlOjNtjvDseKk+SXHGnF17VNtDVfWG25hm0yesQkSoWBXmikeDX1qn
-         lRUjnRKd4uUP89DMqk5y5OrBsNAP+RWuEjQGMcQh+fQecy9yAOX48zj52+tLeJqLIhia
-         vFW54ilMLiJWDnoqKRxpf/u/WJFEJK3mz/AD6ZTl8Fn+Myp8KBT1BCL/Gj1v0IjzdBJJ
-         T3Yw==
-X-Gm-Message-State: AOAM532QATNO6BB3YjHG/mhu9UzVlJKVd9xOjT3m5yLLaSWMsjVKnVa0
-        4wzB3nG5Mq65pAveK9jFpXQ9iPV1Aok=
-X-Google-Smtp-Source: ABdhPJwaKsfrkVPAQqrmNPkXeOoV5ojbnFBjbeKZA/jS5qJJ/IayHYWc5lHLQayGyxNzSMj9tj/HtQ==
-X-Received: by 2002:a17:902:d30b:: with SMTP id b11mr17216779plc.107.1597799318500;
-        Tue, 18 Aug 2020 18:08:38 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:20fd])
-        by smtp.gmail.com with ESMTPSA id l78sm26298479pfd.130.2020.08.18.18.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 18:08:37 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 18:08:35 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 4/4] tools: remove feature-libelf-mmap feature
- detection
-Message-ID: <20200819010835.3r7ch5h4wb4yue6k@ast-mbp.dhcp.thefacebook.com>
-References: <20200818215908.2746786-1-andriin@fb.com>
- <20200818215908.2746786-5-andriin@fb.com>
+        id S1726938AbgHSBO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 21:14:57 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62782 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726871AbgHSBO5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 21:14:57 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07J1DW83018300
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 18:14:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=/uUFrz2pplyNeuzwjVTtdWHekCwyi/O0CKqPnUBAh2Y=;
+ b=A08HzhhPElIP8ar1HUd6SO3WoFR2zWYS304bUD3/iGH7tq16rHT9X+6i+bNksEqKJLBo
+ tPJNPbLzpcBnIor4xYyEYi7riZWFWYvmcvYY3NG7BEl+DYk4GgNICA273F6w3AuMIU+L
+ 3tXb3CcQoiPSbZxSgxn7eetJn3yu2L3kzDc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3304kpp0ep-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 18 Aug 2020 18:14:55 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 18 Aug 2020 18:14:54 -0700
+Received: by devbig218.frc2.facebook.com (Postfix, from userid 116055)
+        id 4079D207458; Tue, 18 Aug 2020 18:14:50 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Udip Pant <udippant@fb.com>
+Smtp-Origin-Hostname: devbig218.frc2.facebook.com
+To:     Udip Pant <udippant@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Smtp-Origin-Cluster: frc2c02
+Subject: [PATCH bpf] bpf: verifier: check for packet data access based on target prog
+Date:   Tue, 18 Aug 2020 18:12:44 -0700
+Message-ID: <20200819011244.2027725-1-udippant@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818215908.2746786-5-andriin@fb.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-18_16:2020-08-18,2020-08-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011 spamscore=0
+ impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=880
+ lowpriorityscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008190010
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 02:59:08PM -0700, Andrii Nakryiko wrote:
-> It's trivial to handle missing ELF_C_MMAP_READ support in libelf the way that
-> objtool has solved it in
-> ("774bec3fddcc objtool: Add fallback from ELF_C_READ_MMAP to ELF_C_READ").
-> 
-> So instead of having an entire feature detector for that, just do what objtool
-> does for perf and libbpf. And keep their Makefiles a bit simpler.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+While using dynamic program extension (of type BPF_PROG_TYPE_EXT), we
+need to check the program type of the target program to grant the read /
+write access to the packet data.
 
-overall looks good, but this patch doesn't apply to bpf-next.
+The BPF_PROG_TYPE_EXT type can be used to extend types such as XDP, SKB
+and others. Since the BPF_PROG_TYPE_EXT program type on itself is just a
+placeholder for those, we need this extended check for those target
+programs to actually work while using this option.
+
+Tested this with a freplace xdp program. Without this patch, the
+verifier fails with error 'cannot write into packet'.
+
+Signed-off-by: Udip Pant <udippant@fb.com>
+---
+ kernel/bpf/verifier.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ef938f17b944..4d7604430994 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2629,7 +2629,11 @@ static bool may_access_direct_pkt_data(struct bpf_=
+verifier_env *env,
+ 				       const struct bpf_call_arg_meta *meta,
+ 				       enum bpf_access_type t)
+ {
+-	switch (env->prog->type) {
++	struct bpf_prog *prog =3D env->prog;
++	enum bpf_prog_type prog_type =3D prog->aux->linked_prog ?
++	      prog->aux->linked_prog->type : prog->type;
++
++	switch (prog_type) {
+ 	/* Program types only with direct read access go here! */
+ 	case BPF_PROG_TYPE_LWT_IN:
+ 	case BPF_PROG_TYPE_LWT_OUT:
+--=20
+2.24.1
+
