@@ -2,132 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B624A269
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 17:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981C324A2BD
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 17:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgHSPEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 11:04:47 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:38777 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgHSPE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:04:26 -0400
-Received: by mail-il1-f197.google.com with SMTP id t79so16967948ild.5
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 08:04:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=VDNiVmoVHM/EAgrPMdZuxSNbn4Cv7QjczVTKlAQSEmk=;
-        b=QToZwzjyizSLQaO7KHGQ6v5EUdV2/F6qyqUT/VTXP0VnGOdxe8r9wM240Wk68VD/dQ
-         NeJKuVQzWhDAKZn0+b/PeGjtmEanoGjs+3tcA7eu49EURxcE8nsO9wrUDXVKal430BeD
-         EjjFp3VkIOkyEKcEnQ7/XwCF4jdS/dEwf6SC/NCJSWVtDorHkSnCzUg9temqO6vZHVEf
-         84QlS1bYcNOeMp4S/ipsNsWNKZstSklB//kS7VI66vlUwBQqycAdbO4qMh58rKjY2xV0
-         v3kd5Jr5NuCkFSxCvWBChl0LjzO0qt5QE6ET43JjivlqsPtB95cnaBtaRmvEpCNF2MtH
-         xTdA==
-X-Gm-Message-State: AOAM530KEd/LhUfUYSzOTJSKlb7GiNMD/z+8mYDuAC5L77tvjOqaIv7K
-        st627/0bhOJmiDyOC7yibOdKUDs/mqqn5RnrT4ntj44clwkq
-X-Google-Smtp-Source: ABdhPJzeo74koGhSSSorznRH6H8AtESLASRNC7zQ8Md7nTE1JsONxbQConiM86dPAk4WOiflAjYv1YIace83+WiDrjid6uQT0mQE
+        id S1728665AbgHSPVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 11:21:36 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:41544 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbgHSPVf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:21:35 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 362B180487;
+        Wed, 19 Aug 2020 17:21:22 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 17:21:20 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
+        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200819152120.GA106437@ravnborg.org>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1614:: with SMTP id x20mr23864466jas.92.1597849465083;
- Wed, 19 Aug 2020 08:04:25 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 08:04:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c560bd05ad3c5187@google.com>
-Subject: WARNING in rtnl_dellink
-From:   syzbot <syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, jiri@mellanox.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        roopa@cumulusnetworks.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1597833138.git.mchehab+huawei@kernel.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=0DMDbjpnAAAA:20 a=e5mUnYsNAAAA:8
+        a=wgkdfqopUnWM4JvIQe8A:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi Mauro.
 
-syzbot found the following issue on:
+On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:
+> This patch series port the out-of-tree driver for Hikey 970 (which
+> should also support Hikey 960) from the official 96boards tree:
+> 
+>    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> 
+> Based on his history, this driver seems to be originally written
+> for Kernel 4.4, and was later ported to Kernel 4.9. The original
+> driver used to depend on ION (from Kernel 4.4) and had its own
+> implementation for FB dev API.
+> 
+> As I need to preserve the original history (with has patches from
+> both HiSilicon and from Linaro),  I'm starting from the original
+> patch applied there. The remaining patches are incremental,
+> and port this driver to work with upstream Kernel.
+> 
+> This driver doesn't depend on any firmware or on any special
+> userspace code. It works as-is with both X11 and Wayland.
+> 
+> Yet, I'm submitting it via staging due to the following reasons:
+> 
+> - It depends on the LDO3 power supply, which is provided by
+>   a regulator driver that it is currently on staging;
+> - Due to legal reasons, I need to preserve the authorship of
+>   each one responsbile for each patch. So, I need to start from
+>   the original patch from Kernel 4.4;
+> - There are still some problems I need to figure out how to solve:
+>    - The adv7535 can't get EDID data. Maybe it is a timing issue,
+>      but it requires more research to be sure about how to solve it;
+>    - The driver only accept resolutions on a defined list, as there's
+>      a known bug that this driver may have troubles with random
+>      resolutions. Probably due to a bug at the pixel clock settings;
+>    - Sometimes (at least with 1080p), it generates LDI underflow
+>      errors, which in turn causes the DRM to stop working. That
+>      happens for example when using gdm on Wayland and
+>      gnome on X11;
+>    - Probably related to the previous issue, when the monitor
+>      suspends due to DPMS, it doesn't return back to life.
+> 
+> So, IMO, the best is to keep it on staging for a while, until those
+> remaining bugs gets solved.
+> 
+> I added this series, together with the regulator driver and
+> a few other patches (including a hack to fix a Kernel 5.8 
+> regression at WiFi ) at:
+> 
+> 	https://gitlab.freedesktop.org/mchehab_kernel/hikey-970/-/commits/master
+> 
+> 
+> Chen Feng (1):
+>   staging: hikey9xx: Add hisilicon DRM driver for hikey960/970
+> 
+> John Stultz (1):
+>   staging: hikey9xx/gpu: port it to work with Kernel v4.9
+> 
+> Liwei Cai (2):
+>   staging: hikey9xx/gpu: solve tearing issue of display
+>   staging: hikey9xx/gpu: resolve the performance issue by interrupt
+>     mechanism
+> 
+> Mauro Carvalho Chehab (38):
+>   staging: hikey9xx/gpu: get rid of adv7535 fork
+Very good - I was in my mind starting a rant why we needed a fork of
+this driver, but I see it gets deleted again.
 
-HEAD commit:    4ca0d9ac bonding: show saner speed for broadcast mode
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c21516900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c89856ae5fc8b6
-dashboard link: https://syzkaller.appspot.com/bug?extid=b3b5c64f4880403edd36
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119f99f6900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe8fbe900000
+I do acknowledge you need to preserve history and all -
+but this patchset is not easy to review.
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11516872900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13516872900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15516872900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com
-
-bond1 (unregistering): Released all slaves
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 7280 at net/core/dev.c:9304 rollback_registered_many+0xecd/0x1210 net/core/dev.c:9304
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 7280 Comm: syz-executor543 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:231
- __warn.cold+0x20/0x4a kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:rollback_registered_many+0xecd/0x1210 net/core/dev.c:9304
-Code: 0a 1b 00 00 48 c7 c6 40 d7 fe 88 48 c7 c7 80 d7 fe 88 c6 05 b6 e1 71 04 01 e8 71 18 0a fb 0f 0b e9 13 fc ff ff e8 d3 14 39 fb <0f> 0b e9 ea fb ff ff e8 c7 14 39 fb 0f 0b e9 29 fc ff ff e8 3b 25
-RSP: 0018:ffffc90002df7290 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000a650bd01 RCX: ffffffff863b3396
-RDX: ffff8880874fc540 RSI: ffffffff863b37ad RDI: 0000000000000001
-RBP: ffff8880a5edef80 R08: 0000000000000000 R09: ffffffff8a7e4067
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
-R13: ffff8880925b0000 R14: dffffc0000000000 R15: ffff8880a5edef80
- unregister_netdevice_many.part.0+0x1a/0x2f0 net/core/dev.c:10426
- unregister_netdevice_many+0x36/0x50 net/core/dev.c:10425
- rtnl_delete_link net/core/rtnetlink.c:3055 [inline]
- rtnl_dellink+0x34a/0xa60 net/core/rtnetlink.c:3107
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44b1a9
-Code: e8 9c 14 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 4b 05 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f8155c28d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006e7a58 RCX: 000000000044b1a9
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000009
-RBP: 00000000006e7a50 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e7a5c
-R13: 0000000000000000 R14: 0000000000000000 R15: 068500100000003c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Could you follow-up with a review-able set of patches as a follow-up
+for this?
+I spotted some wrong bridge handling in one patch but I do not know if
+this got changed in a later patch. And I lost the motivation to go
+looking for it.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>   staging: hikey9xx/gpu: rename the Kirin9xx namespace
+>   staging: hikey9xx/gpu: get rid of kirin9xx_fbdev.c
+>   staging: hikey9xx/gpu: get rid of some ifdefs
+>   staging: hikey9xx/gpu: rename the config option for Kirin970
+>   staging: hikey9xx/gpu: change the includes to reflect upstream
+>   staging: hikey9xx/gpu: port driver to upstream kAPIs
+>   staging: hikey9xx/gpu: add a copy of set_reg() function there
+>   staging: hikey9xx/gpu: get rid of ION headers
+>   staging: hikey9xx/gpu: add support for using a reserved CMA memory
+>   staging: hikey9xx/gpu: cleanup encoder attach logic
+>   staging: hikey9xx/gpu: Change the logic which sets the burst mode
+>   staging: hikey9xx/gpu: fix the DRM setting logic
+>   staging: hikey9xx/gpu: do some code cleanups
+>   staging: hikey9xx/gpu: use default GEM_CMA fops
+>   staging: hikey9xx/gpu: place vblank enable/disable at the right place
+>   staging: hikey9xx/gpu: remove an uneeded hack
+>   staging: hikey9xx/gpu: add a possible implementation for
+>     atomic_disable
+>   staging: hikey9xx/gpu: register connector
+>   staging: hikey9xx/gpu: fix driver name
+>   staging: hikey9xx/gpu: get rid of iommu_format
+>   staging: hikey9xx/gpu: re-work the mode validation code
+>   staging: hikey9xx/gpu: add support for enable/disable ldo3 regulator
+>   staging: hikey9xx/gpu: add SPMI headers
+>   staging: hikey9xx/gpu: solve most coding style issues
+>   staging: hikey9xx/gpu: don't use iommu code
+>   staging: hikey9xx/gpu: add kirin9xx driver to the building system
+>   staging: hikey9xx/gpu: get rid of typedefs
+>   staging: hikey9xx/gpu: get rid of input/output macros
+>   staging: hikey9xx/gpu: get rid of some unused data
+>   staging: hikey9xx/gpu: place common definitions at kirin9xx_dpe.h
+>   staging: hikey9xx/gpu: get rid of DRM_HISI_KIRIN970
+>   dts: hisilicon: hi3670.dtsi: add I2C settings
+>   dts: hikey970-pinctrl.dtsi: add missing pinctrl settings
+>   dt: hisilicon: add support for the PMIC found on Hikey 970
+>   dts: add support for Hikey 970 DRM
+>   staging: hikey9xx/gpu: drop kirin9xx_pwm
+>   dt: display: Add binds for the DPE and DSI controller for Kirin
+>     960/970
+> 
+> Xiubin Zhang (7):
+>   staging: hikey9xx/gpu: add support to hikey970 HDMI and panel
+>   staging: hikey9xx/gpu: Solve SR Cannot Display Problems.
+>   staging: hikey9xx/gpu: Solve HDMI compatibility Problem.
+>   staging: hikey9xx/gpu: Support MIPI DSI 3 lanes for hikey970.
+>   staging: hikey9xx/gpu: Solve SR test reset problem for hikey970.
+>   staging: hikey9xx/gpu: add debug prints for this driver
+>   staging: hikey9xx/gpu: Add support 10.1 inch special HDMI displays.
+> 
+>  .../display/hisilicon,hi3660-dpe.yaml         |   99 +
+>  .../display/hisilicon,hi3660-dsi.yaml         |  102 +
+>  .../boot/dts/hisilicon/hi3670-hikey970.dts    |   56 +-
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |   77 +
+>  .../boot/dts/hisilicon/hikey970-drm.dtsi      |   93 +
+>  .../boot/dts/hisilicon/hikey970-pinctrl.dtsi  |  548 +++-
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  197 ++
+>  drivers/staging/hikey9xx/Kconfig              |    3 +
+>  drivers/staging/hikey9xx/Makefile             |    1 +
+>  drivers/staging/hikey9xx/gpu/Kconfig          |   22 +
+>  drivers/staging/hikey9xx/gpu/Makefile         |    9 +
+>  drivers/staging/hikey9xx/gpu/kirin960_defs.c  |  378 +++
+>  .../staging/hikey9xx/gpu/kirin960_dpe_reg.h   |  233 ++
+>  drivers/staging/hikey9xx/gpu/kirin970_defs.c  |  381 +++
+>  .../staging/hikey9xx/gpu/kirin970_dpe_reg.h   | 1188 ++++++++
+>  drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h   | 2437 +++++++++++++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.c     | 1178 ++++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_dpe_utils.h     |  286 ++
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.c   |  368 +++
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_drv.h   |   57 +
+>  .../staging/hikey9xx/gpu/kirin9xx_drm_dss.c   | 1063 +++++++
+>  .../hikey9xx/gpu/kirin9xx_drm_overlay_utils.c | 1005 +++++++
+>  .../hikey9xx/gpu/kirin9xx_dw_drm_dsi.c        | 2132 ++++++++++++++
+>  .../hikey9xx/gpu/kirin9xx_dw_dsi_reg.h        |  146 +
+>  .../staging/hikey9xx/gpu/kirin9xx_fb_panel.h  |  191 ++
+>  25 files changed, 12229 insertions(+), 21 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dpe.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.yaml
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Patch that intropduce new bindings must following the submitting patches
+guidelines for bindings. For once the subject is "dt-bindings: bla bla".
+
+	Sam
+
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-drm.dtsi
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+>  create mode 100644 drivers/staging/hikey9xx/gpu/Kconfig
+>  create mode 100644 drivers/staging/hikey9xx/gpu/Makefile
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_defs.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin960_dpe_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_defs.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin970_dpe_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dpe.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dpe_utils.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_drv.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_dss.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_drm_dsi.c
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_dw_dsi_reg.h
+>  create mode 100644 drivers/staging/hikey9xx/gpu/kirin9xx_fb_panel.h
+> 
+> -- 
+> 2.26.2
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
