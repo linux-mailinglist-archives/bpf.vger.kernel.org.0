@@ -2,163 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF4B24A7E3
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 22:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA0024A7FA
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 22:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgHSUq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 16:46:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38454 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725275AbgHSUq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 16:46:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597870017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qeaXYLzlMjRZzB79ht3RxrE8j6zqJxKY+oFWupwJ5gY=;
-        b=OSZM4qfuyoEKHeZvMY0X5sQM1yPxJngM35mbSFTmlAjvLQL49bMk3wrpjIl9adOZhgY4mN
-        mncVClUelU+O4Uu40PwyIi/cMjeO3W32qv4vYIvdzUnyU48CvBBBlfti1qzlq72ICZ/igl
-        A4G/wGm6FWSnrcU0LTixGehVuoWFaKw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-LjuMay8bM_mZ8ieLn7wRvQ-1; Wed, 19 Aug 2020 16:46:55 -0400
-X-MC-Unique: LjuMay8bM_mZ8ieLn7wRvQ-1
-Received: by mail-wm1-f72.google.com with SMTP id g72so43392wme.4
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 13:46:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qeaXYLzlMjRZzB79ht3RxrE8j6zqJxKY+oFWupwJ5gY=;
-        b=PVurTFQaYm1th9cgvla4yAq0LR9+fhBvWiq7wKuOXsptphBaAdapchaf7L0YMrNdxE
-         NJZ1jmVIIXd8SbyvgXt9RIXhAx0kLB+MYjxIOrbrAJMmn6nuUc2ORn+S8M1Qn/ivGyNF
-         YNQi5rH/SjPVtIDcUKjOZxrfSBsJm0Hro1urVzsbDeDDuVLqJKR/zl2FGer1QiqC0qcC
-         lWVJDuLlYDlClkzWP0gGfPW9DwCWT6m8fnOKigstTEzIVtrAALuormpT0UPhVP7gKqkH
-         9SbBEvSCaoVPUVQhLC4IqVjQ0i1GHrQIxSTih9R+LKjNWeeCBDtQTiiIKANT6B3+ibeG
-         Yx1A==
-X-Gm-Message-State: AOAM5335XIo4voeRNWnEHmjkW4tTThwk9bxPvB4hjvYAek8NVMIsjM1D
-        PvrQdFS07FI9SGqGUqLkS08OCALWDfaoKMf/2M41ScVTFjXYBtI6PREuXFlJt/rPPctpxepyFqM
-        T8ti5IVLqo0aYwLXzOJIwhdxl/peL
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr28274348wrb.53.1597870014164;
-        Wed, 19 Aug 2020 13:46:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAL2082kimynBu4pYfs9Sr23jdDmhST7LFHqbYGo++Ykv/XFx4+62GbdDr0uf365B8lu8+5bsJxfugL8n2dWE=
-X-Received: by 2002:adf:a35e:: with SMTP id d30mr28274331wrb.53.1597870013880;
- Wed, 19 Aug 2020 13:46:53 -0700 (PDT)
+        id S1726617AbgHSUuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 16:50:54 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32888 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725275AbgHSUuv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Aug 2020 16:50:51 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07JKoWA4032198;
+        Wed, 19 Aug 2020 13:50:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=H+RpGadKkwjqQ+BQ/hzmedK4h6N9n7V029jfwP7guo0=;
+ b=buCAMz8nXUyHGcMFrWizWB4Sjn6N/E9paZMetFQ7TN9RL7XUrs/SGf+StUdwOzhN0TiM
+ 3XapZ5wuzVp1CWBlEKUsf8668XpJD8NC9nI7Vub3ioDVzqrqfC8R92+dIzHzO0xGgCno
+ 2tTleyvmqw4HKhn4UkgzMWaWE4+VAhjc0wA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3304jqakrh-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 Aug 2020 13:50:48 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 19 Aug 2020 13:50:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aTWk4E8M7JaapqkNKHitMpYwQ44XI2Gl0XIY0ud96ZxvTxlEL13rxtD5pnEuCCZHbULlxSiKxnWF8r5ZyO6DTMxqJ3H2CYG7mvCq9PJeFERUxcwYLjuROBS1GbhGrF46+gB4V48A9kXptMNvP91uQTHMWKJFZ/1R2TGGSF4riRSKb4+bQcm5+uSFe94KfXSit4PDXDmZR6GSrfKRw0CYIuRk/nVO+37La7LM7npuzw3H6H+XQenLTkcOeCWN6YqxG/Ad0XJZFpYJ42LeoMoGwIl6M1lWB7nEuUlqVts/hFMscMwB4XAWAXiOKrtcaxYf0C8he1M25M6dwidLZLlYTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+RpGadKkwjqQ+BQ/hzmedK4h6N9n7V029jfwP7guo0=;
+ b=UEZLG7jH/b/vs67yc/c4ubj+N11aC/7hvzqNmLel117hm/sN71auWV1hBciZzbVjPxASUImniJ02+7zlfhwbgkbI6l6/LIMKlohMsMNfmkAHRhKscxONWi3eIKCuXgLTrRUDYUEf9ek/h3LCVQB/+4u68z1LamukIrnJ+2hQwYhlJbXi9DWMrcPl+fyCTCU4krDpQpyq+Yp+yfqzXYDBczqdHcgDn/vMYnXymPPuLwXqqtLNBJiXx40hK9qX2YNVa4S96iI4IrPuv//CxsCdL2n1mu1uyQPf26GZuMTEZnElULc7WsmX+H3QWElNu+HXBBOwD/cyTEzu0GaJOhe0uw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H+RpGadKkwjqQ+BQ/hzmedK4h6N9n7V029jfwP7guo0=;
+ b=KaunacxMp0q+OFYHqxtJeAjcZOhAe4mFghQoOxbs242uLmaY2eduirA9GQJrFmFOzXvXmN0ug1h9p3UmViQGlBfOzwTSVp++3VOCL6WcWjntMvz00i1GRty8YMdCYX3y0CbCT0+lwby99UZzIy7TaSPSjdLbb6Hqg3i1xMdW2No=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2376.namprd15.prod.outlook.com (2603:10b6:a02:8c::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Wed, 19 Aug
+ 2020 20:50:41 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3283.028; Wed, 19 Aug 2020
+ 20:50:41 +0000
+Subject: Re: [PATCH bpf] bpf: refer to struct xdp_md in user space comments
+To:     Jakub Kicinski <kuba@kernel.org>, <bpf@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>
+References: <20200819192723.838228-1-kuba@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <931cca2a-60af-71f5-aac5-a4651db0fcae@fb.com>
+Date:   Wed, 19 Aug 2020 13:50:38 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
+In-Reply-To: <20200819192723.838228-1-kuba@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL0PR0102CA0048.prod.exchangelabs.com
+ (2603:10b6:208:25::25) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-References: <20200819023427.267182-1-yauheni.kaliuta@redhat.com>
- <66d63f42-ce71-446a-7ee2-586ffcea160d@fb.com> <CANoWswmccdLu4mCj48iVH1_Od4zZ=BdgCHZ0CMyieYQ9WxoHPA@mail.gmail.com>
- <1518db68-6699-b261-7b6e-2d71c3d9566c@fb.com>
-In-Reply-To: <1518db68-6699-b261-7b6e-2d71c3d9566c@fb.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Wed, 19 Aug 2020 23:46:37 +0300
-Message-ID: <CANoWswnJ0fh_uMzwuLDyZsyWcNyiwMnx4-Unp=q22ppVe8f0-w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: selftests: global_funcs: check err_str before strstr
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c0a8:11e8::10d3] (2620:10d:c091:480::1:d29f) by BL0PR0102CA0048.prod.exchangelabs.com (2603:10b6:208:25::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend Transport; Wed, 19 Aug 2020 20:50:40 +0000
+X-Originating-IP: [2620:10d:c091:480::1:d29f]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 545d2bed-e61c-4436-8761-08d844818920
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2376:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2376FFC7A8702E7E410150AED35D0@BYAPR15MB2376.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:597;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8tHdlUJeRO51X5ZK2VNOFyTPdpg6jUWbvVWWH0x61us+om+99E34SNpKHNtyJdePsYoJylLmsEnTndFJ2YnIcQfy+zC4Fs8DCtHWOpmJTujUtXoF1TDFZhPMlbrkE8XDpnGu7G5CpIpf8cBf7JdtZphxoatAkxb9KchAXZnlRtzaztdY9kBMY4Pd+XonAbX9x7//DtZ2M/bDI3IDuvcuukwSUQ7e0voQ+sQNXAcsDy8qzlDaRhR7GlkZ/uB0KYRgHUCtrLGwcIci6N1z8w2bRRGaNjCNS0gq+tYi3SvfT49TzT6A+rkKW9YC2CpRgYUMxFnilqi1VCbn2hr52xG1mJluPz6aN8kYppbX10WZj8pNV4vPZFrJboKrrJE/7WLa
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(396003)(376002)(136003)(16526019)(31686004)(52116002)(36756003)(4326008)(6486002)(2616005)(86362001)(31696002)(5660300002)(186003)(316002)(2906002)(66476007)(478600001)(66556008)(8676002)(66946007)(8936002)(558084003)(53546011)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 9PFHH6jmkBCOnCYlrck5/eGuN3iTmKSI2QH3gCQvtCekxnB+G9mmwRReJwzWyGvkyY8XjsgnhFiBgnLwpKoIoTFUFeqAXLbCaIoO2+gLCJQMBoYZ1bIfvA8YfMr6PLSsPWwzSeYoh8NpBCVF+XSgRXwn0giboTvePk/ih6AJvA3vj0ISZtR1Ivh2PStjbY/8kwFtbQPLGRrq642wD9sTru/LTdkgU+PdRt0p5beN7KELDJDIaRbtzkSijlKtKW9uibbqQYe66YfrV7rViTMZiDqDL8ZrUFp6ETb/XKCMlk1MENum6OKPQl0pMo/lmpZd4dhuJncyhDF7FJZQM9z/l/z7JTP1ksEm6lFuQW4d0Xqu3nuXyLx+UuPaUAeoksBjjlcpHUj+e7Ccd5XqSQ2z0AH/vUUVMT/cB7DoQ8/JhDpkTlm48DkGQCAzDDQjNCb8Ul2FpnvbEM3OqMFT8GEDayymAl5ZuY/lP3YLSaGKehjrm4vJPXVFj2w/H54EAwVZ1e3g3IPqw8UNG7R0M6Dt53LEg0sumpxdgcmW0MQ4COLgdvgjUumVlD+jFb6Mxjj0yGLDqh41me/YaASAb4hBNbjPz9Wwtvlk79J96HgVlvrUeTxtf5umsngxhfeBarTemPP0Qcti2FVvNVFu9sIby243hV7piTGWwAnvYs3tNMiF17UfZLTg+iSr4MgT/07K
+X-MS-Exchange-CrossTenant-Network-Message-Id: 545d2bed-e61c-4436-8761-08d844818920
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2020 20:50:41.6864
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hibp2aNSSivzO2H+XDioR756pAQ0RNEEFyaCZJwYhsWa3uWm3vr89btQfEueHBN5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2376
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-19_13:2020-08-19,2020-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008190170
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 5:57 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 8/19/20 12:05 AM, Yauheni Kaliuta wrote:
-> > On Wed, Aug 19, 2020 at 8:19 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 8/18/20 7:34 PM, Yauheni Kaliuta wrote:
-> >>> The error path in libbpf.c:load_program() has calls to pr_warn()
-> >>> which ends up for global_funcs tests to
-> >>> test_global_funcs.c:libbpf_debug_print().
-> >>>
-> >>> For the tests with no struct test_def::err_str initialized with a
-> >>> string, it causes call of strstr() with NULL as the second argument
-> >>> and it segfaults.
-> >>>
-> >>> Fix it by calling strstr() only for non-NULL err_str.
-> >>>
-> >>> The patch does not fix the test itself.
-> >>
-> >> So this happens in older kernel, right? Could you clarify more
-> >> in which kernel and what environment? It probably no need to
-> >> fix the issue for really old kernel but some clarification
-> >> will be good.
-> >
-> > I'll test it with the very recent kernel on that architecture soon,
-> > for sure. But it's not related to the patch.
->
-> The above "The patch does not fix the test itself" a little bit vague.
-> You can say that "The test may fail in old kernels where <why it fails
-> ...> and this patch is to fix the segfault rather the test failure.".
-> This way people can easily understand why and the purpose of this patch.
-
-Ok, I'll remove it completely (as I mentioned in the follow-up email,
-the test still fails for me for the Linus' HEAD).
-
->
-> >
-> >>
-> >>>
-> >>> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
->
-> Ok, ack with the above nit and one nit below.
->     Acked-by: Yonghong Song <yhs@fb.com>
-> I guess it is better to send a v2 carrying my ack.
->
-> >>> ---
-> >>>    tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
-> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> >>> index 25b068591e9a..6ad14c5465eb 100644
-> >>> --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> >>> @@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
-> >>>        log_buf = va_arg(args, char *);
-> >>>        if (!log_buf)
-> >>>                goto out;
-> >>> -     if (strstr(log_buf, err_str) == 0)
-> >>> +     if ((err_str != NULL) && (strstr(log_buf, err_str) == 0))
-> >>
-> >> Looks good but the code can be simplified as
-> >>          if (err_str && strstr(log_buf, err_str) == 0)
-> >>                  found = true;
-> >
-> > Yes, but I prefer to use NULL explicitly when I deal with pointers. It
-> > demonstrates intention better. You also can simplify strstr() == 0
-> > with !. Actually, strstr() returns char *, so comparation to 0
-> > (totally legal by standard) breaks my feelings too :).
->
-> comparison with NULL is okay. You can just do
->     (err_str != NULL && strstr(log_buf, err_str) == 0)
-> there is no need for extra parenthesis.
-
-Ah, ok. Inconsistency with the strstr check bothers me, but it would
-be unrelated change.
-
-Thank you for review!
-
->
-> >
-> > If you insist, I'll send v2 of course.
-> >
-> >>>                found = true;
-> >>>    out:
-> >>>        printf(format, log_buf);
-> >>>
-> >>
-> >
-> >
->
 
 
--- 
-WBR, Yauheni
+On 8/19/20 12:27 PM, Jakub Kicinski wrote:
+> uAPI uses xdp_md, not xdp_buff. Fix comments.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
+Acked-by: Yonghong Song <yhs@fb.com>
