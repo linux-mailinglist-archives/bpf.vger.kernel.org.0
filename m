@@ -2,147 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26E52491FC
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 02:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B4A249219
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 03:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgHSAuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 20:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
+        id S1726799AbgHSBHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 21:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726717AbgHSAuB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Aug 2020 20:50:01 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90400C061389;
-        Tue, 18 Aug 2020 17:50:00 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i92so399521pje.0;
-        Tue, 18 Aug 2020 17:50:00 -0700 (PDT)
+        with ESMTP id S1726600AbgHSBHW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 21:07:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C3FC061389;
+        Tue, 18 Aug 2020 18:07:22 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u128so10821126pfb.6;
+        Tue, 18 Aug 2020 18:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jygbgrnQenGEuGov4ivBCZFA8Viy7yd7/y09kWCsgZ8=;
-        b=adovtIMoWmZphfDLeuJGrsGbIqbbRcjQG5o5P+p3AXrSflMrTjtchUYyGwNmIMYECR
-         2N4PNenPUKY2mXw0jYqkK9P/aRBlCOcET1C+bNiKh6uhO8p0csJbz60qiNYWnPERP9KI
-         UjKdjf2vprPbn9rzDD1We7ayVTLN4Fe3XeMChSzh5UB0ziXb43EwOsrNSPBYfdRvla/w
-         loAZ/I3MXgTPlYA7WSJKnjPXbBCxGAvGM9BVNGiKLvklhYgig40KPutmgeO8CbQvQzjR
-         mNxU5uYn5YHgRSAsYfZ4ywvzvBChs9p8+I26ANs7vxdc5uNMzrf5oL70yIxV9/o4v3Mn
-         K9vA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+wK+rbb5LFUWKURBdXLnf6TcSgWtJm3SjVLoS6sfcuI=;
+        b=brh0Ktr9dycNhnLW0TLf+gpUU1vGvFAIch6QvlYZD2h3wpkxtOUXJpYuj5T7Mg4MoH
+         fdcfOOddoaJoAdFiceyY9Bvl65u1M5WXv5lsjc/zYiYr4Xx5oh79H1UlIZ0xsAkuCR0c
+         k8LPYnUO8G5h87s8/KZgQzG3FTKI/pYVyTykiElXJIwatK/4FDc5lplRbLdUBAVwncjI
+         aEp6y79FP44uK4F19CV+I0tQlN+6Rdf6A2RIyhkDyvRDkIhPwD9gElmk8RVC+3RvZyrJ
+         pYTprYuxPXU8Z1Q9pyHGlzh0Vn4ZO/lYZU8yyeE7oXzZYmrLYfBnfYQzwP7H6nHUXEVg
+         rQzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jygbgrnQenGEuGov4ivBCZFA8Viy7yd7/y09kWCsgZ8=;
-        b=JZzfDjnU2fJEpyavgh+G9Uh+Hm8fOgz/ByLRGfhyIzRKQ80OFH5RADr7YCBLbPNVL0
-         /TJUWKUj0mG+138UQf5Gtpv1EuDn1US6EUjVJeuAJZ0l6z53UNpQK13fWzyc7BV/ws6Z
-         HOj2mrHDx3AQTh67c1Qz4JSnnEvtkWbbGvqLTa7tULjXDe7DL4UrckvhuaucQO7HbmQa
-         oDCsyQR60TTi1ei7dflsMB4rDrWv5gE40zZZ7CvxIo2AG7lnJULstfjHtyrHxEmEQawc
-         eewexDgZ3LXUvXwA3n53uCon/2OhAKqqWsmuWJhzsMIAGKUSC+HmlWX53fmQsXDsaMIf
-         gFKA==
-X-Gm-Message-State: AOAM533y/F8VK6u7TSKxngIpPGK6SrYdL5VFmYUVR3BG35DQirqZbgej
-        adUj9oN8Y8w0pm00zVDDIXg=
-X-Google-Smtp-Source: ABdhPJziEw0zviXGYfoqHwgN/kZiVL1IkULJ4LUGZjk4NvgQoeMq/GGu6rvI1tGDIox1/tz/QQwh8w==
-X-Received: by 2002:a17:90a:644b:: with SMTP id y11mr2078305pjm.13.1597798199621;
-        Tue, 18 Aug 2020 17:49:59 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:20fd])
-        by smtp.gmail.com with ESMTPSA id u62sm25860766pfb.4.2020.08.18.17.49.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+wK+rbb5LFUWKURBdXLnf6TcSgWtJm3SjVLoS6sfcuI=;
+        b=Ufl+dvkZP2KHHT+10EzZn97wvpbZ5Zcx/A4sKdk8UTrXtRn8HdICXx2rwv1TwwVdTZ
+         V6eMkRd+qDs8do1ilpkBez+JOtmbqK5htYy7JTRkGDlVpngoJ0qMy/gk3/S0qXji6epe
+         lOMHWGxZG6M2ZmXAkzWtlTVfNvvhWR1aN23uA9b4JFTqXV2saIZTShswn6d9Hb9k8cRs
+         BH0RlQZEzV+qF9uQq5T0QZR05DBsYEJ8TLJql12RJShvQhfZM/p/gMF+qLAmrh9Ve6wp
+         hJjXEM2fVnZw9GS3N8znSlVsUALptYcjavTjQZRcRvcHbnF31RNm4pKntmsHUCvM+nGt
+         yP9Q==
+X-Gm-Message-State: AOAM530oPiELc/4C7MBKCqhxGkG3NSk8nNDFqH6CAoFKsFwEKC0aG+ZG
+        jee4KfymrQqoR4Zmn3kULyI=
+X-Google-Smtp-Source: ABdhPJwxddduoYdkGM2dQ7x6yTJRwPoAWBQclChxX2K6PuPejzkXW7RRl1/JLLhDhZgvN8XjQvEOeg==
+X-Received: by 2002:a62:8105:: with SMTP id t5mr17454448pfd.94.1597799240520;
+        Tue, 18 Aug 2020 18:07:20 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:a28c:fdff:fee1:f370])
+        by smtp.gmail.com with ESMTPSA id 193sm25881853pfu.169.2020.08.18.18.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 17:49:58 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 17:49:57 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Tue, 18 Aug 2020 18:07:19 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH bpf v2 1/3] bpf: fix a rcu_sched stall issue with bpf
- task/task_file iterator
-Message-ID: <20200819004957.tvx6el2lblfp6kb7@ast-mbp.dhcp.thefacebook.com>
-References: <20200818222309.2181236-1-yhs@fb.com>
- <20200818222309.2181348-1-yhs@fb.com>
- <20200819000547.7qv32me2fxviwdkx@ast-mbp.dhcp.thefacebook.com>
- <ac2c7081-8e6b-76c6-e032-ed2be3727e4d@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH bpf-next 1/2] net-tun: add type safety to tun_xdp_to_ptr() and tun_ptr_to_xdp()
+Date:   Tue, 18 Aug 2020 18:07:09 -0700
+Message-Id: <20200819010710.3959310-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.28.0.220.ged08abb693-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac2c7081-8e6b-76c6-e032-ed2be3727e4d@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 05:30:37PM -0700, Yonghong Song wrote:
-> 
-> 
-> On 8/18/20 5:05 PM, Alexei Starovoitov wrote:
-> > On Tue, Aug 18, 2020 at 03:23:09PM -0700, Yonghong Song wrote:
-> > > 
-> > > We did not use cond_resched() since for some iterators, e.g.,
-> > > netlink iterator, where rcu read_lock critical section spans between
-> > > consecutive seq_ops->next(), which makes impossible to do cond_resched()
-> > > in the key while loop of function bpf_seq_read().
-> > 
-> > but after this patch we can, right?
-> 
-> We can do cond_resched() after seq->op->stop(). See more below.
-> 
-> > 
-> > > +/* maximum visited objects before bailing out */
-> > > +#define MAX_ITER_OBJECTS	1000000
-> > > +
-> > >   /* bpf_seq_read, a customized and simpler version for bpf iterator.
-> > >    * no_llseek is assumed for this file.
-> > >    * The following are differences from seq_read():
-> > > @@ -79,7 +82,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
-> > >   {
-> > >   	struct seq_file *seq = file->private_data;
-> > >   	size_t n, offs, copied = 0;
-> > > -	int err = 0;
-> > > +	int err = 0, num_objs = 0;
-> > >   	void *p;
-> > >   	mutex_lock(&seq->lock);
-> > > @@ -135,6 +138,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
-> > >   	while (1) {
-> > >   		loff_t pos = seq->index;
-> > > +		num_objs++;
-> > >   		offs = seq->count;
-> > >   		p = seq->op->next(seq, p, &seq->index);
-> > >   		if (pos == seq->index) {
-> > > @@ -153,6 +157,15 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
-> > >   		if (seq->count >= size)
-> > >   			break;
-> > > +		if (num_objs >= MAX_ITER_OBJECTS) {
-> > > +			if (offs == 0) {
-> > > +				err = -EAGAIN;
-> > > +				seq->op->stop(seq, p);
-> > > +				goto done;
-> > > +			}
-> > > +			break;
-> > > +		}
-> > > +
-> > 
-> > should this block be after op->show() and error processing?
-> > Otherwise bpf_iter_inc_seq_num() will be incorrectly incremented?
-> 
-> The purpose of op->next() is to calculate the "next" object position,
-> stored in the seq private data. So for next read() syscall, start()
-> will try to fetch the data based on the info in seq private data.
-> 
-> This is true for conditions "if (seq->count >= size) break"
-> in the above so next op->start() can try to locate the correct
-> object. The same is for this -EAGAIN thing.
-> 
-> > 
-> > >   		err = seq->op->show(seq, p);
-> > >   		if (err > 0) {
-> > >   			bpf_iter_dec_seq_num(seq);
-> > 
-> > After op->stop() we can do cond_resched() in all cases,
-> > since rhashtable walk does rcu_unlock in stop() callback, right?
-> 
-> Yes, we can. I am thinking since we return to user space,
-> cond_resched() might not be needed since returning to user space
-> will trigger some kind of scheduling. This patch fixed
-> the rcu stall issue. But if my understanding is incorrect,
-> I am happy to add cond_reched().
+From: Maciej Żenczykowski <maze@google.com>
 
-ahh. you're correct on both counts. Applied all three patches to bpf tree. thanks!
+This reduces likelihood of incorrect use.
+
+Test: builds
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ drivers/net/tun.c      | 6 +++---
+ include/linux/if_tun.h | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 3c11a77f5709..5dd7f353eeef 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -225,13 +225,13 @@ bool tun_is_xdp_frame(void *ptr)
+ }
+ EXPORT_SYMBOL(tun_is_xdp_frame);
+ 
+-void *tun_xdp_to_ptr(void *ptr)
++void *tun_xdp_to_ptr(struct xdp_frame *xdp)
+ {
+-	return (void *)((unsigned long)ptr | TUN_XDP_FLAG);
++	return (void *)((unsigned long)xdp | TUN_XDP_FLAG);
+ }
+ EXPORT_SYMBOL(tun_xdp_to_ptr);
+ 
+-void *tun_ptr_to_xdp(void *ptr)
++struct xdp_frame *tun_ptr_to_xdp(void *ptr)
+ {
+ 	return (void *)((unsigned long)ptr & ~TUN_XDP_FLAG);
+ }
+diff --git a/include/linux/if_tun.h b/include/linux/if_tun.h
+index 5bda8cf457b6..6c37e1dbc5df 100644
+--- a/include/linux/if_tun.h
++++ b/include/linux/if_tun.h
+@@ -28,8 +28,8 @@ struct tun_xdp_hdr {
+ struct socket *tun_get_socket(struct file *);
+ struct ptr_ring *tun_get_tx_ring(struct file *file);
+ bool tun_is_xdp_frame(void *ptr);
+-void *tun_xdp_to_ptr(void *ptr);
+-void *tun_ptr_to_xdp(void *ptr);
++void *tun_xdp_to_ptr(struct xdp_frame *xdp);
++struct xdp_frame *tun_ptr_to_xdp(void *ptr);
+ void tun_ptr_free(void *ptr);
+ #else
+ #include <linux/err.h>
+@@ -48,11 +48,11 @@ static inline bool tun_is_xdp_frame(void *ptr)
+ {
+ 	return false;
+ }
+-static inline void *tun_xdp_to_ptr(void *ptr)
++static inline void *tun_xdp_to_ptr(struct xdp_frame *xdp)
+ {
+ 	return NULL;
+ }
+-static inline void *tun_ptr_to_xdp(void *ptr)
++static inline struct xdp_frame *tun_ptr_to_xdp(void *ptr)
+ {
+ 	return NULL;
+ }
+-- 
+2.28.0.220.ged08abb693-goog
+
