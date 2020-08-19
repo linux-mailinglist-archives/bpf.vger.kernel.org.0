@@ -2,198 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85A724A5C1
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 20:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2B724A603
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 20:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgHSSQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 14:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        id S1726729AbgHSSca (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 14:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgHSSQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 14:16:29 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D86DC061383
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 11:16:29 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id h2so798737plr.0
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 11:16:29 -0700 (PDT)
+        with ESMTP id S1726435AbgHSSc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 14:32:27 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDD1C061383
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 11:32:26 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v4so26531060ljd.0
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 11:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dSui/fSURO6y1Wz5D3dLmsitas0HJHJce/emppKsko8=;
-        b=dF/8AYNHfvBk97Tne9yynHHsGff9iK0RM/kkGTfShK1LRGRKa/HViuyrVTfy0slqjk
-         wzD7tNw/9SwP7DkHBWqiVh1/vHu/5LOHaABMkppQ11J3F4Hb5iXfp1LnIBQb2GzNFe+Y
-         Zso/e1BV1VIktkdWwCdDS9kKgiA6BPJvn2xdqHRFZAzHpICLh6pVWwE8FP++sBd2To2t
-         VbYvofNGuF3R5X/tMviOhgsBOTRvMPA26sBsH9X7tXj4WBSqAfJB6uELRHB6t44N5jt9
-         fBw+wqmDsTyA5fzMBGzJyvBdg3UFWnl/+Prb9sSoi9ffC10L3meNyfzcmfPFSV5WV3Fd
-         1+yA==
+        bh=PCuKkyRxcbup4ABdZGpC9XS5K02qBsfUZIlHBjZs1pc=;
+        b=YN7mKrskvwWbX56uQExfTWNmH6b7b06GM1t6v6PKQMs/53B4exuT41lXnTdk02Vy1a
+         kyWEZ0RcGu5BbhBuNhEnWP2R+82h3AWl7VuY+FT8Owk6ALwcQj9n43iDoTjn/PJjStUs
+         +r7PqpmcMgHSVrmWSkasonWj1JvkoFL9fZBlA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dSui/fSURO6y1Wz5D3dLmsitas0HJHJce/emppKsko8=;
-        b=lDM4HVV55D+XgmbcinNKjM8LJCMkB3IQ+r3krX+ZA3kb2d+MEq0Wix72m+1siSgxp4
-         9gvkHos10SOWzm4l3C/Ms8GWTp8Wrg3KggNf4kZv2cI7DDSPHMF3mk5tDoNJR6zkA1DQ
-         ZJbFT5giSn5FPF7Lf7v2C0QcBIojsvk4vV49kbEKNNAXhvGz/jlfCn6ya/i8D4yAVcVo
-         jV4WUn9KHuc98bKc14dLj5szjs0Zx2Pf49u99V1nlS7E+pPpi9b0MfobVW+PMkquV/C0
-         b3TAEvkrIY0O6YX/X5V83iQIE8U3RN7lgRaIBm5IJkXQVWKe+c40kRAyqKGnwjFFk/Yl
-         32/Q==
-X-Gm-Message-State: AOAM5310j9tqVy/w+HOKNDOPSng391mxaTX4XCzDucEM/l2ZW5at1b37
-        gm8gPSG36bh61GcG9l09rhcLFl+mnzxJD8bQaj2SJA==
-X-Google-Smtp-Source: ABdhPJzsMX/bqJHt1p0BQWY/gaVhEOyhReGXKI17HsvOgOaZ4GJdmSuu2OtNmkJOwIZGjp7Cx7lzB7kU4PKSVbZtFBc=
-X-Received: by 2002:a17:902:cb91:: with SMTP id d17mr19284728ply.223.1597860988249;
- Wed, 19 Aug 2020 11:16:28 -0700 (PDT)
+        bh=PCuKkyRxcbup4ABdZGpC9XS5K02qBsfUZIlHBjZs1pc=;
+        b=mN4cLk/HpzIQrYRdmG//cqN+JGHJwTYbJ62N6OHI4Si7yfHSLLnbqPhUwF7542VVjY
+         1eBRzfrHDKaiPj6oSBNSV2LyF3lLWOneNsA7hbc+vhOt1X6nS+zGfoDk/SjQ6JbzSTVO
+         VbVZ3czSTk+FW4b1H7KwwghiexJeCzuqcues6HL+pA8D3X16qU978j2ytclEJ/uDZ7JK
+         oeSoP2WB4S7gp/lwRQh+ogZeQbCXpk3tsfP8kYHDcrB9yB2aobhJZ1dYfoSA2ULgO122
+         5fIT9Ua1uNEU+SWI4RPqYVOD8hN1s3miVg8tctRzWnYz07CIy3zQzR+pG0epkjCK22Rt
+         2BFA==
+X-Gm-Message-State: AOAM530HuA2/sYTdhvStGptRU3Rv5q6Djmou4x2nC8NaY+AIICvLSB8S
+        YXUqNiPbW9eBu7UiKlOKuTP2i//L1aD6DA==
+X-Google-Smtp-Source: ABdhPJyOorufACqZ0WjRj1G6BZcP+Awaf9TfakCpSh6pfKXPlDEdDQ/wol9WFovi2HgIxPGMrnN7Bw==
+X-Received: by 2002:a2e:b010:: with SMTP id y16mr13276985ljk.391.1597861943683;
+        Wed, 19 Aug 2020 11:32:23 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id w19sm6734624ljd.112.2020.08.19.11.32.21
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Aug 2020 11:32:22 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id t6so26476091ljk.9
+        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 11:32:21 -0700 (PDT)
+X-Received: by 2002:a2e:545:: with SMTP id 66mr13526311ljf.285.1597861941474;
+ Wed, 19 Aug 2020 11:32:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200819092342.259004-1-jolsa@kernel.org> <254246ed-1b76-c435-a7bd-0783a29094d9@fb.com>
- <20200819173618.GH177896@krava>
-In-Reply-To: <20200819173618.GH177896@krava>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 19 Aug 2020 11:16:17 -0700
-Message-ID: <CAKwvOdnfy4ASdeVqPjMtALXOXgMKdEB8U0UzWDPBKVqdhcPaFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix sections with wrong alignment
-To:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org> <20200817220425.9389-9-ebiederm@xmission.com>
+ <CAHk-=whCU_psWXHod0-WqXXKB4gKzgW9q=d_ZEFPNATr3kG=QQ@mail.gmail.com>
+ <875z9g7oln.fsf@x220.int.ebiederm.org> <CAHk-=wjk_CnGHt4LBi2WsOeYOxE5j79R8xHzZytCy8t-_9orQw@mail.gmail.com>
+ <20200818110556.q5i5quflrcljv4wa@wittgenstein> <87pn7m22kn.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87pn7m22kn.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 19 Aug 2020 11:32:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj8BQbgJFLa+J0e=iT-1qpmCRTbPAJ8gd6MJQ=kbRPqyQ@mail.gmail.com>
+Message-ID: <CAHk-=wj8BQbgJFLa+J0e=iT-1qpmCRTbPAJ8gd6MJQ=kbRPqyQ@mail.gmail.com>
+Subject: Re: [PATCH 09/17] file: Implement fnext_task
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        criu@openvz.org, bpf <bpf@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Mark Wielaard <mjw@redhat.com>,
-        Nick Clifton <nickc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 10:36 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Aug 19, 2020 at 6:25 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> On Wed, Aug 19, 2020 at 08:31:51AM -0700, Yonghong Song wrote:
-> >
-> >
-> > On 8/19/20 2:23 AM, Jiri Olsa wrote:
-> > > The data of compressed section should be aligned to 4
-> > > (for 32bit) or 8 (for 64 bit) bytes.
-> > >
-> > > The binutils ld sets sh_addralign to 1, which makes libelf
-> > > fail with misaligned section error during the update as
-> > > reported by Jesper:
-> > >
-> > >     FAILED elf_update(WRITE): invalid section alignment
-> > >
-> > > While waiting for ld fix, we can fix compressed sections
-> > > sh_addralign value manually.
+> So I sat down and played with it and here is what I wound up with is:
+>
+> __fcheck_files -> files_lookup_fd_raw
+> fcheck_files   -> files_lookup_fd_locked
+> fcheck_files   -> files_lookup_fd_rcu
+> fcheck         -> lookup_fd_rcu
+> ...
+> fcheck_task    -> task_lookup_fd_fcu
+> fnext_task     -> task_lookup_next_fd_rcu
 
-Is there a bug filed against GNU ld? Link?
+This certainly looks fine to me. No confusion about what it does. So Ack.
 
-> > >
-> > > Adding warning in -vv mode when the fix is triggered:
-> > >
-> > >    $ ./tools/bpf/resolve_btfids/resolve_btfids -vv vmlinux
-> > >    ...
-> > >    section(36) .comment, size 44, link 0, flags 30, type=1
-> > >    section(37) .debug_aranges, size 45684, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 16, expected 8
-> > >    section(38) .debug_info, size 129104957, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 1, expected 8
-> > >    section(39) .debug_abbrev, size 1152583, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 1, expected 8
-> > >    section(40) .debug_line, size 7374522, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 1, expected 8
-> > >    section(41) .debug_frame, size 702463, link 0, flags 800, type=1
-> > >    section(42) .debug_str, size 1017571, link 0, flags 830, type=1
-> > >     - fixing wrong alignment sh_addralign 1, expected 8
-> > >    section(43) .debug_loc, size 3019453, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 1, expected 8
-> > >    section(44) .debug_ranges, size 1744583, link 0, flags 800, type=1
-> > >     - fixing wrong alignment sh_addralign 16, expected 8
-> > >    section(45) .symtab, size 2955888, link 46, flags 0, type=2
-> > >    section(46) .strtab, size 2613072, link 0, flags 0, type=3
-> > >    ...
-> > >    update ok for vmlinux
-> > >
-> > > Another workaround is to disable compressed debug info data
-> > > CONFIG_DEBUG_INFO_COMPRESSED kernel option.
-> >
-> > So CONFIG_DEBUG_INFO_COMPRESSED is required to reproduce the bug, right?
->
-> correct
->
-> >
-> > I turned on CONFIG_DEBUG_INFO_COMPRESSED in my config and got a bunch of
-> > build failures.
-> >
-> > ld: drivers/crypto/virtio/virtio_crypto_algs.o: unable to initialize
-> > decompress status for section .debug_info
-> > ld: drivers/crypto/virtio/virtio_crypto_algs.o: unable to initialize
-> > decompress status for section .debug_info
-> > ld: drivers/crypto/virtio/virtio_crypto_algs.o: unable to initialize
-> > decompress status for section .debug_info
-> > ld: drivers/crypto/virtio/virtio_crypto_algs.o: unable to initialize
-> > decompress status for section .debug_info
-> > drivers/crypto/virtio/virtio_crypto_algs.o: file not recognized: File format
-> > not recognized
-> >
-> > ld: net/llc/llc_core.o: unable to initialize decompress status for section
-> > .debug_info
-> > ld: net/llc/llc_core.o: unable to initialize decompress status for section
-> > .debug_info
-> > ld: net/llc/llc_core.o: unable to initialize decompress status for section
-> > .debug_info
-> > ld: net/llc/llc_core.o: unable to initialize decompress status for section
-> > .debug_info
-> > net/llc/llc_core.o: file not recognized: File format not recognized
-> >
-> > ...
-> >
-> > The 'ld' in my system:
-> >
-> > $ ld -V
-> > GNU ld version 2.30-74.el8
-> >   Supported emulations:
-> >    elf_x86_64
-> >    elf32_x86_64
-> >    elf_i386
-> >    elf_iamcu
-> >    i386linux
-> >    elf_l1om
-> >    elf_k1om
-> >    i386pep
-> >    i386pe
-
-According to Documentation/process/changes.rst, the minimum supported
-version of GNU binutils for the kernels is 2.23.  Can you upgrade to
-that and confirm that you still observe the issue?  I don't want to
-spend time chasing bugs in old, unsupported versions of GNU binutils,
-especially as Jiri notes, 2.26 is required for
-CONFIG_DEBUG_INFO_COMPRESSED.  We can always strengthen the Kconfig
-check for it.  Otherwise, I'm not familiar with the observed error
-message.
-
-> > $
-> >
-> > Do you know what is the issue here?
->
-> mine's: GNU ld version 2.32-31.fc31
->
-> there's version info in commit:
->   10e68b02c861 Makefile: support compressed debug info
->
->   Compress the debug information using zlib.  Requires GCC 5.0+ or Clang
->   5.0+, binutils 2.26+, and zlib.
->
-> cc-ing Nick Desaulniers, author of that patch.. any idea about the error above?
->
-> thanks,
-> jirka
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+                   Linus
