@@ -2,82 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856482492EA
-	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 04:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD46924931D
+	for <lists+bpf@lfdr.de>; Wed, 19 Aug 2020 04:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgHSCeg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Aug 2020 22:34:36 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60935 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726718AbgHSCeg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Aug 2020 22:34:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597804474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xG+Smo/hbvCwpLsWztqMEz2PRikMhrGpQAYmDOYK+mQ=;
-        b=eHcBo7ZklmLxmY7mtdNqafiBFO6LZKRSXQCIs6YJpzHKSOcOpbPewwK5ZGc6luXv0Cd/hE
-        EEkLKXMd5CEOaNCU53vtI6xNIGSoSgh2SdDyn7EBDJJWx4PF/o0rjNxrypX+Wz1kIe9XzJ
-        nEFvqyYehq2dgE2t9Ez2a4JONwzTX00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-br62jBZONMa9-nHLs4qulQ-1; Tue, 18 Aug 2020 22:34:32 -0400
-X-MC-Unique: br62jBZONMa9-nHLs4qulQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93CCA10066FB;
-        Wed, 19 Aug 2020 02:34:31 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-30.ams2.redhat.com [10.36.112.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2520760BE5;
-        Wed, 19 Aug 2020 02:34:29 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH] bpf: selftests: global_funcs: check err_str before strstr
-Date:   Wed, 19 Aug 2020 05:34:27 +0300
-Message-Id: <20200819023427.267182-1-yauheni.kaliuta@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1726847AbgHSCz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Aug 2020 22:55:58 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:39748 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726632AbgHSCz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Aug 2020 22:55:57 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowADHzhozlDxffb5EAw--.5934S2;
+        Wed, 19 Aug 2020 10:53:39 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH bpf-next] libbpf: simplify the return expression of build_map_pin_path()
+Date:   Wed, 19 Aug 2020 02:53:24 +0000
+Message-Id: <20200819025324.14680-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADHzhozlDxffb5EAw--.5934S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF47GF4DJFy3Jr4xXr1DKFg_yoWfWFg_C3
+        48XFWxGrWUGFWak3sYkrZ0vr97AFyDGr1DuF4vqrnxGFyj9ay5CrZrAFZ5JF90gw4fKF1x
+        AF9avrWUZF47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUJrcfUUUUU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAwkNA13qZTxtpwAAsg
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The error path in libbpf.c:load_program() has calls to pr_warn()
-which ends up for global_funcs tests to
-test_global_funcs.c:libbpf_debug_print().
+Simplify the return expression.
 
-For the tests with no struct test_def::err_str initialized with a
-string, it causes call of strstr() with NULL as the second argument
-and it segfaults.
-
-Fix it by calling strstr() only for non-NULL err_str.
-
-The patch does not fix the test itself.
-
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index 25b068591e9a..6ad14c5465eb 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
- 	log_buf = va_arg(args, char *);
- 	if (!log_buf)
- 		goto out;
--	if (strstr(log_buf, err_str) == 0)
-+	if ((err_str != NULL) && (strstr(log_buf, err_str) == 0))
- 		found = true;
- out:
- 	printf(format, log_buf);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 5d20b2da4427..cd59e237ca96 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1924,7 +1924,7 @@ static bool get_map_field_int(const char *map_name, const struct btf *btf,
+ static int build_map_pin_path(struct bpf_map *map, const char *path)
+ {
+ 	char buf[PATH_MAX];
+-	int err, len;
++	int len;
+ 
+ 	if (!path)
+ 		path = "/sys/fs/bpf";
+@@ -1935,11 +1935,7 @@ static int build_map_pin_path(struct bpf_map *map, const char *path)
+ 	else if (len >= PATH_MAX)
+ 		return -ENAMETOOLONG;
+ 
+-	err = bpf_map__set_pin_path(map, buf);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return bpf_map__set_pin_path(map, buf);
+ }
+ 
+ 
 -- 
-2.26.2
+2.17.1
 
