@@ -2,116 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ACF24A900
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 00:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E2924A96F
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 00:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgHSWTv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Aug 2020 18:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgHSWTr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Aug 2020 18:19:47 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D72C061384
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o23so318584ejr.1
-        for <bpf@vger.kernel.org>; Wed, 19 Aug 2020 15:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
-        b=Ef522J+HKC9VQ3bXTdQCKpaISrqMAApkaMt0vil8OTOF7bGl/toU8qGdBGUstpcOqL
-         7TvPKLv3ULgx8c5b25OU0ONXCq5g193Cxas0ff1KGyXSKNqk3GB+VuXaMUfUh3k1AT+s
-         t0tZroI67koT3PQ7a/dFTvQC3LLqKlUymmTV0=
+        id S1726482AbgHSWgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Aug 2020 18:36:31 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:35088 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726209AbgHSWga (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Aug 2020 18:36:30 -0400
+Received: by mail-io1-f65.google.com with SMTP id s2so413972ioo.2;
+        Wed, 19 Aug 2020 15:36:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c+nD+6rOSt5uemBROilNSHXJdZPlPNIu2EDTx+MPmGY=;
-        b=cpZybCQbpInSZ2gtXZx30qZ3M36pMOnXDBb4mF9Z8pD7k8xJB5I92hIdT0i8Ud4PcX
-         W/DCtQ269vXSspcvFW4lUhfn0kztr3nSSZFHFItGb5gDSahRZzNE95KCXcK+mqR+7OLF
-         vOuVleDlcYQ/jlLNMeF/C+W/VivlXFUde3O7a4qSjpRSGJRu1I29Ckr7TWRPw9JitONU
-         Y28fy2dZ8EeZVGs+E2ySg1eVvIeMKO0NTdxOsNgkLowwGjt0wMlbuW9n4HixSt2Ts5JK
-         B5FFU0qTbsG3xLeLpn2dwyNeIdwCUTLZjH5hhVqYGkhhnvwAZzHMRsrCVKj16eZdnunt
-         jwnQ==
-X-Gm-Message-State: AOAM532VB+5R5x7iJ3lsof0H65Y8d/cMuJacdQMc8LahWpeFVL7ZLQkf
-        tlsQ7MHsljWvZxxwFaTCnyicwA==
-X-Google-Smtp-Source: ABdhPJx1M6OHslbrJYzGQRpPTSSNnbD5cIdvwVw/gDhCC4OwGBD5G3lDSoEC9VQuL0+As3CMMoNHHw==
-X-Received: by 2002:a17:906:6d59:: with SMTP id a25mr453935ejt.193.1597875585467;
-        Wed, 19 Aug 2020 15:19:45 -0700 (PDT)
-Received: from kpsingh-macbookpro2.roam.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id x16sm47545edr.25.2020.08.19.15.19.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Aug 2020 15:19:44 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v8 3/7] bpf: Generalize bpf_sk_storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bC6aASYEgsmqX0lrYUMvyzWqmXHNI5bk9/vbQX0AirY=;
+        b=SWTs008CEnelWbAez7PJeCHAIGaPzw12nSXnkigcyRglTdj+2qTPIpfbZTB44q3qrP
+         1HUJXJiPEIvKB/RABIWEfsqZHOfxmoX9HmhvgJRHkpvZDRXZcVsdr9MXf1QUDXzOM+UT
+         3ih7/fiAL+le0Nqu6HbHoFGiFQbOe12IFANNzQw/ly8PT9oQ3/j08oUfQF+aYMETyoGc
+         OkQPXAIaUw3OE0EXirbTGsj8WgxV/lpBBruL8lpDG34Se6nLa56Fkm8vQJ6YJbJeKvbq
+         I4DJ6Ma5tvPM8qY3gsVfRtzpf9nsM2MrCFKhcce32Zx31oH/LQ22a0V3gFJZ8es+YRND
+         oFiQ==
+X-Gm-Message-State: AOAM533OPoAraIbyMe+b3nZEUtW9eDpAUW/Z/2qSXESqyIKyBycX76B7
+        aZyNAhhomC6lDdHnp5holQ==
+X-Google-Smtp-Source: ABdhPJyExfthK/G2i9U35sdrsHpH6q4ydgO7dbM/7WUr+hI2m5whIMc2HLDa2NliEenlvW3c4ys8/A==
+X-Received: by 2002:a6b:591a:: with SMTP id n26mr147084iob.122.1597876589103;
+        Wed, 19 Aug 2020 15:36:29 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id p21sm49152ioj.10.2020.08.19.15.36.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 15:36:28 -0700 (PDT)
+Received: (nullmailer pid 2087313 invoked by uid 1000);
+        Wed, 19 Aug 2020 22:36:25 -0000
+Date:   Wed, 19 Aug 2020 16:36:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-References: <20200803164655.1924498-1-kpsingh@chromium.org>
- <20200803164655.1924498-4-kpsingh@chromium.org>
- <20200818010545.iix72le4tkhuyqe5@kafai-mbp.dhcp.thefacebook.com>
- <6cb51fa0-61a5-2cf6-b44d-84d58d08c775@chromium.org>
- <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Message-ID: <a69e6bdf-7a1b-3152-f26b-20175451d9c2@chromium.org>
-Date:   Thu, 20 Aug 2020 00:19:44 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        John Fastabend <john.fastabend@gmail.com>, linuxarm@huawei.com,
+        David Airlie <airlied@linux.ie>, Wei Xu <xuwei5@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        mauro.chehab@huawei.com, Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH 49/49] dt: display: Add binds for the DPE and DSI
+ controller for Kirin 960/970
+Message-ID: <20200819223625.GA2086431@bogus>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+ <6471642f74779fecfc9d5e990d90f9475d8b32d4.1597833138.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200819171215.lcgoon3fbm4kvkpc@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6471642f74779fecfc9d5e990d90f9475d8b32d4.1597833138.git.mchehab+huawei@kernel.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 19.08.20 19:12, Martin KaFai Lau wrote:
-> On Wed, Aug 19, 2020 at 02:41:50PM +0200, KP Singh wrote:
->> On 8/18/20 3:05 AM, Martin KaFai Lau wrote:
->>> On Mon, Aug 03, 2020 at 06:46:51PM +0200, KP Singh wrote:
->>>> From: KP Singh <kpsingh@google.com>
->>>>
->>>> Refactor the functionality in bpf_sk_storage.c so that concept of
-
-[...]
-
->>>> +			struct bpf_local_storage_map *smap,
->>>> +			struct bpf_local_storage_elem *first_selem);
->>>> +
->>>> +struct bpf_local_storage_data *
->>>> +bpf_local_storage_update(void *owner, struct bpf_map *map, void *value,
->>> Nit.  It may be more consistent to take "struct bpf_local_storage_map *smap"
->>> instead of "struct bpf_map *map" here.
->>>
->>> bpf_local_storage_map_check_btf() will be the only one taking
->>> "struct bpf_map *map".
->>
->> That's because it is used in map operations as map_check_btf which expects
->> a bpf_map *map pointer. We can wrap it in another function but is that
->> worth doing?
-> Agree.  bpf_local_storage_map_check_btf() should stay as is.
+On Wed, 19 Aug 2020 13:46:17 +0200, Mauro Carvalho Chehab wrote:
+> Add a description of the bindings used by Kirin 960/970 Display
+> Serial Interface (DSI) controller and by its Display Engine (DPE).
 > 
-> I meant to only change the "bpf_local_storage_update()" to take
-> "struct bpf_local_storage_map *smap".
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../display/hisilicon,hi3660-dpe.yaml         |  99 +++++++++++++++++
+>  .../display/hisilicon,hi3660-dsi.yaml         | 102 ++++++++++++++++++
+>  .../boot/dts/hisilicon/hikey970-drm.dtsi      |   4 +-
+>  3 files changed, 203 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dpe.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.yaml
 > 
 
-Apologies, I misread that. Updated.
 
-- KP
+My bot found errors running 'make dt_binding_check' on your patch:
 
- up here
->> 	 * or when the storage is freed e.g.
->> 	 * by bpf_sk_storage_free() during __sk_destruct().
->>
-> +1
-> 
+Error: Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.example.dts:25.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/hisilicon,hi3660-dsi.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1367: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1347736
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
