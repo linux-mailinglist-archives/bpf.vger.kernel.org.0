@@ -2,149 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6466924C3D4
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 18:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E84D24C41C
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 19:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgHTQ5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 12:57:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:55927 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgHTQ5F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 12:57:05 -0400
-IronPort-SDR: Q0DuJtpLYcnSZQecfmJkUsWnuyOcsZUfF/2FSjijlFswBYbsyTOV3B1tbJ6RQy4l/97BVeFH+R
- NBQPjhRvn6uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="219651857"
-X-IronPort-AV: E=Sophos;i="5.76,333,1592895600"; 
-   d="scan'208";a="219651857"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 09:57:03 -0700
-IronPort-SDR: SpP52+PYmcCRug9mKPMauRqpa/+6bVTp0UbJXDXI+SH1r31Fuado2jXXguhRUVQPAgklb6yl74
- Vs8oBgYUQLxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,333,1592895600"; 
-   d="scan'208";a="498214383"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Aug 2020 09:57:00 -0700
-Date:   Thu, 20 Aug 2020 18:51:21 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     Li RongQing <lirongqing@baidu.com>,
-        Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>, Piotr <piotr.raczynski@intel.com>,
-        Maciej <maciej.machnikowski@intel.com>
-Subject: Re: [Intel-wired-lan] [PATCH 0/2] intel/xdp fixes for fliping rx
- buffer
-Message-ID: <20200820165121.GA9731@ranger.igk.intel.com>
-References: <1594967062-20674-1-git-send-email-lirongqing@baidu.com>
- <CAJ+HfNi2B+2KYP9A7yCfFUhfUBd=sFPeuGbNZMjhNSdq3GEpMg@mail.gmail.com>
- <CAJ+HfNjybUeN9v6N-pnupi32088PL+ZXu8CKWGWmowOaH4nmOw@mail.gmail.com>
+        id S1730429AbgHTRHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 13:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730348AbgHTRFP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 13:05:15 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3850FC061385
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 10:05:06 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id jp10so3410877ejb.0
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 10:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Io5tdLMfOwzBnOTgWMWIIWlg9YYSmolrrRZ0RRvwKR8=;
+        b=kh+7Oi77zCYs0Sv7wjusq4Fc5vU9fpUjsb6r/DE/kUtxx0CQITSCQqoDaZMzjaZZ0n
+         b1VJBkGhEFH8feITupWHQFvEFbhGDN845BnvjWUre/C1K2N+lPbdhqaIylz5UM+JGll+
+         GAVJaLbBjUVw3gF32YxoWxhiSe7a6YeLphd03FE7liKLJ5lz6XlIf+0N3dLp2wHQZ2P2
+         53QhRJ8b2V+Ssvr4++sy0/W/vhM+NV6FRxAvOqnSw4Nm2O2HY9sBxZRz1vMCOGY4jAbH
+         UjkJOxnjy+aZJDIrRyJTTdd0XsUtqpmNCMnzV1KqEUvUC7x54C+Gl0x7HdYdkHKrC7ng
+         JLZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Io5tdLMfOwzBnOTgWMWIIWlg9YYSmolrrRZ0RRvwKR8=;
+        b=XwFITpzTAC0EnSUCTRPhhVAcpI2vSUTVDOh7UxEn/Rq35KS5kMFOlLr49p714oS6JH
+         RylcALCOTlc2HAdgA+62fN2hsS2Hty3HWjolxNT91WdMqvHX1CoS42SvB8HII79MhJG2
+         0nBK38CeUPZgBA0MGNYq41HfI2nHjMRQSkMGLJPBD/WLOS4sfEQUskaS5T59uh2gxLOu
+         dIuTpbvqlTTSqPP+nrBaoxFkiWdz/mnPNxGA/sEE3qrKCO+6G0+irkW+PW62aFwNEgzT
+         5rsERuvX/ybodo/xRhbQ7w8WIx+FY5269H4Fhjy4T20bSQfPu7y2uFFuoVvufE1qu4uh
+         nDPQ==
+X-Gm-Message-State: AOAM531z2SED0uzbMim4QVKzTKhm+9aSATtrfB26hV86yCKIWQANaXpK
+        1YLEBeV28EBMR1jaw716MOFqPhZmRQ83yHn6iA0lbw==
+X-Google-Smtp-Source: ABdhPJxmhN2XhjhlawKzSbrnBdxU0whJpUJmBc0bEkLW6GcfQwO/fGclhykmEtouej1+n+vSOnBFgnayetnB0wumRKM=
+X-Received: by 2002:a17:906:54d3:: with SMTP id c19mr4419389ejp.408.1597943104367;
+ Thu, 20 Aug 2020 10:05:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNjybUeN9v6N-pnupi32088PL+ZXu8CKWGWmowOaH4nmOw@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-2-haoluo@google.com>
+ <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
+In-Reply-To: <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 20 Aug 2020 10:04:53 -0700
+Message-ID: <CA+khW7jYgRxsjvqSWwLQDP5PpuXB0HJDNMLGFAOPddi7SdMP0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Introduce pseudo_btf_id
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 05:13:16PM +0200, Björn Töpel wrote:
-> On Tue, 18 Aug 2020 at 16:04, Björn Töpel <bjorn.topel@gmail.com> wrote:
+Yonghong,
+
+Thank you for taking a look. Explicitly cc'ing Arnaldo to see if he
+has any immediate insights. In the meantime, I'll dedicate time to
+investigate this issue you found.
+
+Thanks,
+Hao
+
+
+On Thu, Aug 20, 2020 at 8:23 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/19/20 3:40 PM, Hao Luo wrote:
+> > Pseudo_btf_id is a type of ld_imm insn that associates a btf_id to a
+> > ksym so that further dereferences on the ksym can use the BTF info
+> > to validate accesses. Internally, when seeing a pseudo_btf_id ld insn,
+> > the verifier reads the btf_id stored in the insn[0]'s imm field and
+> > marks the dst_reg as PTR_TO_BTF_ID. The btf_id points to a VAR_KIND,
+> > which is encoded in btf_vminux by pahole. If the VAR is not of a struct
+> > type, the dst reg will be marked as PTR_TO_MEM instead of PTR_TO_BTF_ID
+> > and the mem_size is resolved to the size of the VAR's type.
 > >
-> > On Fri, 17 Jul 2020 at 08:24, Li RongQing <lirongqing@baidu.com> wrote:
-> > >
-> > > This fixes ice/i40e/ixgbe/ixgbevf_rx_buffer_flip in
-> > > copy mode xdp that can lead to data corruption.
-> > >
-> > > I split two patches, since i40e/xgbe/ixgbevf supports xsk
-> > > receiving from 4.18, put their fixes in a patch
-> > >
+> >  From the VAR btf_id, the verifier can also read the address of the
+> > ksym's corresponding kernel var from kallsyms and use that to fill
+> > dst_reg.
 > >
-> > Li, sorry for the looong latency. I took a looong vacation. :-P
+> > Therefore, the proper functionality of pseudo_btf_id depends on (1)
+> > kallsyms and (2) the encoding of kernel global VARs in pahole, which
+> > should be available since pahole v1.18.
+>
+> I tried your patch with latest pahole but it did not generate
+> expected BTF_TYPE_VARs. My pahole head is:
+>    f3d9054ba8ff btf_encoder: Teach pahole to store percpu variables in
+> vmlinux BTF.
+>
+> First I made the following changes to facilitate debugging:
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 982f59d..f94c3a6 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -334,6 +334,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool
+> force)
+>                  /* percpu variables are allocated in global space */
+>                  if (variable__scope(var) != VSCOPE_GLOBAL)
+>                          continue;
+> +               /* type 0 is void, probably an internal error */
+> +               if (var->ip.tag.type == 0)
+> +                       continue;
+>                  has_global_var = true;
+>                  head = &hash_addr[hashaddr__fn(var->ip.addr)];
+>                  hlist_add_head(&var->tool_hnode, head);
+> @@ -399,8 +402,8 @@ int cu__encode_btf(struct cu *cu, int verbose, bool
+> force)
+>                  }
+>
+>                  if (verbose)
+> -                       printf("symbol '%s' of address 0x%lx encoded\n",
+> -                              sym_name, addr);
+> +                       printf("symbol '%s' of address 0x%lx encoded,
+> type %u\n",
+> +                              sym_name, addr, type);
+>
+>                  /* add a BTF_KIND_VAR in btfe->types */
+>                  linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED :
+> BTF_VAR_STATIC;
+> diff --git a/libbtf.c b/libbtf.c
+> index 7a01ded..3a0d8d7 100644
+> --- a/libbtf.c
+> +++ b/libbtf.c
+> @@ -304,6 +304,8 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>          [BTF_KIND_RESTRICT]     = "RESTRICT",
+>          [BTF_KIND_FUNC]         = "FUNC",
+>          [BTF_KIND_FUNC_PROTO]   = "FUNC_PROTO",
+> +       [BTF_KIND_VAR]          = "VAR",
+> +       [BTF_KIND_DATASEC]      = "DATASEC",
+>   };
+>
+>   static const char *btf_elf__name_in_gobuf(const struct btf_elf *btfe,
+> uint32_t offset)
+> @@ -671,7 +673,7 @@ int32_t btf_elf__add_var_type(struct btf_elf *btfe,
+> uint32_t type, uint32_t name
+>                  return -1;
+>          }
+>
+> -       btf_elf__log_type(btfe, &t.type, false, false, "type=%u name=%s",
+> +       btf_elf__log_type(btfe, &t.type, false, false, "type=%u name=%s\n",
+>                            t.type.type, btf_elf__name_in_gobuf(btfe,
+> t.type.name_off));
+>
+>          return btfe->type_index;
+>
+> It would be good if you can add some of the above changes to
+> pahole for easier `pahole -JV` dump.
+>
+> With the above change, I only got static per cpu variables.
+> For example,
+>     static DEFINE_PER_CPU(unsigned int , mirred_rec_level);
+> in net/sched/act_mirred.c.
+>
+> [10] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+> [74536] VAR 'mirred_rec_level' type_id=10, linkage=static
+>
+> The dwarf debug_info entry for `mirred_rec_level`:
+> 0x0001d8d6:   DW_TAG_variable
+>                  DW_AT_name      ("mirred_rec_level")
+>                  DW_AT_decl_file
+> ("/data/users/yhs/work/net-next/net/sched/act_mirred.c")
+>                  DW_AT_decl_line (31)
+>                  DW_AT_decl_column       (0x08)
+>                  DW_AT_type      (0x00000063 "unsigned int")
+>                  DW_AT_location  (DW_OP_addr 0x0)
+> It is not a declaration and it contains type.
+>
+> All global per cpu variables do not have BTF_KIND_VAR generated.
+> I did a brief investigation and found this mostly like to be a
+> pahole issue. For example, for global per cpu variable
+> bpf_prog_active,
+>    include/linux/bpf.h
+>          DECLARE_PER_CPU(int , bpf_prog_active);
+>    kernel/bpf/syscall.c
+>          DEFINE_PER_CPU(int , bpf_prog_active);
+> it is declared in the header include/linux/bpf.h and
+> defined in kernel/bpf/syscall.c.
+>
+> In many cu's, you will see:
+> 0x0003592a:   DW_TAG_variable
+>                  DW_AT_name      ("bpf_prog_active")
+>                  DW_AT_decl_file
+> ("/data/users/yhs/work/net-next/include/linux/bpf.h")
+>                  DW_AT_decl_line (1074)
+>                  DW_AT_decl_column       (0x01)
+>                  DW_AT_type      (0x0001fa7e "int")
+>                  DW_AT_external  (true)
+>                  DW_AT_declaration       (true)
+>
+> In kernel/bpf/syscall.c, I see
+> the following dwarf entry for real definition:
+> 0x00013534:   DW_TAG_variable
+>                  DW_AT_name      ("bpf_prog_active")
+>                  DW_AT_decl_file
+> ("/data/users/yhs/work/net-next/include/linux/bpf.h")
+>                  DW_AT_decl_line (1074)
+>                  DW_AT_decl_column       (0x01)
+>                  DW_AT_type      (0x000000d6 "int")
+>                  DW_AT_external  (true)
+>                  DW_AT_declaration       (true)
+>
+> 0x00021a25:   DW_TAG_variable
+>                  DW_AT_specification     (0x00013534 "bpf_prog_active")
+>                  DW_AT_decl_file
+> ("/data/users/yhs/work/net-next/kernel/bpf/syscall.c")
+>                  DW_AT_decl_line (43)
+>                  DW_AT_location  (DW_OP_addr 0x0)
+>
+> Note that for the second entry DW_AT_specification points to the
+> declaration. I am not 100% sure whether pahole handle this properly or
+> not. It generates a type id 0 (void) for bpf_prog_active variable.
+>
+> Could you investigate this a little more?
+>
+> I am using gcc 8.2.1. Using kernel default dwarf (dwarf 2) exposed
+> the above issue. Tries to use dwarf 4 and the problem still exists.
+>
+>
 > >
-> > Thanks for taking a look at this, but I believe this is not a bug.
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+> >   include/linux/btf.h      | 15 +++++++++
+> >   include/uapi/linux/bpf.h | 38 ++++++++++++++++------
+> >   kernel/bpf/btf.c         | 15 ---------
+> >   kernel/bpf/verifier.c    | 68 ++++++++++++++++++++++++++++++++++++++++
+> >   4 files changed, 112 insertions(+), 24 deletions(-)
 > >
-> 
-> Ok, dug a bit more into this. I had an offlist discussion with Li, and
-> there are two places (AFAIK) where Li experience a BUG() in
-> tcp_collapse():
-> 
->             BUG_ON(offset < 0);
-> and
->                 if (skb_copy_bits(skb, offset, skb_put(nskb, size), size))
->                     BUG();
-> 
-> (Li, please correct me if I'm wrong.)
-> 
-> I still claim that the page-flipping mechanism is correct, but I found
-> some weirdness in the build_skb() call.
-> 
-> In drivers/net/ethernet/intel/i40e/i40e_txrx.c, build_skb() is invoked as:
->     skb = build_skb(xdp->data_hard_start, truesize);
-> 
-> For the setup Li has truesize is 2048 (half a page), but the
-> rx_buf_len is 1536. In the driver a packet is layed out as:
-> 
-> | padding 192 | packet data 1536 | skb shared info 320 |
-> 
-> build_skb() assumes that the second argument (frag_size) is max packet
-> size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)). In other words,
-> frag_size should not include the padding (192 above). In build_skb(),
-
-Not sure I am buying that reasoning. It assumes the padding + packet_data
-and we use skb_reserve() to tell the skb about the padding.
-
-__build_skb_around() subtracts sizeof(struct skb_shared_info) from size
-that we are providing, so now we are with padding + packet_data.
-Then it is used to calculate the skb->end.
-
-Back to i40e_build_skb(), we use the skb_reserve() to advance the
-skb->data and skb->tail so that they point to packet_data. Finally
-__skb_put() will move the skb->tail to the end of packet_data.
-
-Wouldn't your approach disallow having the headroom at all in the linear
-part of skb?
-
-> frag_size is used to compute the skb truesize and skb end. i40e passes
-
-IMHO skb->end is correct. For skb->truesize I would assume that the
-headroom should also be taken into account for tracking how many bytes a
-particular skb consumes, no?
-
-> a too large buffer, and can therefore potentially corrupt the skb, and
-> maybe this is the reason for tcp_collapse() splatting.
-> 
-> Li, could you test if you get the splat with this patch:
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> index 3e5c566ceb01..acfb4ad9b506 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> @@ -2065,7 +2065,8 @@ static struct sk_buff *i40e_build_skb(struct
-> i40e_ring *rx_ring,
->  {
->      unsigned int metasize = xdp->data - xdp->data_meta;
->  #if (PAGE_SIZE < 8192)
-> -    unsigned int truesize = i40e_rx_pg_size(rx_ring) / 2;
-> +    unsigned int truesize = rx_ring->rx_buf_len +
-> +                SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-
-This will actually break the page flipping scheme. We need a separate
-variable for that and use the old truesize to bump the page_offset.
-
->  #else
->      unsigned int truesize = SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) +
->                  SKB_DATA_ALIGN(xdp->data_end -
-> 
-> I'll have a look in the other Intel drivers, and see if there are
-> similar issues. I'll cook a patch.
-> 
-> 
-> Björn
+> [...]
