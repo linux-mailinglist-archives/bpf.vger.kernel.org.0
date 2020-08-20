@@ -2,163 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FC624B9C4
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC9824B906
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgHTLsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 07:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        id S1730595AbgHTLef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 07:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbgHTKCo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:02:44 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B25FC061757;
-        Thu, 20 Aug 2020 03:02:42 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E5E323D;
-        Thu, 20 Aug 2020 12:02:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1597917743;
-        bh=UdZW/gWpeBR8Fp2uswR4BNeR1AZf83I2Xerix6/McmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ItMFiAGpy+m799SAJlmxoBALpCUTcBMW2ZU7dxHv3+rwmOEr6obhEyMEeRR1DmtU5
-         w83NTD2V6detNxAnQkYHTyfm7GYG23NbpofX1u6znoMCAcfcbBJQgrORodryscgxWx
-         WciTsmZ7pXmG36Axz5Ekh/zrHURi1ohdX/kph6gI=
-Date:   Thu, 20 Aug 2020 13:02:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liuyao An <anliuyao@huawei.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-Message-ID: <20200820100205.GA5962@pendragon.ideasonboard.com>
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
- <20200819152120.GA106437@ravnborg.org>
- <20200819153045.GA18469@pendragon.ideasonboard.com>
- <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
- <20200820090326.3f400a15@coco.lan>
+        with ESMTP id S1730703AbgHTLd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 07:33:27 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6D3C061386
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h22so1156402otq.11
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 04:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
+        b=dNd1ucF68FOwK698++MeDaHZC8R4QTfkj/7ds5fx+EVzNfJCMORnX8FAOUdJXqjhwB
+         KzyLCNsY8RwuHBIj/D1WqqnFEjPzWvq/PbQrZhsKiZ2hAM1Tl2HAg7aZ9Om4JaruuI0q
+         ECAeeAY4+/MbKn5cW+ySGsEjinxUvgEoWpJtY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QDmA2I/vpmdly65/ewdOkuvkgD5OTZaOmPpGyJss1r8=;
+        b=JaZmVOmh2tY40kr8HnksfI2aa1dvR78A74rcLrd7vjzRiI0TEZxuwppLvBKAviW2i+
+         vQfub57xWL3+6Md08IXiMxxT8TxUtmctnE5cAnoGdTHjqCz9Z9KzrT70gtHCBLVHdmVp
+         b7kjNPgB2nt6+z5TNRMG1z4yw/Dre+klEd6bXXG6giJSYMG7nAiZ3N8zAdwa8vcdVImn
+         P8cRj/qBCqK6Jb+hKjK6b7yZagHdFHvR5rPferLxLt8R+BWAVMNy898OA0gHf5rSo4fv
+         WJXim6W9ND4g/rEzo9FWbJINGcTQZ8zmy5hyYaaEmo1Lv2SCWacA87gW9rvamCgr1SgT
+         lH+Q==
+X-Gm-Message-State: AOAM532MV2WMIXh4F5fVNy8ceRyqSBJm5kb/gw1T9eIFtSuEdlifE3P4
+        pJGW1DkgnASrnTAqDNi+XKNB8Ly9xNDSogGdE9FQng==
+X-Google-Smtp-Source: ABdhPJz5sS9SzkLweMOTau3oDrIAtuUMdCvWcs9y5ZeCHjWJmjdV0SWMRwsXpqL0zJOpQbQIgTkvrSUYiwFOo9W6SY8=
+X-Received: by 2002:a9d:2f23:: with SMTP id h32mr1908222otb.334.1597923206365;
+ Thu, 20 Aug 2020 04:33:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200820090326.3f400a15@coco.lan>
+References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-6-lmb@cloudflare.com>
+ <5f3d982f51f22_2c9b2adeefb585bccb@john-XPS-13-9370.notmuch> <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
+In-Reply-To: <5f3daa91265a7_1b0e2ab87245e5c05@john-XPS-13-9370.notmuch>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 20 Aug 2020 12:33:15 +0100
+Message-ID: <CACAyw9_oa5BKq+0gLS6pAuGu6pj9MsRHhEAxFvts167DwpdhLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] bpf: sockmap: allow update from BPF
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Mauro,
-
-On Thu, Aug 20, 2020 at 09:03:26AM +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 19 Aug 2020 12:52:06 -0700 John Stultz escreveu:
-> > On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart wrote:
-> > > On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:  
-> > > > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > > This patch series port the out-of-tree driver for Hikey 970 (which
-> > > > > should also support Hikey 960) from the official 96boards tree:
-> > > > >
-> > > > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
-> > > > >
-> > > > > Based on his history, this driver seems to be originally written
-> > > > > for Kernel 4.4, and was later ported to Kernel 4.9. The original
-> > > > > driver used to depend on ION (from Kernel 4.4) and had its own
-> > > > > implementation for FB dev API.
-> > > > >
-> > > > > As I need to preserve the original history (with has patches from
-> > > > > both HiSilicon and from Linaro),  I'm starting from the original
-> > > > > patch applied there. The remaining patches are incremental,
-> > > > > and port this driver to work with upstream Kernel.
-> > > > >  
-> > ...
-> > > > > - Due to legal reasons, I need to preserve the authorship of
-> > > > >   each one responsbile for each patch. So, I need to start from
-> > > > >   the original patch from Kernel 4.4;  
-> > ...
-> > > > I do acknowledge you need to preserve history and all -
-> > > > but this patchset is not easy to review.  
+On Wed, 19 Aug 2020 at 23:41, John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> John Fastabend wrote:
+> > Lorenz Bauer wrote:
+> > > Allow calling bpf_map_update_elem on sockmap and sockhash from a BPF
+> > > context. The synchronization required for this is a bit fiddly: we
+> > > need to prevent the socket from changing it's state while we add it
+> > > to the sockmap, since we rely on getting a callback via
+> > > sk_prot->unhash. However, we can't just lock_sock like in
+> > > sock_map_sk_acquire because that might sleep. So instead we disable
+> > > softirq processing and use bh_lock_sock to prevent further
+> > > modification.
 > > >
-> > > Why do we need to preserve history ? Adding relevant Signed-off-by and
-> > > Co-developed-by should be enough, shouldn't it ? Having a public branch
-> > > that contains the history is useful if anyone is interested, but I don't
-> > > think it's required in mainline.  
-> > 
-> > Yea. I concur with Laurent here. I'm not sure what legal reasoning you
-> > have on this but preserving the "absolute" history here is actively
-> > detrimental for review and understanding of the patch set.
-> > 
-> > Preserving Authorship, Signed-off-by lines and adding Co-developed-by
-> > lines should be sufficient to provide both atribution credit and DCO
-> > history.
-> 
-> I'm not convinced that, from legal standpoint, folding things would
-> be enough. See, there are at least 3 legal systems involved here
-> among the different patch authors:
-> 
-> 	- civil law;
-> 	- common law;
-> 	- customary law + common law.
-> 
-> Merging stuff altogether from different law systems can be problematic,
-> and trying to discuss this with experienced IP property lawyers will
-> for sure take a lot of time and efforts. I also bet that different
-> lawyers will have different opinions, because laws are subject to 
-> interpretation. With that matter I'm not aware of any court rules 
-> with regards to folded patches. So, it sounds to me that folding 
-> patches is something that has yet to be proofed in courts around
-> the globe.
-> 
-> At least for US legal system, it sounds that the Country of
-> origin of a patch is relevant, as they have a concept of
-> "national technology" that can be subject to export regulations.
-> 
-> From my side, I really prefer to play safe and stay out of any such
-> legal discussions.
+> > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > ---
+> > >  kernel/bpf/verifier.c |  6 ++++--
+> > >  net/core/sock_map.c   | 24 ++++++++++++++++++++++++
+> > >  2 files changed, 28 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 47f9b94bb9d4..421fccf18dea 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -4254,7 +4254,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> > >                 func_id != BPF_FUNC_map_delete_elem &&
+> > >                 func_id != BPF_FUNC_msg_redirect_map &&
+> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
+> > > -               func_id != BPF_FUNC_map_lookup_elem)
+> > > +               func_id != BPF_FUNC_map_lookup_elem &&
+> > > +               func_id != BPF_FUNC_map_update_elem)
+> > >                     goto error;
+> > >             break;
+> > >     case BPF_MAP_TYPE_SOCKHASH:
+> > > @@ -4263,7 +4264,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+> > >                 func_id != BPF_FUNC_map_delete_elem &&
+> > >                 func_id != BPF_FUNC_msg_redirect_hash &&
+> > >                 func_id != BPF_FUNC_sk_select_reuseport &&
+> > > -               func_id != BPF_FUNC_map_lookup_elem)
+> > > +               func_id != BPF_FUNC_map_lookup_elem &&
+> > > +               func_id != BPF_FUNC_map_update_elem)
+> >
+> > I lost track of a detail here, map_lookup_elem should return
+> > PTR_TO_MAP_VALUE_OR_NULL but if we want to feed that back into
+> > the map_update_elem() we need to return PTR_TO_SOCKET_OR_NULL
+> > and then presumably have a null check to get a PTR_TO_SOCKET
+> > type as expect.
+> >
+> > Can we use the same logic for expected arg (previous patch) on the
+> > ret_type. Or did I miss it:/ Need some coffee I guess.
+>
+> OK, I tracked this down. It looks like we rely on mark_ptr_or_null_reg()
+> to update the reg->tyype to PTR_TO_SOCKET. I do wonder if it would be
+> a bit more straight forward to do something similar to the previous
+> patch and refine it earlier to PTR_TO_SOCKET_OR_NULL, but should be
+> safe as-is for now.
 
-Let's be serious for a moment. If you think there are legal issues in
-taking GPL-v2.0-only patches and squashing them while retaining
-authorship information through tags, the Linux kernel if *full* of that.
-You also routinely modify patches that you commit to the media subsystem
-to fix "small issues".
+Yes, it took me a while to figure this out as well. I think we can use
+the same approach, but I wanted to keep this series simple.
 
-The country of origin argument makes no sense either, the kernel code
-base if full of code coming from pretty much all country on the planet.
+> I still have the below question though.
+>
+> >
+> > >                     goto error;
+> > >             break;
+> > >     case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
+> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > > index 018367fb889f..b2c886c34566 100644
+> > > --- a/net/core/sock_map.c
+> > > +++ b/net/core/sock_map.c
+> > > @@ -603,6 +603,28 @@ int sock_map_update_elem_sys(struct bpf_map *map, void *key,
+> > >     return ret;
+> > >  }
+> > >
+> > > +static int sock_map_update_elem(struct bpf_map *map, void *key,
+> > > +                           void *value, u64 flags)
+> > > +{
+> > > +   struct sock *sk = (struct sock *)value;
+> > > +   int ret;
+> > > +
+> > > +   if (!sock_map_sk_is_suitable(sk))
+> > > +           return -EOPNOTSUPP;
+> > > +
+> > > +   local_bh_disable();
+> > > +   bh_lock_sock(sk);
+> >
+> > How do ensure we are not being called from some context which
+> > already has the bh_lock_sock() held? It seems we can call map_update_elem()
+> > from any context, kprobes, tc, xdp, etc.?
 
-Keeping the patches separate make this hard to review. Please squash
-them.
+Yeah, to be honest I'm not entirely sure.
 
--- 
-Regards,
+XDP, TC, sk_lookup are fine I think. We have bpf_sk_lookup_tcp and
+friends, but these aren't locked, and the BPF doesn't run in a context
+where there is a locked socket.
 
-Laurent Pinchart
+As you point out, kprobes / tracing is problematic because the probe
+_can_ run at a point where an sk is locked. If the tracing program
+somehow gets a hold of this socket via sk_lookup_* or
+a sockmap the program could deadlock.
+
+bpf_sock_ops is also problematic since ctx->sk is in various states of
+locking. For example, BPF_SOCK_OPS_TCP_LISTEN_CB is called with
+lock_sock held, so unproblematic. BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
+on the other hand is called with the spinlock held.
+
+It seems to me like the only option is to instead only allow updates
+from "safe" contexts, such as XDP, tc, bpf_iter etc.
+
+Am I missing something?
+
+
+> >
+> > > +   if (!sock_map_sk_state_allowed(sk))
+> > > +           ret = -EOPNOTSUPP;
+> > > +   else if (map->map_type == BPF_MAP_TYPE_SOCKMAP)
+> > > +           ret = sock_map_update_common(map, *(u32 *)key, sk, flags);
+> > > +   else
+> > > +           ret = sock_hash_update_common(map, key, sk, flags);
+> > > +   bh_unlock_sock(sk);
+> > > +   local_bh_enable();
+> > > +   return ret;
+> > > +}
+> > > +
+> > >  BPF_CALL_4(bpf_sock_map_update, struct bpf_sock_ops_kern *, sops,
+> > >        struct bpf_map *, map, void *, key, u64, flags)
+> > >  {
+> > > @@ -687,6 +709,7 @@ const struct bpf_map_ops sock_map_ops = {
+> > >     .map_free               = sock_map_free,
+> > >     .map_get_next_key       = sock_map_get_next_key,
+> > >     .map_lookup_elem_sys_only = sock_map_lookup_sys,
+> > > +   .map_update_elem        = sock_map_update_elem,
+> > >     .map_delete_elem        = sock_map_delete_elem,
+> > >     .map_lookup_elem        = sock_map_lookup,
+> > >     .map_release_uref       = sock_map_release_progs,
+> > > @@ -1180,6 +1203,7 @@ const struct bpf_map_ops sock_hash_ops = {
+> > >     .map_alloc              = sock_hash_alloc,
+> > >     .map_free               = sock_hash_free,
+> > >     .map_get_next_key       = sock_hash_get_next_key,
+> > > +   .map_update_elem        = sock_map_update_elem,
+> > >     .map_delete_elem        = sock_hash_delete_elem,
+> > >     .map_lookup_elem        = sock_hash_lookup,
+> > >     .map_lookup_elem_sys_only = sock_hash_lookup_sys,
+> > > --
+> > > 2.25.1
+> > >
+> >
+> >
+>
+>
+
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
