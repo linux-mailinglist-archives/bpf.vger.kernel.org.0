@@ -2,224 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1576424C747
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89CE24C758
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbgHTVqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 17:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S1726923AbgHTVur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 17:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbgHTVqB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:46:01 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35F9C061385
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:46:00 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id y206so11471pfb.10
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:46:00 -0700 (PDT)
+        with ESMTP id S1725819AbgHTVup (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:50:45 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EA2C061385;
+        Thu, 20 Aug 2020 14:50:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j22so1715981lfm.2;
+        Thu, 20 Aug 2020 14:50:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lAdAyYh5aN2j5JPQrGtT0EfFNZkeh1mFjZ/MnX14mHg=;
-        b=jqlWDd6sxFDmFJ/KUiqRGFnNyGKWDiNJLpoSwupzugFLhqCN9ZS6qtccF0An5Z2pAp
-         nwBWlzga+bXknE60CNsiILhMirgchDDV2Vj7hY7IEMtxh8h6VGzn+3wNGo2+F7ea9pJx
-         uume6sU6+RSqa4UeUUuBxrG3vOAzelifZxGgw=
+         :content-disposition:in-reply-to:user-agent;
+        bh=7AT6xe8X2sqCtMqnt9f+SepCQYWF9ewRZrrb25ZUrXA=;
+        b=uHYHvhOVAtZD3s88MupqVp6p5JxFv0OUp77vnXiDnZnCApFK6ED2eGConlbikzoog7
+         EHBnL7MWkjTHduKfJiVRlA730UtZcBFWJjnKvgOTXqLFa58iA3a/H1uSmWZBlHzD1lO6
+         KJteIauUpAdZOIWOJfDF+WCh829sP2qum49l4Fn50VSwfrsF2a0NDB0FPcG8DXouCUEV
+         8S00h5WfFK0zIQ+fKoJIm50OIV2KE1n2NJ0mGNYAp+vnkebg6Gsg3tQDpEmDCi3oNcG/
+         qd7SNjQOQXYhcr7V1ieKgcQsOswMFOtSURuvTWXXGW2Jl8gAIqutN7uCUB3CklZyJPPl
+         y8LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lAdAyYh5aN2j5JPQrGtT0EfFNZkeh1mFjZ/MnX14mHg=;
-        b=RtONRuuxD/fD5vJQaSA639PzzqkGpKksWxxzP191pS/mAHH995AOHXwEf06jAxfU/A
-         tG0HEpuvDOwTVkSAesAgTObymzq6mPhY/Yrlospr8TPuHGnECTAwdUh0+1dvVrAxyFVQ
-         IMbQC0F3u5jV165IzBcB5lNgMGKc821rYrtbQw84WWx7DtAlbwWSJQe6gZt2Gp0gZ6jj
-         /TqCsh35y+hBxVNo/+hZDV1cMeb1QvrspMDVkV/7S5k+jMySaFI36yBbk7BIARo6tKG6
-         0xJymGFhs0H6C3CY6NWAujB7yiTvYIaK56qVUrx/Wgf/CETjQ44PvV6FBThpHaaq7JOv
-         TFrg==
-X-Gm-Message-State: AOAM532gWOlUx0qmX96uu+U01BfweJfmMzGC5B5GXGTSHpXCVovcf3aO
-        zRGCVFOdB1ftXYTrHi2ywt5ku6B52v08zQ==
-X-Google-Smtp-Source: ABdhPJy7ns/mk8REZldx/9DoA3Zk3IWns4swu15vQGd9bLEgzAMf1K45e88Ruhw0luZiFw52DoX76w==
-X-Received: by 2002:a65:66c4:: with SMTP id c4mr64065pgw.442.1597959959876;
-        Thu, 20 Aug 2020 14:45:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k21sm4159pgl.0.2020.08.20.14.45.58
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7AT6xe8X2sqCtMqnt9f+SepCQYWF9ewRZrrb25ZUrXA=;
+        b=S0tBSstj6DCKyCRf2oEZnKincDNzrXBau5QDsUyMWSOExgs5ACzpeAZ749USGyS1Gd
+         3CFskXV0VufYXL9Nc4DPanRcZJhXPBnQSP+Fn8UG+vt/8b9HAVpzXQeB6cV9wRJURb5+
+         DcWexmnPwR4zzqKEo74XH3VopqBizE0fQFzFU3Md4ZtUmdRNdAyjp69dA5pw7UtuAkZz
+         ejd7EgYg/oeR7DG+VysAGvDBPy4mtF9LtW6aotapCGbw3EeH1b2pFNgSMg7HCfe/8J+Z
+         fC2C18C9Z/jYbigzTigzavtpdOxnLdLYAC5uoxnwTaNcrlFOHLv7oM9ornfKnXbbvQm5
+         Wcug==
+X-Gm-Message-State: AOAM532OFi9qnvO+GvedrleKTS4Kc0y4I3WYKazoFg9v3lYLsPglmfoY
+        wy4A94bQbndZZ13Sh/To4MU=
+X-Google-Smtp-Source: ABdhPJxJN+zRWB5H3PbcUJeY+wulDlizc7kgOfjBePwy17SCe21+bOgb9+nLsxmVcCy6k+Pkq1IROg==
+X-Received: by 2002:a05:6512:1044:: with SMTP id c4mr191023lfb.77.1597960243085;
+        Thu, 20 Aug 2020 14:50:43 -0700 (PDT)
+Received: from grain.localdomain ([5.18.103.226])
+        by smtp.gmail.com with ESMTPSA id c5sm746605lfb.24.2020.08.20.14.50.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 14:45:58 -0700 (PDT)
-Date:   Thu, 20 Aug 2020 14:45:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brendan Jackman <jackmanb@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Paul Renauld <renauld@google.com>,
+        Thu, 20 Aug 2020 14:50:41 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 9F7CC1A0078; Fri, 21 Aug 2020 00:50:41 +0300 (MSK)
+Date:   Fri, 21 Aug 2020 00:50:41 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, pjt@google.com,
-        jannh@google.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
-        thgarnie@chromium.org, kpsingh@google.com,
-        paul.renauld.epfl@gmail.com, Brendan Jackman <jackmanb@google.com>
-Subject: Re: [RFC] security: replace indirect calls with static calls
-Message-ID: <202008201435.97CF8296@keescook>
-References: <20200820164753.3256899-1-jackmanb@chromium.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH 09/17] file: Implement fnext_task
+Message-ID: <20200820215041.GT2074@grain>
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
+ <20200817220425.9389-9-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200820164753.3256899-1-jackmanb@chromium.org>
+In-Reply-To: <20200817220425.9389-9-ebiederm@xmission.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 06:47:53PM +0200, Brendan Jackman wrote:
-> From: Paul Renauld <renauld@google.com>
+On Mon, Aug 17, 2020 at 05:04:17PM -0500, Eric W. Biederman wrote:
+> As a companion to fget_task and fcheck_task implement fnext_task that
+> will return the struct file for the first file descriptor show number
+> is equal or greater than the fd argument value, or NULL if there is
+> no such struct file.
 > 
-> LSMs have high overhead due to indirect function calls through
-> retpolines. This RPC proposes to replace these with static calls [1]
-
-typo: RFC
-
-> instead.
-
-Yay! :)
-
-> [...]
-> This overhead prevents the adoption of bpf LSM on performance critical
-> systems, and also, in general, slows down all LSMs.
-
-I'd be curious to see other workloads too. (Your measurements are a bit
-synthetic, mostly showing "worst case": one short syscall in a tight
-loop. I'm curious how much performance gain can be had -- we should
-still do it, it'll be a direct performance improvement, but I'm curious
-about "real world" impact too.)
-
-> [...]
-> Previously, the code for this hook would have looked like this:
+> This allows file descriptors of foreign processes to be iterated through
+> safely, without needed to increment the count on files_struct.
 > 
-> 	ret = DEFAULT_RET;
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  fs/file.c               | 21 +++++++++++++++++++++
+>  include/linux/fdtable.h |  1 +
+>  2 files changed, 22 insertions(+)
 > 
->         for each cb in [A, B, C]:
->                 ret = cb(args); <--- costly indirect call here
->                 if ret != 0:
->                         break;
-> 
->         return ret;
-> 
-> Static calls are defined at build time and are initially empty (NOP
-> instructions). When the LSMs are initialized, the slots are filled as
-> follows:
-> 
->  slot idx     content
->            |-----------|
->     0      |           |
->            |-----------|
->     1      |           |
->            |-----------|
->     2      |   call A  | <-- base_slot_idx = 2
->            |-----------|
->     3      |   call B  |
->            |-----------|
->     4      |   call C  |
->            |-----------|
-> 
-> The generated code will unroll the foreach loop to have a static call for
-> each possible LSM:
-> 
->         ret = DEFAULT_RET;
->         switch(base_slot_idx):
-> 
->                 case 0:
->                         NOP
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 1:
->                         NOP
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 2:
->                         ret = A(args); <--- direct call, no retpoline
->                         if ret != 0:
->                                 break;
->                         // fallthrough
->                 case 3:
->                         ret = B(args); <--- direct call, no retpoline
->                         if ret != 0:
->                                 break;
->                         // fallthrough
-> 
->                 [...]
-> 
->                 default:
->                         break;
-> 
->         return ret;
-> 
-> A similar logic is applied for void hooks.
-> 
-> Why this trick with a switch statement? The table of static call is defined
-> at compile time. The number of hook callbacks that will be defined is
-> unknown at that time, and the table cannot be resized at runtime.  Static
-> calls do not define a conditional execution for a non-void function, so the
-> executed slots must be non-empty.  With this use of the table and the
-> switch, it is possible to jump directly to the first used slot and execute
-> all of the slots after. This essentially makes the entry point of the table
-> dynamic. Instead, it would also be possible to start from 0 and break after
-> the final populated slot, but that would require an additional conditional
-> after each slot.
+> diff --git a/fs/file.c b/fs/file.c
+> index 8d4b385055e9..88f9f78869f8 100644
+> --- a/fs/file.c
+> +++ b/fs/file.c
+> @@ -876,6 +876,27 @@ struct file *fcheck_task(struct task_struct *task, unsigned int fd)
+>  	return file;
+>  }
+>  
+> +struct file *fnext_task(struct task_struct *task, unsigned int *ret_fd)
+> +{
+> +	/* Must be called with rcu_read_lock held */
+> +	struct files_struct *files;
+> +	unsigned int fd = *ret_fd;
+> +	struct file *file = NULL;
+> +
+> +	task_lock(task);
+> +	files = task->files;
+> +	if (files) {
+> +		for (; fd < files_fdtable(files)->max_fds; fd++) {
+> +			file = fcheck_files(files, fd);
+> +			if (file)
+> +				break;
+> +		}
+> +	}
+> +	task_unlock(task);
+> +	*ret_fd = fd;
+> +	return file;
+> +}
 
-Instead of just "NOP", having the static branches perform a jump would
-solve this pretty cleanly, yes? Something like:
+Eric, if only I'm not missing something obvious you could
+escape @fd/@ret_fd operations in case if task->files = NULL,
+iow
 
-	ret = DEFAULT_RET;
-
-	ret = A(args); <--- direct call, no retpoline
-	if ret != 0:
-		goto out;
-
-	ret = B(args); <--- direct call, no retpoline
-	if ret != 0:
-		goto out;
-
-	goto out;
-	if ret != 0:
-		goto out;
-
-out:
-	return ret;
-
-
-> [...]
-> The number of available slots for each LSM hook is currently fixed at
-> 11 (the number of LSMs in the kernel). Ideally, it should automatically
-> adapt to the number of LSMs compiled into the kernel.
-
-Seems like a reasonable thing to do and could be a separate patch.
-
-> If there’s no practical way to implement such automatic adaptation, an
-> option instead would be to remove the panic call by falling-back to the old
-> linked-list mechanism, which is still present anyway (see below).
-> 
-> A few special cases of LSM don't use the macro call_[int/void]_hook but
-> have their own calling logic. The linked-lists are kept as a possible slow
-> path fallback for them.
-
-I assume you mean the integrity subsystem? That just needs to be fixed
-correctly. If we switch to this, let's ditch the linked list entirely.
-Fixing integrity's stacking can be a separate patch too.
-
-> [...]
-> Signed-off-by: Paul Renauld <renauld@google.com>
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-
-This implies a maintainership chain, with Paul as the sole author. If
-you mean all of you worked on the patch, include Co-developed-by: as
-needed[1].
-
--Kees
-
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
-
--- 
-Kees Cook
+	if (files) {
+		unsigned int fd = *ret_fd;
+		for (; fd < files_fdtable(files)->max_fds; fd++) {
+			file = fcheck_files(files, fd);
+			if (file)
+				break;
+		}
+		*ret_fd = fd;
+	}
