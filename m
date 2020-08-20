@@ -2,86 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B914024C659
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 21:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9287A24C6BD
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 22:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgHTTn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 15:43:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:6047 "EHLO mga18.intel.com"
+        id S1728238AbgHTU3c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 16:29:32 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:33773 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726887AbgHTTn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 15:43:57 -0400
-IronPort-SDR: aBGCAlJBhlOuy5RL3yoMj+v5DCipkv/Ryk5/AFVFJhtDL2cPt0tBh1L3OO/KHxvWnc00Oalm3Z
- jfoYSSXqA4Bw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9718"; a="143028629"
-X-IronPort-AV: E=Sophos;i="5.76,334,1592895600"; 
-   d="scan'208";a="143028629"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2020 12:43:57 -0700
-IronPort-SDR: vaSHAulyVGUhgZbbR9H3VHNWNcCnAlBmNCoF1EoiTknxQG0NWWwwkRafNVKpjMH0KITA69CEFW
- Fg0Re2GVZaRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,334,1592895600"; 
-   d="scan'208";a="321003880"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Aug 2020 12:43:54 -0700
-Date:   Thu, 20 Aug 2020 21:38:14 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org
-Subject: Re: [PATCH net-next 3/6] net: mvneta: update mb bit before passing
- the xdp buffer to eBPF layer
-Message-ID: <20200820193814.GB12291@ranger.igk.intel.com>
-References: <cover.1597842004.git.lorenzo@kernel.org>
- <08f8656e906ff69bd30915a6a37a01d5f0422194.1597842004.git.lorenzo@kernel.org>
+        id S1726908AbgHTU3b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 16:29:31 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 6eebc9dc;
+        Thu, 20 Aug 2020 20:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :in-reply-to:references:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=vbB12wcoqGij8pNjbTWmmp+jHvY=; b=wUs8au
+        lE4biNqHYhGliEHSQHFFLxEWY9JK5D3fy0wIB5+PTA1mWWxXL0IFPECmgrvwdMkl
+        Ewys71yT2/SchWAbsGurH0rikrqWivc/7rHZ4Ie9ghMwEbKsfTnBIXCXhobobuJU
+        obUr6B2hY9kDOSrPJOCXXWdD3aLfsYxOJDaJAqMvVbrziYgeMLbU4UCEnvVkcxys
+        JIQpuuc+/rl8KI6xD+oCU7WjAge6x7vROtGA4diV8IDKYC5vHDincOFzm+ReN2lS
+        VdeEim8JmC3VPmR/NOXeJpeTeEnDg2JDl3CsJOg7MmP2xu3w7iO+UhkW+rgiD5xC
+        4SEiHWuayPrDwEDg==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id aa7c0c0b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 20 Aug 2020 20:02:59 +0000 (UTC)
+Received: by mail-il1-f179.google.com with SMTP id 77so2780107ilc.5;
+        Thu, 20 Aug 2020 13:29:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533AfpcTOqXq/M+VL612QGJGxX0BUUzFGFWehSgTQOadb3zr+O3m
+        JOlGiI3OOTUy63xOvE3Fp60AShVZzYgYjw4XE5w=
+X-Google-Smtp-Source: ABdhPJxYAN5teeI+8iuarY1p5HV0KRkx/xSmiz39Aszl4gAfKEvCJyq1qzz5qPsVx8Vjx6yv+lbqRx1SMAobfZvt8H0=
+X-Received: by 2002:a92:cf09:: with SMTP id c9mr364213ilo.38.1597955367170;
+ Thu, 20 Aug 2020 13:29:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08f8656e906ff69bd30915a6a37a01d5f0422194.1597842004.git.lorenzo@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Received: by 2002:a05:6e02:ed0:0:0:0:0 with HTTP; Thu, 20 Aug 2020 13:29:26
+ -0700 (PDT)
+In-Reply-To: <20200820.115512.511642239854628332.davem@davemloft.net>
+References: <20200815074102.5357-1-Jason@zx2c4.com> <20200819.162247.527509541688231611.davem@davemloft.net>
+ <CAHmME9oBQu-k6VKJ5QzVLpE-ZuYoo=qHGKESj8JbxQhDq9QNrQ@mail.gmail.com> <20200820.115512.511642239854628332.davem@davemloft.net>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Thu, 20 Aug 2020 22:29:26 +0200
+X-Gmail-Original-Message-ID: <CAHmME9qzVc-3ZzC-Bhxyb5TG85jkEicM+T+-nNU7_ez6+vS8RA@mail.gmail.com>
+Message-ID: <CAHmME9qzVc-3ZzC-Bhxyb5TG85jkEicM+T+-nNU7_ez6+vS8RA@mail.gmail.com>
+Subject: Re: [PATCH net v6] net: xdp: account for layer 3 packets in generic
+ skb handler
+To:     David Miller <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, thomas@sockpuppet.org,
+        adhipati@tuta.io, dsahern@gmail.com, toke@redhat.com,
+        kuba@kernel.org, alexei.starovoitov@gmail.com, brouer@redhat.com,
+        john.fastabend@gmail.com, daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 03:13:48PM +0200, Lorenzo Bianconi wrote:
-> Update multi-buffer bit (mb) in xdp_buff to notify XDP/eBPF layer and
-> XDP remote drivers if this is a "non-linear" XDP buffer
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/ethernet/marvell/mvneta.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> index 832bbb8b05c8..36a3defa63fa 100644
-> --- a/drivers/net/ethernet/marvell/mvneta.c
-> +++ b/drivers/net/ethernet/marvell/mvneta.c
-> @@ -2170,11 +2170,14 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
->  	       struct bpf_prog *prog, struct xdp_buff *xdp,
->  	       u32 frame_sz, struct mvneta_stats *stats)
->  {
-> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
->  	unsigned int len, data_len, sync;
->  	u32 ret, act;
->  
->  	len = xdp->data_end - xdp->data_hard_start - pp->rx_offset_correction;
->  	data_len = xdp->data_end - xdp->data;
-> +
-> +	xdp->mb = !!sinfo->nr_frags;
+On 8/20/20, David Miller <davem@davemloft.net> wrote:
+> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> Date: Thu, 20 Aug 2020 11:13:49 +0200
+>
+>> It seems like if an eBPF program pushes on a VLAN tag or changes the
+>> protocol or does any other modification, it will be treated in exactly
+>> the same way as the L2 packet above by the remaining parts of the
+>> networking stack.
+>
+> What will update the skb metadata if the XDP program changes the
+> wireguard header(s)?
+>
 
-But this set is not utilizing it from BPF side in any way. Personally I
-would like to see this as a part of work where BPF program would actually
-be taught how to rely on xdp->mb. Especially after John's comment in other
-patch.
+XDP runs after decryption/decapsulation, in the netif_rx path, which
+means there is no wireguard header at that point. All the wireguard
+crypto/udp/header stuff is all inside the driver itself, and the rest
+of the stack just deals in terms of plain vanilla L3 ipv4/ipv6
+packets.
 
->  	act = bpf_prog_run_xdp(prog, xdp);
->  
->  	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-> -- 
-> 2.26.2
-> 
+The skb->protocol metadata is handled by the fake ethernet header.
+
+Is there other metadata I should keep in mind? WireGuard doesn't play
+with skb_metadata_*, for example. (Though it may implicitly reach a
+skb_metadata_clear via pskb_expand path.)
