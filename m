@@ -2,99 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D8224C737
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C079124C744
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgHTVet (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 17:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
+        id S1726887AbgHTVpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 17:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgHTVes (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:34:48 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14284C061385
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:34:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b30so1674262lfj.12
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:34:47 -0700 (PDT)
+        with ESMTP id S1726435AbgHTVp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:45:29 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3796C061385;
+        Thu, 20 Aug 2020 14:45:28 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 185so3727541ljj.7;
+        Thu, 20 Aug 2020 14:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BgGg/lzlwTediVsGi+CqjcHwxBq5iC8XcBhTDFLRiJk=;
-        b=IbQPXE7ycG5yDo04hNKHVhWhAvAsjHvfzE3bIq6gCsZ3oDErCZakMSD7V4TqCeSnUv
-         X9cKf/C3MMTkbtbIjiY7Iqx57zKOloTWXQL6qCehwplUpiLRCFJwfrfVgQMi4xqq4o+n
-         PKn/DQQYsTuLtJ4G5p1nvRRyGpjwcKK2rXGcHQcFiY2Wu0EiVqxiBC6TpmL1NmS4osGY
-         IZZP0U9745X1iboHCrIXMbQ47/hvHloJ1VUT9xhMJ/NlIfTSxQj/QFMOYaNm9lD4tZfE
-         E2kw+tySAPh1qTG+wdeK7GS8O4dkH4n+SpDa9DqKOB1j2ULaOlBRDx7XlT32OaP8uyv2
-         TMqw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QZOnv7vWdfjv3SqHEA46nQHDVbKjndfvS9Fptn5c3EE=;
+        b=lAHsE1M3z56gY4Q01f/VtsJo8BTVYHuvYw9FurVaiCEvDgjhF2RqBPY9jc6I2xX9hc
+         6Y4AuxToEMZioijEfL6AzNbzf1iBjyD3n22+84o3gpj43ECPttL1qTIhSn/tTPfPoRD3
+         L91qSWhcnPYSPXOR9ePmDpgj9Taq8gewoiYomUTozjZT4xHjc6YNBgawbN49kZcDhUOU
+         Szd0+BD5jRxO8aooUyA6pvkK0ZOoLOBBS4kcwgAWQlYWffi25Mih85FNvAECRpd+fMkm
+         BvCF1pVI7K7PuK+0aH8zH8FkL+T7XkSQgjMksGQe7nhnVnTZuGn2uoi+rEs33pN8WAX6
+         wxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BgGg/lzlwTediVsGi+CqjcHwxBq5iC8XcBhTDFLRiJk=;
-        b=UU5mTQNUnHkr8vBP/VdyiGUOc6/rbg65EG6h5yFmXZEepx6xznEQ8Eqw3M1Cod4Jp5
-         2CfecPgxlyvU+MosoEjoTw2/HBR6b3BBEebBcCyXUMnljrTCjn19wZKO/2QXWm/0vWZn
-         zBKVoNw3Jmrs84YZD1l8zquO7YQtmGFkDxT0bLbapvsbf2bHVTJjMZ82jh9UcAtqd0Wf
-         DDRKZnAC8wSdD5fwCdzvgnwpkVNsjj5iMtBdpmKm3lhr20wJqHZg3YgdnZuRaVu9Mcno
-         uLA1fEm/aNHnjlxoPgjZCnai2BsFwjUliCWES64UP6oDwpIwOrSFmjckAIoOsKOcnoim
-         Vizg==
-X-Gm-Message-State: AOAM531/rmkHIXfRr6V8WH+FT5kaBf1MZvPwmrCy0qux9qHp8hpXBUQf
-        jPOrDkQolrfmS59U3x3nmjXcqBjkVqr+Lyt5Z1M=
-X-Google-Smtp-Source: ABdhPJwOaMOoPQ5Z9j8bbMBxmr5zgxN9jMOsHGRgDKEySmdMZBxhLv0rxiWAfnSPgpsFDaaTw+Ptn69l+MEMus0QAoI=
-X-Received: by 2002:a19:84ce:: with SMTP id g197mr160696lfd.73.1597959286373;
- Thu, 20 Aug 2020 14:34:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QZOnv7vWdfjv3SqHEA46nQHDVbKjndfvS9Fptn5c3EE=;
+        b=B9cBRwsT05QplP/5thb1K/wkqO2sqfTxkCOQr5aVaoVpG/9gue/dDQpvTb3v4RP/Rj
+         ytXwFNOhp6Noj6EJwiUbpTT4zp1xUSWLr8KDt10KCi2RwS/oQ60keYqFS0TsUO0k3D+a
+         aAgSOOGU2XeP1sqzAmbdCw6jwQwQvOOfXJ/FLx7Ge6DkfXF2PipQOfuUhh1aiu0/yN9K
+         8Bz4WN+bon0HuiSPPJxecKd6JBjlYdo32wLZt0PyoJnfgQdU+9goaq81Uh4ooROf2Pd7
+         U1k/lHP2L9uXJNWrEpFa6Re36VxBhApbZUB3VUrUIfEir+jZkqqPQn5RsN7aKw4aoUs2
+         6szQ==
+X-Gm-Message-State: AOAM533TOz7iMLofVrMVangapiiPo6ZZR+voXU8Z80NArsvROD3pzHtg
+        Uw2WGfrYrYwDsidNeBgWEDY=
+X-Google-Smtp-Source: ABdhPJzPoxlP4SPY+LCj/KkElp/gHlvve5jFOm8dtSPmsQQY+NzL90YrPzmVQtcFyAMf8IbB3+gtOw==
+X-Received: by 2002:a2e:9003:: with SMTP id h3mr143345ljg.185.1597959926761;
+        Thu, 20 Aug 2020 14:45:26 -0700 (PDT)
+Received: from grain.localdomain ([5.18.103.226])
+        by smtp.gmail.com with ESMTPSA id l24sm675558ljb.43.2020.08.20.14.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 14:45:25 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 03ECC1A0078; Fri, 21 Aug 2020 00:45:24 +0300 (MSK)
+Date:   Fri, 21 Aug 2020 00:45:24 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@debian.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Matthew Wilcox <matthew@wil.cx>,
+        Trond Myklebust <trond.myklebust@fys.uio.no>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH 04/17] kcmp: In kcmp_epoll_target use fget_task
+Message-ID: <20200820214524.GS2074@grain>
+References: <87ft8l6ic3.fsf@x220.int.ebiederm.org>
+ <20200817220425.9389-4-ebiederm@xmission.com>
 MIME-Version: 1.0
-References: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 20 Aug 2020 14:34:35 -0700
-Message-ID: <CAADnVQJYXQ6bQ3gZJ+3wMc4W9dwyMP53PP2xQZXik=jkE+S72A@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: selftests: global_funcs: check err_str before strstr
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817220425.9389-4-ebiederm@xmission.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 4:58 AM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
->
-> The error path in libbpf.c:load_program() has calls to pr_warn()
-> which ends up for global_funcs tests to
-> test_global_funcs.c:libbpf_debug_print().
->
-> For the tests with no struct test_def::err_str initialized with a
-> string, it causes call of strstr() with NULL as the second argument
-> and it segfaults.
->
-> Fix it by calling strstr() only for non-NULL err_str.
->
-> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->
-> v1->v2:
->
-> - remove extra parenthesis;
-> - remove vague statement from changelog.
->
-> ---
->  tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> index 25b068591e9a..2e80a57e5f9d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> @@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
->         log_buf = va_arg(args, char *);
->         if (!log_buf)
->                 goto out;
-> -       if (strstr(log_buf, err_str) == 0)
-> +       if (err_str != NULL && strstr(log_buf, err_str) == 0)
+On Mon, Aug 17, 2020 at 05:04:12PM -0500, Eric W. Biederman wrote:
+> Use the helper fget_task and simplify the code.
+> 
+> As well as simplifying the code this removes one unnecessary increment of
+> struct files_struct.  This unnecessary increment of files_struct.count can
+> result in exec unnecessarily unsharing files_struct and breaking posix
+> locks, and it can result in fget_light having to fallback to fget reducing
+> performance.
+> 
+> Suggested-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
 
-I got rid of '!= NULL', since it doesn't fit kernel coding style and
-applied to bpf tree. Thanks
+I really like this simplification!
