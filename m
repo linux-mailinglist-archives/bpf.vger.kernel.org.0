@@ -2,127 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D8724B5E8
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 12:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B48D24B6AA
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 12:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731650AbgHTK3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 06:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731552AbgHTK3e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:29:34 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D80C061757
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 03:29:33 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id m22so1500778ljj.5
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 03:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9pwmmvPAgNgpZan9qxqpd7m5i/x2Jbr84ZbARDB6UlQ=;
-        b=Kz0aOxy/GDniL6sr/VQKKUMmlcE4xqm8BzhipXe24UTQl0x9tYcQFrrTj7D+xiZ26w
-         hzNlpp/GWZgkSi1vShjeloqy7gTJXloQz/XdD1ZLVmbawyZVuZANQ6vgK2OEPZI7/4ev
-         Iu2n6mnBTqhY0Lt0vMyibyZY239UR0KSyqxwg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9pwmmvPAgNgpZan9qxqpd7m5i/x2Jbr84ZbARDB6UlQ=;
-        b=Pi7q6kOWoUDYJW0fgLITHI5ICy3CDFxzf42U1PSkEtNuxwcoMlEiZ9BMLWAsXXOegL
-         B3jA2BTht/S1wfuLrX3xTU55RaD+mwwVWsjlYb1j2M2PtA/AgQhwtfhtnPMSwVZvsV7W
-         WBt9ZZYEUpYQqG/ebHcU6B2P3sjHPN1mgNRjy8rGwAftZENx5zqnNi7e4Mi1YHi90Bqi
-         jN7qW+/udbYReEfqDOApabxCHP3hg2qBygt/sXNb1bPcv+jR1Gi49bvExi12nCooCSbd
-         mtZ7qzlzdHdLicDnPYBX8wkQvX+JaFlyWd7YqxVCEBamug9JsBA6K+qARjI6afZ5YtsQ
-         S9dA==
-X-Gm-Message-State: AOAM531kfJx3yX9iibRkVIaKw8zDi1NP7UTmQBHd307dKbZCwcKeptcZ
-        94yqsmlNZO4FHwBRVR/tT4OZqA==
-X-Google-Smtp-Source: ABdhPJxGKv9AjPpps1uUtTo6HIAYPA9ktHbnDoC9XQ0Hh+M7mIatMaC+6PqtnP9zBhHOsltgDiWtNA==
-X-Received: by 2002:a2e:b5b3:: with SMTP id f19mr1235128ljn.210.1597919371873;
-        Thu, 20 Aug 2020 03:29:31 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id y19sm410308lfe.77.2020.08.20.03.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 03:29:31 -0700 (PDT)
-References: <20200717103536.397595-1-jakub@cloudflare.com> <87lficrm2v.fsf@cloudflare.com> <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
+        id S1731561AbgHTKjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 06:39:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32937 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731224AbgHTKS1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:18:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597918704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zVRgxsfepYzYkU+vpFAChRcrhAuOfHEv8LFvPPE6d28=;
+        b=P+r5Gooa85xwjVB5WlCJZF7bMyjGulCXN7QTnkZ+Xrj+wLIFr3xEkTyNmoMY4Gehg8wQdQ
+        Ne1Gm80yBHXOjZiX9F1vUbDTHE9UW0msF8RoosPzizsWo3HKs3VJnROmEnGcTeZivtOOTD
+        0VR9hbZFeKxTV1h14GQmKZon3lYkJMw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-CakX2Xi6PCqH5-AxDXr1nQ-1; Thu, 20 Aug 2020 06:18:22 -0400
+X-MC-Unique: CakX2Xi6PCqH5-AxDXr1nQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EB2E807332;
+        Thu, 20 Aug 2020 10:18:20 +0000 (UTC)
+Received: from krava (unknown [10.40.194.187])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5239319C66;
+        Thu, 20 Aug 2020 10:18:11 +0000 (UTC)
+Date:   Thu, 20 Aug 2020 12:18:10 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Mark Wielaard <mjw@redhat.com>,
+        Nick Clifton <nickc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
-In-reply-to: <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
-Date:   Thu, 20 Aug 2020 12:29:30 +0200
-Message-ID: <87k0xtsj91.fsf@cloudflare.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix sections with wrong
+ alignment
+Message-ID: <20200820101810.GA336489@krava>
+References: <20200819092342.259004-1-jolsa@kernel.org>
+ <254246ed-1b76-c435-a7bd-0783a29094d9@fb.com>
+ <20200819173618.GH177896@krava>
+ <CAKwvOdnfy4ASdeVqPjMtALXOXgMKdEB8U0UzWDPBKVqdhcPaFg@mail.gmail.com>
+ <2e35cf9e-d815-5cd7-9106-7947e5b9fe3f@fb.com>
+ <CAFP8O3+mqgQr_zVS9pMXSpFsCm0yp5y5Vgx1jmDc+wi-8-HOVQ@mail.gmail.com>
+ <ba7bbec7-9fb5-5f8f-131e-1e0aeff843fa@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ba7bbec7-9fb5-5f8f-131e-1e0aeff843fa@fb.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 08:19 PM CEST, Alexei Starovoitov wrote:
-> On Tue, Aug 18, 2020 at 8:49 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>          :                      rcu_read_lock();
->>          :                      run_array = rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
->>     0.01 :   ffffffff817f8624:       mov    0xd68(%r12),%rsi
->>          :                      if (run_array) {
->>     0.00 :   ffffffff817f862c:       test   %rsi,%rsi
->>     0.00 :   ffffffff817f862f:       je     ffffffff817f87a9 <__udp4_lib_lookup+0x2c9>
->>          :                      struct bpf_sk_lookup_kern ctx = {
->>     1.05 :   ffffffff817f8635:       xor    %eax,%eax
->>     0.00 :   ffffffff817f8637:       mov    $0x6,%ecx
->>     0.01 :   ffffffff817f863c:       movl   $0x110002,0x40(%rsp)
->>     0.00 :   ffffffff817f8644:       lea    0x48(%rsp),%rdi
->>    18.76 :   ffffffff817f8649:       rep stos %rax,%es:(%rdi)
->>     1.12 :   ffffffff817f864c:       mov    0xc(%rsp),%eax
->>     0.00 :   ffffffff817f8650:       mov    %ebp,0x48(%rsp)
->>     0.00 :   ffffffff817f8654:       mov    %eax,0x44(%rsp)
->>     0.00 :   ffffffff817f8658:       movzwl 0x10(%rsp),%eax
->>     1.21 :   ffffffff817f865d:       mov    %ax,0x60(%rsp)
->>     0.00 :   ffffffff817f8662:       movzwl 0x20(%rsp),%eax
->>     0.00 :   ffffffff817f8667:       mov    %ax,0x62(%rsp)
->>          :                      .sport          = sport,
->>          :                      .dport          = dport,
->>          :                      };
->
-> Such heavy hit to zero init 56-byte structure is surprising.
-> There are two 4-byte holes in this struct. You can try to pack it and
-> make sure that 'rep stoq' is used instead of 'rep stos' (8 byte at a time vs 4).
+On Wed, Aug 19, 2020 at 08:23:10PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/19/20 7:27 PM, Fāng-ruì Sòng wrote:
+> > > > >     section(36) .comment, size 44, link 0, flags 30, type=1
+> > > > >     section(37) .debug_aranges, size 45684, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 16, expected 8
+> > > > >     section(38) .debug_info, size 129104957, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 1, expected 8
+> > > > >     section(39) .debug_abbrev, size 1152583, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 1, expected 8
+> > > > >     section(40) .debug_line, size 7374522, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 1, expected 8
+> > > > >     section(41) .debug_frame, size 702463, link 0, flags 800, type=1
+> > > > >     section(42) .debug_str, size 1017571, link 0, flags 830, type=1
+> > > > >      - fixing wrong alignment sh_addralign 1, expected 8
+> > > > >     section(43) .debug_loc, size 3019453, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 1, expected 8
+> > > > >     section(44) .debug_ranges, size 1744583, link 0, flags 800, type=1
+> > > > >      - fixing wrong alignment sh_addralign 16, expected 8
+> > > > >     section(45) .symtab, size 2955888, link 46, flags 0, type=2
+> > > > >     section(46) .strtab, size 2613072, link 0, flags 0, type=3
+> > 
+> > I think this is resolve_btfids's bug. GNU ld and LLD are innocent.
+> > These .debug_* sections work fine if their sh_addralign is 1.
+> > When the section flag SHF_COMPRESSED is set, the meaningful alignment
+> > is Elf64_Chdr::ch_addralign, after the header is uncompressed.
+> > 
+> > On Wed, Aug 19, 2020 at 2:30 PM Yonghong Song <yhs@fb.com> wrote:
+> > > 
+> > > 
+> > > 
+> > > On 8/19/20 11:16 AM, Nick Desaulniers wrote:
+> > > > On Wed, Aug 19, 2020 at 10:36 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > 
+> > > > > On Wed, Aug 19, 2020 at 08:31:51AM -0700, Yonghong Song wrote:
+> > > > > > 
+> > > > > > 
+> > > > > > On 8/19/20 2:23 AM, Jiri Olsa wrote:
+> > > > > > > The data of compressed section should be aligned to 4
+> > > > > > > (for 32bit) or 8 (for 64 bit) bytes.
+> > > > > > > 
+> > > > > > > The binutils ld sets sh_addralign to 1, which makes libelf
+> > > > > > > fail with misaligned section error during the update as
+> > > > > > > reported by Jesper:
+> > > > > > > 
+> > > > > > >       FAILED elf_update(WRITE): invalid section alignment
+> 
+> Jiri,
+> 
+> Since Fangrui mentioned this is not a ld/lld bug, then changing
+> alighment from 1 to 4 might have some adverse effect for the binary,
+> I guess.
 
-Thanks for the tip. I'll give it a try.
+not sure about that.. Mark? ;-)
 
-> Long term we should probably stop doing *_kern style of ctx passing
-> into bpf progs.
-> We have BTF, CO-RE and freplace now. This old style of memset *_kern and manual
-> ctx conversion has performance implications and annoying copy-paste of ctx
-> conversion routines.
-> For this particular case instead of introducing udp4_lookup_run_bpf()
-> and copying registers into stack we could have used freplace of
-> udp4_lib_lookup2.
-> More verifier work needed, of course.
-> My main point that existing approach "lets prep args for bpf prog to
-> run" that is used
-> pretty much in every bpf hook is no longer necessary.
+> 
+> Do you think we could skip these .debug_* sections somehow in elf parsing in
+> resolve_btfids? resolve_btfids does not need to read
+> these sections. This way, no need to change their alignment either.
 
-Andrii has also suggested leveraging BTF [0], but to expose the *_kern
-struct directly to BPF prog instead of emitting ctx access instructions.
+I'm don't think libelf interface allows for that, will check
 
-What I'm curious about is if we get rid of prepping args and ctx
-conversion, then how do we limit what memory BPF prog can access?
+jirka
 
-Say, I'm passing a struct sock * to my BPF prog. If it's not a tracing
-prog, then I don't want it to have access to everything that is
-reachable from struct sock *. This is where this approach currently
-breaks down for me.
-
-[0] https://lore.kernel.org/bpf/CAEf4BzZ7-0TFD4+NqpK9X=Yuiem89Ug27v90fev=nn+3anCTpA@mail.gmail.com/
