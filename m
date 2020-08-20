@@ -2,84 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D94224C730
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D8224C737
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 23:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgHTV3u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 17:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S1727115AbgHTVet (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 17:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgHTV3u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 17:29:50 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D360DC061385;
-        Thu, 20 Aug 2020 14:29:49 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m22so3715231ljj.5;
-        Thu, 20 Aug 2020 14:29:49 -0700 (PDT)
+        with ESMTP id S1726435AbgHTVes (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 17:34:48 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14284C061385
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:34:47 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b30so1674262lfj.12
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 14:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vuN0s3Da0AnT6B0e2RQMk4b+CC+s05ufiDR5tqVHKDs=;
-        b=Qv3aziob2eyBkZ7Vs2DlO8HuHuvTFW+OxE9dPfVMofHi4rNWaL4FfykYGLGQZ7pcfU
-         mr8lISZcSgDxUkBGSrXKJXcWmvEu6Mc/TFY83dTQL7sv8IVa+7o6uRE6hUYTMhUt6Tth
-         MBEVVvntHEyn1wy7HmDv88uWnmC15DaKK+DOrp/JsS2RXgw6fnU7lYe9vEjR4BKMnTKf
-         fvlGyCjBdmt1LYqAKlPKYefdQ3WPPSi4Gew9gefNov3mQvdfGs2rf1Q7qJ7S1HwNtvXo
-         5nhsiv6UTg2YTrCiQG0HlsvtiRu/I1BY6lKU+t9AWEakpDkvWPtbx+Njsct4YgVrE6ms
-         A+7g==
+        bh=BgGg/lzlwTediVsGi+CqjcHwxBq5iC8XcBhTDFLRiJk=;
+        b=IbQPXE7ycG5yDo04hNKHVhWhAvAsjHvfzE3bIq6gCsZ3oDErCZakMSD7V4TqCeSnUv
+         X9cKf/C3MMTkbtbIjiY7Iqx57zKOloTWXQL6qCehwplUpiLRCFJwfrfVgQMi4xqq4o+n
+         PKn/DQQYsTuLtJ4G5p1nvRRyGpjwcKK2rXGcHQcFiY2Wu0EiVqxiBC6TpmL1NmS4osGY
+         IZZP0U9745X1iboHCrIXMbQ47/hvHloJ1VUT9xhMJ/NlIfTSxQj/QFMOYaNm9lD4tZfE
+         E2kw+tySAPh1qTG+wdeK7GS8O4dkH4n+SpDa9DqKOB1j2ULaOlBRDx7XlT32OaP8uyv2
+         TMqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vuN0s3Da0AnT6B0e2RQMk4b+CC+s05ufiDR5tqVHKDs=;
-        b=rpnSc47Gok6kVREGtXVVHwk4dA9a5KlaGXjTBfDZHew4qVQkfpKAXzy4qHEGGPVPlI
-         3YJ8blIyW+b5TRk5/7Qs7WXObSLNCeWi3ARffYb4NGvLEPNF2kg196qRsNscrMttc27y
-         Y/jWWuSeM6zL9dycC2yN/u+Ruk8JTj2d9rGw1zHkNNX/zHLEaNQiPDdRNYe8TL5noX0v
-         ydCmXkmlnGxakgndsle7GS4xRGyDtY6kDfq7K8zs+h3j4/gNIY9Zjj1YvXRD0Lf/9IXG
-         i2TGcZ1jKs7x44fMbavcUZ0ptm2V8gHZzHRw/Cliyig4oqPuuYr5mDHzl69RQdWxX4SC
-         UtDg==
-X-Gm-Message-State: AOAM533bmqQwct0I8O2OQWuCyBG4VQJx2BLMXQ2Cj2rN5C6+Tg+LCKk/
-        QhMvPBIYw+IrIp/lVZDji2g+hcOPyodnKjmtsCc=
-X-Google-Smtp-Source: ABdhPJyOI0oOuo+sqb7SBQLmD1ARwiT2qYKlBXehB15yqB4+rXJjJSkKrOVmga1B4TuBtDt/lr7Y6dXkk2SPrANU9aA=
-X-Received: by 2002:a2e:4e09:: with SMTP id c9mr112049ljb.283.1597958988060;
- Thu, 20 Aug 2020 14:29:48 -0700 (PDT)
+        bh=BgGg/lzlwTediVsGi+CqjcHwxBq5iC8XcBhTDFLRiJk=;
+        b=UU5mTQNUnHkr8vBP/VdyiGUOc6/rbg65EG6h5yFmXZEepx6xznEQ8Eqw3M1Cod4Jp5
+         2CfecPgxlyvU+MosoEjoTw2/HBR6b3BBEebBcCyXUMnljrTCjn19wZKO/2QXWm/0vWZn
+         zBKVoNw3Jmrs84YZD1l8zquO7YQtmGFkDxT0bLbapvsbf2bHVTJjMZ82jh9UcAtqd0Wf
+         DDRKZnAC8wSdD5fwCdzvgnwpkVNsjj5iMtBdpmKm3lhr20wJqHZg3YgdnZuRaVu9Mcno
+         uLA1fEm/aNHnjlxoPgjZCnai2BsFwjUliCWES64UP6oDwpIwOrSFmjckAIoOsKOcnoim
+         Vizg==
+X-Gm-Message-State: AOAM531/rmkHIXfRr6V8WH+FT5kaBf1MZvPwmrCy0qux9qHp8hpXBUQf
+        jPOrDkQolrfmS59U3x3nmjXcqBjkVqr+Lyt5Z1M=
+X-Google-Smtp-Source: ABdhPJwOaMOoPQ5Z9j8bbMBxmr5zgxN9jMOsHGRgDKEySmdMZBxhLv0rxiWAfnSPgpsFDaaTw+Ptn69l+MEMus0QAoI=
+X-Received: by 2002:a19:84ce:: with SMTP id g197mr160696lfd.73.1597959286373;
+ Thu, 20 Aug 2020 14:34:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200820052841.1559757-1-andriin@fb.com> <20200820082408.GE2282@lore-desk>
-In-Reply-To: <20200820082408.GE2282@lore-desk>
+References: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 20 Aug 2020 14:29:36 -0700
-Message-ID: <CAADnVQKjsRQnFifsYP4qx0UxD67g3UD2oyGfSJa5mv7ny=P-Pg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: xdp: fix XDP mode when no mode flags specified
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Thu, 20 Aug 2020 14:34:35 -0700
+Message-ID: <CAADnVQJYXQ6bQ3gZJ+3wMc4W9dwyMP53PP2xQZXik=jkE+S72A@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: selftests: global_funcs: check err_str before strstr
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 1:24 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Thu, Aug 20, 2020 at 4:58 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
 >
-> > 7f0a838254bd ("bpf, xdp: Maintain info on attached XDP BPF programs in net_device")
-> > inadvertently changed which XDP mode is assumed when no mode flags are
-> > specified explicitly. Previously, driver mode was preferred, if driver
-> > supported it. If not, generic SKB mode was chosen. That commit changed default
-> > to SKB mode always. This patch fixes the issue and restores the original
-> > logic.
-> >
-> > Reported-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Fixes: 7f0a838254bd ("bpf, xdp: Maintain info on attached XDP BPF programs in net_device")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> The error path in libbpf.c:load_program() has calls to pr_warn()
+> which ends up for global_funcs tests to
+> test_global_funcs.c:libbpf_debug_print().
 >
-> Hi Andrii,
+> For the tests with no struct test_def::err_str initialized with a
+> string, it causes call of strstr() with NULL as the second argument
+> and it segfaults.
 >
-> Regarding this patch:
+> Fix it by calling strstr() only for non-NULL err_str.
 >
-> Tested-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> ---
+>
+> v1->v2:
+>
+> - remove extra parenthesis;
+> - remove vague statement from changelog.
+>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> index 25b068591e9a..2e80a57e5f9d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> @@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+>         log_buf = va_arg(args, char *);
+>         if (!log_buf)
+>                 goto out;
+> -       if (strstr(log_buf, err_str) == 0)
+> +       if (err_str != NULL && strstr(log_buf, err_str) == 0)
 
-Applied to bpf tree. Thanks
+I got rid of '!= NULL', since it doesn't fit kernel coding style and
+applied to bpf tree. Thanks
