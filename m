@@ -2,279 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FEA24BA04
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC1324BA03
 	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgHTL6g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 07:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730511AbgHTL6U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 07:58:20 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94898C061388
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 04:58:20 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u24so1600371oic.7
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 04:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WYTZ5oggGW4vnzG+aCQEqmegKWwKj3jml6L7NHXjNYI=;
-        b=PbHlW3SVBwPWT6+JRJN2hRCld4WOZY3LufJi+ZUjHgO7SHb8ZadSRR5VI/+sG/8kq3
-         Vs/Djz3hkKLDwPtYDjJ1Ldm2wll4UIRbjwalRzWoSB/3cGRWrxBmYSmhZGDLy1Lh2UgJ
-         oSB7vNuDglyUp4UxSkWaTOPZAX8HVOnuueN1Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WYTZ5oggGW4vnzG+aCQEqmegKWwKj3jml6L7NHXjNYI=;
-        b=FV4qSM/8ejX3oUbLYjkbILsK7eWNoS+OhQ4AUvOaBsa+gkL/8Ixs+cAmZMrA2GCSRv
-         uSv6E9QwBqwOfk3LGJOSPdc4wQwbAa1Ad1lbYRnR9UyfUqUlC7pSqxtzeih/5RUAeWMZ
-         CToH3qXOdQrQctElhQquziqZGkUheNCQJTwY128W5qbSu70BaB7OBEwpICjsAqUTES9A
-         tBuKqb0v1lQnpXo7/hL4pwJjMkLphiYfnwHZXnbe8620ImqtR7o6kLWJHhZ/OOiDGSMt
-         Xug7TM8o1Dk3btt4BpTdNTUIKnhezEPh9DGipb9m9nHvH31imh0qhjLkX4+KUpW1DbY1
-         jwDg==
-X-Gm-Message-State: AOAM533r2uBPaOj7WB91OiRs2054XP78c5K/UHugLPsLT/T5gvunpapT
-        1M2FtpJlhm669A6ukWEoThVA9fvqxIuUfSezxgnPBQ==
-X-Google-Smtp-Source: ABdhPJxtaCKs7uJ1rcTpGij31O041fZY6yd8YrzYEQJZp4JbbiPOA8mscbMD5ZiT845VViNeDV7NvyTljs97E5UPVZ8=
-X-Received: by 2002:aca:a88e:: with SMTP id r136mr1516559oie.110.1597924699316;
- Thu, 20 Aug 2020 04:58:19 -0700 (PDT)
+        id S1728565AbgHTL6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 07:58:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729716AbgHTL6k (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 07:58:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1597924719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0JsyfIwa+8GriEHyvv6HcAO6z5z27/c9oHAAPEBOpJM=;
+        b=fCqVb4KzmDthjtpce7oywgkhkIU8ZmtLXj8hFR6b88L5O6uOWjPLUXkj2rN7q7IaXkM8Jf
+        CXLqBHpZWcal5fNRQvx8LwnwR6jfq+akD5/AGUrJTECICVYeLaKnuKgYiAX/jyVzXIyJ06
+        uf3LMZqHI5uwDnIWVhijUsNUNLiAULE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-n0W9MtINMvW0m216YYnCeg-1; Thu, 20 Aug 2020 07:58:35 -0400
+X-MC-Unique: n0W9MtINMvW0m216YYnCeg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CADEE807354;
+        Thu, 20 Aug 2020 11:58:33 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-208.ams2.redhat.com [10.36.112.208])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8DC8210013C4;
+        Thu, 20 Aug 2020 11:58:32 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH v2] bpf: selftests: global_funcs: check err_str before strstr
+Date:   Thu, 20 Aug 2020 14:58:30 +0300
+Message-Id: <20200820115830.39394-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
-References: <20200819092436.58232-1-lmb@cloudflare.com> <20200819092436.58232-7-lmb@cloudflare.com>
- <1ad29823-1925-01ee-f042-20b422a62a73@fb.com>
-In-Reply-To: <1ad29823-1925-01ee-f042-20b422a62a73@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 20 Aug 2020 12:58:07 +0100
-Message-ID: <CACAyw9-ORs29Gt0c02qsco9ah_h88OqQh5cq36SpDCD19x89uw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/6] selftests: bpf: test sockmap update from BPF
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Aug 2020 at 21:46, Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 8/19/20 2:24 AM, Lorenz Bauer wrote:
-> > Add a test which copies a socket from a sockmap into another sockmap
-> > or sockhash. This excercises bpf_map_update_elem support from BPF
-> > context. Compare the socket cookies from source and destination to
-> > ensure that the copy succeeded.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
-> >   .../selftests/bpf/prog_tests/sockmap_basic.c  | 76 +++++++++++++++++++
-> >   .../selftests/bpf/progs/test_sockmap_copy.c   | 48 ++++++++++++
-> >   2 files changed, 124 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > index 96e7b7f84c65..d30cabc00e9e 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> > @@ -4,6 +4,7 @@
-> >
-> >   #include "test_progs.h"
-> >   #include "test_skmsg_load_helpers.skel.h"
-> > +#include "test_sockmap_copy.skel.h"
-> >
-> >   #define TCP_REPAIR          19      /* TCP sock is under repair right now */
-> >
-> > @@ -101,6 +102,77 @@ static void test_skmsg_helpers(enum bpf_map_type map_type)
-> >       test_skmsg_load_helpers__destroy(skel);
-> >   }
-> >
-> > +static void test_sockmap_copy(enum bpf_map_type map_type)
-> > +{
-> > +     struct bpf_prog_test_run_attr attr;
-> > +     struct test_sockmap_copy *skel;
-> > +     __u64 src_cookie, dst_cookie;
-> > +     int err, prog, s, src, dst;
-> > +     const __u32 zero = 0;
-> > +     char dummy[14] = {0};
-> > +
-> > +     s = connected_socket_v4();
->
-> Maybe change variable name to "sk" for better clarity?
+The error path in libbpf.c:load_program() has calls to pr_warn()
+which ends up for global_funcs tests to
+test_global_funcs.c:libbpf_debug_print().
 
-Yup!
+For the tests with no struct test_def::err_str initialized with a
+string, it causes call of strstr() with NULL as the second argument
+and it segfaults.
 
->
-> > +     if (CHECK_FAIL(s == -1))
-> > +             return;
-> > +
-> > +     skel = test_sockmap_copy__open_and_load();
-> > +     if (CHECK_FAIL(!skel)) {
-> > +             close(s);
-> > +             perror("test_sockmap_copy__open_and_load");
-> > +             return;
-> > +     }
->
-> Could you use CHECK instead of CHECK_FAIL?
-> With CHECK, you can print additional information without perror.
+Fix it by calling strstr() only for non-NULL err_str.
 
-I avoid CHECK because it requires `duration`, which doesn't make sense
-for most things that I call CHECK_FAIL on here. So either it outputs 0
-nsec (which is bogus) or it outputs the value from the last
-bpf_prog_test_run call (which is also bogus). How do other tests
-handle this? Just ignore it?
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
 
->
->
-> > +
-> > +     prog = bpf_program__fd(skel->progs.copy_sock_map);
-> > +     src = bpf_map__fd(skel->maps.src);
-> > +     if (map_type == BPF_MAP_TYPE_SOCKMAP)
-> > +             dst = bpf_map__fd(skel->maps.dst_sock_map);
-> > +     else
-> > +             dst = bpf_map__fd(skel->maps.dst_sock_hash);
-> > +
-> > +     err = bpf_map_update_elem(src, &zero, &s, BPF_NOEXIST);
->
-> The map defined in bpf program is __u64 and here "s" is int.
-> Any potential issues?
+v1->v2:
 
-Hm, good point. This is a quirk of the sockmap API, I need to dig into
-this a bit.
+- remove extra parenthesis;
+- remove vague statement from changelog.
 
->
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_update");
-> > +             goto out;
-> > +     }
-> > +
-> > +     err = bpf_map_lookup_elem(src, &zero, &src_cookie);
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_lookup_elem(src)");
-> > +             goto out;
-> > +     }
-> > +
-> > +     attr = (struct bpf_prog_test_run_attr){
-> > +             .prog_fd = prog,
-> > +             .repeat = 1,
-> > +             .data_in = dummy,
-> > +             .data_size_in = sizeof(dummy),
-> > +     };
-> > +
-> > +     err = bpf_prog_test_run_xattr(&attr);
-> > +     if (err) {
->
-> You can use CHECK macro here.
->
-> > +             test__fail();
-> > +             perror("bpf_prog_test_run");
-> > +             goto out;
-> > +     } else if (!attr.retval) {
-> > +             PRINT_FAIL("bpf_prog_test_run: program returned %u\n",
-> > +                        attr.retval);
-> > +             goto out;
-> > +     }
-> > +
-> > +     err = bpf_map_lookup_elem(dst, &zero, &dst_cookie);
-> > +     if (CHECK_FAIL(err)) {
-> > +             perror("bpf_map_lookup_elem(dst)");
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (dst_cookie != src_cookie)
-> > +             PRINT_FAIL("cookie %llu != %llu\n", dst_cookie, src_cookie);
->
-> Just replace the whole if statement with a CHECK macro.
+---
+ tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-See above, re duration.
-
->
-> > +
-> > +out:
-> > +     close(s);
-> > +     test_sockmap_copy__destroy(skel);
-> > +}
-> > +
-> >   void test_sockmap_basic(void)
-> >   {
-> >       if (test__start_subtest("sockmap create_update_free"))
-> > @@ -111,4 +183,8 @@ void test_sockmap_basic(void)
-> >               test_skmsg_helpers(BPF_MAP_TYPE_SOCKMAP);
-> >       if (test__start_subtest("sockhash sk_msg load helpers"))
-> >               test_skmsg_helpers(BPF_MAP_TYPE_SOCKHASH);
-> > +     if (test__start_subtest("sockmap copy"))
-> > +             test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
-> > +     if (test__start_subtest("sockhash copy"))
-> > +             test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
-> >   }
-> > diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_copy.c b/tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> > new file mode 100644
-> > index 000000000000..9d0c9f28cab2
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_sockmap_copy.c
-> > @@ -0,0 +1,48 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2020 Cloudflare
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKMAP);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} src SEC(".maps");
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKMAP);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} dst_sock_map SEC(".maps");
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_SOCKHASH);
-> > +     __uint(max_entries, 1);
-> > +     __type(key, __u32);
-> > +     __type(value, __u64);
-> > +} dst_sock_hash SEC(".maps");
-> > +
-> > +SEC("classifier/copy_sock_map")
-> > +int copy_sock_map(void *ctx)
-> > +{
-> > +     struct bpf_sock *sk;
-> > +     bool failed = false;
-> > +     __u32 key = 0;
-> > +
-> > +     sk = bpf_map_lookup_elem(&src, &key);
-> > +     if (!sk)
-> > +             return SK_DROP;
-> > +
-> > +     if (bpf_map_update_elem(&dst_sock_map, &key, sk, 0))
-> > +             failed = true;
-> > +
-> > +     if (bpf_map_update_elem(&dst_sock_hash, &key, sk, 0))
-> > +             failed = true;
-> > +
-> > +     bpf_sk_release(sk);
-> > +     return failed ? SK_DROP : SK_PASS;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> >
-
-
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+index 25b068591e9a..2e80a57e5f9d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+@@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+ 	log_buf = va_arg(args, char *);
+ 	if (!log_buf)
+ 		goto out;
+-	if (strstr(log_buf, err_str) == 0)
++	if (err_str != NULL && strstr(log_buf, err_str) == 0)
+ 		found = true;
+ out:
+ 	printf(format, log_buf);
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.26.2
 
-www.cloudflare.com
