@@ -2,95 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76A224BE03
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 15:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828F824BFB9
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 15:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgHTNRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 09:17:18 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45275 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729664AbgHTNRO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 09:17:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597929431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LUsWgJtzCWl4vI3kssiyw/tK9ufRzzCdj6MkZUNtJZM=;
-        b=Cj2yvMpgzcGzFPxOwa8ggc5LLwRgnvpuso72OSxepQvHzMzfQyKmEWoEQ34BK2iJLSinLN
-        bk97dcgGZfl5NeeYv/4EzCYkqIouNuAmO8QIk8HbA5NT3pRgoF7yciA2wPslP1qGuwHfVK
-        MxCflDhwsdmVkC/s40/F6jC7t7t5AQg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-eb0KLz7rNeKKTKic23c18g-1; Thu, 20 Aug 2020 09:16:55 -0400
-X-MC-Unique: eb0KLz7rNeKKTKic23c18g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D9FA1DE07;
-        Thu, 20 Aug 2020 13:16:54 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3103016E25;
-        Thu, 20 Aug 2020 13:16:45 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 15:16:44 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, echaudro@redhat.com,
-        sameehj@amazon.com, kuba@kernel.org, brouer@redhat.com
-Subject: Re: [PATCH net-next 0/6] mvneta: introduce XDP multi-buffer support
-Message-ID: <20200820151644.00e6c87c@carbon>
-In-Reply-To: <cover.1597842004.git.lorenzo@kernel.org>
-References: <cover.1597842004.git.lorenzo@kernel.org>
+        id S1728906AbgHTNxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 09:53:19 -0400
+Received: from outside1.canonet.ne.jp ([210.134.165.78]:49058 "EHLO
+        outside1.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727915AbgHTJ0o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:26:44 -0400
+X-Greylist: delayed 618 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 05:26:44 EDT
+Received: from cmcheck1.canonet.ne.jp (unknown [172.21.160.141])
+        by outside1.canonet.ne.jp (Postfix) with ESMTP id A816D1E034A;
+        Thu, 20 Aug 2020 18:16:23 +0900 (JST)
+Received: from echeck1.canonet.ne.jp ([172.21.160.31])
+        by cmcheck1 with ESMTP
+        id 8ggJk6AqUrwkG8ggJkgFID; Thu, 20 Aug 2020 18:16:23 +0900
+Received: from echeck1.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id 0C37A1C0269;
+        Thu, 20 Aug 2020 18:16:22 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp1.canonet.ne.jp (smtp1.canonet.ne.jp [172.21.160.21])
+        by echeck1.canonet.ne.jp (Postfix) with ESMTP id 071541C0266;
+        Thu, 20 Aug 2020 18:16:22 +0900 (JST)
+Received: from kanekokogyo.co.jp (webmail.canonet.ne.jp [210.134.164.250])
+        by smtp1.canonet.ne.jp (Postfix) with ESMTPA id AE1E815F964;
+        Thu, 20 Aug 2020 18:16:20 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Message-ID: <20200820091620.00006B98.0447@kanekokogyo.co.jp>
+Date:   Thu, 20 Aug 2020 18:16:20 +0900
+From:   "Frederic Awedeou" <rakuraku@kanekokogyo.co.jp>
+To:     <fredericawedeou@gmail.com>
+Reply-To: <fredericawedeou@gmail.com>
+Subject: hello
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: base64
+X-Priority: 3
+ORGANIZATION: Frederic Awedeou
+X-MAILER: Active! mail
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1597914983;VERSION=7858;MC=396971737;TRN=0;CRV=0;IPC=210.134.164.250;SP=4;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=0;RNP=
+X-ESET-Antispam: OK
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-General issue (that I think must be resolved/discussed as part of this initial
-patchset).
-
-When XDP_REDIRECT'ing a multi-buffer xdp_frame out of another driver's
-ndo_xdp_xmit(), what happens if the remote driver doesn't understand the
-multi-buffer format?
-
-My guess it that it will only send the first part of the packet (in the
-main page). Fortunately we don't leak memory, because xdp_return_frame()
-handle freeing the other segments. I assume this isn't acceptable
-behavior... or maybe it is?
-
-What are our options for handling this:
-
-1. Add mb support in ndo_xdp_xmit in every driver?
-
-2. Drop xdp->mb frames inside ndo_xdp_xmit (in every driver without support)?
-
-3. Add core-code check before calling ndo_xdp_xmit()?
-
---Jesper
-
-On Wed, 19 Aug 2020 15:13:45 +0200 Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-
-> Finalize XDP multi-buffer support for mvneta driver introducing the capability
-> to map non-linear buffers on tx side.
-> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify if
-> shared_info area has been properly initialized.
-> Initialize multi-buffer bit (mb) to 0 in all XDP-capable drivers.
-> Add multi-buff support to xdp_return_{buff/frame} utility routines.
-> 
-> Changes since RFC:
-> - squash multi-buffer bit initialization in a single patch
-> - add mvneta non-linear XDP buff support for tx side
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+v1JlY2liaXN0ZSBtaSD6bHRpbW8gbWVuc2FqZT8NCg==
 
