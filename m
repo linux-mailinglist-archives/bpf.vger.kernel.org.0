@@ -2,120 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C31B24B102
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 10:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ABE24B1D9
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 11:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgHTIZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 04:25:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53851 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725798AbgHTIZ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 04:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597911956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/NUw1qL/bzTA4qpBlCwBzMc0qVHyWlU5nHmGswtf9w=;
-        b=Ybob7Rl3WjUmVKVq0NReu2YOy44TjMD74OCFNUsNrtjGvt5dJFs4cOMD7XGEoNGQ9leVHR
-        b4So6LXubzb01gdiW4rdDNun4IuNBG847gY7TOGNE3OZjwOCH9L8Ux5DWArBL6IAESynd5
-        i5CpdNXjaYROi+I86zZWz5hKYn+xgz8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-yfYegtHSP5ux-TSizW7jPQ-1; Thu, 20 Aug 2020 04:25:52 -0400
-X-MC-Unique: yfYegtHSP5ux-TSizW7jPQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 650A44239E;
-        Thu, 20 Aug 2020 08:25:51 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 340125C893;
-        Thu, 20 Aug 2020 08:25:40 +0000 (UTC)
-Date:   Thu, 20 Aug 2020 10:25:39 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>, brouer@redhat.com,
-        David Ahern <dsahern@gmail.com>,
-        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>
-Subject: Re: xdp generic default option
-Message-ID: <20200820102539.35ad8687@carbon>
-In-Reply-To: <CAEf4BzZSui9r=-yDzy0CjWKVx9zKvQWX6ZBNXmSUTOHCOR+7RA@mail.gmail.com>
-References: <20200819092811.GA2420@lore-desk>
-        <CAEf4BzZSui9r=-yDzy0CjWKVx9zKvQWX6ZBNXmSUTOHCOR+7RA@mail.gmail.com>
+        id S1726759AbgHTJOl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 05:14:41 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:37407 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726951AbgHTJOG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:14:06 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id acce9074;
+        Thu, 20 Aug 2020 08:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=EmqNmAaP9d5tln4z5/gXHm1XFQk=; b=Y6iqPX
+        WaA2oJk4rNuOxnfLhqF7entIN6S3kDv2hCqZN6B32nJzyTCpJKn5orL9UubNa2DI
+        R4ROW/buKNsGHuLJ2JjDarVa80noHhUL+fROwzJFE6Aa6X0gUf2redFYk5Ed7bQE
+        InRFtIq1qpCG0jmCPQW3KVCFSxrUeToVZo6rbt7wJZxDej/mSb+asVP0lIOfq78t
+        9Qgt7MpdwfnnPcU0jSeBabsTzUqVAip1dmsIyhdu8xhUWKnNMMV+VVtOyIIcRH1F
+        e3P+vz0OL60ERH3kkh9CtR53eJmqYq+2HbTnQL3H/GEWrKHLqJZ7u7iudRqzf9TE
+        Q9O8Ysh4Alv2Jigw==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c146ec0b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 20 Aug 2020 08:47:37 +0000 (UTC)
+Received: by mail-io1-f46.google.com with SMTP id b17so1452280ion.7;
+        Thu, 20 Aug 2020 02:14:01 -0700 (PDT)
+X-Gm-Message-State: AOAM530gpQXUighAJQfZ4nwkTikY5fS8iwwnouGjX0TMgJkTxOFKITa/
+        3GWKzgzRals59LgjjnGxhqI0MPzBBIp47Y8vc1w=
+X-Google-Smtp-Source: ABdhPJwrD+kMX381ZsNH5ZVv7XZpJr3WPE37RwgpGR8uD3r1z7iibyb0fdT8uJc3F2IdHO7K9Ylo+qHdlk4BWFZdUgE=
+X-Received: by 2002:a6b:b211:: with SMTP id b17mr1793664iof.29.1597914841074;
+ Thu, 20 Aug 2020 02:14:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200814.135546.2266851283177227377.davem@davemloft.net>
+ <20200815074102.5357-1-Jason@zx2c4.com> <20200819.162247.527509541688231611.davem@davemloft.net>
+In-Reply-To: <20200819.162247.527509541688231611.davem@davemloft.net>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Thu, 20 Aug 2020 11:13:49 +0200
+X-Gmail-Original-Message-ID: <CAHmME9oBQu-k6VKJ5QzVLpE-ZuYoo=qHGKESj8JbxQhDq9QNrQ@mail.gmail.com>
+Message-ID: <CAHmME9oBQu-k6VKJ5QzVLpE-ZuYoo=qHGKESj8JbxQhDq9QNrQ@mail.gmail.com>
+Subject: Re: [PATCH net v6] net: xdp: account for layer 3 packets in generic
+ skb handler
+To:     David Miller <davem@davemloft.net>
+Cc:     Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Thomas Ptacek <thomas@sockpuppet.org>,
+        Adhipati Blambangan <adhipati@tuta.io>,
+        David Ahern <dsahern@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        john.fastabend@gmail.com, Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Aug 2020 13:57:51 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Thu, Aug 20, 2020 at 1:22 AM David Miller <davem@davemloft.net> wrote:
+>
+> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> Date: Sat, 15 Aug 2020 09:41:02 +0200
+>
+> > A user reported that packets from wireguard were possibly ignored by XDP
+> > [1]. Another user reported that modifying packets from layer 3
+> > interfaces results in impossible to diagnose drops.
+>
+> Jason this really is a minefield.
+>
+> If you make everything look like ethernet, even when it isn't, that is
+> a huge pile of worms.
+>
+> If the XDP program changes the fake ethernet header's protocol field,
+> what will update the next protocol field in the wireguard
+> encapsulation headers so that it matches?
+>
+> How do you support pushing VLAN headers as some XDP programs do?  What
+> will undo the fake ethernet header and push the VLAN header into the
+> right place, and set it's next protocol field correctly?
+>
+> And so on, and so forth...
 
-> On Wed, Aug 19, 2020 at 2:29 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> >
-> > Hi Andrii,
-> >
-> > working on xdp multi-buff I figured out now xdp generic is the default choice
-> > if not specified by userspace. In particular after commit 7f0a838254bd
-> > ("bpf, xdp: Maintain info on attached XDP BPF programs in net_device"), running
-> > the command below, XDP will run in generic mode even if the underlay driver
-> > support XDP in native mode:
-> >
-> > $ip link set dev eth0 xdp obj prog.o
-> > $ip link show dev eth0
-> > 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdpgeneric qdisc mq state UP mode DEFAULT
-> >    group default qlen 1024
-> >    link/ether f0:ad:4e:09:6b:57 brd ff:ff:ff:ff:ff:ff
-> >    prog/xdp id 1 tag 3b185187f1855c4c jited
-> >
-> > Is it better to use xdpdrv as default choice if not specified by userspace?
-> > doing something like:
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index a00aa737ce29..1f85880ee412 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -8747,9 +8747,9 @@ static enum bpf_xdp_mode dev_xdp_mode(u32 flags)
-> >  {
-> >         if (flags & XDP_FLAGS_HW_MODE)
-> >                 return XDP_MODE_HW;
-> > -       if (flags & XDP_FLAGS_DRV_MODE)
-> > -               return XDP_MODE_DRV;
-> > -       return XDP_MODE_SKB;
-> > +       if (flags & XDP_FLAGS_SKB_MODE)
-> > +               return XDP_MODE_SKB;
-> > +       return XDP_MODE_DRV;
-> >  }
-> >  
-> 
-> I think the better way would be to choose XDP_MODE_DRV if ndo_bpf !=
-> NULL and XDP_MODE_SKB otherwise. That seems to be matching original
-> behavior, no?
+Huh, that's an interesting set of considerations. It looks like after
+the generic XDP program runs, there's a call to
+skb_vlan_untag()->skb_reorder_vlan_header() if skb->protocol is 8021q
+or 8021qad, which makes me think the stack will just do the right
+thing? I'm probably overlooking some critical detail that you and
+Jesper find clear. My understanding of the generic XDP handler for L2
+packets is:
 
-Yes, but this silent fallback to XDP_MODE_SKB (generic-XDP) have
-cause a lot of support issues in the past.  I wish we could change it.
-We already changed all the samples/bpf/ to ask for XDP_FLAGS_DRV_MODE,
-so they behave this way.
+1. They arrive with skb->data pointing at L3, but skb->data - mac_len
+is the L2 header.
+2. This skb->data - mac_len pointer is what's passed to the eBPF executor.
+3. When it's done, skb->data still points to the L3 data, but the eBPF
+program might have pushed some things on before that or altered the
+ethernet header.
+4. If the ethernet header's h_proto is changed, so skb->protocol is
+updated (along with the broadcast/multicast flag too).
+5. The skb is passed onto the rest of the stack, with skb->data still
+pointing to L3, but with L2 existing in the area just before
+skb->data, just like how it came in.
 
-d50ecc46d18f ("samples/bpf: Attach XDP programs in driver mode by default")
- https://git.kernel.org/torvalds/c/d50ecc46d18fa
+This patch attempts to add L3 semantics that slightly modify the flow
+for L3 packets:
 
-> It was not my intent to change the behavior, sorry about that. I'll
-> post patch a bit later today.
+1. They arrive with skb->data pointing at L3, with nothing coherent
+before skb->data.
+2. An ethernet header is pushed onto the packet, and then pulled off
+again, so that skb->data points at L3 but skb->data - ETH_HLEN points
+to the fake L2.
+3. Steps 2-5 from the above flow now apply.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+It seems like if an eBPF program pushes on a VLAN tag or changes the
+protocol or does any other modification, it will be treated in exactly
+the same way as the L2 packet above by the remaining parts of the
+networking stack.
 
+However, Jesper points out in his previous message (I think) that by
+only calling skb_push(skb, ETH_HLEN), I'm not actually increasing the
+head room enough for eBPF programs to safely tack on vlan tags and
+other things. In other words, I need to increase the head room more,
+beyond a measly ETH_HLEN. That seems like an easy change.
+
+> With so many unanswered questions and unclear semantics the only
+> reasonable approach right now is to reject L3 devices from having XDP
+> programs attached at this time.
+
+I don't know if there are _so_ many unanswered questions, but it seems
+like there remain some unknowns, but Jesper has made a good suggestion
+that I start going through that test suite and make sure that
+everything works properly there. It might be that one test starts
+failing catastrophically, and when I investigate I find that there's
+not a very clear cut answer as to how to fix it, reinforcing your
+point. Or, perhaps it will all kind of work nicely without scary or
+fundamental changes required. Mostly out of my own curiosity, I'll
+give it a try when I'm at my desk again and report back.
+
+> Arguably the best answer is the hardest answer, which is that we
+> expose device protocols and headers exactly how they are and don't try
+> to pretend they are something else.  But it really means that XDP
+> programs have to be written targetted to the attach point device type.
+> And it also means we need a way to update skb->protocol properly,
+> handle the pushing of new headers, etc.
+
+That's actually where this patch started many months ago, with just a
+simple change to quit trying to cast skb->data-mac_len to an ethhdr in
+the case that it's an L3 packet. Of course indeed that didn't address
+skb->protocol. And it also didn't help L3 packets _become_ L2 packets,
+which might be desirable. And in general it would mean that no
+existing XDP programs would work with it, as Toke pointed out. So I
+think if the pseudo ethernet header winds up being actually doable and
+consistent, that's probably the best approach. You seem skeptical that
+it is actually consistent, and you're probably right. I'll let you
+know if I notice otherwise though, once I get that test suite rolling.
+
+Jason
