@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1324BA03
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDA324BA08
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbgHTL6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 07:58:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24723 "EHLO
+        id S1728519AbgHTL7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 07:59:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59075 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729716AbgHTL6k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 07:58:40 -0400
+        by vger.kernel.org with ESMTP id S1728906AbgHTL7A (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 07:59:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597924719;
+        s=mimecast20190719; t=1597924729;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
         bh=0JsyfIwa+8GriEHyvv6HcAO6z5z27/c9oHAAPEBOpJM=;
-        b=fCqVb4KzmDthjtpce7oywgkhkIU8ZmtLXj8hFR6b88L5O6uOWjPLUXkj2rN7q7IaXkM8Jf
-        CXLqBHpZWcal5fNRQvx8LwnwR6jfq+akD5/AGUrJTECICVYeLaKnuKgYiAX/jyVzXIyJ06
-        uf3LMZqHI5uwDnIWVhijUsNUNLiAULE=
+        b=VMuVGvBFqLB7OqDDXtwQ0Z8dsEJofRvoEF8N7Vzzte42eEMPRG8jL/O1BhfpEb0rL2p7RJ
+        QOcNZmM6umPKl0REa48s7xklVFIyoPHkiNQXJvyZUCDd9EZJIZpMqvDkh8VxhZsDBuVmyM
+        zprzjj9p2VGBN+2CBkFKHx/oXnWeeJE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-n0W9MtINMvW0m216YYnCeg-1; Thu, 20 Aug 2020 07:58:35 -0400
-X-MC-Unique: n0W9MtINMvW0m216YYnCeg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-358-Fk5phE-EPMyfaoIdUyXBHQ-1; Thu, 20 Aug 2020 07:58:48 -0400
+X-MC-Unique: Fk5phE-EPMyfaoIdUyXBHQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CADEE807354;
-        Thu, 20 Aug 2020 11:58:33 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6B4F871803;
+        Thu, 20 Aug 2020 11:58:46 +0000 (UTC)
 Received: from astarta.redhat.com (ovpn-112-208.ams2.redhat.com [10.36.112.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8DC8210013C4;
-        Thu, 20 Aug 2020 11:58:32 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7753F5D9F1;
+        Thu, 20 Aug 2020 11:58:45 +0000 (UTC)
 From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
 Subject: [PATCH v2] bpf: selftests: global_funcs: check err_str before strstr
-Date:   Thu, 20 Aug 2020 14:58:30 +0300
-Message-Id: <20200820115830.39394-1-yauheni.kaliuta@redhat.com>
+Date:   Thu, 20 Aug 2020 14:58:43 +0300
+Message-Id: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
