@@ -2,118 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BC724C342
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 18:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DF424C384
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 18:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729834AbgHTQTh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 12:19:37 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43232 "EHLO
+        id S1729461AbgHTQo0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 12:44:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64614 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729944AbgHTQTY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 12:19:24 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KGAbFN010187;
-        Thu, 20 Aug 2020 09:19:04 -0700
+        by vger.kernel.org with ESMTP id S1729295AbgHTQoX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 12:44:23 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07KGexF2019576;
+        Thu, 20 Aug 2020 09:43:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
- b=D7AUyCF24hDz3cXh2cjPG0huAYgPTA9KsIsdwcm/l/g6aSVnDDrBK5GpE+Cvv57/yjP+
- goMr+gQpznETh5tFZbHbaShh/lYxvrzyWIdwzJiljelT4CCFKSwRVeWMtfvjWp+PDO37
- oDXIZcj/OcKtSmW6DxDbhpnBuLMDmPrizkM= 
+ bh=oCgkEzR61Ww8D3uxegvSqWerdwVf6X81wRDVXfWa7U8=;
+ b=MKFyf4EQGnTCWHYhwauuqvoRCcvPRNXpAXPTnG6KqAGMLXp1/E1W/ZoJhPzuUux/Fe24
+ UDVnXI4CIYv+LgVkA+5ZoctHRqDKmeHrOve4AiFay044xlo5azwKMVCqPBGg90dkcZCM
+ Ng7NLbXwxxSETGUNe8d1LHTyBIQga8qYJOI= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 331d50m0cr-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3304p3q6kj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 Aug 2020 09:19:04 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+        Thu, 20 Aug 2020 09:43:33 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 20 Aug 2020 09:19:04 -0700
+ 15.1.1979.3; Thu, 20 Aug 2020 09:43:32 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DUHdwGEuELiwr3WM5qrE+PZussXS8Fj7aCtiSYUIwUlMBd3F7buXJtM+Y/cTDZrqrfZyWBBUcjYOUcURQCAHD7RObfdZy19pzJUIgCSQK9e0PeoloGVMoXsmtAQcNhbPgcqP0HRwWg1helCgOteMt1EkgNFmjlwgs2mghANt+xpENW7XmODuLWWPz4zuzJl2jVkW7aditOT/w6/SMXap+YVBEfhsrrPbes9kxmshqHcnuzCJvr1hhxFBI6BgLgbspl9yhhf2mMJCSz4nfjVwhIpEXdMcOl2gY6sTM/73yZg8OdS8H4n7TwB0CzdIXlKeU+FDAGxGv1156e1XukkfTA==
+ b=bpD6ZHr2qbCIOm2F992qFwoHbHMdebwZWhMy/kqMsYMO7l/hEKXbec5+/vE9tCZkaTVNJxS2olbES3xNzYz/V7Gmquu2zZTdvhoFmSBGflrn6k70+nmpVWd+MxGWPEZZRCjR08U+3rQHhxk2mjKmZdfgwvM0WkohqhtP5VdnO+UYkvo8SzcmZ05lgKspzvU25a4p92e+RiyA36LKTkf6y7czd4Bn1MyGfMbxowz7l+K9ESi/f0hoJkVk7xc9bH8+J3vj8FSdlsEygxXjAk3CfhpQjNvdqK1YpDzJpOdzD8PxBfR+un3PNAXy//2XrXSZxbDrlcBTrEPagfS93j1keQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
- b=VOzw9pEmJACgIPwrUDYcj0/FuGXNPFh2D57AgfNCZUItSvKw8GMNuYjV3Ow2tFuq76Vl7b3ssnJyLg7qcGg2p8n2nZovrbJ50qeErpjKAggU0Jf40JRk9zMcXPzt53hPwQpvV1TBIROu2nw9/Jl8wITa5/CAiL6zo4r53gMwL3tI1NY7a7s3+/TWERPlMNc5fYf8PF6JUtcTW+6ahSOxG/52Dl/Pfk6NX1MjEKgNUUhJKmcL2+qlqh7WX3Ldjfqkhrk5UNNgaUXZ3djwSg7UtthxMvIZFiSzBVUcpPpwQQ2ycxF6hducRAGfeeFI5U1ZV7Ob5XpxFrCMlg4P/RdKiQ==
+ bh=oCgkEzR61Ww8D3uxegvSqWerdwVf6X81wRDVXfWa7U8=;
+ b=YNsArXOI0ros6mRsW8DwCud9p+55W+EAjIw5qVrYiwCAswSzf/Ys4iRdRo8lubaavMZlw8SIHzcu5PPufHsc4k3BDEcA5uvP8bhyIj6L7QLWZkV8bIViLDvrcMKQesary/pDP8KLiHiSahADSUO/hKnS23nXcLGW+p7SmEa2INAsAm0incykUUxfha5erjp+viHGeq2IbOc+Okok090APB+ySMO19KTuINBVfCUvfvLAkn4qUpiOu3ecu938oK28/1RWw8I5a5y83NhGJ+YZ6kQzZJ/c017U/Ox+tByA3CoXDoNzObkGi2WMzr4z2HPtg38Qw/YbooVjMngHBrsGqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n88BMqN7VBIH/kJoxqi6FPMKxdintb/pzM7ZVXrtC2k=;
- b=lYdzPevzFM+AM7CJ4Oi3UJ1kZDj8qjEBTPsVGEwCB68WyXVW5toWn5d2eDinV6czD30mRubYkBTGrG9zLgs31ZO8TjD+A3bv6Y7kWMDnKxhTsvrUT4BBnQJ2Kg0euBlSq5NU2YffaTlwvIiNmvkSPa80FxUOWsml+EL0ykROlbs=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+ bh=oCgkEzR61Ww8D3uxegvSqWerdwVf6X81wRDVXfWa7U8=;
+ b=IW2pc/5rVaAwTkYlXP0wKU02t76TV7YWNv4Zsai2tyoX15kc11QLBbCFvgFNHl3RAY1YWEkJlqo+pOQSInqjOGz2F3Z7XxBTKSZ8hSM3gZxw/u+BLVh61p2aiAvSBABxG7lSIaINzKu724oRkk0N1UWZ6GmYWdDFjVXoNm0vM8w=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18) with
+ by BYAPR15MB2821.namprd15.prod.outlook.com (2603:10b6:a03:15d::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Thu, 20 Aug
- 2020 16:19:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24; Thu, 20 Aug
+ 2020 16:43:31 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3305.026; Thu, 20 Aug 2020
- 16:19:02 +0000
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: override the meaning of
- ARG_PTR_TO_MAP_VALUE for sockmap and sockhash
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+ 16:43:31 +0000
+Subject: Re: [PATCH bpf-next v1 1/8] bpf: Introduce pseudo_btf_id
+To:     Hao Luo <haoluo@google.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200820135729.135783-1-lmb@cloudflare.com>
- <20200820135729.135783-5-lmb@cloudflare.com>
- <34027dbc-d5c6-e886-21f8-f3e73e2fde4a@fb.com>
- <CACAyw98gaWmpJT-LPhqKbKgaPG9s=aNU=K2Db1144dihFHzXJA@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+References: <20200819224030.1615203-1-haoluo@google.com>
+ <20200819224030.1615203-2-haoluo@google.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <2d167605-df64-29c8-f817-d2602cb9d57f@fb.com>
-Date:   Thu, 20 Aug 2020 09:18:57 -0700
+Message-ID: <3c14ea8e-fd86-51bf-16b4-498cfc30ca48@fb.com>
+Date:   Thu, 20 Aug 2020 09:43:24 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <CACAyw98gaWmpJT-LPhqKbKgaPG9s=aNU=K2Db1144dihFHzXJA@mail.gmail.com>
+In-Reply-To: <20200819224030.1615203-2-haoluo@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0056.namprd13.prod.outlook.com
- (2603:10b6:208:257::31) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+X-ClientProxiedBy: MN2PR01CA0032.prod.exchangelabs.com (2603:10b6:208:10c::45)
+ To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BL1PR13CA0056.namprd13.prod.outlook.com (2603:10b6:208:257::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Thu, 20 Aug 2020 16:19:00 +0000
+Received: from 255.255.255.255 (255.255.255.255) by MN2PR01CA0032.prod.exchangelabs.com (2603:10b6:208:10c::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25 via Frontend Transport; Thu, 20 Aug 2020 16:43:27 +0000
 X-Originating-IP: [2620:10d:c091:480::1:7ec1]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c8897372-e04f-459f-dce0-08d84524c0a2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4088:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB408882415B0AE4C27A25F912D35A0@BYAPR15MB4088.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 374afd0e-b636-4f8f-7269-08d845282bc2
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2821:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB282156D0094981E96D7BDCFDD35A0@BYAPR15MB2821.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lO7QPyvWnMamYDwBonbwPgV1xN46L/Uvfm1a36ZmcTDJtjRP2QbpUnQsuYUv3Fi4aKFhnBLtyFFUe0s5z5hrBMzOUEMCOt7tJJFgq4GMZruMWTixHdMdq8oWIRsWgd3cxtWbpOwUGLl/+n1Xd8GhH9m7WeG/7iBbcdkhI8P4ZIeH+jqa2B8j58IahKPxbW2pinUrYCGohIw6gdKqV6qS0nvQjIYjNa+u1q9mVC+Y9AqeXjCuM0wiyCjTFgbdR6IO3L4ws23t0DXp+/7u6ZQq76CyxoI21KT3i2x6br1z3cp7tyUPXlyfXvJDr3RGOYunU54UNQL93vT+ImYg/nrtsCDXcEf+Km7NtNWG0vdG/7TuRYrCMp9CAHAzPhMw7CbFE1nBX0st9fpQejBR7BrDfDO6d9mCyARkiN9TvCMQ4/Y=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(39860400002)(346002)(54906003)(52116002)(66556008)(66476007)(316002)(66946007)(8936002)(31696002)(5660300002)(83380400001)(6666004)(186003)(53546011)(86362001)(2906002)(2616005)(16576012)(36756003)(478600001)(110011004)(8676002)(956004)(4326008)(6486002)(6916009)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: O5m73O5sxRYDxSaO7qcI0m+shFTwPgSlVIlAMzRlculHn3OmuFXl3GNkyXeq5USgKnnQonv0P48tZEysMzMrkoWA5qU6fj9UiMI+ulNw4wOtIiX4dSXIhb4q8PSCLSF5bNBGHl2zmiNuTREyDuCS/Km/ZcIT38dKHxb0iaS0e7jRaXT4BSJ1V6gquFAHYGtz7m5524hABAv9ZSbDc55d9fvp4URxhdodNFvaPeqtWR3Lsn0BxsQ9ANd32eBicM7aB0H8mtPOxiYEYLzPXdgHlop6Nt/sHk7DcQRIKDDoKIgesaSAy4wHhwgbR7S09GVFKNIPTZRlcMdTOZI+SQirL7r31IGzqoyoLCtVRX9yTIt8tSFsRo2OWApVWVTudh9qZhU44eTAYp51pfKE8PoCkgKo3w0RRvwRz4CYElDtQTZ/y7eoQPawsvkZoY6kbNjQ0B2DhDPKxNvuPjPoBetF5ZYHuQXku5xnWkytSxNgAaHV3kiSKVXHpg+fXa6wrZeAhf+C5s2p7PI+4RfO704LZA491Oi6Cbb8ZusfDkQT/7VfmKoIo8PF6sw/pPekWvoGzp/l2DC2Jwzl2ZPcVh/2BH9fNYx/kgcx9XkuzuFs9jDYcTjw1BlQ5RmiAVsV/w0tfEjDpFtu9CRZSJZlRljFxDqI5Ndc4iGrd9YiDKgyoXk=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8897372-e04f-459f-dce0-08d84524c0a2
+X-Microsoft-Antispam-Message-Info: 06UILhyRCqGwy8tWKNYBXsZ6SHCdAtcK5gRu9jrXjOneiNS7Jow/XA7O52QcfR2COK4UJj8fuEGojmL9W30Bu9Kt4xiotZD1TPT5R5ko1/dde8HLa3qqYsER4y259GBw/ISY1yQo6kmCVl13KnTI5kYcJFFd6shj+Ggf0yFN0P/y5i4iLxBOYhs8LJpG8mbCAIpdQHgqKA5wVa1YIZwtwCSeU3pwupglOPvvfGNu4DIxfWhZW+Lvg1N719a7XRvCbilObiwl8dwoMvsAuGImNitpYXzdmRgOany4cINQVA1INZrD9Nlh6Hw7P1rrVfrOqzDNNPsDgFPxg6/zihV2VLPNv08sYQcfMxpDbYKMU55cxRhOrecjQGXQwhmlks/M/jMoLHAey7ElH108H1b3Fow7I8VxedEtymprHW3uiVM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(366004)(136003)(396003)(110011004)(6666004)(31696002)(316002)(478600001)(54906003)(53546011)(52116002)(86362001)(16576012)(31686004)(186003)(2616005)(7416002)(956004)(36756003)(2906002)(8936002)(83380400001)(66946007)(4326008)(6486002)(66476007)(66556008)(8676002)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: BQ4rs3/LdJmEmx7pC0VBGi1Nz52ZfXYW8qHDNRz0k3mqvaxmkqQy4jR62BV4D6Zs076y2vejuD2yQE9ww9uzFzheM/Z08woMNN7C2qS8TggNzja3wpklCdwNfjqacbCO54OE7MXZiFbBK6BWrXy6+HGz69oEEwFl8QkVle0QnhDKI1pmAPTRLx2pPm4UPqUiOO0YYRtZ6oFxNxp4E6sGoso7C1Ik8QoWlK9v3eG5q6VkHUnc/48nQbQFnxyW2yf04AWN7GeUQOb4EFMJvV0NRvfRcXYWLiuuPjfTQPsZ8+0fbSoBUVgUS3N3fka6aoG2ORncJn+nXMyjV4ISeuOA+p9/6jw+JfDUDUcHI+dfrtBknA0boPzt06fhr1YRP2JoPQkEPvIYi2Z1feTTdAG3AHLS2E739qH0XcWJVhPmIHGtlDMKjV9k4ciDzbjiCRdBqFk5O0Zg/cuUY71KirgyU1FF6Q8jLD7B/bwLEMHVEhVKbZqIW6iZhH8IeIYzBDdR1IfcD40noujG6ftlzyIUcfX4+///7qKM2J9M4qCqtUgx5HvYcztNOJejjNySib576ZlFiioSgGBI5WQ4ybuTrijgSo/ShWEb1ysKEVPh430NQmCW9sjhWnXw004TfVB0CnrhKci+3zdItS2QSUhaMLzO8SUmZa0q0mHp9OqqkP0=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 374afd0e-b636-4f8f-7269-08d845282bc2
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 16:19:02.7012
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2020 16:43:31.1655
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AZUWeQio4uxZFdaE0DAqs0r/DPi2yZ52rvgo5ItIzRs0KWg0mV/Dhhfn5EHKq5ip
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4088
+X-MS-Exchange-CrossTenant-UserPrincipalName: 32dSUcKqeTSsXvT+8i0uz7tJAy58IeV5JD+ZMXgzINRWn8ESWjEDjxqGGocI9DmH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2821
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-20_03:2020-08-19,2020-08-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- malwarescore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
- clxscore=1015 phishscore=0 suspectscore=0 adultscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008200132
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 clxscore=1015 suspectscore=0 adultscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008200136
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -122,114 +125,218 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/20/20 9:15 AM, Lorenz Bauer wrote:
-> On Thu, 20 Aug 2020 at 17:10, Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 8/20/20 6:57 AM, Lorenz Bauer wrote:
->>> The verifier assumes that map values are simple blobs of memory, and
->>> therefore treats ARG_PTR_TO_MAP_VALUE, etc. as such. However, there are
->>> map types where this isn't true. For example, sockmap and sockhash store
->>> sockets. In general this isn't a big problem: we can just
->>> write helpers that explicitly requests PTR_TO_SOCKET instead of
->>> ARG_PTR_TO_MAP_VALUE.
->>>
->>> The one exception are the standard map helpers like map_update_elem,
->>> map_lookup_elem, etc. Here it would be nice we could overload the
->>> function prototype for different kinds of maps. Unfortunately, this
->>> isn't entirely straight forward:
->>> We only know the type of the map once we have resolved meta->map_ptr
->>> in check_func_arg. This means we can't swap out the prototype
->>> in check_helper_call until we're half way through the function.
->>>
->>> Instead, modify check_func_arg to treat ARG_PTR_TO_MAP_VALUE* to
->>> mean "the native type for the map" instead of "pointer to memory"
->>> for sockmap and sockhash. This means we don't have to modify the
->>> function prototype at all
->>>
->>> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
->>> ---
->>>    kernel/bpf/verifier.c | 37 +++++++++++++++++++++++++++++++++++++
->>>    1 file changed, 37 insertions(+)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index b6ccfce3bf4c..24feec515d3e 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -3872,6 +3872,35 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
->>>        return -EINVAL;
->>>    }
->>>
->>> +static int resolve_map_arg_type(struct bpf_verifier_env *env,
->>> +                              const struct bpf_call_arg_meta *meta,
->>> +                              enum bpf_arg_type *arg_type)
->>> +{
->>> +     if (!meta->map_ptr) {
->>> +             /* kernel subsystem misconfigured verifier */
->>> +             verbose(env, "invalid map_ptr to access map->type\n");
->>> +             return -EACCES;
->>> +     }
->>> +
->>> +     switch (meta->map_ptr->map_type) {
->>> +     case BPF_MAP_TYPE_SOCKMAP:
->>> +     case BPF_MAP_TYPE_SOCKHASH:
->>> +             if (*arg_type == ARG_PTR_TO_MAP_VALUE) {
->>> +                     *arg_type = ARG_PTR_TO_SOCKET;
->>> +             } else if (*arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
->>> +                     *arg_type = ARG_PTR_TO_SOCKET_OR_NULL;
->>
->> Is this *arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL possible with
->> current implementation?
+On 8/19/20 3:40 PM, Hao Luo wrote:
+> Pseudo_btf_id is a type of ld_imm insn that associates a btf_id to a
+> ksym so that further dereferences on the ksym can use the BTF info
+> to validate accesses. Internally, when seeing a pseudo_btf_id ld insn,
+> the verifier reads the btf_id stored in the insn[0]'s imm field and
+> marks the dst_reg as PTR_TO_BTF_ID. The btf_id points to a VAR_KIND,
+> which is encoded in btf_vminux by pahole. If the VAR is not of a struct
+> type, the dst reg will be marked as PTR_TO_MEM instead of PTR_TO_BTF_ID
+> and the mem_size is resolved to the size of the VAR's type.
 > 
-> No, the only user is bpf_sk_storage_get and friends which requires
-> BPF_MAP_TYPE_SK_STORAGE.
-> I seemed to make sense to map ARG_PTR_TO_MAP_VALUE_OR_NULL, but I can
-> remove it as
-> well if you prefer. Do you think this is dangerous?
+>  From the VAR btf_id, the verifier can also read the address of the
+> ksym's corresponding kernel var from kallsyms and use that to fill
+> dst_reg.
+> 
+> Therefore, the proper functionality of pseudo_btf_id depends on (1)
+> kallsyms and (2) the encoding of kernel global VARs in pahole, which
+> should be available since pahole v1.18.
+> 
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>   include/linux/btf.h      | 15 +++++++++
+>   include/uapi/linux/bpf.h | 38 ++++++++++++++++------
+>   kernel/bpf/btf.c         | 15 ---------
+>   kernel/bpf/verifier.c    | 68 ++++++++++++++++++++++++++++++++++++++++
+>   4 files changed, 112 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 8b81fbb4497c..cee4089e83c0 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -107,6 +107,21 @@ static inline bool btf_type_is_func_proto(const struct btf_type *t)
+>   	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC_PROTO;
+>   }
+>   
+> +static inline bool btf_type_is_var(const struct btf_type *t)
+> +{
+> +	return BTF_INFO_KIND(t->info) == BTF_KIND_VAR;
+> +}
+> +
+> +/* union is only a special case of struct:
+> + * all its offsetof(member) == 0
+> + */
+> +static inline bool btf_type_is_struct(const struct btf_type *t)
+> +{
+> +	u8 kind = BTF_INFO_KIND(t->info);
+> +
+> +	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+> +}
+> +
+>   static inline u16 btf_type_vlen(const struct btf_type *t)
+>   {
+>   	return BTF_INFO_VLEN(t->info);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0480f893facd..468376f2910b 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -346,18 +346,38 @@ enum bpf_link_type {
+>   #define BPF_F_TEST_STATE_FREQ	(1U << 3)
+>   
+>   /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+> - * two extensions:
+> - *
+> - * insn[0].src_reg:  BPF_PSEUDO_MAP_FD   BPF_PSEUDO_MAP_VALUE
+> - * insn[0].imm:      map fd              map fd
+> - * insn[1].imm:      0                   offset into value
+> - * insn[0].off:      0                   0
+> - * insn[1].off:      0                   0
+> - * ldimm64 rewrite:  address of map      address of map[0]+offset
+> - * verifier type:    CONST_PTR_TO_MAP    PTR_TO_MAP_VALUE
+> + * the following extensions:
+> + *
+> + * insn[0].src_reg:  BPF_PSEUDO_MAP_FD
+> + * insn[0].imm:      map fd
+> + * insn[1].imm:      0
+> + * insn[0].off:      0
+> + * insn[1].off:      0
+> + * ldimm64 rewrite:  address of map
+> + * verifier type:    CONST_PTR_TO_MAP
+>    */
+>   #define BPF_PSEUDO_MAP_FD	1
+> +/*
+> + * insn[0].src_reg:  BPF_PSEUDO_MAP_VALUE
+> + * insn[0].imm:      map fd
+> + * insn[1].imm:      offset into value
+> + * insn[0].off:      0
+> + * insn[1].off:      0
+> + * ldimm64 rewrite:  address of map[0]+offset
+> + * verifier type:    PTR_TO_MAP_VALUE
+> + */
+>   #define BPF_PSEUDO_MAP_VALUE	2
+> +/*
+> + * insn[0].src_reg:  BPF_PSEUDO_BTF_ID
+> + * insn[0].imm:      kernel btd id of VAR
+> + * insn[1].imm:      0
+> + * insn[0].off:      0
+> + * insn[1].off:      0
+> + * ldimm64 rewrite:  address of the kernel variable
+> + * verifier type:    PTR_TO_BTF_ID or PTR_TO_MEM, depending on whether the var
+> + *                   is struct/union.
+> + */
+> +#define BPF_PSEUDO_BTF_ID	3
+>   
+>   /* when bpf_call->src_reg == BPF_PSEUDO_CALL, bpf_call->imm == pc-relative
+>    * offset to another bpf function
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 91afdd4c82e3..b6d8f653afe2 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -353,16 +353,6 @@ static bool btf_type_nosize_or_null(const struct btf_type *t)
+>   	return !t || btf_type_nosize(t);
+>   }
+>   
+> -/* union is only a special case of struct:
+> - * all its offsetof(member) == 0
+> - */
+> -static bool btf_type_is_struct(const struct btf_type *t)
+> -{
+> -	u8 kind = BTF_INFO_KIND(t->info);
+> -
+> -	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+> -}
+> -
+>   static bool __btf_type_is_struct(const struct btf_type *t)
+>   {
+>   	return BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT;
+> @@ -373,11 +363,6 @@ static bool btf_type_is_array(const struct btf_type *t)
+>   	return BTF_INFO_KIND(t->info) == BTF_KIND_ARRAY;
+>   }
+>   
+> -static bool btf_type_is_var(const struct btf_type *t)
+> -{
+> -	return BTF_INFO_KIND(t->info) == BTF_KIND_VAR;
+> -}
+> -
+>   static bool btf_type_is_datasec(const struct btf_type *t)
+>   {
+>   	return BTF_INFO_KIND(t->info) == BTF_KIND_DATASEC;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ef938f17b944..47badde71f83 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7205,6 +7205,68 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+>   	return 0;
+>   }
+>   
+> +/* verify ld_imm64 insn of type PSEUDO_BTF_ID is valid */
+> +static inline int check_pseudo_btf_id(struct bpf_verifier_env *env,
+> +				      struct bpf_insn *insn)
+> +{
+> +	struct bpf_reg_state *regs = cur_regs(env);
+> +	u32 type, id = insn->imm;
+> +	u64 addr;
+> +	const char *sym_name;
+> +	const struct btf_type *t = btf_type_by_id(btf_vmlinux, id);
 
-It is not dangerous, but is misleading. People looking at code may
-think it is possible but actually it is not. So I prefer you remove it.
+Since this is new code, please try to conform to reverse christmas tree 
+coding style. For the last one, the assignment no need to be in
+declaration, you can put "t = ..." right before the first use of "t".
 
-> 
->>
->> If not, we can remove this "else if" and return -EINVAL, right?
->>
->>> +             } else {
->>> +                     verbose(env, "invalid arg_type for sockmap/sockhash\n");
->>> +                     return -EINVAL;
->>> +             }
->>> +             break;
->>> +
->>> +     default:
->>> +             break;
->>> +     }
->>> +     return 0;
->>> +}
->>> +
->>>    static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->>>                          struct bpf_call_arg_meta *meta,
->>>                          const struct bpf_func_proto *fn)
->>> @@ -3904,6 +3933,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->>>                return -EACCES;
->>>        }
->>>
->>> +     if (arg_type == ARG_PTR_TO_MAP_VALUE ||
->>> +         arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
->>> +         arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
->>> +             err = resolve_map_arg_type(env, meta, &arg_type);
->>
->> I am okay with this to cover all MAP_VALUE types with func
->> name resolve_map_arg_type as a generic helper.
->>
->>> +             if (err)
->>> +                     return err;
->>> +     }
->>> +
->>>        if (arg_type == ARG_PTR_TO_MAP_KEY ||
->>>            arg_type == ARG_PTR_TO_MAP_VALUE ||
->>>            arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
->>>
-> 
-> 
-> 
+same for other places.
+
+> +
+> +	if (!t) {
+> +		verbose(env, "%s: invalid btf_id %d\n", __func__, id);
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (insn[1].imm != 0) {
+> +		verbose(env, "%s: BPF_PSEUDO_BTF_ID uses reserved fields\n",
+> +			__func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!btf_type_is_var(t)) {
+> +		verbose(env, "%s: btf_id %d isn't KIND_VAR\n", __func__, id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	sym_name = btf_name_by_offset(btf_vmlinux, t->name_off);
+> +	addr = kallsyms_lookup_name(sym_name);
+> +	if (!addr) {
+> +		verbose(env, "%s: failed to find the address of symbol '%s'.\n",
+> +			__func__, sym_name);
+> +		return -ENOENT;
+> +	}
+> +
+> +	insn[0].imm = (u32)addr;
+> +	insn[1].imm = addr >> 32;
+> +	mark_reg_known_zero(env, regs, insn->dst_reg);
+> +
+> +	type = t->type;
+> +	t = btf_type_skip_modifiers(btf_vmlinux, type, NULL);
+> +	if (!btf_type_is_struct(t)) {
+> +		u32 tsize;
+> +		const struct btf_type *ret;
+> +		const char *tname; > +
+> +		/* resolve the type size of ksym. */
+> +		ret = btf_resolve_size(btf_vmlinux, t, &tsize, NULL, NULL);
+> +		if (IS_ERR(ret)) {
+> +			tname = btf_name_by_offset(btf_vmlinux, t->name_off);
+> +			verbose(env, "unable to resolve the size of type '%s': %ld\n",
+> +				tname, PTR_ERR(ret));
+> +			return -EINVAL;
+> +		}
+> +		regs[insn->dst_reg].type = PTR_TO_MEM;
+> +		regs[insn->dst_reg].mem_size = tsize;
+> +	} else {
+> +		regs[insn->dst_reg].type = PTR_TO_BTF_ID;
+> +		regs[insn->dst_reg].btf_id = type;
+> +	}
+> +	return 0;
+> +}
+> +
+>   /* verify BPF_LD_IMM64 instruction */
+[...]
