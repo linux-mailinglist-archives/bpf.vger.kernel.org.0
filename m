@@ -2,87 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDA324BA08
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 13:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB0D24BAF2
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 14:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgHTL7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 07:59:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728906AbgHTL7A (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 07:59:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597924729;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0JsyfIwa+8GriEHyvv6HcAO6z5z27/c9oHAAPEBOpJM=;
-        b=VMuVGvBFqLB7OqDDXtwQ0Z8dsEJofRvoEF8N7Vzzte42eEMPRG8jL/O1BhfpEb0rL2p7RJ
-        QOcNZmM6umPKl0REa48s7xklVFIyoPHkiNQXJvyZUCDd9EZJIZpMqvDkh8VxhZsDBuVmyM
-        zprzjj9p2VGBN+2CBkFKHx/oXnWeeJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-Fk5phE-EPMyfaoIdUyXBHQ-1; Thu, 20 Aug 2020 07:58:48 -0400
-X-MC-Unique: Fk5phE-EPMyfaoIdUyXBHQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6B4F871803;
-        Thu, 20 Aug 2020 11:58:46 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-208.ams2.redhat.com [10.36.112.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7753F5D9F1;
-        Thu, 20 Aug 2020 11:58:45 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH v2] bpf: selftests: global_funcs: check err_str before strstr
-Date:   Thu, 20 Aug 2020 14:58:43 +0300
-Message-Id: <20200820115843.39454-1-yauheni.kaliuta@redhat.com>
+        id S1730399AbgHTMUi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 20 Aug 2020 08:20:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:20602 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730475AbgHTMUg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Aug 2020 08:20:36 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-118-q-2yRy14OXaDjkU2wgyLYg-1; Thu, 20 Aug 2020 13:20:32 +0100
+X-MC-Unique: q-2yRy14OXaDjkU2wgyLYg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 20 Aug 2020 13:20:25 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 20 Aug 2020 13:20:25 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jakub Sitnicki' <jakub@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: RE: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
+Thread-Topic: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
+Thread-Index: AQHWdtzbHJLXFHCDqUy9ea5Q2RcL9qlA6Vow
+Date:   Thu, 20 Aug 2020 12:20:25 +0000
+Message-ID: <ad210e824dd74c05b1072655fc5dc69c@AcuMS.aculab.com>
+References: <20200717103536.397595-1-jakub@cloudflare.com>
+ <87lficrm2v.fsf@cloudflare.com>
+ <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
+ <87k0xtsj91.fsf@cloudflare.com>
+In-Reply-To: <87k0xtsj91.fsf@cloudflare.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The error path in libbpf.c:load_program() has calls to pr_warn()
-which ends up for global_funcs tests to
-test_global_funcs.c:libbpf_debug_print().
+From: Jakub Sitnicki
+> Sent: 20 August 2020 11:30
+> Subject: Re: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
+> 
+> On Tue, Aug 18, 2020 at 08:19 PM CEST, Alexei Starovoitov wrote:
+> > On Tue, Aug 18, 2020 at 8:49 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >>          :                      rcu_read_lock();
+> >>          :                      run_array = rcu_dereference(net-
+> >bpf.run_array[NETNS_BPF_SK_LOOKUP]);
+> >>     0.01 :   ffffffff817f8624:       mov    0xd68(%r12),%rsi
+> >>          :                      if (run_array) {
+> >>     0.00 :   ffffffff817f862c:       test   %rsi,%rsi
+> >>     0.00 :   ffffffff817f862f:       je     ffffffff817f87a9 <__udp4_lib_lookup+0x2c9>
+> >>          :                      struct bpf_sk_lookup_kern ctx = {
+> >>     1.05 :   ffffffff817f8635:       xor    %eax,%eax
+> >>     0.00 :   ffffffff817f8637:       mov    $0x6,%ecx
+> >>     0.01 :   ffffffff817f863c:       movl   $0x110002,0x40(%rsp)
+> >>     0.00 :   ffffffff817f8644:       lea    0x48(%rsp),%rdi
+> >>    18.76 :   ffffffff817f8649:       rep stos %rax,%es:(%rdi)
+> >>     1.12 :   ffffffff817f864c:       mov    0xc(%rsp),%eax
+> >>     0.00 :   ffffffff817f8650:       mov    %ebp,0x48(%rsp)
+> >>     0.00 :   ffffffff817f8654:       mov    %eax,0x44(%rsp)
+> >>     0.00 :   ffffffff817f8658:       movzwl 0x10(%rsp),%eax
+> >>     1.21 :   ffffffff817f865d:       mov    %ax,0x60(%rsp)
+> >>     0.00 :   ffffffff817f8662:       movzwl 0x20(%rsp),%eax
+> >>     0.00 :   ffffffff817f8667:       mov    %ax,0x62(%rsp)
+> >>          :                      .sport          = sport,
+> >>          :                      .dport          = dport,
+> >>          :                      };
+> >
+> > Such heavy hit to zero init 56-byte structure is surprising.
+> > There are two 4-byte holes in this struct. You can try to pack it and
+> > make sure that 'rep stoq' is used instead of 'rep stos' (8 byte at a time vs 4).
+> 
+> Thanks for the tip. I'll give it a try.
 
-For the tests with no struct test_def::err_str initialized with a
-string, it causes call of strstr() with NULL as the second argument
-and it segfaults.
+You probably don't want to use 'rep stos' in any of its forms.
+The instruction 'setup' time is horrid on most cpu variants.
+For a 48 byte structure six writes of a zero register will be faster.
 
-Fix it by calling strstr() only for non-NULL err_str.
+If gcc is generating the 'rep stos' then the compiler source code for that
+pessimisation needs deleting...
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
+	David
 
-v1->v2:
-
-- remove extra parenthesis;
-- remove vague statement from changelog.
-
----
- tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index 25b068591e9a..2e80a57e5f9d 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
- 	log_buf = va_arg(args, char *);
- 	if (!log_buf)
- 		goto out;
--	if (strstr(log_buf, err_str) == 0)
-+	if (err_str != NULL && strstr(log_buf, err_str) == 0)
- 		found = true;
- out:
- 	printf(format, log_buf);
--- 
-2.26.2
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
