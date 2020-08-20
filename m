@@ -2,99 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EB824B5A3
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 12:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D8724B5E8
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 12:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731686AbgHTK0Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 20 Aug 2020 06:26:24 -0400
-Received: from wildebeest.demon.nl ([212.238.236.112]:39478 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728505AbgHTK0X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 06:26:23 -0400
-X-Greylist: delayed 461 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 Aug 2020 06:26:23 EDT
-Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 556A130278CD;
-        Thu, 20 Aug 2020 12:18:36 +0200 (CEST)
-Received: by tarox.wildebeest.org (Postfix, from userid 1000)
-        id 05DBC413CE8D; Thu, 20 Aug 2020 12:18:36 +0200 (CEST)
-Message-ID: <5ef90a283aa2f68018763258999fa66cd34cb3bb.camel@klomp.org>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix sections with wrong
- alignment
-From:   Mark Wielaard <mark@klomp.org>
-To:     Yonghong Song <yhs@fb.com>,
-        =?UTF-8?Q?F=C4=81ng-ru=C3=AC_S=C3=B2ng?= <maskray@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        id S1731650AbgHTK3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 06:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731552AbgHTK3e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 06:29:34 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D80C061757
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 03:29:33 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id m22so1500778ljj.5
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 03:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=9pwmmvPAgNgpZan9qxqpd7m5i/x2Jbr84ZbARDB6UlQ=;
+        b=Kz0aOxy/GDniL6sr/VQKKUMmlcE4xqm8BzhipXe24UTQl0x9tYcQFrrTj7D+xiZ26w
+         hzNlpp/GWZgkSi1vShjeloqy7gTJXloQz/XdD1ZLVmbawyZVuZANQ6vgK2OEPZI7/4ev
+         Iu2n6mnBTqhY0Lt0vMyibyZY239UR0KSyqxwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=9pwmmvPAgNgpZan9qxqpd7m5i/x2Jbr84ZbARDB6UlQ=;
+        b=Pi7q6kOWoUDYJW0fgLITHI5ICy3CDFxzf42U1PSkEtNuxwcoMlEiZ9BMLWAsXXOegL
+         B3jA2BTht/S1wfuLrX3xTU55RaD+mwwVWsjlYb1j2M2PtA/AgQhwtfhtnPMSwVZvsV7W
+         WBt9ZZYEUpYQqG/ebHcU6B2P3sjHPN1mgNRjy8rGwAftZENx5zqnNi7e4Mi1YHi90Bqi
+         jN7qW+/udbYReEfqDOApabxCHP3hg2qBygt/sXNb1bPcv+jR1Gi49bvExi12nCooCSbd
+         mtZ7qzlzdHdLicDnPYBX8wkQvX+JaFlyWd7YqxVCEBamug9JsBA6K+qARjI6afZ5YtsQ
+         S9dA==
+X-Gm-Message-State: AOAM531kfJx3yX9iibRkVIaKw8zDi1NP7UTmQBHd307dKbZCwcKeptcZ
+        94yqsmlNZO4FHwBRVR/tT4OZqA==
+X-Google-Smtp-Source: ABdhPJxGKv9AjPpps1uUtTo6HIAYPA9ktHbnDoC9XQ0Hh+M7mIatMaC+6PqtnP9zBhHOsltgDiWtNA==
+X-Received: by 2002:a2e:b5b3:: with SMTP id f19mr1235128ljn.210.1597919371873;
+        Thu, 20 Aug 2020 03:29:31 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id y19sm410308lfe.77.2020.08.20.03.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 03:29:31 -0700 (PDT)
+References: <20200717103536.397595-1-jakub@cloudflare.com> <87lficrm2v.fsf@cloudflare.com> <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Nick Clifton <nickc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Date:   Thu, 20 Aug 2020 12:18:35 +0200
-In-Reply-To: <ba7bbec7-9fb5-5f8f-131e-1e0aeff843fa@fb.com>
-References: <20200819092342.259004-1-jolsa@kernel.org>
-         <254246ed-1b76-c435-a7bd-0783a29094d9@fb.com>
-         <20200819173618.GH177896@krava>
-         <CAKwvOdnfy4ASdeVqPjMtALXOXgMKdEB8U0UzWDPBKVqdhcPaFg@mail.gmail.com>
-         <2e35cf9e-d815-5cd7-9106-7947e5b9fe3f@fb.com>
-         <CAFP8O3+mqgQr_zVS9pMXSpFsCm0yp5y5Vgx1jmDc+wi-8-HOVQ@mail.gmail.com>
-         <ba7bbec7-9fb5-5f8f-131e-1e0aeff843fa@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
+In-reply-to: <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
+Date:   Thu, 20 Aug 2020 12:29:30 +0200
+Message-ID: <87k0xtsj91.fsf@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Tue, Aug 18, 2020 at 08:19 PM CEST, Alexei Starovoitov wrote:
+> On Tue, Aug 18, 2020 at 8:49 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>          :                      rcu_read_lock();
+>>          :                      run_array = rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
+>>     0.01 :   ffffffff817f8624:       mov    0xd68(%r12),%rsi
+>>          :                      if (run_array) {
+>>     0.00 :   ffffffff817f862c:       test   %rsi,%rsi
+>>     0.00 :   ffffffff817f862f:       je     ffffffff817f87a9 <__udp4_lib_lookup+0x2c9>
+>>          :                      struct bpf_sk_lookup_kern ctx = {
+>>     1.05 :   ffffffff817f8635:       xor    %eax,%eax
+>>     0.00 :   ffffffff817f8637:       mov    $0x6,%ecx
+>>     0.01 :   ffffffff817f863c:       movl   $0x110002,0x40(%rsp)
+>>     0.00 :   ffffffff817f8644:       lea    0x48(%rsp),%rdi
+>>    18.76 :   ffffffff817f8649:       rep stos %rax,%es:(%rdi)
+>>     1.12 :   ffffffff817f864c:       mov    0xc(%rsp),%eax
+>>     0.00 :   ffffffff817f8650:       mov    %ebp,0x48(%rsp)
+>>     0.00 :   ffffffff817f8654:       mov    %eax,0x44(%rsp)
+>>     0.00 :   ffffffff817f8658:       movzwl 0x10(%rsp),%eax
+>>     1.21 :   ffffffff817f865d:       mov    %ax,0x60(%rsp)
+>>     0.00 :   ffffffff817f8662:       movzwl 0x20(%rsp),%eax
+>>     0.00 :   ffffffff817f8667:       mov    %ax,0x62(%rsp)
+>>          :                      .sport          = sport,
+>>          :                      .dport          = dport,
+>>          :                      };
+>
+> Such heavy hit to zero init 56-byte structure is surprising.
+> There are two 4-byte holes in this struct. You can try to pack it and
+> make sure that 'rep stoq' is used instead of 'rep stos' (8 byte at a time vs 4).
 
-On Wed, 2020-08-19 at 20:23 -0700, Yonghong Song wrote:
-> On 8/19/20 7:27 PM, Fāng-ruì Sòng wrote:
-> > > > > 
-> > I think this is resolve_btfids's bug. GNU ld and LLD are innocent.
-> > These .debug_* sections work fine if their sh_addralign is 1.
-> > When the section flag SHF_COMPRESSED is set, the meaningful
-> > alignment
-> > is Elf64_Chdr::ch_addralign, after the header is uncompressed.
-> > 
-> > On Wed, Aug 19, 2020 at 2:30 PM Yonghong Song <yhs@fb.com> wrote:
-> Since Fangrui mentioned this is not a ld/lld bug, then changing
-> alighment from 1 to 4 might have some adverse effect for the binary,
-> I guess.
+Thanks for the tip. I'll give it a try.
 
-The bug isn't about a wrong ch_addralign, which seems to have been set
-correctly. But it is a bug about incorrectly setting the sh_addralign
-of the section. The sh_addralign indicates the alignment of the data in
-the section, which is the Elf32/64_Chdr plus compressed data, not the
-alignment of the uncompressed data. It helps the consumer make sure
-they lay out the data so that the ELF data structures can be read
-through their natural alignment.
+> Long term we should probably stop doing *_kern style of ctx passing
+> into bpf progs.
+> We have BTF, CO-RE and freplace now. This old style of memset *_kern and manual
+> ctx conversion has performance implications and annoying copy-paste of ctx
+> conversion routines.
+> For this particular case instead of introducing udp4_lookup_run_bpf()
+> and copying registers into stack we could have used freplace of
+> udp4_lib_lookup2.
+> More verifier work needed, of course.
+> My main point that existing approach "lets prep args for bpf prog to
+> run" that is used
+> pretty much in every bpf hook is no longer necessary.
 
-In practice it often isn't a real issue, because consumers, including
-libelf, will correct the data alignment before usage anyway. But that
-doesn't mean it isn't a bug to set it wrongly.
+Andrii has also suggested leveraging BTF [0], but to expose the *_kern
+struct directly to BPF prog instead of emitting ctx access instructions.
 
-> Do you think we could skip these .debug_* sections somehow in elf 
-> parsing in resolve_btfids? resolve_btfids does not need to read
-> these sections. This way, no need to change their alignment either.
+What I'm curious about is if we get rid of prepping args and ctx
+conversion, then how do we limit what memory BPF prog can access?
 
-The issue is that elfutils libelf will not allow writing out the
-section when it notices the sh_addralign field is setup wrongly.
+Say, I'm passing a struct sock * to my BPF prog. If it's not a tracing
+prog, then I don't want it to have access to everything that is
+reachable from struct sock *. This is where this approach currently
+breaks down for me.
 
-Cheers,
-
-Mark
+[0] https://lore.kernel.org/bpf/CAEf4BzZ7-0TFD4+NqpK9X=Yuiem89Ug27v90fev=nn+3anCTpA@mail.gmail.com/
