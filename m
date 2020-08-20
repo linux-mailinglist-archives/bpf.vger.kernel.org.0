@@ -2,156 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ABE24B1D9
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 11:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF2424B332
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 11:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgHTJOl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 05:14:41 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:37407 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgHTJOG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:14:06 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id acce9074;
-        Thu, 20 Aug 2020 08:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=EmqNmAaP9d5tln4z5/gXHm1XFQk=; b=Y6iqPX
-        WaA2oJk4rNuOxnfLhqF7entIN6S3kDv2hCqZN6B32nJzyTCpJKn5orL9UubNa2DI
-        R4ROW/buKNsGHuLJ2JjDarVa80noHhUL+fROwzJFE6Aa6X0gUf2redFYk5Ed7bQE
-        InRFtIq1qpCG0jmCPQW3KVCFSxrUeToVZo6rbt7wJZxDej/mSb+asVP0lIOfq78t
-        9Qgt7MpdwfnnPcU0jSeBabsTzUqVAip1dmsIyhdu8xhUWKnNMMV+VVtOyIIcRH1F
-        e3P+vz0OL60ERH3kkh9CtR53eJmqYq+2HbTnQL3H/GEWrKHLqJZ7u7iudRqzf9TE
-        Q9O8Ysh4Alv2Jigw==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c146ec0b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 20 Aug 2020 08:47:37 +0000 (UTC)
-Received: by mail-io1-f46.google.com with SMTP id b17so1452280ion.7;
-        Thu, 20 Aug 2020 02:14:01 -0700 (PDT)
-X-Gm-Message-State: AOAM530gpQXUighAJQfZ4nwkTikY5fS8iwwnouGjX0TMgJkTxOFKITa/
-        3GWKzgzRals59LgjjnGxhqI0MPzBBIp47Y8vc1w=
-X-Google-Smtp-Source: ABdhPJwrD+kMX381ZsNH5ZVv7XZpJr3WPE37RwgpGR8uD3r1z7iibyb0fdT8uJc3F2IdHO7K9Ylo+qHdlk4BWFZdUgE=
-X-Received: by 2002:a6b:b211:: with SMTP id b17mr1793664iof.29.1597914841074;
- Thu, 20 Aug 2020 02:14:01 -0700 (PDT)
+        id S1729231AbgHTJnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 05:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729146AbgHTJmR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:42:17 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAB7C061757
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 02:42:16 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g14so1561382iom.0
+        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 02:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hfrDwkUxCWJWhcrr/MkZm9iD6Oaf34/kRmbpIKwwIkA=;
+        b=GC4KoTR+glWOgbethpzs30WzX+5FToyNviIynKCIW8vaPERfA/3+DRIZyYqCWupBJ3
+         Mg6EbRPb7NJ8Y392ikW0K8c+7NhHhw1dI8yMTN51qsPeKqJk6b7iGBAgET8RcHaFmxVP
+         Uf0cHnGVJ7wzZJlakWlgJrohOnOOmbHRPALCTanlHa8kO8xl+zbW6gFJzD5Oc71txxiT
+         qvZvawMG0tNYD/fwGGlP+Zi6ltsKOQ7HBxwuGa1eUTMzyJoVuMNRD2Lars0K+RkE0dLN
+         SLPPb/eW47CbeBJTGSouyzaT8vkKbYIKDpAMcF2VgQZcIqSxZFsCU/436zCDrMKQBmhD
+         jAXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hfrDwkUxCWJWhcrr/MkZm9iD6Oaf34/kRmbpIKwwIkA=;
+        b=P3j0lD1aA5nfBAbxDbAPVvtA9c8T/CFSEBKea5ebyqbNFxN1sR5eOqgy5K9OjPIDgN
+         ewISdp3WoW2I9KEYlS0Keq15awVOb+XxVhh+NDmQgdBWgMEt88Gmt2yQKY63bUtjsgB/
+         BRXCwJJxhLwD1oe7J2JlDX/KqBOAas0A+x9hurCdU46HWx2+Wb4yCtmsEmM/7mrFI0V7
+         3mo4LXR5wYyPPxS5csQYVQPmu2xAltb+TS5H8oqJBpCc62qIA04V2FbbmBYbcZsOnrge
+         8avMHanyj5A/PY4qmmQNZaeuDYCkMaPqlGEfzCgqAuPQHv6FJ075nfAJNkZMKl+xJVRm
+         meYA==
+X-Gm-Message-State: AOAM532SfNPR6oHS4nyl8XwqMWlmlOl3TfAt+KkHi0mvi6Sv/1eJPVX2
+        gJtmBQHbS1Ya2oXvzwA13xMqhRutCE4Iuw==
+X-Google-Smtp-Source: ABdhPJwRVzUHGWZZWBPG7oFSOJ7tbU30+JNE+T+JanSJ/ibZ8FoZOCbZpcDH6h3DlpDvSEZ4LdWW1w==
+X-Received: by 2002:a05:6638:13c5:: with SMTP id i5mr2393322jaj.29.1597916535130;
+        Thu, 20 Aug 2020 02:42:15 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-219.tnkngak.clients.pavlovmedia.com. [173.230.99.219])
+        by smtp.gmail.com with ESMTPSA id r3sm1145597iov.22.2020.08.20.02.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 02:42:14 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Subject: [PATCH bpf-next 0/5] Allow storage of flexible metadata information for eBPF programs
+Date:   Thu, 20 Aug 2020 04:42:06 -0500
+Message-Id: <cover.1597915265.git.zhuyifei@google.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200814.135546.2266851283177227377.davem@davemloft.net>
- <20200815074102.5357-1-Jason@zx2c4.com> <20200819.162247.527509541688231611.davem@davemloft.net>
-In-Reply-To: <20200819.162247.527509541688231611.davem@davemloft.net>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 20 Aug 2020 11:13:49 +0200
-X-Gmail-Original-Message-ID: <CAHmME9oBQu-k6VKJ5QzVLpE-ZuYoo=qHGKESj8JbxQhDq9QNrQ@mail.gmail.com>
-Message-ID: <CAHmME9oBQu-k6VKJ5QzVLpE-ZuYoo=qHGKESj8JbxQhDq9QNrQ@mail.gmail.com>
-Subject: Re: [PATCH net v6] net: xdp: account for layer 3 packets in generic
- skb handler
-To:     David Miller <davem@davemloft.net>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Thomas Ptacek <thomas@sockpuppet.org>,
-        Adhipati Blambangan <adhipati@tuta.io>,
-        David Ahern <dsahern@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        john.fastabend@gmail.com, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 1:22 AM David Miller <davem@davemloft.net> wrote:
->
-> From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> Date: Sat, 15 Aug 2020 09:41:02 +0200
->
-> > A user reported that packets from wireguard were possibly ignored by XDP
-> > [1]. Another user reported that modifying packets from layer 3
-> > interfaces results in impossible to diagnose drops.
->
-> Jason this really is a minefield.
->
-> If you make everything look like ethernet, even when it isn't, that is
-> a huge pile of worms.
->
-> If the XDP program changes the fake ethernet header's protocol field,
-> what will update the next protocol field in the wireguard
-> encapsulation headers so that it matches?
->
-> How do you support pushing VLAN headers as some XDP programs do?  What
-> will undo the fake ethernet header and push the VLAN header into the
-> right place, and set it's next protocol field correctly?
->
-> And so on, and so forth...
+From: YiFei Zhu <zhuyifei@google.com>
 
-Huh, that's an interesting set of considerations. It looks like after
-the generic XDP program runs, there's a call to
-skb_vlan_untag()->skb_reorder_vlan_header() if skb->protocol is 8021q
-or 8021qad, which makes me think the stack will just do the right
-thing? I'm probably overlooking some critical detail that you and
-Jesper find clear. My understanding of the generic XDP handler for L2
-packets is:
+Currently, if a user wants to store arbitrary metadata for an eBPF
+program, for example, the program build commit hash or version, they
+could store it in a map, and conveniently libbpf uses .data section to
+populate an internal map. However, if the program does not actually
+reference the map, then the map would be de-refcounted and freed.
 
-1. They arrive with skb->data pointing at L3, but skb->data - mac_len
-is the L2 header.
-2. This skb->data - mac_len pointer is what's passed to the eBPF executor.
-3. When it's done, skb->data still points to the L3 data, but the eBPF
-program might have pushed some things on before that or altered the
-ethernet header.
-4. If the ethernet header's h_proto is changed, so skb->protocol is
-updated (along with the broadcast/multicast flag too).
-5. The skb is passed onto the rest of the stack, with skb->data still
-pointing to L3, but with L2 existing in the area just before
-skb->data, just like how it came in.
+This patch set introduces a new syscall BPF_PROG_BIND_MAP to add a map
+to a program's used_maps, even if the program instructions does not
+reference the map. libbpf is extended to recognize the .metadata section
+and load it as an internal map, and use the new syscall to ensure the
+map is bound. bpftool is also extended to have a new flag to prog
+subcommand, "--metadata" to dump the contents of the metadata section
+without a separate map dump call.
 
-This patch attempts to add L3 semantics that slightly modify the flow
-for L3 packets:
+An example use of this would be BPF C file declaring:
 
-1. They arrive with skb->data pointing at L3, with nothing coherent
-before skb->data.
-2. An ethernet header is pushed onto the packet, and then pulled off
-again, so that skb->data points at L3 but skb->data - ETH_HLEN points
-to the fake L2.
-3. Steps 2-5 from the above flow now apply.
+  char commit_hash[] SEC(".metadata") = "abcdef123456";
 
-It seems like if an eBPF program pushes on a VLAN tag or changes the
-protocol or does any other modification, it will be treated in exactly
-the same way as the L2 packet above by the remaining parts of the
-networking stack.
+and bpftool would emit:
 
-However, Jesper points out in his previous message (I think) that by
-only calling skb_push(skb, ETH_HLEN), I'm not actually increasing the
-head room enough for eBPF programs to safely tack on vlan tags and
-other things. In other words, I need to increase the head room more,
-beyond a measly ETH_HLEN. That seems like an easy change.
+  $ bpftool prog --metadata
+  [...]
+  	metadata:
+  		commit_hash = "abcdef123456"
 
-> With so many unanswered questions and unclear semantics the only
-> reasonable approach right now is to reject L3 devices from having XDP
-> programs attached at this time.
+Patch 1 protects the used_maps array and count with a mutex.
 
-I don't know if there are _so_ many unanswered questions, but it seems
-like there remain some unknowns, but Jesper has made a good suggestion
-that I start going through that test suite and make sure that
-everything works properly there. It might be that one test starts
-failing catastrophically, and when I investigate I find that there's
-not a very clear cut answer as to how to fix it, reinforcing your
-point. Or, perhaps it will all kind of work nicely without scary or
-fundamental changes required. Mostly out of my own curiosity, I'll
-give it a try when I'm at my desk again and report back.
+Patch 2 implements the new syscall.
 
-> Arguably the best answer is the hardest answer, which is that we
-> expose device protocols and headers exactly how they are and don't try
-> to pretend they are something else.  But it really means that XDP
-> programs have to be written targetted to the attach point device type.
-> And it also means we need a way to update skb->protocol properly,
-> handle the pushing of new headers, etc.
+Patch 3 extends libbpf to have a wrapper around the syscall, probe the
+kernel for support of this new syscall, and use it on .metadata section
+if supported and the section exists.
 
-That's actually where this patch started many months ago, with just a
-simple change to quit trying to cast skb->data-mac_len to an ethhdr in
-the case that it's an L3 packet. Of course indeed that didn't address
-skb->protocol. And it also didn't help L3 packets _become_ L2 packets,
-which might be desirable. And in general it would mean that no
-existing XDP programs would work with it, as Toke pointed out. So I
-think if the pseudo ethernet header winds up being actually doable and
-consistent, that's probably the best approach. You seem skeptical that
-it is actually consistent, and you're probably right. I'll let you
-know if I notice otherwise though, once I get that test suite rolling.
+Patch 4 extends bpftool so that it is able to dump metadata from prog
+show.
 
-Jason
+Patch 5 adds a test to check the metadata loading and dumping.
+
+Changes since RFC:
+* Fixed a few missing unlocks, and missing close while iterating map fds.
+* Move mutex initialization to right after prog aux allocation, and mutex
+  destroy to right after prog aux free.
+* s/ADD_MAP/BIND_MAP/
+* Use mutex only instead of RCU to protect the used_map array & count.
+
+YiFei Zhu (5):
+  bpf: Mutex protect used_maps array and count
+  bpf: Add BPF_PROG_BIND_MAP syscall
+  libbpf: Add BPF_PROG_BIND_MAP syscall and use it on .metadata section
+  bpftool: support dumping metadata
+  selftests/bpf: Test bpftool loading and dumping metadata
+
+ .../net/ethernet/netronome/nfp/bpf/offload.c  |  18 ++-
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/core.c                             |  15 +-
+ kernel/bpf/syscall.c                          |  81 ++++++++++-
+ net/core/dev.c                                |  11 +-
+ tools/bpf/bpftool/json_writer.c               |   6 +
+ tools/bpf/bpftool/json_writer.h               |   3 +
+ tools/bpf/bpftool/main.c                      |  10 ++
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      | 135 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  11 ++
+ tools/lib/bpf/bpf.h                           |   1 +
+ tools/lib/bpf/libbpf.c                        | 100 ++++++++++++-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/progs/metadata_unused.c     |  15 ++
+ .../selftests/bpf/progs/metadata_used.c       |  15 ++
+ .../selftests/bpf/test_bpftool_metadata.sh    |  82 +++++++++++
+ 20 files changed, 504 insertions(+), 19 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
+
+-- 
+2.28.0
+
